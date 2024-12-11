@@ -31,7 +31,7 @@ type K8sApi interface {
 	ExecuteDelete(crd, namespace string) error
 	CheckCrdExists(crd string) error
 	GetDeploymentStatus(namespace, deploymentName string) (v1.DeploymentStatus, error)
-	PortForward(namespace, serviceName, portFrom, portTo string) error
+	PortForward(namespace, serviceName, portFrom, portTo string, onReady func()) error
 }
 
 var Current K8sApi = k8sclient.GoAPI{}
@@ -60,6 +60,6 @@ func GetDeploymentStatus(namespace, deploymentName string) (v1.DeploymentStatus,
 	return Current.GetDeploymentStatus(namespace, deploymentName)
 }
 
-func PortForward(namespace, deploymentName, portFrom, portTo string) error {
-	return Current.PortForward(namespace, deploymentName, portFrom, portTo)
+func PortForward(namespace, deploymentName, portFrom, portTo string, onReady func()) error {
+	return Current.PortForward(namespace, deploymentName, portFrom, portTo, onReady)
 }

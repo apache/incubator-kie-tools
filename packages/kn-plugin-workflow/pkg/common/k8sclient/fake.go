@@ -73,6 +73,6 @@ func (m Fake) GetDeploymentStatus(namespace, deploymentName string) (v1.Deployme
 	return v1.DeploymentStatus{}, nil
 }
 
-func (m Fake) PortForward(namespace, serviceName, portFrom, portTo string) error  {
+func (m Fake) PortForward(namespace, serviceName, portFrom, portTo string, onReady func()) error  {
 	return nil
 }

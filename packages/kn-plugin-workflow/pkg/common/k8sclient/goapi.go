@@ -22,6 +22,7 @@ package k8sclient
 import (
 	"context"
 	"fmt"
+	"io"
 	v1 "k8s.io/api/apps/v1"
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/client-go/kubernetes"
@@ -201,14 +202,14 @@ func (m GoAPI) GetDeploymentStatus(namespace, deploymentName string) (v1.Deploym
 		return v1.DeploymentStatus{}, NoDeploymentFound
 	}
 
-	if deployments.Size() > 1 {
+	if len(deployments.Items) > 1 {
 		return v1.DeploymentStatus{}, fmt.Errorf("❌ ERROR: More than one deployment named %s in namespace %s found", deploymentName, namespace)
 	}
 
 	return deployments.Items[0].Status, nil
 }
 
-func (m GoAPI) PortForward(namespace, serviceName, portFrom, portTo string) error  {
+func (m GoAPI) PortForward(namespace, serviceName, portFrom, portTo string, onReady func()) error  {
 	if namespace == "" {
 		currentNamespace, err := m.GetNamespace()
 		if err != nil {
@@ -222,9 +223,9 @@ func (m GoAPI) PortForward(namespace, serviceName, portFrom, portTo string) erro
 		return fmt.Errorf("❌ ERROR: Failed to create rest config for Kubernetes client: %v", err)
 	}
 
-	newConfig, err := kubernetes.NewForConfig(config)
+	clientSet, err := kubernetes.NewForConfig(config)
 
-	service, err := newConfig.CoreV1().Services(namespace).Get(context.TODO(), serviceName, metav1.GetOptions{})
+	service, err := clientSet.CoreV1().Services(namespace).Get(context.TODO(), serviceName, metav1.GetOptions{})
 	if err != nil {
 		return fmt.Errorf("❌ ERROR: Failed to get service: %v", err)
 	}
@@ -237,7 +238,7 @@ func (m GoAPI) PortForward(namespace, serviceName, portFrom, portTo string) erro
 		labelSelector += fmt.Sprintf("%s=%s", key, value)
 	}
 
-	pods, err := newConfig.CoreV1().Pods(namespace).List(context.TODO(), metav1.ListOptions{
+	pods, err := clientSet.CoreV1().Pods(namespace).List(context.TODO(), metav1.ListOptions{
 		LabelSelector: labelSelector,
 	})
 	if err != nil {
@@ -248,11 +249,8 @@ func (m GoAPI) PortForward(namespace, serviceName, portFrom, portTo string) erro
 		return fmt.Errorf("❌ ERROR: No pods found for service %s in namespace %s", serviceName, namespace)
 	}
 
-	req := newConfig.CoreV1().RESTClient().Post().
-										Resource("pods").
-										Namespace(pods.Items[0].Namespace).
-										Name(pods.Items[0].Name).
-										SubResource("portforward")
+	req := clientSet.CoreV1().RESTClient().Post().Resource("pods").Namespace(pods.Items[0].Namespace).
+								  Name(pods.Items[0].Name).SubResource("portforward")
 
 	transport, upgrader, err := spdy.RoundTripperFor(config)
 	if err != nil {
@@ -267,7 +265,7 @@ func (m GoAPI) PortForward(namespace, serviceName, portFrom, portTo string) erro
 
 	ports := []string{fmt.Sprintf("%s:%s", portFrom, portTo)}
 	go func() {
-		forwardPorts, err := portforward.New(dialer, ports, stopCh, readyCh, os.Stdout, os.Stderr);
+		forwardPorts, err := portforward.New(dialer, ports, stopCh, readyCh, io.Discard, os.Stderr);
 		if err != nil {
 			errCh <- err
 		}
@@ -279,8 +277,7 @@ func (m GoAPI) PortForward(namespace, serviceName, portFrom, portTo string) erro
 
 	select {
 	case <-readyCh:
-		fmt.Println(" - ✅ Port forwarding started successfully.")
-		fmt.Println(" - 🔎 Press Ctrl+C to stop port forwarding.")
+		onReady()
 	case err := <-errCh:
 		return fmt.Errorf("❌ Error starting port forwarding: %v\n", err)
 	}
@@ -295,7 +292,6 @@ func KubeApiConfig() (*api.Config, error) {
 		return nil, fmt.Errorf("error getting user home dir: %w", err)
 	}
 	kubeConfigPath := filepath.Join(homeDir, ".kube", "config")
-	fmt.Printf("🔎 Using kubeconfig: %s\n", kubeConfigPath)
 	config, err := clientcmd.LoadFromFile(kubeConfigPath)
 	if err != nil {
 		return nil, fmt.Errorf("❌ ERROR: Failed to load kubeconfig: %w", err)

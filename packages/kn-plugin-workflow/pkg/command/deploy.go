@@ -183,18 +183,22 @@ func waitForDeploymentAndOpenDevUi(cfg *DeployUndeployCmdConfig) error {
 	defer close(deployed)
 	defer close(errCan)
 
-	fmt.Println("🔍 Waiting for the deployment to complete...", workflow.Id)
+	fmt.Println("🕚 Waiting for the deployment to complete...")
 
 	go PollGetDeploymentStatus(cfg.NameSpace, workflow.Id, 5*time.Second,5 * time.Minute, deployed, errCan)
 
 	select {
 	case <-deployed:
-		fmt.Printf(" - ✅ Deployment of %s completed\n", workflow.Id)
+		fmt.Printf(" - ✅ Deployment of %s is completed\n", workflow.Id)
 	case err := <-errCan:
 		return fmt.Errorf("❌ ERROR: failed to get deployment status: %w", err)
 	}
 
-	if err := common.PortForward(cfg.NameSpace, workflow.Id, "8080", "8080"); err != nil {
+	if err := common.PortForward(cfg.NameSpace, workflow.Id, "8080", "8080", func() {
+		fmt.Println(" - ✅ Port forwarding started successfully.")
+		fmt.Println(" - 🔎 Press Ctrl+C to stop port forwarding.")
+		common.OpenBrowserURL(fmt.Sprintf("http://localhost:%s/q/dev-ui", "8080"))
+	}); err != nil {
 		return fmt.Errorf("❌ ERROR: failed to port forward: %w", err)
 	}
 
@@ -208,14 +212,12 @@ func PollGetDeploymentStatus(namespace, deploymentName string, interval, timeout
 	for {
 		select {
 		case <-timeoutCh:
-			errChan <- fmt.Errorf("timeout riched for deployment %s in namespace %s", deploymentName, namespace)
+			errChan <- fmt.Errorf("❌ Timeout riched for deployment %s in namespace %s", deploymentName, namespace)
 			return
 		default:
 			status, err := common.GetDeploymentStatus(namespace, deploymentName)
 			if err != nil {
-				if errors.As(err, &noDeploymentFound) {
-					// ALL GOOD
-				} else {
+				if !errors.As(err, &noDeploymentFound) {
 					errChan <- err
 					return
 				}
