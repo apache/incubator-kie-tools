@@ -266,7 +266,6 @@ func (m GoAPI) PortForward(namespace, serviceName, portFrom, portTo string) erro
 	readyCh := make(chan struct{})
 
 	ports := []string{fmt.Sprintf("%s:%s", portFrom, portTo)}
-	//TODO do we goroutine this?
 	go func() {
 		forwardPorts, err := portforward.New(dialer, ports, stopCh, readyCh, os.Stdout, os.Stderr);
 		if err != nil {
@@ -280,9 +279,10 @@ func (m GoAPI) PortForward(namespace, serviceName, portFrom, portTo string) erro
 
 	select {
 	case <-readyCh:
-		fmt.Println("Port forwarding started successfully.")
+		fmt.Println(" - ✅ Port forwarding started successfully.")
+		fmt.Println(" - 🔎 Press Ctrl+C to stop port forwarding.")
 	case err := <-errCh:
-		return fmt.Errorf("Error starting port forwarding: %v\n", err)
+		return fmt.Errorf("❌ Error starting port forwarding: %v\n", err)
 	}
 	<-stopCh
 
@@ -313,7 +313,7 @@ func KubeRestConfig() (*rest.Config, error) {
 		clientConfig := clientcmd.NewDefaultClientConfig(*kubeConfig, &clientcmd.ConfigOverrides{})
 		restConfig, err := clientConfig.ClientConfig()
 		if err != nil {
-			log.Fatalf("Error converting to rest.Config: %v", err)
+			log.Fatalf("❌ Error converting to rest.Config: %v", err)
 		}
 		return restConfig, nil
 	}
