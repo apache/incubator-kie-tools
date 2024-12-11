@@ -27,7 +27,7 @@
     "image:build:linux": "pnpm setup:env make -C ./build build",
     "image:build:win32:darwin": "echo \"Build skipped on Windows and MacOS\"",
     "install": "node install.js && pnpm format",
-    "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env kogitoDbMigratorToolImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env kogitoDbMigratorToolImage.account) KOGITO_IMAGE_NAME=$(build-env kogitoDbMigratorToolImage.name) KOGITO_IMAGE_TAG=$(build-env kogitoDbMigratorToolImage.buildTag) QUARKUS_PLATFORM_VERSION=$(build-env versions.quarkus) KOGITO_VERSION=$(build-env versions.kogito)"
+    "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env kogitoDbMigratorToolImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env kogitoDbMigratorToolImage.account) KOGITO_IMAGE_NAME=$(build-env kogitoDbMigratorToolImage.name) KOGITO_IMAGE_TAG=$(build-env kogitoDbMigratorToolImage.buildTag) QUARKUS_PLATFORM_GROUPID=$(build-env kogitoImagesCekitModules.quarkusGroupId) QUARKUS_PLATFORM_VERSION=$(build-env versions.quarkus) KOGITO_VERSION=$(build-env versions.kogito)"
   },
   "dependencies": {
     "@kie-tools/kogito-db-migrator-tool": "workspace:*",
