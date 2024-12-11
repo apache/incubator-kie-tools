@@ -103,6 +103,83 @@ export const Base: Story = {
   },
 };
 
+export const EvaluationHits: Story = {
+  render: (args) =>
+    BoxedExpressionEditorStory({
+      evaluationHitsCountById: new Map([["_1FA12B9F-288C-42E8-B77F-BE2D3702B7B8", 30]]),
+    }),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
+  args: {
+    ...EmptyExpression.args,
+    expression: {
+      __$$element: "decisionTable",
+      "@_id": "_92929AE6-3BB5-4217-B66E-07614680971D",
+      "@_label": "Expression Name",
+      "@_hitPolicy": "UNIQUE",
+      input: [
+        {
+          "@_id": generateUuid(),
+          inputExpression: {
+            "@_id": generateUuid(),
+            text: { __$$text: "input-1" },
+            "@_typeRef": undefined,
+          },
+        },
+      ],
+      output: [
+        {
+          "@_id": generateUuid(),
+          "@_label": "output-1",
+          "@_typeRef": undefined,
+        },
+      ],
+      annotation: [
+        {
+          "@_name": "Annotations",
+        },
+      ],
+      rule: [
+        {
+          "@_id": "_1FA12B9F-288C-42E8-B77F-BE2D3702B7B8",
+          inputEntry: [
+            { "@_id": generateUuid(), text: { __$$text: "E" } },
+            { "@_id": generateUuid(), text: { __$$text: "E" } },
+          ],
+          outputEntry: [
+            { "@_id": generateUuid(), text: { __$$text: "aaa" } },
+            { "@_id": generateUuid(), text: { __$$text: "aaa" } },
+            { "@_id": generateUuid(), text: { __$$text: "aaa" } },
+          ],
+          annotationEntry: [{ text: { __$$text: "// Your annotations here" } }],
+        },
+        {
+          "@_id": "_1FA12B9F-288C-42E8-B77F-BE2D3702B7B4",
+          inputEntry: [
+            { "@_id": generateUuid(), text: { __$$text: "E" } },
+            { "@_id": generateUuid(), text: { __$$text: "E" } },
+          ],
+          outputEntry: [
+            { "@_id": generateUuid(), text: { __$$text: "aaa" } },
+            { "@_id": generateUuid(), text: { __$$text: "aaa" } },
+            { "@_id": generateUuid(), text: { __$$text: "aaa" } },
+          ],
+          annotationEntry: [{ text: { __$$text: "// Your annotations here" } }],
+        },
+      ],
+    },
+    widthsById: {
+      "_92929AE6-3BB5-4217-B66E-07614680971D": [
+        BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
+        DECISION_TABLE_INPUT_DEFAULT_WIDTH,
+        DECISION_TABLE_OUTPUT_DEFAULT_WIDTH,
+        DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH,
+      ],
+    },
+
+    isResetSupportedOnRootExpression: true,
+  },
+};
+
 export const Readonly: Story = {
   render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
