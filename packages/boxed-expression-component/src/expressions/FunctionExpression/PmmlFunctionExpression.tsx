@@ -454,7 +454,7 @@ function PmmlFunctionExpressionDocumentCell(props: React.PropsWithChildren<BeeTa
       placeholderText={PMML_BINDING_VALUE_PLACEHOLDER}
       aria-placeholder={PMML_BINDING_VALUE_PLACEHOLDER}
       variant={SelectVariant.single}
-      onToggle={(_event, _val) => setSelectOpen}
+      onToggle={(_event, val) => setSelectOpen(val)}
       onSelect={onSelect}
       isOpen={isSelectOpen}
       selections={[pmmlDocument]}
@@ -548,7 +548,7 @@ function PmmlFunctionExpressionModelCell(props: React.PropsWithChildren<BeeTable
       placeholderText={pmmlDocument ? PMML_BINDING_VALUE_PLACEHOLDER : "Select a document first"}
       aria-placeholder={PMML_BINDING_VALUE_PLACEHOLDER}
       variant={SelectVariant.single}
-      onToggle={(_event, _val) => setSelectOpen}
+      onToggle={(_event, val) => setSelectOpen(val)}
       onSelect={onSelect}
       isOpen={isSelectOpen}
       selections={[model]}
