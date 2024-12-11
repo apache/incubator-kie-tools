@@ -272,7 +272,11 @@ export class DecisionTableExpressionElement {
             y: 0,
           },
         });
-      await this.locator.getByTestId("kie-tools--bee--table-header-output").nth(0).locator("svg").click();
+      await this.locator
+        .getByTestId("kie-tools--bee--table-header-output")
+        .nth(0)
+        .locator(".add-column-button svg")
+        .click();
     }
   }
 
