@@ -220,11 +220,6 @@ export function activate(context: vscode.ExtensionContext) {
       "[Extended Services Extension] A KIE file has been closed. Current opened KIE files: " +
         kieFilesWatcher.watchedKieFiles.length
     );
-    if (kieFilesWatcher.watchedKieFiles.length === 0) {
-      stopExtendedServices(configuration);
-    } else if (configuration) {
-      validate(configuration.extendedServicesURL);
-    }
   });
 
   localService.subscribeLocalExtendedServicesStarted(() => {
