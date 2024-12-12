@@ -65,7 +65,7 @@ public class FormsStorageImplTest {
         storage.mkdir();
         System.setProperty(PROJECT_FORM_STORAGE_PROP, storage.getAbsolutePath());
 
-        URL formsFolder = Thread.currentThread().getContextClassLoader().getResource("forms");
+        URL formsFolder = Thread.currentThread().getContextClassLoader().getResource("custom-forms-dev");
 
         formsStorage = new FormsStorageImpl(formsFolder);
     }

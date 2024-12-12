@@ -362,11 +362,14 @@ module.exports = controller = {
     }
     let sourceString;
 
-    const configString = fs.readFileSync(path.join(`${__dirname}/forms/examples/${formName}.config`), "utf8");
+    const configString = fs.readFileSync(
+      path.join(`${__dirname}/custom-forms-dev/examples/${formName}.config`),
+      "utf8"
+    );
     if (formInfo[0].type.toLowerCase() === "html") {
-      sourceString = fs.readFileSync(path.join(`${__dirname}/forms/examples/${formName}.html`), "utf8");
+      sourceString = fs.readFileSync(path.join(`${__dirname}/custom-forms-dev/examples/${formName}.html`), "utf8");
     } else if (formInfo[0].type.toLowerCase() === "tsx") {
-      sourceString = fs.readFileSync(path.join(`${__dirname}/forms/examples/${formName}.tsx`), "utf8");
+      sourceString = fs.readFileSync(path.join(`${__dirname}/custom-forms-dev/examples/${formName}.tsx`), "utf8");
     }
     const response = {
       formInfo: formInfo[0],

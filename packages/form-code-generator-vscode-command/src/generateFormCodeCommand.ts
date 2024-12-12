@@ -28,7 +28,7 @@ import { FormSchema } from "@kie-tools/form-code-generator/dist/types";
 import { PATTERNFLY_FILE_EXT } from "@kie-tools/form-code-generator-patternfly-theme/dist/theme";
 import { BOOTSTRAP4_FILE_EXT } from "@kie-tools/form-code-generator-bootstrap4-theme/dist/theme";
 
-const FORM_CODE_GENERATION_DEST_PATH = "src/main/resources/forms";
+const FORM_CODE_GENERATION_DEST_PATH = "src/main/resources/custom-forms-dev";
 const JSON_SCHEMA_PATH = "target/classes/META-INF/jsonSchema";
 
 export async function generateFormsCommand() {
