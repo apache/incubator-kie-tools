@@ -23,6 +23,7 @@ export async function ping(extendedServicesURL: URL): Promise<pingresponse.PingR
   const url = new URL("/ping", extendedServicesURL);
 
   try {
+    console.debug("[Extended Services Extension] Pinging: " + url.toString());
     const response = await fetch(url.toString());
     if (response.ok) {
       const responseData = (await response.json()) as pingresponse.PingResponse;

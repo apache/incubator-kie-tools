@@ -71,14 +71,16 @@ function initializeVSCodeElements() {
 }
 
 function startExtendedServices(context: vscode.ExtensionContext): void {
-  let config: Configuration;
+  console.debug("[Extended Services Extension] Starting Extended Service");
+  statusBarItem.command = undefined;
   try {
-    statusBarItem.command = undefined;
-    statusBarItem.show();
     configuration = fetchConfiguration();
   } catch (error) {
-    stopExtendedServices(null);
-    vscode.window.showErrorMessage("An error happened while trying to start the Extended Services: " + error.message);
+    console.error("[Extended Services Extension] Extension configuration is wrong: " + error.message);
+    vscode.window.showErrorMessage(
+      "Extension configuration is wrong: " + error.message + " Please fix your local extension's setting"
+    );
+    statusBarItem.hide();
     return;
   }
 
@@ -90,6 +92,7 @@ function startExtendedServices(context: vscode.ExtensionContext): void {
 }
 
 function stopExtendedServices(configuration: Configuration | null) {
+  console.debug("[Extended Services Extension] Stopping Extended Service");
   statusBarItem.command = undefined;
   if (configuration?.enableAutoRun) {
     localService.stop();
@@ -99,24 +102,39 @@ function stopExtendedServices(configuration: Configuration | null) {
 }
 
 function startLocalExtendedServices(configuration: Configuration, context: vscode.ExtensionContext): void {
+  console.debug("[Extended Services Extension] Starting a Local Extended Service process");
   try {
     localService.start(configuration.extendedServicesURL, context.extensionPath);
   } catch (error) {
     stopExtendedServices(configuration);
-    vscode.window.showErrorMessage("An error happened while trying to start the local service:" + error.message);
+    console.error(
+      "[Extended Services Extension] An error happened while trying to start the Local Extended Service process:" +
+        error.message
+    );
+    vscode.window.showErrorMessage(
+      "An error happened while trying to start the Local Extended Service process:" + error.message
+    );
   }
 }
 
 function startConnection(configuration: Configuration) {
+  console.debug(
+    "[Extended Services Extension] Connecting with the Extended Service located: " + configuration.extendedServicesURL
+  );
   try {
     connection.start(configuration.extendedServicesURL, configuration.connectionHeartbeatIntervalinSecs);
   } catch (error) {
     stopExtendedServices(configuration);
+    console.error(
+      "[Extended Services Extension] An error happened while trying to connect to the service:" + error.message
+    );
     vscode.window.showErrorMessage("An error happened while trying to connect to the service:" + error.message);
   }
 }
 
-async function validate(configuration: Configuration) {
+async function validate(extendedServicesURL: URL) {
+  console.debug("[Extended Services Extension] Validating the opened KIE files");
+
   diagnosticCollection.clear();
 
   const bpmnFiles: KieFile[] = await kiefilesfetcher.findActiveKieFiles([kiefilesfetcher.bpmnDocumentFilter]);
@@ -124,12 +142,16 @@ async function validate(configuration: Configuration) {
 
   for (const bpmnFile of bpmnFiles) {
     try {
-      const bpmnDiagnostics: vscode.Diagnostic[] = await validator.validateBPMN(
-        configuration.extendedServicesURL,
-        bpmnFile
-      );
+      console.debug("[Extended Services Extension] Validating BPMN file: " + bpmnFile);
+      const bpmnDiagnostics: vscode.Diagnostic[] = await validator.validateBPMN(extendedServicesURL, bpmnFile);
       diagnosticCollection.set(bpmnFile.uri, bpmnDiagnostics);
     } catch (error) {
+      console.error(
+        "[Extended Services Extension] An error happened while trying to validate " +
+          bpmnFile.uri.path +
+          ": " +
+          error.message
+      );
       vscode.window.showErrorMessage(
         "An error happened while trying to validate " + bpmnFile.uri.path + ": " + error.message
       );
@@ -138,13 +160,16 @@ async function validate(configuration: Configuration) {
 
   for (const dmnFile of dmnFiles) {
     try {
-      const bpmnDiagnostics: vscode.Diagnostic[] = await validator.validateDMN(
-        configuration.extendedServicesURL,
-        dmnFile
-      );
-      diagnosticCollection.set(dmnFile.uri, bpmnDiagnostics);
+      console.debug("[Extended Services Extension] Validating DMN file: " + dmnFile);
+      const dmnDiagnostics: vscode.Diagnostic[] = await validator.validateDMN(extendedServicesURL, dmnFile);
+      diagnosticCollection.set(dmnFile.uri, dmnDiagnostics);
     } catch (error) {
-      stopExtendedServices(configuration);
+      console.error(
+        "[Extended Services Extension] An error happened while trying to validate " +
+          dmnFile.uri.path +
+          ": " +
+          error.message
+      );
       vscode.window.showErrorMessage(
         "An error happened while trying to validate " + dmnFile.uri.path + ": " + error.message
       );
@@ -166,30 +191,33 @@ export function activate(context: vscode.ExtensionContext) {
   });
 
   kieFilesWatcher.subscribeKieFilesOpened(() => {
-    statusBarItem.show();
-    if (userDisconnected) {
-      return;
-    }
-
-    if (configuration) {
-      validate(configuration);
-    } else {
+    console.debug(
+      "[Extended Services Extension] A KIE file has been opened. Current opened KIE files: " +
+        kieFilesWatcher.watchedKieFiles.length
+    );
+    if (!userDisconnected && kieFilesWatcher.watchedKieFiles.length <= 1) {
       startExtendedServices(context);
+    } else if (configuration) {
+      validate(configuration.extendedServicesURL);
     }
   });
 
   kieFilesWatcher.subscribeKieFileChanged(() => {
+    console.debug("[Extended Services Extension] A KIE file has been changed");
     if (configuration) {
-      validate(configuration);
+      validate(configuration.extendedServicesURL);
     }
   });
 
   kieFilesWatcher.subscribeKieFilesClosed(() => {
+    console.debug(
+      "[Extended Services Extension] A KIE file has been closed. Current opened KIE files: " +
+        kieFilesWatcher.watchedKieFiles.length
+    );
     if (kieFilesWatcher.watchedKieFiles.length === 0) {
       stopExtendedServices(configuration);
-      statusBarItem.hide();
     } else if (configuration) {
-      validate(configuration);
+      validate(configuration.extendedServicesURL);
     }
   });
 
@@ -214,8 +242,9 @@ export function activate(context: vscode.ExtensionContext) {
 
   connection.subscribeConnected(() => {
     vscode.commands.executeCommand("setContext", connectedEnablementUID, true);
+    statusBarItem.show();
     if (configuration) {
-      validate(configuration);
+      validate(configuration.extendedServicesURL);
       statusBarItem.text = "$(extended-services-connected)";
       statusBarItem.tooltip = "Apache KIE Extended Services are connected. Click to disconnect.";
       statusBarItem.command = stopExtendedServicesCommandUID;
@@ -223,6 +252,7 @@ export function activate(context: vscode.ExtensionContext) {
   });
 
   connection.subscribeConnectionLost((errorMessage: string) => {
+    statusBarItem.hide();
     stopExtendedServices(configuration);
     vscode.window.showErrorMessage("Connection error: " + errorMessage);
   });
