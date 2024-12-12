@@ -40,6 +40,8 @@ import "./styles.scss";
 import { ErrorBoundary } from "@kie-tools/dmn-runner/dist/ErrorBoundary";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { DecisionResult, DmnEvaluationStatus, DmnEvaluationResult } from "@kie-tools/extended-services-api";
+import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 const ISSUES_URL = "https://github.com/apache/incubator-kie-issues/issues";
 
@@ -61,6 +63,7 @@ export interface FormDmnOutputsProps {
   locale?: string;
   notificationsPanel: boolean;
   openExecutionTab?: () => void;
+  openBoxedExpressionEditor?: (nodeId: string) => void;
 }
 
 export function FormDmnOutputs({ openExecutionTab, ...props }: FormDmnOutputsProps) {
@@ -258,7 +261,13 @@ export function FormDmnOutputs({ openExecutionTab, ...props }: FormDmnOutputsPro
             onAnimationEnd={(e) => onAnimationEnd(e, index)}
           >
             <CardTitle>
-              <Title headingLevel={"h2"}>{dmnFormResult.decisionName}</Title>
+              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                <Title headingLevel={"h2"}>{dmnFormResult.decisionName}</Title>
+                <ArrowUpIcon
+                  data-navigate-to-expression-id={dmnFormResult.decisionId}
+                  onClick={() => props.openBoxedExpressionEditor?.(dmnFormResult.decisionId)}
+                />
+              </Flex>
             </CardTitle>
             <CardBody isFilled={true}>{result(dmnFormResult.result)}</CardBody>
             <CardFooter>{resultStatus(dmnFormResult.evaluationStatus)}</CardFooter>
