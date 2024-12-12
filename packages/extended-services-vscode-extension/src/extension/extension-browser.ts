@@ -40,16 +40,19 @@ let kieFilesWatcher: KieFilesWatcher;
 let configurationWatcher: ConfigurationWatcher;
 let connection: Connection;
 
-let userDisconnected: boolean = false;
+/* Determines if the extension is corrected with the Extended Services Backend */
+let isConnected = false;
+/* Determines the user explicitely disconnected the Extension from the Extended Services Backend  */
+let disconnectedByUser: boolean = false;
 let configuration: Configuration | null = null;
 
 function initializeCommands(context: vscode.ExtensionContext) {
   connectExtendedServicesCommand = vscode.commands.registerCommand(startExtendedServicesCommandUID, () => {
-    userDisconnected = false;
+    disconnectedByUser = false;
     startExtendedServices();
   });
   disconnectExtendedServicesCommand = vscode.commands.registerCommand(stopExtendedServicesCommandUID, () => {
-    userDisconnected = true;
+    disconnectedByUser = true;
     stopExtendedServices();
   });
 }
@@ -94,6 +97,8 @@ function startExtendedServices(): void {
 
 function stopExtendedServices() {
   console.debug("[Extended Services Extension] Stopping Extended Service");
+  /* Invalidating immediatly the current connection, so any request coming when shutting down is not served */
+  isConnected = false;
   configuration = null;
   connection.stop();
 }
@@ -106,7 +111,7 @@ async function validate(extendedServicesURL: URL) {
 
   for (const bpmnFile of bpmnFiles) {
     try {
-      console.debug("[Extended Services Extension] Validating BPMN file: " + bpmnFile);
+      console.debug("[Extended Services Extension] Validating BPMN file: " + bpmnFile.uri.path);
       const bpmnDiagnostics: vscode.Diagnostic[] = await validator.validateBPMN(extendedServicesURL, bpmnFile);
       diagnosticCollection.set(bpmnFile.uri, bpmnDiagnostics);
     } catch (error) {
@@ -124,7 +129,7 @@ async function validate(extendedServicesURL: URL) {
 
   for (const dmnFile of dmnFiles) {
     try {
-      console.debug("[Extended Services Extension] Validating DMN file: " + dmnFile);
+      console.debug("[Extended Services Extension] Validating DMN file: " + dmnFile.uri.path);
       const dmnDiagnostics: vscode.Diagnostic[] = await validator.validateDMN(extendedServicesURL, dmnFile);
       diagnosticCollection.set(dmnFile.uri, dmnDiagnostics);
     } catch (error) {
@@ -148,7 +153,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   configurationWatcher.subscribeSettingsChanged(() => {
     stopExtendedServices();
-    if (!userDisconnected && kieFilesWatcher.watchedKieFiles.length > 0) {
+    if (!disconnectedByUser && kieFilesWatcher.watchedKieFiles.length > 0) {
       startExtendedServices();
     }
   });
@@ -158,16 +163,17 @@ export function activate(context: vscode.ExtensionContext) {
       "[Extended Services Extension] A KIE file has been opened. Current opened KIE files: " +
         kieFilesWatcher.watchedKieFiles.length
     );
-    if (!userDisconnected && kieFilesWatcher.watchedKieFiles.length <= 1) {
-      startExtendedServices();
-    } else if (configuration) {
+    if (!disconnectedByUser && isConnected && configuration) {
       validate(configuration.extendedServicesURL);
+    }
+    if (!disconnectedByUser && !isConnected) {
+      startExtendedServices();
     }
   });
 
   kieFilesWatcher.subscribeKieFileChanged(() => {
     console.debug("[Extended Services Extension] A KIE file has been changed");
-    if (configuration) {
+    if (!disconnectedByUser && isConnected && configuration) {
       validate(configuration.extendedServicesURL);
     }
   });
@@ -185,8 +191,10 @@ export function activate(context: vscode.ExtensionContext) {
   });
 
   connection.subscribeConnected(() => {
-    statusBarItem.show();
+    console.debug("[Extended Services Extension] Connected with Extended Services");
+    isConnected = true;
     vscode.commands.executeCommand("setContext", connectedEnablementUID, true);
+    statusBarItem.show();
     if (configuration) {
       validate(configuration.extendedServicesURL);
       statusBarItem.text = "$(extended-services-connected)";
@@ -196,12 +204,16 @@ export function activate(context: vscode.ExtensionContext) {
   });
 
   connection.subscribeConnectionLost((errorMessage: string) => {
-    vscode.window.showErrorMessage("Connection error: " + errorMessage);
     statusBarItem.hide();
     stopExtendedServices();
+    isConnected = false;
+    console.error("[Extended Services Extension] Connection lost with Extended Services");
+    vscode.window.showErrorMessage("Connection error: " + errorMessage);
   });
 
   connection.subscribeDisconnected(() => {
+    console.debug("[Extended Services Extension] Disconnected with Extended Services");
+    isConnected = false;
     vscode.commands.executeCommand("setContext", connectedEnablementUID, false);
     statusBarItem.text = "$(extended-services-disconnected)";
     statusBarItem.tooltip = "Apache KIE Extended Services are not connected. Click to connect.";
