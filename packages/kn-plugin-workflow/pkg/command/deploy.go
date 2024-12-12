@@ -22,19 +22,19 @@ package command
 import (
 	"errors"
 	"fmt"
-	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common/k8sclient"
-	"gopkg.in/yaml.v2"
-	apierrors "k8s.io/apimachinery/pkg/api/errors"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"os"
 	"path"
 	"time"
 
-	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
-
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common/k8sclient"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v2"
+
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func NewDeployCommand() *cobra.Command {
@@ -185,7 +185,7 @@ func waitForDeploymentAndOpenDevUi(cfg *DeployUndeployCmdConfig) error {
 
 	fmt.Println("🕚 Waiting for the deployment to complete...")
 
-	go PollGetDeploymentStatus(cfg.NameSpace, workflow.Id, 5*time.Second,5 * time.Minute, deployed, errCan)
+	go PollGetDeploymentStatus(cfg.NameSpace, workflow.Id, 5 * time.Second, 5 * time.Minute, deployed, errCan)
 
 	select {
 	case <-deployed:

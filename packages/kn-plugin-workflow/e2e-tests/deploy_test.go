@@ -22,9 +22,13 @@
 package e2e_tests
 
 import (
+	"fmt"
+	"os"
 	"testing"
+	"time"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command"
+	"github.com/stretchr/testify/require"
 )
 
 type cfgTestInputDeploy struct {
@@ -41,14 +45,37 @@ func transformDeployCmdCfgToArgs(cfg command.DeployUndeployCmdConfig) []string {
 }
 
 func TestDeployProjectSuccess(t *testing.T) {
-	////TODO: implement deploy test
-	// for testIndex, test := range cfgTestInputDeploy_Success {
-	// 	t.Run(fmt.Sprintf("Test deploy project success index: %d", testIndex), func(t *testing.T) {
-	// 		// Run `deploy` command
-	// 		out, err := ExecuteKnWorkflow(transformDeployCmdCfgToArgs(test.input)...)
-	// 		require.NoErrorf(t, err, "Expected nil error, got: %v", err)
-	// 		fmt.Println(out)
-	// 		require.Equal(t, command.DeployCommandOutput, out)
-	// 	})
-	// }
+	dir, err := os.Getwd()
+	require.NoError(t, err)
+	defer os.Chdir(dir)
+	for testIndex, test := range cfgTestInputDeploy_Success {
+		t.Run(fmt.Sprintf("Test deploy project success index: %d", testIndex), func(t *testing.T) {
+			// Run `create` command
+			RunCreateTest(t, CfgTestInputCreate_Success[0])
+			// change dir to created project
+			err := os.Chdir(GetCreateProjectName(t, CfgTestInputCreate_Success[0]))
+			require.NoError(t, err)
+
+			// Run `deploy` command
+			_, err = ExecuteKnWorkflow(transformDeployCmdCfgToArgs(test.input)...)
+			require.NoErrorf(t, err, "Expected nil error, got: %v", err)
+
+			deployed := make(chan bool)
+			errCan := make(chan error)
+			defer close(deployed)
+			defer close(errCan)
+
+			go command.PollGetDeploymentStatus("default", "hello", 5*time.Second, 5*time.Minute, deployed, errCan)
+
+			select {
+			case <-deployed:
+				fmt.Printf(" - ✅ Deployment of %s is completed\n", "hello")
+			case err := <-errCan:
+				t.Fatalf(" - ❌ Deployment of %s failed: %v\n", "default", err)
+			}
+
+			err = command.NewUndeployCommand().Execute()
+			require.NoError(t, err)
+		})
+	}
 }
