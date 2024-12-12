@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definitions
+  xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
+  xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:kie="https://kie.org/dmn/extensions/1.0"
+  expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+  namespace="https://kie.org/dmn/_3BFF6543-4697-4C29-AF20-B8E622597121"
+  id="_370DC2EC-B59D-453D-9A4E-18A481386E98"
+  name="Insurance Pricing"
+>
+  <inputData name="Age" id="_A33974B4-3E37-4D4B-869B-674BDFC86373">
+    <variable name="Age" id="_ACA74946-078F-4C6C-8FDC-09D335E81982" typeRef="number" />
+  </inputData>
+  <inputData name="had previous incidents" id="_14C75636-256C-415F-B0B1-046C103F6175">
+    <variable name="had previous incidents" id="_17EE1FA9-7548-4B6C-8371-22F8374F9D2B" typeRef="boolean" />
+  </inputData>
+  <decision name="Insurance Total Price" id="_3D58D6F2-CC40-4BBB-86E6-F5EDDD8A5FAB">
+    <variable name="Insurance Total Price" id="_2E5FA120-0BE5-4F5F-BC4D-4D822507480D" typeRef="number" />
+    <informationRequirement id="_04C37286-500C-4A55-9613-88A35662EC41">
+      <requiredInput href="#_14C75636-256C-415F-B0B1-046C103F6175" />
+    </informationRequirement>
+    <informationRequirement id="_1003CC0F-E653-4C69-936E-925DA6025940">
+      <requiredInput href="#_A33974B4-3E37-4D4B-869B-674BDFC86373" />
+    </informationRequirement>
+    <decisionTable
+      id="_806E4867-C6D7-4895-B6FC-98927BE4F472"
+      hitPolicy="UNIQUE"
+      label="Insurance Total Price"
+      typeRef="number"
+    >
+      <input id="_8E73D3FB-0DD8-4D23-B642-752B906EC8E9">
+        <inputExpression id="_1E24B2F9-B0EE-4126-BB38-36138D24665F" typeRef="number">
+          <text>Age</text>
+        </inputExpression>
+      </input>
+      <input id="_A7FA6FE2-6186-4492-A0C9-2A24BB333BE6">
+        <inputExpression id="_10845A35-3DBC-4248-81F2-E4B380D5345C" typeRef="boolean">
+          <text>had previous incidents</text>
+        </inputExpression>
+      </input>
+      <output id="_4612AC80-6FB9-4329-8DA4-DEA3AE628F00" name="Output-1" />
+      <annotation name="Annotations" />
+      <rule id="_393C1693-9546-4694-A706-D01CA496F3F0">
+        <inputEntry id="_689136DF-E9BE-4E80-98B1-10FF15C4DF12">
+          <text>&gt;25</text>
+        </inputEntry>
+        <inputEntry id="_5C0C961B-3DCF-4A40-9053-E36C23B03D9D">
+          <text>false</text>
+        </inputEntry>
+        <outputEntry id="_161716E1-CE18-4D6B-A855-D58F9B0BF0E6">
+          <text>1000</text>
+        </outputEntry>
+        <annotationEntry>
+          <text />
+        </annotationEntry>
+      </rule>
+      <rule id="_8EC9BF19-6CF4-41C6-AF64-878E7CB3A0B6">
+        <inputEntry id="_2F06C636-936B-468E-B441-2EB49743CE99">
+          <text>&gt;25</text>
+        </inputEntry>
+        <inputEntry id="_6066E7B8-3A33-422F-AB06-BF1DBE435DAF">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="_CA1343DF-9F3A-458C-801A-C94B62ACAD98">
+          <text>1250</text>
+        </outputEntry>
+        <annotationEntry>
+          <text />
+        </annotationEntry>
+      </rule>
+      <rule id="_07CB489E-D043-4EA5-BA89-93215145BDE9">
+        <inputEntry id="_61556043-94FA-4F3E-B1FA-0FFB9459ADEE">
+          <text>[18..25]</text>
+        </inputEntry>
+        <inputEntry id="_2D433FAE-75EC-4C42-B9AA-E6C4852D5FA5">
+          <text>false</text>
+        </inputEntry>
+        <outputEntry id="_23819346-A1D5-4619-B945-BAC117AC4D86">
+          <text>2000</text>
+        </outputEntry>
+        <annotationEntry>
+          <text />
+        </annotationEntry>
+      </rule>
+      <rule id="_0B0EAD42-2EFC-4473-95B4-AF3156B8343B">
+        <inputEntry id="_21192D4D-14C0-4EEA-AFDA-0B2DAD839D4D">
+          <text>[18..25]</text>
+        </inputEntry>
+        <inputEntry id="_A98852AA-02F4-4D0D-81F0-071A9802BC83">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="_3C5F1CCD-E6CE-41F1-A178-A2960AA84BB1">
+          <text>3000</text>
+        </outputEntry>
+        <annotationEntry>
+          <text />
+        </annotationEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram
+      id="_88199DB2-B4E1-4E00-AC8A-D9BD22F05EC8"
+      name="Default DRD"
+      useAlternativeInputDataShape="false"
+    >
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_806E4867-C6D7-4895-B6FC-98927BE4F472">
+            <kie:width>60</kie:width>
+            <kie:width>154</kie:width>
+            <kie:width>174</kie:width>
+            <kie:width>184</kie:width>
+            <kie:width>240</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape
+        id="_315413FB-A5F2-4890-8EEE-8797C9E791D4"
+        dmnElementRef="_A33974B4-3E37-4D4B-869B-674BDFC86373"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="140" y="180" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape
+        id="_B40B04FC-DA9B-46A9-A9AC-DE97E9679F3A"
+        dmnElementRef="_14C75636-256C-415F-B0B1-046C103F6175"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="300" y="180" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape
+        id="_5EEF8806-5DBC-42C3-809B-529809FFD121"
+        dmnElementRef="_3D58D6F2-CC40-4BBB-86E6-F5EDDD8A5FAB"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="220" y="40" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge
+        id="_DBD10443-5AF8-4FC9-8013-4C5BF9859952"
+        dmnElementRef="_04C37286-500C-4A55-9613-88A35662EC41"
+        sourceElement="_B40B04FC-DA9B-46A9-A9AC-DE97E9679F3A"
+        targetElement="_5EEF8806-5DBC-42C3-809B-529809FFD121"
+      >
+        <di:waypoint x="380" y="220" />
+        <di:waypoint x="300" y="80" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge
+        id="_1F378CB5-C333-4F0D-A9FD-79F92E7A517F"
+        dmnElementRef="_1003CC0F-E653-4C69-936E-925DA6025940"
+        sourceElement="_315413FB-A5F2-4890-8EEE-8797C9E791D4"
+        targetElement="_5EEF8806-5DBC-42C3-809B-529809FFD121"
+      >
+        <di:waypoint x="220" y="220" />
+        <di:waypoint x="300" y="80" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
