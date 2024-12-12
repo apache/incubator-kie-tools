@@ -69,14 +69,14 @@ async function validate(
 
 export async function validateBPMN(
   serviceURL: URL,
-  kieFile: kiefile.KieFile
+  bpmnFile: kiefile.KieFile
 ): Promise<validationresponse.BPMNValidationResponse[]> {
   try {
-    return validate(serviceURL, kieFile, "/jitbpmn/validate", validationresponse.parseBPMNValidationResponse);
+    return validate(serviceURL, bpmnFile, "/jitbpmn/validate", validationresponse.parseBPMNValidationResponse);
   } catch (error) {
     console.error(
       "[Extended Services Extension] An error happened while trying to validate " +
-        kieFile +
+        bpmnFile +
         " from serviceUrl " +
         serviceURL +
         ": " +
@@ -88,14 +88,14 @@ export async function validateBPMN(
 
 export async function validateDMN(
   serviceURL: URL,
-  kieFile: kiefile.KieFile
+  dmnFile: kiefile.KieFile
 ): Promise<validationresponse.DMNValidationResponse[]> {
   try {
-    return validate(serviceURL, kieFile, "/jitdmn/validate", validationresponse.parseDMNValidationResponse);
+    return validate(serviceURL, dmnFile, "/jitdmn/validate", validationresponse.parseDMNValidationResponse);
   } catch (error) {
     console.error(
       "[Extended Services Extension] An error happened while trying to validate " +
-        kieFile +
+        dmnFile +
         " from serviceUrl " +
         serviceURL +
         ": " +

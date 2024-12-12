@@ -47,10 +47,11 @@ function fetchExtendedServicesURL(): URL {
 
 const getConfigurationPropertyValue = <T>(property: string, defaultValue: T): T => {
   const value = vscode.workspace.getConfiguration().get(property) as T;
-  if (!value) {
+  if (value == null) {
     console.warn("Property: " + property + " is missing, using the default: " + defaultValue);
+    value == defaultValue;
   }
-  return value || defaultValue;
+  return value;
 };
 
 export function fetchConfiguration(): Configuration {
