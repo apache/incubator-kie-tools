@@ -32,6 +32,7 @@ import org.kie.workbench.common.stunner.sw.client.shapes.icons.DataDepiction;
 import org.kie.workbench.common.stunner.sw.client.theme.ColorTheme;
 import org.kie.workbench.common.stunner.sw.definition.ParallelState;
 import org.kie.workbench.common.stunner.sw.definition.State;
+import org.kie.workbench.common.stunner.sw.definition.StateExecTimeout;
 import org.kie.workbench.common.stunner.sw.definition.WorkflowTimeouts;
 
 import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPath.BRANCH;
@@ -62,7 +63,9 @@ public class ParallelStateShape extends StateShape implements HasDataFilter,
             getView().addChild(new CornerIcon(CLOCK,
                                               LEFT_FROM_RIGHT_TOP_CORNER,
                                               getTranslation(TIMEOUT_BRANCH) + ": " + truncate(((WorkflowTimeouts) state.getTimeouts()).getBranchExecTimeout()) + "\r\n"
-                                                      + getTranslation(TIMEOUT_STATE) + ": " + truncate(((WorkflowTimeouts) state.getTimeouts()).getStateExecTimeout())));
+                                                      + getTranslation(TIMEOUT_STATE) + ": " + truncate(((WorkflowTimeouts) state.getTimeouts()).getStateExecTimeout() instanceof String ?
+                                                      (String) ((WorkflowTimeouts) state.getTimeouts()).getStateExecTimeout()
+                                                      : ((StateExecTimeout) ((WorkflowTimeouts) state.getTimeouts()).getStateExecTimeout()).getTotal())));
         }
 
         getView().addChild(new CornerIcon(BRANCH,
