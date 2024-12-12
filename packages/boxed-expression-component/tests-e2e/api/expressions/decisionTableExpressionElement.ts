@@ -100,7 +100,11 @@ export class DecisionTableExpressionElement {
             y: 0,
           },
         });
-      await this.locator.getByTestId("kie-tools--bee--table-header-input").nth(index).locator("svg").click();
+      await this.locator
+        .getByTestId("kie-tools--bee--table-header-input")
+        .nth(index)
+        .locator(".add-column-button svg")
+        .click();
     }
   }
 
