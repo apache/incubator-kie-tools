@@ -87,6 +87,7 @@ type StorybookArgWidhtsById = Record<string, number[]>;
 export type BoxedExpressionEditorStoryArgs = Omit<BoxedExpressionEditorProps, "widthsById" | "onWidthsChange"> & {
   widthsById?: Record<string, number[]>;
   onWidthsChange?: React.Dispatch<React.SetStateAction<Record<string, number[]>>>;
+  evaluationHitsCountById?: Map<string, number>;
 };
 
 export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditorStoryArgs>) {
@@ -95,6 +96,7 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
   const [expressionState, setExpressionState] = useState<Normalized<BoxedExpression> | undefined>(
     args?.expression ?? props?.expression
   );
+  const [evaluationHitsCountById, setEvaluationHitsCountById] = useState(props?.evaluationHitsCountById);
 
   const [widthsByIdState, setWidthsByIdState] = useState<StorybookArgWidhtsById>(
     args.widthsById ?? props?.widthsById ?? {}
@@ -175,6 +177,7 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
           }
           expressionHolderTypeRef={props?.expressionHolderTypeRef ?? args?.expressionHolderTypeRef}
           expression={expressionState}
+          evaluationHitsCountById={evaluationHitsCountById}
           onExpressionChange={setExpressionState}
           onWidthsChange={onWidthsChange}
           dataTypes={props?.dataTypes ?? args?.dataTypes ?? dataTypes}

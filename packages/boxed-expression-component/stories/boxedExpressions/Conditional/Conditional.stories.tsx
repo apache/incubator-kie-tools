@@ -103,6 +103,190 @@ export const Readonly: Story = {
   },
 };
 
+export const EvaluationHits: Story = {
+  render: (args) =>
+    BoxedExpressionEditorStory({
+      evaluationHitsCountById: new Map([
+        ["_1FA12B9F-288C-42E8-B77F-BE2D3702B7B7", 70],
+        ["_1FA12B9F-288C-42E8-B77F-BE2D3702B7B8", 30],
+        ["_1FA12B9F-288C-42E8-B77F-BE2D3702B7B9", 40],
+        ["_1FA12B9F-288C-42E8-B77F-BE2D3702B7B0", 50],
+        ["_1FA12B9F-288C-42E8-B77F-BE2D3702B7B1", 20],
+        ["_1FA12B9F-288C-42E8-B77F-BE2D3702B7B2", 70],
+        ["_1FA12B9F-288C-42E8-B77F-BE2D3702B7B3", 20],
+      ]),
+    }),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
+  args: {
+    ...EmptyExpression.args,
+    expression: {
+      __$$element: "conditional",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
+      if: {
+        "@_id": generateUuid(),
+        expression: {
+          __$$element: "literalExpression",
+          "@_id": generateUuid(),
+        },
+      },
+      then: {
+        "@_id": "_1FA12B9F-288C-42E8-B77F-BE2D3702B7B7",
+        expression: {
+          __$$element: "decisionTable",
+          "@_id": generateUuid(),
+          "@_typeRef": "Any",
+          "@_hitPolicy": "UNIQUE",
+          input: [
+            {
+              "@_id": generateUuid(),
+              inputExpression: {
+                "@_id": generateUuid(),
+                text: { __$$text: "input-1" },
+              },
+            },
+            {
+              "@_id": generateUuid(),
+              inputExpression: {
+                "@_id": generateUuid(),
+                text: { __$$text: "input-2" },
+              },
+            },
+          ],
+          output: [
+            {
+              "@_id": generateUuid(),
+              "@_label": "output-1",
+            },
+            {
+              "@_id": generateUuid(),
+              "@_label": "output-2",
+            },
+            {
+              "@_id": generateUuid(),
+              "@_label": "output-3",
+            },
+          ],
+          annotation: [
+            {
+              "@_name": "Annotations",
+            },
+          ],
+          rule: [
+            {
+              "@_id": "_1FA12B9F-288C-42E8-B77F-BE2D3702B7B8",
+              inputEntry: [
+                { "@_id": generateUuid(), text: { __$$text: "E" } },
+                { "@_id": generateUuid(), text: { __$$text: "E" } },
+              ],
+              outputEntry: [
+                { "@_id": generateUuid(), text: { __$$text: "aaa" } },
+                { "@_id": generateUuid(), text: { __$$text: "aaa" } },
+                { "@_id": generateUuid(), text: { __$$text: "aaa" } },
+              ],
+              annotationEntry: [{ text: { __$$text: "// Your annotations here" } }],
+            },
+            {
+              "@_id": "_1FA12B9F-288C-42E8-B77F-BE2D3702B7B9",
+              inputEntry: [
+                { "@_id": generateUuid(), text: { __$$text: "E" } },
+                { "@_id": generateUuid(), text: { __$$text: "E" } },
+              ],
+              outputEntry: [
+                { "@_id": generateUuid(), text: { __$$text: "aaa" } },
+                { "@_id": generateUuid(), text: { __$$text: "aaa" } },
+                { "@_id": generateUuid(), text: { __$$text: "aaa" } },
+              ],
+              annotationEntry: [{ text: { __$$text: "// Your annotations here" } }],
+            },
+          ],
+        },
+      },
+      else: {
+        "@_id": "_1FA12B9F-288C-42E8-B77F-BE2D3702B7B2",
+        expression: {
+          __$$element: "conditional",
+          "@_id": generateUuid(),
+          "@_label": "Expression Name",
+          if: {
+            "@_id": generateUuid(),
+            expression: {
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+            },
+          },
+          then: {
+            "@_id": "_1FA12B9F-288C-42E8-B77F-BE2D3702B7B0",
+            expression: {
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+            },
+          },
+          else: {
+            "@_id": "_1FA12B9F-288C-42E8-B77F-BE2D3702B7B3",
+            expression: {
+              __$$element: "decisionTable",
+              "@_id": generateUuid(),
+              "@_typeRef": "Any",
+              "@_hitPolicy": "UNIQUE",
+              input: [
+                {
+                  "@_id": generateUuid(),
+                  inputExpression: {
+                    "@_id": generateUuid(),
+                    text: { __$$text: "input-1" },
+                  },
+                },
+                {
+                  "@_id": generateUuid(),
+                  inputExpression: {
+                    "@_id": generateUuid(),
+                    text: { __$$text: "input-2" },
+                  },
+                },
+              ],
+              output: [
+                {
+                  "@_id": generateUuid(),
+                  "@_label": "output-1",
+                },
+                {
+                  "@_id": generateUuid(),
+                  "@_label": "output-2",
+                },
+                {
+                  "@_id": generateUuid(),
+                  "@_label": "output-3",
+                },
+              ],
+              annotation: [
+                {
+                  "@_name": "Annotations",
+                },
+              ],
+              rule: [
+                {
+                  "@_id": "_1FA12B9F-288C-42E8-B77F-BE2D3702B7B1",
+                  inputEntry: [
+                    { "@_id": generateUuid(), text: { __$$text: "E" } },
+                    { "@_id": generateUuid(), text: { __$$text: "E" } },
+                  ],
+                  outputEntry: [
+                    { "@_id": generateUuid(), text: { __$$text: "aaa" } },
+                    { "@_id": generateUuid(), text: { __$$text: "aaa" } },
+                    { "@_id": generateUuid(), text: { __$$text: "aaa" } },
+                  ],
+                  annotationEntry: [{ text: { __$$text: "// Your annotations here" } }],
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+  },
+};
+
 export const MonthlyFee: Story = {
   render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
