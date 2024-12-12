@@ -35,6 +35,7 @@ export class Connection {
   }
 
   public stop(): void {
+    console.debug("[Extended Services Extension] Disconnecting from Extended Service");
     if (this.timeout) {
       this.fireDisconnectedEvent();
       clearInterval(this.timeout);
