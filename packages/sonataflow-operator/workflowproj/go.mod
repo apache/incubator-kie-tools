@@ -7,6 +7,7 @@ replace github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api =
 
 require (
 	github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api v0.0.0
+	github.com/magiconair/properties v1.8.7
 	github.com/pb33f/libopenapi v0.8.4
 	github.com/pkg/errors v0.9.1
 	github.com/santhosh-tekuri/jsonschema/v5 v5.3.0
