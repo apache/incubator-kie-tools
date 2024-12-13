@@ -67,7 +67,7 @@ const (
 	KogitoServiceURLProperty                       = "kogito.service.url"
 	KogitoServiceURLProtocol                       = "http"
 	DataIndexKafkaSmallRyeHealthProperty           = `quarkus.smallrye-health.check."io.quarkus.kafka.client.health.KafkaHealthCheck".enabled`
-	JobServiceKafkaSmallRyeHealthProperty          = `quarkus.smallrye-health.check."org.kie.kogito.jobs.service.messaging.http.health.knative.KSinkInjectionHealthCheck".enabled`
+	JobServiceKafkaSmallRyeHealthProperty          = `quarkus.smallrye-health.check."io.quarkus.kafka.client.health.KafkaHealthCheck".enabled`
 	JobServiceLeaderLivenessSmallRyeHealthProperty = `quarkus.smallrye-health.check."org.kie.kogito.jobs.service.management.JobServiceLeaderLivenessHealthCheck".enabled`
 	DataIndexKafkaHealthCheck                      = `quarkus.smallrye-health.check."io.quarkus.kafka.client.health.KafkaHealthCheck".enabled`
 	JobServiceKSinkInjectionHealthCheck            = `quarkus.smallrye-health.check."org.kie.kogito.jobs.service.messaging.http.health.knative.KSinkInjectionHealthCheck".enabled`
