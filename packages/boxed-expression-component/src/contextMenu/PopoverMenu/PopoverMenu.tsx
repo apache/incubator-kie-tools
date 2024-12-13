@@ -82,7 +82,7 @@ export const PopoverMenu = React.forwardRef(
       appendTo,
       className,
       hasAutoWidth,
-      minWidth,
+      minWidth = `var(--pf-v5-c-popover--MinWidth)`,
       onHide = () => {},
       onCancel = () => {},
       onShown = () => {},

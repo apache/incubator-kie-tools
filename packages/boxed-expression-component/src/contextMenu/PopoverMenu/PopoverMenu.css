@@ -17,7 +17,7 @@
  * under the License.
  */
 
-.popover-menu-selector .pf-v5-c-popover__content > .pf-v5-c-button {
+.popover-menu-selector .pf-v5-c-popover__content .pf-v5-c-popover__close > .pf-v5-c-button {
   display: none;
 }
 
