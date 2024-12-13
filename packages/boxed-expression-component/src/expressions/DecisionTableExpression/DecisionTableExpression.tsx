@@ -1077,7 +1077,6 @@ export function DecisionTableExpression({
         shouldRenderRowIndexColumn={true}
         shouldShowRowsInlineControls={true}
         shouldShowColumnsInlineControls={true}
-        evaluationHitsCountColumnIndex={0}
         supportsEvaluationHitsCount={supportsEvaluationHitsCount}
         // lastColumnMinWidth={lastColumnMinWidth} // FIXME: Check if this is a good strategy or not when doing https://github.com/apache/incubator-kie-issues/issues/181
       />

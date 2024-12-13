@@ -97,8 +97,6 @@ export interface BeeTableProps<R extends object> {
   shouldShowColumnsInlineControls: boolean;
   resizerStopBehavior: ResizerStopBehavior;
   lastColumnMinWidth?: number;
-  /** Index of the column, where the evaluation hits count should be displayed. If not set, evaluation hits count number is not shown. */
-  evaluationHitsCountColumnIndex?: number;
   /** Method should return true for table rows, that can display evaluation hits count, false otherwise. If not set, BeeTableBody defaults to false. */
   supportsEvaluationHitsCount?: (row: ReactTable.Row<R>) => boolean;
 }

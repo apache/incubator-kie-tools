@@ -256,7 +256,6 @@ export function ConditionalExpression({
           shouldRenderRowIndexColumn={false}
           shouldShowRowsInlineControls={false}
           shouldShowColumnsInlineControls={false}
-          evaluationHitsCountColumnIndex={1}
           supportsEvaluationHitsCount={supportsEvaluationHitsCount}
         />
       </div>

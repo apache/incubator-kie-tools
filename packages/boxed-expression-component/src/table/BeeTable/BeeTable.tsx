@@ -103,7 +103,6 @@ export function BeeTableInternal<R extends object>({
   resizerStopBehavior,
   lastColumnMinWidth,
   rowWrapper,
-  evaluationHitsCountColumnIndex,
   supportsEvaluationHitsCount,
 }: BeeTableProps<R> & {
   selectionRef?: React.RefObject<BeeTableSelectionRef>;
@@ -659,7 +658,6 @@ export function BeeTableInternal<R extends object>({
           onDataCellKeyUp={onDataCellKeyUp}
           lastColumnMinWidth={lastColumnMinWidth}
           isReadOnly={isReadOnly}
-          evaluationHitsCountColumnIndex={evaluationHitsCountColumnIndex}
           supportsEvaluationHitsCount={supportsEvaluationHitsCount}
         />
       </table>
