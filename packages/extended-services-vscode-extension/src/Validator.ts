@@ -22,7 +22,7 @@ import * as validationRequests from "./requests/ValidationRequests";
 import * as validationResponse from "./requests/ValidationResponse";
 import * as vscode from "vscode";
 
-const source: string = "Apache KIE Extended Services";
+const source: string = "Apache KIE™ Extended Services";
 
 function createBPMNDiagnostics(validationResponses: validationResponse.BPMNValidationResponse[]): vscode.Diagnostic[] {
   return validationResponses.map((validationResponse) => {

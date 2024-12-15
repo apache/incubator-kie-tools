@@ -53,7 +53,7 @@
   "engines": {
     "vscode": "^1.67.0"
   },
-  "displayName": "Apache KIE Extended Services",
+  "displayName": "Apache KIE™ Extended Services",
   "categories": [
     "Other"
   ],
@@ -62,13 +62,13 @@
       {
         "category": "Extended-Services",
         "command": "extended-services-vscode-extension.startExtendedServices",
-        "title": "Connect Apache KIE Extended-Services",
+        "title": "Connect Apache KIE™ Extended Services",
         "when": "extended-services-vscode-extension.connected"
       },
       {
         "category": "Extended-Services",
         "command": "extended-services-vscode-extension.stopExtendedServices",
-        "title": "Disconnect Apache KIE Extended-Services"
+        "title": "Disconnect Apache KIE™ Extended Services"
       }
     ],
     "configuration": {
@@ -94,7 +94,7 @@
           "type": "string"
         }
       },
-      "title": "Apache KIE Extended Services"
+      "title": "Apache KIE™ Extended Services"
     },
     "icons": {
       "extended-services-connected": {
@@ -102,14 +102,14 @@
           "fontCharacter": "\\E000",
           "fontPath": "./static/extended-services-font.woff"
         },
-        "description": "Connected to the Apache KIE Extended-Services"
+        "description": "Connected to the Apache KIE™ Extended Services"
       },
       "extended-services-disconnected": {
         "default": {
           "fontCharacter": "\\E001",
           "fontPath": "./static/extended-services-font.woff"
         },
-        "description": "Apache KIE Extended-Services are Disconnected"
+        "description": "Apache KIE™ Extended Services are Disconnected"
       }
     },
     "languages": [
