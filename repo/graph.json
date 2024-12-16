@@ -11,58 +11,93 @@
       { "id": "@kie-tools-scripts/update-version" },
       { "id": "@kie-tools-scripts/build-env" },
       { "id": "@kie-tools/tsconfig" },
-      { "id": "@kie-tools-examples/base64png-editor" },
+      { "id": "@kie-tools-examples/bpmn-editor-classic-on-webapp" },
+      { "id": "@kie-tools-core/react-hooks" },
+      { "id": "@kie-tools/kie-bc-editors" },
+      { "id": "@kie-tools/stunner-editors" },
+      { "id": "@kie-tools/eslint" },
+      { "id": "@kie-tools/root-env" },
       { "id": "@kie-tools-core/editor" },
+      { "id": "@kie-tools-core/vscode-java-code-completion" },
+      { "id": "@kie-tools/dmn-language-service" },
+      { "id": "@kie-tools/pmml-editor-marshaller" },
+      { "id": "@kie-tools/stunner-editors-dmn-loader" },
+      { "id": "@kie-tools-examples/dmn-editor-classic-on-webapp" },
+      { "id": "@kie-tools-examples/dmn-editor-on-webapp" },
+      { "id": "@kie-tools/dmn-editor-envelope" },
+      { "id": "@kie-tools/dmn-editor" },
+      { "id": "@kie-tools-examples/dmn-editor-standalone-on-webapp" },
+      { "id": "@kie-tools/dmn-editor-standalone" },
+      {
+        "id": "@kie-tools-examples/kie-sandbox-commit-message-validation-service"
+      },
+      {
+        "id": "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor"
+      },
       { "id": "@kie-tools-core/envelope" },
       { "id": "@kie-tools-core/keyboard-shortcuts" },
       { "id": "@kie-tools-core/notifications" },
       { "id": "@kie-tools-core/patternfly-base" },
-      { "id": "@kie-tools-examples/base64png-editor-chrome-extension" },
+      {
+        "id": "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor-chrome-extension"
+      },
       { "id": "@kie-tools-core/chrome-extension" },
       { "id": "@kie-tools-core/webpack-base" },
-      { "id": "@kie-tools/root-env" },
-      { "id": "kie-tools-examples-base64png-editor-vscode-extension" },
+      {
+        "id": "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor-on-webapp"
+      },
+      {
+        "id": "kie-tools-examples-micro-frontends-multiplying-architecture-base64png-editor-vscode-extension"
+      },
       { "id": "@kie-tools-core/vscode-extension" },
-      { "id": "@kie-tools-core/vscode-java-code-completion" },
-      { "id": "@kie-tools-examples/commit-message-validation-service" },
-      { "id": "@kie-tools-examples/dmn-editor-standalone-examples" },
-      { "id": "@kie-tools/dmn-editor-standalone" },
-      { "id": "@kie-tools/dmn-editor-envelope" },
-      { "id": "@kie-tools-examples/drools-process-usertasks-quarkus-example" },
+      {
+        "id": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view"
+      },
+      { "id": "@kie-tools-core/envelope-bus" },
+      {
+        "id": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view-in-angular"
+      },
+      {
+        "id": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view-in-react"
+      },
+      {
+        "id": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-views-on-webapp"
+      },
+      {
+        "id": "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view"
+      },
+      {
+        "id": "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view-on-webapp"
+      },
+      {
+        "id": "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension"
+      },
+      { "id": "@kie-tools-examples/process-compact-architecture" },
       { "id": "@kie-tools/jbpm-quarkus-devui" },
+      { "id": "@kie-tools/kogito-management-console" },
       { "id": "@kie-tools/maven-base" },
       { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
-      { "id": "@kie-tools-examples/jbpm-compact-architecture-example" },
-      { "id": "@kie-tools/kogito-management-console" },
       { "id": "@kie-tools/image-builder" },
       { "id": "@kie-tools/image-env-to-json" },
       { "id": "@kie-tools/runtime-tools-management-console-webapp" },
-      { "id": "@kie-tools-examples/ping-pong-view" },
-      { "id": "@kie-tools-core/envelope-bus" },
-      { "id": "@kie-tools-examples/ping-pong-view-angular" },
-      { "id": "@kie-tools-examples/ping-pong-view-react" },
-      { "id": "@kie-tools-examples/sonataflow-greeting-quarkus-example" },
+      { "id": "@kie-tools-examples/process-user-tasks-subsystem" },
+      {
+        "id": "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp"
+      },
+      { "id": "@kie-tools/serverless-workflow-standalone-editor" },
+      { "id": "@kie-tools/serverless-workflow-combined-editor" },
+      { "id": "@kie-tools-examples/sonataflow-greeting" },
       { "id": "@kie-tools/sonataflow-quarkus-devui" },
       { "id": "@kie-tools/serverless-workflow-dev-ui-webapp" },
-      { "id": "@kie-tools-examples/todo-list-view" },
-      { "id": "kie-tools-examples-todo-list-view-vscode-extension" },
       { "id": "@kie-tools-examples/uniforms-patternfly" },
       { "id": "@kie-tools/uniforms-patternfly" },
-      { "id": "@kie-tools/eslint" },
       { "id": "@kie-tools/jest-base" },
-      { "id": "@kie-tools-examples/webapp" },
-      { "id": "@kie-tools/kie-editors-standalone" },
-      { "id": "@kie-tools/serverless-workflow-standalone-editor" },
-      { "id": "@kie-tools/kie-bc-editors" },
-      { "id": "@kie-tools/stunner-editors" },
-      { "id": "@kie-tools/serverless-workflow-combined-editor" },
       { "id": "@kie-tools/boxed-expression-component" },
       { "id": "@kie-tools-core/operating-system" },
       { "id": "@kie-tools/feel-input-component" },
       { "id": "@kie-tools/playwright-base" },
       { "id": "@kie-tools/storybook-base" },
       { "id": "@kie-tools-core/monaco-editor" },
-      { "id": "@kie-tools/dmn-language-service" },
       { "id": "@kie-tools/i18n-common-dictionary" },
       { "id": "@kie-tools/bpmn-marshaller" },
       { "id": "@kie-tools/xml-parser-ts-codegen" },
@@ -71,8 +106,6 @@
       { "id": "@kie-tools/form-code-generator-vscode-command" },
       { "id": "@kie-tools/vscode-java-code-completion-extension-plugin" },
       { "id": "@kie-tools/jbpm-form-code-generator-themes" },
-      { "id": "@kie-tools/pmml-editor-marshaller" },
-      { "id": "@kie-tools/stunner-editors-dmn-loader" },
       { "id": "chrome-extension-pack-kogito-kie-editors" },
       { "id": "@kie-tools/chrome-extension-test-helper" },
       { "id": "chrome-extension-serverless-workflow-editor" },
@@ -102,7 +135,6 @@
       { "id": "@kie-tools/dashbuilder-viewer" },
       { "id": "@kie-tools/dashbuilder-viewer-deployment-webapp" },
       { "id": "@kie-tools-core/workspaces-git-fs" },
-      { "id": "@kie-tools-core/react-hooks" },
       { "id": "@kie-tools-core/workspace" },
       { "id": "@kie-tools/kie-sandbox-fs" },
       { "id": "@kie-tools-core/i18n" },
@@ -118,7 +150,6 @@
       { "id": "@kie-tools/dev-deployment-kogito-quarkus-blank-app" },
       { "id": "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" },
       { "id": "@kie-tools/maven-m2-repo-via-http-image" },
-      { "id": "@kie-tools/dmn-editor" },
       { "id": "@kie-tools/dmn-feel-antlr4-parser" },
       { "id": "@kie-tools/dmn-marshaller" },
       { "id": "@kie-tools/dmn-marshaller-backend-compatibility-tester" },
@@ -141,6 +172,7 @@
       { "id": "kie-editors-dev-vscode-extension" },
       { "id": "@kie-tools/pmml-editor" },
       { "id": "@kie-tools/vscode-extension-common-test-helpers" },
+      { "id": "@kie-tools/kie-editors-standalone" },
       { "id": "@kie-tools/kie-sandbox-accelerator-quarkus" },
       { "id": "@kie-tools/kie-sandbox-distribution" },
       { "id": "@kie-tools/kie-sandbox-extended-services-image" },
@@ -261,8 +293,58 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools-examples/base64png-editor",
+        "source": "@kie-tools-examples/bpmn-editor-classic-on-webapp",
+        "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/bpmn-editor-classic-on-webapp",
+        "target": "@kie-tools/kie-bc-editors",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/bpmn-editor-classic-on-webapp",
+        "target": "@kie-tools/stunner-editors",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/react-hooks",
+        "target": "@kie-tools/eslint",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/react-hooks",
+        "target": "@kie-tools/root-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/react-hooks",
+        "target": "@kie-tools/tsconfig",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/kie-bc-editors",
         "target": "@kie-tools-core/editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/kie-bc-editors",
+        "target": "@kie-tools-core/vscode-java-code-completion",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/kie-bc-editors",
+        "target": "@kie-tools/dmn-language-service",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/kie-bc-editors",
+        "target": "@kie-tools/pmml-editor-marshaller",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/stunner-editors",
+        "target": "@kie-tools/stunner-editors-dmn-loader",
         "weight": 1
       },
       {
@@ -283,6 +365,121 @@
       {
         "source": "@kie-tools-core/editor",
         "target": "@kie-tools-core/patternfly-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/vscode-java-code-completion",
+        "target": "@kie-tools/eslint",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/vscode-java-code-completion",
+        "target": "@kie-tools/root-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/vscode-java-code-completion",
+        "target": "@kie-tools/tsconfig",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-language-service",
+        "target": "@kie-tools/dmn-feel-antlr4-parser",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-language-service",
+        "target": "@kie-tools-core/switch-expression-ts",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/pmml-editor-marshaller",
+        "target": "@kie-tools/eslint",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/pmml-editor-marshaller",
+        "target": "@kie-tools/jest-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/pmml-editor-marshaller",
+        "target": "@kie-tools/tsconfig",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/stunner-editors-dmn-loader",
+        "target": "@kie-tools/boxed-expression-component",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/stunner-editors-dmn-loader",
+        "target": "@kie-tools/import-java-classes-component",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/dmn-editor-classic-on-webapp",
+        "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/dmn-editor-classic-on-webapp",
+        "target": "@kie-tools/kie-bc-editors",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/dmn-editor-classic-on-webapp",
+        "target": "@kie-tools/stunner-editors",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/dmn-editor-on-webapp",
+        "target": "@kie-tools/dmn-editor-envelope",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-editor-envelope",
+        "target": "@kie-tools-core/editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-editor-envelope",
+        "target": "@kie-tools/dmn-editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-editor",
+        "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-editor",
+        "target": "@kie-tools/boxed-expression-component",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-editor",
+        "target": "@kie-tools/pmml-editor-marshaller",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/dmn-editor-standalone-on-webapp",
+        "target": "@kie-tools/dmn-editor-standalone",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-editor-standalone",
+        "target": "@kie-tools/dmn-editor-envelope",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/kie-sandbox-commit-message-validation-service",
+        "target": "@kie-tools/root-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor",
+        "target": "@kie-tools-core/editor",
         "weight": 1
       },
       {
@@ -316,18 +513,18 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools-examples/base64png-editor-chrome-extension",
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor-chrome-extension",
         "target": "@kie-tools-core/chrome-extension",
         "weight": 1
       },
       {
-        "source": "@kie-tools-examples/base64png-editor-chrome-extension",
-        "target": "@kie-tools-examples/base64png-editor",
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor-chrome-extension",
+        "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
       {
-        "source": "@kie-tools-examples/base64png-editor-chrome-extension",
-        "target": "@kie-tools-core/webpack-base",
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor-chrome-extension",
+        "target": "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor",
         "weight": 1
       },
       {
@@ -341,18 +538,33 @@
         "weight": 1
       },
       {
-        "source": "kie-tools-examples-base64png-editor-vscode-extension",
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor-on-webapp",
+        "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor-on-webapp",
+        "target": "@kie-tools-core/webpack-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor-on-webapp",
+        "target": "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor",
+        "weight": 1
+      },
+      {
+        "source": "kie-tools-examples-micro-frontends-multiplying-architecture-base64png-editor-vscode-extension",
         "target": "@kie-tools-core/vscode-extension",
         "weight": 1
       },
       {
-        "source": "kie-tools-examples-base64png-editor-vscode-extension",
-        "target": "@kie-tools-examples/base64png-editor",
+        "source": "kie-tools-examples-micro-frontends-multiplying-architecture-base64png-editor-vscode-extension",
+        "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
       {
-        "source": "kie-tools-examples-base64png-editor-vscode-extension",
-        "target": "@kie-tools-core/webpack-base",
+        "source": "kie-tools-examples-micro-frontends-multiplying-architecture-base64png-editor-vscode-extension",
+        "target": "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor",
         "weight": 1
       },
       {
@@ -366,48 +578,108 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools-core/vscode-java-code-completion",
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view",
+        "target": "@kie-tools-core/envelope",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/envelope-bus",
         "target": "@kie-tools/eslint",
         "weight": 1
       },
       {
-        "source": "@kie-tools-core/vscode-java-code-completion",
-        "target": "@kie-tools/root-env",
+        "source": "@kie-tools-core/envelope-bus",
+        "target": "@kie-tools/jest-base",
         "weight": 1
       },
       {
-        "source": "@kie-tools-core/vscode-java-code-completion",
+        "source": "@kie-tools-core/envelope-bus",
         "target": "@kie-tools/tsconfig",
         "weight": 1
       },
       {
-        "source": "@kie-tools-examples/commit-message-validation-service",
-        "target": "@kie-tools/root-env",
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view-in-angular",
+        "target": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view",
         "weight": 1
       },
       {
-        "source": "@kie-tools-examples/dmn-editor-standalone-examples",
-        "target": "@kie-tools/dmn-editor-standalone",
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view-in-react",
+        "target": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view",
         "weight": 1
       },
       {
-        "source": "@kie-tools/dmn-editor-standalone",
-        "target": "@kie-tools/dmn-editor-envelope",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/dmn-editor-envelope",
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-views-on-webapp",
         "target": "@kie-tools-core/editor",
         "weight": 1
       },
       {
-        "source": "@kie-tools/dmn-editor-envelope",
-        "target": "@kie-tools/dmn-editor",
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-views-on-webapp",
+        "target": "@kie-tools-core/react-hooks",
         "weight": 1
       },
       {
-        "source": "@kie-tools-examples/drools-process-usertasks-quarkus-example",
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-views-on-webapp",
+        "target": "@kie-tools-core/webpack-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-views-on-webapp",
+        "target": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view-in-angular",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-views-on-webapp",
+        "target": "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view-in-react",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view",
+        "target": "@kie-tools-core/envelope",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view-on-webapp",
+        "target": "@kie-tools-core/editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view-on-webapp",
+        "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view-on-webapp",
+        "target": "@kie-tools-core/webpack-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view-on-webapp",
+        "target": "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view",
+        "weight": 1
+      },
+      {
+        "source": "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension",
+        "target": "@kie-tools-core/vscode-extension",
+        "weight": 1
+      },
+      {
+        "source": "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension",
+        "target": "@kie-tools-core/webpack-base",
+        "weight": 1
+      },
+      {
+        "source": "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension",
+        "target": "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-compact-architecture",
         "target": "@kie-tools/jbpm-quarkus-devui",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-compact-architecture",
+        "target": "@kie-tools/kogito-management-console",
         "weight": 1
       },
       {
@@ -418,31 +690,6 @@
       {
         "source": "@kie-tools/jbpm-quarkus-devui",
         "target": "@kie-tools/runtime-tools-process-dev-ui-webapp",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/maven-base",
-        "target": "@kie-tools/root-env",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
-        "target": "@kie-tools/runtime-tools-process-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
-        "target": "@kie-tools/runtime-tools-shared-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-examples/jbpm-compact-architecture-example",
-        "target": "@kie-tools/jbpm-quarkus-devui",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-examples/jbpm-compact-architecture-example",
-        "target": "@kie-tools/kogito-management-console",
         "weight": 1
       },
       {
@@ -458,6 +705,21 @@
       {
         "source": "@kie-tools/kogito-management-console",
         "target": "@kie-tools/runtime-tools-management-console-webapp",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/maven-base",
+        "target": "@kie-tools/root-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
         "weight": 1
       },
       {
@@ -491,37 +753,37 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools-examples/ping-pong-view",
-        "target": "@kie-tools-core/envelope",
+        "source": "@kie-tools-examples/process-user-tasks-subsystem",
+        "target": "@kie-tools/jbpm-quarkus-devui",
         "weight": 1
       },
       {
-        "source": "@kie-tools-core/envelope-bus",
-        "target": "@kie-tools/eslint",
+        "source": "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp",
+        "target": "@kie-tools-core/react-hooks",
         "weight": 1
       },
       {
-        "source": "@kie-tools-core/envelope-bus",
-        "target": "@kie-tools/jest-base",
+        "source": "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp",
+        "target": "@kie-tools/serverless-workflow-standalone-editor",
         "weight": 1
       },
       {
-        "source": "@kie-tools-core/envelope-bus",
-        "target": "@kie-tools/tsconfig",
+        "source": "@kie-tools/serverless-workflow-standalone-editor",
+        "target": "@kie-tools/serverless-workflow-combined-editor",
         "weight": 1
       },
       {
-        "source": "@kie-tools-examples/ping-pong-view-angular",
-        "target": "@kie-tools-examples/ping-pong-view",
+        "source": "@kie-tools/serverless-workflow-combined-editor",
+        "target": "@kie-tools/serverless-workflow-diagram-editor-assets",
         "weight": 1
       },
       {
-        "source": "@kie-tools-examples/ping-pong-view-react",
-        "target": "@kie-tools-examples/ping-pong-view",
+        "source": "@kie-tools/serverless-workflow-combined-editor",
+        "target": "@kie-tools/serverless-workflow-text-editor",
         "weight": 1
       },
       {
-        "source": "@kie-tools-examples/sonataflow-greeting-quarkus-example",
+        "source": "@kie-tools-examples/sonataflow-greeting",
         "target": "@kie-tools/sonataflow-quarkus-devui",
         "weight": 1
       },
@@ -548,26 +810,6 @@
       {
         "source": "@kie-tools/serverless-workflow-dev-ui-webapp",
         "target": "@kie-tools/sonataflow-dev-app",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-examples/todo-list-view",
-        "target": "@kie-tools-core/envelope",
-        "weight": 1
-      },
-      {
-        "source": "kie-tools-examples-todo-list-view-vscode-extension",
-        "target": "@kie-tools-core/vscode-extension",
-        "weight": 1
-      },
-      {
-        "source": "kie-tools-examples-todo-list-view-vscode-extension",
-        "target": "@kie-tools-examples/todo-list-view",
-        "weight": 1
-      },
-      {
-        "source": "kie-tools-examples-todo-list-view-vscode-extension",
-        "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
       {
@@ -603,91 +845,6 @@
       {
         "source": "@kie-tools/jest-base",
         "target": "@kie-tools/root-env",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-examples/webapp",
-        "target": "@kie-tools-examples/base64png-editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-examples/webapp",
-        "target": "@kie-tools-examples/ping-pong-view-angular",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-examples/webapp",
-        "target": "@kie-tools-examples/ping-pong-view-react",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-examples/webapp",
-        "target": "@kie-tools-examples/todo-list-view",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-examples/webapp",
-        "target": "@kie-tools/dmn-editor-standalone",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-examples/webapp",
-        "target": "@kie-tools/kie-editors-standalone",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-examples/webapp",
-        "target": "@kie-tools/serverless-workflow-standalone-editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/kie-editors-standalone",
-        "target": "@kie-tools/kie-bc-editors",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/kie-editors-standalone",
-        "target": "@kie-tools/stunner-editors",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-workflow-standalone-editor",
-        "target": "@kie-tools/serverless-workflow-combined-editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/kie-bc-editors",
-        "target": "@kie-tools-core/editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/kie-bc-editors",
-        "target": "@kie-tools-core/vscode-java-code-completion",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/kie-bc-editors",
-        "target": "@kie-tools/dmn-language-service",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/kie-bc-editors",
-        "target": "@kie-tools/pmml-editor-marshaller",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/stunner-editors",
-        "target": "@kie-tools/stunner-editors-dmn-loader",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-workflow-combined-editor",
-        "target": "@kie-tools/serverless-workflow-diagram-editor-assets",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/serverless-workflow-combined-editor",
-        "target": "@kie-tools/serverless-workflow-text-editor",
         "weight": 1
       },
       {
@@ -786,16 +943,6 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/dmn-language-service",
-        "target": "@kie-tools/dmn-feel-antlr4-parser",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/dmn-language-service",
-        "target": "@kie-tools-core/switch-expression-ts",
-        "weight": 1
-      },
-      {
         "source": "@kie-tools/i18n-common-dictionary",
         "target": "@kie-tools-core/i18n",
         "weight": 1
@@ -868,31 +1015,6 @@
       {
         "source": "@kie-tools/jbpm-form-code-generator-themes",
         "target": "@kie-tools/form-code-generator-patternfly-theme",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/pmml-editor-marshaller",
-        "target": "@kie-tools/eslint",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/pmml-editor-marshaller",
-        "target": "@kie-tools/jest-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/pmml-editor-marshaller",
-        "target": "@kie-tools/tsconfig",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/stunner-editors-dmn-loader",
-        "target": "@kie-tools/boxed-expression-component",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/stunner-editors-dmn-loader",
-        "target": "@kie-tools/import-java-classes-component",
         "weight": 1
       },
       {
@@ -1301,21 +1423,6 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools-core/react-hooks",
-        "target": "@kie-tools/eslint",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/react-hooks",
-        "target": "@kie-tools/root-env",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-core/react-hooks",
-        "target": "@kie-tools/tsconfig",
-        "weight": 1
-      },
-      {
         "source": "@kie-tools-core/workspace",
         "target": "@kie-tools-core/operating-system",
         "weight": 1
@@ -1458,21 +1565,6 @@
       {
         "source": "@kie-tools/maven-m2-repo-via-http-image",
         "target": "@kie-tools/root-env",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/dmn-editor",
-        "target": "@kie-tools-core/react-hooks",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/dmn-editor",
-        "target": "@kie-tools/boxed-expression-component",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/dmn-editor",
-        "target": "@kie-tools/pmml-editor-marshaller",
         "weight": 1
       },
       {
@@ -1743,6 +1835,16 @@
       {
         "source": "@kie-tools/vscode-extension-common-test-helpers",
         "target": "@kie-tools/tsconfig",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/kie-editors-standalone",
+        "target": "@kie-tools/kie-bc-editors",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/kie-editors-standalone",
+        "target": "@kie-tools/stunner-editors",
         "weight": 1
       },
       {
@@ -2579,24 +2681,66 @@
   },
   "serializedPackagesLocationByName": [
     ["kie-tools-root", ""],
-    ["@kie-tools-examples/base64png-editor", "examples/base64png-editor"],
-    ["@kie-tools-examples/base64png-editor-chrome-extension", "examples/base64png-editor-chrome-extension"],
-    ["kie-tools-examples-base64png-editor-vscode-extension", "examples/base64png-editor-vscode-extension"],
-    ["@kie-tools-examples/commit-message-validation-service", "examples/commit-message-validation-service"],
-    ["@kie-tools-examples/dmn-editor-standalone-examples", "examples/dmn-editor-standalone-examples"],
+    ["@kie-tools-examples/bpmn-editor-classic-on-webapp", "examples/bpmn-editor-classic-on-webapp"],
+    ["@kie-tools-examples/dmn-editor-classic-on-webapp", "examples/dmn-editor-classic-on-webapp"],
+    ["@kie-tools-examples/dmn-editor-on-webapp", "examples/dmn-editor-on-webapp"],
+    ["@kie-tools-examples/dmn-editor-standalone-on-webapp", "examples/dmn-editor-standalone-on-webapp"],
     [
-      "@kie-tools-examples/drools-process-usertasks-quarkus-example",
-      "examples/drools-process-usertasks-quarkus-example"
+      "@kie-tools-examples/kie-sandbox-commit-message-validation-service",
+      "examples/kie-sandbox-commit-message-validation-service"
     ],
-    ["@kie-tools-examples/jbpm-compact-architecture-example", "examples/jbpm-compact-architecture-example"],
-    ["@kie-tools-examples/ping-pong-view", "examples/ping-pong-view"],
-    ["@kie-tools-examples/ping-pong-view-angular", "examples/ping-pong-view-angular"],
-    ["@kie-tools-examples/ping-pong-view-react", "examples/ping-pong-view-react"],
-    ["@kie-tools-examples/sonataflow-greeting-quarkus-example", "examples/sonataflow-greeting-quarkus-example"],
-    ["@kie-tools-examples/todo-list-view", "examples/todo-list-view"],
-    ["kie-tools-examples-todo-list-view-vscode-extension", "examples/todo-list-view-vscode-extension"],
+    [
+      "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor",
+      "examples/micro-frontends-multiplying-architecture-base64png-editor"
+    ],
+    [
+      "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor-chrome-extension",
+      "examples/micro-frontends-multiplying-architecture-base64png-editor-chrome-extension"
+    ],
+    [
+      "@kie-tools-examples/micro-frontends-multiplying-architecture-base64png-editor-on-webapp",
+      "examples/micro-frontends-multiplying-architecture-base64png-editor-on-webapp"
+    ],
+    [
+      "kie-tools-examples-micro-frontends-multiplying-architecture-base64png-editor-vscode-extension",
+      "examples/micro-frontends-multiplying-architecture-base64png-editor-vscode-extension"
+    ],
+    [
+      "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view",
+      "examples/micro-frontends-multiplying-architecture-ping-pong-view"
+    ],
+    [
+      "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view-in-angular",
+      "examples/micro-frontends-multiplying-architecture-ping-pong-view-in-angular"
+    ],
+    [
+      "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-view-in-react",
+      "examples/micro-frontends-multiplying-architecture-ping-pong-view-in-react"
+    ],
+    [
+      "@kie-tools-examples/micro-frontends-multiplying-architecture-ping-pong-views-on-webapp",
+      "examples/micro-frontends-multiplying-architecture-ping-pong-views-on-webapp"
+    ],
+    [
+      "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view",
+      "examples/micro-frontends-multiplying-architecture-todo-list-view"
+    ],
+    [
+      "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view-on-webapp",
+      "examples/micro-frontends-multiplying-architecture-todo-list-view-on-webapp"
+    ],
+    [
+      "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension",
+      "examples/micro-frontends-multiplying-architecture-todo-list-view-vscode-extension"
+    ],
+    ["@kie-tools-examples/process-compact-architecture", "examples/process-compact-architecture"],
+    ["@kie-tools-examples/process-user-tasks-subsystem", "examples/process-user-tasks-subsystem"],
+    [
+      "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp",
+      "examples/serverless-workflow-editor-standalone-on-webapp"
+    ],
+    ["@kie-tools-examples/sonataflow-greeting", "examples/sonataflow-greeting"],
     ["@kie-tools-examples/uniforms-patternfly", "examples/uniforms-patternfly"],
-    ["@kie-tools-examples/webapp", "examples/webapp"],
     ["@kie-tools/boxed-expression-component", "packages/boxed-expression-component"],
     ["@kie-tools/bpmn-marshaller", "packages/bpmn-marshaller"],
     ["bpmn-vscode-extension", "packages/bpmn-vscode-extension"],

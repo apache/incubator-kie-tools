@@ -20,41 +20,41 @@ pnpm-lock.yaml
 pnpm-workspace.yaml
 # _intellij-project/maven-based-packages-@-kie-tools.iml
 maven-based-packages-@-kie-tools.iml
-# examples/base64png-editor-vscode-extension/.vscodeignore
+# examples/micro-frontends-multiplying-architecture-base64png-editor-vscode-extension/.vscodeignore
 .vscodeignore
-# examples/commit-message-validation-service/go.mod
+# examples/kie-sandbox-commit-message-validation-service/go.mod
 go.mod
-# examples/commit-message-validation-service/go.sum
+# examples/kie-sandbox-commit-message-validation-service/go.sum
 go.sum
-# examples/drools-process-usertasks-quarkus-example/drools-process-usertasks-quarkus-example.iml
-drools-process-usertasks-quarkus-example.iml
-# examples/drools-process-usertasks-quarkus-example/src/main/docker/Dockerfile.jvm
+# examples/process-user-tasks-subsystem/process-user-tasks-subsystem.iml
+process-user-tasks-subsystem.iml
+# examples/process-user-tasks-subsystem/src/main/docker/Dockerfile.jvm
 Dockerfile.jvm
-# examples/drools-process-usertasks-quarkus-example/src/main/docker/Dockerfile.native
+# examples/process-user-tasks-subsystem/src/main/docker/Dockerfile.native
 Dockerfile.native
-# examples/jbpm-compact-architecture-example/.gitignore
+# examples/process-compact-architecture/.gitignore
 .gitignore
-# examples/jbpm-compact-architecture-example/jbpm-compact-architecture-quarkus-example.iml
-jbpm-compact-architecture-quarkus-example.iml
-# examples/jbpm-compact-architecture-example/docker-compose/startContainers.sh
+# examples/process-compact-architecture/process-compact-architecture.iml
+process-compact-architecture.iml
+# examples/process-compact-architecture/docker-compose/startContainers.sh
 startContainers.sh
-# examples/jbpm-compact-architecture-example/docker-compose/pgadmin/pgpass
+# examples/process-compact-architecture/docker-compose/pgadmin/pgpass
 pgpass
-# examples/jbpm-compact-architecture-example/docker-compose/sql/init.sql
+# examples/process-compact-architecture/docker-compose/sql/init.sql
 init.sql
-# examples/ping-pong-view-angular/src/assets/.gitkeep
+# examples/micro-frontends-multiplying-architecture-ping-pong-view-in-angular/src/assets/.gitkeep
 .gitkeep
-# examples/sonataflow-greeting-quarkus-example/sonataflow-greeting-quarkus-example.iml
-sonataflow-greeting-quarkus-example.iml
-# examples/todo-list-view-vscode-extension/.vscodeignore
+# examples/sonataflow-greeting/sonataflow-greeting.iml
+sonataflow-greeting.iml
+# examples/micro-frontends-multiplying-architecture-todo-list-view-vscode-extension/.vscodeignore
 .vscodeignore
-# examples/webapp/static/examples/dorinha.base64png
+# examples/micro-frontends-multiplying-architecture-base64png-editor-on-webapp/static/examples/dorinha.base64png
 dorinha.base64png
-# examples/webapp/static/examples/luiz.base64png
+# examples/micro-frontends-multiplying-architecture-base64png-editor-on-webapp/static/examples/luiz.base64png
 luiz.base64png
-# examples/webapp/static/examples/sample.base64png
+# examples/micro-frontends-multiplying-architecture-base64png-editor-on-webapp/static/examples/sample.base64png
 sample.base64png
-# examples/webapp/static/examples/tiago.base64png
+# examples/micro-frontends-multiplying-architecture-base64png-editor-on-webapp/static/examples/tiago.base64png
 tiago.base64png
 # packages/bpmn-marshaller/src/schemas/bpmn-2_0/BPMN20.xsd
 BPMN20.xsd
@@ -74,6 +74,8 @@ SingleEditorToolbar.test.tsx.snap
 chrome_sample.sw.yaml
 # packages/dashbuilder/dashbuilder-parent.iml
 dashbuilder-parent.iml
+# packages/dashbuilder/appformer/uberfire-api/src/main/resources/org/uberfire/jre/org/uberfire/util/uri.min.js
+uri.min.js
 # packages/dashbuilder/appformer/uberfire-extensions/uberfire-layout-editor/uberfire-layout-editor-client/src/test/resources/org/uberfire/ext/layout/editor/client/columnWithComponentsLayout.txt
 columnWithComponentsLayout.txt
 # packages/dashbuilder/appformer/uberfire-extensions/uberfire-layout-editor/uberfire-layout-editor-client/src/test/resources/org/uberfire/ext/layout/editor/client/fullLayoutFluid.txt
@@ -276,6 +278,8 @@ integrationTest.test.js.snap
 spec.txt
 # packages/dmn-editor-standalone/tests-e2e/__fixtures__/files/loan-pre-qualification.dmn
 loan-pre-qualification.dmn
+# packages/dmn-editor-standalone/tests-e2e/__fixtures__/files/scorecard.pmml
+scorecard.pmml
 # packages/dmn-feel-antlr4-parser/src/parser/grammar/generated-parser/FEEL_1_1.interp
 FEEL_1_1.interp
 # packages/dmn-feel-antlr4-parser/src/parser/grammar/generated-parser/FEEL_1_1.tokens
@@ -656,6 +660,8 @@ settings.xml.envsubst
 Caddyfile
 # packages/online-editor/src/accelerators/test.dmn
 test.dmn
+# packages/online-editor/static/samples/Sample.pmml
+Sample.pmml
 # packages/pmml-editor/e2e-tests/fixtures/compound-predicate.pmml
 compound-predicate.pmml
 # packages/pmml-editor/e2e-tests/fixtures/empty-characteristics-DD-defined-types.pmml
@@ -686,6 +692,44 @@ LandingPage.test.tsx.snap
 MiningSchemaContainer.test.tsx.snap
 # packages/pmml-editor/tests/editor/components/Outputs/organisms/OutputFieldsTable/__snapshots__/OutputFieldsTable.test.tsx.snap
 OutputFieldsTable.test.tsx.snap
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_AnomalyDetectionModel.ts
+TestData_AnomalyDetectionModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_AssociationModel.ts
+TestData_AssociationModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_BaselineModel.ts
+TestData_BaselineModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_BayesianNetworkModel.ts
+TestData_BayesianNetworkModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_ClusteringModel.ts
+TestData_ClusteringModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_GaussianProcessModel.ts
+TestData_GaussianProcessModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_GeneralRegressionModel.ts
+TestData_GeneralRegressionModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_LinearRegressions.ts
+TestData_LinearRegressions.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_MiningModel.ts
+TestData_MiningModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_MiningSchema.ts
+TestData_MiningSchema.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_NaiveBayesModel.ts
+TestData_NaiveBayesModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_NearestNeighborModel.ts
+TestData_NearestNeighborModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_NeuralNetwork.ts
+TestData_NeuralNetwork.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_RuleSetModel.ts
+TestData_RuleSetModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_SequenceModel.ts
+TestData_SequenceModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_SupportVectorMachineModel.ts
+TestData_SupportVectorMachineModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_TextModel.ts
+TestData_TextModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_TimeSeriesModel.ts
+TestData_TimeSeriesModel.ts
+# packages/pmml-editor-marshaller/tests/marshaller/TestData_TreeModel.ts
+TestData_TreeModel.ts
 # packages/python-venv/requirements.txt
 requirements.txt
 # packages/root-env/root-env.iml
@@ -784,10 +828,24 @@ OpenSans-SemiboldItalic-webfont.svg
 fontawesome-webfont.svg
 # packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-Bold-webfont.svg
 OpenSans-Bold-webfont.svg
+# packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-BoldItalic-webfont.svg
+OpenSans-BoldItalic-webfont.svg
+# packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-ExtraBold-webfont.svg
+OpenSans-ExtraBold-webfont.svg
+# packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-ExtraBoldItalic-webfont.svg
+OpenSans-ExtraBoldItalic-webfont.svg
+# packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-Italic-webfont.svg
+OpenSans-Italic-webfont.svg
+# packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-Light-webfont.svg
+OpenSans-Light-webfont.svg
+# packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-LightItalic-webfont.svg
+OpenSans-LightItalic-webfont.svg
 # packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-Regular-webfont.svg
 OpenSans-Regular-webfont.svg
 # packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-Semibold-webfont.svg
 OpenSans-Semibold-webfont.svg
+# packages/serverless-workflow-diagram-editor/sw-editor/sw-editor-kogito-app/src/main/webapp/fonts/OpenSans-SemiboldItalic-webfont.svg
+OpenSans-SemiboldItalic-webfont.svg
 # packages/serverless-workflow-diagram-editor/third_party/errai/src/main/java/org/jboss/errai/common/client/util/Base64Util.java
 Base64Util.java
 # packages/serverless-workflow-diagram-editor/third_party/gwtbootstrap3/core/src/main/resources/org/gwtbootstrap3/client/resource/css/bootstrap-3.4.1.min.cache.css
@@ -964,8 +1022,6 @@ Base64Util.java
 TimeUnit.java
 # packages/stunner-editors/errai-common/src/main/java/org/jboss/errai/common/compat/README.eclipse
 README.eclipse
-# packages/stunner-editors/errai-common/src/main/java/org/jboss/errai/common/compat/javax/annotation/processing/Generated.java
-Generated.java
 # packages/stunner-editors/errai-common/src/main/resources/META-INF/ErraiApp.properties
 ErraiApp.properties
 # packages/stunner-editors/errai-common/src/test/resources/ErraiApp.properties
@@ -1892,6 +1948,8 @@ DiValidator.java
 WorkDefinitions.wid
 # packages/stunner-editors/kie-wb-common-stunner/kie-wb-common-stunner-sets/kie-wb-common-stunner-bpmn/kie-wb-common-stunner-bpmn-marshalling/src/test/resources/META-INF/ErraiApp.properties
 ErraiApp.properties
+# packages/stunner-editors/uberfire-api/src/main/resources/org/uberfire/jre/org/uberfire/util/uri.min.js
+uri.min.js
 # packages/stunner-editors/uberfire-extensions/uberfire-layout-editor/uberfire-layout-editor-client/src/test/resources/org/uberfire/ext/layout/editor/client/columnWithComponentsLayout.txt
 columnWithComponentsLayout.txt
 # packages/stunner-editors/uberfire-extensions/uberfire-layout-editor/uberfire-layout-editor-client/src/test/resources/org/uberfire/ext/layout/editor/client/fullLayoutFluid.txt
