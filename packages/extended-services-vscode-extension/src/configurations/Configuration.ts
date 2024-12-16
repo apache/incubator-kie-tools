@@ -37,7 +37,7 @@ export class Configuration {
 }
 
 function fetchExtendedServicesURL(): URL {
-  const defaultExtendedServicesURL = `http://${process.env.WEBPACK_REPLACE__extendedServicesUrlHost}:${process.env.WEBPACK_REPLACE__extendedServicesUrlPort!}`;
+  const defaultExtendedServicesURL = `http://${process.env.WEBPACK_REPLACE__extendedServicesUrlHost}:${process.env.WEBPACK_REPLACE__extendedServicesUrlPort}`;
   const extendedServicesURL = getConfigurationPropertyValue<string>(extendedServicesURLID, defaultExtendedServicesURL);
   try {
     return new URL(extendedServicesURL);
@@ -47,10 +47,7 @@ function fetchExtendedServicesURL(): URL {
 }
 
 const getConfigurationPropertyValue = <T>(property: string, defaultValue: T): T => {
-  console.log(" property " + property);
-  console.log(" default " + defaultValue);
   const value: T | null = vscode.workspace.getConfiguration().get(property) as T;
-  console.log(" value: " + value);
   if (value == null) {
     console.warn(`Property: ${property} is missing, using the default: ${defaultValue}`);
     value == defaultValue;
