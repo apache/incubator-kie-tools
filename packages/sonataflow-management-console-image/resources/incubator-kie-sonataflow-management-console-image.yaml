@@ -18,7 +18,7 @@
 #
 - name: "docker.io/apache/incubator-kie-sonataflow-management-console"
   from: "registry.access.redhat.com/ubi9/httpd-24:1-336.1725850633"
-  version: "0.0.0"
+  version: "main"
   description: "SonataFlow Management Console Image"
 
   labels:
