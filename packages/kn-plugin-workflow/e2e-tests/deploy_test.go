@@ -24,6 +24,7 @@ package e2e_tests
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -53,8 +54,15 @@ func TestDeployProjectSuccess(t *testing.T) {
 			// Run `create` command
 			RunCreateTest(t, CfgTestInputCreate_Success[0])
 			// change dir to created project
-			err := os.Chdir(GetCreateProjectName(t, CfgTestInputCreate_Success[0]))
+			projectName := GetCreateProjectName(t, CfgTestInputCreate_Success[0])
+			projectDir := filepath.Join(TempTestsPath, projectName)
+
+			// delete the project directory after the test
+			defer os.RemoveAll(projectDir)
+
 			require.NoError(t, err)
+			err = os.Chdir(projectDir)
+			require.NoErrorf(t, err, "Expected nil error, got %v", err)
 
 			// Run `deploy` command
 			_, err = ExecuteKnWorkflow(transformDeployCmdCfgToArgs(test.input)...)
