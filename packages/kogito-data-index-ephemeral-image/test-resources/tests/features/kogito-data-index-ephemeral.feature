@@ -31,7 +31,7 @@ Feature: Kogito-data-index ephemeral postgresql feature.
     When container is started with env
       | variable       | value  |
       | SCRIPT_DEBUG   | false   |
-    Then container log should contain -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/quarkus-app/quarkus-run.jar
+    Then container log should contain -Djava.library.path="/home/kogito/lib" -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/quarkus-app/quarkus-run.jar
     And container log should contain Embedded Postgres started at port
     And container log should not contain Application failed to start
 
