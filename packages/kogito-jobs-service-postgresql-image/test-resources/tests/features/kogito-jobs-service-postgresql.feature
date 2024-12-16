@@ -35,7 +35,7 @@ Feature: Kogito-jobs-service-postgresql feature.
   Scenario: verify if container starts as expected
     When container is started with env
       | variable                    | value                                                 |
-      | SCRIPT_DEBUG                | true                                                  |
+      | SCRIPT_DEBUG                | false                                                 |
       | QUARKUS_LOG_LEVEL           | DEBUG                                                 |
       | QUARKUS_DATASOURCE_DB_KIND  | postgresql                                            |
       | QUARKUS_DATASOURCE_USERNAME | test                                                  |

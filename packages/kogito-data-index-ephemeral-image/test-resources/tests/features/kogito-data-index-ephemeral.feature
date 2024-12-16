@@ -30,7 +30,7 @@ Feature: Kogito-data-index ephemeral postgresql feature.
   Scenario: verify if of kogito-data-index-ephemeral container is correctly started
     When container is started with env
       | variable       | value  |
-      | SCRIPT_DEBUG   | true   |
+      | SCRIPT_DEBUG   | false   |
     Then container log should contain -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/quarkus-app/quarkus-run.jar
     And container log should contain Embedded Postgres started at port
     And container log should not contain Application failed to start
@@ -38,5 +38,5 @@ Feature: Kogito-data-index ephemeral postgresql feature.
   Scenario: check if the default quarkus profile is correctly set on data index
     When container is started with env
       | variable               | value   |
-      | SCRIPT_DEBUG           | true    |
+      | SCRIPT_DEBUG           | false    |
     Then available container log should contain -Dquarkus.profile=http-events-support

@@ -35,7 +35,7 @@ Feature: Kogito-jobs-service-ephemeral feature.
   Scenario: Verify if the debug is correctly enabled with the ephemeral jar
     When container is started with env
       | variable     | value |
-      | SCRIPT_DEBUG | true  |
+      | SCRIPT_DEBUG | false |
     Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/quarkus-app/quarkus-run.jar
     And container log should contain started in
     And container log should not contain Application failed to start

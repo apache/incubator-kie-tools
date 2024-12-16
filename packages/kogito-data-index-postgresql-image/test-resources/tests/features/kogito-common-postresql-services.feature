@@ -23,7 +23,7 @@ Feature: Kogito-data-index postgresql feature.
   Scenario: verify if of container is correctly started with postgresql parameters
     When container is started with env
       | variable                     | value                                     |
-      | SCRIPT_DEBUG                 | true                                      |
+      | SCRIPT_DEBUG                 | false                                      |
       | QUARKUS_DATASOURCE_JDBC_URL  | jdbc:postgresql://localhost:5432/quarkus  |
       | QUARKUS_DATASOURCE_USERNAME  | kogito                                    |
       | QUARKUS_DATASOURCE_PASSWORD  | s3cr3t                                    |

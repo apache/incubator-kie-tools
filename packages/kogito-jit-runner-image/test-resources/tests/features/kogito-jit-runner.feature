@@ -31,13 +31,13 @@ Feature: Kogito-jit-runner feature.
   Scenario: Verify if the debug is correctly enabled and test default http port
     When container is started with env
       | variable     | value |
-      | SCRIPT_DEBUG | true  |
+      | SCRIPT_DEBUG | false |
     Then container log should contain -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/quarkus-app/quarkus-run.jar
 
   Scenario: Verify that jit runner can evaluate a DMN model with a context
     When container is started with env
       | variable     | value |
-      | SCRIPT_DEBUG | true  |
+      | SCRIPT_DEBUG | false  |
     Then check that page is served
       | property        | value                                                                                            |
       | port            | 8080                                                                                             |
