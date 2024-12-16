@@ -20,10 +20,10 @@
   "devDependencies": {
     "@kie-tools/tsconfig": "workspace:*",
     "@types/chai": "^4.3.6",
-    "@types/selenium-webdriver": "^4.1.20",
+    "@types/selenium-webdriver": "^4.1.27",
     "chai": "^4.3.10",
     "rimraf": "^3.0.2",
-    "selenium-webdriver": "^4.15.0",
+    "selenium-webdriver": "^4.27.0",
     "typescript": "^5.5.3"
   }
 }

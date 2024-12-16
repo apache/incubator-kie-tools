@@ -57,7 +57,7 @@ function fetchConnectionHeartbeatIntervalinSecs(): number {
 function fetchExtendedServicesURL(): URL {
   const extendedServicesURL = vscode.workspace.getConfiguration().get<string>(extendedServicesURLID);
   if (!extendedServicesURL) {
-    throw new Error("Extended Services URL configuration not found");
+    throw new Error("URL configuration not found");
   }
 
   try {

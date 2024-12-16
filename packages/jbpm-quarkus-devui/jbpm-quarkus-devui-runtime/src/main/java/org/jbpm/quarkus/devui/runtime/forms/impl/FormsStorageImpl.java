@@ -60,7 +60,7 @@ public class FormsStorageImpl implements FormsStorage {
 
     private static final String CONFIG_EXT = ".config";
 
-    private static final String FORMS_STORAGE_PATH = "/forms";
+    private static final String FORMS_STORAGE_PATH = "/custom-forms-dev";
 
     private static final String JAR_FORMS_STORAGE_PATH = "/target/classes" + FORMS_STORAGE_PATH;
     private static final String FS_FORMS_STORAGE_PATH = "/src/main/resources" + FORMS_STORAGE_PATH;
