@@ -59,7 +59,10 @@ test.describe("Populate Relation", () => {
     await page.getByRole("columnheader", { name: "Married (boolean)" }).hover();
 
     await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("People");
+    await page
+      .getByRole("row", { name: "# Expression Name (<Undefined" })
+      .getByPlaceholder("Expression Name")
+      .fill("People");
     await page.keyboard.press("Enter");
 
     await bee.expression.asRelation().addRowAtBellowOfRowAtIndex(1);
