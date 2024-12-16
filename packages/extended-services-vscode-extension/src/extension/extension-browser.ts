@@ -85,7 +85,7 @@ function startExtendedServices(): void {
     console.debug(
       `[Extended Services Extension] Connecting with the Extended Services located: ${configuration.extendedServicesURL}`
     );
-    connection.start(configuration.extendedServicesURL, configuration.connectionHeartbeatIntervalinSecs);
+    connection.start(configuration.extendedServicesURL, configuration.connectionHeartbeatIntervalInSecs);
   } catch (error) {
     stopExtendedServices();
     console.error(

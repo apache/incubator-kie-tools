@@ -20,23 +20,24 @@
 import * as vscode from "vscode";
 
 export const enableAutoRunID = "extendedServices.enableAutorun";
-export const connectionHeartbeatIntervalinSecsID = "extendedServices.connectionHeartbeatIntervalinSecs";
+export const connectionHeartbeatIntervalInSecsID = "extendedServices.connectionHeartbeatIntervalInSecs";
 export const extendedServicesURLID = "extendedServices.extendedServicesURL";
 const defaultExtendedServicesURL = "http://localhost:21345";
 
 export class Configuration {
   readonly enableAutoRun: boolean;
-  readonly connectionHeartbeatIntervalinSecs: number;
+  readonly connectionHeartbeatIntervalInSecs: number;
   readonly extendedServicesURL: URL;
 
-  constructor(enableAutoRun: boolean, connectionHeartbeatIntervalinSecs: number, extendedServicesURL: URL) {
+  constructor(enableAutoRun: boolean, connectionHeartbeatIntervalInSecs: number, extendedServicesURL: URL) {
     this.enableAutoRun = enableAutoRun;
-    this.connectionHeartbeatIntervalinSecs = connectionHeartbeatIntervalinSecs;
+    this.connectionHeartbeatIntervalInSecs = connectionHeartbeatIntervalInSecs;
     this.extendedServicesURL = extendedServicesURL;
   }
 }
 
 function fetchExtendedServicesURL(): URL {
+  const defaultExtendedServicesURL = `http://${process.env.WEBPACK_REPLACE__extendedServicesUrlHost}:${process.env.WEBPACK_REPLACE__extendedServicesUrlPort!}`;
   const extendedServicesURL = getConfigurationPropertyValue<string>(extendedServicesURLID, defaultExtendedServicesURL);
   try {
     return new URL(extendedServicesURL);
@@ -46,7 +47,10 @@ function fetchExtendedServicesURL(): URL {
 }
 
 const getConfigurationPropertyValue = <T>(property: string, defaultValue: T): T => {
-  const value = vscode.workspace.getConfiguration().get(property) as T;
+  console.log(" property " + property);
+  console.log(" default " + defaultValue);
+  const value: T | null = vscode.workspace.getConfiguration().get(property) as T;
+  console.log(" value: " + value);
   if (value == null) {
     console.warn(`Property: ${property} is missing, using the default: ${defaultValue}`);
     value == defaultValue;
@@ -56,11 +60,11 @@ const getConfigurationPropertyValue = <T>(property: string, defaultValue: T): T 
 
 export function fetchConfiguration(): Configuration {
   const enableAutoRun = getConfigurationPropertyValue<boolean>(enableAutoRunID, true);
-  const connectionHeartbeatIntervalinSecs = getConfigurationPropertyValue<number>(
-    connectionHeartbeatIntervalinSecsID,
+  const connectionHeartbeatIntervalInSecs = getConfigurationPropertyValue<number>(
+    connectionHeartbeatIntervalInSecsID,
     10
   );
   const extendedServicesURL = fetchExtendedServicesURL();
 
-  return new Configuration(enableAutoRun, connectionHeartbeatIntervalinSecs, extendedServicesURL);
+  return new Configuration(enableAutoRun, connectionHeartbeatIntervalInSecs, extendedServicesURL);
 }

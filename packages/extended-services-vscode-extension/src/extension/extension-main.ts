@@ -127,7 +127,7 @@ function startConnection(configuration: Configuration) {
     "[Extended Services Extension] Connecting with the Extended Services located: " + configuration.extendedServicesURL
   );
   try {
-    connection.start(configuration.extendedServicesURL, configuration.connectionHeartbeatIntervalinSecs);
+    connection.start(configuration.extendedServicesURL, configuration.connectionHeartbeatIntervalInSecs);
   } catch (error) {
     stopExtendedServices(configuration);
     console.error(
