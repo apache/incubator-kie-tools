@@ -41,7 +41,7 @@ function fetchExtendedServicesURL(): URL {
   try {
     return new URL(extendedServicesURL);
   } catch (error) {
-    throw new Error("The provided Extended Services URL " + extendedServicesURL + " is invalid: " + error.message);
+    throw new Error("URL configuration " + extendedServicesURL + " is invalid: " + error.message);
   }
 }
 

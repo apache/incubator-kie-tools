@@ -251,7 +251,7 @@ export function activate(context: vscode.ExtensionContext) {
     if (configuration) {
       validate(configuration.extendedServicesURL);
       statusBarItem.text = "$(extended-services-connected)";
-      statusBarItem.tooltip = "Apache KIE Extended Services are connected. Click to disconnect.";
+      statusBarItem.tooltip = "Apache KIE™ Extended Services are connected. Click to disconnect.";
       statusBarItem.command = stopExtendedServicesCommandUID;
     }
   });
@@ -269,7 +269,7 @@ export function activate(context: vscode.ExtensionContext) {
     isConnected = false;
     vscode.commands.executeCommand("setContext", connectedEnablementUID, false);
     statusBarItem.text = "$(extended-services-disconnected)";
-    statusBarItem.tooltip = "Apache KIE Extended Services are not connected. Click to connect.";
+    statusBarItem.tooltip = "Apache KIE™ Extended Services are not connected. Click to connect.";
     statusBarItem.command = startExtendedServicesCommandUID;
     diagnosticCollection.clear();
   });
