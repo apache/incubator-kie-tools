@@ -227,7 +227,7 @@ export function DmnDiagramSvg({
               <Text
                 key={i}
                 lineHeight={fontStyle.lineHeight}
-                style={{ ...fontStyle }}
+                style={{ ...fontStyle, fill: fontStyle.color }}
                 dy={`calc(1.5em * ${i})`}
                 {...getNodeLabelSvgTextAlignmentProps(
                   node,
