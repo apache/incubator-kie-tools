@@ -17,11 +17,28 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+const { getOrDefault, varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
+  vars: varsWithName({
+    EXTENDED_SERVICES_JAVA__host: {
+      default: "0.0.0.0",
+      description:
+        "Quarkus HTTP Host. Configures the IP address or host to which a Quarkus application binds for incoming HTTP requests.",
+    },
+    EXTENDED_SERVICES_JAVA__port: {
+      default: "21345",
+      description:
+        "Quarkus HTTP Port. Configures the network port on which a Quarkus application accepts incoming HTTP requests.",
+    },
+  }),
   get env() {
-    return {};
+    return {
+      extendedServicesJava: {
+        version: require("../package.json").version,
+        host: getOrDefault(this.vars.EXTENDED_SERVICES_JAVA__host),
+        port: getOrDefault(this.vars.EXTENDED_SERVICES_JAVA__port),
+      },
+    };
   },
 });
