@@ -22,7 +22,6 @@ import * as vscode from "vscode";
 export const enableAutoRunID = "extendedServices.enableAutorun";
 export const connectionHeartbeatIntervalInSecsID = "extendedServices.connectionHeartbeatIntervalInSecs";
 export const extendedServicesURLID = "extendedServices.extendedServicesURL";
-const defaultExtendedServicesURL = "http://localhost:21345";
 
 export class Configuration {
   readonly enableAutoRun: boolean;
