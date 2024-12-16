@@ -1022,8 +1022,6 @@ Base64Util.java
 TimeUnit.java
 # packages/stunner-editors/errai-common/src/main/java/org/jboss/errai/common/compat/README.eclipse
 README.eclipse
-# packages/stunner-editors/errai-common/src/main/java/org/jboss/errai/common/compat/javax/annotation/processing/Generated.java
-Generated.java
 # packages/stunner-editors/errai-common/src/main/resources/META-INF/ErraiApp.properties
 ErraiApp.properties
 # packages/stunner-editors/errai-common/src/test/resources/ErraiApp.properties
