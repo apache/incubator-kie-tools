@@ -24,11 +24,9 @@ import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClient;
-import jakarta.enterprise.context.ApplicationScoped;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ApplicationScoped
 public class DataIndexCounter {
     private static final String DATA_INDEX_URL = "kogito.data-index.url";
     private static final Logger LOGGER = LoggerFactory.getLogger(DataIndexCounter.class);
@@ -41,11 +39,11 @@ public class DataIndexCounter {
 
         Vertx vertx = Vertx.vertx();
         this.multi = Multi.createFrom().emitter(emitter -> {
-            vertx.setTimer(1000, id -> emitter.emit("Initial data emitted"));
+            vertx.setPeriodic(1000, id -> emitter.emit("Initial data emitted"));
         });
 
   
-        vertx.setTimer(1000, id -> refreshData(stream,query,graphname)); 
+        vertx.setPeriodic(1000, id -> refreshData(stream,query,graphname)); 
     }
 
     private void refreshData(BroadcastProcessor<String> stream, String query, String graphname ) {
