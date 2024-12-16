@@ -57,10 +57,8 @@ export async function validateBPMN(serviceURL: URL, bpmnFile: kieFile.KieFile): 
     );
     return createBPMNDiagnostics(validationResponses);
   } catch (error) {
-    console.error("An error happened while trying to validate BPMN file: " + kieFile + " with error: " + error.message);
-    throw new Error(
-      "An error happened while trying to validate BPMN file: " + kieFile + " with error: " + error.message
-    );
+    console.error(`An error occured while trying to validate DMN file: ${bpmnFile} with error: ${error.message}`);
+    throw new Error(`An error occured while trying to validate DMN file: ${bpmnFile} with error: ${error.message}`);
   }
 }
 
@@ -72,9 +70,7 @@ export async function validateDMN(serviceURL: URL, dmnFile: kieFile.KieFile): Pr
     );
     return createDMNDiagnostics(validationResponses);
   } catch (error) {
-    console.error("An error happened while trying to validate DMN file: " + kieFile + " with error: " + error.message);
-    throw new Error(
-      "An error happened while trying to validate DMN file: " + kieFile + " with error: " + error.message
-    );
+    console.error(`An error occured while trying to validate DMN file: ${dmnFile} with error: ${error.message}`);
+    throw new Error(`An error occured while trying to validate DMN file: ${dmnFile} with error: ${error.message}`);
   }
 }

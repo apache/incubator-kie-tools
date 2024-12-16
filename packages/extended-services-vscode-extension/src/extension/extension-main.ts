@@ -43,7 +43,7 @@ let configurationWatcher: ConfigurationWatcher;
 let connection: Connection;
 let localService: LocalExtendedServices;
 
-/* Determines if the extension is corrected with the Extended Services Backend */
+/* Determines if the extension is connected with the Extended Services Backend */
 let isConnected = false;
 /* Determines the user explicitely disconnected the Extension from the Extended Services Backend  */
 let disconnectedByUser: boolean = false;
@@ -107,24 +107,24 @@ function stopExtendedServices(configuration: Configuration | null) {
 }
 
 function startLocalExtendedServices(configuration: Configuration, context: vscode.ExtensionContext): void {
-  console.debug("[Extended Services Extension] Starting a Local Extended Service process");
+  console.debug("[Extended Services Extension] Starting a Local Extended Services process");
   try {
     localService.start(configuration.extendedServicesURL, context.extensionPath);
   } catch (error) {
     stopExtendedServices(configuration);
     console.error(
-      "[Extended Services Extension] An error happened while trying to start the Local Extended Service process:" +
+      "[Extended Services Extension] An error happened while trying to start the Local Extended Services process:" +
         error.message
     );
     vscode.window.showErrorMessage(
-      "An error happened while trying to start the Local Extended Service process:" + error.message
+      "An error happened while trying to start the Local Extended Services process:" + error.message
     );
   }
 }
 
 function startConnection(configuration: Configuration) {
   console.debug(
-    "[Extended Services Extension] Connecting with the Extended Service located: " + configuration.extendedServicesURL
+    "[Extended Services Extension] Connecting with the Extended Services located: " + configuration.extendedServicesURL
   );
   try {
     connection.start(configuration.extendedServicesURL, configuration.connectionHeartbeatIntervalinSecs);

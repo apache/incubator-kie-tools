@@ -74,24 +74,24 @@ function startExtendedServices(): void {
   try {
     configuration = fetchConfiguration();
   } catch (error) {
-    console.error("[Extended Services Extension] Extension configuration is wrong: " + error.message);
+    console.error(`[Extended Services Extension] Extension configuration is wrong: ${error.message}`);
     vscode.window.showErrorMessage(
-      "Extension configuration is wrong: " + error.message + " Please fix your local extension's setting"
+      `Extension configuration is wrong: ${error.message}. Please fix your local extension's setting`
     );
     return;
   }
 
   try {
     console.debug(
-      "[Extended Services Extension] Connecting with the Extended Service located: " + configuration.extendedServicesURL
+      `[Extended Services Extension] Connecting with the Extended Services located: ${configuration.extendedServicesURL}`
     );
     connection.start(configuration.extendedServicesURL, configuration.connectionHeartbeatIntervalinSecs);
   } catch (error) {
     stopExtendedServices();
     console.error(
-      "[Extended Services Extension] An error happened while trying to start the local service:" + error.message
+      `[Extended Services Extension] An error happened while trying to start the local service: ${error.message}`
     );
-    vscode.window.showErrorMessage("An error happened while trying to start the local service:" + error.message);
+    vscode.window.showErrorMessage(`An error happened while trying to start the local service: ${error.message}`);
   }
 }
 
@@ -111,36 +111,30 @@ async function validate(extendedServicesURL: URL) {
 
   for (const bpmnFile of bpmnFiles) {
     try {
-      console.debug("[Extended Services Extension] Validating BPMN file: " + bpmnFile.uri.path);
+      console.debug(`[Extended Services Extension] Validating DMN file: ${bpmnFile.uri.path}`);
       const bpmnDiagnostics: vscode.Diagnostic[] = await validator.validateBPMN(extendedServicesURL, bpmnFile);
       diagnosticCollection.set(bpmnFile.uri, bpmnDiagnostics);
     } catch (error) {
       console.error(
-        "[Extended Services Extension] An error happened while trying to validate " +
-          bpmnFile.uri.path +
-          ": " +
-          error.message
+        `[Extended Services Extension] An error happened while trying to validate ${bpmnFile.uri.path}: ${error.message}`
       );
       vscode.window.showErrorMessage(
-        "An error happened while trying to validate " + bpmnFile.uri.path + ": " + error.message
+        `An error happened while trying to validate ${bpmnFile.uri.path}: ${error.message}`
       );
     }
   }
 
   for (const dmnFile of dmnFiles) {
     try {
-      console.debug("[Extended Services Extension] Validating DMN file: " + dmnFile.uri.path);
+      console.debug(`[Extended Services Extension] Validating DMN file: ${dmnFile.uri.path}`);
       const dmnDiagnostics: vscode.Diagnostic[] = await validator.validateDMN(extendedServicesURL, dmnFile);
       diagnosticCollection.set(dmnFile.uri, dmnDiagnostics);
     } catch (error) {
       console.error(
-        "[Extended Services Extension] An error happened while trying to validate " +
-          dmnFile.uri.path +
-          ": " +
-          error.message
+        `[Extended Services Extension] An error happened while trying to validate ${dmnFile.uri.path}: ${error.message}`
       );
       vscode.window.showErrorMessage(
-        "An error happened while trying to validate " + dmnFile.uri.path + ": " + error.message
+        `An error happened while trying to validate ${dmnFile.uri.path}: ${error.message}`
       );
     }
   }
@@ -160,8 +154,9 @@ export function activate(context: vscode.ExtensionContext) {
 
   kieFilesWatcher.subscribeKieFilesOpened(() => {
     console.debug(
-      "[Extended Services Extension] A KIE file has been opened. Current opened KIE files: " +
+      `[Extended Services Extension] A KIE file has been opened. Current opened KIE files: ${
         kieFilesWatcher.watchedKieFiles.length
+      }`
     );
     if (!disconnectedByUser && isConnected && configuration) {
       validate(configuration.extendedServicesURL);
@@ -203,7 +198,7 @@ export function activate(context: vscode.ExtensionContext) {
     stopExtendedServices();
     isConnected = false;
     console.error("[Extended Services Extension] Connection lost with Extended Services");
-    vscode.window.showErrorMessage("Connection error: " + errorMessage);
+    vscode.window.showErrorMessage(`Connection error: ${errorMessage}`);
   });
 
   connection.subscribeDisconnected(() => {

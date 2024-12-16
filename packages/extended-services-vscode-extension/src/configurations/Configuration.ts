@@ -41,14 +41,14 @@ function fetchExtendedServicesURL(): URL {
   try {
     return new URL(extendedServicesURL);
   } catch (error) {
-    throw new Error("URL configuration " + extendedServicesURL + " is invalid: " + error.message);
+    throw new Error(`URL configuration ${extendedServicesURL} is invalid: ${error.message}`);
   }
 }
 
 const getConfigurationPropertyValue = <T>(property: string, defaultValue: T): T => {
   const value = vscode.workspace.getConfiguration().get(property) as T;
   if (value == null) {
-    console.warn("Property: " + property + " is missing, using the default: " + defaultValue);
+    console.warn(`Property: ${property} is missing, using the default: ${defaultValue}`);
     value == defaultValue;
   }
   return value;
