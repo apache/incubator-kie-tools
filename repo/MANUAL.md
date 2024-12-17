@@ -198,7 +198,7 @@ A few scripts are available for general purpose usage on `kie-tools`. They're bu
   - [sparse-checkout](../scripts/sparse-checkout/README.md): Partially clone `kie-tools` and work on a subset of its packages.
 - Mostly used by our automations
   - [check-junit-report-results](../scripts/check-junit-report-results/README.md): Checks JUnit XML files to see if tests failed. Used on our CI.
-  - [update-kogito-version](../scripts/update-kogito-version/README.md): Updates the version of Kogito Maven dependencies. (E.g., `999-20241016-SNAPSHOT`, `999-SNAPSHOT` or `10.0.0`)
+  - [update-kogito-version](../scripts/update-kogito-version/README.md): Updates the version of Kogito Maven dependencies. (E.g., `999-20241208-SNAPSHOT`, `999-SNAPSHOT` or `10.0.0`)
   - [update-stream-name](../scripts/update-stream-name/README.md): Updates this repo's stream name. (E.g., `main` or `10.0.x`)
   - [update-version](../scripts/update-version/README.md): Updates this repo's version (E.g., `0.0.0` or `10.0.999`)
 
