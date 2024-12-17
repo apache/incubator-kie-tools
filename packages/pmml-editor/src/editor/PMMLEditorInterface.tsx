@@ -54,6 +54,11 @@ export class PMMLEditorInterface implements Editor {
     );
   }
 
+  public async openBoxedExpressionEditor(nodeId: string): Promise<void> {
+    // TODO FIX
+    return this.self.undo();
+  }
+
   public async undo(): Promise<void> {
     return this.self.undo();
   }

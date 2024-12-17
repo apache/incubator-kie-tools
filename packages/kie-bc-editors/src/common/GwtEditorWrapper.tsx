@@ -75,6 +75,11 @@ export class GwtEditorWrapper implements Editor {
     return <></>;
   }
 
+  public async openBoxedExpressionEditor(nodeId: string) {
+    // TODO FIX
+    return this.stateControlService.undo();
+  }
+
   public async undo() {
     return this.stateControlService.undo();
   }

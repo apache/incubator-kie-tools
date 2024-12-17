@@ -38,6 +38,7 @@ import { DmnRunnerLoading } from "./DmnRunnerLoading";
 import { DmnRunnerProviderActionType } from "./DmnRunnerTypes";
 import { PanelId, useEditorDockContext } from "../editor/EditorPageDockContextProvider";
 import { DmnRunnerExtendedServicesError } from "./DmnRunnerContextProvider";
+import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 
 enum ButtonPosition {
   INPUT,
@@ -53,7 +54,7 @@ interface DmnRunnerStylesConfig {
   buttonPosition: ButtonPosition;
 }
 
-export function DmnRunnerDrawerPanelContent() {
+export function DmnRunnerDrawerPanelContent(props: { editor: EmbeddedEditorRef | undefined }) {
   // STATEs
   const [drawerError, setDrawerError] = useState<boolean>(false);
   const [dmnRunnerStylesConfig, setDmnRunnerStylesConfig] = useState<DmnRunnerStylesConfig>({
@@ -325,10 +326,9 @@ export function DmnRunnerDrawerPanelContent() {
                       notificationsPanel={true}
                       openExecutionTab={openExecutionTab}
                       openBoxedExpressionEditor={(nodeId) => {
-                        // TODO we need somehow access 'dmnEditorStoreApi'
-                        // dmnEditorStoreApi.setState((state) => {
-                        //   state.dispatch(state).boxedExpressionEditor.open(nodeId);
-                        // })
+                        console.error("here 2");
+                        props.editor?.openBoxedExpressionEditor(nodeId);
+                        console.error(props.editor + " here 3");
                       }}
                     />
                   </PageSection>

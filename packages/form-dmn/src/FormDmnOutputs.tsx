@@ -265,7 +265,10 @@ export function FormDmnOutputs({ openExecutionTab, ...props }: FormDmnOutputsPro
                 <Title headingLevel={"h2"}>{dmnFormResult.decisionName}</Title>
                 <ArrowUpIcon
                   data-navigate-to-expression-id={dmnFormResult.decisionId}
-                  onClick={() => props.openBoxedExpressionEditor?.(dmnFormResult.decisionId)}
+                  onClick={() => {
+                    console.error("here");
+                    props.openBoxedExpressionEditor?.(dmnFormResult.decisionId);
+                  }}
                 />
               </Flex>
             </CardTitle>
