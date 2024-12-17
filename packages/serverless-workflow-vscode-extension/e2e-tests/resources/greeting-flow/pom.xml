@@ -34,7 +34,7 @@
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <version.quarkus>2.13.1.Final</version.quarkus>
     <skipITs>true</skipITs>
-    <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
+    <surefire-plugin.version>3.3.0</surefire-plugin.version>
   </properties>
   <dependencyManagement>
     <dependencies>
