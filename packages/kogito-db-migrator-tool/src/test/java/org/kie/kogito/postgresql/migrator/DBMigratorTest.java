@@ -1,17 +1,20 @@
 /*
- * Copyright 2024 Apache Software Foundation (ASF)
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ * 
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License. 
  */
 
 package org.kie.kogito.postgresql.migrator;
@@ -19,7 +22,6 @@ package org.kie.kogito.postgresql.migrator;
 import io.quarkus.test.Mock;
 import org.junit.Rule;
 import org.junit.contrib.java.lang.system.ExpectedSystemExit;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,10 +29,12 @@ import java.sql.SQLException;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
-public class DBMigratorTest {
+class DBMigratorTest {
     @Rule
-    public final ExpectedSystemExit exitRule = ExpectedSystemExit.none();
+    final ExpectedSystemExit exitRule = ExpectedSystemExit.none();
 
     @Mock
     MigrationService migrationService;
@@ -41,22 +45,26 @@ public class DBMigratorTest {
     DBMigrator dbMigrator = new DBMigrator();
 
     @BeforeEach
-    public void setupEach() {
+    void setupEach() {
         migrationService = mock(MigrationService.class);
         dbConnectionChecker = mock(DBConnectionChecker.class);
     }
 
     @Test
-    public void testMigratorWithNoMigrations() throws Exception {
+    void testMigratorWithNoMigrations() throws Exception {
         dbMigrator.migrateDataIndex = false;
         dbMigrator.migrateJobsService = false;
 
         exitRule.expectSystemExitWithStatus(0);
         dbMigrator.run();
+        verify(dbConnectionChecker, times(0)).checkDataIndexDBConnection();
+        verify(dbConnectionChecker, times(0)).checkJobsServiceDBConnection();
+        verify(migrationService, times(0)).migrateDataIndex();
+        verify(migrationService, times(0)).migrateJobsService();
     }
 
     @Test
-    public void testMigratorWithAllMigrations() throws Exception {
+    void testMigratorWithAllMigrations() throws Exception {
         dbMigrator.migrateDataIndex = true;
         dbMigrator.migrateJobsService = true;
         dbMigrator.dbConnectionChecker = dbConnectionChecker;
@@ -64,10 +72,14 @@ public class DBMigratorTest {
 
         exitRule.expectSystemExitWithStatus(0);
         dbMigrator.run();
+        verify(dbConnectionChecker, times(1)).checkDataIndexDBConnection();
+        verify(dbConnectionChecker, times(1)).checkJobsServiceDBConnection();
+        verify(migrationService, times(1)).migrateDataIndex();
+        verify(migrationService, times(1)).migrateJobsService();
     }
 
     @Test
-    public void testDataIndexMigrationWithException() throws Exception {
+    void testDataIndexMigrationWithException() throws Exception {
         dbMigrator.migrateDataIndex = true;
         dbMigrator.migrateJobsService = false;
         dbMigrator.dbConnectionChecker = dbConnectionChecker;
@@ -77,10 +89,12 @@ public class DBMigratorTest {
 
         exitRule.expectSystemExitWithStatus(-1);
         dbMigrator.run();
+        verify(migrationService, times(0)).migrateDataIndex();
+        verify(migrationService, times(0)).migrateJobsService();
     }
 
     @Test
-    public void testJobsServiceWithException() throws Exception {
+    void testJobsServiceWithException() throws Exception {
         dbMigrator.migrateDataIndex = false;
         dbMigrator.migrateJobsService = true;
         dbMigrator.dbConnectionChecker = dbConnectionChecker;
@@ -90,5 +104,7 @@ public class DBMigratorTest {
 
         exitRule.expectSystemExitWithStatus(-2);
         dbMigrator.run();
+        verify(migrationService, times(0)).migrateDataIndex();
+        verify(migrationService, times(0)).migrateJobsService();
     }
 }

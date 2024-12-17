@@ -19,7 +19,7 @@
 name: "docker.io/apache/incubator-kie-kogito-db-migrator-tool"
 version: "main"
 from: registry.access.redhat.com/ubi8/openjdk-17-runtime:1.20
-description: Flyway image for Data Index and Jobs Service database migration
+description: DBMigratorTool image for Data Index and Jobs Service database migration
 
 labels:
   - name: "org.kie.kogito.version"

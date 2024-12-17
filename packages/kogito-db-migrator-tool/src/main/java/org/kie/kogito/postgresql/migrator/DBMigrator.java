@@ -23,6 +23,7 @@ import io.quarkus.runtime.QuarkusApplication;
 import io.quarkus.runtime.annotations.QuarkusMain;
 import jakarta.inject.Inject;
 import io.quarkus.logging.Log;
+import org.flywaydb.core.api.FlywayException;
 
 import java.sql.SQLException;
 
@@ -30,6 +31,12 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @QuarkusMain
 public class DBMigrator implements QuarkusApplication {
+
+    private int SUCCESS_DB_MIGRATION = 0;
+    private int ERR_DATA_INDEX_DB_CONN = -1;
+    private int ERR_JOBS_SERVICE_DB_CONN = -2;
+    private int ERR_DATA_INDEX_MIGRATION = -3;
+    private int ERR_JOBS_SERVICE_MIGRATION = -4;
 
     @Inject
     MigrationService service;
@@ -50,10 +57,17 @@ public class DBMigrator implements QuarkusApplication {
                 dbConnectionChecker.checkDataIndexDBConnection();
             } catch (SQLException e) {
                 Log.error( "Error obtaining data index database connection. Cannot proceed, exiting.");
-                Quarkus.asyncExit(-1);
-                return -1;
+                Quarkus.asyncExit(ERR_DATA_INDEX_DB_CONN);
+                return ERR_DATA_INDEX_DB_CONN;
             }
-            service.migrateDataIndex();
+
+            try{
+                service.migrateDataIndex();
+            } catch ( FlywayException fe ){
+                Log.error( "Error migrating data index database, flyway service exception occured, please check logs.");
+                Quarkus.asyncExit(ERR_DATA_INDEX_MIGRATION);
+                return ERR_DATA_INDEX_MIGRATION;
+            }
         }
 
         if (migrateJobsService) {
@@ -61,13 +75,20 @@ public class DBMigrator implements QuarkusApplication {
                 dbConnectionChecker.checkJobsServiceDBConnection();
             } catch (SQLException e) {
                 Log.error( "Error obtaining jobs service database connection. Cannot proceed, exiting.");
-                Quarkus.asyncExit(-2);
-                return -2;
+                Quarkus.asyncExit(ERR_JOBS_SERVICE_DB_CONN);
+                return ERR_JOBS_SERVICE_DB_CONN;
             }
-            service.migrateJobsService();
+
+            try{
+                service.migrateJobsService();
+            } catch ( FlywayException fe ){
+                Log.error( "Error migrating jobs service database, flyway service exception occured, please check logs.");
+                Quarkus.asyncExit(ERR_JOBS_SERVICE_MIGRATION);
+                return ERR_JOBS_SERVICE_MIGRATION;
+            }
         }
 
-        Quarkus.asyncExit(0);
-        return 0;
+        Quarkus.asyncExit(SUCCESS_DB_MIGRATION);
+        return SUCCESS_DB_MIGRATION;
     }
 }

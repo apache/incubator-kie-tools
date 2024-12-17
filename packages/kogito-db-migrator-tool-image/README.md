@@ -63,12 +63,12 @@ pnpm -F @kie-tools/kogito-db-migrator-tool-image... build:prod
 | QUARKUS_DATASOURCE_DATAINDEX_JDBC_URL   | Data index database url e.g. jdbc:postgresql://host.docker.internal:5432/di      | jdbc:postgresql://localhost:5432/postgres |
 | QUARKUS_DATASOURCE_DATAINDEX_USERNAME   | Data index database username                                                     | postgres                                  |
 | QUARKUS_DATASOURCE_DATAINDEX_PASSWORD   | Data index database password                                                     | postgres                                  |
-| QUARKUS_FLYWAY_DATAINDEX_SCHEMAS        | Data index database schema                                                       | dataindex                                 |
+| QUARKUS_FLYWAY_DATAINDEX_SCHEMAS        | Data index database schema                                                       | data-index-service                        |
 | MIGRATE_DB_JOBSSERVICE                  | Set to true if you want to migrate jobs service database, set to false otherwise | false                                     |
 | QUARKUS_DATASOURCE_JOBSSERVICE_JDBC_URL | Jobs service database url e.g. jdbc:postgresql://host.docker.internal:5432/js    | jdbc:postgresql://localhost:5432/postgres |
 | QUARKUS_DATASOURCE_JOBSSERVICE_USERNAME | Jobs service database username                                                   | postgres                                  |
 | QUARKUS_DATASOURCE_JOBSSERVICE_PASSWORD | Jobs service database password                                                   | postgres                                  |
-| QUARKUS_FLYWAY_JOBSSERVICE_SCHEMAS      | Jobs service database schema                                                     | jobsservice                               |
+| QUARKUS_FLYWAY_JOBSSERVICE_SCHEMAS      | Jobs service database schema                                                     | jobs-service                              |
 
 ### Example
 
@@ -80,13 +80,13 @@ An example to use diverse environment variables
    --env QUARKUS_DATASOURCE_DATAINDEX_JDBC_URL=<data-index-db-url e.g. jdbc:postgresql://host.docker.internal:5432/di> \
    --env QUARKUS_DATASOURCE_DATAINDEX_USERNAME=<data-index-db-user> \
    --env QUARKUS_DATASOURCE_DATAINDEX_PASSWORD=<data-index-db-password> \
-   --env QUARKUS_FLYWAY_DATAINDEX_SCHEMAS=dataindex \
+   --env QUARKUS_FLYWAY_DATAINDEX_SCHEMAS=data-index-service \
    --env MIGRATE_DB_JOBSSERVICE=true \
    --env QUARKUS_DATASOURCE_JOBSSERVICE_JDBC_URL=<jobs-service-db-url e.g. jdbc:postgresql://host.docker.internal:5432/js> \
    --env QUARKUS_DATASOURCE_JOBSSERVICE_USERNAME=<jobs-service-db-user> \
    --env QUARKUS_DATASOURCE_JOBSSERVICE_PASSWORD=<jobs-service-db-password> \
-   --env QUARKUS_FLYWAY_JOBSSERVICE_SCHEMAS=jobsservice \
-   docker.io/apache/incubator-kie-kogito-service-db-migration-postgresql:999-SNAPSHOT
+   --env QUARKUS_FLYWAY_JOBSSERVICE_SCHEMAS=jobs-service \
+   docker.io/apache/incubator-kie-kogito-db-migrator-tool:main
 ```
 
 ---
