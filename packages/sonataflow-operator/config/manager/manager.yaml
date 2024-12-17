@@ -1,4 +1,3 @@
-#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,7 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-#
 
 apiVersion: v1
 kind: Namespace
@@ -31,6 +29,7 @@ metadata:
   namespace: system
   labels:
     control-plane: sonataflow-operator
+    app.kubernetes.io/name: sonataflow-operator
 spec:
   selector:
     matchLabels:
@@ -74,9 +73,9 @@ spec:
           resources:
             limits:
               cpu: 500m
-              memory: 128Mi
+              memory: 500Mi
             requests:
-              cpu: 10m
-              memory: 64Mi
+              cpu: 100m
+              memory: 200Mi
       serviceAccountName: controller-manager
       terminationGracePeriodSeconds: 10

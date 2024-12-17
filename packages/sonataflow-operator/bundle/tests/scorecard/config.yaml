@@ -25,7 +25,7 @@ stages:
       - entrypoint:
           - scorecard-test
           - basic-check-spec
-        image: quay.io/operator-framework/scorecard-test:v1.25.0
+        image: quay.io/operator-framework/scorecard-test:v1.35.0
         labels:
           suite: basic
           test: basic-check-spec-test
@@ -35,7 +35,7 @@ stages:
       - entrypoint:
           - scorecard-test
           - olm-bundle-validation
-        image: quay.io/operator-framework/scorecard-test:v1.25.0
+        image: quay.io/operator-framework/scorecard-test:v1.35.0
         labels:
           suite: olm
           test: olm-bundle-validation-test
@@ -45,7 +45,7 @@ stages:
       - entrypoint:
           - scorecard-test
           - olm-crds-have-validation
-        image: quay.io/operator-framework/scorecard-test:v1.25.0
+        image: quay.io/operator-framework/scorecard-test:v1.35.0
         labels:
           suite: olm
           test: olm-crds-have-validation-test
@@ -65,7 +65,7 @@ stages:
       - entrypoint:
           - scorecard-test
           - olm-spec-descriptors
-        image: quay.io/operator-framework/scorecard-test:v1.25.0
+        image: quay.io/operator-framework/scorecard-test:v1.35.0
         labels:
           suite: olm
           test: olm-spec-descriptors-test
@@ -75,7 +75,7 @@ stages:
       - entrypoint:
           - scorecard-test
           - olm-status-descriptors
-        image: quay.io/operator-framework/scorecard-test:v1.25.0
+        image: quay.io/operator-framework/scorecard-test:v1.35.0
         labels:
           suite: olm
           test: olm-status-descriptors-test

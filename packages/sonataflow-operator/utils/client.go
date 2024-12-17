@@ -17,9 +17,14 @@
 
 package utils
 
-import "sigs.k8s.io/controller-runtime/pkg/client"
+import (
+	"k8s.io/client-go/discovery"
+	"k8s.io/client-go/rest"
+	"sigs.k8s.io/controller-runtime/pkg/client"
+)
 
 var k8sClient client.Client
+var discoveryClient discovery.DiscoveryInterface
 
 // TODO: consider refactor the internals as we progress adding features to rely on this client instead of passing it through all the functions
 
@@ -32,4 +37,19 @@ func GetClient() client.Client {
 // SetClient is meant for internal use only. Don't call it!
 func SetClient(client client.Client) {
 	k8sClient = client
+}
+
+func GetDiscoveryClient(cfg *rest.Config) (discovery.DiscoveryInterface, error) {
+	if discoveryClient == nil {
+		if cli, err := discovery.NewDiscoveryClientForConfig(cfg); err != nil {
+			return nil, err
+		} else {
+			discoveryClient = cli
+		}
+	}
+	return discoveryClient, nil
+}
+
+func SetDiscoveryClient(cli discovery.DiscoveryInterface) {
+	discoveryClient = cli
 }

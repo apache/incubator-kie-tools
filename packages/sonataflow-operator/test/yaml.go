@@ -27,15 +27,21 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api"
-	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
 	"github.com/davecgh/go-spew/spew"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/yaml"
-	"k8s.io/klog/v2"
+	"k8s.io/client-go/discovery"
+	discfake "k8s.io/client-go/discovery/fake"
+	clienttesting "k8s.io/client-go/testing"
+	klog "k8s.io/klog/v2"
+	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api"
+	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
 )
 
 const (
@@ -48,14 +54,15 @@ const (
 	SonataFlowGreetingsDataInputSchemaConfig  = "v1_configmap_greetings_datainput.yaml"
 	SonataFlowGreetingsStaticFilesConfig      = "v1_configmap_greetings_staticfiles.yaml"
 	sonataFlowPlatformYamlCR                  = "sonataflow.org_v1alpha08_sonataflowplatform.yaml"
+	sonataFlowPlatformWithBrokerYamlCR        = "sonataflow.org_v1alpha08_sonataflowplatform_withBroker.yaml"
 	sonataFlowPlatformWithCacheMinikubeYamlCR = "sonataflow.org_v1alpha08_sonataflowplatform_withCache_minikube.yaml"
 	sonataFlowPlatformForOpenshift            = "sonataflow.org_v1alpha08_sonataflowplatform_openshift.yaml"
 	sonataFlowClusterPlatformYamlCR           = "sonataflow.org_v1alpha08_sonataflowclusterplatform.yaml"
 	sonataFlowBuilderConfig                   = "sonataflow-operator-builder-config_v1_configmap.yaml"
 	sonataFlowBuildSucceed                    = "sonataflow.org_v1alpha08_sonataflowbuild.yaml"
-
-	e2eSamples    = "test/testdata/"
-	manifestsPath = "bundle/manifests/"
+	knativeDefaultBrokerCR                    = "knative_default_broker.yaml"
+	e2eSamples                                = "test/testdata/"
+	manifestsPath                             = "bundle/manifests/"
 )
 
 var projectDir = ""
@@ -66,6 +73,7 @@ func GetSonataFlow(testFile, namespace string) *operatorapi.SonataFlow {
 	GetKubernetesResource(testFile, ksw)
 	klog.V(log.D).InfoS("Successfully read KSW", "ksw", spew.Sprint(ksw))
 	ksw.Namespace = namespace
+	ksw.Status.FlowCRC, _ = utils.Crc32Checksum(ksw.Spec.Flow)
 	return ksw
 }
 
@@ -199,6 +207,10 @@ func SetPreviewProfile(workflow *operatorapi.SonataFlow) {
 	workflow.Annotations["sonataflow.org/profile"] = "preview"
 }
 
+func SetGitopsProfile(workflow *operatorapi.SonataFlow) {
+	workflow.Annotations["sonataflow.org/profile"] = "gitops"
+}
+
 func GetBaseSonataFlow(namespace string) *operatorapi.SonataFlow {
 	return NewSonataFlow(sonataFlowSampleYamlCR, namespace)
 }
@@ -215,9 +227,13 @@ func GetBaseSonataFlowWithProdProfile(namespace string) *operatorapi.SonataFlow 
 	return NewSonataFlow(sonataFlowSampleYamlCR, namespace, SetPreviewProfile)
 }
 
-// GetBaseSonataFlowWithProdOpsProfile gets a base workflow that has a pre-built image set in podTemplate.
-func GetBaseSonataFlowWithProdOpsProfile(namespace string) *operatorapi.SonataFlow {
+// GetBaseSonataFlowWithPreviewProfile gets a base workflow that has a pre-built image set in podTemplate.
+func GetBaseSonataFlowWithPreviewProfile(namespace string) *operatorapi.SonataFlow {
 	return NewSonataFlow(SonataFlowSimpleOpsYamlCR, namespace)
+}
+
+func GetBaseSonataFlowWithGitopsProfile(namespace string) *operatorapi.SonataFlow {
+	return NewSonataFlow(sonataFlowSampleYamlCR, namespace, SetGitopsProfile)
 }
 
 func GetBaseClusterPlatformInReadyPhase(namespace string) *operatorapi.SonataFlowClusterPlatform {
@@ -240,12 +256,20 @@ func GetBasePlatformWithDevBaseImageInReadyPhase(namespace string) *operatorapi.
 	platform := GetBasePlatform()
 	platform.Namespace = namespace
 	platform.Status.Manager().MarkTrue(api.SucceedConditionType)
-	platform.Spec.DevMode.BaseImage = "docker.io/customgroup/custom-swf-builder:42.43.7"
+	platform.Spec.DevMode.BaseImage = "docker.io/customgroup/custom-swf-builder-nightly:42.43.7"
 	return platform
 }
 
 func GetBasePlatform() *operatorapi.SonataFlowPlatform {
 	return getSonataFlowPlatform(sonataFlowPlatformYamlCR)
+}
+
+func GetBasePlatformWithBroker() *operatorapi.SonataFlowPlatform {
+	return getSonataFlowPlatform(sonataFlowPlatformWithBrokerYamlCR)
+}
+
+func GetBasePlatformWithBrokerInReadyPhase(namespace string) *operatorapi.SonataFlowPlatform {
+	return GetSonataFlowPlatformInReadyPhase(sonataFlowPlatformWithBrokerYamlCR, namespace)
 }
 
 func GetPlatformMinikubeE2eTest() string {
@@ -257,23 +281,15 @@ func GetPlatformOpenshiftE2eTest() string {
 }
 
 func GetSonataFlowE2eOrderProcessingFolder() string {
-	return e2eSamples + sonataFlowOrderProcessingFolder
+	return GetPathFromE2EDirectory("order-processing")
 }
 
-func GetSonataFlowE2EPlatformServicesDirectory() string {
-	return filepath.Join(getTestDataDir(), "platform", "services")
+func GetPathFromDataDirectory(join ...string) string {
+	return filepath.Join(append([]string{getTestDataDir()}, join...)...)
 }
 
-func GetSonataFlowE2EPlatformNoServicesDirectory() string {
-	return filepath.Join(getTestDataDir(), "platform", "noservices")
-}
-
-func GetSonataFlowE2EPlatformPersistenceSampleDataDirectory(subdir string) string {
-	return filepath.Join(getTestDataDir(), "platform", "persistence", subdir)
-}
-
-func GetSonataFlowE2EWorkflowPersistenceSampleDataDirectory(subdir string) string {
-	return filepath.Join(getTestDataDir(), "workflow", "persistence", subdir)
+func GetPathFromE2EDirectory(join ...string) string {
+	return filepath.Join(append([]string{getProjectDir(), "test", "e2e", "testdata"}, join...)...)
 }
 
 // getTestDataDir gets the testdata directory containing every sample out there from test/testdata.
@@ -308,4 +324,23 @@ func getProjectDir() string {
 	}
 
 	return projectDir
+}
+
+func CreateFakeKnativeAndMonitoringDiscoveryClient() discovery.DiscoveryInterface {
+	return &discfake.FakeDiscovery{
+		Fake: &clienttesting.Fake{
+			Resources: []*metav1.APIResourceList{
+				{GroupVersion: "serving.knative.dev/v1"},
+				{GroupVersion: "eventing.knative.dev/v1"},
+				{GroupVersion: "monitoring.coreos.com/v1"},
+			},
+		},
+	}
+}
+
+func GetDefaultBroker(namespace string) *eventingv1.Broker {
+	broker := &eventingv1.Broker{}
+	GetKubernetesResource(knativeDefaultBrokerCR, broker)
+	broker.Namespace = namespace
+	return broker
 }

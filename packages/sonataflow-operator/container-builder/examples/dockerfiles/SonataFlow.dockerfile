@@ -16,7 +16,6 @@
 # under the License.
 
 FROM docker.io/apache/incubator-kie-sonataflow-builder:main AS builder
-# This image name and tag is auto-replaced using environment variables during install, don't touch.
 
 # Kogito User
 USER 1001

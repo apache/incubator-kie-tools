@@ -22,10 +22,11 @@ package v1alpha08
 import (
 	"encoding/json"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 )
 
 type BuildPhase string
@@ -145,6 +146,7 @@ func (k *SonataFlowBuildStatus) GetInnerBuild(innerBuild interface{}) error {
 // +kubebuilder:printcolumn:name="Phase",type=string,JSONPath=`.status.buildPhase`
 // +kubebuilder:resource:shortName={"sfb", "sfbuild", "sfbuilds"}
 // +operator-sdk:csv:customresourcedefinitions:resources={{BuildConfig,build.openshift.io/v1,"An Openshift Build Config"}}
+// +operator-sdk:csv:customresourcedefinitions:displayName="SonataFlowBuild"
 type SonataFlowBuild struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

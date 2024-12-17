@@ -20,8 +20,9 @@
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
 const rootEnv = require("@kie-tools/root-env/env");
+const sonataflowImageCommonEnv = require("@kie-tools/sonataflow-image-common/env");
 
-module.exports = composeEnv([rootEnv], {
+module.exports = composeEnv([rootEnv, sonataflowImageCommonEnv], {
   vars: varsWithName({
     KOGITO_BASE_BUILDER_IMAGE__registry: {
       default: "docker.io",
