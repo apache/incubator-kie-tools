@@ -40,7 +40,7 @@ let kieFilesWatcher: KieFilesWatcher;
 let configurationWatcher: ConfigurationWatcher;
 let connection: Connection;
 
-/* Determines if the extension is corrected with the Extended Services Backend */
+/* Determines if the extension is connected with the Extended Services Backend */
 let isConnected = false;
 /* Determines the user explicitely disconnected the Extension from the Extended Services Backend  */
 let disconnectedByUser: boolean = false;
