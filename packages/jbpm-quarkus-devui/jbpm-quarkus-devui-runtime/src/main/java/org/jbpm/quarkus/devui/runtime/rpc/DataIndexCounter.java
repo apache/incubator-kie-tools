@@ -30,18 +30,18 @@ import org.slf4j.LoggerFactory;
 
 public class DataIndexCounter {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataIndexCounter.class);
+    private final Vertx vertx;
+    private final Multi<String> multi;
+    private final WebClient dataIndexWebClient;
+
     private String query;
     private String field;
-
-    private Vertx vertx;
-    private Multi<String> multi;
-    private WebClient dataIndexWebClient;
     private String count = "-";
     private MultiEmitter<? super String> emitter;
     private long vertxTimer;
 
     public DataIndexCounter(String query, String graphField, WebClient dataIndexWebClient) {
-        if(dataIndexWebClient == null) {
+        if (dataIndexWebClient == null) {
             throw new IllegalArgumentException("dataIndexWebClient is null");
         }
         this.query = query;
@@ -51,49 +51,50 @@ public class DataIndexCounter {
 
         this.multi = Multi.createFrom().emitter(emitter -> {
             this.emitter = emitter;
-            vertxTimer = vertx.setPeriodic(3000, id -> {
+            vertxTimer = vertx.setPeriodic(500, id -> {
                 this.emit();
             });
             this.emit();
         });
         refreshCount();
-        }
+    }
 
-        public void refresh() {
-            vertx.setTimer(3000, id -> {
-                refreshCount();
-            });
-        }
-        public void stop() {
-            vertx.cancelTimer(vertxTimer);
-        }
-    
-        private void emit() {
-            emitter.emit(count);
-        }
+    public void refresh() {
+        vertx.setTimer(500, id -> {
+            refreshCount();
+        });
+    }
 
-        private void refreshCount() {
+    public void stop() {
+        vertx.cancelTimer(vertxTimer);
+    }
+
+    private void emit() {
+        emitter.emit(count);
+    }
+
+    private void refreshCount() {
         LOGGER.info("Refreshing data for query: {}", query);
 
         doQuery(query, field).toCompletionStage()
-                 .thenAccept(result -> {
+                .thenAccept(result -> {
                     this.count = result;
                     this.emit();
-                 });
+                });
     }
 
-       private Future<String> doQuery(String query, String graphModelName) {
-         return this.dataIndexWebClient.post("/graphql")
-                 .putHeader("content-type", "application/json")
-                 .sendJson(new JsonObject(query))
-                 .map(response -> {
-                    if(response.statusCode() == 200) {
-                         JsonObject responseData = response.bodyAsJsonObject().getJsonObject("data");
-                         return String.valueOf(responseData.getJsonArray(graphModelName).size());
-                     }
-                     return "-";
-                 });
-     }
+    private Future<String> doQuery(String query, String graphModelName) {
+        return this.dataIndexWebClient.post("/graphql")
+                .putHeader("content-type", "application/json")
+                .sendJson(new JsonObject(query))
+                .map(response -> {
+                    if (response.statusCode() == 200) {
+                        JsonObject responseData = response.bodyAsJsonObject().getJsonObject("data");
+                        return String.valueOf(responseData.getJsonArray(graphModelName).size());
+                    }
+                    return "-";
+                });
+    }
 
     public Multi<String> getMulti() {
         return multi;

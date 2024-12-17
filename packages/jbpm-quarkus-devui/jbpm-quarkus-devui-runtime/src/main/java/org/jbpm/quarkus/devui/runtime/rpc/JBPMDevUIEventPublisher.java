@@ -17,65 +17,66 @@
  * under the License.
  */
 
- package org.jbpm.quarkus.devui.runtime.rpc;
- import jakarta.enterprise.context.ApplicationScoped;
+package org.jbpm.quarkus.devui.runtime.rpc;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 import org.kie.kogito.event.DataEvent;
- import org.kie.kogito.event.EventPublisher;
- import org.slf4j.Logger;
- import org.slf4j.LoggerFactory;
+import org.kie.kogito.event.EventPublisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.quarkus.arc.profile.IfBuildProfile;
 
 import java.util.Collection;
- import java.util.Objects;
+import java.util.Objects;
 
 @ApplicationScoped
 @IfBuildProfile("dev")
- public class JBPMDevUIEventPublisher implements EventPublisher {
- 
-     private static final Logger LOGGER = LoggerFactory.getLogger(JBPMDevUIEventPublisher.class);
-     private Runnable onProcessEvent;
-     private Runnable onTaskEvent;
-     private Runnable onJobEvent;
- 
-     @Override
-     public void publish(DataEvent<?> event) {
-         switch (event.getType()) {
-             case "ProcessInstanceStateDataEvent":
-                 maybeRun(onProcessEvent);
-                 break;
-             case "UserTaskInstanceStateDataEvent":
-                 maybeRun(onTaskEvent);
-                 break;
-             case "JobEvent":
-                 maybeRun(onJobEvent);
-                 break;
-             default:
-                 LOGGER.debug("Unknown type of event '{}', ignoring for this publisher", event.getType());
-         }
-     }
- 
-     @Override
-     public void publish(Collection<DataEvent<?>> events) {
-         events.forEach(this::publish);
-     }
- 
-     private void maybeRun(Runnable runnable) {
-         if(Objects.nonNull(runnable)) {
-             runnable.run();
-         }
-     }
- 
-     public void setOnProcessEventListener(Runnable onProcessEvent) {
-         this.onProcessEvent = onProcessEvent;
-     }
- 
-     public void setOnTaskEventListener(Runnable onTaskEvent) {
-         this.onTaskEvent = onTaskEvent;
-     }
-     
-     public void setOnJobEventListener(Runnable onJobEvent) {
-         this.onJobEvent = onJobEvent;
-     }
- }
+public class JBPMDevUIEventPublisher implements EventPublisher {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JBPMDevUIEventPublisher.class);
+    private Runnable onProcessEvent;
+    private Runnable onTaskEvent;
+    private Runnable onJobEvent;
+
+    @Override
+    public void publish(DataEvent<?> event) {
+        switch (event.getType()) {
+            case "ProcessInstanceStateDataEvent":
+                maybeRun(onProcessEvent);
+                break;
+            case "UserTaskInstanceStateDataEvent":
+                maybeRun(onTaskEvent);
+                break;
+            case "JobEvent":
+                maybeRun(onJobEvent);
+                break;
+            default:
+                LOGGER.debug("Unknown type of event '{}', ignoring for this publisher", event.getType());
+        }
+    }
+
+    @Override
+    public void publish(Collection<DataEvent<?>> events) {
+        events.forEach(this::publish);
+    }
+
+    private void maybeRun(Runnable runnable) {
+        if (Objects.nonNull(runnable)) {
+            runnable.run();
+        }
+    }
+
+    public void setOnProcessEventListener(Runnable onProcessEvent) {
+        this.onProcessEvent = onProcessEvent;
+    }
+
+    public void setOnTaskEventListener(Runnable onTaskEvent) {
+        this.onTaskEvent = onTaskEvent;
+    }
+
+    public void setOnJobEventListener(Runnable onJobEvent) {
+        this.onJobEvent = onJobEvent;
+    }
+}
