@@ -19,47 +19,70 @@
 package org.jbpm.quarkus.devui.runtime.rpc;
 
 import io.smallrye.mutiny.Multi;
-import io.smallrye.mutiny.operators.multi.processors.BroadcastProcessor;
+import io.smallrye.mutiny.subscription.MultiEmitter;
 import io.vertx.core.Future;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClient;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DataIndexCounter {
-    private static final String DATA_INDEX_URL = "kogito.data-index.url";
     private static final Logger LOGGER = LoggerFactory.getLogger(DataIndexCounter.class);
+    private String query;
+    private String field;
 
+    private Vertx vertx;
     private Multi<String> multi;
     private WebClient dataIndexWebClient;
+    private String count = "-";
+    private MultiEmitter<? super String> emitter;
+    private long vertxTimer;
 
-    public DataIndexCounter(String query, String graphname, BroadcastProcessor<String> stream,WebClient dataIndexWebClient, JBPMDevUIEventPublisher eventPublisher) {
+    public DataIndexCounter(String query, String graphField, WebClient dataIndexWebClient) {
+        if(dataIndexWebClient == null) {
+            throw new IllegalArgumentException("dataIndexWebClient is null");
+        }
+        this.query = query;
+        this.field = graphField;
         this.dataIndexWebClient = dataIndexWebClient;
+        this.vertx = Vertx.vertx();
 
-        Vertx vertx = Vertx.vertx();
         this.multi = Multi.createFrom().emitter(emitter -> {
-            vertx.setPeriodic(1000, id -> emitter.emit("Initial data emitted"));
+            this.emitter = emitter;
+            vertxTimer = vertx.setPeriodic(3000, id -> {
+                this.emit();
+            });
+            this.emit();
         });
+        refreshCount();
+        }
 
-  
-        vertx.setPeriodic(1000, id -> refreshData(stream,query,graphname)); 
-    }
+        public void refresh() {
+            vertx.setTimer(3000, id -> {
+                refreshCount();
+            });
+        }
+        public void stop() {
+            vertx.cancelTimer(vertxTimer);
+        }
+    
+        private void emit() {
+            emitter.emit(count);
+        }
 
-    private void refreshData(BroadcastProcessor<String> stream, String query, String graphname ) {
+        private void refreshCount() {
         LOGGER.info("Refreshing data for query: {}", query);
 
-        doQuery(query, graphname).toCompletionStage()
+        doQuery(query, field).toCompletionStage()
                  .thenAccept(result -> {
-            stream.onNext(result);
+                    this.count = result;
+                    this.emit();
                  });
     }
 
        private Future<String> doQuery(String query, String graphModelName) {
-        if(dataIndexWebClient == null) {
-            LOGGER.warn("Cannot perform '{}' query, dataIndexWebClient couldn't be set. Is DataIndex correctly? Please verify '{}' value", graphModelName, DATA_INDEX_URL);
-             return Future.succeededFuture("-");
-         }
          return this.dataIndexWebClient.post("/graphql")
                  .putHeader("content-type", "application/json")
                  .sendJson(new JsonObject(query))

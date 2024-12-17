@@ -24,13 +24,14 @@
  import java.util.Optional;
  
  import io.smallrye.mutiny.Uni;
-import io.smallrye.mutiny.operators.multi.processors.BroadcastProcessor;
 import io.smallrye.mutiny.Multi;
  import io.vertx.core.Vertx;
  import io.vertx.ext.web.client.WebClient;
  import io.vertx.ext.web.client.WebClientOptions;
  import jakarta.annotation.PostConstruct;
- import org.eclipse.microprofile.config.ConfigProvider;
+import jakarta.annotation.PreDestroy;
+
+import org.eclipse.microprofile.config.ConfigProvider;
  import org.jbpm.quarkus.devui.runtime.forms.FormsStorage;
  
  import jakarta.enterprise.context.ApplicationScoped;
@@ -41,10 +42,6 @@ import io.smallrye.mutiny.Multi;
  @ApplicationScoped
  public class JBPMDevuiJsonRPCService {
      private static final String DATA_INDEX_URL = "kogito.data-index.url";
-
-    private final BroadcastProcessor<String> processesStream = BroadcastProcessor.create();
-    private final BroadcastProcessor<String> userTaskStream = BroadcastProcessor.create();
-    private final BroadcastProcessor<String> jobsStreams = BroadcastProcessor.create();
  
      private static final Logger LOGGER = LoggerFactory.getLogger(JBPMDevuiJsonRPCService.class);
  
@@ -61,23 +58,15 @@ import io.smallrye.mutiny.Multi;
      private final Vertx vertx;
      private final JBPMDevUIEventPublisher eventPublisher;
      private final FormsStorage formsStorage;
-     DataIndexCounter processesCounter;
-     DataIndexCounter tasksCounter;
-     DataIndexCounter jobsCounter;
+     private DataIndexCounter processesCounter;
+     private DataIndexCounter tasksCounter;
+     private DataIndexCounter jobsCounter;
  
      @Inject
     public JBPMDevuiJsonRPCService(Vertx vertx, JBPMDevUIEventPublisher eventPublisher, FormsStorage formsStorage) {
          this.vertx = vertx;
          this.eventPublisher = eventPublisher;
          this.formsStorage = formsStorage;
-
-        processesCounter = new DataIndexCounter(ALL_PROCESS_INSTANCES_IDS_QUERY, PROCESS_INSTANCES, processesStream, dataIndexWebClient,eventPublisher);
-        tasksCounter = new DataIndexCounter(ALL_TASKS_IDS_QUERY, USER_TASKS, userTaskStream, dataIndexWebClient,eventPublisher);
-        jobsCounter = new DataIndexCounter(ALL_JOBS_IDS_QUERY, JOBS, jobsStreams, dataIndexWebClient,eventPublisher);
-
-         this.eventPublisher.setOnJobEventListener(this::queryProcessInstancesCount);
-         this.eventPublisher.setOnTaskEventListener(this::queryTasksCount);
-         this.eventPublisher.setOnJobEventListener(this::queryJobsCount);
      }
  
      @PostConstruct
@@ -89,6 +78,13 @@ import io.smallrye.mutiny.Multi;
      private void initDataIndexWebClient(String dataIndexURL) {
          try {
              this.dataIndexWebClient = WebClient.create(vertx, buildWebClientOptions(dataIndexURL));
+             this.processesCounter = new DataIndexCounter(ALL_PROCESS_INSTANCES_IDS_QUERY, PROCESS_INSTANCES, dataIndexWebClient);
+             this.tasksCounter = new DataIndexCounter(ALL_TASKS_IDS_QUERY, USER_TASKS, dataIndexWebClient);
+             this.jobsCounter = new DataIndexCounter(ALL_JOBS_IDS_QUERY, JOBS, dataIndexWebClient);
+
+             this.eventPublisher.setOnProcessEventListener(processesCounter::refresh);
+             this.eventPublisher.setOnTaskEventListener(tasksCounter::refresh);
+             this.eventPublisher.setOnJobEventListener(jobsCounter::refresh);
          } catch (Exception ex) {
              LOGGER.warn("Cannot configure dataIndexWebClient with 'kogito.data-index.url'='{}':", dataIndexURL, ex);
          }
@@ -103,18 +99,25 @@ import io.smallrye.mutiny.Multi;
      }
  
      public Multi<String> queryProcessInstancesCount() {
-        return processesCounter.getMulti();
+        return Multi.createFrom().deferred(() -> processesCounter.getMulti());
      }
  
      public Multi<String> queryTasksCount() {
-        return tasksCounter.getMulti();
+        return Multi.createFrom().deferred(() -> tasksCounter.getMulti());
      }
  
      public Multi<String> queryJobsCount() {
-        return jobsCounter.getMulti();
+        return Multi.createFrom().deferred(() -> jobsCounter.getMulti());
      }
  
     public Uni<String> getFormsCount() {
          return Uni.createFrom().item(String.valueOf(this.formsStorage.getFormsCount()));
+     }
+     
+     @PreDestroy
+     public void destroy() {
+         processesCounter.stop();
+         tasksCounter.stop();
+         jobsCounter.stop();
      }
 }
