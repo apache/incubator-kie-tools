@@ -33,7 +33,7 @@
   <groupId>org.kie.tools</groupId>
   <artifactId>extended-services-java</artifactId>
 
-  <name>KIE Tools :: KIE Sandbox :: Extended Services Quarkus app</name>
+  <name>KIE Tools :: Extended Services Quarkus app</name>
   <description
   >Quarkus-based application that wraps Kogito JIT Executor for consumption as a KIE Sandbox backend.</description>
 

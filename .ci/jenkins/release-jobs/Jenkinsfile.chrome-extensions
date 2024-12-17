@@ -45,7 +45,7 @@ pipeline {
         CHROME_EXTENSION__manifestFile = 'manifest.prod.json'
         CHROME_EXTENSION__onlineEditorUrl = 'https://apache.github.io/incubator-kie-kogito-online'
         SWF_CHROME_EXTENSION__routerTargetOrigin = 'https://apache.github.io'
-        SWF_CHROME_EXTENSION__routerRelativePath = "kogito-online/swf-chrome-extension/${params.RELEASE_VERSION}"
+        SWF_CHROME_EXTENSION__routerRelativePath = "incubator-kie-kogito-online/swf-chrome-extension/${params.RELEASE_VERSION}"
         SWF_CHROME_EXTENSION__manifestFile = 'manifest.prod.json'
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"

@@ -23,7 +23,7 @@
     "chai": "^4.3.10",
     "fs-extra": "^11.1.1",
     "sanitize-filename-ts": "^1.0.2",
-    "selenium-webdriver": "^4.15.0"
+    "selenium-webdriver": "^4.27.0"
   },
   "devDependencies": {
     "@kie-tools/tsconfig": "workspace:*",
@@ -31,14 +31,14 @@
     "@types/fs-extra": "^11.0.1",
     "@types/mocha": "^10.0.7",
     "@types/node": "^20.14.2",
-    "@types/selenium-webdriver": "^4.1.20",
+    "@types/selenium-webdriver": "^4.1.27",
     "mocha": "^10.6.0",
     "rimraf": "^3.0.2",
     "typescript": "^5.5.3",
-    "vscode-extension-tester": "^8.8.0"
+    "vscode-extension-tester": "^8.10.0"
   },
   "peerDependencies": {
     "mocha": "^10.6.0",
-    "vscode-extension-tester": "^8.8.0"
+    "vscode-extension-tester": "^8.10.0"
   }
 }

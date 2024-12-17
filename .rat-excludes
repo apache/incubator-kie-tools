@@ -20,41 +20,41 @@ pnpm-lock.yaml
 pnpm-workspace.yaml
 # _intellij-project/maven-based-packages-@-kie-tools.iml
 maven-based-packages-@-kie-tools.iml
-# examples/base64png-editor-vscode-extension/.vscodeignore
+# examples/micro-frontends-multiplying-architecture-base64png-editor-vscode-extension/.vscodeignore
 .vscodeignore
-# examples/commit-message-validation-service/go.mod
+# examples/kie-sandbox-commit-message-validation-service/go.mod
 go.mod
-# examples/commit-message-validation-service/go.sum
+# examples/kie-sandbox-commit-message-validation-service/go.sum
 go.sum
-# examples/drools-process-usertasks-quarkus-example/drools-process-usertasks-quarkus-example.iml
-drools-process-usertasks-quarkus-example.iml
-# examples/drools-process-usertasks-quarkus-example/src/main/docker/Dockerfile.jvm
+# examples/process-user-tasks-subsystem/process-user-tasks-subsystem.iml
+process-user-tasks-subsystem.iml
+# examples/process-user-tasks-subsystem/src/main/docker/Dockerfile.jvm
 Dockerfile.jvm
-# examples/drools-process-usertasks-quarkus-example/src/main/docker/Dockerfile.native
+# examples/process-user-tasks-subsystem/src/main/docker/Dockerfile.native
 Dockerfile.native
-# examples/jbpm-compact-architecture-example/.gitignore
+# examples/process-compact-architecture/.gitignore
 .gitignore
-# examples/jbpm-compact-architecture-example/jbpm-compact-architecture-quarkus-example.iml
-jbpm-compact-architecture-quarkus-example.iml
-# examples/jbpm-compact-architecture-example/docker-compose/startContainers.sh
+# examples/process-compact-architecture/process-compact-architecture.iml
+process-compact-architecture.iml
+# examples/process-compact-architecture/docker-compose/startContainers.sh
 startContainers.sh
-# examples/jbpm-compact-architecture-example/docker-compose/pgadmin/pgpass
+# examples/process-compact-architecture/docker-compose/pgadmin/pgpass
 pgpass
-# examples/jbpm-compact-architecture-example/docker-compose/sql/init.sql
+# examples/process-compact-architecture/docker-compose/sql/init.sql
 init.sql
-# examples/ping-pong-view-angular/src/assets/.gitkeep
+# examples/micro-frontends-multiplying-architecture-ping-pong-view-in-angular/src/assets/.gitkeep
 .gitkeep
-# examples/sonataflow-greeting-quarkus-example/sonataflow-greeting-quarkus-example.iml
-sonataflow-greeting-quarkus-example.iml
-# examples/todo-list-view-vscode-extension/.vscodeignore
+# examples/sonataflow-greeting/sonataflow-greeting.iml
+sonataflow-greeting.iml
+# examples/micro-frontends-multiplying-architecture-todo-list-view-vscode-extension/.vscodeignore
 .vscodeignore
-# examples/webapp/static/examples/dorinha.base64png
+# examples/micro-frontends-multiplying-architecture-base64png-editor-on-webapp/static/examples/dorinha.base64png
 dorinha.base64png
-# examples/webapp/static/examples/luiz.base64png
+# examples/micro-frontends-multiplying-architecture-base64png-editor-on-webapp/static/examples/luiz.base64png
 luiz.base64png
-# examples/webapp/static/examples/sample.base64png
+# examples/micro-frontends-multiplying-architecture-base64png-editor-on-webapp/static/examples/sample.base64png
 sample.base64png
-# examples/webapp/static/examples/tiago.base64png
+# examples/micro-frontends-multiplying-architecture-base64png-editor-on-webapp/static/examples/tiago.base64png
 tiago.base64png
 # packages/bpmn-marshaller/src/schemas/bpmn-2_0/BPMN20.xsd
 BPMN20.xsd
@@ -1022,8 +1022,6 @@ Base64Util.java
 TimeUnit.java
 # packages/stunner-editors/errai-common/src/main/java/org/jboss/errai/common/compat/README.eclipse
 README.eclipse
-# packages/stunner-editors/errai-common/src/main/java/org/jboss/errai/common/compat/javax/annotation/processing/Generated.java
-Generated.java
 # packages/stunner-editors/errai-common/src/main/resources/META-INF/ErraiApp.properties
 ErraiApp.properties
 # packages/stunner-editors/errai-common/src/test/resources/ErraiApp.properties
