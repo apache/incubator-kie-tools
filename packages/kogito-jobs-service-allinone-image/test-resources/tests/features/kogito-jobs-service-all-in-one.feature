@@ -37,7 +37,7 @@ Feature: Kogito-jobs-service-all-in-one feature.
     When container is started with env
       | variable     | value |
       | SCRIPT_DEBUG | false |
-    Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/ephemeral/quarkus-app/quarkus-run.jar
+    Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar "/home/kogito/bin/ephemeral/quarkus-app/quarkus-run.jar"
     And container log should contain started in
     And container log should not contain Application failed to start
 
@@ -46,7 +46,7 @@ Feature: Kogito-jobs-service-all-in-one feature.
       | variable                          | value      |
       | SCRIPT_DEBUG                      | false      |
       | JOBS_SERVICE_PERSISTENCE          | something  |
-    Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/ephemeral/quarkus-app/quarkus-run.jar
+    Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar "/home/kogito/bin/ephemeral/quarkus-app/quarkus-run.jar"
     And container log should contain something is not supported, the allowed flavors are [ephemeral postgresql], defaulting to ephemeral
 
   Scenario: verify if container starts as expected
@@ -59,7 +59,7 @@ Feature: Kogito-jobs-service-all-in-one feature.
       | QUARKUS_DATASOURCE_USERNAME | test                                                  |
       | QUARKUS_DATASOURCE_PASSWORD | 123456                                                |
       | QUARKUS_DATASOURCE_JDBC_URL | jdbc:postgresql://10.11.12.13:5432/hibernate_orm_test |
-    Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/postgresql/quarkus-app/quarkus-run.jar
+    Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar "/home/kogito/bin/postgresql/quarkus-app/quarkus-run.jar"
     And container log should contain QUARKUS_DATASOURCE_DB_KIND=postgresql
     And container log should contain QUARKUS_DATASOURCE_USERNAME=test
     And container log should contain QUARKUS_DATASOURCE_PASSWORD=123456
