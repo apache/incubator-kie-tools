@@ -107,9 +107,8 @@
 
     <!-- Plugins version -->
     <!-- Before adding a new Plugin version, please check if the "apache" parent POM defines it -->
-    <version.maven.artifact.plugin>3.5.3</version.maven.artifact.plugin>
-    <version.maven.helper.plugin>3.2.0</version.maven.helper.plugin>
     <version.codehaus.flatten.plugin>1.6.0</version.codehaus.flatten.plugin>
+    <version.maven.artifact.plugin>3.5.3</version.maven.artifact.plugin>
 
     <!-- Apache KIE -->
     <version.org.kie.kogito>999-20241016-SNAPSHOT</version.org.kie.kogito>
@@ -271,11 +270,6 @@
             <pluginIssues
             >${session.executionRootDirectory}/node_modules/@kie-tools/maven-base/not-reproducible-plugins.properties</pluginIssues>
           </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-helper-plugin</artifactId>
-          <version>${version.maven.helper.plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
