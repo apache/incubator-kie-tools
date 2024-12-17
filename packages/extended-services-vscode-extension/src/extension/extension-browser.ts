@@ -175,8 +175,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   kieFilesWatcher.subscribeKieFilesClosed(() => {
     console.debug(
-      "[Extended Services Extension] A KIE file has been closed. Current opened KIE files: " +
-        kieFilesWatcher.watchedKieFiles.length
+      `[Extended Services Extension] A KIE file has been closed. Current opened KIE files: ${kieFilesWatcher.watchedKieFiles.length}`
     );
   });
 

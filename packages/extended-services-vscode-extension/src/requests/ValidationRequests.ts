@@ -54,7 +54,7 @@ async function validate(
     textDocument = await vscode.workspace.openTextDocument(kieFile.uri);
   }
   const url = new URL(endpoint, serviceURL);
-  console.debug("[Extended Services Extension] Fetching " + url.toString());
+  console.debug(`[Extended Services Extension] Fetching ${url.toString()}`);
   const response = await fetch(url.toString(), {
     method: "POST",
     headers: {
@@ -75,12 +75,7 @@ export async function validateBPMN(
     return validate(serviceURL, bpmnFile, "/jitbpmn/validate", validationresponse.parseBPMNValidationResponse);
   } catch (error) {
     console.error(
-      "[Extended Services Extension] An error happened while trying to validate " +
-        bpmnFile +
-        " from serviceUrl " +
-        serviceURL +
-        ": " +
-        error
+      `[Extended Services Extension] An error happened while trying to validate ${bpmnFile} from serviceUrl ${serviceURL}: ${error.message}`
     );
     throw new Error("VALIDATE BPMN REQUEST ERROR: \n", error.message);
   }
@@ -94,12 +89,7 @@ export async function validateDMN(
     return validate(serviceURL, dmnFile, "/jitdmn/validate", validationresponse.parseDMNValidationResponse);
   } catch (error) {
     console.error(
-      "[Extended Services Extension] An error happened while trying to validate " +
-        dmnFile +
-        " from serviceUrl " +
-        serviceURL +
-        ": " +
-        error
+      `[Extended Services Extension] An error happened while trying to validate ${dmnFile} from serviceUrl ${serviceURL}: ${error.message}`
     );
     throw new Error("VALIDATE DMN REQUEST ERROR: \n", error.message);
   }
