@@ -26,6 +26,7 @@ import Moment from "react-moment";
 import "../styles.css";
 import { Job } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import isNil from "lodash/isNil";
 
 interface IOwnProps {
   actionType: string;
@@ -70,20 +71,30 @@ export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
             <FlexItem>
               <Split hasGutter>
                 <SplitItem>
-                  <Text component={TextVariants.h6}>Status: </Text>{" "}
+                  <Text component={TextVariants.h6}>NodeInstanceId: </Text>
                 </SplitItem>
-                <SplitItem>{job.status}</SplitItem>
+                <SplitItem>{job.nodeInstanceId}</SplitItem>
               </Split>
             </FlexItem>
             <FlexItem>
               <Split hasGutter>
                 <SplitItem>
-                  <Text component={TextVariants.h6}>Priority: </Text>{" "}
+                  <Text component={TextVariants.h6}>Status: </Text>{" "}
                 </SplitItem>
-                <SplitItem>{job.priority}</SplitItem>
+                <SplitItem>{job.status}</SplitItem>
               </Split>
             </FlexItem>
-            {job.repeatInterval && (
+            {!isNil(job.priority) && (
+              <FlexItem>
+                <Split hasGutter>
+                  <SplitItem>
+                    <Text component={TextVariants.h6}>Priority: </Text>{" "}
+                  </SplitItem>
+                  <SplitItem>{job.priority}</SplitItem>
+                </Split>
+              </FlexItem>
+            )}
+            {!isNil(job.repeatInterval) && (
               <FlexItem>
                 <Split hasGutter>
                   <SplitItem>
@@ -93,7 +104,7 @@ export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
                 </Split>
               </FlexItem>
             )}
-            {job.repeatLimit && (
+            {!isNil(job.repeatLimit) && (
               <FlexItem>
                 <Split hasGutter>
                   <SplitItem>
@@ -103,14 +114,16 @@ export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
                 </Split>
               </FlexItem>
             )}
-            <FlexItem>
-              <Split hasGutter>
-                <SplitItem>
-                  <Text component={TextVariants.h6}>ScheduledId: </Text>
-                </SplitItem>
-                <SplitItem>{job.scheduledId}</SplitItem>
-              </Split>
-            </FlexItem>
+            {job.scheduledId && (
+              <FlexItem>
+                <Split hasGutter>
+                  <SplitItem>
+                    <Text component={TextVariants.h6}>ScheduledId: </Text>
+                  </SplitItem>
+                  <SplitItem>{job.scheduledId}</SplitItem>
+                </Split>
+              </FlexItem>
+            )}
             <FlexItem>
               <Split hasGutter>
                 <SplitItem>
@@ -137,16 +150,18 @@ export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
                 </SplitItem>
               </Split>
             </FlexItem>
-            <FlexItem>
-              <Split hasGutter>
-                <SplitItem>
-                  <Text component={TextVariants.h6} className="kogito-management-console-shared--jobsModal__text">
-                    Callback Endpoint:{" "}
-                  </Text>
-                </SplitItem>
-                <SplitItem>{job.callbackEndpoint}</SplitItem>
-              </Split>
-            </FlexItem>
+            {job.callbackEndpoint && (
+              <FlexItem>
+                <Split hasGutter>
+                  <SplitItem>
+                    <Text component={TextVariants.h6} className="kogito-management-console-shared--jobsModal__text">
+                      Callback Endpoint:{" "}
+                    </Text>
+                  </SplitItem>
+                  <SplitItem>{job.callbackEndpoint}</SplitItem>
+                </Split>
+              </FlexItem>
+            )}
           </Flex>
         </TextContent>
       </div>

@@ -1,22 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
 /* eslint-disable */
 import gql from "graphql-tag";
 import * as ApolloReactCommon from "@apollo/react-common";
@@ -464,14 +445,8 @@ export namespace GraphQL {
     referenceName?: Maybe<Scalars["String"]>;
     rootProcessId?: Maybe<Scalars["String"]>;
     rootProcessInstanceId?: Maybe<Scalars["String"]>;
-    schema?: Maybe<Scalars["String"]>;
     started?: Maybe<Scalars["DateTime"]>;
     state?: Maybe<Scalars["String"]>;
-  };
-
-  export type UserTaskInstanceSchemaArgs = {
-    groups?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
-    user?: InputMaybe<Scalars["String"]>;
   };
 
   export type Attachment = {
@@ -609,16 +584,6 @@ export namespace GraphQL {
     user?: InputMaybe<Scalars["String"]>;
   };
 
-  export type Subscription = {
-    __typename?: "Subscription";
-    JobAdded: Job;
-    JobUpdated: Job;
-    ProcessInstanceAdded: ProcessInstance;
-    ProcessInstanceUpdated: ProcessInstance;
-    UserTaskInstanceAdded: UserTaskInstance;
-    UserTaskInstanceUpdated: UserTaskInstance;
-  };
-
   export type BigDecimalArgument = {
     between?: InputMaybe<BigDecimalRange>;
     equal?: InputMaybe<Scalars["BigDecimal"]>;
@@ -654,101 +619,6 @@ export namespace GraphQL {
   export type FloatRange = {
     from: Scalars["Float"];
     to: Scalars["Float"];
-  };
-
-  export type KogitoMetadata = {
-    __typename?: "KogitoMetadata";
-    lastUpdate: Scalars["DateTime"];
-    processInstances?: Maybe<Array<Maybe<ProcessInstanceMeta>>>;
-    userTasks?: Maybe<Array<Maybe<UserTaskInstanceMeta>>>;
-  };
-
-  export type ProcessInstanceMeta = {
-    __typename?: "ProcessInstanceMeta";
-    businessKey?: Maybe<Scalars["String"]>;
-    createdBy?: Maybe<Scalars["String"]>;
-    end?: Maybe<Scalars["DateTime"]>;
-    endpoint: Scalars["String"];
-    id: Scalars["String"];
-    lastUpdate: Scalars["DateTime"];
-    parentProcessInstanceId?: Maybe<Scalars["String"]>;
-    processId: Scalars["String"];
-    processName?: Maybe<Scalars["String"]>;
-    roles?: Maybe<Array<Scalars["String"]>>;
-    rootProcessId?: Maybe<Scalars["String"]>;
-    rootProcessInstanceId?: Maybe<Scalars["String"]>;
-    serviceUrl?: Maybe<Scalars["String"]>;
-    start: Scalars["DateTime"];
-    state: ProcessInstanceState;
-    updatedBy?: Maybe<Scalars["String"]>;
-    version?: Maybe<Scalars["String"]>;
-  };
-
-  export type UserTaskInstanceMeta = {
-    __typename?: "UserTaskInstanceMeta";
-    actualOwner?: Maybe<Scalars["String"]>;
-    adminGroups?: Maybe<Array<Scalars["String"]>>;
-    adminUsers?: Maybe<Array<Scalars["String"]>>;
-    attachments?: Maybe<Array<Attachment>>;
-    comments?: Maybe<Array<Comment>>;
-    completed?: Maybe<Scalars["DateTime"]>;
-    description?: Maybe<Scalars["String"]>;
-    excludedUsers?: Maybe<Array<Scalars["String"]>>;
-    id: Scalars["String"];
-    lastUpdate: Scalars["DateTime"];
-    name?: Maybe<Scalars["String"]>;
-    potentialGroups?: Maybe<Array<Scalars["String"]>>;
-    potentialUsers?: Maybe<Array<Scalars["String"]>>;
-    priority?: Maybe<Scalars["String"]>;
-    processInstanceId: Scalars["String"];
-    referenceName?: Maybe<Scalars["String"]>;
-    started: Scalars["DateTime"];
-    state: Scalars["String"];
-  };
-
-  export type KogitoMetadataArgument = {
-    lastUpdate?: InputMaybe<DateArgument>;
-    processInstances?: InputMaybe<ProcessInstanceMetaArgument>;
-    userTasks?: InputMaybe<UserTaskInstanceMetaArgument>;
-  };
-
-  export type ProcessInstanceMetaArgument = {
-    businessKey?: InputMaybe<StringArgument>;
-    createdBy?: InputMaybe<StringArgument>;
-    end?: InputMaybe<DateArgument>;
-    endpoint?: InputMaybe<StringArgument>;
-    id?: InputMaybe<IdArgument>;
-    parentProcessInstanceId?: InputMaybe<IdArgument>;
-    processId?: InputMaybe<StringArgument>;
-    processName?: InputMaybe<StringArgument>;
-    roles?: InputMaybe<StringArrayArgument>;
-    rootProcessId?: InputMaybe<StringArgument>;
-    rootProcessInstanceId?: InputMaybe<IdArgument>;
-    start?: InputMaybe<DateArgument>;
-    state?: InputMaybe<ProcessInstanceStateArgument>;
-    updatedBy?: InputMaybe<StringArgument>;
-  };
-
-  export type UserTaskInstanceMetaArgument = {
-    actualOwner?: InputMaybe<StringArgument>;
-    adminGroups?: InputMaybe<StringArrayArgument>;
-    adminUsers?: InputMaybe<StringArrayArgument>;
-    completed?: InputMaybe<DateArgument>;
-    description?: InputMaybe<StringArgument>;
-    excludedUsers?: InputMaybe<StringArrayArgument>;
-    id?: InputMaybe<IdArgument>;
-    name?: InputMaybe<StringArgument>;
-    potentialGroups?: InputMaybe<StringArrayArgument>;
-    potentialUsers?: InputMaybe<StringArrayArgument>;
-    priority?: InputMaybe<StringArgument>;
-    processInstanceId?: InputMaybe<IdArgument>;
-    referenceName?: InputMaybe<StringArgument>;
-    started?: InputMaybe<DateArgument>;
-    state?: InputMaybe<StringArgument>;
-  };
-
-  export type KogitoMetadataOrderBy = {
-    lastUpdate?: InputMaybe<OrderBy>;
   };
 
   export type LongArgument = {
@@ -1338,6 +1208,7 @@ export namespace GraphQL {
       retries?: number | null;
       lastUpdate?: any | null;
       endpoint?: string | null;
+      nodeInstanceId?: string | null;
       executionCounter?: number | null;
     } | null> | null;
   };
@@ -1367,6 +1238,17 @@ export namespace GraphQL {
   export type GetProcessInstanceSvgQuery = {
     __typename?: "Query";
     ProcessInstances?: Array<{ __typename?: "ProcessInstance"; diagram?: string | null } | null> | null;
+  };
+
+  export type GetProcessDefinitionsQueryVariables = Exact<{ [key: string]: never }>;
+
+  export type GetProcessDefinitionsQuery = {
+    __typename?: "Query";
+    ProcessDefinitions?: Array<{
+      __typename?: "ProcessDefinition";
+      id: string;
+      endpoint?: string | null;
+    } | null> | null;
   };
 
   export type GetProcessDefinitionNodesQueryVariables = Exact<{
@@ -1424,15 +1306,6 @@ export namespace GraphQL {
   }>;
 
   export type HandleJobRescheduleMutation = { __typename?: "Mutation"; JobReschedule?: string | null };
-
-  export const GetProcessDefinitionsDocument = gql`
-    query getProcessDefinitions {
-      ProcessDefinitions {
-        id
-        endpoint
-      }
-    }
-  `;
 
   export const GetProcessInstancesDocument = gql`
     query getProcessInstances(
@@ -2285,6 +2158,7 @@ export namespace GraphQL {
         retries
         lastUpdate
         endpoint
+        nodeInstanceId
         executionCounter
       }
     }
@@ -2515,6 +2389,54 @@ export namespace GraphQL {
   export type GetProcessInstanceSvgQueryResult = ApolloReactCommon.QueryResult<
     GetProcessInstanceSvgQuery,
     GetProcessInstanceSvgQueryVariables
+  >;
+  export const GetProcessDefinitionsDocument = gql`
+    query getProcessDefinitions {
+      ProcessDefinitions {
+        id
+        endpoint
+      }
+    }
+  `;
+
+  /**
+   * __useGetProcessDefinitionsQuery__
+   *
+   * To run a query within a React component, call `useGetProcessDefinitionsQuery` and pass it any options that fit your needs.
+   * When your component renders, `useGetProcessDefinitionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+   * you can use to render your UI.
+   *
+   * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+   *
+   * @example
+   * const { data, loading, error } = useGetProcessDefinitionsQuery({
+   *   variables: {
+   *   },
+   * });
+   */
+  export function useGetProcessDefinitionsQuery(
+    baseOptions?: ApolloReactHooks.QueryHookOptions<GetProcessDefinitionsQuery, GetProcessDefinitionsQueryVariables>
+  ) {
+    const options = { ...defaultOptions, ...baseOptions };
+    return ApolloReactHooks.useQuery<GetProcessDefinitionsQuery, GetProcessDefinitionsQueryVariables>(
+      GetProcessDefinitionsDocument,
+      options
+    );
+  }
+  export function useGetProcessDefinitionsLazyQuery(
+    baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetProcessDefinitionsQuery, GetProcessDefinitionsQueryVariables>
+  ) {
+    const options = { ...defaultOptions, ...baseOptions };
+    return ApolloReactHooks.useLazyQuery<GetProcessDefinitionsQuery, GetProcessDefinitionsQueryVariables>(
+      GetProcessDefinitionsDocument,
+      options
+    );
+  }
+  export type GetProcessDefinitionsQueryHookResult = ReturnType<typeof useGetProcessDefinitionsQuery>;
+  export type GetProcessDefinitionsLazyQueryHookResult = ReturnType<typeof useGetProcessDefinitionsLazyQuery>;
+  export type GetProcessDefinitionsQueryResult = ApolloReactCommon.QueryResult<
+    GetProcessDefinitionsQuery,
+    GetProcessDefinitionsQueryVariables
   >;
   export const GetProcessDefinitionNodesDocument = gql`
     query getProcessDefinitionNodes($processId: String) {
