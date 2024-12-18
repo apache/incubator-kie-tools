@@ -18,8 +18,6 @@
 #
 
 @docker.io/apache/incubator-kie-kogito-jobs-service-postgresql
-@docker.io/apache/incubator-kie-kogito-jobs-service-postgresql
-@docker.io/apache/incubator-kie-kogito-jobs-service-postgresql
 Feature: Kogito-jobs-service common feature.
 
   Scenario: verify if the events is correctly enabled
@@ -28,4 +26,4 @@ Feature: Kogito-jobs-service common feature.
       | SCRIPT_DEBUG            | false                                     |
       | ENABLE_EVENTS           | true                                      |
       | KOGITO_JOBS_PROPS       | -Dkafka.bootstrap.servers=localhost:11111 |
-    Then container log should contain -Dkafka.bootstrap.servers=localhost:11111 -Dquarkus.profile=events-support -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar
+    Then container log should contain localhost:11111

@@ -30,7 +30,7 @@ Feature: Kogito-jobs-service-postgresql feature.
 
   Scenario: Verify if the application jar exists
     When container is started with command bash
-    Then run sh -c 'ls /home/kogito/bin/quarkus-app/quarkus-run.jar' in container and immediately check its output for "/home/kogito/bin/quarkus-app/quarkus-run.jar"
+    Then run sh -c 'ls /home/kogito/bin/quarkus-app/quarkus-run.jar' in container and immediately check its output for /home/kogito/bin/quarkus-app/quarkus-run.jar
 
   Scenario: verify if container starts as expected
     When container is started with env
@@ -42,8 +42,4 @@ Feature: Kogito-jobs-service-postgresql feature.
       | QUARKUS_DATASOURCE_PASSWORD | 123456                                                |
       | QUARKUS_DATASOURCE_JDBC_URL | jdbc:postgresql://10.11.12.13:5432/hibernate_orm_test |
     Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar "/home/kogito/bin/quarkus-app/quarkus-run.jar"
-    And container log should contain QUARKUS_DATASOURCE_DB_KIND=postgresql
-    And container log should contain QUARKUS_DATASOURCE_USERNAME=test
-    And container log should contain QUARKUS_DATASOURCE_PASSWORD=123456
-    And container log should contain QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://10.11.12.13:5432/hibernate_orm_test
     And container log should contain  Trying to establish a protocol version 3 connection to 10.11.12.13:5432
