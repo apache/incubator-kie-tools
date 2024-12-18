@@ -24,7 +24,7 @@ spec:
   timeout: 0s
 status:
   buildPhase: Succeeded
-  imageTag: 10.100.163.129/greeting:0.0.1
+  imageTag: host/namespace/image:latest
   innerBuild:
     metadata:
       name: greeting
