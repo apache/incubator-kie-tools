@@ -54,7 +54,7 @@ export class PMMLEditorInterface implements Editor {
     );
   }
 
-  public async openBoxedExpressionEditor(nodeId: string): Promise<void> {
+  public openBoxedExpressionEditor(nodeId: string): void {
     throw new Error("Operation 'openBoxedExpressionEditor' is not supported in PMML Editor");
   }
 

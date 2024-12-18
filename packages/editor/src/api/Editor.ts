@@ -44,5 +44,5 @@ export interface EditorApi {
   redo(): Promise<void>;
   validate(): Promise<Notification[]>;
   setTheme(theme: EditorTheme): Promise<void>;
-  openBoxedExpressionEditor(nodeId: string): Promise<void>;
+  openBoxedExpressionEditor(nodeId: string): void;
 }

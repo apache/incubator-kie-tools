@@ -100,8 +100,8 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
 
   // Exposed API
 
-  public async openBoxedExpressionEditor(nodeId: string): Promise<void> {
-    await this.dmnEditorRef.current?.openBoxedExpressionEditor(nodeId);
+  public openBoxedExpressionEditor(nodeId: string): void {
+    this.dmnEditorRef.current?.openBoxedExpressionEditor(nodeId);
   }
 
   public async undo(): Promise<void> {

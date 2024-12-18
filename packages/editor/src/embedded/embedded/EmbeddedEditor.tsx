@@ -194,9 +194,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
       setTheme: (theme) => Promise.resolve(envelopeServer.shared.kogitoEditor_theme.set(theme)),
       onKeyDown: (ke: React.KeyboardEvent) => onKeyDown(envelopeServer, ke),
       openBoxedExpressionEditor: (nodeId) =>
-        Promise.resolve(
-          Promise.resolve(envelopeServer.envelopeApi.notifications.kogitoEditor_openBoxedExpressionEditor.send(nodeId))
-        ),
+        envelopeServer.envelopeApi.notifications.kogitoEditor_openBoxedExpressionEditor.send(nodeId),
     };
   }, [props.isReady, isReady, stateControl, envelopeServer, onKeyDown]);
 

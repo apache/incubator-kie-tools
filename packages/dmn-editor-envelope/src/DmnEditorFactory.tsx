@@ -68,8 +68,8 @@ export class DmnEditorInterface implements Editor {
     return Promise.resolve(); // No-op for now. The DMN Editor only has the LIGHT theme.
   }
 
-  public async openBoxedExpressionEditor(nodeId: string): Promise<void> {
-    return this.self.openBoxedExpressionEditor(nodeId);
+  public openBoxedExpressionEditor(nodeId: string): void {
+    this.self.openBoxedExpressionEditor(nodeId);
   }
 
   public async undo(): Promise<void> {
