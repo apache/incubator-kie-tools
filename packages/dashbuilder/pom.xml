@@ -109,8 +109,6 @@
     <version.resources.plugin>3.3.1</version.resources.plugin>
     <version.war.plugin>3.4.0</version.war.plugin>
     <version.checkstyle.plugin>3.4.0</version.checkstyle.plugin>
-    <version.install.plugin>3.1.2</version.install.plugin>
-    <version.site.plugin>3.12.1</version.site.plugin>
     <version.antrun.plugin>1.8</version.antrun.plugin>
     <version.exec-maven-plugin>3.0.0</version.exec-maven-plugin>
     <!-- Properties from DROOLS-WB parent POM -->
