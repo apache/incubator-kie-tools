@@ -326,9 +326,7 @@ export function DmnRunnerDrawerPanelContent(props: { editor: EmbeddedEditorRef |
                       notificationsPanel={true}
                       openExecutionTab={openExecutionTab}
                       openBoxedExpressionEditor={(nodeId) => {
-                        console.error("here 2");
                         props.editor?.openBoxedExpressionEditor(nodeId);
-                        console.error(props.editor + " here 3");
                       }}
                     />
                   </PageSection>

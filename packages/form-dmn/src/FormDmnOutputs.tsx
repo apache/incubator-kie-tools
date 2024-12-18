@@ -266,7 +266,6 @@ export function FormDmnOutputs({ openExecutionTab, ...props }: FormDmnOutputsPro
                 <ArrowUpIcon
                   data-navigate-to-expression-id={dmnFormResult.decisionId}
                   onClick={() => {
-                    console.error("here");
                     props.openBoxedExpressionEditor?.(dmnFormResult.decisionId);
                   }}
                 />
