@@ -29,6 +29,7 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { useMemo } from "react";
 import { SingleNodeProperties } from "./SingleNodeProperties";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 
 export function BeePropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -55,7 +56,11 @@ export function BeePropertiesPanel() {
           isResizable={true}
           minSize={"300px"}
           defaultSize={"500px"}
-          onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
+          onKeyDown={(e) => {
+            if (!(getOperatingSystem() === OperatingSystem.MACOS && e.metaKey)) {
+              e.stopPropagation();
+            }
+          }}
         >
           <DrawerHead>
             {shouldDisplayDecisionOrBkmProps && <SingleNodeProperties nodeId={node.id} />}

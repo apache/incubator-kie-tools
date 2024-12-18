@@ -53,6 +53,7 @@ import { useExternalModels } from "../includedModels/DmnEditorDependenciesContex
 import { drgElementToBoxedExpression } from "../boxedExpressions/BoxedExpressionScreen";
 import { IteratorVariableCell } from "./BoxedExpressionPropertiesPanelComponents/IteratorVariableCell";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 
 export function BoxedExpressionPropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -109,7 +110,11 @@ export function BoxedExpressionPropertiesPanel() {
           isResizable={true}
           minSize={"300px"}
           defaultSize={"500px"}
-          onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
+          onKeyDown={(e) => {
+            if (!(getOperatingSystem() === OperatingSystem.MACOS && e.metaKey)) {
+              e.stopPropagation();
+            }
+          }}
         >
           <DrawerHead>
             {shouldDisplayDecisionOrBkmProps && <SingleNodeProperties nodeId={node.id} />}

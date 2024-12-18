@@ -26,6 +26,7 @@ import { MultipleNodeProperties } from "./MultipleNodeProperties";
 import { useDmnEditorStore } from "../store/StoreContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import "./DiagramPropertiesPanel.css";
+import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 
 export function DiagramPropertiesPanel() {
   const { externalModelsByNamespace } = useExternalModels();
@@ -39,7 +40,11 @@ export function DiagramPropertiesPanel() {
       isResizable={true}
       minSize={"300px"}
       defaultSize={"500px"}
-      onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
+      onKeyDown={(e) => {
+        if (!(getOperatingSystem() === OperatingSystem.MACOS && e.metaKey)) {
+          e.stopPropagation();
+        }
+      }}
     >
       <DrawerHead>
         {selectedNodesById.size <= 0 && <GlobalDiagramProperties />}

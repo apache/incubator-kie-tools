@@ -38,6 +38,7 @@ import {
   BeeTableSelectionContextProvider,
   SELECTION_MIN_ACTIVE_DEPTH,
   SelectionPart,
+  useBeeTableSelection,
   useBeeTableSelectionDispatch,
 } from "../../selection/BeeTableSelectionContext";
 import { BeeTableCellWidthsToFitDataContextProvider } from "../../resizing/BeeTableCellWidthToFitDataContext";
@@ -110,6 +111,8 @@ export function BeeTableInternal<R extends object>({
     useBeeTableSelectionDispatch();
   const tableComposableRef = useRef<HTMLTableElement>(null);
   const { currentlyOpenContextMenu } = useBoxedExpressionEditor();
+
+  const { selectionStart, selectionEnd } = useBeeTableSelection();
 
   const tableRef = React.useRef<HTMLDivElement>(null);
 
@@ -325,6 +328,10 @@ export function BeeTableInternal<R extends object>({
 
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      if (selectionStart?.isEditing || selectionEnd?.isEditing) {
+        return;
+      }
+
       if (!enableKeyboardNavigation) {
         return;
       }
@@ -504,20 +511,22 @@ export function BeeTableInternal<R extends object>({
       }
     },
     [
+      selectionStart?.isEditing,
+      selectionEnd?.isEditing,
       enableKeyboardNavigation,
       currentlyOpenContextMenu,
+      isReadOnly,
       setCurrentDepth,
       mutateSelection,
-      rowCount,
-      reactTableInstance.allColumns.length,
-      reactTableInstance.rows.length,
       getColumnCount,
+      rowCount,
+      reactTableInstance.rows.length,
+      reactTableInstance.allColumns.length,
       erase,
       resetSelectionAt,
       copy,
       cut,
       paste,
-      isReadOnly,
     ]
   );
 
