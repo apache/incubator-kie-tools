@@ -17,6 +17,7 @@
     "build:prod": "pnpm pre-build && run-script-os",
     "build:prod:darwin:linux": "mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
     "build:prod:win32": "pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
+    "install": "node install.js",
     "pre-build": "mvn dependency:unpack"
   },
   "dependencies": {

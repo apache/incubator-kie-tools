@@ -141,7 +141,6 @@
     <version.org.kie.j2cl.tools.yaml.mapper>0.4</version.org.kie.j2cl.tools.yaml.mapper>
     <version.j2cl.maven.plugin>0.23.0</version.j2cl.maven.plugin>
     <version.jacoco.maven.plugin>0.8.12</version.jacoco.maven.plugin>
-    <version.com.github.stefanbirkner.systemrules>1.19.0</version.com.github.stefanbirkner.systemrules>
   </properties>
 
   <dependencyManagement>
@@ -263,12 +262,6 @@
         <groupId>org.mockito</groupId>
         <artifactId>mockito-inline</artifactId>
         <version>${version.org.mockito}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>com.github.stefanbirkner</groupId>
-        <artifactId>system-rules</artifactId>
-        <version>${version.com.github.stefanbirkner.systemrules}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>

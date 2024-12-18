@@ -21,12 +21,7 @@ const { setupMavenConfigFile, buildTailFromPackageJsonDependencies } = require("
 
 setupMavenConfigFile(
   `
-    --batch-mode
-    -Dstyle.color=always
-    -Drevision=${env.devDeploymentQuarkusApp.version}
-    -Dversion.quarkus=${env.versions.quarkus}
-    -Dversion.org.kie.kogito=${env.versions.kogito}
+    -Drevision=${env.kogitoDBMigratorTool.version}
     -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
-`,
-  { ignoreDefault: true } // Can't have special <repositories> configuration that only works inside this repo.
+`
 );

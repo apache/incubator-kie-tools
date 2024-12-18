@@ -20,8 +20,6 @@
 package org.kie.kogito.postgresql.migrator;
 
 import io.quarkus.test.Mock;
-import org.junit.Rule;
-import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -33,8 +31,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.times;
 
 class DBMigratorTest {
-    @Rule
-    final ExpectedSystemExit exitRule = ExpectedSystemExit.none();
 
     @Mock
     MigrationService migrationService;
@@ -55,7 +51,6 @@ class DBMigratorTest {
         dbMigrator.migrateDataIndex = false;
         dbMigrator.migrateJobsService = false;
 
-        exitRule.expectSystemExitWithStatus(0);
         dbMigrator.run();
         verify(dbConnectionChecker, times(0)).checkDataIndexDBConnection();
         verify(dbConnectionChecker, times(0)).checkJobsServiceDBConnection();
@@ -70,7 +65,6 @@ class DBMigratorTest {
         dbMigrator.dbConnectionChecker = dbConnectionChecker;
         dbMigrator.service = migrationService;
 
-        exitRule.expectSystemExitWithStatus(0);
         dbMigrator.run();
         verify(dbConnectionChecker, times(1)).checkDataIndexDBConnection();
         verify(dbConnectionChecker, times(1)).checkJobsServiceDBConnection();
@@ -87,7 +81,6 @@ class DBMigratorTest {
 
         doThrow(new SQLException()).when(dbConnectionChecker).checkDataIndexDBConnection();
 
-        exitRule.expectSystemExitWithStatus(-1);
         dbMigrator.run();
         verify(migrationService, times(0)).migrateDataIndex();
         verify(migrationService, times(0)).migrateJobsService();
@@ -102,7 +95,6 @@ class DBMigratorTest {
 
         doThrow(new SQLException()).when(dbConnectionChecker).checkJobsServiceDBConnection();
 
-        exitRule.expectSystemExitWithStatus(-2);
         dbMigrator.run();
         verify(migrationService, times(0)).migrateDataIndex();
         verify(migrationService, times(0)).migrateJobsService();
