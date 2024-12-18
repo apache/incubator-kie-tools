@@ -28,6 +28,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/magiconair/properties"
+
 	"k8s.io/apimachinery/pkg/runtime/schema"
 
 	"github.com/stretchr/testify/assert"
@@ -132,6 +134,45 @@ func Test_Handler_WorkflowMinimalAndPropsAndSpecAndGeneric(t *testing.T) {
 	data, err = getResourceDataWithFileName(proj.Resources, "input.json")
 	assert.NoError(t, err)
 	assert.NotEmpty(t, data)
+}
+
+func Test_Handler_WorkflowMinimalAndSecrets(t *testing.T) {
+	type env struct {
+		key              string
+		secretKeyRefName string
+	}
+	proj, err := New("default").
+		Named("minimal").
+		Profile(metadata.PreviewProfile).
+		WithWorkflow(getWorkflowMinimal()).
+		WithSecretProperties(getWorkflowSecretProperties()).
+		AsObjects()
+	assert.NoError(t, err)
+	assert.NotNil(t, proj.Workflow)
+	assert.NotNil(t, proj.SecretProperties)
+	assert.Equal(t, "minimal", proj.Workflow.Name)
+	assert.Equal(t, "minimal-secrets", proj.SecretProperties.Name)
+	assert.NotEmpty(t, proj.SecretProperties.StringData)
+
+	secretPropsContent, err := io.ReadAll(getWorkflowSecretProperties())
+	assert.NoError(t, err)
+	secrets, err := properties.Load(secretPropsContent, properties.UTF8)
+	assert.NoError(t, err)
+	envs := map[string]env{}
+
+	for _, value := range proj.Workflow.Spec.PodTemplate.Container.Env {
+		envs[value.Name] = env{key: value.ValueFrom.SecretKeyRef.Key, secretKeyRefName: value.ValueFrom.SecretKeyRef.Name}
+	}
+
+	for k, v := range secrets.Map() {
+		assert.Equal(t, v, proj.SecretProperties.StringData[k])
+		normalized, err := normalizeEnvName(k)
+		assert.NoError(t, err)
+		env, exists := envs[normalized]
+		assert.True(t, exists)
+		assert.Equal(t, k, env.key)
+		assert.Equal(t, proj.SecretProperties.Name, env.secretKeyRefName)
+	}
 }
 
 func getResourceDataWithFileName(cms []*corev1.ConfigMap, fileName string) (string, error) {
@@ -242,6 +283,49 @@ func TestWorkflowProjectHandler_Image(t *testing.T) {
 	assert.Equal(t, "host/namespace/service:latest", proj.Workflow.Spec.PodTemplate.Container.Image)
 }
 
+func TestNormalizeEnvName(t *testing.T) {
+	type testCase struct {
+		input    string
+		expected string
+		error    bool
+	}
+	tests := []testCase{
+		{"my-env", "MY_ENV", false},
+		{"my.env.1", "MY_ENV_1", false},
+		{"my.env-1", "MY_ENV_1", false},
+		{"my-env.1", "MY_ENV_1", false},
+		{"my-env-1$", "", true},
+		{"my-env-1&&", "", true},
+		{"", "", true},
+		{"$%&*", "", true},
+		{"a", "A", false},
+		{"1", "1", false},
+		{"_", "", true},
+		{"my env", "MY_ENV", false},
+		{"  my env  ", "MY_ENV", false},
+		{"-", "", true},
+		{".", "", true},
+		{"my-env-1234567890-long-name-with-dashes", "MY_ENV_1234567890_LONG_NAME_WITH_DASHES", false},
+		{"long-name-with-invalid-characters-@#$%^", "", true},
+		{"my-env-1@name", "", true},
+		{"A", "A", false},
+		{"a1_b2", "A1_B2", false},
+		{"a!!@#$b", "", true},
+	}
+
+	for _, test := range tests {
+		t.Run(test.input, func(t *testing.T) {
+			actual, err := normalizeEnvName(test.input)
+			if test.error {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, test.expected, actual)
+			}
+		})
+	}
+}
+
 func getWorkflowMinimalInvalid() io.Reader {
 	return mustGetFile("testdata/workflows/workflow-minimal-invalid.sw.json")
 }
@@ -264,6 +348,10 @@ func getSpecOpenApi() io.Reader {
 
 func getSpecGeneric() io.Reader {
 	return mustGetFile("testdata/workflows/specs/workflow-service-schema.json")
+}
+
+func getWorkflowSecretProperties() io.Reader {
+	return mustGetFile("testdata/workflows/secret.properties")
 }
 
 func mustGetFile(filepath string) io.Reader {
