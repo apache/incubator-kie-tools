@@ -44,7 +44,7 @@ func GetNamespace() (string, error) {
 	return Current.GetNamespace()
 }
 
-func ExecuteApply(crd, namespace string) error {
+var ExecuteApply = func(crd, namespace string) error {
 	return Current.ExecuteApply(crd, namespace)
 }
 

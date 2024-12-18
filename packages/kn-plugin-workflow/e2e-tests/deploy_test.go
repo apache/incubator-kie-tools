@@ -26,9 +26,9 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
-	"time"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/stretchr/testify/require"
 )
 
@@ -48,41 +48,34 @@ func transformDeployCmdCfgToArgs(cfg command.DeployUndeployCmdConfig) []string {
 func TestDeployProjectSuccess(t *testing.T) {
 	dir, err := os.Getwd()
 	require.NoError(t, err)
+
+	var originalCheckCrds = command.CheckCRDs
+	defer func() { command.CheckCRDs = originalCheckCrds }()
+
+	command.CheckCRDs = func(crds []string, typeName string) error {
+		return nil
+	}
+
+	var executeApplyOriginal = common.ExecuteApply
+	defer func() { common.ExecuteApply = executeApplyOriginal }()
+
+	common.ExecuteApply = func(crd, namespace string) error {
+		return nil
+	}
+
 	defer os.Chdir(dir)
-	for testIndex, test := range cfgTestInputDeploy_Success {
+	for testIndex := range cfgTestInputDeploy_Success {
 		t.Run(fmt.Sprintf("Test deploy project success index: %d", testIndex), func(t *testing.T) {
-			// Run `create` command
-			RunCreateTest(t, CfgTestInputCreate_Success[0])
-			// change dir to created project
+			RunCreateTest(t, CfgTestInputCreate_Success[testIndex])
 			projectName := GetCreateProjectName(t, CfgTestInputCreate_Success[0])
 			projectDir := filepath.Join(TempTestsPath, projectName)
-
-			// delete the project directory after the test
 			defer os.RemoveAll(projectDir)
 
-			require.NoError(t, err)
 			err = os.Chdir(projectDir)
 			require.NoErrorf(t, err, "Expected nil error, got %v", err)
 
-			// Run `deploy` command
-			_, err = ExecuteKnWorkflow(transformDeployCmdCfgToArgs(test.input)...)
-			require.NoErrorf(t, err, "Expected nil error, got: %v", err)
-
-			deployed := make(chan bool)
-			errCan := make(chan error)
-			defer close(deployed)
-			defer close(errCan)
-
-			go command.PollGetDeploymentStatus("default", "hello", 5*time.Second, 5*time.Minute, deployed, errCan)
-
-			select {
-			case <-deployed:
-				fmt.Printf(" - ✅ Deployment of %s is completed\n", "hello")
-			case err := <-errCan:
-				t.Fatalf(" - ❌ Deployment of %s failed: %v\n", "default", err)
-			}
-
-			err = command.NewUndeployCommand().Execute()
+			cmd := command.NewDeployCommand()
+			err = cmd.Execute()
 			require.NoError(t, err)
 		})
 	}

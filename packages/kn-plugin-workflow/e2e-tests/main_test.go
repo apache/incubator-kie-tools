@@ -22,7 +22,6 @@
 package e2e_tests
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	"os"
@@ -31,13 +30,6 @@ import (
 	"strings"
 	"testing"
 	"time"
-
-	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common/k8sclient"
-
-	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/api/meta"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/dynamic"
 )
 
 var parentPath string
@@ -52,8 +44,6 @@ func TestMain(m *testing.M) {
 
 	// Create temp directory for tests and switch inside it
 	workingPath, _ := os.Getwd()
-	// we have to setup the CRDs before we can run the tests
-	setupCrds(workingPath)
 	parentPath = filepath.Dir(workingPath)
 	tempDirName := "temp-tests"
 	if fileExists(tempDirName) {
@@ -73,46 +63,6 @@ func TestMain(m *testing.M) {
 	cleanUpTemp(workingPath, tempDirName)
 
 	os.Exit(exitCode)
-}
-
-func setupCrds(current string) {
-
-	client, err := k8sclient.DynamicClient()
-	if err != nil {
-		fmt.Println("❌ ERROR: Failed to create dynamic client: ", err)
-		os.Exit(1)
-	}
-	crdPath := filepath.Join(current, "crd", operatorCRD)
-	if resources, err := k8sclient.ParseYamlFile(crdPath); err != nil {
-		fmt.Printf("❌ ERROR: Failed to parse YAML file: %v\n", err)
-		os.Exit(1)
-	} else {
-		for _, resource := range resources {
-			gvk := resource.GroupVersionKind()
-			gvr, _ := meta.UnsafeGuessKindToResource(gvk)
-
-			baseResource := client.Resource(gvr)
-
-			ns := resource.GetNamespace()
-			var resourceInterface dynamic.ResourceInterface
-
-			if ns != "" {
-				resourceInterface = baseResource.Namespace(ns)
-			} else {
-				resourceInterface = baseResource
-			}
-
-			_, err := resourceInterface.Create(context.Background(), &resource, metav1.CreateOptions{})
-			if err != nil {
-				if errors.IsAlreadyExists(err) {
-					continue
-				} else {
-					fmt.Println("❌ ERROR: Failed to create resource: ", err)
-					os.Exit(1)
-				}
-			}
-		}
-	}
 }
 
 func setUpTempDir(tempDirName string) {

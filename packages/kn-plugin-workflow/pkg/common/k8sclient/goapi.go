@@ -352,12 +352,20 @@ var GetNamespace = func() (string, error) {
 
 	config, err := KubeApiConfig()
 	if err != nil {
+		fmt.Println("❌ ERROR: Failed to get current k8s namespace: %w", err)
 		return "", fmt.Errorf("❌ ERROR: Failed to get current k8s namespace: %w", err)
 	}
-	namespace := config.Contexts[config.CurrentContext].Namespace
 
-	if len(namespace) == 0 {
+	var namespace string
+
+	if contextes, ok := config.Contexts[config.CurrentContext]; !ok {
 		namespace = "default"
+	} else {
+		if len(contextes.Namespace) == 0 {
+			namespace = "default"
+		} else {
+			namespace = contextes.Namespace
+		}
 	}
 	fmt.Printf(" - ✅  k8s current namespace: %s\n", namespace)
 	return namespace, nil

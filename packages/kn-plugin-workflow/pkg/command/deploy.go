@@ -289,7 +289,7 @@ func runDeployCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, err er
 	return cfg, nil
 }
 
-func CheckCRDs(crds []string, typeName string) error {
+var CheckCRDs = func(crds []string, typeName string) error {
 	for _, crd := range crds {
 		err := common.CheckCrdExists(crd)
 		if err != nil {
