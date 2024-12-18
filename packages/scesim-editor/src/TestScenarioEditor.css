@@ -18,7 +18,7 @@
  */
 
 .kie-scesim-editor--background-table-container {
-  overflow-x: auto;
+  overflow: auto;
 }
 
 .kie-scesim-editor--content {
@@ -31,6 +31,7 @@
 }
 
 .kie-scesim-editor--content-tabs {
+  height: 100%;
   padding-top: 15px;
   padding-left: 15px;
 }
@@ -44,5 +45,5 @@
 }
 
 .kie-scesim-editor--scenario-table-container {
-  overflow-x: auto;
+  overflow: auto;
 }
