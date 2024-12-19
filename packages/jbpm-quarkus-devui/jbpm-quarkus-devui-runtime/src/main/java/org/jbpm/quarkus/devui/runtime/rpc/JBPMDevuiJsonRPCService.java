@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.Optional;
 
 import io.smallrye.mutiny.Uni;
+import io.quarkus.arc.profile.IfBuildProfile;
 import io.smallrye.mutiny.Multi;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.client.WebClient;
@@ -40,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @ApplicationScoped
+@IfBuildProfile("dev")
 public class JBPMDevuiJsonRPCService {
     private static final String DATA_INDEX_URL = "kogito.data-index.url";
 
