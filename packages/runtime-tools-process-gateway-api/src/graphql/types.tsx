@@ -1,22 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
 /* eslint-disable */
 import gql from "graphql-tag";
 import * as ApolloReactCommon from "@apollo/react-common";
@@ -280,6 +261,7 @@ export namespace GraphQL {
     start?: InputMaybe<DateArgument>;
     state?: InputMaybe<ProcessInstanceStateArgument>;
     updatedBy?: InputMaybe<StringArgument>;
+    variables?: InputMaybe<Scalars["JSON"]>;
   };
 
   export type StringArrayArgument = {
@@ -360,6 +342,7 @@ export namespace GraphQL {
     rootProcessId?: Maybe<Scalars["String"]>;
     rootProcessInstanceId?: Maybe<Scalars["String"]>;
     serviceUrl?: Maybe<Scalars["String"]>;
+    slaDueDate?: Maybe<Scalars["DateTime"]>;
     source?: Maybe<Scalars["String"]>;
     start?: Maybe<Scalars["DateTime"]>;
     state?: Maybe<ProcessInstanceState>;
@@ -389,6 +372,7 @@ export namespace GraphQL {
     id: Scalars["String"];
     name: Scalars["String"];
     nodeId: Scalars["String"];
+    slaDueDate?: Maybe<Scalars["DateTime"]>;
     type: Scalars["String"];
   };
 
@@ -451,6 +435,7 @@ export namespace GraphQL {
     description?: Maybe<Scalars["String"]>;
     endpoint?: Maybe<Scalars["String"]>;
     excludedUsers?: Maybe<Array<Scalars["String"]>>;
+    externalReferenceId?: Maybe<Scalars["String"]>;
     id: Scalars["String"];
     inputs?: Maybe<Scalars["String"]>;
     lastUpdate: Scalars["DateTime"];
@@ -464,8 +449,15 @@ export namespace GraphQL {
     referenceName?: Maybe<Scalars["String"]>;
     rootProcessId?: Maybe<Scalars["String"]>;
     rootProcessInstanceId?: Maybe<Scalars["String"]>;
+    schema?: Maybe<Scalars["String"]>;
+    slaDueDate?: Maybe<Scalars["DateTime"]>;
     started?: Maybe<Scalars["DateTime"]>;
     state?: Maybe<Scalars["String"]>;
+  };
+
+  export type UserTaskInstanceSchemaArgs = {
+    groups?: InputMaybe<Array<InputMaybe<Scalars["String"]>>>;
+    user?: InputMaybe<Scalars["String"]>;
   };
 
   export type Attachment = {
@@ -603,6 +595,16 @@ export namespace GraphQL {
     user?: InputMaybe<Scalars["String"]>;
   };
 
+  export type Subscription = {
+    __typename?: "Subscription";
+    JobAdded: Job;
+    JobUpdated: Job;
+    ProcessInstanceAdded: ProcessInstance;
+    ProcessInstanceUpdated: ProcessInstance;
+    UserTaskInstanceAdded: UserTaskInstance;
+    UserTaskInstanceUpdated: UserTaskInstance;
+  };
+
   export type BigDecimalArgument = {
     between?: InputMaybe<BigDecimalRange>;
     equal?: InputMaybe<Scalars["BigDecimal"]>;
@@ -638,6 +640,101 @@ export namespace GraphQL {
   export type FloatRange = {
     from: Scalars["Float"];
     to: Scalars["Float"];
+  };
+
+  export type KogitoMetadata = {
+    __typename?: "KogitoMetadata";
+    lastUpdate: Scalars["DateTime"];
+    processInstances?: Maybe<Array<Maybe<ProcessInstanceMeta>>>;
+    userTasks?: Maybe<Array<Maybe<UserTaskInstanceMeta>>>;
+  };
+
+  export type ProcessInstanceMeta = {
+    __typename?: "ProcessInstanceMeta";
+    businessKey?: Maybe<Scalars["String"]>;
+    createdBy?: Maybe<Scalars["String"]>;
+    end?: Maybe<Scalars["DateTime"]>;
+    endpoint: Scalars["String"];
+    id: Scalars["String"];
+    lastUpdate: Scalars["DateTime"];
+    parentProcessInstanceId?: Maybe<Scalars["String"]>;
+    processId: Scalars["String"];
+    processName?: Maybe<Scalars["String"]>;
+    roles?: Maybe<Array<Scalars["String"]>>;
+    rootProcessId?: Maybe<Scalars["String"]>;
+    rootProcessInstanceId?: Maybe<Scalars["String"]>;
+    serviceUrl?: Maybe<Scalars["String"]>;
+    start: Scalars["DateTime"];
+    state: ProcessInstanceState;
+    updatedBy?: Maybe<Scalars["String"]>;
+    version?: Maybe<Scalars["String"]>;
+  };
+
+  export type UserTaskInstanceMeta = {
+    __typename?: "UserTaskInstanceMeta";
+    actualOwner?: Maybe<Scalars["String"]>;
+    adminGroups?: Maybe<Array<Scalars["String"]>>;
+    adminUsers?: Maybe<Array<Scalars["String"]>>;
+    attachments?: Maybe<Array<Attachment>>;
+    comments?: Maybe<Array<Comment>>;
+    completed?: Maybe<Scalars["DateTime"]>;
+    description?: Maybe<Scalars["String"]>;
+    excludedUsers?: Maybe<Array<Scalars["String"]>>;
+    id: Scalars["String"];
+    lastUpdate: Scalars["DateTime"];
+    name?: Maybe<Scalars["String"]>;
+    potentialGroups?: Maybe<Array<Scalars["String"]>>;
+    potentialUsers?: Maybe<Array<Scalars["String"]>>;
+    priority?: Maybe<Scalars["String"]>;
+    processInstanceId: Scalars["String"];
+    referenceName?: Maybe<Scalars["String"]>;
+    started: Scalars["DateTime"];
+    state: Scalars["String"];
+  };
+
+  export type KogitoMetadataArgument = {
+    lastUpdate?: InputMaybe<DateArgument>;
+    processInstances?: InputMaybe<ProcessInstanceMetaArgument>;
+    userTasks?: InputMaybe<UserTaskInstanceMetaArgument>;
+  };
+
+  export type ProcessInstanceMetaArgument = {
+    businessKey?: InputMaybe<StringArgument>;
+    createdBy?: InputMaybe<StringArgument>;
+    end?: InputMaybe<DateArgument>;
+    endpoint?: InputMaybe<StringArgument>;
+    id?: InputMaybe<IdArgument>;
+    parentProcessInstanceId?: InputMaybe<IdArgument>;
+    processId?: InputMaybe<StringArgument>;
+    processName?: InputMaybe<StringArgument>;
+    roles?: InputMaybe<StringArrayArgument>;
+    rootProcessId?: InputMaybe<StringArgument>;
+    rootProcessInstanceId?: InputMaybe<IdArgument>;
+    start?: InputMaybe<DateArgument>;
+    state?: InputMaybe<ProcessInstanceStateArgument>;
+    updatedBy?: InputMaybe<StringArgument>;
+  };
+
+  export type UserTaskInstanceMetaArgument = {
+    actualOwner?: InputMaybe<StringArgument>;
+    adminGroups?: InputMaybe<StringArrayArgument>;
+    adminUsers?: InputMaybe<StringArrayArgument>;
+    completed?: InputMaybe<DateArgument>;
+    description?: InputMaybe<StringArgument>;
+    excludedUsers?: InputMaybe<StringArrayArgument>;
+    id?: InputMaybe<IdArgument>;
+    name?: InputMaybe<StringArgument>;
+    potentialGroups?: InputMaybe<StringArrayArgument>;
+    potentialUsers?: InputMaybe<StringArrayArgument>;
+    priority?: InputMaybe<StringArgument>;
+    processInstanceId?: InputMaybe<IdArgument>;
+    referenceName?: InputMaybe<StringArgument>;
+    started?: InputMaybe<DateArgument>;
+    state?: InputMaybe<StringArgument>;
+  };
+
+  export type KogitoMetadataOrderBy = {
+    lastUpdate?: InputMaybe<OrderBy>;
   };
 
   export type LongArgument = {

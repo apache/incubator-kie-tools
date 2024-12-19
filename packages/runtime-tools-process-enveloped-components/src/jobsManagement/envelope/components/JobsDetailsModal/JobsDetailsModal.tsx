@@ -26,7 +26,6 @@ import Moment from "react-moment";
 import "../styles.css";
 import { Job } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import isNil from "lodash/isNil";
 
 interface IOwnProps {
   actionType: string;
@@ -51,31 +50,37 @@ export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
       <div className="kogito-management-console-shared--jobsModal__detailsModal">
         <TextContent>
           <Flex direction={{ default: "column" }}>
-            <FlexItem>
-              <Split hasGutter>
-                <SplitItem>
-                  <Text component={TextVariants.h6}>Process Id: </Text>{" "}
-                </SplitItem>
-                <SplitItem>{job.processId}</SplitItem>
-              </Split>
-            </FlexItem>
-            <FlexItem>
-              <Split hasGutter>
-                <SplitItem>
-                  {" "}
-                  <Text component={TextVariants.h6}>Process Instance Id: </Text>{" "}
-                </SplitItem>
-                <SplitItem>{job.processInstanceId}</SplitItem>
-              </Split>
-            </FlexItem>
-            <FlexItem>
-              <Split hasGutter>
-                <SplitItem>
-                  <Text component={TextVariants.h6}>NodeInstanceId: </Text>
-                </SplitItem>
-                <SplitItem>{job.nodeInstanceId}</SplitItem>
-              </Split>
-            </FlexItem>
+            {job.processId && (
+              <FlexItem>
+                <Split hasGutter>
+                  <SplitItem>
+                    <Text component={TextVariants.h6}>Process Id: </Text>{" "}
+                  </SplitItem>
+                  <SplitItem>{job.processId}</SplitItem>
+                </Split>
+              </FlexItem>
+            )}
+            {job.processInstanceId && (
+              <FlexItem>
+                <Split hasGutter>
+                  <SplitItem>
+                    {" "}
+                    <Text component={TextVariants.h6}>Process Instance Id: </Text>{" "}
+                  </SplitItem>
+                  <SplitItem>{job.processInstanceId}</SplitItem>
+                </Split>
+              </FlexItem>
+            )}
+            {job.nodeInstanceId && (
+              <FlexItem>
+                <Split hasGutter>
+                  <SplitItem>
+                    <Text component={TextVariants.h6}>Node Instance Id: </Text>
+                  </SplitItem>
+                  <SplitItem>{job.nodeInstanceId}</SplitItem>
+                </Split>
+              </FlexItem>
+            )}
             <FlexItem>
               <Split hasGutter>
                 <SplitItem>
@@ -84,7 +89,7 @@ export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
                 <SplitItem>{job.status}</SplitItem>
               </Split>
             </FlexItem>
-            {!isNil(job.priority) && (
+            {job.priority !== undefined && (
               <FlexItem>
                 <Split hasGutter>
                   <SplitItem>
@@ -94,21 +99,21 @@ export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
                 </Split>
               </FlexItem>
             )}
-            {!isNil(job.repeatInterval) && (
+            {job.repeatInterval !== undefined && (
               <FlexItem>
                 <Split hasGutter>
                   <SplitItem>
-                    <Text component={TextVariants.h6}>RepeatInterval: </Text>
+                    <Text component={TextVariants.h6}>Repeat Interval: </Text>
                   </SplitItem>
                   <SplitItem>{job.repeatInterval}</SplitItem>
                 </Split>
               </FlexItem>
             )}
-            {!isNil(job.repeatLimit) && (
+            {job.repeatLimit !== undefined && (
               <FlexItem>
                 <Split hasGutter>
                   <SplitItem>
-                    <Text component={TextVariants.h6}>RepeatLimit: </Text>
+                    <Text component={TextVariants.h6}>Repeat Limit: </Text>
                   </SplitItem>
                   <SplitItem>{job.repeatLimit}</SplitItem>
                 </Split>
@@ -118,38 +123,44 @@ export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
               <FlexItem>
                 <Split hasGutter>
                   <SplitItem>
-                    <Text component={TextVariants.h6}>ScheduledId: </Text>
+                    <Text component={TextVariants.h6}>Scheduled Id: </Text>
                   </SplitItem>
                   <SplitItem>{job.scheduledId}</SplitItem>
                 </Split>
               </FlexItem>
             )}
-            <FlexItem>
-              <Split hasGutter>
-                <SplitItem>
-                  <Text component={TextVariants.h6}>Retries: </Text>
-                </SplitItem>
-                <SplitItem>{job.retries}</SplitItem>
-              </Split>
-            </FlexItem>
-            <FlexItem>
-              <Split hasGutter>
-                <SplitItem>
-                  <Text component={TextVariants.h6}>Execution counter: </Text>
-                </SplitItem>
-                <SplitItem>{job.executionCounter}</SplitItem>
-              </Split>
-            </FlexItem>
-            <FlexItem>
-              <Split hasGutter>
-                <SplitItem>
-                  <Text component={TextVariants.h6}>Last Updated: </Text>
-                </SplitItem>
-                <SplitItem>
-                  <Moment fromNow>{new Date(`${job.lastUpdate}`)}</Moment>
-                </SplitItem>
-              </Split>
-            </FlexItem>
+            {job.retries !== undefined && (
+              <FlexItem>
+                <Split hasGutter>
+                  <SplitItem>
+                    <Text component={TextVariants.h6}>Retries: </Text>
+                  </SplitItem>
+                  <SplitItem>{job.retries}</SplitItem>
+                </Split>
+              </FlexItem>
+            )}
+            {job.executionCounter !== undefined && (
+              <FlexItem>
+                <Split hasGutter>
+                  <SplitItem>
+                    <Text component={TextVariants.h6}>Execution counter: </Text>
+                  </SplitItem>
+                  <SplitItem>{job.executionCounter}</SplitItem>
+                </Split>
+              </FlexItem>
+            )}
+            {job.lastUpdate !== undefined && (
+              <FlexItem>
+                <Split hasGutter>
+                  <SplitItem>
+                    <Text component={TextVariants.h6}>Last Updated: </Text>
+                  </SplitItem>
+                  <SplitItem>
+                    <Moment fromNow>{new Date(`${job.lastUpdate}`)}</Moment>
+                  </SplitItem>
+                </Split>
+              </FlexItem>
+            )}
             {job.callbackEndpoint && (
               <FlexItem>
                 <Split hasGutter>

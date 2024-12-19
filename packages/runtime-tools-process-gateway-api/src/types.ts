@@ -36,16 +36,16 @@ export enum JobStatus {
 export interface Job {
   id: string;
   status: JobStatus;
-  expirationTime: Date;
-  priority: number;
-  callbackEndpoint: string;
-  repeatInterval: number;
-  repeatLimit: number;
-  scheduledId: string;
-  retries: number;
-  lastUpdate: Date;
+  expirationTime?: Date;
+  priority?: number;
+  callbackEndpoint?: string;
+  repeatInterval?: number;
+  repeatLimit?: number;
+  scheduledId?: string;
+  retries?: number;
+  lastUpdate?: Date;
   executionCounter?: number;
-  endpoint: string;
+  endpoint?: string;
   nodeInstanceId?: string;
   processId?: string;
   processInstanceId?: string;
