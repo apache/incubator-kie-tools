@@ -21,7 +21,7 @@
     "copy:image-env-to-json:linux:darwin": "cp ./node_modules/@kie-tools/image-env-to-json/dist/linux/image-env-to-json-standalone ./dist-dev/",
     "copy:image-env-to-json:win32": "pnpm powershell \"Copy-Item ./node_modules/@kie-tools/image-env-to-json/dist/linux/image-env-to-json-standalone ./dist-dev/\"",
     "copy:test-assets": "run-script-os",
-    "copy:test-assets:linux:darwin": "cp -R test-resources/* dist-dev",
+    "copy:test-assets:linux:darwin": "cp -R test-resources/* dist-dev && DOCKER_HOST=\"$(hostname -I | awk '{print $1}')\" envsubst < test-resources/tests/features/sonataflow-management-console.feature > dist-dev/tests/features/sonataflow-management-console.feature",
     "copy:webapp-assets": "run-script-os",
     "copy:webapp-assets:linux:darwin": "cp -R ./node_modules/@kie-tools/sonataflow-management-console-webapp/dist/ ./dist-dev/sonataflow-management-console-webapp",
     "copy:webapp-assets:win32": "pnpm powershell \"Copy-Item -R ./node_modules/@kie-tools/sonataflow-management-console-webapp/dist/ ./dist-dev/sonataflow-management-console-webapp\"",
