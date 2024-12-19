@@ -51,7 +51,7 @@ public class DataIndexCounter {
 
         this.multi = Multi.createFrom().emitter(emitter -> {
             this.emitter = emitter;
-            vertxTimer = vertx.setPeriodic(500, id -> {
+            vertxTimer = vertx.setPeriodic(1000, id -> {
                 this.emit();
             });
             this.emit();
@@ -60,7 +60,7 @@ public class DataIndexCounter {
     }
 
     public void refresh() {
-        vertx.setTimer(500, id -> {
+        vertx.setTimer(1000, id -> {
             refreshCount();
         });
     }

@@ -53,8 +53,6 @@ public class JBPMDevUIEventPublisher implements EventPublisher {
             case "JobEvent":
                 maybeRun(onJobEvent);
                 break;
-            default:
-                LOGGER.debug("Unknown type of event '{}', ignoring for this publisher", event.getType());
         }
     }
 
