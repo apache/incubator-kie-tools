@@ -1,0 +1,38 @@
+id: flink-workflow
+version: "1.0"
+specVersion: "0.8"
+name: flink workflow
+description: Create a starter flink job management
+functions:
+  - name: getItems
+    operation: specs/openapi.yaml#getItems
+  - name: getOrders
+    operation: specs/openapi.yaml#getOrders
+  - name: createOrder
+    operation: specs/openapi.yaml#createOrder
+  - name: getOrder
+    operation: specs/openapi.yaml#getOrder
+start: Get Flink Jars
+states:
+  - name: Get Flink Jars
+    type: operation
+    actionMode: sequential
+    actions:
+      - name: Get Flink Jars
+        functionRef:
+          refName: getJars
+    transition: Run Flink Job
+  - name: Run Flink Job
+    type: operation
+    actionMode: sequential
+    actions:
+      - actionDataFilter:
+          useResults: true
+        name: Run Flink Job
+        functionRef:
+          refName: runFlinkJob
+          arguments:
+            jarid: 72ecfc25-43ca-4f53-a4ee-1aaf93ac709a_flink-streaming-1.0.jar
+            entry-class: com.demo.flink.streaming.StreamingJob
+    end:
+      terminate: true

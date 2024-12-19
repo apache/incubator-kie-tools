@@ -27,6 +27,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"reflect"
 	"strings"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
@@ -158,22 +159,9 @@ func (m *OpenApiMinifier) minifySpecsFile(specFileName string, operations sets.S
 		return "", fmt.Errorf("❌ ERROR: failed to read OpenAPI document: %w", err)
 	}
 
-	doc, err := openapi3.NewLoader().LoadFromData(data)
+	doc, err := m.removeUnusedNodes(data, specFile, operations)
 	if err != nil {
-		return "", fmt.Errorf("❌ ERROR: failed to load OpenAPI document: %w", err)
-	}
-	if doc.Paths == nil {
-		return "", fmt.Errorf("OpenAPI document %s has no paths", specFileName)
-	}
-	for key, value := range doc.Paths.Map() {
-		for method, operation := range value.Operations() {
-			if !operations.Has(operation.OperationID) {
-				value.SetOperation(method, nil)
-			}
-		}
-		if isPathItemEmpty(value) {
-			doc.Paths.Delete(key)
-		}
+		return "", err
 	}
 
 	minifiedFile, err := m.writeMinifiedFileToDisk(specFile, doc)
@@ -192,6 +180,66 @@ func (m *OpenApiMinifier) minifySpecsFile(specFileName string, operations sets.S
 
 	fmt.Printf("✅ Minified file %s created with %d bytes (original size: %d bytes)\n", minifiedFile, finalSize, initialSize.Size())
 	return minifiedFile, nil
+}
+
+func (m *OpenApiMinifier) removeUnusedNodes(data []byte, specFileName string, operations sets.Set[string]) (*openapi3.T, error) {
+	doc, err := openapi3.NewLoader().LoadFromData(data)
+
+	collector, err := newCollector(specFileName)
+	if err != nil {
+		return nil, err
+	}
+
+	keep, err := collector.collect(operations)
+	if err != nil {
+		return nil, err
+	}
+
+	if err != nil {
+		return nil, fmt.Errorf("❌ ERROR: failed to load OpenAPI document: %w", err)
+	}
+	if doc.Paths == nil {
+		return nil, fmt.Errorf("OpenAPI document %s has no paths", specFileName)
+	}
+	for key, value := range doc.Paths.Map() {
+		for method, operation := range value.Operations() {
+			if !operations.Has(operation.OperationID) {
+				value.SetOperation(method, nil)
+			}
+		}
+		if isPathItemEmpty(value) {
+			doc.Paths.Delete(key)
+		}
+	}
+
+	if doc.Components != nil {
+		// note we have to skip securitySchemes, because it aren't referenced by operation directly via $ref
+		components := map[string]interface{}{
+			"schemas":       doc.Components.Schemas,
+			"headers":       doc.Components.Headers,
+			"parameters":    doc.Components.Parameters,
+			"responses":     doc.Components.Responses,
+			"requestBodies": doc.Components.RequestBodies,
+			"examples":      doc.Components.Examples,
+			"links":         doc.Components.Links,
+			"callbacks":     doc.Components.Callbacks,
+		}
+
+		for key, componentMap := range components {
+			if componentMap == nil {
+				continue
+			}
+
+			componentValue := reflect.ValueOf(componentMap)
+			for _, name := range componentValue.MapKeys() {
+				nameStr := name.String()
+				if !keep["components"][key].Has(nameStr) {
+					componentValue.SetMapIndex(name, reflect.Value{})
+				}
+			}
+		}
+	}
+	return doc, nil
 }
 
 func (m *OpenApiMinifier) findWorkflowFile() error {
