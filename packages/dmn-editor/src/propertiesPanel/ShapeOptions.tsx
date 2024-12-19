@@ -454,7 +454,7 @@ export function ShapeOptions({
                         value={isDimensioningEnabled ? width : undefined}
                         placeholder={isDimensioningEnabled ? "Enter a value..." : undefined}
                         onBlur={onBlurWidth}
-                        onChange={(_event, _val) => onChangeWidth}
+                        onChange={(_event, val) => onChangeWidth(val)}
                         style={{ border: "none", backgroundColor: "transparent" }}
                       />
                       <div>
@@ -482,7 +482,7 @@ export function ShapeOptions({
                         value={isDimensioningEnabled ? height : undefined}
                         placeholder={isDimensioningEnabled ? "Enter a value..." : undefined}
                         onBlur={onBlurHeight}
-                        onChange={(_event, _val) => onChangeHeight}
+                        onChange={(_event, val) => onChangeHeight(val)}
                         style={{ border: "none", backgroundColor: "transparent" }}
                       />
                       <div>
@@ -520,7 +520,7 @@ export function ShapeOptions({
                     type={"number"}
                     isDisabled={settings.isReadOnly}
                     value={boundPositionX}
-                    onChange={(_event, _val) => onChangePositionX}
+                    onChange={(_event, val) => onChangePositionX(val)}
                     placeholder={"Enter X value..."}
                   />
                 </div>
@@ -537,7 +537,7 @@ export function ShapeOptions({
                     type={"number"}
                     isDisabled={settings.isReadOnly}
                     value={boundPositionY}
-                    onChange={(_event, _val) => onChangePositionY}
+                    onChange={(_event, val) => onChangePositionY(val)}
                     placeholder={"Enter Y value..."}
                   />
                 </div>

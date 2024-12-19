@@ -272,7 +272,7 @@ export const constraintTypeHelper = (
           return (
             <TextInput
               autoFocus={props.autoFocus}
-              onChange={(_event, _val) => props.onChange}
+              onChange={(_event, val) => props.onChange(val)}
               id={props.id}
               isDisabled={props.isDisabled}
               value={props.value}
@@ -287,7 +287,7 @@ export const constraintTypeHelper = (
           return (
             <TextInput
               autoFocus={props.autoFocus}
-              onChange={(_event, _val) => props.onChange}
+              onChange={(_event, val) => props.onChange(val)}
               id={props.id}
               isDisabled={props.isDisabled}
               value={props.value}
@@ -778,7 +778,7 @@ export function Constraints({
                 text={ConstraintsType.NONE}
                 buttonId={ConstraintsType.NONE}
                 isSelected={internalSelectedConstraint.selectedConstraint === ConstraintsType.NONE}
-                onChange={(_event, _val) => onToggleGroupChangeInternal}
+                onChange={(event, val) => onToggleGroupChangeInternal(val, event)}
                 isDisabled={isReadOnly}
               />
               <ToggleGroupItem
@@ -790,21 +790,21 @@ export function Constraints({
                 text={ConstraintsType.EXPRESSION}
                 buttonId={ConstraintsType.EXPRESSION}
                 isSelected={internalSelectedConstraint.selectedConstraint === ConstraintsType.EXPRESSION}
-                onChange={(_event, _val) => onToggleGroupChangeInternal}
+                onChange={(event, val) => onToggleGroupChangeInternal(val, event)}
                 isDisabled={isReadOnly || !isConstraintEnabled.expression}
               />
               <ToggleGroupItem
                 text={ConstraintsType.ENUMERATION}
                 buttonId={ConstraintsType.ENUMERATION}
                 isSelected={internalSelectedConstraint.selectedConstraint === ConstraintsType.ENUMERATION}
-                onChange={(_event, _val) => onToggleGroupChangeInternal}
+                onChange={(event, val) => onToggleGroupChangeInternal(val, event)}
                 isDisabled={isReadOnly || !isConstraintEnabled.enumeration}
               />
               <ToggleGroupItem
                 text={ConstraintsType.RANGE}
                 buttonId={ConstraintsType.RANGE}
                 isSelected={internalSelectedConstraint.selectedConstraint === ConstraintsType.RANGE}
-                onChange={(_event, _val) => onToggleGroupChangeInternal}
+                onChange={(event, val) => onToggleGroupChangeInternal(val, event)}
                 isDisabled={isReadOnly || !isConstraintEnabled.range}
               />
             </ToggleGroup>
