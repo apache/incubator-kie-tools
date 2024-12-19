@@ -32,11 +32,9 @@ import io.quarkus.arc.profile.IfBuildProfile;
 import java.util.Collection;
 import java.util.Objects;
 @ApplicationScoped
-@Default
 @IfBuildProfile("dev")
 public class JBPMDevUIEventPublisher implements EventPublisher {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JBPMDevUIEventPublisher.class);
     private Runnable onProcessEvent;
     private Runnable onTaskEvent;
     private Runnable onJobEvent;
