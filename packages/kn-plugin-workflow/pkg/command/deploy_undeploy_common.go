@@ -51,6 +51,7 @@ type DeployUndeployCmdConfig struct {
 	SubFlowsFilesPath          []string
 	DashboardsPath             []string
 	Minify                     bool
+	Wait					   bool
 }
 
 func checkEnvironment(cfg *DeployUndeployCmdConfig) error {
@@ -83,13 +84,10 @@ func checkEnvironment(cfg *DeployUndeployCmdConfig) error {
 }
 
 func generateManifests(cfg *DeployUndeployCmdConfig) error {
-
-	workflowExtensionsType := []string{metadata.YAMLSWExtension, metadata.YMLSWExtension, metadata.JSONSWExtension}
-
 	fmt.Println("\n🛠️  Generating your manifests...")
 
 	fmt.Println("🔍 Looking for your SonataFlow files...")
-	if file, err := common.FindSonataFlowFile(workflowExtensionsType); err != nil {
+	if file, err := common.FindSonataFlowFile(common.WorkflowExtensionsType); err != nil {
 		return err
 	} else {
 		cfg.SonataFlowFile = file
@@ -97,7 +95,7 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 	fmt.Printf(" - ✅ SonataFlow file found: %s\n", cfg.SonataFlowFile)
 
 	fmt.Println("🔍 Looking for your SonataFlow sub flows...")
-	files, err := common.FindFilesWithExtensions(cfg.SubflowsDir, workflowExtensionsType)
+	files, err := common.FindFilesWithExtensions(cfg.SubflowsDir, common.WorkflowExtensionsType)
 	if err != nil {
 		return fmt.Errorf("❌ ERROR: failed to get subflows directory: %w", err)
 	}
