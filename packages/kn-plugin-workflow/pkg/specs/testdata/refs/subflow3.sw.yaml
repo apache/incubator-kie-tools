@@ -1,0 +1,21 @@
+---
+id: "helloworldyaml1"
+version: "1.0"
+specVersion: "0.8"
+name: "Hello World Workflow"
+description: "JSON based hello world workflow"
+start: "Inject Hello World SubFlow"
+functions:
+  - name: getItems
+    operation: specs/openapi.yaml#getItems
+states:
+  - name: "Inject Hello World SubFlow"
+    type: "inject"
+    data:
+      greeting-subflow: "Hello World SubFlow"
+    transition: "Inject Mantra SubFlow"
+  - name: "Inject Mantra SubFlow"
+    type: "inject"
+    data:
+      mantra-subflow: "SubFlow Serverless Workflow is awesome!"
+    end: true

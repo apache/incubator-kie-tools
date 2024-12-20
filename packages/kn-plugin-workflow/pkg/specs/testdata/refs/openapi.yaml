@@ -1,0 +1,320 @@
+openapi: 3.0.3
+info:
+  title: Example API
+  version: 1.0.0
+
+paths:
+  # 1. $ref within a parameter using a schema
+  /items:
+    get:
+      summary: Get a list of items
+      operationId: getItems
+      tags:
+        - items
+      parameters:
+        - name: filter
+          in: query
+          schema:
+            $ref: "#/components/schemas/FilterSchema"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Item"
+        "201":
+          description: Created
+          links:
+            GetItemById:
+              $ref: "#/components/links/GetItemById"
+
+  # 2. $ref within response headers
+  /orders:
+    get:
+      summary: Get a list of orders
+      operationId: getOrders
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: List of orders
+          headers:
+            X-Rate-Limit-Remaining:
+              $ref: "#/components/headers/RateLimitHeader"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrdersList"
+    post:
+      summary: Create a new order
+      operationId: createOrder
+      requestBody:
+        $ref: "#/components/requestBodies/CreateOrderRequest"
+      responses:
+        "201":
+          $ref: "#/components/responses/OrderCreatedResponse"
+
+  # 3. $ref within the request body schema
+  /orders/{orderId}:
+    get:
+      summary: Get order information
+      operationId: getOrder
+      parameters:
+        - name: orderId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          $ref: "#/components/responses/OrderResponse"
+        "404":
+          $ref: "#/components/responses/NotFoundResponse"
+
+    # 4. $ref for examples in responses
+    put:
+      summary: Update an order
+      operationId: updateOrder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrder"
+            examples:
+              updateExample:
+                $ref: "#/components/examples/UpdateOrderExample"
+      responses:
+        "200":
+          $ref: "#/components/responses/OrderResponse"
+
+  # 5. $ref within callbacks
+  /webhooks:
+    post:
+      summary: Set a webhook
+      operationId: setWebhook
+      requestBody:
+        $ref: "#/components/requestBodies/WebhookRequest"
+      responses:
+        "201":
+          description: Webhook set
+      callbacks:
+        onEvent:
+          $ref: "#/components/callbacks/EventCallback"
+
+  # 7. Using security schemes
+  /secure-data:
+    get:
+      summary: Get secure data
+      operationId: getSecureData
+      security:
+        - ApiKeyAuth: []
+        - OAuth2Security: ["read", "write"]
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: string
+
+components:
+  # 1. Schemas used in parameters and request bodies
+  schemas:
+    FilterSchema:
+      type: object
+      properties:
+        status:
+          type: string
+        category:
+          type: string
+    Item:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    CreateOrderSchema:
+      type: object
+      properties:
+        productId:
+          type: string
+        quantity:
+          type: integer
+    UpdateOrder:
+      type: object
+      properties:
+        status:
+          type: string
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+    OrdersList:
+      type: array
+      items:
+        $ref: "#/components/schemas/Order"
+    Event:
+      type: object
+      properties:
+        event:
+          type: string
+
+  # 2. Parameters
+  parameters:
+    OrderId:
+      name: orderId
+      in: query
+      description: Order identifier
+      required: true
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      description: Record limit
+      required: false
+      schema:
+        type: integer
+
+  # 3. Headers
+  headers:
+    RateLimitHeader:
+      description: Remaining request limit
+      schema:
+        type: integer
+
+  # 4. Request bodies
+  requestBodies:
+    CreateOrderRequest:
+      description: Data to create a new order
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/CreateOrderSchema"
+    WebhookRequest:
+      description: Data to set a webhook
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              url:
+                type: string
+
+  # 6. Responses
+  responses:
+    OrderCreatedResponse:
+      description: Order created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+    OrderCreatedResponseWithLink:
+      description: Order created
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+      links:
+        GetOrderById:
+          $ref: "#/components/links/GetOrderById"
+    OrdersResponse:
+      description: List of orders
+      headers:
+        X-Rate-Limit-Remaining:
+          $ref: "#/components/headers/RateLimitHeader"
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/OrdersList"
+    OrderResponse:
+      description: Order information
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Order"
+          examples:
+            orderExample:
+              $ref: "#/components/examples/OrderExample"
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+
+  # 7. Examples for responses
+  examples:
+    OrderExample:
+      summary: Order example
+      value:
+        id: "12345"
+        status: "processing"
+    UpdateOrderExample:
+      summary: Order update example
+      value:
+        status: "shipped"
+
+  # 8. Callbacks
+  callbacks:
+    EventCallback:
+      "{$request.body#/callbackUrl}":
+        post:
+          summary: Event received
+          requestBody:
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Event"
+          responses:
+            "200":
+              description: Event processed
+
+  # 9. Links
+  links:
+    GetOrderById:
+      operationId: getOrder
+      parameters:
+        orderId: "$response.body#/id"
+    GetItemById:
+      operationId: getItem
+      parameters:
+        itemId: "$response.body#/id"
+  # 10. Security schemes
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+    OAuth2Security:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: https://example.com/oauth/authorize
+          tokenUrl: https://example.com/oauth/token
+          scopes:
+            read: Read access
+            write: Write access
+tags:
+  - name: items
+    description: Item operations
