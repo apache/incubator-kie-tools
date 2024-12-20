@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React from "react";
+import React, { useCallback } from "react";
 import { TextContent, Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -45,28 +45,46 @@ export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
   ouiaId,
   ouiaSafe,
 }) => {
-  const modalContent = () => {
+  const checkNumericProperty = useCallback((propertyValue?: number) => {
+    return propertyValue !== undefined && propertyValue !== null;
+  }, []);
+
+  const modalContent = useCallback(() => {
     return (
       <div className="kogito-management-console-shared--jobsModal__detailsModal">
         <TextContent>
           <Flex direction={{ default: "column" }}>
-            <FlexItem>
-              <Split hasGutter>
-                <SplitItem>
-                  <Text component={TextVariants.h6}>Process Id: </Text>{" "}
-                </SplitItem>
-                <SplitItem>{job.processId}</SplitItem>
-              </Split>
-            </FlexItem>
-            <FlexItem>
-              <Split hasGutter>
-                <SplitItem>
-                  {" "}
-                  <Text component={TextVariants.h6}>Process Instance Id: </Text>{" "}
-                </SplitItem>
-                <SplitItem>{job.processInstanceId}</SplitItem>
-              </Split>
-            </FlexItem>
+            {job.processId && (
+              <FlexItem>
+                <Split hasGutter>
+                  <SplitItem>
+                    <Text component={TextVariants.h6}>Process Id: </Text>{" "}
+                  </SplitItem>
+                  <SplitItem>{job.processId}</SplitItem>
+                </Split>
+              </FlexItem>
+            )}
+            {job.processInstanceId && (
+              <FlexItem>
+                <Split hasGutter>
+                  <SplitItem>
+                    {" "}
+                    <Text component={TextVariants.h6}>Process Instance Id: </Text>{" "}
+                  </SplitItem>
+                  <SplitItem>{job.processInstanceId}</SplitItem>
+                </Split>
+              </FlexItem>
+            )}
+            {job.nodeInstanceId && (
+              <FlexItem>
+                <Split hasGutter>
+                  <SplitItem>
+                    <Text component={TextVariants.h6}>Node Instance Id: </Text>
+                  </SplitItem>
+                  <SplitItem>{job.nodeInstanceId}</SplitItem>
+                </Split>
+              </FlexItem>
+            )}
             <FlexItem>
               <Split hasGutter>
                 <SplitItem>
@@ -75,83 +93,95 @@ export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
                 <SplitItem>{job.status}</SplitItem>
               </Split>
             </FlexItem>
-            <FlexItem>
-              <Split hasGutter>
-                <SplitItem>
-                  <Text component={TextVariants.h6}>Priority: </Text>{" "}
-                </SplitItem>
-                <SplitItem>{job.priority}</SplitItem>
-              </Split>
-            </FlexItem>
-            {job.repeatInterval && (
+            {checkNumericProperty(job.priority) && (
               <FlexItem>
                 <Split hasGutter>
                   <SplitItem>
-                    <Text component={TextVariants.h6}>RepeatInterval: </Text>
+                    <Text component={TextVariants.h6}>Priority: </Text>{" "}
+                  </SplitItem>
+                  <SplitItem>{job.priority}</SplitItem>
+                </Split>
+              </FlexItem>
+            )}
+            {checkNumericProperty(job.repeatInterval) && (
+              <FlexItem>
+                <Split hasGutter>
+                  <SplitItem>
+                    <Text component={TextVariants.h6}>Repeat Interval: </Text>
                   </SplitItem>
                   <SplitItem>{job.repeatInterval}</SplitItem>
                 </Split>
               </FlexItem>
             )}
-            {job.repeatLimit && (
+            {checkNumericProperty(job.repeatLimit) && (
               <FlexItem>
                 <Split hasGutter>
                   <SplitItem>
-                    <Text component={TextVariants.h6}>RepeatLimit: </Text>
+                    <Text component={TextVariants.h6}>Repeat Limit: </Text>
                   </SplitItem>
                   <SplitItem>{job.repeatLimit}</SplitItem>
                 </Split>
               </FlexItem>
             )}
-            <FlexItem>
-              <Split hasGutter>
-                <SplitItem>
-                  <Text component={TextVariants.h6}>ScheduledId: </Text>
-                </SplitItem>
-                <SplitItem>{job.scheduledId}</SplitItem>
-              </Split>
-            </FlexItem>
-            <FlexItem>
-              <Split hasGutter>
-                <SplitItem>
-                  <Text component={TextVariants.h6}>Retries: </Text>
-                </SplitItem>
-                <SplitItem>{job.retries}</SplitItem>
-              </Split>
-            </FlexItem>
-            <FlexItem>
-              <Split hasGutter>
-                <SplitItem>
-                  <Text component={TextVariants.h6}>Execution counter: </Text>
-                </SplitItem>
-                <SplitItem>{job.executionCounter}</SplitItem>
-              </Split>
-            </FlexItem>
-            <FlexItem>
-              <Split hasGutter>
-                <SplitItem>
-                  <Text component={TextVariants.h6}>Last Updated: </Text>
-                </SplitItem>
-                <SplitItem>
-                  <Moment fromNow>{new Date(`${job.lastUpdate}`)}</Moment>
-                </SplitItem>
-              </Split>
-            </FlexItem>
-            <FlexItem>
-              <Split hasGutter>
-                <SplitItem>
-                  <Text component={TextVariants.h6} className="kogito-management-console-shared--jobsModal__text">
-                    Callback Endpoint:{" "}
-                  </Text>
-                </SplitItem>
-                <SplitItem>{job.callbackEndpoint}</SplitItem>
-              </Split>
-            </FlexItem>
+            {job.scheduledId && (
+              <FlexItem>
+                <Split hasGutter>
+                  <SplitItem>
+                    <Text component={TextVariants.h6}>Scheduled Id: </Text>
+                  </SplitItem>
+                  <SplitItem>{job.scheduledId}</SplitItem>
+                </Split>
+              </FlexItem>
+            )}
+            {checkNumericProperty(job.retries) && (
+              <FlexItem>
+                <Split hasGutter>
+                  <SplitItem>
+                    <Text component={TextVariants.h6}>Retries: </Text>
+                  </SplitItem>
+                  <SplitItem>{job.retries}</SplitItem>
+                </Split>
+              </FlexItem>
+            )}
+            {checkNumericProperty(job.executionCounter) && (
+              <FlexItem>
+                <Split hasGutter>
+                  <SplitItem>
+                    <Text component={TextVariants.h6}>Execution counter: </Text>
+                  </SplitItem>
+                  <SplitItem>{job.executionCounter}</SplitItem>
+                </Split>
+              </FlexItem>
+            )}
+            {job.lastUpdate && (
+              <FlexItem>
+                <Split hasGutter>
+                  <SplitItem>
+                    <Text component={TextVariants.h6}>Last Updated: </Text>
+                  </SplitItem>
+                  <SplitItem>
+                    <Moment fromNow>{new Date(`${job.lastUpdate}`)}</Moment>
+                  </SplitItem>
+                </Split>
+              </FlexItem>
+            )}
+            {job.callbackEndpoint && (
+              <FlexItem>
+                <Split hasGutter>
+                  <SplitItem>
+                    <Text component={TextVariants.h6} className="kogito-management-console-shared--jobsModal__text">
+                      Callback Endpoint:{" "}
+                    </Text>
+                  </SplitItem>
+                  <SplitItem>{job.callbackEndpoint}</SplitItem>
+                </Split>
+              </FlexItem>
+            )}
           </Flex>
         </TextContent>
       </div>
     );
-  };
+  }, [job, checkNumericProperty]);
   return (
     <Modal
       variant={"large"}

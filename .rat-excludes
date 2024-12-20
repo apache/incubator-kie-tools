@@ -2036,3 +2036,5 @@ scripts.iml
 index.test.js
 # scripts/check-junit-report-results/tests/reports/empty.xml
 empty.xml
+# packages/runtime-tools-process-gateway-api/src/graphql/types.tsx
+types.tsx

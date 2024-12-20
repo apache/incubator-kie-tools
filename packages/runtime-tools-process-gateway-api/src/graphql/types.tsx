@@ -1,22 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *  http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-
 /* eslint-disable */
 import gql from "graphql-tag";
 import * as ApolloReactCommon from "@apollo/react-common";
@@ -280,6 +261,7 @@ export namespace GraphQL {
     start?: InputMaybe<DateArgument>;
     state?: InputMaybe<ProcessInstanceStateArgument>;
     updatedBy?: InputMaybe<StringArgument>;
+    variables?: InputMaybe<Scalars["JSON"]>;
   };
 
   export type StringArrayArgument = {
@@ -360,6 +342,7 @@ export namespace GraphQL {
     rootProcessId?: Maybe<Scalars["String"]>;
     rootProcessInstanceId?: Maybe<Scalars["String"]>;
     serviceUrl?: Maybe<Scalars["String"]>;
+    slaDueDate?: Maybe<Scalars["DateTime"]>;
     source?: Maybe<Scalars["String"]>;
     start?: Maybe<Scalars["DateTime"]>;
     state?: Maybe<ProcessInstanceState>;
@@ -389,6 +372,7 @@ export namespace GraphQL {
     id: Scalars["String"];
     name: Scalars["String"];
     nodeId: Scalars["String"];
+    slaDueDate?: Maybe<Scalars["DateTime"]>;
     type: Scalars["String"];
   };
 
@@ -451,6 +435,7 @@ export namespace GraphQL {
     description?: Maybe<Scalars["String"]>;
     endpoint?: Maybe<Scalars["String"]>;
     excludedUsers?: Maybe<Array<Scalars["String"]>>;
+    externalReferenceId?: Maybe<Scalars["String"]>;
     id: Scalars["String"];
     inputs?: Maybe<Scalars["String"]>;
     lastUpdate: Scalars["DateTime"];
@@ -465,6 +450,7 @@ export namespace GraphQL {
     rootProcessId?: Maybe<Scalars["String"]>;
     rootProcessInstanceId?: Maybe<Scalars["String"]>;
     schema?: Maybe<Scalars["String"]>;
+    slaDueDate?: Maybe<Scalars["DateTime"]>;
     started?: Maybe<Scalars["DateTime"]>;
     state?: Maybe<Scalars["String"]>;
   };
@@ -1338,6 +1324,7 @@ export namespace GraphQL {
       retries?: number | null;
       lastUpdate?: any | null;
       endpoint?: string | null;
+      nodeInstanceId?: string | null;
       executionCounter?: number | null;
     } | null> | null;
   };
@@ -1367,6 +1354,17 @@ export namespace GraphQL {
   export type GetProcessInstanceSvgQuery = {
     __typename?: "Query";
     ProcessInstances?: Array<{ __typename?: "ProcessInstance"; diagram?: string | null } | null> | null;
+  };
+
+  export type GetProcessDefinitionsQueryVariables = Exact<{ [key: string]: never }>;
+
+  export type GetProcessDefinitionsQuery = {
+    __typename?: "Query";
+    ProcessDefinitions?: Array<{
+      __typename?: "ProcessDefinition";
+      id: string;
+      endpoint?: string | null;
+    } | null> | null;
   };
 
   export type GetProcessDefinitionNodesQueryVariables = Exact<{
@@ -1424,15 +1422,6 @@ export namespace GraphQL {
   }>;
 
   export type HandleJobRescheduleMutation = { __typename?: "Mutation"; JobReschedule?: string | null };
-
-  export const GetProcessDefinitionsDocument = gql`
-    query getProcessDefinitions {
-      ProcessDefinitions {
-        id
-        endpoint
-      }
-    }
-  `;
 
   export const GetProcessInstancesDocument = gql`
     query getProcessInstances(
@@ -2285,6 +2274,7 @@ export namespace GraphQL {
         retries
         lastUpdate
         endpoint
+        nodeInstanceId
         executionCounter
       }
     }
@@ -2515,6 +2505,54 @@ export namespace GraphQL {
   export type GetProcessInstanceSvgQueryResult = ApolloReactCommon.QueryResult<
     GetProcessInstanceSvgQuery,
     GetProcessInstanceSvgQueryVariables
+  >;
+  export const GetProcessDefinitionsDocument = gql`
+    query getProcessDefinitions {
+      ProcessDefinitions {
+        id
+        endpoint
+      }
+    }
+  `;
+
+  /**
+   * __useGetProcessDefinitionsQuery__
+   *
+   * To run a query within a React component, call `useGetProcessDefinitionsQuery` and pass it any options that fit your needs.
+   * When your component renders, `useGetProcessDefinitionsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+   * you can use to render your UI.
+   *
+   * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+   *
+   * @example
+   * const { data, loading, error } = useGetProcessDefinitionsQuery({
+   *   variables: {
+   *   },
+   * });
+   */
+  export function useGetProcessDefinitionsQuery(
+    baseOptions?: ApolloReactHooks.QueryHookOptions<GetProcessDefinitionsQuery, GetProcessDefinitionsQueryVariables>
+  ) {
+    const options = { ...defaultOptions, ...baseOptions };
+    return ApolloReactHooks.useQuery<GetProcessDefinitionsQuery, GetProcessDefinitionsQueryVariables>(
+      GetProcessDefinitionsDocument,
+      options
+    );
+  }
+  export function useGetProcessDefinitionsLazyQuery(
+    baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetProcessDefinitionsQuery, GetProcessDefinitionsQueryVariables>
+  ) {
+    const options = { ...defaultOptions, ...baseOptions };
+    return ApolloReactHooks.useLazyQuery<GetProcessDefinitionsQuery, GetProcessDefinitionsQueryVariables>(
+      GetProcessDefinitionsDocument,
+      options
+    );
+  }
+  export type GetProcessDefinitionsQueryHookResult = ReturnType<typeof useGetProcessDefinitionsQuery>;
+  export type GetProcessDefinitionsLazyQueryHookResult = ReturnType<typeof useGetProcessDefinitionsLazyQuery>;
+  export type GetProcessDefinitionsQueryResult = ApolloReactCommon.QueryResult<
+    GetProcessDefinitionsQuery,
+    GetProcessDefinitionsQueryVariables
   >;
   export const GetProcessDefinitionNodesDocument = gql`
     query getProcessDefinitionNodes($processId: String) {
