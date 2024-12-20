@@ -23,8 +23,9 @@ import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core
 import { useDmnRunnerState } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { DmnRunnerErrorBoundary } from "./DmnRunnerErrorBoundary";
+import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 
-export function DmnRunnerDrawer(props: React.PropsWithChildren<{}>) {
+export function DmnRunnerDrawer(props: React.PropsWithChildren<{ editor: EmbeddedEditorRef | undefined }>) {
   const dmnRunnerState = useDmnRunnerState();
   return (
     <Drawer
@@ -38,7 +39,7 @@ export function DmnRunnerDrawer(props: React.PropsWithChildren<{}>) {
         }
         panelContent={
           <DmnRunnerErrorBoundary>
-            <DmnRunnerDrawerPanelContent />
+            <DmnRunnerDrawerPanelContent editor={props.editor} />
           </DmnRunnerErrorBoundary>
         }
       >
