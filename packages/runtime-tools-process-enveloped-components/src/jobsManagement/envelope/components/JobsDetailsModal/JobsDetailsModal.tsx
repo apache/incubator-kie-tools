@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React from "react";
+import React, { useCallback } from "react";
 import { TextContent, Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -45,7 +45,11 @@ export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
   ouiaId,
   ouiaSafe,
 }) => {
-  const modalContent = () => {
+  const checkNumericProperty = useCallback((propertyValue?: number) => {
+    return propertyValue !== undefined && propertyValue !== null;
+  }, []);
+
+  const modalContent = useCallback(() => {
     return (
       <div className="kogito-management-console-shared--jobsModal__detailsModal">
         <TextContent>
@@ -89,7 +93,7 @@ export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
                 <SplitItem>{job.status}</SplitItem>
               </Split>
             </FlexItem>
-            {job.priority !== undefined && (
+            {checkNumericProperty(job.priority) && (
               <FlexItem>
                 <Split hasGutter>
                   <SplitItem>
@@ -99,7 +103,7 @@ export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
                 </Split>
               </FlexItem>
             )}
-            {job.repeatInterval !== undefined && (
+            {checkNumericProperty(job.repeatInterval) && (
               <FlexItem>
                 <Split hasGutter>
                   <SplitItem>
@@ -109,7 +113,7 @@ export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
                 </Split>
               </FlexItem>
             )}
-            {job.repeatLimit !== undefined && (
+            {checkNumericProperty(job.repeatLimit) && (
               <FlexItem>
                 <Split hasGutter>
                   <SplitItem>
@@ -129,7 +133,7 @@ export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
                 </Split>
               </FlexItem>
             )}
-            {job.retries !== undefined && (
+            {checkNumericProperty(job.retries) && (
               <FlexItem>
                 <Split hasGutter>
                   <SplitItem>
@@ -139,7 +143,7 @@ export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
                 </Split>
               </FlexItem>
             )}
-            {job.executionCounter !== undefined && (
+            {checkNumericProperty(job.executionCounter) && (
               <FlexItem>
                 <Split hasGutter>
                   <SplitItem>
@@ -149,7 +153,7 @@ export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
                 </Split>
               </FlexItem>
             )}
-            {job.lastUpdate !== undefined && (
+            {job.lastUpdate && (
               <FlexItem>
                 <Split hasGutter>
                   <SplitItem>
@@ -177,7 +181,7 @@ export const JobsDetailsModal: React.FC<IOwnProps & OUIAProps> = ({
         </TextContent>
       </div>
     );
-  };
+  }, [job, checkNumericProperty]);
   return (
     <Modal
       variant={"large"}
