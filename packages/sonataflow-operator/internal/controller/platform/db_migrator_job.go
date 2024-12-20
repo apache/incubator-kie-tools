@@ -22,6 +22,7 @@ package platform
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -31,9 +32,13 @@ import (
 	"k8s.io/klog/v2"
 	"k8s.io/utils/pointer"
 
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/version"
+
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/container-builder/client"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/platform/services"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/constants"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
 )
 
@@ -58,6 +63,18 @@ const (
 	dbMigrationCmd           = "./migration.sh"
 	dbMigrationJobFailed     = 1
 	dbMigrationJobSucceeded  = 1
+
+	migrateDBDataIndex                 = "MIGRATE_DB_DATAINDEX"
+	quarkusDataSourceDataIndexJdbcURL  = "QUARKUS_DATASOURCE_DATAINDEX_JDBC_URL"
+	quarkusDataSourceDataIndexUserName = "QUARKUS_DATASOURCE_DATAINDEX_USERNAME"
+	quarkusDataSourceDataIndexPassword = "QUARKUS_DATASOURCE_DATAINDEX_PASSWORD"
+	quarkusFlywayDataIndexSchemas      = "QUARKUS_FLYWAY_DATAINDEX_SCHEMAS"
+
+	migrateDBJobsService                 = "MIGRATE_DB_JOBSSERVICE"
+	quarkusDataSourceJobsServiceJdbcURL  = "QUARKUS_DATASOURCE_JOBSSERVICE_JDBC_URL"
+	quarkusDataSourceJobsServiceUserName = "QUARKUS_DATASOURCE_JOBSSERVICE_USERNAME"
+	quarkusDataSourceJobsServicePassword = "QUARKUS_DATASOURCE_JOBSSERVICE_PASSWORD"
+	quarkusFlywayJobsServiceSchemas      = "QUARKUS_FLYWAY_JOBSSERVICE_SCHEMAS"
 )
 
 type DBMigrationJobCfg struct {
@@ -121,11 +138,11 @@ func NewDBMigratorJobData(ctx context.Context, client client.Client, platform *o
 		quarkusDataSourceJobService := &QuarkusDataSource{}
 
 		if diJobsBasedDBMigration {
-			quarkusDataSourceDataIndex = getQuarkusDataSourceFromPersistence(ctx, platform, platform.Spec.Services.DataIndex.Persistence, "defaultDi")
+			quarkusDataSourceDataIndex = getQuarkusDataSourceFromPersistence(ctx, platform, platform.Spec.Services.DataIndex.Persistence, "data-index-service")
 		}
 
 		if jsJobsBasedDBMigration {
-			quarkusDataSourceJobService = getQuarkusDataSourceFromPersistence(ctx, platform, platform.Spec.Services.JobService.Persistence, "defaultJs")
+			quarkusDataSourceJobService = getQuarkusDataSourceFromPersistence(ctx, platform, platform.Spec.Services.JobService.Persistence, "jobs-service")
 		}
 
 		return &DBMigratorJob{
@@ -138,7 +155,7 @@ func NewDBMigratorJobData(ctx context.Context, client client.Client, platform *o
 	return nil
 }
 
-func getNewQuarkusDataSource(jdbcURL string, userName string, password string, schema string) *QuarkusDataSource {
+func newQuarkusDataSource(jdbcURL string, userName string, password string, schema string) *QuarkusDataSource {
 	return &QuarkusDataSource{
 		JdbcUrl:  jdbcURL,
 		Username: userName,
@@ -149,8 +166,8 @@ func getNewQuarkusDataSource(jdbcURL string, userName string, password string, s
 
 func (dbmj DBMigratorJob) CreateJobDBMigration(platform *operatorapi.SonataFlowPlatform) *batchv1.Job {
 
-	diQuarkusDataSource := getNewQuarkusDataSource("", "", "", "")
-	jsQuarkusDataSource := getNewQuarkusDataSource("", "", "", "")
+	diQuarkusDataSource := newQuarkusDataSource("", "", "", "")
+	jsQuarkusDataSource := newQuarkusDataSource("", "", "", "")
 
 	if dbmj.DataIndexDataSource != nil {
 		diQuarkusDataSource.JdbcUrl = dbmj.DataIndexDataSource.JdbcUrl
@@ -166,7 +183,7 @@ func (dbmj DBMigratorJob) CreateJobDBMigration(platform *operatorapi.SonataFlowP
 		jsQuarkusDataSource.Schema = dbmj.JobsServiceDataSource.Schema
 	}
 
-	dbMigrationJobCfg := getDBMigrationJobCfg()
+	dbMigrationJobCfg := newDBMigrationJobCfg()
 	job := &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      dbMigrationJobCfg.JobName,
@@ -181,43 +198,43 @@ func (dbmj DBMigratorJob) CreateJobDBMigration(platform *operatorapi.SonataFlowP
 							Image: dbMigrationJobCfg.ToolImageName,
 							Env: []corev1.EnvVar{
 								{
-									Name:  "MIGRATE_DB_DATAINDEX",
+									Name:  migrateDBDataIndex,
 									Value: strconv.FormatBool(dbmj.MigrateDBDataIndex),
 								},
 								{
-									Name:  "QUARKUS_DATASOURCE_DATAINDEX_JDBC_URL",
+									Name:  quarkusDataSourceDataIndexJdbcURL,
 									Value: diQuarkusDataSource.JdbcUrl,
 								},
 								{
-									Name:  "QUARKUS_DATASOURCE_DATAINDEX_USERNAME",
+									Name:  quarkusDataSourceDataIndexUserName,
 									Value: diQuarkusDataSource.Username,
 								},
 								{
-									Name:  "QUARKUS_DATASOURCE_DATAINDEX_PASSWORD",
+									Name:  quarkusDataSourceDataIndexPassword,
 									Value: diQuarkusDataSource.Password,
 								},
 								{
-									Name:  "QUARKUS_FLYWAY_DATAINDEX_SCHEMAS",
+									Name:  quarkusFlywayDataIndexSchemas,
 									Value: diQuarkusDataSource.Schema,
 								},
 								{
-									Name:  "MIGRATE_DB_JOBSSERVICE",
+									Name:  migrateDBJobsService,
 									Value: strconv.FormatBool(dbmj.MigrateDBJobsService),
 								},
 								{
-									Name:  "QUARKUS_DATASOURCE_JOBSSERVICE_JDBC_URL",
+									Name:  quarkusDataSourceJobsServiceJdbcURL,
 									Value: jsQuarkusDataSource.JdbcUrl,
 								},
 								{
-									Name:  "QUARKUS_DATASOURCE_JOBSSERVICE_USERNAME",
+									Name:  quarkusDataSourceJobsServiceUserName,
 									Value: jsQuarkusDataSource.Username,
 								},
 								{
-									Name:  "QUARKUS_DATASOURCE_JOBSSERVICE_PASSWORD",
+									Name:  quarkusDataSourceJobsServicePassword,
 									Value: jsQuarkusDataSource.Password,
 								},
 								{
-									Name:  "QUARKUS_FLYWAY_JOBSSERVICE_SCHEMAS",
+									Name:  quarkusFlywayJobsServiceSchemas,
 									Value: jsQuarkusDataSource.Schema,
 								},
 							},
@@ -265,11 +282,22 @@ func UpdateSonataFlowPlatformDBMigrationPhase(dbMigrationStatus *operatorapi.Son
 	return nil
 }
 
-func getDBMigrationJobCfg() *DBMigrationJobCfg {
+func getKogitoDBMigratorToolImageName() string {
+
+	imgTag := cfg.GetCfg().KogitoDBMigratorToolImageTag
+
+	if imgTag == "" {
+		// returns "docker.io/apache/incubator-kie-kogito-db-migrator-tool:<tag>"
+		imgTag = fmt.Sprintf("%s-%s:%s", constants.ImageNamePrefix, constants.KogitoDBMigratorTool, version.GetImageTagVersion())
+	}
+	return imgTag
+}
+
+func newDBMigrationJobCfg() *DBMigrationJobCfg {
 	return &DBMigrationJobCfg{
 		JobName:       dbMigrationJobName,
 		ContainerName: dbMigrationContainerName,
-		ToolImageName: dbMigratorToolImage,
+		ToolImageName: getKogitoDBMigratorToolImageName(),
 		MigrationCmd:  dbMigrationCmd,
 	}
 }
