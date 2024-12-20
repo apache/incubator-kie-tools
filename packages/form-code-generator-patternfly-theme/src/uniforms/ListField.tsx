@@ -115,6 +115,7 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
     pfImports: [...new Set(["Split", "SplitItem", "Button", ...(listItem?.pfImports ?? [])])],
     reactImports: [...new Set([...(listItem?.reactImports ?? [])])],
     requiredCode: [...new Set([...(listItem?.requiredCode ?? [])])],
+    // requiredIcons: ["PlusCircleIcon", "MinusCircleIcon"],
     jsxCode,
     stateCode: getStateCode(ref.stateName, ref.stateSetter, "any[]", "[]"),
     isReadonly: props.disabled,

@@ -37,7 +37,6 @@ describe("<ListField> tests", () => {
 
     const props: AutoFormProps = {
       id: "id",
-      sanitizedId: "id",
       schema: createSchema(schema),
       disabled: false,
       placeholder: true,

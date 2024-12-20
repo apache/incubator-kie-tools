@@ -47,13 +47,13 @@ const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
 
   const inputJsxCode = `<TextInput
       type={'number'}
-      name={${props.itemProps?.isListItem ? getListItemName(props.itemProps, props.name) : `'${props.name}'`}}
+      name={${props.itemProps?.isListItem ? getListItemName({ itemProps: props.itemProps, name: props.name }) : `'${props.name}'`}}
       isDisabled={${props.disabled || "false"}}
       id={'${props.id}'}
       placeholder={'${props.placeholder}'}
       step={${props.decimal ? 0.01 : 1}} ${max} ${min}
-      value={${props.itemProps?.isListItem ? getListItemValue(props.itemProps, props.name) : ref.stateName}}
-      onChange={${props.itemProps?.isListItem ? getListItemOnChange(props.itemProps, props.name, (value: string) => `Number(${value})`) : `(newValue) => ${ref.stateSetter}(Number(newValue))`}}
+      value={${props.itemProps?.isListItem ? getListItemValue({ itemProps: props.itemProps, name: props.name }) : ref.stateName}}
+      onChange={${props.itemProps?.isListItem ? getListItemOnChange({ itemProps: props.itemProps, name: props.name, callback: (value: string) => `Number(${value})` }) : `(newValue) => ${ref.stateSetter}(Number(newValue))`}}
     />`;
 
   const element: FormInput = buildDefaultInputElement({

@@ -45,7 +45,7 @@ function getItemNameAndWithIsNested(name: string) {
  * `listName.$`
  * `listName.${index}.itemName`
  */
-export const getListItemName = (itemProps: ListItemProps, name: string) => {
+export const getListItemName = ({ itemProps, name }: { itemProps: ListItemProps; name: string }) => {
   const { itemName, isNested } = getItemNameAndWithIsNested(name);
   return `\`${itemProps?.listName}${isNested ? `.$\{${itemProps?.indexVariableName}}.${itemName}` : `.$\{${itemProps?.indexVariableName}}`}\``;
 };
@@ -55,7 +55,7 @@ export const getListItemName = (itemProps: ListItemProps, name: string) => {
  * `listStateName[index]`
  * `listStateName[index].itemName.`
  */
-export const getListItemValue = (itemProps: ListItemProps, name: string) => {
+export const getListItemValue = ({ itemProps, name }: { itemProps: ListItemProps; name: string }) => {
   const { itemName, isNested } = getItemNameAndWithIsNested(name);
   return `${itemProps?.listStateName}[${itemProps?.indexVariableName}]${isNested ? `.${itemName}` : ""}`;
 };
@@ -73,9 +73,22 @@ export const getListItemValue = (itemProps: ListItemProps, name: string) => {
  *    return newState;
  *  );`
  */
-export const getListItemOnChange = (itemProps: ListItemProps, name: string, callback?: (value: string) => string) => {
+export const getListItemOnChange = ({
+  itemProps,
+  name,
+  callback,
+  overrideNewValue,
+}: {
+  itemProps: ListItemProps;
+  name: string;
+  callback?: (value: string) => string;
+  overrideNewValue?: string;
+}) => {
   const { itemName, isNested } = getItemNameAndWithIsNested(name);
-  return `newValue => ${itemProps?.listStateSetter}(s => { const newState = [...s]; newState[${itemProps?.indexVariableName}]${isNested ? `.${itemName}` : ""} = newValue; return ${callback ? callback("newState") : "newState"}; })`;
+  return `
+  newValue => ${itemProps?.listStateSetter}(s => { const newState = [...s];
+  newState[${itemProps?.indexVariableName}]${isNested ? `.${itemName}` : ""} = ${callback ? callback(overrideNewValue ? overrideNewValue : "newValue") : overrideNewValue ? overrideNewValue : "newValue"};
+  return newState; })`;
 };
 
 export interface Props {
