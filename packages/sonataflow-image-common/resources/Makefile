@@ -41,6 +41,9 @@ endif
 
 # Check if there are Quarkus and Kogito version envs
 _check_versions:
+ifndef QUARKUS_PLATFORM_GROUPID
+	$(error Cannot build image, please provide a valid Quarkus groupId using the QUARKUS_PLATFORM_GROUPID env)
+endif
 ifndef QUARKUS_PLATFORM_VERSION
 	$(error Cannot build image, please provide a valid Quarkus version using the QUARKUS_PLATFORM_VERSION env)
 endif
@@ -51,9 +54,9 @@ endif
 # Upgrade Quarkus & Kogito versions in the images and modules
 _run_version_manager:
 ifneq ($(SONATAFLOW_QUARKUS_DEVUI_VERSION),)
-	python3 scripts/versions_manager.py --quarkus-version ${QUARKUS_PLATFORM_VERSION} --kogito-version ${KOGITO_VERSION} --sonataflow-quarkus-devui-version ${SONATAFLOW_QUARKUS_DEVUI_VERSION}
+	python3 scripts/versions_manager.py --quarkus-groupid ${QUARKUS_PLATFORM_GROUPID} --quarkus-version ${QUARKUS_PLATFORM_VERSION} --kogito-version ${KOGITO_VERSION} --sonataflow-quarkus-devui-version ${SONATAFLOW_QUARKUS_DEVUI_VERSION}
 else
-	python3 scripts/versions_manager.py --quarkus-version ${QUARKUS_PLATFORM_VERSION} --kogito-version ${KOGITO_VERSION}
+	python3 scripts/versions_manager.py --quarkus-groupid ${QUARKUS_PLATFORM_GROUPID} --quarkus-version ${QUARKUS_PLATFORM_VERSION} --kogito-version ${KOGITO_VERSION}
 endif
 
 _fix_platform_versions: _check_versions _run_version_manager
@@ -65,12 +68,6 @@ _cekit_build:
 _create_e2e_dir:
 	rm -rf ../dist-tests-e2e
 	mkdir ../dist-tests-e2e
-
-# Pull kogito-apps repo and build the target kogito-apps depending on the `KOGITO_IMAGE_NAME`s
-# Required for kogito-apps images only
-.PHONY build-kogito-app: _build_kogito_app
-_build_kogito_app:
-	scripts/build-kogito-apps-components.sh ${KOGITO_IMAGE_NAME} ${KOGITO_VERSION} ${KOGITO_APPS_TARGET_URI};
 
 # Trigger the image tests
 .PHONY test-image: _create_e2e_dir _check_kogito_image_name _test_image

@@ -25,10 +25,12 @@
           <releases>
             <enabled>true</enabled>
             <updatePolicy>never</updatePolicy>
+            <checksumPolicy>ignore</checksumPolicy> <!-- was already checked when downloaded on host machine -->
           </releases>
           <snapshots>
             <enabled>true</enabled>
             <updatePolicy>never</updatePolicy>
+            <checksumPolicy>ignore</checksumPolicy> <!-- was already checked when downloaded on host machine -->
           </snapshots>
         </repository>
       </repositories>
@@ -42,10 +44,12 @@
           <releases>
             <enabled>true</enabled>
             <updatePolicy>never</updatePolicy>
+            <checksumPolicy>ignore</checksumPolicy> <!-- was already checked when downloaded on host machine -->
           </releases>
           <snapshots>
             <enabled>true</enabled>
             <updatePolicy>never</updatePolicy>
+            <checksumPolicy>ignore</checksumPolicy> <!-- was already checked when downloaded on host machine -->
           </snapshots>
         </pluginRepository>
       </pluginRepositories>

@@ -1,0 +1,43 @@
+openapi: 3.0.1
+info:
+  title: Flink JobManager REST API
+  contact:
+    email: user@flink.apache.org
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: v1/1.20-SNAPSHOT
+paths:
+  /jars/{jarid}/run:
+    post:
+      description: Submits a job for execution.
+      operationId: submitJobFromJar
+      parameters:
+        - name: jarid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: The request was successful.
+  /jars/upload:
+    post:
+      description: Uploads a jar.
+      operationId: uploadJar
+      requestBody:
+        content:
+          application/x-java-archive:
+            schema:
+              type: string
+              format: binary
+      responses:
+        "200":
+          description: The request was successful.
+  /test:
+    get:
+      description: Test endpoint
+      operationId: test
+      responses:
+        "200":
+          description: The request was successful.

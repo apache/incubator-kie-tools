@@ -27,5 +27,5 @@ RUN rm .dockerignore .gitignore README.md \
   && rm -rf .mvn/ src/main/java/ \
   && mvn quarkus:add-extension -Dextensions="quarkus-jsonp,quarkus-smallrye-openapi,quarkus-resteasy,smallrye-health" \
   && echo -e '\nquarkus.http.enable-compression=true\nquarkus.swagger-ui.always-include=true\nquarkus.http.host=0.0.0.0\nquarkus.http.cors=true\nquarkus.http.cors.origins=*\nkogito.service.url=http://localhost:8080' >> src/main/resources/application.properties \
-  && mvn clean package -B -ntp \
+  && mvn clean package -B \
   && rm -rf target/

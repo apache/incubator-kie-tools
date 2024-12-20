@@ -28,7 +28,12 @@ import (
 )
 
 const (
-	HttpScheme = "http"
+	// DefaultServicePortName default service name to increase compatibility with Knative
+	//
+	// see: https://github.com/knative/specs/blob/main/specs/serving/runtime-contract.md#protocols-and-ports
+	// By default we do support HTTP/2:https://quarkus.io/guides/http-reference#http2-support
+	DefaultServicePortName = "h2c"
+	LatestImageTag         = "latest"
 )
 
 // GetOperatorIDAnnotation to safely get the operator id annotation value.

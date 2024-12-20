@@ -1,0 +1,12 @@
+id: helloworldyaml
+version: "1.0.0"
+specVersion: "0.8"
+name: Hello World Workflow
+description: Inject Hello World
+start: Hello State
+states:
+  - name: Hello State
+    type: inject
+    data:
+      result: Hello World YAML SubFlow! Eder
+    end: true

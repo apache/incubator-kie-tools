@@ -1,91 +1,9 @@
 Apache KIE
-Copyright 2023 The Apache Software Foundation
+Copyright 2023-2024 The Apache Software Foundation
 
 This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/).
 
 The Initial Developer of some parts of the framework, which are copied from, derived from, or
-inspired by KIE (Knowledge Is Everthing) group, is Red Hat, Inc (https://www.redhat.com/).
+inspired by KIE (Knowledge Is Everything) group, is Red Hat, Inc (https://www.redhat.com/).
 Copyright Red Hat, Inc. and/or its affiliates.. All Rights Reserved.
-
-This product also includes the following third-party components:
-
-* animate.css (http://daneden.me/animate)
-
-   Copyright (c) 2016 Daniel Eden
-
-* bootstrap (https://getbootstrap.com/)
-
-   Copyright 2011-2019 Twitter, Inc.
-
-* bootstrap-datepicker (https://github.com/smalot/bootstrap-datetimepicker)
-
-   Copyright 2012 Stefan Petre
-
-* bootstrap-select (http://silviomoreto.github.io/bootstrap-select)
-
-   Copyright 2013-2017 bootstrap-select
-
-* Context Dependency Injection (CDI)
-
-   Copyright (C) 2009 The JSR-330 Expert Group
-
-* connected (https://github.com/Vertispan/connected)
-
-   Copyright (C) 2017 Vertispan
-
-* Eclipse Modeling Framework (https://eclipse.dev/modeling/emf/)
-		
-   Copyright (C) Eclipse and contributors: Copyright (c) 2010 SAP AG
-
-* Font Awesome (https://fontawesome.com/)
-
-   Copyright Dave Gandy 2016. All rights reserved
-
-* Google Web Toolkit (GWT) (https://www.gwtproject.org/)
-
-   Copyright 2007 Google Inc.
-
-* GWT Bootstrap 3 (https://github.com/gwtbootstrap3/gwtbootstrap3)
-
-   Copyright (C) 2013 GwtBootstrap3
-
-* highlight.js (https://highlightjs.org)
-
-   Copyright (C) highlight.js
-
-* Jakarta EE (https://jakarta.ee/)
-
-   Copyright (C) Eclipse and contributors
-
-* Java Enterprise Edition (https://www.oracle.com/java/technologies/java-ee-glance.html)
-
-   Copyright (c) 2017, 2020 Oracle and/or its affiliates. All rights reserved.
-
-* Java Standard Edition (https://www.oracle.com/java/technologies/java-se-glance.html)
-
-   Copyright (c) 2005-2013 Oracle and/or its affiliates
-
-* jQuery UI (http://jqueryui.com)
-
-   Copyright jQuery Foundation
-
-* libgdx (https://github.com/libgdx/libgdx)
-
-   Copyright (c) 2008, Avian Contributors
-
-* Lienzo (https://github.com/dikalo/lienzo-core)
-		
-   Copyright (c) 2017 Ahome' Innovation Technologies
-
-* Respond.js (https://github.com/scottjehl/Respond)
-
-   Copyright 2013 Scott Jehl
-
-* SnakeYAML (https://bitbucket.org/snakeyaml/snakeyaml)
-
-   Copyright (c) 2018, SnakeYAML
-
-* wysihtml (https://github.com/Voog/wysihtml)
-
-   Copyright (C) 2012-2016 XING AG, Voog and contributors

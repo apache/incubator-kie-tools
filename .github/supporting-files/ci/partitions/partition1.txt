@@ -1,4 +1,5 @@
-@kie-tools-examples/sonataflow-greeting-quarkus-example
+@kie-tools-examples/sonataflow-greeting
+@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp
 @kie-tools/serverless-logic-web-tools-swf-builder-image
 @kie-tools/serverless-logic-web-tools
 @kie-tools/serverless-logic-web-tools-base-builder-image

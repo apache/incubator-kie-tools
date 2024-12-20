@@ -33,6 +33,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Kie Tools - SWF Image Version Manager')
     parser.add_argument('--bump-to', dest='bump_to', help='Bump all images and yamls to the next version')
     parser.add_argument('--source-folder', dest='source_folder')
+    parser.add_argument('--quarkus-groupid', dest='quarkus_groupid', help='Sets the image Quarkus groupId')
     parser.add_argument('--quarkus-version', dest='quarkus_version', help='Sets the image Quarkus Version')
     parser.add_argument('--kogito-version', dest='kogito_version', help='Sets the image Kogito Version')
     parser.add_argument('--sonataflow-quarkus-devui-version', dest='sonataflow_quarkus_devui_version', help='Sets the image SonataFlow Quarkus DevUI Version', required=False)
@@ -46,6 +47,8 @@ if __name__ == "__main__":
             common.update_image_and_modules_version(args.bump_to, args.source_folder)
         if args.kogito_version is not None:
             common.update_kogito_platform_version(args.kogito_version)
+        if args.quarkus_groupid is not None:
+            common.update_quarkus_platform_groupid(args.quarkus_groupid)
         if args.quarkus_version is not None:
             common.update_quarkus_platform_version(args.quarkus_version)
         if args.sonataflow_quarkus_devui_version is not None:

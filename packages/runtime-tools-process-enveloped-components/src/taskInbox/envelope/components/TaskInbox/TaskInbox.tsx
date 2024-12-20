@@ -45,7 +45,7 @@ export interface TaskInboxProps {
 
 const UserTaskLoadingComponent = (
   <Bullseye>
-    <KogitoSpinner spinnerText="Loading user tasks..." ouiaId="task-inbox-loading-tasks" />
+    <KogitoSpinner spinnerText="Loading user tasks..." ouiaId="tasks-loading-tasks" />
   </Bullseye>
 );
 
@@ -212,7 +212,7 @@ const TaskInbox: React.FC<TaskInboxProps & OUIAProps> = ({
   };
 
   return (
-    <div {...componentOuiaProps(ouiaId, "task-inbox", ouiaSafe)}>
+    <div {...componentOuiaProps(ouiaId, "tasks", ouiaSafe)}>
       <TaskInboxToolbar
         activeFilter={queryFilter}
         allTaskStates={allStates}
@@ -226,7 +226,7 @@ const TaskInbox: React.FC<TaskInboxProps & OUIAProps> = ({
           title="No status is selected"
           body="Try selecting at least one status to see results"
           onClick={() => doApplyFilter({ taskStates: activeStates, taskNames: [] })}
-          ouiaId="task-inbox-no-status"
+          ouiaId="tasks-no-status"
         />
       ) : (
         <>

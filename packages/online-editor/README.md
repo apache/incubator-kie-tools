@@ -37,7 +37,7 @@ More suitable for running `e2e-tests` completely.
 > Before test development, you may need to build `online-editor` as:
 >
 > - `kie-tools$ pnpm bootstrap`
-> - `kie-tools$ pnpm -r -F @kie-tools/online-editor... build:dev`
+> - `kie-tools$ pnpm -F @kie-tools/online-editor... build:dev`
 
 ## Testing insecure/invalid TLS certificates with Git providers
 

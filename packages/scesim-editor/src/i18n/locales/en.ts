@@ -137,6 +137,12 @@ export const en: TestScenarioEditorI18n = {
       title: "Settings",
     },
   },
+  errorFallBack: {
+    title: "An unexpected error happened",
+    body: "This is a bug. Please consider reporting it so the DMN Editor can continue improving. See the details below.",
+    lastActionButton: "Try undoing last action",
+    fileIssueHref: "File an issue",
+  },
   sidebar: {
     cheatSheetTooltip: "CheatSheet: Useful information for Test Scenario Usage",
     dataSelectorTooltip: "Selector: It provides a tool to edit your Scenarios",

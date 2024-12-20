@@ -16,25 +16,23 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-schema_version: 1
-
 name: "docker.io/apache/incubator-kie-kogito-data-index-ephemeral"
 version: "main"
-from: "registry.access.redhat.com/ubi8/openjdk-17-runtime:1.19"
+from: "registry.access.redhat.com/ubi8/openjdk-17-runtime:1.20"
 description: "Runtime image for Kogito Data Index Service for ephemeral PostgreSQL persistence provider"
 
 labels:
-  - name: "org.kie.kogito.version"
+  - name: org.kie.kogito.version
     value: "### SET ME DURING BUILD PROCESS ###"
-  - name: "maintainer"
+  - name: maintainer
     value: "Apache KIE <dev@kie.apache.org>"
-  - name: "io.k8s.description"
+  - name: io.k8s.description
     value: "Runtime image for Kogito Data Index Service for ephemeral PostgreSQL persistence provider"
-  - name: "io.k8s.display-name"
+  - name: io.k8s.display-name
     value: "Kogito Data Index Service - ephemeral PostgreSQL"
-  - name: "io.openshift.tags"
+  - name: io.openshift.tags
     value: "kogito,data-index,data-index-ephemeral"
-  - name: "io.openshift.expose-services"
+  - name: io.openshift.expose-services
     value: "8080:http"
 
 envs:
@@ -54,8 +52,8 @@ modules:
     - name: org.kie.kogito.dynamic.resources
     - name: org.kie.kogito.launch.scripts
     - name: org.kie.kogito.dataindex.ephemeral
-    - name: org.kie.kogito.dataindex.common
     - name: org.kie.kogito.security.custom.truststores
+    - name: org.kie.kogito.dataindex.common
 
 ports:
   - value: 8080

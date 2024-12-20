@@ -33,6 +33,8 @@ export interface TaskInboxQueries {
     filters: QueryFilter,
     sortBy: SortBy
   ): Promise<UserTaskInstance[]>;
+
+  getAllTasks(start: number, end: number, filters: QueryFilter, sortBy: SortBy): Promise<UserTaskInstance[]>;
 }
 
 export class GraphQLTaskInboxQueries implements TaskInboxQueries {
@@ -75,7 +77,27 @@ export class GraphQLTaskInboxQueries implements TaskInboxQueries {
         .query({
           query: GraphQL.GetTasksForUserDocument,
           variables: {
-            whereArgument: buildTaskInboxWhereArgument(user, filters),
+            whereArgument: buildTaskInboxWhereArgument(filters, user),
+            offset: offset,
+            limit: limit,
+            orderBy: getOrderByObject(sortBy),
+          },
+          fetchPolicy: "network-only",
+        })
+        .then((value) => {
+          resolve(value.data.UserTaskInstances);
+        })
+        .catch((reason) => reject(reason));
+    });
+  }
+
+  getAllTasks(offset: number, limit: number, filters: QueryFilter, sortBy: SortBy): Promise<UserTaskInstance[]> {
+    return new Promise<UserTaskInstance[]>((resolve, reject) => {
+      this.client
+        .query({
+          query: GraphQL.GetTasksForUserDocument,
+          variables: {
+            whereArgument: buildTaskInboxWhereArgument(filters),
             offset: offset,
             limit: limit,
             orderBy: getOrderByObject(sortBy),

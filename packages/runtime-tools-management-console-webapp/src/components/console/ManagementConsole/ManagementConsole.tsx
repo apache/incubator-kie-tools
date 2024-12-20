@@ -31,6 +31,8 @@ import { PageLayout } from "@kie-tools/runtime-tools-components/dist/components/
 import { ProcessListContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessList";
 import { ProcessDetailsContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
 import { JobsManagementContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/JobsManagement";
+import { TaskInboxContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskInbox";
+import { TaskFormContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskForms";
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
@@ -64,11 +66,15 @@ const ManagementConsole: React.FC<IOwnProps> = ({ apolloClient, userContext, chi
         <ProcessListContextProvider apolloClient={apolloClient}>
           <ProcessDetailsContextProvider apolloClient={apolloClient}>
             <JobsManagementContextProvider apolloClient={apolloClient}>
-              <Router>
-                <Switch>
-                  <Route path="/" render={renderPage} />
-                </Switch>
-              </Router>
+              <TaskInboxContextProvider apolloClient={apolloClient}>
+                <TaskFormContextProvider>
+                  <Router>
+                    <Switch>
+                      <Route path="/" render={renderPage} />
+                    </Switch>
+                  </Router>
+                </TaskFormContextProvider>
+              </TaskInboxContextProvider>
             </JobsManagementContextProvider>
           </ProcessDetailsContextProvider>
         </ProcessListContextProvider>

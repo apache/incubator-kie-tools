@@ -146,10 +146,10 @@ module.exports = {
   /**
    * Writes to `.mvn/maven.config` idempotently, preserving what was there before this function was called.
    *
-   * @param mavenConfigString New-line-separated string containing arguments to the `mvn` command.
+   * @param pkgSpecificMvnConfigString New-line-separated string containing arguments to the `mvn` command.
    * @param args An object with a `ignoreDefault: boolean` property.
    */
-  setupMavenConfigFile: (mavenConfigString, args) => {
+  setupMavenConfigFile: (pkgSpecificMvnConfigString, args) => {
     console.info(`[maven-base] Configuring Maven through .mvn/maven.config...`);
     console.time(`[maven-base] Configuring Maven through .mvn/maven.config...`);
 
@@ -171,25 +171,21 @@ module.exports = {
     console.info(`${originalMvnConfigString}` || "<empty>");
     fs.writeFileSync(MVN_CONFIG_ORIGINAL_FILE_PATH, originalMvnConfigString);
 
-    const trimmedMavenConfigString = mavenConfigString
+    const sanitizedPkgSpecificMvnConfigString = pkgSpecificMvnConfigString
       .trim()
       .split("\n")
-      .map((l) => l.trim())
+      .map((line) => line.trim())
       .join("\n");
 
-    const newMavenConfigString = `${originalMvnConfigString ? `\n${originalMvnConfigString}\n` : ``}
-${trimmedMavenConfigString.trim()}`;
+    const newMvnConfigString =
+      (args?.ignoreDefault ? "" : `${DEFAULT_MAVEN_CONFIG}\n`) +
+      (sanitizedPkgSpecificMvnConfigString ? `${sanitizedPkgSpecificMvnConfigString}\n` : "") +
+      (originalMvnConfigString ? `${originalMvnConfigString}\n` : "");
 
     console.info(`[maven-base] Writing '${MVN_CONFIG_FILE_PATH}'...`);
-    console.info(newMavenConfigString);
+    console.info(newMvnConfigString);
 
-    const defaultMavenConfigString = args?.ignoreDefault
-      ? ""
-      : `
-
-${DEFAULT_MAVEN_CONFIG}`;
-
-    fs.writeFileSync(MVN_CONFIG_FILE_PATH, `${newMavenConfigString}${defaultMavenConfigString}`);
+    fs.writeFileSync(MVN_CONFIG_FILE_PATH, newMvnConfigString);
     console.timeEnd(`[maven-base] Configuring Maven through .mvn/maven.config...`);
   },
 };

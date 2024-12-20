@@ -73,3 +73,36 @@ const (
 	// Ideally used in production use cases
 	GitOpsProfile ProfileType = "gitops"
 )
+
+const (
+	DefaultProfile = PreviewProfile
+)
+
+// deprecated prod profile is deprecate and not supported, use preview profile
+var supportedProfiles = map[ProfileType]ProfileType{DevProfile: DevProfile, PreviewProfile: PreviewProfile, GitOpsProfile: GitOpsProfile}
+
+func GetProfileOrDefault(annotation map[string]string) ProfileType {
+	if annotation == nil {
+		return DefaultProfile
+	}
+	if profile, ok := supportedProfiles[ProfileType(annotation[Profile])]; !ok {
+		return DefaultProfile
+	} else {
+		return profile
+	}
+}
+
+func (p ProfileType) isValidProfile() bool {
+	_, ok := supportedProfiles[p]
+	return ok
+}
+
+func IsDevProfile(annotation map[string]string) bool {
+	if annotation == nil {
+		return false
+	}
+	if len(annotation[Profile]) == 0 {
+		return false
+	}
+	return ProfileType(annotation[Profile]) == DevProfile
+}

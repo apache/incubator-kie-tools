@@ -20,9 +20,7 @@
 import * as vscode from "vscode";
 import { Uri, Webview } from "vscode";
 import * as __path from "path";
-import { NotificationsChannelApi } from "@kie-tools-core/notifications/dist/api";
-import { BackendProxy } from "@kie-tools-core/backend/dist/api";
-import { ResourceContentService, WorkspaceChannelApi } from "@kie-tools-core/workspace/dist/api";
+import { ResourceContentService } from "@kie-tools-core/workspace/dist/api";
 import {
   EditorEnvelopeLocator,
   EnvelopeContent,
@@ -53,7 +51,6 @@ export class VsCodeKieEditorControllerFactory {
     private readonly editorEnvelopeLocator: EditorEnvelopeLocator,
     private readonly messageBroadcaster: EnvelopeBusMessageBroadcaster,
     private readonly vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
-    private readonly backendProxy: BackendProxy,
     private readonly vscodeNotifications: VsCodeNotificationsChannelApiImpl,
     private readonly javaCodeCompletionApi: JavaCodeCompletionApi,
     private readonly viewType: string,
@@ -120,7 +117,6 @@ export class VsCodeKieEditorControllerFactory {
       editor,
       resourceContentService,
       this.vscodeWorkspace,
-      this.backendProxy,
       this.vscodeNotifications,
       this.javaCodeCompletionApi,
       this.viewType,
