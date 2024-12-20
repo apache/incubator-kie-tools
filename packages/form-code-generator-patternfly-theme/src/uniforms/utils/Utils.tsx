@@ -50,6 +50,7 @@ export const getStateCode = (
 
 type DefaultInputProps = {
   pfImports: string[];
+  pfIconImports?: string[];
   inputJsxCode: string;
   ref: InputReference;
   requiredCode?: string[];
@@ -65,6 +66,7 @@ type WrapperProps = {
 
 export const buildDefaultInputElement = ({
   pfImports,
+  pfIconImports,
   inputJsxCode,
   ref,
   wrapper,
@@ -86,6 +88,7 @@ export const buildDefaultInputElement = ({
   return {
     ref,
     pfImports,
+    pfIconImports,
     reactImports: ["useState"],
     requiredCode: requiredCode,
     jsxCode,
