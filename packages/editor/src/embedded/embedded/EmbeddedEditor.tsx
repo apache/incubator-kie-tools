@@ -193,8 +193,6 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
       validate: () => envelopeServer.envelopeApi.requests.kogitoEditor_validate(),
       setTheme: (theme) => Promise.resolve(envelopeServer.shared.kogitoEditor_theme.set(theme)),
       onKeyDown: (ke: React.KeyboardEvent) => onKeyDown(envelopeServer, ke),
-      openBoxedExpressionEditor: (nodeId) =>
-        envelopeServer.envelopeApi.notifications.kogitoEditor_openBoxedExpressionEditor.send(nodeId),
     };
   }, [props.isReady, isReady, stateControl, envelopeServer, onKeyDown]);
 

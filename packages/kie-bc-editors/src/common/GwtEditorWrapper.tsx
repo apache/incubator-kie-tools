@@ -75,10 +75,6 @@ export class GwtEditorWrapper implements Editor {
     return <></>;
   }
 
-  public openBoxedExpressionEditor(nodeId: string) {
-    throw new Error("Operation 'openBoxedExpressionEditor' is not supported in old GWT based editor");
-  }
-
   public async undo() {
     return this.stateControlService.undo();
   }

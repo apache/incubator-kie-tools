@@ -39,6 +39,8 @@ import { DmnRunnerProviderActionType } from "./DmnRunnerTypes";
 import { PanelId, useEditorDockContext } from "../editor/EditorPageDockContextProvider";
 import { DmnRunnerExtendedServicesError } from "./DmnRunnerContextProvider";
 import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
 
 enum ButtonPosition {
   INPUT,
@@ -325,8 +327,11 @@ export function DmnRunnerDrawerPanelContent(props: { editor: EmbeddedEditorRef |
                       locale={locale}
                       notificationsPanel={true}
                       openExecutionTab={openExecutionTab}
-                      openBoxedExpressionEditor={(nodeId) => {
-                        props.editor?.openBoxedExpressionEditor(nodeId);
+                      openBoxedExpressionEditor={(nodeId: string) => {
+                        const newDmnEditorEnvelopeApi = props.editor?.getEnvelopeServer()
+                          .envelopeApi as unknown as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
+
+                        newDmnEditorEnvelopeApi.notifications.dmnEditor_openBoxedExpressionEditor.send(nodeId);
                       }}
                     />
                   </PageSection>

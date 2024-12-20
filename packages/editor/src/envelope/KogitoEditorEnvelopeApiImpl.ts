@@ -126,9 +126,6 @@ export class KogitoEditorEnvelopeApiImpl<
       .finally(() => this.view().setLoadingFinished());
   };
 
-  public kogitoEditor_openBoxedExpressionEditor(nodeId: string) {
-    this.editor.openBoxedExpressionEditor(nodeId);
-  }
   public kogitoEditor_editorUndo() {
     this.editor.undo();
   }

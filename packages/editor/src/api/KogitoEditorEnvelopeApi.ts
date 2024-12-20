@@ -51,7 +51,6 @@ export interface EditorInitArgs {
 
 export interface KogitoEditorEnvelopeApi extends KeyboardShortcutsEnvelopeApi, I18nEnvelopeApi {
   kogitoEditor_contentChanged(content: EditorContent, args: { showLoadingOverlay: boolean }): Promise<void>;
-  kogitoEditor_openBoxedExpressionEditor(nodeId: string): void;
   kogitoEditor_editorUndo(): void;
   kogitoEditor_editorRedo(): void;
   kogitoEditor_initRequest(association: Association, editorInit: EditorInitArgs): Promise<void>;
