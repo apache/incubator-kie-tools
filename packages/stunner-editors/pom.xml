@@ -258,6 +258,11 @@
 
   <repositories>
     <repository>
+      <id>central</id>
+      <name>Central Repository</name>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </repository>
+    <repository>
       <!-- EXCLUSIVELY FOR `org.kogito:gwt-jsonix-schema-compiler:jar:1.3.0` -->
       <id>jboss</id>
       <name>JBoss Public Repo</name>
