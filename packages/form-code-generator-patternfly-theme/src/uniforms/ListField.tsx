@@ -74,8 +74,7 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
               !${props.disabled} && ${props.maxCount === undefined ? `${ref.stateSetter}((${ref.stateName} ?? []).concat([]))` : `!(${props.maxCount} <= (${ref.stateName}?.length ?? -1)) && ${ref.stateSetter}((${ref.stateName} ?? []).concat([]))`};
             }}
           >
-            +
-            {/* <PlusCircleIcon color='#0088ce' /> */} 
+            <PlusCircleIcon color='#0088ce' />
           </Button>
         </SplitItem>
       </Split>
@@ -101,7 +100,7 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
                   !${props.disabled} && ${props.minCount === undefined ? `${ref.stateSetter}(value)` : `!(${props.minCount} >= (${ref.stateName}?.length ?? -1)) && ${ref.stateSetter}(value)`};
                 }}
               >
-                - { /* <MinusCircleIcon color='#cc0000' /> */}
+                <MinusCircleIcon color='#cc0000' />
               </Button>
             </div>
           </div>)
