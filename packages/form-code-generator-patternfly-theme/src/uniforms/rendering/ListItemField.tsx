@@ -55,9 +55,18 @@ export const getListItemName = ({ itemProps, name }: { itemProps: ListItemProps;
  * `listStateName[index]`
  * `listStateName[index].itemName.`
  */
-export const getListItemValue = ({ itemProps, name }: { itemProps: ListItemProps; name: string }) => {
+export const getListItemValue = ({
+  itemProps,
+  name,
+  callback,
+}: {
+  itemProps: ListItemProps;
+  name: string;
+  callback?: (value: string) => string;
+}) => {
   const { itemName, isNested } = getItemNameAndWithIsNested(name);
-  return `${itemProps?.listStateName}[${itemProps?.indexVariableName}]${isNested ? `.${itemName}` : ""}`;
+  const property = `${itemProps?.listStateName}[${itemProps?.indexVariableName}]${isNested ? `.${itemName}` : ""}`;
+  return `${callback ? callback(property) : property}`;
 };
 
 /**
@@ -78,17 +87,23 @@ export const getListItemOnChange = ({
   name,
   callback,
   overrideNewValue,
+  overrideParam,
 }: {
   itemProps: ListItemProps;
   name: string;
   callback?: (value: string) => string;
+  overrideParam?: string;
   overrideNewValue?: string;
 }) => {
   const { itemName, isNested } = getItemNameAndWithIsNested(name);
   return `
-  newValue => ${itemProps?.listStateSetter}(s => { const newState = [...s];
-  newState[${itemProps?.indexVariableName}]${isNested ? `.${itemName}` : ""} = ${callback ? callback(overrideNewValue ? overrideNewValue : "newValue") : overrideNewValue ? overrideNewValue : "newValue"};
-  return newState; })`;
+  ${overrideParam ? overrideParam : "newValue"} => {
+    ${itemProps?.listStateSetter}(s => {
+      const newState = [...s];
+      newState[${itemProps?.indexVariableName}]${isNested ? `.${itemName}` : ""} = ${callback ? callback(overrideNewValue ? overrideNewValue : "newValue") : overrideNewValue ? overrideNewValue : "newValue"};
+      return newState;
+    })
+  }`;
 };
 
 export interface Props {

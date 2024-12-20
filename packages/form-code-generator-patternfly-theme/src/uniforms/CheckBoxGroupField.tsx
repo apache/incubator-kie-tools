@@ -51,10 +51,9 @@ const CheckBoxGroup: React.FC<CheckBoxGroupProps> = (props: CheckBoxGroupProps) 
   aria-label={'${props.name}'}
   label={'${props.transform ? props.transform(value) : value}'} 
   isDisabled={${props.disabled || false}} 
-  isChecked={${ref.stateName}.indexOf('${value}') != -1}
-  onChange={() => handleCheckboxGroupChange('${value}', ${ref.stateName}, ${ref.stateSetter})}
+  isChecked={${ref.stateName}.indexOf('${value}') !== -1}
+  onChange={${props.itemProps?.isListItem ? getListItemOnChange({ itemProps: props.itemProps, name: props.name, callback: (internalValue: string) => `handleCheckboxGroupChange(${internalValue}, ${ref.stateName}, ${ref.stateSetter})`, overrideNewValue: `'${value}'` }) : `() => handleCheckboxGroupChange('${value}', ${ref.stateName}, ${ref.stateSetter})`}}
   value={${props.itemProps?.isListItem ? getListItemValue({ itemProps: props.itemProps, name: props.name }) : `'${value}'`}}
-  onChange={${props.itemProps?.isListItem ? getListItemOnChange({ itemProps: props.itemProps, name: props.name, callback: (internalValue: string) => `handleCheckboxGroupChange('${internalValue}', ${ref.stateName}, ${ref.stateSetter})`, overrideNewValue: `'${value}'` }) : `handleCheckboxGroupChange('${value}', ${ref.stateName}, ${ref.stateSetter})`}}
 />`;
     })
     .join("\n");

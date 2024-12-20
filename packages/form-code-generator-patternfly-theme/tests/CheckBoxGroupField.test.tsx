@@ -73,7 +73,7 @@ describe("<CheckBoxGroupField> tests", () => {
   aria-label={'${props.name}'}`;
       expect(formElement.jsxCode).toContain(checkbox);
       expect(formElement.jsxCode).toContain(`label={'${value}'}`);
-      expect(formElement.jsxCode).toContain(`isChecked={${formElement.ref.stateName}.indexOf('${value}') != -1}`);
+      expect(formElement.jsxCode).toContain(`isChecked={${formElement.ref.stateName}.indexOf('${value}') !== -1}`);
       expect(formElement.jsxCode).toContain(
         `onChange={() => handleCheckboxGroupChange('${value}', ${formElement.ref.stateName}, ${formElement.ref.stateSetter})}`
       );

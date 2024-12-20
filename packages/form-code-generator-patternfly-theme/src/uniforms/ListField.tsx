@@ -109,13 +109,11 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
       </div>
     </div>`;
 
-  // TODO ADD PLUS AND MINUS ICONS
   const element: FormInput = {
     ref,
     pfImports: [...new Set(["Split", "SplitItem", "Button", ...(listItem?.pfImports ?? [])])],
+    pfIconImports: [...new Set(["PlusCircleIcon", "MinusCircleIcon", ...(listItem?.pfIconImports ?? [])])],
     reactImports: [...new Set([...(listItem?.reactImports ?? [])])],
-    requiredCode: [...new Set([...(listItem?.requiredCode ?? [])])],
-    // requiredIcons: ["PlusCircleIcon", "MinusCircleIcon"],
     jsxCode,
     stateCode: getStateCode(ref.stateName, ref.stateSetter, "any[]", "[]"),
     isReadonly: props.disabled,

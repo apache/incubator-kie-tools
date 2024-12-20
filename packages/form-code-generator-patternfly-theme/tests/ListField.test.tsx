@@ -33,6 +33,22 @@ describe("<ListField> tests", () => {
       friends: { type: Array },
       "friends.$": Object,
       "friends.$.name": { type: String },
+      "friends.$.age": { type: Number },
+      "friends.$.country": { type: String, allowedValues: ["US", "Brazil"] },
+      "friends.$.married": { type: Boolean },
+      "friends.$.know": {
+        type: Array,
+        allowedValues: ["Java", "Node", "Docker"],
+        uniforms: {
+          checkboxes: true,
+        },
+      },
+      "friends.$.know.$": String,
+      "friends.$.areas": {
+        type: String,
+        allowedValues: ["Developer", "HR", "UX"],
+      },
+      "friends.$.birthday": { type: Date },
     };
 
     const props: AutoFormProps = {
@@ -42,37 +58,8 @@ describe("<ListField> tests", () => {
       placeholder: true,
     };
 
-    // const props = {
-    //   id: "id",
-    //   label: "friends",
-    //   name: "friends",
-    //   disabled: false,
-    //   onChange: jest.fn(),
-    //   maxCount: 10,
-    // };
-
     const { container } = render(<AutoForm {...props} />);
 
-    // const { container, formElement } = renderField(ListField, props, schema);
-
     expect(container).toMatchSnapshot();
-
-    // expect(formElement.reactImports).toContain("useState");
-    // expect(formElement.pfImports).toContain("FormGroup");
-    // expect(formElement.pfImports).toContain("TextInput");
-
-    // expect(formElement.ref.binding).toBe(props.name);
-    // expect(formElement.ref.stateName).toBe(props.name);
-    // expect(formElement.ref.stateSetter).toBe(`set__${props.name}`);
-
-    // expect(formElement.jsxCode).not.toBeNull();
-    // expect(formElement.jsxCode).toContain("label={'age'}");
-    // expect(formElement.jsxCode).toContain("name={'age'}");
-    // expect(formElement.jsxCode).toContain("isDisabled={false}");
-
-    // expect(formElement.jsxCode).toContain(`step={1}`);
-    // expect(formElement.jsxCode).toContain(`min={${props.min}}`);
-    // expect(formElement.jsxCode).toContain(`max={${props.max}}`);
-    // expect(formElement.stateCode).not.toBeNull();
   });
 });

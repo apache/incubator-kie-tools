@@ -25,6 +25,7 @@ import { buildDefaultInputElement, getInputReference, renderField } from "./util
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { DATE_FUNCTIONS, TIME_FUNCTIONS } from "./staticCode/staticCodeBlocks";
 import { DATE } from "./utils/dataTypes";
+import { getListItemName, getListItemOnChange, getListItemValue, ListItemProps } from "./rendering/ListItemField";
 
 export type DateFieldProps = HTMLFieldProps<
   Date,
@@ -35,6 +36,7 @@ export type DateFieldProps = HTMLFieldProps<
     required: boolean;
     max?: Date;
     min?: Date;
+    itemProps: ListItemProps;
   }
 >;
 
@@ -52,19 +54,34 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
         <DatePicker
           id={'date-picker-${props.id}'}
           isDisabled={${props.disabled || false}}
-          name={'${props.name}'}
-          onChange={newDate => onDateChange(newDate, ${ref.stateSetter},  ${ref.stateName})}
-          value={parseDate(${ref.stateName})}
+          name={${props.itemProps?.isListItem ? getListItemName({ itemProps: props.itemProps, name: props.name }) : `'${props.name}'`}}
+          onChange={${
+            props.itemProps?.isListItem
+              ? getListItemOnChange({
+                  itemProps: props.itemProps,
+                  name: props.name,
+                  callback: (value) => `onDateChange(${value}, ${ref.stateSetter},  ${ref.stateName})`,
+                })
+              : `newDate => onDateChange(newDate, ${ref.stateSetter},  ${ref.stateName})`
+          }}
+          value={${props.itemProps?.isListItem ? getListItemValue({ itemProps: props.itemProps, name: props.name, callback: (value: string) => `parseDate(${value})` }) : `parseDate(${ref.stateName})`}}
         />
         <TimePicker
           id={'time-picker-${props.id}'}
           isDisabled={${props.disabled || false}}
-          name={'${props.name}'}
-          onChange={(time, hours?, minutes?) => onTimeChange(time, ${ref.stateSetter}, ${
-            ref.stateName
-          }, hours, minutes)}
+          name={${props.itemProps?.isListItem ? getListItemName({ itemProps: props.itemProps, name: props.name }) : `'${props.name}'`}}
+          onChange={${
+            props.itemProps?.isListItem
+              ? getListItemOnChange({
+                  itemProps: props.itemProps,
+                  name: props.name,
+                  callback: (_) => `onTimeChange(time, ${ref.stateSetter}, ${ref.stateName}, hours, minutes)`,
+                  overrideParam: "(time, hours?, minutes?)",
+                })
+              : `(time, hours?, minutes?) => onTimeChange(time, ${ref.stateSetter}, ${ref.stateName}, hours, minutes)`
+          }}
           style={{ width: '120px' }}
-          time={parseTime(${ref.stateName})}
+          time={${props.itemProps?.isListItem ? getListItemValue({ itemProps: props.itemProps, name: props.name, callback: (value: string) => `parseTime(${value})` }) : `parseTime(${ref.stateName})`}}
         />
       </InputGroup>
     </FlexItem>

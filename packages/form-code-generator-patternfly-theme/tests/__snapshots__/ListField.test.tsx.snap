@@ -11,7 +11,18 @@ import {
 	CardBody,
 	TextInput,
 	FormGroup,
+	SelectOption,
+	SelectOptionObject,
+	Select,
+	SelectVariant,
+	Checkbox,
+	DatePicker,
+	Flex,
+	FlexItem,
+	InputGroup,
+	TimePicker,
 } from &#39;@patternfly/react-core&#39;;
+import { PlusCircleIcon, MinusCircleIcon } from &#39;@patternfly/react-icons&#39;;
 const Form__id: React.FC&lt;any&gt; = (props: any) =&gt; {
 	const [formApi, setFormApi] = useState&lt;any&gt;();
 	const [friends, set__friends] = useState&lt;any[]&gt;([]);
@@ -107,14 +118,249 @@ const Form__id: React.FC&lt;any&gt; = (props: any) =&gt; {
 												placeholder={&#39;&#39;}
 												type={&#39;text&#39;}
 												value={friends[itemIndex].name}
-												onChange={(newValue) =&gt;
+												onChange={(newValue) =&gt; {
 													set__friends((s) =&gt; {
 														const newState = [...s];
 														newState[itemIndex].name = newValue;
 														return newState;
-													})
-												}
+													});
+												}}
 											/&gt;
+										&lt;/FormGroup&gt;
+										&lt;FormGroup
+											fieldId={&#39;uniforms-0000-0006&#39;}
+											label={&#39;Age&#39;}
+											isRequired={true}&gt;
+											&lt;TextInput
+												type={&#39;number&#39;}
+												name={\`friends.\${itemIndex}.age\`}
+												isDisabled={false}
+												id={&#39;uniforms-0000-0006&#39;}
+												placeholder={&#39;&#39;}
+												step={0.01}
+												value={friends[itemIndex].age}
+												onChange={(newValue) =&gt; {
+													set__friends((s) =&gt; {
+														const newState = [...s];
+														newState[itemIndex].age = Number(newValue);
+														return newState;
+													});
+												}}
+											/&gt;
+										&lt;/FormGroup&gt;
+										&lt;FormGroup
+											fieldId={&#39;uniforms-0000-0008&#39;}
+											label={&#39;Country&#39;}
+											isRequired={true}&gt;
+											&lt;Select
+												id={&#39;uniforms-0000-0008&#39;}
+												name={\`friends.\${itemIndex}.country\`}
+												variant={SelectVariant.single}
+												isDisabled={false}
+												placeholderText={&#39;&#39;}
+												isOpen={friends__$__country__expanded}
+												selections={friends__$__country}
+												onToggle={(isOpen) =&gt;
+													set__friends__$__country__expanded(isOpen)
+												}
+												onSelect={(event, value, isPlaceHolder) =&gt; {
+													set__friends((s) =&gt; {
+														const newState = [...s];
+														newState[itemIndex].country = handleSelect(
+															value,
+															isPlaceHolder,
+															friends__$__country,
+															set__friends__$__country,
+															set__friends__$__country__expanded
+														);
+														return newState;
+													});
+												}}
+												value={friends[itemIndex].country}&gt;
+												&lt;SelectOption key={&#39;US&#39;} value={&#39;US&#39;}&gt;
+													US
+												&lt;/SelectOption&gt;
+												&lt;SelectOption key={&#39;Brazil&#39;} value={&#39;Brazil&#39;}&gt;
+													Brazil
+												&lt;/SelectOption&gt;
+											&lt;/Select&gt;
+										&lt;/FormGroup&gt;
+										&lt;FormGroup fieldId=&#39;uniforms-0000-000a&#39;&gt;
+											&lt;Checkbox
+												isChecked={friends[itemIndex].married}
+												isDisabled={false}
+												id={&#39;uniforms-0000-000a&#39;}
+												name={\`friends.\${itemIndex}.married\`}
+												label={&#39;Married&#39;}
+												onChange={(newValue) =&gt; {
+													set__friends((s) =&gt; {
+														const newState = [...s];
+														newState[itemIndex].married = newValue;
+														return newState;
+													});
+												}}
+											/&gt;
+										&lt;/FormGroup&gt;
+										&lt;FormGroup
+											fieldId={&#39;uniforms-0000-000c&#39;}
+											label={&#39;Know&#39;}
+											isRequired={true}&gt;
+											&lt;Checkbox
+												key={&#39;uniforms-0000-000c-Java&#39;}
+												id={&#39;uniforms-0000-000c-Java&#39;}
+												name={\`friends.\${itemIndex}.know\`}
+												aria-label={&#39;friends.$.know&#39;}
+												label={&#39;Java&#39;}
+												isDisabled={false}
+												isChecked={friends__$__know.indexOf(&#39;Java&#39;) !== -1}
+												onChange={(newValue) =&gt; {
+													set__friends((s) =&gt; {
+														const newState = [...s];
+														newState[itemIndex].know =
+															handleCheckboxGroupChange(
+																&#39;Java&#39;,
+																friends__$__know,
+																set__friends__$__know
+															);
+														return newState;
+													});
+												}}
+												value={friends[itemIndex].know}
+											/&gt;
+											&lt;Checkbox
+												key={&#39;uniforms-0000-000c-Node&#39;}
+												id={&#39;uniforms-0000-000c-Node&#39;}
+												name={\`friends.\${itemIndex}.know\`}
+												aria-label={&#39;friends.$.know&#39;}
+												label={&#39;Node&#39;}
+												isDisabled={false}
+												isChecked={friends__$__know.indexOf(&#39;Node&#39;) !== -1}
+												onChange={(newValue) =&gt; {
+													set__friends((s) =&gt; {
+														const newState = [...s];
+														newState[itemIndex].know =
+															handleCheckboxGroupChange(
+																&#39;Node&#39;,
+																friends__$__know,
+																set__friends__$__know
+															);
+														return newState;
+													});
+												}}
+												value={friends[itemIndex].know}
+											/&gt;
+											&lt;Checkbox
+												key={&#39;uniforms-0000-000c-Docker&#39;}
+												id={&#39;uniforms-0000-000c-Docker&#39;}
+												name={\`friends.\${itemIndex}.know\`}
+												aria-label={&#39;friends.$.know&#39;}
+												label={&#39;Docker&#39;}
+												isDisabled={false}
+												isChecked={friends__$__know.indexOf(&#39;Docker&#39;) !== -1}
+												onChange={(newValue) =&gt; {
+													set__friends((s) =&gt; {
+														const newState = [...s];
+														newState[itemIndex].know =
+															handleCheckboxGroupChange(
+																&#39;Docker&#39;,
+																friends__$__know,
+																set__friends__$__know
+															);
+														return newState;
+													});
+												}}
+												value={friends[itemIndex].know}
+											/&gt;
+										&lt;/FormGroup&gt;
+										&lt;FormGroup
+											fieldId={&#39;uniforms-0000-000e&#39;}
+											label={&#39;Areas&#39;}
+											isRequired={true}&gt;
+											&lt;Select
+												id={&#39;uniforms-0000-000e&#39;}
+												name={\`friends.\${itemIndex}.areas\`}
+												variant={SelectVariant.single}
+												isDisabled={false}
+												placeholderText={&#39;&#39;}
+												isOpen={friends__$__areas__expanded}
+												selections={friends__$__areas}
+												onToggle={(isOpen) =&gt;
+													set__friends__$__areas__expanded(isOpen)
+												}
+												onSelect={(event, value, isPlaceHolder) =&gt; {
+													set__friends((s) =&gt; {
+														const newState = [...s];
+														newState[itemIndex].areas = handleSelect(
+															value,
+															isPlaceHolder,
+															friends__$__areas,
+															set__friends__$__areas,
+															set__friends__$__areas__expanded
+														);
+														return newState;
+													});
+												}}
+												value={friends[itemIndex].areas}&gt;
+												&lt;SelectOption key={&#39;Developer&#39;} value={&#39;Developer&#39;}&gt;
+													Developer
+												&lt;/SelectOption&gt;
+												&lt;SelectOption key={&#39;HR&#39;} value={&#39;HR&#39;}&gt;
+													HR
+												&lt;/SelectOption&gt;
+												&lt;SelectOption key={&#39;UX&#39;} value={&#39;UX&#39;}&gt;
+													UX
+												&lt;/SelectOption&gt;
+											&lt;/Select&gt;
+										&lt;/FormGroup&gt;
+										&lt;FormGroup
+											fieldId={&#39;uniforms-0000-000g&#39;}
+											label={&#39;Birthday&#39;}
+											isRequired={true}&gt;
+											&lt;Flex
+												direction={{ default: &#39;column&#39; }}
+												id={&#39;uniforms-0000-000g&#39;}&gt;
+												&lt;FlexItem&gt;
+													&lt;InputGroup style={{ background: &#39;transparent&#39; }}&gt;
+														&lt;DatePicker
+															id={&#39;date-picker-uniforms-0000-000g&#39;}
+															isDisabled={false}
+															name={\`friends.\${itemIndex}.birthday\`}
+															onChange={(newValue) =&gt; {
+																set__friends((s) =&gt; {
+																	const newState = [...s];
+																	newState[itemIndex].birthday = onDateChange(
+																		newValue,
+																		set__friends__$__birthday,
+																		friends__$__birthday
+																	);
+																	return newState;
+																});
+															}}
+															value={parseDate(friends[itemIndex].birthday)}
+														/&gt;
+														&lt;TimePicker
+															id={&#39;time-picker-uniforms-0000-000g&#39;}
+															isDisabled={false}
+															name={\`friends.\${itemIndex}.birthday\`}
+															onChange={(time, hours?, minutes?) =&gt; {
+																set__friends((s) =&gt; {
+																	const newState = [...s];
+																	newState[itemIndex].birthday = onTimeChange(
+																		time,
+																		set__friends__$__birthday,
+																		friends__$__birthday,
+																		hours,
+																		minutes
+																	);
+																	return newState;
+																});
+															}}
+															style={{ width: &#39;120px&#39; }}
+															time={parseTime(friends[itemIndex].birthday)}
+														/&gt;
+													&lt;/InputGroup&gt;
+												&lt;/FlexItem&gt;
+											&lt;/Flex&gt;
 										&lt;/FormGroup&gt;
 									&lt;/CardBody&gt;
 								&lt;/Card&gt;
