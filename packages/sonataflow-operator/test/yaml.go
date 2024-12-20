@@ -45,24 +45,22 @@ import (
 )
 
 const (
-	sonataFlowOrderProcessingFolder           = "order-processing"
-	sonataFlowSampleYamlCR                    = "sonataflow.org_v1alpha08_sonataflow.yaml"
-	SonataFlowGreetingsWithDataInputSchemaCR  = "sonataflow.org_v1alpha08_sonataflow_greetings_datainput.yaml"
-	SonataFlowGreetingsWithStaticResourcesCR  = "sonataflow.org_v1alpha08_sonataflow-metainf.yaml"
-	SonataFlowSimpleOpsYamlCR                 = "sonataflow.org_v1alpha08_sonataflow-simpleops.yaml"
-	SonataFlowVetWithEventCR                  = "sonataflow.org_v1alpha08_sonataflow_vet_event.yaml"
-	SonataFlowGreetingsDataInputSchemaConfig  = "v1_configmap_greetings_datainput.yaml"
-	SonataFlowGreetingsStaticFilesConfig      = "v1_configmap_greetings_staticfiles.yaml"
-	sonataFlowPlatformYamlCR                  = "sonataflow.org_v1alpha08_sonataflowplatform.yaml"
-	sonataFlowPlatformWithBrokerYamlCR        = "sonataflow.org_v1alpha08_sonataflowplatform_withBroker.yaml"
-	sonataFlowPlatformWithCacheMinikubeYamlCR = "sonataflow.org_v1alpha08_sonataflowplatform_withCache_minikube.yaml"
-	sonataFlowPlatformForOpenshift            = "sonataflow.org_v1alpha08_sonataflowplatform_openshift.yaml"
-	sonataFlowClusterPlatformYamlCR           = "sonataflow.org_v1alpha08_sonataflowclusterplatform.yaml"
-	sonataFlowBuilderConfig                   = "sonataflow-operator-builder-config_v1_configmap.yaml"
-	sonataFlowBuildSucceed                    = "sonataflow.org_v1alpha08_sonataflowbuild.yaml"
-	knativeDefaultBrokerCR                    = "knative_default_broker.yaml"
-	e2eSamples                                = "test/testdata/"
-	manifestsPath                             = "bundle/manifests/"
+	CommonImageRegistryAccount               = "host/namespace"
+	CommonImageTag                           = CommonImageRegistryAccount + "/image:latest"
+	sonataFlowSampleYamlCR                   = "sonataflow.org_v1alpha08_sonataflow.yaml"
+	SonataFlowGreetingsWithDataInputSchemaCR = "sonataflow.org_v1alpha08_sonataflow_greetings_datainput.yaml"
+	SonataFlowGreetingsWithStaticResourcesCR = "sonataflow.org_v1alpha08_sonataflow-metainf.yaml"
+	SonataFlowSimpleOpsYamlCR                = "sonataflow.org_v1alpha08_sonataflow-simpleops.yaml"
+	SonataFlowVetWithEventCR                 = "sonataflow.org_v1alpha08_sonataflow_vet_event.yaml"
+	SonataFlowGreetingsDataInputSchemaConfig = "v1_configmap_greetings_datainput.yaml"
+	SonataFlowGreetingsStaticFilesConfig     = "v1_configmap_greetings_staticfiles.yaml"
+	sonataFlowPlatformYamlCR                 = "sonataflow.org_v1alpha08_sonataflowplatform.yaml"
+	sonataFlowPlatformWithBrokerYamlCR       = "sonataflow.org_v1alpha08_sonataflowplatform_withBroker.yaml"
+	sonataFlowClusterPlatformYamlCR          = "sonataflow.org_v1alpha08_sonataflowclusterplatform.yaml"
+	sonataFlowBuilderConfig                  = "sonataflow-operator-builder-config_v1_configmap.yaml"
+	sonataFlowBuildSucceed                   = "sonataflow.org_v1alpha08_sonataflowbuild.yaml"
+	knativeDefaultBrokerCR                   = "knative_default_broker.yaml"
+	manifestsPath                            = "bundle/manifests/"
 )
 
 var projectDir = ""
@@ -248,7 +246,7 @@ func GetBasePlatformWithBaseImageInReadyPhase(namespace string) *operatorapi.Son
 	platform := GetBasePlatform()
 	platform.Namespace = namespace
 	platform.Status.Manager().MarkTrue(api.SucceedConditionType)
-	platform.Spec.Build.Config.BaseImage = "docker.io/customx/custom-swf-builder:24.8.17"
+	platform.Spec.Build.Config.BaseImage = CommonImageTag
 	return platform
 }
 
@@ -256,7 +254,7 @@ func GetBasePlatformWithDevBaseImageInReadyPhase(namespace string) *operatorapi.
 	platform := GetBasePlatform()
 	platform.Namespace = namespace
 	platform.Status.Manager().MarkTrue(api.SucceedConditionType)
-	platform.Spec.DevMode.BaseImage = "docker.io/customgroup/custom-swf-builder-nightly:42.43.7"
+	platform.Spec.DevMode.BaseImage = CommonImageTag
 	return platform
 }
 
@@ -270,18 +268,6 @@ func GetBasePlatformWithBroker() *operatorapi.SonataFlowPlatform {
 
 func GetBasePlatformWithBrokerInReadyPhase(namespace string) *operatorapi.SonataFlowPlatform {
 	return GetSonataFlowPlatformInReadyPhase(sonataFlowPlatformWithBrokerYamlCR, namespace)
-}
-
-func GetPlatformMinikubeE2eTest() string {
-	return e2eSamples + sonataFlowPlatformWithCacheMinikubeYamlCR
-}
-
-func GetPlatformOpenshiftE2eTest() string {
-	return e2eSamples + sonataFlowPlatformForOpenshift
-}
-
-func GetSonataFlowE2eOrderProcessingFolder() string {
-	return GetPathFromE2EDirectory("order-processing")
 }
 
 func GetPathFromDataDirectory(join ...string) string {
