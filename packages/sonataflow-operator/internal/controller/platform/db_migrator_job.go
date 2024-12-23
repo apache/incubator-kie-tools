@@ -85,13 +85,12 @@ type DBMigrationJobCfg struct {
 }
 
 func getDBSchemaName(persistencePostgreSQL *operatorapi.PersistencePostgreSQL, defaultSchemaName string) string {
-	jdbcURL := persistencePostgreSQL.JdbcUrl
+	if persistencePostgreSQL != nil && persistencePostgreSQL.ServiceRef != nil && len(persistencePostgreSQL.ServiceRef.DatabaseSchema) > 0 {
+		return persistencePostgreSQL.ServiceRef.DatabaseSchema
+	}
 
-	if len(jdbcURL) == 0 {
-		if persistencePostgreSQL.ServiceRef != nil && len(persistencePostgreSQL.ServiceRef.DatabaseSchema) > 0 {
-			return persistencePostgreSQL.ServiceRef.DatabaseSchema
-		}
-	} else {
+	if persistencePostgreSQL != nil && len(persistencePostgreSQL.JdbcUrl) > 0 {
+		jdbcURL := persistencePostgreSQL.JdbcUrl
 		_, a, found := strings.Cut(jdbcURL, "currentSchema=")
 
 		if found {
@@ -108,10 +107,38 @@ func getDBSchemaName(persistencePostgreSQL *operatorapi.PersistencePostgreSQL, d
 	return defaultSchemaName
 }
 
+func getJdbcUrl(postgresql *operatorapi.PersistencePostgreSQL, defaultDBSchemaName string) string {
+	databaseSchema := defaultDBSchemaName
+	dataSourcePort := constants.DefaultPostgreSQLPort
+	databaseName := constants.DefaultDatabaseName
+	postgresServiceName := constants.DefaultPostgresServiceName
+
+	dataSourceURL := ""
+
+	if postgresql.ServiceRef != nil {
+		if len(postgresql.ServiceRef.DatabaseSchema) > 0 {
+			databaseSchema = postgresql.ServiceRef.DatabaseSchema
+		}
+		if postgresql.ServiceRef.Port != nil {
+			dataSourcePort = *postgresql.ServiceRef.Port
+		}
+		if len(postgresql.ServiceRef.DatabaseName) > 0 {
+			databaseName = postgresql.ServiceRef.DatabaseName
+		}
+		dataSourceURL = fmt.Sprintf("jdbc:postgresql://%s:%d/%s?currentSchema=%s", postgresql.ServiceRef.Name, dataSourcePort, databaseName, databaseSchema)
+	} else if len(postgresql.JdbcUrl) > 0 {
+		dataSourceURL = postgresql.JdbcUrl
+	} else {
+		dataSourceURL = fmt.Sprintf("jdbc:postgresql://%s:%d/%s?currentSchema=%s", postgresServiceName, dataSourcePort, databaseName, databaseSchema)
+	}
+
+	return dataSourceURL
+}
+
 func getQuarkusDataSourceFromPersistence(ctx context.Context, platform *operatorapi.SonataFlowPlatform, persistence *operatorapi.PersistenceOptionsSpec, defaultSchemaName string) *QuarkusDataSource {
 	if persistence != nil && persistence.PostgreSQL != nil {
 		quarkusDataSource := &QuarkusDataSource{}
-		quarkusDataSource.JdbcUrl = persistence.PostgreSQL.JdbcUrl
+		quarkusDataSource.JdbcUrl = getJdbcUrl(persistence.PostgreSQL, defaultSchemaName)
 		quarkusDataSource.Username, _ = services.GetSecretKeyValueString(ctx, persistence.PostgreSQL.SecretRef.Name, persistence.PostgreSQL.SecretRef.UserKey, platform.Namespace)
 		quarkusDataSource.Password, _ = services.GetSecretKeyValueString(ctx, persistence.PostgreSQL.SecretRef.Name, persistence.PostgreSQL.SecretRef.PasswordKey, platform.Namespace)
 		quarkusDataSource.Schema = getDBSchemaName(persistence.PostgreSQL, defaultSchemaName)

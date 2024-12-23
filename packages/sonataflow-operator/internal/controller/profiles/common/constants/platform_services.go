@@ -78,8 +78,9 @@ const (
 	DataIndexName        = "data-index"
 	KogitoDBMigratorTool = "db-migrator-tool"
 
-	DefaultDatabaseName   string = "sonataflow"
-	DefaultPostgreSQLPort int    = 5432
+	DefaultPostgresServiceName string = "postgresql"
+	DefaultDatabaseName        string = "sonataflow"
+	DefaultPostgreSQLPort      int    = 5432
 )
 
 type PersistenceType string
