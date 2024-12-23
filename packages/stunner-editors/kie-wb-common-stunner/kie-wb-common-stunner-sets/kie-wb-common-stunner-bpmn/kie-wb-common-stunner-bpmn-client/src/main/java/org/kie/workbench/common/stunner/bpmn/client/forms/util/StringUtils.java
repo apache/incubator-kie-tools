@@ -36,6 +36,7 @@ import org.kie.workbench.common.stunner.core.util.Patterns;
 public class StringUtils {
 
     public static final String ALPHA_NUM_REGEXP = "^[a-zA-Z0-9\\-\\_]*$";
+    public static final String ALPHA_NUM_UNDERSCORE_DOT_REGEXP = "^[a-zA-Z0-9\\-\\_\\.]*$";
     public static final String ALPHA_NUM_UNDERSCORE_DOT_GT_LT_REGEXP = "^[a-zA-Z0-9<>,\\_\\.]*$";
     public static final String ALPHA_NUM_SPACE_REGEXP = "^[a-zA-Z0-9\\-\\_\\ ]*$";
     public static final RegExp EXPRESSION = RegExp.compile(Patterns.EXPRESSION);
