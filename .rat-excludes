@@ -452,6 +452,8 @@ BoolField.test.tsx.snap
 CheckBoxGroupField.test.tsx.snap
 # packages/form-code-generator-patternfly-theme/tests/__snapshots__/DateField.test.tsx.snap
 DateField.test.tsx.snap
+# packages/form-code-generator-patternfly-theme/tests/__snapshots__/ListField.test.tsx.snap
+ListField.test.tsx.snap
 # packages/form-code-generator-patternfly-theme/tests/__snapshots__/NestField.test.tsx.snap
 NestField.test.tsx.snap
 # packages/form-code-generator-patternfly-theme/tests/__snapshots__/NumField.test.tsx.snap
