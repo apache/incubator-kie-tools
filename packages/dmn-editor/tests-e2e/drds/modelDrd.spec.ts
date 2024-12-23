@@ -236,6 +236,7 @@ test.describe("Model DRD", () => {
         await drgNodes.toggle();
         await drgNodes.dragNode({ name: DefaultNodeName.DECISION, targetPosition: { x: 300, y: 300 } });
         await drgNodes.dragNode({ name: DefaultNodeName.INPUT_DATA, targetPosition: { x: 300, y: 500 } });
+        await drds.toggle();
         await nodes.dragNewConnectedEdge({
           type: EdgeType.INFORMATION_REQUIREMENT,
           from: DefaultNodeName.INPUT_DATA,
