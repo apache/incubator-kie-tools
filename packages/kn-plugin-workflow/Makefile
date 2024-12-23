@@ -71,12 +71,8 @@ test-e2e:
 	@$(MAKE) create-cluster
 	@$(MAKE) install-operator
 	@$(MAKE) go-test-e2e
+	@$(MAKE) go-test-e2e-report
 
-.PHONY: go-test-e2e
-go-test-e2e:
-	rm -rf dist-tests-e2e
-	mkdir dist-tests-e2e
-	go test -v ./e2e-tests/... -tags e2e_tests -timeout 20m 2>&1 | tee ./dist-tests-e2e/go-test-output-e2e.txt
 
 .PHONY: install-kind
 install-kind:
@@ -88,7 +84,13 @@ create-cluster: install-kind
 
 .PHONY: install-operator
 install-operator:
-	kubectl apply -f https://github.com/apache/incubator-kie-tools/blob/c690d462602da4cf2c01b90279815b60a1959162/packages/sonataflow-operator/operator.yaml
+	kubectl create -f ../sonataflow-operator/operator.yaml
+
+.PHONY: go-test-e2e
+go-test-e2e:
+	rm -rf dist-tests-e2e
+	mkdir dist-tests-e2e
+	go test -v ./e2e-tests/... -tags e2e_tests -timeout 20m 2>&1 | tee ./dist-tests-e2e/go-test-output-e2e.txt
 
 .PHONY: go-test-e2e-report
 go-test-e2e-report:
