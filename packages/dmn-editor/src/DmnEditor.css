@@ -616,7 +616,7 @@ the cursor is inside it. By making it adimensional, that never happens.  */
 
 /* Customizing some patternfly components is hard... */
 .kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type > div:first-of-type > button,
-.kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type > div:first-of-type input,
+.kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type > div:first-of-type span input,
 .kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type > div:first-of-type,
 .kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type,
 .kie-dmn-editor--data-type-node-panel > div > div:first-of-type > button,
@@ -642,6 +642,9 @@ the cursor is inside it. By making it adimensional, that never happens.  */
 }
 .kie-dmn-editor--data-type-node-panel span {
   height: 19px;
+}
+.kie-dmn-editor--data-type-node-panel span.pf-v5-c-select__toggle-typeahead {
+  height: auto;
 }
 .kie-dmn-editor--data-type-node-panel .pf-v5-c-button.pf-v5-c-select__toggle-button.pf-m-plain {
   margin-left: 24px;
