@@ -332,9 +332,9 @@ export function JavaFunctionExpression({
         // Class
         if (u.rowIndex === 0) {
           setExpression((prev: Normalized<BoxedFunctionJava>) => {
-            clazz.expression = {
+            const newExpression = {
               ...clazz.expression,
-              __$$element: "literalExpression",
+              __$$element: "literalExpression" as const,
               text: {
                 __$$text: u.value,
               },
@@ -346,7 +346,13 @@ export function JavaFunctionExpression({
               expression: {
                 __$$element: "context",
                 ...context,
-                contextEntry: [clazz, method],
+                contextEntry: [
+                  {
+                    ...clazz,
+                    expression: newExpression,
+                  },
+                  method,
+                ],
               },
             };
 
@@ -356,9 +362,9 @@ export function JavaFunctionExpression({
         // Method
         else if (u.rowIndex === 1) {
           setExpression((prev: Normalized<BoxedFunctionJava>) => {
-            method.expression = {
+            const newExpression = {
               ...method.expression,
-              __$$element: "literalExpression",
+              __$$element: "literalExpression" as const,
               "@_id": method.expression["@_id"] ?? generateUuid(),
               text: {
                 __$$text: u.value,
@@ -371,7 +377,13 @@ export function JavaFunctionExpression({
               expression: {
                 __$$element: "context",
                 ...context,
-                contextEntry: [clazz, method],
+                contextEntry: [
+                  clazz,
+                  {
+                    ...method,
+                    expression: newExpression,
+                  },
+                ],
               },
             };
             return ret;
