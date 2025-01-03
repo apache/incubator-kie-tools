@@ -45,7 +45,9 @@ export function DecisionTableOutputHeaderCell(props: {
   const activeDrgElementId = useDmnEditorStore((s) => s.boxedExpressionEditor.activeDrgElementId);
   const { dmnEditorRootElementRef } = useDmnEditor();
   const { externalModelsByNamespace } = useExternalModels();
-
+  const singleOutputColumn = {
+    name: "Output-1",
+  };
   const node = useDmnEditorStore((s) =>
     s
       .computed(s)
@@ -172,18 +174,22 @@ export function DecisionTableOutputHeaderCell(props: {
           />
         </>
       )}
-      <NameField
-        alternativeFieldName={root?.output.length === 1 ? "Column Name" : undefined}
-        isReadOnly={props.isReadOnly}
-        id={cell["@_id"]!}
-        name={cell?.["@_name"] ?? ""}
-        getAllUniqueNames={getAllUniqueNames}
-        onChange={(newName) =>
-          updater((dmnObject) => {
-            dmnObject["@_name"] = newName;
-          })
-        }
-      />
+      {root?.output && root.output.length > 1 ? (
+        <NameField
+          alternativeFieldName={undefined}
+          isReadOnly={props.isReadOnly}
+          id={cell["@_id"]!}
+          name={cell?.["@_name"] ?? singleOutputColumn.name}
+          getAllUniqueNames={getAllUniqueNames}
+          onChange={(newName) =>
+            updater((dmnObject) => {
+              dmnObject["@_name"] = newName;
+            })
+          }
+        />
+      ) : (
+        ""
+      )}
       <TypeRefField
         alternativeFieldName={root?.output.length === 1 ? "Column Type" : undefined}
         isReadOnly={cellMustHaveSameTypeAsRoot ? true : props.isReadOnly}
