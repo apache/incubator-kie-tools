@@ -76,7 +76,9 @@ enum DecisionTableColumnType {
   OutputClause = "output",
   Annotation = "annotation",
 }
-
+const singleOutputColumn = {
+  name: "Output-1",
+};
 export const DECISION_TABLE_INPUT_DEFAULT_VALUE = "-";
 export const DECISION_TABLE_OUTPUT_DEFAULT_VALUE = "";
 export const DECISION_TABLE_ANNOTATION_DEFAULT_VALUE = "";
@@ -352,8 +354,8 @@ export function DecisionTableExpression({
         id: outputClause["@_id"],
         label:
           decisionTableExpression.output?.length == 1
-            ? decisionTableExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME
-            : outputClause["@_name"] ?? outputClause["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
+            ? ""
+            : outputClause["@_name"] ?? outputClause["@_label"] ?? singleOutputColumn.name,
         dataType:
           decisionTableExpression.output?.length == 1
             ? decisionTableExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined
