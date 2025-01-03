@@ -38,6 +38,8 @@ var KnExecutable string
 
 var TestPrintCmdOutput = flag.Bool("logs", true, "Print command output during tests")
 
+var operatorCRD = "operator.yaml"
+
 func TestMain(m *testing.M) {
 
 	// Create temp directory for tests and switch inside it
