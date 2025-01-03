@@ -154,6 +154,7 @@ func manipulatePomToKogito(filename string, cfg CreateQuarkusProjectConfig) erro
 
 	//add apache repository after profiles declaration
 	var repositories = []Repository{
+		{Id: "central", Name: "Central Repository", Url: "https://repo.maven.apache.org/maven2"},
 		{Id: "apache-public-repository-group", Name: "Apache Public Repository Group", Url: "https://repository.apache.org/content/groups/public/"},
 		{Id: "apache-snapshot-repository-group", Name: "Apache Snapshot Repository Group", Url: "https://repository.apache.org/content/groups/snapshots/"},
 	}
