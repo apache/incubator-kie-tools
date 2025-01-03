@@ -277,7 +277,15 @@ export function getDefaultBoxedExpression({
       "@_typeRef": typeRef,
       "@_hitPolicy": "UNIQUE",
       input,
-      output,
+      output: output.map((out) => {
+        if (output.length > 1) {
+          return {
+            ...out,
+          };
+        } else {
+          return { ...out, "@_name": undefined };
+        }
+      }),
       annotation: [
         {
           "@_name": "Annotations",
