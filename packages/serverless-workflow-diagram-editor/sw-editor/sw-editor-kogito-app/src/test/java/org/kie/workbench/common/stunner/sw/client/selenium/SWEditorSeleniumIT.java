@@ -191,6 +191,11 @@ public class SWEditorSeleniumIT extends SWEditorSeleniumBase {
     }
 
     @Test
+    public void testStateExecTimeoutExample() throws Exception {
+        testExample("StateExecTimeoutExample.sw.json");
+    }
+
+    @Test
     public void testAutoLayoutMultipleConnectionsCPs() throws Exception {
         String resource = "EventBasedSwitchStateExample.sw.json";
         final String expected = loadResource(resource);
