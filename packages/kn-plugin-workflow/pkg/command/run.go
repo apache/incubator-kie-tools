@@ -20,6 +20,7 @@
 package command
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"sync"
@@ -34,7 +35,11 @@ import (
 type RunCmdConfig struct {
 	PortMapping string
 	OpenDevUI   bool
+	StopContainerOnUserInput bool
 }
+
+const StopContainerMsg = "Press any key to stop the container"
+
 
 func NewRunCommand() *cobra.Command {
 	cmd := &cobra.Command{
@@ -56,9 +61,13 @@ func NewRunCommand() *cobra.Command {
 
  	# Disable automatic browser launch of SonataFlow  Dev UI
 	{{.Name}} run --open-dev-ui=false
+
+	# Stop the container when the user presses any key
+	{{.Name}} run --stop-container-on-user-input=false
+
 		 `,
 		SuggestFor: []string{"rnu", "start"}, //nolint:misspell
-		PreRunE:    common.BindEnv("port", "open-dev-ui"),
+		PreRunE:    common.BindEnv("port", "open-dev-ui", "stop-container-on-user-input"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -67,6 +76,7 @@ func NewRunCommand() *cobra.Command {
 
 	cmd.Flags().StringP("port", "p", "8080", "Maps a different host port to the running container port.")
 	cmd.Flags().Bool("open-dev-ui", true, "Disable automatic browser launch of SonataFlow  Dev UI")
+	cmd.Flags().Bool("stop-container-on-user-input", true, "Stop the container when the user presses any key")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	return cmd
@@ -92,8 +102,9 @@ func run() error {
 
 func runDevCmdConfig() (cfg RunCmdConfig, err error) {
 	cfg = RunCmdConfig{
-		PortMapping: viper.GetString("port"),
-		OpenDevUI:   viper.GetBool("open-dev-ui"),
+		PortMapping: 				viper.GetString("port"),
+		OpenDevUI:   				viper.GetBool("open-dev-ui"),
+		StopContainerOnUserInput: 	viper.GetBool("stop-container-on-user-input"),
 	}
 	return
 }
@@ -137,6 +148,36 @@ func runSWFProjectDevMode(containerTool string, cfg RunCmdConfig) (err error) {
 	pollInterval := 5 * time.Second
 	common.ReadyCheck(readyCheckURL, pollInterval, cfg.PortMapping, cfg.OpenDevUI)
 
+	if cfg.StopContainerOnUserInput {
+		if err := stopContainer(containerTool); err != nil {
+			return err
+		}
+	}
+
 	wg.Wait()
 	return err
 }
+
+func stopContainer(containerTool string) error {
+	fmt.Println(StopContainerMsg)
+
+	reader := bufio.NewReader(os.Stdin)
+
+	_, err := reader.ReadString('\n')
+	if err != nil {
+		return fmt.Errorf("error reading from stdin: %w", err)
+	}
+
+	fmt.Println("⏳ Stopping the container...")
+
+	containerID, err := common.GetContainerID(containerTool)
+	if err != nil {
+		return err
+	}
+	if err := common.StopContainer(containerTool, containerID); err != nil {
+		return err
+	}
+	return nil
+}
+
+
