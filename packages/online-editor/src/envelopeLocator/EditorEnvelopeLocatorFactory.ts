@@ -18,7 +18,7 @@
  */
 
 import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
-import { FileTypes, isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
+import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { EditorConfig } from "./EditorEnvelopeLocatorApi";
 
 export const GLOB_PATTERN = {
@@ -28,16 +28,6 @@ export const GLOB_PATTERN = {
   scesim: "**/*.scesim",
   pmml: "**/*.pmml",
 };
-
-export const supportedFileExtensionArray = [
-  FileTypes.DMN,
-  FileTypes.BPMN,
-  FileTypes.BPMN2,
-  FileTypes.SCESIM,
-  FileTypes.PMML,
-];
-
-export type SupportedFileExtensions = (typeof supportedFileExtensionArray)[number];
 
 export function isModel(path: string): boolean {
   return isOfKind("dmn", path) || isOfKind("bpmn", path) || isOfKind("pmml", path);
