@@ -24,7 +24,7 @@ const rootEnv = require("@kie-tools/root-env/env");
 module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     DEV_DEPLOYMENT_BASE_IMAGE__builderImage: {
-      default: "registry.access.redhat.com/ubi9/openjdk-17:1.20",
+      default: "registry.access.redhat.com/ubi9/openjdk-17:1.21",
       description: "The image used in the FROM import.",
     },
     DEV_DEPLOYMENT_BASE_IMAGE__userId: {

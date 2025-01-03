@@ -21,9 +21,9 @@ Docker image with Java and Maven, as well as the dev-deployment-upload-service b
 
 ## Build arguments
 
-- `BUILDER_IMAGE_ARG`: The base image used for building this image (defaults to `registry.access.redhat.com/ubi9/openjdk-17:1.20`).
+- `BUILDER_IMAGE_ARG`: The base image used for building this image (defaults to `registry.access.redhat.com/ubi9/openjdk-17:1.21`).
   - Tested with:
-    - registry.access.redhat.com/ubi9/openjdk-17:1.20
+    - registry.access.redhat.com/ubi9/openjdk-17:1.21
     - icr.io/appcafe/ibm-semeru-runtimes:open-17-jdk-ubi-minimal
 
 ## Environment variables
