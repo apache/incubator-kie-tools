@@ -74,7 +74,7 @@ public class MetaDataListItemWidgetViewImpl implements MetaDataListItemWidgetVie
 
     @PostConstruct
     public void init() {
-        attribute.setRegExp(StringUtils.ALPHA_NUM_UNDERSCORE_DOT_REGEXP,
+        attribute.setRegExp(StringUtils.ALPHA_NUM_HYPHEN_UNDERSCORE_DOT_REGEXP,
                             StunnerFormsClientFieldsConstants.CONSTANTS.Removed_invalid_characters_from_name(),
                             StunnerFormsClientFieldsConstants.CONSTANTS.Invalid_character_in_name());
 
