@@ -20,11 +20,9 @@
 export interface FormElement {
   reactImports: string[];
   pfImports: string[];
-
+  pfIconImports?: string[];
   requiredCode?: string[];
-
   ref: InputReference;
-
   stateCode: string;
   jsxCode: string;
   isReadonly: boolean;
@@ -33,6 +31,7 @@ export interface FormElement {
 abstract class AbstractFormElement implements FormElement {
   jsxCode: string;
   pfImports: string[];
+  pfIconImports?: string[];
   reactImports: string[];
   requiredCode?: string[];
   ref: InputReference;

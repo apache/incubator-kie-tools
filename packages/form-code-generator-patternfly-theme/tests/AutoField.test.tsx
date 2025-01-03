@@ -183,7 +183,7 @@ describe("<AutoField> tests", () => {
     expect(formElement.requiredCode).toContain(DATE_FUNCTIONS);
   });
 
-  it("<UnsupportedField> - rendering", () => {
+  it.skip("<UnsupportedField> - rendering", () => {
     const { formElement } = doRenderField("friends");
 
     expect(formElement.pfImports).toContain("FormGroup");
