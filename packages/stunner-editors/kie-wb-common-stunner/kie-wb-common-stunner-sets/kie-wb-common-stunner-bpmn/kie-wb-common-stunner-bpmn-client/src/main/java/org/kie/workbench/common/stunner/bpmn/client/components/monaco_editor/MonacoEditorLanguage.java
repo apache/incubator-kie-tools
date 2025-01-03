@@ -24,8 +24,6 @@ public class MonacoEditorLanguage {
 
     static final String LANG_JAVA = "java";
     static final String TITLE_JAVA = "Java";
-    static final String LANG_JAVASCRIPT = "javascript";
-    static final String TITLE_JAVASCRIPT = "JavaScript";
     static final String LANG_MVEL = "mvel";
     static final String TITLE_MVEL = "MVEL";
     static final String LANG_DROOLS = "drools";
@@ -33,21 +31,12 @@ public class MonacoEditorLanguage {
     static final String LANG_FEEL = "feel";
     static final String TITLE_FEEL = "FEEL";
     static final String JAVA_MODULE = "vs/basic-languages/java/java";
-    static final String JAVASCRIPT_MODULE = "vs/basic-languages/javascript/javascript";
-    static final String TYPESCRIPT_MODULE = "vs/basic-languages/typescript/typescript";
-    static final String TYPESCRIPT_MODE_MODULE = "vs/language/typescript/tsMode";
 
     public static MonacoEditorLanguage JAVA =
             new MonacoEditorLanguage(LANG_JAVA,
                                      TITLE_JAVA,
                                      LANG_JAVA,
                                      new String[]{JAVA_MODULE});
-
-    public static MonacoEditorLanguage JAVA_SCRIPT =
-            new MonacoEditorLanguage(LANG_JAVASCRIPT,
-                                     TITLE_JAVASCRIPT,
-                                     LANG_JAVASCRIPT,
-                                     new String[]{JAVASCRIPT_MODULE, TYPESCRIPT_MODULE, TYPESCRIPT_MODE_MODULE});
 
     // Let's assume use of Java syntax for MVEL.
     public static MonacoEditorLanguage MVEL =
