@@ -977,6 +977,8 @@ common.py
 # packages/sonataflow-management-console-webapp/resources/monitoring-webapp/MonitoringReport.dash.yml
 MonitoringReport.dash.yml
 # packages/sonataflow-management-console-webapp/resources/monitoring-webapp/WorkflowDetails.dash.yml
+sonataflow-management-console.feature
+# packages/sonataflow-management-console-image/test-resources/tests/features/sonataflow-management-console.feature
 WorkflowDetails.dash.yml
 # packages/sonataflow-operator/PROJECT
 PROJECT
