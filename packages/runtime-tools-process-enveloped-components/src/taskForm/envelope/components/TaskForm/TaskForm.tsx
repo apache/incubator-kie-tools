@@ -97,7 +97,7 @@ export const TaskForm: React.FC<TaskFormProps & OUIAProps> = ({ userTask, schema
     if (!taskFormSchema) {
       return (
         <Bullseye {...componentOuiaProps((ouiaId ? ouiaId : "task-form-") + "-loading-spinner", "task-form", true)}>
-          <KogitoSpinner spinnerText={`Loading task form...`} />
+          <KogitoSpinner spinnerText={`Loading Task form...`} />
         </Bullseye>
       );
     }
