@@ -28,16 +28,16 @@ Feature: Kogito-jit-runner feature.
     And the image should contain label io.k8s.display-name with value Kogito JIT Runner
     And the image should contain label io.openshift.tags with value kogito,jit-runner
 
-  Scenario: Verify if the debug is correctly enabled and test default http port
+  Scenario: Verify default http port
     When container is started with env
       | variable     | value |
-      | SCRIPT_DEBUG | true  |
-    Then container log should contain -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/quarkus-app/quarkus-run.jar
+      | SCRIPT_DEBUG | false |
+    Then container log should match regex -Djava\.library\.path="/home/kogito/lib" -Dquarkus\.http\.host=0\.0\.0\.0 -Dquarkus\.http\.port=8080 -jar "/home/kogito/bin/quarkus-app/quarkus-run\.jar"
 
   Scenario: Verify that jit runner can evaluate a DMN model with a context
     When container is started with env
       | variable     | value |
-      | SCRIPT_DEBUG | true  |
+      | SCRIPT_DEBUG | false  |
     Then check that page is served
       | property        | value                                                                                            |
       | port            | 8080                                                                                             |

@@ -41,8 +41,12 @@ source "${KOGITO_HOME}"/launch/configure.sh
 DYNAMIC_RESOURCES_OPTS="$(${JBOSS_CONTAINER_JAVA_JVM_MODULE}/java-default-options) $(${JBOSS_CONTAINER_JAVA_JVM_MODULE}/debug-options)"
 
 # shellcheck disable=SC2086
-exec java ${SHOW_JVM_SETTINGS} ${DYNAMIC_RESOURCES_OPTS} ${JAVA_OPTIONS} ${CUSTOM_TRUSTSTORE_ARGS} \
-        -Djava.library.path="${KOGITO_HOME}"/lib \
-        -Dquarkus.http.host=0.0.0.0 \
-        -Dquarkus.http.port=8080 \
-        -jar "${KOGITO_HOME}"/bin/quarkus-app/quarkus-run.jar
+CMD="exec java ${SHOW_JVM_SETTINGS} ${DYNAMIC_RESOURCES_OPTS} ${JAVA_OPTIONS} ${CUSTOM_TRUSTSTORE_ARGS} \
+-Djava.library.path=\"${KOGITO_HOME}/lib\" \
+-Dquarkus.http.host=0.0.0.0 \
+-Dquarkus.http.port=8080 \
+-jar \"${KOGITO_HOME}/bin/quarkus-app/quarkus-run.jar\""
+
+log_info "Running application start mvn command"
+echo "$CMD"
+eval "$CMD"

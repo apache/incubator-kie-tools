@@ -5,9 +5,9 @@ exports[`Test built images individually cors-proxy homepage 1`] = `
     <html>
       <title>@kie-tools/cors-proxy</title>
       <h1>@kie-tools/cors-proxy</h1>
-      <p>This is a Cors-Proxy software intended to be used to proxy requests .</p>
-      <p>The source code is hosted on Github at <a href="https://github.com/apache/incubator-kie-tools/packages/cors-proxy">@kie-tools/cors-proxy</a></p>
-      <p>It can also be installed from npm with <code>npm install <a href="https://npmjs.org/package/@kie-tools/cors-proxy">@kie-tools/cors-proxy</a></code></p>
+      <p>This is a CORS proxy software intended to be used to proxy requests.</p>
+      <p>The source code is hosted on GitHub at <a href="https://github.com/apache/incubator-kie-tools/tree/main/packages/cors-proxy">@kie-tools/cors-proxy</a></p>
+      <p>It can also be installed from NPM with <code>npm install <a href="https://npmjs.org/package/@kie-tools/cors-proxy">@kie-tools/cors-proxy</a></code></p>
     </html>"
 `;
 

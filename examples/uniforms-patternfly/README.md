@@ -15,7 +15,7 @@
    under the License.
 -->
 
-## @kie-tools-examples/uniforms-patternfly
+# Example :: Uniforms PatternFly
 
 ---
 

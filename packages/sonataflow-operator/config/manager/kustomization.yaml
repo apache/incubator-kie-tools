@@ -1,4 +1,3 @@
-#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -15,7 +14,6 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-#
 
 resources:
   - manager.yaml
@@ -37,13 +35,15 @@ configMapGenerator:
       - controllers_cfg.yaml
     name: controllers-config
 apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
+kind:
+  Kustomization
+  # Changed during "make build", do not attempt to modify it manually!
 images:
   - name: controller
     newName: docker.io/apache/incubator-kie-sonataflow-operator
     newTag: main
 # Patching the manager deployment file to add an env var with the operator namespace in
-patchesJson6902:
+patches:
   - patch: |-
       - op: add
         path: /spec/template/spec/containers/0/env

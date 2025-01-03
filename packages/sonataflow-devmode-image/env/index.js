@@ -19,6 +19,7 @@
 
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 const sonataFlowQuarkusDevUiEnv = require("@kie-tools/sonataflow-quarkus-devui/env");
+const sonataflowImageCommonEnv = require("@kie-tools/sonataflow-image-common/env");
 
 const {
   env: { mavenM2RepoViaHttpImage: mavenM2RepoViaHttpImageEnv },
@@ -26,7 +27,7 @@ const {
 
 const rootEnv = require("@kie-tools/root-env/env");
 
-module.exports = composeEnv([rootEnv], {
+module.exports = composeEnv([rootEnv, sonataflowImageCommonEnv], {
   vars: varsWithName({
     SONATAFLOW_DEVMODE_IMAGE__registry: {
       default: "docker.io",

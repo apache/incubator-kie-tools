@@ -25,6 +25,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 
+	"github.com/docker/docker/api/types/registry"
+
 	"k8s.io/klog/v2"
 
 	"github.com/docker/docker/api/types"
@@ -165,7 +167,7 @@ func (d Docker) TagImage(imageSource string, imageTag string) error {
 }
 
 func (d Docker) PushImage(image string, url string, username string, password string) error {
-	var authConfig = types.AuthConfig{
+	var authConfig = registry.AuthConfig{
 		Username:      username,
 		Password:      password,
 		ServerAddress: url,

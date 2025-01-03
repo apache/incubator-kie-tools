@@ -33,7 +33,7 @@
     "install": "node install.js && pnpm format",
     "m2-repo-via-http:container:kill": "(docker container kill m2-repo-via-http || true) && (docker container rm m2-repo-via-http || true)",
     "m2-repo-via-http:container:run": "(pnpm m2-repo-via-http:container:kill || true) && docker run --name m2-repo-via-http -v \"$(mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout):/var/www/html\" -dit $(build-env sonataflowBuilderImage.dev.mavenM2RepoViaHttpImage)",
-    "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env sonataflowBuilderImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env sonataflowBuilderImage.account) KOGITO_IMAGE_NAME=$(build-env sonataflowBuilderImage.name) KOGITO_IMAGE_TAG=$(build-env sonataflowBuilderImage.buildTag) QUARKUS_PLATFORM_VERSION=$(build-env versions.quarkus) KOGITO_VERSION=$(build-env versions.kogito)",
+    "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env sonataflowBuilderImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env sonataflowBuilderImage.account) KOGITO_IMAGE_NAME=$(build-env sonataflowBuilderImage.name) KOGITO_IMAGE_TAG=$(build-env sonataflowBuilderImage.buildTag) QUARKUS_PLATFORM_GROUPID=$(build-env kogitoImagesCekitModules.quarkusGroupId) QUARKUS_PLATFORM_VERSION=$(build-env versions.quarkus) KOGITO_VERSION=$(build-env versions.kogito)",
     "test": "run-script-os",
     "test:cleanup": "mv dist-tests/report.xml dist-tests/junit-report.xml || true",
     "test:linux:darwin": "run-script-if --bool \"$(build-env tests.run)\" --then \"pnpm test:setup\" \"pnpm test:run\" --finally \"pnpm test:cleanup\"",
