@@ -39,14 +39,16 @@ public class DataIndexCounter {
     private String count = "-";
     private MultiEmitter<? super String> emitter;
     private long vertxTimer;
+    private String path;
 
-    public DataIndexCounter(String query, String graphField, WebClient dataIndexWebClient) {
+    public DataIndexCounter(String query, String graphField, WebClient dataIndexWebClient, String path) {
         if (dataIndexWebClient == null) {
             throw new IllegalArgumentException("dataIndexWebClient is null");
         }
         this.query = query;
         this.field = graphField;
         this.dataIndexWebClient = dataIndexWebClient;
+        this.path=path;
         this.vertx = Vertx.vertx();
 
         this.multi = Multi.createFrom().emitter(emitter -> {
@@ -84,7 +86,7 @@ public class DataIndexCounter {
     }
 
     private Future<String> doQuery(String query, String graphModelName) {
-        return this.dataIndexWebClient.post("/graphql")
+        return this.dataIndexWebClient.post(path + "/graphql")
                 .putHeader("content-type", "application/json")
                 .sendJson(new JsonObject(query))
                 .map(response -> {
@@ -92,7 +94,7 @@ public class DataIndexCounter {
                         JsonObject responseData = response.bodyAsJsonObject().getJsonObject("data");
                         return String.valueOf(responseData.getJsonArray(graphModelName).size());
                     }
-                    return "-";
+                    return "0";
                 });
     }
 
