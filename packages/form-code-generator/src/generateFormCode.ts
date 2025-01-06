@@ -38,6 +38,7 @@ export function generateFormCode<FormThemeFileExt extends string, CustomFormAsse
     (generatedForms, formSchema) => {
       try {
         generatedForms.push({ formAsset: formGeneratorTheme.generate(formSchema), formError: undefined });
+        console.trace(`JSON: `, JSON.stringify(formSchema));
       } catch (error) {
         console.trace(`Error generating form: `, error);
         generatedForms.push({ formAsset: undefined, formError: error });

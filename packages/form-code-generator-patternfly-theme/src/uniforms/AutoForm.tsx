@@ -63,9 +63,9 @@ const AutoForm: React.FC<AutoFormProps> = (props) => {
   const staticCodeStr: string = staticCodeArray.map((id) => JSON.stringify(getStaticCodeBlock(id))).join("\n");
 
   const formTemplate = `
-import React, { ${reactImports.join(", ")} }  from "react";
+import React, { ${reactImports.join(", ")} } from "react";
 import { ${pfImports.join(", ")} } from "@patternfly/react-core";
-${pfIconImports.length > 0 ? `import { ${pfIconImports.join(", ")} } from "@patternfly/react-icons";` : ""}
+${pfIconImports.length > 0 ? `import { ${pfIconImports.join(", ")} } from "@patternfly/react-icons";` : "// error"}
     
 const ${formName}: React.FC<any> = ( props:any ) => {
   const [formApi, setFormApi] = useState<any>();

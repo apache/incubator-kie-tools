@@ -28,7 +28,7 @@ const schema = {
   "friends.$.age": { type: Number },
 };
 
-describe.skip("<UnsupportedField> tests", () => {
+describe("<UnsupportedField> tests", () => {
   it("<UnsupportedField> - rendering", () => {
     const props = {
       id: "id",

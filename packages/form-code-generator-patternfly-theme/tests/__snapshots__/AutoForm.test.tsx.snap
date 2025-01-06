@@ -587,7 +587,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							onClick={() =&gt; {
 								!false &amp;&amp; set__friends((friends ?? []).concat([]));
 							}}&gt;
-							+{/* &lt;PlusCircleIcon color=&#39;#0088ce&#39; /&gt; */}
+							&lt;PlusCircleIcon color=&#39;#0088ce&#39; /&gt;
 						&lt;/Button&gt;
 					&lt;/SplitItem&gt;
 				&lt;/Split&gt;
@@ -657,7 +657,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 										value.splice(NaN, 1);
 										!false &amp;&amp; set__friends(value);
 									}}&gt;
-									- {/* &lt;MinusCircleIcon color=&#39;#cc0000&#39; /&gt; */}
+									&lt;MinusCircleIcon color=&#39;#cc0000&#39; /&gt;
 								&lt;/Button&gt;
 							&lt;/div&gt;
 						&lt;/div&gt;

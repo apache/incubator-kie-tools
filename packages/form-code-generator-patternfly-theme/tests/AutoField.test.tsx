@@ -114,6 +114,17 @@ describe("<AutoField> tests", () => {
     expect(formElement.requiredCode).toContain(TIME_FUNCTIONS);
   });
 
+  it("<ListField> - rendering", () => {
+    const { formElement } = doRenderField("friends");
+
+    expect(formElement.pfImports).toContain("FormGroup");
+    expect(formElement.pfImports).toContain("TextInput");
+    expect(formElement.pfIconImports).toContain("PlusCircleIcon");
+    expect(formElement.pfIconImports).toContain("MinusCircleIcon");
+
+    expect(formElement.jsxCode).not.toBeNull();
+  });
+
   it("<NumField> - integer rendering", () => {
     const { formElement } = doRenderField("age");
 
@@ -181,12 +192,5 @@ describe("<AutoField> tests", () => {
     expect(formElement.requiredCode).not.toBeUndefined();
     expect(formElement.requiredCode).toHaveLength(1);
     expect(formElement.requiredCode).toContain(DATE_FUNCTIONS);
-  });
-
-  it.skip("<UnsupportedField> - rendering", () => {
-    const { formElement } = doRenderField("friends");
-
-    expect(formElement.pfImports).toContain("FormGroup");
-    expect(formElement.pfImports).toContain("Alert");
   });
 });
