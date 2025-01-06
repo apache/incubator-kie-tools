@@ -79,11 +79,13 @@ public class JBPMDevuiJsonRPCService {
 
     private void initDataIndexWebClient(String dataIndexURL) {
         try {
+            URL url = new URL(dataIndexURL);
+            String path= url.getPath();
             this.dataIndexWebClient = WebClient.create(vertx, buildWebClientOptions(dataIndexURL));
             this.processesCounter = new DataIndexCounter(ALL_PROCESS_INSTANCES_IDS_QUERY, PROCESS_INSTANCES,
-                    dataIndexWebClient);
-            this.tasksCounter = new DataIndexCounter(ALL_TASKS_IDS_QUERY, USER_TASKS, dataIndexWebClient);
-            this.jobsCounter = new DataIndexCounter(ALL_JOBS_IDS_QUERY, JOBS, dataIndexWebClient);
+                    dataIndexWebClient,path);
+            this.tasksCounter = new DataIndexCounter(ALL_TASKS_IDS_QUERY, USER_TASKS, dataIndexWebClient,path);
+            this.jobsCounter = new DataIndexCounter(ALL_JOBS_IDS_QUERY, JOBS, dataIndexWebClient,path);
 
             this.eventPublisher.setOnProcessEventListener(processesCounter::refresh);
             this.eventPublisher.setOnTaskEventListener(tasksCounter::refresh);
