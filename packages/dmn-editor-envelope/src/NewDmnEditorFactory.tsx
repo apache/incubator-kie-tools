@@ -32,6 +32,10 @@ export class NewDmnEditorFactory implements EditorFactory<NewDmnEditorInterface,
 }
 
 export class NewDmnEditorInterface extends DmnEditorInterface {
+  /**
+   * Open boxed expression editor for given node
+   * @param nodeId id of the node to open
+   */
   public openBoxedExpressionEditor(nodeId: string): void {
     this.self.openBoxedExpressionEditor(nodeId);
   }
