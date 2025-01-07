@@ -45,11 +45,15 @@ function fetchExtendedServicesURL(): URL {
   }
 }
 
-const getConfigurationPropertyValue = <T>(property: string, defaultValue: T): T => {
-  const value: T | null = vscode.workspace.getConfiguration().get(property) as T;
-  if (value == null) {
+// Place on top of the file or on another file
+// I don't think this is a suitable name, it's just to exemplify
+type Property = string | number | boolean
+
+const getConfigurationPropertyValue = <T extends Property | null>(property: string, defaultValue: T): T => {
+  const value = vscode.workspace.getConfiguration().get(property) as T;
+  if (value === null) {
     console.warn(`Property: ${property} is missing, using the default: ${defaultValue}`);
-    value == defaultValue;
+    value = defaultValue;
   }
   return value;
 };
