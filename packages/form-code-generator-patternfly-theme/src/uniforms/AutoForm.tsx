@@ -65,7 +65,7 @@ const AutoForm: React.FC<AutoFormProps> = (props) => {
   const formTemplate = `
 import React, { ${reactImports.join(", ")} } from "react";
 import { ${pfImports.join(", ")} } from "@patternfly/react-core";
-${pfIconImports.length > 0 ? `import { ${pfIconImports.join(", ")} } from "@patternfly/react-icons";` : "// error"}
+${pfIconImports.length > 0 ? `import { ${pfIconImports.join(", ")} } from "@patternfly/react-icons";` : ""}
     
 const ${formName}: React.FC<any> = ( props:any ) => {
   const [formApi, setFormApi] = useState<any>();
