@@ -241,7 +241,7 @@ func Test_devProfileWithImageSnapshotOverrideWithPlatform(t *testing.T) {
 
 	// check if the objects have been created
 	deployment := test.MustGetDeployment(t, client, workflow)
-	assert.Equal(t, "docker.io/customgroup/custom-swf-builder-nightly:42.43.7", deployment.Spec.Template.Spec.Containers[0].Image)
+	assert.Equal(t, test.CommonImageTag, deployment.Spec.Template.Spec.Containers[0].Image)
 }
 
 func Test_devProfileWithWPlatformWithoutDevBaseImageAndWithBaseImage(t *testing.T) {
