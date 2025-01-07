@@ -21,40 +21,65 @@ import * as React from "react";
 import { render } from "@testing-library/react";
 import createSchema from "./_createSchema";
 import AutoForm, { AutoFormProps } from "../src/uniforms/AutoForm";
+import { renderField } from "./_render";
+import { ListField } from "../src/uniforms";
+import { InputsContainer } from "../src/api";
 
 describe("<ListField> tests", () => {
   it("<ListField>", () => {
-    const schema = {
-      friends: { type: Array },
-      "friends.$": Object,
-      "friends.$.name": { type: String },
-      "friends.$.age": { type: Number },
-      "friends.$.country": { type: String, allowedValues: ["US", "Brazil"] },
-      "friends.$.married": { type: Boolean },
-      "friends.$.know": {
-        type: Array,
-        allowedValues: ["Java", "Node", "Docker"],
-        uniforms: {
-          checkboxes: true,
+    const { container, formElement } = renderField(
+      ListField,
+      {
+        id: "id",
+        label: "Friends",
+        name: "friends",
+        disabled: false,
+      },
+      {
+        friends: { type: Array },
+        "friends.$": Object,
+        "friends.$.name": { type: String },
+        "friends.$.age": { type: Number },
+        "friends.$.country": { type: String, allowedValues: ["US", "Brazil"] },
+        "friends.$.married": { type: Boolean },
+        "friends.$.know": {
+          type: Array,
+          allowedValues: ["Java", "Node", "Docker"],
+          uniforms: {
+            checkboxes: true,
+          },
         },
-      },
-      "friends.$.know.$": String,
-      "friends.$.areas": {
-        type: String,
-        allowedValues: ["Developer", "HR", "UX"],
-      },
-      "friends.$.birthday": { type: Date },
-    };
-
-    const props: AutoFormProps = {
-      id: "hiring_ITInterview",
-      schema: createSchema(schema),
-      disabled: false,
-      placeholder: true,
-    };
-
-    const { container } = render(<AutoForm {...props} />);
+        "friends.$.know.$": String,
+        "friends.$.areas": {
+          type: String,
+          allowedValues: ["Developer", "HR", "UX"],
+        },
+        "friends.$.birthday": { type: Date },
+      }
+    );
 
     expect(container).toMatchSnapshot();
+
+    const inputContainer = formElement as InputsContainer;
+    expect(inputContainer.pfImports).toStrictEqual([
+      "Split",
+      "SplitItem",
+      "Button",
+      "Card",
+      "CardBody",
+      "TextInput",
+      "FormGroup",
+      "SelectOption",
+      "SelectOptionObject",
+      "Select",
+      "SelectVariant",
+      "Checkbox",
+      "DatePicker",
+      "Flex",
+      "FlexItem",
+      "InputGroup",
+      "TimePicker",
+    ]);
+    expect(inputContainer.pfIconImports).toStrictEqual(["PlusCircleIcon", "MinusCircleIcon"]);
   });
 });

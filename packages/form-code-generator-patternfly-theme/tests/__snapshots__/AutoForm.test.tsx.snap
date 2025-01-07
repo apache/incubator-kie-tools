@@ -576,7 +576,13 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 			&lt;/Card&gt;
 			&lt;div fieldId={&#39;uniforms-0000-000x&#39;}&gt;
 				&lt;Split hasGutter&gt;
-					&lt;SplitItem&gt;{&#39;Friends&#39; &amp;&amp; &lt;label&gt;&#39;Friends&#39;&lt;/label&gt;}&lt;/SplitItem&gt;
+					&lt;SplitItem&gt;
+						{&#39;Friends&#39; &amp;&amp; (
+							&lt;label className={&#39;pf-c-form__label&#39;}&gt;
+								&lt;span className={&#39;pf-c-form__label-text&#39;}&gt;Friends&lt;/span&gt;
+							&lt;/label&gt;
+						)}
+					&lt;/SplitItem&gt;
 					&lt;SplitItem isFilled /&gt;
 					&lt;SplitItem&gt;
 						&lt;Button
@@ -585,7 +591,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							style={{ paddingLeft: &#39;0&#39;, paddingRight: &#39;0&#39; }}
 							disabled={false}
 							onClick={() =&gt; {
-								!false &amp;&amp; set__friends((friends ?? []).concat([]));
+								!false &amp;&amp; set__friends((friends ?? []).concat([undefined]));
 							}}&gt;
 							&lt;PlusCircleIcon color=&#39;#0088ce&#39; /&gt;
 						&lt;/Button&gt;
@@ -653,8 +659,8 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 									variant=&#39;plain&#39;
 									style={{ paddingLeft: &#39;0&#39;, paddingRight: &#39;0&#39; }}
 									onClick={() =&gt; {
-										const value = friends!.slice();
-										value.splice(NaN, 1);
+										const value = [...friends];
+										value.splice(itemIndex, 1);
 										!false &amp;&amp; set__friends(value);
 									}}&gt;
 									&lt;MinusCircleIcon color=&#39;#cc0000&#39; /&gt;

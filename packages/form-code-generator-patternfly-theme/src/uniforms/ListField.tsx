@@ -54,12 +54,34 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
     },
     props.disabled
   );
+
+  const getNewItemProps = () => {
+    const typeName = listItem?.ref.dataType.name;
+    if (typeName?.endsWith("[]")) {
+      return listItem?.ref.dataType.defaultValue ?? [];
+    }
+    switch (typeName) {
+      case "string":
+        return listItem?.ref.dataType.defaultValue ?? "";
+      case "number":
+        return listItem?.ref.dataType.defaultValue ?? null;
+      case "boolean":
+        return listItem?.ref.dataType.defaultValue ?? false;
+      case "object":
+        return listItem?.ref.dataType.defaultValue ?? {};
+      default: // any
+        return listItem?.ref.dataType.defaultValue;
+    }
+  };
+
   const jsxCode = `<div fieldId={'${props.id}'}>
       <Split hasGutter>
         <SplitItem>
           {'${props.label}' && (
-            <label>
-              '${props.label}'
+            <label className={"pf-c-form__label"}>
+              <span className={"pf-c-form__label-text"}>
+                ${props.label}
+              </span>
             </label>
           )}
         </SplitItem>
@@ -71,7 +93,7 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
             style={{ paddingLeft: '0', paddingRight: '0' }}
             disabled={${props.maxCount === undefined ? props.disabled : `${props.disabled} || !(${props.maxCount} <= (${ref.stateName}?.length ?? -1))`}}
             onClick={() => {
-              !${props.disabled} && ${props.maxCount === undefined ? `${ref.stateSetter}((${ref.stateName} ?? []).concat([]))` : `!(${props.maxCount} <= (${ref.stateName}?.length ?? -1)) && ${ref.stateSetter}((${ref.stateName} ?? []).concat([]))`};
+              !${props.disabled} && ${props.maxCount === undefined ? `${ref.stateSetter}((${ref.stateName} ?? []).concat([${getNewItemProps()}]))` : `!(${props.maxCount} <= (${ref.stateName}?.length ?? -1)) && ${ref.stateSetter}((${ref.stateName} ?? []).concat([]))`};
             }}
           >
             <PlusCircleIcon color='#0088ce' />
@@ -95,8 +117,8 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
                 variant='plain'
                 style={{ paddingLeft: '0', paddingRight: '0' }}
                 onClick={() => {
-                  const value = ${ref.stateName}!.slice();
-                  value.splice(${+joinName(null, "")[joinName(null, "").length - 1]}, 1);
+                  const value = [...${ref.stateName}]
+                  value.splice(itemIndex, 1);
                   !${props.disabled} && ${props.minCount === undefined ? `${ref.stateSetter}(value)` : `!(${props.minCount} >= (${ref.stateName}?.length ?? -1)) && ${ref.stateSetter}(value)`};
                 }}
               >
