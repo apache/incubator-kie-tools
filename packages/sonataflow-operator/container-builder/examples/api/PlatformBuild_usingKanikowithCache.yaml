@@ -18,9 +18,9 @@
 name: platform-kaniko-using-cache
 spec:
   publishStrategy: "Kaniko"
-  baseImage: docker.io/apache/incubator-kie-sonataflow-builder:main
+  baseImage: host/namespace/image:latest
   registry:
-    address: docker.io/apache
+    address: host/namespace
     secret: regcred
   PublishStrategyOptions:
     KanikoBuildCacheEnabled: "true"

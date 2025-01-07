@@ -20,6 +20,7 @@
 package platform
 
 import (
+	"fmt"
 	"os"
 	"regexp"
 	"testing"
@@ -43,16 +44,16 @@ func TestSonataFlowBuildController(t *testing.T) {
 		assert.Fail(t, "Unable to read base Dockerfile")
 	}
 	dockerfile := string(dockerfileBytes)
-	// 1 - Let's verify that the default image is used (for this unit test is docker.io/apache/incubator-kie-sonataflow-builder:main)
+	// 1 - Let's verify that the default image is used
 	resDefault := GetCustomizedBuilderDockerfile(dockerfile, *platform)
-	foundDefault, err := regexp.MatchString("FROM docker.io/apache/incubator-kie-sonataflow-builder:main AS builder", resDefault)
+	foundDefault, err := regexp.MatchString(fmt.Sprintf("FROM %s AS builder", test.CommonImageTag), resDefault)
 	assert.NoError(t, err)
 	assert.True(t, foundDefault)
 
 	// 2 - Let's try to override using the productized image
-	platform.Spec.Build.Config.BaseImage = "registry.access.redhat.com/openshift-serverless-1-tech-preview/logic-swf-builder-rhel8"
+	platform.Spec.Build.Config.BaseImage = "host2.org/namespace2/builder2:main"
 	resProductized := GetCustomizedBuilderDockerfile(dockerfile, *platform)
-	foundProductized, err := regexp.MatchString("FROM registry.access.redhat.com/openshift-serverless-1-tech-preview/logic-swf-builder-rhel8 AS builder", resProductized)
+	foundProductized, err := regexp.MatchString(fmt.Sprintf("FROM %s AS builder", platform.Spec.Build.Config.BaseImage), resProductized)
 	assert.NoError(t, err)
 	assert.True(t, foundProductized)
 }
@@ -76,14 +77,14 @@ func TestGetCustomizedBuilderDockerfile_BaseImageCustomizationFromPlatform(t *te
 			Build: v1alpha08.BuildPlatformSpec{
 				Template: v1alpha08.BuildTemplate{},
 				Config: v1alpha08.BuildPlatformConfig{
-					BaseImage: "docker.io/apache/platfom-sonataflow-builder:main",
+					BaseImage: test.CommonImageTag,
 				},
 			},
 		},
 		Status: v1alpha08.SonataFlowPlatformStatus{},
 	}
 
-	expectedDockerFile := "FROM docker.io/apache/platfom-sonataflow-builder:main AS builder\n\n# ETC, \n\n# ETC, \n\n# ETC"
+	expectedDockerFile := fmt.Sprintf("FROM %s AS builder\n\n# ETC, \n\n# ETC, \n\n# ETC", test.CommonImageTag)
 	customizedDockerfile := GetCustomizedBuilderDockerfile(dockerFile, sfp)
 	assert.Equal(t, expectedDockerFile, customizedDockerfile)
 }
