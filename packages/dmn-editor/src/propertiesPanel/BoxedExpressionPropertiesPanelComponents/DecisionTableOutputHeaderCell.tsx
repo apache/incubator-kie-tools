@@ -45,9 +45,6 @@ export function DecisionTableOutputHeaderCell(props: {
   const activeDrgElementId = useDmnEditorStore((s) => s.boxedExpressionEditor.activeDrgElementId);
   const { dmnEditorRootElementRef } = useDmnEditor();
   const { externalModelsByNamespace } = useExternalModels();
-  const singleOutputColumn = {
-    name: "Output-1",
-  };
   const node = useDmnEditorStore((s) =>
     s
       .computed(s)
