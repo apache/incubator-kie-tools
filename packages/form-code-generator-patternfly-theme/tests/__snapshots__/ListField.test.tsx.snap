@@ -23,7 +23,7 @@ import {
 	TimePicker,
 } from &#39;@patternfly/react-core&#39;;
 import { PlusCircleIcon, MinusCircleIcon } from &#39;@patternfly/react-icons&#39;;
-const Form__id: React.FC&lt;any&gt; = (props: any) =&gt; {
+const Form__hiring_ITInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 	const [formApi, setFormApi] = useState&lt;any&gt;();
 	const [friends, set__friends] = useState&lt;any[]&gt;([]);
 	/* Utility function that fills the form with the data received from the kogito runtime */
@@ -91,7 +91,7 @@ const Form__id: React.FC&lt;any&gt; = (props: any) =&gt; {
 							onClick={() =&gt; {
 								!false &amp;&amp; set__friends((friends ?? []).concat([]));
 							}}&gt;
-							+{/* &lt;PlusCircleIcon color=&#39;#0088ce&#39; /&gt; */}
+							&lt;PlusCircleIcon color=&#39;#0088ce&#39; /&gt;
 						&lt;/Button&gt;
 					&lt;/SplitItem&gt;
 				&lt;/Split&gt;
@@ -375,7 +375,7 @@ const Form__id: React.FC&lt;any&gt; = (props: any) =&gt; {
 										value.splice(NaN, 1);
 										!false &amp;&amp; set__friends(value);
 									}}&gt;
-									- {/* &lt;MinusCircleIcon color=&#39;#cc0000&#39; /&gt; */}
+									&lt;MinusCircleIcon color=&#39;#cc0000&#39; /&gt;
 								&lt;/Button&gt;
 							&lt;/div&gt;
 						&lt;/div&gt;
@@ -385,7 +385,7 @@ const Form__id: React.FC&lt;any&gt; = (props: any) =&gt; {
 		&lt;/div&gt;
 	);
 };
-export default Form__id;
+export default Form__hiring_ITInterview;
 
 </div>
 `;

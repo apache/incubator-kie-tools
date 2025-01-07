@@ -19,52 +19,36 @@
 
 import * as React from "react";
 import { render } from "@testing-library/react";
-import { createJsonSchema } from "./_createSchema";
+import createSchema from "./_createSchema";
 import AutoForm, { AutoFormProps } from "../src/uniforms/AutoForm";
 
 describe("<ListField> tests", () => {
   it("<ListField>", () => {
-    // const schema = {
-    //   friends: { type: Array },
-    //   "friends.$": Object,
-    //   "friends.$.name": { type: String },
-    //   "friends.$.age": { type: Number },
-    //   "friends.$.country": { type: String, allowedValues: ["US", "Brazil"] },
-    //   "friends.$.married": { type: Boolean },
-    //   "friends.$.know": {
-    //     type: Array,
-    //     allowedValues: ["Java", "Node", "Docker"],
-    //     uniforms: {
-    //       checkboxes: true,
-    //     },
-    //   },
-    //   "friends.$.know.$": String,
-    //   "friends.$.areas": {
-    //     type: String,
-    //     allowedValues: ["Developer", "HR", "UX"],
-    //   },
-    //   "friends.$.birthday": { type: Date },
-    // };
-
     const schema = {
-      $schema: "https://json-schema.org/draft/2019-09/schema",
-      $defs: {
-        CandidateData: {
-          type: "object",
-          properties: {
-            skills: { type: "array", items: { type: "string" } },
-          },
+      friends: { type: Array },
+      "friends.$": Object,
+      "friends.$.name": { type: String },
+      "friends.$.age": { type: Number },
+      "friends.$.country": { type: String, allowedValues: ["US", "Brazil"] },
+      "friends.$.married": { type: Boolean },
+      "friends.$.know": {
+        type: Array,
+        allowedValues: ["Java", "Node", "Docker"],
+        uniforms: {
+          checkboxes: true,
         },
       },
-      type: "object",
-      properties: {
-        candidate: { $ref: "#/$defs/CandidateData" },
+      "friends.$.know.$": String,
+      "friends.$.areas": {
+        type: String,
+        allowedValues: ["Developer", "HR", "UX"],
       },
+      "friends.$.birthday": { type: Date },
     };
 
     const props: AutoFormProps = {
       id: "hiring_ITInterview",
-      schema: createJsonSchema(schema),
+      schema: createSchema(schema),
       disabled: false,
       placeholder: true,
     };

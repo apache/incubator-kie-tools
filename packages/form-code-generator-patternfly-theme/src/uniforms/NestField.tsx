@@ -49,6 +49,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
   const nestedJsx: string[] = [];
 
   let pfImports: string[] = ["Card", "CardBody"];
+  let pfIconImports: string[] = [];
   let reactImports: string[] = [];
   let requiredCode: string[] = [];
 
@@ -65,6 +66,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
           nestedRefs.push(...nestedContainer.childRefs);
         }
         pfImports = union(pfImports, renderedInput.pfImports);
+        pfIconImports = union(pfIconImports, renderedInput.pfIconImports);
         reactImports = union(reactImports, renderedInput.reactImports);
         if (renderedInput.requiredCode) {
           requiredCode = union(requiredCode, renderedInput.requiredCode);
@@ -86,6 +88,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
 
   const rendered: InputsContainer = {
     pfImports,
+    pfIconImports,
     reactImports,
     requiredCode: requiredCode,
     stateCode,
