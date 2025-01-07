@@ -44,7 +44,7 @@ import {
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
-import {} from "@patternfly/react-core/dist/js/components/Title";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 import ErrorIcon from "@patternfly/react-icons/dist/esm/icons/error-circle-o-icon";
@@ -337,11 +337,10 @@ function TestScenarioParserErrorPanel({
 }) {
   return (
     <EmptyState>
-      <EmptyStateHeader
-        titleText={<>{parserErrorTitle}</>}
-        icon={<EmptyStateIcon icon={ErrorIcon} />}
-        headingLevel="h4"
-      />
+      <EmptyStateIcon icon={ErrorIcon} />
+      <Title headingLevel="h4" size="lg">
+        {parserErrorTitle}
+      </Title>
       <EmptyStateBody>{parserErrorMessage}</EmptyStateBody>
     </EmptyState>
   );
