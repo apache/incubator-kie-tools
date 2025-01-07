@@ -479,7 +479,7 @@ Error details: ${err}`);
                   <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} />
                   <Divider />
                   <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }} aria-label="Editor section">
-                    <DmnRunnerDrawer editor={editor}>
+                    <DmnRunnerDrawer editor={editor} isLegacyDmnEditor={settings.editors.useLegacyDmnEditor}>
                       <EditorPageDockDrawer>
                         {embeddedEditorFile && (
                           <EmbeddedEditor

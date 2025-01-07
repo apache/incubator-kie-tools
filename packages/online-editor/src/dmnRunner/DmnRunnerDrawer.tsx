@@ -25,7 +25,9 @@ import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { DmnRunnerErrorBoundary } from "./DmnRunnerErrorBoundary";
 import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 
-export function DmnRunnerDrawer(props: React.PropsWithChildren<{ editor: EmbeddedEditorRef | undefined }>) {
+export function DmnRunnerDrawer(
+  props: React.PropsWithChildren<{ editor: EmbeddedEditorRef | undefined; isLegacyDmnEditor: boolean }>
+) {
   const dmnRunnerState = useDmnRunnerState();
   return (
     <Drawer
@@ -39,7 +41,7 @@ export function DmnRunnerDrawer(props: React.PropsWithChildren<{ editor: Embedde
         }
         panelContent={
           <DmnRunnerErrorBoundary>
-            <DmnRunnerDrawerPanelContent editor={props.editor} />
+            <DmnRunnerDrawerPanelContent {...props} />
           </DmnRunnerErrorBoundary>
         }
       >

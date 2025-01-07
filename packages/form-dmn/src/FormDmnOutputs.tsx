@@ -264,13 +264,15 @@ export function FormDmnOutputs({ openExecutionTab, ...props }: FormDmnOutputsPro
             <CardTitle>
               <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
                 <Title headingLevel={"h2"}>{dmnFormResult.decisionName}</Title>
-                <Button
-                  variant={"plain"}
-                  title={`Open ${dmnFormResult.decisionName} expression`}
-                  icon={<ArrowUpIcon />}
-                  data-navigate-to-expression-id={dmnFormResult.decisionId}
-                  onClick={() => props.openBoxedExpressionEditor?.(dmnFormResult.decisionId)}
-                />
+                {props.openBoxedExpressionEditor !== undefined && (
+                  <Button
+                    variant={"plain"}
+                    title={`Open ${dmnFormResult.decisionName} expression`}
+                    icon={<ArrowUpIcon />}
+                    data-navigate-to-expression-id={dmnFormResult.decisionId}
+                    onClick={() => props.openBoxedExpressionEditor?.(dmnFormResult.decisionId)}
+                  />
+                )}
               </Flex>
             </CardTitle>
             <CardBody isFilled={true}>{result(dmnFormResult.result)}</CardBody>

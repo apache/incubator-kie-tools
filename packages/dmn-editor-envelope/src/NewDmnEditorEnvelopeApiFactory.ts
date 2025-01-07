@@ -20,7 +20,7 @@
 import { EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
 import { EditorEnvelopeViewApi, KogitoEditorEnvelopeApiImpl } from "@kie-tools-core/editor/dist/envelope";
 import { KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
-import { DmnEditorInterface } from "./DmnEditorFactory";
+import { NewDmnEditorInterface } from "./NewDmnEditorFactory";
 import { NewDmnEditorEnvelopeApi } from "./NewDmnEditorEnvelopeApi";
 import { NewDmnEditorChannelApi } from "./NewDmnEditorChannelApi";
 import { NewDmnEditorFactory } from "./NewDmnEditorFactory";
@@ -28,12 +28,12 @@ import { NewDmnEditorFactory } from "./NewDmnEditorFactory";
 export type NewDmnEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
   NewDmnEditorEnvelopeApi,
   NewDmnEditorChannelApi,
-  EditorEnvelopeViewApi<DmnEditorInterface>,
+  EditorEnvelopeViewApi<NewDmnEditorInterface>,
   KogitoEditorEnvelopeContextType<NewDmnEditorChannelApi>
 >;
 
 export class NewDmnEditorEnvelopeApiImpl
-  extends KogitoEditorEnvelopeApiImpl<DmnEditorInterface, NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>
+  extends KogitoEditorEnvelopeApiImpl<NewDmnEditorInterface, NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>
   implements NewDmnEditorEnvelopeApi
 {
   constructor(readonly dmnArgs: NewDmnEnvelopeApiFactoryArgs) {

@@ -56,7 +56,10 @@ interface DmnRunnerStylesConfig {
   buttonPosition: ButtonPosition;
 }
 
-export function DmnRunnerDrawerPanelContent(props: { editor: EmbeddedEditorRef | undefined }) {
+export function DmnRunnerDrawerPanelContent(props: {
+  editor: EmbeddedEditorRef | undefined;
+  isLegacyDmnEditor: boolean;
+}) {
   // STATEs
   const [drawerError, setDrawerError] = useState<boolean>(false);
   const [dmnRunnerStylesConfig, setDmnRunnerStylesConfig] = useState<DmnRunnerStylesConfig>({
@@ -327,12 +330,15 @@ export function DmnRunnerDrawerPanelContent(props: { editor: EmbeddedEditorRef |
                       locale={locale}
                       notificationsPanel={true}
                       openExecutionTab={openExecutionTab}
-                      openBoxedExpressionEditor={(nodeId: string) => {
-                        const newDmnEditorEnvelopeApi = props.editor?.getEnvelopeServer()
-                          .envelopeApi as unknown as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
-
-                        newDmnEditorEnvelopeApi.notifications.dmnEditor_openBoxedExpressionEditor.send(nodeId);
-                      }}
+                      openBoxedExpressionEditor={
+                        !props.isLegacyDmnEditor
+                          ? (nodeId: string) => {
+                              const newDmnEditorEnvelopeApi = props.editor?.getEnvelopeServer()
+                                .envelopeApi as unknown as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
+                              newDmnEditorEnvelopeApi.notifications.dmnEditor_openBoxedExpressionEditor.send(nodeId);
+                            }
+                          : undefined
+                      }
                     />
                   </PageSection>
                 </div>

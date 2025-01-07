@@ -22,11 +22,17 @@ import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "
 import { NewDmnEditorChannelApi } from "./NewDmnEditorChannelApi";
 import { DmnEditorInterface } from "./DmnEditorFactory";
 
-export class NewDmnEditorFactory implements EditorFactory<DmnEditorInterface, NewDmnEditorChannelApi> {
+export class NewDmnEditorFactory implements EditorFactory<NewDmnEditorInterface, NewDmnEditorChannelApi> {
   public createEditor(
     envelopeContext: KogitoEditorEnvelopeContextType<NewDmnEditorChannelApi>,
     initArgs: EditorInitArgs
-  ): Promise<DmnEditorInterface> {
-    return Promise.resolve(new DmnEditorInterface(envelopeContext, initArgs));
+  ): Promise<NewDmnEditorInterface> {
+    return Promise.resolve(new NewDmnEditorInterface(envelopeContext, initArgs));
+  }
+}
+
+export class NewDmnEditorInterface extends DmnEditorInterface {
+  public openBoxedExpressionEditor(nodeId: string): void {
+    this.self.openBoxedExpressionEditor(nodeId);
   }
 }

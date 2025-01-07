@@ -42,7 +42,7 @@ export class DmnEditorFactory implements EditorFactory<Editor, KogitoEditorChann
 }
 
 export class DmnEditorInterface implements Editor {
-  private self: DmnEditorRoot;
+  protected self: DmnEditorRoot;
   public af_isReact = true;
   public af_componentId: "dmn-editor";
   public af_componentTitle: "DMN Editor";
@@ -66,10 +66,6 @@ export class DmnEditorInterface implements Editor {
 
   public async setTheme(theme: EditorTheme): Promise<void> {
     return Promise.resolve(); // No-op for now. The DMN Editor only has the LIGHT theme.
-  }
-
-  public openBoxedExpressionEditor(nodeId: string): void {
-    this.self.openBoxedExpressionEditor(nodeId);
   }
 
   public async undo(): Promise<void> {
