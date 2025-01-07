@@ -176,10 +176,9 @@ export function DecisionTableOutputHeaderCell(props: {
       )}
       {root?.output && root.output.length > 1 ? (
         <NameField
-          alternativeFieldName={undefined}
           isReadOnly={props.isReadOnly}
           id={cell["@_id"]!}
-          name={cell?.["@_name"] ?? singleOutputColumn.name}
+          name={cell?.["@_name"] ?? ""}
           getAllUniqueNames={getAllUniqueNames}
           onChange={(newName) =>
             updater((dmnObject) => {

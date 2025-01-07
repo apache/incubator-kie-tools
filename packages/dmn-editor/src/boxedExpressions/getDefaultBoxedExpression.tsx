@@ -230,7 +230,7 @@ export function getDefaultBoxedExpression({
     return relationExpression;
   } else if (logicType === "decisionTable") {
     const singleOutputColumn = {
-      name: "Output-1",
+      name: undefined,
       typeRef: dataType?.feelName,
     };
     const singleInputColumn = {
@@ -277,15 +277,7 @@ export function getDefaultBoxedExpression({
       "@_typeRef": typeRef,
       "@_hitPolicy": "UNIQUE",
       input,
-      output: output.map((out) => {
-        if (output.length > 1) {
-          return {
-            ...out,
-          };
-        } else {
-          return { ...out, "@_name": undefined };
-        }
-      }),
+      output,
       annotation: [
         {
           "@_name": "Annotations",
