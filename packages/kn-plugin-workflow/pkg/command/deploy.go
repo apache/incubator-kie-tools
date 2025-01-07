@@ -29,6 +29,7 @@ import (
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common/k8sclient"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
+	apiMetadata "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
@@ -138,6 +139,14 @@ func runDeployUndeploy(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+type Manifest struct {
+	Kind     string `json:"kind"`
+	Metadata struct {
+		Annotations map[string]string `json:"annotations"`
+		Name        string            `json:"name"`
+	} `json:"metadata"`
+}
+
 func deploy(cfg *DeployUndeployCmdConfig) error {
 	fmt.Printf("🛠 Deploying your SonataFlow project in namespace %s\n", cfg.NameSpace)
 
@@ -152,31 +161,41 @@ func deploy(cfg *DeployUndeployCmdConfig) error {
 	if err != nil {
 		return fmt.Errorf("❌ ERROR: failed to get manifest directory and files: %w", err)
 	}
+
+	var workflowId string
+
 	for _, file := range files {
+		bytes, err := os.ReadFile(file)
+		if err != nil {
+			return fmt.Errorf("❌ ERROR: failed to read SonataFlow file: %w", err)
+		}
+
+		var manifest Manifest
+		if err = yaml.Unmarshal(bytes, &manifest); err == nil {
+			if err == nil {
+				if manifest.Kind == "SonataFlow" {
+					workflowId = manifest.Metadata.Name
+					cfg.Profile = manifest.Metadata.Annotations["sonataflow.org/profile"]
+				}
+			}
+		}
+
 		if err = common.ExecuteApply(file, cfg.NameSpace); err != nil {
 			return fmt.Errorf("❌ ERROR: failed to deploy manifest %s,  %w", file, err)
 		}
 		fmt.Printf(" - ✅ Manifest %s successfully deployed in namespace %s\n", path.Base(file), cfg.NameSpace)
 
 	}
-	if cfg.Wait {
-		if err := waitForDeploymentAndOpenDevUi(cfg); err != nil {
+
+	if cfg.Wait && !(cfg.Profile == apiMetadata.PreviewProfile.String() || cfg.Profile == apiMetadata.GitOpsProfile.String()) {
+		if err := waitForDeploymentAndOpenDevUi(cfg, workflowId); err != nil {
 			return fmt.Errorf("❌ ERROR: failed to wait for deployment and open dev ui: %w", err)
 		}
 	}
 	return nil
 }
 
-func waitForDeploymentAndOpenDevUi(cfg *DeployUndeployCmdConfig) error {
-	bytes, err := os.ReadFile(cfg.SonataFlowFile)
-	if err != nil {
-		return fmt.Errorf("❌ ERROR: failed to read SonataFlow file: %w", err)
-	}
-	workflow :=  &common.Workflow{}
-	err = yaml.Unmarshal(bytes, &workflow)
-	if err != nil {
-		return fmt.Errorf("❌ ERROR: failed to unmarshal SonataFlow file: %w", err)
-	}
+func waitForDeploymentAndOpenDevUi(cfg *DeployUndeployCmdConfig, workflowId string) error {
 	// run goroutine and wait for the deployment to complete using GetDeploymentStatus
 	deployed := make(chan bool)
 	errCan := make(chan error)
@@ -185,16 +204,16 @@ func waitForDeploymentAndOpenDevUi(cfg *DeployUndeployCmdConfig) error {
 
 	fmt.Println("🕚 Waiting for the deployment to complete...")
 
-	go PollGetDeploymentStatus(cfg.NameSpace, workflow.Id, 5 * time.Second, 5 * time.Minute, deployed, errCan)
+	go PollGetDeploymentStatus(cfg.NameSpace, workflowId, 5 * time.Second, 5 * time.Minute, deployed, errCan)
 
 	select {
 	case <-deployed:
-		fmt.Printf(" - ✅ Deployment of %s is completed\n", workflow.Id)
+		fmt.Printf(" - ✅ Deployment of %s is completed\n", workflowId)
 	case err := <-errCan:
 		return fmt.Errorf("❌ ERROR: failed to get deployment status: %w", err)
 	}
 
-	if err := common.PortForward(cfg.NameSpace, workflow.Id, "8080", "8080", func() {
+	if err := common.PortForward(cfg.NameSpace, workflowId, "8080", "8080", func() {
 		fmt.Println(" - ✅ Port forwarding started successfully.")
 		fmt.Println(" - 🔎 Press Ctrl+C to stop port forwarding.")
 		common.OpenBrowserURL(fmt.Sprintf("http://localhost:%s/q/dev-ui", "8080"))
