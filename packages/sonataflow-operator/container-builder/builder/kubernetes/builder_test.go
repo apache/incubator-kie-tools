@@ -39,7 +39,7 @@ func TestNewBuild(t *testing.T) {
 	ns := "test"
 	c := test.NewFakeClient()
 
-	dockerFile, err := os.ReadFile("testdata/Dockerfile")
+	dockerFile, err := os.ReadFile("testdata/sample.Dockerfile")
 	assert.NoError(t, err)
 
 	workflowDefinition, err := os.ReadFile("testdata/greetings.sw.json")

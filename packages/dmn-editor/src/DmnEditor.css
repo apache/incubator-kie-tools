@@ -395,6 +395,12 @@
 }
 /* (end) autolayout panel toggle */
 
+/* (begin) evaluation-highlights panel toggle */
+.kie-dmn-editor--evaluation-highlights-panel-toggle {
+  min-width: 190px;
+}
+/* (end) evaluation-highlights panel toggle */
+
 /* (begin) overlays panel toggle */
 .kie-dmn-editor--overlays-panel-toggle {
   width: 42px;

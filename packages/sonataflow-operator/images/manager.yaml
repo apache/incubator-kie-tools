@@ -16,7 +16,7 @@
 # under the License.
 
 - name: operator-builder
-  version: 0.0.0"
+  version: 0.0.0
   from: "golang:1.22"
   description: Builder Image for the Operator
 

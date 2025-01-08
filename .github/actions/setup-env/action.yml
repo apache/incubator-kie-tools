@@ -246,6 +246,11 @@ runs:
           libxml2-utils > /dev/null 2>&1
         fi
 
+    - name: "Allow unprivileged user namespace (Ubuntu Only)"
+      if: runner.os == 'Linux'
+      shell: bash
+      run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
     - name: "Update bash for macOS (macOS Only)"
       shell: bash
       if: runner.os == 'macOS'

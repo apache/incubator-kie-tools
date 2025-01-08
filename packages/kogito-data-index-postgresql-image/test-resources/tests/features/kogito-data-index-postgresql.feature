@@ -31,5 +31,5 @@ Feature: Kogito-data-index postgresql feature.
   Scenario: check if the default quarkus profile is correctly set on data index
     When container is started with env
       | variable               | value   |
-      | SCRIPT_DEBUG           | true    |
+      | SCRIPT_DEBUG           | false   |
     Then container log should contain -Dquarkus.profile=kafka-events-support

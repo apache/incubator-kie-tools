@@ -175,6 +175,7 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
           }
           expressionHolderTypeRef={props?.expressionHolderTypeRef ?? args?.expressionHolderTypeRef}
           expression={expressionState}
+          evaluationHitsCountById={props?.evaluationHitsCountById ?? args?.evaluationHitsCountById}
           onExpressionChange={setExpressionState}
           onWidthsChange={onWidthsChange}
           dataTypes={props?.dataTypes ?? args?.dataTypes ?? dataTypes}

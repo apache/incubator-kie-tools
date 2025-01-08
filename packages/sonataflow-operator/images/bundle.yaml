@@ -18,8 +18,12 @@
 schema_version: 1
 name: "sonataflow-operator-bundle"
 description: "SonataFlow Operator Bundle"
-version: 0.0.0"
+version: 0.0.0
 from: "scratch"
+
+args:
+  - name: SOURCE_DATE_EPOCH
+    description: Preserve timestamp while copying files
 
 labels:
   - name: maintainer

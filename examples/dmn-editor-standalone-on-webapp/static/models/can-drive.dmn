@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~ 
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~ 
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.      
+-->
+<definitions
+  xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
+  expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+  namespace="https://kie.org/dmn/_8131B6C4-A117-47E9-93EB-922C63CE328F"
+  id="_71B8B1CC-1F0B-4DE3-AFD2-C60FF033481C"
+  name="CanDrive"
+  xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:kie="https://kie.org/dmn/extensions/1.0"
+  xmlns:included0="https://kie.org/dmn/_8A2ED07B-1CE0-4A81-B9C9-5792D851EC85"
+>
+  <import
+    id="_44F1D0BD-60F9-4E99-A821-442C56404FC0"
+    name="CanDriveTypes"
+    importType="http://www.omg.org/spec/DMN/20180521/MODEL/"
+    namespace="https://kie.org/dmn/_8A2ED07B-1CE0-4A81-B9C9-5792D851EC85"
+    locationURI="./path1/can-drive-types.dmn"
+  />
+  <inputData name="Person" id="_E2FBAB4A-317B-4D46-903D-D2771D209F2F">
+    <variable name="Person" id="_7A5CA35A-1E13-48E0-87B2-C9686586DBE3" typeRef="CanDriveTypes.tPerson" />
+  </inputData>
+  <decision name="Can drive?" id="_91E12B2E-07D1-429A-AA4A-9637542E53CF">
+    <variable name="Can drive?" id="_35CAAEE7-57B6-48DC-B098-6C8554A454CC" typeRef="boolean" />
+    <informationRequirement id="_FDA369B9-37DF-44CB-98F4-ED4E13B8988D">
+      <requiredInput href="#_E2FBAB4A-317B-4D46-903D-D2771D209F2F" />
+    </informationRequirement>
+    <decisionTable
+      id="_9A0C38FB-4AB7-4DD8-91A1-C22E28C8A620"
+      hitPolicy="UNIQUE"
+      preferredOrientation="Rule-as-Row"
+      label="Can drive?"
+      typeRef="boolean"
+    >
+      <input id="_CD9FDB5B-882F-4404-AB26-FE015E13789E">
+        <inputExpression id="_7DEAF340-187B-4037-8C1E-52295F773678" typeRef="number">
+          <text>Person.Age</text>
+        </inputExpression>
+      </input>
+      <input id="_7B365CA3-5C03-4844-9D27-27BAFC070E52">
+        <inputExpression id="_1837FEBA-E54E-46DC-818E-ADA7A9A33FBD" typeRef="string">
+          <text>Person.Country</text>
+        </inputExpression>
+        <inputValues kie:constraintType="enumeration" id="_E153950D-50F5-41A8-B7E7-AA15E4C4AEDD">
+          <text>&quot;Brazil&quot;, &quot;US&quot;, &quot;England&quot;</text>
+        </inputValues>
+      </input>
+      <output id="_98E28442-D147-409B-B85C-14A6930F6EE0" />
+      <annotation name="annotation-1" />
+      <rule id="_E367C428-E607-41F3-BC91-6CA65765664C">
+        <inputEntry id="_A6AD2106-03AA-4842-B4BA-6B2A8AFBFAE5">
+          <text>&gt;= 18</text>
+        </inputEntry>
+        <inputEntry id="_114C9161-EB57-41B3-8549-E9D78FF7D14B">
+          <text>&quot;Brazil&quot;</text>
+        </inputEntry>
+        <outputEntry id="_44E83AF7-0E52-428E-A77D-F90DD015B6B4">
+          <text>true</text>
+        </outputEntry>
+        <annotationEntry>
+          <text />
+        </annotationEntry>
+      </rule>
+      <rule id="_0DF952AC-F9FA-4EC8-B0A2-62396C4D4214">
+        <inputEntry id="_7B0BE44C-FDAA-409E-920D-527AB57859D1">
+          <text>&lt; 18</text>
+        </inputEntry>
+        <inputEntry id="_4E1CA859-8FF2-4190-80D2-F8270B583C2C">
+          <text>&quot;Brazil&quot;</text>
+        </inputEntry>
+        <outputEntry id="_D51843A9-8071-4337-BF22-27F56D223F86">
+          <text>false</text>
+        </outputEntry>
+        <annotationEntry>
+          <text />
+        </annotationEntry>
+      </rule>
+      <rule id="_16C235E4-F829-4922-9B93-9A59D3DAD0FB">
+        <inputEntry id="_A6229979-EA8E-4359-8B9C-11CC050110BA">
+          <text>&gt;= 17</text>
+        </inputEntry>
+        <inputEntry id="_A355BB4D-1A8E-4663-BF76-19608AE9A7C9">
+          <text>&quot;England&quot;</text>
+        </inputEntry>
+        <outputEntry id="_E178F6D9-2DFD-4C0C-B294-AB63C2BFF3B5">
+          <text>true</text>
+        </outputEntry>
+        <annotationEntry>
+          <text />
+        </annotationEntry>
+      </rule>
+      <rule id="_A7FEB897-8395-4520-BCE8-FBF3EFF60A23">
+        <inputEntry id="_DDF55135-F0E9-438D-934A-1549EF097576">
+          <text>&lt; 17</text>
+        </inputEntry>
+        <inputEntry id="_2C87405E-9FAA-4B77-9E73-6E7FB23FF343">
+          <text>&quot;England&quot;</text>
+        </inputEntry>
+        <outputEntry id="_7DB6B719-DCB3-46FC-A183-DBFA087DCA10">
+          <text>false</text>
+        </outputEntry>
+        <annotationEntry>
+          <text />
+        </annotationEntry>
+      </rule>
+      <rule id="_F7A2C97A-AED1-4605-AEE9-555B38B873B8">
+        <inputEntry id="_43D27957-3679-4051-81E1-E33DB82EE175">
+          <text>&gt;= 16</text>
+        </inputEntry>
+        <inputEntry id="_6C3F2EF4-9B3B-4849-993D-FB56DD66E56F">
+          <text>&quot;USA&quot;</text>
+        </inputEntry>
+        <outputEntry id="_1B1A1699-4FF5-4D49-8EC7-C1CC7C03C2AE">
+          <text>true</text>
+        </outputEntry>
+        <annotationEntry>
+          <text />
+        </annotationEntry>
+      </rule>
+      <rule id="_C748CD16-EE70-4FB4-A2C6-5CAD72395393">
+        <inputEntry id="_002FCA60-B5BA-4D5C-8AD5-02DFBC5C614C">
+          <text>&lt; 16</text>
+        </inputEntry>
+        <inputEntry id="_08E98916-7ED0-4987-8417-17404D0C01EA">
+          <text>&quot;USA&quot;</text>
+        </inputEntry>
+        <outputEntry id="_A43BF6B4-AE9F-459D-8777-B52B440E4402">
+          <text>false</text>
+        </outputEntry>
+        <annotationEntry>
+          <text />
+        </annotationEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram
+      id="_41C81932-8C97-4510-840F-33B944815075"
+      name="Default DRD"
+      useAlternativeInputDataShape="false"
+    >
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_4E3A3401-21A1-40A5-BB8B-1A18509072FD">
+            <kie:width>60</kie:width>
+            <kie:width>118</kie:width>
+            <kie:width>118</kie:width>
+            <kie:width>240</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_9A0C38FB-4AB7-4DD8-91A1-C22E28C8A620">
+            <kie:width>50</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>100</kie:width>
+            <kie:width>100</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape
+        id="_7B3B3B50-07D1-4F7C-9CD2-EF33476EDEC4"
+        dmnElementRef="_E2FBAB4A-317B-4D46-903D-D2771D209F2F"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="760" y="480" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape
+        id="_8C63A21B-2DFD-49E8-8EF6-860EE6B97B1C"
+        dmnElementRef="_91E12B2E-07D1-429A-AA4A-9637542E53CF"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="760" y="300" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge
+        id="_12073758-9A22-4CC7-A012-07A7DD810DE5"
+        dmnElementRef="_FDA369B9-37DF-44CB-98F4-ED4E13B8988D"
+        sourceElement="_7B3B3B50-07D1-4F7C-9CD2-EF33476EDEC4"
+        targetElement="_8C63A21B-2DFD-49E8-8EF6-860EE6B97B1C"
+      >
+        <di:waypoint x="840" y="520" />
+        <di:waypoint x="840" y="380" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

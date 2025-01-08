@@ -1,3 +1,20 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
 # VERSION defines the project version for the bundle.
 # Update this value when you upgrade the version of your project.
 # To re-generate a bundle for another specific version without changing the standard setup, you can:
@@ -25,7 +42,7 @@ BUNDLE_DEFAULT_CHANNEL := --default-channel=$(DEFAULT_CHANNEL)
 endif
 BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 
-# IMAGE_TAG_BASE defines the docker.io namespace and part of the image name for remote images.
+# IMAGE_TAG_BASE defines the image namespace and part of the image name for remote images.
 # This variable is used to construct full image tags for bundle and catalog images.
 #
 # For example, running 'make bundle-build bundle-push catalog-build catalog-push' will build and push both
@@ -47,13 +64,15 @@ BUILDER ?= docker
 # USE_IMAGE_DIGESTS defines if images are resolved via tags or digests
 # You can enable this value if you would like to use SHA Based Digests
 # To enable set flag to true
+IMG_TAG_SEP = :
 USE_IMAGE_DIGESTS ?= false
 ifeq ($(USE_IMAGE_DIGESTS), true)
 	BUNDLE_GEN_FLAGS += --use-image-digests
+	IMG_TAG_SEP = @
 endif
 
 # Image URL to use all building/pushing image targets
-IMG ?= $(IMAGE_TAG_BASE):$(IMAGE_TAG)
+IMG ?= $(IMAGE_TAG_BASE)$(IMG_TAG_SEP)$(IMAGE_TAG)
 # ENVTEST_K8S_VERSION refers to the version of kubebuilder assets to be downloaded by envtest binary.
 ENVTEST_K8S_VERSION = 1.26
 
@@ -309,19 +328,21 @@ endef
 
 
 .PHONY: bundle
-bundle: manifests kustomize install-operator-sdk ## Generate bundle manifests and metadata, then validate generated files.
+PACKAGE_NAME = "sonataflow-operator"
+bundle: kustomize install-operator-sdk ## Generate bundle manifests and metadata, then validate generated files.
 	@echo "📦 Generating bundle manifests and metadata..."
-	@operator-sdk generate kustomize manifests -q > /dev/null 2>&1
+	@operator-sdk generate kustomize manifests --package=$(PACKAGE_NAME) -q > /dev/null 2>&1
 	@echo "🔧 Setting controller image in Kustomize..."
 	@cd config/manager && $(KUSTOMIZE) edit set image controller=$(IMG) > /dev/null 2>&1
 	@echo "🔨 Building Kustomize and generating bundle..."
-	@$(KUSTOMIZE) build config/manifests | operator-sdk generate bundle $(BUNDLE_GEN_FLAGS) > /dev/null 2>&1
+	@$(KUSTOMIZE) build config/manifests | operator-sdk generate bundle $(BUNDLE_GEN_FLAGS) --package=$(PACKAGE_NAME) > /dev/null 2>&1
 	@echo "🛠️  Validating generated bundle..."
 	@operator-sdk bundle validate ./bundle > /dev/null 2>&1
 
 .PHONY: bundle-build
+BUNDLE_DESCRIPTOR = "images/bundle.yaml"
 bundle-build: ## Build the bundle image
-	cekit -v --descriptor images/bundle.yaml build ${build_options} $(BUILDER) --no-squash --build-arg SOURCE_DATE_EPOCH="$(shell git log -1 --pretty=%ct)"
+	cekit -v --descriptor $(BUNDLE_DESCRIPTOR) build ${build_options} $(BUILDER) --no-squash --build-arg SOURCE_DATE_EPOCH="$(shell git log -1 --pretty=%ct)"
 ifneq ($(ignore_tag),true)
 	$(BUILDER) tag sonataflow-operator-bundle:latest $(BUNDLE_IMG)
 endif
@@ -450,8 +471,8 @@ before-pr: generate-all test ## Run generate-all before executing tests.
 .PHONY: load-docker-image
 load-docker-image: install-kind
 	kind load docker-image $(IMG)
-	kind load docker-image docker.io/apache/incubator-kie-sonataflow-builder:main
-	kind load docker-image docker.io/apache/incubator-kie-sonataflow-devmode:main
+	kind load docker-image $(shell pnpm build-env sonataFlowOperator.sonataflowBuilderImage)
+	kind load docker-image $(shell pnpm build-env sonataFlowOperator.sonataflowDevModeImage)
 
 .PHONY: install-kind
 install-kind:
@@ -484,3 +505,25 @@ deploy-grafana: create-cluster
 .PHONY: delete-cluster
 delete-cluster: install-kind
 	kind delete cluster && $(BUILDER) rm -f kind-registry
+
+# Updates the controllers_cfg.yaml file with the images used by the operator.
+# These params come from the package.json file processing the env vars at ./env/index.js
+.PHONY: update-config
+update-config:
+	@echo "🔧 Preparing to update controllers config file..."
+	$(eval PARAMS := \
+		jobsServicePostgreSQLImageTag=$$(shell build-env sonataFlowOperator.kogitoJobsServicePostgresqlImage) \
+		jobsServiceEphemeralImageTag=$$(shell build-env sonataFlowOperator.kogitoJobsServiceEphemeralImage) \
+		dataIndexPostgreSQLImageTag=$$(shell build-env sonataFlowOperator.kogitoDataIndexPostgresqlImage) \
+		dataIndexEphemeralImageTag=$$(shell build-env sonataFlowOperator.kogitoDataIndexEphemeralImage) \
+		sonataFlowBaseBuilderImageTag=$$(shell build-env sonataFlowOperator.sonataflowBuilderImage) \
+		sonataFlowDevModeImageTag=$$(shell build-env sonataFlowOperator.sonataflowDevModeImage))
+	@if [ -z "$(strip $(PARAMS))" ]; then \
+		echo "⚠️  No variables resolved. Skipping updates to controllers config file."; \
+	else \
+		echo "📋 Resolved variables:"; \
+		echo "$(PARAMS)" | tr ' ' '\n'; \
+		echo "🚀 Running Python script to update controllers config file..."; \
+		python ./hack/update_controllers_cfg.py $(PARAMS); \
+		echo "✅ Configuration updated successfully!"; \
+	fi
