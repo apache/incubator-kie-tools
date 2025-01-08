@@ -44,7 +44,7 @@ let connection: Connection;
 let localService: LocalExtendedServices;
 
 /* Determines if the extension is connected with the Extended Services Backend */
-let isConnected = false;
+let isConnected: boolean = false;
 /* Determines the user explicitely disconnected the Extension from the Extended Services Backend  */
 let disconnectedByUser: boolean = false;
 let configuration: Configuration | null;
@@ -213,6 +213,9 @@ export function activate(context: vscode.ExtensionContext) {
     console.debug(
       `[Extended Services Extension] A KIE file has been closed. Current opened KIE files: ${kieFilesWatcher.watchedKieFiles.length}`
     );
+    if (!disconnectedByUser && isConnected && configuration) {
+      validate(configuration.extendedServicesURL);
+    }
   });
 
   localService.subscribeLocalExtendedServicesStarted(() => {
@@ -253,6 +256,7 @@ export function activate(context: vscode.ExtensionContext) {
     statusBarItem.hide();
     stopExtendedServices(configuration);
     isConnected = false;
+    diagnosticCollection.clear();
     console.error("[Extended Services Extension] Connection lost with Extended Services");
     vscode.window.showErrorMessage(`Connection error: ${errorMessage}`);
   });

@@ -177,6 +177,9 @@ export function activate(context: vscode.ExtensionContext) {
     console.debug(
       `[Extended Services Extension] A KIE file has been closed. Current opened KIE files: ${kieFilesWatcher.watchedKieFiles.length}`
     );
+    if (!disconnectedByUser && isConnected && configuration) {
+      validate(configuration.extendedServicesURL);
+    }
   });
 
   connection.subscribeConnected(() => {
