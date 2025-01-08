@@ -36,7 +36,7 @@ public class DataIndexCounter {
 
     private String query;
     private String field;
-    private String count = "-";
+    private String count = "0";
     private MultiEmitter<? super String> emitter;
     private long vertxTimer;
     private String path;
