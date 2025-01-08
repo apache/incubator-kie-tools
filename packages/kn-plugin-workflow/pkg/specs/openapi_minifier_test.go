@@ -24,6 +24,7 @@ import (
 	"io"
 	"os"
 	"path"
+	"reflect"
 	"strings"
 	"testing"
 
@@ -36,6 +37,7 @@ import (
 
 type spec struct {
 	file     string
+	expected string
 	initial  int
 	minified int
 }
@@ -51,30 +53,30 @@ type minifyTest struct {
 func TestOpenAPIMinify(t *testing.T) {
 	tests := []minifyTest{
 		{
-			workflowFile:     "testdata/workflow.sw.yaml",                   // 4 functions, 2 of them are ref to the same openapi spec
-			openapiSpecFiles: []spec{{"testdata/flink-openapi.yaml", 5, 3}}, // 5 operations, 3 must left
+			workflowFile:     "testdata/workflow.sw.yaml",                                            // 4 functions, 2 of them are ref to the same openapi spec
+			openapiSpecFiles: []spec{{file: "testdata/flink-openapi.yaml", initial: 5, minified: 3}}, // 5 operations, 3 must left
 			specsDir:         "specs",
 			subflowsDir:      "subflows",
 		},
 		{
-			workflowFile:     "testdata/workflow.sw.json",                   // 4 functions, 2 of them are ref to the same openapi spec
-			openapiSpecFiles: []spec{{"testdata/flink-openapi.yaml", 5, 3}}, // 5 operations, 3 must left
+			workflowFile:     "testdata/workflow.sw.json",                                            // 4 functions, 2 of them are ref to the same openapi spec
+			openapiSpecFiles: []spec{{file: "testdata/flink-openapi.yaml", initial: 5, minified: 3}}, // 5 operations, 3 must left
 			specsDir:         "specs",
 			subflowsDir:      "subflows",
 		},
 		{
-			workflowFile:     "testdata/workflow-json-openapi.sw.json",           // 4 functions, 2 of them are ref to the same openapi spec
-			openapiSpecFiles: []spec{{"testdata/flink-openapi-json.json", 5, 3}}, // 5 operations, 3 must left
+			workflowFile:     "testdata/workflow-json-openapi.sw.json",                                    // 4 functions, 2 of them are ref to the same openapi spec
+			openapiSpecFiles: []spec{{file: "testdata/flink-openapi-json.json", initial: 5, minified: 3}}, // 5 operations, 3 must left
 			specsDir:         "specs",
 			subflowsDir:      "subflows",
 		},
 		{
 			workflowFile: "testdata/workflow2.sw.yaml", // 4 functions, 1 per openapi spec file
 			openapiSpecFiles: []spec{
-				{"testdata/flink1-openapi.yaml", 3, 1},
-				{"testdata/flink2-openapi.yaml", 3, 1},
-				{"testdata/flink3-openapi.yaml", 3, 1},
-				{"testdata/flink4-openapi.yaml", 3, 1}},
+				{file: "testdata/flink1-openapi.yaml", initial: 3, minified: 1},
+				{file: "testdata/flink2-openapi.yaml", initial: 3, minified: 1},
+				{file: "testdata/flink3-openapi.yaml", initial: 3, minified: 1},
+				{file: "testdata/flink4-openapi.yaml", initial: 3, minified: 1}},
 			specsDir:    "specs",
 			subflowsDir: "subflows",
 		},
@@ -86,26 +88,26 @@ func TestOpenAPIMinify(t *testing.T) {
 		},
 		{
 			workflowFile:     "testdata/workflow-empty.sw.yaml", // check all operations are removed
-			openapiSpecFiles: []spec{{"testdata/flink-openapi.yaml", 5, 0}},
+			openapiSpecFiles: []spec{{file: "testdata/flink-openapi.yaml", initial: 5, minified: 0}},
 			specsDir:         "specs",
 			subflowsDir:      "subflows",
 		},
 		{
 			workflowFile:     "testdata/workflow-mySpecsDir.sw.yaml", // check all operations are removed, with different specs dir
-			openapiSpecFiles: []spec{{"testdata/flink-openapi.yaml", 5, 3}},
+			openapiSpecFiles: []spec{{file: "testdata/flink-openapi.yaml", initial: 5, minified: 3}},
 			specsDir:         "mySpecsDir",
 			subflowsDir:      "subflows",
 		},
 		{
 			workflowFile:     "testdata/workflow-mySpecsDir-one-finction.sw.yaml", // check all operations are removed, with different specs dir
-			openapiSpecFiles: []spec{{"testdata/flink-openapi.yaml", 5, 2}},
+			openapiSpecFiles: []spec{{file: "testdata/flink-openapi.yaml", initial: 5, minified: 2}},
 			specsDir:         "mySpecsDir",
 			subflowsDir:      "subflows",
 			subflows:         []string{"testdata/subflow-mySpecsDir.sw.yaml"},
 		},
 		{
 			workflowFile:     "testdata/workflow-empty.sw.yaml", // check all operations are removed, with different subflow dir
-			openapiSpecFiles: []spec{{"testdata/flink-openapi.yaml", 5, 0}},
+			openapiSpecFiles: []spec{{file: "testdata/flink-openapi.yaml", initial: 5, minified: 0}},
 			specsDir:         "mySpecsDir",
 			subflowsDir:      "subflows",
 		},
@@ -117,35 +119,35 @@ func TestOpenAPIMinify(t *testing.T) {
 		},
 		{
 			workflowFile:     "testdata/workflow-empty2.sw.yaml", // check functions is on subflow
-			openapiSpecFiles: []spec{{"testdata/flink-openapi.yaml", 5, 2}},
+			openapiSpecFiles: []spec{{file: "testdata/flink-openapi.yaml", initial: 5, minified: 2}},
 			specsDir:         "specs",
 			subflowsDir:      "subflows",
 			subflows:         []string{"testdata/subflow.sw.yaml"},
 		},
 		{
 			workflowFile:     "testdata/workflow-empty2.sw.yaml", // check functions is on subflow, with different subflow and specs dirs
-			openapiSpecFiles: []spec{{"testdata/flink-openapi.yaml", 5, 2}},
+			openapiSpecFiles: []spec{{file: "testdata/flink-openapi.yaml", initial: 5, minified: 2}},
 			specsDir:         "mySpecsDir",
 			subflowsDir:      "mySubFlowDir",
 			subflows:         []string{"testdata/subflow-mySpecsDir.sw.yaml"},
 		},
 		{
-			workflowFile: 	  "testdata/workflow-greeting.sw.yaml", // check we can process subflows with the same file name but different extensions
-			openapiSpecFiles: []spec{{"testdata/greetingAPI.yaml", 3, 1}},
+			workflowFile:     "testdata/workflow-greeting.sw.yaml", // check we can process subflows with the same file name but different extensions
+			openapiSpecFiles: []spec{{file: "testdata/greetingAPI.yaml", initial: 3, minified: 1}},
 			specsDir:         "specs",
 			subflowsDir:      "custom_subflows",
 			subflows:         []string{"testdata/hello.sw.json", "testdata/hello.sw.yaml"}, // 2 subflows, 1 of them has a function that uses the greetingAPI.yaml
 		},
 		{
-			workflowFile: 	  "testdata/workflow-greeting.sw.yaml", // check we can process subflows with the same file name but different extensions
-			openapiSpecFiles: []spec{{"testdata/flink-openapi.yaml", 5, 2}},
+			workflowFile:     "testdata/workflow-greeting.sw.yaml", // check we can process subflows with the same file name but different extensions
+			openapiSpecFiles: []spec{{file: "testdata/flink-openapi.yaml", initial: 5, minified: 2}},
 			specsDir:         "custom_specs",
 			subflowsDir:      "custom_subflows",
 			subflows:         []string{"testdata/subflow-custom.sw.json", "testdata/subflow-custom.sw.yaml"}, // 2 subflows, each one has a function that uses the flink-openapi.yaml
 		},
 		{
-			workflowFile: 	  "testdata/workflow-subflow-custom.sw.yaml", // workflow with a function that uses a subflow with a function that uses the flink-openapi.yaml
-			openapiSpecFiles: []spec{{"testdata/flink-openapi.yaml", 5, 3}},
+			workflowFile:     "testdata/workflow-subflow-custom.sw.yaml", // workflow with a function that uses a subflow with a function that uses the flink-openapi.yaml
+			openapiSpecFiles: []spec{{file: "testdata/flink-openapi.yaml", initial: 5, minified: 3}},
 			specsDir:         "custom_specs",
 			subflowsDir:      "custom_subflows",
 			subflows:         []string{"testdata/subflow-custom.sw.json", "testdata/subflow-custom.sw.yaml"}, // 2 subflows, each one has a function that uses the flink-openapi.yaml
@@ -159,30 +161,8 @@ func TestOpenAPIMinify(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.workflowFile, func(t *testing.T) {
-			if err := os.Mkdir(test.specsDir, 0755); err != nil {
-				t.Fatalf("Error creating specs directory: %v", err)
-			}
-			defer os.RemoveAll(test.specsDir)
-			if err := copyFile(test.workflowFile, path.Base(test.workflowFile)); err != nil {
-				t.Fatalf("Error copying workflow file: %v", err)
-			}
-			defer os.Remove(path.Base(test.workflowFile))
-			if len(test.subflows) > 0 {
-				if err := os.Mkdir(test.subflowsDir, 0755); err != nil {
-					t.Fatalf("Error creating subflows directory: %v", err)
-				}
-				defer os.RemoveAll(test.subflowsDir)
-				for _, subflow := range test.subflows {
-					if err := copyFile(subflow, path.Join(test.subflowsDir, path.Base(subflow))); err != nil {
-						t.Fatalf("Error copying subflow file: %v", err)
-					}
-				}
-			}
-			for _, openapiSpecFile := range test.openapiSpecFiles {
-				if err := copyFile(openapiSpecFile.file, path.Join(test.specsDir, path.Base(openapiSpecFile.file))); err != nil {
-					t.Fatalf("Error copying openapi spec file: %v", err)
-				}
-			}
+			prepareStructure(t, test)
+			defer cleanUp(t, test)
 
 			minifiedfiles, err := NewMinifier(&OpenApiMinifierOpts{
 				SpecsDir:    path.Join(current, test.specsDir),
@@ -195,6 +175,160 @@ func TestOpenAPIMinify(t *testing.T) {
 			checkResult(t, test, minifiedfiles)
 		})
 	}
+}
+
+// These tests contain openapi specs with $ref to other specs
+func TestOpenAPIMinifyRefs(t *testing.T) {
+	tests := []minifyTest{
+		{
+			workflowFile:     "testdata/refs/workflow.sw.yaml",
+			openapiSpecFiles: []spec{{file: "testdata/refs/openapi.yaml", expected: "testdata/refs/openapi.expected.yaml", initial: 5, minified: 3}},
+			specsDir:         "specs",
+			subflowsDir:      "subflows",
+		},
+		{
+			workflowFile:     "testdata/refs/workflow.sw.yaml",
+			openapiSpecFiles: []spec{{file: "testdata/refs/openapi.yaml", expected: "testdata/refs/openapi.expected.yaml", initial: 5, minified: 3}},
+			specsDir:         "my_specs",
+			subflowsDir:      "subflows",
+		},
+		{
+			workflowFile:     "testdata/refs/emptyworkflow.sw.yaml",
+			openapiSpecFiles: []spec{{file: "testdata/refs/openapi1.yaml", expected: "testdata/refs/openapi1.expected.yaml", initial: 1, minified: 1},
+				                     {file: "testdata/refs/openapi2.yaml", expected: "testdata/refs/openapi2.expected.yaml", initial: 1, minified: 1}},
+			specsDir:         "specs",
+			subflowsDir:      "subflows",
+		},
+		{
+			workflowFile:     "testdata/refs/emptyworkflow.sw.yaml",
+			openapiSpecFiles: []spec{{file: "testdata/refs/openapi1.yaml", expected: "testdata/refs/openapi1.expected.yaml", initial: 1, minified: 1},
+				                     {file: "testdata/refs/openapi2.yaml", expected: "testdata/refs/openapi2.expected.yaml", initial: 1, minified: 1}},
+			specsDir:         "my_specs",
+			subflowsDir:      "subflows",
+		},
+		{
+			workflowFile:     "testdata/refs/emptyworkflow.sw.yaml",
+			openapiSpecFiles: []spec{{file: "testdata/refs/openapi1.yaml", expected: "testdata/refs/openapi1.expected.yaml", initial: 1, minified: 1},
+				                     {file: "testdata/refs/openapi2.yaml", expected: "testdata/refs/openapi2.expected.yaml", initial: 1, minified: 1}},
+			specsDir:         "my_specs",
+			subflowsDir:      "custom_specs",
+			subflows:         []string{"testdata/refs//subflow2.sw.yaml", "testdata/refs/subflow2.sw.yaml"}, // 2 subflows, each one has a function that uses the flink-openapi.yaml
+		},
+		{
+			workflowFile:     "testdata/refs/emptyworkflow.sw.yaml",
+			openapiSpecFiles: []spec{{file: "testdata/refs/openapi.yaml", expected: "testdata/refs/openapi-subflow34.expected.yaml", initial: 5, minified: 2}},
+			specsDir:         "specs",
+			subflowsDir:      "custom_specs",
+			subflows:         []string{"testdata/refs//subflow3.sw.yaml", "testdata/refs/subflow4.sw.yaml"}, // 2 subflows, each one has a function that uses the flink-openapi.yaml
+		},
+	}
+
+	current, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Error getting current directory: %v", err)
+	}
+
+	for _, test := range tests {
+		t.Run(test.workflowFile, func(t *testing.T) {
+			prepareStructure(t, test)
+			defer cleanUp(t, test)
+
+			minifiedfiles, err := NewMinifier(&OpenApiMinifierOpts{
+				SpecsDir:    path.Join(current, test.specsDir),
+				SubflowsDir: path.Join(current, test.subflowsDir),
+			}).Minify()
+
+			if err != nil {
+				t.Fatalf("Error minifying openapi specs: %v", err)
+			}
+			testFiles := map[string]spec{}
+
+			for _, spec := range test.openapiSpecFiles {
+				testFiles[path.Base(spec.file)] = spec
+			}
+
+			for k, v := range minifiedfiles {
+				expected := testFiles[k].expected
+				assert.Nil(t, validateOpenAPISpec(v), "Minified file %s is not a valid OpenAPI spec", v)
+				assert.True(t, compareYAMLFiles(t, v, expected), "Minified file %s is not equal to the expected file %s", v, expected)
+			}
+		})
+	}
+}
+
+func validateOpenAPISpec(filePath string) error {
+	loader := openapi3.NewLoader()
+	doc, err := loader.LoadFromFile(filePath)
+	if err != nil {
+		return fmt.Errorf("failed to load OpenAPI spec from file: %v", err)
+	}
+
+	if err := doc.Validate(loader.Context); err != nil {
+		return fmt.Errorf("OpenAPI spec is invalid: %v", err)
+	}
+	return nil
+}
+
+func compareYAMLFiles(t *testing.T, file1Path, file2Path string) bool {
+	data1, err := os.ReadFile(file1Path)
+	if err != nil {
+		t.Fatalf("failed to read file %s: %v", file1Path, err)
+	}
+
+	data2, err := os.ReadFile(file2Path)
+	if err != nil {
+		t.Fatalf("failed to read file %s: %v", file2Path, err)
+	}
+
+	var obj1, obj2 interface{}
+	if err := yaml.Unmarshal(data1, &obj1); err != nil {
+		t.Fatalf("failed to unmarshal file %s: %v", file1Path, err)
+	}
+	if err := yaml.Unmarshal(data2, &obj2); err != nil {
+		t.Fatalf("failed to unmarshal file %s: %v", file2Path, err)
+	}
+
+	return reflect.DeepEqual(obj1, obj2)
+}
+
+func prepareStructure(t *testing.T, test minifyTest) {
+	if err := os.Mkdir(test.specsDir, 0755); err != nil {
+		t.Fatalf("Error creating specs directory: %v", err)
+	}
+	if err := copyFile(test.workflowFile, path.Base(test.workflowFile)); err != nil {
+		t.Fatalf("Error copying workflow file: %v", err)
+	}
+	if len(test.subflows) > 0 {
+		if err := os.Mkdir(test.subflowsDir, 0755); err != nil {
+			t.Fatalf("Error creating subflows directory: %v", err)
+		}
+		for _, subflow := range test.subflows {
+			if err := copyFile(subflow, path.Join(test.subflowsDir, path.Base(subflow))); err != nil {
+				t.Fatalf("Error copying subflow file: %v", err)
+			}
+		}
+	}
+	for _, openapiSpecFile := range test.openapiSpecFiles {
+		if err := copyFile(openapiSpecFile.file, path.Join(test.specsDir, path.Base(openapiSpecFile.file))); err != nil {
+			t.Fatalf("Error copying openapi spec file: %v", err)
+		}
+	}
+}
+
+func cleanUp(t *testing.T, test minifyTest) {
+	err := os.Remove(path.Base(test.workflowFile))
+	if err != nil {
+		t.Fatalf("Error removing workflow file: %v", err)
+	}
+	err = os.RemoveAll(test.specsDir)
+	if err != nil {
+		t.Fatalf("Error removing specs directory: %v", err)
+	}
+	err = os.RemoveAll(test.subflowsDir)
+	if err != nil {
+		t.Fatalf("Error removing subflows directory: %v", err)
+	}
+
 }
 
 // checkInitial checks the initial number of operations in the openapi specs
