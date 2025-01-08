@@ -23,6 +23,8 @@ export const enableAutoRunID = "extendedServices.enableAutorun";
 export const connectionHeartbeatIntervalInSecsID = "extendedServices.connectionHeartbeatIntervalInSecs";
 export const extendedServicesURLID = "extendedServices.extendedServicesURL";
 
+type ConfigurationProperty = string | number | boolean;
+
 export class Configuration {
   readonly enableAutoRun: boolean;
   readonly connectionHeartbeatIntervalInSecs: number;
@@ -45,12 +47,11 @@ function fetchExtendedServicesURL(): URL {
   }
 }
 
-// Place on top of the file or on another file
-// I don't think this is a suitable name, it's just to exemplify
-type Property = string | number | boolean
-
-const getConfigurationPropertyValue = <T extends Property | null>(property: string, defaultValue: T): T => {
-  const value = vscode.workspace.getConfiguration().get(property) as T;
+const getConfigurationPropertyValue = <T extends ConfigurationProperty | null>(
+  property: string,
+  defaultValue: T
+): T => {
+  let value = vscode.workspace.getConfiguration().get(property) as T;
   if (value === null) {
     console.warn(`Property: ${property} is missing, using the default: ${defaultValue}`);
     value = defaultValue;
