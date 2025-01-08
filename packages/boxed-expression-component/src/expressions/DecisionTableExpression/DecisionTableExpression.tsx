@@ -902,11 +902,19 @@ export function DecisionTableExpression({
           case DecisionTableColumnType.OutputClause:
             const newOutputs = [...(prev.output ?? [])];
             newOutputs.splice(localIndexInsideGroup, 1);
-
+            const updatedOutputColumns = [
+              ...(newOutputs ?? []).map((outputColumn) => {
+                const outputCopy = { ...outputColumn };
+                if (newOutputs.length == 1) {
+                  outputCopy["@_name"] = undefined;
+                }
+                return outputCopy;
+              }),
+            ];
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
             const retOutput: Normalized<BoxedDecisionTable> = {
               ...prev,
-              output: newOutputs,
+              output: updatedOutputColumns,
               rule: [...(prev.rule ?? [])].map((rule) => {
                 const newOutputEntry = [...rule.outputEntry];
                 newOutputEntry.splice(localIndexInsideGroup, 1);
