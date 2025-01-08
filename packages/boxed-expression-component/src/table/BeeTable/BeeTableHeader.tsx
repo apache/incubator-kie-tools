@@ -30,6 +30,9 @@ import { BeeTableThController } from "./BeeTableThController";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 import { InlineEditableTextInput } from "./InlineEditableTextInput";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export interface BeeTableColumnUpdate<R extends object> {
   typeRef: string | undefined;
@@ -229,43 +232,54 @@ export function BeeTableHeader<R extends object>({
                 }
               }}
               headerCellInfo={
-                <div
-                  className="expression-info header-cell-info"
-                  data-ouia-component-type="expression-column-header-cell-info"
-                >
-                  {column.headerCellElement ? (
-                    column.headerCellElement
-                  ) : column.isInlineEditable && !isReadOnly ? (
-                    <InlineEditableTextInput
-                      setActiveCellEditing={setActiveCellEditing}
-                      columnIndex={columnIndex}
-                      rowIndex={rowIndex}
-                      value={column.label}
-                      onChange={(value) => {
-                        onExpressionHeaderUpdated(
-                          column,
-                          columnIndex
-                        )({ "@_label": value, "@_typeRef": column.dataType });
-                      }}
-                      isReadOnly={isReadOnly}
-                    />
-                  ) : (
-                    <p
-                      data-testid={"kie-tools--bee--expression-info-name"}
-                      className="expression-info-name pf-u-text-truncate name"
-                    >
-                      {column.label}
-                    </p>
-                  )}
-                  {column.dataType ? (
-                    <p
-                      data-testid={"kie-tools--bee--expression-info-data-type"}
-                      className="expression-info-data-type pf-u-text-truncate data-type"
-                    >
-                      ({column.dataType})
-                    </p>
-                  ) : null}
-                </div>
+                <Flex justifyContent={{ default: "justifyContentCenter" }}>
+                  <div
+                    className="expression-info header-cell-info"
+                    data-ouia-component-type="expression-column-header-cell-info"
+                  >
+                    {column.headerCellElement ? (
+                      column.headerCellElement
+                    ) : column.isInlineEditable && !isReadOnly ? (
+                      <InlineEditableTextInput
+                        setActiveCellEditing={setActiveCellEditing}
+                        columnIndex={columnIndex}
+                        rowIndex={rowIndex}
+                        value={column.label}
+                        onChange={(value) => {
+                          onExpressionHeaderUpdated(
+                            column,
+                            columnIndex
+                          )({ "@_label": value, "@_typeRef": column.dataType });
+                        }}
+                        isReadOnly={isReadOnly}
+                      />
+                    ) : (
+                      <p
+                        data-testid={"kie-tools--bee--expression-info-name"}
+                        className="expression-info-name pf-u-text-truncate name"
+                      >
+                        {column.label}
+                      </p>
+                    )}
+                    {column.dataType ? (
+                      <p
+                        data-testid={"kie-tools--bee--expression-info-data-type"}
+                        className="expression-info-data-type pf-u-text-truncate data-type"
+                      >
+                        ({column.dataType})
+                      </p>
+                    ) : null}
+                  </div>
+                  {/* {props.openBoxedExpressionEditor !== undefined && ( */}
+                  <Button
+                    variant={"plain"}
+                    // title={`Open ${dmnFormResult.decisionName} expression`}
+                    icon={<ArrowUpIcon />}
+                    // data-navigate-to-expression-id={dmnFormResult.decisionId}
+                    // onClick={() => props.openBoxedExpressionEditor?.(dmnFormResult.decisionId)}
+                  />
+                  {/* )} */}
+                </Flex>
               }
             />
           )}
