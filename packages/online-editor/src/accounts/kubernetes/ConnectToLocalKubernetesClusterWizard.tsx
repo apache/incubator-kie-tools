@@ -54,7 +54,7 @@ import { Tab, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/componen
 import ExternalLinkAltIcon from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { useRoutes } from "../../navigation/Hooks";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
-import { HelperText, HelperTextItem } from "@patternfly/react-core/src/components/HelperText";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 
 enum WizardStepIds {
