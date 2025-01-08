@@ -34,7 +34,7 @@ import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/js/com
 import { HelpIcon } from "@patternfly/react-icons/dist/esm/icons/help-icon";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 import AddIcon from "@patternfly/react-icons/dist/esm/icons/add-circle-o-icon";
@@ -86,10 +86,11 @@ function TestScenarioCreationPanel() {
 
   return (
     <EmptyState>
-      <EmptyStateIcon icon={CubesIcon} />
-      <Title headingLevel={"h6"} size={"md"}>
-        {i18n.creationPanel.title}
-      </Title>
+      <EmptyStateHeader
+        titleText={<>{i18n.creationPanel.title}</>}
+        icon={<EmptyStateIcon icon={CubesIcon} />}
+        headingLevel={"h6"}
+      />
       <Form isHorizontal className="kie-scesim-editor--creation-form">
         <FormGroup label={i18n.creationPanel.assetsGroup} isRequired>
           <FormSelect

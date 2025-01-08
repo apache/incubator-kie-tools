@@ -167,7 +167,7 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
         >
           <Switch
             isChecked={diagram.overlays.enableEvaluationHighlights}
-            onChange={(newValue) =>
+            onChange={(_event, newValue) =>
               dmnEditorStoreApi.setState((state) => {
                 state.diagram.overlays.enableEvaluationHighlights = newValue;
               })

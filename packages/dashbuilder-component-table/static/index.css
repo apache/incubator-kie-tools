@@ -23,46 +23,46 @@
   background-color: #393555 !important;
 }
 [mode="dark"] {
-  --pf-global--Color--100: #eef1fa !important;
-  --pf-global--Color--200: var(--pf-global--Color--light-200) !important;
-  --pf-global--BorderColor--100: var(--pf-global--BorderColor--light-100) !important;
-  --pf-global--primary-color--100: var(--pf-global--primary-color--light-100) !important;
-  --pf-global--link--Color: var(--pf-global--link--Color--light) !important;
-  --pf-global--link--Color--hover: var(--pf-global--link--Color--light) !important;
-  --pf-global--BackgroundColor--100: #100c2a !important;
+  --pf-v5-global--Color--100: #eef1fa !important;
+  --pf-v5-global--Color--200: var(--pf-v5-global--Color--light-200) !important;
+  --pf-v5-global--BorderColor--100: var(--pf-v5-global--BorderColor--light-100) !important;
+  --pf-v5-global--primary-color--100: var(--pf-v5-global--primary-color--light-100) !important;
+  --pf-v5-global--link--Color: var(--pf-v5-global--link--Color--light) !important;
+  --pf-v5-global--link--Color--hover: var(--pf-v5-global--link--Color--light) !important;
+  --pf-v5-global--BackgroundColor--100: #100c2a !important;
 }
 
 [mode="dark"] body,
-[mode="dark"] .pf-c-table,
-[mode="dark"] .pf-c-input-group,
-[mode="dark"] .pf-c-options-menu__menu {
-  --pf-global--Color--100: #eef1fa !important;
-  --pf-global--Color--200: var(--pf-global--Color--light-200) !important;
-  --pf-global--BorderColor--100: var(--pf-global--BorderColor--light-100) !important;
-  --pf-global--primary-color--100: var(--pf-global--primary-color--light-100) !important;
-  --pf-global--link--Color: var(--pf-global--link--Color--light) !important;
-  --pf-global--link--Color--hover: var(--pf-global--link--Color--light) !important;
-  --pf-global--BackgroundColor--100: #100c2a !important;
+[mode="dark"] .pf-v5-c-table,
+[mode="dark"] .pf-v5-c-input-group,
+[mode="dark"] .pf-v5-c-options-menu__menu {
+  --pf-v5-global--Color--100: #eef1fa !important;
+  --pf-v5-global--Color--200: var(--pf-v5-global--Color--light-200) !important;
+  --pf-v5-global--BorderColor--100: var(--pf-v5-global--BorderColor--light-100) !important;
+  --pf-v5-global--primary-color--100: var(--pf-v5-global--primary-color--light-100) !important;
+  --pf-v5-global--link--Color: var(--pf-v5-global--link--Color--light) !important;
+  --pf-v5-global--link--Color--hover: var(--pf-v5-global--link--Color--light) !important;
+  --pf-v5-global--BackgroundColor--100: #100c2a !important;
 }
 
-[mode="dark"] .pf-c-options-menu__menu,
-[mode="dark"] .pf-c-pagination__nav,
-[mode="dark"] .pf-c-pagination__total-items {
+[mode="dark"] .pf-v5-c-options-menu__menu,
+[mode="dark"] .pf-v5-c-pagination__nav,
+[mode="dark"] .pf-v5-c-pagination__total-items {
   background-color: #100c2a !important;
   color: #eef1fa;
 }
 
-[mode="dark"] .pf-c-options-menu__menu-item:hover,
-[mode="dark"] .pf-c-table tr.pf-m-hoverable:hover {
+[mode="dark"] .pf-v5-c-options-menu__menu-item:hover,
+[mode="dark"] .pf-v5-c-table tr.pf-m-hoverable:hover {
   background-color: #393555;
   color: #eef1fa;
 }
 
-[mode="dark"] .pf-c-form-control {
-  --pf-global--Color--100: #eef1fa !important;
-  --pf-global--BackgroundColor--100: #100c2a !important;
+[mode="dark"] .pf-v5-c-form-control {
+  --pf-v5-global--Color--100: #eef1fa !important;
+  --pf-v5-global--BackgroundColor--100: #100c2a !important;
 }
 
-[mode="dark"] .pf-c-form-control:disabled {
-  --pf-c-form-control--BackgroundColor: #464545;
+[mode="dark"] .pf-v5-c-form-control:disabled {
+  --pf-v5-c-form-control--BackgroundColor: #464545;
 }

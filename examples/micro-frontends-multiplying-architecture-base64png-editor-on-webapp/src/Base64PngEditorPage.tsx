@@ -22,7 +22,8 @@ import { ChannelType, EnvelopeContentType } from "@kie-tools-core/editor/dist/ap
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { EditorEnvelopeLocator, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { useMemo, useState } from "react";
-import { Page, PageHeader, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { PageHeader } from "@patternfly/react-core/deprecated";
 import { EmbeddedEditor } from "@kie-tools-core/editor/dist/embedded";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { Base64PngGallery } from "./Base64PngGallery";

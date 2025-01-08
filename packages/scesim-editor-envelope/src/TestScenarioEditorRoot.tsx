@@ -28,8 +28,13 @@ import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ResourceContent, SearchType, WorkspaceChannelApi, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import { domParser } from "@kie-tools/xml-parser-ts";
 import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";
@@ -505,10 +510,11 @@ function TestScenarioMarshallerFallbackError({ error }: { error: Error }) {
   return (
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
       <EmptyState style={{ maxWidth: "1280px" }}>
-        <EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />
-        <Title size={"lg"} headingLevel={"h4"}>
-          Unable to open file.
-        </Title>
+        <EmptyStateHeader
+          titleText="Unable to open file."
+          icon={<EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />}
+          headingLevel={"h4"}
+        />
         <br />
         <EmptyStateBody>Error details: {error.message}</EmptyStateBody>
       </EmptyState>

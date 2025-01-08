@@ -24,7 +24,8 @@ import { useMemo, useState } from "react";
 import { EmbeddedEditor, useEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { EmbeddedEditorFile } from "@kie-tools-core/editor/dist/channel";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
-import { Page, PageSection, PageHeader } from "@patternfly/react-core/dist/js/components/Page";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { PageHeader } from "@patternfly/react-core/deprecated";
 import { Sidebar } from "./Sidebar";
 
 export function DmnEditorClassicPage() {

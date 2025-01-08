@@ -333,7 +333,6 @@ export function WorkspaceCard(props: {
                 isSelectable={true}
                 onMouseOver={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
-                isHoverable={true}
                 isCompact={true}
                 style={{ cursor: "pointer" }}
                 onClick={() => {

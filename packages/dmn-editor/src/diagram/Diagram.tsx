@@ -43,7 +43,7 @@ import {
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { BlueprintIcon } from "@patternfly/react-icons/dist/js/icons/blueprint-icon";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
@@ -1506,144 +1506,144 @@ function DmnDiagramEmptyState({
 
         <EmptyState>
           <EmptyStateHeader icon={<EmptyStateIcon icon={MousePointerIcon} />} />
-          <Title size={"md"} headingLevel={"h4"}>
-            {`This DMN's Diagram is empty`}
-          </Title>
-          {isReadOnly ? (
-            <>
-              <EmptyStateBody>Make sure the DMN has nodes or try opening another file</EmptyStateBody>
-            </>
-          ) : (
-            <>
-              <EmptyStateBody>Start by dragging nodes from the Palette</EmptyStateBody>
-              <br />
-              <EmptyStateBody>or</EmptyStateBody>
-              <EmptyStateFooter>
-                <EmptyStateActions>
-                  <div>
-                    <Button
-                      variant={ButtonVariant.link}
-                      icon={<TableIcon />}
-                      onClick={() => {
-                        dmnEditorStoreApi.setState((state) => {
-                          const { href: decisionNodeHref } = addStandaloneNode({
-                            definitions: state.dmn.model.definitions,
-                            drdIndex: state.computed(state).getDrdIndex(),
-                            newNode: {
-                              type: NODE_TYPES.decision,
-                              bounds: {
-                                "@_x": 100,
-                                "@_y": 100,
-                                "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
-                                  snapGrid: state.diagram.snapGrid,
-                                })["@_width"],
-                                "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
-                                  snapGrid: state.diagram.snapGrid,
-                                })["@_height"],
+          <EmptyStateFooter>
+            <EmptyStateHeader titleText={<>{`This DMN's Diagram is empty`}</>} headingLevel={"h4"} />
+            {isReadOnly ? (
+              <>
+                <EmptyStateBody>Make sure the DMN has nodes or try opening another file</EmptyStateBody>
+              </>
+            ) : (
+              <>
+                <EmptyStateBody>Start by dragging nodes from the Palette</EmptyStateBody>
+                <br />
+                <EmptyStateBody>or</EmptyStateBody>
+                <EmptyStateFooter>
+                  <EmptyStateActions>
+                    <div>
+                      <Button
+                        variant={ButtonVariant.link}
+                        icon={<TableIcon />}
+                        onClick={() => {
+                          dmnEditorStoreApi.setState((state) => {
+                            const { href: decisionNodeHref } = addStandaloneNode({
+                              definitions: state.dmn.model.definitions,
+                              drdIndex: state.computed(state).getDrdIndex(),
+                              newNode: {
+                                type: NODE_TYPES.decision,
+                                bounds: {
+                                  "@_x": 100,
+                                  "@_y": 100,
+                                  "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
+                                    snapGrid: state.diagram.snapGrid,
+                                  })["@_width"],
+                                  "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
+                                    snapGrid: state.diagram.snapGrid,
+                                  })["@_height"],
+                                },
                               },
-                            },
-                            externalModelsByNamespace,
-                          });
+                              externalModelsByNamespace,
+                            });
 
-                          const drgElementIndex = (state.dmn.model.definitions.drgElement ?? []).length - 1;
+                            const drgElementIndex = (state.dmn.model.definitions.drgElement ?? []).length - 1;
 
-                          const defaultWidthsById = new Map<string, number[]>();
-                          const defaultExpression = getDefaultBoxedExpression({
-                            logicType: "decisionTable",
-                            allTopLevelDataTypesByFeelName: new Map(),
-                            typeRef: undefined,
-                            getDefaultColumnWidth,
-                            widthsById: defaultWidthsById,
-                          });
+                            const defaultWidthsById = new Map<string, number[]>();
+                            const defaultExpression = getDefaultBoxedExpression({
+                              logicType: "decisionTable",
+                              allTopLevelDataTypesByFeelName: new Map(),
+                              typeRef: undefined,
+                              getDefaultColumnWidth,
+                              widthsById: defaultWidthsById,
+                            });
 
-                          updateExpression({
-                            definitions: state.dmn.model.definitions,
-                            drgElementIndex,
-                            expression: {
-                              ...defaultExpression,
-                              "@_label": "New Decision",
-                            },
-                          });
-
-                          updateExpressionWidths({
-                            definitions: state.dmn.model.definitions,
-                            drdIndex: state.computed(state).getDrdIndex(),
-                            widthsById: defaultWidthsById,
-                          });
-
-                          state.dispatch(state).boxedExpressionEditor.open(parseXmlHref(decisionNodeHref).id);
-                        });
-                      }}
-                    >
-                      New Decision Table...
-                    </Button>
-                    <br />
-                    <Button
-                      variant={ButtonVariant.link}
-                      icon={<BlueprintIcon />}
-                      onClick={() => {
-                        dmnEditorStoreApi.setState((state) => {
-                          const inputDataNodeBounds: DC__Bounds = {
-                            "@_x": 100,
-                            "@_y": 300,
-                            "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.inputData]({
-                              snapGrid: state.diagram.snapGrid,
-                              isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
-                            })["@_width"],
-                            "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.inputData]({
-                              snapGrid: state.diagram.snapGrid,
-                              isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
-                            })["@_height"],
-                          };
-
-                          const { href: inputDataNodeHref, shapeId: inputDataShapeId } = addStandaloneNode({
-                            definitions: state.dmn.model.definitions,
-                            drdIndex: state.computed(state).getDrdIndex(),
-                            newNode: {
-                              type: NODE_TYPES.inputData,
-                              bounds: inputDataNodeBounds,
-                            },
-                            externalModelsByNamespace,
-                          });
-
-                          const { href: decisionNodeHref } = addConnectedNode({
-                            definitions: state.dmn.model.definitions,
-                            drdIndex: state.computed(state).getDrdIndex(),
-                            edgeType: EDGE_TYPES.informationRequirement,
-                            sourceNode: {
-                              href: inputDataNodeHref,
-                              type: NODE_TYPES.inputData,
-                              bounds: inputDataNodeBounds,
-                              shapeId: inputDataShapeId,
-                            },
-                            newNode: {
-                              type: NODE_TYPES.decision,
-                              bounds: {
-                                "@_x": 100,
-                                "@_y": 100,
-                                "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
-                                  snapGrid: state.diagram.snapGrid,
-                                })["@_width"],
-                                "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
-                                  snapGrid: state.diagram.snapGrid,
-                                })["@_height"],
+                            updateExpression({
+                              definitions: state.dmn.model.definitions,
+                              drgElementIndex,
+                              expression: {
+                                ...defaultExpression,
+                                "@_label": "New Decision",
                               },
-                            },
-                            externalModelsByNamespace,
-                          });
+                            });
 
-                          state.diagram._selectedNodes = [decisionNodeHref];
-                          state.diagram.propertiesPanel.isOpen = true;
-                        });
-                      }}
-                    >
-                      New Decision with Input Data...
-                    </Button>
-                  </div>
-                </EmptyStateActions>
-              </EmptyStateFooter>
-            </>
-          )}
+                            updateExpressionWidths({
+                              definitions: state.dmn.model.definitions,
+                              drdIndex: state.computed(state).getDrdIndex(),
+                              widthsById: defaultWidthsById,
+                            });
+
+                            state.dispatch(state).boxedExpressionEditor.open(parseXmlHref(decisionNodeHref).id);
+                          });
+                        }}
+                      >
+                        New Decision Table...
+                      </Button>
+                      <br />
+                      <Button
+                        variant={ButtonVariant.link}
+                        icon={<BlueprintIcon />}
+                        onClick={() => {
+                          dmnEditorStoreApi.setState((state) => {
+                            const inputDataNodeBounds: DC__Bounds = {
+                              "@_x": 100,
+                              "@_y": 300,
+                              "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.inputData]({
+                                snapGrid: state.diagram.snapGrid,
+                                isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+                              })["@_width"],
+                              "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.inputData]({
+                                snapGrid: state.diagram.snapGrid,
+                                isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+                              })["@_height"],
+                            };
+
+                            const { href: inputDataNodeHref, shapeId: inputDataShapeId } = addStandaloneNode({
+                              definitions: state.dmn.model.definitions,
+                              drdIndex: state.computed(state).getDrdIndex(),
+                              newNode: {
+                                type: NODE_TYPES.inputData,
+                                bounds: inputDataNodeBounds,
+                              },
+                              externalModelsByNamespace,
+                            });
+
+                            const { href: decisionNodeHref } = addConnectedNode({
+                              definitions: state.dmn.model.definitions,
+                              drdIndex: state.computed(state).getDrdIndex(),
+                              edgeType: EDGE_TYPES.informationRequirement,
+                              sourceNode: {
+                                href: inputDataNodeHref,
+                                type: NODE_TYPES.inputData,
+                                bounds: inputDataNodeBounds,
+                                shapeId: inputDataShapeId,
+                              },
+                              newNode: {
+                                type: NODE_TYPES.decision,
+                                bounds: {
+                                  "@_x": 100,
+                                  "@_y": 100,
+                                  "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
+                                    snapGrid: state.diagram.snapGrid,
+                                  })["@_width"],
+                                  "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
+                                    snapGrid: state.diagram.snapGrid,
+                                  })["@_height"],
+                                },
+                              },
+                              externalModelsByNamespace,
+                            });
+
+                            state.diagram._selectedNodes = [decisionNodeHref];
+                            state.diagram.propertiesPanel.isOpen = true;
+                          });
+                        }}
+                      >
+                        New Decision with Input Data...
+                      </Button>
+                    </div>
+                  </EmptyStateActions>
+                </EmptyStateFooter>
+              </>
+            )}
+          </EmptyStateFooter>
         </EmptyState>
       </div>
     </Bullseye>

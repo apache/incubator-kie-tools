@@ -17,15 +17,8 @@
  * under the License.
  */
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  ExpandableRowContent,
-  Table,
-  Tr,
-  Th,
-  Thead,
-  Td,
-  Tbody,
-} from "@patternfly/react-table/dist/js/components/Table";
+import { ExpandableRowContent, Tr, Th, Thead, Td, Tbody } from "@patternfly/react-table/dist/js/components/Table";
+import { Table } from "@patternfly/react-table/deprecated";
 import _ from "lodash";
 import ProcessListChildTable from "../ProcessListChildTable/ProcessListChildTable";
 import { HistoryIcon } from "@patternfly/react-icons/dist/js/icons/history-icon";
