@@ -52,7 +52,7 @@ func NewGenManifest() *cobra.Command {
 	{{.Name}} gen-manifest --skip-namespace
 
 	# Persist the generated Operator manifests on a specific custom path
-	{{.Name}} gen-manifest --custom-generated-manifest-dir=<full_directory_path>
+	{{.Name}} gen-manifest --custom-generated-manifests-dir=<full_directory_path>
 
 	# Specify a custom subflows files directory. (default: ./subflows)
 	{{.Name}} gen-manifest --subflows-dir=<full_directory_path>
