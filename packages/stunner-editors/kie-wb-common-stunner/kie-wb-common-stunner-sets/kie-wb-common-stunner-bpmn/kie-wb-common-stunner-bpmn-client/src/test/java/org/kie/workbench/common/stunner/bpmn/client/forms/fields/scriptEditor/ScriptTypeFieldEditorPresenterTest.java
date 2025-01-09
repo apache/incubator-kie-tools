@@ -82,7 +82,6 @@ public class ScriptTypeFieldEditorPresenterTest
         verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.MVEL));
         verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.DROOLS));
         verify(view, never()).addLanguage(eq(MonacoEditorLanguage.JAVA));
-        verify(view, never()).addLanguage(eq(MonacoEditorLanguage.JAVA_SCRIPT));
         verify(view, never()).addLanguage(eq(MonacoEditorLanguage.FEEL));
     }
 
@@ -90,7 +89,6 @@ public class ScriptTypeFieldEditorPresenterTest
     public void testSetFlowConditionMode() {
         editor.setMode(ScriptTypeMode.FLOW_CONDITION);
         verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.JAVA));
-        verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.JAVA_SCRIPT));
         verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.MVEL));
         verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.DROOLS));
         verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.FEEL));
@@ -100,7 +98,6 @@ public class ScriptTypeFieldEditorPresenterTest
     public void testSetActionScriptMode() {
         editor.setMode(ScriptTypeMode.ACTION_SCRIPT);
         verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.JAVA));
-        verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.JAVA_SCRIPT));
         verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.MVEL));
         verify(view, never()).addLanguage(eq(MonacoEditorLanguage.DROOLS));
         verify(view, never()).addLanguage(eq(MonacoEditorLanguage.FEEL));
@@ -111,7 +108,6 @@ public class ScriptTypeFieldEditorPresenterTest
         editor.setMode(ScriptTypeMode.DROOLS_CONDITION);
         verify(view, times(1)).addLanguage(eq(MonacoEditorLanguage.DROOLS));
         verify(view, never()).addLanguage(eq(MonacoEditorLanguage.JAVA));
-        verify(view, never()).addLanguage(eq(MonacoEditorLanguage.JAVA_SCRIPT));
         verify(view, never()).addLanguage(eq(MonacoEditorLanguage.MVEL));
         verify(view, never()).addLanguage(eq(MonacoEditorLanguage.FEEL));
     }
