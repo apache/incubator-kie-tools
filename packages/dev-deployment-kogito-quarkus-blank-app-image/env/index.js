@@ -19,34 +19,37 @@
 
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
 
-const buildEnv = require("@kie-tools/root-env/env");
-const devDeploymentBaseImageEnv = require("@kie-tools/dev-deployment-base-image/env");
+const rootEnv = require("@kie-tools/root-env/env");
 
-module.exports = composeEnv([buildEnv, devDeploymentBaseImageEnv], {
+const {
+  env: { devDeploymentBaseImage: devDeploymentBaseImageEnv },
+} = require("@kie-tools/dev-deployment-base-image/env");
+
+const {
+  env: { mavenM2RepoViaHttpImage: mavenM2RepoViaHttpImageEnv },
+} = require("@kie-tools/maven-m2-repo-via-http-image/env");
+
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__builderImage: {
-      default: `${devDeploymentBaseImageEnv.env.devDeploymentBaseImage.registry}/${
-        devDeploymentBaseImageEnv.env.devDeploymentBaseImage.account
-      }/${devDeploymentBaseImageEnv.env.devDeploymentBaseImage.name}:${
-        devDeploymentBaseImageEnv.env.devDeploymentBaseImage.tags.split(" ")[0]
-      }`,
+      default: `${devDeploymentBaseImageEnv.registry}/${devDeploymentBaseImageEnv.account}/${devDeploymentBaseImageEnv.name}:${devDeploymentBaseImageEnv.buildTag}`,
       description: "The image used in the FROM import.",
     },
     DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry: {
-      default: "quay.io",
-      description: "The image registry.",
+      default: "docker.io",
+      description: "E.g., `docker.io` or `quay.io`.",
     },
     DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account: {
-      default: "kie-tools",
-      description: "The image registry account.",
+      default: "apache",
+      description: "E.g,. `apache` or `kie-tools-bot`",
     },
     DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name: {
-      default: "dev-deployment-kogito-quarkus-blank-app-image",
-      description: "The image name.",
+      default: "incubator-kie-sandbox-dev-deployment-kogito-quarkus-blank-app",
+      description: "Name of the image itself.",
     },
-    DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTags: {
-      default: "daily-dev",
-      description: "The image tag.",
+    DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTag: {
+      default: rootEnv.env.root.streamName,
+      description: "Tag version of this image. E.g., `main` or `10.0.x` or `10.0.0",
     },
   }),
   get env() {
@@ -56,8 +59,11 @@ module.exports = composeEnv([buildEnv, devDeploymentBaseImageEnv], {
         registry: getOrDefault(this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry),
         account: getOrDefault(this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account),
         name: getOrDefault(this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name),
-        tags: getOrDefault(this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTags),
+        buildTag: getOrDefault(this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTag),
         version: require("../package.json").version,
+        dev: {
+          mavenM2RepoViaHttpImage: `${mavenM2RepoViaHttpImageEnv.registry}/${mavenM2RepoViaHttpImageEnv.account}/${mavenM2RepoViaHttpImageEnv.name}:${mavenM2RepoViaHttpImageEnv.buildTag}`,
+        },
       },
     };
   },

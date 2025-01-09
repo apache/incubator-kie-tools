@@ -31,12 +31,20 @@ import {
   GwtExpressionDefinitionLogicType,
 } from "./types";
 import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
-import { BoxedExpression } from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  BoxedExpression,
+  DmnBuiltInDataType,
+  generateUuid,
+  Normalized,
+} from "@kie-tools/boxed-expression-component/dist/api";
 
 /** Converts a GwtExpressionDefinition to a BoxedExpression. This convertion is
  *  necessary for historical reasons, as the Boxed Expression Editor was
  *  created prior to the DMN Editor, needing to declare its own model. */
-export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<string, number[]>): BoxedExpression {
+export function gwtToBee(
+  expression: GwtExpressionDefinition,
+  __widths: Map<string, number[]>
+): Normalized<BoxedExpression> {
   if (!expression) {
     return undefined!; // SPEC DISCREPANCY
   }
@@ -48,7 +56,7 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
         __$$element: "context",
         "@_id": expression.id,
         "@_label": expression.name,
-        "@_typeRef": expression.dataType,
+        "@_typeRef": normalizeTypeRef(expression.dataType),
         contextEntry: [
           ...expression.contextEntries.map((e) => {
             __widths.set(expression.id, expression.entryInfoWidth ? [expression.entryInfoWidth] : []);
@@ -56,8 +64,9 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
               "@_id": e.entryInfo.id,
               expression: gwtToBee(e.entryExpression, __widths)!,
               variable: {
+                "@_id": generateUuid(),
                 "@_name": e.entryInfo.name,
-                "@_typeRef": e.entryInfo.dataType,
+                "@_typeRef": normalizeTypeRef(e.entryInfo.dataType),
               },
             };
           }),
@@ -77,7 +86,7 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
         __$$element: "decisionTable",
         "@_id": expression.id,
         "@_label": expression.name,
-        "@_typeRef": expression.dataType,
+        "@_typeRef": normalizeTypeRef(expression.dataType),
         "@_hitPolicy": expression.hitPolicy,
         "@_aggregation": (() => {
           switch (expression.aggregation) {
@@ -102,7 +111,7 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
             "@_id": s.id,
             inputExpression: {
               "@_id": s.idLiteralExpression,
-              "@_typeRef": s.dataType,
+              "@_typeRef": normalizeTypeRef(s.dataType),
               text: { __$$text: s.name }, // This is really bad... `s.name` is actually an expression. Will be addressed by https://github.com/apache/incubator-kie-issues/issues/455
             },
           };
@@ -115,7 +124,7 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
           return {
             "@_id": o.id,
             "@_name": o.name,
-            "@_typeRef": o.dataType,
+            "@_typeRef": normalizeTypeRef(o.dataType),
           };
         }),
         annotation: (expression.annotations ?? []).map((a) => {
@@ -142,77 +151,95 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
         "@_id": expression.id,
         "@_label": expression.name,
         "@_kind": expression.functionKind,
-        "@_typeRef": expression.dataType,
+        "@_typeRef": normalizeTypeRef(expression.dataType),
         formalParameter: expression.formalParameters.map((p) => ({
           "@_id": p.id,
           "@_name": p.name,
-          "@_typeRef": p.dataType,
+          "@_typeRef": normalizeTypeRef(p.dataType),
         })),
         expression:
           expression.functionKind === FunctionExpressionDefinitionKind.Feel
             ? gwtToBee(expression.expression, __widths)
             : expression.functionKind === FunctionExpressionDefinitionKind.Java
-            ? (() => {
-                __widths.set(expression.id, [
-                  BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
-                  expression.classAndMethodNamesWidth ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
-                ]);
-                return {
-                  __$$element: "context",
-                  contextEntry: [
-                    {
-                      "@_id": expression.classFieldId,
-                      expression: {
-                        __$$element: "literalExpression",
-                        text: { __$$text: expression.className ?? "" },
+              ? (() => {
+                  __widths.set(expression.id, [
+                    BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
+                    expression.classAndMethodNamesWidth ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
+                  ]);
+                  return {
+                    "@_id": generateUuid(),
+                    __$$element: "context",
+                    contextEntry: [
+                      {
+                        "@_id": expression.classFieldId ?? generateUuid(),
+                        expression: {
+                          "@_id": generateUuid(),
+                          __$$element: "literalExpression",
+                          text: { __$$text: expression.className ?? "" },
+                        },
+                        variable: {
+                          "@_id": generateUuid(),
+                          "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.classFieldName,
+                        },
                       },
-                      variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.classFieldName },
-                    },
-                    {
-                      "@_id": expression.methodFieldId,
-                      expression: {
-                        __$$element: "literalExpression",
-                        text: { __$$text: expression.methodName ?? "" },
+                      {
+                        "@_id": expression.methodFieldId ?? generateUuid(),
+                        expression: {
+                          "@_id": generateUuid(),
+                          __$$element: "literalExpression",
+                          text: { __$$text: expression.methodName ?? "" },
+                        },
+                        variable: {
+                          "@_id": generateUuid(),
+                          "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.methodSignatureFieldName,
+                        },
                       },
-                      variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.methodSignatureFieldName },
-                    },
-                  ],
-                };
-              })()
-            : expression.functionKind === FunctionExpressionDefinitionKind.Pmml
-            ? (() => {
-                return {
-                  __$$element: "context",
-                  contextEntry: [
-                    {
-                      "@_id": expression.documentFieldId,
-                      expression: {
-                        __$$element: "literalExpression",
-                        text: { __$$text: expression.document ?? "" },
-                      },
-                      variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.documentFieldName },
-                    },
-                    {
-                      "@_id": expression.modelFieldId,
-                      expression: {
-                        __$$element: "literalExpression",
-                        text: { __$$text: expression.model ?? "" },
-                      },
-                      variable: { "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.modelFieldName },
-                    },
-                  ],
-                };
-              })()
-            : (() => {
-                throw new Error(`Unknown Function kind '${(expression as any).functionKind}'.`);
-              })(),
+                    ],
+                  };
+                })()
+              : expression.functionKind === FunctionExpressionDefinitionKind.Pmml
+                ? (() => {
+                    return {
+                      "@_id": generateUuid(),
+                      __$$element: "context",
+                      contextEntry: [
+                        {
+                          "@_id": expression.documentFieldId ?? generateUuid(),
+                          expression: {
+                            "@_id": generateUuid(),
+                            __$$element: "literalExpression",
+                            text: { __$$text: expression.document ?? "" },
+                          },
+                          variable: {
+                            "@_id": generateUuid(),
+                            "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.documentFieldName,
+                          },
+                        },
+                        {
+                          "@_id": expression.modelFieldId ?? generateUuid(),
+                          expression: {
+                            "@_id": generateUuid(),
+                            __$$element: "literalExpression",
+                            text: { __$$text: expression.model ?? "" },
+                          },
+                          variable: {
+                            "@_id": generateUuid(),
+                            "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.modelFieldName,
+                          },
+                        },
+                      ],
+                    };
+                  })()
+                : (() => {
+                    throw new Error(`Unknown Function kind '${(expression as any).functionKind}'.`);
+                  })(),
       };
     case GwtExpressionDefinitionLogicType.Invocation:
       return {
         __$$element: "invocation",
         "@_id": expression.id,
         "@_label": expression.name,
-        "@_typeRef": expression.dataType,
+        "@_typeRef": normalizeTypeRef(expression.dataType),
         expression: {
           __$$element: "literalExpression",
           "@_id": expression.invokedFunction.id,
@@ -224,8 +251,9 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
             "@_id": e.entryInfo.id,
             expression: gwtToBee(e.entryExpression, __widths)!,
             parameter: {
+              "@_id": e.entryInfo.id,
               "@_name": e.entryInfo.name,
-              "@_typeRef": e.entryInfo.dataType,
+              "@_typeRef": normalizeTypeRef(e.entryInfo.dataType),
             },
           };
         }),
@@ -236,7 +264,7 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
         __$$element: "list",
         "@_id": expression.id,
         "@_label": expression.name,
-        "@_typeRef": expression.dataType,
+        "@_typeRef": normalizeTypeRef(expression.dataType),
         expression: expression.items.map((i) => gwtToBee(i, __widths)!),
       };
     case GwtExpressionDefinitionLogicType.Literal:
@@ -245,7 +273,7 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
         __$$element: "literalExpression",
         "@_id": expression.id,
         "@_label": expression.name,
-        "@_typeRef": expression.dataType,
+        "@_typeRef": normalizeTypeRef(expression.dataType),
         text: { __$$text: expression.content ?? "" },
       };
     case GwtExpressionDefinitionLogicType.Relation:
@@ -254,14 +282,14 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
         __$$element: "relation",
         "@_id": expression.id,
         "@_label": expression.name,
-        "@_typeRef": expression.dataType,
+        "@_typeRef": normalizeTypeRef(expression.dataType),
         row: (expression.rows ?? []).map((r) => {
           return {
             "@_id": r.id,
             expression: r.cells.map((cell) => ({
               __$$element: "literalExpression",
               text: { __$$text: cell.content },
-              id: cell.id,
+              "@_id": cell.id,
             })),
           };
         }),
@@ -270,11 +298,15 @@ export function gwtToBee(expression: GwtExpressionDefinition, __widths: Map<stri
           return {
             "@_id": c.id,
             "@_name": c.name,
-            "@_typeRef": c.dataType,
+            "@_typeRef": normalizeTypeRef(c.dataType),
           };
         }),
       };
     default:
       throw new Error(`Unknown logicType for expression: '${(expression as any).logicType}'`);
   }
+}
+
+function normalizeTypeRef(dataType: DmnBuiltInDataType) {
+  return dataType === DmnBuiltInDataType.Undefined ? undefined : dataType;
 }

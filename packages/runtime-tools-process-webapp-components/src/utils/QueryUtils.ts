@@ -34,7 +34,10 @@ const createSearchTextArray = (taskNames: string[]) => {
   };
 };
 
-const createUserAssignmentClause = (currentUser: User) => {
+const createUserAssignmentClause = (currentUser?: User) => {
+  if (!currentUser) {
+    return {};
+  }
   return {
     or: [
       { actualOwner: { equal: currentUser.id } },
@@ -56,7 +59,7 @@ const createUserAssignmentClause = (currentUser: User) => {
   };
 };
 
-export const buildTaskInboxWhereArgument = (currentUser: User, activeFilters: QueryFilter) => {
+export const buildTaskInboxWhereArgument = (activeFilters: QueryFilter, currentUser?: User) => {
   if (activeFilters) {
     const filtersClause = [];
     if (activeFilters.taskStates.length > 0) {

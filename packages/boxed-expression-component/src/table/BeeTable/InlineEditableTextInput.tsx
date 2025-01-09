@@ -27,30 +27,37 @@ import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionC
 export interface InlineEditableTextInputProps {
   value: string;
   onChange: (updatedValue: string) => void;
-  setEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  setActiveCellEditing: (isEditing: boolean) => void;
   rowIndex: number;
   columnIndex: number;
+  isReadOnly: boolean;
 }
 
 export const InlineEditableTextInput: React.FunctionComponent<InlineEditableTextInputProps> = ({
   rowIndex,
   columnIndex,
   value,
-  setEditing,
+  setActiveCellEditing,
   onChange,
+  isReadOnly,
 }) => {
   const { i18n } = useBoxedExpressionEditorI18n();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { isEditing } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined, undefined);
+  const { isEditing } = useBeeTableSelectableCellRef(
+    rowIndex,
+    columnIndex,
+    onChange,
+    useCallback(() => value, [value])
+  );
 
   const stopEditingPersistingValue = useCallback(() => {
     const newValue = inputRef.current?.value;
     if (newValue && newValue !== value) {
       onChange(newValue);
     }
-    setEditing(false);
-  }, [onChange, setEditing, value]);
+    setActiveCellEditing(false);
+  }, [onChange, setActiveCellEditing, value]);
 
   const onInputKeyDown = useMemo(
     () => (e: React.KeyboardEvent) => {
@@ -61,17 +68,17 @@ export const InlineEditableTextInput: React.FunctionComponent<InlineEditableText
       }
 
       if (NavigationKeysUtils.isEsc(e.key)) {
-        setEditing(false);
+        setActiveCellEditing(false);
       }
     },
-    [setEditing, stopEditingPersistingValue]
+    [setActiveCellEditing, stopEditingPersistingValue]
   );
 
   const onLabelClick = useCallback(() => {
-    setEditing(true);
-  }, [setEditing]);
+    setActiveCellEditing(true);
+  }, [setActiveCellEditing]);
 
-  const getTextStyle = useMemo(() => {
+  const textStyle = useMemo(() => {
     if (_.isEmpty(value)) {
       return { fontStyle: "italic", cursor: "pointer", color: "gray" };
     } else {
@@ -86,8 +93,12 @@ export const InlineEditableTextInput: React.FunctionComponent<InlineEditableText
     }
   });
 
-  return !isEditing ? (
-    <p className={"inline-editable-preview pf-u-text-truncate"} style={getTextStyle} onClick={onLabelClick}>
+  return !isEditing || isReadOnly ? (
+    <p
+      className={"inline-editable-preview pf-u-text-truncate"}
+      style={{ ...textStyle, width: "100%" }}
+      onClick={isReadOnly ? undefined : onLabelClick}
+    >
       {value || i18n.enterText}
     </p>
   ) : (

@@ -23,13 +23,15 @@ package org.kie.workbench.common.stunner.sw.definition;
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
 import jakarta.json.bind.annotation.JsonbTypeSerializer;
 import jsinterop.annotations.JsType;
+import org.kie.j2cl.tools.json.mapper.annotation.JSONMapper;
+import org.kie.j2cl.tools.processors.annotations.GWT3Export;
+import org.kie.j2cl.tools.yaml.mapper.api.annotation.YAMLMapper;
+import org.kie.j2cl.tools.yaml.mapper.api.annotation.YamlTypeDeserializer;
+import org.kie.j2cl.tools.yaml.mapper.api.annotation.YamlTypeSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.json.StateExecTimeoutJsonSerializer;
 import org.kie.workbench.common.stunner.sw.marshall.json.WorkflowExecTimeoutJsonSerializer;
+import org.kie.workbench.common.stunner.sw.marshall.yaml.StateExecTimeoutYamlSerializer;
 import org.kie.workbench.common.stunner.sw.marshall.yaml.WorkflowExecTimeoutYamlSerializer;
-import org.treblereel.gwt.json.mapper.annotation.JSONMapper;
-import org.treblereel.gwt.yaml.api.annotation.YAMLMapper;
-import org.treblereel.gwt.yaml.api.annotation.YamlTypeDeserializer;
-import org.treblereel.gwt.yaml.api.annotation.YamlTypeSerializer;
-import org.treblereel.j2cl.processors.annotations.GWT3Export;
 
 @JSONMapper
 @YAMLMapper
@@ -42,7 +44,12 @@ public class WorkflowTimeouts {
     @YamlTypeSerializer(WorkflowExecTimeoutYamlSerializer.class)
     @YamlTypeDeserializer(WorkflowExecTimeoutYamlSerializer.class)
     private Object workflowExecTimeout;
-    private String stateExecTimeout;
+
+    @JsonbTypeSerializer(StateExecTimeoutJsonSerializer.class)
+    @JsonbTypeDeserializer(StateExecTimeoutJsonSerializer.class)
+    @YamlTypeSerializer(StateExecTimeoutYamlSerializer.class)
+    @YamlTypeDeserializer(StateExecTimeoutYamlSerializer.class)
+    private Object stateExecTimeout;
     private String actionExecTimeout;
     private String branchExecTimeout;
     private String eventTimeout;
@@ -55,11 +62,11 @@ public class WorkflowTimeouts {
         this.workflowExecTimeout = workflowExecTimeout;
     }
 
-    public final String getStateExecTimeout() {
+    public final Object getStateExecTimeout() {
         return stateExecTimeout;
     }
 
-    public final void setStateExecTimeout(String stateExecTimeout) {
+    public final void setStateExecTimeout(Object stateExecTimeout) {
         this.stateExecTimeout = stateExecTimeout;
     }
 

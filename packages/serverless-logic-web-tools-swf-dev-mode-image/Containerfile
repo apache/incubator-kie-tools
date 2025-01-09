@@ -15,35 +15,34 @@
 # specific language governing permissions and limitations
 # under the License.
 
-ARG KOGITO_IMAGE_TAG
+ARG BASE_IMAGE_TAG
 
-FROM --platform=linux/amd64 quay.io/kiegroup/kogito-base-builder-nightly:$KOGITO_IMAGE_TAG
+FROM --platform=linux/amd64 $BASE_IMAGE_TAG
 
 ENV PATH="${PATH}:/usr/share/maven/bin"
 
 USER root
-RUN chown kogito /home/kogito/.m2
-USER kogito
 
-COPY --chown=kogito:root dist-dev/serverless-logic-web-tools-swf-deployment-quarkus-app/ /home/kogito/serverless-logic-web-tools-swf-deployment-quarkus-app/
+COPY --chown=kogito:root dist-dev/quarkus-app/ /home/kogito/serverless-logic-web-tools-swf-deployment-quarkus-app/
+COPY --chown=kogito:root dist-dev/settings.xml /home/kogito/.m2/settings.xml
+COPY --chown=kogito:root entrypoint.sh /home/kogito/entrypoint.sh
 
 WORKDIR /home/kogito/serverless-logic-web-tools-swf-deployment-quarkus-app/
 
-RUN rm -rf src/test/ && \
+RUN chown kogito /home/kogito/.m2 && \
+  rm -rf src/test/ && \
   mvn clean package \
   quarkus:go-offline \
   -B \
-  -ntp \
+  -s /home/kogito/.m2/settings.xml \
   -Dmaven.test.skip \
-  -Dquarkus-profiles=build,dev
+  -Dmaven.repo.local=/home/kogito/.m2/repository \
+  -Dquarkus-profiles=build,dev && \
+  chmod -R 775 /home/kogito && \
+  mkdir -p -m 777 /tmp/app
 
-USER root
-RUN chmod -R 775 /home/kogito
 USER kogito
 
-ENTRYPOINT mvn quarkus:dev \
-  quarkus:go-offline \
-  -nsu \
-  -Ddebug=false \
-  -Dmaven.repo.local=/home/kogito/.m2/repository \
-  -Dquarkus.http.port=8080
+EXPOSE 8080
+
+ENTRYPOINT [ "/home/kogito/entrypoint.sh" ]

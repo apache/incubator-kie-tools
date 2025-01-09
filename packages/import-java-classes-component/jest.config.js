@@ -17,23 +17,18 @@
  * under the License.
  */
 
+const { config, jestSetupPath, typescriptTransform } = require("@kie-tools/jest-base/jest.config");
+
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
-  globals: {
-    "ts-jest": {
-      tsconfig: "<rootDir>/tsconfig.json",
-    },
-  },
-  reporters: ["default", ["jest-junit", { outputFile: "./dist-tests/junit-report.xml" }]],
-  moduleDirectories: ["node_modules", "src", "<rootDir>"],
-  moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
-  modulePathIgnorePatterns: ["<rootDir>/showcase/", "<rootDir>/dist/"],
-  testRegex: "/__tests__/.*\\.test\\.(jsx?|tsx?)$",
-  setupFilesAfterEnv: ["./src/__tests__/test-setup.ts"],
-  transform: {
-    "^.+\\.jsx?$": ["babel-jest", { presets: [["@babel/env", { targets: { node: "current" } }], "@babel/react"] }],
-    "^.+\\.tsx?$": "ts-jest",
-  },
+  ...config,
+  testEnvironment: "jsdom",
+  modulePathIgnorePatterns: ["<rootDir>/showcase/"],
   moduleNameMapper: {
     "\\.(css|less|sass|scss)$": "identity-obj-proxy",
+  },
+  setupFilesAfterEnv: [jestSetupPath],
+  transform: {
+    ...typescriptTransform,
   },
 };

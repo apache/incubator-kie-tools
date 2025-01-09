@@ -1,1 +1,16 @@
-.gitignore
+pnpm-lock.yaml
+
+# @prettier/parser-xml transform empty elements to oneliners, breaking the compilation. e.g.: <ui></ui> -> <ui />
+**/*.ui.xml
+
+# @prettier/parser-xml tries to format *.mod files as they are used to create Document Type Definitions (DTDs).
+**/go.mod
+
+# @prettier/parser-xml plugin doesn't support DTD declaration
+packages/xml-parser-ts-codegen/src/schemas/xsd/HFP.xsd
+packages/xml-parser-ts-codegen/src/schemas/xsd-incomplete--manually-written/HFP.xsd
+packages/xml-parser-ts-codegen/src/schemas/xsd-incomplete--manually-written/XSD.xsd
+
+# @prettier/parser-xml shouldn't mess with auto-generated IntelliJ files
+_intellij-project
+*.iml

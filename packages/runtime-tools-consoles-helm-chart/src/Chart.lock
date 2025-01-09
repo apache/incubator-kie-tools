@@ -1,0 +1,6 @@
+dependencies:
+- name: management-console
+  repository: ""
+  version: 0.0.0
+digest: sha256:84cd8d19b35a87b2a5393ae1880b8c76be191f4c1839739cd6783454b02c503f
+generated: "2024-10-23T12:57:15.741355-03:00"

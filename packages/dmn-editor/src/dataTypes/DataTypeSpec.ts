@@ -35,6 +35,7 @@ import {
   DMN15__tRelation,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { DataTypeIndex } from "./DataTypes";
 import { KIE__tConstraintType } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
 
@@ -45,7 +46,7 @@ export function findDataTypeById({
 }: {
   allDataTypesById: DataTypeIndex;
   itemDefinitionId: string;
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
 }) {
   const indexesPath: number[] = [];
   let current = allDataTypesById.get(itemDefinitionId);
@@ -65,7 +66,9 @@ export function findDataTypeById({
   return { items, itemDefinition, index: last };
 }
 
-export function getNewItemDefinition(partial?: Partial<DMN15__tItemDefinition>) {
+export function getNewItemDefinition(
+  partial?: Partial<Normalized<DMN15__tItemDefinition>>
+): Normalized<DMN15__tItemDefinition> {
   return {
     "@_id": generateUuid(),
     "@_name": "New data type",
@@ -75,7 +78,11 @@ export function getNewItemDefinition(partial?: Partial<DMN15__tItemDefinition>) 
   };
 }
 
-export function isStruct(itemDefinition: DMN15__tItemDefinition) {
+export function isCollection(itemDefinition: Normalized<DMN15__tItemDefinition>) {
+  return itemDefinition["@_isCollection"] ?? false;
+}
+
+export function isStruct(itemDefinition: Normalized<DMN15__tItemDefinition>) {
   return !itemDefinition.typeRef && !!itemDefinition.itemComponent;
 }
 
@@ -92,16 +99,17 @@ export const constrainableBuiltInFeelTypes = new Map<DmnBuiltInDataType, KIE__tC
   [DmnBuiltInDataType.DateTime, ["expression", "enumeration", "range"]],
 ]);
 
-export function canHaveConstraints(itemDefinition: DMN15__tItemDefinition) {
+export function canHaveConstraints(itemDefinition: Normalized<DMN15__tItemDefinition>) {
   return (
-    !isStruct(itemDefinition) &&
-    (constrainableBuiltInFeelTypes.get(itemDefinition.typeRef?.__$$text as DmnBuiltInDataType)?.length ?? 0) > 0
+    isCollection(itemDefinition) ||
+    (!isStruct(itemDefinition) &&
+      (constrainableBuiltInFeelTypes.get(itemDefinition.typeRef?.__$$text as DmnBuiltInDataType)?.length ?? 0) > 0)
   );
 }
 
 export function traverseItemDefinitions(
-  items: DMN15__tItemDefinition[],
-  consumer: (itemDefinition: DMN15__tItemDefinition) => void
+  items: Normalized<DMN15__tItemDefinition>[],
+  consumer: (itemDefinition: Normalized<DMN15__tItemDefinition>) => void
 ) {
   for (let i = 0; i < (items.length ?? 0); i++) {
     consumer(items[i]);
@@ -109,7 +117,7 @@ export function traverseItemDefinitions(
   }
 }
 
-export type AllExpressions = NonNullable<DMN15__tDecision["expression"]>;
+export type AllExpressions = NonNullable<Normalized<DMN15__tDecision>["expression"]>;
 export type AllExpressionsWithoutTypes = Omit<AllExpressions, "__$$element">;
 export type AllExpressionTypes = AllExpressions["__$$element"];
 
@@ -117,8 +125,8 @@ export type AllExpressionTypes = AllExpressions["__$$element"];
 
 export function traverseTypeRefedInExpressionHolders(
   expressionHolder:
-    | (DMN15__tDecision & { __$$element: "decision" })
-    | (DMN15__tBusinessKnowledgeModel & { __$$element: "businessKnowledgeModel" }),
+    | (Normalized<DMN15__tDecision> & { __$$element: "decision" })
+    | (Normalized<DMN15__tBusinessKnowledgeModel> & { __$$element: "businessKnowledgeModel" }),
   consumer: (typed: { "@_typeRef"?: string }) => void
 ) {
   if (expressionHolder.__$$element === "decision") {
@@ -149,11 +157,11 @@ export function traverseTypeRefedInExpressions(
   if (__$$element === "literalExpression") {
     // Leaf expression.
   } else if (__$$element === "decisionTable") {
-    for (const e of (expression as DMN15__tDecisionTable).input ?? []) {
+    for (const e of (expression as Normalized<DMN15__tDecisionTable>).input ?? []) {
       traverseTypeRefedInExpressions(e.inputExpression, "literalExpression", consumer);
     }
 
-    for (const e of (expression as DMN15__tDecisionTable).output ?? []) {
+    for (const e of (expression as Normalized<DMN15__tDecisionTable>).output ?? []) {
       consumer(e);
       if (e.defaultOutputEntry) {
         consumer(e.defaultOutputEntry);
@@ -163,52 +171,52 @@ export function traverseTypeRefedInExpressions(
       }
     }
   } else if (__$$element === "relation") {
-    for (const e of (expression as DMN15__tRelation).column ?? []) {
+    for (const e of (expression as Normalized<DMN15__tRelation>).column ?? []) {
       consumer(e);
     }
     // Leaf expression.
   } else if (__$$element === "list") {
-    for (const e of (expression as DMN15__tList).expression ?? []) {
+    for (const e of (expression as Normalized<DMN15__tList>).expression ?? []) {
       traverseTypeRefedInExpressions(e, e.__$$element, consumer);
     }
   } else if (__$$element === "context") {
-    for (const e of (expression as DMN15__tContext).contextEntry ?? []) {
+    for (const e of (expression as Normalized<DMN15__tContext>).contextEntry ?? []) {
       if (e.variable) {
         consumer(e.variable);
       }
       traverseTypeRefedInExpressions(e.expression, e.expression?.__$$element, consumer);
     }
   } else if (__$$element === "invocation") {
-    for (const e of (expression as DMN15__tInvocation).binding ?? []) {
+    for (const e of (expression as Normalized<DMN15__tInvocation>).binding ?? []) {
       if (e.parameter) {
         consumer(e.parameter);
       }
       traverseTypeRefedInExpressions(e.expression, e.expression?.__$$element, consumer);
     }
   } else if (__$$element === "functionDefinition") {
-    const e = expression as DMN15__tFunctionDefinition;
+    const e = expression as Normalized<DMN15__tFunctionDefinition>;
     traverseTypeRefedInExpressions(e.expression, e.expression?.__$$element, consumer);
   } else if (__$$element === "conditional") {
-    const e = expression as DMN15__tConditional;
+    const e = expression as Normalized<DMN15__tConditional>;
     traverseTypeRefedInExpressions(e.if.expression, e.if.expression?.__$$element, consumer);
     traverseTypeRefedInExpressions(e.then.expression, e.then.expression?.__$$element, consumer);
     traverseTypeRefedInExpressions(e.else.expression, e.else.expression?.__$$element, consumer);
   } else if (__$$element === "every") {
-    const e = expression as DMN15__tQuantified;
+    const e = expression as Normalized<DMN15__tQuantified>;
     consumer(e.in);
     traverseTypeRefedInExpressions(e.in.expression, e.in.expression?.__$$element, consumer);
     traverseTypeRefedInExpressions(e.satisfies.expression, e.satisfies.expression?.__$$element, consumer);
   } else if (__$$element === "some") {
-    const e = expression as DMN15__tQuantified;
+    const e = expression as Normalized<DMN15__tQuantified>;
     consumer(e.in);
     traverseTypeRefedInExpressions(e.in.expression, e.in.expression?.__$$element, consumer);
     traverseTypeRefedInExpressions(e.satisfies.expression, e.satisfies.expression?.__$$element, consumer);
   } else if (__$$element === "filter") {
-    const e = expression as DMN15__tFilter;
+    const e = expression as Normalized<DMN15__tFilter>;
     traverseTypeRefedInExpressions(e.in.expression, e.in.expression?.__$$element, consumer);
     traverseTypeRefedInExpressions(e.match.expression, e.match.expression?.__$$element, consumer);
   } else if (__$$element === "for") {
-    const e = expression as DMN15__tFor;
+    const e = expression as Normalized<DMN15__tFor>;
     consumer(e.in);
     traverseTypeRefedInExpressions(e.in.expression, e.in.expression?.__$$element, consumer);
     traverseTypeRefedInExpressions(e.return.expression, e.return.expression?.__$$element, consumer);
@@ -221,8 +229,8 @@ export function traverseTypeRefedInExpressions(
 
 export function traverseExpressionsInExpressionHolders(
   expressionHolder:
-    | (DMN15__tDecision & { __$$element: "decision" })
-    | (DMN15__tBusinessKnowledgeModel & { __$$element: "businessKnowledgeModel" }),
+    | (Normalized<DMN15__tDecision> & { __$$element: "decision" })
+    | (Normalized<DMN15__tBusinessKnowledgeModel> & { __$$element: "businessKnowledgeModel" }),
   consumer: (expression: AllExpressionsWithoutTypes | undefined, __$$element: AllExpressionTypes | undefined) => void
 ) {
   if (expressionHolder.__$$element === "decision") {
@@ -252,45 +260,45 @@ export function traverseExpressions(
   if (__$$element === "literalExpression") {
     // No nested expressions.
   } else if (__$$element === "decisionTable") {
-    for (const e of (expression as DMN15__tDecisionTable).input ?? []) {
+    for (const e of (expression as Normalized<DMN15__tDecisionTable>).input ?? []) {
       traverseExpressions(e.inputExpression, "literalExpression", consumer);
     }
   } else if (__$$element === "relation") {
     // No nested expressions.
   } else if (__$$element === "list") {
-    for (const e of (expression as DMN15__tList).expression ?? []) {
+    for (const e of (expression as Normalized<DMN15__tList>).expression ?? []) {
       traverseExpressions(e, e.__$$element, consumer);
     }
   } else if (__$$element === "context") {
-    for (const e of (expression as DMN15__tContext).contextEntry ?? []) {
+    for (const e of (expression as Normalized<DMN15__tContext>).contextEntry ?? []) {
       traverseExpressions(e.expression, e.expression?.__$$element, consumer);
     }
   } else if (__$$element === "invocation") {
-    for (const e of (expression as DMN15__tInvocation).binding ?? []) {
+    for (const e of (expression as Normalized<DMN15__tInvocation>).binding ?? []) {
       traverseExpressions(e.expression, e.expression?.__$$element, consumer);
     }
   } else if (__$$element === "functionDefinition") {
-    const e = expression as DMN15__tFunctionDefinition;
+    const e = expression as Normalized<DMN15__tFunctionDefinition>;
     traverseExpressions(e.expression, e.expression?.__$$element, consumer);
   } else if (__$$element === "conditional") {
-    const e = expression as DMN15__tConditional;
+    const e = expression as Normalized<DMN15__tConditional>;
     traverseExpressions(e.if.expression, e.if.expression?.__$$element, consumer);
     traverseExpressions(e.then.expression, e.then.expression?.__$$element, consumer);
     traverseExpressions(e.else.expression, e.else.expression?.__$$element, consumer);
   } else if (__$$element === "every") {
-    const e = expression as DMN15__tQuantified;
+    const e = expression as Normalized<DMN15__tQuantified>;
     traverseExpressions(e.in.expression, e.in.expression?.__$$element, consumer);
     traverseExpressions(e.satisfies.expression, e.satisfies.expression?.__$$element, consumer);
   } else if (__$$element === "some") {
-    const e = expression as DMN15__tQuantified;
+    const e = expression as Normalized<DMN15__tQuantified>;
     traverseExpressions(e.in.expression, e.in.expression?.__$$element, consumer);
     traverseExpressions(e.satisfies.expression, e.satisfies.expression?.__$$element, consumer);
   } else if (__$$element === "filter") {
-    const e = expression as DMN15__tFilter;
+    const e = expression as Normalized<DMN15__tFilter>;
     traverseExpressions(e.in.expression, e.in.expression?.__$$element, consumer);
     traverseExpressions(e.match.expression, e.match.expression?.__$$element, consumer);
   } else if (__$$element === "for") {
-    const e = expression as DMN15__tFor;
+    const e = expression as Normalized<DMN15__tFor>;
     traverseExpressions(e.in.expression, e.in.expression?.__$$element, consumer);
     traverseExpressions(e.return.expression, e.return.expression?.__$$element, consumer);
   } else {

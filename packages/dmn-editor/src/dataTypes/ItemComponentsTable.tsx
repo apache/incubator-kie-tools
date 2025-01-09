@@ -39,25 +39,26 @@ import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
 import { EyeIcon } from "@patternfly/react-icons/dist/js/icons/eye-icon";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
-import { DataType, EditItemDefinition, AddItemComponent, DataTypeIndex } from "./DataTypes";
+import { AddItemComponent, DataType, DataTypeIndex, EditItemDefinition } from "./DataTypes";
 import { DataTypeName } from "./DataTypeName";
-import { isStruct, canHaveConstraints, getNewItemDefinition } from "./DataTypeSpec";
+import { canHaveConstraints, getNewItemDefinition, isStruct } from "./DataTypeSpec";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import {
+  buildClipboardFromDataType,
   DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE,
   DmnEditorDataTypesClipboard,
-  buildClipboardFromDataType,
   getClipboard,
 } from "../clipboard/Clipboard";
-import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
+import { getNewDmnIdRandomizer } from "@kie-tools/dmn-marshaller/dist/idRandomizer/dmnIdRandomizer";
 import { isEnum } from "./ConstraintsEnum";
 import { isRange } from "./ConstraintsRange";
-import { constraintTypeHelper } from "./Constraints";
+import { constraintTypeHelper, recursivelyGetRootItemDefinition } from "./Constraints";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 import { useDmnEditor } from "../DmnEditorContext";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { resolveTypeRef } from "./resolveTypeRef";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
@@ -72,7 +73,7 @@ const leftGutterForStructsInPxs =
 const rowPaddingRight = 16;
 
 export function ItemComponentsTable({
-  isReadonly,
+  isReadOnly,
   parent,
   editItemDefinition,
   addItemComponent,
@@ -80,7 +81,7 @@ export function ItemComponentsTable({
   allDataTypesById,
   setDropdownOpenFor,
 }: {
-  isReadonly: boolean;
+  isReadOnly: boolean;
   parent: DataType;
   editItemDefinition: EditItemDefinition;
   addItemComponent: AddItemComponent;
@@ -95,6 +96,9 @@ export function ItemComponentsTable({
   const allTopLevelDataTypesByFeelName = useDmnEditorStore(
     (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelDataTypesByFeelName
   );
+  const allTopLevelItemDefinitionUniqueNames = useDmnEditorStore(
+    (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allTopLevelItemDefinitionUniqueNames
+  );
   const importsByNamespace = useDmnEditorStore((s) => s.computed(s).importsByNamespace());
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
@@ -107,6 +111,7 @@ export function ItemComponentsTable({
 
   const flatTree = useMemo(() => {
     const ret: { dataType: DataType; allUniqueNamesAtLevel: UniqueNameIndex }[] = [];
+
     function traverse(dataType: DataType[], allUniqueNamesAtLevel: UniqueNameIndex) {
       for (let i = 0; i < (dataType?.length ?? 0); i++) {
         ret.push({ dataType: dataType[i], allUniqueNamesAtLevel });
@@ -152,14 +157,14 @@ export function ItemComponentsTable({
         <FlexItem>
           <Title size={"md"} headingLevel={"h4"}>
             {`Properties in '${parent.itemDefinition["@_name"]}'`}
-            {!isReadonly && (
+            {!isReadOnly && (
               <Button
                 title={"Add item component (at the top)"}
                 variant={ButtonVariant.link}
                 onClick={() =>
                   addItemComponent(parent.itemDefinition["@_id"]!, "unshift", {
                     "@_name": "New property",
-                    typeRef: { __$$text: DmnBuiltInDataType.Undefined },
+                    typeRef: undefined,
                   })
                 }
               >
@@ -175,7 +180,7 @@ export function ItemComponentsTable({
           <Button variant={ButtonVariant.link} onClick={collapseAll}>
             Collapse all
           </Button>
-          {!isReadonly && (
+          {!isReadOnly && (
             <Dropdown
               toggle={
                 <KebabToggle
@@ -226,7 +231,7 @@ export function ItemComponentsTable({
       </Flex>
       {flatTree.length <= 0 && (
         <div className={"kie-dmn-editor--data-type-properties-table--empty-state"}>
-          {isReadonly ? "None" : "None yet"}
+          {isReadOnly ? "None" : "None yet"}
         </div>
       )}
       {flatTree.length > 0 && (
@@ -269,30 +274,55 @@ export function ItemComponentsTable({
                 level * BRIGHTNESS_DECREASE_STEP_IN_PERCENTAGE_PER_NESTING_LEVEL;
 
               const constraintLabel = () => {
-                if (dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "enumeration") {
+                if (
+                  dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "enumeration" ||
+                  dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "enumeration"
+                ) {
                   return <>Enumeration</>;
                 }
-                if (dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "expression") {
+                if (
+                  dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "expression" ||
+                  dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "expression"
+                ) {
                   return <>Expression</>;
                 }
-                if (dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "range") {
+                if (
+                  dt.itemDefinition.typeConstraint?.["@_kie:constraintType"] === "range" ||
+                  dt.itemDefinition.allowedValues?.["@_kie:constraintType"] === "range"
+                ) {
                   return <>Range</>;
                 }
 
-                const constraintValue = dt.itemDefinition.allowedValues?.text.__$$text;
-                const typeRef =
-                  (dt.itemDefinition.typeRef?.__$$text as DmnBuiltInDataType) ?? DmnBuiltInDataType.Undefined;
+                const constraintValue =
+                  dt.itemDefinition.typeConstraint?.text.__$$text ?? dt.itemDefinition.allowedValues?.text.__$$text;
+
+                const typeHelper = constraintTypeHelper(
+                  dt.itemDefinition,
+                  allDataTypesById,
+                  allTopLevelItemDefinitionUniqueNames
+                );
+
                 if (constraintValue === undefined) {
                   return <>None</>;
                 }
-                if (isEnum(constraintValue, constraintTypeHelper(typeRef).check)) {
+                if (isEnum(constraintValue, typeHelper.check)) {
                   return <>Enumeration</>;
                 }
-                if (isRange(constraintValue, constraintTypeHelper(typeRef).check)) {
+                if (isRange(constraintValue, typeHelper.check)) {
                   return <>Range</>;
                 }
                 return <>Expression</>;
               };
+
+              const rootItemDefinition = recursivelyGetRootItemDefinition(
+                dt.itemDefinition,
+                allDataTypesById,
+                allTopLevelItemDefinitionUniqueNames
+              );
+
+              const isItemComponent = !!parent.itemDefinition?.itemComponent?.find(
+                (ic) => ic["@_id"] === rootItemDefinition["@_id"]
+              );
 
               return (
                 <React.Fragment key={dt.itemDefinition["@_id"]}>
@@ -340,7 +370,7 @@ export function ItemComponentsTable({
                             )}
                           </div>
                           <div style={{ width: `${addItemComponentButtonWidthInPxs}px` }}>
-                            {!isReadonly && isStruct(dt.itemDefinition) && (
+                            {!isReadOnly && isStruct(dt.itemDefinition) && (
                               <Button
                                 title={"Add item component"}
                                 variant={ButtonVariant.link}
@@ -348,7 +378,7 @@ export function ItemComponentsTable({
                                 onClick={() => {
                                   addItemComponent(dt.itemDefinition["@_id"]!, "unshift", {
                                     "@_name": "New property",
-                                    typeRef: { __$$text: DmnBuiltInDataType.Undefined },
+                                    typeRef: undefined,
                                   });
                                   dmnEditorStoreApi.setState((state) => {
                                     state.dataTypesEditor.expandedItemComponentIds.push(dt.itemDefinition["@_id"]!);
@@ -365,7 +395,7 @@ export function ItemComponentsTable({
                               editMode={"hover"}
                               isActive={false}
                               itemDefinition={dt.itemDefinition}
-                              isReadonly={dt.namespace !== thisDmnsNamespace}
+                              isReadOnly={isReadOnly || dt.namespace !== thisDmnsNamespace}
                               onGetAllUniqueNames={() => allUniqueNamesAtLevel}
                             />
                           </div>
@@ -374,15 +404,18 @@ export function ItemComponentsTable({
                       <td>
                         <Switch
                           aria-label={"Is struct?"}
+                          isDisabled={isReadOnly}
                           isChecked={isStruct(dt.itemDefinition)}
                           onChange={(isChecked) => {
                             editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
                               if (isChecked) {
                                 itemDefinition.typeRef = undefined;
                                 itemDefinition.itemComponent = [];
+                                itemDefinition.typeConstraint = undefined;
                                 itemDefinition.allowedValues = undefined;
                               } else {
                                 itemDefinition.typeRef = { __$$text: DmnBuiltInDataType.Any };
+                                itemDefinition.typeConstraint = undefined;
                                 itemDefinition.allowedValues = undefined;
                               }
                             });
@@ -393,7 +426,7 @@ export function ItemComponentsTable({
                         {!isStruct(dt.itemDefinition) && (
                           <TypeRefSelector
                             heightRef={dmnEditorRootElementRef}
-                            isDisabled={isReadonly}
+                            isDisabled={isReadOnly}
                             typeRef={resolveTypeRef({
                               typeRef: dt.itemDefinition.typeRef?.__$$text,
                               namespace: parent.namespace,
@@ -404,10 +437,11 @@ export function ItemComponentsTable({
                             })}
                             onChange={(newDataType) => {
                               editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
-                                itemDefinition.typeRef = { __$$text: newDataType };
                                 if (itemDefinition.typeRef?.__$$text !== newDataType) {
+                                  itemDefinition.typeConstraint = undefined;
                                   itemDefinition.allowedValues = undefined;
                                 }
+                                itemDefinition.typeRef = newDataType ? { __$$text: newDataType } : undefined;
                               });
                             }}
                           />
@@ -416,17 +450,20 @@ export function ItemComponentsTable({
                       <td>
                         <Switch
                           aria-label={"Is collection?"}
+                          isDisabled={isReadOnly}
                           isChecked={dt.itemDefinition["@_isCollection"] ?? false}
                           onChange={(isChecked) => {
                             editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
                               itemDefinition["@_isCollection"] = isChecked;
+                              itemDefinition.typeConstraint = undefined;
                               itemDefinition.allowedValues = undefined;
                             });
                           }}
                         />
                       </td>
                       <td>
-                        {canHaveConstraints(dt.itemDefinition) ? (
+                        {canHaveConstraints(rootItemDefinition) ||
+                        (isStruct(rootItemDefinition) && !isItemComponent) ? (
                           <Button
                             variant={ButtonVariant.link}
                             onClick={() => {
@@ -467,48 +504,54 @@ export function ItemComponentsTable({
                               View
                             </DropdownItem>,
                             <DropdownSeparator key="view-separator" />,
-                            <DropdownItem
-                              key={"extract-to-top-level"}
-                              icon={<ImportIcon style={{ transform: "scale(-1, -1)" }} />}
-                              style={{ minWidth: "240px" }}
-                              onClick={() => {
-                                editItemDefinition(
-                                  dt.itemDefinition["@_id"]!,
-                                  (itemDefinition, _, __, itemDefinitions) => {
-                                    const newItemDefinition = getNewItemDefinition({
-                                      ...dt.itemDefinition,
-                                      typeRef: dt.itemDefinition.typeRef,
-                                      "@_name": `t${dt.itemDefinition["@_name"]}`,
-                                      "@_isCollection": false,
-                                    });
+                            <React.Fragment key={"extract-to-top-level-fragment"}>
+                              {!isReadOnly && (
+                                <>
+                                  <DropdownItem
+                                    key={"extract-to-top-level"}
+                                    icon={<ImportIcon style={{ transform: "scale(-1, -1)" }} />}
+                                    style={{ minWidth: "240px" }}
+                                    onClick={() => {
+                                      editItemDefinition(
+                                        dt.itemDefinition["@_id"]!,
+                                        (itemDefinition, _, __, itemDefinitions) => {
+                                          const newItemDefinition = getNewItemDefinition({
+                                            ...dt.itemDefinition,
+                                            typeRef: dt.itemDefinition.typeRef,
+                                            "@_name": `t${dt.itemDefinition["@_name"]}`,
+                                            "@_isCollection": false,
+                                          });
 
-                                    const newItemDefinitionCopy: DMN15__tItemDefinition = JSON.parse(
-                                      JSON.stringify(newItemDefinition)
-                                    ); // Necessary because idRandomizer will mutate this object.
+                                          const newItemDefinitionCopy: Normalized<DMN15__tItemDefinition> = JSON.parse(
+                                            JSON.stringify(newItemDefinition)
+                                          ); // Necessary because idRandomizer will mutate this object.
 
-                                    getNewDmnIdRandomizer()
-                                      .ack({
-                                        json: [newItemDefinitionCopy],
-                                        type: "DMN15__tDefinitions",
-                                        attr: "itemDefinition",
-                                      })
-                                      .randomize();
+                                          getNewDmnIdRandomizer()
+                                            .ack({
+                                              json: [newItemDefinitionCopy],
+                                              type: "DMN15__tDefinitions",
+                                              attr: "itemDefinition",
+                                            })
+                                            .randomize();
 
-                                    itemDefinitions.unshift(newItemDefinitionCopy);
+                                          itemDefinitions.unshift(newItemDefinitionCopy);
 
-                                    // Creating a new type is fine, but only update the current type if it is not readOnly
-                                    if (!isReadonly) {
-                                      itemDefinition["@_id"] = generateUuid();
-                                      itemDefinition.typeRef = { __$$text: newItemDefinitionCopy["@_name"] };
-                                      itemDefinition.itemComponent = undefined;
-                                    }
-                                  }
-                                );
-                              }}
-                            >
-                              Extract data type
-                            </DropdownItem>,
-                            <DropdownSeparator key="extract-data-type-separator" />,
+                                          // Creating a new type is fine, but only update the current type if it is not readOnly
+                                          if (!isReadOnly) {
+                                            itemDefinition["@_id"] = generateUuid();
+                                            itemDefinition.typeRef = { __$$text: newItemDefinitionCopy["@_name"] };
+                                            itemDefinition.itemComponent = undefined;
+                                          }
+                                        }
+                                      );
+                                    }}
+                                  >
+                                    Extract data type
+                                  </DropdownItem>
+                                  <DropdownSeparator key="extract-data-type-separator" />
+                                </>
+                              )}
+                            </React.Fragment>,
                             <DropdownItem
                               key={"copy-item"}
                               icon={<CopyIcon />}
@@ -520,7 +563,7 @@ export function ItemComponentsTable({
                               Copy
                             </DropdownItem>,
                             <React.Fragment key={"cut-fragment"}>
-                              {!isReadonly && (
+                              {!isReadOnly && (
                                 <DropdownItem
                                   key={"cut-item"}
                                   icon={<CutIcon />}
@@ -538,7 +581,7 @@ export function ItemComponentsTable({
                               )}
                             </React.Fragment>,
                             <React.Fragment key={"remove-fragment"}>
-                              {!isReadonly && (
+                              {!isReadOnly && (
                                 <DropdownItem
                                   key={"remove-item"}
                                   icon={<TrashIcon />}
@@ -552,7 +595,7 @@ export function ItemComponentsTable({
                                 </DropdownItem>
                               )}
                             </React.Fragment>,
-                            !isReadonly && isStruct(dt.itemDefinition) ? (
+                            !isReadOnly && isStruct(dt.itemDefinition) ? (
                               <React.Fragment key="paste-property-fragment">
                                 <DropdownSeparator />
                                 <React.Fragment>
@@ -598,7 +641,7 @@ export function ItemComponentsTable({
               );
             })}
           </tbody>
-          {!isReadonly && (
+          {!isReadOnly && (
             <tfoot>
               <tr>
                 <td colSpan={5}>
@@ -607,7 +650,7 @@ export function ItemComponentsTable({
                     onClick={() =>
                       addItemComponent(parent.itemDefinition["@_id"]!, "push", {
                         "@_name": "New property",
-                        typeRef: { __$$text: DmnBuiltInDataType.Undefined },
+                        typeRef: undefined,
                       })
                     }
                     style={{ paddingLeft: 0 }}

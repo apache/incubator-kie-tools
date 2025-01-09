@@ -19,6 +19,7 @@
 
 import * as React from "react";
 import { DMN15__tDecision } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
@@ -30,20 +31,23 @@ import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useDmnEditor } from "../DmnEditorContext";
 import { useResolvedTypeRef } from "../dataTypes/useResolvedTypeRef";
 import { useCallback } from "react";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export function DecisionProperties({
   decision,
   namespace,
   index,
 }: {
-  decision: DMN15__tDecision;
+  decision: Normalized<DMN15__tDecision>;
   namespace: string | undefined;
   index: number;
 }) {
   const { setState } = useDmnEditorStoreApi();
+  const settings = useSettings();
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
-  const isReadonly = !!namespace && namespace !== thisDmnsNamespace;
+  const isReadOnly = settings.isReadOnly || (!!namespace && namespace !== thisDmnsNamespace);
 
   const { dmnEditorRootElementRef } = useDmnEditor();
 
@@ -57,7 +61,7 @@ export function DecisionProperties({
           isPlain={false}
           id={decision["@_id"]!}
           name={decision["@_name"]}
-          isReadonly={isReadonly}
+          isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
           className={"pf-c-form-control"}
           onRenamed={(newName) => {
@@ -77,10 +81,11 @@ export function DecisionProperties({
         <TypeRefSelector
           heightRef={dmnEditorRootElementRef}
           typeRef={resolvedTypeRef}
+          isDisabled={isReadOnly}
           onChange={(newTypeRef) => {
             setState((state) => {
-              const drgElement = state.dmn.model.definitions.drgElement![index] as DMN15__tDecision;
-              drgElement.variable ??= { "@_name": decision["@_name"] };
+              const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>;
+              drgElement.variable ??= { "@_id": generateUuid(), "@_name": decision["@_name"] };
               drgElement.variable["@_typeRef"] = newTypeRef;
             });
           }}
@@ -91,11 +96,11 @@ export function DecisionProperties({
         <TextArea
           aria-label={"Description"}
           type={"text"}
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
           value={decision.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecision).description = {
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).description = {
                 __$$text: newDescription,
               };
             });
@@ -116,11 +121,13 @@ export function DecisionProperties({
         <TextArea
           aria-label={"Question"}
           type={"text"}
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
           value={decision.question?.__$$text}
           onChange={(newQuestion) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecision).question = { __$$text: newQuestion };
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).question = {
+                __$$text: newQuestion,
+              };
             });
           }}
           placeholder={"Enter a question..."}
@@ -133,11 +140,11 @@ export function DecisionProperties({
         <TextArea
           aria-label={"Allowed answers"}
           type={"text"}
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
           value={decision.allowedAnswers?.__$$text}
           onChange={(newAllowedAnswers) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tDecision).allowedAnswers = {
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).allowedAnswers = {
                 __$$text: newAllowedAnswers,
               };
             });
@@ -149,27 +156,27 @@ export function DecisionProperties({
       </FormGroup>
 
       <DocumentationLinksFormGroup
-        isReadonly={isReadonly}
+        isReadOnly={isReadOnly}
         values={decision.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as DMN15__tDecision).extensionElements = {
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).extensionElements = {
               "kie:attachment": newExtensionElements,
             };
           });
         }}
       />
 
-      {/* 
-      
+      {/*
+
       What about:
-      
+
       - supportedObjective
       - impactedPerformanceIndicator
       - decisionMaker
       - decisionOwner
       - usingProcess
-      - usingTask 
+      - usingTask
 
       ?
       */}

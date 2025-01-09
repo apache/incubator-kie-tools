@@ -73,7 +73,7 @@ describe("DelegatingModelReducer::Valid actions", () => {
     });
     service.commit(pmml);
 
-    expect(mockReducer).toBeCalled();
+    expect(mockReducer).toHaveBeenCalled();
     //mock.calls[invocationIndex][parameterIndex]....
     expect(mockReducer.mock.calls.length).toBe(2);
     expect(mockReducer.mock.calls[0][1].payload.modelIndex).toBe(0);
@@ -102,7 +102,7 @@ describe("DelegatingModelReducer::Valid actions", () => {
     });
     service.commit(pmml);
 
-    expect(mockReducer).toBeCalled();
+    expect(mockReducer).toHaveBeenCalled();
     //mock.calls[invocationIndex][parameterIndex]....
     expect(mockReducer.mock.calls.length).toBe(1);
     expect(mockReducer.mock.calls[0][1].payload.modelIndex).toBe(1);

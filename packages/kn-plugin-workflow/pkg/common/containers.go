@@ -20,10 +20,13 @@
 package common
 
 import (
+	"bufio"
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/docker/distribution/reference"
 	"io"
 	"os"
 	"os/exec"
@@ -31,11 +34,11 @@ import (
 	"runtime"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/client"
 	"github.com/docker/docker/pkg/stdcopy"
 	"github.com/docker/go-connections/nat"
@@ -49,6 +52,10 @@ const (
 type DockerLogMessage struct {
 	Status string `json:"status,omitempty"`
 	ID     string `json:"id,omitempty"`
+}
+
+type DockerClient interface {
+	ImageList(ctx context.Context, options types.ImageListOptions) ([]types.ImageSummary, error)
 }
 
 func getDockerClient() (*client.Client, error) {
@@ -198,25 +205,71 @@ func GracefullyStopTheContainerWhenInterrupted(containerTool string) {
 	}()
 }
 
-func pullDockerImage(cli *client.Client, ctx context.Context) (io.ReadCloser, error) {
-	// Check if the image exists locally
-	imageFilters := filters.NewArgs()
-	imageFilters.Add("reference", metadata.DevModeImage)
-	images, err := cli.ImageList(ctx, types.ImageListOptions{Filters: imageFilters})
+func pullDockerImage(cli *client.Client, ctx context.Context) error {
+	// Check if the image exists locally.
+	exists, err := CheckImageExists(cli, ctx, metadata.DevModeImage)
 	if err != nil {
-		return nil, fmt.Errorf("error listing images: %s", err)
+		return fmt.Errorf("error listing images: %s", err)
 	}
 
 	// If the image is not found locally, pull it from the remote registry
-	if len(images) == 0 {
-		reader, err := cli.ImagePull(ctx, metadata.DevModeImage, types.ImagePullOptions{})
-		if err != nil {
-			return nil, fmt.Errorf("\nError pulling image: %s. Error is: %s", metadata.DevModeImage, err)
+	if !exists {
+		fmt.Printf("\n⏳ Retrieving (%s), this could take some time...\n", metadata.DevModeImage)
+
+		ctx, cancel := context.WithTimeout(ctx, 1*time.Minute)
+		defer cancel()
+
+		reader, writer := io.Pipe()
+		defer writer.Close()
+
+		var stderr bytes.Buffer
+
+		go func() {
+			scanner := bufio.NewScanner(reader)
+			for scanner.Scan() {
+				fmt.Print(".")
+			}
+		}()
+
+		// we use local docker client to pull the image
+		cmd := exec.CommandContext(ctx, "docker", "pull", metadata.DevModeImage)
+		cmd.Stdout = writer
+		cmd.Stderr = &stderr
+
+		if err := cmd.Start(); err != nil {
+			return fmt.Errorf("\nError pulling image: %s. Error is: %s", metadata.DevModeImage, err)
 		}
-		return reader, nil
+
+		if err := cmd.Wait(); err != nil {
+			return fmt.Errorf("\nError pulling image: %s. Error is: %s", metadata.DevModeImage, stderr.String())
+		}
+		fmt.Println("\n🎉 Successfully pulled the image")
 	}
 
-	return nil, nil
+	return nil
+}
+
+func CheckImageExists(cli DockerClient, ctx context.Context, imageName string) (bool, error) {
+	named, err := reference.ParseNormalizedNamed(imageName)
+
+	if tagged, ok := named.(reference.Tagged); ok {
+		imageName = fmt.Sprintf("%s:%s", reference.Path(named), tagged.Tag())
+	} else {
+		imageName = fmt.Sprintf("%s:%s", reference.Path(named), "latest")
+	}
+	images, err := cli.ImageList(ctx, types.ImageListOptions{All: true})
+	if err != nil {
+		return false, fmt.Errorf("error listing images: %s", err)
+	}
+
+	for _, image := range images {
+		for _, tag := range image.RepoTags {
+			if strings.HasSuffix(tag, imageName) {
+				return true, nil
+			}
+		}
+	}
+	return false, nil
 }
 
 func processDockerImagePullLogs(reader io.ReadCloser) error {
@@ -282,22 +335,16 @@ func startDockerContainer(cli *client.Client, ctx context.Context, resp containe
 }
 
 func runDockerContainer(portMapping string, path string) error {
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+	defer cancel()
+
 	cli, err := getDockerClient()
 	if err != nil {
 		return err
 	}
-
-	reader, err := pullDockerImage(cli, ctx)
+	err = pullDockerImage(cli, ctx)
 	if err != nil {
 		return err
-	}
-
-	if reader != nil {
-		fmt.Printf("\n⏳ Retrieving (%s), this could take some time...\n", metadata.DevModeImage)
-		if err := processDockerImagePullLogs(reader); err != nil {
-			return err
-		}
 	}
 
 	resp, err := createDockerContainer(cli, ctx, portMapping, path)
@@ -341,4 +388,48 @@ func processOutputDuringContainerExecution(cli *client.Client, ctx context.Conte
 	}
 
 	return nil
+}
+
+
+func PollContainerStoppedCheck(containerID string, interval time.Duration, ready chan<- bool) {
+	for {
+		running, err := IsContainerRunning(containerID)
+		if err != nil {
+			fmt.Printf("Error checking if container %s is running: %s", containerID, err)
+			ready <- false
+			return
+		}
+		if !running {
+			ready <- true
+			return
+		}
+		time.Sleep(interval)
+	}
+}
+
+func IsContainerRunning(containerID string) (bool, error) {
+	if errDocker := CheckDocker(); errDocker == nil {
+		cli, err := getDockerClient()
+		if err != nil {
+			return false, fmt.Errorf("unable to create docker client: %w", err)
+		}
+		containerJSON, err := cli.ContainerInspect(context.Background(), containerID)
+		if err != nil {
+			if client.IsErrNotFound(err) {
+				return false, nil
+			}
+			return false, fmt.Errorf("unable to inspect container %s with docker: %w", containerID, err)
+		}
+		return containerJSON.State.Running, nil
+
+	} else if errPodman := CheckPodman(); errPodman == nil {
+		cmd := exec.Command("podman", "inspect", containerID, "--format", "{{.State.Running}}")
+		output, err := cmd.Output()
+		if err != nil {
+			return false, fmt.Errorf("unable to inspect container %s with podman: %w", containerID, err)
+		}
+		return strings.TrimSpace(string(output)) == "true", nil
+	}
+
+	return false, fmt.Errorf("there is no docker or podman available")
 }

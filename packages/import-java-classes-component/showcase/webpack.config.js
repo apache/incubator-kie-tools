@@ -23,10 +23,9 @@ const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const { env } = require("../env");
-const buildEnv = env;
 
-module.exports = (env) =>
-  merge(common(env), {
+module.exports = (webpackEnv) =>
+  merge(common(webpackEnv), {
     mode: "development",
     entry: {
       index: path.resolve(__dirname, "./index.tsx"),
@@ -43,7 +42,7 @@ module.exports = (env) =>
       rules: [
         {
           test: /\.ttf$/,
-          use: ["file-loader"],
+          use: [require.resolve("file-loader")],
         },
         ...patternflyBase.webpackModuleRules,
       ],
@@ -59,7 +58,7 @@ module.exports = (env) =>
     devServer: {
       historyApiFallback: true,
       compress: true,
-      port: buildEnv.importJavaClassesComponent.dev.port,
+      port: env.importJavaClassesComponent.dev.port,
       open: false,
       hot: true,
       client: {

@@ -36,10 +36,9 @@ import HtmlReplaceWebpackPlugin from "html-replace-webpack-plugin";
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { env } from "./env";
-
 const buildEnv: any = env; // build-env is not typed
 
-export default async (env: any, argv: any) => {
+export default async (webpackEnv: any, webpackArgv: any) => {
   const buildInfo = getBuildInfo();
   const gtmResource = getGtmResource();
   const [swfBuilderImageRegistry, swfBuilderImageAccount, swfBuilderImageName, swfBuilderImageTag] =
@@ -56,7 +55,7 @@ export default async (env: any, argv: any) => {
   ] = getDashbuilderViewerImageArgs();
 
   return [
-    merge(common(env), {
+    merge(common(webpackEnv), {
       entry: {
         "workspace/worker/sharedWorker": "./src/workspace/worker/sharedWorker.ts",
       },
@@ -80,7 +79,7 @@ export default async (env: any, argv: any) => {
       ],
     }),
     {
-      ...merge(common(env), {
+      ...merge(common(webpackEnv), {
         entry: {
           index: "./src/index.tsx",
           "yard-editor-envelope": "./src/envelope/YardEditorEnvelopeApp.ts",
@@ -220,10 +219,10 @@ export default async (env: any, argv: any) => {
 };
 
 function getSwfBuilderImageArgs() {
-  const swfBuilderImageRegistry = buildEnv.swfBuilderImageEnv.registry;
-  const swfBuilderImageAccount = buildEnv.swfBuilderImageEnv.account;
-  const swfBuilderImageName = buildEnv.swfBuilderImageEnv.name;
-  const swfBuilderImageTag = buildEnv.serverlessLogicWebTools.swfBuilderImage.tag;
+  const swfBuilderImageRegistry = buildEnv.slwtBuilderImageEnv.registry;
+  const swfBuilderImageAccount = buildEnv.slwtBuilderImageEnv.account;
+  const swfBuilderImageName = buildEnv.slwtBuilderImageEnv.name;
+  const swfBuilderImageTag = buildEnv.serverlessLogicWebTools.slwtBuilderImageEnv.tag;
 
   console.info("Serverless Logic Web Tools :: SWF Builder Image Registry: " + swfBuilderImageRegistry);
   console.info("Serverless Logic Web Tools :: SWF Builder Image Account: " + swfBuilderImageAccount);
@@ -234,10 +233,10 @@ function getSwfBuilderImageArgs() {
 }
 
 function getSwfDevModeImageArgs() {
-  const swfDevModeImageRegistry = buildEnv.swfDevModeImageEnv.registry;
-  const swfDevModeImageAccount = buildEnv.swfDevModeImageEnv.account;
-  const swfDevModeImageName = buildEnv.swfDevModeImageEnv.name;
-  const swfDevModeImageTag = buildEnv.serverlessLogicWebTools.swfDevModeImage.tag;
+  const swfDevModeImageRegistry = buildEnv.slwtDevModeImageEnv.registry;
+  const swfDevModeImageAccount = buildEnv.slwtDevModeImageEnv.account;
+  const swfDevModeImageName = buildEnv.slwtDevModeImageEnv.name;
+  const swfDevModeImageTag = buildEnv.serverlessLogicWebTools.slwtDevModeImage.tag;
 
   console.info("Serverless Logic Web Tools :: Dev Mode Image Registry: " + swfDevModeImageRegistry);
   console.info("Serverless Logic Web Tools :: Dev Mode Image Account: " + swfDevModeImageAccount);
@@ -248,10 +247,10 @@ function getSwfDevModeImageArgs() {
 }
 
 function getBaseBuilderImageArgs() {
-  const baseBuilderImageRegistry = buildEnv.baseBuilderImageEnv.registry;
-  const baseBuilderImageAccount = buildEnv.baseBuilderImageEnv.account;
-  const baseBuilderImageName = buildEnv.baseBuilderImageEnv.name;
-  const baseBuilderImageTag = buildEnv.serverlessLogicWebTools.baseBuilderImage.tag;
+  const baseBuilderImageRegistry = buildEnv.slwtBaseBuilderImageEnv.registry;
+  const baseBuilderImageAccount = buildEnv.slwtBaseBuilderImageEnv.account;
+  const baseBuilderImageName = buildEnv.slwtBaseBuilderImageEnv.name;
+  const baseBuilderImageTag = buildEnv.serverlessLogicWebTools.slwtBaseBuilderImage.tag;
 
   console.info("Serverless Logic Web Tools :: Base Builder Image Registry: " + baseBuilderImageRegistry);
   console.info("Serverless Logic Web Tools :: Base Builder Image Account: " + baseBuilderImageAccount);

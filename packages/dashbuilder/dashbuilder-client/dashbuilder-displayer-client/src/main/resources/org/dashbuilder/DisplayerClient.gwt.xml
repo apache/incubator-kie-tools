@@ -22,7 +22,7 @@
 <module>
   <inherits name='com.google.gwt.user.User' />
   <inherits name="com.google.gwt.i18n.I18N" />
-  
+
   <inherits name='com.google.gwt.xml.XML' />
   <inherits name="org.gwtbootstrap3.GwtBootstrap3NoTheme" />
   <inherits name="org.gwtbootstrap3.extras.positionedtabs.PositionedTabs" />

@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/BoxedExpressionEditor";
 import { BoxedExpressionEditorStory, BoxedExpressionEditorStoryArgs } from "../../boxedExpressionStoriesWrapper";
@@ -64,6 +63,39 @@ export const Base: Story = {
       ],
     },
     isResetSupportedOnRootExpression: true,
+  },
+};
+
+export const Readonly: Story = {
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
+  args: {
+    ...EmptyExpression.args,
+    expression: {
+      __$$element: "relation",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
+      column: [
+        {
+          "@_id": generateUuid(),
+          "@_name": "column-1",
+        },
+      ],
+      row: [
+        {
+          "@_id": generateUuid(),
+          expression: [
+            {
+              __$$element: "literalExpression",
+              "@_id": generateUuid(),
+              text: { __$$text: RELATION_EXPRESSION_DEFAULT_VALUE },
+            },
+          ],
+        },
+      ],
+    },
+    isResetSupportedOnRootExpression: true,
+    isReadOnly: true,
   },
 };
 
@@ -260,6 +292,7 @@ export const Nested: Story = {
       "@_label": "Expression Name",
       contextEntry: [
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "ContextEntry-1",

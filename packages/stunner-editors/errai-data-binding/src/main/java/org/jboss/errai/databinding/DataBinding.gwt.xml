@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Licensed to the Apache Software Foundation (ASF) under one
   ~ or more contributor license agreements.  See the NOTICE file
@@ -19,11 +20,11 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0//EN"
   "http://google-web-toolkit.googlecode.com/svn/releases/2.0/distro-source/core/src/gwt-module.dtd">
 <module>
-    <inherits name='com.google.gwt.user.User' />
-    <inherits name='com.google.common.collect.Collect' />
-    <inherits name='org.jboss.errai.ui.DataBindingUIExtensions' />
+  <inherits name='com.google.gwt.user.User' />
+  <inherits name='com.google.common.collect.Collect' />
+  <inherits name='org.jboss.errai.ui.DataBindingUIExtensions' />
 
-    <generate-with class="org.jboss.errai.databinding.rebind.BindableProxyLoaderGenerator">
-        <when-type-assignable class="org.jboss.errai.databinding.client.BindableProxyLoader" />
-    </generate-with>
+  <generate-with class="org.jboss.errai.databinding.rebind.BindableProxyLoaderGenerator">
+    <when-type-assignable class="org.jboss.errai.databinding.client.BindableProxyLoader" />
+  </generate-with>
 </module>

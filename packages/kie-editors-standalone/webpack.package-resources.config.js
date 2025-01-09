@@ -21,10 +21,9 @@ const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const path = require("path");
 const { env } = require("./env");
-const buildEnv = env;
 
-module.exports = (env) =>
-  merge(common(env), {
+module.exports = (webpackEnv) =>
+  merge(common(webpackEnv), {
     output: {
       path: path.join(__dirname, "dist"),
       filename: "[name]/index.js",
@@ -35,10 +34,22 @@ module.exports = (env) =>
       dmn: "./src/dmn/index.ts",
       bpmn: "./src/bpmn/index.ts",
     },
+    module: {
+      rules: [
+        {
+          test: /dmnEnvelopeIndex\.html$/,
+          type: "asset/source",
+        },
+        {
+          test: /bpmnEnvelopeIndex\.html$/,
+          type: "asset/source",
+        },
+      ],
+    },
     devServer: {
       historyApiFallback: false,
       static: [{ directory: path.join(__dirname, "./dist") }],
       compress: true,
-      port: buildEnv.standaloneEditors.dev.port,
+      port: env.standaloneEditors.dev.port,
     },
   });

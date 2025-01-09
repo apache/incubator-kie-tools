@@ -32,6 +32,7 @@ import (
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -80,14 +81,17 @@ func TestRunCommand(t *testing.T) {
 
 func RunRunTest(t *testing.T, cfgTestInputPrepareCreate CfgTestInputCreate, test cfgTestInputRun) string {
 	var err error
+	var containerId string
 
 	// Create the project
 	RunCreateTest(t, cfgTestInputPrepareCreate)
 
 	projectName := GetCreateProjectName(t, cfgTestInputPrepareCreateRun)
 	projectDir := filepath.Join(TempTestsPath, projectName)
+
 	err = os.Chdir(projectDir)
 	require.NoErrorf(t, err, "Expected nil error, got %v", err)
+	WriteMavenConfigFileWithTailDirs(projectDir)
 
 	cmd := exec.Command(KnExecutable)
 
@@ -97,14 +101,15 @@ func RunRunTest(t *testing.T, cfgTestInputPrepareCreate CfgTestInputCreate, test
 	// Run the `run` command
 	go func() {
 		defer wg.Done()
-		_, err = ExecuteKnWorkflowWithCmd(cmd, transformRunCmdCfgToArgs(test.input)...)
+		containerId, err = ExecuteKnWorkflowWithCmdAndStopContainer(cmd, transformRunCmdCfgToArgs(test.input)...)
+		assert.NotNil(t, containerId, "Container ID is nil")
 		require.Truef(t, err == nil || IsSignalInterrupt(err), "Expected nil error or signal interrupt, got %v", err)
 	}()
 
 	// Check if the project is successfully run and accessible within a specified time limit.
 	readyCheckURL := fmt.Sprintf("http://localhost:%s/q/health/ready", getRunProjectPort(t, test))
 	pollInterval := 5 * time.Second
-	timeout := 4 * time.Minute
+	timeout := 10 * time.Minute
 	ready := make(chan bool)
 	t.Logf("Checking if project is ready at %s", readyCheckURL)
 	go common.PollReadyCheckURL(readyCheckURL, pollInterval, ready)
@@ -117,6 +122,19 @@ func RunRunTest(t *testing.T, cfgTestInputPrepareCreate CfgTestInputCreate, test
 	}
 
 	wg.Wait()
+
+	stopped := make(chan bool)
+	t.Logf("Checking if container is stopped")
+	assert.NotNil(t, containerId, "Container ID is nil")
+	// Check if the container is stopped within a specified time limit.
+	go common.PollContainerStoppedCheck(containerId, pollInterval, stopped)
+	select {
+	case <-stopped:
+		fmt.Println("Project is stopped")
+	case <-time.After(timeout):
+		t.Fatalf("Test case timed out after %s. The project was not stopped within the specified time.", timeout)
+		cmd.Process.Signal(os.Interrupt)
+	}
 
 	return projectName
 }

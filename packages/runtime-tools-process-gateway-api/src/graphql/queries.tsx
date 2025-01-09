@@ -370,6 +370,7 @@ export const GET_JOBS_WITH_FILTERS = gql`
       retries
       lastUpdate
       endpoint
+      nodeInstanceId
       executionCounter
     }
   }
@@ -400,15 +401,22 @@ export const GET_PROCESS_INSTANCE_SVG = gql`
   }
 `;
 
-export const GET_PROCESS_INSTANCE_NODES = gql`
-  query getProcessInstanceNodeDefinitions($processId: String) {
-    ProcessInstances(where: { id: { equal: $processId } }) {
-      nodeDefinitions {
+export const GET_PROCESS_DEFINITIONS = gql`
+  query getProcessDefinitions {
+    ProcessDefinitions {
+      id
+      endpoint
+    }
+  }
+`;
+
+export const GET_PROCESS_DEFINITION_NODES = gql`
+  query getProcessDefinitionNodes($processId: String) {
+    ProcessDefinitions(where: { id: { equal: $processId } }) {
+      nodes {
         id
         name
         type
-        uniqueId
-        nodeDefinitionId
       }
     }
   }

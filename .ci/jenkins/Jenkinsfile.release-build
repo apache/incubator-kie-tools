@@ -20,7 +20,7 @@
 pipeline {
     agent {
         docker {
-            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
             label util.avoidFaultyNodes()
         }
@@ -33,9 +33,10 @@ pipeline {
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
         string(description: 'Base Ref', name: 'BASE_REF')
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Upload asset url', name: 'UPLOAD_ASSET_URL', defaultValue: '')
-        string(description: 'Runners', name: 'RUNNERS', defaultValue: '{"dev_deployment_base_image":"false","dev_deployment_kogito_quakus_blank_app_image":"false","dev_deployment_dmn_form_webapp_image":"false","dev_deployment_upload_service":"false","kie_sandbox_image":"false","kie_sandbox_extended_services_image":"false","cors_proxy_image":"false","online_editor":"false","chrome_extensions":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","npm_packages":"false","standalone_editors_cdn":"false","extended_services":"false","serverless_logic_web_tools":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","dashbuilder_viewer_image":"false","kn_plugin_workflow":"false","kie_sandbox_helm_chart":"true"}')
+        string(description: 'Runners', name: 'RUNNERS', defaultValue: '{"chrome_extensions":"false","cors_proxy_image":"false","dashbuilder_viewer_image":"false","dev_deployment_base_image":"false","dev_deployment_dmn_form_webapp_image":"false","dev_deployment_kogito_quakus_blank_app_image":"false","dev_deployment_upload_service":"false","extended_services":"false","jbpm_quarkus_devui":"false","kie_sandbox_extended_services_image":"false","kie_sandbox_helm_chart":"false","kie_sandbox_image":"false","kn_plugin_workflow":"false","kogito_task_console":"false","kogito_management_console":"false","kogito_swf_builder":"false","kogito_swf_devmode":"false","kogito_serverless_operator":"false","npm_packages":"false","online_editor":"false","runtime_tools_consoles_helm_chart": "false","serverless_logic_web_tools":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","standalone_editors_cdn":"false","sonataflow_quarkus_devui":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false"}')
+        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
     environment {
@@ -52,6 +53,11 @@ pipeline {
         SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE_JOB_RESULT = 'SKIPPED'
         SERVERLESS_LOGIC_WEB_TOOLS_SWF_DEV_MODE_IMAGE_JOB_RESULT = 'SKIPPED'
         DASHBUILDER_VIEWER_IMAGE_JOB_RESULT = 'SKIPPED'
+        KOGITO_TASK_CONSOLE_JOB_RESULT = 'SKIPPED'
+        KOGITO_MANAGEMENT_CONSOLE_JOB_RESULT = 'SKIPPED'
+        KOGITO_SWF_BUILDER_JOB_RESULT = 'SKIPPED'
+        KOGITO_SWF_DEVMODE_JOB_RESULT = 'SKIPPED'
+        KOGITO_SERVERLESS_OPERATOR_JOB_RESULT = 'SKIPPED'
     }
 
     stages {
@@ -67,470 +73,346 @@ pipeline {
         stage('Set Runners') {
             steps {
                 script {
-                    runners = readJSON text: "${params.RUNNERS}"
-                    env.DEV_DEPLOYMENT_BASE_IMAGE = runners.dev_deployment_base_image
-                    env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE = runners.dev_deployment_kogito_quakus_blank_app_image
-                    env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE = runners.dev_deployment_dmn_form_webapp_image
-                    env.DEV_DEPLOYMENT_UPLOAD_SERVICE = runners.dev_deployment_upload_service
-                    env.KIE_SANDBOX_IMAGE = runners.kie_sandbox_image
-                    env.KIE_SANDBOX_EXTENDED_SERVICES_IMAGE = runners.kie_sandbox_extended_services_image
-                    env.CORS_PROXY_IMAGE = runners.cors_proxy_image
-                    env.ONLINE_EDITOR = runners.online_editor
-                    env.CHROME_EXTENSIONS = runners.chrome_extensions
-                    env.VSCODE_EXTENSIONS_DEV = runners.vscode_extensions_dev
-                    env.VSCODE_EXTENSIONS_PROD = runners.vscode_extensions_prod
-                    env.NPM_PACKAGES = runners.npm_packages
-                    env.STANDALONE_EDITORS_CDN = runners.standalone_editors_cdn
-                    env.EXTENDED_SERVICES = runners.extended_services
-                    env.SERVERLESS_LOGIC_WEB_TOOLS = runners.serverless_logic_web_tools
-                    env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE = runners.serverless_logic_web_tools_swf_builder_image
-                    env.SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE = runners.serverless_logic_web_tools_base_builder_image
-                    env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_DEV_MODE_IMAGE = runners.serverless_logic_web_tools_swf_dev_mode_image
-                    env.DASHBUILDER_VIEWER_IMAGE = runners.dashbuilder_viewer_image
-                    env.KN_PLUGIN_WORKFLOW = runners.kn_plugin_workflow
-                    env.KIE_SANDBOX_HELM_CHART = runners.kie_sandbox_helm_chart
+                    setRunners()
                 }
             }
         }
 
         stage('Print Runners') {
             steps {
-                sh """
-                echo "dev_deployment_base_image: ${env.DEV_DEPLOYMENT_BASE_IMAGE}"
-                echo "dev_deployment_kogito_quakus_blank_app_image: ${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE}"
-                echo "dev_deployment_dmn_form_webapp_image: ${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE}"
-                echo "dev_deployment_upload_service: ${env.DEV_DEPLOYMENT_UPLOAD_SERVICE}"
-                echo "kie_sandbox_image: ${env.KIE_SANDBOX_IMAGE}"
-                echo "kie_sandbox_extended_services_image: ${env.KIE_SANDBOX_EXTENDED_SERVICES_IMAGE}"
-                echo "cors_proxy_image: ${env.CORS_PROXY_IMAGE}"
-                echo "online_editor: ${env.ONLINE_EDITOR}"
-                echo "chrome_extensions: ${env.CHROME_EXTENSIONS}"
-                echo "vscode_extensions_dev: ${env.VSCODE_EXTENSIONS_DEV}"
-                echo "vscode_extensions_prod: ${env.VSCODE_EXTENSIONS_PROD}"
-                echo "npm_packages: ${env.NPM_PACKAGES}"
-                echo "standalone_editors_cdn: ${env.STANDALONE_EDITORS_CDN}"
-                echo "extended_services: ${env.EXTENDED_SERVICES}"
-                echo "serverless_logic_web_tools: ${env.SERVERLESS_LOGIC_WEB_TOOLS}"
-                echo "serverless_logic_web_tools_swf_builder_image: ${env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE}"
-                echo "serverless_logic_web_tools_base_builder_image: ${env.SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE}"
-                echo "serverless_logic_web_tools_swf_dev_mode_image: ${env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_DEV_MODE_IMAGE}"
-                echo "dashbuilder_viewer_image: ${env.DASHBUILDER_VIEWER_IMAGE}"
-                echo "kn_plugin_workflow: ${env.KN_PLUGIN_WORKFLOW}"
-                echo "kie_sandbox_helm_chart: ${env.KIE_SANDBOX_HELM_CHART}"
-                """.trim()
-            }
-        }
-
-        stage('Dev Deployment Base Image') {
-            when {
-                expression { env.DEV_DEPLOYMENT_BASE_IMAGE == 'true' }
-            }
-            steps {
                 script {
-                    env.DEV_DEPLOYMENT_BASE_IMAGE_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/dev-deployment-base-image',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}")
-                        ]
-                    ).result
+                    printRunners()
                 }
             }
         }
 
-        stage('Dev Deployment DMN Form Webapp Image') {
-            when {
-                expression { env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE == 'true' }
-            }
-            steps {
-                script {
-                    env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/dev-deployment-dmn-form-webapp-image',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}")
-                        ]
-                    ).result
+        stage('Parallel - Builds') {
+            parallel {
+                stage('KIE Sandbox Accelerator Quarkus') {
+                    when {
+                        expression { env.KIE_SANDBOX_ACCELERATOR_QUARKUS == 'true' }
+                    }
+                    steps {
+                        script {
+                            kieSandboxAcceleratorQuarkusBuildJob()
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('Dev Deployment Kogito Quarkus Blank App Image') {
-            when {
-                expression { env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE == 'true' }
-            }
-            steps {
-                script {
-                    env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/dev-deployment-kogito-quarkus-blank-app-image',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}")
-                        ]
-                    ).result
+                stage('Dev Deployment Kogito Quarkus Blank App Image') {
+                    when {
+                        expression { env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE == 'true' }
+                    }
+                    steps {
+                        script {
+                            devDeploymentKogitoQuarkusBlankAppImageBuildJob()
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('Dev Deployment Upload Service') {
-            when {
-                expression { env.DEV_DEPLOYMENT_UPLOAD_SERVICE == 'true' }
-            }
-            steps {
-                script {
-                    env.DEV_DEPLOYMENT_UPLOAD_SERVICE_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/dev-deployment-upload-service',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}"),
-                            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}")
-                        ]
-                    ).result
+                stage('Dev Deployment Upload Service') {
+                    when {
+                        expression { env.DEV_DEPLOYMENT_UPLOAD_SERVICE == 'true' }
+                    }
+                    steps {
+                        script {
+                            devDeploymentUploadServiceBuildJob()
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('KIE Sandbox Extended Services Image') {
-            when {
-                expression { env.KIE_SANDBOX_EXTENDED_SERVICES_IMAGE == 'true' }
-            }
-            steps {
-                script {
-                    env.KIE_SANDBOX_EXTENDED_SERVICES_IMAGE_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/kie-sandbox-extended-services',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}")
-                        ]
-                    ).result
-
-                    env.KIE_SANDBOX_EXTENDED_SERVICES_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", 'kie-sandbox-extended-services', "${pipelineVars.openshiftCredentialsId}")
+                stage('VSCode Extensions Dev') {
+                    when {
+                        expression { env.VSCODE_EXTENSIONS_DEV == 'true' }
+                    }
+                    steps {
+                        script {
+                            vscodeExtensionsDevBuildJob()
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('CORS Proxy Image') {
-            when {
-                expression { env.CORS_PROXY_IMAGE == 'true' }
-            }
-            steps {
-                script {
-                    env.CORS_PROXY_IMAGE_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/cors-proxy',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}")
-                        ]
-                    ).result
-
-                    env.KIE_SANDBOX_CORS_PROXY_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", 'cors-proxy', "${pipelineVars.openshiftCredentialsId}")
+                stage('VSCode Extensions Prod') {
+                    when {
+                        expression { env.VSCODE_EXTENSIONS_PROD == 'true' }
+                    }
+                    steps {
+                        script {
+                            vscodeExtensionsProdBuildJob()
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('KIE Sandbox Image') {
-            when {
-                expression { env.KIE_SANDBOX_IMAGE == 'true' }
-            }
-            steps {
-                script {
-                    env.KIE_SANDBOX_IMAGE_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/kie-sandbox',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}"),
-                            string(name: 'KIE_SANDBOX_EXTENDED_SERVICES_URL', value: "${env.KIE_SANDBOX_EXTENDED_SERVICES_URL}"),
-                            string(name: 'KIE_SANDBOX_CORS_PROXY_URL', value: "${env.KIE_SANDBOX_CORS_PROXY_URL}")
-                        ]
-                    ).result
-
-                    env.KIE_SANDBOX_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", 'kie-sandbox', "${pipelineVars.openshiftCredentialsId}")
+                stage('NPM Packages') {
+                    when {
+                        expression { env.NPM_PACKAGES == 'true' }
+                    }
+                    steps {
+                        script {
+                            npmPackagesBuildJob()
+                        }
+                    }
                 }
-            }
-        }
 
-        // TODO: Verify Windows + MacOS builds
-        stage('Extendend Services') {
-            when {
-                expression { env.EXTENDED_SERVICES == 'true' }
-            }
-            steps {
-                script {
-                    env.EXTENDED_SERVICES_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/extended-services',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}"),
-                            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}")
-                        ]
-                    ).result
+                stage('Kn Plugin Workflow') {
+                    when {
+                        expression { env.KN_PLUGIN_WORKFLOW == 'true' }
+                    }
+                    steps {
+                        script {
+                            knPluginWorkflowBuildJob()
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('Online Editor') {
-            when {
-                expression { env.ONLINE_EDITOR == 'true' && (env.EXTENDED_SERVICES_JOB_RESULT == 'SUCCESS' || env.EXTENDED_SERVICES_JOB_RESULT == 'SKIPPED') && (env.DEV_DEPLOYMENT_BASE_IMAGE_JOB_RESULT == 'SUCCESS' || env.DEV_DEPLOYMENT_BASE_IMAGE_JOB_RESULT == 'SKIPPED') && (env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_JOB_RESULT == 'SUCCESS' || env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_JOB_RESULT == 'SKIPPED') }
-            }
-            steps {
-                script {
-                    env.ONLINE_EDITOR_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/online-editor',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}")
-                        ]
-                    ).result
+                stage('Serverless Logic Web Tools Swf Builder Image') {
+                    when {
+                        expression { env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE == 'true' }
+                    }
+                    steps {
+                        script {
+                            serverlessLogicWebToolsSwfBuilderImageBuildJob()
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('Chrome Extensions') {
-            when {
-                expression { env.CHROME_EXTENSIONS == 'true' && (env.EXTENDED_SERVICES_JOB_RESULT == 'SUCCESS' || env.EXTENDED_SERVICES_JOB_RESULT == 'SKIPPED') && (env.DEV_DEPLOYMENT_BASE_IMAGE_JOB_RESULT == 'SUCCESS' || env.DEV_DEPLOYMENT_BASE_IMAGE_JOB_RESULT == 'SKIPPED') && (env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_JOB_RESULT == 'SUCCESS' || env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_JOB_RESULT == 'SKIPPED') && (env.ONLINE_EDITOR_JOB_RESULT == 'SUCCESS' || env.ONLINE_EDITOR_JOB_RESULT == 'SKIPPED') }
-            }
-            steps {
-                script {
-                    env.CHROME_EXTENSIONS_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/chrome-extensions',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}"),
-                            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}")
-                        ]
-                    ).result
+                stage('Serverless Logic Web Tools Swf Dev Mode Image') {
+                    when {
+                        expression { env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_DEV_MODE_IMAGE == 'true' }
+                    }
+                    steps {
+                        script {
+                            serverlessLogicWebToolsSwfDevModeImageBuildJob()
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('VSCode Extensions Dev') {
-            when {
-                expression { env.VSCODE_EXTENSIONS_DEV == 'true' }
-            }
-            steps {
-                script {
-                    env.VSCODE_EXTENSIONS_DEV_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/vscode-extensions-dev',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}"),
-                            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}")
-                        ]
-                    ).result
+                stage('Serverless Logic Web Tools Base Builder Image') {
+                    when {
+                        expression { env.SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE == 'true' }
+                    }
+                    steps {
+                        script {
+                            serverlessLogicWebToolsBaseBuilderImageBuildJob()
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('VSCode Extensions Prod') {
-            when {
-                expression { env.VSCODE_EXTENSIONS_PROD == 'true' }
-            }
-            steps {
-                script {
-                    env.CHROME_EXTENSIONS_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/vscode-extensions-prod',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}"),
-                            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}")
-                        ]
-                    ).result
+                stage('Dashbuilder Viewer Image') {
+                    when {
+                        expression { env.DASHBUILDER_VIEWER_IMAGE == 'true' }
+                    }
+                    steps {
+                        script {
+                            dashbuilderViewerImageBuildJob()
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('NPM Packages') {
-            when {
-                expression { env.NPM_PACKAGES == 'true' }
-            }
-            steps {
-                script {
-                    env.NPM_PACKAGES_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/npm-packages',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}")
-                        ]
-                    ).result
+                stage('Serverless Logic Web Tools') {
+                    when {
+                        expression { env.SERVERLESS_LOGIC_WEB_TOOLS == 'true' }
+                    }
+                    steps {
+                        script {
+                            serverlessLogicWebToolsBuildJob()
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('Standalone Editors CDN') {
-            when {
-                expression { env.STANDALONE_EDITORS_CDN == 'true' && (env.EXTENDED_SERVICES_JOB_RESULT == 'SUCCESS' || env.EXTENDED_SERVICES_JOB_RESULT == 'SKIPPED') && (env.DEV_DEPLOYMENT_BASE_IMAGE_JOB_RESULT == 'SUCCESS' || env.DEV_DEPLOYMENT_BASE_IMAGE_JOB_RESULT == 'SKIPPED') && (env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_JOB_RESULT == 'SUCCESS' || env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_JOB_RESULT == 'SKIPPED') && (env.ONLINE_EDITOR_JOB_RESULT == 'SUCCESS' || env.ONLINE_EDITOR_JOB_RESULT == 'SKIPPED') && (env.CHROME_EXTENSIONS_JOB_RESULT == 'SUCCESS' || env.CHROME_EXTENSIONS_JOB_RESULT == 'SKIPPED') }
-            }
-            steps {
-                script {
-                    env.STANDALONE_EDITORS_CDN_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/standalone-editors-cdn',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}")
-                        ]
-                    ).result
+                stage('Kogito Management Console Image') {
+                    when {
+                        expression { env.KOGITO_MANAGEMENT_CONSOLE == 'true' }
+                    }
+                    steps {
+                        script {
+                            kogitoManagementConsoleBuildJob()
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('Kn Plugin Workflow') {
-            when {
-                expression { env.KN_PLUGIN_WORKFLOW == 'true' }
-            }
-            steps {
-                script {
-                    env.KN_PLUGIN_WORKFLOW_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/kn-plugin-workflow',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}"),
-                            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}")
-                        ]
-                    ).result
+                stage('Kogito SWF Builder Image') {
+                    when {
+                        expression { env.KOGITO_SWF_BUILDER == 'true' }
+                    }
+                    steps {
+                        script {
+                            kogitoSwfBuilderBuildJob()
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('Serverless Logic Web Tools Swf Builder Image') {
-            when {
-                expression { env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE == 'true' }
-            }
-            steps {
-                script {
-                    env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/serverless-logic-web-tools-swf-builder-image',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}")
-                        ]
-                    ).result
+                stage('Kogito SWF Devmode Image') {
+                    when {
+                        expression { env.KOGITO_SWF_DEVMODE == 'true' }
+                    }
+                    steps {
+                        script {
+                            kogitoSwfDevmodeBuildJob()
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('Serverless Logic Web Tools Swf Dev Mode Image') {
-            when {
-                expression { env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_DEV_MODE_IMAGE == 'true' }
-            }
-            steps {
-                script {
-                    env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_DEV_MODE_IMAGE_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/serverless-logic-web-tools-swf-dev-mode-image',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}")
-                        ]
-                    ).result
+                stage('Kogito Serverless Operator Image') {
+                    when {
+                        expression { env.KOGITO_SERVERLESS_OPERATOR == 'true' }
+                    }
+                    steps {
+                        script {
+                            kogitoServerlessOperatorBuildJob()
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('Serverless Logic Web Tools Base Builder Image') {
-            when {
-                expression { env.SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE == 'true' }
-            }
-            steps {
-                script {
-                    env.SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/serverless-logic-web-tools-base-builder-image',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}")
-                        ]
-                    ).result
+                stage('JBPM Quarkus Dev UI') {
+                    when {
+                        expression { env.JBPM_QUARKUS_DEVUI == 'true' }
+                    }
+                    steps {
+                        script {
+                            jbpmQuarkusDevuiBuildJob()
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('Dashbuilder Viewer Image') {
-            when {
-                expression { env.DASHBUILDER_VIEWER_IMAGE == 'true' }
-            }
-            steps {
-                script {
-                    env.DASHBUILDER_VIEWER_IMAGE_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/dashbuilder-viewer-image',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}")
-                        ]
-                    ).result
+                stage('Sonataflow Quarkus Dev UI') {
+                    when {
+                        expression { env.SONATAFLOW_QUARKUS_DEVUI == 'true' }
+                    }
+                    steps {
+                        script {
+                            sonataflowQuarkusDevuiBuildJob()
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('Serverless Logic Web Tools') {
-            when {
-                expression { env.SERVERLESS_LOGIC_WEB_TOOLS == 'true' && (env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE_JOB_RESULT == 'SUCCESS' || env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE_JOB_RESULT == 'SKIPPED') && (env.SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE_JOB_RESULT == 'SUCCESS' || env.SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE_JOB_RESULT == 'SKIPPED') && (env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_DEV_MODE_IMAGE_JOB_RESULT == 'SUCCESS' || env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_DEV_MODE_IMAGE_JOB_RESULT == 'SKIPPED') && (env.DASHBUILDER_VIEWER_IMAGE_JOB_RESULT == 'SUCCESS' || env.DASHBUILDER_VIEWER_IMAGE_JOB_RESULT == 'SKIPPED') }
-            }
-            steps {
-                script {
-                    env.DASHBUILDER_VIEWER_IMAGE_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/serverless-logic-web-tools',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}")
-                        ]
-                    ).result
+                stage('Dependant build #1') {
+                    stages {
+                        stage('Dev Deployment Base Image') {
+                            when {
+                                expression { env.DEV_DEPLOYMENT_BASE_IMAGE == 'true' }
+                            }
+                            steps {
+                                script {
+                                    devDeploymentBaseImageBuildJob()
+                                }
+                            }
+                        }
+
+                        stage('Dev Deployment DMN Form Webapp Image') {
+                            when {
+                                expression { env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE == 'true' }
+                            }
+                            steps {
+                                script {
+                                    devDeploymentDmnFormWebappImageBuildJob()
+                                }
+                            }
+                        }
+
+                        stage('Extendend Services') {
+                            when {
+                                expression { env.EXTENDED_SERVICES == 'true' }
+                            }
+                            steps {
+                                script {
+                                    extendedServicesBuildJob()
+                                }
+                            }
+                        }
+
+                        stage('Online Editor') {
+                            when {
+                                expression { env.ONLINE_EDITOR == 'true' && (env.EXTENDED_SERVICES_JOB_RESULT == 'SUCCESS' || env.EXTENDED_SERVICES_JOB_RESULT == 'SKIPPED') && (env.DEV_DEPLOYMENT_BASE_IMAGE_JOB_RESULT == 'SUCCESS' || env.DEV_DEPLOYMENT_BASE_IMAGE_JOB_RESULT == 'SKIPPED') && (env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_JOB_RESULT == 'SUCCESS' || env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_JOB_RESULT == 'SKIPPED') }
+                            }
+                            steps {
+                                script {
+                                    onlineEditorBuildJob()
+                                }
+                            }
+                        }
+
+                        stage('Chrome Extensions') {
+                            when {
+                                expression { env.CHROME_EXTENSIONS == 'true' && (env.EXTENDED_SERVICES_JOB_RESULT == 'SUCCESS' || env.EXTENDED_SERVICES_JOB_RESULT == 'SKIPPED') && (env.DEV_DEPLOYMENT_BASE_IMAGE_JOB_RESULT == 'SUCCESS' || env.DEV_DEPLOYMENT_BASE_IMAGE_JOB_RESULT == 'SKIPPED') && (env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_JOB_RESULT == 'SUCCESS' || env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_JOB_RESULT == 'SKIPPED') && (env.ONLINE_EDITOR_JOB_RESULT == 'SUCCESS' || env.ONLINE_EDITOR_JOB_RESULT == 'SKIPPED') }
+                            }
+                            steps {
+                                script {
+                                    chromeExtensionsBuildJob()
+                                }
+                            }
+                        }
+
+                        stage('Standalone Editors CDN') {
+                            when {
+                                expression { env.STANDALONE_EDITORS_CDN == 'true' && (env.EXTENDED_SERVICES_JOB_RESULT == 'SUCCESS' || env.EXTENDED_SERVICES_JOB_RESULT == 'SKIPPED') && (env.DEV_DEPLOYMENT_BASE_IMAGE_JOB_RESULT == 'SUCCESS' || env.DEV_DEPLOYMENT_BASE_IMAGE_JOB_RESULT == 'SKIPPED') && (env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_JOB_RESULT == 'SUCCESS' || env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_JOB_RESULT == 'SKIPPED') && (env.ONLINE_EDITOR_JOB_RESULT == 'SUCCESS' || env.ONLINE_EDITOR_JOB_RESULT == 'SKIPPED') && (env.CHROME_EXTENSIONS_JOB_RESULT == 'SUCCESS' || env.CHROME_EXTENSIONS_JOB_RESULT == 'SKIPPED') }
+                            }
+                            steps {
+                                script {
+                                    standaloneEditorsCdnBuildJob()
+                                }
+                            }
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('KIE Sandbox Helm Chart') {
-            when {
-                expression { env.KIE_SANDBOX_HELM_CHART == 'true' }
-            }
-            steps {
-                script {
-                    env.KIE_SANDBOX_HELM_CHART_JOB_RESULT = build(
-                        wait: true,
-                        job: 'KIE/kie-tools/kie-tools-release-jobs/kie-sandbox-helm-chart',
-                        parameters: [
-                            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
-                            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-                            string(name: 'TAG', value: "${params.TAG}")
-                        ]
-                    ).result
+                stage('Dependant build #2') {
+                    stages {
+                        stage('KIE Sandbox Extended Services Image') {
+                            when {
+                                expression { env.KIE_SANDBOX_EXTENDED_SERVICES_IMAGE == 'true' }
+                            }
+                            steps {
+                                script {
+                                    kieSandboxExtendedServicesImageBuildJob()
+                                }
+                            }
+                        }
+
+                        stage('CORS Proxy Image') {
+                            when {
+                                expression { env.CORS_PROXY_IMAGE == 'true' }
+                            }
+                            steps {
+                                script {
+                                    corsProxyImageBuildJob()
+                                }
+                            }
+                        }
+
+                        stage('KIE Sandbox Image') {
+                            when {
+                                expression { env.KIE_SANDBOX_IMAGE == 'true' && (env.KIE_SANDBOX_EXTENDED_SERVICES_IMAGE_JOB_RESULT == 'SUCCESS' || env.KIE_SANDBOX_EXTENDED_SERVICES_IMAGE_JOB_RESULT == 'SKIPPED') && (env.CORS_PROXY_IMAGE_JOB_RESULT == 'SUCCESS' || env.CORS_PROXY_IMAGE_JOB_RESULT == 'SKIPPED') }
+                            }
+                            steps {
+                                script {
+                                    kieSandboxImageBuildJob()
+                                }
+                            }
+                        }
+
+                        stage('KIE Sandbox Helm Chart') {
+                            when {
+                                expression { env.KIE_SANDBOX_HELM_CHART == 'true' }
+                            }
+                            steps {
+                                script {
+                                    kieSandboxHelmChartBuildJob()
+                                }
+                            }
+                        }
+
+                        stage('Runtime Tools Consoles Helm Chart') {
+                            when {
+                                expression { env.RUNTIME_TOOLS_CONSOLES_HELM_CHART == 'true' }
+                            }
+                            steps {
+                                script {
+                                    runtimeToolsConsolesHelmChartBuildJob()
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -541,4 +423,431 @@ pipeline {
             cleanWs(deleteDirs: true)
         }
     }
+}
+
+def setRunners() {
+    runners = readJSON text: "${params.RUNNERS}"
+    env.KIE_SANDBOX_ACCELERATOR_QUARKUS = runners.kie_sandbox_accelerator_quarkus
+    env.DEV_DEPLOYMENT_BASE_IMAGE = runners.dev_deployment_base_image
+    env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE = runners.dev_deployment_kogito_quakus_blank_app_image
+    env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE = runners.dev_deployment_dmn_form_webapp_image
+    env.DEV_DEPLOYMENT_UPLOAD_SERVICE = runners.dev_deployment_upload_service
+    env.KIE_SANDBOX_IMAGE = runners.kie_sandbox_image
+    env.KIE_SANDBOX_EXTENDED_SERVICES_IMAGE = runners.kie_sandbox_extended_services_image
+    env.CORS_PROXY_IMAGE = runners.cors_proxy_image
+    env.ONLINE_EDITOR = runners.online_editor
+    env.CHROME_EXTENSIONS = runners.chrome_extensions
+    env.VSCODE_EXTENSIONS_DEV = runners.vscode_extensions_dev
+    env.VSCODE_EXTENSIONS_PROD = runners.vscode_extensions_prod
+    env.NPM_PACKAGES = runners.npm_packages
+    env.STANDALONE_EDITORS_CDN = runners.standalone_editors_cdn
+    env.EXTENDED_SERVICES = runners.extended_services
+    env.SERVERLESS_LOGIC_WEB_TOOLS = runners.serverless_logic_web_tools
+    env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE = runners.serverless_logic_web_tools_swf_builder_image
+    env.SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE = runners.serverless_logic_web_tools_base_builder_image
+    env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_DEV_MODE_IMAGE = runners.serverless_logic_web_tools_swf_dev_mode_image
+    env.DASHBUILDER_VIEWER_IMAGE = runners.dashbuilder_viewer_image
+    env.KN_PLUGIN_WORKFLOW = runners.kn_plugin_workflow
+    env.KIE_SANDBOX_HELM_CHART = runners.kie_sandbox_helm_chart
+    env.KOGITO_TASK_CONSOLE = runners.kogito_task_console
+    env.KOGITO_MANAGEMENT_CONSOLE = runners.kogito_management_console
+    env.KOGITO_SWF_BUILDER = runners.kogito_swf_builder
+    env.KOGITO_SWF_DEVMODE = runners.kogito_swf_devmode
+    env.KOGITO_SERVERLESS_OPERATOR = runners.kogito_serverless_operator
+    env.JBPM_QUARKUS_DEVUI = runners.jbpm_quarkus_devui
+    env.SONATAFLOW_QUARKUS_DEVUI = runners.sonataflow_quarkus_devui
+    env.RUNTIME_TOOLS_CONSOLES_HELM_CHART = runners.runtime_tools_consoles_helm_chart
+}
+
+def printRunners() {
+    sh """
+    echo "kie_sandbox_accelerator_quarkus: ${env.KIE_SANDBOX_ACCELERATOR_QUARKUS}"
+    echo "dev_deployment_base_image: ${env.DEV_DEPLOYMENT_BASE_IMAGE}"
+    echo "dev_deployment_kogito_quakus_blank_app_image: ${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE}"
+    echo "dev_deployment_dmn_form_webapp_image: ${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE}"
+    echo "dev_deployment_upload_service: ${env.DEV_DEPLOYMENT_UPLOAD_SERVICE}"
+    echo "kie_sandbox_image: ${env.KIE_SANDBOX_IMAGE}"
+    echo "kie_sandbox_extended_services_image: ${env.KIE_SANDBOX_EXTENDED_SERVICES_IMAGE}"
+    echo "cors_proxy_image: ${env.CORS_PROXY_IMAGE}"
+    echo "online_editor: ${env.ONLINE_EDITOR}"
+    echo "chrome_extensions: ${env.CHROME_EXTENSIONS}"
+    echo "vscode_extensions_dev: ${env.VSCODE_EXTENSIONS_DEV}"
+    echo "vscode_extensions_prod: ${env.VSCODE_EXTENSIONS_PROD}"
+    echo "npm_packages: ${env.NPM_PACKAGES}"
+    echo "standalone_editors_cdn: ${env.STANDALONE_EDITORS_CDN}"
+    echo "extended_services: ${env.EXTENDED_SERVICES}"
+    echo "serverless_logic_web_tools: ${env.SERVERLESS_LOGIC_WEB_TOOLS}"
+    echo "serverless_logic_web_tools_swf_builder_image: ${env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE}"
+    echo "serverless_logic_web_tools_base_builder_image: ${env.SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE}"
+    echo "serverless_logic_web_tools_swf_dev_mode_image: ${env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_DEV_MODE_IMAGE}"
+    echo "dashbuilder_viewer_image: ${env.DASHBUILDER_VIEWER_IMAGE}"
+    echo "kn_plugin_workflow: ${env.KN_PLUGIN_WORKFLOW}"
+    echo "kie_sandbox_helm_chart: ${env.KIE_SANDBOX_HELM_CHART}"
+    echo "kogito_task_console: ${env.KOGITO_TASK_CONSOLE}"
+    echo "kogito_management_console: ${env.KOGITO_MANAGEMENT_CONSOLE}"
+    echo "kogito_swf_builder: ${env.KOGITO_SWF_BUILDER}"
+    echo "kogito_swf_devmode: ${env.KOGITO_SWF_DEVMODE}"
+    echo "kogito_serverless_operator: ${env.KOGITO_SERVERLESS_OPERATOR}"
+    echo "jbpm_quarkus_devui: ${env.JBPM_QUARKUS_DEVUI}"
+    echo "sonataflow_quarkus_devui: ${env.SONATAFLOW_QUARKUS_DEVUI}"
+    echo "runtime_tools_consoles_helm_chart: ${env.RUNTIME_TOOLS_CONSOLES_HELM_CHART}"
+    """.trim()
+}
+
+def devDeploymentKogitoQuarkusBlankAppImageBuildJob() {
+    env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/dev-deployment-kogito-quarkus-blank-app-image',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def devDeploymentUploadServiceBuildJob() {
+    env.DEV_DEPLOYMENT_UPLOAD_SERVICE_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/dev-deployment-upload-service',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def vscodeExtensionsDevBuildJob() {
+    env.VSCODE_EXTENSIONS_DEV_JOB_RESULT = build(
+        wait: true,
+        job: 'KIE/kie-tools/kie-tools-release-jobs/vscode-extensions-dev',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}")
+        ]
+    ).result
+}
+
+def vscodeExtensionsProdBuildJob() {
+    env.VSCODE_EXTENSIONS_PROD_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/vscode-extensions-prod',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def npmPackagesBuildJob() {
+    env.NPM_PACKAGES_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/npm-packages',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def knPluginWorkflowBuildJob() {
+    env.KN_PLUGIN_WORKFLOW_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/kn-plugin-workflow',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def serverlessLogicWebToolsSwfBuilderImageBuildJob() {
+    env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/serverless-logic-web-tools-swf-builder-image',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def serverlessLogicWebToolsSwfDevModeImageBuildJob() {
+    env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_DEV_MODE_IMAGE_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/serverless-logic-web-tools-swf-dev-mode-image',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def serverlessLogicWebToolsBaseBuilderImageBuildJob() {
+    env.SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/serverless-logic-web-tools-base-builder-image',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def dashbuilderViewerImageBuildJob() {
+    env.DASHBUILDER_VIEWER_IMAGE_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/dashbuilder-viewer-image',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def serverlessLogicWebToolsBuildJob() {
+    env.SERVERLESS_LOGIC_WEB_TOOLS_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/serverless-logic-web-tools',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+        ]
+    ).result
+}
+
+def kogitoManagementConsoleBuildJob() {
+    env.KOGITO_MANAGEMENT_CONSOLE_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/kogito-management-console',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def kogitoSwfBuilderBuildJob() {
+    env.KOGITO_SWF_BUILDER_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/kogito-swf-builder',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def kogitoSwfDevmodeBuildJob() {
+    env.KOGITO_SWF_DEVMODE_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/kogito-swf-devmode',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def kogitoServerlessOperatorBuildJob() {
+    env.KOGITO_SERVERLESS_OPERATOR_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/kogito-serverless-operator',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def jbpmQuarkusDevuiBuildJob() {
+    env.JBPM_QUARKUS_DEVUI_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/jbpm-quarkus-devui',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+        ]
+    ).result
+}
+
+def sonataflowQuarkusDevuiBuildJob() {
+    env.SONATAFLOW_QUARKUS_DEVUI_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/sonataflow-quarkus-devui',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+        ]
+    ).result
+}
+
+def devDeploymentBaseImageBuildJob() {
+    env.DEV_DEPLOYMENT_BASE_IMAGE_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/dev-deployment-base-image',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def devDeploymentDmnFormWebappImageBuildJob() {
+    env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/dev-deployment-dmn-form-webapp-image',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def extendedServicesBuildJob() {
+    env.EXTENDED_SERVICES_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/extended-services',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def onlineEditorBuildJob() {
+    env.ONLINE_EDITOR_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/online-editor',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def chromeExtensionsBuildJob() {
+    env.CHROME_EXTENSIONS_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/chrome-extensions',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def standaloneEditorsCdnBuildJob() {
+    env.STANDALONE_EDITORS_CDN_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/standalone-editors-cdn',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def kieSandboxExtendedServicesImageBuildJob() {
+    env.KIE_SANDBOX_EXTENDED_SERVICES_IMAGE_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/kie-sandbox-extended-services',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+    env.KIE_SANDBOX_EXTENDED_SERVICES_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", 'kie-sandbox-extended-services', "${pipelineVars.openshiftCredentialsId}")
+}
+
+def corsProxyImageBuildJob() {
+    env.CORS_PROXY_IMAGE_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/cors-proxy',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+    env.KIE_SANDBOX_CORS_PROXY_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", 'cors-proxy', "${pipelineVars.openshiftCredentialsId}")
+}
+
+def kieSandboxImageBuildJob() {
+    env.KIE_SANDBOX_IMAGE_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/kie-sandbox',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'KIE_SANDBOX_EXTENDED_SERVICES_URL', value: "${env.KIE_SANDBOX_EXTENDED_SERVICES_URL}"),
+            string(name: 'KIE_SANDBOX_CORS_PROXY_URL', value: "${env.KIE_SANDBOX_CORS_PROXY_URL}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+    env.KIE_SANDBOX_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", 'kie-sandbox', "${pipelineVars.openshiftCredentialsId}")
+}
+
+def kieSandboxAcceleratorQuarkusBuildJob() {
+    env.KIE_SANDBOX_IMAGE_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/kie-sandbox-accelerator-quarkus',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+    env.KIE_SANDBOX_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", 'kie-sandbox', "${pipelineVars.openshiftCredentialsId}")
+}
+
+def kieSandboxHelmChartBuildJob() {
+    env.KIE_SANDBOX_HELM_CHART_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/kie-sandbox-helm-chart',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def runtimeToolsConsolesHelmChartBuildJob() {
+    env.RUNTIME_TOOLS_CONSOLES_HELM_CHART_JOB_RESULT = build(
+        wait: true,
+        job: 'KIE/kie-tools/kie-tools-release-jobs/runtime-tools-consoles-helm-chart',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
 }

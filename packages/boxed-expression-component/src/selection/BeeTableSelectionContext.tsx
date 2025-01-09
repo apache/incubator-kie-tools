@@ -401,18 +401,18 @@ export function BeeTableSelectionContextProvider({ children }: React.PropsWithCh
                   columnIndex: prev.active.columnIndex,
                 }
               : part === SelectionPart.SelectionEnd
-              ? {
-                  rowIndex: prev.selectionEnd?.rowIndex,
-                  columnIndex: prev.selectionEnd?.columnIndex,
-                }
-              : part === SelectionPart.SelectionStart
-              ? {
-                  rowIndex: prev.selectionStart?.rowIndex,
-                  columnIndex: prev.selectionStart?.columnIndex,
-                }
-              : (() => {
-                  throw new Error("Impossible case for SelectionPart");
-                })();
+                ? {
+                    rowIndex: prev.selectionEnd?.rowIndex,
+                    columnIndex: prev.selectionEnd?.columnIndex,
+                  }
+                : part === SelectionPart.SelectionStart
+                  ? {
+                      rowIndex: prev.selectionStart?.rowIndex,
+                      columnIndex: prev.selectionStart?.columnIndex,
+                    }
+                  : (() => {
+                      throw new Error("Impossible case for SelectionPart");
+                    })();
 
           const newRowIndex =
             (prevCoords.rowIndex ?? 0) < 0
@@ -1019,6 +1019,10 @@ export function useBeeTableSelectableCell(
 
   const onMouseDown = useCallback(
     (e: React.MouseEvent) => {
+      if (document.activeElement instanceof HTMLInputElement) {
+        // See https://github.com/apache/incubator-kie-issues/issues/1158
+        (document.activeElement as any)?.blur?.();
+      }
       e.stopPropagation();
 
       if (

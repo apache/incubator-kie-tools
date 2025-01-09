@@ -19,7 +19,7 @@
 
 import _ from "lodash";
 import * as React from "react";
-import { useCallback, useMemo, useRef } from "react";
+import { useCallback, useImperativeHandle, useMemo, useRef } from "react";
 import * as ReactTable from "react-table";
 import { BeeTableHeaderVisibility, BeeTableProps, InsertRowColumnsDirection } from "../../api";
 import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
@@ -29,7 +29,7 @@ import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../resizing/WidthConstants"
 import { BeeTableBody } from "./BeeTableBody";
 import {
   BeeTableResizableColumnsContextProvider,
-  BeeTableResizableColumnsDispatchContextType,
+  BeeTableResizingRef,
 } from "../../resizing/BeeTableResizableColumnsContext";
 import { BeeTableContextMenuHandler } from "./BeeTableContextMenuHandler";
 import { BeeTableDefaultCell } from "./BeeTableDefaultCell";
@@ -62,7 +62,12 @@ export function getColumnsAtLastLevel<R extends ReactTable.Column<any> | ReactTa
   });
 }
 
+export type BeeTableSelectionRef = {
+  setActiveCellEditing: (isEditing: boolean) => void;
+};
+
 export function BeeTableInternal<R extends object>({
+  selectionRef,
   tableId,
   additionalRow,
   editColumnLabel,
@@ -98,7 +103,10 @@ export function BeeTableInternal<R extends object>({
   resizerStopBehavior,
   lastColumnMinWidth,
   rowWrapper,
-}: BeeTableProps<R>) {
+  supportsEvaluationHitsCount,
+}: BeeTableProps<R> & {
+  selectionRef?: React.RefObject<BeeTableSelectionRef>;
+}) {
   const { resetSelectionAt, erase, copy, cut, paste, adaptSelection, mutateSelection, setCurrentDepth } =
     useBeeTableSelectionDispatch();
   const tableComposableRef = useRef<HTMLTableElement>(null);
@@ -172,7 +180,7 @@ export function BeeTableInternal<R extends object>({
     [hasAdditionalRow]
   );
 
-  const _setEditing = useCallback(
+  const _setActiveCellEditing = useCallback(
     (rowCount: number, columnCount: (rowIndex: number) => number) => (isEditing: boolean) => {
       mutateSelection({
         part: SelectionPart.ActiveCell,
@@ -239,7 +247,7 @@ export function BeeTableInternal<R extends object>({
               cellProps={cellProps}
               onCellUpdates={onCellUpdates}
               isReadOnly={isReadOnly}
-              setEditing={_setEditing(cellProps.rows.length, () => cellProps.allColumns.length)}
+              setEditing={_setActiveCellEditing(cellProps.rows.length, () => cellProps.allColumns.length)}
               navigateHorizontally={_navigateHorizontally(cellProps.rows.length, () => cellProps.allColumns.length)}
               navigateVertically={_navigateVertically(cellProps.rows.length, () => cellProps.allColumns.length)}
             />
@@ -247,7 +255,14 @@ export function BeeTableInternal<R extends object>({
         }
       },
     }),
-    [cellComponentByColumnAccessor, onCellUpdates, isReadOnly, _setEditing, _navigateHorizontally, _navigateVertically]
+    [
+      cellComponentByColumnAccessor,
+      onCellUpdates,
+      isReadOnly,
+      _setActiveCellEditing,
+      _navigateHorizontally,
+      _navigateVertically,
+    ]
   );
 
   const reactTableInstance = ReactTable.useTable<R>(
@@ -431,7 +446,7 @@ export function BeeTableInternal<R extends object>({
 
       // DELETE
 
-      if (NavigationKeysUtils.isDelete(e.key) || NavigationKeysUtils.isBackspace(e.key)) {
+      if (!isReadOnly && (NavigationKeysUtils.isDelete(e.key) || NavigationKeysUtils.isBackspace(e.key))) {
         e.stopPropagation();
         e.preventDefault();
         erase();
@@ -452,17 +467,18 @@ export function BeeTableInternal<R extends object>({
         e.preventDefault();
         copy();
       }
-      if (!e.shiftKey && complementaryKey && e.key.toLowerCase() === "x") {
-        e.stopPropagation();
-        e.preventDefault();
-        cut();
+      if (!isReadOnly) {
+        if (!e.shiftKey && complementaryKey && e.key.toLowerCase() === "x") {
+          e.stopPropagation();
+          e.preventDefault();
+          cut();
+        }
+        if (!e.shiftKey && complementaryKey && e.key.toLowerCase() === "v") {
+          e.stopPropagation();
+          e.preventDefault();
+          paste();
+        }
       }
-      if (!e.shiftKey && complementaryKey && e.key.toLowerCase() === "v") {
-        e.stopPropagation();
-        e.preventDefault();
-        paste();
-      }
-
       // SELECT ALL
       if (!e.shiftKey && complementaryKey && e.key.toLowerCase() === "a") {
         e.stopPropagation();
@@ -502,6 +518,7 @@ export function BeeTableInternal<R extends object>({
       copy,
       cut,
       paste,
+      isReadOnly,
     ]
   );
 
@@ -588,9 +605,17 @@ export function BeeTableInternal<R extends object>({
     [adaptSelection, onColumnDeleted]
   );
 
-  const setEditing = useMemo(() => {
-    return _setEditing(reactTableInstance.rows.length, () => reactTableInstance.allColumns.length);
-  }, [_setEditing, reactTableInstance.allColumns.length, reactTableInstance.rows.length]);
+  const setActiveCellEditing = useMemo(() => {
+    return _setActiveCellEditing(reactTableInstance.rows.length, () => reactTableInstance.allColumns.length);
+  }, [_setActiveCellEditing, reactTableInstance.allColumns.length, reactTableInstance.rows.length]);
+
+  useImperativeHandle(
+    selectionRef,
+    () => ({
+      setActiveCellEditing: (isEditing) => setActiveCellEditing(isEditing),
+    }),
+    [setActiveCellEditing]
+  );
 
   return (
     <div className={`table-component ${tableId}`} ref={tableRef} onKeyDown={onKeyDown}>
@@ -615,13 +640,14 @@ export function BeeTableInternal<R extends object>({
           onHeaderClick={onHeaderClick}
           onHeaderKeyUp={onHeaderKeyUp}
           lastColumnMinWidth={lastColumnMinWidth}
-          setEditing={setEditing}
+          setActiveCellEditing={setActiveCellEditing}
+          isReadOnly={isReadOnly}
         />
         <BeeTableBody<R>
           rowWrapper={rowWrapper}
           resizerStopBehavior={resizerStopBehavior}
           shouldRenderRowIndexColumn={shouldRenderRowIndexColumn}
-          shouldShowRowsInlineControls={shouldShowRowsInlineControls}
+          shouldShowRowsInlineControls={!isReadOnly && shouldShowRowsInlineControls}
           getColumnKey={onGetColumnKey}
           getRowKey={onGetRowKey}
           headerVisibility={headerVisibility}
@@ -631,6 +657,8 @@ export function BeeTableInternal<R extends object>({
           onDataCellClick={onDataCellClick}
           onDataCellKeyUp={onDataCellKeyUp}
           lastColumnMinWidth={lastColumnMinWidth}
+          isReadOnly={isReadOnly}
+          supportsEvaluationHitsCount={supportsEvaluationHitsCount}
         />
       </table>
       <BeeTableContextMenuHandler
@@ -644,27 +672,43 @@ export function BeeTableInternal<R extends object>({
         onColumnAdded={onColumnAdded2}
         onColumnDeleted={onColumnDeleted2}
         onRowReset={onRowReset}
+        isReadOnly={isReadOnly}
       />
     </div>
   );
 }
 
-export type BeeTableRef = BeeTableResizableColumnsDispatchContextType;
+export type BeeTableRef = BeeTableResizingRef & BeeTableSelectionRef;
 
-export type ForwardRefBeeTableProps<R extends object> = BeeTableProps<R> & { forwardRef?: React.Ref<BeeTableRef> } & {
+export type ForwardRefBeeTableProps<R extends object> = BeeTableProps<R> & {
+  forwardRef?: React.Ref<BeeTableRef | null>;
+} & {
   onColumnResizingWidthChange?: (args: Map<number, ResizingWidth | undefined>) => void;
 };
 
-export const BeeTable = <R extends object>(props: ForwardRefBeeTableProps<R>) => {
+export const BeeTable = <R extends object>({
+  forwardRef,
+  onColumnResizingWidthChange,
+  ...props
+}: ForwardRefBeeTableProps<R>) => {
+  const beeTableResizingRef = useRef<BeeTableResizingRef>(null);
+  const beeTableSelectionRef = useRef<BeeTableSelectionRef>(null);
+
+  useImperativeHandle(forwardRef, () => {
+    if (!beeTableResizingRef.current || !beeTableSelectionRef.current) {
+      return null;
+    }
+
+    return {
+      ...beeTableSelectionRef.current!,
+      ...beeTableResizingRef.current!,
+    };
+  }, []);
   return (
     <BeeTableSelectionContextProvider>
-      <BeeTableResizableColumnsContextProvider
-        ref={props.forwardRef}
-        onChange={props.onColumnResizingWidthChange}
-        columns={props.columns}
-      >
+      <BeeTableResizableColumnsContextProvider resizingRef={beeTableResizingRef} onChange={onColumnResizingWidthChange}>
         <BeeTableCellWidthsToFitDataContextProvider>
-          <BeeTableInternal {...props} />
+          <BeeTableInternal {...props} selectionRef={beeTableSelectionRef} />
         </BeeTableCellWidthsToFitDataContextProvider>
       </BeeTableResizableColumnsContextProvider>
     </BeeTableSelectionContextProvider>

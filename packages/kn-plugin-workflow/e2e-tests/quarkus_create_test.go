@@ -23,6 +23,7 @@ package e2e_tests
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -50,7 +51,7 @@ var cfgTestInputQuarkusCreate_Success = []CfgTestInputQuarkusCreate{
 		Extensions:  "quarkus-jsonp,quarkus-smallrye-openapi",
 		DependenciesVersion: metadata.DependenciesVersion{
 			QuarkusPlatformGroupId: "io.quarkus.platform",
-			QuarkusVersion:         "3.2.10.Final",
+			QuarkusVersion:         "3.8.6",
 		},
 	}},
 }
@@ -108,7 +109,10 @@ func RunQuarkusCreateTest(t *testing.T, test CfgTestInputQuarkusCreate) string {
 
 	// Run `quarkus create` command
 	_, err = ExecuteKnWorkflowQuarkus(transformQuarkusCreateCmdCfgToArgs(test.input)...)
+
+	err = os.Chdir(projectDir)
 	require.NoErrorf(t, err, "Expected nil error, got: %v", err)
+	WriteMavenConfigFileWithTailDirs(projectDir)
 
 	// Check if the project directory was created
 	require.DirExistsf(t, projectDir, "Expected project directory '%s' to be created", projectDir)
@@ -120,8 +124,6 @@ func RunQuarkusCreateTest(t *testing.T, test CfgTestInputQuarkusCreate) string {
 		"src/main/docker",
 		"src/main",
 		"src",
-		".mvn/wrapper",
-		".mvn",
 	}
 	VerifyDirectoriesExist(t, projectDir, expectedDirectories)
 	expectedFiles := []string{
@@ -131,15 +133,10 @@ func RunQuarkusCreateTest(t *testing.T, test CfgTestInputQuarkusCreate) string {
 		"src/main/docker/Dockerfile.jvm",
 		"src/main/docker/Dockerfile.native",
 		"src/main/docker/Dockerfile.native-micro",
-		".mvn/wrapper/.gitignore",
-		".mvn/wrapper/MavenWrapperDownloader.java",
-		".mvn/wrapper/maven-wrapper.properties",
 		".gitignore",
 		"pom.xml",
 		"README.md",
 		".dockerignore",
-		"mvnw.cmd",
-		"mvnw",
 	}
 	VerifyFilesExist(t, projectDir, expectedFiles)
 
@@ -149,7 +146,6 @@ func RunQuarkusCreateTest(t *testing.T, test CfgTestInputQuarkusCreate) string {
 	require.NoErrorf(t, err, "Error reading workflow template: %v", err)
 	expectedFileContent := string(workflowFileData)
 	VerifyFileContent(t, workflowFilePath, expectedFileContent)
-
 	return projectName
 }
 

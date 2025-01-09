@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useRef, useEffect } from "react";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { FeelInput } from "@kie-tools/feel-input-component/dist";
 import "./ConstraintsExpression.css";
@@ -28,11 +28,13 @@ import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/a
 import { TypeHelper } from "./Constraints";
 
 export function ConstraintsExpression({
-  isReadonly,
+  id,
+  isReadOnly,
   value,
   onSave,
 }: {
-  isReadonly: boolean;
+  id: string;
+  isReadOnly: boolean;
   value?: string;
   savedValue?: string;
   type: DmnBuiltInDataType;
@@ -41,13 +43,41 @@ export function ConstraintsExpression({
   isDisabled?: boolean;
 }) {
   const [preview, setPreview] = useState(value ?? "");
-  const [editingValue, setEditingValue] = useState(value);
+  const [isEditing, setEditing] = useState(false);
+  const valueCopy = useRef(value);
+
+  const onFeelBlur = useCallback((valueOnBlur: string) => {
+    setEditing(false);
+  }, []);
+
   const onFeelChange = useCallback(
     (_, content, preview) => {
-      onSave?.(content.trim());
       setPreview(preview);
+      onSave?.(content.trim());
     },
     [onSave]
+  );
+
+  const onPreviewChanged = useCallback((newPreview: string) => setPreview(newPreview), []);
+
+  useEffect(() => {
+    valueCopy.current = isEditing ? valueCopy.current : value;
+  }, [isEditing, value]);
+
+  const onKeyDown = useCallback(
+    (e) => {
+      // When inside FEEL Input, all keyboard events should be kept inside it.
+      // Exceptions to this strategy are handled on `onFeelKeyDown`.
+      if (!isReadOnly && isEditing) {
+        e.stopPropagation();
+      }
+
+      // This is used to start editing a cell without being in edit mode.
+      if (!isReadOnly && !isEditing) {
+        setEditing(true);
+      }
+    },
+    [isEditing, isReadOnly]
   );
 
   const monacoOptions = useMemo(
@@ -64,8 +94,10 @@ export function ConstraintsExpression({
   );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-      {isReadonly && (
+    // FeelInput doens't react to `onFeelChange` updates
+    // making it necessary to add a key to force a re-render;
+    <div key={id} style={{ display: "flex", flexDirection: "column", width: "100%" }} onKeyDown={onKeyDown}>
+      {isReadOnly && (
         <Title size={"md"} headingLevel="h5" style={{ paddingBottom: "10px" }}>
           Equivalent FEEL expression:
         </Title>
@@ -73,27 +105,32 @@ export function ConstraintsExpression({
 
       <div
         style={
-          !isReadonly
+          !isReadOnly
             ? { flexGrow: 1, flexShrink: 0, border: "solid 1px lightgray", borderRadius: "4px" }
             : { flexGrow: 1, flexShrink: 0, height: "22px" }
         }
       >
-        {isReadonly &&
+        {isReadOnly &&
           (value ? (
-            <span className="editable-cell-value pf-u-text-break-word" dangerouslySetInnerHTML={{ __html: preview }} />
+            <span
+              data-testid={"kie-tools--dmn-editor--readonly-expression-constraint-with-value"}
+              className="editable-cell-value pf-u-text-break-word"
+              dangerouslySetInnerHTML={{ __html: preview }}
+            />
           ) : (
             <p style={{ fontStyle: "italic" }}>{`<None>`}</p>
           ))}
         <FeelInput
-          value={isReadonly ? value : editingValue}
+          value={isEditing ? valueCopy.current : value}
           onChange={onFeelChange}
-          onPreviewChanged={setPreview}
-          enabled={!isReadonly}
+          onBlur={onFeelBlur}
+          onPreviewChanged={onPreviewChanged}
+          enabled={!isReadOnly}
           options={monacoOptions as any}
         />
       </div>
       <HelperText>
-        {!isReadonly && (
+        {!isReadOnly && (
           <HelperTextItem variant="indeterminate" icon={<InfoIcon />}>
             Check the{" "}
             <a target={"_blank"} href={"https://kiegroup.github.io/dmn-feel-handbook/#feel-values"}>

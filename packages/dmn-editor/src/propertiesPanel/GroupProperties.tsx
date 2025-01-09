@@ -19,15 +19,18 @@
 
 import * as React from "react";
 import { DMN15__tGroup } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { useDmnEditorStoreApi } from "../store/StoreContext";
 import { renameGroupNode } from "../mutations/renameNode";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
-export function GroupProperties({ group, index }: { group: DMN15__tGroup; index: number }) {
+export function GroupProperties({ group, index }: { group: Normalized<DMN15__tGroup>; index: number }) {
   const { setState } = useDmnEditorStoreApi();
+  const settings = useSettings();
 
   return (
     <>
@@ -35,7 +38,7 @@ export function GroupProperties({ group, index }: { group: DMN15__tGroup; index:
         <TextInput
           aria-label={"Name"}
           type={"text"}
-          isDisabled={false}
+          isDisabled={settings.isReadOnly}
           onChange={(newName) => {
             setState((state) => {
               renameGroupNode({
@@ -54,11 +57,11 @@ export function GroupProperties({ group, index }: { group: DMN15__tGroup; index:
         <TextArea
           aria-label={"Description"}
           type={"text"}
-          isDisabled={false}
+          isDisabled={settings.isReadOnly}
           value={group.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.artifact![index] as DMN15__tGroup).description = {
+              (state.dmn.model.definitions.artifact![index] as Normalized<DMN15__tGroup>).description = {
                 __$$text: newDescription,
               };
             });

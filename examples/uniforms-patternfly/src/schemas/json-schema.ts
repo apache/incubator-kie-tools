@@ -17,16 +17,19 @@
  * under the License.
  */
 
-import * as Ajv from "ajv";
+import AjvDraft04 from "ajv-draft-04";
+import addFormats from "ajv-formats";
 import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
 
-const ajv = new Ajv({ allErrors: true, useDefaults: true });
+const ajv = new AjvDraft04({ strict: false, allErrors: true, useDefaults: true });
+addFormats(ajv);
 
 function createValidator(schema: any) {
   const validator = ajv.compile(schema);
   return (model: any) => {
     validator(model);
     if (validator.errors && validator.errors.length) {
+      console.error("VALIDATION ERROR: MODEL: ", model);
       throw { details: validator.errors };
     }
   };
@@ -55,7 +58,7 @@ const schema = {
           type: "string",
           format: "date-time",
           max: "2000-04-04T10:30:00.000Z",
-          description: "this is date and time field",
+          description: "this is the date and time field",
         },
       },
       disabled: false,
@@ -83,8 +86,8 @@ const schema = {
         },
         numberOfBeds: {
           placeholder: "Select...",
-          enum: [1, 2, 3],
-          type: "number",
+          enum: [null, 0, 1, 2],
+          type: ["null", "number"],
         },
       },
     },

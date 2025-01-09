@@ -1,3 +1,20 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+     http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
+
 # End to End tests
 
 There is a set of cypress tests in `e2e-tests` folder. To run them, please refer to one option bellow.
@@ -14,13 +31,13 @@ More suitable for running particular tests from `e2e-tests`.
 
 More suitable for running `e2e-tests` completely.
 
-- `packages/online-editor$ START_SERVER_AND_TEST_INSECURE=true KOGITO_TOOLING_BUILD_testIT=true pnpm test:e2e`
+- `packages/online-editor$ KIE_TOOLS_BUILD__runEndToEndTests=true pnpm test-e2e`
 
 > **NOTE:**
 > Before test development, you may need to build `online-editor` as:
 >
 > - `kie-tools$ pnpm bootstrap`
-> - `kie-tools$ pnpm -r -F @kie-tools/online-editor... build:dev`
+> - `kie-tools$ pnpm -F @kie-tools/online-editor... build:dev`
 
 ## Testing insecure/invalid TLS certificates with Git providers
 
@@ -71,91 +88,32 @@ Obs.: _To use different Git providers remember to change the Caddyfile_;
 
 Obs.: _`github.com` and `github.<enterprise_name>.com` use different APIs. If your Caddyfile is proxying `github.com` you'll need to change the `getGithubInstanceApiUrl` function in [github/Hooks.tsx](src/github/Hooks.tsx)_.
 
-# Dev deployments
+# Dev Deployments
 
-KIE Sandbox allows for Dev deployments targeting OpenShift or simple Kubernetes clusters. This is achieved by applying pre-defined [Kubernetes](src/devDeployments/services/resources/kubernetes/index.ts) and [OpenShift](src/devDeployments/services/resources/openshift/index.ts) resources for each provider.
+Read more about it here: [Dev Deployments Architecture](./docs/DEV_DEPLOYMENTS_ARCHITECTURE.md)
 
-To apply those YAMLs the `k8s-yaml-to-apiserver-requests` library is used. It first maps the cluster API resources and then parses a YAML to make the required requests. This creates the resources at the Kubernetes cluster and return the resources created.
+---
 
-Dev deployments requires some information to be present on the resources metadata so that it can list and manage these resources, including a Dev deployment name, related workspace id and a created by tag with the value `kie-tools`. To make this easier a set of tokens is generated and can be used to interpolate variables inside the resource YAML. Here's an example:
+Apache KIE (incubating) is an effort undergoing incubation at The Apache Software
+Foundation (ASF), sponsored by the name of Apache Incubator. Incubation is
+required of all newly accepted projects until a further review indicates that
+the infrastructure, communications, and decision making process have stabilized
+in a manner consistent with other successful ASF projects. While incubation
+status is not necessarily a reflection of the completeness or stability of the
+code, it does indicate that the project has yet to be fully endorsed by the ASF.
 
-```yaml
-kind: Deployment
-apiVersion: apps/v1
-metadata:
-  name: \${{ devDeployment.uniqueName }}
-  namespace: \${{ devDeployment.kubernetes.namespace }}
-  labels:
-    app: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/component: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/instance: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/name: \${{ devDeployment.uniqueName }}
-    app.kubernetes.io/part-of: \${{ devDeployment.uniqueName }}
-    \${{ devDeployment.labels.createdBy }}: kie-tools
-    \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
-  annotations:
-    \${{ devDeployment.annotations.workspaceId }}: \${{ devDeployment.workspace.id }}
-    \${{ devDeployment.annotations.workspaceName }}: \${{ devDeployment.workspace.name }}
-```
+Some of the incubating project’s releases may not be fully compliant with ASF
+policy. For example, releases may have incomplete or un-reviewed licensing
+conditions. What follows is a list of known issues the project is currently
+aware of (note that this list, by definition, is likely to be incomplete):
 
-As you can see, there are several variables in use here: `devDeployment.uniqueName`, `devDeployment.labels...`, `devDeployment.annotations...`, `devDeployment.workspace...`. These are replaced via an [interpolation implementation](/packages/k8s-yaml-to-apiserver-requests/src/interpolateK8sResourceYamls.ts).
+- Hibernate, an LGPL project, is being used. Hibernate is in the process of
+  relicensing to ASL v2
+- Some files, particularly test files, and those not supporting comments, may
+  be missing the ASF Licensing Header
 
-## Required metadata, labels and annotations
-
-For a successfull deployment this is the required information the resource should have:
-
-```yaml
-metadata:
-  name: \${{ devDeployment.uniqueName }}
-  namespace: \${{ devDeployment.kubernetes.namespace }}
-  labels:
-    \${{ devDeployment.labels.createdBy }}: kie-tools
-    \${{ devDeployment.labels.partOf }}: \${{ devDeployment.uniqueName }}
-  annotations:
-    \${{ devDeployment.annotations.workspaceId }}: \${{ devDeployment.workspace.id }}
-    \${{ devDeployment.annotations.workspaceName }}: \${{ devDeployment.workspace.name }}
-```
-
-- The `name` is how the deployment is identified across the board.
-- The `namespace` is where the deployment should be created in the cluster and should be the same configured in the connected account.
-- The labels (`createdBy` and `partOf`) are required so that KIE Sandbox can filter and map all resources related to a single deployment. **Important:** `createdBy` should always have the value `kie-tools`.
-- The annotations (`workspaceId` and `workspaceName`) are useful to match a deployment to a workspace.
-
-Anything else can be customized.
-
-## Available tokens
-
-Some tokens are pre-defined and others are generated during runtime (like `uniqueName` and `uploadService.apiKey`).
-
-```js
-devDeployment: {
-  labels: {
-    createdBy: "tools.kie.org/created-by",
-    partOf: "tools.kie.org/part-of",
-  },
-  annotations: {
-    workspaceId: "tools.kie.org/workspace-id",
-    workspaceName: "tools.kie.org/workspace-name",
-  },
-  uniqueName: string,
-  uploadService: {
-    apiKey: string,
-  },
-  workspace: {
-    id: string,
-    name: string,
-  },
-  kubernetes: {
-    namespace: string,
-  },
-},
-```
-
-These tokens can be referenced in the YAML resource using the following notation: `${{ varPath.varName }}`. Here are some examples from the tokens above:
-
-- `${{ devDeployment.labels.createdBy }}`
-- `${{ devDeployment.annotations.workspaceId }}`
-- `${{ devDeployment.uniqueName }}`
-- `${{ devDeployment.kubernetes.namespace }}`
-
-**\*Obs.:** It's important to note that if you're defining a resource YAML in a `.js`/`.ts` file you'll need to escape the `$` character, so a variable would become `\${{ varPath.varName}}`.\*
+If you are planning to incorporate this work into your product/project, please
+be aware that you will need to conduct a thorough licensing review to determine
+the overall implications of including this work. For the current status of this
+project through the Apache Incubator visit:
+https://incubator.apache.org/projects/kie.html

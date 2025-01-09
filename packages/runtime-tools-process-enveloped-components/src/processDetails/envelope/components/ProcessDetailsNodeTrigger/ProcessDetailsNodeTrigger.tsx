@@ -23,7 +23,7 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import ProcessDetailsErrorModal from "../ProcessDetailsErrorModal/ProcessDetailsErrorModal";
 import "../styles.css";
@@ -37,6 +37,8 @@ interface ProcessDetailsNodeTriggerProps {
   processInstanceData: ProcessInstance;
   driver: ProcessDetailsDriver;
 }
+
+const BANNED_NODE_TYPES = ["BoundaryEventNode", "EndNode", "Join", "StartNode", "Split"];
 
 const ProcessDetailsNodeTrigger: React.FC<ProcessDetailsNodeTriggerProps & OUIAProps> = ({
   processInstanceData,
@@ -84,28 +86,24 @@ const ProcessDetailsNodeTrigger: React.FC<ProcessDetailsNodeTriggerProps & OUIAP
     setIsOpen(isDropDownOpen);
   };
 
-  const getSelectedNode = (selectedNodeName: string): void => {
-    const selectedNodeObject: TriggerableNode[] =
-      nodes.length > 0 ? nodes.filter((node: TriggerableNode) => node.name === selectedNodeName) : [];
+  const getSelectedNode = useCallback(
+    (selectedNodeId: string): void => {
+      setSelectedNode(nodes.find((node: TriggerableNode) => node.id === selectedNodeId));
+    },
+    [nodes]
+  );
 
-    setSelectedNode(selectedNodeObject[0]);
-  };
-
-  const createNodeDropDown = (): JSX.Element[] => {
-    const nodeDropDown: JSX.Element[] = [];
-    nodes.length > 0 &&
-      nodes.forEach((node: TriggerableNode) => {
-        node.type !== null &&
-          node.type !== "StartNode" &&
-          node.type !== "Join" &&
-          nodeDropDown.push(
-            <DropdownItem key={node.uniqueId} id={node.name}>
-              {node.name}
-            </DropdownItem>
-          );
-      });
-    return nodeDropDown;
-  };
+  const nodeDropDownOptions = useMemo(() => {
+    return nodes
+      .filter((node) => {
+        return node.type !== null && !BANNED_NODE_TYPES.includes(node.type);
+      })
+      .map((node) => (
+        <DropdownItem key={node.id} id={node.id}>
+          {node.name}
+        </DropdownItem>
+      ));
+  }, [nodes]);
 
   const onTriggerClick = (): void => {
     setModalTitle("Node trigger process");
@@ -165,7 +163,7 @@ const ProcessDetailsNodeTrigger: React.FC<ProcessDetailsNodeTriggerProps & OUIAP
                   </DropdownToggle>
                 }
                 isOpen={isOpen}
-                dropdownItems={createNodeDropDown()}
+                dropdownItems={nodeDropDownOptions}
               />
             </div>
             {selectedNode && (

@@ -23,6 +23,7 @@ import {
   traverseItemDefinitions,
   traverseTypeRefedInExpressionHolders,
 } from "../dataTypes/DataTypeSpec";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
 
 export function renameItemDefinition({
@@ -31,7 +32,7 @@ export function renameItemDefinition({
   allDataTypesById,
   itemDefinitionId,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
   newName: string;
   itemDefinitionId: string;
   allDataTypesById: DataTypeIndex;

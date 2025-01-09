@@ -21,13 +21,17 @@ package quarkus
 
 import (
 	"fmt"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
+	"path/filepath"
 )
 
 type DeployCmdConfig struct {
-	Path string // service name
+	Path      string // service name
+	Namespace string
 }
 
 func NewDeployCommand() *cobra.Command {
@@ -47,12 +51,15 @@ func NewDeployCommand() *cobra.Command {
 	# Deploy the workflow from the current directory's project. 
 	# Deploy as Knative service.
 	{{.Name}} deploy
+
+	# You can provide target namespace or use default
+	{{.Name}} deploy --namespace <your_namespace>
 	
 	# Specify the path of the directory containing the "knative.yml" 
 	{{.Name}} deploy --path ./kubernetes
 		`,
 		SuggestFor: []string{"delpoy", "deplyo"},
-		PreRunE:    common.BindEnv("path"),
+		PreRunE:    common.BindEnv("namespace", "path"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -60,10 +67,16 @@ func NewDeployCommand() *cobra.Command {
 	}
 
 	cmd.Flags().StringP("path", "p", "./target/kubernetes", fmt.Sprintf("%s path to knative deployment files", cmd.Name()))
+	cmd.Flags().StringP("namespace", "n", "", "Target namespace of your deployment.")
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	return cmd
+}
+
+var crds = map[string][]string{
+	"SonataFlow Operator":                  metadata.SonataflowCRDs,
+	"Knative Serving and Knative Eventing": metadata.KnativeCoreServingCRDs,
 }
 
 func runDeploy(cmd *cobra.Command, args []string) error {
@@ -74,11 +87,15 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("initializing deploy config: %w", err)
 	}
 
-	if err = common.CheckKubectl(); err != nil {
-		return err
+	// check necessary CRDs are installed
+	for name, crds := range crds {
+		if err := command.CheckCRDs(crds, name); err != nil {
+			return err
+		}
 	}
 
 	if _, err = deployKnativeServiceAndEventingBindings(cfg); err != nil {
+		fmt.Println("❌ ERROR:Deploy failed, Knative Eventing binding was not created.")
 		return err
 	}
 
@@ -89,41 +106,33 @@ func runDeploy(cmd *cobra.Command, args []string) error {
 
 func deployKnativeServiceAndEventingBindings(cfg DeployCmdConfig) (bool, error) {
 	isKnativeEventingBindingsCreated := false
-	createService := common.ExecCommand("kubectl", "apply", "-f", fmt.Sprintf("%s/knative.yml", cfg.Path))
-	if err := common.RunCommand(
-		createService,
-		"deploy",
-	); err != nil {
-		fmt.Println("❌ ERROR: Deploy failed, Knative service was not created.")
+
+	err := common.ExecuteApply(filepath.Join(cfg.Path, "knative.yml"), cfg.Namespace)
+	if err != nil {
 		return isKnativeEventingBindingsCreated, err
 	}
 	fmt.Println("🎉 Knative service successfully created")
 
-	// Check if kogito.yml file exists
 	if exists, err := checkIfKogitoFileExists(cfg); exists && err == nil {
-		deploy := common.ExecCommand("kubectl", "apply", "-f", fmt.Sprintf("%s/kogito.yml", cfg.Path))
-		if err := common.RunCommand(
-			deploy,
-			"deploy",
-		); err != nil {
-			fmt.Println("❌ ERROR:Deploy failed, Knative Eventing binding was not created.")
+		if err := common.ExecuteApply(filepath.Join(cfg.Path, "kogito.yml"), cfg.Namespace); err != nil {
 			return isKnativeEventingBindingsCreated, err
 		}
 		isKnativeEventingBindingsCreated = true
-		fmt.Println("✅ Knative Eventing bindings successfully created")
+		fmt.Println("🎉 Knative Eventing bindings successfully created")
 	}
 	return isKnativeEventingBindingsCreated, nil
 }
 
 func runDeployCmdConfig(cmd *cobra.Command) (cfg DeployCmdConfig, err error) {
 	cfg = DeployCmdConfig{
-		Path: viper.GetString("path"),
+		Path:      viper.GetString("path"),
+		Namespace: viper.GetString("namespace"),
 	}
 	return
 }
 
 func checkIfKogitoFileExists(cfg DeployCmdConfig) (bool, error) {
-	if _, err := common.FS.Stat(fmt.Sprintf("%s/kogito.yml", cfg.Path)); err == nil {
+	if _, err := common.FS.Stat(filepath.Join(cfg.Path, "kogito.yml")); err == nil {
 		return true, nil
 	} else {
 		return false, err

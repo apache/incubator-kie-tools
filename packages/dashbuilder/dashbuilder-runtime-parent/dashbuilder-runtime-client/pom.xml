@@ -22,7 +22,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 >
-
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.dashbuilder</groupId>
@@ -85,7 +84,6 @@
       <artifactId>dashbuilder-dataset-client</artifactId>
       <scope>provided</scope>
     </dependency>
-
 
     <dependency>
       <groupId>org.dashbuilder</groupId>
@@ -330,7 +328,7 @@
       <artifactId>errai-cdi-shared</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- JS Libraries -->
     <dependency>
       <groupId>org.webjars.npm</groupId>
@@ -451,7 +449,6 @@
             <compileSourcesArtifact>org.uberfire:uberfire-client-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench-client</compileSourcesArtifact>
             <compileSourcesArtifact>org.uberfire:uberfire-workbench-client-views-patternfly</compileSourcesArtifact>
-
           </compileSourcesArtifacts>
           <compileReport>true</compileReport>
         </configuration>
@@ -561,7 +558,7 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-	      <outputDirectory>${project.build.outputDirectory}/org/dashbuilder/client/resources/js</outputDirectory>
+              <outputDirectory>${project.build.outputDirectory}/org/dashbuilder/client/resources/js</outputDirectory>
               <resources>
                 <resource>
                   <directory
@@ -580,10 +577,10 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-	      <outputDirectory>${project.build.outputDirectory}/org/dashbuilder/client/resources/js</outputDirectory>
+              <outputDirectory>${project.build.outputDirectory}/org/dashbuilder/client/resources/js</outputDirectory>
               <resources>
                 <resource>
-		  <directory
+                  <directory
                   >${project.build.directory}/js-yaml/META-INF/resources/webjars/js-yaml/${version.org.webjars.npm.js-yaml}/dist</directory>
                   <includes>
                     <include>js-yaml.min.js</include>
@@ -595,7 +592,6 @@
         </executions>
       </plugin>
     </plugins>
-
   </build>
 
   <profiles>
@@ -608,7 +604,8 @@
       </activation>
       <build>
         <plugins>
-          <plugin><!-- Keep in sync with soa profile -->
+          <plugin>
+            <!-- Keep in sync with soa profile -->
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>gwt-maven-plugin</artifactId>
             <configuration>
@@ -623,7 +620,7 @@
             <artifactId>maven-war-plugin</artifactId>
             <configuration>
               <packagingExcludes>WEB-INF/,META-INF/</packagingExcludes>
-            </configuration>         
+            </configuration>
           </plugin>
         </plugins>
       </build>
@@ -696,7 +693,5 @@
         </plugins>
       </build>
     </profile>
-
   </profiles>
-
 </project>

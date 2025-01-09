@@ -26,11 +26,11 @@ import {
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
+  BoxedRelation,
   DmnBuiltInDataType,
   generateUuid,
   getNextAvailablePrefixedName,
-  InsertRowColumnsDirection,
-  BoxedRelation,
+  Normalized,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContext";
@@ -44,21 +44,23 @@ import {
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
 import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
-import { DMN15__tList, DMN15__tLiteralExpression } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN15__tList } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import "./RelationExpression.css";
 
 type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
 
 export const RELATION_EXPRESSION_DEFAULT_VALUE = "";
 
-export function RelationExpression(
-  relationExpression: BoxedRelation & {
-    isNested: boolean;
-    parentElementId: string;
-  }
-) {
+export function RelationExpression({
+  isNested,
+  expression: relationExpression,
+}: {
+  expression: BoxedRelation;
+  isNested: boolean;
+  parentElementId: string;
+}) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { widthsById, expressionHolderId } = useBoxedExpressionEditor();
+  const { widthsById, expressionHolderId, isReadOnly } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
 
   const id = relationExpression["@_id"]!;
@@ -125,7 +127,9 @@ export function RelationExpression(
         if (newWidth && prevColumnWidth) {
           const minSize = columnIndex + 1;
           const newValues = [...prev];
-          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
+          newValues.push(
+            ...Array<number>(Math.max(0, minSize - newValues.length)).fill(RELATION_EXPRESSION_COLUMN_MIN_WIDTH)
+          );
           newValues.splice(columnIndex, 1, newWidth);
           newMap.set(id, newValues);
         }
@@ -149,7 +153,7 @@ export function RelationExpression(
   useApportionedColumnWidthsIfNestedTable(
     beeTableRef,
     isPivoting,
-    relationExpression.isNested,
+    isNested,
     BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
     columns,
     columnResizingWidths,
@@ -186,7 +190,10 @@ export function RelationExpression(
           (tableRow: ROWTYPE, column, columnIndex) => {
             const cellExpression = row.expression?.[columnIndex];
             if (cellExpression?.__$$element === "literalExpression") {
-              tableRow[column["@_id"]!] = cellExpression.text?.__$$text ?? "";
+              tableRow[column["@_id"]!] = {
+                id: cellExpression["@_id"] ?? generateUuid(),
+                content: cellExpression.text?.__$$text ?? "",
+              };
             }
             return tableRow;
           },
@@ -198,8 +205,8 @@ export function RelationExpression(
 
   const onCellUpdates = useCallback(
     (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
-      setExpression((prev: BoxedRelation) => {
-        let previousExpression: BoxedRelation = { ...prev };
+      setExpression((prev: Normalized<BoxedRelation>) => {
+        let previousExpression: Normalized<BoxedRelation> = { ...prev };
 
         cellUpdates.forEach((cellUpdate) => {
           const newRows = [...(previousExpression.row ?? [])];
@@ -230,7 +237,7 @@ export function RelationExpression(
 
   const onColumnUpdates = useCallback(
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression((prev: BoxedRelation) => {
+      setExpression((prev: Normalized<BoxedRelation>) => {
         const n = { ...prev };
         const newColumns = [...(prev.column ?? [])];
 
@@ -248,7 +255,7 @@ export function RelationExpression(
         }
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedRelation = {
+        const ret: Normalized<BoxedRelation> = {
           ...n,
           column: newColumns,
         };
@@ -276,7 +283,7 @@ export function RelationExpression(
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number }) => {
-      setExpression((prev: BoxedRelation) => {
+      setExpression((prev: Normalized<BoxedRelation>) => {
         const newRows = [...(prev.row ?? [])];
         const newItems = [];
 
@@ -294,7 +301,7 @@ export function RelationExpression(
         }
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedRelation = {
+        const ret: Normalized<BoxedRelation> = {
           ...prev,
           row: newRows,
         };
@@ -307,7 +314,7 @@ export function RelationExpression(
 
   const onColumnAdded = useCallback(
     (args: { beforeIndex: number; columnsCount: number }) => {
-      setExpression((prev: BoxedRelation) => {
+      setExpression((prev: Normalized<BoxedRelation>) => {
         const newColumns = [...(prev.column ?? [])];
 
         const newItems = [];
@@ -320,7 +327,7 @@ export function RelationExpression(
           newItems.push({
             "@_id": generateUuid(),
             "@_name": name,
-            "@_typeRef": DmnBuiltInDataType.Undefined,
+            "@_typeRef": undefined,
           });
         }
 
@@ -338,7 +345,7 @@ export function RelationExpression(
         });
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedRelation = {
+        const ret: Normalized<BoxedRelation> = {
           ...prev,
           column: newColumns,
           row: newRows,
@@ -363,7 +370,7 @@ export function RelationExpression(
 
   const onColumnDeleted = useCallback(
     (args: { columnIndex: number }) => {
-      setExpression((prev: BoxedRelation) => {
+      setExpression((prev: Normalized<BoxedRelation>) => {
         const newColumns = [...(prev.column ?? [])];
         newColumns.splice(args.columnIndex, 1);
 
@@ -377,7 +384,7 @@ export function RelationExpression(
         });
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedRelation = {
+        const ret: Normalized<BoxedRelation> = {
           ...prev,
           column: newColumns,
           row: newRows,
@@ -398,12 +405,12 @@ export function RelationExpression(
 
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: BoxedRelation) => {
+      setExpression((prev: Normalized<BoxedRelation>) => {
         const newRows = [...(prev.row ?? [])];
         newRows.splice(args.rowIndex, 1);
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedRelation = {
+        const ret: Normalized<BoxedRelation> = {
           ...prev,
           row: newRows,
         };
@@ -416,7 +423,7 @@ export function RelationExpression(
 
   const onRowDuplicated = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: BoxedRelation) => {
+      setExpression((prev: Normalized<BoxedRelation>) => {
         const duplicatedRow = {
           "@_id": generateUuid(),
           expression: prev.row![args.rowIndex].expression?.map((cell) => ({
@@ -429,7 +436,7 @@ export function RelationExpression(
         newRows.splice(args.rowIndex, 0, duplicatedRow);
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedRelation = {
+        const ret: Normalized<BoxedRelation> = {
           ...prev,
           row: newRows,
         };
@@ -441,8 +448,8 @@ export function RelationExpression(
   );
 
   const beeTableHeaderVisibility = useMemo(() => {
-    return relationExpression.isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
-  }, [relationExpression.isNested]);
+    return isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
+  }, [isNested]);
 
   const allowedOperations = useCallback(
     (conditions: BeeTableContextMenuAllowedOperationsConditions) => {
@@ -488,6 +495,8 @@ export function RelationExpression(
   return (
     <div className={`relation-expression`}>
       <BeeTable<ROWTYPE>
+        isReadOnly={isReadOnly}
+        isEditableHeader={!isReadOnly}
         resizerStopBehavior={
           isPivoting ? ResizerStopBehavior.SET_WIDTH_ALWAYS : ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER
         }

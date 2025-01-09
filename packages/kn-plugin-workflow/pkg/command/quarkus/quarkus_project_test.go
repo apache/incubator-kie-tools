@@ -30,6 +30,8 @@ func TestManipulatePom(t *testing.T) {
 
 	//setup
 	metadata.KogitoVersion = "1.0.0.Final"
+	metadata.PluginVersion = "0.0.0"
+	metadata.KogitoBomDependency.Version = "0.0.0"
 
 	inputPath := "testdata/pom1-input.xml_no_auto_formatting"
 	expectedPath := "testdata/pom1-expected.xml_no_auto_formatting"

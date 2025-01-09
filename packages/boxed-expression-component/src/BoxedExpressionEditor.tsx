@@ -20,7 +20,7 @@
 import "@patternfly/react-styles/css/components/Drawer/drawer.css";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import * as React from "react";
-import { BeeGwtService, DmnDataType, BoxedExpression, PmmlDocument } from "./api";
+import { BeeGwtService, BoxedExpression, DmnDataType, Normalized, PmmlDocument } from "./api";
 import {
   boxedExpressionEditorDictionaries,
   BoxedExpressionEditorI18nContext,
@@ -42,11 +42,11 @@ export interface BoxedExpressionEditorProps {
   /** Name of the Decision or BKM containing `expression` */
   expressionHolderName: string;
   /** TypeRef of the Decision or BKM containing `expression` */
-  expressionHolderTypeRef: string;
+  expressionHolderTypeRef: string | undefined;
   /** The boxed expression itself */
-  expression: BoxedExpression | undefined;
+  expression: Normalized<BoxedExpression> | undefined;
   /** Called every time something changes on the expression */
-  onExpressionChange: React.Dispatch<React.SetStateAction<BoxedExpression | undefined>>;
+  onExpressionChange: React.Dispatch<React.SetStateAction<Normalized<BoxedExpression> | undefined>>;
   /** KIE Extension to represent IDs of individual columns or expressions */
   widthsById: Map<string, number[]>;
   /** Called every time a width changes on the expression */
@@ -55,16 +55,22 @@ export interface BoxedExpressionEditorProps {
   isResetSupportedOnRootExpression?: boolean;
   /** The Data Types available */
   dataTypes: DmnDataType[];
+  /** ReadOnly mode flag */
+  isReadOnly?: boolean;
   /** PMML models available to use on Boxed PMML Function */
   pmmlDocuments?: PmmlDocument[];
+  evaluationHitsCountById?: Map<string, number>;
   /** The containing HTMLElement which is scrollable */
   scrollableParentRef: React.RefObject<HTMLElement>;
   /** Parsed variables used for syntax coloring and auto-complete */
   onRequestFeelVariables?: OnRequestFeelVariables;
+  /** Hide DMN 1.4 boxed expressions */
+  hideDmn14BoxedExpressions?: boolean;
 }
 
 export function BoxedExpressionEditor({
   dataTypes,
+  isReadOnly,
   expressionHolderId,
   expressionHolderName,
   expressionHolderTypeRef,
@@ -74,9 +80,11 @@ export function BoxedExpressionEditor({
   isResetSupportedOnRootExpression,
   scrollableParentRef,
   pmmlDocuments,
+  evaluationHitsCountById,
   onRequestFeelVariables,
   widthsById,
   onWidthsChange,
+  hideDmn14BoxedExpressions,
 }: BoxedExpressionEditorProps) {
   return (
     <I18nDictionariesProvider
@@ -94,10 +102,13 @@ export function BoxedExpressionEditor({
         expression={expression}
         onExpressionChange={onExpressionChange}
         onWidthsChange={onWidthsChange}
+        isReadOnly={isReadOnly}
         dataTypes={dataTypes}
         pmmlDocuments={pmmlDocuments}
+        evaluationHitsCountById={evaluationHitsCountById}
         onRequestFeelVariables={onRequestFeelVariables}
         widthsById={widthsById}
+        hideDmn14BoxedExpressions={hideDmn14BoxedExpressions}
       >
         <ExpressionDefinitionRoot
           expressionHolderId={expressionHolderId}

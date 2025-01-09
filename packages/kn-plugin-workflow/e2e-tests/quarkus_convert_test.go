@@ -56,7 +56,7 @@ var cfgTestInputQuarkusConvert_Success = []CfgTestInputQuarkusConvert{
 		Extensions: "quarkus-jsonp,quarkus-smallrye-openapi",
 		DependenciesVersion: metadata.DependenciesVersion{
 			QuarkusPlatformGroupId: "io.quarkus.platform",
-			QuarkusVersion:         "3.2.10.Final",
+			QuarkusVersion:         "3.8.6",
 		},
 	}},
 }
@@ -106,6 +106,7 @@ func RunQuarkusConvertTest(t *testing.T, cfgTestInputCreateConvert CfgTestInputC
 
 	err = os.Chdir(projectDir)
 	require.NoErrorf(t, err, "Expected nil error, got %v", err)
+	WriteMavenConfigFileWithTailDirs(projectDir)
 
 	// Run `quarkus convert` command
 	_, err = ExecuteKnWorkflowQuarkus(transformQuarkusConvertCmdCfgToArgs(t, test.input)...)
@@ -118,8 +119,6 @@ func RunQuarkusConvertTest(t *testing.T, cfgTestInputCreateConvert CfgTestInputC
 		"src/main/docker",
 		"src/main",
 		"src",
-		".mvn/wrapper",
-		".mvn",
 	}
 	VerifyDirectoriesExist(t, projectDir, expectedDirectories)
 	expectedFiles := []string{
@@ -129,15 +128,10 @@ func RunQuarkusConvertTest(t *testing.T, cfgTestInputCreateConvert CfgTestInputC
 		"src/main/docker/Dockerfile.jvm",
 		"src/main/docker/Dockerfile.native",
 		"src/main/docker/Dockerfile.native-micro",
-		".mvn/wrapper/.gitignore",
-		".mvn/wrapper/MavenWrapperDownloader.java",
-		".mvn/wrapper/maven-wrapper.properties",
 		".gitignore",
 		"pom.xml",
 		"README.md",
 		".dockerignore",
-		"mvnw.cmd",
-		"mvnw",
 	}
 	VerifyFilesExist(t, projectDir, expectedFiles)
 
@@ -165,6 +159,7 @@ func TestQuarkusConvertProjectFailed(t *testing.T) {
 
 			err = os.Chdir(projectDir)
 			require.NoErrorf(t, err, "Expected nil error, got %v", err)
+			WriteMavenConfigFileWithTailDirs(projectDir)
 
 			// Run `quarkus convert` command
 			_, err = ExecuteKnWorkflowQuarkus(transformQuarkusConvertCmdCfgToArgs(t, test.input)...)
@@ -189,6 +184,7 @@ func TestQuarkusConvertProjectFailedAlreadyQuarkus(t *testing.T) {
 
 			err = os.Chdir(projectDir)
 			require.NoErrorf(t, err, "Expected nil error, got %v", err)
+			WriteMavenConfigFileWithTailDirs(projectDir)
 
 			// Run `quarkus convert` command
 			_, err = ExecuteKnWorkflowQuarkus(transformQuarkusConvertCmdCfgToArgs(t, test.input)...)

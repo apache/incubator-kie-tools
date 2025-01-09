@@ -97,6 +97,8 @@ export interface BeeTableProps<R extends object> {
   shouldShowColumnsInlineControls: boolean;
   resizerStopBehavior: ResizerStopBehavior;
   lastColumnMinWidth?: number;
+  /** Method should return true for table rows, that can display evaluation hits count, false otherwise. If not set, BeeTableBody defaults to false. */
+  supportsEvaluationHitsCount?: (row: ReactTable.Row<R>) => boolean;
 }
 
 /** Possible status for the visibility of the Table's Header */

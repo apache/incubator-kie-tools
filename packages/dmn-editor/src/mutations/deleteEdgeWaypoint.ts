@@ -18,6 +18,7 @@
  */
 
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { addOrGetDrd } from "./addOrGetDrd";
 
 export function deleteEdgeWaypoint({
@@ -26,7 +27,7 @@ export function deleteEdgeWaypoint({
   edgeIndex,
   waypointIndex,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   edgeIndex: number;
   waypointIndex: number;

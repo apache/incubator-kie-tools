@@ -23,7 +23,10 @@ import ErrorProcessor from "../utils/tools/ErrorProcessor";
 import LocatorWaitAction from "./LocatorWaitAction";
 
 export default class Locator {
-  constructor(private readonly driver: WebDriver, private readonly by: By) {}
+  constructor(
+    private readonly driver: WebDriver,
+    private readonly by: By
+  ) {}
 
   public wait(timeout?: number): LocatorWaitAction {
     return new LocatorWaitAction(this.driver, this.by, timeout);

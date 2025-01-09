@@ -17,8 +17,8 @@
     "build:dev:darwin:linux": "mvn clean install -DskipTests",
     "build:dev:win32": "pnpm powershell \"mvn clean install -DskipTests \"",
     "build:prod": "pnpm lint && run-script-os",
-    "build:prod:darwin:linux": "mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
-    "build:prod:win32": "pnpm powershell \"mvn clean install `-DskipTests `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
+    "build:prod:darwin:linux": "mvn clean deploy -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -Dmaven.deploy.skip=$(build-env maven.deploy.skip) -Dreproducible",
+    "build:prod:win32": "pnpm powershell \"mvn clean deploy `-DskipTests `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-Dmaven.deploy.skip=$(build-env maven.deploy.skip) `-Dreproducible\"",
     "install": "node install.js",
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
@@ -26,9 +26,10 @@
     "quarkus:dev:darwin:linux": "mvn clean package quarkus:dev -DskipTests",
     "quarkus:dev:win32": "mvn clean package quarkus:dev -DskipTests"
   },
+  "dependencies": {
+    "@kie-tools/maven-base": "workspace:*"
+  },
   "devDependencies": {
-    "@kie-tools/maven-base": "workspace:*",
-    "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/serverless-workflow-dev-ui-webapp": "workspace:*",
     "run-script-os": "^1.1.6"

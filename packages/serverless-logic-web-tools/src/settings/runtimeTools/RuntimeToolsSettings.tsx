@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { ActionGroup, Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -43,14 +43,31 @@ import {
   saveConfigCookie,
 } from "./RuntimeToolsConfig";
 import { removeTrailingSlashFromUrl } from "../../url";
+import { isDataIndexUrlValid } from "../../url";
+import { Alert } from "@patternfly/react-core/dist/js";
+import { useAppI18n } from "../../i18n";
+import { verifyDataIndex } from "@kie-tools/runtime-tools-swf-gateway-api/src/gatewayApi/apis";
 
 const PAGE_TITLE = "Runtime Tools";
 
+enum FormValiationOptions {
+  INITIAL = "INITIAL",
+  INVALID = "INVALID",
+  CONNECTION_ERROR = "CONNECTION_ERROR",
+}
+
 export function RuntimeToolsSettings(props: SettingsPageProps) {
+  const { i18n } = useAppI18n();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
   const [config, setConfig] = useState(settings.runtimeTools.config);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfigValidated, setConfigValidated] = useState(FormValiationOptions.INITIAL);
+  const [dataIndexUrlAvailable, setDataIndexUrlAvailable] = useState<boolean>(false);
+
+  useEffect(() => {
+    setConfigValidated(FormValiationOptions.INITIAL);
+  }, [config]);
 
   const handleModalToggle = useCallback(() => {
     setIsModalOpen((prevIsModalOpen) => !prevIsModalOpen);
@@ -65,15 +82,8 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
 
   const onClearDataIndexUrl = useCallback(() => setConfig({ ...config, dataIndexUrl: "" }), [config]);
 
-  const onClearKogitoServiceUrl = useCallback(() => setConfig({ ...config, kogitoServiceUrl: "" }), [config]);
-
   const onDataIndexURLChanged = useCallback(
     (newValue: string) => setConfig({ ...config, dataIndexUrl: newValue }),
-    [config]
-  );
-
-  const onKogitoServiceUrlChanged = useCallback(
-    (newValue: string) => setConfig({ ...config, kogitoServiceUrl: newValue }),
     [config]
   );
 
@@ -83,11 +93,23 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
     resetConfigCookie();
   }, [settingsDispatch.runtimeTools]);
 
-  const onApply = useCallback(() => {
+  const onApply = useCallback(async () => {
     const newConfig: RuntimeToolsSettingsConfig = {
       dataIndexUrl: removeTrailingSlashFromUrl(config.dataIndexUrl),
-      kogitoServiceUrl: removeTrailingSlashFromUrl(config.kogitoServiceUrl),
     };
+    const isDataIndexUrlVerified = await verifyDataIndex(config.dataIndexUrl);
+    if (!isDataIndexUrlValid(config.dataIndexUrl)) {
+      setConfigValidated(FormValiationOptions.INVALID);
+      return;
+    } else {
+      if (isDataIndexUrlVerified == true) {
+        setDataIndexUrlAvailable(true);
+      } else {
+        setConfigValidated(FormValiationOptions.CONNECTION_ERROR);
+        return;
+      }
+    }
+
     setConfig(newConfig);
     settingsDispatch.runtimeTools.setConfig(newConfig);
     saveConfigCookie(newConfig);
@@ -117,9 +139,6 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
                 <br />
                 <b>Data Index URL: </b>
                 <i>{config.dataIndexUrl}</i>
-                <br />
-                <b>SonataFlow Service URL: </b>
-                <i>{config.kogitoServiceUrl}</i>
                 <br />
                 <br />
                 <Button variant={ButtonVariant.tertiary} onClick={onReset}>
@@ -155,10 +174,36 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
           appendTo={props.pageContainerRef.current || document.body}
         >
           <Form>
+            {isConfigValidated === FormValiationOptions.INVALID && (
+              <FormAlert>
+                <Alert
+                  variant="danger"
+                  title={i18n.RuntimeToolsSettings.configModal.validDataIndexURLError}
+                  aria-live="polite"
+                  isInline
+                  data-testid="alert-data-index-url-invalid"
+                />
+              </FormAlert>
+            )}
+            {isConfigValidated === FormValiationOptions.CONNECTION_ERROR && (
+              <FormAlert>
+                <Alert
+                  variant="danger"
+                  title={i18n.RuntimeToolsSettings.configModal.dataIndexConnectionError}
+                  aria-live="polite"
+                  isInline
+                  data-testid="alert-data-index-url-connection-error"
+                />
+              </FormAlert>
+            )}
             <FormGroup
               label={"Data Index URL"}
               labelIcon={
-                <Popover bodyContent={"Data Index URL associated with your running Kogito runtime service."}>
+                <Popover
+                  bodyContent={
+                    "Data Index URL associated with your running SonataFlow runtime services. Used to list workflow instances and definitions."
+                  }
+                >
                   <button
                     type="button"
                     aria-label="More info for Data Index URL field"
@@ -193,50 +238,6 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
                     variant="plain"
                     aria-label="Clear Data Index URL button"
                     onClick={onClearDataIndexUrl}
-                  >
-                    <TimesIcon />
-                  </Button>
-                </InputGroupText>
-              </InputGroup>
-            </FormGroup>
-            <FormGroup
-              label={"SonataFlow Service URL"}
-              labelIcon={
-                <Popover bodyContent={"URL associated with your running SonataFlow runtime service."}>
-                  <button
-                    type="button"
-                    aria-label="More info for SonataFlow Service URL field"
-                    onClick={(e) => e.preventDefault()}
-                    aria-describedby="kogito-service-url-field"
-                    className="pf-c-form__group-label-help"
-                  >
-                    <HelpIcon noVerticalAlign />
-                  </button>
-                </Popover>
-              }
-              isRequired
-              fieldId="kogito-service-url-field"
-            >
-              <InputGroup className="pf-u-mt-sm">
-                <TextInput
-                  autoComplete={"off"}
-                  isRequired
-                  type="text"
-                  id="kogito-service-url-field"
-                  name="kogito-service-url-field"
-                  aria-label="SonataFlow Service URL field"
-                  aria-describedby="kogito-service-url-field-helper"
-                  value={config.kogitoServiceUrl}
-                  onChange={onKogitoServiceUrlChanged}
-                  tabIndex={2}
-                  data-testid="kogito-service-url-text-field"
-                />
-                <InputGroupText>
-                  <Button
-                    isSmall
-                    variant="plain"
-                    aria-label="Clear SonataFlow Service URL button"
-                    onClick={onClearKogitoServiceUrl}
                   >
                     <TimesIcon />
                   </Button>

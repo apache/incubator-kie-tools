@@ -36,15 +36,18 @@ import { ProcessDetailsContextProvider } from "@kie-tools/runtime-tools-process-
 import { JobsManagementContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/JobsManagement";
 import { TaskFormContextProvider } from "../../contexts/TaskFormContextProvider";
 import { TaskInboxContextProvider } from "../../contexts/TaskInboxContextProvider";
+import ProcessContextProvider from "../../contexts/ProcessContextProvider";
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
   isProcessEnabled: boolean;
   users: User[];
   children: React.ReactElement;
+  devUIOrigin: string;
   devUIUrl: string;
-  openApiPath: string;
-  remoteKogitoAppUrl: string;
+  quarkusAppOrigin: string;
+  quarkusAppRootPath: string;
+  shouldReplaceQuarkusAppOriginWithWebappOrigin: boolean;
   availablePages?: string[];
   customLabels: CustomLabels;
   omittedProcessTimelineEvents?: string[];
@@ -55,9 +58,11 @@ const DevUILayout: React.FC<IOwnProps> = ({
   apolloClient,
   isProcessEnabled,
   users,
+  devUIOrigin,
   devUIUrl,
-  openApiPath,
-  remoteKogitoAppUrl,
+  quarkusAppOrigin,
+  quarkusAppRootPath,
+  shouldReplaceQuarkusAppOriginWithWebappOrigin,
   availablePages,
   customLabels,
   omittedProcessTimelineEvents,
@@ -76,9 +81,11 @@ const DevUILayout: React.FC<IOwnProps> = ({
     <ApolloProvider client={apolloClient}>
       <DevUIAppContextProvider
         users={users}
+        devUIOrigin={devUIOrigin}
         devUIUrl={devUIUrl}
-        openApiPath={openApiPath}
-        remoteKogitoAppUrl={remoteKogitoAppUrl}
+        quarkusAppOrigin={quarkusAppOrigin}
+        quarkusAppRootPath={quarkusAppRootPath}
+        shouldReplaceQuarkusAppOriginWithWebappOrigin={shouldReplaceQuarkusAppOriginWithWebappOrigin}
         isProcessEnabled={isProcessEnabled}
         availablePages={availablePages}
         customLabels={customLabels}
@@ -87,25 +94,21 @@ const DevUILayout: React.FC<IOwnProps> = ({
       >
         <TaskInboxContextProvider apolloClient={apolloClient}>
           <TaskFormContextProvider>
-            <ProcessListContextProvider apolloClient={apolloClient}>
-              <ProcessDetailsContextProvider apolloClient={apolloClient}>
-                <JobsManagementContextProvider apolloClient={apolloClient}>
-                  <ProcessDefinitionListContextProvider>
-                    <FormsListContextProvider>
-                      <FormDetailsContextProvider>
-                        <ProcessFormContextProvider>
-                          <MemoryRouter>
-                            <Switch>
-                              <Route path="/" render={renderPage} />
-                            </Switch>
-                          </MemoryRouter>
-                        </ProcessFormContextProvider>
-                      </FormDetailsContextProvider>
-                    </FormsListContextProvider>
-                  </ProcessDefinitionListContextProvider>
-                </JobsManagementContextProvider>
-              </ProcessDetailsContextProvider>
-            </ProcessListContextProvider>
+            <ProcessContextProvider apolloClient={apolloClient}>
+              <JobsManagementContextProvider apolloClient={apolloClient}>
+                <FormsListContextProvider>
+                  <FormDetailsContextProvider>
+                    <ProcessFormContextProvider>
+                      <MemoryRouter>
+                        <Switch>
+                          <Route path="/" render={renderPage} />
+                        </Switch>
+                      </MemoryRouter>
+                    </ProcessFormContextProvider>
+                  </FormDetailsContextProvider>
+                </FormsListContextProvider>
+              </JobsManagementContextProvider>
+            </ProcessContextProvider>
           </TaskFormContextProvider>
         </TaskInboxContextProvider>
       </DevUIAppContextProvider>

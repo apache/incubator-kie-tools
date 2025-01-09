@@ -1,4 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~ 
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~ 
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.      
+-->
 <definitions
   id="Definitions_DecisionService"
   name="Decision Service"
@@ -7,15 +25,15 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
   xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
-  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/">
-  <decisionService id="DecisionService_1" name="Decision Service 1">
-  </decisionService>
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+>
+  <decisionService id="DecisionService_1" name="Decision Service 1" />
   <dmndi:DMNDI>
     <dmndi:DMNDiagram id="DRD1">
       <dmndi:DMNShape id="_DMNShape_DecisionService_1" dmnElementRef="DecisionService_1">
-        <dc:Bounds x="0" y="0" width="907" height="421"/>
+        <dc:Bounds x="0" y="0" width="907" height="421" />
         <dmndi:DMNLabel>
-          <dc:Bounds x="354" y="96" width="197" height="18"/>
+          <dc:Bounds x="354" y="96" width="197" height="18" />
         </dmndi:DMNLabel>
         <dmndi:DMNDecisionServiceDividerLine>
           <di:waypoint xsi:type="dc:Point" x="0" y="210" />

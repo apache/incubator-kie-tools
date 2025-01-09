@@ -17,51 +17,61 @@
  * under the License.
  */
 
-import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
+import { ExtendedServicesFormSchema } from "@kie-tools/extended-services-api";
 import OpenAPIParser from "@readme/openapi-parser";
 import { routes } from "./Routes";
-import { DmnFormAppProps } from "./DmnFormApp";
-import * as path from "path";
 
 export interface FormData {
   modelName: string;
-  schema: ExtendedServicesDmnJsonSchema;
+  schema: ExtendedServicesFormSchema;
 }
 
 export interface AppData {
   forms: FormData[];
-  baseOrigin: string;
-  basePath: string;
 }
 
 export type DmnDefinitionsJson = FormData;
 
-export async function fetchAppData(args: DmnFormAppProps): Promise<AppData> {
+export async function fetchAppData(args: { quarkusAppOrigin: string; quarkusAppPath: string }): Promise<AppData> {
   const openApiSpec = await (
-    await fetch(routes.quarkusApp.openApiJson.path({}, args.baseOrigin, args.basePath))
+    await fetch(routes.quarkusApp.openApiJson.path({}, args.quarkusAppOrigin, args.quarkusAppPath))
   ).json();
-  const fixedRefOpenApiSpec = JSON.parse(
-    JSON.stringify(openApiSpec).replace(
-      new RegExp(`${args.basePath ? `/${args.basePath}` : ""}/dmnDefinitions.json`, "g"),
-      routes.quarkusApp.dmnDefinitionsJson.path({}, args.baseOrigin, args.basePath)
-    )
-  );
 
-  const dereferencedSpec = await OpenAPIParser.dereference(fixedRefOpenApiSpec, {
+  // Append origin to schema $refs
+  Object.keys(openApiSpec.paths).forEach((modelPath) => {
+    const inputSetSchemaRef = openApiSpec.paths[modelPath]?.post.requestBody.content["application/json"].schema.$ref;
+    const outputSetSchemaRef =
+      openApiSpec.paths[modelPath]?.post.responses.default?.content["application/json"].schema.$ref;
+
+    if (inputSetSchemaRef) {
+      openApiSpec.paths[modelPath].post.requestBody.content["application/json"].schema.$ref =
+        `${args.quarkusAppOrigin}${inputSetSchemaRef}`;
+    }
+
+    if (outputSetSchemaRef) {
+      openApiSpec.paths[modelPath].post.responses.default.content["application/json"].schema.$ref =
+        `${args.quarkusAppOrigin}${outputSetSchemaRef}`;
+    }
+  });
+
+  // Dereference schema (replace $refs with their values fetched from the <model>.json files)
+  const dereferencedSpec = await OpenAPIParser.dereference(openApiSpec, {
     dereference: { circular: "ignore" },
   });
 
+  // Filter models with dmnresult endpoints
   const models = Object.keys(dereferencedSpec.paths)
     .filter((path: string) => path.includes("/dmnresult"))
     .map((path) => path.replace("/dmnresult", ""));
 
+  // Generate form objects from the models
   const forms = models.map((modelPath: string) => {
     const inputSetSchema = dereferencedSpec.paths[modelPath]?.post.requestBody.content["application/json"].schema;
     const outputSetSchema =
       dereferencedSpec.paths[modelPath]?.post.responses.default.content["application/json"].schema;
 
     return {
-      modelName: modelPath.replace(args.basePath ? `/${args.basePath}` : "", "").replace("/", ""),
+      modelName: modelPath.replace(args.quarkusAppPath ? `/${args.quarkusAppPath}` : "", "").replace("/", ""),
       schema: {
         $ref: "#/definitions/InputSet",
         definitions: {
@@ -78,7 +88,5 @@ export async function fetchAppData(args: DmnFormAppProps): Promise<AppData> {
 
   return {
     forms,
-    baseOrigin: args.baseOrigin,
-    basePath: args.basePath,
   };
 }

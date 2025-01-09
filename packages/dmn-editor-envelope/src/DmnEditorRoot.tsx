@@ -19,21 +19,15 @@
 
 import * as __path from "path";
 import * as React from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import * as DmnEditor from "@kie-tools/dmn-editor/dist/DmnEditor";
-import { getMarshaller } from "@kie-tools/dmn-marshaller";
+import { normalize, Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { DMN_LATEST_VERSION, DmnLatestModel, DmnMarshaller, getMarshaller } from "@kie-tools/dmn-marshaller";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import {
-  ContentType,
-  ResourceContent,
-  SearchType,
-  WorkspaceChannelApi,
-  WorkspaceEdit,
-} from "@kie-tools-core/workspace/dist/api";
+import { ResourceContent, SearchType, WorkspaceChannelApi, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
-import { DMN_LATEST_VERSION, DmnLatestModel, DmnMarshaller } from "@kie-tools/dmn-marshaller";
 import { domParser } from "@kie-tools/xml-parser-ts";
 import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
-import { useEffect, useMemo, useState } from "react";
 import { XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 import { getPmmlNamespace } from "@kie-tools/dmn-editor/dist/pmml/pmml";
 import { getNamespaceOfDmnImport } from "@kie-tools/dmn-editor/dist/includedModels/importNamespaces";
@@ -41,6 +35,10 @@ import {
   imperativePromiseHandle,
   PromiseImperativeHandle,
 } from "@kie-tools-core/react-hooks/dist/useImperativePromiseHandler";
+import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
 export const EXTERNAL_MODELS_SEARCH_GLOB_PATTERN = "**/*.{dmn,pmml}";
 
@@ -60,16 +58,21 @@ export type DmnEditorRootProps = {
   onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot: WorkspaceChannelApi["kogitoWorkspace_openFile"];
   workspaceRootAbsolutePosixPath: string;
+  keyboardShortcutsService: KeyboardShortcutsService | undefined;
+  isReadOnly: boolean;
 };
 
 export type DmnEditorRootState = {
   marshaller: DmnMarshaller<typeof DMN_LATEST_VERSION> | undefined;
-  stack: DmnLatestModel[];
+  stack: Normalized<DmnLatestModel>[];
   pointer: number;
-  openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
+  openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
   externalModelsByNamespace: DmnEditor.ExternalModelsIndex;
-  readonly: boolean;
+  isReadOnly: boolean;
   externalModelsManagerDoneBootstraping: boolean;
+  keyboardShortcutsRegisterIds: number[];
+  keyboardShortcutsRegistered: boolean;
+  error: Error | undefined;
 };
 
 export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditorRootState> {
@@ -86,9 +89,12 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       marshaller: undefined,
       stack: [],
       pointer: -1,
-      openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: undefined,
-      readonly: true,
+      openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: undefined,
+      isReadOnly: props.isReadOnly,
       externalModelsManagerDoneBootstraping: false,
+      keyboardShortcutsRegisterIds: [],
+      keyboardShortcutsRegistered: false,
+      error: undefined,
     };
   }
 
@@ -117,36 +123,40 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
   }
 
   public async setContent(
-    openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: string,
+    openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: string,
     content: string
   ): Promise<void> {
-    const marshaller = getMarshaller(content || EMPTY_DMN(), { upgradeTo: "latest" });
+    const marshaller = this.getMarshaller(content);
 
     // Save stack
-    let savedStackPointer: DmnLatestModel[] = [];
+    let savedStackPointer: Normalized<DmnLatestModel>[] = [];
 
     // Set the model and path for external models manager.
     this.setState((prev) => {
       savedStackPointer = [...prev.stack];
-      return { stack: [marshaller.parser.parse()], openFilenormalizedPosixPathRelativeToTheWorkspaceRoot, pointer: 0 };
+      return {
+        stack: [normalize(marshaller.parser.parse())],
+        openFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
+        pointer: 0,
+      };
     });
 
     // Wait the external manager models to load.
     await this.externalModelsManagerDoneBootstraping.promise;
 
-    // Set the valeus to render the DMN Editor.
+    // Set the values to render the DMN Editor.
     this.setState((prev) => {
       // External change to the same file.
       if (
-        prev.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot ===
-        openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
+        prev.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot ===
+        openFileNormalizedPosixPathRelativeToTheWorkspaceRoot
       ) {
         const newStack = savedStackPointer.slice(0, prev.pointer + 1);
         return {
           marshaller,
-          openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
-          stack: [...newStack, marshaller.parser.parse()],
-          readonly: false,
+          openFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
+          stack: [...newStack, normalize(marshaller.parser.parse())],
+          isReadOnly: prev.isReadOnly,
           pointer: newStack.length,
           externalModelsManagerDoneBootstraping: true,
         };
@@ -156,9 +166,9 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       else {
         return {
           marshaller,
-          openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
-          stack: [marshaller.parser.parse()],
-          readonly: false,
+          openFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
+          stack: [normalize(marshaller.parser.parse())],
+          isReadOnly: prev.isReadOnly,
           pointer: 0,
           externalModelsManagerDoneBootstraping: true,
         };
@@ -166,10 +176,22 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     });
   }
 
+  public get model(): Normalized<DmnLatestModel> | undefined {
+    return this.state.stack[this.state.pointer];
+  }
+
   // Internal methods
 
-  public get model(): DmnLatestModel | undefined {
-    return this.state.stack[this.state.pointer];
+  private getMarshaller(content: string) {
+    try {
+      return getMarshaller(content || EMPTY_DMN(), { upgradeTo: "latest" });
+    } catch (e) {
+      this.setState((s) => ({
+        ...s,
+        error: e,
+      }));
+      throw e;
+    }
   }
 
   private setExternalModelsByNamespace = (externalModelsByNamespace: DmnEditor.ExternalModelsIndex) => {
@@ -188,13 +210,13 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       },
       () =>
         this.props.onNewEdit({
-          id: `${this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot}__${generateUuid()}`,
+          id: `${this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot}__${generateUuid()}`,
         })
     );
   };
 
   private onRequestExternalModelsAvailableToInclude: DmnEditor.OnRequestExternalModelsAvailableToInclude = async () => {
-    if (!this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot) {
+    if (!this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot) {
       return [];
     }
 
@@ -205,9 +227,9 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
 
     return list.normalizedPosixPathsRelativeToTheWorkspaceRoot.flatMap((p) =>
       // Do not show this DMN on the list
-      p === this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
+      p === this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot
         ? []
-        : __path.relative(__path.dirname(this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot!), p)
+        : __path.relative(__path.dirname(this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot!), p)
     );
   };
 
@@ -216,7 +238,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
   ) => {
     const normalizedPosixPathRelativeToTheWorkspaceRoot = __path
       .resolve(
-        __path.dirname(this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot!),
+        __path.dirname(this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot!),
         normalizedPosixPathRelativeToTheOpenFile
       )
       .substring(1); // Remove leading slash.
@@ -239,7 +261,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     );
     const resource = await this.props.onRequestWorkspaceFileContent({
       normalizedPosixPathRelativeToTheWorkspaceRoot,
-      opts: { type: ContentType.TEXT },
+      opts: { type: "text" },
     });
 
     const ext = __path.extname(normalizedPosixPathRelativeToTheOpenFile);
@@ -247,7 +269,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       return {
         normalizedPosixPathRelativeToTheOpenFile,
         type: "dmn",
-        model: getMarshaller(resource?.content ?? "", { upgradeTo: "latest" }).parser.parse(),
+        model: normalize(getMarshaller(resource?.content ?? "", { upgradeTo: "latest" }).parser.parse()),
         svg: "",
       };
     } else if (ext === ".pmml") {
@@ -262,7 +284,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
   };
 
   private onOpenFileFromPathRelativeToTheOpenFile = (normalizedPosixPathRelativeToTheOpenFile: string) => {
-    if (!this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot) {
+    if (!this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot) {
       return;
     }
 
@@ -271,9 +293,180 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     );
   };
 
+  public componentDidUpdate(
+    prevProps: Readonly<DmnEditorRootProps>,
+    prevState: Readonly<DmnEditorRootState>,
+    snapshot?: any
+  ): void {
+    if (this.props.keyboardShortcutsService === undefined || this.state.keyboardShortcutsRegistered === true) {
+      return;
+    }
+
+    const commands = this.dmnEditorRef.current?.getCommands();
+    if (commands === undefined) {
+      return;
+    }
+    const cancelAction = this.props.keyboardShortcutsService.registerKeyPress("Escape", "Edit | Unselect", async () =>
+      commands.cancelAction()
+    );
+    const deleteSelectionBackspace = this.props.keyboardShortcutsService.registerKeyPress(
+      "Backspace",
+      "Edit | Delete selection",
+      async () => {}
+    );
+    const deleteSelectionDelete = this.props.keyboardShortcutsService.registerKeyPress(
+      "Delete",
+      "Edit | Delete selection",
+      async () => {}
+    );
+    const selectAll = this.props.keyboardShortcutsService?.registerKeyPress(
+      "A",
+      "Edit | Select/Deselect all",
+      async () => commands.selectAll()
+    );
+    const createGroup = this.props.keyboardShortcutsService?.registerKeyPress(
+      "G",
+      "Edit | Create group wrapping selection",
+      async () => {
+        console.log(" KEY GROUP PRESSED, ", commands);
+        return commands.createGroup();
+      }
+    );
+    const hideFromDrd = this.props.keyboardShortcutsService?.registerKeyPress("X", "Edit | Hide from DRD", async () =>
+      commands.hideFromDrd()
+    );
+    const copy = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+C", "Edit | Copy nodes", async () =>
+      commands.copy()
+    );
+    const cut = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+X", "Edit | Cut nodes", async () =>
+      commands.cut()
+    );
+    const paste = this.props.keyboardShortcutsService?.registerKeyPress("Ctrl+V", "Edit | Paste nodes", async () =>
+      commands.paste()
+    );
+    const togglePropertiesPanel = this.props.keyboardShortcutsService?.registerKeyPress(
+      "I",
+      "Misc | Open/Close properties panel",
+      async () => commands.togglePropertiesPanel()
+    );
+    const toggleHierarchyHighlight = this.props.keyboardShortcutsService?.registerKeyPress(
+      "H",
+      "Misc | Toggle hierarchy highlights",
+      async () => commands.toggleHierarchyHighlight()
+    );
+    const moveUp = this.props.keyboardShortcutsService.registerKeyPress(
+      "Up",
+      "Move | Move selection up",
+      async () => {}
+    );
+    const moveDown = this.props.keyboardShortcutsService.registerKeyPress(
+      "Down",
+      "Move | Move selection down",
+      async () => {}
+    );
+    const moveLeft = this.props.keyboardShortcutsService.registerKeyPress(
+      "Left",
+      "Move | Move selection left",
+      async () => {}
+    );
+    const moveRight = this.props.keyboardShortcutsService.registerKeyPress(
+      "Right",
+      "Move | Move selection right",
+      async () => {}
+    );
+    const bigMoveUp = this.props.keyboardShortcutsService.registerKeyPress(
+      "Shift + Up",
+      "Move | Move selection up a big distance",
+      async () => {}
+    );
+    const bigMoveDown = this.props.keyboardShortcutsService.registerKeyPress(
+      "Shift + Down",
+      "Move | Move selection down a big distance",
+      async () => {}
+    );
+    const bigMoveLeft = this.props.keyboardShortcutsService.registerKeyPress(
+      "Shift + Left",
+      "Move | Move selection left a big distance",
+      async () => {}
+    );
+    const bigMoveRight = this.props.keyboardShortcutsService.registerKeyPress(
+      "Shift + Right",
+      "Move | Move selection right a big distance",
+      async () => {}
+    );
+    const focusOnBounds = this.props.keyboardShortcutsService?.registerKeyPress(
+      "B",
+      "Navigate | Focus on selection",
+      async () => commands.focusOnSelection()
+    );
+    const resetPosition = this.props.keyboardShortcutsService?.registerKeyPress(
+      "Space",
+      "Navigate | Reset position to origin",
+      async () => commands.resetPosition()
+    );
+    const pan = this.props.keyboardShortcutsService?.registerKeyPress(
+      "Right Mouse Button",
+      "Navigate | Hold and drag to Pan",
+      async () => {}
+    );
+    const zoom = this.props.keyboardShortcutsService?.registerKeyPress(
+      "Ctrl",
+      "Navigate | Hold and scroll to zoom in/out",
+      async () => {}
+    );
+    const navigateHorizontally = this.props.keyboardShortcutsService?.registerKeyPress(
+      "Shift",
+      "Navigate | Hold and scroll to navigate horizontally",
+      async () => {}
+    );
+
+    this.setState((prev) => ({
+      ...prev,
+      keyboardShortcutsRegistered: true,
+      keyboardShortcutsRegisterIds: [
+        bigMoveDown,
+        bigMoveLeft,
+        bigMoveRight,
+        bigMoveUp,
+        cancelAction,
+        copy,
+        createGroup,
+        cut,
+        deleteSelectionBackspace,
+        deleteSelectionDelete,
+        focusOnBounds,
+        hideFromDrd,
+        moveDown,
+        moveLeft,
+        moveRight,
+        moveUp,
+        navigateHorizontally,
+        pan,
+        paste,
+        resetPosition,
+        selectAll,
+        toggleHierarchyHighlight,
+        togglePropertiesPanel,
+        zoom,
+      ],
+    }));
+  }
+
+  public componentWillUnmount() {
+    const keyboardShortcuts = this.dmnEditorRef.current?.getCommands();
+    if (keyboardShortcuts === undefined) {
+      return;
+    }
+
+    this.state.keyboardShortcutsRegisterIds.forEach((id) => {
+      this.props.keyboardShortcutsService?.deregister(id);
+    });
+  }
+
   public render() {
     return (
       <>
+        {this.state.error && <DmnMarshallerFallbackError error={this.state.error} />}
         {this.model && (
           <>
             <DmnEditor.DmnEditor
@@ -286,6 +479,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
               externalContextName={""}
               externalContextDescription={""}
               issueTrackerHref={""}
+              isReadOnly={this.state.isReadOnly}
               onModelChange={this.onModelChange}
               onRequestExternalModelsAvailableToInclude={this.onRequestExternalModelsAvailableToInclude}
               // (begin) All paths coming from inside the DmnEditor component are paths relative to the open file.
@@ -297,7 +491,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
             <ExternalModelsManager
               workspaceRootAbsolutePosixPath={this.props.workspaceRootAbsolutePosixPath}
               thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot={
-                this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
+                this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot
               }
               model={this.model}
               onChange={this.setExternalModelsByNamespace}
@@ -325,17 +519,14 @@ function ExternalModelsManager({
 }: {
   workspaceRootAbsolutePosixPath: string;
   thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
-  model: DmnLatestModel;
+  model: Normalized<DmnLatestModel>;
   onChange: (externalModelsByNamespace: DmnEditor.ExternalModelsIndex) => void;
   onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onRequestWorkspaceFilesList: WorkspaceChannelApi["kogitoWorkspace_resourceListRequest"];
   externalModelsManagerDoneBootstraping: PromiseImperativeHandle<void>;
 }) {
   const namespaces = useMemo(
-    () =>
-      (model.definitions.import ?? [])
-        .map((i) => getNamespaceOfDmnImport({ dmnImport: i }))
-        .join(NAMESPACES_EFFECT_SEPARATOR),
+    () => getIncludedNamespacesFromModel(model.definitions.import),
     [model.definitions.import]
   );
 
@@ -363,6 +554,38 @@ function ExternalModelsManager({
     };
   }, [thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot]);
 
+  const getDmnsByNamespace = useCallback((resources: (ResourceContent | undefined)[]) => {
+    const ret = new Map<string, ResourceContent>();
+    for (let i = 0; i < resources.length; i++) {
+      const resource = resources[i];
+      if (!resource) {
+        continue;
+      }
+
+      const content = resource.content ?? "";
+      const ext = __path.extname(resource.normalizedPosixPathRelativeToTheWorkspaceRoot);
+      if (ext === ".dmn") {
+        const namespace = domParser.getDomDocument(content).documentElement.getAttribute("namespace");
+        if (namespace) {
+          // Check for multiplicity of namespaces on DMN models
+          if (ret.has(namespace)) {
+            console.warn(
+              `DMN EDITOR ROOT: Multiple DMN models encountered with the same namespace '${namespace}': '${
+                resource.normalizedPosixPathRelativeToTheWorkspaceRoot
+              }' and '${
+                ret.get(namespace)!.normalizedPosixPathRelativeToTheWorkspaceRoot
+              }'. The latter will be considered.`
+            );
+          }
+
+          ret.set(namespace, resource);
+        }
+      }
+    }
+
+    return ret;
+  }, []);
+
   // This effect actually populates `externalModelsByNamespace` through the `onChange` call.
   useEffect(() => {
     let canceled = false;
@@ -384,7 +607,7 @@ function ExternalModelsManager({
           resources.push(
             onRequestWorkspaceFileContent({
               normalizedPosixPathRelativeToTheWorkspaceRoot,
-              opts: { type: ContentType.TEXT },
+              opts: { type: "text" },
             })
           );
         }
@@ -394,6 +617,8 @@ function ExternalModelsManager({
         const externalModelsIndex: DmnEditor.ExternalModelsIndex = {};
 
         const namespacesSet = new Set(namespaces.split(NAMESPACES_EFFECT_SEPARATOR));
+        const loadedDmnsByPathRelativeToTheWorkspaceRoot = new Set<string>();
+        const dmnsByNamespace = getDmnsByNamespace(resources);
 
         for (let i = 0; i < resources.length; i++) {
           const resource = resources[i];
@@ -401,46 +626,54 @@ function ExternalModelsManager({
             continue;
           }
 
-          const content = resource.content ?? "";
-
+          const ext = __path.extname(resource.normalizedPosixPathRelativeToTheWorkspaceRoot);
           const normalizedPosixPathRelativeToTheOpenFile = __path.relative(
             __path.dirname(thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot),
             resource.normalizedPosixPathRelativeToTheWorkspaceRoot
           );
 
-          const ext = __path.extname(resource.normalizedPosixPathRelativeToTheWorkspaceRoot);
-          if (ext === ".dmn") {
-            const namespace = domParser.getDomDocument(content).documentElement.getAttribute("namespace");
-            if (namespace && namespacesSet.has(namespace)) {
-              // Check for multiplicity of namespaces on DMN models
-              if (externalModelsIndex[namespace]) {
-                console.warn(
-                  `DMN EDITOR ROOT: Multiple DMN models encountered with the same namespace '${namespace}': '${
-                    resource.normalizedPosixPathRelativeToTheWorkspaceRoot
-                  }' and '${
-                    externalModelsIndex[namespace]!.normalizedPosixPathRelativeToTheOpenFile
-                  }'. The latter will be considered.`
-                );
-              }
+          const resourceContent = resource.content ?? "";
 
-              externalModelsIndex[namespace] = {
-                normalizedPosixPathRelativeToTheOpenFile,
-                model: getMarshaller(content, { upgradeTo: "latest" }).parser.parse(),
-                type: "dmn",
-                svg: "",
-              };
+          // DMN Files
+          if (ext === ".dmn") {
+            const namespaceOfTheResourceFile = domParser
+              .getDomDocument(resourceContent)
+              .documentElement.getAttribute("namespace");
+
+            if (namespaceOfTheResourceFile && namespacesSet.has(namespaceOfTheResourceFile)) {
+              checkIfNamespaceIsAlreadyLoaded({
+                externalModelsIndex,
+                namespaceOfTheResourceFile,
+                normalizedPosixPathRelativeToTheWorkspaceRoot: resource.normalizedPosixPathRelativeToTheWorkspaceRoot,
+              });
+
+              loadModel({
+                includedModelContent: resourceContent,
+                includedModelNamespace: namespaceOfTheResourceFile,
+                externalModelsIndex,
+                thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot,
+                loadedDmnsByPathRelativeToTheWorkspaceRoot,
+                normalizedPosixPathRelativeToTheWorkspaceRoot: resource.normalizedPosixPathRelativeToTheWorkspaceRoot,
+                resourcesByNamespace: dmnsByNamespace,
+              });
             }
-          } else if (ext === ".pmml") {
+          }
+
+          // PMML Files
+          else if (ext === ".pmml") {
             const namespace = getPmmlNamespace({ normalizedPosixPathRelativeToTheOpenFile });
             if (namespace && namespacesSet.has(namespace)) {
               // No need to check for namespaces being equal becuase there can't be two files with the same relativePath.
               externalModelsIndex[namespace] = {
                 normalizedPosixPathRelativeToTheOpenFile,
-                model: XML2PMML(content),
+                model: XML2PMML(resourceContent),
                 type: "pmml",
               };
             }
-          } else {
+          }
+
+          // Unknown files
+          else {
             throw new Error(`Unknown extension '${ext}'.`);
           }
         }
@@ -463,7 +696,113 @@ function ExternalModelsManager({
     externalUpdatesCount,
     workspaceRootAbsolutePosixPath,
     externalModelsManagerDoneBootstraping,
+    getDmnsByNamespace,
   ]);
 
   return <></>;
+}
+
+function DmnMarshallerFallbackError({ error }: { error: Error }) {
+  return (
+    <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
+      <EmptyState style={{ maxWidth: "1280px" }}>
+        <EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />
+        <Title size={"lg"} headingLevel={"h4"}>
+          Unable to open file.
+        </Title>
+        <br />
+        <EmptyStateBody>Error details: {error.message}</EmptyStateBody>
+      </EmptyState>
+    </Flex>
+  );
+}
+
+function getIncludedNamespacesFromModel(imports: Normalized<DmnLatestModel["definitions"]["import"]>) {
+  return (imports ?? []).map((i) => getNamespaceOfDmnImport({ dmnImport: i })).join(NAMESPACES_EFFECT_SEPARATOR);
+}
+
+function loadModel(args: {
+  thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot: string;
+  resourcesByNamespace: Map<string, ResourceContent>;
+  normalizedPosixPathRelativeToTheWorkspaceRoot: string;
+  includedModelNamespace: string;
+  loadedDmnsByPathRelativeToTheWorkspaceRoot: Set<string>;
+  includedModelContent: string;
+  externalModelsIndex: DmnEditor.ExternalModelsIndex;
+}) {
+  const normalizedPosixPathRelativeToTheOpenFile = __path.relative(
+    __path.dirname(args.thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot),
+    args.normalizedPosixPathRelativeToTheWorkspaceRoot
+  );
+
+  const includedModel = normalize(getMarshaller(args.includedModelContent, { upgradeTo: "latest" }).parser.parse());
+  args.externalModelsIndex[args.includedModelNamespace] = {
+    normalizedPosixPathRelativeToTheOpenFile,
+    model: includedModel,
+    type: "dmn",
+    svg: "",
+  };
+
+  args.loadedDmnsByPathRelativeToTheWorkspaceRoot.add(args.normalizedPosixPathRelativeToTheWorkspaceRoot);
+
+  loadDependentModels({
+    ...args,
+    model: includedModel,
+  });
+}
+
+// Load all included models from the model and the included models of those models, recursively.
+function loadDependentModels(args: {
+  model: Normalized<DmnLatestModel>;
+  externalModelsIndex: DmnEditor.ExternalModelsIndex;
+  resourcesByNamespace: Map<string, ResourceContent>;
+  loadedDmnsByPathRelativeToTheWorkspaceRoot: Set<string>;
+  thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot: string;
+}) {
+  const includedNamespaces = new Set(
+    getIncludedNamespacesFromModel(args.model.definitions.import).split(NAMESPACES_EFFECT_SEPARATOR)
+  );
+
+  for (const includedNamespace of includedNamespaces) {
+    if (!args.resourcesByNamespace.has(includedNamespace)) {
+      console.warn(
+        `DMN EDITOR ROOT: The included namespace '${includedNamespace}' for the model '${args.model.definitions["@_id"]}' can not be found.`
+      );
+      continue;
+    }
+
+    const resource = args.resourcesByNamespace.get(includedNamespace)!;
+    if (args.loadedDmnsByPathRelativeToTheWorkspaceRoot.has(resource.normalizedPosixPathRelativeToTheWorkspaceRoot)) {
+      continue;
+    }
+
+    checkIfNamespaceIsAlreadyLoaded({
+      externalModelsIndex: args.externalModelsIndex,
+      namespaceOfTheResourceFile: includedNamespace,
+      normalizedPosixPathRelativeToTheWorkspaceRoot: resource.normalizedPosixPathRelativeToTheWorkspaceRoot,
+    });
+
+    loadModel({
+      ...args,
+      includedModelContent: resource.content ?? "",
+      normalizedPosixPathRelativeToTheWorkspaceRoot: resource.normalizedPosixPathRelativeToTheWorkspaceRoot,
+      includedModelNamespace: includedNamespace,
+    });
+  }
+}
+
+function checkIfNamespaceIsAlreadyLoaded(args: {
+  externalModelsIndex: DmnEditor.ExternalModelsIndex;
+  namespaceOfTheResourceFile: string;
+  normalizedPosixPathRelativeToTheWorkspaceRoot: string;
+}) {
+  if (args.externalModelsIndex[args.namespaceOfTheResourceFile]) {
+    console.warn(
+      `DMN EDITOR ROOT: Multiple DMN models encountered with the same namespace '${args.namespaceOfTheResourceFile}': '${
+        args.normalizedPosixPathRelativeToTheWorkspaceRoot
+      }' and '${
+        args.externalModelsIndex[args.namespaceOfTheResourceFile]!.normalizedPosixPathRelativeToTheOpenFile
+      }'. The latter will be considered.`
+    );
+  }
 }

@@ -41,7 +41,6 @@
   </properties>
 
   <dependencies>
-
     <!-- Stunner. -->
 
     <dependency>
@@ -58,7 +57,6 @@
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>kie-wb-common-stunner-core-common</artifactId>
     </dependency>
-
 
     <dependency>
       <groupId>com.google.jsinterop</groupId>
@@ -85,29 +83,29 @@
     </dependency>
 
     <dependency>
-      <groupId>org.treblereel.j2cl.processors</groupId>
+      <groupId>org.kie.j2cl.tools.processors</groupId>
       <artifactId>processors</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.treblereel.gwt.json.mapper</groupId>
+      <groupId>org.kie.j2cl.tools.json.mapper</groupId>
       <artifactId>common</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.treblereel.gwt.json.mapper</groupId>
+      <groupId>org.kie.j2cl.tools.json.mapper</groupId>
       <artifactId>processor</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.treblereel.gwt.yaml.mapper</groupId>
+      <groupId>org.kie.j2cl.tools.yaml.mapper</groupId>
       <artifactId>common</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.treblereel.gwt.yaml.mapper</groupId>
+      <groupId>org.kie.j2cl.tools.yaml.mapper</groupId>
       <artifactId>processor</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -218,7 +216,5 @@
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
       <artifactId>lienzo-core</artifactId>
     </dependency>
-
   </dependencies>
-
 </project>

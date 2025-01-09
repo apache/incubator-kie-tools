@@ -46,7 +46,6 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
     public static final String RULE_FLOW_GROUP = "ruleFlowGroup";
     public static final String FILE_NAME = "fileName";
     public static final String NAMESPACE = "namespace";
-    public static final String DECISON_NAME = "decisionName";
     public static final String DMN_MODEL_NAME = "dmnModelName";
 
     @Property
@@ -91,19 +90,7 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
 
     @Property
     @FormField(
-            afterElement = "namespace",
-            type = ComboBoxFieldType.class
-    )
-    @SelectorDataProvider(
-            type = SelectorDataProvider.ProviderType.CLIENT,
-            className = "org.kie.workbench.common.stunner.bpmn.client.dataproviders.DecisionNameFormProvider"
-    )
-    @Valid
-    private DecisionName decisionName;
-
-    @Property
-    @FormField(
-            afterElement = "decisionName"
+            afterElement = "namespace"
     )
     @Valid
     private DmnModelName dmnModelName;
@@ -140,7 +127,6 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
              new RuleFlowGroup(),
              new FileName(),
              new Namespace(),
-             new DecisionName(),
              new DmnModelName(),
              new OnEntryAction(new ScriptTypeListValue().addValue(new ScriptTypeValue("java",
                                                                                       ""))),
@@ -155,7 +141,6 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
                                         final @MapsTo("ruleFlowGroup") RuleFlowGroup ruleFlowGroup,
                                         final @MapsTo("fileName") FileName fileName,
                                         final @MapsTo("namespace") Namespace namespace,
-                                        final @MapsTo("decisionName") DecisionName decisionName,
                                         final @MapsTo("dmnModelName") DmnModelName dmnModelName,
                                         final @MapsTo("onEntryAction") OnEntryAction onEntryAction,
                                         final @MapsTo("onExitAction") OnExitAction onExitAction,
@@ -166,7 +151,6 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
         this.ruleFlowGroup = ruleFlowGroup;
         this.fileName = fileName;
         this.namespace = namespace;
-        this.decisionName = decisionName;
         this.dmnModelName = dmnModelName;
         this.onEntryAction = onEntryAction;
         this.onExitAction = onExitAction;
@@ -205,14 +189,6 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
 
     public void setNamespace(Namespace namespace) {
         this.namespace = namespace;
-    }
-
-    public DecisionName getDecisionName() {
-        return decisionName;
-    }
-
-    public void setDecisionName(DecisionName decisionName) {
-        this.decisionName = decisionName;
     }
 
     public DmnModelName getDmnModelName() {
@@ -269,7 +245,6 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
                                          Objects.hashCode(ruleFlowGroup),
                                          Objects.hashCode(fileName),
                                          Objects.hashCode(namespace),
-                                         Objects.hashCode(decisionName),
                                          Objects.hashCode(dmnModelName),
                                          Objects.hashCode(onEntryAction),
                                          Objects.hashCode(onExitAction),
@@ -286,7 +261,6 @@ public class BusinessRuleTaskExecutionSet implements BPMNPropertySet {
                     Objects.equals(ruleFlowGroup, other.ruleFlowGroup) &&
                     Objects.equals(fileName, other.fileName) &&
                     Objects.equals(namespace, other.namespace) &&
-                    Objects.equals(decisionName, other.decisionName) &&
                     Objects.equals(dmnModelName, other.dmnModelName) &&
                     Objects.equals(onEntryAction, other.onEntryAction) &&
                     Objects.equals(onExitAction, other.onExitAction) &&

@@ -19,7 +19,7 @@
 
 import { GraphQL } from "../graphql";
 import {
-  JobCancel,
+  JobOperationResult,
   JobStatus,
   Job,
   JobsSortBy,
@@ -92,44 +92,38 @@ export const getChildProcessInstances = async (
 
 //Rest Api to Cancel multiple Jobs
 export const performMultipleCancel = async (
-  jobsToBeActioned: (GraphQL.Job & { errorMessage?: string })[],
+  jobsToBeActioned: (Job & { errorMessage?: string })[],
   client: ApolloClient<any>
 ): Promise<any> => {
-  const multipleCancel: Promise<any>[] = [];
-  for (const job of jobsToBeActioned) {
-    multipleCancel.push(
-      new Promise((resolve, reject) => {
-        client
-          .mutate({
-            mutation: GraphQL.JobCancelDocument,
-            variables: {
-              jobId: job.id,
-            },
-            fetchPolicy: "no-cache",
-          })
-          .then((value) => {
-            resolve({ successJob: job });
-          })
-          .catch((reason) => {
-            job.errorMessage = JSON.stringify(reason.message);
-            reject({ failedJob: job });
-          });
-      })
-    );
-  }
+  const multipleCancel: Promise<any>[] = jobsToBeActioned.map((job) => {
+    return new Promise((resolve, reject) => {
+      client
+        .mutate({
+          mutation: GraphQL.JobCancelDocument,
+          variables: {
+            jobId: job.id,
+          },
+          fetchPolicy: "no-cache",
+        })
+        .then((value) => {
+          resolve({ successJob: job });
+        })
+        .catch((reason) => {
+          job.errorMessage = JSON.stringify(reason.message);
+          reject({ failedJob: job });
+        });
+    });
+  });
   return Promise.all(multipleCancel.map((mc) => mc.catch((error) => error))).then((result) => {
     return Promise.resolve(result);
   });
 };
 
 //Rest Api to Cancel a Job
-export const jobCancel = async (
-  job: Pick<GraphQL.Job, "id" | "endpoint">,
-  client: ApolloClient<any>
-): Promise<JobCancel> => {
+export const jobCancel = async (job: Job, client: ApolloClient<any>): Promise<JobOperationResult> => {
   let modalTitle: string;
   let modalContent: string;
-  return new Promise<JobCancel>((resolve, reject) => {
+  return new Promise<JobOperationResult>((resolve, reject) => {
     client
       .mutate({
         mutation: GraphQL.JobCancelDocument,
@@ -174,7 +168,7 @@ export const handleJobReschedule = async (
     };
   }
 
-  return new Promise<JobCancel>((resolve, reject) => {
+  return new Promise<JobOperationResult>((resolve, reject) => {
     client
       .mutate({
         mutation: GraphQL.HandleJobRescheduleDocument,
@@ -305,7 +299,7 @@ export const handleNodeTrigger = async (
         mutation: GraphQL.HandleNodeTriggerDocument,
         variables: {
           processId: processInstance.id,
-          nodeId: node.nodeDefinitionId,
+          nodeId: node.id,
         },
         fetchPolicy: "no-cache",
       })
@@ -442,14 +436,14 @@ export const getTriggerableNodes = async (
 ): Promise<any> => {
   return client
     .query({
-      query: GraphQL.GetProcessInstanceNodeDefinitionsDocument,
+      query: GraphQL.GetProcessDefinitionNodesDocument,
       variables: {
-        processId: processInstance.id,
+        processId: processInstance.processId,
       },
       fetchPolicy: "no-cache",
     })
     .then((value) => {
-      return value.data.ProcessInstances[0].nodeDefinitions;
+      return value.data.ProcessDefinitions[0].nodes;
     })
     .catch((reason) => {
       return reason;
@@ -480,10 +474,10 @@ export const getJobsWithFilters = async (
   }
 };
 
-export const getForms = (formFilter: string[]): Promise<FormInfo[]> => {
+export const getForms = (baseUrl: string, formFilter: string[]): Promise<FormInfo[]> => {
   return new Promise((resolve, reject) => {
     axios
-      .get("/forms/list", {
+      .get(new URL(`forms/list`, baseUrl).toString(), {
         params: {
           names: formFilter.join(";"),
         },
@@ -495,10 +489,10 @@ export const getForms = (formFilter: string[]): Promise<FormInfo[]> => {
   });
 };
 
-export const getFormContent = (formName: string): Promise<Form> => {
+export const getFormContent = (baseUrl: string, formName: string): Promise<Form> => {
   return new Promise((resolve, reject) => {
     axios
-      .get(`/forms/${formName}`)
+      .get(new URL(`forms/${formName}`, baseUrl).toString())
       .then((result) => {
         resolve(result.data);
       })
@@ -506,10 +500,10 @@ export const getFormContent = (formName: string): Promise<Form> => {
   });
 };
 
-export const saveFormContent = (formName: string, content: FormContent): Promise<void> => {
+export const saveFormContent = (baseUrl: string, formName: string, content: FormContent): Promise<void> => {
   return new Promise((resolve, reject) => {
     axios
-      .post(`/forms/${formName}`, content)
+      .post(new URL(`forms/${formName}`, baseUrl).toString(), content)
       .then((result) => {
         resolve();
       })
@@ -517,39 +511,27 @@ export const saveFormContent = (formName: string, content: FormContent): Promise
   });
 };
 
-export const createProcessDefinitionList = (processDefinitionObjs: any, url: string): ProcessDefinition[] => {
-  const processDefinitionList: ProcessDefinition[] = [];
-  processDefinitionObjs.forEach((processDefObj: any) => {
-    const processName = Object.keys(processDefObj)[0].split("/")[1];
-    const endpoint = `${url}/${processName}`;
-    processDefinitionList.push({
-      processName,
-      endpoint,
-    });
-  });
-  return processDefinitionList;
-};
-
-export const getProcessDefinitionList = (kogitoAppUrl: string, openApiPath: string): Promise<ProcessDefinition[]> => {
-  return new Promise((resolve, reject) => {
-    SwaggerParser.parse(`${kogitoAppUrl}/${openApiPath.replace(/^\//, "")}`)
-      .then((response) => {
-        const processDefinitionObjs: any = [];
-        const paths = response.paths;
-        const regexPattern = /^\/[^\n/]+\/schema/;
-        Object.getOwnPropertyNames(paths)
-          .filter((path) => regexPattern.test(path.toString()))
-          .forEach((url) => {
-            let processArray = url.split("/");
-            processArray = processArray.filter((name) => name.length !== 0);
-            /* istanbul ignore else*/
-            if (Object.prototype.hasOwnProperty.call(paths[`/${processArray[0]}`], "post")) {
-              processDefinitionObjs.push({ [url]: paths[url] });
-            }
-          });
-        resolve(createProcessDefinitionList(processDefinitionObjs, kogitoAppUrl));
+export const getProcessDefinitions = (client: ApolloClient<any>): Promise<ProcessDefinition[]> => {
+  return new Promise<ProcessDefinition[]>((resolve, reject) => {
+    client
+      .query({
+        query: GraphQL.GetProcessDefinitionsDocument,
+        fetchPolicy: "network-only",
+        errorPolicy: "all",
       })
-      .catch((err) => reject(err));
+      .then((value) => {
+        resolve(
+          (value.data.ProcessDefinitions ?? []).map((item: { id: string; endpoint: string }) => {
+            return {
+              processName: item.id,
+              endpoint: item.endpoint,
+            };
+          })
+        );
+      })
+      .catch((reason) => {
+        reject({ errorMessage: JSON.stringify(reason) });
+      });
   });
 };
 

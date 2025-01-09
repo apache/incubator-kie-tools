@@ -19,26 +19,22 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv(
-  [require("@kie-tools/root-env/env"), require("@kie-tools/serverless-logic-web-tools-swf-builder-image-env/env")],
-  {
-    vars: varsWithName({
-      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags: {
-        default: "latest",
-        description: "",
-      },
-      SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderKogitoImageTag: {
-        default: "main-2024-04-03",
-        description: "",
-      },
-    }),
-    get env() {
-      return {
-        swfBuilderImage: {
-          buildTags: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTags),
-          kogitoImageTag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderKogitoImageTag),
-        },
-      };
+const rootEnv = require("@kie-tools/root-env/env");
+const serverlessLogicWebToolsSwfBuilderImageEnv = require("@kie-tools/serverless-logic-web-tools-swf-builder-image-env/env");
+const sonataflowBuilderImageEnv = require("@kie-tools/sonataflow-builder-image/env");
+
+module.exports = composeEnv([rootEnv, serverlessLogicWebToolsSwfBuilderImageEnv, sonataflowBuilderImageEnv], {
+  vars: varsWithName({
+    SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE__baseImageUrl: {
+      default: `${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.registry}/${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.account}/${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.name}:${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.buildTag}`,
+      description: "The image used in the FROM import.",
     },
-  }
-);
+  }),
+  get env() {
+    return {
+      slwtBuilderImage: {
+        baseImageUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE__baseImageUrl),
+      },
+    };
+  },
+});

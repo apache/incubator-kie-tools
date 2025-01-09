@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.kie.kogito.quarkus.extensions.spi.deployment.KogitoDataIndexServiceAvailableBuildItem;
-import org.kie.kogito.quarkus.extensions.spi.deployment.TrustyServiceAvailableBuildItem;
 import org.jbpm.quarkus.devui.deployment.data.UserInfo;
 import org.jbpm.quarkus.devui.runtime.config.DevConsoleRuntimeConfig;
 import org.jbpm.quarkus.devui.runtime.config.DevUIStaticArtifactsRecorder;
@@ -53,7 +53,8 @@ import io.quarkus.vertx.http.runtime.management.ManagementInterfaceBuildTimeConf
 public class DevConsoleProcessor {
 
     private static final String STATIC_RESOURCES_PATH = "dev-static/";
-    private static final String BASE_RELATIVE_URL = "/q/dev-ui/org.jbpm.jbpm-quarkus-devui";
+    private static final String BASE_RELATIVE_URL = "dev-ui/org.jbpm.jbpm-quarkus-devui";
+    private static final String NON_APPLICATION_BASE_RELATIVE_URL = "/q/" + BASE_RELATIVE_URL;
     private static final String DATA_INDEX_CAPABILITY = "org.kie.kogito.data-index";
 
     @SuppressWarnings("unused")
@@ -78,13 +79,13 @@ public class DevConsoleProcessor {
                 true);
 
         routeBuildItemBuildProducer.produce(new RouteBuildItem.Builder()
-                .route(BASE_RELATIVE_URL + "/resources/*")
+                .route(NON_APPLICATION_BASE_RELATIVE_URL + "/resources/*")
                 .handler(devUIStaticArtifactsRecorder.handler(devConsoleStaticResourcesDeploymentPath.toString(),
                         shutdownContext))
                 .build());
 
         routeBuildItemBuildProducer.produce(new RouteBuildItem.Builder()
-                .route(BASE_RELATIVE_URL + "/*")
+                .route(NON_APPLICATION_BASE_RELATIVE_URL + "/*")
                 .handler(devUIStaticArtifactsRecorder.handler(devConsoleStaticResourcesDeploymentPath.toString(),
                         shutdownContext))
                 .build());
@@ -104,64 +105,58 @@ public class DevConsoleProcessor {
             final ConfigurationBuildItem configurationBuildItem,
             final List<SystemPropertyBuildItem> systemPropertyBuildItems,
             final Optional<KogitoDataIndexServiceAvailableBuildItem> dataIndexServiceAvailableBuildItem,
-            final Optional<TrustyServiceAvailableBuildItem> trustyServiceAvailableBuildItem,
             final Capabilities capabilities) {
 
-        CardPageBuildItem cardPageBuildItem = new CardPageBuildItem();
+        if (dataIndexServiceAvailableBuildItem.isEmpty() && !capabilities.isPresent(DATA_INDEX_CAPABILITY)) {
+            return null;
+        }
 
         String uiPath = nonApplicationRootPathBuildItem.resolveManagementPath(BASE_RELATIVE_URL,
                 managementInterfaceBuildTimeConfig, launchModeBuildItem, true);
 
-        String openapiPath = getProperty(configurationBuildItem, systemPropertyBuildItems, "quarkus.smallrye-openapi.path");
         String devUIUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.dev-ui.url");
         String dataIndexUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.data-index.url");
-        String trustyServiceUrl = getProperty(configurationBuildItem, systemPropertyBuildItems, "kogito.trusty.http.url");
+        String quarkusHttpHost = ConfigProvider.getConfig().getOptionalValue("quarkus.http.host", String.class).orElse("0.0.0.0");
+        String quarkusHttpPort = ConfigProvider.getConfig().getOptionalValue("quarkus.http.port", String.class).orElse("8080");
 
+        CardPageBuildItem cardPageBuildItem = new CardPageBuildItem();
+
+        cardPageBuildItem.addBuildTimeData("quarkusHttpHost", quarkusHttpHost);
+        cardPageBuildItem.addBuildTimeData("quarkusHttpPort", quarkusHttpPort);
+        cardPageBuildItem.addBuildTimeData("quarkusAppRootPath", nonApplicationRootPathBuildItem.getNormalizedHttpRootPath());
         cardPageBuildItem.addBuildTimeData("extensionBasePath", uiPath);
-        cardPageBuildItem.addBuildTimeData("openapiPath", openapiPath);
         cardPageBuildItem.addBuildTimeData("devUIUrl", devUIUrl);
         cardPageBuildItem.addBuildTimeData("dataIndexUrl", dataIndexUrl);
-        cardPageBuildItem.addBuildTimeData("isTracingEnabled", trustyServiceAvailableBuildItem.isPresent());
-        cardPageBuildItem.addBuildTimeData("trustyServiceUrl", trustyServiceUrl);
+        cardPageBuildItem.addBuildTimeData("isTracingEnabled", false);
         cardPageBuildItem.addBuildTimeData("userData", readUsersInfo(devConsoleRuntimeConfig));
 
-        if (dataIndexServiceAvailableBuildItem.isPresent() || capabilities.isPresent(DATA_INDEX_CAPABILITY)) {
-            cardPageBuildItem.addPage(Page.webComponentPageBuilder()
-                    .componentLink("qwc-jbpm-quarkus-devui.js")
-                    .metadata("page", "Processes")
-                    .title("Process Instances")
-                    .icon("font-awesome-solid:diagram-project")
-                    .dynamicLabelJsonRPCMethodName("queryProcessInstancesCount"));
+        cardPageBuildItem.addPage(Page.webComponentPageBuilder()
+                .componentLink("qwc-jbpm-quarkus-devui.js")
+                .metadata("page", "Processes")
+                .title("Process Instances")
+                .icon("font-awesome-solid:diagram-project")
+                .dynamicLabelJsonRPCMethodName("queryProcessInstancesCount"));
 
-            cardPageBuildItem.addPage(Page.webComponentPageBuilder()
-                    .componentLink("qwc-jbpm-quarkus-devui.js")
-                    .metadata("page", "TaskInbox")
-                    .title("Tasks")
-                    .icon("font-awesome-solid:bars-progress")
-                    .dynamicLabelJsonRPCMethodName("queryTasksCount"));
+        cardPageBuildItem.addPage(Page.webComponentPageBuilder()
+                .componentLink("qwc-jbpm-quarkus-devui.js")
+                .metadata("page", "Tasks")
+                .title("Tasks")
+                .icon("font-awesome-solid:bars-progress")
+                .dynamicLabelJsonRPCMethodName("queryTasksCount"));
 
-            cardPageBuildItem.addPage(Page.webComponentPageBuilder()
-                    .componentLink("qwc-jbpm-quarkus-devui.js")
-                    .metadata("page", "JobsManagement")
-                    .title("Jobs")
-                    .icon("font-awesome-solid:clock")
-                    .dynamicLabelJsonRPCMethodName("queryJobsCount"));
+        cardPageBuildItem.addPage(Page.webComponentPageBuilder()
+                .componentLink("qwc-jbpm-quarkus-devui.js")
+                .metadata("page", "Jobs")
+                .title("Jobs")
+                .icon("font-awesome-solid:clock")
+                .dynamicLabelJsonRPCMethodName("queryJobsCount"));
 
-            cardPageBuildItem.addPage(Page.webComponentPageBuilder()
-                    .componentLink("qwc-jbpm-quarkus-devui.js")
-                    .metadata("page", "Forms")
-                    .title("Forms")
-                    .icon("font-awesome-solid:table-cells")
-                    .dynamicLabelJsonRPCMethodName("getFormsCount"));
-        }
-
-        if (trustyServiceAvailableBuildItem.isPresent()) {
-            cardPageBuildItem.addPage(Page.webComponentPageBuilder()
-                    .componentLink("qwc-jbpm-quarkus-devui.js")
-                    .metadata("page", "Audit")
-                    .title("Audit investigation")
-                    .icon("font-awesome-solid:gauge-high"));
-        }
+        cardPageBuildItem.addPage(Page.webComponentPageBuilder()
+                .componentLink("qwc-jbpm-quarkus-devui.js")
+                .metadata("page", "Forms")
+                .title("Forms")
+                .icon("font-awesome-solid:table-cells")
+                .dynamicLabelJsonRPCMethodName("getFormsCount"));
 
         return cardPageBuildItem;
     }

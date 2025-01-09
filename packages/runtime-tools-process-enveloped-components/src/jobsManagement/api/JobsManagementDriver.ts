@@ -20,7 +20,7 @@ import {
   Job,
   JobStatus,
   BulkCancel,
-  JobCancel,
+  JobOperationResult,
   JobsSortBy,
 } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
@@ -28,7 +28,7 @@ export interface JobsManagementDriver {
   initialLoad(filter: JobStatus[], orderBy: JobsSortBy): Promise<void>;
   applyFilter(filter: JobStatus[]): Promise<void>;
   bulkCancel(jobsToBeActioned: Job[]): Promise<BulkCancel>;
-  cancelJob(job: Pick<Job, "id" | "endpoint">): Promise<JobCancel>;
+  cancelJob(job: Pick<Job, "id" | "endpoint">): Promise<JobOperationResult>;
   rescheduleJob(
     job: Job,
     repeatInterval: number | string,

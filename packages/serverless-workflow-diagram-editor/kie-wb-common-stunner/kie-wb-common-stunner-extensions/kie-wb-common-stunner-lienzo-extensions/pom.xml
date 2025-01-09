@@ -40,7 +40,6 @@
   </properties>
 
   <dependencies>
-
     <!-- Lienzo. -->
 
     <dependency>
@@ -87,11 +86,9 @@
       <artifactId>lienzo-tests</artifactId>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>io.crysknife</groupId>
-          <artifactId>crysknife-core</artifactId>
-      </dependency>
-
+    <dependency>
+      <groupId>org.kie.j2cl.tools.di</groupId>
+      <artifactId>core</artifactId>
+    </dependency>
   </dependencies>
-
 </project>

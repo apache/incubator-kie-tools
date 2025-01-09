@@ -103,23 +103,23 @@ export function DmnDiagramSvg({
               allTopLevelItemDefinitionUniqueNames.get(node.data.dmnObject.variable?.["@_typeRef"] ?? "") ?? ""
             )?.itemDefinition?.["@_isCollection"] ?? false
           : node.data?.dmnObject?.__$$element === "decision"
-          ? allDataTypesById.get(
-              allTopLevelItemDefinitionUniqueNames.get(node.data.dmnObject.variable?.["@_typeRef"] ?? "") ?? ""
-            )?.itemDefinition?.["@_isCollection"] ?? false
-          : false;
+            ? allDataTypesById.get(
+                allTopLevelItemDefinitionUniqueNames.get(node.data.dmnObject.variable?.["@_typeRef"] ?? "") ?? ""
+              )?.itemDefinition?.["@_isCollection"] ?? false
+            : false;
 
       const label =
         node.data?.dmnObject?.__$$element === "group"
           ? node.data.dmnObject?.["@_label"] ?? node.data?.dmnObject?.["@_name"] ?? "<Empty>"
           : node.data?.dmnObject?.__$$element === "textAnnotation"
-          ? node.data.dmnObject?.["@_label"] ?? node.data?.dmnObject?.text?.__$$text ?? "<Empty>"
-          : buildFeelQNameFromXmlQName({
-              namedElement: node.data!.dmnObject!,
-              importsByNamespace,
-              model: thisDmn.model.definitions,
-              namedElementQName: node.data!.dmnObjectQName,
-              relativeToNamespace: thisDmn.model.definitions["@_namespace"],
-            }).full;
+            ? node.data.dmnObject?.["@_label"] ?? node.data?.dmnObject?.text?.__$$text ?? "<Empty>"
+            : buildFeelQNameFromXmlQName({
+                namedElement: node.data!.dmnObject!,
+                importsByNamespace,
+                model: thisDmn.model.definitions,
+                namedElementQName: node.data!.dmnObjectQName,
+                relativeToNamespace: thisDmn.model.definitions["@_namespace"],
+              }).full;
 
       return (
         <g data-kie-dmn-node-id={node.id} key={node.id}>
@@ -187,7 +187,7 @@ export function DmnDiagramSvg({
               x={node.positionAbsolute!.x}
               y={node.positionAbsolute!.y}
               showSectionLabels={false}
-              isReadonly={true}
+              isReadOnly={true}
               {...style}
               {...shapeStyle}
             />

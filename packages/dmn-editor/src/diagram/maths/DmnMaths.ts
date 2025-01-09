@@ -24,6 +24,7 @@ import {
   DC__Point,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { SnapGrid } from "../../store/Store";
 import { snapBoundsDimensions, snapBoundsPosition } from "../SnapGrid";
 import { PositionalNodeHandleId } from "../connections/PositionalNodeHandles";
@@ -245,7 +246,7 @@ export function pointsToPath(points: DC__Point[]): string {
   return path;
 }
 
-export function getDecisionServiceDividerLineLocalY(shape: DMNDI15__DMNShape) {
+export function getDecisionServiceDividerLineLocalY(shape: Normalized<DMNDI15__DMNShape>) {
   return (
     (shape["dmndi:DMNDecisionServiceDividerLine"]?.["di:waypoint"]?.[0]["@_y"] ?? 0) -
     (shape["dc:Bounds"]?.["@_y"] ?? 0)

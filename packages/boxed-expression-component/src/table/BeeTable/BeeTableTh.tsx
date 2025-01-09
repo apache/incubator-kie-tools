@@ -51,6 +51,7 @@ export interface BeeTableThProps<R extends object> {
   column: ReactTable.ColumnInstance<R>;
   shouldShowColumnsInlineControls: boolean;
   forwardRef?: React.RefObject<HTMLTableCellElement>;
+  isReadOnly: boolean;
 }
 
 export type HoverInfo =
@@ -78,6 +79,7 @@ export function BeeTableTh<R extends object>({
   column,
   isLastLevelColumn,
   shouldShowColumnsInlineControls: shouldShowRowsInlineControls,
+  isReadOnly,
 }: React.PropsWithChildren<BeeTableThProps<R>>) {
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
 
@@ -108,17 +110,18 @@ export function BeeTableTh<R extends object>({
 
   const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
 
+  // FIXME: The BeeTable shouldn't know about DMN or GWT
+  // The following useEffect shouldn't be placed here.
   const { beeGwtService } = useBoxedExpressionEditor();
-
   useEffect(() => {
     if (isActive) {
-      if (column.isRowIndexColumn) {
+      if (column.isRowIndexColumn || groupType === "annotation") {
         beeGwtService?.selectObject("");
       } else {
         beeGwtService?.selectObject(columnKey);
       }
     }
-  }, [beeGwtService, column.isRowIndexColumn, columnKey, isActive]);
+  }, [beeGwtService, column.isRowIndexColumn, columnKey, groupType, isActive]);
 
   const _thRef = useRef<HTMLTableCellElement>(null);
   const thRef = forwardRef ?? _thRef;
@@ -168,10 +171,12 @@ export function BeeTableTh<R extends object>({
     useCallback(() => {
       if (column.dataType) {
         return `${column.label} (${column.dataType})`;
-      } else {
+      } else if (!column.isInlineEditable) {
         return column.label;
+      } else {
+        return "";
       }
-    }, [column.dataType, column.label])
+    }, [column.dataType, column.isInlineEditable, column.label])
   );
 
   const coordinates = useMemo<BeeTableCellCoordinates>(
@@ -190,14 +195,15 @@ export function BeeTableTh<R extends object>({
         style={{ ...thProps.style, display: "table-cell" }}
         ref={thRef}
         onMouseDown={onMouseDown}
-        onDoubleClick={onDoubleClick}
+        onDoubleClick={isReadOnly ? undefined : onDoubleClick}
         onClick={onClick}
-        onKeyUp={onHeaderKeyUp}
+        onKeyUp={isReadOnly ? undefined : onHeaderKeyUp}
         className={`${className} ${cssClasses}`}
         tabIndex={-1}
+        data-testid={`kie-tools--bee--table-header-${column.groupType ?? "undefined"}`}
       >
         {children}
-        {hoverInfo.isHovered && onColumnAdded && isLastLevelColumn && shouldShowRowsInlineControls && (
+        {!isReadOnly && hoverInfo.isHovered && onColumnAdded && isLastLevelColumn && shouldShowRowsInlineControls && (
           <div
             onMouseDown={(e) => e.stopPropagation()}
             onDoubleClick={(e) => e.stopPropagation()}

@@ -34,6 +34,14 @@ module.exports = composeEnv([], {
       default: `${false}`,
       description: "Ignores failures on tests and continues with the build until the end.",
     },
+    KIE_TOOLS_BUILD__runScriptsTests: {
+      default: `${false}`,
+      description: "Enables/disables running scripts/ tests during bootstrap.",
+    },
+    KIE_TOOLS_BUILD__ignoreScriptTestFailures: {
+      default: `${false}`,
+      description: "Ignores failures on scripts/ tests and continues with bootstrap until the end.",
+    },
     KIE_TOOLS_BUILD__runEndToEndTests: {
       default: `${false}`,
       description: "Enables/disables running end-to-end tests during the build.",
@@ -50,23 +58,36 @@ module.exports = composeEnv([], {
       default: `${false}`,
       description: "Enables/disables building example packages during the build.",
     },
+    /* (begin) This part of the file is referenced in `scripts/update-stream-name` */
+    KIE_TOOLS_BUILD__streamName: {
+      default: "main",
+      description: `Name of the release/development stream. E.g, 'main', or '10.0.x' etc. Useful for publishing "nightly" or "snapshot" artifacts. Created to reflect the Git branch name without coupling with Git itself.`,
+    },
+    /* (end) */
     QUARKUS_PLATFORM_version: {
-      default: "3.2.10.Final",
+      default: "3.8.6",
       description: "Quarkus version to be used on dependency declaration.",
     },
+    /* (begin) This part of the file is referenced in `scripts/update-kogito-version` */
     KOGITO_RUNTIME_version: {
-      default: "999-20240331-SNAPSHOT",
+      default: "999-20241208-SNAPSHOT",
       description: "Kogito version to be used on dependency declaration.",
     },
+    /* (end) */
   }),
   get env() {
     return {
       root: {
         version: rootPackageJson.version,
+        streamName: getOrDefault(this.vars.KIE_TOOLS_BUILD__streamName),
       },
       tests: {
         run: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__runTests)),
         ignoreFailures: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__ignoreTestFailures)),
+      },
+      scriptTests: {
+        run: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__runScriptsTests)),
+        ignoreFailures: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__ignoreScriptTestFailures)),
       },
       endToEndTests: {
         run: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__runEndToEndTests)),
@@ -81,11 +102,9 @@ module.exports = composeEnv([], {
       examples: {
         build: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__buildExamples)),
       },
-      kogitoRuntime: {
-        version: getOrDefault(this.vars.KOGITO_RUNTIME_version),
-      },
-      quarkusPlatform: {
-        version: getOrDefault(this.vars.QUARKUS_PLATFORM_version),
+      versions: {
+        kogito: getOrDefault(this.vars.KOGITO_RUNTIME_version),
+        quarkus: getOrDefault(this.vars.QUARKUS_PLATFORM_version),
       },
     };
   },

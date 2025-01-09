@@ -18,9 +18,8 @@
  */
 
 import * as React from "react";
-import { useContext, useMemo } from "react";
-import { BeeGwtService, DmnDataType, BoxedExpression, PmmlDocument } from "./api";
-import { useRef, useState } from "react";
+import { useContext, useMemo, useRef, useState } from "react";
+import { BeeGwtService, BoxedExpression, DmnDataType, Normalized, PmmlDocument } from "./api";
 import { BoxedExpressionEditorProps, OnRequestFeelVariables } from "./BoxedExpressionEditor";
 import "./BoxedExpressionEditorContext.css";
 
@@ -34,6 +33,8 @@ export interface BoxedExpressionEditorContextType {
   expressionHolderId: string;
   pmmlDocuments?: PmmlDocument[];
   dataTypes: DmnDataType[];
+  isReadOnly?: boolean;
+  evaluationHitsCountById?: Map<string, number>;
 
   // State
   currentlyOpenContextMenu: string | undefined;
@@ -41,10 +42,11 @@ export interface BoxedExpressionEditorContextType {
 
   onRequestFeelVariables?: OnRequestFeelVariables;
   widthsById: Map<string, number[]>;
+  hideDmn14BoxedExpressions?: boolean;
 }
 
 export interface BoxedExpressionEditorDispatchContextType {
-  setExpression: React.Dispatch<React.SetStateAction<BoxedExpression>>;
+  setExpression: React.Dispatch<React.SetStateAction<Normalized<BoxedExpression>>>;
   setWidthsById: (mutation: ({ newMap }: { newMap: Map<string, number[]> }) => void) => void;
 }
 
@@ -68,13 +70,16 @@ export function BoxedExpressionEditorContextProvider({
   onExpressionChange,
   onWidthsChange,
   dataTypes,
+  isReadOnly,
   expressionHolderId,
   beeGwtService,
   children,
   pmmlDocuments,
+  evaluationHitsCountById,
   scrollableParentRef,
   onRequestFeelVariables,
   widthsById,
+  hideDmn14BoxedExpressions,
 }: React.PropsWithChildren<BoxedExpressionEditorProps>) {
   const [currentlyOpenContextMenu, setCurrentlyOpenContextMenu] = useState<string | undefined>(undefined);
 
@@ -109,13 +114,16 @@ export function BoxedExpressionEditorContextProvider({
         // props
         expressionHolderId,
         dataTypes,
+        isReadOnly,
         pmmlDocuments,
+        evaluationHitsCountById,
 
         //state // FIXME: Move to a separate context (https://github.com/apache/incubator-kie-issues/issues/168)
         currentlyOpenContextMenu,
         setCurrentlyOpenContextMenu,
         onRequestFeelVariables,
         widthsById,
+        hideDmn14BoxedExpressions,
       }}
     >
       <BoxedExpressionEditorDispatchContext.Provider value={dispatch}>
@@ -128,7 +136,7 @@ export function BoxedExpressionEditorContextProvider({
 }
 
 export type OnSetExpression = (args: {
-  getNewExpression: (prev: BoxedExpression | undefined) => BoxedExpression | undefined;
+  getNewExpression: (prev: Normalized<BoxedExpression> | undefined) => Normalized<BoxedExpression> | undefined;
 }) => void;
 
 export function NestedExpressionDispatchContextProvider({
@@ -140,8 +148,8 @@ export function NestedExpressionDispatchContextProvider({
   const { setWidthsById } = useBoxedExpressionEditorDispatch();
   const nestedExpressionDispatch = useMemo<BoxedExpressionEditorDispatchContextType>(() => {
     return {
-      setExpression: (newExpressionAction: React.SetStateAction<BoxedExpression>) => {
-        function getNewExpression(prev: BoxedExpression) {
+      setExpression: (newExpressionAction: React.SetStateAction<Normalized<BoxedExpression>>) => {
+        function getNewExpression(prev: Normalized<BoxedExpression>) {
           return typeof newExpressionAction === "function" ? newExpressionAction(prev) : newExpressionAction;
         }
 

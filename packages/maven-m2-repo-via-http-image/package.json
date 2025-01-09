@@ -1,0 +1,26 @@
+{
+  "private": true,
+  "name": "@kie-tools/maven-m2-repo-via-http-image",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "scripts": {
+    "build": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
+    "build:dev": "pnpm build",
+    "build:prod": "pnpm build",
+    "image:docker:build": "kie-tools--image-builder build -r \"$(build-env mavenM2RepoViaHttpImage.registry)\" -a \"$(build-env mavenM2RepoViaHttpImage.account)\" -n \"$(build-env mavenM2RepoViaHttpImage.name)\" -t \"$(build-env mavenM2RepoViaHttpImage.buildTag)\""
+  },
+  "devDependencies": {
+    "@kie-tools/image-builder": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "run-script-os": "^1.1.6"
+  }
+}

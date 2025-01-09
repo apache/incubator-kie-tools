@@ -29,6 +29,7 @@ import {
   DmnBuiltInDataType,
   generateUuid,
   getNextAvailablePrefixedName,
+  Normalized,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContext";
@@ -60,9 +61,10 @@ import {
   DMN15__tDecisionRule,
   DMN15__tHitPolicy,
   DMN15__tInputClause,
+  DMN15__tLiteralExpression,
   DMN15__tOutputClause,
-  DMN15__tRuleAnnotation,
   DMN15__tRuleAnnotationClause,
+  DMN15__tUnaryTests,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import "./DecisionTableExpression.css";
 import { Unpacked } from "../../tsExt/tsExt";
@@ -79,31 +81,35 @@ export const DECISION_TABLE_INPUT_DEFAULT_VALUE = "-";
 export const DECISION_TABLE_OUTPUT_DEFAULT_VALUE = "";
 export const DECISION_TABLE_ANNOTATION_DEFAULT_VALUE = "";
 
-function createInputEntry(): Unpacked<DMN15__tDecisionRule["inputEntry"]> {
+function createInputEntry(): Unpacked<Normalized<DMN15__tDecisionRule["inputEntry"]>> {
   return {
     "@_id": generateUuid(),
     text: { __$$text: DECISION_TABLE_INPUT_DEFAULT_VALUE },
   };
 }
 
-function createOutputEntry(): Unpacked<DMN15__tDecisionRule["outputEntry"]> {
+function createOutputEntry(): Unpacked<Normalized<DMN15__tDecisionRule["outputEntry"]>> {
   return {
     "@_id": generateUuid(),
     text: { __$$text: DECISION_TABLE_OUTPUT_DEFAULT_VALUE },
   };
 }
 
-function createAnnotationEntry(): Unpacked<DMN15__tDecisionRule["annotationEntry"]> {
+function createAnnotationEntry(): Unpacked<Normalized<DMN15__tDecisionRule["annotationEntry"]>> {
   return {
     text: { __$$text: DECISION_TABLE_ANNOTATION_DEFAULT_VALUE },
   };
 }
 
-export function DecisionTableExpression(
-  decisionTableExpression: BoxedDecisionTable & { isNested: boolean; parentElementId: string }
-) {
+export function DecisionTableExpression({
+  isNested,
+  expression: decisionTableExpression,
+}: {
+  expression: BoxedDecisionTable;
+  isNested: boolean;
+}) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
+  const { expressionHolderId, widthsById, isReadOnly } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
 
   const id = decisionTableExpression["@_id"]!;
@@ -214,7 +220,9 @@ export function DecisionTableExpression(
         if (newWidth && inputWidth) {
           const minSize = inputWidth.index + 1;
           const newValues = [...prev];
-          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
+          newValues.push(
+            ...Array<number>(Math.max(0, minSize - newValues.length)).fill(DECISION_TABLE_INPUT_MIN_WIDTH)
+          );
           newValues.splice(inputWidth.index, 1, newWidth);
           newMap.set(id, newValues);
         }
@@ -233,7 +241,9 @@ export function DecisionTableExpression(
         if (newWidth && outputWidth) {
           const minSize = outputWidth.index + 1;
           const newValues = [...prev];
-          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
+          newValues.push(
+            ...Array<number>(Math.max(0, minSize - newValues.length)).fill(DECISION_TABLE_OUTPUT_MIN_WIDTH)
+          );
           newValues.splice(outputWidth.index, 1, newWidth);
           newMap.set(id, newValues);
         }
@@ -252,7 +262,9 @@ export function DecisionTableExpression(
         if (newWidth && annotationWidth) {
           const minSize = annotationWidth.index + 1;
           const newValues = [...prev];
-          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
+          newValues.push(
+            ...Array<number>(Math.max(0, minSize - newValues.length)).fill(DECISION_TABLE_ANNOTATION_MIN_WIDTH)
+          );
           newValues.splice(annotationWidth.index, 1, newWidth);
           newMap.set(id, newValues);
         }
@@ -309,7 +321,7 @@ export function DecisionTableExpression(
   useApportionedColumnWidthsIfNestedTable(
     beeTableRef,
     isPivoting,
-    decisionTableExpression.isNested,
+    isNested,
     BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
     columns,
     columnResizingWidths,
@@ -414,7 +426,10 @@ export function DecisionTableExpression(
 
         return getColumnsAtLastLevel(beeTableColumns).reduce(
           (tableRow: ROWTYPE, column, columnIndex) => {
-            tableRow[column.accessor] = ruleRow[columnIndex]?.text?.__$$text ?? "";
+            tableRow[column.accessor] = {
+              id: (ruleRow[columnIndex] as DMN15__tUnaryTests & DMN15__tLiteralExpression)?.["@_id"] ?? "",
+              content: ruleRow[columnIndex]?.text?.__$$text ?? "",
+            };
             return tableRow;
           },
           { id: rule["@_id"] }
@@ -425,8 +440,8 @@ export function DecisionTableExpression(
 
   const onCellUpdates = useCallback(
     (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
-      setExpression((prev: BoxedDecisionTable) => {
-        let previousExpression: BoxedDecisionTable = { ...prev };
+      setExpression((prev: Normalized<BoxedDecisionTable>) => {
+        let previousExpression: Normalized<BoxedDecisionTable> = { ...prev };
 
         cellUpdates.forEach((cellUpdate) => {
           const newRules = [...(previousExpression.rule ?? [])];
@@ -489,9 +504,9 @@ export function DecisionTableExpression(
 
   const onColumnUpdates = useCallback(
     (columnUpdates: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression((prev: BoxedDecisionTable) => {
+      setExpression((prev: Normalized<BoxedDecisionTable>) => {
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedDecisionTable = { ...prev };
+        const ret: Normalized<BoxedDecisionTable> = { ...prev };
         for (const columnUpdate of columnUpdates) {
           // This is the Output column aggregator column, which represents the entire expression name and typeRef
           if (
@@ -561,9 +576,9 @@ export function DecisionTableExpression(
 
   const onHitPolicySelect = useCallback(
     (hitPolicy: string) => {
-      setExpression((prev: BoxedDecisionTable) => {
+      setExpression((prev: Normalized<BoxedDecisionTable>) => {
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedDecisionTable = {
+        const ret: Normalized<BoxedDecisionTable> = {
           ...prev,
           "@_hitPolicy": hitPolicy as DMN15__tHitPolicy,
           "@_aggregation": HIT_POLICIES_THAT_SUPPORT_AGGREGATION.includes(hitPolicy)
@@ -612,9 +627,9 @@ export function DecisionTableExpression(
 
   const onBuiltInAggregatorSelect = useCallback(
     (aggregation: DMN15__tBuiltinAggregator) => {
-      setExpression((prev: BoxedDecisionTable) => {
+      setExpression((prev: Normalized<BoxedDecisionTable>) => {
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedDecisionTable = {
+        const ret: Normalized<BoxedDecisionTable> = {
           ...prev,
           "@_aggregation": getAggregation(aggregation),
         };
@@ -632,16 +647,17 @@ export function DecisionTableExpression(
         selectedBuiltInAggregator={getAggregationKey(decisionTableExpression["@_aggregation"])}
         onHitPolicySelected={onHitPolicySelect}
         onBuiltInAggregatorSelected={onBuiltInAggregatorSelect}
+        isReadOnly={isReadOnly ?? false}
       />
     ),
-    [decisionTableExpression, getAggregationKey, onBuiltInAggregatorSelect, onHitPolicySelect]
+    [decisionTableExpression, getAggregationKey, isReadOnly, onBuiltInAggregatorSelect, onHitPolicySelect]
   );
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number }) => {
-      setExpression((prev: BoxedDecisionTable) => {
+      setExpression((prev: Normalized<BoxedDecisionTable>) => {
         const newRules = [...(prev.rule ?? [])];
-        const newItems = [];
+        const newItems: Normalized<DMN15__tDecisionRule>[] = [];
 
         for (let i = 0; i < args.rowsCount; i++) {
           newItems.push({
@@ -663,7 +679,7 @@ export function DecisionTableExpression(
         }
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedDecisionTable = {
+        const ret: Normalized<BoxedDecisionTable> = {
           ...prev,
           rule: newRules,
         };
@@ -701,12 +717,12 @@ export function DecisionTableExpression(
 
       const localIndexInsideGroup = getLocalIndexInsideGroupType(args.beforeIndex, groupType);
 
-      setExpression((prev: BoxedDecisionTable) => {
+      setExpression((prev: Normalized<BoxedDecisionTable>) => {
         const nextRows = [...(prev.rule ?? [])];
 
         switch (groupType) {
           case DecisionTableColumnType.InputClause:
-            const inputColumnsToAdd: DMN15__tInputClause[] = [];
+            const inputColumnsToAdd: Normalized<DMN15__tInputClause>[] = [];
 
             const currentInputNames = prev.input?.map((c) => c.inputExpression.text?.__$$text ?? "") ?? [];
             for (let i = 0; i < args.columnsCount; i++) {
@@ -717,7 +733,7 @@ export function DecisionTableExpression(
                 "@_id": generateUuid(),
                 inputExpression: {
                   "@_id": generateUuid(),
-                  "@_typeRef": DmnBuiltInDataType.Undefined,
+                  "@_typeRef": undefined,
                   text: { __$$text: newName },
                 },
               });
@@ -739,7 +755,7 @@ export function DecisionTableExpression(
             }
 
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-            const retInput: BoxedDecisionTable = {
+            const retInput: Normalized<BoxedDecisionTable> = {
               ...prev,
               input: nextInputColumns,
               rule: nextRows,
@@ -748,7 +764,7 @@ export function DecisionTableExpression(
             return retInput;
 
           case DecisionTableColumnType.OutputClause:
-            const outputColumnsToAdd: DMN15__tOutputClause[] = [];
+            const outputColumnsToAdd: Normalized<DMN15__tOutputClause>[] = [];
 
             const currentOutputColumnNames = prev.output?.map((c) => c["@_name"] ?? "") ?? [];
             for (let i = 0; i < args.columnsCount; i++) {
@@ -757,7 +773,7 @@ export function DecisionTableExpression(
               outputColumnsToAdd.push({
                 "@_id": generateUuid(),
                 "@_name": name,
-                "@_typeRef": DmnBuiltInDataType.Undefined,
+                "@_typeRef": undefined,
               });
             }
 
@@ -778,7 +794,7 @@ export function DecisionTableExpression(
             }
 
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-            const retOutput: BoxedDecisionTable = {
+            const retOutput: Normalized<BoxedDecisionTable> = {
               ...prev,
               output: nextOutputColumns,
               rule: nextRows,
@@ -787,18 +803,18 @@ export function DecisionTableExpression(
             return retOutput;
 
           case DecisionTableColumnType.Annotation:
-            const annotationColumsnToAdd: DMN15__tRuleAnnotationClause[] = [];
+            const annotationColumnsToAdd: Normalized<DMN15__tRuleAnnotationClause>[] = [];
 
             const currentAnnotationColumnNames = prev.annotation?.map((c) => c["@_name"] ?? "") ?? [];
             for (let i = 0; i < args.columnsCount; i++) {
               const newName = getNextAvailablePrefixedName(currentAnnotationColumnNames, "Annotations");
               currentAnnotationColumnNames.push(newName);
-              annotationColumsnToAdd.push({ "@_name": newName });
+              annotationColumnsToAdd.push({ "@_name": newName });
             }
 
             const nextAnnotationColumns = [...(prev.annotation ?? [])];
-            for (/* Add new columns */ let i = 0; i < annotationColumsnToAdd.length; i++) {
-              nextAnnotationColumns.splice(localIndexInsideGroup + i, 0, annotationColumsnToAdd[i]);
+            for (/* Add new columns */ let i = 0; i < annotationColumnsToAdd.length; i++) {
+              nextAnnotationColumns.splice(localIndexInsideGroup + i, 0, annotationColumnsToAdd[i]);
             }
 
             for (/* Add new cells to each row */ let i = 0; i < nextRows.length; i++) {
@@ -812,7 +828,7 @@ export function DecisionTableExpression(
             }
 
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-            const retAnnotation: BoxedDecisionTable = {
+            const retAnnotation: Normalized<BoxedDecisionTable> = {
               ...prev,
               annotation: nextAnnotationColumns,
               rule: nextRows,
@@ -831,8 +847,8 @@ export function DecisionTableExpression(
           args.groupType === DecisionTableColumnType.InputClause
             ? DECISION_TABLE_INPUT_DEFAULT_WIDTH
             : args.groupType === DecisionTableColumnType.OutputClause
-            ? DECISION_TABLE_OUTPUT_DEFAULT_WIDTH
-            : DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH;
+              ? DECISION_TABLE_OUTPUT_DEFAULT_WIDTH
+              : DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH;
 
         const nextValues = [...prev];
         const minValuesLength = args.beforeIndex + 1 + args.columnsCount;
@@ -849,7 +865,7 @@ export function DecisionTableExpression(
 
   const onColumnDeleted = useCallback(
     (args: { columnIndex: number; groupType: DecisionTableColumnType }) => {
-      setExpression((prev: BoxedDecisionTable) => {
+      setExpression((prev: Normalized<BoxedDecisionTable>) => {
         const groupType = args.groupType;
         if (!groupType) {
           throw new Error("Column without groupType for Decision table.");
@@ -863,7 +879,7 @@ export function DecisionTableExpression(
             newInputs.splice(localIndexInsideGroup, 1);
 
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-            const retInput: BoxedDecisionTable = {
+            const retInput: Normalized<BoxedDecisionTable> = {
               ...prev,
               input: newInputs,
               rule: [...(prev.rule ?? [])].map((rule) => {
@@ -881,7 +897,7 @@ export function DecisionTableExpression(
             newOutputs.splice(localIndexInsideGroup, 1);
 
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-            const retOutput: BoxedDecisionTable = {
+            const retOutput: Normalized<BoxedDecisionTable> = {
               ...prev,
               output: newOutputs,
               rule: [...(prev.rule ?? [])].map((rule) => {
@@ -900,7 +916,7 @@ export function DecisionTableExpression(
             newAnnotations.splice(localIndexInsideGroup, 1);
 
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-            const retAnnotation: BoxedDecisionTable = {
+            const retAnnotation: Normalized<BoxedDecisionTable> = {
               ...prev,
               annotation: newAnnotations,
               rule: [...(prev.rule ?? [])].map((rule) => {
@@ -930,12 +946,12 @@ export function DecisionTableExpression(
 
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: BoxedDecisionTable) => {
+      setExpression((prev: Normalized<BoxedDecisionTable>) => {
         const newRules = [...(prev.rule ?? [])];
         newRules.splice(args.rowIndex, 1);
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedDecisionTable = {
+        const ret: Normalized<BoxedDecisionTable> = {
           ...prev,
           rule: newRules,
         };
@@ -947,7 +963,7 @@ export function DecisionTableExpression(
 
   const onRowDuplicated = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: BoxedDecisionTable) => {
+      setExpression((prev: Normalized<BoxedDecisionTable>) => {
         const duplicatedRule = {
           "@_id": generateUuid(),
           inputEntry: prev.rule![args.rowIndex].inputEntry?.map((input) => ({
@@ -965,7 +981,7 @@ export function DecisionTableExpression(
         newRules.splice(args.rowIndex, 0, duplicatedRule);
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedDecisionTable = {
+        const ret: Normalized<BoxedDecisionTable> = {
           ...prev,
           rule: newRules,
         };
@@ -977,8 +993,8 @@ export function DecisionTableExpression(
   );
 
   const beeTableHeaderVisibility = useMemo(() => {
-    return decisionTableExpression.isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
-  }, [decisionTableExpression.isNested]);
+    return isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;
+  }, [isNested]);
 
   const allowedOperations = useCallback(
     (conditions: BeeTableContextMenuAllowedOperationsConditions) => {
@@ -1029,9 +1045,15 @@ export function DecisionTableExpression(
     [beeTableRows.length]
   );
 
+  const supportsEvaluationHitsCount = useCallback((row: ReactTable.Row<ROWTYPE>) => {
+    return true;
+  }, []);
+
   return (
     <div className={`decision-table-expression ${decisionTableExpression["@_id"]}`}>
       <BeeTable<ROWTYPE>
+        isReadOnly={isReadOnly}
+        isEditableHeader={!isReadOnly}
         resizerStopBehavior={
           isPivoting ? ResizerStopBehavior.SET_WIDTH_ALWAYS : ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER
         }
@@ -1055,6 +1077,7 @@ export function DecisionTableExpression(
         shouldRenderRowIndexColumn={true}
         shouldShowRowsInlineControls={true}
         shouldShowColumnsInlineControls={true}
+        supportsEvaluationHitsCount={supportsEvaluationHitsCount}
         // lastColumnMinWidth={lastColumnMinWidth} // FIXME: Check if this is a good strategy or not when doing https://github.com/apache/incubator-kie-issues/issues/181
       />
     </div>

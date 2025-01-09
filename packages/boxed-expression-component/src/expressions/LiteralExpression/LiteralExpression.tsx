@@ -24,11 +24,16 @@ import {
   BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
   BeeTableOperation,
-  DmnBuiltInDataType,
   BoxedLiteral,
+  DmnBuiltInDataType,
+  Normalized,
 } from "../../api";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
-import { LITERAL_EXPRESSION_EXTRA_WIDTH, LITERAL_EXPRESSION_MIN_WIDTH } from "../../resizing/WidthConstants";
+import {
+  LITERAL_EXPRESSION_EXTRA_WIDTH,
+  LITERAL_EXPRESSION_MIN_WIDTH,
+  LITERAL_EXPRESSION_WIDTH_INDEX,
+} from "../../resizing/WidthConstants";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
 import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContext";
 import { useBeeTableCoordinates, useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
@@ -40,9 +45,15 @@ import "./LiteralExpression.css";
 
 type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
 
-export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: boolean }) {
+export function LiteralExpression({
+  isNested,
+  expression: literalExpression,
+}: {
+  expression: Normalized<BoxedLiteral>;
+  isNested: boolean;
+}) {
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
-  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
+  const { expressionHolderId, widthsById, isReadOnly } = useBoxedExpressionEditor();
 
   const id = literalExpression["@_id"]!;
 
@@ -52,13 +63,17 @@ export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: 
 
   const setValue = useCallback(
     (value: string) => {
-      setExpression(() => ({ ...literalExpression, text: { __$$text: value } }));
+      setExpression((prev: Normalized<BoxedLiteral>) => {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: Normalized<BoxedLiteral> = { ...literalExpression, text: { __$$text: value } };
+        return ret;
+      });
     },
     [literalExpression, setExpression]
   );
 
   const width = useMemo(() => {
-    return widthsById.get(id)?.[0] ?? LITERAL_EXPRESSION_MIN_WIDTH;
+    return widthsById.get(id)?.[LITERAL_EXPRESSION_WIDTH_INDEX] ?? LITERAL_EXPRESSION_MIN_WIDTH;
   }, [id, widthsById]);
 
   const { containerCellCoordinates } = useBeeTableCoordinates();
@@ -71,11 +86,13 @@ export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: 
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression(() => ({
-        ...literalExpression,
-        "@_label": name,
-        "@_typeRef": typeRef,
-      }));
+      setExpression(
+        (): Normalized<BoxedLiteral> => ({
+          ...literalExpression,
+          "@_label": name,
+          "@_typeRef": typeRef,
+        })
+      );
     },
     [literalExpression, setExpression]
   );
@@ -84,7 +101,7 @@ export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: 
     (newWidthAction: React.SetStateAction<number | undefined>) => {
       setWidthsById(({ newMap }) => {
         const prev = newMap.get(id) ?? [];
-        const prevWidth = prev[0];
+        const prevWidth = prev[LITERAL_EXPRESSION_WIDTH_INDEX];
         const newWidth = typeof newWidthAction === "function" ? newWidthAction(prevWidth) : newWidthAction;
         newMap.set(id, [newWidth ?? LITERAL_EXPRESSION_MIN_WIDTH]);
       });
@@ -117,7 +134,7 @@ export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: 
   const beeTableRef = useRef<BeeTableRef>(null);
 
   useEffect(() => {
-    if (isPivoting || !literalExpression.isNested) {
+    if (isPivoting || !isNested) {
       return;
     }
 
@@ -133,7 +150,7 @@ export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: 
         ],
       ])
     );
-  }, [isPivoting, literalExpression.isNested, minWidth, nestedExpressionContainer.resizingWidth.value]);
+  }, [isPivoting, isNested, minWidth, nestedExpressionContainer.resizingWidth.value]);
 
   /// //////////////////////////////////////////////////////
 
@@ -156,8 +173,8 @@ export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: 
   }, [expressionHolderId, literalExpression.text, id]);
 
   const beeTableHeaderVisibility = useMemo(() => {
-    return literalExpression.isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.AllLevels;
-  }, [literalExpression.isNested]);
+    return isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.AllLevels;
+  }, [isNested]);
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {
     return row.id;
@@ -193,10 +210,12 @@ export function LiteralExpression(literalExpression: BoxedLiteral & { isNested: 
   }, []);
 
   return (
-    <div className={`literal-expression`}>
+    <div className={`literal-expression`} data-testid={`kie-tools--bee--literal-expression-${id}`}>
       <div className={"literal-expression-body-container"}>
-        <div className={"equals-sign"}>{`=`}</div>
+        <div className={"equals-sign"} data-testid={"kie-tools--equals-sign"}>{`=`}</div>
         <BeeTable<ROWTYPE>
+          isReadOnly={isReadOnly}
+          isEditableHeader={!isReadOnly}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           forwardRef={beeTableRef}
           getRowKey={getRowKey}

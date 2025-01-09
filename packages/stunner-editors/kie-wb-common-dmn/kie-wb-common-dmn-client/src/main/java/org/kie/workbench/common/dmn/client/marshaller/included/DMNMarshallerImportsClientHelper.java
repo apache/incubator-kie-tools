@@ -184,7 +184,7 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
 
                             @Override
                             public void onError(final ClientRuntimeError error) {
-                                LOGGER.severe(error::getMessage);
+                                LOGGER.severe(error::getErrorMessage);
                                 fail.onInvoke(error);
                             }
                         })
@@ -221,7 +221,7 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
 
                                     @Override
                                     public void onError(final ClientRuntimeError error) {
-                                        LOGGER.warning(error::getMessage);
+                                        LOGGER.warning(error::getErrorMessage);
                                         //Swallow. Since it must try to load other paths.
                                         success.onInvoke(promises.resolve());
                                     }
@@ -288,7 +288,7 @@ public class DMNMarshallerImportsClientHelper implements DMNMarshallerImportsHel
 
             @Override
             public void onError(final ClientRuntimeError error) {
-                LOGGER.log(Level.SEVERE, error.getMessage());
+                LOGGER.log(Level.SEVERE, error.getErrorMessage());
             }
         };
     }

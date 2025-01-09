@@ -18,12 +18,12 @@
  */
 
 import { DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { NumberInput } from "@patternfly/react-core/dist/js/components/NumberInput";
 import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { PencilAltIcon } from "@patternfly/react-icons/dist/js/icons/pencil-alt-icon";
 import { UndoAltIcon } from "@patternfly/react-icons/dist/js/icons/undo-alt-icon";
 import * as React from "react";
@@ -36,6 +36,8 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { ColorPicker } from "./ColorPicker";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import "./FontOptions.css";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 // https://www.w3schools.com/cssref/css_websafe_fonts.php
 // Array of [name, family]
@@ -66,6 +68,7 @@ enum FontStyleToggleOptions {
 
 export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean; nodeIds: string[] }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const settings = useSettings();
 
   const shapeStyles = useDmnEditorStore((s) =>
     nodeIds.map((nodeId) => s.computed(s).indexedDrd().dmnShapesByHref.get(nodeId)?.["di:Style"])
@@ -78,18 +81,21 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
   const isFontStrikeThrough = useMemo(() => shapeStyles[0]?.["@_fontStrikeThrough"] ?? false, [shapeStyles]);
   const fontSize = useMemo(() => shapeStyles[0]?.["@_fontSize"] ?? DEFAULT_FONT_SIZE, [shapeStyles]);
   const fontColor = useMemo(() => {
-    const b = (shapeStyles[0]?.["dmndi:FontColor"]?.["@_blue"] ?? DEFAULT_FONT_COLOR["@_red"]).toString(16);
+    const b = (shapeStyles[0]?.["dmndi:FontColor"]?.["@_blue"] ?? DEFAULT_FONT_COLOR["@_blue"]).toString(16);
     const g = (shapeStyles[0]?.["dmndi:FontColor"]?.["@_green"] ?? DEFAULT_FONT_COLOR["@_green"]).toString(16);
-    const r = (shapeStyles[0]?.["dmndi:FontColor"]?.["@_red"] ?? DEFAULT_FONT_COLOR["@_blue"]).toString(16);
+    const r = (shapeStyles[0]?.["dmndi:FontColor"]?.["@_red"] ?? DEFAULT_FONT_COLOR["@_red"]).toString(16);
     return `#${r.length === 1 ? "0" + r : r}${g.length === 1 ? "0" + g : g}${b.length === 1 ? "0" + b : b}`;
   }, [shapeStyles]);
 
   const [isStyleSectionExpanded, setStyleSectionExpanded] = useState<boolean>(startExpanded);
 
   const setShapeStyles = useCallback(
-    (callback: (shape: DMNDI15__DMNShape[], state: State) => void) => {
+    (callback: (shape: Normalized<DMNDI15__DMNShape>[], state: State) => void) => {
       dmnEditorStoreApi.setState((s) => {
-        const { diagramElements } = addOrGetDrd({ definitions: s.dmn.model.definitions, drdIndex: s.diagram.drdIndex });
+        const { diagramElements } = addOrGetDrd({
+          definitions: s.dmn.model.definitions,
+          drdIndex: s.computed(s).getDrdIndex(),
+        });
 
         const shapes = nodeIds.map((nodeId) => {
           const shape = s.computed(s).indexedDrd().dmnShapesByHref.get(nodeId);
@@ -101,7 +107,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
         });
 
         for (const shape of shapes) {
-          shape["di:Style"] ??= { __$$element: "dmndi:DMNStyle" };
+          shape["di:Style"] ??= { "@_id": generateUuid(), __$$element: "dmndi:DMNStyle" };
         }
 
         callback(shapes, s);
@@ -234,7 +240,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
       setShapeStyles((shapes, state) => {
         shapes.forEach((shape) => {
           state.diagram.isEditingStyle = false;
-          shape["di:Style"]!["dmndi:FontColor"] ??= DEFAULT_FONT_COLOR;
+          shape["di:Style"]!["dmndi:FontColor"] ??= { ...DEFAULT_FONT_COLOR };
           shape["di:Style"]!["dmndi:FontColor"]["@_red"] = parseInt(temporaryFontColor.slice(0, 2), 16);
           shape["di:Style"]!["dmndi:FontColor"]["@_green"] = parseInt(temporaryFontColor.slice(2, 4), 16);
           shape["di:Style"]!["dmndi:FontColor"]["@_blue"] = parseInt(temporaryFontColor.slice(4, 6), 16);
@@ -257,10 +263,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
         shape["di:Style"]!["@_fontStrikeThrough"] = undefined;
         shape["di:Style"]!["@_fontSize"] = undefined;
         shape["di:Style"]!["@_fontFamily"] = undefined;
-        shape["di:Style"]!["dmndi:FontColor"] ??= DEFAULT_FONT_COLOR;
-        shape["di:Style"]!["dmndi:FontColor"]["@_red"] = DEFAULT_FONT_COLOR["@_red"];
-        shape["di:Style"]!["dmndi:FontColor"]["@_green"] = DEFAULT_FONT_COLOR["@_green"];
-        shape["di:Style"]!["dmndi:FontColor"]["@_blue"] = DEFAULT_FONT_COLOR["@_blue"];
+        shape["di:Style"]!["dmndi:FontColor"] = { ...DEFAULT_FONT_COLOR };
       });
     });
   }, [setShapeStyles]);
@@ -277,6 +280,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
         action={
           <Button
             variant={ButtonVariant.plain}
+            isDisabled={settings.isReadOnly}
             onClick={() => onReset()}
             style={{ paddingBottom: 0, paddingTop: 0 }}
             title={"Reset font"}
@@ -293,7 +297,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                 aria-label={"Font size"}
                 className={"kie-dmn-editor--font-options-toggle-group-item-number-input"}
                 value={fontSize}
-                isDisabled={false}
+                isDisabled={settings.isReadOnly}
                 widthChars={2}
                 onMinus={onMinus}
                 onChange={onChange}
@@ -312,6 +316,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                       <b>B</b>
                     </div>
                   }
+                  isDisabled={settings.isReadOnly}
                   key={FontStyleToggleOptions.BOLD}
                   buttonId={FontStyleToggleOptions.BOLD}
                   isSelected={isFontBold}
@@ -325,6 +330,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                       <i style={{ fontFamily: "serif" }}>I</i>
                     </div>
                   }
+                  isDisabled={settings.isReadOnly}
                   key={FontStyleToggleOptions.ITALIC}
                   buttonId={FontStyleToggleOptions.ITALIC}
                   isSelected={isFontItalic}
@@ -338,6 +344,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                       <u>U</u>
                     </div>
                   }
+                  isDisabled={settings.isReadOnly}
                   aria-label={"Toggle font underline"}
                   buttonId={FontStyleToggleOptions.UNDERLINE}
                   isSelected={isFontUnderline}
@@ -351,6 +358,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                       <p style={{ textDecoration: "line-through" }}>S</p>
                     </div>
                   }
+                  isDisabled={settings.isReadOnly}
                   aria-label={"Toggle font strike through"}
                   buttonId={FontStyleToggleOptions.STRIKE_THROUGH}
                   isSelected={isFontStrikeThrough}
@@ -359,37 +367,42 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                 <ToggleGroupItem
                   key={FontStyleToggleOptions.FONT_COLOR}
                   className={"kie-dmn-editor--font-options-toggle-group-item-color-picker"}
-                  aria-label={"Toggle font strike through"}
+                  aria-label={"Font color"}
                   buttonId={FontStyleToggleOptions.FONT_COLOR}
                   onClick={() => colorPickerRef.current?.click()}
                   text={
                     <ColorPicker
+                      name={"font"}
                       icon={<p>A</p>}
                       colorPickerRef={colorPickerRef}
                       color={fontColor}
                       onChange={onChangeColor}
+                      isDisabled={settings.isReadOnly}
                     />
                   }
+                  isDisabled={settings.isReadOnly}
                 />
               </ToggleGroup>
             </div>
             <br />
-            <Select
-              toggleRef={toggleRef}
-              variant={SelectVariant.single}
-              aria-label={"Select font style"}
-              isOpen={isFontFamilySelectOpen}
-              onSelect={onSelectFont}
-              onToggle={() => setFontFamilySelectOpen((prev) => !prev)}
-              selections={fontFamily ?? ""}
-              isDisabled={false}
-              maxHeight={inViewTimezoneSelect.maxHeight}
-              direction={inViewTimezoneSelect.direction}
-            >
-              {WEBSAFE_FONTS_LIST.map((fontName, index) => (
-                <SelectOption key={index} value={fontName} style={{ fontFamily: fontName }} />
-              ))}
-            </Select>
+            <div data-testid={"kie-tools--dmn-editor--properties-panel-node-font-style"}>
+              <Select
+                toggleRef={toggleRef}
+                variant={SelectVariant.single}
+                aria-label={"Select font style"}
+                isOpen={isFontFamilySelectOpen}
+                onSelect={onSelectFont}
+                onToggle={() => setFontFamilySelectOpen((prev) => !prev)}
+                selections={fontFamily ?? ""}
+                isDisabled={settings.isReadOnly}
+                maxHeight={inViewTimezoneSelect.maxHeight}
+                direction={inViewTimezoneSelect.direction}
+              >
+                {WEBSAFE_FONTS_LIST.map((fontName, index) => (
+                  <SelectOption key={index} value={fontName} style={{ fontFamily: fontName }} />
+                ))}
+              </Select>
+            </div>
           </div>
         </FormSection>
       )}

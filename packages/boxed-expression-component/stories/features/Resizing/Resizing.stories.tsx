@@ -17,12 +17,18 @@
  * under the License.
  */
 
-import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/BoxedExpressionEditor";
 import * as Literal from "../../boxedExpressions/Literal/Literal.stories";
 import * as Context from "../../boxedExpressions/Context/Context.stories";
-import { DmnBuiltInDataType, BoxedExpression, BoxedFunctionKind, BoxedLiteral } from "../../../src/api";
+import {
+  BoxedExpression,
+  BoxedFunctionKind,
+  BoxedLiteral,
+  DmnBuiltInDataType,
+  generateUuid,
+  Normalized,
+} from "../../../src/api";
 import { BoxedExpressionEditorStoryArgs } from "../../boxedExpressionStoriesWrapper";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
@@ -39,17 +45,18 @@ export const CanDrive: Story = {
   args: {
     ...Literal.CanDrive.args,
     expression: {
-      ...(Literal.CanDrive.args!.expression! as BoxedLiteral),
+      ...(Literal.CanDrive.args!.expression! as Normalized<BoxedLiteral>),
     },
   },
 };
 
-const expression: BoxedExpression = {
+const expression: Normalized<BoxedExpression> = {
   "@_id": "_577B0672-0DCE-48E2-A387-A06D89770346",
   "@_typeRef": DmnBuiltInDataType.Boolean,
   __$$element: "context",
   contextEntry: [
     {
+      "@_id": generateUuid(),
       variable: {
         "@_id": "_04EAD539-9830-42CF-BECC-F718D2929F16",
         "@_name": "Affordability Calculation",
@@ -89,10 +96,11 @@ const expression: BoxedExpression = {
         "@_kind": BoxedFunctionKind.Feel,
         expression: {
           "@_id": "_C1F325BF-D812-4192-AA90-B820C892EA9A",
-          "@_typeRef": DmnBuiltInDataType.Undefined,
+          "@_typeRef": undefined,
           __$$element: "context",
           contextEntry: [
             {
+              "@_id": generateUuid(),
               variable: {
                 "@_id": "_D1B671D5-DA59-4292-B407-A200CC5716B1",
                 "@_name": "Disposable Income",
@@ -106,6 +114,7 @@ const expression: BoxedExpression = {
               },
             },
             {
+              "@_id": generateUuid(),
               variable: {
                 "@_id": "_9FDEECB8-92EB-41B1-B44A-A93105BF6181",
                 "@_name": "Credit Contigency Factor",
@@ -117,6 +126,7 @@ const expression: BoxedExpression = {
                 __$$element: "context",
                 contextEntry: [
                   {
+                    "@_id": generateUuid(),
                     variable: {
                       "@_id": "_893A101E-970A-406F-81B3-64CDF93E143F",
                       "@_name": "Risk Category",
@@ -130,6 +140,7 @@ const expression: BoxedExpression = {
                     },
                   },
                   {
+                    "@_id": generateUuid(),
                     expression: {
                       "@_id": "_B7FA5008-05B1-4A5D-AAF5-EA3447C6307B",
                       __$$element: "decisionTable",
@@ -149,7 +160,7 @@ const expression: BoxedExpression = {
                         {
                           "@_id": "_64AA2820-EC4F-4A5B-9045-A474983CC86E",
                           "@_name": "Result Expression",
-                          "@_typeRef": DmnBuiltInDataType.Undefined,
+                          "@_typeRef": undefined,
                         },
                       ],
                       annotation: [
@@ -213,6 +224,7 @@ const expression: BoxedExpression = {
               },
             },
             {
+              "@_id": generateUuid(),
               variable: {
                 "@_id": "_F7311902-5700-4EB3-AA36-ADAFBB33752D",
                 "@_name": "Affordability",
@@ -229,6 +241,7 @@ const expression: BoxedExpression = {
               },
             },
             {
+              "@_id": generateUuid(),
               expression: {
                 "@_id": "_002EF0D0-D8AE-4086-82FC-526E9B5028CA",
                 __$$element: "literalExpression",
@@ -240,6 +253,7 @@ const expression: BoxedExpression = {
       },
     },
     {
+      "@_id": generateUuid(),
       expression: {
         __$$element: "invocation",
         "@_id": "_DC4F55F0-5650-427A-B0F6-6ED93E73E66F",

@@ -27,10 +27,11 @@ import {
   BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
-  DmnBuiltInDataType,
-  InsertRowColumnsDirection,
-  BoxedList,
   BoxedExpression,
+  BoxedList,
+  DmnBuiltInDataType,
+  generateUuid,
+  Normalized,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
@@ -45,17 +46,20 @@ import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn
 import { findAllIdsDeep } from "../../ids/ids";
 import "./ListExpression.css";
 
-export type ROWTYPE = DMN15__tContextEntry;
+export type ROWTYPE = Normalized<DMN15__tContextEntry>;
 
-export function ListExpression(
-  listExpression: BoxedList & {
-    isNested: boolean;
-    parentElementId: string;
-  }
-) {
+export function ListExpression({
+  isNested,
+  parentElementId,
+  expression: listExpression,
+}: {
+  expression: Normalized<BoxedList>;
+  isNested: boolean;
+  parentElementId: string;
+}) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
-  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
+  const { expressionHolderId, widthsById, isReadOnly } = useBoxedExpressionEditor();
 
   /// //////////////////////////////////////////////////////
   /// ///////////// RESIZING WIDTHS ////////////////////////
@@ -64,8 +68,10 @@ export function ListExpression(
   const { nestedExpressionContainerValue, onColumnResizingWidthChange } =
     useNestedExpressionContainerWithNestedExpressions(
       useMemo(() => {
+        const nestedExpressions = listExpression.expression ?? [];
+
         return {
-          nestedExpressions: listExpression.expression ?? [],
+          nestedExpressions: nestedExpressions,
           fixedColumnActualWidth: 0,
           fixedColumnResizingWidth: { value: 0, isPivoting: false },
           fixedColumnMinWidth: 0,
@@ -107,11 +113,13 @@ export function ListExpression(
 
   const beeTableRows = useMemo(() => {
     const rows = (listExpression.expression ?? []).map((item) => ({
+      "@_id": generateUuid(),
       expression: item,
     }));
 
     if (rows.length === 0) {
       rows.push({
+        "@_id": generateUuid(),
         expression: undefined!,
       });
     }
@@ -140,17 +148,17 @@ export function ListExpression(
   const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = useMemo(
     (): { [p: string]: ({ rowIndex, data, columnIndex }: BeeTableCellProps<ROWTYPE>) => JSX.Element } => ({
       [expressionHolderId]: (props) => (
-        <ListItemCell parentElementId={listExpression.parentElementId} listExpression={listExpression} {...props} />
+        <ListItemCell parentElementId={parentElementId} listExpression={listExpression} {...props} />
       ),
     }),
-    [expressionHolderId, listExpression]
+    [expressionHolderId, listExpression, parentElementId]
   );
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number }) => {
-      setExpression((prev: BoxedList) => {
+      setExpression((prev: Normalized<BoxedList>) => {
         const newItems = [...(prev.expression ?? [])];
-        const newListItems: BoxedExpression[] = [];
+        const newListItems: Normalized<BoxedExpression>[] = [];
 
         for (let i = 0; i < args.rowsCount; i++) {
           newListItems.push(undefined!); // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
@@ -161,7 +169,7 @@ export function ListExpression(
         }
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedList = {
+        const ret: Normalized<BoxedList> = {
           ...prev,
           expression: newItems,
         };
@@ -174,14 +182,14 @@ export function ListExpression(
 
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
-      let oldExpression: BoxedExpression | undefined;
-      setExpression((prev: BoxedList) => {
+      let oldExpression: Normalized<BoxedExpression> | undefined;
+      setExpression((prev: Normalized<BoxedList>) => {
         const newItems = [...(prev.expression ?? [])];
         oldExpression = newItems[args.rowIndex];
         newItems.splice(args.rowIndex, 1);
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedList = {
+        const ret: Normalized<BoxedList> = {
           ...prev,
           expression: newItems,
         };
@@ -200,14 +208,14 @@ export function ListExpression(
 
   const onRowReset = useCallback(
     (args: { rowIndex: number }) => {
-      let oldExpression: BoxedExpression | undefined;
-      setExpression((prev: BoxedList) => {
+      let oldExpression: Normalized<BoxedExpression> | undefined;
+      setExpression((prev: Normalized<BoxedList>) => {
         const newItems = [...(prev.expression ?? [])];
         oldExpression = newItems[args.rowIndex];
         newItems.splice(args.rowIndex, 1, undefined!); // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedList = {
+        const ret: Normalized<BoxedList> = {
           ...prev,
           expression: newItems,
         };
@@ -225,14 +233,14 @@ export function ListExpression(
   );
 
   const beeTableHeaderVisibility = useMemo(() => {
-    return listExpression.isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.AllLevels;
-  }, [listExpression.isNested]);
+    return isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.AllLevels;
+  }, [isNested]);
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression((prev: BoxedList) => {
+      setExpression((prev: Normalized<BoxedList>) => {
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedList = {
+        const ret: Normalized<BoxedList> = {
           ...prev,
           "@_label": name,
           "@_typeRef": typeRef,
@@ -270,6 +278,8 @@ export function ListExpression(
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div className={`${listExpression["@_id"]} list-expression`}>
         <BeeTable<ROWTYPE>
+          isReadOnly={isReadOnly}
+          isEditableHeader={!isReadOnly}
           onColumnResizingWidthChange={onColumnResizingWidthChange}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={listExpression["@_id"]}

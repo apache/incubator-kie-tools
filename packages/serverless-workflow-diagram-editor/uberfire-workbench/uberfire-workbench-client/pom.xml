@@ -22,7 +22,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 >
-
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
@@ -54,19 +53,19 @@
       <artifactId>jsinterop-annotations</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.crysknife</groupId>
-      <artifactId>crysknife-core</artifactId>
+      <groupId>org.kie.j2cl.tools.di</groupId>
+      <artifactId>core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.treblereel.j2cl.processors</groupId>
+      <groupId>org.kie.j2cl.tools.processors</groupId>
       <artifactId>annotations</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.treblereel.j2cl.processors</groupId>
+      <groupId>org.kie.j2cl.tools.processors</groupId>
       <artifactId>common</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.treblereel.j2cl.processors</groupId>
+      <groupId>org.kie.j2cl.tools.processors</groupId>
       <artifactId>processors</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -87,5 +86,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
 </project>

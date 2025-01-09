@@ -23,9 +23,10 @@ import {
   devUIUrl,
   extensionBasePath,
   isTracingEnabled,
-  openapiPath,
-  trustyServiceUrl,
   userData,
+  quarkusAppRootPath,
+  quarkusHttpHost,
+  quarkusHttpPort,
 } from "build-time-data";
 import { RouterController } from "router-controller";
 
@@ -43,6 +44,7 @@ export class QwcJbpmQuarkusDevui extends LitElement {
   async connectedCallback() {
     super.connectedCallback();
     await this.updateComplete;
+
     if (!document.querySelector("#jbpm-devui-script")) {
       const script = document.createElement("script");
       script.setAttribute("async", "");
@@ -60,15 +62,18 @@ export class QwcJbpmQuarkusDevui extends LitElement {
   initUI() {
     const metadata = this._routerController.getCurrentMetaData();
     const container = this.renderRoot.querySelector("#envelope-app");
+
     RuntimeToolsDevUI.open({
       container: container,
       isDataIndexAvailable: true,
       isTracingEnabled: isTracingEnabled,
-      dataIndexUrl: `${dataIndexUrl ?? "http://localhost:8180"}/graphql`,
-      trustyServiceUrl: `${trustyServiceUrl ?? "http://localhost:1336"}`,
+      quarkusAppOrigin: `http://${quarkusHttpHost}:${quarkusHttpPort}`,
+      quarkusAppRootPath: quarkusAppRootPath,
+      shouldReplaceQuarkusAppOriginWithWebappOrigin: true,
+      dataIndexUrl: `${dataIndexUrl}/graphql`,
       page: metadata.page ?? "Processes",
-      devUIUrl: `${devUIUrl ?? window.location.origin}`,
-      openApiPath: `${openapiPath ?? "q/openapi.json"}`,
+      devUIUrl: devUIUrl ?? window.location.origin,
+      devUIOrigin: window.location.origin,
       availablePages: ["Processes", "Jobs", "Tasks", "Forms"],
       users: userData ?? [],
     });

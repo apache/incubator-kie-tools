@@ -19,15 +19,20 @@
 
 const { execSync, execFileSync } = require("child_process");
 const path = require("path");
-const buildEnv = require("../env");
+const { env } = require("../env");
+const version = require("../package.json").version;
 
 const filePath = path.join(process.cwd(), "tests/test.zip");
 
 const containersPorts = {
-  fileserver: buildEnv.env.devDeploymentUploadService.dev.fileServerPort,
-  buildtimeInstall: buildEnv.env.devDeploymentUploadService.dev.buildTimePort,
-  runTimeInstall: buildEnv.env.devDeploymentUploadService.dev.runtTimePort,
+  fileserver: env.devDeploymentUploadService.dev.fileServerPort,
+  buildtimeInstall: env.devDeploymentUploadService.dev.buildTimePort,
+  runTimeInstall: env.devDeploymentUploadService.dev.runtTimePort,
 };
+
+const dockerInfo = JSON.parse(execSync(`docker info --format '{{ json . }}'`).toString().trim());
+const platform = dockerInfo["OSType"];
+const arch = dockerInfo["Architecture"] === "aarch64" ? "arm64" : "amd64";
 
 describe("Test built images individually", () => {
   beforeAll(() => {
@@ -64,7 +69,9 @@ describe("Test built images individually", () => {
     ]).toString();
     const dockerLogs = execSync(`docker logs ddus-runtime-install`)
       .toString()
-      .replace(/http:\/\/.*:/, "<ddus-fileserver-ip>:");
+      .replace(/http:\/\/.*:/, "<ddus-fileserver-ip>:")
+      .replaceAll(version, "<ddus-version>")
+      .replaceAll(`${platform}-${arch}`, "<platform-arch>");
     expect(response).toMatchSnapshot();
     expect(dockerLogs).toMatchSnapshot();
   });

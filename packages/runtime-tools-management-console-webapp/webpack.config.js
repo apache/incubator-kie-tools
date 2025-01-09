@@ -18,26 +18,27 @@
  */
 
 const path = require("path");
-const webpack = require("webpack");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { env: buildEnv } = require("./env");
+const CopyPlugin = require("copy-webpack-plugin");
+const { env } = require("./env");
+const { defaultEnvJson } = require("./build/defaultEnvJson");
 
 const BG_IMAGES_DIRNAME = "bgimages";
 
-module.exports = async (env) => {
-  const dataIndexURL = buildEnv.runtimeToolsManagementConsoleWebapp.kogitoDataIndexUrl;
-  return merge(common(env), {
+module.exports = async (webpackEnv) => {
+  return merge(common(webpackEnv), {
     entry: {
-      app: path.resolve(__dirname, "src", "index.tsx"),
+      index: path.resolve(__dirname, "src", "index.tsx"),
+      "resources/form-displayer": "./src/resources/form-displayer.ts",
     },
     devServer: {
       static: {
         directory: "./dist",
       },
-      host: buildEnv.runtimeToolsManagementConsoleWebapp.host,
-      port: buildEnv.runtimeToolsManagementConsoleWebapp.port,
+      host: env.runtimeToolsManagementConsoleWebapp.host,
+      port: env.runtimeToolsManagementConsoleWebapp.port,
       compress: true,
       historyApiFallback: true,
       hot: true,
@@ -58,14 +59,19 @@ module.exports = async (env) => {
       },
     },
     plugins: [
-      new webpack.EnvironmentPlugin({
-        KOGITO_ENV_MODE: env.dev ? "DEV" : "PROD",
-        KOGITO_DATAINDEX_HTTP_URL: dataIndexURL,
-      }),
       new HtmlWebpackPlugin({
-        template: path.resolve(__dirname, "src", "index.html"),
-        favicon: "src/favicon.ico",
-        chunks: ["app"],
+        template: "./src/index.html",
+        inject: false,
+        minify: false,
+      }),
+      new CopyPlugin({
+        patterns: [
+          {
+            from: "./src/static/env.json",
+            to: "./env.json",
+            transform: () => JSON.stringify(defaultEnvJson, null, 2),
+          },
+        ],
       }),
     ],
     module: {
@@ -77,7 +83,7 @@ module.exports = async (env) => {
         {
           test: /\.(svg|ttf|eot|woff|woff2)$/,
           use: {
-            loader: "file-loader",
+            loader: require.resolve("file-loader"),
             options: {
               // Limit at 50k. larger files emited into separate files
               limit: 5000,
@@ -91,7 +97,7 @@ module.exports = async (env) => {
           include: (input) => input.indexOf("background-filter.svg") > 1,
           use: [
             {
-              loader: "url-loader",
+              loader: require.resolve("url-loader"),
               options: {
                 limit: 5000,
                 outputPath: "svgs",
@@ -104,7 +110,7 @@ module.exports = async (env) => {
           test: /\.svg$/,
           include: (input) => input.indexOf(BG_IMAGES_DIRNAME) > -1,
           use: {
-            loader: "svg-url-loader",
+            loader: require.resolve("svg-url-loader"),
             options: {},
           },
         },
@@ -112,7 +118,7 @@ module.exports = async (env) => {
           test: /\.(jpg|jpeg|png|gif)$/i,
           use: [
             {
-              loader: "url-loader",
+              loader: require.resolve("url-loader"),
               options: {
                 limit: 5000,
                 outputPath: "images",

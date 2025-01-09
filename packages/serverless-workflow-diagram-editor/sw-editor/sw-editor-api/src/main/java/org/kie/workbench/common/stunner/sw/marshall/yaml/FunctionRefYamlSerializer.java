@@ -20,19 +20,19 @@
 
 package org.kie.workbench.common.stunner.sw.marshall.yaml;
 
+import org.kie.j2cl.tools.yaml.mapper.api.YAMLDeserializer;
+import org.kie.j2cl.tools.yaml.mapper.api.YAMLSerializer;
+import org.kie.j2cl.tools.yaml.mapper.api.exception.YAMLDeserializationException;
+import org.kie.j2cl.tools.yaml.mapper.api.internal.deser.StringYAMLDeserializer;
+import org.kie.j2cl.tools.yaml.mapper.api.internal.deser.YAMLDeserializationContext;
+import org.kie.j2cl.tools.yaml.mapper.api.internal.ser.StringYAMLSerializer;
+import org.kie.j2cl.tools.yaml.mapper.api.internal.ser.YAMLSerializationContext;
+import org.kie.j2cl.tools.yaml.mapper.api.node.NodeType;
+import org.kie.j2cl.tools.yaml.mapper.api.node.YamlMapping;
+import org.kie.j2cl.tools.yaml.mapper.api.node.YamlNode;
+import org.kie.j2cl.tools.yaml.mapper.api.node.YamlSequence;
 import org.kie.workbench.common.stunner.sw.definition.FunctionRef;
 import org.kie.workbench.common.stunner.sw.definition.FunctionRef_YamlMapperImpl;
-import org.treblereel.gwt.yaml.api.YAMLDeserializer;
-import org.treblereel.gwt.yaml.api.YAMLSerializer;
-import org.treblereel.gwt.yaml.api.exception.YAMLDeserializationException;
-import org.treblereel.gwt.yaml.api.internal.deser.StringYAMLDeserializer;
-import org.treblereel.gwt.yaml.api.internal.deser.YAMLDeserializationContext;
-import org.treblereel.gwt.yaml.api.internal.ser.StringYAMLSerializer;
-import org.treblereel.gwt.yaml.api.internal.ser.YAMLSerializationContext;
-import org.treblereel.gwt.yaml.api.node.NodeType;
-import org.treblereel.gwt.yaml.api.node.YamlMapping;
-import org.treblereel.gwt.yaml.api.node.YamlNode;
-import org.treblereel.gwt.yaml.api.node.YamlSequence;
 
 public class FunctionRefYamlSerializer implements YAMLDeserializer, YAMLSerializer {
 

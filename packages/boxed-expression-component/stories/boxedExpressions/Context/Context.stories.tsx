@@ -43,13 +43,14 @@ export const Base: Story = {
       __$$element: "context",
       "@_id": "_35255561-88FA-4A78-9C3F-61855213EE0F",
       "@_label": "Expression Name",
-      "@_typeRef": DmnBuiltInDataType.Undefined,
+      "@_typeRef": undefined,
       contextEntry: [
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "ContextEntry-1",
-            "@_typeRef": DmnBuiltInDataType.Undefined,
+            "@_typeRef": undefined,
           },
           expression: undefined!,
         },
@@ -57,6 +58,38 @@ export const Base: Story = {
     },
     isResetSupportedOnRootExpression: true,
     widthsById: { "_35255561-88FA-4A78-9C3F-61855213EE0F": [CONTEXT_ENTRY_VARIABLE_MIN_WIDTH] },
+  },
+};
+
+export const Readonly: Story = {
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
+  args: {
+    ...EmptyExpression.args,
+    expression: {
+      __$$element: "context",
+      "@_id": "_35255561-88FA-4A78-9C3F-61855213EE0F",
+      "@_label": "Expression Name",
+      "@_typeRef": undefined,
+      contextEntry: [
+        {
+          "@_id": generateUuid(),
+          variable: {
+            "@_id": generateUuid(),
+            "@_name": "ContextEntry-1",
+            "@_typeRef": undefined,
+          },
+          expression: {
+            "@_id": generateUuid(),
+            __$$element: "literalExpression",
+            text: { __$$text: "readonly text" },
+          },
+        },
+      ],
+    },
+    isResetSupportedOnRootExpression: true,
+    widthsById: { "_35255561-88FA-4A78-9C3F-61855213EE0F": [CONTEXT_ENTRY_VARIABLE_MIN_WIDTH] },
+    isReadOnly: true,
   },
 };
 
@@ -72,6 +105,7 @@ export const InstallmentCalculation: Story = {
       "@_typeRef": DmnBuiltInDataType.Number,
       contextEntry: [
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "Fee",
@@ -86,6 +120,7 @@ export const InstallmentCalculation: Story = {
           },
         },
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "Repayments",
@@ -100,6 +135,7 @@ export const InstallmentCalculation: Story = {
           },
         },
         {
+          "@_id": generateUuid(),
           // The result expression is a ContextEntry without variable
           expression: {
             __$$element: "literalExpression",
@@ -127,6 +163,7 @@ export const Customer: Story = {
       "@_typeRef": "tCustomer",
       contextEntry: [
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "Name",
@@ -141,6 +178,7 @@ export const Customer: Story = {
           },
         },
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "Age",
@@ -171,6 +209,7 @@ export const Nested: Story = {
       "@_label": "Expression Name",
       contextEntry: [
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "ContextEntry-1",
@@ -181,6 +220,7 @@ export const Nested: Story = {
             "@_label": "Expression Name",
             contextEntry: [
               {
+                "@_id": generateUuid(),
                 variable: {
                   "@_id": generateUuid(),
                   "@_name": "ContextEntry-1",

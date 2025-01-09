@@ -159,7 +159,11 @@ export function CloudEventFormPage() {
                 </Title>
               </EmptyState>
             ) : (
-              <CloudEventForm driver={driver} defaultValues={defaultValues} />
+              <CloudEventForm
+                driver={driver}
+                defaultValues={defaultValues}
+                serviceUrl={window.location.href.split("/#")[0]}
+              />
             )}
           </CardBody>
         </Card>

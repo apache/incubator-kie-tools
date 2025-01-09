@@ -35,10 +35,11 @@ export function DiagramPropertiesPanel() {
 
   return (
     <DrawerPanelContent
+      data-testid={"kie-tools--dmn-editor--properties-panel-container"}
       isResizable={true}
       minSize={"300px"}
       defaultSize={"500px"}
-      onKeyDown={(e) => e.stopPropagation()} // This prevents ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
+      onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
     >
       <DrawerHead>
         {selectedNodesById.size <= 0 && <GlobalDiagramProperties />}

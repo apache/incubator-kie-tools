@@ -1,5 +1,5 @@
 {
-  "private": false,
+  "private": true,
   "name": "@kie-tools/yard-validator-worker",
   "version": "0.0.0",
   "description": "",
@@ -15,28 +15,25 @@
   },
   "scripts": {
     "build:dev": "rimraf dist && run-script-os && pnpm copy:webworker",
-    "build:dev:darwin:linux": "pnpm install:mvnw && mvn clean install -DskipTests",
-    "build:dev:win32": "pnpm install:mvnw && pnpm powershell \"mvn clean install `-DskipTests\"",
+    "build:dev:darwin:linux": "mvn clean install -DskipTests",
+    "build:dev:win32": "pnpm powershell \"mvn clean install `-DskipTests\"",
     "build:prod": "pnpm lint && run-script-os && pnpm copy:webworker",
-    "build:prod:darwin:linux": "pnpm install:mvnw && mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)",
-    "build:prod:win32": "pnpm install:mvnw && pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures)\"",
+    "build:prod:darwin:linux": "mvn clean install -DskipTests=$(build-env tests.run --not) -Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) -Dreproducible",
+    "build:prod:win32": "pnpm powershell \"mvn clean install `-DskipTests=$(build-env tests.run --not) `-Dmaven.test.failure.ignore=$(build-env tests.ignoreFailures) `-Dreproducible\"",
     "copy:webworker": "copyfiles -f target/worker/yard-validator-worker/yard-validator-worker.js dist",
     "install": "node install.js",
-    "install:mvnw": "run-script-os",
-    "install:mvnw:darwin:linux": "mvn wrapper:wrapper",
-    "install:mvnw:win32": "pnpm powershell \"mvn wrapper:wrapper\"",
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
+  "dependencies": {
+    "@kie-tools/maven-base": "workspace:*",
+    "@kie-tools/yard-model": "workspace:*"
+  },
   "devDependencies": {
-    "@kie-tools/maven-config-setup-helper": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
-    "@kie-tools/tsconfig": "workspace:*",
-    "@kie-tools/yard-model": "workspace:*",
     "copyfiles": "^2.4.1",
     "rimraf": "^3.0.2",
-    "run-script-os": "^1.1.6",
-    "typescript": "^4.6.2"
+    "run-script-os": "^1.1.6"
   },
   "kieTools": {
     "requiredPreinstalledCliCommands": [

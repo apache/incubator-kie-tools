@@ -1,0 +1,101 @@
+<settings
+  xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd"
+>
+  <mirrors>
+    <mirror>
+      <id>apache-public-repository-group-mirror-to-central</id>
+      <mirrorOf>apache-public-repository-group</mirrorOf>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </mirror>
+    <mirror>
+      <id>jboss-public-repository-group-mirror-to-central</id>
+      <mirrorOf>jboss-public-repository-group</mirrorOf>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </mirror>
+    <mirror>
+      <id>jboss-enterprise-maven-repository-mirror-to-central</id>
+      <mirrorOf>jboss-enterprise-maven-repository</mirrorOf>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </mirror>
+  </mirrors>
+
+  <profiles>
+    <profile>
+      <id>kie-tools--default-repos</id>
+      <activation>
+        <property>
+          <name>ignore--kie-tools--default-repos</name>
+          <value>!true</value>
+        </property>
+      </activation>
+      <repositories>
+        <repository>
+          <id>apache.snapshots</id>
+          <name>Apache Snapshot Repository</name>
+          <url>https://repository.apache.org/snapshots</url>
+          <releases>
+            <enabled>false</enabled>
+          </releases>
+          <snapshots>
+            <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </repository>
+        <repository>
+          <id>central</id>
+          <name>Central Repository</name>
+          <url>https://repo.maven.apache.org/maven2</url>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+        <repository>
+          <id>apache-public-repository-group</id>
+          <name>Apache Public Repository Group</name>
+          <url>https://repo.maven.apache.org/maven2</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>false</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </repository>
+        <repository>
+          <id>jboss-public-repository-group</id>
+          <name>JBOSS Public Repository Group</name>
+          <url>https://repo.maven.apache.org/maven2</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>false</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>apache-public-repository-group</id>
+          <name>Apache Public Repository Group</name>
+          <url>https://repository.apache.org/content/groups/public/</url>
+          <layout>default</layout>
+          <releases>
+            <enabled>false</enabled>
+            <updatePolicy>never</updatePolicy>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+            <updatePolicy>never</updatePolicy>
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+</settings>

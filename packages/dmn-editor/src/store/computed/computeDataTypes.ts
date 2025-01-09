@@ -19,6 +19,7 @@
 
 import { DMN15__tImport, DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { builtInFeelTypeNames } from "../../dataTypes/BuiltInFeelTypes";
 import { DataType, DataTypeIndex } from "../../dataTypes/DataTypes";
 import { buildFeelQNameFromNamespace } from "../../feel/buildFeelQName";
@@ -28,7 +29,7 @@ import { Computed, State } from "../Store";
 export function computeDataTypes(
   namespace: State["dmn"]["model"]["definitions"]["@_namespace"],
   itemDefinitions: State["dmn"]["model"]["definitions"]["itemDefinition"],
-  externalModelTypesByNamespace: TypeOrReturnType<Computed["getExternalModelTypesByNamespace"]>,
+  externalModelTypesByNamespace: TypeOrReturnType<Computed["getDirectlyIncludedExternalModelsByNamespace"]>,
   thisDmnsImportsByNamespace: TypeOrReturnType<Computed["importsByNamespace"]>
 ) {
   const allDataTypesById: DataTypeIndex = new Map();
@@ -79,7 +80,7 @@ export function computeDataTypes(
 }
 
 export function buildDataTypesTree(
-  items: DMN15__tItemDefinition[],
+  items: Normalized<DMN15__tItemDefinition>[],
   importsByNamespace: Map<string, DMN15__tImport>,
   allDataTypesById: DataTypeIndex,
   allTopLevelDataTypesByFeelName: DataTypeIndex,

@@ -39,6 +39,7 @@ import {
   useWorkflowListGatewayApi,
   WorkflowListGatewayApi,
 } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowList";
+import { changeBaseURLToCurrentLocation } from "../../../url";
 
 interface MatchProps {
   instanceID: string;
@@ -75,6 +76,16 @@ const WorkflowsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
     [history]
   );
 
+  const getFinalEndpoint = useCallback(
+    (endpoint: string) => (apiContext.isLocalCluster ? changeBaseURLToCurrentLocation(endpoint) : endpoint),
+    [apiContext.isLocalCluster]
+  );
+
+  const getFinalServiceUrl = useCallback(
+    (serviceUrl: string) => (apiContext.isLocalCluster ? changeBaseURLToCurrentLocation(serviceUrl) : serviceUrl),
+    [apiContext.isLocalCluster]
+  );
+
   const onOpenWorkflowForm = useCallback(
     (workflowDefinition: WorkflowDefinition) => {
       history.push({
@@ -82,12 +93,29 @@ const WorkflowsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
         state: {
           workflowDefinition: {
             workflowName: workflowDefinition.workflowName,
-            endpoint: workflowDefinition.endpoint,
+            endpoint: getFinalEndpoint(workflowDefinition.endpoint),
+            serviceUrl: getFinalServiceUrl(workflowDefinition.serviceUrl),
           },
         },
       });
     },
-    [history]
+    [history, getFinalEndpoint, getFinalServiceUrl]
+  );
+
+  const onOpenTriggerCloudEvent = useCallback(
+    (workflowDefinition: WorkflowDefinition) => {
+      history.push({
+        pathname: `/WorkflowDefinitions/CloudEvent`,
+        state: {
+          workflowDefinition: {
+            workflowName: workflowDefinition.workflowName,
+            endpoint: getFinalEndpoint(workflowDefinition.endpoint),
+            serviceUrl: getFinalServiceUrl(workflowDefinition.serviceUrl),
+          },
+        },
+      });
+    },
+    [history, getFinalEndpoint, getFinalServiceUrl]
   );
 
   return (
@@ -120,6 +148,7 @@ const WorkflowsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
               <Card className="Dev-ui__card-size">
                 <WorkflowDefinitionListContainer
                   onOpenWorkflowForm={onOpenWorkflowForm}
+                  onOpenTriggerCloudEventForWorkflow={onOpenTriggerCloudEvent}
                   targetOrigin={apiContext.getDevUIUrl()}
                 />
               </Card>

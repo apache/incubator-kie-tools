@@ -19,13 +19,19 @@
 import React from "react";
 import FormsListContext from "./FormsListContext";
 import { FormsListGatewayApiImpl } from "./FormsListGatewayApi";
+import { useDevUIAppContext } from "../../components/contexts/DevUIAppContext";
 
 interface FormsListContextProviderProps {
   children;
 }
 
 const FormsListContextProvider: React.FC<FormsListContextProviderProps> = ({ children }) => {
-  return <FormsListContext.Provider value={new FormsListGatewayApiImpl()}>{children}</FormsListContext.Provider>;
+  const appContext = useDevUIAppContext();
+  const baseUrl = appContext.transformQuarkusUrl(
+    `${appContext.getQuarkusAppOrigin()}${appContext.getQuarkusAppRootPath()}`
+  );
+
+  return <FormsListContext.Provider value={new FormsListGatewayApiImpl(baseUrl)}>{children}</FormsListContext.Provider>;
 };
 
 export default FormsListContextProvider;

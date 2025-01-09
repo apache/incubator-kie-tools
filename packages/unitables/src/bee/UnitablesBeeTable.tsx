@@ -145,30 +145,33 @@ export function UnitablesBeeTable({
   );
 
   const cellComponentByColumnAccessor: BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"] = React.useMemo(() => {
-    return columns.reduce((acc, column) => {
-      if (column.insideProperties) {
-        for (const insideProperty of column.insideProperties) {
-          acc[getColumnAccessor(insideProperty)] = (props) => (
+    return columns.reduce(
+      (acc, column) => {
+        if (column.insideProperties) {
+          for (const insideProperty of column.insideProperties) {
+            acc[getColumnAccessor(insideProperty)] = (props) => (
+              <UnitablesBeeTableCell
+                {...props}
+                joinedName={insideProperty.joinedName}
+                rowCount={rows.length}
+                columnCount={columnsCount}
+              />
+            );
+          }
+        } else {
+          acc[getColumnAccessor(column)] = (props) => (
             <UnitablesBeeTableCell
               {...props}
-              joinedName={insideProperty.joinedName}
+              joinedName={column.joinedName}
               rowCount={rows.length}
               columnCount={columnsCount}
             />
           );
         }
-      } else {
-        acc[getColumnAccessor(column)] = (props) => (
-          <UnitablesBeeTableCell
-            {...props}
-            joinedName={column.joinedName}
-            rowCount={rows.length}
-            columnCount={columnsCount}
-          />
-        );
-      }
-      return acc;
-    }, {} as NonNullable<BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"]>);
+        return acc;
+      },
+      {} as NonNullable<BeeTableProps<ROWTYPE>["cellComponentByColumnAccessor"]>
+    );
   }, [columns, rows.length, columnsCount]);
 
   const setColumnWidth = useCallback(

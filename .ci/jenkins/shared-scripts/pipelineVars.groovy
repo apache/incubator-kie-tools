@@ -16,26 +16,35 @@
  */
 class PipelineVars implements Serializable {
 
-    String githubRepositoryOrg = 'apache';
-    String githubRepositoryName = 'incubator-kie-tools';
-    String githubRepositorySlug = 'apache/incubator-kie-tools';
-
-    String quayPushCredentialsId = 'quay-io-kie-tools-token';
-    String openshiftCredentialsId = 'openshift-kie-tools-token';
-    String kieToolsBotGithubCredentialsId = 'kie-tools-bot-gh';
-    String kieToolsBotGithubTokenCredentialsId = 'kie-tools-bot-gh-token';
-    String kieToolsGithubCodeQLTokenCredentialsId = 'kie-tools-gh-codeql-token';
-    String chromeStoreCredentialsId = 'kie-tools-chrome-store';
-    String chromeStoreRefreshTokenCredentialsId = 'kie-tools-chrome-store-refresh-token';
-    String chromeExtensionIdCredentialsId = 'kie-tools-chrome-extension-id';
-    String swfChromeExtensionIdCredentialsId = 'kie-tools-swf-chrome-extension-id';
-    String npmTokenCredentialsId = 'kie-tools-npm-token';
-    String buildKiteTokenCredentialsId = 'kie-tools-build-kite-token';
-    String asfGithubPushCredentialsId = '84811880-2025-45b6-a44c-2f33bef30ad2';
-    String asfGithubTokenPushCredentialsId = '41128c14-bb63-4708-9074-d20a318ee630';
-
-    String defaultArtifactsTempDir = 'artifacts-tmp';
+    String githubRepositoryOrg = 'apache'
+    String githubRepositoryName = 'incubator-kie-tools'
+    String githubRepositorySlug = 'apache/incubator-kie-tools'
+    String quayPushCredentialsId = 'quay-io-kie-tools-token'
+    String dockerHubUserCredentialsId = 'DOCKERHUB_USER'
+    String dockerHubTokenCredentialsId = 'DOCKERHUB_TOKEN'
+    String openshiftCredentialsId = 'openshift-kie-tools-token'
+    String kieToolsBotGithubCredentialsId = 'kie-tools-bot-gh'
+    String kieToolsBotGithubTokenCredentialsId = 'kie-tools-bot-gh-token'
+    String kieToolsGithubCodeQLTokenCredentialsId = 'kie-tools-gh-codeql-token'
+    String chromeStoreCredentialsId = 'kie-tools-chrome-store'
+    String chromeStoreRefreshTokenCredentialsId = 'kie-tools-chrome-store-refresh-token'
+    String chromeExtensionIdCredentialsId = 'kie-tools-chrome-extension-id'
+    String swfChromeExtensionIdCredentialsId = 'kie-tools-swf-chrome-extension-id'
+    String npmTokenCredentialsId = 'kie-tools-npm-token'
+    String buildKiteTokenCredentialsId = 'kie-tools-build-kite-token'
+    String asfCIGithubCredentialsId = '399061d0-5ab5-4142-a186-a52081fef742'
+    String asfGithubPushCredentialsId = '84811880-2025-45b6-a44c-2f33bef30ad2'
+    String asfGithubTokenPushCredentialsId = '41128c14-bb63-4708-9074-d20a318ee630'
+    String mavenSettingsReleaseConfigFileId = 'kie-release-authn-settings'
+    String mavenSettingsNightlyConfigFileId = 'kie-nightly-authn-settings'
+    String defaultArtifactsTempDir = 'artifacts-tmp'
+    String asfReleaseStagingRepository = 'https://dist.apache.org/repos/dist/dev/incubator/kie'
+    String asfReleaseGPGKeyCredentialsId = 'GPG_KEY_FILE'
+    String asfReleaseSVNStagingCredentialsId = 'kie-svn-credentials'
+    String kieToolsCiBuildImageRegistry = 'docker.io'
+    String kieToolsCiBuildImageAccount = 'apache'
+    String kieToolsCiBuildImageName = 'incubator-kie-tools-ci-build'
 
 }
 
-return new PipelineVars();
+return new PipelineVars()

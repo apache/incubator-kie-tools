@@ -31,13 +31,15 @@ const CONSTRAINT_START_ID = "start";
 const CONSTRAINT_END_ID = "end";
 
 export function ConstraintsRange({
-  isReadonly,
+  id,
+  isReadOnly,
   value,
   expressionValue,
   type,
   typeHelper,
   onSave,
   isDisabled,
+  renderOnPropertiesPanel,
 }: ConstraintComponentProps) {
   const start = useMemo(
     () => typeHelper.recover(isRange(value ?? "", typeHelper.check)?.[0]) ?? "",
@@ -208,7 +210,7 @@ export function ConstraintsRange({
           >
             <button
               id={CONSTRAINT_START_ID}
-              disabled={isReadonly || isDisabled}
+              disabled={isReadOnly || isDisabled}
               onClick={() => onIncludeStartToogle()}
               style={{
                 borderRadius: "100%",
@@ -222,13 +224,13 @@ export function ConstraintsRange({
             />
           </Tooltip>
         </div>
-        <div style={{ gridArea: "startField" }}>
+        <div style={{ gridArea: "startField" }} data-testid={"kie-tools--dmn-editor--range-constraint-start-value"}>
           {typeHelper.component({
             autoFocus: start === "",
             onBlur: () => onInternalChange(),
             onChange: onStartChange,
             id: "start-value",
-            isDisabled: isReadonly || isDisabled,
+            isDisabled: isReadOnly || isDisabled,
             placeholder: "Starts with",
             style: {
               outline: "none",
@@ -270,7 +272,7 @@ export function ConstraintsRange({
           >
             <button
               id={CONSTRAINT_END_ID}
-              disabled={isReadonly || isDisabled}
+              disabled={isReadOnly || isDisabled}
               onClick={() => onIncludeEndToogle()}
               style={{
                 borderRadius: "100%",
@@ -284,13 +286,13 @@ export function ConstraintsRange({
             />
           </Tooltip>
         </div>
-        <div style={{ gridArea: "endField" }}>
+        <div style={{ gridArea: "endField" }} data-testid={"kie-tools--dmn-editor--range-constraint-end-value"}>
           {typeHelper.component({
             autoFocus: start !== "",
             onBlur: () => onInternalChange(),
             onChange: onEndChange,
             id: "end-value",
-            isDisabled: isReadonly || isDisabled,
+            isDisabled: isReadOnly || isDisabled,
             placeholder: "Ends with",
             style: { outline: "none" },
             value: end,
@@ -308,8 +310,12 @@ export function ConstraintsRange({
           </HelperText>
         </div>
       </div>
-      <br />
-      <ConstraintsExpression isReadonly={true} value={expressionValue ?? ""} type={type} />
+      {!renderOnPropertiesPanel && (
+        <>
+          <br />
+          <ConstraintsExpression id={id} isReadOnly={true} value={expressionValue ?? ""} type={type} />
+        </>
+      )}
     </div>
   );
 }

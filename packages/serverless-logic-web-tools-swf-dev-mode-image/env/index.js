@@ -19,26 +19,32 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv(
-  [require("@kie-tools/root-env/env"), require("@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env/env")],
-  {
-    vars: varsWithName({
-      SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags: {
-        default: "latest",
-        description: "",
-      },
-      SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeKogitoImageTag: {
-        default: "main-2024-04-03",
-        description: "",
-      },
-    }),
-    get env() {
-      return {
-        swfDevModeImage: {
-          buildTags: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTags),
-          kogitoImageTag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeKogitoImageTag),
-        },
-      };
+const rootEnv = require("@kie-tools/root-env/env");
+
+const {
+  env: { mavenM2RepoViaHttpImage: mavenM2RepoViaHttpImageEnv },
+} = require("@kie-tools/maven-m2-repo-via-http-image/env");
+
+const {
+  env: { kogitoBaseBuilderImage: kogitoBaseBuilderImageEnv },
+} = require("@kie/kogito-base-builder-image/env");
+
+module.exports = composeEnv([rootEnv, require("@kie-tools/serverless-logic-web-tools-swf-dev-mode-image-env/env")], {
+  vars: varsWithName({
+    SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__baseImageTag: {
+      default: `${kogitoBaseBuilderImageEnv.registry}/${kogitoBaseBuilderImageEnv.account}/${kogitoBaseBuilderImageEnv.name}:${kogitoBaseBuilderImageEnv.buildTag}`,
+      description: "Base image complete tag.",
     },
-  }
-);
+  }),
+  get env() {
+    return {
+      slwtDevModeImage: {
+        baseImageTag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS_DEVMODE_IMAGE__baseImageTag),
+        version: require("../package.json").version,
+        dev: {
+          mavenM2RepoViaHttpImage: `${mavenM2RepoViaHttpImageEnv.registry}/${mavenM2RepoViaHttpImageEnv.account}/${mavenM2RepoViaHttpImageEnv.name}:${mavenM2RepoViaHttpImageEnv.buildTag}`,
+        },
+      },
+    };
+  },
+});

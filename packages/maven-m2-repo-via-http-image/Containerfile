@@ -1,0 +1,48 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.4
+
+# Argument for configuring the port
+ARG PORT=80
+
+# Install required packages: httpd and unzip, clean up after installation
+RUN microdnf --disableplugin=subscription-manager -y install httpd \
+ && microdnf --disableplugin=subscription-manager clean all
+
+# Apache configuration adjustments
+RUN echo "Mutex posixsem" >> /etc/httpd/conf/httpd.conf \
+ && sed -i "s/Listen 80/Listen $PORT/g" /etc/httpd/conf/httpd.conf \
+ && sed -i "s/#ServerName www.example.com:80/ServerName 127.0.0.1:$PORT/g" /etc/httpd/conf/httpd.conf \
+ && sed -i "/ServerName 127.0.0.1:$PORT/a Header set Content-Security-Policy \"frame-ancestors 'self';\"" /etc/httpd/conf/httpd.conf \
+ && sed -i "s/Options Indexes FollowSymLinks/Options +Indexes +FollowSymLinks/" /etc/httpd/conf/httpd.conf \
+ && sed -i "$ a ServerTokens Prod" /etc/httpd/conf/httpd.conf \
+ && sed -i "$ a ServerSignature Off" /etc/httpd/conf/httpd.conf \
+ && sed -i "\$ a <Directory \"/var/www/html\">\n    Options +Indexes +FollowSymLinks\n    AllowOverride None\n    Require all granted\n    IndexOptions FancyIndexing SuppressDescription SuppressHTMLPreamble SuppressLastModified SuppressSize NameWidth=* SuppressColumnSorting SuppressIcon SuppressRules\n    HeaderName /header.html\n    ReadmeName /readme.html\n</Directory>" /etc/httpd/conf/httpd.conf
+
+VOLUME /var/www/html/
+
+# Remove the default welcome page to avoid conflicts
+RUN rm -rf /etc/httpd/conf.d/welcome.conf
+
+# Expose the configured port
+EXPOSE $PORT
+
+HEALTHCHECK --interval=1s --timeout=60s CMD curl -f http://localhost:"$PORT" || exit 1
+
+# Start httpd when the container launches
+CMD ["httpd", "-D", "FOREGROUND"]

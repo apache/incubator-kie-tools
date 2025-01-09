@@ -17,23 +17,14 @@
  * under the License.
  */
 
-const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
+const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv(
   [require("@kie-tools/root-env/env"), require("@kie-tools/dashbuilder-viewer-image-env/env")],
   {
-    vars: varsWithName({
-      DASHBUILDER__viewerImageBuildTags: {
-        default: "latest",
-        description: "",
-      },
-    }),
+    vars: varsWithName({}),
     get env() {
-      return {
-        dashbuilderViewerImage: {
-          buildTags: getOrDefault(this.vars.DASHBUILDER__viewerImageBuildTags),
-        },
-      };
+      return {};
     },
   }
 );

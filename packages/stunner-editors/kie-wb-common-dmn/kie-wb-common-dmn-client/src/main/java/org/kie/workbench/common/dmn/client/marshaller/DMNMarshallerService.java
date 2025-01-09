@@ -6,15 +6,15 @@
  * to you under the Apache License, Version 2.0 (the
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
- * 
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
- * under the License. 
+ * under the License.
  */
 
 package org.kie.workbench.common.dmn.client.marshaller;
@@ -44,6 +44,7 @@ import org.kie.workbench.common.dmn.client.docks.navigator.drds.DRGDiagramUtils;
 import org.kie.workbench.common.dmn.client.marshaller.common.DMNGraphUtils;
 import org.kie.workbench.common.dmn.client.marshaller.marshall.DMNMarshaller;
 import org.kie.workbench.common.dmn.client.marshaller.unmarshall.DMNUnmarshaller;
+import org.kie.workbench.common.dmn.client.resources.i18n.DMNEditorConstants;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.MainJs;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.callbacks.DMN12MarshallCallback;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.callbacks.DMN12UnmarshallCallback;
@@ -52,6 +53,7 @@ import org.kie.workbench.common.dmn.webapp.kogito.marshaller.js.model.dmn12.JSIT
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper.JSIName;
 import org.kie.workbench.common.dmn.webapp.kogito.marshaller.mapper.JsUtils;
 import org.kie.workbench.common.stunner.core.api.DefinitionManager;
+import org.kie.workbench.common.stunner.core.client.i18n.ClientTranslationService;
 import org.kie.workbench.common.stunner.core.client.service.ClientRuntimeError;
 import org.kie.workbench.common.stunner.core.client.service.ServiceCallback;
 import org.kie.workbench.common.stunner.core.definition.adapter.binding.BindableAdapterUtils;
@@ -83,6 +85,8 @@ public class DMNMarshallerService {
 
     private final DMNDiagramsSession dmnDiagramsSession;
 
+    private final ClientTranslationService translationService;
+
     private ServiceCallback<Diagram> onDiagramLoad = emptyService();
 
     private Metadata metadata;
@@ -93,13 +97,15 @@ public class DMNMarshallerService {
                                 final DMNDiagramFactory dmnDiagramFactory,
                                 final DefinitionManager definitionManager,
                                 final Promises promises,
-                                final DMNDiagramsSession dmnDiagramsSession) {
+                                final DMNDiagramsSession dmnDiagramsSession,
+                                final ClientTranslationService translationService) {
         this.dmnUnmarshaller = dmnUnmarshaller;
         this.dmnMarshaller = dmnMarshaller;
         this.dmnDiagramFactory = dmnDiagramFactory;
         this.definitionManager = definitionManager;
         this.promises = promises;
         this.dmnDiagramsSession = dmnDiagramsSession;
+        this.translationService = translationService;
     }
 
     public void unmarshall(final Path path,
@@ -127,8 +133,30 @@ public class DMNMarshallerService {
             MainJs.unmarshall(xml, "", jsCallback);
         } catch (final Exception e) {
             LOGGER.severe(e.getMessage());
-            callback.onError(new ClientRuntimeError(e.getMessage(), new DiagramParsingException(getMetadata(), xml)));
+            String contentMessage = generateUnsupportedVersionMessage(xml);
+
+            if (contentMessage != null) {
+                callback.onError(
+                        new ClientRuntimeError(translationService.getValue(DMNEditorConstants.DMNMarshaller_UnsupportedMessageTitle), contentMessage, e.getMessage(),
+                                new DiagramParsingException(getMetadata(), xml)));
+            } else {
+                callback.onError(new ClientRuntimeError(e.getMessage(), new DiagramParsingException(getMetadata(), xml)));
+            }
         }
+    }
+
+    private String generateUnsupportedVersionMessage(String xml) {
+        String errorMessage = null;
+
+        if (xml.contains("https://www.omg.org/spec/DMN/20191111/MODEL/")) {
+            errorMessage = translationService.getValue(DMNEditorConstants.DMNMarshaller_UnsupportedMessage, "1.3");
+        } else if (xml.contains("https://www.omg.org/spec/DMN/20211108/MODEL/")) {
+            errorMessage = translationService.getValue(DMNEditorConstants.DMNMarshaller_UnsupportedMessage, "1.4");
+        } else if (xml.contains("https://www.omg.org/spec/DMN/20230324/MODEL/")) {
+            errorMessage = translationService.getValue(DMNEditorConstants.DMNMarshaller_UnsupportedMessage, "1.5");
+        }
+
+        return errorMessage;
     }
 
     public void marshall(final Diagram diagram,
@@ -153,7 +181,7 @@ public class DMNMarshallerService {
             JsUtils.setValueOnWrapped(dmn12, jsitDefinitions);
 
             final JavaScriptObject namespaces = createNamespaces(jsitDefinitions.getOtherAttributes(),
-                                                                 jsitDefinitions.getNamespace());
+                    jsitDefinitions.getNamespace());
             MainJs.marshall(dmn12, namespaces, jsCallback);
         } catch (final Exception e) {
             contentServiceCallback.onError(new ClientRuntimeError("Error during the marshaller: " + e.getMessage()));
@@ -227,7 +255,7 @@ public class DMNMarshallerService {
         final String shapeSetId = BindableAdapterUtils.getShapeSetId(DMNShapeSet.class);
 
         return new MetadataImpl.MetadataImplBuilder(defSetId,
-                                                    definitionManager)
+                definitionManager)
                 .setPath(path)
                 .setShapeSetId(shapeSetId)
                 .build();

@@ -31,13 +31,15 @@ import { ConstraintComponentProps, TypeHelper } from "./Constraints";
 export const ENUM_SEPARATOR = ",";
 
 export function ConstraintsEnum({
-  isReadonly,
+  id,
+  isReadOnly,
   value,
   expressionValue,
   type,
   typeHelper,
   onSave,
   isDisabled,
+  renderOnPropertiesPanel,
 }: ConstraintComponentProps) {
   const enumValues = useMemo(() => isEnum(value, typeHelper.check) ?? [""], [typeHelper.check, value]);
   const [valuesUuid, setValuesUuid] = useState((enumValues ?? [""])?.map((_) => generateUuid()));
@@ -112,11 +114,12 @@ export function ConstraintsEnum({
           index={index}
           style={{ alignItems: "center" }}
           handlerStyle={{ margin: "0px 10px" }}
+          isDisabled={isReadOnly || isDisabled}
         >
           <li style={{ marginLeft: "20px", listStyleType: "initial" }}>
             <EnumElement
               id={`enum-element-${index}`}
-              isDisabled={isReadonly || isDisabled}
+              isDisabled={isReadOnly || isDisabled}
               initialValue={typeHelper.recover(value) ?? ""}
               onChange={(newValue) => onChangeItem(newValue, index)}
               onRemove={() => onRemove(index)}
@@ -137,7 +140,7 @@ export function ConstraintsEnum({
         </Draggable>
       );
     },
-    [focusOwner, isDisabled, isItemValid, isReadonly, onAdd, onChangeItem, onRemove, typeHelper, valuesUuid]
+    [focusOwner, isDisabled, isItemValid, isReadOnly, onAdd, onChangeItem, onRemove, typeHelper, valuesUuid]
   );
 
   return (
@@ -152,29 +155,37 @@ export function ConstraintsEnum({
             borderRadius: "4px",
           }}
         >
-          <ul>
+          <ul data-testid={"kie-tools--dmn-editor--enumeration-constraint-list"}>
             <DragAndDrop
               reorder={reorder}
               onDragEnd={onDragEnd}
               values={enumValues}
               draggableItem={draggableItem}
-              isDisabled={isDisabled || isReadonly}
+              isDisabled={isDisabled || isReadOnly}
             />
           </ul>
         </div>
       </div>
-      <Button
-        title={"Add enum value"}
-        onClick={() => onAdd()}
-        variant={ButtonVariant.link}
-        icon={<PlusCircleIcon />}
-        style={{ paddingTop: "10px", paddingBottom: 0, paddingLeft: 0, paddingRight: 0 }}
-      >
-        Add value
-      </Button>
-      <br />
-      <br />
-      <ConstraintsExpression isReadonly={true} value={expressionValue ?? ""} type={type} />
+      {!(isDisabled || isReadOnly) && (
+        <>
+          <Button
+            title={"Add enum value"}
+            onClick={() => onAdd()}
+            variant={ButtonVariant.link}
+            icon={<PlusCircleIcon />}
+            style={{ paddingTop: "10px", paddingBottom: 0, paddingLeft: 0, paddingRight: 0 }}
+          >
+            Add value
+          </Button>
+        </>
+      )}
+      {!renderOnPropertiesPanel && (
+        <>
+          <br />
+          <br />
+          <ConstraintsExpression id={id} isReadOnly={true} value={expressionValue ?? ""} type={type} />
+        </>
+      )}
     </div>
   );
 }
@@ -197,10 +208,10 @@ function EnumElement({
   isValid: boolean;
   typeHelper: TypeHelper;
   focusOwner: string;
-  setFocusOwner: React.SetStateAction<React.Dispatch<string>>;
+  setFocusOwner: (id: string) => void;
   onChange: (newValue: string) => void;
   onRemove: () => void;
-  onKeyDown?: (e: React.KeyboardEvent<HTMLElement>) => void;
+  onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => void;
 }) {
   const value = useMemo<string>(() => initialValue, [initialValue]);
   const removeButtonRef = useRef(null);
@@ -229,6 +240,7 @@ function EnumElement({
         title={"Remove enum value"}
         ref={removeButtonRef}
         style={{ opacity: hovered ? "100%" : "0" }}
+        isDisabled={isDisabled}
         className={"kie-dmn-editor--documentation-link--row-remove"}
         variant={"plain"}
         icon={<TimesIcon />}

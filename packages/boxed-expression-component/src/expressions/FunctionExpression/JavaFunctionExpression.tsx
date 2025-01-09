@@ -29,10 +29,11 @@ import {
   BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
-  DmnBuiltInDataType,
-  BoxedFunctionKind,
-  generateUuid,
   BoxedFunction,
+  BoxedFunctionKind,
+  DmnBuiltInDataType,
+  generateUuid,
+  Normalized,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { usePublishedBeeTableResizableColumns } from "../../resizing/BeeTableResizableColumnsContext";
@@ -41,9 +42,9 @@ import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import {
   JAVA_FUNCTION_EXPRESSION_EXTRA_WIDTH,
   JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
+  JAVA_FUNCTION_EXPRESSION_VALUES_COLUMN_WIDTH_INDEX,
   JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH,
 } from "../../resizing/WidthConstants";
-import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
 import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
@@ -54,6 +55,7 @@ import {
   DMN15__tLiteralExpression,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import "./JavaFunctionExpression.css";
+import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 
 export type JAVA_ROWTYPE = {
   value: string;
@@ -65,26 +67,22 @@ export type BoxedFunctionJava = DMN15__tFunctionDefinition & {
   __$$element: "functionDefinition";
 };
 
-const JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX = 2; // 0 is the rowIndex column, 1 is the label column.
-
 export function JavaFunctionExpression({
   functionExpression,
   isNested,
-  parentElementId,
 }: {
-  functionExpression: BoxedFunctionJava;
+  functionExpression: Normalized<BoxedFunctionJava>;
   isNested: boolean;
-  parentElementId: string;
 }) {
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
+  const { expressionHolderId, widthsById, isReadOnly } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
 
-  const getClassContextEntry = useCallback((c: DMN15__tContext) => {
+  const getClassContextEntry = useCallback((c: Normalized<DMN15__tContext>) => {
     return c.contextEntry?.find(({ variable }) => variable?.["@_name"] === "class");
   }, []);
 
-  const getVariableContextEntry = useCallback((c: DMN15__tContext) => {
+  const getVariableContextEntry = useCallback((c: Normalized<DMN15__tContext>) => {
     return c.contextEntry?.find(({ variable }) => variable?.["@_name"] === "method signature");
   }, []);
 
@@ -93,7 +91,7 @@ export function JavaFunctionExpression({
   const widths = useMemo(() => widthsById.get(id) ?? [], [id, widthsById]);
 
   const getClassAndMethodNamesWidth = useCallback((widths: number[]) => {
-    return widths[JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX] ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH;
+    return widths[JAVA_FUNCTION_EXPRESSION_VALUES_COLUMN_WIDTH_INDEX] ?? JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH;
   }, []);
 
   const classAndMethodNamesWidth = useMemo(
@@ -109,10 +107,12 @@ export function JavaFunctionExpression({
           typeof newWidthAction === "function" ? newWidthAction(getClassAndMethodNamesWidth(prev)) : newWidthAction;
 
         if (newWidth) {
-          const minSize = JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX + 1;
+          const minSize = JAVA_FUNCTION_EXPRESSION_VALUES_COLUMN_WIDTH_INDEX + 1;
           const newValues = [...prev];
-          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
-          newValues.splice(JAVA_FUNCTION_CLASS_AND_METHOD_NAMES_WIDTH_INDEX, 1, newWidth);
+          newValues.push(
+            ...Array<number>(Math.max(0, minSize - newValues.length)).fill(JAVA_FUNCTION_EXPRESSION_VALUES_MIN_WIDTH)
+          );
+          newValues.splice(JAVA_FUNCTION_EXPRESSION_VALUES_COLUMN_WIDTH_INDEX, 1, newWidth);
           newMap.set(id, newValues);
         }
       });
@@ -120,7 +120,14 @@ export function JavaFunctionExpression({
     [getClassAndMethodNamesWidth, id, setWidthsById]
   );
 
-  const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(functionExpression.formalParameter);
+  const parametersColumnHeader = useFunctionExpressionParametersColumnHeader(
+    functionExpression.formalParameter,
+    isReadOnly ?? false
+  );
+  const parametersId = useMemo(
+    () => (functionExpression["@_id"] ? `${functionExpression["@_id"]}-parameters` : "parameters"),
+    [functionExpression]
+  );
 
   const beeTableColumns = useMemo<ReactTable.Column<JAVA_ROWTYPE>[]>(() => {
     return [
@@ -133,7 +140,7 @@ export function JavaFunctionExpression({
         columns: [
           {
             headerCellElement: parametersColumnHeader,
-            accessor: "parameters" as any,
+            accessor: parametersId as any,
             label: "parameters",
             isRowIndexColumn: false,
             dataType: undefined as any,
@@ -169,6 +176,7 @@ export function JavaFunctionExpression({
     classAndMethodNamesWidth,
     parametersColumnHeader,
     setClassAndMethodNamesWidth,
+    parametersId,
   ]);
 
   const headerVisibility = useMemo(() => {
@@ -177,9 +185,9 @@ export function JavaFunctionExpression({
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<JAVA_ROWTYPE>[]) => {
-      setExpression((prev: BoxedFunctionJava) => {
+      setExpression((prev: Normalized<BoxedFunctionJava>) => {
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedFunctionJava = {
+        const ret: Normalized<BoxedFunctionJava> = {
           ...prev,
           "@_label": name,
           "@_typeRef": typeRef,
@@ -191,7 +199,7 @@ export function JavaFunctionExpression({
   );
 
   // It is always a Context
-  const context = functionExpression.expression! as DMN15__tContext;
+  const context = functionExpression.expression! as Normalized<DMN15__tContext>;
   const clazz = getClassContextEntry(context);
   const method = getVariableContextEntry(context);
 
@@ -228,9 +236,9 @@ export function JavaFunctionExpression({
   }, []);
 
   const onRowReset = useCallback(() => {
-    setExpression((prev: BoxedFunctionJava) => {
+    setExpression((prev: Normalized<BoxedFunctionJava>) => {
       // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-      const ret: BoxedFunctionJava = {
+      const ret: Normalized<BoxedFunctionJava> = {
         ...prev,
         expression: undefined!,
       };
@@ -294,47 +302,55 @@ export function JavaFunctionExpression({
   const onCellUpdates = useCallback(
     (cellUpdates: BeeTableCellUpdate<JAVA_ROWTYPE>[]) => {
       for (const u of cellUpdates) {
-        const context: DMN15__tContext = functionExpression.expression!;
+        const context: Normalized<DMN15__tContext> = functionExpression.expression!;
 
         const clazz = getClassContextEntry(context) ?? {
+          "@_id": generateUuid(),
           expression: {
             __$$element: "literalExpression",
             "@_id": generateUuid(),
             text: { __$$text: "" },
           },
           variable: {
+            "@_id": generateUuid(),
             "@_name": "class",
           },
         };
         const method = getVariableContextEntry(context) ?? {
+          "@_id": generateUuid(),
           expression: {
             __$$element: "literalExpression",
             "@_id": generateUuid(),
             text: { __$$text: "" },
           },
           variable: {
+            "@_id": generateUuid(),
             "@_name": "method signature",
           },
         };
 
         // Class
         if (u.rowIndex === 0) {
-          setExpression((prev: BoxedFunctionJava) => {
-            clazz.expression = {
-              ...clazz.expression,
-              __$$element: "literalExpression",
-              text: {
-                __$$text: u.value,
-              },
-            };
-
+          setExpression((prev: Normalized<BoxedFunctionJava>) => {
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-            const ret: BoxedFunction = {
+            const ret: Normalized<BoxedFunction> = {
               ...prev,
               expression: {
                 __$$element: "context",
                 ...context,
-                contextEntry: [clazz, method],
+                contextEntry: [
+                  {
+                    ...clazz,
+                    expression: {
+                      ...clazz.expression,
+                      __$$element: "literalExpression",
+                      text: {
+                        __$$text: u.value,
+                      },
+                    },
+                  },
+                  method,
+                ],
               },
             };
 
@@ -343,23 +359,27 @@ export function JavaFunctionExpression({
         }
         // Method
         else if (u.rowIndex === 1) {
-          setExpression((prev: BoxedFunctionJava) => {
-            method.expression = {
-              ...method.expression,
-              __$$element: "literalExpression",
-              "@_id": method.expression["@_id"] ?? generateUuid(),
-              text: {
-                __$$text: u.value,
-              },
-            };
-
+          setExpression((prev: Normalized<BoxedFunctionJava>) => {
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-            const ret: BoxedFunction = {
+            const ret: Normalized<BoxedFunction> = {
               ...prev,
               expression: {
                 __$$element: "context",
                 ...context,
-                contextEntry: [clazz, method],
+                contextEntry: [
+                  clazz,
+                  {
+                    ...method,
+                    expression: {
+                      ...method.expression,
+                      __$$element: "literalExpression",
+                      "@_id": method.expression["@_id"] ?? generateUuid(),
+                      text: {
+                        __$$text: u.value,
+                      },
+                    },
+                  },
+                ],
               },
             };
             return ret;
@@ -378,6 +398,7 @@ export function JavaFunctionExpression({
     <div className={`function-expression ${functionExpression["@_id"]}`}>
       <BeeTable<JAVA_ROWTYPE>
         forwardRef={beeTableRef}
+        isReadOnly={isReadOnly}
         onColumnResizingWidthChange={onColumnResizingWidthChange}
         resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
         operationConfig={beeTableOperationConfig}

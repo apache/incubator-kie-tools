@@ -1,16 +1,53 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kie.apache.org/dmn/_9C2F7F6B-87A6-479F-9F25-8109E56C037B" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="https://kie.apache.org/dmn/extensions/1.0" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:included1="https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB" id="_71D8E973-7EE5-4571-813F-FD6B9ACF90FB" name="Untitled" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kie.apache.org/dmn/_9C2F7F6B-87A6-479F-9F25-8109E56C037B">
-  <dmn:extensionElements/>
-  <dmn:import id="_9C7437D4-E1BA-42F0-B703-B07095C7A6B4" name="sdfsadfas" namespace="https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB" locationURI="Sample.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~ 
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~ 
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.      
+-->
+<dmn:definitions
+  xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  xmlns="https://kie.apache.org/dmn/_9C2F7F6B-87A6-479F-9F25-8109E56C037B"
+  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  xmlns:kie="https://kie.apache.org/dmn/extensions/1.0"
+  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+  xmlns:included1="https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB"
+  id="_71D8E973-7EE5-4571-813F-FD6B9ACF90FB"
+  name="Untitled"
+  typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  namespace="https://kie.apache.org/dmn/_9C2F7F6B-87A6-479F-9F25-8109E56C037B"
+>
+  <dmn:extensionElements />
+  <dmn:import
+    id="_9C7437D4-E1BA-42F0-B703-B07095C7A6B4"
+    name="sdfsadfas"
+    namespace="https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB"
+    locationURI="Sample.dmn"
+    importType="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  />
   <dmn:decisionService id="_6D705F69-2C6F-4345-8EF7-72C8D3BD7FF1" name="DecisionService-1">
-    <dmn:extensionElements/>
-    <dmn:variable id="_D4E1F1F8-5F7E-433B-86E6-FCCF8BC068BC" name="DecisionService-1"/>
+    <dmn:extensionElements />
+    <dmn:variable id="_D4E1F1F8-5F7E-433B-86E6-FCCF8BC068BC" name="DecisionService-1" />
   </dmn:decisionService>
   <dmn:knowledgeSource id="_E6D813A5-8FB8-4D11-B6BE-BDCABD0215C2" name="KnowledgeSource-1" locationURI="">
     <dmn:extensionElements>
-      <kie:attachment url="https://github.com/tiagobento/KieDora" name="tiago"/>
+      <kie:attachment url="https://github.com/tiagobento/KieDora" name="tiago" />
     </dmn:extensionElements>
-    <dmn:type/>
+    <dmn:type />
   </dmn:knowledgeSource>
   <dmn:textAnnotation id="_FD6BC150-F61B-4542-9F7B-1CD5547C6AC9" textFormat="text/plain">
     <dmn:text>TextAnnotation-1</dmn:text>
@@ -18,38 +55,50 @@
   <dmndi:DMNDI>
     <dmndi:DMNDiagram id="_3B0B7F2A-DD86-4DAF-93DC-E69D2B30FB06" name="DRG">
       <di:extension>
-        <kie:ComponentsWidthsExtension/>
+        <kie:ComponentsWidthsExtension />
       </di:extension>
-      <dmndi:DMNShape id="dmnshape-drg-_6D705F69-2C6F-4345-8EF7-72C8D3BD7FF1" dmnElementRef="_6D705F69-2C6F-4345-8EF7-72C8D3BD7FF1" isCollapsed="false">
+      <dmndi:DMNShape
+        id="dmnshape-drg-_6D705F69-2C6F-4345-8EF7-72C8D3BD7FF1"
+        dmnElementRef="_6D705F69-2C6F-4345-8EF7-72C8D3BD7FF1"
+        isCollapsed="false"
+      >
         <dmndi:DMNStyle>
-          <dmndi:FillColor red="255" green="255" blue="255"/>
-          <dmndi:StrokeColor red="0" green="0" blue="0"/>
-          <dmndi:FontColor red="0" green="0" blue="0"/>
+          <dmndi:FillColor red="255" green="255" blue="255" />
+          <dmndi:StrokeColor red="0" green="0" blue="0" />
+          <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
-        <dc:Bounds x="394" y="230" width="200" height="200"/>
-        <dmndi:DMNLabel/>
+        <dc:Bounds x="394" y="230" width="200" height="200" />
+        <dmndi:DMNLabel />
         <dmndi:DMNDecisionServiceDividerLine>
-          <di:waypoint x="394" y="330"/>
-          <di:waypoint x="594" y="330"/>
+          <di:waypoint x="394" y="330" />
+          <di:waypoint x="594" y="330" />
         </dmndi:DMNDecisionServiceDividerLine>
       </dmndi:DMNShape>
-      <dmndi:DMNShape id="dmnshape-drg-_FD6BC150-F61B-4542-9F7B-1CD5547C6AC9" dmnElementRef="_FD6BC150-F61B-4542-9F7B-1CD5547C6AC9" isCollapsed="false">
+      <dmndi:DMNShape
+        id="dmnshape-drg-_FD6BC150-F61B-4542-9F7B-1CD5547C6AC9"
+        dmnElementRef="_FD6BC150-F61B-4542-9F7B-1CD5547C6AC9"
+        isCollapsed="false"
+      >
         <dmndi:DMNStyle>
-          <dmndi:FillColor red="255" green="255" blue="255"/>
-          <dmndi:StrokeColor red="0" green="0" blue="0"/>
-          <dmndi:FontColor red="0" green="0" blue="0"/>
+          <dmndi:FillColor red="255" green="255" blue="255" />
+          <dmndi:StrokeColor red="0" green="0" blue="0" />
+          <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
-        <dc:Bounds x="216" y="202" width="100" height="50"/>
-        <dmndi:DMNLabel/>
+        <dc:Bounds x="216" y="202" width="100" height="50" />
+        <dmndi:DMNLabel />
       </dmndi:DMNShape>
-      <dmndi:DMNShape id="dmnshape-drg-_E6D813A5-8FB8-4D11-B6BE-BDCABD0215C2" dmnElementRef="_E6D813A5-8FB8-4D11-B6BE-BDCABD0215C2" isCollapsed="false">
+      <dmndi:DMNShape
+        id="dmnshape-drg-_E6D813A5-8FB8-4D11-B6BE-BDCABD0215C2"
+        dmnElementRef="_E6D813A5-8FB8-4D11-B6BE-BDCABD0215C2"
+        isCollapsed="false"
+      >
         <dmndi:DMNStyle>
-          <dmndi:FillColor red="255" green="255" blue="255"/>
-          <dmndi:StrokeColor red="0" green="0" blue="0"/>
-          <dmndi:FontColor red="0" green="0" blue="0"/>
+          <dmndi:FillColor red="255" green="255" blue="255" />
+          <dmndi:StrokeColor red="0" green="0" blue="0" />
+          <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
-        <dc:Bounds x="411" y="109" width="100" height="50"/>
-        <dmndi:DMNLabel/>
+        <dc:Bounds x="411" y="109" width="100" height="50" />
+        <dmndi:DMNLabel />
       </dmndi:DMNShape>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>

@@ -1,69 +1,95 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<definitions namespace="http://www.montera.com.au/spec/DMN/0057-feel-context" name="0057-feel-context" id="_i9fboPUUEeesLuP4RHs4vA" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-    <description>FEEL contexts</description>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~ 
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~ 
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.      
+-->
+<definitions
+  namespace="http://www.montera.com.au/spec/DMN/0057-feel-context"
+  name="0057-feel-context"
+  id="_i9fboPUUEeesLuP4RHs4vA"
+  xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+>
+  <description>FEEL contexts</description>
 
-    <decision name="decision001" id="_decision001">
-        <variable name="decision001"/>
-        <literalExpression>
-            <text>{a: "foo", b: "bar"}</text>
-        </literalExpression>
-    </decision>
+  <decision name="decision001" id="_decision001">
+    <variable name="decision001" />
+    <literalExpression>
+      <text>{a: "foo", b: "bar"}</text>
+    </literalExpression>
+  </decision>
 
-    <decision name="decision002" id="_decision002">
-        <variable name="decision002"/>
-        <literalExpression>
-            <text>{a: "foo", b: {c: "bar", d: {e: "baz"}}}</text>
-        </literalExpression>
-    </decision>
+  <decision name="decision002" id="_decision002">
+    <variable name="decision002" />
+    <literalExpression>
+      <text>{a: "foo", b: {c: "bar", d: {e: "baz"}}}</text>
+    </literalExpression>
+  </decision>
 
-    <decision name="decision003" id="_decision003">
-        <variable name="decision003"/>
-        <literalExpression>
-            <text>{a: 1 + 2, b: a + 3}</text>
-        </literalExpression>
-    </decision>
+  <decision name="decision003" id="_decision003">
+    <variable name="decision003" />
+    <literalExpression>
+      <text>{a: 1 + 2, b: a + 3}</text>
+    </literalExpression>
+  </decision>
 
-    <decision name="decision003_a" id="_decision003_a">
-        <variable name="decision003_a"/>
-        <literalExpression>
-            <text>{a: 1 + 2, b: 3, c: {d: a + b}}</text>
-        </literalExpression>
-    </decision>
+  <decision name="decision003_a" id="_decision003_a">
+    <variable name="decision003_a" />
+    <literalExpression>
+      <text>{a: 1 + 2, b: 3, c: {d: a + b}}</text>
+    </literalExpression>
+  </decision>
 
-    <decision name="decision004" id="_decision004">
-        <variable name="decision004"/>
-        <literalExpression>
-            <text>{foo bar: "foo"}</text>
-        </literalExpression>
-    </decision>
+  <decision name="decision004" id="_decision004">
+    <variable name="decision004" />
+    <literalExpression>
+      <text>{foo bar: "foo"}</text>
+    </literalExpression>
+  </decision>
 
-    <decision name="decision005" id="_decision005">
-        <variable name="decision005"/>
-        <literalExpression>
-            <text>{foo+bar: "foo"}</text>
-        </literalExpression>
-    </decision>
+  <decision name="decision005" id="_decision005">
+    <variable name="decision005" />
+    <literalExpression>
+      <text>{foo+bar: "foo"}</text>
+    </literalExpression>
+  </decision>
 
-    <decision name="decision006" id="_decision006">
-        <variable name="decision006"/>
-        <literalExpression>
-            <text>{"foo+bar((!!],foo": "foo"}</text>
-        </literalExpression>
-    </decision>
+  <decision name="decision006" id="_decision006">
+    <variable name="decision006" />
+    <literalExpression>
+      <text>{"foo+bar((!!],foo": "foo"}</text>
+    </literalExpression>
+  </decision>
 
-    <decision name="decision007" id="_decision007">
-        <variable name="decision007"/>
-        <literalExpression>
-            <text>{"": "foo"}</text>
-        </literalExpression>
-    </decision>
+  <decision name="decision007" id="_decision007">
+    <variable name="decision007" />
+    <literalExpression>
+      <text>{"": "foo"}</text>
+    </literalExpression>
+  </decision>
 
-    <decision name="decision008" id="_decision008">
-        <variable name="decision008"/>
-        <literalExpression>
-            <text>{foo: "bar", foo: "baz"}</text>
-        </literalExpression>
-    </decision>
-
+  <decision name="decision008" id="_decision008">
+    <variable name="decision008" />
+    <literalExpression>
+      <text>{foo: "bar", foo: "baz"}</text>
+    </literalExpression>
+  </decision>
 </definitions>
-

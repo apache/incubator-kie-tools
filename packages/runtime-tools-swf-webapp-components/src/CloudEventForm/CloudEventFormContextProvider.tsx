@@ -21,15 +21,10 @@ import React, { useMemo } from "react";
 import CloudEventFormContext from "./CloudEventFormContext";
 import { CloudEventFormGatewayApiImpl } from "./CloudEventFormGatewayApi";
 
-export function CloudEventFormContextProvider(
-  props: React.PropsWithChildren<{ proxyEndpoint?: string; kogitoServiceUrl: string }>
-) {
-  const { proxyEndpoint, kogitoServiceUrl } = props;
+export function CloudEventFormContextProvider(props: React.PropsWithChildren<{ proxyEndpoint?: string }>) {
+  const { proxyEndpoint } = props;
 
-  const gatewayApi = useMemo(
-    () => new CloudEventFormGatewayApiImpl(kogitoServiceUrl, proxyEndpoint),
-    [proxyEndpoint, kogitoServiceUrl]
-  );
+  const gatewayApi = useMemo(() => new CloudEventFormGatewayApiImpl(proxyEndpoint), [proxyEndpoint]);
 
   return <CloudEventFormContext.Provider value={gatewayApi}>{props.children}</CloudEventFormContext.Provider>;
 }

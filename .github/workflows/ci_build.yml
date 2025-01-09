@@ -1,3 +1,22 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
 name: "CI :: Build"
 
 on:
@@ -13,6 +32,7 @@ concurrency:
 
 env:
   TMPDIR: "/tmp"
+  BUILD_ENV__accessErrorsLogFileAbsolutePath: "/tmp/build-env-access-errors.log"
 
 jobs:
   run:
@@ -20,7 +40,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-13, windows-latest]
+        partition: [0, 1, 2]
     runs-on: ${{ matrix.os }}
     steps:
       - name: "Support longpaths"
@@ -36,6 +57,16 @@ jobs:
         with:
           ref: ${{ github.base_ref }}
 
+      - name: "Setup pnpm"
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9.3.0
+
+      - name: "Setup Node"
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.14.0
+
       - name: "Setup CI patterns"
         id: ci_patterns
         uses: ./.github/actions/setup-ci-patterns
@@ -44,51 +75,55 @@ jobs:
         id: setup_build_mode
         shell: bash
         run: |
-          export CHANGED_SOURCE_PATHS=($(eval "git diff --name-only ${{ steps.checkout_pr.outputs.base_sha }} ${{ steps.checkout_pr.outputs.head_sha }} -- ${{ steps.ci_patterns.outputs.non_source_files_patterns_for_git_diff }}"))
-          echo "Changed source paths:"
-          echo ${#CHANGED_SOURCE_PATHS[@]}
-          printf '%s\n' "${CHANGED_SOURCE_PATHS[@]}"
 
-          export CHANGED_SOURCE_PATHS_IN_ROOT=($(printf '%s\n' "${CHANGED_SOURCE_PATHS[@]}" | grep -v -e "^packages" -e "^examples"))
-          echo "Changed source paths in root:"
-          echo ${#CHANGED_SOURCE_PATHS_IN_ROOT[@]}
-          printf '%s\n' "${CHANGED_SOURCE_PATHS_IN_ROOT[@]}"
+          npm -g install bun@1.1.6 turbo@2.1.2
 
-          if [ ${#CHANGED_SOURCE_PATHS[@]} -eq 0 ]; then
-            echo 'No source files changed; `CI :: Build` (none) will run.'
-            echo "mode=none" >> $GITHUB_OUTPUT
-          elif [ ! ${{ github.event.pull_request }} ]; then
-            echo 'Push to the `main` branch happened; `CI :: Build` (full) will run.'
-            echo "mode=full" >> $GITHUB_OUTPUT
-          elif [ ${#CHANGED_SOURCE_PATHS_IN_ROOT[@]} -eq 0 ]; then
-            echo 'No source files changed in root; `CI :: Build` (partial) will run.'
-            echo "mode=partial" >> $GITHUB_OUTPUT
-          else
-            echo 'Source files changed in root; `CI :: Build` (full) will run.'
-            echo "mode=full" >> $GITHUB_OUTPUT
-          fi
+          echo '{}' > turbo.json
 
-          echo "Done"
+          turbo telemetry disable
+
+          bun ./.github/supporting-files/ci/build-partitioning/build_partitioning.ts \
+            --outputPath='/tmp/partitions.json' \
+            --forceFull='${{ !github.event.pull_request }}' \
+            --baseSha='${{ steps.checkout_pr.outputs.base_sha }}' \
+            --headSha='${{steps.checkout_pr.outputs.head_sha }}' \
+            --graphJsonPath='./repo/graph.json' \
+            --partition='./.github/supporting-files/ci/partitions/partition0.txt' \
+            --partition='./.github/supporting-files/ci/partitions/partition1.txt'
+
+          npm -g uninstall bun turbo
+
+          rm turbo.json
+
+          echo "mode=$(jq --raw-output '.[${{ matrix.partition }}].mode' /tmp/partitions.json)" >> $GITHUB_OUTPUT
+          echo "bootstrapPnpmFilterString=$(jq --raw-output '.[${{ matrix.partition }}].bootstrapPnpmFilterString' /tmp/partitions.json)" >> $GITHUB_OUTPUT
+          echo "fullBuildPnpmFilterString=$(jq --raw-output '.[${{ matrix.partition }}].fullBuildPnpmFilterString' /tmp/partitions.json)" >> $GITHUB_OUTPUT
+          echo "upstreamPnpmFilterString=$(jq --raw-output '.[${{ matrix.partition }}].upstreamPnpmFilterString' /tmp/partitions.json)" >> $GITHUB_OUTPUT
+          echo "affectedPnpmFilterString=$(jq --raw-output '.[${{ matrix.partition }}].affectedPnpmFilterString' /tmp/partitions.json)" >> $GITHUB_OUTPUT
+          echo "Done."
 
       - name: "Setup environment"
         if: steps.setup_build_mode.outputs.mode != 'none'
         uses: ./.github/actions/setup-env
 
-      - name: "FULL → Bootstrap"
-        if: steps.setup_build_mode.outputs.mode == 'full'
+      - name: "Bootstrap"
+        if: steps.setup_build_mode.outputs.mode != 'none'
         env:
           PLAYWRIGHT_BASE__installDeps: "true"
         uses: ./.github/actions/bootstrap
+        with:
+          pnpm_filter_string: ${{ steps.setup_build_mode.outputs.bootstrapPnpmFilterString }}
 
-      - name: "FULL → Build (without some images)"
+      - name: "FULL → Build"
         if: steps.setup_build_mode.outputs.mode == 'full'
+        shell: bash
         env:
           WEBPACK__minimize: "false"
           WEBPACK__tsLoaderTranspileOnly: "false"
           KIE_TOOLS_BUILD__runLinters: "true"
           KIE_TOOLS_BUILD__runTests: "true"
           KIE_TOOLS_BUILD__runEndToEndTests: ${{ runner.os == 'Linux' }}
-          KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os != 'Windows' }}
+          KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os == 'Linux' }}
           KIE_TOOLS_BUILD__buildExamples: "true"
           KIE_TOOLS_BUILD__ignoreTestFailures: ${{ !github.event.pull_request }}
           KIE_TOOLS_BUILD__ignoreEndToEndTestFailures: ${{ !github.event.pull_request }}
@@ -96,135 +131,32 @@ jobs:
           START_SERVER_AND_TEST_INSECURE: "true"
           NODE_OPTIONS: "--max_old_space_size=4096"
         run: >-
-          pnpm
-          -F='!@kie-tools/serverless-logic-web-tools-swf-dev-mode-image'
-          -F='!@kie-tools/dev-deployment-base-image'
-          -F='!@kie-tools/dev-deployment-kogito-quarkus-blank-app-image'
-          -F='!@kie-tools/dev-deployment-dmn-form-webapp-image'
-          -F='!@kie-tools/serverless-logic-web-tools-base-builder-image'
-          -F='!@kie-tools/dashbuilder-viewer-image'
-          -r --workspace-concurrency=1 build:prod
+          eval "pnpm ${{ steps.setup_build_mode.outputs.fullBuildPnpmFilterString }} --workspace-concurrency=1 build:prod"
 
-      - name: "FULL → Build → serverless-logic-web-tools-swf-dev-mode-image"
-        if: steps.setup_build_mode.outputs.mode == 'full' && runner.os == 'Linux'
-        env:
-          KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runEndToEndTests: "true"
-          KIE_TOOLS_BUILD__buildContainerImages: "true"
-        run: |
-          echo "Clean up container image resources"
-          if command -v docker &> /dev/null; then
-            docker system prune -af
-          fi
-          if command -v podman &> /dev/null; then
-            podman system prune --all --force
-          fi
-          echo "Build @kie-tools/serverless-logic-web-tools-swf-dev-mode-image"
-          pnpm -F @kie-tools/serverless-logic-web-tools-swf-dev-mode-image... --workspace-concurrency=1 build:prod
-
-      - name: "FULL → Build → dev-deployment-base-image and dev-deployment-kogito-quarkus-blank-app"
-        if: steps.setup_build_mode.outputs.mode == 'full' && runner.os == 'Linux'
-        env:
-          KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runEndToEndTests: "true"
-          KIE_TOOLS_BUILD__buildContainerImages: "true"
-        run: |
-          echo "Clean up container image resources"
-          if command -v docker &> /dev/null; then
-            docker system prune -af
-          fi
-          if command -v podman &> /dev/null; then
-            podman system prune --all --force
-          fi
-          echo "Build @kie-tools/dev-deployment-base-image"
-          pnpm -F @kie-tools/dev-deployment-base-image... -F @kie-tools/dev-deployment-kogito-quarkus-blank-app... --workspace-concurrency=1 build:prod
-
-      - name: "FULL → Build → dev-deployment-dmn-form-webapp-image"
-        if: steps.setup_build_mode.outputs.mode == 'full' && runner.os == 'Linux'
-        env:
-          KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runEndToEndTests: "true"
-          KIE_TOOLS_BUILD__buildContainerImages: "true"
-        run: |
-          echo "Clean up container image resources"
-          if command -v docker &> /dev/null; then
-            docker system prune -af
-          fi
-          if command -v podman &> /dev/null; then
-            podman system prune --all --force
-          fi
-          echo "Build @kie-tools/dev-deployment-dmn-form-webapp-image"
-          pnpm -F @kie-tools/dev-deployment-dmn-form-webapp-image... --workspace-concurrency=1 build:prod
-
-      - name: "FULL → Build → serverless-logic-web-tools-base-builder-image"
-        if: steps.setup_build_mode.outputs.mode == 'full' && runner.os == 'Linux'
-        env:
-          KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runEndToEndTests: "true"
-          KIE_TOOLS_BUILD__buildContainerImages: "true"
-        run: |
-          echo "Clean up container image resources"
-          if command -v docker &> /dev/null; then
-            docker system prune -af
-          fi
-          if command -v podman &> /dev/null; then
-            podman system prune --all --force
-          fi
-          echo "Build @kie-tools/serverless-logic-web-tools-base-builder-image"
-          pnpm -F @kie-tools/serverless-logic-web-tools-base-builder-image... --workspace-concurrency=1 build:prod
-
-      - name: "FULL → Build → dashbuilder-viewer-image"
-        if: steps.setup_build_mode.outputs.mode == 'full' && runner.os == 'Linux'
-        env:
-          KIE_TOOLS_BUILD__runTests: "true"
-          KIE_TOOLS_BUILD__runEndToEndTests: "true"
-          KIE_TOOLS_BUILD__buildContainerImages: "true"
-        run: |
-          echo "Clean up container image resources"
-          if command -v docker &> /dev/null; then
-            docker system prune -af
-          fi
-          if command -v podman &> /dev/null; then
-            podman system prune --all --force
-          fi
-          echo "Build @kie-tools/dashbuilder-viewer-image"
-          pnpm -F @kie-tools/dashbuilder-viewer-image... --workspace-concurrency=1 build:prod
-
-      - name: "PARTIAL → Bootstrap"
-        if: steps.setup_build_mode.outputs.mode == 'partial'
-        env:
-          PLAYWRIGHT_BASE__installDeps: "true"
-        uses: ./.github/actions/bootstrap
-        with:
-          pnpm_filter_string: -F "...[${{ steps.checkout_pr.outputs.base_sha }}]..."
-
-      - name: "PARTIAL → Build dependencies"
-        if: steps.setup_build_mode.outputs.mode == 'partial'
+      - name: "PARTIAL → Build upstream"
+        if: steps.setup_build_mode.outputs.mode == 'partial' && steps.setup_build_mode.outputs.upstreamPnpmFilterString != ''
         shell: bash
         env:
-          KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os != 'Windows' }}
+          KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os == 'Linux' }}
           KIE_TOOLS_BUILD__buildExamples: "true"
         run: |
-          export ALL_DEPENDENCIES_FILTER=$(pnpm -F="...[${{ steps.checkout_pr.outputs.base_sha }}]" exec bash -c 'echo -n " -F=$(jq --raw-output .name package.json)^..."')
-          export CHANGED_PKGS_EXCLUSION_FILTER=$(pnpm -F="...[${{ steps.checkout_pr.outputs.base_sha }}]" exec bash -c 'echo -n " -F='"'"'!$(jq --raw-output .name package.json)'"'"'"')
-          echo $ALL_DEPENDENCIES_FILTER
-          echo $CHANGED_PKGS_EXCLUSION_FILTER
-          eval "pnpm $ALL_DEPENDENCIES_FILTER $CHANGED_PKGS_EXCLUSION_FILTER build:dev"
+          eval "pnpm ${{ steps.setup_build_mode.outputs.upstreamPnpmFilterString }} build:dev"
 
-      - name: "PARTIAL → Build changed and dependents"
+      - name: "PARTIAL → Build changed and downstream"
+        shell: bash
         if: steps.setup_build_mode.outputs.mode == 'partial'
         env:
           WEBPACK__minimize: "false"
           KIE_TOOLS_BUILD__runLinters: "true"
           KIE_TOOLS_BUILD__runTests: "true"
           KIE_TOOLS_BUILD__runEndToEndTests: ${{ runner.os == 'Linux' }}
-          KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os != 'Windows' }}
+          KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os == 'Linux' }}
           KIE_TOOLS_BUILD__buildExamples: "true"
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
           NODE_OPTIONS: "--max_old_space_size=4096"
         run: |
-          pnpm -F "...[${{ steps.checkout_pr.outputs.base_sha }}]" --workspace-concurrency=1 build:prod
+          eval "pnpm ${{ steps.setup_build_mode.outputs.affectedPnpmFilterString }} --workspace-concurrency=1 build:prod"
 
       - name: "Check tests result (`main` only)"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
@@ -244,6 +176,14 @@ jobs:
             const script = require("./scripts/check-junit-report-results/src/index.js");
             await script({ core, glob, patterns });
 
+      - name: "Check build-env access errors log"
+        if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
+        shell: bash
+        run: |
+          touch "$BUILD_ENV__accessErrorsLogFileAbsolutePath"
+          cat "$BUILD_ENV__accessErrorsLogFileAbsolutePath"
+          [ "0" == "$(cat "$BUILD_ENV__accessErrorsLogFileAbsolutePath" | wc -l | tr -d ' ')" ]
+
       - name: "Check hanging uncommitted files (you should commit those!)"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
         shell: bash
@@ -254,6 +194,8 @@ jobs:
       - name: "Upload reports and artifacts"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
         uses: ./.github/actions/upload-ci-reports-and-artifacts
+        with:
+          partition_index: ${{ matrix.partition }}
 
       - name: "Upload end-to-end tests results to Buildkite (`main` only)"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none' && !github.event.pull_request

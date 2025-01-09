@@ -36,7 +36,7 @@ import static org.dashbuilder.dataset.group.DateIntervalType.SECOND;
 
 /**
  * Interval builder for date columns which generates a fixed number of intervals for a given interval size.
- * <p>The only intervals sizes supported are: QUARTER, MONTH, DAY_OF_WEEK, HOUR, MINUTE & SECOND.</p>
+ * <p>The only intervals sizes supported are: QUARTER, MONTH, DAY_OF_WEEK, HOUR, MINUTE and SECOND.</p>
  */
 public class IntervalBuilderFixedDate implements IntervalBuilder {
 

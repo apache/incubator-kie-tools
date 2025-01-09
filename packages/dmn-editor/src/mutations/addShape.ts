@@ -17,33 +17,42 @@
  * under the License.
  */
 
-import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { addOrGetDrd } from "./addOrGetDrd";
-import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import {
+  DC__Point,
+  DMN15__tDefinitions,
+  DMNDI15__DMNShape,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
+import { addOrGetDrd } from "./addOrGetDrd";
 import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 
 export function addShape({
   definitions,
   drdIndex,
   nodeType,
   shape,
+  decisionServiceDividerLineWaypoint: decisionServiceDividerLineWaypoint,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   nodeType: NodeType;
-  shape: WithoutIdXmlAttributes<DMNDI15__DMNShape>;
+  shape: Normalized<DMNDI15__DMNShape>;
+  decisionServiceDividerLineWaypoint?: DC__Point[];
 }) {
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
   diagramElements.push({
     __$$element: "dmndi:DMNShape",
-    "@_id": generateUuid(),
     ...(nodeType === NODE_TYPES.decisionService
-      ? { "dmndi:DMNDecisionServiceDividerLine": getCentralizedDecisionServiceDividerLine(shape["dc:Bounds"]!) }
+      ? {
+          "dmndi:DMNDecisionServiceDividerLine":
+            decisionServiceDividerLineWaypoint !== undefined
+              ? { "@_id": generateUuid(), "di:waypoint": [...decisionServiceDividerLineWaypoint] }
+              : getCentralizedDecisionServiceDividerLine(shape["dc:Bounds"]!),
+        }
       : {}),
     ...shape,
   });
 }
-
-export type WithoutIdXmlAttributes<T> = { [K in keyof T]: K extends "@_id" ? never : WithoutIdXmlAttributes<T[K]> };

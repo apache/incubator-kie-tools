@@ -19,6 +19,7 @@
 
 import * as React from "react";
 import { DMN15__tKnowledgeSource } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
@@ -28,20 +29,22 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useCallback } from "react";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export function KnowledgeSourceProperties({
   knowledgeSource,
   namespace,
   index,
 }: {
-  knowledgeSource: DMN15__tKnowledgeSource;
+  knowledgeSource: Normalized<DMN15__tKnowledgeSource>;
   namespace: string | undefined;
   index: number;
 }) {
   const { setState } = useDmnEditorStoreApi();
+  const settings = useSettings();
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
-  const isReadonly = !!namespace && namespace !== thisDmnsNamespace;
+  const isReadOnly = settings.isReadOnly || (!!namespace && namespace !== thisDmnsNamespace);
 
   return (
     <>
@@ -51,7 +54,7 @@ export function KnowledgeSourceProperties({
           isPlain={false}
           id={knowledgeSource["@_id"]!}
           name={knowledgeSource["@_name"]}
-          isReadonly={isReadonly}
+          isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
           className={"pf-c-form-control"}
           onRenamed={(newName) => {
@@ -71,11 +74,11 @@ export function KnowledgeSourceProperties({
         <TextArea
           aria-label={"Description"}
           type={"text"}
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
           value={knowledgeSource.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource).description = {
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>).description = {
                 __$$text: newDescription,
               };
             });
@@ -96,11 +99,13 @@ export function KnowledgeSourceProperties({
         <TextInput
           aria-label={"Source type"}
           type={"text"}
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
           value={knowledgeSource.type?.__$$text}
           onChange={(newType) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource).type = { __$$text: newType };
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>).type = {
+                __$$text: newType,
+              };
             });
           }}
           placeholder={"Enter source type..."}
@@ -111,11 +116,11 @@ export function KnowledgeSourceProperties({
         <TextInput
           aria-label={"Location URI"}
           type={"text"}
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
           value={knowledgeSource["@_locationURI"]}
           onChange={(newLocationUri) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource)["@_locationURI"] =
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>)["@_locationURI"] =
                 newLocationUri;
             });
           }}
@@ -124,13 +129,14 @@ export function KnowledgeSourceProperties({
       </FormGroup>
 
       <DocumentationLinksFormGroup
-        isReadonly={isReadonly}
+        isReadOnly={isReadOnly}
         values={knowledgeSource.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as DMN15__tKnowledgeSource).extensionElements = {
-              "kie:attachment": newExtensionElements,
-            };
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>).extensionElements =
+              {
+                "kie:attachment": newExtensionElements,
+              };
           });
         }}
       />

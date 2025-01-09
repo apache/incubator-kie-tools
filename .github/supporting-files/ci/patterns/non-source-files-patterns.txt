@@ -1,0 +1,16 @@
+*.md
+*.icns
+*.ico
+*.gif
+*.jpg
+*.jpeg
+*.svg
+docs
+gifs
+repo
+devbox.*
+.vscode
+.idea
+.ci
+./_intellij-project
+.github/CODEOWNERS

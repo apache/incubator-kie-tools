@@ -1,5 +1,5 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "extends": "@kie-tools/tsconfig/tsconfig.esm.json",
   "compilerOptions": {
     "rootDir": "./src-tests",
     "outDir": "dist-tests"

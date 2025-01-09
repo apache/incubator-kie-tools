@@ -147,7 +147,7 @@ describe("OutputFieldsTable", () => {
     expect(outputField0deleteIcon).not.toBeUndefined();
     fireEvent.click(outputField0deleteIcon, {});
 
-    expect(onDeleteOutputFieldImpl).toBeCalledWith(0);
+    expect(onDeleteOutputFieldImpl).toHaveBeenCalledWith(0);
 
     rerender(
       <OperationContext.Provider
@@ -236,7 +236,7 @@ describe("OutputFieldsTable", () => {
     expect(outputField0deleteIcon).not.toBeUndefined();
     fireEvent.keyDown(outputField0deleteIcon, { key: "Enter" });
 
-    expect(onDeleteOutputFieldImpl).toBeCalledWith(0);
+    expect(onDeleteOutputFieldImpl).toHaveBeenCalledWith(0);
 
     rerender(
       <OperationContext.Provider

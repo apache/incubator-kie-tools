@@ -22,7 +22,7 @@ import {
   DMN15__tInformationItem,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore } from "../../store/StoreContext";
 import { OnCreateDataType, OnToggle, OnTypeRefChange, TypeRefSelector } from "../../dataTypes/TypeRefSelector";
 import { useDmnEditor } from "../../DmnEditorContext";
@@ -34,8 +34,9 @@ function stopPropagation(e: React.MouseEvent | React.KeyboardEvent) {
 
 export function DataTypeNodePanel(props: {
   isVisible: boolean;
-  variable: DMN15__tInformationItem | undefined;
-  shape: DMNDI15__DMNShape | undefined;
+  isReadOnly?: boolean;
+  variable: Normalized<DMN15__tInformationItem> | undefined;
+  shape: Normalized<DMNDI15__DMNShape> | undefined;
   onChange: OnTypeRefChange;
   onCreate?: OnCreateDataType;
   onToggle?: OnToggle;
@@ -45,10 +46,7 @@ export function DataTypeNodePanel(props: {
 
   const { dmnEditorRootElementRef } = useDmnEditor();
 
-  const resolvedTypeRef = useResolvedTypeRef(
-    props.variable?.["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
-    props.dmnObjectNamespace
-  );
+  const resolvedTypeRef = useResolvedTypeRef(props.variable?.["@_typeRef"], props.dmnObjectNamespace);
 
   const isExternalNode = !!props.dmnObjectNamespace;
 
@@ -56,7 +54,7 @@ export function DataTypeNodePanel(props: {
     <>
       {props.isVisible && enableDataTypesToolbarOnNodes && (
         <div
-          className={"kie-dmn-editor--data-type-node-panel"}
+          className={`kie-dmn-editor--data-type-node-panel ${props.isReadOnly ? "kie-dmn-editor--data-type-node-panel-readonly" : ""}`}
           // Do not allow any events to go to the node itself...
           onMouseDownCapture={stopPropagation}
           onKeyDownCapture={stopPropagation}
@@ -73,7 +71,7 @@ export function DataTypeNodePanel(props: {
               onCreate={props.onCreate}
               onToggle={props.onToggle}
               menuAppendTo={"parent"}
-              isDisabled={isExternalNode}
+              isDisabled={isExternalNode || props.isReadOnly}
             />
           </div>
         </div>

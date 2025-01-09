@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { BackendProxy } from "@kie-tools-core/backend/dist/api";
 import { EditorContent, KogitoEditorChannelApi, StateControlCommand } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
@@ -44,14 +43,13 @@ import { getNormalizedPosixPathRelativeToWorkspaceRoot, getWorkspaceRoot } from 
 
 export class DefaultVsCodeKieEditorChannelApiImpl implements KogitoEditorChannelApi, JavaCodeCompletionChannelApi {
   constructor(
-    private readonly editor: VsCodeKieEditorController,
-    private readonly resourceContentService: ResourceContentService,
-    private readonly vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
-    private readonly backendProxy: BackendProxy,
-    private readonly vscodeNotifications: VsCodeNotificationsChannelApiImpl,
-    private readonly javaCodeCompletionApi: JavaCodeCompletionApi,
-    private readonly viewType: string,
-    private readonly i18n: I18n<VsCodeI18n>
+    protected readonly editor: VsCodeKieEditorController,
+    protected readonly resourceContentService: ResourceContentService,
+    protected readonly vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
+    protected readonly vscodeNotifications: VsCodeNotificationsChannelApiImpl,
+    protected readonly javaCodeCompletionApi: JavaCodeCompletionApi,
+    protected readonly viewType: string,
+    protected readonly i18n: I18n<VsCodeI18n>
   ) {}
 
   public async kogitoWorkspace_newEdit(workspaceEdit: WorkspaceEdit) {

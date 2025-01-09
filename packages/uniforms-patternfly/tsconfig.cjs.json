@@ -1,13 +1,9 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "extends": "@kie-tools/tsconfig/tsconfig.cjs.json",
   "compilerOptions": {
-    "baseUrl": "src",
-    "outDir": "dist/cjs",
-    "rootDir": "src",
-    "module": "commonjs",
-    "target": "es6",
     "esModuleInterop": true,
-    "moduleResolution": "node"
-  },
-  "include": ["src"]
+    "jsx": "react-jsx",
+    "outDir": "dist/cjs",
+    "types": ["node", "@testing-library/jest-dom"]
+  }
 }

@@ -222,7 +222,7 @@ export const Unitables = ({
             style={{ display: "flex", flexDirection: "column" }}
           >
             <OutsideRowMenu height={63} isFirstChild={true}>{`#`}</OutsideRowMenu>
-            <OutsideRowMenu height={65} borderBottomSizeBasis={1}>{`#`}</OutsideRowMenu>
+            <OutsideRowMenu height={64} borderBottomSizeBasis={1}>{`#`}</OutsideRowMenu>
             {rows.map((_, rowIndex) => (
               <Tooltip key={rowIndex} content={`Open row ${rowIndex + 1} in the form view`}>
                 <OutsideRowMenu height={61} isLastChild={rowIndex === rows.length - 1}>

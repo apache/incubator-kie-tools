@@ -30,7 +30,7 @@ import {
 } from "./FeelConfigs";
 
 import { FeelSyntacticSymbolNature, FeelVariables, ParsedExpression } from "@kie-tools/dmn-feel-antlr4-parser";
-import { Element } from "./themes/Element";
+import { SemanticTokensProvider } from "./semanticTokensProvider";
 
 export const EXPRESSION_PROPERTIES_SEPARATOR = ".";
 
@@ -76,21 +76,6 @@ Monaco.editor.defineTheme(MONACO_FEEL_THEME, feelTheme());
 // Don't remove this mechanism. It's necessary for Monaco to initialize correctly and display correct colors for FEEL.
 let __firstTimeInitializingMonacoToEnableColorizingCorrectly = true;
 
-function getTokenTypeIndex(symbolType: FeelSyntacticSymbolNature) {
-  switch (symbolType) {
-    default:
-    case FeelSyntacticSymbolNature.LocalVariable:
-    case FeelSyntacticSymbolNature.GlobalVariable:
-      return Element.InputDataVariable;
-    case FeelSyntacticSymbolNature.Unknown:
-      return Element.UnknownVariable;
-    case FeelSyntacticSymbolNature.Invocable:
-      return Element.FunctionCall;
-    case FeelSyntacticSymbolNature.Parameter:
-      return Element.FunctionParameterVariable;
-  }
-}
-
 export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
   (
     {
@@ -113,6 +98,11 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
 
     const [currentParsedExpression, setCurrentParsedExpression] = useState<ParsedExpression>();
 
+    const semanticTokensProvider = useMemo(
+      () => new SemanticTokensProvider(feelVariables, expressionId, setCurrentParsedExpression),
+      [expressionId, feelVariables]
+    );
+
     const getLastValidSymbolAtPosition = useCallback((currentParsedExpression: ParsedExpression, position: number) => {
       let lastValidSymbol;
       for (let i = 0; i < currentParsedExpression.feelVariables.length; i++) {
@@ -132,6 +122,15 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
         }
       }
       return lastValidSymbol;
+    }, []);
+
+    const getSymbolAtPosition = useCallback((currentParsedExpression: ParsedExpression, position: number) => {
+      for (const feelVariable of currentParsedExpression.feelVariables) {
+        if (feelVariable.startIndex < position && position <= feelVariable.startIndex + feelVariable.length) {
+          return feelVariable;
+        }
+      }
+      return undefined;
     }, []);
 
     const getDefaultCompletionItems = useCallback(
@@ -171,7 +170,7 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
 
     const completionItemProvider = useCallback(() => {
       return {
-        triggerCharacters: [" ", EXPRESSION_PROPERTIES_SEPARATOR],
+        triggerCharacters: [EXPRESSION_PROPERTIES_SEPARATOR],
         provideCompletionItems: (model: Monaco.editor.ITextModel, position: Monaco.Position) => {
           const completionItems = getDefaultCompletionItems(suggestionProvider, model, position);
           const variablesSuggestions = new Array<Monaco.languages.CompletionItem>();
@@ -181,11 +180,12 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
             const expression = model.getValue();
 
             const currentChar = expression.charAt(pos - 1);
-            if (currentChar === EXPRESSION_PROPERTIES_SEPARATOR) {
+            if (currentChar === EXPRESSION_PROPERTIES_SEPARATOR || currentChar === " ") {
               pos--;
             }
 
             const lastValidSymbol = getLastValidSymbolAtPosition(currentParsedExpression, pos);
+
             if (
               lastValidSymbol &&
               lastValidSymbol.feelSymbolNature !== FeelSyntacticSymbolNature.Unknown &&
@@ -197,16 +197,48 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
                   label: scopeSymbol.name,
                   insertText: scopeSymbol.name,
                   detail: scopeSymbol.type,
+                  range: {
+                    startLineNumber: lastValidSymbol.startLine + 1,
+                    endLineNumber: lastValidSymbol.endLine + 1,
+                    startColumn: lastValidSymbol.startIndex + lastValidSymbol.length + 2, // It is +2 because of the . (dot)
+                    endColumn: lastValidSymbol.startIndex + lastValidSymbol.length + 2 + scopeSymbol.name.length,
+                  },
                 } as Monaco.languages.CompletionItem);
               }
             } else {
+              const currentSymbol = getSymbolAtPosition(currentParsedExpression, pos);
               for (const scopeSymbol of currentParsedExpression.availableSymbols) {
-                variablesSuggestions.push({
-                  kind: Monaco.languages.CompletionItemKind.Variable,
-                  label: scopeSymbol.name,
-                  insertText: scopeSymbol.name,
-                  detail: scopeSymbol.type,
-                } as Monaco.languages.CompletionItem);
+                // Consider this scenario:
+                // 1. User typed: Tax In
+                // 2. Available symbols: [Tax Incoming, Tax Input, Tax InSomethingElse, Tax Out, Tax Output]
+                // 3. "Tax In" is an invalid symbol (unrecognized symbol)
+                // In this case, we want to show all symbols that starts with "Tax In"
+                if (currentSymbol && scopeSymbol.name.startsWith(currentSymbol.text)) {
+                  variablesSuggestions.push({
+                    kind: Monaco.languages.CompletionItemKind.Variable,
+                    label: scopeSymbol.name,
+                    insertText: scopeSymbol.name,
+                    detail: scopeSymbol.type,
+                    sortText: "1", // We want the variables to be at top of autocomplete
+                    // We want to replace the current symbol with the available scopeSymbol (Tax Incoming, for example)
+                    // Note: Monaco is NOT zero-indexed. It starts with 1 but FEEL parser is zero indexed,
+                    // that's why were incrementing 1 at each position.
+                    range: {
+                      startLineNumber: currentSymbol.startLine + 1,
+                      endLineNumber: currentSymbol.endLine + 1,
+                      startColumn: currentSymbol.startIndex + 1,
+                      endColumn: currentSymbol.startIndex + 1 + scopeSymbol.name.length,
+                    },
+                  } as Monaco.languages.CompletionItem);
+                } else {
+                  variablesSuggestions.push({
+                    kind: Monaco.languages.CompletionItemKind.Variable,
+                    label: scopeSymbol.name,
+                    insertText: scopeSymbol.name,
+                    detail: scopeSymbol.type,
+                    sortText: "2", // The others variables at second level
+                  } as Monaco.languages.CompletionItem);
+                }
               }
 
               variablesSuggestions.push(...completionItems);
@@ -220,7 +252,13 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
           };
         },
       };
-    }, [currentParsedExpression, getDefaultCompletionItems, getLastValidSymbolAtPosition, suggestionProvider]);
+    }, [
+      currentParsedExpression,
+      getDefaultCompletionItems,
+      getLastValidSymbolAtPosition,
+      getSymbolAtPosition,
+      suggestionProvider,
+    ]);
 
     useEffect(() => {
       if (!enabled) {
@@ -242,89 +280,12 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
 
       const disposable = Monaco.languages.registerDocumentSemanticTokensProvider(
         { language: MONACO_FEEL_LANGUAGE },
-        {
-          provideDocumentSemanticTokens: function (model) {
-            const tokenTypes = new Array<number>();
-
-            if (feelVariables) {
-              const text = model.getValue();
-              const contentByLines = model.getLinesContent();
-              let startOfPreviousToken = 0;
-              let previousLine = 0;
-              let lineOffset = 0;
-              let currentLine = 0;
-              const parsedExpression = feelVariables.parser.parse(expressionId ?? "", text);
-              setCurrentParsedExpression(parsedExpression);
-
-              for (const variable of parsedExpression.feelVariables) {
-                if (variable.startLine != currentLine) {
-                  lineOffset += contentByLines[currentLine].length + 1; // +1 = the line break
-                  currentLine = variable.startLine;
-                }
-                variable.startIndex -= lineOffset;
-              }
-
-              for (const variable of parsedExpression.feelVariables) {
-                if (previousLine != variable.startLine) {
-                  startOfPreviousToken = 0;
-                }
-                if (variable.startLine === variable.endLine) {
-                  tokenTypes.push(
-                    variable.startLine - previousLine, // lineIndex = relative to the PREVIOUS line
-                    variable.startIndex - startOfPreviousToken, // columnIndex = relative to the start of the PREVIOUS token NOT to the start of the line
-                    variable.length,
-                    getTokenTypeIndex(variable.feelSymbolNature),
-                    0 // token modifier = not used so we keep it 0
-                  );
-
-                  previousLine = variable.startLine;
-                  startOfPreviousToken = variable.startIndex;
-                } else {
-                  tokenTypes.push(
-                    variable.startLine - previousLine,
-                    variable.startIndex - startOfPreviousToken,
-                    variable.length,
-                    getTokenTypeIndex(variable.feelSymbolNature),
-                    0
-                  );
-
-                  const length =
-                    variable.length - (contentByLines[variable.startLine].length - variable.startIndex + 1); // +1 = the line break
-
-                  tokenTypes.push(
-                    variable.endLine - variable.startLine,
-                    0,
-                    length,
-                    getTokenTypeIndex(variable.feelSymbolNature),
-                    0
-                  );
-
-                  startOfPreviousToken = 0;
-                  previousLine = variable.endLine;
-                }
-              }
-            }
-
-            return {
-              data: new Uint32Array(tokenTypes),
-              resultId: undefined,
-            };
-          },
-          getLegend: function (): Monaco.languages.SemanticTokensLegend {
-            return {
-              tokenTypes: Object.values(Element).filter((x) => typeof x === "string") as string[],
-              tokenModifiers: [],
-            };
-          },
-          releaseDocumentSemanticTokens: function (resultId: string | undefined): void {
-            // do nothing
-          },
-        }
+        semanticTokensProvider
       );
       return () => {
         disposable.dispose();
       };
-    }, [enabled, expressionId, feelVariables]);
+    }, [enabled, expressionId, feelVariables, semanticTokensProvider]);
 
     const config = useMemo(() => {
       return feelDefaultConfig(options);

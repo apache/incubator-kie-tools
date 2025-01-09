@@ -19,6 +19,7 @@
 
 import { SCHEMA_VERSION } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import Ajv, { ValidateFunction } from "ajv";
+import addFormats from "ajv-formats";
 
 /**
  * Defines a basic Form Validator
@@ -59,11 +60,13 @@ export function lookupValidator(schema: any): FormValidator {
 export class Draft7FormValidator implements FormValidator {
   readonly schema: any;
   readonly validator: ValidateFunction;
+  readonly ajv: Ajv;
 
   constructor(schema: any) {
     this.schema = schema;
-
-    this.validator = new Ajv({ allErrors: true, useDefaults: true }).compile(schema);
+    this.ajv = new Ajv({ strict: false, allErrors: true, useDefaults: true });
+    addFormats(this.ajv);
+    this.validator = this.ajv.compile(schema);
   }
 
   validate(model: any): any | undefined {

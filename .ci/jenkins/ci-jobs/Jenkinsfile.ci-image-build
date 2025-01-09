@@ -18,13 +18,10 @@ pipeline {
     agent any
 
     parameters {
-        string(description: 'Image tag', name: 'IMAGE_TAG', defaultValue: 'latest')
+        string(description: 'Image tag', name: 'IMAGE_TAG', defaultValue: "${env.BRANCH_NAME}")
     }
 
     environment {
-        IMAGE_ACCOUNT = 'quay.io/kie-tools'
-        IMAGE_NAME = 'kie-tools-ci-build'
-        IMAGE_NAME_TAG = "${IMAGE_ACCOUNT}/${IMAGE_NAME}:${params.IMAGE_TAG}"
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
     }
 
@@ -43,77 +40,40 @@ pipeline {
             }
         }
 
-        stage('Clean workspace') {
+        stage('Clean workspace before build') {
             steps {
                 cleanWs(deleteDirs: true, disableDeferredWipeout: true)
             }
         }
 
-        stage('Checkout Apache KIE Tools (Simulated squashed merge)') {
+        stage('Checkout kie-tools') {
             steps {
                 dir('kie-tools') {
-                    script {
-                        githubUtils.checkoutRepoSquashedMerge(
-                            env.CHANGE_AUTHOR,
-                            env.CHANGE_BRANCH,
-                            "https://github.com/${env.CHANGE_AUTHOR}/${pipelineVars.githubRepositoryName}.git",
-                            env.CHANGE_TARGET ?: env.BRANCH_NAME,
-                            "https://github.com/${pipelineVars.githubRepositoryOrg}/${pipelineVars.githubRepositoryName}.git",
-                            "${pipelineVars.kieToolsBotGithubCredentialsId}"
-                        )
-                    }
+                    checkout scm
                 }
             }
         }
 
-        stage('Check image tag already exists') {
-            steps {
-                script {
-                    IMAGE_EXISTS = dockerUtils.checkImageExistsInRegistry(
-                        "${IMAGE_ACCOUNT}",
-                        "${IMAGE_NAME}",
-                        "${params.IMAGE_TAG}",
-                        "${pipelineVars.quayPushCredentialsId}"
-                    )
-                }
-            }
-        }
-
-        // Trigger by PR = Tag is GIT commit hash and it has expiration = 1d
-        // Trigger by Branch = Tags are GIT commit and latest and they have no expiration
         stage('Build image') {
-            when {
-                expression { !IMAGE_EXISTS }
-            }
             steps {
                 dir('kie-tools') {
                     script {
-                        if (!env.CHANGE_ID && env.BRANCH_NAME == 'main') {
-                            sh """
-                            docker build -t ${IMAGE_NAME_TAG} -f .ci/kie-tools-ci-build.Dockerfile .
-                            docker tag ${IMAGE_NAME_TAG} ${IMAGE_ACCOUNT}/${IMAGE_NAME}:latest
-                            """
-                            IMAGE_TAGS = "${params.IMAGE_TAG} latest"
-                        } else {
-                            sh "docker build -t ${IMAGE_NAME_TAG} --label 'quay.expires-after=1d' -f .ci/kie-tools-ci-build.Dockerfile ."
-                            IMAGE_TAGS = "${params.IMAGE_TAG}"
-                        }
+                        sh "docker build -t ${pipelineVars.kieToolsCiBuildImageRegistry}/${pipelineVars.kieToolsCiBuildImageAccount}/${pipelineVars.kieToolsCiBuildImageName}:${params.IMAGE_TAG} -f .ci/incubator-kie-tools-ci-build.Dockerfile ."
                     }
                 }
             }
         }
 
         stage('Push image to registry') {
-            when {
-                expression { !IMAGE_EXISTS }
-            }
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${IMAGE_ACCOUNT}",
-                        "${IMAGE_NAME}",
-                        "${IMAGE_TAGS}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${pipelineVars.kieToolsCiBuildImageRegistry}",
+                        "${pipelineVars.kieToolsCiBuildImageAccount}",
+                        "${pipelineVars.kieToolsCiBuildImageName}",
+                        "${params.IMAGE_TAG}",
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
                 }
             }
@@ -122,7 +82,7 @@ pipeline {
         stage('Test built image') {
             agent {
                 docker {
-                    image env.IMAGE_NAME_TAG
+                    image "${pipelineVars.kieToolsCiBuildImageRegistry}/${pipelineVars.kieToolsCiBuildImageAccount}/${pipelineVars.kieToolsCiBuildImageName}:${params.IMAGE_TAG}"
                 }
             }
             steps {
@@ -133,6 +93,9 @@ pipeline {
                     node --version
                     npm --version
                     pnpm --version
+                    python --version
+                    docker --version
+                    helm version
                     go version
                 '''.trim()
             }

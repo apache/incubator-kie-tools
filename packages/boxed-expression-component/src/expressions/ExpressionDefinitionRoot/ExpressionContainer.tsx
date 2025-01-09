@@ -20,14 +20,14 @@
 import * as React from "react";
 import { useCallback, useEffect, useRef } from "react";
 import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
-import { BoxedContext, BoxedExpression, DmnBuiltInDataType, generateUuid } from "../../api";
+import { BoxedExpression, generateUuid, Normalized } from "../../api";
 import { findAllIdsDeep } from "../../ids/ids";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { ExpressionDefinitionLogicTypeSelector } from "./ExpressionDefinitionLogicTypeSelector";
 
 export interface ExpressionContainerProps {
-  expression?: BoxedExpression;
+  expression?: Normalized<BoxedExpression>;
   isNested: boolean;
   isResetSupported: boolean;
   rowIndex: number;
@@ -49,30 +49,27 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { beeGwtService, expressionHolderId } = useBoxedExpressionEditor();
+  const { beeGwtService, expressionHolderId, hideDmn14BoxedExpressions } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
   const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
 
+  // Selecting the Expression container should reset the selectObject
   useEffect(() => {
     if (isActive) {
-      beeGwtService?.selectObject("");
+      beeGwtService?.selectObject(expression?.["@_id"]);
     }
-  }, [beeGwtService, isActive]);
+  }, [beeGwtService, isActive, expression]);
 
   const expressionTypeRef = expression?.["@_typeRef"];
 
   const onLogicTypeSelected = useCallback(
     (logicType: BoxedExpression["__$$element"] | undefined) => {
       const { expression: defaultExpression, widthsById: defaultWidthsById } =
-        beeGwtService!.getDefaultExpressionDefinition(
-          logicType,
-          parentElementTypeRef ?? expressionTypeRef ?? DmnBuiltInDataType.Undefined,
-          !isNested
-        );
+        beeGwtService!.getDefaultExpressionDefinition(logicType, parentElementTypeRef ?? expressionTypeRef, !isNested);
 
-      setExpression((prev: BoxedExpression) => {
+      setExpression((prev: Normalized<BoxedExpression>) => {
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedExpression = {
+        const ret: Normalized<BoxedExpression> = {
           ...defaultExpression,
           "@_id": defaultExpression["@_id"] ?? generateUuid(),
           "@_label": defaultExpression["@_label"] ?? parentElementName ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
@@ -103,7 +100,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
   const getPlacementRef = useCallback(() => containerRef.current!, []);
 
   return (
-    <div ref={containerRef} className={"expression-container-box"} data-testid="expression-container">
+    <div ref={containerRef} className={"expression-container-box"} data-testid="kie-tools--bee--expression-container">
       <ExpressionDefinitionLogicTypeSelector
         expression={expression}
         onLogicTypeSelected={onLogicTypeSelected}
@@ -112,6 +109,7 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
         isResetSupported={isResetSupported}
         isNested={isNested}
         parentElementId={parentElementId ?? expressionHolderId}
+        hideDmn14BoxedExpressions={hideDmn14BoxedExpressions}
       />
     </div>
   );

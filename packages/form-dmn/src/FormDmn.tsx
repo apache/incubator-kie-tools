@@ -23,12 +23,12 @@ import { FormDmnValidator } from "./FormDmnValidator";
 import { formDmnI18n } from "./i18n";
 import { FormComponent, FormProps } from "@kie-tools/form/dist/FormComponent";
 import { DmnAutoFieldProvider } from "@kie-tools/dmn-runner/dist/uniforms";
-import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 import { formDmnRunnerAutoFieldValue } from "./uniforms/FormDmnRunnerAutoFieldValue";
+import { JSONSchema4 } from "json-schema";
 
 export type InputRow = Record<string, any>;
 
-export function FormDmn(props: FormProps<InputRow, ExtendedServicesDmnJsonSchema>) {
+export function FormDmn(props: FormProps<InputRow, JSONSchema4>) {
   const i18n = useMemo(() => {
     formDmnI18n.setLocale(props.locale ?? navigator.language);
     return formDmnI18n.getCurrent();

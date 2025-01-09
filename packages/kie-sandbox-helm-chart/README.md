@@ -1,11 +1,27 @@
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+     http://www.apache.org/licenses/LICENSE-2.0
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
+
 # KIE Sandbox Helm Chart
 
 This chart can be used to deploy KIE Sandbox image on a [Kubernetes](https://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
 ## Additional requirements
 
-- Podman (for Linux)
-- Docker (for macOS)
+- Docker
 - Minikube
 
 ## Components
@@ -147,32 +163,32 @@ No need to run any commands. KIE Sandbox should be accessible via https://kie-sa
 
 ## Installing a released version from the OCI registry:
 
-Very similar to the way you install the chart from source code, you can also install a released version available on quay.io registry:
+Very similar to the way you install the chart from source code, you can also install a released version available on docker.io registry:
 
 ### Default install
 
 ```console
-$ helm install kie-sandbox oci://quay.io/kie-tools/kie-sandbox-helm-chart --version=0.0.0
+$ helm install kie-sandbox oci://docker.io/apache/incubator-kie-sandbox-helm-chart --version=0.0.0-main
 ```
 
 ### Minikube install
 
 ```console
-$ helm pull oci://quay.io/kie-tools/kie-sandbox-helm-chart --version=0.0.0 --untar
+$ helm pull oci://docker.io/apache/incubator-kie-sandbox-helm-chart --version=0.0.0-main --untar
 $ helm install kie-sandbox ./kie-sandbox-helm-chart --values ./kie-sandbox-helm-chart/values-minikube-nginx.yaml
 ```
 
 ### Kubernetes install
 
 ```console
-$ helm pull oci://quay.io/kie-tools/kie-sandbox-helm-chart --version=0.0.0 --untar
+$ helm pull oci://docker.io/apache/incubator-kie-sandbox-helm-chart --version=0.0.0-main --untar
 $ helm install kie-sandbox ./kie-sandbox-helm-chart --values ./kie-sandbox-helm-chart/values-kubernetes.yaml --set global.kubernetesClusterDomain="<YOUR_KUBERNETES_CLUSTER_DOMAIN>" --set global.kubernetesIngressClass="<YOUR_KUBERNETES_INGRESS_CLASS>"
 ```
 
 ### OpenShift install
 
 ```console
-$ helm pull oci://quay.io/kie-tools/kie-sandbox-helm-chart --version=0.0.0 --untar
+$ helm pull oci://docker.io/apache/incubator-kie-sandbox-helm-chart --version=0.0.0-main --untar
 $ helm install kie-sandbox ./kie-sandbox-helm-chart --values ./kie-sandbox-helm-chart/values-openshift.yaml --set global.openshiftRouteDomain="<YOUR_OCP_ROUTE_DOMAIN>"
 ```
 
@@ -189,29 +205,12 @@ $ helm uninstall kie-sandbox
 This chart uses default environmental variables from `values.yaml` file. We can override those by passing it from command line.
 
 ```console
-$ helm install kie-sandbox ./src --set image.repository=quay.io
+$ helm install kie-sandbox ./src --set image.repository=docker.io
 ```
 
 ## Configuration
 
 The following table lists the configurable parameters of the KIE Sandbox chart and their default values.
-
-<details>
-  <summary markdown="span">How to update this list?</summary>
-  <ul>
-    <li>Install <a href="https://github.com/norwoodj/helm-docs">norwoodj/helm-docs</a>;</li>
-    <li>
-      Run the following commands:
-<pre>
-$ cd src
-$ helm-docs --document-dependency-values=true --chart-search-root=.
-</pre>
-    </li>
-    <li>
-      Run the install script.
-    </li>
-  </ul>
-</details>
 
 <!-- CHART_VALUES_README -->
 
@@ -225,28 +224,30 @@ $ helm-docs --document-dependency-values=true --chart-search-root=.
 | nameOverride                       | string | `""`                                                                                                                                                                                                                                                   | Overrides charts name                                                                                                                           |
 | cors_proxy.autoscaling             | object | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}`                                                                                                                                                              | CORS Proxy HorizontalPodAutoscaler configuration (https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)                   |
 | cors_proxy.fullnameOverride        | string | `""`                                                                                                                                                                                                                                                   | Overrides charts full name                                                                                                                      |
-| cors_proxy.image                   | object | `{"account":"kie-tools","name":"cors-proxy-image","pullPolicy":"IfNotPresent","registry":"quay.io","tag":"latest"}`                                                                                                                                    | Image source configuration for the CORS Proxy image                                                                                             |
+| cors_proxy.image                   | object | `{"account":"apache","name":"incubator-kie-cors-proxy","pullPolicy":"IfNotPresent","registry":"docker.io","tag":"main"}`                                                                                                                               | Image source configuration for the CORS Proxy image                                                                                             |
 | cors_proxy.imagePullSecrets        | list   | `[]`                                                                                                                                                                                                                                                   | Pull secrets used when pulling CORS Proxy image                                                                                                 |
 | cors_proxy.ingress                 | object | `{"annotations":{},"className":"{{ .Values.global.kubernetesIngressClass }}","enabled":false,"hosts":[{"host":"cors-proxy.{{ .Values.global.kubernetesClusterDomain }}","paths":[{"path":"/","pathType":"ImplementationSpecific"}]}],"tls":[]}`        | CORS Proxy Ingress configuration (https://kubernetes.io/docs/concepts/services-networking/ingress/)                                             |
 | cors_proxy.name                    | string | `"cors-proxy"`                                                                                                                                                                                                                                         | The CORS Proxy application name                                                                                                                 |
 | cors_proxy.nameOverride            | string | `""`                                                                                                                                                                                                                                                   | Overrides charts name                                                                                                                           |
+| cors_proxy.nodeSelector            | object | `{}`                                                                                                                                                                                                                                                   |                                                                                                                                                 |
 | cors_proxy.openshiftRoute          | object | `{"annotations":{},"enabled":false,"host":"cors-proxy.{{ .Values.global.openshiftRouteDomain }}","tls":{"insecureEdgeTerminationPolicy":"None","termination":"edge"}}`                                                                                 | CORS Proxy OpenShift Route configuration (https://docs.openshift.com/container-platform/4.14/networking/routes/route-configuration.html)        |
 | cors_proxy.service                 | object | `{"nodePort":"","port":8080,"type":"ClusterIP"}`                                                                                                                                                                                                       | CORS Proxy Service configuration (https://kubernetes.io/docs/concepts/services-networking/service/)                                             |
 | cors_proxy.serviceAccount          | object | `{"annotations":{},"create":true,"name":""}`                                                                                                                                                                                                           | CORS Proxy ServiceAccount configuration (https://kubernetes.io/docs/concepts/security/service-accounts/)                                        |
 | extended_services.autoscaling      | object | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}`                                                                                                                                                              | Extended Services HorizontalPodAutoscaler configuration (https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)            |
 | extended_services.fullnameOverride | string | `""`                                                                                                                                                                                                                                                   | Overrides charts full name                                                                                                                      |
-| extended_services.image            | object | `{"account":"kie-tools","name":"kie-sandbox-extended-services-image","pullPolicy":"IfNotPresent","registry":"quay.io","tag":"latest"}`                                                                                                                 | Image source configuration for the Extended Services image                                                                                      |
+| extended_services.image            | object | `{"account":"apache","name":"incubator-kie-sandbox-extended-services","pullPolicy":"IfNotPresent","registry":"docker.io","tag":"main"}`                                                                                                                | Image source configuration for the Extended Services image                                                                                      |
 | extended_services.imagePullSecrets | list   | `[]`                                                                                                                                                                                                                                                   | Pull secrets used when pulling Extended Services image                                                                                          |
 | extended_services.ingress          | object | `{"annotations":{},"className":"{{ .Values.global.kubernetesIngressClass }}","enabled":false,"hosts":[{"host":"extended-services.{{ .Values.global.kubernetesClusterDomain }}","paths":[{"path":"/","pathType":"ImplementationSpecific"}]}],"tls":[]}` | Extended Services Ingress configuration (https://kubernetes.io/docs/concepts/services-networking/ingress/)                                      |
 | extended_services.name             | string | `"extended-services"`                                                                                                                                                                                                                                  | The Extended Services application name                                                                                                          |
 | extended_services.nameOverride     | string | `""`                                                                                                                                                                                                                                                   | Overrides charts name                                                                                                                           |
+| extended_services.nodeSelector     | object | `{}`                                                                                                                                                                                                                                                   |                                                                                                                                                 |
 | extended_services.openshiftRoute   | object | `{"annotations":{},"enabled":false,"host":"extended-services.{{ .Values.global.openshiftRouteDomain }}","tls":{"insecureEdgeTerminationPolicy":"None","termination":"edge"}}`                                                                          | Extended Services OpenShift Route configuration (https://docs.openshift.com/container-platform/4.14/networking/routes/route-configuration.html) |
 | extended_services.service          | object | `{"nodePort":"","port":21345,"type":"ClusterIP"}`                                                                                                                                                                                                      | Extended Services Service configuration (https://kubernetes.io/docs/concepts/services-networking/service/)                                      |
 | extended_services.serviceAccount   | object | `{"annotations":{},"create":true,"name":""}`                                                                                                                                                                                                           | Extended Services ServiceAccount configuration (https://kubernetes.io/docs/concepts/security/service-accounts/)                                 |
 | kie_sandbox.autoscaling            | object | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}`                                                                                                                                                              | KIE Sandbox HorizontalPodAutoscaler configuration (https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)                  |
 | kie_sandbox.env                    | list   | `[{"name":"KIE_SANDBOX_EXTENDED_SERVICES_URL","value":"http://127.0.0.1:21345"},{"name":"KIE_SANDBOX_CORS_PROXY_URL","value":"http://127.0.0.1:8081"}]`                                                                                                | Env variables for KIE Sandbox deployment                                                                                                        |
 | kie_sandbox.fullnameOverride       | string | `""`                                                                                                                                                                                                                                                   | Overrides charts full name                                                                                                                      |
-| kie_sandbox.image                  | object | `{"account":"kie-tools","name":"kie-sandbox-image","pullPolicy":"IfNotPresent","registry":"quay.io","tag":"latest"}`                                                                                                                                   | Image source configuration for the KIE Sandbox image                                                                                            |
+| kie_sandbox.image                  | object | `{"account":"apache","name":"incubator-kie-sandbox-webapp","pullPolicy":"IfNotPresent","registry":"docker.io","tag":"main"}`                                                                                                                           | Image source configuration for the KIE Sandbox image                                                                                            |
 | kie_sandbox.imagePullSecrets       | list   | `[]`                                                                                                                                                                                                                                                   | Pull secrets used when pulling KIE Sandbox image                                                                                                |
 | kie_sandbox.ingress                | object | `{"annotations":{},"className":"{{ .Values.global.kubernetesIngressClass }}","enabled":false,"hosts":[{"host":"kie-sandbox.{{ .Values.global.kubernetesClusterDomain }}","paths":[{"path":"/","pathType":"ImplementationSpecific"}]}],"tls":[]}`       | KIE Sandbox Ingress configuration (https://kubernetes.io/docs/concepts/services-networking/ingress/)                                            |
 | kie_sandbox.name                   | string | `"kie-sandbox"`                                                                                                                                                                                                                                        | The KIE Sandbox application name                                                                                                                |
@@ -257,4 +258,4 @@ $ helm-docs --document-dependency-values=true --chart-search-root=.
 
 ---
 
-Autogenerated from chart metadata using [helm-docs v1.12.0](https://github.com/norwoodj/helm-docs/releases/v1.12.0)
+Autogenerated from chart metadata using [helm-docs v1.13.1](https://github.com/norwoodj/helm-docs/releases/v1.13.1)

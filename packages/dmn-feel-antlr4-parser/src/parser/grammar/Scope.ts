@@ -84,4 +84,10 @@ export interface Scope {
   getSymbols(): Map<string, Symbol>;
 
   getType(): Type | undefined;
+
+  /**
+   * Allow the scope to accept variables that are validate during the runtime (dynamic variables),
+   * without marking them as invalid or valid variables.
+   */
+  allowDynamicVariables: boolean | undefined;
 }

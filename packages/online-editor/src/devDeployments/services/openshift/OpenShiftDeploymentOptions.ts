@@ -32,7 +32,7 @@ export function OpenShiftDeploymentOptions(args: DeploymentOptionArgs): Array<De
       includeDmnFormWebapp: {
         id: "includeDmnFormWebapp",
         name: "Include DMN Form Webapp",
-        description: "Wether to deploy the DMN Form Webapp as a sidecar container or not",
+        description: "Whether to deploy the DMN Form Webapp as a sidecar container or not",
         type: "boolean",
         defaultValue: false,
         skipActionsIfFalse: true,

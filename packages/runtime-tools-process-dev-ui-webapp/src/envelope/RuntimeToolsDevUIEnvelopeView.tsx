@@ -27,58 +27,63 @@ import { DiagramPreviewSize } from "@kie-tools/runtime-tools-process-enveloped-c
 export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIEnvelopeViewApi>(
   (props, forwardingRef) => {
     const [dataIndexUrl, setDataIndexUrl] = React.useState("");
-    const [remoteKogitoAppUrl, setRemoteKogitoAppUrl] = React.useState("");
+    const [quarkusAppOrigin, setQuarkusAppOrigin] = React.useState("");
+    const [quarkusAppRootPath, setQuarkusAppRootPath] = React.useState("");
+    const [shouldReplaceQuarkusAppOriginWithWebappOrigin, setShouldReplaceQuarkusAppOriginWithWebappOrigin] =
+      React.useState<boolean>(false);
     const [DevUiUsers, setDevUiUsers] = React.useState<User[]>([]);
     const [navigate, setNavigate] = React.useState<string>("");
+    const [devUIOrigin, setDevUIOrigin] = React.useState<string>("");
     const [devUIUrl, setDevUIUrl] = React.useState<string>("");
-    const [openApiPath, setOpenApiPath] = React.useState<string>("");
     const [isProcessEnabled, setProcessEnabled] = React.useState(false);
     const [availablePages, setAvailablePages] = React.useState<string[]>([]);
     const [customLabels, setCustomLabels] = React.useState(undefined);
     const [omittedProcessTimelineEvents, setOmittedProcessTimelineEvents] = React.useState<string[]>([]);
     const [diagramPreviewSize, setDiagramPreviewSize] = React.useState<DiagramPreviewSize>();
 
-    useImperativeHandle(
-      forwardingRef,
-      () => {
-        return {
-          setDataIndexUrl: (dataIndexUrl) => {
-            setDataIndexUrl(dataIndexUrl);
-          },
-          setRemoteKogitoAppUrl: (remoteKogitoAppUrl) => {
-            setRemoteKogitoAppUrl(remoteKogitoAppUrl);
-          },
-          setUsers: (users) => {
-            setDevUiUsers(users);
-          },
-          navigateTo: (page) => {
-            setNavigate(page);
-          },
-          setDevUIUrl: (url) => {
-            setDevUIUrl(url);
-          },
-          setOpenApiPath: (path) => {
-            setOpenApiPath(path);
-          },
-          setProcessEnabled: (isProcessEnabled) => {
-            setProcessEnabled(isProcessEnabled);
-          },
-          setAvailablePages: (availablePages) => {
-            setAvailablePages(availablePages);
-          },
-          setCustomLabels: (customLabels) => {
-            setCustomLabels(customLabels);
-          },
-          setOmittedProcessTimelineEvents: (omittedProcessTimelineEvents) => {
-            setOmittedProcessTimelineEvents(omittedProcessTimelineEvents);
-          },
-          setDiagramPreviewSize: (diagramPreviewSize) => {
-            setDiagramPreviewSize(diagramPreviewSize);
-          },
-        };
-      },
-      []
-    );
+    useImperativeHandle(forwardingRef, () => {
+      return {
+        setDataIndexUrl: (dataIndexUrl) => {
+          setDataIndexUrl(dataIndexUrl);
+        },
+        setQuarkusAppOrigin: (quarkusAppOrigin: string) => {
+          setQuarkusAppOrigin(quarkusAppOrigin);
+        },
+        setQuarkusAppRootPath: (quarkusAppRootPath: string) => {
+          setQuarkusAppRootPath(quarkusAppRootPath);
+        },
+        setShouldReplaceQuarkusAppOriginWithWebappOrigin: (shouldReplaceQuarkusAppOriginWithWebappOrigin: boolean) => {
+          setShouldReplaceQuarkusAppOriginWithWebappOrigin(shouldReplaceQuarkusAppOriginWithWebappOrigin);
+        },
+        setUsers: (users) => {
+          setDevUiUsers(users);
+        },
+        navigateTo: (page) => {
+          setNavigate(page);
+        },
+        setDevUIUrl: (url) => {
+          setDevUIUrl(url);
+        },
+        setDevUIOrigin: (url) => {
+          setDevUIOrigin(url);
+        },
+        setProcessEnabled: (isProcessEnabled) => {
+          setProcessEnabled(isProcessEnabled);
+        },
+        setAvailablePages: (availablePages) => {
+          setAvailablePages(availablePages);
+        },
+        setCustomLabels: (customLabels) => {
+          setCustomLabels(customLabels);
+        },
+        setOmittedProcessTimelineEvents: (omittedProcessTimelineEvents) => {
+          setOmittedProcessTimelineEvents(omittedProcessTimelineEvents);
+        },
+        setDiagramPreviewSize: (diagramPreviewSize) => {
+          setDiagramPreviewSize(diagramPreviewSize);
+        },
+      };
+    }, []);
     return (
       <>
         {isProcessEnabled && navigate.length > 0 && (
@@ -86,14 +91,16 @@ export const RuntimeToolsDevUIEnvelopeView = React.forwardRef<RuntimeToolsDevUIE
             users={DevUiUsers}
             dataIndexUrl={dataIndexUrl}
             navigate={navigate}
-            openApiPath={openApiPath}
+            devUIOrigin={devUIOrigin}
             devUIUrl={devUIUrl}
             isProcessEnabled={isProcessEnabled}
             availablePages={availablePages}
             customLabels={customLabels}
             omittedProcessTimelineEvents={omittedProcessTimelineEvents}
             diagramPreviewSize={diagramPreviewSize}
-            remoteKogitoAppUrl={remoteKogitoAppUrl}
+            quarkusAppOrigin={quarkusAppOrigin}
+            quarkusAppRootPath={quarkusAppRootPath}
+            shouldReplaceQuarkusAppOriginWithWebappOrigin={shouldReplaceQuarkusAppOriginWithWebappOrigin}
           />
         )}
       </>

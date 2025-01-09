@@ -57,12 +57,15 @@ export class ParserHelper {
     return this._variables;
   }
 
-  public pushScope(type?: Type) {
-    this.currentScope = new ScopeImpl(this.currentName.peek(), this.currentScope, type);
+  public pushScope(type?: Type, allowDynamicVariables?: boolean) {
+    this.currentScope = new ScopeImpl(this.currentName.peek(), this.currentScope, type, allowDynamicVariables);
   }
 
   public popScope() {
     this.currentScope = this.currentScope?.getParentScope();
+    if (this.currentScope?.allowDynamicVariables) {
+      this.currentScope = this.currentScope.getParentScope();
+    }
   }
 
   public enableDynamicResolution() {
@@ -107,13 +110,15 @@ export class ParserHelper {
     variable: string | ParserRuleContext,
     type?: Type,
     variableType?: FeelSyntacticSymbolNature,
-    variableSource?: Variable
+    variableSource?: Variable,
+    allowDynamicVariables?: boolean
   ) {
     const variableSymbol = new VariableSymbol(
       variable instanceof ParserRuleContext ? this.getName(variable) : variable,
       type,
       variableType,
-      variableSource
+      variableSource,
+      allowDynamicVariables
     );
 
     if (variableSymbol.getId()) {
@@ -143,18 +148,9 @@ export class ParserHelper {
     const s = this.currentScope?.getChildScopes().get(scopeName);
     if (s != null) {
       this.currentScope = s;
-
-      //const type = this.currentScope.getType();
-      // if (type && type === BuiltInType.UNKNOWN) {
-      //   this.enableDynamicResolution();
-      // }
     } else {
       const resolved = this.currentScope?.resolve(scopeName);
       const scopeType = resolved?.getType();
-      // if (scopeType instanceof GenListType) {
-      //   scopeType = ((GenListType) scopeType).getGen();
-      // }
-
       if (resolved != null && scopeType instanceof MapBackedType) {
         this.pushScope(scopeType);
         for (const f of scopeType.properties) {
@@ -190,7 +186,11 @@ export class ParserHelper {
     const startLine = _n1.start.line - 1;
     const endLine = _n1.stop?.line !== undefined ? _n1.stop.line - 1 : startLine;
 
-    const variableName = name.replaceAll("\n", "");
+    // Replace line-breaks and multiple blank-spaces, since it is considered valid in variables names.
+    // Notice that line-brakes behave exactly like blank-spaces, that's why we're replacing them to blank-spaces.
+    // The Regex is to replace all concatenated blank-spaces to a single one. For example:
+    // "a           b"  becomes "a b", because that's how it is handled in the DMN runner.
+    const variableName = name.replaceAll("\r\n", " ").replaceAll("\n", " ").replace(/\s\s+/g, " ");
     if (this.currentScope?.getChildScopes().has(variableName)) {
       this.variables.push(
         new FeelVariable(start, length, startLine, endLine, FeelSyntacticSymbolNature.GlobalVariable, variableName)
@@ -198,7 +198,6 @@ export class ParserHelper {
     } else {
       const symbol = this.currentScope?.resolve(variableName);
       if (symbol) {
-        symbol.getType();
         if (symbol instanceof VariableSymbol) {
           const scopeSymbols = [];
           if ((symbol as VariableSymbol).getType() instanceof MapBackedType) {
@@ -210,6 +209,11 @@ export class ParserHelper {
               });
             }
           }
+
+          if (symbol.allowDynamicVariables) {
+            this.pushScope(undefined, true);
+          }
+
           this.variables.push(
             new FeelVariable(
               start,

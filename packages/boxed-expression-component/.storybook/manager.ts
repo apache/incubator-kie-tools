@@ -22,4 +22,7 @@ import { KieToolsTheme } from "@kie-tools/storybook-base/dist/config/theme";
 
 addons.setConfig({
   theme: KieToolsTheme,
+  // Disable Storybook keyboard shortcuts.
+  // The shortcuts conflicts with the Monaco editor, impacting its behavior
+  enableShortcuts: false,
 });

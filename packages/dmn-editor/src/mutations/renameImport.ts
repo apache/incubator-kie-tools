@@ -22,6 +22,7 @@ import {
   DMN15__tFunctionDefinition,
   DMN15__tLiteralExpression,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import {
   traverseExpressionsInExpressionHolders,
   traverseItemDefinitions,
@@ -38,7 +39,7 @@ export function renameImport({
   allTopLevelDataTypesByFeelName,
   index,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
   allTopLevelDataTypesByFeelName: DataTypeIndex;
   newName: string;
   index: number;
@@ -85,13 +86,15 @@ export function renameImport({
       if (element.__$$element === "decision" || element.__$$element === "businessKnowledgeModel") {
         traverseExpressionsInExpressionHolders(element, (expression, __$$element) => {
           if (__$$element === "functionDefinition") {
-            const e = expression as DMN15__tFunctionDefinition;
+            const e = expression as Normalized<DMN15__tFunctionDefinition>;
             if (e["@_kind"] === "PMML") {
-              const pmmlDocument = (e.expression as DMN15__tContext).contextEntry?.find(
+              const pmmlDocument = (e.expression as Normalized<DMN15__tContext>).contextEntry?.find(
                 ({ variable }) => variable?.["@_name"] === DMN15_SPEC.BOXED.FUNCTION.PMML.documentFieldName
               );
 
-              const pmmlDocumentLiteralExpression = pmmlDocument?.expression as DMN15__tLiteralExpression | undefined;
+              const pmmlDocumentLiteralExpression = pmmlDocument?.expression as
+                | Normalized<DMN15__tLiteralExpression>
+                | undefined;
               if (pmmlDocumentLiteralExpression?.text?.__$$text === _import["@_name"]) {
                 pmmlDocumentLiteralExpression.text = { __$$text: trimmedNewName };
               }

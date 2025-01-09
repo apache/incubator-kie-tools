@@ -158,7 +158,9 @@ public class StunnerEditor {
             final DiagramParsingException dpe = (DiagramParsingException) e;
             close();
             parsingExceptionProcessor.accept(dpe);
-            errorPage.setErrorContent(error.getMessage());
+            errorPage.setTitle(error.getErrorTitle());
+            errorPage.setContent(error.getErrorContent());
+            errorPage.setErrorContent(error.getErrorMessage());
             view.setWidget(errorPage);
         } else {
             String message = null;
@@ -168,7 +170,7 @@ public class StunnerEditor {
                                                       dnfe.getDefinitionId());
             } else {
                 message = error.getThrowable() != null ?
-                        error.getThrowable().getMessage() : error.getMessage();
+                        error.getThrowable().getMessage() : error.getErrorMessage();
             }
             showError(message);
             exceptionProcessor.accept(error.getThrowable());

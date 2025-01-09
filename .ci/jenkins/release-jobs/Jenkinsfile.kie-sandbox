@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'quay.io/kie-tools/kie-tools-ci-build:latest'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -28,10 +28,11 @@ pipeline {
 
     parameters {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Tag', name: 'TAG', defaultValue: '0.0.0')
+        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
         string(description: 'Kie Sandbox Extendend Services Url', name: 'KIE_SANDBOX_EXTENDED_SERVICES_URL')
         string(description: 'Kie Sandbox Cors Proxy Url', name: 'KIE_SANDBOX_CORS_PROXY_URL')
+        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
     environment {
@@ -44,28 +45,30 @@ pipeline {
         OPENSHIFT_PART_OF = 'kie-sandbox-app'
         OPENSHIFT_NAMESPACE = 'kie-sandbox'
 
-        KIE_SANDBOX__imageRegistry = 'quay.io'
-        KIE_SANDBOX__imageAccount = 'kie-tools'
-        KIE_SANDBOX__imageName = 'kie-sandbox-image'
-        KIE_SANDBOX__imageBuildTags = "latest ${params.TAG}"
-        ONLINE_EDITOR__buildInfo = "${params.TAG}"
-        ONLINE_EDITOR__extendedServicesDownloadUrlLinux = "https://github.com/apache/incubator-kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_linux_${params.TAG}.tar.gz"
-        ONLINE_EDITOR__extendedServicesDownloadUrlMacOs = "https://github.com/apache/incubator-kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_macos_${params.TAG}.dmg"
-        ONLINE_EDITOR__extendedServicesDownloadUrlWindows = "https://github.com/apache/incubator-kie-tools/releases/download/${params.TAG}/kie_sandbox_extended_services_windows_${params.TAG}.exe"
-        ONLINE_EDITOR__extendedServicesCompatibleVersion = "${params.TAG}"
-        ONLINE_EDITOR__devDeploymentBaseImageRegistry = 'quay.io'
-        ONLINE_EDITOR__devDeploymentBaseImageAccount = 'kie-tools'
-        ONLINE_EDITOR__devDeploymentBaseImageName = 'dev-deployment-base-image'
-        ONLINE_EDITOR__devDeploymentBaseImageTag = "${params.TAG}"
-        ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry = 'quay.io'
-        ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount = 'kie-tools'
-        ONLINE_EDITOR__devDeploymentDmnFormWebappImageName = 'dev-deployment-dmn-form-webapp-image'
-        ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = "${params.TAG}"
+        KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry = 'docker.io'
+        KIE_SANDBOX_WEBAPP_IMAGE__imageAccount = 'apache'
+        KIE_SANDBOX_WEBAPP_IMAGE__imageName = 'incubator-kie-sandbox-webapp'
+        KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTag = "${params.RELEASE_VERSION}"
+        ONLINE_EDITOR__buildInfo = "${params.RELEASE_VERSION}"
+        ONLINE_EDITOR__extendedServicesDownloadUrlLinux = "https://github.com/apache/incubator-kie-tools/releases/download/${params.RELEASE_VERSION}/kie_sandbox_extended_services_linux_${params.RELEASE_VERSION}.tar.gz"
+        ONLINE_EDITOR__extendedServicesDownloadUrlMacOs = "https://github.com/apache/incubator-kie-tools/releases/download/${params.RELEASE_VERSION}/kie_sandbox_extended_services_macos_${params.RELEASE_VERSION}.dmg"
+        ONLINE_EDITOR__extendedServicesDownloadUrlWindows = "https://github.com/apache/incubator-kie-tools/releases/download/${params.RELEASE_VERSION}/kie_sandbox_extended_services_windows_${params.RELEASE_VERSION}.exe"
+        ONLINE_EDITOR__extendedServicesCompatibleVersion = "${params.RELEASE_VERSION}"
+        ONLINE_EDITOR__devDeploymentBaseImageRegistry = 'docker.io'
+        ONLINE_EDITOR__devDeploymentBaseImageAccount = 'apache'
+        ONLINE_EDITOR__devDeploymentBaseImageName = 'incubator-kie-sandbox-dev-deployment-base'
+        ONLINE_EDITOR__devDeploymentBaseImageTag = "${params.RELEASE_VERSION}"
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageRegistry = 'docker.io'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount = 'apache'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageName = 'incubator-kie-sandbox-dev-deployment-dmn-form-webapp'
+        ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = "${params.RELEASE_VERSION}"
         ONLINE_EDITOR__gtmId = 'GTM-PQGMKNW'
+
+        RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
-        PNPM_FILTER_STRING = '-F @kie-tools/kie-sandbox-image...'
+        PNPM_FILTER_STRING = '-F @kie-tools/kie-sandbox-webapp-image...'
     }
 
     stages {
@@ -77,6 +80,7 @@ pipeline {
                     githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
                     dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
                     openShiftUtils = load '.ci/jenkins/shared-scripts/openShiftUtils.groovy'
+                    releaseUtils = load '.ci/jenkins/shared-scripts/releaseUtils.groovy'
                 }
             }
         }
@@ -92,6 +96,20 @@ pipeline {
         stage('Clean workspace before build') {
             steps {
                 cleanWs(deleteDirs: true, disableDeferredWipeout: true)
+            }
+        }
+
+        stage('Load upstream images') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+            }
+            steps {
+                script {
+                    upstreamReleaseArtifactsDir = "${WORKSPACE}/upstream-release-artifacts"
+                    releaseUtils.downloadReleaseArtifacts("${pipelineVars.asfReleaseStagingRepository}", "${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}")
+                    upstreamImagesArtifacts = releaseUtils.getUpstreamImagesArtifactsList("${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}")
+                    dockerUtils.loadImages(upstreamImagesArtifacts as String[])
+                }
             }
         }
 
@@ -113,7 +131,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm()
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsReleaseConfigFileId}")
                     }
                 }
             }
@@ -139,17 +157,19 @@ pipeline {
             }
         }
 
-        stage('Push kie-sandbox-image to quay.io') {
+        stage('Push kie-sandbox-image to Docker Hub') {
             when {
-                expression { !params.DRY_RUN }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
             }
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.KIE_SANDBOX__imageRegistry}/${env.KIE_SANDBOX__imageAccount}",
-                        "${env.KIE_SANDBOX__imageName}",
-                        "${env.KIE_SANDBOX__imageBuildTags}",
-                        "${pipelineVars.quayPushCredentialsId}"
+                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}",
+                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}",
+                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageName}",
+                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageBuildTag}",
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
                 }
             }
@@ -157,7 +177,7 @@ pipeline {
 
         stage('Prepare environment variables for OpenShift deployment') {
             when {
-                expression { !params.DRY_RUN }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
             }
             steps {
                 sh """#!/bin/bash -el
@@ -169,19 +189,65 @@ pipeline {
 
         stage('Deploy kie-sandbox-image to OpenShift') {
             when {
-                expression { !params.DRY_RUN }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
             }
             steps {
                 script {
                     openShiftUtils.createOrUpdateApp(
                         "${env.OPENSHIFT_NAMESPACE}",
                         "${env.OPENSHIFT_APP_NAME}",
-                        "${params.TAG}",
-                        "${env.KIE_SANDBOX__imageRegistry}/${env.KIE_SANDBOX__imageAccount}/${env.KIE_SANDBOX__imageName}:${params.TAG}",
+                        "${params.RELEASE_VERSION}",
+                        "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageName}:${params.RELEASE_VERSION}",
                         "${env.OPENSHIFT_PART_OF}",
                         'js',
                         "${pipelineVars.openshiftCredentialsId}",
                         './deployment.env'
+                    )
+                }
+            }
+        }
+
+        stage('Setup release candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+            }
+            steps {
+                script {
+                    env.RELEASE_IMAGE_TAR_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-webapp-image.tar.gz"
+
+                    sh """#!/bin/bash -el
+                    mkdir ${env.RELEASE_ARTIFACTS_DIR}
+                    docker save "${env.KIE_SANDBOX_WEBAPP_IMAGE__imageRegistry}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageAccount}/${env.KIE_SANDBOX_WEBAPP_IMAGE__imageName}:${params.RELEASE_VERSION}" | gzip > "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_IMAGE_TAR_FILE}"
+                    """.trim()
+                }
+            }
+        }
+
+        stage('Sign artifact for Apache release') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+            }
+            steps {
+                dir("${env.RELEASE_ARTIFACTS_DIR}") {
+                    script {
+                        releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
+                        releaseUtils.signArtifact("${env.RELEASE_IMAGE_TAR_FILE}")
+                    }
+                }
+            }
+        }
+
+        stage('Publish Release Candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+            }
+            steps {
+                script {
+                    releaseUtils.publishArtifacts(
+                        "${env.RELEASE_ARTIFACTS_DIR}",
+                        "${pipelineVars.asfReleaseStagingRepository}",
+                        "${params.RELEASE_CANDIDATE_VERSION}",
+                        "${pipelineVars.asfReleaseSVNStagingCredentialsId}"
                     )
                 }
             }

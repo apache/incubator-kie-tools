@@ -25,6 +25,7 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContex
 import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { buildFeelQNameFromXmlQName } from "../../feel/buildFeelQName";
 import { DMN15__tNamedElement } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { invalidInlineFeelNameStyle } from "../../feel/InlineFeelNameInput";
@@ -34,6 +35,7 @@ import { flushSync } from "react-dom";
 import { NodeLabelPosition } from "./NodeSvgs";
 import { State } from "../../store/Store";
 import "./EditableNodeLabel.css";
+import { useSettings } from "../../settings/DmnEditorSettingsContext";
 
 export type OnEditableNodeLabelChange = (value: string | undefined) => void;
 
@@ -59,7 +61,7 @@ export function EditableNodeLabel({
   shouldCommitOnBlur?: boolean;
   grow?: boolean;
   truncate?: boolean;
-  namedElement?: DMN15__tNamedElement;
+  namedElement?: Normalized<DMN15__tNamedElement>;
   namedElementQName?: XmlQName;
   position: NodeLabelPosition;
   isEditing: boolean;
@@ -218,7 +220,11 @@ export function EditableNodeLabel({
   );
 
   return (
-    <div className={`kie-dmn-editor--editable-node-name-input ${position} ${grow ? "grow" : ""}`}>
+    <div
+      className={`kie-dmn-editor--editable-node-name-input ${position} ${grow ? "grow" : ""} ${
+        namedElementQName?.prefix ? "kie-dmn-editor--node-external" : ""
+      }`}
+    >
       {(isEditing && (
         <input
           spellCheck={"false"} // Let's not confuse FEEL name validation with the browser's grammar check.
@@ -259,16 +265,23 @@ export function EditableNodeLabel({
 
 export function useEditableNodeLabel(id: string | undefined) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const settings = useSettings();
 
   const [isEditingLabel, setEditingLabel] = useState(
     !!id && !!dmnEditorStoreApi.getState().focus.consumableId && dmnEditorStoreApi.getState().focus.consumableId === id
   );
 
-  const triggerEditing = useCallback<React.EventHandler<React.SyntheticEvent>>((e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setEditingLabel(true);
-  }, []);
+  const triggerEditing = useCallback<React.EventHandler<React.SyntheticEvent>>(
+    (e) => {
+      if (settings.isReadOnly) {
+        return;
+      }
+      e.stopPropagation();
+      e.preventDefault();
+      setEditingLabel(true);
+    },
+    [settings.isReadOnly]
+  );
 
   // Trigger editing on `Enter` pressed.
   const triggerEditingIfEnter = useCallback<React.KeyboardEventHandler>(

@@ -20,32 +20,33 @@
 import "@patternfly/react-core/dist/styles/base.css";
 import "reactflow/dist/style.css";
 
-import { AllDmnMarshallers, DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import * as RF from "reactflow";
+import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { original } from "immer";
 import { PMML } from "@kie-tools/pmml-editor-marshaller";
-import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
-import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { Tab, TabTitleIcon, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/components/Tabs";
+import { DmnLatestModel, AllDmnMarshallers } from "@kie-tools/dmn-marshaller";
+import { Normalized, normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { FileIcon } from "@patternfly/react-icons/dist/js/icons/file-icon";
 import { InfrastructureIcon } from "@patternfly/react-icons/dist/js/icons/infrastructure-icon";
 import { PficonTemplateIcon } from "@patternfly/react-icons/dist/js/icons/pficon-template-icon";
-import { original } from "immer";
-import * as React from "react";
-import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
-import * as ReactDOM from "react-dom";
-import { ErrorBoundary, ErrorBoundaryPropsWithFallback } from "react-error-boundary";
-import * as RF from "reactflow";
-import { DmnEditorContextProvider, useDmnEditor } from "./DmnEditorContext";
-import { DmnEditorErrorFallback } from "./DmnEditorErrorFallback";
+import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
+import { Tab, TabTitleIcon, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/components/Tabs";
 import { BoxedExpressionScreen } from "./boxedExpressions/BoxedExpressionScreen";
 import { DataTypes } from "./dataTypes/DataTypes";
 import { Diagram, DiagramRef } from "./diagram/Diagram";
 import { DmnVersionLabel } from "./diagram/DmnVersionLabel";
+import { BoxedExpressionPropertiesPanel } from "./propertiesPanel/BoxedExpressionPropertiesPanel";
+import { DmnEditorContextProvider, useDmnEditor } from "./DmnEditorContext";
+import { DmnEditorErrorFallback } from "./DmnEditorErrorFallback";
 import {
   DmnEditorExternalModelsContextProvider,
   useExternalModels,
 } from "./includedModels/DmnEditorDependenciesContext";
 import { IncludedModels } from "./includedModels/IncludedModels";
-import { BeePropertiesPanel } from "./propertiesPanel/BeePropertiesPanel";
 import { DiagramPropertiesPanel } from "./propertiesPanel/DiagramPropertiesPanel";
 import { ComputedStateCache } from "./store/ComputedStateCache";
 import { Computed, DmnEditorTab, createDmnEditorStore, defaultStaticState } from "./store/Store";
@@ -56,6 +57,8 @@ import { INITIAL_COMPUTED_CACHE } from "./store/computed/initial";
 
 import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
+import { Commands, CommandsContextProvider, useCommands } from "./commands/CommandsContextProvider";
+import { DmnEditorSettingsContextProvider } from "./settings/DmnEditorSettingsContext";
 
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
 
@@ -64,11 +67,12 @@ const SVG_PADDING = 20;
 export type DmnEditorRef = {
   reset: (mode: DmnLatestModel) => void;
   getDiagramSvg: () => Promise<string | undefined>;
+  getCommands: () => Commands;
 };
 
 export type EvaluationResults = Record<string, any>;
 export type ValidationMessages = Record<string, any>;
-export type OnDmnModelChange = (model: DmnLatestModel) => void;
+export type OnDmnModelChange = (model: Normalized<DmnLatestModel>) => void;
 
 export type OnRequestToJumpToPath = (normalizedPosixPathRelativeToTheOpenFile: string) => void;
 export type OnRequestToResolvePath = (normalizedPosixPathRelativeToTheOpenFile: string) => string;
@@ -86,7 +90,11 @@ export type ExternalModelsIndex = Record<
 export type ExternalModel = ({ type: "dmn" } & ExternalDmn) | ({ type: "pmml" } & ExternalPmml);
 
 export type ExternalDmnsIndex = Map<string /** normalizedPosixPathRelativeToTheOpenFile */, ExternalDmn>;
-export type ExternalDmn = { model: DmnLatestModel; normalizedPosixPathRelativeToTheOpenFile: string; svg: string };
+export type ExternalDmn = {
+  model: Normalized<DmnLatestModel>;
+  normalizedPosixPathRelativeToTheOpenFile: string;
+  svg: string;
+};
 
 export type ExternalPmmlsIndex = Map<string /** normalizedPosixPathRelativeToTheOpenFile */, ExternalPmml>;
 export type ExternalPmml = { model: PMML; normalizedPosixPathRelativeToTheOpenFile: string };
@@ -142,6 +150,12 @@ export type DmnEditorProps = {
    */
   issueTrackerHref?: string;
   /**
+   * A flag to enable read-only mode on the DMN Editor.
+   * When enabled navigation is still possible (e.g. entering the Boxed Expression Editor, Data Types and Included Models),
+   * but no changes can be made and the model itself is unaltered.
+   */
+  isReadOnly?: boolean;
+  /**
    * When users want to jump to another file, this method is called, allowing the controller of this component decide what to do.
    * Links are only rendered if this is provided. Otherwise, paths will be rendered as text.
    */
@@ -170,14 +184,13 @@ export const DmnEditorInternal = ({
   const navigationTab = useDmnEditorStore((s) => s.navigation.tab);
   const dmn = useDmnEditorStore((s) => s.dmn);
   const isDiagramEditingInProgress = useDmnEditorStore((s) => s.computed(s).isDiagramEditingInProgress());
-
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const { commandsRef } = useCommands();
 
   const { dmnModelBeforeEditingRef, dmnEditorRootElementRef } = useDmnEditor();
   const { externalModelsByNamespace } = useExternalModels();
 
   // Refs
-
   const diagramRef = useRef<DiagramRef>(null);
   const diagramContainerRef = useRef<HTMLDivElement>(null);
   const beeContainerRef = useRef<HTMLDivElement>(null);
@@ -188,7 +201,7 @@ export const DmnEditorInternal = ({
     () => ({
       reset: (model) => {
         const state = dmnEditorStoreApi.getState();
-        return state.dispatch(state).dmn.reset(model);
+        return state.dispatch(state).dmn.reset(normalize(model));
       },
       getDiagramSvg: async () => {
         const nodes = diagramRef.current?.getReactFlowInstance()?.getNodes();
@@ -232,8 +245,9 @@ export const DmnEditorInternal = ({
 
         return new XMLSerializer().serializeToString(svg);
       },
+      getCommands: () => commandsRef.current,
     }),
-    [dmnEditorStoreApi, externalModelsByNamespace]
+    [dmnEditorStoreApi, externalModelsByNamespace, commandsRef]
   );
 
   // Make sure the DMN Editor reacts to props changing.
@@ -243,8 +257,13 @@ export const DmnEditorInternal = ({
       if (model === original(state.dmn.model)) {
         return;
       }
-      state.dmn.model = model;
-      dmnModelBeforeEditingRef.current = model;
+
+      state.diagram.autoLayout.canAutoGenerateDrd =
+        model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] === undefined &&
+        model.definitions.drgElement !== undefined;
+      state.dmn.model = normalize(model);
+
+      dmnModelBeforeEditingRef.current = state.dmn.model;
     });
   }, [dmnEditorStoreApi, model]);
 
@@ -328,7 +347,7 @@ export const DmnEditorInternal = ({
   }, [dmn.model.definitions.import?.length, dmn.model.definitions.itemDefinition?.length]);
 
   const diagramPropertiesPanel = useMemo(() => <DiagramPropertiesPanel />, []);
-  const beePropertiesPanel = useMemo(() => <BeePropertiesPanel />, []);
+  const beePropertiesPanel = useMemo(() => <BoxedExpressionPropertiesPanel />, []);
 
   return (
     <div ref={dmnEditorRootElementRef} className={"kie-dmn-editor--root"}>
@@ -347,9 +366,9 @@ export const DmnEditorInternal = ({
                   <DrawerContent panelContent={diagramPropertiesPanel}>
                     <DrawerContentBody>
                       <div
-                        className={"kie-dmn-editor--diagram-container"}
+                        className={"kie-tools--dmn-editor--diagram-container"}
                         ref={diagramContainerRef}
-                        data-testid={"kie-dmn-editor--diagram-container"}
+                        data-testid={"kie-tools--dmn-editor--diagram-container"}
                       >
                         {originalVersion && <DmnVersionLabel version={originalVersion} />}
                         <Diagram ref={diagramRef} container={diagramContainerRef} />
@@ -374,11 +393,15 @@ export const DmnEditorInternal = ({
         </Tab>
 
         <Tab eventKey={DmnEditorTab.DATA_TYPES} title={tabTitle.dataTypes}>
-          {navigationTab === DmnEditorTab.DATA_TYPES && <DataTypes />}
+          <div data-testid={"kie-tools--dmn-editor--data-types-container"}>
+            {navigationTab === DmnEditorTab.DATA_TYPES && <DataTypes />}
+          </div>
         </Tab>
 
         <Tab eventKey={DmnEditorTab.INCLUDED_MODELS} title={tabTitle.includedModels}>
-          {navigationTab === DmnEditorTab.INCLUDED_MODELS && <IncludedModels />}
+          <div data-testid={"kie-tools--dmn-editor--included-models-container"}>
+            {navigationTab === DmnEditorTab.INCLUDED_MODELS && <IncludedModels />}
+          </div>
         </Tab>
       </Tabs>
     </div>
@@ -404,11 +427,15 @@ export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref
   return (
     <DmnEditorContextProvider {...props}>
       <ErrorBoundary FallbackComponent={DmnEditorErrorFallback} onReset={resetState}>
-        <DmnEditorExternalModelsContextProvider {...props}>
-          <DmnEditorStoreApiContext.Provider value={storeRef.current}>
-            <DmnEditorInternal forwardRef={ref} {...props} />
-          </DmnEditorStoreApiContext.Provider>
-        </DmnEditorExternalModelsContextProvider>
+        <DmnEditorSettingsContextProvider {...props}>
+          <DmnEditorExternalModelsContextProvider {...props}>
+            <DmnEditorStoreApiContext.Provider value={storeRef.current}>
+              <CommandsContextProvider>
+                <DmnEditorInternal forwardRef={ref} {...props} />
+              </CommandsContextProvider>
+            </DmnEditorStoreApiContext.Provider>
+          </DmnEditorExternalModelsContextProvider>
+        </DmnEditorSettingsContextProvider>
       </ErrorBoundary>
     </DmnEditorContextProvider>
   );

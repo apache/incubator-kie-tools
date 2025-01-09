@@ -1,0 +1,3 @@
+**/dist-tests-e2e/junit-report*.xml
+**/dist-tests-e2e/TESTS-*.xml
+**/target/failsafe-reports/TEST-*.xml

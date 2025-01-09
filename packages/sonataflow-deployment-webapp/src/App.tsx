@@ -24,6 +24,7 @@ import { OpenApiContextProvider } from "./context/OpenApiContextProvider";
 import { RoutesSwitch } from "./navigation/RoutesSwitch";
 import { DeploymentWorkflowListContextProvider } from "./runtimeTools/contexts/DeploymentWorkflowListContextProvider";
 import { DeploymentWorkflowDetailsContextProvider } from "./runtimeTools/contexts/DeploymentWorkflowDetailsContextProvider";
+import { DeploymentWorkflowDefinitionListContextProvider } from "./runtimeTools/contexts/DeploymentWorkflowDefinitionListContextProvider";
 
 export const App = () => (
   <HashRouter>
@@ -32,13 +33,17 @@ export const App = () => (
       [OpenApiContextProvider, {}],
       [DeploymentWorkflowListContextProvider, {}],
       [DeploymentWorkflowDetailsContextProvider, {}],
+      [DeploymentWorkflowDefinitionListContextProvider, {}],
       [RoutesSwitch, {}]
     )}
   </HashRouter>
 );
 
 function nest(...components: Array<[(...args: any[]) => any, object]>) {
-  return components.reduceRight((acc, [Component, props]) => {
-    return <Component {...props}>{acc}</Component>;
-  }, <></>);
+  return components.reduceRight(
+    (acc, [Component, props]) => {
+      return <Component {...props}>{acc}</Component>;
+    },
+    <></>
+  );
 }

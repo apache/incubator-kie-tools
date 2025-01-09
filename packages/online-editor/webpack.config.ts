@@ -21,12 +21,9 @@ import * as path from "path";
 import CopyPlugin from "copy-webpack-plugin";
 import { merge } from "webpack-merge";
 import * as stunnerEditors from "@kie-tools/stunner-editors";
-import { EnvironmentPlugin } from "webpack";
-
 import HtmlWebpackPlugin from "html-webpack-plugin";
-import { ProvidePlugin } from "webpack";
+import { ProvidePlugin, EnvironmentPlugin } from "webpack";
 import { defaultEnvJson } from "./build/defaultEnvJson";
-
 import common from "@kie-tools-core/webpack-base/webpack.common.config";
 import patternflyBase from "@kie-tools-core/patternfly-base";
 import childProcess from "child_process";
@@ -40,7 +37,7 @@ import HtmlReplaceWebpackPlugin from "html-replace-webpack-plugin";
 import { env } from "./env";
 const buildEnv: any = env; // build-env is not typed
 
-export default async (env: any, argv: any) => {
+export default async (webpackEnv: any, webpackArgv: any) => {
   const buildInfo = getBuildInfo();
   const [
     extendedServices_linuxDownloadUrl,
@@ -55,11 +52,11 @@ export default async (env: any, argv: any) => {
     lastCommitHash = childProcess.execSync("git rev-parse --short HEAD").toString().trim();
     JSON.stringify(lastCommitHash);
   } catch (e) {
-    throw new Error(e);
+    lastCommitHash = "not-built-inside-git-root";
   }
 
   return [
-    merge(common(env), {
+    merge(common(webpackEnv), {
       entry: {
         "workspace/worker/sharedWorker": "./src/workspace/worker/sharedWorker.ts",
       },
@@ -80,7 +77,7 @@ export default async (env: any, argv: any) => {
       ],
     }),
     {
-      ...merge(common(env), {
+      ...merge(common(webpackEnv), {
         entry: {
           index: "./src/index.tsx",
           "bpmn-envelope": "./src/envelope/BpmnEditorEnvelopeApp.ts",
@@ -107,8 +104,8 @@ export default async (env: any, argv: any) => {
             WEBPACK_REPLACE__extendedServicesMacOsDownloadUrl: extendedServices_macOsDownloadUrl,
             WEBPACK_REPLACE__extendedServicesWindowsDownloadUrl: extendedServices_windowsDownloadUrl,
             WEBPACK_REPLACE__extendedServicesCompatibleVersion: extendedServices_compatibleVersion,
-            WEBPACK_REPLACE__quarkusPlatformVersion: buildEnv.quarkusPlatform.version,
-            WEBPACK_REPLACE__kogitoRuntimeVersion: buildEnv.kogitoRuntime.version,
+            WEBPACK_REPLACE__quarkusPlatformVersion: buildEnv.versions.quarkus,
+            WEBPACK_REPLACE__kogitoRuntimeVersion: buildEnv.versions.kogito,
           }),
           new CopyPlugin({
             patterns: [

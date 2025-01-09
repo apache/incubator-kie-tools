@@ -68,6 +68,4 @@
     <module>kie-soup-dataset-core</module>
     <module>kie-soup-dataset-external</module>
   </modules>
-
-
 </project>

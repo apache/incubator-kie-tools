@@ -17,7 +17,15 @@
  * under the License.
  */
 
-import { DmnBuiltInDataType, BoxedFunction, BoxedFunctionKind, BoxedInvocation, BoxedRelation } from "../../../src/api";
+import {
+  BoxedFunction,
+  BoxedFunctionKind,
+  BoxedInvocation,
+  BoxedRelation,
+  DmnBuiltInDataType,
+  generateUuid,
+  Normalized,
+} from "../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   beeGwtService,
@@ -47,7 +55,7 @@ export const findEmployeesDataTypes = [
   { name: "tKnowledges", isCustom: true },
 ];
 
-export const employeesExpression: BoxedRelation = {
+export const employeesExpression: Normalized<BoxedRelation> = {
   __$$element: "relation",
   "@_id": "_03E4FDF0-AF4A-4C82-A589-2F9BED02921B",
   "@_label": "Employees",
@@ -170,7 +178,7 @@ export const employeesWidthsById = {
   "_03E4FDF0-AF4A-4C82-A589-2F9BED02921B": [BEE_TABLE_ROW_INDEX_COLUMN_WIDTH, 100, 156, 150, 252, 100],
 };
 
-export const findEmployeesByKnowledgeExpression: BoxedFunction = {
+export const findEmployeesByKnowledgeExpression: Normalized<BoxedFunction> = {
   __$$element: "functionDefinition",
   "@_id": "_243056C9-28EA-4EF2-8510-6F3BC6A5E5DC",
   "@_label": "Find employee by knowledge",
@@ -187,6 +195,7 @@ export const findEmployeesByKnowledgeExpression: BoxedFunction = {
     "@_label": "Feel Expression",
     contextEntry: [
       {
+        "@_id": generateUuid(),
         variable: {
           "@_id": "_A762CB8E-56C3-45AE-B59F-731E4A0CA73F",
           "@_name": "Employees by Dept",
@@ -201,6 +210,7 @@ export const findEmployeesByKnowledgeExpression: BoxedFunction = {
         },
       },
       {
+        "@_id": generateUuid(),
         variable: {
           "@_id": "_C772ADED-2499-4AF1-9C99-63AA17901EBB",
           "@_name": "Employees with Knowledge",
@@ -218,6 +228,7 @@ export const findEmployeesByKnowledgeExpression: BoxedFunction = {
         },
       },
       {
+        "@_id": generateUuid(),
         expression: {
           __$$element: "literalExpression",
           "@_id": "_049ECA86-1971-48B7-86FF-7E89B399074A",
@@ -239,7 +250,7 @@ export const findEmployeesByKnowledgeWidthsById = {
   "_049ECA86-1971-48B7-86FF-7E89B399074A": [400],
 };
 
-export const findEmployeesExpression: BoxedInvocation = {
+export const findEmployeesExpression: Normalized<BoxedInvocation> = {
   __$$element: "invocation",
   "@_id": "_8001CBC8-8DE4-4DBF-8B02-7FBFC582B136",
   "@_label": "Find employees",

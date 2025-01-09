@@ -150,8 +150,8 @@ export const de: OnlineI18n = {
       body: "Dieser Vorgang kann einige Minuten in Anspruch nehmen, und Sie müssen eine neue Bereitstellung erstellen, wenn Sie Ihr Modell aktualisieren, da Dev-Deployments unveränderbar sind.",
     },
     deleteConfirmModal: {
-      title: "Dev deployment(s) löschen",
-      body: "Sind Sie sicher, dass Sie Ihre Dev deployment(s) löschen möchten?",
+      title: "Dev Deployment(s) löschen",
+      body: "Sind Sie sicher, dass Sie Ihre Dev Deployment(s) löschen möchten?",
     },
     alerts: {
       deployStartedError:
@@ -159,7 +159,7 @@ export const de: OnlineI18n = {
       deployStartedSuccess: "Ihre Dev Deployment wurde erfolgreich gestartet und wird in Kürze verfügbar sein.",
       deleteError:
         "Dev Deployment(s) konnte(n) nicht gelöscht werden. Bitte versuchen Sie es erneut über die OpenShift-Konsole oder CLI.",
-      deleteSuccess: "Dev deployment(s) erfolgreich gelöscht.",
+      deleteSuccess: "Dev Deployment(s) erfolgreich gelöscht.",
     },
     introduction: {
       explanation: `Erstellen Sie Dev Deployments in der Cloud und teilen Sie sie mit anderen.`,
@@ -468,6 +468,12 @@ export const de: OnlineI18n = {
         stoppedAlert: {
           title: `${de_common.names.extendedServices} wurde angehalten!`,
           message: `Es sieht so aus, als ob ${de_common.names.extendedServices} plötzlich beendet wurde, bitte folgen Sie diesen Anweisungen, um es wieder zu starten.`,
+        },
+        disabled: {
+          title: `${de_common.names.extendedServices}`,
+          alert: `Sie sind nicht mit ${de_common.names.extendedServices} verbunden.`,
+          message: `Beachten Sie, dass einige Funktionen wie der ${de_common.names.dmnRunner}, ohne ${de_common.names.extendedServices} nicht verfügbar sind.`,
+          helper: `Stellen Sie sicher, dass ${de_common.names.extendedServices} ausgeführt wird, und überprüfen Sie dann die Host- und Porteinstellungen.`,
         },
         macos: {
           install: {

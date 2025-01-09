@@ -21,24 +21,28 @@ import * as express from "express";
 import * as cors from "cors";
 
 import { ExpressCorsProxy } from "./ExpressCorsProxy";
-import { dnsFix } from "./dnsFix";
 
 export type ServerArgs = {
   port: number;
   origin: string;
   verbose: boolean;
+  hostsToUseHttp: string[];
 };
 
 export const startServer = (args: ServerArgs): void => {
-  console.log("Starting Kie-Tools Cors-Proxy...");
+  console.log("Starting CORS proxy...");
+  console.log("====================================================");
+  console.log(`Origin:                     ${args.origin}`);
+  console.log(`Port:                       ${args.port}`);
+  console.log(`Verbose:                    ${args.verbose}`);
+  console.log(`Hosts to proxy with HTTP:   ${args.hostsToUseHttp}`);
+  console.log("====================================================");
 
   const app: express.Express = express();
 
   app.disable("x-powered-by");
 
   const proxy = new ExpressCorsProxy(args);
-
-  dnsFix();
 
   const corsHandler = cors();
 
@@ -67,11 +71,11 @@ export const startServer = (args: ServerArgs): void => {
     <html>
       <title>@kie-tools/cors-proxy</title>
       <h1>@kie-tools/cors-proxy</h1>
-      <p>This is a Cors-Proxy software intended to be used to proxy requests .</p>
-      <p>The source code is hosted on Github at <a href="https://github.com/apache/incubator-kie-tools/packages/cors-proxy">@kie-tools/cors-proxy</a></p>
-      <p>It can also be installed from npm with <code>npm install <a href="https://npmjs.org/package/@kie-tools/cors-proxy">@kie-tools/cors-proxy</a></code></p>
+      <p>This is a CORS proxy software intended to be used to proxy requests.</p>
+      <p>The source code is hosted on GitHub at <a href="https://github.com/apache/incubator-kie-tools/tree/main/packages/cors-proxy">@kie-tools/cors-proxy</a></p>
+      <p>It can also be installed from NPM with <code>npm install <a href="https://npmjs.org/package/@kie-tools/cors-proxy">@kie-tools/cors-proxy</a></code></p>
     </html>`);
   });
 
-  app.listen(args.port, () => console.log(`Kie-Tools Cors-Proxy listening in port ${args.port}`));
+  app.listen(args.port, () => console.log(`CORS proxy listening at port ${args.port}`));
 };

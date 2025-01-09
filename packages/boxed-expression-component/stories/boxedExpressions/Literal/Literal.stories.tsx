@@ -47,6 +47,21 @@ export const Base: Story = {
   },
 };
 
+export const Readonly: Story = {
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
+  args: {
+    ...EmptyExpression.args,
+    expression: {
+      __$$element: "literalExpression",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
+    },
+    isResetSupportedOnRootExpression: true,
+    isReadOnly: true,
+  },
+};
+
 export const CanDrive: Story = {
   render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
@@ -78,6 +93,7 @@ export const Nested: Story = {
       "@_label": "Expression Name",
       contextEntry: [
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "ContextEntry-1",

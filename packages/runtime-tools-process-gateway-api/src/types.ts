@@ -37,15 +37,15 @@ export interface Job {
   id: string;
   status: JobStatus;
   expirationTime: Date;
-  priority: number;
-  callbackEndpoint: string;
+  priority?: number;
+  callbackEndpoint?: string;
   repeatInterval: number;
   repeatLimit: number;
-  scheduledId: string;
-  retries: number;
-  lastUpdate: Date;
+  scheduledId?: string;
+  retries?: number;
+  lastUpdate?: Date;
   executionCounter?: number;
-  endpoint: string;
+  endpoint?: string;
   nodeInstanceId?: string;
   processId?: string;
   processInstanceId?: string;
@@ -58,7 +58,7 @@ export interface BulkCancel {
   failedJobs: Job[];
 }
 
-export interface JobCancel {
+export interface JobOperationResult {
   modalTitle: string;
   modalContent: string;
 }

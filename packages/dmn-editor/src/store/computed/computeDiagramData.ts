@@ -21,6 +21,8 @@ import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import * as RF from "reactflow";
 import { KIE_DMN_UNKNOWN_NAMESPACE } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { buildXmlHref, parseXmlHref, xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml";
 import { snapShapeDimensions, snapShapePosition } from "../../diagram/SnapGrid";
 import { EdgeType, NodeType } from "../../diagram/connections/graphStructure";
 import { EDGE_TYPES } from "../../diagram/edges/EdgeTypes";
@@ -32,10 +34,10 @@ import { ___NASTY_HACK_FOR_SAFARI_to_force_redrawing_svgs_and_avoid_repaint_glit
 import { NODE_TYPES } from "../../diagram/nodes/NodeTypes";
 import { DmnDiagramNodeData, NodeDmnObjects } from "../../diagram/nodes/Nodes";
 import { Unpacked } from "../../tsExt/tsExt";
-import { buildXmlHref, parseXmlHref } from "../../xml/xmlHrefs";
 import { TypeOrReturnType } from "../ComputedStateCache";
 import { Computed, State } from "../Store";
 import { getDecisionServicePropertiesRelativeToThisDmn } from "../../mutations/addExistingDecisionServiceToDrd";
+import { KIE_UNKNOWN_NAMESPACE } from "../../kie/kie";
 
 export const NODE_LAYERS = {
   GROUP_NODE: 0,
@@ -50,6 +52,7 @@ type AckEdge = (args: {
   type: EdgeType;
   source: string;
   target: string;
+  sourceNamespace: string | undefined;
 }) => RF.Edge<DmnDiagramEdgeData>;
 
 type AckNode = (
@@ -61,7 +64,7 @@ type AckNode = (
 export function computeDiagramData(
   diagram: State["diagram"],
   definitions: State["dmn"]["model"]["definitions"],
-  externalModelTypesByNamespace: TypeOrReturnType<Computed["getExternalModelTypesByNamespace"]>,
+  externalModelTypesByNamespace: TypeOrReturnType<Computed["getDirectlyIncludedExternalModelsByNamespace"]>,
   indexedDrd: TypeOrReturnType<Computed["indexedDrd"]>,
   isAlternativeInputDataShape: boolean
 ) {
@@ -77,6 +80,8 @@ export function computeDiagramData(
   const nodesById = new Map<string, RF.Node<DmnDiagramNodeData>>();
   const edgesById = new Map<string, RF.Edge<DmnDiagramEdgeData>>();
   const parentIdsById = new Map<string, DmnDiagramNodeData>();
+  const externalNodesByNamespace = new Map<string, Array<RF.Node<DmnDiagramNodeData>>>();
+  const edgesFromExternalNodesByNamespace = new Map<string, Array<RF.Edge<DmnDiagramEdgeData>>>();
 
   const { selectedNodes, draggingNodes, resizingNodes, selectedEdges } = {
     selectedNodes: new Set(diagram._selectedNodes),
@@ -91,10 +96,10 @@ export function computeDiagramData(
   const drgEdges: DrgEdge[] = [];
   const drgAdjacencyList: DrgAdjacencyList = new Map();
 
-  const ackEdge: AckEdge = ({ id, type, dmnObject, source, target }) => {
+  const ackEdge: AckEdge = ({ id, type, dmnObject, source, target, sourceNamespace }) => {
     const data = {
       dmnObject,
-      dmnEdge: id ? indexedDrd.dmnEdgesByDmnElementRef.get(id) : undefined,
+      dmnEdge: id ? indexedDrd.dmnEdgesByDmnElementRef.get(xmlHrefToQName(id, definitions)) : undefined,
       dmnShapeSource: indexedDrd.dmnShapesByHref.get(source),
       dmnShapeTarget: indexedDrd.dmnShapesByHref.get(target),
     };
@@ -107,6 +112,13 @@ export function computeDiagramData(
       target,
       selected: selectedEdges.has(id),
     };
+
+    if (sourceNamespace && sourceNamespace !== KIE_UNKNOWN_NAMESPACE) {
+      edgesFromExternalNodesByNamespace.set(sourceNamespace, [
+        ...(edgesFromExternalNodesByNamespace.get(sourceNamespace) ?? []),
+        edge,
+      ]);
+    }
 
     edgesById.set(edge.id, edge);
     if (edge.selected) {
@@ -148,6 +160,7 @@ export function computeDiagramData(
       type: EDGE_TYPES.association,
       source: dmnObject.sourceRef?.["@_href"],
       target: dmnObject.targetRef?.["@_href"],
+      sourceNamespace: undefined, // association are always from the current namespace
     });
   });
 
@@ -205,22 +218,29 @@ export function computeDiagramData(
     };
 
     if (dmnObject?.__$$element === "decisionService") {
-      const { containedDecisionHrefsRelativeToThisDmn } = getDecisionServicePropertiesRelativeToThisDmn({
-        thisDmnsNamespace: definitions["@_namespace"],
-        decisionServiceNamespace: dmnObjectNamespace ?? definitions["@_namespace"],
-        decisionService: dmnObject,
-      });
+      if (!shape["@_isCollapsed"]) {
+        const { containedDecisionHrefsRelativeToThisDmn } = getDecisionServicePropertiesRelativeToThisDmn({
+          thisDmnsNamespace: definitions["@_namespace"],
+          decisionServiceNamespace: dmnObjectNamespace ?? definitions["@_namespace"],
+          decisionService: dmnObject,
+        });
 
-      for (let i = 0; i < containedDecisionHrefsRelativeToThisDmn.length; i++) {
-        parentIdsById.set(containedDecisionHrefsRelativeToThisDmn[i], data);
-      }
-
-      if (shape["@_isCollapsed"]) {
+        for (let i = 0; i < containedDecisionHrefsRelativeToThisDmn.length; i++) {
+          parentIdsById.set(containedDecisionHrefsRelativeToThisDmn[i], data);
+        }
+      } else {
         newNode.style = {
           ...newNode.style,
           ...DECISION_SERVICE_COLLAPSED_DIMENSIONS,
         };
       }
+    }
+
+    if (dmnObjectNamespace && dmnObjectNamespace !== KIE_UNKNOWN_NAMESPACE) {
+      externalNodesByNamespace.set(dmnObjectNamespace, [
+        ...(externalNodesByNamespace.get(dmnObjectNamespace) ?? []),
+        newNode,
+      ]);
     }
 
     nodesById.set(newNode.id, newNode);
@@ -260,11 +280,26 @@ export function computeDiagramData(
         namespace,
         (externalDmn.model.definitions.drgElement ?? []).reduce(
           (acc, e, index) => acc.set(e["@_id"]!, { element: e, index }),
-          new Map<string, { index: number; element: Unpacked<DMN15__tDefinitions["drgElement"]> }>()
+          new Map<
+            string,
+            {
+              index: number;
+              element: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]>;
+            }
+          >()
         )
       );
     },
-    new Map<string, Map<string, { index: number; element: Unpacked<DMN15__tDefinitions["drgElement"]> }>>()
+    new Map<
+      string,
+      Map<
+        string,
+        {
+          index: number;
+          element: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]>;
+        }
+      >
+    >()
   );
 
   const externalNodes = [...indexedDrd.dmnShapesByHref.entries()].flatMap(([href, shape]) => {
@@ -340,7 +375,10 @@ export function computeDiagramData(
     const parentNodeData = parentIdsById.get(sortedNodes[i].id);
     if (parentNodeData) {
       sortedNodes[i].data.parentRfNode = nodesById.get(
-        buildXmlHref({ namespace: parentNodeData.dmnObjectNamespace, id: parentNodeData.dmnObjectQName.localPart })
+        buildXmlHref({
+          namespace: parentNodeData.dmnObjectNamespace,
+          id: parentNodeData.dmnObjectQName.localPart,
+        })
       );
       sortedNodes[i].extent = undefined; // Allows the node to be dragged freely outside of parent's bounds.
       sortedNodes[i].zIndex = NODE_LAYERS.NESTED_NODES;
@@ -359,6 +397,8 @@ export function computeDiagramData(
     nodes: sortedNodes,
     edges: sortedEdges,
     edgesById,
+    externalNodesByNamespace,
+    edgesFromExternalNodesByNamespace,
     nodesById,
     selectedNodeTypes,
     selectedNodesById,
@@ -370,7 +410,7 @@ export function computeDiagramData(
 function ackRequirementEdges(
   thisDmnsNamespace: string,
   drgElementsNamespace: string,
-  drgElements: DMN15__tDefinitions["drgElement"],
+  drgElements: Normalized<DMN15__tDefinitions>["drgElement"],
   ackEdge: AckEdge
 ) {
   const namespace = drgElementsNamespace === thisDmnsNamespace ? "" : drgElementsNamespace;
@@ -381,7 +421,11 @@ function ackRequirementEdges(
       (dmnObject.informationRequirement ?? []).forEach((ir, index) => {
         const irHref = parseXmlHref((ir.requiredDecision ?? ir.requiredInput)!["@_href"]);
         ackEdge({
-          id: ir["@_id"]!,
+          // HREF format, used as RF.Edge ID
+          id:
+            drgElementsNamespace === thisDmnsNamespace
+              ? ir["@_id"]
+              : buildXmlHref({ namespace: drgElementsNamespace, id: ir["@_id"] }),
           dmnObject: {
             namespace: drgElementsNamespace,
             type: dmnObject.__$$element,
@@ -392,6 +436,7 @@ function ackRequirementEdges(
           type: EDGE_TYPES.informationRequirement,
           source: buildXmlHref({ namespace: irHref.namespace ?? namespace, id: irHref.id }),
           target: buildXmlHref({ namespace, id: dmnObject["@_id"]! }),
+          sourceNamespace: irHref.namespace ?? namespace,
         });
       });
     }
@@ -400,7 +445,11 @@ function ackRequirementEdges(
       (dmnObject.knowledgeRequirement ?? []).forEach((kr, index) => {
         const krHref = parseXmlHref(kr.requiredKnowledge["@_href"]);
         ackEdge({
-          id: kr["@_id"]!,
+          // HREF format, used as RF.Edge ID
+          id:
+            drgElementsNamespace === thisDmnsNamespace
+              ? kr["@_id"]
+              : buildXmlHref({ namespace: drgElementsNamespace, id: kr["@_id"] }),
           dmnObject: {
             namespace: drgElementsNamespace,
             type: dmnObject.__$$element,
@@ -411,6 +460,7 @@ function ackRequirementEdges(
           type: EDGE_TYPES.knowledgeRequirement,
           source: buildXmlHref({ namespace: krHref.namespace ?? namespace, id: krHref.id }),
           target: buildXmlHref({ namespace, id: dmnObject["@_id"]! }),
+          sourceNamespace: krHref.namespace ?? namespace,
         });
       });
     }
@@ -434,6 +484,7 @@ function ackRequirementEdges(
           type: EDGE_TYPES.authorityRequirement,
           source: buildXmlHref({ namespace: arHref.namespace ?? namespace, id: arHref.id }),
           target: buildXmlHref({ namespace, id: dmnObject["@_id"]! }),
+          sourceNamespace: arHref.namespace ?? namespace,
         });
       });
     }

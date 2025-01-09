@@ -31,9 +31,13 @@ USER root
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=$HOME_PATH/app
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=8080
 
-RUN mkdir -p -m 777 $HOME_PATH/app && mkdir -p -m 777 /tmp/app && mkdir -p -m 777 /.m2
+RUN microdnf --disableplugin=subscription-manager install -y tar gzip \
+    && microdnf --disableplugin=subscription-manager clean all \
+    && mkdir -p -m 777 $HOME_PATH/app \
+    && mkdir -p -m 777 /tmp/app \
+    && mkdir -p -m 777 /.m2
 
-COPY dist-dev/dev-deployment-upload-service /usr/local/bin
+COPY dist-dev/dev-deployment-upload-service /usr/local/bin/
 COPY .mvn $HOME_PATH/app/.mvn
 COPY mvnw $HOME_PATH/app
 

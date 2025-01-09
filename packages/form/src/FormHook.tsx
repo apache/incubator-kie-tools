@@ -99,12 +99,12 @@ export function useForm<Input extends Record<string, any>, Schema extends Record
         (infos: any, detail: any) => {
           if (detail.keyword === "type") {
             // If it's a type error, it's handled by replacing the current value with a undefined value.
-            const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
+            const formFieldPath = dataPathToFormFieldPath(detail.instancePath);
             infos.changes = [...infos.changes, [formFieldPath, undefined]];
             return infos;
           } else if (detail.keyword === "enum") {
             // A enum error is caused by a type error.
-            const formFieldPath = dataPathToFormFieldPath(detail.dataPath);
+            const formFieldPath = dataPathToFormFieldPath(detail.instancePath);
             infos.changes = [...infos.changes, [formFieldPath, undefined]];
             return infos;
           }

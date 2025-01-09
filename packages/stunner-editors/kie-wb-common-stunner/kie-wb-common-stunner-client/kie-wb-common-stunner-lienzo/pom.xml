@@ -39,7 +39,6 @@
   </properties>
 
   <dependencies>
-
     <!-- Stunner. -->
 
     <dependency>
@@ -191,7 +190,5 @@
       <artifactId>kie-wb-common-stunner-backend-api</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
-
 </project>

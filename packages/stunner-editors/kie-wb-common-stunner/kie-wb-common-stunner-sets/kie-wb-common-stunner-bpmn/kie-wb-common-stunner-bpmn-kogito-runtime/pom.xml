@@ -44,7 +44,6 @@
     <sonar.skip>true</sonar.skip>
   </properties>
 
-
   <dependencies>
     <!--Logs-->
     <dependency>
@@ -499,7 +498,6 @@
       <artifactId>assertj-core</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <build>
@@ -507,7 +505,6 @@
     <outputDirectory>src/main/webapp/WEB-INF/classes</outputDirectory>
 
     <plugins>
-
       <!-- Override the enforcer rules here to exclude some classes from BPMN client-side marshallers (Eclipse EMF)-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -656,7 +653,6 @@
             <!-- Appformer -->
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:appformer-client-api</compileSourcesArtifact>
             <compileSourcesArtifact>org.kie.kogito.stunner.editors:appformer-kogito-bridge</compileSourcesArtifact>
-
           </compileSourcesArtifacts>
         </configuration>
         <executions>
@@ -723,13 +719,10 @@
           </systemPropertyVariables>
         </configuration>
       </plugin>
-
     </plugins>
-
   </build>
 
   <profiles>
-
     <!-- As Dev Profile but also including Source Maps in the assembled webapp. -->
     <profile>
       <id>sources</id>

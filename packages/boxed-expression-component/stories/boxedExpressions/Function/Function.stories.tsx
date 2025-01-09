@@ -21,8 +21,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../../../src/BoxedExpressionEditor";
 import { BoxedExpressionEditorStory, BoxedExpressionEditorStoryArgs } from "../../boxedExpressionStoriesWrapper";
 import { Base as EmptyExpression } from "../../misc/Empty/EmptyExpression.stories";
-import { DmnBuiltInDataType, BoxedFunctionKind, generateUuid } from "../../../src/api";
-import { BEE_TABLE_ROW_INDEX_COLUMN_WIDTH } from "../../../src/resizing/WidthConstants";
+import { BoxedFunctionKind, DmnBuiltInDataType, generateUuid } from "../../../src/api";
 
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 const meta: Meta<BoxedExpressionEditorProps> = {
@@ -46,6 +45,22 @@ export const Base: Story = {
       "@_kind": BoxedFunctionKind.Feel,
     },
     isResetSupportedOnRootExpression: true,
+  },
+};
+
+export const Readonly: Story = {
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
+  args: {
+    ...EmptyExpression.args,
+    expression: {
+      __$$element: "functionDefinition",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
+      "@_kind": BoxedFunctionKind.Feel,
+    },
+    isResetSupportedOnRootExpression: true,
+    isReadOnly: true,
   },
 };
 
@@ -100,6 +115,7 @@ export const Nested: Story = {
       "@_label": "Expression Name",
       contextEntry: [
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "ContextEntry-1",

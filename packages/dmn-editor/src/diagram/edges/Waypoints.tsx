@@ -68,7 +68,7 @@ export function Waypoint({
 }) {
   const circleRef = React.useRef<SVGCircleElement>(null);
   const diagram = useDmnEditorStore((s) => s.diagram);
-  const dispatch = useDmnEditorStore((s) => s.dispatch);
+  const drdIndex = useDmnEditorStore((s) => s.computed(s).getDrdIndex());
   const { setState } = useDmnEditorStoreApi();
 
   useEffect(() => {
@@ -85,7 +85,7 @@ export function Waypoint({
         setState((state) => {
           repositionEdgeWaypoint({
             definitions: state.dmn.model.definitions,
-            drdIndex: diagram.drdIndex,
+            drdIndex: drdIndex,
             edgeIndex,
             waypointIndex: index,
             waypoint: snapPoint(diagram.snapGrid, { "@_x": e.x, "@_y": e.y }),
@@ -101,7 +101,7 @@ export function Waypoint({
     return () => {
       selection.on(".drag", null);
     };
-  }, [diagram.drdIndex, diagram.snapGrid, edgeId, edgeIndex, index, onDragStop, setState]);
+  }, [drdIndex, diagram.snapGrid, edgeId, edgeIndex, index, onDragStop, setState]);
 
   return (
     <circle
@@ -118,7 +118,7 @@ export function Waypoint({
         setState((state) => {
           deleteEdgeWaypoint({
             definitions: state.dmn.model.definitions,
-            drdIndex: diagram.drdIndex,
+            drdIndex: drdIndex,
             edgeIndex,
             waypointIndex: index,
           });

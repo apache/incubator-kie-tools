@@ -23,6 +23,8 @@ import { Symbol } from "./Symbol";
 import { TokenTree } from "./TokenTree";
 import { CharStreams, Token } from "antlr4";
 import FEEL_1_1Lexer from "./generated-parser/FEEL_1_1Lexer";
+import { VariableSymbol } from "./VariableSymbol";
+import { FeelSyntacticSymbolNature } from "../FeelSyntacticSymbolNature";
 
 export class ScopeImpl implements Scope {
   private readonly name?: string;
@@ -31,16 +33,22 @@ export class ScopeImpl implements Scope {
   private readonly childScopes: Map<string, Scope>;
   private readonly symbols: Map<string, Symbol>;
   private tokenTree?: TokenTree;
+  private readonly _allowDynamicVariables?: boolean;
 
-  public constructor(name?: string, parentScope?: Scope, type?: Type) {
+  public constructor(name?: string, parentScope?: Scope, type?: Type, allowDynamicVariables?: boolean) {
     this.childScopes = new Map<string, Scope>();
     this.symbols = new Map<string, Symbol>();
     this.name = name;
     this.parentScope = parentScope;
     this.type = type;
+    this._allowDynamicVariables = allowDynamicVariables;
     if (parentScope) {
       parentScope.addChildScope(this);
     }
+  }
+
+  get allowDynamicVariables(): boolean | undefined {
+    return this._allowDynamicVariables;
   }
 
   addChildScope(scope: Scope): void {
@@ -110,6 +118,15 @@ export class ScopeImpl implements Scope {
   resolve(qualifiedName: string[]): Symbol | undefined;
   resolve(parameter: string | string[]): Symbol | undefined {
     if (typeof parameter === "string") {
+      if (this._allowDynamicVariables) {
+        return new VariableSymbol(
+          parameter,
+          {
+            name: "name",
+          },
+          FeelSyntacticSymbolNature.DynamicVariable
+        );
+      }
       return this.resolveId(parameter);
     } else {
       return this.resolveQualifiedName(parameter);

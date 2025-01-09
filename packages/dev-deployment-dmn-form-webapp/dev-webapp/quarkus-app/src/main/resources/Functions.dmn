@@ -1,41 +1,94 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kie.apache.org/dmn/_B9DFF42B-4A3C-4A8D-A32E-C951C404F7D4" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="https://kie.apache.org/dmn/extensions/1.0" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:included1="https://kie.apache.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB22" id="_3369B481-DAAB-45E6-A2A9-ACA4DD093096" name="Functions" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kie.apache.org/dmn/_B9DFF42B-4A3C-4A8D-A32E-C951C404F7D4">
-  <dmn:extensionElements/>
-  <dmn:import id="_B3DD735B-3C43-4C20-8996-299C6537CB40" name="t" namespace="https://kie.apache.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB22" locationURI="Types.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~ 
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~ 
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.      
+-->
+<dmn:definitions
+  xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  xmlns="https://kie.apache.org/dmn/_B9DFF42B-4A3C-4A8D-A32E-C951C404F7D4"
+  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  xmlns:kie="https://kie.apache.org/dmn/extensions/1.0"
+  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+  xmlns:included1="https://kie.apache.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB22"
+  id="_3369B481-DAAB-45E6-A2A9-ACA4DD093096"
+  name="Functions"
+  typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  namespace="https://kie.apache.org/dmn/_B9DFF42B-4A3C-4A8D-A32E-C951C404F7D4"
+>
+  <dmn:extensionElements />
+  <dmn:import
+    id="_B3DD735B-3C43-4C20-8996-299C6537CB40"
+    name="t"
+    namespace="https://kie.apache.org/dmn/_CAC18569-3F97-42D1-A535-1693DF56CB22"
+    locationURI="Types.dmn"
+    importType="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  />
   <dmn:businessKnowledgeModel id="_121D1636-282B-45B5-ACDA-8C73CBF17CE1" name="Affordability calculation">
-    <dmn:extensionElements/>
-    <dmn:variable id="_F11CC9DE-704A-419B-912C-FDABBB0DAB4F" name="Affordability calculation" typeRef="boolean"/>
+    <dmn:extensionElements />
+    <dmn:variable id="_F11CC9DE-704A-419B-912C-FDABBB0DAB4F" name="Affordability calculation" typeRef="boolean" />
     <dmn:encapsulatedLogic id="_72FC1D95-7AB8-4459-9815-D2EC186DD40A" kind="FEEL">
-      <dmn:formalParameter id="_FCF7D50D-CE15-4F25-92A0-CCD1A4D8FE39" name="Monthly Income" typeRef="number"/>
-      <dmn:formalParameter id="_2E6DEF97-E9F0-4FFC-AD59-55BFFB4237BF" name="Monthly Repayments" typeRef="number"/>
-      <dmn:formalParameter id="_30C11588-0245-42E2-BAA5-4E50DB935D46" name="Monthly Expenses" typeRef="number"/>
-      <dmn:formalParameter id="_ABAA1C74-7B19-497D-879F-492EB9F015FB" name="Risk Category" typeRef="t.BureauRiskCategory"/>
-      <dmn:formalParameter id="_1D44F721-DB97-421B-B9FA-AB5A5246FF97" name="Required Monthly Installment" typeRef="number"/>
+      <dmn:formalParameter id="_FCF7D50D-CE15-4F25-92A0-CCD1A4D8FE39" name="Monthly Income" typeRef="number" />
+      <dmn:formalParameter id="_2E6DEF97-E9F0-4FFC-AD59-55BFFB4237BF" name="Monthly Repayments" typeRef="number" />
+      <dmn:formalParameter id="_30C11588-0245-42E2-BAA5-4E50DB935D46" name="Monthly Expenses" typeRef="number" />
+      <dmn:formalParameter
+        id="_ABAA1C74-7B19-497D-879F-492EB9F015FB"
+        name="Risk Category"
+        typeRef="t.BureauRiskCategory"
+      />
+      <dmn:formalParameter
+        id="_1D44F721-DB97-421B-B9FA-AB5A5246FF97"
+        name="Required Monthly Installment"
+        typeRef="number"
+      />
       <dmn:context id="_C46876F8-8596-4064-9291-AE059DE73F84">
         <dmn:contextEntry>
-          <dmn:variable id="_AC69745A-2636-4D69-9402-5B5DBBEB789F" name="Disposable Income" typeRef="number"/>
+          <dmn:variable id="_AC69745A-2636-4D69-9402-5B5DBBEB789F" name="Disposable Income" typeRef="number" />
           <dmn:literalExpression id="_4D8F65CA-89A3-449B-830F-1241E838A428">
             <dmn:text>Monthly Income - (Monthly Repayments + Monthly Expenses)</dmn:text>
           </dmn:literalExpression>
         </dmn:contextEntry>
         <dmn:contextEntry>
-          <dmn:variable id="_D7DDD7CE-91AD-451D-8F23-1F38C336B4F4" name="Credit Contigency Factor" typeRef="number"/>
+          <dmn:variable id="_D7DDD7CE-91AD-451D-8F23-1F38C336B4F4" name="Credit Contigency Factor" typeRef="number" />
           <dmn:context id="_B2B24D48-8D43-493B-B3DC-D02AA5E6FA30">
             <dmn:contextEntry>
-              <dmn:variable id="_CA4ADB45-F815-46D7-84C5-7A41CCB5DDC2" name="Risk Category" typeRef="t.BureauRiskCategory"/>
+              <dmn:variable
+                id="_CA4ADB45-F815-46D7-84C5-7A41CCB5DDC2"
+                name="Risk Category"
+                typeRef="t.BureauRiskCategory"
+              />
               <dmn:literalExpression id="_2A63B4FA-F6F1-4A68-8280-50C8F42AFEA5">
                 <dmn:text>Risk Category</dmn:text>
               </dmn:literalExpression>
             </dmn:contextEntry>
             <dmn:contextEntry>
-              <dmn:decisionTable id="_AC320F29-8043-4A9E-9A5A-7E07C873084F" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
+              <dmn:decisionTable
+                id="_AC320F29-8043-4A9E-9A5A-7E07C873084F"
+                hitPolicy="UNIQUE"
+                preferredOrientation="Rule-as-Row"
+              >
                 <dmn:input id="_7283628F-FDB6-4DEC-95D4-B7678B86DCAA">
                   <dmn:inputExpression id="_0BDDD624-2B0C-4E90-8B90-5C43DA87E5F8" typeRef="t.BureauRiskCategory">
                     <dmn:text>Risk Category</dmn:text>
                   </dmn:inputExpression>
                 </dmn:input>
-                <dmn:output id="_58BFBB2D-C78F-4D6A-AA3E-26D1A2ABA7EA"/>
-                <dmn:annotation name="annotation-1"/>
+                <dmn:output id="_58BFBB2D-C78F-4D6A-AA3E-26D1A2ABA7EA" />
+                <dmn:annotation name="annotation-1" />
                 <dmn:rule id="_52890D5C-85F5-422B-B771-54CD0FAD4A40">
                   <dmn:inputEntry id="_53A9B5E0-6856-4D6F-BD72-59C3466D361B">
                     <dmn:text>"High", "Decline"</dmn:text>
@@ -44,7 +97,7 @@
                     <dmn:text>0.6</dmn:text>
                   </dmn:outputEntry>
                   <dmn:annotationEntry>
-                    <dmn:text/>
+                    <dmn:text />
                   </dmn:annotationEntry>
                 </dmn:rule>
                 <dmn:rule id="_64813FBD-87E7-4A67-AF78-DAAC2086C3DF">
@@ -55,7 +108,7 @@
                     <dmn:text>0.7</dmn:text>
                   </dmn:outputEntry>
                   <dmn:annotationEntry>
-                    <dmn:text/>
+                    <dmn:text />
                   </dmn:annotationEntry>
                 </dmn:rule>
                 <dmn:rule id="_AEF602C0-ABC0-4553-A792-5C2140E6F07E">
@@ -66,7 +119,7 @@
                     <dmn:text>0.8</dmn:text>
                   </dmn:outputEntry>
                   <dmn:annotationEntry>
-                    <dmn:text/>
+                    <dmn:text />
                   </dmn:annotationEntry>
                 </dmn:rule>
               </dmn:decisionTable>
@@ -84,16 +137,16 @@ else false</dmn:text>
     </dmn:encapsulatedLogic>
   </dmn:businessKnowledgeModel>
   <dmn:businessKnowledgeModel id="_DAA2F03D-EFA9-4BA9-AEB1-109AC3F4F1AC" name="Installment calculation">
-    <dmn:extensionElements/>
-    <dmn:variable id="_5D654E89-B70D-4CB5-88D8-4D25E5008D8F" name="Installment calculation" typeRef="number"/>
+    <dmn:extensionElements />
+    <dmn:variable id="_5D654E89-B70D-4CB5-88D8-4D25E5008D8F" name="Installment calculation" typeRef="number" />
     <dmn:encapsulatedLogic id="_1E31E836-0609-4B4C-8FAF-389F774B1FE3" kind="FEEL">
-      <dmn:formalParameter id="_18DFB02E-9A87-44A2-AE57-997D6FE092B6" name="Product Type" typeRef="t.ProductType"/>
-      <dmn:formalParameter id="_907026CD-42C1-4731-B0B3-CC65A00180B1" name="Rate" typeRef="number"/>
-      <dmn:formalParameter id="_BF350457-ED49-42CD-A087-7E6CBCB0B0E0" name="Term" typeRef="number"/>
-      <dmn:formalParameter id="_F5D2470B-A1F2-4E40-98D7-DBCD286149FB" name="Amount" typeRef="number"/>
+      <dmn:formalParameter id="_18DFB02E-9A87-44A2-AE57-997D6FE092B6" name="Product Type" typeRef="t.ProductType" />
+      <dmn:formalParameter id="_907026CD-42C1-4731-B0B3-CC65A00180B1" name="Rate" typeRef="number" />
+      <dmn:formalParameter id="_BF350457-ED49-42CD-A087-7E6CBCB0B0E0" name="Term" typeRef="number" />
+      <dmn:formalParameter id="_F5D2470B-A1F2-4E40-98D7-DBCD286149FB" name="Amount" typeRef="number" />
       <dmn:context id="_7A96C527-9D9E-4199-987B-A6A0C8308296">
         <dmn:contextEntry>
-          <dmn:variable id="_4AAFD507-11D2-4C6A-82E0-CBEEFA26FCE9" name="Monthly Fee" typeRef="number"/>
+          <dmn:variable id="_4AAFD507-11D2-4C6A-82E0-CBEEFA26FCE9" name="Monthly Fee" typeRef="number" />
           <dmn:literalExpression id="_6B635731-73ED-41B8-9D3C-72F174D68036">
             <dmn:text>if Product Type = "Standard Loan"
 then 20.00
@@ -103,7 +156,7 @@ else null</dmn:text>
           </dmn:literalExpression>
         </dmn:contextEntry>
         <dmn:contextEntry>
-          <dmn:variable id="_1852E1E0-A49C-49D8-BB83-18D395672ECB" name="Monthly Repayments" typeRef="number"/>
+          <dmn:variable id="_1852E1E0-A49C-49D8-BB83-18D395672ECB" name="Monthly Repayments" typeRef="number" />
           <dmn:literalExpression id="_68539BE5-8AA0-4C5B-8AE6-D4A8F1118B7B">
             <dmn:text>(Amount*Rate/12)/(1-(1+Rate/12)**-Term)</dmn:text>
           </dmn:literalExpression>
@@ -169,23 +222,31 @@ else null</dmn:text>
           </kie:ComponentWidths>
         </kie:ComponentsWidthsExtension>
       </di:extension>
-      <dmndi:DMNShape id="dmnshape-drg-_121D1636-282B-45B5-ACDA-8C73CBF17CE1" dmnElementRef="_121D1636-282B-45B5-ACDA-8C73CBF17CE1" isCollapsed="false">
+      <dmndi:DMNShape
+        id="dmnshape-drg-_121D1636-282B-45B5-ACDA-8C73CBF17CE1"
+        dmnElementRef="_121D1636-282B-45B5-ACDA-8C73CBF17CE1"
+        isCollapsed="false"
+      >
         <dmndi:DMNStyle>
-          <dmndi:FillColor red="255" green="255" blue="255"/>
-          <dmndi:StrokeColor red="0" green="0" blue="0"/>
-          <dmndi:FontColor red="0" green="0" blue="0"/>
+          <dmndi:FillColor red="255" green="255" blue="255" />
+          <dmndi:StrokeColor red="0" green="0" blue="0" />
+          <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
-        <dc:Bounds x="242" y="191" width="100" height="50"/>
-        <dmndi:DMNLabel/>
+        <dc:Bounds x="242" y="191" width="100" height="50" />
+        <dmndi:DMNLabel />
       </dmndi:DMNShape>
-      <dmndi:DMNShape id="dmnshape-drg-_DAA2F03D-EFA9-4BA9-AEB1-109AC3F4F1AC" dmnElementRef="_DAA2F03D-EFA9-4BA9-AEB1-109AC3F4F1AC" isCollapsed="false">
+      <dmndi:DMNShape
+        id="dmnshape-drg-_DAA2F03D-EFA9-4BA9-AEB1-109AC3F4F1AC"
+        dmnElementRef="_DAA2F03D-EFA9-4BA9-AEB1-109AC3F4F1AC"
+        isCollapsed="false"
+      >
         <dmndi:DMNStyle>
-          <dmndi:FillColor red="255" green="255" blue="255"/>
-          <dmndi:StrokeColor red="0" green="0" blue="0"/>
-          <dmndi:FontColor red="0" green="0" blue="0"/>
+          <dmndi:FillColor red="255" green="255" blue="255" />
+          <dmndi:StrokeColor red="0" green="0" blue="0" />
+          <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
-        <dc:Bounds x="242" y="312" width="100" height="50"/>
-        <dmndi:DMNLabel/>
+        <dc:Bounds x="242" y="312" width="100" height="50" />
+        <dmndi:DMNLabel />
       </dmndi:DMNShape>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>

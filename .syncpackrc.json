@@ -1,1 +1,22 @@
-{}
+{
+  "versionGroups": [
+    {
+      "dependencies": ["prettier"],
+      "packages": [
+        "@kie-tools/form-code-generator-bootstrap4-theme",
+        "@kie-tools/form-code-generator-patternfly-theme",
+        "@kie-tools/yaml-language-server"
+      ]
+    },
+    {
+      "dependencies": ["react", "react-dom"],
+      "policy": "sameRange"
+    },
+    {
+      "label": "Use workspace protocol when developing local packages",
+      "dependencies": ["$LOCAL"],
+      "dependencyTypes": ["prod", "dev"],
+      "pinVersion": "workspace:*"
+    }
+  ]
+}

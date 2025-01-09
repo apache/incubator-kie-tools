@@ -62,6 +62,39 @@ export const Base: Story = {
   },
 };
 
+export const Readonly: Story = {
+  render: (args) => BoxedExpressionEditorStory(),
+  parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
+  args: {
+    ...EmptyExpression.args,
+    expression: {
+      __$$element: "invocation",
+      "@_id": generateUuid(),
+      "@_label": "Expression Name",
+      binding: [
+        {
+          parameter: {
+            "@_id": generateUuid(),
+            "@_name": INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME,
+          },
+          expression: {
+            "@_id": generateUuid(),
+            __$$element: "literalExpression",
+            text: { __$$text: "read only" },
+          },
+        },
+      ],
+      expression: {
+        "@_id": generateUuid(),
+        __$$element: "literalExpression",
+        text: { __$$text: "FUNCTION NAME" },
+      },
+    },
+    isResetSupportedOnRootExpression: true,
+    isReadOnly: true,
+  },
+};
+
 export const MonthlyInstallment: Story = {
   render: (args) => BoxedExpressionEditorStory(),
   parameters: { exclude: ["dataTypes", "beeGwtService", "pmmlDocuments"] },
@@ -138,6 +171,7 @@ export const Nested: Story = {
       "@_label": "Expression Name",
       contextEntry: [
         {
+          "@_id": generateUuid(),
           variable: {
             "@_id": generateUuid(),
             "@_name": "ContextEntry-1",

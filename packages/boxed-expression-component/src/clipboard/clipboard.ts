@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { BoxedExpression } from "../api";
+import { BoxedExpression, Normalized } from "../api";
 import { findAllIdsDeep } from "../ids/ids";
 
 export const DMN_BOXED_EXPRESSION_CLIPBOARD_MIME_TYPE =
@@ -25,12 +25,12 @@ export const DMN_BOXED_EXPRESSION_CLIPBOARD_MIME_TYPE =
 
 export type BoxedExpressionClipboard = {
   mimeType: typeof DMN_BOXED_EXPRESSION_CLIPBOARD_MIME_TYPE;
-  expression: BoxedExpression;
+  expression: Normalized<BoxedExpression>;
   widthsById: Record<string, number[]>;
 };
 
 export function buildClipboardFromExpression(
-  expression: BoxedExpression,
+  expression: Normalized<BoxedExpression>,
   widthsById: Map<string, number[]>
 ): BoxedExpressionClipboard {
   const originalIds = findAllIdsDeep(expression);

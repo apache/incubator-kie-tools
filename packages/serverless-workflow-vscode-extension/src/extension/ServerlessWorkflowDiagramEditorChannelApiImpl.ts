@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { BackendProxy } from "@kie-tools-core/backend/dist/api";
 import {
   EditorContent,
   EditorTheme,
@@ -68,7 +67,6 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
     private readonly editor: VsCodeKieEditorController,
     resourceContentService: ResourceContentService,
     vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
-    backendProxy: BackendProxy,
     vscodeNotifications: VsCodeNotificationsChannelApiImpl,
     javaCodeCompletionApi: JavaCodeCompletionApi,
     viewType: string,
@@ -81,7 +79,6 @@ export class ServerlessWorkflowDiagramEditorChannelApiImpl implements Serverless
       editor,
       resourceContentService,
       vscodeWorkspace,
-      backendProxy,
       vscodeNotifications,
       javaCodeCompletionApi,
       viewType,

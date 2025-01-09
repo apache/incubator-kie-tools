@@ -20,6 +20,8 @@
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { getNewDmnIdRandomizer } from "@kie-tools/dmn-marshaller/dist/idRandomizer/dmnIdRandomizer";
 import {
   Drawer,
   DrawerContent,
@@ -53,13 +55,12 @@ import {
   DmnEditorDataTypesClipboard,
   getClipboard,
 } from "../clipboard/Clipboard";
-import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 import { addTopLevelItemDefinition as _addTopLevelItemDefinition } from "../mutations/addTopLevelItemDefinition";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 export type DataType = {
-  itemDefinition: DMN15__tItemDefinition;
+  itemDefinition: Normalized<DMN15__tItemDefinition>;
   parentId: string | undefined;
   parents: Set<string>;
   index: number;
@@ -70,16 +71,20 @@ export type DataType = {
 export type DataTypeTreeViewDataItem = {};
 export type DataTypeIndex = Map<string, DataType>;
 
-export type AddItemComponent = (id: string, how: "unshift" | "push", partial?: Partial<DMN15__tItemDefinition>) => void;
-export type AddTopLevelItemDefinition = (partial: Partial<DMN15__tItemDefinition>) => void;
+export type AddItemComponent = (
+  id: string,
+  how: "unshift" | "push",
+  partial?: Partial<Normalized<DMN15__tItemDefinition>>
+) => void;
+export type AddTopLevelItemDefinition = (partial: Partial<Normalized<DMN15__tItemDefinition>>) => void;
 
 export type EditItemDefinition = (
   id: string,
   consumer: (
-    itemDefinition: DMN15__tItemDefinition,
-    items: DMN15__tItemDefinition[],
+    itemDefinition: Normalized<DMN15__tItemDefinition>,
+    items: Normalized<DMN15__tItemDefinition>[],
     index: number,
-    all: DMN15__tItemDefinition[],
+    all: Normalized<DMN15__tItemDefinition>[],
     state: State
   ) => void
 ) => void;
@@ -87,7 +92,8 @@ export type EditItemDefinition = (
 export function DataTypes() {
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { activeItemDefinitionId } = useDmnEditorStore((s) => s.dataTypesEditor);
+  const activeItemDefinitionId = useDmnEditorStore((s) => s.dataTypesEditor.activeItemDefinitionId);
+  const settings = useSettings();
 
   const [filter, setFilter] = useState("");
   const { externalModelsByNamespace } = useExternalModels();
@@ -142,6 +148,9 @@ export function DataTypes() {
   );
 
   const pasteTopLevelItemDefinition = useCallback(() => {
+    if (settings.isReadOnly) {
+      return;
+    }
     navigator.clipboard.readText().then((text) => {
       const clipboard = getClipboard<DmnEditorDataTypesClipboard>(text, DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE);
       if (!clipboard) {
@@ -160,7 +169,7 @@ export function DataTypes() {
         addTopLevelItemDefinition(itemDefinition);
       }
     });
-  }, [addTopLevelItemDefinition]);
+  }, [addTopLevelItemDefinition, settings.isReadOnly]);
 
   const [isAddDataTypeDropdownOpen, setAddDataTypeDropdownOpen] = useState(false);
 
@@ -171,14 +180,19 @@ export function DataTypes() {
     <>
       {(dataTypesTree.length <= 0 && (
         <DataTypesEmptyState
-          onAdd={() => addTopLevelItemDefinition({ typeRef: { __$$text: DmnBuiltInDataType.Undefined } })}
+          onAdd={() => addTopLevelItemDefinition({ typeRef: undefined })}
           onPaste={pasteTopLevelItemDefinition}
         />
       )) || (
         <Drawer isExpanded={true} isInline={true} position={"left"} className={"kie-dmn-editor--data-types-container"}>
           <DrawerContent
             panelContent={
-              <DrawerPanelContent isResizable={true} minSize={"300px"} defaultSize={"400px"}>
+              <DrawerPanelContent
+                isResizable={true}
+                minSize={"300px"}
+                defaultSize={"400px"}
+                data-testid={"kie-tools--dmn-editor--data-types-list"}
+              >
                 <Flex
                   justifyContent={{ default: "justifyContentSpaceBetween" }}
                   alignItems={{ default: "alignItemsCenter" }}
@@ -192,41 +206,41 @@ export function DataTypes() {
                       onClear={() => setFilter("")}
                     />
 
-                    <Dropdown
-                      onSelect={() => setAddDataTypeDropdownOpen(false)}
-                      menuAppendTo={document.body}
-                      toggle={
-                        <DropdownToggle
-                          id="add-data-type-toggle"
-                          splitButtonItems={[
-                            <DropdownToggleAction
-                              {...extraPropsForDropdownToggleAction}
-                              key="add-data-type-action"
-                              aria-label="Add Data Type"
-                              onClick={() =>
-                                addTopLevelItemDefinition({ typeRef: { __$$text: DmnBuiltInDataType.Undefined } })
-                              }
-                            >
-                              <PlusCircleIcon />
-                            </DropdownToggleAction>,
-                          ]}
-                          splitButtonVariant="action"
-                          onToggle={setAddDataTypeDropdownOpen}
-                        />
-                      }
-                      position={DropdownPosition.right}
-                      isOpen={isAddDataTypeDropdownOpen}
-                      dropdownItems={[
-                        <DropdownItem
-                          key={"paste"}
-                          onClick={() => pasteTopLevelItemDefinition()}
-                          style={{ minWidth: "240px" }}
-                          icon={<PasteIcon />}
-                        >
-                          Paste
-                        </DropdownItem>,
-                      ]}
-                    />
+                    {!settings.isReadOnly && (
+                      <Dropdown
+                        onSelect={() => setAddDataTypeDropdownOpen(false)}
+                        menuAppendTo={document.body}
+                        toggle={
+                          <DropdownToggle
+                            id="add-data-type-toggle"
+                            splitButtonItems={[
+                              <DropdownToggleAction
+                                {...extraPropsForDropdownToggleAction}
+                                key="add-data-type-action"
+                                aria-label="Add Data Type"
+                                onClick={() => addTopLevelItemDefinition({ typeRef: undefined })}
+                              >
+                                <PlusCircleIcon />
+                              </DropdownToggleAction>,
+                            ]}
+                            splitButtonVariant="action"
+                            onToggle={setAddDataTypeDropdownOpen}
+                          />
+                        }
+                        position={DropdownPosition.right}
+                        isOpen={isAddDataTypeDropdownOpen}
+                        dropdownItems={[
+                          <DropdownItem
+                            key={"paste"}
+                            onClick={() => pasteTopLevelItemDefinition()}
+                            style={{ minWidth: "240px" }}
+                            icon={<PasteIcon />}
+                          >
+                            Paste
+                          </DropdownItem>,
+                        ]}
+                      />
+                    )}
                   </InputGroup>
                 </Flex>
                 <div className={`kie-dmn-editor--data-types-nav`}>
@@ -255,7 +269,7 @@ export function DataTypes() {
                         {(namespace === thisDmnsNamespace && (
                           <DataTypeName
                             relativeToNamespace={thisDmnsNamespace}
-                            isReadonly={namespace !== thisDmnsNamespace}
+                            isReadOnly={settings.isReadOnly || namespace !== thisDmnsNamespace}
                             itemDefinition={itemDefinition}
                             isActive={isActive}
                             editMode={"double-click"}
@@ -291,7 +305,7 @@ export function DataTypes() {
             <DrawerContentBody>
               {activeDataType && (
                 <DataTypePanel
-                  isReadonly={activeDataType.namespace !== thisDmnsNamespace}
+                  isReadOnly={settings.isReadOnly || activeDataType.namespace !== thisDmnsNamespace}
                   dataType={activeDataType}
                   allDataTypesById={allDataTypesById}
                   editItemDefinition={editItemDefinition}

@@ -1,9 +1,28 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 /* (begin) global */
 .kie-dmn-editor--root {
   height: 100%;
 }
 
-.kie-dmn-editor--diagram-container {
+.kie-tools--dmn-editor--diagram-container {
   height: 100%;
   position: relative;
 }
@@ -71,6 +90,7 @@
   z-index: 1;
 }
 .kie-dmn-editor--input-data-node {
+  outline: none;
   width: 100%;
   height: 100%;
 }
@@ -152,7 +172,7 @@
 /* (end) decisionService and group nodes */
 
 /* (begin) external nodes */
-.kie-dmn-editor--node.external {
+.kie-dmn-editor--node-external {
   text-decoration: underline;
 }
 /* (end) external node */
@@ -252,9 +272,6 @@
 }
 .kie-dmn-editor--drd-list button.active {
   color: #0067cc;
-  filter: brightness(95%);
-}
-.kie-dmn-editor--drd-list button:hover {
   filter: brightness(95%);
 }
 .kie-dmn-editor--drd-list button:active {
@@ -377,6 +394,12 @@
   filter: brightness(90%);
 }
 /* (end) autolayout panel toggle */
+
+/* (begin) evaluation-highlights panel toggle */
+.kie-dmn-editor--evaluation-highlights-panel-toggle {
+  min-width: 190px;
+}
+/* (end) evaluation-highlights panel toggle */
 
 /* (begin) overlays panel toggle */
 .kie-dmn-editor--overlays-panel-toggle {
@@ -513,8 +536,8 @@
 }
 
 /* (begin) node handles */
-/*  To make sure connection lines are steadly glued to the 
-handles, we make their indicators be ::before elements. The handle 
+/*  To make sure connection lines are steadly glued to the
+handles, we make their indicators be ::before elements. The handle
 itself is a 0px by 0px div, as connection lines can move freely when
 the cursor is inside it. By making it adimensional, that never happens.  */
 .kie-dmn-editor--node-handle.connecting::before {
@@ -586,9 +609,17 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   transform: scale(0.8);
 }
 .kie-dmn-editor--data-type-node-panel .kie-dmn-editor--data-type-jump-to-definition {
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-right: 0px;
+  background: none;
+  border: none;
+  height: auto;
+  padding-top: 0;
+  padding-bottom: 0;
 }
+.kie-dmn-editor--data-type-node-panel-readonly .kie-dmn-editor--data-type-jump-to-definition {
+  padding-right: 6px;
+}
+
 /* Customizing some patternfly components is hard... */
 .kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type > div:first-of-type > button,
 .kie-dmn-editor--data-type-node-panel > div > div:first-of-type > div:first-of-type > div:first-of-type input,
@@ -600,8 +631,13 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   border-radius: 99999px;
   outline: none;
 }
+.kie-dmn-editor--data-type-node-panel .pf-c-select__toggle.pf-m-typeahead {
+  padding-left: 10px;
+}
+.kie-dmn-editor--data-type-node-panel .pf-c-select__toggle-wrapper {
+  padding-left: 10px;
+}
 .kie-dmn-editor--data-type-node-panel > div {
-  padding-left: 12px;
   border: 1.25px solid black;
   background: white;
   box-shadow: 5px 5px 2px 0px rgb(127 127 127);
@@ -887,6 +923,11 @@ th {
   color: red;
   text-decoration: red dotted underline;
   text-underline-position: under;
+}
+
+.kie-dmn-editor--data-types-container .pf-c-switch__input:disabled:checked ~ .pf-c-switch__toggle {
+  background-color: var(--pf-global--primary-color--100);
+  opacity: 50%;
 }
 /* (end) data types */
 

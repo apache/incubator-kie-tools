@@ -1,0 +1,64 @@
+{{- if not .Values.global.ingressSource }}
+
+In order to get {{ .Release.Name }} running you need to run these commands:
+
+{{- if and (index .Values "management-console" "enabled") (index .Values "management-console" "ingress" "enabled") }}
+1. Management Console available at:
+{{- range $host := index .Values "management-console" "ingress" "hosts" }}
+  {{- range .paths }}
+  http{{ if index $.Values "management-console" "ingress" "tls" }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
+  {{- end }}
+{{- end }}
+{{- else }}
+
+1. Run the following commands in a separate terminal to port-forward Management Console application:
+{{- if contains "NodePort" ( index .Values "management-console" "service" "type" ) }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "managementConsole.fullname" ( index .Subcharts "management-console" ) }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" ( index .Values "management-console" "service" "type" ) }}
+     NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+           You can watch the status of by running 'kubectl get --namespace {{ .Release.Namespace }} svc -w {{ include "managementConsole.fullname"  ( index .Subcharts "management-console" ) }}'
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "managementConsole.fullname" ( index .Subcharts "management-console" ) }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo http://$SERVICE_IP:{{ index .Values "management-console" "service" "port" }}
+{{- else if contains "ClusterIP" ( index .Values "management-console" "service" "type" ) }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/component={{ index .Values "management-console" "name" }},app.kubernetes.io/instance={{ .Release.Name }}" -o jsonpath="{.items[0].metadata.name}")
+  export CONTAINER_PORT=$(kubectl get pod --namespace {{ .Release.Namespace }} $POD_NAME -o jsonpath="{.spec.containers[0].ports[0].containerPort}")
+  echo "Management Console URL: http://127.0.0.1:{{ index .Values "management-console" "service" "port" }}"
+  kubectl --namespace {{ .Release.Namespace }} port-forward $POD_NAME {{ index .Values "management-console" "service" "port" }}:$CONTAINER_PORT
+{{- end }}
+{{- end }}
+
+{{- else if eq .Values.global.ingressSource "minikube" }}
+
+You may need to add the above hostnames to your /etc/hosts file, mapping them to your minikube ip.
+
+Run the following commands:
+  export MINIKUBE_IP=$(minikube ip)
+  echo "\n# Minikube Runtime Tools Consoles Helm Chart hostnames" | sudo tee -a /etc/hosts
+{{- if index .Values "management-console" "enabled" }}
+{{- range $host := index .Values "management-console" "ingress" "hosts" }}
+  {{- range .paths }}
+  echo "$MINIKUBE_IP {{ tpl $host.host $ }}" | sudo tee -a /etc/hosts
+  {{- end }}
+{{- end }}
+{{- end }}
+
+{{- else if eq .Values.global.ingressSource "openshift" }}
+
+{{- if index .Values "management-console" "enabled" }}
+1. Management Console available at:
+  http{{ if index $.Values "management-console" "openshiftRoute" "tls" }}s{{ end }}://{{ tpl (index .Values "management-console" "openshiftRoute" "host") . }}
+{{- end }}
+
+{{- else }}
+{{- if and ( index .Values "management-console" "enabled" ) ( index .Values "management-console" "ingress" "enabled" ) }}
+1. Management Console available at:
+{{- range $host := index .Values "management-console" "ingress" "hosts" }}
+  {{- range .paths }}
+  http{{ if index $.Values "management-console" "ingress" "tls" }}s{{ end }}://{{ tpl $host.host $ }}{{ .path }}
+  {{- end }}
+{{- end }}
+{{- end }}
+
+{{- end }}

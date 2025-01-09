@@ -22,6 +22,7 @@
 package e2e_tests
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	"io"
@@ -32,6 +33,7 @@ import (
 	"syscall"
 	"testing"
 
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command/quarkus"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
@@ -63,6 +65,11 @@ func ExecuteKnWorkflowWithCmd(cmd *exec.Cmd, args ...string) (string, error) {
 	return executeCommandWithOutput(cmd, args...)
 }
 
+// ExecuteKnWorkflowWithCmdAndStopContainer executes the 'kn-workflow' CLI tool with the given arguments using the provided command and returns the containerID and possible error message.
+func ExecuteKnWorkflowWithCmdAndStopContainer(cmd *exec.Cmd, args ...string) (string, error) {
+	return executeCommandWithOutputAndStopContainer(cmd, args...)
+}
+
 // ExecuteKnWorkflowQuarkusWithCmd executes the 'kn-workflow' CLI tool with 'quarkus' command with the given arguments using the provided command and returns the command's output and possible error message.
 func ExecuteKnWorkflowQuarkusWithCmd(cmd *exec.Cmd, args ...string) (string, error) {
 	newArgs := append([]string{"quarkus"}, args...)
@@ -87,6 +94,70 @@ func executeCommandWithOutput(cmd *exec.Cmd, args ...string) (string, error) {
 		return stdout.String(), err
 	}
 	return stdout.String(), nil
+}
+
+func executeCommandWithOutputAndStopContainer(cmd *exec.Cmd, args ...string) (string, error) {
+	cmd.Args = append([]string{cmd.Path}, args...)
+
+	var containerId string
+	var stderr bytes.Buffer
+
+	stdoutPipe, err := cmd.StdoutPipe()
+	if err != nil {
+		return "", fmt.Errorf("failed to create stdout pipe: %w", err)
+	}
+	defer stdoutPipe.Close()
+
+	stdinPipe, err := cmd.StdinPipe()
+	if err != nil {
+		return "", fmt.Errorf("failed to create stdin pipe: %w", err)
+	}
+	defer stdinPipe.Close()
+
+	cmd.Stderr = &stderr
+	errorCh := make(chan error, 1)
+
+	go func() {
+		defer close(errorCh)
+		scanner := bufio.NewScanner(stdoutPipe)
+		for scanner.Scan() {
+			line := scanner.Text()
+
+			if strings.HasPrefix(line, "Created container with ID ") {
+				id, ok := strings.CutPrefix(line, "Created container with ID ")
+				if !ok || id == "" {
+					errorCh <- fmt.Errorf("failed to parse container ID from output: %q", line)
+					return
+				}
+				containerId = id
+			}
+
+			if line == command.StopContainerMsg {
+				_, err := io.WriteString(stdinPipe, "any\n")
+				if err != nil {
+					errorCh <- fmt.Errorf("failed to write to stdin: %w", err)
+					return
+				}
+			}
+		}
+
+		if err := scanner.Err(); err != nil {
+			errorCh <- fmt.Errorf("error reading from stdout: %w", err)
+			return
+		}
+	}()
+
+	err = cmd.Run()
+	if err != nil {
+		return "", fmt.Errorf("command run error: %w (stderr: %s)", err, stderr.String())
+	}
+
+	readErr := <-errorCh
+	if readErr != nil {
+		return "", readErr
+	}
+
+	return containerId, nil
 }
 
 // VerifyFileContent verifies that the content of a file matches the expected content.
@@ -171,4 +242,79 @@ func CleanUpAndChdirTemp(t *testing.T) {
 		t.Errorf("failed to change directory to temp: %v", err)
 		os.Exit(1)
 	}
+}
+
+func WriteMavenConfigFileWithTailDirs(projectDir string) {
+	dirPath := filepath.Join(projectDir, ".mvn")
+	if _, err := os.Stat(dirPath); os.IsNotExist(err) {
+		err := os.Mkdir(dirPath, 0755) // Permissions: owner=rwx, group=rx, others=rx
+		if err != nil {
+			fmt.Printf("Error creating .mvn directory. %v", err)
+			os.Exit(1)
+		}
+	}
+
+	sonataflowQuarkusDevUiM2, err := filepath.Abs("../../../node_modules/@kie-tools/sonataflow-quarkus-devui/dist/1st-party-m2/repository")
+	if err != nil {
+		fmt.Printf("Failed to resolve absolute path for `@kie-tools/sonataflow-quarkus-devui` package. %v", err)
+		os.Exit(1)
+	}
+	mavenBaseM2, err := filepath.Abs("../../../node_modules/@kie-tools/maven-base/dist/1st-party-m2/repository")
+	if err != nil {
+		fmt.Printf("Failed to resolve absolute path for `@kie-tools/maven-base` package. %v", err)
+		os.Exit(1)
+	}
+
+	tail := mavenBaseM2 + "," + sonataflowQuarkusDevUiM2 + "\n"
+
+	err = os.WriteFile(filepath.Join(projectDir, ".mvn", "maven.config"), []byte("-Dmaven.repo.local.tail="+tail), 0644)
+	if err != nil {
+		fmt.Printf("Failed to create .mvn/maven.config file: %v", err)
+		os.Exit(1)
+	}
+}
+
+func AddSnapshotRepositoryDeclarationToPom(t *testing.T, projectDir string) {
+	VerifyFilesExist(t, projectDir, []string{"pom.xml"})
+	pomFilePath := filepath.Join(projectDir, "pom.xml")
+
+	file, err := os.Open(pomFilePath)
+	require.NoErrorf(t, err, "Expected nil error, got: %v", err)
+
+	content, err := io.ReadAll(file)
+	require.NoErrorf(t, err, "Expected nil error, got: %v", err)
+
+	err = file.Close()
+	require.NoErrorf(t, err, "Expected nil error, got: %v", err)
+
+	xml := string(content)
+	insertPosition := strings.Index(xml, "</profiles>") + len("</profiles>")
+
+	const repository = `
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>apache-kie</id>
+            <url>https://repository.apache.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>`
+
+	modifiedXml := xml[:insertPosition] + repository + xml[insertPosition:]
+	err = os.WriteFile(pomFilePath, []byte(modifiedXml), 0644)
+	require.NoErrorf(t, err, "Expected nil error, got: %v", err)
 }

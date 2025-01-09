@@ -21,8 +21,8 @@
 package org.kie.workbench.common.stunner.core.graph.content.view;
 
 import jsinterop.annotations.JsType;
+import org.kie.j2cl.tools.processors.annotations.GWT3Export;
 import org.kie.workbench.common.stunner.core.graph.content.Bounds;
-import org.treblereel.j2cl.processors.annotations.GWT3Export;
 
 @JsType
 @GWT3Export

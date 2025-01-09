@@ -23,9 +23,12 @@ import {
   DMN15__tDefinitions,
   DMNDI15__DMNEdge,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefToQName";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
+import { ExternalModelsIndex } from "../DmnEditor";
 
 export enum EdgeDeletionMode {
   FROM_DRG_AND_ALL_DRDS,
@@ -37,48 +40,49 @@ export function deleteEdge({
   drdIndex,
   edge,
   mode,
+  externalModelsByNamespace,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   edge: { id: string; dmnObject: DmnDiagramEdgeData["dmnObject"] };
   mode: EdgeDeletionMode;
+  externalModelsByNamespace: ExternalModelsIndex | undefined;
 }) {
-  if (edge.dmnObject.namespace !== definitions["@_namespace"]) {
-    console.debug("DMN MUTATION: Can't delete an edge that's from an external node.");
-    return { dmnEdge: undefined };
-  }
-
-  const dmnObjects: DMN15__tDefinitions["drgElement" | "artifact"] =
-    switchExpression(edge?.dmnObject.type, {
-      association: definitions.artifact,
-      group: definitions.artifact,
-      default: definitions.drgElement,
-    }) ?? [];
-
-  const dmnObjectIndex = dmnObjects.findIndex((d) => d["@_id"] === edge.dmnObject.id);
-  if (dmnObjectIndex < 0) {
-    throw new Error(`DMN MUTATION: Can't find DMN element with ID ${edge.dmnObject.id}`);
-  }
-
-  if (mode === EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
-    const requirements =
-      switchExpression(edge?.dmnObject.requirementType, {
-        // Casting to DMN15__tDecision because if has all types of requirement, but not necessarily that's true.
-        informationRequirement: (dmnObjects[dmnObjectIndex] as DMN15__tDecision).informationRequirement,
-        knowledgeRequirement: (dmnObjects[dmnObjectIndex] as DMN15__tDecision).knowledgeRequirement,
-        authorityRequirement: (dmnObjects[dmnObjectIndex] as DMN15__tDecision).authorityRequirement,
-        association: dmnObjects,
+  if (edge.dmnObject.namespace === definitions["@_namespace"]) {
+    const dmnObjects: Normalized<DMN15__tDefinitions>["drgElement" | "artifact"] =
+      switchExpression(edge?.dmnObject.type, {
+        association: definitions.artifact,
+        group: definitions.artifact,
+        default: definitions.drgElement,
       }) ?? [];
 
-    // Deleting the requirement
-    const requirementIndex = (requirements ?? []).findIndex((d) => d["@_id"] === edge.id);
-    if (requirementIndex >= 0) {
-      requirements?.splice(requirementIndex, 1);
+    const dmnObjectIndex = dmnObjects.findIndex((d) => d["@_id"] === edge.dmnObject.id);
+    if (dmnObjectIndex < 0) {
+      throw new Error(`DMN MUTATION: Can't find DMN element with ID ${edge.dmnObject.id}`);
+    }
+
+    if (mode === EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
+      const requirements =
+        switchExpression(edge?.dmnObject.requirementType, {
+          // Casting to DMN15__tDecision because if has all types of requirement, but not necessarily that's true.
+          informationRequirement: (dmnObjects[dmnObjectIndex] as Normalized<DMN15__tDecision>).informationRequirement,
+          knowledgeRequirement: (dmnObjects[dmnObjectIndex] as Normalized<DMN15__tDecision>).knowledgeRequirement,
+          authorityRequirement: (dmnObjects[dmnObjectIndex] as Normalized<DMN15__tDecision>).authorityRequirement,
+          association: dmnObjects,
+        }) ?? [];
+
+      // Deleting the requirement
+      const requirementIndex = (requirements ?? []).findIndex((d) => d["@_id"] === edge.id);
+      if (requirementIndex >= 0) {
+        requirements?.splice(requirementIndex, 1);
+      }
     }
   }
 
   // Deleting the DMNEdge's
-  let deletedDmnEdgeOnCurrentDrd: DMNDI15__DMNEdge | undefined;
+  // needs to be executed even if edge.dmnObject.namespace !== definitions["@_namespace"]
+  // As they may be DMNEdge depictions for edges targeting external nodes
+  let deletedDmnEdgeOnCurrentDrd: Normalized<DMNDI15__DMNEdge> | undefined;
 
   const drdCount = (definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? []).length;
   for (let i = 0; i < drdCount; i++) {
@@ -88,7 +92,9 @@ export function deleteEdge({
       continue;
     }
 
-    const dmnEdgeIndex = (diagramElements ?? []).findIndex((d) => d["@_dmnElementRef"] === edge.id);
+    const dmnEdgeIndex = (diagramElements ?? []).findIndex(
+      (d) => d["@_dmnElementRef"] === xmlHrefToQName(edge.id, definitions)
+    );
     if (dmnEdgeIndex >= 0) {
       if (i === drdIndex) {
         deletedDmnEdgeOnCurrentDrd = diagramElements[dmnEdgeIndex];
@@ -98,7 +104,7 @@ export function deleteEdge({
     }
   }
 
-  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });
+  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions, externalModelsByNamespace });
 
   return { deletedDmnEdgeOnCurrentDrd };
 }

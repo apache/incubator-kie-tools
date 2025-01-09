@@ -30,7 +30,7 @@ export function HomePageNav(props: { pathname: string }) {
   const settings = useSettings();
 
   const runtimeToolsNavItem = useMemo(() => {
-    if (settings.runtimeTools.config.kogitoServiceUrl && settings.runtimeTools.config.dataIndexUrl) {
+    if (settings.runtimeTools.config.dataIndexUrl) {
       return (
         <NavExpandable title="Runtime Tools" groupId="runtime-tools-nav-group">
           <NavItem
@@ -48,14 +48,6 @@ export function HomePageNav(props: { pathname: string }) {
             ouiaId="runtime-tools-workflow-instances-nav"
           >
             <Link to={routes.runtimeToolsWorkflowInstances.path({})}>Workflow Instances</Link>
-          </NavItem>
-          <NavItem
-            itemId={5}
-            key={"RuntimeToolsTriggerCloudEvent-nav"}
-            isActive={props.pathname === routes.runtimeToolsTriggerCloudEvent.path({})}
-            ouiaId="runtime-tools-trigger-cloud-event-nav"
-          >
-            <Link to={routes.runtimeToolsTriggerCloudEvent.path({})}>Trigger Cloud Event</Link>
           </NavItem>
         </NavExpandable>
       );

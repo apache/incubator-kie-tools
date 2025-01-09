@@ -18,6 +18,7 @@
  */
 
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Unpacked } from "../../tsExt/tsExt";
 
 export type AdjMatrix = Record<
@@ -34,7 +35,7 @@ export type DrgEdge = {
   dmnObject: {
     namespace: string;
     id: string;
-    type: Unpacked<DMN15__tDefinitions["artifact" | "drgElement"]>["__$$element"];
+    type: Unpacked<Normalized<DMN15__tDefinitions>["artifact" | "drgElement"]>["__$$element"];
     requirementType: "informationRequirement" | "knowledgeRequirement" | "authorityRequirement" | "association";
     index: number;
   };

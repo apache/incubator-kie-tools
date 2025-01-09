@@ -17,21 +17,19 @@
   "main": "dist/extension/extension.js",
   "scripts": {
     "build:dev": "rimraf dist && webpack --env dev",
-    "build:prod": "rimraf dist && pnpm lint && webpack && pnpm test && pnpm package:prod && pnpm test:e2e",
+    "build:prod": "rimraf dist && pnpm lint && webpack && pnpm package:prod && pnpm test-e2e",
     "compile": "pnpm build:dev",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "package:prod": "vsce package --no-dependencies -o ./dist/kie_editors_dev_vscode_extension_$npm_package_version.vsix",
     "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
-    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\"",
-    "test:e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm test:e2e:clean\" \"cpr e2e-tests/resources e2e-tests-tmp/resources\" \"tsc --project tsconfig.e2e-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --yarn -c max -u -e ./test-resources -o e2e-tests/settings.json out/*.test.js\"",
-    "test:e2e:clean": "rimraf ./dist-e2e-tests && rimraf ./test-resources && rimraf ./out && rimraf ./e2e-tests-tmp && rimraf *.vsix",
-    "test:e2e:clean:offline": "rimraf ./dist-e2e-tests && rimraf ./out && rimraf ./e2e-tests-tmp && rimraf *.vsix",
-    "test:e2e:insider": "rimraf ./test-resources && rimraf ./out && tsc --project tsconfig.e2e-tests.json --skipLibCheck --sourceMap true && extest setup-and-run --yarn -t insider -u -e ./test-resources -o e2e-tests/settings.json out/*.test.js",
-    "test:e2e:offline": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm test:e2e:clean:offline\" \"cpr e2e-tests/resources e2e-tests-tmp/resources\" \"tsc --project tsconfig.e2e-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --offline --yarn -c max -u -e ./test-resources -o e2e-tests/settings.json out/*.test.js\"",
+    "test-e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm test-e2e:clean\" \"cpr e2e-tests/resources e2e-tests-tmp/resources\" \"tsc --project tsconfig.e2e-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --yarn -c max -u -e ./test-resources -o e2e-tests/settings.json out/*.test.js\"",
+    "test-e2e:clean": "rimraf ./dist-tests-e2e && rimraf ./test-resources && rimraf ./out && rimraf ./e2e-tests-tmp && rimraf *.vsix",
+    "test-e2e:clean:offline": "rimraf ./dist-tests-e2e && rimraf ./out && rimraf ./e2e-tests-tmp && rimraf *.vsix",
+    "test-e2e:insider": "rimraf ./test-resources && rimraf ./out && tsc --project tsconfig.e2e-tests.json --skipLibCheck --sourceMap true && extest setup-and-run --yarn -t insider -u -e ./test-resources -o e2e-tests/settings.json out/*.test.js",
+    "test-e2e:offline": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm test-e2e:clean:offline\" \"cpr e2e-tests/resources e2e-tests-tmp/resources\" \"tsc --project tsconfig.e2e-tests.json --skipLibCheck --sourceMap true\" \"extest setup-and-run --offline --yarn -c max -u -e ./test-resources -o e2e-tests/settings.json out/*.test.js\"",
     "watch": "export WEBPACK__sourceMaps=true; WEBPACK__minimize=false; webpack --env dev"
   },
   "dependencies": {
-    "@kie-tools-core/backend": "workspace:*",
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/envelope": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",
@@ -40,6 +38,7 @@
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/vscode-extension": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
+    "@kie-tools/form-code-generator-vscode-command": "workspace:*",
     "@kie-tools/kie-bc-editors": "workspace:*",
     "@kie-tools/pmml-editor": "workspace:*",
     "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*",
@@ -58,10 +57,8 @@
     "@kie-tools/vscode-extension-common-test-helpers": "workspace:*",
     "@types/chai": "^4.3.6",
     "@types/fs-extra": "^11.0.1",
-    "@types/jest": "^26.0.23",
-    "@types/jest-when": "^2.7.4",
     "@types/minimatch": "^3.0.5",
-    "@types/mocha": "^8.2.2",
+    "@types/mocha": "^10.0.7",
     "@types/vscode": "1.67.0",
     "@vscode/test-electron": "^2.3.6",
     "@vscode/test-web": "^0.0.30",
@@ -70,20 +67,16 @@
     "copy-webpack-plugin": "^11.0.0",
     "cpr": "^3.0.1",
     "file-loader": "^6.2.0",
-    "jest": "^26.6.3",
-    "jest-junit": "^14.0.0",
-    "jest-when": "^3.5.0",
-    "mocha": "^9.2.0",
-    "mocha-jenkins-reporter": "^0.4.5",
-    "mocha-junit-reporter": "^2.0.2",
+    "mocha": "^10.6.0",
+    "mocha-jenkins-reporter": "^0.4.8",
+    "mocha-junit-reporter": "^2.2.1",
     "mocha-multi-reporters": "^1.5.1",
     "process": "^0.11.10",
     "rimraf": "^3.0.2",
     "sanitize-filename-ts": "^1.0.2",
-    "ts-jest": "^26.5.6",
-    "typescript": "^4.6.2",
-    "vscode-extension-tester": "5.10.0",
-    "webpack": "^5.88.2",
+    "typescript": "^5.5.3",
+    "vscode-extension-tester": "^8.10.0",
+    "webpack": "^5.94.0",
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.15.1",
     "webpack-merge": "^5.9.0"
@@ -103,15 +96,19 @@
           "dark": "./static/svg-icon-dark.png",
           "light": "./static/svg-icon-light.png"
         },
-        "title": "Save Preview SVG"
+        "title": "Kogito Editors: Save Preview SVG"
       },
       {
         "command": "extension.kogito.runTest",
-        "title": "Run"
+        "title": "Kogito Editors: Run"
       },
       {
         "command": "extension.kogito.silentlyGenerateSvg",
-        "title": "Generate SVG without any notification"
+        "title": "Kogito Editors: Generate SVG without any notification"
+      },
+      {
+        "command": "extension.apache.kie.kogitoEditors.generateFormCode",
+        "title": "Kogito Editors: Generate form code for human interactions from jBPM project"
       }
     ],
     "configuration": {
@@ -151,7 +148,7 @@
     },
     "customEditors": [
       {
-        "displayName": "KIE Kogito Editors",
+        "displayName": "Apache KIE Kogito Editors",
         "selector": [
           {
             "filenamePattern": "*.{dmn,bpmn,bpmn2,scesim,pmml}"

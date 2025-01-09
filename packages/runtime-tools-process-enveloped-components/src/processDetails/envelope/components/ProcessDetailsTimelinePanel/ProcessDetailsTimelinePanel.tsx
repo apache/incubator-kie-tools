@@ -124,7 +124,12 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
     setSelectedJob(job);
   };
 
-  const handleJobReschedule = async (repeatInterval, repeatLimit, scheduleDate): Promise<void> => {
+  const handleJobReschedule = async (
+    _job: Job,
+    repeatInterval: string | number,
+    repeatLimit: string | number,
+    scheduleDate: Date
+  ): Promise<void> => {
     await handleJobRescheduleUtil(
       repeatInterval,
       repeatLimit,
@@ -337,23 +342,19 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
   };
 
   const renderTimerIcon = (id: string) => {
-    return jobs.length > 0 ? (
-      jobs.map((job, idx) => {
-        if (id === job.nodeInstanceId) {
-          return (
-            <Tooltip content={"Node has job"} key={idx}>
-              <OutlinedClockIcon
-                className="pf-u-ml-sm"
-                color="var(--pf-global--icon--Color--dark)"
-                onClick={() => handleJobDetails(job)}
-              />
-            </Tooltip>
-          );
-        }
-      })[0]
-    ) : (
-      <></>
-    );
+    const job = jobs.find((job) => id === job.nodeInstanceId);
+    if (job) {
+      return (
+        <Tooltip content={"Node has job"} key={`${id}-job-tooltip-${job.id}`}>
+          <OutlinedClockIcon
+            className="pf-u-ml-sm"
+            color="var(--pf-global--icon--Color--dark)"
+            onClick={() => handleJobDetails(job)}
+          />
+        </Tooltip>
+      );
+    }
+    return <></>;
   };
 
   const detailsAction: JSX.Element[] = [

@@ -194,9 +194,7 @@ export function DragAndDrop({
           onDragLeave: onInternalDragLeave,
         }}
       >
-        {valuesCopy?.map((value, index) => (
-          <div key={valuesKeys[index]}>{draggableItem?.(value, index)}</div>
-        ))}
+        {valuesCopy?.map((value, index) => <div key={valuesKeys[index]}>{draggableItem?.(value, index)}</div>)}
       </DraggableDispatchContext.Provider>
     </DraggableStateContext.Provider>
   );
@@ -213,6 +211,7 @@ export function Draggable(props: {
   childrenClassName?: string;
   itemStyle?: React.CSSProperties;
   itemClassName?: string;
+  isDisabled: boolean;
 }) {
   const { source, dragging, leftOrigin } = useDraggableStateContext();
   const { onDragStart, onDragOver, onDragEnd, onDragEnter, onDragLeave } = useDraggableDispatchContext();
@@ -251,22 +250,30 @@ export function Draggable(props: {
       onPointerEnter={() => setHoveredItem(props.index)}
       onPointerLeave={() => setHoveredItem(-1)}
       onPointerOver={() => setHoveredItem(props.index)}
+      data-testid={`kie-tools--dmn-editor--draggable-row-${props.index}`}
     >
-      <Icon
-        className={"kie-dmn-editor--draggable-icon"}
-        onPointerEnter={() => setDraggable(true)}
-        onPointerLeave={() => setDraggable(false)}
-        style={props.handlerStyle}
-      >
-        <GripVerticalIcon
-          className={
-            hovered ? "kie-dmn-editor--draggable-icon-handler-hovered" : "kie-dmn-editor--draggable-icon-handler"
-          }
-        />
-      </Icon>
+      {!props.isDisabled ? (
+        <div data-testid={"kie-tools--dmn-editor--draggable-icon"}>
+          <Icon
+            className={"kie-dmn-editor--draggable-icon"}
+            onPointerEnter={() => setDraggable(true)}
+            onPointerLeave={() => setDraggable(false)}
+            style={props.handlerStyle}
+          >
+            <GripVerticalIcon
+              className={
+                hovered ? "kie-dmn-editor--draggable-icon-handler-hovered" : "kie-dmn-editor--draggable-icon-handler"
+              }
+            />
+          </Icon>
+        </div>
+      ) : (
+        <div style={{ width: "36px" }}></div>
+      )}
       <div
         style={props.childrenStyle}
         className={`kie-dmn-editor--draggable-children ${props.childrenClassName ? props.childrenClassName : ""}`}
+        data-testid={"kie-tools--dmn-editor--draggable-children"}
       >
         <DraggableItemContext.Provider value={{ hovered }}>{props.children}</DraggableItemContext.Provider>
       </div>

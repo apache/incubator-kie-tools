@@ -57,25 +57,21 @@
     <url>https://github.com/apache/incubator-kie-issues/issues</url>
   </issueManagement>
 
-  <repositories>
-    <repository>
-      <id>jboss</id>
-      <name>JBoss Public Repo</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public</url>
-    </repository>
-    <repository>
-      <id>sonatype-public</id>
-      <name>Sonatype Public Snapshots Repo</name>
-      <url>https://oss.sonatype.org/content/repositories/public</url>
-    </repository>
-  </repositories>
-
   <properties>
     <sonar.skip>true</sonar.skip>
+    <version.j2cl.tools>0.1</version.j2cl.tools>
   </properties>
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.kie.j2cl.tools</groupId>
+        <artifactId>bom</artifactId>
+        <version>${version.j2cl.tools}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
       <!-- appformer internal modules -->
       <dependency>
         <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
@@ -252,63 +248,9 @@
       </dependency>
 
       <dependency>
-        <groupId>org.eclipse.jgit</groupId>
-        <artifactId>org.eclipse.jgit</artifactId>
-        <version>${version.org.eclipse.jgit}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.eclipse.jgit</groupId>
-        <artifactId>org.eclipse.jgit.http.server</artifactId>
-        <version>${version.org.eclipse.jgit}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
         <groupId>com.google.jsinterop</groupId>
         <artifactId>base</artifactId>
         <version>${version.com.google.jsinterop.base}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>com.allen-sauer.gwt.dnd</groupId>
-        <artifactId>gwt-dnd</artifactId>
-        <version>${version.com.allen-sauer.gwt.dnd}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.scannotation</groupId>
-        <artifactId>scannotation</artifactId>
-        <version>${version.org.scannotation}</version>
-        <exclusions>
-          <!-- Uses old javassist groupId so Maven is not able to exclude this itself. All UF modules have to use
-               org.javassist:javassist instead of this one. -->
-          <exclusion>
-            <groupId>javassist</groupId>
-            <artifactId>javassist</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
@@ -321,89 +263,6 @@
             <artifactId>apache-el</artifactId>
           </exclusion>
         </exclusions>
-      </dependency>
-
-      <!-- Byteman -->
-      <dependency>
-        <groupId>org.jboss.byteman</groupId>
-        <artifactId>byteman</artifactId>
-        <version>${version.org.jboss.byteman}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.byteman</groupId>
-        <artifactId>byteman-submit</artifactId>
-        <version>${version.org.jboss.byteman}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.byteman</groupId>
-        <artifactId>byteman-install</artifactId>
-        <version>${version.org.jboss.byteman}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.byteman</groupId>
-        <artifactId>byteman-bmunit</artifactId>
-        <version>${version.org.jboss.byteman}</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-client-hotrod</artifactId>
-        <version>${version.org.infinispan}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.jboss.marshalling</groupId>
-            <artifactId>jboss-marshalling-osgi</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.infinispan</groupId>
-        <artifactId>infinispan-commons</artifactId>
-        <version>${version.org.infinispan}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.jboss.marshalling</groupId>
-            <artifactId>jboss-marshalling-osgi</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-buffer</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-transport</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-handler</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-codec-http</artifactId>
-        <version>${version.io.netty}</version>
-      </dependency>
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>${version.ch.qos.logback}</version>
-      </dependency>
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-core</artifactId>
-        <version>${version.ch.qos.logback}</version>
       </dependency>
 
       <!-- KIE Lienzo modules -->
@@ -421,24 +280,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.kie.kogito.stunner.serverless.editor.third_party.jakarta.jsonb</groupId>
-        <artifactId>api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie.kogito.stunner.serverless.editor.third_party.jakarta.jsonb</groupId>
-        <artifactId>impl</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
-        <artifactId>stdlib</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
         <artifactId>gwtproject</artifactId>
         <version>${project.version}</version>
@@ -447,35 +288,6 @@
       <dependency>
         <groupId>org.kie.kogito.stunner.serverless.editor.third_party</groupId>
         <artifactId>errai</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling.json</groupId>
-        <artifactId>common</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling.json</groupId>
-        <artifactId>processor</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling.yaml</groupId>
-        <artifactId>common</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling.yaml</groupId>
-        <artifactId>processor</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.kie.kogito.stunner.serverless.editor.third_party.tooling.marshalling.yaml</groupId>
-        <artifactId>snakeyaml-engine</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -495,43 +307,6 @@
         <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
         <artifactId>lienzo-tests</artifactId>
         <version>${project.version}</version>
-      </dependency>
-
-      <!-- ARQUILLIAN -->
-
-      <dependency>
-        <groupId>org.arquillian.cube</groupId>
-        <artifactId>arquillian-cube-docker-junit-rule</artifactId>
-        <version>${version.org.arquillian.cube}</version>
-        <scope>test</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>com.github.docker-java</groupId>
-            <artifactId>docker-java</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.arquillian.cube</groupId>
-            <artifactId>arquillian-cube-requirement-spi</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.marshalling</groupId>
-        <artifactId>marshalling-api</artifactId>
-        <version>${version.org.jboss.marshalling.api}</version>
-        <scope>test</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.jboss.shrinkwrap</groupId>
-        <artifactId>shrinkwrap-impl-base</artifactId>
-        <version>${version.org.jboss.shrinkwrap}</version>
-        <scope>test</scope>
       </dependency>
 
       <dependency>
@@ -563,5 +338,4 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
 </project>

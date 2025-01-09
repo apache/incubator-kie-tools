@@ -18,27 +18,36 @@
  */
 
 import * as React from "react";
-import { BoxedInvocation, BeeTableCellProps } from "../../api";
+import { useCallback, useEffect } from "react";
+import { BeeTableCellProps, BoxedInvocation, Normalized } from "../../api";
+import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 import {
   NestedExpressionDispatchContextProvider,
   OnSetExpression,
+  useBoxedExpressionEditor,
   useBoxedExpressionEditorDispatch,
 } from "../../BoxedExpressionEditorContext";
-import { useCallback } from "react";
-import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 import { ROWTYPE } from "./InvocationExpression";
 import "../ContextExpression/ContextEntryExpressionCell.css";
+import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 
 export const ArgumentEntryExpressionCell: React.FunctionComponent<
   BeeTableCellProps<ROWTYPE> & { parentElementId: string }
 > = ({ data, rowIndex, columnIndex, parentElementId }) => {
   const { setExpression } = useBoxedExpressionEditorDispatch();
-
   const { expression, variable, index } = data[rowIndex];
+  const { isActive } = useBeeTableSelectableCellRef(rowIndex, columnIndex, undefined);
+  const { beeGwtService } = useBoxedExpressionEditor();
+
+  useEffect(() => {
+    if (isActive) {
+      expression ? beeGwtService?.selectObject(expression["@_id"]) : "";
+    }
+  }, [beeGwtService, columnIndex, expression, isActive]);
 
   const onSetExpression = useCallback<OnSetExpression>(
     ({ getNewExpression }) => {
-      setExpression((prev: BoxedInvocation) => {
+      setExpression((prev: Normalized<BoxedInvocation>) => {
         const newBindings = [...(prev.binding ?? [])];
         newBindings[index] = {
           ...newBindings[index],
@@ -46,7 +55,7 @@ export const ArgumentEntryExpressionCell: React.FunctionComponent<
         };
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedInvocation = {
+        const ret: Normalized<BoxedInvocation> = {
           ...prev,
           binding: newBindings,
         };

@@ -27,11 +27,12 @@ const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const NodePolyfillPlugin = require("node-polyfill-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
-const { env: buildEnv } = require("./env");
+const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
+const { env } = require("./env");
 
-module.exports = async (env) => {
-  const dataIndexURL = buildEnv.runtimeToolsProcessDevUIWebapp.kogitoDataIndexUrl;
-  return merge(common(env), {
+module.exports = async (webpackEnv) => {
+  const dataIndexURL = env.runtimeToolsProcessDevUIWebapp.kogitoDataIndexUrl;
+  return merge(common(webpackEnv), {
     entry: {
       standalone: path.resolve(__dirname, "src", "standalone", "standalone.ts"),
       envelope: path.resolve(__dirname, "src", "standalone", "EnvelopeApp.ts"),
@@ -41,7 +42,7 @@ module.exports = async (env) => {
       static: {
         directory: "./dist",
       },
-      port: buildEnv.runtimeToolsProcessDevUIWebapp.port,
+      port: env.runtimeToolsProcessDevUIWebapp.port,
       compress: true,
       historyApiFallback: true,
       hot: true,
@@ -67,8 +68,7 @@ module.exports = async (env) => {
         KOGITO_APP_VERSION: "DEV",
         KOGITO_APP_NAME: "Runtime tools dev-ui",
         KOGITO_DATAINDEX_HTTP_URL: dataIndexURL,
-        KOGITO_REMOTE_KOGITO_APP_URL: buildEnv.runtimeToolsProcessDevUIWebapp.kogitoAppUrl,
-        KOGITO_OPENAPI_PATH: buildEnv.runtimeToolsProcessDevUIWebapp.openApiPath,
+        KOGITO_REMOTE_KOGITO_APP_URL: env.runtimeToolsProcessDevUIWebapp.kogitoAppUrl,
       }),
       new CopyPlugin({
         patterns: [
@@ -95,13 +95,23 @@ module.exports = async (env) => {
         favicon: "src/favicon.ico",
         chunks: ["app"],
       }),
+      new HtmlReplaceWebpackPlugin([
+        {
+          pattern: /\${WEBPACK_REPLACEMENT_WEBAPP_HOST}/g,
+          replacement: () => env.runtimeToolsProcessDevUIWebapp.host ?? "",
+        },
+        {
+          pattern: /\${WEBPACK_REPLACEMENT_WEBAPP_PORT}/g,
+          replacement: () => env.runtimeToolsProcessDevUIWebapp.port ?? "",
+        },
+      ]),
     ],
     module: {
       rules: [
         {
           test: /\.(svg|ttf|eot|woff|woff2)$/,
           use: {
-            loader: "file-loader",
+            loader: require.resolve("file-loader"),
             options: {
               // Limit at 50k. larger files emited into separate files
               limit: 5000,
@@ -115,7 +125,7 @@ module.exports = async (env) => {
           include: (input) => input.indexOf("background-filter.svg") > 1,
           use: [
             {
-              loader: "url-loader",
+              loader: require.resolve("url-loader"),
               options: {
                 limit: 5000,
                 outputPath: "svgs",
@@ -128,7 +138,7 @@ module.exports = async (env) => {
           test: /\.svg$/,
           include: (input) => input.indexOf(BG_IMAGES_DIRNAME) > -1,
           use: {
-            loader: "svg-url-loader",
+            loader: require.resolve("svg-url-loader"),
             options: {},
           },
         },
@@ -136,7 +146,7 @@ module.exports = async (env) => {
           test: /\.(jpg|jpeg|png|gif)$/i,
           use: [
             {
-              loader: "url-loader",
+              loader: require.resolve("url-loader"),
               options: {
                 limit: 5000,
                 outputPath: "images",

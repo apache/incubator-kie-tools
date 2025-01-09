@@ -61,7 +61,7 @@ export enum UrlType {
   INVALID,
 }
 
-export function isCertainlyGit(urlType: UrlType) {
+export function isCertainlyGit(urlType: UrlType): boolean {
   return (
     urlType === UrlType.GIT ||
     urlType === UrlType.GITHUB_DOT_COM ||
@@ -71,7 +71,7 @@ export function isCertainlyGit(urlType: UrlType) {
   );
 }
 
-export function isPotentiallyGit(urlType: UrlType) {
+export function isPotentiallyGit(urlType: UrlType): boolean {
   return isCertainlyGit(urlType) || urlType === UrlType.UNKNOWN;
 }
 
@@ -334,7 +334,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
 
     if (url.host === "raw.githubusercontent.com") {
       const gitHubRawFileMatch = matchPath<{ org: string; repo: string; tree: string; path: string }>(url.pathname, {
-        path: "/:org/:repo/:tree/:path*",
+        path: "/:org/:repo/refs/heads/:tree/:path*",
         exact: true,
         strict: true,
         sensitive: false,

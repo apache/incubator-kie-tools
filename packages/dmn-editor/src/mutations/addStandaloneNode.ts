@@ -18,24 +18,28 @@
  */
 
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
-import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { DC__Bounds, DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { NodeNature, nodeNatures } from "./NodeNature";
 import { addOrGetDrd as getDefaultDiagram } from "./addOrGetDrd";
 import { getCentralizedDecisionServiceDividerLine } from "./updateDecisionServiceDividerLine";
 import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "./repopulateInputDataAndDecisionsOnDecisionService";
-import { buildXmlHref } from "../xml/xmlHrefs";
+import { ExternalModelsIndex } from "../DmnEditor";
 
 export function addStandaloneNode({
   definitions,
   drdIndex,
   newNode,
+  externalModelsByNamespace,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   newNode: { type: NodeType; bounds: DC__Bounds };
+  externalModelsByNamespace: ExternalModelsIndex | undefined;
 }) {
   const newNodeId = generateUuid();
   const nature = nodeNatures[newNode.type];
@@ -44,7 +48,7 @@ export function addStandaloneNode({
     definitions.drgElement ??= [];
     const variableBase = {
       "@_id": generateUuid(),
-      "@_typeRef": DmnBuiltInDataType.Undefined,
+      "@_typeRef": undefined,
     };
     definitions.drgElement?.push(
       switchExpression(newNode.type as Exclude<NodeType, "node_group" | "node_textAnnotation" | "node_unknown">, {
@@ -120,17 +124,19 @@ export function addStandaloneNode({
   const shapeId = generateUuid();
   diagramElements?.push({
     __$$element: "dmndi:DMNShape",
-    "@_id": shapeId,
+    "@_id": shapeId, // FIXME: Tiago --> This should break if removed.
     "@_dmnElementRef": newNodeId,
     "@_isCollapsed": false,
     "@_isListedInputData": false,
     "dc:Bounds": newNode.bounds,
     ...(newNode.type === NODE_TYPES.decisionService
-      ? { "dmndi:DMNDecisionServiceDividerLine": getCentralizedDecisionServiceDividerLine(newNode.bounds) }
+      ? {
+          "dmndi:DMNDecisionServiceDividerLine": getCentralizedDecisionServiceDividerLine(newNode.bounds),
+        }
       : {}),
   });
 
-  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions });
+  repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions, externalModelsByNamespace });
 
   return { id: newNodeId, href: buildXmlHref({ id: newNodeId }), shapeId };
 }

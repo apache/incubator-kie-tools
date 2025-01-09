@@ -1,6 +1,36 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:feel="https://www.omg.org/spec/DMN/20191111/FEEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_BA898F11-9F63-4A74-AF32-235D82663253" name="x1" expressionLanguage="https://www.omg.org/spec/DMN/20191111/FEEL/" typeLanguage="https://www.omg.org/spec/DMN/20191111/FEEL/" namespace="https://kie.apache.org/dmn/_EBF07892-D449-49E8-B77A-08CDAAB2E820">
-  <extensionElements/>
+<?xml version='1.0' encoding='UTF-8' ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~ 
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~ 
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.      
+-->
+<definitions
+  xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:kie="http://www.drools.org/kie/dmn/1.2"
+  xmlns:feel="https://www.omg.org/spec/DMN/20191111/FEEL/"
+  xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+  id="_BA898F11-9F63-4A74-AF32-235D82663253"
+  name="x1"
+  expressionLanguage="https://www.omg.org/spec/DMN/20191111/FEEL/"
+  typeLanguage="https://www.omg.org/spec/DMN/20191111/FEEL/"
+  namespace="https://kie.apache.org/dmn/_EBF07892-D449-49E8-B77A-08CDAAB2E820"
+>
+  <extensionElements />
   <itemDefinition id="_1A35CDE5-592B-4C7D-A302-15043E11830C" name="tGrade" isCollection="false">
     <typeRef>string</typeRef>
     <allowedValues kie:constraintType="enumeration" id="_E9560012-0F49-44D2-96D8-BA655980F315">
@@ -8,9 +38,9 @@
     </allowedValues>
   </itemDefinition>
   <decision id="_2770588B-EF63-490A-BA13-B21D4EB1926D" name="Graduation DT">
-    <variable id="_A41CE5F4-5B2F-490B-90A3-9E5F53ED5B01" name="Graduation DT" typeRef="string"/>
+    <variable id="_A41CE5F4-5B2F-490B-90A3-9E5F53ED5B01" name="Graduation DT" typeRef="string" />
     <informationRequirement id="_50AC4BEA-CFAB-45A9-9F29-F6D3B037356A">
-      <requiredInput href="#_8B025B2F-6110-4A25-9F8B-2E76DB81298C"/>
+      <requiredInput href="#_8B025B2F-6110-4A25-9F8B-2E76DB81298C" />
     </informationRequirement>
     <decisionTable id="_CD3DB28A-1220-41E4-B1E5-F4DA448FEC02" hitPolicy="UNIQUE" preferredOrientation="Rule-as-Row">
       <input id="_AF31943B-2A05-4F02-839A-4F1B6C5DC073">
@@ -18,7 +48,7 @@
           <text>Grade</text>
         </inputExpression>
       </input>
-      <output id="_5F1FEDAD-C742-445A-B194-47B0112573B8" typeRef="string"/>
+      <output id="_5F1FEDAD-C742-445A-B194-47B0112573B8" typeRef="string" />
       <rule id="_967C2799-CC1E-45C5-9F6B-BF3C2F5BCF36">
         <inputEntry id="_47B77F78-DE9F-4CF3-A78D-AD274A951078">
           <text>"A"</text>
@@ -70,48 +100,49 @@
     </decisionTable>
   </decision>
   <decision id="_874E905E-290A-4B2F-ADB9-EDB3CA24CA67" name="Graduation result">
-    <variable id="_5F80DA91-A764-42C4-A526-3CADCD34E856" name="Graduation result" typeRef="string"/>
+    <variable id="_5F80DA91-A764-42C4-A526-3CADCD34E856" name="Graduation result" typeRef="string" />
     <informationRequirement id="_A572F522-9AC1-4B6C-8042-F8354E76E706">
-      <requiredDecision href="#_2770588B-EF63-490A-BA13-B21D4EB1926D"/>
+      <requiredDecision href="#_2770588B-EF63-490A-BA13-B21D4EB1926D" />
     </informationRequirement>
     <informationRequirement id="_599BCBD3-6D72-4A50-9D4D-D6A994AF30C3">
-      <requiredInput href="#_40D8FD5A-BF1A-41FA-BFBE-41B5BBD81794"/>
+      <requiredInput href="#_40D8FD5A-BF1A-41FA-BFBE-41B5BBD81794" />
     </informationRequirement>
     <informationRequirement id="_E58609E3-7FC3-4827-8AF1-A01ADC452B53">
-      <requiredInput href="#_8B025B2F-6110-4A25-9F8B-2E76DB81298C"/>
+      <requiredInput href="#_8B025B2F-6110-4A25-9F8B-2E76DB81298C" />
     </informationRequirement>
     <informationRequirement id="_18C96BC9-1530-40B4-BCA6-95FCFAB49548">
-      <requiredDecision href="#_0C226138-201A-4073-8ED4-F28FA2A1BC64"/>
+      <requiredDecision href="#_0C226138-201A-4073-8ED4-F28FA2A1BC64" />
     </informationRequirement>
     <literalExpression id="_7C49F288-73F5-41AB-97D8-C569099B2CC7">
-      <text>Student's name + " is " + Graduation DT + " with grade: " + Grade + " and evaluation: " + Teacher's Evaluation</text>
+      <text
+      >Student's name + " is " + Graduation DT + " with grade: " + Grade + " and evaluation: " + Teacher's Evaluation</text>
     </literalExpression>
   </decision>
   <decision id="_0C226138-201A-4073-8ED4-F28FA2A1BC64" name="Teacher's Evaluation">
-    <variable id="_A2732FC7-2D94-4EFE-9A70-5A5D5F0EDCA3" name="Teacher's Evaluation"/>
+    <variable id="_A2732FC7-2D94-4EFE-9A70-5A5D5F0EDCA3" name="Teacher's Evaluation" />
     <informationRequirement id="_003DBA4E-D12C-4EA7-B6F2-662081D0A654">
-      <requiredInput href="#_40D8FD5A-BF1A-41FA-BFBE-41B5BBD81794"/>
+      <requiredInput href="#_40D8FD5A-BF1A-41FA-BFBE-41B5BBD81794" />
     </informationRequirement>
     <authorityRequirement id="_16EA50D8-7B0C-4C17-96E8-EC1910DB7EC0">
-      <requiredAuthority href="#_2284D6C3-0DAD-4AF0-A758-C40D5A2A0A32"/>
+      <requiredAuthority href="#_2284D6C3-0DAD-4AF0-A758-C40D5A2A0A32" />
     </authorityRequirement>
     <!-- No decision logic, intentional -->
   </decision>
   <knowledgeSource id="_2284D6C3-0DAD-4AF0-A758-C40D5A2A0A32" name="Teacher's knowledge" locationURI="">
-    <type></type>
+    <type />
   </knowledgeSource>
   <inputData id="_40D8FD5A-BF1A-41FA-BFBE-41B5BBD81794" name="Student's name">
-    <variable id="_9114ABD1-CD57-4E59-B6C7-FE7CD5AB1EFD" name="Student's name" typeRef="string"/>
+    <variable id="_9114ABD1-CD57-4E59-B6C7-FE7CD5AB1EFD" name="Student's name" typeRef="string" />
   </inputData>
   <decisionService id="_7A9C80F8-4A44-4080-9031-F28EA411A35C" name="Evaluation DS">
-    <variable id="_7D7F3394-69B4-46A6-BFED-4F71AFF6ABB3" name="Evaluation DS"/>
-    <outputDecision href="#_874E905E-290A-4B2F-ADB9-EDB3CA24CA67"/>
-    <encapsulatedDecision href="#_2770588B-EF63-490A-BA13-B21D4EB1926D"/>
-    <inputDecision href="#_0C226138-201A-4073-8ED4-F28FA2A1BC64"/>
-    <inputData href="#_8B025B2F-6110-4A25-9F8B-2E76DB81298C"/>
-    <inputData href="#_40D8FD5A-BF1A-41FA-BFBE-41B5BBD81794"/>
+    <variable id="_7D7F3394-69B4-46A6-BFED-4F71AFF6ABB3" name="Evaluation DS" />
+    <outputDecision href="#_874E905E-290A-4B2F-ADB9-EDB3CA24CA67" />
+    <encapsulatedDecision href="#_2770588B-EF63-490A-BA13-B21D4EB1926D" />
+    <inputDecision href="#_0C226138-201A-4073-8ED4-F28FA2A1BC64" />
+    <inputData href="#_8B025B2F-6110-4A25-9F8B-2E76DB81298C" />
+    <inputData href="#_40D8FD5A-BF1A-41FA-BFBE-41B5BBD81794" />
   </decisionService>
   <inputData id="_8B025B2F-6110-4A25-9F8B-2E76DB81298C" name="Grade">
-    <variable id="_22CC6AB7-BBB7-4F30-AFB3-FA67486F2DBA" name="Grade" typeRef="tGrade"/>
+    <variable id="_22CC6AB7-BBB7-4F30-AFB3-FA67486F2DBA" name="Grade" typeRef="tGrade" />
   </inputData>
 </definitions>

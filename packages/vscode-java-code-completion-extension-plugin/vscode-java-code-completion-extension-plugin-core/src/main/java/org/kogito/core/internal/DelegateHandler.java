@@ -32,17 +32,19 @@ import org.kogito.core.internal.handlers.GetClassesHandler;
 import org.kogito.core.internal.handlers.Handler;
 import org.kogito.core.internal.handlers.HandlerConstants;
 import org.kogito.core.internal.handlers.IsLanguageServerAvailableHandler;
+import org.kogito.core.internal.handlers.TypeHierarchyHandler;
 
 public class DelegateHandler implements IDelegateCommandHandler {
 
     private static final JavaEngine JAVA_ENGINE = new JavaEngine();
     private static final ActivationChecker ACTIVATION_CHECKER = new ActivationChecker();
     private static final AutocompleteHandler AUTOCOMPLETE_HANDLER = new AutocompleteHandler(ACTIVATION_CHECKER);
+    private static final TypeHierarchyHandler TYPE_HIERARCHY_HANDLER = new TypeHierarchyHandler(ACTIVATION_CHECKER);
     private final IsLanguageServerAvailableHandler isAvailableHandler;
 
     private static final List<Handler<?>> handlers = List.of(
             new GetClassesHandler(HandlerConstants.GET_CLASSES, JAVA_ENGINE, AUTOCOMPLETE_HANDLER),
-            new GetAccessorsHandler(HandlerConstants.GET_ACCESSORS, JAVA_ENGINE, AUTOCOMPLETE_HANDLER));
+            new GetAccessorsHandler(HandlerConstants.GET_ACCESSORS, JAVA_ENGINE, AUTOCOMPLETE_HANDLER, TYPE_HIERARCHY_HANDLER));
 
     public DelegateHandler() {
         ACTIVATION_CHECKER.check();

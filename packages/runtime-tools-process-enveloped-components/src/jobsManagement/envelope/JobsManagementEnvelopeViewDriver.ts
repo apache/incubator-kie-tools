@@ -21,7 +21,7 @@ import {
   Job,
   JobStatus,
   BulkCancel,
-  JobCancel,
+  JobOperationResult,
   JobsSortBy,
 } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { JobsManagementChannelApi, JobsManagementDriver } from "../api";
@@ -41,7 +41,7 @@ export default class JobsManagementEnvelopeViewDriver implements JobsManagementD
     return this.channelApi.requests.jobList__bulkCancel(jobsToBeActioned);
   }
 
-  cancelJob(job: Pick<Job, "id" | "endpoint">): Promise<JobCancel> {
+  cancelJob(job: Pick<Job, "id" | "endpoint">): Promise<JobOperationResult> {
     return this.channelApi.requests.jobList_cancelJob(job);
   }
 

@@ -21,14 +21,10 @@ pipeline {
         timeout(time: 600, unit: 'MINUTES')
     }
 
-    parameters {
-        string(description: 'Image tag', name: 'IMAGE_TAG', defaultValue: 'latest')
-    }
-
     environment {
         TESTS_REPORTS_PATTERNS = 'kie-tools/packages/**/dist-tests/junit-report*.xml kie-tools/examples/**/dist-tests/junit-report*.xml kie-tools/packages/**/target/surefire-reports/TEST-*.xml kie-tools/examples/**/target/surefire-reports/TEST-*.xml'
-        END_TO_END_TESTS_REPORTS_PATTERNS = 'kie-tools/packages/**/dist-e2e-tests/junit-report*.xml kie-tools/examples/**/dist-e2e-tests/junit-report*.xml kie-tools/packages/**/target/failsafe-reports/TEST-*.xml kie-tools/examples/**/target/failsafe-reports/TEST-*.xml'
-        END_TO_END_TESTS_ARTIFACTS_PATTERNS = 'kie-tools/packages/**/dist-e2e-tests kie-tools/examples/**/dist-e2e-tests'
+        END_TO_END_TESTS_REPORTS_PATTERNS = 'kie-tools/packages/**/dist-tests-e2e/junit-report*.xml kie-tools/examples/**/dist-tests-e2e/junit-report*.xml kie-tools/packages/**/target/failsafe-reports/TEST-*.xml kie-tools/examples/**/target/failsafe-reports/TEST-*.xml'
+        END_TO_END_TESTS_ARTIFACTS_PATTERNS = 'kie-tools/packages/**/dist-tests-e2e kie-tools/examples/**/dist-tests-e2e'
         BUILD_ARTIFACTS_PATTERNS = 'kie-tools/packages/**/dist kie-tools/examples/**/dist'
         ENABLE_BUILDKITE = 'false'
     }
@@ -49,7 +45,7 @@ pipeline {
             agent {
                 docker {
                     label("${buildUtils.apacheAgentLabels()}")
-                    image "quay.io/kie-tools/kie-tools-ci-build:${params.IMAGE_TAG}"
+                    image "docker.io/apache/incubator-kie-tools-ci-build:${env.BRANCH_NAME}"
                     args '--shm-size=2g --privileged --group-add docker'
                 }
             }
@@ -69,19 +65,10 @@ pipeline {
                     }
                 }
 
-                stage('Checkout Apache KIE Tools (Simulated squashed merge)') {
+                stage('Checkout kie-tools') {
                     steps {
                         dir('kie-tools') {
-                            script {
-                                githubUtils.checkoutRepoSquashedMerge(
-                                    env.CHANGE_AUTHOR,
-                                    env.CHANGE_BRANCH,
-                                    "https://github.com/${env.CHANGE_AUTHOR}/${pipelineVars.githubRepositoryName}.git",
-                                    env.CHANGE_TARGET ?: env.BRANCH_NAME,
-                                    "https://github.com/${pipelineVars.githubRepositoryOrg}/${pipelineVars.githubRepositoryName}.git",
-                                    "${pipelineVars.kieToolsBotGithubCredentialsId}"
-                                )
-                            }
+                            checkout scm
                         }
                     }
                 }
@@ -151,7 +138,7 @@ pipeline {
 
                 stage('Upload end-to-end tests results to Buildkite (`main` only)') {
                     when {
-                        expression { !env.CHANGE_ID && env.BRANCH_NAME == 'main' && env.ENABLE_BUILDKITE == 'true' }
+                        expression { env.BRANCH_NAME == 'main' && env.ENABLE_BUILDKITE == 'true' }
                     }
                     steps {
                         dir('kie-tools') {

@@ -40,5 +40,4 @@
     <module>kie-wb-common-stunner-svg</module>
     <module>kie-wb-common-stunner-kogito</module>
   </modules>
-
 </project>

@@ -19,8 +19,8 @@
 
 package org.kie.workbench.common.stunner.sw.client.shapes;
 
-import io.crysknife.ui.translation.client.TranslationService;
 import org.appformer.kogito.bridge.client.resource.ResourceContentService;
+import org.kie.j2cl.tools.di.ui.translation.client.TranslationService;
 import org.kie.workbench.common.stunner.core.client.shape.MutationContext;
 import org.kie.workbench.common.stunner.core.client.theme.StunnerTheme;
 import org.kie.workbench.common.stunner.core.graph.Edge;
@@ -30,6 +30,7 @@ import org.kie.workbench.common.stunner.sw.client.shapes.icons.CornerIcon;
 import org.kie.workbench.common.stunner.sw.client.theme.ColorTheme;
 import org.kie.workbench.common.stunner.sw.definition.EventState;
 import org.kie.workbench.common.stunner.sw.definition.State;
+import org.kie.workbench.common.stunner.sw.definition.StateExecTimeout;
 import org.kie.workbench.common.stunner.sw.definition.WorkflowTimeouts;
 
 import static org.kie.workbench.common.stunner.sw.client.shapes.icons.IconPath.CLOCK;
@@ -56,7 +57,9 @@ public class EventStateShape extends StateShape implements HasDataFilter {
             getView().addChild(new CornerIcon(CLOCK,
                                               RIGHT_TOP_CORNER,
                                               getTranslation(TIMEOUT_EVENT) + ": " + truncate(((WorkflowTimeouts) state.getTimeouts()).getEventTimeout()) + "\r\n"
-                                                      + getTranslation(TIMEOUT_STATE) + ": " + truncate(((WorkflowTimeouts) state.getTimeouts()).getStateExecTimeout()) + "\r\n"
+                                                      + getTranslation(TIMEOUT_STATE) + ": " + truncate(((WorkflowTimeouts) state.getTimeouts()).getStateExecTimeout() instanceof String ?
+                                                      (String) ((WorkflowTimeouts) state.getTimeouts()).getStateExecTimeout()
+                                                      : ((StateExecTimeout) ((WorkflowTimeouts) state.getTimeouts()).getStateExecTimeout()).getTotal()) + "\r\n"
                                                       + getTranslation(TIMEOUT_ACTION) + ": " + truncate(((WorkflowTimeouts) state.getTimeouts()).getActionExecTimeout())));
         }
 

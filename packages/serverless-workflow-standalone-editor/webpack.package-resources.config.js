@@ -21,11 +21,10 @@ const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const path = require("path");
 const { env } = require("./env");
-const buildEnv = env;
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 
-module.exports = (env) =>
-  merge(common(env), {
+module.exports = (webpackEnv) =>
+  merge(common(webpackEnv), {
     output: {
       path: path.join(__dirname, "dist"),
       filename: "[name]/index.js",
@@ -42,7 +41,7 @@ module.exports = (env) =>
       historyApiFallback: false,
       static: [{ directory: path.join(__dirname, "./dist") }],
       compress: true,
-      port: buildEnv.standaloneEditors.dev.port,
+      port: env.standaloneEditors.dev.port,
     },
     ignoreWarnings: [/Failed to parse source map/],
   });

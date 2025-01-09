@@ -39,12 +39,18 @@ var KogitoBomDependency = Dependency{
 // KogitoDependencies defines the set of dependencies to be added to the pom.xml
 // of created and converted Quarkus projects.
 var KogitoDependencies = []Dependency{
-	{GroupId: "org.kie.kogito", ArtifactId: "kogito-addons-quarkus-knative-eventing"},
-	{GroupId: "org.kie.kogito", ArtifactId: "kogito-addons-quarkus-source-files"},
-	{GroupId: "org.kie.kogito", ArtifactId: "kogito-quarkus-serverless-workflow-devui"},
-	{GroupId: "org.kie.kogito", ArtifactId: "kogito-addons-quarkus-data-index-inmemory"},
-	{GroupId: "org.kie.kogito", ArtifactId: "kogito-quarkus-serverless-workflow"},
+	{GroupId: "org.kie", ArtifactId: "kie-addons-quarkus-knative-eventing"},
+	{GroupId: "org.kie", ArtifactId: "kie-addons-quarkus-process-management"},
+	{GroupId: "org.kie", ArtifactId: "kie-addons-quarkus-source-files"},
+	{GroupId: "org.kie", ArtifactId: "kogito-addons-quarkus-data-index-inmemory"},
+	{GroupId: "org.kie", ArtifactId: "kogito-addons-quarkus-jobs-service-embedded"},
+	{GroupId: "org.apache.kie.sonataflow", ArtifactId: "sonataflow-quarkus"},
+	{GroupId: "org.apache.kie.sonataflow", ArtifactId: "sonataflow-quarkus-devui", Version: "${kie.tooling.version}"},
 }
+
+// requared crds for sonataflow
+var SonataflowCRDs = []string{"sonataflowbuilds.sonataflow.org", "sonataflowclusterplatforms.sonataflow.org", "sonataflowplatforms.sonataflow.org", "sonataflows.sonataflow.org"}
+var KnativeCoreServingCRDs = []string{"images.caching.internal.knative.dev", "certificates.networking.internal.knative.dev", "configurations.serving.knative.dev", "clusterdomainclaims.networking.internal.knative.dev", "domainmappings.serving.knative.dev", "ingresses.networking.internal.knative.dev", "metrics.autoscaling.internal.knative.dev", "podautoscalers.autoscaling.internal.knative.dev", "revisions.serving.knative.dev", "routes.serving.knative.dev", "services.serving.knative.dev", "serverlessservices.networking.internal.knative.dev"}
 
 const (
 	QuarkusMavenPlugin                          = "quarkus-maven-plugin"
@@ -53,10 +59,10 @@ const (
 	QuarkusContainerImageJib                    = "quarkus-container-image-jib"
 	SmallryeHealth                              = "smallrye-health"
 	QuarkusContainerImageDocker                 = "quarkus-container-image-docker"
-	KogitoQuarkusServerlessWorkflowExtension    = "kogito-quarkus-serverless-workflow"
-	KogitoAddonsQuarkusKnativeEventingExtension = "kogito-addons-quarkus-knative-eventing"
-	KogitoQuarkusServerlessWorkflowDevUi        = "kogito-quarkus-serverless-workflow-devui"
-	KogitoAddonsQuarkusSourceFiles              = "kogito-addons-quarkus-source-files"
+	KogitoQuarkusServerlessWorkflowExtension    = "sonataflow-quarkus"
+	KogitoAddonsQuarkusKnativeEventingExtension = "kie-addons-quarkus-knative-eventing"
+	KogitoQuarkusServerlessWorkflowDevUi        = "sonataflow-quarkus-devui"
+	KogitoAddonsQuarkusSourceFiles              = "kie-addons-quarkus-source-files"
 	KogitoDataIndexInMemory                     = "kogito-addons-quarkus-data-index-inmemory"
 
 	JavaVersion       = 11

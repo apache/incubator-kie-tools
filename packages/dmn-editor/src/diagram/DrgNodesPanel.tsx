@@ -18,6 +18,8 @@
  */
 
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button/Button";
 import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
@@ -29,7 +31,6 @@ import { DmnObjectListItem } from "../externalNodes/DmnObjectListItem";
 import { DiagramLhsPanel } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { Unpacked } from "../tsExt/tsExt";
-import { buildXmlHref } from "../xml/xmlHrefs";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeContainingDecisionServiceHrefsByDecisionHrefs.ts";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
@@ -49,16 +50,18 @@ export function DrgNodesPanel() {
 
   const namespaceForHref = ""; // That's the default namespace.
 
-  const onDragStart = useCallback((event: React.DragEvent, drgElement: Unpacked<DMN15__tDefinitions["drgElement"]>) => {
-    event.dataTransfer.setData(MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE, JSON.stringify(drgElement));
-    event.dataTransfer.effectAllowed = "move";
-  }, []);
+  const onDragStart = useCallback(
+    (event: React.DragEvent, drgElement: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]>) => {
+      event.dataTransfer.setData(MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE, JSON.stringify(drgElement));
+      event.dataTransfer.effectAllowed = "move";
+    },
+    []
+  );
 
   const containingDecisionServiceHrefsByDecisionHrefsRelativeToThisDmn = useMemo(
     () =>
       computeContainingDecisionServiceHrefsByDecisionHrefs({
-        drgElements: thisDmnsDrgElements,
-        drgElementsNamespace: thisDmnsNamespace,
+        drgElementsByNamespace: new Map([[thisDmnsNamespace, thisDmnsDrgElements]]),
         thisDmnsNamespace: thisDmnsNamespace,
       }),
     [thisDmnsDrgElements, thisDmnsNamespace]

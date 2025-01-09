@@ -27,7 +27,6 @@ import { WorkflowListGatewayApi } from "../WorkflowList/WorkflowListGatewayApi";
 interface WorkflowListContainerProps {
   initialState: WorkflowListState;
   onOpenWorkflowDetails: (args: { workflowId: string; state: WorkflowListState }) => void;
-  onOpenTriggerCloudEvent?: () => void;
   onOpenTriggerCloudEventForWorkflow?: (workflowId: string) => void;
   targetOrigin?: string;
 }
@@ -35,7 +34,6 @@ interface WorkflowListContainerProps {
 export const WorkflowListContainer: React.FC<WorkflowListContainerProps & OUIAProps> = ({
   initialState,
   onOpenWorkflowDetails,
-  onOpenTriggerCloudEvent,
   onOpenTriggerCloudEventForWorkflow,
   ouiaId,
   ouiaSafe,
@@ -53,17 +51,14 @@ export const WorkflowListContainer: React.FC<WorkflowListContainerProps & OUIAPr
       onOpen(workflowInstance?: WorkflowInstance) {
         if (workflowInstance) {
           onOpenTriggerCloudEventForWorkflow?.(workflowInstance.id);
-          return;
         }
-
-        onOpenTriggerCloudEvent?.();
       },
     });
     return () => {
       onOpenInstanceUnsubscriber.unSubscribe();
       onTriggerCloudEventUnsubscriber?.unSubscribe();
     };
-  }, [gatewayApi, onOpenTriggerCloudEvent, onOpenTriggerCloudEventForWorkflow, onOpenWorkflowDetails]);
+  }, [gatewayApi, onOpenTriggerCloudEventForWorkflow, onOpenWorkflowDetails]);
 
   return (
     <EmbeddedWorkflowList

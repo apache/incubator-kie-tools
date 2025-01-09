@@ -35,7 +35,6 @@
   <description>Uberfire Layout Editor Client</description>
 
   <dependencies>
-
     <dependency>
       <groupId>org.kie.kogito.stunner.editors</groupId>
       <artifactId>errai-common</artifactId>

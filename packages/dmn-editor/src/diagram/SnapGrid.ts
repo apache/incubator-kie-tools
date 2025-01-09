@@ -23,9 +23,10 @@ import {
   DC__Point,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { SnapGrid } from "../store/Store";
 
-export function snapShapePosition(snapGrid: SnapGrid, shape: DMNDI15__DMNShape) {
+export function snapShapePosition(snapGrid: SnapGrid, shape: Normalized<DMNDI15__DMNShape>) {
   return snapBoundsPosition(snapGrid, shape["dc:Bounds"]);
 }
 
@@ -36,7 +37,10 @@ export function snapBoundsPosition(snapGrid: SnapGrid, bounds: DC__Bounds | unde
   };
 }
 
-export function offsetShapePosition(shape: DMNDI15__DMNShape, offset: { x: number; y: number }): DMNDI15__DMNShape {
+export function offsetShapePosition(
+  shape: Normalized<DMNDI15__DMNShape>,
+  offset: { x: number; y: number }
+): Normalized<DMNDI15__DMNShape> {
   if (!shape["dc:Bounds"]) {
     return shape;
   }
@@ -51,7 +55,7 @@ export function offsetShapePosition(shape: DMNDI15__DMNShape, offset: { x: numbe
   };
 }
 
-export function snapShapeDimensions(grid: SnapGrid, shape: DMNDI15__DMNShape, minSizes: DC__Dimension) {
+export function snapShapeDimensions(grid: SnapGrid, shape: Normalized<DMNDI15__DMNShape>, minSizes: DC__Dimension) {
   return snapBoundsDimensions(grid, shape["dc:Bounds"], minSizes);
 }
 

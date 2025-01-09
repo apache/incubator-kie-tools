@@ -1,0 +1,9 @@
+{
+  "extends": "@kie-tools/tsconfig/tsconfig.esm.json",
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  }
+}

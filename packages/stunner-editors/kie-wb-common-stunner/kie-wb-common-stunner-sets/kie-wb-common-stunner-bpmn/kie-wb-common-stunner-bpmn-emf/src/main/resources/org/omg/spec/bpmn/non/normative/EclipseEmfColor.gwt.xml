@@ -23,5 +23,4 @@
   <inherits name="org.eclipse.EclipseEmulation" />
 
   <source path="color" />
-
 </module>

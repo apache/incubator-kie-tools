@@ -48,8 +48,8 @@
       <artifactId>jsinterop-annotations</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.crysknife.ui</groupId>
-      <artifactId>crysknife-ui-core</artifactId>
+      <groupId>org.kie.j2cl.tools.di.ui</groupId>
+      <artifactId>core</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito.stunner.serverless.editor</groupId>
@@ -64,7 +64,7 @@
       <artifactId>uberfire-client-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.treblereel.j2cl.processors</groupId>
+      <groupId>org.kie.j2cl.tools.processors</groupId>
       <artifactId>processors</artifactId>
       <scope>provided</scope>
     </dependency>
@@ -113,8 +113,6 @@
       <artifactId>powermock-module-junit4</artifactId>
       <scope>test</scope>
     </dependency>
-
-
   </dependencies>
 
   <build>
@@ -130,5 +128,4 @@
       </resource>
     </resources>
   </build>
-
 </project>

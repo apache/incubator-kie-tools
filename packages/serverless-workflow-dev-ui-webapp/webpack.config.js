@@ -29,10 +29,9 @@ const swEditor = require("@kie-tools/serverless-workflow-diagram-editor-assets")
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { env } = require("./env");
-const buildEnv = env;
 
-module.exports = async (env) =>
-  merge(common(env), {
+module.exports = async (webpackEnv) =>
+  merge(common(webpackEnv), {
     entry: {
       standalone: path.resolve(__dirname, "src", "standalone", "standalone.ts"),
       envelope: path.resolve(__dirname, "src", "standalone", "EnvelopeApp.ts"),
@@ -45,7 +44,7 @@ module.exports = async (env) =>
       static: {
         directory: "./dist",
       },
-      port: buildEnv.runtimeToolsDevUiWebapp.dev.port,
+      port: env.runtimeToolsDevUiWebapp.dev.port,
       compress: true,
       historyApiFallback: true,
       hot: true,
@@ -55,7 +54,13 @@ module.exports = async (env) =>
       },
       proxy: [
         {
-          context: ["/svg", "/forms", "/customDashboard"],
+          context: (pathname, req) => {
+            // redirect all POST request to test the local cluster environment
+            return (
+              req.method === "POST" ||
+              ["/svg", "/forms", "/customDashboard", "/q/openapi.json"].some((path) => pathname.startsWith(path))
+            );
+          },
           target: "http://localhost:4000",
           secure: false,
           changeOrigin: true,
@@ -151,7 +156,7 @@ module.exports = async (env) =>
         {
           test: /\.(svg|ttf|eot|woff|woff2)$/,
           use: {
-            loader: "file-loader",
+            loader: require.resolve("file-loader"),
             options: {
               // Limit at 50k. larger files emited into separate files
               limit: 5000,
@@ -165,7 +170,7 @@ module.exports = async (env) =>
           include: (input) => input.indexOf("background-filter.svg") > 1,
           use: [
             {
-              loader: "url-loader",
+              loader: require.resolve("url-loader"),
               options: {
                 limit: 5000,
                 outputPath: "svgs",
@@ -178,7 +183,7 @@ module.exports = async (env) =>
           test: /\.svg$/,
           include: (input) => input.indexOf(BG_IMAGES_DIRNAME) > -1,
           use: {
-            loader: "svg-url-loader",
+            loader: require.resolve("svg-url-loader"),
             options: {},
           },
         },
@@ -186,7 +191,7 @@ module.exports = async (env) =>
           test: /\.(jpg|jpeg|png|gif)$/i,
           use: [
             {
-              loader: "url-loader",
+              loader: require.resolve("url-loader"),
               options: {
                 limit: 5000,
                 outputPath: "images",

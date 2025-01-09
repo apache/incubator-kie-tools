@@ -20,7 +20,10 @@
 package command
 
 import (
+	"errors"
 	"fmt"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"os"
 	"path"
 
@@ -78,6 +81,11 @@ func NewDeployCommand() *cobra.Command {
 	cmd.Flags().StringP("specs-dir", "p", "", "Specify a custom specs files directory")
 	cmd.Flags().StringP("subflows-dir", "s", "", "Specify a custom subflows files directory")
 	cmd.Flags().StringP("schemas-dir", "t", "", "Specify a custom schemas files directory")
+	cmd.Flags().BoolP("minify", "f", true, "Minify the OpenAPI specs files before deploying")
+
+	if err := viper.BindPFlag("minify", cmd.Flags().Lookup("minify")); err != nil {
+		fmt.Println("❌ ERROR: failed to bind minify flag")
+	}
 
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
@@ -138,7 +146,7 @@ func deploy(cfg *DeployUndeployCmdConfig) error {
 		return fmt.Errorf("❌ ERROR: failed to get manifest directory and files: %w", err)
 	}
 	for _, file := range files {
-		if err = common.ExecuteKubectlApply(file, cfg.NameSpace); err != nil {
+		if err = common.ExecuteApply(file, cfg.NameSpace); err != nil {
 			return fmt.Errorf("❌ ERROR: failed to deploy manifest %s,  %w", file, err)
 		}
 		fmt.Printf(" - ✅ Manifest %s successfully deployed in namespace %s\n", path.Base(file), cfg.NameSpace)
@@ -156,6 +164,7 @@ func runDeployCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, err er
 		SpecsDir:                   viper.GetString("specs-dir"),
 		SchemasDir:                 viper.GetString("schemas-dir"),
 		SubflowsDir:                viper.GetString("subflows-dir"),
+		Minify:                     viper.GetBool("minify"),
 	}
 
 	if len(cfg.SubflowsDir) == 0 {
@@ -188,10 +197,30 @@ func runDeployCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, err er
 		return cfg, fmt.Errorf("❌ ERROR: failed to get default dashboards files folder: %w", err)
 	}
 
+	// check if sonataflow operator and knative CRDs are installed
+	if err := CheckCRDs(metadata.SonataflowCRDs, "SonataFlow Operator"); err != nil {
+		return cfg, err
+	}
+
 	//setup manifest path
 	if err := setupConfigManifestPath(&cfg); err != nil {
 		return cfg, err
 	}
 
 	return cfg, nil
+}
+
+func CheckCRDs(crds []string, typeName string) error {
+	for _, crd := range crds {
+		err := common.CheckCrdExists(crd)
+		if err != nil {
+			var statusErr *apierrors.StatusError
+			if errors.As(err, &statusErr) && statusErr.ErrStatus.Reason == metav1.StatusReasonNotFound {
+				return fmt.Errorf("❌ ERROR: the required CRDs are not installed.. Install the %s CRD first", typeName)
+			} else {
+				return fmt.Errorf("❌ ERROR: failed to check if CRD %s exists: %w", crd, err)
+			}
+		}
+	}
+	return nil
 }

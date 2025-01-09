@@ -27,8 +27,8 @@ export type RecursiveReplace<T, V> = {
   [P in keyof T]: T[P] extends (infer U)[]
     ? RecursiveReplace<U, V>[]
     : T[P] extends number | string | symbol | undefined
-    ? V
-    : RecursiveReplace<T[P], V>;
+      ? V
+      : RecursiveReplace<T[P], V>;
 };
 
 export type KieSandboxDeployment = {

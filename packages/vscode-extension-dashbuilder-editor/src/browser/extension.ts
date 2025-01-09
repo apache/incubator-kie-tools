@@ -17,8 +17,6 @@
  * under the License.
  */
 
-import { backendI18nDefaults, backendI18nDictionaries } from "@kie-tools-core/backend/dist/i18n";
-import { VsCodeBackendProxy } from "@kie-tools-core/backend/dist/vscode";
 import { EditorEnvelopeLocator, EnvelopeContentType, EnvelopeMapping } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 import * as KogitoVsCode from "@kie-tools-core/vscode-extension";
@@ -34,15 +32,6 @@ const componentServerUrl = "https://start.kubesmarts.org/dashbuilder-client/dash
 export async function activate(context: vscode.ExtensionContext) {
   console.info("Extension is alive.");
 
-  const backendI18n = new I18n(backendI18nDefaults, backendI18nDictionaries, vscode.env.language);
-  const backendProxy = new VsCodeBackendProxy(context, backendI18n);
-
-  context.subscriptions.push(
-    new vscode.Disposable(() => {
-      return backendProxy.stopServices();
-    })
-  );
-
   const kieEditorsStore = await KogitoVsCode.startExtension({
     extensionName: "kie-group.vscode-extension-dashbuilder-editor",
     context: context,
@@ -57,7 +46,6 @@ export async function activate(context: vscode.ExtensionContext) {
       }),
     ]),
     channelApiProducer: new DashbuilderViewerChannelApiProducer(new Promise((resolve) => resolve(componentServerUrl))),
-    backendProxy: backendProxy,
   });
 
   const configuration = new DashbuilderVsCodeExtensionConfiguration();

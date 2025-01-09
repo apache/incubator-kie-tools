@@ -7,9 +7,11 @@
     "bootstrap": "pnpm bootstrap:root && pnpm bootstrap:packages",
     "bootstrap:packages": "kie-tools--bootstrap",
     "bootstrap:root": "pnpm install --workspace-root --strict-peer-dependencies=false -F kie-tools-root...",
-    "format": "prettier --write . '**/*.xml'",
-    "format:check": "prettier --check . '**/*.xml'",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "prepare": "husky install",
+    "update-kogito-version-to": "kie-tools--update-kogito-version-to",
+    "update-stream-name-to": "kie-tools--update-stream-name-to",
     "update-version-to": "kie-tools--update-version-to"
   },
   "devDependencies": {
@@ -18,22 +20,20 @@
     "@kie-tools-scripts/check-junit-report-results": "workspace:*",
     "@kie-tools-scripts/run-script-if": "workspace:*",
     "@kie-tools-scripts/sparse-checkout": "workspace:*",
+    "@kie-tools-scripts/update-kogito-version": "workspace:*",
+    "@kie-tools-scripts/update-stream-name": "workspace:*",
     "@kie-tools-scripts/update-version": "workspace:*",
-    "@nice-move/prettier-plugin-package-json": "^0.6.1",
-    "@prettier/plugin-xml": "^2",
-    "@types/node": "^18.13.0",
+    "@nice-move/prettier-plugin-package-json": "^0.8.0",
+    "@prettier/plugin-xml": "^3.4.1",
+    "@types/node": "^20.14.2",
     "husky": "^6.0.0",
     "postinstall-postinstall": "^2.1.0",
-    "prettier": "^2.8.8",
-    "pretty-quick": "^3.1.0"
+    "prettier": "^3.3.2",
+    "pretty-quick": "^4.0.0"
   },
   "resolutions": {
     "@types/react": "^17.0.6",
     "react-dropzone": "^11.4.2"
-  },
-  "engines": {
-    "node": ">=18",
-    "pnpm": "8.7.0"
   },
   "pnpm": {
     "packageExtensions": {
@@ -50,6 +50,11 @@
       "selenium-webdriver@4.15.0": "patches/selenium-webdriver@4.15.0.patch",
       "zustand@4.4.2": "patches/zustand@4.4.2.patch"
     }
+  },
+  "packageManager": "pnpm@9.3.0",
+  "engines": {
+    "node": ">=20",
+    "pnpm": "9.3.0"
   },
   "kieTools": {
     "requiredPreinstalledCliCommands": [

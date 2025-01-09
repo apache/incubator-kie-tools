@@ -19,29 +19,28 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
+const {
+  env: { kogitoBaseBuilderImage: kogitoBaseBuilderImageEnv },
+} = require("@kie/kogito-base-builder-image/env");
+
 module.exports = composeEnv(
   [require("@kie-tools/root-env/env"), require("@kie-tools/serverless-logic-web-tools-base-builder-image-env/env")],
   {
     vars: varsWithName({
-      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags: {
-        default: "latest",
-        description: "",
-      },
-      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKubectlVersion: {
+      SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE__kubectlVersion: {
         default: "v1.27.3",
-        description: "",
+        description: "kubectl version to install.",
       },
-      SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoImageTag: {
-        default: "main-2024-04-03",
-        description: "",
+      SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE__baseImageTag: {
+        default: `${kogitoBaseBuilderImageEnv.registry}/${kogitoBaseBuilderImageEnv.account}/${kogitoBaseBuilderImageEnv.name}:${kogitoBaseBuilderImageEnv.buildTag}`,
+        description: "Base image complete tag.",
       },
     }),
     get env() {
       return {
-        baseBuilderImage: {
-          buildTags: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageBuildTags),
-          kubectlVersion: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKubectlVersion),
-          kogitoImageTag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderKogitoImageTag),
+        slwtBaseBuilderImage: {
+          kubectlVersion: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE__kubectlVersion),
+          baseImageTag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE__baseImageTag),
         },
       };
     },

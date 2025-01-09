@@ -38,11 +38,11 @@ const PLACEHOLDER_URL_TITLE = "Enter a title...";
 const PLACEHOLDER_URL = "https://...";
 
 export function DocumentationLinksFormGroup({
-  isReadonly,
+  isReadOnly,
   values,
   onChange,
 }: {
-  isReadonly: boolean;
+  isReadOnly: boolean;
   values?: Namespaced<"kie", KIE__tAttachment>[];
   onChange?: (newExtensionElements: Namespaced<"kie", KIE__tAttachment>[]) => void;
 }) {
@@ -91,7 +91,7 @@ export function DocumentationLinksFormGroup({
   const onChangeKieAttachment = useCallback(
     (args: { index: number; newUrlTitle?: string; newUrl?: string }) => {
       setAutoFocusFirst(false);
-      if (isReadonly) {
+      if (isReadOnly) {
         return;
       }
 
@@ -104,7 +104,7 @@ export function DocumentationLinksFormGroup({
       };
       onInternalChange(newValues);
     },
-    [isReadonly, onInternalChange, values]
+    [isReadOnly, onInternalChange, values]
   );
 
   const onRemove = useCallback(
@@ -165,7 +165,7 @@ export function DocumentationLinksFormGroup({
   }, []);
 
   const draggableItem = useCallback(
-    (kieAttachment, index) => {
+    (kieAttachment: Namespaced<"kie", KIE__tAttachment>, index: number) => {
       return (
         <Draggable
           key={valuesUuid?.[index] ?? generateUuid()}
@@ -176,12 +176,13 @@ export function DocumentationLinksFormGroup({
               ? { alignSelf: "flex-start", paddingTop: "8px", paddingLeft: "16px", paddingRight: "16px" }
               : { paddingLeft: "16px", paddingRight: "16px" }
           }
+          isDisabled={isReadOnly}
         >
           <li>
             <DocumentationLinksInput
               title={kieAttachment["@_name"] ?? ""}
               url={kieAttachment["@_url"] ?? ""}
-              isReadonly={isReadonly}
+              isReadOnly={isReadOnly}
               onChange={(newUrlTitle, newUrl) => onChangeKieAttachment({ newUrlTitle, newUrl, index })}
               onRemove={() => onRemove(index)}
               isUrlExpanded={expandedUrls[index]}
@@ -192,7 +193,7 @@ export function DocumentationLinksFormGroup({
         </Draggable>
       );
     },
-    [autoFocusFirst, expandedUrls, isReadonly, onChangeKieAttachment, onRemove, setUrlExpanded, valuesUuid]
+    [autoFocusFirst, expandedUrls, isReadOnly, onChangeKieAttachment, onRemove, setUrlExpanded, valuesUuid]
   );
 
   return (
@@ -202,7 +203,7 @@ export function DocumentationLinksFormGroup({
           <label className={"pf-c-form__label"} style={{ flexGrow: 1, cursor: "auto" }}>
             <span className={"pf-c-form__label-text"}>Documentation links</span>
           </label>
-          {!isReadonly && (
+          {!isReadOnly && (
             <Button variant={"plain"} icon={<PlusCircleIcon />} onClick={onAdd} title={"Add documentation link"} />
           )}
         </div>
@@ -210,14 +211,14 @@ export function DocumentationLinksFormGroup({
     >
       <ul>
         {(values ?? []).length === 0 && (
-          <li className={"kie-dmn-editor--documentation-link--empty-state"}>{isReadonly ? "None" : "None yet"}</li>
+          <li className={"kie-dmn-editor--documentation-link--empty-state"}>{isReadOnly ? "None" : "None yet"}</li>
         )}
         <DragAndDrop
           reorder={reorder}
           onDragEnd={onDragEnd}
           values={values}
           draggableItem={draggableItem}
-          isDisabled={isReadonly}
+          isDisabled={isReadOnly}
         />
       </ul>
     </FormGroup>
@@ -227,7 +228,7 @@ export function DocumentationLinksFormGroup({
 function DocumentationLinksInput({
   title,
   url,
-  isReadonly,
+  isReadOnly,
   isUrlExpanded,
   onChange,
   onRemove,
@@ -236,7 +237,7 @@ function DocumentationLinksInput({
 }: {
   title: string;
   url: string;
-  isReadonly: boolean;
+  isReadOnly: boolean;
   isUrlExpanded: boolean;
   onChange: (newUrlTitle: string, newUrl: string) => void;
   onRemove: () => void;
@@ -333,7 +334,10 @@ function DocumentationLinksInput({
 
   return (
     <React.Fragment>
-      <div className={"kie-dmn-editor--documentation-link--row"}>
+      <div
+        className={"kie-dmn-editor--documentation-link--row"}
+        data-testid={"kie-tools--dmn-editor--documentation-link--row"}
+      >
         <Button
           title={"Expand / collapse documentation link"}
           variant={ButtonVariant.plain}
@@ -347,7 +351,7 @@ function DocumentationLinksInput({
             <>
               <div ref={urlTitleRef} className={"kie-dmn-editor--documentation-link--row-title"}>
                 {isUrl ? (
-                  <a href={url} target={"_blank"}>
+                  <a href={url} target={"_blank"} data-testid={"kie-tools--dmn-editor--documentation-link--row-title"}>
                     {title}
                   </a>
                 ) : (
@@ -364,7 +368,7 @@ function DocumentationLinksInput({
             <div className={"kie-dmn-editor--documentation-link--row-inputs"}>
               <InlineFeelNameInput
                 isPlain={true}
-                isReadonly={isReadonly}
+                isReadOnly={isReadOnly}
                 id={`${uuid}-name`}
                 shouldCommitOnBlur={true}
                 placeholder={PLACEHOLDER_URL_TITLE}
@@ -391,7 +395,7 @@ function DocumentationLinksInput({
               <InlineFeelNameInput
                 className={"kie-dmn-editor--documentation-link--row-inputs-url"}
                 isPlain={true}
-                isReadonly={isReadonly}
+                isReadOnly={isReadOnly}
                 id={`${uuid}-url`}
                 shouldCommitOnBlur={true}
                 placeholder={PLACEHOLDER_URL}
@@ -424,6 +428,7 @@ function DocumentationLinksInput({
               className={"kie-dmn-editor--documentation-link--row-remove"}
               variant={"plain"}
               icon={<TimesIcon />}
+              isDisabled={isReadOnly}
               onClick={() => onRemove()}
             />
           </Tooltip>

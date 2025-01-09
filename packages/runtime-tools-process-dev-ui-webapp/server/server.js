@@ -22,7 +22,7 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerApiDoc = require("./MockData/openAPI/openapi.json");
 var cors = require("cors");
 const app = express();
-const { ApolloServer, gql } = require("apollo-server-express");
+const { ApolloServer } = require("apollo-server-express");
 var bodyParser = require("body-parser");
 // GraphQL - Apollo
 const { GraphQLScalarType } = require("graphql");
@@ -406,6 +406,16 @@ const resolvers = {
       console.log("result length: " + result.length);
       return result;
     },
+    ProcessDefinitions: async (parent, args) => {
+      await timeout();
+      return data.ProcessDefinitionData.filter((proccessDefinition) => {
+        if (args["where"] !== undefined) {
+          return proccessDefinition.id === args["where"].id.equal;
+        } else {
+          return proccessDefinition;
+        }
+      });
+    },
     Jobs: async (parent, args) => {
       if (Object.keys(args).length > 0) {
         const result = data.JobsData.filter((jobData) => {
@@ -515,7 +525,7 @@ const resolvers = {
     serialize(value) {
       return value;
     },
-    parseLiteral(ast) {
+    parseLiteral() {
       return null;
     },
   }),

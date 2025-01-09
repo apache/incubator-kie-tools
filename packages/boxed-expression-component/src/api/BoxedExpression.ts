@@ -51,6 +51,18 @@ export enum BoxedFunctionKind {
   Pmml = "PMML",
 }
 
+export type Normalized<T> = WithRequiredDeep<T, "@_id">;
+
+type WithRequiredDeep<T, K extends keyof any> = T extends undefined
+  ? T
+  : T extends Array<infer U>
+    ? Array<WithRequiredDeep<U, K>>
+    : { [P in keyof T]: WithRequiredDeep<T[P], K> } & (K extends keyof T
+        ? { [P in K]-?: NonNullable<WithRequiredDeep<T[P], K>> }
+        : T);
+
+export type BoxedIterator = BoxedFor | BoxedEvery | BoxedSome;
+
 export type BoxedExpression =
   | BoxedLiteral
   | BoxedRelation

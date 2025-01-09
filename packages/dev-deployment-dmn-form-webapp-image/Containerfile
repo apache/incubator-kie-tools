@@ -5,34 +5,43 @@
 # to you under the Apache License, Version 2.0 (the
 # "License"); you may not use this file except in compliance
 # with the License.  You may obtain a copy of the License at
-# 
+#
 #  http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing,
 # software distributed under the License is distributed on an
 # "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
-# under the License. 
+# under the License.
 
-FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.3
+FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.4
 
-RUN microdnf --disableplugin=subscription-manager -y install httpd-2.4.57-5.el9.x86_64 \
+ARG DEV_DEPLOYMENT_DMN_FORM_WEBAPP_DEFAULT_PORT=8081
+
+COPY entrypoint.sh dist-dev/image-env-to-json-standalone dist-dev/EnvJson.schema.json /tmp/
+
+RUN microdnf --disableplugin=subscription-manager -y install httpd \
   && microdnf --disableplugin=subscription-manager clean all \
   && echo "Mutex posixsem" >> /etc/httpd/conf/httpd.conf \
-  && sed -i -e 's/Listen 80/Listen 8081/' /etc/httpd/conf/httpd.conf \
-  && sed -i -e 's/#ServerName www.example.com:80/ServerName 127.0.0.1:8080/' /etc/httpd/conf/httpd.conf \
-  && sed -i -e "/ServerName 127.0.0.1:8080/aHeader set Content-Security-Policy \"frame-ancestors 'self';\"" /etc/httpd/conf/httpd.conf \
-  && sed -i -e 's/Options Indexes FollowSymLinks/Options -Indexes +FollowSymLinks/' /etc/httpd/conf/httpd.conf \
-  && sed -i '$ a ServerTokens Prod' /etc/httpd/conf/httpd.conf \
-  && sed -i '$ a ServerSignature Off' /etc/httpd/conf/httpd.conf \
-  && chgrp -R 0 /var/log/httpd /var/run/httpd /var/www/html \
-  && chmod -R g=u /var/log/httpd /var/run/httpd /var/www/html
+  && sed -i "s/Listen 80/Listen $DEV_DEPLOYMENT_DMN_FORM_WEBAPP_DEFAULT_PORT/" /etc/httpd/conf/httpd.conf \
+  && sed -i "s/#ServerName www.example.com:80/ServerName 127.0.0.1:$DEV_DEPLOYMENT_DMN_FORM_WEBAPP_DEFAULT_PORT/" /etc/httpd/conf/httpd.conf \
+  && sed -i -e "/ServerName 127.0.0.1:$DEV_DEPLOYMENT_DMN_FORM_WEBAPP_DEFAULT_PORT/aHeader set Content-Security-Policy \"frame-ancestors 'self';\"" /etc/httpd/conf/httpd.conf \
+  && sed -i -e "s/Options Indexes FollowSymLinks/Options -Indexes +FollowSymLinks/" /etc/httpd/conf/httpd.conf \
+  && sed -i "$ a ServerTokens Prod" /etc/httpd/conf/httpd.conf \
+  && sed -i "$ a ServerSignature Off" /etc/httpd/conf/httpd.conf \
+  && mkdir /dmn-form-webapp \
+  && mv -t /dmn-form-webapp /tmp/entrypoint.sh /tmp/image-env-to-json-standalone /tmp/EnvJson.schema.json \
+  && chgrp -R 0 /var/log/httpd /var/run/httpd /var/www/html /dmn-form-webapp \
+  && chmod -R g=u /var/log/httpd /var/run/httpd /var/www/html /dmn-form-webapp \
+  && chmod +x /dmn-form-webapp/entrypoint.sh /dmn-form-webapp/image-env-to-json-standalone
 
-COPY dist-dev /var/www/html
+COPY dist-dev/dev-deployment-dmn-form-webapp /dmn-form-webapp/app
 
-EXPOSE 8081
+RUN if [ -f /dmn-form-webapp/app/env.json ]; then chmod a+w /dmn-form-webapp/app/env.json; fi
+
+EXPOSE $DEV_DEPLOYMENT_DMN_FORM_WEBAPP_DEFAULT_PORT
 
 USER 1000
 
-ENTRYPOINT ["httpd", "-D", "FOREGROUND"]
+ENTRYPOINT [ "/dmn-form-webapp/entrypoint.sh" ]

@@ -18,6 +18,7 @@
  */
 
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { addOrGetDrd } from "./addOrGetDrd";
 
 export function updateExpressionWidths({
@@ -25,24 +26,13 @@ export function updateExpressionWidths({
   drdIndex,
   widthsById,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   widthsById: Map<string, number[]>;
 }): void {
-  const { widthsExtension, widths } = addOrGetDrd({ definitions, drdIndex });
-  const componentWidthsMap = widths.reduce(
-    (acc, e) =>
-      e["@_dmnElementRef"]
-        ? acc.set(
-            e["@_dmnElementRef"],
-            (e["kie:width"] ?? []).map((vv) => vv.__$$text)
-          )
-        : acc,
-    new Map<string, number[]>()
-  );
+  const { widthsExtension } = addOrGetDrd({ definitions, drdIndex });
 
-  widthsById.forEach((v, k) => componentWidthsMap.set(k, v));
-  widthsExtension["kie:ComponentWidths"] = [...componentWidthsMap.entries()].map(([k, v]) => ({
+  widthsExtension["kie:ComponentWidths"] = [...widthsById.entries()].map(([k, v]) => ({
     "@_dmnElementRef": k,
     "kie:width": v.map((vv) => ({ __$$text: vv })),
   }));

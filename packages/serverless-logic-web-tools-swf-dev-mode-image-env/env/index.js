@@ -19,27 +19,34 @@
 
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
-module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+const rootEnv = require("@kie-tools/root-env/env");
+
+module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry: {
-      default: "quay.io",
-      description: "",
+      default: "docker.io",
+      description: "E.g., `docker.io` or `quay.io`.",
     },
     SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount: {
-      default: "kie-tools",
-      description: "",
+      default: "apache",
+      description: "E.g,. `apache` or `kie-tools-bot`",
     },
     SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName: {
-      default: "serverless-logic-web-tools-swf-dev-mode-image",
-      description: "",
+      default: "incubator-kie-serverless-logic-web-tools-swf-dev-mode",
+      description: "Name of the image itself.",
+    },
+    SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTag: {
+      default: rootEnv.env.root.streamName,
+      description: "Tag version of this image. E.g., `main` or `10.0.x` or `10.0.0",
     },
   }),
   get env() {
     return {
-      swfDevModeImageEnv: {
+      slwtDevModeImageEnv: {
         registry: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry),
         account: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount),
         name: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName),
+        buildTag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTag),
       },
     };
   },

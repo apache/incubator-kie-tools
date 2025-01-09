@@ -37,7 +37,8 @@ export function useNestedExpressionResizingWidthValue(
   fixedColumnMinWidth: number,
   nestedExpressionMinWidth: number,
   extraWidth: number,
-  widthsById: Map<string, number[]>
+  widthsById: Map<string, number[]>,
+  nestedExpressionsExtraWidths?: Map<string, number>
 ) {
   const { resizingWidths } = useResizingWidths();
   const nestedExpressionContainer = useNestedExpressionContainer();
@@ -54,7 +55,8 @@ export function useNestedExpressionResizingWidthValue(
 
     if (nestedPivotingExpression) {
       return Math.max(
-        getExpressionResizingWidth(nestedPivotingExpression, resizingWidths, widthsById),
+        getExpressionResizingWidth(nestedPivotingExpression, resizingWidths, widthsById) +
+          (nestedExpressionsExtraWidths?.get(nestedPivotingExpression["@_id"]!) ?? 0),
         fixedColumnMinWidth
       );
     }
@@ -66,7 +68,11 @@ export function useNestedExpressionResizingWidthValue(
 
     return Math.max(
       nestedExpressionContainerResizingWidthValue - fixedColumnResizingWidth.value - extraWidth,
-      ...nestedExpressions.map((e) => getExpressionResizingWidth(e, new Map(), widthsById)),
+      ...nestedExpressions.map(
+        (e) =>
+          getExpressionResizingWidth(e, new Map(), widthsById) +
+          (nestedExpressionsExtraWidths?.get(e?.["@_id"] ?? "") ?? 0)
+      ),
       nestedExpressionMinWidth
     );
   }, [
@@ -83,6 +89,7 @@ export function useNestedExpressionResizingWidthValue(
     resizingWidths,
     widthsById,
     fixedColumnMinWidth,
+    nestedExpressionsExtraWidths,
   ]);
 }
 
@@ -144,6 +151,7 @@ export function useNestedExpressionContainerWithNestedExpressions({
   expression,
   flexibleColumnIndex,
   widthsById,
+  nestedExpressionsExtraWidths,
 }: {
   nestedExpressions: BoxedExpression[];
   fixedColumnActualWidth: number;
@@ -154,6 +162,7 @@ export function useNestedExpressionContainerWithNestedExpressions({
   expression: BoxedExpression;
   flexibleColumnIndex: number;
   widthsById: Map<string, number[]>;
+  nestedExpressionsExtraWidths?: Map<string, number>;
 }) {
   const nestedExpressionContainer = useNestedExpressionContainer();
 
@@ -189,7 +198,8 @@ export function useNestedExpressionContainerWithNestedExpressions({
     fixedColumnMinWidth,
     nestedExpressionMinWidth,
     extraWidth,
-    widthsById
+    widthsById,
+    nestedExpressionsExtraWidths
   );
 
   const maxNestedExpressionMinWidth = useNestedExpressionMinWidth(

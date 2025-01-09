@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { BoxedExpression } from "./BoxedExpression";
+import { BoxedExpression, Normalized } from "./BoxedExpression";
 
 /**
  * This interface defines all the API methods which BoxedExpressionEditor component can use to dialog with GWT Layer
@@ -25,9 +25,9 @@ import { BoxedExpression } from "./BoxedExpression";
 export interface BeeGwtService {
   getDefaultExpressionDefinition(
     logicType: BoxedExpression["__$$element"] | undefined,
-    typeRef: string,
+    typeRef: string | undefined,
     isRoot?: boolean
-  ): { expression: BoxedExpression; widthsById: Map<string, number[]> };
+  ): { expression: Normalized<BoxedExpression>; widthsById: Map<string, number[]> };
 
   openDataTypePage: () => void; // Just open the data types tab
 

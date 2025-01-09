@@ -23,6 +23,6 @@ export class ResourceContent {
   constructor(
     public readonly normalizedPosixPathRelativeToTheWorkspaceRoot: string,
     public readonly content: string | undefined,
-    public readonly type: ContentType = ContentType.TEXT
+    public readonly type: ContentType = "text"
   ) {}
 }

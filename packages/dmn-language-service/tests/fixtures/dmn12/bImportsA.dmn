@@ -1,24 +1,65 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kie.apache.org/dmn/_92BDAC3A-440F-490F-A673-9F5E18007A7E" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="https://kie.apache.org/dmn/extensions/1.0" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:included1="https://kie.apache.org/dmn/_235F665F-D019-40F9-8350-566FBDE21490" id="_3062BDB5-F775-4E00-9499-89BAFD8310B1" name="recursive" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kie.apache.org/dmn/_92BDAC3A-440F-490F-A673-9F5E18007A7E">
-  <extensionElements/>
-  <import id="_16BC8F9B-54E6-4ECA-8A63-D593F8B1C607" name="nested" namespace="https://kie.apache.org/dmn/_235F665F-D019-40F9-8350-566FBDE21490" locationURI="a.dmn" importType="http://www.omg.org/spec/DMN/20180521/MODEL/"/>
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~ 
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~ 
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.      
+-->
+<definitions
+  xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  xmlns="https://kie.apache.org/dmn/_92BDAC3A-440F-490F-A673-9F5E18007A7E"
+  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  xmlns:kie="https://kie.apache.org/dmn/extensions/1.0"
+  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+  xmlns:included1="https://kie.apache.org/dmn/_235F665F-D019-40F9-8350-566FBDE21490"
+  id="_3062BDB5-F775-4E00-9499-89BAFD8310B1"
+  name="recursive"
+  typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  namespace="https://kie.apache.org/dmn/_92BDAC3A-440F-490F-A673-9F5E18007A7E"
+>
+  <extensionElements />
+  <import
+    id="_16BC8F9B-54E6-4ECA-8A63-D593F8B1C607"
+    name="nested"
+    namespace="https://kie.apache.org/dmn/_235F665F-D019-40F9-8350-566FBDE21490"
+    locationURI="a.dmn"
+    importType="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  />
   <inputData id="_4B366BE7-DEDF-4CF1-AE91-4E10BEC1B450" name="test2">
-    <extensionElements/>
-    <variable id="_A2324F46-2BE1-4AAD-B7F0-893F5004723E" name="test2"/>
+    <extensionElements />
+    <variable id="_A2324F46-2BE1-4AAD-B7F0-893F5004723E" name="test2" />
   </inputData>
   <DMNDI>
     <DMNDiagram id="_6254BA36-BC72-4238-8379-7D21F88B4C96" name="DRG">
       <di:extension>
-        <kie:ComponentsWidthsExtension/>
+        <kie:ComponentsWidthsExtension />
       </di:extension>
-      <DMNShape id="dmnshape-drg-_4B366BE7-DEDF-4CF1-AE91-4E10BEC1B450" dmnElementRef="_4B366BE7-DEDF-4CF1-AE91-4E10BEC1B450" isCollapsed="false">
+      <DMNShape
+        id="dmnshape-drg-_4B366BE7-DEDF-4CF1-AE91-4E10BEC1B450"
+        dmnElementRef="_4B366BE7-DEDF-4CF1-AE91-4E10BEC1B450"
+        isCollapsed="false"
+      >
         <DMNStyle>
-          <FillColor red="255" green="255" blue="255"/>
-          <StrokeColor red="0" green="0" blue="0"/>
-          <FontColor red="0" green="0" blue="0"/>
+          <FillColor red="255" green="255" blue="255" />
+          <StrokeColor red="0" green="0" blue="0" />
+          <FontColor red="0" green="0" blue="0" />
         </DMNStyle>
-        <dc:Bounds x="174" y="172" width="100" height="50"/>
-        <DMNLabel/>
+        <dc:Bounds x="174" y="172" width="100" height="50" />
+        <DMNLabel />
       </DMNShape>
     </DMNDiagram>
   </DMNDI>

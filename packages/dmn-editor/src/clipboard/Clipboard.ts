@@ -25,6 +25,9 @@ import {
   DMNDI15__DMNEdge,
   DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { parseXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
+import { getNewDmnIdRandomizer } from "@kie-tools/dmn-marshaller/dist/idRandomizer/dmnIdRandomizer";
 import { Unpacked } from "../tsExt/tsExt";
 import * as RF from "reactflow";
 import { State } from "../store/Store";
@@ -35,8 +38,6 @@ import { DmnDiagramEdgeData } from "../diagram/edges/Edges";
 import { KIE, Namespaced } from "@kie-tools/dmn-marshaller/dist/kie-extensions";
 import { KIE__tComponentWidths } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
 import { DataType } from "../dataTypes/DataTypes";
-import { parseXmlHref } from "../xml/xmlHrefs";
-import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
 
 export const DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE = "application/json+kie-dmn-editor--diagram" as const;
 export const DMN_EDITOR_BOXED_EXPRESSION_CLIPBOARD_MIME_TYPE =
@@ -47,17 +48,17 @@ export type DmnEditorDataTypesClipboard = {
   mimeType: typeof DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE;
   namespaceWhereClipboardWasCreatedFrom: string;
   namespace: string;
-  itemDefinitions: DMN15__tItemDefinition[];
+  itemDefinitions: Normalized<DMN15__tItemDefinition>[];
 };
 
 export type DmnEditorDiagramClipboard = {
   mimeType: typeof DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE;
   namespaceWhereClipboardWasCreatedFrom: string;
-  drgElements: NonNullable<Unpacked<DMN15__tDefinitions["drgElement"]>>[];
-  artifacts: NonNullable<Unpacked<DMN15__tDefinitions["artifact"]>>[];
+  drgElements: NonNullable<Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]>>[];
+  artifacts: NonNullable<Unpacked<Normalized<DMN15__tDefinitions>["artifact"]>>[];
   widths: Namespaced<KIE, KIE__tComponentWidths>[];
-  shapes: DMNDI15__DMNShape[];
-  edges: DMNDI15__DMNEdge[];
+  shapes: Normalized<DMNDI15__DMNShape>[];
+  edges: Normalized<DMNDI15__DMNEdge>[];
 };
 
 export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorState: State) {
@@ -89,12 +90,12 @@ export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorS
             return;
           }
 
-          const dmnObject = JSON.parse(JSON.stringify(node.data.dmnObject)) as DMN15__tDecision; // Casting to `DMN15__tDecision` because it has all requirement types.
+          const dmnObject = JSON.parse(JSON.stringify(node.data.dmnObject)) as Normalized<DMN15__tDecision>; // Casting to `DMN15__tDecision` because it has all requirement types.
 
           // This is going to get repopulated when this data is pasted somewhere.
           if (node.data.dmnObject?.__$$element === "decisionService") {
-            (dmnObject as DMN15__tDecisionService).inputData = [];
-            (dmnObject as DMN15__tDecisionService).inputDecision = [];
+            (dmnObject as Normalized<DMN15__tDecisionService>).inputData = [];
+            (dmnObject as Normalized<DMN15__tDecisionService>).inputDecision = [];
           }
 
           if (dmnObject.authorityRequirement) {
@@ -188,9 +189,9 @@ export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorS
     .getOriginalIds();
 
   clipboard.widths = (
-    dmnEditorState.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[dmnEditorState.diagram.drdIndex][
-      "di:extension"
-    ]?.["kie:ComponentsWidthsExtension"]?.["kie:ComponentWidths"] ?? []
+    dmnEditorState.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[
+      dmnEditorState.computed(dmnEditorState).getDrdIndex()
+    ]["di:extension"]?.["kie:ComponentsWidthsExtension"]?.["kie:ComponentWidths"] ?? []
   ).filter((w: KIE__tComponentWidths) => idsOnDrgElementTrees.has(w["@_dmnElementRef"]!));
 
   const artifacts = dmnEditorState.dmn.model.definitions.artifact ?? [];

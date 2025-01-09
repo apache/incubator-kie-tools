@@ -19,7 +19,7 @@
 
 import { Validator } from "../src";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
-import { formI18n } from "../dist";
+import { formI18n } from "@kie-tools/form/dist/i18n/index";
 
 const schema = {
   type: "object",
@@ -67,7 +67,7 @@ describe("Validator Tests", () => {
       const validate = validator.createValidator(schema);
       const errors = validate(model);
       expect(errors?.details[0].keyword).toEqual("minimum");
-      expect(errors?.details[0].message).toEqual("should be >= 1");
+      expect(errors?.details[0].message).toEqual("must be >= 1");
     });
 
     it("invalid model - format", () => {
@@ -82,7 +82,7 @@ describe("Validator Tests", () => {
       const validate = validator.createValidator(schema);
       const errors = validate(model);
       expect(errors?.details[0].keyword).toEqual("format");
-      expect(errors?.details[0].message).toEqual(`should match format "date-time"`);
+      expect(errors?.details[0].message).toEqual(`must match format "date-time"`);
     });
   });
 

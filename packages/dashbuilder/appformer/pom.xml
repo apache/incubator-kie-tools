@@ -22,7 +22,6 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
 >
-
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.dashbuilder</groupId>
@@ -30,7 +29,6 @@
     <version>${revision}</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-
 
   <groupId>org.uberfire</groupId>
   <artifactId>uberfire-parent</artifactId>
@@ -93,7 +91,7 @@
     <jboss.snapshots.repo.url
     >https://repository.jboss.org/nexus/content/repositories/snapshots/</jboss.snapshots.repo.url>
 
-    <version.org.infinispan.protostream>4.3.5.Final</version.org.infinispan.protostream>
+    <version.org.infinispan.protostream>4.6.2.Final</version.org.infinispan.protostream>
 
     <!-- Newer version in kie-parent causes ServiceLoader error -->
     <version.ch.qos.logback>1.3.12</version.ch.qos.logback>
@@ -120,45 +118,6 @@
       with dashbuilder-validator module -->
     <version.javax.validation>1.0.0.GA</version.javax.validation>
   </properties>
-
-  <repositories>
-    <repository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>jboss-public-repository-group</id>
-      <name>JBoss Public Repository Group</name>
-      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
-
-  <scm>
-    <connection>scm:git:git@github.com:apache/incubator-kie-tools.git</connection>
-    <developerConnection>scm:git:git@github.com:apache/incubator-kie-tools.git</developerConnection>
-    <url>scm:git:git@github.com:apache/incubator-kie-tools.git</url>
-  </scm>
-  <issueManagement>
-    <system>github-issues</system>
-    <url>https://github.com/apache/incubator-kie-issues/issues</url>
-  </issueManagement>
 
   <build>
     <pluginManagement>
@@ -402,7 +361,6 @@
           </configuration>
         </plugin>
       </plugins>
-
     </pluginManagement>
 
     <plugins>
@@ -801,7 +759,6 @@
         <scope>test</scope>
       </dependency>
 
-
       <!-- INDEXING -->
       <dependency>
         <groupId>io.netty</groupId>
@@ -1034,7 +991,6 @@
         <scope>test</scope>
       </dependency>
 
-
       <!-- ARQUILLIAN -->
 
       <dependency>
@@ -1080,7 +1036,6 @@
         <artifactId>assertj-core</artifactId>
         <version>${version.org.assertj}</version>
       </dependency>
-
     </dependencies>
   </dependencyManagement>
 
@@ -1113,11 +1068,8 @@
         </exclusion>
       </exclusions>
     </dependency>
-
-
   </dependencies>
 
   <!-- DistributionManagement is inherited from org.jboss:jboss-parent -->
   <!-- <distributionManagement/> -->
-
 </project>

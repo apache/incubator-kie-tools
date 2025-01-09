@@ -17,12 +17,12 @@
  * under the License.
  */
 
-import { ExtendedServicesDmnJsonSchema } from "@kie-tools/extended-services-api";
 import { FormDmnValidator } from "../src/FormDmnValidator";
 import { formDmnI18n } from "../src/i18n";
 import { FormDmnJsonSchemaBridge } from "../src/uniforms";
+import type { JSONSchema4 } from "json-schema";
 
-const schema: ExtendedServicesDmnJsonSchema = {
+const schema: JSONSchema4 = {
   definitions: {
     InputSet: {
       type: "object",

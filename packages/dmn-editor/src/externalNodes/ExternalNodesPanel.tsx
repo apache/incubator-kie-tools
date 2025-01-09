@@ -19,10 +19,10 @@
 
 import * as React from "react";
 import { useCallback, useState } from "react";
+import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { DiagramLhsPanel, DmnEditorTab } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { buildXmlHref } from "../xml/xmlHrefs";
 import {
   EmptyState,
   EmptyStateBody,
@@ -54,7 +54,7 @@ export function ExternalNodesPanel() {
   const importsByNamespace = useDmnEditorStore((s) => s.computed(s).importsByNamespace());
   const { externalModelsByNamespace } = useExternalModels();
   const externalDmnsByNamespace = useDmnEditorStore(
-    (s) => s.computed(s).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns
+    (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
   );
   const dmnShapesByHref = useDmnEditorStore((s) => s.computed(s).indexedDrd().dmnShapesByHref);
   const { onRequestToResolvePath } = useDmnEditor();
@@ -136,7 +136,7 @@ export function ExternalNodesPanel() {
               const _import = importsByNamespace.get(namespace);
               if (!_import) {
                 console.debug(
-                  `DMN EDITOR: Couldn't find import for namespace '${namespace}', although there's an external DMN referncing it.`
+                  `DMN EDITOR: Couldn't find import for namespace '${namespace}', although there's an external DMN referencing it.`
                 );
                 return [];
               }
@@ -159,6 +159,7 @@ export function ExternalNodesPanel() {
                           externalDrgElementId: drgElement["@_id"]!,
                         })
                       }
+                      data-testid={`kie-tools--dmn-editor--external-node-${_import["@_name"] === "" ? _import["@_id"] : _import["@_name"]}-${drgElement["@_name"]}`}
                     >
                       <Flex
                         alignItems={{ default: "alignItemsCenter" }}

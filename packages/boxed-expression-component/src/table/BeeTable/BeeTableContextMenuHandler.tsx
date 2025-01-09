@@ -36,6 +36,7 @@ import {
   BeeTableContextMenuAllowedOperationsConditions,
   BeeTableOperation,
   BeeTableOperationConfig,
+  BeeTableOperationGroup,
   InsertRowColumnsDirection,
 } from "../../api";
 import { useCustomContextMenuHandler } from "../../contextMenu";
@@ -75,6 +76,7 @@ export interface BeeTableContextMenuHandlerProps {
     insertDirection: InsertRowColumnsDirection;
   }) => void;
   onColumnDeleted?: (args: { columnIndex: number; groupType: string | undefined }) => void;
+  isReadOnly: boolean;
 }
 
 /** The maximum numbers of rows or columns that can be inserted from the Insert menu. */
@@ -94,6 +96,7 @@ export function BeeTableContextMenuHandler({
   onRowReset,
   onColumnAdded,
   onColumnDeleted,
+  isReadOnly,
 }: BeeTableContextMenuHandlerProps) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setCurrentlyOpenContextMenu } = useBoxedExpressionEditor();
@@ -209,20 +212,6 @@ export function BeeTableContextMenuHandler({
     }
   }, [activeCell, columns]);
 
-  const operationGroups = useMemo(() => {
-    if (!activeCell) {
-      return [];
-    }
-    if (_.isArray(operationConfig)) {
-      return operationConfig;
-    }
-    return (operationConfig ?? {})[column?.groupType || ""];
-  }, [activeCell, column?.groupType, operationConfig]);
-
-  const allOperations = useMemo(() => {
-    return operationGroups.flatMap(({ items }) => items);
-  }, [operationGroups]);
-
   const operationLabel = useCallback(
     (operation: BeeTableOperation) => {
       switch (operation) {
@@ -260,6 +249,33 @@ export function BeeTableContextMenuHandler({
     },
     [i18n]
   );
+
+  const operationGroups = useMemo(() => {
+    if (!activeCell) {
+      return [];
+    }
+    if (isReadOnly) {
+      const operationGroup: BeeTableOperationGroup = {
+        group: "",
+        items: [
+          {
+            name: operationLabel(BeeTableOperation.SelectionCopy),
+            type: BeeTableOperation.SelectionCopy,
+          },
+        ],
+      };
+
+      return [operationGroup];
+    }
+    if (_.isArray(operationConfig)) {
+      return operationConfig;
+    }
+    return (operationConfig ?? {})[column?.groupType || ""];
+  }, [activeCell, column?.groupType, isReadOnly, operationConfig, operationLabel]);
+
+  const allOperations = useMemo(() => {
+    return operationGroups.flatMap(({ items }) => items);
+  }, [operationGroups]);
 
   const operationIcon = useCallback((operation: BeeTableOperation) => {
     switch (operation) {
@@ -485,7 +501,7 @@ export function BeeTableContextMenuHandler({
     );
   }, [insertMultipleRowColumnsValue, onMinus, onChange, onPlus]);
 
-  const contextMenuContainerDiv = React.createRef<HTMLDivElement>();
+  const contextMenuContainer = React.createRef<HTMLDivElement>();
 
   const { xPos, yPos, isOpen } = useCustomContextMenuHandler(tableRef);
 
@@ -511,21 +527,30 @@ export function BeeTableContextMenuHandler({
   }, [xPos, yPos]);
 
   useLayoutEffect(() => {
-    if (contextMenuContainerDiv.current) {
-      const bounds = contextMenuContainerDiv.current.getBoundingClientRect();
-      const contextMenuHeight = menuHeights[activeMenuId];
+    if (contextMenuContainer.current) {
+      const bounds = contextMenuContainer.current.getBoundingClientRect();
+      let contextMenuHeight = menuHeights[activeMenuId];
       const availableHeight = document.documentElement.clientHeight;
+      if (contextMenuHeight + yPos >= availableHeight) {
+        const offset = contextMenuHeight + yPos - availableHeight;
+        contextMenuHeight = contextMenuHeight - offset;
+        contextMenuContainer.current.style.height = contextMenuHeight + "px";
+        contextMenuContainer.current.style.overflowY = "scroll";
+      } else {
+        contextMenuContainer.current.style.overflowY = "visible";
+      }
+
       if (contextMenuHeight <= availableHeight && contextMenuHeight + yPos > availableHeight) {
         const offset = contextMenuHeight + yPos - availableHeight;
-        contextMenuContainerDiv.current.style.top = yPos - offset + "px";
-        contextMenuContainerDiv.current.style.left = xPos + 2 + "px";
+        contextMenuContainer.current.style.top = yPos - offset + "px";
+        contextMenuContainer.current.style.left = xPos + 2 + "px";
       }
 
       const contextMenuWidth = bounds.width;
       const availableWidth = document.documentElement.clientWidth;
       if (contextMenuWidth <= availableWidth && contextMenuWidth + xPos > availableWidth) {
         const offset = contextMenuWidth + xPos - availableWidth;
-        contextMenuContainerDiv.current.style.left = xPos - offset - 2 + "px";
+        contextMenuContainer.current.style.left = xPos - offset - 2 + "px";
       }
     }
   });
@@ -662,7 +687,8 @@ export function BeeTableContextMenuHandler({
           className="context-menu-container"
           style={style}
           onMouseDown={(e) => e.stopPropagation()}
-          ref={contextMenuContainerDiv}
+          ref={contextMenuContainer}
+          data-testid={"kie-tools--bee--context-menu-container"}
         >
           <Menu
             ouiaId="expression-table-context-menu"

@@ -46,15 +46,22 @@ def startFluxbox() {
 /**
 * Setup PNPM parameters for building KIE-Tools
 */
-def setupPnpm() {
+def setupPnpm(String mavenSettingsFileId = '') {
     sh """#!/bin/bash -el
     pnpm config set network-timeout 1000000
     pnpm -r exec 'bash' '-c' 'mkdir .mvn'
     pnpm -r exec 'bash' '-c' 'echo -B > .mvn/maven.config'
-    pnpm -r exec 'bash' '-c' 'echo -ntp >> .mvn/maven.config'
     pnpm -r exec 'bash' '-c' 'echo -Xmx2g > .mvn/jvm.config'
-    pnpm -F *-image exec sed -i 's/\\("build:prod.*".*\\)podman:build\\(.*\\)/\\1docker:build\\2/g' package.json
     """.trim()
+
+    if (mavenSettingsFileId) {
+        configFileProvider([configFile(fileId: mavenSettingsFileId, variable: 'MAVEN_SETTINGS_FILE')]) {
+            sh """#!/bin/bash -el
+            cp ${MAVEN_SETTINGS_FILE} ${WORKSPACE}/kie-settings.xml
+            pnpm -r exec 'bash' '-c' 'echo --settings=${WORKSPACE}/kie-settings.xml >> .mvn/maven.config'
+            """.trim()
+        }
+    }
 }
 
 /**
@@ -85,6 +92,33 @@ def pnpmBuild(String filters, Integer workspaceConcurrency = 1) {
 }
 
 /**
+* PNPM update project version to
+*/
+def pnpmUpdateProjectVersion(String projectVersion) {
+    sh """#!/bin/bash -el
+    pnpm update-version-to ${projectVersion}
+    """.trim()
+}
+
+/**
+* PNPM update kogito version to
+*/
+def pnpmUpdateKogitoVersion(String kogitoVersion, String imagesTag) {
+    sh """#!/bin/bash -el
+    pnpm update-kogito-version-to --maven ${kogitoVersion}
+    """.trim()
+}
+
+/**
+* PNPM update stream name to
+*/
+def pnpmUpdateStreamName(String streamName) {
+    sh """#!/bin/bash -el
+    pnpm update-stream-name-to ${streamName}
+    """.trim()
+}
+
+/**
 * Start KIE-Tools required services for build and test
 */
 def startRequiredServices() {
@@ -104,7 +138,7 @@ def buildDateTime() {
 * @return String the Apache Jenkins agent nodes with higher capacity (builds22 to builds30)
 **/
 def apacheAgentLabels() {
-    return (22..30).collect{"builds$it"}.join(' || ')
+    return (22..30).collect { "builds$it" }.join(' || ')
 }
 
-return this;
+return this

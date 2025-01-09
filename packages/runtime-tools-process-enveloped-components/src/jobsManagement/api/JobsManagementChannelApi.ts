@@ -20,7 +20,7 @@ import {
   Job,
   JobStatus,
   BulkCancel,
-  JobCancel,
+  JobOperationResult,
   JobsSortBy,
 } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
@@ -28,7 +28,7 @@ export interface JobsManagementChannelApi {
   jobList__initialLoad(filter: JobStatus[], orderBy: JobsSortBy): Promise<void>;
   jobList__applyFilter(filter: JobStatus[]): Promise<void>;
   jobList__bulkCancel(jobsToBeActioned: Job[]): Promise<BulkCancel>;
-  jobList_cancelJob(job: Pick<Job, "id" | "endpoint">): Promise<JobCancel>;
+  jobList_cancelJob(job: Pick<Job, "id" | "endpoint">): Promise<JobOperationResult>;
   jobList_rescheduleJob(
     job: Job,
     repeatInterval: number | string,

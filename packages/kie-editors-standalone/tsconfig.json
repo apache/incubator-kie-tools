@@ -1,7 +1,9 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.json",
+  "extends": "@kie-tools/tsconfig/tsconfig.esm.json",
   "compilerOptions": {
-    "outDir": "dist"
-  },
-  "include": ["src"]
+    "jsx": "react-jsx",
+    // Skip declarations, they are bundled manually in another step
+    "declarationMap": false,
+    "declaration": false
+  }
 }

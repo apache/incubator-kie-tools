@@ -45,7 +45,7 @@ export const INITIAL_COMPUTED_CACHE: Cache<Computed> = {
     value: undefined,
     dependencies: [],
   },
-  getExternalModelTypesByNamespace: {
+  getDirectlyIncludedExternalModelsByNamespace: {
     value: undefined,
     dependencies: [],
   },
@@ -54,6 +54,10 @@ export const INITIAL_COMPUTED_CACHE: Cache<Computed> = {
     dependencies: [],
   },
   getAllFeelVariableUniqueNames: {
+    value: undefined,
+    dependencies: [],
+  },
+  getDrdIndex: {
     value: undefined,
     dependencies: [],
   },

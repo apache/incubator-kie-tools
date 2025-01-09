@@ -22,84 +22,94 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 >
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.kie.kogito</groupId>
-    <artifactId>yard-validator-worker</artifactId>
+  <parent>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-tools-maven-base</artifactId>
     <version>${revision}</version>
+    <relativePath>./node_modules/@kie-tools/maven-base/pom.xml</relativePath>
+  </parent>
 
-    <licenses>
-        <license>
-            <name>Apache Software License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.kie.kogito</groupId>
+  <artifactId>yard-validator-worker</artifactId>
 
-    <properties>
-        <yaml.mapper>0.4</yaml.mapper>
-        <org.jresearch.gwt.time>2.0.10</org.jresearch.gwt.time>
-        <compiler-plugin.version>3.8.1</compiler-plugin.version>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
-        <version.junit>4.13.1</version.junit>
-        <j2cl.maven.plugin.version>0.20</j2cl.maven.plugin.version>
-        <version.org.junit>4.13.1</version.org.junit>
-    </properties>
+  <name>KIE Tools :: YaRD validator worker</name>
 
-    <dependencies>
+  <licenses>
+    <license>
+      <name>Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <properties>
+    <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
+    <org.jresearch.gwt.time>2.0.10</org.jresearch.gwt.time>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.kie.j2cl.tools.yaml.mapper</groupId>
+      <artifactId>common</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>include-1st-party-dependencies</id>
+      <activation>
+        <property>
+          <name>kieTools.do-not-use-this-property.ignore1stPartyDependencies</name>
+          <value>!true</value>
+        </property>
+      </activation>
+      <dependencies>
         <dependency>
-            <groupId>org.treblereel.gwt.yaml.mapper</groupId>
-            <artifactId>common</artifactId>
-            <version>${yaml.mapper}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>yard-model</artifactId>
-            <version>${project.version}</version>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>yard-model</artifactId>
+          <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.kie.kogito</groupId>
-            <artifactId>yard-model</artifactId>
-            <version>${project.version}</version>
-            <classifier>sources</classifier>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>yard-model</artifactId>
+          <version>${project.version}</version>
+          <classifier>sources</classifier>
         </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${version.org.junit}</version>
-            <scope>test</scope>
-        </dependency>
-
-    </dependencies>
-
-    <build>
-        <resources>
-            <resource>
-                <directory>../src/main/resources</directory>
-            </resource>
-        </resources>
-        <plugins>
-            <plugin>
-                <groupId>com.vertispan.j2cl</groupId>
-                <artifactId>j2cl-maven-plugin</artifactId>
-                <version>${j2cl.maven.plugin.version}</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <webappDirectory>${project.build.directory}/worker</webappDirectory>
-                    <compilationLevel>ADVANCED</compilationLevel>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  <build>
+    <resources>
+      <resource>
+        <directory>../src/main/resources</directory>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.kie.j2cl.tools</groupId>
+        <artifactId>j2cl-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <webappDirectory>${project.build.directory}/worker</webappDirectory>
+          <compilationLevel>ADVANCED</compilationLevel>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

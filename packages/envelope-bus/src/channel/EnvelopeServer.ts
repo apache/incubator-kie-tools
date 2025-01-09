@@ -34,7 +34,7 @@ export enum EnvelopeServerType {
 
 export class EnvelopeServer<
   ApiToProvide extends ApiDefinition<ApiToProvide>,
-  ApiToConsume extends ApiDefinition<ApiToConsume>
+  ApiToConsume extends ApiDefinition<ApiToConsume>,
 > {
   public static INIT_POLLING_TIMEOUT_IN_MS = 60000;
   public static INIT_POLLING_INTERVAL_IN_MS = 100;

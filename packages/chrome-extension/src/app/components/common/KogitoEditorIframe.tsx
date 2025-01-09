@@ -110,19 +110,15 @@ const RefForwardingKogitoEditorIframe: React.ForwardRefRenderFunction<IsolatedEd
   }, [textMode, editor, readonly]);
 
   // Forward reference methods to set content programmatically vs property
-  useImperativeHandle(
-    forwardedRef,
-    () => {
-      if (!editor) {
-        return undefined;
-      }
+  useImperativeHandle(forwardedRef, () => {
+    if (!editor) {
+      return undefined;
+    }
 
-      return {
-        setContent: (content: string) => editor.setContent(contentPath, content),
-      };
-    },
-    [editor, contentPath]
-  );
+    return {
+      setContent: (content: string) => editor.setContent(contentPath, content),
+    };
+  }, [editor, contentPath]);
 
   return (
     <>

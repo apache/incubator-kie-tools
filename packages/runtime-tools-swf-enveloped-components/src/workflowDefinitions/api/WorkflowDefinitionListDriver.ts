@@ -27,5 +27,5 @@ export interface WorkflowDefinitionListDriver {
   setWorkflowDefinitionFilter(filter: string[]): Promise<void>;
   getWorkflowDefinitionFilter(): Promise<string[]>;
   openWorkflowForm(workflowDefinition: WorkflowDefinition): Promise<void>;
-  openTriggerCloudEvent(): void;
+  openTriggerCloudEvent(workflowDefinition: WorkflowDefinition): Promise<void>;
 }

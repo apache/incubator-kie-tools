@@ -20,7 +20,7 @@
 
 package org.kie.workbench.common.stunner.client.widgets;
 
-import io.crysknife.ui.translation.client.annotation.Bundle;
+import org.kie.j2cl.tools.di.ui.translation.client.annotation.Bundle;
 
 @Bundle("resources/i18n/StunnerWidgetsConstants.properties")
 public class StunnerWidgetsEntryPoint {

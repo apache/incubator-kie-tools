@@ -20,6 +20,7 @@
 import * as React from "react";
 import { useCallback } from "react";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { EditableNodeLabel, useEditableNodeLabel } from "../diagram/nodes/EditableNodeLabel";
 import { TypeRefLabel } from "./TypeRefLabel";
@@ -30,9 +31,10 @@ import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { InlineFeelNameInput, OnInlineFeelNameRenamed } from "../feel/InlineFeelNameInput";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { State } from "../store/Store";
+import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 
 export function DataTypeName({
-  isReadonly,
+  isReadOnly,
   itemDefinition,
   isActive,
   editMode,
@@ -41,9 +43,9 @@ export function DataTypeName({
   onGetAllUniqueNames,
   enableAutoFocusing,
 }: {
-  isReadonly: boolean;
+  isReadOnly: boolean;
   editMode: "hover" | "double-click";
-  itemDefinition: DMN15__tItemDefinition;
+  itemDefinition: Normalized<DMN15__tItemDefinition>;
   isActive: boolean;
   relativeToNamespace: string;
   shouldCommitOnBlur?: boolean;
@@ -70,7 +72,7 @@ export function DataTypeName({
 
   const onRenamed = useCallback<OnInlineFeelNameRenamed>(
     (newName) => {
-      if (isReadonly) {
+      if (isReadOnly) {
         return;
       }
 
@@ -83,7 +85,7 @@ export function DataTypeName({
         });
       });
     },
-    [dmnEditorStoreApi, externalModelsByNamespace, isReadonly, itemDefinition]
+    [dmnEditorStoreApi, externalModelsByNamespace, isReadOnly, itemDefinition]
   );
 
   const _shouldCommitOnBlur = shouldCommitOnBlur ?? true; // Defaults to true
@@ -93,7 +95,7 @@ export function DataTypeName({
       {editMode === "hover" && (
         <InlineFeelNameInput
           isPlain={true}
-          isReadonly={isReadonly}
+          isReadOnly={isReadOnly}
           id={itemDefinition["@_id"]!}
           shouldCommitOnBlur={_shouldCommitOnBlur}
           name={feelQNameToDisplay.full}
@@ -135,7 +137,7 @@ export function DataTypeName({
           />
           {!isEditingLabel && (
             <TypeRefLabel
-              typeRef={itemDefinition.typeRef?.__$$text}
+              typeRef={itemDefinition.typeRef?.__$$text ?? DmnBuiltInDataType.Undefined}
               isCollection={itemDefinition["@_isCollection"]}
               relativeToNamespace={relativeToNamespace}
             />

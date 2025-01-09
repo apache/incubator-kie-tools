@@ -20,7 +20,7 @@
 
 package org.kie.workbench.common.stunner.sw.marshall;
 
-import io.crysknife.ui.translation.client.TranslationService;
+import org.kie.j2cl.tools.di.ui.translation.client.TranslationService;
 
 public class Message {
 

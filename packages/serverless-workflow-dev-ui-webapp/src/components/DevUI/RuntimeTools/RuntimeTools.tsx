@@ -24,39 +24,42 @@ import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
 import ApolloClient from "apollo-client";
 import DevUIRoutes from "../DevUIRoutes/DevUIRoutes";
 import DevUILayout from "../DevUILayout/DevUILayout";
+import { changeBaseURLToCurrentLocation } from "../../../url";
 import ReactDOM from "react-dom";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-swf-enveloped-components/dist/workflowDetails/api";
 import { ServerUnavailablePage } from "@kie-tools/runtime-tools-shared-webapp-components/dist/ServerUnavailablePage";
 
 interface IOwnProps {
-  isWorkflowEnabled: boolean;
+  availablePages: string[];
   dataIndexUrl: string;
-  navigate: string;
   devUIUrl: string;
+  diagramPreviewSize?: DiagramPreviewSize;
+  isLocalCluster?: boolean;
+  isStunnerEnabled: boolean;
+  isWorkflowEnabled: boolean;
+  navigate: string;
+  omittedWorkflowTimelineEvents: string[];
   openApiBaseUrl: string;
   openApiPath: string;
-  availablePages: string[];
-  omittedWorkflowTimelineEvents: string[];
-  diagramPreviewSize?: DiagramPreviewSize;
-  isStunnerEnabled: boolean;
 }
 
 const RuntimeTools: React.FC<IOwnProps> = ({
+  availablePages,
   dataIndexUrl,
-  navigate,
   devUIUrl,
+  diagramPreviewSize,
+  isLocalCluster,
+  isStunnerEnabled,
+  isWorkflowEnabled,
+  navigate,
+  omittedWorkflowTimelineEvents,
   openApiBaseUrl,
   openApiPath,
-  isWorkflowEnabled,
-  availablePages,
-  omittedWorkflowTimelineEvents,
-  diagramPreviewSize,
-  isStunnerEnabled,
 }) => {
   const httpLink = new HttpLink({
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    uri: dataIndexUrl,
+    uri: isLocalCluster ? changeBaseURLToCurrentLocation(dataIndexUrl) : dataIndexUrl,
   });
 
   const fallbackUI = onError(({ networkError }: any) => {
@@ -65,14 +68,15 @@ const RuntimeTools: React.FC<IOwnProps> = ({
       return ReactDOM.render(
         <DevUILayout
           apolloClient={client}
-          devUIUrl={devUIUrl}
-          openApiBaseUrl={openApiBaseUrl}
-          openApiPath={openApiPath}
-          isWorkflowEnabled={isWorkflowEnabled}
           availablePages={availablePages}
-          omittedWorkflowTimelineEvents={omittedWorkflowTimelineEvents}
+          devUIUrl={devUIUrl}
           diagramPreviewSize={diagramPreviewSize}
+          isLocalCluster={isLocalCluster}
           isStunnerEnabled={isStunnerEnabled}
+          isWorkflowEnabled={isWorkflowEnabled}
+          omittedWorkflowTimelineEvents={omittedWorkflowTimelineEvents}
+          openApiBaseUrl={isLocalCluster ? changeBaseURLToCurrentLocation(openApiBaseUrl) : openApiBaseUrl}
+          openApiPath={openApiPath}
         >
           <ServerUnavailablePage displayName={"Runtime Dev UI"} reload={() => window.location.reload()} />
         </DevUILayout>,
@@ -90,16 +94,20 @@ const RuntimeTools: React.FC<IOwnProps> = ({
   return (
     <DevUILayout
       apolloClient={client}
-      devUIUrl={devUIUrl}
-      openApiBaseUrl={openApiBaseUrl}
-      openApiPath={openApiPath}
-      isWorkflowEnabled={isWorkflowEnabled}
       availablePages={availablePages}
-      omittedWorkflowTimelineEvents={omittedWorkflowTimelineEvents}
+      devUIUrl={devUIUrl}
       diagramPreviewSize={diagramPreviewSize}
+      isLocalCluster={isLocalCluster}
       isStunnerEnabled={isStunnerEnabled}
+      isWorkflowEnabled={isWorkflowEnabled}
+      omittedWorkflowTimelineEvents={omittedWorkflowTimelineEvents}
+      openApiBaseUrl={isLocalCluster ? changeBaseURLToCurrentLocation(openApiBaseUrl) : openApiBaseUrl}
+      openApiPath={openApiPath}
     >
-      <DevUIRoutes navigate={navigate} dataIndexUrl={dataIndexUrl} />
+      <DevUIRoutes
+        navigate={navigate}
+        dataIndexUrl={isLocalCluster ? changeBaseURLToCurrentLocation(dataIndexUrl) : dataIndexUrl}
+      />
     </DevUILayout>
   );
 };

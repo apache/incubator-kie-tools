@@ -17,7 +17,6 @@
    limitations under the License.
 -->
 <module>
-
   <inherits name='com.google.gwt.user.User' />
   <inherits name="com.ait.lienzo.Lienzo" />
 
@@ -29,7 +28,6 @@
   <add-linker name="xsiframe" />
   <set-configuration-property name="devModeRedirectEnabled" value="true" />
   <set-property name="compiler.useSourceMaps" value="true" />
-  
+
   <source path="client" />
-  
 </module>

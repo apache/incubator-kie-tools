@@ -30,13 +30,13 @@ import elemental2.core.JsRegExp;
 import elemental2.core.RegExpResult;
 import elemental2.dom.DomGlobal;
 import elemental2.promise.Promise;
-import io.crysknife.ui.translation.client.TranslationService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 import org.appformer.kogito.bridge.client.diagramApi.DiagramApi;
+import org.kie.j2cl.tools.di.ui.translation.client.TranslationService;
 import org.kie.workbench.common.stunner.client.lienzo.canvas.wires.WiresCanvas;
 import org.kie.workbench.common.stunner.client.lienzo.components.mediators.preview.TogglePreviewEvent;
 import org.kie.workbench.common.stunner.client.widgets.canvas.ScrollableLienzoPanel;
@@ -183,7 +183,7 @@ public class DiagramEditor {
 
     private void setTheme() {
         StunnerTheme.setTheme(themeToBeApplied);
-        setCanvasBackgroundColor();
+        setCanvasColors();
         themeToBeApplied = null;
     }
 
@@ -193,11 +193,9 @@ public class DiagramEditor {
         }
     }
 
-    void setCanvasBackgroundColor() {
-        if (null != stunnerEditor.getSession()) {
-            ((WiresCanvas) stunnerEditor.getCanvasHandler().getCanvas())
-                    .setBackgroundColor(((ColorTheme) StunnerTheme.getTheme()).getCanvasBackgroundColor());
-        }
+    void setCanvasColors() {
+        stunnerEditor.setScrollbarColors();
+        stunnerEditor.setCanvasBackgroundColor();
     }
 
     public Promise<Void> setContent(final String path, final String value) {
@@ -273,7 +271,7 @@ public class DiagramEditor {
 
                                                                @Override
                                                                public void afterCanvasInitialized() {
-                                                                   setCanvasBackgroundColor();
+                                                                   setCanvasColors();
                                                                }
                                                            });
                                          }

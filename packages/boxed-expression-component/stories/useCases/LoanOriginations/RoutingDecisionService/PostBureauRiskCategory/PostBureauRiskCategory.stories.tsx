@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { BoxedContext, DmnBuiltInDataType } from "../../../../../src/api";
+import { BoxedContext, DmnBuiltInDataType, generateUuid, Normalized } from "../../../../../src/api";
 import type { Meta, StoryObj } from "@storybook/react";
 import {
   beeGwtService,
@@ -38,13 +38,14 @@ const meta: Meta<BoxedExpressionEditorProps> = {
 export default meta;
 type Story = StoryObj<BoxedExpressionEditorStoryArgs>;
 
-export const postBureauRiskCategoryExpression: BoxedContext = {
+export const postBureauRiskCategoryExpression: Normalized<BoxedContext> = {
   __$$element: "context",
   "@_id": "_55A050DB-250D-473E-A7DF-43C49CE87694",
   "@_label": "Post-bureau risk category",
   "@_typeRef": "t.BureauRiskCategory",
   contextEntry: [
     {
+      "@_id": generateUuid(),
       variable: {
         "@_id": "_79173F55-FFE4-4FE7-9620-A4CAC4CCD084",
         "@_name": "Existing Customer",
@@ -59,6 +60,7 @@ export const postBureauRiskCategoryExpression: BoxedContext = {
       },
     },
     {
+      "@_id": generateUuid(),
       variable: {
         "@_id": "_538E6427-680B-4307-A234-D1C6C60D5D75",
         "@_name": "Credit Score",
@@ -73,6 +75,7 @@ export const postBureauRiskCategoryExpression: BoxedContext = {
       },
     },
     {
+      "@_id": generateUuid(),
       expression: {
         __$$element: "decisionTable",
         "@_id": "_E26346D5-7A7C-44A2-8EF2-D79CECB257FF",

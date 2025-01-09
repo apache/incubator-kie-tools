@@ -38,7 +38,7 @@ import {
   getSVG,
   getTriggerableNodes,
 } from "@kie-tools/runtime-tools-process-gateway-api/dist/gatewayApi";
-import { Job, JobCancel, ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { Job, JobOperationResult, ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export interface ProcessDetailsQueries {
   getProcessDetails(id: string): Promise<ProcessInstance>;
@@ -47,7 +47,7 @@ export interface ProcessDetailsQueries {
   handleProcessAbort(processInstance: ProcessInstance): Promise<void>;
   handleProcessRetry(processInstance: ProcessInstance): Promise<void>;
   getSVG(processInstance: ProcessInstance): Promise<any>;
-  jobCancel(job: Job): Promise<JobCancel>;
+  jobCancel(job: Job): Promise<JobOperationResult>;
   rescheduleJob: (
     job: Job,
     repeatInterval: number | string,
@@ -65,14 +65,19 @@ export interface ProcessDetailsQueries {
 }
 
 export class GraphQLProcessDetailsQueries implements ProcessDetailsQueries {
-  private readonly client: ApolloClient<any>;
-
-  constructor(client: ApolloClient<any>) {
-    this.client = client;
-  }
+  constructor(
+    private readonly client: ApolloClient<any>,
+    private readonly options?: { transformUrls?: (url?: string) => string }
+  ) {}
 
   async getProcessDetails(id: string): Promise<ProcessInstance> {
-    return getProcessDetails(id, this.client);
+    return getProcessDetails(id, this.client).then((details) => {
+      return {
+        ...details,
+        endpoint: this.options?.transformUrls?.(details.endpoint) ?? details.endpoint,
+        serviceUrl: this.options?.transformUrls?.(details.serviceUrl) ?? details.serviceUrl,
+      };
+    });
   }
 
   async getJobs(id: string): Promise<Job[]> {
@@ -95,7 +100,7 @@ export class GraphQLProcessDetailsQueries implements ProcessDetailsQueries {
     return Promise.resolve(getSVG(processInstance, this.client));
   }
 
-  async jobCancel(job: Job): Promise<JobCancel> {
+  async jobCancel(job: Job): Promise<JobOperationResult> {
     return jobCancel(job, this.client);
   }
 

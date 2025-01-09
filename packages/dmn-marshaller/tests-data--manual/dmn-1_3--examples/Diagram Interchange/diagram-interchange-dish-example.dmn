@@ -1,19 +1,39 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<definitions id="dish-decisions" name="Dish Decisions"
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~ 
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~ 
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.      
+-->
+<definitions
+  id="dish-decisions"
+  name="Dish Decisions"
   namespace="http://www.omg.org/spec/DMN/20180521/dish-example/"
   xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/"
   xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
-  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/">
-
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+>
   <inputData name="Type of day" id="dayType_id">
-    <variable typeRef="string" name="Type of day" id="dayType_ii"/>
+    <variable typeRef="string" name="Type of day" id="dayType_ii" />
   </inputData>
   <inputData name="Weather in Celsius" id="temperature_id">
-    <variable typeRef="integer" name="Weather in Celsius" id="temperature_ii"/>
+    <variable typeRef="integer" name="Weather in Celsius" id="temperature_ii" />
   </inputData>
-  <knowledgeSource name="Host" id="host_ks"/>
+  <knowledgeSource name="Host" id="host_ks" />
   <decision id="dish" name="Dish">
     <informationRequirement id="season_ir">
       <requiredDecision href="#season" />
@@ -22,7 +42,7 @@
       <requiredDecision href="#guestCount" />
     </informationRequirement>
     <authorityRequirement id="host_ar">
-      <requiredAuthority href="#host_ks"/>
+      <requiredAuthority href="#host_ks" />
     </authorityRequirement>
     <decisionTable id="dishDecisionTable">
       <input id="seasonInput" label="Season">
@@ -106,7 +126,7 @@
   </decision>
   <decision id="season" name="Season">
     <informationRequirement id="temperature_ir">
-      <requiredInput href="#temperature_id"/>
+      <requiredInput href="#temperature_id" />
     </informationRequirement>
     <decisionTable id="seasonDecisionTable">
       <input id="temperatureInput" label="Weather in Celsius">
@@ -143,7 +163,7 @@
   </decision>
   <decision id="guestCount" name="Guest Count">
     <informationRequirement id="dayType_ir">
-      <requiredInput href="#dayType_id"/>
+      <requiredInput href="#dayType_id" />
     </informationRequirement>
     <decisionTable id="guestCountDecisionTable">
       <input id="typeOfDayInput" label="Type of day">

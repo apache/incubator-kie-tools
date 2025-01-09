@@ -18,15 +18,18 @@
  */
 
 import * as RF from "reactflow";
+import { useOnViewportChange, Viewport } from "reactflow";
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import {
   DC__Bounds,
   DC__Dimension,
   DMN15__tDecisionService,
   DMN15__tDefinitions,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized, normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { buildXmlHref, parseXmlHref, xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml";
 import { buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import {
@@ -34,6 +37,7 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStatePrimary,
+  EmptyStateVariant,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
@@ -50,43 +54,32 @@ import { AutolayoutButton } from "../autolayout/AutolayoutButton";
 import { getDefaultColumnWidth } from "../boxedExpressions/getDefaultColumnWidth";
 import { getDefaultBoxedExpression } from "../boxedExpressions/getDefaultBoxedExpression";
 import {
-  DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE,
-  DmnEditorDiagramClipboard,
-  buildClipboardFromDiagram,
-  getClipboard,
-} from "../clipboard/Clipboard";
-import {
   ExternalNode,
   MIME_TYPE_FOR_DMN_EDITOR_EXTERNAL_NODES_FROM_INCLUDED_MODELS,
 } from "../externalNodes/ExternalNodesPanel";
-import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
-import { NodeNature, nodeNatures } from "../mutations/NodeNature";
+import { nodeNatures } from "../mutations/NodeNature";
 import { addConnectedNode } from "../mutations/addConnectedNode";
 import { addDecisionToDecisionService } from "../mutations/addDecisionToDecisionService";
 import { addEdge } from "../mutations/addEdge";
-import { addOrGetDrd } from "../mutations/addOrGetDrd";
 import { addShape } from "../mutations/addShape";
 import { addStandaloneNode } from "../mutations/addStandaloneNode";
 import { deleteDecisionFromDecisionService } from "../mutations/deleteDecisionFromDecisionService";
-import { EdgeDeletionMode, deleteEdge } from "../mutations/deleteEdge";
-import { NodeDeletionMode, canRemoveNodeFromDrdOnly, deleteNode } from "../mutations/deleteNode";
-import { repopulateInputDataAndDecisionsOnAllDecisionServices } from "../mutations/repopulateInputDataAndDecisionsOnDecisionService";
+import { deleteEdge, EdgeDeletionMode } from "../mutations/deleteEdge";
+import { deleteNode, NodeDeletionMode } from "../mutations/deleteNode";
 import { repositionNode } from "../mutations/repositionNode";
 import { resizeNode } from "../mutations/resizeNode";
 import { updateExpression } from "../mutations/updateExpression";
 import { OverlaysPanel } from "../overlaysPanel/OverlaysPanel";
-import { DiagramLhsPanel, SnapGrid } from "../store/Store";
+import { DiagramLhsPanel, SnapGrid, State } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { Unpacked } from "../tsExt/tsExt";
-import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
-import { getXmlNamespaceDeclarationName } from "../xml/xmlNamespaceDeclarations";
 import { DiagramContainerContextProvider } from "./DiagramContainerContext";
 import { MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE } from "./DrgNodesPanel";
 import { MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE, Palette } from "./Palette";
 import { offsetShapePosition, snapShapeDimensions, snapShapePosition } from "./SnapGrid";
 import { ConnectionLine } from "./connections/ConnectionLine";
 import { PositionalNodeHandleId } from "./connections/PositionalNodeHandles";
-import { EdgeType, NodeType, containment, getDefaultEdgeTypeBetween } from "./connections/graphStructure";
+import { containment, EdgeType, getDefaultEdgeTypeBetween, NodeType } from "./connections/graphStructure";
 import { checkIsValidConnection } from "./connections/isValidConnection";
 import { EdgeMarkers } from "./edges/EdgeMarkers";
 import { EDGE_TYPES } from "./edges/EdgeTypes";
@@ -99,10 +92,8 @@ import {
 } from "./edges/Edges";
 import { buildHierarchy } from "./graph/graph";
 import {
-  CONTAINER_NODES_DESIRABLE_PADDING,
-  getBounds,
-  getDmnBoundsCenterPoint,
   getContainmentRelationship,
+  getDmnBoundsCenterPoint,
   getHandlePosition,
   getNodeTypeFromDmnObject,
 } from "./maths/DmnMaths";
@@ -120,12 +111,23 @@ import {
   UnknownNode,
 } from "./nodes/Nodes";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
-import { xmlHrefToQName } from "../xml/xmlHrefToQName";
 import {
+  addAutoGeneratedDecisionServiceToDrd,
+  addConflictingDecisionServiceToDrd,
   addExistingDecisionServiceToDrd,
   getDecisionServicePropertiesRelativeToThisDmn,
+  getStrategyToAddExistingDecisionServiceToDrd,
+  StrategyForAddingDecisionServiceToDrd,
 } from "../mutations/addExistingDecisionServiceToDrd";
 import { updateExpressionWidths } from "../mutations/updateExpressionWidths";
+import { DiagramCommands } from "./DiagramCommands";
+import { getAutoLayoutedInfo } from "../autolayout/autoLayoutInfo";
+import { autoGenerateDrd } from "../normalization/autoGenerateDrd";
+import OptimizeIcon from "@patternfly/react-icons/dist/js/icons/optimize-icon";
+import { applyAutoLayoutToDrd } from "../mutations/applyAutoLayoutToDrd";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { EvaluationHighlightsBadge } from "../evaluationHighlights/EvaluationHighlightsBadge";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 const isFirefox = typeof (window as any).InstallTrigger !== "undefined"; // See https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers
 
@@ -133,9 +135,11 @@ const PAN_ON_DRAG = [1, 2];
 
 const FIT_VIEW_OPTIONS: RF.FitViewOptions = { maxZoom: 1, minZoom: 0.1, duration: 400 };
 
-const DEFAULT_VIEWPORT = { x: 100, y: 100, zoom: 1 };
+export const DEFAULT_VIEWPORT = { x: 100, y: 100, zoom: 1 };
 
 const DELETE_NODE_KEY_CODES = ["Backspace", "Delete"];
+
+const AREA_ABOVE_OVERLAYS_PANEL = 120;
 
 const nodeTypes: Record<NodeType, any> = {
   [NODE_TYPES.decisionService]: DecisionServiceNode,
@@ -167,7 +171,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
     const { externalModelsByNamespace } = useExternalModels();
     const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
     const thisDmn = useDmnEditorStore((s) => s.dmn);
-
+    const settings = useSettings();
     const { dmnModelBeforeEditingRef } = useDmnEditor();
 
     // State
@@ -176,8 +180,9 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
       RF.ReactFlowInstance<DmnDiagramNodeData, DmnDiagramEdgeData> | undefined
     >(undefined);
 
-    // Refs
+    const viewport = useDmnEditorStore((s) => s.diagram.viewport);
 
+    // Refs
     React.useImperativeHandle(
       ref,
       () => ({
@@ -212,14 +217,14 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           const sourceBounds = sourceNode.data.shape["dc:Bounds"];
           const targetBounds = targetNode.data.shape["dc:Bounds"];
           if (!sourceBounds || !targetBounds) {
-            throw new Error("Cannot create connection without target bounds!");
+            throw new Error("Cannot create connection without source and target bounds!");
           }
 
           // --------- This is where we draw the line between the diagram and the model.
 
           addEdge({
             definitions: state.dmn.model.definitions,
-            drdIndex: state.diagram.drdIndex,
+            drdIndex: state.computed(state).getDrdIndex(),
             edge: {
               type: sourceHandle as EdgeType,
               targetHandle: targetHandle as PositionalNodeHandleId,
@@ -242,6 +247,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               shapeId: targetNode.data.shape["@_id"],
             },
             keepWaypoints: false,
+            externalModelsByNamespace,
           });
         });
       },
@@ -293,7 +299,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
     }, []);
 
     const onDrop = useCallback(
-      (e: React.DragEvent) => {
+      async (e: React.DragEvent) => {
         e.preventDefault();
 
         if (!container.current || !reactFlowInstance) {
@@ -317,7 +323,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           dmnEditorStoreApi.setState((state) => {
             const { id, href: newNodeId } = addStandaloneNode({
               definitions: state.dmn.model.definitions,
-              drdIndex: state.diagram.drdIndex,
+              drdIndex: state.computed(state).getDrdIndex(),
               newNode: {
                 type: typeOfNewNodeFromPalette,
                 bounds: {
@@ -333,6 +339,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                   })["@_height"],
                 },
               },
+              externalModelsByNamespace,
             });
             state.diagram._selectedNodes = [newNodeId];
             state.focus.consumableId = newNodeId;
@@ -345,56 +352,108 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
           // --------- This is where we draw the line between the diagram and the model.
 
-          dmnEditorStoreApi.setState((state) => {
-            const externalDmnsIndex = state
-              .computed(state)
-              .getExternalModelTypesByNamespace(externalModelsByNamespace).dmns;
+          const state = dmnEditorStoreApi.getState();
+          const externalDmnsIndex = state
+            .computed(state)
+            .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns;
 
-            const externalNodeDmn = externalDmnsIndex.get(externalNode.externalDrgElementNamespace);
-            const externalDrgElement = (externalNodeDmn?.model.definitions.drgElement ?? []).find(
-              (e) => e["@_id"] === externalNode.externalDrgElementId
+          const externalNodeDmn = externalDmnsIndex.get(externalNode.externalDrgElementNamespace);
+          const externalDrgElement = (externalNodeDmn?.model.definitions.drgElement ?? []).find(
+            (e) => e["@_id"] === externalNode.externalDrgElementId
+          );
+          if (!externalNodeDmn || !externalDrgElement) {
+            throw new Error(
+              `Can't find DRG element with id '${externalNode.externalDrgElementId}' on/or model with namespace '${externalNode.externalDrgElementNamespace}'.`
             );
-            if (!externalNodeDmn || !externalDrgElement) {
-              throw new Error(
-                `Can't find DRG element with id '${externalNode.externalDrgElementId}' on/or model with namespace '${externalNode.externalDrgElementNamespace}'.`
-              );
-            }
+          }
 
-            const externalNodeType = getNodeTypeFromDmnObject(externalDrgElement)!;
+          const externalNodeType = getNodeTypeFromDmnObject(externalDrgElement)!;
 
-            const defaultExternalNodeDimensions = DEFAULT_NODE_SIZES[externalNodeType]({
-              snapGrid: state.diagram.snapGrid,
-              isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+          const defaultExternalNodeDimensions = DEFAULT_NODE_SIZES[externalNodeType]({
+            snapGrid: state.diagram.snapGrid,
+            isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+          });
+
+          const externalNodeHref = buildXmlHref({
+            namespace: externalNode.externalDrgElementNamespace,
+            id: externalNode.externalDrgElementId,
+          });
+
+          if (externalDrgElement.__$$element === "decisionService") {
+            // Create a dereferencedState to enables us to edit the object without changing the original state
+            // After we finish applying the changes it will be used to set the new state.
+            const { computed, ...internalState } = state;
+            const dereferencedState: State = { computed, ...JSON.parse(JSON.stringify(internalState)) };
+            const drdIndex = dereferencedState.computed(dereferencedState).getDrdIndex();
+
+            const {
+              strategyForAddingDecisionServiceToDrd,
+              indexedDrdContainingDecisionServiceDepiction,
+              decisionServiceHrefRelativeToThisDmn,
+              containedDecisionHrefsRelativeToThisDmn,
+            } = getStrategyToAddExistingDecisionServiceToDrd({
+              __readonly_definitions: dereferencedState.dmn.model.definitions,
+              __readonly_drgElement: externalDrgElement,
+              __readonly_decisionServiceNamespace: externalNodeDmn.model.definitions["@_namespace"],
+              __readonly_drdIndex: drdIndex,
+              __readonly_externalDmnsIndex: externalDmnsIndex,
+              __readonly_indexedDrd: dereferencedState.computed(dereferencedState).indexedDrd(),
+              __readonly_namespace: dereferencedState.dmn.model.definitions["@_namespace"],
             });
 
-            const namespaceName = getXmlNamespaceDeclarationName({
-              rootElement: state.dmn.model.definitions,
-              namespace: externalNode.externalDrgElementNamespace,
-            });
-
-            const externalNodeHref = buildXmlHref({
-              namespace: externalNode.externalDrgElementNamespace,
-              id: externalNode.externalDrgElementId,
-            });
-
-            if (externalDrgElement.__$$element === "decisionService") {
-              addExistingDecisionServiceToDrd({
-                decisionService: externalDrgElement,
-                decisionServiceNamespace: externalNodeDmn.model.definitions["@_namespace"],
-                drdIndex: state.diagram.drdIndex,
-                dropPoint,
-                externalDmnsIndex,
-                thisDmnsDefinitions: state.dmn.model.definitions,
-                thisDmnsIndexedDrd: state.computed(state).indexedDrd(),
-                thisDmnsNamespace: state.dmn.model.definitions["@_namespace"],
+            if (strategyForAddingDecisionServiceToDrd === StrategyForAddingDecisionServiceToDrd.CONFLICT) {
+              addConflictingDecisionServiceToDrd({
+                definitions: dereferencedState.dmn.model.definitions,
+                __readonly_drdIndex: drdIndex,
+                __readonly_dropPoint: dropPoint,
+                __readonly_decisionServiceHrefRelativeToThisDmn: decisionServiceHrefRelativeToThisDmn,
               });
-            } else {
+            } else if (strategyForAddingDecisionServiceToDrd === StrategyForAddingDecisionServiceToDrd.AUTO_GENERATE) {
+              await addAutoGeneratedDecisionServiceToDrd({
+                state: dereferencedState,
+                __readonly_decisionServiceNamespace: externalNodeDmn.model.definitions["@_namespace"],
+                __readonly_drdIndex: drdIndex,
+                __readonly_externalDmnsIndex: externalDmnsIndex,
+                __readonly_containedDecisionHrefsRelativeToThisDmn: containedDecisionHrefsRelativeToThisDmn,
+                __readonly_decisionServiceHrefRelativeToThisDmn: decisionServiceHrefRelativeToThisDmn,
+                __readonly_snapGrid: dereferencedState.diagram.snapGrid,
+                __readonly_dropPoint: dropPoint,
+                __readonly_externalModelsByNamespace: externalModelsByNamespace,
+                __readonly_isAlternativeInputDataShape: dereferencedState
+                  .computed(dereferencedState)
+                  .isAlternativeInputDataShape(),
+              });
+            } else if (
+              strategyForAddingDecisionServiceToDrd === StrategyForAddingDecisionServiceToDrd.COPY_FROM_ANOTHER_DRD
+            ) {
+              addExistingDecisionServiceToDrd({
+                definitions: dereferencedState.dmn.model.definitions,
+                __readonly_decisionServiceNamespace: externalNodeDmn.model.definitions["@_namespace"],
+                __readonly_drdIndex: drdIndex,
+                __readonly_externalDmnsIndex: dereferencedState
+                  .computed(dereferencedState)
+                  .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
+                __readonly_indexedDrd: dereferencedState.computed(dereferencedState).indexedDrd(),
+                __readonly_indexedDrdContainingDecisionServiceDepiction: indexedDrdContainingDecisionServiceDepiction!,
+                __readonly_containedDecisionHrefsRelativeToThisDmn: containedDecisionHrefsRelativeToThisDmn,
+                __readonly_decisionServiceHrefRelativeToThisDmn: decisionServiceHrefRelativeToThisDmn,
+                __readonly_dropPoint: dropPoint,
+                __readonly_namespace: dereferencedState.dmn.model.definitions["@_namespace"],
+              });
+            }
+            dmnEditorStoreApi.setState((state) => {
+              state.dmn.model = JSON.parse(JSON.stringify(dereferencedState.dmn.model));
+              state.diagram._selectedNodes = [externalNodeHref];
+            });
+          } else {
+            dmnEditorStoreApi.setState((state) => {
               const externalNodeType = getNodeTypeFromDmnObject(externalDrgElement)!;
               addShape({
                 definitions: state.dmn.model.definitions,
-                drdIndex: state.diagram.drdIndex,
+                drdIndex: state.computed(state).getDrdIndex(),
                 nodeType: externalNodeType,
                 shape: {
+                  "@_id": generateUuid(),
                   "@_dmnElementRef": xmlHrefToQName(externalNodeHref, state.dmn.model.definitions),
                   "dc:Bounds": {
                     "@_x": dropPoint.x,
@@ -404,47 +463,105 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                   },
                 },
               });
-            }
-            state.diagram._selectedNodes = [externalNodeHref];
-          });
-
+              state.diagram._selectedNodes = [externalNodeHref];
+            });
+          }
           console.debug(`DMN DIAGRAM: Adding external node`, JSON.stringify(externalNode));
         } else if (e.dataTransfer.getData(MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE)) {
           const drgElement = JSON.parse(e.dataTransfer.getData(MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE)) as Unpacked<
-            DMN15__tDefinitions["drgElement"]
+            Normalized<DMN15__tDefinitions>["drgElement"]
           >;
 
-          dmnEditorStoreApi.setState((state) => {
-            const nodeType = getNodeTypeFromDmnObject(drgElement);
-            if (nodeType === undefined) {
-              throw new Error("DMN DIAGRAM: It wasn't possible to determine the node type");
-            }
+          const nodeType = getNodeTypeFromDmnObject(drgElement);
+          if (nodeType === undefined) {
+            throw new Error("DMN DIAGRAM: It wasn't possible to determine the node type");
+          }
 
-            const defaultNodeDimensions = DEFAULT_NODE_SIZES[nodeType]({
-              snapGrid: state.diagram.snapGrid,
-              isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+          if (drgElement.__$$element === "decisionService") {
+            const { computed, ...state } = dmnEditorStoreApi.getState();
+            const dereferencedState: State = { computed, ...JSON.parse(JSON.stringify(state)) };
+
+            const drdIndex = dereferencedState.computed(dereferencedState).getDrdIndex();
+            const externalDmnsIndex = dereferencedState
+              .computed(dereferencedState)
+              .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns;
+
+            const {
+              strategyForAddingDecisionServiceToDrd,
+              indexedDrdContainingDecisionServiceDepiction,
+              decisionServiceHrefRelativeToThisDmn,
+              containedDecisionHrefsRelativeToThisDmn,
+            } = getStrategyToAddExistingDecisionServiceToDrd({
+              __readonly_definitions: dereferencedState.dmn.model.definitions,
+              __readonly_drgElement: drgElement,
+              __readonly_decisionServiceNamespace: dereferencedState.dmn.model.definitions["@_namespace"],
+              __readonly_drdIndex: drdIndex,
+              __readonly_externalDmnsIndex: externalDmnsIndex,
+              __readonly_indexedDrd: dereferencedState.computed(dereferencedState).indexedDrd(),
+              __readonly_namespace: dereferencedState.dmn.model.definitions["@_namespace"],
             });
-
-            if (drgElement.__$$element === "decisionService") {
-              addExistingDecisionServiceToDrd({
-                decisionService: drgElement,
-                decisionServiceNamespace: state.dmn.model.definitions["@_namespace"],
-                drdIndex: state.diagram.drdIndex,
-                dropPoint,
-                externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace)
-                  .dmns,
-                thisDmnsDefinitions: state.dmn.model.definitions,
-                thisDmnsIndexedDrd: state.computed(state).indexedDrd(),
-                thisDmnsNamespace: state.dmn.model.definitions["@_namespace"],
+            if (strategyForAddingDecisionServiceToDrd === StrategyForAddingDecisionServiceToDrd.CONFLICT) {
+              addConflictingDecisionServiceToDrd({
+                definitions: dereferencedState.dmn.model.definitions,
+                __readonly_drdIndex: drdIndex,
+                __readonly_dropPoint: dropPoint,
+                __readonly_decisionServiceHrefRelativeToThisDmn: decisionServiceHrefRelativeToThisDmn,
               });
-            } else {
+            } else if (strategyForAddingDecisionServiceToDrd === StrategyForAddingDecisionServiceToDrd.AUTO_GENERATE) {
+              await addAutoGeneratedDecisionServiceToDrd({
+                state: dereferencedState,
+                __readonly_decisionServiceNamespace: dereferencedState.dmn.model.definitions["@_namespace"],
+                __readonly_drdIndex: drdIndex,
+                __readonly_externalDmnsIndex: externalDmnsIndex,
+                __readonly_containedDecisionHrefsRelativeToThisDmn: containedDecisionHrefsRelativeToThisDmn,
+                __readonly_decisionServiceHrefRelativeToThisDmn: decisionServiceHrefRelativeToThisDmn,
+                __readonly_snapGrid: dereferencedState.diagram.snapGrid,
+                __readonly_dropPoint: dropPoint,
+                __readonly_externalModelsByNamespace: externalModelsByNamespace,
+                __readonly_isAlternativeInputDataShape: dereferencedState
+                  .computed(dereferencedState)
+                  .isAlternativeInputDataShape(),
+              });
+            } else if (
+              strategyForAddingDecisionServiceToDrd === StrategyForAddingDecisionServiceToDrd.COPY_FROM_ANOTHER_DRD
+            ) {
+              addExistingDecisionServiceToDrd({
+                definitions: dereferencedState.dmn.model.definitions,
+                __readonly_decisionServiceNamespace: dereferencedState.dmn.model.definitions["@_namespace"],
+                __readonly_drdIndex: drdIndex,
+                __readonly_externalDmnsIndex: dereferencedState
+                  .computed(dereferencedState)
+                  .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
+                __readonly_indexedDrd: dereferencedState.computed(dereferencedState).indexedDrd(),
+                __readonly_indexedDrdContainingDecisionServiceDepiction: indexedDrdContainingDecisionServiceDepiction!,
+                __readonly_containedDecisionHrefsRelativeToThisDmn: containedDecisionHrefsRelativeToThisDmn,
+                __readonly_decisionServiceHrefRelativeToThisDmn: decisionServiceHrefRelativeToThisDmn,
+                __readonly_dropPoint: dropPoint,
+                __readonly_namespace: dereferencedState.dmn.model.definitions["@_namespace"],
+              });
+            }
+            dmnEditorStoreApi.setState((state) => {
+              state.dmn.model = JSON.parse(JSON.stringify(dereferencedState.dmn.model));
+            });
+          } else {
+            dmnEditorStoreApi.setState((state) => {
               const nodeType = getNodeTypeFromDmnObject(drgElement)!;
+
+              const defaultNodeDimensions = DEFAULT_NODE_SIZES[nodeType]({
+                snapGrid: state.diagram.snapGrid,
+                isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
+              });
+
               addShape({
                 definitions: state.dmn.model.definitions,
-                drdIndex: state.diagram.drdIndex,
+                drdIndex: state.computed(state).getDrdIndex(),
                 nodeType,
                 shape: {
-                  "@_dmnElementRef": buildXmlQName({ type: "xml-qname", localPart: drgElement["@_id"]! }),
+                  "@_id": generateUuid(),
+                  "@_dmnElementRef": buildXmlQName({
+                    type: "xml-qname",
+                    localPart: drgElement["@_id"]!,
+                  }),
                   "@_isCollapsed": false,
                   "dc:Bounds": {
                     "@_x": dropPoint.x,
@@ -454,13 +571,12 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                   },
                 },
               });
-            }
-          });
-
+            });
+          }
           console.debug(`DMN DIAGRAM: Adding DRG node`, JSON.stringify(drgElement));
         }
       },
-      [container, reactFlowInstance, dmnEditorStoreApi, externalModelsByNamespace]
+      [container, dmnEditorStoreApi, externalModelsByNamespace, reactFlowInstance]
     );
 
     const ongoingConnection = useDmnEditorStore((s) => s.diagram.ongoingConnection);
@@ -534,7 +650,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
           const { id, href: newDmnObejctHref } = addConnectedNode({
             definitions: state.dmn.model.definitions,
-            drdIndex: state.diagram.drdIndex,
+            drdIndex: state.computed(state).getDrdIndex(),
             edgeType,
             sourceNode: {
               href: sourceNode.id,
@@ -557,6 +673,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 })["@_height"],
               },
             },
+            externalModelsByNamespace,
           });
 
           state.diagram._selectedNodes = [newDmnObejctHref];
@@ -603,10 +720,6 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
     const onNodesChange = useCallback<RF.OnNodesChange>(
       (changes) => {
-        if (!reactFlowInstance) {
-          return;
-        }
-
         dmnEditorStoreApi.setState((state) => {
           const controlWaypointsByEdge = new Map<number, Set<number>>();
 
@@ -639,9 +752,13 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                   ) {
                     resizeNode({
                       definitions: state.dmn.model.definitions,
-                      drdIndex: state.diagram.drdIndex,
-                      dmnShapesByHref: state.computed(state).indexedDrd().dmnShapesByHref,
+                      drdIndex: state.computed(state).getDrdIndex(),
+                      __readonly_dmnShapesByHref: state.computed(state).indexedDrd().dmnShapesByHref,
                       snapGrid: state.diagram.snapGrid,
+                      __readonly_dmnObjectNamespace: node.data.dmnObjectNamespace,
+                      __readonly_externalDmnsIndex: state
+                        .computed(state)
+                        .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
                       change: {
                         isExternal: !!node.data.dmnObjectQName.prefix,
                         nodeType: node.type as NodeType,
@@ -678,7 +795,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                     .nodesById.get(change.id)!;
                   const { delta } = repositionNode({
                     definitions: state.dmn.model.definitions,
-                    drdIndex: state.diagram.drdIndex,
+                    drdIndex: state.computed(state).getDrdIndex(),
                     controlWaypointsByEdge,
                     change: {
                       type: "absolute",
@@ -705,7 +822,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
                   // Update contained Decisions of Decision Service if in expanded form
                   if (node.type === NODE_TYPES.decisionService && !(node.data.shape["@_isCollapsed"] ?? false)) {
-                    const decisionService = node.data.dmnObject as DMN15__tDecisionService;
+                    const decisionService = node.data.dmnObject as Normalized<DMN15__tDecisionService>;
 
                     const { containedDecisionHrefsRelativeToThisDmn } = getDecisionServicePropertiesRelativeToThisDmn({
                       thisDmnsNamespace: state.dmn.model.definitions["@_namespace"],
@@ -716,14 +833,18 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
                     for (let i = 0; i < containedDecisionHrefsRelativeToThisDmn.length; i++) {
                       const diagramData = state.computed(state).getDiagramData(externalModelsByNamespace);
-                      const nestedNode = diagramData.nodesById.get(containedDecisionHrefsRelativeToThisDmn[i])!;
+                      const nestedNode = diagramData.nodesById.get(containedDecisionHrefsRelativeToThisDmn[i]);
+                      if (nestedNode?.data?.shape === undefined) {
+                        // In case we have an incomple depiction of the decision service in the current DRD
+                        continue;
+                      }
                       const snappedNestedNodeShapeWithAppliedDelta = snapShapePosition(
                         state.diagram.snapGrid,
                         offsetShapePosition(nestedNode.data.shape, delta)
                       );
                       repositionNode({
                         definitions: state.dmn.model.definitions,
-                        drdIndex: state.diagram.drdIndex,
+                        drdIndex: state.computed(state).getDrdIndex(),
                         controlWaypointsByEdge,
                         change: {
                           type: "absolute",
@@ -747,16 +868,19 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 console.debug(`DMN DIAGRAM: 'onNodesChange' --> remove '${change.id}'`);
                 const node = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById.get(change.id)!;
                 deleteNode({
-                  drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
                   definitions: state.dmn.model.definitions,
-                  drdIndex: state.diagram.drdIndex,
-                  dmnObjectNamespace: node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
-                  dmnObjectQName: node.data.dmnObjectQName,
-                  dmnObjectId: node.data.dmnObject?.["@_id"],
-                  nodeNature: nodeNatures[node.type as NodeType],
-                  mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
-                  externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace)
-                    .dmns,
+                  __readonly_drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
+                  __readonly_drdIndex: state.computed(state).getDrdIndex(),
+                  __readonly_dmnObjectNamespace:
+                    node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
+                  __readonly_dmnObjectQName: node.data.dmnObjectQName,
+                  __readonly_dmnObjectId: node.data.dmnObject?.["@_id"],
+                  __readonly_nodeNature: nodeNatures[node.type as NodeType],
+                  __readonly_mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
+                  __readonly_externalDmnsIndex: state
+                    .computed(state)
+                    .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
+                  __readonly_externalModelsByNamespace: externalModelsByNamespace,
                 });
                 state.dispatch(state).diagram.setNodeStatus(node.id, {
                   selected: false,
@@ -778,12 +902,12 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           }
         });
       },
-      [reactFlowInstance, dmnEditorStoreApi, externalModelsByNamespace]
+      [dmnEditorStoreApi, externalModelsByNamespace]
     );
 
     const resetToBeforeEditingBegan = useCallback(() => {
       dmnEditorStoreApi.setState((state) => {
-        state.dmn.model = dmnModelBeforeEditingRef.current;
+        state.dmn.model = normalize(dmnModelBeforeEditingRef.current);
         state.diagram.draggingNodes = [];
         state.diagram.draggingWaypoints = [];
         state.diagram.resizingNodes = [];
@@ -871,8 +995,9 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 for (let i = 0; i < selectedNodes.length; i++) {
                   deleteDecisionFromDecisionService({
                     definitions: state.dmn.model.definitions,
-                    decisionId: selectedNodes[i].data.dmnObject!["@_id"]!, // We can assume that all selected nodes are Decisions because the contaiment was validated above.
+                    decisionHref: selectedNodes[i].id, // We can assume that all selected nodes are Decisions because the contaiment was validated above.
                     decisionServiceId: p.data.dmnObject!["@_id"]!,
+                    externalModelsByNamespace,
                   });
                 }
               } else {
@@ -887,13 +1012,14 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               for (let i = 0; i < selectedNodes.length; i++) {
                 addDecisionToDecisionService({
                   definitions: state.dmn.model.definitions,
-                  drdIndex: state.diagram.drdIndex,
-                  decisionId: selectedNodes[i].data.dmnObject!["@_id"]!, // We can assume that all selected nodes are Decisions because the contaiment was validated above.
+                  drdIndex: state.computed(state).getDrdIndex(),
+                  decisionHref: selectedNodes[i].id, // We can assume that all selected nodes are Decisions because the contaiment was validated above.
                   decisionServiceId: state
                     .computed(state)
                     .getDiagramData(externalModelsByNamespace)
                     .nodesById.get(dropTargetNode.id)!.data.dmnObject!["@_id"]!,
                   snapGrid: state.diagram.snapGrid,
+                  externalModelsByNamespace,
                 });
               }
             } else {
@@ -925,11 +1051,15 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 if (edge?.data) {
                   deleteEdge({
                     definitions: state.dmn.model.definitions,
-                    drdIndex: state.diagram.drdIndex,
+                    drdIndex: state.computed(state).getDrdIndex(),
                     edge: { id: change.id, dmnObject: edge.data.dmnObject },
                     mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
+                    externalModelsByNamespace,
                   });
-                  state.dispatch(state).diagram.setEdgeStatus(change.id, { selected: false, draggingWaypoint: false });
+                  state.dispatch(state).diagram.setEdgeStatus(change.id, {
+                    selected: false,
+                    draggingWaypoint: false,
+                  });
                 }
                 break;
               case "add":
@@ -976,7 +1106,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
           const { newDmnEdge } = addEdge({
             definitions: state.dmn.model.definitions,
-            drdIndex: state.diagram.drdIndex,
+            drdIndex: state.computed(state).getDrdIndex(),
             edge: {
               autoPositionedEdgeMarker: undefined,
               type: oldEdge.type as EdgeType,
@@ -1003,15 +1133,17 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               shapeId: targetNode.data.shape["@_id"],
             },
             keepWaypoints: true,
+            externalModelsByNamespace,
           });
 
           // The DMN Edge changed nodes, so we need to delete the old one, but keep the waypoints on the same DRD.
           if (newDmnEdge["@_dmnElementRef"] !== oldEdge.id) {
             const { deletedDmnEdgeOnCurrentDrd } = deleteEdge({
               definitions: state.dmn.model.definitions,
-              drdIndex: state.diagram.drdIndex,
+              drdIndex: state.computed(state).getDrdIndex(),
               edge: { id: oldEdge.id, dmnObject: oldEdge.data!.dmnObject },
               mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
+              externalModelsByNamespace,
             });
 
             const deletedWaypoints = deletedDmnEdgeOnCurrentDrd?.["di:waypoint"];
@@ -1086,6 +1218,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 console.debug("DMN DIAGRAM: Esc pressed. Desselecting everything.");
                 state.diagram._selectedNodes = [];
                 state.diagram._selectedEdges = [];
+                e.stopPropagation();
                 e.preventDefault();
               } else if (
                 state.computed(s).getDiagramData(externalModelsByNamespace).selectedNodesById.size <= 0 &&
@@ -1095,6 +1228,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                 state.diagram.propertiesPanel.isOpen = false;
                 state.diagram.overlaysPanel.isOpen = false;
                 state.diagram.openLhsPanel = DiagramLhsPanel.NONE;
+                e.stopPropagation();
                 e.preventDefault();
               } else {
                 // Let the
@@ -1121,9 +1255,19 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
     const isEmptyStateShowing =
       showEmptyState && nodes.length === 0 && drgElementsWithoutVisualRepresentationOnCurrentDrdLength === 0;
 
+    const canAutoGenerateDrd = useDmnEditorStore((s) => s.diagram.autoLayout.canAutoGenerateDrd);
+    const drdsLength = useDmnEditorStore((s) => s.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.length);
+
+    const showAutoGenerateDrdModal = useMemo(() => {
+      return canAutoGenerateDrd && drdsLength === undefined;
+    }, [canAutoGenerateDrd, drdsLength]);
+
     return (
       <>
-        {isEmptyStateShowing && <DmnDiagramEmptyState setShowEmptyState={setShowEmptyState} />}
+        {showAutoGenerateDrdModal && <DmnDiagramWithoutDrd />}
+        {isEmptyStateShowing && !canAutoGenerateDrd && (
+          <DmnDiagramEmptyState setShowEmptyState={setShowEmptyState} isReadOnly={settings.isReadOnly} />
+        )}
         <DiagramContainerContextProvider container={container}>
           <svg style={{ position: "absolute", top: 0, left: 0 }}>
             <EdgeMarkers />
@@ -1147,7 +1291,6 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             preventScrolling={true}
             selectionOnDrag={true}
             panOnDrag={PAN_ON_DRAG}
-            panActivationKeyCode={"Alt"}
             selectionMode={RF.SelectionMode.Full} // For selections happening inside Groups/DecisionServices it's better to leave it as "Full"
             isValidConnection={isValidConnection}
             connectionLineComponent={ConnectionLine}
@@ -1162,16 +1305,17 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             onNodeDrag={onNodeDrag}
             // (end)
             onNodeDragStop={onNodeDragStop}
+            nodesDraggable={!settings.isReadOnly}
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}
             snapToGrid={true}
             snapGrid={rfSnapGrid}
-            defaultViewport={DEFAULT_VIEWPORT}
+            defaultViewport={viewport}
             fitView={false}
             fitViewOptions={FIT_VIEW_OPTIONS}
             attributionPosition={"bottom-right"}
             onInit={setReactFlowInstance}
-            deleteKeyCode={DELETE_NODE_KEY_CODES}
+            deleteKeyCode={settings.isReadOnly ? [] : DELETE_NODE_KEY_CODES}
             // (begin)
             // Used to make the Palette work by dropping nodes on the Reactflow Canvas
             onDrop={onDrop}
@@ -1180,12 +1324,12 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           >
             <SelectionStatus />
             <Palette pulse={isEmptyStateShowing} />
-            <TopRightCornerPanels />
-            <PanWhenAltPressed />
-            <KeyboardShortcuts />
+            <TopRightCornerPanels availableHeight={container.current?.offsetHeight} />
+            <DiagramCommands />
             {!isFirefox && <RF.Background />}
             <RF.Controls fitViewOptions={FIT_VIEW_OPTIONS} position={"bottom-right"} />
             <SetConnectionToReactFlowStore />
+            <ViewportWatcher />
           </RF.ReactFlow>
         </DiagramContainerContextProvider>
       </>
@@ -1193,12 +1337,144 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
   }
 );
 
+function DmnDiagramWithoutDrd() {
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const settings = useSettings();
+  const { externalModelsByNamespace } = useExternalModels();
+
+  return (
+    <Bullseye
+      style={{
+        position: "absolute",
+        width: "100%",
+        pointerEvents: "none",
+        zIndex: 1,
+        height: "auto",
+        marginTop: "120px",
+      }}
+    >
+      <div className={"kie-dmn-editor--diagram-empty-state"}>
+        <Button
+          title={"Close"}
+          style={{
+            position: "absolute",
+            top: "8px",
+            right: 0,
+          }}
+          variant={ButtonVariant.plain}
+          icon={<TimesIcon />}
+          onClick={() => {
+            dmnEditorStoreApi.setState((s) => {
+              s.diagram.autoLayout.canAutoGenerateDrd = false;
+            });
+          }}
+        />
+
+        <EmptyState variant={EmptyStateVariant.small}>
+          <EmptyStateIcon icon={BlueprintIcon} />
+          <Title size={"md"} headingLevel={"h4"}>
+            Empty Diagram
+          </Title>
+          <EmptyStateBody>
+            The current DMN does not have any Diagram associated with it. Do you want to auto-generate it?
+          </EmptyStateBody>
+
+          <EmptyStatePrimary>
+            <Button
+              variant={ButtonVariant.link}
+              isDisabled={settings.isReadOnly}
+              icon={<OptimizeIcon />}
+              onClick={async () => {
+                const { computed, ...state } = dmnEditorStoreApi.getState();
+                const dereferencedState: State = { computed, ...JSON.parse(JSON.stringify(state)) };
+
+                const externalModelTypesByNamespace = dereferencedState
+                  .computed(dereferencedState)
+                  .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace);
+
+                autoGenerateDrd({
+                  model: dereferencedState.dmn.model,
+                  diagram: dereferencedState.diagram,
+                  externalModelsByNamespace,
+                  externalModelTypesByNamespace,
+                });
+
+                const snapGrid = dereferencedState.diagram.snapGrid;
+                const nodesById = dereferencedState
+                  .computed(dereferencedState)
+                  .getDiagramData(externalModelsByNamespace).nodesById;
+                const edgesById = dereferencedState
+                  .computed(dereferencedState)
+                  .getDiagramData(externalModelsByNamespace).edgesById;
+                const nodes = dereferencedState
+                  .computed(dereferencedState)
+                  .getDiagramData(externalModelsByNamespace).nodes;
+                const edges = dereferencedState
+                  .computed(dereferencedState)
+                  .getDiagramData(externalModelsByNamespace).edges;
+                const drgEdges = dereferencedState
+                  .computed(dereferencedState)
+                  .getDiagramData(externalModelsByNamespace).drgEdges;
+                const isAlternativeInputDataShape = dereferencedState
+                  .computed(dereferencedState)
+                  .isAlternativeInputDataShape();
+                const dmnShapesByHref = dereferencedState.computed(dereferencedState).indexedDrd().dmnShapesByHref;
+
+                // Auto layout the new DRD
+                const { __readonly_autoLayoutedInfo, __readonly_parentNodesById } = await getAutoLayoutedInfo({
+                  __readonly_snapGrid: snapGrid,
+                  __readonly_nodesById: nodesById,
+                  __readonly_edgesById: edgesById,
+                  __readonly_nodes: nodes,
+                  __readonly_drgEdges: drgEdges,
+                  __readonly_isAlternativeInputDataShape: isAlternativeInputDataShape,
+                });
+
+                dmnEditorStoreApi.setState((s) => {
+                  s.diagram.autoLayout.canAutoGenerateDrd = false;
+                  applyAutoLayoutToDrd({
+                    state: dereferencedState,
+                    __readonly_dmnShapesByHref: dmnShapesByHref,
+                    __readonly_edges: edges,
+                    __readonly_edgesById: edgesById,
+                    __readonly_nodesById: nodesById,
+                    __readonly_autoLayoutedInfo,
+                    __readonly_parentNodesById,
+                    __readonly_drdIndex: dereferencedState.computed(dereferencedState).getDrdIndex(),
+                    __readonly_dmnObjectNamespace: dereferencedState.dmn.model.definitions["@_namespace"],
+                    __readonly_externalDmnsIndex: dereferencedState
+                      .computed(dereferencedState)
+                      .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
+                    __readonly_externalModelsByNamespace: externalModelsByNamespace,
+                  });
+                  s.dmn.model = dereferencedState.dmn.model;
+                });
+              }}
+            >
+              Auto-generate Diagram
+            </Button>
+          </EmptyStatePrimary>
+
+          <br />
+          <EmptyStateBody style={{ fontSize: "12px", wordBreak: "break-word" }}>
+            Auto generating the diagram will automatically place the nodes with the default size and shape. You can also
+            manually build your diagram using the &quot;DRG Nodes&quot; option from the palette.
+          </EmptyStateBody>
+        </EmptyState>
+      </div>
+    </Bullseye>
+  );
+}
+
 function DmnDiagramEmptyState({
   setShowEmptyState,
+  isReadOnly,
 }: {
   setShowEmptyState: React.Dispatch<React.SetStateAction<boolean>>;
+  isReadOnly?: boolean;
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const { externalModelsByNamespace } = useExternalModels();
 
   return (
     <Bullseye
@@ -1229,130 +1505,157 @@ function DmnDiagramEmptyState({
           <Title size={"md"} headingLevel={"h4"}>
             {`This DMN's Diagram is empty`}
           </Title>
-          <EmptyStateBody>Start by dragging nodes from the Palette</EmptyStateBody>
-          <br />
-          <EmptyStateBody>or</EmptyStateBody>
-          <EmptyStatePrimary>
-            <Button
-              variant={ButtonVariant.link}
-              icon={<TableIcon />}
-              onClick={() => {
-                dmnEditorStoreApi.setState((state) => {
-                  const { href: decisionNodeHref } = addStandaloneNode({
-                    definitions: state.dmn.model.definitions,
-                    drdIndex: state.diagram.drdIndex,
-                    newNode: {
-                      type: NODE_TYPES.decision,
-                      bounds: {
+          {isReadOnly ? (
+            <>
+              <EmptyStateBody>Make sure the DMN has nodes or try opening another file</EmptyStateBody>
+            </>
+          ) : (
+            <>
+              <EmptyStateBody>Start by dragging nodes from the Palette</EmptyStateBody>
+              <br />
+              <EmptyStateBody>or</EmptyStateBody>
+              <EmptyStatePrimary>
+                <Button
+                  variant={ButtonVariant.link}
+                  icon={<TableIcon />}
+                  onClick={() => {
+                    dmnEditorStoreApi.setState((state) => {
+                      const { href: decisionNodeHref } = addStandaloneNode({
+                        definitions: state.dmn.model.definitions,
+                        drdIndex: state.computed(state).getDrdIndex(),
+                        newNode: {
+                          type: NODE_TYPES.decision,
+                          bounds: {
+                            "@_x": 100,
+                            "@_y": 100,
+                            "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
+                              snapGrid: state.diagram.snapGrid,
+                            })["@_width"],
+                            "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
+                              snapGrid: state.diagram.snapGrid,
+                            })["@_height"],
+                          },
+                        },
+                        externalModelsByNamespace,
+                      });
+
+                      const drgElementIndex = (state.dmn.model.definitions.drgElement ?? []).length - 1;
+
+                      const defaultWidthsById = new Map<string, number[]>();
+                      const defaultExpression = getDefaultBoxedExpression({
+                        logicType: "decisionTable",
+                        allTopLevelDataTypesByFeelName: new Map(),
+                        typeRef: undefined,
+                        getDefaultColumnWidth,
+                        widthsById: defaultWidthsById,
+                      });
+
+                      updateExpression({
+                        definitions: state.dmn.model.definitions,
+                        drgElementIndex,
+                        expression: {
+                          ...defaultExpression,
+                          "@_label": "New Decision",
+                        },
+                      });
+
+                      updateExpressionWidths({
+                        definitions: state.dmn.model.definitions,
+                        drdIndex: state.computed(state).getDrdIndex(),
+                        widthsById: defaultWidthsById,
+                      });
+
+                      state.dispatch(state).boxedExpressionEditor.open(parseXmlHref(decisionNodeHref).id);
+                    });
+                  }}
+                >
+                  New Decision Table...
+                </Button>
+                <br />
+                <Button
+                  variant={ButtonVariant.link}
+                  icon={<BlueprintIcon />}
+                  onClick={() => {
+                    dmnEditorStoreApi.setState((state) => {
+                      const inputDataNodeBounds: DC__Bounds = {
                         "@_x": 100,
-                        "@_y": 100,
-                        "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
+                        "@_y": 300,
+                        "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.inputData]({
                           snapGrid: state.diagram.snapGrid,
+                          isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
                         })["@_width"],
-                        "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
+                        "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.inputData]({
                           snapGrid: state.diagram.snapGrid,
+                          isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
                         })["@_height"],
-                      },
-                    },
-                  });
+                      };
 
-                  const drgElementIndex = (state.dmn.model.definitions.drgElement ?? []).length - 1;
+                      const { href: inputDataNodeHref, shapeId: inputDataShapeId } = addStandaloneNode({
+                        definitions: state.dmn.model.definitions,
+                        drdIndex: state.computed(state).getDrdIndex(),
+                        newNode: {
+                          type: NODE_TYPES.inputData,
+                          bounds: inputDataNodeBounds,
+                        },
+                        externalModelsByNamespace,
+                      });
 
-                  const defaultWidthsById = new Map<string, number[]>();
-                  const defaultExpression = getDefaultBoxedExpression({
-                    logicType: "decisionTable",
-                    allTopLevelDataTypesByFeelName: new Map(),
-                    typeRef: DmnBuiltInDataType.Undefined,
-                    getDefaultColumnWidth,
-                    widthsById: defaultWidthsById,
-                  });
+                      const { href: decisionNodeHref } = addConnectedNode({
+                        definitions: state.dmn.model.definitions,
+                        drdIndex: state.computed(state).getDrdIndex(),
+                        edgeType: EDGE_TYPES.informationRequirement,
+                        sourceNode: {
+                          href: inputDataNodeHref,
+                          type: NODE_TYPES.inputData,
+                          bounds: inputDataNodeBounds,
+                          shapeId: inputDataShapeId,
+                        },
+                        newNode: {
+                          type: NODE_TYPES.decision,
+                          bounds: {
+                            "@_x": 100,
+                            "@_y": 100,
+                            "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
+                              snapGrid: state.diagram.snapGrid,
+                            })["@_width"],
+                            "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
+                              snapGrid: state.diagram.snapGrid,
+                            })["@_height"],
+                          },
+                        },
+                        externalModelsByNamespace,
+                      });
 
-                  updateExpression({
-                    definitions: state.dmn.model.definitions,
-                    drgElementIndex,
-                    expression: {
-                      ...defaultExpression,
-                      "@_label": "New Decision",
-                    },
-                  });
-
-                  updateExpressionWidths({
-                    definitions: state.dmn.model.definitions,
-                    drdIndex: state.diagram.drdIndex,
-                    widthsById: defaultWidthsById,
-                  });
-
-                  state.dispatch(state).boxedExpressionEditor.open(parseXmlHref(decisionNodeHref).id);
-                });
-              }}
-            >
-              New Decision Table...
-            </Button>
-            <br />
-            <Button
-              variant={ButtonVariant.link}
-              icon={<BlueprintIcon />}
-              onClick={() => {
-                dmnEditorStoreApi.setState((state) => {
-                  const inputDataNodeBounds: DC__Bounds = {
-                    "@_x": 100,
-                    "@_y": 300,
-                    "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.inputData]({
-                      snapGrid: state.diagram.snapGrid,
-                      isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
-                    })["@_width"],
-                    "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.inputData]({
-                      snapGrid: state.diagram.snapGrid,
-                      isAlternativeInputDataShape: state.computed(state).isAlternativeInputDataShape(),
-                    })["@_height"],
-                  };
-
-                  const { href: inputDataNodeHref, shapeId: inputDataShapeId } = addStandaloneNode({
-                    definitions: state.dmn.model.definitions,
-                    drdIndex: state.diagram.drdIndex,
-                    newNode: {
-                      type: NODE_TYPES.inputData,
-                      bounds: inputDataNodeBounds,
-                    },
-                  });
-
-                  const { href: decisionNodeHref } = addConnectedNode({
-                    definitions: state.dmn.model.definitions,
-                    drdIndex: state.diagram.drdIndex,
-                    edgeType: EDGE_TYPES.informationRequirement,
-                    sourceNode: {
-                      href: inputDataNodeHref,
-                      type: NODE_TYPES.inputData,
-                      bounds: inputDataNodeBounds,
-                      shapeId: inputDataShapeId,
-                    },
-                    newNode: {
-                      type: NODE_TYPES.decision,
-                      bounds: {
-                        "@_x": 100,
-                        "@_y": 100,
-                        "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
-                          snapGrid: state.diagram.snapGrid,
-                        })["@_width"],
-                        "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decision]({
-                          snapGrid: state.diagram.snapGrid,
-                        })["@_height"],
-                      },
-                    },
-                  });
-
-                  state.diagram._selectedNodes = [decisionNodeHref];
-                  state.diagram.propertiesPanel.isOpen = true;
-                });
-              }}
-            >
-              New Decision with Input Data...
-            </Button>
-          </EmptyStatePrimary>
+                      state.diagram._selectedNodes = [decisionNodeHref];
+                      state.diagram.propertiesPanel.isOpen = true;
+                    });
+                  }}
+                >
+                  New Decision with Input Data...
+                </Button>
+              </EmptyStatePrimary>
+            </>
+          )}
         </EmptyState>
       </div>
     </Bullseye>
   );
+}
+
+export function ViewportWatcher() {
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
+  useOnViewportChange({
+    onChange: (viewport: Viewport) => {
+      dmnEditorStoreApi.setState((state) => {
+        state.diagram.viewport = {
+          x: viewport.x,
+          y: viewport.y,
+          zoom: viewport.zoom,
+        };
+      });
+    },
+  });
+  return <></>;
 }
 
 export function SetConnectionToReactFlowStore(props: {}) {
@@ -1369,9 +1672,14 @@ export function SetConnectionToReactFlowStore(props: {}) {
   return <></>;
 }
 
-export function TopRightCornerPanels() {
+interface TopRightCornerPanelsProps {
+  availableHeight?: number | undefined;
+}
+
+export function TopRightCornerPanels({ availableHeight }: TopRightCornerPanelsProps) {
   const diagram = useDmnEditorStore((s) => s.diagram);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
+  const settings = useSettings();
 
   const togglePropertiesPanel = useCallback(() => {
     dmnEditorStoreApi.setState((state) => {
@@ -1401,42 +1709,48 @@ export function TopRightCornerPanels() {
 
   return (
     <>
-      <RF.Panel position={"top-right"} style={{ display: "flex" }}>
-        <aside className={"kie-dmn-editor--autolayout-panel-toggle"}>
-          <AutolayoutButton />
-        </aside>
-        <aside className={"kie-dmn-editor--overlays-panel-toggle"}>
-          <Popover
-            className={"kie-dmn-editor--overlay-panel-popover"}
-            key={`${diagram.overlaysPanel.isOpen}`}
-            aria-label="Overlays Panel"
-            position={"bottom-end"}
-            enableFlip={false}
-            flipBehavior={["bottom-end"]}
-            hideOnOutsideClick={false}
-            isVisible={diagram.overlaysPanel.isOpen}
-            bodyContent={<OverlaysPanel />}
-          >
-            <button
-              className={"kie-dmn-editor--overlays-panel-toggle-button"}
-              onClick={toggleOverlaysPanel}
-              title={"Overlays"}
+      <RF.Panel position={"top-right"}>
+        <Flex>
+          {diagram.overlays.enableEvaluationHighlights && <EvaluationHighlightsBadge />}
+          {!settings.isReadOnly && (
+            <aside className={"kie-dmn-editor--autolayout-panel-toggle"}>
+              <AutolayoutButton />
+            </aside>
+          )}
+          <aside className={"kie-dmn-editor--overlays-panel-toggle"}>
+            <Popover
+              className={"kie-dmn-editor--overlay-panel-popover"}
+              key={`${diagram.overlaysPanel.isOpen}`}
+              aria-label="Overlays Panel"
+              position={"bottom-end"}
+              enableFlip={false}
+              flipBehavior={["bottom-end"]}
+              hideOnOutsideClick={false}
+              showClose={false}
+              isVisible={diagram.overlaysPanel.isOpen}
+              bodyContent={<OverlaysPanel availableHeight={(availableHeight ?? 0) - AREA_ABOVE_OVERLAYS_PANEL} />}
             >
-              <VirtualMachineIcon size={"sm"} />
-            </button>
-          </Popover>
-        </aside>
-        {!diagram.propertiesPanel.isOpen && (
-          <aside className={"kie-dmn-editor--properties-panel-toggle"}>
-            <button
-              className={"kie-dmn-editor--properties-panel-toggle-button"}
-              onClick={togglePropertiesPanel}
-              title={"Properties panel"}
-            >
-              <InfoIcon size={"sm"} />
-            </button>
+              <button
+                className={"kie-dmn-editor--overlays-panel-toggle-button"}
+                onClick={toggleOverlaysPanel}
+                title={"Overlays"}
+              >
+                <VirtualMachineIcon size={"sm"} />
+              </button>
+            </Popover>
           </aside>
-        )}
+          {!diagram.propertiesPanel.isOpen && (
+            <aside className={"kie-dmn-editor--properties-panel-toggle"}>
+              <button
+                className={"kie-dmn-editor--properties-panel-toggle-button"}
+                onClick={togglePropertiesPanel}
+                title={"Properties panel"}
+              >
+                <InfoIcon size={"sm"} />
+              </button>
+            </aside>
+          )}
+        </Flex>
       </RF.Panel>
     </>
   );
@@ -1486,394 +1800,4 @@ export function SelectionStatus() {
       )) || <></>}
     </>
   );
-}
-
-export function KeyboardShortcuts(props: {}) {
-  const rfStoreApi = RF.useStoreApi();
-  const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { externalModelsByNamespace } = useExternalModels();
-
-  const rf = RF.useReactFlow<DmnDiagramNodeData, DmnDiagramEdgeData>();
-
-  // Reset position to origin
-  const space = RF.useKeyPress(["Space"]);
-  useEffect(() => {
-    if (!space) {
-      return;
-    }
-
-    rf.setViewport(DEFAULT_VIEWPORT, { duration: 200 });
-  }, [rf, space]);
-
-  // Focus on node bounds
-  const b = RF.useKeyPress(["b"]);
-  useEffect(() => {
-    if (!b) {
-      return;
-    }
-
-    const selectedNodes = rf.getNodes().filter((s) => s.selected);
-    if (selectedNodes.length <= 0) {
-      return;
-    }
-
-    const bounds = getBounds({
-      nodes: selectedNodes,
-      padding: 100,
-    });
-
-    rf.fitBounds(
-      {
-        x: bounds["@_x"],
-        y: bounds["@_y"],
-        width: bounds["@_width"],
-        height: bounds["@_height"],
-      },
-      { duration: 200 }
-    );
-  }, [b, rf]);
-
-  // Cancel action
-  const esc = RF.useKeyPress(["Escape"]);
-  useEffect(() => {
-    if (!esc) {
-      return;
-    }
-
-    rfStoreApi.setState((rfState) => {
-      if (rfState.connectionNodeId) {
-        console.debug("DMN DIAGRAM: Esc pressed. Cancelling connection.");
-        rfState.cancelConnection();
-        dmnEditorStoreApi.setState((state) => {
-          state.diagram.ongoingConnection = undefined;
-        });
-      } else {
-        (document.activeElement as any)?.blur?.();
-      }
-
-      return rfState;
-    });
-  }, [esc, dmnEditorStoreApi, rfStoreApi]);
-
-  // Cut
-  const cut = RF.useKeyPress(["Meta+x"]);
-  useEffect(() => {
-    if (!cut) {
-      return;
-    }
-    console.debug("DMN DIAGRAM: Cutting selected nodes...");
-
-    const { clipboard, copiedEdgesById, danglingEdgesById, copiedNodesById } = buildClipboardFromDiagram(
-      rfStoreApi.getState(),
-      dmnEditorStoreApi.getState()
-    );
-
-    navigator.clipboard.writeText(JSON.stringify(clipboard)).then(() => {
-      dmnEditorStoreApi.setState((state) => {
-        // Delete edges
-        [...copiedEdgesById.values(), ...danglingEdgesById.values()].forEach((edge) => {
-          deleteEdge({
-            definitions: state.dmn.model.definitions,
-            drdIndex: state.diagram.drdIndex,
-            edge: { id: edge.id, dmnObject: edge.data!.dmnObject },
-            mode: EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS,
-          });
-          state.dispatch(state).diagram.setEdgeStatus(edge.id, {
-            selected: false,
-            draggingWaypoint: false,
-          });
-        });
-
-        // Delete nodes
-        rfStoreApi
-          .getState()
-          .getNodes()
-          .forEach((node: RF.Node<DmnDiagramNodeData>) => {
-            if (copiedNodesById.has(node.id)) {
-              deleteNode({
-                drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
-                definitions: state.dmn.model.definitions,
-                drdIndex: state.diagram.drdIndex,
-                dmnObjectNamespace: node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
-                dmnObjectQName: node.data.dmnObjectQName,
-                dmnObjectId: node.data.dmnObject?.["@_id"],
-                nodeNature: nodeNatures[node.type as NodeType],
-                mode: NodeDeletionMode.FROM_DRG_AND_ALL_DRDS,
-                externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace)
-                  .dmns,
-              });
-              state.dispatch(state).diagram.setNodeStatus(node.id, {
-                selected: false,
-                dragging: false,
-                resizing: false,
-              });
-            }
-          });
-      });
-    });
-  }, [cut, dmnEditorStoreApi, rfStoreApi, externalModelsByNamespace]);
-
-  // Copy
-  const copy = RF.useKeyPress(["Meta+c"]);
-  useEffect(() => {
-    if (!copy) {
-      return;
-    }
-
-    console.debug("DMN DIAGRAM: Copying selected nodes...");
-
-    const { clipboard } = buildClipboardFromDiagram(rfStoreApi.getState(), dmnEditorStoreApi.getState());
-    navigator.clipboard.writeText(JSON.stringify(clipboard));
-  }, [copy, dmnEditorStoreApi, rfStoreApi]);
-
-  // Paste
-  const paste = RF.useKeyPress(["Meta+v"]);
-  useEffect(() => {
-    if (!paste) {
-      return;
-    }
-
-    console.debug("DMN DIAGRAM: Pasting nodes...");
-
-    navigator.clipboard.readText().then((text) => {
-      const clipboard = getClipboard<DmnEditorDiagramClipboard>(text, DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE);
-      if (!clipboard) {
-        return;
-      }
-
-      getNewDmnIdRandomizer()
-        .ack({
-          json: clipboard.drgElements,
-          type: "DMN15__tDefinitions",
-          attr: "drgElement",
-        })
-        .ack({
-          json: clipboard.artifacts,
-          type: "DMN15__tDefinitions",
-          attr: "artifact",
-        })
-        .ack({
-          json: clipboard.shapes,
-          type: "DMNDI15__DMNDiagram",
-          attr: "dmndi:DMNDiagramElement",
-          __$$element: "dmndi:DMNShape",
-        })
-        .ack({
-          json: clipboard.edges,
-          type: "DMNDI15__DMNDiagram",
-          attr: "dmndi:DMNDiagramElement",
-          __$$element: "dmndi:DMNEdge",
-        })
-        .ack<any>({
-          // This `any` argument ideally wouldn't be here, but the type of DMN's `meta` is not composed with KIE's `meta` in compile-time
-          json: clipboard.widths,
-          type: "KIE__tComponentsWidthsExtension",
-          attr: "kie:ComponentWidths",
-        })
-        .randomize();
-
-      dmnEditorStoreApi.setState((state) => {
-        state.dmn.model.definitions.drgElement ??= [];
-        state.dmn.model.definitions.drgElement.push(...clipboard.drgElements);
-        state.dmn.model.definitions.artifact ??= [];
-        state.dmn.model.definitions.artifact.push(...clipboard.artifacts);
-
-        const { diagramElements, widths } = addOrGetDrd({
-          definitions: state.dmn.model.definitions,
-          drdIndex: state.diagram.drdIndex,
-        });
-        diagramElements.push(...clipboard.shapes.map((s) => ({ ...s, __$$element: "dmndi:DMNShape" as const })));
-        diagramElements.push(...clipboard.edges.map((s) => ({ ...s, __$$element: "dmndi:DMNEdge" as const })));
-
-        widths.push(...clipboard.widths);
-
-        repopulateInputDataAndDecisionsOnAllDecisionServices({ definitions: state.dmn.model.definitions });
-
-        state.diagram._selectedNodes = [...clipboard.drgElements, ...clipboard.artifacts].map((s) =>
-          buildXmlHref({ id: s["@_id"]! })
-        );
-
-        if (state.diagram._selectedNodes.length === 1) {
-          state.focus.consumableId = parseXmlHref(state.diagram._selectedNodes[0]).id;
-        }
-      });
-    });
-  }, [paste, dmnEditorStoreApi]);
-
-  // Select/deselect all
-  const selectAll = RF.useKeyPress(["a", "Meta+a"]);
-  useEffect(() => {
-    if (!selectAll) {
-      return;
-    }
-
-    const allNodeIds = rfStoreApi
-      .getState()
-      .getNodes()
-      .map((s) => s.id);
-
-    const allEdgeIds = rfStoreApi.getState().edges.map((s) => s.id);
-
-    dmnEditorStoreApi.setState((state) => {
-      const allSelectedNodesSet = new Set(state.diagram._selectedNodes);
-      const allSelectedEdgesSet = new Set(state.diagram._selectedEdges);
-
-      // If everything is selected, deselect everything.
-      if (
-        allNodeIds.every((id) => allSelectedNodesSet.has(id) && allEdgeIds.every((id) => allSelectedEdgesSet.has(id)))
-      ) {
-        state.diagram._selectedNodes = [];
-        state.diagram._selectedEdges = [];
-      } else {
-        state.diagram._selectedNodes = allNodeIds;
-        state.diagram._selectedEdges = allEdgeIds;
-      }
-    });
-  }, [selectAll, dmnEditorStoreApi, rfStoreApi]);
-
-  // Create group wrapping selection
-  const g = RF.useKeyPress(["g"]);
-  useEffect(() => {
-    if (!g) {
-      return;
-    }
-
-    const selectedNodes = rf.getNodes().filter((s) => s.selected);
-    if (selectedNodes.length <= 0) {
-      return;
-    }
-
-    dmnEditorStoreApi.setState((state) => {
-      if (state.diagram._selectedNodes.length <= 0) {
-        return;
-      }
-
-      const { href: newNodeId } = addStandaloneNode({
-        definitions: state.dmn.model.definitions,
-        drdIndex: state.diagram.drdIndex,
-        newNode: {
-          type: NODE_TYPES.group,
-          bounds: getBounds({
-            nodes: selectedNodes,
-            padding: CONTAINER_NODES_DESIRABLE_PADDING,
-          }),
-        },
-      });
-
-      state.dispatch(state).diagram.setNodeStatus(newNodeId, { selected: true });
-    });
-  }, [g, dmnEditorStoreApi, rf]);
-
-  // Toggle hierarchy highlights
-  const h = RF.useKeyPress(["h"]);
-  useEffect(() => {
-    if (!h) {
-      return;
-    }
-
-    dmnEditorStoreApi.setState((state) => {
-      state.diagram.overlays.enableNodeHierarchyHighlight = !state.diagram.overlays.enableNodeHierarchyHighlight;
-    });
-  }, [h, dmnEditorStoreApi]);
-
-  // Show Properties panel
-  const i = RF.useKeyPress(["i"]);
-  useEffect(() => {
-    if (!i) {
-      return;
-    }
-
-    dmnEditorStoreApi.setState((state) => {
-      state.diagram.propertiesPanel.isOpen = !state.diagram.propertiesPanel.isOpen;
-    });
-  }, [i, dmnEditorStoreApi]);
-
-  // Hide from DRD
-  const x = RF.useKeyPress(["x"]);
-  useEffect(() => {
-    if (!x) {
-      return;
-    }
-
-    const nodesById = rf
-      .getNodes()
-      .reduce((acc, s) => acc.set(s.id, s), new Map<string, RF.Node<DmnDiagramNodeData>>());
-
-    dmnEditorStoreApi.setState((state) => {
-      const selectedNodeIds = new Set(state.diagram._selectedNodes);
-      for (const edge of rf.getEdges()) {
-        if (
-          (selectedNodeIds.has(edge.source) &&
-            canRemoveNodeFromDrdOnly({
-              externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
-              definitions: state.dmn.model.definitions,
-              drdIndex: state.diagram.drdIndex,
-              dmnObjectNamespace:
-                nodesById.get(edge.source)!.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
-              dmnObjectId: nodesById.get(edge.source)!.data.dmnObject?.["@_id"],
-            })) ||
-          (selectedNodeIds.has(edge.target) &&
-            canRemoveNodeFromDrdOnly({
-              externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
-              definitions: state.dmn.model.definitions,
-              drdIndex: state.diagram.drdIndex,
-              dmnObjectNamespace:
-                nodesById.get(edge.target)!.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
-              dmnObjectId: nodesById.get(edge.target)!.data.dmnObject?.["@_id"],
-            }))
-        ) {
-          deleteEdge({
-            definitions: state.dmn.model.definitions,
-            drdIndex: state.diagram.drdIndex,
-            edge: { id: edge.id, dmnObject: edge.data!.dmnObject },
-            mode: EdgeDeletionMode.FROM_CURRENT_DRD_ONLY,
-          });
-          state.dispatch(state).diagram.setEdgeStatus(edge.id, { selected: false, draggingWaypoint: false });
-        }
-      }
-
-      for (const node of rf.getNodes().filter((s) => s.selected)) {
-        // Prevent hiding artifact nodes from DRD;
-        if (nodeNatures[node.type as NodeType] === NodeNature.ARTIFACT) {
-          continue;
-        }
-        const { deletedDmnShapeOnCurrentDrd: deletedShape } = deleteNode({
-          drgEdges: [], // Deleting from DRD only.
-          definitions: state.dmn.model.definitions,
-          externalDmnsIndex: state.computed(state).getExternalModelTypesByNamespace(externalModelsByNamespace).dmns,
-          drdIndex: state.diagram.drdIndex,
-          dmnObjectNamespace: node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
-          dmnObjectQName: node.data.dmnObjectQName,
-          dmnObjectId: node.data.dmnObject?.["@_id"],
-          nodeNature: nodeNatures[node.type as NodeType],
-          mode: NodeDeletionMode.FROM_CURRENT_DRD_ONLY,
-        });
-
-        if (deletedShape) {
-          state.dispatch(state).diagram.setNodeStatus(node.id, {
-            selected: false,
-            dragging: false,
-            resizing: false,
-          });
-        }
-      }
-    });
-  }, [x, dmnEditorStoreApi, rf, externalModelsByNamespace]);
-
-  return <></>;
-}
-
-export function PanWhenAltPressed() {
-  const altPressed = RF.useKeyPress("Alt");
-  const rfStoreApi = RF.useStoreApi();
-
-  useEffect(() => {
-    rfStoreApi.setState({
-      nodesDraggable: !altPressed,
-      nodesConnectable: !altPressed,
-      elementsSelectable: !altPressed,
-    });
-  }, [altPressed, rfStoreApi]);
-
-  return <></>;
 }

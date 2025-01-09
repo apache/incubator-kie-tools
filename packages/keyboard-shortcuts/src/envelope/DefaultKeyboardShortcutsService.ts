@@ -52,6 +52,7 @@ const KEY_CODES = new Map<string, string>([
   ["esc", "Escape"],
   ["delete", "Delete"],
   ["backspace", "Backspace"],
+  ["space", "Space"],
   ["right", "ArrowRight"],
   ["left", "ArrowLeft"],
   ["up", "ArrowUp"],

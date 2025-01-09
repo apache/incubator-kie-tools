@@ -19,6 +19,7 @@
 
 import React, { useMemo } from "react";
 import { DMNDI15__DMNStyle } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { NodeType } from "../connections/graphStructure";
 import { NODE_TYPES } from "./NodeTypes";
 import { NodeLabelPosition } from "./NodeSvgs";
@@ -42,6 +43,7 @@ export interface DmnFontStyle {
   family?: string;
   size?: number;
   color: string;
+  fill: string;
 }
 
 export interface Color {
@@ -61,7 +63,7 @@ export const DEFAULT_NODE_STROKE_COLOR = "rgba(0, 0, 0, 1)";
 export const DEFAULT_FONT_COLOR = "rgba(0, 0, 0, 1)";
 
 export function useNodeStyle(args: {
-  dmnStyle?: DMNDI15__DMNStyle;
+  dmnStyle?: Normalized<DMNDI15__DMNStyle>;
   nodeType?: NodeType;
   isEnabled?: boolean;
 }): NodeStyle {
@@ -111,7 +113,7 @@ export function getNodeStyle({
 }
 
 export function getNodeShapeFillColor(args: {
-  dmnStyle?: DMNDI15__DMNStyle | undefined;
+  dmnStyle?: Normalized<DMNDI15__DMNStyle> | undefined;
   nodeType?: NodeType | undefined;
   isEnabled?: boolean | undefined;
 }) {
@@ -134,7 +136,7 @@ export function getNodeShapeFillColor(args: {
 }
 
 export function getNodeShapeStrokeColor(args: {
-  dmnStyle?: DMNDI15__DMNStyle | undefined;
+  dmnStyle?: Normalized<DMNDI15__DMNStyle> | undefined;
   isEnabled?: boolean | undefined;
 }) {
   const blue = args.dmnStyle?.["dmndi:StrokeColor"]?.["@_blue"];
@@ -148,7 +150,7 @@ export function getNodeShapeStrokeColor(args: {
 }
 
 export function getDmnFontStyle(args: {
-  dmnStyle?: DMNDI15__DMNStyle | undefined;
+  dmnStyle?: Normalized<DMNDI15__DMNStyle> | undefined;
   isEnabled?: boolean | undefined;
 }): DmnFontStyle {
   const blue = args.dmnStyle?.["dmndi:FontColor"]?.["@_blue"];
@@ -168,6 +170,7 @@ export function getDmnFontStyle(args: {
     family: args.isEnabled ? args.dmnStyle?.["@_fontFamily"] : undefined,
     size: args.isEnabled ? args.dmnStyle?.["@_fontSize"] : undefined,
     color: fontColor,
+    fill: fontColor,
   };
 }
 
@@ -188,6 +191,7 @@ export function getFontCssProperties(dmnFontStyle?: DmnFontStyle): React.CSSProp
     textDecoration,
     fontSize: dmnFontStyle?.size ?? "16px",
     color: dmnFontStyle?.color ?? "black",
+    fill: dmnFontStyle?.fill ?? "black",
     lineHeight: "1.5em", // This needs to be em `em` otherwise `@visx/text` breaks when generating the SVG.
   };
 }

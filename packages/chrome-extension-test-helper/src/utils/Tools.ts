@@ -29,11 +29,14 @@ import Window from "./tools/Window";
 import { resolve } from "path";
 
 export default class Tools {
-  private static readonly SCREENSHOTS_DIR: string = resolve("dist-e2e-tests", "screenshots");
+  private static readonly SCREENSHOTS_DIR: string = resolve("dist-tests-e2e", "screenshots");
 
   private readonly screenShot: Screenshot;
 
-  private constructor(private readonly driver: WebDriver, private readonly testName: string) {
+  private constructor(
+    private readonly driver: WebDriver,
+    private readonly testName: string
+  ) {
     this.screenShot = new Screenshot(this.driver, Tools.SCREENSHOTS_DIR);
   }
 

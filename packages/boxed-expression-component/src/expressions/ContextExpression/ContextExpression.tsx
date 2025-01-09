@@ -31,6 +31,7 @@ import {
   DmnBuiltInDataType,
   generateUuid,
   getNextAvailablePrefixedName,
+  Normalized,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainerWithNestedExpressions } from "../../resizing/Hooks";
@@ -38,6 +39,7 @@ import { NestedExpressionContainerContext } from "../../resizing/NestedExpressio
 import { ResizerStopBehavior, ResizingWidth } from "../../resizing/ResizingWidthsContext";
 import {
   CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
+  CONTEXT_ENTRY_VARIABLE_COLUMN_WIDTH_INDEX,
   CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
   CONTEXT_EXPRESSION_EXTRA_WIDTH,
 } from "../../resizing/WidthConstants";
@@ -53,27 +55,27 @@ import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn
 import { findAllIdsDeep } from "../../ids/ids";
 import "./ContextExpression.css";
 
-const CONTEXT_ENTRY_DEFAULT_DATA_TYPE = DmnBuiltInDataType.Undefined;
-const CONTEXT_ENTRY_VARIABLE_WIDTH_INDEX = 0;
-
 export type ROWTYPE = ExpressionWithVariable & { index: number };
 
-export function ContextExpression(
-  contextExpression: BoxedContext & {
-    isNested: boolean;
-    parentElementId: string;
-  }
-) {
+export function ContextExpression({
+  isNested,
+  parentElementId,
+  expression: contextExpression,
+}: {
+  expression: Normalized<BoxedContext>;
+  isNested: boolean;
+  parentElementId: string;
+}) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
-  const { expressionHolderId, widthsById } = useBoxedExpressionEditor();
+  const { expressionHolderId, widthsById, isReadOnly } = useBoxedExpressionEditor();
 
   const id = contextExpression["@_id"]!;
 
   const widths = useMemo(() => widthsById.get(id) ?? [], [id, widthsById]);
 
   const getEntryVariableWidth = useCallback(
-    (widths: number[]) => widths?.[CONTEXT_ENTRY_VARIABLE_WIDTH_INDEX] ?? CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
+    (widths: number[]) => widths?.[CONTEXT_ENTRY_VARIABLE_COLUMN_WIDTH_INDEX] ?? CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
     []
   );
 
@@ -87,10 +89,12 @@ export function ContextExpression(
           typeof newWidthAction === "function" ? newWidthAction(getEntryVariableWidth(prev)) : newWidthAction;
 
         if (newWidth) {
-          const minSize = CONTEXT_ENTRY_VARIABLE_WIDTH_INDEX + 1;
+          const minSize = CONTEXT_ENTRY_VARIABLE_COLUMN_WIDTH_INDEX + 1;
           const newValues = [...prev];
-          newValues.push(...Array(Math.max(0, minSize - newValues.length)));
-          newValues.splice(CONTEXT_ENTRY_VARIABLE_WIDTH_INDEX, 1, newWidth);
+          newValues.push(
+            ...Array<number>(Math.max(0, minSize - newValues.length)).fill(CONTEXT_ENTRY_VARIABLE_MIN_WIDTH)
+          );
+          newValues.splice(CONTEXT_ENTRY_VARIABLE_COLUMN_WIDTH_INDEX, 1, newWidth);
           newMap.set(id, newValues);
         }
       });
@@ -113,34 +117,28 @@ export function ContextExpression(
   /// //////////////////////////////////////////////////////
   /// ///////////// RESIZING WIDTHS ////////////////////////
   /// //////////////////////////////////////////////////////
-
-  const resultExpression = useMemo(
-    () => contextExpression.contextEntry?.find((e) => !e.variable)?.expression,
-    [contextExpression.contextEntry]
-  );
-
   const { nestedExpressionContainerValue, onColumnResizingWidthChange: onColumnResizingWidthChange2 } =
     useNestedExpressionContainerWithNestedExpressions(
       useMemo(() => {
-        const entriesWidths = (contextExpression.contextEntry ?? []).map((e) =>
-          getExpressionTotalMinWidth(0, e.expression, widthsById)
+        const nestedExpressions = (contextExpression.contextEntry ?? []).map((e) => e.expression);
+
+        const maxNestedExpressionTotalMinWidth = Math.max(
+          ...nestedExpressions.map((e) => getExpressionTotalMinWidth(0, e, widthsById)),
+          CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH
         );
 
-        const resultWidth = getExpressionTotalMinWidth(0, resultExpression, widthsById);
-        const maxNestedExpressionMinWidth = Math.max(...entriesWidths, resultWidth, CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH);
-
         return {
-          nestedExpressions: (contextExpression.contextEntry ?? []).map((e) => e.expression),
+          nestedExpressions: nestedExpressions,
           fixedColumnActualWidth: entryVariableWidth,
           fixedColumnResizingWidth: entryVariableResizingWidth,
           fixedColumnMinWidth: CONTEXT_ENTRY_VARIABLE_MIN_WIDTH,
-          nestedExpressionMinWidth: maxNestedExpressionMinWidth,
+          nestedExpressionMinWidth: maxNestedExpressionTotalMinWidth,
           extraWidth: CONTEXT_EXPRESSION_EXTRA_WIDTH,
           expression: contextExpression,
           flexibleColumnIndex: 2,
           widthsById: widthsById,
         };
-      }, [contextExpression, entryVariableResizingWidth, entryVariableWidth, resultExpression, widthsById])
+      }, [contextExpression, entryVariableResizingWidth, entryVariableWidth, widthsById])
     );
 
   /// //////////////////////////////////////////////////////
@@ -159,7 +157,7 @@ export function ContextExpression(
         accessor: expressionHolderId as any, // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
         label: contextExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
         isRowIndexColumn: false,
-        dataType: contextExpression["@_typeRef"] ?? CONTEXT_ENTRY_DEFAULT_DATA_TYPE,
+        dataType: contextExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
         width: undefined,
         columns: [
           {
@@ -187,9 +185,9 @@ export function ContextExpression(
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression((prev: BoxedContext) => {
+      setExpression((prev: Normalized<BoxedContext>) => {
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedContext = {
+        const ret: Normalized<BoxedContext> = {
           ...prev,
           "@_label": name,
           "@_typeRef": typeRef,
@@ -202,12 +200,12 @@ export function ContextExpression(
   );
 
   const headerVisibility = useMemo(() => {
-    return contextExpression.isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.SecondToLastLevel;
-  }, [contextExpression.isNested]);
+    return isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.SecondToLastLevel;
+  }, [isNested]);
 
   const updateVariable = useCallback(
     (index: number, { expression, variable }: ExpressionWithVariable) => {
-      setExpression((prev: BoxedContext) => {
+      setExpression((prev: Normalized<BoxedContext>) => {
         const contextEntries = [...(prev.contextEntry ?? [])];
 
         contextEntries[index] = {
@@ -217,7 +215,7 @@ export function ContextExpression(
         };
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedContext = {
+        const ret: Normalized<BoxedContext> = {
           ...prev,
           contextEntry: contextEntries,
         };
@@ -265,7 +263,7 @@ export function ContextExpression(
 
   const beeTableAdditionalRow = useMemo(() => {
     return [
-      <ContextResultInfoCell key={"context-result-info"} />,
+      <ContextResultInfoCell key={"context-result-info"} parentElementId={parentElementId} />,
       <ContextResultExpressionCell
         key={"context-result-expression"}
         contextExpression={contextExpression}
@@ -273,10 +271,10 @@ export function ContextExpression(
         columnIndex={2}
       />,
     ];
-  }, [contextExpression]);
+  }, [contextExpression, parentElementId]);
 
   const getDefaultContextEntry = useCallback(
-    (name?: string): DMN15__tContextEntry => {
+    (name?: string): Normalized<DMN15__tContextEntry> => {
       const variableName =
         name ||
         getNextAvailablePrefixedName(
@@ -287,8 +285,9 @@ export function ContextExpression(
         "@_id": generateUuid(),
         expression: undefined!, // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
         variable: {
+          "@_id": generateUuid(),
           "@_name": variableName,
-          "@_typeRef": DmnBuiltInDataType.Undefined,
+          "@_typeRef": undefined,
           description: { __$$text: "" },
         },
       };
@@ -298,7 +297,7 @@ export function ContextExpression(
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number }) => {
-      setExpression((prev: BoxedContext) => {
+      setExpression((prev: Normalized<BoxedContext>) => {
         const newContextEntries = [...(prev.contextEntry ?? [])];
 
         const newEntries = [];
@@ -314,7 +313,7 @@ export function ContextExpression(
         }
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedContext = {
+        const ret: Normalized<BoxedContext> = {
           ...prev,
           contextEntry: newContextEntries,
         };
@@ -327,9 +326,9 @@ export function ContextExpression(
 
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
-      let oldExpression: BoxedExpression | undefined;
+      let oldExpression: Normalized<BoxedExpression> | undefined;
 
-      setExpression((prev: BoxedContext) => {
+      setExpression((prev: Normalized<BoxedContext>) => {
         const newContextEntries = [...(prev.contextEntry ?? [])];
 
         const { isResultOperation: isDeletingResult, entryIndex } = solveResultAndEntriesIndex({
@@ -345,7 +344,7 @@ export function ContextExpression(
         }
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedContext = {
+        const ret: Normalized<BoxedContext> = {
           ...prev,
           contextEntry: newContextEntries,
         };
@@ -364,9 +363,9 @@ export function ContextExpression(
 
   const onRowReset = useCallback(
     (args: { rowIndex: number }) => {
-      let oldExpression: BoxedExpression | undefined;
+      let oldExpression: Normalized<BoxedExpression> | undefined;
 
-      setExpression((prev: BoxedContext) => {
+      setExpression((prev: Normalized<BoxedContext>) => {
         const newContextEntries = [...(prev.contextEntry ?? [])];
 
         const {
@@ -393,7 +392,7 @@ export function ContextExpression(
         }
 
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: BoxedContext = {
+        const ret: Normalized<BoxedContext> = {
           ...prev,
           contextEntry: newContextEntries,
         };
@@ -461,6 +460,8 @@ export function ContextExpression(
     <NestedExpressionContainerContext.Provider value={nestedExpressionContainerValue}>
       <div className={`context-expression ${id}`}>
         <BeeTable<ROWTYPE>
+          isReadOnly={isReadOnly}
+          isEditableHeader={!isReadOnly}
           resizerStopBehavior={ResizerStopBehavior.SET_WIDTH_WHEN_SMALLER}
           tableId={id}
           headerLevelCountForAppendingRowIndexColumn={1}
@@ -505,14 +506,14 @@ export function solveResultAndEntriesIndex({
     resultIndex === -1
       ? rowIndex //
       : resultIndex < rowIndex
-      ? rowIndex + 1
-      : rowIndex
+        ? rowIndex + 1
+        : rowIndex
   );
 
   return { isResultOperation, hasResultEntry, resultIndex, entryIndex };
 }
 
-export function ContextResultInfoCell() {
+export function ContextResultInfoCell(props: { parentElementId: string }) {
   const { containerCellCoordinates } = useBeeTableCoordinates();
 
   const value = useMemo(() => {
@@ -532,11 +533,12 @@ export function ContextResultInfoCell() {
 
   const { beeGwtService } = useBoxedExpressionEditor();
 
+  // Selecting the context result cell should be the parent data type
   useEffect(() => {
     if (isActive) {
-      beeGwtService?.selectObject("");
+      beeGwtService?.selectObject(props.parentElementId);
     }
-  }, [beeGwtService, isActive]);
+  }, [beeGwtService, isActive, props.parentElementId]);
 
   return <div className="context-result">{value}</div>;
 }

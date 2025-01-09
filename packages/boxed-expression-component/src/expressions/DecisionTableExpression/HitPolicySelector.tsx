@@ -41,6 +41,8 @@ export interface HitPolicySelectorProps {
   onHitPolicySelected: (hitPolicy: string) => void;
   /** Callback invoked when built-in aggregator selection changes */
   onBuiltInAggregatorSelected: (builtInAggregator: string) => void;
+  /** If the hit policy is readonly or not*/
+  isReadOnly: boolean;
 }
 
 export const HIT_POLICIES_THAT_SUPPORT_AGGREGATION = ["COLLECT"];
@@ -50,6 +52,7 @@ export function HitPolicySelector({
   onHitPolicySelected,
   selectedBuiltInAggregator,
   selectedHitPolicy,
+  isReadOnly,
 }: HitPolicySelectorProps) {
   const { i18n } = useBoxedExpressionEditorI18n();
   const { editorRef } = useBoxedExpressionEditor();
@@ -140,7 +143,18 @@ export function HitPolicySelector({
     setVisibleHelpAggregatorFunction((previousHelp) => (previousHelp !== help ? help : ""));
   }, []);
 
-  return (
+  const hitPolicyCell = useMemo(() => {
+    return (
+      <div className="selected-hit-policy" data-testid="kie-tools--bee--selected-hit-policy">
+        {!builtInAggregatorEnabled && `${_.first(selectedHitPolicy)}`}
+        {builtInAggregatorEnabled && `${_.first(selectedHitPolicy)}${selectedBuiltInAggregator}`}
+      </div>
+    );
+  }, [builtInAggregatorEnabled, selectedBuiltInAggregator, selectedHitPolicy]);
+
+  return isReadOnly ? (
+    hitPolicyCell
+  ) : (
     <PopoverMenu
       onHide={() => {
         setVisibleHelpAggregatorFunction("");
@@ -152,7 +166,7 @@ export function HitPolicySelector({
       position={PopoverPosition.left}
       distance={25}
       body={
-        <div className="hit-policy-flex-container">
+        <div className="hit-policy-flex-container" data-testid={"kie-tools--bee--hit-policy-header"}>
           <div className="hit-policy-section">
             <Menu onSelect={hitPolicySelectionCallback} selected={selectedHitPolicy}>
               <MenuGroup className="menu-with-help" label="Hit policy">
@@ -211,10 +225,7 @@ export function HitPolicySelector({
         </div>
       }
     >
-      <div className="selected-hit-policy">
-        {!builtInAggregatorEnabled && `${_.first(selectedHitPolicy)}`}
-        {builtInAggregatorEnabled && `${_.first(selectedHitPolicy)}${selectedBuiltInAggregator}`}
-      </div>
+      {hitPolicyCell}
     </PopoverMenu>
   );
 }

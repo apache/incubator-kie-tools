@@ -76,7 +76,7 @@ export function useEditorNotifications(args: HookArgs) {
                     endLineNumber: lsDiagnostic.range.end.line + 1,
                     endColumn: lsDiagnostic.range.end.character + 1,
                   },
-                } as Notification)
+                }) as Notification
             );
             setNotifications([...mappedDiagnostics, ...lazyNotifications]);
           })
