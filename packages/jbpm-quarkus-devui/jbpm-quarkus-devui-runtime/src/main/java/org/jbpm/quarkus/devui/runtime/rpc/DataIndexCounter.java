@@ -76,7 +76,7 @@ public class DataIndexCounter {
     }
 
     private void refreshCount() {
-        LOGGER.info("Refreshing data for query: {}", query);
+        LOGGER.debug("Refreshing data for query: {}", query);
 
         doQuery(query, field).toCompletionStage()
                 .thenAccept(result -> {
