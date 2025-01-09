@@ -269,12 +269,12 @@ describe("KIE Editors End to End Test Suite - BPMN Editor", () => {
     await bpmnEditorTester.scrollElementIntoView(onExitActionSection);
 
     const newOnEntryAction = "console.log('On Entry Action test log');";
-    const newOnEntryLanguage = "javascript";
+    const newOnEntryLanguage = "mvel";
     await propertiesPanel.changeWidgetedProperty("On Entry Action", newOnEntryAction, "textarea");
     await propertiesPanel.changeWidgetedProperty("On Entry Action", newOnEntryLanguage, "select");
 
     const newOnExitAction = "console.log('On Exit Action test log');";
-    const newOnExitLanguage = "javascript";
+    const newOnExitLanguage = "mvel";
     await propertiesPanel.changeWidgetedProperty("On Exit Action", newOnExitAction, "textarea");
     await propertiesPanel.changeWidgetedProperty("On Exit Action", newOnExitLanguage, "select");
 
