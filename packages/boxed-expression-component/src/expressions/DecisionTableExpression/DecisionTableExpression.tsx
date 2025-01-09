@@ -779,7 +779,7 @@ export function DecisionTableExpression({
             const nextOutputColumns = [
               ...(prev.output ?? []).map((outputColumn, index) => {
                 const outputCopy = { ...outputColumn };
-                if (outputCopy["@_name"] == null) {
+                if (outputCopy["@_name"] === null) {
                   outputCopy["@_name"] = `Output-${index + 1}`;
                 }
                 return outputCopy;
@@ -902,10 +902,11 @@ export function DecisionTableExpression({
           case DecisionTableColumnType.OutputClause:
             const newOutputs = [...(prev.output ?? [])];
             newOutputs.splice(localIndexInsideGroup, 1);
-            const updatedOutputColumns = [
+            //Output name shouldn't be displayed when there is single output column(kie-issues#1466)
+            const updatedOutputForSingleOutputColumns = [
               ...(newOutputs ?? []).map((outputColumn) => {
                 const outputCopy = { ...outputColumn };
-                if (newOutputs.length == 1) {
+                if (newOutputs.length === 1) {
                   outputCopy["@_name"] = undefined;
                 }
                 return outputCopy;
@@ -914,7 +915,7 @@ export function DecisionTableExpression({
             // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
             const retOutput: Normalized<BoxedDecisionTable> = {
               ...prev,
-              output: updatedOutputColumns,
+              output: updatedOutputForSingleOutputColumns,
               rule: [...(prev.rule ?? [])].map((rule) => {
                 const newOutputEntry = [...rule.outputEntry];
                 newOutputEntry.splice(localIndexInsideGroup, 1);
