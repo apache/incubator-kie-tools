@@ -32,6 +32,7 @@ import (
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -80,6 +81,7 @@ func TestRunCommand(t *testing.T) {
 
 func RunRunTest(t *testing.T, cfgTestInputPrepareCreate CfgTestInputCreate, test cfgTestInputRun) string {
 	var err error
+	var containerId string
 
 	// Create the project
 	RunCreateTest(t, cfgTestInputPrepareCreate)
@@ -99,7 +101,8 @@ func RunRunTest(t *testing.T, cfgTestInputPrepareCreate CfgTestInputCreate, test
 	// Run the `run` command
 	go func() {
 		defer wg.Done()
-		_, err = ExecuteKnWorkflowWithCmd(cmd, transformRunCmdCfgToArgs(test.input)...)
+		containerId, err = ExecuteKnWorkflowWithCmdAndStopContainer(cmd, transformRunCmdCfgToArgs(test.input)...)
+		assert.NotNil(t, containerId, "Container ID is nil")
 		require.Truef(t, err == nil || IsSignalInterrupt(err), "Expected nil error or signal interrupt, got %v", err)
 	}()
 
@@ -119,6 +122,19 @@ func RunRunTest(t *testing.T, cfgTestInputPrepareCreate CfgTestInputCreate, test
 	}
 
 	wg.Wait()
+
+	stopped := make(chan bool)
+	t.Logf("Checking if container is stopped")
+	assert.NotNil(t, containerId, "Container ID is nil")
+	// Check if the container is stopped within a specified time limit.
+	go common.PollContainerStoppedCheck(containerId, pollInterval, stopped)
+	select {
+	case <-stopped:
+		fmt.Println("Project is stopped")
+	case <-time.After(timeout):
+		t.Fatalf("Test case timed out after %s. The project was not stopped within the specified time.", timeout)
+		cmd.Process.Signal(os.Interrupt)
+	}
 
 	return projectName
 }

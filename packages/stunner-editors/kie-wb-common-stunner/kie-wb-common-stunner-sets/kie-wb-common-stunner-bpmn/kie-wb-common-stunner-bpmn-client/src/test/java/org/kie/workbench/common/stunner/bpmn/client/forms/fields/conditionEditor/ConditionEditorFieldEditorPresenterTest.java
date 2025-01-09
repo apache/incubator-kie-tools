@@ -158,7 +158,7 @@ public class ConditionEditorFieldEditorPresenterTest {
 
     @Test
     public void testSetValueWithScriptNonInJava() {
-        ScriptTypeValue value = new ScriptTypeValue("javascript", SCRIPT_VALUE);
+        ScriptTypeValue value = new ScriptTypeValue("mvel", SCRIPT_VALUE);
         presenter.setValue(value);
         verifySetValueCommonActions(value);
         verifyShowScriptEditor();
