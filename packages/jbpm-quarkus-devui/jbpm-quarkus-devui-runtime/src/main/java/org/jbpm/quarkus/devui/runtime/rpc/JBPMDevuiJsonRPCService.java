@@ -79,13 +79,11 @@ public class JBPMDevuiJsonRPCService {
 
     private void initDataIndexWebClient(String dataIndexURL) {
         try {
-            URL url = new URL(dataIndexURL);
-            String path= url.getPath();
             this.dataIndexWebClient = WebClient.create(vertx, buildWebClientOptions(dataIndexURL));
             this.processesCounter = new DataIndexCounter(ALL_PROCESS_INSTANCES_IDS_QUERY, PROCESS_INSTANCES,
-                    dataIndexWebClient,path);
-            this.tasksCounter = new DataIndexCounter(ALL_TASKS_IDS_QUERY, USER_TASKS, dataIndexWebClient,path);
-            this.jobsCounter = new DataIndexCounter(ALL_JOBS_IDS_QUERY, JOBS, dataIndexWebClient,path);
+                    vertx, dataIndexWebClient);
+            this.tasksCounter = new DataIndexCounter(ALL_TASKS_IDS_QUERY, USER_TASKS, vertx, dataIndexWebClient);
+            this.jobsCounter = new DataIndexCounter(ALL_JOBS_IDS_QUERY, JOBS, vertx, dataIndexWebClient);
 
             this.eventPublisher.setOnProcessEventListener(processesCounter::refresh);
             this.eventPublisher.setOnTaskEventListener(tasksCounter::refresh);
@@ -104,15 +102,15 @@ public class JBPMDevuiJsonRPCService {
     }
 
     public Multi<String> queryProcessInstancesCount() {
-        return Multi.createFrom().deferred(() -> processesCounter.getMulti());
+        return processesCounter.getMulti();
     }
 
     public Multi<String> queryTasksCount() {
-        return Multi.createFrom().deferred(() -> tasksCounter.getMulti());
+        return tasksCounter.getMulti();
     }
 
     public Multi<String> queryJobsCount() {
-        return Multi.createFrom().deferred(() -> jobsCounter.getMulti());
+        return jobsCounter.getMulti();
     }
 
     public Uni<String> getFormsCount() {
