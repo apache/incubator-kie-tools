@@ -19,8 +19,8 @@
 package org.jbpm.quarkus.devui.runtime.rpc;
 
 import io.smallrye.mutiny.Multi;
-import io.smallrye.mutiny.subscription.MultiEmitter;
-import io.vertx.core.Future;
+import io.smallrye.mutiny.operators.multi.MultiCacheOp;
+import io.smallrye.mutiny.operators.multi.processors.BroadcastProcessor;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClient;
@@ -30,34 +30,28 @@ import org.slf4j.LoggerFactory;
 
 public class DataIndexCounter {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataIndexCounter.class);
+
     private final Vertx vertx;
-    private final Multi<String> multi;
+    private final MultiCacheOp<String> multi;
     private final WebClient dataIndexWebClient;
+    private final String path;
 
-    private String query;
-    private String field;
-    private String count = "0";
-    private MultiEmitter<? super String> emitter;
-    private long vertxTimer;
-    private String path;
+    private final String query;
+    private final String field;
 
-    public DataIndexCounter(String query, String graphField, WebClient dataIndexWebClient, String path) {
+    public DataIndexCounter(String query, String graphField, String path, Vertx vertx, WebClient dataIndexWebClient) {
         if (dataIndexWebClient == null) {
             throw new IllegalArgumentException("dataIndexWebClient is null");
         }
         this.query = query;
         this.field = graphField;
-        this.dataIndexWebClient = dataIndexWebClient;
-        this.path=path;
-        this.vertx = Vertx.vertx();
+        this.path = path;
 
-        this.multi = Multi.createFrom().emitter(emitter -> {
-            this.emitter = emitter;
-            vertxTimer = vertx.setPeriodic(1000, id -> {
-                this.emit();
-            });
-            this.emit();
-        });
+        this.vertx = vertx;
+        this.dataIndexWebClient = dataIndexWebClient;
+
+        this.multi = new MultiCacheOp<>(BroadcastProcessor.create());
+
         refreshCount();
     }
 
@@ -68,34 +62,23 @@ public class DataIndexCounter {
     }
 
     public void stop() {
-        vertx.cancelTimer(vertxTimer);
-    }
-
-    private void emit() {
-        emitter.emit(count);
+        multi.onComplete();
     }
 
     private void refreshCount() {
         LOGGER.debug("Refreshing data for query: {}", query);
 
-        doQuery(query, field).toCompletionStage()
-                .thenAccept(result -> {
-                    this.count = result;
-                    this.emit();
-                });
-    }
-
-    private Future<String> doQuery(String query, String graphModelName) {
-        return this.dataIndexWebClient.post(path + "/graphql")
+        this.dataIndexWebClient.post(path + "/graphql")
                 .putHeader("content-type", "application/json")
                 .sendJson(new JsonObject(query))
                 .map(response -> {
                     if (response.statusCode() == 200) {
                         JsonObject responseData = response.bodyAsJsonObject().getJsonObject("data");
-                        return String.valueOf(responseData.getJsonArray(graphModelName).size());
+                        return String.valueOf(responseData.getJsonArray(field).size());
                     }
                     return "0";
-                });
+                })
+                .onComplete(count -> this.multi.onNext(count.result()));
     }
 
     public Multi<String> getMulti() {
