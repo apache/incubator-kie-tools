@@ -345,40 +345,46 @@ export function WorkspaceCard(props: {
                   });
                 }}
               >
-                <CardHeader>
+                <CardHeader
+                  actions={{
+                    actions: (
+                      <>
+                        <DeleteDropdownWithConfirmation
+                          key={`${workspace.descriptor.workspaceId}-${isHovered}`}
+                          onDelete={() => {
+                            props.onDelete?.();
+                            workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
+                          }}
+                          item={
+                            <Flex flexWrap={{ default: "nowrap" }}>
+                              <FlexItem>
+                                Delete <b>{`"${editableFiles[0].nameWithoutExtension}"`}</b>
+                              </FlexItem>
+                              <FlexItem>
+                                <b>
+                                  <FileLabel extension={editableFiles[0].extension} />
+                                </b>
+                              </FlexItem>
+                            </Flex>
+                          }
+                        />
+                      </>
+                    ),
+                  }}
+                >
                   <FileLink file={editableFiles[0]} style={{ width: "100%", minWidth: 0 }}>
-                    <CardHeaderMain style={{ width: "100%" }}>
-                      <SingleFileWorkspaceListItem
-                        isBig={true}
-                        file={editableFiles[0]}
-                        workspaceDescriptor={workspace.descriptor}
-                      />
-                    </CardHeaderMain>
+                    {/* <CardHeaderMain style={{ width: "100%" }}> */}
+                    <SingleFileWorkspaceListItem
+                      isBig={true}
+                      file={editableFiles[0]}
+                      workspaceDescriptor={workspace.descriptor}
+                    />
+                    {/* </CardHeaderMain> */}
                   </FileLink>
-                  <CardActions
+                  {/* <CardActions
                     style={{ visibility: isHovered ? "visible" : "hidden" }}
                     onClick={(e) => e.stopPropagation()} // Prevent bug when clicking at the backdrop of ResponsiveDropdown
-                  >
-                    <DeleteDropdownWithConfirmation
-                      key={`${workspace.descriptor.workspaceId}-${isHovered}`}
-                      onDelete={() => {
-                        props.onDelete?.();
-                        workspaces.deleteWorkspace({ workspaceId: props.workspaceId });
-                      }}
-                      item={
-                        <Flex flexWrap={{ default: "nowrap" }}>
-                          <FlexItem>
-                            Delete <b>{`"${editableFiles[0].nameWithoutExtension}"`}</b>
-                          </FlexItem>
-                          <FlexItem>
-                            <b>
-                              <FileLabel extension={editableFiles[0].extension} />
-                            </b>
-                          </FlexItem>
-                        </Flex>
-                      }
-                    />
-                  </CardActions>
+                  ></CardActions> */}
                 </CardHeader>
               </Card>
             )) || (
