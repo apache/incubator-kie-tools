@@ -79,11 +79,14 @@ public class JBPMDevuiJsonRPCService {
 
     private void initDataIndexWebClient(String dataIndexURL) {
         try {
-            this.dataIndexWebClient = WebClient.create(vertx, buildWebClientOptions(dataIndexURL));
+            URL url = new URL(dataIndexURL);
+            this.dataIndexWebClient = WebClient.create(vertx, buildWebClientOptions(url));
+
+            String contextPath = url.getPath();
             this.processesCounter = new DataIndexCounter(ALL_PROCESS_INSTANCES_IDS_QUERY, PROCESS_INSTANCES,
-                    vertx, dataIndexWebClient);
-            this.tasksCounter = new DataIndexCounter(ALL_TASKS_IDS_QUERY, USER_TASKS, vertx, dataIndexWebClient);
-            this.jobsCounter = new DataIndexCounter(ALL_JOBS_IDS_QUERY, JOBS, vertx, dataIndexWebClient);
+                    contextPath, vertx, dataIndexWebClient);
+            this.tasksCounter = new DataIndexCounter(ALL_TASKS_IDS_QUERY, USER_TASKS, contextPath, vertx, dataIndexWebClient);
+            this.jobsCounter = new DataIndexCounter(ALL_JOBS_IDS_QUERY, JOBS, contextPath, vertx, dataIndexWebClient);
 
             this.eventPublisher.setOnProcessEventListener(processesCounter::refresh);
             this.eventPublisher.setOnTaskEventListener(tasksCounter::refresh);
@@ -93,12 +96,11 @@ public class JBPMDevuiJsonRPCService {
         }
     }
 
-    protected WebClientOptions buildWebClientOptions(String dataIndexURL) throws MalformedURLException {
-        URL url = new URL(dataIndexURL);
+    protected WebClientOptions buildWebClientOptions(URL dataIndexURL) throws MalformedURLException {
         return new WebClientOptions()
-                .setDefaultHost(url.getHost())
-                .setDefaultPort((url.getPort() != -1 ? url.getPort() : url.getDefaultPort()))
-                .setSsl(url.getProtocol().compareToIgnoreCase("https") == 0);
+                .setDefaultHost(dataIndexURL.getHost())
+                .setDefaultPort((dataIndexURL.getPort() != -1 ? dataIndexURL.getPort() : dataIndexURL.getDefaultPort()))
+                .setSsl(dataIndexURL.getProtocol().compareToIgnoreCase("https") == 0);
     }
 
     public Multi<String> queryProcessInstancesCount() {
