@@ -1,17 +1,39 @@
-FROM mcr.microsoft.com/playwright:v1.38.1-jammy
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Use jammy due to compatibility with GHA ubuntu-latest
+FROM mcr.microsoft.com/playwright:v1.45.2-jammy
 
 # adds args/envs for the config.ts
 # requires to bind mount the test folder to /app/tests/
 # requires to bind mount the dist-e2e/
 
-WORKDIR /app
+WORKDIR /kie-tools-playwright
 
-COPY package.docker.json package.json
-COPY playwright.docker.config.ts playwright.config.ts
+COPY package.container.json package.json
+COPY playwright.container.config.ts playwright.config.ts
 COPY projectNames.ts projectNames.ts
-COPY annotations.ts annotations.ts
-COPY tsconfig.docker.json tsconfig.json
+COPY projectNames.ts playwright-base/projectNames.ts
+COPY annotations.ts playwright-base/annotations.ts
+COPY tsconfig.container.json tsconfig.json
 
+# Left in multiples layers to simplify debugging and version upgrade
 RUN npm install
-RUN npx playwright install-deps
+RUN npx playwright install-deps && npx playwright install chrome
+RUN npm install --global pnpm@9.3.0
 
+ENTRYPOINT ["/bin/bash"]

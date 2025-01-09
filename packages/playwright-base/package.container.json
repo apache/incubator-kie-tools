@@ -1,0 +1,21 @@
+{
+  "name": "kie-tools-playwright-docker",
+  "version": "1.0.0",
+  "description": "A project for using playwright for end-to-end testing purpose with docker",
+  "main": "index.js",
+  "scripts": {
+    "replace-paths": "node -r tsconfig-paths/register",
+    "test:e2e": "playwright test",
+    "test:e2e:trace": "playwright test --trace=on",
+    "test:e2e:open": "playwright show-report dist-e2e-tests/reports"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "1.45.2",
+    "@types/node": "^18.13.0",
+    "playwright": "1.45.2",
+    "tsconfig-paths": "4.2.0",
+    "typescript": "^4.6.2"
+  }
+}

@@ -1,0 +1,12 @@
+services:
+  playwright:
+    container_name: kie-tools-playwright-containerization-scesim-editor
+    image: kie-tools-playwright-container-image
+    entrypoint: ["/bin/bash"]
+    stdin_open: true
+    tty: true
+    ipc: "host"
+    network_mode: "host"
+    volumes:
+      - ../../tests-e2e:/kie-tools-playwright/tests-e2e
+      - ../../dist-tests-e2e:/kie-tools-playwright/dist-tests-e2e

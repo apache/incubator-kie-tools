@@ -14,6 +14,9 @@
     "start:linux:darwin": "cross-env STORYBOOK_PORT=$(build-env scesimEditor.storybook.port) pnpm kie-tools--storybook --storybookArgs=\"dev --no-open\"",
     "start:win32": "pnpm powershell \"cross-env STORYBOOK_PORT=$(build-env scesimEditor.storybook.port) pnpm kie-tools--storybook --storybookArgs='dev --no-open'",
     "test-e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm rimraf ./dist-tests-e2e\" \"pnpm test-e2e:run\"",
+    "test-e2e:container:bash": "docker exec -it kie-tools-playwright-containerization-scesim-editor /bin/bash",
+    "test-e2e:container:down": "docker compose -f ./tests-e2e/__containerization__/playwright-docker-compose.yml down",
+    "test-e2e:container:up": "docker compose -f ./tests-e2e/__containerization__/playwright-docker-compose.yml up -d",
     "test-e2e:open": "pnpm exec playwright show-report dist-tests-e2e/reports",
     "test-e2e:run": "pnpm exec playwright test"
   },
