@@ -276,7 +276,8 @@ export function BeeTableHeader<R extends object>({
                     // title={`Open ${dmnFormResult.decisionName} expression`}
                     icon={<ArrowUpIcon />}
                     // data-navigate-to-expression-id={dmnFormResult.decisionId}
-                    // onClick={() => props.openBoxedExpressionEditor?.(dmnFormResult.decisionId)}
+                    onClick={() => column.headerCellClickCallback?.()}
+                    title={column.decisionId}
                   />
                   {/* )} */}
                 </Flex>

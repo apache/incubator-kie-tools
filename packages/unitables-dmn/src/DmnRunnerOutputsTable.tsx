@@ -50,9 +50,16 @@ interface Props {
   results: Array<DecisionResult[] | undefined> | undefined;
   jsonSchemaBridge: DmnUnitablesJsonSchemaBridge;
   scrollableParentRef: React.RefObject<HTMLElement>;
+  dmnSpecialCallback?: (nodeId: string) => void;
 }
 
-export function DmnRunnerOutputsTable({ i18n, jsonSchemaBridge, results, scrollableParentRef }: Props) {
+export function DmnRunnerOutputsTable({
+  i18n,
+  jsonSchemaBridge,
+  results,
+  scrollableParentRef,
+  dmnSpecialCallback,
+}: Props) {
   const outputUid = useMemo(() => nextId(), []);
   const outputErrorBoundaryRef = useRef<ErrorBoundary>(null);
   const [outputError, setOutputError] = useState<boolean>(false);
@@ -80,6 +87,7 @@ export function DmnRunnerOutputsTable({ i18n, jsonSchemaBridge, results, scrolla
             outputsPropertiesMap={outputsPropertiesMap}
             results={results}
             id={outputUid}
+            dmnSpecialCallback={dmnSpecialCallback}
           />
         </ErrorBoundary>
       ) : (
@@ -129,9 +137,17 @@ interface OutputsTableProps {
   results: (DecisionResult[] | undefined)[] | undefined;
   outputsPropertiesMap: Map<string, OutputField>;
   scrollableParentRef: React.RefObject<HTMLElement>;
+  dmnSpecialCallback?: (nodeId: string) => void;
 }
 
-function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollableParentRef }: OutputsTableProps) {
+function OutputsBeeTable({
+  id,
+  i18n,
+  outputsPropertiesMap,
+  results,
+  scrollableParentRef,
+  dmnSpecialCallback,
+}: OutputsTableProps) {
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
       {
@@ -229,7 +245,7 @@ function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollablePa
   );
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
-    return (results?.[0] ?? []).flatMap(({ result, decisionName }) => {
+    return (results?.[0] ?? []).flatMap(({ result, decisionName, decisionId }) => {
       const outputProperties = outputsPropertiesMap.get(decisionName);
       if (!outputProperties) {
         return [];
@@ -286,6 +302,7 @@ function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollablePa
       if (typeof result === "string" || typeof result === "number" || typeof result === "boolean" || result === null) {
         return [
           {
+            decisionId: decisionId,
             originalId: `parent-${outputProperties?.name}-` + generateUuid(),
             label: "",
             accessor: (`output-parent-${outputProperties?.name}-` + generateUuid()) as any,
@@ -295,7 +312,11 @@ function OutputsBeeTable({ id, i18n, outputsPropertiesMap, results, scrollablePa
             minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
             columns: [
               {
-                originalId: `${outputProperties?.name}-` + generateUuid(),
+                decisionId: decisionId,
+                headerCellClickCallback: () => {
+                  dmnSpecialCallback?.(decisionId);
+                },
+                originalId: `${outputProperties?.name}-` + generateUuid() + `${outputProperties?.properties?.id}`,
                 label: outputProperties?.name ?? "",
                 accessor: (`output-${outputProperties?.name}-` + generateUuid()) as any,
                 dataType: outputProperties?.dataType ?? DmnBuiltInDataType.Undefined,
