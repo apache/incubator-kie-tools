@@ -34,18 +34,21 @@ public class DataIndexCounter {
     private final Vertx vertx;
     private final MultiCacheOp<String> multi;
     private final WebClient dataIndexWebClient;
+    private final String path;
 
     private final String query;
     private final String field;
 
-    public DataIndexCounter(String query, String graphField, Vertx vertx, WebClient dataIndexWebClient) {
+    public DataIndexCounter(String query, String graphField, String path, Vertx vertx, WebClient dataIndexWebClient) {
         if (dataIndexWebClient == null) {
             throw new IllegalArgumentException("dataIndexWebClient is null");
         }
         this.query = query;
         this.field = graphField;
-        this.dataIndexWebClient = dataIndexWebClient;
+        this.path = path;
+
         this.vertx = vertx;
+        this.dataIndexWebClient = dataIndexWebClient;
 
         this.multi = new MultiCacheOp<>(BroadcastProcessor.create());
 
@@ -65,7 +68,7 @@ public class DataIndexCounter {
     private void refreshCount() {
         LOGGER.debug("Refreshing data for query: {}", query);
 
-        this.dataIndexWebClient.post("/graphql")
+        this.dataIndexWebClient.post(path + "/graphql")
                 .putHeader("content-type", "application/json")
                 .sendJson(new JsonObject(query))
                 .map(response -> {
