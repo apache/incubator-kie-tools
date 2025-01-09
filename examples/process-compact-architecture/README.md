@@ -1,21 +1,4 @@
-<!--
-   Licensed to the Apache Software Foundation (ASF) under one
-   or more contributor license agreements.  See the NOTICE file
-   distributed with this work for additional information
-   regarding copyright ownership.  The ASF licenses this file
-   to you under the Apache License, Version 2.0 (the
-   "License"); you may not use this file except in compliance
-   with the License.  You may obtain a copy of the License at
-     http://www.apache.org/licenses/LICENSE-2.0
-   Unless required by applicable law or agreed to in writing,
-   software distributed under the License is distributed on an
-   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-   KIND, either express or implied.  See the License for the
-   specific language governing permissions and limitations
-   under the License.
--->
-
-# Example :: Process Compact Architecture
+# Process Compact Architecture Quarkus Example
 
 This example showcases a basic implementation of a **Hiring** Process that drives a _Candidate_ through different
 interviews until they get hired. It features simple User Task orchestration including the use of DMN decisions to
@@ -25,9 +8,9 @@ Additionally, this example also demonstrates how to configure the whole environm
 Architecture_, simplifying the communication among services, removing the need of events (Kafka/HTTP) between
 them. This is achieved using the following _Quarkus_ addons:
 
-- `kogito-addons-quarkus-data-index-postgresql`: enables the _Kogito Runtime_ persisting directly into the
+- `kogito-addons-quarkus-data-index-postgresql`: enables the _KOGITO Runtime_ persisting directly into the
   _Data-Index_ database.
-- `kogito-addons-quarkus-jobs`: enables collocating the _Jobs Service_ inside the _Kogito Runtime_.
+- `kogito-addons-quarkus-jobs`: enables collocating the _Jobs Service_ inside the _KOGITO Runtime_.
 
 ---
 
@@ -35,12 +18,12 @@ them. This is achieved using the following _Quarkus_ addons:
 
 The process handles the following _Variables_:
 
-| Variable          | Type                              | Tags         | Description                                       |
-| ----------------- | --------------------------------- | ------------ | ------------------------------------------------- |
-| **candidateData** | `org.kie.kogito.hr.CandidateData` | **input**    | The candidate data                                |
-| **offer**         | `org.kie.kogito.hr.Offer`         | **output**   | The generated candidate offer                     |
-| **hr_approval**   | `Boolean`                         | **internal** | Determines that HR department approves the hiring |
-| **it_approval**   | `Boolean`                         | **internal** | Determines that IT department approves the hiring |
+| Variable          | Type                     | Tags         | Description                                       |
+| ----------------- | ------------------------ | ------------ | ------------------------------------------------- |
+| **candidateData** | `org.acme.CandidateData` | **input**    | The candidate data                                |
+| **offer**         | `org.acme.Offer`         | **output**   | The generated candidate offer                     |
+| **hr_approval**   | `Boolean`                | **internal** | Determines that HR department approves the hiring |
+| **it_approval**   | `Boolean`                | **internal** | Determines that IT department approves the hiring |
 
 ---
 
@@ -58,7 +41,7 @@ the candidate application will be denied and the process will complete without s
 
 The **Generate base offer** is a _Business Rule Task_ that will use the _New Hiring Offer_ decision defined in the
 `NewHiringOffer.dmn` to generate the an `Offer` based on the candidate experience and skills. The task takes the
-`candidateData` as an input and will produce an instance of `org.kie.kogito.hr.Offer` that will be stored in the `offer`
+`candidateData` as an input and will produce an instance of `org.acme.Offer` that will be stored in the `offer`
 variable.
 
 <div style="text-align:center">
@@ -85,7 +68,7 @@ The **HR Interview** _User Task_ also has a _Boundary Timer Event_ that will pre
 the
 task after certain time (for example purpose just 3 minutes). This _Boundary Timer Event_ will schedule a Job in the
 Jobs Service
-that when trigger will notify the _Kogito Runtime_ to cancel the task and deny the application.
+that when trigger will notify the _KOGITO Runtime_ to cancel the task and deny the application.
 
 If **HR Interview** successfully completed, the process will jump into the **IT Interview** _User Task_. Again the
 candidate
@@ -106,8 +89,7 @@ being true)
 the process will jump into the **Send Offer to Candidate** _Script Task_ that will notify the candidate about the offer
 and the process will end.
 
-> **NOTE:** for simplicity, all the _User Tasks_ in this example are assigned to the _jdoe_ user present in the Keycloak
-> configuration
+> **NOTE:** for simplicity, all the _User Tasks_ in this example are assigned to the _jdoe_ user. Despite showing "Anonymous" in the top-right corner, Kogito Management Console will always use the first "potential user" defined by the Process Definition.
 
 ### The _"New Hiring Offer"_ Decision (DMN)
 
@@ -151,7 +133,7 @@ The `Offer` Decision uses the following _Boxed Expression_ to generate the `tOff
 
 ### The Java models
 
-The **Hiring** process uses two POJOs to handle the process data, both of them can be found in the _org.kie.kogito.hr_
+The **Hiring** process uses two POJOs to handle the process data, both of them can be found in the _org.acme_
 package.
 
 The `CandidateData` POJO is the input of the process. It represents the person that wants to get the job.
@@ -183,21 +165,79 @@ public class Offer {
 }
 ```
 
+## Infrastructure requirements
+
+To help bootstrapping the Infrastructure Services, the example provides a `docker-compose.yml` file. This quickstart provides three ways of running the example application. In development ("dev") mode, the user can start a minimal infrastructure using `docker-compose` and must run the Kogito application manually. In "example" mode the `docker-compose` file will start the minimal infrastructure services and the Kogito application, requiring the project to be compiled first to generate the process's container images. At least, the `docker-compose` "full" model will start the minimal infrastructure services, the Kogito application, and Management Console, still requiring the project to be compiled first to generate the process's container images. To use `docker-compose` we must first create a `.env` file in the example root, and it should have the following variables:
+
+```
+PROJECT_VERSION=
+KOGITO_MANAGEMENT_CONSOLE_IMAGE=
+COMPOSE_PROFILES=
+```
+
+- `PROJECT_VERSION`: Should be set with the current Kogito version being used: `PROJECT_VERSION=`
+- `KOGITO_MANAGEMENT_CONSOLE_IMAGE`: Should be set with the Kogito Management Console image `quay.io/kogito/management-console:${PROJECT_VERSION}`
+- `COMPOSE_PROFILES`: filters which services will run.
+
+### Development mode
+
+For development mode, the `.env` must have the `COMPOSE_PROFILES=dev`:
+
+```
+PROJECT_VERSION=
+KOGITO_MANAGEMENT_CONSOLE_IMAGE=quay.io/kogito/management-console:${PROJECT_VERSION}
+COMPOSE_PROFILES=dev
+```
+
+### Example mode
+
+For example mode, the `.env` must have the `COMPOSE_PROFILES=example`:
+
+```
+PROJECT_VERSION=
+KOGITO_MANAGEMENT_CONSOLE_IMAGE=quay.io/kogito/management-console:${PROJECT_VERSION}
+COMPOSE_PROFILES=example
+```
+
+### Full mode
+
+For full mode, the `.env` must have the `COMPOSE_PROFILES=full`:
+
+```
+PROJECT_VERSION=
+KOGITO_MANAGEMENT_CONSOLE_IMAGE=quay.io/kogito/management-console:${PROJECT_VERSION}
+COMPOSE_PROFILES=full
+```
+
+### Handling services
+
+To start the services use the command above:
+
+```bash
+docker compose up
+```
+
+To stop the services you can hit `CTRL/CMD + C` in your terminal, and to clean up perform the command above:
+
+```bash
+docker compose down
+```
+
 ---
 
 ## Running
 
 ### Prerequisites
 
-- Java 17+ installed
-- Environment variable JAVA_HOME set accordingly
-- Maven 3.9.6+ installed
+- Java 17 installed
+- Environment variable `JAVA_HOME` set accordingly
+- Maven 3.9.6 installed
 - Docker and Docker Compose to run the required example infrastructure.
 
 And when using native image compilation, you will also need:
 
 - GraalVM 20.3+ installed
-- Environment variable GRAALVM_HOME set accordingly
+- Environment variable `GRAALVM_HOME` set accordingly
 - GraalVM native image needs as well native-image extension: https://www.graalvm.org/reference-manual/native-image/
 - Note that GraalVM native image compilation typically requires other packages (glibc-devel, zlib-devel and gcc) to be
   installed too, please refer to GraalVM installation documentation for more details.
@@ -211,15 +251,8 @@ services are connected with a default configuration.
 | ------------------ | ----------------------------- |
 | PostgreSQL         | [5432](http://localhost:5432) |
 | PgAdmin            | [8055](http://localhost:8055) |
-| Keycloak           | [8480](http://localhost:8480) |
 | Management Console | [8280](http://localhost:8280) |
 | This example's app | [8080](http://localhost:8080) |
-
-To help bootstrapping the Infrastructure Services, the example provides the `startContainers.sh` script inside the
-`docker-compose` folder.
-
-> **_NOTE_**: The Docker Compose template requires using _extra_hosts_ to allow the services use the host network, this
-> may carry some issues if you are using a **podman** version older than **4.7**.
 
 ### Running as containers
 
@@ -236,8 +269,7 @@ To execute the full example (including Management Console), run the following co
 `docker-compose` folder:
 
 ```shell
-# cd docker-compose
-sh startContainers.sh
+docker compose up
 ```
 
 > **_IMPORTANT:_** if you are running this example on macOS and you are not using **Docker Desktop**, please append
@@ -249,17 +281,16 @@ sh startContainers.sh
 
 Additionally, if you want to start only the example and the minimal Infrastructure Services (PostgreSQL, Data-Index and
 Jobs Service),
-you can run the same `startContainers.sh` script but passing the `example-only` argument
+you can manually change the .env file with `COMPOSE_PROFILES=example`, and them start the Docker compose:
 
 ```shell
-sh startContainers.sh example-only
+docker compose up
 ```
 
-- **infra**: Starts only the minimal infrastructure to run the example (PostgreSQL, pgadmin, Kogito Data-Index)
-- **example-only**: Starts the services in _infra_ profile and this example's app. Requires the example to be compiled
+- **dev**: Starts only the minimal infrastructure to run the example (PostgreSQL, pgadmin)
+- **example**: Starts the services in _dev_ profile and this example's app. Requires the example to be compiled
   with `mvn clean package -Pcontainer`.
-- **full** (default): includes all the above and also starts the **Management Console** and **Keycloak** to handle the
-  console authentication. Requires the example to be compiled with `mvn clean package -Pcontainer`.
+- **full** (default): includes all the above and **Management Console**. Requires the example to be compiled with `mvn clean package -Pcontainer`.
 
 ### Running in Development mode
 
@@ -361,7 +392,7 @@ If everything went well you may get a response like:
 }
 ```
 
-In the server log You may find a trace like:
+In the server log you may find a trace like:
 
 ```
 New Hiring has been created for candidate: Jon Snow
@@ -370,43 +401,42 @@ Candidate Jon Snow don't meet the requirements for the position but we'll keep i
 ###################################
 ```
 
-### Using Keycloak as Identify Provider (IdP)
-
-In this Quickstart we'll be using [Keycloak](https://www.keycloak.org/) as _Authentication Server_ for _Management
-Console_. It will be started
-as a part of the project _Infrastructure Services_, you can check the configuration on the
-project [docker-compose.yml](docker-compose/docker-compose.yml) in [docker-compose](docker-compose) folder.
-
-It will install the _Kogito Realm_ that comes with a predefined set of users:
-
-| Login | Password | Roles               |
-| ----- | -------- | ------------------- |
-| admin | admin    | _admin_, _managers_ |
-| alice | alice    | _user_              |
-| jdoe  | jdoe     | _managers_          |
-
-Once Keycloak is started, you should be able to access your _Keycloak Server_
-at [localhost:8480/auth](http://localhost:8480/auth) with _admin_ user.
-
-### Using Management Console to interact with the Hiring Process
-
-The following _step-by-step_ guides will show how to take advantage of _Management Console_ to operate with
-the instances of _Hiring_ process.
-
-To be able to follow the guides, please make sure that the example has been built using the `container` and all the
-_Infrastructure Services_
-are started as explained in the [Building & Running](#building--running-the-example) section.
-
-> **_NOTE_**: For more information about how to operate with the _Management Console_, please refer to the
-> [Management Console](https://docs.kogito.kie.org/latest/html_single/#con-management-console_kogito-developing-process-services)
-> documentation.
-
 #### Show active Hiring process instance at Management Console
 
-_Management Console_ is the tool that enables the user to view and administrate process instances in our _Kogito
+_Management Console_ is the tool that enables the user to view and administrate process instances in our _KOGITO
 application_.
 
 In this guide we'll see how to use the _Management Console_ to view the state of the Hiring process instances.
+
+First, you must connect the Management Console to the Kogito runtime. To do so, open the `localhost:8280` url, and click in "Connect to a runtime..." button:
+
+<div style="text-align:center;">
+   <figure>
+      <img width=75%  src="docs/images/mc_welcome.png" alt="Process List">
+      <br/>
+      <figcaption>Opening <i>Management Console</i> for the first time</figcaption>
+   </figure>
+</div>
+
+Enter an alias, and the runtime url:
+
+<div style="text-align:center;">
+   <figure>
+      <img width=75%  src="docs/images/mc_connect.png" alt="Process List">
+      <br/>
+      <figcaption><b>Connect to a runtime</b> in <i>Management Console</i></figcaption>
+   </figure>
+</div>
+
+Now, you're connect to the Kogito Management Console:
+
+<div style="text-align:center;">
+   <figure>
+      <img width=75%  src="docs/images/mc_connected.png" alt="Process List">
+      <br/>
+      <figcaption><b>Connected</b> to <i>Management Console</i></figcaption>
+   </figure>
+</div>
 
 1. With the example built and all the _Infrastructure Services_ running, let's start an instance of the
    \_Hiring_process.
@@ -420,15 +450,15 @@ In this guide we'll see how to use the _Management Console_ to view the state of
 
    ```json
    {
-     "id": "064a6372-b5bb-4eff-a059-d7b24d4ac64a",
+     "id": "cee61d56-333b-433c-9c0a-32e81ee9fa4b",
      "offer": { "category": "Senior Software Engineer", "salary": 40450 }
    }
    ```
 
-   Which indicates that a new process instance with id **064a6372-b5bb-4eff-a059-d7b24d4ac64a** has been started.
+   Which indicates that a new process instance with id **cee61d56-333b-433c-9c0a-32e81ee9fa4b** has been started.
 
 2. Now let's check the process instance state with the _Management Console_. To do so, in your browser navigate
-   to http://localhost:8280, and you'll be redirected to the **Process Instances** page in the _Kogito Management
+   to http://localhost:8280, and you'll be redirected to the **Process Instances** page in the _KOGITO Management
    Console_.
    There where you should be able to see the started process instance in active state.
 
@@ -479,7 +509,7 @@ In this guide we'll see how to use the _Management Console_ to view the state of
 
 #### Complete Hiring process instances using Management Console
 
-When a _Kogito_ process reaches a _User Task_, the process execution stops waiting for the user input
+When a _KOGITO_ process reaches a _User Task_, the process execution stops waiting for the user input
 that will enable the _User Task_ to finish and allowing the process execution to continue.
 
 _Management Console_ allows admin users to interact with the process _User Tasks_ and provide the
@@ -488,7 +518,7 @@ necessary data for the process to continue.
 In this guide, we'll see how to complete the process _User Tasks_ using _Management Console_ to interact with the
 process _User Tasks_.
 
-> **_NOTE_**: For simplicity, all the _User Tasks_ are assigned to the user _jdoe_.
+> **NOTE:** for simplicity, all the _User Tasks_ in this example are assigned to the _jdoe_ user. Despite showing "Anonymous" in the top-right corner, Kogito Management Console will always use the first "potential user" defined by the Process Definition.
 
 1. With the example built and all the _Infrastructure Services_ running, let's start an instance of the
    \_Hiring_process.
@@ -509,7 +539,7 @@ process _User Tasks_.
 
    Which indicates that a new process instance with id **3cf0d58f-a824-4046-ba6c-c2e79edc1df7** has been started.
 
-2. Let's check the process instance state. Again browse to http://localhost:8280 to access the _Kogito Management
+2. Let's check the process instance state. Again browse to http://localhost:8280 to access the _KOGITO Management
    Console_,
    and in the **Process List** click the **Id** column to open the **Process Details** page.
 
@@ -533,9 +563,8 @@ process _User Tasks_.
    try to
    complete the task.
 
-3. Now open the _Management Console_ by browsing to http://localhost:8280 and log in using the **jdoe/jdoe**
-   credentials.
-   After logging in, navigate to the **Tasks** page, which contains the list of _Active_ tasks. In this case you should
+3. Now open the _Management Console_ by browsing to http://localhost:8280.
+   Navigate to the **Tasks** page, which contains the list of _Active_ tasks. In this case you should
    be able to see only the new _HR Interview_ task.
 
    <div style="text-align:center;">

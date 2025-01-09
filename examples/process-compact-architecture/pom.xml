@@ -31,9 +31,8 @@
   </parent>
 
   <artifactId>process-compact-architecture</artifactId>
-  <version>${revision}</version>
-
   <name>KIE Tools :: Example :: Process Compact Architecture</name>
+  <version>${revision}</version>
 
   <properties>
     <kogito.management-console.image
@@ -140,17 +139,6 @@
       <properties>
         <quarkus.profile>dev</quarkus.profile>
       </properties>
-      <dependencyManagement>
-        <dependencies>
-          <dependency>
-            <groupId>org.jbpm</groupId>
-            <artifactId>jbpm-quarkus-devui-bom</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-            <scope>import</scope>
-          </dependency>
-        </dependencies>
-      </dependencyManagement>
       <dependencies>
         <dependency>
           <groupId>org.jbpm</groupId>
@@ -170,6 +158,7 @@
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
+        <version>${quarkus-plugin.version}</version>
         <executions>
           <execution>
             <goals>
