@@ -1,0 +1,33 @@
+{/* Licensed to the Apache Software Foundation (ASF) under one */}
+{/* or more contributor license agreements. See the NOTICE file */}
+{/* distributed with this work for additional information */}
+{/* regarding copyright ownership. The ASF licenses this file */}
+{/* to you under the Apache License, Version 2.0 (the */}
+{/* "License"); you may not use this file except in compliance */}
+{/* with the License. You may obtain a copy of the License at */}
+{/*  */}
+{/* http://www.apache.org/licenses/LICENSE-2.0 */}
+{/*  */}
+{/* Unless required by applicable law or agreed to in writing, */}
+{/* software distributed under the License is distributed on an */}
+{/* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY */}
+{/* KIND, either express or implied. See the License for the */}
+{/* specific language governing permissions and limitations */}
+{/* under the License. */}
+
+import { Meta, Story } from "@storybook/blocks";
+import * as Payroll from "./Payroll.stories";
+
+<Meta title="MDX/Use cases/Payroll" of={Payroll} />
+
+## Payroll
+
+The Payroll DMN demonstrates reusing logic through a decision service.
+This example is a little more complex and takes a simple input, the Employee and reuses logic found in the output section of the Decision Service.
+
+- `taxRate` - Contains tax rate data for the "US" and "UK"
+- `vacationDays` - Also contains data for the "US" and "UK" about the number of vacation days
+- `paymentDate` - Lists the payment dates for the "US" and "UK"
+
+To compute actual payroll, an invocation is made passing in the employee.
+This example could be reused or embedded in other examples.
