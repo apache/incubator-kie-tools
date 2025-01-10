@@ -25,7 +25,6 @@ import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import {
   EmptyState,
   EmptyStateIcon,
-  EmptyStateHeader,
   EmptyStateFooter,
   EmptyStateActions,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
@@ -44,6 +43,7 @@ import { useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext
 import { useTestScenarioEditorI18n } from "../i18n";
 
 import "./TestScenarioCreationPanel.css";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
 function TestScenarioCreationPanel() {
   const { i18n } = useTestScenarioEditorI18n();
@@ -86,11 +86,10 @@ function TestScenarioCreationPanel() {
 
   return (
     <EmptyState>
-      <EmptyStateHeader
-        titleText={<>{i18n.creationPanel.title}</>}
-        icon={<EmptyStateIcon icon={CubesIcon} />}
-        headingLevel={"h5"}
-      />
+      <EmptyStateIcon icon={CubesIcon} />
+      <Title headingLevel={"h6"} size="md">
+        {i18n.creationPanel.title}
+      </Title>
       <Form isHorizontal className="kie-scesim-editor--creation-form">
         <FormGroup label={i18n.creationPanel.assetsGroup} isRequired>
           <FormSelect
