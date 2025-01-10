@@ -230,6 +230,8 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     sh """#!/bin/bash -el
+                    git config user.email asf-ci-kie@jenkins.kie.apache.org
+                    git config user.name asf-ci-kie
                     export WEBPACK__minimize=true
                     export WEBPACK__tsLoaderTranspileOnly=false
                     export CHROME_EXTENSION__routerTargetOrigin=https://apache.github.io

@@ -153,7 +153,7 @@ func UsesPostgreSQLPersistence(workflow *operatorapi.SonataFlow, platform *opera
 }
 
 // GetPostgreSQLExtensions returns the Quarkus extensions required for postgresql persistence.
-func GetPostgreSQLExtensions() []cfg.GAV {
+func GetPostgreSQLExtensions() []cfg.GroupArtifactId {
 	return cfg.GetCfg().PostgreSQLPersistenceExtensions
 }
 

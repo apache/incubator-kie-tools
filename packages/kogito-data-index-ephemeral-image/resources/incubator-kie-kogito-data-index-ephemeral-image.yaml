@@ -18,7 +18,7 @@
 #
 name: "docker.io/apache/incubator-kie-kogito-data-index-ephemeral"
 version: "main"
-from: "registry.access.redhat.com/ubi8/openjdk-17-runtime:1.20"
+from: "registry.access.redhat.com/ubi8/openjdk-17-runtime:1.21"
 description: "Runtime image for Kogito Data Index Service for ephemeral PostgreSQL persistence provider"
 
 labels:
@@ -49,6 +49,7 @@ modules:
   install:
     - name: org.kie.kogito.system.user
     - name: org.kie.kogito.logging
+    - name: org.kie.kogito.project.versions
     - name: org.kie.kogito.dynamic.resources
     - name: org.kie.kogito.launch.scripts
     - name: org.kie.kogito.dataindex.ephemeral

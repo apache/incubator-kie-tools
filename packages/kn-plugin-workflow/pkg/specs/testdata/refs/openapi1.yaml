@@ -1,0 +1,75 @@
+openapi: 3.0.3
+info:
+  title: Example API
+  version: 1.0.0
+
+paths:
+  /items:
+    get:
+      summary: Get a list of items
+      operationId: getItems
+      tags:
+        - items
+      parameters:
+        - name: filter
+          in: query
+          schema:
+            $ref: "#/components/schemas/FilterSchema"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Item"
+components:
+  schemas:
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+    FilterSchema:
+      type: object
+      properties:
+        type:
+          type: string
+        description:
+          type: string
+    OrdersList:
+      type: object
+      properties:
+        orders:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+
+    Jars:
+      type: object
+      properties:
+        jarid:
+          type: string
+        jarname:
+          type: string
+        jarversion:
+          type: string
+    Message:
+      type: object
+      properties:
+        message:
+          type: string
+  requestBodies:
+    HelloWorld:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Message"
