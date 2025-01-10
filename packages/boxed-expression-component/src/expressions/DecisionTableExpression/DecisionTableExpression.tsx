@@ -779,7 +779,7 @@ export function DecisionTableExpression({
             const nextOutputColumns = [
               ...(prev.output ?? []).map((outputColumn, index) => {
                 const outputCopy = { ...outputColumn };
-                if (outputCopy["@_name"] === null) {
+                if (outputCopy["@_name"] === undefined) {
                   outputCopy["@_name"] = `Output-${index + 1}`;
                 }
                 return outputCopy;
