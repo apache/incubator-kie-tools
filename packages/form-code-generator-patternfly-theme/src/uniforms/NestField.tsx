@@ -25,8 +25,9 @@ import { InputReference, InputsContainer } from "../api";
 import { codeGenContext } from "./CodeGenContext";
 import { union } from "lodash";
 import { OBJECT } from "./utils/dataTypes";
+import { ListItemProps } from "./rendering/ListItemField";
 
-export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { itemProps?: any }>;
+export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { itemProps?: ListItemProps }>;
 
 const Nest: React.FunctionComponent<NestFieldProps> = ({
   id,
