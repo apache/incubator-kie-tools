@@ -628,6 +628,32 @@ goapi.go
 greetingAPI.yaml
 # packages/kn-plugin-workflow/pkg/specs/testdata/hello.sw.yaml
 hello.sw.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/emptyworkflow.sw.yaml
+emptyworkflow.sw.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi-subflow34.expected.yaml
+openapi-subflow34.expected.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi.expected.yaml
+openapi.expected.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi.yaml
+openapi.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi1.expected.yaml
+openapi1.expected.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi1.yaml
+openapi1.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi2.expected.yaml
+openapi2.expected.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi2.yaml
+openapi2.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/subflow1.sw.yaml
+subflow1.sw.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/subflow2.sw.yaml
+subflow2.sw.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/subflow3.sw.yaml
+subflow3.sw.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/subflow4.sw.yaml
+subflow4.sw.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/workflow1.sw.yaml
+workflow1.sw.yaml
 # packages/kn-plugin-workflow/pkg/specs/testdata/subflow-custom.sw.yaml
 subflow-custom.sw.yaml
 # packages/kn-plugin-workflow/pkg/specs/testdata/subflow-mySpecsDir.sw.yaml

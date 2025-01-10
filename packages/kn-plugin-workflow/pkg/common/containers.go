@@ -389,3 +389,47 @@ func processOutputDuringContainerExecution(cli *client.Client, ctx context.Conte
 
 	return nil
 }
+
+
+func PollContainerStoppedCheck(containerID string, interval time.Duration, ready chan<- bool) {
+	for {
+		running, err := IsContainerRunning(containerID)
+		if err != nil {
+			fmt.Printf("Error checking if container %s is running: %s", containerID, err)
+			ready <- false
+			return
+		}
+		if !running {
+			ready <- true
+			return
+		}
+		time.Sleep(interval)
+	}
+}
+
+func IsContainerRunning(containerID string) (bool, error) {
+	if errDocker := CheckDocker(); errDocker == nil {
+		cli, err := getDockerClient()
+		if err != nil {
+			return false, fmt.Errorf("unable to create docker client: %w", err)
+		}
+		containerJSON, err := cli.ContainerInspect(context.Background(), containerID)
+		if err != nil {
+			if client.IsErrNotFound(err) {
+				return false, nil
+			}
+			return false, fmt.Errorf("unable to inspect container %s with docker: %w", containerID, err)
+		}
+		return containerJSON.State.Running, nil
+
+	} else if errPodman := CheckPodman(); errPodman == nil {
+		cmd := exec.Command("podman", "inspect", containerID, "--format", "{{.State.Running}}")
+		output, err := cmd.Output()
+		if err != nil {
+			return false, fmt.Errorf("unable to inspect container %s with podman: %w", containerID, err)
+		}
+		return strings.TrimSpace(string(output)) == "true", nil
+	}
+
+	return false, fmt.Errorf("there is no docker or podman available")
+}
