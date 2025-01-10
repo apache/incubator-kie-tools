@@ -468,6 +468,7 @@ Error details: ${err}`);
                 workspaceFile={file.workspaceFile}
                 workspaces={workspaces}
                 dmnLanguageService={dmnLanguageService}
+                editor={editor}
                 isEditorReady={editor?.isReady ?? false}
                 editorValidate={editor?.validate}
               >

@@ -32,14 +32,13 @@ import setObjectValueByPath from "lodash/set";
 import cloneDeep from "lodash/cloneDeep";
 import { DmnRunnerProviderActionType } from "./DmnRunnerTypes";
 import { DmnRunnerExtendedServicesError } from "./DmnRunnerContextProvider";
-import { useEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
+import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 
-export function DmnRunnerTable() {
+export function DmnRunnerTable(props: { editor: EmbeddedEditorRef | undefined }) {
   // STATEs
   const [dmnRunnerTableError, setDmnRunnerTableError] = useState<boolean>(false);
-  const { editor } = useEditorRef();
 
   // REFs
   const [inputsContainerRef, setInputsContainerRef] = useState<HTMLDivElement | null>(null);
@@ -142,7 +141,7 @@ export function DmnRunnerTable() {
                           jsonSchemaBridge={jsonSchemaBridge}
                           results={results}
                           dmnSpecialCallback={(nodeId: string) => {
-                            const newDmnEditorEnvelopeApi = editor?.getEnvelopeServer()
+                            const newDmnEditorEnvelopeApi = props.editor?.getEnvelopeServer()
                               .envelopeApi as unknown as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
 
                             newDmnEditorEnvelopeApi.notifications.dmnEditor_openBoxedExpressionEditor.send(nodeId);

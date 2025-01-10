@@ -35,6 +35,7 @@ import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 import { DmnRunnerTable } from "../dmnRunner/DmnRunnerTable";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { DmnRunnerErrorBoundary } from "../dmnRunner/DmnRunnerErrorBoundary";
+import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 
 interface EditorPageDockContextType {
   panel: PanelId;
@@ -74,6 +75,7 @@ interface Props {
   workspaces: WorkspacesContextType;
   dmnLanguageService?: DmnLanguageService;
   isEditorReady: boolean;
+  editor: EmbeddedEditorRef | undefined;
   editorValidate?: () => Promise<Notification[]>;
 }
 
@@ -83,6 +85,7 @@ export function EditorPageDockContextProvider({
   workspaces,
   workspaceFile,
   isEditorReady,
+  editor,
   editorValidate,
 }: React.PropsWithChildren<Props>) {
   const { i18n } = useOnlineI18n();
@@ -186,7 +189,7 @@ export function EditorPageDockContextProvider({
       case PanelId.DMN_RUNNER_TABLE:
         return (
           <DmnRunnerErrorBoundary>
-            <DmnRunnerTable />
+            <DmnRunnerTable editor={editor} />
           </DmnRunnerErrorBoundary>
         );
       default:
