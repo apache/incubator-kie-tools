@@ -74,7 +74,7 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
     }
   };
 
-  const jsxCode = `<div fieldId={'${props.id}'}>
+  const jsxCode = `<div>
       <Split hasGutter>
         <SplitItem>
           {'${props.label}' && (
@@ -136,7 +136,7 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
     pfIconImports: [...new Set(["PlusCircleIcon", "MinusCircleIcon", ...(listItem?.pfIconImports ?? [])])],
     reactImports: [...new Set([...(listItem?.reactImports ?? [])])],
     jsxCode,
-    stateCode: getStateCode(ref.stateName, ref.stateSetter, "any[]", "[]"),
+    stateCode: getStateCode(ref.stateName, ref.stateSetter, ref.dataType.name, "[]"),
     isReadonly: props.disabled,
   };
 
