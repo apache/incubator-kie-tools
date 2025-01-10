@@ -48,9 +48,10 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
       const yPos = bounds.y;
       if (currentHeight + yPos >= availableHeight) {
         overlayPanelContainer.current.style.height = availableHeight - BOTTOM_MARGIN + "px";
-        overlayPanelContainer.current.style.overflowY = "scroll";
+        overlayPanelContainer.current.style.overflowY = "auto";
       } else {
-        overlayPanelContainer.current.style.overflowY = "visible";
+        overlayPanelContainer.current.style.overflowY = "hidden";
+        overlayPanelContainer.current.style.height = "auto";
       }
     }
   });
