@@ -33,7 +33,7 @@
 
 - name: sonataflow-operator
   version: 0.0.0
-  from: "registry.access.redhat.com/ubi9/ubi-micro:9.5-1731519709"
+  from: "registry.access.redhat.com/ubi9/ubi-micro:9.5"
   description: Runtime Image for the Operator
 
   args:

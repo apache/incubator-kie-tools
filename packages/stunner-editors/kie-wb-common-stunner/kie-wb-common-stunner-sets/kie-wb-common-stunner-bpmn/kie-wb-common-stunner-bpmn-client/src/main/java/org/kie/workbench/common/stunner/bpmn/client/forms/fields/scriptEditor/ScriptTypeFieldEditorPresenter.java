@@ -131,7 +131,6 @@ public class ScriptTypeFieldEditorPresenter
         if (mode == ACTION_SCRIPT) {
             languages = new ArrayList<>(3);
             languages.add(MonacoEditorLanguage.JAVA);
-            languages.add(MonacoEditorLanguage.JAVA_SCRIPT);
             languages.add(MonacoEditorLanguage.MVEL);
         } else if (mode == COMPLETION_CONDITION) {
             languages = new ArrayList<>(2);
@@ -140,7 +139,6 @@ public class ScriptTypeFieldEditorPresenter
         } else if (mode == FLOW_CONDITION) {
             languages = new ArrayList<>(5);
             languages.add(MonacoEditorLanguage.JAVA);
-            languages.add(MonacoEditorLanguage.JAVA_SCRIPT);
             languages.add(MonacoEditorLanguage.MVEL);
             languages.add(MonacoEditorLanguage.DROOLS);
             languages.add(MonacoEditorLanguage.FEEL);
@@ -159,6 +157,7 @@ public class ScriptTypeFieldEditorPresenter
                      true);
         value.setScript(view.getValue());
         value.setLanguage(view.getLanguageId());
+
         notifyChange(oldValue,
                      value);
     }
