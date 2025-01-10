@@ -36,7 +36,6 @@ import {
 import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import {} from "@patternfly/react-core/dist/js/components/Title";
 import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { useImportJavaClassesWizardI18n } from "../../i18n";
 import { useCallback, useState } from "react";

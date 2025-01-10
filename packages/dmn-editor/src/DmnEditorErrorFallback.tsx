@@ -28,7 +28,6 @@ import {
   EmptyStateHeader,
   EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
-import {} from "@patternfly/react-core/dist/js/components/Title";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { FallbackProps } from "react-error-boundary";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";

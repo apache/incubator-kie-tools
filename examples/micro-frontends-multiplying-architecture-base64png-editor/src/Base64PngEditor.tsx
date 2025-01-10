@@ -24,7 +24,6 @@ import { EmptyState, EmptyStateIcon, EmptyStateHeader } from "@patternfly/react-
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
 import { Page } from "@patternfly/react-core/dist/js/components/Page";
 import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
-import {} from "@patternfly/react-core/dist/js/components/Title";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { Base64PngEdit, Base64PngEditorStateControl } from "./Base64PngEditorStateControl";
 import { KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";

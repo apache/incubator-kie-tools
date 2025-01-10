@@ -39,7 +39,6 @@ import {
   EmptyStateHeader,
   EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
-import {} from "@patternfly/react-core/dist/js/components/Title";
 import UsersIcon from "@patternfly/react-icons/dist/js/icons/users-icon";
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "./AccountsContext";
 import { ConnectToOpenShiftSection } from "./openshift/ConnectToOpenShiftSection";

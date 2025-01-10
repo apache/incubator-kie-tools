@@ -26,7 +26,7 @@ import {
   EmptyStateHeader,
   EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
-import {} from "@patternfly/react-core/dist/js/components/Title";
+
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";

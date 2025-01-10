@@ -44,7 +44,7 @@ import {
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
-import {} from "@patternfly/react-core/dist/js/components/Title";
+
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 import ErrorIcon from "@patternfly/react-icons/dist/esm/icons/error-circle-o-icon";

@@ -36,7 +36,6 @@ import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form"
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
-import {} from "@patternfly/react-core/dist/js/components/Title";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";

@@ -34,7 +34,7 @@ import {
   EmptyStateIcon,
   EmptyStateHeader,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
-import {} from "@patternfly/react-core/dist/js/components/Title";
+
 import { domParser } from "@kie-tools/xml-parser-ts";
 import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";

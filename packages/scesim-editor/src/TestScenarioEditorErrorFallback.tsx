@@ -31,7 +31,7 @@ import {
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import {} from "@patternfly/react-core/dist/js/components/Title";
+
 import { FallbackProps } from "react-error-boundary";
 import { useTestScenarioEditorI18n } from "./i18n";
 import { useTestScenarioEditor } from "./TestScenarioEditorContext";

@@ -25,7 +25,7 @@ import { EmptyState, EmptyStateIcon, EmptyStateHeader } from "@patternfly/react-
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import {} from "@patternfly/react-core/dist/js/components/Title";
+
 import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";

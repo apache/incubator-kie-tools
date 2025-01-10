@@ -25,7 +25,7 @@ import {
   EmptyStateHeader,
   EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
-import {} from "@patternfly/react-core/dist/js/components/Title";
+
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { SearchIcon } from "@patternfly/react-icons/dist/js/icons";
 import { Td, Tr } from "@patternfly/react-table/dist/esm";

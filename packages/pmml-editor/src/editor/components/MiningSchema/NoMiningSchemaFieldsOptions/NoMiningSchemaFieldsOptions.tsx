@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import {} from "@patternfly/react-core/dist/js/components/Title";
+
 import {
   EmptyState,
   EmptyStateBody,

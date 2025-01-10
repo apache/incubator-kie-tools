@@ -27,7 +27,7 @@ import {
   EmptyStateFooter,
 } from "@patternfly/react-core/components";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import {} from "@patternfly/react-core/dist/js/components/Title";
+
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { SearchIcon } from "@patternfly/react-icons/dist/js/icons/search-icon";
 import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";

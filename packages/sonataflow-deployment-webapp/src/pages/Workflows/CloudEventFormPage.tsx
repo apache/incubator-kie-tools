@@ -22,7 +22,7 @@ import { EmptyState, EmptyStateIcon, EmptyStateHeader } from "@patternfly/react-
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import {} from "@patternfly/react-core/dist/js/components/Title";
+
 import React, { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router";
 import { CloudEventRequest } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";

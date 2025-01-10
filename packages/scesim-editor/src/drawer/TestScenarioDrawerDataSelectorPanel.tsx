@@ -33,7 +33,7 @@ import {
 import { HelpIcon } from "@patternfly/react-icons/dist/esm/icons/help-icon";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
-import {} from "@patternfly/react-core/dist/js/components/Title";
+
 import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar/";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip/";
 import { TreeView, TreeViewDataItem, TreeViewSearch } from "@patternfly/react-core/dist/js/components/TreeView/";

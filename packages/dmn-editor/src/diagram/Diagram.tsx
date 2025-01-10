@@ -43,7 +43,6 @@ import {
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
-import {} from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { BlueprintIcon } from "@patternfly/react-icons/dist/js/icons/blueprint-icon";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";

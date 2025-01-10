@@ -19,7 +19,7 @@
 
 import React from "react";
 import { EmptyState, EmptyStateIcon, EmptyStateHeader } from "@patternfly/react-core/components";
-import {} from "@patternfly/react-core/dist/js/components/Title";
+
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { OUIAProps, componentOuiaProps } from "../../ouiaTools";
 
