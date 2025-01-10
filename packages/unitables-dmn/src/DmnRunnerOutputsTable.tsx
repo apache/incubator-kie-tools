@@ -275,6 +275,11 @@ function OutputsBeeTable({
                     return deepFlattenObjectColumn(collectedOutput, outputProperties?.properties);
                   }
                   return {
+                    decisionName: decisionName,
+                    decisionId: decisionId,
+                    headerCellClickCallback: () => {
+                      dmnSpecialCallback?.(decisionId);
+                    },
                     originalId: "context-" + generateUuid(),
                     label: "context",
                     accessor: (`output-context-` + generateUuid()) as any,
@@ -333,6 +338,11 @@ function OutputsBeeTable({
       if (Array.isArray(result)) {
         return [
           {
+            decisionName: decisionName,
+            decisionId: decisionId,
+            headerCellClickCallback: () => {
+              dmnSpecialCallback?.(decisionId);
+            },
             originalId: `${outputProperties?.name}-` + generateUuid(),
             label: `${outputProperties?.name}`,
             accessor: (`output-array-parent-${outputProperties?.name}-` + generateUuid()) as any,
@@ -357,6 +367,11 @@ function OutputsBeeTable({
       if (typeof result === "object") {
         return [
           {
+            decisionName: decisionName,
+            decisionId: decisionId,
+            headerCellClickCallback: () => {
+              dmnSpecialCallback?.(decisionId);
+            },
             originalId: `${outputProperties?.name}-` + generateUuid(),
             label: outputProperties?.name ?? "",
             accessor: (`output-object-parent-${outputProperties?.name}-` + generateUuid()) as any,
