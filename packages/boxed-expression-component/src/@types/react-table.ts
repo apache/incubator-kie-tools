@@ -41,6 +41,7 @@ declare module "react-table" {
     /** Used by react-table to hold the original id chosen for the column, independently of applied operations */
     originalId?: string;
     decisionId?: string;
+    decisionName?: string;
     headerCellClickCallback?: () => void;
     /** Column identifier */
     accessor: string;

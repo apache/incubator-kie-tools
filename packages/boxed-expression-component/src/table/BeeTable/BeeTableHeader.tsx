@@ -270,16 +270,15 @@ export function BeeTableHeader<R extends object>({
                       </p>
                     ) : null}
                   </div>
-                  {/* {props.openBoxedExpressionEditor !== undefined && ( */}
-                  <Button
-                    variant={"plain"}
-                    // title={`Open ${dmnFormResult.decisionName} expression`}
-                    icon={<ArrowUpIcon />}
-                    // data-navigate-to-expression-id={dmnFormResult.decisionId}
-                    onClick={() => column.headerCellClickCallback?.()}
-                    title={column.decisionId}
-                  />
-                  {/* )} */}
+                  {column.decisionId !== undefined && column.headerCellClickCallback !== undefined && (
+                    <Button
+                      variant={"plain"}
+                      title={`Open ${column.decisionName} expression`}
+                      icon={<ArrowUpIcon />}
+                      // data-navigate-to-expression-id={dmnFormResult.decisionId}
+                      onClick={() => column.headerCellClickCallback?.()}
+                    />
+                  )}
                 </Flex>
               }
             />

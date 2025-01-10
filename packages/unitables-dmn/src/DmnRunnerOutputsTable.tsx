@@ -302,7 +302,6 @@ function OutputsBeeTable({
       if (typeof result === "string" || typeof result === "number" || typeof result === "boolean" || result === null) {
         return [
           {
-            decisionId: decisionId,
             originalId: `parent-${outputProperties?.name}-` + generateUuid(),
             label: "",
             accessor: (`output-parent-${outputProperties?.name}-` + generateUuid()) as any,
@@ -312,6 +311,7 @@ function OutputsBeeTable({
             minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
             columns: [
               {
+                decisionName: decisionName,
                 decisionId: decisionId,
                 headerCellClickCallback: () => {
                   dmnSpecialCallback?.(decisionId);
