@@ -51,7 +51,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 	const [interview__hire, set__interview__hire] = useState&lt;boolean&gt;(false);
 	const [interview__hiringDate, set__interview__hiringDate] =
 		useState&lt;string&gt;();
-	const [friends, set__friends] = useState&lt;any[]&gt;([]);
+	const [friends, set__friends] = useState&lt;string[]&gt;([]);
 	/* Utility function that fills the form with the data received from the kogito runtime */
 	const setFormData = (data) =&gt; {
 		if (!data) {
@@ -574,7 +574,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 					&lt;/FormGroup&gt;
 				&lt;/CardBody&gt;
 			&lt;/Card&gt;
-			&lt;div fieldId={&#39;uniforms-0000-000x&#39;}&gt;
+			&lt;div&gt;
 				&lt;Split hasGutter&gt;
 					&lt;SplitItem&gt;
 						{&#39;Friends&#39; &amp;&amp; (
