@@ -30,12 +30,12 @@ export class ConfigurationWatcher {
 
   private handleConfigurationChange(configurationChange: vscode.ConfigurationChangeEvent) {
     const enableAutoRunChanged = configurationChange.affectsConfiguration(configuration.enableAutoRunID);
-    const connectionHeartbeatIntervalinSecsChanged = configurationChange.affectsConfiguration(
-      configuration.connectionHeartbeatIntervalinSecsID
+    const connectionHeartbeatIntervalInSecsChanged = configurationChange.affectsConfiguration(
+      configuration.connectionHeartbeatIntervalInSecsID
     );
     const extendedServicesURLChanged = configurationChange.affectsConfiguration(configuration.extendedServicesURLID);
 
-    if (enableAutoRunChanged || connectionHeartbeatIntervalinSecsChanged || extendedServicesURLChanged) {
+    if (enableAutoRunChanged || connectionHeartbeatIntervalInSecsChanged || extendedServicesURLChanged) {
       this.fireConfigurationChangedEvent();
     }
   }
