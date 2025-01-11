@@ -611,15 +611,14 @@ function IncludedModelCard({
               position={PopoverPosition.bottom}
               shouldOpen={() => setRemovePopoverOpen(true)}
             >
-              <Button
-                variant={"plain"}
+              <div
                 onClick={(ev) => {
                   ev.stopPropagation();
                   ev.preventDefault();
                 }}
               >
                 <KebabToggle />
-              </Button>
+              </div>
             </Popover>
           </CardActions>
         )}
