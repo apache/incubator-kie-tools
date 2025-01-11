@@ -35,9 +35,14 @@ import (
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command/quarkus"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
 )
+
+// Holds quarkus dependencies populated from environment variables
+var quarkusDependencies = metadata.ResolveQuarkusDependencies()
+
 
 // ExecuteCommand executes a command with the given arguments and returns an error if the command fails.
 func ExecuteCommand(command string, args ...string) error {
