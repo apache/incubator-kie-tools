@@ -18,10 +18,15 @@
  */
 
 import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
-import { DmnEditorFactory } from "@kie-tools/dmn-editor-envelope/dist/DmnEditorFactory";
+import { NewDmnEditorInterface } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorFactory";
+import { NewDmnEditorChannelApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorChannelApi";
+import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
+import { NewDmnEditorEnvelopeApiImpl } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApiFactory";
 
-EditorEnvelope.init({
+EditorEnvelope.initCustom<NewDmnEditorInterface, NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>({
   container: document.getElementById("envelope-app")!,
-  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, "*", _) },
-  editorFactory: new DmnEditorFactory(),
+  bus: { postMessage: (message, targetOrigin, _) => window.parent.postMessage(message, targetOrigin!, _) },
+  apiImplFactory: {
+    create: (args) => new NewDmnEditorEnvelopeApiImpl(args),
+  },
 });
