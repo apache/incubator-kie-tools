@@ -79,8 +79,8 @@ enum BulkSelectionType {
 interface ProcessListToolbarProps {
   filters: ProcessInstanceFilter;
   setFilters: React.Dispatch<React.SetStateAction<ProcessInstanceFilter>>;
-  applyFilter: (filter: ProcessInstanceFilter) => void;
-  refresh: () => void;
+  applyFilter: (filter: ProcessInstanceFilter) => Promise<void>;
+  refresh: () => Promise<void>;
   processStates: ProcessInstanceState[];
   setProcessStates: React.Dispatch<React.SetStateAction<ProcessInstanceState[]>>;
   selectedInstances: ProcessInstance[];
@@ -296,7 +296,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
     }
   };
 
-  const onDeleteChip = (categoryName: Category, value: string): void => {
+  const onDeleteChip = async (categoryName: Category, value: string) => {
     const clonedProcessStates = [...processStates];
     const clonedBusinessKeyArray = [...(filters.businessKey ?? [])];
     switch (categoryName) {
@@ -314,13 +314,13 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
         setFilters({ ...filters, businessKey: clonedBusinessKeyArray });
         break;
     }
-    applyFilter({
+    await applyFilter({
       status: clonedProcessStates,
       businessKey: clonedBusinessKeyArray,
     });
   };
 
-  const onApplyFilter = (): void => {
+  const onApplyFilter = async () => {
     setBusinessKeyInput("");
     const clonedBusinessKeyArray = [...(filters.businessKey ?? [])];
     if (businessKeyInput && !clonedBusinessKeyArray.includes(businessKeyInput)) {
@@ -331,16 +331,15 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
       status: processStates,
       businessKey: clonedBusinessKeyArray,
     });
-    applyFilter({
+    await applyFilter({
       status: processStates,
       businessKey: clonedBusinessKeyArray,
     });
   };
 
-  const onEnterClicked = (event: React.KeyboardEvent<EventTarget>): void => {
-    /* istanbul ignore else */
+  const onEnterClicked = async (event: React.KeyboardEvent<EventTarget>) => {
     if (event.key === "Enter") {
-      businessKeyInput.length > 0 && onApplyFilter();
+      businessKeyInput.length > 0 && (await onApplyFilter());
     }
   };
 

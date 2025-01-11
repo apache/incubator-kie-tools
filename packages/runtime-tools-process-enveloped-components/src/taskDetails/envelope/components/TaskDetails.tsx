@@ -35,7 +35,7 @@ export const TaskDetails: React.FC<TaskDetailsProps & OUIAProps> = ({ userTask, 
     return (
       <KogitoSpinner
         {...componentOuiaProps(ouiaId, "task-details-component-loading", ouiaSafe)}
-        spinnerText={"Loading task details"}
+        spinnerText={"Loading Task details"}
       />
     );
   }
