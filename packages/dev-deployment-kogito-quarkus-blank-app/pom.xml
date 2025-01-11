@@ -41,19 +41,15 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-    <!-- Maven versions -->
-    <version.maven.artifact.plugin>3.4.1</version.maven.artifact.plugin>
-    <version.maven.compiler.plugin>3.13.0</version.maven.compiler.plugin>
-    <version.maven.resources.plugin>3.3.1</version.maven.resources.plugin>
-    <version.maven.failsafe.plugin>3.0.0-M7</version.maven.failsafe.plugin>
-    <version.maven.surefire.plugin>3.5.0</version.maven.surefire.plugin>
-    <version.maven.install.plugin>3.1.3</version.maven.install.plugin>
-    <version.maven.deploy.plugin>3.1.2</version.maven.deploy.plugin>
-    <version.maven.site.plugin>3.21.0</version.maven.site.plugin>
-    <version.maven.dependency.plugin>3.6.1</version.maven.dependency.plugin>
-    <version.maven.jar.plugin>3.4.1</version.maven.jar.plugin>
-    <version.maven.clean.plugin>3.4.0</version.maven.clean.plugin>
+    <!-- Plugins version -->
     <version.codehaus.flatten.plugin>1.6.0</version.codehaus.flatten.plugin>
+    <version.maven.clean.plugin>3.4.0</version.maven.clean.plugin>
+    <version.maven.compiler.plugin>3.13.0</version.maven.compiler.plugin>
+    <version.maven.failsafe.plugin>${version.maven.surefire.plugin}</version.maven.failsafe.plugin>
+    <version.maven.jar.plugin>3.4.2</version.maven.jar.plugin>
+    <version.maven.resources.plugin>3.3.1</version.maven.resources.plugin>
+    <version.maven.site.plugin>3.21.0</version.maven.site.plugin>
+    <version.maven.surefire.plugin>3.5.0</version.maven.surefire.plugin>
     <!-- Temporary declaring xstream dependency, a version (1.4.20) is transitively imported by Quarkus 3.8 affected by CVE
       When upgrading Quarkus (> 3.15.x) to a new version, please evaluate if this exclusion can be removed   -->
     <version.com.thoughtworks.xstream>1.4.21</version.com.thoughtworks.xstream>
