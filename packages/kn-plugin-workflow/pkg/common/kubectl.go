@@ -21,6 +21,7 @@ package common
 
 import (
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common/k8sclient"
+	v1 "k8s.io/api/apps/v1"
 )
 
 type K8sApi interface {
@@ -29,6 +30,8 @@ type K8sApi interface {
 	ExecuteApply(crd, namespace string) error
 	ExecuteDelete(crd, namespace string) error
 	CheckCrdExists(crd string) error
+	GetDeploymentStatus(namespace, deploymentName string) (v1.DeploymentStatus, error)
+	PortForward(namespace, serviceName, portFrom, portTo string, onReady func()) error
 }
 
 var Current K8sApi = k8sclient.GoAPI{}
@@ -41,7 +44,7 @@ func GetNamespace() (string, error) {
 	return Current.GetNamespace()
 }
 
-func ExecuteApply(crd, namespace string) error {
+var ExecuteApply = func(crd, namespace string) error {
 	return Current.ExecuteApply(crd, namespace)
 }
 
@@ -51,4 +54,12 @@ func ExecuteDelete(crd, namespace string) error {
 
 func CheckCrdExists(crd string) error {
 	return Current.CheckCrdExists(crd)
+}
+
+func GetDeploymentStatus(namespace, deploymentName string) (v1.DeploymentStatus, error) {
+	return Current.GetDeploymentStatus(namespace, deploymentName)
+}
+
+func PortForward(namespace, deploymentName, portFrom, portTo string, onReady func()) error {
+	return Current.PortForward(namespace, deploymentName, portFrom, portTo, onReady)
 }

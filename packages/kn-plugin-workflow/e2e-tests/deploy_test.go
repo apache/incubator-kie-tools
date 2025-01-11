@@ -22,9 +22,14 @@
 package e2e_tests
 
 import (
+	"fmt"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
+	"github.com/stretchr/testify/require"
 )
 
 type cfgTestInputDeploy struct {
@@ -41,14 +46,37 @@ func transformDeployCmdCfgToArgs(cfg command.DeployUndeployCmdConfig) []string {
 }
 
 func TestDeployProjectSuccess(t *testing.T) {
-	////TODO: implement deploy test
-	// for testIndex, test := range cfgTestInputDeploy_Success {
-	// 	t.Run(fmt.Sprintf("Test deploy project success index: %d", testIndex), func(t *testing.T) {
-	// 		// Run `deploy` command
-	// 		out, err := ExecuteKnWorkflow(transformDeployCmdCfgToArgs(test.input)...)
-	// 		require.NoErrorf(t, err, "Expected nil error, got: %v", err)
-	// 		fmt.Println(out)
-	// 		require.Equal(t, command.DeployCommandOutput, out)
-	// 	})
-	// }
+	dir, err := os.Getwd()
+	require.NoError(t, err)
+
+	var originalCheckCrds = command.CheckCRDs
+	defer func() { command.CheckCRDs = originalCheckCrds }()
+
+	command.CheckCRDs = func(crds []string, typeName string) error {
+		return nil
+	}
+
+	var executeApplyOriginal = common.ExecuteApply
+	defer func() { common.ExecuteApply = executeApplyOriginal }()
+
+	common.ExecuteApply = func(crd, namespace string) error {
+		return nil
+	}
+
+	defer os.Chdir(dir)
+	for testIndex := range cfgTestInputDeploy_Success {
+		t.Run(fmt.Sprintf("Test deploy project success index: %d", testIndex), func(t *testing.T) {
+			RunCreateTest(t, CfgTestInputCreate_Success[testIndex])
+			projectName := GetCreateProjectName(t, CfgTestInputCreate_Success[0])
+			projectDir := filepath.Join(TempTestsPath, projectName)
+			defer os.RemoveAll(projectDir)
+
+			err = os.Chdir(projectDir)
+			require.NoErrorf(t, err, "Expected nil error, got %v", err)
+
+			cmd := command.NewDeployCommand()
+			err = cmd.Execute()
+			require.NoError(t, err)
+		})
+	}
 }
