@@ -25,8 +25,9 @@ import { InputReference, InputsContainer } from "../api";
 import { codeGenContext } from "./CodeGenContext";
 import { union } from "lodash";
 import { OBJECT } from "./utils/dataTypes";
+import { ListItemProps } from "./rendering/ListItemField";
 
-export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { itemProps?: object }>;
+export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { itemProps?: ListItemProps }>;
 
 const Nest: React.FunctionComponent<NestFieldProps> = ({
   id,
@@ -49,6 +50,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
   const nestedJsx: string[] = [];
 
   let pfImports: string[] = ["Card", "CardBody"];
+  let pfIconImports: string[] = [];
   let reactImports: string[] = [];
   let requiredCode: string[] = [];
 
@@ -65,6 +67,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
           nestedRefs.push(...nestedContainer.childRefs);
         }
         pfImports = union(pfImports, renderedInput.pfImports);
+        pfIconImports = union(pfIconImports, renderedInput.pfIconImports);
         reactImports = union(reactImports, renderedInput.reactImports);
         if (renderedInput.requiredCode) {
           requiredCode = union(requiredCode, renderedInput.requiredCode);
@@ -75,7 +78,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
     });
   }
 
-  const bodyLabel = label ? `<label><b>${label}</b></label>` : "";
+  const bodyLabel = label && !itemProps?.isListItem ? `<label><b>${label}</b></label>` : "";
 
   const stateCode = nestedStates.join("\n");
   const jsxCode = `<Card>
@@ -86,6 +89,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
 
   const rendered: InputsContainer = {
     pfImports,
+    pfIconImports,
     reactImports,
     requiredCode: requiredCode,
     stateCode,

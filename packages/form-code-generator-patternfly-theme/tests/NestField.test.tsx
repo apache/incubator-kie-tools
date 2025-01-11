@@ -30,6 +30,11 @@ const schema = {
     type: String,
     allowedValues: ["Developer", "HR", "UX"],
   },
+  "candidate.skills": {
+    type: Array,
+  },
+  "candidate.skills.$": Object,
+  "candidate.skills.$.name": { type: String },
 };
 
 describe("<NestField> tests", () => {
@@ -57,8 +62,12 @@ describe("<NestField> tests", () => {
       "SelectOptionObject",
       "Select",
       "SelectVariant",
+      "Split",
+      "SplitItem",
+      "Button",
     ]);
-    expect(inputContainer.childRefs).toHaveLength(3);
+    expect(inputContainer.pfIconImports).toStrictEqual(["PlusCircleIcon", "MinusCircleIcon"]);
+    expect(inputContainer.childRefs).toHaveLength(4);
 
     expect(inputContainer.childRefs[0].binding).toEqual("candidate.name");
     expect(inputContainer.childRefs[0].stateName).toEqual("candidate__name");
@@ -71,5 +80,9 @@ describe("<NestField> tests", () => {
     expect(inputContainer.childRefs[2].binding).toEqual("candidate.role");
     expect(inputContainer.childRefs[2].stateName).toEqual("candidate__role");
     expect(inputContainer.childRefs[2].stateSetter).toEqual("set__candidate__role");
+
+    expect(inputContainer.childRefs[3].binding).toEqual("candidate.skills");
+    expect(inputContainer.childRefs[3].stateName).toEqual("candidate__skills");
+    expect(inputContainer.childRefs[3].stateSetter).toEqual("set__candidate__skills");
   });
 });

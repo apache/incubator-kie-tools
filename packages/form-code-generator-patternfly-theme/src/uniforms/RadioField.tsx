@@ -23,6 +23,7 @@ import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
 import { STRING } from "./utils/dataTypes";
+import { getListItemName, getListItemOnChange, getListItemValue, ListItemProps } from "./rendering/ListItemField";
 
 export type RadioFieldProps = HTMLFieldProps<
   string,
@@ -34,6 +35,7 @@ export type RadioFieldProps = HTMLFieldProps<
     allowedValues: string[];
     required: boolean;
     disabled: boolean;
+    itemProps?: ListItemProps;
   }
 >;
 
@@ -46,12 +48,12 @@ const Radio = (props: RadioFieldProps) => {
     const radio = `<Radio
       key={'${item}'}
       id={'${props.id}-${item}'}
-      name={'${props.name}'}
-      isChecked={'${item}' === ${ref.stateName}}
+      name={${props.itemProps?.isListItem ? getListItemName({ itemProps: props.itemProps, name: props.name }) : `'${props.name}'`}}
+      isChecked={${props.itemProps?.isListItem ? getListItemValue({ itemProps: props.itemProps, name: props.name }) : `'${item}' === ${ref.stateName}`}}
       isDisabled={${props.disabled || false}}
       label={'${props.transform ? props.transform(item) : item}'}
       aria-label={'${props.name}'}
-      onChange={() => ${ref.stateSetter}('${item}')}
+      onChange={${props.itemProps?.isListItem ? getListItemOnChange({ itemProps: props.itemProps, name: props.name, overrideNewValue: item }) : `() => ${ref.stateSetter}('${item}')`}}
     />`;
     radios.push(radio);
   });
