@@ -32,8 +32,11 @@ import setObjectValueByPath from "lodash/set";
 import cloneDeep from "lodash/cloneDeep";
 import { DmnRunnerProviderActionType } from "./DmnRunnerTypes";
 import { DmnRunnerExtendedServicesError } from "./DmnRunnerContextProvider";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
+import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 
-export function DmnRunnerTable() {
+export function DmnRunnerTable(props: { editor: EmbeddedEditorRef | undefined }) {
   // STATEs
   const [dmnRunnerTableError, setDmnRunnerTableError] = useState<boolean>(false);
 
@@ -137,6 +140,12 @@ export function DmnRunnerTable() {
                           i18n={i18n.dmnRunner.table}
                           jsonSchemaBridge={jsonSchemaBridge}
                           results={results}
+                          dmnSpecialCallback={(nodeId: string) => {
+                            const newDmnEditorEnvelopeApi = props.editor?.getEnvelopeServer()
+                              .envelopeApi as unknown as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
+
+                            newDmnEditorEnvelopeApi.notifications.dmnEditor_openBoxedExpressionEditor.send(nodeId);
+                          }}
                         />
                       </div>
                     </DrawerPanelContent>

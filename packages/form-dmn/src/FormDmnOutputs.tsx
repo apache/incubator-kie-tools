@@ -19,6 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
@@ -40,6 +41,8 @@ import "./styles.scss";
 import { ErrorBoundary } from "@kie-tools/dmn-runner/dist/ErrorBoundary";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { DecisionResult, DmnEvaluationStatus, DmnEvaluationResult } from "@kie-tools/extended-services-api";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
 
 const ISSUES_URL = "https://github.com/apache/incubator-kie-issues/issues";
 
@@ -61,6 +64,7 @@ export interface FormDmnOutputsProps {
   locale?: string;
   notificationsPanel: boolean;
   openExecutionTab?: () => void;
+  openBoxedExpressionEditor?: (nodeId: string) => void;
 }
 
 export function FormDmnOutputs({ openExecutionTab, ...props }: FormDmnOutputsProps) {
@@ -258,7 +262,18 @@ export function FormDmnOutputs({ openExecutionTab, ...props }: FormDmnOutputsPro
             onAnimationEnd={(e) => onAnimationEnd(e, index)}
           >
             <CardTitle>
-              <Title headingLevel={"h2"}>{dmnFormResult.decisionName}</Title>
+              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                <Title headingLevel={"h2"}>{dmnFormResult.decisionName}</Title>
+                {props.openBoxedExpressionEditor !== undefined && (
+                  <Button
+                    variant={"plain"}
+                    title={`Open ${dmnFormResult.decisionName} expression`}
+                    icon={<ArrowUpIcon />}
+                    data-navigate-to-expression-id={dmnFormResult.decisionId}
+                    onClick={() => props.openBoxedExpressionEditor?.(dmnFormResult.decisionId)}
+                  />
+                )}
+              </Flex>
             </CardTitle>
             <CardBody isFilled={true}>{result(dmnFormResult.result)}</CardBody>
             <CardFooter>{resultStatus(dmnFormResult.evaluationStatus)}</CardFooter>

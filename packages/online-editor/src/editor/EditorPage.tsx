@@ -468,6 +468,7 @@ Error details: ${err}`);
                 workspaceFile={file.workspaceFile}
                 workspaces={workspaces}
                 dmnLanguageService={dmnLanguageService}
+                editor={editor}
                 isEditorReady={editor?.isReady ?? false}
                 editorValidate={editor?.validate}
               >
@@ -479,7 +480,7 @@ Error details: ${err}`);
                   <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} />
                   <Divider />
                   <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }} aria-label="Editor section">
-                    <DmnRunnerDrawer>
+                    <DmnRunnerDrawer editor={editor} isLegacyDmnEditor={settings.editors.useLegacyDmnEditor}>
                       <EditorPageDockDrawer>
                         {embeddedEditorFile && (
                           <EmbeddedEditor
