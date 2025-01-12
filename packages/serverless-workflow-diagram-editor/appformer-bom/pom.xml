@@ -59,7 +59,7 @@
 
   <properties>
     <sonar.skip>true</sonar.skip>
-    <version.j2cl.tools>0.1</version.j2cl.tools>
+    <version.j2cl.tools>0.4</version.j2cl.tools>
   </properties>
 
   <dependencyManagement>

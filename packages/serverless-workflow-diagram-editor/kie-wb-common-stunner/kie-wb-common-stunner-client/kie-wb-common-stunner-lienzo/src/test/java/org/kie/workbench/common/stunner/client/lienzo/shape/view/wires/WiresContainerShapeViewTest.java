@@ -23,6 +23,8 @@ package org.kie.workbench.common.stunner.client.lienzo.shape.view.wires;
 import com.ait.lienzo.client.core.shape.MultiPath;
 import com.ait.lienzo.client.core.shape.wires.handlers.WiresShapeControl;
 import com.ait.lienzo.test.LienzoMockitoTestRunner;
+import com.google.gwtmockito.WithClassesToStub;
+import elemental2.core.JsMap;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.workbench.common.stunner.core.client.shape.HasChildren;
@@ -33,6 +35,7 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
 @RunWith(LienzoMockitoTestRunner.class)
+@WithClassesToStub(JsMap.class)
 public class WiresContainerShapeViewTest {
 
     @Mock

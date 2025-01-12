@@ -167,7 +167,7 @@ public class ViewEventHandlerManager {
         JsIteratorIterable<JsArray<HandlerRegistration>> regs = registrationsByType.values();
         registrationsByType.forEach(new JsMap.ForEachCallbackFn<ViewEventType, JsArray<HandlerRegistration>>() {
             @Override
-            public Object onInvoke(JsArray<HandlerRegistration> p0, ViewEventType p1, JsMap<? extends ViewEventType, ? extends JsArray<HandlerRegistration>> p2) {
+            public Object onInvoke(JsArray<HandlerRegistration> p0, ViewEventType p1) {
                 removeHandlers(p0);
                 return null;
             }

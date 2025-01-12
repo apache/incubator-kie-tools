@@ -20,14 +20,14 @@ import elemental2.core.Global;
 import elemental2.core.JsIterable;
 import elemental2.core.JsIteratorIterable;
 import elemental2.core.JsMap;
-import elemental2.core.JsMap.JsIterableTypeParameterArrayUnionType;
+import elemental2.core.ReadonlyMap;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
 
 @JsType(isNative = true, name = "Map", namespace = JsPackage.GLOBAL)
-public class NObjectJSO implements JsIterable<JsIterableTypeParameterArrayUnionType<String, ?>[]> {
+public class NObjectJSO implements JsIterable<ReadonlyMap.JsIterableTypeParameterArrayUnionType<String, ?>[]> {
 
     @JsOverlay
     public static final NObjectJSO make() {

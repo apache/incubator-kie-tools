@@ -56,7 +56,7 @@ public class JsMap<KEY, VALUE> {
         return mock(JsIteratorIterable.class);
     }
 
-    public Object forEach(elemental2.core.JsMap.ForEachCallbackFn<? super KEY, ? super VALUE> callback) {
-        return mock(Object.class);
+    public void forEach(elemental2.core.ReadonlyMap.ForEachCallbackFn<? super KEY, ? super VALUE> callback) {
+        mock(Object.class);
     }
 }
