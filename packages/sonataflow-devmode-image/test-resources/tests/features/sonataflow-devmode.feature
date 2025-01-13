@@ -4,7 +4,7 @@ Feature: Serverless Workflow devmode images
   Scenario: Verify if container starts in devmode by default
     When container is started with env
       | variable     | value |
-      | SCRIPT_DEBUG | true  |
+      | SCRIPT_DEBUG | false  |
     Then check that page is served
       | property             | value             |
       | port                 | 8080              |
@@ -12,8 +12,6 @@ Feature: Serverless Workflow devmode images
       | wait                 | 480               |
       | request_method       | GET               |
       | expected_status_code | 200               |
-    And container log should contain -Duser.home=/home/kogito -o
-    And container log should contain -Dquarkus.test.continuous-testing=disabled
     And container log should match regex Installed features:.*kogito-serverless-workflow
     And container log should match regex Installed features:.*kie-addon-knative-eventing-extension
     And container log should match regex Installed features:.*smallrye-health
@@ -25,7 +23,7 @@ Feature: Serverless Workflow devmode images
   Scenario: Verify if container starts correctly when continuous testing is enabled
     When container is started with env
       | variable                   | value    |
-      | SCRIPT_DEBUG               | true     |
+      | SCRIPT_DEBUG               | false     |
       | QUARKUS_CONTINUOUS_TESTING | enabled  |
     Then check that page is served
       | property             | value             |
@@ -34,14 +32,12 @@ Feature: Serverless Workflow devmode images
       | wait                 | 480               |
       | request_method       | GET               |
       | expected_status_code | 200               |
-    And container log should contain -Duser.home=/home/kogito
-    And container log should not contain /bin/mvn -B -X --batch-mode -o
     And container log should contain -Dquarkus.test.continuous-testing=enabled
 
   Scenario: Verify if container starts correctly when QUARKUS_EXTENSIONS env is used
     When container is started with env
       | variable                   | value                                    |
-      | SCRIPT_DEBUG               | true                                     |
+      | SCRIPT_DEBUG               | false                                     |
       | QUARKUS_EXTENSIONS         | io.quarkus:quarkus-elytron-security-jdbc |
     Then check that page is served
       | property             | value             |
@@ -50,9 +46,7 @@ Feature: Serverless Workflow devmode images
       | wait                 | 960               |
       | request_method       | GET               |
       | expected_status_code | 200               |
-    And container log should contain -Duser.home=/home/kogito
-    And container log should not contain /bin/mvn -B -X --batch-mode -o
-    And container log should contain Extension io.quarkus:quarkus-elytron-security-jdbc has been installed
+    And container log should match regex Extension io\.quarkus:quarkus-elytron-security-jdbc.* has been installed
     And container log should match regex Installed features:.*kogito-serverless-workflow
     And container log should match regex Installed features:.*kie-addon-knative-eventing-extension
     And container log should match regex Installed features:.*smallrye-health

@@ -17,8 +17,8 @@
 # under the License.
 #
 - name: "docker.io/apache/incubator-kie-sonataflow-management-console"
-  from: "registry.access.redhat.com/ubi9/httpd-24:1-336.1725850633"
-  version: "main"
+  from: "registry.access.redhat.com/ubi9/httpd-24:9.5"
+  version: "0.0.0"
   description: "SonataFlow Management Console Image"
 
   labels:

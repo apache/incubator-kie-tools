@@ -45,36 +45,31 @@ var defaultControllersCfg = &ControllersCfg{
 	BuilderConfigMapName:          "sonataflow-operator-builder-config",
 }
 
-type GAV struct {
+type GroupArtifactId struct {
 	GroupId    string `yaml:"groupId,omitempty"`
 	ArtifactId string `yaml:"artifactId,omitempty"`
-	Version    string `yaml:"version,omitempty"`
 }
 
-func (g *GAV) GroupAndArtifact() string {
+func (g *GroupArtifactId) String() string {
 	return fmt.Sprintf("%s:%s", g.GroupId, g.ArtifactId)
 }
 
-func (g *GAV) String() string {
-	return fmt.Sprintf("%s:%s:%s", g.GroupId, g.ArtifactId, g.Version)
-}
-
 type ControllersCfg struct {
-	DefaultPvcKanikoSize            string `yaml:"defaultPvcKanikoSize,omitempty"`
-	HealthFailureThresholdDevMode   int32  `yaml:"healthFailureThresholdDevMode,omitempty"`
-	KanikoDefaultWarmerImageTag     string `yaml:"kanikoDefaultWarmerImageTag,omitempty"`
-	KanikoExecutorImageTag          string `yaml:"kanikoExecutorImageTag,omitempty"`
-	JobsServicePostgreSQLImageTag   string `yaml:"jobsServicePostgreSQLImageTag,omitempty"`
-	JobsServiceEphemeralImageTag    string `yaml:"jobsServiceEphemeralImageTag,omitempty"`
-	DataIndexPostgreSQLImageTag     string `yaml:"dataIndexPostgreSQLImageTag,omitempty"`
-	DataIndexEphemeralImageTag      string `yaml:"dataIndexEphemeralImageTag,omitempty"`
-	SonataFlowBaseBuilderImageTag   string `yaml:"sonataFlowBaseBuilderImageTag,omitempty"`
-	SonataFlowDevModeImageTag       string `yaml:"sonataFlowDevModeImageTag,omitempty"`
-	BuilderConfigMapName            string `yaml:"builderConfigMapName,omitempty"`
-	PostgreSQLPersistenceExtensions []GAV  `yaml:"postgreSQLPersistenceExtensions,omitempty"`
-	KogitoEventsGrouping            bool   `yaml:"kogitoEventsGrouping,omitempty"`
-	KogitoEventsGroupingBinary      bool   `yaml:"KogitoEventsGroupingBinary,omitempty"`
-	KogitoEventsGroupingCompress    bool   `yaml:"KogitoEventsGroupingCompress,omitempty"`
+	DefaultPvcKanikoSize            string            `yaml:"defaultPvcKanikoSize,omitempty"`
+	HealthFailureThresholdDevMode   int32             `yaml:"healthFailureThresholdDevMode,omitempty"`
+	KanikoDefaultWarmerImageTag     string            `yaml:"kanikoDefaultWarmerImageTag,omitempty"`
+	KanikoExecutorImageTag          string            `yaml:"kanikoExecutorImageTag,omitempty"`
+	JobsServicePostgreSQLImageTag   string            `yaml:"jobsServicePostgreSQLImageTag,omitempty"`
+	JobsServiceEphemeralImageTag    string            `yaml:"jobsServiceEphemeralImageTag,omitempty"`
+	DataIndexPostgreSQLImageTag     string            `yaml:"dataIndexPostgreSQLImageTag,omitempty"`
+	DataIndexEphemeralImageTag      string            `yaml:"dataIndexEphemeralImageTag,omitempty"`
+	SonataFlowBaseBuilderImageTag   string            `yaml:"sonataFlowBaseBuilderImageTag,omitempty"`
+	SonataFlowDevModeImageTag       string            `yaml:"sonataFlowDevModeImageTag,omitempty"`
+	BuilderConfigMapName            string            `yaml:"builderConfigMapName,omitempty"`
+	PostgreSQLPersistenceExtensions []GroupArtifactId `yaml:"postgreSQLPersistenceExtensions,omitempty"`
+	KogitoEventsGrouping            bool              `yaml:"kogitoEventsGrouping,omitempty"`
+	KogitoEventsGroupingBinary      bool              `yaml:"KogitoEventsGroupingBinary,omitempty"`
+	KogitoEventsGroupingCompress    bool              `yaml:"KogitoEventsGroupingCompress,omitempty"`
 }
 
 // InitializeControllersCfg initializes the platform configuration for this instance.
