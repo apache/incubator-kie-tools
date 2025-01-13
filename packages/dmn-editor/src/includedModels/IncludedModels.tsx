@@ -612,6 +612,7 @@ function IncludedModelCard({
               shouldOpen={() => setRemovePopoverOpen(true)}
             >
               <div
+                className="kebabtoggle-wrapper"
                 onClick={(ev) => {
                   ev.stopPropagation();
                   ev.preventDefault();
