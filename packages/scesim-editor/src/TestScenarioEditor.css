@@ -22,8 +22,13 @@
 }
 
 .kie-scesim-editor--content {
-  padding-right: 50px;
-  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin-right: 50px;
+  overflow: hidden;
 }
 
 .kie-scesim-editor--content-alert {
