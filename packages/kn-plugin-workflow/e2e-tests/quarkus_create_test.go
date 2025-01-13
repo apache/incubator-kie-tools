@@ -50,8 +50,8 @@ var cfgTestInputQuarkusCreate_Success = []CfgTestInputQuarkusCreate{
 		ProjectName: "serverless-workflow-hello-world",
 		Extensions:  "quarkus-jsonp,quarkus-smallrye-openapi",
 		DependenciesVersion: metadata.DependenciesVersion{
-			QuarkusPlatformGroupId: "io.quarkus.platform",
-			QuarkusVersion:         "3.8.6",
+			QuarkusPlatformGroupId: quarkusDependencies.QuarkusPlatformGroupId,
+			QuarkusVersion:         quarkusDependencies.QuarkusVersion,
 		},
 	}},
 }
