@@ -49,7 +49,7 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
       if (currentHeight + yPos >= availableHeight) {
         overlayPanelContainer.current.style.height = availableHeight - BOTTOM_MARGIN + "px";
         overlayPanelContainer.current.style.overflowY = "auto";
-      } else {
+      } else if (overlayPanelContainer.current.style.height != "auto") {
         overlayPanelContainer.current.style.overflowY = "hidden";
         overlayPanelContainer.current.style.height = "auto";
       }
