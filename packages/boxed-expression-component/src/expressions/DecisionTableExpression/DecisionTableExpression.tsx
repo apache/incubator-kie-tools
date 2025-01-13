@@ -908,6 +908,7 @@ export function DecisionTableExpression({
                 const outputCopy = { ...outputColumn };
                 if (newOutputs.length === 1) {
                   outputCopy["@_name"] = undefined;
+                  outputCopy["@_typeRef"] = undefined;
                 }
                 return outputCopy;
               }),
