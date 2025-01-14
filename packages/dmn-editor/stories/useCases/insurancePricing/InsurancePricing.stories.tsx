@@ -51,7 +51,7 @@ export const insurancePricingDmn = `<?xml version="1.0" encoding="UTF-8" ?>
           <text>had previous incidents</text>
         </inputExpression>
       </input>
-      <output id="_4612AC80-6FB9-4329-8DA4-DEA3AE628F00" name="Output-1" />
+      <output id="_4612AC80-6FB9-4329-8DA4-DEA3AE628F00" />
       <annotation name="Annotations" />
       <rule id="_393C1693-9546-4694-A706-D01CA496F3F0">
         <inputEntry id="_689136DF-E9BE-4E80-98B1-10FF15C4DF12">

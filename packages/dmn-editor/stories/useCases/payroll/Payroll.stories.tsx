@@ -83,7 +83,7 @@ export const payrollDmn = `<?xml version="1.0" encoding="UTF-8" ?>
   </dmn:decisionService>
   <dmn:decision id="_C49CC255-F44C-4E4E-B5DD-C1F328B692D9" name="compute Payroll">
     <dmn:extensionElements />
-    <dmn:variable id="_CDD8D60D-065A-450B-80AF-8A4094EB5D9E" name="compute Payroll" typeRef="Any" />
+    <dmn:variable id="_CDD8D60D-065A-450B-80AF-8A4094EB5D9E" name="compute Payroll" typeRef="tPayroll" />
     <dmn:informationRequirement id="_C894CE79-758B-4185-A110-D76FDF9C9636">
       <dmn:requiredInput href="#_2F274241-3ABA-4777-9A0A-47D16BA06076" />
     </dmn:informationRequirement>
