@@ -100,7 +100,7 @@
 
     <!-- Plugins -->
     <version.jar.plugin>3.1.2</version.jar.plugin>
-    <version.surefire.plugin>3.3.0</version.surefire.plugin>
+    <version.surefire.plugin>3.5.0</version.surefire.plugin>
     <version.failsafe.plugin>${version.surefire.plugin}</version.failsafe.plugin>
     <version.buildhelper.plugin>3.0.0</version.buildhelper.plugin>
     <version.enforcer.plugin>3.5.0</version.enforcer.plugin>
