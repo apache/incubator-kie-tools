@@ -43,8 +43,12 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
     <!-- Plugins version -->
-    <!-- Before adding a new Plugin version, please check if the "apache" parent POM defines it -->
     <version.codehaus.flatten.plugin>1.6.0</version.codehaus.flatten.plugin>
+    <version.maven.compiler.plugin>3.13.0</version.maven.compiler.plugin>
+    <version.maven-jar-plugin>3.4.2</version.maven-jar-plugin>
+    <version.maven-remote-resources-plugin>3.2.0</version.maven-remote-resources-plugin>
+    <version.maven-site-plugin>3.12.1</version.maven-site-plugin>
+    <version.maven-surefire>3.5.0</version.maven-surefire>
 
     <!-- Config -->
     <maven.compiler.parameters>true</maven.compiler.parameters>
@@ -149,6 +153,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-site-plugin</artifactId>
+          <version>${version.maven.site.plugin}</version>
           <dependencies>
             <dependency>
               <groupId>org.apache.commons</groupId>
@@ -165,6 +170,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-remote-resources-plugin</artifactId>
+          <version>${version.maven.remote.resources.plugin}</version>
           <dependencies>
             <dependency>
               <groupId>org.apache.commons</groupId>
@@ -181,6 +187,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
+          <version>${version.maven.jar.plugin}</version>
           <dependencies>
             <dependency>
               <groupId>org.iq80.snappy</groupId>
@@ -192,6 +199,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
+          <version>${version.maven.surefire.plugin}</version>
           <dependencies>
             <dependency>
               <groupId>org.iq80.snappy</groupId>
@@ -223,6 +231,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>${version.maven.compiler.plugin}</version>
         <configuration>
           <parameters>${maven.compiler.parameters}</parameters>
         </configuration>
