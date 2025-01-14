@@ -32,6 +32,7 @@ import { InlineFeelNameInput, OnInlineFeelNameRenamed } from "../feel/InlineFeel
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { State } from "../store/Store";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { isStruct } from "./DataTypeSpec";
 
 export function DataTypeName({
   isReadOnly,
@@ -137,7 +138,7 @@ export function DataTypeName({
           />
           {!isEditingLabel && (
             <TypeRefLabel
-              typeRef={itemDefinition.typeRef?.__$$text ?? DmnBuiltInDataType.Undefined}
+              typeRef={isStruct(itemDefinition) ? "" : itemDefinition.typeRef?.__$$text ?? DmnBuiltInDataType.Undefined}
               isCollection={itemDefinition["@_isCollection"]}
               relativeToNamespace={relativeToNamespace}
             />

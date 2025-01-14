@@ -111,7 +111,7 @@
     <version.maven.artifact.plugin>3.5.3</version.maven.artifact.plugin>
 
     <!-- Apache KIE -->
-    <version.org.kie.kogito>999-20241208-SNAPSHOT</version.org.kie.kogito>
+    <version.org.kie.kogito>999-20250105-SNAPSHOT</version.org.kie.kogito>
 
     <!-- Quarkus -->
     <version.quarkus>3.8.6</version.quarkus>

@@ -22,6 +22,7 @@ package org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunn
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.bpmn2.Bpmn2Factory;
 import org.eclipse.bpmn2.ExtensionAttributeValue;
@@ -42,17 +43,12 @@ import org.kie.workbench.common.stunner.bpmn.definition.property.task.ScriptType
 import static org.jboss.drools.DroolsPackage.Literals.DOCUMENT_ROOT__ON_ENTRY_SCRIPT;
 import static org.jboss.drools.DroolsPackage.Literals.DOCUMENT_ROOT__ON_EXIT_SCRIPT;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.fromstunner.Factories.droolsFactory;
-import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.Scripts.LANGUAGE.DROOLS;
-import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.Scripts.LANGUAGE.FEEL;
 import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.Scripts.LANGUAGE.JAVA;
-import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.Scripts.LANGUAGE.JAVASCRIPT;
-import static org.kie.workbench.common.stunner.bpmn.client.marshall.converters.tostunner.properties.Scripts.LANGUAGE.MVEL;
 
 public class Scripts {
 
     public enum LANGUAGE {
         JAVA("java", "http://www.java.com/java"),
-        JAVASCRIPT("javascript", "http://www.javascript.com/javascript"),
         MVEL("mvel", "http://www.mvel.org/2.0"),
         DROOLS("drools", "http://www.jboss.org/drools/rule"),
         FEEL("feel", "http://www.omg.org/spec/FEEL/20140401");
@@ -116,19 +112,11 @@ public class Scripts {
             return defaultValue;
         }
 
-        if (JAVA.language().equals(language)) {
-            return JAVA.format();
-        } else if (MVEL.language().equals(language)) {
-            return MVEL.format();
-        } else if (JAVASCRIPT.language().equals(language)) {
-            return JAVASCRIPT.format();
-        } else if (DROOLS.language().equals(language)) {
-            return DROOLS.format();
-        } else if (FEEL.language().equals(language)) {
-            return FEEL.format();
-        } else {
-            return defaultValue;
-        }
+        return Stream.of(LANGUAGE.values())
+                .filter(lang -> lang.language().equals(language))
+                .findFirst()
+                .map(LANGUAGE::format)
+                .orElse(defaultValue);
     }
 
     public static String scriptLanguageFromUri(String format) {
@@ -140,19 +128,11 @@ public class Scripts {
             return defaultValue;
         }
 
-        if (JAVA.format().equals(format)) {
-            return JAVA.language();
-        } else if (MVEL.format().equals(format)) {
-            return MVEL.language();
-        } else if (JAVASCRIPT.format().equals(format)) {
-            return JAVASCRIPT.language();
-        } else if (DROOLS.format().equals(format)) {
-            return DROOLS.language();
-        } else if (FEEL.format().equals(format)) {
-            return FEEL.language();
-        } else {
-            return defaultValue;
-        }
+        return Stream.of(LANGUAGE.values())
+                .filter(lang -> lang.format().equals(format))
+                .findFirst()
+                .map(LANGUAGE::language)
+                .orElse(defaultValue);
     }
 
     public static ScriptTypeListValue onExit(List<ExtensionAttributeValue> extensions) {
