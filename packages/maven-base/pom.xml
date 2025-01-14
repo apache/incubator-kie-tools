@@ -106,9 +106,19 @@
     <maven.compiler.parameters>true</maven.compiler.parameters>
 
     <!-- Plugins version -->
-    <!-- Before adding a new Plugin version, please check if the "apache" parent POM defines it -->
     <version.codehaus.flatten.plugin>1.6.0</version.codehaus.flatten.plugin>
-    <version.maven.artifact.plugin>3.5.3</version.maven.artifact.plugin>
+    <version.maven-artifact.plugin>3.5.3</version.maven-artifact.plugin>
+    <version.maven-clean-plugin>3.4.0</version.maven-clean-plugin>
+    <version.maven-compiler-plugin>3.13.0</version.maven-compiler-plugin>
+    <version.maven-dependency-plugin>3.7.1</version.maven-dependency-plugin>
+    <version.maven-deploy-plugin>3.1.2</version.maven-deploy-plugin>
+    <version.maven-failsafe>${version.maven-surefire}</version.maven-failsafe>
+    <version.maven-help-plugin>3.4.1</version.maven-help-plugin>
+    <version.maven-install-plugin>3.1.2</version.maven-install-plugin>
+    <version.maven-jar-plugin>3.4.2</version.maven-jar-plugin>
+    <version.maven-remote-resources-plugin>3.2.0</version.maven-remote-resources-plugin>
+    <version.maven-source-plugin>3.3.1</version.maven-source-plugin>
+    <version.maven-surefire>${surefire.version}</version.maven-surefire>
 
     <!-- Apache KIE -->
     <version.org.kie.kogito>999-20250105-SNAPSHOT</version.org.kie.kogito>
@@ -260,7 +270,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-artifact-plugin</artifactId>
-          <version>${version.maven.artifact.plugin}</version>
+          <version>${version.maven-artifact.plugin}</version>
           <configuration>
             <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
             <!--
@@ -270,6 +280,61 @@
             <pluginIssues
             >${session.executionRootDirectory}/node_modules/@kie-tools/maven-base/not-reproducible-plugins.properties</pluginIssues>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>${version.maven-install-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${version.maven-deploy-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-help-plugin</artifactId>
+          <version>${version.maven-help-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>${version.maven-dependency-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${version.maven-compiler-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${version.maven-failsafe}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>${version.maven-clean-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${version.maven-surefire}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${version.maven-jar-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${version.maven-source-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-remote-resources-plugin</artifactId>
+          <version>${version.maven-remote-resources-plugin}</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -375,6 +440,7 @@
             <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-install-plugin</artifactId>
+              <version>${version.maven-install.plugin}</version>
               <configuration>
                 <skip>true</skip>
               </configuration>
