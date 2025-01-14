@@ -270,7 +270,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-artifact-plugin</artifactId>
-          <version>${version.maven-artifact.plugin}</version>
+          <version>${version.maven.artifact.plugin}</version>
           <configuration>
             <outputTimestamp>${project.build.outputTimestamp}</outputTimestamp>
             <!--
