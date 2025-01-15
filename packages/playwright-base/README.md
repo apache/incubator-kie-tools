@@ -22,7 +22,7 @@
 ### Build the image
 
 ```
-docker build -t kie-tools-playwright-container-image . -f Containerfile
+pnpm -F playwright-base build:image
 ```
 
 ---

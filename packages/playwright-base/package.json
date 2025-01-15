@@ -18,6 +18,8 @@
     "index.js"
   ],
   "scripts": {
+    "build:dev": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"docker build -t kie-tools-playwright-container-image:$(build-env root.version) . -f Containerfile\"",
+    "build:prod": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"docker build -t kie-tools-playwright-container-image:$(build-env root.version) . -f Containerfile\"",
     "install": "run-script-if --bool \"$(build-env playwrightBase.installDeps)\" --then \"pnpm playwright install --with-deps\""
   },
   "devDependencies": {
