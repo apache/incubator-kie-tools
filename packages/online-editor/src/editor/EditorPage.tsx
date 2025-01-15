@@ -475,11 +475,13 @@ Error details: ${err}`);
                   workspaceFile={file.workspaceFile}
                   isEditorReady={editor?.isReady}
                   dmnLanguageService={dmnLanguageService}
+                  dmnEditor={editor}
+                  isLegacyDmnEditor={settings.editors.useLegacyDmnEditor}
                 >
                   <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} />
                   <Divider />
                   <PageSection hasOverflowScroll={true} padding={{ default: "noPadding" }} aria-label="Editor section">
-                    <DmnRunnerDrawer editor={editor} isLegacyDmnEditor={settings.editors.useLegacyDmnEditor}>
+                    <DmnRunnerDrawer>
                       <EditorPageDockDrawer>
                         {embeddedEditorFile && (
                           <EmbeddedEditor

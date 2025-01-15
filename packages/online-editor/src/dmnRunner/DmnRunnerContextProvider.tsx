@@ -73,11 +73,14 @@ import {
 import { extractDifferencesFromArray } from "@kie-tools/dmn-runner/dist/results";
 import { openapiSchemaToJsonSchema } from "@openapi-contrib/openapi-schema-to-json-schema";
 import type { JSONSchema4 } from "json-schema";
+import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 
 interface Props {
   isEditorReady?: boolean;
   workspaceFile: WorkspaceFile;
   dmnLanguageService?: DmnLanguageService;
+  dmnEditor: EmbeddedEditorRef | undefined;
+  isLegacyDmnEditor: boolean;
 }
 
 const initialDmnRunnerProviderStates: DmnRunnerProviderState = {
@@ -162,6 +165,9 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   );
   const status = useMemo(() => (isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE), [isExpanded]);
   const dmnRunnerAjv = useMemo(() => new DmnRunnerAjv().getAjv(), []);
+
+  const dmnEditor = useMemo(() => props.dmnEditor, [props.dmnEditor]);
+  const isLegacyDmnEditor = useMemo(() => props.isLegacyDmnEditor, [props.isLegacyDmnEditor]);
 
   useLayoutEffect(() => {
     if (props.isEditorReady) {
@@ -708,6 +714,8 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       results,
       resultsDifference,
       status,
+      dmnEditor,
+      isLegacyDmnEditor,
     }),
     [
       canBeVisualized,
@@ -723,6 +731,8 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       results,
       resultsDifference,
       status,
+      dmnEditor,
+      isLegacyDmnEditor,
     ]
   );
 

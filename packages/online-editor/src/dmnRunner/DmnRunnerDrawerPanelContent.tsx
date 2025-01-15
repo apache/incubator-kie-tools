@@ -38,7 +38,6 @@ import { DmnRunnerLoading } from "./DmnRunnerLoading";
 import { DmnRunnerProviderActionType } from "./DmnRunnerTypes";
 import { PanelId, useEditorDockContext } from "../editor/EditorPageDockContextProvider";
 import { DmnRunnerExtendedServicesError } from "./DmnRunnerContextProvider";
-import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
 
@@ -56,10 +55,7 @@ interface DmnRunnerStylesConfig {
   buttonPosition: ButtonPosition;
 }
 
-export function DmnRunnerDrawerPanelContent(props: {
-  editor: EmbeddedEditorRef | undefined;
-  isLegacyDmnEditor: boolean;
-}) {
+export function DmnRunnerDrawerPanelContent() {
   // STATEs
   const [drawerError, setDrawerError] = useState<boolean>(false);
   const [dmnRunnerStylesConfig, setDmnRunnerStylesConfig] = useState<DmnRunnerStylesConfig>({
@@ -71,8 +67,17 @@ export function DmnRunnerDrawerPanelContent(props: {
   const [rowSelectionIsOpen, openRowSelection] = useState<boolean>(false);
 
   const { i18n, locale } = useOnlineI18n();
-  const { currentInputIndex, dmnRunnerKey, extendedServicesError, inputs, jsonSchema, results, resultsDifference } =
-    useDmnRunnerState();
+  const {
+    currentInputIndex,
+    dmnRunnerKey,
+    extendedServicesError,
+    inputs,
+    jsonSchema,
+    results,
+    resultsDifference,
+    dmnEditor,
+    isLegacyDmnEditor,
+  } = useDmnRunnerState();
   const { setDmnRunnerContextProviderState, onRowAdded, setDmnRunnerInputs, setDmnRunnerMode } = useDmnRunnerDispatch();
   const { notificationsPanel, onOpenPanel } = useEditorDockContext();
 
@@ -331,9 +336,9 @@ export function DmnRunnerDrawerPanelContent(props: {
                       notificationsPanel={true}
                       openExecutionTab={openExecutionTab}
                       openBoxedExpressionEditor={
-                        !props.isLegacyDmnEditor
+                        !isLegacyDmnEditor
                           ? (nodeId: string) => {
-                              const newDmnEditorEnvelopeApi = props.editor?.getEnvelopeServer()
+                              const newDmnEditorEnvelopeApi = dmnEditor?.getEnvelopeServer()
                                 .envelopeApi as unknown as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
                               newDmnEditorEnvelopeApi.notifications.dmnEditor_openBoxedExpressionEditor.send(nodeId);
                             }
