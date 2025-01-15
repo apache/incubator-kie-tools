@@ -67,7 +67,7 @@ export interface FormDmnOutputsProps {
   openBoxedExpressionEditor?: (nodeId: string) => void;
 }
 
-export function FormDmnOutputs({ openExecutionTab, ...props }: FormDmnOutputsProps) {
+export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ...props }: FormDmnOutputsProps) {
   const [formResultStatus, setFormResultStatus] = useState<FormDmnOutputsStatus>(FormDmnOutputsStatus.EMPTY);
   const [formResultError, setFormResultError] = useState<boolean>(false);
   const i18n = useMemo(() => {
@@ -251,6 +251,13 @@ export function FormDmnOutputs({ openExecutionTab, ...props }: FormDmnOutputsPro
     [i18n]
   );
 
+  const onOpenBoxedExpressionEditor = useCallback(
+    (nodeId: string) => {
+      return openBoxedExpressionEditor?.(nodeId);
+    },
+    [openBoxedExpressionEditor]
+  );
+
   const resultsToRender = useMemo(
     () =>
       props.results?.map((dmnFormResult, index) => (
@@ -264,13 +271,13 @@ export function FormDmnOutputs({ openExecutionTab, ...props }: FormDmnOutputsPro
             <CardTitle>
               <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
                 <Title headingLevel={"h2"}>{dmnFormResult.decisionName}</Title>
-                {props.openBoxedExpressionEditor !== undefined && (
+                {onOpenBoxedExpressionEditor !== undefined && (
                   <Button
                     variant={"plain"}
                     title={`Open ${dmnFormResult.decisionName} expression`}
                     icon={<ArrowUpIcon />}
                     data-navigate-to-expression-id={dmnFormResult.decisionId}
-                    onClick={() => props.openBoxedExpressionEditor?.(dmnFormResult.decisionId)}
+                    onClick={() => onOpenBoxedExpressionEditor?.(dmnFormResult.decisionId)}
                   />
                 )}
               </Flex>
@@ -280,7 +287,7 @@ export function FormDmnOutputs({ openExecutionTab, ...props }: FormDmnOutputsPro
           </Card>
         </div>
       )),
-    [onAnimationEnd, props.results, result, resultStatus]
+    [onAnimationEnd, onOpenBoxedExpressionEditor, props.results, result, resultStatus]
   );
 
   const formResultErrorMessage = useMemo(
