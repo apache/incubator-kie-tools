@@ -1,0 +1,36 @@
+openapi: 3.0.3
+info:
+  title: Example API
+  version: 1.0.0
+
+paths:
+  /orders:
+    get:
+      summary: Get a list of items
+      operationId: getOrders
+      responses:
+        "200":
+          description: List of orders
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrdersList"
+components:
+  schemas:
+    OrdersList:
+      type: object
+      properties:
+        orders:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key

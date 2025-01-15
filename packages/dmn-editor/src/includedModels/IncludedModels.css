@@ -20,3 +20,9 @@
 .kie-dmn-editor--selected-model-to-include-error {
   color: var(--pf-global--danger-color--100);
 }
+.kie-dmn-editor--model-card-kebabtoggle-wrapper {
+  color: grey;
+}
+.kie-dmn-editor--model-card-kebabtoggle-wrapper:hover {
+  color: black;
+}
