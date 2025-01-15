@@ -24,8 +24,7 @@
     "start:kie-sandbox": "webpack serve --host 0.0.0.0 --env dev",
     "start:kie-sandbox-accelerator-quarkus": "npm --prefix ./node_modules/@kie-tools/kie-sandbox-accelerator-quarkus run start",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose\"",
-    "test-e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then  \"pnpm rimraf ./dist-tests-e2e\" \"pnpm test-e2e:container\"",
-    "test-e2e:container": "run-script-if --bool \"true\" --then \"pnpm test-e2e:container:up\" \"pnpm test-e2e:container:run\" --else \"pnpm test-e2e:container:build\" \"pnpm test-e2e:container:up\" \"pnpm test-e2e:container:run\"",
+    "test-e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then  \"pnpm rimraf ./dist-tests-e2e\" \"pnpm test-e2e:run\" --else \"pnpm test-e2e:containerized:condition\"",
     "test-e2e:container:bash": "docker exec -it kie-tools-playwright-containerization-online-editor /bin/bash -c \"cd kie-tools/packages/online-editor && exec /bin/bash\"",
     "test-e2e:container:build": "cross-env KIE_TOOLS_BUILD__buildContainerImages=true pnpm -F playwright-base build:dev",
     "test-e2e:container:check": "run-script-os",
@@ -34,6 +33,8 @@
     "test-e2e:container:down": "cross-env PROJECT_VERSION=$(build-env root.version) docker compose -f ./tests-e2e/__containerization__/playwright-docker-compose.yml down",
     "test-e2e:container:run": "docker exec -it kie-tools-playwright-containerization-online-editor /bin/bash -c \"cd kie-tools/packages/online-editor && KIE_TOOLS_BUILD__runEndToEndTests=true pnpm test-e2e\"",
     "test-e2e:container:up": "cross-env PROJECT_VERSION=$(build-env root.version) docker compose -f ./tests-e2e/__containerization__/playwright-docker-compose.yml up -d",
+    "test-e2e:containerized": "run-script-if --bool \"true\" --then \"pnpm test-e2e:container:up\" \"pnpm test-e2e:container:run\" --else \"pnpm test-e2e:container:build\" \"pnpm test-e2e:container:up\" \"pnpm test-e2e:container:run\"",
+    "test-e2e:containerized:condition": "run-script-if --ignore-errors \"$(build-env containerizedEndToEndTests.ignoreFailures)\" --bool \"$(build-env containerizedEndToEndTests.run)\" --then  \"pnpm rimraf ./dist-tests-e2e\" \"pnpm test-e2e:containerized\"",
     "test-e2e:open": "pnpm exec playwright show-report dist-tests-e2e/reports",
     "test-e2e:run": "pnpm exec playwright test"
   },

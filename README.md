@@ -115,6 +115,10 @@ Bootstrapping installs the necessary dependencies for each package.
 
 > **ℹ️ NOTE**
 >
+> Ubuntu 22.04 is the only OS that nativelly supports running E2E tests. To run in another OSs please use the `export KIE_TOOLS_BUILD__runContainerizedEndToEndTests=true`.
+
+> **ℹ️ NOTE**
+>
 > Final artifacts will be in `{packages,examples}/*/dist` directories.
 
 ---
