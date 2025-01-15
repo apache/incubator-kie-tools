@@ -28,7 +28,6 @@
   bottom: 0;
   right: 0;
   margin-right: 50px;
-  overflow: hidden;
 }
 
 .kie-scesim-editor--content-alert {
@@ -37,16 +36,12 @@
 
 .kie-scesim-editor--content-tabs {
   height: 100%;
-  padding-top: 15px;
+  padding-top: 10px;
   padding-left: 15px;
 }
 
 .kie-scesim-editor--creation-form {
   margin-top: 50px;
-}
-
-.kie-scesim-editor--grid-container {
-  height: 100%;
 }
 
 .kie-scesim-editor--scenario-table-container {
