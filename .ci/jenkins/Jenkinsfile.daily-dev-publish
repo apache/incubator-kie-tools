@@ -559,10 +559,10 @@ pipeline {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.KOGITO_DB_MIGRATOR_TOOL__registry}",
-                        "${env.KOGITO_DB_MIGRATOR_TOOL__account}",
-                        "${env.KOGITO_DB_MIGRATOR_TOOL__name}",
-                        "${env.KOGITO_DB_MIGRATOR_TOOL__buildTag}",
+                        "${env.KOGITO_POSTGRESQL_DB_MIGRATOR_TOOL__registry}",
+                        "${env.KOGITO_POSTGRESQL_DB_MIGRATOR_TOOL__account}",
+                        "${env.KOGITO_POSTGRESQL_DB_MIGRATOR_TOOL__name}",
+                        "${env.KOGITO_POSTGRESQL_DB_MIGRATOR_TOOL__buildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
