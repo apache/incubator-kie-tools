@@ -1,4 +1,4 @@
-# kogito-db-migrator-tool
+# kogito-postgresql-db-migrator-tool
 src/main/resources/postgresql
 src/main/resources/ansi
 src/main/resources/h2

@@ -23,7 +23,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-t
   vars: varsWithName({}),
   get env() {
     return {
-      kogitoDBMigratorTool: {
+      kogitoDbMigratorTool: {
         version: require("../package.json").version,
       },
     };

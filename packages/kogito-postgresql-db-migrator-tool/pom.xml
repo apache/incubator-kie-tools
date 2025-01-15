@@ -31,7 +31,11 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito</groupId>
-  <artifactId>kogito-db-migrator-tool</artifactId>
+  <artifactId>kogito-postgresql-db-migrator-tool</artifactId>
+
+  <properties>
+    <version.jacoco.maven.plugin>0.8.12</version.jacoco.maven.plugin>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -101,6 +105,25 @@
             <arg>-parameters</arg>
           </compilerArgs>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version> ${version.jacoco.maven.plugin} </version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>

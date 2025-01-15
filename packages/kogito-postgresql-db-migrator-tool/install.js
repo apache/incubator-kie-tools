@@ -21,7 +21,7 @@ const { setupMavenConfigFile, buildTailFromPackageJsonDependencies } = require("
 
 setupMavenConfigFile(
   `
-    -Drevision=${env.kogitoDBMigratorTool.version}
+    -Drevision=${env.kogitoDbMigratorTool.version}
     -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
 `
 );

@@ -7403,7 +7403,7 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
-  packages/kogito-db-migrator-tool:
+  packages/kogito-postgresql-db-migrator-tool:
     dependencies:
       '@kie-tools/maven-base':
         specifier: workspace:*
@@ -7419,11 +7419,11 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
-  packages/kogito-db-migrator-tool-image:
+  packages/kogito-postgresql-db-migrator-tool-image:
     dependencies:
-      '@kie-tools/kogito-db-migrator-tool':
+      '@kie-tools/kogito-postgresql-db-migrator-tool':
         specifier: workspace:*
-        version: link:../kogito-db-migrator-tool
+        version: link:../kogito-postgresql-db-migrator-tool
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv

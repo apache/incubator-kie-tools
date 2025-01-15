@@ -50,7 +50,7 @@ let imageYaml = fs.readFileSync(originalYamlPath, "utf8");
 const imageUrl = `${env.kogitoDbMigratorToolImage.registry}/${env.kogitoDbMigratorToolImage.account}/${env.kogitoDbMigratorToolImage.name}`;
 
 // Replace the whole string between quotes ("") with the image name
-imageYaml = imageYaml.replace(/(?<=")(.*kie-kogito-db-migrator-tool.*)(?=")/gm, imageUrl);
+imageYaml = imageYaml.replace(/(?<=")(.*kie-kogito-postgresql-db-migrator-tool.*)(?=")/gm, imageUrl);
 
 // Write file and then rename it to match the image name
 fs.writeFileSync(originalYamlPath, imageYaml);

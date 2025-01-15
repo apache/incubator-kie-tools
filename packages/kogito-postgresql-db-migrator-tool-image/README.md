@@ -15,42 +15,20 @@
    under the License.
 -->
 
-# Kogito Postgres DB Migrator Tool Image
+# Kogito PostgreSQL DB Migrator Tool Image
 
-This package contains the `Containerfile/Dockerfile` and scripts to build a container image for Kogito Postgres DB Migrator Tool. Details about the Kogito Postgres DB Migrator Tool can be found [here](../kogito-db-migrator-tool/README.md)
+This package contains the `Containerfile/Dockerfile` and scripts to build a container image for Kogito PostgreSQL DB Migrator Tool. Details about the Kogito PostgreSQL DB Migrator Tool can be found [here](../kogito-postgresql-db-migrator-tool/README.md)
 
 ## Additional requirements
 
 - docker
-
-## Build
-
-_NOTE_: Before performing this step, be sure that the Kogito Postgres DB Migrator Tool jar has been built and available for inclusion in the image.
-
-- Enable the image to be built:
-
-  ```bash
-  export KIE_TOOLS_BUILD__buildContainerImages=true
-  ```
-
-Run the following in the root folder of the repository to build the package:
-
-```bash
-pnpm -F @kie-tools/kogito-db-migrator-tool-image... build:prod
-```
-
-- Then check if the image is correctly stored:
-
-  ```bash
-  docker images
-  ```
 
 ## Run
 
 - Start up a clean container with:
 
   ```bash
-    docker run docker.io/apache/incubator-kie-kogito-service-db-migration-postgresql:latest
+    docker run docker.io/apache/incubator-kie-kogito-service-db-migration-postgresql:main
   ```
 
 ## Customization
@@ -86,7 +64,7 @@ An example to use diverse environment variables
    --env QUARKUS_DATASOURCE_JOBSSERVICE_USERNAME=<jobs-service-db-user> \
    --env QUARKUS_DATASOURCE_JOBSSERVICE_PASSWORD=<jobs-service-db-password> \
    --env QUARKUS_FLYWAY_JOBSSERVICE_SCHEMAS=jobs-service \
-   docker.io/apache/incubator-kie-kogito-db-migrator-tool:main
+   docker.io/apache/incubator-kie-kogito-postgresql-db-migrator-tool:main
 ```
 
 ---

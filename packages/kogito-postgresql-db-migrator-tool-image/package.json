@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@kie-tools/kogito-db-migrator-tool-image",
+  "name": "@kie-tools/kogito-postgresql-db-migrator-tool-image",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
@@ -21,7 +21,7 @@
     "build:prod:linux": "pnpm build",
     "build:prod:win32:darwin": "echo \"Build skipped on Windows and MacOS\"",
     "copy-assets": "run-script-os",
-    "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/sonataflow-image-common/resources build && cp -R resources/* build && mkdir -p build/modules/kogito-postgres-db-migration-deps/quarkus-app && cp -R ./node_modules/@kie-tools/kogito-db-migrator-tool/target/quarkus-app/* build/modules/kogito-postgres-db-migration-deps/quarkus-app",
+    "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/sonataflow-image-common/resources build && cp -R resources/* build && mkdir -p build/modules/kogito-postgres-db-migration-deps/quarkus-app && cp -R ./node_modules/@kie-tools/kogito-postgresql-db-migrator-tool/target/quarkus-app/* build/modules/kogito-postgres-db-migration-deps/quarkus-app",
     "format": "prettier --write . --ignore-path=../../.prettierignore --ignore-path=../../.gitignore",
     "image:build": "run-script-os",
     "image:build:linux": "pnpm setup:env make -C ./build build",
@@ -31,7 +31,7 @@
     "venv-activate": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate"
   },
   "dependencies": {
-    "@kie-tools/kogito-db-migrator-tool": "workspace:*",
+    "@kie-tools/kogito-postgresql-db-migrator-tool": "workspace:*",
     "@kie-tools/python-venv": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/sonataflow-image-common": "workspace:*"

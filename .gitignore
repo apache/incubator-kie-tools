@@ -347,7 +347,5 @@ turbo.json
 packages/*/.idea
 examples/*/.idea
 
-# Jar files
-**/*.jar
 # Apache RAT check excludes file
 !.rat-excludes

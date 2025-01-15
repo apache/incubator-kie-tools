@@ -1,8 +1,8 @@
-# Kogito Postgres DB Migrator Tool
+# Kogito PostgreSQL DB Migrator Tool
 
 This is a Java, Quarkus-based PostgreSQL database migrator application for Data-Index and Jobs Service applications for use by SonataFlow Operator.
 
-_NOTE_: This postgres database migrator application and its corresponding images are only envisaged to be made use of by SonataFlow Operator, Data Index and Jobs Service internally. Conversely this application is of no use outside the usecases involved with SonataFlow Operator, Data Index and Jobs Service applications.
+_NOTE_: This PostgreSQL database migrator application and its corresponding images are only envisaged to be made use of by SonataFlow Operator, Data Index and Jobs Service internally. Conversely this application is of no use outside the usecases involved with SonataFlow Operator, Data Index and Jobs Service applications.
 
 ---
 
