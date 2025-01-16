@@ -15,16 +15,17 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# Use jammy due to compatibility with GHA ubuntu-latest
-FROM mcr.microsoft.com/playwright:v1.45.2-jammy
+# Using bookworm (debian 12) due to compatibility with GHA ubuntu-latest (Ubuntu 22.04)
+FROM node:20-bookworm
 
-WORKDIR /kie-tools-playwright
+# Set cache folder
+ENV PLAYWRIGHT_BROWSERS_PATH=/home/node/kie-tools-playwright/.cache/ms-playwright
 
-COPY package.container.json package.json
-
+# Installing `pnpm` to keep it consistent with the kie-tools repository
 RUN npm install --global pnpm@9.3.0
-RUN pnpm install
-RUN pnpm exec playwright install chrome chromium webkit
-RUN pnpm exec playwright install-deps
+RUN npx playwright@1.45.2 install-deps
+RUN npx playwright@1.45.2 install chrome chromium webkit
+
+WORKDIR /home/node/kie-tools-playwright
 
 ENTRYPOINT ["/bin/bash"]

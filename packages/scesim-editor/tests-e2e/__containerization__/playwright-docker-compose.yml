@@ -30,4 +30,4 @@ services:
     environment:
       - KIE_TOOLS_BUILD__runEndToEndTests=true
     volumes:
-      - ../../../../../kie-tools:/kie-tools-playwright/kie-tools/
+      - ../../../../../kie-tools:/home/node/kie-tools-playwright/kie-tools/

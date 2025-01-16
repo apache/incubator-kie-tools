@@ -20,8 +20,8 @@
     "test-e2e:container:check": "run-script-if --bool $([ $(docker image inspect kie-tools-playwright-container-image:$(build-env root.version)) > /dev/null 2>&1 ] && echo true || echo false) --then \"pnpm test-e2e:container:start\" --else \"pnpm test-e2e:container:build\" \"pnpm test-e2e:container:start\"",
     "test-e2e:container:down": "docker compose -f ./tests-e2e/__containerization__/playwright-docker-compose.yml down",
     "test-e2e:container:run": "docker exec -it kie-tools-playwright-containerization-scesim-editor /bin/bash -c \"cd kie-tools/packages/scesim-editor && pnpm test-e2e:run\"",
-    "test-e2e:container:shell": "pnpm start-server-and-test start http://localhost:$(build-env boxedExpressionComponent.storybook.port)/iframe.html pnpm test-e2e:container:up && pnpm test-e2e:container:run",
-    "test-e2e:container:start": "pnpm start-server-and-test start http://localhost:$(build-env boxedExpressionComponent.storybook.port)/iframe.html pnpm test-e2e:container:up && pnpm test-e2e:container:run",
+    "test-e2e:container:shell": "start-server-and-test 'pnpm start' http://$(build-env playwrightBase.host):$(build-env scesimEditor.storybook.port)/iframe.html 'pnpm test-e2e:container:up && pnpm test-e2e:container:bash'",
+    "test-e2e:container:start": "start-server-and-test 'pnpm start' http://$(build-env playwrightBase.host):$(build-env scesimEditor.storybook.port)/iframe.html 'pnpm test-e2e:container:up && pnpm test-e2e:container:run'",
     "test-e2e:container:up": "cross-env PROJECT_VERSION=$(build-env root.version) docker compose -f ./tests-e2e/__containerization__/playwright-docker-compose.yml up -d",
     "test-e2e:open": "pnpm exec playwright show-report dist-tests-e2e/reports",
     "test-e2e:run": "pnpm exec playwright test"
