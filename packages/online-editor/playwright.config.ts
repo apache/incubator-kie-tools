@@ -30,32 +30,32 @@ const customConfig = defineConfig({
   },
   use: {
     viewport: { width: 1600, height: 1200 },
-    baseURL: `http://localhost:${buildEnv.onlineEditor.dev.port}`,
+    baseURL: `http://${buildEnv.playwrightBase.host}:${buildEnv.onlineEditor.dev.port}`,
     ignoreHTTPSErrors: true,
   },
   /* Run your local dev server before starting the tests */
   webServer: [
     {
       command: "pnpm start:cors-proxy",
-      url: `http://localhost:${buildEnv.corsProxy.dev.port}/ping`,
+      url: `http://${buildEnv.playwrightBase.host}:${buildEnv.corsProxy.dev.port}/ping`,
       reuseExistingServer: !process.env.CI || true,
       stdout: "pipe",
     },
     {
       command: "pnpm start:extended-services",
-      url: `http://localhost:${buildEnv.extendedServicesJava.port}/ping`,
+      url: `http://${buildEnv.playwrightBase.host}:${buildEnv.extendedServicesJava.port}/ping`,
       reuseExistingServer: !process.env.CI || true,
       stdout: "pipe",
     },
     {
       command: "pnpm start:kie-sandbox-accelerator-quarkus",
-      url: `http://localhost:${buildEnv.kieSandboxAcceleratorQuarkus.dev.port}/git-repo-bare.git`,
+      url: `http://${buildEnv.playwrightBase.host}:${buildEnv.kieSandboxAcceleratorQuarkus.dev.port}/git-repo-bare.git`,
       reuseExistingServer: !process.env.CI || true,
       stdout: "pipe",
     },
     {
       command: "pnpm start:kie-sandbox",
-      url: `http://localhost:${buildEnv.onlineEditor.dev.port}`,
+      url: `http://${buildEnv.playwrightBase.host}:${buildEnv.onlineEditor.dev.port}`,
       reuseExistingServer: !process.env.CI || true,
       ignoreHTTPSErrors: true,
       timeout: 240000,

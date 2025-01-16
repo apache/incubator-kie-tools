@@ -26,13 +26,13 @@ const buildEnv: any = env; // build-env is not typed
 
 const customConfig = defineConfig({
   use: {
-    baseURL: `http://localhost:${buildEnv.scesimEditor.storybook.port}`,
+    baseURL: `http://${buildEnv.playwrightBase.host}:${buildEnv.scesimEditor.storybook.port}`,
   },
 
   /* Run your local dev server before starting the tests */
   webServer: {
     command: "pnpm start",
-    url: `http://localhost:${buildEnv.scesimEditor.storybook.port}/iframe.html?args=&id=misc-empty--empty&viewMode=story`,
+    url: `http://${buildEnv.playwrightBase.host}:${buildEnv.scesimEditor.storybook.port}/iframe.html?args=&id=misc-empty--empty&viewMode=story`,
     reuseExistingServer: !process.env.CI || true,
     stdout: "pipe",
     timeout: 180000,

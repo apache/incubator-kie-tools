@@ -99,7 +99,6 @@ module.exports = composeEnv([], {
       },
       containerizedEndToEndTests: {
         run: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__runContainerizedEndToEndTests)),
-        ignoreFailures: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__ignoreEndToEndTestFailures)),
       },
       linters: {
         run: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__runLinters)),

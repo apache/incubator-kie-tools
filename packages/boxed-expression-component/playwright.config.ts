@@ -26,12 +26,12 @@ const buildEnv: any = env; // build-env is not typed
 
 const customConfig = defineConfig({
   use: {
-    baseURL: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}`,
+    baseURL: `http://${buildEnv.playwrightBase.host}:${buildEnv.boxedExpressionComponent.storybook.port}`,
   },
   /* Run your local dev server before starting the tests */
   webServer: {
     command: "pnpm start",
-    url: `http://localhost:${buildEnv.boxedExpressionComponent.storybook.port}/iframe.html?id=misc-empty-boxed-expression--base`,
+    url: `http://${buildEnv.playwrightBase.host}:${buildEnv.boxedExpressionComponent.storybook.port}/iframe.html?id=misc-empty-boxed-expression--base`,
     reuseExistingServer: !process.env.CI || true,
     stdout: "pipe",
     timeout: 180000,

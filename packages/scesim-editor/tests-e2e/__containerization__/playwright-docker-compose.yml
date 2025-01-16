@@ -26,6 +26,7 @@ services:
     tty: true
     ipc: "host"
     network_mode: "host"
+    user: 1000:1000
     environment:
       - KIE_TOOLS_BUILD__runEndToEndTests=true
     volumes:
