@@ -251,7 +251,7 @@ pipeline {
                     export SERVERLESS_LOGIC_WEB_TOOLS__buildInfo="${env.VERSION} (daily-dev) @ ${env.GIT_COMMIT} (${env.BUILD_DATE})"
                     export MAVEN_OPTS=${MAVEN_OPTS}
                     echo "Running: pnpm -r --workspace-concurrency=1 build:prod"
-                    pnpm -r --workspace-concurrency=1 -F dev-deployment-kogito-quarkus-blank-app-image... build:prod
+                    pnpm -r --workspace-concurrency=1 build:prod
                     """.trim()
                 }
             }
