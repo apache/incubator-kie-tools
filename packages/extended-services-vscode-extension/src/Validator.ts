@@ -57,8 +57,8 @@ export async function validateBPMN(serviceURL: URL, bpmnFile: kieFile.KieFile): 
     );
     return createBPMNDiagnostics(validationResponses);
   } catch (error) {
-    console.error(`An error occured while trying to validate DMN file: ${bpmnFile} with error: ${error.message}`);
-    throw new Error(`An error occured while trying to validate DMN file: ${bpmnFile} with error: ${error.message}`);
+    console.error(`An error occured while trying to validate BPMN file: ${bpmnFile} with error: ${error.message}`);
+    throw new Error(`An error occured while trying to validate BPMN file: ${bpmnFile} with error: ${error.message}`);
   }
 }
 
