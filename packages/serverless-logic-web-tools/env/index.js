@@ -41,6 +41,14 @@ module.exports = composeEnv(
         default: version,
         description: "Version of the application",
       },
+      SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryOrg: {
+        default: "kiegroup",
+        description: "Org owner for `kiegroup/kie-samples` repository",
+      },
+      SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryName: {
+        default: "kie-samples",
+        description: "Repository name for `kiegroup/kie-samples` repository",
+      },
       SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef: {
         default: "main",
         description: "Tag/branch to fetch samples from `kiegroup/kie-samples` repository",
@@ -99,6 +107,8 @@ module.exports = composeEnv(
             tag: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag),
           },
           corsProxyUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl),
+          samplesRepositoryOrg: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryOrg),
+          samplesRepositoryName: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryName),
           samplesRepositoryRef: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef),
         },
       };
