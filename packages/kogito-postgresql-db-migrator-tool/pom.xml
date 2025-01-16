@@ -33,10 +33,6 @@
   <groupId>org.kie.kogito</groupId>
   <artifactId>kogito-postgresql-db-migrator-tool</artifactId>
 
-  <properties>
-    <version.jacoco.maven.plugin>0.8.12</version.jacoco.maven.plugin>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

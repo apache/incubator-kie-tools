@@ -140,6 +140,7 @@
     <version.org.mockito>4.11.0</version.org.mockito>
     <version.org.kie.j2cl.tools.yaml.mapper>0.4</version.org.kie.j2cl.tools.yaml.mapper>
     <version.j2cl.maven.plugin>0.23.0</version.j2cl.maven.plugin>
+    <version.jacoco.maven.plugin>0.8.12</version.jacoco.maven.plugin>
   </properties>
 
   <dependencyManagement>
