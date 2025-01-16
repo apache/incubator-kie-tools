@@ -186,17 +186,21 @@ export function DecisionTableOutputHeaderCell(props: {
       ) : (
         ""
       )}
-      <TypeRefField
-        alternativeFieldName={root?.output.length === 1 ? "Column Type" : undefined}
-        isReadOnly={cellMustHaveSameTypeAsRoot ? true : props.isReadOnly}
-        dmnEditorRootElementRef={dmnEditorRootElementRef}
-        typeRef={cellMustHaveSameTypeAsRoot ? root?.["@_typeRef"] : cell?.["@_typeRef"]}
-        onChange={(newTypeRef) =>
-          updater((dmnObject) => {
-            dmnObject["@_typeRef"] = newTypeRef;
-          })
-        }
-      />
+      {root?.output && root.output.length > 1 ? (
+        <TypeRefField
+          alternativeFieldName={root?.output.length === 1 ? "Column Type" : undefined}
+          isReadOnly={cellMustHaveSameTypeAsRoot ? true : props.isReadOnly}
+          dmnEditorRootElementRef={dmnEditorRootElementRef}
+          typeRef={cellMustHaveSameTypeAsRoot ? root?.["@_typeRef"] : cell?.["@_typeRef"]}
+          onChange={(newTypeRef) =>
+            updater((dmnObject) => {
+              dmnObject["@_typeRef"] = newTypeRef;
+            })
+          }
+        />
+      ) : (
+        ""
+      )}
       {itemDefinition && (
         <FormGroup label="Constraint">
           <ConstraintsFromTypeConstraintAttribute
