@@ -111,7 +111,7 @@ async function validate(extendedServicesURL: URL) {
 
   for (const bpmnFile of bpmnFiles) {
     try {
-      console.debug(`[Extended Services Extension] Validating DMN file: ${bpmnFile.uri.path}`);
+      console.debug(`[Extended Services Extension] Validating BPMN file: ${bpmnFile.uri.path}`);
       const bpmnDiagnostics: vscode.Diagnostic[] = await validator.validateBPMN(extendedServicesURL, bpmnFile);
       diagnosticCollection.set(bpmnFile.uri, bpmnDiagnostics);
     } catch (error) {
