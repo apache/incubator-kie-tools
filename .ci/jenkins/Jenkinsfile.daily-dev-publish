@@ -125,11 +125,6 @@ pipeline {
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTag = "${params.BRANCH_NAME}"
         SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl = 'https://daily-dev-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud'
 
-        KOGITO_TASK_CONSOLE__registry = 'docker.io'
-        KOGITO_TASK_CONSOLE__account = 'apache'
-        KOGITO_TASK_CONSOLE__name = 'incubator-kie-kogito-task-console'
-        KOGITO_TASK_CONSOLE__buildTag = "${params.BRANCH_NAME}"
-
         KOGITO_MANAGEMENT_CONSOLE__registry = 'docker.io'
         KOGITO_MANAGEMENT_CONSOLE__account = 'apache'
         KOGITO_MANAGEMENT_CONSOLE__name = 'incubator-kie-kogito-management-console'
@@ -522,21 +517,6 @@ pipeline {
                         "${env.DASHBUILDER__viewerImageAccount}",
                         "${env.DASHBUILDER__viewerImageName}",
                         "${env.DASHBUILDER__viewerImageBuildTag}",
-                        "${pipelineVars.dockerHubUserCredentialsId}",
-                        "${pipelineVars.dockerHubTokenCredentialsId}"
-                    )
-                }
-            }
-        }
-
-        stage('Push kogito-task-console to Docker Hub') {
-            steps {
-                script {
-                    dockerUtils.pushImageToRegistry(
-                        "${env.KOGITO_TASK_CONSOLE__registry}",
-                        "${env.KOGITO_TASK_CONSOLE__account}",
-                        "${env.KOGITO_TASK_CONSOLE__name}",
-                        "${env.KOGITO_TASK_CONSOLE__buildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
