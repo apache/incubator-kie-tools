@@ -19,6 +19,7 @@
 
 services:
   playwright:
+    platform: linux/amd64
     container_name: kie-tools-playwright-containerization-dmn-editor
     image: kie-tools-playwright-container-image:${PROJECT_VERSION}
     entrypoint: ["/bin/bash"]
