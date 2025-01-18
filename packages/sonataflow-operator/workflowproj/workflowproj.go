@@ -303,24 +303,25 @@ func (w *workflowProjectHandler) parseRawSecretProperties() error {
 	w.project.SecretProperties = CreateNewSecretPropsConfigMap(w.project.Workflow)
 	w.project.SecretProperties.StringData = map[string]string{}
 	for key, value := range secrets.Map() {
-		normalizedEnvName, err := normalizeEnvName(key)
+		normalizedEnvNames, err := normalizeEnvNames(key)
 		if err != nil {
 			return err
 		}
-
-		w.project.SecretProperties.StringData[key] = value
-		env := corev1.EnvVar{
-			Name: normalizedEnvName,
-			ValueFrom: &corev1.EnvVarSource{
-				SecretKeyRef: &corev1.SecretKeySelector{
-					LocalObjectReference: corev1.LocalObjectReference{
-						Name: w.project.SecretProperties.Name,
+		for _, normalizedEnvName := range normalizedEnvNames {
+			w.project.SecretProperties.StringData[key] = value
+			env := corev1.EnvVar{
+				Name: normalizedEnvName,
+				ValueFrom: &corev1.EnvVarSource{
+					SecretKeyRef: &corev1.SecretKeySelector{
+						LocalObjectReference: corev1.LocalObjectReference{
+							Name: w.project.SecretProperties.Name,
+						},
+						Key: key,
 					},
-					Key: key,
 				},
-			},
+			}
+			w.project.Workflow.Spec.PodTemplate.Container.Env = append(w.project.Workflow.Spec.PodTemplate.Container.Env, env)
 		}
-		w.project.Workflow.Spec.PodTemplate.Container.Env = append(w.project.Workflow.Spec.PodTemplate.Container.Env, env)
 	}
 
 	if err = SetTypeToObject(w.project.SecretProperties, w.scheme); err != nil {
@@ -407,16 +408,55 @@ func isProfile(workflow *operatorapi.SonataFlow, profileType metadata.ProfileTyp
 	return metadata.ProfileType(profile) == profileType
 }
 
-func normalizeEnvName(name string) (string, error) {
+var envProfilesExpr = regexp.MustCompile(`^%([A-Za-z0-9_-]+(?:,[A-Za-z0-9_-]+)*)\.(.+)$`)
+
+func normalizeEnvNames(names string) ([]string, error) {
+	matches := envProfilesExpr.FindStringSubmatch(names)
+	if matches == nil {
+		if normalized, err := normalizeEnvName(names); err != nil {
+			return nil, err
+		} else {
+			return []string{normalized}, nil
+		}
+	} else {
+		profiles := strings.Split(matches[1], ",")
+		propertyKey := matches[2]
+		var result []string
+		for _, profile := range profiles {
+			normalized, err := normalizeEnvName("%" + profile + "_" + propertyKey)
+			if err != nil {
+				return nil, err
+			}
+			result = append(result, normalized)
+		}
+		return result, nil
+	}
+}
+
+func normalizeEnvName(original string) (string, error) {
+	name := original
 	name = strings.TrimSpace(name)
 
-	replacer := strings.NewReplacer(" ", "_", "-", "_", ".", "_")
+	replacer := strings.NewReplacer(
+		" ", "_",
+		"-", "_",
+		".", "_",
+		"\"", "_",
+		"'", "_",
+		"[", "_",
+		"]", "_",
+		"%", "_",
+	)
 	name = replacer.Replace(name)
 	name = strings.ToUpper(name)
 
+	if strings.HasSuffix(name, "_") {
+		name = name[:len(name)-1]
+	}
+
 	validName := regexp.MustCompile(`^[A-Z0-9_]+$`)
-	if !validName.MatchString(name) || name == "_" {
-		return "", fmt.Errorf("invalid environment variable name: %s (must only contain A-Z, 0-9, and _)", name)
+	if !validName.MatchString(name) {
+		return "", fmt.Errorf("invalid environment variable name: %s (must only contain A-Z, 0-9, and _)", original)
 	}
 
 	return name, nil

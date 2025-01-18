@@ -166,12 +166,15 @@ func Test_Handler_WorkflowMinimalAndSecrets(t *testing.T) {
 
 	for k, v := range secrets.Map() {
 		assert.Equal(t, v, proj.SecretProperties.StringData[k])
-		normalized, err := normalizeEnvName(k)
-		assert.NoError(t, err)
-		env, exists := envs[normalized]
-		assert.True(t, exists)
-		assert.Equal(t, k, env.key)
-		assert.Equal(t, proj.SecretProperties.Name, env.secretKeyRefName)
+		normalized, err := normalizeEnvNames(k)
+		for _, value := range normalized {
+			assert.NoError(t, err)
+			env, exists := envs[value]
+			assert.True(t, exists)
+			assert.Equal(t, k, env.key)
+			assert.Equal(t, proj.SecretProperties.Name, env.secretKeyRefName)
+		}
+
 	}
 }
 
@@ -286,41 +289,57 @@ func TestWorkflowProjectHandler_Image(t *testing.T) {
 func TestNormalizeEnvName(t *testing.T) {
 	type testCase struct {
 		input    string
-		expected string
+		expected []string
 		error    bool
 	}
 	tests := []testCase{
-		{"my-env", "MY_ENV", false},
-		{"my.env.1", "MY_ENV_1", false},
-		{"my.env-1", "MY_ENV_1", false},
-		{"my-env.1", "MY_ENV_1", false},
-		{"my-env-1$", "", true},
-		{"my-env-1&&", "", true},
-		{"", "", true},
-		{"$%&*", "", true},
-		{"a", "A", false},
-		{"1", "1", false},
-		{"_", "", true},
-		{"my env", "MY_ENV", false},
-		{"  my env  ", "MY_ENV", false},
-		{"-", "", true},
-		{".", "", true},
-		{"my-env-1234567890-long-name-with-dashes", "MY_ENV_1234567890_LONG_NAME_WITH_DASHES", false},
-		{"long-name-with-invalid-characters-@#$%^", "", true},
-		{"my-env-1@name", "", true},
-		{"A", "A", false},
-		{"a1_b2", "A1_B2", false},
-		{"a!!@#$b", "", true},
+		{"my-env", []string{"MY_ENV"}, false},
+		{"my.env.1", []string{"MY_ENV_1"}, false},
+		{"my.env-1", []string{"MY_ENV_1"}, false},
+		{"my-env.1", []string{"MY_ENV_1"}, false},
+		{"my-env-1$", []string{""}, true},
+		{"my-env-1&&", []string{""}, true},
+		{"", []string{""}, true},
+		{"$%&*", []string{""}, true},
+		{"a", []string{"A"}, false},
+		{"1", []string{"1"}, false},
+		{"_", []string{""}, true},
+		{"my env", []string{"MY_ENV"}, false},
+		{"  my env  ", []string{"MY_ENV"}, false},
+		{"-", []string{""}, true},
+		{".", []string{""}, true},
+		{"my-env-1234567890-long-name-with-dashes", []string{"MY_ENV_1234567890_LONG_NAME_WITH_DASHES"}, false},
+		{"long-name-with-invalid-characters-@#$%^", []string{""}, true},
+		{"my-env-1@name", []string{""}, true},
+		{"A", []string{"A"}, false},
+		{"a1_b2", []string{"A1_B2"}, false},
+		{"a!!@#$b", []string{""}, true},
+		{"foo.\"bar\".baz", []string{"FOO__BAR__BAZ"}, false},
+		{"quarkus.'my-property'.foo", []string{"QUARKUS__MY_PROPERTY__FOO"}, false},
+		{"myProperty[10]", []string{"MYPROPERTY_10"}, false},
+		{"my.config[0].value", []string{"MY_CONFIG_0__VALUE"}, false},
+		{"quarkus.\"myProperty\"[0].value", []string{"QUARKUS__MYPROPERTY__0__VALUE"}, false},
+		{"quarkus.\"my-property\"[1].sub-name", []string{"QUARKUS__MY_PROPERTY__1__SUB_NAME"}, false},
+		{"quarkus.myProperty..sub.value", []string{"QUARKUS_MYPROPERTY__SUB_VALUE"}, false},
+		{"quarkus.[strange].key", []string{"QUARKUS__STRANGE__KEY"}, false},
+		{"quarkus.datasource.\"datasource-name\".jdbc.url", []string{"QUARKUS_DATASOURCE__DATASOURCE_NAME__JDBC_URL"}, false},
+		{"%dev.quarkus.http.port", []string{"_DEV_QUARKUS_HTTP_PORT"}, false},
+		{"%staging.quarkus.http.test-port", []string{"_STAGING_QUARKUS_HTTP_TEST_PORT"}, false},
+		{"%prod,dev.my.prop", []string{"_PROD_MY_PROP", "_DEV_MY_PROP"}, false},
+		{"%prod,dev.quarkus.datasource.\"datasource-name\".jdbc.url", []string{"_PROD_QUARKUS_DATASOURCE__DATASOURCE_NAME__JDBC_URL",
+			"_DEV_QUARKUS_DATASOURCE__DATASOURCE_NAME__JDBC_URL"}, false},
 	}
 
 	for _, test := range tests {
 		t.Run(test.input, func(t *testing.T) {
-			actual, err := normalizeEnvName(test.input)
+			actual, err := normalizeEnvNames(test.input)
 			if test.error {
 				assert.Error(t, err)
 			} else {
 				assert.NoError(t, err)
-				assert.Equal(t, test.expected, actual)
+				for index, expected := range test.expected {
+					assert.Equal(t, expected, actual[index])
+				}
 			}
 		})
 	}
