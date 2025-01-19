@@ -19,8 +19,7 @@ package com.ait.lienzo.tools.client.collection;
 import elemental2.core.JsIterable;
 import elemental2.core.JsIteratorIterable;
 import elemental2.core.JsMap;
-import elemental2.core.JsMap.EntriesJsIteratorIterableTypeParameterArrayUnionType;
-import elemental2.core.JsMap.JsIterableTypeParameterArrayUnionType;
+import elemental2.core.ReadonlyMap;
 import jsinterop.annotations.JsOverlay;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsType;
@@ -32,7 +31,7 @@ import jsinterop.annotations.JsType;
  */
 
 @JsType(isNative = true, name = "Map", namespace = JsPackage.GLOBAL)
-public final class NFastStringMap<V> implements JsIterable<JsIterableTypeParameterArrayUnionType<String, V>[]> {
+public final class NFastStringMap<V> implements JsIterable<ReadonlyMap.JsIterableTypeParameterArrayUnionType<String, V>[]> {
 
     public NFastStringMap() {
     }
@@ -109,7 +108,7 @@ public final class NFastStringMap<V> implements JsIterable<JsIterableTypeParamet
     public native boolean delete(String key);
 
     public native JsIteratorIterable<
-            EntriesJsIteratorIterableTypeParameterArrayUnionType<String, V>[]>
+            ReadonlyMap.EntriesJsIteratorIterableTypeParameterArrayUnionType<String, V>[]>
     entries();
 
     public native Object forEach(
