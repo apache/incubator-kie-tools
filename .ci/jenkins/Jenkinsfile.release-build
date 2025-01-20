@@ -35,7 +35,7 @@ pipeline {
         string(description: 'Base Ref', name: 'BASE_REF')
         string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Upload asset url', name: 'UPLOAD_ASSET_URL', defaultValue: '')
-        string(description: 'Runners', name: 'RUNNERS', defaultValue: '{"chrome_extensions":"false","cors_proxy_image":"false","dashbuilder_viewer_image":"false","dev_deployment_base_image":"false","dev_deployment_dmn_form_webapp_image":"false","dev_deployment_kogito_quakus_blank_app_image":"false","dev_deployment_upload_service":"false","extended_services":"false","jbpm_quarkus_devui":"false","kie_sandbox_extended_services_image":"false","kie_sandbox_helm_chart":"false","kie_sandbox_image":"false","kn_plugin_workflow":"false","kogito_task_console":"false","kogito_management_console":"false","kogito_swf_builder":"false","kogito_swf_devmode":"false","kogito_serverless_operator":"false","npm_packages":"false","online_editor":"false","runtime_tools_consoles_helm_chart": "false","serverless_logic_web_tools":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","standalone_editors_cdn":"false","sonataflow_quarkus_devui":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false"}')
+        string(description: 'Runners', name: 'RUNNERS', defaultValue: '{"chrome_extensions":"false","cors_proxy_image":"false","dashbuilder_viewer_image":"false","dev_deployment_base_image":"false","dev_deployment_dmn_form_webapp_image":"false","dev_deployment_kogito_quakus_blank_app_image":"false","dev_deployment_upload_service":"false","extended_services":"false","jbpm_quarkus_devui":"false","kie_sandbox_extended_services_image":"false","kie_sandbox_helm_chart":"false","kie_sandbox_image":"false","kn_plugin_workflow":"false","kogito_management_console":"false","kogito_swf_builder":"false","kogito_swf_devmode":"false","kogito_serverless_operator":"false","npm_packages":"false","online_editor":"false","runtime_tools_consoles_helm_chart": "false","serverless_logic_web_tools":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","standalone_editors_cdn":"false","sonataflow_quarkus_devui":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false"}')
         string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
@@ -53,7 +53,6 @@ pipeline {
         SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE_JOB_RESULT = 'SKIPPED'
         SERVERLESS_LOGIC_WEB_TOOLS_SWF_DEV_MODE_IMAGE_JOB_RESULT = 'SKIPPED'
         DASHBUILDER_VIEWER_IMAGE_JOB_RESULT = 'SKIPPED'
-        KOGITO_TASK_CONSOLE_JOB_RESULT = 'SKIPPED'
         KOGITO_MANAGEMENT_CONSOLE_JOB_RESULT = 'SKIPPED'
         KOGITO_SWF_BUILDER_JOB_RESULT = 'SKIPPED'
         KOGITO_SWF_DEVMODE_JOB_RESULT = 'SKIPPED'
@@ -449,7 +448,6 @@ def setRunners() {
     env.DASHBUILDER_VIEWER_IMAGE = runners.dashbuilder_viewer_image
     env.KN_PLUGIN_WORKFLOW = runners.kn_plugin_workflow
     env.KIE_SANDBOX_HELM_CHART = runners.kie_sandbox_helm_chart
-    env.KOGITO_TASK_CONSOLE = runners.kogito_task_console
     env.KOGITO_MANAGEMENT_CONSOLE = runners.kogito_management_console
     env.KOGITO_SWF_BUILDER = runners.kogito_swf_builder
     env.KOGITO_SWF_DEVMODE = runners.kogito_swf_devmode
@@ -483,7 +481,6 @@ def printRunners() {
     echo "dashbuilder_viewer_image: ${env.DASHBUILDER_VIEWER_IMAGE}"
     echo "kn_plugin_workflow: ${env.KN_PLUGIN_WORKFLOW}"
     echo "kie_sandbox_helm_chart: ${env.KIE_SANDBOX_HELM_CHART}"
-    echo "kogito_task_console: ${env.KOGITO_TASK_CONSOLE}"
     echo "kogito_management_console: ${env.KOGITO_MANAGEMENT_CONSOLE}"
     echo "kogito_swf_builder: ${env.KOGITO_SWF_BUILDER}"
     echo "kogito_swf_devmode: ${env.KOGITO_SWF_DEVMODE}"
