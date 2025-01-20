@@ -100,22 +100,17 @@
 
     <!-- Plugins -->
     <version.jar.plugin>3.1.2</version.jar.plugin>
-    <version.org.apache.maven.plugins.dependency>3.3.0</version.org.apache.maven.plugins.dependency>
-    <version.surefire.plugin>2.22.2</version.surefire.plugin>
+    <version.surefire.plugin>3.5.0</version.surefire.plugin>
     <version.failsafe.plugin>${version.surefire.plugin}</version.failsafe.plugin>
     <version.buildhelper.plugin>3.0.0</version.buildhelper.plugin>
-    <version.surefire.plugin>3.2.5</version.surefire.plugin>
-    <version.enforcer.plugin>3.0.0-M3</version.enforcer.plugin>
-    <version.clean.plugin>3.1.0</version.clean.plugin>
-    <version.compiler.plugin>3.12.1</version.compiler.plugin>
-    <version.resources.plugin>3.2.0</version.resources.plugin>
-    <version.war.plugin>3.2.3</version.war.plugin>
-    <version.checkstyle.plugin>3.1.1</version.checkstyle.plugin>
-    <version.install.plugin>2.5.2</version.install.plugin>
-    <version.site.plugin>3.8.2</version.site.plugin>
+    <version.enforcer.plugin>3.5.0</version.enforcer.plugin>
+    <version.clean.plugin>3.4.0</version.clean.plugin>
+    <version.compiler.plugin>3.13.0</version.compiler.plugin>
+    <version.resources.plugin>3.3.1</version.resources.plugin>
+    <version.war.plugin>3.4.0</version.war.plugin>
+    <version.checkstyle.plugin>3.4.0</version.checkstyle.plugin>
     <version.antrun.plugin>1.8</version.antrun.plugin>
     <version.exec-maven-plugin>3.0.0</version.exec-maven-plugin>
-    <version.org.maven.dependency.plugin>3.1.2</version.org.maven.dependency.plugin>
     <!-- Properties from DROOLS-WB parent POM -->
     <!-- TODO: Enable these flags after fixing all checkstyle issues -->
     <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
