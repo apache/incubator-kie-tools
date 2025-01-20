@@ -154,7 +154,7 @@ pipeline {
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
-        MAVEN_ARGS = "-Dmaven.repo.local=${WORKSPACE}/.maven"
+        MAVEN_ARGS = "-Dmaven.repo.local=${WORKSPACE}/.maven -Dstyle.color=never"
     }
 
     stages {
@@ -608,8 +608,7 @@ pipeline {
                         configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsNightlyConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
                             sh """#!/bin/bash -el
                             export KIE_TOOLS_BUILD__mavenDeploySkip=false
-                            pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
-                            pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Drevision=999-SNAPSHOT >> .mvn/maven.config'
+                            export MAVEN_ARGS=\"${MAVEN_ARGS} --settings=${MAVEN_SETTINGS_FILE} -Drevision=999-SNAPSHOT\"
                             pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... build:prod
                             """.trim()
                         }
