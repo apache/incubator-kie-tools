@@ -396,7 +396,7 @@ export const TestScenarioEditorInternal = ({
   console.trace("[TestScenarioEditorInternal] File Status: " + TestScenarioFileStatus[scesimFileStatus]);
 
   return (
-    <div ref={testScenarioEditorRootElementRef}>
+    <div ref={testScenarioEditorRootElementRef} data-testid="kie-tools--scesim-editor--container">
       {(() => {
         switch (scesimFileStatus) {
           case TestScenarioFileStatus.EMPTY:
