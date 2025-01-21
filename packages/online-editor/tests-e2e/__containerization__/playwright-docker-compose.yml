@@ -48,7 +48,6 @@ services:
       - source: nginx-dev-config
         target: /etc/nginx/nginx.conf
 
-  # The nginx reverse-proxy is used to forward `host.docker.internal` requests to `localhost.
   nginx-cors-proxy:
     image: nginx:latest
     container_name: kie-tools-playwright-containerization-online-editor-nginx-cors-proxy
@@ -58,7 +57,6 @@ services:
       - source: nginx-cors-proxy-config
         target: /etc/nginx/nginx.conf
 
-  # The nginx reverse-proxy is used to forward `host.docker.internal` requests to `localhost.
   nginx-extended-services:
     image: nginx:latest
     container_name: kie-tools-playwright-containerization-online-editor-nginx-extended-services
@@ -68,7 +66,6 @@ services:
       - source: nginx-extended-services-config
         target: /etc/nginx/nginx.conf
 
-  # The nginx reverse-proxy is used to forward `host.docker.internal` requests to `localhost.
   nginx-quarkus-accelerator:
     image: nginx:latest
     container_name: kie-tools-playwright-containerization-online-editor-nginx-quarkus-accelerator
