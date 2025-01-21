@@ -43,11 +43,16 @@ if [ ! -z "${QUARKUS_EXTENSIONS}" ]; then
     offline_param=""
 fi
 
-"${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
+CMD="\"${MAVEN_HOME}\"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
     ${offline_param} \
-    -s "${MAVEN_SETTINGS_PATH}" \
+    -s \"${MAVEN_SETTINGS_PATH}\" \
     -DskipTests \
     -Dquarkus.http.host=0.0.0.0 \
     -Dquarkus.test.continuous-testing=${QUARKUS_CONTINUOUS_TESTING:-disabled} \
-    -Dquarkus.analytics.disabled=${QUARKUS_ANALYTICS_DISABLED:true} \
-    clean compile quarkus:dev
+    -Dquarkus.analytics.disabled=${QUARKUS_ANALYTICS_DISABLED:-true} \
+    clean compile quarkus:dev"
+
+# Prints the command before executing for troubleshooting purposes
+log_info "Running application start mvn command"
+echo "$CMD"
+eval "$CMD"

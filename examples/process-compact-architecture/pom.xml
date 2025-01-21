@@ -1,0 +1,207 @@
+<?xml version="1.0" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~ 
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~ 
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.      
+-->
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.kie</groupId>
+    <artifactId>kie-tools-maven-base</artifactId>
+    <version>${revision}</version>
+    <relativePath>./node_modules/@kie-tools/maven-base/pom.xml</relativePath>
+  </parent>
+
+  <artifactId>process-compact-architecture</artifactId>
+  <version>${revision}</version>
+
+  <name>KIE Tools :: Example :: Process Compact Architecture</name>
+
+  <properties>
+    <kogito.management-console.image
+    >docker.io/apache/incubator-kie-kogito-management-console:main</kogito.management-console.image>
+    <kogito.task-console.image>docker.io/apache/incubator-kie-kogito-task-console:main</kogito.task-console.image>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy-jackson</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-openapi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-health</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-with-drools-quarkus</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-process-management</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kogito-addons-quarkus-jobs-management</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-process-svg</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-source-files</artifactId>
+    </dependency>
+
+    <!-- Persistence -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-jdbc-postgresql</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-agroal</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-persistence-jdbc</artifactId>
+    </dependency>
+
+    <!-- Data-Index Addon -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kogito-addons-quarkus-data-index-jpa</artifactId>
+    </dependency>
+
+    <!-- Jobs Service -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kogito-addons-quarkus-jobs</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>jobs-service-storage-jpa</artifactId>
+    </dependency>
+
+    <!-- Data Audit -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kogito-addons-quarkus-data-audit-jpa</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kogito-addons-quarkus-data-audit</artifactId>
+    </dependency>
+
+    <!-- User Task persistence -->
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-addons-quarkus-usertask-storage-jpa</artifactId>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>container</id>
+      <properties>
+        <quarkus.profile>container</quarkus.profile>
+      </properties>
+      <dependencies>
+        <dependency>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-container-image-jib</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>development</id>
+      <properties>
+        <quarkus.profile>dev</quarkus.profile>
+      </properties>
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-quarkus-devui-bom</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
+      <dependencies>
+        <dependency>
+          <groupId>org.jbpm</groupId>
+          <artifactId>jbpm-quarkus-devui</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-jdbc-h2</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
+  <build>
+    <finalName>${project.artifactId}</finalName>
+    <plugins>
+      <plugin>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>build</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <copy todir="./docker-compose/svg" overwrite="true">
+                  <fileset dir="target/classes/META-INF/processSVG/" />
+                </copy>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

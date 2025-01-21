@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common/k8sclient"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/spf13/afero"
 	"github.com/stretchr/testify/assert"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -34,6 +35,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -46,6 +48,8 @@ type testDeploy struct {
 }
 
 const defaultPath = "./target/kubernetes"
+
+var quarkusDependencies = metadata.ResolveQuarkusDependencies()
 
 var testRunDeploy = []testDeploy{
 	{input: DeployCmdConfig{Path: defaultPath}, expected: true, knative: "knative.yml", kogito: "kogito-default.yml"},
@@ -175,8 +179,20 @@ func prepareFolderAndFiles(t *testing.T, test testDeploy) {
 		test.input.Path = defaultPath
 	}
 	common.CreateFolderStructure(t, test.input.Path)
-	common.CopyFileInFolderStructure(t, test.input.Path, test.knative, "knative.yml")
+	knativeFixQuarkusVersionAndWriteToTestFolder(t, test)
 	common.CopyFileInFolderStructure(t, test.input.Path, test.kogito, "kogito.yml")
+}
+
+func knativeFixQuarkusVersionAndWriteToTestFolder(t *testing.T, test testDeploy) {
+	knativeBytes, err := os.ReadFile(filepath.Join("testdata", "knative.yml"))
+	if err != nil {
+		t.Errorf("❌ ERROR: Failed to read Knative file: %v", err)
+	}
+	knativeWithQuarkusVersion := strings.ReplaceAll(string(knativeBytes), "QUARKUS_VERSION", quarkusDependencies.QuarkusVersion)
+
+	if err := afero.WriteFile(common.FS, filepath.Join(test.input.Path, "knative.yml"), []byte(knativeWithQuarkusVersion), 0644); err != nil {
+		t.Errorf("Error writing to file: %s", filepath.Join(test.input.Path, "knative.yml"))
+	}
 }
 
 func checkObjectCreated(obj unstructured.Unstructured, namespace string) (bool, error) {

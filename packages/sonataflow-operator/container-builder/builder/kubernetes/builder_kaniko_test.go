@@ -41,7 +41,7 @@ func TestNewBuildWithKanikoCustomizations(t *testing.T) {
 	ns := "test"
 	c := test.NewFakeClient()
 
-	dockerFile, err := os.ReadFile("testdata/Dockerfile")
+	dockerFile, err := os.ReadFile("testdata/sample.Dockerfile")
 	assert.NoError(t, err)
 
 	workflowDefinition, err := os.ReadFile("testdata/greetings.sw.json")
@@ -68,7 +68,7 @@ func TestNewBuildWithKanikoCustomizations(t *testing.T) {
 	addFlags[0] = "--use-new-run=true"
 
 	// create the new build, schedule with cache enabled, a specific set of resources and additional flags
-	build, err := NewBuild(ContainerBuilderInfo{FinalImageName: "docker.io/apache/incubator-kie-buildexample:latest", BuildUniqueName: "build1", Platform: platform}).
+	build, err := NewBuild(ContainerBuilderInfo{FinalImageName: "host/namespace/myservice:latest", BuildUniqueName: "build1", Platform: platform}).
 		AddResource("Dockerfile", dockerFile).
 		AddResource("greetings.sw.json", workflowDefinition).
 		WithClient(c).
@@ -116,7 +116,7 @@ func TestNewBuildWithKanikoWithBuildArgsAndEnv(t *testing.T) {
 	ns := "test"
 	c := test.NewFakeClient()
 
-	dockerFile, err := os.ReadFile("testdata/Dockerfile")
+	dockerFile, err := os.ReadFile("testdata/sample.Dockerfile")
 	assert.NoError(t, err)
 
 	workflowDefinition, err := os.ReadFile("testdata/greetings.sw.json")
@@ -134,7 +134,7 @@ func TestNewBuildWithKanikoWithBuildArgsAndEnv(t *testing.T) {
 		},
 	}
 
-	build, err := NewBuild(ContainerBuilderInfo{FinalImageName: "docker.io/apache/incubator-kie-buildexample:latest", BuildUniqueName: "build1", Platform: platform}).
+	build, err := NewBuild(ContainerBuilderInfo{FinalImageName: "host/namespace/service:latest", BuildUniqueName: "build1", Platform: platform}).
 		AddResource("Dockerfile", dockerFile).
 		AddResource("greetings.sw.json", workflowDefinition).
 		WithClient(c).
@@ -151,6 +151,7 @@ func TestNewBuildWithKanikoWithBuildArgsAndEnv(t *testing.T) {
 			Value: "value",
 		}}).
 		Schedule()
+	assert.NoError(t, err)
 
 	// reconcile twice to push forward to the pod creation
 	build, err = FromBuild(build).WithClient(c).Reconcile()

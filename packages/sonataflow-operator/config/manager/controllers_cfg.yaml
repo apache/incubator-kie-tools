@@ -25,11 +25,11 @@ kanikoDefaultWarmerImageTag: gcr.io/kaniko-project/warmer:v1.9.0
 # Default image used internally by the Operator Managed Kaniko builder to create the executor pods
 kanikoExecutorImageTag: gcr.io/kaniko-project/executor:v1.9.0
 # The Jobs Service image to use, if empty the operator will use the default Apache Community one based on the current operator's version
-jobsServicePostgreSQLImageTag: ""
-jobsServiceEphemeralImageTag: ""
+jobsServicePostgreSQLImageTag: "docker.io/apache/incubator-kie-kogito-jobs-service-postgresql:main"
+jobsServiceEphemeralImageTag: "docker.io/apache/incubator-kie-kogito-jobs-service-ephemeral:main"
 # The Data Index image to use, if empty the operator will use the default Apache Community one based on the current operator's version
-dataIndexPostgreSQLImageTag: ""
-dataIndexEphemeralImageTag: ""
+dataIndexPostgreSQLImageTag: "docker.io/apache/incubator-kie-kogito-data-index-postgresql:main"
+dataIndexEphemeralImageTag: "docker.io/apache/incubator-kie-kogito-data-index-ephemeral:main"
 # SonataFlow base builder image used in the internal Dockerfile to build workflow applications in preview profile
 # Order of precedence is:
 # 1. SonataFlowPlatform in the given namespace
@@ -37,9 +37,26 @@ dataIndexEphemeralImageTag: ""
 # 3. The FROM in the Dockerfile in the operator's namespace "sonataflow-operator-builder-config" configMap.
 # If 1 or 2, the FROM tag will be replaced by the tag se there.
 # If empty the operator will use the default Apache Community one based on the current operator's version.
-sonataFlowBaseBuilderImageTag: ""
+sonataFlowBaseBuilderImageTag: "docker.io/apache/incubator-kie-sonataflow-builder:main"
 # The image to use to deploy SonataFlow workflow images in devmode profile.
 # If empty the operator will use the default Apache Community one based on the current operator's version.
-sonataFlowDevModeImageTag: ""
+sonataFlowDevModeImageTag: "docker.io/apache/incubator-kie-sonataflow-devmode:main"
 # The default name of the builder configMap in the operator's namespace
 builderConfigMapName: "sonataflow-operator-builder-config"
+# Quarkus extensions required for workflows persistence. These extensions are used by the SonataFlow build system,
+# in cases where the workflow being built has configured postgresql persistence.
+postgreSQLPersistenceExtensions:
+  - groupId: io.quarkus
+    artifactId: quarkus-jdbc-postgresql
+  - groupId: io.quarkus
+    artifactId: quarkus-agroal
+  - groupId: org.kie
+    artifactId: kie-addons-quarkus-persistence-jdbc
+# If true, the workflow deployments will be configured to send accumulated workflow status change events to the Data
+# Index Service reducing the number of produced events. Set to false to send individual events.
+kogitoEventsGrouping: true
+# If true, the accumulated workflow status change events will be sent in binary mode. (reduces the evens size)
+kogitoEventsGroupingBinary: true
+# If true, the accumulated workflow status change events, when sent in binary mode, will be gzipped at the cost of
+# some performance.
+kogitoEventsGroupingCompress: false

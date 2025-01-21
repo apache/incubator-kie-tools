@@ -181,6 +181,7 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
           expressionHolderTypeRef={props?.expressionHolderTypeRef ?? args?.expressionHolderTypeRef}
           expression={expressionState}
           onExpressionChange={onExpressionChange}
+          evaluationHitsCountById={props?.evaluationHitsCountById ?? args?.evaluationHitsCountById}
           onWidthsChange={onWidthsChange}
           dataTypes={props?.dataTypes ?? args?.dataTypes ?? dataTypes}
           scrollableParentRef={props?.scrollableParentRef ?? args?.scrollableParentRef ?? emptyRef}

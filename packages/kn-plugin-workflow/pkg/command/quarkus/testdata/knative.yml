@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   annotations:
-    app.quarkus.io/quarkus-version: 3.8.6
+    app.quarkus.io/quarkus-version: QUARKUS_VERSION
     app.quarkus.io/build-timestamp: 2024-08-22 - 21:01:20 +0000
   labels:
     app.kubernetes.io/version: 1.0.0-SNAPSHOT
@@ -14,7 +14,7 @@ apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   annotations:
-    app.quarkus.io/quarkus-version: 3.8.6
+    app.quarkus.io/quarkus-version: QUARKUS_VERSION
     app.quarkus.io/build-timestamp: 2024-08-22 - 21:01:20 +0000
   labels:
     app.kubernetes.io/version: 1.0.0-SNAPSHOT

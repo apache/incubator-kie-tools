@@ -91,6 +91,8 @@ import {
   isIdentifierReferencedInSomeExpression,
   RefactorConfirmationDialog,
 } from "../refactor/RefactorConfirmationDialog";
+import { EvaluationHighlightsBadge } from "../evaluationHighlights/EvaluationHighlightsBadge";
+
 export function BoxedExpressionScreen({ container }: { container: React.RefObject<HTMLElement> }) {
   const { externalModelsByNamespace } = useExternalModels();
 
@@ -475,23 +477,26 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
             </Flex>
           </FlexItem>
 
-          <aside
-            className={"kie-dmn-editor--properties-panel-toggle"}
-            style={{ visibility: isPropertiesPanelOpen ? "hidden" : undefined }}
-          >
-            <button
-              className={"kie-dmn-editor--properties-panel-toggle-button"}
-              title={"Properties panel"}
-              onClick={() => {
-                dmnEditorStoreApi.setState((state) => {
-                  state.boxedExpressionEditor.propertiesPanel.isOpen =
-                    !state.boxedExpressionEditor.propertiesPanel.isOpen;
-                });
-              }}
+          <Flex>
+            <EvaluationHighlightsBadge />
+            <aside
+              className={"kie-dmn-editor--properties-panel-toggle"}
+              style={{ visibility: isPropertiesPanelOpen ? "hidden" : undefined }}
             >
-              <InfoIcon size={"sm"} />
-            </button>
-          </aside>
+              <button
+                className={"kie-dmn-editor--properties-panel-toggle-button"}
+                title={"Properties panel"}
+                onClick={() => {
+                  dmnEditorStoreApi.setState((state) => {
+                    state.boxedExpressionEditor.propertiesPanel.isOpen =
+                      !state.boxedExpressionEditor.propertiesPanel.isOpen;
+                  });
+                }}
+              >
+                <InfoIcon size={"sm"} />
+              </button>
+            </aside>
+          </Flex>
         </Flex>
         <RefactorConfirmationDialog
           onConfirmExpressionRefactor={onConfirmExpressionRefactor}
@@ -505,6 +510,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
             setNewExpression(undefined);
           }}
         />
+
         <div style={{ flexGrow: 1 }}>
           <BoxedExpressionEditor
             beeGwtService={beeGwtService}

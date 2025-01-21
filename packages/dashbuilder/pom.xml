@@ -100,46 +100,17 @@
 
     <!-- Plugins -->
     <version.jar.plugin>3.1.2</version.jar.plugin>
-    <version.org.apache.maven.plugins.dependency>3.3.0</version.org.apache.maven.plugins.dependency>
-    <version.surefire.plugin>2.22.2</version.surefire.plugin>
+    <version.surefire.plugin>3.5.0</version.surefire.plugin>
     <version.failsafe.plugin>${version.surefire.plugin}</version.failsafe.plugin>
     <version.buildhelper.plugin>3.0.0</version.buildhelper.plugin>
-    <version.surefire.plugin>3.2.5</version.surefire.plugin>
-    <version.enforcer.plugin>3.0.0-M3</version.enforcer.plugin>
-    <version.clean.plugin>3.1.0</version.clean.plugin>
-    <version.compiler.plugin>3.12.1</version.compiler.plugin>
-    <version.resources.plugin>3.2.0</version.resources.plugin>
-    <version.war.plugin>3.2.3</version.war.plugin>
-    <version.checkstyle.plugin>3.1.1</version.checkstyle.plugin>
-    <version.install.plugin>2.5.2</version.install.plugin>
-    <version.site.plugin>3.8.2</version.site.plugin>
+    <version.enforcer.plugin>3.5.0</version.enforcer.plugin>
+    <version.clean.plugin>3.4.0</version.clean.plugin>
+    <version.compiler.plugin>3.13.0</version.compiler.plugin>
+    <version.resources.plugin>3.3.1</version.resources.plugin>
+    <version.war.plugin>3.4.0</version.war.plugin>
+    <version.checkstyle.plugin>3.4.0</version.checkstyle.plugin>
     <version.antrun.plugin>1.8</version.antrun.plugin>
     <version.exec-maven-plugin>3.0.0</version.exec-maven-plugin>
-    <version.org.maven.dependency.plugin>3.1.2</version.org.maven.dependency.plugin>
-    <checkstyle.header.extensions>java</checkstyle.header.extensions>
-    <checkstyle.header.template
-    ><![CDATA[
-^\/\*$\n^
-\* Licensed to the Apache Software Foundation \(ASF\) under one$\n^
-\* or more contributor license agreements\.  See the NOTICE file$\n^
-\* distributed with this work for additional information$\n^
-\* regarding copyright ownership\.  The ASF licenses this file$\n^
-\* to you under the Apache License, Version 2\.0 \(the$\n^
-\* &quot;License&quot;\); you may not use this file except in compliance$\n^
-\* with the License\.  You may obtain a copy of the License at$\n^
-\*$\n^
-\*   http:\/\/www\.apache\.org\/licenses\/LICENSE-2\.0$\n^
-\*$\n^
-\* Unless required by applicable law or agreed to in writing,$\n^
-\* software distributed under the License is distributed on an$\n^
-\* &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY$\n^
-\* KIND, either express or implied\.  See the License for the$\n^
-\* specific language governing permissions and limitations$\n^
-\* under the License\.$\n^
-\*\/$
-]]>
-    </checkstyle.header.template>
-
     <!-- Properties from DROOLS-WB parent POM -->
     <!-- TODO: Enable these flags after fixing all checkstyle issues -->
     <checkstyle.failOnViolation>true</checkstyle.failOnViolation>
@@ -1190,10 +1161,6 @@
                       />
                     </module>
                     <module name="EqualsHashCode" />
-                  </module>
-                  <module name="RegexpHeader">
-                    <property name="header" value="${checkstyle.header.template}" />
-                    <property name="fileExtensions" value="${checkstyle.header.extensions}" />
                   </module>
                 </module>
               </checkstyleRules>

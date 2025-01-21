@@ -17,7 +17,7 @@
 # under the License.
 #
 @docker.io/apache/incubator-kie-kogito-data-index-ephemeral
-Feature: Kogito-data-index ephemeral postgresql feature.
+Feature: Kogito-data-index ephemeral feature.
 
   Scenario: verify if all labels are correctly set on kogito-data-index-ephemeral image
     Given image is built
@@ -27,16 +27,16 @@ Feature: Kogito-data-index ephemeral postgresql feature.
       And the image should contain label io.k8s.display-name with value Kogito Data Index Service - ephemeral PostgreSQL
       And the image should contain label io.openshift.tags with value kogito,data-index,data-index-ephemeral
 
-  Scenario: verify if of kogito-data-index-ephemeral container is correctly started
+  Scenario: verify if kogito-data-index-ephemeral container is correctly started
     When container is started with env
       | variable       | value  |
-      | SCRIPT_DEBUG   | true   |
-    Then container log should contain -Djava.library.path=/home/kogito/lib -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar /home/kogito/bin/quarkus-app/quarkus-run.jar
+      | SCRIPT_DEBUG   | false  |
+    Then container log should match regex exec java.*-Djava\.library\.path="/home/kogito/lib" -Dquarkus\.http\.host=0\.0\.0\.0 -Dquarkus\.http\.port=8080 -jar "/home/kogito/bin/quarkus-app/quarkus-run\.jar"
     And container log should contain Embedded Postgres started at port
     And container log should not contain Application failed to start
 
   Scenario: check if the default quarkus profile is correctly set on data index
     When container is started with env
       | variable               | value   |
-      | SCRIPT_DEBUG           | true    |
+      | SCRIPT_DEBUG           | false    |
     Then available container log should contain -Dquarkus.profile=http-events-support

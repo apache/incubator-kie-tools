@@ -20,7 +20,7 @@ schema_version: 1
 
 name: "docker.io/apache/incubator-kie-kogito-jobs-service-postgresql"
 version: "main"
-from: "registry.access.redhat.com/ubi8/openjdk-17-runtime:1.20"
+from: "registry.access.redhat.com/ubi8/openjdk-17-runtime:1.21"
 description: "Runtime image for Kogito Jobs Service based on Postgresql"
 
 labels:
@@ -51,6 +51,7 @@ modules:
   install:
     - name: org.kie.kogito.system.user
     - name: org.kie.kogito.logging
+    - name: org.kie.kogito.project.versions
     - name: org.kie.kogito.dynamic.resources
     - name: org.kie.kogito.launch.scripts
     - name: org.kie.kogito.jobs.service.postgresql

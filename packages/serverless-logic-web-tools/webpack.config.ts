@@ -110,6 +110,8 @@ export default async (webpackEnv: any, webpackArgv: any) => {
             WEBPACK_REPLACE__devModeImageFullUrl: `${swfDevModeImageRegistry}/${swfDevModeImageAccount}/${swfDevModeImageName}:${swfDevModeImageTag}`,
             WEBPACK_REPLACE__dashbuilderViewerImageFullUrl: `${dashbuilderViewerImageRegistry}/${dashbuilderViewerImageAccount}/${dashbuilderViewerImageName}:${dashbuilderViewerImageTag}`,
             WEBPACK_REPLACE__corsProxyUrl: buildEnv.serverlessLogicWebTools.corsProxyUrl,
+            WEBPACK_REPLACE__samplesRepositoryOrg: buildEnv.serverlessLogicWebTools.samplesRepositoryOrg,
+            WEBPACK_REPLACE__samplesRepositoryName: buildEnv.serverlessLogicWebTools.samplesRepositoryName,
             WEBPACK_REPLACE__samplesRepositoryRef: buildEnv.serverlessLogicWebTools.samplesRepositoryRef,
           }),
           new CopyPlugin({

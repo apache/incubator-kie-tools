@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.5
 
 ARG DDUS_FILESERVER_IP=""
 ARG DDUS_VERSION="0.0.0"

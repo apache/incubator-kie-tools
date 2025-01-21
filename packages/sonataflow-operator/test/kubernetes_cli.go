@@ -21,7 +21,15 @@ package test
 
 import (
 	"context"
+
 	"testing"
+
+	prometheus "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
+	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
+	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
+	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
 
 	buildv1 "github.com/openshift/api/build/v1"
 	imgv1 "github.com/openshift/api/image/v1"
@@ -29,6 +37,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -43,22 +52,64 @@ func NewFakeRecorder() record.EventRecorder {
 	return record.NewFakeRecorder(10)
 }
 
+type SonataFlowClientBuilder struct {
+	innerBuilder *fake.ClientBuilder
+}
+
+// Build from the underlying fake.ClientBuilder.
+// To overwrite this method we need to forward all the functions from the
+// base implementation since they do not use an interface.
+func (s *SonataFlowClientBuilder) Build() ctrl.WithWatch {
+	cli := s.innerBuilder.Build()
+	utils.SetClient(cli)
+	return cli
+}
+
+func (s *SonataFlowClientBuilder) WithRuntimeObjects(initRuntimeObjs ...runtime.Object) *SonataFlowClientBuilder {
+	_ = s.innerBuilder.WithRuntimeObjects(initRuntimeObjs...)
+	return s
+}
+
+func (s *SonataFlowClientBuilder) WithStatusSubresource(o ...ctrl.Object) *SonataFlowClientBuilder {
+	_ = s.innerBuilder.WithStatusSubresource(o...)
+	return s
+}
+
 // NewSonataFlowClientBuilder creates a new fake.ClientBuilder with the right scheme references
-func NewSonataFlowClientBuilder() *fake.ClientBuilder {
+func NewSonataFlowClientBuilder() *SonataFlowClientBuilder {
 	s := scheme.Scheme
 	utilruntime.Must(operatorapi.AddToScheme(s))
-	return fake.NewClientBuilder().WithScheme(s)
+	builder := fake.NewClientBuilder().WithScheme(s)
+	return &SonataFlowClientBuilder{
+		innerBuilder: builder,
+	}
+}
+
+func NewSonataFlowClientBuilderWithKnative() *SonataFlowClientBuilder {
+	s := scheme.Scheme
+	utilruntime.Must(operatorapi.AddToScheme(s))
+	utilruntime.Must(servingv1.AddToScheme(s))
+	builder := fake.NewClientBuilder().WithScheme(s)
+	return &SonataFlowClientBuilder{
+		innerBuilder: builder,
+	}
 }
 
 // NewKogitoClientBuilderWithOpenShift creates a new fake client with OpenShift schemas.
 // If your object is not present, just add in the list below.
-func NewKogitoClientBuilderWithOpenShift() *fake.ClientBuilder {
+func NewKogitoClientBuilderWithOpenShift() *SonataFlowClientBuilder {
 	s := scheme.Scheme
 	utilruntime.Must(routev1.Install(s))
 	utilruntime.Must(buildv1.Install(s))
 	utilruntime.Must(imgv1.Install(s))
 	utilruntime.Must(operatorapi.AddToScheme(s))
-	return fake.NewClientBuilder().WithScheme(s)
+	utilruntime.Must(eventingv1.AddToScheme(s))
+	utilruntime.Must(sourcesv1.AddToScheme(s))
+	utilruntime.Must(prometheus.AddToScheme(s))
+	builder := fake.NewClientBuilder().WithScheme(s)
+	return &SonataFlowClientBuilder{
+		innerBuilder: builder,
+	}
 }
 
 func MustGetDeployment(t *testing.T, client ctrl.WithWatch, workflow *operatorapi.SonataFlow) *appsv1.Deployment {

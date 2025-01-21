@@ -234,7 +234,7 @@ export function useDeployDropdownItems(props: Props) {
           return;
         }
         uploadToDevModeSuccessAlert.close();
-        devModeReadyAlert.show({ routeUrl: devMode.endpoints!.base, filePaths: result.uploadedPaths });
+        devModeReadyAlert.show({ routeUrl: devMode.endpoints!.swfDevUi, filePaths: result.uploadedPaths });
         window.clearInterval(fetchDevModeDeploymentTask);
       }, FETCH_DEV_MODE_DEPLOYMENT_POLLING_TIME);
     } else {

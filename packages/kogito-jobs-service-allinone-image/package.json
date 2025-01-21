@@ -30,7 +30,7 @@
     "mvn-build-app": "run-script-os",
     "mvn-build-app:linux:darwin": "mvn -am package -Dquarkus.package.type=fast-jar -Dquarkus.container-image.build=false -B -f ./resources/app/pom.xml",
     "mvn-build-app:win32": "echo \"Build skipped on Windows\"",
-    "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env kogitoJobsServiceAllInOneImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env kogitoJobsServiceAllInOneImage.account) KOGITO_IMAGE_NAME=$(build-env kogitoJobsServiceAllInOneImage.name) KOGITO_IMAGE_TAG=$(build-env kogitoJobsServiceAllInOneImage.buildTag) QUARKUS_PLATFORM_VERSION=$(build-env versions.quarkus) KOGITO_VERSION=$(build-env versions.kogito)"
+    "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env kogitoJobsServiceAllInOneImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env kogitoJobsServiceAllInOneImage.account) KOGITO_IMAGE_NAME=$(build-env kogitoJobsServiceAllInOneImage.name) KOGITO_IMAGE_TAG=$(build-env kogitoJobsServiceAllInOneImage.buildTag) QUARKUS_PLATFORM_GROUPID=$(build-env kogitoImagesCekitModules.quarkusGroupId) QUARKUS_PLATFORM_VERSION=$(build-env versions.quarkus) KOGITO_VERSION=$(build-env versions.kogito)"
   },
   "devDependencies": {
     "@kie-tools/maven-base": "workspace:*",

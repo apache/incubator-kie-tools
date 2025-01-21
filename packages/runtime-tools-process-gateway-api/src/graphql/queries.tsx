@@ -370,6 +370,7 @@ export const GET_JOBS_WITH_FILTERS = gql`
       retries
       lastUpdate
       endpoint
+      nodeInstanceId
       executionCounter
     }
   }
@@ -396,6 +397,15 @@ export const GET_PROCESS_INSTANCE_SVG = gql`
   query getProcessInstanceSVG($processId: String) {
     ProcessInstances(where: { id: { equal: $processId } }) {
       diagram
+    }
+  }
+`;
+
+export const GET_PROCESS_DEFINITIONS = gql`
+  query getProcessDefinitions {
+    ProcessDefinitions {
+      id
+      endpoint
     }
   }
 `;

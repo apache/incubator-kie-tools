@@ -43,6 +43,7 @@ export interface DmnFontStyle {
   family?: string;
   size?: number;
   color: string;
+  fill: string;
 }
 
 export interface Color {
@@ -169,6 +170,7 @@ export function getDmnFontStyle(args: {
     family: args.isEnabled ? args.dmnStyle?.["@_fontFamily"] : undefined,
     size: args.isEnabled ? args.dmnStyle?.["@_fontSize"] : undefined,
     color: fontColor,
+    fill: fontColor,
   };
 }
 
@@ -189,6 +191,7 @@ export function getFontCssProperties(dmnFontStyle?: DmnFontStyle): React.CSSProp
     textDecoration,
     fontSize: dmnFontStyle?.size ?? "16px",
     color: dmnFontStyle?.color ?? "black",
+    fill: dmnFontStyle?.fill ?? "black",
     lineHeight: "1.5em", // This needs to be em `em` otherwise `@visx/text` breaks when generating the SVG.
   };
 }

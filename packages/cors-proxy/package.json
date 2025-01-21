@@ -21,14 +21,14 @@
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "run-script-os",
-    "start:darwin:linux": "pnpm build:dev && cross-env CORS_PROXY_HTTP_PORT=$(build-env corsProxy.dev.port) CORS_PROXY_ORIGIN=$(build-env corsProxy.dev.origin) CORS_PROXY_VERBOSE=$(build-env corsProxy.dev.verbose) node dist/index.js",
-    "start:win32": "pnpm build:dev && pnpm powershell \"cross-env CORS_PROXY_HTTP_PORT=$(build-env corsProxy.dev.port) CORS_PROXY_ORIGIN=$(build-env corsProxy.dev.origin) CORS_PROXY_VERBOSE=$(build-env corsProxy.dev.verbose) node dist/index.js\"",
+    "start:darwin:linux": "pnpm build:dev && cross-env CORS_PROXY_USE_HTTP_FOR_HOSTS=$(build-env corsProxy.dev.useHttpForHosts) CORS_PROXY_HTTP_PORT=$(build-env corsProxy.dev.port) CORS_PROXY_ORIGIN=$(build-env corsProxy.dev.origin) CORS_PROXY_VERBOSE=$(build-env corsProxy.dev.verbose) node dist/index.js",
+    "start:win32": "pnpm build:dev && pnpm powershell \"cross-env CORS_PROXY_USE_HTTP_FOR_HOSTS=$(build-env corsProxy.dev.useHttpForHosts) CORS_PROXY_HTTP_PORT=$(build-env corsProxy.dev.port) CORS_PROXY_ORIGIN=$(build-env corsProxy.dev.origin) CORS_PROXY_VERBOSE=$(build-env corsProxy.dev.verbose) node dist/index.js\"",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.1",
-    "node-fetch": "^3.3.1"
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

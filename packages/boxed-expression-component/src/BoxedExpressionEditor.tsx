@@ -59,6 +59,7 @@ export interface BoxedExpressionEditorProps {
   isReadOnly?: boolean;
   /** PMML models available to use on Boxed PMML Function */
   pmmlDocuments?: PmmlDocument[];
+  evaluationHitsCountById?: Map<string, number>;
   /** The containing HTMLElement which is scrollable */
   scrollableParentRef: React.RefObject<HTMLElement>;
   /** Parsed identifiers used for syntax coloring and auto-complete */
@@ -80,6 +81,7 @@ export function BoxedExpressionEditor({
   scrollableParentRef,
   pmmlDocuments,
   onRequestFeelIdentifiers,
+  evaluationHitsCountById,
   widthsById,
   onWidthsChange,
   hideDmn14BoxedExpressions,
@@ -104,6 +106,7 @@ export function BoxedExpressionEditor({
         dataTypes={dataTypes}
         pmmlDocuments={pmmlDocuments}
         onRequestFeelIdentifiers={onRequestFeelIdentifiers}
+        evaluationHitsCountById={evaluationHitsCountById}
         widthsById={widthsById}
         hideDmn14BoxedExpressions={hideDmn14BoxedExpressions}
       >
