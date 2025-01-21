@@ -49,26 +49,28 @@ function createDMNDiagnostics(validationResponses: validationResponse.DMNValidat
   });
 }
 
-export async function validateBPMN(serviceURL: URL, kieFile: kieFile.KieFile): Promise<vscode.Diagnostic[]> {
+export async function validateBPMN(serviceURL: URL, bpmnFile: kieFile.KieFile): Promise<vscode.Diagnostic[]> {
   try {
     const validationResponses: validationResponse.BPMNValidationResponse[] = await validationRequests.validateBPMN(
       serviceURL,
-      kieFile
+      bpmnFile
     );
     return createBPMNDiagnostics(validationResponses);
   } catch (error) {
-    throw new Error("VALIDATE BPMN ERROR - " + error.message);
+    console.error(`An error occured while trying to validate BPMN file: ${bpmnFile} with error: ${error.message}`);
+    throw new Error(`An error occured while trying to validate BPMN file: ${bpmnFile} with error: ${error.message}`);
   }
 }
 
-export async function validateDMN(serviceURL: URL, kieFile: kieFile.KieFile): Promise<vscode.Diagnostic[]> {
+export async function validateDMN(serviceURL: URL, dmnFile: kieFile.KieFile): Promise<vscode.Diagnostic[]> {
   try {
     const validationResponses: validationResponse.DMNValidationResponse[] = await validationRequests.validateDMN(
       serviceURL,
-      kieFile
+      dmnFile
     );
     return createDMNDiagnostics(validationResponses);
   } catch (error) {
-    throw new Error("VALIDATE DMN ERROR - " + error.message);
+    console.error(`An error occured while trying to validate DMN file: ${dmnFile} with error: ${error.message}`);
+    throw new Error(`An error occured while trying to validate DMN file: ${dmnFile} with error: ${error.message}`);
   }
 }

@@ -74,13 +74,13 @@ import { extractDifferencesFromArray } from "@kie-tools/dmn-runner/dist/results"
 import { openapiSchemaToJsonSchema } from "@openapi-contrib/openapi-schema-to-json-schema";
 import type { JSONSchema4 } from "json-schema";
 import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
+import { useSettings } from "../settings/SettingsContext";
 
 interface Props {
   isEditorReady?: boolean;
   workspaceFile: WorkspaceFile;
   dmnLanguageService?: DmnLanguageService;
   dmnEditor: EmbeddedEditorRef | undefined;
-  isLegacyDmnEditor: boolean;
 }
 
 const initialDmnRunnerProviderStates: DmnRunnerProviderState = {
@@ -167,7 +167,8 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   const dmnRunnerAjv = useMemo(() => new DmnRunnerAjv().getAjv(), []);
 
   const dmnEditor = useMemo(() => props.dmnEditor, [props.dmnEditor]);
-  const isLegacyDmnEditor = useMemo(() => props.isLegacyDmnEditor, [props.isLegacyDmnEditor]);
+  const { settings } = useSettings();
+  const isLegacyDmnEditor = useMemo(() => settings.editors.useLegacyDmnEditor, [settings.editors.useLegacyDmnEditor]);
 
   useLayoutEffect(() => {
     if (props.isEditorReady) {
