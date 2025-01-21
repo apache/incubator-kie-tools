@@ -17,12 +17,27 @@
 
 ## @kie-tools/playwright-base
 
+## Overview
+
+This package collects common configurations to run end-to-end Playwright tests.
+
 ## Using containers to generate screen shots
 
-### Build the image
+Each OS has a slighty different UI, even for the same browser. This difference causes screnshot comparison tests to fail. To solve this problem and have a stable environment with tests passing locally and in the CI, we can take advantage of containers. Running Playwright tests inside a container that mimics the CI environment independent of the host OS can make screenshot tests reproducible.
 
+To run the tests using containers, first is required to build the image based on this package's Containerfile. To do so, please use the `image:docker:build` script as follow:
+
+```sh
+# In this package folder
+KIE_TOOLS_BUILD__buildContainerImages=true pnpm image:docker:build
+# or in any folder of the kie-tools monorepo
+KIE_TOOLS_BUILD__buildContainerImages=true pnpm -F @kie-tools/plawright-base image:docker:build
 ```
-pnpm -F playwright-base build:image
+
+By default, the tests will run in the host machine, and to run using the container environment it will be required to set the `KIE_TOOLS_BUILD__runContainerizedEndToEndTests` environment variable to `true`.
+
+```sh
+KIE_TOOLS_BUILD__runContainerizedEndToEndTests=true pnpm test-e2e
 ```
 
 ---

@@ -115,7 +115,7 @@ Bootstrapping installs the necessary dependencies for each package.
 
 > **ℹ️ NOTE**
 >
-> Ubuntu 22.04 is the only OS that nativelly supports running E2E tests. To run in another OSs please use the `export KIE_TOOLS_BUILD__runContainerizedEndToEndTests=true`.
+> Ubuntu 22.04 is the only OS that nativelly supports running E2E tests. To run in another OS please use `export KIE_TOOLS_BUILD__runContainerizedEndToEndTests=true`. Please refer to [@kie-tools/playwright-base](./packages/playwright-base/README.md) README.
 
 > **ℹ️ NOTE**
 >

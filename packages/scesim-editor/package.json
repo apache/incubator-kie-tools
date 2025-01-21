@@ -16,7 +16,7 @@
     "test-e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm rimraf ./dist-tests-e2e\" \"pnpm test-e2e:run\" --else \"pnpm test-e2e:container\"",
     "test-e2e:container": "run-script-if --bool \"$(build-env containerizedEndToEndTests.run)\" --then  \"pnpm rimraf ./dist-tests-e2e\" \"pnpm test-e2e:container:check\"",
     "test-e2e:container:bash": "docker exec -it kie-tools-playwright-containerization-scesim-editor /bin/bash -c \"cd kie-tools/packages/scesim-editor && exec /bin/bash\"",
-    "test-e2e:container:build": "cross-env KIE_TOOLS_BUILD__buildContainerImages=true pnpm -F playwright-base build:dev",
+    "test-e2e:container:build": "cross-env KIE_TOOLS_BUILD__buildContainerImages=true pnpm -F playwright-base image:docker:build",
     "test-e2e:container:check": "run-script-if --bool $([ $(docker image inspect kie-tools-playwright-container-image:$(build-env root.version)) > /dev/null 2>&1 ] && echo false || echo true) --then \"pnpm test-e2e:container:start\" --else \"pnpm test-e2e:container:build\" \"pnpm test-e2e:container:start\"",
     "test-e2e:container:down": "docker compose -f ./tests-e2e/__containerization__/playwright-docker-compose.yml down",
     "test-e2e:container:run": "docker exec -it kie-tools-playwright-containerization-scesim-editor /bin/bash -c \"cd kie-tools/packages/scesim-editor && pnpm test-e2e:run\"",
