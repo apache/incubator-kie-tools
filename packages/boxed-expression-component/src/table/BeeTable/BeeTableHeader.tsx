@@ -271,13 +271,14 @@ export function BeeTableHeader<R extends object>({
                     ) : null}
                   </div>
                   {column.decisionId !== undefined && column.headerCellClickCallback !== undefined && (
-                    <Button
-                      variant={"plain"}
-                      title={`Open ${column.decisionName} expression`}
-                      icon={<ArrowUpIcon />}
-                      // data-navigate-to-expression-id={dmnFormResult.decisionId}
-                      onClick={() => column.headerCellClickCallback?.()}
-                    />
+                    <Flex direction={{ default: "column" }} alignSelf={{ default: "alignSelfCenter" }}>
+                      <Button
+                        variant={"plain"}
+                        title={`Open ${column.decisionName} expression`}
+                        icon={<ArrowUpIcon width="0.9em" height="0.9em" />}
+                        onClick={() => column.headerCellClickCallback?.()}
+                      />
+                    </Flex>
                   )}
                 </Flex>
               }
