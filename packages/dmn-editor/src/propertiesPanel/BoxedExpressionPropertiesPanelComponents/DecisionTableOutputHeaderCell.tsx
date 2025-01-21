@@ -39,7 +39,6 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContex
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { State } from "../../store/Store";
 import { renameDrgElement } from "../../mutations/renameNode";
-import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import { OnEditableNodeLabelChange } from "../../diagram/nodes/EditableNodeLabel";
 import {
   isIdentifierReferencedInSomeExpression,
@@ -55,18 +54,9 @@ export function DecisionTableOutputHeaderCell(props: {
   const activeDrgElementId = useDmnEditorStore((s) => s.boxedExpressionEditor.activeDrgElementId);
   const { dmnEditorRootElementRef } = useDmnEditor();
   const { externalModelsByNamespace } = useExternalModels();
-
-  const externalDmnsByNamespace = useDmnEditorStore(
-    (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
+  const externalDmnModelsByNamespaceMap = useDmnEditorStore((s) =>
+    s.computed(s).getExternalDmnModelsByNamespaceMap(externalModelsByNamespace)
   );
-  const externalDmnModelsByNamespaceMap = useMemo(() => {
-    const externalModels = new Map<string, Normalized<DmnLatestModel>>();
-
-    for (const [key, externalDmn] of externalDmnsByNamespace) {
-      externalModels.set(key, externalDmn.model);
-    }
-    return externalModels;
-  }, [externalDmnsByNamespace]);
 
   const node = useDmnEditorStore((s) =>
     s

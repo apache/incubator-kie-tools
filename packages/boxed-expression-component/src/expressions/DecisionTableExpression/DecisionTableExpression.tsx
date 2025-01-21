@@ -546,8 +546,8 @@ export function DecisionTableExpression({
       } else {
         //  Changes in other columns does not reflect in changes in variables
         // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const columnChangedAction: ExpressionChangedArgs = { action: Action.ColumnChanged };
-        return columnChangedAction;
+        const expressionChangedArgs: ExpressionChangedArgs = { action: Action.ColumnChanged };
+        return expressionChangedArgs;
       }
     },
     [decisionTableExpression, expressionHolderId]

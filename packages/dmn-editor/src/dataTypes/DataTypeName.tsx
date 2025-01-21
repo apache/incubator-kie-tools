@@ -35,7 +35,6 @@ import { InlineFeelNameInput, OnInlineFeelNameRenamed } from "../feel/InlineFeel
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { State } from "../store/Store";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
-import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import {
   isIdentifierReferencedInSomeExpression,
   RefactorConfirmationDialog,
@@ -79,18 +78,9 @@ export function DataTypeName({
     relativeToNamespace,
   });
 
-  const externalDmnsByNamespace = useDmnEditorStore(
-    (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
+  const externalDmnModelsByNamespaceMap = useDmnEditorStore((s) =>
+    s.computed(s).getExternalDmnModelsByNamespaceMap(externalModelsByNamespace)
   );
-
-  const externalDmnModelsByNamespaceMap = useMemo(() => {
-    const externalModels = new Map<string, Normalized<DmnLatestModel>>();
-
-    for (const [key, externalDmn] of externalDmnsByNamespace) {
-      externalModels.set(key, externalDmn.model);
-    }
-    return externalModels;
-  }, [externalDmnsByNamespace]);
 
   const _shouldCommitOnBlur = shouldCommitOnBlur ?? true; // Defaults to true
 

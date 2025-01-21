@@ -62,7 +62,7 @@ export const ExpressionVariableCell: React.FunctionComponent<
 
   const onVariableUpdated = useCallback<OnExpressionVariableUpdated>(
     ({ name = DEFAULT_EXPRESSION_VARIABLE_NAME, typeRef = undefined }) => {
-      const variableChangedArgs: ExpressionChangedArgs = {
+      const expressionChangedArgs: ExpressionChangedArgs = {
         action: Action.VariableChanged,
         variableUuid: variable["@_id"],
         typeChange:
@@ -98,7 +98,7 @@ export const ExpressionVariableCell: React.FunctionComponent<
             "@_typeRef": typeRef,
           },
         },
-        variableChangedArgs
+        expressionChangedArgs
       );
     },
     [onExpressionWithVariableUpdated, index, expression, variable]

@@ -17,11 +17,20 @@
  * under the License.
  */
 
-import { v4 as uuid } from "uuid";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import { ExternalDmnsIndex } from "../../DmnEditor";
 
-/**
- * Generates a UUID with a format similar to _6EFDBCB4-F4AF-4E9A-9A66-2A9F24185674
- */
-export const generateUuid = () => {
-  return `_${uuid()}`.toLocaleUpperCase();
-};
+export function computeExternalDmnModelsByNamespaceMap(
+  externalDmnsByNamespace: ExternalDmnsIndex | undefined
+): Map<string, Normalized<DmnLatestModel>> {
+  const externalModels = new Map<string, Normalized<DmnLatestModel>>();
+  if (!externalDmnsByNamespace) {
+    return externalModels;
+  }
+
+  for (const [key, externalDmn] of externalDmnsByNamespace) {
+    externalModels.set(key, externalDmn.model);
+  }
+  return externalModels;
+}

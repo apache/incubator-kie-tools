@@ -28,7 +28,6 @@ import {
 import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/BoxedExpressionEditor";
 import { FeelIdentifiers } from "@kie-tools/dmn-feel-antlr4-parser";
 import { IdentifiersRefactor } from "@kie-tools/dmn-language-service";
-import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import {
   DMN15__tBusinessKnowledgeModel,
   DMN15__tDecision,
@@ -114,14 +113,9 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
   const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
   const drdIndex = useDmnEditorStore((s) => s.computed(s).getDrdIndex());
 
-  const externalDmnModelsByNamespaceMap = useMemo(() => {
-    const externalModels = new Map<string, Normalized<DmnLatestModel>>();
-
-    for (const [key, externalDmn] of externalDmnsByNamespace) {
-      externalModels.set(key, externalDmn.model);
-    }
-    return externalModels;
-  }, [externalDmnsByNamespace]);
+  const externalDmnModelsByNamespaceMap = useDmnEditorStore((s) =>
+    s.computed(s).getExternalDmnModelsByNamespaceMap(externalModelsByNamespace)
+  );
 
   const onRequestFeelIdentifiers = useCallback(() => {
     return new FeelIdentifiers({

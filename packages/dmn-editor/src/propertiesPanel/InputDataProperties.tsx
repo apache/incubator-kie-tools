@@ -33,27 +33,28 @@ import { useResolvedTypeRef } from "../dataTypes/useResolvedTypeRef";
 import { useCallback, useMemo, useState } from "react";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
-import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import { OnEditableNodeLabelChange } from "../diagram/nodes/EditableNodeLabel";
 import {
   isIdentifierReferencedInSomeExpression,
   RefactorConfirmationDialog,
 } from "../refactor/RefactorConfirmationDialog";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 
 export function InputDataProperties({
   inputData,
   namespace,
   index,
-  externalDmnModelsByNamespaceMap,
 }: {
   inputData: Normalized<DMN15__tInputData>;
   namespace: string | undefined;
   index: number;
-  externalDmnModelsByNamespaceMap: Map<string, Normalized<DmnLatestModel>>;
 }) {
   const { setState } = useDmnEditorStoreApi();
   const settings = useSettings();
-
+  const { externalModelsByNamespace } = useExternalModels();
+  const externalDmnModelsByNamespaceMap = useDmnEditorStore((s) =>
+    s.computed(s).getExternalDmnModelsByNamespaceMap(externalModelsByNamespace)
+  );
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const isReadOnly = settings.isReadOnly || (!!namespace && namespace !== thisDmnsNamespace);
 

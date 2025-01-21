@@ -73,7 +73,6 @@ import { propsHaveSameValuesDeep } from "../memoization/memoization";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { NODE_LAYERS } from "../../store/computed/computeDiagramData";
 import { useSettings } from "../../settings/DmnEditorSettingsContext";
-import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import {
   isIdentifierReferencedInSomeExpression,
   RefactorConfirmationDialog,
@@ -142,17 +141,9 @@ export const InputDataNode = React.memo(
     });
 
     const { externalModelsByNamespace } = useExternalModels();
-    const externalDmnsByNamespace = useDmnEditorStore(
-      (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
+    const externalDmnModelsByNamespaceMap = useDmnEditorStore((s) =>
+      s.computed(s).getExternalDmnModelsByNamespaceMap(externalModelsByNamespace)
     );
-    const externalDmnModelsByNamespaceMap = useMemo(() => {
-      const externalModels = new Map<string, Normalized<DmnLatestModel>>();
-
-      for (const [key, externalDmn] of externalDmnsByNamespace) {
-        externalModels.set(key, externalDmn.model);
-      }
-      return externalModels;
-    }, [externalDmnsByNamespace]);
 
     const [isRefactorModalOpen, setIsRefactorModalOpen] = useState(false);
     const [newName, setNewName] = useState("");
@@ -440,17 +431,9 @@ export const DecisionNode = React.memo(
     });
 
     const { externalModelsByNamespace } = useExternalModels();
-    const externalDmnsByNamespace = useDmnEditorStore(
-      (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
+    const externalDmnModelsByNamespaceMap = useDmnEditorStore((s) =>
+      s.computed(s).getExternalDmnModelsByNamespaceMap(externalModelsByNamespace)
     );
-    const externalDmnModelsByNamespaceMap = useMemo(() => {
-      const externalModels = new Map<string, Normalized<DmnLatestModel>>();
-
-      for (const [key, externalDmn] of externalDmnsByNamespace) {
-        externalModels.set(key, externalDmn.model);
-      }
-      return externalModels;
-    }, [externalDmnsByNamespace]);
 
     const [isRefactorModalOpen, setIsRefactorModalOpen] = useState(false);
     const [newName, setNewName] = useState("");
@@ -670,17 +653,9 @@ export const BkmNode = React.memo(
     const nodeDimensions = useNodeDimensions({ nodeType: type as typeof NODE_TYPES.bkm, snapGrid, shape });
 
     const { externalModelsByNamespace } = useExternalModels();
-    const externalDmnsByNamespace = useDmnEditorStore(
-      (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
+    const externalDmnModelsByNamespaceMap = useDmnEditorStore((s) =>
+      s.computed(s).getExternalDmnModelsByNamespaceMap(externalModelsByNamespace)
     );
-    const externalDmnModelsByNamespaceMap = useMemo(() => {
-      const externalModels = new Map<string, Normalized<DmnLatestModel>>();
-
-      for (const [key, externalDmn] of externalDmnsByNamespace) {
-        externalModels.set(key, externalDmn.model);
-      }
-      return externalModels;
-    }, [externalDmnsByNamespace]);
 
     const [isRefactorModalOpen, setIsRefactorModalOpen] = useState(false);
     const [newName, setNewName] = useState("");
@@ -890,17 +865,9 @@ export const KnowledgeSourceNode = React.memo(
     });
 
     const { externalModelsByNamespace } = useExternalModels();
-    const externalDmnsByNamespace = useDmnEditorStore(
-      (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
+    const externalDmnModelsByNamespaceMap = useDmnEditorStore((s) =>
+      s.computed(s).getExternalDmnModelsByNamespaceMap(externalModelsByNamespace)
     );
-    const externalDmnModelsByNamespaceMap = useMemo(() => {
-      const externalModels = new Map<string, Normalized<DmnLatestModel>>();
-
-      for (const [key, externalDmn] of externalDmnsByNamespace) {
-        externalModels.set(key, externalDmn.model);
-      }
-      return externalModels;
-    }, [externalDmnsByNamespace]);
 
     const [isRefactorModalOpen, setIsRefactorModalOpen] = useState(false);
     const [newName, setNewName] = useState("");
@@ -1192,17 +1159,9 @@ export const DecisionServiceNode = React.memo(
       shape,
     });
 
-    const externalDmnsByNamespace = useDmnEditorStore(
-      (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
+    const externalDmnModelsByNamespaceMap = useDmnEditorStore((s) =>
+      s.computed(s).getExternalDmnModelsByNamespaceMap(externalModelsByNamespace)
     );
-    const externalDmnModelsByNamespaceMap = useMemo(() => {
-      const externalModels = new Map<string, Normalized<DmnLatestModel>>();
-
-      for (const [key, externalDmn] of externalDmnsByNamespace) {
-        externalModels.set(key, externalDmn.model);
-      }
-      return externalModels;
-    }, [externalDmnsByNamespace]);
 
     const [isRefactorModalOpen, setIsRefactorModalOpen] = useState(false);
     const [newName, setNewName] = useState("");

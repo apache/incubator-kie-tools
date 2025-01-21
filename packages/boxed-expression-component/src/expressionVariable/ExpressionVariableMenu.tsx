@@ -108,7 +108,7 @@ export function ExpressionVariableMenu({
   }, [beeGwtService]);
 
   const saveExpression = useCallback(() => {
-    const changes: ExpressionChangedArgs = {
+    const expressionChangedArgs: ExpressionChangedArgs = {
       action: Action.VariableChanged,
       variableUuid: variableUuid,
       typeChange:
@@ -127,8 +127,8 @@ export function ExpressionVariableMenu({
           : undefined,
     };
 
-    if (changes.nameChange || changes.typeChange) {
-      onVariableUpdated({ name: expressionName, typeRef: dataType, changes });
+    if (expressionChangedArgs.nameChange || expressionChangedArgs.typeChange) {
+      onVariableUpdated({ name: expressionName, typeRef: dataType, changes: expressionChangedArgs });
     }
   }, [expressionName, selectedExpressionName, dataType, selectedDataType, variableUuid, onVariableUpdated]);
 

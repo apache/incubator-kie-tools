@@ -34,7 +34,6 @@ import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useCallback, useMemo, useState } from "react";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
-import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import {
   isIdentifierReferencedInSomeExpression,
   RefactorConfirmationDialog,
@@ -56,17 +55,9 @@ export function KnowledgeSourceProperties({
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const isReadOnly = settings.isReadOnly || (!!namespace && namespace !== thisDmnsNamespace);
   const { externalModelsByNamespace } = useExternalModels();
-  const externalDmnsByNamespace = useDmnEditorStore(
-    (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
+  const externalDmnModelsByNamespaceMap = useDmnEditorStore((s) =>
+    s.computed(s).getExternalDmnModelsByNamespaceMap(externalModelsByNamespace)
   );
-  const externalDmnModelsByNamespaceMap = useMemo(() => {
-    const externalModels = new Map<string, Normalized<DmnLatestModel>>();
-
-    for (const [key, externalDmn] of externalDmnsByNamespace) {
-      externalModels.set(key, externalDmn.model);
-    }
-    return externalModels;
-  }, [externalDmnsByNamespace]);
 
   const [isRefactorModalOpen, setIsRefactorModalOpen] = useState(false);
   const [newName, setNewName] = useState("");

@@ -48,7 +48,6 @@ import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ExternalDmn } from "../DmnEditor";
 import { Unpacked } from "../tsExt/tsExt";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
-import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import {
   isIdentifierReferencedInSomeExpression,
   RefactorConfirmationDialog,
@@ -65,18 +64,18 @@ export function DecisionServiceProperties({
   decisionService,
   namespace,
   index,
-  externalDmnModelsByNamespaceMap,
 }: {
   decisionService: Normalized<DMN15__tDecisionService>;
   namespace: string | undefined;
   index: number;
-  externalDmnModelsByNamespaceMap: Map<string, Normalized<DmnLatestModel>>;
 }) {
   const { setState } = useDmnEditorStoreApi();
   const settings = useSettings();
-
-  const thisDmn = useDmnEditorStore((s) => s.dmn);
   const { externalModelsByNamespace } = useExternalModels();
+  const externalDmnModelsByNamespaceMap = useDmnEditorStore((s) =>
+    s.computed(s).getExternalDmnModelsByNamespaceMap(externalModelsByNamespace)
+  );
+  const thisDmn = useDmnEditorStore((s) => s.dmn);
 
   const allExternalDmns = Object.entries(externalModelsByNamespace ?? {}).reduce((acc, [namespace, externalModel]) => {
     if (!externalModel) {
