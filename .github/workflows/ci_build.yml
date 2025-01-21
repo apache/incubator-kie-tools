@@ -40,8 +40,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
-        partition: [2]
+        os: [ubuntu-latest, masos-13, windows-latest]
+        partition: [0, 1, 2]
     runs-on: ${{ matrix.os }}
     steps:
       - name: "Support longpaths"
@@ -131,7 +131,7 @@ jobs:
           START_SERVER_AND_TEST_INSECURE: "true"
           NODE_OPTIONS: "--max_old_space_size=4096"
         run: >-
-          eval "pnpm -F boxed-expression-component... --workspace-concurrency=1 build:prod"
+          eval "pnpm ${{ steps.setup_build_mode.outputs.fullBuildPnpmFilterString }} --workspace-concurrency=1 build:prod"
 
       - name: "PARTIAL → Build upstream"
         if: steps.setup_build_mode.outputs.mode == 'partial' && steps.setup_build_mode.outputs.upstreamPnpmFilterString != ''
