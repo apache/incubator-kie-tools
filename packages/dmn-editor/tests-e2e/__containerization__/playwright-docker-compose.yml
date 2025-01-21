@@ -32,6 +32,7 @@ services:
     user: 1000:1000
     environment:
       - KIE_TOOLS_BUILD__runEndToEndTests=true
+      - KIE_TOOLS_BUILD__runContainerizedEndToEndTests=true
     volumes:
       - ../../../../../kie-tools:/home/node/kie-tools-playwright/kie-tools/
 

@@ -23,9 +23,9 @@ This package collects common configurations to run end-to-end Playwright tests.
 
 ## Using containers to generate screen shots
 
-Each OS has a slighty different UI, even for the same browser. This difference causes screnshot comparison tests to fail. To solve this problem and have a stable environment with tests passing locally and in the CI, we can take advantage of containers. Running Playwright tests inside a container that mimics the CI environment independent of the host OS can make screenshot tests reproducible.
+Each operating system has slight variations in UI, even within the same browser. These differences can cause screenshot comparison tests to fail. To address this issue and ensure a stable environment with consistent test results locally and in CI, containers can be used. Running Playwright tests inside a container that replicates the CI environment makes screenshot tests reproducible, regardless of the host OS.
 
-To run the tests using containers, first is required to build the image based on this package's Containerfile. To do so, please use the `image:docker:build` script as follow:
+To run tests in a container, you first need to build the image using the Containerfile provided in this package. Use the `image:docker:build` script as shown below:
 
 ```sh
 # In this package folder
@@ -34,10 +34,23 @@ KIE_TOOLS_BUILD__buildContainerImages=true pnpm image:docker:build
 KIE_TOOLS_BUILD__buildContainerImages=true pnpm -F @kie-tools/plawright-base image:docker:build
 ```
 
-By default, the tests will run in the host machine, and to run using the container environment it will be required to set the `KIE_TOOLS_BUILD__runContainerizedEndToEndTests` environment variable to `true`.
+By default, tests run on the host machine. To execute them in the containerized environment, set the `KIE_TOOLS_BUILD__runContainerizedEndToEndTests` environment variable to `true`.
 
 ```sh
 KIE_TOOLS_BUILD__runContainerizedEndToEndTests=true pnpm test-e2e
+```
+
+## Updating Playwright screenshots
+
+By default, running tests does not automatically update screenshots. The `test-e2e` script launches the test suite with standard settings. For greater control over Playwright parameters, you can use the `test-e2e:container:shell` script, which opens a shell inside the container. This script will start the dev server (if not already running), initialize the Playwright container, and provide access to a new shell.
+
+To update screenshots, use the `-u` or `--update-snapshots` flags with the `test-e2e:run` script as shown below:
+
+```sh
+pnpm test-e2e:container:shell
+
+# Wait until the new shell is ready
+pnpm test-e2e:run --update-snapshots
 ```
 
 ---

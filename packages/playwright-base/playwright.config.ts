@@ -20,6 +20,9 @@
 import { devices, defineConfig } from "@playwright/test";
 import { ProjectName } from "./projectNames";
 
+import { env } from "./env";
+const buildEnv: any = env; // build-env is not typed
+
 export default defineConfig({
   testDir: "./tests-e2e",
   outputDir: "dist-tests-e2e/output",
@@ -29,7 +32,7 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI || buildEnv.containerizedEndToEndTests.run ? 2 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 2 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */

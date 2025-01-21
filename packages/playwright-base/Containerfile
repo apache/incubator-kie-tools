@@ -23,7 +23,9 @@ ENV PLAYWRIGHT_BROWSERS_PATH=/home/node/kie-tools-playwright/.cache/ms-playwrigh
 
 # Installing `pnpm` to keep it consistent with the kie-tools repository
 RUN npm install --global pnpm@9.3.0
-RUN npx playwright@1.45.2 install-deps
+
+# Installing Playwright browser and dependencies
+RUN npx playwright@1.45.2 install-deps 
 RUN npx playwright@1.45.2 install chrome chromium webkit
 
 WORKDIR /home/node/kie-tools-playwright
