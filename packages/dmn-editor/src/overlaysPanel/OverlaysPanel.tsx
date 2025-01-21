@@ -43,16 +43,15 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
   const overlayPanelContainer = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
     if (overlayPanelContainer.current && availableHeight) {
-      if (!(overlayPanelContainer.current.scrollHeight > availableHeight)) {
-        if (overlayPanelContainer.current.style.height !== "auto") {
-          overlayPanelContainer.current.style.overflowY = "hidden";
-          overlayPanelContainer.current.style.height = "auto";
-        }
-      } else {
-        if (overlayPanelContainer.current.style.height !== availableHeight - BOTTOM_MARGIN + "px") {
-          overlayPanelContainer.current.style.height = availableHeight - BOTTOM_MARGIN + "px";
-          overlayPanelContainer.current.style.overflowY = "auto";
-        }
+      if (overlayPanelContainer.current.scrollHeight <= availableHeight) {
+        overlayPanelContainer.current.style.overflowY = "hidden";
+        overlayPanelContainer.current.style.height = "auto";
+      } else if (
+        overlayPanelContainer.current.style.height !== availableHeight - BOTTOM_MARGIN + "px" &&
+        overlayPanelContainer.current.style.height !== "auto"
+      ) {
+        overlayPanelContainer.current.style.height = availableHeight - BOTTOM_MARGIN + "px";
+        overlayPanelContainer.current.style.overflowY = "auto";
       }
     }
   }, [availableHeight]);
