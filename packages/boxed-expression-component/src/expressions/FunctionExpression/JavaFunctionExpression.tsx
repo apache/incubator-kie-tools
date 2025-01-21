@@ -358,29 +358,29 @@ export function JavaFunctionExpression({
 
         // Class
         if (u.rowIndex === 0) {
-            setExpression({
-                setExpressionAction: (prev: Normalized<BoxedFunctionJava>) => {
-            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-            const ret: Normalized<BoxedFunction> = {
-              ...prev,
-              expression: {
-                __$$element: "context",
-                ...context,
-                contextEntry: [
-                  {
-                    ...clazz,
-                    expression: {
-                      ...clazz.expression,
-                      __$$element: "literalExpression",
-                      text: {
-                        __$$text: u.value,
+          setExpression({
+            setExpressionAction: (prev: Normalized<BoxedFunctionJava>) => {
+              // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+              const ret: Normalized<BoxedFunction> = {
+                ...prev,
+                expression: {
+                  __$$element: "context",
+                  ...context,
+                  contextEntry: [
+                    {
+                      ...clazz,
+                      expression: {
+                        ...clazz.expression,
+                        __$$element: "literalExpression",
+                        text: {
+                          __$$text: u.value,
+                        },
                       },
                     },
-                  },
-                  method,
-                ],
-              },
-            };
+                    method,
+                  ],
+                },
+              };
 
               return ret;
             },
@@ -393,38 +393,38 @@ export function JavaFunctionExpression({
         }
         // Method
         else if (u.rowIndex === 1) {
-            setExpression({
-                setExpressionAction: (prev: Normalized<BoxedFunctionJava>) => {
-            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-            const ret: Normalized<BoxedFunction> = {
-              ...prev,
-              expression: {
-                __$$element: "context",
-                ...context,
-                contextEntry: [
-                  clazz,
-                  {
-                    ...method,
-                    expression: {
-                      ...method.expression,
-                      __$$element: "literalExpression",
-                      "@_id": method.expression["@_id"] ?? generateUuid(),
-                      text: {
-                        __$$text: u.value,
+          setExpression({
+            setExpressionAction: (prev: Normalized<BoxedFunctionJava>) => {
+              // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+              const ret: Normalized<BoxedFunction> = {
+                ...prev,
+                expression: {
+                  __$$element: "context",
+                  ...context,
+                  contextEntry: [
+                    clazz,
+                    {
+                      ...method,
+                      expression: {
+                        ...method.expression,
+                        __$$element: "literalExpression",
+                        "@_id": method.expression["@_id"] ?? generateUuid(),
+                        text: {
+                          __$$text: u.value,
+                        },
                       },
                     },
-                  },
-                ],
-              },
-            };
-            return ret;
-            },
-                expressionChangedArgs: {
-                    action: Action.LiteralTextExpressionChanged,
-                    from: method.expression.__$$element === "literalExpression" ? method.expression.text?.__$$text ?? "" : "",
-                    to: u.value,
+                  ],
                 },
-            });
+              };
+              return ret;
+            },
+            expressionChangedArgs: {
+              action: Action.LiteralTextExpressionChanged,
+              from: method.expression.__$$element === "literalExpression" ? method.expression.text?.__$$text ?? "" : "",
+              to: u.value,
+            },
+          });
         }
       }
     },
