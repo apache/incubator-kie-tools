@@ -23,7 +23,10 @@ services:
     container_name: kie-tools-playwright-containerization-online-editor
     image: kie-tools-playwright-container-image:${PROJECT_VERSION}
     depends_on:
-      - nginx
+      - nginx-dev
+      - nginx-cors-proxy
+      - nginx-extended-services
+      - nginx-quarkus-accelerator
     entrypoint: ["/bin/bash"]
     stdin_open: true
     tty: true
@@ -36,17 +39,47 @@ services:
       - ../../../../../kie-tools:/home/node/kie-tools-playwright/kie-tools/
 
   # The nginx reverse-proxy is used to forward `host.docker.internal` requests to `localhost.
-  nginx:
+  nginx-dev:
     image: nginx:latest
-    container_name: kie-tools-playwright-containerization-online-editor-nginx
+    container_name: kie-tools-playwright-containerization-online-editor-nginx-dev
     network_mode: host
     command: ["nginx", "-g", "daemon off;"]
     configs:
-      - source: nginx-config
+      - source: nginx-dev-config
+        target: /etc/nginx/nginx.conf
+
+  # The nginx reverse-proxy is used to forward `host.docker.internal` requests to `localhost.
+  nginx-cors-proxy:
+    image: nginx:latest
+    container_name: kie-tools-playwright-containerization-online-editor-nginx-cors-proxy
+    network_mode: host
+    command: ["nginx", "-g", "daemon off;"]
+    configs:
+      - source: nginx-cors-proxy-config
+        target: /etc/nginx/nginx.conf
+
+  # The nginx reverse-proxy is used to forward `host.docker.internal` requests to `localhost.
+  nginx-extended-services:
+    image: nginx:latest
+    container_name: kie-tools-playwright-containerization-online-editor-nginx-extended-services
+    network_mode: host
+    command: ["nginx", "-g", "daemon off;"]
+    configs:
+      - source: nginx-extended-services-config
+        target: /etc/nginx/nginx.conf
+
+  # The nginx reverse-proxy is used to forward `host.docker.internal` requests to `localhost.
+  nginx-quarkus-accelerator:
+    image: nginx:latest
+    container_name: kie-tools-playwright-containerization-online-editor-nginx-quarkus-accelerator
+    network_mode: host
+    command: ["nginx", "-g", "daemon off;"]
+    configs:
+      - source: nginx-quarkus-accelerator-config
         target: /etc/nginx/nginx.conf
 
 configs:
-  nginx-config:
+  nginx-dev-config:
     content: |
       events {}
 
@@ -57,6 +90,51 @@ configs:
 
               location / {
                   proxy_pass http://host.docker.internal:${PLAYWRIGHT_PORT};
+              }
+          }
+      }
+
+  nginx-cors-proxy-config:
+    content: |
+      events {}
+
+      http {
+          server {
+              listen ${PLAYWRIGHT_CORS_PROXY_PORT};
+              server_name localhost;
+
+              location / {
+                  proxy_pass http://host.docker.internal:${PLAYWRIGHT_CORS_PROXY_PORT};
+              }
+          }
+      }
+
+  nginx-extended-services-config:
+    content: |
+      events {}
+
+      http {
+          server {
+              listen ${PLAYWRIGHT_EXTENDED_SERVICES_PORT};
+              server_name localhost;
+
+              location / {
+                  proxy_pass http://host.docker.internal:${PLAYWRIGHT_EXTENDED_SERVICES_PORT};
+              }
+          }
+      }
+
+  nginx-quarkus-accelerator-config:
+    content: |
+      events {}
+
+      http {
+          server {
+              listen ${PLAYWRIGHT_QUARKUS_ACCELERATOR_PORT};
+              server_name localhost;
+
+              location / {
+                  proxy_pass http://host.docker.internal:${PLAYWRIGHT_QUARKUS_ACCELERATOR_PORT};
               }
           }
       }
