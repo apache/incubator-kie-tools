@@ -476,7 +476,6 @@ Error details: ${err}`);
                   isEditorReady={editor?.isReady}
                   dmnLanguageService={dmnLanguageService}
                   dmnEditor={editor}
-                  isLegacyDmnEditor={settings.editors.useLegacyDmnEditor}
                 >
                   <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} />
                   <Divider />
