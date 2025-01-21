@@ -25,17 +25,11 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "false",
       description: "Toggles the installation of Playwright dependencies. Can be `true` or `false`.",
     },
-    PLAYWRIGHT_BASE__host: {
-      default: "localhost",
-      description:
-        'The app host Playwright is testing. When running inside a container in macOS use "host.docker.internal"',
-    },
   }),
   get env() {
     return {
       playwrightBase: {
         installDeps: str2bool(getOrDefault(this.vars.PLAYWRIGHT_BASE__installDeps)),
-        host: getOrDefault(this.vars.PLAYWRIGHT_BASE__host),
       },
     };
   },

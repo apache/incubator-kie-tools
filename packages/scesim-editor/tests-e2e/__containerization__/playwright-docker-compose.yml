@@ -22,6 +22,8 @@ services:
     platform: linux/amd64
     container_name: kie-tools-playwright-containerization-scesim-editor
     image: kie-tools-playwright-container-image:${PROJECT_VERSION}
+    depends_on:
+      - nginx
     entrypoint: ["/bin/bash"]
     stdin_open: true
     tty: true
@@ -32,3 +34,29 @@ services:
       - KIE_TOOLS_BUILD__runEndToEndTests=true
     volumes:
       - ../../../../../kie-tools:/home/node/kie-tools-playwright/kie-tools/
+
+  # The nginx reverse-proxy is used to forward `host.docker.internal` requests to `localhost.
+  nginx:
+    image: nginx:latest
+    container_name: kie-tools-playwright-containerization-scesim-editor-nginx
+    network_mode: host
+    command: ["nginx", "-g", "daemon off;"]
+    configs:
+      - source: nginx-config
+        target: /etc/nginx/nginx.conf
+
+configs:
+  nginx-config:
+    content: |
+      events {}
+
+      http {
+          server {
+              listen ${PLAYWRIGHT_PORT};
+              server_name localhost;
+
+              location / {
+                  proxy_pass http://host.docker.internal:${PLAYWRIGHT_PORT};
+              }
+          }
+      }
