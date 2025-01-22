@@ -30,6 +30,7 @@ export type DmnEditorContextProviderProps = Pick<
   | "model"
   | "onRequestToJumpToPath"
   | "onRequestToResolvePath"
+  | "evaluationStatus"
 >;
 
 export type DmnModelBeforeEditing = DmnLatestModel;
@@ -41,6 +42,7 @@ export type DmnEditorContextType = Pick<
   | "issueTrackerHref"
   | "onRequestToJumpToPath"
   | "onRequestToResolvePath"
+  | "evaluationStatus"
 > & {
   dmnModelBeforeEditingRef: React.MutableRefObject<DmnModelBeforeEditing>;
   dmnEditorRootElementRef: React.RefObject<HTMLDivElement>;
@@ -65,6 +67,7 @@ export function DmnEditorContextProvider(props: React.PropsWithChildren<DmnEdito
       issueTrackerHref: props.issueTrackerHref,
       onRequestToJumpToPath: props.onRequestToJumpToPath,
       onRequestToResolvePath: props.onRequestToResolvePath,
+      evaluationStatus: props.evaluationStatus,
     }),
     [
       props.externalContextDescription,
@@ -72,6 +75,7 @@ export function DmnEditorContextProvider(props: React.PropsWithChildren<DmnEdito
       props.issueTrackerHref,
       props.onRequestToJumpToPath,
       props.onRequestToResolvePath,
+      props.evaluationStatus,
     ]
   );
   return <DmnEditorContext.Provider value={value}>{props.children}</DmnEditorContext.Provider>;

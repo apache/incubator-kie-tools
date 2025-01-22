@@ -73,6 +73,7 @@ import { propsHaveSameValuesDeep } from "../memoization/memoization";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { NODE_LAYERS } from "../../store/computed/computeDiagramData";
 import { useSettings } from "../../settings/DmnEditorSettingsContext";
+import { useDmnEditor } from "../../DmnEditorContext";
 
 export type ElementFilter<E extends { __$$element: string }, Filter extends string> = E extends any
   ? E["__$$element"] extends Filter
@@ -403,9 +404,11 @@ export const DecisionNode = React.memo(
     });
 
     const isEvaluationHighlightsEnabled = useDmnEditorStore((s) => s.diagram.overlays.enableEvaluationHighlights);
-    const evaluationStatusClassName = isEvaluationHighlightsEnabled
-      ? "kie-dmn-editor--decision-node--evaluation-status-success"
-      : "";
+    const { evaluationStatus } = useDmnEditor();
+    const evaluationStatusClassName =
+      isEvaluationHighlightsEnabled && evaluationStatus!.has(decision["@_id"])
+        ? `kie-dmn-editor--decision-node--evaluation-status-${evaluationStatus!.get(decision["@_id"])}`
+        : "";
 
     return (
       <>
