@@ -53,7 +53,7 @@
     "@patternfly/react-core": "^4.276.6",
     "@playwright/test": "^1.45.2",
     "@storybook/addon-links": "^7.3.2",
-    "@storybook/addon-webpack5-compiler-babel": "^3.0.3",
+    "@storybook/addon-webpack5-compiler-babel": "^3.0.5",
     "@storybook/blocks": "^7.3.2",
     "@storybook/manager-api": "^7.3.2",
     "@storybook/preview-api": "^7.3.2",
