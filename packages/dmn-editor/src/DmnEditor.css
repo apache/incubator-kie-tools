@@ -104,6 +104,39 @@
 }
 /* (end) nodes */
 
+/* (begin) decision node evaluation status */
+.kie-dmn-editor--decision-node--evaluation-status-failure::before {
+  content: " \2716";
+  font-size: 0.8em;
+  text-align: left;
+  color: white;
+  background-color: rgb(134, 106, 212);
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 40px;
+  width: 40px;
+  clip-path: polygon(0% 100%, 100% 0%, 0% 0%);
+  padding-left: 0.2em;
+}
+
+.kie-dmn-editor--decision-node--evaluation-status-success::before {
+  content: " \2714";
+  font-size: 0.8em;
+  text-align: left;
+  color: white;
+  background-color: rgb(134, 106, 212);
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  height: 40px;
+  width: 40px;
+  clip-path: polygon(0% 100%, 100% 0%, 0% 0%);
+  padding-left: 0.2em;
+}
+
+/* (end) decision node evaluation status */
+
 /* (begin) decisionService and group nodes */
 /* DECISION SERVICES AND GROUPS HAVE A SPECIFIC SELECTION MECHANISM TO ALLOW EDITING EDGES INSIDE THEM */
 .kie-dmn-editor--node-decisionService-visibleRect {

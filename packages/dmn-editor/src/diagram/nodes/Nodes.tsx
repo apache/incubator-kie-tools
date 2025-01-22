@@ -402,6 +402,11 @@ export const DecisionNode = React.memo(
       );
     });
 
+    const isEvaluationHighlightsEnabled = useDmnEditorStore((s) => s.diagram.overlays.enableEvaluationHighlights);
+    const evaluationStatusClassName = isEvaluationHighlightsEnabled
+      ? "kie-dmn-editor--decision-node--evaluation-status-success"
+      : "";
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
@@ -421,7 +426,7 @@ export const DecisionNode = React.memo(
 
         <div
           ref={ref}
-          className={`kie-dmn-editor--node kie-dmn-editor--decision-node ${className}`}
+          className={`kie-dmn-editor--node kie-dmn-editor--decision-node ${className} ${evaluationStatusClassName}`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
