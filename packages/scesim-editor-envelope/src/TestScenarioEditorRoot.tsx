@@ -58,7 +58,7 @@ export type TestScenarioEditorRootState = {
   keyboardShortcutsRegistred: boolean;
   keyboardShortcutsRegisterIds: number[];
   marshaller: SceSimMarshaller | undefined;
-  openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
+  openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
   pointer: number;
   stack: SceSimModel[];
 };
@@ -80,7 +80,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
       keyboardShortcutsRegisterIds: [],
       keyboardShortcutsRegistred: false,
       marshaller: undefined,
-      openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: undefined,
+      openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: undefined,
       pointer: -1,
       stack: [],
     };
@@ -111,7 +111,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
   }
 
   public async setContent(
-    openFilenormalizedPosixPathRelativeToTheWorkspaceRoot: string,
+    openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: string,
     content: string
   ): Promise<void> {
     const marshaller = this.getMarshaller(content || EMPTY_ONE_EIGHT);
@@ -124,7 +124,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
       savedStackPointer = [...prev.stack];
       return {
         stack: [marshaller.parser.parse()],
-        openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
+        openFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
         pointer: 0,
       };
     });
@@ -136,14 +136,14 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     this.setState((prev) => {
       // External change to the same file.
       if (
-        prev.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot ===
-        openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
+        prev.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot ===
+        openFileNormalizedPosixPathRelativeToTheWorkspaceRoot
       ) {
         const newStack = savedStackPointer.slice(0, prev.pointer + 1);
         return {
           externalModelsManagerDoneBootstraping: true,
           isReadOnly: prev.isReadOnly,
-          openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
+          openFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
           marshaller,
           pointer: newStack.length,
           stack: [...newStack, marshaller.parser.parse()],
@@ -156,7 +156,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
           externalModelsManagerDoneBootstraping: true,
           isReadOnly: prev.isReadOnly,
           marshaller,
-          openFilenormalizedPosixPathRelativeToTheWorkspaceRoot,
+          openFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
           pointer: 0,
           stack: [marshaller.parser.parse()],
         };
@@ -198,14 +198,14 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
       },
       () =>
         this.props.onNewEdit({
-          id: `${this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot}__${generateUuid()}`,
+          id: `${this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot}__${generateUuid()}`,
         })
     );
   };
 
   private onRequestExternalModelsAvailableToInclude: TestScenarioEditor.OnRequestExternalModelsAvailableToInclude =
     async () => {
-      if (!this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot) {
+      if (!this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot) {
         return [];
       }
 
@@ -215,7 +215,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
       });
 
       return list.normalizedPosixPathsRelativeToTheWorkspaceRoot.flatMap((p) =>
-        __path.relative(__path.dirname(this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot!), p)
+        __path.relative(__path.dirname(this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot!), p)
       );
     };
 
@@ -224,7 +224,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
   ) => {
     const normalizedPosixPathRelativeToTheWorkspaceRoot = __path
       .resolve(
-        __path.dirname(this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot!),
+        __path.dirname(this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot!),
         normalizedPosixPathRelativeToTheOpenFile
       )
       .substring(1); // Remove leading slash.
@@ -264,7 +264,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
   };
 
   private onOpenFileFromPathRelativeToTheOpenFile = (normalizedPosixPathRelativeToTheOpenFile: string) => {
-    if (!this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot) {
+    if (!this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot) {
       return;
     }
 
@@ -326,14 +326,14 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
               onRequestToJumpToPath={this.onOpenFileFromPathRelativeToTheOpenFile}
               onRequestToResolvePath={this.onRequestToResolvePathRelativeToTheOpenFile}
               openFileNormalizedPosixPathRelativeToTheWorkspaceRoot={
-                this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
+                this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot
               }
             />
             {
               <ExternalModelsManager
                 workspaceRootAbsolutePosixPath={this.props.workspaceRootAbsolutePosixPath}
                 thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot={
-                  this.state.openFilenormalizedPosixPathRelativeToTheWorkspaceRoot
+                  this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot
                 }
                 model={this.model}
                 onChange={this.setExternalModelsByNamespace}

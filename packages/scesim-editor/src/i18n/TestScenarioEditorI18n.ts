@@ -39,6 +39,7 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
     createButton: string;
     dmnGroup: string;
     dmnNoChoice: string;
+    dmnNoPresent: string;
     kieSessionGroup: string;
     kieAgendaGroup: string;
     optional: string;

@@ -67,6 +67,7 @@ export function SceSimEditorWrapper(props: Partial<StorybookTestScenarioEditorPr
   return (
     <TestScenarioEditor
       ref={ref}
+      externalModelsByNamespace={props?.externalModelsByNamespace ?? args.externalModelsByNamespace}
       issueTrackerHref={props?.issueTrackerHref ?? args.issueTrackerHref}
       model={model}
       onModelChange={onModelChange}

@@ -9927,6 +9927,9 @@ importers:
       '@kie-tools-core/patternfly-base':
         specifier: workspace:*
         version: link:../patternfly-base
+      '@kie-tools-core/react-hooks':
+        specifier: workspace:*
+        version: link:../react-hooks
       '@kie-tools/boxed-expression-component':
         specifier: workspace:*
         version: link:../boxed-expression-component
@@ -20574,11 +20577,6 @@ packages:
   '@vscode/vsce-sign@2.0.4':
     resolution: {integrity: sha512-0uL32egStKYfy60IqnynAChMTbL0oqpqk0Ew0YHiIb+fayuGZWADuIPHWUcY1GCnAA+VgchOPDMxnc2R3XGWEA==}
 
-  '@vscode/vsce@2.22.0':
-    resolution: {integrity: sha512-8df4uJiM3C6GZ2Sx/KilSKVxsetrTBBIUb3c0W4B1EWHcddioVs5mkyDKtMNP0khP/xBILVSzlXxhV+nm2rC9A==}
-    engines: {node: '>= 14'}
-    hasBin: true
-
   '@vscode/vsce@3.2.1':
     resolution: {integrity: sha512-AY9vBjwExakK1c0cI/3NN2Ey0EgiKLBye/fxl/ue+o4q6RZ7N+xzd1jAD6eI6eBeMVANi617+V2rxIAkDPco2Q==}
     engines: {node: '>= 20'}
@@ -21332,9 +21330,6 @@ packages:
 
   axios@1.7.4:
     resolution: {integrity: sha512-DukmaFRnY6AzAALSH4J2M3k6PkaC+MfaAGdEERRWcC9q3/TWQwLpHR8ZRLKTdQ3aBDL64EdluRDjJqKw+BPZEw==}
-
-  azure-devops-node-api@11.0.1:
-    resolution: {integrity: sha512-YMdjAw9l5p/6leiyIloxj3k7VIvYThKjvqgiQn88r3nhT93ENwsoDS3A83CyJ4uTWzCZ5f5jCi6c27rTU5Pz+A==}
 
   azure-devops-node-api@12.5.0:
     resolution: {integrity: sha512-R5eFskGvOm3U/GzeAuxRkUsAl0hrAwGgWn6zAd2KrZmrEhWZVqLew4OOupbQlXUuojUzpGtq62SmdhJ06N88og==}
@@ -23326,9 +23321,6 @@ packages:
 
   ent@2.2.0:
     resolution: {integrity: sha512-GHrMyVZQWvTIdDtpiEXdHZnFQKzeO09apj8Cbl4pKWy4i0Oprcq17usfDt5aO63swf0JOeMWjWQE/LzgSRuWpA==}
-
-  entities@2.1.0:
-    resolution: {integrity: sha512-hCx1oky9PFrJ611mf0ifBLBRW8lUUVRlFolb5gWRfIELabBlbp9xZvrqZLZAs+NxFnbfQoeGd8wDkygjg7U85w==}
 
   entities@2.2.0:
     resolution: {integrity: sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==}
@@ -25991,9 +25983,6 @@ packages:
   lines-and-columns@1.1.6:
     resolution: {integrity: sha512-8ZmlJFVK9iCmtLz19HpSsR8HaAMWBT284VMNednLwlIMDP2hJDCIhUp0IZ2xUcZ+Ob6BM0VvCSJwzASDM45NLQ==}
 
-  linkify-it@3.0.3:
-    resolution: {integrity: sha512-ynTsyrFSdE5oZ/O9GEf00kPngmOfVwazR5GKDq6EYfhlpFug3J2zybX56a2PRRpc9P+FuSoGNAwjlbDs9jJBPQ==}
-
   linkify-it@5.0.0:
     resolution: {integrity: sha512-5aHCbzQRADcdP+ATqnDuhhJ/MRIqDkZX5pyjFHRRysS8vZ5AbqGEoFIb6pYHPZ+L/OC2Lc+xT8uHVVR5CAK/wQ==}
 
@@ -26266,10 +26255,6 @@ packages:
     resolution: {integrity: sha512-4y7uGv8bd2WdM9vpQsiQNo41Ln1NvhvDRuVt0k2JZQ+ezN2uaQes7lZeZ+QQUHOLQAtDaBJ+7wCbi+ab/KFs+w==}
     engines: {node: '>=0.10.0'}
 
-  markdown-it@12.3.2:
-    resolution: {integrity: sha512-TchMembfxfNVpHkbtriWltGWc+m3xszaRD0CZup7GFFhzIgQqxIfn3eGj1yZpfuflzPvfkt611B2Q/Bsk1YnGg==}
-    hasBin: true
-
   markdown-it@14.1.0:
     resolution: {integrity: sha512-a54IwgWPaeBCAAsv13YgmALOF1elABB08FxO9i+r4VFk5Vl4pKokRPeX8u5TCgSsPi6ec1otfLjdOpVcgbpshg==}
     hasBin: true
@@ -26306,9 +26291,6 @@ packages:
 
   mdn-data@2.0.30:
     resolution: {integrity: sha512-GaqWWShW4kv/G9IEucWScBx9G1/vsFZZJUO+tD26M8J8z3Kw5RDQjaoZe03YAClgeS/SWPOcb4nkFBTEi5DUEA==}
-
-  mdurl@1.0.1:
-    resolution: {integrity: sha512-/sKlQJCBYVY9Ers9hqzKou4H6V5UWc/M59TH2dvkt+84itfnq7uFOMLpOiOS4ujvHP4etln18fmIxA5R5fll0g==}
 
   mdurl@2.0.0:
     resolution: {integrity: sha512-Lf+9+2r+Tdp5wXDXC4PcIBjTDtq4UKjCPMQhKIuzpJNW0b96kVqSwW0bT7FhRSfmAiFYgP+SCRvdrDozfh0U5w==}
@@ -30156,9 +30138,6 @@ packages:
 
   ua-parser-js@0.7.31:
     resolution: {integrity: sha512-qLK/Xe9E2uzmYI3qLeOmI0tEOt+TBBQyUIAh4aAgU05FVYzeZrKUdkAZfBNVGRaHVgV0TDkdEngJSw/SyQchkQ==}
-
-  uc.micro@1.0.6:
-    resolution: {integrity: sha512-8Y75pvTYkLJW2hWQHXxoqRgV7qb9B+9vFEtidML+7koHUFapnVJAZ6cKs+Qjz5Aw3aZWHMC6u0wJE3At+nSGwA==}
 
   uc.micro@2.1.0:
     resolution: {integrity: sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A==}
@@ -44994,11 +44973,6 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  azure-devops-node-api@11.0.1:
-    dependencies:
-      tunnel: 0.0.6
-      typed-rest-client: 1.8.4
-
   azure-devops-node-api@12.5.0:
     dependencies:
       tunnel: 0.0.6
@@ -48058,8 +48032,6 @@ snapshots:
       strip-ansi: 6.0.1
 
   ent@2.2.0: {}
-
-  entities@2.1.0: {}
 
   entities@2.2.0: {}
 
@@ -52251,10 +52223,6 @@ snapshots:
 
   lines-and-columns@1.1.6: {}
 
-  linkify-it@3.0.3:
-    dependencies:
-      uc.micro: 1.0.6
-
   linkify-it@5.0.0:
     dependencies:
       uc.micro: 2.1.0
@@ -52580,14 +52548,6 @@ snapshots:
     dependencies:
       object-visit: 1.0.1
 
-  markdown-it@12.3.2:
-    dependencies:
-      argparse: 2.0.1
-      entities: 2.1.0
-      linkify-it: 3.0.3
-      mdurl: 1.0.1
-      uc.micro: 1.0.6
-
   markdown-it@14.1.0:
     dependencies:
       argparse: 2.0.1
@@ -52628,8 +52588,6 @@ snapshots:
   mdn-data@2.0.28: {}
 
   mdn-data@2.0.30: {}
-
-  mdurl@1.0.1: {}
 
   mdurl@2.0.0: {}
 
@@ -57621,8 +57579,6 @@ snapshots:
   typescript@5.5.3: {}
 
   ua-parser-js@0.7.31: {}
-
-  uc.micro@1.0.6: {}
 
   uc.micro@2.1.0: {}
 

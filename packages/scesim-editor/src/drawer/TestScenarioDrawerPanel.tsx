@@ -36,7 +36,13 @@ import TestScenarioDrawerDataSelectorPanel from "./TestScenarioDrawerDataSelecto
 import TestScenarioDrawerCheatSheetPanel from "./TestScenarioDrawerCheatSheetPanel";
 import TestScenarioDrawerSettingsPanel from "../drawer/TestScenarioDrawerSettingsPanel";
 
-function TestScenarioDrawerPanel({ onDrawerClose }: { onDrawerClose: () => void }) {
+function TestScenarioDrawerPanel({
+  scesimFilePath,
+  onDrawerClose,
+}: {
+  scesimFilePath: string | undefined;
+  onDrawerClose: () => void;
+}) {
   const { i18n } = useTestScenarioEditorI18n();
   const navigation = useTestScenarioEditorStore((state) => state.navigation);
   const settingsModel = useTestScenarioEditorStore((state) => state.scesim.model.ScenarioSimulationModel.settings);
@@ -76,7 +82,7 @@ function TestScenarioDrawerPanel({ onDrawerClose }: { onDrawerClose: () => void 
             case TestScenarioEditorDock.DATA_OBJECT:
               return <TestScenarioDrawerDataSelectorPanel />;
             case TestScenarioEditorDock.SETTINGS:
-              return <TestScenarioDrawerSettingsPanel />;
+              return <TestScenarioDrawerSettingsPanel scesimFilePath={scesimFilePath} />;
             default:
               throw new Error("Wrong state, an invalid dock has been selected " + navigation.dock.selected);
           }

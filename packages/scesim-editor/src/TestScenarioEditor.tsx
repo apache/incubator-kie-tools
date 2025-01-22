@@ -126,11 +126,11 @@ export type TestScenarioEditorProps = {
    */
   onModelDebounceStateChanged?: (changed: boolean) => void;
   /**
-   * Called when the contents of a specific available DMN model is necessary.
+   * Called when the contents of a specific available model is necessary. Used by the "Included models" tab.
    */
   onRequestExternalModelByPath?: OnRequestExternalModelByPath;
   /**
-   * Called when the list of paths of available DMN models
+   * Called when the list of paths of available models to be included is needed. Used by the "Included models" tab.
    */
   onRequestExternalModelsAvailableToInclude?: OnRequestExternalModelsAvailableToInclude;
   /**
@@ -139,7 +139,7 @@ export type TestScenarioEditorProps = {
    */
   onRequestToJumpToPath?: OnRequestToJumpToPath;
   /**
-   * All paths inside the Test Scenario Editor are relative. To be able to resolve them and display them as absolute paths, this function is called.
+   * All paths inside the DMN Editor are relative. To be able to resolve them and display them as absolute paths, this function is called.
    * If undefined, the relative paths will be displayed.
    */
   onRequestToResolvePath?: OnRequestToResolvePath;
@@ -161,14 +161,14 @@ export type TestScenarioSelectedColumnMetaData = {
   isBackground: boolean;
 };
 
-function TestScenarioMainPanel() {
+function TestScenarioMainPanel({ scesimFilePath }: { scesimFilePath: string | undefined }) {
   const { i18n } = useTestScenarioEditorI18n();
   const { commandsRef } = useCommands();
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const navigation = useTestScenarioEditorStore((s) => s.navigation);
   const scesimModel = useTestScenarioEditorStore((s) => s.scesim.model);
-  const isAlertEnabled = true; // Will be managed in kie-issue#970
   const testScenarioType = scesimModel.ScenarioSimulationModel.settings.type?.__$$text.toUpperCase();
+  const isAlertEnabled = testScenarioType !== "DMN"; // Will be managed in kie-issue#970
 
   const scenarioTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
   const backgroundTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
@@ -208,7 +208,11 @@ function TestScenarioMainPanel() {
     <>
       <div className="kie-scesim-editor--content">
         <Drawer isExpanded={navigation.dock.isOpen} isInline={true} position={"right"}>
-          <DrawerContent panelContent={<TestScenarioDrawerPanel onDrawerClose={() => showDockPanel(false)} />}>
+          <DrawerContent
+            panelContent={
+              <TestScenarioDrawerPanel scesimFilePath={scesimFilePath} onDrawerClose={() => showDockPanel(false)} />
+            }
+          >
             <DrawerContentBody>
               {isAlertEnabled && (
                 <div className="kie-scesim-editor--content-alert">
@@ -310,6 +314,7 @@ export const TestScenarioEditorInternal = ({
   model,
   onModelChange,
   onModelDebounceStateChanged,
+  openFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
 }: TestScenarioEditorProps & { forwardRef?: React.Ref<TestScenarioEditorRef> }) => {
   console.trace("[TestScenarioEditorInternal] Component creation ...");
 
@@ -433,7 +438,7 @@ export const TestScenarioEditorInternal = ({
               />
             );
           case TestScenarioFileStatus.VALID:
-            return <TestScenarioMainPanel />;
+            return <TestScenarioMainPanel scesimFilePath={openFileNormalizedPosixPathRelativeToTheWorkspaceRoot} />;
         }
       })()}
     </div>

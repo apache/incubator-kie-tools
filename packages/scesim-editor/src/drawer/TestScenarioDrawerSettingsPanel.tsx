@@ -17,7 +17,8 @@
  * under the License.
  */
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
+import { basename } from "path";
 
 import { Checkbox } from "@patternfly/react-core/dist/esm/components/Checkbox";
 import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/esm/components/FormSelect";
@@ -27,20 +28,48 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/esm/components/Tooltip";
 
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+
 import { SceSim__settingsType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
 import { useTestScenarioEditorI18n } from "../i18n";
 import { useTestScenarioEditorStore, useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
-
-import "./TestScenarioDrawerSettingsPanel.css";
+import { useExternalModels } from "../externalModels/TestScenarioEditorDependenciesContext";
 import { useTestScenarioEditor } from "../TestScenarioEditorContext";
 
-function TestScenarioDrawerSettingsPanel() {
+import "./TestScenarioDrawerSettingsPanel.css";
+
+function TestScenarioDrawerSettingsPanel({ scesimFilePath }: { scesimFilePath: string | undefined }) {
   const { i18n } = useTestScenarioEditorI18n();
-  const { openFileNormalizedPosixPathRelativeToTheWorkspaceRoot } = useTestScenarioEditor();
+  const { onRequestExternalModelsAvailableToInclude, onRequestExternalModelByPath } = useExternalModels();
+  const { onRequestToResolvePath } = useTestScenarioEditor();
   const settingsModel = useTestScenarioEditorStore((state) => state.scesim.model.ScenarioSimulationModel.settings);
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const testScenarioType = settingsModel.type?.__$$text.toUpperCase();
+  const [availableDmnModelPaths, setAvailableDmnModelPaths] = useState<string[] | undefined>(undefined);
+  const [selectedDMNPathRelativeToThisScesim, setSelectedDMNPathRelativeToThisScesim] = useState<string | undefined>(
+    settingsModel.dmnFilePath?.__$$text
+  );
+
+  /* Retrieving all the DMN available in the project */
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        onRequestExternalModelsAvailableToInclude?.()
+          .then((paths) => {
+            if (canceled.get()) {
+              return;
+            }
+            setAvailableDmnModelPaths(paths);
+          })
+          .catch((err) => {
+            console.error(err);
+            return;
+          });
+      },
+      [onRequestExternalModelsAvailableToInclude]
+    )
+  );
 
   const updateSettingsField = useCallback(
     (fieldName: keyof SceSim__settingsType, value: string | boolean) =>
@@ -62,7 +91,7 @@ function TestScenarioDrawerSettingsPanel() {
         className={"kie-scesim-editor-drawer-settings--text-input"}
         isDisabled
         type="text"
-        value={openFileNormalizedPosixPathRelativeToTheWorkspaceRoot}
+        value={scesimFilePath}
       />
       <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
         {i18n.drawer.settings.assetType}
@@ -79,15 +108,30 @@ function TestScenarioDrawerSettingsPanel() {
           <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
             {i18n.drawer.settings.dmnModel}
           </Title>
-          {/* Temporary Mocked */}
           <FormSelect
             aria-label="form-select-input"
             className={"kie-scesim-editor-drawer-settings--form-select"}
             ouiaId="BasicFormSelect"
-            value={"1"}
+            onChange={(path) => {
+              if (typeof path !== "string") {
+                throw new Error(`Invalid path for an included model ${JSON.stringify(path)}`);
+              }
+              setSelectedDMNPathRelativeToThisScesim(path);
+              console.trace(path);
+            }}
+            value={selectedDMNPathRelativeToThisScesim}
           >
-            <FormSelectOption isDisabled={true} key={0} value={"1"} label={"MockedDMN.dmn"} />
-            <FormSelectOption isDisabled={true} key={1} value={"2"} label={"MockedDMN2.dmn"} />
+            {((availableDmnModelPaths?.length ?? 0) > 0 &&
+              availableDmnModelPaths?.map((path) => {
+                const normalizedPosixPathRelativeToTheWorkspaceRoot = onRequestToResolvePath?.(path) ?? path;
+                return (
+                  <FormSelectOption
+                    key={path}
+                    value={normalizedPosixPathRelativeToTheWorkspaceRoot}
+                    label={basename(normalizedPosixPathRelativeToTheWorkspaceRoot)}
+                  />
+                );
+              })) || <FormSelectOption key={undefined} isDisabled label={i18n.creationPanel.dmnNoPresent} value={""} />}
           </FormSelect>
           <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
             {i18n.drawer.settings.dmnName}

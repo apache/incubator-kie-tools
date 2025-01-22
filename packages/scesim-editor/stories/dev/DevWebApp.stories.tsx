@@ -33,8 +33,9 @@ import {
   OnSceSimModelChange,
   TestScenarioEditorProps,
 } from "../../src/TestScenarioEditor";
+import { EMPTY_ONE_EIGHT } from "../../src/resources/EmptyScesimFile";
 import { SceSimEditorWrapper } from "../scesimEditorStoriesWrapper";
-import { emptyFileName, emptySceSim } from "../misc/empty/Empty.stories";
+import { emptyFileName } from "../misc/empty/Empty.stories";
 import { isOldEnoughDrl, isOldEnoughDrlFileName } from "../useCases/IsOldEnoughRule.stories";
 import { trafficViolationDmn, trafficViolationDmnFileName } from "../useCases/TrafficViolationDmn.stories";
 import { availableModelsByPath } from "../examples/AvailableDMNModels";
@@ -47,7 +48,7 @@ function DevWebApp(props: TestScenarioEditorProps) {
     pointer: number;
     stack: SceSimModel[];
   }>(() => {
-    const emptySceSimMarshaller = getMarshaller(emptySceSim);
+    const emptySceSimMarshaller = getMarshaller(EMPTY_ONE_EIGHT);
     return {
       marshaller: emptySceSimMarshaller,
       pointer: 0,
@@ -67,11 +68,11 @@ function DevWebApp(props: TestScenarioEditorProps) {
   const downloadAsXml = useCallback(() => {
     if (downloadRef.current) {
       const fileBlob = new Blob([state.marshaller.builder.build(currentModel)], { type: "text/xml" });
-      downloadRef.current.download = fileName ?? `scesim-test-${makeid(10)}.scesim`;
+      downloadRef.current.download = `scesim-test-${makeid(10)}.scesim`;
       downloadRef.current.href = URL.createObjectURL(fileBlob);
       downloadRef.current.click();
     }
-  }, [currentModel, fileName, state.marshaller.builder]);
+  }, [currentModel, state.marshaller.builder]);
 
   // TODO Unmarshall here the DMN
   const externalModelsByNamespace = useMemo<ExternalDmnsIndex>(() => {
@@ -107,16 +108,20 @@ function DevWebApp(props: TestScenarioEditorProps) {
     }
   }, []);
 
-  const onModelChange = useCallback<OnSceSimModelChange>((model) => {
-    setState((prev) => {
-      const newStack = prev.stack.slice(0, prev.pointer + 1);
-      return {
-        ...prev,
-        stack: [...newStack, model],
-        pointer: newStack.length,
-      };
-    });
-  }, []);
+  const onModelChange = useCallback<OnSceSimModelChange>(
+    (model) => {
+      setState((prev) => {
+        const newStack = prev.stack.slice(0, prev.pointer + 1);
+        return {
+          ...prev,
+          stack: [...newStack, model],
+          pointer: newStack.length,
+        };
+      });
+      setFileName(props.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot);
+    },
+    [props.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot]
+  );
 
   const onRequestToJumpToPath = useCallback<OnRequestToJumpToPath>((path) => {
     alert("A request to open this file: " + path);
@@ -135,7 +140,7 @@ function DevWebApp(props: TestScenarioEditorProps) {
   }, []);
 
   const reset = useCallback(() => {
-    const marshaller = getMarshaller(emptySceSim);
+    const marshaller = getMarshaller(EMPTY_ONE_EIGHT);
     setState({
       marshaller,
       pointer: 0,
@@ -172,7 +177,7 @@ function DevWebApp(props: TestScenarioEditorProps) {
           <StackItem>
             <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
               <FlexItem shrink={{ default: "shrink" }}>
-                <Button onClick={() => onSelectModel(emptySceSim, emptyFileName)}>Empty</Button>
+                <Button onClick={() => onSelectModel(EMPTY_ONE_EIGHT, emptyFileName)}>Empty</Button>
                 &nbsp; &nbsp;
                 <Button onClick={() => onSelectModel(isOldEnoughDrl, isOldEnoughDrlFileName)}>
                   Are They Old Enough?
@@ -264,7 +269,6 @@ export const WebApp: Story = {
   render: (args) => DevWebApp(args),
   args: {
     issueTrackerHref: "https://github.com/apache/incubator-kie-issues/issues/new",
-    model: getMarshaller(emptySceSim).parser.parse(),
-    openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: "Untitled.scesim",
+    model: getMarshaller(emptyFileName).parser.parse(),
   },
 };

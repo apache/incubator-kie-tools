@@ -45,6 +45,7 @@ export const en: TestScenarioEditorI18n = {
     createButton: "Create",
     dmnGroup: "Select DMN",
     dmnNoChoice: "Select a DMN file",
+    dmnNoPresent: "No DMN files found in the project",
     kieSessionGroup: "KIE Session",
     kieAgendaGroup: "Group",
     optional: "Optional",

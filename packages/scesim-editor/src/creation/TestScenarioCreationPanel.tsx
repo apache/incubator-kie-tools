@@ -18,7 +18,9 @@
  */
 
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { basename } from "path";
 
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
@@ -38,9 +40,30 @@ import { useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext
 import { useTestScenarioEditorI18n } from "../i18n";
 
 import "./TestScenarioCreationPanel.css";
+import { useExternalModels } from "../externalModels/TestScenarioEditorDependenciesContext";
+import { ExternalDmn } from "../TestScenarioEditor";
+import { useTestScenarioEditor } from "../TestScenarioEditorContext";
+import { createNewDmnTypeTestScenario } from "../mutations/createNewDmnTypeTestScenario";
+import { createNewRuleTypeTestScenario } from "../mutations/createNewRuleTypeTestScenario";
 
 function TestScenarioCreationPanel() {
   const { i18n } = useTestScenarioEditorI18n();
+  const { onRequestExternalModelsAvailableToInclude, onRequestExternalModelByPath } = useExternalModels();
+  const { onRequestToResolvePath } = useTestScenarioEditor();
+  const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
+
+  const [assetType, setAssetType] = React.useState<"" | "DMN" | "RULE">("");
+  const [isAutoFillTableEnabled, setAutoFillTableEnabled] = React.useState(true);
+  const [isStatelessSessionRule, setStatelessSessionRule] = React.useState(false);
+  const [isTestSkipped, setTestSkipped] = React.useState(false);
+  const [kieSessionRule, setKieSessionRule] = React.useState("");
+  const [availableDmnModelPaths, setAvailableDmnModelPaths] = useState<string[] | undefined>(undefined);
+  const [selectedDmnPathRelativeToThisScesim, setSelectedDmnPathRelativeToThisScesim] = useState<string | undefined>(
+    undefined
+  );
+  const [ruleFlowGroup, setRuleFlowGroup] = React.useState("");
+  const [selectedDmnModel, setSelectedDmnModel] = useState<ExternalDmn | undefined>(undefined);
+  const [selectedModelError, setSelectedModelError] = useState<string | undefined>(undefined);
 
   const assetsOption = [
     { value: "", label: i18n.creationPanel.assetsOption.noChoice, disabled: true },
@@ -48,34 +71,87 @@ function TestScenarioCreationPanel() {
     { value: "RULE", label: i18n.creationPanel.assetsOption.rule, disabled: false },
   ];
 
-  const [assetType, setAssetType] = React.useState<"" | "DMN" | "RULE">("");
-  const [isAutoFillTableEnabled, setAutoFillTableEnabled] = React.useState(true);
-  const [isStatelessSessionRule, setStatelessSessionRule] = React.useState(false);
-  const [isTestSkipped, setTestSkipped] = React.useState(false);
-  const [kieSessionRule, setKieSessionRule] = React.useState("");
-  const [ruleFlowGroup, setRuleFlowGroup] = React.useState("");
-  const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (!selectedDmnPathRelativeToThisScesim || onRequestExternalModelByPath === undefined) {
+          return;
+        }
+
+        onRequestExternalModelByPath(selectedDmnPathRelativeToThisScesim)
+          .then((externalModel) => {
+            if (canceled.get() || !externalModel) {
+              return;
+            }
+
+            setSelectedModelError(undefined);
+            setSelectedDmnModel(externalModel);
+          })
+          .catch((err) => {
+            setSelectedModelError(
+              `An error occurred when parsing the selected model '${selectedDmnPathRelativeToThisScesim}'. Please double-check it is a non-empty valid model.`
+            );
+            console.error(err);
+            return;
+          });
+      },
+      [onRequestExternalModelByPath, selectedDmnPathRelativeToThisScesim]
+    )
+  );
+
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        onRequestExternalModelsAvailableToInclude?.()
+          .then((paths) => {
+            if (canceled.get()) {
+              return;
+            }
+            setAvailableDmnModelPaths(paths);
+          })
+          .catch((err) => {
+            console.error(err);
+            return;
+          });
+      },
+      [onRequestExternalModelsAvailableToInclude]
+    )
+  );
 
   const createTestScenario = useCallback(
-    (
-      assetType: string,
-      isStatelessSessionRule: boolean,
-      isTestSkipped: boolean,
-      kieSessionRule: string,
-      ruleFlowGroup: string
-    ) =>
+    () =>
       testScenarioEditorStoreApi.setState((state) => {
-        const settings = state.scesim.model.ScenarioSimulationModel.settings;
-        settings.dmnFilePath = assetType === "DMN" ? { __$$text: "./MockedDMNName.dmn" } : undefined;
-        settings.dmnName = assetType === "DMN" ? { __$$text: "MockedDMNName.dmn" } : undefined;
-        settings.dmnNamespace = assetType === "DMN" ? { __$$text: "https:\\kiegroup" } : undefined;
-        settings.dmoSession = assetType === "RULE" && kieSessionRule ? { __$$text: kieSessionRule } : undefined;
-        settings.ruleFlowGroup = assetType === "RULE" && ruleFlowGroup ? { __$$text: ruleFlowGroup } : undefined;
-        settings.skipFromBuild = { __$$text: isTestSkipped };
-        settings.stateless = assetType === "RULE" ? { __$$text: isStatelessSessionRule } : undefined;
-        settings.type = { __$$text: assetType };
+        assetType === "DMN"
+          ? createNewDmnTypeTestScenario({
+              dmnModel: selectedDmnModel!,
+              factMappingsModel:
+                state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!,
+              factMappingValuesModel: state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!,
+              isAutoFillTableEnabled,
+              isTestSkipped,
+              settingsModel: state.scesim.model.ScenarioSimulationModel.settings,
+            })
+          : createNewRuleTypeTestScenario({
+              factMappingsModel:
+                state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!,
+              factMappingValuesModel: state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!,
+              isStatelessSessionRule,
+              isTestSkipped,
+              kieSessionRule,
+              ruleFlowGroup,
+              settingsModel: state.scesim.model.ScenarioSimulationModel.settings,
+            });
       }),
-    [testScenarioEditorStoreApi]
+    [
+      assetType,
+      isAutoFillTableEnabled,
+      isStatelessSessionRule,
+      isTestSkipped,
+      kieSessionRule,
+      ruleFlowGroup,
+      selectedDmnModel,
+      testScenarioEditorStoreApi,
+    ]
   );
 
   return (
@@ -100,8 +176,32 @@ function TestScenarioCreationPanel() {
         {assetType === "DMN" && (
           <>
             <FormGroup label={i18n.creationPanel.dmnGroup} isRequired>
-              <FormSelect id="dmn-select" name="dmn-select" value={""} isDisabled>
-                <FormSelectOption isDisabled={true} key={0} value={""} label={i18n.creationPanel.dmnNoChoice} />
+              <FormSelect
+                id="dmn-select"
+                name="dmn-select"
+                onChange={(path) => {
+                  if (typeof path !== "string") {
+                    throw new Error(`Invalid path for an included model ${JSON.stringify(path)}`);
+                  }
+                  setSelectedDmnPathRelativeToThisScesim(path);
+                  console.trace(path);
+                }}
+                value={selectedDmnPathRelativeToThisScesim}
+              >
+                <FormSelectOption key={undefined} isDisabled label={i18n.creationPanel.dmnNoChoice} value={""} />
+                {((availableDmnModelPaths?.length ?? 0) > 0 &&
+                  availableDmnModelPaths?.map((path) => {
+                    const normalizedPosixPathRelativeToTheWorkspaceRoot = onRequestToResolvePath?.(path) ?? path;
+                    return (
+                      <FormSelectOption
+                        key={path}
+                        value={normalizedPosixPathRelativeToTheWorkspaceRoot}
+                        label={basename(normalizedPosixPathRelativeToTheWorkspaceRoot)}
+                      />
+                    );
+                  })) || (
+                  <FormSelectOption key={undefined} isDisabled label={i18n.creationPanel.dmnNoPresent} value={""} />
+                )}
               </FormSelect>
             </FormGroup>
             <FormGroup>
@@ -186,10 +286,8 @@ function TestScenarioCreationPanel() {
       </Form>
       <Button
         icon={<AddIcon />}
-        isDisabled={assetType == ""}
-        onClick={() =>
-          createTestScenario(assetType, isStatelessSessionRule, isTestSkipped, kieSessionRule, ruleFlowGroup)
-        }
+        isDisabled={assetType === "" || (assetType === "DMN" && !selectedDmnModel)}
+        onClick={createTestScenario}
         variant="primary"
       >
         {i18n.creationPanel.createButton}

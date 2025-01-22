@@ -4,6 +4,18 @@
   "description": "The Test Scenario editor, a powerful tool to create, edit and manage *.scesim files, to test DMN assets",
   "license": "Apache-2.0",
   "keywords": [],
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "build:dev": "rimraf dist && tsc -p tsconfig.json",
     "build:prod": "rimraf dist && pnpm lint && tsc -p tsconfig.json && pnpm test-e2e",
@@ -20,6 +32,7 @@
   "dependencies": {
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
+    "@kie-tools-core/react-hooks": "workspace:*",
     "@kie-tools/boxed-expression-component": "workspace:*",
     "@kie-tools/dmn-marshaller": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",
