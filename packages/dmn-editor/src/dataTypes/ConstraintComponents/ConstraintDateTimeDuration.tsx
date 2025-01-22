@@ -102,7 +102,7 @@ export function ConstraintDateTimeDuration({
             placeholder={"Days"}
             className={`kie-dmn-editor--constraint-input ${isValid ? "" : "kie-dmn-editor--constraint-invalid"}`}
             value={days}
-            onChange={onDaysChange}
+            onChange={(_event, _val) => onDaysChange}
             isDisabled={isDisabled}
             autoFocus={true}
           />
@@ -115,7 +115,7 @@ export function ConstraintDateTimeDuration({
             placeholder={"Hours"}
             className={`kie-dmn-editor--constraint-input ${isValid ? "" : "kie-dmn-editor--constraint-invalid"}`}
             value={hours}
-            onChange={onHoursChange}
+            onChange={(_event, _val) => onHoursChange}
             isDisabled={isDisabled}
           />
         </div>
@@ -127,7 +127,7 @@ export function ConstraintDateTimeDuration({
             placeholder={"Minutes"}
             className={`kie-dmn-editor--constraint-input ${isValid ? "" : "kie-dmn-editor--constraint-invalid"}`}
             value={minutes}
-            onChange={onMinutesChange}
+            onChange={(_event, _val) => onMinutesChange}
             isDisabled={isDisabled}
           />
         </div>
@@ -139,7 +139,7 @@ export function ConstraintDateTimeDuration({
             placeholder={"Seconds"}
             className={`kie-dmn-editor--constraint-input ${isValid ? "" : "kie-dmn-editor--constraint-invalid"}`}
             value={seconds}
-            onChange={onSecondsChange}
+            onChange={(_event, _val) => onSecondsChange}
             isDisabled={isDisabled}
           />
         </div>

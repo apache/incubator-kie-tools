@@ -26,7 +26,7 @@
 
   &__header {
     &__container {
-      background-color: var(--pf-c-page__main-section--m-light--BackgroundColor);
+      background-color: var(--pf-v5-c-page__main-section--m-light--BackgroundColor);
     }
 
     &__content {
@@ -37,7 +37,7 @@
 
   &__body {
     &__container {
-      background-color: var(--pf-c-page__main-section--BackgroundColor);
+      background-color: var(--pf-v5-c-page__main-section--BackgroundColor);
       flex-grow: 1;
     }
 
@@ -54,7 +54,7 @@
 
 .editable-item {
   --sizeEasing: cubic-bezier(0.25, 1, 0.5, 1);
-  border: 1px solid var(--pf-global--BorderColor--100);
+  border: 1px solid var(--pf-v5-global--BorderColor--100);
   background-color: #ffffff;
   margin-bottom: 1em;
   transition:
@@ -69,8 +69,8 @@
   }
 
   &:not(.editable-item--editing):hover {
-    box-shadow: var(--pf-global--BoxShadow--lg);
-    border-left: var(--pf-global--BorderWidth--lg) solid var(--pf-global--BorderColor--light-100);
+    box-shadow: var(--pf-v5-global--BoxShadow--lg);
+    border-left: var(--pf-v5-global--BorderWidth--lg) solid var(--pf-v5-global--BorderColor--light-100);
   }
 
   // from 5 items reduce spacing
@@ -95,8 +95,8 @@
 
   &--editing {
     cursor: auto;
-    box-shadow: var(--pf-global--BoxShadow--sm-top), var(--pf-global--BoxShadow--sm-bottom);
-    border-left: var(--pf-global--BorderWidth--lg) solid var(--pf-global--active-color--100);
+    box-shadow: var(--pf-v5-global--BoxShadow--sm-top), var(--pf-v5-global--BoxShadow--sm-bottom);
+    border-left: var(--pf-v5-global--BorderWidth--lg) solid var(--pf-v5-global--active-color--100);
 
     .editable-item__inner {
       padding: 1em !important;

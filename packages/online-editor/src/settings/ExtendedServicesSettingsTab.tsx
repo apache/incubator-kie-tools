@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useCallback, useState } from "react";
 import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
@@ -28,6 +28,8 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
 import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
+import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 
 export function ExtendedServicesSettingsTab() {
   const { settings } = useSettings();
@@ -73,43 +75,61 @@ export function ExtendedServicesSettingsTab() {
               </FormAlert>
               <FormGroup
                 isRequired={true}
-                helperTextInvalid={""}
-                validated={"default"}
+                // helperTextInvalid={""}
+                // validated={"default"}
                 label={"Host"}
                 fieldId={"host-input"}
               >
                 <InputGroup>
-                  <TextInput
-                    id="host-input"
-                    name="host"
-                    aria-describedby="host-text-input-helper"
-                    placeholder={""}
-                    validated={"default"}
-                    value={host}
-                    onChange={setHost}
-                    autoFocus={true}
-                  />
+                  <InputGroupItem isFill>
+                    <TextInput
+                      id="host-input"
+                      name="host"
+                      aria-describedby="host-text-input-helper"
+                      placeholder={""}
+                      validated={"default"}
+                      value={host}
+                      onChange={(_event, val) => setHost(val)}
+                      autoFocus={true}
+                    />
+                  </InputGroupItem>
                 </InputGroup>
+                <HelperText>
+                  (
+                  <HelperTextItem variant="default" icon={ValidatedOptions.default}>
+                    {""}
+                  </HelperTextItem>
+                  )
+                </HelperText>
               </FormGroup>
               <FormGroup
                 isRequired={false}
-                helperTextInvalid={""}
-                validated={"default"}
+                // helperTextInvalid={""}
+                // validated={"default"}
                 label={"Port"}
                 fieldId={"port-input"}
               >
                 <InputGroup>
-                  <TextInput
-                    id="port-input"
-                    name="port"
-                    aria-describedby="port-text-input-helper"
-                    placeholder={""}
-                    validated={"default"}
-                    value={port}
-                    onChange={setPort}
-                    autoFocus={true}
-                  />
+                  <InputGroupItem isFill>
+                    <TextInput
+                      id="port-input"
+                      name="port"
+                      aria-describedby="port-text-input-helper"
+                      placeholder={""}
+                      validated={"default"}
+                      value={port}
+                      onChange={(_event, val) => setPort(val)}
+                      autoFocus={true}
+                    />
+                  </InputGroupItem>
                 </InputGroup>
+                <HelperText>
+                  (
+                  <HelperTextItem variant="default" icon={ValidatedOptions.default}>
+                    {""}
+                  </HelperTextItem>
+                  )
+                </HelperText>
               </FormGroup>
               <ActionGroup>
                 <Button

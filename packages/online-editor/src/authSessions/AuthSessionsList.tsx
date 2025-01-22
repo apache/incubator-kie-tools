@@ -19,14 +19,7 @@
 
 import * as React from "react";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import {
-  Card,
-  CardActions,
-  CardBody,
-  CardExpandableContent,
-  CardHeader,
-  CardHeaderMain,
-} from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody, CardExpandableContent, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
 import { Stack } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { AuthSessionLabel } from "./AuthSessionLabel";
 import { useAuthSessions, useAuthSessionsDispatch } from "./AuthSessionsContext";
@@ -137,38 +130,46 @@ function AuthSessionCard(props: {
 
   return (
     <Card key={props.authSession.id} isCompact={true} isExpanded={isExpanded}>
-      <CardHeader onExpand={() => setExpanded((prev) => !prev)}>
-        <CardActions>
-          {authSessionStatus.get(props.authSession.id) === AuthSessionStatus.INVALID && (
-            <Tooltip content={"Could not authenticate using this session. Its Token was probably revoked, or expired."}>
-              <>
-                <ExclamationCircleIcon style={{ color: "var(--pf-global--palette--red-100)" }} />
-              </>
-            </Tooltip>
-          )}
-          <Button variant={ButtonVariant.link} onClick={() => authSessionsDispatch.remove(props.authSession)}>
-            Remove
-          </Button>
-        </CardActions>
-        <CardHeaderMain
-          style={{
-            display: "flex",
-            opacity: (props.authSession.type !== "git" ? 1 : props.usages?.length ?? 0) <= 0 ? 0.5 : 1,
-          }}
-        >
-          <AuthSessionLabel authSession={props.authSession} />
-          {(props.authSession.type === "git" ||
-            props.authSession.type === "openshift" ||
-            props.authSession.type === "kubernetes") && (
+      <CardHeader
+        actions={{
+          actions: (
             <>
-              &nbsp; &nbsp; &nbsp;
-              <Label>
-                &nbsp;{props.usages ? (props.usages.length === 1 ? "1 usage" : `${props.usages.length} usages`) : "-"}
-                &nbsp;
-              </Label>
+              {authSessionStatus.get(props.authSession.id) === AuthSessionStatus.INVALID && (
+                <Tooltip
+                  content={"Could not authenticate using this session. Its Token was probably revoked, or expired."}
+                >
+                  <>
+                    <ExclamationCircleIcon style={{ color: "var(--pf-v5-global--palette--red-100)" }} />
+                  </>
+                </Tooltip>
+              )}
+              <Button variant={ButtonVariant.link} onClick={() => authSessionsDispatch.remove(props.authSession)}>
+                Remove
+              </Button>
             </>
-          )}
-        </CardHeaderMain>
+          ),
+          hasNoOffset: false,
+          className: undefined,
+        }}
+        onExpand={() => setExpanded((prev) => !prev)}
+      >
+        actions=
+        {
+          <>
+            <AuthSessionLabel authSession={props.authSession} />
+            {(props.authSession.type === "git" ||
+              props.authSession.type === "openshift" ||
+              props.authSession.type === "kubernetes") && (
+              <>
+                &nbsp; &nbsp; &nbsp;
+                <Label>
+                  &nbsp;{props.usages ? (props.usages.length === 1 ? "1 usage" : `${props.usages.length} usages`) : "-"}
+                  &nbsp;
+                </Label>
+              </>
+            )}
+          </>
+        }
       </CardHeader>
       <CardExpandableContent>
         <CardBody>

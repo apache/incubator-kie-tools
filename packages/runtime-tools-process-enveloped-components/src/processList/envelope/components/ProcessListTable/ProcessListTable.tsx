@@ -17,8 +17,8 @@
  * under the License.
  */
 import React, { useEffect, useMemo, useState } from "react";
-import { ExpandableRowContent } from "@patternfly/react-table/dist/js/components/Table";
-import { TableComposable, Thead, Tbody, Tr, Th, Td } from "@patternfly/react-table/dist/js/components/TableComposable";
+import { ExpandableRowContent, Tr, Th, Thead, Td, Tbody } from "@patternfly/react-table/dist/js/components/Table";
+import { Table } from "@patternfly/react-table/deprecated";
 import _ from "lodash";
 import ProcessListChildTable from "../ProcessListChildTable/ProcessListChildTable";
 import { HistoryIcon } from "@patternfly/react-icons/dist/js/icons/history-icon";
@@ -241,7 +241,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
             processInstance.start ? <Moment fromNow>{new Date(`${processInstance.start}`)}</Moment> : "",
             processInstance.lastUpdate ? (
               <span>
-                <HistoryIcon className="pf-u-mr-sm" /> {"Updated "}
+                <HistoryIcon className="pf-v5-u-mr-sm" /> {"Updated "}
                 <Moment fromNow>{new Date(`${processInstance.lastUpdate}`)}</Moment>
               </span>
             ) : (
@@ -358,7 +358,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
         processName={selectedProcessInstance && selectedProcessInstance.processName}
         ouiaId={selectedProcessInstance && "process-" + selectedProcessInstance.id}
       />
-      <TableComposable
+      <Table
         data-testid="process-list-table"
         aria-label="Process List Table"
         {...componentOuiaProps(ouiaId, "process-list-table", ouiaSafe ? ouiaSafe : !isLoading)}
@@ -467,7 +467,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
             </Tr>
           </tbody>
         )}
-      </TableComposable>
+      </Table>
     </React.Fragment>
   );
 };

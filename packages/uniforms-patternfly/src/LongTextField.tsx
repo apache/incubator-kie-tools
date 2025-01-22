@@ -51,7 +51,7 @@ function LongTextField({
         disabled={disabled}
         name={name}
         aria-label={name}
-        onChange={(value, event) => onChange(event.target.value)}
+        onChange={(event, value) => onChange(event.target.value)}
         placeholder={placeholder}
         ref={inputRef}
         value={value ?? ""}

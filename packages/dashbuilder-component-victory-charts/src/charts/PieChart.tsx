@@ -37,7 +37,6 @@ export class PieChart extends PieBaseChart {
         animate={this.animationProp}
         padding={this.props.padding}
         themeColor={themeColor}
-        themeVariant={themeVariant}
         width={width}
         height={height}
       />

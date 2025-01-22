@@ -39,7 +39,7 @@ export function GroupProperties({ group, index }: { group: Normalized<DMN15__tGr
           aria-label={"Name"}
           type={"text"}
           isDisabled={settings.isReadOnly}
-          onChange={(newName) => {
+          onChange={(_event, newName) => {
             setState((state) => {
               renameGroupNode({
                 definitions: state.dmn.model.definitions,
@@ -59,7 +59,7 @@ export function GroupProperties({ group, index }: { group: Normalized<DMN15__tGr
           type={"text"}
           isDisabled={settings.isReadOnly}
           value={group.description?.__$$text}
-          onChange={(newDescription) => {
+          onChange={(_event, newDescription) => {
             setState((state) => {
               (state.dmn.model.definitions.artifact![index] as Normalized<DMN15__tGroup>).description = {
                 __$$text: newDescription,

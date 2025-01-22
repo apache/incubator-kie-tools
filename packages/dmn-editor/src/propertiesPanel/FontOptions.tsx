@@ -22,7 +22,7 @@ import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normali
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { NumberInput } from "@patternfly/react-core/dist/js/components/NumberInput";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import { PencilAltIcon } from "@patternfly/react-icons/dist/js/icons/pencil-alt-icon";
 import { UndoAltIcon } from "@patternfly/react-icons/dist/js/icons/undo-alt-icon";

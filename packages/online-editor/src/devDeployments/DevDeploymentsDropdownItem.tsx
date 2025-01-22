@@ -18,7 +18,7 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownItem } from "@patternfly/react-core/deprecated";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
@@ -191,7 +191,7 @@ export function DevDeploymentsDropdownItem(props: Props) {
       <FlexItem alignSelf={{ default: "alignSelfCenter" }}>
         <Button
           className="kogito--editor__dev-deployments-dropdown-item-delete"
-          style={{ color: "var(--pf-global--palette--black-500)" }}
+          style={{ color: "var(--pf-v5-global--palette--black-500)" }}
           variant={ButtonVariant.link}
           isDanger={true}
           onClick={onDelete}

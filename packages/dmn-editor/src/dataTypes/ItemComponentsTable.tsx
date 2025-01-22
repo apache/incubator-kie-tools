@@ -28,12 +28,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { TypeRefSelector } from "./TypeRefSelector";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownSeparator,
-  KebabToggle,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownItem, DropdownSeparator, KebabToggle } from "@patternfly/react-core/deprecated";
 import { ImportIcon } from "@patternfly/react-icons/dist/js/icons/import-icon";
 import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-icon";
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
@@ -185,7 +180,7 @@ export function ItemComponentsTable({
               toggle={
                 <KebabToggle
                   id={"toggle-kebab-properties-table"}
-                  onToggle={(isOpen) => setDropdownOpenFor(isOpen ? parent.itemDefinition["@_id"] : undefined)}
+                  onToggle={(_event, isOpen) => setDropdownOpenFor(isOpen ? parent.itemDefinition["@_id"] : undefined)}
                 />
               }
               onSelect={() => setDropdownOpenFor(undefined)}
@@ -406,7 +401,7 @@ export function ItemComponentsTable({
                           aria-label={"Is struct?"}
                           isDisabled={isReadOnly}
                           isChecked={isStruct(dt.itemDefinition)}
-                          onChange={(isChecked) => {
+                          onChange={(_event, isChecked) => {
                             editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
                               if (isChecked) {
                                 itemDefinition.typeRef = undefined;
@@ -452,7 +447,7 @@ export function ItemComponentsTable({
                           aria-label={"Is collection?"}
                           isDisabled={isReadOnly}
                           isChecked={dt.itemDefinition["@_isCollection"] ?? false}
-                          onChange={(isChecked) => {
+                          onChange={(_event, isChecked) => {
                             editItemDefinition(dt.itemDefinition["@_id"]!, (itemDefinition, items) => {
                               itemDefinition["@_isCollection"] = isChecked;
                               itemDefinition.typeConstraint = undefined;
@@ -483,7 +478,9 @@ export function ItemComponentsTable({
                           toggle={
                             <KebabToggle
                               id={"toggle-kebab-" + dt.itemDefinition["@_id"]}
-                              onToggle={(isOpen) => setDropdownOpenFor(isOpen ? dt.itemDefinition["@_id"] : undefined)}
+                              onToggle={(_event, isOpen) =>
+                                setDropdownOpenFor(isOpen ? dt.itemDefinition["@_id"] : undefined)
+                              }
                             />
                           }
                           onSelect={() => setDropdownOpenFor(undefined)}

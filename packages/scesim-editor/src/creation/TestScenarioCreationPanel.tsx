@@ -22,13 +22,18 @@ import { useCallback } from "react";
 
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
-import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateIcon,
+  EmptyStateFooter,
+  EmptyStateActions,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/js/components/FormSelect";
 import { HelpIcon } from "@patternfly/react-icons/dist/esm/icons/help-icon";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 import AddIcon from "@patternfly/react-icons/dist/esm/icons/add-circle-o-icon";
@@ -38,6 +43,7 @@ import { useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext
 import { useTestScenarioEditorI18n } from "../i18n";
 
 import "./TestScenarioCreationPanel.css";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
 function TestScenarioCreationPanel() {
   const { i18n } = useTestScenarioEditorI18n();
@@ -81,7 +87,7 @@ function TestScenarioCreationPanel() {
   return (
     <EmptyState>
       <EmptyStateIcon icon={CubesIcon} />
-      <Title headingLevel={"h6"} size={"md"}>
+      <Title headingLevel={"h6"} size="md">
         {i18n.creationPanel.title}
       </Title>
       <Form isHorizontal className="kie-scesim-editor--creation-form">
@@ -89,7 +95,7 @@ function TestScenarioCreationPanel() {
           <FormSelect
             id="asset-type-select"
             name="asset-type-select"
-            onChange={(value: "" | "DMN" | "RULE") => setAssetType(value)}
+            onChange={(_event, value: "" | "DMN" | "RULE") => setAssetType(value)}
             value={assetType}
           >
             {assetsOption.map((option, index) => (
@@ -118,7 +124,7 @@ function TestScenarioCreationPanel() {
                     </Tooltip>
                   </>
                 }
-                onChange={(value: boolean) => {
+                onChange={(_event, value: boolean) => {
                   setAutoFillTableEnabled(value);
                 }}
               />
@@ -129,7 +135,7 @@ function TestScenarioCreationPanel() {
           <>
             <FormGroup label={i18n.creationPanel.kieSessionGroup}>
               <TextInput
-                onChange={(value) => setKieSessionRule(value)}
+                onChange={(_event, value) => setKieSessionRule(value)}
                 placeholder={"<" + i18n.creationPanel.optional + ">"}
                 type="text"
                 value={kieSessionRule}
@@ -137,7 +143,7 @@ function TestScenarioCreationPanel() {
             </FormGroup>
             <FormGroup label={i18n.creationPanel.kieAgendaGroup}>
               <TextInput
-                onChange={(value) => setRuleFlowGroup(value)}
+                onChange={(_event, value) => setRuleFlowGroup(value)}
                 placeholder={"<" + i18n.creationPanel.optional + ">"}
                 type="text"
                 value={ruleFlowGroup}
@@ -157,7 +163,7 @@ function TestScenarioCreationPanel() {
                     </Tooltip>
                   </>
                 }
-                onChange={(value) => {
+                onChange={(_event, value) => {
                   setStatelessSessionRule(value);
                 }}
               />
@@ -178,22 +184,26 @@ function TestScenarioCreationPanel() {
                 </Tooltip>
               </>
             }
-            onChange={(value: boolean) => {
+            onChange={(_event, value: boolean) => {
               setTestSkipped(value);
             }}
           />
         </FormGroup>
       </Form>
-      <Button
-        icon={<AddIcon />}
-        isDisabled={assetType == ""}
-        onClick={() =>
-          createTestScenario(assetType, isStatelessSessionRule, isTestSkipped, kieSessionRule, ruleFlowGroup)
-        }
-        variant="primary"
-      >
-        {i18n.creationPanel.createButton}
-      </Button>
+      <EmptyStateFooter>
+        <EmptyStateActions>
+          <Button
+            variant="primary"
+            icon={<AddIcon />}
+            isDisabled={assetType == ""}
+            onClick={() =>
+              createTestScenario(assetType, isStatelessSessionRule, isTestSkipped, kieSessionRule, ruleFlowGroup)
+            }
+          >
+            {i18n.creationPanel.createButton}
+          </Button>
+        </EmptyStateActions>
+      </EmptyStateFooter>
     </EmptyState>
   );
 }

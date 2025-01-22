@@ -21,9 +21,10 @@ import { ReactElement, useMemo } from "react";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
-import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
+
 import "./ModelTitle.scss";
 import { ValidationEntry, ValidationLevel } from "../../../validation";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 interface ValidationIndicatorProps {
   validations: ValidationEntry[];
@@ -39,8 +40,16 @@ export const ValidationIndicator = (props: ValidationIndicatorProps) => {
       {maxLevel !== undefined && (
         <ValidationIndicatorTooltip validations={validations}>
           <>
-            {maxLevel === ValidationLevel.ERROR && <ExclamationCircleIcon size={"sm"} color={"red"} />}
-            {maxLevel === ValidationLevel.WARNING && <ExclamationTriangleIcon size={"sm"} color={"orange"} />}
+            {maxLevel === ValidationLevel.ERROR && (
+              <Icon size="sm">
+                <ExclamationCircleIcon color={"red"} />
+              </Icon>
+            )}
+            {maxLevel === ValidationLevel.WARNING && (
+              <Icon size="sm">
+                <ExclamationCircleIcon color={"orange"} />
+              </Icon>
+            )}
           </>
         </ValidationIndicatorTooltip>
       )}
@@ -96,9 +105,17 @@ export const ValidationIndicatorLabel = (props: ValidationIndicatorLabelProps) =
   const labelIcon = useMemo(() => {
     switch (maxLevel) {
       case ValidationLevel.ERROR:
-        return <ExclamationCircleIcon size={"sm"} color={"red"} />;
+        return (
+          <Icon size="sm">
+            <ExclamationCircleIcon color={"red"} />
+          </Icon>
+        );
       case ValidationLevel.WARNING:
-        return <ExclamationTriangleIcon size={"sm"} color={"orange"} />;
+        return (
+          <Icon size="sm">
+            <ExclamationCircleIcon color={"orange"} />
+          </Icon>
+        );
       default:
         return undefined;
     }

@@ -137,8 +137,8 @@ test("<TextField> - renders a label", () => {
 test("<TextField> - renders a help", () => {
   render(usingUniformsContext(<TextField required={false} name="x" helperText="y" />, { x: { type: String } }));
 
-  expect(screen.getByTestId("wrapper-field").querySelector(".pf-c-form__helper-text")).toBeInTheDocument();
-  expect(screen.getByTestId("wrapper-field").querySelector(".pf-c-form__helper-text")?.textContent).toBe("y");
+  expect(screen.getByTestId("wrapper-field").querySelector(".pf-v5-c-form__helper-text")).toBeInTheDocument();
+  expect(screen.getByTestId("wrapper-field").querySelector(".pf-v5-c-form__helper-text")?.textContent).toBe("y");
 });
 
 test("<TextField> - renders a initial value on date field (type = date)", () => {

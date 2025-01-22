@@ -378,7 +378,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
                   });
                 }}
               >
-                <InfoIcon size={"sm"} />
+                <InfoIcon />
               </button>
             </aside>
           </Flex>

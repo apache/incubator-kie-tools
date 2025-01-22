@@ -26,9 +26,10 @@ import {
   DrilldownMenu,
   Menu,
   MenuContent,
-  MenuInput,
+  MenuSearch,
   MenuItem,
   MenuList,
+  MenuSearchInput,
 } from "@patternfly/react-core/dist/js/components/Menu";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { basename } from "path";
@@ -319,29 +320,33 @@ export function NewFileDropdownMenu(props: {
               <DrilldownMenu id={"importFromUrlMenu"}>
                 <MenuItem direction="up">Back</MenuItem>
                 <Divider />
-                <MenuInput>
-                  <ImportFromUrlForm
-                    importingError={importingError}
-                    allowedTypes={allowedUrlTypes}
-                    urlInputRef={urlInputRef}
-                    url={url}
-                    onChange={(url) => {
-                      setUrl(url);
-                      setImportingError(undefined);
-                    }}
-                    onValidate={setIsUrlValid}
-                    onSubmit={() => importFromUrl(url)}
-                  />
-                </MenuInput>
-                <MenuInput>
-                  <ImportFromUrlButton
-                    allowedTypes={allowedUrlTypes}
-                    url={url}
-                    isUrlValid={isUrlValid}
-                    isLoading={isImporting}
-                    onClick={() => importFromUrl(url)}
-                  />
-                </MenuInput>
+                <MenuSearch>
+                  <MenuSearchInput>
+                    <ImportFromUrlForm
+                      importingError={importingError}
+                      allowedTypes={allowedUrlTypes}
+                      urlInputRef={urlInputRef}
+                      url={url}
+                      onChange={(url) => {
+                        setUrl(url);
+                        setImportingError(undefined);
+                      }}
+                      onValidate={setIsUrlValid}
+                      onSubmit={() => importFromUrl(url)}
+                    />
+                  </MenuSearchInput>
+                </MenuSearch>
+                <MenuSearch>
+                  <MenuSearchInput>
+                    <ImportFromUrlButton
+                      allowedTypes={allowedUrlTypes}
+                      url={url}
+                      isUrlValid={isUrlValid}
+                      isLoading={isImporting}
+                      onClick={() => importFromUrl(url)}
+                    />
+                  </MenuSearchInput>
+                </MenuSearch>
               </DrilldownMenu>
             }
           >

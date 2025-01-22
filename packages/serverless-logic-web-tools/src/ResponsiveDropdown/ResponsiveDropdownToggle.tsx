@@ -18,7 +18,7 @@
  */
 
 import React from "react";
-import { DropdownToggle, DropdownToggleProps } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownToggle, DropdownToggleProps } from "@patternfly/react-core/deprecated";
 import { useResponsiveDropdownContext } from "./ResponsiveDropdownContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 
@@ -29,7 +29,7 @@ export function ResponsiveDropdownToggle(props: DropdownToggleProps) {
       {isModal ? (
         <Button
           variant={ButtonVariant.plain}
-          onClick={(e) => props.onToggle?.(props.isOpen || false, e)}
+          onClick={(e) => props.onToggle?.(e, props.isOpen || false)}
           className={props.className}
         >
           {props.children}

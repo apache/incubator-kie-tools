@@ -64,7 +64,7 @@ export const AboutButton: React.FunctionComponent = () => {
       </Button>
       <Modal
         header={
-          <MastheadBrand style={{ textDecoration: "none" }}>
+          <MastheadBrand component="a" style={{ textDecoration: "none" }}>
             <Flex alignItems={{ default: "alignItemsCenter" }}>
               <FlexItem style={{ display: "flex", alignItems: "center" }}>
                 <Brand src={routes.static.images.appLogoDefault.path({})} alt={"Logo"} heights={{ default: "80px" }}>

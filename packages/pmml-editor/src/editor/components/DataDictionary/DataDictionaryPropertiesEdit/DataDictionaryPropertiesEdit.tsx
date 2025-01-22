@@ -33,6 +33,8 @@ import { ArrowAltCircleLeftIcon } from "@patternfly/react-icons/dist/js/icons/ar
 import { ConstraintType, DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import ConstraintsEdit from "../ConstraintsEdit/ConstraintsEdit";
 import "./DataDictionaryPropertiesEdit.scss";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 interface DataDictionaryPropertiesEditProps {
   dataType: DDDataField;
@@ -102,7 +104,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                     className="data-dictionary__properties-edit__field"
                     label="Display Name"
                     fieldId="display-name"
-                    helperText="Display Name to use instead of the data type name"
+                    // helperText="Display Name to use instead of the data type name"
                   >
                     <TextInput
                       type="text"
@@ -110,7 +112,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                       name="display-name"
                       aria-describedby="Display Name"
                       value={displayName}
-                      onChange={(value) => setDisplayName(value)}
+                      onChange={(_event, value) => setDisplayName(value)}
                       autoComplete="off"
                       onBlur={() =>
                         onSave({
@@ -119,6 +121,13 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                       }
                       ouiaId="display-name"
                     />
+                    <FormHelperText>
+                      <HelperText>
+                        <HelperTextItem variant="error">
+                          Display Name to use instead of the data type name
+                        </HelperTextItem>
+                      </HelperText>
+                    </FormHelperText>
                   </FormGroup>
                 </StackItem>
                 <StackItem>
@@ -133,9 +142,9 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                           <button
                             aria-label="More info for Cyclic Type"
                             onClick={(e) => e.preventDefault()}
-                            className="pf-c-form__group-label-help"
+                            className="pf-v5-c-form__group-label-help"
                           >
-                            <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                            <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
                           </button>
                         </Tooltip>
                       ) : (
@@ -183,7 +192,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                     className="data-dictionary__properties-edit__field"
                     label="Missing Value"
                     fieldId="missing-value"
-                    helperText="Value for when the input is missing"
+                    // helperText="Value for when the input is missing"
                   >
                     <TextInput
                       type="text"
@@ -191,7 +200,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                       name="missing-value"
                       aria-describedby="Missing Value"
                       value={missingValue}
-                      onChange={(value) => setMissingValue(value)}
+                      onChange={(_event, value) => setMissingValue(value)}
                       autoComplete="off"
                       onBlur={() =>
                         onSave({
@@ -200,6 +209,11 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                       }
                       ouiaId="missing-value"
                     />
+                    <FormHelperText>
+                      <HelperText>
+                        <HelperTextItem variant="error">Value for when the input is missing</HelperTextItem>
+                      </HelperText>
+                    </FormHelperText>
                   </FormGroup>
                 </StackItem>
                 <StackItem>
@@ -207,7 +221,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                     className="data-dictionary__properties-edit__field"
                     label="Invalid Value"
                     fieldId="missing-value"
-                    helperText="Value for when the input is invalid"
+                    // helperText="Value for when the input is invalid"
                   >
                     <TextInput
                       type="text"
@@ -215,7 +229,7 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                       name="invalid-value"
                       aria-describedby="Invalid Value"
                       value={invalidValue}
-                      onChange={(value) => setInvalidValue(value)}
+                      onChange={(_event, value) => setInvalidValue(value)}
                       autoComplete="off"
                       onBlur={() =>
                         onSave({
@@ -224,6 +238,11 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                       }
                       ouiaId="invalid-value"
                     />
+                    <FormHelperText>
+                      <HelperText>
+                        <HelperTextItem variant="error">Value for when the input is invalid</HelperTextItem>
+                      </HelperText>
+                    </FormHelperText>
                   </FormGroup>
                 </StackItem>
               </Stack>

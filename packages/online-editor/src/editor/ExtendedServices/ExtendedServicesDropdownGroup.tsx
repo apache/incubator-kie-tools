@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DropdownGroup, DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownGroup, DropdownItem } from "@patternfly/react-core/deprecated";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import * as React from "react";
 import { useCallback, useMemo } from "react";

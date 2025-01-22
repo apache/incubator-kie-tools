@@ -47,7 +47,7 @@ export function TextAnnotationProperties({
           isDisabled={settings.isReadOnly}
           value={textAnnotation["@_textFormat"]}
           placeholder={"Enter a text format..."}
-          onChange={(newTextFormat) => {
+          onChange={(_event, newTextFormat) => {
             setState((state) => {
               (state.dmn.model.definitions.artifact![index] as Normalized<DMN15__tTextAnnotation>)["@_textFormat"] =
                 newTextFormat;
@@ -62,7 +62,7 @@ export function TextAnnotationProperties({
           type={"text"}
           isDisabled={settings.isReadOnly}
           value={textAnnotation.text?.__$$text}
-          onChange={(newText) => {
+          onChange={(_event, newText) => {
             setState((state) => {
               updateTextAnnotation({
                 definitions: state.dmn.model.definitions,
@@ -83,7 +83,7 @@ export function TextAnnotationProperties({
           type={"text"}
           isDisabled={settings.isReadOnly}
           value={textAnnotation.description?.__$$text}
-          onChange={(newDescription) => {
+          onChange={(_event, newDescription) => {
             setState((state) => {
               (state.dmn.model.definitions.artifact![index] as Normalized<DMN15__tTextAnnotation>).description = {
                 __$$text: newDescription,

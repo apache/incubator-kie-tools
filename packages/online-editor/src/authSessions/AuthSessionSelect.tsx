@@ -25,10 +25,10 @@ import {
   SelectPosition,
   SelectProps,
   SelectVariant,
-} from "@patternfly/react-core/dist/js/components/Select";
+} from "@patternfly/react-core/deprecated";
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
 import { useAuthSession, useAuthSessions } from "./AuthSessionsContext";
-import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
+// import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
 import { AuthProvider, AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 import { useEffect, useMemo, useState } from "react";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
@@ -43,6 +43,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
 import { v4 as uuid } from "uuid";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 export type AuthSessionSelectItem = {
   groupLabel: string;
@@ -142,7 +143,7 @@ export function AuthSessionSelect(props: {
       variant={SelectVariant.single}
       selections={selectedAuthSessionId}
       isOpen={isAuthSessionSelectorOpen}
-      onToggle={setAuthSessionSelectorOpen}
+      onToggle={(_event, val) => setAuthSessionSelectorOpen(val)}
       isPlain={validated === ValidatedOptions.default ? props.isPlain : false}
       onSelect={(e, value) => {
         e.stopPropagation();
@@ -218,13 +219,13 @@ export function AuthSessionSelect(props: {
                     <SelectGroup
                       key={groupLabel}
                       label={groupLabel}
-                      style={{ boxShadow: "var(--pf-global--BoxShadow--sm-top)", marginTop: "8px" }}
+                      style={{ boxShadow: "var(--pf-v5-global--BoxShadow--sm-top)", marginTop: "8px" }}
                     ></SelectGroup>,
                   ]
                 : [
                     <div
                       key={uuid()}
-                      style={{ boxShadow: "var(--pf-global--BoxShadow--sm-top)", marginTop: "8px", height: "8px" }}
+                      style={{ boxShadow: "var(--pf-v5-global--BoxShadow--sm-top)", marginTop: "8px", height: "8px" }}
                     />,
                   ]),
             ],
@@ -244,7 +245,9 @@ export function AuthSessionSelect(props: {
                 if (authSession.type === "none") {
                   return [
                     <SelectOption key={AUTH_SESSION_NONE.id} value={AUTH_SESSION_NONE.id} description={<i>{}</i>}>
-                      <AuthProviderIcon authProvider={undefined} size={IconSize.sm} />
+                      <Icon iconSize="sm">
+                        <AuthProviderIcon authProvider={undefined} />{" "}
+                      </Icon>
                       &nbsp;&nbsp;
                       {AUTH_SESSION_NONE.login}
                     </SelectOption>,
@@ -256,7 +259,9 @@ export function AuthSessionSelect(props: {
                     <SelectOption key={authSession.id} value={authSession.id} description={<i>{authProvider?.name}</i>}>
                       <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
                         <FlexItem>
-                          <AuthProviderIcon authProvider={authProvider} size={IconSize.sm} />
+                          <Icon iconSize="sm">
+                            <AuthProviderIcon authProvider={authProvider} />{" "}
+                          </Icon>
                           &nbsp;&nbsp;
                           {authSession.login}
                         </FlexItem>
@@ -275,7 +280,9 @@ export function AuthSessionSelect(props: {
                     <SelectOption key={authSession.id} value={authSession.id} description={<i>{authProvider?.name}</i>}>
                       <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
                         <FlexItem>
-                          <AuthProviderIcon authProvider={authProvider} size={IconSize.sm} />
+                          <Icon iconSize="sm">
+                            <AuthProviderIcon authProvider={authProvider} />{" "}
+                          </Icon>
                           &nbsp;&nbsp;
                           {authSession.namespace}
                         </FlexItem>
@@ -306,7 +313,7 @@ export function InvalidAuthSessionIcon() {
       content={"Could not authenticate using this session. Its Token was probably revoked, or expired."}
     >
       <>
-        <ExclamationCircleIcon style={{ color: "var(--pf-global--palette--red-100)" }} />
+        <ExclamationCircleIcon style={{ color: "var(--pf-v5-global--palette--red-100)" }} />
       </>
     </Tooltip>
   );

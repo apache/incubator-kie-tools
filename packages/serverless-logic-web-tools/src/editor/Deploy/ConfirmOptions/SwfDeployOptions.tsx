@@ -84,7 +84,7 @@ const RefForwardingSwfDeployOptions: ForwardRefRenderFunction<ConfirmDeployOptio
           label="Deploy as a project"
           description={"All files in the workspace will be deployed as-is so no pre-built template will be used."}
           isChecked={shouldDeployAsProject}
-          onChange={(checked) => setShouldDeployAsProject(checked)}
+          onChange={(_event, checked) => setShouldDeployAsProject(checked)}
           isDisabled={!canDeployAsProject}
         />
       </Tooltip>
@@ -104,7 +104,7 @@ const RefForwardingSwfDeployOptions: ForwardRefRenderFunction<ConfirmDeployOptio
               "The spec associated with the deployment will be available in the configured Service Registry."
             }
             isChecked={shouldUploadOpenApi}
-            onChange={(checked) => setShouldUploadOpenApi(checked)}
+            onChange={(_event, checked) => setShouldUploadOpenApi(checked)}
             isDisabled={!canUploadOpenApi}
           />
         </Tooltip>

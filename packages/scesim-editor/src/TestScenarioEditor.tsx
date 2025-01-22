@@ -35,11 +35,16 @@ import { SceSim__FactMappingType } from "@kie-tools/scesim-marshaller/dist/schem
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 import ErrorIcon from "@patternfly/react-icons/dist/esm/icons/error-circle-o-icon";
@@ -86,19 +91,30 @@ enum TestScenarioFileStatus {
 
 /* Types */
 
+// export type TestScenarioAlert = {
+//   enabled: boolean;
+//   message?: string;
+//   variant: "success" | "danger" | "warning" | "info" | "custom";
+// };
 export type OnRequestExternalModelsAvailableToInclude = () => Promise<string[]>;
+
 export type OnRequestToJumpToPath = (normalizedPosixPathRelativeToTheOpenFile: string) => void;
+
 export type OnRequestToResolvePath = (normalizedPosixPathRelativeToTheOpenFile: string) => string;
+
 export type OnSceSimModelChange = (model: SceSimModel) => void;
 
 export type OnRequestExternalModelByPath = (
   normalizedPosixPathRelativeToTheOpenFile: string
 ) => Promise<ExternalDmn | null>;
+
 export type ExternalDmnsIndex = Record<string /** normalizedPosixPathRelativeToTheOpenFile */, ExternalDmn | undefined>;
 
 export type ExternalDmn = {
   model: Normalized<DmnLatestModel>;
+
   normalizedPosixPathRelativeToTheOpenFile: string;
+
   svg: string;
 };
 
@@ -193,11 +209,36 @@ function TestScenarioMainPanel() {
 
   // Show Properties panel
   useEffect(() => {
+    //   const assetType = scesimModel.ScenarioSimulationModel.settings.type!.__$$text;
+
+    //   let alertEnabled = false;
+    //   let alertMessage = "";
+    //   let alertVariant: "custom" | "danger" | "warning" | "info" | "success" = "danger";
+
+    //   if (dataObjects.length > 0) {
+    //     alertMessage =
+    //       assetType === TestScenarioType[TestScenarioType.DMN]
+    //         ? i18n.alerts.dmnDataRetrievedFromScesim
+    //         : i18n.alerts.ruleDataRetrievedFromScesim;
+    //     alertEnabled = true;
+    //   } else {
+    //     alertMessage =
+    //       assetType === TestScenarioType[TestScenarioType.DMN]
+    //         ? i18n.alerts.dmnDataNotAvailable
+    //         : i18n.alerts.ruleDataNotAvailable;
+    //     alertVariant = assetType === TestScenarioType[TestScenarioType.DMN] ? "warning" : "danger";
+    //     alertEnabled = true;
+    //   }
+
+    //   setAlert({ enabled: alertEnabled, message: alertMessage, variant: alertVariant });
+    // }, [dataObjects, i18n, scesimModel.ScenarioSimulationModel.settings.type]);
     if (!commandsRef.current) {
       return;
     }
+
     commandsRef.current.toggleTestScenarioDock = async () => {
       console.trace("Test Scenario Editor: COMMANDS: Toggle dock panel...");
+
       testScenarioEditorStoreApi.setState((state) => {
         state.navigation.dock.isOpen = !state.navigation.dock.isOpen;
       });
@@ -296,10 +337,11 @@ function TestScenarioParserErrorPanel({
 }) {
   return (
     <EmptyState>
-      <EmptyStateIcon icon={ErrorIcon} />
-      <Title headingLevel="h4" size="lg">
-        {parserErrorTitle}
-      </Title>
+      <EmptyStateHeader
+        titleText={<>{parserErrorTitle}</>}
+        icon={<EmptyStateIcon icon={ErrorIcon} />}
+        headingLevel="h4"
+      />
       <EmptyStateBody>{parserErrorMessage}</EmptyStateBody>
     </EmptyState>
   );

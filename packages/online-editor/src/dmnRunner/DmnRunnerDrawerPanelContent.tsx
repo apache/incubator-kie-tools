@@ -28,7 +28,7 @@ import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
 import { useOnlineI18n } from "../i18n";
 import { FormDmn, FormDmnOutputs, InputRow } from "@kie-tools/form-dmn";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core/deprecated";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -72,7 +72,7 @@ export function DmnRunnerDrawerPanelContent() {
 
   const formInputs: InputRow = useMemo(() => inputs[currentInputIndex], [inputs, currentInputIndex]);
 
-  const onResize = useCallback((width: number) => {
+  const onResize = useCallback((event: MouseEvent | TouchEvent, width: number) => {
     // FIXME: PatternFly bug. The first interaction without resizing the splitter will result in width === 0.
     if (width === 0) {
       return;

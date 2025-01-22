@@ -140,7 +140,7 @@ const CloudEventCustomHeadersEditor = React.forwardRef<CloudEventCustomHeadersEd
                         <TextInput
                           id={`header-key-${index}-input`}
                           value={header.key}
-                          onChange={(value) => updateHeaderKey(index, value)}
+                          onChange={(_event, value) => updateHeaderKey(index, value)}
                           autoFocus={isNewHeader && index === headers.length - 1}
                         />
                       </GridItem>
@@ -148,7 +148,7 @@ const CloudEventCustomHeadersEditor = React.forwardRef<CloudEventCustomHeadersEd
                         <TextInput
                           id={`header-value-${index}-input`}
                           value={header.value}
-                          onChange={(value) => updateHeaderValue(index, value)}
+                          onChange={(_event, value) => updateHeaderValue(index, value)}
                         />
                       </GridItem>
                       <GridItem span={1} key={`header-delete-${header.uuid}`}>

@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useMemo, useState } from "react";
-import { Dropdown, DropdownItem, KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownItem, KebabToggle } from "@patternfly/react-core/deprecated";
 import { checkProcessInstanceState } from "../utils/ProcessListUtils";
 import { ProcessInstance, ProcessInstanceState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
@@ -87,7 +87,7 @@ const ProcessListActionsKebab: React.FC<ProcessListActionsKebabProps & OUIAProps
       toggle={
         <KebabToggle
           isDisabled={checkProcessInstanceState(processInstance)}
-          onToggle={onToggle}
+          onToggle={(_event, isOpen: boolean) => onToggle(isOpen)}
           data-testid="kebab-toggle"
           id="kebab-toggle"
         />

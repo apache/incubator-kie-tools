@@ -28,9 +28,10 @@ import {
   Menu,
   MenuContent,
   MenuGroup,
-  MenuInput,
+  MenuSearch,
   MenuItem,
   MenuList,
+  MenuSearchInput,
 } from "@patternfly/react-core/dist/js/components/Menu";
 import {
   SupportedFileExtensions,
@@ -356,32 +357,36 @@ export function NewFileDropdownMenu(props: {
                 <MenuItem direction="up">Back</MenuItem>
                 <Divider />
                 {/* Allows for arrows to work when editing the text. */}
-                <MenuInput onKeyDown={(e) => e.stopPropagation()}>
-                  <ImportSingleFileFromUrlForm
-                    authSessionSelectHelperText={`Changing it here won't change it on '${props.workspaceDescriptor.name}'`}
-                    importingError={importingError}
-                    importableUrl={importableUrl}
-                    urlInputRef={urlInputRef}
-                    url={url}
-                    setUrl={(url) => {
-                      setUrl(url);
-                      setImportingError(undefined);
-                    }}
-                    authSessionId={authSessionId}
-                    setAuthSessionId={setAuthSessionId}
-                    onSubmit={() => importFromUrl(importableUrl)}
-                  />
-                </MenuInput>
-                <MenuInput>
-                  <Button
-                    variant={ButtonVariant.primary}
-                    isDisabled={!!importableUrl.error}
-                    isLoading={isImporting}
-                    onClick={() => importFromUrl(importableUrl)}
-                  >
-                    Import
-                  </Button>
-                </MenuInput>
+                <MenuSearch>
+                  <MenuSearchInput onKeyDown={(e) => e.stopPropagation()}>
+                    <ImportSingleFileFromUrlForm
+                      authSessionSelectHelperText={`Changing it here won't change it on '${props.workspaceDescriptor.name}'`}
+                      importingError={importingError}
+                      importableUrl={importableUrl}
+                      urlInputRef={urlInputRef}
+                      url={url}
+                      setUrl={(url) => {
+                        setUrl(url);
+                        setImportingError(undefined);
+                      }}
+                      authSessionId={authSessionId}
+                      setAuthSessionId={setAuthSessionId}
+                      onSubmit={() => importFromUrl(importableUrl)}
+                    />
+                  </MenuSearchInput>
+                </MenuSearch>
+                <MenuSearch>
+                  <MenuSearchInput>
+                    <Button
+                      variant={ButtonVariant.primary}
+                      isDisabled={!!importableUrl.error}
+                      isLoading={isImporting}
+                      onClick={() => importFromUrl(importableUrl)}
+                    >
+                      Import
+                    </Button>
+                  </MenuSearchInput>
+                </MenuSearch>
               </DrilldownMenu>
             }
           >

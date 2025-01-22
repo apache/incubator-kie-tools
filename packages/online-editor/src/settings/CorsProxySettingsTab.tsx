@@ -20,11 +20,13 @@
 import * as React from "react";
 import { useCallback } from "react";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useEnv } from "../env/hooks/EnvContext";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
+import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 
 export function CorsProxySettingsTab() {
   const { env } = useEnv();
@@ -41,23 +43,32 @@ export function CorsProxySettingsTab() {
             <Form onSubmit={onSubmit}>
               <FormGroup
                 isRequired={true}
-                helperTextInvalid={""}
-                validated={"default"}
+                // helperTextInvalid={""}
+                // validated={"default"}
                 label={"URL"}
                 fieldId={"url-input"}
               >
                 <InputGroup>
-                  <TextInput
-                    isDisabled={true}
-                    id="url-input"
-                    name="url"
-                    aria-describedby="url-text-input-helper"
-                    placeholder={""}
-                    validated={"default"}
-                    value={env.KIE_SANDBOX_CORS_PROXY_URL}
-                    autoFocus={true}
-                  />
+                  <InputGroupItem isFill>
+                    <TextInput
+                      isDisabled={true}
+                      id="url-input"
+                      name="url"
+                      aria-describedby="url-text-input-helper"
+                      placeholder={""}
+                      validated={"default"}
+                      value={env.KIE_SANDBOX_CORS_PROXY_URL}
+                      autoFocus={true}
+                    />
+                  </InputGroupItem>
                 </InputGroup>
+                <HelperText>
+                  (
+                  <HelperTextItem variant="default" icon={ValidatedOptions.default}>
+                    {""}
+                  </HelperTextItem>
+                  )
+                </HelperText>
               </FormGroup>
               <TextContent>
                 <Text component={"small"}>

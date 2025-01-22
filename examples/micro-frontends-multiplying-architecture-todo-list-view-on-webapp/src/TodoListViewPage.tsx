@@ -25,7 +25,8 @@ import {
 } from "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view/dist/embedded";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
-import { Page, PageHeader, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { PageHeader } from "@patternfly/react-core/deprecated";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button/Button";
 
 import { useStateAsSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";

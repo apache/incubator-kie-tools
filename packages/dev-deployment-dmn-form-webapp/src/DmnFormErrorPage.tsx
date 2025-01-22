@@ -19,7 +19,12 @@
 
 import * as React from "react";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { useDmnFormI18n } from "./i18n";
@@ -32,7 +37,7 @@ export function DmnFormErrorPage() {
   return (
     <>
       <EmptyState data-testid="dmn-form-error-page">
-        <EmptyStateIcon icon={ExclamationTriangleIcon} />
+        <EmptyStateHeader icon={<EmptyStateIcon icon={ExclamationTriangleIcon} />} />
         <TextContent>
           <Text component={"h2"}>{i18n.page.error.title}</Text>
         </TextContent>

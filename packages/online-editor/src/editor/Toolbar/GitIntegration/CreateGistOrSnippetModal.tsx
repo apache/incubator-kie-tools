@@ -24,7 +24,7 @@ import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/work
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { Form, FormAlert, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
-import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
+
 import { UsersIcon } from "@patternfly/react-icons/dist/js/icons/users-icon";
 import { LockIcon } from "@patternfly/react-icons/dist/js/icons/lock-icon";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
@@ -49,6 +49,7 @@ import { useOnlineI18n } from "../../../i18n";
 import { LoadOrganizationsSelect, SelectOptionObjectType } from "./LoadOrganizationsSelect";
 import { useGitIntegration } from "./GitIntegrationContextProvider";
 import { useEnv } from "../../../env/hooks/EnvContext";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 export interface CreateGistOrSnippetResponse {
   cloneUrl: string;
@@ -289,7 +290,7 @@ If you are, it means that creating this Snippet failed and it can safely be dele
         )}
         <FormGroup
           label={i18n.createGistOrSnippetModal[authProvider.type].form.select.label}
-          helperText={i18n.createGistOrSnippetModal[authProvider.type].form.select.description}
+          // helperText={i18n.createGistOrSnippetModal[authProvider.type].form.select.description}
           fieldId="organization"
         >
           <LoadOrganizationsSelect
@@ -297,10 +298,19 @@ If you are, it means that creating this Snippet failed and it can safely be dele
             onSelect={setSelectedOrganization}
             readonly={authProvider.type === AuthProviderType.github}
           />
+          (
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant="error">
+                {i18n.createGistOrSnippetModal[authProvider.type].form.select.description}
+              </HelperTextItem>
+            </HelperText>
+          </FormHelperText>
+          )
         </FormGroup>
         <FormGroup
-          helperText={<FormHelperText icon={<CheckCircleIcon />} isHidden={false} style={{ visibility: "hidden" }} />}
-          helperTextInvalidIcon={<ExclamationCircleIcon />}
+          // helperText={<FormHelperText style={{ visibility: "hidden" }} />}
+          // helperTextInvalidIcon={<ExclamationCircleIcon />}
           fieldId="gist-or-snippet-visibility"
         >
           <Radio
@@ -330,6 +340,13 @@ If you are, it means that creating this Snippet failed and it can safely be dele
             description={i18n.createGistOrSnippetModal.form.visibility.private.description}
             onChange={() => setPrivate(true)}
           />
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant="error">
+                <ExclamationCircleIcon />{" "}
+              </HelperTextItem>
+            </HelperText>
+          </FormHelperText>
         </FormGroup>
       </Form>
     </Modal>

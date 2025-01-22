@@ -133,7 +133,7 @@ export const ImportJavaClassesWizardSecondStep = ({
     <>
       {selectedJavaClasses.some((javaClass) => !javaClass.fieldsLoaded) ? (
         <Bullseye>
-          <Spinner isSVG={true} />
+          <Spinner />
         </Bullseye>
       ) : (
         <ImportJavaClassesWizardFieldListTable

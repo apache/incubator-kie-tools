@@ -154,7 +154,7 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
                 <DrawerContentBody
                   style={{
                     padding: "0px",
-                    background: "var(--pf-c-page__main-section--BackgroundColor)",
+                    background: "var(--pf-v5-c-page__main-section--BackgroundColor)",
                   }}
                 >
                   {activeTab === 0 && (
@@ -179,7 +179,7 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
                 <DrawerContentBody
                   style={{
                     padding: "0px",
-                    background: "var(--pf-c-page__main-section--BackgroundColor)",
+                    background: "var(--pf-v5-c-page__main-section--BackgroundColor)",
                   }}
                 >
                   {activeTab === 1 && (

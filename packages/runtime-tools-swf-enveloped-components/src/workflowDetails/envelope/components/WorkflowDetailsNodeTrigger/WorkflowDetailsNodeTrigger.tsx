@@ -18,7 +18,7 @@
  */
 
 import { Card, CardBody, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
-import { Dropdown, DropdownToggle, DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownToggle, DropdownItem } from "@patternfly/react-core/deprecated";
 import { TextContent, Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
@@ -161,7 +161,7 @@ const WorkflowDetailsNodeTrigger: React.FC<WorkflowDetailsNodeTriggerProps & OUI
                   <DropdownToggle
                     id="toggle-id"
                     data-testid="toggle-id"
-                    onToggle={onToggle}
+                    onToggle={(_event, isDropDownOpen: boolean) => onToggle(isDropDownOpen)}
                     toggleIndicator={CaretDownIcon}
                   >
                     {selectedNode ? selectedNode.name : "select a node"}
@@ -173,7 +173,7 @@ const WorkflowDetailsNodeTrigger: React.FC<WorkflowDetailsNodeTriggerProps & OUI
             </div>
             {selectedNode && (
               <>
-                <div className="pf-u-mt-md">
+                <div className="pf-v5-u-mt-md">
                   <Flex direction={{ default: "column" }}>
                     <FlexItem>
                       <TextContent>
@@ -218,7 +218,7 @@ const WorkflowDetailsNodeTrigger: React.FC<WorkflowDetailsNodeTriggerProps & OUI
                 </div>
               </>
             )}
-            <div className="pf-u-mt-md">
+            <div className="pf-v5-u-mt-md">
               <Button
                 variant="secondary"
                 onClick={onTriggerClick}

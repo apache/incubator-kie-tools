@@ -91,7 +91,7 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
     useCallback(({ close }) => {
       return (
         <Alert
-          className="pf-u-mb-md"
+          className="pf-v5-u-mb-md"
           variant="info"
           title={"Your Dev Mode deployment has been created and will be available shortly"}
           aria-live="polite"
@@ -106,7 +106,7 @@ export function DevModeContextProvider(props: React.PropsWithChildren<{}>) {
     useCallback(({ close }, { message }) => {
       return (
         <Alert
-          className="pf-u-mb-md"
+          className="pf-v5-u-mb-md"
           variant="warning"
           title={
             <>

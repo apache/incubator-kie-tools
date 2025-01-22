@@ -20,14 +20,14 @@
 import { Form, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
-import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
-import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+
 import * as React from "react";
 import { FormEvent, useCallback, useMemo } from "react";
 import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
 import { gitAuthSessionSelectFilter } from "../authSessions/CompatibleAuthSessions";
 import { ImportableUrl } from "./ImportableUrlHooks";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 export function ImportSingleFileFromUrlForm(props: {
   url: string;
@@ -84,7 +84,7 @@ export function ImportSingleFileFromUrlForm(props: {
         fieldId="auth-source"
         label="Authentication"
         isRequired={true}
-        helperText={props.authSessionSelectHelperText}
+        // helperText={props.authSessionSelectHelperText}
       >
         <AuthSessionSelect
           menuAppendTo={document.body}
@@ -95,16 +95,23 @@ export function ImportSingleFileFromUrlForm(props: {
           filter={gitAuthSessionSelectFilter()}
           showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.GIT}
         />
+        <HelperText>
+          (
+          <HelperTextItem variant="default" icon={ValidatedOptions.default}>
+            {props.authSessionSelectHelperText}
+          </HelperTextItem>
+          )
+        </HelperText>
       </FormGroup>
       <FormGroup
         autoFocus={true}
         label={"URL"}
         isRequired={true}
-        helperTextInvalid={helperTextInvalid}
-        helperText={<FormHelperText icon={<CheckCircleIcon />} isHidden={false} style={{ visibility: "hidden" }} />}
-        helperTextInvalidIcon={<ExclamationCircleIcon />}
+        // helperTextInvalid={helperTextInvalid}
+        // helperText={<FormHelperText style={{ visibility: "hidden" }} />}
+        // helperTextInvalidIcon={<ExclamationCircleIcon />}
         fieldId="url"
-        validated={validatedOption}
+        // validated={validatedOption}
       >
         <TextInput
           ref={props.urlInputRef}
@@ -114,8 +121,21 @@ export function ImportSingleFileFromUrlForm(props: {
           isRequired={true}
           placeholder={"File URL"}
           value={props.url}
-          onChange={props.setUrl}
+          onChange={(_event, val) => props.setUrl}
         />
+        {validatedOption === "error" ? (
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant="error">{helperTextInvalid}</HelperTextItem>
+            </HelperText>
+          </FormHelperText>
+        ) : (
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant="success"></HelperTextItem>
+            </HelperText>
+          </FormHelperText>
+        )}
       </FormGroup>
     </Form>
   );

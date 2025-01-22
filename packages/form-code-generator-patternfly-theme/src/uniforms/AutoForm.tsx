@@ -129,7 +129,7 @@ const ${formName}: React.FC<any> = ( props:any ) => {
   ${staticCodeStr}
       
   return (
-    <div className={'pf-c-form'}>
+    <div className={'pf-v5-c-form'}>
       ${elements}        
     </div>
   )    

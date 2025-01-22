@@ -26,10 +26,10 @@ export const setTitle = (titleStatus: string, titleText: string): JSX.Element =>
 
   switch (titleStatus) {
     case "success":
-      icon = <InfoCircleIcon className="pf-u-mr-sm" color="var(--pf-global--info-color--100)" />;
+      icon = <InfoCircleIcon className="pf-v5-u-mr-sm" color="var(--pf-v5-global--info-color--100)" />;
       break;
     case "failure":
-      icon = <InfoCircleIcon className="pf-u-mr-sm" color="var(--pf-global--danger-color--100)" />;
+      icon = <InfoCircleIcon className="pf-v5-u-mr-sm" color="var(--pf-v5-global--danger-color--100)" />;
       break;
   }
 

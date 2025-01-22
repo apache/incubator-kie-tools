@@ -45,6 +45,8 @@ import {
   isInvalidValueReplacementRequired,
   isMissingValueReplacementRequired,
 } from "../../../validation/MiningSchema";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 interface MiningSchemaPropertiesEditProps {
   modelIndex: number;
@@ -262,8 +264,8 @@ const MiningSchemaPropertiesEdit = ({
                   className="mining-schema__properties__field"
                   label="Importance"
                   fieldId="importance"
-                  helperText={validationsImportance.length === 0 ? "" : validationsImportance[0].message}
-                  validated={validationsImportance.length === 0 ? "default" : "warning"}
+                  // helperText={validationsImportance.length === 0 ? "" : validationsImportance[0].message}
+                  // validated={validationsImportance.length === 0 ? "default" : "warning"}
                 >
                   <TextInput
                     type="number"
@@ -276,7 +278,7 @@ const MiningSchemaPropertiesEdit = ({
                     ouiaId="importance"
                     data-ouia-component-type="double-input"
                     validated={validationsImportance.length === 0 ? "default" : "warning"}
-                    onChange={(value) => setImportance(toNumberOrUndefined(value))}
+                    onChange={(_event, value) => setImportance(toNumberOrUndefined(value))}
                     onBlur={() => {
                       if (importance !== undefined) {
                         let _importance = importance;
@@ -291,6 +293,19 @@ const MiningSchemaPropertiesEdit = ({
                       handleSave();
                     }}
                   />
+                  {validationsImportance.length === 0 ? (
+                    <FormHelperText>
+                      <HelperText>
+                        <HelperTextItem variant="default"></HelperTextItem>
+                      </HelperText>
+                    </FormHelperText>
+                  ) : (
+                    <FormHelperText>
+                      <HelperText>
+                        <HelperTextItem variant="warning">{validationsImportance[0].message}</HelperTextItem>
+                      </HelperText>
+                    </FormHelperText>
+                  )}
                 </FormGroup>
               </StackItem>
               <StackItem>
@@ -318,8 +333,8 @@ const MiningSchemaPropertiesEdit = ({
                       label="Low Value"
                       fieldId="lowValue"
                       className="mining-schema__properties__field"
-                      helperText={validationsLowValue.length === 0 ? "" : validationsLowValue[0].message}
-                      validated={validationsLowValue.length === 0 ? "default" : "warning"}
+                      // helperText={validationsLowValue.length === 0 ? "" : validationsLowValue[0].message}
+                      // validated={validationsLowValue.length === 0 ? "default" : "warning"}
                       labelIcon={
                         <Tooltip
                           content={`Low Value is required when Outliers is "asExtremeValues" or "asMissingValues"`}
@@ -327,9 +342,9 @@ const MiningSchemaPropertiesEdit = ({
                           <button
                             aria-label="More information for Low Value field"
                             onClick={(e) => e.preventDefault()}
-                            className="pf-c-form__group-label-help"
+                            className="pf-v5-c-form__group-label-help"
                           >
-                            <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                            <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
                           </button>
                         </Tooltip>
                       }
@@ -344,10 +359,23 @@ const MiningSchemaPropertiesEdit = ({
                         isDisabled={!enableLowValueComponent}
                         placeholder={!enableLowValueComponent ? "<Not needed>" : ""}
                         className={!enableLowValueComponent ? "mining-schema__edit__form__disabled" : ""}
-                        onChange={(value) => setLowValue(toNumberOrUndefined(value))}
+                        onChange={(_event, value) => setLowValue(toNumberOrUndefined(value))}
                         onBlur={handleSave}
                         ouiaId="low-value"
                       />
+                      {validationsLowValue.length === 0 ? (
+                        <FormHelperText>
+                          <HelperText>
+                            <HelperTextItem variant="default"></HelperTextItem>
+                          </HelperText>
+                        </FormHelperText>
+                      ) : (
+                        <FormHelperText>
+                          <HelperText>
+                            <HelperTextItem variant="warning">{validationsLowValue[0].message}</HelperTextItem>
+                          </HelperText>
+                        </FormHelperText>
+                      )}
                     </FormGroup>
                   </SplitItem>
                   <SplitItem>
@@ -355,8 +383,8 @@ const MiningSchemaPropertiesEdit = ({
                       label="High Value"
                       fieldId="highValue"
                       className="mining-schema__properties__field"
-                      helperText={validationsHighValue.length === 0 ? "" : validationsHighValue[0].message}
-                      validated={validationsHighValue.length === 0 ? "default" : "warning"}
+                      // helperText={validationsHighValue.length === 0 ? "" : validationsHighValue[0].message}
+                      // validated={validationsHighValue.length === 0 ? "default" : "warning"}
                       labelIcon={
                         <Tooltip
                           content={`High Value is required when Outliers is "asExtremeValues" or "asMissingValues"`}
@@ -364,9 +392,9 @@ const MiningSchemaPropertiesEdit = ({
                           <button
                             aria-label="More information for High Value field"
                             onClick={(e) => e.preventDefault()}
-                            className="pf-c-form__group-label-help"
+                            className="pf-v5-c-form__group-label-help"
                           >
-                            <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                            <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
                           </button>
                         </Tooltip>
                       }
@@ -381,10 +409,23 @@ const MiningSchemaPropertiesEdit = ({
                         isDisabled={!enableHighValueComponent}
                         placeholder={!enableHighValueComponent ? "<Not needed>" : ""}
                         className={!enableHighValueComponent ? "mining-schema__edit__form__disabled" : ""}
-                        onChange={(value) => setHighValue(toNumberOrUndefined(value))}
+                        onChange={(_event, value) => setHighValue(toNumberOrUndefined(value))}
                         onBlur={handleSave}
                         ouiaId="high-value"
                       />
+                      {validationsHighValue.length === 0 ? (
+                        <FormHelperText>
+                          <HelperText>
+                            <HelperTextItem variant="default"></HelperTextItem>
+                          </HelperText>
+                        </FormHelperText>
+                      ) : (
+                        <FormHelperText>
+                          <HelperText>
+                            <HelperTextItem variant="warning">{validationsHighValue[0].message}</HelperTextItem>
+                          </HelperText>
+                        </FormHelperText>
+                      )}
                     </FormGroup>
                   </SplitItem>
                 </Split>
@@ -408,10 +449,10 @@ const MiningSchemaPropertiesEdit = ({
                     <FormGroup
                       label="Missing Value Replacement"
                       fieldId="missingValueReplacement"
-                      validated={validationsMissingValueReplacement.length === 0 ? "default" : "warning"}
-                      helperText={
-                        validationsMissingValueReplacement[0] ? validationsMissingValueReplacement[0].message : ""
-                      }
+                      // validated={validationsMissingValueReplacement.length === 0 ? "default" : "warning"}
+                      // helperText={
+                      //   validationsMissingValueReplacement[0] ? validationsMissingValueReplacement[0].message : ""
+                      // }
                       labelIcon={
                         <Tooltip
                           content={`Missing Value Replacement is required when Missing Value Treatment is "asMean", "asMedian" or "asMode"`}
@@ -419,9 +460,9 @@ const MiningSchemaPropertiesEdit = ({
                           <button
                             aria-label="More information for Missing Value Replacement field"
                             onClick={(e) => e.preventDefault()}
-                            className="pf-c-form__group-label-help"
+                            className="pf-v5-c-form__group-label-help"
                           >
-                            <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                            <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
                           </button>
                         </Tooltip>
                       }
@@ -436,9 +477,24 @@ const MiningSchemaPropertiesEdit = ({
                         isDisabled={!enableMissingValueComponent}
                         placeholder={!enableMissingValueComponent ? "<Not needed>" : ""}
                         className={!enableMissingValueComponent ? "mining-schema__edit__form__disabled" : ""}
-                        onChange={(value) => setMissingValueReplacement(value)}
+                        onChange={(_event, value) => setMissingValueReplacement(value)}
                         onBlur={handleSave}
                       />
+                      {validationsMissingValueReplacement.length === 0 ? (
+                        <FormHelperText>
+                          <HelperText>
+                            <HelperTextItem variant="default">
+                              {validationsMissingValueReplacement[0].message}
+                            </HelperTextItem>
+                          </HelperText>
+                        </FormHelperText>
+                      ) : (
+                        <FormHelperText>
+                          <HelperText>
+                            <HelperTextItem variant="warning"></HelperTextItem>
+                          </HelperText>
+                        </FormHelperText>
+                      )}
                     </FormGroup>
                   </SplitItem>
                 </Split>
@@ -462,10 +518,10 @@ const MiningSchemaPropertiesEdit = ({
                     <FormGroup
                       label="Invalid Value Replacement"
                       fieldId="invalidValueReplacement"
-                      validated={validationsInvalidValueReplacement.length === 0 ? "default" : "warning"}
-                      helperText={
-                        validationsInvalidValueReplacement[0] ? validationsInvalidValueReplacement[0].message : ""
-                      }
+                      // validated={validationsInvalidValueReplacement.length === 0 ? "default" : "warning"}
+                      // helperText={
+                      //   validationsInvalidValueReplacement[0] ? validationsInvalidValueReplacement[0].message : ""
+                      // }
                       labelIcon={
                         <Tooltip
                           content={`Invalid Value Replacement is required when Invalid Value Treatment is "asValue"`}
@@ -473,9 +529,9 @@ const MiningSchemaPropertiesEdit = ({
                           <button
                             aria-label="More information for Invalid Value Replacement field"
                             onClick={(e) => e.preventDefault()}
-                            className="pf-c-form__group-label-help"
+                            className="pf-v5-c-form__group-label-help"
                           >
-                            <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                            <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
                           </button>
                         </Tooltip>
                       }
@@ -490,9 +546,24 @@ const MiningSchemaPropertiesEdit = ({
                         isDisabled={!enableInvalidValueComponent}
                         placeholder={!enableInvalidValueComponent ? "<Not needed>" : ""}
                         className={!enableInvalidValueComponent ? "mining-schema__edit__form__disabled" : ""}
-                        onChange={(value) => setInvalidValueReplacement(value)}
+                        onChange={(_event, value) => setInvalidValueReplacement(value)}
                         onBlur={handleSave}
                       />
+                      {validationsInvalidValueReplacement.length === 0 ? (
+                        <FormHelperText>
+                          <HelperText>
+                            <HelperTextItem variant="default">
+                              {validationsInvalidValueReplacement[0].message}
+                            </HelperTextItem>
+                          </HelperText>
+                        </FormHelperText>
+                      ) : (
+                        <FormHelperText>
+                          <HelperText>
+                            <HelperTextItem variant="warning"></HelperTextItem>
+                          </HelperText>
+                        </FormHelperText>
+                      )}
                     </FormGroup>
                   </SplitItem>
                 </Split>
