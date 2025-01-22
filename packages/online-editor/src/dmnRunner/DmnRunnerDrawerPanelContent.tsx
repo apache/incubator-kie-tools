@@ -40,6 +40,7 @@ import { PanelId, useEditorDockContext } from "../editor/EditorPageDockContextPr
 import { DmnRunnerExtendedServicesError } from "./DmnRunnerContextProvider";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
+import { useSettings } from "../settings/SettingsContext";
 
 enum ButtonPosition {
   INPUT,
@@ -76,12 +77,14 @@ export function DmnRunnerDrawerPanelContent() {
     results,
     resultsDifference,
     dmnEditor,
-    isLegacyDmnEditor,
   } = useDmnRunnerState();
   const { setDmnRunnerContextProviderState, onRowAdded, setDmnRunnerInputs, setDmnRunnerMode } = useDmnRunnerDispatch();
   const { notificationsPanel, onOpenPanel } = useEditorDockContext();
 
   const formInputs: InputRow = useMemo(() => inputs[currentInputIndex], [inputs, currentInputIndex]);
+
+  const { settings } = useSettings();
+  const isLegacyDmnEditor = useMemo(() => settings.editors.useLegacyDmnEditor, [settings.editors.useLegacyDmnEditor]);
 
   const onResize = useCallback((width: number) => {
     // FIXME: PatternFly bug. The first interaction without resizing the splitter will result in width === 0.

@@ -43,7 +43,6 @@ export interface DmnRunnerContextType {
   resultsDifference: Array<Array<object>>;
   status: DmnRunnerStatus;
   dmnEditor: EmbeddedEditorRef | undefined;
-  isLegacyDmnEditor: boolean;
 }
 
 export interface DmnRunnerCallbacksContextType {
