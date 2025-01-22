@@ -100,6 +100,10 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
 
   // Exposed API
 
+  public openBoxedExpressionEditor(nodeId: string): void {
+    this.dmnEditorRef.current?.openBoxedExpressionEditor(nodeId);
+  }
+
   public async undo(): Promise<void> {
     this.setState((prev) => ({ ...prev, pointer: Math.max(0, prev.pointer - 1) }));
   }
