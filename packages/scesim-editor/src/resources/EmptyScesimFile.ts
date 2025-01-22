@@ -52,38 +52,6 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
           <columnWidth>300</columnWidth>
         </FactMapping>
-        <FactMapping>
-          <expressionElements/>
-          <expressionIdentifier>
-            <name>1|1</name>
-            <type>GIVEN</type>
-          </expressionIdentifier>
-          <factIdentifier>
-            <name>Empty</name>
-            <className>java.lang.Void</className>
-          </factIdentifier>
-          <className>java.lang.Void</className>
-          <factAlias>INSTANCE-1</factAlias>
-          <expressionAlias>PROPERTY</expressionAlias>
-          <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
-          <columnWidth>150</columnWidth>
-        </FactMapping>
-        <FactMapping>
-          <expressionElements/>
-          <expressionIdentifier>
-            <name>1|2</name>
-            <type>EXPECT</type>
-          </expressionIdentifier>
-          <factIdentifier>
-            <name>Empty</name>
-            <className>java.lang.Void</className>
-          </factIdentifier>
-          <className>java.lang.Void</className>
-          <factAlias>INSTANCE-2</factAlias>
-          <expressionAlias>PROPERTY</expressionAlias>
-          <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
-          <columnWidth>150</columnWidth>
-        </FactMapping>
       </factMappings>
     </scesimModelDescriptor>
     <scesimData>
@@ -97,26 +65,6 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
             <expressionIdentifier>
               <name>Description</name>
               <type>OTHER</type>
-            </expressionIdentifier>
-          </FactMappingValue>
-          <FactMappingValue>
-            <factIdentifier>
-              <name>Empty</name>
-              <className>java.lang.Void</className>
-            </factIdentifier>
-            <expressionIdentifier>
-              <name>1|1</name>
-              <type>GIVEN</type>
-            </expressionIdentifier>
-          </FactMappingValue>
-          <FactMappingValue>
-            <factIdentifier>
-              <name>Empty</name>
-              <className>java.lang.Void</className>
-            </factIdentifier>
-            <expressionIdentifier>
-              <name>1|2</name>
-              <type>EXPECT</type>
             </expressionIdentifier>
           </FactMappingValue>
         </factMappingValues>
@@ -138,7 +86,7 @@ export const EMPTY_ONE_EIGHT = `<?xml version="1.0" encoding="UTF-8"?>
           </factIdentifier>
           <className>java.lang.Void</className>
           <factAlias>INSTANCE-1</factAlias>
-          <expressionAlias>PROPERTY</expressionAlias>
+          <expressionAlias>PROPERTY-1</expressionAlias>
           <columnWidth>150</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
