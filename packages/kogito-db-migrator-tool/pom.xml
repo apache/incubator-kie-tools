@@ -31,7 +31,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito</groupId>
-  <artifactId>kogito-postgresql-db-migrator-tool</artifactId>
+  <artifactId>kogito-db-migrator-tool</artifactId>
 
   <dependencies>
     <dependency>

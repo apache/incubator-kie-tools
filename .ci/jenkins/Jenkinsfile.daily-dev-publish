@@ -135,10 +135,10 @@ pipeline {
         KOGITO_MANAGEMENT_CONSOLE__name = 'incubator-kie-kogito-management-console'
         KOGITO_MANAGEMENT_CONSOLE__buildTag = "${params.BRANCH_NAME}"
 
-        KOGITO_POSTGRESQL_DB_MIGRATOR_TOOL__registry = 'docker.io'
-        KOGITO_POSTGRESQL_DB_MIGRATOR_TOOL__account = 'apache'
-        KOGITO_POSTGRESQL_DB_MIGRATOR_TOOL__name = 'kogito-postgresql-db-migrator-tool'
-        KOGITO_POSTGRESQL_DB_MIGRATOR_TOOL__buildTag = "${params.BRANCH_NAME}"
+        KOGITO_DB_MIGRATOR_TOOL__registry = 'docker.io'
+        KOGITO_DB_MIGRATOR_TOOL__account = 'apache'
+        KOGITO_DB_MIGRATOR_TOOL__name = 'kogito-db-migrator-tool'
+        KOGITO_DB_MIGRATOR_TOOL__buildTag = "${params.BRANCH_NAME}"
 
         SONATAFLOW_BUILDER_IMAGE__registry = 'docker.io'
         SONATAFLOW_BUILDER_IMAGE__account = 'apache'
@@ -555,14 +555,14 @@ pipeline {
             }
         }
 
-        stage('Push kogito-postgresql-db-migrator-tool to Docker Hub') {
+        stage('Push kogito-db-migrator-tool to Docker Hub') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.KOGITO_POSTGRESQL_DB_MIGRATOR_TOOL__registry}",
-                        "${env.KOGITO_POSTGRESQL_DB_MIGRATOR_TOOL__account}",
-                        "${env.KOGITO_POSTGRESQL_DB_MIGRATOR_TOOL__name}",
-                        "${env.KOGITO_POSTGRESQL_DB_MIGRATOR_TOOL__buildTag}",
+                        "${env.KOGITO_DB_MIGRATOR_TOOL__registry}",
+                        "${env.KOGITO_DB_MIGRATOR_TOOL__account}",
+                        "${env.KOGITO_DB_MIGRATOR_TOOL__name}",
+                        "${env.KOGITO_DB_MIGRATOR_TOOL__buildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )

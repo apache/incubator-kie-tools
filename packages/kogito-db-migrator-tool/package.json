@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@kie-tools/kogito-postgresql-db-migrator-tool",
+  "name": "@kie-tools/kogito-db-migrator-tool",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
