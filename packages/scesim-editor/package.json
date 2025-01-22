@@ -53,7 +53,7 @@
     "@storybook/react": "^7.3.2",
     "@storybook/react-webpack5": "^7.3.2",
     "@types/lodash": "^4.14.168",
-    "@types/node": "^20.14.2",
+    "@types/node": "^22.10.7",
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
     "@types/react-table": "^7.0.25",
