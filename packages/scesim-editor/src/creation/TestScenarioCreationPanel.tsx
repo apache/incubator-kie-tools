@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { basename } from "path";
 
@@ -39,12 +39,13 @@ import CubesIcon from "@patternfly/react-icons/dist/esm/icons/cubes-icon";
 import { useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
 import { useTestScenarioEditorI18n } from "../i18n";
 
-import "./TestScenarioCreationPanel.css";
 import { useExternalModels } from "../externalModels/TestScenarioEditorDependenciesContext";
 import { ExternalDmn } from "../TestScenarioEditor";
 import { useTestScenarioEditor } from "../TestScenarioEditorContext";
 import { createNewDmnTypeTestScenario } from "../mutations/createNewDmnTypeTestScenario";
 import { createNewRuleTypeTestScenario } from "../mutations/createNewRuleTypeTestScenario";
+
+import "./TestScenarioCreationPanel.css";
 
 function TestScenarioCreationPanel() {
   const { i18n } = useTestScenarioEditorI18n();
@@ -53,17 +54,17 @@ function TestScenarioCreationPanel() {
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
 
   const [assetType, setAssetType] = React.useState<"" | "DMN" | "RULE">("");
+  const [availableDmnModelPaths, setAvailableDmnModelPaths] = useState<string[] | undefined>(undefined);
+  const [callBackError, setCallBackError] = useState<any>(undefined);
   const [isAutoFillTableEnabled, setAutoFillTableEnabled] = React.useState(true);
   const [isStatelessSessionRule, setStatelessSessionRule] = React.useState(false);
   const [isTestSkipped, setTestSkipped] = React.useState(false);
   const [kieSessionRule, setKieSessionRule] = React.useState("");
-  const [availableDmnModelPaths, setAvailableDmnModelPaths] = useState<string[] | undefined>(undefined);
+  const [ruleFlowGroup, setRuleFlowGroup] = React.useState("");
+  const [selectedDmnModel, setSelectedDmnModel] = useState<ExternalDmn | undefined>(undefined);
   const [selectedDmnPathRelativeToThisScesim, setSelectedDmnPathRelativeToThisScesim] = useState<string | undefined>(
     undefined
   );
-  const [ruleFlowGroup, setRuleFlowGroup] = React.useState("");
-  const [selectedDmnModel, setSelectedDmnModel] = useState<ExternalDmn | undefined>(undefined);
-  const [selectedModelError, setSelectedModelError] = useState<string | undefined>(undefined);
 
   const assetsOption = [
     { value: "", label: i18n.creationPanel.assetsOption.noChoice, disabled: true },
@@ -71,6 +72,34 @@ function TestScenarioCreationPanel() {
     { value: "RULE", label: i18n.creationPanel.assetsOption.rule, disabled: false },
   ];
 
+  /** This callback retrieves all the avaiable DMN files available in the user's project */
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        onRequestExternalModelsAvailableToInclude?.()
+          .then((dmnModelPaths) => {
+            console.trace("[TestScenarioCreationPanel] The below external DMN models have been found");
+            console.trace(dmnModelPaths);
+
+            if (canceled.get()) {
+              return;
+            }
+            setAvailableDmnModelPaths(dmnModelPaths);
+          })
+          .catch((err) => {
+            setCallBackError(err);
+            console.error(
+              `[TestScenarioCreationPanel] The below error when trying to retrieve all the External DMN files from the project.`
+            );
+            console.error(err);
+            return;
+          });
+      },
+      [onRequestExternalModelsAvailableToInclude]
+    )
+  );
+
+  /** This callback return the unmarshalled representation of a DMN model given its path */
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
@@ -79,17 +108,20 @@ function TestScenarioCreationPanel() {
         }
 
         onRequestExternalModelByPath(selectedDmnPathRelativeToThisScesim)
-          .then((externalModel) => {
-            if (canceled.get() || !externalModel) {
+          .then((externalDMNModel) => {
+            console.trace("[TestScenarioCreationPanel] The below external DMN model have been loaded");
+            console.trace(externalDMNModel);
+
+            if (canceled.get() || !externalDMNModel) {
               return;
             }
 
-            setSelectedModelError(undefined);
-            setSelectedDmnModel(externalModel);
+            setSelectedDmnModel(externalDMNModel);
           })
           .catch((err) => {
-            setSelectedModelError(
-              `An error occurred when parsing the selected model '${selectedDmnPathRelativeToThisScesim}'. Please double-check it is a non-empty valid model.`
+            setCallBackError(err);
+            console.error(
+              `[TestScenarioCreationPanel] An error occurred when parsing the selected model '${selectedDmnPathRelativeToThisScesim}'. Please double-check it is a non-empty valid model.`
             );
             console.error(err);
             return;
@@ -99,24 +131,14 @@ function TestScenarioCreationPanel() {
     )
   );
 
-  useCancelableEffect(
-    useCallback(
-      ({ canceled }) => {
-        onRequestExternalModelsAvailableToInclude?.()
-          .then((paths) => {
-            if (canceled.get()) {
-              return;
-            }
-            setAvailableDmnModelPaths(paths);
-          })
-          .catch((err) => {
-            console.error(err);
-            return;
-          });
-      },
-      [onRequestExternalModelsAvailableToInclude]
-    )
-  );
+  /**
+   * If any error occurs during the execution of useCancelableEffect's callback, it throws the error that will be catched by the ErrorBoundary.
+   */
+  useEffect(() => {
+    if (callBackError) {
+      throw new Error(callBackError);
+    }
+  }, [callBackError]);
 
   const createTestScenario = useCallback(
     () =>
@@ -160,8 +182,8 @@ function TestScenarioCreationPanel() {
       <Title headingLevel={"h6"} size={"md"}>
         {i18n.creationPanel.title}
       </Title>
-      <Form isHorizontal className="kie-scesim-editor--creation-form">
-        <FormGroup label={i18n.creationPanel.assetsGroup} isRequired>
+      <Form className="kie-scesim-editor--creation-form" isHorizontal>
+        <FormGroup isRequired label={i18n.creationPanel.assetsGroup}>
           <FormSelect
             id="asset-type-select"
             name="asset-type-select"
@@ -175,7 +197,7 @@ function TestScenarioCreationPanel() {
         </FormGroup>
         {assetType === "DMN" && (
           <>
-            <FormGroup label={i18n.creationPanel.dmnGroup} isRequired>
+            <FormGroup isRequired label={i18n.creationPanel.dmnGroup}>
               <FormSelect
                 id="dmn-select"
                 name="dmn-select"
@@ -183,8 +205,8 @@ function TestScenarioCreationPanel() {
                   if (typeof path !== "string") {
                     throw new Error(`Invalid path for an included model ${JSON.stringify(path)}`);
                   }
+                  console.trace(`[TestScenarioCreationPanel] Selected path ${path}`);
                   setSelectedDmnPathRelativeToThisScesim(path);
-                  console.trace(path);
                 }}
                 value={selectedDmnPathRelativeToThisScesim}
               >

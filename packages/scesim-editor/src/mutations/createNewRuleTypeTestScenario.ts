@@ -28,8 +28,8 @@ import { pushFactMappings } from "./pushFactMappings";
  * It creates a new RULE-type Test Scenario, adding 2 empty columns (FactMappings) and its related data cells (FactMappingValues)
  */
 export function createNewRuleTypeTestScenario({
-  factMappingsModel, // The SceSim FactMappings model (which represent Columns) to be mutated when isAutoFillTableEnabled is true
-  factMappingValuesModel, // The SceSim FactMappingValue model (which represent a Data Rows) to be mutated when isAutoFillTableEnabled is true
+  factMappingsModel, // The SceSim FactMappings model (which represents Columns) to be mutated when isAutoFillTableEnabled is true
+  factMappingValuesModel, // The SceSim FactMappingValue model (which represents a Data Rows) to be mutated when isAutoFillTableEnabled is true
   isStatelessSessionRule,
   isTestSkipped,
   kieSessionRule,

@@ -140,7 +140,7 @@ export const en: TestScenarioEditorI18n = {
   },
   errorFallBack: {
     title: "An unexpected error happened",
-    body: "This is a bug. Please consider reporting it so the DMN Editor can continue improving. See the details below.",
+    body: "This is a bug. Please consider reporting it so the Test Scenario Editor can continue improving. See the details below.",
     lastActionButton: "Try undoing last action",
     fileIssueHref: "File an issue",
   },
