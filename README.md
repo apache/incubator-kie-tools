@@ -47,7 +47,7 @@ To build and test all packages of the Apache KIE Tools project, you're going to 
 
 - Node `20` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
 - pnpm `9.3.0` _(To install, follow these instructions: https://pnpm.io/installation#using-npm)_
-- Maven `3.9.6`
+- Maven `3.9.9`
 - Java `17`
 - Go `1.22.9` _(To install, follow these instructions: https://go.dev/doc/install)_
 - Python `3.12` _(To install, follow these instructions: https://www.python.org/downloads/)_
