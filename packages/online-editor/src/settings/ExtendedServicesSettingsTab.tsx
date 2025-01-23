@@ -95,11 +95,11 @@ export function ExtendedServicesSettingsTab() {
                   </InputGroupItem>
                 </InputGroup>
                 <HelperText>
-                  (
+                  {/* (
                   <HelperTextItem variant="default" icon={ValidatedOptions.default}>
                     {""}
                   </HelperTextItem>
-                  )
+                  ) */}
                 </HelperText>
               </FormGroup>
               <FormGroup
@@ -124,11 +124,11 @@ export function ExtendedServicesSettingsTab() {
                   </InputGroupItem>
                 </InputGroup>
                 <HelperText>
-                  (
+                  {/* (
                   <HelperTextItem variant="default" icon={ValidatedOptions.default}>
                     {""}
                   </HelperTextItem>
-                  )
+                  ) */}
                 </HelperText>
               </FormGroup>
               <ActionGroup>
