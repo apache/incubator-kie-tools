@@ -50,7 +50,7 @@ interface Props {
   results: Array<DecisionResult[] | undefined> | undefined;
   jsonSchemaBridge: DmnUnitablesJsonSchemaBridge;
   scrollableParentRef: React.RefObject<HTMLElement>;
-  dmnSpecialCallback?: (nodeId: string) => void;
+  openBoxedExpressionEditor?: (nodeId: string) => void;
 }
 
 export function DmnRunnerOutputsTable({
@@ -58,7 +58,7 @@ export function DmnRunnerOutputsTable({
   jsonSchemaBridge,
   results,
   scrollableParentRef,
-  dmnSpecialCallback,
+  openBoxedExpressionEditor,
 }: Props) {
   const outputUid = useMemo(() => nextId(), []);
   const outputErrorBoundaryRef = useRef<ErrorBoundary>(null);
@@ -87,7 +87,7 @@ export function DmnRunnerOutputsTable({
             outputsPropertiesMap={outputsPropertiesMap}
             results={results}
             id={outputUid}
-            dmnSpecialCallback={dmnSpecialCallback}
+            openBoxedExpressionEditor={openBoxedExpressionEditor}
           />
         </ErrorBoundary>
       ) : (
@@ -137,7 +137,7 @@ interface OutputsTableProps {
   results: (DecisionResult[] | undefined)[] | undefined;
   outputsPropertiesMap: Map<string, OutputField>;
   scrollableParentRef: React.RefObject<HTMLElement>;
-  dmnSpecialCallback?: (nodeId: string) => void;
+  openBoxedExpressionEditor?: (nodeId: string) => void;
 }
 
 function OutputsBeeTable({
@@ -146,7 +146,7 @@ function OutputsBeeTable({
   outputsPropertiesMap,
   results,
   scrollableParentRef,
-  dmnSpecialCallback,
+  openBoxedExpressionEditor,
 }: OutputsTableProps) {
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
@@ -275,10 +275,8 @@ function OutputsBeeTable({
                     return deepFlattenObjectColumn(collectedOutput, outputProperties?.properties);
                   }
                   return {
-                    decisionName: decisionName,
-                    decisionId: decisionId,
                     headerCellClickCallback: () => {
-                      dmnSpecialCallback?.(decisionId);
+                      openBoxedExpressionEditor?.(decisionId);
                     },
                     originalId: "context-" + generateUuid(),
                     label: "context",
@@ -316,10 +314,8 @@ function OutputsBeeTable({
             minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
             columns: [
               {
-                decisionName: decisionName,
-                decisionId: decisionId,
                 headerCellClickCallback: () => {
-                  dmnSpecialCallback?.(decisionId);
+                  openBoxedExpressionEditor?.(decisionId);
                 },
                 originalId: `${outputProperties?.name}-` + generateUuid() + `${outputProperties?.properties?.id}`,
                 label: outputProperties?.name ?? "",
@@ -338,10 +334,8 @@ function OutputsBeeTable({
       if (Array.isArray(result)) {
         return [
           {
-            decisionName: decisionName,
-            decisionId: decisionId,
             headerCellClickCallback: () => {
-              dmnSpecialCallback?.(decisionId);
+              openBoxedExpressionEditor?.(decisionId);
             },
             originalId: `${outputProperties?.name}-` + generateUuid(),
             label: `${outputProperties?.name}`,
@@ -367,10 +361,8 @@ function OutputsBeeTable({
       if (typeof result === "object") {
         return [
           {
-            decisionName: decisionName,
-            decisionId: decisionId,
             headerCellClickCallback: () => {
-              dmnSpecialCallback?.(decisionId);
+              openBoxedExpressionEditor?.(decisionId);
             },
             originalId: `${outputProperties?.name}-` + generateUuid(),
             label: outputProperties?.name ?? "",

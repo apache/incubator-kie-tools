@@ -35,6 +35,7 @@ import { DmnRunnerExtendedServicesError } from "./DmnRunnerContextProvider";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
 import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
+import { useSettings } from "../settings/SettingsContext";
 
 export function DmnRunnerTable(props: { editor: EmbeddedEditorRef | undefined }) {
   // STATEs
@@ -116,6 +117,9 @@ export function DmnRunnerTable(props: { editor: EmbeddedEditorRef | undefined })
     setDmnRunnerTableError(false);
   }, [jsonSchema]);
 
+  const { settings } = useSettings();
+  const isLegacyDmnEditor = useMemo(() => settings.editors.useLegacyDmnEditor, [settings.editors.useLegacyDmnEditor]);
+
   return (
     <>
       {extendedServicesError ? (
@@ -140,12 +144,18 @@ export function DmnRunnerTable(props: { editor: EmbeddedEditorRef | undefined })
                           i18n={i18n.dmnRunner.table}
                           jsonSchemaBridge={jsonSchemaBridge}
                           results={results}
-                          dmnSpecialCallback={(nodeId: string) => {
-                            const newDmnEditorEnvelopeApi = props.editor?.getEnvelopeServer()
-                              .envelopeApi as unknown as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
+                          openBoxedExpressionEditor={
+                            !isLegacyDmnEditor
+                              ? (nodeId: string) => {
+                                  const newDmnEditorEnvelopeApi = props.editor?.getEnvelopeServer()
+                                    .envelopeApi as unknown as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
 
-                            newDmnEditorEnvelopeApi.notifications.dmnEditor_openBoxedExpressionEditor.send(nodeId);
-                          }}
+                                  newDmnEditorEnvelopeApi.notifications.dmnEditor_openBoxedExpressionEditor.send(
+                                    nodeId
+                                  );
+                                }
+                              : undefined
+                          }
                         />
                       </div>
                     </DrawerPanelContent>

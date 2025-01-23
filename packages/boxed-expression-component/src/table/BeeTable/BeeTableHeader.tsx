@@ -270,12 +270,12 @@ export function BeeTableHeader<R extends object>({
                       </p>
                     ) : null}
                   </div>
-                  {column.decisionId !== undefined && column.headerCellClickCallback !== undefined && (
+                  {column.headerCellClickCallback !== undefined && (
                     <Flex direction={{ default: "column" }} alignSelf={{ default: "alignSelfCenter" }}>
                       <Button
                         variant={"plain"}
-                        title={`Open ${column.decisionName} expression`}
-                        icon={<ArrowUpIcon width="0.9em" height="0.9em" />}
+                        title={`Open '${column.label}' expression`}
+                        icon={<ArrowUpIcon />}
                         onClick={() => column.headerCellClickCallback?.()}
                       />
                     </Flex>
