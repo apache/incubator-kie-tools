@@ -68,7 +68,6 @@ export function AccountsIcon() {
       </Button>
       {accounts.section !== AccountsSection.CLOSED && (
         <Modal
-          className="overflow-y:hidden"
           aria-label={"Accounts"}
           variant={ModalVariant.large}
           isOpen={true}
