@@ -37,7 +37,7 @@ import * as TestScenarioEditor from "@kie-tools/scesim-editor/dist/TestScenarioE
 import { getMarshaller, SceSimMarshaller, SceSimModel } from "@kie-tools/scesim-marshaller";
 import { EMPTY_ONE_EIGHT } from "@kie-tools/scesim-editor/dist/resources/EmptyScesimFile";
 
-export const DMN_MODELS_SEARCH_GLOB_PATTERN = "**/*.{dmn}";
+export const DMN_MODELS_SEARCH_GLOB_PATTERN = "**/*.dmn";
 
 export type TestScenarioEditorRootProps = {
   exposing: (s: TestScenarioEditorRoot) => void;
