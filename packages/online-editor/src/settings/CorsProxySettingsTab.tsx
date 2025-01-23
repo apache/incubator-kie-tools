@@ -63,11 +63,11 @@ export function CorsProxySettingsTab() {
                   </InputGroupItem>
                 </InputGroup>
                 <HelperText>
-                  (
+                  {/* (
                   <HelperTextItem variant="default" icon={ValidatedOptions.default}>
                     {""}
                   </HelperTextItem>
-                  )
+                  ) */}
                 </HelperText>
               </FormGroup>
               <TextContent>
