@@ -127,7 +127,6 @@ export function AuthProvidersGallery(props: {
                     }}
                   >
                     <CardHeader>
-                      actions=
                       {
                         <>
                           <CardTitle>{authProvider.name}</CardTitle>

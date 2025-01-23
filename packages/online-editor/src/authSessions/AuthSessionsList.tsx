@@ -153,7 +153,6 @@ function AuthSessionCard(props: {
         }}
         onExpand={() => setExpanded((prev) => !prev)}
       >
-        actions=
         {
           <>
             <AuthSessionLabel authSession={props.authSession} />
