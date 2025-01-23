@@ -38,9 +38,9 @@
   ],
   "scripts": {
     "build:dev": "rimraf dist && pnpm copy:src",
-    "build:prod": "rimraf dist && pnpm copy:src && pnpm test",
+    "build:prod": "rimraf dist && pnpm copy:src && pnpm test-e2e",
     "copy:src": "copyfiles -u 1 \"src/**/*.{js,ts}\" dist/",
-    "test": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"karma start --single-run --watch\""
+    "test-e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"karma start --single-run --watch\""
   },
   "dependencies": {
     "@isomorphic-git/idb-keyval": "^3.3.2",
