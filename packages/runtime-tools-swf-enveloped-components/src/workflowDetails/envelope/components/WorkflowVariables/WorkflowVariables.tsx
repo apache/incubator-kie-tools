@@ -22,7 +22,7 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import React from "react";
-import ReactJson from "react-json-view";
+import ReactJson from "@microlink/react-json-view";
 import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";
 import { WorkflowInstance, WorkflowInstanceState } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
