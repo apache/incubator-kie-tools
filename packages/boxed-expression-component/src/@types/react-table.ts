@@ -40,7 +40,6 @@ declare module "react-table" {
   export interface ColumnInterface<D extends object> {
     /** Used by react-table to hold the original id chosen for the column, independently of applied operations */
     originalId?: string;
-    headerCellClickCallback?: () => void;
     /** Column identifier */
     accessor: string;
     /** Column group type */

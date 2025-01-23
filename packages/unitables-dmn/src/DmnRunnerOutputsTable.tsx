@@ -261,7 +261,7 @@ function OutputsBeeTable({
         );
         return [
           {
-            originalId: `${outputProperties?.name}-` + generateUuid(),
+            originalId: `${outputProperties?.name}-${generateUuid()}-${decisionId}`,
             label: outputProperties?.name ?? "",
             accessor: (`output-object-parent-${outputProperties?.name}-` + generateUuid()) as any,
             dataType: outputProperties?.dataType,
@@ -275,10 +275,7 @@ function OutputsBeeTable({
                     return deepFlattenObjectColumn(collectedOutput, outputProperties?.properties);
                   }
                   return {
-                    headerCellClickCallback: () => {
-                      openBoxedExpressionEditor?.(decisionId);
-                    },
-                    originalId: "context-" + generateUuid(),
+                    originalId: `context-${generateUuid()}-${decisionId}`,
                     label: "context",
                     accessor: (`output-context-` + generateUuid()) as any,
                     dataType: outputProperties?.dataType ?? DmnBuiltInDataType.Any,
@@ -305,7 +302,7 @@ function OutputsBeeTable({
       if (typeof result === "string" || typeof result === "number" || typeof result === "boolean" || result === null) {
         return [
           {
-            originalId: `parent-${outputProperties?.name}-` + generateUuid(),
+            originalId: `parent-${outputProperties?.name}-${generateUuid()}-${decisionId}`,
             label: "",
             accessor: (`output-parent-${outputProperties?.name}-` + generateUuid()) as any,
             dataType: undefined as any,
@@ -314,10 +311,7 @@ function OutputsBeeTable({
             minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
             columns: [
               {
-                headerCellClickCallback: () => {
-                  openBoxedExpressionEditor?.(decisionId);
-                },
-                originalId: `${outputProperties?.name}-` + generateUuid() + `${outputProperties?.properties?.id}`,
+                originalId: `${outputProperties?.name}-${generateUuid()}-${outputProperties?.properties?.id}-${decisionId}`,
                 label: outputProperties?.name ?? "",
                 accessor: (`output-${outputProperties?.name}-` + generateUuid()) as any,
                 dataType: outputProperties?.dataType ?? DmnBuiltInDataType.Undefined,
@@ -334,17 +328,14 @@ function OutputsBeeTable({
       if (Array.isArray(result)) {
         return [
           {
-            headerCellClickCallback: () => {
-              openBoxedExpressionEditor?.(decisionId);
-            },
-            originalId: `${outputProperties?.name}-` + generateUuid(),
+            originalId: `${outputProperties?.name}-${generateUuid()}-${decisionId}`,
             label: `${outputProperties?.name}`,
             accessor: (`output-array-parent-${outputProperties?.name}-` + generateUuid()) as any,
             dataType: outputProperties?.dataType ?? DmnBuiltInDataType.Undefined,
             isRowIndexColumn: false,
             groupType: "dmn-runner-output",
             columns: result.map((entry, entryIndex) => ({
-              originalId: `${entryIndex}-` + generateUuid(),
+              originalId: `${entryIndex}-${generateUuid()}-${decisionId}`,
               label: `[${entryIndex}]`,
               accessor: (`output-array-${entryIndex}-` + generateUuid()) as any,
               dataType: undefined as any,
@@ -361,10 +352,7 @@ function OutputsBeeTable({
       if (typeof result === "object") {
         return [
           {
-            headerCellClickCallback: () => {
-              openBoxedExpressionEditor?.(decisionId);
-            },
-            originalId: `${outputProperties?.name}-` + generateUuid(),
+            originalId: `${outputProperties?.name}-${generateUuid()}-${decisionId}`,
             label: outputProperties?.name ?? "",
             accessor: (`output-object-parent-${outputProperties?.name}-` + generateUuid()) as any,
             dataType: outputProperties?.dataType ?? DmnBuiltInDataType.Undefined,
@@ -427,6 +415,17 @@ function OutputsBeeTable({
     return [BeeTableOperation.SelectionCopy];
   }, []);
 
+  const onOpenBoxedExpressionHeaderButtonClick = useCallback(
+    (columnKey: string) => {
+      (results?.[0] ?? []).flatMap(({ decisionId }) => {
+        if (columnKey.includes(decisionId)) {
+          openBoxedExpressionEditor?.(decisionId);
+        }
+      });
+    },
+    [openBoxedExpressionEditor, results]
+  );
+
   return (
     <StandaloneBeeTable
       scrollableParentRef={scrollableParentRef}
@@ -437,6 +436,7 @@ function OutputsBeeTable({
       isEditableHeader={false}
       headerLevelCountForAppendingRowIndexColumn={1}
       headerVisibility={BeeTableHeaderVisibility.AllLevels}
+      onHeaderClick={onOpenBoxedExpressionHeaderButtonClick}
       operationConfig={beeTableOperationConfig}
       columns={beeTableColumns}
       rows={beeTableRows}

@@ -270,13 +270,13 @@ export function BeeTableHeader<R extends object>({
                       </p>
                     ) : null}
                   </div>
-                  {column.headerCellClickCallback !== undefined && (
+                  {column.groupType === "dmn-runner-output" && !column.columns && (
                     <Flex direction={{ default: "column" }} alignSelf={{ default: "alignSelfCenter" }}>
                       <Button
                         variant={"plain"}
                         title={`Open '${column.label}' expression`}
                         icon={<ArrowUpIcon />}
-                        onClick={() => column.headerCellClickCallback?.()}
+                        onClick={() => onHeaderClick?.(column.originalId ?? "")}
                       />
                     </Flex>
                   )}
