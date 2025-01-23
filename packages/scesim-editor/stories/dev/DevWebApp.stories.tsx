@@ -39,7 +39,6 @@ import { emptyFileName } from "../misc/empty/Empty.stories";
 import { isOldEnoughDrl, isOldEnoughDrlFileName } from "../useCases/IsOldEnoughRule.stories";
 import { trafficViolationDmn, trafficViolationDmnFileName } from "../useCases/TrafficViolationDmn.stories";
 import { availableModelsByPath } from "../examples/AvailableDMNModels";
-import "./DevWebApp.css";
 
 function DevWebApp(props: TestScenarioEditorProps) {
   const [fileName, setFileName] = useState<string | undefined>("Untitled.scesim");
@@ -161,87 +160,89 @@ function DevWebApp(props: TestScenarioEditorProps) {
   }, []);
 
   return (
-    <Page onDragOver={onDragOver} onDrop={onDrop}>
-      <PageSection aria-label={"dev-app-header"} variant={"light"} isFilled={false}>
-        <Stack hasGutter>
-          <StackItem>
-            <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-              <FlexItem shrink={{ default: "shrink" }}>
-                <h3>Test Scenario Editor :: Dev WebApp</h3>
-              </FlexItem>
-              <FlexItem>
-                <h5>(Drag & drop a file anywhere to open it)</h5>
-              </FlexItem>
-            </Flex>
-          </StackItem>
-          <StackItem>
-            <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-              <FlexItem shrink={{ default: "shrink" }}>
-                <Button onClick={() => onSelectModel(EMPTY_ONE_EIGHT, emptyFileName)}>Empty</Button>
-                &nbsp; &nbsp;
-                <Button onClick={() => onSelectModel(isOldEnoughDrl, isOldEnoughDrlFileName)}>
-                  Are They Old Enough?
-                </Button>
-                &nbsp; &nbsp;
-                <Button onClick={() => onSelectModel(trafficViolationDmn, trafficViolationDmnFileName)}>
-                  Traffic Violation
-                </Button>
-                &nbsp; &nbsp; | &nbsp; &nbsp;
-                <Button
-                  onClick={undo}
-                  disabled={!isUndoEnabled}
-                  style={{ opacity: isUndoEnabled ? 1 : 0.5 }}
-                  variant="secondary"
-                >
-                  {`Undo (${state.pointer})`}
-                </Button>
-                &nbsp; &nbsp;
-                <Button
-                  onClick={redo}
-                  disabled={!isRedoEnabled}
-                  style={{ opacity: isRedoEnabled ? 1 : 0.5 }}
-                  variant="secondary"
-                >
-                  {`Redo (${state.stack.length - 1 - state.pointer})`}
-                </Button>
-                &nbsp; &nbsp; | &nbsp; &nbsp;
-                <Button onClick={reset} variant="tertiary">
-                  Reset
-                </Button>
-                &nbsp; &nbsp;
-                <Button onClick={copyAsXml} variant="tertiary">
-                  Copy as XML
-                </Button>
-                &nbsp; &nbsp;
-                <Button onClick={downloadAsXml} variant="tertiary">
-                  Download
-                </Button>
-              </FlexItem>
-            </Flex>
-          </StackItem>
-        </Stack>
-        <a ref={downloadRef} />
-      </PageSection>
-      <hr />
-      <PageSection
-        aria-label={"dev-app-body"}
-        className={"section-body"}
-        isFilled={true}
-        hasOverflowScroll={true}
-        variant={"light"}
-      >
-        {SceSimEditorWrapper({
-          issueTrackerHref: props.issueTrackerHref,
-          externalModelsByNamespace: externalModelsByNamespace,
-          model: currentModel,
-          onModelChange: onModelChange,
-          onRequestExternalModelsAvailableToInclude: onRequestExternalModelsAvailableToInclude,
-          onRequestExternalModelByPath: onRequestExternalModelByPath,
-          onRequestToJumpToPath: onRequestToJumpToPath,
-          openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: fileName,
-        })}
-      </PageSection>
-    </Page>
+    <div style={{ width: "100vw", height: "100vh" }}>
+      <Page onDragOver={onDragOver} onDrop={onDrop}>
+        <PageSection aria-label={"dev-app-header"} variant={"light"} isFilled={false}>
+          <Stack hasGutter>
+            <StackItem>
+              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                <FlexItem shrink={{ default: "shrink" }}>
+                  <h3>Test Scenario Editor :: Dev WebApp</h3>
+                </FlexItem>
+                <FlexItem>
+                  <h5>(Drag & drop a file anywhere to open it)</h5>
+                </FlexItem>
+              </Flex>
+            </StackItem>
+            <StackItem>
+              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                <FlexItem shrink={{ default: "shrink" }}>
+                  <Button onClick={() => onSelectModel(EMPTY_ONE_EIGHT, emptyFileName)}>Empty</Button>
+                  &nbsp; &nbsp;
+                  <Button onClick={() => onSelectModel(isOldEnoughDrl, isOldEnoughDrlFileName)}>
+                    Are They Old Enough?
+                  </Button>
+                  &nbsp; &nbsp;
+                  <Button onClick={() => onSelectModel(trafficViolationDmn, trafficViolationDmnFileName)}>
+                    Traffic Violation
+                  </Button>
+                  &nbsp; &nbsp; | &nbsp; &nbsp;
+                  <Button
+                    onClick={undo}
+                    disabled={!isUndoEnabled}
+                    style={{ opacity: isUndoEnabled ? 1 : 0.5 }}
+                    variant="secondary"
+                  >
+                    {`Undo (${state.pointer})`}
+                  </Button>
+                  &nbsp; &nbsp;
+                  <Button
+                    onClick={redo}
+                    disabled={!isRedoEnabled}
+                    style={{ opacity: isRedoEnabled ? 1 : 0.5 }}
+                    variant="secondary"
+                  >
+                    {`Redo (${state.stack.length - 1 - state.pointer})`}
+                  </Button>
+                  &nbsp; &nbsp; | &nbsp; &nbsp;
+                  <Button onClick={reset} variant="tertiary">
+                    Reset
+                  </Button>
+                  &nbsp; &nbsp;
+                  <Button onClick={copyAsXml} variant="tertiary">
+                    Copy as XML
+                  </Button>
+                  &nbsp; &nbsp;
+                  <Button onClick={downloadAsXml} variant="tertiary">
+                    Download
+                  </Button>
+                </FlexItem>
+              </Flex>
+            </StackItem>
+          </Stack>
+          <a ref={downloadRef} />
+        </PageSection>
+        <hr />
+        <PageSection
+          aria-label={"editor"}
+          isFilled={true}
+          hasOverflowScroll={true}
+          padding={{ default: "noPadding" }}
+          variant={"light"}
+        >
+          {SceSimEditorWrapper({
+            issueTrackerHref: props.issueTrackerHref,
+            externalModelsByNamespace: externalModelsByNamespace,
+            model: currentModel,
+            onModelChange: onModelChange,
+            onRequestExternalModelsAvailableToInclude: onRequestExternalModelsAvailableToInclude,
+            onRequestExternalModelByPath: onRequestExternalModelByPath,
+            onRequestToJumpToPath: onRequestToJumpToPath,
+            openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: fileName,
+          })}
+        </PageSection>
+      </Page>
+    </div>
   );
 }
 

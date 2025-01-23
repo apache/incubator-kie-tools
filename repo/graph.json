@@ -158,6 +158,8 @@
       { "id": "@kie-tools/dmn-runner" },
       { "id": "@kie-tools/extended-services-api" },
       { "id": "dmn-vscode-extension" },
+      { "id": "@kie-tools/scesim-editor-envelope" },
+      { "id": "@kie-tools/scesim-editor" },
       { "id": "@kie-tools/extended-services" },
       { "id": "@kie-tools/extended-services-java" },
       { "id": "extended-services-vscode-extension" },
@@ -205,9 +207,7 @@
       { "id": "@kie-tools/runtime-tools-swf-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-swf-gateway-api" },
       { "id": "@kie-tools/runtime-tools-swf-webapp-components" },
-      { "id": "@kie-tools/scesim-editor" },
       { "id": "@kie-tools/scesim-marshaller" },
-      { "id": "@kie-tools/scesim-editor-envelope" },
       { "id": "@kie-tools/serverless-logic-web-tools" },
       { "id": "@kie-tools/text-editor" },
       { "id": "@kie-tools/yard-editor" },
@@ -1654,12 +1654,42 @@
       },
       {
         "source": "dmn-vscode-extension",
+        "target": "@kie-tools/scesim-editor-envelope",
+        "weight": 1
+      },
+      {
+        "source": "dmn-vscode-extension",
         "target": "@kie-tools/stunner-editors",
         "weight": 1
       },
       {
         "source": "dmn-vscode-extension",
         "target": "@kie-tools/vscode-java-code-completion-extension-plugin",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/scesim-editor-envelope",
+        "target": "@kie-tools-core/editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/scesim-editor-envelope",
+        "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/scesim-editor-envelope",
+        "target": "@kie-tools/scesim-editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/scesim-editor",
+        "target": "@kie-tools/boxed-expression-component",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/scesim-editor",
+        "target": "@kie-tools/scesim-marshaller",
         "weight": 1
       },
       {

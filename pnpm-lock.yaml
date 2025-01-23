@@ -4848,6 +4848,9 @@ importers:
       '@kie-tools/kie-bc-editors':
         specifier: workspace:*
         version: link:../kie-bc-editors
+      '@kie-tools/scesim-editor-envelope':
+        specifier: workspace:*
+        version: link:../scesim-editor-envelope
     devDependencies:
       '@kie-tools-core/webpack-base':
         specifier: workspace:*
@@ -10042,6 +10045,9 @@ importers:
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.94.0(webpack-cli@4.10.0))
+      copyfiles:
+        specifier: ^2.4.1
+        version: 2.4.1
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3

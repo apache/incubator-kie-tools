@@ -42,7 +42,7 @@ export class DmnEditorFactory implements EditorFactory<Editor, KogitoEditorChann
 }
 
 export class DmnEditorInterface implements Editor {
-  private self: DmnEditorRoot;
+  protected self: DmnEditorRoot;
   public af_isReact = true;
   public af_componentId: "dmn-editor";
   public af_componentTitle: "DMN Editor";

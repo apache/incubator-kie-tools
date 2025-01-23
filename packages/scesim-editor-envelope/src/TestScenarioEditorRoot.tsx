@@ -114,7 +114,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: string,
     content: string
   ): Promise<void> {
-    const marshaller = this.getMarshaller(content || EMPTY_ONE_EIGHT);
+    const marshaller = this.getMarshaller(content);
 
     // Save stack
     let savedStackPointer: SceSimModel[] = [];
@@ -411,7 +411,7 @@ function ExternalModelsManager({
   useEffect(() => {
     let canceled = false;
 
-    if (!thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot || !targetNamespace) {
+    if (!thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot) {
       return;
     }
 
@@ -455,7 +455,7 @@ function ExternalModelsManager({
           const ext = __path.extname(resource.normalizedPosixPathRelativeToTheWorkspaceRoot);
           if (ext === ".dmn") {
             const namespace = domParser.getDomDocument(content).documentElement.getAttribute("namespace");
-            if (namespace === targetNamespace) {
+            if (targetNamespace && namespace === targetNamespace) {
               // Check for multiplicity of namespaces on DMN models
               if (externalModelsIndex[namespace]) {
                 console.warn(
