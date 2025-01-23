@@ -442,7 +442,6 @@ export function WorkspaceCard(props: {
                 isToggleRightAligned={true}
                 onExpand={props.onSelect}
               >
-                actions=
                 {
                   <>
                     <WorkspaceListItem

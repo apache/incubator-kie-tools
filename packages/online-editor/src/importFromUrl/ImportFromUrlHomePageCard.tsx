@@ -195,7 +195,7 @@ export function ImportFromUrlCard() {
                     {validation.helperText}
                   </HelperTextItem>
                 ) : (
-                  <HelperTextItem icon={ValidatedOptions.success}>{validation.option}</HelperTextItem>
+                  validation.helperTextInvalid
                 )}
               </HelperText>
             </FormGroup>
