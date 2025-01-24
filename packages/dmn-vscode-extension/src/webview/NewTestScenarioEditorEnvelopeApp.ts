@@ -17,9 +17,13 @@
  * under the License.
  */
 
-.section-body {
-  --pf-c-page__main-section--PaddingTop: 0px;
-  --pf-c-page__main-section--PaddingRight: 0px;
-  --pf-c-page__main-section--PaddingBottom: 0px;
-  --pf-c-page__main-section--PaddingLeft: 0px;
-}
+import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
+import { TestScenarioEditorFactory } from "@kie-tools/scesim-editor-envelope/dist/TestScenarioEditorFactory";
+
+declare const acquireVsCodeApi: any;
+
+EditorEnvelope.init({
+  container: document.getElementById("envelope-app")!,
+  bus: acquireVsCodeApi(),
+  editorFactory: new TestScenarioEditorFactory(),
+});

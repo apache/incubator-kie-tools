@@ -68,7 +68,7 @@ function TestScenarioCreationPanel() {
         const settings = state.scesim.model.ScenarioSimulationModel.settings;
         settings.dmnFilePath = assetType === "DMN" ? { __$$text: "./MockedDMNName.dmn" } : undefined;
         settings.dmnName = assetType === "DMN" ? { __$$text: "MockedDMNName.dmn" } : undefined;
-        settings.dmnNamespace = assetType === "DMN" ? { __$$text: "https:\\kiegroup" } : undefined;
+        settings.dmnNamespace = assetType === "DMN" ? { __$$text: "https:\\kie" } : undefined;
         settings.dmoSession = assetType === "RULE" && kieSessionRule ? { __$$text: kieSessionRule } : undefined;
         settings.ruleFlowGroup = assetType === "RULE" && ruleFlowGroup ? { __$$text: ruleFlowGroup } : undefined;
         settings.skipFromBuild = { __$$text: isTestSkipped };
