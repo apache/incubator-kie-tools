@@ -247,10 +247,10 @@ function OutputsBeeTable({
   );
 
   const onOpenBoxedExpressionHeaderButtonClick = useCallback(
-    (columnKey: string) => {
-      (results?.[0] ?? []).flatMap(({ decisionId }) => {
-        if (columnKey.includes(decisionId)) {
-          openBoxedExpressionEditor?.(decisionId);
+    (clickedDecisionId: string) => {
+      (results?.[0] ?? []).flatMap(({ decisionId: resultDecisionId }) => {
+        if (clickedDecisionId === resultDecisionId) {
+          openBoxedExpressionEditor?.(resultDecisionId);
         }
       });
     },
