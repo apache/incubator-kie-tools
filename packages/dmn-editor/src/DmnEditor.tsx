@@ -67,6 +67,7 @@ const SVG_PADDING = 20;
 export type DmnEditorRef = {
   reset: (mode: DmnLatestModel) => void;
   getDiagramSvg: () => Promise<string | undefined>;
+  openBoxedExpressionEditor: (nodeId: string) => void;
   getCommands: () => Commands;
 };
 
@@ -206,6 +207,11 @@ export const DmnEditorInternal = ({
       reset: (model) => {
         const state = dmnEditorStoreApi.getState();
         return state.dispatch(state).dmn.reset(normalize(model));
+      },
+      openBoxedExpressionEditor: (nodeId: string) => {
+        dmnEditorStoreApi.setState((state) => {
+          state.dispatch(state).boxedExpressionEditor.open(nodeId);
+        });
       },
       getDiagramSvg: async () => {
         const nodes = diagramRef.current?.getReactFlowInstance()?.getNodes();
