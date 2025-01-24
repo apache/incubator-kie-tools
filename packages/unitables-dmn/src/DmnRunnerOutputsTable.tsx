@@ -44,6 +44,8 @@ import "@kie-tools/boxed-expression-component/dist/@types/react-table";
 import { ResizerStopBehavior } from "@kie-tools/boxed-expression-component/dist/resizing/ResizingWidthsContext";
 import "./DmnRunnerOutputsTable.css";
 import { DecisionResult, DmnEvaluationResult } from "@kie-tools/extended-services-api";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon";
 
 interface Props {
   i18n: DmnUnitablesI18n;
@@ -244,6 +246,31 @@ function OutputsBeeTable({
     [getRowValue]
   );
 
+  const onOpenBoxedExpressionHeaderButtonClick = useCallback(
+    (columnKey: string) => {
+      (results?.[0] ?? []).flatMap(({ decisionId }) => {
+        if (columnKey.includes(decisionId)) {
+          openBoxedExpressionEditor?.(decisionId);
+        }
+      });
+    },
+    [openBoxedExpressionEditor, results]
+  );
+
+  const openBoxedExpressionHeaderButton = useCallback(
+    ({ decisionId, decisionName }) => {
+      return (
+        <Button
+          variant={"plain"}
+          title={`Open '${decisionName}' expression`}
+          icon={<ArrowUpIcon />}
+          onClick={() => onOpenBoxedExpressionHeaderButtonClick(decisionId)}
+        />
+      );
+    },
+    [onOpenBoxedExpressionHeaderButtonClick]
+  );
+
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return (results?.[0] ?? []).flatMap(({ result, decisionName, decisionId }) => {
       const outputProperties = outputsPropertiesMap.get(decisionName);
@@ -262,6 +289,7 @@ function OutputsBeeTable({
         return [
           {
             originalId: `${outputProperties?.name}-${generateUuid()}-${decisionId}`,
+            headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
             label: outputProperties?.name ?? "",
             accessor: (`output-object-parent-${outputProperties?.name}-` + generateUuid()) as any,
             dataType: outputProperties?.dataType,
@@ -312,6 +340,7 @@ function OutputsBeeTable({
             columns: [
               {
                 originalId: `${outputProperties?.name}-${generateUuid()}-${outputProperties?.properties?.id}-${decisionId}`,
+                headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
                 label: outputProperties?.name ?? "",
                 accessor: (`output-${outputProperties?.name}-` + generateUuid()) as any,
                 dataType: outputProperties?.dataType ?? DmnBuiltInDataType.Undefined,
@@ -329,6 +358,7 @@ function OutputsBeeTable({
         return [
           {
             originalId: `${outputProperties?.name}-${generateUuid()}-${decisionId}`,
+            headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
             label: `${outputProperties?.name}`,
             accessor: (`output-array-parent-${outputProperties?.name}-` + generateUuid()) as any,
             dataType: outputProperties?.dataType ?? DmnBuiltInDataType.Undefined,
@@ -353,6 +383,7 @@ function OutputsBeeTable({
         return [
           {
             originalId: `${outputProperties?.name}-${generateUuid()}-${decisionId}`,
+            headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
             label: outputProperties?.name ?? "",
             accessor: (`output-object-parent-${outputProperties?.name}-` + generateUuid()) as any,
             dataType: outputProperties?.dataType ?? DmnBuiltInDataType.Undefined,
@@ -365,7 +396,7 @@ function OutputsBeeTable({
       }
       return [] as ReactTable.Column<ROWTYPE>[];
     });
-  }, [deepFlattenObjectColumn, outputsPropertiesMap, results]);
+  }, [deepFlattenObjectColumn, openBoxedExpressionHeaderButton, outputsPropertiesMap, results]);
 
   const beeTableRows = useMemo<ROWTYPE[]>(() => {
     return (results ?? []).map((decisionResult, rowIndex) => {
@@ -415,17 +446,6 @@ function OutputsBeeTable({
     return [BeeTableOperation.SelectionCopy];
   }, []);
 
-  const onOpenBoxedExpressionHeaderButtonClick = useCallback(
-    (columnKey: string) => {
-      (results?.[0] ?? []).flatMap(({ decisionId }) => {
-        if (columnKey.includes(decisionId)) {
-          openBoxedExpressionEditor?.(decisionId);
-        }
-      });
-    },
-    [openBoxedExpressionEditor, results]
-  );
-
   return (
     <StandaloneBeeTable
       scrollableParentRef={scrollableParentRef}
@@ -436,7 +456,6 @@ function OutputsBeeTable({
       isEditableHeader={false}
       headerLevelCountForAppendingRowIndexColumn={1}
       headerVisibility={BeeTableHeaderVisibility.AllLevels}
-      onHeaderClick={onOpenBoxedExpressionHeaderButtonClick}
       operationConfig={beeTableOperationConfig}
       columns={beeTableColumns}
       rows={beeTableRows}

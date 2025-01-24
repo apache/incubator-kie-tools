@@ -30,8 +30,6 @@ import { BeeTableThController } from "./BeeTableThController";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 import { InlineEditableTextInput } from "./InlineEditableTextInput";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export interface BeeTableColumnUpdate<R extends object> {
@@ -270,14 +268,9 @@ export function BeeTableHeader<R extends object>({
                       </p>
                     ) : null}
                   </div>
-                  {column.groupType === "dmn-runner-output" && !column.columns && (
+                  {column.headerCellElementExtension !== undefined && (
                     <Flex direction={{ default: "column" }} alignSelf={{ default: "alignSelfCenter" }}>
-                      <Button
-                        variant={"plain"}
-                        title={`Open '${column.label}' expression`}
-                        icon={<ArrowUpIcon />}
-                        onClick={() => onHeaderClick?.(column.originalId ?? "")}
-                      />
+                      {column.headerCellElementExtension}
                     </Flex>
                   )}
                 </Flex>
