@@ -288,7 +288,7 @@ function OutputsBeeTable({
         );
         return [
           {
-            originalId: `${outputProperties?.name}-${generateUuid()}-${decisionId}`,
+            originalId: `${outputProperties?.name}-${generateUuid()}`,
             headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
             label: outputProperties?.name ?? "",
             accessor: (`output-object-parent-${outputProperties?.name}-` + generateUuid()) as any,
@@ -303,7 +303,7 @@ function OutputsBeeTable({
                     return deepFlattenObjectColumn(collectedOutput, outputProperties?.properties);
                   }
                   return {
-                    originalId: `context-${generateUuid()}-${decisionId}`,
+                    originalId: `context-${generateUuid()}`,
                     label: "context",
                     accessor: (`output-context-` + generateUuid()) as any,
                     dataType: outputProperties?.dataType ?? DmnBuiltInDataType.Any,
@@ -330,7 +330,7 @@ function OutputsBeeTable({
       if (typeof result === "string" || typeof result === "number" || typeof result === "boolean" || result === null) {
         return [
           {
-            originalId: `parent-${outputProperties?.name}-${generateUuid()}-${decisionId}`,
+            originalId: `parent-${outputProperties?.name}-${generateUuid()}`,
             label: "",
             accessor: (`output-parent-${outputProperties?.name}-` + generateUuid()) as any,
             dataType: undefined as any,
@@ -339,7 +339,7 @@ function OutputsBeeTable({
             minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
             columns: [
               {
-                originalId: `${outputProperties?.name}-${generateUuid()}-${outputProperties?.properties?.id}-${decisionId}`,
+                originalId: `${outputProperties?.name}-${generateUuid()}-${outputProperties?.properties?.id}`,
                 headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
                 label: outputProperties?.name ?? "",
                 accessor: (`output-${outputProperties?.name}-` + generateUuid()) as any,
@@ -357,7 +357,7 @@ function OutputsBeeTable({
       if (Array.isArray(result)) {
         return [
           {
-            originalId: `${outputProperties?.name}-${generateUuid()}-${decisionId}`,
+            originalId: `${outputProperties?.name}-${generateUuid()}`,
             headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
             label: `${outputProperties?.name}`,
             accessor: (`output-array-parent-${outputProperties?.name}-` + generateUuid()) as any,
@@ -365,7 +365,7 @@ function OutputsBeeTable({
             isRowIndexColumn: false,
             groupType: "dmn-runner-output",
             columns: result.map((entry, entryIndex) => ({
-              originalId: `${entryIndex}-${generateUuid()}-${decisionId}`,
+              originalId: `${entryIndex}-${generateUuid()}`,
               label: `[${entryIndex}]`,
               accessor: (`output-array-${entryIndex}-` + generateUuid()) as any,
               dataType: undefined as any,
@@ -382,7 +382,7 @@ function OutputsBeeTable({
       if (typeof result === "object") {
         return [
           {
-            originalId: `${outputProperties?.name}-${generateUuid()}-${decisionId}`,
+            originalId: `${outputProperties?.name}-${generateUuid()}`,
             headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
             label: outputProperties?.name ?? "",
             accessor: (`output-object-parent-${outputProperties?.name}-` + generateUuid()) as any,
