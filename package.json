@@ -25,7 +25,7 @@
     "@kie-tools-scripts/update-version": "workspace:*",
     "@nice-move/prettier-plugin-package-json": "^0.8.0",
     "@prettier/plugin-xml": "^3.4.1",
-    "@types/node": "^20.14.2",
+    "@types/node": "^22.10.7",
     "husky": "^6.0.0",
     "postinstall-postinstall": "^2.1.0",
     "prettier": "^3.3.2",
