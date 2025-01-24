@@ -46,7 +46,8 @@ function TestScenarioDrawerSettingsPanel({ scesimFilePath }: { scesimFilePath: s
   const settingsModel = useTestScenarioEditorStore((state) => state.scesim.model.ScenarioSimulationModel.settings);
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const testScenarioType = settingsModel.type?.__$$text.toUpperCase();
-  const [availableDmnModelPaths, setAvailableDmnModelPaths] = useState<string[] | undefined>(undefined);
+  const [availableDmnModelNormalizedPosixPathRelativePaths, setAvailableDmnModelNormalizedPosixPathRelativePaths] =
+    useState<string[] | undefined>(undefined);
   const [selectedDMNPathRelativeToThisScesim, setSelectedDMNPathRelativeToThisScesim] = useState<string | undefined>(
     settingsModel.dmnFilePath?.__$$text
   );
@@ -60,7 +61,7 @@ function TestScenarioDrawerSettingsPanel({ scesimFilePath }: { scesimFilePath: s
             if (canceled.get()) {
               return;
             }
-            setAvailableDmnModelPaths(paths);
+            setAvailableDmnModelNormalizedPosixPathRelativePaths(paths);
           })
           .catch((err) => {
             console.error(err);
@@ -121,17 +122,14 @@ function TestScenarioDrawerSettingsPanel({ scesimFilePath }: { scesimFilePath: s
             }}
             value={selectedDMNPathRelativeToThisScesim}
           >
-            {((availableDmnModelPaths?.length ?? 0) > 0 &&
-              availableDmnModelPaths?.map((path) => {
-                const normalizedPosixPathRelativeToTheWorkspaceRoot = onRequestToResolvePath?.(path) ?? path;
-                return (
-                  <FormSelectOption
-                    key={path}
-                    value={normalizedPosixPathRelativeToTheWorkspaceRoot}
-                    label={basename(normalizedPosixPathRelativeToTheWorkspaceRoot)}
-                  />
-                );
-              })) || <FormSelectOption key={undefined} isDisabled label={i18n.creationPanel.dmnNoPresent} value={""} />}
+            {((availableDmnModelNormalizedPosixPathRelativePaths?.length ?? 0) > 0 &&
+              availableDmnModelNormalizedPosixPathRelativePaths?.map((normalizedPosixPathRelativeToTheOpenFile) => (
+                <FormSelectOption
+                  key={normalizedPosixPathRelativeToTheOpenFile}
+                  value={normalizedPosixPathRelativeToTheOpenFile}
+                  label={basename(normalizedPosixPathRelativeToTheOpenFile)}
+                />
+              ))) || <FormSelectOption key={undefined} isDisabled label={i18n.creationPanel.dmnNoPresent} />}
           </FormSelect>
           <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
             {i18n.drawer.settings.dmnName}

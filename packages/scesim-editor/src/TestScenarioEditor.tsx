@@ -140,7 +140,7 @@ export type TestScenarioEditorProps = {
    */
   onRequestToJumpToPath?: OnRequestToJumpToPath;
   /**
-   * All paths inside the DMN Editor are relative. To be able to resolve them and display them as absolute paths, this function is called.
+   * All paths inside the Test Scenario Editor are relative. To be able to resolve them and display them as absolute paths, this function is called.
    * If undefined, the relative paths will be displayed.
    */
   onRequestToResolvePath?: OnRequestToResolvePath;
