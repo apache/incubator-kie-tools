@@ -37,7 +37,9 @@ services:
       - KIE_TOOLS_BUILD__runEndToEndTests=true
       - KIE_TOOLS_BUILD__runContainerizedEndToEndTests=true
     volumes:
-      - ../../../../../kie-tools:/home/node/kie-tools-playwright/kie-tools/
+      - type: bind
+        source: ./../../../../
+        target: /home/node/kie-tools-playwright/incubator-kie-tools
 
   # The nginx reverse-proxy is used to forward `host.docker.internal` requests to `localhost.
   nginx-dev:
