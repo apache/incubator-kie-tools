@@ -109,7 +109,6 @@ export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
           issueTrackerHref={props?.issueTrackerHref ?? args.issueTrackerHref}
           onRequestToJumpToPath={props?.onRequestToJumpToPath ?? args.onRequestToJumpToPath}
           onModelDebounceStateChanged={onModelDebounceStateChanged}
-          evaluationStatus={props?.evaluationStatus || args.evaluationStatus}
         />
       </div>
     </>

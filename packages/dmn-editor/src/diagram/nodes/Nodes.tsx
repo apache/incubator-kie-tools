@@ -404,10 +404,10 @@ export const DecisionNode = React.memo(
     });
 
     const isEvaluationHighlightsEnabled = useDmnEditorStore((s) => s.diagram.overlays.enableEvaluationHighlights);
-    const { evaluationStatus } = useDmnEditor();
-    const evaluationStatusClassName =
-      isEvaluationHighlightsEnabled && evaluationStatus!.has(decision["@_id"])
-        ? `kie-dmn-editor--decision-node--evaluation-status-${evaluationStatus!.get(decision["@_id"])}`
+    const { evaluationResults } = useDmnEditor();
+    const evaluationResultsClassName =
+      isEvaluationHighlightsEnabled && evaluationResults![decision["@_id"]] !== undefined
+        ? `kie-dmn-editor--decision-node--evaluation-status-${evaluationResults![decision["@_id"]]}`
         : "";
 
     return (
@@ -429,7 +429,7 @@ export const DecisionNode = React.memo(
 
         <div
           ref={ref}
-          className={`kie-dmn-editor--node kie-dmn-editor--decision-node ${className} ${evaluationStatusClassName}`}
+          className={`kie-dmn-editor--node kie-dmn-editor--decision-node ${className} ${evaluationResultsClassName}`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}

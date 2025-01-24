@@ -71,7 +71,7 @@ export type DmnEditorRef = {
   getCommands: () => Commands;
 };
 
-export type EvaluationResults = Record<string, any>;
+export type EvaluationResults = Record<string, "success" | "failure">;
 export type ValidationMessages = Record<string, any>;
 export type OnDmnModelChange = (model: Normalized<DmnLatestModel>) => void;
 
@@ -170,10 +170,6 @@ export type DmnEditorProps = {
    * Notifies the caller when the DMN Editor performs a new edit after the debounce time.
    */
   onModelDebounceStateChanged?: (changed: boolean) => void;
-  /**
-   * Its a map telling if given key (decisionId) was evaluated with value ("success" or "failure")
-   */
-  evaluationStatus?: Map<string, "success" | "failure">;
 };
 
 export const DmnEditorInternal = ({

@@ -782,7 +782,7 @@ else &quot;Insufficient&quot;</dmn:text>
 </dmn:definitions>
 `;
 
-function EvaluationStatus(args: DmnEditorProps) {
+function EvaluationResults(args: DmnEditorProps) {
   const [state, setState] = useState<{
     marshaller: DmnMarshaller;
     stack: Normalized<DmnLatestModel>[];
@@ -820,35 +820,33 @@ function EvaluationStatus(args: DmnEditorProps) {
         validationMessages: args.validationMessages,
         evaluationResults: args.evaluationResults,
         issueTrackerHref: args.issueTrackerHref,
-        evaluationStatus: args.evaluationStatus,
       })}
     </>
   );
 }
 
 const meta: Meta<DmnEditorProps> = {
-  title: "Misc/EvaluationStatus",
+  title: "Misc/EvaluationResults",
   component: DmnEditor,
   includeStories: /^[A-Z]/,
 };
 
 export default meta;
-type Story = StoryObj<typeof EvaluationStatus>;
+type Story = StoryObj<typeof EvaluationResults>;
 
-export const EvaluationStatusStory: Story = {
-  render: (args) => EvaluationStatus(args),
+export const EvaluationResultsStory: Story = {
+  render: (args) => EvaluationResults(args),
   args: {
     model: getMarshaller(initialModel, { upgradeTo: "latest" }).parser.parse(),
     originalVersion: "1.5",
-    evaluationResults: {},
+    evaluationResults: {
+      "_F0DC8923-5FC7-4200-8BD1-461D5F3714BE": "success",
+      "_D6F4234F-15B3-4F5B-B814-5F6FF29D2907": "failure",
+    },
     externalContextDescription: "External context description",
     externalContextName: "Storybook - DMN Editor",
     externalModelsByNamespace: {},
     issueTrackerHref: "",
     validationMessages: {},
-    evaluationStatus: new Map([
-      ["_F0DC8923-5FC7-4200-8BD1-461D5F3714BE", "success"],
-      ["_D6F4234F-15B3-4F5B-B814-5F6FF29D2907", "failure"],
-    ]),
   },
 };
