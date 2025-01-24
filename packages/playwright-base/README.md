@@ -25,13 +25,19 @@ This package collects common configurations to run end-to-end Playwright tests.
 
 Each operating system has slight variations in UI, even within the same browser. These differences can cause screenshot comparison tests to fail. To address this issue and ensure a stable environment with consistent test results locally and in CI, containers can be used. Running Playwright tests inside a container that replicates the CI environment makes screenshot tests reproducible, regardless of the host OS.
 
-To run tests in a container, you first need to build the image using the Containerfile provided in this package. Use the `image:docker:build` script as shown below:
+> **ℹ️ NOTE**
+>
+> Due to compatibility issues, this containerization solution cannot yet be used on Windows natively and requires running it directly within WSL (Windows Subsystem for Linux).
+
+---
+
+To run tests in a container, you first need to build the image using the Containerfile provided in this package. Use the `build:dev` script as shown below:
 
 ```sh
 # In this package folder
-KIE_TOOLS_BUILD__buildContainerImages=true pnpm image:docker:build
+KIE_TOOLS_BUILD__buildContainerImages=true pnpm build:dev
 # or in any folder of the kie-tools monorepo
-KIE_TOOLS_BUILD__buildContainerImages=true pnpm -F @kie-tools/plawright-base image:docker:build
+KIE_TOOLS_BUILD__buildContainerImages=true pnpm -F @kie-tools/plawright-base build:dev
 ```
 
 By default, tests run on the host machine. To execute them in the containerized environment, set the `KIE_TOOLS_BUILD__runContainerizedEndToEndTests` environment variable to `true`.
