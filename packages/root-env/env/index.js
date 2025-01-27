@@ -46,9 +46,9 @@ module.exports = composeEnv([], {
       default: `${false}`,
       description: "Enables/disables running end-to-end tests during the build.",
     },
-    KIE_TOOLS_BUILD__runContainerizedEndToEndTests: {
+    KIE_TOOLS_BUILD__containerizedEndToEndTests: {
       default: `${false}`,
-      description: "Enables/disables running end-to-end tests inside a container during the build.",
+      description: "Enables/disables running end-to-end tests inside a container during the test execution.",
     },
     KIE_TOOLS_BUILD__ignoreEndToEndTestFailures: {
       default: `${false}`,
@@ -96,9 +96,7 @@ module.exports = composeEnv([], {
       endToEndTests: {
         run: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__runEndToEndTests)),
         ignoreFailures: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__ignoreEndToEndTestFailures)),
-      },
-      containerizedEndToEndTests: {
-        run: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__runContainerizedEndToEndTests)),
+        containerized: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__containerizedEndToEndTests)),
       },
       linters: {
         run: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__runLinters)),

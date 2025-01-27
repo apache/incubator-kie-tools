@@ -23,33 +23,35 @@ services:
     container_name: kie-tools-playwright-containerization-boxed-expression-component
     image: kie-tools-playwright-container-image:${PROJECT_VERSION}
     depends_on:
-      - nginx
+      - reverse-proxy
     entrypoint: ["/bin/bash"]
     stdin_open: true
     tty: true
-    ipc: "host"
     network_mode: "host"
     user: 1000:1000
     environment:
       - KIE_TOOLS_BUILD__runEndToEndTests=true
-      - KIE_TOOLS_BUILD__runContainerizedEndToEndTests=true
+      - KIE_TOOLS_BUILD__containerizedEndToEndTests=true
     volumes:
       - type: bind
         source: ./../../../../
         target: /home/node/kie-tools-playwright/incubator-kie-tools
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   # The nginx reverse-proxy is used to forward `host.docker.internal` requests to `localhost.
-  nginx:
-    image: nginx:latest
-    container_name: kie-tools-playwright-containerization-scesim-editor-nginx
-    network_mode: host
+  reverse-proxy:
+    image: nginx:1.27.3-alpine
+    container_name: kie-tools-playwright-containerization-scesim-editor-reverse-proxy
     command: ["nginx", "-g", "daemon off;"]
     configs:
-      - source: nginx-config
+      - source: reverse-proxy-config
         target: /etc/nginx/nginx.conf
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
 configs:
-  nginx-config:
+  reverse-proxy-config:
     content: |
       events {}
 

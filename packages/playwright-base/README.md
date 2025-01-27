@@ -40,10 +40,10 @@ KIE_TOOLS_BUILD__buildContainerImages=true pnpm build:dev
 KIE_TOOLS_BUILD__buildContainerImages=true pnpm -F @kie-tools/plawright-base build:dev
 ```
 
-By default, tests run on the host machine. To execute them in the containerized environment, set the `KIE_TOOLS_BUILD__runContainerizedEndToEndTests` environment variable to `true`.
+By default, tests run on the host machine. To execute them in the containerized environment, set the `KIE_TOOLS_BUILD__containerizedEndToEndTests` environment variable to `true`.
 
 ```sh
-KIE_TOOLS_BUILD__runContainerizedEndToEndTests=true pnpm test-e2e
+KIE_TOOLS_BUILD__containerizedEndToEndTests=true pnpm test-e2e
 ```
 
 ## Updating Playwright screenshots

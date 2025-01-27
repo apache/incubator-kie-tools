@@ -14,7 +14,7 @@
     "start:linux:darwin": "cross-env STORYBOOK_PORT=$(build-env scesimEditor.storybook.port) pnpm kie-tools--storybook --storybookArgs=\"dev --no-open\"",
     "start:win32": "pnpm powershell \"cross-env STORYBOOK_PORT=$(build-env scesimEditor.storybook.port) pnpm kie-tools--storybook --storybookArgs='dev --no-open'",
     "test-e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm rimraf ./dist-tests-e2e\" \"pnpm test-e2e:run\" --else \"pnpm test-e2e:container\"",
-    "test-e2e:container": "run-script-if --bool \"$(build-env containerizedEndToEndTests.run)\" --then  \"pnpm rimraf ./dist-tests-e2e\" \"pnpm test-e2e:container:start\"",
+    "test-e2e:container": "run-script-if --bool \"$(build-env endToEndTests.containerized)\" --then  \"pnpm rimraf ./dist-tests-e2e\" \"pnpm test-e2e:container:start\"",
     "test-e2e:container:bash": "docker exec -it kie-tools-playwright-containerization-scesim-editor /bin/bash -c \"cd incubator-kie-tools/packages/scesim-editor && exec /bin/bash\"",
     "test-e2e:container:down": "docker compose -f ./tests-e2e/__containerization__/playwright-docker-compose.yml down",
     "test-e2e:container:run": "docker exec -it kie-tools-playwright-containerization-scesim-editor /bin/bash -c \"cd incubator-kie-tools/packages/scesim-editor && pnpm test-e2e:run\"",
