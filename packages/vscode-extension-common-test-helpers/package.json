@@ -30,7 +30,7 @@
     "@types/chai": "^4.3.6",
     "@types/fs-extra": "^11.0.1",
     "@types/mocha": "^10.0.7",
-    "@types/node": "^20.14.2",
+    "@types/node": "^22.10.7",
     "@types/selenium-webdriver": "^4.1.27",
     "mocha": "^10.6.0",
     "rimraf": "^3.0.2",
