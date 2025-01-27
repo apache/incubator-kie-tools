@@ -127,11 +127,11 @@ export type TestScenarioEditorProps = {
    */
   onModelDebounceStateChanged?: (changed: boolean) => void;
   /**
-   * Called when the contents of a specific available model is necessary. Used by the "Included models" tab.
+   * Called when the contents of a specific available DMN model is necessary
    */
   onRequestExternalModelByPath?: OnRequestExternalModelByPath;
   /**
-   * Called when the list of paths of available models to be included is needed. Used by the "Included models" tab.
+   * Called when the list of paths of available DMN models
    */
   onRequestExternalModelsAvailableToInclude?: OnRequestExternalModelsAvailableToInclude;
   /**
