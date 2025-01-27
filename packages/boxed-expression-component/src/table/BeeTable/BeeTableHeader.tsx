@@ -30,7 +30,6 @@ import { BeeTableThController } from "./BeeTableThController";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 import { InlineEditableTextInput } from "./InlineEditableTextInput";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
-import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export interface BeeTableColumnUpdate<R extends object> {
   typeRef: string | undefined;
@@ -230,50 +229,48 @@ export function BeeTableHeader<R extends object>({
                 }
               }}
               headerCellInfo={
-                <Flex justifyContent={{ default: "justifyContentCenter" }}>
-                  <div
-                    className="expression-info header-cell-info"
-                    data-ouia-component-type="expression-column-header-cell-info"
-                  >
-                    {column.headerCellElement ? (
-                      column.headerCellElement
-                    ) : column.isInlineEditable && !isReadOnly ? (
-                      <InlineEditableTextInput
-                        setActiveCellEditing={setActiveCellEditing}
-                        columnIndex={columnIndex}
-                        rowIndex={rowIndex}
-                        value={column.label}
-                        onChange={(value) => {
-                          onExpressionHeaderUpdated(
-                            column,
-                            columnIndex
-                          )({ "@_label": value, "@_typeRef": column.dataType });
-                        }}
-                        isReadOnly={isReadOnly}
-                      />
-                    ) : (
-                      <p
-                        data-testid={"kie-tools--bee--expression-info-name"}
-                        className="expression-info-name pf-u-text-truncate name"
-                      >
-                        {column.label}
-                      </p>
-                    )}
-                    {column.dataType ? (
-                      <p
-                        data-testid={"kie-tools--bee--expression-info-data-type"}
-                        className="expression-info-data-type pf-u-text-truncate data-type"
-                      >
-                        ({column.dataType})
-                      </p>
-                    ) : null}
-                  </div>
-                  {column.headerCellElementExtension !== undefined && (
-                    <Flex direction={{ default: "column" }} alignSelf={{ default: "alignSelfCenter" }}>
-                      {column.headerCellElementExtension}
-                    </Flex>
+                <div
+                  className="expression-info header-cell-info"
+                  data-ouia-component-type="expression-column-header-cell-info"
+                >
+                  {column.headerCellElement ? (
+                    column.headerCellElement
+                  ) : column.isInlineEditable && !isReadOnly ? (
+                    <InlineEditableTextInput
+                      setActiveCellEditing={setActiveCellEditing}
+                      columnIndex={columnIndex}
+                      rowIndex={rowIndex}
+                      value={column.label}
+                      onChange={(value) => {
+                        onExpressionHeaderUpdated(
+                          column,
+                          columnIndex
+                        )({ "@_label": value, "@_typeRef": column.dataType });
+                      }}
+                      isReadOnly={isReadOnly}
+                    />
+                  ) : (
+                    <p
+                      data-testid={"kie-tools--bee--expression-info-name"}
+                      className="expression-info-name pf-u-text-truncate name"
+                    >
+                      {column.label}
+                    </p>
                   )}
-                </Flex>
+                  {column.dataType ? (
+                    <p
+                      data-testid={"kie-tools--bee--expression-info-data-type"}
+                      className="expression-info-data-type pf-u-text-truncate data-type"
+                    >
+                      ({column.dataType})
+                    </p>
+                  ) : null}
+                  {column.headerCellElementExtension !== undefined && (
+                    <div className="kie-tools--bee--header-cell-element-extension">
+                      {column.headerCellElementExtension}
+                    </div>
+                  )}
+                </div>
               }
             />
           )}

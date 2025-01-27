@@ -50,7 +50,7 @@ declare module "react-table" {
     label: string;
     /** Custom Element to be rendered in place of the column label */
     headerCellElement?: JSX.Element;
-    /** Additional Element to be rendered next to the Header Cell Element */
+    /** Additional Element to be rendered in the Header Cell top right corner */
     headerCellElementExtension?: JSX.Element;
     /** It makes this column header inline editable (with double-click) */
     isInlineEditable?: boolean;
