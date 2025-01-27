@@ -47,7 +47,6 @@
     "monaco-editor": "^0.39.0",
     "react-helmet": "^6.1.0",
     "react-inlinesvg": "^2.3.0",
-    "react-json-view": "^1.21.3",
     "react-moment": "0.9.7",
     "react-pure-loaders": "^3.0.1",
     "react-svg-pan-zoom": "^3.12.1",
