@@ -17,7 +17,7 @@
 # under the License.
 #
 schema_version: 1
-name: org.kie.kogito.postgresql.db-migration-deps
+name: org.kie.kogito.db-migrator-tool.db-migration-deps
 version: "main"
 artifacts:
   # The following artifact comes from the package kogito-db-migrator-tool during the pnpm build:dev phase

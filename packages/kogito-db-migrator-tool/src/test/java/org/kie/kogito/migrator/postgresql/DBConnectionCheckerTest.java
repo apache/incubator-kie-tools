@@ -17,7 +17,7 @@
  * under the License. 
  */
 
-package org.kie.kogito.postgresql.migrator;
+package org.kie.kogito.migrator.postgresql;
 
 import io.quarkus.test.Mock;
 import org.junit.jupiter.api.BeforeAll;

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package org.kie.kogito.postgresql.migrator;
+ package org.kie.kogito.migrator.postgresql;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

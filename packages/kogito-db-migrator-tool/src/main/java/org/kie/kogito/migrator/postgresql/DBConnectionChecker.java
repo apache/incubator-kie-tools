@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.kie.kogito.postgresql.migrator;
+package org.kie.kogito.migrator.postgresql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

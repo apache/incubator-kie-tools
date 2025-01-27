@@ -15,9 +15,9 @@
    under the License.
 -->
 
-# Kogito PostgreSQL DB Migrator Tool Image
+# Kogito DB Migrator Tool Image
 
-This package contains the `Containerfile/Dockerfile` and scripts to build a container image for Kogito PostgreSQL DB Migrator Tool. Details about the Kogito PostgreSQL DB Migrator Tool can be found [here](../kogito-db-migrator-tool/README.md)
+This package contains the `Containerfile/Dockerfile` and scripts to build a container image for Kogito DB Migrator Tool, which currently supports PostgreSQL database. Future versions are expected to support more database variants. Details about the Kogito DB Migrator Tool can be found [here](../kogito-db-migrator-tool/README.md)
 
 ## Additional requirements
 
@@ -28,7 +28,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 - Start up a clean container with:
 
   ```bash
-    docker run docker.io/apache/incubator-kie-kogito-service-db-migration-postgresql:main
+    docker run docker.io/apache/incubator-kie-kogito-db-migrator-tool:main
   ```
 
 ## Customization
