@@ -628,6 +628,32 @@ goapi.go
 greetingAPI.yaml
 # packages/kn-plugin-workflow/pkg/specs/testdata/hello.sw.yaml
 hello.sw.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/emptyworkflow.sw.yaml
+emptyworkflow.sw.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi-subflow34.expected.yaml
+openapi-subflow34.expected.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi.expected.yaml
+openapi.expected.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi.yaml
+openapi.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi1.expected.yaml
+openapi1.expected.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi1.yaml
+openapi1.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi2.expected.yaml
+openapi2.expected.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi2.yaml
+openapi2.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/subflow1.sw.yaml
+subflow1.sw.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/subflow2.sw.yaml
+subflow2.sw.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/subflow3.sw.yaml
+subflow3.sw.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/subflow4.sw.yaml
+subflow4.sw.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/workflow1.sw.yaml
+workflow1.sw.yaml
 # packages/kn-plugin-workflow/pkg/specs/testdata/subflow-custom.sw.yaml
 subflow-custom.sw.yaml
 # packages/kn-plugin-workflow/pkg/specs/testdata/subflow-mySpecsDir.sw.yaml
@@ -1022,8 +1048,6 @@ Base64Util.java
 TimeUnit.java
 # packages/stunner-editors/errai-common/src/main/java/org/jboss/errai/common/compat/README.eclipse
 README.eclipse
-# packages/stunner-editors/errai-common/src/main/java/org/jboss/errai/common/compat/javax/annotation/processing/Generated.java
-Generated.java
 # packages/stunner-editors/errai-common/src/main/resources/META-INF/ErraiApp.properties
 ErraiApp.properties
 # packages/stunner-editors/errai-common/src/test/resources/ErraiApp.properties
@@ -2038,3 +2062,5 @@ scripts.iml
 index.test.js
 # scripts/check-junit-report-results/tests/reports/empty.xml
 empty.xml
+# packages/runtime-tools-process-gateway-api/src/graphql/types.tsx
+types.tsx

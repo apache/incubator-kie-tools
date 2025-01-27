@@ -33,8 +33,8 @@ export const resolveSampleFsMountPoint = (appVersion: string) => {
 };
 
 export const KIE_SAMPLES_REPOSITORY_INFO: SamplesRepositoryInfo = {
-  org: "kiegroup",
-  name: "kie-samples",
+  org: process.env["WEBPACK_REPLACE__samplesRepositoryOrg"]!,
+  name: process.env["WEBPACK_REPLACE__samplesRepositoryName"]!,
   ref: process.env["WEBPACK_REPLACE__samplesRepositoryRef"]!,
   paths: {
     samplesFolder: "samples",

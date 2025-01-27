@@ -1,0 +1,102 @@
+{
+  "id": "getcatfactinformation",
+  "description": "Description",
+  "version": "1.0",
+  "specVersion": "0.8",
+  "expressionLang": "jq",
+  "states": [
+    {
+      "name": "GreetOrCatFact",
+      "type": "switch",
+      "defaultCondition": {
+        "transition": {
+          "nextState": "GetOneStaticFact"
+        }
+      },
+      "dataConditions": [
+        {
+          "condition": "${ .fact == \"random\"}",
+          "transition": {
+            "nextState": "GetRandomFact"
+          }
+        }
+      ],
+      "timeouts": {
+        "stateExecTimeout": {
+          "total": "P4D"
+        },
+        "eventTimeout": "P4D"
+      }
+    },
+    {
+      "name": "GetOneStaticFact",
+      "type": "inject",
+      "transition": {
+        "nextState": "PrintTheFact"
+      },
+      "data": {
+        "message": "Cats are very cute"
+      }
+    },
+    {
+      "name": "GetRandomFact",
+      "type": "operation",
+      "transition": {
+        "nextState": "PrintTheFact"
+      },
+      "actionMode": "sequential",
+      "actions": [
+        {
+          "name": "getRandomFact",
+          "functionRef": {
+            "refName": "getCatFact",
+            "invoke": "sync"
+          },
+          "actionDataFilter": {
+            "useResults": true
+          }
+        }
+      ],
+      "timeouts": {
+        "stateExecTimeout": {
+          "total": "P4D"
+        }
+      }
+    },
+    {
+      "name": "PrintTheFact",
+      "type": "operation",
+      "end": {
+        "terminate": true
+      },
+      "actionMode": "sequential",
+      "actions": [
+        {
+          "name": "greetAction",
+          "functionRef": {
+            "refName": "sysOutFunction",
+            "arguments": {
+              "message": "${\"Fact is that: \" + .message + .fact }"
+            },
+            "invoke": "sync"
+          },
+          "actionDataFilter": {
+            "useResults": true
+          }
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "name": "getCatFact",
+      "operation": "specs/catfacts.json#getRandomFact",
+      "type": "rest"
+    },
+    {
+      "name": "sysOutFunction",
+      "operation": "sysout",
+      "type": "custom"
+    }
+  ]
+}

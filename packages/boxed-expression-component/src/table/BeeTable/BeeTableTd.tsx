@@ -49,6 +49,10 @@ export interface BeeTableTdProps<R extends object> {
   onDataCellClick?: (columnID: string) => void;
   onDataCellKeyUp?: (columnID: string) => void;
   isReadOnly: boolean;
+  /** True means the table cell can display evaluation hits count. False means evaluation hits count is not displayed in the table cell. */
+  canDisplayEvaluationHitsCountBadge?: boolean;
+  /** Actuall evaluation hits count number that will be displayed in the table cell if 'canDisplayEvaluationHitsCountBadge' is set to true. */
+  evaluationHitsCount?: number;
 }
 
 export type HoverInfo =
@@ -73,6 +77,8 @@ export function BeeTableTd<R extends object>({
   onDataCellClick,
   onDataCellKeyUp,
   isReadOnly,
+  canDisplayEvaluationHitsCountBadge,
+  evaluationHitsCount,
 }: BeeTableTdProps<R>) {
   const [isResizing, setResizing] = useState(false);
   const [hoverInfo, setHoverInfo] = useState<HoverInfo>({ isHovered: false });
@@ -225,6 +231,14 @@ export function BeeTableTd<R extends object>({
     return onDataCellKeyUp?.(column.id);
   }, [column.id, onDataCellKeyUp]);
 
+  const evaluationHitsCountBadgeClassName = useMemo(() => {
+    return canDisplayEvaluationHitsCountBadge
+      ? (evaluationHitsCount ?? 0) > 0
+        ? "evaluation-hits-count-badge-colored"
+        : "evaluation-hits-count-badge-non-colored"
+      : "";
+  }, [canDisplayEvaluationHitsCountBadge, evaluationHitsCount]);
+
   return (
     <BeeTableCoordinatesContextProvider coordinates={coordinates}>
       <td
@@ -246,9 +260,11 @@ export function BeeTableTd<R extends object>({
         }}
       >
         {column.isRowIndexColumn ? (
-          <>{rowIndexLabel}</>
+          <div className={evaluationHitsCountBadgeClassName} data-evaluation-hits-count={evaluationHitsCount}>
+            {rowIndexLabel}
+          </div>
         ) : (
-          <>
+          <div className={evaluationHitsCountBadgeClassName} data-evaluation-hits-count={evaluationHitsCount}>
             {tdContent}
 
             {!isReadOnly && shouldRenderResizer && (
@@ -262,7 +278,7 @@ export function BeeTableTd<R extends object>({
                 setResizing={setResizing}
               />
             )}
-          </>
+          </div>
         )}
 
         {!isReadOnly &&

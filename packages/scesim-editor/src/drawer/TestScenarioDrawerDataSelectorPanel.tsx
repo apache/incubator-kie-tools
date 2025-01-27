@@ -27,6 +27,7 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider/";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { HelpIcon } from "@patternfly/react-icons/dist/esm/icons/help-icon";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar/";
@@ -477,87 +478,93 @@ function TestScenarioDataSelectorPanel() {
   );
 
   return (
-    <>
-      <Text className="kie-scesim-editor-drawer-data-objects--text">
-        {testScenarioType === "DMN"
-          ? i18n.drawer.dataSelector.descriptionDMN
-          : i18n.drawer.dataSelector.descriptionRule}
-        <Tooltip
-          content={
-            testScenarioType === "DMN"
-              ? i18n.drawer.dataSelector.dataObjectsDescriptionDMN
-              : i18n.drawer.dataSelector.dataObjectsDescriptionRule
-          }
-        >
-          <Icon className={"kie-scesim-editor-drawer-data-objects--info-icon"} size="sm" status="info">
-            <HelpIcon />
-          </Icon>
-        </Tooltip>
-      </Text>
-      <Divider />
-      <div className={"kie-scesim-editor-drawer-data-objects--selector"}>
-        {treeViewEmptyStatus.enabled ? (
-          <div aria-disabled={true}>
-            <TreeView
-              activeItems={treeViewStatus.activeItems}
-              allExpanded={allExpanded || treeViewStatus.isExpanded}
-              className={
-                dataSelectorStatus !== TestScenarioDataSelectorState.DISABLED
-                  ? undefined
-                  : "kie-scesim-editor-drawer-data-objects--selector-disabled"
-              }
-              data={filteredItems}
-              hasBadges
-              hasSelectableNodes
-              onSelect={onSelectTreeViewItem}
-              toolbar={treeViewSearchToolbar}
-            />
-          </div>
-        ) : (
-          <Bullseye>
-            <EmptyState>
-              <EmptyStateIcon icon={treeViewEmptyStatus.icon} />
-              <Title headingLevel="h4" size="lg">
-                {treeViewEmptyStatus.title}
-              </Title>
-              <EmptyStateBody>{treeViewEmptyStatus.description}</EmptyStateBody>
-            </EmptyState>
-          </Bullseye>
-        )}
-      </div>
-      <Divider />
-      <div className={"kie-scesim-editor-drawer-data-objects--button-container"}>
-        <Tooltip content={insertDataObjectButtonStatus.message}>
-          <Button
-            isAriaDisabled={!insertDataObjectButtonStatus.enabled}
-            onClick={onInsertDataObjectClick}
-            variant="primary"
+    <Stack>
+      <StackItem>
+        <Text className="kie-scesim-editor-drawer-data-objects--text">
+          {testScenarioType === "DMN"
+            ? i18n.drawer.dataSelector.descriptionDMN
+            : i18n.drawer.dataSelector.descriptionRule}
+          <Tooltip
+            content={
+              testScenarioType === "DMN"
+                ? i18n.drawer.dataSelector.dataObjectsDescriptionDMN
+                : i18n.drawer.dataSelector.dataObjectsDescriptionRule
+            }
           >
-            {i18n.drawer.dataSelector.insertDataObject}
+            <Icon className={"kie-scesim-editor-drawer-data-objects--info-icon"} size="sm" status="info">
+              <HelpIcon />
+            </Icon>
+          </Tooltip>
+        </Text>
+      </StackItem>
+      <Divider />
+      <StackItem isFilled>
+        <div className={"kie-scesim-editor-drawer-data-objects--selector"}>
+          {treeViewEmptyStatus.enabled ? (
+            <div aria-disabled={true}>
+              <TreeView
+                activeItems={treeViewStatus.activeItems}
+                allExpanded={allExpanded || treeViewStatus.isExpanded}
+                className={
+                  dataSelectorStatus !== TestScenarioDataSelectorState.DISABLED
+                    ? undefined
+                    : "kie-scesim-editor-drawer-data-objects--selector-disabled"
+                }
+                data={filteredItems}
+                hasBadges
+                hasSelectableNodes
+                onSelect={onSelectTreeViewItem}
+                toolbar={treeViewSearchToolbar}
+              />
+            </div>
+          ) : (
+            <Bullseye>
+              <EmptyState>
+                <EmptyStateIcon icon={treeViewEmptyStatus.icon} />
+                <Title headingLevel="h4" size="lg">
+                  {treeViewEmptyStatus.title}
+                </Title>
+                <EmptyStateBody>{treeViewEmptyStatus.description}</EmptyStateBody>
+              </EmptyState>
+            </Bullseye>
+          )}
+        </div>
+      </StackItem>
+      <Divider />
+      <StackItem>
+        <div className={"kie-scesim-editor-drawer-data-objects--button-container"}>
+          <Tooltip content={insertDataObjectButtonStatus.message}>
+            <Button
+              isAriaDisabled={!insertDataObjectButtonStatus.enabled}
+              onClick={onInsertDataObjectClick}
+              variant="primary"
+            >
+              {i18n.drawer.dataSelector.insertDataObject}
+            </Button>
+          </Tooltip>
+          <Button
+            isDisabled={
+              treeViewStatus.activeItems.length !== 1 || dataSelectorStatus !== TestScenarioDataSelectorState.ENABLED
+            }
+            onClick={onClearSelectionClicked}
+            variant="secondary"
+          >
+            {i18n.drawer.dataSelector.clearSelection}
           </Button>
-        </Tooltip>
-        <Button
-          isDisabled={
-            treeViewStatus.activeItems.length !== 1 || dataSelectorStatus !== TestScenarioDataSelectorState.ENABLED
-          }
-          onClick={onClearSelectionClicked}
-          variant="secondary"
-        >
-          {i18n.drawer.dataSelector.clearSelection}
-        </Button>
-        <Button
-          isDisabled={
-            filteredItems.length < 1 ||
-            treeViewStatus.isExpanded ||
-            dataSelectorStatus !== TestScenarioDataSelectorState.ENABLED
-          }
-          onClick={onAllExpandedToggle}
-          variant="link"
-        >
-          {allExpanded ? i18n.drawer.dataSelector.collapseAll : i18n.drawer.dataSelector.expandAll}
-        </Button>
-      </div>
-    </>
+          <Button
+            isDisabled={
+              filteredItems.length < 1 ||
+              treeViewStatus.isExpanded ||
+              dataSelectorStatus !== TestScenarioDataSelectorState.ENABLED
+            }
+            onClick={onAllExpandedToggle}
+            variant="link"
+          >
+            {allExpanded ? i18n.drawer.dataSelector.collapseAll : i18n.drawer.dataSelector.expandAll}
+          </Button>
+        </div>
+      </StackItem>
+    </Stack>
   );
 }
 
