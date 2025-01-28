@@ -17,20 +17,18 @@
  * under the License.
  */
 
-import { Cache } from "../ComputedStateCache";
-import { Computed } from "../TestScenarioEditorStore";
+import { State, TestScenarioDataObject } from "../TestScenarioEditorStore";
 
-export const INITIAL_COMPUTED_CACHE: Cache<Computed> = {
-  getDataObjects: {
-    value: undefined,
-    dependencies: [],
-  },
-  getDmnDataObjects: {
-    value: undefined,
-    dependencies: [],
-  },
-  getTestScenarioDataObjects: {
-    value: undefined,
-    dependencies: [],
-  },
-};
+/* It computes the Data Objects consumed in the TestScenarioDrawerDataSelectorPanel. */
+export function computeDataObjects(
+  testScenarioDataObjects: TestScenarioDataObject[],
+  dmnDataObjects: TestScenarioDataObject[],
+  scesimType: State["scesim"]["model"]["ScenarioSimulationModel"]["settings"]["type"]
+) {
+  /* DataObjects retrieved from the DMN file are passed if is a DMN-based Scesim and if are avaialble   */
+  /* i.e. correctly computed. In all other cases, DataObjects retrieved from the scesim file are passed */
+  if (scesimType?.__$$text === "DMN" && dmnDataObjects && dmnDataObjects.length > 0) {
+    return dmnDataObjects;
+  }
+  return testScenarioDataObjects;
+}
