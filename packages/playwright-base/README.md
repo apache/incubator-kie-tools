@@ -21,7 +21,7 @@
 
 This package collects common configurations to run end-to-end Playwright tests.
 
-## Using containers to generate screen shots
+## Using containers to generate screenshots
 
 Each operating system has slight variations in UI, even within the same browser. These differences can cause screenshot comparison tests to fail. To address this issue and ensure a stable environment with consistent test results locally and in CI, containers can be used. Running Playwright tests inside a container that replicates the CI environment makes screenshot tests reproducible, regardless of the host OS.
 
