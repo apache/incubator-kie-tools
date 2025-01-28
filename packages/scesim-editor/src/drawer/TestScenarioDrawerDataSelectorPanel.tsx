@@ -52,7 +52,7 @@ const enum TestScenarioDataSelectorState {
 
 function TestScenarioDataSelectorPanel() {
   const { i18n } = useTestScenarioEditorI18n();
-  const dataObjects = useTestScenarioEditorStore((state) => state.computed(state).getTestScenarioDataObjects());
+  const dataObjects = useTestScenarioEditorStore((state) => state.computed(state).getDataObjects());
   const scesimModel = useTestScenarioEditorStore((state) => state.scesim.model);
   const tableStatus = useTestScenarioEditorStore((state) => state.table);
   const tabStatus = useTestScenarioEditorStore((state) => state.navigation.tab);

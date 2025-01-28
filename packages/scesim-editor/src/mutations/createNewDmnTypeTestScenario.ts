@@ -160,45 +160,46 @@ function generateFactMappingsAndFactMappingValuesFromDmnModel(
 ) {
   const factMappingsToPush = [] as FactMapping[];
 
-  drgElements.forEach((inputDataElement) => {
-    if (isSimpleType(inputDataElement.variable!["@_typeRef"]!)) {
+  drgElements.forEach((drgElement) => {
+    const itemDefinition = itemDefinitionMap.get(drgElement.variable!["@_typeRef"]!);
+    if (!itemDefinition?.itemComponent || itemDefinition?.itemComponent.length === 0) {
       factMappingsToPush.push(
         generateSimpleTypeFactMapping(
-          inputDataElement.variable!["@_typeRef"]!,
+          drgElement.variable!["@_typeRef"]!,
           100,
-          [inputDataElement.variable!["@_name"]!],
+          [drgElement.variable!["@_name"]!],
           expressionIdentifierType,
-          inputDataElement.variable!["@_name"]!,
-          inputDataElement.variable!["@_typeRef"]!
+          drgElement.variable!["@_name"]!,
+          drgElement.variable!["@_typeRef"]!
         )
       );
     } else {
-      const itemDefinition = itemDefinitionMap.get(inputDataElement.variable!["@_typeRef"]!);
       if (itemDefinition?.typeRef && isSimpleType(itemDefinition?.typeRef?.__$$text)) {
         generateSimpleTypeFactMapping(
           itemDefinition?.typeRef?.__$$text,
           100,
-          [inputDataElement.variable!["@_name"]!],
+          [drgElement.variable!["@_name"]!],
           expressionIdentifierType,
-          inputDataElement.variable!["@_name"]!,
-          inputDataElement.variable!["@_typeRef"]!
+          drgElement.variable!["@_name"]!,
+          drgElement.variable!["@_typeRef"]!
         );
       } else {
         itemDefinition?.itemComponent!.forEach((itemComponent) => {
           recursevlyNavigateItemComponent(
             100,
             factMappingsToPush,
-            [inputDataElement.variable!["@_name"]!],
+            [drgElement.variable!["@_name"]!],
             expressionIdentifierType,
             itemComponent,
-            inputDataElement.variable!["@_name"]!,
-            inputDataElement.variable!["@_typeRef"]!
+            drgElement.variable!["@_name"]!,
+            drgElement.variable!["@_typeRef"]!
           );
         });
       }
     }
   });
-  return factMappingsToPush;
+
+  return factMappingsToPush.sort((a, b) => a.factAlias.localeCompare(b.factAlias));
 }
 
 function generateSimpleTypeFactMapping(

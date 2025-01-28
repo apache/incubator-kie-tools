@@ -142,6 +142,7 @@ function TestScenarioCreationPanel() {
   const createTestScenario = useCallback(
     () =>
       testScenarioEditorStoreApi.setState((state) => {
+        state.dmn.externalModel = selectedDmnModel; //TO REVIEW
         assetType === "DMN"
           ? createNewDmnTypeTestScenario({
               dmnModel: selectedDmnModel!,

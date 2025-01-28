@@ -41,8 +41,7 @@ import "./TestScenarioDrawerSettingsPanel.css";
 
 function TestScenarioDrawerSettingsPanel({ scesimFilePath }: { scesimFilePath: string | undefined }) {
   const { i18n } = useTestScenarioEditorI18n();
-  const { onRequestExternalModelsAvailableToInclude, onRequestExternalModelByPath } = useExternalModels();
-  const { onRequestToResolvePath } = useTestScenarioEditor();
+  const { onRequestExternalModelsAvailableToInclude } = useExternalModels();
   const settingsModel = useTestScenarioEditorStore((state) => state.scesim.model.ScenarioSimulationModel.settings);
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const testScenarioType = settingsModel.type?.__$$text.toUpperCase();

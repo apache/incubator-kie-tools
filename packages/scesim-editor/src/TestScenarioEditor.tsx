@@ -333,7 +333,7 @@ export const TestScenarioEditorInternal = ({
       reset: () => {
         console.trace("[TestScenarioEditorInternal: Reset called!");
         const state = testScenarioEditorStoreApi.getState();
-        state.dispatch(state).scesim.reset();
+        state.dispatch(state).navigation.reset();
       },
       getCommands: () => commandsRef.current,
       getDiagramSvg: async () => undefined,
