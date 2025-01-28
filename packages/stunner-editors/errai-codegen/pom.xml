@@ -135,6 +135,10 @@
           <groupId>org.eclipse.jetty</groupId>
           <artifactId>apache-jsp</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>commons-net</groupId>
+          <artifactId>commons-net</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
   </dependencies>
