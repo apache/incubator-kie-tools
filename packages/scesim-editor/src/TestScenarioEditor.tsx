@@ -162,7 +162,7 @@ export type TestScenarioSelectedColumnMetaData = {
   isBackground: boolean;
 };
 
-function TestScenarioMainPanel({ scesimFilePath }: { scesimFilePath: string | undefined }) {
+function TestScenarioMainPanel() {
   const { i18n } = useTestScenarioEditorI18n();
   const { commandsRef } = useCommands();
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
@@ -209,11 +209,7 @@ function TestScenarioMainPanel({ scesimFilePath }: { scesimFilePath: string | un
     <>
       <div className="kie-scesim-editor--content">
         <Drawer isExpanded={navigation.dock.isOpen} isInline={true} position={"right"}>
-          <DrawerContent
-            panelContent={
-              <TestScenarioDrawerPanel scesimFilePath={scesimFilePath} onDrawerClose={() => showDockPanel(false)} />
-            }
-          >
+          <DrawerContent panelContent={<TestScenarioDrawerPanel onDrawerClose={() => showDockPanel(false)} />}>
             <DrawerContentBody>
               {isAlertEnabled && (
                 <div className="kie-scesim-editor--content-alert">
@@ -315,7 +311,6 @@ export const TestScenarioEditorInternal = ({
   model,
   onModelChange,
   onModelDebounceStateChanged,
-  openFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
 }: TestScenarioEditorProps & { forwardRef?: React.Ref<TestScenarioEditorRef> }) => {
   console.trace("[TestScenarioEditorInternal] Component creation ...");
 
@@ -439,7 +434,7 @@ export const TestScenarioEditorInternal = ({
               />
             );
           case TestScenarioFileStatus.VALID:
-            return <TestScenarioMainPanel scesimFilePath={openFileNormalizedPosixPathRelativeToTheWorkspaceRoot} />;
+            return <TestScenarioMainPanel />;
         }
       })()}
     </div>

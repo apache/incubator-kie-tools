@@ -67,11 +67,11 @@ function DevWebApp(props: TestScenarioEditorProps) {
   const downloadAsXml = useCallback(() => {
     if (downloadRef.current) {
       const fileBlob = new Blob([state.marshaller.builder.build(currentModel)], { type: "text/xml" });
-      downloadRef.current.download = `scesim-test-${makeid(10)}.scesim`;
+      downloadRef.current.download = fileName ?? `scesim-test-${makeid(10)}.scesim`;
       downloadRef.current.href = URL.createObjectURL(fileBlob);
       downloadRef.current.click();
     }
-  }, [currentModel, state.marshaller.builder]);
+  }, [currentModel, fileName, state.marshaller.builder]);
 
   // TODO Unmarshall here the DMN
   const externalModelsByNamespace = useMemo<ExternalDmnsIndex>(() => {
