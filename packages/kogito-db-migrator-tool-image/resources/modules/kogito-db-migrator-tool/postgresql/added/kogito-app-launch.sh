@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -16,13 +17,10 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-schema_version: 1
-name: org.kie.kogito.db-migrator-tool.db-migration-deps
-version: "main"
-artifacts:
-  # The following artifact comes from the package kogito-db-migrator-tool during the pnpm build:dev phase
-  - name: kogito-db-migrator-tool-quarkus-app
-    path: ./quarkus-app
-    dest: /home/kogito/bin
-execute:
-  - script: configure
+
+CMD="exec java ${JAVA_OPTIONS} \
+-Djava.library.path=\"${KOGITO_HOME}/bin/lib\" \
+-jar \"${KOGITO_HOME}/bin/quarkus-run.jar\""
+
+echo "$CMD"
+eval "$CMD"

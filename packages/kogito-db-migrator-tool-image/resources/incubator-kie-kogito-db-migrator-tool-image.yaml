@@ -43,8 +43,6 @@ modules:
 
 run:
   workdir: "/home/kogito/bin"
-  entrypoint:
-    - "java"
+  user: 1001
   cmd:
-    - "-jar"
-    - "./quarkus-run.jar"
+    - "/home/kogito/kogito-app-launch.sh"
