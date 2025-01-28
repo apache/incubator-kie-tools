@@ -27,7 +27,7 @@ services:
     entrypoint: ["/bin/bash"]
     stdin_open: true
     tty: true
-    network_mode: "host"
+    network_mode: host
     user: 1000:1000
     environment:
       - KIE_TOOLS_BUILD__runEndToEndTests=true
@@ -36,19 +36,16 @@ services:
       - type: bind
         source: ./../../../../
         target: /home/node/kie-tools-playwright/incubator-kie-tools
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
 
   # The nginx reverse-proxy is used to forward `host.docker.internal` requests to `localhost.
   reverse-proxy:
     image: nginx:1.27.3-alpine
     container_name: kie-tools-playwright-containerization-online-editor-reverse-proxy
+    network_mode: host
     command: ["nginx", "-g", "daemon off;"]
     configs:
       - source: reverse-proxy-config
         target: /etc/nginx/nginx.conf
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
 
 configs:
   reverse-proxy-config:
@@ -62,10 +59,17 @@ configs:
 
               location / {
                   proxy_pass http://host.docker.internal:${PLAYWRIGHT_PORT};
+
                   proxy_http_version 1.1;
-                  proxy_set_header Upgrade $http_upgrade;
                   proxy_set_header Connection "Upgrade";
-                  proxy_set_header Host $host;
+              }
+
+              location /ws {
+                  proxy_pass http://host.docker.internal:${PLAYWRIGHT_PORT};
+
+                  proxy_http_version 1.1;
+                  proxy_set_header Upgrade websocket;
+                  proxy_set_header Connection "Upgrade";
               }
           }
 
