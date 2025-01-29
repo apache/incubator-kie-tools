@@ -321,7 +321,7 @@ export function EditorToolbarWithWorkspace(
                       <Dropdown
                         toggle={
                           <DropdownToggle
-                            onToggle={(_event, _) => setNewDmnEditorDropdownOpen}
+                            onToggle={(_event, val) => setNewDmnEditorDropdownOpen(val)}
                             id="new-dmn-editor-dropdown-toggle"
                           >
                             <Label color="cyan" variant={"outline"}>
