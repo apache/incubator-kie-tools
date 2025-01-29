@@ -26,6 +26,7 @@ import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Pag
 import { Stack, StackItem } from "@patternfly/react-core/dist/js";
 import { SceSimMarshaller, SceSimModel, getMarshaller } from "@kie-tools/scesim-marshaller";
 import {
+  ExternalDmn,
   ExternalDmnsIndex,
   OnRequestExternalModelByPath,
   OnRequestExternalModelsAvailableToInclude,
@@ -38,7 +39,7 @@ import { SceSimEditorWrapper } from "../scesimEditorStoriesWrapper";
 import { emptyFileName } from "../misc/empty/Empty.stories";
 import { isOldEnoughDrl, isOldEnoughDrlFileName } from "../useCases/IsOldEnoughRule.stories";
 import { trafficViolationDmn, trafficViolationDmnFileName } from "../useCases/TrafficViolationDmn.stories";
-import { availableModelsByPath } from "../examples/AvailableDMNModels";
+import { availableModels, availableModelsByPath } from "../examples/AvailableDMNModels";
 
 function DevWebApp(props: TestScenarioEditorProps) {
   const [fileName, setFileName] = useState<string | undefined>("Untitled.scesim");
@@ -73,9 +74,17 @@ function DevWebApp(props: TestScenarioEditorProps) {
     }
   }, [currentModel, fileName, state.marshaller.builder]);
 
-  // TODO Unmarshall here the DMN
-  const externalModelsByNamespace = useMemo<ExternalDmnsIndex>(() => {
-    return currentModel.ScenarioSimulationModel.settings.dmnNamespace?.__$$text, {} as ExternalDmnsIndex;
+  const externalModelsByNamespace = useMemo<ExternalDmnsIndex | undefined>(() => {
+    if (currentModel.ScenarioSimulationModel.settings.dmnNamespace) {
+      const dmnModel = availableModels.find(
+        (model) =>
+          model.model.definitions["@_namespace"] ===
+          currentModel.ScenarioSimulationModel.settings.dmnNamespace?.__$$text
+      );
+      return (currentModel.ScenarioSimulationModel.settings.dmnNamespace?.__$$text,
+      dmnModel ? dmnModel : {}) as ExternalDmnsIndex;
+    }
+    return undefined;
   }, [currentModel.ScenarioSimulationModel.settings.dmnNamespace]);
 
   const onDragOver = useCallback((e: React.DragEvent) => {
