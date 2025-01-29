@@ -67,8 +67,9 @@ def setupPnpm(String mavenSettingsFileId = '') {
 /**
 * PNPM Bootsrap
 */
-def pnpmBootstrap(String filters = '') {
+def pnpmBootstrap(String filters = '', String mavenArgs = '') {
     sh """#!/bin/bash -el
+    export MAVEN_ARGS=${mavenArgs}
     pnpm bootstrap ${filters}
     """.trim()
 }

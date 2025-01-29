@@ -17,33 +17,12 @@
  * under the License.
  */
 
-.kie-scesim-editor-drawer-data-objects--button-container {
-  margin-top: 10px;
-}
+import { KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 
-.kie-scesim-editor-drawer-data-objects--button-container button + button {
-  margin-left: 10px;
-}
-
-.kie-scesim-editor-drawer-data-objects--info-icon {
-  margin-left: 5px;
-  vertical-align: top;
-}
-
-.kie-scesim-editor-drawer-data-objects--selector {
-  overflow: scroll;
-}
-
-.kie-scesim-editor-drawer-data-objects--selector-disabled {
-  overflow: scroll;
-  opacity: 0.25;
-  pointer-events: none;
-}
-
-.kie-scesim-editor-drawer-data-objects--selector-title {
-  margin-top: 10px;
-}
-
-.kie-scesim-editor-drawer-data-objects--text {
-  margin-bottom: 10px;
+export interface NewDmnEditorEnvelopeApi extends KogitoEditorEnvelopeApi {
+  /**
+   * Open boxed expression editor for given node
+   * @param nodeId id of the node to open
+   */
+  dmnEditor_openBoxedExpressionEditor(nodeId: string): void;
 }
