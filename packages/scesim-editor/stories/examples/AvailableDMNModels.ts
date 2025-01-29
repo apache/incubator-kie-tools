@@ -29,7 +29,7 @@ export const trafficViolationModel = normalize(
   getMarshaller(TRAFFIC_VIOLATION, { upgradeTo: "latest" }).parser.parse()
 );
 
-export const avaiableModels: TestScenarioEditor.ExternalDmn[] = [
+export const availableModels: TestScenarioEditor.ExternalDmn[] = [
   {
     model: loanPreQualification,
     svg: "",
@@ -43,7 +43,7 @@ export const avaiableModels: TestScenarioEditor.ExternalDmn[] = [
 ];
 
 export const availableModelsByPath: Record<string, TestScenarioEditor.ExternalDmn> = Object.values(
-  avaiableModels
+  availableModels
 ).reduce(
   (acc, v) => {
     acc[v.normalizedPosixPathRelativeToTheOpenFile] = v;
