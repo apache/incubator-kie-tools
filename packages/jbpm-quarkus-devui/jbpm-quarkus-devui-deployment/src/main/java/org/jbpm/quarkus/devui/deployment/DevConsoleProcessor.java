@@ -20,6 +20,7 @@ package org.jbpm.quarkus.devui.deployment;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -40,14 +41,14 @@ import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.*;
-import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
-import io.quarkus.deployment.util.WebJarUtil;
+import io.quarkus.vertx.http.deployment.webjar.WebJarResultsBuildItem;
 import io.quarkus.devui.spi.JsonRPCProvidersBuildItem;
 import io.quarkus.devui.spi.page.CardPageBuildItem;
 import io.quarkus.devui.spi.page.Page;
-import io.quarkus.maven.dependency.ResolvedDependency;
+import io.quarkus.maven.dependency.GACT;
 import io.quarkus.vertx.http.deployment.NonApplicationRootPathBuildItem;
 import io.quarkus.vertx.http.deployment.RouteBuildItem;
+import io.quarkus.vertx.http.runtime.devmode.FileSystemStaticHandler;
 import io.quarkus.vertx.http.runtime.management.ManagementInterfaceBuildTimeConfig;
 
 public class DevConsoleProcessor {
@@ -56,37 +57,39 @@ public class DevConsoleProcessor {
     private static final String BASE_RELATIVE_URL = "dev-ui/org.jbpm.jbpm-quarkus-devui";
     private static final String NON_APPLICATION_BASE_RELATIVE_URL = "/q/" + BASE_RELATIVE_URL;
     private static final String DATA_INDEX_CAPABILITY = "org.kie.kogito.data-index";
+    private static final GACT DEVCONSOLE_WEBJAR_ARTIFACT_KEY = new GACT("org.jbpm", "jbpm-quarkus-devui-deployment", null,
+    "jar");
 
     @SuppressWarnings("unused")
     @BuildStep(onlyIf = IsDevelopment.class)
     @Record(ExecutionTime.RUNTIME_INIT)
     public void deployStaticResources(final DevUIStaticArtifactsRecorder devUIStaticArtifactsRecorder,
-            final CurateOutcomeBuildItem curateOutcomeBuildItem,
-            final LiveReloadBuildItem liveReloadBuildItem,
-            final LaunchModeBuildItem launchMode,
             final ShutdownContextBuildItem shutdownContext,
+            final WebJarResultsBuildItem webJarResultsBuildItem,
             final BuildProducer<RouteBuildItem> routeBuildItemBuildProducer) throws IOException {
-        ResolvedDependency devConsoleResourcesArtifact = WebJarUtil.getAppArtifact(curateOutcomeBuildItem,
-                "org.jbpm",
-                "jbpm-quarkus-devui-deployment");
 
-        Path devConsoleStaticResourcesDeploymentPath = WebJarUtil.copyResourcesForDevOrTest(
-                liveReloadBuildItem,
-                curateOutcomeBuildItem,
-                launchMode,
-                devConsoleResourcesArtifact,
-                STATIC_RESOURCES_PATH,
-                true);
+        WebJarResultsBuildItem.WebJarResult result = webJarResultsBuildItem.byArtifactKey(DEVCONSOLE_WEBJAR_ARTIFACT_KEY);
 
+        if (result == null) {
+                return;
+        }
+
+        List<FileSystemStaticHandler.StaticWebRootConfiguration> webRootConfigurations = new ArrayList<>();
+        webRootConfigurations.add(
+                new FileSystemStaticHandler.StaticWebRootConfiguration(result.getFinalDestination(),""));
+        for (Path resolvedPath : result.getDependency().getResolvedPaths()) {
+            webRootConfigurations
+                    .add(new FileSystemStaticHandler.StaticWebRootConfiguration(resolvedPath.toString(),STATIC_RESOURCES_PATH));
+        }
         routeBuildItemBuildProducer.produce(new RouteBuildItem.Builder()
                 .route(NON_APPLICATION_BASE_RELATIVE_URL + "/resources/*")
-                .handler(devUIStaticArtifactsRecorder.handler(devConsoleStaticResourcesDeploymentPath.toString(),
+                .handler(devUIStaticArtifactsRecorder.handler(webRootConfigurations,
                         shutdownContext))
                 .build());
 
         routeBuildItemBuildProducer.produce(new RouteBuildItem.Builder()
                 .route(NON_APPLICATION_BASE_RELATIVE_URL + "/*")
-                .handler(devUIStaticArtifactsRecorder.handler(devConsoleStaticResourcesDeploymentPath.toString(),
+                .handler(devUIStaticArtifactsRecorder.handler(webRootConfigurations,
                         shutdownContext))
                 .build());
     }
