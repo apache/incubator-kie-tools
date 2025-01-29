@@ -96,11 +96,11 @@ export function ImportSingleFileFromUrlForm(props: {
           showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.GIT}
         />
         <HelperText>
-          (
+          {/* (
           <HelperTextItem variant="default" icon={ValidatedOptions.default}>
             {props.authSessionSelectHelperText}
           </HelperTextItem>
-          )
+          ) */}
         </HelperText>
       </FormGroup>
       <FormGroup
