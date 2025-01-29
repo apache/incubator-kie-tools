@@ -162,6 +162,8 @@ export function EditableNodeLabel({
   // Finish editing on `Enter` pressed.
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      // In macOS, we can not stopPropagation here because, otherwise, shortcuts are not handled
+      // See https://github.com/apache/incubator-kie-issues/issues/1164
       if (!(getOperatingSystem() === OperatingSystem.MACOS && e.metaKey)) {
         e.stopPropagation();
       }

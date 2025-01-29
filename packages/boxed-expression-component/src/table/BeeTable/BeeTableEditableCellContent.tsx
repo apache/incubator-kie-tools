@@ -184,6 +184,8 @@ export function BeeTableEditableCellContent({
     (e) => {
       // When inside FEEL Input, all keyboard events should be kept inside it.
       // Exceptions to this strategy are handled on `onFeelKeyDown`.
+      // NOTE: In macOS, we can not stopPropagation here because, otherwise, shortcuts are not handled
+      // See https://github.com/apache/incubator-kie-issues/issues/1164
       if (isEditing && !(getOperatingSystem() === OperatingSystem.MACOS && e.metaKey)) {
         e.stopPropagation();
       }

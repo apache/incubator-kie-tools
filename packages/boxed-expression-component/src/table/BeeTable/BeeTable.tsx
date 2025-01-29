@@ -329,6 +329,8 @@ export function BeeTableInternal<R extends object>({
 
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      // This prevents keyboard events, specially shortcuts, from being handled here because if a cell is being edited,
+      // we want that the shortcuts to be handled by the cell.
       if (selectionStart?.isEditing || selectionEnd?.isEditing) {
         return;
       }
