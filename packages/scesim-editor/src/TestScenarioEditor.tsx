@@ -166,13 +166,17 @@ function TestScenarioMainPanel() {
   const { i18n } = useTestScenarioEditorI18n();
   const { commandsRef } = useCommands();
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
-  const navigation = useTestScenarioEditorStore((s) => s.navigation);
-  const scesimModel = useTestScenarioEditorStore((s) => s.scesim.model);
+  const dmnDataObjects = useTestScenarioEditorStore((state) => state.computed(state).getDmnDataObjects());
+  const navigation = useTestScenarioEditorStore((state) => state.navigation);
+  const scesimModel = useTestScenarioEditorStore((state) => state.scesim.model);
   const testScenarioType = scesimModel.ScenarioSimulationModel.settings.type?.__$$text.toUpperCase();
-  const isAlertEnabled = testScenarioType !== "DMN"; // Will be managed in kie-issue#970
 
   const scenarioTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
   const backgroundTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
+
+  const isMissingDataObjectsNotificationEnabled = useMemo(() => {
+    return testScenarioType !== "DMN" || (testScenarioType === "DMN" && dmnDataObjects.length === 0);
+  }, [dmnDataObjects, testScenarioType]);
 
   const onTabChanged = useCallback(
     (_event, tab) => {
@@ -211,7 +215,7 @@ function TestScenarioMainPanel() {
         <Drawer isExpanded={navigation.dock.isOpen} isInline={true} position={"right"}>
           <DrawerContent panelContent={<TestScenarioDrawerPanel onDrawerClose={() => showDockPanel(false)} />}>
             <DrawerContentBody>
-              {isAlertEnabled && (
+              {isMissingDataObjectsNotificationEnabled && (
                 <div className="kie-scesim-editor--content-alert">
                   <Alert
                     variant={testScenarioType === "DMN" ? "warning" : "danger"}
