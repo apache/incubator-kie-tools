@@ -29,7 +29,6 @@ import {
 } from "../../selection/BeeTableSelectionContext";
 import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 import { InsertRowColumnsDirection } from "../../api";
-import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 
 export interface BeeTableThProps<R extends object> {
   groupType: string | undefined;
@@ -86,9 +85,7 @@ export function BeeTableTh<R extends object>({
 
   const onAddColumnButtonClick = useCallback(
     (e: React.MouseEvent) => {
-      if (!(getOperatingSystem() === OperatingSystem.MACOS && e.metaKey)) {
-        e.stopPropagation();
-      }
+      e.stopPropagation();
 
       if (!hoverInfo.isHovered) {
         return;
