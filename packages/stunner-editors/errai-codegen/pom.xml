@@ -135,6 +135,10 @@
           <groupId>org.eclipse.jetty</groupId>
           <artifactId>apache-jsp</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>commons-codec</groupId>
+          <artifactId>commons-codec</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
   </dependencies>
