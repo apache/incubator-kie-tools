@@ -151,12 +151,6 @@ export function getDefaultBoxedExpression({
       __$$element: "list",
       "@_id": generateUuid(),
       "@_typeRef": typeRef,
-      expression: [
-        {
-          "@_id": generateUuid(),
-          __$$element: "list",
-        },
-      ],
     };
     return listExpression;
   } else if (logicType === "invocation") {
