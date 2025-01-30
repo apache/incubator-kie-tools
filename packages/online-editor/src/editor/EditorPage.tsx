@@ -468,7 +468,7 @@ Error details: ${err}`);
                 workspaceFile={file.workspaceFile}
                 workspaces={workspaces}
                 dmnLanguageService={dmnLanguageService}
-                editor={editor}
+                envelopeServer={editor?.getEnvelopeServer()}
                 isEditorReady={editor?.isReady ?? false}
                 editorValidate={editor?.validate}
               >
@@ -476,7 +476,6 @@ Error details: ${err}`);
                   workspaceFile={file.workspaceFile}
                   isEditorReady={editor?.isReady}
                   dmnLanguageService={dmnLanguageService}
-                  dmnEditor={editor}
                 >
                   <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} />
                   <Divider />

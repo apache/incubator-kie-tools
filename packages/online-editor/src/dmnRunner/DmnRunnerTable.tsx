@@ -34,10 +34,10 @@ import { DmnRunnerProviderActionType } from "./DmnRunnerTypes";
 import { DmnRunnerExtendedServicesError } from "./DmnRunnerContextProvider";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
-import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 import { useSettings } from "../settings/SettingsContext";
+import { useEditorDockContext } from "../editor/EditorPageDockContextProvider";
 
-export function DmnRunnerTable(props: { editor: EmbeddedEditorRef | undefined }) {
+export function DmnRunnerTable() {
   // STATEs
   const [dmnRunnerTableError, setDmnRunnerTableError] = useState<boolean>(false);
 
@@ -120,6 +120,8 @@ export function DmnRunnerTable(props: { editor: EmbeddedEditorRef | undefined })
   const { settings } = useSettings();
   const isLegacyDmnEditor = useMemo(() => settings.editors.useLegacyDmnEditor, [settings.editors.useLegacyDmnEditor]);
 
+  const { envelopeServer } = useEditorDockContext();
+
   return (
     <>
       {extendedServicesError ? (
@@ -147,8 +149,8 @@ export function DmnRunnerTable(props: { editor: EmbeddedEditorRef | undefined })
                           openBoxedExpressionEditor={
                             !isLegacyDmnEditor
                               ? (nodeId: string) => {
-                                  const newDmnEditorEnvelopeApi = props.editor?.getEnvelopeServer()
-                                    .envelopeApi as unknown as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
+                                  const newDmnEditorEnvelopeApi =
+                                    envelopeServer?.envelopeApi as unknown as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
 
                                   newDmnEditorEnvelopeApi.notifications.dmnEditor_openBoxedExpressionEditor.send(
                                     nodeId

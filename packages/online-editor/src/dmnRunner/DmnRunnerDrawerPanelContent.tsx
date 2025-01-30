@@ -68,18 +68,10 @@ export function DmnRunnerDrawerPanelContent() {
   const [rowSelectionIsOpen, openRowSelection] = useState<boolean>(false);
 
   const { i18n, locale } = useOnlineI18n();
-  const {
-    currentInputIndex,
-    dmnRunnerKey,
-    extendedServicesError,
-    inputs,
-    jsonSchema,
-    results,
-    resultsDifference,
-    dmnEditor,
-  } = useDmnRunnerState();
+  const { currentInputIndex, dmnRunnerKey, extendedServicesError, inputs, jsonSchema, results, resultsDifference } =
+    useDmnRunnerState();
   const { setDmnRunnerContextProviderState, onRowAdded, setDmnRunnerInputs, setDmnRunnerMode } = useDmnRunnerDispatch();
-  const { notificationsPanel, onOpenPanel } = useEditorDockContext();
+  const { envelopeServer, notificationsPanel, onOpenPanel } = useEditorDockContext();
 
   const formInputs: InputRow = useMemo(() => inputs[currentInputIndex], [inputs, currentInputIndex]);
 
@@ -341,8 +333,8 @@ export function DmnRunnerDrawerPanelContent() {
                       openBoxedExpressionEditor={
                         !isLegacyDmnEditor
                           ? (nodeId: string) => {
-                              const newDmnEditorEnvelopeApi = dmnEditor?.getEnvelopeServer()
-                                .envelopeApi as unknown as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
+                              const newDmnEditorEnvelopeApi =
+                                envelopeServer?.envelopeApi as unknown as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
                               newDmnEditorEnvelopeApi.notifications.dmnEditor_openBoxedExpressionEditor.send(nodeId);
                             }
                           : undefined
