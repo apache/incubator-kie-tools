@@ -246,15 +246,13 @@ function OutputsBeeTable({
     [getRowValue]
   );
 
-  const onOpenBoxedExpressionHeaderButtonClick = useCallback(
-    (clickedDecisionId: string) => {
-      (results?.[0] ?? []).flatMap(({ decisionId: resultDecisionId }) => {
-        if (clickedDecisionId === resultDecisionId) {
-          openBoxedExpressionEditor?.(resultDecisionId);
-        }
-      });
-    },
-    [openBoxedExpressionEditor, results]
+  const resultsDecisionIds = useMemo(
+    () =>
+      results?.[0]?.reduce((set, result) => {
+        set.add(result.decisionId);
+        return set;
+      }, new Set()),
+    [results]
   );
 
   const openBoxedExpressionHeaderButton = useCallback(
@@ -264,11 +262,11 @@ function OutputsBeeTable({
           variant={"plain"}
           title={`Open '${decisionName}' expression`}
           icon={<ArrowUpIcon />}
-          onClick={() => onOpenBoxedExpressionHeaderButtonClick(decisionId)}
+          onClick={() => resultsDecisionIds!.has(decisionId) && openBoxedExpressionEditor?.(decisionId)}
         />
       );
     },
-    [onOpenBoxedExpressionHeaderButtonClick]
+    [openBoxedExpressionEditor, resultsDecisionIds]
   );
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
