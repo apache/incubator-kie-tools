@@ -150,7 +150,7 @@ export function DmnRunnerTable() {
                             !isLegacyDmnEditor
                               ? (nodeId: string) => {
                                   const newDmnEditorEnvelopeApi =
-                                    envelopeServer?.envelopeApi as unknown as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
+                                    envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
 
                                   newDmnEditorEnvelopeApi.notifications.dmnEditor_openBoxedExpressionEditor.send(
                                     nodeId
