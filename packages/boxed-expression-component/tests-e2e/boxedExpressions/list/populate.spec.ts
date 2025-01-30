@@ -27,6 +27,7 @@ test.describe("Populate Boxed List", () => {
     await bee.expression.asList().addEntryAtTop();
     await bee.expression.asList().addEntryAtTop();
     await bee.expression.asList().addEntryAtTop();
+    await bee.expression.asList().addEntryAtTop();
 
     await bee.expression.asList().row(0).selectExpressionMenu.selectLiteral();
     await bee.expression.asList().row(1).selectExpressionMenu.selectLiteral();
