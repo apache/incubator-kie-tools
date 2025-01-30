@@ -105,7 +105,7 @@ export const en: TestScenarioEditorI18n = {
       emptyDataObjectsTitleDMN: "No DMN Nodes",
       emptyDataObjectsTitleRule: "No Java Classes",
       emptyDataObjectsDescriptionDMN: "Impossible to retrieve the DMN Nodes data from the linked DMN file.",
-      emptyDataObjectsDescriptionRule: "Impossible to retrieve the Java Classes from project.",
+      emptyDataObjectsDescriptionRule: "Impossible to retrieve the Java Classes from the project.",
       expandAll: "Expand all",
       insertDataObject: "Assign",
       insertDataObjectTooltipColumnSelectionMessage:
