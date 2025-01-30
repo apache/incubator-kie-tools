@@ -38,11 +38,12 @@ import { useExternalModels } from "../externalModels/TestScenarioEditorDependenc
 import { useTestScenarioEditor } from "../TestScenarioEditorContext";
 
 import "./TestScenarioDrawerSettingsPanel.css";
+import { ExternalDmn } from "../TestScenarioEditor";
 
 function TestScenarioDrawerSettingsPanel() {
   const { i18n } = useTestScenarioEditorI18n();
   const { openFileNormalizedPosixPathRelativeToTheWorkspaceRoot } = useTestScenarioEditor();
-  const { onRequestExternalModelsAvailableToInclude } = useExternalModels();
+  const { onRequestExternalModelsAvailableToInclude, onRequestExternalModelByPath } = useExternalModels();
   const settingsModel = useTestScenarioEditorStore((state) => state.scesim.model.ScenarioSimulationModel.settings);
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const testScenarioType = settingsModel.type?.__$$text.toUpperCase();
@@ -51,6 +52,7 @@ function TestScenarioDrawerSettingsPanel() {
   const [selectedDMNPathRelativeToThisScesim, setSelectedDMNPathRelativeToThisScesim] = useState<string | undefined>(
     settingsModel.dmnFilePath?.__$$text
   );
+  const [selectedDmnModel, setSelectedDmnModel] = useState<ExternalDmn | undefined>(undefined);
 
   /* Retrieving all the DMN available in the project */
   useCancelableEffect(
@@ -69,6 +71,46 @@ function TestScenarioDrawerSettingsPanel() {
           });
       },
       [onRequestExternalModelsAvailableToInclude]
+    )
+  );
+
+  /** This callback return the unmarshalled representation of a DMN model given its path */
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (!selectedDMNPathRelativeToThisScesim || onRequestExternalModelByPath === undefined) {
+          return;
+        }
+
+        onRequestExternalModelByPath(selectedDMNPathRelativeToThisScesim)
+          .then((externalDMNModel) => {
+            console.trace("[TestScenarioCreationPanel] The below external DMN model have been loaded");
+            console.trace(externalDMNModel);
+
+            if (canceled.get() || !externalDMNModel) {
+              return;
+            }
+
+            setSelectedDmnModel(externalDMNModel);
+            testScenarioEditorStoreApi.setState((state) => {
+              state.scesim.model.ScenarioSimulationModel.settings.dmnFilePath!.__$$text =
+                selectedDMNPathRelativeToThisScesim;
+              state.scesim.model.ScenarioSimulationModel.settings.dmnName!.__$$text =
+                externalDMNModel.model.definitions["@_name"];
+              state.scesim.model.ScenarioSimulationModel.settings.dmnNamespace!.__$$text =
+                externalDMNModel.model.definitions["@_namespace"];
+            });
+          })
+          .catch((err) => {
+            console.error(
+              `[TestScenarioCreationPanel] An error occurred when parsing the selected model '${selectedDMNPathRelativeToThisScesim}'. Please double-check it is a non-empty valid model.`
+            );
+            console.error(err);
+            throw new Error(err);
+            return;
+          });
+      },
+      [onRequestExternalModelByPath, selectedDMNPathRelativeToThisScesim, testScenarioEditorStoreApi]
     )
   );
 
@@ -120,6 +162,7 @@ function TestScenarioDrawerSettingsPanel() {
               setSelectedDMNPathRelativeToThisScesim(path);
               console.trace(path);
             }}
+            validated={selectedDmnModel ? undefined : "error"}
             value={selectedDMNPathRelativeToThisScesim}
           >
             {((availableDmnModelNormalizedPosixPathRelativePaths?.length ?? 0) > 0 &&

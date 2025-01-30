@@ -23,26 +23,34 @@ import {
   DMN15__tItemDefinition,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 
-import { ExternalDmn } from "../../TestScenarioEditor";
-import { TestScenarioDataObject } from "../TestScenarioEditorStore";
+import { ExternalDmnsIndex } from "../../TestScenarioEditor";
+import { State, TestScenarioDataObject } from "../TestScenarioEditorStore";
 
 export function computeDmnDataObjects(
-  externalDmnModel: ExternalDmn
-  //settings: State["scesim"]["model"]["ScenarioSimulationModel"]["settings"]
+  referencedDmnModel: ExternalDmnsIndex | undefined,
+  settings: State["scesim"]["model"]["ScenarioSimulationModel"]["settings"]
 ): TestScenarioDataObject[] {
   const dataObjects: TestScenarioDataObject[] = [];
 
-  if (externalDmnModel?.model) {
+  if (settings.type?.__$$text !== "DMN") {
+    return dataObjects;
+  }
+
+  const dmnModel = referencedDmnModel?.get(settings.dmnNamespace!.__$$text);
+
+  /* CHECKS external DMN */
+
+  if (dmnModel) {
     const itemDefinitions = new Map(
-      externalDmnModel.model.definitions.itemDefinition!.map(
+      dmnModel.model.definitions.itemDefinition!.map(
         (itemDefinition) => [itemDefinition["@_name"], itemDefinition] as const
       )
     );
 
-    const inputDataElements = externalDmnModel.model.definitions.drgElement!.filter(
+    const inputDataElements = dmnModel.model.definitions.drgElement!.filter(
       (drgElement) => drgElement.__$$element === "inputData"
     );
-    const decisionElements = externalDmnModel.model.definitions.drgElement!.filter(
+    const decisionElements = dmnModel.model.definitions.drgElement!.filter(
       (drgElement) => drgElement.__$$element === "decision"
     );
 

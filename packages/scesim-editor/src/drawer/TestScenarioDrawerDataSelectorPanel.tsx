@@ -40,6 +40,7 @@ import { SceSim__expressionElementsType } from "@kie-tools/scesim-marshaller/dis
 import { useTestScenarioEditorI18n } from "../i18n";
 
 import "./TestScenarioDrawerDataSelectorPanel.css";
+import { useExternalModels } from "../externalModels/TestScenarioEditorDependenciesContext";
 import { useTestScenarioEditorStore, useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
 import { TestScenarioDataObject, TestScenarioEditorTab } from "../store/TestScenarioEditorStore";
 import { updateColumn } from "../mutations/updateColumn";
@@ -52,7 +53,10 @@ const enum TestScenarioDataSelectorState {
 
 function TestScenarioDataSelectorPanel() {
   const { i18n } = useTestScenarioEditorI18n();
-  const dataObjects = useTestScenarioEditorStore((state) => state.computed(state).getDataObjects());
+  const { externalModelsByNamespace } = useExternalModels();
+  const dataObjects = useTestScenarioEditorStore((state) =>
+    state.computed(state).getDataObjects(externalModelsByNamespace)
+  );
   const scesimModel = useTestScenarioEditorStore((state) => state.scesim.model);
   const tableStatus = useTestScenarioEditorStore((state) => state.table);
   const tabStatus = useTestScenarioEditorStore((state) => state.navigation.tab);

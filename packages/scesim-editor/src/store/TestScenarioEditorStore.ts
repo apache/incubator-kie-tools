@@ -24,7 +24,7 @@ import { immer } from "zustand/middleware/immer";
 
 import { SceSim__FactMappingType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
-import { ExternalDmn } from "../TestScenarioEditor";
+import { ExternalDmnsIndex } from "../TestScenarioEditor";
 import { ComputedStateCache } from "./ComputedStateCache";
 import { computeDmnDataObjects } from "./computed/computeDmnDataObjects";
 import { computeTestScenarioDataObjects } from "./computed/computeTestScenarioDataObjects";
@@ -67,7 +67,6 @@ export type TestScenarioSelectedColumnMetaData = {
 export interface State {
   computed: (s: State) => Computed;
   dispatch: (s: State) => Dispatch;
-  dmn: { externalModel: ExternalDmn | undefined };
   navigation: {
     dock: {
       isOpen: boolean;
@@ -89,8 +88,8 @@ export interface State {
 // Read this to understand why we need computed as part of the store.
 // https://github.com/pmndrs/zustand/issues/132#issuecomment-1120467721
 export type Computed = {
-  getDataObjects(): TestScenarioDataObject[];
-  getDmnDataObjects(): TestScenarioDataObject[];
+  getDataObjects(referencedDmnModel: ExternalDmnsIndex | undefined): TestScenarioDataObject[];
+  getDmnDataObjects(referencedDmnModel: ExternalDmnsIndex | undefined): TestScenarioDataObject[];
   getTestScenarioDataObjects(): TestScenarioDataObject[];
 };
 
@@ -104,9 +103,6 @@ export type Dispatch = {
 };
 
 export const defaultStaticState = (): Omit<State, "computed" | "dispatch" | "scesim"> => ({
-  dmn: {
-    externalModel: undefined,
-  },
   navigation: {
     dock: {
       isOpen: true,
@@ -159,15 +155,18 @@ export function createTestScenarioEditorStore(model: SceSimModel, computedCache:
       },
       computed(state: State) {
         return {
-          getDataObjects: () =>
+          getDataObjects: (referencedDmnModel: ExternalDmnsIndex | undefined) =>
             computedCache.cached("getDataObjects", computeDataObjects, [
               state.computed(state).getTestScenarioDataObjects(),
-              state.computed(state).getDmnDataObjects(),
+              state.computed(state).getDmnDataObjects(referencedDmnModel),
               state.scesim.model.ScenarioSimulationModel.settings.type,
             ]),
 
-          getDmnDataObjects: () =>
-            computedCache.cached("getDmnDataObjects", computeDmnDataObjects, [state.dmn.externalModel]),
+          getDmnDataObjects: (referencedDmnModel: ExternalDmnsIndex | undefined) =>
+            computedCache.cached("getDmnDataObjects", computeDmnDataObjects, [
+              referencedDmnModel,
+              state.scesim.model.ScenarioSimulationModel.settings,
+            ]),
 
           getTestScenarioDataObjects: () =>
             computedCache.cachedData(

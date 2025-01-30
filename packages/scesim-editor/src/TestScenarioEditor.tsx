@@ -67,7 +67,10 @@ import {
 } from "./store/TestScenarioStoreContext";
 import { TestScenarioEditorErrorFallback } from "./TestScenarioEditorErrorFallback";
 import { TestScenarioEditorContextProvider, useTestScenarioEditor } from "./TestScenarioEditorContext";
-import { TestScenarioEditorExternalModelsContextProvider } from "./externalModels/TestScenarioEditorDependenciesContext";
+import {
+  TestScenarioEditorExternalModelsContextProvider,
+  useExternalModels,
+} from "./externalModels/TestScenarioEditorDependenciesContext";
 import { useEffectAfterFirstRender } from "./hook/useEffectAfterFirstRender";
 import { INITIAL_COMPUTED_CACHE } from "./store/computed/initial";
 
@@ -95,7 +98,7 @@ export type OnSceSimModelChange = (model: SceSimModel) => void;
 export type OnRequestExternalModelByPath = (
   normalizedPosixPathRelativeToTheOpenFile: string
 ) => Promise<ExternalDmn | null>;
-export type ExternalDmnsIndex = Record<string /** normalizedPosixPathRelativeToTheOpenFile */, ExternalDmn | undefined>;
+export type ExternalDmnsIndex = Map<string, ExternalDmn | undefined>;
 
 export type ExternalDmn = {
   model: Normalized<DmnLatestModel>;
@@ -165,18 +168,24 @@ export type TestScenarioSelectedColumnMetaData = {
 function TestScenarioMainPanel() {
   const { i18n } = useTestScenarioEditorI18n();
   const { commandsRef } = useCommands();
+  const { externalModelsByNamespace } = useExternalModels();
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
-  const dmnDataObjects = useTestScenarioEditorStore((state) => state.computed(state).getDmnDataObjects());
   const navigation = useTestScenarioEditorStore((state) => state.navigation);
   const scesimModel = useTestScenarioEditorStore((state) => state.scesim.model);
+  const testScenarioDmnNamespace = scesimModel.ScenarioSimulationModel.settings.dmnNamespace?.__$$text;
   const testScenarioType = scesimModel.ScenarioSimulationModel.settings.type?.__$$text.toUpperCase();
 
   const scenarioTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
   const backgroundTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
 
   const isMissingDataObjectsNotificationEnabled = useMemo(() => {
-    return testScenarioType !== "DMN" || (testScenarioType === "DMN" && dmnDataObjects.length === 0);
-  }, [dmnDataObjects, testScenarioType]);
+    const isReferencedDMNFileMissing =
+      externalModelsByNamespace &&
+      externalModelsByNamespace.has(testScenarioDmnNamespace!) &&
+      !externalModelsByNamespace.get(testScenarioDmnNamespace!);
+
+    return testScenarioType !== "DMN" || (testScenarioType === "DMN" && isReferencedDMNFileMissing);
+  }, [externalModelsByNamespace, testScenarioDmnNamespace, testScenarioType]);
 
   const onTabChanged = useCallback(
     (_event, tab) => {
