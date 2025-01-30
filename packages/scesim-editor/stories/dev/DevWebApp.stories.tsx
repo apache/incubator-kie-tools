@@ -26,7 +26,6 @@ import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Pag
 import { Stack, StackItem } from "@patternfly/react-core/dist/js";
 import { SceSimMarshaller, SceSimModel, getMarshaller } from "@kie-tools/scesim-marshaller";
 import {
-  ExternalDmn,
   ExternalDmnsIndex,
   OnRequestExternalModelByPath,
   OnRequestExternalModelsAvailableToInclude,
@@ -81,8 +80,7 @@ function DevWebApp(props: TestScenarioEditorProps) {
           model.model.definitions["@_namespace"] ===
           currentModel.ScenarioSimulationModel.settings.dmnNamespace?.__$$text
       );
-      return (currentModel.ScenarioSimulationModel.settings.dmnNamespace?.__$$text,
-      dmnModel ? dmnModel : {}) as ExternalDmnsIndex;
+      return new Map([[currentModel.ScenarioSimulationModel.settings.dmnNamespace?.__$$text, dmnModel]]);
     }
     return undefined;
   }, [currentModel.ScenarioSimulationModel.settings.dmnNamespace]);
