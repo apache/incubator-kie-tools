@@ -74,7 +74,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     this.testScenarioEditorRef = React.createRef();
     this.state = {
       error: undefined,
-      externalModelsByNamespace: {},
+      externalModelsByNamespace: new Map(),
       externalModelsManagerDoneBootstraping: false,
       isReadOnly: props.isReadOnly,
       keyboardShortcutsRegisterIds: [],
@@ -318,6 +318,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
           <>
             <TestScenarioEditor.TestScenarioEditor
               ref={this.testScenarioEditorRef}
+              externalModelsByNamespace={this.state.externalModelsByNamespace}
               issueTrackerHref={""}
               model={this.model}
               onModelChange={this.onModelChange}
@@ -371,7 +372,7 @@ function ExternalModelsManager({
       return null;
     }
     if (model.ScenarioSimulationModel.settings.dmnNamespace?.__$$text) {
-      return model.ScenarioSimulationModel.settings.dmnNamespace?.__$$text.toUpperCase();
+      return model.ScenarioSimulationModel.settings.dmnNamespace?.__$$text;
     }
     return null;
   }, [model.ScenarioSimulationModel.settings]);
@@ -437,7 +438,7 @@ function ExternalModelsManager({
         return Promise.all(resources);
       })
       .then((resources) => {
-        const externalModelsIndex: TestScenarioEditor.ExternalDmnsIndex = {};
+        const externalModelsByNamespace: TestScenarioEditor.ExternalDmnsIndex = new Map();
 
         for (let i = 0; i < resources.length; i++) {
           const resource = resources[i];
@@ -457,29 +458,35 @@ function ExternalModelsManager({
             const namespace = domParser.getDomDocument(content).documentElement.getAttribute("namespace");
             if (targetNamespace && namespace === targetNamespace) {
               // Check for multiplicity of namespaces on DMN models
-              if (externalModelsIndex[namespace]) {
+              if (externalModelsByNamespace.has(namespace)) {
                 console.warn(
                   `TEST SCENARIO EDITOR ROOT: Multiple DMN models encountered with the same namespace '${namespace}': '${
                     resource.normalizedPosixPathRelativeToTheWorkspaceRoot
                   }' and '${
-                    externalModelsIndex[namespace]!.normalizedPosixPathRelativeToTheOpenFile
+                    externalModelsByNamespace.get(namespace)!.normalizedPosixPathRelativeToTheOpenFile
                   }'. The latter will be considered.`
                 );
               }
 
-              externalModelsIndex[namespace] = {
+              externalModelsByNamespace.set(namespace, {
                 normalizedPosixPathRelativeToTheOpenFile,
                 model: normalize(getDmnMarshaller(content, { upgradeTo: "latest" }).parser.parse()),
                 svg: "",
-              };
+              });
             }
           } else {
             throw new Error(`Unknown extension '${ext}'.`);
           }
         }
 
+        /* The DMN file with the targetNamespace is not found, it populates the returning externalModelsByNamespace Map
+        /* adding the target key with an undefined model, to be propagated to the internal Test Scenario component */
+        if (targetNamespace && !externalModelsByNamespace.has(targetNamespace)) {
+          externalModelsByNamespace.set(targetNamespace, undefined);
+        }
+
         if (!canceled) {
-          onChange(externalModelsIndex);
+          onChange(externalModelsByNamespace);
         }
         externalModelsManagerDoneBootstraping.resolve();
       });

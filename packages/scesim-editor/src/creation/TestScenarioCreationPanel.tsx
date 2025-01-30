@@ -130,9 +130,8 @@ function TestScenarioCreationPanel() {
     )
   );
 
-  /**
-   * If any error occurs during the execution of useCancelableEffect's callback, it throws the error that will be catched by the ErrorBoundary.
-   */
+  /* If any error occurs during the execution of useCancelableEffect's callback,    */
+  /* it throws the error that will be catched by the ErrorBoundary.                 */
   useEffect(() => {
     if (callBackError) {
       throw new Error(callBackError);
@@ -142,7 +141,6 @@ function TestScenarioCreationPanel() {
   const createTestScenario = useCallback(
     () =>
       testScenarioEditorStoreApi.setState((state) => {
-        state.dmn.externalModel = selectedDmnModel; //TO REVIEW
         assetType === "DMN"
           ? createNewDmnTypeTestScenario({
               dmnModel: selectedDmnModel!,
