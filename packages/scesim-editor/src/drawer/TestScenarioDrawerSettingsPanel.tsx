@@ -88,6 +88,7 @@ function TestScenarioDrawerSettingsPanel() {
             console.trace(externalDMNModel);
 
             if (canceled.get() || !externalDMNModel) {
+              setSelectedDmnModel(undefined);
               return;
             }
 
@@ -102,12 +103,12 @@ function TestScenarioDrawerSettingsPanel() {
             });
           })
           .catch((err) => {
+            setSelectedDmnModel(undefined);
             console.error(
               `[TestScenarioCreationPanel] An error occurred when parsing the selected model '${selectedDMNPathRelativeToThisScesim}'. Please double-check it is a non-empty valid model.`
             );
             console.error(err);
             throw new Error(err);
-            return;
           });
       },
       [onRequestExternalModelByPath, selectedDMNPathRelativeToThisScesim, testScenarioEditorStoreApi]
@@ -134,7 +135,7 @@ function TestScenarioDrawerSettingsPanel() {
         className={"kie-scesim-editor-drawer-settings--text-input"}
         isDisabled
         type="text"
-        value={openFileNormalizedPosixPathRelativeToTheWorkspaceRoot}
+        value={basename(openFileNormalizedPosixPathRelativeToTheWorkspaceRoot ?? "")}
       />
       <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
         {i18n.drawer.settings.assetType}
@@ -163,8 +164,10 @@ function TestScenarioDrawerSettingsPanel() {
               console.trace(path);
             }}
             validated={selectedDmnModel ? undefined : "error"}
-            value={selectedDMNPathRelativeToThisScesim}
+            value={selectedDmnModel ? selectedDMNPathRelativeToThisScesim : undefined}
           >
+            {!selectedDmnModel && <FormSelectOption key={undefined} isDisabled label={"Can't find linked DMN"} />}
+
             {((availableDmnModelNormalizedPosixPathRelativePaths?.length ?? 0) > 0 &&
               availableDmnModelNormalizedPosixPathRelativePaths?.map((normalizedPosixPathRelativeToTheOpenFile) => (
                 <FormSelectOption

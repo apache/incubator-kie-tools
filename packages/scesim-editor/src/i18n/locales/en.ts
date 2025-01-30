@@ -23,12 +23,10 @@ import TestScenarioEditorI18n from "../TestScenarioEditorI18n";
 export const en: TestScenarioEditorI18n = {
   ...en_common,
   alerts: {
-    dmnDataNotAvailable:
-      "It's still not possibile to retrieve the DMN information from your DMN file. Work in progress.",
     ruleDataNotAvailable:
       "It's not possibile to retrieve the Java Classes from your project. This feature is still not supported.",
     dmnDataRetrievedFromScesim:
-      "Impossibile to retrieve DMN Nodes from the given DMN file, therefore they have been restored from the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose its related DMN Node data.",
+      "Impossibile to retrieve DMN Nodes from the referenced DMN file, therefore they have been restored from the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose its related DMN Node data. To fix this issue, go to the Setting panel and restore the link with the related DMN model.",
     ruleDataRetrievedFromScesim:
       "Impossibile to retrieve the Java Classes from your project, therefore they have been restored from the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose its related Java Class data.",
   },
@@ -120,6 +118,7 @@ export const en: TestScenarioEditorI18n = {
     settings: {
       assetType: "Type",
       dmnModel: "DMN Model",
+      dmnModelReferenceError: "Impossible to load the referenced DMN File",
       dmnName: "DMN Name",
       dmnNameSpace: "DMN Namespace",
       fileName: "Name",
