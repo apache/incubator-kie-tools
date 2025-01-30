@@ -188,7 +188,6 @@ export function DecisionTableOutputHeaderCell(props: {
       )}
       {root?.output && root.output.length > 1 ? (
         <TypeRefField
-          alternativeFieldName={root?.output.length === 1 ? "Column Type" : undefined}
           isReadOnly={cellMustHaveSameTypeAsRoot ? true : props.isReadOnly}
           dmnEditorRootElementRef={dmnEditorRootElementRef}
           typeRef={cellMustHaveSameTypeAsRoot ? root?.["@_typeRef"] : cell?.["@_typeRef"]}
