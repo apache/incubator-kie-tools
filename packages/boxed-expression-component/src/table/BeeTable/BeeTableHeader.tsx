@@ -266,9 +266,7 @@ export function BeeTableHeader<R extends object>({
                     </p>
                   ) : null}
                   {column.headerCellElementExtension !== undefined && (
-                    <div className="kie-tools--bee--header-cell-element-extension">
-                      {column.headerCellElementExtension}
-                    </div>
+                    <div className="header-cell-element-extension">{column.headerCellElementExtension}</div>
                   )}
                 </div>
               }
