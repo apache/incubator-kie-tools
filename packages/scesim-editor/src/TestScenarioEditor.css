@@ -18,12 +18,16 @@
  */
 
 .kie-scesim-editor--background-table-container {
-  overflow-x: auto;
+  overflow: auto;
 }
 
 .kie-scesim-editor--content {
-  padding-right: 50px;
-  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin-right: 50px;
 }
 
 .kie-scesim-editor--content-alert {
@@ -31,7 +35,8 @@
 }
 
 .kie-scesim-editor--content-tabs {
-  padding-top: 15px;
+  height: 100%;
+  padding-top: 10px;
   padding-left: 15px;
 }
 
@@ -39,10 +44,6 @@
   margin-top: 50px;
 }
 
-.kie-scesim-editor--grid-container {
-  height: 100%;
-}
-
 .kie-scesim-editor--scenario-table-container {
-  overflow-x: auto;
+  overflow: auto;
 }

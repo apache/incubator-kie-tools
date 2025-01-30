@@ -53,19 +53,6 @@ public class MonacoEditorLanguageTest {
     }
 
     @Test
-    public void testJavaScriptOptions() {
-        MonacoEditorLanguage language = MonacoEditorLanguage.JAVA_SCRIPT;
-        assertEquals(MonacoEditorLanguage.LANG_JAVASCRIPT, language.getId());
-        assertEquals(MonacoEditorLanguage.TITLE_JAVASCRIPT, language.getTitle());
-        assertEquals(MonacoEditorLanguage.LANG_JAVASCRIPT, language.getLanguageCode());
-        assertEquals(3, language.getModules().length);
-        assertEquals(MonacoEditorLanguage.JAVASCRIPT_MODULE, language.getModules()[0]);
-        assertEquals(MonacoEditorLanguage.TYPESCRIPT_MODULE, language.getModules()[1]);
-        assertEquals(MonacoEditorLanguage.TYPESCRIPT_MODE_MODULE, language.getModules()[2]);
-        assertEquals(MonacoEditorLanguage.LANG_JAVASCRIPT, language.buildOptions().getLanguage());
-    }
-
-    @Test
     public void testMVELOptions() {
         MonacoEditorLanguage language = MonacoEditorLanguage.MVEL;
         assertEquals(MonacoEditorLanguage.LANG_MVEL, language.getId());

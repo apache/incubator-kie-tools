@@ -28,7 +28,7 @@
   <parent>
     <groupId>org.apache</groupId>
     <artifactId>apache</artifactId>
-    <version>32</version>
+    <version>33</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -47,7 +47,7 @@
     <io.swagger.parser.v3.swagger-parser-v3.version>2.1.20</io.swagger.parser.v3.swagger-parser-v3.version>
     <org.apache.commons.commons-compress.version>1.26.0</org.apache.commons.commons-compress.version>
     <com.github.erosb.everit-json-schema.version>1.14.2</com.github.erosb.everit-json-schema.version>
-    <surefire-plugin.version>3.2.5</surefire-plugin.version>
+    <surefire-plugin.version>3.5.0</surefire-plugin.version>
   </properties>
 
   <dependencyManagement>
