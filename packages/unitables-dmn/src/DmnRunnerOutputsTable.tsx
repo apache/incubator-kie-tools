@@ -46,6 +46,7 @@ import "./DmnRunnerOutputsTable.css";
 import { DecisionResult, DmnEvaluationResult } from "@kie-tools/extended-services-api";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon";
+import { getDefaultColumnWidth } from "@kie-tools/boxed-expression-component/dist/resizing/WidthsToFitData";
 
 interface Props {
   i18n: DmnUnitablesI18n;
@@ -125,8 +126,6 @@ function OutputError() {
   );
 }
 
-export const DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH = 150;
-
 interface ROWTYPE {
   id: string;
 }
@@ -168,7 +167,8 @@ function OutputsBeeTable({
     (
       myObject: Record<string, any>,
       propertiesTypes?: Record<string, any>,
-      parentKey?: string
+      parentKey?: string,
+      parentColumnMinWidth?: number
     ): ReactTable.Column<ROWTYPE>[] => {
       return Object.entries(myObject).flatMap(([myObjectKey, value]) => {
         if (value !== null && typeof value === "object") {
@@ -176,13 +176,15 @@ function OutputsBeeTable({
           return deepFlattenObjectColumn(
             value,
             propertiesTypes?.[myObjectKey]?.properties ?? propertiesTypes?.[myObjectKey]?.items,
-            myKey
+            myKey,
+            parentColumnMinWidth
           );
         }
 
         const label = parentKey ? `${parentKey}-${myObjectKey}` : myObjectKey;
         const myObjectProperties = propertiesTypes?.[myObjectKey] ?? propertiesTypes;
-        const dataType = myObjectProperties ? myObjectProperties.type : DmnBuiltInDataType.Any;
+        const dataType = myObjectProperties ? myObjectProperties.type : DmnBuiltInDataType.Undefined;
+        const columnMinWidth = getDefaultDmnRunnerOutputColumnWidth(label, dataType);
 
         return {
           originalId: label + generateUuid(),
@@ -191,8 +193,10 @@ function OutputsBeeTable({
           dataType,
           isRowIndexColumn: false,
           groupType: "dmn-runner-output",
-          width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
-          minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
+          minWidth: Math.max(
+            (parentColumnMinWidth ?? columnMinWidth) / Object.entries(myObject).length,
+            columnMinWidth
+          ),
         };
       });
     },
@@ -269,6 +273,13 @@ function OutputsBeeTable({
     [openBoxedExpressionEditor, resultsDecisionIds]
   );
 
+  /**
+   * Wrapping 'getDefaultColumnWidth' to add additional space for the '<ArrowUp />' icon in the runner outputs columns.
+   */
+  const getDefaultDmnRunnerOutputColumnWidth = useCallback((label, dataType) => {
+    return getDefaultColumnWidth({ name: label, typeRef: dataType }) + 100;
+  }, []);
+
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return (results?.[0] ?? []).flatMap(({ result, decisionName, decisionId }) => {
       const outputProperties = outputsPropertiesMap.get(decisionName);
@@ -284,31 +295,40 @@ function OutputsBeeTable({
             ?.filter((decisionResult) => decisionResult.decisionName === outputProperties.joinedName)
             ?.flatMap((decisionResult) => decisionResult.result)
         );
+        const parentLabel = outputProperties?.name ?? "";
+        const parentDataType = outputProperties?.dataType ?? DmnBuiltInDataType.Undefined;
+        const parentColumnMinWidth = getDefaultDmnRunnerOutputColumnWidth(parentLabel, parentDataType);
         return [
           {
             originalId: `${outputProperties?.name}-${generateUuid()}`,
             headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
-            label: outputProperties?.name ?? "",
+            label: parentLabel,
             accessor: (`output-object-parent-${outputProperties?.name}-` + generateUuid()) as any,
-            dataType: outputProperties?.dataType,
+            dataType: parentDataType,
             isRowIndexColumn: false,
             groupType: "dmn-runner-output",
-            minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
             columns:
               collectedOutputs
                 ?.flatMap((collectedOutput) => {
                   if (collectedOutput !== null && typeof collectedOutput === "object") {
-                    return deepFlattenObjectColumn(collectedOutput, outputProperties?.properties);
+                    return deepFlattenObjectColumn(
+                      collectedOutput,
+                      outputProperties?.properties,
+                      undefined,
+                      parentColumnMinWidth
+                    );
                   }
+                  const label = "context";
+                  const dataType = outputProperties?.dataType ?? DmnBuiltInDataType.Undefined;
+                  const columnMinWidth = getDefaultDmnRunnerOutputColumnWidth(label, dataType);
                   return {
                     originalId: `context-${generateUuid()}`,
-                    label: "context",
+                    label: label,
                     accessor: (`output-context-` + generateUuid()) as any,
-                    dataType: outputProperties?.dataType ?? DmnBuiltInDataType.Any,
+                    dataType: dataType,
                     isRowIndexColumn: false,
                     groupType: "dmn-runner-output",
-                    width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
-                    minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
+                    minWidth: Math.max(parentColumnMinWidth / collectedOutputs.length, columnMinWidth),
                   };
                 })
                 .reduce((acc: ReactTable.Column<ROWTYPE>[], column) => {
@@ -326,6 +346,9 @@ function OutputsBeeTable({
 
       // Primitives and null;
       if (typeof result === "string" || typeof result === "number" || typeof result === "boolean" || result === null) {
+        const label = outputProperties?.name ?? "";
+        const dataType = outputProperties?.dataType ?? DmnBuiltInDataType.Undefined;
+        const columnMinWidth = getDefaultDmnRunnerOutputColumnWidth(label, dataType);
         return [
           {
             originalId: `parent-${outputProperties?.name}-${generateUuid()}`,
@@ -334,18 +357,16 @@ function OutputsBeeTable({
             dataType: undefined as any,
             isRowIndexColumn: false,
             groupType: "dmn-runner-output",
-            minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
             columns: [
               {
                 originalId: `${outputProperties?.name}-${generateUuid()}-${outputProperties?.properties?.id}`,
                 headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
-                label: outputProperties?.name ?? "",
+                label: label,
                 accessor: (`output-${outputProperties?.name}-` + generateUuid()) as any,
-                dataType: outputProperties?.dataType ?? DmnBuiltInDataType.Undefined,
+                dataType: dataType,
                 isRowIndexColumn: false,
                 groupType: "dmn-runner-output",
-                width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
-                minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
+                minWidth: columnMinWidth,
               },
             ],
           },
@@ -353,48 +374,63 @@ function OutputsBeeTable({
       }
       // Lists
       if (Array.isArray(result)) {
+        const parentLabel = outputProperties?.name ?? "";
+        const parentDataType = outputProperties?.dataType ?? DmnBuiltInDataType.Undefined;
+        const parentColumnMinWidth = getDefaultDmnRunnerOutputColumnWidth(parentLabel, parentDataType);
         return [
           {
             originalId: `${outputProperties?.name}-${generateUuid()}`,
             headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
-            label: `${outputProperties?.name}`,
+            label: parentLabel,
             accessor: (`output-array-parent-${outputProperties?.name}-` + generateUuid()) as any,
-            dataType: outputProperties?.dataType ?? DmnBuiltInDataType.Undefined,
+            dataType: parentDataType,
             isRowIndexColumn: false,
             groupType: "dmn-runner-output",
-            columns: result.map((entry, entryIndex) => ({
-              originalId: `${entryIndex}-${generateUuid()}`,
-              label: `[${entryIndex}]`,
-              accessor: (`output-array-${entryIndex}-` + generateUuid()) as any,
-              dataType: undefined as any,
-              groupType: "dmn-runner-output",
-              isRowIndexColumn: false,
-              width: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
-              minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
-            })),
+            columns: result.map((entry, entryIndex) => {
+              const label = `[${entryIndex}]`;
+              const dataType = DmnBuiltInDataType.Undefined;
+              const columnMinWidth = getDefaultDmnRunnerOutputColumnWidth(label, dataType);
+              return {
+                originalId: `${entryIndex}-${generateUuid()}`,
+                label: label,
+                accessor: (`output-array-${entryIndex}-` + generateUuid()) as any,
+                dataType: dataType,
+                groupType: "dmn-runner-output",
+                isRowIndexColumn: false,
+                minWidth: Math.max(parentColumnMinWidth / result.length, columnMinWidth),
+              };
+            }),
           },
         ];
       }
 
       // Structures
       if (typeof result === "object") {
+        const parentLabel = outputProperties?.name ?? "";
+        const parentDataType = outputProperties?.dataType ?? DmnBuiltInDataType.Undefined;
+        const parentColumnMinWidth = getDefaultDmnRunnerOutputColumnWidth(parentLabel, parentDataType);
         return [
           {
             originalId: `${outputProperties?.name}-${generateUuid()}`,
             headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
-            label: outputProperties?.name ?? "",
+            label: parentLabel,
             accessor: (`output-object-parent-${outputProperties?.name}-` + generateUuid()) as any,
-            dataType: outputProperties?.dataType ?? DmnBuiltInDataType.Undefined,
+            dataType: parentDataType,
             isRowIndexColumn: false,
             groupType: "dmn-runner-output",
-            minWidth: DMN_RUNNER_OUTPUT_COLUMN_MIN_WIDTH,
-            columns: deepFlattenObjectColumn(result, outputProperties?.properties),
+            columns: deepFlattenObjectColumn(result, outputProperties?.properties, undefined, parentColumnMinWidth),
           },
         ];
       }
       return [] as ReactTable.Column<ROWTYPE>[];
     });
-  }, [deepFlattenObjectColumn, openBoxedExpressionHeaderButton, outputsPropertiesMap, results]);
+  }, [
+    deepFlattenObjectColumn,
+    getDefaultDmnRunnerOutputColumnWidth,
+    openBoxedExpressionHeaderButton,
+    outputsPropertiesMap,
+    results,
+  ]);
 
   const beeTableRows = useMemo<ROWTYPE[]>(() => {
     return (results ?? []).map((decisionResult, rowIndex) => {
