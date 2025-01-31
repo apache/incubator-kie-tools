@@ -851,7 +851,7 @@ export function DecisionTableExpression({
               : DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH;
 
         const nextValues = [...prev];
-        const minValuesLength = args.beforeIndex + 1 + args.columnsCount;
+        const minValuesLength = args.beforeIndex + args.columnsCount;
         nextValues.push(...Array(Math.max(0, minValuesLength - nextValues.length)));
         for (let i = 0; i < args.columnsCount; i++) {
           const widthIndex = args.beforeIndex + i + 1; // + 1 to account for the rowIndex column.
