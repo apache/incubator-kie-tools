@@ -24,6 +24,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { NavigationKeysUtils } from "../../keysUtils/keyUtils";
 import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 import "./BeeTableEditableCellContent.css";
+import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 
 const CELL_LINE_HEIGHT = 20;
 
@@ -183,7 +184,9 @@ export function BeeTableEditableCellContent({
     (e) => {
       // When inside FEEL Input, all keyboard events should be kept inside it.
       // Exceptions to this strategy are handled on `onFeelKeyDown`.
-      if (isEditing) {
+      // NOTE: In macOS, we can not stopPropagation here because, otherwise, shortcuts are not handled
+      // See https://github.com/apache/incubator-kie-issues/issues/1164
+      if (isEditing && !(getOperatingSystem() === OperatingSystem.MACOS && e.metaKey)) {
         e.stopPropagation();
       }
 
