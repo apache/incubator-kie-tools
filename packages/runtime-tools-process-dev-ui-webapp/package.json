@@ -86,7 +86,7 @@
     "cors": "^2.8.5",
     "css-loader": "^5.2.6",
     "css-minimizer-webpack-plugin": "^5.0.1",
-    "express": "^4.21.1",
+    "express": "^4.21.2",
     "file-loader": "^6.2.0",
     "filemanager-webpack-plugin": "^7.0.0",
     "graphql": "14.3.1",
