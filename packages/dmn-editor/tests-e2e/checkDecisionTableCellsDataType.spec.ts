@@ -87,7 +87,6 @@ test.describe("Decision Table - Cells Data Type", () => {
 
       await expect(beePropertiesPanel.decisionTableOutputHeader.getColumnDataType()).not.toBeAttached();
       await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionDataType()).toHaveValue(DataType.Number);
-      await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(DataType.Number);
     });
 
     test("Decision table fix output column with different type than expression header", async ({
@@ -110,7 +109,6 @@ test.describe("Decision Table - Cells Data Type", () => {
 
       await expect(beePropertiesPanel.decisionTableOutputHeader.getColumnDataType()).not.toBeAttached();
       await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionDataType()).toHaveValue(DataType.Number);
-      await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(DataType.Number);
     });
   });
 });
@@ -175,7 +173,6 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         await beePropertiesPanel.decisionTableOutputHeader.setExpressionDataType({ newDataType: dataType });
 
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionDataType()).toHaveValue(`${dataType}`);
-        await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(`${dataType}`);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getColumnDataType()).not.toBeAttached();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).not.toBeAttached();
       });
@@ -585,7 +582,6 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionDataType()).toHaveValue(
           /^\s*enumType\s$/i
         );
-        await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(/^\s*enumType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
         await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getEnumerationValueAt(0)).toHaveValue("foo");
@@ -617,7 +613,6 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionDataType()).toHaveValue(
           /^\s*enumType\s$/i
         );
-        await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(/^\s*enumType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
         await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getEnumerationValueAt(0)).toHaveValue("foo");
@@ -633,7 +628,6 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionDataType()).toHaveValue(
           /^\s*enumType\s$/i
         );
-        await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(/^\s*enumType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
         await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getEnumerationValueAt(0)).toHaveValue("foo");
@@ -665,7 +659,6 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionDataType()).toHaveValue(
           /^\s*rangeType\s$/i
         );
-        await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(/^\s*rangeType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
         await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
 
@@ -704,7 +697,6 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionDataType()).toHaveValue(
           /^\s*rangeType\s$/i
         );
-        await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(/^\s*rangeType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
         await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(
@@ -723,7 +715,6 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionDataType()).toHaveValue(
           /^\s*rangeType\s$/i
         );
-        await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(/^\s*rangeType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
         await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(
@@ -761,7 +752,6 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionDataType()).toHaveValue(
           /^\s*expressionType\s$/i
         );
-        await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(/^\s*expressionType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
         await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionConstraintValue()).toHaveText("> 20");
@@ -791,7 +781,6 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionDataType()).toHaveValue(
           /^\s*expressionType\s$/i
         );
-        await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(/^\s*expressionType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
         await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionConstraintValue()).toHaveText("> 20");
@@ -805,7 +794,6 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionDataType()).toHaveValue(
           /^\s*expressionType\s$/i
         );
-        await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(/^\s*expressionType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
         await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionConstraintValue()).toHaveText("< 30");
@@ -831,7 +819,6 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionDataType()).toHaveValue(
           /^\s*noneType\s$/i
         );
-        await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(/^\s*noneType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
         await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getNoneConstraint()).toBeAttached();
@@ -857,7 +844,6 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionDataType()).toHaveValue(
           /^\s*enumType\s$/i
         );
-        await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(/^\s*enumType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
         await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getEnumerationValueAt(0)).toHaveValue("foo");
@@ -878,7 +864,6 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionDataType()).toHaveValue(
           /^\s*rangeType\s$/i
         );
-        await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(/^\s*rangeType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
         await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(
@@ -907,7 +892,6 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionDataType()).toHaveValue(
           /^\s*expressionType\s$/i
         );
-        await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(/^\s*expressionType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
         await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionConstraintValue()).toHaveText("> 20");
@@ -924,7 +908,6 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         await expect(beePropertiesPanel.decisionTableOutputHeader.getExpressionDataType()).toHaveValue(
           /^\s*noneType\s$/i
         );
-        await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(/^\s*noneType\s$/i);
         await expect(beePropertiesPanel.decisionTableOutputHeader.getConstraintSection()).toBeAttached();
         await beePropertiesPanel.decisionTableOutputHeader.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputHeader.getNoneConstraint()).toBeAttached();
