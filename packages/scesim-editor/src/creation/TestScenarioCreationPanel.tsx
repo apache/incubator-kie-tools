@@ -51,9 +51,10 @@ function TestScenarioCreationPanel() {
   const { onRequestExternalModelsAvailableToInclude, onRequestExternalModelByPath } = useExternalModels();
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
 
+  const [allDmnModelsNormalizedPosixPathRelative, setAllDmnModelsNormalizedPosixPathRelative] = useState<
+    string[] | undefined
+  >(undefined);
   const [assetType, setAssetType] = React.useState<"" | "DMN" | "RULE">("");
-  const [availableDmnModelNormalizedPosixPathRelativePaths, setAvailableDmnModelNormalizedPosixPathRelativePaths] =
-    useState<string[] | undefined>(undefined);
   const [callBackError, setCallBackError] = useState<any>(undefined);
   const [isAutoFillTableEnabled, setAutoFillTableEnabled] = React.useState(true);
   const [isStatelessSessionRule, setStatelessSessionRule] = React.useState(false);
@@ -83,7 +84,7 @@ function TestScenarioCreationPanel() {
             if (canceled.get()) {
               return;
             }
-            setAvailableDmnModelNormalizedPosixPathRelativePaths(dmnModelNormalizedPosixPathRelativePaths);
+            setAllDmnModelsNormalizedPosixPathRelative(dmnModelNormalizedPosixPathRelativePaths);
           })
           .catch((err) => {
             setCallBackError(err);
@@ -211,8 +212,8 @@ function TestScenarioCreationPanel() {
                 value={selectedDmnModelPathRelativeToThisScesim}
               >
                 <FormSelectOption key={undefined} isDisabled label={i18n.creationPanel.dmnNoChoice} />
-                {((availableDmnModelNormalizedPosixPathRelativePaths?.length ?? 0) > 0 &&
-                  availableDmnModelNormalizedPosixPathRelativePaths?.map((normalizedPosixPathRelativeToTheOpenFile) => (
+                {((allDmnModelsNormalizedPosixPathRelative?.length ?? 0) > 0 &&
+                  allDmnModelsNormalizedPosixPathRelative?.map((normalizedPosixPathRelativeToTheOpenFile) => (
                     <FormSelectOption
                       key={normalizedPosixPathRelativeToTheOpenFile}
                       value={normalizedPosixPathRelativeToTheOpenFile}
