@@ -475,6 +475,7 @@ Error details: ${err}`);
                   workspaceFile={file.workspaceFile}
                   isEditorReady={editor?.isReady}
                   dmnLanguageService={dmnLanguageService}
+                  dmnEditor={editor}
                 >
                   <EditorToolbar workspaceFile={file.workspaceFile} editor={editor} />
                   <Divider />

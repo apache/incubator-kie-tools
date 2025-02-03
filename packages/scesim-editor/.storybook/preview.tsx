@@ -44,7 +44,11 @@ const preview: Preview = {
   },
 
   // It should be Story() to be possible to use "preview-api" inside stories; (https://github.com/storybookjs/storybook/issues/22132)
-  decorators: [(Story) => <div data-testid="test-scenario-editor">{Story()}</div>],
+  decorators: [
+    (Story) => (
+      <div style={{ position: "absolute", width: "100vw", height: "100vh", top: "0px", left: "0px" }}>{Story()}</div>
+    ),
+  ],
 };
 
 export default preview;

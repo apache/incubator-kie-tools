@@ -61,6 +61,6 @@ export class Editor {
   }
 
   public get() {
-    return this.page.getByTestId("test-scenario-editor");
+    return this.page.getByTestId("kie-scesim-editor--container");
   }
 }

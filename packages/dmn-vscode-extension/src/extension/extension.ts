@@ -59,6 +59,12 @@ export function activate(context: vscode.ExtensionContext) {
         resourcesPathPrefix: "",
         envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/webview/NewDmnEditorEnvelopeApp.js" },
       }),
+      new EnvelopeMapping({
+        type: "scesim",
+        filePathGlob: "**/*.scesim",
+        resourcesPathPrefix: "",
+        envelopeContent: { type: EnvelopeContentType.PATH, path: "dist/webview/NewTestScenarioEditorEnvelopeApp.js" },
+      }),
     ]),
   });
 

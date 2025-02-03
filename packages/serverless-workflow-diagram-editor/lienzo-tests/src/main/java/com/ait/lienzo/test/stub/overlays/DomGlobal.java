@@ -55,7 +55,7 @@ public class DomGlobal {
     }
 
     public static final Promise<ImageBitmap> createImageBitmap(Blob image) {
-        return new Promise<ImageBitmap>((resolve, reject) ->
+        return new Promise<>((resolve, reject) ->
                                                 new ImageBitmap() {
                                                     @Override
                                                     public int getHeight() {
@@ -65,6 +65,10 @@ public class DomGlobal {
                                                     @Override
                                                     public int getWidth() {
                                                         return 0;
+                                                    }
+                                                  @Override
+                                                    public void close() {
+                                                      // Do nothing
                                                     }
                                                 }
         );

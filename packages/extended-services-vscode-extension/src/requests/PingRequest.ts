@@ -20,10 +20,11 @@
 import * as pingresponse from "./PingResponse";
 
 export async function ping(extendedServicesURL: URL): Promise<pingresponse.PingResponse> {
-  const url = new URL("/ping", extendedServicesURL);
+  const extendedServicesPingURL = new URL("/ping", extendedServicesURL);
 
   try {
-    const response = await fetch(url.toString());
+    console.debug("[Extended Services Extension] Pinging: " + extendedServicesPingURL.toString());
+    const response = await fetch(extendedServicesPingURL.toString());
     if (response.ok) {
       const responseData = (await response.json()) as pingresponse.PingResponse;
       return responseData;

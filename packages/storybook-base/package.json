@@ -41,7 +41,7 @@
     "@storybook/addon-outline": "^7.3.2",
     "@storybook/addon-toolbars": "^7.3.2",
     "@storybook/addon-viewport": "^7.3.2",
-    "@storybook/addon-webpack5-compiler-babel": "^3.0.3",
+    "@storybook/addon-webpack5-compiler-babel": "^3.0.5",
     "@storybook/react-webpack5": "^7.3.2",
     "@storybook/theming": "^7.3.2",
     "@types/vscode": "1.67.0",
