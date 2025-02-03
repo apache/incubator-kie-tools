@@ -277,7 +277,9 @@ function OutputsBeeTable({
    * Wrapping 'getDefaultColumnWidth' to add additional space for the '<ArrowUp />' icon in the runner outputs columns.
    */
   const getDefaultDmnRunnerOutputColumnWidth = useCallback((label, dataType) => {
-    return getDefaultColumnWidth({ name: label, typeRef: dataType }) + 100;
+    const OPEN_BOXED_EXPRESSION_HEADER_ARROW_UP_BUTTON_WIDTH = 50;
+    const ADDITIONAL_WIDTH_TO_CENTER_HEADER_CONTENT = 2 * OPEN_BOXED_EXPRESSION_HEADER_ARROW_UP_BUTTON_WIDTH;
+    return getDefaultColumnWidth({ name: label, typeRef: dataType }) + ADDITIONAL_WIDTH_TO_CENTER_HEADER_CONTENT;
   }, []);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
