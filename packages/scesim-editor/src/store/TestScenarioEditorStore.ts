@@ -53,7 +53,6 @@ export type TestScenarioDataObject = {
   id: string;
   children?: TestScenarioDataObject[];
   customBadgeContent?: string;
-  isCollection?: boolean;
   isSimpleTypeFact?: boolean;
   name: string;
 };
@@ -88,8 +87,8 @@ export interface State {
 // Read this to understand why we need computed as part of the store.
 // https://github.com/pmndrs/zustand/issues/132#issuecomment-1120467721
 export type Computed = {
-  getDataObjects(referencedDmnModel: ExternalDmnsIndex | undefined): TestScenarioDataObject[];
-  getDmnDataObjects(referencedDmnModel: ExternalDmnsIndex | undefined): TestScenarioDataObject[];
+  getDataObjects(externalModelsByNamespace: ExternalDmnsIndex | undefined): TestScenarioDataObject[];
+  getDmnDataObjects(externalModelsByNamespace: ExternalDmnsIndex | undefined): TestScenarioDataObject[];
   getTestScenarioDataObjects(): TestScenarioDataObject[];
 };
 
@@ -155,16 +154,16 @@ export function createTestScenarioEditorStore(model: SceSimModel, computedCache:
       },
       computed(state: State) {
         return {
-          getDataObjects: (referencedDmnModel: ExternalDmnsIndex | undefined) =>
+          getDataObjects: (externalModelsByNamespace: ExternalDmnsIndex | undefined) =>
             computedCache.cached("getDataObjects", computeDataObjects, [
               state.computed(state).getTestScenarioDataObjects(),
-              state.computed(state).getDmnDataObjects(referencedDmnModel),
+              state.computed(state).getDmnDataObjects(externalModelsByNamespace),
               state.scesim.model.ScenarioSimulationModel.settings.type,
             ]),
 
-          getDmnDataObjects: (referencedDmnModel: ExternalDmnsIndex | undefined) =>
+          getDmnDataObjects: (externalModelsByNamespace: ExternalDmnsIndex | undefined) =>
             computedCache.cached("getDmnDataObjects", computeDmnDataObjects, [
-              referencedDmnModel,
+              externalModelsByNamespace,
               state.scesim.model.ScenarioSimulationModel.settings,
             ]),
 

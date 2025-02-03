@@ -27,7 +27,7 @@ import { ExternalDmnsIndex } from "../../TestScenarioEditor";
 import { State, TestScenarioDataObject } from "../TestScenarioEditorStore";
 
 export function computeDmnDataObjects(
-  referencedDmnModel: ExternalDmnsIndex | undefined,
+  externalModelsByNamespace: ExternalDmnsIndex | undefined,
   settings: State["scesim"]["model"]["ScenarioSimulationModel"]["settings"]
 ): TestScenarioDataObject[] {
   const dataObjects: TestScenarioDataObject[] = [];
@@ -36,7 +36,7 @@ export function computeDmnDataObjects(
     return dataObjects;
   }
 
-  const dmnModel = referencedDmnModel?.get(settings.dmnNamespace!.__$$text);
+  const dmnModel = externalModelsByNamespace?.get(settings.dmnNamespace!.__$$text);
 
   /* CHECKS external DMN */
 
