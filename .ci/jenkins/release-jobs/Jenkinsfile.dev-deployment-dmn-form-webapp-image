@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            image 'mirror.gcr.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -39,7 +39,7 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry = 'docker.io'
+        DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry = 'mirror.gcr.io'
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account = 'apache'
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__name = 'incubator-kie-sandbox-dev-deployment-dmn-form-webapp'
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__buildTag = "latest ${params.RELEASE_VERSION}"

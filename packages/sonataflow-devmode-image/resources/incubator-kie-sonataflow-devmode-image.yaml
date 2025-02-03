@@ -36,7 +36,7 @@
   packages:
     manager: microdnf
 
-- name: "docker.io/apache/incubator-kie-sonataflow-devmode"
+- name: "mirror.gcr.io/apache/incubator-kie-sonataflow-devmode"
   from: "registry.access.redhat.com/ubi8/openjdk-17:1.21"
   version: "main"
   description: "Kogito Serverless Workflow development mode with Quarkus extensions libraries preinstalled"

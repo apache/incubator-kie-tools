@@ -33,7 +33,7 @@
       - name: org.kie.sonataflow.builder.build-config
       - name: org.kie.sonataflow.common.build
 
-- name: "docker.io/apache/incubator-kie-sonataflow-builder"
+- name: "mirror.gcr.io/apache/incubator-kie-sonataflow-builder"
   from: "registry.access.redhat.com/ubi8/openjdk-17:1.21"
   version: "main"
   description: "Kogito Serverless Workflow base builder with Quarkus extensions libraries preinstalled"

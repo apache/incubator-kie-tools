@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            image 'mirror.gcr.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -41,19 +41,19 @@ pipeline {
         SERVERLESS_LOGIC_WEB_TOOLS__version = "${params.RELEASE_VERSION}"
         SERVERLESS_LOGIC_WEB_TOOLS__samplesRepositoryRef = "${params.RELEASE_VERSION}"
         SERVERLESS_LOGIC_WEB_TOOLS__buildInfo = ''
-        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry = 'docker.io'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry = 'mirror.gcr.io'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount = 'apache'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName = 'incubator-kie-serverless-logic-web-tools-swf-builder'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageTag = "${params.RELEASE_VERSION}"
-        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry = 'docker.io'
+        SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageRegistry = 'mirror.gcr.io'
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageAccount = 'apache'
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageName = 'incubator-kie-serverless-logic-web-tools-base-builder'
         SERVERLESS_LOGIC_WEB_TOOLS__baseBuilderImageTag = "${params.RELEASE_VERSION}"
-        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry = 'docker.io'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageRegistry = 'mirror.gcr.io'
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageAccount = 'apache'
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageName = 'incubator-kie-serverless-logic-web-tools-swf-dev-mode'
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageTag = "${params.RELEASE_VERSION}"
-        DASHBUILDER__viewerImageRegistry = 'docker.io'
+        DASHBUILDER__viewerImageRegistry = 'mirror.gcr.io'
         DASHBUILDER__viewerImageAccount = 'apache'
         DASHBUILDER__viewerImageName = 'incubator-kie-dashbuilder-viewer'
         SERVERLESS_LOGIC_WEB_TOOLS__dashbuilderViewerImageTag = "${params.RELEASE_VERSION}"

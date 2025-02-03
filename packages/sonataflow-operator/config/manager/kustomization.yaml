@@ -40,7 +40,7 @@ kind:
   # Changed during "make build", do not attempt to modify it manually!
 images:
   - name: controller
-    newName: docker.io/apache/incubator-kie-sonataflow-operator
+    newName: mirror.gcr.io/apache/incubator-kie-sonataflow-operator
     newTag: main
 # Patching the manager deployment file to add an env var with the operator namespace in
 patches:

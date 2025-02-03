@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            image 'mirror.gcr.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -39,7 +39,7 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        RUNTIME_TOOLS_CONSOLES_HELM_CHART__registry = 'docker.io'
+        RUNTIME_TOOLS_CONSOLES_HELM_CHART__registry = 'mirror.gcr.io'
         RUNTIME_TOOLS_CONSOLES_HELM_CHART__account = 'apache'
         RUNTIME_TOOLS_CONSOLES_HELM_CHART__name = 'incubator-kie-runtime-tools-consoles-helm-chart'
         RUNTIME_TOOLS_CONSOLES_HELM_CHART__tag = "${params.RELEASE_VERSION}"

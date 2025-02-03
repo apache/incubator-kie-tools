@@ -35,7 +35,7 @@ replicaCount: 1
 
 # -- Image source configuration for the Management Console image
 image:
-  registry: docker.io
+  registry: mirror.gcr.io
   account: apache
   name: incubator-kie-kogito-management-console
   pullPolicy: IfNotPresent

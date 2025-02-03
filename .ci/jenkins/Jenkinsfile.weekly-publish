@@ -25,7 +25,7 @@ def dateDefaultValue = sdf.format(new Date())
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            image 'mirror.gcr.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
             label util.avoidFaultyNodes()
         }

@@ -45,7 +45,7 @@ pipeline {
             agent {
                 docker {
                     label("${buildUtils.apacheAgentLabels()}")
-                    image "docker.io/apache/incubator-kie-tools-ci-build:${env.BRANCH_NAME}"
+                    image "mirror.gcr.io/apache/incubator-kie-tools-ci-build:${env.BRANCH_NAME}"
                     args '--shm-size=2g --privileged --group-add docker'
                 }
             }
