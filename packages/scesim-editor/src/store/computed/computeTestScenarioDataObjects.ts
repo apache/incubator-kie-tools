@@ -19,24 +19,15 @@
 
 import { State, TestScenarioDataObject } from "../TestScenarioEditorStore";
 
-/* The scope of this logic is to retrieve the TestScenarioDataObjects from the scesim itself */
+/* The scope of this logic is to retrieve the Data Objects from the scesim file itself */
 export function computeTestScenarioDataObjects(
   factMappings: State["scesim"]["model"]["ScenarioSimulationModel"]["simulation"]["scesimModelDescriptor"]["factMappings"]["FactMapping"]
 ) {
-  /* To create the Data Object arrays we need an external source, in details: */
-  /* DMN Data: Retrieving DMN type from linked DMN file */
-  /* Java classes: Retrieving Java classes info from the user projects */
-  /* At this time, the latter is still not avialble, and the related DMN could be not available in the project */
-  /* Therefore, it tries to retrieve these info from the SCESIM file */
-
-  /* Retriving Data Object from the scesim file.       
-       That makes sense for previously created scesim files */
-
   const factsMappings = factMappings ?? [];
   const dataObjects: TestScenarioDataObject[] = [];
 
-  /* The first two FactMapping are related to the "Number" and "Description" columns. 
-        If those columns only are present, no Data Objects can be detected in the scesim file */
+  /* The first two FactMapping are related to the "Number" and "Description" columns.      */
+  /* If those columns only are present, no Data Objects can be detected in the scesim file */
   for (let i = 2; i < factsMappings.length; i++) {
     if (factsMappings[i].className!.__$$text === "java.lang.Void") {
       continue;
