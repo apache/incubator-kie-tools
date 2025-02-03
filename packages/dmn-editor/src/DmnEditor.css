@@ -117,7 +117,8 @@
   height: 40px;
   width: 40px;
   clip-path: polygon(0% 100%, 100% 0%, 0% 0%);
-  padding-left: 0.2em;
+  padding-left: 7px;
+  padding-top: 2px;
 }
 
 .kie-dmn-editor--decision-node--evaluation-status-success::before {
@@ -132,7 +133,8 @@
   height: 40px;
   width: 40px;
   clip-path: polygon(0% 100%, 100% 0%, 0% 0%);
-  padding-left: 0.2em;
+  padding-left: 7px;
+  padding-top: 2px;
 }
 
 /* (end) decision node evaluation status */
