@@ -278,5 +278,6 @@ export const WebApp: Story = {
   args: {
     issueTrackerHref: "https://github.com/apache/incubator-kie-issues/issues/new",
     model: getMarshaller(emptyFileName).parser.parse(),
+    openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: "Untitled.scesim",
   },
 };
