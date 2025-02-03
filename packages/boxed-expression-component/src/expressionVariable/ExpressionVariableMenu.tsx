@@ -29,6 +29,7 @@ import { NavigationKeysUtils } from "../keysUtils/keyUtils";
 import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
 import "./ExpressionVariableMenu.css";
 import { Action, ExpressionChangedArgs, VariableChangedArgs } from "../api";
+import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 
 export type OnExpressionVariableUpdated = (args: {
   name: string;
@@ -167,7 +168,11 @@ export function ExpressionVariableMenu({
 
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      e.stopPropagation();
+      // In macOS, we can not stopPropagation here because, otherwise, shortcuts are not handled
+      // See https://github.com/apache/incubator-kie-issues/issues/1164
+      if (!(getOperatingSystem() === OperatingSystem.MACOS && e.metaKey)) {
+        e.stopPropagation();
+      }
 
       if (NavigationKeysUtils.isEnter(e.key)) {
         saveExpression();

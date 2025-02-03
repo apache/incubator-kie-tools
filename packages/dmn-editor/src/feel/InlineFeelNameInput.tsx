@@ -23,6 +23,7 @@ import { DMN15_SPEC, UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/sche
 import { useFocusableElement } from "../focus/useFocusableElement";
 import { State } from "../store/Store";
 import { useDmnEditorStoreApi } from "../store/StoreContext";
+import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 
 export type OnInlineFeelNameRenamed = (newName: string) => void;
 
@@ -127,7 +128,11 @@ export function InlineFeelNameInput({
       }}
       onKeyDown={(e) => {
         onKeyDown?.(e);
-        e.stopPropagation();
+        // In macOS, we can not stopPropagation here because, otherwise, shortcuts are not handled
+        // See https://github.com/apache/incubator-kie-issues/issues/1164
+        if (!(getOperatingSystem() === OperatingSystem.MACOS && e.metaKey)) {
+          e.stopPropagation();
+        }
 
         if (e.key === "Enter") {
           e.preventDefault();

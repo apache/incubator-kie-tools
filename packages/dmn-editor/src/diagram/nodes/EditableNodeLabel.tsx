@@ -36,6 +36,7 @@ import { NodeLabelPosition } from "./NodeSvgs";
 import { State } from "../../store/Store";
 import "./EditableNodeLabel.css";
 import { useSettings } from "../../settings/DmnEditorSettingsContext";
+import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 
 export type OnEditableNodeLabelChange = (value: string | undefined) => void;
 
@@ -162,7 +163,11 @@ export function EditableNodeLabel({
   // Finish editing on `Enter` pressed.
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      e.stopPropagation();
+      // In macOS, we can not stopPropagation here because, otherwise, shortcuts are not handled
+      // See https://github.com/apache/incubator-kie-issues/issues/1164
+      if (!(getOperatingSystem() === OperatingSystem.MACOS && e.metaKey)) {
+        e.stopPropagation();
+      }
 
       if (e.key === "Enter") {
         if (!isValid) {

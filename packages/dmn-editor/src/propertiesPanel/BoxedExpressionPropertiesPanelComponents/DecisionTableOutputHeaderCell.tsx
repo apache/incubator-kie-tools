@@ -252,29 +252,35 @@ export function DecisionTableOutputHeaderCell(props: {
           />
         </>
       )}
-      <NameField
-        alternativeFieldName={root?.output.length === 1 ? "Column Name" : undefined}
-        isReadOnly={props.isReadOnly}
-        id={cell["@_id"]!}
-        name={cell?.["@_name"] ?? ""}
-        getAllUniqueNames={getAllUniqueNames}
-        onChange={(newName) =>
-          updater((dmnObject) => {
-            dmnObject["@_name"] = newName;
-          })
-        }
-      />
-      <TypeRefField
-        alternativeFieldName={root?.output.length === 1 ? "Column Type" : undefined}
-        isReadOnly={cellMustHaveSameTypeAsRoot ? true : props.isReadOnly}
-        dmnEditorRootElementRef={dmnEditorRootElementRef}
-        typeRef={cellMustHaveSameTypeAsRoot ? root?.["@_typeRef"] : cell?.["@_typeRef"]}
-        onChange={(newTypeRef) =>
-          updater((dmnObject) => {
-            dmnObject["@_typeRef"] = newTypeRef;
-          })
-        }
-      />
+      {root?.output && root.output.length > 1 ? (
+        <NameField
+          isReadOnly={props.isReadOnly}
+          id={cell["@_id"]!}
+          name={cell?.["@_name"] ?? ""}
+          getAllUniqueNames={getAllUniqueNames}
+          onChange={(newName) =>
+            updater((dmnObject) => {
+              dmnObject["@_name"] = newName;
+            })
+          }
+        />
+      ) : (
+        ""
+      )}
+      {root?.output && root.output.length > 1 ? (
+        <TypeRefField
+          isReadOnly={cellMustHaveSameTypeAsRoot ? true : props.isReadOnly}
+          dmnEditorRootElementRef={dmnEditorRootElementRef}
+          typeRef={cellMustHaveSameTypeAsRoot ? root?.["@_typeRef"] : cell?.["@_typeRef"]}
+          onChange={(newTypeRef) =>
+            updater((dmnObject) => {
+              dmnObject["@_typeRef"] = newTypeRef;
+            })
+          }
+        />
+      ) : (
+        ""
+      )}
       {itemDefinition && (
         <FormGroup label="Constraint">
           <ConstraintsFromTypeConstraintAttribute

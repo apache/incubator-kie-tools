@@ -78,7 +78,6 @@ enum DecisionTableColumnType {
   OutputClause = "output",
   Annotation = "annotation",
 }
-
 export const DECISION_TABLE_INPUT_DEFAULT_VALUE = "-";
 export const DECISION_TABLE_OUTPUT_DEFAULT_VALUE = "";
 export const DECISION_TABLE_ANNOTATION_DEFAULT_VALUE = "";
@@ -844,7 +843,15 @@ export function DecisionTableExpression({
                 });
               }
 
-              const nextOutputColumns = [...(prev.output ?? [])];
+              const nextOutputColumns = [
+                ...(prev.output ?? []).map((outputColumn, index) => {
+                  const outputCopy = { ...outputColumn };
+                  if (outputCopy["@_name"] === undefined) {
+                    outputCopy["@_name"] = `Output-${index + 1}`;
+                  }
+                  return outputCopy;
+                }),
+              ];
               for (/* Add new columns */ let i = 0; i < outputColumnsToAdd.length; i++) {
                 nextOutputColumns.splice(localIndexInsideGroup + i, 0, outputColumnsToAdd[i]);
               }
@@ -924,7 +931,7 @@ export function DecisionTableExpression({
               : DECISION_TABLE_ANNOTATION_DEFAULT_WIDTH;
 
         const nextValues = [...prev];
-        const minValuesLength = args.beforeIndex + 1 + args.columnsCount;
+        const minValuesLength = args.beforeIndex + args.columnsCount;
         nextValues.push(...Array(Math.max(0, minValuesLength - nextValues.length)));
         for (let i = 0; i < args.columnsCount; i++) {
           const widthIndex = args.beforeIndex + i + 1; // + 1 to account for the rowIndex column.
@@ -969,11 +976,21 @@ export function DecisionTableExpression({
             case DecisionTableColumnType.OutputClause:
               const newOutputs = [...(prev.output ?? [])];
               newOutputs.splice(localIndexInsideGroup, 1);
-
+              //Output name shouldn't be displayed when there is single output column(kie-issues#1466)
+              const updatedOutputForSingleOutputColumns = [
+                ...(newOutputs ?? []).map((outputColumn) => {
+                  const outputCopy = { ...outputColumn };
+                  if (newOutputs.length === 1) {
+                    outputCopy["@_name"] = undefined;
+                    outputCopy["@_typeRef"] = undefined;
+                  }
+                  return outputCopy;
+                }),
+              ];
               // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
               const retOutput: Normalized<BoxedDecisionTable> = {
                 ...prev,
-                output: newOutputs,
+                output: updatedOutputForSingleOutputColumns,
                 rule: [...(prev.rule ?? [])].map((rule) => {
                   const newOutputEntry = [...rule.outputEntry];
                   newOutputEntry.splice(localIndexInsideGroup, 1);
