@@ -118,7 +118,7 @@ export const en: TestScenarioEditorI18n = {
     settings: {
       assetType: "Type",
       dmnModel: "DMN Model",
-      dmnModelReferenceError: "Impossible to load the referenced DMN File",
+      dmnModelReferenceError: "Wrong DMN Model path",
       dmnName: "DMN Name",
       dmnNameSpace: "DMN Namespace",
       fileName: "Name",

@@ -51,7 +51,7 @@ function TestScenarioCreationPanel() {
   const { onRequestExternalModelsAvailableToInclude, onRequestExternalModelByPath } = useExternalModels();
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
 
-  const [allDmnModelsNormalizedPosixPathRelative, setAllDmnModelsNormalizedPosixPathRelative] = useState<
+  const [allDmnModelNormalizedPosixRelativePaths, setAllDmnModelNormalizedPosixRelativePaths] = useState<
     string[] | undefined
   >(undefined);
   const [assetType, setAssetType] = React.useState<"" | "DMN" | "RULE">("");
@@ -84,7 +84,7 @@ function TestScenarioCreationPanel() {
             if (canceled.get()) {
               return;
             }
-            setAllDmnModelsNormalizedPosixPathRelative(dmnModelNormalizedPosixPathRelativePaths);
+            setAllDmnModelNormalizedPosixRelativePaths(dmnModelNormalizedPosixPathRelativePaths);
           })
           .catch((err) => {
             setCallBackError(err);
@@ -92,7 +92,6 @@ function TestScenarioCreationPanel() {
               `[TestScenarioCreationPanel] The below error when trying to retrieve all the External DMN files from the project.`
             );
             console.error(err);
-            return;
           });
       },
       [onRequestExternalModelsAvailableToInclude]
@@ -124,7 +123,6 @@ function TestScenarioCreationPanel() {
               `[TestScenarioCreationPanel] An error occurred when parsing the selected model '${selectedDmnModelPathRelativeToThisScesim}'. Please double-check it is a non-empty valid model.`
             );
             console.error(err);
-            return;
           });
       },
       [onRequestExternalModelByPath, selectedDmnModelPathRelativeToThisScesim]
@@ -135,7 +133,7 @@ function TestScenarioCreationPanel() {
   /* it throws the error that will be catched by the ErrorBoundary.                 */
   useEffect(() => {
     if (callBackError) {
-      throw new Error(callBackError);
+      throw callBackError;
     }
   }, [callBackError]);
 
@@ -212,8 +210,8 @@ function TestScenarioCreationPanel() {
                 value={selectedDmnModelPathRelativeToThisScesim}
               >
                 <FormSelectOption key={undefined} isDisabled label={i18n.creationPanel.dmnNoChoice} />
-                {((allDmnModelsNormalizedPosixPathRelative?.length ?? 0) > 0 &&
-                  allDmnModelsNormalizedPosixPathRelative?.map((normalizedPosixPathRelativeToTheOpenFile) => (
+                {((allDmnModelNormalizedPosixRelativePaths?.length ?? 0) > 0 &&
+                  allDmnModelNormalizedPosixRelativePaths?.map((normalizedPosixPathRelativeToTheOpenFile) => (
                     <FormSelectOption
                       key={normalizedPosixPathRelativeToTheOpenFile}
                       value={normalizedPosixPathRelativeToTheOpenFile}
