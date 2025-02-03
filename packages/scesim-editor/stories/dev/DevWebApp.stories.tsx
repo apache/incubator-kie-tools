@@ -114,20 +114,16 @@ function DevWebApp(props: TestScenarioEditorProps) {
     }
   }, []);
 
-  const onModelChange = useCallback<OnSceSimModelChange>(
-    (model) => {
-      setState((prev) => {
-        const newStack = prev.stack.slice(0, prev.pointer + 1);
-        return {
-          ...prev,
-          stack: [...newStack, model],
-          pointer: newStack.length,
-        };
-      });
-      setFileName(props.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot);
-    },
-    [props.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot]
-  );
+  const onModelChange = useCallback<OnSceSimModelChange>((model) => {
+    setState((prev) => {
+      const newStack = prev.stack.slice(0, prev.pointer + 1);
+      return {
+        ...prev,
+        stack: [...newStack, model],
+        pointer: newStack.length,
+      };
+    });
+  }, []);
 
   const onRequestToJumpToPath = useCallback<OnRequestToJumpToPath>((path) => {
     alert("A request to open this file: " + path);
