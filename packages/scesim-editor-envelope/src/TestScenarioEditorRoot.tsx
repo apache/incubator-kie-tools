@@ -479,8 +479,8 @@ function ExternalModelsManager({
           }
         }
 
-        /* The DMN file with the targetNamespace is not found, it populates the returning externalModelsByNamespace Map
-        /* adding the target key with an undefined model, to be propagated to the internal Test Scenario component */
+        /* If the DMN file with the targetNamespace is not found, it populates the returning externalModelsByNamespace Map
+        /* adding the targetNamespace key with an undefined model, to be propagated to the internal Test Scenario component */
         if (targetNamespace && !externalModelsByNamespace.has(targetNamespace)) {
           externalModelsByNamespace.set(targetNamespace, undefined);
         }
