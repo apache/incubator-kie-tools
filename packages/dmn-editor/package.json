@@ -33,7 +33,7 @@
     "test-e2e:container:run": "docker exec -it kie-tools-playwright-containerization-dmn-editor /bin/bash -c \"cd incubator-kie-tools/packages/dmn-editor && pnpm test-e2e:run\"",
     "test-e2e:container:shell": "start-server-and-test 'pnpm start' http://localhost:$(build-env dmnEditor.storybook.port)/iframe.html 'pnpm test-e2e:container:up && pnpm test-e2e:container:bash'",
     "test-e2e:container:start": "start-server-and-test 'pnpm start' http://localhost:$(build-env dmnEditor.storybook.port)/iframe.html 'pnpm test-e2e:container:up && pnpm test-e2e:container:run'",
-    "test-e2e:container:up": "cross-env PROJECT_VERSION=$(build-env root.version) PLAYWRIGHT_PORT=$(build-env dmnEditor.storybook.port) docker compose -f ./tests-e2e/__containerization__/playwright-docker-compose.yml up -d",
+    "test-e2e:container:up": "cross-env PROJECT_VERSION=$(build-env root.version) KIE_TOOLS_PLAYWRIGHT_CONTAINER__PORT=$(build-env dmnEditor.storybook.port) docker compose -f ./tests-e2e/__containerization__/playwright-docker-compose.yml up -d",
     "test-e2e:open": "pnpm exec playwright show-report dist-tests-e2e/reports",
     "test-e2e:run": "pnpm exec playwright test"
   },

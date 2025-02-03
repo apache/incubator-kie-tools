@@ -31,7 +31,8 @@ services:
     user: 1000:1000
     environment:
       - KIE_TOOLS_BUILD__runEndToEndTests=true
-      - KIE_TOOLS_BUILD__containerizedEndToEndTests=true
+      - KIE_TOOLS_BUILD__containerizedEndToEndTests=false # Already inside the container, variable must be false.
+      - KIE_TOOLS_ONLINE_EDITOR__SKIP_PLAYWRIGHT_FOR_MACOS_ARM64=${KIE_TOOLS_ONLINE_EDITOR__SKIP_PLAYWRIGHT_FOR_MACOS_ARM64}
     volumes:
       - type: bind
         source: ./../../../../
@@ -54,18 +55,18 @@ configs:
 
       http {
           server {
-              listen ${PLAYWRIGHT_PORT};
+              listen ${KIE_TOOLS_PLAYWRIGHT_CONTAINER__PORT};
               server_name localhost;
 
               location / {
-                  proxy_pass http://host.docker.internal:${PLAYWRIGHT_PORT};
+                  proxy_pass http://host.docker.internal:${KIE_TOOLS_PLAYWRIGHT_CONTAINER__PORT};
 
                   proxy_http_version 1.1;
                   proxy_set_header Connection "Upgrade";
               }
 
               location /ws {
-                  proxy_pass http://host.docker.internal:${PLAYWRIGHT_PORT};
+                  proxy_pass http://host.docker.internal:${KIE_TOOLS_PLAYWRIGHT_CONTAINER__PORT};
 
                   proxy_http_version 1.1;
                   proxy_set_header Upgrade websocket;
@@ -74,29 +75,29 @@ configs:
           }
 
           server {
-              listen ${PLAYWRIGHT_CORS_PROXY_PORT};
+              listen ${KIE_TOOLS_PLAYWRIGHT_CONTAINER__CORS_PROXY_PORT};
               server_name localhost;
 
               location / {
-                  proxy_pass http://host.docker.internal:${PLAYWRIGHT_CORS_PROXY_PORT};
+                  proxy_pass http://host.docker.internal:${KIE_TOOLS_PLAYWRIGHT_CONTAINER__CORS_PROXY_PORT};
               }
           }
 
           server {
-              listen ${PLAYWRIGHT_EXTENDED_SERVICES_PORT};
+              listen ${KIE_TOOLS_PLAYWRIGHT_CONTAINER__EXTENDED_SERVICES_PORT};
               server_name localhost;
 
               location / {
-                  proxy_pass http://host.docker.internal:${PLAYWRIGHT_EXTENDED_SERVICES_PORT};
+                  proxy_pass http://host.docker.internal:${KIE_TOOLS_PLAYWRIGHT_CONTAINER__EXTENDED_SERVICES_PORT};
               }
           }
 
           server {
-              listen ${PLAYWRIGHT_QUARKUS_ACCELERATOR_PORT};
+              listen ${KIE_TOOLS_PLAYWRIGHT_CONTAINER__QUARKUS_ACCELERATOR_PORT};
               server_name localhost;
 
               location / {
-                  proxy_pass http://host.docker.internal:${PLAYWRIGHT_QUARKUS_ACCELERATOR_PORT};
+                  proxy_pass http://host.docker.internal:${KIE_TOOLS_PLAYWRIGHT_CONTAINER__QUARKUS_ACCELERATOR_PORT};
               }
           }
       }

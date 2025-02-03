@@ -60,7 +60,7 @@ export default defineConfig({
     toHaveScreenshot: {
       // An acceptable ratio of pixels that are different to the
       // total amount of pixels, between 0 and 1.
-      maxDiffPixelRatio: 0.1,
+      maxDiffPixelRatio: 0.001,
     },
   },
   /* Configure projects for major browsers */

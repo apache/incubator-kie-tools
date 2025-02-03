@@ -31,7 +31,7 @@ services:
     user: 1000:1000
     environment:
       - KIE_TOOLS_BUILD__runEndToEndTests=true
-      - KIE_TOOLS_BUILD__containerizedEndToEndTests=true
+      - KIE_TOOLS_BUILD__containerizedEndToEndTests=false # Already inside the container, variable must be false.
     volumes:
       - type: bind
         source: ./../../../../
@@ -54,11 +54,11 @@ configs:
 
       http {
           server {
-              listen ${PLAYWRIGHT_PORT};
+              listen ${KIE_TOOLS_PLAYWRIGHT_CONTAINER__PORT};
               server_name localhost;
 
               location / {
-                  proxy_pass http://host.docker.internal:${PLAYWRIGHT_PORT};
+                  proxy_pass http://host.docker.internal:${KIE_TOOLS_PLAYWRIGHT_CONTAINER__PORT};
               }
           }
       }
