@@ -130,7 +130,7 @@ export type TestScenarioEditorProps = {
    */
   onModelDebounceStateChanged?: (changed: boolean) => void;
   /**
-   * Called when the contents of a specific available DMN model is necessary
+   * Called when the contents of a specific available DMN model is necessary.
    */
   onRequestExternalModelByPath?: OnRequestExternalModelByPath;
   /**
@@ -178,13 +178,14 @@ function TestScenarioMainPanel() {
   const scenarioTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
   const backgroundTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
 
+  /* RULE-based Test Scenario are still not supported. The Notification will always be active in such a case */
   const isMissingDataObjectsNotificationEnabled = useMemo(() => {
     const isReferencedDMNFileMissing =
       externalModelsByNamespace &&
       externalModelsByNamespace.has(testScenarioDmnNamespace!) &&
       !externalModelsByNamespace.get(testScenarioDmnNamespace!);
 
-    return testScenarioType !== "DMN" || (testScenarioType === "DMN" && isReferencedDMNFileMissing);
+    return testScenarioType === "RULE" || isReferencedDMNFileMissing;
   }, [externalModelsByNamespace, testScenarioDmnNamespace, testScenarioType]);
 
   const onTabChanged = useCallback(
@@ -227,7 +228,7 @@ function TestScenarioMainPanel() {
               {isMissingDataObjectsNotificationEnabled && (
                 <div className="kie-scesim-editor--content-alert">
                   <Alert
-                    variant={testScenarioType === "DMN" ? "warning" : "danger"}
+                    variant={"danger"}
                     title={
                       testScenarioType === "DMN"
                         ? i18n.alerts.dmnDataRetrievedFromScesim
