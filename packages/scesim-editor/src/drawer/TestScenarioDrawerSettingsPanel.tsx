@@ -155,7 +155,7 @@ function TestScenarioDrawerSettingsPanel() {
           <FormSelect
             aria-label="form-select-input"
             className={"kie-scesim-editor-drawer-settings--form-select"}
-            isDisabled={!selectedDmnModel}
+            isDisabled={!!selectedDmnModel}
             ouiaId="BasicFormSelect"
             onChange={(path) => {
               if (typeof path !== "string") {
