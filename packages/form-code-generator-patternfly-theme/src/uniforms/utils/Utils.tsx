@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { DataType, FormElement, FormInput, InputReference, InputsContainer } from "../../api";
-import { OBJECT } from "./dataTypes";
+import { DEFAULT_DATA_TYPE_OBJECT } from "./dataTypes";
 
 export const NS_SEPARATOR = "__";
 export const FIELD_SET_PREFFIX = `set`;
@@ -104,7 +104,7 @@ export const renderField = (element: FormElement) => {
 export const buildSetFormDataCallback = (inputs: FormElement[]): string => {
   let result = "";
   inputs.forEach((input) => {
-    if (input.ref.dataType === OBJECT) {
+    if (input.ref.dataType === DEFAULT_DATA_TYPE_OBJECT) {
       const container = input as InputsContainer;
       container.childRefs.forEach((ref) => {
         result += buildSetStateValueExpression(ref);
@@ -119,7 +119,7 @@ export const buildSetFormDataCallback = (inputs: FormElement[]): string => {
 
 const buildSetStateValueExpression = (ref: InputReference): string => {
   const dataType: DataType = ref.dataType;
-  if (dataType === OBJECT) {
+  if (dataType === DEFAULT_DATA_TYPE_OBJECT) {
     return "";
   }
   const defaultValueStr: string = dataType.defaultValue ? ` ?? ${dataType.defaultValue}` : "";
@@ -161,12 +161,12 @@ export const buildGetFormDataCallbackDeps = (inputs: FormElement[]): string => {
       if ((input as any)?.childRefs) {
         const container = input as InputsContainer;
         container.childRefs
-          .filter((ref) => ref.dataType !== OBJECT)
+          .filter((ref) => ref.dataType !== DEFAULT_DATA_TYPE_OBJECT)
           .forEach((ref) => {
             result.push(ref.stateName);
           });
       } else {
-        if (input.ref.dataType !== OBJECT) {
+        if (input.ref.dataType !== DEFAULT_DATA_TYPE_OBJECT) {
           result.push(input.ref.stateName);
         }
       }
@@ -175,7 +175,7 @@ export const buildGetFormDataCallbackDeps = (inputs: FormElement[]): string => {
 };
 
 const buildWriteModelValueExpression = (ref: InputReference): string => {
-  if (ref.dataType === OBJECT) {
+  if (ref.dataType === DEFAULT_DATA_TYPE_OBJECT) {
     return `\nformData.${ref.binding} = {}`;
   }
   return `\nformData.${ref.binding} = ${ref.stateName}`;

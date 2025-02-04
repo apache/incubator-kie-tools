@@ -51,7 +51,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 	const [interview__hire, set__interview__hire] = useState&lt;boolean&gt;(false);
 	const [interview__hiringDate, set__interview__hiringDate] =
 		useState&lt;string&gt;();
-	const [friends, set__friends] = useState&lt;string[]&gt;([]);
+	const [friends, set__friends] = useState&lt;object[]&gt;([]);
 	/* Utility function that fills the form with the data received from the kogito runtime */
 	const setFormData = (data) =&gt; {
 		if (!data) {
@@ -591,7 +591,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							style={{ paddingLeft: &#39;0&#39;, paddingRight: &#39;0&#39; }}
 							disabled={false}
 							onClick={() =&gt; {
-								!false &amp;&amp; set__friends((friends ?? []).concat([undefined]));
+								!false &amp;&amp; set__friends((friends ?? []).concat([{}]));
 							}}&gt;
 							&lt;PlusCircleIcon color=&#39;#0088ce&#39; /&gt;
 						&lt;/Button&gt;

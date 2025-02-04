@@ -17,10 +17,6 @@
  * under the License.
  */
 
-import * as React from "react";
-import { render } from "@testing-library/react";
-import createSchema from "./_createSchema";
-import AutoForm, { AutoFormProps } from "../src/uniforms/AutoForm";
 import { renderField } from "./_render";
 import { ListField } from "../src/uniforms";
 import { InputsContainer } from "../src/api";

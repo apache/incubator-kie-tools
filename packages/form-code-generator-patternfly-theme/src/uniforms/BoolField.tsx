@@ -23,7 +23,7 @@ import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
 
 import { getInputReference, getStateCodeFromRef, renderField } from "./utils/Utils";
-import { BOOLEAN } from "./utils/dataTypes";
+import { DEFAULT_DATA_TYPE_BOOLEAN } from "./utils/dataTypes";
 import { getListItemName, getListItemOnChange, getListItemValue, ListItemProps } from "./rendering/ListItemField";
 
 export type BoolFieldProps = HTMLFieldProps<
@@ -37,7 +37,7 @@ export type BoolFieldProps = HTMLFieldProps<
 >;
 
 const Bool: React.FC<BoolFieldProps> = (props: BoolFieldProps) => {
-  const ref: InputReference = getInputReference(props.name, BOOLEAN);
+  const ref: InputReference = getInputReference(props.name, DEFAULT_DATA_TYPE_BOOLEAN);
 
   const stateCode = getStateCodeFromRef(ref);
 

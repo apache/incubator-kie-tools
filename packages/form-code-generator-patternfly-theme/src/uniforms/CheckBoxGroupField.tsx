@@ -23,7 +23,7 @@ import { buildDefaultInputElement, getInputReference, renderField } from "./util
 import { FormInput, InputReference } from "../api";
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { CHECKBOX_GROUP_FUNCTIONS } from "./staticCode/staticCodeBlocks";
-import { ARRAY } from "./utils/dataTypes";
+import { DEFAULT_DATA_TYPE_STRING_ARRAY } from "./utils/dataTypes";
 import { getListItemName, getListItemOnChange, getListItemValue, ListItemProps } from "./rendering/ListItemField";
 
 export type CheckBoxGroupProps = HTMLFieldProps<
@@ -40,7 +40,7 @@ export type CheckBoxGroupProps = HTMLFieldProps<
 >;
 
 const CheckBoxGroup: React.FC<CheckBoxGroupProps> = (props: CheckBoxGroupProps) => {
-  const ref: InputReference = getInputReference(props.name, ARRAY);
+  const ref: InputReference = getInputReference(props.name, DEFAULT_DATA_TYPE_STRING_ARRAY);
 
   const jsxCode = props.allowedValues
     ?.map((value) => {

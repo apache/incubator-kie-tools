@@ -24,7 +24,7 @@ import { getInputReference, renderField } from "./utils/Utils";
 import { InputReference, InputsContainer } from "../api";
 import { codeGenContext } from "./CodeGenContext";
 import { union } from "lodash";
-import { OBJECT } from "./utils/dataTypes";
+import { DEFAULT_DATA_TYPE_OBJECT } from "./utils/dataTypes";
 import { ListItemProps } from "./rendering/ListItemField";
 
 export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { itemProps?: ListItemProps }>;
@@ -62,7 +62,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
         nestedStates.push(renderedInput.stateCode);
         nestedJsx.push(renderedInput.jsxCode);
         nestedRefs.push(renderedInput.ref);
-        if (renderedInput.ref.dataType === OBJECT) {
+        if (renderedInput.ref.dataType === DEFAULT_DATA_TYPE_OBJECT) {
           const nestedContainer: InputsContainer = renderedInput as InputsContainer;
           nestedRefs.push(...nestedContainer.childRefs);
         }
@@ -94,7 +94,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
     requiredCode: requiredCode,
     stateCode,
     jsxCode,
-    ref: getInputReference(name, OBJECT),
+    ref: getInputReference(name, DEFAULT_DATA_TYPE_OBJECT),
     childRefs: nestedRefs,
     isReadonly: disabled,
   };

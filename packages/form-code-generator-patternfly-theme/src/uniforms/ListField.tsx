@@ -17,12 +17,18 @@
  * under the License.
  */
 
-import React, { useContext } from "react";
-import { connectField, context, HTMLFieldProps, joinName } from "uniforms/cjs";
+import React, { useContext, useCallback } from "react";
+import { connectField, context, HTMLFieldProps } from "uniforms/cjs";
 import { getInputReference, getStateCode, renderField } from "./utils/Utils";
 import { codeGenContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
-import { ARRAY } from "./utils/dataTypes";
+import {
+  DEFAULT_DATA_TYPE_ANY_ARRAY,
+  DEFAULT_DATA_TYPE_BOOLEAN_ARRAY,
+  DEFAULT_DATA_TYPE_NUMBER_ARRAY,
+  DEFAULT_DATA_TYPE_OBJECT_ARRAY,
+  DEFAULT_DATA_TYPE_STRING_ARRAY,
+} from "./utils/dataTypes";
 import { renderListItemFragmentWithContext } from "./rendering/RenderingUtils";
 import { ListItemProps } from "./rendering/ListItemField";
 
@@ -37,7 +43,7 @@ export type ListFieldProps = HTMLFieldProps<
 >;
 
 const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
-  const ref: InputReference = getInputReference(props.name, ARRAY);
+  const ref: InputReference = getInputReference(props.name, DEFAULT_DATA_TYPE_ANY_ARRAY);
 
   const uniformsContext = useContext(context);
   const codegenCtx = useContext(codeGenContext);
@@ -55,24 +61,30 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
     props.disabled
   );
 
-  const getNewItemProps = () => {
+  const getDefaultItemValue = () => {
     const typeName = listItem?.ref.dataType.name;
     if (typeName?.endsWith("[]")) {
       return listItem?.ref.dataType.defaultValue ?? [];
     }
     switch (typeName) {
       case "string":
+        ref.dataType = DEFAULT_DATA_TYPE_STRING_ARRAY;
         return listItem?.ref.dataType.defaultValue ?? "";
       case "number":
+        ref.dataType = DEFAULT_DATA_TYPE_NUMBER_ARRAY;
         return listItem?.ref.dataType.defaultValue ?? null;
       case "boolean":
+        ref.dataType = DEFAULT_DATA_TYPE_BOOLEAN_ARRAY;
         return listItem?.ref.dataType.defaultValue ?? false;
       case "object":
+        ref.dataType = DEFAULT_DATA_TYPE_OBJECT_ARRAY;
         return listItem?.ref.dataType.defaultValue ?? {};
       default: // any
+        ref.dataType = DEFAULT_DATA_TYPE_ANY_ARRAY;
         return listItem?.ref.dataType.defaultValue;
     }
   };
+  const listItemValue = getDefaultItemValue();
 
   const jsxCode = `<div>
       <Split hasGutter>
@@ -93,7 +105,7 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
             style={{ paddingLeft: '0', paddingRight: '0' }}
             disabled={${props.maxCount === undefined ? props.disabled : `${props.disabled} || !(${props.maxCount} <= (${ref.stateName}?.length ?? -1))`}}
             onClick={() => {
-              !${props.disabled} && ${props.maxCount === undefined ? `${ref.stateSetter}((${ref.stateName} ?? []).concat([${getNewItemProps()}]))` : `!(${props.maxCount} <= (${ref.stateName}?.length ?? -1)) && ${ref.stateSetter}((${ref.stateName} ?? []).concat([]))`};
+              !${props.disabled} && ${props.maxCount === undefined ? `${ref.stateSetter}((${ref.stateName} ?? []).concat([${listItemValue}]))` : `!(${props.maxCount} <= (${ref.stateName}?.length ?? -1)) && ${ref.stateSetter}((${ref.stateName} ?? []).concat([]))`};
             }}
           >
             <PlusCircleIcon color='#0088ce' />

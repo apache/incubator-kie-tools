@@ -23,7 +23,7 @@ import { connectField, HTMLFieldProps } from "uniforms/cjs";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
-import { NUMBER } from "./utils/dataTypes";
+import { DEFAULT_DATA_TYPE_NUMBER } from "./utils/dataTypes";
 import { getListItemName, getListItemOnChange, getListItemValue, ListItemProps } from "./rendering/ListItemField";
 
 export type NumFieldProps = HTMLFieldProps<
@@ -40,7 +40,7 @@ export type NumFieldProps = HTMLFieldProps<
 >;
 
 const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
-  const ref: InputReference = getInputReference(props.name, NUMBER);
+  const ref: InputReference = getInputReference(props.name, DEFAULT_DATA_TYPE_NUMBER);
 
   const max = props.max ? `max={${props.max}}` : "";
   const min = props.min ? `min={${props.min}}` : "";

@@ -22,7 +22,7 @@ import { connectField, HTMLFieldProps } from "uniforms/cjs";
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
-import { STRING } from "./utils/dataTypes";
+import { DEFAULT_DATA_TYPE_STRING } from "./utils/dataTypes";
 import { getListItemName, getListItemOnChange, getListItemValue, ListItemProps } from "./rendering/ListItemField";
 
 export type RadioFieldProps = HTMLFieldProps<
@@ -40,7 +40,7 @@ export type RadioFieldProps = HTMLFieldProps<
 >;
 
 const Radio = (props: RadioFieldProps) => {
-  const ref: InputReference = getInputReference(props.name, STRING);
+  const ref: InputReference = getInputReference(props.name, DEFAULT_DATA_TYPE_STRING);
 
   const radios: string[] = [];
 

@@ -24,7 +24,7 @@ import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
 import { DATE_FUNCTIONS } from "./staticCode/staticCodeBlocks";
-import { DATE, STRING } from "./utils/dataTypes";
+import { DEFAULT_DATA_TYPE_DATE, DEFAULT_DATA_TYPE_STRING } from "./utils/dataTypes";
 import { getListItemName, getListItemOnChange, getListItemValue, ListItemProps } from "./rendering/ListItemField";
 
 export type TextFieldProps = HTMLFieldProps<
@@ -40,7 +40,7 @@ export type TextFieldProps = HTMLFieldProps<
 const Text: React.FC<TextFieldProps> = (props: TextFieldProps) => {
   const isDate: boolean = props.type === "date" || props.field.format === "date";
 
-  const ref: InputReference = getInputReference(props.name, isDate ? DATE : STRING);
+  const ref: InputReference = getInputReference(props.name, isDate ? DEFAULT_DATA_TYPE_DATE : DEFAULT_DATA_TYPE_STRING);
 
   const getDateElement = (): FormInput => {
     const inputJsxCode = `<DatePicker

@@ -24,7 +24,7 @@ import { FormInput, InputReference } from "../api";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { DATE_FUNCTIONS, TIME_FUNCTIONS } from "./staticCode/staticCodeBlocks";
-import { DATE } from "./utils/dataTypes";
+import { DEFAULT_DATA_TYPE_DATE } from "./utils/dataTypes";
 import { getListItemName, getListItemOnChange, getListItemValue, ListItemProps } from "./rendering/ListItemField";
 
 export type DateFieldProps = HTMLFieldProps<
@@ -41,7 +41,7 @@ export type DateFieldProps = HTMLFieldProps<
 >;
 
 const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
-  const ref: InputReference = getInputReference(props.name, DATE);
+  const ref: InputReference = getInputReference(props.name, DEFAULT_DATA_TYPE_DATE);
 
   const pfImports = ["DatePicker", "Flex", "FlexItem", "InputGroup", "TimePicker"];
 

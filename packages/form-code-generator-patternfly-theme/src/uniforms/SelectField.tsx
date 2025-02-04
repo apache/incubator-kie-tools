@@ -23,7 +23,7 @@ import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
 import { getInputReference, getStateCode, getStateCodeFromRef, NS_SEPARATOR, renderField } from "./utils/Utils";
 import { MULTIPLE_SELECT_FUNCTIONS, SELECT_FUNCTIONS } from "./staticCode/staticCodeBlocks";
-import { ARRAY, STRING } from "./utils/dataTypes";
+import { DEFAULT_DATA_TYPE_STRING_ARRAY, DEFAULT_DATA_TYPE_STRING } from "./utils/dataTypes";
 import { getListItemName, getListItemOnChange, getListItemValue, ListItemProps } from "./rendering/ListItemField";
 
 export type SelectInputProps = HTMLFieldProps<
@@ -41,7 +41,10 @@ export const SELECT_IMPORTS: string[] = ["SelectOption", "SelectOptionObject", "
 const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
   const isArray: boolean = props.fieldType === Array;
 
-  const ref: InputReference = getInputReference(props.name, isArray ? ARRAY : STRING);
+  const ref: InputReference = getInputReference(
+    props.name,
+    isArray ? DEFAULT_DATA_TYPE_STRING_ARRAY : DEFAULT_DATA_TYPE_STRING
+  );
 
   const selectedOptions: string[] = [];
 
