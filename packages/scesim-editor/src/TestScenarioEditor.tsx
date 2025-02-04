@@ -363,7 +363,7 @@ export const TestScenarioEditorInternal = ({
 
       state.scesim.model = model;
       testScenarioEditorModelBeforeEditingRef.current = model;
-      //state.dispatch(state).scesim.reset();
+      state.dispatch(state).navigation.reset();
     });
   }, [testScenarioEditorStoreApi, model]);
 

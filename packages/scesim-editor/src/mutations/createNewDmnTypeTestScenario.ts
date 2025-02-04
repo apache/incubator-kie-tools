@@ -199,7 +199,7 @@ function generateFactMappingsAndFactMappingValuesFromDmnModel(
     }
   });
 
-  return factMappingsToPush.sort((a, b) => a.factAlias.localeCompare(b.factAlias));
+  return factMappingsToPush.sort((a, b) => a.expressionElements.join().localeCompare(b.expressionElements.join()));
 }
 
 function generateSimpleTypeFactMapping(

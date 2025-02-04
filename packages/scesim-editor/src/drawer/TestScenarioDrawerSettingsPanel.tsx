@@ -17,7 +17,7 @@
  * under the License.
  */
 import * as React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { basename } from "path";
 
 import { Checkbox } from "@patternfly/react-core/dist/esm/components/Checkbox";
@@ -117,14 +117,6 @@ function TestScenarioDrawerSettingsPanel() {
     )
   );
 
-  /* If any error occurs during the execution of useCancelableEffect's callback, */
-  /* it throws the error that will be catched by the ErrorBoundary.              */
-  useEffect(() => {
-    if (callBackError) {
-      throw callBackError;
-    }
-  }, [callBackError]);
-
   const updateSettingsField = useCallback(
     (fieldName: keyof SceSim__settingsType, value: string | boolean) =>
       testScenarioEditorStoreApi.setState((state) => {
@@ -174,8 +166,8 @@ function TestScenarioDrawerSettingsPanel() {
               setSelectedDMNPathRelativeToThisScesim(path);
               console.trace(path);
             }}
-            validated={selectedDmnModel ? undefined : "error"}
-            value={selectedDmnModel ? settingsModel.dmnFilePath?.__$$text : undefined}
+            validated={callBackError ? "error" : undefined}
+            value={callBackError ? undefined : settingsModel.dmnFilePath?.__$$text}
           >
             {!selectedDmnModel && (
               <FormSelectOption key={undefined} isDisabled label={i18n.drawer.settings.dmnModelReferenceError} />
