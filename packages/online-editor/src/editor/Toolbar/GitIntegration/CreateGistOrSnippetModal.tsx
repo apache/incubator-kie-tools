@@ -298,15 +298,13 @@ If you are, it means that creating this Snippet failed and it can safely be dele
             onSelect={setSelectedOrganization}
             readonly={authProvider.type === AuthProviderType.github}
           />
-          (
           <FormHelperText>
             <HelperText>
-              <HelperTextItem variant="error">
+              <HelperTextItem variant="default">
                 {i18n.createGistOrSnippetModal[authProvider.type].form.select.description}
               </HelperTextItem>
             </HelperText>
           </FormHelperText>
-          )
         </FormGroup>
         <FormGroup
           // helperText={<FormHelperText style={{ visibility: "hidden" }} />}
@@ -340,13 +338,13 @@ If you are, it means that creating this Snippet failed and it can safely be dele
             description={i18n.createGistOrSnippetModal.form.visibility.private.description}
             onChange={() => setPrivate(true)}
           />
-          <FormHelperText>
+          {/* <FormHelperText>
             <HelperText>
               <HelperTextItem variant="error">
                 <ExclamationCircleIcon />{" "}
               </HelperTextItem>
             </HelperText>
-          </FormHelperText>
+          </FormHelperText> */}
         </FormGroup>
       </Form>
     </Modal>

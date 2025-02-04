@@ -309,7 +309,7 @@ export function CreateGitRepositoryModal(props: {
           <LoadOrganizationsSelect workspace={props.workspace} onSelect={setSelectedOrganization} />
           <FormHelperText>
             <HelperText>
-              <HelperTextItem variant="error">
+              <HelperTextItem variant="default">
                 {i18n.createGitRepositoryModal[authProvider.type].form.select.description}
               </HelperTextItem>
             </HelperText>
@@ -379,13 +379,13 @@ export function CreateGitRepositoryModal(props: {
             description={i18n.createGitRepositoryModal.form.visibility.private.description}
             onChange={() => setPrivate(true)}
           />
-          <FormHelperText>
+          {/* <FormHelperText>
             <HelperText>
               <HelperTextItem variant="error">
                 <ExclamationCircleIcon />{" "}
               </HelperTextItem>
             </HelperText>
-          </FormHelperText>
+          </FormHelperText> */}
         </FormGroup>
       </Form>
     </Modal>
