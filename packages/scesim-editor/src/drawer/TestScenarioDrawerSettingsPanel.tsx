@@ -17,7 +17,7 @@
  * under the License.
  */
 import * as React from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { basename } from "path";
 
 import { Checkbox } from "@patternfly/react-core/dist/esm/components/Checkbox";
@@ -117,6 +117,13 @@ function TestScenarioDrawerSettingsPanel() {
     )
   );
 
+  const isSelectedDmnValid: boolean = useMemo(
+    () =>
+      callBackError ||
+      selectedDmnModel?.normalizedPosixPathRelativeToTheOpenFile !== settingsModel.dmnFilePath?.__$$text,
+    [callBackError, selectedDmnModel?.normalizedPosixPathRelativeToTheOpenFile, settingsModel.dmnFilePath?.__$$text]
+  );
+
   const updateSettingsField = useCallback(
     (fieldName: keyof SceSim__settingsType, value: string | boolean) =>
       testScenarioEditorStoreApi.setState((state) => {
@@ -165,13 +172,8 @@ function TestScenarioDrawerSettingsPanel() {
               setSelectedDMNPathRelativeToThisScesim(path);
               console.trace(path);
             }}
-            validated={callBackError ? "error" : undefined}
-            value={
-              callBackError ||
-              selectedDmnModel?.normalizedPosixPathRelativeToTheOpenFile !== settingsModel.dmnFilePath?.__$$text
-                ? undefined
-                : settingsModel.dmnFilePath?.__$$text
-            }
+            validated={isSelectedDmnValid ? "error" : undefined}
+            value={isSelectedDmnValid ? undefined : settingsModel.dmnFilePath?.__$$text}
           >
             {!selectedDmnModel && (
               <FormSelectOption key={undefined} isDisabled label={i18n.drawer.settings.dmnModelReferenceError} />
