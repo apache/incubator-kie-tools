@@ -263,7 +263,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
                 });
               }}
             >
-              <Icon size="sm">
+              <Icon size="md">
                 <BarsIcon />
               </Icon>
             </button>
@@ -294,7 +294,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
                 });
               }}
             >
-              <Icon size="sm">
+              <Icon size="md">
                 {" "}
                 <MigrationIcon />
               </Icon>
