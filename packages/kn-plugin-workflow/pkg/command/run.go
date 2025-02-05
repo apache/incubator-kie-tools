@@ -67,6 +67,7 @@ func NewRunCommand() *cobra.Command {
 	{{.Name}} run --stop-container-on-user-input=false
 
 	# Specify a custom container image to use for the deployment.
+	# By default, the ` + metadata.DevModeImage + ` image is used
 	{{.Name}} run --image=<your_image>
 
 		 `,
@@ -81,7 +82,7 @@ func NewRunCommand() *cobra.Command {
 	cmd.Flags().StringP("port", "p", "8080", "Maps a different host port to the running container port.")
 	cmd.Flags().Bool("open-dev-ui", true, "Disable automatic browser launch of SonataFlow  Dev UI")
 	cmd.Flags().Bool("stop-container-on-user-input", true, "Stop the container when the user presses any key")
-	cmd.Flags().StringP("image", "i", "", "Specify a custom image to use for the deployment")
+	cmd.Flags().StringP("image", "i", "", "Specify a custom image to use for the deployment. By default, the `" + metadata.DevModeImage + "` image is used")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	return cmd
