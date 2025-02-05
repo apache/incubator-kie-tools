@@ -173,20 +173,26 @@ function TestScenarioMainPanel() {
   const navigation = useTestScenarioEditorStore((state) => state.navigation);
   const scesimModel = useTestScenarioEditorStore((state) => state.scesim.model);
   const testScenarioDmnNamespace = scesimModel.ScenarioSimulationModel.settings.dmnNamespace?.__$$text;
+  const testScenarioDmnFilePath = scesimModel.ScenarioSimulationModel.settings.dmnFilePath?.__$$text;
   const testScenarioType = scesimModel.ScenarioSimulationModel.settings.type?.__$$text.toUpperCase();
 
   const scenarioTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
   const backgroundTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
 
-  /* RULE-based Test Scenario are still not supported. The Notification will always be active in such a case */
+  /* RULE-based Test Scenario are still not supported. The Notification will always be active in such a case
+     In DMN-based Test Scenario, the notification will be active if: 
+     - The DMN model with the target reference is missing at all
+     - The DMN model with the target reference is found, but in a different location */
   const isMissingDataObjectsNotificationEnabled = useMemo(() => {
     const isReferencedDMNFileMissing =
       externalModelsByNamespace &&
       externalModelsByNamespace.has(testScenarioDmnNamespace!) &&
-      !externalModelsByNamespace.get(testScenarioDmnNamespace!);
+      (!externalModelsByNamespace.get(testScenarioDmnNamespace!) ||
+        externalModelsByNamespace.get(testScenarioDmnNamespace!)?.normalizedPosixPathRelativeToTheOpenFile !==
+          testScenarioDmnFilePath);
 
     return testScenarioType === "RULE" || isReferencedDMNFileMissing;
-  }, [externalModelsByNamespace, testScenarioDmnNamespace, testScenarioType]);
+  }, [externalModelsByNamespace, testScenarioDmnFilePath, testScenarioDmnNamespace, testScenarioType]);
 
   const onTabChanged = useCallback(
     (_event, tab) => {

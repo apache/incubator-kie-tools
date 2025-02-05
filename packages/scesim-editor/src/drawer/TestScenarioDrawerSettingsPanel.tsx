@@ -157,7 +157,6 @@ function TestScenarioDrawerSettingsPanel() {
           <FormSelect
             aria-label="form-select-input"
             className={"kie-scesim-editor-drawer-settings--form-select"}
-            isDisabled={!!selectedDmnModel}
             ouiaId="BasicFormSelect"
             onChange={(path) => {
               if (typeof path !== "string") {
@@ -167,7 +166,12 @@ function TestScenarioDrawerSettingsPanel() {
               console.trace(path);
             }}
             validated={callBackError ? "error" : undefined}
-            value={callBackError ? undefined : settingsModel.dmnFilePath?.__$$text}
+            value={
+              callBackError ||
+              selectedDmnModel?.normalizedPosixPathRelativeToTheOpenFile !== settingsModel.dmnFilePath?.__$$text
+                ? undefined
+                : settingsModel.dmnFilePath?.__$$text
+            }
           >
             {!selectedDmnModel && (
               <FormSelectOption key={undefined} isDisabled label={i18n.drawer.settings.dmnModelReferenceError} />
