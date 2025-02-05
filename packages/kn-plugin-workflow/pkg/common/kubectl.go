@@ -28,8 +28,8 @@ import (
 
 type K8sApi interface {
 
-	CanICreate(resourcePath string, namespace string) (bool, error)
-	CanIDelete(resourcePath string, namespace string) error
+	IsCreateAllowed(resourcePath string, namespace string) (bool, error)
+	IsDeleteAllowed(resourcePath string, namespace string) error
 	GetCurrentNamespace() (string, error)
 	CheckContext() (string, error)
 	ExecuteApply(path, namespace string) error
@@ -45,12 +45,12 @@ type K8sApi interface {
 
 var Current K8sApi = k8sclient.GoAPI{}
 
-func CanICreate(resourcePath string, namespace string) (bool, error) {
-	return Current.CanICreate(resourcePath, namespace)
+func IsCreateAllowed(resourcePath string, namespace string) (bool, error) {
+	return Current.IsCreateAllowed(resourcePath, namespace)
 }
 
-func CanIDelete(name string, namespace string) error {
-	return Current.CanIDelete(name, namespace)
+func IsDeleteAllowed(name string, namespace string) error {
+	return Current.IsDeleteAllowed(name, namespace)
 }
 
 func CheckContext() (string, error) {
