@@ -83,7 +83,7 @@ const (
 	YMLSWExtension        = "sw.yml"
 	JSONSWExtension       = "sw.json"
 	ApplicationProperties = "application.properties"
-
+	ApplicationSecretProperties = "secret.properties"
 	ManifestServiceFilesKind = "SonataFlow"
 
 	DockerInternalPort = "8080/tcp"
