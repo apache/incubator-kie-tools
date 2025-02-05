@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/../packages/extended-services-java/extended-services-java.iml" filepath="$PROJECT_DIR$/../packages/extended-services-java/extended-services-java.iml" />
       <module fileurl="file://$PROJECT_DIR$/../packages/jbpm-quarkus-devui/jbpm-quarkus-devui-parent.iml" filepath="$PROJECT_DIR$/../packages/jbpm-quarkus-devui/jbpm-quarkus-devui-parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/../packages/maven-base/kie-tools-maven-base.iml" filepath="$PROJECT_DIR$/../packages/maven-base/kie-tools-maven-base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../packages/kogito-db-migrator-tool/kogito-db-migrator-tool.iml" filepath="$PROJECT_DIR$/../packages/kogito-db-migrator-tool/kogito-db-migrator-tool.iml" />
       <module fileurl="file://$PROJECT_DIR$/maven-based-packages-@-kie-tools.iml" filepath="$PROJECT_DIR$/maven-based-packages-@-kie-tools.iml" />
       <module fileurl="file://$PROJECT_DIR$/../examples/process-compact-architecture/process-compact-architecture.iml" filepath="$PROJECT_DIR$/../examples/process-compact-architecture/process-compact-architecture.iml" />
       <module fileurl="file://$PROJECT_DIR$/../examples/process-user-tasks-subsystem/process-user-tasks-subsystem.iml" filepath="$PROJECT_DIR$/../examples/process-user-tasks-subsystem/process-user-tasks-subsystem.iml" />
