@@ -69,7 +69,6 @@ function TestScenarioDrawerSettingsPanel() {
             setAllDmnModelNormalizedPosixRelativePaths(paths);
           })
           .catch((err) => {
-            setCallBackError(err);
             console.error(err);
           });
       },
@@ -103,6 +102,7 @@ function TestScenarioDrawerSettingsPanel() {
               state.scesim.model.ScenarioSimulationModel.settings.dmnNamespace!.__$$text =
                 externalDMNModel.model.definitions["@_namespace"];
             });
+            setCallBackError(undefined);
           })
           .catch((err) => {
             setSelectedDmnModel(undefined);
@@ -117,9 +117,9 @@ function TestScenarioDrawerSettingsPanel() {
     )
   );
 
-  const isSelectedDmnValid: boolean = useMemo(
+  const isSelectedDmnInvalid = useMemo(
     () =>
-      callBackError ||
+      callBackError !== undefined ||
       selectedDmnModel?.normalizedPosixPathRelativeToTheOpenFile !== settingsModel.dmnFilePath?.__$$text,
     [callBackError, selectedDmnModel?.normalizedPosixPathRelativeToTheOpenFile, settingsModel.dmnFilePath?.__$$text]
   );
@@ -172,8 +172,8 @@ function TestScenarioDrawerSettingsPanel() {
               setSelectedDMNPathRelativeToThisScesim(path);
               console.trace(path);
             }}
-            validated={isSelectedDmnValid ? "error" : undefined}
-            value={isSelectedDmnValid ? undefined : settingsModel.dmnFilePath?.__$$text}
+            validated={isSelectedDmnInvalid ? "error" : undefined}
+            value={isSelectedDmnInvalid ? undefined : settingsModel.dmnFilePath?.__$$text}
           >
             {!selectedDmnModel && (
               <FormSelectOption key={undefined} isDisabled label={i18n.drawer.settings.dmnModelReferenceError} />
