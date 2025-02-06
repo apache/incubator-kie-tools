@@ -19,4 +19,4 @@
 
 export * from "./DmnDocumentData";
 export * from "./DmnLanguageService";
-export * from "./refactor/IdentifiersRefactor";
+export * from "./IdentifiersRefactor";
