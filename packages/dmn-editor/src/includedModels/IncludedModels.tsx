@@ -361,7 +361,7 @@ export function IncludedModels() {
                       name={importName}
                       isReadOnly={false}
                       shouldCommitOnBlur={true}
-                      className={"pf-v5-c-form-control"}
+                      // className={"pf-v5-c-form-control"}
                       onRenamed={setImportName}
                       allUniqueNames={getAllUniqueNames}
                     />
