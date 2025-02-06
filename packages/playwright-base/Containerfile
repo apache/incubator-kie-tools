@@ -74,7 +74,4 @@ RUN npx playwright@1.45.2 install-deps && npx playwright@1.45.2 install chrome c
 
 WORKDIR /home/node/kie-tools-playwright
 
-# Switch to node user to prevent creating folders with root privilege
-USER node
-
 ENTRYPOINT ["/bin/bash"]
