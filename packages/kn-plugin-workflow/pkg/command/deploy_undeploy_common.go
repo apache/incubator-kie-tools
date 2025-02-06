@@ -32,26 +32,27 @@ import (
 )
 
 type DeployUndeployCmdConfig struct {
-	EmptyNameSpace             bool
-	NameSpace                  string
-	KubectlContext             string
-	SonataFlowFile             string
-	CustomGeneratedManifestDir string
-	TempDir                    string
-	ApplicationPropertiesPath  string
-	SubflowsDir                string
-	SpecsDir                   string
-	SchemasDir                 string
-	CustomManifestsFileDir     string
-	DefaultDashboardsFolder    string
-	Profile                    string
-	Image                      string
-	SchemasFilesPath           []string
-	SpecsFilesPath             map[string]string
-	SubFlowsFilesPath          []string
-	DashboardsPath             []string
-	Minify                     bool
-	Wait					   bool
+	EmptyNameSpace                   bool
+	NameSpace                        string
+	KubectlContext                   string
+	SonataFlowFile                   string
+	CustomGeneratedManifestDir       string
+	TempDir                          string
+	ApplicationPropertiesPath        string
+	ApplicationSecretPropertiesPath  string
+	SubflowsDir                      string
+	SpecsDir                         string
+	SchemasDir                       string
+	CustomManifestsFileDir           string
+	DefaultDashboardsFolder          string
+	Profile                          string
+	Image                            string
+	SchemasFilesPath                 []string
+	SpecsFilesPath                   map[string]string
+	SubFlowsFilesPath                []string
+	DashboardsPath                   []string
+	Minify                           bool
+	Wait					   		 bool
 }
 
 func checkEnvironment(cfg *DeployUndeployCmdConfig) error {
@@ -119,6 +120,12 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 		fmt.Printf(" - ✅ Properties file found: %s\n", cfg.ApplicationPropertiesPath)
 	}
 
+	applicationSecretPropertiesPath := findApplicationSecretPropertiesPath(dir)
+	if applicationSecretPropertiesPath != "" {
+		cfg.ApplicationSecretPropertiesPath = applicationSecretPropertiesPath
+		fmt.Printf(" - ✅ Secret Properties file found: %s\n", cfg.ApplicationSecretPropertiesPath)
+	}
+
 	supportFileExtensions := []string{metadata.JSONExtension, metadata.YAMLExtension, metadata.YMLExtension}
 
 	fmt.Println("🔍 Looking for specs files...")
@@ -182,6 +189,14 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 		handler.WithAppProperties(appIO)
 	}
 
+	if cfg.ApplicationSecretPropertiesPath != "" {
+		appIO, err := common.MustGetFile(cfg.ApplicationSecretPropertiesPath)
+		if err != nil {
+			return err
+		}
+		handler.WithSecretProperties(appIO)
+	}
+
 	for _, subflow := range cfg.SubFlowsFilesPath {
 		specIO, err := common.MustGetFile(subflow)
 		if err != nil {
@@ -237,6 +252,17 @@ func generateManifests(cfg *DeployUndeployCmdConfig) error {
 
 func findApplicationPropertiesPath(directoryPath string) string {
 	filePath := filepath.Join(directoryPath, metadata.ApplicationProperties)
+
+	fileInfo, err := os.Stat(filePath)
+	if err != nil || fileInfo.IsDir() {
+		return ""
+	}
+
+	return filePath
+}
+
+func findApplicationSecretPropertiesPath(directoryPath string) string {
+	filePath := filepath.Join(directoryPath, metadata.ApplicationSecretProperties)
 
 	fileInfo, err := os.Stat(filePath)
 	if err != nil || fileInfo.IsDir() {
