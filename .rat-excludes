@@ -676,6 +676,16 @@ workflow-subflow-custom.sw.yaml
 workflow.sw.yaml
 # packages/kn-plugin-workflow/pkg/specs/testdata/workflow2.sw.yaml
 workflow2.sw.yaml
+# packages/kn-plugin-workflow/pkg/command/quarkus/testdata/docker/Dockerfile.jvm
+Dockerfile.jvm
+# packages/kn-plugin-workflow/pkg/command/quarkus/testdata/docker/Dockerfile.native
+Dockerfile.native
+# packages/kn-plugin-workflow/pkg/command/quarkus/testdata/docker/Dockerfile.legacy-jar
+Dockerfile.legacy-jar
+# packages/kn-plugin-workflow/pkg/command/quarkus/testdata/docker/Dockerfile.native-micro
+Dockerfile.native-micro
+packages/kn-plugin-workflow/pkg/command/quarkus/testdata/dockerignore
+dockerignore
 # packages/maven-base/kie-tools-maven-base.iml
 kie-tools-maven-base.iml
 # packages/maven-base/settings.xml
