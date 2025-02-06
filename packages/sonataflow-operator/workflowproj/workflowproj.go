@@ -23,8 +23,11 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"regexp"
 	"sort"
 	"strings"
+
+	"github.com/magiconair/properties"
 
 	"github.com/pkg/errors"
 	"github.com/serverlessworkflow/sdk-go/v2/model"
@@ -56,6 +59,8 @@ type WorkflowProjectHandler interface {
 	WithWorkflow(reader io.Reader) WorkflowProjectHandler
 	// WithAppProperties reader for a file or the content stream of a workflow application properties.
 	WithAppProperties(reader io.Reader) WorkflowProjectHandler
+	// WithSecretProperties reader for a file or the content stream of a workflow application properties.
+	WithSecretProperties(reader io.Reader) WorkflowProjectHandler
 	// AddResource reader for a file or the content stream of any resource needed by the workflow. E.g. an OpenAPI specification file.
 	// Name is required, should match the workflow function definition.
 	AddResource(name string, reader io.Reader) WorkflowProjectHandler
@@ -75,6 +80,8 @@ type WorkflowProject struct {
 	Workflow *operatorapi.SonataFlow
 	// Properties the application properties for the workflow
 	Properties *corev1.ConfigMap
+	//SecretProperties the secret properties for the workflow
+	SecretProperties *corev1.Secret
 	// Resources any resource that this workflow requires, like an OpenAPI specification file.
 	Resources []*corev1.ConfigMap
 }
@@ -98,15 +105,16 @@ func New(namespace string) WorkflowProjectHandler {
 }
 
 type workflowProjectHandler struct {
-	name             string
-	namespace        string
-	profile          metadata.ProfileType
-	scheme           *runtime.Scheme
-	project          WorkflowProject
-	rawWorkflow      io.Reader
-	rawAppProperties io.Reader
-	rawResources     map[string][]*resource
-	parsed           bool
+	name                string
+	namespace           string
+	profile             metadata.ProfileType
+	scheme              *runtime.Scheme
+	project             WorkflowProject
+	rawWorkflow         io.Reader
+	rawAppProperties    io.Reader
+	rawSecretProperties io.Reader
+	rawResources        map[string][]*resource
+	parsed              bool
 }
 
 func (w *workflowProjectHandler) Named(name string) WorkflowProjectHandler {
@@ -129,6 +137,12 @@ func (w *workflowProjectHandler) WithWorkflow(reader io.Reader) WorkflowProjectH
 
 func (w *workflowProjectHandler) WithAppProperties(reader io.Reader) WorkflowProjectHandler {
 	w.rawAppProperties = reader
+	w.parsed = false
+	return w
+}
+
+func (w *workflowProjectHandler) WithSecretProperties(reader io.Reader) WorkflowProjectHandler {
+	w.rawSecretProperties = reader
 	w.parsed = false
 	return w
 }
@@ -163,6 +177,12 @@ func (w *workflowProjectHandler) SaveAsKubernetesManifests(path string) error {
 			return err
 		}
 	}
+	if w.project.SecretProperties != nil {
+		fileCount++
+		if err := saveAsKubernetesManifest(w.project.SecretProperties, path, fileCount); err != nil {
+			return err
+		}
+	}
 	for _, r := range w.project.Resources {
 		fileCount++
 		if err := saveAsKubernetesManifest(r, path, fileCount); err != nil {
@@ -194,6 +214,9 @@ func (w *workflowProjectHandler) parseRawProject() error {
 		return err
 	}
 	if err := w.parseRawAppProperties(); err != nil {
+		return err
+	}
+	if err := w.parseRawSecretProperties(); err != nil {
 		return err
 	}
 	if err := w.parseRawResources(); err != nil {
@@ -256,6 +279,52 @@ func (w *workflowProjectHandler) parseRawAppProperties() error {
 	w.project.Properties = CreateNewUserPropsConfigMap(w.project.Workflow)
 	w.project.Properties.Data[ApplicationPropertiesFileName] = string(appPropsContent)
 	if err = SetTypeToObject(w.project.Properties, w.scheme); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (w *workflowProjectHandler) parseRawSecretProperties() error {
+	if w.rawSecretProperties == nil {
+		return nil
+	}
+	secretPropsContent, err := io.ReadAll(w.rawSecretProperties)
+	if err != nil {
+		return fmt.Errorf("Failed to read secret properties: %w", err)
+	}
+	secrets, err := properties.Load(secretPropsContent, properties.UTF8)
+	if err != nil {
+		return fmt.Errorf("Failed to load secret properties: %w", err)
+	}
+	if len(secrets.Map()) == 0 {
+		return nil //Do not create a secret if there are no secrets
+	}
+
+	w.project.SecretProperties = CreateNewSecretPropsConfigMap(w.project.Workflow)
+	w.project.SecretProperties.StringData = map[string]string{}
+	for key, value := range secrets.Map() {
+		normalizedEnvNames, err := normalizeEnvNames(key)
+		if err != nil {
+			return err
+		}
+		for _, normalizedEnvName := range normalizedEnvNames {
+			w.project.SecretProperties.StringData[key] = value
+			env := corev1.EnvVar{
+				Name: normalizedEnvName,
+				ValueFrom: &corev1.EnvVarSource{
+					SecretKeyRef: &corev1.SecretKeySelector{
+						LocalObjectReference: corev1.LocalObjectReference{
+							Name: w.project.SecretProperties.Name,
+						},
+						Key: key,
+					},
+				},
+			}
+			w.project.Workflow.Spec.PodTemplate.Container.Env = append(w.project.Workflow.Spec.PodTemplate.Container.Env, env)
+		}
+	}
+
+	if err = SetTypeToObject(w.project.SecretProperties, w.scheme); err != nil {
 		return err
 	}
 	return nil
@@ -337,4 +406,58 @@ func isProfile(workflow *operatorapi.SonataFlow, profileType metadata.ProfileTyp
 		return false
 	}
 	return metadata.ProfileType(profile) == profileType
+}
+
+var envProfilesExpr = regexp.MustCompile(`^%([A-Za-z0-9_-]+(?:,[A-Za-z0-9_-]+)*)\.(.+)$`)
+
+func normalizeEnvNames(names string) ([]string, error) {
+	matches := envProfilesExpr.FindStringSubmatch(names)
+	if matches == nil {
+		if normalized, err := normalizeEnvName(names); err != nil {
+			return nil, err
+		} else {
+			return []string{normalized}, nil
+		}
+	} else {
+		profiles := strings.Split(matches[1], ",")
+		propertyKey := matches[2]
+		var result []string
+		for _, profile := range profiles {
+			normalized, err := normalizeEnvName("%" + profile + "_" + propertyKey)
+			if err != nil {
+				return nil, err
+			}
+			result = append(result, normalized)
+		}
+		return result, nil
+	}
+}
+
+func normalizeEnvName(original string) (string, error) {
+	name := original
+	name = strings.TrimSpace(name)
+
+	replacer := strings.NewReplacer(
+		" ", "_",
+		"-", "_",
+		".", "_",
+		"\"", "_",
+		"'", "_",
+		"[", "_",
+		"]", "_",
+		"%", "_",
+	)
+	name = replacer.Replace(name)
+	name = strings.ToUpper(name)
+
+	if strings.HasSuffix(name, "_") {
+		name = name[:len(name)-1]
+	}
+
+	validName := regexp.MustCompile(`^[A-Z0-9_]+$`)
+	if !validName.MatchString(name) {
+		return "", fmt.Errorf("invalid environment variable name: %s (must only contain A-Z, 0-9, and _)", original)
+	}
+
+	return name, nil
 }

@@ -20,7 +20,9 @@
 package quarkus
 
 import (
+	"bufio"
 	"os"
+	"path"
 	"testing"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
@@ -70,4 +72,89 @@ func TestManipulatePom(t *testing.T) {
 	if string(modifiedData) != string(expectedData) {
 		t.Errorf("Manipulated XML does not match expected XML")
 	}
+}
+
+func TestManipulateDockerFiles(t *testing.T) {
+	text := "COPY target/classes/workflow.sw.json /deployments/app/workflow.sw.json"
+	tempDir, err := os.MkdirTemp("", "project")
+	if err != nil {
+		t.Fatalf("❌ ERROR: failed to create temporary directory: %v", err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	dockerDir := path.Join(tempDir, "/src/main/docker")
+	err = os.MkdirAll(dockerDir, 0755)
+	if err != nil {
+		t.Fatalf("Error creating docker directory: %v", err)
+	}
+	err = copyDir("testdata/docker", dockerDir)
+	if err != nil {
+		t.Fatalf("Error copying Dockerfiles: %v", err)
+	}
+
+	extensions := []string{"jvm", "legacy-jar", "native", "native-micro"}
+
+	for _, extension := range extensions {
+		dockerFilePath := path.Join(dockerDir, "Dockerfile."+extension)
+		_, err := os.Stat(dockerFilePath)
+		if err != nil {
+			t.Fatalf("Error reading Dockerfile: %v", err)
+		}
+
+		if err := manipulateDockerfile(dockerFilePath); err != nil {
+			t.Fatalf("Error manipulating Dockerfile: %v", err)
+		}
+
+		contains, err := checkFileContainsText(dockerFilePath, text)
+		if err != nil {
+			t.Fatalf("Failed to stat Dockerfile for extension %s: %v", extension, err)
+		}
+		if !contains {
+			t.Errorf("Dockerfile does not contain expected text")
+		}
+	}
+}
+func TestManipulateDockerIgnoreFile(t *testing.T) {
+	text := "!target/classes/workflow.sw.json"
+	tempDir, err := os.MkdirTemp("", "project")
+	if err != nil {
+		t.Fatalf("❌ ERROR: failed to create temporary directory: %v", err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	dockerIgnorePath := path.Join(tempDir, ".dockerignore")
+	err = copyFile("testdata/dockerignore", dockerIgnorePath)
+	if err != nil {
+		t.Fatalf("Error copying .dockerignore: %v", err)
+	}
+	if err := manipulateDockerIgnore(dockerIgnorePath); err != nil {
+		t.Fatalf("Error manipulating .dockerignore: %v", err)
+	}
+	contains, err := checkFileContainsText(dockerIgnorePath, text)
+	if err != nil {
+		t.Fatalf("Error reading .dockerignore: %v", err)
+	}
+	if !contains {
+		t.Errorf(".dockerignore does not contain expected text")
+	}
+
+}
+
+func checkFileContainsText(filePath, text string) (bool, error) {
+	file, err := os.Open(filePath)
+	if err != nil {
+		return false, err
+	}
+	defer file.Close()
+
+	var contains = false
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if line == text {
+			contains = true
+			break
+		}
+	}
+	return contains, nil
 }
