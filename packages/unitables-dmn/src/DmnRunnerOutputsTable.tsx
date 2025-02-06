@@ -163,6 +163,15 @@ function OutputsBeeTable({
     return generateUuid();
   }, []);
 
+  /**
+   * Wrapping 'getDefaultColumnWidth' to add additional space for the '<ArrowUp />' icon in the runner outputs columns.
+   */
+  const getDefaultDmnRunnerOutputColumnWidth = useCallback((label, dataType) => {
+    const OPEN_BOXED_EXPRESSION_HEADER_ARROW_UP_BUTTON_WIDTH = 50;
+    const ADDITIONAL_WIDTH_TO_CENTER_HEADER_CONTENT = 2 * OPEN_BOXED_EXPRESSION_HEADER_ARROW_UP_BUTTON_WIDTH;
+    return getDefaultColumnWidth({ name: label, typeRef: dataType }) + ADDITIONAL_WIDTH_TO_CENTER_HEADER_CONTENT;
+  }, []);
+
   const deepFlattenObjectColumn = useCallback(
     (
       myObject: Record<string, any>,
@@ -200,7 +209,7 @@ function OutputsBeeTable({
         };
       });
     },
-    []
+    [getDefaultDmnRunnerOutputColumnWidth]
   );
 
   const getRowValue = useCallback((value: DmnEvaluationResult) => {
@@ -272,15 +281,6 @@ function OutputsBeeTable({
     },
     [openBoxedExpressionEditor, resultsDecisionIds]
   );
-
-  /**
-   * Wrapping 'getDefaultColumnWidth' to add additional space for the '<ArrowUp />' icon in the runner outputs columns.
-   */
-  const getDefaultDmnRunnerOutputColumnWidth = useCallback((label, dataType) => {
-    const OPEN_BOXED_EXPRESSION_HEADER_ARROW_UP_BUTTON_WIDTH = 50;
-    const ADDITIONAL_WIDTH_TO_CENTER_HEADER_CONTENT = 2 * OPEN_BOXED_EXPRESSION_HEADER_ARROW_UP_BUTTON_WIDTH;
-    return getDefaultColumnWidth({ name: label, typeRef: dataType }) + ADDITIONAL_WIDTH_TO_CENTER_HEADER_CONTENT;
-  }, []);
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return (results?.[0] ?? []).flatMap(({ result, decisionName, decisionId }) => {
