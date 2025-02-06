@@ -412,8 +412,6 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
               <FormGroup
                 fieldId={"dev-deployments-config-namespace"}
                 label={i18n.devDeployments.kubernetesConfigWizard.fields.namespace}
-                // validated={isNamespaceValidated ? "success" : "error"}
-                // helperTextInvalid={i18n.devDeployments.common.requiredField}
                 isRequired={true}
               >
                 <InputGroup>
@@ -450,8 +448,6 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
               <FormGroup
                 fieldId={"dev-deployments-config-host"}
                 label={i18n.devDeployments.kubernetesConfigWizard.fields.kubernetesApiServerUrl}
-                // validated={isHostValidated ? "success" : "error"}
-                // helperTextInvalid={i18n.devDeployments.common.requiredField}
                 isRequired={true}
               >
                 <InputGroup>

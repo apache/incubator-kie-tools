@@ -104,7 +104,6 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                     className="data-dictionary__properties-edit__field"
                     label="Display Name"
                     fieldId="display-name"
-                    // helperText="Display Name to use instead of the data type name"
                   >
                     <TextInput
                       type="text"
@@ -192,7 +191,6 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                     className="data-dictionary__properties-edit__field"
                     label="Missing Value"
                     fieldId="missing-value"
-                    // helperText="Value for when the input is missing"
                   >
                     <TextInput
                       type="text"
@@ -221,7 +219,6 @@ const DataDictionaryPropertiesEdit = (props: DataDictionaryPropertiesEditProps) 
                     className="data-dictionary__properties-edit__field"
                     label="Invalid Value"
                     fieldId="missing-value"
-                    // helperText="Value for when the input is invalid"
                   >
                     <TextInput
                       type="text"

@@ -18,7 +18,6 @@
  */
 
 import * as React from "react";
-// import { getSize, IconSize } from "@patternfly/react-icons/dist/js/createIcon";
 import BitbucketIcon from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
 import GithubIcon from "@patternfly/react-icons/dist/js/icons/github-icon";
 import GitlabIcon from "@patternfly/react-icons/dist/js/icons/gitlab-icon";
@@ -27,35 +26,25 @@ import QuestionIcon from "@patternfly/react-icons/dist/js/icons/question-icon";
 import UsersIcon from "@patternfly/react-icons/dist/js/icons/users-icon";
 import { AuthProvider } from "./AuthProvidersApi";
 
-export function AuthProviderIcon(props: {
-  authProvider: AuthProvider | undefined;
-  // size: IconSize | keyof typeof IconSize;
-}) {
+export function AuthProviderIcon(props: { authProvider: AuthProvider | undefined }) {
   if (!props.authProvider) {
     return <UsersIcon />;
   }
-
-  // if (props.authProvider.iconPath) {
-  //   const baseAlign = -0.125 * Number.parseFloat(getSize(props.size)); // Copied from PatternFly
-  //   return (
-  //     <img style={{ height: getSize(props.size), verticalAlign: `${baseAlign}em` }} src={props.authProvider.iconPath} />
-  //   );
-  // }
 
   if (props.authProvider.type === "github") {
     return <GithubIcon />;
   }
 
   if (props.authProvider.type === "bitbucket") {
-    return <BitbucketIcon />;
+    return <BitbucketIcon color="blue" />;
   }
 
   if (props.authProvider.type === "gitlab") {
-    return <GitlabIcon />;
+    return <GitlabIcon color="orange" />;
   }
 
   if (props.authProvider.type === "openshift") {
-    return <OpenshiftIcon />;
+    return <OpenshiftIcon color="red" />;
   }
 
   return <QuestionIcon />;

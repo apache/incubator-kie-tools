@@ -23,7 +23,6 @@ import { AuthSession } from "./AuthSessionApi";
 import { useAuthProvider } from "../authProviders/AuthProvidersContext";
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-// import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 export function AuthSessionLabel(props: { authSession: AuthSession }) {

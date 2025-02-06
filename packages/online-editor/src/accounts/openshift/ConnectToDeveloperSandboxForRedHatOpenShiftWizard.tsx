@@ -221,13 +221,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
             <br />
             <br />
             <Form className="pf-v5-u-mt-md" onSubmit={(e) => e.preventDefault()}>
-              <FormGroup
-                fieldId={"dev-deployments-config-namespace"}
-                label={i18n.terms.namespace}
-                // validated={isNamespaceValidated ? "success" : "error"}
-                // helperTextInvalid={i18n.devDeployments.common.requiredField}
-                isRequired={true}
-              >
+              <FormGroup fieldId={"dev-deployments-config-namespace"} label={i18n.terms.namespace} isRequired={true}>
                 <InputGroup>
                   <InputGroupItem isFill>
                     <TextInput

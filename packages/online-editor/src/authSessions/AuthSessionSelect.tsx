@@ -246,7 +246,7 @@ export function AuthSessionSelect(props: {
                   return [
                     <SelectOption key={AUTH_SESSION_NONE.id} value={AUTH_SESSION_NONE.id} description={<i>{}</i>}>
                       <Icon iconSize="sm">
-                        <AuthProviderIcon authProvider={undefined} />{" "}
+                        <AuthProviderIcon authProvider={undefined} />
                       </Icon>
                       &nbsp;&nbsp;
                       {AUTH_SESSION_NONE.login}

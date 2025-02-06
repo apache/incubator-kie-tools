@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import "./ImportJavaClassesWizardFieldListTable.css";
-import { ExpandableRowContent, Table /* data-codemods */, Tbody, Td, Tr } from "@patternfly/react-table";
+import { ExpandableRowContent, Table, Tbody, Td, Tr } from "@patternfly/react-table";
 import { JavaClass } from "./model/JavaClass";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { JavaField } from "./model/JavaField";

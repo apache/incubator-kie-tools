@@ -181,12 +181,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
       <Form>
         <Split hasGutter={true}>
           <SplitItem isFilled={true}>
-            <FormGroup
-              label="Predicate"
-              isRequired={true}
-              fieldId="attribute-predicate-helper"
-              // validated={predicateValidation.length > 0 ? "warning" : "default"}
-            >
+            <FormGroup label="Predicate" isRequired={true} fieldId="attribute-predicate-helper">
               <div ref={ref} data-ouia-component-id="predicate">
                 <PredicateEditor text={text} setText={setText} />
                 <>
@@ -226,12 +221,6 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                 <FormGroup
                   label="Reason code"
                   fieldId="attribute-reason-code-helper"
-                  // validated={reasonCodeValidation.length > 0 ? "warning" : "default"}
-                  // helperText={
-                  //   reasonCodeValidation.length > 0
-                  //     ? reasonCodeValidation[0].message
-                  //     : "A Reason Code is mapped to a Business reason."
-                  // }
                   labelIcon={
                     <Tooltip
                       content={
@@ -288,12 +277,6 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                 <FormGroup
                   label="Partial score"
                   fieldId="attribute-partial-score-helper"
-                  // validated={partialScoreValidation.length > 0 ? "warning" : "default"}
-                  // helperText={
-                  //   partialScoreValidation.length > 0
-                  //     ? partialScoreValidation[0].message
-                  //     : "Defines the score points awarded to the Attribute."
-                  // }
                   labelIcon={
                     <Tooltip
                       content={

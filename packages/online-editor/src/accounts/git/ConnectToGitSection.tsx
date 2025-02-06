@@ -299,11 +299,6 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
             })}
             <FormGroup
               isRequired={true}
-              // helperTextIcon={validation.helperTextIcon}
-              // helperTextInvalidIcon={validation.helperTextInvalidIcon}
-              // helperTextInvalid={validation.helperTextInvalid}
-              // helperText={validation.helperText}
-              // validated={validation.validated}
               label={i18n.connectToGitModal[props.authProvider.type].form.token.label}
               fieldId={"github-pat"}
             >

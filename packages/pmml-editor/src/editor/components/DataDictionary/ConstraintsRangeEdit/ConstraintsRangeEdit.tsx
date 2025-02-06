@@ -178,11 +178,7 @@ const RangeEdit = (props: RangeEditProps) => {
     <section ref={rangeRef} data-ouia-component-id={`interval-${index}`} data-ouia-component-type="interval-item">
       <Split hasGutter={true} className="constraints__range-item">
         <SplitItem isFilled={true}>
-          <FormGroup
-            label="Start Value"
-            fieldId={`start-value-${index}`}
-            // helperText={validations[0] ? "Please enter start and/or end value" : ""}
-          >
+          <FormGroup label="Start Value" fieldId={`start-value-${index}`}>
             <TextInput
               type="number"
               id={`start-value-${index}`}
@@ -218,11 +214,7 @@ const RangeEdit = (props: RangeEditProps) => {
           </FormGroup>
         </SplitItem>
         <SplitItem isFilled={true}>
-          <FormGroup
-            label="End Value"
-            fieldId={`end-value-${index}`}
-            // helperText={validations[0] ? "Please enter start and/or end value" : ""}
-          >
+          <FormGroup label="End Value" fieldId={`end-value-${index}`}>
             <TextInput
               type="number"
               id={`end-value-${index}`}

@@ -75,7 +75,6 @@ export const LoadMore: React.FC<IOwnProps & OUIAProps> = ({
               <Icon size="sm" color="var(--pf-v5-global--info-color--100)">
                 <CheckIcon />
               </Icon>
-              {/* <CheckIcon size="sm" color="var(--pf-v5-global--info-color--100)" /> */}
             </SplitItem>
           )}
         </Split>
