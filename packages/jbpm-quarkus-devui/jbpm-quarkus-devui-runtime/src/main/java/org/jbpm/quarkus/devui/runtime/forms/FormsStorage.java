@@ -26,9 +26,6 @@ import org.jbpm.quarkus.devui.runtime.forms.model.FormContent;
 import org.jbpm.quarkus.devui.runtime.forms.model.FormFilter;
 import org.jbpm.quarkus.devui.runtime.forms.model.FormInfo;
 
-import io.quarkus.arc.profile.IfBuildProfile;
-
-@IfBuildProfile("dev")
 public interface FormsStorage {
 
     int getFormsCount();
