@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { DMN15__tDefinitions, DMN15__tInputData } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN15__tInputData } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -26,19 +26,13 @@ import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { DocumentationLinksFormGroup } from "./DocumentationLinksFormGroup";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
-import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useDmnEditor } from "../DmnEditorContext";
 import { useResolvedTypeRef } from "../dataTypes/useResolvedTypeRef";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
-import { OnEditableNodeLabelChange } from "../diagram/nodes/EditableNodeLabel";
-import {
-  isIdentifierReferencedInSomeExpression,
-  RefactorConfirmationDialog,
-} from "../refactor/RefactorConfirmationDialog";
-import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { useRefactor } from "../refactor/RefactorConfirmationDialog";
 
 export function InputDataProperties({
   inputData,
@@ -51,10 +45,6 @@ export function InputDataProperties({
 }) {
   const { setState } = useDmnEditorStoreApi();
   const settings = useSettings();
-  const { externalModelsByNamespace } = useExternalModels();
-  const externalDmnModelsByNamespaceMap = useDmnEditorStore((s) =>
-    s.computed(s).getExternalDmnModelsByNamespaceMap(externalModelsByNamespace)
-  );
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const isReadOnly = settings.isReadOnly || (!!namespace && namespace !== thisDmnsNamespace);
 
@@ -62,87 +52,22 @@ export function InputDataProperties({
 
   const resolvedTypeRef = useResolvedTypeRef(inputData.variable?.["@_typeRef"], namespace);
 
-  const [isRefactorModalOpen, setIsRefactorModalOpen] = useState(false);
-  const [newName, setNewName] = useState("");
   const identifierId = useMemo(() => inputData["@_id"], [inputData]);
   const oldName = useMemo(() => inputData["@_label"] ?? inputData["@_name"], [inputData]);
+
+  const { setNewIdentifierNameCandidate, refactorConfirmationDialog, newName } = useRefactor({
+    index,
+    identifierId,
+    oldName,
+  });
+
   const currentName = useMemo(() => {
     return newName === "" ? oldName : newName;
   }, [newName, oldName]);
 
-  const applyRename = useCallback(
-    (args: {
-      definitions: Normalized<DMN15__tDefinitions>;
-      newName: string;
-      shouldRenameReferencedExpressions: boolean;
-    }) => {
-      renameDrgElement({
-        ...args,
-        index,
-        externalDmnModelsByNamespaceMap,
-      });
-    },
-    [externalDmnModelsByNamespaceMap, index]
-  );
-
-  const setName = useCallback<OnEditableNodeLabelChange>(
-    (name: string) => {
-      if (name === oldName) {
-        return;
-      }
-      setState((state) => {
-        if (
-          isIdentifierReferencedInSomeExpression({
-            identifierUuid: identifierId,
-            dmnDefinitions: state.dmn.model.definitions,
-            externalDmnModelsByNamespaceMap,
-          })
-        ) {
-          setNewName(name);
-          setIsRefactorModalOpen(true);
-        } else {
-          applyRename({
-            definitions: state.dmn.model.definitions,
-            newName: name,
-            shouldRenameReferencedExpressions: false,
-          });
-        }
-      });
-    },
-    [applyRename, externalDmnModelsByNamespaceMap, oldName, identifierId, setState]
-  );
-
   return (
     <>
-      <RefactorConfirmationDialog
-        onConfirmExpressionRefactor={() => {
-          setIsRefactorModalOpen(false);
-          setState((state) => {
-            applyRename({
-              definitions: state.dmn.model.definitions,
-              newName,
-              shouldRenameReferencedExpressions: true,
-            });
-          });
-        }}
-        onConfirmRenameOnly={() => {
-          setIsRefactorModalOpen(false);
-          setState((state) => {
-            applyRename({
-              definitions: state.dmn.model.definitions,
-              newName,
-              shouldRenameReferencedExpressions: false,
-            });
-          });
-        }}
-        onCancel={() => {
-          setIsRefactorModalOpen(false);
-          setNewName("");
-        }}
-        isRefactorModalOpen={isRefactorModalOpen}
-        fromName={oldName}
-        toName={newName}
-      />
+      {refactorConfirmationDialog}
       <FormGroup label="Name">
         <InlineFeelNameInput
           enableAutoFocusing={false}
@@ -152,7 +77,7 @@ export function InputDataProperties({
           isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
           className={"pf-c-form-control"}
-          onRenamed={setName}
+          onRenamed={setNewIdentifierNameCandidate}
           allUniqueNames={useCallback((s) => s.computed(s).getAllFeelVariableUniqueNames(), [])}
         />
       </FormGroup>

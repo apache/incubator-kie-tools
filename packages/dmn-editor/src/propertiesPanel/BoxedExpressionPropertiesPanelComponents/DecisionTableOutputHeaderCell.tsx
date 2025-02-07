@@ -22,11 +22,7 @@ import { useCallback, useMemo, useState } from "react";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { ContentField, DescriptionField, ExpressionLanguageField, NameField, TypeRefField } from "./Fields";
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
-import {
-  DMN15__tDecision,
-  DMN15__tDefinitions,
-  DMN15__tOutputClause,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN15__tDecision, DMN15__tOutputClause } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
@@ -38,12 +34,8 @@ import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constrai
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { State } from "../../store/Store";
-import { renameDrgElement } from "../../mutations/renameNode";
-import { OnEditableNodeLabelChange } from "../../diagram/nodes/EditableNodeLabel";
-import {
-  isIdentifierReferencedInSomeExpression,
-  RefactorConfirmationDialog,
-} from "../../refactor/RefactorConfirmationDialog";
+
+import { useRefactor } from "../../refactor/RefactorConfirmationDialog";
 
 export function DecisionTableOutputHeaderCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
@@ -54,9 +46,6 @@ export function DecisionTableOutputHeaderCell(props: {
   const activeDrgElementId = useDmnEditorStore((s) => s.boxedExpressionEditor.activeDrgElementId);
   const { dmnEditorRootElementRef } = useDmnEditor();
   const { externalModelsByNamespace } = useExternalModels();
-  const externalDmnModelsByNamespaceMap = useDmnEditorStore((s) =>
-    s.computed(s).getExternalDmnModelsByNamespaceMap(externalModelsByNamespace)
-  );
 
   const node = useDmnEditorStore((s) =>
     s
@@ -139,84 +128,18 @@ export function DecisionTableOutputHeaderCell(props: {
     }
   }, [selectedObjectInfos?.expressionPath]);
 
-  const [isRefactorModalOpen, setIsRefactorModalOpen] = useState(false);
-  const [newName, setNewName] = useState("");
-
   const identifierId = useMemo(() => root?.["@_id"] ?? "", [root]);
   const oldName = useMemo(() => root?.["@_label"] ?? "", [root]);
 
-  const applyRename = useCallback(
-    (args: {
-      definitions: Normalized<DMN15__tDefinitions>;
-      newName: string;
-      shouldRenameReferencedExpressions: boolean;
-    }) => {
-      renameDrgElement({
-        ...args,
-        index: node?.data.index ?? 0,
-        externalDmnModelsByNamespaceMap,
-      });
-    },
-    [externalDmnModelsByNamespaceMap, node?.data.index]
-  );
-
-  const setName = useCallback<OnEditableNodeLabelChange>(
-    (name: string) => {
-      if (name === oldName) {
-        return;
-      }
-      dmnEditorStoreApi.setState((state) => {
-        if (
-          isIdentifierReferencedInSomeExpression({
-            identifierUuid: identifierId,
-            dmnDefinitions: state.dmn.model.definitions,
-            externalDmnModelsByNamespaceMap,
-          })
-        ) {
-          setNewName(name);
-          setIsRefactorModalOpen(true);
-        } else {
-          applyRename({
-            definitions: state.dmn.model.definitions,
-            newName: name,
-            shouldRenameReferencedExpressions: false,
-          });
-        }
-      });
-    },
-    [oldName, dmnEditorStoreApi, identifierId, externalDmnModelsByNamespaceMap, applyRename]
-  );
+  const { setNewIdentifierNameCandidate, refactorConfirmationDialog } = useRefactor({
+    index: node?.data.index ?? 0,
+    identifierId,
+    oldName,
+  });
 
   return (
     <>
-      <RefactorConfirmationDialog
-        onConfirmExpressionRefactor={() => {
-          setIsRefactorModalOpen(false);
-          dmnEditorStoreApi.setState((state) => {
-            applyRename({
-              definitions: state.dmn.model.definitions,
-              newName,
-              shouldRenameReferencedExpressions: true,
-            });
-          });
-        }}
-        onConfirmRenameOnly={() => {
-          setIsRefactorModalOpen(false);
-          dmnEditorStoreApi.setState((state) => {
-            applyRename({
-              definitions: state.dmn.model.definitions,
-              newName,
-              shouldRenameReferencedExpressions: false,
-            });
-          });
-        }}
-        onCancel={() => {
-          setIsRefactorModalOpen(false);
-        }}
-        isRefactorModalOpen={isRefactorModalOpen}
-        fromName={oldName}
-        toName={newName}
-      />
+      {refactorConfirmationDialog}
       <FormGroup label="ID">
         <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
           {selectedObjectId}
@@ -230,7 +153,7 @@ export function DecisionTableOutputHeaderCell(props: {
             id={root["@_id"]!}
             name={root?.["@_label"] ?? ""}
             getAllUniqueNames={getAllUniqueNames}
-            onChange={setName}
+            onChange={setNewIdentifierNameCandidate}
           />
           <TypeRefField
             alternativeFieldName={`${alternativeFieldName} Type`}

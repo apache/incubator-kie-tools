@@ -24,6 +24,10 @@ import * as React from "react";
 import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { IdentifiersRefactor } from "@kie-tools/dmn-language-service";
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller/dist";
+import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
+import { useCallback, useMemo, useState } from "react";
+import { renameDrgElement } from "../mutations/renameNode";
 
 export function RefactorConfirmationDialog({
   onConfirmExpressionRefactor,
@@ -54,6 +58,9 @@ export function RefactorConfirmationDialog({
         <Button key="rename" variant={ButtonVariant.secondary} onClick={onConfirmRenameOnly}>
           No, just rename
         </Button>,
+        <Button key="cancel" variant={ButtonVariant.danger} onClick={onCancel}>
+          Cancel
+        </Button>,
       ]}
     >
       The identifier `{fromName ?? "<undefined>"}` was renamed to `{toName ?? "<undefined>"}`.
@@ -79,4 +86,107 @@ export function isIdentifierReferencedInSomeExpression(args: {
   });
 
   return Array.from(identifiersRefactor.getExpressionsThatUseTheIdentifier(args.identifierUuid)).length > 0;
+}
+
+export function useRefactor({
+  index,
+  identifierId,
+  oldName,
+}: {
+  index: number;
+  identifierId: string;
+  oldName: string;
+}) {
+  const { externalModelsByNamespace } = useExternalModels();
+  const externalDmnModelsByNamespaceMap = useDmnEditorStore((s) =>
+    s.computed(s).getExternalDmnModelsByNamespaceMap(externalModelsByNamespace)
+  );
+  const [isRefactorModalOpen, setIsRefactorModalOpen] = useState(false);
+  const [newName, setNewName] = useState("");
+  const dmnEditorStoreApi = useDmnEditorStoreApi();
+
+  const applyRename = useCallback(
+    (args: {
+      definitions: Normalized<DMN15__tDefinitions>;
+      newName: string;
+      shouldRenameReferencedExpressions: boolean;
+    }) => {
+      renameDrgElement({
+        ...args,
+        index,
+        externalDmnModelsByNamespaceMap,
+      });
+    },
+    [externalDmnModelsByNamespaceMap, index]
+  );
+
+  const setNewIdentifierNameCandidate = useCallback(
+    (name: string) => {
+      if (name === oldName) {
+        return;
+      }
+      dmnEditorStoreApi.setState((state) => {
+        if (
+          isIdentifierReferencedInSomeExpression({
+            identifierUuid: identifierId,
+            dmnDefinitions: state.dmn.model.definitions,
+            externalDmnModelsByNamespaceMap,
+          })
+        ) {
+          setNewName(name);
+          setIsRefactorModalOpen(true);
+        } else {
+          applyRename({
+            definitions: state.dmn.model.definitions,
+            newName: name,
+            shouldRenameReferencedExpressions: false,
+          });
+        }
+      });
+    },
+    [oldName, dmnEditorStoreApi, identifierId, externalDmnModelsByNamespaceMap, applyRename]
+  );
+
+  const refactorConfirmationDialog = useMemo(
+    () => (
+      <RefactorConfirmationDialog
+        onConfirmExpressionRefactor={() => {
+          setIsRefactorModalOpen(false);
+          dmnEditorStoreApi.setState((state) => {
+            applyRename({
+              definitions: state.dmn.model.definitions,
+              newName,
+              shouldRenameReferencedExpressions: true,
+            });
+          });
+        }}
+        onConfirmRenameOnly={() => {
+          setIsRefactorModalOpen(false);
+          dmnEditorStoreApi.setState((state) => {
+            applyRename({
+              definitions: state.dmn.model.definitions,
+              newName,
+              shouldRenameReferencedExpressions: false,
+            });
+          });
+        }}
+        onCancel={() => {
+          setIsRefactorModalOpen(false);
+          setNewName("");
+        }}
+        isRefactorModalOpen={isRefactorModalOpen}
+        fromName={oldName}
+        toName={newName}
+      />
+    ),
+    [applyRename, dmnEditorStoreApi, isRefactorModalOpen, newName, oldName]
+  );
+
+  return {
+    setNewIdentifierNameCandidate,
+    isRefactorModalOpen,
+    setIsRefactorModalOpen,
+    refactorConfirmationDialog,
+    newName,
+  };
 }
