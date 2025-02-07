@@ -102,8 +102,9 @@ Feature: Serverless Workflow devmode images
 
   Scenario: verify that the serverless workflow devui is running
     When container is started with env
-      | variable                    | value |
-      | QUARKUS_DEVSERVICES_ENABLED | false |
+      | variable                    | value                                                                                               |
+      | QUARKUS_DEVSERVICES_ENABLED | false                                                                                               |
+      | QUARKUS_DEV_UI_HOSTS        | 172.17.0.2,172.17.0.3,172.17.0.4,172.17.0.5,172.17.0.6,172.17.0.7,172.17.0.8,172.17.0.9,172.17.0.10 | 
     Then check that page is served
       | property             | value                                                                 |
       | port                 | 8080                                                                  |
