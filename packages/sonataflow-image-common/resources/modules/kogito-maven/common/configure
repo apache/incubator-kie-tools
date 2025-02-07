@@ -38,6 +38,8 @@ else
     echo "---> Installing Maven wrapper for Maven 3.8.6"
     cd "${MAVEN_HOME}"/bin
     mvn wrapper:wrapper -Dmaven=3.8.6 -Dtype=source
+    echo "--> Validating Maven wrapper installation"
+    ${MAVEN_CMD} --version
 fi
 
 mkdir "${KOGITO_HOME}"/.m2

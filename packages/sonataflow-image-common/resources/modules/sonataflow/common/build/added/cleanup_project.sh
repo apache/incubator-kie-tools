@@ -25,7 +25,7 @@ echo 'Clean unnecessary files'
 rm -rfv "${PROJECT_ARTIFACT_ID}"/target
 rm -rfv "${PROJECT_ARTIFACT_ID}"/src/main/resources/*
 rm -rfv "${PROJECT_ARTIFACT_ID}"/src/main/docker
-rm -rfv "${PROJECT_ARTIFACT_ID}"/.mvn/wrapper
+rm -rfv "${PROJECT_ARTIFACT_ID}"/.mvn
 rm -rfv "${PROJECT_ARTIFACT_ID}"/mvnw*
 rm -rfv "${PROJECT_ARTIFACT_ID}"/src/test
 rm -rfv "${PROJECT_ARTIFACT_ID}"/*.bak
