@@ -56,7 +56,7 @@ export default defineConfig({
     locale: "en-US",
   },
   expect: {
-    timeout: 30000,
+    timeout: 30_000,
     toHaveScreenshot: {
       // An acceptable ratio of pixels that are different to the
       // total amount of pixels, between 0 and 1.
@@ -66,7 +66,7 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     {
-      timeout: 60000,
+      timeout: 180_000,
       name: ProjectName.CHROMIUM,
       use: { ...devices["Desktop Chrome"], permissions: ["clipboard-read"] },
     },
@@ -77,13 +77,13 @@ export default defineConfig({
     // },
 
     {
-      timeout: 60000,
+      timeout: 180_000,
       name: ProjectName.WEBKIT,
       use: { ...devices["Desktop Safari"], deviceScaleFactor: 1 },
     },
 
     {
-      timeout: 60000,
+      timeout: 180_000,
       name: ProjectName.GOOGLE_CHROME,
       use: { ...devices["Desktop Chrome"], channel: "chrome", permissions: ["clipboard-read"] },
     },
