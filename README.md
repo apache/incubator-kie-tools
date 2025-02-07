@@ -70,14 +70,6 @@ Bootstrapping installs the necessary dependencies for each package.
   >
   > `pnpm bootstrap -F dmn-editor...` bootstraps the `dmn-editor` package and its dependencies.
 
-> **ℹ️ NOTE**
->
-> If you plan on running Playwright tests, set the `PLAYWRIGHT_BASE__installDeps` environment variable to `true` before running the command above.
->
-> `PLAYWRIGHT_BASE__installDeps=true pnpm bootstrap`.
->
-> This will install all Playwright dependencies (such as browsers engines and OS-specific libraries).
-
 #### Step 2: Build
 
 - Dev
@@ -115,7 +107,7 @@ Bootstrapping installs the necessary dependencies for each package.
 
 > **ℹ️ NOTE**
 >
-> Ubuntu 22.04 is the only OS that nativelly supports running E2E tests. To run in another OS please use `export KIE_TOOLS_BUILD__containerizedEndToEndTests=true` together with the `KIE_TOOLS_BUILD__runEndToEndTests`. Please refer to @kie-tools/playwright-base [README](./packages/playwright-base/README.md).
+> Ubuntu 22.04 is the only OS that nativelly supports running E2E tests and by default the E2E tests will run using a Docker container. To run the tests natively in your OS please install the Playwright dependencies during the Bootstrap phase by adding the `PLAYWRIGHT_BASE__installDeps=true` environment variable. Additionally, tweak the containerized tests variable to `false` (`KIE_TOOLS_BUILD__containerizedEndToEndTests=false`). Please refer to @kie-tools/playwright-base [README](./packages/playwright-base/README.md).
 
 > **ℹ️ NOTE**
 >
