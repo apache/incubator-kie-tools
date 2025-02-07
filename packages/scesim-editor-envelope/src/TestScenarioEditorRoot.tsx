@@ -230,13 +230,6 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
       .substring(1); // Remove leading slash.
 
     return normalizedPosixPathRelativeToTheWorkspaceRoot;
-
-    // Example:
-    // this.state.openFileAbsolutePath = /Users/ljmotta/packages/dmns/Dmn.dmn
-    // normalizedPosixPathRelativeToTheOpenFile = ../../tmp/Tmp.dmn
-    // workspaceRootAbsolutePosixPath = /Users/ljmotta
-    // resolvedAbsolutePath = /Users/ljmotta/tmp/Tmp.dmn
-    // return (which is the normalizedPosixPathRelativeToTheWorkspaceRoot) = tmp/Tmp.dmn
   };
 
   private onRequestExternalModelByPathsRelativeToTheOpenFile: TestScenarioEditor.OnRequestExternalModelByPath = async (

@@ -82,6 +82,7 @@ export function SceSimEditorWrapper(props: Partial<StorybookTestScenarioEditorPr
           args.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot
         }
         onRequestToJumpToPath={props?.onRequestToJumpToPath ?? args.onRequestToJumpToPath}
+        onRequestToResolvePath={props?.onRequestToResolvePath ?? args.onRequestToResolvePath}
       />
     </div>
   );
