@@ -94,7 +94,7 @@ export function createNewDmnTypeTestScenario({
 
   if (isAutoFillTableEnabled && dmnModel.model.definitions.drgElement) {
     const itemDefinitions = new Map(
-      dmnModel.model.definitions.itemDefinition!.map(
+      dmnModel.model.definitions.itemDefinition?.map(
         (itemDefinition) => [itemDefinition["@_name"], itemDefinition] as const
       )
     );
