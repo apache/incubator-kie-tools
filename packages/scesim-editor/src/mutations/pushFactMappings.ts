@@ -89,7 +89,6 @@ export function pushFactMappings({
           name: { __$$text: newFactMapping.factIdentifier.name.__$$text },
           className: { __$$text: newFactMapping.factIdentifier.className.__$$text },
         },
-        rawValue: { __$$text: "", "@_class": "string" },
       });
     });
   });
