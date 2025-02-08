@@ -33,7 +33,6 @@ export const defaultEnvJson: EnvJson = {
   KOGITO_CONSOLES_KEYCLOAK_REALM: "kogito",
   KOGITO_CONSOLES_KEYCLOAK_UPDATE_TOKEN_VALIDITY: 30,
   KOGITO_CONSOLES_KEYCLOAK_URL: "http://localhost:8280",
-  SONATAFLOW_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT: buildEnv.sonataflowManagementConsoleWebapp.sonataflowDataIndexUrl,
   SONATAFLOW_MANAGEMENT_CONSOLE_KOGITO_APP_NAME: "SonataFlow Management Console",
   SONATAFLOW_MANAGEMENT_CONSOLE_KOGITO_APP_VERSION: version,
   SONATAFLOW_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE: buildEnv.sonataflowManagementConsoleWebapp.sonataflowEnvMode,

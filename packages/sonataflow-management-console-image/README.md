@@ -109,6 +109,25 @@ The port used internally on the container can be changed:
 
 When building, set the `SONATAFLOW_MANAGEMENT_CONSOLE__port` environment variable to any port you want, and the Containerfile will be built using that port.
 
+## Run the Docker Image Locally
+
+1. This command will start the container and configure it to access your local data-index service from the container.
+   Replace `<HOST_IP_ADDRESS>` with the IP address of your host machine.
+
+   ```bash
+   docker run --rm -it -p 8080:8080 \
+     -e SONATAFLOW_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE='DEV' \
+     -e SONATAFLOW_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT='http://<HOST_IP_ADDRESS>:4000/graphql' \
+     docker.io/apache/incubator-kie-sonataflow-management-console:main
+   ```
+
+2. In a separate terminal, start Sonataflow Dev App for the Data Index service.
+
+   ```bash
+    cd ../sonataflow-dev-app
+    pnpm start
+   ```
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software
