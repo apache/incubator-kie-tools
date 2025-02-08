@@ -94,7 +94,7 @@
     <version.org.infinispan.protostream>4.6.2.Final</version.org.infinispan.protostream>
 
     <!-- Newer version in kie-parent causes ServiceLoader error -->
-    <version.ch.qos.logback>1.5.13</version.ch.qos.logback>
+    <version.ch.qos.logback>1.5.16</version.ch.qos.logback>
     <version.jnuit.docker.rule>0.3</version.jnuit.docker.rule>
     <version.com.spotify.docker>5.0.2</version.com.spotify.docker>
     <version.org.uberfire.latestFinal.release>1.4.0.Final</version.org.uberfire.latestFinal.release>
