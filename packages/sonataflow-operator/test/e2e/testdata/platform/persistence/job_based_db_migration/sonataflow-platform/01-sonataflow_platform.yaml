@@ -24,56 +24,24 @@ spec:
     config:
       strategyOptions:
         KanikoBuildCacheEnabled: "true"
-  persistence:
-    postgresql:
-      secretRef:
-        name: postgres-secrets
-        userKey: USER
-        passwordKey: PASSWORD
-      serviceRef:
-        name: no-db-exists
-        port: 5432
-        databaseName: find-me
   services:
     dataIndex:
-      enabled: false
+      enabled: true
       persistence:
-        dbMigrationStrategy: service
+        dbMigrationStrategy: job
         postgresql:
           jdbcUrl: jdbc:postgresql://postgres:5432/sonataflow?currentSchema=data-index-service
           secretRef:
             name: postgres-secrets
             userKey: POSTGRES_USER
             passwordKey: POSTGRES_PASSWORD
-      podTemplate:
-        initContainers:
-          - name: init-postgres
-            image: registry.access.redhat.com/ubi9/ubi-micro:latest
-            imagePullPolicy: IfNotPresent
-            command:
-              [
-                "sh",
-                "-c",
-                'until (echo 1 > /dev/tcp/postgres.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local/5432) >/dev/null 2>&1; do echo "Waiting for postgres server"; sleep 3; done;',
-              ]
     jobService:
-      enabled: false
+      enabled: true
       persistence:
-        dbMigrationStrategy: service
+        dbMigrationStrategy: job
         postgresql:
           jdbcUrl: jdbc:postgresql://postgres:5432/sonataflow?currentSchema=jobs-service
           secretRef:
             name: postgres-secrets
             userKey: POSTGRES_USER
             passwordKey: POSTGRES_PASSWORD
-      podTemplate:
-        initContainers:
-          - name: init-postgres
-            image: registry.access.redhat.com/ubi9/ubi-micro:latest
-            imagePullPolicy: IfNotPresent
-            command:
-              [
-                "sh",
-                "-c",
-                'until (echo 1 > /dev/tcp/postgres.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local/5432) >/dev/null 2>&1; do echo "Waiting for postgres server"; sleep 3; done;',
-              ]
