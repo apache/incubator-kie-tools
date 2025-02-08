@@ -60,4 +60,4 @@ Feature: Kogito-jobs-service-all-in-one feature.
       | QUARKUS_DATASOURCE_PASSWORD | 123456                                                |
       | QUARKUS_DATASOURCE_JDBC_URL | jdbc:postgresql://10.11.12.13:5432/hibernate_orm_test |
     Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar "/home/kogito/bin/postgresql/quarkus-app/quarkus-run.jar"
-    And container log should contain  Trying to establish a protocol version 3 connection to 10.11.12.13:5432
+    And container log should contain  connected to jdbc:postgresql://10.11.12.13:5432/hibernate_orm_test

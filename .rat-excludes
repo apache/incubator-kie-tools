@@ -1042,6 +1042,8 @@ go.sum
 sonataflow-quarkus-devui-parent.iml
 # packages/stunner-editors/stunner-editors-parent.iml
 stunner-editors-parent.iml
+# packages/kogito-db-migrator-tool/kogito-db-migrator-tool.iml
+kogito-db-migrator-tool.iml
 # packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-api/src/main/resources/META-INF/beans.xml
 beans.xml
 # packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-marshaller/src/main/java/.gitkeep
