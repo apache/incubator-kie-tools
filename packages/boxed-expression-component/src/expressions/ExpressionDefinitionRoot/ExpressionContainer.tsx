@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useRef } from "react";
 import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
-import { BoxedExpression, generateUuid, Normalized } from "../../api";
+import { Action, BoxedExpression, generateUuid, Normalized } from "../../api";
 import { findAllIdsDeep } from "../../ids/ids";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
@@ -67,15 +67,18 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
       const { expression: defaultExpression, widthsById: defaultWidthsById } =
         beeGwtService!.getDefaultExpressionDefinition(logicType, parentElementTypeRef ?? expressionTypeRef, !isNested);
 
-      setExpression((prev: Normalized<BoxedExpression>) => {
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedExpression> = {
-          ...defaultExpression,
-          "@_id": defaultExpression["@_id"] ?? generateUuid(),
-          "@_label": defaultExpression["@_label"] ?? parentElementName ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
-        };
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedExpression>) => {
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedExpression> = {
+            ...defaultExpression,
+            "@_id": defaultExpression["@_id"] ?? generateUuid(),
+            "@_label": defaultExpression["@_label"] ?? parentElementName ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
+          };
 
-        return ret;
+          return ret;
+        },
+        expressionChangedArgs: { action: Action.ExpressionCreated },
       });
 
       setWidthsById(({ newMap }) => {
@@ -94,7 +97,12 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
       }
     });
 
-    setExpression(undefined!); // SPEC DISCREPANCY: Undefined expressions gives users the ability to select the expression type.
+    setExpression({
+      setExpressionAction: () => {
+        return undefined; // SPEC DISCREPANCY: Undefined expressions gives users the ability to select the expression type.
+      },
+      expressionChangedArgs: { action: Action.ExpressionReset },
+    });
   }, [expression, setExpression, setWidthsById]);
 
   const getPlacementRef = useCallback(() => containerRef.current!, []);

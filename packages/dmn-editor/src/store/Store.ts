@@ -35,6 +35,7 @@ import { computeImportsByNamespace } from "./computed/computeImportsByNamespace"
 import { computeIndexedDrd } from "./computed/computeIndexes";
 import { computeIsDropTargetNodeValidForSelection } from "./computed/computeIsDropTargetNodeValidForSelection";
 import { DEFAULT_VIEWPORT } from "../diagram/Diagram";
+import { computeExternalDmnModelsByNamespaceMap } from "./computed/computeExternalDmnModelsByNamespaceMap";
 
 enableMapSet(); // Necessary because `Computed` has a lot of Maps and Sets.
 
@@ -146,9 +147,13 @@ export type Computed = {
     e: ExternalModelsIndex | undefined
   ) => ReturnType<typeof computeDirectlyIncludedExternalModelsByNamespace>;
 
+  getExternalDmnModelsByNamespaceMap: (
+    e: ExternalModelsIndex | undefined
+  ) => ReturnType<typeof computeExternalDmnModelsByNamespaceMap>;
+
   /**
    * Get a valid DRD index.
-   * `__unsafeDrdIndex` can point to a DRD that doens't exist.
+   * `__unsafeDrdIndex` can point to a DRD that doesn't exist.
    */
   getDrdIndex(): number;
 
@@ -425,6 +430,11 @@ export function createDmnEditorStore(model: DmnLatestModel, computedCache: Compu
               s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace),
               s.computed(s).indexedDrd(),
               s.computed(s).isAlternativeInputDataShape(),
+            ]),
+
+          getExternalDmnModelsByNamespaceMap: (externalModelsByNamespace: ExternalModelsIndex | undefined) =>
+            computedCache.cached("getExternalDmnModelsByNamespaceMap", computeExternalDmnModelsByNamespaceMap, [
+              s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
             ]),
         };
       },

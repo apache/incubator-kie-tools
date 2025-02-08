@@ -29,7 +29,7 @@ import {
   MONACO_FEEL_THEME,
 } from "./FeelConfigs";
 
-import { FeelSyntacticSymbolNature, FeelVariables, ParsedExpression } from "@kie-tools/dmn-feel-antlr4-parser";
+import { FeelSyntacticSymbolNature, FeelIdentifiers, ParsedExpression } from "@kie-tools/dmn-feel-antlr4-parser";
 import { SemanticTokensProvider } from "./semanticTokensProvider";
 
 export const EXPRESSION_PROPERTIES_SEPARATOR = ".";
@@ -49,7 +49,7 @@ export interface FeelInputProps {
   onKeyDown?: (event: Monaco.IKeyboardEvent, value: string) => void;
   onChange?: (event: Monaco.editor.IModelContentChangedEvent, value: string, preview: string) => void;
   options?: Monaco.editor.IStandaloneEditorConstructionOptions;
-  feelVariables?: FeelVariables;
+  feelIdentifiers?: FeelIdentifiers;
   expressionId?: string;
 }
 
@@ -87,7 +87,7 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
       onKeyDown,
       onChange,
       options,
-      feelVariables,
+      feelIdentifiers,
       expressionId,
     },
     forwardRef
@@ -99,24 +99,24 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
     const [currentParsedExpression, setCurrentParsedExpression] = useState<ParsedExpression>();
 
     const semanticTokensProvider = useMemo(
-      () => new SemanticTokensProvider(feelVariables, expressionId, setCurrentParsedExpression),
-      [expressionId, feelVariables]
+      () => new SemanticTokensProvider(feelIdentifiers, expressionId, setCurrentParsedExpression),
+      [expressionId, feelIdentifiers]
     );
 
     const getLastValidSymbolAtPosition = useCallback((currentParsedExpression: ParsedExpression, position: number) => {
       let lastValidSymbol;
-      for (let i = 0; i < currentParsedExpression.feelVariables.length; i++) {
-        const feelVariable = currentParsedExpression.feelVariables[i];
+      for (let i = 0; i < currentParsedExpression.feelIdentifiedSymbols.length; i++) {
+        const feelVariable = currentParsedExpression.feelIdentifiedSymbols[i];
 
         if (feelVariable.startIndex < position && position <= feelVariable.startIndex + feelVariable.length) {
           lastValidSymbol = feelVariable;
           const target = i - 1;
           if (
-            target < currentParsedExpression.feelVariables.length &&
+            target < currentParsedExpression.feelIdentifiedSymbols.length &&
             0 <= target &&
             lastValidSymbol.feelSymbolNature === FeelSyntacticSymbolNature.Unknown
           ) {
-            lastValidSymbol = currentParsedExpression.feelVariables[target];
+            lastValidSymbol = currentParsedExpression.feelIdentifiedSymbols[target];
           }
           break;
         }
@@ -125,7 +125,7 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
     }, []);
 
     const getSymbolAtPosition = useCallback((currentParsedExpression: ParsedExpression, position: number) => {
-      for (const feelVariable of currentParsedExpression.feelVariables) {
+      for (const feelVariable of currentParsedExpression.feelIdentifiedSymbols) {
         if (feelVariable.startIndex < position && position <= feelVariable.startIndex + feelVariable.length) {
           return feelVariable;
         }
@@ -285,7 +285,7 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
       return () => {
         disposable.dispose();
       };
-    }, [enabled, expressionId, feelVariables, semanticTokensProvider]);
+    }, [enabled, expressionId, feelIdentifiers, semanticTokensProvider]);
 
     const config = useMemo(() => {
       return feelDefaultConfig(options);

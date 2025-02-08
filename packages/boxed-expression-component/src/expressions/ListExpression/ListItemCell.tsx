@@ -39,18 +39,21 @@ export function ListItemCell({
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onSetExpression = useCallback<OnSetExpression>(
-    ({ getNewExpression }) => {
-      setExpression((prev: Normalized<BoxedList>) => {
-        const newItems = [...(prev.expression ?? [])];
-        newItems[rowIndex] = getNewExpression(newItems[rowIndex])!; // SPEC DISCREPANCY: Allowing undefined expression
+    ({ getNewExpression, expressionChangedArgs }) => {
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedList>) => {
+          const newItems = [...(prev.expression ?? [])];
+          newItems[rowIndex] = getNewExpression(newItems[rowIndex])!; // SPEC DISCREPANCY: Allowing undefined expression
 
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedList> = {
-          ...prev,
-          expression: newItems,
-        };
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedList> = {
+            ...prev,
+            expression: newItems,
+          };
 
-        return ret;
+          return ret;
+        },
+        expressionChangedArgs,
       });
     },
     [rowIndex, setExpression]

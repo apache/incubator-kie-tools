@@ -4075,6 +4075,9 @@ importers:
       '@kie-tools/dmn-feel-antlr4-parser':
         specifier: workspace:*
         version: link:../dmn-feel-antlr4-parser
+      '@kie-tools/dmn-language-service':
+        specifier: workspace:*
+        version: link:../dmn-language-service
       '@kie-tools/dmn-marshaller':
         specifier: workspace:*
         version: link:../dmn-marshaller
@@ -4548,6 +4551,9 @@ importers:
       antlr4:
         specifier: ^4.13.0
         version: 4.13.0
+      uuid:
+        specifier: ^8.3.2
+        version: 8.3.2
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -4564,6 +4570,9 @@ importers:
       '@kie-tools/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      '@types/uuid':
+        specifier: ^8.3.0
+        version: 8.3.0
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2

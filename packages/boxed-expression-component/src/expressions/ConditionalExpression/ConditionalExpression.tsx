@@ -18,12 +18,14 @@
  */
 
 import {
+  Action,
   BeeTableHeaderVisibility,
   BeeTableOperation,
   BeeTableOperationConfig,
   BeeTableProps,
   BoxedConditional,
   DmnBuiltInDataType,
+  ExpressionChangedArgs,
   generateUuid,
   Normalized,
 } from "../../api";
@@ -171,40 +173,43 @@ export function ConditionalExpression({
 
   const onRowReset = useCallback(
     (args: { rowIndex: number }) => {
-      setExpression((prev: Normalized<BoxedConditional>) => {
-        if (args.rowIndex === 0) {
-          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-          const ret: Normalized<BoxedConditional> = {
-            ...prev,
-            if: {
-              "@_id": generateUuid(),
-              expression: undefined!,
-            }, // SPEC DISCREPANCY
-          };
-          return ret;
-        } else if (args.rowIndex === 1) {
-          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-          const ret: Normalized<BoxedConditional> = {
-            ...prev,
-            then: {
-              "@_id": generateUuid(),
-              expression: undefined!,
-            }, // SPEC DISCREPANCY
-          };
-          return ret;
-        } else if (args.rowIndex === 2) {
-          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-          const ret: Normalized<BoxedConditional> = {
-            ...prev,
-            else: {
-              "@_id": generateUuid(),
-              expression: undefined!,
-            }, // SPEC DISCREPANCY
-          };
-          return ret;
-        } else {
-          throw new Error("ConditionalExpression shouldn't have more than 3 rows.");
-        }
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedConditional>) => {
+          if (args.rowIndex === 0) {
+            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+            const ret: Normalized<BoxedConditional> = {
+              ...prev,
+              if: {
+                "@_id": generateUuid(),
+                expression: undefined!,
+              }, // SPEC DISCREPANCY
+            };
+            return ret;
+          } else if (args.rowIndex === 1) {
+            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+            const ret: Normalized<BoxedConditional> = {
+              ...prev,
+              then: {
+                "@_id": generateUuid(),
+                expression: undefined!,
+              }, // SPEC DISCREPANCY
+            };
+            return ret;
+          } else if (args.rowIndex === 2) {
+            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+            const ret: Normalized<BoxedConditional> = {
+              ...prev,
+              else: {
+                "@_id": generateUuid(),
+                expression: undefined!,
+              }, // SPEC DISCREPANCY
+            };
+            return ret;
+          } else {
+            throw new Error("ConditionalExpression shouldn't have more than 3 rows.");
+          }
+        },
+        expressionChangedArgs: { action: Action.RowReset, rowIndex: args.rowIndex },
       });
     },
     [setExpression]
@@ -212,18 +217,40 @@ export function ConditionalExpression({
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression((prev: Normalized<BoxedConditional>) => {
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedConditional> = {
-          ...prev,
-          "@_label": name,
-          "@_typeRef": typeRef,
-        };
+      const expressionChangedArgs: ExpressionChangedArgs = {
+        action: Action.VariableChanged,
+        variableUuid: expressionHolderId,
+        typeChange:
+          typeRef !== conditionalExpression["@_typeRef"]
+            ? {
+                from: conditionalExpression["@_typeRef"] ?? "",
+                to: typeRef,
+              }
+            : undefined,
+        nameChange:
+          name !== conditionalExpression["@_label"]
+            ? {
+                from: conditionalExpression["@_label"] ?? "",
+                to: name,
+              }
+            : undefined,
+      };
 
-        return ret;
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedConditional>) => {
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedConditional> = {
+            ...prev,
+            "@_label": name,
+            "@_typeRef": typeRef,
+          };
+
+          return ret;
+        },
+        expressionChangedArgs,
       });
     },
-    [setExpression]
+    [conditionalExpression, expressionHolderId, setExpression]
   );
 
   const getRowKey = useCallback((row: ReactTable.Row<ROWTYPE>) => {

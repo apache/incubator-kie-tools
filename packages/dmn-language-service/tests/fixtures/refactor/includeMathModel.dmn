@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+-->
+<definitions
+  xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
+  expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+  namespace="https://kie.org/dmn/_C43CF726-D7D2-4B96-A0DC-11B116837493"
+  id="_89E4960B-21A7-4E1E-A7BB-B9D9421D7BCB"
+  name="DMN_1FA04E39-1D32-49A8-B905-592D9DAA0C0C"
+  xmlns:included0="https://kie.org/dmn/_39AA2E1D-15A9-400B-BA55-B663B90AA2DF"
+  xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:kie="https://kie.org/dmn/extensions/1.0"
+>
+  <import
+    id="_C3E4FDDA-CDC0-474D-A83A-2BC4C645821F"
+    name="INCLUDED_MATH"
+    importType="http://www.omg.org/spec/DMN/20180521/MODEL/"
+    namespace="https://kie.org/dmn/_39AA2E1D-15A9-400B-BA55-B663B90AA2DF"
+    locationURI="./Math.dmn"
+  />
+  <decision name="Use The Included Nodes" id="_F2FC30D9-4FE0-4FAA-8FCA-CDA4013AAD2A">
+    <variable name="Use The Included Nodes" id="_55B083CC-4C99-4434-98EC-F08281A89F71" typeRef="number" />
+    <informationRequirement id="_C0775058-DCAA-4E95-AE1D-2CDDE0B7FE76">
+      <requiredDecision
+        href="https://kie.org/dmn/_39AA2E1D-15A9-400B-BA55-B663B90AA2DF#_D1B3D6E9-83C7-4BD0-B8CE-1D2F15E73826"
+      />
+    </informationRequirement>
+    <informationRequirement id="_C4BE20E0-E35B-49B2-AEB7-5CA88862BCE2">
+      <requiredInput
+        href="https://kie.org/dmn/_39AA2E1D-15A9-400B-BA55-B663B90AA2DF#_0D24A776-9966-44A4-8F07-F8DABD80539D"
+      />
+    </informationRequirement>
+    <informationRequirement id="_EAC23C37-84B2-4AF6-A99F-9E5C2CF2B676">
+      <requiredInput
+        href="https://kie.org/dmn/_39AA2E1D-15A9-400B-BA55-B663B90AA2DF#_8D56EA4E-400A-475D-AA25-ECF4A092EC34"
+      />
+    </informationRequirement>
+    <informationRequirement id="_72F4CBDB-8426-47E6-BC34-F1B0D2A7CF84">
+      <requiredInput
+        href="https://kie.org/dmn/_39AA2E1D-15A9-400B-BA55-B663B90AA2DF#_A86D2E25-2435-4CDF-8380-89046D11D1CB"
+      />
+    </informationRequirement>
+    <informationRequirement id="_6386E4DB-BAEA-416F-8409-96F5AAF847CB">
+      <requiredDecision href="#_2D9DBFBB-0CE5-45EA-8A0E-478D9F4558D5" />
+    </informationRequirement>
+    <literalExpression id="_C8B740AC-F2E3-47F4-A9FE-60B6FF1A713B" typeRef="number" label="Use The Included Nodes">
+      <text
+      >INCLUDED_MATH.Input A + INCLUDED_MATH.Input B + INCLUDED_MATH.Input C + INCLUDED_MATH.Sum Numbers + INCLUDED_MATH_FAKE</text>
+    </literalExpression>
+  </decision>
+  <decision name="INCLUDED_MATH_FAKE" id="_2D9DBFBB-0CE5-45EA-8A0E-478D9F4558D5">
+    <variable name="INCLUDED_MATH_FAKE" id="_81D744C8-FEB7-4822-96C1-7016062FA35B" typeRef="number" />
+    <literalExpression id="_07E6428C-C9EE-4062-B806-AE02DF204FE7" typeRef="number" label="INCLUDED_MATH_FAKE">
+      <text>123456</text>
+    </literalExpression>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram
+      id="_1AFA1ACC-EC84-4AF8-A8A6-5B822C68E317"
+      name="Default DRD"
+      useAlternativeInputDataShape="false"
+    >
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_C8B740AC-F2E3-47F4-A9FE-60B6FF1A713B">
+            <kie:width>907</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_07E6428C-C9EE-4062-B806-AE02DF204FE7">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape
+        id="_95F25B36-3C19-437F-960C-C3EB3BCEE388"
+        dmnElementRef="included0:_D1B3D6E9-83C7-4BD0-B8CE-1D2F15E73826"
+      >
+        <dc:Bounds x="480" y="200" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape
+        id="_4FA26B72-9315-4F0F-863F-DEF038DDD967"
+        dmnElementRef="included0:_0D24A776-9966-44A4-8F07-F8DABD80539D"
+      >
+        <dc:Bounds x="332" y="472" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape
+        id="_BAC50B80-20A6-43F8-9895-460A76040446"
+        dmnElementRef="included0:_8D56EA4E-400A-475D-AA25-ECF4A092EC34"
+      >
+        <dc:Bounds x="112" y="472" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape
+        id="_0C4C9BCE-FBCB-4204-833A-E5DF277C3A08"
+        dmnElementRef="included0:_A86D2E25-2435-4CDF-8380-89046D11D1CB"
+      >
+        <dc:Bounds x="552" y="472" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape
+        id="_73E956EE-A14F-4BF6-8BC0-0FB7F5CA6B77"
+        dmnElementRef="_F2FC30D9-4FE0-4FAA-8FCA-CDA4013AAD2A"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="112" y="112" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge
+        id="_02AD19A7-13E0-4D01-B75A-94B51FEB4167"
+        dmnElementRef="_C0775058-DCAA-4E95-AE1D-2CDDE0B7FE76"
+        sourceElement="_95F25B36-3C19-437F-960C-C3EB3BCEE388"
+        targetElement="_73E956EE-A14F-4BF6-8BC0-0FB7F5CA6B77"
+      >
+        <di:waypoint x="560" y="200" />
+        <di:waypoint x="192" y="192" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge
+        id="_8A9CDABA-B73A-4596-A41B-914D4C5B72A3"
+        dmnElementRef="_C4BE20E0-E35B-49B2-AEB7-5CA88862BCE2"
+        sourceElement="_4FA26B72-9315-4F0F-863F-DEF038DDD967"
+        targetElement="_73E956EE-A14F-4BF6-8BC0-0FB7F5CA6B77"
+      >
+        <di:waypoint x="412" y="472" />
+        <di:waypoint x="192" y="192" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge
+        id="_002243AB-C915-4485-93C5-6454F98CCD51"
+        dmnElementRef="_EAC23C37-84B2-4AF6-A99F-9E5C2CF2B676"
+        sourceElement="_BAC50B80-20A6-43F8-9895-460A76040446"
+        targetElement="_73E956EE-A14F-4BF6-8BC0-0FB7F5CA6B77"
+      >
+        <di:waypoint x="192" y="472" />
+        <di:waypoint x="192" y="192" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge
+        id="_0CB687D9-84A5-4409-A3F8-7869535572DD"
+        dmnElementRef="_72F4CBDB-8426-47E6-BC34-F1B0D2A7CF84"
+        sourceElement="_0C4C9BCE-FBCB-4204-833A-E5DF277C3A08"
+        targetElement="_73E956EE-A14F-4BF6-8BC0-0FB7F5CA6B77"
+      >
+        <di:waypoint x="632" y="472" />
+        <di:waypoint x="192" y="192" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape
+        id="_58DA5524-44C8-4AAD-B9F2-BE4FE7233F22"
+        dmnElementRef="_2D9DBFBB-0CE5-45EA-8A0E-478D9F4558D5"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="-140" y="120" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge
+        id="_463227F9-CC25-4F5D-BB9A-DA93C50E50E5"
+        dmnElementRef="_6386E4DB-BAEA-416F-8409-96F5AAF847CB"
+        sourceElement="_58DA5524-44C8-4AAD-B9F2-BE4FE7233F22"
+        targetElement="_73E956EE-A14F-4BF6-8BC0-0FB7F5CA6B77"
+      >
+        <di:waypoint x="-60" y="160" />
+        <di:waypoint x="192" y="152" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

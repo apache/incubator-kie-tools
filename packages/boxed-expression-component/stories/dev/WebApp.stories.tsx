@@ -34,6 +34,7 @@ import {
   postBureauAffordabilityExpression,
   postBureauAffordabilityWidthsById,
 } from "../useCases/LoanOriginations/RoutingDecisionService/PostBureauAffordability/PostBureauAffordability.stories";
+import { OnExpressionChange } from "../../src/BoxedExpressionEditorContext";
 
 /**
  * Constants copied from tests to fix debugger
@@ -111,6 +112,18 @@ function App() {
     []
   );
 
+  const onExpressionChange = useCallback<OnExpressionChange>(
+    (args) => {
+      const newExpression =
+        typeof args.setExpressionAction === "function"
+          ? args.setExpressionAction(boxedExpression)
+          : args.setExpressionAction;
+
+      setBoxedExpression(newExpression);
+    },
+    [boxedExpression]
+  );
+
   const beeGwtService: BeeGwtService = {
     getDefaultExpressionDefinition(logicType, typeRef) {
       return {
@@ -154,7 +167,7 @@ function App() {
               {BoxedExpressionEditorStory({
                 expressionHolderId: "_00000000-0000-0000-0000-000000000000",
                 expression: boxedExpression,
-                onExpressionChange: setBoxedExpression,
+                onExpressionChange: onExpressionChange,
                 widthsById: widthsById,
                 onWidthsChange: setWidthsById,
                 isResetSupportedOnRootExpression: true,

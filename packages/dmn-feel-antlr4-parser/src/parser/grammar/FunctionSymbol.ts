@@ -20,7 +20,12 @@
 import { Scope } from "./Scope";
 import { Symbol } from "./Symbol";
 import { Type } from "./Type";
+import { Expression } from "../Expression";
+import { FeelSyntacticSymbolNature } from "../FeelSyntacticSymbolNature";
 
+/**
+ * Defines a symbol that represents a function or a method.
+ */
 export class FunctionSymbol implements Symbol {
   private readonly id;
 
@@ -33,9 +38,19 @@ export class FunctionSymbol implements Symbol {
   }
 
   getType(): Type | undefined {
-    return { name: this.id };
+    return {
+      source: {
+        value: this.id,
+        feelSyntacticSymbolNature: FeelSyntacticSymbolNature.Unknown,
+        expressionsThatUseTheIdentifier: new Map<string, Expression>(),
+      },
+      name: this.id,
+    };
   }
 
+  /**
+   * Symbols and Functions does not define scopes, so it returns undefined.
+   */
   getScope(): Scope | undefined {
     return undefined;
   }

@@ -45,7 +45,7 @@ import { BeeTableCellWidthsToFitDataContextProvider } from "../../resizing/BeeTa
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 import "./BeeTable.css";
 
-const ROW_INDEX_COLUMN_ACCESOR = "#";
+const ROW_INDEX_COLUMN_ACCESSOR = "#";
 const ROW_INDEX_SUB_COLUMN_ACCESSOR = "0";
 
 export function getColumnsAtLastLevel<R extends ReactTable.Column<any> | ReactTable.ColumnInstance<any>>(
@@ -85,7 +85,7 @@ export function BeeTableInternal<R extends object>({
   onHeaderKeyUp,
   onDataCellClick,
   onDataCellKeyUp,
-  controllerCell = ROW_INDEX_COLUMN_ACCESOR,
+  controllerCell = ROW_INDEX_COLUMN_ACCESSOR,
   cellComponentByColumnAccessor,
   rows,
   columns,
@@ -157,7 +157,7 @@ export function BeeTableInternal<R extends object>({
     (currentControllerCell, columns) => {
       const rowIndexColumn: ReactTable.Column<R> = {
         label: currentControllerCell as any, //FIXME: https://github.com/apache/incubator-kie-issues/issues/169
-        accessor: ROW_INDEX_COLUMN_ACCESOR as any,
+        accessor: ROW_INDEX_COLUMN_ACCESSOR as any,
         width: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
         minWidth: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
         isRowIndexColumn: true,

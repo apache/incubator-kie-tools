@@ -1,0 +1,361 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+-->
+<definitions
+  xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
+  xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+  xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+  xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+  xmlns:kie="https://kie.org/dmn/extensions/1.0"
+  expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+  namespace="https://kie.org/dmn/_39AA2E1D-15A9-400B-BA55-B663B90AA2DF"
+  id="_0F856C52-28FC-4FCC-82E9-F1D55767398A"
+  name="DMN_3386744C-144E-40BE-B4E2-0884B77C9103"
+>
+  <decision name="Sum Numbers" id="_D1B3D6E9-83C7-4BD0-B8CE-1D2F15E73826">
+    <variable name="Sum Numbers" id="_3278A96D-5669-4A14-974B-AACCA3D77B3D" typeRef="number" />
+    <informationRequirement id="_9A503071-5779-47B6-9C7D-E79B02077AE4">
+      <requiredInput href="#_0D24A776-9966-44A4-8F07-F8DABD80539D" />
+    </informationRequirement>
+    <informationRequirement id="_C3256C77-956B-423C-A6E0-5C34EAD064B6">
+      <requiredInput href="#_8D56EA4E-400A-475D-AA25-ECF4A092EC34" />
+    </informationRequirement>
+    <informationRequirement id="_B36FE306-1C01-4C61-9EE0-FEAFA6C90EF1">
+      <requiredInput href="#_A86D2E25-2435-4CDF-8380-89046D11D1CB" />
+    </informationRequirement>
+  </decision>
+  <inputData name="Input A" id="_0D24A776-9966-44A4-8F07-F8DABD80539D">
+    <variable name="Input A" id="_17CFF800-1F7E-472C-AD6A-3F5370FF2B09" typeRef="number" />
+  </inputData>
+  <inputData name="Input B" id="_8D56EA4E-400A-475D-AA25-ECF4A092EC34">
+    <variable name="Input B" id="_FDB80EC6-EDA0-4575-8CF5-49E4AAA1EBB2" typeRef="number" />
+  </inputData>
+  <inputData name="Input C" id="_A86D2E25-2435-4CDF-8380-89046D11D1CB">
+    <variable name="Input C" id="_C0E25EB4-3F19-4807-853A-DE36D216A1CA" typeRef="string" />
+  </inputData>
+  <decision name="Some calcs" id="_BBBF0022-6ECF-4AF4-91DC-A8AEB41ED8BA">
+    <variable name="Some calcs" id="_E197D100-8C81-44DB-A884-11FADB2B38DC" />
+    <informationRequirement id="_4560D464-C977-44BE-AD1B-D0F16DADEAD9">
+      <requiredDecision href="#_D1B3D6E9-83C7-4BD0-B8CE-1D2F15E73826" />
+    </informationRequirement>
+    <context id="_0F1BC41A-D624-4B7B-9E05-A9DC8845E556" label="Some calcs">
+      <contextEntry id="_C6AC1327-89C7-4EE5-8877-1B16EC059646">
+        <variable id="_0A838F50-7852-45B4-A3A8-615A45D24C90" name="Inner Calc 1" typeRef="number" />
+        <literalExpression id="_3F0521F2-186A-4BF6-B482-C70A827A1939" typeRef="number" label="Inner Calc 1">
+          <text>Sum Numbers + 10 + Sum Numbers + 20</text>
+        </literalExpression>
+      </contextEntry>
+      <contextEntry id="_810B69CE-0B3A-445F-8272-1AE6B5E285B2">
+        <variable id="_B5B3C83D-6BDB-4924-AF58-D7D85EF70BDF" name="Inner Calc 2" typeRef="number">
+          <description />
+        </variable>
+        <literalExpression id="_9CF6F853-53EC-45CB-A5DD-42065A299AE4" typeRef="number" label="Inner Calc 2">
+          <text>10 + Sum Numbers + 50+Sum Numbers/10*Sum Numbers-Sum Numbers+1</text>
+        </literalExpression>
+      </contextEntry>
+      <contextEntry id="_07C31FED-F5E2-4262-A2B1-2DC8582DC81D">
+        <literalExpression id="_62182814-0852-470C-9FB0-FE1BA1CEC068" label="Some calcs">
+          <text>Inner Calc 1+1+Inner Calc 2+2+Sum Numbers/Inner Calc 1 + Inner Calc 2 + Sum Numbers</text>
+        </literalExpression>
+      </contextEntry>
+    </context>
+  </decision>
+  <decision name="Test With Some" id="_04E2A70A-6527-4333-8AEC-BE33E38EC02D">
+    <variable name="Test With Some" id="_9B6FE211-E007-4E70-9445-FE8263C0AB7F" typeRef="boolean" />
+    <informationRequirement id="_54C7A158-B984-4BD6-AE1A-E0C542638E23">
+      <requiredDecision href="#_D1B3D6E9-83C7-4BD0-B8CE-1D2F15E73826" />
+    </informationRequirement>
+    <some
+      id="_46F5BE0C-ADA7-4FE9-B418-48C7D2A3EBFD"
+      label="Test With Some"
+      typeRef="boolean"
+      iteratorVariable="mySomeVar"
+    >
+      <in id="_7D8075B9-6FC2-4B8E-993C-6CBBDB90AA77">
+        <list id="_55BF8ED9-7AF3-494C-A1DB-17B029A7B569" label="Expression Name">
+          <literalExpression id="_39501ACE-4859-4F31-AE3A-719C4854A133" label="Expression Name">
+            <text>Sum Numbers +10</text>
+          </literalExpression>
+          <literalExpression id="_DC5A5662-677E-4B6D-8DB0-3331CFFE304D" label="Expression Name">
+            <text>Sum Numbers*2</text>
+          </literalExpression>
+        </list>
+      </in>
+      <satisfies id="_13204B5B-D2FB-4852-8E2D-B66B4F5F468B">
+        <literalExpression id="_0597BCD6-EA94-416D-BA4B-7009B240CEF0" label="Expression Name">
+          <text>mySomeVar &gt; 20</text>
+        </literalExpression>
+      </satisfies>
+    </some>
+  </decision>
+  <decision name="Test With Every" id="_74737AEE-244E-46C6-BF81-7EF835F17B1C">
+    <variable name="Test With Every" id="_183B2D5C-C353-4EEA-A25D-E4DB097C1D2C" />
+    <informationRequirement id="_B9F0F2B7-3EF4-4846-A63F-2294C3F1E574">
+      <requiredInput href="#_0D24A776-9966-44A4-8F07-F8DABD80539D" />
+    </informationRequirement>
+    <informationRequirement id="_F4F4D82E-37E2-43CA-83C0-74793BD0CB8B">
+      <requiredInput href="#_8D56EA4E-400A-475D-AA25-ECF4A092EC34" />
+    </informationRequirement>
+    <informationRequirement id="_69BDE488-81CA-4243-B25A-775F4733AEA1">
+      <requiredInput href="#_A86D2E25-2435-4CDF-8380-89046D11D1CB" />
+    </informationRequirement>
+    <every id="_531BBFBA-6C3B-4A5C-B412-113CF70DF8F4" label="Test With Every" iteratorVariable="myEveryVar">
+      <in id="_C0559ADA-5082-4A6A-8410-4BA9DD457D48">
+        <list id="_BA18D88E-7FAF-4D58-A957-D5905F5C5EB2" label="Expression Name">
+          <literalExpression id="_4CBA6BF5-D430-414D-8025-4DD499FA9F80" label="Expression Name">
+            <text>(Input A + Input B + Input C)/2</text>
+          </literalExpression>
+          <literalExpression id="_DAD9ED2A-C725-4C3D-BE5F-9A201D32F83F" label="Expression Name">
+            <text>(Input A + Input B + Input C)/3</text>
+          </literalExpression>
+          <literalExpression id="_4032930B-DD28-4019-B617-5E68F8FAF67B" label="Expression Name">
+            <text>Input A + Input B + Input C</text>
+          </literalExpression>
+        </list>
+      </in>
+      <satisfies id="_54DA9DF3-19DA-4E49-8824-7CB6B771DDC0">
+        <literalExpression id="_731556A3-EA79-4863-B921-154EA3134A81" label="Expression Name">
+          <text>myEveryVar &gt; 2</text>
+        </literalExpression>
+      </satisfies>
+    </every>
+  </decision>
+  <decisionService name="My Decision Service" id="_15386E14-2211-4206-8C23-924F7B2068BF">
+    <variable name="My Decision Service" id="_337B39BC-F747-46A0-94B2-E2FFCB66B08E" />
+    <outputDecision href="#_BBBF0022-6ECF-4AF4-91DC-A8AEB41ED8BA" />
+    <encapsulatedDecision href="#_D1B3D6E9-83C7-4BD0-B8CE-1D2F15E73826" />
+    <inputData href="#_0D24A776-9966-44A4-8F07-F8DABD80539D" />
+    <inputData href="#_8D56EA4E-400A-475D-AA25-ECF4A092EC34" />
+    <inputData href="#_A86D2E25-2435-4CDF-8380-89046D11D1CB" />
+  </decisionService>
+  <decision name="Call DS Node" id="_072CCBB0-B753-491C-A6A3-96875F709D56">
+    <variable id="_F480439D-E322-41BA-85AD-EB442538A664" typeRef="number" name="Call DS Node" />
+    <knowledgeRequirement id="_D88DD773-B321-48A8-9AE4-C4BF568FA1F4">
+      <requiredKnowledge href="#_15386E14-2211-4206-8C23-924F7B2068BF" />
+    </knowledgeRequirement>
+    <literalExpression id="_D12BB402-5C2E-4AE5-903B-8A2594DA31F6" typeRef="number" label="Call DS Node">
+      <text>My Decision Service(10, 20, 30) /3 + My Decision Service(1,1,1)</text>
+    </literalExpression>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram
+      id="_02955123-1184-4D34-8CB0-330F2B190353"
+      name="Default DRD"
+      useAlternativeInputDataShape="false"
+    >
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_0F1BC41A-D624-4B7B-9E05-A9DC8845E556">
+            <kie:width>120</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_3F0521F2-186A-4BF6-B482-C70A827A1939">
+            <kie:width>469</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_9CF6F853-53EC-45CB-A5DD-42065A299AE4">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_62182814-0852-470C-9FB0-FE1BA1CEC068">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_39501ACE-4859-4F31-AE3A-719C4854A133">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_DC5A5662-677E-4B6D-8DB0-3331CFFE304D">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_0597BCD6-EA94-416D-BA4B-7009B240CEF0">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_4CBA6BF5-D430-414D-8025-4DD499FA9F80">
+            <kie:width>349</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_DAD9ED2A-C725-4C3D-BE5F-9A201D32F83F">
+            <kie:width>349</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_4032930B-DD28-4019-B617-5E68F8FAF67B">
+            <kie:width>349</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_731556A3-EA79-4863-B921-154EA3134A81">
+            <kie:width>411</kie:width>
+          </kie:ComponentWidths>
+          <kie:ComponentWidths dmnElementRef="_D12BB402-5C2E-4AE5-903B-8A2594DA31F6">
+            <kie:width>784</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape
+        id="_C5B5EADA-420F-432E-BFFB-9C5B92AF4BA3"
+        dmnElementRef="_D1B3D6E9-83C7-4BD0-B8CE-1D2F15E73826"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="380" y="80" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape
+        id="_1607B390-E438-4CBA-A0B4-CFCEAA73F784"
+        dmnElementRef="_0D24A776-9966-44A4-8F07-F8DABD80539D"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="180" y="260" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape
+        id="_AF6BEF1D-F3B9-4F95-B3E1-9017A38FF95E"
+        dmnElementRef="_8D56EA4E-400A-475D-AA25-ECF4A092EC34"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="380" y="260" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape
+        id="_1C878523-942E-4F4A-8D9D-0671521CB976"
+        dmnElementRef="_A86D2E25-2435-4CDF-8380-89046D11D1CB"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="560" y="260" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge
+        id="_C5E34CFA-3907-4F7D-9F70-FB83E5CC024C"
+        dmnElementRef="_9A503071-5779-47B6-9C7D-E79B02077AE4"
+        sourceElement="_1607B390-E438-4CBA-A0B4-CFCEAA73F784"
+        targetElement="_C5B5EADA-420F-432E-BFFB-9C5B92AF4BA3"
+      >
+        <di:waypoint x="260" y="300" />
+        <di:waypoint x="460" y="120" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge
+        id="_A2E1D676-053E-4AEF-B6B3-EB77B2D3B6A7"
+        dmnElementRef="_C3256C77-956B-423C-A6E0-5C34EAD064B6"
+        sourceElement="_AF6BEF1D-F3B9-4F95-B3E1-9017A38FF95E"
+        targetElement="_C5B5EADA-420F-432E-BFFB-9C5B92AF4BA3"
+      >
+        <di:waypoint x="460" y="300" />
+        <di:waypoint x="460" y="120" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge
+        id="_0663F7DB-B211-4877-89D6-000C1B20E803"
+        dmnElementRef="_B36FE306-1C01-4C61-9EE0-FEAFA6C90EF1"
+        sourceElement="_1C878523-942E-4F4A-8D9D-0671521CB976"
+        targetElement="_C5B5EADA-420F-432E-BFFB-9C5B92AF4BA3"
+      >
+        <di:waypoint x="640" y="300" />
+        <di:waypoint x="460" y="120" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape
+        id="_55A18F38-44C5-4067-971F-7C03A35675C1"
+        dmnElementRef="_BBBF0022-6ECF-4AF4-91DC-A8AEB41ED8BA"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="380" y="-80" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge
+        id="_7727C031-E829-4642-A042-AA4A568B0F51"
+        dmnElementRef="_4560D464-C977-44BE-AD1B-D0F16DADEAD9"
+        sourceElement="_C5B5EADA-420F-432E-BFFB-9C5B92AF4BA3"
+        targetElement="_55A18F38-44C5-4067-971F-7C03A35675C1"
+      >
+        <di:waypoint x="460" y="120" />
+        <di:waypoint x="460" y="-40" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape
+        id="_DE4814E8-7C91-414A-8165-429C467F74E0"
+        dmnElementRef="_04E2A70A-6527-4333-8AEC-BE33E38EC02D"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="0" y="-60" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge
+        id="_3573BF84-D283-460C-AFD8-3A761A98A3B4"
+        dmnElementRef="_54C7A158-B984-4BD6-AE1A-E0C542638E23"
+        sourceElement="_C5B5EADA-420F-432E-BFFB-9C5B92AF4BA3"
+        targetElement="_DE4814E8-7C91-414A-8165-429C467F74E0"
+      >
+        <di:waypoint x="460" y="120" />
+        <di:waypoint x="80" y="20" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape
+        id="_D7844C9F-E273-408B-B146-38026D80BF58"
+        dmnElementRef="_74737AEE-244E-46C6-BF81-7EF835F17B1C"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="380" y="480" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge
+        id="_613051E8-F7B6-4BBD-BC57-EF72779305EB"
+        dmnElementRef="_B9F0F2B7-3EF4-4846-A63F-2294C3F1E574"
+        sourceElement="_1607B390-E438-4CBA-A0B4-CFCEAA73F784"
+        targetElement="_D7844C9F-E273-408B-B146-38026D80BF58"
+      >
+        <di:waypoint x="260" y="300" />
+        <di:waypoint x="460" y="520" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge
+        id="_5F04638F-0F24-415A-8460-C4BFE1D3977C"
+        dmnElementRef="_F4F4D82E-37E2-43CA-83C0-74793BD0CB8B"
+        sourceElement="_AF6BEF1D-F3B9-4F95-B3E1-9017A38FF95E"
+        targetElement="_D7844C9F-E273-408B-B146-38026D80BF58"
+      >
+        <di:waypoint x="460" y="300" />
+        <di:waypoint x="460" y="520" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge
+        id="_1E309913-FD21-49AC-8560-12A8DD5B75DD"
+        dmnElementRef="_69BDE488-81CA-4243-B25A-775F4733AEA1"
+        sourceElement="_1C878523-942E-4F4A-8D9D-0671521CB976"
+        targetElement="_D7844C9F-E273-408B-B146-38026D80BF58"
+      >
+        <di:waypoint x="640" y="300" />
+        <di:waypoint x="460" y="520" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape
+        id="_DEAB8962-41C1-4263-A3E0-F7FC1A1718B7"
+        dmnElementRef="_15386E14-2211-4206-8C23-924F7B2068BF"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="300" y="-120" width="320" height="320" />
+        <dmndi:DMNDecisionServiceDividerLine id="_808BAE2F-9E79-4E00-8ACF-E77696E370F0">
+          <di:waypoint x="300" y="40" />
+          <di:waypoint x="620" y="40" />
+        </dmndi:DMNDecisionServiceDividerLine>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape
+        id="_B9440E74-B0AE-4FF9-B4B5-D6266168A4FC"
+        dmnElementRef="_072CCBB0-B753-491C-A6A3-96875F709D56"
+        isCollapsed="false"
+        isListedInputData="false"
+      >
+        <dc:Bounds x="840" y="0" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge
+        id="_A3D81DD6-3DD1-464A-B100-0003B16430E6-AUTO-TARGET"
+        dmnElementRef="_D88DD773-B321-48A8-9AE4-C4BF568FA1F4"
+        sourceElement="_DEAB8962-41C1-4263-A3E0-F7FC1A1718B7"
+        targetElement="_B9440E74-B0AE-4FF9-B4B5-D6266168A4FC"
+      >
+        <di:waypoint x="460" y="40" />
+        <di:waypoint x="920" y="40" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

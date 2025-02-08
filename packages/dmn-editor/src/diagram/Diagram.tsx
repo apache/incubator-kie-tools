@@ -1475,7 +1475,9 @@ function DmnDiagramEmptyState({
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { externalModelsByNamespace } = useExternalModels();
-
+  const externalDmnModelsByNamespaceMap = useDmnEditorStore((s) =>
+    s.computed(s).getExternalDmnModelsByNamespaceMap(externalModelsByNamespace)
+  );
   return (
     <Bullseye
       style={{
@@ -1557,6 +1559,7 @@ function DmnDiagramEmptyState({
                           ...defaultExpression,
                           "@_label": "New Decision",
                         },
+                        externalDmnModelsByNamespaceMap,
                       });
 
                       updateExpressionWidths({
