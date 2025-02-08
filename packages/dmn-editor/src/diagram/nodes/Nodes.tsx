@@ -73,6 +73,7 @@ import { propsHaveSameValuesDeep } from "../memoization/memoization";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { NODE_LAYERS } from "../../store/computed/computeDiagramData";
 import { useSettings } from "../../settings/DmnEditorSettingsContext";
+import { useDmnEditor } from "../../DmnEditorContext";
 
 export type ElementFilter<E extends { __$$element: string }, Filter extends string> = E extends any
   ? E["__$$element"] extends Filter
@@ -402,6 +403,13 @@ export const DecisionNode = React.memo(
       );
     });
 
+    const isEvaluationHighlightsEnabled = useDmnEditorStore((s) => s.diagram.overlays.enableEvaluationHighlights);
+    const { evaluationResults } = useDmnEditor();
+    const evaluationResultsClassName =
+      isEvaluationHighlightsEnabled && evaluationResults![decision["@_id"]] !== undefined
+        ? `kie-dmn-editor--decision-node--evaluation-status-${evaluationResults![decision["@_id"]]}`
+        : "";
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
@@ -421,7 +429,7 @@ export const DecisionNode = React.memo(
 
         <div
           ref={ref}
-          className={`kie-dmn-editor--node kie-dmn-editor--decision-node ${className}`}
+          className={`kie-dmn-editor--node kie-dmn-editor--decision-node ${className} ${evaluationResultsClassName}`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}

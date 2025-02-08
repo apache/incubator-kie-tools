@@ -71,7 +71,10 @@ export type DmnEditorRef = {
   getCommands: () => Commands;
 };
 
-export type EvaluationResults = Record<string, any>;
+/**
+ * TODO we need to implement mapping  between (extended-services-api/src/dmnResult.ts) and ("success" | "failure")
+ */
+export type EvaluationResults = Record<string, "success" | "failure">;
 export type ValidationMessages = Record<string, any>;
 export type OnDmnModelChange = (model: Normalized<DmnLatestModel>) => void;
 
