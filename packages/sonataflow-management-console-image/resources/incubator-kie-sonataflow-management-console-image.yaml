@@ -16,7 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-- name: "docker.io/apache/incubator-kie-sonataflow-devmode"
+- name: "mirror.gcr.io/apache/incubator-kie-sonataflow-devmode"
   from: "registry.access.redhat.com/ubi9/httpd-24:9.5"
   version: "0.0.0"
   description: "SonataFlow Management Console Image"

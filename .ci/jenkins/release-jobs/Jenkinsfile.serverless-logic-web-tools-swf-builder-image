@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            image 'mirror.gcr.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -39,7 +39,7 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry = 'docker.io'
+        SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageRegistry = 'mirror.gcr.io'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageAccount = 'apache'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageName = 'incubator-kie-serverless-logic-web-tools-swf-builder'
         SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageBuildTag = "${params.RELEASE_VERSION}"
