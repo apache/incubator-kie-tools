@@ -75,7 +75,7 @@ export const CreateGistOrSnippetModal = (props: {
   const [isGistOrSnippetLoading, setGistOrSnippetLoading] = useState(false);
 
   const {
-    alerts: { successfullyUpdatedGistOrSnippetAlert, errorAlert },
+    alerts: { successfullyCreatedGistOrSnippetAlert, errorAlert },
   } = useGitIntegration();
 
   const createGitHubGist: () => Promise<CreateGistOrSnippetResponse> = useCallback(async () => {
@@ -132,7 +132,7 @@ If you are, it means that creating this Snippet failed and it can safely be dele
       return (e.name = "https" && e.href.startsWith("https"));
     })[0].href;
 
-    return { cloneUrl, htmlUrl: json.links.html };
+    return { cloneUrl, htmlUrl: json.links.html.href };
   }, [bitbucketClient, env.KIE_SANDBOX_APP_NAME, isPrivate, props.workspace.name, selectedOrganization]);
 
   const createGistOrSnippet = useCallback(async () => {
@@ -214,8 +214,8 @@ If you are, it means that creating this Snippet failed and it can safely be dele
       });
 
       props.onClose();
-      successfullyUpdatedGistOrSnippetAlert.show({ url: gistOrSnippet.cloneUrl });
-      props.onSuccess?.({ url: gistOrSnippet.cloneUrl });
+      props.onSuccess?.({ url: gistOrSnippet.htmlUrl });
+      successfullyCreatedGistOrSnippetAlert.show({ url: gistOrSnippet.htmlUrl });
       return;
     } catch (err) {
       setError(err);
@@ -233,7 +233,7 @@ If you are, it means that creating this Snippet failed and it can safely be dele
     workspaces,
     props,
     gitConfig,
-    successfullyUpdatedGistOrSnippetAlert,
+    successfullyCreatedGistOrSnippetAlert,
     errorAlert,
   ]);
 
