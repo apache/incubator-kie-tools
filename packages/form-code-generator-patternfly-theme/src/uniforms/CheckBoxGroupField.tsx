@@ -23,7 +23,8 @@ import { buildDefaultInputElement, getInputReference, renderField } from "./util
 import { FormInput, InputReference } from "../api";
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { CHECKBOX_GROUP_FUNCTIONS } from "./staticCode/staticCodeBlocks";
-import { ARRAY } from "./utils/dataTypes";
+import { DEFAULT_DATA_TYPE_STRING_ARRAY } from "./utils/dataTypes";
+import { getListItemName, getListItemOnChange, getListItemValue, ListItemProps } from "./rendering/ListItemField";
 
 export type CheckBoxGroupProps = HTMLFieldProps<
   string[],
@@ -34,22 +35,26 @@ export type CheckBoxGroupProps = HTMLFieldProps<
     allowedValues?: string[];
     required: boolean;
     transform?(value: string): string;
+    itemProps: ListItemProps;
   }
 >;
 
 const CheckBoxGroup: React.FC<CheckBoxGroupProps> = (props: CheckBoxGroupProps) => {
-  const ref: InputReference = getInputReference(props.name, ARRAY);
+  const ref: InputReference = getInputReference(props.name, DEFAULT_DATA_TYPE_STRING_ARRAY);
 
   const jsxCode = props.allowedValues
     ?.map((value) => {
-      return `<Checkbox key={'${props.id}-${value}'} id={'${props.id}-${value}'} name={'${props.name}'} aria-label={'${
-        props.name
-      }'}
-               label={'${props.transform ? props.transform(value) : value}'} 
-               isDisabled={${props.disabled || false}} 
-               isChecked={${ref.stateName}.indexOf('${value}') != -1}
-               onChange={() => handleCheckboxGroupChange('${value}', ${ref.stateName}, ${ref.stateSetter})}
-               value={'${value}'}/>`;
+      return `<Checkbox
+  key={'${props.id}-${value}'}
+  id={'${props.id}-${value}'}
+  name={${props.itemProps?.isListItem ? getListItemName({ itemProps: props.itemProps, name: props.name }) : `'${props.name}'`}}
+  aria-label={'${props.name}'}
+  label={'${props.transform ? props.transform(value) : value}'} 
+  isDisabled={${props.disabled || false}} 
+  isChecked={${ref.stateName}.indexOf('${value}') !== -1}
+  onChange={${props.itemProps?.isListItem ? getListItemOnChange({ itemProps: props.itemProps, name: props.name, callback: (internalValue: string) => `handleCheckboxGroupChange(${internalValue}, ${ref.stateName}, ${ref.stateSetter})`, overrideNewValue: `'${value}'` }) : `() => handleCheckboxGroupChange('${value}', ${ref.stateName}, ${ref.stateSetter})`}}
+  value={${props.itemProps?.isListItem ? getListItemValue({ itemProps: props.itemProps, name: props.name }) : `'${value}'`}}
+/>`;
     })
     .join("\n");
 

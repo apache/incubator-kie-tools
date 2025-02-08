@@ -23,7 +23,8 @@ import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
 import { getInputReference, getStateCode, getStateCodeFromRef, NS_SEPARATOR, renderField } from "./utils/Utils";
 import { MULTIPLE_SELECT_FUNCTIONS, SELECT_FUNCTIONS } from "./staticCode/staticCodeBlocks";
-import { ARRAY, STRING } from "./utils/dataTypes";
+import { DEFAULT_DATA_TYPE_STRING_ARRAY, DEFAULT_DATA_TYPE_STRING } from "./utils/dataTypes";
+import { getListItemName, getListItemOnChange, getListItemValue, ListItemProps } from "./rendering/ListItemField";
 
 export type SelectInputProps = HTMLFieldProps<
   string | string[],
@@ -31,6 +32,7 @@ export type SelectInputProps = HTMLFieldProps<
   {
     allowedValues?: string[];
     transform?(value: string): string;
+    itemProps?: ListItemProps;
   }
 >;
 
@@ -39,7 +41,10 @@ export const SELECT_IMPORTS: string[] = ["SelectOption", "SelectOptionObject", "
 const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
   const isArray: boolean = props.fieldType === Array;
 
-  const ref: InputReference = getInputReference(props.name, isArray ? ARRAY : STRING);
+  const ref: InputReference = getInputReference(
+    props.name,
+    isArray ? DEFAULT_DATA_TYPE_STRING_ARRAY : DEFAULT_DATA_TYPE_STRING
+  );
 
   const selectedOptions: string[] = [];
 
@@ -75,17 +80,15 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
       isRequired={${props.required}}
     ><Select
       id={'${props.id}'}
-      name={'${props.name}'}
+      name={${props.itemProps?.isListItem ? getListItemName({ itemProps: props.itemProps, name: props.name }) : `'${props.name}'`}}
       variant={SelectVariant.${isArray ? "typeaheadMulti" : "single"}}
       isDisabled={${props.disabled || false}}
       placeholderText={'${props.placeholder || ""}'}
       isOpen={${expandedStateName}}
       selections={${ref.stateName}}
       onToggle={(isOpen) => ${expandedStateNameSetter}(isOpen)}
-      onSelect={(event, value, isPlaceHolder) => {
-        ${hanldeSelect}
-      }}
-      value={${ref.stateName}}
+      onSelect={${props.itemProps?.isListItem ? getListItemOnChange({ itemProps: props.itemProps, name: props.name, callback: (value: string) => `${hanldeSelect}`, overrideParam: "(event, value, isPlaceHolder)" }) : `(event, value, isPlaceHolder) => ${hanldeSelect}`}}
+      value={${props.itemProps?.isListItem ? getListItemValue({ itemProps: props.itemProps, name: props.name }) : ref.stateName}}
     >
       ${selectedOptions.join("\n")}
     </Select></FormGroup>`;
