@@ -35,6 +35,8 @@ import { DmnLanguageService } from "@kie-tools/dmn-language-service";
 import { DmnRunnerTable } from "../dmnRunner/DmnRunnerTable";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { DmnRunnerErrorBoundary } from "../dmnRunner/DmnRunnerErrorBoundary";
+import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
+import { KogitoEditorChannelApi, KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 
 interface EditorPageDockContextType {
   panel: PanelId;
@@ -55,6 +57,7 @@ interface EditorPageDockContextType {
   error: boolean;
   setHasError: React.Dispatch<React.SetStateAction<boolean>>;
   errorBoundaryRef: React.MutableRefObject<ErrorBoundary | null>;
+  envelopeServer: EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi> | undefined;
 }
 
 export const EditorPageDockContext = React.createContext<EditorPageDockContextType>({} as any);
@@ -74,6 +77,7 @@ interface Props {
   workspaces: WorkspacesContextType;
   dmnLanguageService?: DmnLanguageService;
   isEditorReady: boolean;
+  envelopeServer: EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi> | undefined;
   editorValidate?: () => Promise<Notification[]>;
 }
 
@@ -83,6 +87,7 @@ export function EditorPageDockContextProvider({
   workspaces,
   workspaceFile,
   isEditorReady,
+  envelopeServer,
   editorValidate,
 }: React.PropsWithChildren<Props>) {
   const { i18n } = useOnlineI18n();
@@ -243,9 +248,9 @@ export function EditorPageDockContextProvider({
         toggleGroupItems,
         panelContent,
         notificationsPanel,
+        envelopeServer,
         error,
         errorBoundaryRef,
-
         addToggleItem,
         removeToggleItem,
         onTogglePanel,

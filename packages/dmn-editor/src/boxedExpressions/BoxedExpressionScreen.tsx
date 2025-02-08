@@ -78,7 +78,7 @@ import { updateExpression } from "../mutations/updateExpression";
 import { updateExpressionWidths } from "../mutations/updateExpressionWidths";
 import { DmnEditorTab } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
-import { getDefaultColumnWidth } from "./getDefaultColumnWidth";
+import { getDefaultColumnWidth } from "@kie-tools/boxed-expression-component/dist/resizing/WidthsToFitData";
 import { getDefaultBoxedExpression } from "./getDefaultBoxedExpression";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { EvaluationHighlightsBadge } from "../evaluationHighlights/EvaluationHighlightsBadge";

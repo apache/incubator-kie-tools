@@ -73,6 +73,12 @@
   min-height: 21px;
 }
 
+.header-cell-element-extension {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
 .expression-container .table-component table thead tr {
   height: 4em;
 }

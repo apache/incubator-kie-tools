@@ -265,6 +265,9 @@ export function BeeTableHeader<R extends object>({
                       ({column.dataType})
                     </p>
                   ) : null}
+                  {column.headerCellElementExtension !== undefined && (
+                    <div className="header-cell-element-extension">{column.headerCellElementExtension}</div>
+                  )}
                 </div>
               }
             />
