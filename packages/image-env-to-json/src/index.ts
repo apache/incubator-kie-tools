@@ -44,14 +44,6 @@ function getEnvVarValueAsJson(name: string) {
 function main() {
   const program = createCommand();
 
-  program.name("image-env-to-json").version(packageVersion);
-  program.showHelpAfterError("(add --help for additional information)");
-  program
-    .requiredOption("-d, --directory <directory>", `directory to create or update an existing '${ENV_JSON_FILE}' file.`)
-    .option("-n, --names <names...>", "Environment variable names to look for. Using a JSON Schema is preferred.")
-    .option("--json-schema <path>", `JSON Schema file to validate '${ENV_JSON_FILE}'`)
-    .parse();
-
   const options = program.opts();
 
   if (!existsSync(options.directory)) {
