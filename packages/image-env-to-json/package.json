@@ -14,14 +14,30 @@
   },
   "main": "dist/index.js",
   "scripts": {
-    "build:dev": "rimraf -rf dist && pnpm setup:env make build-all",
-    "build:prod": "rimraf -rf dist && pnpm setup:env make build-all && pnpm test",
+    "build": "run-script-os",
+    "build:darwin": "pnpm setup:env make build-darwin",
+    "build:darwin:amd": "pnpm setup:env make build-darwin-amd64",
+    "build:darwin:arm": "pnpm setup:env make build-darwin-arm64",
+    "build:dev": "rimraf -rf dist && pnpm build",
+    "build:linux": "pnpm setup:env make build-linux",
+    "build:linux:amd": "pnpm setup:env make build-linux-amd64",
+    "build:linux:arm": "pnpm setup:env make build-linux-arm64",
+    "build:prod": "rimraf -rf dist && run-script-os && pnpm test",
+    "build:prod:darwin": "rimraf dist && pnpm setup:env make build-all",
+    "build:prod:linux": "rimraf dist && pnpm setup:env make build-all",
+    "build:prod:win32": "rimraf dist && pnpm setup:env:win32 make build-all",
+    "build:win32": "pnpm setup:env:win32 make build-win",
+    "build:win32:amd": "pnpm setup:env:win32 make build-win-amd64",
+    "build:win32:arm": "pnpm setup:env:win32 make build-win-arm64",
     "install": "go mod tidy",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "setup:env": "PLUGIN_VERSION=$(build-env imageEnvToJson.version)",
+    "setup:env:win32": "pnpm powershell \"PLUGIN_VERSION=$(build-env imageEnvToJson.version)\"",
     "test": "go test ./..."
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
   }
 }

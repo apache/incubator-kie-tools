@@ -16,8 +16,12 @@
 # under the License.
 
 BIN              := image-env-to-json
+BIN_DARWIN_AMD   ?= $(BIN)-darwin-amd64
+BIN_DARWIN_ARM   ?= $(BIN)-darwin-arm64
 BIN_LINUX_AMD    ?= $(BIN)-linux-amd64
 BIN_LINUX_ARM    ?= $(BIN)-linux-arm64
+BIN_WINDOWS_AMD  ?= $(BIN)-win-amd64.exe
+BIN_WINDOWS_ARM  ?= $(BIN)-win-arm64.exe
 
 BIN_PATH         := ./dist
 TEST_PATH        := ./dist-tests
@@ -30,19 +34,44 @@ LDFLAGS                       := "-X $(SET_VERSION)"
 ARCH := $(shell uname -m)
 ifeq ($(ARCH),arm64)
 	GOARCH = arm64
-	BIN_BUILD_DARWIN=$(BIN_DARWIN_ARM64)
+	BIN_BUILD_DARWIN=$(BIN_DARWIN_AMD)
+	BIN_BUILD_LINUX=$(BIN_LINUX_AMD)
+	BIN_BUILD_WINDOWS=$(BIN_WINDOWS_AMD)
 else
 	GOARCH = amd64
-	BIN_BUILD_DARWIN=$(BIN_DARWIN_AMD64)
+	BIN_BUILD_DARWIN=$(BIN_DARWIN_ARM)
+	BIN_BUILD_LINUX=$(BIN_LINUX_ARM)
+	BIN_BUILD_WINDOWS=$(BIN_WINDOWS_ARM)
 endif
 
-build-all: build-linux-amd64 build-linux-arm64
+build-all: build-darwin-amd64 build-darwin-arm64 build-linux-amd64 build-linux-arm64 build-win-amd64 build-win-arm64
+
+build-darwin:
+	CGO_ENABLED=0 GOOS=darwin GOARCH=$(GOARCH) go build -ldflags $(LDFLAGS) -o $(BIN_PATH)/$(BIN_BUILD_DARWIN) $(MAIN_PATH)
+
+build-darwin-amd64:
+	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags $(LDFLAGS) -o $(BIN_PATH)/$(BIN_DARWIN_AMD) $(MAIN_PATH)
+
+build-darwin-arm64:
+	CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -ldflags $(LDFLAGS) -o $(BIN_PATH)/$(BIN_DARWIN_ARM) $(MAIN_PATH)
+
+build-linux:
+	CGO_ENABLED=0 GOOS=linux GOARCH=$(GOARCH) go build -ldflags $(LDFLAGS) -o $(BIN_PATH)/$(BIN_BUILD_LINUX) $(MAIN_PATH)
 
 build-linux-amd64:
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags $(LDFLAGS) -o $(BIN_PATH)/$(BIN_LINUX_AMD) $(MAIN_PATH)
 
 build-linux-arm64:
 	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags $(LDFLAGS) -o $(BIN_PATH)/$(BIN_LINUX_ARM) $(MAIN_PATH)
+
+build-win:
+	CGO_ENABLED=0 GOOS=windows GOARCH=$(GOARCH) go build -ldflags $(LDFLAGS) -o $(BIN_PATH)/$(BIN_BUILD_WINDOWS) $(MAIN_PATH)
+
+build-win-amd64:
+	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags $(LDFLAGS) -o $(BIN_PATH)/$(BIN_WINDOWS_AMD) $(MAIN_PATH)
+
+build-win-arm64:
+	CGO_ENABLED=0 GOOS=windows GOARCH=arm64 go build -ldflags $(LDFLAGS) -o $(BIN_PATH)/$(BIN_WINDOWS_ARM) $(MAIN_PATH)
 
 clean:
 	go clean
