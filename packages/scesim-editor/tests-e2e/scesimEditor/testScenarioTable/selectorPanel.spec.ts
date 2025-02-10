@@ -97,7 +97,7 @@ test.describe("Use Selector Panel on Test Scenario table based on are they old e
       columnNumber: 0,
     });
 
-    await table.selectColumnHeader({ name: "PROPERTY-1 (<Undefined>)", columnNumber: 0 });
+    await table.selectColumnHeader({ name: "PROPERTY-4 (<Undefined>)", columnNumber: 0 });
     await selectorPanel.assign({ name: "approved" });
 
     await table.selectColumnHeader({ name: "Expression </>" });
