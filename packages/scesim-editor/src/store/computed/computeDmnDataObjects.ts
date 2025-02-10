@@ -47,20 +47,20 @@ export function computeDmnDataObjects(
       )
     );
 
-    const inputDataElements = dmnModel.model.definitions.drgElement!.filter(
+    const inputDataElements = dmnModel.model.definitions.drgElement?.filter(
       (drgElement) => drgElement.__$$element === "inputData"
     );
-    const decisionElements = dmnModel.model.definitions.drgElement!.filter(
+    const decisionElements = dmnModel.model.definitions.drgElement?.filter(
       (drgElement) => drgElement.__$$element === "decision"
     );
 
-    const inpuDataObjects = inputDataElements.map((inputDataElement) =>
+    const inpuDataObjects = inputDataElements?.map((inputDataElement) =>
       createTestScenarioObjects(inputDataElement, itemDefinitions)
     );
-    const decisionDataObjects = decisionElements.map((decisionElement) =>
+    const decisionDataObjects = decisionElements?.map((decisionElement) =>
       createTestScenarioObjects(decisionElement, itemDefinitions)
     );
-    dataObjects.push(...inpuDataObjects, ...decisionDataObjects);
+    dataObjects.push(...(inpuDataObjects ?? []), ...(decisionDataObjects ?? []));
   }
 
   return dataObjects.sort((dataObjectA, dataObjectB) => dataObjectA.name.localeCompare(dataObjectB.name));

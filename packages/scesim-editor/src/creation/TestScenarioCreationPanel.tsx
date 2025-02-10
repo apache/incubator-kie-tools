@@ -84,7 +84,11 @@ function TestScenarioCreationPanel() {
             if (canceled.get()) {
               return;
             }
-            setAllDmnModelNormalizedPosixRelativePaths(dmnModelNormalizedPosixPathRelativePaths);
+            setAllDmnModelNormalizedPosixRelativePaths(
+              dmnModelNormalizedPosixPathRelativePaths.sort((modelA, modelB) =>
+                basename(modelA).localeCompare(basename(modelB))
+              )
+            );
           })
           .catch((err) => {
             setCallBackError(err);
