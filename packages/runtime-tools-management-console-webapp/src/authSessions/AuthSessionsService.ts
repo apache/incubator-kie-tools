@@ -58,7 +58,6 @@ export class AuthSessionsService {
      */
     const code_verifier = client.randomPKCECodeVerifier();
     const code_challenge = await client.calculatePKCECodeChallenge(code_verifier);
-    // let nonce: string | undefined = undefined;
 
     // redirect user to as.authorization_endpoint
     const parameters: OidcAuthUrlParameters = {
@@ -70,16 +69,6 @@ export class AuthSessionsService {
       state: uuid(),
       ...(args.forceLoginPrompt ? { prompt: "login" } : {}),
     };
-
-    // /**
-    //  * We cannot be sure the AS supports PKCE so we're going to use nonce too. Use
-    //  * of PKCE is backwards compatible even if the AS doesn't support it which is
-    //  * why we're using it regardless.
-    //  */
-    // if (!args.config.serverMetadata().supportsPKCE()) {
-    //   nonce = client.randomNonce();
-    //   parameters.nonce = nonce;
-    // }
 
     return parameters;
   }
@@ -245,8 +234,19 @@ export class AuthSessionsService {
       return Promise.resolve(authSession);
     }
 
+    const runtimeOidcProxyUrl = new URL(
+      path.join(new URL(temporaryAuthSessionData.runtimeUrl).pathname, AUTH_SESSION_RUNTIME_AUTH_SERVER_URL_ENDPOINT),
+      temporaryAuthSessionData.runtimeUrl
+    );
+
+    console.log({
+      runtimeUrl: temporaryAuthSessionData.runtimeUrl,
+      AUTH_SESSION_RUNTIME_AUTH_SERVER_URL_ENDPOINT,
+      runtimeOidcProxyUrl,
+    });
+
     const config = new client.Configuration(temporaryAuthSessionData.serverMetadata, temporaryAuthSessionData.clientId);
-    if (new URL(temporaryAuthSessionData.serverMetadata.issuer).protocol === "http:") {
+    if (runtimeOidcProxyUrl.protocol === "http:") {
       client.allowInsecureRequests(config);
     }
 
@@ -254,7 +254,6 @@ export class AuthSessionsService {
     const currentUrl: URL = new URL(window.location.href);
     const tokens = await client.authorizationCodeGrant(config, currentUrl, {
       pkceCodeVerifier: temporaryAuthSessionData.parameters.code_verifier,
-      // expectedNonce: temporaryAuthSessionData.parameters.nonce,
       expectedState: temporaryAuthSessionData.parameters.state,
       idTokenExpected: true,
     });
@@ -295,7 +294,7 @@ export class AuthSessionsService {
       tokens,
       claims,
       runtimeUrl: temporaryAuthSessionData.runtimeUrl,
-      issuer: temporaryAuthSessionData.serverMetadata.issuer,
+      issuer: runtimeOidcProxyUrl.toString(),
       userInfo: userInfo,
       status: AuthSessionStatus.VALID,
       createdAtDateISO: new Date(Date.now()).toISOString(),

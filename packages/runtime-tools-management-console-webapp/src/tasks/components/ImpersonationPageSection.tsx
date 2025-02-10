@@ -57,8 +57,6 @@ export const ImpersonationPageSection: React.FC<{}> = () => {
   const [groups, setGroups] = useState<string>();
 
   useEffect(() => {
-    console.log(impersonationUsername);
-    console.log(impersonationGroups);
     setUsername((prev) => prev || impersonationUsername);
     setGroups((prev) => prev || impersonationGroups);
   }, [impersonationGroups, impersonationUsername]);
