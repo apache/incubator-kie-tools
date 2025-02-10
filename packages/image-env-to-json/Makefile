@@ -23,7 +23,7 @@ BIN_WINDOWS      ?= $(BIN)-windows-amd64.exe
 
 BIN_PATH         := ./dist
 TEST_PATH        := ./dist-tests
-MAIN_PATH        := cmd/main.go
+MAIN_PATH        := ./main.go
 
 METADATA_PATH                 := github.com/apache/incubator-kie-tools/packages/image-env-to-json/internal
 SET_VERSION                   := $(METADATA_PATH).Version=$(PLUGIN_VERSION)

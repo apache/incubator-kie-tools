@@ -26,16 +26,6 @@ import (
 	"github.com/apache/incubator-kie-tools/packages/image-env-to-json/internal"
 )
 
-type CmdConfig struct {
-	Version string
-}
-
-var (
-	directory  string
-	names      []string
-	jsonSchema string
-)
-
 func main() {
 	if err := cmd.RootCmd(cmd.CmdConfig{Version: internal.Version}).Execute(); err != nil {
 		os.Exit(1)
