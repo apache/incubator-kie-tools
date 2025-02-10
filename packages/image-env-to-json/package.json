@@ -15,7 +15,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build:dev": "rimraf -rf dist && pnpm setup:env make build-all",
-    "build:prod": "pnpm lint && rimraf -rf dist && pnpm setup:env make build-all && pnpm test",
+    "build:prod": "rimraf -rf dist && pnpm setup:env make build-all && pnpm test",
     "install": "go mod tidy",
     "setup:env": "PLUGIN_VERSION=$(build-env imageEnvToJson.version)",
     "test": "go test ./..."
