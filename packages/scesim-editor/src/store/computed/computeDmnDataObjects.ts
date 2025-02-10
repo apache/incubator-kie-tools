@@ -42,7 +42,7 @@ export function computeDmnDataObjects(
 
   if (dmnModel) {
     const itemDefinitions = new Map(
-      dmnModel.model.definitions.itemDefinition!.map(
+      dmnModel.model.definitions.itemDefinition?.map(
         (itemDefinition) => [itemDefinition["@_name"], itemDefinition] as const
       )
     );
@@ -85,7 +85,7 @@ function createTestScenarioObjects(
     });
   } else {
     const itemDefinition = itemDefinitionMap.get(drgElementTypeRef!);
-    children.push(...createChildrenTestScenarioObjects(itemDefinition!, drgElementName, drgElementTypeRef!));
+    children.push(...createChildrenTestScenarioObjects(itemDefinition, drgElementName, drgElementTypeRef!));
   }
 
   return {
@@ -97,13 +97,13 @@ function createTestScenarioObjects(
 }
 
 function createChildrenTestScenarioObjects(
-  itemDefinition: DMN15__tItemDefinition,
+  itemDefinition: DMN15__tItemDefinition | undefined,
   drgElementName: string,
   drgElementTypeRef: string
 ) {
   const children: TestScenarioDataObject[] = [];
 
-  if (itemDefinition.itemComponent && itemDefinition.itemComponent.length > 0) {
+  if (itemDefinition?.itemComponent && itemDefinition.itemComponent.length > 0) {
     const childrenTestScenarioObjects = itemDefinition.itemComponent.map((itemComponent) => {
       const nestedChildren: TestScenarioDataObject[] = [];
 

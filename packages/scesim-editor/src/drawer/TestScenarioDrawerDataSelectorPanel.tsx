@@ -44,7 +44,6 @@ import { useExternalModels } from "../externalModels/TestScenarioEditorDependenc
 import { useTestScenarioEditorStore, useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
 import { TestScenarioDataObject, TestScenarioEditorTab } from "../store/TestScenarioEditorStore";
 import { updateColumn } from "../mutations/updateColumn";
-import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner/Spinner";
 
 const enum TestScenarioDataSelectorState {
