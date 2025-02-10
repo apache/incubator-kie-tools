@@ -39,7 +39,6 @@ $ image-env-to-json [options]
 Options:
   -V, --version                output the version number
   -d, --directory <directory>  directory to create or update an existing env.json file
-  -n, --names <names...>       environment variable names to look for
   -h, --help                   display help for command
 ```
 
@@ -55,7 +54,7 @@ ENV_B=value_b
 When running:
 
 ```bash
-$ image-env-to-json -d /my/directory -n ENV_A ENV_B ENV_C
+$ image-env-to-json --directory /my/directory --json-schema ENV_A ENV_B ENV_C
 ```
 
 The following JSON content will be written to `/my/directory/env.json`:

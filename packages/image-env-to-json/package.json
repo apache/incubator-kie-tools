@@ -14,11 +14,10 @@
   },
   "main": "dist/index.js",
   "scripts": {
-    "build:dev": "rimraf -rf dist && pnpm build:linux",
-    "build:linux": "pnpm setup:env make build-linux-amd64",
-    "build:prod": "pnpm lint && rimraf -rf dist && pnpm build:linux",
-    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
-    "setup:env": "PLUGIN_VERSION=$(build-env imageEnvToJson.version)"
+    "build:dev": "rimraf -rf dist && pnpm setup:env make build-all",
+    "build:prod": "pnpm lint && rimraf -rf dist && pnpm setup:env make build-all && pnpm test",
+    "setup:env": "PLUGIN_VERSION=$(build-env imageEnvToJson.version)",
+    "test": "go test ./..."
   },
   "dependencies": {
     "commander": "^8.3.0"
