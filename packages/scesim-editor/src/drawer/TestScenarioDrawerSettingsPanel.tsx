@@ -66,7 +66,9 @@ function TestScenarioDrawerSettingsPanel() {
             if (canceled.get()) {
               return;
             }
-            setAllDmnModelNormalizedPosixRelativePaths(paths);
+            setAllDmnModelNormalizedPosixRelativePaths(
+              paths.sort((modelA, modelB) => basename(modelA).localeCompare(basename(modelB)))
+            );
           })
           .catch((err) => {
             console.error(err);
