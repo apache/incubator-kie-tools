@@ -29,7 +29,7 @@ test.describe("Background table context menu", () => {
       await editor.createTestScenario(AssetType.DECISION);
       await editor.switchToBackgroundTable();
       await table.addPropertyColumn({
-        targetCellName: "PROPERTY-2 (<Undefined>)",
+        targetCellName: "PROPERTY-1 (<Undefined>)",
         position: AddColumnPosition.RIGHT,
         columnNumber: 0,
       });
