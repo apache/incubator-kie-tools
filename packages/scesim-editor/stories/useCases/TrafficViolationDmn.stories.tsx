@@ -779,7 +779,7 @@ export const trafficViolationDmn = `<?xml version="1.0" encoding="UTF-8"?>
     </scesimData>
   </background>
   <settings>
-    <dmnFilePath>src/main/resources/Traffic Violation.dmn</dmnFilePath>
+    <dmnFilePath>dev-webapp/available-dmn-models/traffic-violation.dmn</dmnFilePath>
     <type>DMN</type>
     <dmnNamespace>https://kie.apache.org/dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF</dmnNamespace>
     <dmnName>Traffic Violation</dmnName>

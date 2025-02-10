@@ -68,6 +68,7 @@ export function SceSimEditorWrapper(props: Partial<StorybookTestScenarioEditorPr
     <div style={{ position: "absolute", width: "100%", height: "100%", top: "0px", left: "0px" }}>
       <TestScenarioEditor
         ref={ref}
+        externalModelsByNamespace={props?.externalModelsByNamespace ?? args.externalModelsByNamespace}
         issueTrackerHref={props?.issueTrackerHref ?? args.issueTrackerHref}
         model={model}
         onModelChange={onModelChange}
@@ -81,6 +82,7 @@ export function SceSimEditorWrapper(props: Partial<StorybookTestScenarioEditorPr
           args.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot
         }
         onRequestToJumpToPath={props?.onRequestToJumpToPath ?? args.onRequestToJumpToPath}
+        onRequestToResolvePath={props?.onRequestToResolvePath ?? args.onRequestToResolvePath}
       />
     </div>
   );
