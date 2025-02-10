@@ -67,7 +67,7 @@ test.describe("Use Selector Panel on Test Scenario table based on are they old e
       position: AddColumnPosition.RIGHT,
       columnNumber: 0,
     });
-    await table.selectColumnHeader({ name: "PROPERTY-1 (<Undefined>)", columnNumber: 0 });
+    await table.selectColumnHeader({ name: "PROPERTY-3 (<Undefined>)", columnNumber: 0 });
     await expect(selectorPanel.getAttribute({ name: "amount" })).not.toBeAttached();
   });
 
