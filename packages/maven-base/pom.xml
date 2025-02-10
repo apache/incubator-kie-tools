@@ -121,16 +121,16 @@
     <version.maven.surefire.plugin>3.5.0</version.maven.surefire.plugin>
 
     <!-- Apache KIE -->
-    <version.org.kie.kogito>999-20250105-SNAPSHOT</version.org.kie.kogito>
+    <version.org.kie.kogito>999-20250128-SNAPSHOT</version.org.kie.kogito>
 
     <!-- Quarkus -->
-    <version.quarkus>3.8.6</version.quarkus>
+    <version.quarkus>3.15.3</version.quarkus>
 
     <!-- 3rd party dependencies -->
     <version.junit>4.13.2</version.junit>
     <version.org.apache.commons.commons-compress>1.26.1</version.org.apache.commons.commons-compress>
     <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
-    <version.io.quarkiverse.embedded.postgresql>0.2.2</version.io.quarkiverse.embedded.postgresql>
+    <version.io.quarkiverse.embedded.postgresql>0.3.0</version.io.quarkiverse.embedded.postgresql>
     <version.org.apache.mime4j>0.8.11</version.org.apache.mime4j>
     <version.org.freemarker>2.3.32</version.org.freemarker>
     <version.org.assertj>3.25.3</version.org.assertj>
