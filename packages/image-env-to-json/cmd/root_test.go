@@ -11,9 +11,8 @@ import (
 
 func TestGenerateEnvJsonWithInvalidJsonSchema(t *testing.T) {
 	tempDir := t.TempDir()
-
 	// Define an invalid JSON Schema
-	envJsonSchema := `{}`
+	envJsonSchema := ""
 
 	// Create a temporary JSON schema file
 	envSchemaPath := filepath.Join(tempDir, "EnvSchema.json")
@@ -27,14 +26,13 @@ func TestGenerateEnvJsonWithInvalidJsonSchema(t *testing.T) {
 	err = generateEnvJson(tempDir, envSchemaPath)
 	assert.Error(t, err)
 
-	// Verify that the env.json file was created
+	// `env.json` mustn't exist
 	_, err = os.Stat(envJsonPath)
 	assert.Error(t, err, "env.json file should exist")
 }
 
 func TestGenerateEnvJsonWithValidJsonSchema(t *testing.T) {
 	tempDir := t.TempDir()
-
 	// Define a sample JSON Schema
 	envJsonSchema := `{
 		"$id": "EnvJson",
@@ -52,8 +50,8 @@ func TestGenerateEnvJsonWithValidJsonSchema(t *testing.T) {
 	}`
 
 	// Create a temporary JSON schema file
-	envSchemaPath := filepath.Join(tempDir, "EnvSchema.json")
-	err := os.WriteFile(envSchemaPath, []byte(envJsonSchema), 0644)
+	envJsonSchemaPath := filepath.Join(tempDir, "EnvSchema.json")
+	err := os.WriteFile(envJsonSchemaPath, []byte(envJsonSchema), 0644)
 	assert.NoError(t, err)
 
 	// Set environment variables
@@ -66,7 +64,7 @@ func TestGenerateEnvJsonWithValidJsonSchema(t *testing.T) {
 	envJsonPath := filepath.Join(tempDir, "env.json")
 
 	// Invoke the generateEnvJson
-	err = generateEnvJson(tempDir, envSchemaPath)
+	err = generateEnvJson(tempDir, envJsonSchemaPath)
 	assert.NoError(t, err)
 
 	// Verify that the env.json file was created

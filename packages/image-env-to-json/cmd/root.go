@@ -38,22 +38,22 @@ const (
 
 func RootCmd(cfg CmdConfig) *cobra.Command {
 	var (
-		directory  string
-		jsonSchema string
+		envJsonDirectory string
+		jsonSchemaPath   string
 	)
 
 	var cmd = &cobra.Command{
 		Use:   "image-env-to-json",
 		Short: "A CLI tool to create a 'env.json' file from a JSON Schema.",
 		Long: `
-	This tool uses the "json-schema" JSON Schema file and creates a 'env.json' environment file in the specified "directory".
+	This tool uses the "json-schema" JSON Schema file and creates a 'env.json' environment file in the specified "directory". Paths can be relative or absolute.
 			`,
 		Example: `
 	# Run the 
 	image-env-to-json --directory /path/to/env.json --json-schema /path/to/jsonSchema.json
 		 `,
 		Run: func(cmd *cobra.Command, args []string) {
-			if err := generateEnvJson(directory, jsonSchema); err != nil {
+			if err := generateEnvJson(envJsonDirectory, jsonSchemaPath); err != nil {
 				fmt.Printf("[image-env-to-json] Error: '%v'.", err)
 				os.Exit(1)
 			}
@@ -63,39 +63,54 @@ func RootCmd(cfg CmdConfig) *cobra.Command {
 	cmd.Version = cfg.Version
 	cmd.SetVersionTemplate(`{{printf "%s\n" .Version}}`)
 
-	cmd.PersistentFlags().StringVarP(&directory, "directory", "d", "", "directory to create or update an existing env.json file.")
-	cmd.PersistentFlags().StringVar(&jsonSchema, "json-schema", "", "JSON Schema file path to validate.")
+	cmd.PersistentFlags().StringVarP(&envJsonDirectory, "directory", "d", "", "directory to create or update an existing env.json file.")
+	cmd.PersistentFlags().StringVar(&jsonSchemaPath, "json-schema", "", "JSON Schema file path to validate.")
 	cmd.MarkFlagRequired("directory")
 	cmd.MarkFlagRequired("json-schema")
 
 	return cmd
 }
 
-func generateEnvJson(directory string, jsonSchema string) error {
+func generateEnvJson(envJsonDirectory string, jsonSchemaPath string) error {
 	// Check if directory exists
-	if _, err := os.Stat(directory); err != nil {
+	if _, err := os.Stat(envJsonDirectory); err != nil {
 		if os.IsNotExist(err) {
-			fmt.Printf("[image-env-to-json] Directory '%s' does not exist. Please provide an existing directory.\n", directory)
+			fmt.Printf("[image-env-to-json] Directory '%s' does not exist. Please provide an existing directory.\n", envJsonDirectory)
 			return err
 		} else {
-			fmt.Printf("[image-env-to-json] Error while reading the '%s'.\n", directory)
+			fmt.Printf("[image-env-to-json] Error while reading the '%s'.\n", envJsonDirectory)
 			return err
 		}
 	}
 
-	fmt.Printf("[image-env-to-json] Reading JSON Schema from '%s'...\n", jsonSchema)
-	data, err := os.ReadFile(jsonSchema)
+	fmt.Printf("[image-env-to-json] Reading JSON Schema from '%s'...\n", jsonSchemaPath)
+	data, err := os.ReadFile(jsonSchemaPath)
 	if err != nil {
-		fmt.Printf("[image-env-to-json] Error reading file '%s'.\n", jsonSchema)
+		fmt.Printf("[image-env-to-json] Error reading file '%s'.\n", jsonSchemaPath)
 		return err
 	}
 
 	var schema map[string]any
 	if err := json.Unmarshal(data, &schema); err != nil {
-		fmt.Printf("[image-env-to-json] Error parsing JSON Schema from '%s'.\n", jsonSchema)
+		fmt.Printf("[image-env-to-json] Error parsing JSON Schema from '%s'.\n", jsonSchemaPath)
 		return err
 	}
 
+	// Validate --json-schema
+	schemaLoader := gojsonschema.NewGoLoader(schema)
+	metaSchemaLoader := gojsonschema.NewReferenceLoader("http://json-schema.org/draft-07/schema#")
+	result, err := gojsonschema.Validate(metaSchemaLoader, schemaLoader)
+	if err != nil {
+		fmt.Printf("[image-env-to-json] Error while validating the '%s' JSON Schema.\n", jsonSchemaPath)
+		return err
+	}
+	if !result.Valid() {
+		fmt.Printf("[image-env-to-json] The '%s' JSON Schema isn't valid.\n", jsonSchemaPath)
+		return fmt.Errorf("invalid JSON Schema")
+	}
+	fmt.Printf("[image-env-to-json] The '%s' JSON Schema is valid.\n", jsonSchemaPath)
+
+	// Walk though the --json-schema, saving the env var names
 	id := fmt.Sprintf("%v", schema["$id"])
 	properties, _ := schema["definitions"].(map[string]any)[id].(map[string]any)["properties"].(map[string]any)
 	envVarNames := make([]string, 0, len(properties))
@@ -104,8 +119,8 @@ func generateEnvJson(directory string, jsonSchema string) error {
 	}
 	fmt.Printf("[image-env-to-json] Extracted envVarNames: %s\n", envVarNames)
 
-	fmt.Printf("[image-env-to-json] Looking for environment variables: %v...\n", envVarNames)
-	var envJsonPath = fmt.Sprintf("%s/%s", directory, EnvJsonFile)
+	// Checks if `env.json` exists, or create a new one
+	var envJsonPath = fmt.Sprintf("%s/%s", envJsonDirectory, EnvJsonFile)
 	if _, err := os.Stat(envJsonPath); err != nil {
 		if os.IsNotExist(err) {
 			// Create emtpy `env.json` file
@@ -120,18 +135,21 @@ func generateEnvJson(directory string, jsonSchema string) error {
 		}
 	}
 
+	fmt.Printf("[image-env-to-json] Looking for environment variables: %v...\n", envVarNames)
 	envData, err := os.ReadFile(envJsonPath)
 	if err != nil {
 		fmt.Printf("[image-env-to-json] Error reading %s\n", EnvJsonFile)
 		return err
 	}
 
+	// Loads the `env.json` file
 	var envJson map[string]any
 	if err := json.Unmarshal(envData, &envJson); err != nil {
 		fmt.Printf("[image-env-to-json] Error parsing %s\n", EnvJsonFile)
 		return err
 	}
 
+	// Update the `env.json` file
 	isUpdated := false
 	for _, name := range envVarNames {
 		envVarStringValue, exists := os.LookupEnv(name)

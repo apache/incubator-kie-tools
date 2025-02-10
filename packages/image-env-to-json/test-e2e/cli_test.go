@@ -19,13 +19,12 @@ func TestCliBinary(t *testing.T) {
 	assert.Contains(t, string(output), "Usage:", "Help text not found in output")
 
 	// Run the CLI with a JSON Schema file
-	schemaPath := "testdata/schema.json" // Place a sample schema in `testdata/`
-	directoryPath := filepath.Join(t.TempDir(), "env.json")
+	jsonSchemaPath := "./testdata/schema.json"
+	envJsonPath := filepath.Join(tempDir, "env.json")
 
-	runCmd = exec.Command(binPath, "--directory", directoryPath, "--json-schema", schemaPath)
-	runCmd.Env = append(os.Environ(), "MY_ENV=value1", "MY_ENV2=value2") // Set environment vars
+	runCmd = exec.Command(binPath, "--directory", tempDir, "--json-schema", jsonSchemaPath)
+	runCmd.Env = append(os.Environ(), "MY_ENV=value1", "MY_ENV2=value2")
 
-	envJsonPath := filepath.Join(t.TempDir(), "env.json")
 	_, err = runCmd.CombinedOutput()
 	assert.NoError(t, err, "CLI command failed")
 	assert.FileExists(t, envJsonPath, "env.json should be created")
