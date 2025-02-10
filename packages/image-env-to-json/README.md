@@ -19,7 +19,7 @@
 
 This package contains a CLI tool to convert environment variables to a JSON file.
 
-It is designed mainly to be used by in Linux containers.
+It is intended for use within a Linux container.
 
 ## Build
 
