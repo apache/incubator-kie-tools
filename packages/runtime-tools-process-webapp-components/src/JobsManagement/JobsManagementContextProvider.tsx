@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import * as React from "react";
+import React, { useMemo } from "react";
 import { ApolloClient } from "apollo-client";
 import JobsManagementContext from "./JobsManagementContext";
 import { JobsManagementGatewayApiImpl } from "./JobsManagementGatewayApi";
@@ -28,13 +28,11 @@ interface IOwnProps {
 }
 
 export const JobsManagementContextProvider: React.FC<IOwnProps> = ({ apolloClient, children }) => {
-  return (
-    <JobsManagementContext.Provider
-      value={new JobsManagementGatewayApiImpl(new GraphQLJobsManagementQueries(apolloClient))}
-    >
-      {children}
-    </JobsManagementContext.Provider>
+  const gatewayApi = useMemo(
+    () => new JobsManagementGatewayApiImpl(new GraphQLJobsManagementQueries(apolloClient)),
+    [apolloClient]
   );
+  return <JobsManagementContext.Provider value={gatewayApi}>{children}</JobsManagementContext.Provider>;
 };
 
 export default JobsManagementContextProvider;
