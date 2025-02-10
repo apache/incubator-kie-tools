@@ -48,11 +48,6 @@ export function RuntimeToolsWorkflowInstances() {
       <PageSection variant="light">
         <Bullseye>
           <EmptyState>
-            {/* <EmptyStateHeader
-              titleText={<>{`Data Index service not available`}</>}
-              icon={<EmptyStateIcon icon={CubesIcon} />}
-              headingLevel="h4"
-            /> */}
             <EmptyStateHeader
               titleText={
                 <>

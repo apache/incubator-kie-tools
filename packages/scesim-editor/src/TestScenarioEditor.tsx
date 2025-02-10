@@ -89,13 +89,6 @@ enum TestScenarioFileStatus {
   VALID,
 }
 
-/* Types */
-
-// export type TestScenarioAlert = {
-//   enabled: boolean;
-//   message?: string;
-//   variant: "success" | "danger" | "warning" | "info" | "custom";
-// };
 export type OnRequestExternalModelsAvailableToInclude = () => Promise<string[]>;
 
 export type OnRequestToJumpToPath = (normalizedPosixPathRelativeToTheOpenFile: string) => void;
@@ -209,29 +202,6 @@ function TestScenarioMainPanel() {
 
   // Show Properties panel
   useEffect(() => {
-    //   const assetType = scesimModel.ScenarioSimulationModel.settings.type!.__$$text;
-
-    //   let alertEnabled = false;
-    //   let alertMessage = "";
-    //   let alertVariant: "custom" | "danger" | "warning" | "info" | "success" = "danger";
-
-    //   if (dataObjects.length > 0) {
-    //     alertMessage =
-    //       assetType === TestScenarioType[TestScenarioType.DMN]
-    //         ? i18n.alerts.dmnDataRetrievedFromScesim
-    //         : i18n.alerts.ruleDataRetrievedFromScesim;
-    //     alertEnabled = true;
-    //   } else {
-    //     alertMessage =
-    //       assetType === TestScenarioType[TestScenarioType.DMN]
-    //         ? i18n.alerts.dmnDataNotAvailable
-    //         : i18n.alerts.ruleDataNotAvailable;
-    //     alertVariant = assetType === TestScenarioType[TestScenarioType.DMN] ? "warning" : "danger";
-    //     alertEnabled = true;
-    //   }
-
-    //   setAlert({ enabled: alertEnabled, message: alertMessage, variant: alertVariant });
-    // }, [dataObjects, i18n, scesimModel.ScenarioSimulationModel.settings.type]);
     if (!commandsRef.current) {
       return;
     }
