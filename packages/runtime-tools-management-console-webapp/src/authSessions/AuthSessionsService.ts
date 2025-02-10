@@ -58,7 +58,7 @@ export class AuthSessionsService {
      */
     const code_verifier = client.randomPKCECodeVerifier();
     const code_challenge = await client.calculatePKCECodeChallenge(code_verifier);
-    let nonce: string | undefined = undefined;
+    // let nonce: string | undefined = undefined;
 
     // redirect user to as.authorization_endpoint
     const parameters: OidcAuthUrlParameters = {
@@ -67,18 +67,19 @@ export class AuthSessionsService {
       code_verifier,
       code_challenge,
       code_challenge_method,
+      state: uuid(),
       ...(args.forceLoginPrompt ? { prompt: "login" } : {}),
     };
 
-    /**
-     * We cannot be sure the AS supports PKCE so we're going to use nonce too. Use
-     * of PKCE is backwards compatible even if the AS doesn't support it which is
-     * why we're using it regardless.
-     */
-    if (!args.config.serverMetadata().supportsPKCE()) {
-      nonce = client.randomNonce();
-      parameters.nonce = nonce;
-    }
+    // /**
+    //  * We cannot be sure the AS supports PKCE so we're going to use nonce too. Use
+    //  * of PKCE is backwards compatible even if the AS doesn't support it which is
+    //  * why we're using it regardless.
+    //  */
+    // if (!args.config.serverMetadata().supportsPKCE()) {
+    //   nonce = client.randomNonce();
+    //   parameters.nonce = nonce;
+    // }
 
     return parameters;
   }
@@ -108,11 +109,12 @@ export class AuthSessionsService {
 
   static async getIdentityProviderUrl(runtimeUrl: string) {
     const newPath = path.join(new URL(runtimeUrl).pathname, AUTH_SESSION_RUNTIME_AUTH_SERVER_URL_ENDPOINT);
-    const response = await fetch(new URL(newPath, runtimeUrl));
+    const oidcUrl = new URL(newPath, runtimeUrl);
+    const response = await fetch(oidcUrl);
     if (response.status !== 200) {
       throw new Error("No authentication endpoint found.");
     }
-    return await response.text();
+    return oidcUrl;
   }
 
   static async checkIfAuthenticationRequired(runtimeUrl: string): Promise<
@@ -123,10 +125,10 @@ export class AuthSessionsService {
     | { isAuthenticationRequired: false }
   > {
     try {
-      const authServerUrl = await AuthSessionsService.getIdentityProviderUrl(runtimeUrl);
+      const oidcUrl = await AuthSessionsService.getIdentityProviderUrl(runtimeUrl);
       return {
         isAuthenticationRequired: true,
-        authServerUrl,
+        authServerUrl: oidcUrl.toString(),
       };
     } catch (authServerError) {
       // Maybe not required?
@@ -252,7 +254,8 @@ export class AuthSessionsService {
     const currentUrl: URL = new URL(window.location.href);
     const tokens = await client.authorizationCodeGrant(config, currentUrl, {
       pkceCodeVerifier: temporaryAuthSessionData.parameters.code_verifier,
-      expectedNonce: temporaryAuthSessionData.parameters.nonce,
+      // expectedNonce: temporaryAuthSessionData.parameters.nonce,
+      expectedState: temporaryAuthSessionData.parameters.state,
       idTokenExpected: true,
     });
 

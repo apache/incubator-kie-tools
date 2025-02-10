@@ -31,7 +31,7 @@ export const AUTH_SESSIONS_VERSION_NUMBER = 1;
 export const AUTH_SESSIONS_FS_NAME_WITH_VERSION = `${AUTH_SESSIONS_FS_NAME}_v${AUTH_SESSIONS_VERSION_NUMBER.toString()}`;
 
 export const AUTH_SESSION_TEMP_OPENID_AUTH_DATA_STORAGE_KEY = "temporaryOpenIdAuthData";
-export const AUTH_SESSION_RUNTIME_AUTH_SERVER_URL_ENDPOINT = "kogito/security/oidc/auth-server-url";
+export const AUTH_SESSION_RUNTIME_AUTH_SERVER_URL_ENDPOINT = "q/oidc/.well-known/openid-configuration";
 export const AUTH_SESSION_RUNTIME_ME_ENDPOINT = "kogito/security/me";
 
 export function mapSerializer(_: string, value: any) {
@@ -117,6 +117,7 @@ export type OidcAuthUrlParameters = {
   code_challenge_method: string;
   nonce?: string;
   prompt?: string;
+  state?: string;
 };
 
 export type TemporaryAuthSessionData =

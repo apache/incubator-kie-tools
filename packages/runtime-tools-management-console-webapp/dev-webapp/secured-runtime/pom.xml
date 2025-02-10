@@ -113,6 +113,21 @@
       <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-data-audit</artifactId>
     </dependency>
+
+    <!-- OIDC Proxy -->
+    <dependency>
+      <groupId>io.quarkiverse.oidc-proxy</groupId>
+      <artifactId>quarkus-oidc-proxy</artifactId>
+      <version>0.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-oidc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-resteasy-client-oidc-token-propagation</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

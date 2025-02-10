@@ -18,7 +18,6 @@
  */
 
 const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
-const rootEnv = require("@kie-tools/root-env/env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
@@ -50,13 +49,13 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
           host: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__dev_host),
           port: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__dev_port),
           idp: {
-            port: 9071,
+            port: "9071",
           },
           securedRuntime: {
-            port: 8080,
+            port: "8080",
           },
           unsecuredRuntime: {
-            port: 8081,
+            port: "8081",
           },
         },
         oidcClient: {
