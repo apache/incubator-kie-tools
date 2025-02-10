@@ -66,14 +66,18 @@ describe("<CheckBoxGroupField> tests", () => {
     expect(formElement.jsxCode).toContain("isDisabled={false}");
 
     props.allowedValues.forEach((value) => {
-      const checkbox = `<Checkbox key={'${props.id}-${value}'} id={'${props.id}-${value}'} name={'${props.name}'} aria-label={'${props.name}'}`;
+      const checkbox = `<Checkbox
+  key={'${props.id}-${value}'}
+  id={'${props.id}-${value}'}
+  name={'${props.name}'}
+  aria-label={'${props.name}'}`;
       expect(formElement.jsxCode).toContain(checkbox);
       expect(formElement.jsxCode).toContain(`label={'${value}'}`);
-      expect(formElement.jsxCode).toContain(`isChecked={${formElement.ref.stateName}.indexOf('${value}') != -1}`);
+      expect(formElement.jsxCode).toContain(`isChecked={${formElement.ref.stateName}.indexOf('${value}') !== -1}`);
       expect(formElement.jsxCode).toContain(
         `onChange={() => handleCheckboxGroupChange('${value}', ${formElement.ref.stateName}, ${formElement.ref.stateSetter})}`
       );
-      expect(formElement.jsxCode).toContain(`value={'${value}'}/>`);
+      expect(formElement.jsxCode).toContain(`value={'${value}'}`);
     });
     expect(formElement.stateCode).not.toBeNull();
   });
