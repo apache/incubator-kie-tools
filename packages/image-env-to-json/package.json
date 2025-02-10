@@ -16,25 +16,12 @@
   "scripts": {
     "build:dev": "rimraf -rf dist && pnpm setup:env make build-all",
     "build:prod": "pnpm lint && rimraf -rf dist && pnpm setup:env make build-all && pnpm test",
+    "install": "go mod tidy",
     "setup:env": "PLUGIN_VERSION=$(build-env imageEnvToJson.version)",
     "test": "go test ./..."
   },
-  "dependencies": {
-    "commander": "^8.3.0"
-  },
   "devDependencies": {
-    "@kie-tools-core/webpack-base": "workspace:*",
-    "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
-    "@kie-tools/tsconfig": "workspace:*",
-    "jsonschema": "^1.4.1",
-    "rimraf": "^3.0.2",
-    "run-script-os": "^1.1.6",
-    "typescript": "^5.5.3",
-    "webpack": "^5.94.0",
-    "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.15.1",
-    "webpack-merge": "^5.9.0",
-    "webpack-node-externals": "^3.0.0"
+    "rimraf": "^3.0.2"
   }
 }
