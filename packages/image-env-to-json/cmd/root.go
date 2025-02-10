@@ -24,8 +24,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/santhosh-tekuri/jsonschema/v6"
 	"github.com/spf13/cobra"
-	"github.com/xeipuuv/gojsonschema"
 )
 
 type CmdConfig struct {
@@ -84,40 +84,26 @@ func generateEnvJson(envJsonDirectory string, jsonSchemaPath string) error {
 	}
 
 	fmt.Printf("[image-env-to-json] Reading JSON Schema from '%s'...\n", jsonSchemaPath)
-	data, err := os.ReadFile(jsonSchemaPath)
+	jsonSchemaFile, err := os.Open(jsonSchemaPath)
 	if err != nil {
 		fmt.Printf("[image-env-to-json] Error reading file '%s'.\n", jsonSchemaPath)
 		return err
 	}
 
-	var schema map[string]any
-	if err := json.Unmarshal(data, &schema); err != nil {
-		fmt.Printf("[image-env-to-json] Error parsing JSON Schema from '%s'.\n", jsonSchemaPath)
-		return err
-	}
-
-	// Validate --json-schema
-	schemaLoader := gojsonschema.NewGoLoader(schema)
-	metaSchemaLoader := gojsonschema.NewReferenceLoader("http://json-schema.org/draft-07/schema#")
-	result, err := gojsonschema.Validate(metaSchemaLoader, schemaLoader)
+	schema, err := jsonschema.UnmarshalJSON(jsonSchemaFile)
 	if err != nil {
-		fmt.Printf("[image-env-to-json] Error while validating the '%s' JSON Schema.\n", jsonSchemaPath)
+		fmt.Printf("[image-env-to-json] Failed to unmarshal JSON Schema file: %s.\n", jsonSchemaPath)
 		return err
 	}
-	if !result.Valid() {
-		fmt.Printf("[image-env-to-json] The '%s' JSON Schema isn't valid.\n", jsonSchemaPath)
-		return fmt.Errorf("invalid JSON Schema")
-	}
-	fmt.Printf("[image-env-to-json] The '%s' JSON Schema is valid.\n", jsonSchemaPath)
 
 	// Walk though the --json-schema, saving the env var names
-	id := fmt.Sprintf("%v", schema["$id"])
-	properties, _ := schema["definitions"].(map[string]any)[id].(map[string]any)["properties"].(map[string]any)
+	id := fmt.Sprintf("%v", schema.(map[string]any)["$id"])
+	properties, _ := schema.(map[string]any)["definitions"].(map[string]any)[id].(map[string]any)["properties"].(map[string]any)
 	envVarNames := make([]string, 0, len(properties))
 	for key := range properties {
 		envVarNames = append(envVarNames, key)
 	}
-	fmt.Printf("[image-env-to-json] Extracted envVarNames: %s\n", envVarNames)
+	fmt.Printf("[image-env-to-json] Extracted environment variables: %s\n", envVarNames)
 
 	// Checks if `env.json` exists, or create a new one
 	var envJsonPath = fmt.Sprintf("%s/%s", envJsonDirectory, EnvJsonFile)
@@ -188,17 +174,16 @@ func generateEnvJson(envJsonDirectory string, jsonSchemaPath string) error {
 
 	// Validate JSON if schema exists
 	if schema != nil {
-		goSchema := gojsonschema.NewGoLoader(schema)
-		goEnvJson := gojsonschema.NewGoLoader(envJson)
-
-		result, err := gojsonschema.Validate(goSchema, goEnvJson)
+		compiler := jsonschema.NewCompiler()
+		compiledSchema, err := compiler.Compile(jsonSchemaPath)
 		if err != nil {
-			fmt.Printf("[image-env-to-json] Error while validating '%s'.\n", EnvJsonFile)
+			fmt.Printf("[image-env-to-json] Error compiling the JSON Schema: %s.\n", jsonSchemaPath)
 			return err
 		}
 
-		if !result.Valid() {
-			fmt.Printf("[image-env-to-json] Invalid '%s' at '%s'\n", EnvJsonFile, envJsonPath)
+		err = compiledSchema.Validate(envJson)
+		if err != nil {
+			fmt.Printf("[image-env-to-json] Error while validating '%s'.\n", EnvJsonFile)
 			return err
 		}
 		fmt.Printf("[image-env-to-json] '%s' at '%s' is valid.\n", EnvJsonFile, envJsonPath)
