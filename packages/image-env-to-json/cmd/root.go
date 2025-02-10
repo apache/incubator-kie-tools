@@ -83,6 +83,7 @@ func generateEnvJson(envJsonDirectory string, jsonSchemaPath string) error {
 		}
 	}
 
+	// Open the JSON Schema file in the `jsonSchemaPath`
 	fmt.Printf("[image-env-to-json] Reading JSON Schema from '%s'...\n", jsonSchemaPath)
 	jsonSchemaFile, err := os.Open(jsonSchemaPath)
 	if err != nil {
@@ -90,22 +91,23 @@ func generateEnvJson(envJsonDirectory string, jsonSchemaPath string) error {
 		return err
 	}
 
-	schema, err := jsonschema.UnmarshalJSON(jsonSchemaFile)
+	// Unmarshal the `jsonSchemaFile`
+	jsonSchema, err := jsonschema.UnmarshalJSON(jsonSchemaFile)
 	if err != nil {
 		fmt.Printf("[image-env-to-json] Failed to unmarshal JSON Schema file: %s.\n", jsonSchemaPath)
 		return err
 	}
 
-	// Walk though the --json-schema, saving the env var names
-	id := fmt.Sprintf("%v", schema.(map[string]any)["$id"])
-	properties, _ := schema.(map[string]any)["definitions"].(map[string]any)[id].(map[string]any)["properties"].(map[string]any)
+	// Walk though the `jsonSchema` properties, saving the environment variable names
+	id := fmt.Sprintf("%v", jsonSchema.(map[string]any)["$id"])
+	properties, _ := jsonSchema.(map[string]any)["definitions"].(map[string]any)[id].(map[string]any)["properties"].(map[string]any)
 	envVarNames := make([]string, 0, len(properties))
 	for key := range properties {
 		envVarNames = append(envVarNames, key)
 	}
 	fmt.Printf("[image-env-to-json] Extracted environment variables: %s\n", envVarNames)
 
-	// Checks if `env.json` exists, or create a new one
+	// Checks if `env.json` exists, or create a new empty one (`{}`)
 	var envJsonPath = fmt.Sprintf("%s/%s", envJsonDirectory, EnvJsonFile)
 	if _, err := os.Stat(envJsonPath); err != nil {
 		if os.IsNotExist(err) {
@@ -121,6 +123,7 @@ func generateEnvJson(envJsonDirectory string, jsonSchemaPath string) error {
 		}
 	}
 
+	// Load the `env.json` file
 	fmt.Printf("[image-env-to-json] Looking for environment variables: %v...\n", envVarNames)
 	envData, err := os.ReadFile(envJsonPath)
 	if err != nil {
@@ -128,14 +131,14 @@ func generateEnvJson(envJsonDirectory string, jsonSchemaPath string) error {
 		return err
 	}
 
-	// Loads the `env.json` file
+	// Unmarshal the `env.json` file
 	var envJson map[string]any
 	if err := json.Unmarshal(envData, &envJson); err != nil {
 		fmt.Printf("[image-env-to-json] Error parsing %s\n", EnvJsonFile)
 		return err
 	}
 
-	// Update the `env.json` file
+	// Update the `env.json` file with the environment variables
 	isUpdated := false
 	for _, name := range envVarNames {
 		envVarStringValue, exists := os.LookupEnv(name)
@@ -155,12 +158,14 @@ func generateEnvJson(envJsonDirectory string, jsonSchemaPath string) error {
 		}
 	}
 
+	// Marshal the `env.json` file
 	updatedData, err := json.MarshalIndent(envJson, "", "  ")
 	if err != nil {
 		fmt.Printf("[image-env-to-json] Error encoding %s\n", EnvJsonFile)
 		return err
 	}
 
+	// Save the `env.json` file
 	if err := os.WriteFile(envJsonPath, updatedData, 0644); err != nil {
 		fmt.Printf("[image-env-to-json] Error writing %s\n", EnvJsonFile)
 		return err
@@ -172,8 +177,8 @@ func generateEnvJson(envJsonDirectory string, jsonSchemaPath string) error {
 		fmt.Printf("[image-env-to-json] No environment variables overwrites. Using original file.\n")
 	}
 
-	// Validate JSON if schema exists
-	if schema != nil {
+	// Validates `env.json` using the `jsonSchema` file
+	if jsonSchema != nil {
 		compiler := jsonschema.NewCompiler()
 		compiledSchema, err := compiler.Compile(jsonSchemaPath)
 		if err != nil {
