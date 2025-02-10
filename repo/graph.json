@@ -731,17 +731,7 @@
       },
       {
         "source": "@kie-tools/image-env-to-json",
-        "target": "@kie-tools-core/webpack-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/image-env-to-json",
-        "target": "@kie-tools/eslint",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/image-env-to-json",
-        "target": "@kie-tools/tsconfig",
+        "target": "@kie-tools/root-env",
         "weight": 1
       },
       {

@@ -41,7 +41,7 @@ mkdir -p "${MGMT_CONSOLE_HOME}/launch"
 cp -v "${SCRIPT_DIR}"/added/* "${MGMT_CONSOLE_HOME}"/launch
 
 # Fixing permissions
-chmod +x "${MGMT_CONSOLE_HOME}/launch/entrypoint.sh" "${MGMT_CONSOLE_HOME}/image-env-to-json-standalone"
+chmod +x "${MGMT_CONSOLE_HOME}/launch/entrypoint.sh" "${MGMT_CONSOLE_HOME}/image-env-to-json-linux-amd64"
 chown -R "${USER_ID}" "${MGMT_CONSOLE_HOME}"
 
 # Fixing /var/www permissions
