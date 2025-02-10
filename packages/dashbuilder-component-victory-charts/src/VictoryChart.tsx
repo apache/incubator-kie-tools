@@ -45,7 +45,6 @@ export interface VictoryChartProps {
 
   type: ChartType;
   themeColor: ThemeColorType;
-  themeVariant: ThemeVariantType;
   legendPosition?: LegendPosition;
   legendOrientation?: LegendOrientation;
 
@@ -101,7 +100,6 @@ export const VictoryChart = (props: VictoryChartProps) => {
         width: props.width || 600,
         height: props.height || 400,
         themeColor: props.themeColor,
-        themeVariant: props.themeVariant,
         dataSet: props.dataSet || EMPTY_DATASET,
         legendPosition: props.legendPosition || "bottom",
         legendOrientation: props.legendOrientation,

@@ -23,7 +23,7 @@ import { PieBaseChart } from "./PieBaseChart";
 
 export class PieChart extends PieBaseChart {
   render() {
-    const { width, height, themeColor, themeVariant } = this.props;
+    const { width, height, themeColor } = this.props;
     return (
       <ChartPie
         ariaDesc={this.props.ariaDescription}

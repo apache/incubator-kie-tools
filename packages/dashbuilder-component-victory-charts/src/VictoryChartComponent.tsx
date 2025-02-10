@@ -34,7 +34,6 @@ export function VictoryChartComponent(props: Props) {
     height: 0,
     type: "bar",
     themeColor: "blue",
-    themeVariant: "light",
     gridX: false,
     onValidationError: (message: string) => props.controller.requireConfigurationFix(message),
     onValidationSuccess: () => props.controller.configurationOk(),
@@ -53,7 +52,6 @@ export function VictoryChartComponent(props: Props) {
           height: +(params.get("height") || 0),
           type: (params.get("chartType") as ChartType) || "bar",
           themeColor: (params.get("themeColor") as ThemeColorType) || "multi",
-          themeVariant: (params.get("themeVariant") as ThemeVariantType) || "light",
 
           ariaTitle: params.get("title"),
           ariaDescription: params.get("description"),

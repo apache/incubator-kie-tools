@@ -26,7 +26,7 @@ export type ChartGroupType = typeof ChartGroup;
 
 export abstract class XYChart extends BaseChart {
   render() {
-    const { width, height, themeColor, themeVariant } = this.props;
+    const { width, height, themeColor } = this.props;
     return (
       <Chart
         ariaDesc={this.props.ariaDescription}
