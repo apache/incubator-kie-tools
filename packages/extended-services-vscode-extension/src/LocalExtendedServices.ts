@@ -80,6 +80,7 @@ export class LocalExtendedServices {
   }
 
   public stop(): void {
+    console.debug("[Extended Services Extension] Stopping local instance of Extended Service");
     if (!this.serviceProcess) {
       return;
     }

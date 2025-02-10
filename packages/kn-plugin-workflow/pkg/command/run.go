@@ -36,6 +36,7 @@ type RunCmdConfig struct {
 	PortMapping string
 	OpenDevUI   bool
 	StopContainerOnUserInput bool
+	Image string
 }
 
 const StopContainerMsg = "Press any key to stop the container"
@@ -65,9 +66,13 @@ func NewRunCommand() *cobra.Command {
 	# Stop the container when the user presses any key
 	{{.Name}} run --stop-container-on-user-input=false
 
+	# Specify a custom container image to use for the deployment.
+	# By default, the ` + metadata.DevModeImage + ` image is used
+	{{.Name}} run --image=<your_image>
+
 		 `,
 		SuggestFor: []string{"rnu", "start"}, //nolint:misspell
-		PreRunE:    common.BindEnv("port", "open-dev-ui", "stop-container-on-user-input"),
+		PreRunE:    common.BindEnv("port", "open-dev-ui", "stop-container-on-user-input", "image"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -77,6 +82,7 @@ func NewRunCommand() *cobra.Command {
 	cmd.Flags().StringP("port", "p", "8080", "Maps a different host port to the running container port.")
 	cmd.Flags().Bool("open-dev-ui", true, "Disable automatic browser launch of SonataFlow  Dev UI")
 	cmd.Flags().Bool("stop-container-on-user-input", true, "Stop the container when the user presses any key")
+	cmd.Flags().StringP("image", "i", "", "Specify a custom image to use for the deployment. By default, the `" + metadata.DevModeImage + "` image is used")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	return cmd
@@ -86,6 +92,10 @@ func run() error {
 	cfg, err := runDevCmdConfig()
 	if err != nil {
 		return fmt.Errorf("initializing create config: %w", err)
+	}
+
+	if cfg.Image != "" {
+		metadata.DevModeImage = cfg.Image
 	}
 
 	if common.IsSonataFlowProject() {
@@ -105,6 +115,7 @@ func runDevCmdConfig() (cfg RunCmdConfig, err error) {
 		PortMapping: 				viper.GetString("port"),
 		OpenDevUI:   				viper.GetBool("open-dev-ui"),
 		StopContainerOnUserInput: 	viper.GetBool("stop-container-on-user-input"),
+		Image: 						viper.GetString("image"),
 	}
 	return
 }

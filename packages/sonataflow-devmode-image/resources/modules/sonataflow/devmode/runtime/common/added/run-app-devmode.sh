@@ -43,7 +43,7 @@ if [ ! -z "${QUARKUS_EXTENSIONS}" ]; then
     offline_param=""
 fi
 
-CMD="\"${MAVEN_HOME}\"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
+CMD="\"${MAVEN_CMD}\" -B ${MAVEN_ARGS_APPEND} \
     ${offline_param} \
     -s \"${MAVEN_SETTINGS_PATH}\" \
     -DskipTests \

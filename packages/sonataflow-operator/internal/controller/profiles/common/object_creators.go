@@ -318,7 +318,7 @@ func SinkBindingCreator(workflow *operatorapi.SonataFlow, plf *operatorapi.Sonat
 	return sinkBinding, nil
 }
 
-func getBrokerRefFromPlatform(plf *operatorapi.SonataFlowPlatform) (*duckv1.KReference, error) {
+func getBrokerRefFromPlatform(plf *operatorapi.SonataFlowPlatform, checkRemote bool) (*duckv1.KReference, error) {
 	// check the local platform
 	if plf.Spec.Eventing != nil && plf.Spec.Eventing.Broker != nil && plf.Spec.Eventing.Broker.Ref != nil {
 		ref := plf.Spec.Eventing.Broker.Ref.DeepCopy()
@@ -328,7 +328,7 @@ func getBrokerRefFromPlatform(plf *operatorapi.SonataFlowPlatform) (*duckv1.KRef
 		return ref, nil
 	}
 	// Check the cluster platform
-	if plf.Status.ClusterPlatformRef != nil && len(plf.Status.ClusterPlatformRef.PlatformRef.Name) > 0 {
+	if checkRemote && plf.Status.ClusterPlatformRef != nil && len(plf.Status.ClusterPlatformRef.PlatformRef.Name) > 0 {
 		platform := &operatorapi.SonataFlowPlatform{}
 		if err := utils.GetClient().Get(context.TODO(), types.NamespacedName{Namespace: plf.Status.ClusterPlatformRef.PlatformRef.Namespace, Name: plf.Status.ClusterPlatformRef.PlatformRef.Name}, platform); err != nil {
 			if errors.IsNotFound(err) {
@@ -336,8 +336,7 @@ func getBrokerRefFromPlatform(plf *operatorapi.SonataFlowPlatform) (*duckv1.KRef
 			}
 			return nil, err
 		}
-		return getBrokerRefFromPlatform(platform)
-
+		return getBrokerRefFromPlatform(platform, false)
 	}
 	return nil, nil
 }
@@ -354,7 +353,7 @@ func getBrokerRefForEventType(eventType string, workflow *operatorapi.SonataFlow
 		}
 	}
 	// get the broker from the local platform or cluster platform
-	return getBrokerRefFromPlatform(plf)
+	return getBrokerRefFromPlatform(plf, true)
 }
 
 // TriggersCreator is an ObjectsCreator for Triggers.

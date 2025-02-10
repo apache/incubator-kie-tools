@@ -16,10 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+const { env } = require("./env");
+const { setupMavenConfigFile, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
 
-.section-body {
-  --pf-c-page__main-section--PaddingTop: 0px;
-  --pf-c-page__main-section--PaddingRight: 0px;
-  --pf-c-page__main-section--PaddingBottom: 0px;
-  --pf-c-page__main-section--PaddingLeft: 0px;
-}
+setupMavenConfigFile(
+  `
+    -Drevision=${env.kogitoDbMigratorTool.version}
+    -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
+`
+);

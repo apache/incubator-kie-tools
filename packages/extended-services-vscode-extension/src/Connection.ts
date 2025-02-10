@@ -28,13 +28,14 @@ export class Connection {
   private timeout: NodeJS.Timeout | null = null;
   private connected: boolean = false;
 
-  public async start(extendedServicesURL: URL, connectionHeartbeatIntervalinSecs: number): Promise<void> {
+  public async start(extendedServicesURL: URL, connectionHeartbeatIntervalInSecs: number): Promise<void> {
     this.timeout = setInterval(async () => {
       this.performHeartbeatCheck(extendedServicesURL);
-    }, connectionHeartbeatIntervalinSecs * 1000);
+    }, connectionHeartbeatIntervalInSecs * 1000);
   }
 
   public stop(): void {
+    console.debug("[Extended Services Extension] Disconnecting from Extended Service");
     if (this.timeout) {
       this.fireDisconnectedEvent();
       clearInterval(this.timeout);

@@ -65,7 +65,7 @@ jobs:
       - name: "Setup Node"
         uses: actions/setup-node@v4
         with:
-          node-version: 20.14.0
+          node-version: 22.13.1
 
       - name: "Setup CI patterns"
         id: ci_patterns
@@ -113,6 +113,13 @@ jobs:
         uses: ./.github/actions/bootstrap
         with:
           pnpm_filter_string: ${{ steps.setup_build_mode.outputs.bootstrapPnpmFilterString }}
+
+      - name: "Check hanging uncommitted files after bootstrapping (you should either commit or not modify those!)"
+        if: steps.setup_build_mode.outputs.mode != 'none'
+        shell: bash
+        run: |
+          git diff
+          [ "0" == "$(git diff | wc -l | tr -d ' ')" ]
 
       - name: "FULL → Build"
         if: steps.setup_build_mode.outputs.mode == 'full'
@@ -184,7 +191,7 @@ jobs:
           cat "$BUILD_ENV__accessErrorsLogFileAbsolutePath"
           [ "0" == "$(cat "$BUILD_ENV__accessErrorsLogFileAbsolutePath" | wc -l | tr -d ' ')" ]
 
-      - name: "Check hanging uncommitted files (you should commit those!)"
+      - name: "Check hanging uncommitted files after building (you should either commit or not modify those!)"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
         shell: bash
         run: |

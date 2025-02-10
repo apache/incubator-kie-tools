@@ -73,11 +73,13 @@ import {
 import { extractDifferencesFromArray } from "@kie-tools/dmn-runner/dist/results";
 import { openapiSchemaToJsonSchema } from "@openapi-contrib/openapi-schema-to-json-schema";
 import type { JSONSchema4 } from "json-schema";
+import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 
 interface Props {
   isEditorReady?: boolean;
   workspaceFile: WorkspaceFile;
   dmnLanguageService?: DmnLanguageService;
+  dmnEditor: EmbeddedEditorRef | undefined;
 }
 
 const initialDmnRunnerProviderStates: DmnRunnerProviderState = {
@@ -708,6 +710,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       results,
       resultsDifference,
       status,
+      dmnEditor: props.dmnEditor,
     }),
     [
       canBeVisualized,
@@ -723,6 +726,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       results,
       resultsDifference,
       status,
+      props.dmnEditor,
     ]
   );
 
