@@ -20,7 +20,7 @@
   "scripts": {
     "build:dev": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
     "build:prod": "pnpm build:dev",
-    "image:docker:build": "docker build --platform=linux/amd64 -t kie-tools-playwright-container-image:$(build-env root.version) . -f Containerfile --output type=docker",
+    "image:docker:build": "docker build --platform=linux/amd64 -t dev.local/${USER}/kie-tools-playwright-container-image:$(build-env root.version) . -f Containerfile --output type=docker",
     "install": "run-script-if --bool \"$(build-env playwrightBase.installDeps)\" --then \"pnpm playwright install --with-deps\""
   },
   "devDependencies": {

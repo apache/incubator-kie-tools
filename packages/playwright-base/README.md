@@ -23,11 +23,11 @@ This package collects common configurations to run end-to-end Playwright tests.
 
 ## Using containers to generate screenshots
 
-Each operating system has slight variations in UI, even within the same browser. These differences can cause screenshot comparison tests to fail. To address this issue and ensure a stable environment with consistent test results locally and in CI, containers can be used. Running Playwright tests inside a container that replicates the CI environment makes screenshot tests reproducible, regardless of the host OS.
+Each operating system has slight variations in UI, even within the same browser. These differences can cause screenshot comparison tests to fail. To address this issue and ensure a stable environment with consistent test results locally and in CI, containers can be used. Running Playwright tests inside a container that is also used in the CI environment makes screenshot tests reproducible, regardless of the host OS.
 
 > **ℹ️ NOTE**
 >
-> Due to compatibility issues, this containerization solution cannot yet be used on Windows natively and requires running it directly within WSL (Windows Subsystem for Linux).
+> Due to compatibility issues, this containerization solution cannot yet be used on native Windows and requires running it directly within WSL (Windows Subsystem for Linux). Also, Linux arm64 doesn't support Google Chrome, and due to this caveat, some tests will be disabled for this arch.
 
 ---
 
@@ -40,7 +40,7 @@ KIE_TOOLS_BUILD__buildContainerImages=true pnpm build:dev
 KIE_TOOLS_BUILD__buildContainerImages=true pnpm -F @kie-tools/plawright-base build:dev
 ```
 
-By default, tests run on the host machine. To execute them in the containerized environment, set the `KIE_TOOLS_BUILD__containerizedEndToEndTests` environment variable to `true`.
+By default, tests run on using containers. To execute them in the native OS environment, set the `KIE_TOOLS_BUILD__containerizedEndToEndTests` environment variable to `false`.
 
 ```sh
 KIE_TOOLS_BUILD__containerizedEndToEndTests=true pnpm test-e2e

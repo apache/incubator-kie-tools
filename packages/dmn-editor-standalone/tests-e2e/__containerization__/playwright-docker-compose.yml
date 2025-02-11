@@ -20,7 +20,7 @@
 services:
   playwright:
     platform: linux/amd64
-    container_name: kie-tools-playwright-containerization-online-editor
+    container_name: kie-tools-playwright-containerization-dmn-editor-standalone
     image: dev.local/${USER}/kie-tools-playwright-container-image:${PROJECT_VERSION}
     depends_on:
       - reverse-proxy
@@ -32,7 +32,6 @@ services:
     environment:
       - KIE_TOOLS_BUILD__runEndToEndTests=true
       - KIE_TOOLS_BUILD__containerizedEndToEndTests=false # Already inside the container, variable must be false.
-      - KIE_TOOLS_ONLINE_EDITOR__SKIP_PLAYWRIGHT_FOR_ARM64=${KIE_TOOLS_ONLINE_EDITOR__SKIP_PLAYWRIGHT_FOR_ARM64}
     volumes:
       - type: bind
         source: ./../../../../
@@ -41,7 +40,7 @@ services:
   # The nginx reverse-proxy is used to forward `host.docker.internal` requests to `localhost.
   reverse-proxy:
     image: nginx:1.27.3-alpine
-    container_name: kie-tools-playwright-containerization-online-editor-reverse-proxy
+    container_name: kie-tools-playwright-containerization-dmn-editor-standalone-reverse-proxy
     network_mode: host
     command: ["nginx", "-g", "daemon off;"]
     configs:
@@ -60,44 +59,6 @@ configs:
 
               location / {
                   proxy_pass http://host.docker.internal:${KIE_TOOLS_PLAYWRIGHT_CONTAINER__PORT};
-
-                  proxy_http_version 1.1;
-                  proxy_set_header Connection "Upgrade";
-              }
-
-              location /ws {
-                  proxy_pass http://host.docker.internal:${KIE_TOOLS_PLAYWRIGHT_CONTAINER__PORT};
-
-                  proxy_http_version 1.1;
-                  proxy_set_header Upgrade websocket;
-                  proxy_set_header Connection "Upgrade";
-              }
-          }
-
-          server {
-              listen ${KIE_TOOLS_PLAYWRIGHT_CONTAINER__CORS_PROXY_PORT};
-              server_name localhost;
-
-              location / {
-                  proxy_pass http://host.docker.internal:${KIE_TOOLS_PLAYWRIGHT_CONTAINER__CORS_PROXY_PORT};
-              }
-          }
-
-          server {
-              listen ${KIE_TOOLS_PLAYWRIGHT_CONTAINER__EXTENDED_SERVICES_PORT};
-              server_name localhost;
-
-              location / {
-                  proxy_pass http://host.docker.internal:${KIE_TOOLS_PLAYWRIGHT_CONTAINER__EXTENDED_SERVICES_PORT};
-              }
-          }
-
-          server {
-              listen ${KIE_TOOLS_PLAYWRIGHT_CONTAINER__QUARKUS_ACCELERATOR_PORT};
-              server_name localhost;
-
-              location / {
-                  proxy_pass http://host.docker.internal:${KIE_TOOLS_PLAYWRIGHT_CONTAINER__QUARKUS_ACCELERATOR_PORT};
               }
           }
       }

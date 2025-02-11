@@ -15,20 +15,41 @@
 # specific language governing permissions and limitations
 # under the License.
 
-# Use Ubuntu 22.04 as the base image due to compatibility with GHA ubuntu-latest
 FROM ubuntu:22.04
 
 # Set non-interactive mode to prevent tzdata prompt
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install dependencies and clean up
-RUN apt-get update && apt-get install -y \
+# Install required dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     ca-certificates \
-    xz-utils \
-    ttf-mscorefonts-installer \
-    fontconfig \
+    wget \
+    jq \
     && rm -rf /var/lib/apt/lists/*
+
+# Adding all dependencies available in GHA `ubuntu-latest`
+RUN wget https://raw.githubusercontent.com/actions/runner-images/refs/heads/main/images/ubuntu/toolsets/toolset-2204.json && \
+    export APT_PACKAGES="$(cat toolset-2204.json | jq -r '.apt | [.vital_packages[], .common_packages[], .cmd_packages[]] | join(" ")')" && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends $APT_PACKAGES && \
+    rm -rf /var/lib/apt/lists/* toolset-2204.json
+
+# Install fonts
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    fonts-ubuntu \
+    fonts-dejavu-core \
+    fonts-dejavu-extra \
+    fonts-freefont-ttf \
+    fonts-liberation \
+    fonts-noto-core \
+    fonts-noto-ui-core \
+    fonts-noto-color-emoji \
+    fonts-noto-mono \
+    fonts-droid-fallback \
+    fontconfig \
+    ttf-mscorefonts-installer && \
+    rm -rf /var/lib/apt/lists/*
 
 # Set Node.js version
 ENV NODE_VERSION=22.13.0
@@ -47,14 +68,9 @@ ENV PLAYWRIGHT_BROWSERS_PATH=/home/node/kie-tools-playwright/.cache/ms-playwrigh
 
 # Installing `pnpm` to keep it consistent with the kie-tools repository
 RUN npm install --global pnpm@9.3.0
-
 # Installing Playwright browser and dependencies
-RUN npx playwright@1.45.2 install-deps 
-RUN npx playwright@1.45.2 install chrome chromium webkit
+RUN npx playwright@1.45.2 install-deps && npx playwright@1.45.2 install chrome chromium webkit
 
 WORKDIR /home/node/kie-tools-playwright
-
-# Switch to node user to prevent creating folders with root privilege
-USER node
 
 ENTRYPOINT ["/bin/bash"]

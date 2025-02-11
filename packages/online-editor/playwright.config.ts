@@ -63,7 +63,7 @@ const customConfig = defineConfig({
     },
   ],
   // Override
-  projects: process.env.KIE_TOOLS_ONLINE_EDITOR__SKIP_PLAYWRIGHT_FOR_MACOS_ARM64
+  projects: process.env.KIE_TOOLS_ONLINE_EDITOR__SKIP_PLAYWRIGHT_FOR_ARM64
     ? [
         {
           timeout: 60000,

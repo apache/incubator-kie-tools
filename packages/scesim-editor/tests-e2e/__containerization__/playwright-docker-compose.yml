@@ -21,14 +21,14 @@ services:
   playwright:
     platform: linux/amd64
     container_name: kie-tools-playwright-containerization-scesim-editor
-    image: kie-tools-playwright-container-image:${PROJECT_VERSION}
+    image: dev.local/${USER}/kie-tools-playwright-container-image:${PROJECT_VERSION}
     depends_on:
       - reverse-proxy
     entrypoint: ["/bin/bash"]
     stdin_open: true
     tty: true
     network_mode: host
-    user: 1000:1000
+    user: "1000:1000"
     environment:
       - KIE_TOOLS_BUILD__runEndToEndTests=true
       - KIE_TOOLS_BUILD__containerizedEndToEndTests=false # Already inside the container, variable must be false.
