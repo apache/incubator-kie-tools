@@ -132,7 +132,7 @@ Installs the necessary 3rd party dependencies and links packages of this reposit
 
 > **ℹ️ NOTE**
 >
-> For more information about how this repository works, please refer to [the `kie-tools` User Manual](./repo/MANUAL.md)
+> For more information about how this repository works, please refer to [the `kie-tools` Manual](./repo/MANUAL.md)
 
 ---
 
