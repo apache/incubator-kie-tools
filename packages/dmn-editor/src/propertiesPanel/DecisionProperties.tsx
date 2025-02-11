@@ -104,9 +104,8 @@ export function DecisionProperties({
           value={decision.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).description = {
-                __$$text: newDescription,
-              };
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).description!.__$$text =
+                newDescription;
             });
           }}
           placeholder={"Enter a description..."}
@@ -129,9 +128,8 @@ export function DecisionProperties({
           value={decision.question?.__$$text}
           onChange={(newQuestion) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).question = {
-                __$$text: newQuestion,
-              };
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).question!.__$$text =
+                newQuestion;
             });
           }}
           placeholder={"Enter a question..."}
@@ -148,9 +146,9 @@ export function DecisionProperties({
           value={decision.allowedAnswers?.__$$text}
           onChange={(newAllowedAnswers) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).allowedAnswers = {
-                __$$text: newAllowedAnswers,
-              };
+              (
+                state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>
+              ).allowedAnswers!.__$$text = newAllowedAnswers;
             });
           }}
           placeholder={"Enter allowed answers..."}
