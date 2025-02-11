@@ -17,13 +17,14 @@
  * under the License.
  */
 
-export * from "./FeelVariables";
-export * from "./parser/FeelVariable";
+export * from "./FeelIdentifiers";
+export * from "./parser/FeelIdentifiedSymbol";
 export * from "./parser/ReservedWords";
 export * from "./parser/FeelSyntacticSymbolNature";
-export * from "./parser/FeelVariablesParser";
-export * from "./parser/VariablesRepository";
+export * from "./parser/FeelIdentifiersParser";
+export * from "./parser/IdentifiersRepository";
 export * from "./parser/ParsedExpression";
 export * from "./parser/FeelSymbol";
 export * from "./parser/BuiltInTypes";
 export * from "./parser/DataType";
+export * from "./parser/Expression";

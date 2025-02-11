@@ -19,15 +19,18 @@
 
 import { FeelSyntacticSymbolNature } from "./FeelSyntacticSymbolNature";
 import { FeelSymbol } from "./FeelSymbol";
-import { Variable } from "./Variable";
+import { Identifier } from "./Identifier";
 
-export class FeelVariable {
+/**
+ * Defines a Feel symbol already identified by the parser, inside an existing expression.
+ */
+export class FeelIdentifiedSymbol {
   private readonly _text: string;
   private _startIndex: number;
   private readonly _feelSymbolNature: FeelSyntacticSymbolNature;
   private readonly _length: number;
   private readonly _scopeSymbols: FeelSymbol[];
-  private readonly _source: Variable | undefined;
+  private readonly _source: Identifier | undefined;
   private readonly _startLine: number;
   private readonly _endLine: number;
 
@@ -39,7 +42,7 @@ export class FeelVariable {
     symbolType: FeelSyntacticSymbolNature,
     text: string,
     scopeSymbols?: FeelSymbol[],
-    source?: Variable
+    source?: Identifier
   ) {
     this._startIndex = startIndex;
     this._length = length;
@@ -51,14 +54,23 @@ export class FeelVariable {
     this._endLine = endLine;
   }
 
-  get source(): Variable | undefined {
+  /**
+   * The source that generated this symbol.
+   */
+  get source(): Identifier | undefined {
     return this._source;
   }
 
+  /**
+   * The text (content) of the symbol.
+   */
   get text(): string {
     return this._text;
   }
 
+  /**
+   * The start index of the symbol inside the expression.
+   */
   get startIndex(): number {
     return this._startIndex;
   }
@@ -67,6 +79,9 @@ export class FeelVariable {
     this._startIndex = value;
   }
 
+  /**
+   * The start line of the symbol inside the expression.
+   */
   get startLine(): number {
     return this._startLine;
   }
@@ -74,10 +89,17 @@ export class FeelVariable {
   get endLine(): number {
     return this._endLine;
   }
+
+  /**
+   * The {@link FeelSyntacticSymbolNature} of the symbol.
+   */
   get feelSymbolNature(): FeelSyntacticSymbolNature {
     return this._feelSymbolNature;
   }
 
+  /**
+   * The length of the symbol.
+   */
   get length(): number {
     return this._length;
   }

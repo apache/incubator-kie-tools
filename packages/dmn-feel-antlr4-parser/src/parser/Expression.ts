@@ -17,29 +17,35 @@
  *  under the License.
  */
 
-import { Variable } from "./Variable";
-import { FeelVariable } from "./FeelVariable";
+import { Identifier } from "./Identifier";
+import { FeelIdentifiedSymbol } from "./FeelIdentifiedSymbol";
+import { ExpressionSource } from "./IdentifiersRepository";
 
 export class Expression {
   private readonly _uuid: string;
   private _fullExpression: string;
-  private _variables: Array<FeelVariable>;
+  private _identifiersOfTheExpression: Array<FeelIdentifiedSymbol>;
+  private source: ExpressionSource;
 
-  constructor(uuid: string, fullExpression?: string) {
+  constructor(uuid: string, source: ExpressionSource) {
     this._uuid = uuid;
-    this._variables = new Array<FeelVariable>();
-    this._fullExpression = fullExpression ?? "";
+    this._identifiersOfTheExpression = new Array<FeelIdentifiedSymbol>();
+    this._fullExpression = source.text?.__$$text ?? "";
+    this.source = source;
   }
 
-  public renameVariable(renamedVariable: Variable, newName: String) {
-    // We assume that variables are already ordered by the parser
+  public applyChangesToExpressionSource() {
+    this.source.text = { __$$text: this._fullExpression };
+  }
 
+  public renameIdentifier(identifier: Identifier, newName: String) {
+    // It is safe to assume that identifiers are already ordered by the parser.
     let offset = 0;
-    for (const variable of this._variables) {
-      variable.startIndex += offset;
-      if (variable.source != undefined && variable.source === renamedVariable) {
-        this.replaceAt(variable.startIndex, renamedVariable.value.length, newName);
-        offset += renamedVariable.value.length - newName.length;
+    for (const feelIdentifiedSymbol of this._identifiersOfTheExpression) {
+      feelIdentifiedSymbol.startIndex += offset;
+      if (feelIdentifiedSymbol.source != undefined && feelIdentifiedSymbol.source === identifier) {
+        this.replaceAt(feelIdentifiedSymbol.startIndex, identifier.value.length, newName);
+        offset += newName.length - identifier.value.length;
       }
     }
   }
@@ -52,12 +58,12 @@ export class Expression {
     this.fullExpression = part1 + newPart + part2;
   }
 
-  get variables(): Array<FeelVariable> {
-    return this._variables;
+  get identifiersOfTheExpression(): Array<FeelIdentifiedSymbol> {
+    return this._identifiersOfTheExpression;
   }
 
-  set variables(value: Array<FeelVariable>) {
-    this._variables = value;
+  set identifiersOfTheExpression(value: Array<FeelIdentifiedSymbol>) {
+    this._identifiersOfTheExpression = value;
   }
 
   get fullExpression(): string {

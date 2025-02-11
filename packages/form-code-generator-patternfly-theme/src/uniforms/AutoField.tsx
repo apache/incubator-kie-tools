@@ -21,6 +21,7 @@ import { createAutoField } from "uniforms/cjs/createAutoField";
 
 import TextField from "./TextField";
 import BoolField from "./BoolField";
+import ListField from "./ListField";
 import NumField from "./NumField";
 import NestField from "./NestField";
 import DateField from "./DateField";
@@ -40,10 +41,8 @@ const AutoField = createAutoField((props) => {
   }
 
   switch (props.fieldType) {
-    /*
-    TODO: implement array support
     case Array:
-      return  ListField;*/
+      return ListField;
     case Boolean:
       return BoolField;
     case Date:

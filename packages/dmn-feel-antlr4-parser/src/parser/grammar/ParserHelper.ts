@@ -21,23 +21,23 @@ import { Parser, ParserRuleContext, Token } from "antlr4";
 import { FilterPathExpressionContext, KeyStringContext, NameRefContext } from "./generated-parser/FEEL_1_1Parser";
 import { Scope } from "./Scope";
 import { Type } from "./Type";
-import { VariableSymbol } from "./VariableSymbol";
+import { IdentifierSymbol } from "./IdentifierSymbol";
 import { ScopeImpl } from "./ScopeImpl";
 import { NameQueue } from "./NameQueue";
-import { FeelVariable } from "../FeelVariable";
+import { FeelIdentifiedSymbol } from "../FeelIdentifiedSymbol";
 import { Scopes } from "./Scopes";
 import { ReservedWords } from "../ReservedWords";
 import { FeelSyntacticSymbolNature } from "../FeelSyntacticSymbolNature";
 import { MapBackedType } from "./MapBackedType";
 import { FeelSymbol } from "../FeelSymbol";
-import { Variable } from "../Variable";
+import { Identifier } from "../Identifier";
 import { FunctionSymbol } from "./FunctionSymbol";
 
 export class ParserHelper {
   private dynamicResolution = 0;
   private currentScope: Scope | undefined;
   private readonly currentName: NameQueue;
-  private readonly _variables: Array<FeelVariable>;
+  private readonly _variables: Array<FeelIdentifiedSymbol>;
   private readonly scopes = new Scopes();
   private readonly _availableSymbols: Array<FeelSymbol>;
 
@@ -45,7 +45,7 @@ export class ParserHelper {
     this.currentName = new NameQueue();
     this.currentName.push("<local>");
     this.currentScope = this.scopes.getGlobalScope();
-    this._variables = new Array<FeelVariable>();
+    this._variables = new Array<FeelIdentifiedSymbol>();
     this._availableSymbols = new Array<FeelSymbol>();
   }
 
@@ -53,7 +53,7 @@ export class ParserHelper {
     return this._availableSymbols;
   }
 
-  get variables(): Array<FeelVariable> {
+  get variables(): Array<FeelIdentifiedSymbol> {
     return this._variables;
   }
 
@@ -110,10 +110,10 @@ export class ParserHelper {
     variable: string | ParserRuleContext,
     type?: Type,
     variableType?: FeelSyntacticSymbolNature,
-    variableSource?: Variable,
+    variableSource?: Identifier,
     allowDynamicVariables?: boolean
   ) {
-    const variableSymbol = new VariableSymbol(
+    const variableSymbol = new IdentifierSymbol(
       variable instanceof ParserRuleContext ? this.getName(variable) : variable,
       type,
       variableType,
@@ -154,7 +154,9 @@ export class ParserHelper {
       if (resolved != null && scopeType instanceof MapBackedType) {
         this.pushScope(scopeType);
         for (const f of scopeType.properties) {
-          this.currentScope?.define(new VariableSymbol(f[0], f[1]));
+          this.currentScope?.define(
+            new IdentifierSymbol(f[0], f[1], FeelSyntacticSymbolNature.GlobalVariable, f[1].source)
+          );
         }
       } else {
         this.pushScope();
@@ -193,15 +195,22 @@ export class ParserHelper {
     const variableName = name.replaceAll("\r\n", " ").replaceAll("\n", " ").replace(/\s\s+/g, " ");
     if (this.currentScope?.getChildScopes().has(variableName)) {
       this.variables.push(
-        new FeelVariable(start, length, startLine, endLine, FeelSyntacticSymbolNature.GlobalVariable, variableName)
+        new FeelIdentifiedSymbol(
+          start,
+          length,
+          startLine,
+          endLine,
+          FeelSyntacticSymbolNature.GlobalVariable,
+          variableName
+        )
       );
     } else {
       const symbol = this.currentScope?.resolve(variableName);
       if (symbol) {
-        if (symbol instanceof VariableSymbol) {
+        if (symbol instanceof IdentifierSymbol) {
           const scopeSymbols = [];
-          if ((symbol as VariableSymbol).getType() instanceof MapBackedType) {
-            const map = (symbol as VariableSymbol).getType() as MapBackedType;
+          if ((symbol as IdentifierSymbol).getType() instanceof MapBackedType) {
+            const map = (symbol as IdentifierSymbol).getType() as MapBackedType;
             for (const [key, value] of map.properties) {
               scopeSymbols.push({
                 name: key,
@@ -215,26 +224,34 @@ export class ParserHelper {
           }
 
           this.variables.push(
-            new FeelVariable(
+            new FeelIdentifiedSymbol(
               start,
               length,
               startLine,
               endLine,
               symbol.symbolType ?? FeelSyntacticSymbolNature.GlobalVariable,
               variableName,
-              scopeSymbols
+              scopeSymbols,
+              symbol.symbolSource
             )
           );
         } else if (!(symbol instanceof FunctionSymbol)) {
           // We ignore FunctionSymbols (built-in functions) because they are not variables
           this.variables.push(
-            new FeelVariable(start, length, startLine, endLine, FeelSyntacticSymbolNature.GlobalVariable, variableName)
+            new FeelIdentifiedSymbol(
+              start,
+              length,
+              startLine,
+              endLine,
+              FeelSyntacticSymbolNature.GlobalVariable,
+              variableName
+            )
           );
         }
       } else {
         if (!ReservedWords.FeelFunctions.has(variableName) && !ReservedWords.FeelKeywords.has(variableName)) {
           this.variables.push(
-            new FeelVariable(start, length, startLine, endLine, FeelSyntacticSymbolNature.Unknown, variableName)
+            new FeelIdentifiedSymbol(start, length, startLine, endLine, FeelSyntacticSymbolNature.Unknown, variableName)
           );
         }
       }

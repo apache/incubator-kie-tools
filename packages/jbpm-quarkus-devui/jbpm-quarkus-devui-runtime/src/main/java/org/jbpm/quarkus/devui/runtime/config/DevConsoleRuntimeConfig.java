@@ -23,13 +23,17 @@ import java.util.Map;
 import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigPhase;
 import io.quarkus.runtime.annotations.ConfigRoot;
+import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithName;
 
-@ConfigRoot(name = "", prefix = "jbpm.devui", phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED)
-public class DevConsoleRuntimeConfig {
+@ConfigMapping(prefix = "jbpm.devui")
+@ConfigRoot(phase = ConfigPhase.BUILD_AND_RUN_TIME_FIXED)
+public interface DevConsoleRuntimeConfig {
 
     /**
      * Mocked users data for the Tasks screen.
      */
-    @ConfigItem(name = "users")
-    public Map<String, UserConfig> userConfigByUser;
+
+    @WithName("users")
+    public Map<String, UserConfig> userConfigByUser();
 }

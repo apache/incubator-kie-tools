@@ -114,6 +114,13 @@ jobs:
         with:
           pnpm_filter_string: ${{ steps.setup_build_mode.outputs.bootstrapPnpmFilterString }}
 
+      - name: "Check hanging uncommitted files after bootstrapping (you should either commit or not modify those!)"
+        if: steps.setup_build_mode.outputs.mode != 'none'
+        shell: bash
+        run: |
+          git diff
+          [ "0" == "$(git diff | wc -l | tr -d ' ')" ]
+
       - name: "FULL → Build"
         if: steps.setup_build_mode.outputs.mode == 'full'
         shell: bash
@@ -184,7 +191,7 @@ jobs:
           cat "$BUILD_ENV__accessErrorsLogFileAbsolutePath"
           [ "0" == "$(cat "$BUILD_ENV__accessErrorsLogFileAbsolutePath" | wc -l | tr -d ' ')" ]
 
-      - name: "Check hanging uncommitted files (you should commit those!)"
+      - name: "Check hanging uncommitted files after building (you should either commit or not modify those!)"
         if: always() && !cancelled() && steps.setup_build_mode.outputs.mode != 'none'
         shell: bash
         run: |

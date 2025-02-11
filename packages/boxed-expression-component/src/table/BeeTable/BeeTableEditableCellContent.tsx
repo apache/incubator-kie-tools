@@ -77,15 +77,15 @@ export function BeeTableEditableCellContent({
   }, [isEditing, isReadOnly]);
 
   // FIXME: Tiago --> Temporary fix for the Boxed Expression Editor to work well. Ideally this wouldn't bee here, as the BeeTable should be decoupled from the DMN Editor's Boxed Expression Editor use-case.
-  const { onRequestFeelVariables } = useBoxedExpressionEditor();
+  const { onRequestFeelIdentifiers } = useBoxedExpressionEditor();
 
-  const feelVariables = useMemo(() => {
+  const feelIdentifiers = useMemo(() => {
     if (mode === Mode.Edit) {
-      return onRequestFeelVariables?.();
+      return onRequestFeelIdentifiers?.();
     } else {
       return undefined;
     }
-  }, [mode, onRequestFeelVariables]);
+  }, [mode, onRequestFeelIdentifiers]);
 
   useEffect(() => {
     setPreviousValue((prev) => (isEditing ? prev : value));
@@ -221,7 +221,7 @@ export function BeeTableEditableCellContent({
           onPreviewChanged={setPreview}
           options={MONACO_OPTIONS}
           onBlur={onFeelBlur}
-          feelVariables={feelVariables}
+          feelIdentifiers={feelIdentifiers}
           expressionId={expressionId}
         />
       </div>
