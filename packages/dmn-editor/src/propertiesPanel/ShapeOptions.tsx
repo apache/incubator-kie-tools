@@ -42,6 +42,7 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { DC__Dimension } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_2/ts-gen/types";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 const DEFAULT_FILL_COLOR = { "@_blue": 255, "@_green": 255, "@_red": 255 };
 const DEFAULT_STROKE_COLOR = { "@_blue": 0, "@_green": 0, "@_red": 0 };
@@ -347,7 +348,12 @@ export function ShapeOptions({
   return (
     <>
       <PropertiesPanelHeader
-        icon={<CubeIcon width={16} height={36} style={{ marginLeft: "12px" }} />}
+        icon={
+          <Icon isInline size="md" style={{ marginTop: "10px" }}>
+            {" "}
+            <CubeIcon />
+          </Icon>
+        }
         expands={true}
         fixed={false}
         isSectionExpanded={isShapeSectionExpanded}

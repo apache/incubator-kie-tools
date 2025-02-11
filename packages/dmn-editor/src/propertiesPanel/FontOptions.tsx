@@ -38,6 +38,7 @@ import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import "./FontOptions.css";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 // https://www.w3schools.com/cssref/css_websafe_fonts.php
 // Array of [name, family]
@@ -271,7 +272,12 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
   return (
     <>
       <PropertiesPanelHeader
-        icon={<PencilAltIcon width={16} height={36} style={{ marginLeft: "12px" }} />}
+        icon={
+          <Icon isInline size="md" style={{ marginTop: "10px" }}>
+            {" "}
+            <PencilAltIcon />
+          </Icon>
+        }
         expands={true}
         fixed={false}
         isSectionExpanded={isStyleSectionExpanded} // TODO LUIZ: isStyleSectionExpanded
