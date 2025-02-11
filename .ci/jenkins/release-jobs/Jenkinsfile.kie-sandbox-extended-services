@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            image 'mirror.gcr.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -43,7 +43,7 @@ pipeline {
         OPENSHIFT_PART_OF = 'kie-sandbox-app'
         OPENSHIFT_NAMESPACE = 'kie-sandbox'
 
-        KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry = 'docker.io'
+        KIE_SANDBOX_EXTENDED_SERVICES__imageRegistry = 'mirror.gcr.io'
         KIE_SANDBOX_EXTENDED_SERVICES__imageAccount = 'apache'
         KIE_SANDBOX_EXTENDED_SERVICES__imageName = 'incubator-kie-sandbox-extended-services'
         KIE_SANDBOX_EXTENDED_SERVICES__imageBuildTag = "${params.RELEASE_VERSION}"
