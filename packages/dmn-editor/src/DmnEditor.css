@@ -112,8 +112,8 @@
   color: white;
   background-color: rgb(134, 106, 212);
   position: absolute;
-  top: 0px;
-  left: 0px;
+  top: 2px;
+  left: 2px;
   height: 40px;
   width: 40px;
   clip-path: polygon(0% 100%, 100% 0%, 0% 0%);
@@ -128,8 +128,8 @@
   color: white;
   background-color: rgb(134, 106, 212);
   position: absolute;
-  top: 0px;
-  left: 0px;
+  top: 2px;
+  left: 2px;
   height: 40px;
   width: 40px;
   clip-path: polygon(0% 100%, 100% 0%, 0% 0%);
