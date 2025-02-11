@@ -45,7 +45,7 @@ test.describe("Background table context menu", () => {
     });
 
     test("should render field context menu", async ({ contextMenu }) => {
-      await contextMenu.openOnColumnHeader({ name: "PROPERTY-2 (<Undefined>)", columnNumber: 1 });
+      await contextMenu.openOnColumnHeader({ name: "PROPERTY-1 (<Undefined>)" });
       await expect(contextMenu.getHeading({ heading: HeadingType.SELECTION })).not.toBeAttached();
       await expect(contextMenu.getHeading({ heading: HeadingType.SCENARIO })).not.toBeAttached();
       await expect(contextMenu.getHeading({ heading: HeadingType.FIELD })).toBeAttached();
@@ -88,36 +88,38 @@ test.describe("Background table context menu", () => {
 
     test("should add and delete property column left", async ({ table, backgroundTable, contextMenu }) => {
       await table.addPropertyColumn({
-        targetCellName: "PROPERTY-2 (<Undefined>)",
+        targetCellName: "PROPERTY-1 (<Undefined>)",
         position: AddColumnPosition.LEFT,
         columnNumber: 0,
       });
-      await expect(table.getColumnHeader({ name: "PROPERTY-2 (<Undefined>)", columnNumber: 1 })).toBeAttached();
-      await expect(table.getColumnHeader({ name: "PROPERTY-1 (<Undefined>)", columnNumber: 2 })).toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-1 (<Undefined>)" })).toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-2 (<Undefined>)" })).toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-3 (<Undefined>)" })).toBeAttached();
       await expect(backgroundTable.get()).toHaveScreenshot("background-table-add-property-column-left.png");
 
-      await contextMenu.openOnColumnHeader({ name: "PROPERTY-2 (<Undefined>)", columnNumber: 1 });
+      await contextMenu.openOnColumnHeader({ name: "PROPERTY-3 (<Undefined>)" });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_FIELD });
-      await expect(table.getColumnHeader({ name: "PROPERTY-1 (<Undefined>)", columnNumber: 2 })).not.toBeAttached();
-      await expect(table.getColumnHeader({ name: "PROPERTY-2 (<Undefined>)", columnNumber: 2 })).not.toBeAttached();
-      await expect(table.getColumnHeader({ name: "PROPERTY-1 (<Undefined>)", columnNumber: 1 })).toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-3 (<Undefined>)" })).not.toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-2 (<Undefined>)" })).toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-1 (<Undefined>)" })).toBeAttached();
     });
 
     test("should add and delete property column right", async ({ table, backgroundTable, contextMenu }) => {
       await table.addPropertyColumn({
-        targetCellName: "PROPERTY-2 (<Undefined>)",
+        targetCellName: "PROPERTY-1 (<Undefined>)",
         position: AddColumnPosition.RIGHT,
         columnNumber: 0,
       });
-      await expect(table.getColumnHeader({ name: "PROPERTY-1 (<Undefined>)", columnNumber: 1 })).toBeAttached();
-      await expect(table.getColumnHeader({ name: "PROPERTY-2 (<Undefined>)", columnNumber: 2 })).toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-1 (<Undefined>)" })).toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-2 (<Undefined>)" })).toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-3 (<Undefined>)" })).toBeAttached();
       await expect(backgroundTable.get()).toHaveScreenshot("background-table-add-property-column-right.png");
 
-      await contextMenu.openOnColumnHeader({ name: "PROPERTY-1 (<Undefined>)", columnNumber: 1 });
+      await contextMenu.openOnColumnHeader({ name: "PROPERTY-3 (<Undefined>)" });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_FIELD });
-      await expect(table.getColumnHeader({ name: "PROPERTY-1 (<Undefined>)", columnNumber: 2 })).not.toBeAttached();
-      await expect(table.getColumnHeader({ name: "PROPERTY-2 (<Undefined>)", columnNumber: 2 })).not.toBeAttached();
-      await expect(table.getColumnHeader({ name: "PROPERTY-2 (<Undefined>)", columnNumber: 1 })).toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-3 (<Undefined>)" })).not.toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-1 (<Undefined>)" })).toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-1 (<Undefined>)" })).toBeAttached();
     });
 
     test("should not render context menu on the given header", async ({ table, backgroundTable, contextMenu }) => {
