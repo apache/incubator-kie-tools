@@ -73,6 +73,7 @@ export type DmnEditorRef = {
 
 /**
  * TODO we need to implement mapping  between (extended-services-api/src/dmnResult.ts) and ("success" | "failure")
+ * https://github.com/apache/incubator-kie-issues/issues/1823
  */
 export type EvaluationResults = Record<string, "success" | "failure">;
 export type ValidationMessages = Record<string, any>;
