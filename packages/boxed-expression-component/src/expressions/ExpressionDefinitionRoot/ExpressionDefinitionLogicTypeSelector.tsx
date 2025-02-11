@@ -59,6 +59,7 @@ import { ConditionalExpression } from "../ConditionalExpression/ConditionalExpre
 import { IteratorExpressionComponent } from "../IteratorExpression/IteratorExpressionComponent";
 import { FilterExpressionComponent } from "../FilterExpression/FilterExpressionComponent";
 import FilterIcon from "@patternfly/react-icons/dist/esm/icons/filter-icon";
+import { Icon } from "@patternfly/react-core/dist/js";
 
 export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Expression properties */
@@ -531,7 +532,12 @@ export function ExpressionDefinitionLogicTypeSelector({
               toggle={
                 <DropdownToggle
                   data-testid={"kie-tools--bee--expression-header-dropdown"}
-                  icon={<>{logicTypeIcon(expression.__$$element)}</>}
+                  icon={
+                    <Icon style={{ marginRight: "5px" }}>
+                      <>{logicTypeIcon(expression.__$$element)}</>
+                    </Icon>
+                  }
+                  // icon={<>{logicTypeIcon(expression.__$$element)}</>}
                   style={{ padding: 0 }}
                   onToggle={(_event, val) => setDropdownOpen(val)}
                   tabIndex={-1}
