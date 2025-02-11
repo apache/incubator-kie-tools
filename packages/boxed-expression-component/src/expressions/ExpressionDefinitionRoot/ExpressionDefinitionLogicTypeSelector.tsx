@@ -537,7 +537,6 @@ export function ExpressionDefinitionLogicTypeSelector({
                       <>{logicTypeIcon(expression.__$$element)}</>
                     </Icon>
                   }
-                  // icon={<>{logicTypeIcon(expression.__$$element)}</>}
                   style={{ padding: 0 }}
                   onToggle={(_event, val) => setDropdownOpen(val)}
                   tabIndex={-1}
