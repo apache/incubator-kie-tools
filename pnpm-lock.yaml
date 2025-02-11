@@ -6088,6 +6088,9 @@ importers:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2

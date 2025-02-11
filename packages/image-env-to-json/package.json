@@ -31,12 +31,13 @@
     "build:win32:arm": "pnpm setup:env:win32 make build-win-arm64",
     "install": "go mod tidy",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
-    "setup:env": "PLUGIN_VERSION=$(build-env imageEnvToJson.version)",
-    "setup:env:win32": "pnpm powershell \"PLUGIN_VERSION=$(build-env imageEnvToJson.version)\"",
+    "setup:env": "cross-env PLUGIN_VERSION=$(build-env imageEnvToJson.version)",
+    "setup:env:win32": "pnpm powershell \"cross-env PLUGIN_VERSION=$(build-env imageEnvToJson.version)\"",
     "test": "go test ./..."
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
+    "cross-env": "^7.0.3",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6"
   }
