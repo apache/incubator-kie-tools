@@ -130,6 +130,10 @@ Installs the necessary 3rd party dependencies and links packages of this reposit
 >
 > Final artifacts will be in `{packages,examples}/*/dist` directories.
 
+> **ℹ️ NOTE**
+>
+> For more information about how this repository works, please refer to [the `kie-tools` User Manual](./repo/MANUAL.md)
+
 ---
 
 ## Reproducible Builds for _maven-based_ packages
