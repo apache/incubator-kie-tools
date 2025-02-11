@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,32 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+const { env } = require("./env");
+const { setupMavenConfigFile, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
 
-import { DataType } from "./DataType";
-import { FeelSyntacticSymbolNature } from "./FeelSyntacticSymbolNature";
-import { Expression } from "./VariableOccurrence";
-
-/**
- * Describe a variable in FEEL.
- */
-export interface Variable {
-  /**
-   * The name/value of the variable.
-   */
-  value: string;
-
-  /**
-   * The nature of the variable.
-   */
-  feelSyntacticSymbolNature: FeelSyntacticSymbolNature;
-
-  /**
-   * The type of the variable, which can be a custom data type defined by the user, a built-in type or not defined.
-   */
-  typeRef?: DataType | string | undefined;
-
-  /**
-   * The expressions where this variable is being used.
-   */
-  expressions: Map<string, Expression>;
-}
+setupMavenConfigFile(
+  `
+    -Drevision=${env.kogitoDbMigratorTool.version}
+    -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
+`
+);

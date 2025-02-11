@@ -1,0 +1,45 @@
+{
+  "private": true,
+  "name": "@kie-tools/kogito-db-migrator-tool-image",
+  "version": "0.0.0",
+  "description": "",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "scripts": {
+    "build": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm venv-activate\" \"pnpm copy-assets\" \"pnpm image:build\" \"rimraf target\" \"rimraf dist-tests-e2e\"",
+    "build:dev": "run-script-os",
+    "build:dev:linux": "pnpm build",
+    "build:dev:win32:darwin": "echo \"Build skipped on Windows and MacOS\"",
+    "build:prod": "run-script-os",
+    "build:prod:linux": "pnpm build",
+    "build:prod:win32:darwin": "echo \"Build skipped on Windows and MacOS\"",
+    "copy-assets": "run-script-os",
+    "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/sonataflow-image-common/resources build && cp -R resources/* build && mkdir -p build/modules/kogito-db-migrator-tool/postgresql/quarkus-app && cp -R ./node_modules/@kie-tools/kogito-db-migrator-tool/target/quarkus-app/* build/modules/kogito-db-migrator-tool/postgresql/quarkus-app",
+    "format": "prettier --write . --ignore-path=../../.prettierignore --ignore-path=../../.gitignore",
+    "image:build": "run-script-os",
+    "image:build:linux": "pnpm setup:env make -C ./build build",
+    "image:build:win32:darwin": "echo \"Build skipped on Windows and MacOS\"",
+    "install": "node install.js && pnpm format",
+    "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env kogitoDbMigratorToolImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env kogitoDbMigratorToolImage.account) KOGITO_IMAGE_NAME=$(build-env kogitoDbMigratorToolImage.name) KOGITO_IMAGE_TAG=$(build-env kogitoDbMigratorToolImage.buildTag) QUARKUS_PLATFORM_GROUPID=$(build-env kogitoImagesCekitModules.quarkusGroupId) QUARKUS_PLATFORM_VERSION=$(build-env versions.quarkus) KOGITO_VERSION=$(build-env versions.kogito)",
+    "venv-activate": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate"
+  },
+  "dependencies": {
+    "@kie-tools/kogito-db-migrator-tool": "workspace:*",
+    "@kie-tools/python-venv": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/sonataflow-image-common": "workspace:*"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "replace-in-file": "^7.1.0",
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
+  }
+}

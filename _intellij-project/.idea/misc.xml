@@ -20,6 +20,7 @@
         <option value="$PROJECT_DIR$/../packages/dmn-testing-models/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/serverless-logic-web-tools-swf-deployment-quarkus-app/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/vscode-java-code-completion-extension-plugin/pom.xml" />
+        <option value="$PROJECT_DIR$/../packages/kogito-db-migrator-tool/pom.xml" />
       </list>
     </option>
   </component>

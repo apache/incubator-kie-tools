@@ -89,6 +89,24 @@ export const threeLevelRecursionC = () => {
   });
 };
 
+export const sampleLoanDmnModel = () => {
+  return getModelXmlForTestFixtures({
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/refactor/sampleLoan.dmn",
+  });
+};
+
+export const mathDmnModel = () => {
+  return getModelXmlForTestFixtures({
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/refactor/math.dmn",
+  });
+};
+
+export const includeMathModelDmn = () => {
+  return getModelXmlForTestFixtures({
+    normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/refactor/includeMathModel.dmn",
+  });
+};
+
 export const decisions = () => {
   return getModelXmlForTestFixtures({ normalizedPosixPathRelativeToTheWorkspaceRoot: "fixtures/decisions.dmn" });
 };

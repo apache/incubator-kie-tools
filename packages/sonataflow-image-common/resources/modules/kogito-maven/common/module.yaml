@@ -25,6 +25,8 @@ envs:
     description: "The Maven version to setup with this module"
   - name: "MAVEN_HOME"
     value: "/usr/share/maven"
+  - name: "MAVEN_CMD"
+    value: "/usr/share/maven/bin/mvnw"
   - name: "MAVEN_SETTINGS_PATH"
     description: "The location of the settings.xml file"
     value: "${KOGITO_HOME}/.m2/settings.xml"

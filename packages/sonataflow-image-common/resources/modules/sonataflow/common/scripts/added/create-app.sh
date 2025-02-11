@@ -34,7 +34,7 @@ fi
 
 source "${script_dir_path}"/configure-jvm-mvn.sh
 
-"${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
+"${MAVEN_CMD}" -B ${MAVEN_ARGS_APPEND} \
   -nsu \
   -B \
   -s "${MAVEN_SETTINGS_PATH}" \
@@ -129,7 +129,7 @@ fi
 # see:
 #   https://quarkus.io/guides/maven-tooling#downloading-maven-artifact-dependencies-for-offline-development-and-testing
 #   https://maven.apache.org/plugins/maven-dependency-plugin/go-offline-mojo.html
-"${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
+"${MAVEN_CMD}" -B ${MAVEN_ARGS_APPEND} \
   -nsu \
   -B \
   -s "${MAVEN_SETTINGS_PATH}" \
@@ -138,7 +138,7 @@ fi
   clean dependency:go-offline "${QUARKUS_PLATFORM_GROUPID}":quarkus-maven-plugin:"${QUARKUS_PLATFORM_VERSION}":go-offline install
 
 # clean up
-"${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
+"${MAVEN_CMD}" -B ${MAVEN_ARGS_APPEND} \
   -nsu \
   -B \
   -s "${MAVEN_SETTINGS_PATH}" \
