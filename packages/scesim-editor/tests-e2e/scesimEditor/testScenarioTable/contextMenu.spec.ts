@@ -119,7 +119,7 @@ test.describe("Test scenario table context menu", () => {
 
     test("should add and delete row below", async ({ table, contextMenu }) => {
       await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
-      await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
+      await expect(table.getCell({ rowNumber: "1", columnNumber: 2 })).toContainText("test");
 
       await contextMenu.openOnCell({ rowNumber: "3", columnNumber: 0 });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_SCENARIO });
@@ -128,7 +128,7 @@ test.describe("Test scenario table context menu", () => {
 
     test("should add and delete row above", async ({ table, contextMenu }) => {
       await table.addRow({ targetCellName: "1", position: AddRowPosition.ABOVE });
-      await expect(table.getCell({ rowNumber: "2", columnNumber: 1 })).toContainText("test");
+      await expect(table.getCell({ rowNumber: "2", columnNumber: 2 })).toContainText("test");
 
       await contextMenu.openOnCell({ rowNumber: "3", columnNumber: 0 });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_SCENARIO });
