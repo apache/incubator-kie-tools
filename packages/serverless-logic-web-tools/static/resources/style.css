@@ -77,11 +77,18 @@
   overflow: hidden;
 }
 
-.kogito--editor__toolbar-name-container span:focus {
-  border: var(--pf-v5-global--BorderWidth--md) solid var(--pf-v5-global--active-color--100);
+.kogito--editor__toolbar-name-container span::before,
+.kogito--editor__toolbar-name-container span::after {
+  border: none;
+}
+
+.kogito--editor__toolbar-name-container span:focus-within {
+  outline-width: 1px;
+  outline-style: auto;
 }
 
 .kogito--editor__toolbar-name-container span input {
+  outline-width: 0;
   padding: 0;
 }
 
