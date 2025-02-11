@@ -43,37 +43,40 @@ export function IteratorExpressionCell({
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onSetExpression = useCallback(
-    ({ getNewExpression }) => {
-      setExpression((prev: Normalized<BoxedIterator>) => {
-        switch (rowIndex) {
-          case 1:
-            return {
-              ...prev,
-              in: {
-                "@_id": generateUuid(),
-                expression: getNewExpression(prev.in.expression),
-              },
-            };
-          case 2:
-          default:
-            if (prev.__$$element === "for") {
+    ({ getNewExpression, expressionChangedArgs }) => {
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedIterator>) => {
+          switch (rowIndex) {
+            case 1:
               return {
                 ...prev,
-                return: {
+                in: {
                   "@_id": generateUuid(),
-                  expression: getNewExpression(prev.return.expression),
+                  expression: getNewExpression(prev.in.expression),
                 },
               };
-            } else {
-              return {
-                ...prev,
-                satisfies: {
-                  "@_id": generateUuid(),
-                  expression: getNewExpression(prev.satisfies.expression),
-                },
-              };
-            }
-        }
+            case 2:
+            default:
+              if (prev.__$$element === "for") {
+                return {
+                  ...prev,
+                  return: {
+                    "@_id": generateUuid(),
+                    expression: getNewExpression(prev.return.expression),
+                  },
+                };
+              } else {
+                return {
+                  ...prev,
+                  satisfies: {
+                    "@_id": generateUuid(),
+                    expression: getNewExpression(prev.satisfies.expression),
+                  },
+                };
+              }
+          }
+        },
+        expressionChangedArgs,
       });
     },
     [rowIndex, setExpression]

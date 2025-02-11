@@ -19,8 +19,11 @@ import {
 	FlexItem,
 	InputGroup,
 	TimePicker,
-	Alert,
+	Split,
+	SplitItem,
+	Button,
 } from &#39;@patternfly/react-core&#39;;
+import { PlusCircleIcon, MinusCircleIcon } from &#39;@patternfly/react-icons&#39;;
 const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 	const [formApi, setFormApi] = useState&lt;any&gt;();
 	const [personalData__name, set__personalData__name] = useState&lt;string&gt;(&#39;&#39;);
@@ -48,7 +51,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 	const [interview__hire, set__interview__hire] = useState&lt;boolean&gt;(false);
 	const [interview__hiringDate, set__interview__hiringDate] =
 		useState&lt;string&gt;();
-	const [friends, set__friends] = useState&lt;any[]&gt;();
+	const [friends, set__friends] = useState&lt;object[]&gt;([]);
 	/* Utility function that fills the form with the data received from the kogito runtime */
 	const setFormData = (data) =&gt; {
 		if (!data) {
@@ -69,7 +72,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 		set__interview__rating(data?.interview?.rating ?? &#39;&#39;);
 		set__interview__hire(data?.interview?.hire ?? false);
 		set__interview__hiringDate(data?.interview?.hiringDate);
-		set__friends(data?.friends);
+		set__friends(data?.friends ?? []);
 	};
 	/* Utility function to generate the expected form output as a json object */
 	const getFormData = useCallback(() =&gt; {
@@ -300,15 +303,15 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							isOpen={interview__position__expanded}
 							selections={interview__position}
 							onToggle={(isOpen) =&gt; set__interview__position__expanded(isOpen)}
-							onSelect={(event, value, isPlaceHolder) =&gt; {
+							onSelect={(event, value, isPlaceHolder) =&gt;
 								handleSelect(
 									value,
 									isPlaceHolder,
 									interview__position,
 									set__interview__position,
 									set__interview__position__expanded
-								);
-							}}
+								)
+							}
 							value={interview__position}&gt;
 							&lt;SelectOption key={&#39;Developer&#39;} value={&#39;Developer&#39;}&gt;
 								Developer
@@ -336,14 +339,14 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							onToggle={(isOpen) =&gt;
 								set__interview__otherPositions__expanded(isOpen)
 							}
-							onSelect={(event, value, isPlaceHolder) =&gt; {
+							onSelect={(event, value, isPlaceHolder) =&gt;
 								handleMultipleSelect(
 									value,
 									isPlaceHolder,
 									interview__otherPositions,
 									set__interview__otherPositions
-								);
-							}}
+								)
+							}
 							value={interview__otherPositions}&gt;
 							&lt;SelectOption key={&#39;Developer&#39;} value={&#39;Developer&#39;}&gt;
 								Developer
@@ -367,7 +370,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							aria-label={&#39;interview.skills&#39;}
 							label={&#39;Java&#39;}
 							isDisabled={false}
-							isChecked={interview__skills.indexOf(&#39;Java&#39;) != -1}
+							isChecked={interview__skills.indexOf(&#39;Java&#39;) !== -1}
 							onChange={() =&gt;
 								handleCheckboxGroupChange(
 									&#39;Java&#39;,
@@ -384,7 +387,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							aria-label={&#39;interview.skills&#39;}
 							label={&#39;React&#39;}
 							isDisabled={false}
-							isChecked={interview__skills.indexOf(&#39;React&#39;) != -1}
+							isChecked={interview__skills.indexOf(&#39;React&#39;) !== -1}
 							onChange={() =&gt;
 								handleCheckboxGroupChange(
 									&#39;React&#39;,
@@ -401,7 +404,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							aria-label={&#39;interview.skills&#39;}
 							label={&#39;TypeScript&#39;}
 							isDisabled={false}
-							isChecked={interview__skills.indexOf(&#39;TypeScript&#39;) != -1}
+							isChecked={interview__skills.indexOf(&#39;TypeScript&#39;) !== -1}
 							onChange={() =&gt;
 								handleCheckboxGroupChange(
 									&#39;TypeScript&#39;,
@@ -418,7 +421,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							aria-label={&#39;interview.skills&#39;}
 							label={&#39;Quarkus&#39;}
 							isDisabled={false}
-							isChecked={interview__skills.indexOf(&#39;Quarkus&#39;) != -1}
+							isChecked={interview__skills.indexOf(&#39;Quarkus&#39;) !== -1}
 							onChange={() =&gt;
 								handleCheckboxGroupChange(
 									&#39;Quarkus&#39;,
@@ -571,21 +574,102 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 					&lt;/FormGroup&gt;
 				&lt;/CardBody&gt;
 			&lt;/Card&gt;
-			&lt;FormGroup
-				fieldId={&#39;uniforms-0000-000x&#39;}
-				label={&#39;Friends&#39;}
-				isRequired={true}&gt;
-				&lt;Alert variant=&#39;warning&#39; title=&#39;Unsupported field type: Array&#39;&gt;
-					Cannot find form control for property &lt;code&gt;friends&lt;/code&gt; with type{&#39; &#39;}
-					&lt;code&gt;Array&lt;/code&gt;:&lt;br /&gt;
-					Some complex property types, such as &lt;code&gt;
-						Array&amp;lt;object&amp;gt;
-					&lt;/code&gt;{&#39; &#39;}
-					aren&#39;t yet supported, however, you can still write your own component
-					into the form and use the already existing states{&#39; &#39;}
-					&lt;code&gt;const [ friends, set__friends ]&lt;/code&gt;.
-				&lt;/Alert&gt;
-			&lt;/FormGroup&gt;
+			&lt;div&gt;
+				&lt;Split hasGutter&gt;
+					&lt;SplitItem&gt;
+						{&#39;Friends&#39; &amp;&amp; (
+							&lt;label className={&#39;pf-c-form__label&#39;}&gt;
+								&lt;span className={&#39;pf-c-form__label-text&#39;}&gt;Friends&lt;/span&gt;
+							&lt;/label&gt;
+						)}
+					&lt;/SplitItem&gt;
+					&lt;SplitItem isFilled /&gt;
+					&lt;SplitItem&gt;
+						&lt;Button
+							name=&#39;$&#39;
+							variant=&#39;plain&#39;
+							style={{ paddingLeft: &#39;0&#39;, paddingRight: &#39;0&#39; }}
+							disabled={false}
+							onClick={() =&gt; {
+								!false &amp;&amp; set__friends((friends ?? []).concat([{}]));
+							}}&gt;
+							&lt;PlusCircleIcon color=&#39;#0088ce&#39; /&gt;
+						&lt;/Button&gt;
+					&lt;/SplitItem&gt;
+				&lt;/Split&gt;
+				&lt;div&gt;
+					{friends?.map((_, itemIndex) =&gt; (
+						&lt;div
+							key={itemIndex}
+							style={{
+								marginBottom: &#39;1rem&#39;,
+								display: &#39;flex&#39;,
+								justifyContent: &#39;space-between&#39;,
+							}}&gt;
+							&lt;div style={{ width: &#39;100%&#39;, marginRight: &#39;10px&#39; }}&gt;
+								&lt;Card&gt;
+									&lt;CardBody className=&#39;pf-c-form&#39;&gt;
+										&lt;FormGroup
+											fieldId={&#39;uniforms-0000-0010&#39;}
+											label={&#39;Name&#39;}
+											isRequired={true}&gt;
+											&lt;TextInput
+												name={\`friends.\${itemIndex}.name\`}
+												id={&#39;uniforms-0000-0010&#39;}
+												isDisabled={false}
+												placeholder={&#39;&#39;}
+												type={&#39;text&#39;}
+												value={friends[itemIndex].name}
+												onChange={(newValue) =&gt; {
+													set__friends((s) =&gt; {
+														const newState = [...s];
+														newState[itemIndex].name = newValue;
+														return newState;
+													});
+												}}
+											/&gt;
+										&lt;/FormGroup&gt;
+										&lt;FormGroup
+											fieldId={&#39;uniforms-0000-0012&#39;}
+											label={&#39;Age&#39;}
+											isRequired={true}&gt;
+											&lt;TextInput
+												type={&#39;number&#39;}
+												name={\`friends.\${itemIndex}.age\`}
+												isDisabled={false}
+												id={&#39;uniforms-0000-0012&#39;}
+												placeholder={&#39;&#39;}
+												step={0.01}
+												value={friends[itemIndex].age}
+												onChange={(newValue) =&gt; {
+													set__friends((s) =&gt; {
+														const newState = [...s];
+														newState[itemIndex].age = Number(newValue);
+														return newState;
+													});
+												}}
+											/&gt;
+										&lt;/FormGroup&gt;
+									&lt;/CardBody&gt;
+								&lt;/Card&gt;
+							&lt;/div&gt;
+							&lt;div&gt;
+								&lt;Button
+									disabled={false}
+									variant=&#39;plain&#39;
+									style={{ paddingLeft: &#39;0&#39;, paddingRight: &#39;0&#39; }}
+									onClick={() =&gt; {
+										const value = [...friends];
+										value.splice(itemIndex, 1);
+										!false &amp;&amp; set__friends(value);
+									}}&gt;
+									&lt;MinusCircleIcon color=&#39;#cc0000&#39; /&gt;
+								&lt;/Button&gt;
+							&lt;/div&gt;
+						&lt;/div&gt;
+					))}
+				&lt;/div&gt;
+			&lt;/div&gt;
 		&lt;/div&gt;
 	);
 };

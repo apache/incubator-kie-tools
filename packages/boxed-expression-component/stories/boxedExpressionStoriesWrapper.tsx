@@ -24,6 +24,7 @@ import { BoxedExpressionEditor, BoxedExpressionEditorProps } from "../src/BoxedE
 import { BeeGwtService, BoxedExpression, DmnBuiltInDataType, generateUuid, Normalized } from "../src/api";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../src/expressionVariable/ExpressionVariableMenu";
 import { getDefaultBoxedExpressionForStories } from "./getDefaultBoxedExpressionForStories";
+import { OnExpressionChange } from "../src/BoxedExpressionEditorContext";
 
 export const pmmlDocuments = [
   {
@@ -147,6 +148,10 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
     });
   }, [props?.widthsById, updateArgs]);
 
+  const onExpressionChange = useCallback<OnExpressionChange>((args) => {
+    setExpressionState(args.setExpressionAction);
+  }, []);
+
   // Keep expression args in sync with state
   useEffect(() => {
     updateArgs({ expression: expressionState });
@@ -175,8 +180,8 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
           }
           expressionHolderTypeRef={props?.expressionHolderTypeRef ?? args?.expressionHolderTypeRef}
           expression={expressionState}
+          onExpressionChange={onExpressionChange}
           evaluationHitsCountById={props?.evaluationHitsCountById ?? args?.evaluationHitsCountById}
-          onExpressionChange={setExpressionState}
           onWidthsChange={onWidthsChange}
           dataTypes={props?.dataTypes ?? args?.dataTypes ?? dataTypes}
           scrollableParentRef={props?.scrollableParentRef ?? args?.scrollableParentRef ?? emptyRef}
