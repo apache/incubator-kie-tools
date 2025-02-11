@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import { Variable } from "./Variable";
+import { Identifier } from "./Identifier";
 
 /**
- * Describe a Variable Context in FEEL. Each defined variable have its own context.
+ * Describe an Identifier Context in FEEL. Each defined identifier have its own context.
  * For example, when user creates a new DecisionNode-1, a variable called "DecisionNode-1" is defined
  * and a new context is created. In this context, we can have:
  * 1. Inner variables: declared inside the Boxed Expression Editor;
@@ -28,7 +28,7 @@ import { Variable } from "./Variable";
  * 3. The variable: the variable context may declare a Variable that is valid for this context and for its
  * children, for example, a row in a Context Expression inside a Decision Node.
  */
-export interface VariableContext {
+export interface IdentifierContext {
   /**
    * The unique UUID for the variable context.
    */
@@ -38,22 +38,22 @@ export interface VariableContext {
    * A Variable Context can be child of another context (i.e. the first entry inside a Context Expression defined in
    * Boxed Expression Editor is child of the parent node).
    */
-  parent?: VariableContext;
+  parent?: IdentifierContext;
 
   /**
-   * The defined variable.
+   * The identifier (variable) declared by this context.
    */
-  variable: Variable;
+  identifier: Identifier;
 
   /**
    * Children contexts indexed by its unique uuid.
    */
-  children: Map<string, VariableContext>;
+  children: Map<string, IdentifierContext>;
 
   /**
-   * Input nodes that define variables.
+   * Input identifiers to this context. They are external known identifiers in this context.
    */
-  inputVariables: Array<string>;
+  inputIdentifiers: Array<string>;
 
   /**
    * Dynamic variables are variables only validated during runtime.

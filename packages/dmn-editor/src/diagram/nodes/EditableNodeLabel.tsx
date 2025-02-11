@@ -153,6 +153,7 @@ export function EditableNodeLabel({
 
     if (isValid && internalValue !== value && shouldCommit) {
       onChange(internalValue);
+      setInternalValue(value); // Reset the component after the commit
     } else {
       console.debug(`Label change cancelled for node with label ${value}`);
       setInternalValue(value);

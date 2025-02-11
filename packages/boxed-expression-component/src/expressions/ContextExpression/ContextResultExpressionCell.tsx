@@ -41,35 +41,38 @@ export function ContextResultExpressionCell(props: {
   });
 
   const onSetExpression = useCallback<OnSetExpression>(
-    ({ getNewExpression }) => {
-      setExpression((prev: Normalized<BoxedContext>) => {
-        const newContextEntries = [...(prev.contextEntry ?? [])];
+    ({ getNewExpression, expressionChangedArgs }) => {
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedContext>) => {
+          const newContextEntries = [...(prev.contextEntry ?? [])];
 
-        const newExpression = getNewExpression(newContextEntries[resultIndex]?.expression);
+          const newExpression = getNewExpression(newContextEntries[resultIndex]?.expression);
 
-        if (resultIndex <= -1) {
-          newContextEntries.push({
-            "@_id": generateUuid(),
-            expression: newExpression!, // SPEC DISCREPANCY:
-          });
-        } else if (newExpression) {
-          newContextEntries.splice(resultIndex, 1, {
-            ...newContextEntries[resultIndex],
-            expression: newExpression,
-          });
-        } else {
-          newContextEntries.splice(resultIndex, 1);
-        }
+          if (resultIndex <= -1) {
+            newContextEntries.push({
+              "@_id": generateUuid(),
+              expression: newExpression!, // SPEC DISCREPANCY:
+            });
+          } else if (newExpression) {
+            newContextEntries.splice(resultIndex, 1, {
+              ...newContextEntries[resultIndex],
+              expression: newExpression,
+            });
+          } else {
+            newContextEntries.splice(resultIndex, 1);
+          }
 
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedContext> = {
-          ...prev,
-          contextEntry: newContextEntries,
-          "@_label": newExpression?.["@_label"] ?? prev["@_label"],
-          "@_typeRef": newExpression?.["@_typeRef"] ?? prev["@_typeRef"],
-        };
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedContext> = {
+            ...prev,
+            contextEntry: newContextEntries,
+            "@_label": newExpression?.["@_label"] ?? prev["@_label"],
+            "@_typeRef": newExpression?.["@_typeRef"] ?? prev["@_typeRef"],
+          };
 
-        return ret;
+          return ret;
+        },
+        expressionChangedArgs,
       });
     },
     [resultIndex, setExpression]
