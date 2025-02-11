@@ -758,7 +758,7 @@ export const trafficViolationDmn = `<?xml version="1.0" encoding="UTF-8"?>
           </factIdentifier>
           <className>java.lang.Void</className>
           <factAlias>INSTANCE 1</factAlias>
-          <expressionAlias>PROPERTY 1</expressionAlias>
+          <expressionAlias>PROPERTY-1</expressionAlias>
           <columnWidth>114</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>

@@ -45,7 +45,7 @@ test.describe("Use Selector Panel on background table based on traffic violation
     await table.selectColumnHeader({ name: "PROPERTY-1 (<Undefined>)" });
     await selectorPanel.expandAttribute({
       name: "Should the driver be suspended?",
-      dataType: "Should the driver be suspended?",
+      dataType: "string",
     });
     await selectorPanel.assign({ name: "value" });
 
@@ -100,12 +100,12 @@ test.describe("Use Selector Panel on background table based on traffic violation
 
   test("should correctly remove instance from selector panel once assigned", async ({ table, selectorPanel }) => {
     await table.addPropertyColumn({
-      targetCellName: "PROPERTY 1 (<Undefined>)",
+      targetCellName: "PROPERTY-1 (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       columnNumber: 0,
     });
     await table.addPropertyColumn({
-      targetCellName: "PROPERTY 1 (<Undefined>)",
+      targetCellName: "PROPERTY-1 (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       columnNumber: 0,
     });
