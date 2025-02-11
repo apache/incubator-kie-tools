@@ -18,12 +18,9 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { DmnLatestModel, DmnMarshaller, getMarshaller } from "@kie-tools/dmn-marshaller";
-import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
-import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { DmnEditor, DmnEditorProps, OnDmnModelChange } from "@kie-tools/dmn-editor/dist/DmnEditor";
 import { normalize, Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 
@@ -782,7 +779,7 @@ else &quot;Insufficient&quot;</dmn:text>
 </dmn:definitions>
 `;
 
-function EvaluationResults(args: DmnEditorProps) {
+function EvaluationHighlights(args: DmnEditorProps) {
   const [state, setState] = useState<{
     marshaller: DmnMarshaller;
     stack: Normalized<DmnLatestModel>[];
@@ -826,16 +823,16 @@ function EvaluationResults(args: DmnEditorProps) {
 }
 
 const meta: Meta<DmnEditorProps> = {
-  title: "Misc/EvaluationResults",
+  title: "Misc/EvaluationHighlights",
   component: DmnEditor,
   includeStories: /^[A-Z]/,
 };
 
 export default meta;
-type Story = StoryObj<typeof EvaluationResults>;
+type Story = StoryObj<typeof EvaluationHighlights>;
 
-export const EvaluationResultsStory: Story = {
-  render: (args) => EvaluationResults(args),
+export const EvaluationHighlightsStory: Story = {
+  render: (args) => EvaluationHighlights(args),
   args: {
     model: getMarshaller(initialModel, { upgradeTo: "latest" }).parser.parse(),
     originalVersion: "1.5",
