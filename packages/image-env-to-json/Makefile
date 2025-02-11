@@ -20,8 +20,8 @@ BIN_DARWIN_AMD   ?= $(BIN)-darwin-amd64
 BIN_DARWIN_ARM   ?= $(BIN)-darwin-arm64
 BIN_LINUX_AMD    ?= $(BIN)-linux-amd64
 BIN_LINUX_ARM    ?= $(BIN)-linux-arm64
-BIN_WINDOWS_AMD  ?= $(BIN)-win-amd64.exe
-BIN_WINDOWS_ARM  ?= $(BIN)-win-arm64.exe
+BIN_WINDOWS_AMD  ?= $(BIN)-windows-amd64.exe
+BIN_WINDOWS_ARM  ?= $(BIN)-windows-arm64.exe
 
 BIN_PATH         := ./dist
 TEST_PATH        := ./dist-tests

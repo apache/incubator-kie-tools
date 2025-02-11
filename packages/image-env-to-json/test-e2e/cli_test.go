@@ -23,14 +23,24 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
+func getBinPath() string {
+	// Detect OS and architecture for the binary
+	binName := "../dist/image-env-to-json-" + runtime.GOOS + "-" + runtime.GOARCH
+	if runtime.GOOS == "windows" {
+		binName += ".exe" // Add .exe for Windows
+	}
+	return filepath.Join("../dist", binName)
+}
+
 func TestCliBinaryWithJsonWithoutRef(t *testing.T) {
 	tempDir := t.TempDir()
-	binPath := "../dist/image-env-to-json-linux-amd64"
+	binPath := getBinPath()
 	// Run the CLI binary with arguments
 	runCmd := exec.Command(binPath, "--help")
 	output, err := runCmd.CombinedOutput()
@@ -57,7 +67,7 @@ func TestCliBinaryWithJsonWithoutRef(t *testing.T) {
 
 func TestCliBinaryWithJsonWithRef(t *testing.T) {
 	tempDir := t.TempDir()
-	binPath := "../dist/image-env-to-json-linux-amd64"
+	binPath := getBinPath()
 	// Run the CLI binary with arguments
 	runCmd := exec.Command(binPath, "--help")
 	output, err := runCmd.CombinedOutput()
