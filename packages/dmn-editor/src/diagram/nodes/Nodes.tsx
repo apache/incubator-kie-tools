@@ -391,13 +391,21 @@ export const DecisionNode = React.memo(
       );
     });
 
-    const isEvaluationHighlightsEnabled = useDmnEditorStore((s) => s.diagram.overlays.enableEvaluationHighlights);
+    const overlays = useDmnEditorStore((s) => {
+      return s.diagram.overlays;
+    });
+    const isEvaluationHighlightsEnabled = useMemo(() => {
+      return overlays.enableEvaluationHighlights;
+    }, [overlays]);
     const { evaluationResults } = useDmnEditor();
-    const evaluationResultsClassName = useMemo(() => {
-      isEvaluationHighlightsEnabled && evaluationResults![decision["@_id"]] !== undefined
-        ? `kie-dmn-editor--decision-node--evaluation-status-${evaluationResults![decision["@_id"]]}`
-        : "";
-    }, [decision, evaluationResults, isEvaluationHighlightsEnabled]);
+    const decisionId = useMemo(() => decision["@_id"], [decision]);
+    const evaluationResultsClassName = useMemo(
+      () =>
+        isEvaluationHighlightsEnabled && evaluationResults![decisionId] !== undefined
+          ? `kie-dmn-editor--decision-node--evaluation-status-${evaluationResults![decisionId]}`
+          : "",
+      [decisionId, evaluationResults, isEvaluationHighlightsEnabled]
+    );
 
     return (
       <>
