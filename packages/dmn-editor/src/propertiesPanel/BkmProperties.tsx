@@ -108,9 +108,7 @@ export function BkmProperties({
             setState((state) => {
               (
                 state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tBusinessKnowledgeModel>
-              ).description = {
-                __$$text: newDescription,
-              };
+              ).description!.__$$text = newDescription;
             });
           }}
           placeholder={"Enter a description..."}
