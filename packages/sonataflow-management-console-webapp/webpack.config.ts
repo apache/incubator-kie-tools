@@ -195,13 +195,14 @@ export default async (webpackEnv: any, webpackArgv: any) => {
           },
           progress: true,
         },
-        proxy: {
-          "/svg": {
+        proxy: [
+          {
+            context: (path, req) => req.method === "POST" || path.startsWith("/graphql") || path === "/q/openapi.json",
             target: "http://localhost:4000",
             secure: false,
             changeOrigin: true,
           },
-        },
+        ],
       },
     },
   ];

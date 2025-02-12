@@ -12203,6 +12203,9 @@ importers:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
+      '@kie-tools/sonataflow-dev-app':
+        specifier: workspace:*
+        version: link:../sonataflow-dev-app
       '@kie-tools/sonataflow-image-common':
         specifier: workspace:*
         version: link:../sonataflow-image-common
@@ -12221,6 +12224,9 @@ importers:
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6
+      start-server-and-test:
+        specifier: ^2.0.3
+        version: 2.0.3
       ts-json-schema-generator:
         specifier: ^1.1.2
         version: 1.1.2
