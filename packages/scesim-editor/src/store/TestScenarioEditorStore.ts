@@ -52,7 +52,7 @@ export type TestScenarioAlert = {
 export type TestScenarioDataObject = {
   id: string;
   children?: TestScenarioDataObject[];
-  customBadgeContent?: string;
+  customBadgeContent: string;
   isSimpleTypeFact?: boolean;
   name: string;
 };

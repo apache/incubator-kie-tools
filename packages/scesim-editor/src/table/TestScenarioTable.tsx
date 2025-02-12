@@ -117,7 +117,7 @@ function TestScenarioTable({
       if (testScenarioType === "RULE") {
         dataTypeLabel = dataTypeLabel.split(".").pop() ?? dataTypeLabel;
       }
-      return !dataTypeLabel || dataTypeLabel.endsWith("Void") ? "<Undefined>" : dataTypeLabel;
+      return !dataTypeLabel || dataTypeLabel.endsWith("Void") ? "Any" : dataTypeLabel;
     },
     [testScenarioType]
   );
