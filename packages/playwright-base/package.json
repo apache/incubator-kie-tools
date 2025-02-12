@@ -18,6 +18,9 @@
     "index.js"
   ],
   "scripts": {
+    "build:dev": "run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:docker:build\"",
+    "build:prod": "pnpm build:dev",
+    "image:docker:build": "docker build --platform=linux/amd64 -t dev.local/apache-kie-tools/playwright-e2e-tests-image:$(build-env root.streamName) . -f Containerfile --output type=docker",
     "install": "run-script-if --bool \"$(build-env playwrightBase.installDeps)\" --then \"pnpm playwright install --with-deps\""
   },
   "devDependencies": {

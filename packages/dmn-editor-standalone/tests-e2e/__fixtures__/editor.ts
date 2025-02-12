@@ -65,7 +65,7 @@ export class Editor {
       document.getElementById("is-dirty")!.innerHTML = "false";
     }, args);
     this.subscribeToContentChanges();
-    await expect(this.get().getByText("This DMN's Diagram is empty")).toBeAttached();
+    await expect(this.get().getByRole("heading", { name: "This DMN's Diagram is empty" })).toBeAttached();
   }
 
   public async close() {
