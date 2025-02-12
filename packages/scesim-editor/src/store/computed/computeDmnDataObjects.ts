@@ -80,7 +80,7 @@ function createTestScenarioObjects(
     children.push({
       id: drgElementName.concat("."), //TO BE REVIEWED IN https://github.com/apache/incubator-kie-issues/issues/1514
       name: "value",
-      customBadgeContent: drgElementTypeRef ?? "Any",
+      customBadgeContent: drgElementTypeRef,
       isSimpleTypeFact: isDrgElementSimpleType,
     });
   } else {
@@ -91,7 +91,7 @@ function createTestScenarioObjects(
   return {
     id: drgElementName,
     name: drgElementName,
-    customBadgeContent: drgElementTypeRef ?? "Any",
+    customBadgeContent: drgElementTypeRef,
     children: children,
   };
 }
@@ -117,7 +117,7 @@ function createChildrenTestScenarioObjects(
       }
 
       return {
-        customBadgeContent: itemComponent.typeRef?.__$$text ?? "Any",
+        customBadgeContent: itemComponent.typeRef?.__$$text,
         children: nestedChildren.length > 0 ? nestedChildren : undefined,
         id: drgElementName.concat(".").concat(itemComponent["@_name"]),
         isCollection: itemComponent["@_isCollection"],
@@ -127,7 +127,7 @@ function createChildrenTestScenarioObjects(
     children.push(...childrenTestScenarioObjects);
   } else {
     children.push({
-      customBadgeContent: drgElementTypeRef ?? "Any",
+      customBadgeContent: drgElementTypeRef,
       id: drgElementName.concat("."), //TO BE REVIEWED IN https://github.com/apache/incubator-kie-issues/issues/1514
       //isCollection: itemComponent["@_isCollection"],
       name: "value",
