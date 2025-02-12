@@ -38,7 +38,7 @@ test.describe("Selection", () => {
       });
 
       test("should use copy from selection context menu", async ({ clipboard, contextMenu, table }) => {
-        test.skip(true, "getCell() rely on an inconsistent API");
+        test.skip(true, "getCell() relies on an inconsistent API");
 
         await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
         await contextMenu.clickMenuItem({ menuItem: MenuItem.COPY });
@@ -52,7 +52,7 @@ test.describe("Selection", () => {
       });
 
       test("should use cut from selection context menu", async ({ clipboard, contextMenu, table }) => {
-        test.skip(true, "getCell() rely on an inconsistent API");
+        test.skip(true, "getCell() relies on an inconsistent API");
 
         await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
         await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
