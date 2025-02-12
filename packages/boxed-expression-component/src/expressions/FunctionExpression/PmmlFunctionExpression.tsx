@@ -22,6 +22,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
+  Action,
   BeeTableCellProps,
   BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
@@ -31,6 +32,7 @@ import {
   BoxedFunction,
   BoxedFunctionKind,
   DmnBuiltInDataType,
+  ExpressionChangedArgs,
   generateUuid,
   Normalized,
 } from "../../api";
@@ -136,18 +138,40 @@ export function PmmlFunctionExpression({
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef: dataType }]: BeeTableColumnUpdate<PMML_ROWTYPE>[]) => {
-      setExpression((prev: Normalized<BoxedFunctionPmml>) => {
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedFunctionPmml> = {
-          ...prev,
-          "@_label": name,
-          "@_typeRef": dataType,
-        };
+      const expressionChangedArgs: ExpressionChangedArgs = {
+        action: Action.VariableChanged,
+        variableUuid: expressionHolderId,
+        typeChange:
+          dataType !== functionExpression["@_typeRef"]
+            ? {
+                from: functionExpression["@_typeRef"] ?? "",
+                to: dataType,
+              }
+            : undefined,
+        nameChange:
+          name !== functionExpression["@_label"]
+            ? {
+                from: functionExpression["@_label"] ?? "",
+                to: name,
+              }
+            : undefined,
+      };
 
-        return ret;
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedFunctionPmml>) => {
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedFunctionPmml> = {
+            ...prev,
+            "@_label": name,
+            "@_typeRef": dataType,
+          };
+
+          return ret;
+        },
+        expressionChangedArgs,
       });
     },
-    [setExpression]
+    [expressionHolderId, functionExpression, setExpression]
   );
 
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
@@ -201,14 +225,17 @@ export function PmmlFunctionExpression({
   }, []);
 
   const onRowReset = useCallback(() => {
-    setExpression((prev: Normalized<BoxedFunctionPmml>) => {
-      // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-      const ret: Normalized<BoxedFunctionPmml> = {
-        ...prev,
-        expression: undefined!,
-      };
+    setExpression({
+      setExpressionAction: (prev: Normalized<BoxedFunctionPmml>) => {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: Normalized<BoxedFunctionPmml> = {
+          ...prev,
+          expression: undefined!,
+        };
 
-      return ret;
+        return ret;
+      },
+      expressionChangedArgs: { action: Action.RowReset, rowIndex: 0 },
     });
   }, [setExpression]);
 
@@ -430,11 +457,14 @@ function PmmlFunctionExpressionDocumentCell(props: React.PropsWithChildren<BeeTa
   const onSelect = useCallback(
     (event, newDocument) => {
       setSelectOpen(false);
-      setExpression((prev: Normalized<BoxedFunctionPmml>) => {
-        return getUpdatedExpression(prev, newDocument, "");
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedFunctionPmml>) => {
+          return getUpdatedExpression(prev, newDocument, "");
+        },
+        expressionChangedArgs: { action: Action.ExpressionCreated },
       });
     },
-    [setExpression]
+    [pmmlFunctionExpression, setExpression]
   );
 
   const [isSelectOpen, setSelectOpen] = React.useState(false);
@@ -487,12 +517,15 @@ function PmmlFunctionExpressionModelCell(props: React.PropsWithChildren<BeeTable
     (event, newModel) => {
       setSelectOpen(false);
 
-      setExpression((prev: Normalized<BoxedFunctionPmml>) => {
-        const document = getDocumentEntry(prev);
-        const currentDocument =
-          document.expression?.__$$element === "literalExpression" ? document.expression.text?.__$$text ?? "" : "";
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedFunctionPmml>) => {
+          const document = getDocumentEntry(prev);
+          const currentDocument =
+            document.expression?.__$$element === "literalExpression" ? document.expression.text?.__$$text ?? "" : "";
 
-        return getUpdatedExpression(prev, currentDocument, newModel);
+          return getUpdatedExpression(prev, currentDocument, newModel);
+        },
+        expressionChangedArgs: { action: Action.LiteralTextExpressionChanged, from: "", to: newModel },
       });
     },
     [setExpression]

@@ -274,9 +274,8 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
                 {onOpenBoxedExpressionEditor !== undefined && (
                   <Button
                     variant={"plain"}
-                    title={`Open ${dmnFormResult.decisionName} expression`}
+                    title={`Open '${dmnFormResult.decisionName}' expression`}
                     icon={<ArrowUpIcon />}
-                    data-navigate-to-expression-id={dmnFormResult.decisionId}
                     onClick={() => onOpenBoxedExpressionEditor?.(dmnFormResult.decisionId)}
                   />
                 )}

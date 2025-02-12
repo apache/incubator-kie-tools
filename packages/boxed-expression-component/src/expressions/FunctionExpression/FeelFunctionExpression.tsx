@@ -21,6 +21,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
+  Action,
   BeeTableCellProps,
   BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
@@ -31,6 +32,7 @@ import {
   BoxedFunction,
   BoxedFunctionKind,
   DmnBuiltInDataType,
+  ExpressionChangedArgs,
   Normalized,
 } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -111,18 +113,39 @@ export function FeelFunctionExpression({
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<FEEL_ROWTYPE>[]) => {
-      setExpression((prev: Normalized<BoxedFunctionFeel>) => {
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedFunctionFeel> = {
-          ...prev,
-          "@_label": name,
-          "@_typeRef": typeRef,
-        };
+      const expressionChangedArgs: ExpressionChangedArgs = {
+        action: Action.VariableChanged,
+        variableUuid: expressionHolderId,
+        typeChange:
+          typeRef !== functionExpression["@_typeRef"]
+            ? {
+                from: functionExpression["@_typeRef"] ?? "",
+                to: typeRef,
+              }
+            : undefined,
+        nameChange:
+          name !== functionExpression["@_label"]
+            ? {
+                from: functionExpression["@_label"] ?? "",
+                to: name,
+              }
+            : undefined,
+      };
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedFunctionFeel>) => {
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedFunctionFeel> = {
+            ...prev,
+            "@_label": name,
+            "@_typeRef": typeRef,
+          };
 
-        return ret;
+          return ret;
+        },
+        expressionChangedArgs,
       });
     },
-    [setExpression]
+    [expressionHolderId, functionExpression, setExpression]
   );
 
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(() => {
@@ -156,9 +179,12 @@ export function FeelFunctionExpression({
 
   const onRowReset = useCallback(() => {
     let oldExpression: Normalized<BoxedExpression> | undefined;
-    setExpression((prev: Normalized<BoxedFunctionFeel>) => {
-      oldExpression = prev.expression;
-      return undefined!; // SPEC DISCREPANCY
+    setExpression({
+      setExpressionAction: (prev: Normalized<BoxedFunctionFeel>) => {
+        oldExpression = prev.expression;
+        return undefined!; // SPEC DISCREPANCY
+      },
+      expressionChangedArgs: { action: Action.RowReset, rowIndex: 0 },
     });
     setWidthsById(({ newMap }) => {
       for (const id of findAllIdsDeep(oldExpression)) {
@@ -243,17 +269,22 @@ export function FeelFunctionImplementationCell({
   const onSetExpression = useCallback<OnSetExpression>(
     ({
       getNewExpression,
+      expressionChangedArgs,
     }: {
       getNewExpression: (prev: Normalized<BoxedExpression>) => Normalized<BoxedExpression>;
+      expressionChangedArgs: ExpressionChangedArgs;
     }) => {
-      setExpression((prev: Normalized<BoxedFunctionFeel>) => {
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedFunctionFeel> = {
-          ...prev,
-          expression: getNewExpression(prev.expression ?? undefined!),
-        };
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedFunctionFeel>) => {
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedFunctionFeel> = {
+            ...prev,
+            expression: getNewExpression(prev.expression ?? undefined!),
+          };
 
-        return ret;
+          return ret;
+        },
+        expressionChangedArgs,
       });
     },
     [setExpression]

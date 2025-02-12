@@ -18,7 +18,7 @@
 #
 schema_version: 1
 name: org.kie.sonataflow.management.console
-version: "0.0.0"
+version: "main"
 description: "SonataFlow Management Console Launch Scripts and Configurations"
 
 execute:

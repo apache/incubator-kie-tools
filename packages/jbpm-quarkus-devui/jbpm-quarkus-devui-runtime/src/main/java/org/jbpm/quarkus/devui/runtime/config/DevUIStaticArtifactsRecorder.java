@@ -19,7 +19,6 @@
 
 package org.jbpm.quarkus.devui.runtime.config;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.quarkus.runtime.ShutdownContext;
@@ -31,10 +30,7 @@ import io.vertx.ext.web.RoutingContext;
 @Recorder
 public class DevUIStaticArtifactsRecorder {
 
-    public Handler<RoutingContext> handler(String deploymentArtifactPath, ShutdownContext shutdownContext) {
-        List<FileSystemStaticHandler.StaticWebRootConfiguration> webRootConfigurations = new ArrayList<>();
-        webRootConfigurations.add(
-                new FileSystemStaticHandler.StaticWebRootConfiguration(deploymentArtifactPath, ""));
+    public Handler<RoutingContext> handler(List<FileSystemStaticHandler.StaticWebRootConfiguration> webRootConfigurations, ShutdownContext shutdownContext) {
 
         FileSystemStaticHandler fileSystemStaticHandler = new FileSystemStaticHandler(webRootConfigurations);
 
