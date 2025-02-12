@@ -36,7 +36,7 @@ Once prompted by IntelliJ IDEA, select "Open" and choose this folder.
 
 After you're done importing the project, please also configure the code formatter (or Code Style, in IntelliJ IDEA terminology.)
 
-Apache KIE Tools uses an Eclipse Formatter XML, so please install https://plugins.jetbrains.com/plugin/6546-adapter-for-eclipse-code-formatter and configure it like in the screenshot below:
+Apache KIE uses an Eclipse Formatter XML, so please install https://plugins.jetbrains.com/plugin/6546-adapter-for-eclipse-code-formatter and configure it like in the screenshot below:
 
 <img src="docs/intellij-eclipse-formatter-config.png" alt="Configure Eclipse formatter" style="width:600px" />
 
