@@ -32,7 +32,6 @@ export const AUTH_SESSIONS_FS_NAME_WITH_VERSION = `${AUTH_SESSIONS_FS_NAME}_v${A
 
 export const AUTH_SESSION_TEMP_OPENID_AUTH_DATA_STORAGE_KEY = "temporaryOpenIdAuthData";
 export const AUTH_SESSION_RUNTIME_AUTH_SERVER_URL_ENDPOINT = "q/oidc/.well-known/openid-configuration";
-export const AUTH_SESSION_RUNTIME_ME_ENDPOINT = "kogito/security/me";
 
 export function mapSerializer(_: string, value: any) {
   if (value instanceof Map) {
