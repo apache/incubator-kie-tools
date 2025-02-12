@@ -86,9 +86,7 @@ export function addColumn({
     },
     factIdentifier: {
       name: {
-        __$$text: isNewInstance
-          ? getNextAvailablePrefixedName(instanceDefaultNames, "INSTANCE")
-          : selectedColumnFactMapping.factIdentifier.name!.__$$text,
+        __$$text: isNewInstance ? "Empty" : selectedColumnFactMapping.factIdentifier.name!.__$$text,
       },
       className: {
         __$$text: isNewInstance ? "java.lang.Void" : selectedColumnFactMapping.factIdentifier.className!.__$$text,
