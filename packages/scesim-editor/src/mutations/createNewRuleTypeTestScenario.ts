@@ -58,7 +58,7 @@ export function createNewRuleTypeTestScenario({
       expressionElements: [],
       expressionIdentifierType: "GIVEN",
       factAlias: "INSTANCE-1",
-      factIdentifierName: "Empty",
+      factIdentifierName: "INSTANCE-1",
       factIdentifierClassName: "java.lang.Void",
     },
     {
@@ -68,7 +68,7 @@ export function createNewRuleTypeTestScenario({
       expressionElements: [],
       expressionIdentifierType: "EXPECT",
       factAlias: "INSTANCE-2",
-      factIdentifierName: "Empty",
+      factIdentifierName: "INSTANCE-2",
       factIdentifierClassName: "java.lang.Void",
     },
   ];
