@@ -32,7 +32,7 @@ services:
     environment:
       - KIE_TOOLS_BUILD__runEndToEndTests=true
       - KIE_TOOLS_BUILD__containerizedEndToEndTests=false # Already inside the container, variable must be false.
-      - KIE_TOOLS_ONLINE_EDITOR__SKIP_PLAYWRIGHT_FOR_ARM64=${KIE_TOOLS_ONLINE_EDITOR__SKIP_PLAYWRIGHT_FOR_ARM64}
+      - ONLINE_EDITOR__skipPlaywrightTestsForArm64=${ONLINE_EDITOR__skipPlaywrightTestsForArm64}
     volumes:
       - type: bind
         source: ./../../../../

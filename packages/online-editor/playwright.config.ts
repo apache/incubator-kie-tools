@@ -63,7 +63,7 @@ const customConfig = defineConfig({
     },
   ],
   // Override
-  projects: process.env.KIE_TOOLS_ONLINE_EDITOR__SKIP_PLAYWRIGHT_FOR_ARM64
+  projects: buildEnv.onlineEditor.test.ONLINE_EDITOR__skipPlaywrightTestsForArm64
     ? [
         {
           timeout: 60000,
