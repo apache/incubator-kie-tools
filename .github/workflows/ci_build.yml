@@ -109,7 +109,6 @@ jobs:
       - name: "Bootstrap"
         if: steps.setup_build_mode.outputs.mode != 'none'
         env:
-          PLAYWRIGHT_BASE__installDeps: "true"
           MAVEN_ARGS: "-B -Puse-maven-repo-local-tail"
           MAVEN_OPTS: "-Xmx2g"
         uses: ./.github/actions/bootstrap
@@ -132,6 +131,7 @@ jobs:
           KIE_TOOLS_BUILD__runLinters: "true"
           KIE_TOOLS_BUILD__runTests: "true"
           KIE_TOOLS_BUILD__runEndToEndTests: ${{ runner.os == 'Linux' }}
+          KIE_TOOLS_BUILD__containerizedEndToEndTests: ${{ runner.os == 'Linux' }}
           KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os == 'Linux' }}
           KIE_TOOLS_BUILD__buildExamples: "true"
           KIE_TOOLS_BUILD__ignoreTestFailures: ${{ !github.event.pull_request }}
