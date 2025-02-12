@@ -21,6 +21,26 @@
 
 This package collects common configurations to run end-to-end Playwright tests.
 
+## Installing Playwright deps
+
+Currently, all Playwright end-to-end tests run inside containers. If you need to debug a test, we recommend doing so on the host machine. To do this, you need to install the Playwright dependencies. Use the `PLAYWRIGHT_BASE__installDeps` environment variable during the bootstrap phase to install all the required dependencies.
+
+```sh
+# in the `kie-tools` root
+PLAYWRIGHT_BASE__installDeps=true pnpm bootstrap
+```
+
+or
+
+```sh
+# in the `kie-tools` root
+PLAYWRIGHT_BASE__installDeps=true pnpm bootstrap -F playwright-base
+```
+
+> **i NOTE**
+>
+> Since this step install the Playwright browsers, it requires sudo permision.
+
 ## Using containers to generate screenshots
 
 Each operating system has slight variations in UI, even within the same browser. These differences can cause screenshot comparison tests to fail. To address this issue and ensure a stable environment with consistent test results locally and in CI, containers can be used. Running Playwright tests inside a container that is also used in the CI environment makes screenshot tests reproducible, regardless of the host OS.

@@ -20,9 +20,6 @@
 import { devices, defineConfig } from "@playwright/test";
 import { ProjectName } from "./projectNames";
 
-import { env } from "./env";
-const buildEnv: any = env; // build-env is not typed
-
 export default defineConfig({
   testDir: "./tests-e2e",
   outputDir: "dist-tests-e2e/output",

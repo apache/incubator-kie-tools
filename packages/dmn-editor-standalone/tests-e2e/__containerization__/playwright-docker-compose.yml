@@ -21,7 +21,7 @@ services:
   playwright:
     platform: linux/amd64
     container_name: kie-tools-playwright-containerization-dmn-editor-standalone
-    image: dev.local/${USER}/kie-tools-playwright-container-image:${PROJECT_VERSION}
+    image: dev.local/apache-kie-tools/playwright-e2e-tests-image:${STREAM_VERSION}
     depends_on:
       - reverse-proxy
     entrypoint: ["/bin/bash"]
