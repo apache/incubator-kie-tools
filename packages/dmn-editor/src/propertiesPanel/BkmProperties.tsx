@@ -106,9 +106,12 @@ export function BkmProperties({
           value={bkm.description?.__$$text}
           onChange={(newDescription) => {
             setState((state) => {
-              (
-                state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tBusinessKnowledgeModel>
-              ).description!.__$$text = newDescription;
+              const drgElement = state.dmn.model.definitions.drgElement![
+                index
+              ] as Normalized<DMN15__tBusinessKnowledgeModel>;
+              if (drgElement && drgElement.description) {
+                drgElement.description.__$$text = newDescription;
+              }
             });
           }}
           placeholder={"Enter a description..."}
