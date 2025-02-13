@@ -21,8 +21,8 @@
     "start:all": "concurrently -c red,white,blue,green --names IDP,webapp,secured-runtime,unsecured-runtime 'pnpm start:idp' 'pnpm start' 'pnpm start:secured-runtime' 'pnpm start:unsecured-runtime'",
     "start:idp": "docker run --rm -e KC_BOOTSTRAP_ADMIN_USERNAME=admin -e KC_BOOTSTRAP_ADMIN_PASSWORD=admin -v ./dev-webapp/keycloak:/opt/keycloak/data/import -p \"$(build-env runtimeToolsManagementConsoleWebapp.dev.idp.port)\":8080 quay.io/keycloak/keycloak:26.0.5 start-dev --import-realm",
     "start:idp-mock": "pnpm exec oauth2-mock-server -p \"$(build-env runtimeToolsManagementConsoleWebapp.dev.idp.port)\"",
-    "start:secured-runtime": "mvn -nsu -f dev-webapp/secured-runtime quarkus:dev -Dquarkus.http.port=\"$(build-env runtimeToolsManagementConsoleWebapp.dev.securedRuntime.port)\" -Ddev-webapp.idp.port=\"$(build-env runtimeToolsManagementConsoleWebapp.dev.idp.port)\" -Drevision=\"$(build-env runtimeToolsManagementConsoleWebapp.version)\"",
-    "start:unsecured-runtime": "mvn -nsu -f dev-webapp/unsecured-runtime quarkus:dev -Dquarkus.http.port=\"$(build-env runtimeToolsManagementConsoleWebapp.dev.unsecuredRuntime.port)\" -Ddev-webapp.idp.port=\"$(build-env runtimeToolsManagementConsoleWebapp.dev.idp.port)\" -Drevision=\"$(build-env runtimeToolsManagementConsoleWebapp.version)\""
+    "start:secured-runtime": "mvn -nsu -f dev-webapp/secured-runtime quarkus:dev -Dquarkus.http.port=\"$(build-env runtimeToolsManagementConsoleWebapp.dev.securedRuntime.port)\" -Ddev-webapp.idp.port=\"$(build-env runtimeToolsManagementConsoleWebapp.dev.idp.port)\" -Drevision=\"$(build-env runtimeToolsManagementConsoleWebapp.version)\" -Ddebug=6005",
+    "start:unsecured-runtime": "mvn -nsu -f dev-webapp/unsecured-runtime quarkus:dev -Dquarkus.http.port=\"$(build-env runtimeToolsManagementConsoleWebapp.dev.unsecuredRuntime.port)\" -Ddev-webapp.idp.port=\"$(build-env runtimeToolsManagementConsoleWebapp.dev.idp.port)\" -Drevision=\"$(build-env runtimeToolsManagementConsoleWebapp.version)\" -Ddebug=6006"
   },
   "dependencies": {
     "@kie-tools-core/react-hooks": "workspace:*",
