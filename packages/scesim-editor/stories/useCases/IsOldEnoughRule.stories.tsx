@@ -355,7 +355,7 @@ export const isOldEnoughDrl = `<ScenarioSimulationModel version="1.8" xmlns="htt
         </factIdentifier>
         <className>java.lang.Void</className>
         <factAlias>INSTANCE 1</factAlias>
-        <expressionAlias>PROPERTY 1</expressionAlias>
+        <expressionAlias>PROPERTY-1</expressionAlias>
         <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         <columnWidth>114.0</columnWidth>
       </FactMapping>

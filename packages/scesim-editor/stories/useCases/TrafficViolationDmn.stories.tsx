@@ -19,9 +19,12 @@
 
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
+import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";
 import { getMarshaller } from "@kie-tools/scesim-marshaller";
 import { TestScenarioEditor } from "../../src/TestScenarioEditor";
 import { SceSimEditorWrapper, StorybookTestScenarioEditorProps } from "../scesimEditorStoriesWrapper";
+import { TRAFFIC_VIOLATION } from "../examples/ExternalDmnModels";
 
 export const trafficViolationDmnFileName = "TrafficViolation.scesim";
 export const trafficViolationDmn = `<?xml version="1.0" encoding="UTF-8"?>
@@ -755,7 +758,7 @@ export const trafficViolationDmn = `<?xml version="1.0" encoding="UTF-8"?>
           </factIdentifier>
           <className>java.lang.Void</className>
           <factAlias>INSTANCE 1</factAlias>
-          <expressionAlias>PROPERTY 1</expressionAlias>
+          <expressionAlias>PROPERTY-1</expressionAlias>
           <columnWidth>114</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
@@ -779,7 +782,7 @@ export const trafficViolationDmn = `<?xml version="1.0" encoding="UTF-8"?>
     </scesimData>
   </background>
   <settings>
-    <dmnFilePath>src/main/resources/Traffic Violation.dmn</dmnFilePath>
+    <dmnFilePath>dev-webapp/available-dmn-models/traffic-violation.dmn</dmnFilePath>
     <type>DMN</type>
     <dmnNamespace>https://kie.apache.org/dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF</dmnNamespace>
     <dmnName>Traffic Violation</dmnName>
@@ -801,13 +804,25 @@ export default meta;
 type Story = StoryObj<StorybookTestScenarioEditorProps>;
 
 const marshaller = getMarshaller(trafficViolationDmn);
-const model = marshaller.parser.parse();
+const currentModel = marshaller.parser.parse();
+const dmnModel = {
+  normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/traffic-violation.dmn",
+  type: "dmn",
+  model: normalize(getDmnMarshaller(TRAFFIC_VIOLATION ?? "", { upgradeTo: "latest" }).parser.parse()),
+  svg: "",
+};
 
 export const TrafficViolation: Story = {
   render: (args) => SceSimEditorWrapper(args),
   args: {
     model: marshaller.parser.parse(),
     openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: trafficViolationDmnFileName,
-    xml: marshaller.builder.build(model),
+    externalModelsByNamespace: new Map([
+      ["https://kie.apache.org/dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF", dmnModel],
+    ]),
+    xml: marshaller.builder.build(currentModel),
+    onRequestExternalModelsAvailableToInclude: () =>
+      Promise.resolve(["dev-webapp/available-dmn-models/traffic-violation.dmn"]),
+    onRequestExternalModelByPath: () => Promise.resolve(dmnModel),
   },
 };
