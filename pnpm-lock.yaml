@@ -6998,6 +6998,9 @@ importers:
         specifier: workspace:*
         version: link:../jbpm-quarkus-devui
     devDependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
