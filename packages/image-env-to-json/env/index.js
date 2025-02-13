@@ -17,21 +17,14 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/build-env");
-const packageJson = require("@kie-tools/image-env-to-json/package.json");
+const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({
-    IMAGE_ENV_TO_JSON__version: {
-      name: "IMAGE_ENV_TO_JSON__version",
-      default: packageJson.version,
-      description: "Image env to JSON cli version",
-    },
-  }),
+  vars: varsWithName({}),
   get env() {
     return {
       imageEnvToJson: {
-        version: getOrDefault(this.vars.IMAGE_ENV_TO_JSON__version),
+        version: require("../package.json").version,
       },
     };
   },

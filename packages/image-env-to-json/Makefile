@@ -34,7 +34,7 @@ BIN_PATH         := dist
 MAIN_PATH        := main.go
 
 METADATA_PATH                 := github.com/apache/incubator-kie-tools/packages/image-env-to-json/internal
-SET_VERSION                   := $(METADATA_PATH).Version=$(PLUGIN_VERSION)
+SET_VERSION                   := $(METADATA_PATH).Version=$(IMAGE_ENV_TO_JSON_VERSION)
 LDFLAGS                       := "-X $(SET_VERSION)"
 
 ARCH := $(shell uname -m)

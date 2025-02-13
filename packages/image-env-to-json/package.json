@@ -28,8 +28,8 @@
     "install": "go mod tidy",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "setup:env": "run-script-os",
-    "setup:env:darwin:linux": "cross-env PLUGIN_VERSION=$(build-env imageEnvToJson.version)",
-    "setup:env:win32": "pnpm powershell \"cross-env PLUGIN_VERSION=$(build-env imageEnvToJson.version)\"",
+    "setup:env:darwin:linux": "cross-env IMAGE_ENV_TO_JSON_VERSION=$(build-env imageEnvToJson.version)",
+    "setup:env:win32": "pnpm powershell \"cross-env IMAGE_ENV_TO_JSON_VERSION=$(build-env imageEnvToJson.version)\"",
     "test": "go test ./..."
   },
   "devDependencies": {
