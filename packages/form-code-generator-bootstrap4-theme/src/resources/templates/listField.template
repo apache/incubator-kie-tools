@@ -1,0 +1,8 @@
+<fieldset<%=props.disabled ? " disabled" : ""%>>
+    <legend><%=props.label%></legend>
+    <div>
+<% _.each(props.children, function(child) { %>
+        <%=child.html%>
+<% }); %>
+    </div>
+</fieldset>

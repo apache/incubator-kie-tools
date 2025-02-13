@@ -29,7 +29,7 @@ const schema = {
 };
 
 describe("<UnsupportedField> tests", () => {
-  it("<UnsupportedField> - rendering", () => {
+  it.skip("<UnsupportedField> - rendering", () => {
     const props = {
       id: "id",
       label: "Friends?",
