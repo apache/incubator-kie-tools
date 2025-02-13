@@ -88,7 +88,7 @@
           "type": "boolean"
         },
         "extendedServices.extendedServicesURL": {
-          "default": "http://localhost:21345",
+          "default": "http://127.0.0.1:21345",
           "description": "Specifies the Extended Services URL.",
           "format": "uri",
           "order": 1,

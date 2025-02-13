@@ -32,7 +32,7 @@ module.exports = composeEnv([rootEnv], {
       description: "Extended Services version. Used by clients for checking compatibility.",
     },
     EXTENDED_SERVICES__ip: {
-      default: "0.0.0.0",
+      default: "127.0.0.1",
       description: "Extended Services IP",
     },
     EXTENDED_SERVICES__port: {

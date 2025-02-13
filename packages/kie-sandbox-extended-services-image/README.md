@@ -63,7 +63,7 @@ Start up a new container with:
 $ docker run -p 21345:21345 -i --rm docker.io/apache/incubator-kie-sandbox-extended-services:latest
 ```
 
-The service will be up at http://localhost:21345
+The service will be up at http://127.0.0.1:21345
 
 ---
 
