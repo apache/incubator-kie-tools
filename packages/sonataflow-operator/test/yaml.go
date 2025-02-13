@@ -61,6 +61,7 @@ const (
 	sonataFlowBuildSucceed                   = "sonataflow.org_v1alpha08_sonataflowbuild.yaml"
 	knativeDefaultBrokerCR                   = "knative_default_broker.yaml"
 	manifestsPath                            = "bundle/manifests/"
+	DBMigrationSonataFlowPlatform            = "db_migrator_sonataflow_platform.yaml"
 )
 
 var projectDir = ""
@@ -240,6 +241,10 @@ func GetBaseClusterPlatformInReadyPhase(namespace string) *operatorapi.SonataFlo
 
 func GetBasePlatformInReadyPhase(namespace string) *operatorapi.SonataFlowPlatform {
 	return GetSonataFlowPlatformInReadyPhase(sonataFlowPlatformYamlCR, namespace)
+}
+
+func GetBaseSonataFlowPlatformInReadyPhase(namespace string) *operatorapi.SonataFlowPlatform {
+	return GetSonataFlowPlatformInReadyPhase(DBMigrationSonataFlowPlatform, namespace)
 }
 
 func GetBasePlatformWithBaseImageInReadyPhase(namespace string) *operatorapi.SonataFlowPlatform {

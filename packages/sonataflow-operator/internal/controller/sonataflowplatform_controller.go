@@ -71,6 +71,7 @@ type SonataFlowPlatformReconciler struct {
 //+kubebuilder:rbac:groups=sonataflow.org,resources=sonataflowplatforms,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=sonataflow.org,resources=sonataflowplatforms/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=sonataflow.org,resources=sonataflowplatforms/finalizers,verbs=update
+//+kubebuilder:rbac:groups=batch,resources=jobs,verbs=get;list;watch;create;update;patch;delete
 
 // Reconcile is part of the main kubernetes reconciliation loop which aims to
 // move the current state of the cluster closer to the desired state.
@@ -181,6 +182,10 @@ func (r *SonataFlowPlatformReconciler) Reconcile(ctx context.Context, req reconc
 				if err != nil {
 					return reconcile.Result{}, err
 				}
+			} else {
+				return reconcile.Result{
+					RequeueAfter: 5 * time.Second,
+				}, nil
 			}
 
 			// handle one action at time so the resource

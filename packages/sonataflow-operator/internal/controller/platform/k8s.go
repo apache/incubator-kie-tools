@@ -69,13 +69,24 @@ func (action *serviceAction) Handle(ctx context.Context, platform *operatorapi.S
 	}
 
 	psDI := services.NewDataIndexHandler(platform)
+	psJS := services.NewJobServiceHandler(platform)
+
+	if IsJobsBasedDBMigration(platform, psDI, psJS) {
+		p, err := HandleDBMigrationJob(ctx, action.client, platform, psDI, psJS)
+		if p == nil && err == nil { // DB migration is in-progress
+			return nil, nil, nil
+		} else if p == nil && err != nil { // DB migration failed
+			klog.V(log.E).ErrorS(err, "Error handling DB migration job", "namespace", platform.Namespace)
+			return nil, nil, err
+		}
+	}
+
 	if psDI.IsServiceSetInSpec() {
 		if event, err := createOrUpdateServiceComponents(ctx, action.client, platform, psDI); err != nil {
 			return nil, event, err
 		}
 	}
 
-	psJS := services.NewJobServiceHandler(platform)
 	if psJS.IsServiceSetInSpec() {
 		if event, err := createOrUpdateServiceComponents(ctx, action.client, platform, psJS); err != nil {
 			return nil, event, err
