@@ -41,6 +41,7 @@ export interface ProcessListGatewayApi {
   query(offset: number, limit: number): Promise<ProcessInstance[]>;
   getChildProcessesQuery(rootProcessInstanceId: string): Promise<ProcessInstance[]>;
   onOpenProcessListen: (listener: OnOpenProcessListener) => UnSubscribeHandler;
+  onUpdateProcessListState: (listener: OnUpdateProcessListStateListener) => UnSubscribeHandler;
   openTriggerCloudEvent(processInstance?: ProcessInstance): void;
 }
 
@@ -53,11 +54,16 @@ export interface OnOpenProcessListener {
   onOpen: (process: ProcessInstance) => void;
 }
 
+export interface OnUpdateProcessListStateListener {
+  onUpdate: (processListState: ProcessListState) => void;
+}
+
 export interface UnSubscribeHandler {
   unSubscribe: () => void;
 }
 export class ProcessListGatewayApiImpl implements ProcessListGatewayApi {
-  private readonly listeners: OnOpenProcessListener[] = [];
+  private readonly onOpenProcessListeners: OnOpenProcessListener[] = [];
+  private readonly onUpdateProcessListStateListeners: OnUpdateProcessListStateListener[] = [];
   private readonly queries: ProcessListQueries;
   private _ProcessListState: ProcessListState;
 
@@ -77,7 +83,7 @@ export class ProcessListGatewayApiImpl implements ProcessListGatewayApi {
   }
 
   openProcess = (process: ProcessInstance): Promise<void> => {
-    this.listeners.forEach((listener) => listener.onOpen(process));
+    this.onOpenProcessListeners.forEach((listener) => listener.onOpen(process));
     return Promise.resolve();
   };
 
@@ -89,11 +95,13 @@ export class ProcessListGatewayApiImpl implements ProcessListGatewayApi {
 
   applyFilter = (filter: ProcessInstanceFilter): Promise<void> => {
     this.processListState.filters = filter;
+    this.onUpdateProcessListStateListeners.forEach((listener) => listener.onUpdate(this.processListState));
     return Promise.resolve();
   };
 
   applySorting = (sortBy: ProcessListSortBy) => {
     this._ProcessListState.sortBy = sortBy;
+    this.onUpdateProcessListStateListeners.forEach((listener) => listener.onUpdate(this.processListState));
     return Promise.resolve();
   };
 
@@ -142,12 +150,27 @@ export class ProcessListGatewayApiImpl implements ProcessListGatewayApi {
   }
 
   onOpenProcessListen(listener: OnOpenProcessListener): UnSubscribeHandler {
-    this.listeners.push(listener);
+    this.onOpenProcessListeners.push(listener);
 
     const unSubscribe = () => {
-      const index = this.listeners.indexOf(listener);
+      const index = this.onOpenProcessListeners.indexOf(listener);
       if (index > -1) {
-        this.listeners.splice(index, 1);
+        this.onOpenProcessListeners.splice(index, 1);
+      }
+    };
+
+    return {
+      unSubscribe,
+    };
+  }
+
+  onUpdateProcessListState(listener: OnUpdateProcessListStateListener): UnSubscribeHandler {
+    this.onUpdateProcessListStateListeners.push(listener);
+
+    const unSubscribe = () => {
+      const index = this.onUpdateProcessListStateListeners.indexOf(listener);
+      if (index > -1) {
+        this.onUpdateProcessListStateListeners.splice(index, 1);
       }
     };
 

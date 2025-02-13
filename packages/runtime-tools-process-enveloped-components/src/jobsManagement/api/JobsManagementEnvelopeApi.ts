@@ -1,3 +1,5 @@
+import { JobsManagementState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,7 +19,7 @@
  * under the License.
  */
 export interface JobsManagementEnvelopeApi {
-  jobsManagement__init(association: Association): Promise<void>;
+  jobsManagement__init(association: Association, initArgs: JobsManagementInitArgs): Promise<void>;
 }
 export interface Association {
   origin: string;
@@ -27,4 +29,8 @@ export interface Association {
 export interface QueryPage {
   offset: number;
   limit: number;
+}
+
+export interface JobsManagementInitArgs {
+  initialState?: JobsManagementState;
 }

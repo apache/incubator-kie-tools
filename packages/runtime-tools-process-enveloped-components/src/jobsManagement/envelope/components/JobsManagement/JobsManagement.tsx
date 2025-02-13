@@ -16,9 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { ISortBy } from "@patternfly/react-table/dist/js/components/Table";
 import { LoadMore } from "@kie-tools/runtime-tools-components/dist/components/LoadMore";
@@ -28,7 +27,13 @@ import {
   KogitoEmptyStateType,
 } from "@kie-tools/runtime-tools-components/dist/components/KogitoEmptyState";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools/OuiaUtils";
-import { BulkCancel, Job, JobStatus, JobsSortBy } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import {
+  BulkCancel,
+  Job,
+  JobStatus,
+  JobsManagementState,
+  JobsSortBy,
+} from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import {
   BulkListItem,
   BulkListType,
@@ -44,6 +49,7 @@ import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { JobsDetailsModal } from "../JobsDetailsModal";
 import { JobsRescheduleModal } from "../JobsRescheduleModal";
 import { JobsCancelModal } from "../JobsCancelModal";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 
 export const formatForBulkListJob = (jobsList: (Job & { errorMessage?: string })[]): BulkListItem[] => {
   const formattedItems: BulkListItem[] = [];
@@ -62,22 +68,35 @@ export const formatForBulkListJob = (jobsList: (Job & { errorMessage?: string })
 interface JobsManagementProps {
   isEnvelopeConnectedToChannel: boolean;
   driver: JobsManagementDriver;
+  initialState?: JobsManagementState;
 }
+
+const defaultPageSize: number = 10;
+const defaultSortBy: ISortBy = { index: 6, direction: "asc" };
 
 const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
   ouiaId,
   ouiaSafe,
   driver,
   isEnvelopeConnectedToChannel,
+  initialState,
 }) => {
-  const defaultPageSize: number = 10;
-  const defaultStatus: JobStatus[] = [JobStatus.Scheduled];
-  const defaultChip: JobStatus[] = [JobStatus.Scheduled];
-  const defaultSortBy: ISortBy = { index: 6, direction: "asc" };
-  const defaultOrderBy: JobsSortBy = {
-    lastUpdate: OrderBy.ASC,
-  };
-  const [chips, setChips] = useState(defaultChip);
+  const defaultStatus: JobStatus[] = useMemo(
+    () => (initialState && initialState.filters ? [...initialState.filters] : [JobStatus.Scheduled]),
+    [initialState]
+  );
+
+  const defaultOrderBy: JobsSortBy = useMemo(
+    () =>
+      initialState && initialState.orderBy
+        ? initialState.orderBy
+        : {
+            lastUpdate: OrderBy.DESC,
+          },
+    [initialState]
+  );
+
+  const [chips, setChips] = useState<JobStatus[]>(defaultStatus);
   const [selectedStatus, setSelectedStatus] = useState<JobStatus[]>(defaultStatus);
   const [selectedJobInstances, setSelectedJobInstances] = useState<Job[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -105,177 +124,237 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
       ignoredItems: [],
     },
   });
+  const [isInitialLoadDone, setIsInitialLoadDone] = useState(false);
 
-  const onRefresh = async (): Promise<void> => {
-    setIsLoading(true);
-    await driver.initialLoad(selectedStatus, orderBy);
-    setSortBy(defaultSortBy);
-    setOffset(0);
-    doQueryJobs(0, 10);
-  };
-
-  const initLoad = async (): Promise<void> => {
-    const defaultState: any = {
-      filters: ["SCHEDULED"],
-      sortBy: { lastUpdate: "ASC" },
-    };
-    setIsLoading(true);
-    await driver.initialLoad(defaultState.filters, defaultState.sortBy);
-    doQueryJobs(0, 10);
-  };
-
-  const doQueryJobs = async (_offset: number, _limit: number): Promise<void> => {
-    try {
-      const jobsResponse: Job[] = await driver.query(_offset, _limit);
-      setIsLoading(false);
-      setLimit(jobsResponse.length);
-      if (_offset > 0 && jobs.length > 0) {
-        setIsLoadingMore(false);
-        const tempData: Job[] = jobs.concat(jobsResponse);
-        setJobs(tempData);
-      } else {
-        setJobs(jobsResponse);
+  const doQueryJobs = useCallback(
+    async (_offset: number, _limit: number) => {
+      try {
+        const jobsResponse: Job[] = await driver.query(_offset, _limit);
+        setLimit(jobsResponse.length);
+        setJobs((currentJobs) => {
+          if (_offset > 0 && currentJobs.length > 0) {
+            const tempData: Job[] = currentJobs.concat(jobsResponse);
+            return tempData;
+          } else {
+            return jobsResponse;
+          }
+        });
+      } catch (err) {
+        setError(err);
       }
-    } catch (err) {
-      setError(err);
-    }
-  };
+    },
+    [driver]
+  );
 
-  React.useEffect(() => {
-    if (isEnvelopeConnectedToChannel) {
-      initLoad();
+  const onRefresh = useCallback(async () => {
+    setIsLoading(true);
+    await driver.applyFilter(selectedStatus);
+    await driver.sortBy(orderBy);
+    setOffset(0);
+    await doQueryJobs(0, 10);
+    setIsLoading(false);
+  }, [doQueryJobs, driver, orderBy, selectedStatus]);
+
+  const onApplyFilter = useCallback(async () => {
+    setIsLoading(true);
+    await driver.applyFilter(selectedStatus);
+    await driver.sortBy(orderBy);
+    setChips(selectedStatus);
+    setOffset(0);
+    await doQueryJobs(0, 10);
+    setIsLoading(false);
+  }, [doQueryJobs, driver, orderBy, selectedStatus]);
+
+  useEffect(() => {
+    if (!isEnvelopeConnectedToChannel) {
+      setIsInitialLoadDone(false);
     }
   }, [isEnvelopeConnectedToChannel]);
 
-  const handleCancelModalToggle = (): void => {
-    setIsCancelModalOpen(!isCancelModalOpen);
-  };
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (isEnvelopeConnectedToChannel) {
+          setIsLoading(true);
+          setSelectedStatus(defaultStatus);
+          setChips(defaultStatus);
+          setOrderBy(defaultOrderBy);
+          if (canceled.get()) {
+            return;
+          }
+          driver
+            .initialLoad(defaultStatus, defaultOrderBy)
+            .then(() => {
+              if (canceled.get()) {
+                return;
+              }
+              return doQueryJobs(0, 10);
+            })
+            .then(() => {
+              if (canceled.get()) {
+                return;
+              }
+              setIsLoading(false);
+              setIsInitialLoadDone(true);
+            });
+        }
+      },
+      [defaultOrderBy, defaultStatus, doQueryJobs, driver, isEnvelopeConnectedToChannel]
+    )
+  );
 
-  const handleCancelModalCloseToggle = (): void => {
+  const handleCancelModalToggle = useCallback((): void => {
     setIsCancelModalOpen(!isCancelModalOpen);
-    doQueryJobs(0, 10);
-  };
+  }, [isCancelModalOpen]);
 
-  const handleDetailsToggle = (): void => {
+  const handleCancelModalCloseToggle = useCallback(async () => {
+    setIsCancelModalOpen(!isCancelModalOpen);
+    setIsLoading(true);
+    await doQueryJobs(0, 10);
+    setIsLoading(false);
+  }, [doQueryJobs, isCancelModalOpen]);
+
+  const handleDetailsToggle = useCallback((): void => {
     setIsDetailsModalOpen(!isDetailsModalOpen);
-  };
+  }, [isDetailsModalOpen]);
 
-  const handleRescheduleToggle = (): void => {
+  const handleRescheduleToggle = useCallback((): void => {
     setIsRescheduleModalOpen(!isRescheduleModalOpen);
-  };
+  }, [isRescheduleModalOpen]);
 
-  const onGetMoreInstances = async (initVal: number, _pageSize: number): Promise<void> => {
-    setIsLoadingMore(true);
-    setOffset(initVal);
-    setPageSize(_pageSize);
-    await driver.initialLoad(selectedStatus, orderBy);
-    doQueryJobs(initVal, _pageSize);
-  };
+  const onGetMoreInstances = useCallback(
+    async (initVal: number, _pageSize: number): Promise<void> => {
+      setIsLoadingMore(true);
+      setOffset(initVal);
+      setPageSize(_pageSize);
+      await driver.initialLoad(selectedStatus, orderBy);
+      await doQueryJobs(initVal, _pageSize);
+      setIsLoadingMore(false);
+    },
+    [doQueryJobs, driver, orderBy, selectedStatus]
+  );
 
-  const handleBulkCancel = (cancelResults: BulkCancel, ignoredJobs: Job[]): void => {
-    setIsActionPerformed(true);
-    setModalTitle(setTitle("success", "Job Cancel"));
-    setModalContent("");
-    setJobOperationResults({
-      ...jobOperationResults,
-      [OperationType.CANCEL]: {
-        ...jobOperationResults[OperationType.CANCEL],
-        successItems: formatForBulkListJob(cancelResults.successJobs),
-        failedItems: formatForBulkListJob(cancelResults.failedJobs),
-        ignoredItems: formatForBulkListJob(ignoredJobs),
-      },
-    });
-    handleCancelModalToggle();
-  };
+  const handleBulkCancel = useCallback(
+    (cancelResults: BulkCancel, ignoredJobs: Job[]): void => {
+      setIsActionPerformed(true);
+      setModalTitle(setTitle("success", "Job Cancel"));
+      setModalContent("");
+      setJobOperationResults({
+        ...jobOperationResults,
+        [OperationType.CANCEL]: {
+          ...jobOperationResults[OperationType.CANCEL],
+          successItems: formatForBulkListJob(cancelResults.successJobs),
+          failedItems: formatForBulkListJob(cancelResults.failedJobs),
+          ignoredItems: formatForBulkListJob(ignoredJobs),
+        },
+      });
+      handleCancelModalToggle();
+    },
+    [handleCancelModalToggle, jobOperationResults]
+  );
 
-  const jobOperations: IOperations = {
-    CANCEL: {
-      type: BulkListType.JOB,
-      results: jobOperationResults[OperationType.CANCEL],
-      messages: {
-        successMessage: "Canceled jobs: ",
-        noItemsMessage: "No jobs were canceled",
-        warningMessage:
-          "Note: The job status has been updated. The list may appear inconsistent until you refresh any applied filters.",
-        ignoredMessage: "These jobs were ignored because they were already canceled or executed.",
-      },
-      functions: {
-        perform: async () => {
-          const ignoredJobs: Job[] = [];
-          const remainingInstances = selectedJobInstances.filter((job) => {
-            if (job.status === JobStatus.Canceled || job.status === JobStatus.Executed) {
-              ignoredJobs.push(job);
-            } else {
-              return true;
-            }
-          });
-          const cancelResults = await driver.bulkCancel(remainingInstances);
-          handleBulkCancel(cancelResults, ignoredJobs);
+  const jobOperations: IOperations = useMemo(
+    () => ({
+      CANCEL: {
+        type: BulkListType.JOB,
+        results: jobOperationResults[OperationType.CANCEL],
+        messages: {
+          successMessage: "Canceled jobs: ",
+          noItemsMessage: "No jobs were canceled",
+          warningMessage:
+            "Note: The job status has been updated. The list may appear inconsistent until you refresh any applied filters.",
+          ignoredMessage: "These jobs were ignored because they were already canceled or executed.",
+        },
+        functions: {
+          perform: async () => {
+            const ignoredJobs: Job[] = [];
+            const remainingInstances = selectedJobInstances.filter((job) => {
+              if (job.status === JobStatus.Canceled || job.status === JobStatus.Executed) {
+                ignoredJobs.push(job);
+              } else {
+                return true;
+              }
+            });
+            const cancelResults = await driver.bulkCancel(remainingInstances);
+            handleBulkCancel(cancelResults, ignoredJobs);
+          },
         },
       },
+    }),
+    [driver, handleBulkCancel, jobOperationResults, selectedJobInstances]
+  );
+
+  const detailsAction: JSX.Element[] = useMemo(
+    () => [
+      <Button key="confirm-selection" variant="primary" onClick={handleDetailsToggle}>
+        OK
+      </Button>,
+    ],
+    [handleDetailsToggle]
+  );
+
+  const rescheduleActions: JSX.Element[] = useMemo(
+    () => [
+      <Button key="cancel-reschedule" variant="secondary" onClick={handleRescheduleToggle}>
+        Cancel
+      </Button>,
+    ],
+    [handleRescheduleToggle]
+  );
+
+  const onResetToDefault = useCallback(async () => {
+    const defaultState: any = {
+      filters: ["SCHEDULED"],
+      orderBy: { lastUpdate: "ASC" },
+    };
+    setSelectedStatus(defaultState.filters);
+    setChips(defaultState.filters);
+    setOrderBy(defaultState.orderBy), setDisplayTable(true);
+    setIsLoading(true);
+    await driver.initialLoad(defaultState.filters, defaultState.orderBy);
+    await doQueryJobs(0, 10);
+    setIsLoading(false);
+  }, [doQueryJobs, driver]);
+
+  const handleJobReschedule = useCallback(
+    async (job: Job, repeatInterval: string | number, repeatLimit: string | number, scheduleDate: Date) => {
+      const response = await driver.rescheduleJob(job, repeatInterval, repeatLimit, scheduleDate);
+      setIsLoading(true);
+      if (response && response.modalTitle === "success") {
+        handleRescheduleToggle();
+        await doQueryJobs(0, 10);
+      } else if (response && response.modalTitle === "failure") {
+        handleRescheduleToggle();
+        setRescheduleError(response.modalContent);
+        await doQueryJobs(0, 10);
+      }
+      setIsLoading(false);
     },
-  };
+    [doQueryJobs, driver, handleRescheduleToggle]
+  );
 
-  const detailsAction: JSX.Element[] = [
-    <Button key="confirm-selection" variant="primary" onClick={handleDetailsToggle}>
-      OK
-    </Button>,
-  ];
-
-  const rescheduleActions: JSX.Element[] = [
-    <Button key="cancel-reschedule" variant="secondary" onClick={handleRescheduleToggle}>
-      Cancel
-    </Button>,
-  ];
-
-  const onResetToDefault = (): void => {
-    setSelectedStatus(defaultStatus);
-    setChips(defaultChip);
-    setDisplayTable(true);
-    initLoad();
-  };
-
-  const handleJobReschedule = async (
-    job: Job,
-    repeatInterval: string | number,
-    repeatLimit: string | number,
-    scheduleDate: Date
-  ) => {
-    const response = await driver.rescheduleJob(job, repeatInterval, repeatLimit, scheduleDate);
-    if (response && response.modalTitle === "success") {
-      handleRescheduleToggle();
-      setIsLoading(true);
-      doQueryJobs(0, 10);
-    } else if (response && response.modalTitle === "failure") {
-      handleRescheduleToggle();
-      setRescheduleError(response.modalContent);
-      setIsLoading(true);
-      doQueryJobs(0, 10);
-    }
-  };
   return (
     <div {...componentOuiaProps(ouiaId, "JobsManagementPage", ouiaSafe ? ouiaSafe : !isLoading)}>
       {error.length === 0 ? (
         <>
-          <CardTitle>
-            <JobsManagementToolbar
-              chips={chips}
-              onResetToDefault={onResetToDefault}
-              driver={driver}
-              doQueryJobs={doQueryJobs}
-              jobOperations={jobOperations}
-              onRefresh={onRefresh}
-              selectedStatus={selectedStatus}
-              selectedJobInstances={selectedJobInstances}
-              setChips={setChips}
-              setDisplayTable={setDisplayTable}
-              setIsLoading={setIsLoading}
-              setSelectedJobInstances={setSelectedJobInstances}
-              setSelectedStatus={setSelectedStatus}
-            />
-          </CardTitle>
+          <JobsManagementToolbar
+            chips={chips}
+            onResetToDefault={onResetToDefault}
+            driver={driver}
+            doQueryJobs={doQueryJobs}
+            onApplyFilter={onApplyFilter}
+            jobOperations={jobOperations}
+            onRefresh={onRefresh}
+            selectedStatus={selectedStatus}
+            selectedJobInstances={selectedJobInstances}
+            setChips={setChips}
+            setDisplayTable={setDisplayTable}
+            setIsLoading={setIsLoading}
+            setSelectedJobInstances={setSelectedJobInstances}
+            setSelectedStatus={setSelectedStatus}
+          />
           <Divider />
-          {isEnvelopeConnectedToChannel && displayTable ? (
+          {isInitialLoadDone && displayTable ? (
             <JobsManagementTable
               jobs={jobs}
               driver={driver}
@@ -309,7 +388,7 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
               )}
             </>
           )}
-          {isEnvelopeConnectedToChannel && (!isLoading || isLoadingMore) && (limit === pageSize || isLoadingMore) && (
+          {isInitialLoadDone && (!isLoading || isLoadingMore) && (limit === pageSize || isLoadingMore) && (
             <LoadMore
               offset={offset}
               setOffset={setOffset}

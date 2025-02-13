@@ -23,23 +23,41 @@ import { ProcessListChannelApi, ProcessListInitArgs } from "../api";
 import ProcessList from "./components/ProcessList/ProcessList";
 import ProcessListEnvelopeViewDriver from "./ProcessListEnvelopeViewDriver";
 import "@patternfly/patternfly/patternfly.css";
+import { ProcessInstanceState, ProcessListState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { OrderBy } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface ProcessListEnvelopeViewApi {
-  initialize: (initialState?: ProcessListInitArgs) => void;
+  initialize: (initArgs?: ProcessListInitArgs) => void;
 }
 interface Props {
   channelApi: MessageBusClientApi<ProcessListChannelApi>;
 }
 
+const defaultFilters = {
+  status: [ProcessInstanceState.Active],
+  businessKey: [],
+};
+
+const defaultSortBy = {
+  lastUpdate: OrderBy.DESC,
+};
+
 export const ProcessListEnvelopeView = React.forwardRef<ProcessListEnvelopeViewApi, Props>((props, forwardedRef) => {
   const [isEnvelopeConnectedToChannel, setEnvelopeConnectedToChannel] = useState<boolean>(false);
-  const [processInitialState, setProcessInitialState] = useState<ProcessListInitArgs>({} as ProcessListInitArgs);
+  const [processInitialArgs, setProcessInitialArgs] = useState<ProcessListInitArgs>({
+    initialState: {
+      filters: defaultFilters,
+      sortBy: defaultSortBy,
+    } as ProcessListState,
+    singularProcessLabel: "Process",
+    pluralProcessLabel: "Processes",
+  });
   useImperativeHandle(
     forwardedRef,
     () => ({
-      initialize: (initialState) => {
+      initialize: (initArgs) => {
         setEnvelopeConnectedToChannel(false);
-        setProcessInitialState(initialState!);
+        setProcessInitialArgs(initArgs!);
         setEnvelopeConnectedToChannel(true);
       },
     }),
@@ -51,9 +69,9 @@ export const ProcessListEnvelopeView = React.forwardRef<ProcessListEnvelopeViewA
       <ProcessList
         isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
         driver={new ProcessListEnvelopeViewDriver(props.channelApi)}
-        initialState={processInitialState.initialState}
-        singularProcessLabel={processInitialState.singularProcessLabel}
-        pluralProcessLabel={processInitialState.pluralProcessLabel}
+        initialState={processInitialArgs.initialState}
+        singularProcessLabel={processInitialArgs?.singularProcessLabel}
+        pluralProcessLabel={processInitialArgs?.pluralProcessLabel}
       />
     </React.Fragment>
   );
