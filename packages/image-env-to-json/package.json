@@ -22,16 +22,20 @@
     "build:linux:amd": "pnpm setup:env make build-linux-amd64",
     "build:linux:arm": "pnpm setup:env make build-linux-arm64",
     "build:prod": "rimraf -rf dist && pnpm setup:env make build-all && pnpm test",
-    "build:win32": "pnpm setup:env make build-win",
-    "build:win32:amd": "pnpm setup:env make build-win-amd64",
-    "build:win32:arm": "pnpm setup:env make build-win-arm64",
+    "build:win32": "pnpm setup:env:win32 make build-win",
+    "build:win32:amd": "pnpm setup:env:win32 make build-win-amd64",
+    "build:win32:arm": "pnpm setup:env:win32 make build-win-arm64",
     "install": "go mod tidy",
-    "setup:env": "cross-env PLUGIN_VERSION=$(build-env imageEnvToJson.version)",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
+    "setup:env": "run-script-os",
+    "setup:env:darwin:linux": "cross-env PLUGIN_VERSION=$(build-env imageEnvToJson.version)",
+    "setup:env:win32": "pnpm powershell \"cross-env PLUGIN_VERSION=$(build-env imageEnvToJson.version)\"",
     "test": "go test ./..."
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
     "cross-env": "^7.0.3",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "run-script-os": "^1.1.6"
   }
 }
