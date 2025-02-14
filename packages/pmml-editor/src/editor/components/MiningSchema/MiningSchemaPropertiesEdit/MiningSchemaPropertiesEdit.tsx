@@ -260,13 +260,7 @@ const MiningSchemaPropertiesEdit = ({
                 </Split>
               </StackItem>
               <StackItem>
-                <FormGroup
-                  className="mining-schema__properties__field"
-                  label="Importance"
-                  fieldId="importance"
-                  // helperText={validationsImportance.length === 0 ? "" : validationsImportance[0].message}
-                  // validated={validationsImportance.length === 0 ? "default" : "warning"}
-                >
+                <FormGroup className="mining-schema__properties__field" label="Importance" fieldId="importance">
                   <TextInput
                     type="number"
                     min={0}
@@ -333,8 +327,6 @@ const MiningSchemaPropertiesEdit = ({
                       label="Low Value"
                       fieldId="lowValue"
                       className="mining-schema__properties__field"
-                      // helperText={validationsLowValue.length === 0 ? "" : validationsLowValue[0].message}
-                      // validated={validationsLowValue.length === 0 ? "default" : "warning"}
                       labelIcon={
                         <Tooltip
                           content={`Low Value is required when Outliers is "asExtremeValues" or "asMissingValues"`}
@@ -383,8 +375,6 @@ const MiningSchemaPropertiesEdit = ({
                       label="High Value"
                       fieldId="highValue"
                       className="mining-schema__properties__field"
-                      // helperText={validationsHighValue.length === 0 ? "" : validationsHighValue[0].message}
-                      // validated={validationsHighValue.length === 0 ? "default" : "warning"}
                       labelIcon={
                         <Tooltip
                           content={`High Value is required when Outliers is "asExtremeValues" or "asMissingValues"`}
@@ -449,10 +439,6 @@ const MiningSchemaPropertiesEdit = ({
                     <FormGroup
                       label="Missing Value Replacement"
                       fieldId="missingValueReplacement"
-                      // validated={validationsMissingValueReplacement.length === 0 ? "default" : "warning"}
-                      // helperText={
-                      //   validationsMissingValueReplacement[0] ? validationsMissingValueReplacement[0].message : ""
-                      // }
                       labelIcon={
                         <Tooltip
                           content={`Missing Value Replacement is required when Missing Value Treatment is "asMean", "asMedian" or "asMode"`}
@@ -518,10 +504,6 @@ const MiningSchemaPropertiesEdit = ({
                     <FormGroup
                       label="Invalid Value Replacement"
                       fieldId="invalidValueReplacement"
-                      // validated={validationsInvalidValueReplacement.length === 0 ? "default" : "warning"}
-                      // helperText={
-                      //   validationsInvalidValueReplacement[0] ? validationsInvalidValueReplacement[0].message : ""
-                      // }
                       labelIcon={
                         <Tooltip
                           content={`Invalid Value Replacement is required when Invalid Value Treatment is "asValue"`}

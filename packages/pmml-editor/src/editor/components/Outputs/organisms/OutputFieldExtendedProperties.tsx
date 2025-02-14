@@ -168,9 +168,7 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
       <FormGroup
         label="Target field"
         fieldId="output-targetField-helper"
-        // helperText={validationsTargetField.length === 0 ? "" : validationsTargetField[0].message}
         className="outputs-container__extended-properties__field"
-        // validated={validationsTargetField.length === 0 ? "default" : "warning"}
         labelIcon={
           !targetFieldsOptions.length ? (
             <Tooltip content={"There are no Mining Schema fields with target usage type."}>

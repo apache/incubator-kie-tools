@@ -198,9 +198,6 @@ const ConstraintsEdit = (props: ConstraintsEditProps) => {
       <FormGroup
         fieldId="constraints-type"
         label="Constraints Type"
-        // helperText={
-        //   enabledTypeOptionsCount > 1 ? "Select the type of constraint and then fill in the required fields." : ""
-        // }
         labelIcon={
           typeDescription.length > 0 ? (
             <Tooltip content={typeDescription}>

@@ -88,13 +88,7 @@ export function ImportFromUrlForm(props: {
 
   return (
     <Form onSubmit={onSubmit}>
-      <FormGroup
-        // helperTextInvalid={displayError}
-        // helperText={<FormHelperText style={{ visibility: "hidden" }} />}
-        // helperTextInvalidIcon={<ExclamationCircleIcon />}
-        fieldId="import-url-form-input"
-        // validated={validatedOption}
-      >
+      <FormGroup fieldId="import-url-form-input">
         <TextInput
           ref={props.urlInputRef}
           id={"import-url-form-input"}

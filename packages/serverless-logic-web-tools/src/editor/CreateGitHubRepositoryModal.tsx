@@ -246,17 +246,7 @@ export function CreateGitHubRepositoryModal(props: {
             <br />
           </FormAlert>
         )}
-        <FormGroup
-          label="Name"
-          isRequired={true}
-          // helperTextInvalid={
-          //   "Invalid name. Only letters, numbers, dashes (-), dots (.), and underscores (_) are allowed."
-          // }
-          // helperText={<FormHelperText style={{ visibility: "hidden" }} />}
-          // helperTextInvalidIcon={<ExclamationCircleIcon />}
-          fieldId="github-repository-name"
-          // validated={validated}
-        >
+        <FormGroup label="Name" isRequired={true} fieldId="github-repository-name">
           <TextInput
             id={"github-repo-name"}
             validated={validated}
@@ -282,11 +272,7 @@ export function CreateGitHubRepositoryModal(props: {
           )}
         </FormGroup>
         <Divider inset={{ default: "inset3xl" }} />
-        <FormGroup
-          // helperText={<FormHelperText style={{ visibility: "hidden" }} />}
-          // helperTextInvalidIcon={<ExclamationCircleIcon />}
-          fieldId="github-repo-visibility"
-        >
+        <FormGroup fieldId="github-repo-visibility">
           <Radio
             isChecked={!isPrivate}
             id={"github-repository-public"}

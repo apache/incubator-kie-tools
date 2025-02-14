@@ -106,11 +106,7 @@ export const JobsRescheduleModal: React.FC<IOwnProps & OUIAProps> = ({
               <OutlinedClockIcon /> Now
             </Button>
           </FormGroup>
-          <FormGroup
-            label="Repeat Interval"
-            fieldId="repeat-interval"
-            // helperText={repeatInterval === null ? "Input disabled since it is an one-time run job" : null}
-          >
+          <FormGroup label="Repeat Interval" fieldId="repeat-interval">
             <TextInput
               type="text"
               id="repeat-interval-input"
@@ -128,11 +124,7 @@ export const JobsRescheduleModal: React.FC<IOwnProps & OUIAProps> = ({
               </FormHelperText>
             ) : null}
           </FormGroup>
-          <FormGroup
-            label="Repeat Limit"
-            fieldId="repeat-limit"
-            // helperText={repeatLimit === null ? "Input disabled since it is an one-time run job" : null}
-          >
+          <FormGroup label="Repeat Limit" fieldId="repeat-limit">
             <TextInput
               type="text"
               id="repeat-limit-input"

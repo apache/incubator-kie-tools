@@ -95,10 +95,7 @@ export default function wrapField(
         ) : undefined
       }
       isRequired={required}
-      // validated={error ? "error" : "default"}
       type={type}
-      // helperText={help}
-      // helperTextInvalid={errorMessage}
       {...filterDOMProps(props)}
     >
       {children}

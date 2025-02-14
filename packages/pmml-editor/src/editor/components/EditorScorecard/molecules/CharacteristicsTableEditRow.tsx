@@ -284,8 +284,6 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                     </button>
                   </Tooltip>
                 }
-                // validated={reasonCodeValidation.length > 0 ? "warning" : "default"}
-                // helperText={reasonCodeValidation.length > 0 ? reasonCodeValidation[0].message : undefined}
               >
                 <TextInput
                   type="text"
@@ -342,8 +340,6 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                     </button>
                   </Tooltip>
                 }
-                // helperText={baselineScoreValidation.length > 0 ? baselineScoreValidation[0].message : undefined}
-                // validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
                 style={{ width: "16em" }}
               >
                 <TextInput

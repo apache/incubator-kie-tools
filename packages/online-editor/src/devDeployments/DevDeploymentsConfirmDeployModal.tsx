@@ -186,14 +186,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
         Object.values(deploymentOption.parameters).map((parameter) => {
           if (parameter.type === "boolean") {
             return (
-              <FormGroup
-                key={parameter.id}
-                // helperText={
-                //   <small>
-                //     <i>{parameter.description}</i>
-                //   </small>
-                // }
-              >
+              <FormGroup key={parameter.id}>
                 <Checkbox
                   id={parameter.id}
                   name={parameter.name}
@@ -213,15 +206,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
             );
           } else if (parameter.type === "text") {
             return (
-              <FormGroup
-                label={<b>{parameter.name}:</b>}
-                key={parameter.id}
-                // helperText={
-                //   <small>
-                //     <i>{parameter.description}</i>
-                //   </small>
-                // }
-              >
+              <FormGroup label={<b>{parameter.name}:</b>} key={parameter.id}>
                 <TextArea
                   id={parameter.id}
                   value={String(deploymentParameters[parameter.id])}
@@ -240,15 +225,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
             );
           } else if (parameter.type === "number") {
             return (
-              <FormGroup
-                label={<b>{parameter.name}:</b>}
-                key={parameter.id}
-                // helperText={
-                //   <small>
-                //     <i>{parameter.description}</i>
-                //   </small>
-                // }
-              >
+              <FormGroup label={<b>{parameter.name}:</b>} key={parameter.id}>
                 <TextInput
                   id={parameter.id}
                   value={Number(deploymentParameters[parameter.id])}

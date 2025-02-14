@@ -80,12 +80,7 @@ export function ImportSingleFileFromUrlForm(props: {
 
   return (
     <Form onSubmit={onSubmit}>
-      <FormGroup
-        fieldId="auth-source"
-        label="Authentication"
-        isRequired={true}
-        // helperText={props.authSessionSelectHelperText}
-      >
+      <FormGroup fieldId="auth-source" label="Authentication" isRequired={true}>
         <AuthSessionSelect
           menuAppendTo={document.body}
           title={"Select authentication source for importing..."}
@@ -95,24 +90,8 @@ export function ImportSingleFileFromUrlForm(props: {
           filter={gitAuthSessionSelectFilter()}
           showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.GIT}
         />
-        <HelperText>
-          {/* (
-          <HelperTextItem variant="default" icon={ValidatedOptions.default}>
-            {props.authSessionSelectHelperText}
-          </HelperTextItem>
-          ) */}
-        </HelperText>
       </FormGroup>
-      <FormGroup
-        autoFocus={true}
-        label={"URL"}
-        isRequired={true}
-        // helperTextInvalid={helperTextInvalid}
-        // helperText={<FormHelperText style={{ visibility: "hidden" }} />}
-        // helperTextInvalidIcon={<ExclamationCircleIcon />}
-        fieldId="url"
-        // validated={validatedOption}
-      >
+      <FormGroup autoFocus={true} label={"URL"} isRequired={true} fieldId="url">
         <TextInput
           ref={props.urlInputRef}
           id={"url"}

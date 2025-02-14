@@ -301,11 +301,7 @@ export function CreateGitRepositoryModal(props: {
             <br />
           </FormAlert>
         )}
-        <FormGroup
-          label={i18n.createGitRepositoryModal[authProvider.type].form.select.label}
-          // helperText={i18n.createGitRepositoryModal[authProvider.type].form.select.description}
-          fieldId="organization"
-        >
+        <FormGroup label={i18n.createGitRepositoryModal[authProvider.type].form.select.label} fieldId="organization">
           <LoadOrganizationsSelect workspace={props.workspace} onSelect={setSelectedOrganization} />
           <FormHelperText>
             <HelperText>
@@ -318,11 +314,7 @@ export function CreateGitRepositoryModal(props: {
         <FormGroup
           label={i18n.createGitRepositoryModal.form.nameField.label}
           isRequired={true}
-          // helperTextInvalid={i18n.createGitRepositoryModal.form.nameField.hint}
-          // helperText={<FormHelperText style={{ visibility: "hidden" }} />}
-          // helperTextInvalidIcon={<ExclamationCircleIcon />}
           fieldId="repository-name"
-          // validated={validated}
         >
           <TextInput
             id={"repo-name"}
@@ -347,11 +339,7 @@ export function CreateGitRepositoryModal(props: {
           )}
         </FormGroup>
         <Divider inset={{ default: "inset3xl" }} />
-        <FormGroup
-          // helperText={<FormHelperText style={{ visibility: "hidden" }} />}
-          // helperTextInvalidIcon={<ExclamationCircleIcon />}
-          fieldId="repo-visibility"
-        >
+        <FormGroup fieldId="repo-visibility">
           <Radio
             isChecked={!isPrivate}
             id={"repository-public"}

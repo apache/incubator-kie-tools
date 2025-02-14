@@ -174,21 +174,7 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                   onChange={(_event, val) => props.setInsecurelyDisableTlsCertificateValidation}
                 />
               </FormGroup>
-              <FormGroup
-                fieldId="url"
-                label="URL"
-                isRequired={true}
-                // helperTextInvalid={props.validation.helperTextInvalid}
-                // helperTextInvalidIcon={<ExclamationCircleIcon />}
-                // helperText={
-                //   props.validation.option !== ValidatedOptions.success ? (
-                //     props.validation.helperText
-                //   ) : (
-                //     <FormHelperText />
-                //   )
-                // }
-                // validated={props.validation.option}
-              >
+              <FormGroup fieldId="url" label="URL" isRequired={true}>
                 <TextInput
                   type="text"
                   id="import-modal-url"
@@ -216,7 +202,6 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                 fieldId="gitRefName"
                 label="Branch/Tag"
                 isRequired={true}
-                // helperText={<FormHelperText>Loading...</FormHelperText>}
               >
                 <Select
                   isDisabled={props.validation.option !== ValidatedOptions.success}

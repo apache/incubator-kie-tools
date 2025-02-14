@@ -222,14 +222,7 @@ export function GitHubSettings(props: SettingsPageProps) {
                 <ExternalLinkAltIcon />
               </a>
             </h3>
-            <FormGroup
-              isRequired={true}
-              // helperTextInvalid={githubTokenHelperText}
-              // validated={githubTokenValidated}
-              label={"Token"}
-              fieldId={"github-pat"}
-              // helperText={"Your token must include the 'repo' scope."}
-            >
+            <FormGroup isRequired={true} label={"Token"} fieldId={"github-pat"}>
               <InputGroup>
                 <InputGroupItem isFill>
                   <TextInput

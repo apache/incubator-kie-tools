@@ -288,11 +288,7 @@ If you are, it means that creating this Snippet failed and it can safely be dele
             <br />
           </FormAlert>
         )}
-        <FormGroup
-          label={i18n.createGistOrSnippetModal[authProvider.type].form.select.label}
-          // helperText={i18n.createGistOrSnippetModal[authProvider.type].form.select.description}
-          fieldId="organization"
-        >
+        <FormGroup label={i18n.createGistOrSnippetModal[authProvider.type].form.select.label} fieldId="organization">
           <LoadOrganizationsSelect
             workspace={props.workspace}
             onSelect={setSelectedOrganization}
@@ -306,11 +302,7 @@ If you are, it means that creating this Snippet failed and it can safely be dele
             </HelperText>
           </FormHelperText>
         </FormGroup>
-        <FormGroup
-          // helperText={<FormHelperText style={{ visibility: "hidden" }} />}
-          // helperTextInvalidIcon={<ExclamationCircleIcon />}
-          fieldId="gist-or-snippet-visibility"
-        >
+        <FormGroup fieldId="gist-or-snippet-visibility">
           <Radio
             isChecked={!isPrivate}
             id={"gist-or-snippet-public"}

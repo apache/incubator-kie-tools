@@ -339,8 +339,6 @@ export const CorePropertiesTable = (props: CorePropertiesTableProps) => {
                       <FormGroup
                         label="Baseline score"
                         fieldId="core-baselineScore"
-                        // validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
-                        // helperText={baselineScoreValidation.length > 0 ? baselineScoreValidation[0].message : undefined}
                         labelIcon={
                           <Tooltip
                             content={
