@@ -32,4 +32,8 @@ test.describe("Evaluation Highlights on Nodes", () => {
   test("should highlight node evaluation result - failure", async ({ nodes }) => {
     await expect(nodes.get({ name: "Back End Ratio" })).toHaveScreenshot("evaluation-highlights-failure.png");
   });
+
+  test("should highlight node evaluation result - skipped", async ({ nodes }) => {
+    await expect(nodes.get({ name: "Credit Score Rating" })).toHaveScreenshot("evaluation-highlights-skipped.png");
+  });
 });
