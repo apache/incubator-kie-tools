@@ -175,18 +175,12 @@ func generateEnvJson(envJsonDirectory string, jsonSchemaPath string) error {
 		return err
 	}
 
-	// Save the `env.json` file
-	if err := os.WriteFile(envJsonPath, updatedEnvJson, 0644); err != nil {
-		fmt.Printf("[image-env-to-json] Error writing %s\n", EnvJsonFile)
-		return err
-	}
-
-	// Validates `env.json` using the `jsonSchema` file
+	fmt.Printf("[image-env-to-json] Validating '%s' before saving it.\n", EnvJsonFile)
 	if jsonSchema != nil {
 		compiler := jsonschema.NewCompiler()
 		compiledSchema, err := compiler.Compile(jsonSchemaPath)
 		if err != nil {
-			fmt.Printf("[image-env-to-json] Error compiling the JSON Schema: %s.\n", jsonSchemaPath)
+			fmt.Printf("[image-env-to-json] Error compiling JSON Schema file: %s.\n", jsonSchemaPath)
 			return err
 		}
 
@@ -195,7 +189,13 @@ func generateEnvJson(envJsonDirectory string, jsonSchemaPath string) error {
 			fmt.Printf("[image-env-to-json] Error while validating '%s'.\n", EnvJsonFile)
 			return err
 		}
-		fmt.Printf("[image-env-to-json] '%s' at '%s' is valid.\n", EnvJsonFile, envJsonPath)
+		fmt.Printf("[image-env-to-json] '%s' is valid.\n", EnvJsonFile)
+	}
+
+	fmt.Printf("[image-env-to-json] Writing '%s' at '%s'.\n", EnvJsonFile, envJsonDirectory)
+	if err := os.WriteFile(envJsonPath, updatedEnvJson, 0644); err != nil {
+		fmt.Printf("[image-env-to-json] Error writing '%s'.\n", EnvJsonFile)
+		return err
 	}
 
 	fmt.Printf("[image-env-to-json] Done.\n")
