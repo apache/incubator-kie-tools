@@ -43,6 +43,7 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 import { DecisionResult, DmnEvaluationStatus, DmnEvaluationResult } from "@kie-tools/extended-services-api";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Icon } from "@patternfly/react-core";
 
 const ISSUES_URL = "https://github.com/apache/incubator-kie-issues/issues";
 
@@ -123,7 +124,7 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
           return (
             <>
               <div className={"kie-tools__dmn-form-result__evaluation"}>
-                <InfoCircleIcon />
+                <Icon>&#8631;</Icon>
                 {props.notificationsPanel ? (
                   <a onClick={onOpenExecutionTab} className={"kogito--editor__dmn-form-result__evaluation-link"}>
                     {i18n.result.evaluation.skipped}

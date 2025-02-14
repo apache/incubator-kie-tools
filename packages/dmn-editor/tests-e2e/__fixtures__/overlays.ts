@@ -22,6 +22,13 @@ import { Page } from "@playwright/test";
 export class Overlays {
   constructor(public page: Page) {}
 
+  public async enableEvaluationHighlights() {
+    await this.page.getByTitle("Overlays").click();
+    await this.page.getByTestId("kie-tools--dmn-editor--evaluation-highlights-control").scrollIntoViewIfNeeded();
+    await this.page.getByTestId("kie-tools--dmn-editor--evaluation-highlights-control").check({ force: true });
+    await this.page.getByTitle("Overlays").click();
+  }
+
   public async turnOffSnapping() {
     await this.page.getByTitle("Overlays").click();
     await this.page.getByLabel("Snapping").uncheck({ force: true });
