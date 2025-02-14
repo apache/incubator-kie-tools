@@ -106,7 +106,7 @@
 
 /* (begin) decision node evaluation status */
 .kie-dmn-editor--decision-node--evaluation-status-failure::before {
-  content: " \2716";
+  content: "\2716";
   font-size: 0.8em;
   text-align: left;
   color: white;
@@ -122,7 +122,23 @@
 }
 
 .kie-dmn-editor--decision-node--evaluation-status-success::before {
-  content: " \2714";
+  content: "\2714";
+  font-size: 0.8em;
+  text-align: left;
+  color: white;
+  background-color: rgb(134, 106, 212);
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  height: 40px;
+  width: 40px;
+  clip-path: polygon(0% 100%, 100% 0%, 0% 0%);
+  padding-left: 7px;
+  padding-top: 2px;
+}
+
+.kie-dmn-editor--decision-node--evaluation-status-skipped::before {
+  content: "\21B7";
   font-size: 0.8em;
   text-align: left;
   color: white;
