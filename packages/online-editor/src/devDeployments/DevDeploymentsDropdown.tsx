@@ -42,6 +42,7 @@ import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useOnlineI18n } from "../i18n";
 import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { KieSandboxDeployment } from "./services/types";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 const REFRESH_COUNTDOWN_INITIAL_VALUE_IN_SECONDS = 30;
 
@@ -142,7 +143,11 @@ export function DevDeploymentsDropdown() {
               <EmptyState>
                 <EmptyStateHeader
                   titleText={<>{`Error fetching Dev Deployments.`}</>}
-                  icon={<EmptyStateIcon icon={PficonSatelliteIcon} />}
+                  icon={
+                    <Icon size="lg" color="darkgrey">
+                      <EmptyStateIcon icon={PficonSatelliteIcon} />
+                    </Icon>
+                  }
                   headingLevel="h4"
                 />
               </EmptyState>
@@ -156,8 +161,12 @@ export function DevDeploymentsDropdown() {
               <EmptyState>
                 <EmptyStateHeader
                   titleText={<>{`No Dev Deployments found`}</>}
-                  icon={<EmptyStateIcon icon={PficonSatelliteIcon} />}
-                  headingLevel="h4"
+                  icon={
+                    <Icon size="lg" color="darkgrey">
+                      <EmptyStateIcon icon={PficonSatelliteIcon} />
+                    </Icon>
+                  }
+                  headingLevel="h5"
                 />
               </EmptyState>
             </Bullseye>
@@ -198,7 +207,11 @@ export function DevDeploymentsDropdown() {
           <EmptyState>
             <EmptyStateHeader
               titleText={<>{`Choose a Cloud provider to see your Dev Deployments.`}</>}
-              icon={<EmptyStateIcon icon={PficonSatelliteIcon} />}
+              icon={
+                <Icon size="lg" color="darkgrey">
+                  <EmptyStateIcon icon={PficonSatelliteIcon} />
+                </Icon>
+              }
               headingLevel="h4"
             />
           </EmptyState>
