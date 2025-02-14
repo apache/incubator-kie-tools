@@ -40,6 +40,9 @@ import {
 import { initEnv } from "./env/Env";
 import { ENV_PREFIX } from "./env/EnvConstants";
 import { EnvJson } from "./env/EnvJson";
+import { DATA_INDEX_ENDPOINT } from "./AppConstants";
+
+window["DATA_INDEX_ENDPOINT"] = DATA_INDEX_ENDPOINT;
 
 const onLoadFailure = (): void => {
   ReactDOM.render(<KeycloakUnavailablePage />, document.getElementById("root"));

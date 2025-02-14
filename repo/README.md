@@ -31,7 +31,7 @@ condition in all building processes.
 
 #### Packages dependency graph
 
-![Apache KIE Tools packages dependency graph](https://g.gravizo.com/source/svg?https%3A%2F%2Fraw.githubusercontent.com%2Fapache%2Fincubator-kie-tools%2Fmain%2Frepo%2Fgraph.dot)
+![This repository's packages dependency graph](https://g.gravizo.com/source/svg?https%3A%2F%2Fraw.githubusercontent.com%2Fapache%2Fincubator-kie-tools%2Fmain%2Frepo%2Fgraph.dot)
 
 Nodes:
 
