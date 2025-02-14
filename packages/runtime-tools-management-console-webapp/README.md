@@ -19,7 +19,82 @@
 
 A web application to manage multiple Runtimes.
 
+## Configuring your Kogito Runtimes application to support the Management Console
+
+### Unsecured
+
+Add this to the `application.properties` to disable authentication:
+
+```properties
+# Kogito security
+kogito.security.auth.enabled=false
+
+# Quarkus OIDC
+quarkus.oidc.enabled=false
+```
+
+### Secured (OIDC authentication/authorization)
+
+Add the `quarkus-oidc-proxy` extension to your `pom.xml` to proxy the Identity Provider:
+
+```xml
+<!-- OIDC Proxy -->
+<dependency>
+  <groupId>io.quarkiverse.oidc-proxy</groupId>
+  <artifactId>quarkus-oidc-proxy</artifactId>
+  <version>0.1.1</version>
+</dependency>
+```
+
+Add this to the `application.properties` to enable authentication through an Identity Provider:
+
+```properties
+# Kogito security
+kogito.security.auth.enabled=true
+
+# Quarkus OIDC
+quarkus.oidc.enabled=true
+quarkus.oidc.auth-server-url=<IDENTITY_PROVIDER_URL>
+quarkus.oidc.discovery-enabled=true
+quarkus.oidc.tenant-enabled=true
+quarkus.oidc.application-type=service
+quarkus.oidc.client-id=<CLIENT_ID> # Can be the same as the Management Console
+
+# Quarkus OIDC Proxy
+quarkus.oidc-proxy.external-client-id=<CLIENT_ID>
+
+# Authenticated and public paths
+quarkus.http.auth.permission.authenticated.paths=/*
+quarkus.http.auth.permission.authenticated.policy=authenticated
+quarkus.http.auth.permission.public.paths=/q/*,/docs/*
+quarkus.http.auth.permission.public.policy=permit
+```
+
+---
+
+> In both cases, if using CORS, remember to allow the Management Console origin:
+>
+> ```properties
+> quarkus.http.cors=true
+> quarkus.http.cors.origins=<MANAGEMENT_CONSOLE_ORIGIN> # Using `*` will allow all origins.
+> ```
+
 ## Working with Management Console features
+
+### Connecting to a Kogito Runtimes instance
+
+To do so, click on the `+ Connect to a runtime…` button and fill in the required information on the
+modal:
+
+- **Alias**: The name to give your connected runtime instance (can be anything that helps you identify it).
+- **URL**: The runtime root URL (E.g., http://localhost:8080)
+
+If your runtime uses OpenID Connect authentication, you should be redirected to the Identity Provider
+(IdP) login page or, if you’re already logged in, redirected back to the Management Console. If your
+runtime is unsecured, it should connect directly.
+
+Once logged in, the management pages will be displayed in the side menu, listing Process Instances,
+Jobs, and Tasks.
 
 ### Process instances
 
@@ -51,19 +126,11 @@ Initially the process instance list loads all the active instances available.To 
 
 ##### b) Filter by business key :
 
-![Businesskeysearch](./docs/businesskeysearch.gif "Businessekeysearch")
-
 The business key is a business relevant identifier that might or might not be present in the process instance. The business key, if available would appear as a **blue coloured badge** near the process name in the list. We can enter the business key or parts of business key in the textbox and either click **Apply filter** or press **Enter** key to apply the filter. Similar to the Status filter, the chips with the typed keywords would appear below the textbox. The search for business key works on a _OR_ based condition. Also to remove a filter based on the keyword, click on the '**X**' in the chip to remove and the list will reload to show the applied filter. The search supports [Wild cards](https://en.wikipedia.org/wiki/Wildcard_character "Wild cards") in its keywords. For example, consider a process having a business key as _WIOO2E_. This business key can be searched by entering \*W\*_ or _\*OO\** or *WIOO2E\*.
 
 #### Bulk Process Actions
 
-![Multiselect](./docs/multiselect.gif "Multiselect")
-
-The multi select is used to select multiple process instances while performing bulk [process-management](#process-management) actions.The multi select checkbox by default selects all the parent and child process instances(if loaded). It also has drop-down actions to select none (removes all selections), select only parent process instances, select all the process instances (both parent and child). The multi-select works in correlation with the set of buttons present as a part of the toolbar. The buttons present are - **Abort selected**, **Retry selected** and **Skip selected**. This is a part of the [bulk operations](#bulk-operations) performed in the list.
-
-![Bulkoperations](./docs/bulkoperations.gif "Bulkoperations")
-
-The process instance list allows the user to select multiple process instances and perform bulk process management operations.It consist of _Abort selected_, _Retry selected_ and _Skip selected_.The user can select individual process instances by selecting the checkbox present in the list or use the [multi select checkbox](#multi-select-checkbox) to select the process instances.
+The multi select is used to select multiple process instances while performing bulk [process-management](#process-management) actions.The multi select checkbox by default selects all the parent and child process instances(if loaded). It also has drop-down actions to select none (removes all selections), select only parent process instances, select all the process instances (both parent and child). The multi-select works in correlation with the set of buttons present as a part of the toolbar. The buttons present are - **Abort selected**, **Retry selected** and **Skip selected**.
 
 - Clicking on the _Abort selected_ will open a box to show the instances being aborted and the instances being skipped(An instance which is already in _Completed_ or _Aborted_ cannot be Aborted again, hence the instances are skipped).
 - Clicking on the _Retry selected_ or _Skip selected_ will open a box to show the instances being retriggered or skipped respectively. These actions can be performed on instances which are in _Error_ state only. Other instances(in different states), if selected will appear under the skipped list.
@@ -187,7 +254,7 @@ The milestones panel show the list of milestones present and their current state
 
 ![Milestones](./docs/milestones.png?raw=true "Milestones")
 
-## Working with the Tasks panel
+## Tasks
 
 The tasks panel shows a list of user tasks which are available for a process. Each column contains detailed information about the user task which are - _Name_, _Process_, _Priority_, _Status_, _Started_ and _Last update_. The columns are sortable.
 
