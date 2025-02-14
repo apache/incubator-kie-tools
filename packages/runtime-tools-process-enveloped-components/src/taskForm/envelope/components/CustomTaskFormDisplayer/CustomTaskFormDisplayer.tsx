@@ -43,6 +43,7 @@ export interface CustomTaskFormDisplayerProps {
   customForm: Form;
   user: User;
   driver: TaskFormDriver;
+  phases: string[];
   targetOrigin: string;
 }
 
@@ -52,6 +53,7 @@ const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps & OUIAProps
   schema,
   user,
   driver,
+  phases,
   targetOrigin,
   ouiaId,
   ouiaSafe,
@@ -83,8 +85,8 @@ const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps & OUIAProps
   };
 
   useEffect(() => {
-    if (schema.phases) {
-      const actions = schema.phases.map((phase) => {
+    if (phases) {
+      const actions = phases.map((phase) => {
         return {
           name: phase,
           execute: () => {

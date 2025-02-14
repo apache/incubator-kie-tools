@@ -79,6 +79,14 @@ export const TaskForm: React.FC<Props> = ({
           // No-op
           return gatewayApi.getCustomForm(userTask);
         },
+        getTaskPhases(): Promise<string[]> {
+          return gatewayApi.getTaskPhases(userTask, requestHeaders).catch(async (error) => {
+            if (error?.response?.status === 401) {
+              await onUnauthorized(error);
+            }
+            return error;
+          });
+        },
       }}
       targetOrigin={window.location.origin}
     />

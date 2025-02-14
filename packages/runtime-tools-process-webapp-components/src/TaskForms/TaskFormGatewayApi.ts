@@ -16,7 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import {
+  UserTaskInstance,
+  UserTaskTransition,
+  UserTaskTransitionInfo,
+} from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import axios from "axios";
 import { ANONYMOUS_USER, User } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
@@ -27,15 +31,17 @@ export interface TaskFormGatewayApi {
   getCustomForm(userTask: UserTaskInstance): Promise<Form>;
 
   doSubmit(userTask: UserTaskInstance, phase: string, payload: any, headers?: any): Promise<any>;
+
+  getTaskPhases(userTask: UserTaskInstance, headers?: any): Promise<string[]>;
 }
 
 export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
   constructor(private readonly getCurrentUser: () => User) {}
 
-  submitTaskForm(endpoint: string, payload: any, headers?: any) {
+  submitTaskForm(endpoint: string, transition: UserTaskTransitionInfo, headers?: any) {
     return new Promise<any>((resolve, reject) => {
       axios
-        .post(endpoint, payload, {
+        .post(endpoint, transition, {
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
@@ -74,9 +80,35 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
     });
   }
 
+  fetchTaskTransitionPhases(endpoint: string, headers?: any) {
+    return new Promise<string[]>((resolve, reject) => {
+      axios
+        .get(endpoint, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            ...headers,
+          },
+        })
+        .then((response) => {
+          if (response.status == 200) {
+            const transitions: UserTaskTransition[] = response.data;
+            resolve(transitions.map((transition) => transition.transitionId));
+          } else {
+            reject(response);
+          }
+        })
+        .catch((error) => reject(error));
+    });
+  }
+
   doSubmit(userTask: UserTaskInstance, phase: string, payload: any, headers?: any): Promise<any> {
-    const endpoint = `${userTask.endpoint}?phase=${phase}&${getTaskEndpointSecurityParams(userTask, this.getCurrentUser())}`;
-    return this.submitTaskForm(endpoint, payload, headers);
+    const endpoint = getTaskTransitionsEndpoint(userTask, this.getCurrentUser());
+    const transition: UserTaskTransitionInfo = {
+      transitionId: phase,
+      data: payload,
+    };
+    return this.submitTaskForm(endpoint, transition, headers);
   }
 
   getTaskFormSchema(userTask: UserTaskInstance, headers?: any): Promise<Record<string, any>> {
@@ -87,21 +119,29 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
   getCustomForm(userTask: UserTaskInstance): Promise<Form> {
     return Promise.reject();
   }
+
+  getTaskPhases(userTask: UserTaskInstance, headers?: any): Promise<string[]> {
+    const endpoint = getTaskTransitionsEndpoint(userTask, this.getCurrentUser());
+    return this.fetchTaskTransitionPhases(endpoint, headers);
+  }
+}
+
+function getTaskTransitionsEndpoint(task: UserTaskInstance, user?: User): string {
+  const baseUrl = cleanUserTaskEndpoint(task);
+
+  const params = getTaskEndpointSecurityParams(task, user);
+
+  return `${baseUrl}/usertasks/instance/${task.id}/transition?${params}`;
 }
 
 function getTaskSchemaEndPoint(task: UserTaskInstance, user?: User): string {
-  let params = "";
   let endpoint = task.endpoint;
 
-  if (task.completed) {
-    // if task is completed we load the schema for the task definition
-    endpoint = endpoint!.slice(0, -(task.id.length + 1));
-    endpoint = endpoint.replace(task.processInstanceId + "/", "");
-  } else {
-    params = `?${getTaskEndpointSecurityParams(task, user)}`;
-  }
+  // Getting the schema from the workItem schema endpoint to avoid phases calculation
+  endpoint = endpoint!.slice(0, -(task.id.length + 1));
+  endpoint = endpoint.replace(task.processInstanceId + "/", "");
 
-  return `${endpoint}/schema${params}`;
+  return `${endpoint}/schema`;
 }
 
 function getTaskEndpointSecurityParams(task: UserTaskInstance, user?: User): string {
@@ -115,4 +155,13 @@ function getTaskEndpointSecurityParams(task: UserTaskInstance, user?: User): str
     groups = `&group=${user.groups.join("&group=")}`;
   }
   return `${user.id ? `user=${user.id}` : ""}${groups}`;
+}
+
+function cleanUserTaskEndpoint(task: UserTaskInstance): string {
+  const suffix = calculateUserTaskEndpointSuffix(task);
+  return task.endpoint!.slice(0, -suffix.length);
+}
+
+function calculateUserTaskEndpointSuffix(task: UserTaskInstance): string {
+  return `/${task.processId}/${task.processInstanceId}/${task.name}/${task.externalReferenceId}`;
 }

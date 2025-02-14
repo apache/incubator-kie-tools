@@ -34,6 +34,7 @@ import {
   KogitoEmptyStateType,
 } from "@kie-tools/runtime-tools-components/dist/components/KogitoEmptyState";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { filterTaskPhases } from "./components/TaskFormRenderer/TaskPhasesUtils";
 
 export interface TaskFormEnvelopeViewApi {
   initialize: (initArgs: TaskFormInitArgs) => void;
@@ -52,6 +53,7 @@ export const TaskFormEnvelopeView = React.forwardRef<TaskFormEnvelopeViewApi, Pr
     const [user, setUser] = useState<User>();
     const [taskFormSchema, setTaskFormSchema] = useState<Record<string, any>>();
     const [customForm, setCustomForm] = useState<Form>();
+    const [userTaskPhases, setUserTaskPhases] = useState<string[]>([]);
 
     const [driver] = useState<TaskFormEnvelopeViewDriver>(new TaskFormEnvelopeViewDriver(channelApi));
 
@@ -99,7 +101,20 @@ export const TaskFormEnvelopeView = React.forwardRef<TaskFormEnvelopeViewApi, Pr
                 .catch((error) => resolve());
             });
 
-            Promise.all([customFormPromise, schemaPromise]).then((values) => {
+            const phasesPromise: Promise<void> = new Promise<void>((resolve) => {
+              driver
+                .getTaskPhases()
+                .then((phases) => {
+                  if (canceled.get()) {
+                    return;
+                  }
+                  setUserTaskPhases(filterTaskPhases(phases));
+                  resolve();
+                })
+                .catch((error) => resolve());
+            });
+
+            Promise.all([customFormPromise, schemaPromise, phasesPromise]).then((values) => {
               setIsLoading(false);
             });
           }
@@ -132,6 +147,7 @@ export const TaskFormEnvelopeView = React.forwardRef<TaskFormEnvelopeViewApi, Pr
             customForm={customForm}
             user={user!}
             driver={driver}
+            phases={userTaskPhases}
             targetOrigin={targetOrigin}
           />
         );
@@ -141,6 +157,7 @@ export const TaskFormEnvelopeView = React.forwardRef<TaskFormEnvelopeViewApi, Pr
           {...componentOuiaProps((ouiaId ? ouiaId : "task-form-envelope-view") + "-task-form", "task-form", ouiaSafe)}
           userTask={userTask!}
           schema={taskFormSchema}
+          phases={userTaskPhases}
           driver={driver}
         />
       );

@@ -17,14 +17,21 @@
  * under the License.
  */
 
-import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+const CLAIM_PHASE = "claim";
 
-/**
- * Interface that defines a Driver for TaskForm views.
- */
-export interface TaskFormDriver {
-  getTaskFormSchema(): Promise<Record<string, any>>;
-  getCustomForm(): Promise<Form>;
-  doSubmit(phase?: string, payload?: any): Promise<any>;
-  getTaskPhases(): Promise<string[]>;
+const REASSIGN_PHASE = "reassign";
+const FAIL_PHASE = "fail";
+
+const BANNED_PHASES = [REASSIGN_PHASE, FAIL_PHASE];
+
+export function filterTaskPhases(phases: string[]): string[] {
+  if (!phases) {
+    return [];
+  }
+
+  if (phases.some((phase) => phase.toLowerCase() === CLAIM_PHASE)) {
+    return [CLAIM_PHASE];
+  }
+
+  return phases.filter((phase) => !BANNED_PHASES.includes(phase.toLowerCase()));
 }

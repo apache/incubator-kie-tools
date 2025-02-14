@@ -175,4 +175,21 @@ export type UserTaskInstance = {
   referenceName?: string;
   lastUpdate: Date;
   endpoint?: string;
+  externalReferenceId?: string;
+};
+
+export type UserTaskState = {
+  name: string;
+  terminate?: string;
+};
+
+export type UserTaskTransition = {
+  transitionId: string;
+  source: UserTaskState;
+  target: UserTaskState;
+};
+
+export type UserTaskTransitionInfo = {
+  transitionId: string;
+  data: any;
 };
