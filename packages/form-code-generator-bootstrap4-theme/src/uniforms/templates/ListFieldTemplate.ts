@@ -26,7 +26,13 @@ import { CompiledTemplate, template } from "underscore";
 import { union } from "lodash";
 
 interface ListFieldTemplateProps extends FormElementTemplateProps<any> {
-  children: FormElement<any>[];
+  children: {
+    ref: { id: string; binding: string }[];
+    html: string;
+    disabled: boolean;
+    setValueFromModelCode: { code: string; requiredCode: string[] };
+    writeValueToModelCode: { code: string; requiredCode: string[] };
+  };
 }
 
 export class ListFieldTemplate implements FormElementTemplate<FormInputContainer, ListFieldTemplateProps> {
@@ -35,56 +41,26 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
   private readonly listFieldWriteValueToModelTemplate: CompiledTemplate = template(writeValueToModel);
 
   render(props: ListFieldTemplateProps): FormInputContainer {
-    const ref: InputReference[] = [];
+    const ref: InputReference[] = props.children.ref;
 
-    let setValueFromModelRequiredCode: string[] = [];
-    let writeValueToModelRequiredCode: string[] = [];
-
-    props.children.forEach((child: FormElement<any>) => {
-      if (Array.isArray(child.ref)) {
-        child.ref.forEach((childRef) => ref.push(childRef));
-      } else {
-        ref.push(child.ref);
-      }
-
-      if (child.setValueFromModelCode) {
-        setValueFromModelRequiredCode = union(setValueFromModelRequiredCode, child.setValueFromModelCode.requiredCode);
-      }
-
-      if (child.writeValueToModelCode) {
-        writeValueToModelRequiredCode = union(writeValueToModelRequiredCode, child.writeValueToModelCode.requiredCode);
-      }
-    });
+    const setValueFromModelRequiredCode: string[] = props.children.setValueFromModelCode.requiredCode;
+    const writeValueToModelRequiredCode: string[] = props.children.writeValueToModelCode.requiredCode;
 
     return {
       ref,
       html: this.listFieldTemplate({ props: props }),
       disabled: props.disabled,
-      setValueFromModelCode: this.buildSetValueFromModelCode(props, setValueFromModelRequiredCode),
-      writeValueToModelCode: this.buildWriteValueFromModelCode(props, writeValueToModelRequiredCode),
-    };
-  }
-
-  protected buildSetValueFromModelCode(
-    props: ListFieldTemplateProps,
-    setValueFromModelRequiredCode: string[]
-  ): CodeFragment {
-    return {
-      code: this.listFieldSetValueFromModelTemplate({ props: props }),
-      requiredCode: setValueFromModelRequiredCode,
-    };
-  }
-
-  protected buildWriteValueFromModelCode(
-    props: ListFieldTemplateProps,
-    writeValueToModelRequiredCode: string[]
-  ): CodeFragment | undefined {
-    if (props.disabled) {
-      return undefined;
-    }
-    return {
-      code: this.listFieldWriteValueToModelTemplate({ props: props }),
-      requiredCode: writeValueToModelRequiredCode,
+      setValueFromModelCode: {
+        code: this.listFieldSetValueFromModelTemplate({ props: props }),
+        requiredCode: setValueFromModelRequiredCode,
+      },
+      writeValueToModelCode:
+        props.disabled === true
+          ? undefined
+          : {
+              code: this.listFieldWriteValueToModelTemplate({ props: props }),
+              requiredCode: writeValueToModelRequiredCode,
+            },
     };
   }
 }

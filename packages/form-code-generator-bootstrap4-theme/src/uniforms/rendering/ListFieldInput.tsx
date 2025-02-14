@@ -23,28 +23,23 @@ import AutoField from "../AutoField";
 import { BootstrapCodeGenContext, CodeGenContextProvider } from "../BootstrapCodeGenContext";
 
 export interface ListItemProps {
-  codegenCtx: BootstrapCodeGenContext;
-  uniformsContext: Context<any>;
-  field: any;
-  itempProps: any;
-  disabled?: boolean;
-  isListItem?: boolean;
-  indexVariableName?: string;
-  listName?: string;
-  listStateName?: string;
-  listStateSetter?: string;
+  isListItem: boolean;
+  indexVariableName: string;
+  listName: string;
 }
 
-export const ListFieldInput: React.FC<ListItemProps> = ({
-  codegenCtx,
-  uniformsContext,
-  field,
-  itempProps,
-  disabled,
-}) => {
+export interface Props {
+  codegenCtx: BootstrapCodeGenContext;
+  uniformsContext: Context<any>;
+  fieldName: any;
+  itemProps: ListItemProps;
+  disabled?: boolean;
+}
+
+export const ListFieldInput: React.FC<Props> = ({ codegenCtx, uniformsContext, fieldName, itemProps, disabled }) => {
   return (
     <CodeGenContextProvider schema={uniformsContext.schema} codegenCtx={codegenCtx} uniformsCtx={uniformsContext}>
-      <AutoField key={field} name={field} disabled={disabled} {...itempProps} />
+      <AutoField key={fieldName} name={fieldName} disabled={disabled} itemProps={itemProps} />
     </CodeGenContextProvider>
   );
 };

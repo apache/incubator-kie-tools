@@ -55,65 +55,28 @@ const List: React.FunctionComponent<ListFieldProps> = ({
   disabled,
   ...props
 }: ListFieldProps) => {
-  // const ref: InputReference = getInputReference(props.name, DEFAULT_DATA_TYPE_ANY_ARRAY);
-
-  // const listItem = renderListItemFragmentWithContext(
-  //   uniformsContext,
-  //   "$",
-  //   {
-  //     isListItem: true,
-  //     indexVariableName: "itemIndex",
-  //     listName: props.name,
-  //     listStateName: ref.stateName,
-  //     listStateSetter: ref.stateSetter,
-  //   },
-  //   props.disabled
-  // );
-
-  // const getDefaultItemValue = () => {
-  //   const typeName = listItem?.ref.dataType.name;
-  //   if (typeName?.endsWith("[]")) {
-  //     return listItem?.ref.dataType.defaultValue ?? [];
-  //   }
-  //   switch (typeName) {
-  //     case "string":
-  //       ref.dataType = DEFAULT_DATA_TYPE_STRING_ARRAY;
-  //       return listItem?.ref.dataType.defaultValue ?? "";
-  //     case "number":
-  //       ref.dataType = DEFAULT_DATA_TYPE_NUMBER_ARRAY;
-  //       return listItem?.ref.dataType.defaultValue ?? null;
-  //     case "boolean":
-  //       ref.dataType = DEFAULT_DATA_TYPE_BOOLEAN_ARRAY;
-  //       return listItem?.ref.dataType.defaultValue ?? false;
-  //     case "object":
-  //       ref.dataType = DEFAULT_DATA_TYPE_OBJECT_ARRAY;
-  //       return listItem?.ref.dataType.defaultValue ?? {};
-  //     default: // any
-  //       ref.dataType = DEFAULT_DATA_TYPE_ANY_ARRAY;
-  //       return listItem?.ref.dataType.defaultValue;
-  //   }
-  // };
-  // const listItemValue = getDefaultItemValue();
-
   const uniformsContext = useContext(context);
   const codegenCtx = useBootstrapCodegenContext();
 
-  const listFields = fields?.reduce((listFields: FormElement<any>[], field) => {
-    const listElement = renderListItemFragmentWithContext(uniformsContext, field, itemProps, disabled);
-    if (listElement) {
-      listFields.push(listElement);
-    } else {
-      console.log(`Cannot render form field for: '${field}'`);
-    }
-    return listFields;
-  }, []);
+  const listItem = renderListItemFragmentWithContext(
+    uniformsContext,
+    "$",
+    {
+      isListItem: true,
+      indexVariableName: "itemIndex",
+      listName: name,
+    },
+    disabled
+  );
+
+  // document.getElementById("friends.$").value[index].name = data?.friends?.index?.name ?? ""
 
   const properties = {
     id: name,
     name: name,
     label: label,
     disabled: disabled,
-    children: listFields,
+    children: listItem,
   };
 
   const element: FormInputContainer = renderCodeGenElement(LIST, properties);

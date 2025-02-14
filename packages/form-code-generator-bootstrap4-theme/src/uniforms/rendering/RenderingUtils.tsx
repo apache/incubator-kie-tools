@@ -66,8 +66,8 @@ export const renderNestedInputFragmentWithContext = (
 
 export const renderListItemFragmentWithContext = (
   uniformsContext: any,
-  field: any,
-  itempProps: ListItemProps,
+  fieldName: string,
+  itemProps: ListItemProps,
   disabled?: boolean
 ): FormInput | undefined => {
   const codegenCtx: BootstrapCodeGenContext = {
@@ -78,8 +78,8 @@ export const renderListItemFragmentWithContext = (
     React.createElement(ListFieldInput, {
       codegenCtx,
       uniformsContext,
-      field,
-      itempProps,
+      fieldName,
+      itemProps,
       disabled,
     })
   );

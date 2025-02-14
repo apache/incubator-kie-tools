@@ -1,8 +1,8 @@
 <fieldset<%=props.disabled ? " disabled" : ""%>>
     <legend><%=props.label%></legend>
+    <!-- must interate over an array-->
+    <button>+</button>
     <div>
-<% _.each(props.children, function(child) { %>
-        <%=child.html%>
-<% }); %>
+        <%=props.children.html%>
     </div>
 </fieldset>
