@@ -107,37 +107,30 @@ func generateEnvJson(envJsonDirectory string, jsonSchemaPath string) error {
 	for key := range properties {
 		envVarNames = append(envVarNames, key)
 	}
+	fmt.Printf("[image-env-to-json] Extracted environment variables '%s' \n", envVarNames)
 
-	fmt.Printf("[image-env-to-json] Extracted environment variables: %s\n", envVarNames)
-
-	// Checks if `env.json` exists, or create a new empty one (`{}`)
-
+	var envJsonFile []byte
 	var envJsonPath = filepath.Join(envJsonDirectory, EnvJsonFile)
+	fmt.Printf("[image-env-to-json] Checking if '%s' file exists.\n", envJsonPath)
 	if _, err := os.Stat(envJsonPath); err != nil {
 		if os.IsNotExist(err) {
-			// Create emtpy `env.json` file
-			err := os.WriteFile(envJsonPath, []byte("{}"), 0644)
-			if err != nil {
-				fmt.Printf("[image-env-to-json] Error writing to file.\n")
-				return err
-			}
+			fmt.Printf("[image-env-to-json] Couldn't find '%s' file. Using an empty object as starting point.\n", envJsonPath)
+			envJsonFile = []byte("{}")
 		} else {
 			fmt.Printf("[image-env-to-json] Error while reading the '%s' file.\n", envJsonPath)
 			return err
 		}
+	} else {
+		envJsonFile, err = os.ReadFile(envJsonPath)
+		if err != nil {
+			fmt.Printf("[image-env-to-json] Error reading %s\n", EnvJsonFile)
+			return err
+		}
 	}
 
-	// Load the `env.json` file
-	fmt.Printf("[image-env-to-json] Looking for environment variables...\n")
-	envData, err := os.ReadFile(envJsonPath)
-	if err != nil {
-		fmt.Printf("[image-env-to-json] Error reading %s\n", EnvJsonFile)
-		return err
-	}
-
-	// Unmarshal the `env.json` file
+	// Unmarshal the envJsonFile
 	var envJson map[string]any
-	if err := json.Unmarshal(envData, &envJson); err != nil {
+	if err := json.Unmarshal(envJsonFile, &envJson); err != nil {
 		fmt.Printf("[image-env-to-json] Error parsing %s\n", EnvJsonFile)
 		return err
 	}
@@ -163,30 +156,30 @@ func generateEnvJson(envJsonDirectory string, jsonSchemaPath string) error {
 	}
 
 	if isUpdated {
-		fmt.Printf("[image-env-to-json] '%s' file has been updated according to environment variables.\n", envJsonPath)
+		fmt.Printf("[image-env-to-json] Environment variables were updated.\n")
 	} else {
-		fmt.Printf("[image-env-to-json] No environment variables overwrites. Using original file.\n")
+		fmt.Printf("[image-env-to-json] Environment variables weren't updated.\n")
 	}
 
-	// Marshal the `env.json` file
+	// Marshal envJson content
 	updatedEnvJson, err := json.MarshalIndent(envJson, "", "  ")
 	if err != nil {
 		fmt.Printf("[image-env-to-json] Error encoding %s\n", EnvJsonFile)
 		return err
 	}
 
-	fmt.Printf("[image-env-to-json] Validating '%s' before saving it.\n", EnvJsonFile)
+	fmt.Printf("[image-env-to-json] Validating new '%s' before saving it.\n", EnvJsonFile)
 	if jsonSchema != nil {
 		compiler := jsonschema.NewCompiler()
 		compiledSchema, err := compiler.Compile(jsonSchemaPath)
 		if err != nil {
-			fmt.Printf("[image-env-to-json] Error compiling JSON Schema file: %s.\n", jsonSchemaPath)
+			fmt.Printf("[image-env-to-json] Error compiling '%s' file.\n", jsonSchemaPath)
 			return err
 		}
 
 		err = compiledSchema.Validate(envJson)
 		if err != nil {
-			fmt.Printf("[image-env-to-json] Error while validating '%s'.\n", EnvJsonFile)
+			fmt.Printf("[image-env-to-json] Error validating '%s' file.\n", EnvJsonFile)
 			return err
 		}
 		fmt.Printf("[image-env-to-json] '%s' is valid.\n", EnvJsonFile)
