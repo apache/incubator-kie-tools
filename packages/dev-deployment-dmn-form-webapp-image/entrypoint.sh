@@ -22,6 +22,6 @@
 # But, just like any other directory modified during runtime, the /var/www/html must be a mounted volume in the container in this case.
 cp -R /dmn-form-webapp/app/* /var/www/html
 
-/dmn-form-webapp/image-env-to-json-standalone --directory /var/www/html --json-schema /dmn-form-webapp/EnvJson.schema.json
+/dmn-form-webapp/image-env-to-json-linux-amd64 --directory /var/www/html --json-schema /dmn-form-webapp/EnvJson.schema.json
 
 httpd -D FOREGROUND
