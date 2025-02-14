@@ -23,6 +23,7 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { AcceleratorModal } from "./AcceleratorModal";
 import { AcceleratorIcon } from "./AcceleratorIcon";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 type Props = {
   workspaceId: string;
@@ -41,7 +42,9 @@ export function AcceleratorIndicator(props: Props) {
       position={"right"}
       content={
         <>
-          <AcceleratorIcon iconUrl={currentAccelerator.iconUrl} />
+          <Icon size="md">
+            <AcceleratorIcon iconUrl={currentAccelerator.iconUrl} />
+          </Icon>
           &nbsp;
           {currentAccelerator.name} Accelerator
         </>
@@ -53,7 +56,9 @@ export function AcceleratorIndicator(props: Props) {
           onClick={() => setAcceleratorDetailsModalOpen(true)}
           className={"kie-tools--masthead-hoverable"}
         >
-          <AcceleratorIcon iconUrl={currentAccelerator.iconUrl} />
+          <Icon size="lg">
+            <AcceleratorIcon iconUrl={currentAccelerator.iconUrl} />
+          </Icon>
         </Button>
         <AcceleratorModal
           isOpen={isAcceleratorDetailsModalOpen}
