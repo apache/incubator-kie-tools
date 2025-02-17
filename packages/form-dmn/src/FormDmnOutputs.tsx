@@ -19,6 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";
@@ -43,7 +44,6 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 import { DecisionResult, DmnEvaluationStatus, DmnEvaluationResult } from "@kie-tools/extended-services-api";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Icon } from "@patternfly/react-core";
 
 const ISSUES_URL = "https://github.com/apache/incubator-kie-issues/issues";
 
