@@ -1958,8 +1958,8 @@ importers:
         specifier: 1.67.0
         version: 1.67.0
       '@vscode/test-web':
-        specifier: ^0.0.30
-        version: 0.0.30
+        specifier: ^0.0.66
+        version: 0.0.66
       '@vscode/vsce':
         specifier: ^3.2.1
         version: 3.2.1
@@ -4886,8 +4886,8 @@ importers:
         specifier: 1.67.0
         version: 1.67.0
       '@vscode/test-web':
-        specifier: ^0.0.30
-        version: 0.0.30
+        specifier: ^0.0.66
+        version: 0.0.66
       '@vscode/vsce':
         specifier: ^3.2.1
         version: 3.2.1
@@ -5261,8 +5261,8 @@ importers:
         specifier: 1.67.0
         version: 1.67.0
       '@vscode/test-web':
-        specifier: ^0.0.30
-        version: 0.0.30
+        specifier: ^0.0.66
+        version: 0.0.66
       '@vscode/vsce':
         specifier: ^3.2.1
         version: 3.2.1
@@ -6779,8 +6779,8 @@ importers:
         specifier: ^2.3.6
         version: 2.3.6
       '@vscode/test-web':
-        specifier: ^0.0.30
-        version: 0.0.30
+        specifier: ^0.0.66
+        version: 0.0.66
       '@vscode/vsce':
         specifier: ^3.2.1
         version: 3.2.1
@@ -8343,8 +8343,8 @@ importers:
         specifier: 1.67.0
         version: 1.67.0
       '@vscode/test-web':
-        specifier: ^0.0.30
-        version: 0.0.30
+        specifier: ^0.0.66
+        version: 0.0.66
       '@vscode/vsce':
         specifier: ^3.2.1
         version: 3.2.1
@@ -11846,8 +11846,8 @@ importers:
         specifier: ^2.3.6
         version: 2.3.6
       '@vscode/test-web':
-        specifier: ^0.0.30
-        version: 0.0.30
+        specifier: ^0.0.66
+        version: 0.0.66
       '@vscode/vsce':
         specifier: ^3.2.1
         version: 3.2.1
@@ -14252,8 +14252,8 @@ importers:
         specifier: ^2.3.6
         version: 2.3.6
       '@vscode/test-web':
-        specifier: ^0.0.30
-        version: 0.0.30
+        specifier: ^0.0.66
+        version: 0.0.66
       '@vscode/vsce':
         specifier: ^3.2.1
         version: 3.2.1
@@ -18016,9 +18016,17 @@ packages:
     resolution: {integrity: sha512-WPXQUaAeAMVaLTEFpoq3T2O1C+FstkjJnDQqy95Ck1UdILajsRhu6mhJ8H2f4NFPRBoCNN+qywTJfq/gGki5mw==}
     engines: {node: '>= 8.0.0'}
 
+  '@koa/cors@5.0.0':
+    resolution: {integrity: sha512-x/iUDjcS90W69PryLDIMgFyV21YLTnG9zOpPXS7Bkt2b8AsY3zZsIpOLBkYr9fBcF3HbkKaER5hOBZLfpLgYNw==}
+    engines: {node: '>= 14.0.0'}
+
   '@koa/router@10.1.1':
     resolution: {integrity: sha512-ORNjq5z4EmQPriKbR0ER3k4Gh7YGNhWDL7JBW+8wXDrHLbWYKYSJaOJ9aN06npF5tbTxe2JBOsurpJDAvjiXKw==}
     engines: {node: '>= 8.0.0'}
+
+  '@koa/router@13.1.0':
+    resolution: {integrity: sha512-mNVu1nvkpSd8Q8gMebGbCkDWJ51ODetrFvLKYusej+V0ByD4btqHYnPIzTBLXnQMVUlm/oxVwqmWBY3zQfZilw==}
+    engines: {node: '>= 18'}
 
   '@kubernetes-models/apimachinery@1.1.0':
     resolution: {integrity: sha512-DvCNeou3+M5ESJluVs8daVp7g03/hWnwXHou9Se8qNRZpqH6lQHvRjXy6HWSqBV9fKZOnWcOExmkUPQGbVIa6A==}
@@ -18339,6 +18347,10 @@ packages:
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
+
+  '@playwright/browser-chromium@1.50.1':
+    resolution: {integrity: sha512-odDVeETxPjB/TENtKVpfa/p7ZZ1/awda0tgknSDHNd4R2KrE1vrkNysc3rws3mh2ecQf6UOeI15eaUcNm5YxUg==}
+    engines: {node: '>=18'}
 
   '@playwright/test@1.45.2':
     resolution: {integrity: sha512-JxG9eq92ET75EbVi3s+4sYbcG7q72ECeZNbdBlaMkGcNbiDQ4cAi8U2QP5oKkOx+1gpaiL1LDStmzCaEM1Z6fQ==}
@@ -20674,6 +20686,11 @@ packages:
     engines: {node: '>=8.9.3'}
     hasBin: true
 
+  '@vscode/test-web@0.0.66':
+    resolution: {integrity: sha512-4gFSQujh9vOmT3mZUKjBSbxDAL173rav4OAssO3pxWJuh/OZNXRdL4cLeYegodGUERI2tAGw6oyma1omTDMtUQ==}
+    engines: {node: '>=16'}
+    hasBin: true
+
   '@vscode/vsce-sign-alpine-arm64@2.0.2':
     resolution: {integrity: sha512-E80YvqhtZCLUv3YAf9+tIbbqoinWLCO/B3j03yQPbjT3ZIHCliKZlsy1peNc4XNZ5uIb87Jn0HWx/ZbPXviuAQ==}
     cpu: [arm64]
@@ -21033,6 +21050,10 @@ packages:
 
   agent-base@7.1.1:
     resolution: {integrity: sha512-H0TSyFNDMomMNJQBn8wFV5YC/2eJ+VXECwOadZJT554xP6cODZHPX3H9QMQECxvrgiSOP1pHjy1sMWQVYJOUOA==}
+    engines: {node: '>= 14'}
+
+  agent-base@7.1.3:
+    resolution: {integrity: sha512-jRR5wdylq8CkOe6hei19GGZnxM6rBGwFl3Bg0YItGDimvjGtAvdZk4Pu6Cl4u4Igsws4a1fd1Vq3ezrhn4KmFw==}
     engines: {node: '>= 14'}
 
   agentkeepalive@4.1.4:
@@ -21479,6 +21500,9 @@ packages:
   azure-devops-node-api@12.5.0:
     resolution: {integrity: sha512-R5eFskGvOm3U/GzeAuxRkUsAl0hrAwGgWn6zAd2KrZmrEhWZVqLew4OOupbQlXUuojUzpGtq62SmdhJ06N88og==}
 
+  b4a@1.6.7:
+    resolution: {integrity: sha512-OnAYlL5b7LEkALw87fUVafQw5rVR9RjwGd4KUwNQ6DrrNmaVaUCgLipfVlzrPQ4tWOR9P0IXGNOx50jYCCdSJg==}
+
   babel-core@7.0.0-bridge.0:
     resolution: {integrity: sha512-poPX9mZH/5CSanm50Q+1toVci6pv5KSRv/5TWCwtzQS5XEwn40BcCrgIeMFWP9CKKIniKXNxoIOnOq4VVlGXhg==}
     peerDependencies:
@@ -21653,6 +21677,31 @@ packages:
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
+
+  bare-events@2.5.4:
+    resolution: {integrity: sha512-+gFfDkR8pj4/TrWCGUGWmJIkBwuxPS5F+a5yWjOHQt2hHvNZd5YLzadjmDUtFmMM4y429bnKLa8bYBMHcYdnQA==}
+
+  bare-fs@4.0.1:
+    resolution: {integrity: sha512-ilQs4fm/l9eMfWY2dY0WCIUplSUp7U0CT1vrqMg1MUdeZl4fypu5UP0XcDBK5WBQPJAKP1b7XEodISmekH/CEg==}
+    engines: {bare: '>=1.7.0'}
+
+  bare-os@3.4.0:
+    resolution: {integrity: sha512-9Ous7UlnKbe3fMi7Y+qh0DwAup6A1JkYgPnjvMDNOlmnxNRQvQ/7Nst+OnUQKzk0iAT0m9BisbDVp9gCv8+ETA==}
+    engines: {bare: '>=1.6.0'}
+
+  bare-path@3.0.0:
+    resolution: {integrity: sha512-tyfW2cQcB5NN8Saijrhqn0Zh7AnFNsnczRcuWODH0eYAXBsJ5gVxAUuNr7tsHSC6IZ77cA0SitzT+s47kot8Mw==}
+
+  bare-stream@2.6.5:
+    resolution: {integrity: sha512-jSmxKJNJmHySi6hC42zlZnq00rga4jjxcgNZjY9N5WlOe/iOoGRtdwGsHzQv2RlH2KOYMwGUXhf2zXd32BA9RA==}
+    peerDependencies:
+      bare-buffer: '*'
+      bare-events: '*'
+    peerDependenciesMeta:
+      bare-buffer:
+        optional: true
+      bare-events:
+        optional: true
 
   base16@1.0.0:
     resolution: {integrity: sha512-pNdYkNPiJUnEhnfXV56+sQy8+AaPcG3POZAUnwr4EeqCUZFz4u2PePbo3e5Gj4ziYPCWGUZT9RHisvJKnwFuBQ==}
@@ -22449,6 +22498,10 @@ packages:
 
   cookies@0.8.0:
     resolution: {integrity: sha512-8aPsApQfebXnuI+537McwYsDtjVxGm8gTIzQI3FDW6t5t/DAhERxtnbEPN/8RX+uZthoz4eCOgloXaE5cYyNow==}
+    engines: {node: '>= 0.8'}
+
+  cookies@0.9.1:
+    resolution: {integrity: sha512-TG2hpqe4ELx54QER/S3HQ9SRVnQnGBtKUz5bLQWtYAQ+o6GpgMs6sYUvaiJjVxb+UXwhRhAEP3m7LbsIZ77Hmw==}
     engines: {node: '>= 0.8'}
 
   copy-anything@2.0.3:
@@ -24029,6 +24082,9 @@ packages:
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
 
+  fast-fifo@1.3.2:
+    resolution: {integrity: sha512-/d9sfos4yxzpwkDkuN7k2SqFKtYNmCTzgfEpz82x34IM9/zc8KGxQoXg1liNC/izpRM/MBdt44Nmx41ZWqk+FQ==}
+
   fast-glob@3.2.11:
     resolution: {integrity: sha512-xrO3+1bxSo3ZVHAnqzyuewYT6aMFHRAd4Kcs92MAonjwQZLsK9d0SF1IyQ3k5PoirxTW0Oe/RqFgMQ6TcNE5Ew==}
     engines: {node: '>=8.6.0'}
@@ -24517,6 +24573,11 @@ packages:
     engines: {node: 20 || >=22}
     hasBin: true
 
+  glob@11.0.1:
+    resolution: {integrity: sha512-zrQDm8XPnYEKawJScsnM0QzobJxlT/kHOOlRTio8IH/GrmxRE5fjllkzdaHclIuNjUQTJYH2xHNIGfdpJkDJUw==}
+    engines: {node: 20 || >=22}
+    hasBin: true
+
   glob@7.2.0:
     resolution: {integrity: sha512-lmLf6gtyrPq8tTjSmrO94wBeQbFR3HbLHbuyD69wuyQkImp2hWqMGB47OX65FBkPffO641IP9jWa1z4ivqG26Q==}
 
@@ -24926,6 +24987,10 @@ packages:
 
   https-proxy-agent@7.0.5:
     resolution: {integrity: sha512-1e4Wqeblerz+tMKPIq2EMGiiWW1dIjZOksyHWSUm1rmuvw/how9hBHZ38lAGj5ID4Ik6EdkOw7NmWPy6LAwalw==}
+    engines: {node: '>= 14'}
+
+  https-proxy-agent@7.0.6:
+    resolution: {integrity: sha512-vK9P5/iUfdl95AI+JVyUuIcVtd4ofvtrOr3HNtM2yxC9bnMbEdp3x01OhQNnjb8IJYi38VlTE3mBXwcfvywuSw==}
     engines: {node: '>= 14'}
 
   human-signals@1.1.1:
@@ -26089,6 +26154,10 @@ packages:
 
   koa@2.14.1:
     resolution: {integrity: sha512-USJFyZgi2l0wDgqkfD27gL4YGno7TfUkcmOe6UOLFOVuN+J7FwnNu4Dydl4CUQzraM1lBAiGed0M9OVJoT0Kqw==}
+    engines: {node: ^4.8.4 || ^6.10.1 || ^7.10.1 || >= 8.1.4}
+
+  koa@2.15.4:
+    resolution: {integrity: sha512-7fNBIdrU2PEgLljXoPWoyY4r1e+ToWCmzS/wwMPbUNs7X+5MMET1ObhJBlUkF5uZG9B6QhM2zS1TsH6adegkiQ==}
     engines: {node: ^4.8.4 || ^6.10.1 || ^7.10.1 || >= 8.1.4}
 
   kubernetes-models@4.1.0:
@@ -27562,6 +27631,9 @@ packages:
   path-to-regexp@6.2.1:
     resolution: {integrity: sha512-JLyh7xT1kizaEvcaXOQwOc2/Yhw6KZOvPf1S8401UyLk86CU79LN3vl7ztXGm/pZ+YjoyAJ4rxmHwbkBXJX+yw==}
 
+  path-to-regexp@6.3.0:
+    resolution: {integrity: sha512-Yhpw4T9C6hPpgPeA28us07OJeqZ5EzQTkbfwuhsUg0c237RomFoETJgmp2sa3F/41gfLE6G5cqcYwznmeEeOlQ==}
+
   path-type@4.0.0:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
     engines: {node: '>=8'}
@@ -27686,6 +27758,11 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
+  playwright-core@1.50.1:
+    resolution: {integrity: sha512-ra9fsNWayuYumt+NiM069M6OkcRb1FZSK8bgi66AtpFoWkg2+y0bJSNmkFrWhMbEBbVKC/EruAHH3g0zmtwGmQ==}
+    engines: {node: '>=18'}
+    hasBin: true
+
   playwright@1.32.2:
     resolution: {integrity: sha512-jHVnXJke0PXpuPszKtk9y1zZSlzO5+2a+aockT/AND0oeXx46FiJEFrafthurglLygVZA+1gEbtUM1C7qtTV+Q==}
     engines: {node: '>=14'}
@@ -27693,6 +27770,11 @@ packages:
 
   playwright@1.45.2:
     resolution: {integrity: sha512-ReywF2t/0teRvNBpfIgh5e4wnrI/8Su8ssdo5XsQKpjxJj+jspm00jSoz9BTg91TT0c9HRjXO7LBNVrgYj9X0g==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  playwright@1.50.1:
+    resolution: {integrity: sha512-G8rwsOQJ63XG6BbKj2w5rHeavFjy5zynBA9zsJMMtBoe/Uf757oG12NXz6e6OirF7RCrTVAKFXbLmn1RbL7Qaw==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -29597,6 +29679,9 @@ packages:
     resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==}
     engines: {node: '>=10.0.0'}
 
+  streamx@2.22.0:
+    resolution: {integrity: sha512-sLh1evHOzBy/iWRiR6d1zRcLao4gGZr3C1kzNz4fopCOKJb6xD9ub8Mpi9Mr1R6id5o43S+d93fI48UC5uM9aw==}
+
   string-env-interpolation@1.0.1:
     resolution: {integrity: sha512-78lwMoCcn0nNu8LszbP1UA7g55OeE4v7rCeWnM5B453rnNr4aq+5it3FEYtZrSEiMvHZOZ9Jlqb0OD0M2VInqg==}
 
@@ -29836,6 +29921,9 @@ packages:
   tar-fs@2.1.1:
     resolution: {integrity: sha512-V0r2Y9scmbDRLCNex/+hYzvp/zyYjvFbHPNgVTKfQvVrb6guiE/fxP+XblDNR011utopbkex2nM4dHNV6GDsng==}
 
+  tar-fs@3.0.8:
+    resolution: {integrity: sha512-ZoROL70jptorGAlgAYiLoBLItEKw/fUxg9BSYK/dF/GAGYFJOJJJMvjPAKDJraCXFwadD456FCuvLWgfhMsPwg==}
+
   tar-stream@1.6.2:
     resolution: {integrity: sha512-rzS0heiNf8Xn7/mpdSVVSMAWAoy9bfb1WOTYC78Z0UQKeKa/CWS8FOq0lKGNa8DWKAn9gxjCvMLYc5PGXYlK2A==}
     engines: {node: '>= 0.8.0'}
@@ -29843,6 +29931,9 @@ packages:
   tar-stream@2.2.0:
     resolution: {integrity: sha512-ujeqbceABgwMZxEJnk2HDY2DlnUZ+9oEcb1KzTVfYHio0UE6dG71n60d8D2I4qNvleWrrXpmjpt7vZeF1LnMZQ==}
     engines: {node: '>=6'}
+
+  tar-stream@3.1.7:
+    resolution: {integrity: sha512-qJj60CXt7IU1Ffyc3NJMjh6EkuCFej46zUqJ4J7pqYlThyd9bO0XBTmcOIhSzZJVWfsLks0+nle/j538YAW9RQ==}
 
   tar@6.2.0:
     resolution: {integrity: sha512-/Wo7DcT0u5HUV486xg675HtjNd3BXZ6xDbzsCUZPt5iw8bTQ63bP0Raut3mvro9u+CUyq7YQd8Cx55fsZXxqLQ==}
@@ -29941,6 +30032,9 @@ packages:
   test-exclude@7.0.1:
     resolution: {integrity: sha512-pFYqmTw68LXVjeWJMST4+borgQP2AyMNbg1BpZh9LbyhUeNkeaPF9gzfPGUAnSMV3qPYdWUwDIjjCLiSDOl7vg==}
     engines: {node: '>=18'}
+
+  text-decoder@1.2.3:
+    resolution: {integrity: sha512-3/o9z3X0X0fTupwsYvR03pJ/DjWuqqrfwBgTQzdWDiQSm9KitAyz/9WqsT2JQW7KV2m+bC2ol/zqpW37NHxLaA==}
 
   text-table@0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
@@ -30840,6 +30934,9 @@ packages:
 
   vscode-uri@3.0.7:
     resolution: {integrity: sha512-eOpPHogvorZRobNqJGhapa0JdwaxpjVvyBp0QIUMRMSf8ZAlqOdEquKuRmw9Qwu0qXtJIWqFtMkmvJjUZmMjVA==}
+
+  vscode-uri@3.1.0:
+    resolution: {integrity: sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==}
 
   w3c-xmlserializer@4.0.0:
     resolution: {integrity: sha512-d+BFHzbiCx6zGfz0HyQ6Rg69w9k19nviJspaj4yNscGjrHu94sVP+aRm75yEbCh+r2/yR+7q6hux9LVtbuTGBw==}
@@ -39311,6 +39408,10 @@ snapshots:
     dependencies:
       vary: 1.1.2
 
+  '@koa/cors@5.0.0':
+    dependencies:
+      vary: 1.1.2
+
   '@koa/router@10.1.1':
     dependencies:
       debug: 4.3.5
@@ -39320,6 +39421,12 @@ snapshots:
       path-to-regexp: 6.2.1
     transitivePeerDependencies:
       - supports-color
+
+  '@koa/router@13.1.0':
+    dependencies:
+      http-errors: 2.0.0
+      koa-compose: 4.1.0
+      path-to-regexp: 6.3.0
 
   '@kubernetes-models/apimachinery@1.1.0':
     dependencies:
@@ -39762,6 +39869,10 @@ snapshots:
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
+
+  '@playwright/browser-chromium@1.50.1':
+    dependencies:
+      playwright-core: 1.50.1
 
   '@playwright/test@1.45.2':
     dependencies:
@@ -44203,6 +44314,27 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@vscode/test-web@0.0.66':
+    dependencies:
+      '@koa/cors': 5.0.0
+      '@koa/router': 13.1.0
+      '@playwright/browser-chromium': 1.50.1
+      glob: 11.0.1
+      gunzip-maybe: 1.4.2
+      http-proxy-agent: 7.0.2
+      https-proxy-agent: 7.0.6
+      koa: 2.15.4
+      koa-morgan: 1.0.1
+      koa-mount: 4.0.0
+      koa-static: 5.0.0
+      minimist: 1.2.8
+      playwright: 1.50.1
+      tar-fs: 3.0.8
+      vscode-uri: 3.1.0
+    transitivePeerDependencies:
+      - bare-buffer
+      - supports-color
+
   '@vscode/vsce-sign-alpine-arm64@2.0.2':
     optional: true
 
@@ -44772,6 +44904,8 @@ snapshots:
       debug: 4.3.6
     transitivePeerDependencies:
       - supports-color
+
+  agent-base@7.1.3: {}
 
   agentkeepalive@4.1.4:
     dependencies:
@@ -45345,6 +45479,8 @@ snapshots:
     dependencies:
       tunnel: 0.0.6
       typed-rest-client: 1.8.4
+
+  b4a@1.6.7: {}
 
   babel-core@7.0.0-bridge.0(@babel/core@7.24.9):
     dependencies:
@@ -45993,6 +46129,33 @@ snapshots:
   balanced-match@0.4.2: {}
 
   balanced-match@1.0.2: {}
+
+  bare-events@2.5.4:
+    optional: true
+
+  bare-fs@4.0.1:
+    dependencies:
+      bare-events: 2.5.4
+      bare-path: 3.0.0
+      bare-stream: 2.6.5(bare-events@2.5.4)
+    transitivePeerDependencies:
+      - bare-buffer
+    optional: true
+
+  bare-os@3.4.0:
+    optional: true
+
+  bare-path@3.0.0:
+    dependencies:
+      bare-os: 3.4.0
+    optional: true
+
+  bare-stream@2.6.5(bare-events@2.5.4):
+    dependencies:
+      streamx: 2.22.0
+    optionalDependencies:
+      bare-events: 2.5.4
+    optional: true
 
   base16@1.0.0: {}
 
@@ -47013,6 +47176,11 @@ snapshots:
   cookiejar@2.1.4: {}
 
   cookies@0.8.0:
+    dependencies:
+      depd: 2.0.0
+      keygrip: 1.1.0
+
+  cookies@0.9.1:
     dependencies:
       depd: 2.0.0
       keygrip: 1.1.0
@@ -49302,6 +49470,8 @@ snapshots:
 
   fast-deep-equal@3.1.3: {}
 
+  fast-fifo@1.3.2: {}
+
   fast-glob@3.2.11:
     dependencies:
       '@nodelib/fs.stat': 2.0.5
@@ -49957,6 +50127,15 @@ snapshots:
       package-json-from-dist: 1.0.0
       path-scurry: 2.0.0
 
+  glob@11.0.1:
+    dependencies:
+      foreground-child: 3.1.1
+      jackspeak: 4.0.2
+      minimatch: 10.0.1
+      minipass: 7.1.2
+      package-json-from-dist: 1.0.0
+      path-scurry: 2.0.0
+
   glob@7.2.0:
     dependencies:
       fs.realpath: 1.0.0
@@ -50486,7 +50665,7 @@ snapshots:
 
   http-proxy-agent@7.0.2:
     dependencies:
-      agent-base: 7.1.1
+      agent-base: 7.1.3
       debug: 4.3.6
     transitivePeerDependencies:
       - supports-color
@@ -50605,6 +50784,13 @@ snapshots:
   https-proxy-agent@7.0.5:
     dependencies:
       agent-base: 7.1.1
+      debug: 4.3.6
+    transitivePeerDependencies:
+      - supports-color
+
+  https-proxy-agent@7.0.6:
+    dependencies:
+      agent-base: 7.1.3
       debug: 4.3.6
     transitivePeerDependencies:
       - supports-color
@@ -52299,7 +52485,7 @@ snapshots:
 
   koa-mount@4.0.0:
     dependencies:
-      debug: 4.3.5
+      debug: 4.3.6
       koa-compose: 4.1.0
     transitivePeerDependencies:
       - supports-color
@@ -52327,6 +52513,34 @@ snapshots:
       content-type: 1.0.5
       cookies: 0.8.0
       debug: 4.3.5
+      delegates: 1.0.0
+      depd: 2.0.0
+      destroy: 1.2.0
+      encodeurl: 1.0.2
+      escape-html: 1.0.3
+      fresh: 0.5.2
+      http-assert: 1.5.0
+      http-errors: 1.8.1
+      is-generator-function: 1.0.10
+      koa-compose: 4.1.0
+      koa-convert: 2.0.0
+      on-finished: 2.4.1
+      only: 0.0.2
+      parseurl: 1.3.3
+      statuses: 1.5.0
+      type-is: 1.6.18
+      vary: 1.1.2
+    transitivePeerDependencies:
+      - supports-color
+
+  koa@2.15.4:
+    dependencies:
+      accepts: 1.3.8
+      cache-content-type: 1.0.1
+      content-disposition: 0.5.4
+      content-type: 1.0.5
+      cookies: 0.9.1
+      debug: 4.3.6
       delegates: 1.0.0
       depd: 2.0.0
       destroy: 1.2.0
@@ -54047,6 +54261,8 @@ snapshots:
 
   path-to-regexp@6.2.1: {}
 
+  path-to-regexp@6.3.0: {}
+
   path-type@4.0.0: {}
 
   path-type@5.0.0: {}
@@ -54169,6 +54385,8 @@ snapshots:
 
   playwright-core@1.45.2: {}
 
+  playwright-core@1.50.1: {}
+
   playwright@1.32.2:
     dependencies:
       playwright-core: 1.32.2
@@ -54176,6 +54394,12 @@ snapshots:
   playwright@1.45.2:
     dependencies:
       playwright-core: 1.45.2
+    optionalDependencies:
+      fsevents: 2.3.2
+
+  playwright@1.50.1:
+    dependencies:
+      playwright-core: 1.50.1
     optionalDependencies:
       fsevents: 2.3.2
 
@@ -56518,6 +56742,13 @@ snapshots:
 
   streamsearch@1.1.0: {}
 
+  streamx@2.22.0:
+    dependencies:
+      fast-fifo: 1.3.2
+      text-decoder: 1.2.3
+    optionalDependencies:
+      bare-events: 2.5.4
+
   string-env-interpolation@1.0.1: {}
 
   string-length@4.0.2:
@@ -56856,6 +57087,16 @@ snapshots:
       pump: 3.0.0
       tar-stream: 2.2.0
 
+  tar-fs@3.0.8:
+    dependencies:
+      pump: 3.0.0
+      tar-stream: 3.1.7
+    optionalDependencies:
+      bare-fs: 4.0.1
+      bare-path: 3.0.0
+    transitivePeerDependencies:
+      - bare-buffer
+
   tar-stream@1.6.2:
     dependencies:
       bl: 1.2.3
@@ -56873,6 +57114,12 @@ snapshots:
       fs-constants: 1.0.0
       inherits: 2.0.4
       readable-stream: 3.6.0
+
+  tar-stream@3.1.7:
+    dependencies:
+      b4a: 1.6.7
+      fast-fifo: 1.3.2
+      streamx: 2.22.0
 
   tar@6.2.0:
     dependencies:
@@ -57069,6 +57316,10 @@ snapshots:
       '@istanbuljs/schema': 0.1.3
       glob: 10.4.5
       minimatch: 9.0.5
+
+  text-decoder@1.2.3:
+    dependencies:
+      b4a: 1.6.7
 
   text-table@0.2.0: {}
 
@@ -58376,6 +58627,8 @@ snapshots:
   vscode-uri@3.0.6: {}
 
   vscode-uri@3.0.7: {}
+
+  vscode-uri@3.1.0: {}
 
   w3c-xmlserializer@4.0.0:
     dependencies:
