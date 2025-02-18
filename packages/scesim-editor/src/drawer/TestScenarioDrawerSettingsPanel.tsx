@@ -122,8 +122,9 @@ function TestScenarioDrawerSettingsPanel() {
   const isSelectedDmnValid = useMemo(
     () =>
       !dmnNotFoundError &&
-      selectedDmnModel?.normalizedPosixPathRelativeToTheOpenFile === settingsModel.dmnFilePath?.__$$text,
-    [dmnNotFoundError, selectedDmnModel?.normalizedPosixPathRelativeToTheOpenFile, settingsModel.dmnFilePath?.__$$text]
+      (!selectedDmnModel ||
+        selectedDmnModel.normalizedPosixPathRelativeToTheOpenFile === settingsModel.dmnFilePath?.__$$text),
+    [dmnNotFoundError, selectedDmnModel, settingsModel.dmnFilePath?.__$$text]
   );
 
   const updateSettingsField = useCallback(
