@@ -69,8 +69,6 @@ const List: React.FunctionComponent<ListFieldProps> = ({
     disabled
   );
 
-  // document.getElementById("friends.$").value[index].name = data?.friends?.index?.name ?? ""
-
   const properties = {
     id: name,
     name: name,

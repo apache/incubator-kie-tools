@@ -2,22 +2,146 @@
 
 exports[`<ListField> tests <ListField> - full AutoForm rendering (TO DELETE) 1`] = `
 <div>
-  <div>
-	<fieldset>
-		<legend>Friends</legend>
-		<div></div>
-	</fieldset>
-	<script>
+  &lt;div&gt;
+	&lt;div class=&quot;card mb-3&quot;&gt;
+		&lt;div class=&quot;card-body&quot;&gt;
+			&lt;div class=&quot;card-title&quot;&gt;
+				&lt;label class=&quot;col-form-label&quot;&gt; Friends&amp;nbsp; &lt;/label&gt;
+				&lt;div class=&quot;badge badge-pill float-right&quot; role=&quot;button&quot; tabindex=&quot;0&quot; onclick=&quot;onAddListItem()&quot; onkeydown=&quot;onAddListItem()&quot;&gt;
+					&lt;i className=&quot;octicon octicon-plus&quot; /&gt;
+				&lt;/div&gt;
+			&lt;/div&gt;
+			&lt;div id=&quot;list-friends&quot;&gt;&lt;/div&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;script&gt;
 		/* Utility function that fills the form with the data received from the kogito runtime */
 		function setFormData(data) {
 			if (!data) {
 				return;
 			}
+			function delListItem(value, disabled, minCount) {
+				return (itemIndex) =&gt; {
+					if (!disabled &amp;&amp; minCount &lt; value.length) {
+						const newValue = [...value];
+						newValue.splice(itemIndex, 1);
+						value = newValue;
+					}
+				};
+			}
+			function addListItem(value, defaultValue, disabled, maxCount, name, childrenHtml) {
+				return () =&gt; {
+					if (!disabled &amp;&amp; maxCount &gt; value.length) {
+						value = value.concat([defaultValue]);
+					}
+					const itemIndex = value.length - 1;
+					const listContainer = document.getElementById(&quot;list-&quot; + name);
+					const newItem = document.createElement(&quot;div&quot;);
+					newItem.class = &quot;row&quot;;
+					newItem.id = name + &quot;-&quot; + itemIndex;
+					newItem.innerHTML = \`
+      &lt;div class=&quot;col-1&quot;&gt;
+        &lt;span class=&quot;badge badge-pill&quot; role=&quot;button&quot; tabindex=&quot;0&quot; onclick=&quot;delListItem(itemIndex)&quot; onkeydown=&quot;delListItem(itemIndex)&quot;&gt;
+          &lt;i className=&quot;octicon octicon-dash&quot; /&gt;
+        &lt;/span&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;col-11&quot;&gt;
+        &lt;%= childrenHtml %&gt;
+      &lt;/div&gt;
+      \`;
+				};
+				listContainer.appendChild(newItem);
+			}
+			onDelListItem = addDelItem(data?.friends, false, undefined);
+			onAddListItem = addListItem(
+				data?.friends,
+				{},
+				false,
+				undefined,
+				friends,
+				\`&lt;fieldset&gt;
+    &lt;legend&gt;Friends&lt;/legend&gt;
+    &lt;div&gt;
+        &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;friends.$.name&quot;&gt;Name&lt;/label&gt;
+    &lt;input type=&quot;text&quot;
+    id=&quot;friends.$.name&quot;
+    name=&quot;friends.$.name&quot;
+    class=&quot;form-control&quot;
+    value=&quot;&quot;/&gt;
+&lt;/div&gt;
+        &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;friends.$.age&quot;&gt;Age&lt;/label&gt;
+    &lt;input
+    type=&quot;number&quot;
+    class=&quot;form-control&quot;
+    id=&quot;friends.$.age&quot;
+    name=&quot;friends.$.age&quot;
+    step=&quot;0.01&quot;
+    value=&quot;&quot;/&gt;
+&lt;/div&gt;
+        &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;friends.$.country&quot;&gt;Country&lt;/label&gt;
+    &lt;select class=&quot;form-control&quot; id=&quot;friends.$.country&quot; name=&quot;friends.$.country&quot;&gt;
+    &lt;option value=&quot;US&quot;&gt;US&lt;/option&gt;
+    &lt;option value=&quot;Brazil&quot;&gt;Brazil&lt;/option&gt;
+&lt;/select&gt;
+&lt;/div&gt;
+        &lt;div class=&quot;form-check&quot;&gt;
+    &lt;input type=&quot;checkbox&quot; id=&quot;friends.$.married&quot; name=&quot;friends.$.married&quot; class=&quot;form-check-input&quot;/&gt;
+    &lt;label class=&quot;form-check-label&quot; for=&quot;friends.$.married&quot;&gt;Married&lt;/label&gt;
+&lt;/div&gt;
+        &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;friends.$.know&quot;&gt;Know&lt;/label&gt;
+&lt;div class=&quot;form-check&quot;&gt;
+    &lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot;
+        id=&quot;friends.$.know__Java&quot;
+        name=&quot;friends.$.know&quot;
+        value=&quot;Java&quot;
+        /&gt;
+    &lt;label class=&quot;form-check-label&quot; for=&quot;friends.$.know__Java&quot;&gt;Java&lt;/label&gt;
+&lt;/div&gt;
+&lt;div class=&quot;form-check&quot;&gt;
+    &lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot;
+        id=&quot;friends.$.know__Node&quot;
+        name=&quot;friends.$.know&quot;
+        value=&quot;Node&quot;
+        /&gt;
+    &lt;label class=&quot;form-check-label&quot; for=&quot;friends.$.know__Node&quot;&gt;Node&lt;/label&gt;
+&lt;/div&gt;
+&lt;div class=&quot;form-check&quot;&gt;
+    &lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot;
+        id=&quot;friends.$.know__Docker&quot;
+        name=&quot;friends.$.know&quot;
+        value=&quot;Docker&quot;
+        /&gt;
+    &lt;label class=&quot;form-check-label&quot; for=&quot;friends.$.know__Docker&quot;&gt;Docker&lt;/label&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+        &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;friends.$.areas&quot;&gt;Areas&lt;/label&gt;
+    &lt;select class=&quot;form-control&quot; id=&quot;friends.$.areas&quot; name=&quot;friends.$.areas&quot;&gt;
+    &lt;option value=&quot;Developer&quot;&gt;Developer&lt;/option&gt;
+    &lt;option value=&quot;HR&quot;&gt;HR&lt;/option&gt;
+    &lt;option value=&quot;UX&quot;&gt;UX&lt;/option&gt;
+&lt;/select&gt;
+&lt;/div&gt;
+        &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;friends.$.birthday&quot;&gt;Birthday&lt;/label&gt;
+    &lt;input
+      type=&quot;datetime-local&quot;
+      id=&quot;friends.$.birthday&quot;
+      name=&quot;friends.$.birthday&quot;
+      class=&quot;form-control&quot;
+      /&gt;
+&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/fieldset&gt;\`
+			);
 		}
 		/* Utility function to generate the expected form output as a json object */
 		function getFormData() {
 			const formData = {};
-			formData.friends = {};
 			return formData;
 		}
 		/* Utility function to validate the form on the &#39;beforeSubmit&#39; Lifecycle Hook */
@@ -32,7 +156,7 @@ exports[`<ListField> tests <ListField> - full AutoForm rendering (TO DELETE) 1`]
                     - ctx: info about the context where the form is being displayed. This will contain information such as the form JSON Schema, process/task, user...
         */
 		const formApi = window.Form.openForm({
-			onOpen: (data, context) => {
+			onOpen: (data, context) =&gt; {
 				setFormData(data);
 			},
 		});
@@ -40,18 +164,18 @@ exports[`<ListField> tests <ListField> - full AutoForm rendering (TO DELETE) 1`]
             Form Lifecycle Hook that will be executed before the form is submitted.
             Throwing an error will stop the form submit. Usually should be used to validate the form.
         */
-		formApi.beforeSubmit = () => {
+		formApi.beforeSubmit = () =&gt; {
 			validateForm();
 		};
 		/*
             Form Lifecycle Hook that will be executed after the form is submitted.
             It will receive a response object containing the \`type\` flag indicating if the submit has been successful and \`info\` with extra information about the submit result.
         */
-		formApi.afterSubmit = (response) => {};
+		formApi.afterSubmit = (response) =&gt; {};
 		/* Generates the expected form output object to be posted */
-		formApi.getFormData = () => getFormData();
-	</script>
-</div>
+		formApi.getFormData = () =&gt; getFormData();
+	&lt;/script&gt;
+&lt;/div&gt;
 
 </div>
 `;

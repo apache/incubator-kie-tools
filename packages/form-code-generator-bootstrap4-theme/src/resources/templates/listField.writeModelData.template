@@ -1,6 +1,0 @@
-<% if(!props.disabled) { %>
-    formData.<%=props.name%> = {};
-    <% if (props.children.writeValueToModelCode) { %>
-        <%= props.children.writeValueToModelCode.code %>
-    <% } %>
-<% } %>

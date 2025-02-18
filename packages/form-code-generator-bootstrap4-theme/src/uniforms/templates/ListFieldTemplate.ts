@@ -20,10 +20,12 @@
 import listField from "!!raw-loader!../../resources/templates/listField.template";
 import setValueFromModel from "!!raw-loader!../../resources/templates/listField.setModelData.template";
 import writeValueToModel from "!!raw-loader!../../resources/templates/listField.writeModelData.template";
+import addListItem from "!!raw-loader!../../resources/staticCode/addListItem.txt";
+import delListItem from "!!raw-loader!../../resources/staticCode/delListItem.txt";
 import { FormElementTemplate, FormElementTemplateProps } from "./types";
-import { CodeFragment, FormElement, FormInputContainer, InputReference } from "../../api";
+import { FormInputContainer, InputReference } from "../../api";
 import { CompiledTemplate, template } from "underscore";
-import { union } from "lodash";
+import { fieldNameToOptionalChain } from "./utils";
 
 interface ListFieldTemplateProps extends FormElementTemplateProps<any> {
   children: {
@@ -33,6 +35,8 @@ interface ListFieldTemplateProps extends FormElementTemplateProps<any> {
     setValueFromModelCode: { code: string; requiredCode: string[] };
     writeValueToModelCode: { code: string; requiredCode: string[] };
   };
+  maxCount: number;
+  minCount: number;
 }
 
 export class ListFieldTemplate implements FormElementTemplate<FormInputContainer, ListFieldTemplateProps> {
@@ -40,26 +44,75 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
   private readonly listFieldSetValueFromModelTemplate: CompiledTemplate = template(setValueFromModel);
   private readonly listFieldWriteValueToModelTemplate: CompiledTemplate = template(writeValueToModel);
 
-  render(props: ListFieldTemplateProps): FormInputContainer {
-    const ref: InputReference[] = props.children.ref;
+  render({
+    id,
+    disabled,
+    label,
+    children,
+    maxCount,
+    minCount,
+    value,
+    name,
+  }: ListFieldTemplateProps): FormInputContainer {
+    const ref: InputReference[] = children.ref;
 
-    const setValueFromModelRequiredCode: string[] = props.children.setValueFromModelCode.requiredCode;
-    const writeValueToModelRequiredCode: string[] = props.children.writeValueToModelCode.requiredCode;
+    const setValueFromModelRequiredCode: string[] = children.setValueFromModelCode.requiredCode;
+    const writeValueToModelRequiredCode: string[] = children.writeValueToModelCode.requiredCode;
+
+    const getDefaultItemValue = () => {
+      return "{}";
+      // const typeName = listItem?.ref.dataType.name;
+      // if (typeName?.endsWith("[]")) {
+      //   return listItem?.ref.dataType.defaultValue ?? [];
+      // }
+      // switch (typeName) {
+      //   case "string":
+      //     ref.dataType = DEFAULT_DATA_TYPE_STRING_ARRAY;
+      //     return listItem?.ref.dataType.defaultValue ?? "";
+      //   case "number":
+      //     ref.dataType = DEFAULT_DATA_TYPE_NUMBER_ARRAY;
+      //     return listItem?.ref.dataType.defaultValue ?? null;
+      //   case "boolean":
+      //     ref.dataType = DEFAULT_DATA_TYPE_BOOLEAN_ARRAY;
+      //     return listItem?.ref.dataType.defaultValue ?? false;
+      //   case "object":
+      //     ref.dataType = DEFAULT_DATA_TYPE_OBJECT_ARRAY;
+      //     return listItem?.ref.dataType.defaultValue ?? {};
+      //   default: // any
+      //     ref.dataType = DEFAULT_DATA_TYPE_ANY_ARRAY;
+      //     return listItem?.ref.dataType.defaultValue;
+      // }
+    };
 
     return {
       ref,
-      html: this.listFieldTemplate({ props: props }),
-      disabled: props.disabled,
+      html: this.listFieldTemplate({
+        id,
+        disabled,
+        label,
+        name,
+        value,
+        childrenHtml: children.html,
+      }),
+      disabled: disabled,
       setValueFromModelCode: {
-        code: this.listFieldSetValueFromModelTemplate({ props: props }),
-        requiredCode: setValueFromModelRequiredCode,
+        code: this.listFieldSetValueFromModelTemplate({
+          defaultValue: getDefaultItemValue(),
+          disabled,
+          minCount,
+          maxCount,
+          childrenHtml: `${children.html}`,
+          name,
+          path: fieldNameToOptionalChain(name),
+        }),
+        requiredCode: [delListItem, addListItem],
       },
       writeValueToModelCode:
-        props.disabled === true
+        disabled === true
           ? undefined
           : {
-              code: this.listFieldWriteValueToModelTemplate({ props: props }),
-              requiredCode: writeValueToModelRequiredCode,
+              code: this.listFieldWriteValueToModelTemplate(),
+              requiredCode: [],
             },
     };
   }

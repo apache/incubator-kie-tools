@@ -1,3 +1,2 @@
-<% if (props.children.setValueFromModelCode) { %>
-    <%= props.children.setValueFromModelCode.code %>
-<% } %>
+onDelListItem = addDelItem(data?.<%=path%>, <%= disabled %>, <%= minCount !== undefined ? minCount : "undefined" %>)
+onAddListItem = addListItem(data?.<%=path%>, <%= defaultValue %>, <%= disabled %>, <%= maxCount !== undefined ? maxCount : "undefined" %>, <%= name %>, `<%= childrenHtml %>`)
