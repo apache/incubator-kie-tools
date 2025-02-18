@@ -298,7 +298,7 @@ function TestScenarioDataSelectorPanel() {
     //TODO 1 This not work with multiple level and expressions fields. see kie-issues#1514
     const treeViewItemToActivate = filteredDataObjects
       .reduce((acc: TestScenarioDataObject[], item) => {
-        return item.children ? acc.concat(item.children) : acc;
+        return item.children ? acc.concat(item).concat(item.children) : acc;
       }, [])
       .filter((item) => item.id === fieldID);
 
@@ -402,7 +402,7 @@ function TestScenarioDataSelectorPanel() {
       const isRootType = isDataObjectRootParent(dataObjects, treeViewStatus.activeItems[0].id!.toString());
       const rootDataObject = findDataObjectRootParent(dataObjects, treeViewStatus.activeItems[0].id!.toString());
       const className = treeViewStatus.activeItems[0].customBadgeContent!.toString();
-      const expressionAlias = isRootType ? "Expression </>" : treeViewStatus.activeItems[0].name!.toString();
+      const expressionAlias = isRootType ? "expression </>" : treeViewStatus.activeItems[0].name!.toString();
       const expressionElementsSteps = treeViewStatus.activeItems[0].id!.split(".").filter((step) => !!step.trim()); //WARNING !!!! THIS DOESN'T WORK WITH IMPORTED DATA OBJECTS see kie-issues#1514
       const factName = treeViewStatus.activeItems[0].id!.split(".")[0]; //WARNING !!!! THIS DOESN'T WORK WITH IMPORTED DATA OBJECTS see kie-issues#1514
       const factClassName = isRootType
