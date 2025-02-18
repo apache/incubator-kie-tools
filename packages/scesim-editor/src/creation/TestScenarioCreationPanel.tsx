@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { basename } from "path";
 
@@ -55,7 +55,6 @@ function TestScenarioCreationPanel() {
     string[] | undefined
   >(undefined);
   const [assetType, setAssetType] = React.useState<"" | "DMN" | "RULE">("");
-  const [dmnNotFoundError, setDmnNotFoundError] = useState<any>(undefined);
   const [isAutoFillTableEnabled, setAutoFillTableEnabled] = React.useState(true);
   const [isStatelessSessionRule, setStatelessSessionRule] = React.useState(false);
   const [isTestSkipped, setTestSkipped] = React.useState(false);
@@ -91,11 +90,11 @@ function TestScenarioCreationPanel() {
             );
           })
           .catch((err) => {
-            setDmnNotFoundError(err);
             console.error(
               `[TestScenarioCreationPanel] The below error when trying to retrieve all the External DMN files from the project.`
             );
             console.error(err);
+            throw err;
           });
       },
       [onRequestExternalModelsAvailableToInclude]
@@ -122,24 +121,16 @@ function TestScenarioCreationPanel() {
             setSelectedDmnModel(externalDMNModel);
           })
           .catch((err) => {
-            setDmnNotFoundError(err);
             console.error(
               `[TestScenarioCreationPanel] An error occurred when parsing the selected model '${selectedDmnModelPathRelativeToThisScesim}'. Please double-check it is a non-empty valid model.`
             );
             console.error(err);
+            throw err;
           });
       },
       [onRequestExternalModelByPath, selectedDmnModelPathRelativeToThisScesim]
     )
   );
-
-  /* If any error occurs during the execution of useCancelableEffect's callback,    */
-  /* it throws the error that will be catched by the ErrorBoundary.                 */
-  useEffect(() => {
-    if (dmnNotFoundError) {
-      throw dmnNotFoundError;
-    }
-  }, [dmnNotFoundError]);
 
   const createTestScenario = useCallback(
     () =>
