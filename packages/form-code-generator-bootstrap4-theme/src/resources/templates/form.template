@@ -4,6 +4,23 @@
 <% }); %>
 
     <script>
+/* Global functions */
+<% const addedGlobalFunctionsCode = []; %>
+<%  _.each(props.children, function(child) { %>
+    <% if (child.globalFunctions && child.globalFunctions.requiredCode) { %>
+        <% _.each(child.globalFunctions.requiredCode, function(codeFragment) { %>
+            <% if (!addedGlobalFunctionsCode.includes(codeFragment)) { %>
+                <% addedGlobalFunctionsCode.push(codeFragment); %>
+                <%= codeFragment %>
+        <% } %>
+    <% }); %>
+    <% } %>
+<% }); %>
+<% _.each(props.children, function(child) { %>
+    <% if (child.globalFunctions) { %>
+            <%= child.globalFunctions.code %>
+    <% } %>
+<% }); %>
         /* Utility function that fills the form with the data received from the kogito runtime */
         function setFormData(data) {
             if(!data) {

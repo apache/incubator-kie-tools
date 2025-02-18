@@ -1,28 +1,28 @@
-<div class="card mb-3">
-  <div class="card-body">
-    <div class="card-title">
-      <label class="col-form-label" for="<%= id %>">
-        <%= label %>
-      </label>
-      <div class="badge badge-pill float-right" role="button" tabindex="0" <%=disabled ? " disabled" : ""%>
-        onclick="onAddListItem()"
-        onkeydown="onAddListItem()">
-        <i className="octicon octicon-plus" />
-      </div>
-    </div>
-    <div id="list-<%= name %>">
-        <% _.each(value, function(item, itemIndex) { %>
-            <div class="row" id="<%= label %>-<%= itemIndex%>">
-                <div class="col-1">
-                    <span class="badge badge-pill" role="button" tabindex="0" onclick="onDelListItem(itemIndex)" onkeydown="onDelListItem(itemIndex)">
-                        <i className="octicon octicon-dash" />
-                    </span>
+<div class="form-group">
+    <div class="card mb-3">
+    <div class="card-body">
+        <div class="card-title">
+        <label class="col-form-label" for="<%= id %>"><%=label%></label>
+        <div class="badge badge-pill float-right" role="button" tabindex="0" <%=disabled ? " disabled" : ""%>
+            onclick="onAddListItem()"
+            onkeydown="onAddListItem()">
+            <i className="octicon octicon-plus" />
+        </div>
+        </div>
+        <div id="<%= name %>">
+            <% _.each(value, function(item, itemIndex) { %>
+                <div class="row" id="<%= label %>-<%= itemIndex%>">
+                    <div class="col-1">
+                        <span class="badge badge-pill" role="button" tabindex="0" onclick="onDelListItem(itemIndex)" onkeydown="onDelListItem(itemIndex)">
+                            <i className="octicon octicon-dash"></i>
+                        </span>
+                    </div>
+                    <div class="col-11">
+                        <%= childrenHtml %>
+                    </div>
                 </div>
-                <div class="col-11">
-                    <%= childrenHtml %>
-                </div>
-            </div>
-        <% }); %>
+            <% }); %>
+        </div>
     </div>
-  </div>
+    </div>
 </div>

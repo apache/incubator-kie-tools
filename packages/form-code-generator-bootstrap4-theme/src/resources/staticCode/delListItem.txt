@@ -1,9 +1,0 @@
-function delListItem(value, disabled, minCount) {
-  return (itemIndex) => {
-    if (!disabled && minCount < value.length) {
-      const newValue = [...value];
-      newValue.splice(itemIndex, 1);
-      value = newValue;
-    }
-  }
-}

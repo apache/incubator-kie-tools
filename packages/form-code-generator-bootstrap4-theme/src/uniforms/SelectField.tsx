@@ -22,6 +22,7 @@ import { connectField, HTMLFieldProps } from "uniforms/cjs";
 import { renderCodeGenElement, SELECT } from "./templates/templates";
 import { useAddFormElementToBootstrapContext } from "./BootstrapCodeGenContext";
 import { FormInput } from "../api";
+import { ListItemProps } from "./rendering/ListFieldInput";
 
 export type SelectInputProps = HTMLFieldProps<
   string[],
@@ -33,6 +34,7 @@ export type SelectInputProps = HTMLFieldProps<
     allowedValues?: string[];
     required: boolean;
     transform?(value: string): string;
+    itemProps?: ListItemProps;
   }
 >;
 
@@ -47,8 +49,12 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
     }) || [];
 
   const inputProps = {
-    id: props.name,
-    name: props.name,
+    id: props.itemProps?.isListItem
+      ? props.itemProps.listName + ".${" + props.itemProps.indexVariableName + "}"
+      : props.name,
+    name: props.itemProps?.isListItem
+      ? props.itemProps.listName + ".${" + props.itemProps.indexVariableName + "}"
+      : props.name,
     label: props.label,
     multiple: props.fieldType === Array,
     placeHolder: props.placeHolder,

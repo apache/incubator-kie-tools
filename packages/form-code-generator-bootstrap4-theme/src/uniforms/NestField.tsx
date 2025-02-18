@@ -23,8 +23,9 @@ import { renderNestedInputFragmentWithContext } from "./rendering/RenderingUtils
 import { FormElement, FormInput, FormInputContainer } from "../api";
 import { useBootstrapCodegenContext } from "./BootstrapCodeGenContext";
 import { NESTED, renderCodeGenElement } from "./templates/templates";
+import { ListItemProps } from "./rendering/ListFieldInput";
 
-export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { itemProps?: object }>;
+export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { itemProps?: ListItemProps }>;
 
 const Nest: React.FunctionComponent<NestFieldProps> = ({
   id,
@@ -55,8 +56,8 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
   }
 
   const properties = {
-    id: name,
-    name: name,
+    id: itemProps?.isListItem ? itemProps.listName + ".${" + itemProps.indexVariableName + "}" : name,
+    name: itemProps?.isListItem ? itemProps.listName + ".${" + itemProps.indexVariableName + "}" : name,
     label: label,
     disabled: disabled,
     children: nestedFields,

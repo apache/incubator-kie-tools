@@ -22,6 +22,7 @@ import { connectField, HTMLFieldProps } from "uniforms/cjs";
 import { INPUT, renderCodeGenElement } from "./templates/templates";
 import { useAddFormElementToBootstrapContext } from "./BootstrapCodeGenContext";
 import { FormInput } from "../api";
+import { ListItemProps } from "./rendering/ListFieldInput";
 
 export type TextFieldProps = HTMLFieldProps<
   string,
@@ -29,13 +30,18 @@ export type TextFieldProps = HTMLFieldProps<
   {
     label: string;
     required: boolean;
+    itemProps?: ListItemProps;
   }
 >;
 
 const Text: React.FC<TextFieldProps> = (props: TextFieldProps) => {
   const properties = {
-    id: props.name,
-    name: props.name,
+    id: props.itemProps?.isListItem
+      ? props.itemProps.listName + ".${" + props.itemProps.indexVariableName + "}"
+      : props.name,
+    name: props.itemProps?.isListItem
+      ? props.itemProps.listName + ".${" + props.itemProps.indexVariableName + "}"
+      : props.name,
     label: props.label,
     type: props.type ?? "text",
     disabled: props.disabled ?? false,

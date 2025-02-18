@@ -116,18 +116,84 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/fieldset&gt;
-	&lt;div class=&quot;card mb-3&quot;&gt;
-		&lt;div class=&quot;card-body&quot;&gt;
-			&lt;div class=&quot;card-title&quot;&gt;
-				&lt;label class=&quot;col-form-label&quot;&gt; Friends&amp;nbsp; &lt;/label&gt;
-				&lt;div class=&quot;badge badge-pill float-right&quot; role=&quot;button&quot; tabindex=&quot;0&quot; onclick=&quot;onAddListItem()&quot; onkeydown=&quot;onAddListItem()&quot;&gt;
-					&lt;i className=&quot;octicon octicon-plus&quot; /&gt;
+	&lt;div class=&quot;form-group&quot;&gt;
+		&lt;div class=&quot;card mb-3&quot;&gt;
+			&lt;div class=&quot;card-body&quot;&gt;
+				&lt;div class=&quot;card-title&quot;&gt;
+					&lt;label class=&quot;col-form-label&quot; for=&quot;friends&quot;&gt;Friends&lt;/label&gt;
+					&lt;div class=&quot;badge badge-pill float-right&quot; role=&quot;button&quot; tabindex=&quot;0&quot; onclick=&quot;onAddListItem()&quot; onkeydown=&quot;onAddListItem()&quot;&gt;
+						&lt;i className=&quot;octicon octicon-plus&quot; /&gt;
+					&lt;/div&gt;
 				&lt;/div&gt;
+				&lt;div id=&quot;friends&quot;&gt;&lt;/div&gt;
 			&lt;/div&gt;
-			&lt;div id=&quot;list-friends&quot;&gt;&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/div&gt;
 	&lt;script&gt;
+		/* Global functions */
+		function delListItem(value, disabled, minCount) {
+			return (itemIndex) =&gt; {
+				if (!disabled &amp;&amp; minCount &lt; value.length) {
+					const newValue = [...value];
+					newValue.splice(itemIndex, 1);
+					value = newValue;
+				}
+			};
+		}
+		function addListItem(value, defaultValue, disabled, maxCount, name, childrenHtml) {
+			return () =&gt; {
+				if (!disabled &amp;&amp; maxCount &gt; value.length) {
+					value = value.concat([defaultValue]);
+				}
+				const itemIndex = value.length - 1;
+				const listContainer = document.getElementById(name);
+				const newItem = document.createElement(&quot;div&quot;);
+				newItem.class = &quot;row&quot;;
+				newItem.id = name + &quot;.&quot; + itemIndex;
+				newItem.innerHTML = \`
+    &lt;div class=&quot;col-1&quot;&gt;
+      &lt;span class=&quot;badge badge-pill&quot; role=&quot;button&quot; tabindex=&quot;0&quot; onclick=&quot;onDelListItem(itemIndex)&quot; onkeydown=&quot;onDelListItem(itemIndex)&quot;&gt;
+        &lt;i className=&quot;octicon octicon-dash&quot;&gt;&lt;/i&gt;
+      &lt;/span&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;col-11&quot;&gt;
+      \${childrenHtml}
+    &lt;/div&gt;
+    \`;
+			};
+			listContainer.appendChild(newItem);
+		}
+		onDelListItem = addDelItem(data?.friends, false, undefined);
+		onAddListItem = addListItem(
+			data?.friends,
+			{},
+			false,
+			undefined,
+			friends,
+			\`&lt;fieldset&gt;
+    &lt;legend&gt;Friends&lt;/legend&gt;
+    &lt;div&gt;
+        &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;friends.$.name&quot;&gt;Name&lt;/label&gt;
+    &lt;input type=&quot;text&quot;
+    id=&quot;friends.$.name&quot;
+    name=&quot;friends.$.name&quot;
+    class=&quot;form-control&quot;
+    value=&quot;&quot;/&gt;
+&lt;/div&gt;
+        &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;friends.$.age&quot;&gt;Age&lt;/label&gt;
+    &lt;input
+    type=&quot;number&quot;
+    class=&quot;form-control&quot;
+    id=&quot;friends.$.age&quot;
+    name=&quot;friends.$.age&quot;
+    step=&quot;0.01&quot;
+    value=&quot;&quot;/&gt;
+&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/fieldset&gt;\`
+		);
 		/* Utility function that fills the form with the data received from the kogito runtime */
 		function setFormData(data) {
 			if (!data) {
@@ -168,38 +234,6 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 					radioButton.checked = radioButton.value === value;
 				});
 			}
-			function delListItem(value, disabled, minCount) {
-				return (itemIndex) =&gt; {
-					if (!disabled &amp;&amp; minCount &lt; value.length) {
-						const newValue = [...value];
-						newValue.splice(itemIndex, 1);
-						value = newValue;
-					}
-				};
-			}
-			function addListItem(value, defaultValue, disabled, maxCount, name, childrenHtml) {
-				return () =&gt; {
-					if (!disabled &amp;&amp; maxCount &gt; value.length) {
-						value = value.concat([defaultValue]);
-					}
-					const itemIndex = value.length - 1;
-					const listContainer = document.getElementById(&quot;list-&quot; + name);
-					const newItem = document.createElement(&quot;div&quot;);
-					newItem.class = &quot;row&quot;;
-					newItem.id = name + &quot;-&quot; + itemIndex;
-					newItem.innerHTML = \`
-      &lt;div class=&quot;col-1&quot;&gt;
-        &lt;span class=&quot;badge badge-pill&quot; role=&quot;button&quot; tabindex=&quot;0&quot; onclick=&quot;delListItem(itemIndex)&quot; onkeydown=&quot;delListItem(itemIndex)&quot;&gt;
-          &lt;i className=&quot;octicon octicon-dash&quot; /&gt;
-        &lt;/span&gt;
-      &lt;/div&gt;
-      &lt;div class=&quot;col-11&quot;&gt;
-        &lt;%= childrenHtml %&gt;
-      &lt;/div&gt;
-      \`;
-				};
-				listContainer.appendChild(newItem);
-			}
 			document.getElementById(&quot;personalData.name&quot;).value = data?.personalData?.name ?? &quot;&quot;;
 			document.getElementById(&quot;personalData.email&quot;).value = data?.personalData?.email ?? &quot;&quot;;
 			document.getElementById(&quot;address.street&quot;).value = data?.address?.street ?? &quot;&quot;;
@@ -216,37 +250,6 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			document.getElementById(&quot;interview.hiringDate&quot;).value = data?.interview?.hiringDate
 				? new Date(data?.interview?.hiringDate).toISOString().slice(0, 16)
 				: &quot;&quot;;
-			onDelListItem = addDelItem(data?.friends, false, undefined);
-			onAddListItem = addListItem(
-				data?.friends,
-				{},
-				false,
-				undefined,
-				friends,
-				\`&lt;fieldset&gt;
-    &lt;legend&gt;Friends&lt;/legend&gt;
-    &lt;div&gt;
-        &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;friends.$.name&quot;&gt;Name&lt;/label&gt;
-    &lt;input type=&quot;text&quot;
-    id=&quot;friends.$.name&quot;
-    name=&quot;friends.$.name&quot;
-    class=&quot;form-control&quot;
-    value=&quot;&quot;/&gt;
-&lt;/div&gt;
-        &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;friends.$.age&quot;&gt;Age&lt;/label&gt;
-    &lt;input
-    type=&quot;number&quot;
-    class=&quot;form-control&quot;
-    id=&quot;friends.$.age&quot;
-    name=&quot;friends.$.age&quot;
-    step=&quot;0.01&quot;
-    value=&quot;&quot;/&gt;
-&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/fieldset&gt;\`
-			);
 		}
 		/* Utility function to generate the expected form output as a json object */
 		function getFormData() {

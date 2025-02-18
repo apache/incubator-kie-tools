@@ -22,6 +22,7 @@ import { CodeFragment, CodeGenElement, FormElement, FormInput } from "../../api"
 import { CompiledTemplate, template } from "underscore";
 import { getInputReference } from "../utils/Utils";
 import { fieldNameToOptionalChain, flatFieldName } from "./utils";
+import { ListItemProps } from "../rendering/ListFieldInput";
 
 export interface CodeGenTemplate<Element extends CodeGenElement, Properties> {
   render: (props: Properties) => Element;
@@ -33,6 +34,7 @@ export interface FormElementTemplateProps<Type> {
   label: string;
   disabled: boolean;
   value: Type;
+  itemProps?: ListItemProps;
 }
 
 export interface FormElementTemplate<
@@ -54,14 +56,15 @@ export abstract class AbstractFormGroupInputTemplate<Properties extends FormElem
   ) {}
 
   render(props: Properties): FormInput {
-    const data = {
-      props: props,
-      input: this.inputTemplate({ props: props }),
-    };
-
     return {
       ref: getInputReference(props),
-      html: FORM_GROUP_TEMPLATE(data),
+      html: FORM_GROUP_TEMPLATE({
+        id: props.itemProps?.isListItem ? `${props.itemProps.listName}.${props.itemProps.indexVariableName}` : props.id,
+        label: props.itemProps?.isListItem
+          ? `${props.itemProps.listName}.${props.itemProps.indexVariableName}`
+          : props.label,
+        input: this.inputTemplate({ props: props }),
+      }),
       disabled: props.disabled,
       setValueFromModelCode: this.buildSetValueFromModelCode(props),
       writeValueToModelCode: this.writeValueToModelCode(props),

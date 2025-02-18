@@ -18,10 +18,8 @@
  */
 
 import listField from "!!raw-loader!../../resources/templates/listField.template";
-import setValueFromModel from "!!raw-loader!../../resources/templates/listField.setModelData.template";
-import writeValueToModel from "!!raw-loader!../../resources/templates/listField.writeModelData.template";
-import addListItem from "!!raw-loader!../../resources/staticCode/addListItem.txt";
-import delListItem from "!!raw-loader!../../resources/staticCode/delListItem.txt";
+import globalFunctions from "!!raw-loader!../../resources/templates/listField.globalFunctions.template";
+import modifyListSize from "!!raw-loader!../../resources/staticCode/modifyListSize.txt";
 import { FormElementTemplate, FormElementTemplateProps } from "./types";
 import { FormInputContainer, InputReference } from "../../api";
 import { CompiledTemplate, template } from "underscore";
@@ -41,8 +39,9 @@ interface ListFieldTemplateProps extends FormElementTemplateProps<any> {
 
 export class ListFieldTemplate implements FormElementTemplate<FormInputContainer, ListFieldTemplateProps> {
   private readonly listFieldTemplate: CompiledTemplate = template(listField);
-  private readonly listFieldSetValueFromModelTemplate: CompiledTemplate = template(setValueFromModel);
-  private readonly listFieldWriteValueToModelTemplate: CompiledTemplate = template(writeValueToModel);
+  private readonly listFieldGlobalFunctionsTemplate: CompiledTemplate = template(globalFunctions);
+  // private readonly listFieldSetValueFromModelTemplate: CompiledTemplate = template(setValueFromModel);
+  // private readonly listFieldWriteValueToModelTemplate: CompiledTemplate = template(writeValueToModel);
 
   render({
     id,
@@ -61,27 +60,6 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
 
     const getDefaultItemValue = () => {
       return "{}";
-      // const typeName = listItem?.ref.dataType.name;
-      // if (typeName?.endsWith("[]")) {
-      //   return listItem?.ref.dataType.defaultValue ?? [];
-      // }
-      // switch (typeName) {
-      //   case "string":
-      //     ref.dataType = DEFAULT_DATA_TYPE_STRING_ARRAY;
-      //     return listItem?.ref.dataType.defaultValue ?? "";
-      //   case "number":
-      //     ref.dataType = DEFAULT_DATA_TYPE_NUMBER_ARRAY;
-      //     return listItem?.ref.dataType.defaultValue ?? null;
-      //   case "boolean":
-      //     ref.dataType = DEFAULT_DATA_TYPE_BOOLEAN_ARRAY;
-      //     return listItem?.ref.dataType.defaultValue ?? false;
-      //   case "object":
-      //     ref.dataType = DEFAULT_DATA_TYPE_OBJECT_ARRAY;
-      //     return listItem?.ref.dataType.defaultValue ?? {};
-      //   default: // any
-      //     ref.dataType = DEFAULT_DATA_TYPE_ANY_ARRAY;
-      //     return listItem?.ref.dataType.defaultValue;
-      // }
     };
 
     return {
@@ -95,8 +73,8 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
         childrenHtml: children.html,
       }),
       disabled: disabled,
-      setValueFromModelCode: {
-        code: this.listFieldSetValueFromModelTemplate({
+      globalFunctions: {
+        code: this.listFieldGlobalFunctionsTemplate({
           defaultValue: getDefaultItemValue(),
           disabled,
           minCount,
@@ -105,15 +83,8 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
           name,
           path: fieldNameToOptionalChain(name),
         }),
-        requiredCode: [delListItem, addListItem],
+        requiredCode: [modifyListSize],
       },
-      writeValueToModelCode:
-        disabled === true
-          ? undefined
-          : {
-              code: this.listFieldWriteValueToModelTemplate(),
-              requiredCode: [],
-            },
     };
   }
 }

@@ -50,14 +50,15 @@ export class CheckBoxGroupFieldTemplate implements FormElementTemplate<FormInput
   }
 
   render(props: CheckBoxGroupFieldProps): FormInput {
-    const data = {
-      props: props,
-      input: this.inputTemplate({ props: props }),
-    };
-
     return {
       ref: getInputReference(props),
-      html: FORM_GROUP_TEMPLATE(data),
+      html: FORM_GROUP_TEMPLATE({
+        id: props.itemProps?.isListItem ? `${props.itemProps.listName}.${props.itemProps.indexVariableName}` : props.id,
+        label: props.itemProps?.isListItem
+          ? `${props.itemProps.listName}.${props.itemProps.indexVariableName}`
+          : props.label,
+        input: this.inputTemplate({ props: props }),
+      }),
       disabled: props.disabled,
       setValueFromModelCode: this.buildSetValueFromModelCode(props),
       writeValueToModelCode: this.buildWriteValueToModelCode(props),

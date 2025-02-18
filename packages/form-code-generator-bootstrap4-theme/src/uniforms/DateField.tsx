@@ -22,6 +22,7 @@ import { connectField, HTMLFieldProps } from "uniforms/cjs";
 import { DATE, renderCodeGenElement } from "./templates/templates";
 import { useAddFormElementToBootstrapContext } from "./BootstrapCodeGenContext";
 import { FormInput } from "../api";
+import { ListItemProps } from "./rendering/ListFieldInput";
 
 export type DateFieldProps = HTMLFieldProps<
   Date,
@@ -32,6 +33,7 @@ export type DateFieldProps = HTMLFieldProps<
     required: boolean;
     max?: Date;
     min?: Date;
+    itemProps?: ListItemProps;
   }
 >;
 
@@ -41,8 +43,12 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
   }
 
   const properties = {
-    id: props.name,
-    name: props.name,
+    id: props.itemProps?.isListItem
+      ? props.itemProps.listName + ".${" + props.itemProps.indexVariableName + "}"
+      : props.name,
+    name: props.itemProps?.isListItem
+      ? props.itemProps.listName + ".${" + props.itemProps.indexVariableName + "}"
+      : props.name,
     label: props.label,
     disabled: props.disabled ?? false,
     placeholder: props.placeholder,
