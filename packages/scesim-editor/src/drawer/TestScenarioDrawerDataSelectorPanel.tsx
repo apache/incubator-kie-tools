@@ -550,7 +550,7 @@ function TestScenarioDataSelectorPanel() {
             )) ||
             (treeViewEmptyStatus.visibility === "loading" && (
               <Bullseye style={{ paddingTop: "10px" }}>
-                <Spinner aria-label="Contents of the basic example" />
+                <Spinner aria-label="Data Objects loading" />
               </Bullseye>
             ))}
         </div>

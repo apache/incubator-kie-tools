@@ -47,9 +47,9 @@ function TestScenarioDrawerSettingsPanel() {
   const [allDmnModelNormalizedPosixRelativePaths, setAllDmnModelNormalizedPosixRelativePaths] = useState<
     string[] | undefined
   >(undefined);
-  const [callBackError, setCallBackError] = useState<any>(undefined);
+  const [dmnNotFoundError, setDmnNotFoundError] = useState<any>(undefined);
   const settingsModel = useTestScenarioEditorStore((state) => state.scesim.model.ScenarioSimulationModel.settings);
-  const [selectedDMNPathRelativeToThisScesim, setSelectedDMNPathRelativeToThisScesim] = useState<string | undefined>(
+  const [selectedDmnPathRelativeToThisScesim, setSelectedDmnPathRelativeToThisScesim] = useState<string | undefined>(
     settingsModel.dmnFilePath?.__$$text
   );
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
@@ -78,52 +78,52 @@ function TestScenarioDrawerSettingsPanel() {
     )
   );
 
-  /** This callback return the unmarshalled representation of a DMN model given its path */
+  /** It returns the unmarshalled representation of a DMN model given its path */
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
-        if (!selectedDMNPathRelativeToThisScesim || onRequestExternalModelByPath === undefined) {
+        if (!selectedDmnPathRelativeToThisScesim || onRequestExternalModelByPath === undefined) {
           return;
         }
-        onRequestExternalModelByPath(selectedDMNPathRelativeToThisScesim)
-          .then((externalDMNModel) => {
+        onRequestExternalModelByPath(selectedDmnPathRelativeToThisScesim)
+          .then((externalDmnModel) => {
             console.trace("[TestScenarioDrawerSettingsPanel] The below external DMN model have been loaded");
-            console.trace(externalDMNModel);
+            console.trace(externalDmnModel);
 
-            if (canceled.get() || !externalDMNModel) {
+            if (canceled.get() || !externalDmnModel) {
               setSelectedDmnModel(undefined);
               return;
             }
 
-            setSelectedDmnModel(externalDMNModel);
+            setSelectedDmnModel(externalDmnModel);
             testScenarioEditorStoreApi.setState((state) => {
               state.scesim.model.ScenarioSimulationModel.settings.dmnFilePath!.__$$text =
-                selectedDMNPathRelativeToThisScesim;
+                selectedDmnPathRelativeToThisScesim;
               state.scesim.model.ScenarioSimulationModel.settings.dmnName!.__$$text =
-                externalDMNModel.model.definitions["@_name"];
+                externalDmnModel.model.definitions["@_name"];
               state.scesim.model.ScenarioSimulationModel.settings.dmnNamespace!.__$$text =
-                externalDMNModel.model.definitions["@_namespace"];
+                externalDmnModel.model.definitions["@_namespace"];
             });
-            setCallBackError(undefined);
+            setDmnNotFoundError(undefined);
           })
           .catch((err) => {
             setSelectedDmnModel(undefined);
-            setCallBackError(err);
+            setDmnNotFoundError(err);
             console.error(
-              `[TestScenarioDrawerSettingsPanel] An error occurred when parsing the selected model '${selectedDMNPathRelativeToThisScesim}'. Please double-check it is a non-empty valid model.`
+              `[TestScenarioDrawerSettingsPanel] An error occurred when parsing the selected model '${selectedDmnPathRelativeToThisScesim}'. Please double-check it is a non-empty valid model.`
             );
             console.error(err);
           });
       },
-      [onRequestExternalModelByPath, selectedDMNPathRelativeToThisScesim, testScenarioEditorStoreApi]
+      [onRequestExternalModelByPath, selectedDmnPathRelativeToThisScesim, testScenarioEditorStoreApi]
     )
   );
 
-  const isSelectedDmnInvalid = useMemo(
+  const isSelectedDmnValid = useMemo(
     () =>
-      callBackError !== undefined ||
-      selectedDmnModel?.normalizedPosixPathRelativeToTheOpenFile !== settingsModel.dmnFilePath?.__$$text,
-    [callBackError, selectedDmnModel?.normalizedPosixPathRelativeToTheOpenFile, settingsModel.dmnFilePath?.__$$text]
+      !dmnNotFoundError &&
+      selectedDmnModel?.normalizedPosixPathRelativeToTheOpenFile === settingsModel.dmnFilePath?.__$$text,
+    [dmnNotFoundError, selectedDmnModel?.normalizedPosixPathRelativeToTheOpenFile, settingsModel.dmnFilePath?.__$$text]
   );
 
   const updateSettingsField = useCallback(
@@ -171,11 +171,11 @@ function TestScenarioDrawerSettingsPanel() {
               if (typeof path !== "string") {
                 throw new Error(`Invalid path for an included model ${JSON.stringify(path)}`);
               }
-              setSelectedDMNPathRelativeToThisScesim(path);
+              setSelectedDmnPathRelativeToThisScesim(path);
               console.trace(path);
             }}
-            validated={isSelectedDmnInvalid ? "error" : undefined}
-            value={isSelectedDmnInvalid ? undefined : settingsModel.dmnFilePath?.__$$text}
+            validated={isSelectedDmnValid ? undefined : "error"}
+            value={isSelectedDmnValid ? settingsModel.dmnFilePath?.__$$text : undefined}
           >
             {!selectedDmnModel && (
               <FormSelectOption key={undefined} isDisabled label={i18n.drawer.settings.dmnModelReferenceError} />

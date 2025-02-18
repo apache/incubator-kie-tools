@@ -184,14 +184,14 @@ function TestScenarioMainPanel() {
      - The DMN model with the target reference is missing at all
      - The DMN model with the target reference is found, but in a different location */
   const isMissingDataObjectsNotificationEnabled = useMemo(() => {
-    const isReferencedDMNFileMissing =
+    const isReferencedDmnFileMissing =
       externalModelsByNamespace &&
       externalModelsByNamespace.has(testScenarioDmnNamespace!) &&
       (!externalModelsByNamespace.get(testScenarioDmnNamespace!) ||
         externalModelsByNamespace.get(testScenarioDmnNamespace!)?.normalizedPosixPathRelativeToTheOpenFile !==
           testScenarioDmnFilePath);
 
-    return testScenarioType === "RULE" || isReferencedDMNFileMissing;
+    return testScenarioType === "RULE" || isReferencedDmnFileMissing;
   }, [externalModelsByNamespace, testScenarioDmnFilePath, testScenarioDmnNamespace, testScenarioType]);
 
   const onTabChanged = useCallback(

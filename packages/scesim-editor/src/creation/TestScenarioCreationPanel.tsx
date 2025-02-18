@@ -55,7 +55,7 @@ function TestScenarioCreationPanel() {
     string[] | undefined
   >(undefined);
   const [assetType, setAssetType] = React.useState<"" | "DMN" | "RULE">("");
-  const [callBackError, setCallBackError] = useState<any>(undefined);
+  const [dmnNotFoundError, setDmnNotFoundError] = useState<any>(undefined);
   const [isAutoFillTableEnabled, setAutoFillTableEnabled] = React.useState(true);
   const [isStatelessSessionRule, setStatelessSessionRule] = React.useState(false);
   const [isTestSkipped, setTestSkipped] = React.useState(false);
@@ -72,7 +72,7 @@ function TestScenarioCreationPanel() {
     { value: "RULE", label: i18n.creationPanel.assetsOption.rule, disabled: false },
   ];
 
-  /** This callback retrieves all the avaiable DMN files available in the user's project */
+  /** It retrieves all the avaiable DMN files available in the user's project */
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
@@ -91,7 +91,7 @@ function TestScenarioCreationPanel() {
             );
           })
           .catch((err) => {
-            setCallBackError(err);
+            setDmnNotFoundError(err);
             console.error(
               `[TestScenarioCreationPanel] The below error when trying to retrieve all the External DMN files from the project.`
             );
@@ -102,7 +102,7 @@ function TestScenarioCreationPanel() {
     )
   );
 
-  /** This callback return the unmarshalled representation of a DMN model given its path */
+  /** It returns the unmarshalled representation of a DMN model given its path */
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
@@ -122,7 +122,7 @@ function TestScenarioCreationPanel() {
             setSelectedDmnModel(externalDMNModel);
           })
           .catch((err) => {
-            setCallBackError(err);
+            setDmnNotFoundError(err);
             console.error(
               `[TestScenarioCreationPanel] An error occurred when parsing the selected model '${selectedDmnModelPathRelativeToThisScesim}'. Please double-check it is a non-empty valid model.`
             );
@@ -136,10 +136,10 @@ function TestScenarioCreationPanel() {
   /* If any error occurs during the execution of useCancelableEffect's callback,    */
   /* it throws the error that will be catched by the ErrorBoundary.                 */
   useEffect(() => {
-    if (callBackError) {
-      throw callBackError;
+    if (dmnNotFoundError) {
+      throw dmnNotFoundError;
     }
-  }, [callBackError]);
+  }, [dmnNotFoundError]);
 
   const createTestScenario = useCallback(
     () =>
@@ -203,11 +203,6 @@ function TestScenarioCreationPanel() {
                 id="dmn-select"
                 name="dmn-select"
                 onChange={(dmnModelPathRelativeToThisScesim) => {
-                  if (typeof dmnModelPathRelativeToThisScesim !== "string") {
-                    throw new Error(
-                      `Invalid path for an included model ${JSON.stringify(dmnModelPathRelativeToThisScesim)}`
-                    );
-                  }
                   console.trace(`[TestScenarioCreationPanel] Selected path ${dmnModelPathRelativeToThisScesim}`);
                   setSelectedDmnModelPathRelativeToThisScesim(dmnModelPathRelativeToThisScesim);
                 }}
