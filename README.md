@@ -19,7 +19,7 @@
 
 ---
 
-The **[KIE Community](http://kie.org)** is a home for leading Open Source projects that play a role in delivering solutions around Business Automation and Artificial Intelligence in the Cloud.
+**[Apache KIE](http://kie.apache.org)** is a home for leading Open Source projects that play a role in delivering solutions around Business Automation and Artificial Intelligence in the Cloud.
 
 [![GitHub Stars](https://img.shields.io/github/stars/apache/incubator-kie-tools.svg)](https://github.com/apache/incubator-kie-tools/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/apache/incubator-kie-tools.svg)](https://github.com/apache/incubator-kie-tools/network/members)
@@ -29,7 +29,7 @@ The **[KIE Community](http://kie.org)** is a home for leading Open Source projec
 [![License](https://img.shields.io/github/license/apache/incubator-kie-tools.svg)](https://github.com/apache/incubator-kie-tools/blob/main/LICENSE)
 [![Twitter Follow](https://img.shields.io/twitter/follow/KieCommunity.svg?label=Follow&style=social)](https://twitter.com/KieCommunity?lang=en)
 
-This repository contains tooling applications and libraries for KIE projects.
+This repository contains tooling applications and libraries for Apache KIE projects.
 
 ## Contribute
 
@@ -43,13 +43,13 @@ This repository contains tooling applications and libraries for KIE projects.
 >
 > **Nix development environment**: A _devbox_ configuration is provided to automatically setup all the tools below. Read more in [here](./repo/NIX_DEV_ENV.md).
 
-To build and test all packages of the Apache KIE Tools project, you're going to need:
+To build and test all packages on this repository, you're going to need:
 
-- Node `20` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
+- Node.js `22` _(To install, follow these instructions: https://nodejs.org/en/download/package-manager/)_
 - pnpm `9.3.0` _(To install, follow these instructions: https://pnpm.io/installation#using-npm)_
 - Maven `3.9.6`
 - Java `17`
-- Go `1.22.9` _(To install, follow these instructions: https://go.dev/doc/install)_
+- Go `1.22.12` _(To install, follow these instructions: https://go.dev/doc/install)_
 - Python `3.12` _(To install, follow these instructions: https://www.python.org/downloads/)_
 - Helm `3.13.3` _(To install, follow these instructions: https://helm.sh/docs/intro/install/)_
 - Make
@@ -62,21 +62,13 @@ To build and test all packages of the Apache KIE Tools project, you're going to 
 
 #### Step 1: Bootstrap
 
-Bootstrapping installs the necessary dependencies for each package.
+Installs the necessary 3rd party dependencies and links packages of this repository together.
 
 - `pnpm bootstrap` --> Will bootstrap all packages
-- `pnpm bootstrap [pnpm-filter]` --> Will bootstrap packages filtered by [`pnpm` filter](https://pnpm.io/filtering)
+- `pnpm bootstrap [pnpm-filter]` --> Will bootstrap packages filtered by [`pnpm`-filter](https://pnpm.io/filtering)
 - > E.g.,
   >
   > `pnpm bootstrap -F dmn-editor...` bootstraps the `dmn-editor` package and its dependencies.
-
-> **ℹ️ NOTE**
->
-> If you plan on running Playwright tests, set the `PLAYWRIGHT_BASE__installDeps` environment variable to `true` before running the command above.
->
-> `PLAYWRIGHT_BASE__installDeps=true pnpm bootstrap`.
->
-> This will install all Playwright dependencies (such as browsers engines and OS-specific libraries).
 
 #### Step 2: Build
 
@@ -85,7 +77,7 @@ Bootstrapping installs the necessary dependencies for each package.
   - `pnpm -r build:dev`
     - Will build all packages for development. Skipping linters, tests, minifiers etc.
   - `pnpm [pnpm-filter] build:dev`
-    - Will build packages filtered by [`pnpm` filter](https://pnpm.io/filtering)
+    - Will build packages filtered by [`pnpm`-filter](https://pnpm.io/filtering)
   - > E.g.,
     >
     > `pnpm -F dmn-editor... build:dev` builds the `dmn-editor` package and its dependencies.
@@ -95,36 +87,57 @@ Bootstrapping installs the necessary dependencies for each package.
   - `pnpm -r build:prod`
     - Will build all packages for production. Optimizers will run, binaries will be produced for multiple architectures etc.
   - `pnpm [pnpm-filter] build:prod`
-    - Will build packages filtered by [`pnpm` filter](https://pnpm.io/filtering)
+    - Will build packages filtered by [`pnpm`-filter](https://pnpm.io/filtering)
   - > E.g.,
     >
     > `pnpm -F dmn-editor... build:prod` builds the `dmn-editor` package and its dependencies.
 
-- Changed
-  - `pnpm -F '...[HEAD]' build:dev`; or
-  - `pnpm -F '...[HEAD]' build:prod`
-    - Will build changed and affected packages based on your local changes. Useful for verifying that you didn't break anything.
+- Local changes
+  - `pnpm run on-affected [cmd]` (_alias for `pnpm -F '...[HEAD]'`_); or
+  - `pnpm run on-affected-only [cmd]` (_alias for `pnpm -F '...^[HEAD]'`_); or
+  - `pnpm run on-changed [cmd]` (_alias for `pnpm -F '[HEAD]'`_); or
+  - `pnpm run on-changed-deps-only [cmd]` (_alias for `pnpm -F '[HEAD]^...'`_);
+  - > E.g.,
+    >
+    > If you have local changes (staged or unstaged) done to the `dmn-editor` package:
+    >
+    > - `pnpm run on-affected build:dev`
+    >   - builds the `dmn-editor` package and all packages that depend on it.
+    > - `pnpm run on-affected-only build:dev`
+    >   - doesn't build the `dmn-editor` package, but builds all packages that depend on it.
+    > - `pnpm run on-changed build:dev`
+    >   - builds the `dmn-editor` package and nothing else.
+    > - `pnpm run on-changed-deps-only build:dev`
+    >   - doesn't build the `dmn-editor` package, but builds all packages that it depends on.
 
 > **ℹ️ NOTE**
 >
-> The Apache KIE Tools build is parameterized by several Environment Variables. For an extensive list of these variables, please see the list printed by the `bootstrap` step.
+> This repository's build is parameterized by several Environment Variables. For an extensive list of these variables, please see the list printed by the `bootstrap` step.
 >
-> - To enable the examples build: `export KIE_TOOLS_BUILD__buildExamples=true`
-> - To enable container images build: `export KIE_TOOLS_BUILD__buildContainerImages=true`
+> - To enable Examples build: `export KIE_TOOLS_BUILD__buildExamples=true`
+> - To enable Container images build: `export KIE_TOOLS_BUILD__buildContainerImages=true`
 > - To enable E2E tests: `export KIE_TOOLS_BUILD__runEndToEndTests=true`
+
+> **ℹ️ NOTE**
+>
+> Ubuntu 22.04 is the only OS that nativelly supports running E2E tests and by default the E2E tests will run using a Docker container. To run the tests natively in your OS please install the Playwright dependencies during the Bootstrap phase by adding the `PLAYWRIGHT_BASE__installDeps=true` environment variable. Additionally, tweak the containerized tests variable to `false` (`KIE_TOOLS_BUILD__containerizedEndToEndTests=false`). Please refer to @kie-tools/playwright-base [README](./packages/playwright-base/README.md).
 
 > **ℹ️ NOTE**
 >
 > Final artifacts will be in `{packages,examples}/*/dist` directories.
 
+> **ℹ️ NOTE**
+>
+> For more information about how this repository works, please refer to [the `kie-tools` Manual](./repo/MANUAL.md)
+
 ---
 
 ## Reproducible Builds for _maven-based_ packages
 
-It is mandatory that any _maven-based_ package that releases artifacts runs [Reproducible Builds](https://reproducible-builds.org/)
+It is mandatory that any _Maven-based_ package that releases artifacts runs [Reproducible Builds](https://reproducible-builds.org/)
 to build it's artifacts, in this case, in our `build:prod` scripts.
 
-`@kie-tools/maven-base` provides the `reproducible-build` `maven` profile to enable _Reproducible Builds_ in our builds.
+`@kie-tools/maven-base` provides the `reproducible-build` profile to enable _Reproducible Builds_ in our builds.
 To use it follow the steps:
 
 - Make sure the `package.json` depends on `@kie-tools/maven-base`:
@@ -137,7 +150,7 @@ To use it follow the steps:
 }
 ```
 
-- Make the package `pom.xml` has `kie-tools-maven-base` as a parent and declares the `project.build.outputTimestamp` property like:
+- Make sure the package `pom.xml` has `kie-tools-maven-base` as a parent and declares the `project.build.outputTimestamp` property like:
 
 ```xml
 <project>
@@ -171,9 +184,9 @@ To use it follow the steps:
 > we use to generate deployable artifacts using the dynamic `${revision}` variable. You can check the full list of banned
 > plugins [here](https://maven.apache.org/plugins-archives/maven-artifact-plugin-3.4.1/plugin-issues.html).
 > The issue that caused the ban [flatten-maven-plugin/issues/256](https://github.com/mojohaus/flatten-maven-plugin/issues/256) was a result
-> of change in `maven` behaviour between `v3.8.1` and `v3.8.2`, and isn't a problem on the `maven-flatten-plugin`.
+> of change in Maven behaviour between `v3.8.1` and `v3.8.2`, and isn't a problem on the `maven-flatten-plugin`.
 > Actually, in later versions of the `maven-artifact-plugin` the ban got revoked.
-> Having this in mind, and due to the fact that `kie-tools` requires newer `maven` versions, our _Reproducible Builds_ require
+> Having this in mind, and due to the fact that `kie-tools` requires newer Maven versions, our _Reproducible Builds_ require
 > temporarily overriding the list of banned plugins, until we upgrade to a newer `maven-artifact-plugin` version.
 > This will be addressed by https://github.com/apache/incubator-kie-issues/issues/1371
 
@@ -181,13 +194,13 @@ To use it follow the steps:
 
 ## Applications
 
-The Apache KIE Tools project contains several applications. To develop each one of them individually, refer to the instructions below.
+This repository contains several applications. To develop each one of them individually, refer to the instructions below.
 
 #### VS Code Extension (DMN, BPMN, SceSim, and PMML Editors)
 
 1. After you've successfully built the project following the instructions above, open the `packages/kie-editors-dev-vscode-extension` folder on VS Code. Use a new VS Code window so that the `packages/kie-editors-dev-vscode-extension` folder shows up as root in the VS Code explorer.
 2. From there, you can Run the extension or the end-to-end tests by using the `Debug` menu/section. You can also use the respective shortcuts (F5 to start debugging, for instance).
-3. **NOTE:** To run the VS Code extension in development mode, you need `webpack` and `webpack-cli` to be globally installed on NPM. Normally you can do that with `npm install -g webpack@^5.92.1 webpack-cli@^4.10.0`, but `sudo` may be required depending on your installation.
+3. **NOTE:** To run the VS Code extension in development mode, you need `webpack` and `webpack-cli` to be globally installed on NPM. Normally you can do that with `npm install -g webpack@^5.94.0 webpack-cli@^4.10.0`, but `sudo` may be required depending on your installation.
 4. **Remember!** If you make changes to any package other than `packages/kie-editors-dev-vscode-extension`, you have to manually rebuild them before relaunching the extension on VS Code.
 
 #### VS Code Extension (Serverless Workflow Editor)
@@ -243,7 +256,7 @@ The Apache KIE Tools project contains several applications. To develop each one 
 
 #### Stunner Editors
 
-The `stunner-editors` package contains the BPMN, DMN, and SceSim Editors that are used in many applications of Apache KIE Tools.
+The `stunner-editors` package contains the BPMN, DMN, and SceSim Editors that are used in many applications of this repository.
 After cloning the repo, start with a fresh build.
 
 - `pnpm bootstrap -F @kie-tools/stunner-editors...`

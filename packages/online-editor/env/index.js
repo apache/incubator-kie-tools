@@ -148,6 +148,10 @@ module.exports = composeEnv([rootEnv, extendedServicesJavaEnv, corsProxyEnv, kie
       default: "false",
       description: "Tells if the development web server should use https",
     },
+    ONLINE_EDITOR__skipPlaywrightTestsForArm64: {
+      default: "false",
+      description: "Skip Playwright tests for ARM64 architecture.",
+    },
   }),
   get env() {
     return {
@@ -155,6 +159,9 @@ module.exports = composeEnv([rootEnv, extendedServicesJavaEnv, corsProxyEnv, kie
         dev: {
           port: getOrDefault(this.vars.ONLINE_EDITOR_DEV__port),
           https: str2bool(getOrDefault(this.vars.ONLINE_EDITOR_DEV__https)),
+        },
+        test: {
+          skipForArm64: getOrDefault(this.vars.ONLINE_EDITOR__skipPlaywrightTestsForArm64),
         },
         gtmId: getOrDefault(this.vars.ONLINE_EDITOR__gtmId),
         buildInfo: getOrDefault(this.vars.ONLINE_EDITOR__buildInfo),

@@ -26,10 +26,15 @@ class DefaultDataType implements DataType {
   ) {}
 }
 
-export const ARRAY: DataType = new DefaultDataType("string[]", "[]");
-export const ANY_ARRAY: DataType = new DefaultDataType("any[]");
-export const BOOLEAN: DataType = new DefaultDataType("boolean", "false");
-export const DATE: DataType = new DefaultDataType("string");
-export const NUMBER: DataType = new DefaultDataType("number");
-export const STRING: DataType = new DefaultDataType("string", '""');
-export const OBJECT: DataType = new DefaultDataType("any");
+export const DEFAULT_DATA_TYPE_ANY_ARRAY: DataType = new DefaultDataType("any[]");
+export const DEFAULT_DATA_TYPE_BOOLEAN_ARRAY: DataType = new DefaultDataType("boolean[]", "[]");
+export const DEFAULT_DATA_TYPE_DATE_ARRAY: DataType = new DefaultDataType("string[]", "[]");
+export const DEFAULT_DATA_TYPE_NUMBER_ARRAY: DataType = new DefaultDataType("number[]", "[]");
+export const DEFAULT_DATA_TYPE_OBJECT_ARRAY: DataType = new DefaultDataType("object[]", "[]");
+export const DEFAULT_DATA_TYPE_STRING_ARRAY: DataType = new DefaultDataType("string[]", "[]");
+export const DEFAULT_DATA_TYPE_ANY: DataType = new DefaultDataType("any");
+export const DEFAULT_DATA_TYPE_BOOLEAN: DataType = new DefaultDataType("boolean", "false");
+export const DEFAULT_DATA_TYPE_DATE: DataType = new DefaultDataType("string");
+export const DEFAULT_DATA_TYPE_NUMBER: DataType = new DefaultDataType("number");
+export const DEFAULT_DATA_TYPE_OBJECT: DataType = new DefaultDataType("object", "{}");
+export const DEFAULT_DATA_TYPE_STRING: DataType = new DefaultDataType("string", '""');

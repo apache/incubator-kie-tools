@@ -26,7 +26,6 @@ import { InputRow } from "@kie-tools/form-dmn";
 import { DecisionResult } from "@kie-tools/extended-services-api";
 import { DmnRunnerProviderAction } from "./DmnRunnerTypes";
 import type { JSONSchema4 } from "json-schema";
-import { EmbeddedEditorRef } from "@kie-tools-core/editor/dist/embedded";
 
 export interface DmnRunnerContextType {
   configs: UnitablesInputsConfigs;
@@ -42,7 +41,6 @@ export interface DmnRunnerContextType {
   results: Array<DecisionResult[] | undefined>;
   resultsDifference: Array<Array<object>>;
   status: DmnRunnerStatus;
-  dmnEditor: EmbeddedEditorRef | undefined;
 }
 
 export interface DmnRunnerCallbacksContextType {

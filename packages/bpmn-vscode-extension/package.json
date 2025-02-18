@@ -40,7 +40,7 @@
     "@kie-tools/tsconfig": "workspace:*",
     "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*",
     "@types/vscode": "1.67.0",
-    "@vscode/test-web": "^0.0.30",
+    "@vscode/test-web": "^0.0.66",
     "@vscode/vsce": "^3.2.1",
     "copy-webpack-plugin": "^11.0.0",
     "process": "^0.11.10",

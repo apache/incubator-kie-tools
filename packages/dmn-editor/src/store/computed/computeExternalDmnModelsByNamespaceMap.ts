@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -17,31 +17,20 @@
  * under the License.
  */
 
-import { DataType } from "./DataType";
-import { FeelSyntacticSymbolNature } from "./FeelSyntacticSymbolNature";
-import { Expression } from "./VariableOccurrence";
+import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import { ExternalDmnsIndex } from "../../DmnEditor";
 
-/**
- * Describe a variable in FEEL.
- */
-export interface Variable {
-  /**
-   * The name/value of the variable.
-   */
-  value: string;
+export function computeExternalDmnModelsByNamespaceMap(
+  externalDmnsByNamespace: ExternalDmnsIndex | undefined
+): Map<string, Normalized<DmnLatestModel>> {
+  const externalModels = new Map<string, Normalized<DmnLatestModel>>();
+  if (!externalDmnsByNamespace) {
+    return externalModels;
+  }
 
-  /**
-   * The nature of the variable.
-   */
-  feelSyntacticSymbolNature: FeelSyntacticSymbolNature;
-
-  /**
-   * The type of the variable, which can be a custom data type defined by the user, a built-in type or not defined.
-   */
-  typeRef?: DataType | string | undefined;
-
-  /**
-   * The expressions where this variable is being used.
-   */
-  expressions: Map<string, Expression>;
+  for (const [key, externalDmn] of externalDmnsByNamespace) {
+    externalModels.set(key, externalDmn.model);
+  }
+  return externalModels;
 }
