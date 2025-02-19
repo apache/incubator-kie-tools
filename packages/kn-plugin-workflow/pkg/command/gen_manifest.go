@@ -198,7 +198,7 @@ func setupEnvironment(cfg *DeployUndeployCmdConfig) error {
 
 	//setup namespace
 	if len(cfg.NameSpace) == 0 && !cfg.EmptyNameSpace {
-		if defaultNamespace, err := common.GetNamespace(); err == nil {
+		if defaultNamespace, err := common.GetCurrentNamespace(); err == nil {
 			cfg.NameSpace = defaultNamespace
 			fmt.Printf(" - ✅  resolved namespace: %s\n", cfg.NameSpace)
 		} else {
