@@ -23,13 +23,20 @@ import (
 	"context"
 	"fmt"
 
+	"sigs.k8s.io/controller-runtime/pkg/predicate"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/properties"
+
 	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
 	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/knative"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/monitoring"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/workflowdef"
 
 	"k8s.io/klog/v2"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/knative"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/monitoring"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/constants"
@@ -104,14 +111,9 @@ func (r *SonataFlowReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	}
 
 	r.setDefaults(workflow)
-	// If the workflow is being deleted, clean up the triggers on a different namespace
-	if workflow.DeletionTimestamp != nil && controllerutil.ContainsFinalizer(workflow, constants.TriggerFinalizer) {
-		err := r.cleanupTriggers(ctx, workflow)
-		if err != nil {
-			klog.V(log.E).ErrorS(err, "Failed to clean up triggers for workflow %s", workflow.Name)
-			return ctrl.Result{}, err
-		}
-		return ctrl.Result{}, nil
+	// If the workflow is being deleted, execute all the associated finalizers
+	if workflow.DeletionTimestamp != nil {
+		return r.applyFinalizers(ctx, workflow)
 	}
 
 	// Only process resources assigned to the operator
@@ -120,6 +122,54 @@ func (r *SonataFlowReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		return reconcile.Result{}, nil
 	}
 	return profiles.NewReconciler(r.Client, r.Config, r.Recorder, workflow).Reconcile(ctx, workflow)
+}
+
+// applyFinalizers Manages the execution of the potential finalizers added to a workflow.
+func (r *SonataFlowReconciler) applyFinalizers(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, error) {
+	workflowFinalizers := []string{constants.TriggerFinalizer, constants.WorkflowFinalizer}
+	var err error
+	var requeue *ctrl.Result
+
+	for _, finalizer := range workflowFinalizers {
+		if controllerutil.ContainsFinalizer(workflow, finalizer) {
+			switch finalizer {
+			case constants.TriggerFinalizer:
+				err = r.cleanupTriggers(ctx, workflow)
+			case constants.WorkflowFinalizer:
+				err = r.workflowDeletion(ctx, workflow)
+			}
+			if err != nil {
+				now := metav1.Now()
+				workflow.Status.FinalizerAttempts = workflow.Status.FinalizerAttempts + 1
+				workflow.Status.LastTimeFinalizerAttempt = &now
+
+				klog.V(log.E).ErrorS(err, "Failed to execute workflow finalizer",
+					"workflow", workflow.Name, "namespace", workflow.Namespace, "finalizer", finalizer, "attempts", workflow.Status.FinalizerAttempts)
+				if workflow.Status.FinalizerAttempts < constants.MaxWorkflowFinalizerAttempts {
+					requeue = &ctrl.Result{RequeueAfter: constants.WorkflowFinalizerRetryInterval}
+				} else {
+					klog.V(log.E).ErrorS(err, "No more attempts left for executing workflow finalizer",
+						"workflow", workflow.Name, "namespace", workflow.Namespace, "finalizer", finalizer, "attempts", workflow.Status.FinalizerAttempts)
+					workflow.Status.FinalizerAttempts = 0
+				}
+			} else {
+				workflow.Status.FinalizerAttempts = 0
+				workflow.Status.LastTimeFinalizerAttempt = nil
+			}
+
+			if err = r.Client.Status().Update(ctx, workflow); err != nil {
+				return ctrl.Result{}, err
+			}
+			if requeue != nil {
+				return *requeue, nil
+			}
+			controllerutil.RemoveFinalizer(workflow, finalizer)
+			if err = r.Client.Update(ctx, workflow); err != nil {
+				return ctrl.Result{}, err
+			}
+		}
+	}
+	return ctrl.Result{}, nil
 }
 
 // TODO: move to webhook see https://github.com/apache/incubator-kie-tools/packages/sonataflow-operator/pull/239
@@ -146,8 +196,25 @@ func (r *SonataFlowReconciler) cleanupTriggers(ctx context.Context, workflow *op
 			return err
 		}
 	}
-	controllerutil.RemoveFinalizer(workflow, constants.TriggerFinalizer)
-	return r.Client.Update(ctx, workflow)
+	return nil
+}
+
+func (r *SonataFlowReconciler) workflowDeletion(ctx context.Context, workflow *operatorapi.SonataFlow) error {
+	var err error
+	var sfp *operatorapi.SonataFlowPlatform
+
+	if sfp, err = common.GetDataIndexPlatform(ctx, r.Client, workflow); err != nil {
+		return err
+	}
+	if sfp == nil {
+		klog.V(log.I).Infof("No DataIndex containing platform was found for workflow: %s, namespace: %s, for un-deployment notification.", workflow.Name, workflow.Namespace)
+	} else {
+		evt := workflowdef.NewWorkflowDefinitionAvailabilityEvent(workflow, workflowdef.SonataFlowOperatorSource, properties.GetWorkflowEndpointUrl(workflow), false)
+		if err = common.SendWorkflowDefinitionEvent(ctx, workflow, sfp, evt); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // Delete implements a handler for the Delete event.
@@ -225,6 +292,15 @@ func buildEnqueueRequestsFromMapFunc(c client.Client, b *operatorapi.SonataFlowB
 func (r *SonataFlowReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	builder := ctrl.NewControllerManagedBy(mgr).
 		For(&operatorapi.SonataFlow{}).
+		WithEventFilter(predicate.Funcs{
+			UpdateFunc: func(e event.UpdateEvent) bool {
+				oldGeneration := e.ObjectOld.GetGeneration()
+				newGeneration := e.ObjectNew.GetGeneration()
+				// Generation is only updated on spec changes (also on deletion), not upon metadata or status changes.
+				// Filter out events where the generation hasn't changed to avoid being triggered by status updates.
+				return oldGeneration != newGeneration
+			},
+		}).
 		Owns(&appsv1.Deployment{}).
 		Owns(&corev1.Service{}).
 		Owns(&corev1.ConfigMap{}).

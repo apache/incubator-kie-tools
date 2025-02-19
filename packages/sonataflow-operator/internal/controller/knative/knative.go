@@ -116,8 +116,8 @@ func GetKnativeAvailability(cfg *rest.Config) (*Availability, error) {
 	}
 }
 
-// getRemotePlatform returns the remote platfrom referred by a SonataFlowClusterPlatform
-func getRemotePlatform(pl *operatorapi.SonataFlowPlatform) (*operatorapi.SonataFlowPlatform, error) {
+// GetRemotePlatform returns the remote platform referred by a SonataFlowClusterPlatform if any.
+func GetRemotePlatform(pl *operatorapi.SonataFlowPlatform) (*operatorapi.SonataFlowPlatform, error) {
 	if pl.Status.ClusterPlatformRef != nil {
 		// Find the platform referred by the cluster platform
 		platform := &operatorapi.SonataFlowPlatform{}
@@ -177,7 +177,7 @@ func GetWorkflowSink(workflow *operatorapi.SonataFlow, pl *operatorapi.SonataFlo
 		return getDestinationWithNamespace(pl.Spec.Eventing.Broker, pl.Namespace), nil
 	}
 	// Find the remote platform referred by the cluster platform
-	platform, err := getRemotePlatform(pl)
+	platform, err := GetRemotePlatform(pl)
 	if err != nil {
 		return nil, err
 	}
