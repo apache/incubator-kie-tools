@@ -77,6 +77,46 @@ var _ = Describe("Platform Use Cases :: ", Label("platform"), Ordered, func() {
 			}
 		}
 	})
+
+	var _ = Describe("Db migration :: ", Ordered, func() {
+
+		Describe("ensure service based db migration", func() {
+			projectDir, _ := utils.GetProjectDir()
+			It("should successfully deploy the SonataFlowPlatform with data index and jobs service", func() {
+				By("Deploy the CR")
+				var manifests []byte
+				EventuallyWithOffset(1, func() error {
+					var err error
+					cmd := exec.Command("kubectl", "kustomize", filepath.Join(projectDir,
+						"test/e2e/testdata/platform/persistence/service_based_db_migration"))
+					manifests, err = utils.Run(cmd)
+					return err
+				}, time.Minute, time.Second).Should(Succeed())
+				cmd := exec.Command("kubectl", "create", "-n", targetNamespace, "-f", "-")
+				cmd.Stdin = bytes.NewBuffer(manifests)
+				_, err := utils.Run(cmd)
+				Expect(err).NotTo(HaveOccurred())
+
+				By("Wait for SonatatFlowPlatform CR to complete deployment")
+				// wait for service deployments to be ready
+				EventuallyWithOffset(1, func() error {
+					cmd = exec.Command("kubectl", "wait", "pod", "-n", targetNamespace, "-l", "app.kubernetes.io/name in (jobs-service,data-index-service)", "--for", "condition=Ready", "--timeout=5s")
+					_, err = utils.Run(cmd)
+					return err
+				}, 10*time.Minute, 5).Should(Succeed())
+
+				By("Evaluate status of all service's health endpoint")
+				cmd = exec.Command("kubectl", "get", "pod", "-l", "app.kubernetes.io/name in (jobs-service,data-index-service)", "-n", targetNamespace, "-ojsonpath={.items[*].metadata.name}")
+				output, err := utils.Run(cmd)
+				Expect(err).NotTo(HaveOccurred())
+				for _, pn := range strings.Split(string(output), " ") {
+					verifyHealthStatusInPod(pn, targetNamespace)
+				}
+			})
+		})
+
+	})
+
 	var _ = Context("with platform services", func() {
 
 		DescribeTable("when creating a simple workflow", func(testcaseDir string, profile metadata.ProfileType, persistenceType string) {
@@ -186,6 +226,60 @@ var _ = Describe("Platform Use Cases :: ", Label("platform"), Ordered, func() {
 	},
 		Entry("and both Job Service and Data Index using the persistence from platform CR", test.GetPathFromE2EDirectory("platform", "persistence", "generic_from_platform_cr")),
 		Entry("and both Job Service and Data Index using the one defined in each service, discarding the one from the platform CR", test.GetPathFromE2EDirectory("platform", "persistence", "overwritten_by_services")),
+		Entry("Job Service and Data Index come up with service based db migration", test.GetPathFromE2EDirectory("platform", "persistence", "service_based_db_migration")),
+	)
+
+	DescribeTable("when deploying a SonataFlowPlatform CR with PostgreSQL Persistence and using Job based DB migration", func(testcaseDir string) {
+		By("Deploy the Postgres DB")
+		var manifests []byte
+		EventuallyWithOffset(1, func() error {
+			var err error
+			cmd := exec.Command("kubectl", "kustomize", testcaseDir+"/pg-service")
+			manifests, err = utils.Run(cmd)
+			return err
+		}, time.Minute, time.Second).Should(Succeed())
+		cmd := exec.Command("kubectl", "create", "-n", targetNamespace, "-f", "-")
+		cmd.Stdin = bytes.NewBuffer(manifests)
+		_, err := utils.Run(cmd)
+		Expect(err).NotTo(HaveOccurred())
+
+		By("Wait for Postgres DB to come alive")
+		// wait for service deployments to be ready
+		EventuallyWithOffset(1, func() error {
+			cmd = exec.Command("kubectl", "wait", "pod", "-n", targetNamespace, "-l", "app.kubernetes.io/name in (postgres)", "--for", "condition=Ready", "--timeout=5s")
+			_, err = utils.Run(cmd)
+			return err
+		}, 5*time.Minute, 5).Should(Succeed())
+
+		By("Deploy the CR")
+		EventuallyWithOffset(1, func() error {
+			var err error
+			cmd := exec.Command("kubectl", "kustomize", testcaseDir+"/sonataflow-platform")
+			manifests, err = utils.Run(cmd)
+			return err
+		}, time.Minute, time.Second).Should(Succeed())
+		cmd = exec.Command("kubectl", "create", "-n", targetNamespace, "-f", "-")
+		cmd.Stdin = bytes.NewBuffer(manifests)
+		_, err = utils.Run(cmd)
+		Expect(err).NotTo(HaveOccurred())
+
+		By("Wait for SonatatFlowPlatform CR to complete deployment")
+		// wait for service deployments to be ready
+		EventuallyWithOffset(1, func() error {
+			cmd = exec.Command("kubectl", "wait", "pod", "-n", targetNamespace, "-l", "app.kubernetes.io/name in (jobs-service,data-index-service)", "--for", "condition=Ready", "--timeout=5s")
+			_, err = utils.Run(cmd)
+			return err
+		}, 10*time.Minute, 5).Should(Succeed())
+
+		By("Evaluate status of all service's health endpoint")
+		cmd = exec.Command("kubectl", "get", "pod", "-l", "app.kubernetes.io/name in (jobs-service,data-index-service)", "-n", targetNamespace, "-ojsonpath={.items[*].metadata.name}")
+		output, err := utils.Run(cmd)
+		Expect(err).NotTo(HaveOccurred())
+		for _, pn := range strings.Split(string(output), " ") {
+			verifyHealthStatusInPod(pn, targetNamespace)
+		}
+	},
+		Entry("Job Service and Data Index come up with job based db migration", test.GetPathFromE2EDirectory("platform", "persistence", "job_based_db_migration")),
 	)
 
 	DescribeTable("when deploying a SonataFlowPlatform CR with brokers", func(testcaseDir string) {
