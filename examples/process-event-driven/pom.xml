@@ -30,9 +30,10 @@
     <relativePath>./node_modules/@kie-tools/maven-base/pom.xml</relativePath>
   </parent>
 
-  <artifactId>process-user-tasks-subsystem</artifactId>
-  <name>KIE Tools :: Example :: Process User Tasks Subsystem</name>
+  <artifactId>process-event-driven</artifactId>
+  <name>KIE Tools :: Example :: Process Event Driven</name>
   <version>${revision}</version>
+  <packaging>pom</packaging>
 
   <modules>
     <module>hotels</module>

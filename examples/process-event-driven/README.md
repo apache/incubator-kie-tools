@@ -73,12 +73,12 @@ mp.messaging.incoming.correlation.auto.offset.reset=earliest
 To help bootstrapping the Infrastructure Services, the example provides a `docker-compose.yml` file. This quickstart provides two ways of running the example application. In development ("dev") mode, the user can start a Kafka service using `docker-compose` and must run **Process Travelers** and **Process Hotel** processes manually. In "full" mode the `docker-compose` file will start the Kafka service and both processes, requiring the project to be compiled first to generate the process's container images. To use `docker-compose` we must first create a `.env` file in the example root, and it should have the following variables:
 
 ```
-STREAM_NAME=
+PROJECT_VERSION=
 KAFKA_HOST=
 COMPOSE_PROFILES=
 ```
 
-- `STREAM_NAME`: Should be set with the current Kogito version being used: `STREAM_NAME=0.0.0`
+- `PROJECT_VERSION`: Should be set with the current Kogito version being used: `PROJECT_VERSION=0.0.0`
 - `KAFKA_HOST`: tells how the processes will find the Kafka service.
 - `COMPOSE_PROFILES`: filters which services will run.
 
@@ -87,19 +87,19 @@ COMPOSE_PROFILES=
 For development mode, the `.env` must have the following values:
 
 ```
-STREAM_NAME=0.0.0
+PROJECT_VERSION=0.0.0
 KAFKA_HOST=localhost
-COMPOSE_PROFILES=dev
+COMPOSE_PROFILES=development
 ```
 
-### Full mode
+### Container mode
 
-For full mode, the `.env` must have the following values:
+For container mode, the `.env` must have the following values:
 
 ```
-STREAM_NAME=0.0.0
+PROJECT_VERSION=0.0.0
 KAFKA_HOST=kafka
-COMPOSE_PROFILES=full
+COMPOSE_PROFILES=container
 ```
 
 ### Handling services
@@ -141,7 +141,7 @@ First, start the Kafka service (["Infrastructure requirements/Development mode"]
 mvn clean package quarkus:dev
 ```
 
-The **Process Travelers** process will run in the port `8080` and **Process Hotel** process in the port `8081`.
+The **Process Travelers** process will run in the port `8082` and **Process Hotel** process in the port `8081`.
 
 NOTE: With the dev mode of Quarkus you can take advantage of hot reload for business assets like processes, rules, decision tables, and java code. No need to redeploy or restart your running application.
 
@@ -400,11 +400,11 @@ At least, producing the **travelers_message_3** above in the `travelers` topic, 
 
 [Specification at swagger.io](https://swagger.io/docs/specification/about/)
 
-You can take a look at the [OpenAPI definition](http://localhost:8080/openapi?format=json) - automatically generated and included in this service - to determine all available operations exposed by this service. For easy readability you can visualize the OpenAPI definition file using a UI tool like for example available [Swagger UI](https://editor.swagger.io).
+You can take a look at the [OpenAPI definition](http://localhost:8082/openapi?format=json) - automatically generated and included in this service - to determine all available operations exposed by this service. For easy readability you can visualize the OpenAPI definition file using a UI tool like for example available [Swagger UI](https://editor.swagger.io).
 
 In addition, various clients to interact with this service can be easily generated using this OpenAPI definition.
 
-When running in either Quarkus Development or Native mode, we also leverage the [Quarkus OpenAPI extension](https://quarkus.io/guides/openapi-swaggerui#use-swagger-ui-for-development) that exposes [Swagger UI](http://localhost:8080/swagger-ui/) that you can use to look at available REST endpoints and send test requests.
+When running in either Quarkus Development or Native mode, we also leverage the [Quarkus OpenAPI extension](https://quarkus.io/guides/openapi-swaggerui#use-swagger-ui-for-development) that exposes [Swagger UI](http://localhost:8082/swagger-ui/) that you can use to look at available REST endpoints and send test requests.
 
 ---
 

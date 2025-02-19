@@ -21,7 +21,7 @@ services:
   kafka:
     image: apache/kafka:3.7.2
     container_name: process-event-driven-kafka
-    profiles: ["dev", "full"]
+    profiles: ["development", "container"]
     ports:
       - "9092:9092"
     environment:
@@ -40,89 +40,26 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_LOG_DIRS: "/tmp/kraft-combined-logs"
 
-  postgres:
-    container_name: process-event-driven-postgres
-    image: postgres:16.7-alpine3.21
-    profiles: ["full"]
-    ports:
-      - "5432:5432"
-    volumes:
-      - ./docker-compose/sql:/docker-entrypoint-initdb.d:Z
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
-      timeout: 45s
-      interval: 10s
-      retries: 50
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-
-  pgadmin:
-    container_name: process-event-driven-pgadmin
-    image: dpage/pgadmin4:8.14
-    profiles: ["full"]
-    ports:
-      - 8055:80
-    depends_on:
-      - postgres
-    volumes:
-      - ./docker-compose/pgadmin/servers.json:/pgadmin4/servers.json
-      - ./docker-compose/pgadmin/pgpass:/pgadmin4/pgpass
-    entrypoint: >
-      /bin/sh -c "
-      cp -f /pgadmin4/pgpass /var/lib/pgadmin/;
-      chmod 600 /var/lib/pgadmin/pgpass;
-      /entrypoint.sh
-      "
-    environment:
-      PGADMIN_DEFAULT_EMAIL: user@kogito.org
-      PGADMIN_DEFAULT_PASSWORD: pass
-      PGADMIN_CONFIG_SERVER_MODE: "False"
-      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
-      GUNICORN_ACCESS_LOGFILE: "/dev/null"
-
   hotels:
     container_name: process-event-driven-hotels
-    image: dev.local/${USER}/process-event-driven-hotels:${STREAM_NAME}
-    profiles: ["full"]
+    image: dev.local/apache/process-event-driven-hotels:${PROJECT_VERSION}
+    profiles: ["container"]
     ports:
       - "8081:8080"
-    depends_on:
-      postgres:
-        condition: service_healthy
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       QUARKUS_HTTP_CORS_ORIGINS: "/.*/"
-      QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://postgres:5432/hotels"
-      QUARKUS_DATASOURCE_REACTIVE_URL: "postgresql://postgres:5432/hotels"
-      QUARKUS_DATASOURCE_USERNAME: hotel-user
-      QUARKUS_DATASOURCE_PASSWORD: hotel-pass
-      QUARKUS_DATASOURCE_DB_KIND: postgresql
-      KOGITO_JOBS_SERVICE_URL: http://127.0.0.1:8081
-      KOGITO_SERVICE_URL: http://127.0.0.1:8081
-      KOGITO_DATAINDEX_HTTP_URL: http://127.0.0.1:8081
     extra_hosts:
       - "127.0.0.1:host-gateway"
 
   travelers:
     container_name: process-event-driven-travelers
-    image: dev.local/${USER}/process-event-driven-travelers:${STREAM_NAME}
-    profiles: ["full"]
+    image: dev.local/apache/process-event-driven-travelers:${PROJECT_VERSION}
+    profiles: ["container"]
     ports:
       - "8082:8080"
-    depends_on:
-      postgres:
-        condition: service_healthy
     environment:
       KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       QUARKUS_HTTP_CORS_ORIGINS: "/.*/"
-      QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://postgres:5432/travelers"
-      QUARKUS_DATASOURCE_REACTIVE_URL: "postgresql://postgres:5432/travelers"
-      QUARKUS_DATASOURCE_USERNAME: traveler-user
-      QUARKUS_DATASOURCE_PASSWORD: traveler-pass
-      QUARKUS_DATASOURCE_DB_KIND: postgresql
-      KOGITO_JOBS_SERVICE_URL: http://127.0.0.1:8082
-      KOGITO_SERVICE_URL: http://127.0.0.1:8082
-      KOGITO_DATAINDEX_HTTP_URL: http://127.0.0.1:8082
     extra_hosts:
       - "127.0.0.1:host-gateway"
