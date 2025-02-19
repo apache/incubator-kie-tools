@@ -416,35 +416,65 @@ export function DecisionTableExpression({
     widths,
   ]);
 
-  const beeTableRows = useMemo(
-    () =>
-      (decisionTableExpression.rule ?? []).map((rule) => {
-        const ruleRow = [
-          ...(rule.inputEntry ?? []),
-          ...(rule.outputEntry ?? new Array(decisionTableExpression.output.length)),
-          ...(rule.annotationEntry ?? []),
-        ];
+  const beeTableRows = useMemo(() => {
+    const mapRuleToRow = (rule: Normalized<DMN15__tDecisionRule>) => {
+      const ruleRow = [
+        ...(rule.inputEntry ?? []),
+        ...(rule.outputEntry ?? new Array(decisionTableExpression.output.length)),
+        ...(rule.annotationEntry ?? []),
+      ];
 
-        return getColumnsAtLastLevel(beeTableColumns).reduce(
-          (tableRow: ROWTYPE, column, columnIndex) => {
-            tableRow[column.accessor] = {
-              id: (ruleRow[columnIndex] as DMN15__tUnaryTests & DMN15__tLiteralExpression)?.["@_id"] ?? "",
-              content: ruleRow[columnIndex]?.text?.__$$text ?? "",
-            };
-            return tableRow;
-          },
-          { id: rule["@_id"] }
-        );
-      }),
-    [beeTableColumns, decisionTableExpression.output.length, decisionTableExpression.rule]
-  );
+      return getColumnsAtLastLevel(beeTableColumns).reduce(
+        (tableRow: ROWTYPE, column, columnIndex) => {
+          tableRow[column.accessor] = {
+            id: (ruleRow[columnIndex] as DMN15__tUnaryTests & DMN15__tLiteralExpression)?.["@_id"] ?? "",
+            content: ruleRow[columnIndex]?.text?.__$$text ?? "",
+          };
+          return tableRow;
+        },
+        { id: rule["@_id"] }
+      );
+    };
+    const prevRules = decisionTableExpression.rule ?? [];
+    if (prevRules.length === 0) {
+      const defaultRowToAdd: Normalized<DMN15__tDecisionRule> = {
+        "@_id": generateUuid(),
+        inputEntry: decisionTableExpression.input?.map(() => ({
+          "@_id": generateUuid(),
+          text: { __$$text: DECISION_TABLE_INPUT_DEFAULT_VALUE },
+        })),
+        outputEntry: decisionTableExpression.output?.map(() => ({
+          "@_id": generateUuid(),
+          text: { __$$text: DECISION_TABLE_OUTPUT_DEFAULT_VALUE },
+        })),
+        annotationEntry: [{ text: { __$$text: "// Your annotations here" } }],
+      };
+      return [mapRuleToRow(defaultRowToAdd)];
+    }
+    return prevRules.map(mapRuleToRow);
+  }, [decisionTableExpression.rule, decisionTableExpression.output, decisionTableExpression.input, beeTableColumns]);
 
   const onCellUpdates = useCallback(
     (cellUpdates: BeeTableCellUpdate<ROWTYPE>[]) => {
       setExpression({
         setExpressionAction: (prev: Normalized<BoxedDecisionTable>) => {
           let previousExpression: Normalized<BoxedDecisionTable> = { ...prev };
-
+          const isDisplayOnlyRowPresent = previousExpression.rule === undefined ? true : false;
+          if (isDisplayOnlyRowPresent) {
+            const defaultRowToAdd: Normalized<DMN15__tDecisionRule> = {
+              "@_id": generateUuid(),
+              inputEntry: Array.from(new Array(prev.input?.length ?? 0)).map(() => {
+                return createInputEntry();
+              }),
+              outputEntry: Array.from(new Array(prev.output?.length ?? 0)).map(() => {
+                return createOutputEntry();
+              }),
+              annotationEntry: Array.from(new Array(prev.annotation?.length ?? 0)).map(() => {
+                return { text: { __$$text: "// Your annotations here" } };
+              }),
+            };
+            previousExpression.rule = [defaultRowToAdd];
+          }
           cellUpdates.forEach((cellUpdate) => {
             const newRules = [...(previousExpression.rule ?? [])];
             const groupType = cellUpdate.column.groupType as DecisionTableColumnType;
