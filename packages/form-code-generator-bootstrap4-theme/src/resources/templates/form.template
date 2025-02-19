@@ -2,9 +2,7 @@
 <% _.each(props.children, function(child) { %>
     <%=child.html%>
 <% }); %>
-
     <script>
-/* Global functions */
 <% const addedGlobalFunctionsCode = []; %>
 <%  _.each(props.children, function(child) { %>
     <% if (child.globalFunctions && child.globalFunctions.requiredCode) { %>

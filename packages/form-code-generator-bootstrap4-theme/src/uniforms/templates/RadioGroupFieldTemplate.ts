@@ -65,6 +65,7 @@ export class RadioGroupFieldTemplate implements FormElementTemplate<FormInput, R
         input: this.inputTemplate({ props: props }),
       }),
       disabled: props.disabled,
+      globalFunctions: undefined,
       setValueFromModelCode: this.buildSetValueFromModelCode(props),
       writeValueToModelCode: this.writeValueToModelCode(props),
     };

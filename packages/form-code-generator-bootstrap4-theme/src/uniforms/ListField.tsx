@@ -69,15 +69,14 @@ const List: React.FunctionComponent<ListFieldProps> = ({
     disabled
   );
 
-  const properties = {
+  const element: FormInputContainer = renderCodeGenElement(LIST, {
     id: name,
     name: name,
     label: label,
     disabled: disabled,
     children: listItem,
-  };
+  });
 
-  const element: FormInputContainer = renderCodeGenElement(LIST, properties);
   codegenCtx?.rendered.push(element);
   return <>{JSON.stringify(element)}</>;
 };

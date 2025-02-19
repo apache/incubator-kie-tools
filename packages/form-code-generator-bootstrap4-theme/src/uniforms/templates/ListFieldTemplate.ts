@@ -19,6 +19,8 @@
 
 import listField from "!!raw-loader!../../resources/templates/listField.template";
 import globalFunctions from "!!raw-loader!../../resources/templates/listField.globalFunctions.template";
+import setValueFromModel from "!!raw-loader!../../resources/templates/listField.setModelData.template";
+import writeValueToModel from "!!raw-loader!../../resources/templates/listField.writeModelData.template";
 import modifyListSize from "!!raw-loader!../../resources/staticCode/modifyListSize.txt";
 import { FormElementTemplate, FormElementTemplateProps } from "./types";
 import { FormInputContainer, InputReference } from "../../api";
@@ -40,8 +42,8 @@ interface ListFieldTemplateProps extends FormElementTemplateProps<any> {
 export class ListFieldTemplate implements FormElementTemplate<FormInputContainer, ListFieldTemplateProps> {
   private readonly listFieldTemplate: CompiledTemplate = template(listField);
   private readonly listFieldGlobalFunctionsTemplate: CompiledTemplate = template(globalFunctions);
-  // private readonly listFieldSetValueFromModelTemplate: CompiledTemplate = template(setValueFromModel);
-  // private readonly listFieldWriteValueToModelTemplate: CompiledTemplate = template(writeValueToModel);
+  private readonly listFieldSetValueFromModelTemplate: CompiledTemplate = template(setValueFromModel);
+  private readonly listFieldWriteValueToModelTemplate: CompiledTemplate = template(writeValueToModel);
 
   render({
     id,
@@ -55,8 +57,8 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
   }: ListFieldTemplateProps): FormInputContainer {
     const ref: InputReference[] = children.ref;
 
-    const setValueFromModelRequiredCode: string[] = children.setValueFromModelCode.requiredCode;
-    const writeValueToModelRequiredCode: string[] = children.writeValueToModelCode.requiredCode;
+    // const setValueFromModelRequiredCode: string[] = children.setValueFromModelCode.requiredCode;
+    // const writeValueToModelRequiredCode: string[] = children.writeValueToModelCode.requiredCode;
 
     const getDefaultItemValue = () => {
       return "{}";
@@ -84,6 +86,22 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
           path: fieldNameToOptionalChain(name),
         }),
         requiredCode: [modifyListSize],
+      },
+      setValueFromModelCode: {
+        code: this.listFieldGlobalFunctionsTemplate({
+          defaultValue: getDefaultItemValue(),
+          disabled,
+          minCount,
+          maxCount,
+          childrenHtml: `${children.html}`,
+          name,
+          path: fieldNameToOptionalChain(name),
+        }),
+        requiredCode: [modifyListSize],
+      },
+      writeValueToModelCode: {
+        code: this.listFieldWriteValueToModelTemplate({}),
+        requiredCode: [],
       },
     };
   }

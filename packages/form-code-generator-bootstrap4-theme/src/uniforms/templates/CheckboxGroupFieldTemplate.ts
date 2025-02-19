@@ -60,6 +60,7 @@ export class CheckBoxGroupFieldTemplate implements FormElementTemplate<FormInput
         input: this.inputTemplate({ props: props }),
       }),
       disabled: props.disabled,
+      globalFunctions: undefined,
       setValueFromModelCode: this.buildSetValueFromModelCode(props),
       writeValueToModelCode: this.buildWriteValueToModelCode(props),
     };

@@ -55,15 +55,13 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
     });
   }
 
-  const properties = {
+  const element: FormInputContainer = renderCodeGenElement(NESTED, {
     id: itemProps?.isListItem ? itemProps.listName + ".${" + itemProps.indexVariableName + "}" : name,
     name: itemProps?.isListItem ? itemProps.listName + ".${" + itemProps.indexVariableName + "}" : name,
     label: label,
     disabled: disabled,
     children: nestedFields,
-  };
-
-  const element: FormInputContainer = renderCodeGenElement(NESTED, properties);
+  });
   codegenCtx?.rendered.push(element);
   return <>{JSON.stringify(element)}</>;
 };

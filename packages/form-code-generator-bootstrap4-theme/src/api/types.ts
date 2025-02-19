@@ -33,7 +33,7 @@ export interface FormElement<REFERENCE_TYPE> extends CodeGenElement {
 
   setValueFromModelCode?: CodeFragment;
   writeValueToModelCode?: CodeFragment;
-  globalFunctions?: CodeFragment;
+  globalFunctions: CodeFragment | undefined;
 }
 
 export interface FormInput extends FormElement<InputReference> {}

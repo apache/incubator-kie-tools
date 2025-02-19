@@ -63,6 +63,7 @@ export class SelectFieldTemplate implements FormElementTemplate<FormInput, Selec
         input: this.inputTemplate({ props: props }),
       }),
       disabled: props.disabled,
+      globalFunctions: undefined,
       setValueFromModelCode: this.buildSetValueFromModelCode(props),
       writeValueToModelCode: this.writeValueToModelCode(props),
     };

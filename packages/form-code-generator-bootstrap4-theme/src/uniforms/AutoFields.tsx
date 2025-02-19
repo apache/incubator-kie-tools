@@ -38,13 +38,14 @@ const AutoFields: React.FC<AutoFieldsProps> = ({
 }: AutoFieldsProps) => {
   const { schema } = useForm();
 
-  return createElement(
+  const elements = createElement(
     element!,
     props,
     (fields ?? schema.getSubfields())
       .filter((field) => !omitFields!.includes(field))
       .map((field) => createElement(autoField!, { key: field, name: field }))
   );
+  return elements;
 };
 
 AutoFields.defaultProps = {

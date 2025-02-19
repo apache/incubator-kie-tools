@@ -42,6 +42,7 @@ export class UnsupportedFieldTemplate implements FormElementTemplate<FormInput, 
     return {
       ref: getInputReference(props),
       html: this.unsupportedTemplate(data),
+      globalFunctions: undefined,
     };
   }
 }

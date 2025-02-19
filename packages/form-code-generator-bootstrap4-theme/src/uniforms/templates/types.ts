@@ -66,35 +66,23 @@ export abstract class AbstractFormGroupInputTemplate<Properties extends FormElem
         input: this.inputTemplate({ props: props }),
       }),
       disabled: props.disabled,
-      setValueFromModelCode: this.buildSetValueFromModelCode(props),
-      writeValueToModelCode: this.writeValueToModelCode(props),
-    };
-  }
-
-  protected buildSetValueFromModelCode(props: Properties): CodeFragment {
-    const properties = {
-      ...props,
-      path: fieldNameToOptionalChain(props.name),
-      flatFieldName: flatFieldName(props.name),
-    };
-
-    return {
-      code: this.setValueFromModelTemplate(properties),
-    };
-  }
-
-  protected writeValueToModelCode(props: Properties): CodeFragment | undefined {
-    if (props.disabled || !this.writeValueToModelTemplate) {
-      return undefined;
-    }
-
-    const properties = {
-      ...props,
-      flatFieldName: flatFieldName(props.name),
-    };
-
-    return {
-      code: this.writeValueToModelTemplate(properties),
+      globalFunctions: undefined,
+      setValueFromModelCode: {
+        code: this.setValueFromModelTemplate({
+          ...props,
+          path: fieldNameToOptionalChain(props.name),
+          flatFieldName: flatFieldName(props.name),
+        }),
+      },
+      writeValueToModelCode:
+        props.disabled || !this.writeValueToModelTemplate
+          ? undefined
+          : {
+              code: this.writeValueToModelTemplate({
+                ...props,
+                flatFieldName: flatFieldName(props.name),
+              }),
+            },
     };
   }
 }

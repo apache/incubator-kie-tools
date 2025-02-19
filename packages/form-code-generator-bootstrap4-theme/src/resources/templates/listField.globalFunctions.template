@@ -1,2 +1,2 @@
-onDelListItem = addDelItem(data?.<%=path%>, <%= disabled %>, <%= minCount !== undefined ? minCount : "undefined" %>)
-onAddListItem = addListItem(data?.<%=path%>, <%= defaultValue %>, <%= disabled %>, <%= maxCount !== undefined ? maxCount : "undefined" %>, <%= name %>, `<%= childrenHtml %>`)
+onDelListItem = delListItem(data?.<%=path%>, <%= disabled %>, <%= minCount !== undefined ? minCount : "undefined" %>);
+onAddListItem = addListItem(data?.<%=path%>, <%= defaultValue %>, <%= disabled %>, <%= maxCount !== undefined ? maxCount : "undefined" %>, <%= name %>, `<%= childrenHtml %>`);

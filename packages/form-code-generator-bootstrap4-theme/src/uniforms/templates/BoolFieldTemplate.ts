@@ -49,6 +49,7 @@ export class BoolFieldTemplate implements FormElementTemplate<FormInput, BoolFie
       ref: getInputReference(props),
       html: this.checkboxTemplate(data),
       disabled: props.disabled,
+      globalFunctions: undefined,
       setValueFromModelCode: this.buildSetValueFromModelCode(props),
       writeValueToModelCode: this.buildWriteModelDataCode(props),
     };
