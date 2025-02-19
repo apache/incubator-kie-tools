@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ToolbarFilter,
   ToolbarGroup,
@@ -47,7 +47,7 @@ interface TaskInboxToolbarProps {
   activeFilter: QueryFilter;
   allTaskStates: string[];
   activeTaskStates: string[];
-  applyFilter: (filter: QueryFilter) => void;
+  applyFilter: (filter: QueryFilter) => Promise<void>;
   refresh: () => void;
 }
 
@@ -84,61 +84,64 @@ const TaskInboxToolbar: React.FC<TaskInboxToolbarProps & OUIAProps> = ({
     setSelectedTaskStates(activeFilter.taskStates);
     setFilterTaskStates(activeFilter.taskStates);
     setFilterTaskNames(activeFilter.taskNames);
-  }, [activeFilter]);
+  }, [activeFilter, activeTaskStates, allTaskStates]);
 
-  const createStatusMenuItems = () => {
+  const createStatusMenuItems = useCallback(() => {
     return allStates.map((state) => <SelectOption key={state} value={state} />);
-  };
+  }, [allStates]);
 
-  const doResetFilter = () => {
-    applyFilter({
+  const doResetFilter = useCallback(async () => {
+    await applyFilter({
       taskStates: activeStates,
       taskNames: [],
     });
-  };
+  }, [activeStates, applyFilter]);
 
-  const onDeleteFilterGroup = (categoryName: string | ToolbarChipGroup, value: string | ToolbarChip): void => {
-    const newFilterTaskStates = [...filterTaskStates];
-    const newFilterTaskNames = [...filterTaskNames];
+  const onDeleteFilterGroup = useCallback(
+    async (categoryName: string | ToolbarChipGroup, value: string | ToolbarChip) => {
+      const newFilterTaskStates = [...filterTaskStates];
+      const newFilterTaskNames = [...filterTaskNames];
 
-    switch (categoryName) {
-      case Category.STATUS:
-        _.remove(newFilterTaskStates, (status: string) => {
-          return status === value;
-        });
-        setFilterTaskStates(newFilterTaskStates);
-        setSelectedTaskStates(newFilterTaskStates);
-        break;
-      case Category.TASK_NAME:
-        _.remove(newFilterTaskNames, (status: string) => {
-          return status === value;
-        });
-        setFilterTaskNames(newFilterTaskNames);
-        break;
-    }
-    applyFilter({
-      taskNames: newFilterTaskNames,
-      taskStates: newFilterTaskStates,
-    });
-  };
-
-  const onSelectTaskState = (
-    event: React.MouseEvent | React.ChangeEvent,
-    selection: string | SelectOptionObject
-  ): void => {
-    const filter: string[] = [...selectedTaskStates];
-
-    if (!filter.includes(selection.toString())) {
-      filter.push(selection.toString());
-    } else {
-      _.remove(filter, (status: string) => {
-        return status === selection;
+      switch (categoryName) {
+        case Category.STATUS:
+          _.remove(newFilterTaskStates, (status: string) => {
+            return status === value;
+          });
+          setFilterTaskStates(newFilterTaskStates);
+          setSelectedTaskStates(newFilterTaskStates);
+          break;
+        case Category.TASK_NAME:
+          _.remove(newFilterTaskNames, (status: string) => {
+            return status === value;
+          });
+          setFilterTaskNames(newFilterTaskNames);
+          break;
+      }
+      await applyFilter({
+        taskNames: newFilterTaskNames,
+        taskStates: newFilterTaskStates,
       });
-    }
-    setSelectedTaskStates(filter);
-  };
+    },
+    [applyFilter, filterTaskNames, filterTaskStates]
+  );
 
-  const doApplyFilter = () => {
+  const onSelectTaskState = useCallback(
+    (event: React.MouseEvent | React.ChangeEvent, selection: string | SelectOptionObject): void => {
+      const filter: string[] = [...selectedTaskStates];
+
+      if (!filter.includes(selection.toString())) {
+        filter.push(selection.toString());
+      } else {
+        _.remove(filter, (status: string) => {
+          return status === selection;
+        });
+      }
+      setSelectedTaskStates(filter);
+    },
+    [selectedTaskStates]
+  );
+
+  const doApplyFilter = useCallback(async () => {
     const newTaskNames = [...filterTaskNames];
     if (taskNameInput && !newTaskNames.includes(taskNameInput)) {
       newTaskNames.push(taskNameInput);
@@ -150,66 +153,82 @@ const TaskInboxToolbar: React.FC<TaskInboxToolbarProps & OUIAProps> = ({
       taskStates: [...selectedTaskStates],
       taskNames: newTaskNames,
     });
-  };
+  }, [applyFilter, filterTaskNames, selectedTaskStates, taskNameInput]);
 
-  const toggleGroupItems = (
-    <React.Fragment>
-      <ToolbarGroup variant="filter-group">
-        <ToolbarFilter chips={filterTaskStates} deleteChip={onDeleteFilterGroup} categoryName={Category.STATUS}>
-          <Select
-            variant={SelectVariant.checkbox}
-            aria-label="Status"
-            onToggle={setStatusExpanded}
-            onSelect={onSelectTaskState}
-            selections={selectedTaskStates}
-            isOpen={isStatusExpanded}
-            placeholderText="Status"
-          >
-            {createStatusMenuItems()}
-          </Select>
-        </ToolbarFilter>
-        <ToolbarFilter chips={filterTaskNames} deleteChip={onDeleteFilterGroup} categoryName={Category.TASK_NAME}>
-          <InputGroup>
-            <TextInput
-              name="taskName"
-              id="taskName"
-              type="search"
-              aria-label="task name"
-              onChange={setTaskNameInput}
-              placeholder="Filter by Task name"
-              value={taskNameInput}
-            />
-          </InputGroup>
-        </ToolbarFilter>
-        <ToolbarItem>
-          <Button
-            id="apply-filter"
-            variant="primary"
-            onClick={doApplyFilter}
-            isDisabled={_.isEmpty(selectedTaskStates) && _.isEmpty(taskNameInput)}
-          >
-            Apply Filter
-          </Button>
-        </ToolbarItem>
-      </ToolbarGroup>
-    </React.Fragment>
+  const toggleGroupItems = useMemo(
+    () => (
+      <React.Fragment>
+        <ToolbarGroup variant="filter-group">
+          <ToolbarFilter chips={filterTaskStates} deleteChip={onDeleteFilterGroup} categoryName={Category.STATUS}>
+            <Select
+              variant={SelectVariant.checkbox}
+              aria-label="Status"
+              onToggle={setStatusExpanded}
+              onSelect={onSelectTaskState}
+              selections={selectedTaskStates}
+              isOpen={isStatusExpanded}
+              placeholderText="Status"
+            >
+              {createStatusMenuItems()}
+            </Select>
+          </ToolbarFilter>
+          <ToolbarFilter chips={filterTaskNames} deleteChip={onDeleteFilterGroup} categoryName={Category.TASK_NAME}>
+            <InputGroup>
+              <TextInput
+                name="taskName"
+                id="taskName"
+                type="search"
+                aria-label="task name"
+                onChange={setTaskNameInput}
+                placeholder="Filter by Task name"
+                value={taskNameInput}
+              />
+            </InputGroup>
+          </ToolbarFilter>
+          <ToolbarItem>
+            <Button
+              id="apply-filter"
+              variant="primary"
+              onClick={doApplyFilter}
+              isDisabled={_.isEmpty(selectedTaskStates) && _.isEmpty(taskNameInput)}
+            >
+              Apply Filter
+            </Button>
+          </ToolbarItem>
+        </ToolbarGroup>
+      </React.Fragment>
+    ),
+    [
+      createStatusMenuItems,
+      doApplyFilter,
+      filterTaskNames,
+      filterTaskStates,
+      isStatusExpanded,
+      onDeleteFilterGroup,
+      onSelectTaskState,
+      selectedTaskStates,
+      taskNameInput,
+    ]
   );
 
-  const toolbarItems = (
-    <React.Fragment>
-      <ToolbarToggleGroup toggleIcon={<FilterIcon />} breakpoint="xl">
-        {toggleGroupItems}
-      </ToolbarToggleGroup>
-      <ToolbarGroup variant="icon-button-group">
-        <ToolbarItem>
-          <Tooltip content={"Refresh"}>
-            <Button variant="plain" onClick={refresh} id="refresh">
-              <SyncIcon />
-            </Button>
-          </Tooltip>
-        </ToolbarItem>
-      </ToolbarGroup>
-    </React.Fragment>
+  const toolbarItems = useMemo(
+    () => (
+      <React.Fragment>
+        <ToolbarToggleGroup toggleIcon={<FilterIcon />} breakpoint="xl">
+          {toggleGroupItems}
+        </ToolbarToggleGroup>
+        <ToolbarGroup variant="icon-button-group">
+          <ToolbarItem>
+            <Tooltip content={"Refresh"}>
+              <Button variant="plain" onClick={refresh} id="refresh">
+                <SyncIcon />
+              </Button>
+            </Tooltip>
+          </ToolbarItem>
+        </ToolbarGroup>
+      </React.Fragment>
+    ),
+    [refresh, toggleGroupItems]
   );
 
   return (
