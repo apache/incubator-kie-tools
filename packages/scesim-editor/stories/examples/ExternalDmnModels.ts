@@ -1045,26 +1045,38 @@ export const COLLECTION = `<?xml version="1.0" encoding="UTF-8"?>
   <dmn:itemDefinition id="_C0DF58CA-6097-462D-A0F8-29D8FC870F11" name="tNumber" isCollection="true">
     <dmn:typeRef>number</dmn:typeRef>
   </dmn:itemDefinition>
+  <dmn:itemDefinition id="_954DFA6D-DC7D-4690-9250-0FB0776B192B" name="tComplex" isCollection="false">
+    <dmn:itemComponent id="_33427425-A5EC-4D7A-BAE0-5A16D46D6A11" name="nums" isCollection="true">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
   <dmn:decision id="_57337DE2-FDB3-448C-BA51-FF7BDFF1E1F9" name="output">
     <dmn:extensionElements/>
     <dmn:variable id="_52E699A0-A156-4B6E-9ECC-78285EB99D74" name="output" typeRef="boolean"/>
     <dmn:informationRequirement id="_A22D752E-3277-4976-BCD2-25A7E42C5CA1">
       <dmn:requiredInput href="#_9E503F9E-B9F2-4B07-82D7-2351BC64D343"/>
     </dmn:informationRequirement>
+    <dmn:informationRequirement id="_7F7CA568-DF66-43FA-80FF-0A2CC82DA27B">
+      <dmn:requiredInput href="#_83AD1836-45E9-47EE-893A-C252B382AF30"/>
+    </dmn:informationRequirement>
     <dmn:literalExpression id="_B98A2F29-8885-4D1C-9401-37BAA94F9201">
-      <dmn:text>sum(input) &gt; 100</dmn:text>
+      <dmn:text>sum(input) + sum(input2.nums) &gt; 100</dmn:text>
     </dmn:literalExpression>
   </dmn:decision>
   <dmn:inputData id="_9E503F9E-B9F2-4B07-82D7-2351BC64D343" name="input">
     <dmn:extensionElements/>
     <dmn:variable id="_F44A9324-0AAC-4020-BABD-B637F51B8A74" name="input" typeRef="tNumber"/>
   </dmn:inputData>
+  <dmn:inputData id="_83AD1836-45E9-47EE-893A-C252B382AF30" name="input2">
+    <dmn:extensionElements/>
+    <dmn:variable id="_9265B616-6D06-4348-A3E0-42A3C2C6C160" name="input2" typeRef="tComplex"/>
+  </dmn:inputData>
   <dmndi:DMNDI>
     <dmndi:DMNDiagram id="_57229743-5CA8-4A4E-9853-6D080A360DB8" name="DRG">
       <di:extension>
         <kie:ComponentsWidthsExtension>
           <kie:ComponentWidths dmnElementRef="_B98A2F29-8885-4D1C-9401-37BAA94F9201">
-            <kie:width>190</kie:width>
+            <kie:width>266</kie:width>
           </kie:ComponentWidths>
         </kie:ComponentsWidthsExtension>
       </di:extension>
@@ -1086,9 +1098,22 @@ export const COLLECTION = `<?xml version="1.0" encoding="UTF-8"?>
         <dc:Bounds x="432" y="156" width="100" height="50"/>
         <dmndi:DMNLabel/>
       </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_83AD1836-45E9-47EE-893A-C252B382AF30" dmnElementRef="_83AD1836-45E9-47EE-893A-C252B382AF30" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="432.29906542056074" y="251" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
       <dmndi:DMNEdge id="dmnedge-drg-_A22D752E-3277-4976-BCD2-25A7E42C5CA1-AUTO-TARGET" dmnElementRef="_A22D752E-3277-4976-BCD2-25A7E42C5CA1">
         <di:waypoint x="482" y="181"/>
         <di:waypoint x="298" y="181"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="dmnedge-drg-_7F7CA568-DF66-43FA-80FF-0A2CC82DA27B-AUTO-TARGET" dmnElementRef="_7F7CA568-DF66-43FA-80FF-0A2CC82DA27B">
+        <di:waypoint x="482.29906542056074" y="276"/>
+        <di:waypoint x="248" y="206"/>
       </dmndi:DMNEdge>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>
