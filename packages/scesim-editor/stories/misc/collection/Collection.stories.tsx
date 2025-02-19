@@ -20,7 +20,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { getMarshaller } from "@kie-tools/scesim-marshaller";
 import { TestScenarioEditor } from "../../../src/TestScenarioEditor";
-import { EMPTY_ONE_EIGHT } from "../../../src/resources/EmptyScesimFile";
 import { SceSimEditorWrapper, StorybookTestScenarioEditorProps } from "../../scesimEditorStoriesWrapper";
 import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";
@@ -28,7 +27,7 @@ import { COLLECTION } from "../../examples/ExternalDmnModels";
 
 export const collectionFileName = "collection.scesim";
 export const collectionScesim = `<?xml version="1.0" encoding="UTF-8" ?>
-<ScenarioSimulationModel version="1.8">
+<ScenarioSimulationModel xmlns="https://kie.org/scesim/1.8" version="1.8">
   <simulation>
     <scesimModelDescriptor>
       <factMappings>
@@ -69,17 +68,46 @@ export const collectionScesim = `<?xml version="1.0" encoding="UTF-8" ?>
             </ExpressionElement>
           </expressionElements>
           <expressionIdentifier>
-            <name>_498F6311-F759-4A2A-9F9D-2436AA052B4A</name>
+            <name>_33694C8E-C795-435F-B0F0-F1101F9DE403</name>
             <type>GIVEN</type>
           </expressionIdentifier>
           <factIdentifier>
             <name>input</name>
             <className>tNumber</className>
           </factIdentifier>
-          <className>tNumber</className>
+          <className>java.util.List</className>
           <factAlias>input</factAlias>
-          <expressionAlias>value</expressionAlias>
-          <columnWidth>147</columnWidth>
+          <expressionAlias>values</expressionAlias>
+          <genericTypes>
+            <string>tNumber</string>
+          </genericTypes>
+          <columnWidth>141</columnWidth>
+          <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
+        </FactMapping>
+        <FactMapping>
+          <expressionElements>
+            <ExpressionElement>
+              <step>input2</step>
+            </ExpressionElement>
+            <ExpressionElement>
+              <step>nums</step>
+            </ExpressionElement>
+          </expressionElements>
+          <expressionIdentifier>
+            <name>_11DBB39A-5749-420D-A007-3A0D19A66916</name>
+            <type>GIVEN</type>
+          </expressionIdentifier>
+          <factIdentifier>
+            <name>input2</name>
+            <className>tComplex</className>
+          </factIdentifier>
+          <className>java.util.List</className>
+          <factAlias>input2</factAlias>
+          <expressionAlias>nums</expressionAlias>
+          <genericTypes>
+            <string>number</string>
+          </genericTypes>
+          <columnWidth>157</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
         <FactMapping>
@@ -89,7 +117,7 @@ export const collectionScesim = `<?xml version="1.0" encoding="UTF-8" ?>
             </ExpressionElement>
           </expressionElements>
           <expressionIdentifier>
-            <name>_6C4AFB69-5F8E-42D6-84AB-8115C7546C65</name>
+            <name>_E38BFF0C-040B-464E-8C18-7BD1C7372EEA</name>
             <type>EXPECT</type>
           </expressionIdentifier>
           <factIdentifier>
@@ -134,10 +162,21 @@ export const collectionScesim = `<?xml version="1.0" encoding="UTF-8" ?>
               <className>tNumber</className>
             </factIdentifier>
             <expressionIdentifier>
-              <name>_498F6311-F759-4A2A-9F9D-2436AA052B4A</name>
+              <name>_33694C8E-C795-435F-B0F0-F1101F9DE403</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">&quot;[10, 20, 30]&quot;</rawValue>
+            <rawValue class="string">&quot;[10,20,30]&quot;</rawValue>
+          </FactMappingValue>
+          <FactMappingValue>
+            <factIdentifier>
+              <name>input2</name>
+              <className>tComplex</className>
+            </factIdentifier>
+            <expressionIdentifier>
+              <name>_11DBB39A-5749-420D-A007-3A0D19A66916</name>
+              <type>GIVEN</type>
+            </expressionIdentifier>
+            <rawValue class="string">&quot;[40,50,60]&quot;</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -145,10 +184,10 @@ export const collectionScesim = `<?xml version="1.0" encoding="UTF-8" ?>
               <className>boolean</className>
             </factIdentifier>
             <expressionIdentifier>
-              <name>_6C4AFB69-5F8E-42D6-84AB-8115C7546C65</name>
+              <name>_E38BFF0C-040B-464E-8C18-7BD1C7372EEA</name>
               <type>EXPECT</type>
             </expressionIdentifier>
-            <rawValue class="string">false</rawValue>
+            <rawValue class="string">true</rawValue>
           </FactMappingValue>
         </factMappingValues>
       </Scenario>
@@ -196,7 +235,7 @@ export const collectionScesim = `<?xml version="1.0" encoding="UTF-8" ?>
     <dmnFilePath>dev-webapp/available-dmn-models/collection.dmn</dmnFilePath>
     <type>DMN</type>
     <dmnNamespace>https://kie.apache.org/dmn/_D1C37750-2078-4CB7-AF77-850947718867</dmnNamespace>
-    <dmnName>Coll</dmnName>
+    <dmnName>Collection</dmnName>
     <skipFromBuild>false</skipFromBuild>
   </settings>
   <imports>
@@ -217,7 +256,7 @@ type Story = StoryObj<StorybookTestScenarioEditorProps>;
 const marshaller = getMarshaller(collectionScesim);
 const currentModel = marshaller.parser.parse();
 const dmnModel = {
-  normalizedPosixPathRelativeToTheOpenFile: "collection.dmn",
+  normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/collection.dmn",
   type: "dmn",
   model: normalize(getDmnMarshaller(COLLECTION ?? "", { upgradeTo: "latest" }).parser.parse()),
   svg: "",
