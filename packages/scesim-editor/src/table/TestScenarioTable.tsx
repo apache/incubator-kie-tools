@@ -117,14 +117,13 @@ function TestScenarioTable({
       if (testScenarioType === "RULE") {
         dataTypeLabel = dataTypeLabel.split(".").pop() ?? dataTypeLabel;
       }
+      /* List Type */
       if (genericTypes.length == 1) {
         dataTypeLabel = testScenarioType === "RULE" ? `${dataTypeLabel}<${genericTypes[0]}>` : `${genericTypes[0]}[]`;
       }
-      if (genericTypes.length == 2) {
-        dataTypeLabel =
-          testScenarioType === "RULE"
-            ? `${dataTypeLabel}<${genericTypes[0]},${genericTypes[1]}>`
-            : `<${genericTypes[0]}, ${genericTypes[1]}>`;
+      /* Map Type */
+      if (testScenarioType === "RULE" && genericTypes.length == 2) {
+        dataTypeLabel = `${dataTypeLabel}<${genericTypes[0]},${genericTypes[1]}>`;
       }
       return !dataTypeLabel || dataTypeLabel.endsWith("Void") ? "<Undefined>" : dataTypeLabel;
     },
