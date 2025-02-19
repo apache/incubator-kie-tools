@@ -21,7 +21,7 @@ services:
   postgres:
     container_name: process-compact-architecture-postgres
     image: postgres:16.7-alpine3.21
-    profiles: ["dev", "example", "full"]
+    profiles: ["development", "example", "container"]
     ports:
       - "5432:5432"
     volumes:
@@ -38,7 +38,7 @@ services:
   pgadmin:
     container_name: process-compact-architecture-pgadmin
     image: dpage/pgadmin4:8.14
-    profiles: ["dev", "example", "full"]
+    profiles: ["development", "example", "container"]
     ports:
       - 8055:80
     depends_on:
@@ -61,8 +61,8 @@ services:
 
   process-compact-architecture:
     container_name: process-compact-architecture
-    image: dev.local/${USER}/process-compact-architecture:${PROJECT_VERSION}
-    profiles: ["example", "full"]
+    image: dev.local/apache/process-compact-architecture:${PROJECT_VERSION}
+    profiles: ["example", "container"]
     ports:
       - "8080:8080"
     depends_on:
@@ -84,14 +84,14 @@ services:
   management-console:
     container_name: process-compact-architecture-management-console
     image: ${KOGITO_MANAGEMENT_CONSOLE_IMAGE}
-    profiles: ["full"]
+    profiles: ["container"]
     ports:
       - 8280:8080
     depends_on:
-      process-compact-architecture-service:
+      process-compact-architecture:
         condition: service_started
     volumes:
       - ./svg/:/home/kogito/data/svg/
     environment:
-      RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE: "DEV"
+      RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE: "development"
       RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT: http://${DOCKER_GATEWAY_HOST:-host.docker.internal}:8080/graphql

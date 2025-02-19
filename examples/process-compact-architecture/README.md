@@ -167,7 +167,7 @@ public class Offer {
 
 ## Infrastructure requirements
 
-To help bootstrapping the Infrastructure Services, the example provides a `docker-compose.yml` file. This quickstart provides three ways of running the example application. In development ("dev") mode, the user can start a minimal infrastructure using `docker-compose` and must run the Kogito application manually. In "example" mode the `docker-compose` file will start the minimal infrastructure services and the Kogito application, requiring the project to be compiled first to generate the process's container images. At least, the `docker-compose` "full" model will start the minimal infrastructure services, the Kogito application, and Management Console, still requiring the project to be compiled first to generate the process's container images. To use `docker-compose` we must first create a `.env` file in the example root, and it should have the following variables:
+To help bootstrapping the Infrastructure Services, the example provides a `docker-compose.yml` file. This quickstart provides three ways of running the example application. In development ("development") mode, the user can start a minimal infrastructure using `docker-compose` and must run the Kogito application manually. In "example" mode the `docker-compose` file will start the minimal infrastructure services and the Kogito application, requiring the project to be compiled first to generate the process's container images. At least, the `docker-compose` "container" model will start the minimal infrastructure services, the Kogito application, and Management Console, still requiring the project to be compiled first to generate the process's container images. To use `docker-compose` we must first create a `.env` file in the example root, and it should have the following variables:
 
 ```
 PROJECT_VERSION=
@@ -175,18 +175,20 @@ KOGITO_MANAGEMENT_CONSOLE_IMAGE=
 COMPOSE_PROFILES=
 ```
 
+- `STREAM_NAME`: Should be set with the project stream name.
 - `PROJECT_VERSION`: Should be set with the current Kogito version being used: `PROJECT_VERSION=`
-- `KOGITO_MANAGEMENT_CONSOLE_IMAGE`: Should be set with the Kogito Management Console image `quay.io/kogito/management-console:${PROJECT_VERSION}`
+- `KOGITO_MANAGEMENT_CONSOLE_IMAGE`: Should be set with the Kogito Management Console image `docker.io/apache/incubator-kie-kogito-management-console:${PROJECT_VERSION}`
 - `COMPOSE_PROFILES`: filters which services will run.
 
 ### Development mode
 
-For development mode, the `.env` must have the `COMPOSE_PROFILES=dev`:
+For development mode, the `.env` must have the `COMPOSE_PROFILES=development`:
 
 ```
-PROJECT_VERSION=
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=quay.io/kogito/management-console:${PROJECT_VERSION}
-COMPOSE_PROFILES=dev
+STREAM_NAME=main
+PROJECT_VERSION=0.0.0
+KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:${STREAM_NAME}
+COMPOSE_PROFILES=development
 ```
 
 ### Example mode
@@ -194,19 +196,21 @@ COMPOSE_PROFILES=dev
 For example mode, the `.env` must have the `COMPOSE_PROFILES=example`:
 
 ```
-PROJECT_VERSION=
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=quay.io/kogito/management-console:${PROJECT_VERSION}
+STREAM_NAME=main
+PROJECT_VERSION=0.0.0
+KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:${STREAM_NAME}
 COMPOSE_PROFILES=example
 ```
 
-### Full mode
+### Container mode
 
-For full mode, the `.env` must have the `COMPOSE_PROFILES=full`:
+For container mode, the `.env` must have the `COMPOSE_PROFILES=container`:
 
 ```
-PROJECT_VERSION=
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=quay.io/kogito/management-console:${PROJECT_VERSION}
-COMPOSE_PROFILES=full
+STREAM_NAME=main
+PROJECT_VERSION=0.0.0
+KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:${STREAM_NAME}
+COMPOSE_PROFILES=container
 ```
 
 ### Handling services
@@ -287,10 +291,10 @@ you can manually change the .env file with `COMPOSE_PROFILES=example`, and them 
 docker compose up
 ```
 
-- **dev**: Starts only the minimal infrastructure to run the example (PostgreSQL, pgadmin)
+- **development**: Starts only the minimal infrastructure to run the example (PostgreSQL, pgadmin)
 - **example**: Starts the services in _dev_ profile and this example's app. Requires the example to be compiled
   with `mvn clean package -Pcontainer`.
-- **full** (default): includes all the above and **Management Console**. Requires the example to be compiled with `mvn clean package -Pcontainer`.
+- **container** (default): includes all the above and **Management Console**. Requires the example to be compiled with `mvn clean package -Pcontainer`.
 
 ### Running in Development mode
 
