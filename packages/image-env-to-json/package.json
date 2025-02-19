@@ -14,32 +14,28 @@
   },
   "main": "dist/index.js",
   "scripts": {
-    "build:dev": "rimraf -rf dist && webpack --env dev && pnpm build:standalone:all",
-    "build:prod": "pnpm lint && rimraf -rf dist && webpack && pnpm build:standalone:all",
-    "build:standalone": "run-script-os",
-    "build:standalone:all": "pnpm build:standalone:darwin && pnpm build:standalone:linux && pnpm build:standalone:win32",
-    "build:standalone:darwin": "pkg dist/index.js -t node18-macos-x64 -o dist/macos/image-env-to-json-standalone",
-    "build:standalone:linux": "pkg dist/index.js -t node18-linux-x64 -o dist/linux/image-env-to-json-standalone",
-    "build:standalone:win32": "pkg dist/index.js -t node18-win-x64 -o dist/win/image-env-to-json-standalone",
-    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\""
-  },
-  "dependencies": {
-    "commander": "^8.3.0"
+    "build:darwin": "pnpm setup:env make build-darwin",
+    "build:darwin:amd": "pnpm setup:env make build-darwin-amd64",
+    "build:darwin:arm": "pnpm setup:env make build-darwin-arm64",
+    "build:dev": "rimraf -rf dist && pnpm setup:env make build-all",
+    "build:linux": "pnpm setup:env make build-linux",
+    "build:linux:amd": "pnpm setup:env make build-linux-amd64",
+    "build:linux:arm": "pnpm setup:env make build-linux-arm64",
+    "build:prod": "rimraf -rf dist && pnpm setup:env make build-all && pnpm test",
+    "build:win32": "pnpm setup:env:win32 make build-win",
+    "build:win32:amd": "pnpm setup:env:win32 make build-win-amd64",
+    "build:win32:arm": "pnpm setup:env:win32 make build-win-arm64",
+    "install": "go mod tidy",
+    "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
+    "setup:env": "run-script-os",
+    "setup:env:darwin:linux": "cross-env IMAGE_ENV_TO_JSON_VERSION=$(build-env imageEnvToJson.version)",
+    "setup:env:win32": "pnpm powershell \"cross-env IMAGE_ENV_TO_JSON_VERSION=$(build-env imageEnvToJson.version)\"",
+    "test": "go test ./..."
   },
   "devDependencies": {
-    "@kie-tools-core/webpack-base": "workspace:*",
-    "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
-    "@kie-tools/tsconfig": "workspace:*",
-    "jsonschema": "^1.4.1",
-    "pkg": "^5.8.1",
+    "cross-env": "^7.0.3",
     "rimraf": "^3.0.2",
-    "run-script-os": "^1.1.6",
-    "typescript": "^5.5.3",
-    "webpack": "^5.94.0",
-    "webpack-cli": "^4.10.0",
-    "webpack-dev-server": "^4.15.1",
-    "webpack-merge": "^5.9.0",
-    "webpack-node-externals": "^3.0.0"
+    "run-script-os": "^1.1.6"
   }
 }

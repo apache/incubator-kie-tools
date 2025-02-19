@@ -17,19 +17,17 @@
  * under the License.
  */
 
-const nodeExternals = require("webpack-node-externals");
-const { merge } = require("webpack-merge");
-const common = require("@kie-tools-core/webpack-base/webpack.common.config");
+package main
 
-module.exports = (webpackEnv, webpackArgv) => [
-  merge(common(webpackEnv, webpackArgv), {
-    entry: {
-      index: "./src/index.ts",
-    },
-    target: "node",
-    output: {
-      libraryTarget: "commonjs2",
-    },
-    externals: [nodeExternals()],
-  }),
-];
+import (
+	"os"
+
+	"github.com/apache/incubator-kie-tools/packages/image-env-to-json/cmd"
+	"github.com/apache/incubator-kie-tools/packages/image-env-to-json/internal"
+)
+
+func main() {
+	if err := cmd.RootCmd(cmd.CmdConfig{Version: internal.Version}).Execute(); err != nil {
+		os.Exit(1)
+	}
+}
