@@ -1,37 +1,31 @@
-function delListItem(value, disabled, minCount) {
-  return (itemIndex) => {
-    if (!disabled && minCount < value.length) {
-      const newValue = [...value];
-      newValue.splice(itemIndex, 1);
-      value = newValue;
-    }
+function delListItem(value, disabled, minCount, itemIndex) {
+  if (!disabled && minCount < value.length) {
+    const newValue = [...value];
+    newValue.splice(itemIndex, 1);
+    value = newValue;
   }
 }
 
-function addListItem(value, defaultValue, disabled, maxCount, name, childrenHtml) {
-  return () => {
-    if (!disabled && maxCount > value.length) {
-      value = value.concat([defaultValue]);
-    }
+function addListItem(value, defaultValue, disabled, maxCount, name, itemIndex, childrenHtml) {
+  if (!disabled && maxCount > value.length) {
+    value = value.concat([defaultValue]);
+  }
 
-    const itemIndex = value.length-1;
+  const listContainer = document.getElementById(name);
 
-    const listContainer = document.getElementById(name);
+  const newItem = document.createElement("div");
+  newItem.class = "row"
+  newItem.id = name + "." + itemIndex
+  newItem.innerHTML = `
+  <div class="col-1">
+    <span class="badge badge-pill" role="button" tabindex="0" onclick="onDelListItem('${name}', ${itemIndex})" onkeydown="onDelListItem('${name}', ${itemIndex})">
+      <i className="octicon octicon-dash"><span>-</span></i>
+    </span>
+  </div>
+  <div class="col-11">
+    ${childrenHtml}
+  </div>
+  `
 
-    const newItem = document.createElement("div");
-    newItem.class = "row"
-    newItem.id = name + "." + itemIndex
-    newItem.innerHTML = `
-    <div class="col-1">
-      <span class="badge badge-pill" role="button" tabindex="0" onclick="onDelListItem(itemIndex)" onkeydown="onDelListItem(itemIndex)">
-        <i className="octicon octicon-dash"></i>
-      </span>
-    </div>
-    <div class="col-11">
-      ${childrenHtml}
-    </div>
-    `
-    }
-  
   listContainer.appendChild(newItem);
 }

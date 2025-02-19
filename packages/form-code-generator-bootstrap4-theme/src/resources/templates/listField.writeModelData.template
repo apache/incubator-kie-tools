@@ -1,0 +1,31 @@
+formData.<%=name%> = Array.from(document.getElementById("<%=name%>").querySelectorAll("input, select") ?? []).reduce((values, element) => {
+  const fieldName = element.name;
+  
+  if (element.tagName === "INPUT") {
+      switch (element.type) {
+          case "text":
+          case "number":
+              values.push({ [fieldName]: element.value });
+              break;
+          case "checkbox":
+              if (!values[fieldName]) {
+                values.push({ [fieldName]: false });
+              }
+              if (element.checked) {
+                  values.push({ [fieldName]: element.value || true });
+              }
+              break;
+          case "radio":
+              if (element.checked) {
+                  values.push({ [fieldName]: element.value });
+              }
+              break;
+          default:
+              break;
+      }
+  } else if (element.tagName === "SELECT") {
+      values.push({ [fieldName]: element.options[element.selectedIndex].value });
+  }
+
+  return values;
+}, []);

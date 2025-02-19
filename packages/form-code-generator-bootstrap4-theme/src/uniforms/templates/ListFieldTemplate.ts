@@ -73,6 +73,9 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
         name,
         value,
         childrenHtml: children.html,
+        defaultValue: getDefaultItemValue(),
+        minCount,
+        maxCount,
       }),
       disabled: disabled,
       globalFunctions: {
@@ -83,24 +86,17 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
           maxCount,
           childrenHtml: `${children.html}`,
           name,
-          path: fieldNameToOptionalChain(name),
         }),
         requiredCode: [modifyListSize],
       },
       setValueFromModelCode: {
-        code: this.listFieldGlobalFunctionsTemplate({
-          defaultValue: getDefaultItemValue(),
-          disabled,
-          minCount,
-          maxCount,
-          childrenHtml: `${children.html}`,
-          name,
-          path: fieldNameToOptionalChain(name),
-        }),
-        requiredCode: [modifyListSize],
+        code: this.listFieldSetValueFromModelTemplate({}),
+        requiredCode: [],
       },
       writeValueToModelCode: {
-        code: this.listFieldWriteValueToModelTemplate({}),
+        code: this.listFieldWriteValueToModelTemplate({
+          name,
+        }),
         requiredCode: [],
       },
     };

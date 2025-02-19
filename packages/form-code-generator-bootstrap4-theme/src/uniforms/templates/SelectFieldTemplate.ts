@@ -61,6 +61,7 @@ export class SelectFieldTemplate implements FormElementTemplate<FormInput, Selec
           ? `${props.itemProps.listName}.${props.itemProps.indexVariableName}`
           : props.label,
         input: this.inputTemplate({ props: props }),
+        isListItem: props.itemProps?.isListItem ?? false,
       }),
       disabled: props.disabled,
       globalFunctions: undefined,

@@ -1,2 +1,16 @@
-onDelListItem = delListItem(data?.<%=path%>, <%= disabled %>, <%= minCount !== undefined ? minCount : "undefined" %>);
-onAddListItem = addListItem(data?.<%=path%>, <%= defaultValue %>, <%= disabled %>, <%= maxCount !== undefined ? maxCount : "undefined" %>, <%= name %>, `<%= childrenHtml %>`);
+function accessObjectPath(obj, objPath) {
+  return objPath.split(".").reduce((acc, pathPiece) => acc[pathPiece], obj);
+}
+function onDelListItem(name, itemIndex) {
+  const formData = getFormData();
+  const value = accessObjectPath(formData, name) ?? [{}];
+
+  delListItem(value, <%= disabled %>, <%= minCount !== undefined ? minCount : "undefined" %>, itemIndex)
+}
+function onAddListItem(name) {
+  const formData = getFormData();
+  const value = accessObjectPath(formData, name) ?? [{}];
+  const itemIndex = value.length;
+
+  addListItem(value, <%= defaultValue %>, <%= disabled %>, <%= maxCount !== undefined ? maxCount : "undefined" %>, "<%= name %>", itemIndex, `<%= childrenHtml %>`)
+}
