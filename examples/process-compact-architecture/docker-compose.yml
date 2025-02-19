@@ -20,7 +20,7 @@
 services:
   postgres:
     container_name: process-compact-architecture-postgres
-    image: postgres:16.1-alpine3.19
+    image: postgres:16.7-alpine3.21
     profiles: ["dev", "example", "full"]
     ports:
       - "5432:5432"
@@ -37,7 +37,7 @@ services:
 
   pgadmin:
     container_name: process-compact-architecture-pgadmin
-    image: dpage/pgadmin4:8.2
+    image: dpage/pgadmin4:8.14
     profiles: ["dev", "example", "full"]
     ports:
       - 8055:80
@@ -95,7 +95,3 @@ services:
     environment:
       RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE: "DEV"
       RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT: http://${DOCKER_GATEWAY_HOST:-host.docker.internal}:8080/graphql
-      # KOGITO_CONSOLES_KEYCLOAK_HEALTH_CHECK_URL: http://localhost:8480/auth/realms/kogito/.well-known/openid-configuration
-      # KOGITO_CONSOLES_KEYCLOAK_URL: http://localhost:8480/auth
-      # KOGITO_CONSOLES_KEYCLOAK_REALM: kogito
-      # KOGITO_CONSOLES_KEYCLOAK_CLIENT_ID: kogito-console-quarkus

@@ -31,66 +31,8 @@
   </parent>
   <artifactId>process-event-driven-travelers</artifactId>
   <name>Kogito Example :: Process Event Driven :: Travelers</name>
-  <properties>
-    <quarkus.platform.version>3.8.6</quarkus.platform.version>
-    <quarkus-plugin.version>3.8.6</quarkus-plugin.version>
-  </properties>
-
-  <!--
-    Repositories and Plugin Repositories configuration is here 
-    for simplification purposes. In real-world applications this 
-    configuration would go to a Maven `settings.xml` file.
-  -->
-  <repositories>
-    <repository>
-      <id>ibm-kogito-enterprise-maven-repository</id>
-      <url>http://localhost:9000/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>ibm-kogito-enterprise-maven-repository</id>
-      <url>http://localhost:9000/</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-bom</artifactId>
-        <version>${quarkus.platform.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>com.ibm.kogito</groupId>
-        <artifactId>kogito-bom</artifactId>
-        <version>${kogito.bom.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
-    <!-- Kogito -->
-    <dependency>
-      <groupId>com.ibm.kogito</groupId>
-      <artifactId>kogito-ilmt-compliance-quarkus-pamoe</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-with-drools-quarkus</artifactId>
@@ -173,7 +115,6 @@
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
-        <version>${quarkus-plugin.version}</version>
         <executions>
           <execution>
             <goals>

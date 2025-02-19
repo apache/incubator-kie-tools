@@ -37,7 +37,6 @@
   <properties>
     <kogito.management-console.image
     >docker.io/apache/incubator-kie-kogito-management-console:main</kogito.management-console.image>
-    <kogito.task-console.image>docker.io/apache/incubator-kie-kogito-task-console:main</kogito.task-console.image>
   </properties>
 
   <dependencies>
@@ -145,6 +144,17 @@
       <properties>
         <quarkus.profile>dev</quarkus.profile>
       </properties>
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-quarkus-devui-bom</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
       <dependencies>
         <dependency>
           <groupId>org.jbpm</groupId>
@@ -164,7 +174,6 @@
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
-        <version>${quarkus-plugin.version}</version>
         <executions>
           <execution>
             <goals>

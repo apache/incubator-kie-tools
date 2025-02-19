@@ -73,12 +73,12 @@ mp.messaging.incoming.correlation.auto.offset.reset=earliest
 To help bootstrapping the Infrastructure Services, the example provides a `docker-compose.yml` file. This quickstart provides two ways of running the example application. In development ("dev") mode, the user can start a Kafka service using `docker-compose` and must run **Process Travelers** and **Process Hotel** processes manually. In "full" mode the `docker-compose` file will start the Kafka service and both processes, requiring the project to be compiled first to generate the process's container images. To use `docker-compose` we must first create a `.env` file in the example root, and it should have the following variables:
 
 ```
-PROJECT_VERSION=
+STREAM_NAME=
 KAFKA_HOST=
 COMPOSE_PROFILES=
 ```
 
-- `PROJECT_VERSION`: Should be set with the current Kogito version being used: `PROJECT_VERSION=0.0.0`
+- `STREAM_NAME`: Should be set with the current Kogito version being used: `STREAM_NAME=0.0.0`
 - `KAFKA_HOST`: tells how the processes will find the Kafka service.
 - `COMPOSE_PROFILES`: filters which services will run.
 
@@ -87,7 +87,7 @@ COMPOSE_PROFILES=
 For development mode, the `.env` must have the following values:
 
 ```
-PROJECT_VERSION=0.0.0
+STREAM_NAME=0.0.0
 KAFKA_HOST=localhost
 COMPOSE_PROFILES=dev
 ```
@@ -97,7 +97,7 @@ COMPOSE_PROFILES=dev
 For full mode, the `.env` must have the following values:
 
 ```
-PROJECT_VERSION=0.0.0
+STREAM_NAME=0.0.0
 KAFKA_HOST=kafka
 COMPOSE_PROFILES=full
 ```
