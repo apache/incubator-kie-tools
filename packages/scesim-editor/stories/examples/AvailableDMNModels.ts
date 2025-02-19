@@ -20,18 +20,23 @@
 import * as TestScenarioEditor from "../../src/TestScenarioEditor";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
-import { EMPTY, LOAN_PRE_QUALIFICATION, SIMPLE, TRAFFIC_VIOLATION } from "./ExternalDmnModels";
+import { COLLECTION, EMPTY, LOAN_PRE_QUALIFICATION, SIMPLE, TRAFFIC_VIOLATION } from "./ExternalDmnModels";
 
 export const availableModels: TestScenarioEditor.ExternalDmn[] = [
+  {
+    model: normalize(getMarshaller(COLLECTION, { upgradeTo: "latest" }).parser.parse()),
+    svg: "",
+    normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/collection.dmn",
+  },
+  {
+    model: normalize(getMarshaller(EMPTY, { upgradeTo: "latest" }).parser.parse()),
+    svg: "",
+    normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/empty.dmn",
+  },
   {
     model: normalize(getMarshaller(LOAN_PRE_QUALIFICATION, { upgradeTo: "latest" }).parser.parse()),
     svg: "",
     normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/loan-pre-qualification.dmn",
-  },
-  {
-    model: normalize(getMarshaller(TRAFFIC_VIOLATION, { upgradeTo: "latest" }).parser.parse()),
-    svg: "",
-    normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/traffic-violation.dmn",
   },
   {
     model: normalize(getMarshaller(SIMPLE, { upgradeTo: "latest" }).parser.parse()),
@@ -39,9 +44,9 @@ export const availableModels: TestScenarioEditor.ExternalDmn[] = [
     normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/simple.dmn",
   },
   {
-    model: normalize(getMarshaller(EMPTY, { upgradeTo: "latest" }).parser.parse()),
+    model: normalize(getMarshaller(TRAFFIC_VIOLATION, { upgradeTo: "latest" }).parser.parse()),
     svg: "",
-    normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/empty.dmn",
+    normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/traffic-violation.dmn",
   },
 ];
 
