@@ -20,7 +20,7 @@
 services:
   postgres:
     container_name: process-user-tasks-subsystem-postgres
-    image: postgres:16.1-alpine3.19
+    image: postgres:16.7-alpine3.21
     ports:
       - "5432:5432"
     volumes:
@@ -36,7 +36,7 @@ services:
 
   pgadmin:
     container_name: process-user-tasks-subsystem-pgadmin
-    image: dpage/pgadmin4:8.2
+    image: dpage/pgadmin4:8.14
     ports:
       - 8055:80
     depends_on:
@@ -59,7 +59,8 @@ services:
 
   process-user-tasks-subsystem:
     container_name: process-user-tasks-subsystem
-    image: dev.local/kogito/process-user-tasks-subsystem:${PROJECT_VERSION}
+    image: dev.local/apache/process-user-tasks-subsystem:${PROJECT_VERSION}
+    profiles: ["container"]
     ports:
       - "8080:8080"
     depends_on:
@@ -81,7 +82,6 @@ services:
   management-console:
     container_name: process-user-tasks-subsystem-management-console
     image: ${KOGITO_MANAGEMENT_CONSOLE_IMAGE}
-    profiles: ["full"]
     ports:
       - 8280:8080
     depends_on:
@@ -92,7 +92,3 @@ services:
     environment:
       RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE: "DEV"
       RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT: http://${DOCKER_GATEWAY_HOST:-host.docker.internal}:8080/graphql
-      # KOGITO_CONSOLES_KEYCLOAK_HEALTH_CHECK_URL: http://localhost:8480/auth/realms/kogito/.well-known/openid-configuration
-      # KOGITO_CONSOLES_KEYCLOAK_URL: http://localhost:8480/auth
-      # KOGITO_CONSOLES_KEYCLOAK_REALM: kogito
-      # KOGITO_CONSOLES_KEYCLOAK_CLIENT_ID: kogito-console-quarkus

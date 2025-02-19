@@ -138,12 +138,23 @@ mvn clean package -Pcontainer
 Now, add an `.env` file with the content below:
 
 ```
+STREAM_NAME=
 PROJECT_VERSION=
 KOGITO_MANAGEMENT_CONSOLE_IMAGE=
+COMPOSE_PROFILES=
 ```
 
+- `STREAM_NAME`: Should be set with the project stream name.
 - `PROJECT_VERSION`: Should be set with the current Kogito version being used: `PROJECT_VERSION=`
-- `KOGITO_MANAGEMENT_CONSOLE_IMAGE`: Should be set with the Kogito Management Console image `quay.io/kogito/management-console:${PROJECT_VERSION}`
+- `KOGITO_MANAGEMENT_CONSOLE_IMAGE`: Should be set with the Kogito Management Console image `docker.io/apache/incubator-kie-kogito-management-console:${STREAM_NAME}`
+- `COMPOSE_PROFILES`: filters which services will run.
+
+```
+STREAM_NAME=main
+PROJECT_VERSION=0.0.0
+KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:${STREAM_NAME}
+COMPOSE_PROFILES=container
+```
 
 Start Postgres, pgAdmin, Kogito business calendar example and Management Console with the command below:
 

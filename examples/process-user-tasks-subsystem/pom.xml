@@ -37,10 +37,10 @@
   <properties>
     <kogito.management-console.image
     >docker.io/apache/incubator-kie-kogito-management-console:main</kogito.management-console.image>
-    <kogito.task-console.image>docker.io/apache/incubator-kie-kogito-task-console:main</kogito.task-console.image>
   </properties>
 
   <dependencies>
+    <!-- Quarkus -->
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy</artifactId>
@@ -50,16 +50,17 @@
       <artifactId>quarkus-resteasy-jackson</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.jbpm</groupId>
-      <artifactId>jbpm-with-drools-quarkus</artifactId>
-    </dependency>
-    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-openapi</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-smallrye-health</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-with-drools-quarkus</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
@@ -151,6 +152,17 @@
       <properties>
         <quarkus.profile>dev</quarkus.profile>
       </properties>
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-quarkus-devui-bom</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
       <dependencies>
         <dependency>
           <groupId>org.jbpm</groupId>
@@ -160,18 +172,14 @@
           <groupId>io.quarkus</groupId>
           <artifactId>quarkus-jdbc-h2</artifactId>
         </dependency>
-        <dependency>
-          <groupId>org.kie</groupId>
-          <artifactId>kie-addons-quarkus-persistence-jdbc</artifactId>
-        </dependency>
+
+        <!-- Data-Index Addon -->
         <dependency>
           <groupId>org.kie</groupId>
           <artifactId>kogito-addons-quarkus-data-index-jpa</artifactId>
         </dependency>
-        <dependency>
-          <groupId>org.kie</groupId>
-          <artifactId>kogito-addons-quarkus-jobs-management</artifactId>
-        </dependency>
+
+        <!-- Jobs Service -->
         <dependency>
           <groupId>org.kie</groupId>
           <artifactId>kogito-addons-quarkus-jobs</artifactId>
