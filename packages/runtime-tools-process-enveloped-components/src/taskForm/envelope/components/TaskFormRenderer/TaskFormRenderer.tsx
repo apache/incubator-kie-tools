@@ -29,6 +29,7 @@ interface IOwnProps {
   formData?: any;
   formSchema: Record<string, any>;
   enabled: boolean;
+  phases: string[];
   submit: (phase: string, payload: any) => void;
 }
 
@@ -37,6 +38,7 @@ const TaskFormRenderer: React.FC<IOwnProps & OUIAProps> = ({
   formData,
   formSchema,
   enabled,
+  phases,
   submit,
   ouiaId,
   ouiaSafe,
@@ -45,8 +47,8 @@ const TaskFormRenderer: React.FC<IOwnProps & OUIAProps> = ({
   const [formActions, setFormActions] = useState<FormAction[]>([]);
 
   useEffect(() => {
-    if (formSchema.phases) {
-      const actions = formSchema.phases.map((phase) => {
+    if (phases) {
+      const actions = phases.map((phase) => {
         return {
           name: phase,
           execute: () => {
@@ -67,7 +69,7 @@ const TaskFormRenderer: React.FC<IOwnProps & OUIAProps> = ({
       return true;
     }
 
-    if (_.isEmpty(formSchema.phases)) {
+    if (_.isEmpty(phases)) {
       return true;
     }
 

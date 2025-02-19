@@ -61,7 +61,7 @@ export const EmbeddedTaskForm = React.forwardRef(
           { userTask: props.userTask, user: props.user }
         );
       },
-      []
+      [props.targetOrigin, props.user, props.userTask]
     );
 
     return (

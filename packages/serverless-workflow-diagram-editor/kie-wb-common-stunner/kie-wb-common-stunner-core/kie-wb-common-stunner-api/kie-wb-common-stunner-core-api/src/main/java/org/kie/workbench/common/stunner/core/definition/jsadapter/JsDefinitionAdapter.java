@@ -97,7 +97,7 @@ public class JsDefinitionAdapter implements DefinitionAdapter<Object> {
     public String[] getPropertyFields(Object pojo) {
         // Exclude native js object properties and functions
         return JsObject.getOwnPropertyNames(pojo)
-                .filter((prop, i, jsArray) -> (!(prop.contains("__") || Reflect.get(pojo, prop) instanceof Function)))
+                .filter((prop, i) -> (!(prop.contains("__") || Reflect.get(pojo, prop) instanceof Function)))
                 .asArray(new String[0]);
     }
 

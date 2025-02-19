@@ -34,11 +34,11 @@ import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normali
 import { drag } from "d3-drag";
 import { select } from "d3-selection";
 import * as React from "react";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import * as RF from "reactflow";
 import { OnCreateDataType, OnTypeRefChange } from "../../dataTypes/TypeRefSelector";
 import { addTopLevelItemDefinition } from "../../mutations/addTopLevelItemDefinition";
-import { renameDrgElement, renameGroupNode, updateTextAnnotation } from "../../mutations/renameNode";
+import { renameGroupNode, updateTextAnnotation } from "../../mutations/renameNode";
 import { updateDecisionServiceDividerLine } from "../../mutations/updateDecisionServiceDividerLine";
 import { DmnEditorTab, SnapGrid, State } from "../../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
@@ -73,6 +73,7 @@ import { propsHaveSameValuesDeep } from "../memoization/memoization";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { NODE_LAYERS } from "../../store/computed/computeDiagramData";
 import { useSettings } from "../../settings/DmnEditorSettingsContext";
+import { useRefactor } from "../../refactor/RefactorConfirmationDialog";
 
 export type ElementFilter<E extends { __$$element: string }, Filter extends string> = E extends any
   ? E["__$$element"] extends Filter
@@ -102,7 +103,7 @@ export type DmnDiagramNodeData<T extends NodeDmnObjects = NodeDmnObjects> = {
 
 export const InputDataNode = React.memo(
   ({
-    data: { dmnObject: inputData, shape, index, dmnObjectQName, dmnObjectNamespace, parentRfNode },
+    data: { dmnObject: inputData, shape, index, dmnObjectQName, dmnObjectNamespace },
     selected,
     dragging,
     zIndex,
@@ -122,7 +123,6 @@ export const InputDataNode = React.memo(
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
-    const [isDataTypesPanelExpanded, setDataTypePanelExpanded] = useState(false);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const settings = useSettings();
@@ -136,14 +136,10 @@ export const InputDataNode = React.memo(
       isAlternativeInputDataShape,
     });
 
-    const setName = useCallback<OnEditableNodeLabelChange>(
-      (newName: string) => {
-        dmnEditorStoreApi.setState((state) => {
-          renameDrgElement({ definitions: state.dmn.model.definitions, newName, index });
-        });
-      },
-      [dmnEditorStoreApi, index]
-    );
+    const { externalModelsByNamespace } = useExternalModels();
+    const identifierId = useMemo(() => inputData["@_id"], [inputData]);
+    const oldName = useMemo(() => inputData["@_label"] ?? inputData["@_name"], [inputData]);
+    const { setNewIdentifierNameCandidate, refactorConfirmationDialog } = useRefactor({ index, identifierId, oldName });
 
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
@@ -165,8 +161,6 @@ export const InputDataNode = React.memo(
       nodeType: type as NodeType,
       isEnabled: enableCustomNodeStyles,
     });
-
-    const { externalModelsByNamespace } = useExternalModels();
 
     const isCollection = useDmnEditorStore((s) => {
       const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = s
@@ -193,7 +187,7 @@ export const InputDataNode = React.memo(
             }px`,
           } as any)
         : undefined;
-      // The dependecy should be "nodeDimension" to trigger an adjustment on width changes as well.
+      // The dependency should be "nodeDimension" to trigger an adjustment on width changes as well.
     }, [isAlternativeInputDataShape, nodeDimensions, isEditingLabel, alternativeEditableNodeHeight]);
 
     const selectedAlternativeClass = useMemo(
@@ -203,6 +197,7 @@ export const InputDataNode = React.memo(
 
     return (
       <>
+        {refactorConfirmationDialog}
         <svg
           className={`kie-dmn-editor--node-shape ${className} ${isAlternativeInputDataShape ? "alternative" : ""} ${
             selected ? "selected" : ""
@@ -262,7 +257,7 @@ export const InputDataNode = React.memo(
                   isAlternativeInputDataShape,
                 })}
                 value={inputData["@_label"] ?? inputData["@_name"]}
-                onChange={setName}
+                onChange={setNewIdentifierNameCandidate}
                 onGetAllUniqueNames={getAllFeelVariableUniqueNames}
                 shouldCommitOnBlur={true}
                 fontCssProperties={fontCssProperties}
@@ -286,7 +281,6 @@ export const InputDataNode = React.memo(
               shape={shape}
               onCreate={onCreateDataType}
               onChange={onTypeRefChange}
-              onToggle={setDataTypePanelExpanded}
             />
           </div>
           {/* Creates a div element with the node size to push down the <EditableNodeLabel /> */}
@@ -300,7 +294,7 @@ export const InputDataNode = React.memo(
               setEditing={setEditingLabel}
               position={getNodeLabelPosition({ nodeType: type as NodeType, isAlternativeInputDataShape })}
               value={inputData["@_label"] ?? inputData["@_name"]}
-              onChange={setName}
+              onChange={setNewIdentifierNameCandidate}
               onGetAllUniqueNames={getAllFeelVariableUniqueNames}
               shouldCommitOnBlur={true}
               // Keeps the text on top of the selected layer
@@ -344,7 +338,6 @@ export const DecisionNode = React.memo(
     );
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
-    const [isDataTypesPanelExpanded, setDataTypePanelExpanded] = useState(false);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const settings = useSettings();
@@ -356,14 +349,11 @@ export const DecisionNode = React.memo(
       snapGrid,
       shape,
     });
-    const setName = useCallback<OnEditableNodeLabelChange>(
-      (newName: string) => {
-        dmnEditorStoreApi.setState((state) => {
-          renameDrgElement({ definitions: state.dmn.model.definitions, newName, index });
-        });
-      },
-      [dmnEditorStoreApi, index]
-    );
+
+    const { externalModelsByNamespace } = useExternalModels();
+    const identifierId = useMemo(() => decision["@_id"], [decision]);
+    const oldName = useMemo(() => decision["@_label"] ?? decision["@_name"], [decision]);
+    const { setNewIdentifierNameCandidate, refactorConfirmationDialog } = useRefactor({ index, identifierId, oldName });
 
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
@@ -389,8 +379,6 @@ export const DecisionNode = React.memo(
       isEnabled: enableCustomNodeStyles,
     });
 
-    const { externalModelsByNamespace } = useExternalModels();
-
     const isCollection = useDmnEditorStore((s) => {
       const { allDataTypesById, allTopLevelItemDefinitionUniqueNames } = s
         .computed(s)
@@ -404,6 +392,7 @@ export const DecisionNode = React.memo(
 
     return (
       <>
+        {refactorConfirmationDialog}
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <DecisionNodeSvg
             isCollection={isCollection}
@@ -416,9 +405,7 @@ export const DecisionNode = React.memo(
             hasHiddenRequirements={hasHiddenRequirements}
           />
         </svg>
-
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
-
         <div
           ref={ref}
           className={`kie-dmn-editor--node kie-dmn-editor--decision-node ${className}`}
@@ -446,7 +433,7 @@ export const DecisionNode = React.memo(
             setEditing={setEditingLabel}
             position={getNodeLabelPosition({ nodeType: type as typeof NODE_TYPES.decision })}
             value={decision["@_label"] ?? decision["@_name"]}
-            onChange={setName}
+            onChange={setNewIdentifierNameCandidate}
             onGetAllUniqueNames={getAllFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
@@ -468,7 +455,6 @@ export const DecisionNode = React.memo(
             shape={shape}
             onChange={onTypeRefChange}
             onCreate={onCreateDataType}
-            onToggle={setDataTypePanelExpanded}
           />
         </div>
       </>
@@ -500,7 +486,6 @@ export const BkmNode = React.memo(
     );
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
-    const [isDataTypesPanelExpanded, setDataTypePanelExpanded] = useState(false);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const settings = useSettings();
@@ -508,14 +493,10 @@ export const BkmNode = React.memo(
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
     const className = useNodeClassName(isValidConnectionTarget, id);
     const nodeDimensions = useNodeDimensions({ nodeType: type as typeof NODE_TYPES.bkm, snapGrid, shape });
-    const setName = useCallback<OnEditableNodeLabelChange>(
-      (newName: string) => {
-        dmnEditorStoreApi.setState((state) => {
-          renameDrgElement({ definitions: state.dmn.model.definitions, newName, index });
-        });
-      },
-      [dmnEditorStoreApi, index]
-    );
+
+    const identifierId = useMemo(() => bkm["@_id"], [bkm]);
+    const oldName = useMemo(() => bkm["@_label"] ?? bkm["@_name"], [bkm]);
+    const { setNewIdentifierNameCandidate, refactorConfirmationDialog } = useRefactor({ index, identifierId, oldName });
 
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
@@ -545,6 +526,7 @@ export const BkmNode = React.memo(
 
     return (
       <>
+        {refactorConfirmationDialog}
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <BkmNodeSvg
             {...nodeDimensions}
@@ -584,7 +566,7 @@ export const BkmNode = React.memo(
             setEditing={setEditingLabel}
             position={getNodeLabelPosition({ nodeType: type as typeof NODE_TYPES.bkm })}
             value={bkm["@_label"] ?? bkm["@_name"]}
-            onChange={setName}
+            onChange={setNewIdentifierNameCandidate}
             onGetAllUniqueNames={getAllFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
@@ -606,7 +588,6 @@ export const BkmNode = React.memo(
             shape={shape}
             onChange={onTypeRefChange}
             onCreate={onCreateDataType}
-            onToggle={setDataTypePanelExpanded}
           />
         </div>
       </>
@@ -637,7 +618,6 @@ export const KnowledgeSourceNode = React.memo(
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
 
-    const dmnEditorStoreApi = useDmnEditorStoreApi();
     const settings = useSettings();
 
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
@@ -647,14 +627,10 @@ export const KnowledgeSourceNode = React.memo(
       snapGrid,
       shape,
     });
-    const setName = useCallback<OnEditableNodeLabelChange>(
-      (newName: string) => {
-        dmnEditorStoreApi.setState((state) => {
-          renameDrgElement({ definitions: state.dmn.model.definitions, newName, index });
-        });
-      },
-      [dmnEditorStoreApi, index]
-    );
+
+    const identifierId = useMemo(() => knowledgeSource["@_id"], [knowledgeSource]);
+    const oldName = useMemo(() => knowledgeSource["@_label"] ?? knowledgeSource["@_name"], [knowledgeSource]);
+    const { setNewIdentifierNameCandidate, refactorConfirmationDialog } = useRefactor({ index, identifierId, oldName });
 
     const getAllFeelVariableUniqueNames = useCallback((s: State) => s.computed(s).getAllFeelVariableUniqueNames(), []);
 
@@ -666,6 +642,7 @@ export const KnowledgeSourceNode = React.memo(
 
     return (
       <>
+        {refactorConfirmationDialog}
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <KnowledgeSourceNodeSvg
             {...nodeDimensions}
@@ -704,7 +681,7 @@ export const KnowledgeSourceNode = React.memo(
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
             value={knowledgeSource["@_label"] ?? knowledgeSource["@_name"]}
-            onChange={setName}
+            onChange={setNewIdentifierNameCandidate}
             onGetAllUniqueNames={getAllFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
@@ -727,7 +704,7 @@ export const KnowledgeSourceNode = React.memo(
 
 export const TextAnnotationNode = React.memo(
   ({
-    data: { dmnObject: textAnnotation, shape, index, dmnObjectQName },
+    data: { dmnObject: textAnnotation, shape, index },
     selected,
     dragging,
     zIndex,
@@ -857,7 +834,6 @@ export const DecisionServiceNode = React.memo(
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
-    const [isDataTypesPanelExpanded, setDataTypePanelExpanded] = useState(false);
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const settings = useSettings();
@@ -870,14 +846,11 @@ export const DecisionServiceNode = React.memo(
       snapGrid,
       shape,
     });
-    const setName = useCallback<OnEditableNodeLabelChange>(
-      (newName: string) => {
-        dmnEditorStoreApi.setState((state) => {
-          renameDrgElement({ definitions: state.dmn.model.definitions, newName, index });
-        });
-      },
-      [dmnEditorStoreApi, index]
-    );
+
+    const identifierId = useMemo(() => decisionService["@_id"], [decisionService]);
+    const oldName = useMemo(() => decisionService["@_label"] ?? decisionService["@_name"], [decisionService]);
+
+    const { setNewIdentifierNameCandidate, refactorConfirmationDialog } = useRefactor({ index, identifierId, oldName });
 
     // Select nodes representing output and encapsulated decisions contained by the Decision Service
     useEffect(() => {
@@ -966,6 +939,7 @@ export const DecisionServiceNode = React.memo(
 
     return (
       <>
+        {refactorConfirmationDialog}
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
           <DecisionServiceNodeSvg
             dividerLineRef={dividerLineRef}
@@ -1008,7 +982,7 @@ export const DecisionServiceNode = React.memo(
             isEditing={isEditingLabel}
             setEditing={setEditingLabel}
             value={decisionService["@_label"] ?? decisionService["@_name"]}
-            onChange={setName}
+            onChange={setNewIdentifierNameCandidate}
             onGetAllUniqueNames={getAllFeelVariableUniqueNames}
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
@@ -1031,7 +1005,6 @@ export const DecisionServiceNode = React.memo(
             shape={shape}
             onCreate={onCreateDataType}
             onChange={onTypeRefChange}
-            onToggle={setDataTypePanelExpanded}
           />
         </div>
       </>
@@ -1042,10 +1015,9 @@ export const DecisionServiceNode = React.memo(
 
 export const GroupNode = React.memo(
   ({
-    data: { dmnObject: group, shape, index, dmnObjectQName },
+    data: { dmnObject: group, shape, index },
     selected,
     dragging,
-    zIndex,
     type,
     id,
   }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN15__tGroup> & { __$$element: "group" }>>) => {
@@ -1170,14 +1142,7 @@ export const GroupNode = React.memo(
 );
 
 export const UnknownNode = React.memo(
-  ({
-    data: { shape, dmnObjectQName },
-    selected,
-    dragging,
-    zIndex,
-    type,
-    id,
-  }: RF.NodeProps<DmnDiagramNodeData<null>>) => {
+  ({ data: { shape }, selected, dragging, type, id }: RF.NodeProps<DmnDiagramNodeData<null>>) => {
     const ref = useRef<HTMLDivElement>(null);
 
     const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);

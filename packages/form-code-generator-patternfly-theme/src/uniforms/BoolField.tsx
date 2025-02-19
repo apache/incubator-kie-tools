@@ -23,7 +23,8 @@ import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
 
 import { getInputReference, getStateCodeFromRef, renderField } from "./utils/Utils";
-import { BOOLEAN } from "./utils/dataTypes";
+import { DEFAULT_DATA_TYPE_BOOLEAN } from "./utils/dataTypes";
+import { getListItemName, getListItemOnChange, getListItemValue, ListItemProps } from "./rendering/ListItemField";
 
 export type BoolFieldProps = HTMLFieldProps<
   boolean,
@@ -31,22 +32,23 @@ export type BoolFieldProps = HTMLFieldProps<
   {
     name: string;
     label: string;
+    itemProps?: ListItemProps;
   }
 >;
 
 const Bool: React.FC<BoolFieldProps> = (props: BoolFieldProps) => {
-  const ref: InputReference = getInputReference(props.name, BOOLEAN);
+  const ref: InputReference = getInputReference(props.name, DEFAULT_DATA_TYPE_BOOLEAN);
 
   const stateCode = getStateCodeFromRef(ref);
 
   const jsxCode = `<FormGroup fieldId='${props.id}'>
     <Checkbox
-      isChecked={${ref.stateName}}
+      isChecked={${props.itemProps?.isListItem ? getListItemValue({ itemProps: props.itemProps, name: props.name }) : ref.stateName}}
       isDisabled={${props.disabled || "false"}}
       id={'${props.id}'}
-      name={'${props.name}'}
+      name={${props.itemProps?.isListItem ? getListItemName({ itemProps: props.itemProps, name: props.name }) : `'${props.name}'`}}
       label={'${props.label}'}
-      onChange={${ref.stateSetter}}
+      onChange={${props.itemProps?.isListItem ? getListItemOnChange({ itemProps: props.itemProps, name: props.name }) : ref.stateSetter}}
     />
   </FormGroup>`;
 

@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useEffect } from "react";
-import { BoxedIterator, Normalized } from "../../api";
+import { Action, BoxedIterator, ExpressionChangedArgs, Normalized } from "../../api";
 import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
 import { IteratorClause } from "./IteratorExpressionComponent";
 import { InlineEditableTextInput } from "../../table/BeeTable/InlineEditableTextInput";
@@ -64,13 +64,30 @@ export function IteratorExpressionVariableCell({
       <InlineEditableTextInput
         value={data[rowIndex].child as string}
         onChange={(updatedValue) => {
-          setExpression((prev: Normalized<BoxedIterator>) => {
-            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-            const ret: Normalized<BoxedIterator> = {
-              ...prev,
-              "@_iteratorVariable": updatedValue,
-            };
-            return ret;
+          const expressionChangedArgs: ExpressionChangedArgs =
+            (data[rowIndex].child as string) === ""
+              ? {
+                  action: Action.IteratorVariableDefined,
+                }
+              : {
+                  action: Action.VariableChanged,
+                  variableUuid: currentElementId,
+                  nameChange: {
+                    from: data[rowIndex].child as string,
+                    to: updatedValue,
+                  },
+                };
+
+          setExpression({
+            setExpressionAction: (prev: Normalized<BoxedIterator>) => {
+              // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+              const ret: Normalized<BoxedIterator> = {
+                ...prev,
+                "@_iteratorVariable": updatedValue,
+              };
+              return ret;
+            },
+            expressionChangedArgs,
           });
         }}
         rowIndex={rowIndex}

@@ -38,6 +38,9 @@ import { DmnRunnerLoading } from "./DmnRunnerLoading";
 import { DmnRunnerProviderActionType } from "./DmnRunnerTypes";
 import { PanelId, useEditorDockContext } from "../editor/EditorPageDockContextProvider";
 import { DmnRunnerExtendedServicesError } from "./DmnRunnerContextProvider";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
+import { useSettings } from "../settings/SettingsContext";
 
 enum ButtonPosition {
   INPUT,
@@ -68,9 +71,12 @@ export function DmnRunnerDrawerPanelContent() {
   const { currentInputIndex, dmnRunnerKey, extendedServicesError, inputs, jsonSchema, results, resultsDifference } =
     useDmnRunnerState();
   const { setDmnRunnerContextProviderState, onRowAdded, setDmnRunnerInputs, setDmnRunnerMode } = useDmnRunnerDispatch();
-  const { notificationsPanel, onOpenPanel } = useEditorDockContext();
+  const { envelopeServer, notificationsPanel, onOpenPanel } = useEditorDockContext();
 
   const formInputs: InputRow = useMemo(() => inputs[currentInputIndex], [inputs, currentInputIndex]);
+
+  const { settings } = useSettings();
+  const isLegacyDmnEditor = useMemo(() => settings.editors.useLegacyDmnEditor, [settings.editors.useLegacyDmnEditor]);
 
   const onResize = useCallback((width: number) => {
     // FIXME: PatternFly bug. The first interaction without resizing the splitter will result in width === 0.
@@ -324,6 +330,15 @@ export function DmnRunnerDrawerPanelContent() {
                       locale={locale}
                       notificationsPanel={true}
                       openExecutionTab={openExecutionTab}
+                      openBoxedExpressionEditor={
+                        !isLegacyDmnEditor
+                          ? (nodeId: string) => {
+                              const newDmnEditorEnvelopeApi =
+                                envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
+                              newDmnEditorEnvelopeApi.notifications.dmnEditor_openBoxedExpressionEditor.send(nodeId);
+                            }
+                          : undefined
+                      }
                     />
                   </PageSection>
                 </div>

@@ -57,7 +57,7 @@ fi
 
 cd ${KOGITO_HOME}/serverless-workflow-project
 
-"${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
+"${MAVEN_CMD}" -B ${MAVEN_ARGS_APPEND} \
     -nsu \
     -B \
     -s "${MAVEN_SETTINGS_PATH}" \

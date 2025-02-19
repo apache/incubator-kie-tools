@@ -24,19 +24,30 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { IdentifiersRefactor } from "@kie-tools/dmn-language-service";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 
 export function renameDrgElement({
   definitions,
   newName,
   index,
+  externalDmnModelsByNamespaceMap,
+  shouldRenameReferencedExpressions,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   newName: string;
   index: number;
+  externalDmnModelsByNamespaceMap: Map<string, Normalized<DmnLatestModel>>;
+  shouldRenameReferencedExpressions: boolean;
 }) {
   const trimmedNewName = newName.trim();
 
   const drgElement = definitions.drgElement![index];
+
+  const identifiersRefactor = new IdentifiersRefactor({
+    writeableDmnDefinitions: definitions,
+    _readonly_externalDmnModelsByNamespaceMap: externalDmnModelsByNamespaceMap,
+  });
 
   drgElement["@_name"] = trimmedNewName;
 
@@ -53,7 +64,9 @@ export function renameDrgElement({
     drgElement.encapsulatedLogic["@_label"] = trimmedNewName;
   }
 
-  // FIXME: Daniel --> Here we need to update all FEEL expression that were using this node's name as a variable.
+  if (shouldRenameReferencedExpressions) {
+    identifiersRefactor.rename({ identifierUuid: drgElement["@_id"], newName: trimmedNewName });
+  }
 }
 
 export function renameGroupNode({

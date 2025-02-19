@@ -25,7 +25,7 @@ import { PageTitle } from "../PageTitle";
 import { componentOuiaProps, OUIAProps } from "../../ouiaTools";
 import * as H from "history";
 
-type pathType = Pick<H.Location, "pathname" | "state">;
+type pathType = Pick<H.Location, "pathname" | "state"> | H.LocationDescriptor;
 interface PageSectionHeaderProps {
   titleText: string;
   breadcrumbText?: string[];

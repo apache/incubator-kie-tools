@@ -452,6 +452,8 @@ BoolField.test.tsx.snap
 CheckBoxGroupField.test.tsx.snap
 # packages/form-code-generator-patternfly-theme/tests/__snapshots__/DateField.test.tsx.snap
 DateField.test.tsx.snap
+# packages/form-code-generator-patternfly-theme/tests/__snapshots__/ListField.test.tsx.snap
+ListField.test.tsx.snap
 # packages/form-code-generator-patternfly-theme/tests/__snapshots__/NestField.test.tsx.snap
 NestField.test.tsx.snap
 # packages/form-code-generator-patternfly-theme/tests/__snapshots__/NumField.test.tsx.snap
@@ -628,6 +630,32 @@ goapi.go
 greetingAPI.yaml
 # packages/kn-plugin-workflow/pkg/specs/testdata/hello.sw.yaml
 hello.sw.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/emptyworkflow.sw.yaml
+emptyworkflow.sw.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi-subflow34.expected.yaml
+openapi-subflow34.expected.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi.expected.yaml
+openapi.expected.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi.yaml
+openapi.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi1.expected.yaml
+openapi1.expected.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi1.yaml
+openapi1.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi2.expected.yaml
+openapi2.expected.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/openapi2.yaml
+openapi2.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/subflow1.sw.yaml
+subflow1.sw.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/subflow2.sw.yaml
+subflow2.sw.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/subflow3.sw.yaml
+subflow3.sw.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/subflow4.sw.yaml
+subflow4.sw.yaml
+# packages/kn-plugin-workflow/pkg/specs/testdata/refs/workflow1.sw.yaml
+workflow1.sw.yaml
 # packages/kn-plugin-workflow/pkg/specs/testdata/subflow-custom.sw.yaml
 subflow-custom.sw.yaml
 # packages/kn-plugin-workflow/pkg/specs/testdata/subflow-mySpecsDir.sw.yaml
@@ -650,6 +678,16 @@ workflow-subflow-custom.sw.yaml
 workflow.sw.yaml
 # packages/kn-plugin-workflow/pkg/specs/testdata/workflow2.sw.yaml
 workflow2.sw.yaml
+# packages/kn-plugin-workflow/pkg/command/quarkus/testdata/docker/Dockerfile.jvm
+Dockerfile.jvm
+# packages/kn-plugin-workflow/pkg/command/quarkus/testdata/docker/Dockerfile.native
+Dockerfile.native
+# packages/kn-plugin-workflow/pkg/command/quarkus/testdata/docker/Dockerfile.legacy-jar
+Dockerfile.legacy-jar
+# packages/kn-plugin-workflow/pkg/command/quarkus/testdata/docker/Dockerfile.native-micro
+Dockerfile.native-micro
+packages/kn-plugin-workflow/pkg/command/quarkus/testdata/dockerignore
+dockerignore
 # packages/maven-base/kie-tools-maven-base.iml
 kie-tools-maven-base.iml
 # packages/maven-base/settings.xml
@@ -977,6 +1015,8 @@ common.py
 # packages/sonataflow-management-console-webapp/resources/monitoring-webapp/MonitoringReport.dash.yml
 MonitoringReport.dash.yml
 # packages/sonataflow-management-console-webapp/resources/monitoring-webapp/WorkflowDetails.dash.yml
+sonataflow-management-console.feature
+# packages/sonataflow-management-console-image/test-resources/tests/features/sonataflow-management-console.feature
 WorkflowDetails.dash.yml
 # packages/sonataflow-operator/PROJECT
 PROJECT
@@ -1006,6 +1046,8 @@ go.sum
 sonataflow-quarkus-devui-parent.iml
 # packages/stunner-editors/stunner-editors-parent.iml
 stunner-editors-parent.iml
+# packages/kogito-db-migrator-tool/kogito-db-migrator-tool.iml
+kogito-db-migrator-tool.iml
 # packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-api/src/main/resources/META-INF/beans.xml
 beans.xml
 # packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-marshaller/src/main/java/.gitkeep

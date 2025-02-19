@@ -17,7 +17,7 @@
 # under the License.
 #
 
-name: "Bootstrap Apache KIE Tools"
+name: "Bootstrap kie-tools"
 description: ""
 
 inputs:

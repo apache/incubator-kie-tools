@@ -21,25 +21,23 @@ import * as vscode from "vscode";
 import * as validationresponse from "./ValidationResponse";
 import * as kiefile from "../kieFiles/KieFile";
 
-interface ValidationBody {
+interface MultipleResourcesPayload {
   mainURI: string;
-  resources: ValidationResource[];
+  resources: ResourceWithURI[];
 }
 
-interface ValidationResource {
+interface ResourceWithURI {
   URI: string;
   content: string;
 }
 
-function buildRequestBody(document: vscode.TextDocument): string {
-  const body: ValidationBody = {
-    mainURI: "VS Code KIE files",
-    resources: [
-      {
-        URI: document.fileName,
-        content: document.getText(),
-      },
-    ],
+function buildMultipleResourcesPayload(mainURI: string, documents: vscode.TextDocument[]): string {
+  const body: MultipleResourcesPayload = {
+    mainURI: mainURI,
+    resources: documents.map((document) => ({
+      URI: document.fileName,
+      content: document.getText(),
+    })),
   };
 
   return JSON.stringify(body);
@@ -56,12 +54,13 @@ async function validate(
     textDocument = await vscode.workspace.openTextDocument(kieFile.uri);
   }
   const url = new URL(endpoint, serviceURL);
+  console.debug(`[Extended Services Extension] Fetching ${url.toString()}`);
   const response = await fetch(url.toString(), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: buildRequestBody(textDocument),
+    body: buildMultipleResourcesPayload(textDocument.fileName, [textDocument]),
   });
 
   const responseData: any = await response.json();
@@ -70,22 +69,28 @@ async function validate(
 
 export async function validateBPMN(
   serviceURL: URL,
-  kieFile: kiefile.KieFile
+  bpmnFile: kiefile.KieFile
 ): Promise<validationresponse.BPMNValidationResponse[]> {
   try {
-    return validate(serviceURL, kieFile, "/jitbpmn/validate", validationresponse.parseBPMNValidationResponse);
+    return validate(serviceURL, bpmnFile, "/jitbpmn/validate", validationresponse.parseBPMNValidationResponse);
   } catch (error) {
+    console.error(
+      `[Extended Services Extension] An error happened while trying to validate ${bpmnFile} from serviceUrl ${serviceURL}: ${error.message}`
+    );
     throw new Error("VALIDATE BPMN REQUEST ERROR: \n", error.message);
   }
 }
 
 export async function validateDMN(
   serviceURL: URL,
-  kieFile: kiefile.KieFile
+  dmnFile: kiefile.KieFile
 ): Promise<validationresponse.DMNValidationResponse[]> {
   try {
-    return validate(serviceURL, kieFile, "/jitdmn/validate", validationresponse.parseDMNValidationResponse);
+    return validate(serviceURL, dmnFile, "/jitdmn/validate", validationresponse.parseDMNValidationResponse);
   } catch (error) {
+    console.error(
+      `[Extended Services Extension] An error happened while trying to validate ${dmnFile} from serviceUrl ${serviceURL}: ${error.message}`
+    );
     throw new Error("VALIDATE DMN REQUEST ERROR: \n", error.message);
   }
 }
