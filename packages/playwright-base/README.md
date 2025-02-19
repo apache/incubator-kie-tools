@@ -57,7 +57,7 @@ To run tests in a container, you first need to build the image using the Contain
 # In this package folder
 KIE_TOOLS_BUILD__buildContainerImages=true pnpm build:dev
 # or in any folder of the kie-tools monorepo
-KIE_TOOLS_BUILD__buildContainerImages=true pnpm -F @kie-tools/plawright-base build:dev
+KIE_TOOLS_BUILD__buildContainerImages=true pnpm -F @kie-tools/playwright-base build:dev
 ```
 
 By default, tests run on using containers. To execute them in the native OS environment, set the `KIE_TOOLS_BUILD__containerizedEndToEndTests` environment variable to `false`.
