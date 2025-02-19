@@ -95,7 +95,7 @@ RUN curl -s "https://get.sdkman.io" | bash && \
     source "$HOME/.sdkman/bin/sdkman-init.sh" && \
     sdk install java 17.0.11-tem && \
     sudo update-alternatives --install /usr/local/bin/java java $(which java) 1 && \
-    sdk install maven 3.9.6 && \
+    sdk install maven 3.9.9 && \
     sudo update-alternatives --install /usr/local/bin/mvn mvn $(which mvn) 1 && \
     sdk flush
 
