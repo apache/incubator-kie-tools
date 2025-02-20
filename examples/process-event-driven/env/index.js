@@ -23,7 +23,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({}),
   get env() {
     return {
-      processUserTasksSubsystemExample: {
+      processEventDriven: {
         version: require("../package.json").version,
       },
     };
