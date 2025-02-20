@@ -15,24 +15,24 @@
 -- specific language governing permissions and limitations
 -- under the License.
 
-CREATE ROLE "kogito-user" WITH
+CREATE ROLE "kie-user" WITH
     LOGIN
     SUPERUSER
     INHERIT
     CREATEDB
     CREATEROLE
     NOREPLICATION
-    PASSWORD 'kogito-pass';
+    PASSWORD 'kie-pass';
 
-CREATE DATABASE kogito
+CREATE DATABASE kie
     WITH
-    OWNER = "kogito-user"
+    OWNER = "kie-user"
     ENCODING = 'UTF8'
     LC_COLLATE = 'en_US.utf8'
     LC_CTYPE = 'en_US.utf8'
     TABLESPACE = pg_default
     CONNECTION LIMIT = -1;
 
-GRANT ALL PRIVILEGES ON DATABASE postgres TO "kogito-user";
-GRANT ALL PRIVILEGES ON DATABASE kogito TO "kogito-user";
-GRANT ALL PRIVILEGES ON DATABASE kogito TO postgres;
+GRANT ALL PRIVILEGES ON DATABASE postgres TO "kie-user";
+GRANT ALL PRIVILEGES ON DATABASE kie TO "kie-user";
+GRANT ALL PRIVILEGES ON DATABASE kie TO postgres;

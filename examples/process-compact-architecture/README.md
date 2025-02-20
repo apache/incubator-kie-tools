@@ -25,9 +25,9 @@ Additionally, this example also demonstrates how to configure the whole environm
 Architecture_, simplifying the communication among services, removing the need of events (Kafka/HTTP) between
 them. This is achieved using the following _Quarkus_ addons:
 
-- `kogito-addons-quarkus-data-index-postgresql`: enables the _KOGITO Runtime_ persisting directly into the
+- `kogito-addons-quarkus-data-index-postgresql`: enables the _Kogito Runtime_ persisting directly into the
   _Data-Index_ database.
-- `kogito-addons-quarkus-jobs`: enables collocating the _Jobs Service_ inside the _KOGITO Runtime_.
+- `kogito-addons-quarkus-jobs`: enables collocating the _Jobs Service_ inside the _Kogito Runtime_.
 
 ---
 
@@ -85,7 +85,7 @@ The **HR Interview** _User Task_ also has a _Boundary Timer Event_ that will pre
 the
 task after certain time (for example purpose just 3 minutes). This _Boundary Timer Event_ will schedule a Job in the
 Jobs Service
-that when trigger will notify the _KOGITO Runtime_ to cancel the task and deny the application.
+that when trigger will notify the _Kogito Runtime_ to cancel the task and deny the application.
 
 If **HR Interview** successfully completed, the process will jump into the **IT Interview** _User Task_. Again the
 candidate
@@ -251,14 +251,6 @@ docker compose down
 - Maven 3.9.6 installed
 - Docker and Docker Compose to run the required example infrastructure.
 
-And when using native image compilation, you will also need:
-
-- GraalVM 20.3+ installed
-- Environment variable `GRAALVM_HOME` set accordingly
-- GraalVM native image needs as well native-image extension: https://www.graalvm.org/reference-manual/native-image/
-- Note that GraalVM native image compilation typically requires other packages (glibc-devel, zlib-devel and gcc) to be
-  installed too, please refer to GraalVM installation documentation for more details.
-
 ### Infrastructure Services
 
 This quickstart provides a Docker Compose template that starts all the required services. This setup ensures that all
@@ -420,7 +412,7 @@ Candidate Jon Snow don't meet the requirements for the position but we'll keep i
 
 #### Show active Hiring process instance at Management Console
 
-_Management Console_ is the tool that enables the user to view and administrate process instances in our _KOGITO
+_Management Console_ is the tool that enables the user to view and administrate process instances in our _Kogito
 application_.
 
 In this guide we'll see how to use the _Management Console_ to view the state of the Hiring process instances.
@@ -475,7 +467,7 @@ Now, you're connect to the Apache KIE Management Console:
    Which indicates that a new process instance with id **cee61d56-333b-433c-9c0a-32e81ee9fa4b** has been started.
 
 2. Now let's check the process instance state with the _Management Console_. To do so, in your browser navigate
-   to http://localhost:8280, and you'll be redirected to the **Process Instances** page in the _KOGITO Management
+   to http://localhost:8280, and you'll be redirected to the **Process Instances** page in the _Kogito Management
    Console_.
    There where you should be able to see the started process instance in active state.
 
@@ -526,7 +518,7 @@ Now, you're connect to the Apache KIE Management Console:
 
 #### Complete Hiring process instances using Management Console
 
-When a _KOGITO_ process reaches a _User Task_, the process execution stops waiting for the user input
+When a _Kogito_ process reaches a _User Task_, the process execution stops waiting for the user input
 that will enable the _User Task_ to finish and allowing the process execution to continue.
 
 _Management Console_ allows admin users to interact with the process _User Tasks_ and provide the
@@ -556,7 +548,7 @@ process _User Tasks_.
 
    Which indicates that a new process instance with id **3cf0d58f-a824-4046-ba6c-c2e79edc1df7** has been started.
 
-2. Let's check the process instance state. Again browse to http://localhost:8280 to access the _KOGITO Management
+2. Let's check the process instance state. Again browse to http://localhost:8280 to access the _Kogito Management
    Console_,
    and in the **Process List** click the **Id** column to open the **Process Details** page.
 
