@@ -42,7 +42,7 @@ Add the `quarkus-oidc-proxy` extension to your `pom.xml` to proxy the Identity P
 <dependency>
   <groupId>io.quarkiverse.oidc-proxy</groupId>
   <artifactId>quarkus-oidc-proxy</artifactId>
-  <version>0.1.1</version>
+  <version>0.1.2</version>
 </dependency>
 ```
 
@@ -58,10 +58,8 @@ quarkus.oidc.auth-server-url=<IDENTITY_PROVIDER_URL>
 quarkus.oidc.discovery-enabled=true
 quarkus.oidc.tenant-enabled=true
 quarkus.oidc.application-type=service
-quarkus.oidc.client-id=<CLIENT_ID> # Can be the same as the Management Console
-
-# Quarkus OIDC Proxy
-quarkus.oidc-proxy.external-client-id=<CLIENT_ID>
+quarkus.oidc.client-id=<CLIENT_ID> # Usually a client specific to your application
+quarkus.oidc.credentials.secret=<CLIENT_SECRET> # The secret configured in your Identity Provider for the client used
 
 # Authenticated and public paths
 quarkus.http.auth.permission.authenticated.paths=/*
