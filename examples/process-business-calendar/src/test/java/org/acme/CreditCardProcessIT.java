@@ -20,6 +20,7 @@ package org.acme;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.process.ProcessConfig;
+import org.kie.kogito.calendar.BusinessCalendar;
 
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
