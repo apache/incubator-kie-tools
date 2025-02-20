@@ -147,8 +147,7 @@ export const NewAuthSessionModal: React.FC<Props> = ({ onAddAuthSession }) => {
         >
           <TextInput id="url" aria-label="URL" tabIndex={2} onChange={setRuntimeUrl} placeholder="Enter a URL..." />
         </FormGroup>
-        {/* TODO: quarkus-oidc-proxy doesn't support prompt */}
-        {/* <FormGroup
+        <FormGroup
           isRequired={false}
           helperText={
             "Check this box if you are connecting to a secured runtime and intend to use a different user than the one currently logged in to your Identity Provider."
@@ -167,7 +166,7 @@ export const NewAuthSessionModal: React.FC<Props> = ({ onAddAuthSession }) => {
             }
             tabIndex={3}
           />
-        </FormGroup> */}
+        </FormGroup>
 
         <ActionGroup>
           <Button

@@ -26,6 +26,7 @@
   },
   "dependencies": {
     "@kie-tools/jbpm-quarkus-devui": "workspace:*",
+    "@kie-tools/kogito-management-console": "workspace:*",
     "@kie-tools/maven-base": "workspace:*"
   },
   "devDependencies": {
