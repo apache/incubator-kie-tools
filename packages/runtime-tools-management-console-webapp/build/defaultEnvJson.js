@@ -19,20 +19,9 @@
 
 const { env } = require("../env");
 
-const version = require("../package.json").version;
-
 module.exports = {
   defaultEnvJson: {
-    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE: env.runtimeToolsManagementConsoleWebapp.kogitoEnvMode,
-    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_APP_NAME: "Management Console",
-    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_APP_VERSION: version,
-    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT: env.runtimeToolsManagementConsoleWebapp.kogitoDataIndexUrl,
-    KOGITO_CONSOLES_KEYCLOAK_DISABLE_HEALTH_CHECK: false,
-    KOGITO_CONSOLES_KEYCLOAK_UPDATE_TOKEN_VALIDITY: 30,
-    KOGITO_CONSOLES_KEYCLOAK_HEALTH_CHECK_URL:
-      "http://localhost:8280/auth/realms/kogito/.well-known/openid-configuration",
-    KOGITO_CONSOLES_KEYCLOAK_REALM: "kogito",
-    KOGITO_CONSOLES_KEYCLOAK_URL: "http://localhost:8280/auth",
-    KOGITO_CONSOLES_KEYCLOAK_CLIENT_ID: "kogito-console-react",
+    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_APP_NAME: env.runtimeToolsManagementConsoleWebapp.appName,
+    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID: env.runtimeToolsManagementConsoleWebapp.oidcClient.clientId,
   },
 };
