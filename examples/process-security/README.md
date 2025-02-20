@@ -17,7 +17,7 @@
 
 # Process Security Example
 
-This example shows the security features that come with Apache KIE. It shows how to get an access token and how to use it to interact with the Kogito Runtime apps. How to configure your application, and at least, it exemplifies how to use multiple IDPs in Management Console.
+This example shows the security features that come with Apache KIE. It shows how to get an access token and how to use it to interact with the Apache KIE business services. How to configure your application, and at least, it exemplifies how to use multiple IDPs in Management Console.
 
 ## Enabling OpenID Connect (OIDC)
 
@@ -42,10 +42,10 @@ quarkus.http.auth.permission.public.policy=permit
 
 ## Infrastructure requirements
 
-To help bootstrapping the Infrastructure Services, the example provides a `docker-compose.yml` file. This example will start two Keycloak services, one in port `8180` that is used by `kie-service-1` and another in `8280` used by `kie-service-2`, and two ways of running the example application are provided. In development ("development") mode, the user can start the Keycloak services using `docker-compose` and must run the Kogito Runtime apps manually. In "container" mode the `docker-compose` file will start the Keycloak services, a Postgres service, a pgAdmin instance, and the Kogito Runtime apps, requiring the project to be compiled first to generate the services container images. To use `docker-compose` we must first create a `.env` file in the example root, and it should have the following variables:
+To help bootstrapping the Infrastructure Services, the example provides a `docker-compose.yml` file. This example will start two Keycloak services, one in port `8180` that is used by `kie-service-1` and another in `8280` used by `kie-service-2`, and two ways of running the example application are provided. In development ("development") mode, the user can start the Keycloak services using `docker-compose` and must run the Apache KIE business services manually. In "container" mode the `docker-compose` file will start the Keycloak services, a PostgreSQL service, a pgAdmin instance, and the Apache KIE business services, requiring the project to be compiled first to generate the services container images. To use `docker-compose` we must first create a `.env` file in the example root, and it should have the following variables:
 
 ```
-PROJECT_VERSION=main
+PROJECT_VERSION=0.0.0
 KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
 COMPOSE_PROFILES=container
 
@@ -60,7 +60,7 @@ COMPOSE_PROFILES=container
 For development mode, the `.env` must have the `COMPOSE_PROFILES=development`:
 
 ```
-PROJECT_VERSION=main
+PROJECT_VERSION=0.0.0
 KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:${PROJECT_VERSION}
 COMPOSE_PROFILES=development
 ```
@@ -70,7 +70,7 @@ COMPOSE_PROFILES=development
 For JVM mode, the `.env` must have the `COMPOSE_PROFILES=jvm`:
 
 ```
-PROJECT_VERSION=main
+PROJECT_VERSION=0.0.0
 KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:${PROJECT_VERSION}
 COMPOSE_PROFILES=jvm
 ```
@@ -80,12 +80,12 @@ COMPOSE_PROFILES=jvm
 For container mode, the `.env` must have the `COMPOSE_PROFILES=container`:
 
 ```
-PROJECT_VERSION=main
+PROJECT_VERSION=0.0.0
 KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:${PROJECT_VERSION}
 COMPOSE_PROFILES=container
 ```
 
-> NOTE: Integrating the Kogito Runtime apps with the Keycloak instances requires running the docker compose with the [Host network](https://docs.docker.com/engine/network/drivers/host/). This is only necessary for this example, where everything is running on the same host. In production environments each application should have their own domain/host.
+> NOTE: Integrating the Apache KIE business service with the Keycloak instances requires running the docker compose with the [Host network](https://docs.docker.com/engine/network/drivers/host/). This is only necessary for this example, where everything is running on the same host. In production environments each application should have their own domain/host.
 
 ### Handling services
 
@@ -112,7 +112,7 @@ docker compose down
 
 ### Compile and Run in local development mode
 
-First, start the Keycloak services (["Infrastructure requirements/Development mode"](#development-mode)), and then start the Kogito Runtime apps in development mode. To do so, open three new terminals, access the service folders by using the `cd <project_path>` (kie-service-1/kie-service-2/kie-service-3) and run the command below on each terminal:
+First, start the Keycloak services (["Infrastructure requirements/Development mode"](#development-mode)), and then start the Apache KIE business services in development mode. To do so, open three new terminals, access the service folders by using the `cd <project_path>` (kie-service-1/kie-service-2/kie-service-3) and run the command below on each terminal:
 
 ```sh
 mvn clean package quarkus:dev
@@ -126,7 +126,7 @@ NOTE: Adding the `development` profile is optional, which enables the jBPM Dev U
 
 ### Compile and Run in local JVM mode
 
-Start the Keycloak services (["Infrastructure requirements/JVM mode"](#jvm-mode)), and then open three new terminals to start the Kogito Runtime apps with the following commands on each terminal:
+Start the Keycloak services (["Infrastructure requirements/JVM mode"](#jvm-mode)), and then open three new terminals to start the Apache KIE business services with the following commands on each terminal:
 
 ```sh
 # Starts the kie-service-1
@@ -185,7 +185,7 @@ export access_token_1=$(\
  )
 ```
 
-On this request, we have some important things to notice. The request is made to the `127.0.0.1` IP (`localhost`) as all our services are running on the local machine. Now, we can't use `localhost` directly because the Kogito Runtime app expects a token that was obtained from the exact same URL in the `quarkus.oidc.auth-server-url` property from `application.properties`. In this case, we choose to use the IP instead of `localhost` to the request be compatible with both environments ("development" and "container"), as `localhost` can't be used in the `docker compose` as each container has its own network.
+On this request, we have some important things to notice. The request is made to the `127.0.0.1` IP (`localhost`) as all our services are running on the local machine. Now, we can't use `localhost` directly because the Apache KIE business service expects a token that was obtained from the exact same URL in the `quarkus.oidc.auth-server-url` property from `application.properties`. In this case, we choose to use the IP instead of `localhost` to the request be compatible with both environments ("development" and "container"), as `localhost` can't be used in the `docker compose` as each container has its own network.
 
 The request uses the Keycloak `kie` realm to get the token, passing the `client-id` (kie-app) and `secret` (secret). All these configurations are available in the `docker-compose/keycloak-realm-1/kie.json`
 
@@ -245,9 +245,9 @@ curl -X POST "http://127.0.0.1:8180/realms/kie/protocol/openid-connect/token" \
 
 NOTE: All requests can be changed to port 8280 and user `jane` with password `jane`.
 
-### Requests to the Kogito Runtime app
+### Requests to the Apache KIE business service
 
-With the access token in hands, you have access to the entire Kogito Runtime API, you just need to pass the `Authorization` header. To get the processes:
+With the access token in hands, you have access to the entire Apache KIE business service API, you just need to pass the `Authorization` header. To get the processes:
 
 ```sh
 curl -X GET -H "Authorization: Bearer $access_token_1" http://localhost:8081/hiring
@@ -265,7 +265,7 @@ curl -X POST "http://localhost:8081/hiring" \
 
 NOTE: For debbuging purposes, you can add the `--dump-header - ` to the `curl` command: `curl --dump-header - -X GET ...`
 
-### Connecting to the Kogito Runtimes applications in the Management Console
+### Connecting to the Apache KIE business services in the Management Console
 
 To do so, open the Management Console in http://localhost:8380 and click on the `+ Connect to a runtime…` button and fill in the required information on the
 modal:
