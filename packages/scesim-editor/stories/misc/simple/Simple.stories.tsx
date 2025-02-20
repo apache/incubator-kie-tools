@@ -22,14 +22,14 @@ import { getMarshaller } from "@kie-tools/scesim-marshaller";
 import { TestScenarioEditor } from "../../../src/TestScenarioEditor";
 import { EMPTY_ONE_EIGHT } from "../../../src/resources/EmptyScesimFile";
 import { SceSimEditorWrapper, StorybookTestScenarioEditorProps } from "../../scesimEditorStoriesWrapper";
-import { EMPTY } from "../../examples/ExternalDmnModels";
 import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";
+import { SIMPLE } from "../../examples/ExternalDmnModels";
 
-export const emptyFileName = "Untitled.scesim";
+export const simpleFileName = "simple.scesim";
 
 const meta: Meta<{}> = {
-  title: "Misc/Empty",
+  title: "Misc/Simple",
   component: TestScenarioEditor,
   includeStories: /^[A-Z]/,
 };
@@ -40,20 +40,20 @@ type Story = StoryObj<StorybookTestScenarioEditorProps>;
 const marshaller = getMarshaller(EMPTY_ONE_EIGHT);
 const currentModel = marshaller.parser.parse();
 const dmnModel = {
-  normalizedPosixPathRelativeToTheOpenFile: "empty.dmn",
+  normalizedPosixPathRelativeToTheOpenFile: "simple.dmn",
   type: "dmn",
-  model: normalize(getDmnMarshaller(EMPTY ?? "", { upgradeTo: "latest" }).parser.parse()),
+  model: normalize(getDmnMarshaller(SIMPLE ?? "", { upgradeTo: "latest" }).parser.parse()),
   svg: "",
 };
 
-export const Empty: Story = {
+export const Simple: Story = {
   render: (args) => SceSimEditorWrapper(args),
   args: {
     model: marshaller.parser.parse(),
-    openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: emptyFileName,
-    externalModelsByNamespace: new Map([["https://kie.org/dmn/_14487CEE-1B30-453E-976D-C11ED911548F", dmnModel]]),
+    openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: simpleFileName,
+    externalModelsByNamespace: new Map([["https://kie.org/dmn/_0457D4F2-02B6-4A3D-957F-8F971A8321BC", dmnModel]]),
     xml: marshaller.builder.build(currentModel),
-    onRequestExternalModelsAvailableToInclude: () => Promise.resolve(["empty.dmn"]),
+    onRequestExternalModelsAvailableToInclude: () => Promise.resolve(["simple.dmn"]),
     onRequestExternalModelByPath: () => Promise.resolve(dmnModel),
   },
 };
