@@ -39,8 +39,9 @@ digraph G {
   "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/process-accelerator" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/maven-base" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools-examples/process-compact-architecture" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
+  "@kie-tools-examples/process-business-calendar" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/jbpm-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools-examples/process-compact-architecture" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/kogito-management-console" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/process-event-driven" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/process-security" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
@@ -261,6 +262,7 @@ digraph G {
   "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "orange" ];
   "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension" -> "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/process-accelerator" -> "@kie-tools/maven-base" [ style = "solid", color = "orange" ];
+  "@kie-tools-examples/process-business-calendar" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/process-compact-architecture" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/process-compact-architecture" -> "@kie-tools/kogito-management-console" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/process-event-driven" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];

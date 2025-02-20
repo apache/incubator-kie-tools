@@ -74,10 +74,11 @@
       },
       { "id": "@kie-tools-examples/process-accelerator" },
       { "id": "@kie-tools/maven-base" },
-      { "id": "@kie-tools-examples/process-compact-architecture" },
+      { "id": "@kie-tools-examples/process-business-calendar" },
       { "id": "@kie-tools/jbpm-quarkus-devui" },
-      { "id": "@kie-tools/kogito-management-console" },
       { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
+      { "id": "@kie-tools-examples/process-compact-architecture" },
+      { "id": "@kie-tools/kogito-management-console" },
       { "id": "@kie-tools/image-builder" },
       { "id": "@kie-tools/image-env-to-json" },
       { "id": "@kie-tools/runtime-tools-management-console-webapp" },
@@ -688,13 +689,8 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools-examples/process-compact-architecture",
+        "source": "@kie-tools-examples/process-business-calendar",
         "target": "@kie-tools/jbpm-quarkus-devui",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools-examples/process-compact-architecture",
-        "target": "@kie-tools/kogito-management-console",
         "weight": 1
       },
       {
@@ -705,6 +701,26 @@
       {
         "source": "@kie-tools/jbpm-quarkus-devui",
         "target": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-compact-architecture",
+        "target": "@kie-tools/jbpm-quarkus-devui",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-compact-architecture",
+        "target": "@kie-tools/kogito-management-console",
         "weight": 1
       },
       {
@@ -720,16 +736,6 @@
       {
         "source": "@kie-tools/kogito-management-console",
         "target": "@kie-tools/runtime-tools-management-console-webapp",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
-        "target": "@kie-tools/runtime-tools-process-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
-        "target": "@kie-tools/runtime-tools-shared-webapp-components",
         "weight": 1
       },
       {
@@ -2794,6 +2800,7 @@
       "examples/micro-frontends-multiplying-architecture-todo-list-view-vscode-extension"
     ],
     ["@kie-tools-examples/process-accelerator", "examples/process-accelerator"],
+    ["@kie-tools-examples/process-business-calendar", "examples/process-business-calendar"],
     ["@kie-tools-examples/process-compact-architecture", "examples/process-compact-architecture"],
     ["@kie-tools-examples/process-event-driven", "examples/process-event-driven"],
     ["@kie-tools-examples/process-security", "examples/process-security"],

@@ -1286,6 +1286,22 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
+  examples/process-business-calendar:
+    dependencies:
+      '@kie-tools/jbpm-quarkus-devui':
+        specifier: workspace:*
+        version: link:../../packages/jbpm-quarkus-devui
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../../packages/maven-base
+    devDependencies:
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../../packages/root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
   examples/process-compact-architecture:
     dependencies:
       '@kie-tools/jbpm-quarkus-devui':
@@ -57672,7 +57688,7 @@ snapshots:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
       '@types/node': 22.10.7
-      acorn: 8.12.1
+      acorn: 8.10.0
       acorn-walk: 8.2.0
       arg: 4.1.0
       create-require: 1.1.1
