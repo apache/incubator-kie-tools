@@ -64,6 +64,7 @@ function TestScenarioDrawerSettingsPanel() {
         onRequestExternalModelsAvailableToInclude?.()
           .then((paths) => {
             if (canceled.get()) {
+              setAllDmnModelNormalizedPosixRelativePaths(undefined);
               return;
             }
             setAllDmnModelNormalizedPosixRelativePaths(
@@ -92,6 +93,9 @@ function TestScenarioDrawerSettingsPanel() {
 
             if (canceled.get() || !externalDmnModel) {
               setSelectedDmnModel(undefined);
+              setDmnNotFoundError(
+                new Error(`The related DMN file ${selectedDmnPathRelativeToThisScesim} can't be loaded`)
+              );
               return;
             }
 

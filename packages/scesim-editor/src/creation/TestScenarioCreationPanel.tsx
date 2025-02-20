@@ -81,6 +81,7 @@ function TestScenarioCreationPanel() {
             console.trace(dmnModelNormalizedPosixPathRelativePaths);
 
             if (canceled.get()) {
+              setAllDmnModelNormalizedPosixRelativePaths(undefined);
               return;
             }
             setAllDmnModelNormalizedPosixRelativePaths(
@@ -115,6 +116,7 @@ function TestScenarioCreationPanel() {
             console.trace(externalDMNModel);
 
             if (canceled.get() || !externalDMNModel) {
+              setSelectedDmnModel(undefined);
               return;
             }
 
