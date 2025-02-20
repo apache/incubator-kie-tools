@@ -36,6 +36,10 @@ Dockerfile.native
 process-accelerator.iml
 # examples/process-accelerator/src/main/resources/calculate.bpmn
 calculate.bpmn
+# examples/process-business-calendar/process-business-calendar.iml
+process-business-calendar.iml
+# examples/process-business-calendar/src/main/resources/bankTransaction.bpmn2
+bankTransaction.bpmn2
 # examples/process-compact-architecture/src/main/resources/NewHiringOffer.dmn
 NewHiringOffer.dmn
 # examples/process-compact-architecture/src/main/resources/hiring.bpmn
