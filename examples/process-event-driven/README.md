@@ -70,7 +70,7 @@ mp.messaging.incoming.correlation.auto.offset.reset=earliest
 
 ## Infrastructure requirements
 
-To help bootstrapping the Infrastructure Services, the example provides a `docker-compose.yml` file. This quickstart provides two ways of running the example application. In development ("dev") mode, the user can start a Kafka service using `docker-compose` and must run **Process Travelers** and **Process Hotel** processes manually. In "container" mode the `docker-compose` file will start the Kafka service and both processes, requiring the project to be compiled first to generate the process's container images. To use `docker-compose` we must first create a `.env` file in the example root, and it should have the following variables:
+To help bootstrapping the Infrastructure Services, the example provides a `docker-compose.yml` file. This quickstart provides two ways of running the example application. In "development" mode, the user can start a Kafka service using `docker-compose` and must run **Process Travelers** and **Process Hotel** processes manually. In "container" mode the `docker-compose` file will start the Kafka service and both processes, requiring the project to be compiled first to generate the process's container images. To use `docker-compose` we must first create a `.env` file in the example root, and it should have the following variables:
 
 ```
 PROJECT_VERSION=
@@ -124,14 +124,6 @@ docker compose down
 - Environment variable `JAVA_HOME` set accordingly
 - Maven 3.9.6 installed
 - Docker and Docker Compose to run the required example infrastructure.
-
-And when using native image compilation, you will also need:
-
-- GraalVM 20.3+ installed
-- Environment variable `GRAALVM_HOME` set accordingly
-- GraalVM native image needs as well native-image extension: https://www.graalvm.org/reference-manual/native-image/
-- Note that GraalVM native image compilation typically requires other packages (glibc-devel, zlib-devel and gcc) to be
-  installed too, please refer to GraalVM installation documentation for more details.
 
 ### Compile and Run in local development mode
 
