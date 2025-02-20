@@ -1,2 +1,3 @@
-target
-*.swidtag
+svg/
+docker-compose/svg/
+docker-compose/persistence/
