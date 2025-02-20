@@ -19,7 +19,7 @@
 
 ## Description
 
-This example demonstrates a Hiring Process Workflow. It begins with a new hiring request, followed by sequential interviews with HR and IT departments. Each department assesses the candidate's suitability. Based on the evaluations, the process determines whether the candidate is approved or denied, leading to the corresponding end event.
+This example demonstrates a Hiring Process workflow. It begins with a new hiring request, followed by sequential interviews with HR and IT departments. Each department assesses the candidate's suitability. Based on the evaluations, the process determines whether the candidate is approved or denied, leading to the corresponding end event.
 
 - New Hiring Process Model
   <p align="center"><img width=75% height=50% src="docs/images/NewHiringProcessModel.png"></p>
@@ -77,7 +77,7 @@ This example demonstrates a Hiring Process Workflow. It begins with a new hiring
 
 ### Custom User Task assignment strategy
 
-Apache KIE has a way to automatically assign User Tasks to a single User based on a defined logic, which is active by default. The default logic is very basic and doesn't cover real world business cases. This example shows how can you define your own logic. The `org.acme.candidate.CustomUserTaskAssignmentStrategyConfig.java` defines a simple logic assigning the User Task to an user based on the task name:
+Apache KIE has a way to automatically assign User Tasks to a single user based on a defined logic, which is active by default. The default logic is very basic and doesn't cover real world business cases. This example shows how can you define your own logic. The `org.acme.candidate.CustomUserTaskAssignmentStrategyConfig.java` defines a simple logic assigning the User Task to an user based on the task name:
 
 ```java
 @Override
@@ -129,7 +129,7 @@ java -jar target\quarkus-app\quarkus-run.jar
 
 ### Package and Run in container mode
 
-Running in container mode gives access to Management Console. First you need to have `Docker` and `Docker compose` installed. After it, build the project using the `container` profile:
+Running in container mode gives access to Apache KIE Management Console. First you need to have `Docker` and `Docker compose` installed. After it, build the project using the `container` profile:
 
 ```sh
 mvn clean package -Pcontainer
@@ -138,7 +138,6 @@ mvn clean package -Pcontainer
 Now, add an `.env` file with the content below:
 
 ```
-STREAM_NAME=
 PROJECT_VERSION=
 KOGITO_MANAGEMENT_CONSOLE_IMAGE=
 COMPOSE_PROFILES=
@@ -154,7 +153,7 @@ KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management
 COMPOSE_PROFILES=container
 ```
 
-Start Postgres, pgAdmin, Apache KIE user tasks susbystem example and Management Console with the command below:
+Start PostgreSQL, pgAdmin, the user-tasks-susbystem business service and Apache KIE Management Console with the command below:
 
 ```sh
 docker compose up
@@ -170,7 +169,7 @@ To access Management Console open `http://localhost:8280` in your browser.
 
 ## Using
 
-Once the Apache KIE app is running, you can start a new process using the above `curl` command:
+Once the business service is running, you can start a new process using the above `curl` command:
 
 ```sh
 curl -X POST http://localhost:8080/hiring \
@@ -190,7 +189,7 @@ To get all processes use the GET request:
 curl -X GET "http://localhost:8080/hiring"
 ```
 
-Creating a new process will make the app waits for an user from the group `HR` to complete the task. You can get all tasks from the `HR` group with the following curl command:
+Creating a new process will make the business service waits for an user from the group `HR` to complete the task. You can get all tasks from the `HR` group with the following curl command:
 
 ```sh
 curl -X 'GET' \
@@ -298,7 +297,7 @@ curl -X 'POST' \
 
 NOTE: The `GET`, `PUT` and `DELETE` HTTP methods are avaiable for this route.
 
-NOTE: If you have started the Apache KIE app in development mode, you can check the entire API in the `localhost:8080/q/swagger-ui` route.
+NOTE: If you have started the business service in development mode, you can check the entire API in the `localhost:8080/q/swagger-ui` route.
 
 ### OpenAPI (Swagger) documentation
 
