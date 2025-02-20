@@ -1,0 +1,12 @@
+CREATE ROLE "kogito-user" WITH
+    LOGIN
+    SUPERUSER
+    INHERIT
+    CREATEDB
+    CREATEROLE
+    NOREPLICATION
+    PASSWORD 'kogito-pass';
+
+GRANT ALL PRIVILEGES ON DATABASE postgres TO "kogito-user";
+GRANT ALL PRIVILEGES ON DATABASE kogito TO "kogito-user";
+GRANT ALL PRIVILEGES ON DATABASE kogito TO postgres;
