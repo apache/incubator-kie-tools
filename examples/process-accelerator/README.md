@@ -29,13 +29,12 @@ Note that although this example contains a BPMN process file for demo purposes, 
 6. [Configuring Jobs Service](#configuring-jobs-service)
 7. [Externalizing configuration properties](#externalizing-configuration-properties)
 8. [Configuring log levels](#configuring-log-levels)
-9. [Tracking license use in ILMT](#tracking-license-use-in-ilmt)
 
 ---
 
 If you want to jump straight ahead to running this example, go to
 
-10. [Running](#running)
+9. [Running](#running)
 
 ---
 
@@ -49,26 +48,9 @@ Apache KIE provides Data Definition Language (DDL) scripts for creating the data
 - Data-Audit
 - Job Services
 
-The scripts are available in the `docker-compose/sql` folder and support PostgreSQL database only. Apache KIE 10 supports PostgreSQL version 16.
+The SQL files are available in the `docker-compose/sql` folder and support PostgreSQL database only. Apache KIE 10 supports PostgreSQL version 16.
 
-The SQL scripts, are automatically used during container startup.
-
-## Setting up the database using the provided schema
-
-Apache KIE provides Data Definition Language (DDL) scripts for creating the database schema in a PostgreSQL instance. The generated tables are be used by the persistence layer of the following sub-systems:
-
-- Runtime Engine
-- User Tasks
-- Data-Index
-- Data-Audit
-- Job Services
-
-To apply the scripts, you can rely on the standard ways offered by PostgreSQL, like
-
-- Using the pgAdmin’s Query Tool
-- Using a psql command (e.g., `psql -h host -U username -d myDataBase -a -f myInsertFile`)
-
-Note: The script execution order is not relevant.
+The SQL files, are automatically used during container startup.
 
 #### Setting up the schema when using docker compose
 
