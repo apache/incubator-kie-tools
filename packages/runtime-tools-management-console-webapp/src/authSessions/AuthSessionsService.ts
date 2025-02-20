@@ -19,6 +19,7 @@
 
 import * as client from "openid-client";
 import {
+  AUTH_SESSION_RUNTIME_AUTH_SERVER_OPENID_CONFIGURATION_PATH,
   AUTH_SESSION_RUNTIME_AUTH_SERVER_URL_ENDPOINT,
   AUTH_SESSION_TEMP_OPENID_AUTH_DATA_STORAGE_KEY,
   AUTH_SESSIONS_VERSION_NUMBER,
@@ -36,9 +37,15 @@ import { v4 as uuid } from "uuid";
 
 export class AuthSessionsService {
   static async getIdentityProviderConfig(args: { authServerUrl: string; clientId: string }) {
-    const authUrl = new URL(args.authServerUrl);
-    const options = authUrl.protocol === "http:" ? { execute: [client.allowInsecureRequests] } : {};
-    const config: client.Configuration = await client.discovery(authUrl, args.clientId, undefined, undefined, options);
+    const issuerUrl = new URL(args.authServerUrl);
+    const options = issuerUrl.protocol === "http:" ? { execute: [client.allowInsecureRequests] } : {};
+    const config: client.Configuration = await client.discovery(
+      issuerUrl,
+      args.clientId,
+      undefined,
+      undefined,
+      options
+    );
     return config;
   }
 
@@ -106,14 +113,18 @@ export class AuthSessionsService {
     window.location.href = redirectTo.href;
   }
 
-  static async getIdentityProviderUrl(runtimeUrl: string) {
-    const newPath = path.join(new URL(runtimeUrl).pathname, AUTH_SESSION_RUNTIME_AUTH_SERVER_URL_ENDPOINT);
-    const oidcUrl = new URL(newPath, runtimeUrl);
-    const response = await fetch(oidcUrl);
+  static async getIssuerUrlFromOidcProxy(runtimeUrl: string) {
+    const newPath = path.join(
+      new URL(runtimeUrl).pathname,
+      AUTH_SESSION_RUNTIME_AUTH_SERVER_URL_ENDPOINT,
+      AUTH_SESSION_RUNTIME_AUTH_SERVER_OPENID_CONFIGURATION_PATH
+    );
+    const oidcProxyUrl = new URL(newPath, runtimeUrl);
+    const response = await fetch(oidcProxyUrl);
     if (response.status !== 200) {
       throw new Error("No authentication endpoint found.");
     }
-    return oidcUrl;
+    return new URL((await response.json()).issuer);
   }
 
   static async checkIfAuthenticationRequired(runtimeUrl: string): Promise<
@@ -124,10 +135,10 @@ export class AuthSessionsService {
     | { isAuthenticationRequired: false }
   > {
     try {
-      const oidcUrl = await AuthSessionsService.getIdentityProviderUrl(runtimeUrl);
+      const issuerUrl = await AuthSessionsService.getIssuerUrlFromOidcProxy(runtimeUrl);
       return {
         isAuthenticationRequired: true,
-        authServerUrl: oidcUrl.toString(),
+        authServerUrl: issuerUrl.toString(),
       };
     } catch (authServerError) {
       // Maybe not required?
@@ -244,13 +255,10 @@ export class AuthSessionsService {
       return Promise.resolve(authSession);
     }
 
-    const runtimeOidcProxyUrl = new URL(
-      path.join(new URL(temporaryAuthSessionData.runtimeUrl).pathname, AUTH_SESSION_RUNTIME_AUTH_SERVER_URL_ENDPOINT),
-      temporaryAuthSessionData.runtimeUrl
-    );
+    const issuer = new URL(temporaryAuthSessionData.serverMetadata.issuer);
 
     const config = new client.Configuration(temporaryAuthSessionData.serverMetadata, temporaryAuthSessionData.clientId);
-    if (runtimeOidcProxyUrl.protocol === "http:") {
+    if (issuer.protocol === "http:") {
       client.allowInsecureRequests(config);
     }
 
@@ -286,7 +294,7 @@ export class AuthSessionsService {
       tokens,
       claims,
       runtimeUrl: temporaryAuthSessionData.runtimeUrl,
-      issuer: runtimeOidcProxyUrl.toString(),
+      issuer: issuer.toString(),
       userInfo: userInfo,
       status: AuthSessionStatus.VALID,
       createdAtDateISO: new Date(Date.now()).toISOString(),
