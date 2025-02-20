@@ -1273,6 +1273,19 @@ importers:
         specifier: ^5.5.3
         version: 5.5.3
 
+  examples/process-accelerator:
+    dependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../../packages/maven-base
+    devDependencies:
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../../packages/root-env
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
+
   examples/process-compact-architecture:
     dependencies:
       '@kie-tools/jbpm-quarkus-devui':
@@ -1313,6 +1326,9 @@ importers:
       '@kie-tools/jbpm-quarkus-devui':
         specifier: workspace:*
         version: link:../../packages/jbpm-quarkus-devui
+      '@kie-tools/kogito-management-console':
+        specifier: workspace:*
+        version: link:../../packages/kogito-management-console
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../../packages/maven-base
