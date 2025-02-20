@@ -150,17 +150,17 @@ function generateFactMappingsAndFactMappingValuesFromDmnModel(
   drgElements.forEach((drgElement) => {
     const itemDefinition = itemDefinitionMap.get(drgElement.variable!["@_typeRef"]!);
     if (!itemDefinition?.itemComponent || itemDefinition?.itemComponent.length === 0) {
-      factMappingsToPush.push(
-        generateSimpleTypeFactMapping(
-          itemDefinition?.["@_isCollection"] ? "java.util.List" : drgElement.variable!["@_typeRef"]!,
-          100,
-          [drgElement.variable!["@_name"]!],
-          expressionIdentifierType,
-          itemDefinition?.["@_isCollection"] ? [drgElement.variable!["@_typeRef"]!] : undefined,
-          drgElement.variable!["@_name"]!,
-          drgElement.variable!["@_typeRef"]!
-        )
-      );
+      factMappingsToPush.push({
+        className: itemDefinition?.["@_isCollection"] ? "java.util.List" : drgElement.variable!["@_typeRef"]!,
+        columnWidth: 100,
+        expressionAlias: "value",
+        expressionElements: [drgElement.variable!["@_name"]!],
+        expressionIdentifierType: expressionIdentifierType,
+        factAlias: drgElement.variable!["@_name"]!,
+        factIdentifierName: drgElement.variable!["@_name"]!,
+        factIdentifierClassName: drgElement.variable!["@_typeRef"]!,
+        genericTypes: itemDefinition?.["@_isCollection"] ? [drgElement.variable!["@_typeRef"]!] : undefined,
+      });
     } else {
       itemDefinition?.itemComponent!.forEach((itemComponent) => {
         factMappingsToPush.push(
@@ -178,28 +178,6 @@ function generateFactMappingsAndFactMappingValuesFromDmnModel(
   });
 
   return factMappingsToPush.sort((a, b) => a.expressionElements.join().localeCompare(b.expressionElements.join()));
-}
-
-function generateSimpleTypeFactMapping(
-  className: string,
-  columnWidth: number,
-  expressionElements: string[],
-  expressionIdentifierType: "EXPECT" | "GIVEN",
-  genericTypes: string[] | undefined,
-  name: string,
-  typeRef: string
-) {
-  return {
-    className,
-    columnWidth,
-    expressionAlias: genericTypes && genericTypes.length > 0 ? "values" : "value",
-    expressionElements: expressionElements,
-    expressionIdentifierType,
-    factAlias: name,
-    factIdentifierName: name,
-    factIdentifierClassName: typeRef,
-    genericTypes: genericTypes,
-  };
 }
 
 function recursevlyNavigateItemComponent(
