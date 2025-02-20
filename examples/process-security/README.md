@@ -45,7 +45,7 @@ quarkus.http.auth.permission.public.policy=permit
 To help bootstrapping the Infrastructure Services, the example provides a `docker-compose.yml` file. This example will start two Keycloak services, one in port `8180` that is used by `kie-service-1` and another in `8280` used by `kie-service-2`, and two ways of running the example application are provided. In development ("development") mode, the user can start the Keycloak services using `docker-compose` and must run the Kogito Runtime apps manually. In "container" mode the `docker-compose` file will start the Keycloak services, a Postgres service, a pgAdmin instance, and the Kogito Runtime apps, requiring the project to be compiled first to generate the services container images. To use `docker-compose` we must first create a `.env` file in the example root, and it should have the following variables:
 
 ```
-PROJECT_VERSION=0.0.0
+PROJECT_VERSION=main
 KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
 COMPOSE_PROFILES=container
 
@@ -264,6 +264,42 @@ curl -X POST "http://localhost:8081/hiring" \
 ```
 
 NOTE: For debbuging purposes, you can add the `--dump-header - ` to the `curl` command: `curl --dump-header - -X GET ...`
+
+### Connecting to the Kogito Runtimes applications in the Management Console
+
+To do so, open the Management Console in http://localhost:8380 and click on the `+ Connect to a runtime…` button and fill in the required information on the
+modal:
+
+- **Alias**: The name to give your connected runtime instance (can be anything that helps you identify it).
+- **URL**: The runtime root URL (E.g., http://localhost:8080)
+
+#### kie-service-1
+
+- Alias: `kie-service-1`
+- URL: `http://localhost:8081`
+
+Login with user `jdoe` and password `jdoe`.
+
+### kie-service-2
+
+- Alias: `kie-service-2`
+- URL: `http://localhost:8082`
+
+Login with user `jane` and password `jane`.
+
+### kie-service-3
+
+- Alias: `kie-service-3`
+- URL: `http://localhost:8083`
+
+No login required.
+
+If your runtime uses OpenID Connect authentication, you should be redirected to the Identity Provider
+(IdP) login page or, if you’re already logged in, redirected back to the Management Console. If your
+runtime is unsecured, it should connect directly.
+
+Once logged in, the management pages will be displayed in the side menu, listing Process Instances,
+Jobs, and Tasks.
 
 ---
 

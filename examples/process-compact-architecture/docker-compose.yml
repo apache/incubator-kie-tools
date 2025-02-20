@@ -93,5 +93,4 @@ services:
     volumes:
       - ./svg/:/home/kogito/data/svg/
     environment:
-      RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE: "development"
-      RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT: http://${DOCKER_GATEWAY_HOST:-host.docker.internal}:8080/graphql
+      RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID: kie-management-console
