@@ -24,6 +24,20 @@ If you want to jump straight ahead to running this example, go to
 
 ## Setting up the database using the provided schema
 
+Apache KIE 10 provides Data Definition Language (DDL) scripts for creating the database schema in a PostgreSQL instance. The generated tables are be used by the persistence layer of the following sub-systems:
+
+- Runtime Engine
+- User Tasks
+- Data-Index
+- Data-Audit
+- Job Services
+
+The scripts are available in the `docker-compose/sql` folder and support PostgreSQL database only. Apache KIE 10 supports PostgreSQL version 16.
+
+The SQL scripts, are automatically used during container startup.
+
+## Setting up the database using the provided schema
+
 Apache KIE provides Data Definition Language (DDL) scripts for creating the database schema in a PostgreSQL instance. The generated tables are be used by the persistence layer of the following sub-systems:
 
 - Runtime Engine
@@ -45,7 +59,7 @@ Refer to the **Prerequisites** section of this document for more information on 
 
 ## Disabling automatic database schema generation through Flyway
 
-When the database schema is set up using the provided scripts, it is important to disable the automatic schema creation functionality through Flyway. Flyway is an external framework that automatically generates the required tables during application startup. While this is convenient in particular during the development process, this approach is usually not considered feasible in an environment with stricter database access restrictions. Therefore, the following property should be set to `false` in your project’s `application.properties` file:
+When the database schema is set up using scripts, it is important to disable the automatic schema creation functionality through Flyway. Flyway is an external framework that automatically generates the required tables during application startup. While this is convenient in particular during the development process, this approach is usually not considered feasible in an environment with stricter database access restrictions. Therefore, the following property should be set to `false` in your project’s `application.properties` file:
 
 - `kie.flyway.enabled=false` (default is false)
 
