@@ -70,6 +70,8 @@ export interface FormDmnOutputsProps {
 export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ...props }: FormDmnOutputsProps) {
   const [formResultStatus, setFormResultStatus] = useState<FormDmnOutputsStatus>(FormDmnOutputsStatus.EMPTY);
   const [formResultError, setFormResultError] = useState<boolean>(false);
+  const [openedExpressionEditorForNodeId, setOpenedExpressionEditorForNodeId] = useState<string>("");
+
   const i18n = useMemo(() => {
     formDmnI18n.setLocale(props.locale ?? navigator.language);
     return formDmnI18n.getCurrent();
@@ -253,6 +255,7 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
 
   const onOpenBoxedExpressionEditor = useCallback(
     (nodeId: string) => {
+      setOpenedExpressionEditorForNodeId(nodeId);
       return openBoxedExpressionEditor?.(nodeId);
     },
     [openBoxedExpressionEditor]
@@ -265,7 +268,7 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
           <Card
             id={`${index}-dmn-result`}
             isFlat={true}
-            className={"kogito--editor__dmn-form-result__results-card"}
+            className={`kogito--editor__dmn-form-result__results-card${openedExpressionEditorForNodeId === dmnFormResult.decisionId ? "-highlight" : ""}`}
             onAnimationEnd={(e) => onAnimationEnd(e, index)}
           >
             <CardTitle>
