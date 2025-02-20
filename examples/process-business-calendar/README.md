@@ -202,7 +202,7 @@ business.cal.timezone=America/Toronto
 
 **Note**: The test was performed at 16:13 on Monday, which falls under default working hours
 
-- The timer for the Verify Payment task will follow a straightforward countdown based on real time. If the specified time elapses i.e., 1 second, it immediately moves to cancel payment task.
+- The timer for the Verify Payment task will follow a straightforward countdown based on real time. If the specified time elapses i.e., 15 second, it immediately moves to cancel payment task.
 
 - POST/ BusinessCalendarCreditBill
 
@@ -215,7 +215,7 @@ curl -X POST http://localhost:8080/BusinessCalendarCreditBill \
 
 <p align="center"><img width=75% height=50% src="docs/images/Post1.png"></p>
 
-- After 1 second when we send request for GET/ BusinessCalendarCreditBill again we get empty array representing the cancellation.
+- After 15 seconds when we send request for GET/ BusinessCalendarCreditBill again we get empty array representing the cancellation.
 
 ```sh
 curl -X GET http://localhost:8080/BusinessCalendarCreditBill \
@@ -257,7 +257,7 @@ curl -X GET http://localhost:8080/BusinessCalendarCreditBill \
 
 ```
 
-- Now, even after 1 second, the process will be in Active State but not completed state.
+- Now, even after 15 second, the process will be in Active State but not completed state.
 
 <p align="center"><img width=75% height=50% src="docs/images/Get3.png"></p>
 
@@ -290,7 +290,7 @@ curl -X GET http://localhost:8080/BusinessCalendarCreditBill \
 
 ```
 
-- Now, even after 1 second, the process will be in Active State.
+- Now, even after 15 second, the process will be in Active State.
 
 <p align="center"><img width=75% height=50% src="docs/images/Get2.png"></p>
 

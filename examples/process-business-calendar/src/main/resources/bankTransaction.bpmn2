@@ -7,7 +7,7 @@
   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
   xmlns:drools="http://www.jboss.org/drools"
-  id="_d37cUNHSED2O7-4Ez2_o8w"
+  id="_LJIG8NHqED26_II6i2bn3Q"
   xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd http://www.omg.org/spec/DD/20100524/DC DC.xsd http://www.omg.org/spec/DD/20100524/DI DI.xsd "
   exporter="jBPM Process Modeler"
   exporterVersion="2.0"
@@ -129,9 +129,9 @@
       <bpmn2:outMessageRef>_049D6ACC-0D5B-4C91-9382-D5B8417F3902_OutMessage</bpmn2:outMessageRef>
     </bpmn2:operation>
   </bpmn2:interface>
-  <bpmn2:collaboration id="_6A8C2AD9-CD99-4602-A1E3-10E6FB74FE8B" name="Default Collaboration">
+  <bpmn2:collaboration id="_030A7658-5FC8-46E3-A5F9-44879194DA37" name="Default Collaboration">
     <bpmn2:participant
-      id="_15A3374B-728F-4248-B6C3-BAA0FD9C2A9E"
+      id="_AC896AAE-18B0-42D9-9ADC-E86F247F2326"
       name="Pool Participant"
       processRef="BusinessCalendarCreditBill"
     />
@@ -393,7 +393,7 @@
     >
       <bpmn2:outgoing>_A60B1BA8-2BCB-4765-8C9C-EFFCA75D8CA9</bpmn2:outgoing>
       <bpmn2:timerEventDefinition>
-        <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression">PT1S</bpmn2:timeDuration>
+        <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression">PT15S</bpmn2:timeDuration>
       </bpmn2:timerEventDefinition>
     </bpmn2:boundaryEvent>
   </bpmn2:process>
@@ -583,7 +583,7 @@
         </bpsim:Scenario>
       </bpsim:BPSimData>
     </bpmn2:extensionElements>
-    <bpmn2:source>_d37cUNHSED2O7-4Ez2_o8w</bpmn2:source>
-    <bpmn2:target>_d37cUNHSED2O7-4Ez2_o8w</bpmn2:target>
+    <bpmn2:source>_LJIG8NHqED26_II6i2bn3Q</bpmn2:source>
+    <bpmn2:target>_LJIG8NHqED26_II6i2bn3Q</bpmn2:target>
   </bpmn2:relationship>
 </bpmn2:definitions>
