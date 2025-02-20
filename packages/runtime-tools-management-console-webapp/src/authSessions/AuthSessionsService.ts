@@ -255,11 +255,6 @@ export class AuthSessionsService {
       return Promise.resolve(authSession);
     }
 
-    // const runtimeOidcProxyUrl = new URL(
-    //   path.join(new URL(temporaryAuthSessionData.runtimeUrl).pathname, AUTH_SESSION_RUNTIME_AUTH_SERVER_URL_ENDPOINT),
-    //   temporaryAuthSessionData.runtimeUrl
-    // );
-
     const issuer = new URL(temporaryAuthSessionData.serverMetadata.issuer);
 
     const config = new client.Configuration(temporaryAuthSessionData.serverMetadata, temporaryAuthSessionData.clientId);
