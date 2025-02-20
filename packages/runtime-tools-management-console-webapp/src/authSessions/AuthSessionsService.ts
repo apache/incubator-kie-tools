@@ -57,8 +57,7 @@ export class AuthSessionsService {
      */
     const code_verifier = client.randomPKCECodeVerifier();
     const code_challenge = await client.calculatePKCECodeChallenge(code_verifier);
-    // TODO: quarkus-oidc-proxy doesn't support nonce
-    // let nonce: string | undefined = undefined;
+    let nonce: string | undefined = undefined;
 
     // redirect user to as.authorization_endpoint
     const parameters: OidcAuthUrlParameters = {
@@ -68,20 +67,18 @@ export class AuthSessionsService {
       code_challenge,
       code_challenge_method,
       state: uuid(),
-      // TODO: quarkus-oidc-proxy doesn't support prompt
-      // ...(args.forceLoginPrompt ? { prompt: "login" } : {}),
+      ...(args.forceLoginPrompt ? { prompt: "login" } : {}),
     };
 
-    // TODO: quarkus-oidc-proxy doesn't support nonce
-    // /**
-    //  * We cannot be sure the AS supports PKCE so we're going to use nonce too. Use
-    //  * of PKCE is backwards compatible even if the AS doesn't support it which is
-    //  * why we're using it regardless.
-    //  */
-    // if (!args.config.serverMetadata().supportsPKCE()) {
-    //   nonce = client.randomNonce();
-    //   parameters.nonce = nonce;
-    // }
+    /**
+     * We cannot be sure the AS supports PKCE so we're going to use nonce too. Use
+     * of PKCE is backwards compatible even if the AS doesn't support it which is
+     * why we're using it regardless.
+     */
+    if (!args.config.serverMetadata().supportsPKCE()) {
+      nonce = client.randomNonce();
+      parameters.nonce = nonce;
+    }
 
     return parameters;
   }
@@ -262,8 +259,7 @@ export class AuthSessionsService {
     const tokens = await client.authorizationCodeGrant(config, currentUrl, {
       pkceCodeVerifier: temporaryAuthSessionData.parameters.code_verifier,
       expectedState: temporaryAuthSessionData.parameters.state,
-      // TODO: quarkus-oidc-proxy doesn't support nonce
-      // expectedNonce: temporaryAuthSessionData.parameters.nonce,
+      expectedNonce: temporaryAuthSessionData.parameters.nonce,
       idTokenExpected: true,
     });
 

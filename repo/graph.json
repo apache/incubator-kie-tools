@@ -82,6 +82,7 @@
       { "id": "@kie-tools/image-env-to-json" },
       { "id": "@kie-tools/runtime-tools-management-console-webapp" },
       { "id": "@kie-tools-examples/process-event-driven" },
+      { "id": "@kie-tools-examples/process-security" },
       { "id": "@kie-tools-examples/process-user-tasks-subsystem" },
       {
         "id": "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp"
@@ -774,6 +775,16 @@
       {
         "source": "@kie-tools-examples/process-event-driven",
         "target": "@kie-tools/jbpm-quarkus-devui",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-security",
+        "target": "@kie-tools/jbpm-quarkus-devui",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-security",
+        "target": "@kie-tools/kogito-management-console",
         "weight": 1
       },
       {
@@ -2785,6 +2796,7 @@
     ["@kie-tools-examples/process-accelerator", "examples/process-accelerator"],
     ["@kie-tools-examples/process-compact-architecture", "examples/process-compact-architecture"],
     ["@kie-tools-examples/process-event-driven", "examples/process-event-driven"],
+    ["@kie-tools-examples/process-security", "examples/process-security"],
     ["@kie-tools-examples/process-user-tasks-subsystem", "examples/process-user-tasks-subsystem"],
     [
       "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp",

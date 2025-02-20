@@ -1,0 +1,4 @@
+docker-compose/.env
+docker-compose/svg/
+docker-compose/persistence/
+target

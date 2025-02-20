@@ -1,0 +1,6 @@
+postgres:5432:bamoe1:bamoe-user-1:bamoe-pass-1
+postgres:5432:bamoe2:bamoe-user-2:bamoe-pass-2
+postgres:5432:bamoe3:bamoe-user-3:bamoe-pass-3
+postgres:5432:postgres:bamoe-user-1:bamoe-pass-1
+postgres:5432:postgres:bamoe-user-2:bamoe-pass-2
+postgres:5432:postgres:bamoe-user-3:bamoe-pass-3

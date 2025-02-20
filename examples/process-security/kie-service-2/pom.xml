@@ -23,16 +23,16 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 >
   <modelVersion>4.0.0</modelVersion>
+  <artifactId>process-security-kie-service-2</artifactId>
+  <groupId>org.kie.kogito</groupId>
+  <version>${revision}</version>
+  <name>KIE Tools :: Example :: Process Security :: Service 2</name>
+
   <parent>
     <groupId>org.kie</groupId>
-    <artifactId>kie-tools-maven-base</artifactId>
+    <artifactId>process-security</artifactId>
     <version>${revision}</version>
-    <relativePath>../../node_modules/@kie-tools/maven-base/pom.xml</relativePath>
   </parent>
-
-  <!-- This is a development app. It's better that we use an arbitrary string to not make this more complicated than it has to be. -->
-  <artifactId>management-console-dev-webapp-runtime</artifactId>
-  <version>999-dev</version>
 
   <dependencies>
     <dependency>
@@ -77,7 +77,7 @@
     <!-- Persistence -->
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-jdbc-h2</artifactId>
+      <artifactId>quarkus-jdbc-postgresql</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -86,6 +86,10 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-addons-quarkus-persistence-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-addons-quarkus-usertask-storage-jpa</artifactId>
     </dependency>
 
     <!-- Data-Index Addon -->
@@ -104,7 +108,7 @@
       <artifactId>jobs-service-storage-jpa</artifactId>
     </dependency>
 
-    <!-- Data Audit -->
+    <!-- Data-Audit -->
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-data-audit-jpa</artifactId>
@@ -122,18 +126,51 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-oidc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-client-oidc-token-propagation</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-web-proxy</artifactId>
-    </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>container</id>
+      <properties>
+        <quarkus.profile>container</quarkus.profile>
+      </properties>
+      <dependencies>
+        <dependency>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-container-image-jib</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>development</id>
+      <properties>
+        <quarkus.profile>dev</quarkus.profile>
+      </properties>
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-quarkus-devui-bom</artifactId>
+            <version>${project.version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
+      <dependencies>
+        <dependency>
+          <groupId>org.jbpm</groupId>
+          <artifactId>jbpm-quarkus-devui</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>io.quarkus</groupId>
+          <artifactId>quarkus-jdbc-h2</artifactId>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
 
   <build>
     <finalName>${project.artifactId}</finalName>
@@ -141,11 +178,30 @@
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
+        <version>${version.quarkus}</version>
         <executions>
           <execution>
             <goals>
               <goal>build</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <copy todir="./docker-compose/svg" overwrite="true">
+                  <fileset dir="target/classes/META-INF/processSVG/" />
+                </copy>
+              </target>
+            </configuration>
           </execution>
         </executions>
       </plugin>

@@ -43,6 +43,7 @@ digraph G {
   "@kie-tools/jbpm-quarkus-devui" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kogito-management-console" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools-examples/process-event-driven" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
+  "@kie-tools-examples/process-security" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/process-user-tasks-subsystem" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp" [ color = "orange", fontcolor = "orange", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-standalone-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -263,6 +264,8 @@ digraph G {
   "@kie-tools-examples/process-compact-architecture" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/process-compact-architecture" -> "@kie-tools/kogito-management-console" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/process-event-driven" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
+  "@kie-tools-examples/process-security" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
+  "@kie-tools-examples/process-security" -> "@kie-tools/kogito-management-console" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/process-user-tasks-subsystem" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/process-user-tasks-subsystem" -> "@kie-tools/kogito-management-console" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp" -> "@kie-tools-core/react-hooks" [ style = "dashed", color = "orange" ];
