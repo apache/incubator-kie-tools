@@ -77,7 +77,7 @@ This example demonstrates a Hiring Process Workflow. It begins with a new hiring
 
 ### Custom User Task assignment strategy
 
-Kogito has a way to automatically assign User Tasks to a single User based on a defined logic, which is active by default. The default logic is very basic and doesn't cover real world business cases. This example shows how can you define your own logic. The `org.acme.candidate.CustomUserTaskAssignmentStrategyConfig.java` defines a simple logic assigning the User Task to an user based on the task name:
+Apache KIE has a way to automatically assign User Tasks to a single User based on a defined logic, which is active by default. The default logic is very basic and doesn't cover real world business cases. This example shows how can you define your own logic. The `org.acme.candidate.CustomUserTaskAssignmentStrategyConfig.java` defines a simple logic assigning the User Task to an user based on the task name:
 
 ```java
 @Override
@@ -144,19 +144,17 @@ KOGITO_MANAGEMENT_CONSOLE_IMAGE=
 COMPOSE_PROFILES=
 ```
 
-- `STREAM_NAME`: Should be set with the project stream name.
-- `PROJECT_VERSION`: Should be set with the current Kogito version being used: `PROJECT_VERSION=`
-- `KOGITO_MANAGEMENT_CONSOLE_IMAGE`: Should be set with the Kogito Management Console image `docker.io/apache/incubator-kie-kogito-management-console:${STREAM_NAME}`
+- `PROJECT_VERSION`: Should be set with the current Apache KIE version being used: `PROJECT_VERSION=`
+- `KOGITO_MANAGEMENT_CONSOLE_IMAGE`: Should be set with the Apache KIE Management Console image `docker.io/apache/incubator-kie-kogito-management-console:main`
 - `COMPOSE_PROFILES`: filters which services will run.
 
 ```
-STREAM_NAME=main
 PROJECT_VERSION=0.0.0
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:${STREAM_NAME}
+KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
 COMPOSE_PROFILES=container
 ```
 
-Start Postgres, pgAdmin, Kogito business calendar example and Management Console with the command below:
+Start Postgres, pgAdmin, Apache KIE user tasks susbystem example and Management Console with the command below:
 
 ```sh
 docker compose up
@@ -172,7 +170,7 @@ To access Management Console open `http://localhost:8280` in your browser.
 
 ## Using
 
-Once the Kogito app is running, you can start a new process using the above `curl` command:
+Once the Apache KIE app is running, you can start a new process using the above `curl` command:
 
 ```sh
 curl -X POST http://localhost:8080/hiring \
@@ -300,7 +298,7 @@ curl -X 'POST' \
 
 NOTE: The `GET`, `PUT` and `DELETE` HTTP methods are avaiable for this route.
 
-NOTE: If you have started the Kogito app in development mode, you can check the entire API in the `localhost:8080/q/swagger-ui` route.
+NOTE: If you have started the Apache KIE app in development mode, you can check the entire API in the `localhost:8080/q/swagger-ui` route.
 
 ### OpenAPI (Swagger) documentation
 

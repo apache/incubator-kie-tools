@@ -17,7 +17,7 @@
 
 # Example :: Process Event Driven Example
 
-This example shows how a Kogito project can use Apache Kafka to handle events. It showcases a Travel Agency example. The **Process Travelers** process starts by consuming a *travelers* event which will be processed using pre-defined rules. If the *travelers* is successfully processed, a message will be produced triggering the **Process Hotel** process, which is responsible for processing the hotel. Afterward, the **Process Travelers** process will create a new event with the **processed traveler** content. If the *travelers* isn't successfully processed, the **Process Travelers** process will finish without any other event. Additionally, this example also demonstrates how to configure the whole environment to use events (Kafka/HTTP) between processes.
+This example shows how a Apache KIE project can use Apache Kafka to handle events. It showcases a Travel Agency example. The **Process Travelers** process starts by consuming a *travelers* event which will be processed using pre-defined rules. If the *travelers* is successfully processed, a message will be produced triggering the **Process Hotel** process, which is responsible for processing the hotel. Afterward, the **Process Travelers** process will create a new event with the **processed traveler** content. If the *travelers* isn't successfully processed, the **Process Travelers** process will finish without any other event. Additionally, this example also demonstrates how to configure the whole environment to use events (Kafka/HTTP) between processes.
 
 - **Process Travelers** process
 <p align="center"><img width=75% height=50% src="docs/images/processHandleTraveler.png"></p>
@@ -33,7 +33,7 @@ To enable events we must configure our project by adding Maven dependencies to t
 
 To enable Kafka messages we must add the following two dependencies in the `pom.xml` file:
 
-- `org.kie.kie-addons-quarkus-messaging`: Quarkus addon that enables Kogito runtime to produce and consume messages using the Smallrye Messaging library.
+- `org.kie.kie-addons-quarkus-messaging`: Quarkus addon that enables Apache KIE runtime to produce and consume messages using the Smallrye Messaging library.
 - `io.quarkus.quarkus-smallrye-reactive-messaging-kafka`: Enables connecting Kafka broker using the Smallrye Messaging library for Quarkus.
 
 ### Application properties
@@ -70,7 +70,7 @@ mp.messaging.incoming.correlation.auto.offset.reset=earliest
 
 ## Infrastructure requirements
 
-To help bootstrapping the Infrastructure Services, the example provides a `docker-compose.yml` file. This quickstart provides two ways of running the example application. In development ("dev") mode, the user can start a Kafka service using `docker-compose` and must run **Process Travelers** and **Process Hotel** processes manually. In "full" mode the `docker-compose` file will start the Kafka service and both processes, requiring the project to be compiled first to generate the process's container images. To use `docker-compose` we must first create a `.env` file in the example root, and it should have the following variables:
+To help bootstrapping the Infrastructure Services, the example provides a `docker-compose.yml` file. This quickstart provides two ways of running the example application. In development ("dev") mode, the user can start a Kafka service using `docker-compose` and must run **Process Travelers** and **Process Hotel** processes manually. In "container" mode the `docker-compose` file will start the Kafka service and both processes, requiring the project to be compiled first to generate the process's container images. To use `docker-compose` we must first create a `.env` file in the example root, and it should have the following variables:
 
 ```
 PROJECT_VERSION=
@@ -78,7 +78,7 @@ KAFKA_HOST=
 COMPOSE_PROFILES=
 ```
 
-- `PROJECT_VERSION`: Should be set with the current Kogito version being used: `PROJECT_VERSION=0.0.0`
+- `PROJECT_VERSION`: Should be set with the current Apache KIE version being used: `PROJECT_VERSION=0.0.0`
 - `KAFKA_HOST`: tells how the processes will find the Kafka service.
 - `COMPOSE_PROFILES`: filters which services will run.
 
@@ -183,7 +183,7 @@ To run all services using Docker compose build the example using the "container"
 mvn clean package -Pcontainer
 ```
 
-After that, start all services (["Infrastructure requirements/Full mode"](#full-mode)) by running:
+After that, start all services (["Infrastructure requirements/Container mode"](#container-mode)) by running:
 
 ```sh
 docker compose up

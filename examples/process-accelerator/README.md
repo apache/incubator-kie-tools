@@ -72,7 +72,7 @@ Note: The script execution order is not relevant.
 
 #### Setting up the schema when using docker compose
 
-Refer to the **Prerequisites** section of this document for more information on how to leverage docker init scripts to set up the database schema automatically. If successful, the complete schema should be created inside the `kogito` database.
+Refer to the **Prerequisites** section of this document for more information on how to leverage docker init scripts to set up the database schema automatically. If successful, the complete schema should be created inside the `kie` database.
 
 ## Disabling automatic database schema generation through Flyway
 
@@ -94,10 +94,10 @@ kogito.persistence.type=jdbc
 
 # datasource properties
 quarkus.datasource.db-kind=postgresql
-quarkus.datasource.username=kogito-user
-quarkus.datasource.password=kogito-pass
-quarkus.datasource.jdbc.url=jdbc:postgresql://0.0.0.0:5432/kogito
-quarkus.datasource.reactive.url=postgresql://0.0.0.0:5432/kogito
+quarkus.datasource.username=kie-user
+quarkus.datasource.password=kie-pass
+quarkus.datasource.jdbc.url=jdbc:postgresql://0.0.0.0:5432/kie
+quarkus.datasource.reactive.url=postgresql://0.0.0.0:5432/kie
 ```
 
 - Persistence related dependencies in `pom.xml`:
@@ -231,10 +231,10 @@ property.name=${ENV_PROPERTY_NAME:default_value}
 An example for such a setup used in this example is the definition of the database related properties. In `application.properties`, the relevant settings are defined as:
 
 ```properties
-quarkus.datasource.username=${QUARKUS_DATASOURCE_USERNAME:kogito-user}
-quarkus.datasource.password=${QUARKUS_DATASOURCE_PASSWORD:kogito-pass}
-quarkus.datasource.jdbc.url=${QUARKUS_DATASOURCE_JDBC_URL:jdbc:postgresql://localhost:5432/kogito}
-quarkus.datasource.reactive.url=${QUARKUS_DATASOURCE_REACTIVE_URL:postgresql://localhost:5432/kogito}
+quarkus.datasource.username=${QUARKUS_DATASOURCE_USERNAME:kie-user}
+quarkus.datasource.password=${QUARKUS_DATASOURCE_PASSWORD:kie-pass}
+quarkus.datasource.jdbc.url=${QUARKUS_DATASOURCE_JDBC_URL:jdbc:postgresql://localhost:5432/kie}
+quarkus.datasource.reactive.url=${QUARKUS_DATASOURCE_REACTIVE_URL:postgresql://localhost:5432/kie}
 ```
 
 At runtime, the settings can be defined using environment variables. For instance, in the `docker-compose.yml` configuration, these variables are set as:
@@ -243,10 +243,10 @@ At runtime, the settings can be defined using environment variables. For instanc
   process-accelerator:
     ...
     environment:
-      QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://postgres:5432/kogito"
-      QUARKUS_DATASOURCE_REACTIVE_URL: "postgresql://postgres:5432/kogito"
-      QUARKUS_DATASOURCE_USERNAME: kogito-user
-      QUARKUS_DATASOURCE_PASSWORD: kogito-pass
+      QUARKUS_DATASOURCE_JDBC_URL: "jdbc:postgresql://postgres:5432/kie"
+      QUARKUS_DATASOURCE_REACTIVE_URL: "postgresql://postgres:5432/kie"
+      QUARKUS_DATASOURCE_USERNAME: kie-user
+      QUARKUS_DATASOURCE_PASSWORD: kie-pass
 ```
 
 ## Configuring log levels

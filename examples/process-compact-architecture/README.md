@@ -106,7 +106,7 @@ being true)
 the process will jump into the **Send Offer to Candidate** _Script Task_ that will notify the candidate about the offer
 and the process will end.
 
-> **NOTE:** for simplicity, all the _User Tasks_ in this example are assigned to the _jdoe_ user. Despite showing "Anonymous" in the top-right corner, Kogito Management Console will always use the first "potential user" defined by the Process Definition.
+> **NOTE:** for simplicity, all the _User Tasks_ in this example are assigned to the _jdoe_ user. Despite showing "Anonymous" in the top-right corner, Apache KIE Management Console will always use the first "potential user" defined by the Process Definition.
 
 ### The _"New Hiring Offer"_ Decision (DMN)
 
@@ -184,7 +184,7 @@ public class Offer {
 
 ## Infrastructure requirements
 
-To help bootstrapping the Infrastructure Services, the example provides a `docker-compose.yml` file. This quickstart provides three ways of running the example application. In development ("development") mode, the user can start a minimal infrastructure using `docker-compose` and must run the Kogito application manually. In "example" mode the `docker-compose` file will start the minimal infrastructure services and the Kogito application, requiring the project to be compiled first to generate the process's container images. At least, the `docker-compose` "container" model will start the minimal infrastructure services, the Kogito application, and Management Console, still requiring the project to be compiled first to generate the process's container images. To use `docker-compose` we must first create a `.env` file in the example root, and it should have the following variables:
+To help bootstrapping the Infrastructure Services, the example provides a `docker-compose.yml` file. This quickstart provides three ways of running the example application. In development ("development") mode, the user can start a minimal infrastructure using `docker-compose` and must run the business service manually. In "example" mode the `docker-compose` file will start the minimal infrastructure services and the business service, requiring the project to be compiled first to generate the process's container images. At least, the `docker-compose` "container" model will start the minimal infrastructure services, the Kogito application, and Management Console, still requiring the project to be compiled first to generate the process's container images. To use `docker-compose` we must first create a `.env` file in the example root, and it should have the following variables:
 
 ```
 PROJECT_VERSION=
@@ -192,9 +192,8 @@ KOGITO_MANAGEMENT_CONSOLE_IMAGE=
 COMPOSE_PROFILES=
 ```
 
-- `STREAM_NAME`: Should be set with the project stream name.
-- `PROJECT_VERSION`: Should be set with the current Kogito version being used: `PROJECT_VERSION=`
-- `KOGITO_MANAGEMENT_CONSOLE_IMAGE`: Should be set with the Kogito Management Console image `docker.io/apache/incubator-kie-kogito-management-console:${PROJECT_VERSION}`
+- `PROJECT_VERSION`: Should be set with the current Apache KIE version being used: `PROJECT_VERSION=`
+- `KOGITO_MANAGEMENT_CONSOLE_IMAGE`: Should be set with the Apache KIE Management Console image `docker.io/apache/incubator-kie-kogito-management-console:main`
 - `COMPOSE_PROFILES`: filters which services will run.
 
 ### Development mode
@@ -202,9 +201,8 @@ COMPOSE_PROFILES=
 For development mode, the `.env` must have the `COMPOSE_PROFILES=development`:
 
 ```
-STREAM_NAME=main
 PROJECT_VERSION=0.0.0
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:${STREAM_NAME}
+KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
 COMPOSE_PROFILES=development
 ```
 
@@ -213,9 +211,8 @@ COMPOSE_PROFILES=development
 For example mode, the `.env` must have the `COMPOSE_PROFILES=example`:
 
 ```
-STREAM_NAME=main
 PROJECT_VERSION=0.0.0
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:${STREAM_NAME}
+KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
 COMPOSE_PROFILES=example
 ```
 
@@ -224,9 +221,8 @@ COMPOSE_PROFILES=example
 For container mode, the `.env` must have the `COMPOSE_PROFILES=container`:
 
 ```
-STREAM_NAME=main
 PROJECT_VERSION=0.0.0
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:${STREAM_NAME}
+KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
 COMPOSE_PROFILES=container
 ```
 
@@ -429,7 +425,7 @@ application_.
 
 In this guide we'll see how to use the _Management Console_ to view the state of the Hiring process instances.
 
-First, you must connect the Management Console to the Kogito runtime. To do so, open the `localhost:8280` url, and click in "Connect to a runtime..." button:
+First, you must connect the Management Console to the business service. To do so, open the `localhost:8280` url, and click in "Connect to a runtime..." button:
 
 <div style="text-align:center;">
    <figure>
@@ -449,7 +445,7 @@ Enter an alias, and the runtime url:
    </figure>
 </div>
 
-Now, you're connect to the Kogito Management Console:
+Now, you're connect to the Apache KIE Management Console:
 
 <div style="text-align:center;">
    <figure>
@@ -539,7 +535,7 @@ necessary data for the process to continue.
 In this guide, we'll see how to complete the process _User Tasks_ using _Management Console_ to interact with the
 process _User Tasks_.
 
-> **NOTE:** for simplicity, all the _User Tasks_ in this example are assigned to the _jdoe_ user. Despite showing "Anonymous" in the top-right corner, Kogito Management Console will always use the first "potential user" defined by the Process Definition.
+> **NOTE:** for simplicity, all the _User Tasks_ in this example are assigned to the _jdoe_ user. Despite showing "Anonymous" in the top-right corner, Apache KIE Management Console will always use the first "potential user" defined by the Process Definition.
 
 1. With the example built and all the _Infrastructure Services_ running, let's start an instance of the
    \_Hiring_process.

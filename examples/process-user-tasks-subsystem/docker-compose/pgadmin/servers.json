@@ -1,12 +1,12 @@
 {
   "Servers": {
     "1": {
-      "Name": "kogito",
+      "Name": "kie",
       "Group": "Servers",
       "Host": "postgres",
       "Port": 5432,
-      "MaintenanceDB": "kogito",
-      "Username": "kogito-user",
+      "MaintenanceDB": "kie",
+      "Username": "kie-user",
       "SSLMode": "disable",
       "PassFile": "/var/lib/pgadmin/pgpass"
     }

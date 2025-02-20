@@ -15,15 +15,15 @@
 -- specific language governing permissions and limitations
 -- under the License.
 
-CREATE ROLE "kogito-user" WITH
+CREATE ROLE "kie-user" WITH
     LOGIN
     SUPERUSER
     INHERIT
     CREATEDB
     CREATEROLE
     NOREPLICATION
-    PASSWORD 'kogito-pass';
+    PASSWORD 'kie-pass';
 
-GRANT ALL PRIVILEGES ON DATABASE postgres TO "kogito-user";
-GRANT ALL PRIVILEGES ON DATABASE kogito TO "kogito-user";
-GRANT ALL PRIVILEGES ON DATABASE kogito TO postgres;
+GRANT ALL PRIVILEGES ON DATABASE postgres TO "kie-user";
+GRANT ALL PRIVILEGES ON DATABASE kie TO "kie-user";
+GRANT ALL PRIVILEGES ON DATABASE kie TO postgres;

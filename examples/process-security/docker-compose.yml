@@ -1,8 +1,27 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
 services:
   postgres:
     container_name: process-security-postgres
-    image: postgres:16.1-alpine3.19
-    profiles: ["jvm", "full"]
+    image: postgres:16.7-alpine3.21
+    profiles: ["jvm", "container"]
     ports:
       - "5432:5432"
     volumes:
@@ -18,8 +37,8 @@ services:
 
   pgadmin:
     container_name: process-security-pgadmin
-    image: dpage/pgadmin4:8.2
-    profiles: ["jvm", "full"]
+    image: dpage/pgadmin4:8.14
+    profiles: ["jvm", "container"]
     ports:
       - "8055:80"
     depends_on:
@@ -43,7 +62,7 @@ services:
   keycloak-1:
     container_name: process-security-keycloak-1
     image: quay.io/keycloak/keycloak:26.0.5
-    profiles: ["dev", "jvm", "full"]
+    profiles: ["development", "jvm", "container"]
     healthcheck:
       test:
         [
@@ -66,7 +85,7 @@ services:
   keycloak-2:
     container_name: process-security-keycloak-2
     image: quay.io/keycloak/keycloak:26.0.5
-    profiles: ["dev", "jvm", "full"]
+    profiles: ["development", "jvm", "container"]
     healthcheck:
       test:
         [
@@ -89,7 +108,7 @@ services:
   kie-service-1:
     container_name: process-security-kie-service-1
     image: dev.local/kie/process-security-kie-service-1:${PROJECT_VERSION}
-    profiles: ["full"]
+    profiles: ["container"]
     depends_on:
       keycloak-1:
         condition: service_healthy
@@ -112,7 +131,7 @@ services:
   kie-service-2:
     container_name: process-security-kie-service-2
     image: dev.local/kie/process-security-kie-service-2:${PROJECT_VERSION}
-    profiles: ["full"]
+    profiles: ["container"]
     depends_on:
       keycloak-2:
         condition: service_healthy
@@ -135,7 +154,7 @@ services:
   kie-service-3:
     container_name: process-security-kie-service-3
     image: dev.local/kie/process-security-kie-service-3:${PROJECT_VERSION}
-    profiles: ["full"]
+    profiles: ["container"]
     depends_on:
       postgres:
         condition: service_healthy
@@ -155,7 +174,7 @@ services:
   managment-console:
     container_name: process-security-management-console
     image: ${KOGITO_MANAGEMENT_CONSOLE_IMAGE}
-    profiles: ["full"]
+    profiles: ["container"]
     ports:
       - "8380:8080"
     depends_on:
