@@ -34,11 +34,6 @@
   <name>KIE Tools :: Example :: Process Security</name>
   <version>${revision}</version>
 
-  <properties>
-    <kogito.management-console.image
-    >docker.io/apache/incubator-kie-kogito-management-console:main</kogito.management-console.image>
-  </properties>
-
   <packaging>pom</packaging>
 
   <modules>

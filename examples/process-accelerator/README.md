@@ -41,7 +41,7 @@ If you want to jump straight ahead to running this example, go to
 
 ## Setting up the database using the provided schema
 
-Apache KIE 10 provides Data Definition Language (DDL) scripts for creating the database schema in a PostgreSQL instance. The generated tables are be used by the persistence layer of the following sub-systems:
+Apache KIE provides Data Definition Language (DDL) scripts for creating the database schema in a PostgreSQL instance. The generated tables are be used by the persistence layer of the following sub-systems:
 
 - Runtime Engine
 - User Tasks
