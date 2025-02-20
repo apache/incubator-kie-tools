@@ -70,36 +70,24 @@ function createTestScenarioObjects(
   drgElement: DMN15__tInputData | DMN15__tDecision,
   itemDefinitionMap: Map<string, DMN15__tItemDefinition>
 ): TestScenarioDataObject {
-  const children: TestScenarioDataObject[] = [];
-
   const drgElementName = drgElement["@_name"];
-  const drgElementTypeRef = drgElement!.variable?.["@_typeRef"];
-  const isDrgElementSimpleType = isSimpleType(drgElementTypeRef!);
-
-  if (isDrgElementSimpleType) {
-    children.push({
-      id: drgElementName.concat("."), //TO BE REVIEWED IN https://github.com/apache/incubator-kie-issues/issues/1514
-      name: "value",
-      customBadgeContent: drgElementTypeRef,
-      isSimpleTypeFact: isDrgElementSimpleType,
-    });
-  } else {
-    const itemDefinition = itemDefinitionMap.get(drgElementTypeRef!);
-    children.push(...createChildrenTestScenarioObjects(itemDefinition, drgElementName, drgElementTypeRef!));
-  }
+  const drgElementTypeRef = drgElement!.variable?.["@_typeRef"] ?? "<Undefined>";
+  const itemDefinition = itemDefinitionMap.get(drgElementTypeRef!);
 
   return {
     id: drgElementName,
     name: drgElementName,
+    children: createChildrenTestScenarioObjects(itemDefinition, [drgElementName], drgElementTypeRef!),
+    className: drgElementTypeRef!,
     customBadgeContent: drgElementTypeRef,
-    children: children,
+    expressionElements: [drgElementName],
   };
 }
 
 function createChildrenTestScenarioObjects(
   itemDefinition: DMN15__tItemDefinition | undefined,
-  drgElementName: string,
-  drgElementTypeRef: string
+  expressionElements: string[],
+  rootDrgElementTypeRef: string
 ) {
   const children: TestScenarioDataObject[] = [];
 
@@ -110,46 +98,39 @@ function createChildrenTestScenarioObjects(
       if (!itemComponent.typeRef) {
         const ns = createChildrenTestScenarioObjects(
           itemComponent,
-          drgElementName.concat(".").concat(itemComponent["@_name"]),
-          "?"
+          [...expressionElements, itemComponent["@_name"]],
+          rootDrgElementTypeRef
         );
         nestedChildren.push(...ns);
       }
 
+      const isCollection = itemComponent["@_isCollection"] ?? false;
+      const name = itemComponent["@_name"];
+
       return {
-        customBadgeContent: itemComponent.typeRef?.__$$text,
+        id: [...expressionElements, name].join("."),
+        name: name,
         children: nestedChildren.length > 0 ? nestedChildren : undefined,
-        id: drgElementName.concat(".").concat(itemComponent["@_name"]),
-        isCollection: itemComponent["@_isCollection"],
-        name: itemComponent["@_name"],
+        className: isCollection ? "java.util.List" : itemComponent.typeRef?.__$$text,
+        collectionGenericType: isCollection ? [itemComponent.typeRef!.__$$text] : undefined,
+        customBadgeContent: `${itemComponent.typeRef?.__$$text}${isCollection ? "[]" : ""}`,
+        expressionElements: [...expressionElements, name],
       };
     });
     children.push(...childrenTestScenarioObjects);
   } else {
+    const isCollection = itemDefinition?.["@_isCollection"] ?? false;
+    const name = isCollection ? "values" : "value";
+
     children.push({
-      customBadgeContent: drgElementTypeRef,
-      id: drgElementName.concat("."), //TO BE REVIEWED IN https://github.com/apache/incubator-kie-issues/issues/1514
-      //isCollection: itemComponent["@_isCollection"],
-      name: "value",
-      //isSimpleTypeFact: isDrgElementSimpleType, TO DOUBLE CHECK
+      id: [...expressionElements, name].join("."),
+      name: name,
+      className: isCollection ? "java.util.List" : rootDrgElementTypeRef,
+      collectionGenericType: isCollection ? [rootDrgElementTypeRef] : undefined,
+      customBadgeContent: `${rootDrgElementTypeRef}${isCollection ? "[]" : ""}`,
+      expressionElements: expressionElements,
     });
   }
 
   return children.sort((childA, childB) => childA.name.localeCompare(childB.name));
-}
-
-function isSimpleType(type: string) {
-  return [
-    "Any",
-    "boolean",
-    "context",
-    "date",
-    "date and time",
-    "days and time duration",
-    "number",
-    "string",
-    "time",
-    "years and months duration",
-    "<Undefined>",
-  ].includes(type);
 }
