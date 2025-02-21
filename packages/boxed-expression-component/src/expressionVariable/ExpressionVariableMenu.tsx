@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PopoverMenu, PopoverMenuRef } from "../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../i18n";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditorContext";
@@ -30,6 +30,7 @@ import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popov
 import "./ExpressionVariableMenu.css";
 import { Action, ExpressionChangedArgs, VariableChangedArgs } from "../api";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
+import { FeelInputTextbox } from "./FeelInputTextbox";
 
 export type OnExpressionVariableUpdated = (args: {
   name: string;
@@ -59,6 +60,8 @@ export interface ExpressionVariableMenuProps {
   position?: PopoverPosition;
   /** The UUID of the variable. */
   variableUuid: string;
+  /** If instead of plain text the content is a FEEL expression. */
+  isContentAFeelExpression?: boolean;
 }
 
 export const DEFAULT_EXPRESSION_VARIABLE_NAME = "Expression Name";
@@ -74,11 +77,12 @@ export function ExpressionVariableMenu({
   onVariableUpdated,
   position,
   variableUuid,
+  isContentAFeelExpression = false,
 }: ExpressionVariableMenuProps) {
   const { editorRef, beeGwtService } = useBoxedExpressionEditor();
   const { i18n } = useBoxedExpressionEditorI18n();
 
-  nameField = nameField ?? i18n.name;
+  nameField = nameField ?? isContentAFeelExpression ? i18n.expression : i18n.name;
   dataTypeField = dataTypeField ?? i18n.dataType;
   appendTo = appendTo ?? editorRef?.current ?? undefined;
 
@@ -185,6 +189,7 @@ export function ExpressionVariableMenu({
     [resetFormData, saveExpression]
   );
 
+  const { expressionHolderId } = useBoxedExpressionEditor();
   return (
     <PopoverMenu
       ref={popoverMenuRef}
@@ -199,18 +204,26 @@ export function ExpressionVariableMenu({
         <div className="edit-expression-menu" onKeyDown={onKeyDown} onMouseDown={(e) => e.stopPropagation()}>
           <div className="expression-name">
             <label>{nameField}</label>
-            <input
-              ref={expressionNameRef}
-              type="text"
-              id="expression-name"
-              data-ouia-component-id="edit-expression-name"
-              value={expressionName}
-              onChange={onExpressionNameChange}
-              onBlur={onExpressionNameChange}
-              className="form-control pf-c-form-control"
-              placeholder={DEFAULT_EXPRESSION_VARIABLE_NAME}
-              onKeyDown={onKeyDown}
-            />
+            {isContentAFeelExpression ? (
+              <FeelInputTextbox
+                value={expressionName}
+                onChange={(e) => setExpressionName(e)}
+                expressionId={expressionHolderId}
+              />
+            ) : (
+              <input
+                ref={expressionNameRef}
+                type="text"
+                id="expression-name"
+                data-ouia-component-id="edit-expression-name"
+                value={expressionName}
+                onChange={onExpressionNameChange}
+                onBlur={onExpressionNameChange}
+                className="form-control pf-c-form-control"
+                placeholder={DEFAULT_EXPRESSION_VARIABLE_NAME}
+                onKeyDown={onKeyDown}
+              />
+            )}
           </div>
           <div className="expression-data-type">
             <label>{dataTypeField}</label>
