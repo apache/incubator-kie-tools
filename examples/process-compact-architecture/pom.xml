@@ -31,15 +31,8 @@
   </parent>
 
   <artifactId>process-compact-architecture</artifactId>
-  <version>${revision}</version>
-
   <name>KIE Tools :: Example :: Process Compact Architecture</name>
-
-  <properties>
-    <kogito.management-console.image
-    >docker.io/apache/incubator-kie-kogito-management-console:main</kogito.management-console.image>
-    <kogito.task-console.image>docker.io/apache/incubator-kie-kogito-task-console:main</kogito.task-console.image>
-  </properties>
+  <version>${revision}</version>
 
   <dependencies>
     <dependency>
