@@ -102,3 +102,178 @@ func TestGenerateEnvJsonWithValidJsonSchema(t *testing.T) {
 	assert.Equal(t, "value1", envJson["MY_ENV"])
 	assert.Equal(t, "value2", envJson["MY_ENV2"])
 }
+
+func TestGenerateEnvJsonWithNestedObject(t *testing.T) {
+	type MyEnv struct {
+		MY_ENV_A int    `json:"MY_ENV_A"`
+		MY_ENV_B bool   `json:"MY_ENV_B"`
+		MY_ENV_C string `json:"MY_ENV_C"`
+	}
+
+	type EnvJson struct {
+		MY_ENV  MyEnv  `json:"MY_ENV"`
+		MY_ENV2 string `json:"MY_ENV2"`
+	}
+
+	tempDir := t.TempDir()
+	// Define a sample JSON Schema
+	envJsonSchema := `{
+		"$id": "EnvJson",
+		"$schema": "http://json-schema.org/draft-07/schema#",
+		"definitions": {
+			"EnvJson": {
+				"type": "object",
+				"properties": {
+					"MY_ENV": {
+						"type": "object",
+						"properties": {
+							"MY_ENV_A": {
+								"type": "number"
+							},
+							"MY_ENV_B": {
+								"type": "boolean"
+							},
+							"MY_ENV_C": {
+								"type": "string"
+							}
+						}
+					},
+					"MY_ENV2": { "type": "string" }
+				},
+				"required": ["MY_ENV", "MY_ENV2"]
+			}
+		}
+	}`
+
+	// Create a temporary JSON schema file
+	envJsonSchemaPath := filepath.Join(tempDir, "EnvSchema.json")
+	err := os.WriteFile(envJsonSchemaPath, []byte(envJsonSchema), 0644)
+	assert.NoError(t, err)
+
+	// Set environment variables
+	os.Setenv("MY_ENV", `{ "MY_ENV_A": 1, "MY_ENV_B": false, "MY_ENV_C": "value1" }`)
+	os.Setenv("MY_ENV2", `"value2"`)
+	defer os.Unsetenv("MY_ENV")
+	defer os.Unsetenv("MY_ENV2")
+
+	// Define the expected output file path
+	envJsonPath := filepath.Join(tempDir, "env.json")
+
+	// Invoke the generateEnvJson
+	err = generateEnvJson(tempDir, envJsonSchemaPath)
+	assert.NoError(t, err)
+
+	// Verify that the env.json file was created
+	_, err = os.Stat(envJsonPath)
+	assert.NoError(t, err, "env.json file should exist")
+
+	// Read and validate the contents of env.json
+	data, err := os.ReadFile(envJsonPath)
+	assert.NoError(t, err)
+
+	var envJson EnvJson
+	err = json.Unmarshal(data, &envJson)
+	assert.NoError(t, err)
+
+	// Check that the JSON contains the expected values
+	assert.Equal(t, EnvJson{
+		MY_ENV: MyEnv{
+			MY_ENV_A: 1,
+			MY_ENV_B: false,
+			MY_ENV_C: "value1",
+		},
+		MY_ENV2: "value2",
+	}, envJson)
+}
+
+func TestGenerateEnvJsonWithNestedArray(t *testing.T) {
+	type MyEnv struct {
+		MY_ENV_A int    `json:"MY_ENV_A"`
+		MY_ENV_B bool   `json:"MY_ENV_B"`
+		MY_ENV_C string `json:"MY_ENV_C"`
+	}
+
+	type EnvJson struct {
+		MY_ENV  []MyEnv `json:"MY_ENV"`
+		MY_ENV2 string  `json:"MY_ENV2"`
+	}
+
+	tempDir := t.TempDir()
+	// Define a sample JSON Schema
+	envJsonSchema := `{
+		"$id": "EnvJson",
+		"$schema": "http://json-schema.org/draft-07/schema#",
+		"definitions": {
+			"EnvJson": {
+				"type": "object",
+				"properties": {
+					"MY_ENV": {
+						"type": "array",
+						"items": {
+							"properties": {
+								"MY_ENV_A": {
+									"type": "number"
+								},
+								"MY_ENV_B": {
+									"type": "boolean"
+								},
+								"MY_ENV_C": {
+									"type": "string"
+								}
+							}
+						}
+					},
+					"MY_ENV2": { "type": "string" }
+				},
+				"required": ["MY_ENV", "MY_ENV2"]
+			}
+		}
+	}`
+
+	// Create a temporary JSON schema file
+	envJsonSchemaPath := filepath.Join(tempDir, "EnvSchema.json")
+	err := os.WriteFile(envJsonSchemaPath, []byte(envJsonSchema), 0644)
+	assert.NoError(t, err)
+
+	// Set environment variables
+	os.Setenv("MY_ENV", `[{ "MY_ENV_A": 1, "MY_ENV_B": false, "MY_ENV_C": "value1" }, { "MY_ENV_A": 2, "MY_ENV_B": true, "MY_ENV_C": "value0" }]`)
+	os.Setenv("MY_ENV2", `"value2"`)
+	defer os.Unsetenv("MY_ENV")
+	defer os.Unsetenv("MY_ENV2")
+
+	// Define the expected output file path
+	envJsonPath := filepath.Join(tempDir, "env.json")
+
+	// Invoke the generateEnvJson
+	err = generateEnvJson(tempDir, envJsonSchemaPath)
+	assert.NoError(t, err)
+
+	// Verify that the env.json file was created
+	_, err = os.Stat(envJsonPath)
+	assert.NoError(t, err, "env.json file should exist")
+
+	// Read and validate the contents of env.json
+	data, err := os.ReadFile(envJsonPath)
+	assert.NoError(t, err)
+
+	var envJson EnvJson
+	err = json.Unmarshal(data, &envJson)
+	assert.NoError(t, err)
+
+	// Check that the JSON contains the expected values
+	assert.Equal(t, EnvJson{
+		MY_ENV: []MyEnv{
+			{
+				MY_ENV_A: 1,
+				MY_ENV_B: false,
+				MY_ENV_C: "value1",
+			},
+			{
+				MY_ENV_A: 2,
+				MY_ENV_B: true,
+				MY_ENV_C: "value0",
+			},
+		},
+		MY_ENV2: "value2",
+	}, envJson)
+}
