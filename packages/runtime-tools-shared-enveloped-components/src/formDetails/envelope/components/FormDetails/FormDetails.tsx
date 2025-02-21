@@ -30,7 +30,7 @@ import {
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import isEmpty from "lodash/isEmpty";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Form, FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { FormDetailsDriver } from "../../../api/FormDetailsDriver";
 import FormDisplayerContainer from "../../containers/FormDisplayerContainer/FormDisplayerContainer";
@@ -68,9 +68,8 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
     }
   }, [isEnvelopeConnectedToChannel]);
 
-  const init = async (): Promise<void> => {
+  const init = useCallback(async () => {
     try {
-      /* istanbul ignore else */
       if (formData) {
         const response = await driver.getFormContent(formData.name);
         setFormContent(response);
@@ -79,71 +78,76 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
     } catch (error) {
       setError(error);
     }
-  };
+  }, [driver, formData]);
 
-  const saveForm = async (form: Form): Promise<void> => {
-    try {
-      setFormContent(form);
-      await driver.saveFormContent(formData.name, {
-        configuration: form.configuration,
-        source: form.source,
-      });
-    } catch (error) {
-      setError(error);
-    }
-  };
-
-  const panelContent: JSX.Element = (
-    <DrawerPanelContent
-      isResizable
-      defaultSize={"800px"}
-      onResize={() => {
-        editorResize?.current?.doResize();
-      }}
-    >
-      <DrawerHead style={{ height: "100%" }}>
-        {formContent && Object.keys(formContent)[0] && Object.keys(formContent)[0].length > 0 && (
-          <span>
-            <FormDisplayerContainer formContent={formContent} targetOrigin={targetOrigin} />
-          </span>
-        )}
-      </DrawerHead>
-    </DrawerPanelContent>
+  const saveForm = useCallback(
+    (form: Form) => {
+      try {
+        setFormContent(form);
+        driver.saveFormContent(formData.name, {
+          configuration: form.configuration,
+          source: form.source,
+        });
+      } catch (error) {
+        setError(error);
+      }
+    },
+    [driver, formData.name]
   );
 
-  const onTabSelect = (_event: any, tabIndex: number): void => {
+  const onTabSelect = useCallback((_event: any, tabIndex: number): void => {
     setActiveTab(tabIndex);
-  };
+  }, []);
 
-  const getSource = (): string => {
+  const getSource = useCallback(() => {
     /* istanbul ignore else */
     if (!isEmpty(formContent)) {
       return formContent?.source ?? "";
     }
     return "";
-  };
-  const getType = (): string => {
+  }, [formContent]);
+
+  const getType = useCallback(() => {
     /* istanbul ignore else */
     if (!isEmpty(formData)) {
       return formData.type;
     }
     return "";
-  };
-  const getConfig = (): string => {
+  }, [formData]);
+
+  const getConfig = useCallback(() => {
     /* istanbul ignore else */
     if (!isEmpty(formContent)) {
       return JSON.stringify(formContent?.configuration.resources, null, 2);
     }
     return "";
-  };
-  if (error) {
-    return <ServerErrors error={error} variant={"large"} />;
-  }
-  return (
+  }, [formContent]);
+
+  return error ? (
+    <ServerErrors error={error} variant={"large"} />
+  ) : (
     <div {...componentOuiaProps(ouiaId, "form-details", ouiaSafe)}>
       {!isLoading ? (
         <Drawer isStatic>
-          <DrawerContent panelContent={panelContent}>
+          <DrawerContent
+            panelContent={
+              <DrawerPanelContent
+                isResizable
+                defaultSize={"800px"}
+                onResize={() => {
+                  editorResize?.current?.doResize();
+                }}
+              >
+                <DrawerHead style={{ height: "100%" }}>
+                  {formContent && Object.keys(formContent)[0] && Object.keys(formContent)[0].length > 0 && (
+                    <span>
+                      <FormDisplayerContainer formContent={formContent} targetOrigin={targetOrigin} />
+                    </span>
+                  )}
+                </DrawerHead>
+              </DrawerPanelContent>
+            }
+          >
             <Tabs isFilled activeKey={activeTab} onSelect={onTabSelect}>
               <Tab
                 eventKey={0}
