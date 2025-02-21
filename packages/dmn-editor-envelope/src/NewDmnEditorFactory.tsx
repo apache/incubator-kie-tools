@@ -39,4 +39,8 @@ export class NewDmnEditorInterface extends DmnEditorInterface {
   public openBoxedExpressionEditor(nodeId: string): void {
     this.self.openBoxedExpressionEditor(nodeId);
   }
+
+  public getOpenedBoxedExpressionId(): Promise<string> {
+    return this.self.getOpenedBoxedExpressionId();
+  }
 }

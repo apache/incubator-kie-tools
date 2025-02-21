@@ -65,9 +65,15 @@ export interface FormDmnOutputsProps {
   notificationsPanel: boolean;
   openExecutionTab?: () => void;
   openBoxedExpressionEditor?: (nodeId: string) => void;
+  openedBoxedExpressionId?: Promise<string>;
 }
 
-export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ...props }: FormDmnOutputsProps) {
+export function FormDmnOutputs({
+  openExecutionTab,
+  openBoxedExpressionEditor,
+  openedBoxedExpressionId,
+  ...props
+}: FormDmnOutputsProps) {
   const [formResultStatus, setFormResultStatus] = useState<FormDmnOutputsStatus>(FormDmnOutputsStatus.EMPTY);
   const [formResultError, setFormResultError] = useState<boolean>(false);
   const [openedExpressionEditorForNodeId, setOpenedExpressionEditorForNodeId] = useState<string>("");
@@ -87,7 +93,11 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
       const updatedResult = document.getElementById(`${index}-dmn-result`);
       updatedResult?.classList.add("kogito--editor__dmn-form-result__leaf-updated");
     });
-  }, [props.differences]);
+
+    openedBoxedExpressionId?.then((v) => {
+      setOpenedExpressionEditorForNodeId(v);
+    });
+  }, [openedBoxedExpressionId, props.differences]);
 
   const onAnimationEnd = useCallback((e: React.AnimationEvent<HTMLElement>, index) => {
     e.preventDefault();

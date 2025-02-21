@@ -339,6 +339,13 @@ export function DmnRunnerDrawerPanelContent() {
                             }
                           : undefined
                       }
+                      openedBoxedExpressionId={
+                        !isLegacyDmnEditor
+                          ? (
+                              envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>
+                            ).requests.dmnEditor_getOpenedBoxedExpressionId()
+                          : Promise.resolve("")
+                      }
                     />
                   </PageSection>
                 </div>

@@ -68,6 +68,7 @@ export type DmnEditorRef = {
   reset: (mode: DmnLatestModel) => void;
   getDiagramSvg: () => Promise<string | undefined>;
   openBoxedExpressionEditor: (nodeId: string) => void;
+  getOpenedBoxedExpressionId: () => Promise<string>;
   getCommands: () => Commands;
 };
 
@@ -208,6 +209,9 @@ export const DmnEditorInternal = ({
         dmnEditorStoreApi.setState((state) => {
           state.dispatch(state).boxedExpressionEditor.open(nodeId);
         });
+      },
+      getOpenedBoxedExpressionId: async () => {
+        return dmnEditorStoreApi.getState().boxedExpressionEditor.activeDrgElementId ?? "";
       },
       getDiagramSvg: async () => {
         const nodes = diagramRef.current?.getReactFlowInstance()?.getNodes();
