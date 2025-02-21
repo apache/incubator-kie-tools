@@ -122,10 +122,10 @@ services:
       QUARKUS_DATASOURCE_PASSWORD: kie-pass-1
       QUARKUS_DATASOURCE_DB_KIND: postgresql
       QUARKUS_HTTP_PORT: 8081
-      KOGITO_JOBS_SERVICE_URL: http://127.0.0.1:8081
-      KOGITO_SERVICE_URL: http://127.0.0.1:8081
-      KOGITO_DATAINDEX_HTTP_URL: http://127.0.0.1:8081
-      QUARKUS_OIDC_AUTH_SERVER_URL: http://127.0.0.1:8180/realms/kie
+      KOGITO_JOBS_SERVICE_URL: http://${HOST}:8081
+      KOGITO_SERVICE_URL: http://${HOST}:8081
+      KOGITO_DATAINDEX_HTTP_URL: http://${HOST}:8081
+      QUARKUS_OIDC_AUTH_SERVER_URL: http://${HOST}:8180/realms/kie
     network_mode: host
 
   kie-service-2:
@@ -145,10 +145,10 @@ services:
       QUARKUS_DATASOURCE_PASSWORD: kie-pass-2
       QUARKUS_DATASOURCE_DB_KIND: postgresql
       QUARKUS_HTTP_PORT: 8082
-      KOGITO_JOBS_SERVICE_URL: http://127.0.0.1:8082
-      KOGITO_SERVICE_URL: http://127.0.0.1:8082
-      KOGITO_DATAINDEX_HTTP_URL: http://127.0.0.1:8082
-      QUARKUS_OIDC_AUTH_SERVER_URL: http://127.0.0.1:8280/realms/kie
+      KOGITO_JOBS_SERVICE_URL: http://${HOST}:8082
+      KOGITO_SERVICE_URL: http://${HOST}:8082
+      KOGITO_DATAINDEX_HTTP_URL: http://${HOST}:8082
+      QUARKUS_OIDC_AUTH_SERVER_URL: http://${HOST}:8280/realms/kie
     network_mode: host
 
   kie-service-3:
@@ -166,9 +166,9 @@ services:
       QUARKUS_DATASOURCE_PASSWORD: kie-pass-3
       QUARKUS_DATASOURCE_DB_KIND: postgresql
       QUARKUS_HTTP_PORT: 8083
-      KOGITO_JOBS_SERVICE_URL: http://127.0.0.1:8083
-      KOGITO_SERVICE_URL: http://127.0.0.1:8083
-      KOGITO_DATAINDEX_HTTP_URL: http://127.0.0.1:8083
+      KOGITO_JOBS_SERVICE_URL: http://${HOST}:8083
+      KOGITO_SERVICE_URL: http://${HOST}:8083
+      KOGITO_DATAINDEX_HTTP_URL: http://${HOST}:8083
     network_mode: host
 
   managment-console:
