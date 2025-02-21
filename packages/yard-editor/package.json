@@ -41,7 +41,7 @@
     "csstype": "^3.0.11",
     "js-yaml": "^4.1.0",
     "json-schema": "^0.4.0",
-    "monaco-editor": "^0.51.0",
+    "monaco-editor": "^0.39.0",
     "monaco-yaml": "^4.0.4",
     "react-zoom-pan-pinch": "^3.1.0",
     "reaflow": "5.1.2",

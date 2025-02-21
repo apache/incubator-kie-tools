@@ -653,7 +653,6 @@ digraph G {
   "@kie-tools-core/switch-expression-ts" -> "@kie-tools/jest-base" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/switch-expression-ts" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
   "@kie-tools/text-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
-  "@kie-tools/text-editor" -> "@kie-tools-core/monaco-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/uniforms-patternfly" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/uniforms-patternfly" -> "@kie-tools/jest-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/uniforms-patternfly" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
