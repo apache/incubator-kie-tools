@@ -17,7 +17,8 @@
  * under the License.
  */
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useMemo, useState } from "react";
+import { basename } from "path";
 
 import { Checkbox } from "@patternfly/react-core/dist/esm/components/Checkbox";
 import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/esm/components/FormSelect";
@@ -27,20 +28,108 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/esm/components/Tooltip";
 
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+
 import { SceSim__settingsType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
 import { useTestScenarioEditorI18n } from "../i18n";
 import { useTestScenarioEditorStore, useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
+import { useExternalModels } from "../externalModels/TestScenarioEditorDependenciesContext";
+import { ExternalDmn } from "../TestScenarioEditor";
+import { useTestScenarioEditor } from "../TestScenarioEditorContext";
 
 import "./TestScenarioDrawerSettingsPanel.css";
-import { useTestScenarioEditor } from "../TestScenarioEditorContext";
 
 function TestScenarioDrawerSettingsPanel() {
   const { i18n } = useTestScenarioEditorI18n();
   const { openFileNormalizedPosixPathRelativeToTheWorkspaceRoot } = useTestScenarioEditor();
+  const { onRequestExternalModelsAvailableToInclude, onRequestExternalModelByPath } = useExternalModels();
+  const [allDmnModelNormalizedPosixRelativePaths, setAllDmnModelNormalizedPosixRelativePaths] = useState<
+    string[] | undefined
+  >(undefined);
+  const [dmnNotFoundError, setDmnNotFoundError] = useState<any>(undefined);
   const settingsModel = useTestScenarioEditorStore((state) => state.scesim.model.ScenarioSimulationModel.settings);
+  const [selectedDmnPathRelativeToThisScesim, setSelectedDmnPathRelativeToThisScesim] = useState<string | undefined>(
+    settingsModel.dmnFilePath?.__$$text
+  );
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const testScenarioType = settingsModel.type?.__$$text.toUpperCase();
+
+  const [selectedDmnModel, setSelectedDmnModel] = useState<ExternalDmn | undefined>(undefined);
+
+  /* Retrieving all the DMN available in the project */
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        onRequestExternalModelsAvailableToInclude?.()
+          .then((paths) => {
+            if (canceled.get()) {
+              setAllDmnModelNormalizedPosixRelativePaths(undefined);
+              return;
+            }
+            setAllDmnModelNormalizedPosixRelativePaths(
+              paths.sort((modelA, modelB) => basename(modelA).localeCompare(basename(modelB)))
+            );
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      },
+      [onRequestExternalModelsAvailableToInclude]
+    )
+  );
+
+  /** It returns the unmarshalled representation of a DMN model given its path */
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (!selectedDmnPathRelativeToThisScesim || onRequestExternalModelByPath === undefined) {
+          return;
+        }
+        onRequestExternalModelByPath(selectedDmnPathRelativeToThisScesim)
+          .then((externalDmnModel) => {
+            console.trace("[TestScenarioDrawerSettingsPanel] The below external DMN model have been loaded");
+            console.trace(externalDmnModel);
+
+            if (canceled.get() || !externalDmnModel) {
+              setSelectedDmnModel(undefined);
+              setDmnNotFoundError(
+                new Error(`The related DMN file ${selectedDmnPathRelativeToThisScesim} can't be loaded`)
+              );
+              return;
+            }
+
+            setSelectedDmnModel(externalDmnModel);
+            testScenarioEditorStoreApi.setState((state) => {
+              state.scesim.model.ScenarioSimulationModel.settings.dmnFilePath!.__$$text =
+                selectedDmnPathRelativeToThisScesim;
+              state.scesim.model.ScenarioSimulationModel.settings.dmnName!.__$$text =
+                externalDmnModel.model.definitions["@_name"];
+              state.scesim.model.ScenarioSimulationModel.settings.dmnNamespace!.__$$text =
+                externalDmnModel.model.definitions["@_namespace"];
+            });
+            setDmnNotFoundError(undefined);
+          })
+          .catch((err) => {
+            setSelectedDmnModel(undefined);
+            setDmnNotFoundError(err);
+            console.error(
+              `[TestScenarioDrawerSettingsPanel] An error occurred when parsing the selected model '${selectedDmnPathRelativeToThisScesim}'. Please double-check it is a non-empty valid model.`
+            );
+            console.error(err);
+          });
+      },
+      [onRequestExternalModelByPath, selectedDmnPathRelativeToThisScesim, testScenarioEditorStoreApi]
+    )
+  );
+
+  const isSelectedDmnValid = useMemo(
+    () =>
+      !dmnNotFoundError &&
+      (!selectedDmnModel ||
+        selectedDmnModel.normalizedPosixPathRelativeToTheOpenFile === settingsModel.dmnFilePath?.__$$text),
+    [dmnNotFoundError, selectedDmnModel, settingsModel.dmnFilePath?.__$$text]
+  );
 
   const updateSettingsField = useCallback(
     (fieldName: keyof SceSim__settingsType, value: string | boolean) =>
@@ -62,7 +151,7 @@ function TestScenarioDrawerSettingsPanel() {
         className={"kie-scesim-editor-drawer-settings--text-input"}
         isDisabled
         type="text"
-        value={openFileNormalizedPosixPathRelativeToTheWorkspaceRoot}
+        value={basename(openFileNormalizedPosixPathRelativeToTheWorkspaceRoot ?? "")}
       />
       <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
         {i18n.drawer.settings.assetType}
@@ -79,15 +168,31 @@ function TestScenarioDrawerSettingsPanel() {
           <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
             {i18n.drawer.settings.dmnModel}
           </Title>
-          {/* Temporary Mocked */}
           <FormSelect
             aria-label="form-select-input"
             className={"kie-scesim-editor-drawer-settings--form-select"}
             ouiaId="BasicFormSelect"
-            value={"1"}
+            onChange={(path) => {
+              if (typeof path !== "string") {
+                throw new Error(`Invalid path for an included model ${JSON.stringify(path)}`);
+              }
+              setSelectedDmnPathRelativeToThisScesim(path);
+              console.trace(path);
+            }}
+            validated={isSelectedDmnValid ? undefined : "error"}
+            value={isSelectedDmnValid ? settingsModel.dmnFilePath?.__$$text : undefined}
           >
-            <FormSelectOption isDisabled={true} key={0} value={"1"} label={"MockedDMN.dmn"} />
-            <FormSelectOption isDisabled={true} key={1} value={"2"} label={"MockedDMN2.dmn"} />
+            {!selectedDmnModel && (
+              <FormSelectOption key={undefined} isDisabled label={i18n.drawer.settings.dmnModelReferenceError} />
+            )}
+            {((allDmnModelNormalizedPosixRelativePaths?.length ?? 0) > 0 &&
+              allDmnModelNormalizedPosixRelativePaths?.map((normalizedPosixPathRelativeToTheOpenFile) => (
+                <FormSelectOption
+                  key={normalizedPosixPathRelativeToTheOpenFile}
+                  value={normalizedPosixPathRelativeToTheOpenFile}
+                  label={basename(normalizedPosixPathRelativeToTheOpenFile)}
+                />
+              ))) || <FormSelectOption key={undefined} isDisabled label={i18n.creationPanel.dmnNoPresent} />}
           </FormSelect>
           <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
             {i18n.drawer.settings.dmnName}

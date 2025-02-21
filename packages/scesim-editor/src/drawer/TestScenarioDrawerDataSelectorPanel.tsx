@@ -40,9 +40,11 @@ import { SceSim__expressionElementsType } from "@kie-tools/scesim-marshaller/dis
 import { useTestScenarioEditorI18n } from "../i18n";
 
 import "./TestScenarioDrawerDataSelectorPanel.css";
+import { useExternalModels } from "../externalModels/TestScenarioEditorDependenciesContext";
 import { useTestScenarioEditorStore, useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
 import { TestScenarioDataObject, TestScenarioEditorTab } from "../store/TestScenarioEditorStore";
 import { updateColumn } from "../mutations/updateColumn";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner/Spinner";
 
 const enum TestScenarioDataSelectorState {
   DISABLED, // All subcomponents are DISABLED
@@ -52,12 +54,16 @@ const enum TestScenarioDataSelectorState {
 
 function TestScenarioDataSelectorPanel() {
   const { i18n } = useTestScenarioEditorI18n();
-  const dataObjects = useTestScenarioEditorStore((state) => state.computed(state).getTestScenarioDataObjects());
+  const { externalModelsByNamespace } = useExternalModels();
+  const dataObjects = useTestScenarioEditorStore((state) =>
+    state.computed(state).getDataObjects(externalModelsByNamespace)
+  );
   const scesimModel = useTestScenarioEditorStore((state) => state.scesim.model);
   const tableStatus = useTestScenarioEditorStore((state) => state.table);
   const tabStatus = useTestScenarioEditorStore((state) => state.navigation.tab);
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const testScenarioType = scesimModel.ScenarioSimulationModel.settings.type?.__$$text.toUpperCase();
+  const referencedDmnNamespace = scesimModel.ScenarioSimulationModel.settings.dmnNamespace?.__$$text;
 
   const selectedColumnMetadata =
     tabStatus === TestScenarioEditorTab.SIMULATION
@@ -314,7 +320,10 @@ function TestScenarioDataSelectorPanel() {
   ]);
 
   const treeViewEmptyStatus = useMemo(() => {
+    const isReferencedFileLoaded =
+      testScenarioType === "RULE" || externalModelsByNamespace?.has(referencedDmnNamespace!);
     const isTreeViewNotEmpty = dataObjects.length > 0;
+    const treeViewVisibleStatus = isReferencedFileLoaded ? (isTreeViewNotEmpty ? "visible" : "hidden") : "loading";
     const treeViewEmptyIcon = filteredItems.length === 0 ? WarningTriangleIcon : WarningTriangleIcon;
     const title =
       dataObjects.length === 0
@@ -335,8 +344,18 @@ function TestScenarioDataSelectorPanel() {
         : i18n.drawer.dataSelector.emptyDataObjectsTitleRule;
     }
 
-    return { description: description, enabled: isTreeViewNotEmpty, icon: treeViewEmptyIcon, title: title };
-  }, [testScenarioType, dataObjects.length, filteredItems.length, i18n]);
+    return { description: description, icon: treeViewEmptyIcon, title: title, visibility: treeViewVisibleStatus };
+  }, [
+    externalModelsByNamespace,
+    referencedDmnNamespace,
+    filteredItems.length,
+    dataObjects.length,
+    testScenarioType,
+    i18n.drawer.dataSelector.emptyDataObjectsTitleDMN,
+    i18n.drawer.dataSelector.emptyDataObjectsTitleRule,
+    i18n.drawer.dataSelector.emptyDataObjectsDescriptionDMN,
+    i18n.drawer.dataSelector.emptyDataObjectsDescriptionRule,
+  ]);
 
   const insertDataObjectButtonStatus = useMemo(() => {
     if (!selectedColumnMetadata) {
@@ -500,7 +519,7 @@ function TestScenarioDataSelectorPanel() {
       <Divider />
       <StackItem isFilled>
         <div className={"kie-scesim-editor-drawer-data-objects--selector"}>
-          {treeViewEmptyStatus.enabled ? (
+          {(treeViewEmptyStatus.visibility === "visible" && (
             <div aria-disabled={true}>
               <TreeView
                 activeItems={treeViewStatus.activeItems}
@@ -517,17 +536,23 @@ function TestScenarioDataSelectorPanel() {
                 toolbar={treeViewSearchToolbar}
               />
             </div>
-          ) : (
-            <Bullseye>
-              <EmptyState>
-                <EmptyStateIcon icon={treeViewEmptyStatus.icon} />
-                <Title headingLevel="h4" size="lg">
-                  {treeViewEmptyStatus.title}
-                </Title>
-                <EmptyStateBody>{treeViewEmptyStatus.description}</EmptyStateBody>
-              </EmptyState>
-            </Bullseye>
-          )}
+          )) ||
+            (treeViewEmptyStatus.visibility === "hidden" && (
+              <Bullseye>
+                <EmptyState>
+                  <EmptyStateIcon icon={treeViewEmptyStatus.icon} />
+                  <Title headingLevel="h4" size="lg">
+                    {treeViewEmptyStatus.title}
+                  </Title>
+                  <EmptyStateBody>{treeViewEmptyStatus.description}</EmptyStateBody>
+                </EmptyState>
+              </Bullseye>
+            )) ||
+            (treeViewEmptyStatus.visibility === "loading" && (
+              <Bullseye style={{ paddingTop: "10px" }}>
+                <Spinner aria-label="Data Objects loading" />
+              </Bullseye>
+            ))}
         </div>
       </StackItem>
       <Divider />

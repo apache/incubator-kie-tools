@@ -54,12 +54,16 @@ export function addColumn({
     .filter((factMapping) => factMapping.factAlias!.__$$text.startsWith("INSTANCE-"))
     .map((factMapping) => factMapping.factAlias!.__$$text);
 
+  const propertyDefaultNames = factMappings
+    .filter((factMapping) => factMapping.expressionAlias?.__$$text.startsWith("PROPERTY-"))
+    .map((factMapping) => factMapping.expressionAlias!.__$$text);
+
   const isNewInstance = isInstance || selectedColumnFactMapping.factIdentifier.className?.__$$text === "java.lang.Void";
 
   const newFactMapping = {
     className: { __$$text: "java.lang.Void" },
     columnWidth: { __$$text: 150 },
-    expressionAlias: { __$$text: "PROPERTY" },
+    expressionAlias: { __$$text: getNextAvailablePrefixedName(propertyDefaultNames, "PROPERTY") },
     expressionElements: isNewInstance
       ? undefined
       : {
