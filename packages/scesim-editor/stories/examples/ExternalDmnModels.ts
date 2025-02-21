@@ -1004,7 +1004,7 @@ export const TRAFFIC_VIOLATION = `<?xml version='1.0' encoding='UTF-8'?>
 </dmn:definitions>`;
 
 export const SIMPLE = `<?xml version="1.0" encoding="UTF-8" ?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_0457D4F2-02B6-4A3D-957F-8F971A8321BC" id="_DE888083-9CD8-44DC-BE0A-0EC85244DE3B" name="DMN_44D5E2A8-EC16-45A8-8797-14373283EF69">
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_0457D4F2-02B6-4A3D-957F-8F971A8321BC" id="_DE888083-9CD8-44DC-BE0A-0EC85244DE3B" name="Simple">
   <inputData name="Input" id="_926B9E31-3CEA-4A0E-8A66-97F875EFB428">
     <variable name="Input" id="_9B4713BA-E468-447E-9649-91E108CB2F4F" typeRef="number" />
   </inputData>
@@ -1013,6 +1013,9 @@ export const SIMPLE = `<?xml version="1.0" encoding="UTF-8" ?>
     <informationRequirement id="_6F72FA6A-A6E8-403D-8AB7-192FB474878E">
       <requiredInput href="#_926B9E31-3CEA-4A0E-8A66-97F875EFB428" />
     </informationRequirement>
+    <literalExpression id="_1E199E0A-2CC3-4EEE-AA8C-B4F5320EE1DE">
+      <text>Input &gt; 18<text>
+    </literalExpression>
   </decision>
   <dmndi:DMNDI>
     <dmndi:DMNDiagram id="_27FA44E1-3CD0-4B6F-A0A4-1D9862D52B87" name="Default DRD" useAlternativeInputDataShape="false">
