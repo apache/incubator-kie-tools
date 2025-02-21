@@ -16,28 +16,45 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import * as React from "react";
+import React, { useMemo } from "react";
 import { useImperativeHandle, useState } from "react";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { JobsManagementChannelApi } from "../api";
+import { JobsManagementChannelApi, JobsManagementInitArgs } from "../api";
 import JobsManagement from "./components/JobsManagement/JobsManagement";
 import JobsManagementEnvelopeViewDriver from "./JobsManagementEnvelopeViewDriver";
 import "@patternfly/patternfly/patternfly.css";
+import { JobsManagementState, JobStatus } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { OrderBy } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface JobsManagementEnvelopeViewApi {
-  initialize: () => void;
+  initialize: (initArgs?: JobsManagementInitArgs) => void;
 }
 interface Props {
   channelApi: MessageBusClientApi<JobsManagementChannelApi>;
 }
 
+const defaultStatus = [JobStatus.Scheduled];
+
+const defaultOrderBy = {
+  lastUpdate: OrderBy.DESC,
+};
+
 export const JobsManagementEnvelopeView = React.forwardRef<JobsManagementEnvelopeViewApi, Props>(
   (props, forwardedRef) => {
+    const [jobsManagementInitArgs, setJobsManagementInitArgs] = useState<JobsManagementInitArgs>({
+      initialState: {
+        filters: defaultStatus,
+        orderBy: defaultOrderBy,
+      } as JobsManagementState,
+    });
     const [isEnvelopeConnectedToChannel, setEnvelopeConnectedToChannel] = useState<boolean>(false);
+    const driver = useMemo(() => new JobsManagementEnvelopeViewDriver(props.channelApi), [props.channelApi]);
     useImperativeHandle(
       forwardedRef,
       () => ({
-        initialize: () => {
+        initialize: (initArgs) => {
+          setEnvelopeConnectedToChannel(false);
+          setJobsManagementInitArgs(initArgs!);
           setEnvelopeConnectedToChannel(true);
         },
       }),
@@ -45,12 +62,13 @@ export const JobsManagementEnvelopeView = React.forwardRef<JobsManagementEnvelop
     );
 
     return (
-      <React.Fragment>
+      <>
         <JobsManagement
           isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
-          driver={new JobsManagementEnvelopeViewDriver(props.channelApi)}
+          initialState={jobsManagementInitArgs.initialState}
+          driver={driver}
         />
-      </React.Fragment>
+      </>
     );
   }
 );
