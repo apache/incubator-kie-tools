@@ -26,15 +26,16 @@ Note that although this example contains a BPMN process file for demo purposes, 
 3. [Enabling persistence for all sub-systems](#enabling-persistence-for-all-sub-systems) (Runtime Engine, User Tasks, Data-Audit, Data-Index, Jobs Service)
 4. [Enabling transaction support](#enabling-transaction-support)
 5. [Enabling OpenID Connect (OIDC) and securing endpoints](#enabling-openid-connect-oidc-and-securing-endpoints)
-6. [Configuring Jobs Service](#configuring-jobs-service)
-7. [Externalizing configuration properties](#externalizing-configuration-properties)
-8. [Configuring log levels](#configuring-log-levels)
+6. [Enabling events](#enabling-events)
+7. [Configuring Jobs Service](#configuring-jobs-service)
+8. [Externalizing configuration properties](#externalizing-configuration-properties)
+9. [Configuring log levels](#configuring-log-levels)
 
 ---
 
 If you want to jump straight ahead to running this example, go to
 
-9. [Running](#running)
+10. [Running](#running)
 
 ---
 
@@ -167,6 +168,31 @@ quarkus.http.auth.permission.public.policy=permit
 ```
 
 For a complete setup of the security features, please refer to the `process-security` example.
+
+## Enabling Events
+
+To enable Events we must configure our project by adding properties to the `src/main/resources/application.properties` file.
+
+```properties
+# Enabling Events
+# Incoming channel mapping
+mp.messaging.incoming.data_in.connector=smallrye-kafka
+mp.messaging.incoming.data_in.value.deserializer=org.apache.kafka.common.serialization.StringDeserializer
+# Outgoing channel mapping
+mp.messaging.outgoing.data_out.connector=smallrye-kafka
+mp.messaging.outgoing.data_out.value.serializer=org.apache.kafka.common.serialization.StringSerializer
+```
+
+Additionally, it's possible fine tunning the thread pool and queue size to enhance the performance.
+
+```
+# Thread pool size, default 10
+kogito.quarkus.events.threads.poolSize=10
+# Thread queue size, default 1
+kogito.quarkus.events.threads.queueSize=1
+```
+
+For a complete setup of the security features, please refer to the `process-event-driven` example.
 
 ## Configuring Jobs Service
 
