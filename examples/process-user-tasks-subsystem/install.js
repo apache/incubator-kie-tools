@@ -18,9 +18,14 @@
  */
 
 const { env } = require("./env");
-const { setupMavenConfigFile, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
+const { setupMavenConfigFile, buildTailFromPackageJsonDependencies, setPomProperty } = require("@kie-tools/maven-base");
 
 setupMavenConfigFile(`
     -Drevision=${env.processUserTasksSubsystemExample.version}
     -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
 `);
+
+setPomProperty({
+  key: "kogito.management-console.image",
+  value: env.processUserTasksSubsystemExample.kogitoManagementConsoleImage,
+});
