@@ -112,14 +112,14 @@ export const FormEditor = React.forwardRef<ResizableContent, FormEditorProps>(
     return (
       <>
         <div>
-          <FormEditorControl icon={<UndoIcon />} ariaLabel="Undo changes" toolTipText="Undo changes" onClick={onUndo} />
-          <FormEditorControl icon={<RedoIcon />} ariaLabel="Redo changes" toolTipText="Redo changes" onClick={onRedo} />
           <FormEditorControl
             icon={<SaveIcon />}
             ariaLabel="Save form"
             toolTipText="Save form"
             onClick={() => onSaveFormContent()}
           />
+          <FormEditorControl icon={<UndoIcon />} ariaLabel="Undo changes" toolTipText="Undo changes" onClick={onUndo} />
+          <FormEditorControl icon={<RedoIcon />} ariaLabel="Redo changes" toolTipText="Redo changes" onClick={onRedo} />
         </div>
         <div className={"kogito-form-editor-container"} ref={container} style={{ height: "700px" }} />
       </>
