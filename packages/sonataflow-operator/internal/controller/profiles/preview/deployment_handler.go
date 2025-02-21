@@ -20,6 +20,15 @@ package preview
 import (
 	"context"
 
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/properties"
+
+	"k8s.io/klog/v2"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/workflowdef"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
+
 	v1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
@@ -58,6 +67,7 @@ func (d *DeploymentReconciler) reconcileWithImage(ctx context.Context, workflow 
 		return reconcile.Result{Requeue: false}, nil, err
 	}
 
+	previousStatus := workflow.Status
 	// Ensure objects
 	result, objs, err := d.ensureObjects(ctx, workflow, image)
 	if err != nil || result.Requeue {
@@ -71,6 +81,10 @@ func (d *DeploymentReconciler) reconcileWithImage(ctx context.Context, workflow 
 	}
 
 	if _, err := d.PerformStatusUpdate(ctx, workflow); err != nil {
+		return reconcile.Result{Requeue: false}, nil, err
+	}
+
+	if err := d.notifyStatusUpdate(ctx, workflow, previousStatus); err != nil {
 		return reconcile.Result{Requeue: false}, nil, err
 	}
 	return result, objs, nil
@@ -95,7 +109,7 @@ func (d *DeploymentReconciler) ensureKnativeServingRequired(workflow *operatorap
 }
 
 func (d *DeploymentReconciler) ensureObjects(ctx context.Context, workflow *operatorapi.SonataFlow, image string) (reconcile.Result, []client.Object, error) {
-	pl, _ := platform.GetActivePlatform(ctx, d.C, workflow.Namespace)
+	pl, _ := platform.GetActivePlatform(ctx, d.C, workflow.Namespace, true)
 	userPropsCM, _, err := d.ensurers.userPropsConfigMap.Ensure(ctx, workflow)
 	if err != nil {
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.ExternalResourcesNotFoundReason, "Unable to retrieve the user properties config map")
@@ -188,4 +202,41 @@ func (d *DeploymentReconciler) deploymentModelMutateVisitors(
 		mountConfigMapsMutateVisitor(workflow, userPropsCM, managedPropsCM),
 		common.RestoreDeploymentVolumeAndVolumeMountMutateVisitor(),
 		common.RolloutDeploymentIfCMChangedMutateVisitor(workflow, userPropsCM, managedPropsCM)}
+}
+
+func (d *DeploymentReconciler) notifyStatusUpdate(ctx context.Context, workflow *operatorapi.SonataFlow,
+	previousStatus operatorapi.SonataFlowStatus) error {
+	var err error
+	var sfp *operatorapi.SonataFlowPlatform
+	previousRunningCondition := previousStatus.GetCondition(api.RunningConditionType)
+	currentRunningCondition := workflow.Status.GetCondition(api.RunningConditionType)
+
+	if previousRunningCondition == nil {
+		previousRunningCondition = currentRunningCondition
+	}
+
+	if previousRunningCondition.Status != currentRunningCondition.Status || previousStatus.LastTimeStatusNotified == nil {
+		available := currentRunningCondition.IsTrue()
+		if sfp, err = common.GetDataIndexPlatform(ctx, d.C, workflow); err != nil {
+			return err
+		}
+		if sfp == nil {
+			klog.V(log.I).Infof("No DataIndex containing platform was found for workflow: %s, namespace: %s, to send the workflow definition status change event.",
+				workflow.Name, workflow.Namespace)
+		} else {
+			evt := workflowdef.NewWorkflowDefinitionAvailabilityEvent(workflow, workflowdef.SonataFlowOperatorSource, properties.GetWorkflowEndpointUrl(workflow), available)
+			if err = common.SendWorkflowDefinitionEvent(ctx, workflow, sfp, evt); err != nil {
+				klog.V(log.E).ErrorS(err, "An error was produced while sending a status change notification event for workflow",
+					"workflow", "namespace", workflow.Name, workflow.Namespace)
+				workflow.Status.LastTimeStatusNotified = nil
+			} else {
+				now := metav1.Now()
+				workflow.Status.LastTimeStatusNotified = &now
+			}
+			if err = d.C.Status().Update(ctx, workflow); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }

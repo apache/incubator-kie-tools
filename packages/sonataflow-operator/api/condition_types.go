@@ -124,5 +124,7 @@ func (c *Condition) String() string {
 	if len(c.Message) > 0 {
 		str += fmt.Sprintf(". [Message] %s", c.Message)
 	}
+	str += fmt.Sprintf(". [LastUpdateTime] %s", c.LastUpdateTime.String())
+
 	return str
 }
