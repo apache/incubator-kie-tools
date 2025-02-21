@@ -77,7 +77,7 @@ export function updateColumn({
     const factMappingValueToUpdate = factMappingValues[factMappingValueToUpdateIndex];
     factMappingValueToUpdate.factIdentifier.className = { __$$text: factClassName };
     factMappingValueToUpdate.factIdentifier.name = { __$$text: factName };
-    //factMappingValueToUpdate.rawValue = { __$$text: update.value },  //TODO 2 related see kie-issues#1514
+    //factMappingValueToUpdate.rawValue = { __$$text: update.value, "@_class": "string" },  //TODO 2 related see kie-issues#1514
   });
 
   return { updatedFactMapping: JSON.parse(JSON.stringify(factMappingToUpdate)) };
