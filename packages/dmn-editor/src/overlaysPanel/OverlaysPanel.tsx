@@ -167,6 +167,7 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
           }
         >
           <Switch
+            data-testid={"kie-tools--dmn-editor--evaluation-highlights-control"}
             isChecked={diagram.overlays.enableEvaluationHighlights}
             onChange={(newValue) =>
               dmnEditorStoreApi.setState((state) => {
