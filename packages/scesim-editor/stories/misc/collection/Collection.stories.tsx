@@ -77,7 +77,7 @@ export const collectionScesim = `<?xml version="1.0" encoding="UTF-8" ?>
           </factIdentifier>
           <className>java.util.List</className>
           <factAlias>input</factAlias>
-          <expressionAlias>values</expressionAlias>
+          <expressionAlias>value</expressionAlias>
           <genericTypes>
             <string>tNumber</string>
           </genericTypes>
