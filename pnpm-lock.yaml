@@ -10431,8 +10431,8 @@ importers:
         specifier: ^4.224.2
         version: 4.224.2
       '@patternfly/quickstarts':
-        specifier: ^2.3.2
-        version: 2.4.0(@patternfly/react-core@4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(showdown@2.1.0)
+        specifier: ^2.4.4
+        version: 2.4.4(@patternfly/react-core@4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(marked@4.3.0)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@patternfly/react-core':
         specifier: ^4.276.6
         version: 4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -18313,13 +18313,13 @@ packages:
   '@patternfly/patternfly@4.224.2':
     resolution: {integrity: sha512-HGNV26uyHSIECuhjPg/WGn0mXbAotcs6ODfhAOkfYjIgGylddgiwElxUe1rpEHV5mQJJ2rMn4OdeJIIpzRX61g==}
 
-  '@patternfly/quickstarts@2.4.0':
-    resolution: {integrity: sha512-dlGtAX8iQarFvmflEvZ7rHaJb1aaBrcqkbzwx0wy2QLL/BID7Y+UQ9ht7k+TBNfnxhPOljM2YTp0rugG5S9q4g==}
+  '@patternfly/quickstarts@2.4.4':
+    resolution: {integrity: sha512-pna2rUs24g9HFfJH+jxg9BC6w96POCyVmAYwIr7TAWYW6dEYP4/XBwr3ArbIvjc9PwHHxo5wBya3X2SsCzgT6w==}
     peerDependencies:
       '@patternfly/react-core': '>=4.115.2'
+      marked: ^4.0.0
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
-      showdown: '>=1.8.6'
 
   '@patternfly/react-catalog-view-extension@4.96.0':
     resolution: {integrity: sha512-ZMPvaE6KOjbLioCdi1wPtxughsce4+sPq6Us5s4JKu2xgn+e83NcfSD3pAcS5e+M8K3SWwdXd3ycgkD8F+Obvg==}
@@ -26483,6 +26483,11 @@ packages:
     peerDependencies:
       react: '>= 0.14.0'
 
+  marked@4.3.0:
+    resolution: {integrity: sha512-PRsaiG84bK+AMvxziE/lCFss8juXjNaWzVbN5tXAm4XjeaS9NAHhop+PjQxz2A9h8Q4M/xGmzP8vqNwy6JeK0A==}
+    engines: {node: '>= 12'}
+    hasBin: true
+
   math-expression-evaluator@1.4.0:
     resolution: {integrity: sha512-4vRUvPyxdO8cWULGTh9dZWL2tZK6LDBvj+OGHBER7poH9Qdt7kXEoj20wiz4lQUbUXQZFjPbe5mVDo9nutizCw==}
 
@@ -31542,7 +31547,7 @@ snapshots:
     dependencies:
       '@ampproject/remapping': 2.3.0
       '@angular-devkit/architect': 0.1801.3(chokidar@3.6.0)
-      '@angular-devkit/build-webpack': 0.1801.3(chokidar@3.6.0)(webpack-dev-server@5.0.4(webpack@5.94.0))(webpack@5.92.1(esbuild@0.21.5))
+      '@angular-devkit/build-webpack': 0.1801.3(chokidar@3.6.0)(webpack-dev-server@5.0.4(webpack@5.92.1(esbuild@0.21.5)))(webpack@5.92.1(esbuild@0.21.5))
       '@angular-devkit/core': 18.1.3(chokidar@3.6.0)
       '@angular/build': 18.1.3(@angular/compiler-cli@18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8)))(typescript@5.5.3))(@types/node@22.10.7)(chokidar@3.6.0)(less@4.2.0)(postcss@8.4.38)(stylus@0.59.0)(terser@5.29.2)(typescript@5.5.3)
       '@angular/compiler-cli': 18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8)))(typescript@5.5.3)
@@ -31627,6 +31632,15 @@ snapshots:
       - uglify-js
       - utf-8-validate
       - webpack-cli
+
+  '@angular-devkit/build-webpack@0.1801.3(chokidar@3.6.0)(webpack-dev-server@5.0.4(webpack@5.92.1(esbuild@0.21.5)))(webpack@5.92.1(esbuild@0.21.5))':
+    dependencies:
+      '@angular-devkit/architect': 0.1801.3(chokidar@3.6.0)
+      rxjs: 7.8.1
+      webpack: 5.92.1(esbuild@0.21.5)
+      webpack-dev-server: 5.0.4(webpack@5.92.1(esbuild@0.21.5))
+    transitivePeerDependencies:
+      - chokidar
 
   '@angular-devkit/build-webpack@0.1801.3(chokidar@3.6.0)(webpack-dev-server@5.0.4(webpack@5.94.0))(webpack@5.92.1(esbuild@0.21.5))':
     dependencies:
@@ -39371,7 +39385,6 @@ snapshots:
 
   '@koa/router@13.1.0':
     dependencies:
-      debug: 4.3.6
       http-errors: 2.0.0
       koa-compose: 4.1.0
       path-to-regexp: 6.3.0
@@ -39710,15 +39723,15 @@ snapshots:
 
   '@patternfly/patternfly@4.224.2': {}
 
-  '@patternfly/quickstarts@2.4.0(@patternfly/react-core@4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(showdown@2.1.0)':
+  '@patternfly/quickstarts@2.4.4(@patternfly/react-core@4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(marked@4.3.0)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
     dependencies:
       '@patternfly/react-catalog-view-extension': 4.96.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@patternfly/react-core': 4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       dompurify: 2.4.0
       history: 5.3.0
+      marked: 4.3.0
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
-      showdown: 2.1.0
 
   '@patternfly/react-catalog-view-extension@4.96.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
     dependencies:
@@ -52809,6 +52822,8 @@ snapshots:
     dependencies:
       react: 17.0.2
 
+  marked@4.3.0: {}
+
   math-expression-evaluator@1.4.0: {}
 
   md5.js@1.3.5:
@@ -57622,7 +57637,7 @@ snapshots:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
       '@types/node': 22.10.7
-      acorn: 8.12.1
+      acorn: 8.10.0
       acorn-walk: 8.2.0
       arg: 4.1.0
       create-require: 1.1.1
