@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { basename } from "path";
 
@@ -56,7 +56,6 @@ function TestScenarioCreationPanel() {
     string[] | undefined
   >(undefined);
   const [assetType, setAssetType] = React.useState<"" | "DMN" | "RULE">("");
-  const [callBackError, setCallBackError] = useState<any>(undefined);
   const [isAutoFillTableEnabled, setAutoFillTableEnabled] = React.useState(true);
   const [isStatelessSessionRule, setStatelessSessionRule] = React.useState(false);
   const [isTestSkipped, setTestSkipped] = React.useState(false);
@@ -73,7 +72,7 @@ function TestScenarioCreationPanel() {
     { value: "RULE", label: i18n.creationPanel.assetsOption.rule, disabled: false },
   ];
 
-  /** This callback retrieves all the avaiable DMN files available in the user's project */
+  /** It retrieves all the avaiable DMN files available in the user's project */
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
@@ -83,6 +82,7 @@ function TestScenarioCreationPanel() {
             console.trace(dmnModelNormalizedPosixPathRelativePaths);
 
             if (canceled.get()) {
+              setAllDmnModelNormalizedPosixRelativePaths(undefined);
               return;
             }
             setAllDmnModelNormalizedPosixRelativePaths(
@@ -92,18 +92,18 @@ function TestScenarioCreationPanel() {
             );
           })
           .catch((err) => {
-            setCallBackError(err);
             console.error(
               `[TestScenarioCreationPanel] The below error when trying to retrieve all the External DMN files from the project.`
             );
             console.error(err);
+            throw err;
           });
       },
       [onRequestExternalModelsAvailableToInclude]
     )
   );
 
-  /** This callback return the unmarshalled representation of a DMN model given its path */
+  /** It returns the unmarshalled representation of a DMN model given its path */
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
@@ -117,30 +117,23 @@ function TestScenarioCreationPanel() {
             console.trace(externalDMNModel);
 
             if (canceled.get() || !externalDMNModel) {
+              setSelectedDmnModel(undefined);
               return;
             }
 
             setSelectedDmnModel(externalDMNModel);
           })
           .catch((err) => {
-            setCallBackError(err);
             console.error(
               `[TestScenarioCreationPanel] An error occurred when parsing the selected model '${selectedDmnModelPathRelativeToThisScesim}'. Please double-check it is a non-empty valid model.`
             );
             console.error(err);
+            throw err;
           });
       },
       [onRequestExternalModelByPath, selectedDmnModelPathRelativeToThisScesim]
     )
   );
-
-  /* If any error occurs during the execution of useCancelableEffect's callback,    */
-  /* it throws the error that will be catched by the ErrorBoundary.                 */
-  useEffect(() => {
-    if (callBackError) {
-      throw callBackError;
-    }
-  }, [callBackError]);
 
   const createTestScenario = useCallback(
     () =>
@@ -204,11 +197,6 @@ function TestScenarioCreationPanel() {
                 id="dmn-select"
                 name="dmn-select"
                 onChange={(dmnModelPathRelativeToThisScesim) => {
-                  if (typeof dmnModelPathRelativeToThisScesim !== "string") {
-                    throw new Error(
-                      `Invalid path for an included model ${JSON.stringify(dmnModelPathRelativeToThisScesim)}`
-                    );
-                  }
                   console.trace(`[TestScenarioCreationPanel] Selected path ${dmnModelPathRelativeToThisScesim}`);
                   setSelectedDmnModelPathRelativeToThisScesim(dmnModelPathRelativeToThisScesim);
                 }}

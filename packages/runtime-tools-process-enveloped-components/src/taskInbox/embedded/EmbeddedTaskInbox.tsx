@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tools-core/envelope/dist/embedded";
 import { TaskInboxApi, TaskInboxChannelApi, TaskInboxEnvelopeApi, TaskInboxDriver, TaskInboxState } from "../api";
@@ -40,8 +40,11 @@ export const EmbeddedTaskInbox = React.forwardRef((props: Props, forwardedRef: R
     []
   );
   const pollInit = useCallback(
-    (envelopeServer: EnvelopeServer<TaskInboxChannelApi, TaskInboxEnvelopeApi>, container: () => HTMLDivElement) => {
-      init({
+    async (
+      envelopeServer: EnvelopeServer<TaskInboxChannelApi, TaskInboxEnvelopeApi>,
+      container: () => HTMLDivElement
+    ) => {
+      await init({
         config: {
           containerType: ContainerType.DIV,
           envelopeId: envelopeServer.id,
@@ -53,7 +56,7 @@ export const EmbeddedTaskInbox = React.forwardRef((props: Props, forwardedRef: R
           },
         },
       });
-      return envelopeServer.envelopeApi.requests.taskInbox__init(
+      return await envelopeServer.envelopeApi.requests.taskInbox__init(
         {
           origin: envelopeServer.origin,
           envelopeServerId: envelopeServer.id,
@@ -65,13 +68,15 @@ export const EmbeddedTaskInbox = React.forwardRef((props: Props, forwardedRef: R
         }
       );
     },
-    [props.allTaskStates, props.activeTaskStates]
+    [props.initialState, props.allTaskStates, props.activeTaskStates]
   );
+
+  const apiImpl = useMemo(() => new TaskInboxChannelApiImpl(props.driver), [props.driver]);
 
   return (
     <EmbeddedTaskInboxEnvelope
       ref={forwardedRef}
-      apiImpl={new TaskInboxChannelApiImpl(props.driver)}
+      apiImpl={apiImpl}
       origin={props.targetOrigin}
       refDelegate={refDelegate}
       pollInit={pollInit}

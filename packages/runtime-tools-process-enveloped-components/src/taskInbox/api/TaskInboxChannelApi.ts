@@ -20,7 +20,7 @@ import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/d
 import { QueryFilter, SortBy, TaskInboxState } from "./TaskInboxEnvelopeApi";
 
 /**
- * Channel Api for Tasks
+ * Channel Api for Task Inbox
  */
 export interface TaskInboxChannelApi {
   /**
