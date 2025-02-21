@@ -53,7 +53,7 @@ export function computeTestScenarioDataObjects(
           id: propertyID,
           className: propertyClassName,
           customBadgeContent: isCollection
-            ? `${factsMappings[i].genericTypes!.string![0]}${isCollection ? "[]" : ""}`
+            ? `${factsMappings[i].genericTypes!.string![0].__$$text}${isCollection ? "[]" : ""}`
             : propertyClassName,
           expressionElements: factsMappings[i].expressionElements!.ExpressionElement!.map(
             (element) => element.step.__$$text
@@ -73,7 +73,7 @@ export function computeTestScenarioDataObjects(
             id: propertyID,
             className: propertyClassName,
             customBadgeContent: isCollection
-              ? `${factsMappings[i].genericTypes!.string![0]}${isCollection ? "[]" : ""}`
+              ? `${factsMappings[i].genericTypes!.string![0].__$$text}${isCollection ? "[]" : ""}`
               : propertyClassName,
             expressionElements: factsMappings[i].expressionElements!.ExpressionElement!.map(
               (element) => element.step.__$$text

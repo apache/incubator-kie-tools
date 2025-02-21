@@ -120,10 +120,11 @@ function createChildrenTestScenarioObjects(
     children.push(...childrenTestScenarioObjects);
   } else {
     const isCollection = itemDefinition?.["@_isCollection"] ?? false;
+    const name = "value";
 
     children.push({
       id: [...expressionElements, name].join("."),
-      name: "value",
+      name: name,
       className: isCollection ? "java.util.List" : rootDrgElementTypeRef,
       collectionGenericType: isCollection ? [rootDrgElementTypeRef] : undefined,
       customBadgeContent: `${rootDrgElementTypeRef}${isCollection ? "[]" : ""}`,
