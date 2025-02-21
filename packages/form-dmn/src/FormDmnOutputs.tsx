@@ -289,7 +289,7 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
           </Card>
         </div>
       )),
-    [onAnimationEnd, onOpenBoxedExpressionEditor, props.results, result, resultStatus]
+    [onAnimationEnd, openedExpressionEditorForNodeId, onOpenBoxedExpressionEditor, props.results, result, resultStatus]
   );
 
   const formResultErrorMessage = useMemo(
