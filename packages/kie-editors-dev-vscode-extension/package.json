@@ -43,7 +43,7 @@
     "@kie-tools/pmml-editor": "workspace:*",
     "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*",
     "minimatch": "^3.0.5",
-    "monaco-editor": "^0.39.0"
+    "monaco-editor": "^0.51.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
