@@ -736,12 +736,22 @@
       },
       {
         "source": "@kie-tools/runtime-tools-management-console-webapp",
+        "target": "@kie-tools-core/workspaces-git-fs",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-management-console-webapp",
         "target": "@kie-tools/runtime-tools-process-webapp-components",
         "weight": 1
       },
       {
         "source": "@kie-tools/runtime-tools-management-console-webapp",
         "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-management-console-webapp",
+        "target": "@kie-tools/maven-base",
         "weight": 1
       },
       {
@@ -2221,6 +2231,11 @@
       },
       {
         "source": "@kie-tools/runtime-tools-process-enveloped-components",
+        "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-enveloped-components",
         "target": "@kie-tools/runtime-tools-process-gateway-api",
         "weight": 1
       },
@@ -2587,11 +2602,6 @@
       {
         "source": "@kie-tools/sonataflow-management-console-image-env",
         "target": "@kie-tools/root-env",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/sonataflow-management-console-webapp",
-        "target": "@kie-tools-core/react-hooks",
         "weight": 1
       },
       {

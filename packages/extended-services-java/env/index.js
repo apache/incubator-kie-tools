@@ -22,7 +22,7 @@ const { getOrDefault, varsWithName, composeEnv } = require("@kie-tools-scripts/b
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     EXTENDED_SERVICES_JAVA__host: {
-      default: "0.0.0.0",
+      default: "127.0.0.1",
       description:
         "Quarkus HTTP Host. Configures the IP address or host to which a Quarkus application binds for incoming HTTP requests.",
     },

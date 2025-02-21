@@ -238,7 +238,7 @@ export function getExpressionResizingWidth(
   resizingWidths: Map<string, ResizingWidth>,
   widthsById: Map<string, number[]>
 ): number {
-  if (!expression) {
+  if (!expression || !expression.__$$element) {
     return getExpressionMinWidth(expression);
   }
 

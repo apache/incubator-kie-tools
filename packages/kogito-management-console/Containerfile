@@ -19,13 +19,12 @@ FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.5
 
 ARG KOGITO_MANAGEMENT_CONSOLE_PORT=8080
 
-ENV RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE="PROD"
-
 COPY entrypoint.sh dist-dev/image-env-to-json-linux-amd64 dist-dev/EnvJson.schema.json /tmp/
 
 RUN microdnf --disableplugin=subscription-manager -y install httpd \
   && microdnf --disableplugin=subscription-manager clean all \
   && echo "Mutex posixsem" >> /etc/httpd/conf/httpd.conf \
+  && echo "AllowEncodedSlashes NoDecode" >> /etc/httpd/conf/httpd.conf \
   && sed -i -e "/#ServerName www.example.com:80/aHeader set Content-Security-Policy \"frame-ancestors 'self';\"" /etc/httpd/conf/httpd.conf \
   && sed -i -e 's/Options Indexes FollowSymLinks/Options -Indexes +FollowSymLinks/' /etc/httpd/conf/httpd.conf \
   && sed -i "s/Listen 80/Listen ${KOGITO_MANAGEMENT_CONSOLE_PORT}/g" /etc/httpd/conf/httpd.conf \

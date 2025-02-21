@@ -33,6 +33,8 @@ import {
   KogitoEmptyState,
   KogitoEmptyStateType,
 } from "@kie-tools/runtime-tools-components/dist/components/KogitoEmptyState";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { filterTaskPhases } from "./components/TaskFormRenderer/TaskPhasesUtils";
 
 export interface TaskFormEnvelopeViewApi {
   initialize: (initArgs: TaskFormInitArgs) => void;
@@ -51,6 +53,7 @@ export const TaskFormEnvelopeView = React.forwardRef<TaskFormEnvelopeViewApi, Pr
     const [user, setUser] = useState<User>();
     const [taskFormSchema, setTaskFormSchema] = useState<Record<string, any>>();
     const [customForm, setCustomForm] = useState<Form>();
+    const [userTaskPhases, setUserTaskPhases] = useState<string[]>([]);
 
     const [driver] = useState<TaskFormEnvelopeViewDriver>(new TaskFormEnvelopeViewDriver(channelApi));
 
@@ -66,48 +69,66 @@ export const TaskFormEnvelopeView = React.forwardRef<TaskFormEnvelopeViewApi, Pr
       []
     );
 
-    useEffect(() => {
-      if (isEnvelopeConnectedToChannel) {
-        loadForm();
-      }
-    }, [isEnvelopeConnectedToChannel]);
+    useCancelableEffect(
+      useCallback(
+        ({ canceled }) => {
+          if (!isEnvelopeConnectedToChannel) {
+            setIsLoading(true);
+          } else {
+            const customFormPromise: Promise<void> = new Promise<void>((resolve) => {
+              driver
+                .getCustomForm()
+                .then((customForm) => {
+                  if (canceled.get()) {
+                    return;
+                  }
+                  setCustomForm(customForm);
+                  resolve();
+                })
+                .catch((error) => resolve());
+            });
 
-    const loadForm = useCallback(async () => {
-      if (!isEnvelopeConnectedToChannel) {
-        setIsLoading(true);
-      }
+            const schemaPromise: Promise<void> = new Promise<void>((resolve) => {
+              driver
+                .getTaskFormSchema()
+                .then((schema) => {
+                  if (canceled.get()) {
+                    return;
+                  }
+                  setTaskFormSchema(schema);
+                  resolve();
+                })
+                .catch((error) => resolve());
+            });
 
-      const customFormPromise: Promise<void> = new Promise<void>((resolve) => {
-        driver
-          .getCustomForm()
-          .then((customForm) => {
-            setCustomForm(customForm);
-            resolve();
-          })
-          .catch((error) => resolve());
-      });
+            const phasesPromise: Promise<void> = new Promise<void>((resolve) => {
+              driver
+                .getTaskPhases()
+                .then((phases) => {
+                  if (canceled.get()) {
+                    return;
+                  }
+                  setUserTaskPhases(filterTaskPhases(phases));
+                  resolve();
+                })
+                .catch((error) => resolve());
+            });
 
-      const schemaPromise: Promise<void> = new Promise<void>((resolve) => {
-        driver
-          .getTaskFormSchema()
-          .then((schema) => {
-            setTaskFormSchema(schema);
-            resolve();
-          })
-          .catch((error) => resolve());
-      });
-
-      Promise.all([customFormPromise, schemaPromise]).then((values) => {
-        setIsLoading(false);
-      });
-    }, [isEnvelopeConnectedToChannel]);
+            Promise.all([customFormPromise, schemaPromise, phasesPromise]).then((values) => {
+              setIsLoading(false);
+            });
+          }
+        },
+        [driver, isEnvelopeConnectedToChannel]
+      )
+    );
 
     if (isLoading) {
       return (
         <Bullseye
           {...componentOuiaProps((ouiaId ? ouiaId : "task-form-envelope-view") + "-loading-spinner", "task-form", true)}
         >
-          <KogitoSpinner spinnerText={`Loading task form...`} />
+          <KogitoSpinner spinnerText={`Loading Task form...`} />
         </Bullseye>
       );
     }
@@ -126,6 +147,7 @@ export const TaskFormEnvelopeView = React.forwardRef<TaskFormEnvelopeViewApi, Pr
             customForm={customForm}
             user={user!}
             driver={driver}
+            phases={userTaskPhases}
             targetOrigin={targetOrigin}
           />
         );
@@ -135,6 +157,7 @@ export const TaskFormEnvelopeView = React.forwardRef<TaskFormEnvelopeViewApi, Pr
           {...componentOuiaProps((ouiaId ? ouiaId : "task-form-envelope-view") + "-task-form", "task-form", ouiaSafe)}
           userTask={userTask!}
           schema={taskFormSchema}
+          phases={userTaskPhases}
           driver={driver}
         />
       );

@@ -21,30 +21,49 @@ const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/b
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
-    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__kogitoDataIndexUrl: {
-      default: "http://localhost:4000/graphql",
-      description: "URL for the Data Index service",
-    },
-    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__kogitoEnvMode: {
-      default: "DEV",
-      description: "DEV or PROD. PROD enables Keycloak integration",
-    },
-    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__host: {
+    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__dev_host: {
       default: "localhost",
-      description: "Webpack server hostname",
+      description: "Webpack dev server hostname",
     },
-    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__port: {
+    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__dev_port: {
       default: "9025",
-      description: "Webpack server port",
+      description: "Webpack dev server port",
+    },
+    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__buildInfo: {
+      default: `dev (${process.env.USER}) @ ${new Date().toISOString()}`,
+      description: "Build information to be shown in the 'About' modal.",
+    },
+    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__appName: {
+      default: "Apache KIE™ Management Console",
+      description: "The name used to refer to a particular KIE Management Console distribution.",
+    },
+    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__oidcClientClientId: {
+      default: "management-console-dev-webapp",
+      description: "Client ID used for OpenID Connect client configuration.",
     },
   }),
   get env() {
     return {
       runtimeToolsManagementConsoleWebapp: {
-        kogitoDataIndexUrl: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__kogitoDataIndexUrl),
-        kogitoEnvMode: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__kogitoEnvMode),
-        host: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__host),
-        port: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__port),
+        dev: {
+          host: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__dev_host),
+          port: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__dev_port),
+          idp: {
+            port: "9071",
+          },
+          securedRuntime: {
+            port: "8080",
+          },
+          unsecuredRuntime: {
+            port: "8081",
+          },
+        },
+        oidcClient: {
+          clientId: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__oidcClientClientId),
+        },
+        appName: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__appName),
+        buildInfo: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__buildInfo),
+        version: require("../package.json").version,
       },
     };
   },
