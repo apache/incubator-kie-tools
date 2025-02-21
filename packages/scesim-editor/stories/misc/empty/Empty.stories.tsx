@@ -20,160 +20,13 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { getMarshaller } from "@kie-tools/scesim-marshaller";
 import { TestScenarioEditor } from "../../../src/TestScenarioEditor";
+import { EMPTY_ONE_EIGHT } from "../../../src/resources/EmptyScesimFile";
 import { SceSimEditorWrapper, StorybookTestScenarioEditorProps } from "../../scesimEditorStoriesWrapper";
+import { EMPTY } from "../../examples/ExternalDmnModels";
+import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
+import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";
 
 export const emptyFileName = "Untitled.scesim";
-export const emptySceSim = `<?xml version="1.0" encoding="UTF-8"?>
-<ScenarioSimulationModel version="1.8" xmlns="https://kie.org/scesim/1.8">
-  <simulation>
-    <scesimModelDescriptor>
-      <factMappings>
-        <FactMapping>
-          <expressionElements/>
-          <expressionIdentifier>
-            <name>Index</name>
-            <type>OTHER</type>
-          </expressionIdentifier>
-          <factIdentifier>
-            <name>#</name>
-            <className>java.lang.Integer</className>
-          </factIdentifier>
-          <className>java.lang.Integer</className>
-          <factAlias>#</factAlias>
-          <columnWidth>70</columnWidth>
-          <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
-        </FactMapping>
-        <FactMapping>
-          <expressionElements/>
-          <expressionIdentifier>
-            <name>Description</name>
-            <type>OTHER</type>
-          </expressionIdentifier>
-          <factIdentifier>
-            <name>Scenario description</name>
-            <className>java.lang.String</className>
-          </factIdentifier>
-          <className>java.lang.String</className>
-          <factAlias>Scenario description</factAlias>
-          <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
-          <columnWidth>300</columnWidth>
-        </FactMapping>
-        <FactMapping>
-          <expressionElements/>
-          <expressionIdentifier>
-            <name>1|1</name>
-            <type>GIVEN</type>
-          </expressionIdentifier>
-          <factIdentifier>
-            <name>Empty</name>
-            <className>java.lang.Void</className>
-          </factIdentifier>
-          <className>java.lang.Void</className>
-          <factAlias>INSTANCE-1</factAlias>
-          <expressionAlias>PROPERTY</expressionAlias>
-          <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
-          <columnWidth>150</columnWidth>
-        </FactMapping>
-        <FactMapping>
-          <expressionElements/>
-          <expressionIdentifier>
-            <name>1|2</name>
-            <type>EXPECT</type>
-          </expressionIdentifier>
-          <factIdentifier>
-            <name>Empty</name>
-            <className>java.lang.Void</className>
-          </factIdentifier>
-          <className>java.lang.Void</className>
-          <factAlias>INSTANCE-2</factAlias>
-          <expressionAlias>PROPERTY</expressionAlias>
-          <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
-          <columnWidth>150</columnWidth>
-        </FactMapping>
-      </factMappings>
-    </scesimModelDescriptor>
-    <scesimData>
-      <Scenario>
-        <factMappingValues>
-          <FactMappingValue>
-            <factIdentifier>
-              <name>Scenario description</name>
-              <className>java.lang.String</className>
-            </factIdentifier>
-            <expressionIdentifier>
-              <name>Description</name>
-              <type>OTHER</type>
-            </expressionIdentifier>
-          </FactMappingValue>
-          <FactMappingValue>
-            <factIdentifier>
-              <name>Empty</name>
-              <className>java.lang.Void</className>
-            </factIdentifier>
-            <expressionIdentifier>
-              <name>1|1</name>
-              <type>GIVEN</type>
-            </expressionIdentifier>
-          </FactMappingValue>
-          <FactMappingValue>
-            <factIdentifier>
-              <name>Empty</name>
-              <className>java.lang.Void</className>
-            </factIdentifier>
-            <expressionIdentifier>
-              <name>1|2</name>
-              <type>EXPECT</type>
-            </expressionIdentifier>
-          </FactMappingValue>
-        </factMappingValues>
-      </Scenario>
-    </scesimData>
-  </simulation>
-  <background>
-    <scesimModelDescriptor>
-      <factMappings>
-        <FactMapping>
-          <expressionElements/>
-          <expressionIdentifier>
-            <name>1|1</name>
-            <type>GIVEN</type>
-          </expressionIdentifier>
-          <factIdentifier>
-            <name>Empty</name>
-            <className>java.lang.Void</className>
-          </factIdentifier>
-          <className>java.lang.Void</className>
-          <factAlias>INSTANCE-1</factAlias>
-          <expressionAlias>PROPERTY</expressionAlias>
-          <columnWidth>150</columnWidth>
-          <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
-        </FactMapping>
-      </factMappings>
-    </scesimModelDescriptor>
-    <scesimData>
-      <BackgroundData>
-        <factMappingValues>
-          <FactMappingValue>
-            <factIdentifier>
-              <name>Empty</name>
-              <className>java.lang.Void</className>
-            </factIdentifier>
-            <expressionIdentifier>
-              <name>1|1</name>
-              <type>GIVEN</type>
-            </expressionIdentifier>
-          </FactMappingValue>
-        </factMappingValues>
-      </BackgroundData>
-    </scesimData>
-  </background>
-  <settings>
-    <skipFromBuild>false</skipFromBuild>
-  </settings>
-  <imports>
-    <imports/>
-  </imports>
-</ScenarioSimulationModel>`;
 
 const meta: Meta<{}> = {
   title: "Misc/Empty",
@@ -184,14 +37,23 @@ const meta: Meta<{}> = {
 export default meta;
 type Story = StoryObj<StorybookTestScenarioEditorProps>;
 
-const marshaller = getMarshaller(emptySceSim);
-const model = marshaller.parser.parse();
+const marshaller = getMarshaller(EMPTY_ONE_EIGHT);
+const currentModel = marshaller.parser.parse();
+const dmnModel = {
+  normalizedPosixPathRelativeToTheOpenFile: "empty.dmn",
+  type: "dmn",
+  model: normalize(getDmnMarshaller(EMPTY ?? "", { upgradeTo: "latest" }).parser.parse()),
+  svg: "",
+};
 
 export const Empty: Story = {
   render: (args) => SceSimEditorWrapper(args),
   args: {
     model: marshaller.parser.parse(),
     openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: emptyFileName,
-    xml: marshaller.builder.build(model),
+    externalModelsByNamespace: new Map([["https://kie.org/dmn/_14487CEE-1B30-453E-976D-C11ED911548F", dmnModel]]),
+    xml: marshaller.builder.build(currentModel),
+    onRequestExternalModelsAvailableToInclude: () => Promise.resolve(["empty.dmn"]),
+    onRequestExternalModelByPath: () => Promise.resolve(dmnModel),
   },
 };
