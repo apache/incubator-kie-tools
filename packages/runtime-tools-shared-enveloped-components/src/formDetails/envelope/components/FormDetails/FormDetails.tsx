@@ -62,7 +62,6 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
   const editorResize = useRef<ResizableContent>({} as ResizableContent);
 
   useEffect(() => {
-    /* istanbul ignore else */
     if (isEnvelopeConnectedToChannel) {
       init();
     }
@@ -100,7 +99,6 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
   }, []);
 
   const getSource = useCallback(() => {
-    /* istanbul ignore else */
     if (!isEmpty(formContent)) {
       return formContent?.source ?? "";
     }
@@ -108,7 +106,6 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
   }, [formContent]);
 
   const getType = useCallback(() => {
-    /* istanbul ignore else */
     if (!isEmpty(formData)) {
       return formData.type;
     }
@@ -116,7 +113,6 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
   }, [formData]);
 
   const getConfig = useCallback(() => {
-    /* istanbul ignore else */
     if (!isEmpty(formContent)) {
       return JSON.stringify(formContent?.configuration.resources, null, 2);
     }
