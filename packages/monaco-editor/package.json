@@ -17,7 +17,7 @@
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\""
   },
   "dependencies": {
-    "monaco-editor": "^0.39.0"
+    "monaco-editor": "^0.51.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

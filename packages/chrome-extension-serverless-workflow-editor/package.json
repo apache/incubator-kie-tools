@@ -50,7 +50,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "jest-junit": "^16.0.0",
     "jest-when": "^3.6.0",
-    "monaco-editor": "^0.39.0",
+    "monaco-editor": "^0.51.0",
     "monaco-editor-webpack-plugin": "^7.0.1",
     "monaco-yaml": "^4.0.4",
     "process": "^0.11.10",

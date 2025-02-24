@@ -48,7 +48,7 @@
     "dangerously-set-html-content": "^1.0.13",
     "json-schema": "^0.4.0",
     "lodash": "^4.17.21",
-    "monaco-editor": "^0.39.0",
+    "monaco-editor": "^0.51.0",
     "react-datetime-picker": "^3.5.0",
     "react-helmet": "^6.1.0",
     "react-inlinesvg": "^2.3.0",

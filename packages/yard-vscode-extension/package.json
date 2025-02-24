@@ -38,7 +38,7 @@
     "@kie-tools-core/vscode-java-code-completion": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
     "@kie-tools/yard-editor": "workspace:*",
-    "monaco-editor": "^0.39.0",
+    "monaco-editor": "^0.51.0",
     "monaco-yaml": "^4.0.4",
     "openapi-types": "^7.0.1",
     "vscode-languageserver-textdocument": "^1.0.4",

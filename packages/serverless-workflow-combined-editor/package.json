@@ -41,7 +41,7 @@
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
     "json-schema": "^0.4.0",
-    "monaco-editor": "^0.39.0",
+    "monaco-editor": "^0.51.0",
     "monaco-yaml": "^4.0.4",
     "path-browserify": "^1.0.1",
     "vscode-languageserver-types": "^3.16.0"
