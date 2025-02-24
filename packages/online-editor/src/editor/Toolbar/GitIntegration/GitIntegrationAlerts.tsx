@@ -225,12 +225,12 @@ export function useGitIntegrationAlerts(workspace: ActiveWorkspace) {
 
   const successfullyCreatedGistOrSnippetAlert = useGlobalAlert(
     useCallback(
-      ({ close }) => {
+      ({ close }, staticArgs?: { url: string }) => {
         if (!isGistLikeWorkspaceKind(workspace.descriptor.origin.kind)) {
           return <></>;
         }
 
-        const gistOrSnippetUrl = workspace.descriptor.origin.url;
+        const gistOrSnippetUrl = staticArgs?.url || workspace.descriptor.origin.url;
         return (
           <Alert
             variant="success"
