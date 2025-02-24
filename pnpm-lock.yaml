@@ -8821,7 +8821,7 @@ importers:
         version: 4.224.2
       '@patternfly/react-code-editor':
         specifier: 4.82.113
-        version: 4.82.113(react-dom@17.0.2(react@17.0.2))(react-monaco-editor@0.51.0(@types/react@17.0.21)(monaco-editor@0.51.0)(react@17.0.2))(react@17.0.2)
+        version: 4.82.113(react-dom@17.0.2(react@17.0.2))(react-monaco-editor@0.39.0(@types/react@17.0.21)(monaco-editor@0.39.0)(react@17.0.2))(react@17.0.2)
       '@patternfly/react-core':
         specifier: ^4.276.6
         version: 4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -8990,7 +8990,7 @@ importers:
         version: 2.9.0(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0))
       monaco-editor-webpack-plugin:
         specifier: ^7.0.1
-        version: 7.0.1(monaco-editor@0.51.0)(monaco-yaml@4.0.4(monaco-editor@0.51.0))(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0))
+        version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4(monaco-editor@0.39.0))(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0))
       node-polyfill-webpack-plugin:
         specifier: ^2.0.1
         version: 2.0.1(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0))
@@ -11067,7 +11067,7 @@ importers:
         version: 3.6.0(jest@29.7.0(@types/node@22.10.7)(node-notifier@8.0.2)(ts-node@10.9.2(@types/node@22.10.7)(typescript@5.5.3)))
       monaco-editor-webpack-plugin:
         specifier: ^7.0.1
-        version: 7.0.1(monaco-editor@0.51.0)(monaco-yaml@4.0.4(monaco-editor@0.51.0))(webpack@5.94.0(webpack-cli@4.10.0))
+        version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4(monaco-editor@0.39.0))(webpack@5.94.0(webpack-cli@4.10.0))
       node-polyfill-webpack-plugin:
         specifier: ^2.0.1
         version: 2.0.1(webpack@5.94.0(webpack-cli@4.10.0))
@@ -12061,7 +12061,7 @@ importers:
         version: 16.0.0
       monaco-editor-webpack-plugin:
         specifier: ^7.0.1
-        version: 7.0.1(monaco-editor@0.51.0)(monaco-yaml@4.0.4(monaco-editor@0.51.0))(webpack@5.94.0(webpack-cli@4.10.0))
+        version: 7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4(monaco-editor@0.39.0))(webpack@5.94.0(webpack-cli@4.10.0))
       node-polyfill-webpack-plugin:
         specifier: ^2.0.1
         version: 2.0.1(webpack@5.94.0(webpack-cli@4.10.0))
@@ -26751,7 +26751,7 @@ packages:
   monaco-editor@0.39.0:
     resolution: {integrity: sha512-zhbZ2Nx93tLR8aJmL2zI1mhJpsl87HMebNBM6R8z4pLfs8pj604pIVIVwyF1TivcfNtIPpMXL+nb3DsBmE/x6Q==}
 
-  monaco-editor@0.51.0:
+  monaco-editor@0.39.0:
     resolution: {integrity: sha512-xaGwVV1fq343cM7aOYB6lVE4Ugf0UyimdD/x5PWcWBMKENwectaEu77FAN7c5sFiyumqeJdX1RPTh1ocioyDjw==}
 
   monaco-marker-data-provider@1.1.0:
@@ -28403,7 +28403,7 @@ packages:
       monaco-editor: ^0.33.0
       react: '>=17 <= 18'
 
-  react-monaco-editor@0.51.0:
+  react-monaco-editor@0.39.0:
     resolution: {integrity: sha512-6jx1V8p6gHVKJHFaTvicOtmlhFjOJhekobeNd92ZAo7F5UvAin1cF7bxWLCKgtxClYZ7CB3Ar284Kpbhj22FpQ==}
     peerDependencies:
       '@types/react': ^17.0.6
@@ -39681,7 +39681,7 @@ snapshots:
       victory-voronoi-container: 36.6.8(react@17.0.2)
       victory-zoom-container: 36.6.8(react@17.0.2)
 
-  '@patternfly/react-code-editor@4.82.113(react-dom@17.0.2(react@17.0.2))(react-monaco-editor@0.51.0(@types/react@17.0.21)(monaco-editor@0.51.0)(react@17.0.2))(react@17.0.2)':
+  '@patternfly/react-code-editor@4.82.113(react-dom@17.0.2(react@17.0.2))(react-monaco-editor@0.39.0(@types/react@17.0.21)(monaco-editor@0.39.0)(react@17.0.2))(react@17.0.2)':
     dependencies:
       '@patternfly/react-core': 4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@patternfly/react-icons': 4.93.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -39689,7 +39689,7 @@ snapshots:
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
       react-dropzone: 11.7.1(react@17.0.2)
-      react-monaco-editor: 0.51.0(@types/react@17.0.21)(monaco-editor@0.51.0)(react@17.0.2)
+      react-monaco-editor: 0.51.0(@types/react@17.0.21)(monaco-editor@0.39.0)(react@17.0.2)
       tslib: 2.6.2
 
   '@patternfly/react-core@4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
@@ -53081,29 +53081,29 @@ snapshots:
       monaco-yaml: 4.0.4(monaco-editor@0.39.0)
       webpack: 5.94.0(webpack-cli@4.10.0)
 
-  monaco-editor-webpack-plugin@7.0.1(monaco-editor@0.51.0)(monaco-yaml@4.0.4(monaco-editor@0.51.0))(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0)):
+  monaco-editor-webpack-plugin@7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4(monaco-editor@0.39.0))(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0)):
     dependencies:
       loader-utils: 2.0.4
       monaco-editor: 0.51.0
-      monaco-yaml: 4.0.4(monaco-editor@0.51.0)
+      monaco-yaml: 4.0.4(monaco-editor@0.39.0)
       webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0)
 
-  monaco-editor-webpack-plugin@7.0.1(monaco-editor@0.51.0)(monaco-yaml@4.0.4(monaco-editor@0.51.0))(webpack@5.94.0(webpack-cli@4.10.0)):
+  monaco-editor-webpack-plugin@7.0.1(monaco-editor@0.39.0)(monaco-yaml@4.0.4(monaco-editor@0.39.0))(webpack@5.94.0(webpack-cli@4.10.0)):
     dependencies:
       loader-utils: 2.0.4
       monaco-editor: 0.51.0
-      monaco-yaml: 4.0.4(monaco-editor@0.51.0)
+      monaco-yaml: 4.0.4(monaco-editor@0.39.0)
       webpack: 5.94.0(webpack-cli@4.10.0)
 
   monaco-editor@0.39.0: {}
 
-  monaco-editor@0.51.0: {}
+  monaco-editor@0.39.0: {}
 
   monaco-marker-data-provider@1.1.0(monaco-editor@0.39.0):
     dependencies:
       monaco-editor: 0.39.0
 
-  monaco-marker-data-provider@1.1.0(monaco-editor@0.51.0):
+  monaco-marker-data-provider@1.1.0(monaco-editor@0.39.0):
     dependencies:
       monaco-editor: 0.51.0
 
@@ -53111,7 +53111,7 @@ snapshots:
     dependencies:
       monaco-editor: 0.39.0
 
-  monaco-worker-manager@2.0.1(monaco-editor@0.51.0):
+  monaco-worker-manager@2.0.1(monaco-editor@0.39.0):
     dependencies:
       monaco-editor: 0.51.0
 
@@ -53129,13 +53129,13 @@ snapshots:
       vscode-uri: 3.0.7
       yaml: 2.3.2
 
-  monaco-yaml@4.0.4(monaco-editor@0.51.0):
+  monaco-yaml@4.0.4(monaco-editor@0.39.0):
     dependencies:
       '@types/json-schema': 7.0.15
       jsonc-parser: 3.3.1
       monaco-editor: 0.51.0
-      monaco-marker-data-provider: 1.1.0(monaco-editor@0.51.0)
-      monaco-worker-manager: 2.0.1(monaco-editor@0.51.0)
+      monaco-marker-data-provider: 1.1.0(monaco-editor@0.39.0)
+      monaco-worker-manager: 2.0.1(monaco-editor@0.39.0)
       path-browserify: 1.0.1
       prettier: 2.8.8
       vscode-languageserver-textdocument: 1.0.7
@@ -55054,7 +55054,7 @@ snapshots:
       prop-types: 15.8.1
       react: 17.0.2
 
-  react-monaco-editor@0.51.0(@types/react@17.0.21)(monaco-editor@0.51.0)(react@17.0.2):
+  react-monaco-editor@0.39.0(@types/react@17.0.21)(monaco-editor@0.39.0)(react@17.0.2):
     dependencies:
       '@types/react': 17.0.21
       monaco-editor: 0.51.0
