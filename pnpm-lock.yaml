@@ -5375,9 +5375,6 @@ importers:
       '@kie-tools/i18n-common-dictionary':
         specifier: workspace:*
         version: link:../i18n-common-dictionary
-      monaco-editor:
-        specifier: ^0.39.0
-        version: 0.39.0
       react:
         specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
