@@ -25,6 +25,7 @@ import { getMarshaller } from "@kie-tools/scesim-marshaller";
 const files = [
   "../tests-data--manual/dmn/collection.scesim",
   "../tests-data--manual/dmn/expression.scesim",
+  "../tests-data--manual/dmn/imported.scesim",
   "../tests-data--manual/dmn/simple.scesim",
   "../tests-data--manual/dmn/simpleTypes.scesim",
   "../tests-data--manual/dmn/TrafficViolationTest.scesim",
