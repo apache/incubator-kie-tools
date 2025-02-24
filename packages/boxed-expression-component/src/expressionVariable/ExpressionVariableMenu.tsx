@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { PopoverMenu, PopoverMenuRef } from "../contextMenu/PopoverMenu";
 import { useBoxedExpressionEditorI18n } from "../i18n";
 import { useBoxedExpressionEditor } from "../BoxedExpressionEditorContext";
@@ -189,7 +189,6 @@ export function ExpressionVariableMenu({
     [resetFormData, saveExpression]
   );
 
-  const { expressionHolderId } = useBoxedExpressionEditor();
   return (
     <PopoverMenu
       ref={popoverMenuRef}
@@ -208,7 +207,7 @@ export function ExpressionVariableMenu({
               <FeelInputTextbox
                 value={expressionName}
                 onChange={(e) => setExpressionName(e)}
-                expressionId={expressionHolderId}
+                expressionId={variableUuid}
               />
             ) : (
               <input
