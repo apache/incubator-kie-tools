@@ -24,8 +24,11 @@ import { immer } from "zustand/middleware/immer";
 
 import { SceSim__FactMappingType } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
 
+import { ExternalDmnsIndex } from "../TestScenarioEditor";
 import { ComputedStateCache } from "./ComputedStateCache";
+import { computeDmnDataObjects } from "./computed/computeDmnDataObjects";
 import { computeTestScenarioDataObjects } from "./computed/computeTestScenarioDataObjects";
+import { computeDataObjects } from "./computed/computeDataObjects";
 
 enableMapSet(); // Necessary because `Computed` has a lot of Maps and Sets.
 
@@ -84,11 +87,13 @@ export interface State {
 // Read this to understand why we need computed as part of the store.
 // https://github.com/pmndrs/zustand/issues/132#issuecomment-1120467721
 export type Computed = {
+  getDataObjects(externalModelsByNamespace: ExternalDmnsIndex | undefined): TestScenarioDataObject[];
+  getDmnDataObjects(externalModelsByNamespace: ExternalDmnsIndex | undefined): TestScenarioDataObject[];
   getTestScenarioDataObjects(): TestScenarioDataObject[];
 };
 
 export type Dispatch = {
-  scesim: {
+  navigation: {
     reset: () => void;
   };
   table: {
@@ -96,7 +101,7 @@ export type Dispatch = {
   };
 };
 
-export const defaultStaticState = (): Omit<State, "scesim" | "dispatch" | "computed"> => ({
+export const defaultStaticState = (): Omit<State, "computed" | "dispatch" | "scesim"> => ({
   navigation: {
     dock: {
       isOpen: true,
@@ -127,7 +132,7 @@ export function createTestScenarioEditorStore(model: SceSimModel, computedCache:
       },
       dispatch(state: State) {
         return {
-          scesim: {
+          navigation: {
             reset: () => {
               state.navigation.tab = TestScenarioEditorTab.SIMULATION;
               state.navigation.dock.isOpen = true;
@@ -149,14 +154,26 @@ export function createTestScenarioEditorStore(model: SceSimModel, computedCache:
       },
       computed(state: State) {
         return {
-          getTestScenarioDataObjects: () => {
-            return computedCache.cachedData(
+          getDataObjects: (externalModelsByNamespace: ExternalDmnsIndex | undefined) =>
+            computedCache.cached("getDataObjects", computeDataObjects, [
+              state.computed(state).getTestScenarioDataObjects(),
+              state.computed(state).getDmnDataObjects(externalModelsByNamespace),
+              state.scesim.model.ScenarioSimulationModel.settings.type,
+            ]),
+
+          getDmnDataObjects: (externalModelsByNamespace: ExternalDmnsIndex | undefined) =>
+            computedCache.cached("getDmnDataObjects", computeDmnDataObjects, [
+              externalModelsByNamespace,
+              state.scesim.model.ScenarioSimulationModel.settings,
+            ]),
+
+          getTestScenarioDataObjects: () =>
+            computedCache.cachedData(
               "getTestScenarioDataObjects",
               computeTestScenarioDataObjects,
               [state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping],
               [state.scesim.model.ScenarioSimulationModel.settings.type]
-            );
-          },
+            ),
         };
       },
     }))

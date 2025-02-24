@@ -35,12 +35,16 @@ export interface TaskInboxGatewayApi {
   getTaskById(uuid: string): Promise<UserTaskInstance | undefined>;
   openTask: (userTask: UserTaskInstance) => void;
   clearOpenTask: () => Promise<void>;
-
   onOpenTaskListen: (listener: OnOpenTaskListener) => UnSubscribeHandler;
+  onUpdateTaskListState(listener: OnUpdateTaskListStateListener): UnSubscribeHandler;
 }
 
 export interface OnOpenTaskListener {
   onOpen: (userTask: UserTaskInstance) => void;
+}
+
+export interface OnUpdateTaskListStateListener {
+  onUpdate: (taskInboxState: TaskInboxState) => void;
 }
 
 export interface UnSubscribeHandler {
@@ -48,7 +52,8 @@ export interface UnSubscribeHandler {
 }
 
 export class TaskInboxGatewayApiImpl implements TaskInboxGatewayApi {
-  private readonly listeners: OnOpenTaskListener[] = [];
+  private readonly onOpenTaskListeners: OnOpenTaskListener[] = [];
+  private readonly onUpdateTaskListStateListeners: OnUpdateTaskListStateListener[] = [];
   private getCurrentUser: () => User;
   private readonly queries: TaskInboxQueries;
   private _taskInboxState: TaskInboxState;
@@ -75,17 +80,19 @@ export class TaskInboxGatewayApiImpl implements TaskInboxGatewayApi {
 
   openTask(task: UserTaskInstance): Promise<void> {
     this.activeTask = task;
-    this.listeners.forEach((listener) => listener.onOpen(task));
+    this.onOpenTaskListeners.forEach((listener) => listener.onOpen(task));
     return Promise.resolve();
   }
 
   applyFilter(filter: QueryFilter): Promise<void> {
     this._taskInboxState.filters = filter;
+    this.onUpdateTaskListStateListeners.forEach((listener) => listener.onUpdate(this._taskInboxState));
     return Promise.resolve();
   }
 
   applySorting(sortBy: SortBy): Promise<void> {
     this._taskInboxState.sortBy = sortBy;
+    this.onUpdateTaskListStateListeners.forEach((listener) => listener.onUpdate(this._taskInboxState));
     return Promise.resolve();
   }
 
@@ -111,12 +118,27 @@ export class TaskInboxGatewayApiImpl implements TaskInboxGatewayApi {
   }
 
   onOpenTaskListen(listener: OnOpenTaskListener): UnSubscribeHandler {
-    this.listeners.push(listener);
+    this.onOpenTaskListeners.push(listener);
 
     const unSubscribe = () => {
-      const index = this.listeners.indexOf(listener);
+      const index = this.onOpenTaskListeners.indexOf(listener);
       if (index > -1) {
-        this.listeners.splice(index, 1);
+        this.onOpenTaskListeners.splice(index, 1);
+      }
+    };
+
+    return {
+      unSubscribe,
+    };
+  }
+
+  onUpdateTaskListState(listener: OnUpdateTaskListStateListener): UnSubscribeHandler {
+    this.onUpdateTaskListStateListeners.push(listener);
+
+    const unSubscribe = () => {
+      const index = this.onUpdateTaskListStateListeners.indexOf(listener);
+      if (index > -1) {
+        this.onUpdateTaskListStateListeners.splice(index, 1);
       }
     };
 

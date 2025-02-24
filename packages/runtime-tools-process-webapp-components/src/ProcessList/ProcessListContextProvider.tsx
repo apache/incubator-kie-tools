@@ -35,7 +35,7 @@ export const ProcessListContextProvider: FC<ProcessListContextProviderProps> = (
 }) => {
   const gatewayApiImpl = useMemo(() => {
     return new ProcessListGatewayApiImpl(new GraphQLProcessListQueries(apolloClient, options));
-  }, []);
+  }, [apolloClient, options]);
   return <ProcessListContext.Provider value={gatewayApiImpl}>{children}</ProcessListContext.Provider>;
 };
 

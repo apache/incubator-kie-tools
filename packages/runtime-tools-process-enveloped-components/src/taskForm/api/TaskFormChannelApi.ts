@@ -23,4 +23,5 @@ export interface TaskFormChannelApi {
   taskForm__getTaskFormSchema(): Promise<Record<string, any>>;
   taskForm__getCustomForm(): Promise<Form>;
   taskForm__doSubmit(phase?: string, payload?: any): Promise<any>;
+  taskForm__getTaskPhases(): Promise<string[]>;
 }

@@ -63,7 +63,7 @@
     "@octokit/plugin-rest-endpoint-methods": "^5.0.1",
     "@octokit/rest": "^18.5.3",
     "@patternfly/patternfly": "^4.224.2",
-    "@patternfly/quickstarts": "^2.3.2",
+    "@patternfly/quickstarts": "^2.4.4",
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
     "@patternfly/react-table": "^4.112.39",

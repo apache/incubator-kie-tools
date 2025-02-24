@@ -19,7 +19,7 @@ FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.5
 
 ARG DEV_DEPLOYMENT_DMN_FORM_WEBAPP_DEFAULT_PORT=8081
 
-COPY entrypoint.sh dist-dev/image-env-to-json-standalone dist-dev/EnvJson.schema.json /tmp/
+COPY entrypoint.sh dist-dev/image-env-to-json-linux-amd64 dist-dev/EnvJson.schema.json /tmp/
 
 RUN microdnf --disableplugin=subscription-manager -y install httpd \
   && microdnf --disableplugin=subscription-manager clean all \
@@ -31,10 +31,10 @@ RUN microdnf --disableplugin=subscription-manager -y install httpd \
   && sed -i "$ a ServerTokens Prod" /etc/httpd/conf/httpd.conf \
   && sed -i "$ a ServerSignature Off" /etc/httpd/conf/httpd.conf \
   && mkdir /dmn-form-webapp \
-  && mv -t /dmn-form-webapp /tmp/entrypoint.sh /tmp/image-env-to-json-standalone /tmp/EnvJson.schema.json \
+  && mv -t /dmn-form-webapp /tmp/entrypoint.sh /tmp/image-env-to-json-linux-amd64 /tmp/EnvJson.schema.json \
   && chgrp -R 0 /var/log/httpd /var/run/httpd /var/www/html /dmn-form-webapp \
   && chmod -R g=u /var/log/httpd /var/run/httpd /var/www/html /dmn-form-webapp \
-  && chmod +x /dmn-form-webapp/entrypoint.sh /dmn-form-webapp/image-env-to-json-standalone
+  && chmod +x /dmn-form-webapp/entrypoint.sh /dmn-form-webapp/image-env-to-json-linux-amd64
 
 COPY dist-dev/dev-deployment-dmn-form-webapp /dmn-form-webapp/app
 

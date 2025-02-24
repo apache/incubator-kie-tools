@@ -24,8 +24,7 @@ import { UndoIcon } from "@patternfly/react-icons/dist/js/icons/undo-icon";
 import { SaveIcon } from "@patternfly/react-icons/dist/js/icons/save-icon";
 import { RedoIcon } from "@patternfly/react-icons/dist/js/icons/redo-icon";
 import { PlayIcon } from "@patternfly/react-icons/dist/js/icons/play-icon";
-import cloneDeep from "lodash/cloneDeep";
-import React, { useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import React, { useEffect, useImperativeHandle, useMemo, useRef, useState, useCallback } from "react";
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { useFormDetailsContext } from "../contexts/FormDetailsContext";
 import { ResizableContent } from "../FormDetails/FormDetails";
@@ -62,7 +61,7 @@ export const FormEditor = React.forwardRef<ResizableContent, FormEditorProps>(
     { code, formType, formContent, setFormContent, saveFormContent, isSource = false, isConfig = false },
     forwardedRef
   ) => {
-    const [content, setContent] = useState("");
+    const [formSourceCode, setFormSourceCode] = useState("");
     const appContext = useFormDetailsContext();
     const container = useRef<HTMLDivElement>(null);
 
@@ -80,7 +79,7 @@ export const FormEditor = React.forwardRef<ResizableContent, FormEditorProps>(
     }, [formType, isSource, isConfig]);
 
     const controller: FormEditorEditorApi = useMemo<FormEditorEditorApi>(() => {
-      return new FormEditorEditorController(code, (args) => setContent(args.content), formLanguage, false);
+      return new FormEditorEditorController(code, (args) => setFormSourceCode(args.content), formLanguage, false);
     }, [code, formLanguage]);
 
     useEffect(() => {
@@ -95,63 +94,33 @@ export const FormEditor = React.forwardRef<ResizableContent, FormEditorProps>(
 
     useImperativeHandle(forwardedRef, () => controller, [controller]);
 
-    const onExecuteCode = (): void => {
-      const tempContent: Form = cloneDeep(formContent);
-      const value = content;
-      if (Object.keys(formContent)[0].length > 0 && isSource) {
-        tempContent.source = value;
-      } else {
-        tempContent.configuration["resources"] = JSON.parse(value);
-      }
-      const newFormContent = { ...formContent, ...tempContent };
+    const onSaveFormContent = useCallback(() => {
+      const newFormContent = { ...formContent, source: formSourceCode };
+      saveFormContent(newFormContent);
       appContext.updateContent(newFormContent);
       setFormContent(newFormContent);
-    };
+    }, [appContext, formContent, formSourceCode, saveFormContent, setFormContent]);
 
-    const onSaveForm = (): void => {
-      saveFormContent(formContent);
-    };
-
-    const onUndoChanges = (): void => {
+    const onUndo = useCallback(() => {
       controller.undo();
-    };
+    }, [controller]);
 
-    const onRedoChanges = (): void => {
+    const onRedo = useCallback(() => {
       controller.redo();
-    };
-
-    const customControl = (
-      <>
-        <FormEditorControl
-          icon={<PlayIcon />}
-          ariaLabel="Execute form"
-          toolTipText="Execute form"
-          onClick={onExecuteCode}
-        />
-        <FormEditorControl
-          icon={<UndoIcon />}
-          ariaLabel="Undo changes"
-          toolTipText="Undo changes"
-          onClick={onUndoChanges}
-        />
-        <FormEditorControl
-          icon={<RedoIcon />}
-          ariaLabel="Redo changes"
-          toolTipText="Redo changes"
-          onClick={onRedoChanges}
-        />
-        <FormEditorControl
-          icon={<SaveIcon />}
-          ariaLabel="Save form"
-          toolTipText="Save form"
-          onClick={() => onSaveForm()}
-        />
-      </>
-    );
+    }, [controller]);
 
     return (
       <>
-        <div>{customControl}</div>
+        <div>
+          <FormEditorControl
+            icon={<SaveIcon />}
+            ariaLabel="Save form"
+            toolTipText="Save form"
+            onClick={() => onSaveFormContent()}
+          />
+          <FormEditorControl icon={<UndoIcon />} ariaLabel="Undo changes" toolTipText="Undo changes" onClick={onUndo} />
+          <FormEditorControl icon={<RedoIcon />} ariaLabel="Redo changes" toolTipText="Redo changes" onClick={onRedo} />
+        </div>
         <div className={"kogito-form-editor-container"} ref={container} style={{ height: "700px" }} />
       </>
     );
