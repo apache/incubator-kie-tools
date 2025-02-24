@@ -44,7 +44,7 @@
     "copyfiles": "^2.4.1",
     "dangerously-set-html-content": "^1.0.13",
     "lodash": "^4.17.21",
-    "monaco-editor": "^0.51.0",
+    "monaco-editor": "^0.39.0",
     "react-helmet": "^6.1.0",
     "react-inlinesvg": "^2.3.0",
     "react-moment": "0.9.7",
