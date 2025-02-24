@@ -23,30 +23,6 @@ management-console:
     enabled: true
 
 global:
-  # -- If want to enable Keycloak integration set it to PROD, otherwise set it to DEV
-  environment: "DEV"
-
-  # -- Set the URL that points to the Data Index service
-  dataIndexUrl: ""
-
-  # -- If using environment = PROD, enable or disable Keycloak health check
-  keycloakHealthCheck: false
-
-  # -- If using environment = PROD, set the KeyCloak health check url
-  keycloakHealthCheckUrl: ""
-
-  # -- If using environment = PROD, set the KeyCloak token validity
-  keycloakTokenValidity: ""
-
-  # -- If using environment = PROD, set the KeyCloak auth url
-  keycloakUrl: ""
-
-  # -- If using environment = PROD, set the KeyCloak client id
-  keycloakClientId: ""
-
-  # -- If using environment = PROD, set the KeyCloak realm name
-  keycloakRealm: ""
-
   # -- Kubernetes specific configuration
   ingressSource: "kubernetes"
   kubernetesIngressClass: nginx
