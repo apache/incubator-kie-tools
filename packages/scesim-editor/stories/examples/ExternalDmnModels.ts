@@ -17,8 +17,6 @@
  * under the License.
  */
 
-//TODO UPDATE TO DMN 1.5
-
 export const LOAN_PRE_QUALIFICATION = `<?xml version="1.0" encoding="UTF-8" ?>
 <dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" 
     xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
