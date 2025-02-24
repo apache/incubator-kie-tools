@@ -10375,7 +10375,7 @@ importers:
         version: 4.224.2
       '@patternfly/quickstarts':
         specifier: ^2.3.2
-        version: 2.4.0(@patternfly/react-core@4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(showdown@2.1.0)
+        version: 2.4.4(@patternfly/react-core@4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(marked@4.3.0)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@patternfly/react-core':
         specifier: ^4.276.6
         version: 4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -17995,6 +17995,7 @@ packages:
   '@koa/router@10.1.1':
     resolution: {integrity: sha512-ORNjq5z4EmQPriKbR0ER3k4Gh7YGNhWDL7JBW+8wXDrHLbWYKYSJaOJ9aN06npF5tbTxe2JBOsurpJDAvjiXKw==}
     engines: {node: '>= 8.0.0'}
+    deprecated: '**IMPORTANT 10x+ PERFORMANCE UPGRADE**: Please upgrade to v12.0.1+ as we have fixed an issue with debuglog causing 10x slower router benchmark performance, see https://github.com/koajs/router/pull/173'
 
   '@kubernetes-models/apimachinery@1.1.0':
     resolution: {integrity: sha512-DvCNeou3+M5ESJluVs8daVp7g03/hWnwXHou9Se8qNRZpqH6lQHvRjXy6HWSqBV9fKZOnWcOExmkUPQGbVIa6A==}
@@ -18250,13 +18251,13 @@ packages:
   '@patternfly/patternfly@4.224.2':
     resolution: {integrity: sha512-HGNV26uyHSIECuhjPg/WGn0mXbAotcs6ODfhAOkfYjIgGylddgiwElxUe1rpEHV5mQJJ2rMn4OdeJIIpzRX61g==}
 
-  '@patternfly/quickstarts@2.4.0':
-    resolution: {integrity: sha512-dlGtAX8iQarFvmflEvZ7rHaJb1aaBrcqkbzwx0wy2QLL/BID7Y+UQ9ht7k+TBNfnxhPOljM2YTp0rugG5S9q4g==}
+  '@patternfly/quickstarts@2.4.4':
+    resolution: {integrity: sha512-pna2rUs24g9HFfJH+jxg9BC6w96POCyVmAYwIr7TAWYW6dEYP4/XBwr3ArbIvjc9PwHHxo5wBya3X2SsCzgT6w==}
     peerDependencies:
       '@patternfly/react-core': '>=4.115.2'
+      marked: ^4.0.0
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
-      showdown: '>=1.8.6'
 
   '@patternfly/react-catalog-view-extension@4.96.0':
     resolution: {integrity: sha512-ZMPvaE6KOjbLioCdi1wPtxughsce4+sPq6Us5s4JKu2xgn+e83NcfSD3pAcS5e+M8K3SWwdXd3ycgkD8F+Obvg==}
@@ -21011,6 +21012,10 @@ packages:
     resolution: {integrity: sha512-H0TSyFNDMomMNJQBn8wFV5YC/2eJ+VXECwOadZJT554xP6cODZHPX3H9QMQECxvrgiSOP1pHjy1sMWQVYJOUOA==}
     engines: {node: '>= 14'}
 
+  agent-base@7.1.3:
+    resolution: {integrity: sha512-jRR5wdylq8CkOe6hei19GGZnxM6rBGwFl3Bg0YItGDimvjGtAvdZk4Pu6Cl4u4Igsws4a1fd1Vq3ezrhn4KmFw==}
+    engines: {node: '>= 14'}
+
   agentkeepalive@4.1.4:
     resolution: {integrity: sha512-+V/rGa3EuU74H6wR04plBb7Ks10FbtUQgRj/FQOG7uUIEuaINI+AiqJR1k6t3SVNs7o7ZjIdus6706qqzVq8jQ==}
     engines: {node: '>= 8.0.0'}
@@ -22423,8 +22428,8 @@ packages:
   cookiejar@2.1.4:
     resolution: {integrity: sha512-LDx6oHrK+PhzLKJU9j5S7/Y3jM/mUHvD/DeI1WQmJn652iPC5Y4TBzC9l+5OMOXlyTTA+SmVUPm0HQUwpD5Jqw==}
 
-  cookies@0.8.0:
-    resolution: {integrity: sha512-8aPsApQfebXnuI+537McwYsDtjVxGm8gTIzQI3FDW6t5t/DAhERxtnbEPN/8RX+uZthoz4eCOgloXaE5cYyNow==}
+  cookies@0.9.1:
+    resolution: {integrity: sha512-TG2hpqe4ELx54QER/S3HQ9SRVnQnGBtKUz5bLQWtYAQ+o6GpgMs6sYUvaiJjVxb+UXwhRhAEP3m7LbsIZ77Hmw==}
     engines: {node: '>= 0.8'}
 
   copy-anything@2.0.3:
@@ -26063,8 +26068,8 @@ packages:
     resolution: {integrity: sha512-UqyYyH5YEXaJrf9S8E23GoJFQZXkBVJ9zYYMPGz919MSX1KuvAcycIuS0ci150HCoPf4XQVhQ84Qf8xRPWxFaQ==}
     engines: {node: '>= 7.6.0'}
 
-  koa@2.14.1:
-    resolution: {integrity: sha512-USJFyZgi2l0wDgqkfD27gL4YGno7TfUkcmOe6UOLFOVuN+J7FwnNu4Dydl4CUQzraM1lBAiGed0M9OVJoT0Kqw==}
+  koa@2.15.4:
+    resolution: {integrity: sha512-7fNBIdrU2PEgLljXoPWoyY4r1e+ToWCmzS/wwMPbUNs7X+5MMET1ObhJBlUkF5uZG9B6QhM2zS1TsH6adegkiQ==}
     engines: {node: ^4.8.4 || ^6.10.1 || ^7.10.1 || >= 8.1.4}
 
   kubernetes-models@4.1.0:
@@ -26411,6 +26416,11 @@ packages:
     engines: {node: '>= 10'}
     peerDependencies:
       react: '>= 0.14.0'
+
+  marked@4.3.0:
+    resolution: {integrity: sha512-PRsaiG84bK+AMvxziE/lCFss8juXjNaWzVbN5tXAm4XjeaS9NAHhop+PjQxz2A9h8Q4M/xGmzP8vqNwy6JeK0A==}
+    engines: {node: '>= 12'}
+    hasBin: true
 
   math-expression-evaluator@1.4.0:
     resolution: {integrity: sha512-4vRUvPyxdO8cWULGTh9dZWL2tZK6LDBvj+OGHBER7poH9Qdt7kXEoj20wiz4lQUbUXQZFjPbe5mVDo9nutizCw==}
@@ -27538,8 +27548,8 @@ packages:
   path-to-regexp@2.2.1:
     resolution: {integrity: sha512-gu9bD6Ta5bwGrrU8muHzVOBFFREpp2iRkVfhBJahwJ6p6Xw20SjT0MxLnwkjOibQmGSYhiUnf2FLe7k+jcFmGQ==}
 
-  path-to-regexp@6.2.1:
-    resolution: {integrity: sha512-JLyh7xT1kizaEvcaXOQwOc2/Yhw6KZOvPf1S8401UyLk86CU79LN3vl7ztXGm/pZ+YjoyAJ4rxmHwbkBXJX+yw==}
+  path-to-regexp@6.3.0:
+    resolution: {integrity: sha512-Yhpw4T9C6hPpgPeA28us07OJeqZ5EzQTkbfwuhsUg0c237RomFoETJgmp2sa3F/41gfLE6G5cqcYwznmeEeOlQ==}
 
   path-type@4.0.0:
     resolution: {integrity: sha512-gDKb8aZMDeD/tZWs9P6+q0J9Mwkdl6xMV8TjnGP3qJVJ06bdMgkbBlLU8IdfOsIsFz2BW1rNVT3XuNEl8zPAvw==}
@@ -27655,23 +27665,23 @@ packages:
     resolution: {integrity: sha512-Dwtln5x/32/S16DKPzR7SXEz9JtXommoAgq1CPym7Ahe4svwY5eVKj5+blhAwU9hp8wIsKmskxZkIUGfmm6ubA==}
     engines: {node: '>=14.6'}
 
-  playwright-core@1.32.2:
-    resolution: {integrity: sha512-zD7aonO+07kOTthsrCR3YCVnDcqSHIJpdFUtZEMOb6//1Rc7/6mZDRdw+nlzcQiQltOOsiqI3rrSyn/SlyjnJQ==}
-    engines: {node: '>=14'}
-    hasBin: true
-
   playwright-core@1.45.2:
     resolution: {integrity: sha512-ha175tAWb0dTK0X4orvBIqi3jGEt701SMxMhyujxNrgd8K0Uy5wMSwwcQHtyB4om7INUkfndx02XnQ2p6dvLDw==}
     engines: {node: '>=18'}
     hasBin: true
 
-  playwright@1.32.2:
-    resolution: {integrity: sha512-jHVnXJke0PXpuPszKtk9y1zZSlzO5+2a+aockT/AND0oeXx46FiJEFrafthurglLygVZA+1gEbtUM1C7qtTV+Q==}
-    engines: {node: '>=14'}
+  playwright-core@1.50.1:
+    resolution: {integrity: sha512-ra9fsNWayuYumt+NiM069M6OkcRb1FZSK8bgi66AtpFoWkg2+y0bJSNmkFrWhMbEBbVKC/EruAHH3g0zmtwGmQ==}
+    engines: {node: '>=18'}
     hasBin: true
 
   playwright@1.45.2:
     resolution: {integrity: sha512-ReywF2t/0teRvNBpfIgh5e4wnrI/8Su8ssdo5XsQKpjxJj+jspm00jSoz9BTg91TT0c9HRjXO7LBNVrgYj9X0g==}
+    engines: {node: '>=18'}
+    hasBin: true
+
+  playwright@1.50.1:
+    resolution: {integrity: sha512-G8rwsOQJ63XG6BbKj2w5rHeavFjy5zynBA9zsJMMtBoe/Uf757oG12NXz6e6OirF7RCrTVAKFXbLmn1RbL7Qaw==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -30819,6 +30829,9 @@ packages:
 
   vscode-uri@3.0.7:
     resolution: {integrity: sha512-eOpPHogvorZRobNqJGhapa0JdwaxpjVvyBp0QIUMRMSf8ZAlqOdEquKuRmw9Qwu0qXtJIWqFtMkmvJjUZmMjVA==}
+
+  vscode-uri@3.1.0:
+    resolution: {integrity: sha512-/BpdSx+yCQGnCvecbyXdxHDkuk55/G3xwnC0GqY4gmQ3j+A+g8kzzgB4Nk/SINjqn6+waqw3EgbVF2QKExkRxQ==}
 
   w3c-xmlserializer@4.0.0:
     resolution: {integrity: sha512-d+BFHzbiCx6zGfz0HyQ6Rg69w9k19nviJspaj4yNscGjrHu94sVP+aRm75yEbCh+r2/yR+7q6hux9LVtbuTGBw==}
@@ -37853,7 +37866,7 @@ snapshots:
       '@babel/helper-split-export-declaration': 7.22.6
       '@babel/parser': 7.23.9
       '@babel/types': 7.23.9
-      debug: 4.3.5
+      debug: 4.3.6
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -37883,7 +37896,7 @@ snapshots:
       '@babel/helper-split-export-declaration': 7.22.6
       '@babel/parser': 7.23.9
       '@babel/types': 7.23.9
-      debug: 4.3.5
+      debug: 4.3.6
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
@@ -37986,7 +37999,7 @@ snapshots:
       is-typedarray: 1.0.0
       isstream: 0.1.2
       json-stringify-safe: 5.0.1
-      mime-types: 2.1.34
+      mime-types: 2.1.35
       performance-now: 2.1.0
       qs: 6.10.4
       safe-buffer: 5.2.1
@@ -39292,11 +39305,11 @@ snapshots:
 
   '@koa/router@10.1.1':
     dependencies:
-      debug: 4.3.5
+      debug: 4.3.6
       http-errors: 1.8.1
       koa-compose: 4.1.0
       methods: 1.1.2
-      path-to-regexp: 6.2.1
+      path-to-regexp: 6.3.0
     transitivePeerDependencies:
       - supports-color
 
@@ -39634,15 +39647,15 @@ snapshots:
 
   '@patternfly/patternfly@4.224.2': {}
 
-  '@patternfly/quickstarts@2.4.0(@patternfly/react-core@4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(showdown@2.1.0)':
+  '@patternfly/quickstarts@2.4.4(@patternfly/react-core@4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(marked@4.3.0)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
     dependencies:
       '@patternfly/react-catalog-view-extension': 4.96.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@patternfly/react-core': 4.276.6(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       dompurify: 2.4.0
       history: 5.3.0
+      marked: 4.3.0
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
-      showdown: 2.1.0
 
   '@patternfly/react-catalog-view-extension@4.96.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)':
     dependencies:
@@ -41836,7 +41849,7 @@ snapshots:
       '@storybook/client-logger': 7.4.6
       '@storybook/core-events': 7.4.6
       '@storybook/global': 5.0.0
-      qs: 6.11.2
+      qs: 6.13.0
       telejson: 7.2.0
       tiny-invariant: 1.3.1
 
@@ -43012,7 +43025,7 @@ snapshots:
     dependencies:
       '@storybook/client-logger': 7.4.6
       memoizerific: 1.11.3
-      qs: 6.11.2
+      qs: 6.13.0
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
 
@@ -44172,13 +44185,13 @@ snapshots:
       get-stream: 6.0.1
       http-proxy-agent: 5.0.0
       https-proxy-agent: 5.0.1
-      koa: 2.14.1
+      koa: 2.15.4
       koa-morgan: 1.0.1
       koa-mount: 4.0.0
       koa-static: 5.0.0
       minimist: 1.2.8
-      playwright: 1.32.2
-      vscode-uri: 3.0.7
+      playwright: 1.50.1
+      vscode-uri: 3.1.0
     transitivePeerDependencies:
       - supports-color
 
@@ -44751,6 +44764,8 @@ snapshots:
       debug: 4.3.6
     transitivePeerDependencies:
       - supports-color
+
+  agent-base@7.1.3: {}
 
   agentkeepalive@4.1.4:
     dependencies:
@@ -46991,7 +47006,7 @@ snapshots:
 
   cookiejar@2.1.4: {}
 
-  cookies@0.8.0:
+  cookies@0.9.1:
     dependencies:
       depd: 2.0.0
       keygrip: 1.1.0
@@ -50452,7 +50467,7 @@ snapshots:
     dependencies:
       '@tootallnate/once': 2.0.0
       agent-base: 6.0.2
-      debug: 4.3.5
+      debug: 4.3.6
     transitivePeerDependencies:
       - supports-color
 
@@ -50465,7 +50480,7 @@ snapshots:
 
   http-proxy-agent@7.0.2:
     dependencies:
-      agent-base: 7.1.1
+      agent-base: 7.1.3
       debug: 4.3.6
     transitivePeerDependencies:
       - supports-color
@@ -50570,7 +50585,7 @@ snapshots:
   https-proxy-agent@5.0.1:
     dependencies:
       agent-base: 6.0.2
-      debug: 4.3.5
+      debug: 4.3.6
     transitivePeerDependencies:
       - supports-color
 
@@ -52278,7 +52293,7 @@ snapshots:
 
   koa-mount@4.0.0:
     dependencies:
-      debug: 4.3.5
+      debug: 4.3.6
       koa-compose: 4.1.0
     transitivePeerDependencies:
       - supports-color
@@ -52298,14 +52313,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  koa@2.14.1:
+  koa@2.15.4:
     dependencies:
       accepts: 1.3.8
       cache-content-type: 1.0.1
       content-disposition: 0.5.4
       content-type: 1.0.5
-      cookies: 0.8.0
-      debug: 4.3.5
+      cookies: 0.9.1
+      debug: 4.3.6
       delegates: 1.0.0
       depd: 2.0.0
       destroy: 1.2.0
@@ -52730,6 +52745,8 @@ snapshots:
   markdown-to-jsx@7.3.2(react@17.0.2):
     dependencies:
       react: 17.0.2
+
+  marked@4.3.0: {}
 
   math-expression-evaluator@1.4.0: {}
 
@@ -54062,7 +54079,7 @@ snapshots:
 
   path-to-regexp@2.2.1: {}
 
-  path-to-regexp@6.2.1: {}
+  path-to-regexp@6.3.0: {}
 
   path-type@4.0.0: {}
 
@@ -54182,17 +54199,19 @@ snapshots:
       '@pnpm/resolve-workspace-range': 3.0.0
       ramda: '@pnpm/ramda@0.28.1'
 
-  playwright-core@1.32.2: {}
-
   playwright-core@1.45.2: {}
 
-  playwright@1.32.2:
-    dependencies:
-      playwright-core: 1.32.2
+  playwright-core@1.50.1: {}
 
   playwright@1.45.2:
     dependencies:
       playwright-core: 1.45.2
+    optionalDependencies:
+      fsevents: 2.3.2
+
+  playwright@1.50.1:
+    dependencies:
+      playwright-core: 1.50.1
     optionalDependencies:
       fsevents: 2.3.2
 
@@ -56574,7 +56593,7 @@ snapshots:
       has-symbols: 1.0.3
       internal-slot: 1.0.7
       regexp.prototype.flags: 1.5.2
-      side-channel: 1.0.4
+      side-channel: 1.0.6
 
   string.prototype.trim@1.2.9:
     dependencies:
@@ -58393,6 +58412,8 @@ snapshots:
   vscode-uri@3.0.6: {}
 
   vscode-uri@3.0.7: {}
+
+  vscode-uri@3.1.0: {}
 
   w3c-xmlserializer@4.0.0:
     dependencies:
