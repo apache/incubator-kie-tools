@@ -4,16 +4,16 @@
         <div class="card-title">
         <label class="col-form-label" for="<%= id %>"><%=label%></label>
         <div class="badge badge-pill float-right" role="button" tabindex="0" <%=disabled ? " disabled" : ""%>
-            onclick="onAddListItem('<%= name %>')"
-            onkeydown="onAddListItem('<%= name %>')">
+            onclick="onAddListItem<%= functionName %>('<%= name %>')"
+            onkeydown="onAddListItem<%= functionName %>('<%= name %>')">
             <i className="octicon octicon-plus"><span>+</span></i>
         </div>
         </div>
-        <div id="<%= name %>">
+        <div role="list" id="<%= name %>">
             <% _.each(value, function(item, itemIndex) { %>
                 <div class="row" id="<%= label %>-<%= itemIndex%>">
                     <div class="col-1">
-                        <span class="badge badge-pill" role="button" tabindex="0" onclick="onDelListItem('<%= name %>', itemIndex)" onkeydown="onDelListItem('<%= name %>', itemIndex)">
+                        <span class="badge badge-pill" role="button" tabindex="0" onclick="onDelListItem<%= functionName %>('<%= name %>', itemIndex)" onkeydown="onDelListItem<%= functionName %>('<%= name %>', itemIndex)">
                             <i className="octicon octicon-dash"><span>-</span></i>
                         </span>
                     </div>

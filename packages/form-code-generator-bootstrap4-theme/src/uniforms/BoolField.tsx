@@ -37,12 +37,8 @@ export type BoolFieldProps = HTMLFieldProps<
 
 const Bool: React.FC<BoolFieldProps> = (props: BoolFieldProps) => {
   const properties = {
-    id: props.itemProps?.isListItem
-      ? props.itemProps.listName + ".${" + props.itemProps.indexVariableName + "}"
-      : props.name,
-    name: props.itemProps?.isListItem
-      ? props.itemProps.listName + ".${" + props.itemProps.indexVariableName + "}"
-      : props.name,
+    id: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
+    name: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
     label: props.label,
     disabled: props.disabled ?? false,
     checked: props.value ?? false,

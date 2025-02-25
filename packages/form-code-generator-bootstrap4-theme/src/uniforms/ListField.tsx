@@ -19,14 +19,7 @@
 
 import React, { useContext } from "react";
 import { connectField, context, HTMLFieldProps } from "uniforms/cjs";
-import { FormElement, FormInputContainer } from "../api";
-// import {
-//   DEFAULT_DATA_TYPE_ANY_ARRAY,
-//   DEFAULT_DATA_TYPE_BOOLEAN_ARRAY,
-//   DEFAULT_DATA_TYPE_NUMBER_ARRAY,
-//   DEFAULT_DATA_TYPE_OBJECT_ARRAY,
-//   DEFAULT_DATA_TYPE_STRING_ARRAY,
-// } from "./utils/dataTypes";
+import { FormInputContainer } from "../api";
 import { renderListItemFragmentWithContext } from "./rendering/RenderingUtils";
 import { useBootstrapCodegenContext } from "./BootstrapCodeGenContext";
 import { LIST, renderCodeGenElement } from "./templates/templates";

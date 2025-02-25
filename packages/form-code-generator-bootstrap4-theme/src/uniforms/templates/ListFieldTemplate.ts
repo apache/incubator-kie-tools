@@ -57,9 +57,6 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
   }: ListFieldTemplateProps): FormInputContainer {
     const ref: InputReference[] = children.ref;
 
-    // const setValueFromModelRequiredCode: string[] = children.setValueFromModelCode.requiredCode;
-    // const writeValueToModelRequiredCode: string[] = children.writeValueToModelCode.requiredCode;
-
     const getDefaultItemValue = () => {
       return "{}";
     };
@@ -76,6 +73,10 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
         defaultValue: getDefaultItemValue(),
         minCount,
         maxCount,
+        functionName: name
+          .split(".")
+          .map((word) => `${word[0].toUpperCase()}${word.slice(1)}`)
+          .join(""),
       }),
       disabled: disabled,
       globalFunctions: {
@@ -86,11 +87,19 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
           maxCount,
           childrenHtml: `${children.html}`,
           name,
+          functionName: name
+            .split(".")
+            .map((word) => `${word[0].toUpperCase()}${word.slice(1)}`)
+            .join(""),
         }),
         requiredCode: [modifyListSize],
       },
       setValueFromModelCode: {
-        code: this.listFieldSetValueFromModelTemplate({}),
+        code: this.listFieldSetValueFromModelTemplate({
+          id,
+          path: fieldNameToOptionalChain(name),
+          children,
+        }),
         requiredCode: [],
       },
       writeValueToModelCode: {

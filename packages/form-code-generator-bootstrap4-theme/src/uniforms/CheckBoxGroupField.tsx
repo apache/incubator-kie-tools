@@ -48,12 +48,8 @@ const CheckBoxGroup: React.FC<CheckBoxGroupProps> = (props: CheckBoxGroupProps) 
     }) || [];
 
   const inputProps = {
-    id: props.itemProps?.isListItem
-      ? props.itemProps.listName + ".${" + props.itemProps.indexVariableName + "}"
-      : props.name,
-    name: props.itemProps?.isListItem
-      ? props.itemProps.listName + ".${" + props.itemProps.indexVariableName + "}"
-      : props.name,
+    id: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
+    name: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
     label: props.label,
     disabled: props.disabled,
     options: options,

@@ -1,13 +1,31 @@
-function delListItem(value, disabled, minCount, itemIndex) {
-  if (!disabled && minCount < value.length) {
-    const newValue = [...value];
-    newValue.splice(itemIndex, 1);
-    value = newValue;
+function delListItem(value, name, minCount, itemIndex, onDelListItem) {
+  if ((minCount ?? 0) < value.length) {
+    document.getElementById(`${name}.${itemIndex}`).remove();
   }
+  
+  // Re-organize list
+  Array.from(
+    document.getElementById(name).childNodes ?? []
+  ).forEach((element, index) => {
+    const delElement = element.querySelector(`span[name='Remove']`);
+    delElement.onclick = function () { onDelListItem(name, `${index}`) };
+    delElement.onkeydown = function () { onDelListItem(name, `${index}`) };
+
+    element.querySelector("label[for]").htmlFor = `${name}.${index}`;
+    
+    const inputOrSelect = element.querySelector("input, select")
+    inputOrSelect.id = `${name}.${index}`;
+    inputOrSelect.name = `${name}.${index}`;
+
+    element.id = `${name}.${index}`;
+    element.name = `${name}.${index}`;
+  });
 }
 
-function addListItem(value, defaultValue, disabled, maxCount, name, itemIndex, childrenHtml) {
-  if (!disabled && maxCount > value.length) {
+function addListItem(value, defaultValue, maxCount, name, itemIndex, childrenHtml, functionName) {
+  if (maxCount !== undefined && (maxCount > value.length)) {
+    value = value.concat([defaultValue]);
+  } else {
     value = value.concat([defaultValue]);
   }
 
@@ -18,7 +36,7 @@ function addListItem(value, defaultValue, disabled, maxCount, name, itemIndex, c
   newItem.id = name + "." + itemIndex
   newItem.innerHTML = `
   <div class="col-1">
-    <span class="badge badge-pill" role="button" tabindex="0" onclick="onDelListItem('${name}', ${itemIndex})" onkeydown="onDelListItem('${name}', ${itemIndex})">
+    <span name="Remove" class="badge badge-pill" role="button" tabindex="0" onclick="onDelListItem${functionName}('${name}', ${itemIndex})" onkeydown="onDelListItem${functionName}('${name}', ${itemIndex})">
       <i className="octicon octicon-dash"><span>-</span></i>
     </span>
   </div>
@@ -28,4 +46,60 @@ function addListItem(value, defaultValue, disabled, maxCount, name, itemIndex, c
   `
 
   listContainer.appendChild(newItem);
+}
+function recursiveGetObjectListValues(objectElement) {
+  const nestedObjects = objectElement.querySelectorAll("div[role='group']");
+  if (nestedObjects.length) {
+    return Array.from(nestedObjects).reduce((acc, nestedObject) => {
+      return { ...acc, ...recursiveGetObjectListValues(nestedObject) };
+    }, {});
+  }
+  return Array.from(objectElement.querySelectorAll("input, select"))
+    .reduce((acc, inputOrSelectElement) => {
+      acc[inputOrSelectElement.name] = getListValues(inputOrSelectElement);
+      return acc;
+    }, {});
+}
+function recursiveGetArrayListValues(arrayElement) {
+  return Array.from(arrayElement.childNodes).map((childElement) => {
+    if (childElement.getAttribute("role") === "group") {
+      return recursiveGetObjectListValues(childElement);
+    }
+    if (childElement.getAttribute("role") === "list") {
+      return recursiveGetArrayListValues(childElement);
+    }
+    return getListValues(childElement.querySelector("input, select"));
+  });
+}
+function getListValues(inputOrSelectElement) {
+  if (!inputOrSelectElement) {
+    return null;
+  }
+
+  if (inputOrSelectElement.tagName === "INPUT") {
+    if (inputOrSelectElement.type === "text" || inputOrSelectElement.type === "number") {
+      return inputOrSelectElement.value;
+    }
+    if (inputOrSelectElement.type === "checkbox") {
+      return inputOrSelectElement.checked ? (inputOrSelectElement.value || true) : false;
+    }
+    if (inputOrSelectElement.type === "radio") {
+      return inputOrSelectElement.checked ? inputOrSelectElement.value : null;
+    }
+  } else if (inputOrSelectElement.tagName === "SELECT") {
+    if (inputOrSelectElement.multiple) {
+      return Array.from(inputOrSelectElement.selectedOptions).map(opt => opt.value);
+    }
+    return inputOrSelectElement.value;
+  }
+  return null;
+}
+function recursiveGetListValues(element) {
+  if (element.getAttribute("role") === "group") {
+    return recursiveGetObjectListValues(element);
+  }
+  if (element.getAttribute("role") === "list") {
+    return recursiveGetArrayListValues(element);
+  }
+  return getListValues(element);
 }

@@ -1,31 +1,17 @@
-formData.<%=name%> = Array.from(document.getElementById("<%=name%>").querySelectorAll("input, select") ?? []).reduce((values, element) => {
-  const fieldName = element.name;
-  
-  if (element.tagName === "INPUT") {
-      switch (element.type) {
-          case "text":
-          case "number":
-              values.push({ [fieldName]: element.value });
-              break;
-          case "checkbox":
-              if (!values[fieldName]) {
-                values.push({ [fieldName]: false });
-              }
-              if (element.checked) {
-                  values.push({ [fieldName]: element.value || true });
-              }
-              break;
-          case "radio":
-              if (element.checked) {
-                  values.push({ [fieldName]: element.value });
-              }
-              break;
-          default:
-              break;
-      }
-  } else if (element.tagName === "SELECT") {
-      values.push({ [fieldName]: element.options[element.selectedIndex].value });
+formData.<%=name%> = Array.from(document.getElementById("<%=name%>").childNodes).reduce((values, element) => {
+  if (element.getAttribute("role") === "group") {
+    values.push(recursiveGetObjectListValues(element));
+    return values;
   }
 
+  if (element.getAttribute("role") === "list") {
+    values.push(recursiveGetArrayListValues(element));
+    return values;
+  }
+
+  const inputs = element.querySelectorAll("input, select");
+  if (inputs.length) {
+    inputs.forEach(input => values.push(getListValues(input)));
+  }
   return values;
 }, []);

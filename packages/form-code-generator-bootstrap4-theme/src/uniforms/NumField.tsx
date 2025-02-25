@@ -38,12 +38,8 @@ export type NumFieldProps = HTMLFieldProps<
 >;
 const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
   const properties = {
-    id: props.itemProps?.isListItem
-      ? props.itemProps.listName + ".${" + props.itemProps.indexVariableName + "}"
-      : props.name,
-    name: props.itemProps?.isListItem
-      ? props.itemProps.listName + ".${" + props.itemProps.indexVariableName + "}"
-      : props.name,
+    id: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
+    name: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
     label: props.label,
     type: props.type ?? "text",
     disabled: props.disabled ?? false,

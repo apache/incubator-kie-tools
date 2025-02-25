@@ -44,7 +44,7 @@ export const renderFormInputs = (schema: Bridge): FormElement<any>[] => {
 export const renderNestedInputFragmentWithContext = (
   uniformsContext: any,
   field: any,
-  itempProps: any,
+  itemProps: ListItemProps,
   disabled?: boolean
 ): FormInput | undefined => {
   const codegenCtx: BootstrapCodeGenContext = {
@@ -56,7 +56,7 @@ export const renderNestedInputFragmentWithContext = (
       codegenCtx,
       uniformsContext,
       field,
-      itempProps,
+      itemProps,
       disabled,
     })
   );

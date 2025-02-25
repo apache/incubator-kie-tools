@@ -43,12 +43,8 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
   }
 
   const properties = {
-    id: props.itemProps?.isListItem
-      ? props.itemProps.listName + ".${" + props.itemProps.indexVariableName + "}"
-      : props.name,
-    name: props.itemProps?.isListItem
-      ? props.itemProps.listName + ".${" + props.itemProps.indexVariableName + "}"
-      : props.name,
+    id: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
+    name: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
     label: props.label,
     disabled: props.disabled ?? false,
     placeholder: props.placeholder,
