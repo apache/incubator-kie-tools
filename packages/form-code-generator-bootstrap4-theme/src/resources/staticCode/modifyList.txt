@@ -1,17 +1,19 @@
 function delListItem(value, name, minCount, itemIndex, onDelListItem) {
-  if ((minCount ?? 0) < value.length) {
+  if ((minCount ?? 0) <= value.length) {
     document.getElementById(`${name}.${itemIndex}`).remove();
   }
   
   // Re-organize list
   Array.from(
     document.getElementById(name).childNodes ?? []
-  ).forEach((element, index) => {
+  ).filter(node => node.nodeType === 1).forEach((element, index) => {
     const delElement = element.querySelector(`span[name='Remove']`);
     delElement.onclick = function () { onDelListItem(name, `${index}`) };
     delElement.onkeydown = function () { onDelListItem(name, `${index}`) };
 
-    element.querySelector("label[for]").htmlFor = `${name}.${index}`;
+    if (element && element.querySelector("label[for]")) {
+      element.querySelector("label[for]").htmlFor = `${name}.${index}`;
+    }
     
     const inputOrSelect = element.querySelector("input, select")
     inputOrSelect.id = `${name}.${index}`;
@@ -102,4 +104,7 @@ function recursiveGetListValues(element) {
     return recursiveGetArrayListValues(element);
   }
   return getListValues(element);
+}
+function accessObjectPath(obj, objPath) {
+  return objPath.split(".").reduce((acc, pathPiece) => acc[pathPiece], obj);
 }

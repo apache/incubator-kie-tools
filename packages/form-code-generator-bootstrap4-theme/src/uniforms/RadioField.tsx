@@ -40,8 +40,8 @@ export type RadioFieldProps = HTMLFieldProps<
 
 const Radio = (props: RadioFieldProps) => {
   const element: FormInput = renderCodeGenElement(RADIOGROUP, {
-    id: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
-    name: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
+    id: props.name.replaceAll("$", "${" + props.itemProps?.indexVariableName + "}"),
+    name: props.name.replaceAll("$", "${" + props.itemProps?.indexVariableName + "}"),
     label: props.label,
     disabled: props.disabled,
     itemProps: props.itemProps,

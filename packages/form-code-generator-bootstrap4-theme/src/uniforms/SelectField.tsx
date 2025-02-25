@@ -40,8 +40,8 @@ export type SelectInputProps = HTMLFieldProps<
 
 const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
   const element: FormInput = renderCodeGenElement(SELECT, {
-    id: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
-    name: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
+    id: props.name.replaceAll("$", "${" + props.itemProps?.indexVariableName + "}"),
+    name: props.name.replaceAll("$", "${" + props.itemProps?.indexVariableName + "}"),
     label: props.label,
     multiple: props.fieldType === Array,
     placeHolder: props.placeHolder,

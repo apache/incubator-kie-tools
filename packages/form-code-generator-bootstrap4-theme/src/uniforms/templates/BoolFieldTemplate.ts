@@ -54,7 +54,7 @@ export class BoolFieldTemplate implements FormElementTemplate<FormInput, BoolFie
         code: this.checkboxSetValueFromModelTemplate({
           id: props.id,
           path: fieldNameToOptionalChain(props.name),
-          valuePath: props.itemProps?.isListItem ? getItemValeuPath(props.name, props.itemProps.indexVariableName) : "",
+          valuePath: props.itemProps?.isListItem ? getItemValeuPath(props.name) : "",
           isListItem: props.itemProps?.isListItem ?? false,
         }),
       },

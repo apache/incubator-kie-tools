@@ -147,77 +147,20 @@ exports[`<ListField> tests <ListField> - full AutoForm rendering (TO DELETE) 1`]
     &lt;legend&gt;Friends&lt;/legend&gt;
     &lt;div role=&quot;group&quot;&gt;
         &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;item-friends.\${itemIndex}.name&quot;&gt;Name&lt;/label&gt;
-    &lt;input type=&quot;text&quot;
-    id=&quot;friends.\${itemIndex}.name&quot;
-    name=&quot;friends.\${itemIndex}.name&quot;
-    class=&quot;form-control&quot;
-    value=&quot;&quot;/&gt;
-&lt;/div&gt;
-        &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;item-friends.\${itemIndex}.age&quot;&gt;Age&lt;/label&gt;
-    &lt;input
-    type=&quot;number&quot;
-    class=&quot;form-control&quot;
-    id=&quot;friends.\${itemIndex}.age&quot;
-    name=&quot;friends.\${itemIndex}.age&quot;
-    step=&quot;0.01&quot;
-    value=&quot;&quot;/&gt;
-&lt;/div&gt;
-        &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;item-friends.\${itemIndex}.country&quot;&gt;Country&lt;/label&gt;
-    &lt;select class=&quot;form-control&quot; id=&quot;friends.\${itemIndex}.country&quot; name=&quot;friends.\${itemIndex}.country&quot;&gt;
-    &lt;option value=&quot;US&quot;&gt;US&lt;/option&gt;
-    &lt;option value=&quot;Brazil&quot;&gt;Brazil&lt;/option&gt;
-&lt;/select&gt;
-&lt;/div&gt;
-        &lt;div class=&quot;form-check&quot;&gt;
-    &lt;input type=&quot;checkbox&quot; id=&quot;friends.\${itemIndex}.married&quot; name=&quot;friends.\${itemIndex}.married&quot; class=&quot;form-check-input&quot;/&gt;
-    &lt;label class=&quot;form-check-label&quot; for=&quot;friends.\${itemIndex}.married&quot;&gt;Married&lt;/label&gt;
-&lt;/div&gt;
-        &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;item-friends.\${itemIndex}.know&quot;&gt;Know&lt;/label&gt;
-&lt;div class=&quot;form-check&quot;&gt;
-    &lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot;
-        id=&quot;friends.\${itemIndex}.know__Java&quot;
-        name=&quot;friends.\${itemIndex}.know&quot;
-        value=&quot;Java&quot;
-        /&gt;
-    &lt;label class=&quot;form-check-label&quot; for=&quot;friends.\${itemIndex}.know__Java&quot;&gt;Java&lt;/label&gt;
-&lt;/div&gt;
-&lt;div class=&quot;form-check&quot;&gt;
-    &lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot;
-        id=&quot;friends.\${itemIndex}.know__Node&quot;
-        name=&quot;friends.\${itemIndex}.know&quot;
-        value=&quot;Node&quot;
-        /&gt;
-    &lt;label class=&quot;form-check-label&quot; for=&quot;friends.\${itemIndex}.know__Node&quot;&gt;Node&lt;/label&gt;
-&lt;/div&gt;
-&lt;div class=&quot;form-check&quot;&gt;
-    &lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot;
-        id=&quot;friends.\${itemIndex}.know__Docker&quot;
-        name=&quot;friends.\${itemIndex}.know&quot;
-        value=&quot;Docker&quot;
-        /&gt;
-    &lt;label class=&quot;form-check-label&quot; for=&quot;friends.\${itemIndex}.know__Docker&quot;&gt;Docker&lt;/label&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-        &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;item-friends.\${itemIndex}.areas&quot;&gt;Areas&lt;/label&gt;
-    &lt;select class=&quot;form-control&quot; id=&quot;friends.\${itemIndex}.areas&quot; name=&quot;friends.\${itemIndex}.areas&quot;&gt;
-    &lt;option value=&quot;Developer&quot;&gt;Developer&lt;/option&gt;
-    &lt;option value=&quot;HR&quot;&gt;HR&lt;/option&gt;
-    &lt;option value=&quot;UX&quot;&gt;UX&lt;/option&gt;
-&lt;/select&gt;
-&lt;/div&gt;
-        &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;item-friends.\${itemIndex}.birthday&quot;&gt;Birthday&lt;/label&gt;
-    &lt;input
-      type=&quot;datetime-local&quot;
-      id=&quot;friends.\${itemIndex}.birthday&quot;
-      name=&quot;friends.\${itemIndex}.birthday&quot;
-      class=&quot;form-control&quot;
-      /&gt;
+    &lt;div class=&quot;card mb-3&quot;&gt;
+    &lt;div class=&quot;card-body&quot;&gt;
+        &lt;div class=&quot;card-title&quot;&gt;
+        &lt;label class=&quot;col-form-label&quot; for=&quot;friends.\${itemIndex}.know&quot;&gt;Know&lt;/label&gt;
+        &lt;div class=&quot;badge badge-pill float-right&quot; role=&quot;button&quot; tabindex=&quot;0&quot; 
+            onclick=&quot;onAddListItemFriendsKnow(&#39;friends.\${itemIndex}.know&#39;)&quot;
+            onkeydown=&quot;onAddListItemFriendsKnow(&#39;friends.\${itemIndex}.know&#39;)&quot;&gt;
+            &lt;i className=&quot;octicon octicon-plus&quot;&gt;&lt;span&gt;+&lt;/span&gt;&lt;/i&gt;
+        &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div role=&quot;list&quot; id=&quot;friends.\${itemIndex}.know&quot;&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;/div&gt;
 &lt;/div&gt;
     &lt;/div&gt;
 &lt;/fieldset&gt;\`,
@@ -231,15 +174,9 @@ exports[`<ListField> tests <ListField> - full AutoForm rendering (TO DELETE) 1`]
 				return;
 			}
 			data?.friends?.forEach((value, itemIndex) =&gt; {
-				document.getElementById(\`friends.\${itemIndex}.name\`).value = value?.name ?? &quot;&quot;;
-				document.getElementById(\`friends.\${itemIndex}.age\`).value = value?.age ?? &quot;&quot;;
-				setSelectValue(\`friends.\${itemIndex}.country\`, value?.country);
-				document.getElementById(\`friends.\${itemIndex}.married\`).checked = value?.married ?? &quot;&quot;;
-				setCheckboxGroupValues(\`friends.\${itemIndex}.know\`, value?.know ?? &quot;&quot;);
-				setSelectValue(\`friends.\${itemIndex}.areas\`, value?.areas);
-				document.getElementById(\`friends.\${itemIndex}.birthday\`).value = value?.birthday
-					? new Date(value?.birthday).toISOString().slice(0, 16)
-					: &quot;&quot;;
+				data?.friends?.[value]?.know?.forEach((value, itemIndex) =&gt; {
+					document.getElementById(\`friends.\${itemIndex}.know.$\`).value = value?.$ ?? &quot;&quot;;
+				});
 			});
 		}
 		/* Utility function to generate the expected form output as a json object */

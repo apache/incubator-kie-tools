@@ -25,13 +25,14 @@ export function flatFieldName(fieldName: string): string {
   return !fieldName ? "" : fieldName.split(".").join("__");
 }
 
-export function getItemValeuPath(name: string, indexName: string) {
-  // nested
+export function getItemValeuPath(name: string) {
+  // nested array
+  if (name.endsWith("${itemIndex}")) {
+    return "";
+  }
+  // nested object
   if (name.includes("${itemIndex}.")) {
     return `?.${name.split(".").pop()}`;
-  }
-  if (name.includes("${itemIndex}")) {
-    return "";
   }
   return "";
 }

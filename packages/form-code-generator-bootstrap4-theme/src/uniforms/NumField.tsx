@@ -38,8 +38,8 @@ export type NumFieldProps = HTMLFieldProps<
 >;
 const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
   const element: FormInput = renderCodeGenElement(NUMBER, {
-    id: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
-    name: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
+    id: props.name.replaceAll("$", "${" + props.itemProps?.indexVariableName + "}"),
+    name: props.name.replaceAll("$", "${" + props.itemProps?.indexVariableName + "}"),
     label: props.label,
     type: props.type ?? "text",
     disabled: props.disabled ?? false,

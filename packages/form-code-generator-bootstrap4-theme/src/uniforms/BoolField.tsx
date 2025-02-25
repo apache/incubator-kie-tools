@@ -37,8 +37,8 @@ export type BoolFieldProps = HTMLFieldProps<
 
 const Bool: React.FC<BoolFieldProps> = (props: BoolFieldProps) => {
   const element: FormInput = renderCodeGenElement(CHECKBOX, {
-    id: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
-    name: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
+    id: props.name.replaceAll("$", "${" + props.itemProps?.indexVariableName + "}"),
+    name: props.name.replaceAll("$", "${" + props.itemProps?.indexVariableName + "}"),
     label: props.label,
     disabled: props.disabled ?? false,
     checked: props.value ?? false,

@@ -43,8 +43,8 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
   }
 
   const element: FormInput = renderCodeGenElement(DATE, {
-    id: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
-    name: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
+    id: props.name.replaceAll("$", "${" + props.itemProps?.indexVariableName + "}"),
+    name: props.name.replaceAll("$", "${" + props.itemProps?.indexVariableName + "}"),
     label: props.label,
     disabled: props.disabled ?? false,
     placeholder: props.placeholder,

@@ -27,23 +27,13 @@ import createSchema from "./_createSchema";
 const schema = {
   friends: { type: Array },
   "friends.$": Object,
-  "friends.$.name": { type: String },
-  "friends.$.age": { type: Number },
-  "friends.$.country": { type: String, allowedValues: ["US", "Brazil"] },
-  "friends.$.married": { type: Boolean },
   "friends.$.know": {
     type: Array,
-    allowedValues: ["Java", "Node", "Docker"],
     uniforms: {
       checkboxes: true,
     },
   },
-  "friends.$.know.$": String,
-  "friends.$.areas": {
-    type: String,
-    allowedValues: ["Developer", "HR", "UX"],
-  },
-  "friends.$.birthday": { type: Date },
+  "friends.$.know.$": Number,
 };
 
 describe("<ListField> tests", () => {

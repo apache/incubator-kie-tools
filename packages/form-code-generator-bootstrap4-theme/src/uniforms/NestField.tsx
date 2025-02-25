@@ -44,8 +44,8 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
   const codegenCtx = useBootstrapCodegenContext();
 
   const element: FormInputContainer = renderCodeGenElement(NESTED, {
-    id: name.replace("$", "${" + itemProps?.indexVariableName + "}"),
-    name: name.replace("$", "${" + itemProps?.indexVariableName + "}"),
+    id: name.replaceAll("$", "${" + itemProps?.indexVariableName + "}"),
+    name: name.replaceAll("$", "${" + itemProps?.indexVariableName + "}"),
     label: label,
     disabled: disabled,
     itemProps: itemProps,

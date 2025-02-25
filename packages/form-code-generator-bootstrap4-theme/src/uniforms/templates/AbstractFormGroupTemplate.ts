@@ -54,6 +54,7 @@ export abstract class AbstractFormGroupTemplate<Properties extends FormElementTe
   ) {}
 
   render(props: Properties): FormInput {
+    console.log(props.name);
     return {
       ref: getInputReference(props),
       html: template(formGroupTemplate)({
@@ -69,7 +70,7 @@ export abstract class AbstractFormGroupTemplate<Properties extends FormElementTe
           ...props,
           isListItem: props.itemProps?.isListItem ?? false,
           path: fieldNameToOptionalChain(props.name),
-          valuePath: props.itemProps?.isListItem ? getItemValeuPath(props.name, props.itemProps.indexVariableName) : "",
+          valuePath: props.itemProps?.isListItem ? getItemValeuPath(props.name) : "",
           flatFieldName: flatFieldName(props.name),
         }),
       },

@@ -67,7 +67,7 @@ export class CheckBoxGroupFieldTemplate implements FormElementTemplate<FormInput
         code: this.setValueFromModelTemplate({
           ...props,
           path: fieldNameToOptionalChain(props.name),
-          valuePath: props.itemProps?.isListItem ? getItemValeuPath(props.name, props.itemProps.indexVariableName) : "",
+          valuePath: props.itemProps?.isListItem ? getItemValeuPath(props.name) : "",
           isListItem: props.itemProps?.isListItem ?? false,
         }),
         requiredCode: [setRequiredCode],

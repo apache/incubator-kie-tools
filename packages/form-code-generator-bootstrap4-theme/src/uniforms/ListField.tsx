@@ -52,10 +52,11 @@ const List: React.FunctionComponent<ListFieldProps> = ({
   const codegenCtx = useBootstrapCodegenContext();
 
   const element: FormInputContainer = renderCodeGenElement(LIST, {
-    id: name,
-    name: name,
+    id: name.replace("$", "${" + itemProps?.indexVariableName + "}"),
+    name: name.replace("$", "${" + itemProps?.indexVariableName + "}"),
     label: label,
     disabled: disabled,
+    itemProps: itemProps,
     children: renderListItemFragmentWithContext(
       uniformsContext,
       "$",

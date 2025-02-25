@@ -23,18 +23,12 @@ import setValueFromModel from "!!raw-loader!../../resources/templates/listField.
 import writeValueToModel from "!!raw-loader!../../resources/templates/listField.writeModelData.template";
 import modifyList from "!!raw-loader!../../resources/staticCode/modifyList.txt";
 import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
-import { FormInputContainer, InputReference } from "../../api";
+import { FormElement, FormInputContainer, InputReference } from "../../api";
 import { CompiledTemplate, template } from "underscore";
 import { fieldNameToOptionalChain } from "./utils";
 
 interface ListFieldTemplateProps extends FormElementTemplateProps<any> {
-  children: {
-    ref: InputReference[];
-    html: string;
-    disabled: boolean;
-    setValueFromModelCode: { code: string; requiredCode: string[] };
-    writeValueToModelCode: { code: string; requiredCode: string[] };
-  };
+  children: FormElement<any>;
   maxCount: number;
   minCount: number;
 }
@@ -54,12 +48,15 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
     minCount,
     value,
     name,
+    itemProps,
   }: ListFieldTemplateProps): FormInputContainer {
     const ref: InputReference[] = children.ref;
 
     const getDefaultItemValue = () => {
       return "undefined";
     };
+
+    console.log("ListFieldTemplateProps", children);
 
     return {
       ref,
@@ -70,31 +67,28 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
         name,
         value,
         childrenHtml: children.html,
-        functionName: name
-          .split(".")
-          .map((word) => `${word[0].toUpperCase()}${word.slice(1)}`)
-          .join(""),
+        functionName: getFunctionName(name, itemProps?.indexVariableName ?? ""),
       }),
       disabled: disabled,
       globalFunctions: {
-        code: this.listFieldGlobalFunctionsTemplate({
-          defaultValue: getDefaultItemValue(),
-          disabled,
-          minCount,
-          maxCount,
-          childrenHtml: `${children.html}`,
-          name,
-          functionName: name
-            .split(".")
-            .map((word) => `${word[0].toUpperCase()}${word.slice(1)}`)
-            .join(""),
-        }),
+        code:
+          this.listFieldGlobalFunctionsTemplate({
+            defaultValue: getDefaultItemValue(),
+            disabled,
+            minCount,
+            maxCount,
+            childrenHtml: `${children.html}`,
+            name,
+            functionName: getFunctionName(name, itemProps?.indexVariableName ?? ""),
+          }) + children?.globalFunctions?.code,
         requiredCode: [modifyList],
       },
       setValueFromModelCode: {
         code: this.listFieldSetValueFromModelTemplate({
           id,
-          path: fieldNameToOptionalChain(name),
+          path: fieldNameToOptionalChain(name).includes(`$\{${itemProps?.indexVariableName}}`)
+            ? "value"
+            : `data?.${fieldNameToOptionalChain(name)}`,
           itemsSetValueFromModel: children.setValueFromModelCode,
         }),
         requiredCode: [],
@@ -107,4 +101,15 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
       },
     };
   }
+}
+
+function getFunctionName(name: string, indexVariableName: string) {
+  let nameToCaptalize = name;
+  if (name.includes(`$\{${indexVariableName}}`)) {
+    nameToCaptalize = name.replace(`.$\{${indexVariableName}}`, "");
+  }
+  return nameToCaptalize
+    .split(".")
+    .map((word) => `${word?.[0]?.toUpperCase()}${word?.slice(1)}`)
+    .join("");
 }

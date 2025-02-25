@@ -70,7 +70,7 @@ export class SelectFieldTemplate implements FormElementTemplate<FormInput, Selec
         code: this.setValueFromModelTemplate({
           ...props,
           path: fieldNameToOptionalChain(props.name),
-          valuePath: props.itemProps?.isListItem ? getItemValeuPath(props.name, props.itemProps.indexVariableName) : "",
+          valuePath: props.itemProps?.isListItem ? getItemValeuPath(props.name) : "",
           isListItem: props.itemProps?.isListItem ?? false,
         }),
         requiredCode: props.multiple ? [setMultipleRequiredCode] : [setRequiredCode],
