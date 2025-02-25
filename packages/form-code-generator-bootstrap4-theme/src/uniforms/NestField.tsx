@@ -43,24 +43,22 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
   const uniformsContext = useContext(context);
   const codegenCtx = useBootstrapCodegenContext();
 
-  const nestedFields: FormElement<any>[] = [];
-  if (fields) {
-    fields.forEach((field) => {
-      const nestedElement = renderNestedInputFragmentWithContext(uniformsContext, field, itemProps, disabled);
-      if (nestedElement) {
-        nestedFields.push(nestedElement);
-      } else {
-        console.log(`Cannot render form field for: '${field}'`);
-      }
-    });
-  }
-
   const element: FormInputContainer = renderCodeGenElement(NESTED, {
     id: name.replace("$", "${" + itemProps?.indexVariableName + "}"),
     name: name.replace("$", "${" + itemProps?.indexVariableName + "}"),
     label: label,
     disabled: disabled,
-    children: nestedFields,
+    children: fields
+      ? fields.reduce((nestedFields: FormElement<any>[], field) => {
+          const nestedElement = renderNestedInputFragmentWithContext(uniformsContext, field, itemProps, disabled);
+          if (nestedElement) {
+            nestedFields.push(nestedElement);
+          } else {
+            console.log(`Cannot render form field for: '${field}'`);
+          }
+          return nestedFields;
+        }, [])
+      : [],
   });
   codegenCtx?.rendered.push(element);
   return <>{JSON.stringify(element)}</>;

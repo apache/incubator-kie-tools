@@ -35,7 +35,7 @@ export type TextFieldProps = HTMLFieldProps<
 >;
 
 const Text: React.FC<TextFieldProps> = (props: TextFieldProps) => {
-  const properties = {
+  const element: FormInput = renderCodeGenElement(INPUT, {
     id: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
     name: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
     label: props.label,
@@ -44,9 +44,7 @@ const Text: React.FC<TextFieldProps> = (props: TextFieldProps) => {
     placeholder: props.placeholder,
     autoComplete: props.autoComplete ?? false,
     value: props.value,
-  };
-
-  const element: FormInput = renderCodeGenElement(INPUT, properties);
+  });
   useAddFormElementToBootstrapContext(element);
   return <>{JSON.stringify(element)}</>;
 };

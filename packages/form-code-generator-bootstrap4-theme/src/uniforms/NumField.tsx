@@ -37,7 +37,7 @@ export type NumFieldProps = HTMLFieldProps<
   }
 >;
 const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
-  const properties = {
+  const element: FormInput = renderCodeGenElement(NUMBER, {
     id: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
     name: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
     label: props.label,
@@ -49,9 +49,7 @@ const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
     max: props.max,
     min: props.min,
     step: props.decimal ? 0.01 : 1,
-  };
-
-  const element: FormInput = renderCodeGenElement(NUMBER, properties);
+  });
   useAddFormElementToBootstrapContext(element);
   return <>{JSON.stringify(element)}</>;
 };

@@ -39,24 +39,19 @@ export type RadioFieldProps = HTMLFieldProps<
 >;
 
 const Radio = (props: RadioFieldProps) => {
-  const options =
-    props.allowedValues?.map((option) => {
+  const element: FormInput = renderCodeGenElement(RADIOGROUP, {
+    id: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
+    name: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
+    label: props.label,
+    disabled: props.disabled,
+    options: (props.allowedValues ?? [])?.map((option) => {
       return {
         value: option,
         label: props.transform ? props.transform(option) : option,
         checked: props.value === option,
       };
-    }) || [];
-
-  const inputProps = {
-    id: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
-    name: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
-    label: props.label,
-    disabled: props.disabled,
-    options: options,
-  };
-
-  const element: FormInput = renderCodeGenElement(RADIOGROUP, inputProps);
+    }),
+  });
   useAddFormElementToBootstrapContext(element);
   return <>{JSON.stringify(element)}</>;
 };

@@ -61,6 +61,8 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
       return "{}";
     };
 
+    // console.log("children,", children)
+
     return {
       ref,
       html: this.listFieldTemplate({

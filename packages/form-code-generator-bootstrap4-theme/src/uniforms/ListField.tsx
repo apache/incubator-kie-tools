@@ -51,23 +51,21 @@ const List: React.FunctionComponent<ListFieldProps> = ({
   const uniformsContext = useContext(context);
   const codegenCtx = useBootstrapCodegenContext();
 
-  const listItem = renderListItemFragmentWithContext(
-    uniformsContext,
-    "$",
-    {
-      isListItem: true,
-      indexVariableName: "itemIndex",
-      listName: name,
-    },
-    disabled
-  );
-
   const element: FormInputContainer = renderCodeGenElement(LIST, {
     id: name,
     name: name,
     label: label,
     disabled: disabled,
-    children: listItem,
+    children: renderListItemFragmentWithContext(
+      uniformsContext,
+      "$",
+      {
+        isListItem: true,
+        indexVariableName: "itemIndex",
+        listName: name,
+      },
+      disabled
+    ),
   });
 
   codegenCtx?.rendered.push(element);

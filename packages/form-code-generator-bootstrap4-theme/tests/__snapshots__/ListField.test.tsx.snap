@@ -8,143 +8,252 @@ exports[`<ListField> tests <ListField> - full AutoForm rendering (TO DELETE) 1`]
 			&lt;div class=&quot;card-body&quot;&gt;
 				&lt;div class=&quot;card-title&quot;&gt;
 					&lt;label class=&quot;col-form-label&quot; for=&quot;friends&quot;&gt;Friends&lt;/label&gt;
-					&lt;div class=&quot;badge badge-pill float-right&quot; role=&quot;button&quot; tabindex=&quot;0&quot; onclick=&quot;onAddListItem()&quot; onkeydown=&quot;onAddListItem()&quot;&gt;
-						&lt;i className=&quot;octicon octicon-plus&quot; /&gt;
+					&lt;div
+						class=&quot;badge badge-pill float-right&quot;
+						role=&quot;button&quot;
+						tabindex=&quot;0&quot;
+						onclick=&quot;onAddListItemFriends(&#39;friends&#39;)&quot;
+						onkeydown=&quot;onAddListItemFriends(&#39;friends&#39;)&quot;
+					&gt;
+						&lt;i className=&quot;octicon octicon-plus&quot;&gt;&lt;span&gt;+&lt;/span&gt;&lt;/i&gt;
 					&lt;/div&gt;
 				&lt;/div&gt;
-				&lt;div id=&quot;friends&quot;&gt;&lt;/div&gt;
+				&lt;div role=&quot;list&quot; id=&quot;friends&quot;&gt;&lt;/div&gt;
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/div&gt;
 	&lt;script&gt;
-		/* Global functions */
-		function delListItem(value, disabled, minCount) {
-			return (itemIndex) =&gt; {
-				if (!disabled &amp;&amp; minCount &lt; value.length) {
-					const newValue = [...value];
-					newValue.splice(itemIndex, 1);
-					value = newValue;
-				}
-			};
+		function delListItem(value, name, minCount, itemIndex, onDelListItem) {
+			if ((minCount ?? 0) &lt; value.length) {
+				document.getElementById(\`\${name}.\${itemIndex}\`).remove();
+			}
+			// Re-organize list
+			Array.from(document.getElementById(name).childNodes ?? []).forEach((element, index) =&gt; {
+				const delElement = element.querySelector(\`span[name=&#39;Remove&#39;]\`);
+				delElement.onclick = function () {
+					onDelListItem(name, \`\${index}\`);
+				};
+				delElement.onkeydown = function () {
+					onDelListItem(name, \`\${index}\`);
+				};
+				element.querySelector(&quot;label[for]&quot;).htmlFor = \`\${name}.\${index}\`;
+				const inputOrSelect = element.querySelector(&quot;input, select&quot;);
+				inputOrSelect.id = \`\${name}.\${index}\`;
+				inputOrSelect.name = \`\${name}.\${index}\`;
+				element.id = \`\${name}.\${index}\`;
+				element.name = \`\${name}.\${index}\`;
+			});
 		}
-		function addListItem(value, defaultValue, disabled, maxCount, name, childrenHtml) {
-			return () =&gt; {
-				if (!disabled &amp;&amp; maxCount &gt; value.length) {
-					value = value.concat([defaultValue]);
-				}
-				const itemIndex = value.length - 1;
-				const listContainer = document.getElementById(name);
-				const newItem = document.createElement(&quot;div&quot;);
-				newItem.class = &quot;row&quot;;
-				newItem.id = name + &quot;.&quot; + itemIndex;
-				newItem.innerHTML = \`
-    &lt;div class=&quot;col-1&quot;&gt;
-      &lt;span class=&quot;badge badge-pill&quot; role=&quot;button&quot; tabindex=&quot;0&quot; onclick=&quot;onDelListItem(itemIndex)&quot; onkeydown=&quot;onDelListItem(itemIndex)&quot;&gt;
-        &lt;i className=&quot;octicon octicon-dash&quot;&gt;&lt;/i&gt;
-      &lt;/span&gt;
-    &lt;/div&gt;
-    &lt;div class=&quot;col-11&quot;&gt;
-      \${childrenHtml}
-    &lt;/div&gt;
-    \`;
-			};
+		function addListItem(value, defaultValue, maxCount, name, itemIndex, childrenHtml, functionName) {
+			if (maxCount !== undefined &amp;&amp; maxCount &gt; value.length) {
+				value = value.concat([defaultValue]);
+			} else {
+				value = value.concat([defaultValue]);
+			}
+			const listContainer = document.getElementById(name);
+			const newItem = document.createElement(&quot;div&quot;);
+			newItem.class = &quot;row&quot;;
+			newItem.id = name + &quot;.&quot; + itemIndex;
+			newItem.innerHTML = \`
+  &lt;div class=&quot;col-1&quot;&gt;
+    &lt;span name=&quot;Remove&quot; class=&quot;badge badge-pill&quot; role=&quot;button&quot; tabindex=&quot;0&quot; onclick=&quot;onDelListItem\${functionName}(&#39;\${name}&#39;, \${itemIndex})&quot; onkeydown=&quot;onDelListItem\${functionName}(&#39;\${name}&#39;, \${itemIndex})&quot;&gt;
+      &lt;i className=&quot;octicon octicon-dash&quot;&gt;&lt;span&gt;-&lt;/span&gt;&lt;/i&gt;
+    &lt;/span&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;col-11&quot;&gt;
+    \${childrenHtml}
+  &lt;/div&gt;
+  \`;
 			listContainer.appendChild(newItem);
 		}
-		onDelListItem = addDelItem(data?.friends, false, undefined);
-		onAddListItem = addListItem(
-			data?.friends,
-			{},
-			false,
-			undefined,
-			friends,
-			\`&lt;fieldset&gt;
+		function recursiveGetObjectListValues(objectElement) {
+			const nestedObjects = objectElement.querySelectorAll(&quot;div[role=&#39;group&#39;]&quot;);
+			if (nestedObjects.length) {
+				return Array.from(nestedObjects).reduce((acc, nestedObject) =&gt; {
+					return { ...acc, ...recursiveGetObjectListValues(nestedObject) };
+				}, {});
+			}
+			return Array.from(objectElement.querySelectorAll(&quot;input, select&quot;)).reduce((acc, inputOrSelectElement) =&gt; {
+				acc[inputOrSelectElement.name] = getListValues(inputOrSelectElement);
+				return acc;
+			}, {});
+		}
+		function recursiveGetArrayListValues(arrayElement) {
+			return Array.from(arrayElement.childNodes).map((childElement) =&gt; {
+				if (childElement.getAttribute(&quot;role&quot;) === &quot;group&quot;) {
+					return recursiveGetObjectListValues(childElement);
+				}
+				if (childElement.getAttribute(&quot;role&quot;) === &quot;list&quot;) {
+					return recursiveGetArrayListValues(childElement);
+				}
+				return getListValues(childElement.querySelector(&quot;input, select&quot;));
+			});
+		}
+		function getListValues(inputOrSelectElement) {
+			if (!inputOrSelectElement) {
+				return null;
+			}
+			if (inputOrSelectElement.tagName === &quot;INPUT&quot;) {
+				if (inputOrSelectElement.type === &quot;text&quot; || inputOrSelectElement.type === &quot;number&quot;) {
+					return inputOrSelectElement.value;
+				}
+				if (inputOrSelectElement.type === &quot;checkbox&quot;) {
+					return inputOrSelectElement.checked ? inputOrSelectElement.value || true : false;
+				}
+				if (inputOrSelectElement.type === &quot;radio&quot;) {
+					return inputOrSelectElement.checked ? inputOrSelectElement.value : null;
+				}
+			} else if (inputOrSelectElement.tagName === &quot;SELECT&quot;) {
+				if (inputOrSelectElement.multiple) {
+					return Array.from(inputOrSelectElement.selectedOptions).map((opt) =&gt; opt.value);
+				}
+				return inputOrSelectElement.value;
+			}
+			return null;
+		}
+		function recursiveGetListValues(element) {
+			if (element.getAttribute(&quot;role&quot;) === &quot;group&quot;) {
+				return recursiveGetObjectListValues(element);
+			}
+			if (element.getAttribute(&quot;role&quot;) === &quot;list&quot;) {
+				return recursiveGetArrayListValues(element);
+			}
+			return getListValues(element);
+		}
+		function accessObjectPath(obj, objPath) {
+			return objPath.split(&quot;.&quot;).reduce((acc, pathPiece) =&gt; acc[pathPiece], obj);
+		}
+		function onDelListItemFriends(name, itemIndex) {
+			const formData = getFormData();
+			const value = accessObjectPath(formData, name) ?? [{}];
+			const disabled = false;
+			if (!disabled) {
+				delListItem(value, &quot;friends&quot;, undefined, itemIndex, onDelListItemFriends);
+			}
+		}
+		function onAddListItemFriends(name) {
+			const formData = getFormData();
+			const value = accessObjectPath(formData, name) ?? [{}];
+			const itemIndex = value.length;
+			const disabled = false;
+			if (!disabled) {
+				addListItem(
+					value,
+					{},
+					undefined,
+					&quot;friends&quot;,
+					itemIndex,
+					\`&lt;fieldset&gt;
     &lt;legend&gt;Friends&lt;/legend&gt;
-    &lt;div&gt;
+    &lt;div role=&quot;group&quot;&gt;
         &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;friends.$.name&quot;&gt;Name&lt;/label&gt;
+    &lt;label for=&quot;friends.\${itemIndex}.name&quot;&gt;Name&lt;/label&gt;
     &lt;input type=&quot;text&quot;
-    id=&quot;friends.$.name&quot;
-    name=&quot;friends.$.name&quot;
+    id=&quot;friends.\${itemIndex}.name&quot;
+    name=&quot;friends.\${itemIndex}.name&quot;
     class=&quot;form-control&quot;
     value=&quot;&quot;/&gt;
 &lt;/div&gt;
         &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;friends.$.age&quot;&gt;Age&lt;/label&gt;
+    &lt;label for=&quot;friends.\${itemIndex}.age&quot;&gt;Age&lt;/label&gt;
     &lt;input
     type=&quot;number&quot;
     class=&quot;form-control&quot;
-    id=&quot;friends.$.age&quot;
-    name=&quot;friends.$.age&quot;
+    id=&quot;friends.\${itemIndex}.age&quot;
+    name=&quot;friends.\${itemIndex}.age&quot;
     step=&quot;0.01&quot;
     value=&quot;&quot;/&gt;
 &lt;/div&gt;
         &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;friends.$.country&quot;&gt;Country&lt;/label&gt;
-    &lt;select class=&quot;form-control&quot; id=&quot;friends.$.country&quot; name=&quot;friends.$.country&quot;&gt;
+    &lt;label for=&quot;friends.\${itemIndex}.country&quot;&gt;Country&lt;/label&gt;
+    &lt;select class=&quot;form-control&quot; id=&quot;friends.\${itemIndex}.country&quot; name=&quot;friends.\${itemIndex}.country&quot;&gt;
     &lt;option value=&quot;US&quot;&gt;US&lt;/option&gt;
     &lt;option value=&quot;Brazil&quot;&gt;Brazil&lt;/option&gt;
 &lt;/select&gt;
 &lt;/div&gt;
         &lt;div class=&quot;form-check&quot;&gt;
-    &lt;input type=&quot;checkbox&quot; id=&quot;friends.$.married&quot; name=&quot;friends.$.married&quot; class=&quot;form-check-input&quot;/&gt;
-    &lt;label class=&quot;form-check-label&quot; for=&quot;friends.$.married&quot;&gt;Married&lt;/label&gt;
+    &lt;input type=&quot;checkbox&quot; id=&quot;friends.\${itemIndex}.married&quot; name=&quot;friends.\${itemIndex}.married&quot; class=&quot;form-check-input&quot;/&gt;
+    &lt;label class=&quot;form-check-label&quot; for=&quot;friends.\${itemIndex}.married&quot;&gt;Married&lt;/label&gt;
 &lt;/div&gt;
         &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;friends.$.know&quot;&gt;Know&lt;/label&gt;
+    &lt;label for=&quot;friends.\${itemIndex}.know&quot;&gt;Know&lt;/label&gt;
 &lt;div class=&quot;form-check&quot;&gt;
     &lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot;
-        id=&quot;friends.$.know__Java&quot;
-        name=&quot;friends.$.know&quot;
+        id=&quot;friends.\${itemIndex}.know__Java&quot;
+        name=&quot;friends.\${itemIndex}.know&quot;
         value=&quot;Java&quot;
         /&gt;
-    &lt;label class=&quot;form-check-label&quot; for=&quot;friends.$.know__Java&quot;&gt;Java&lt;/label&gt;
+    &lt;label class=&quot;form-check-label&quot; for=&quot;friends.\${itemIndex}.know__Java&quot;&gt;Java&lt;/label&gt;
 &lt;/div&gt;
 &lt;div class=&quot;form-check&quot;&gt;
     &lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot;
-        id=&quot;friends.$.know__Node&quot;
-        name=&quot;friends.$.know&quot;
+        id=&quot;friends.\${itemIndex}.know__Node&quot;
+        name=&quot;friends.\${itemIndex}.know&quot;
         value=&quot;Node&quot;
         /&gt;
-    &lt;label class=&quot;form-check-label&quot; for=&quot;friends.$.know__Node&quot;&gt;Node&lt;/label&gt;
+    &lt;label class=&quot;form-check-label&quot; for=&quot;friends.\${itemIndex}.know__Node&quot;&gt;Node&lt;/label&gt;
 &lt;/div&gt;
 &lt;div class=&quot;form-check&quot;&gt;
     &lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot;
-        id=&quot;friends.$.know__Docker&quot;
-        name=&quot;friends.$.know&quot;
+        id=&quot;friends.\${itemIndex}.know__Docker&quot;
+        name=&quot;friends.\${itemIndex}.know&quot;
         value=&quot;Docker&quot;
         /&gt;
-    &lt;label class=&quot;form-check-label&quot; for=&quot;friends.$.know__Docker&quot;&gt;Docker&lt;/label&gt;
+    &lt;label class=&quot;form-check-label&quot; for=&quot;friends.\${itemIndex}.know__Docker&quot;&gt;Docker&lt;/label&gt;
 &lt;/div&gt;
 &lt;/div&gt;
         &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;friends.$.areas&quot;&gt;Areas&lt;/label&gt;
-    &lt;select class=&quot;form-control&quot; id=&quot;friends.$.areas&quot; name=&quot;friends.$.areas&quot;&gt;
+    &lt;label for=&quot;friends.\${itemIndex}.areas&quot;&gt;Areas&lt;/label&gt;
+    &lt;select class=&quot;form-control&quot; id=&quot;friends.\${itemIndex}.areas&quot; name=&quot;friends.\${itemIndex}.areas&quot;&gt;
     &lt;option value=&quot;Developer&quot;&gt;Developer&lt;/option&gt;
     &lt;option value=&quot;HR&quot;&gt;HR&lt;/option&gt;
     &lt;option value=&quot;UX&quot;&gt;UX&lt;/option&gt;
 &lt;/select&gt;
 &lt;/div&gt;
         &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;friends.$.birthday&quot;&gt;Birthday&lt;/label&gt;
+    &lt;label for=&quot;friends.\${itemIndex}.birthday&quot;&gt;Birthday&lt;/label&gt;
     &lt;input
       type=&quot;datetime-local&quot;
-      id=&quot;friends.$.birthday&quot;
-      name=&quot;friends.$.birthday&quot;
+      id=&quot;friends.\${itemIndex}.birthday&quot;
+      name=&quot;friends.\${itemIndex}.birthday&quot;
       class=&quot;form-control&quot;
       /&gt;
 &lt;/div&gt;
     &lt;/div&gt;
-&lt;/fieldset&gt;\`
-		);
+&lt;/fieldset&gt;\`,
+					&quot;Friends&quot;
+				);
+			}
+		}
 		/* Utility function that fills the form with the data received from the kogito runtime */
 		function setFormData(data) {
 			if (!data) {
 				return;
 			}
+			data?.friends?.forEach((value, index) =&gt; {
+				document.getElementById(\`friends?.\${index}\`).value = value ?? &quot;&quot;;
+				// missing nested objects;
+				document.getElementById(&quot;friends&quot;).value = data?.friends ?? &quot;&quot;;
+			});
 		}
 		/* Utility function to generate the expected form output as a json object */
 		function getFormData() {
 			const formData = {};
+			formData.friends = Array.from(document.getElementById(&quot;friends&quot;).childNodes).reduce((values, element) =&gt; {
+				if (element.getAttribute(&quot;role&quot;) === &quot;group&quot;) {
+					values.push(recursiveGetObjectListValues(element));
+					return values;
+				}
+				if (element.getAttribute(&quot;role&quot;) === &quot;list&quot;) {
+					values.push(recursiveGetArrayListValues(element));
+					return values;
+				}
+				const inputs = element.querySelectorAll(&quot;input, select&quot;);
+				if (inputs.length) {
+					inputs.forEach((input) =&gt; values.push(getListValues(input)));
+				}
+				return values;
+			}, []);
 			return formData;
 		}
 		/* Utility function to validate the form on the &#39;beforeSubmit&#39; Lifecycle Hook */

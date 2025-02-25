@@ -42,7 +42,7 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
     return date?.toISOString().slice(0, -8);
   }
 
-  const properties = {
+  const element: FormInput = renderCodeGenElement(DATE, {
     id: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
     name: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
     label: props.label,
@@ -52,9 +52,7 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
     value: formatDate(props.value),
     max: formatDate(props.max),
     min: formatDate(props.min),
-  };
-
-  const element: FormInput = renderCodeGenElement(DATE, properties);
+  });
   useAddFormElementToBootstrapContext(element);
   return <>{JSON.stringify(element)}</>;
 };

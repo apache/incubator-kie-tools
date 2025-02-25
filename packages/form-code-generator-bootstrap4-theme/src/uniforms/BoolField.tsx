@@ -36,15 +36,13 @@ export type BoolFieldProps = HTMLFieldProps<
 >;
 
 const Bool: React.FC<BoolFieldProps> = (props: BoolFieldProps) => {
-  const properties = {
+  const element: FormInput = renderCodeGenElement(CHECKBOX, {
     id: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
     name: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
     label: props.label,
     disabled: props.disabled ?? false,
     checked: props.value ?? false,
-  };
-
-  const element: FormInput = renderCodeGenElement(CHECKBOX, properties);
+  });
 
   useAddFormElementToBootstrapContext(element);
 

@@ -38,24 +38,19 @@ export type CheckBoxGroupProps = HTMLFieldProps<
 >;
 
 const CheckBoxGroup: React.FC<CheckBoxGroupProps> = (props: CheckBoxGroupProps) => {
-  const options =
-    props.allowedValues?.map((option) => {
+  const element: FormInput = renderCodeGenElement(CHECKBOXGROUP, {
+    id: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
+    name: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
+    label: props.label,
+    disabled: props.disabled,
+    options: (props.allowedValues ?? [])?.map((option) => {
       return {
         value: option,
         label: props.transform ? props.transform(option) : option,
         checked: props.value?.includes(option),
       };
-    }) || [];
-
-  const inputProps = {
-    id: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
-    name: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
-    label: props.label,
-    disabled: props.disabled,
-    options: options,
-  };
-
-  const element: FormInput = renderCodeGenElement(CHECKBOXGROUP, inputProps);
+    }),
+  });
   useAddFormElementToBootstrapContext(element);
   return <>{JSON.stringify(element)}</>;
 };

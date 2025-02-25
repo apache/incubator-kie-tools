@@ -39,27 +39,22 @@ export type SelectInputProps = HTMLFieldProps<
 >;
 
 const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
-  const options =
-    props.allowedValues?.map((option) => {
-      return {
-        value: option,
-        label: props.transform ? props.transform(option) : option,
-        checked: props.value?.includes(option),
-      };
-    }) || [];
-
-  const inputProps = {
+  const element: FormInput = renderCodeGenElement(SELECT, {
     id: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
     name: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
     label: props.label,
     multiple: props.fieldType === Array,
     placeHolder: props.placeHolder,
     disabled: props.disabled,
-    options: options,
     value: props.value,
-  };
-
-  const element: FormInput = renderCodeGenElement(SELECT, inputProps);
+    options: (props.allowedValues ?? [])?.map((option) => {
+      return {
+        value: option,
+        label: props.transform ? props.transform(option) : option,
+        checked: props.value?.includes(option),
+      };
+    }),
+  });
   useAddFormElementToBootstrapContext(element);
   return <>{JSON.stringify(element)}</>;
 };

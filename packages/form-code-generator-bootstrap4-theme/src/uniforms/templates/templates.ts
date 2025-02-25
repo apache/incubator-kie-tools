@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import { CodeGenElement, FormElement } from "../../api";
+import { CodeGenElement } from "../../api";
 import { TextFieldTemplate } from "./TextFieldTemplate";
 import { NumFieldTemplate } from "./NumFieldTemplate";
-import { CodeGenTemplate, FormElementTemplate } from "./types";
+import { CodeGenTemplate } from "./types";
 import { BoolFieldTemplate } from "./BoolFieldTemplate";
 import { DateFieldTemplate } from "./DateFieldTemplate";
 import { RadioGroupFieldTemplate } from "./RadioGroupFieldTemplate";

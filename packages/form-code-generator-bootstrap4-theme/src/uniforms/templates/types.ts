@@ -18,7 +18,7 @@
  */
 
 import formGroupTemplate from "!!raw-loader!../../resources/templates/formGroup.template";
-import { CodeFragment, CodeGenElement, FormElement, FormInput } from "../../api";
+import { CodeGenElement, FormElement, FormInput } from "../../api";
 import { CompiledTemplate, template } from "underscore";
 import { getInputReference } from "../utils/Utils";
 import { fieldNameToOptionalChain, flatFieldName } from "./utils";
@@ -34,7 +34,7 @@ export interface FormElementTemplateProps<Type> {
   label: string;
   disabled: boolean;
   value: Type;
-  itemProps?: ListItemProps;
+  itemProps: ListItemProps;
 }
 
 export interface FormElementTemplate<
@@ -71,6 +71,7 @@ export abstract class AbstractFormGroupInputTemplate<Properties extends FormElem
       setValueFromModelCode: {
         code: this.setValueFromModelTemplate({
           ...props,
+          isListItem: props.itemProps?.isListItem ?? false,
           path: fieldNameToOptionalChain(props.name),
           flatFieldName: flatFieldName(props.name),
         }),
