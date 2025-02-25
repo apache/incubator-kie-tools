@@ -43,6 +43,7 @@ const CheckBoxGroup: React.FC<CheckBoxGroupProps> = (props: CheckBoxGroupProps) 
     name: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
     label: props.label,
     disabled: props.disabled,
+    itemProps: props.itemProps,
     options: (props.allowedValues ?? [])?.map((option) => {
       return {
         value: option,

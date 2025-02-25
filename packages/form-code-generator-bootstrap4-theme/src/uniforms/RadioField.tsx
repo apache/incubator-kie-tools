@@ -44,6 +44,7 @@ const Radio = (props: RadioFieldProps) => {
     name: props.name.replace("$", "${" + props.itemProps?.indexVariableName + "}"),
     label: props.label,
     disabled: props.disabled,
+    itemProps: props.itemProps,
     options: (props.allowedValues ?? [])?.map((option) => {
       return {
         value: option,

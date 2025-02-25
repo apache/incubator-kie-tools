@@ -52,6 +52,7 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
     value: formatDate(props.value),
     max: formatDate(props.max),
     min: formatDate(props.min),
+    itemProps: props.itemProps,
   });
   useAddFormElementToBootstrapContext(element);
   return <>{JSON.stringify(element)}</>;

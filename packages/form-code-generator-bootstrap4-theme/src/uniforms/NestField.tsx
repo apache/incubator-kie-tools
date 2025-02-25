@@ -48,6 +48,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
     name: name.replace("$", "${" + itemProps?.indexVariableName + "}"),
     label: label,
     disabled: disabled,
+    itemProps: itemProps,
     children: fields
       ? fields.reduce((nestedFields: FormElement<any>[], field) => {
           const nestedElement = renderNestedInputFragmentWithContext(uniformsContext, field, itemProps, disabled);

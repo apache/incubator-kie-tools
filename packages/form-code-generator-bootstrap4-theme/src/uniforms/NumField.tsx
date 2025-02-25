@@ -49,6 +49,7 @@ const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
     max: props.max,
     min: props.min,
     step: props.decimal ? 0.01 : 1,
+    itemProps: props.itemProps,
   });
   useAddFormElementToBootstrapContext(element);
   return <>{JSON.stringify(element)}</>;

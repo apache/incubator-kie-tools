@@ -57,10 +57,8 @@ export abstract class AbstractFormGroupTemplate<Properties extends FormElementTe
     return {
       ref: getInputReference(props),
       html: template(formGroupTemplate)({
-        id: props.itemProps?.isListItem ? `${props.itemProps.listName}.${props.itemProps.indexVariableName}` : props.id,
-        label: props.itemProps?.isListItem
-          ? `${props.itemProps.listName}.${props.itemProps.indexVariableName}`
-          : props.label,
+        id: props.id,
+        label: props.label,
         input: this.inputTemplate({ props: props }),
         isListItem: props.itemProps?.isListItem ?? false,
       }),

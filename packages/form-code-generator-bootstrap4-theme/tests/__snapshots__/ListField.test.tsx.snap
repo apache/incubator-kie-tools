@@ -147,7 +147,7 @@ exports[`<ListField> tests <ListField> - full AutoForm rendering (TO DELETE) 1`]
     &lt;legend&gt;Friends&lt;/legend&gt;
     &lt;div role=&quot;group&quot;&gt;
         &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;friends.\${itemIndex}.name&quot;&gt;Name&lt;/label&gt;
+    &lt;label for=&quot;item-friends.\${itemIndex}.name&quot;&gt;Name&lt;/label&gt;
     &lt;input type=&quot;text&quot;
     id=&quot;friends.\${itemIndex}.name&quot;
     name=&quot;friends.\${itemIndex}.name&quot;
@@ -155,7 +155,7 @@ exports[`<ListField> tests <ListField> - full AutoForm rendering (TO DELETE) 1`]
     value=&quot;&quot;/&gt;
 &lt;/div&gt;
         &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;friends.\${itemIndex}.age&quot;&gt;Age&lt;/label&gt;
+    &lt;label for=&quot;item-friends.\${itemIndex}.age&quot;&gt;Age&lt;/label&gt;
     &lt;input
     type=&quot;number&quot;
     class=&quot;form-control&quot;
@@ -165,7 +165,7 @@ exports[`<ListField> tests <ListField> - full AutoForm rendering (TO DELETE) 1`]
     value=&quot;&quot;/&gt;
 &lt;/div&gt;
         &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;friends.\${itemIndex}.country&quot;&gt;Country&lt;/label&gt;
+    &lt;label for=&quot;item-friends.\${itemIndex}.country&quot;&gt;Country&lt;/label&gt;
     &lt;select class=&quot;form-control&quot; id=&quot;friends.\${itemIndex}.country&quot; name=&quot;friends.\${itemIndex}.country&quot;&gt;
     &lt;option value=&quot;US&quot;&gt;US&lt;/option&gt;
     &lt;option value=&quot;Brazil&quot;&gt;Brazil&lt;/option&gt;
@@ -176,7 +176,7 @@ exports[`<ListField> tests <ListField> - full AutoForm rendering (TO DELETE) 1`]
     &lt;label class=&quot;form-check-label&quot; for=&quot;friends.\${itemIndex}.married&quot;&gt;Married&lt;/label&gt;
 &lt;/div&gt;
         &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;friends.\${itemIndex}.know&quot;&gt;Know&lt;/label&gt;
+    &lt;label for=&quot;item-friends.\${itemIndex}.know&quot;&gt;Know&lt;/label&gt;
 &lt;div class=&quot;form-check&quot;&gt;
     &lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot;
         id=&quot;friends.\${itemIndex}.know__Java&quot;
@@ -203,7 +203,7 @@ exports[`<ListField> tests <ListField> - full AutoForm rendering (TO DELETE) 1`]
 &lt;/div&gt;
 &lt;/div&gt;
         &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;friends.\${itemIndex}.areas&quot;&gt;Areas&lt;/label&gt;
+    &lt;label for=&quot;item-friends.\${itemIndex}.areas&quot;&gt;Areas&lt;/label&gt;
     &lt;select class=&quot;form-control&quot; id=&quot;friends.\${itemIndex}.areas&quot; name=&quot;friends.\${itemIndex}.areas&quot;&gt;
     &lt;option value=&quot;Developer&quot;&gt;Developer&lt;/option&gt;
     &lt;option value=&quot;HR&quot;&gt;HR&lt;/option&gt;
@@ -211,7 +211,7 @@ exports[`<ListField> tests <ListField> - full AutoForm rendering (TO DELETE) 1`]
 &lt;/select&gt;
 &lt;/div&gt;
         &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;friends.\${itemIndex}.birthday&quot;&gt;Birthday&lt;/label&gt;
+    &lt;label for=&quot;item-friends.\${itemIndex}.birthday&quot;&gt;Birthday&lt;/label&gt;
     &lt;input
       type=&quot;datetime-local&quot;
       id=&quot;friends.\${itemIndex}.birthday&quot;

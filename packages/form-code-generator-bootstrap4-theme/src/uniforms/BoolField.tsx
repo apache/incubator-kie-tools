@@ -42,6 +42,7 @@ const Bool: React.FC<BoolFieldProps> = (props: BoolFieldProps) => {
     label: props.label,
     disabled: props.disabled ?? false,
     checked: props.value ?? false,
+    itemProps: props.itemProps,
   });
 
   useAddFormElementToBootstrapContext(element);

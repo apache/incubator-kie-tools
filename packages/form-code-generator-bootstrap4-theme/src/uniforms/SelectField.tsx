@@ -47,6 +47,7 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
     placeHolder: props.placeHolder,
     disabled: props.disabled,
     value: props.value,
+    itemProps: props.itemProps,
     options: (props.allowedValues ?? [])?.map((option) => {
       return {
         value: option,

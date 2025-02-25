@@ -44,6 +44,7 @@ const Text: React.FC<TextFieldProps> = (props: TextFieldProps) => {
     placeholder: props.placeholder,
     autoComplete: props.autoComplete ?? false,
     value: props.value,
+    itemProps: props.itemProps,
   });
   useAddFormElementToBootstrapContext(element);
   return <>{JSON.stringify(element)}</>;
