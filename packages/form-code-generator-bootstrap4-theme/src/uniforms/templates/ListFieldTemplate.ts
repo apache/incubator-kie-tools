@@ -29,7 +29,7 @@ import { fieldNameToOptionalChain } from "./utils";
 
 interface ListFieldTemplateProps extends FormElementTemplateProps<any> {
   children: {
-    ref: { id: string; binding: string }[];
+    ref: InputReference[];
     html: string;
     disabled: boolean;
     setValueFromModelCode: { code: string; requiredCode: string[] };
@@ -58,7 +58,7 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
     const ref: InputReference[] = children.ref;
 
     const getDefaultItemValue = () => {
-      return "{}";
+      return "undefined";
     };
 
     return {

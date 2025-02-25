@@ -74,7 +74,7 @@ exports[`<ListField> tests <ListField> - full AutoForm rendering (TO DELETE) 1`]
 				}, {});
 			}
 			return Array.from(objectElement.querySelectorAll(&quot;input, select&quot;)).reduce((acc, inputOrSelectElement) =&gt; {
-				acc[inputOrSelectElement.name] = getListValues(inputOrSelectElement);
+				acc[\`\${inputOrSelectElement.name.split(&quot;.&quot;).pop()}\`] = getListValues(inputOrSelectElement);
 				return acc;
 			}, {});
 		}
@@ -139,7 +139,7 @@ exports[`<ListField> tests <ListField> - full AutoForm rendering (TO DELETE) 1`]
 			if (!disabled) {
 				addListItem(
 					value,
-					{},
+					undefined,
 					undefined,
 					&quot;friends&quot;,
 					itemIndex,

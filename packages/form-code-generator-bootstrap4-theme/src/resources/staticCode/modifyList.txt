@@ -56,7 +56,7 @@ function recursiveGetObjectListValues(objectElement) {
   }
   return Array.from(objectElement.querySelectorAll("input, select"))
     .reduce((acc, inputOrSelectElement) => {
-      acc[inputOrSelectElement.name] = getListValues(inputOrSelectElement);
+      acc[`${inputOrSelectElement.name.split(".").pop()}`] = getListValues(inputOrSelectElement);
       return acc;
     }, {});
 }
