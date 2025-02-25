@@ -21,7 +21,7 @@ import listField from "!!raw-loader!../../resources/templates/listField.template
 import globalFunctions from "!!raw-loader!../../resources/templates/listField.globalFunctions.template";
 import setValueFromModel from "!!raw-loader!../../resources/templates/listField.setModelData.template";
 import writeValueToModel from "!!raw-loader!../../resources/templates/listField.writeModelData.template";
-import modifyListSize from "!!raw-loader!../../resources/staticCode/modifyListSize.txt";
+import modifyList from "!!raw-loader!../../resources/staticCode/modifyList.txt";
 import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
 import { FormInputContainer, InputReference } from "../../api";
 import { CompiledTemplate, template } from "underscore";
@@ -94,7 +94,7 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
             .map((word) => `${word[0].toUpperCase()}${word.slice(1)}`)
             .join(""),
         }),
-        requiredCode: [modifyListSize],
+        requiredCode: [modifyList],
       },
       setValueFromModelCode: {
         code: this.listFieldSetValueFromModelTemplate({
