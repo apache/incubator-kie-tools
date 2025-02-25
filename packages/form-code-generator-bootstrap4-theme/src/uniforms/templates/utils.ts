@@ -18,17 +18,20 @@
  */
 
 export function fieldNameToOptionalChain(fieldName: string): string {
-  if (!fieldName) {
-    return "";
-  }
-
-  return fieldName.split(".").join("?.");
+  return !fieldName ? "" : fieldName.split(".").join("?.");
 }
 
 export function flatFieldName(fieldName: string): string {
-  if (!fieldName) {
+  return !fieldName ? "" : fieldName.split(".").join("__");
+}
+
+export function getItemValeuPath(name: string, indexName: string) {
+  // nested
+  if (name.includes("${itemIndex}.")) {
+    return `?.${name.split(".").pop()}`;
+  }
+  if (name.includes("${itemIndex}")) {
     return "";
   }
-
-  return fieldName.split(".").join("__");
+  return "";
 }

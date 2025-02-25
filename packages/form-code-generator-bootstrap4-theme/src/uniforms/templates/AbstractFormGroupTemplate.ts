@@ -21,7 +21,7 @@ import formGroupTemplate from "!!raw-loader!../../resources/templates/formGroup.
 import { CodeGenElement, FormElement, FormInput } from "../../api";
 import { CompiledTemplate, template } from "underscore";
 import { getInputReference } from "../utils/Utils";
-import { fieldNameToOptionalChain, flatFieldName } from "./utils";
+import { fieldNameToOptionalChain, flatFieldName, getItemValeuPath } from "./utils";
 import { ListItemProps } from "../rendering/ListFieldInput";
 
 export interface CodeGenTemplate<Element extends CodeGenElement, Properties> {
@@ -69,6 +69,7 @@ export abstract class AbstractFormGroupTemplate<Properties extends FormElementTe
           ...props,
           isListItem: props.itemProps?.isListItem ?? false,
           path: fieldNameToOptionalChain(props.name),
+          valuePath: props.itemProps?.isListItem ? getItemValeuPath(props.name, props.itemProps.indexVariableName) : "",
           flatFieldName: flatFieldName(props.name),
         }),
       },

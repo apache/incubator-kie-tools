@@ -340,8 +340,8 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 				? new Date(data?.interview?.hiringDate).toISOString().slice(0, 16)
 				: &quot;&quot;;
 			data?.friends?.forEach((value, itemIndex) =&gt; {
-				document.getElementById(\`friends.\${itemIndex}.name\`).value = value ?? &quot;&quot;;
-				document.getElementById(\`friends.\${itemIndex}.age\`).value = value ?? &quot;&quot;;
+				document.getElementById(\`friends.\${itemIndex}.name\`).value = value?.name ?? &quot;&quot;;
+				document.getElementById(\`friends.\${itemIndex}.age\`).value = value?.age ?? &quot;&quot;;
 			});
 		}
 		/* Utility function to generate the expected form output as a json object */

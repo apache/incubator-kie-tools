@@ -1,1 +1,1 @@
-<% if (isListItem) { %>setRadioButtonGroupValue(`<%=name%>`, value ?? "");<% } else { %>setRadioButtonGroupValue("<%=name%>", data?.<%=path%>);<% } %>
+<% if (isListItem) { %>setRadioButtonGroupValue(`<%=name%>`, value<%= valuePath %> ?? "");<% } else { %>setRadioButtonGroupValue("<%=name%>", data?.<%=path%>);<% } %>

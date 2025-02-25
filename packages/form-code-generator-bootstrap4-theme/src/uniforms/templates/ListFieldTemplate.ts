@@ -70,9 +70,6 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
         name,
         value,
         childrenHtml: children.html,
-        defaultValue: getDefaultItemValue(),
-        minCount,
-        maxCount,
         functionName: name
           .split(".")
           .map((word) => `${word[0].toUpperCase()}${word.slice(1)}`)

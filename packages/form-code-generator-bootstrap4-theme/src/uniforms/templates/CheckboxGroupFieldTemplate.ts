@@ -26,7 +26,7 @@ import formGroupTemplate from "!!raw-loader!../../resources/templates/formGroup.
 import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
 import { CompiledTemplate, template } from "underscore";
 import { FormInput } from "../../api";
-import { fieldNameToOptionalChain } from "./utils";
+import { fieldNameToOptionalChain, getItemValeuPath } from "./utils";
 import { getInputReference } from "../utils/Utils";
 
 export interface Option {
@@ -67,6 +67,7 @@ export class CheckBoxGroupFieldTemplate implements FormElementTemplate<FormInput
         code: this.setValueFromModelTemplate({
           ...props,
           path: fieldNameToOptionalChain(props.name),
+          valuePath: props.itemProps?.isListItem ? getItemValeuPath(props.name, props.itemProps.indexVariableName) : "",
           isListItem: props.itemProps?.isListItem ?? false,
         }),
         requiredCode: [setRequiredCode],
