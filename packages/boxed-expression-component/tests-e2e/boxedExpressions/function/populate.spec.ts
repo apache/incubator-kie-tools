@@ -25,7 +25,12 @@ test.describe("Populate Boxed Function", () => {
     await stories.openBoxedFunction();
 
     await page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Affordability calculation");
+    await monaco.fill({
+      monacoParentLocator: page.getByTestId("kie-tools--bee--expression-popover-menu"),
+      content: "Affordability calculation",
+      submit: false,
+    });
+
     await page.getByLabel("<Undefined>").click();
     await page.getByRole("option", { name: "boolean" }).click();
     await page.keyboard.press("Enter");
