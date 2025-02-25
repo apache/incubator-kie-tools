@@ -61,8 +61,6 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
       return "{}";
     };
 
-    // console.log("children,", children)
-
     return {
       ref,
       html: this.listFieldTemplate({
@@ -100,7 +98,7 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
         code: this.listFieldSetValueFromModelTemplate({
           id,
           path: fieldNameToOptionalChain(name),
-          children,
+          itemsSetValueFromModel: children.setValueFromModelCode,
         }),
         requiredCode: [],
       },

@@ -26,7 +26,7 @@ import writeValueToModel from "!!raw-loader!../../resources/templates/select.wri
 import formGroupTemplate from "!!raw-loader!../../resources/templates/formGroup.template";
 import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
 import { CompiledTemplate, template } from "underscore";
-import { CodeFragment, FormInput } from "../../api";
+import { FormInput } from "../../api";
 import { fieldNameToOptionalChain } from "./utils";
 import { getInputReference } from "../utils/Utils";
 
@@ -66,30 +66,20 @@ export class SelectFieldTemplate implements FormElementTemplate<FormInput, Selec
       }),
       disabled: props.disabled,
       globalFunctions: undefined,
-      setValueFromModelCode: this.buildSetValueFromModelCode(props),
-      writeValueToModelCode: this.writeValueToModelCode(props),
-    };
-  }
-
-  protected buildSetValueFromModelCode(props: SelectFieldProps): CodeFragment {
-    const properties = {
-      ...props,
-      path: fieldNameToOptionalChain(props.name),
-    };
-    return {
-      code: this.setValueFromModelTemplate(properties),
-      requiredCode: props.multiple ? [setMultipleRequiredCode] : [setRequiredCode],
-    };
-  }
-
-  protected writeValueToModelCode(props: SelectFieldProps): CodeFragment | undefined {
-    if (props.disabled) {
-      return undefined;
-    }
-
-    return {
-      requiredCode: props.multiple ? [getMultipleRequiredCode] : undefined,
-      code: this.writeValueToModelTemplate(props),
+      setValueFromModelCode: {
+        code: this.setValueFromModelTemplate({
+          ...props,
+          path: fieldNameToOptionalChain(props.name),
+          isListItem: props.itemProps?.isListItem ?? false,
+        }),
+        requiredCode: props.multiple ? [setMultipleRequiredCode] : [setRequiredCode],
+      },
+      writeValueToModelCode: props.disabled
+        ? undefined
+        : {
+            requiredCode: props.multiple ? [getMultipleRequiredCode] : undefined,
+            code: this.writeValueToModelTemplate(props),
+          },
     };
   }
 }

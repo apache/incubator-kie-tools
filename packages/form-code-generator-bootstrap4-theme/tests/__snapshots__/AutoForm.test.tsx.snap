@@ -260,7 +260,7 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
     &lt;legend&gt;Friends&lt;/legend&gt;
     &lt;div role=&quot;group&quot;&gt;
         &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;friends.\${itemIndex}.name&quot;&gt;Name&lt;/label&gt;
+    &lt;label for=&quot;item-friends.\${itemIndex}.name&quot;&gt;Name&lt;/label&gt;
     &lt;input type=&quot;text&quot;
     id=&quot;friends.\${itemIndex}.name&quot;
     name=&quot;friends.\${itemIndex}.name&quot;
@@ -268,7 +268,7 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
     value=&quot;&quot;/&gt;
 &lt;/div&gt;
         &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;friends.\${itemIndex}.age&quot;&gt;Age&lt;/label&gt;
+    &lt;label for=&quot;item-friends.\${itemIndex}.age&quot;&gt;Age&lt;/label&gt;
     &lt;input
     type=&quot;number&quot;
     class=&quot;form-control&quot;
@@ -340,9 +340,8 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 				? new Date(data?.interview?.hiringDate).toISOString().slice(0, 16)
 				: &quot;&quot;;
 			data?.friends?.forEach((value, index) =&gt; {
-				document.getElementById(\`friends?.\${index}\`).value = value ?? &quot;&quot;;
-				// missing nested objects;
-				document.getElementById(&quot;friends&quot;).value = data?.friends ?? &quot;&quot;;
+				document.getElementById(&quot;friends.\${itemIndex}.name&quot;).value = value ?? &quot;&quot;;
+				document.getElementById(&quot;friends.\${itemIndex}.age&quot;).value = value ?? &quot;&quot;;
 			});
 		}
 		/* Utility function to generate the expected form output as a json object */

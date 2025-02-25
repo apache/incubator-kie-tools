@@ -1,5 +1,9 @@
-<% if(multiple) { %>
+<% if (isListItem) { %><% if(multiple) { %>
+setMultipleSelectValues("<%=id%>", value);
+<% } else { %>
+setSelectValue("<%=id%>", value);
+<% } %><% } else { %><% if(multiple) { %>
 setMultipleSelectValues("<%=id%>", data?.<%=path%>);
 <% } else { %>
 setSelectValue("<%=id%>", data?.<%=path%>);
-<% } %>
+<% } %><% } %>

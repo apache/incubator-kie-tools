@@ -21,7 +21,7 @@ import checkbox from "!!raw-loader!../../resources/templates/checkbox.template";
 import checkboxSetValueFromModel from "!!raw-loader!../../resources/templates/checkbox.setModelData.template";
 import checkboxWriteModelData from "!!raw-loader!../../resources/templates/checkbox.writeModelData.template";
 import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
-import { CodeFragment, FormInput } from "../../api";
+import { FormInput } from "../../api";
 import { CompiledTemplate, template } from "underscore";
 import { getInputReference } from "../utils/Utils";
 import { fieldNameToOptionalChain } from "./utils";
@@ -50,31 +50,21 @@ export class BoolFieldTemplate implements FormElementTemplate<FormInput, BoolFie
       html: this.checkboxTemplate(data),
       disabled: props.disabled,
       globalFunctions: undefined,
-      setValueFromModelCode: this.buildSetValueFromModelCode(props),
-      writeValueToModelCode: this.buildWriteModelDataCode(props),
-    };
-  }
-
-  protected buildSetValueFromModelCode(props: BoolFieldProps): CodeFragment {
-    const properties = {
-      id: props.id,
-      path: fieldNameToOptionalChain(props.name),
-    };
-    return {
-      code: this.checkboxSetValueFromModelTemplate(properties),
-    };
-  }
-
-  protected buildWriteModelDataCode(props: BoolFieldProps): CodeFragment | undefined {
-    if (props.disabled) {
-      return undefined;
-    }
-    const properties = {
-      id: props.id,
-      name: props.name,
-    };
-    return {
-      code: this.checkboxWriteModelTemplate(properties),
+      setValueFromModelCode: {
+        code: this.checkboxSetValueFromModelTemplate({
+          id: props.id,
+          path: fieldNameToOptionalChain(props.name),
+          isListItem: props.itemProps?.isListItem ?? false,
+        }),
+      },
+      writeValueToModelCode: props.disabled
+        ? undefined
+        : {
+            code: this.checkboxWriteModelTemplate({
+              id: props.id,
+              name: props.name,
+            }),
+          },
     };
   }
 }

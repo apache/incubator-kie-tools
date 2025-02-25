@@ -25,7 +25,7 @@ import writeValueToModel from "!!raw-loader!../../resources/templates/checkboxGr
 import formGroupTemplate from "!!raw-loader!../../resources/templates/formGroup.template";
 import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
 import { CompiledTemplate, template } from "underscore";
-import { CodeFragment, FormInput } from "../../api";
+import { FormInput } from "../../api";
 import { fieldNameToOptionalChain } from "./utils";
 import { getInputReference } from "../utils/Utils";
 
@@ -63,30 +63,20 @@ export class CheckBoxGroupFieldTemplate implements FormElementTemplate<FormInput
       }),
       disabled: props.disabled,
       globalFunctions: undefined,
-      setValueFromModelCode: this.buildSetValueFromModelCode(props),
-      writeValueToModelCode: this.buildWriteValueToModelCode(props),
-    };
-  }
-
-  private buildSetValueFromModelCode(props: CheckBoxGroupFieldProps): CodeFragment {
-    const properties = {
-      ...props,
-      path: fieldNameToOptionalChain(props.name),
-    };
-    return {
-      code: this.setValueFromModelTemplate(properties),
-      requiredCode: [setRequiredCode],
-    };
-  }
-
-  private buildWriteValueToModelCode(props: CheckBoxGroupFieldProps): CodeFragment | undefined {
-    if (props.disabled) {
-      return undefined;
-    }
-
-    return {
-      code: this.writeValueToModelTemplate(props),
-      requiredCode: [getRequiredCode],
+      setValueFromModelCode: {
+        code: this.setValueFromModelTemplate({
+          ...props,
+          path: fieldNameToOptionalChain(props.name),
+          isListItem: props.itemProps?.isListItem ?? false,
+        }),
+        requiredCode: [setRequiredCode],
+      },
+      writeValueToModelCode: props.disabled
+        ? undefined
+        : {
+            code: this.writeValueToModelTemplate(props),
+            requiredCode: [getRequiredCode],
+          },
     };
   }
 }

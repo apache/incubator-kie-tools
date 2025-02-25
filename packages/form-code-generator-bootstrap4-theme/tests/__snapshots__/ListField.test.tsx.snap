@@ -231,9 +231,13 @@ exports[`<ListField> tests <ListField> - full AutoForm rendering (TO DELETE) 1`]
 				return;
 			}
 			data?.friends?.forEach((value, index) =&gt; {
-				document.getElementById(\`friends?.\${index}\`).value = value ?? &quot;&quot;;
-				// missing nested objects;
-				document.getElementById(&quot;friends&quot;).value = data?.friends ?? &quot;&quot;;
+				document.getElementById(&quot;friends.\${itemIndex}.name&quot;).value = value ?? &quot;&quot;;
+				document.getElementById(&quot;friends.\${itemIndex}.age&quot;).value = value ?? &quot;&quot;;
+				setSelectValue(&quot;friends.\${itemIndex}.country&quot;, value);
+				document.getElementById(&quot;friends.\${itemIndex}.married&quot;).checked = value ?? &quot;&quot;;
+				setCheckboxGroupValues(&quot;friends.\${itemIndex}.know&quot;, value ?? &quot;&quot;);
+				setSelectValue(&quot;friends.\${itemIndex}.areas&quot;, value);
+				document.getElementById(&quot;friends.\${itemIndex}.birthday&quot;).value = value ? new Date(value).toISOString().slice(0, 16) : &quot;&quot;;
 			});
 		}
 		/* Utility function to generate the expected form output as a json object */

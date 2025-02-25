@@ -1,5 +1,3 @@
 data?.<%=path%>?.forEach((value, index) => {
-  document.getElementById(`<%=path%>?.${index}`).value = value ?? "";
-  // missing nested objects;
-  document.getElementById("<%=id%>").value = data?.<%=path%> ?? "";
+<%= itemsSetValueFromModel.code %>
 });

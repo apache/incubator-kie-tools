@@ -25,7 +25,7 @@ import writeValueToModel from "!!raw-loader!../../resources/templates/radioGroup
 import formGroupTemplate from "!!raw-loader!../../resources/templates/formGroup.template";
 import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
 import { CompiledTemplate, template } from "underscore";
-import { CodeFragment, FormInput } from "../../api";
+import { FormInput } from "../../api";
 import { fieldNameToOptionalChain } from "./utils";
 import { getInputReference } from "../utils/Utils";
 
@@ -63,31 +63,20 @@ export class RadioGroupFieldTemplate implements FormElementTemplate<FormInput, R
       }),
       disabled: props.disabled,
       globalFunctions: undefined,
-      setValueFromModelCode: this.buildSetValueFromModelCode(props),
-      writeValueToModelCode: this.writeValueToModelCode(props),
-    };
-  }
-
-  protected buildSetValueFromModelCode(props: RadioGroupFieldProps): CodeFragment {
-    const properties = {
-      ...props,
-      path: fieldNameToOptionalChain(props.name),
-    };
-
-    return {
-      requiredCode: [setRequiredCode],
-      code: this.setValueFromModelTemplate(properties),
-    };
-  }
-
-  protected writeValueToModelCode(props: RadioGroupFieldProps): CodeFragment | undefined {
-    if (props.disabled) {
-      return undefined;
-    }
-
-    return {
-      requiredCode: [getRequiredCode],
-      code: this.writeValueToModelTemplate(props),
+      setValueFromModelCode: {
+        requiredCode: [setRequiredCode],
+        code: this.setValueFromModelTemplate({
+          ...props,
+          path: fieldNameToOptionalChain(props.name),
+          isListItem: props.itemProps?.isListItem ?? false,
+        }),
+      },
+      writeValueToModelCode: props.disabled
+        ? undefined
+        : {
+            requiredCode: [getRequiredCode],
+            code: this.writeValueToModelTemplate(props),
+          },
     };
   }
 }
