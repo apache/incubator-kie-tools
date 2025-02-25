@@ -60,8 +60,6 @@ hiring.svg
 .gitignore
 # examples/process-compact-architecture/process-compact-architecture.iml
 process-compact-architecture.iml
-# examples/process-compact-architecture/docker-compose/startContainers.sh
-startContainers.sh
 # examples/process-compact-architecture/docker-compose/pgadmin/pgpass
 pgpass
 # examples/process-compact-architecture/docker-compose/sql/init.sql
