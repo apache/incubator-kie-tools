@@ -478,7 +478,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
               originalVersion={this.state.marshaller?.originalVersion}
               model={this.model}
               externalModelsByNamespace={this.state.externalModelsByNamespace}
-              evaluationResults={[]}
+              evaluationResults={{}}
               validationMessages={[]}
               externalContextName={""}
               externalContextDescription={""}
