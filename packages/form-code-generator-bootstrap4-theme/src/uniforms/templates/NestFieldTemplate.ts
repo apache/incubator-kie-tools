@@ -21,8 +21,8 @@ import nestField from "!!raw-loader!../../resources/templates/nestField.template
 import globalFunctions from "!!raw-loader!../../resources/templates/nestField.globalFunctions.template";
 import setValueFromModel from "!!raw-loader!../../resources/templates/nestField.setModelData.template";
 import writeValueToModel from "!!raw-loader!../../resources/templates/nestField.writeModelData.template";
-import { FormElementTemplate, FormElementTemplateProps } from "./types";
-import { CodeFragment, FormElement, FormInputContainer, InputReference } from "../../api";
+import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
+import { FormElement, FormInputContainer, InputReference } from "../../api";
 import { CompiledTemplate, template } from "underscore";
 import { union } from "lodash";
 

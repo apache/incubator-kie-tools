@@ -44,9 +44,7 @@ export interface FormElementTemplate<
   render: (props: Properties) => Element;
 }
 
-export const FORM_GROUP_TEMPLATE: CompiledTemplate = template(formGroupTemplate);
-
-export abstract class AbstractFormGroupInputTemplate<Properties extends FormElementTemplateProps<any>>
+export abstract class AbstractFormGroupTemplate<Properties extends FormElementTemplateProps<any>>
   implements FormElementTemplate<FormInput, Properties>
 {
   protected constructor(
@@ -58,7 +56,7 @@ export abstract class AbstractFormGroupInputTemplate<Properties extends FormElem
   render(props: Properties): FormInput {
     return {
       ref: getInputReference(props),
-      html: FORM_GROUP_TEMPLATE({
+      html: template(formGroupTemplate)({
         id: props.itemProps?.isListItem ? `${props.itemProps.listName}.${props.itemProps.indexVariableName}` : props.id,
         label: props.itemProps?.isListItem
           ? `${props.itemProps.listName}.${props.itemProps.indexVariableName}`

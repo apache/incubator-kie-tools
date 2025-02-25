@@ -20,7 +20,7 @@
 import form from "!!raw-loader!../../resources/templates/form.template";
 import * as prettier from "prettier";
 import trim from "lodash/trim";
-import { CodeGenTemplate } from "./types";
+import { CodeGenTemplate } from "./AbstractFormGroupTemplate";
 import { CompiledTemplate, template } from "underscore";
 import { CodeGenElement, FormElement } from "../../api";
 

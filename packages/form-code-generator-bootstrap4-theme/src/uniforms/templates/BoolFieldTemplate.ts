@@ -20,7 +20,7 @@
 import checkbox from "!!raw-loader!../../resources/templates/checkbox.template";
 import checkboxSetValueFromModel from "!!raw-loader!../../resources/templates/checkbox.setModelData.template";
 import checkboxWriteModelData from "!!raw-loader!../../resources/templates/checkbox.writeModelData.template";
-import { FormElementTemplate, FormElementTemplateProps } from "./types";
+import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
 import { CodeFragment, FormInput } from "../../api";
 import { CompiledTemplate, template } from "underscore";
 import { getInputReference } from "../utils/Utils";

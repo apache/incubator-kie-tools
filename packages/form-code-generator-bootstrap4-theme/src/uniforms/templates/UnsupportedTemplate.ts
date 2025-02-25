@@ -18,9 +18,9 @@
  */
 
 import unsupported from "!!raw-loader!../../resources/templates/unsupported.template";
-import { FormElementTemplate, FormElementTemplateProps } from "./types";
+import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
 import { CompiledTemplate, template } from "underscore";
-import { FormElement, FormInput } from "../../api";
+import { FormInput } from "../../api";
 import { getInputReference } from "../utils/Utils";
 
 export interface UnsupportedFieldProps extends FormElementTemplateProps<any> {

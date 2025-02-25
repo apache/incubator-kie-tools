@@ -22,15 +22,11 @@ import getRequiredCode from "!!raw-loader!../../resources/staticCode/getRadioGro
 import input from "!!raw-loader!../../resources/templates/radioGroup.template";
 import setValueFromModel from "!!raw-loader!../../resources/templates/radioGroup.setModelData.template";
 import writeValueToModel from "!!raw-loader!../../resources/templates/radioGroup.writeModelData.template";
-import {
-  AbstractFormGroupInputTemplate,
-  FORM_GROUP_TEMPLATE,
-  FormElementTemplate,
-  FormElementTemplateProps,
-} from "./types";
+import formGroupTemplate from "!!raw-loader!../../resources/templates/formGroup.template";
+import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
 import { CompiledTemplate, template } from "underscore";
 import { CodeFragment, FormInput } from "../../api";
-import { fieldNameToOptionalChain, flatFieldName } from "./utils";
+import { fieldNameToOptionalChain } from "./utils";
 import { getInputReference } from "../utils/Utils";
 
 export interface Option {
@@ -47,17 +43,19 @@ export class RadioGroupFieldTemplate implements FormElementTemplate<FormInput, R
   private readonly inputTemplate: CompiledTemplate;
   private readonly setValueFromModelTemplate: CompiledTemplate;
   private readonly writeValueToModelTemplate: CompiledTemplate;
+  private readonly formGroupTemplate: CompiledTemplate;
 
   constructor() {
     this.inputTemplate = template(input);
     this.setValueFromModelTemplate = template(setValueFromModel);
     this.writeValueToModelTemplate = template(writeValueToModel);
+    this.formGroupTemplate = template(formGroupTemplate);
   }
 
   render(props: RadioGroupFieldProps): FormInput {
     return {
       ref: getInputReference(props),
-      html: FORM_GROUP_TEMPLATE({
+      html: this.formGroupTemplate({
         id: props.itemProps?.isListItem ? `${props.itemProps.listName}.${props.itemProps.indexVariableName}` : props.id,
         label: props.itemProps?.isListItem
           ? `${props.itemProps.listName}.${props.itemProps.indexVariableName}`

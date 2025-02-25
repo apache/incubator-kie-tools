@@ -20,7 +20,7 @@
 import { CodeGenElement } from "../../api";
 import { TextFieldTemplate } from "./TextFieldTemplate";
 import { NumFieldTemplate } from "./NumFieldTemplate";
-import { CodeGenTemplate } from "./types";
+import { CodeGenTemplate } from "./AbstractFormGroupTemplate";
 import { BoolFieldTemplate } from "./BoolFieldTemplate";
 import { DateFieldTemplate } from "./DateFieldTemplate";
 import { RadioGroupFieldTemplate } from "./RadioGroupFieldTemplate";

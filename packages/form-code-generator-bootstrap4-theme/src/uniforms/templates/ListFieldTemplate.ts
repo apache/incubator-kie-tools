@@ -22,7 +22,7 @@ import globalFunctions from "!!raw-loader!../../resources/templates/listField.gl
 import setValueFromModel from "!!raw-loader!../../resources/templates/listField.setModelData.template";
 import writeValueToModel from "!!raw-loader!../../resources/templates/listField.writeModelData.template";
 import modifyListSize from "!!raw-loader!../../resources/staticCode/modifyListSize.txt";
-import { FormElementTemplate, FormElementTemplateProps } from "./types";
+import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
 import { FormInputContainer, InputReference } from "../../api";
 import { CompiledTemplate, template } from "underscore";
 import { fieldNameToOptionalChain } from "./utils";

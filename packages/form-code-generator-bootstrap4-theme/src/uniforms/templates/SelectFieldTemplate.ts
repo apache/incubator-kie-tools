@@ -23,7 +23,8 @@ import getMultipleRequiredCode from "!!raw-loader!../../resources/staticCode/get
 import input from "!!raw-loader!../../resources/templates/select.template";
 import setValueFromModel from "!!raw-loader!../../resources/templates/select.setModelData.template";
 import writeValueToModel from "!!raw-loader!../../resources/templates/select.writeModelData.template";
-import { FORM_GROUP_TEMPLATE, FormElementTemplate, FormElementTemplateProps } from "./types";
+import formGroupTemplate from "!!raw-loader!../../resources/templates/formGroup.template";
+import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
 import { CompiledTemplate, template } from "underscore";
 import { CodeFragment, FormInput } from "../../api";
 import { fieldNameToOptionalChain } from "./utils";
@@ -45,17 +46,19 @@ export class SelectFieldTemplate implements FormElementTemplate<FormInput, Selec
   private readonly inputTemplate: CompiledTemplate;
   private readonly setValueFromModelTemplate: CompiledTemplate;
   private readonly writeValueToModelTemplate: CompiledTemplate;
+  private readonly formGroupTemplate: CompiledTemplate;
 
   constructor() {
     this.inputTemplate = template(input);
     this.setValueFromModelTemplate = template(setValueFromModel);
     this.writeValueToModelTemplate = template(writeValueToModel);
+    this.formGroupTemplate = template(formGroupTemplate);
   }
 
   render(props: SelectFieldProps): FormInput {
     return {
       ref: getInputReference(props),
-      html: FORM_GROUP_TEMPLATE({
+      html: this.formGroupTemplate({
         id: props.itemProps?.isListItem ? `${props.itemProps.listName}.${props.itemProps.indexVariableName}` : props.id,
         label: props.itemProps?.isListItem
           ? `${props.itemProps.listName}.${props.itemProps.indexVariableName}`

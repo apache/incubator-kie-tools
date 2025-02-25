@@ -22,10 +22,11 @@ import getRequiredCode from "!!raw-loader!../../resources/staticCode/getCheckbox
 import input from "!!raw-loader!../../resources/templates/checkboxGroup.template";
 import setValueFromModel from "!!raw-loader!../../resources/templates/checkboxGroup.setModelData.template";
 import writeValueToModel from "!!raw-loader!../../resources/templates/checkboxGroup.writeModelData.template";
-import { FORM_GROUP_TEMPLATE, FormElementTemplate, FormElementTemplateProps } from "./types";
+import formGroupTemplate from "!!raw-loader!../../resources/templates/formGroup.template";
+import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
 import { CompiledTemplate, template } from "underscore";
 import { CodeFragment, FormInput } from "../../api";
-import { fieldNameToOptionalChain, flatFieldName } from "./utils";
+import { fieldNameToOptionalChain } from "./utils";
 import { getInputReference } from "../utils/Utils";
 
 export interface Option {
@@ -42,17 +43,19 @@ export class CheckBoxGroupFieldTemplate implements FormElementTemplate<FormInput
   private readonly inputTemplate: CompiledTemplate;
   private readonly setValueFromModelTemplate: CompiledTemplate;
   private readonly writeValueToModelTemplate: CompiledTemplate;
+  private readonly formGroupTemplate: CompiledTemplate;
 
   constructor() {
     this.inputTemplate = template(input);
     this.setValueFromModelTemplate = template(setValueFromModel);
     this.writeValueToModelTemplate = template(writeValueToModel);
+    this.formGroupTemplate = template(formGroupTemplate);
   }
 
   render(props: CheckBoxGroupFieldProps): FormInput {
     return {
       ref: getInputReference(props),
-      html: FORM_GROUP_TEMPLATE({
+      html: this.formGroupTemplate({
         id: props.itemProps?.isListItem ? `${props.itemProps.listName}.${props.itemProps.indexVariableName}` : props.id,
         label: props.itemProps?.isListItem
           ? `${props.itemProps.listName}.${props.itemProps.indexVariableName}`
