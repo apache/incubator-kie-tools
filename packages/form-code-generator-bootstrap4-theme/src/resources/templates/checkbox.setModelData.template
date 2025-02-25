@@ -1,1 +1,1 @@
-<% if (isListItem) { %>document.getElementById("<%=id%>").checked = value ?? "";<% } else { %>document.getElementById("<%=id%>").checked = data?.<%=path%>;<% } %>
+<% if (isListItem) { %>document.getElementById(`<%=id%>`).checked = value ?? "";<% } else { %>document.getElementById("<%=id%>").checked = data?.<%=path%>;<% } %>

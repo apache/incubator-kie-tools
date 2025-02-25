@@ -230,14 +230,14 @@ exports[`<ListField> tests <ListField> - full AutoForm rendering (TO DELETE) 1`]
 			if (!data) {
 				return;
 			}
-			data?.friends?.forEach((value, index) =&gt; {
-				document.getElementById(&quot;friends.\${itemIndex}.name&quot;).value = value ?? &quot;&quot;;
-				document.getElementById(&quot;friends.\${itemIndex}.age&quot;).value = value ?? &quot;&quot;;
-				setSelectValue(&quot;friends.\${itemIndex}.country&quot;, value);
-				document.getElementById(&quot;friends.\${itemIndex}.married&quot;).checked = value ?? &quot;&quot;;
-				setCheckboxGroupValues(&quot;friends.\${itemIndex}.know&quot;, value ?? &quot;&quot;);
-				setSelectValue(&quot;friends.\${itemIndex}.areas&quot;, value);
-				document.getElementById(&quot;friends.\${itemIndex}.birthday&quot;).value = value ? new Date(value).toISOString().slice(0, 16) : &quot;&quot;;
+			data?.friends?.forEach((value, itemIndex) =&gt; {
+				document.getElementById(\`friends.\${itemIndex}.name\`).value = value ?? &quot;&quot;;
+				document.getElementById(\`friends.\${itemIndex}.age\`).value = value ?? &quot;&quot;;
+				setSelectValue(\`friends.\${itemIndex}.country\`, value);
+				document.getElementById(\`friends.\${itemIndex}.married\`).checked = value ?? &quot;&quot;;
+				setCheckboxGroupValues(\`friends.\${itemIndex}.know\`, value ?? &quot;&quot;);
+				setSelectValue(\`friends.\${itemIndex}.areas\`, value);
+				document.getElementById(\`friends.\${itemIndex}.birthday\`).value = value ? new Date(value).toISOString().slice(0, 16) : &quot;&quot;;
 			});
 		}
 		/* Utility function to generate the expected form output as a json object */

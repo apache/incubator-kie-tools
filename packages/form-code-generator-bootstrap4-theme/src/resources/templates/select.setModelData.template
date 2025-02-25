@@ -1,7 +1,7 @@
 <% if (isListItem) { %><% if(multiple) { %>
-setMultipleSelectValues("<%=id%>", value);
+setMultipleSelectValues(`<%=id%>`, value);
 <% } else { %>
-setSelectValue("<%=id%>", value);
+setSelectValue(`<%=id%>`, value);
 <% } %><% } else { %><% if(multiple) { %>
 setMultipleSelectValues("<%=id%>", data?.<%=path%>);
 <% } else { %>
