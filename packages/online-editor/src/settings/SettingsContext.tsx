@@ -29,7 +29,6 @@ import { useEnv } from "../env/hooks/EnvContext";
 import { QueryParams } from "../navigation/Routes";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { SettingsTabs } from "./SettingsModalBody";
-import { getCookie } from "../cookies";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 
 export type SettingsContextType = {
