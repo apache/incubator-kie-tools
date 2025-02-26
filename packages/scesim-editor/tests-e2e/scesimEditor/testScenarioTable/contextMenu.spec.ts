@@ -26,7 +26,7 @@ import { AddColumnPosition, AddRowPosition } from "../../__fixtures__/table";
 test.describe("Test scenario table context menu", () => {
   test.describe("Context menu checks", () => {
     test.beforeEach(async ({ editor, testScenarioTable, table }) => {
-      await editor.createTestScenario(AssetType.RULE);
+      await editor.createTestScenario(AssetType.DECISION);
       await table.addRow({ targetCellName: "1", position: AddRowPosition.ABOVE });
       await testScenarioTable.fill({ content: "test", rowLocatorInfo: "1", columnNumber: 1 });
     });

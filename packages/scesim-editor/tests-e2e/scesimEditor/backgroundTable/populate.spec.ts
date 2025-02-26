@@ -70,6 +70,7 @@ test.describe("Populate decision background table", () => {
 });
 
 test.describe("Populate rule background table", () => {
+  test.skip(true, "Rule-Based Test Scenario is not enabled");
   test("should correctly populate a rule-based background table", async ({
     editor,
     resizing,
