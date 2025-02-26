@@ -26,32 +26,27 @@ import createSchema from "./_createSchema";
 
 const schema = {
   friends: { type: Array },
-  "friends.$": Array,
-  "friends.$.$": Number,
-  // "friends.$.know": {
-  //   type: Array,
-  //   uniforms: {
-  //     checkboxes: true,
-  //   },
-  // },
-  // "friends.$.know.$": Number,
+  "friends.$": Object,
+  "friends.$.name": { type: String },
+  "friends.$.age": { type: Number },
+  "friends.$.country": { type: String, allowedValues: ["US", "Brazil"] },
+  "friends.$.married": { type: Boolean },
+  "friends.$.know": {
+    type: Array,
+    uniforms: {
+      checkboxes: true,
+    },
+  },
+  "friends.$.know.$": String,
+  "friends.$.areas": {
+    type: String,
+    allowedValues: ["Developer", "HR", "UX"],
+  },
+  "friends.$.birthday": { type: Date },
 };
 
 describe("<ListField> tests", () => {
-  it("<ListField> - full AutoForm rendering (TO DELETE)", () => {
-    const props: AutoFormProps = {
-      id: "id",
-      schema: createSchema(schema),
-      disabled: false,
-      placeholder: true,
-    };
-
-    const { container } = render(<AutoForm {...props} />);
-
-    expect(container).toMatchSnapshot();
-  });
-
-  it.skip("<ListField> - rendering enabled", () => {
+  it("<ListField> - rendering enabled", () => {
     const props = {
       id: "id",
       label: "Friends",
@@ -64,21 +59,16 @@ describe("<ListField> tests", () => {
     expect(container).toMatchSnapshot();
 
     expect(formElement.html).toContain("<fieldset>");
-    expect(formElement.html).toContain(`<legend>${props.label}</legend>`);
+    expect(formElement.html).toContain("<div role='list'>");
 
-    const inputContainer = formElement as FormInputContainer;
+    expect(formElement.ref).toHaveLength(3);
 
-    expect(inputContainer.ref).toHaveLength(3);
-
-    expect(inputContainer.ref[0].binding).toEqual("candidate.name");
-    expect(inputContainer.ref[1].binding).toEqual("candidate.age");
-    expect(inputContainer.ref[2].binding).toEqual("candidate.role");
-
+    expect(formElement.globalFunctions).not.toBeUndefined();
     expect(formElement.setValueFromModelCode).not.toBeUndefined();
     expect(formElement.writeValueToModelCode).not.toBeUndefined();
   });
 
-  it.skip("<ListField> - rendering disabled", () => {
+  it("<ListField> - rendering disabled", () => {
     const props = {
       id: "id",
       label: "Friends",
@@ -91,16 +81,11 @@ describe("<ListField> tests", () => {
     expect(container).toMatchSnapshot();
 
     expect(formElement.html).toContain("<fieldset disabled>");
-    expect(formElement.html).toContain(`<legend>${props.label}</legend>`);
+    expect(formElement.html).toContain("<div role='list'>");
 
-    const inputContainer = formElement as FormInputContainer;
+    expect(formElement.ref).toHaveLength(3);
 
-    expect(inputContainer.ref).toHaveLength(3);
-
-    expect(inputContainer.ref[0].binding).toEqual("candidate.name");
-    expect(inputContainer.ref[1].binding).toEqual("candidate.age");
-    expect(inputContainer.ref[2].binding).toEqual("candidate.role");
-
+    expect(formElement.globalFunctions).not.toBeUndefined();
     expect(formElement.setValueFromModelCode).not.toBeUndefined();
     expect(formElement.writeValueToModelCode).toBeUndefined();
   });
