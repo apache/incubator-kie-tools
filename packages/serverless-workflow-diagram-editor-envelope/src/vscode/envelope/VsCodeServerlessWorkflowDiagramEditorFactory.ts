@@ -37,8 +37,8 @@ declare let window: CustomWindow;
 class JavaCodeCompletionService implements JavaCodeCompletionApi {
   constructor(
     private readonly envelopeContext: KogitoEditorEnvelopeContextType<
-      VsCodeServerlessWorkflowDiagramEditorChannelApi,
-      ServerlessWorkflowDiagramEditorEnvelopeApi
+      ServerlessWorkflowDiagramEditorEnvelopeApi,
+      VsCodeServerlessWorkflowDiagramEditorChannelApi
     >
   ) {}
   getAccessors(fqcn: string, query: string) {
@@ -56,16 +56,16 @@ export class VsCodeServerlessWorkflowDiagramEditorFactory
   implements
     EditorFactory<
       ServerlessWorkflowDiagramEditor,
-      VsCodeServerlessWorkflowDiagramEditorChannelApi,
-      ServerlessWorkflowDiagramEditorEnvelopeApi
+      ServerlessWorkflowDiagramEditorEnvelopeApi,
+      VsCodeServerlessWorkflowDiagramEditorChannelApi
     >
 {
   constructor(private readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }) {}
 
   public createEditor(
     ctx: KogitoEditorEnvelopeContextType<
-      VsCodeServerlessWorkflowDiagramEditorChannelApi,
-      ServerlessWorkflowDiagramEditorEnvelopeApi
+      ServerlessWorkflowDiagramEditorEnvelopeApi,
+      VsCodeServerlessWorkflowDiagramEditorChannelApi
     >,
     initArgs: EditorInitArgs
   ): Promise<ServerlessWorkflowDiagramEditor> {

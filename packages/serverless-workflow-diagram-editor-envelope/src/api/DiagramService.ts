@@ -28,8 +28,8 @@ import { ServerlessWorkflowDiagramEditorEnvelopeApi } from "./ServerlessWorkflow
 export class DiagramService implements DiagramExposedInteropApi {
   constructor(
     private readonly envelopeContext: KogitoEditorEnvelopeContextType<
-      ServerlessWorkflowDiagramEditorChannelApi,
-      ServerlessWorkflowDiagramEditorEnvelopeApi
+      ServerlessWorkflowDiagramEditorEnvelopeApi,
+      ServerlessWorkflowDiagramEditorChannelApi
     >
   ) {}
 

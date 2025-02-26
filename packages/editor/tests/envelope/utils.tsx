@@ -36,8 +36,8 @@ import {
 } from "@kie-tools-core/editor/dist/envelope/i18n";
 
 export const DEFAULT_TESTING_ENVELOPE_CONTEXT: KogitoEditorEnvelopeContextType<
-  KogitoEditorChannelApi,
-  KogitoEditorEnvelopeApi
+  KogitoEditorEnvelopeApi,
+  KogitoEditorChannelApi
 > = {
   shared: {} as any,
   channelApi: {} as any,
@@ -50,7 +50,7 @@ export const DEFAULT_TESTING_ENVELOPE_CONTEXT: KogitoEditorEnvelopeContextType<
 
 export function usingEnvelopeContext(
   children: React.ReactElement,
-  ctx?: Partial<KogitoEditorEnvelopeContextType<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>>
+  ctx?: Partial<KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>>
 ) {
   const usedCtx = { ...DEFAULT_TESTING_ENVELOPE_CONTEXT, ...ctx };
   return {

@@ -33,7 +33,7 @@ import { I18nService } from "@kie-tools-core/i18n/dist/envelope";
 
 const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 
-const envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi, KogitoEditorEnvelopeApi> = {
+const envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi> = {
   shared: {} as any,
   channelApi: channelApi,
   operatingSystem: OperatingSystem.LINUX,

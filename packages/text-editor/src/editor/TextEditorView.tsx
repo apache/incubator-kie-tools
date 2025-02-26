@@ -37,7 +37,7 @@ export class TextEditorView implements Editor {
   public af_componentTitle: "Text Editor";
 
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<TextEditorChannelApi, KogitoEditorEnvelopeApi>,
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, TextEditorChannelApi>,
     private readonly initArgs: EditorInitArgs
   ) {
     this.editorRef = React.createRef<EditorApi>();

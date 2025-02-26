@@ -29,9 +29,9 @@ import {
 
 export const FACTORY_TYPE = "pmml";
 
-export class PMMLEditorFactory implements EditorFactory<Editor, KogitoEditorChannelApi, KogitoEditorEnvelopeApi> {
+export class PMMLEditorFactory implements EditorFactory<Editor, KogitoEditorEnvelopeApi, KogitoEditorChannelApi> {
   public createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<Editor> {
     return Promise.resolve(new PMMLEditorInterface(envelopeContext));

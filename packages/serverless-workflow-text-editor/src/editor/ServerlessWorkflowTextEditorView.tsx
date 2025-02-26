@@ -36,8 +36,8 @@ export class ServerlessWorkflowTextEditorView implements ServerlessWorkflowTextE
 
   constructor(
     private readonly envelopeContext: KogitoEditorEnvelopeContextType<
-      ServerlessWorkflowTextEditorChannelApi,
-      ServerlessWorkflowTextEditorEnvelopeApi
+      ServerlessWorkflowTextEditorEnvelopeApi,
+      ServerlessWorkflowTextEditorChannelApi
     >,
     private readonly initArgs: EditorInitArgs
   ) {

@@ -24,10 +24,10 @@ import { DmnEditorInterface } from "./DmnEditorFactory";
 import { NewDmnEditorEnvelopeApi } from "./NewDmnEditorEnvelopeApi";
 
 export class NewDmnEditorFactory
-  implements EditorFactory<NewDmnEditorInterface, NewDmnEditorChannelApi, NewDmnEditorEnvelopeApi>
+  implements EditorFactory<NewDmnEditorInterface, NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>
 {
   public createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<NewDmnEditorChannelApi, NewDmnEditorEnvelopeApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<NewDmnEditorInterface> {
     return Promise.resolve(new NewDmnEditorInterface(envelopeContext, initArgs));

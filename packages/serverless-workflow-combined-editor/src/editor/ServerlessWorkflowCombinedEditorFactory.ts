@@ -28,12 +28,12 @@ import { ServerlessWorkflowCombinedEditorView } from "./ServerlessWorkflowCombin
 
 export class ServerlessWorkflowCombinedEditorFactory
   implements
-    EditorFactory<Editor, ServerlessWorkflowCombinedEditorChannelApi, ServerlessWorkflowCombinedEditorEnvelopeApi>
+    EditorFactory<Editor, ServerlessWorkflowCombinedEditorEnvelopeApi, ServerlessWorkflowCombinedEditorChannelApi>
 {
   public async createEditor(
     ctx: KogitoEditorEnvelopeContextType<
-      ServerlessWorkflowCombinedEditorChannelApi,
-      ServerlessWorkflowCombinedEditorEnvelopeApi
+      ServerlessWorkflowCombinedEditorEnvelopeApi,
+      ServerlessWorkflowCombinedEditorChannelApi
     >,
     initArgs: EditorInitArgs
   ) {

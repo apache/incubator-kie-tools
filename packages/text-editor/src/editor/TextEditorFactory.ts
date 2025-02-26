@@ -27,9 +27,9 @@ import {
 import { TextEditorChannelApi } from "../api";
 import { TextEditorView } from "./TextEditorView";
 
-export class TextEditorFactory implements EditorFactory<Editor, TextEditorChannelApi, KogitoEditorEnvelopeApi> {
+export class TextEditorFactory implements EditorFactory<Editor, KogitoEditorEnvelopeApi, TextEditorChannelApi> {
   public async createEditor(
-    ctx: KogitoEditorEnvelopeContextType<TextEditorChannelApi, KogitoEditorEnvelopeApi>,
+    ctx: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, TextEditorChannelApi>,
     initArgs: EditorInitArgs
   ) {
     return new TextEditorView(ctx, initArgs);

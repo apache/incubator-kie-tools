@@ -17,7 +17,12 @@
  * under the License.
  */
 
-import { ChannelType, EditorTheme, useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
+import {
+  ChannelType,
+  EditorTheme,
+  KogitoEditorEnvelopeApi,
+  useKogitoEditorEnvelopeContext,
+} from "@kie-tools-core/editor/dist/api";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { editor } from "monaco-editor";
 import { extname } from "path";
@@ -50,7 +55,7 @@ const RefForwardingMonacoEditor: React.ForwardRefRenderFunction<MonacoEditorApi 
   forwardedRef
 ) => {
   const container = useRef<HTMLDivElement>(null);
-  const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<TextEditorChannelApi>();
+  const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<KogitoEditorEnvelopeApi, TextEditorChannelApi>();
   const [theme] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoEditor_theme);
 
   const controller: MonacoEditorApi = useMemo<MonacoEditorApi>(() => {

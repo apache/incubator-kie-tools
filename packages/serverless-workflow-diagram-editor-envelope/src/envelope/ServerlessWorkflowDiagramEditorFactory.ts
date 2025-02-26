@@ -48,16 +48,16 @@ export class ServerlessWorkflowDiagramEditorFactory
   implements
     EditorFactory<
       ServerlessWorkflowDiagramEditor,
-      ServerlessWorkflowDiagramEditorChannelApi,
-      ServerlessWorkflowDiagramEditorEnvelopeApi
+      ServerlessWorkflowDiagramEditorEnvelopeApi,
+      ServerlessWorkflowDiagramEditorChannelApi
     >
 {
   constructor(private readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }) {}
 
   public createEditor(
     ctx: KogitoEditorEnvelopeContextType<
-      ServerlessWorkflowDiagramEditorChannelApi,
-      ServerlessWorkflowDiagramEditorEnvelopeApi
+      ServerlessWorkflowDiagramEditorEnvelopeApi,
+      ServerlessWorkflowDiagramEditorChannelApi
     >,
     initArgs: EditorInitArgs
   ): Promise<ServerlessWorkflowDiagramEditor> {

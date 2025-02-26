@@ -41,7 +41,7 @@ const INITIAL_INVERT = "0";
  * envelopeContext All the features and information provided by the Apache KIE Tools Envelope.
  */
 interface Props {
-  envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>;
+  envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>;
 }
 
 /**

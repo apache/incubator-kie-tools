@@ -28,7 +28,7 @@ export type BpmnEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
   BpmnEditorEnvelopeApi,
   BpmnEditorChannelApi,
   EditorEnvelopeViewApi<BpmnEditor>,
-  KogitoEditorEnvelopeContextType<BpmnEditorChannelApi, BpmnEditorEnvelopeApi>
+  KogitoEditorEnvelopeContextType<BpmnEditorEnvelopeApi, BpmnEditorChannelApi>
 >;
 
 export class BpmnEditorEnvelopeApiImpl

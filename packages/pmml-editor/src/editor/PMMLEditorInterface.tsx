@@ -33,7 +33,7 @@ export class PMMLEditorInterface implements Editor {
   public af_componentTitle: "PMML Editor";
 
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>
   ) {}
 
   public setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {

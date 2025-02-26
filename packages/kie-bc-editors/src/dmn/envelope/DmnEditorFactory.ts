@@ -32,11 +32,11 @@ export interface CustomWindow extends Window {
 
 declare let window: CustomWindow;
 
-export class DmnEditorFactory implements EditorFactory<DmnEditor, DmnEditorChannelApi, DmnEditorEnvelopeApi> {
+export class DmnEditorFactory implements EditorFactory<DmnEditor, DmnEditorEnvelopeApi, DmnEditorChannelApi> {
   constructor(private readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }) {}
 
   public createEditor(
-    ctx: KogitoEditorEnvelopeContextType<DmnEditorChannelApi, DmnEditorEnvelopeApi>,
+    ctx: KogitoEditorEnvelopeContextType<DmnEditorEnvelopeApi, DmnEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<DmnEditor> {
     const exposedInteropApi: CustomWindow["envelope"] = {

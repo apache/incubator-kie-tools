@@ -28,12 +28,12 @@ import { ServerlessWorkflowTextEditorChannelApi, ServerlessWorkflowTextEditorEnv
 import { ServerlessWorkflowTextEditorView } from "./ServerlessWorkflowTextEditorView";
 
 export class ServerlessWorkflowTextEditorFactory
-  implements EditorFactory<Editor, ServerlessWorkflowTextEditorChannelApi, ServerlessWorkflowTextEditorEnvelopeApi>
+  implements EditorFactory<Editor, ServerlessWorkflowTextEditorEnvelopeApi, ServerlessWorkflowTextEditorChannelApi>
 {
   public async createEditor(
     ctx: KogitoEditorEnvelopeContextType<
-      ServerlessWorkflowTextEditorChannelApi,
-      ServerlessWorkflowTextEditorEnvelopeApi
+      ServerlessWorkflowTextEditorEnvelopeApi,
+      ServerlessWorkflowTextEditorChannelApi
     >,
     initArgs: EditorInitArgs
   ) {

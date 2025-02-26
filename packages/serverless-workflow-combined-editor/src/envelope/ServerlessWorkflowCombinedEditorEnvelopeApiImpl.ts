@@ -29,8 +29,8 @@ export type ServerlessWorkflowCombinedEnvelopeApiFactoryArgs = EnvelopeApiFactor
   ServerlessWorkflowCombinedEditorChannelApi,
   EditorEnvelopeViewApi<ServerlessWorkflowCombinedEditorApi>,
   KogitoEditorEnvelopeContextType<
-    ServerlessWorkflowCombinedEditorChannelApi,
-    ServerlessWorkflowCombinedEditorEnvelopeApi
+    ServerlessWorkflowCombinedEditorEnvelopeApi,
+    ServerlessWorkflowCombinedEditorChannelApi
   >
 >;
 
@@ -46,8 +46,8 @@ export class ServerlessWorkflowCombinedEditorEnvelopeApiImpl
     private readonly serverlessWorkflowArgs: ServerlessWorkflowCombinedEnvelopeApiFactoryArgs,
     editorFactory: EditorFactory<
       ServerlessWorkflowCombinedEditorApi,
-      ServerlessWorkflowCombinedEditorChannelApi,
-      ServerlessWorkflowCombinedEditorEnvelopeApi
+      ServerlessWorkflowCombinedEditorEnvelopeApi,
+      ServerlessWorkflowCombinedEditorChannelApi
     >
   ) {
     super(serverlessWorkflowArgs, editorFactory);

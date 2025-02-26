@@ -37,11 +37,11 @@ export interface CustomWindow extends Window {
 
 declare let window: CustomWindow;
 
-export class BpmnEditorFactory implements EditorFactory<BpmnEditor, BpmnEditorChannelApi, BpmnEditorEnvelopeApi> {
+export class BpmnEditorFactory implements EditorFactory<BpmnEditor, BpmnEditorEnvelopeApi, BpmnEditorChannelApi> {
   constructor(private readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }) {}
 
   public async createEditor(
-    ctx: KogitoEditorEnvelopeContextType<BpmnEditorChannelApi, KogitoEditorEnvelopeApi>,
+    ctx: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, BpmnEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<BpmnEditor> {
     const dmnLs = new DmnLanguageService({

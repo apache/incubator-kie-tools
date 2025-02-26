@@ -89,17 +89,17 @@ export const TodoListEnvelopeView = React.forwardRef<TodoListEnvelopeViewApi, Pr
     [items]
   );
 
-  // State that is updated whenever the Channel changes the `potentialNewItem` Shared Value.
+  // State that is updated whenever the Channel changes the `potentialNewItem` Shared value.
   // Making the Envelope able to react to changes done to it.
   const [potentialNewItem, _] = useSharedValue(props.channelApi.shared.todoList__potentialNewItem);
 
-  // Keeps the `itemsCount` Shared Value current.
+  // Keeps the `itemsCount` Shared value current.
   useEffect(() => {
     props.shared.todoList__itemsCount.set(items.length);
   }, [items.length, props.shared.todoList__itemsCount]);
 
   // Handles set operations to `itemsCount` that do not match items.length.
-  // As a Channel also has write access to a Shared Value, there no way to tell if an
+  // As a Channel also has write access to a Shared value, there no way to tell if an
   // invalid attempt to change this directly will be done, so we need to handle it properly.
   useEffect(() => {
     if (!props.shared.todoList__itemsCount) {
@@ -108,7 +108,7 @@ export const TodoListEnvelopeView = React.forwardRef<TodoListEnvelopeViewApi, Pr
 
     const itemsCountSubs = props.shared.todoList__itemsCount.subscribe((newItemsCount) => {
       if (newItemsCount !== items.length) {
-        console.log("Rejecting operation on `itemsCount` Shared Value because it doesn't match the actual value.");
+        console.log("Rejecting operation on `itemsCount` Shared value because it doesn't match the actual value.");
         props.shared.todoList__itemsCount.set(items.length); // Reverts whatever value was set.
       } else {
         // Ignore, itemsCount matches actual value.

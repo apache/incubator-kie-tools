@@ -62,7 +62,7 @@ export interface CustomWindow extends Window {
 declare let window: CustomWindow;
 
 export class GwtEditorWrapperFactory<E extends GwtEditorWrapper>
-  implements EditorFactory<E, KogitoEditorChannelApi, KogitoEditorEnvelopeApi>
+  implements EditorFactory<E, KogitoEditorEnvelopeApi, KogitoEditorChannelApi>
 {
   constructor(
     private readonly languageData: GwtLanguageData,
@@ -77,7 +77,7 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper>
   public gwtEditor: E;
 
   public createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
     initArgs: EditorInitArgs
   ) {
     this.kieBcEditorsI18n.setLocale(initArgs.initialLocale);
@@ -108,7 +108,7 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper>
   }
 
   private exposeEnvelopeContext(
-    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
     initArgs: EditorInitArgs
   ) {
     window.gwt = {

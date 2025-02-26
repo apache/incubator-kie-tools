@@ -26,9 +26,9 @@ import {
 } from "@kie-tools-core/editor/dist/api";
 import { YardEditorChannelApi, YardEditorEnvelopeApi } from "../api";
 
-export class YardEditorFactory implements EditorFactory<Editor, YardEditorChannelApi, YardEditorEnvelopeApi> {
+export class YardEditorFactory implements EditorFactory<Editor, YardEditorEnvelopeApi, YardEditorChannelApi> {
   public async createEditor(
-    ctx: KogitoEditorEnvelopeContextType<YardEditorChannelApi, YardEditorEnvelopeApi>,
+    ctx: KogitoEditorEnvelopeContextType<YardEditorEnvelopeApi, YardEditorChannelApi>,
     initArgs: EditorInitArgs
   ) {
     return new YardEditorView(ctx, initArgs);

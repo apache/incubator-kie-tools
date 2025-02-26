@@ -31,14 +31,14 @@ import { Base64PngEditorInterface } from "./Base64PngEditorInterface";
  * It tells which extension the Editor supports and how to create a new Editor
  */
 export class Base64PngEditorFactory
-  implements EditorFactory<Base64PngEditorInterface, KogitoEditorChannelApi, KogitoEditorEnvelopeApi>
+  implements EditorFactory<Base64PngEditorInterface, KogitoEditorEnvelopeApi, KogitoEditorChannelApi>
 {
   public supports(fileExtension: string) {
     return fileExtension === "base64png";
   }
 
   public createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
     initArgs: EditorInitArgs
   ) {
     return Promise.resolve(new Base64PngEditorInterface(envelopeContext, initArgs));

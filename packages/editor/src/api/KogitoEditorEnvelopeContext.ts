@@ -28,8 +28,8 @@ import { EditorTheme } from "./EditorTheme";
 import { KogitoEditorEnvelopeApi } from "./KogitoEditorEnvelopeApi";
 
 export interface KogitoEditorEnvelopeContextType<
-  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>,
   EnvelopeApi extends KogitoEditorEnvelopeApi & ApiDefinition<EnvelopeApi>,
+  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>,
 > {
   shared: ApiSharedValueConsumers<EnvelopeApi>;
   channelApi: MessageBusClientApi<ChannelApi>;
@@ -44,8 +44,8 @@ export interface KogitoEditorEnvelopeContextType<
 export const KogitoEditorEnvelopeContext = React.createContext<KogitoEditorEnvelopeContextType<any, any>>({} as any);
 
 export function useKogitoEditorEnvelopeContext<
-  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi> = KogitoEditorChannelApi,
   EnvelopeApi extends KogitoEditorEnvelopeApi & ApiDefinition<EnvelopeApi> = KogitoEditorEnvelopeApi,
+  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi> = KogitoEditorChannelApi,
 >() {
-  return useContext(KogitoEditorEnvelopeContext) as KogitoEditorEnvelopeContextType<ChannelApi, EnvelopeApi>;
+  return useContext(KogitoEditorEnvelopeContext) as KogitoEditorEnvelopeContextType<EnvelopeApi, ChannelApi>;
 }

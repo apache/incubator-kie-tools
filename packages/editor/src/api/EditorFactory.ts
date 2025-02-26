@@ -28,8 +28,8 @@ import { KogitoEditorChannelApi } from "./KogitoEditorChannelApi";
  */
 export interface EditorFactory<
   E extends Editor,
-  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>,
   EnvelopeApi extends KogitoEditorEnvelopeApi & ApiDefinition<EnvelopeApi>,
+  ChannelApi extends KogitoEditorChannelApi & ApiDefinition<ChannelApi>,
 > {
   /**
    * Returns an Editor instance.
@@ -37,7 +37,7 @@ export interface EditorFactory<
    * @param initArgs Initial arguments required for the Editor to initialize itself properly.
    */
   createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<ChannelApi, EnvelopeApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<EnvelopeApi, ChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<E>;
 }

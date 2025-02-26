@@ -33,7 +33,7 @@ export class YardEditorView implements Editor {
   private path: string;
 
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<YardEditorChannelApi, YardEditorEnvelopeApi>,
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<YardEditorEnvelopeApi, YardEditorChannelApi>,
     initArgs: EditorInitArgs
   ) {
     this.editorRef = React.createRef<YardEditorApi>();

@@ -36,8 +36,8 @@ export class ServerlessWorkflowCombinedEditorView implements ServerlessWorkflowC
 
   constructor(
     private readonly envelopeContext: KogitoEditorEnvelopeContextType<
-      ServerlessWorkflowCombinedEditorChannelApi,
-      ServerlessWorkflowCombinedEditorEnvelopeApi
+      ServerlessWorkflowCombinedEditorEnvelopeApi,
+      ServerlessWorkflowCombinedEditorChannelApi
     >,
     private readonly initArgs: EditorInitArgs
   ) {

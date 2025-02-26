@@ -23,12 +23,12 @@ import { GwtEditorWrapperFactory, XmlFormatter } from "../../common";
 import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 
 export class SceSimEditorFactory
-  implements EditorFactory<SceSimEditor, SceSimEditorChannelApi, SceSimEditorEnvelopeApi>
+  implements EditorFactory<SceSimEditor, SceSimEditorEnvelopeApi, SceSimEditorChannelApi>
 {
   constructor(private readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }) {}
 
   public createEditor(
-    ctx: KogitoEditorEnvelopeContextType<SceSimEditorChannelApi, SceSimEditorEnvelopeApi>,
+    ctx: KogitoEditorEnvelopeContextType<SceSimEditorEnvelopeApi, SceSimEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<SceSimEditor> {
     const languageData = getSceSimLanguageData(initArgs.resourcesPathPrefix);
