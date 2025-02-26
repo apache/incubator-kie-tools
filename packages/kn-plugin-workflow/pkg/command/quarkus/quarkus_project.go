@@ -46,6 +46,7 @@ type Repository struct {
 var filesToRemove = []string{"mvnw", "mvnw.cmd", ".mvn",
 	"src/test/java/org/acme/GreetingResourceTest.java",
 	"src/test/java/org/acme/GreetingResourceIT.java",
+	"src/main/java/org/acme/GreetingResource.java",
 }
 
 func CreateQuarkusProject(cfg CreateQuarkusProjectConfig) error {
