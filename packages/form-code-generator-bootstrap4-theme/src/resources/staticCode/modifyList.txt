@@ -1,4 +1,7 @@
-function delListItem(value, name, minCount, itemIndex, onDelListItem) {
+function delListItem(name, minCount, itemIndex, onDelListItem) {
+  const formData = getFormData();
+  const value = accessObjectPath(formData, name) ?? [];
+
   if ((minCount ?? 0) <= value.length) {
     document.getElementById(`${name}.${itemIndex}`).remove();
   }
@@ -20,7 +23,9 @@ function delListItem(value, name, minCount, itemIndex, onDelListItem) {
   });
 }
 
-function addListItem(value, name, defaultValue, maxCount, childrenHtml, functionName) {
+function addListItem(name, defaultValue, maxCount, childrenHtml, functionName) {
+  const formData = getFormData();
+  let value = accessObjectPath(formData, name) ?? [];
   const itemIndex = value.length;
 
   if (maxCount !== undefined && (maxCount > value.length)) {
