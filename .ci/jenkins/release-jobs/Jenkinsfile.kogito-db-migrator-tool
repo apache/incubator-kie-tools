@@ -147,7 +147,7 @@ pipeline {
                         "${env.KIE_KOGITO_DB_MIGRATOR_TOOL__registry}",
                         "${env.KIE_KOGITO_DB_MIGRATOR_TOOL__account}",
                         "${env.KIE_KOGITO_DB_MIGRATOR_TOOL__name}",
-                        "${env.KOGITO_DB_MIGRATOR_TOOL_buildTag}",
+                        "${env.KIE_KOGITO_DB_MIGRATOR_TOOL_buildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
