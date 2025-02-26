@@ -73,6 +73,7 @@ import { propsHaveSameValuesDeep } from "../memoization/memoization";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { NODE_LAYERS } from "../../store/computed/computeDiagramData";
 import { useSettings } from "../../settings/DmnEditorSettingsContext";
+import { useDmnEditor } from "../../DmnEditorContext";
 import { useRefactor } from "../../refactor/RefactorConfirmationDialog";
 
 export type ElementFilter<E extends { __$$element: string }, Filter extends string> = E extends any
@@ -390,6 +391,16 @@ export const DecisionNode = React.memo(
       );
     });
 
+    const isEvaluationHighlightsEnabled = useDmnEditorStore((s) => s.diagram.overlays.enableEvaluationHighlights);
+    const { evaluationResults } = useDmnEditor();
+    const evaluationResultsClassName = useMemo(
+      () =>
+        isEvaluationHighlightsEnabled && evaluationResults![decision["@_id"]] !== undefined
+          ? `kie-dmn-editor--decision-node--evaluation-status-${evaluationResults![decision["@_id"]]}`
+          : "",
+      [decision, evaluationResults, isEvaluationHighlightsEnabled]
+    );
+
     return (
       <>
         {refactorConfirmationDialog}
@@ -408,7 +419,7 @@ export const DecisionNode = React.memo(
         <PositionalNodeHandles isTargeted={isTargeted && isValidConnectionTarget} nodeId={id} />
         <div
           ref={ref}
-          className={`kie-dmn-editor--node kie-dmn-editor--decision-node ${className}`}
+          className={`kie-dmn-editor--node kie-dmn-editor--decision-node ${className} ${evaluationResultsClassName}`}
           tabIndex={-1}
           onDoubleClick={triggerEditing}
           onKeyDown={triggerEditingIfEnter}
