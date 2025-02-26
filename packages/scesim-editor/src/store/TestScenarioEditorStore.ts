@@ -56,6 +56,7 @@ export type TestScenarioDataObject = {
   collectionGenericType?: string[];
   customBadgeContent?: string; // UI-Scoped only
   expressionElements: string[];
+  hasBadge?: boolean; // UI-Scoped only
   name: string;
 };
 

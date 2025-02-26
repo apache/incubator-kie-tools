@@ -143,12 +143,12 @@ export function createNewDmnTypeTestScenario({
 function generateFactMappingsAndFactMappingValuesFromDmnModel(
   drgElements: DMN15__tInputData[] | DMN15__tDecision[],
   expressionIdentifierType: "EXPECT" | "GIVEN",
-  itemDefinitionMap: Map<string, DMN15__tItemDefinition>
+  allItemDefinitionsMap: Map<string, DMN15__tItemDefinition>
 ) {
   const factMappingsToPush = [] as FactMapping[];
 
   drgElements.forEach((drgElement) => {
-    const itemDefinition = itemDefinitionMap.get(drgElement.variable!["@_typeRef"]!);
+    const itemDefinition = allItemDefinitionsMap.get(drgElement.variable!["@_typeRef"]!);
     if (!itemDefinition?.itemComponent || itemDefinition?.itemComponent.length === 0) {
       factMappingsToPush.push({
         className: itemDefinition?.["@_isCollection"] ? "java.util.List" : drgElement.variable!["@_typeRef"]!,
@@ -165,6 +165,7 @@ function generateFactMappingsAndFactMappingValuesFromDmnModel(
       itemDefinition?.itemComponent!.forEach((itemComponent) => {
         factMappingsToPush.push(
           ...recursevlyNavigateItemComponent(
+            allItemDefinitionsMap,
             100,
             [drgElement.variable!["@_name"]!],
             expressionIdentifierType,
@@ -181,6 +182,7 @@ function generateFactMappingsAndFactMappingValuesFromDmnModel(
 }
 
 function recursevlyNavigateItemComponent(
+  allItemDefinitionsMap: Map<string, DMN15__tItemDefinition>,
   columnWidth: number,
   expressionElements: string[],
   expressionIdentifierType: "EXPECT" | "GIVEN",
@@ -189,11 +191,15 @@ function recursevlyNavigateItemComponent(
   typeRef: string
 ) {
   const factMappingsToReturn: FactMapping[] = [];
+  const currentItemDefinition = allItemDefinitionsMap.has(itemComponent?.typeRef?.__$$text ?? "")
+    ? allItemDefinitionsMap.get(itemComponent?.typeRef?.__$$text ?? "")
+    : itemComponent;
 
-  if (!itemComponent.typeRef && itemComponent.itemComponent) {
-    itemComponent.itemComponent.forEach((nestedItemComponent) => {
+  if (!currentItemDefinition?.typeRef && currentItemDefinition?.itemComponent) {
+    currentItemDefinition.itemComponent.forEach((nestedItemComponent) => {
       factMappingsToReturn.push(
         ...recursevlyNavigateItemComponent(
+          allItemDefinitionsMap,
           columnWidth,
           [...expressionElements, itemComponent["@_name"]],
           expressionIdentifierType,

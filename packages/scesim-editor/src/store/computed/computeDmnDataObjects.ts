@@ -41,7 +41,7 @@ export function computeDmnDataObjects(
   /* CHECKS external DMN */
 
   if (dmnModel) {
-    const itemDefinitions = new Map(
+    const allItemDefinitionsMap = new Map(
       dmnModel.model.definitions.itemDefinition?.map(
         (itemDefinition) => [itemDefinition["@_name"], itemDefinition] as const
       )
@@ -55,10 +55,10 @@ export function computeDmnDataObjects(
     );
 
     const inpuDataObjects = inputDataElements?.map((inputDataElement) =>
-      createTestScenarioObjects(inputDataElement, itemDefinitions)
+      createTestScenarioObjects(inputDataElement, allItemDefinitionsMap)
     );
     const decisionDataObjects = decisionElements?.map((decisionElement) =>
-      createTestScenarioObjects(decisionElement, itemDefinitions)
+      createTestScenarioObjects(decisionElement, allItemDefinitionsMap)
     );
     dataObjects.push(...(inpuDataObjects ?? []), ...(decisionDataObjects ?? []));
   }
@@ -68,16 +68,21 @@ export function computeDmnDataObjects(
 
 function createTestScenarioObjects(
   drgElement: DMN15__tInputData | DMN15__tDecision,
-  itemDefinitionMap: Map<string, DMN15__tItemDefinition>
+  allItemDefinitionsMap: Map<string, DMN15__tItemDefinition>
 ): TestScenarioDataObject {
   const drgElementName = drgElement["@_name"];
   const drgElementTypeRef = drgElement!.variable?.["@_typeRef"] ?? "<Undefined>";
-  const itemDefinition = itemDefinitionMap.get(drgElementTypeRef!);
+  const itemDefinition = allItemDefinitionsMap.get(drgElementTypeRef!);
 
   return {
     id: drgElementName,
     name: drgElementName,
-    children: createChildrenTestScenarioObjects(itemDefinition, [drgElementName], drgElementTypeRef!),
+    children: createChildrenTestScenarioObjects(
+      itemDefinition,
+      allItemDefinitionsMap,
+      [drgElementName],
+      drgElementTypeRef!
+    ),
     className: drgElementTypeRef!,
     customBadgeContent: drgElementTypeRef,
     expressionElements: [drgElementName],
@@ -86,6 +91,7 @@ function createTestScenarioObjects(
 
 function createChildrenTestScenarioObjects(
   itemDefinition: DMN15__tItemDefinition | undefined,
+  allItemDefinitionsMap: Map<string, DMN15__tItemDefinition>,
   expressionElements: string[],
   rootDrgElementTypeRef: string
 ) {
@@ -94,10 +100,14 @@ function createChildrenTestScenarioObjects(
   if (itemDefinition?.itemComponent && itemDefinition.itemComponent.length > 0) {
     const childrenTestScenarioObjects = itemDefinition.itemComponent.map((itemComponent) => {
       const nestedChildren: TestScenarioDataObject[] = [];
+      const currentItemDefinition = allItemDefinitionsMap.has(itemComponent?.typeRef?.__$$text ?? "")
+        ? allItemDefinitionsMap.get(itemComponent?.typeRef?.__$$text ?? "")
+        : itemComponent;
 
-      if (!itemComponent.typeRef) {
+      if (!currentItemDefinition?.typeRef) {
         const ns = createChildrenTestScenarioObjects(
-          itemComponent,
+          currentItemDefinition,
+          allItemDefinitionsMap,
           [...expressionElements, itemComponent["@_name"]],
           rootDrgElementTypeRef
         );
@@ -106,12 +116,14 @@ function createChildrenTestScenarioObjects(
 
       const isCollection = itemComponent["@_isCollection"] ?? false;
       const name = itemComponent["@_name"];
+      const className = isCollection ? "java.util.List" : itemComponent.typeRef?.__$$text;
 
       return {
         id: [...expressionElements, name].join("."),
+        hasBadge: !(className === undefined && nestedChildren.length > 0),
         name: name,
         children: nestedChildren.length > 0 ? nestedChildren : undefined,
-        className: isCollection ? "java.util.List" : itemComponent.typeRef?.__$$text,
+        className: className,
         collectionGenericType: isCollection ? [itemComponent.typeRef!.__$$text] : undefined,
         customBadgeContent: `${itemComponent.typeRef?.__$$text}${isCollection ? "[]" : ""}`,
         expressionElements: [...expressionElements, name],
