@@ -302,7 +302,7 @@ function TestScenarioCreationPanel() {
       )}
       <Button
         icon={<AddIcon />}
-        isDisabled={assetType === "" || (assetType === "DMN" && !selectedDmnModel)}
+        isDisabled={assetType === "" || assetType === "RULE" || (assetType === "DMN" && !selectedDmnModel)}
         onClick={createTestScenario}
         variant="primary"
       >
