@@ -26,14 +26,15 @@ import createSchema from "./_createSchema";
 
 const schema = {
   friends: { type: Array },
-  "friends.$": Object,
-  "friends.$.know": {
-    type: Array,
-    uniforms: {
-      checkboxes: true,
-    },
-  },
-  "friends.$.know.$": Number,
+  "friends.$": Array,
+  "friends.$.$": Number,
+  // "friends.$.know": {
+  //   type: Array,
+  //   uniforms: {
+  //     checkboxes: true,
+  //   },
+  // },
+  // "friends.$.know.$": Number,
 };
 
 describe("<ListField> tests", () => {

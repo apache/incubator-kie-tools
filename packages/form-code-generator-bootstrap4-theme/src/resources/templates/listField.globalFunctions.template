@@ -9,9 +9,8 @@ function onDelListItem<%= functionName %>(name, itemIndex) {
 function onAddListItem<%= functionName %>(name) {
   const formData = getFormData();
   const value = accessObjectPath(formData, name) ?? [];
-  const itemIndex = value.length;
   const disabled = <%= disabled %>
   if (!disabled) {
-    addListItem(value, <%= defaultValue %>, <%= maxCount !== undefined ? maxCount : "undefined" %>, `<%= name %>`, itemIndex, `<%= childrenHtml %>`, "<%= functionName %>")
+    addListItem(value, <%= defaultValue %>, <%= maxCount !== undefined ? maxCount : "undefined" %>, `<%= name %>`, `<%= childrenHtml %>`, "<%= functionName %>")
   }
 }

@@ -1,3 +1,4 @@
-<%=path%>?.forEach((value, itemIndex) => {
+<%=path%>?.forEach((value, <%= indexVariableName %>) => {
+const currentItem = `<%= name %>.${<%= indexVariableName %>}`
 <%= itemsSetValueFromModel.code %>
 });

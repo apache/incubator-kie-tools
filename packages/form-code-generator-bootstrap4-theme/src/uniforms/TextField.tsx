@@ -36,8 +36,8 @@ export type TextFieldProps = HTMLFieldProps<
 
 const Text: React.FC<TextFieldProps> = (props: TextFieldProps) => {
   const element: FormInput = renderCodeGenElement(INPUT, {
-    id: props.name.replaceAll("$", "${" + props.itemProps?.indexVariableName + "}"),
-    name: props.name.replaceAll("$", "${" + props.itemProps?.indexVariableName + "}"),
+    id: props.name,
+    name: props.name,
     label: props.label,
     type: props.type ?? "text",
     disabled: props.disabled ?? false,

@@ -24,7 +24,9 @@ function delListItem(value, name, minCount, itemIndex, onDelListItem) {
   });
 }
 
-function addListItem(value, defaultValue, maxCount, name, itemIndex, childrenHtml, functionName) {
+function addListItem(value, defaultValue, maxCount, name, childrenHtml, functionName) {
+  const itemIndex = value.length;
+
   if (maxCount !== undefined && (maxCount > value.length)) {
     value = value.concat([defaultValue]);
   } else {
@@ -63,15 +65,18 @@ function recursiveGetObjectListValues(objectElement) {
     }, {});
 }
 function recursiveGetArrayListValues(arrayElement) {
-  return Array.from(arrayElement.childNodes).map((childElement) => {
+  return Array.from(arrayElement.childNodes).reduce((acc, childElement) => {
     if (childElement.getAttribute("role") === "group") {
-      return recursiveGetObjectListValues(childElement);
+      acc["$"] = recursiveGetObjectListValues(childElement);
+      return acc;
     }
     if (childElement.getAttribute("role") === "list") {
-      return recursiveGetArrayListValues(childElement);
+      acc["$"] = recursiveGetArrayListValues(childElement);
+      return acc;
     }
-    return getListValues(childElement.querySelector("input, select"));
-  });
+    acc["$"] = getListValues(childElement.querySelector("input, select"));
+    return acc;
+  }, {});
 }
 function getListValues(inputOrSelectElement) {
   if (!inputOrSelectElement) {

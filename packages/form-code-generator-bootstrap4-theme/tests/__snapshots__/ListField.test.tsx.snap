@@ -24,25 +24,29 @@ exports[`<ListField> tests <ListField> - full AutoForm rendering (TO DELETE) 1`]
 	&lt;/div&gt;
 	&lt;script&gt;
 		function delListItem(value, name, minCount, itemIndex, onDelListItem) {
-			if ((minCount ?? 0) &lt; value.length) {
+			if ((minCount ?? 0) &lt;= value.length) {
 				document.getElementById(\`\${name}.\${itemIndex}\`).remove();
 			}
 			// Re-organize list
-			Array.from(document.getElementById(name).childNodes ?? []).forEach((element, index) =&gt; {
-				const delElement = element.querySelector(\`span[name=&#39;Remove&#39;]\`);
-				delElement.onclick = function () {
-					onDelListItem(name, \`\${index}\`);
-				};
-				delElement.onkeydown = function () {
-					onDelListItem(name, \`\${index}\`);
-				};
-				element.querySelector(&quot;label[for]&quot;).htmlFor = \`\${name}.\${index}\`;
-				const inputOrSelect = element.querySelector(&quot;input, select&quot;);
-				inputOrSelect.id = \`\${name}.\${index}\`;
-				inputOrSelect.name = \`\${name}.\${index}\`;
-				element.id = \`\${name}.\${index}\`;
-				element.name = \`\${name}.\${index}\`;
-			});
+			Array.from(document.getElementById(name).childNodes ?? [])
+				.filter((node) =&gt; node.nodeType === 1)
+				.forEach((element, index) =&gt; {
+					const delElement = element.querySelector(\`span[name=&#39;Remove&#39;]\`);
+					delElement.onclick = function () {
+						onDelListItem(name, \`\${index}\`);
+					};
+					delElement.onkeydown = function () {
+						onDelListItem(name, \`\${index}\`);
+					};
+					if (element &amp;&amp; element.querySelector(&quot;label[for]&quot;)) {
+						element.querySelector(&quot;label[for]&quot;).htmlFor = \`\${name}.\${index}\`;
+					}
+					const inputOrSelect = element.querySelector(&quot;input, select&quot;);
+					inputOrSelect.id = \`\${name}.\${index}\`;
+					inputOrSelect.name = \`\${name}.\${index}\`;
+					element.id = \`\${name}.\${index}\`;
+					element.name = \`\${name}.\${index}\`;
+				});
 		}
 		function addListItem(value, defaultValue, maxCount, name, itemIndex, childrenHtml, functionName) {
 			if (maxCount !== undefined &amp;&amp; maxCount &gt; value.length) {
@@ -125,15 +129,15 @@ exports[`<ListField> tests <ListField> - full AutoForm rendering (TO DELETE) 1`]
 		}
 		function onDelListItemFriends(name, itemIndex) {
 			const formData = getFormData();
-			const value = accessObjectPath(formData, name) ?? [{}];
+			const value = accessObjectPath(formData, name) ?? [];
 			const disabled = false;
 			if (!disabled) {
-				delListItem(value, &quot;friends&quot;, undefined, itemIndex, onDelListItemFriends);
+				delListItem(value, \`friends\`, undefined, itemIndex, onDelListItemFriends);
 			}
 		}
 		function onAddListItemFriends(name) {
 			const formData = getFormData();
-			const value = accessObjectPath(formData, name) ?? [{}];
+			const value = accessObjectPath(formData, name) ?? [];
 			const itemIndex = value.length;
 			const disabled = false;
 			if (!disabled) {
@@ -141,29 +145,18 @@ exports[`<ListField> tests <ListField> - full AutoForm rendering (TO DELETE) 1`]
 					value,
 					undefined,
 					undefined,
-					&quot;friends&quot;,
+					\`friends\`,
 					itemIndex,
-					\`&lt;fieldset&gt;
-    &lt;legend&gt;Friends&lt;/legend&gt;
-    &lt;div role=&quot;group&quot;&gt;
-        &lt;div class=&quot;form-group&quot;&gt;
-    &lt;div class=&quot;card mb-3&quot;&gt;
-    &lt;div class=&quot;card-body&quot;&gt;
-        &lt;div class=&quot;card-title&quot;&gt;
-        &lt;label class=&quot;col-form-label&quot; for=&quot;friends.\${itemIndex}.know&quot;&gt;Know&lt;/label&gt;
-        &lt;div class=&quot;badge badge-pill float-right&quot; role=&quot;button&quot; tabindex=&quot;0&quot; 
-            onclick=&quot;onAddListItemFriendsKnow(&#39;friends.\${itemIndex}.know&#39;)&quot;
-            onkeydown=&quot;onAddListItemFriendsKnow(&#39;friends.\${itemIndex}.know&#39;)&quot;&gt;
-            &lt;i className=&quot;octicon octicon-plus&quot;&gt;&lt;span&gt;+&lt;/span&gt;&lt;/i&gt;
-        &lt;/div&gt;
-        &lt;/div&gt;
-        &lt;div role=&quot;list&quot; id=&quot;friends.\${itemIndex}.know&quot;&gt;
-        &lt;/div&gt;
-    &lt;/div&gt;
-    &lt;/div&gt;
-&lt;/div&gt;
-    &lt;/div&gt;
-&lt;/fieldset&gt;\`,
+					\`&lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;item-friends.\${itemIndex}&quot;&gt;Friends&lt;/label&gt;
+    &lt;input
+    type=&quot;number&quot;
+    class=&quot;form-control&quot;
+    id=&quot;friends.\${itemIndex}&quot;
+    name=&quot;friends.\${itemIndex}&quot;
+    step=&quot;0.01&quot;
+    value=&quot;&quot;/&gt;
+&lt;/div&gt;\`,
 					&quot;Friends&quot;
 				);
 			}
@@ -174,9 +167,8 @@ exports[`<ListField> tests <ListField> - full AutoForm rendering (TO DELETE) 1`]
 				return;
 			}
 			data?.friends?.forEach((value, itemIndex) =&gt; {
-				data?.friends?.[value]?.know?.forEach((value, itemIndex) =&gt; {
-					document.getElementById(\`friends.\${itemIndex}.know.$\`).value = value?.$ ?? &quot;&quot;;
-				});
+				const currentItem = \`friends.\${itemIndex}\`;
+				document.getElementById(\`friends.\${itemIndex}\`).value = value ?? &quot;&quot;;
 			});
 		}
 		/* Utility function to generate the expected form output as a json object */

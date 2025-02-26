@@ -29,6 +29,7 @@ import { CompiledTemplate, template } from "underscore";
 import { FormInput } from "../../api";
 import { fieldNameToOptionalChain, getItemValeuPath } from "./utils";
 import { getInputReference } from "../utils/Utils";
+import { getCurrentItemSetModelData } from "./ListFieldTemplate";
 
 export interface Option {
   value: string;
@@ -69,6 +70,7 @@ export class SelectFieldTemplate implements FormElementTemplate<FormInput, Selec
       setValueFromModelCode: {
         code: this.setValueFromModelTemplate({
           ...props,
+          id: props.itemProps?.isListItem ? getCurrentItemSetModelData(props.id) : props.id,
           path: fieldNameToOptionalChain(props.name),
           valuePath: props.itemProps?.isListItem ? getItemValeuPath(props.name) : "",
           isListItem: props.itemProps?.isListItem ?? false,

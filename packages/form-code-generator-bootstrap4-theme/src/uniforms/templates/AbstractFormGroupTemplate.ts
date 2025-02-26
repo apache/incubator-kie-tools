@@ -23,6 +23,7 @@ import { CompiledTemplate, template } from "underscore";
 import { getInputReference } from "../utils/Utils";
 import { fieldNameToOptionalChain, flatFieldName, getItemValeuPath } from "./utils";
 import { ListItemProps } from "../rendering/ListFieldInput";
+import { getCurrentItemSetModelData } from "./ListFieldTemplate";
 
 export interface CodeGenTemplate<Element extends CodeGenElement, Properties> {
   render: (props: Properties) => Element;
@@ -54,7 +55,6 @@ export abstract class AbstractFormGroupTemplate<Properties extends FormElementTe
   ) {}
 
   render(props: Properties): FormInput {
-    console.log(props.name);
     return {
       ref: getInputReference(props),
       html: template(formGroupTemplate)({
@@ -68,6 +68,7 @@ export abstract class AbstractFormGroupTemplate<Properties extends FormElementTe
       setValueFromModelCode: {
         code: this.setValueFromModelTemplate({
           ...props,
+          id: props.itemProps?.isListItem ? getCurrentItemSetModelData(props.id) : props.id,
           isListItem: props.itemProps?.isListItem ?? false,
           path: fieldNameToOptionalChain(props.name),
           valuePath: props.itemProps?.isListItem ? getItemValeuPath(props.name) : "",

@@ -25,6 +25,7 @@ import { FormInput } from "../../api";
 import { CompiledTemplate, template } from "underscore";
 import { getInputReference } from "../utils/Utils";
 import { fieldNameToOptionalChain, getItemValeuPath } from "./utils";
+import { getCurrentItemSetModelData } from "./ListFieldTemplate";
 
 interface BoolFieldProps extends FormElementTemplateProps<boolean> {
   checked: boolean;
@@ -52,7 +53,7 @@ export class BoolFieldTemplate implements FormElementTemplate<FormInput, BoolFie
       globalFunctions: undefined,
       setValueFromModelCode: {
         code: this.checkboxSetValueFromModelTemplate({
-          id: props.id,
+          id: props.itemProps?.isListItem ? getCurrentItemSetModelData(props.id) : props.id,
           path: fieldNameToOptionalChain(props.name),
           valuePath: props.itemProps?.isListItem ? getItemValeuPath(props.name) : "",
           isListItem: props.itemProps?.isListItem ?? false,

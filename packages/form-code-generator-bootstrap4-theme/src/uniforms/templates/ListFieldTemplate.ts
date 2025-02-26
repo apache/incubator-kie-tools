@@ -26,6 +26,7 @@ import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGro
 import { FormElement, FormInputContainer, InputReference } from "../../api";
 import { CompiledTemplate, template } from "underscore";
 import { fieldNameToOptionalChain } from "./utils";
+import { LIST_INDEX_VARIABLE_NAME } from "../ListField";
 
 interface ListFieldTemplateProps extends FormElementTemplateProps<any> {
   children: FormElement<any>;
@@ -56,8 +57,6 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
       return "undefined";
     };
 
-    console.log("ListFieldTemplateProps", children);
-
     return {
       ref,
       html: this.listFieldTemplate({
@@ -67,7 +66,7 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
         name,
         value,
         childrenHtml: children.html,
-        functionName: getFunctionName(name, itemProps?.indexVariableName ?? ""),
+        functionName: getFunctionName(name),
       }),
       disabled: disabled,
       globalFunctions: {
@@ -79,17 +78,17 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
             maxCount,
             childrenHtml: `${children.html}`,
             name,
-            functionName: getFunctionName(name, itemProps?.indexVariableName ?? ""),
-          }) + children?.globalFunctions?.code,
+            functionName: getFunctionName(name),
+          }) + (children?.globalFunctions?.code !== undefined ? children?.globalFunctions?.code : ""),
         requiredCode: [modifyList],
       },
       setValueFromModelCode: {
         code: this.listFieldSetValueFromModelTemplate({
           id,
-          path: fieldNameToOptionalChain(name).includes(`$\{${itemProps?.indexVariableName}}`)
-            ? "value"
-            : `data?.${fieldNameToOptionalChain(name)}`,
+          path: getSetItemPath(name),
+          indexVariableName: LIST_INDEX_VARIABLE_NAME,
           itemsSetValueFromModel: children.setValueFromModelCode,
+          name: getCurrentItemSetModelData(name),
         }),
         requiredCode: [],
       },
@@ -103,12 +102,24 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
   }
 }
 
-function getFunctionName(name: string, indexVariableName: string) {
-  let nameToCaptalize = name;
-  if (name.includes(`$\{${indexVariableName}}`)) {
-    nameToCaptalize = name.replace(`.$\{${indexVariableName}}`, "");
+// "value" is the name used in the listField.setModelData.template
+function getSetItemPath(name: string) {
+  return fieldNameToOptionalChain(name).includes(`$`) ? "value" : `data?.${fieldNameToOptionalChain(name)}`;
+}
+
+// "currentItem" is the name used in the listField.setModelData.template
+export function getCurrentItemSetModelData(name: string) {
+  const splittedName = name.split(`.$`);
+  // Is nested
+  if (splittedName.length > 1) {
+    // ${currentItem}. with last part of the field name
+    return "${currentItem}" + (splittedName?.[splittedName.length - 1] ?? "");
   }
-  return nameToCaptalize
+  return name;
+}
+
+function getFunctionName(name: string) {
+  return name
     .split(".")
     .map((word) => `${word?.[0]?.toUpperCase()}${word?.slice(1)}`)
     .join("");

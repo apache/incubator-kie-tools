@@ -28,6 +28,7 @@ import { CompiledTemplate, template } from "underscore";
 import { FormInput } from "../../api";
 import { fieldNameToOptionalChain, getItemValeuPath } from "./utils";
 import { getInputReference } from "../utils/Utils";
+import { getCurrentItemSetModelData } from "./ListFieldTemplate";
 
 export interface Option {
   value: string;
@@ -67,6 +68,7 @@ export class RadioGroupFieldTemplate implements FormElementTemplate<FormInput, R
         requiredCode: [setRequiredCode],
         code: this.setValueFromModelTemplate({
           ...props,
+          name: props.itemProps?.isListItem ? getCurrentItemSetModelData(props.name) : props.name,
           path: fieldNameToOptionalChain(props.name),
           valuePath: props.itemProps?.isListItem ? getItemValeuPath(props.name) : "",
           isListItem: props.itemProps?.isListItem ?? false,

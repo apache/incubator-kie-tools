@@ -52,8 +52,8 @@ const List: React.FunctionComponent<ListFieldProps> = ({
   const codegenCtx = useBootstrapCodegenContext();
 
   const element: FormInputContainer = renderCodeGenElement(LIST, {
-    id: name.replace("$", "${" + itemProps?.indexVariableName + "}"),
-    name: name.replace("$", "${" + itemProps?.indexVariableName + "}"),
+    id: name,
+    name: name,
     label: label,
     disabled: disabled,
     itemProps: itemProps,
@@ -62,7 +62,8 @@ const List: React.FunctionComponent<ListFieldProps> = ({
       "$",
       {
         isListItem: true,
-        indexVariableName: "itemIndex",
+        parentIndexVariableName: itemProps?.indexVariableName,
+        indexVariableName: getNextIndexVariableName(itemProps),
         listName: name,
       },
       disabled
@@ -72,5 +73,15 @@ const List: React.FunctionComponent<ListFieldProps> = ({
   codegenCtx?.rendered.push(element);
   return <>{JSON.stringify(element)}</>;
 };
+
+export const LIST_INDEX_VARIABLE_NAME = "itemIndex";
+export const NEST_PREFIX = "nested";
+
+function getNextIndexVariableName(itemProps: ListItemProps) {
+  if (itemProps?.indexVariableName === undefined) {
+    return LIST_INDEX_VARIABLE_NAME;
+  }
+  return NEST_PREFIX + "__" + itemProps?.indexVariableName;
+}
 
 export default connectField(List);

@@ -24,6 +24,7 @@ import { BootstrapCodeGenContext, CodeGenContextProvider } from "../BootstrapCod
 
 export interface ListItemProps {
   isListItem: boolean;
+  parentIndexVariableName?: string;
   indexVariableName: string;
   listName: string;
 }

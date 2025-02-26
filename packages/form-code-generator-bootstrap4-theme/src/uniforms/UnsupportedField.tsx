@@ -36,8 +36,8 @@ export type UnsupportedFieldProps = HTMLFieldProps<
 
 const Unsupported: React.FC<UnsupportedFieldProps> = (props: UnsupportedFieldProps) => {
   const properties = {
-    id: props.name.replaceAll("$", "${" + props.itemProps?.indexVariableName + "}"),
-    name: props.name.replaceAll("$", "${" + props.itemProps?.indexVariableName + "}"),
+    id: props.name,
+    name: props.name,
     label: props.label,
     fieldType: props.fieldType.name,
   };
