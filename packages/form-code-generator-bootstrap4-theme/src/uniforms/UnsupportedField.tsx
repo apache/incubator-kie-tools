@@ -35,14 +35,12 @@ export type UnsupportedFieldProps = HTMLFieldProps<
 >;
 
 const Unsupported: React.FC<UnsupportedFieldProps> = (props: UnsupportedFieldProps) => {
-  const properties = {
+  const element: FormInput = renderCodeGenElement(UNSUPPORTED, {
     id: props.name,
     name: props.name,
     label: props.label,
     fieldType: props.fieldType.name,
-  };
-
-  const element: FormInput = renderCodeGenElement(UNSUPPORTED, properties);
+  });
   useAddFormElementToBootstrapContext(element);
   return <>{JSON.stringify(element)}</>;
 };

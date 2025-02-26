@@ -31,8 +31,8 @@ export interface FormElement<REFERENCE_TYPE> extends CodeGenElement {
 
   disabled?: boolean;
 
-  setValueFromModelCode?: CodeFragment;
-  writeValueToModelCode?: CodeFragment;
+  setValueFromModelCode: CodeFragment | undefined;
+  writeValueToModelCode: CodeFragment | undefined;
   globalFunctions: CodeFragment | undefined;
 }
 
