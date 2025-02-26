@@ -100,8 +100,11 @@ test.describe("Populate Boxed Function", () => {
       .addRowAtBottomOfIndex(1);
 
     await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).click();
-    await page.getByPlaceholder("Expression Name").fill("Risk category");
-    await page.keyboard.press("Enter");
+    await monaco.fill({
+      monacoParentLocator: page.getByTestId("kie-tools--bee--expression-popover-menu"),
+      content: "Risk category",
+      submit: true,
+    });
 
     await bee.expression.asDecisionTable().fill({
       startAtCell: 1,
