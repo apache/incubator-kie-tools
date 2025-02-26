@@ -162,6 +162,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   );
   const status = useMemo(() => (isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE), [isExpanded]);
   const dmnRunnerAjv = useMemo(() => new DmnRunnerAjv().getAjv(), []);
+  const [currentResponseMessage, setCurrentResponseMessage] = useState<Map<string, DmnEvaluationMessages[]>>(new Map());
 
   useLayoutEffect(() => {
     if (props.isEditorReady) {
@@ -262,6 +263,18 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             if (canceled.get()) {
               return;
             }
+            const currentResults = results[currentInputIndex];
+            if (currentResults && currentResults.messages?.length > 0) {
+              const messagesMap = new Map(
+                (currentResults.decisionResults || []).map((decisionResult) => {
+                  const messages = currentResults.messages || [];
+                  return [decisionResult.decisionId, messages];
+                })
+              );
+              setCurrentResponseMessage(messagesMap);
+            } else {
+              setCurrentResponseMessage(new Map());
+            }
 
             const runnerResults: Array<DecisionResult[] | undefined> = [];
             for (const result of results) {
@@ -277,6 +290,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           })
           .catch((err) => {
             console.log(err);
+            setCurrentResponseMessage(new Map());
             setDmnRunnerResults({ type: DmnRunnerResultsActionType.DEFAULT });
           });
       },
@@ -286,6 +300,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         extendedServices.client,
         dmnRunnerInputs,
         extendedServicesModelPayload,
+        currentInputIndex,
       ]
     )
   );
@@ -340,19 +355,17 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       (acc: Map<string, string>, decisionResult) => acc.set(decisionResult.decisionId, decisionResult.decisionName),
       new Map<string, string>()
     );
-
-    const messagesBySourceId =
-      results[currentInputIndex]?.reduce((acc, decisionResult) => {
-        decisionResult.messages?.forEach((message) => {
-          const messageEntry = acc.get(message.sourceId);
-          if (!messageEntry) {
-            acc.set(message.sourceId, [message]);
-          } else {
-            acc.set(message.sourceId, [...messageEntry, message]);
-          }
-        });
-        return acc;
-      }, new Map<string, DmnEvaluationMessages[]>()) ?? new Map<string, DmnEvaluationMessages[]>();
+    const messagesBySourceId = Array.from(currentResponseMessage.values()).reduce((acc, messages) => {
+      messages.forEach((message) => {
+        const messageEntry = acc.get(message.sourceId) || [];
+        if (!messageEntry) {
+          acc.set(message.sourceId, [message]);
+        } else {
+          acc.set(message.sourceId, [...messageEntry, message]);
+        }
+      });
+      return acc;
+    }, new Map<string, DmnEvaluationMessages[]>());
 
     const notifications: Notification[] = [...messagesBySourceId.entries()].flatMap(([sourceId, messages]) => {
       const path = decisionNameByDecisionId?.get(sourceId) ?? "";
@@ -372,6 +385,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     currentInputIndex,
     props.workspaceFile.extension,
     extendedServices.status,
+    currentResponseMessage,
   ]);
 
   const setDmnRunnerPersistenceJson = useCallback(
