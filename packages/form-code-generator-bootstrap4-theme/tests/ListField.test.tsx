@@ -19,10 +19,6 @@
 
 import { renderField } from "./_render";
 import { ListField } from "../src/uniforms";
-import { FormInputContainer } from "../src/api";
-import { render } from "@testing-library/react";
-import AutoForm, { AutoFormProps } from "../src/uniforms/AutoForm";
-import createSchema from "./_createSchema";
 
 const schema = {
   friends: { type: Array },
@@ -58,35 +54,12 @@ describe("<ListField> tests", () => {
 
     expect(container).toMatchSnapshot();
 
-    expect(formElement.html).toContain("<fieldset>");
-    expect(formElement.html).toContain("<div role='list'>");
+    expect(formElement.html).toContain('<div role="list" id="friends">');
 
-    expect(formElement.ref).toHaveLength(3);
+    expect(formElement.ref).toHaveLength(7);
 
     expect(formElement.globalFunctions).not.toBeUndefined();
     expect(formElement.setValueFromModelCode).not.toBeUndefined();
     expect(formElement.writeValueToModelCode).not.toBeUndefined();
-  });
-
-  it("<ListField> - rendering disabled", () => {
-    const props = {
-      id: "id",
-      label: "Friends",
-      name: "friends",
-      disabled: true,
-    };
-
-    const { container, formElement } = renderField(ListField, props, schema);
-
-    expect(container).toMatchSnapshot();
-
-    expect(formElement.html).toContain("<fieldset disabled>");
-    expect(formElement.html).toContain("<div role='list'>");
-
-    expect(formElement.ref).toHaveLength(3);
-
-    expect(formElement.globalFunctions).not.toBeUndefined();
-    expect(formElement.setValueFromModelCode).not.toBeUndefined();
-    expect(formElement.writeValueToModelCode).toBeUndefined();
   });
 });

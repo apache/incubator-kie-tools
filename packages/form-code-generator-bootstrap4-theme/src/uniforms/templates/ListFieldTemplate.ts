@@ -26,7 +26,7 @@ import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGro
 import { FormElement, FormInputContainer, InputReference } from "../../api";
 import { CompiledTemplate, template } from "underscore";
 import { fieldNameToOptionalChain } from "./utils";
-import { LIST_INDEX_VARIABLE_NAME } from "../ListField";
+import { ListItemProps } from "../rendering/ListFieldInput";
 
 interface ListFieldTemplateProps extends FormElementTemplateProps<any> {
   children: FormElement<any>;
@@ -86,9 +86,11 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
         code: this.listFieldSetValueFromModelTemplate({
           id,
           path: getSetItemPath(name),
-          indexVariableName: LIST_INDEX_VARIABLE_NAME,
+          indexVariableName: "index",
           itemsSetValueFromModel: children.setValueFromModelCode,
-          name: getCurrentItemSetModelData(name),
+          name: getCurrentItemSetModelData(name, itemProps?.indexVariableName ?? "itemIndex"),
+          functionName: getFunctionName(name),
+          prefix: getNextIndexVariableName(itemProps),
         }),
         requiredCode: [],
       },
@@ -105,16 +107,22 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
 
 // "value" is the name used in the listField.setModelData.template
 function getSetItemPath(name: string) {
-  return fieldNameToOptionalChain(name).includes(`$`) ? "value" : `data?.${fieldNameToOptionalChain(name)}`;
+  if (name.endsWith("$")) {
+    return "value";
+  }
+  if (name.includes("$.")) {
+    return `value?.${name.split(".").pop()}`;
+  }
+  return `data?.${fieldNameToOptionalChain(name)}`;
 }
 
 // "currentItem" is the name used in the listField.setModelData.template
-export function getCurrentItemSetModelData(name: string) {
+export function getCurrentItemSetModelData(name: string, prefix: string) {
   const splittedName = name.split(`.$`);
   // Is nested
   if (splittedName.length > 1) {
     // ${currentItem}. with last part of the field name
-    return "${currentItem}" + (splittedName?.[splittedName.length - 1] ?? "");
+    return `\${${prefix}__currentItem}` + (splittedName?.[splittedName.length - 1] ?? "");
   }
   return name;
 }
@@ -124,4 +132,11 @@ function getFunctionName(name: string) {
     .split(".")
     .map((word) => `${word?.[0]?.toUpperCase()}${word?.slice(1)}`)
     .join("");
+}
+
+export function getNextIndexVariableName(itemProps: ListItemProps) {
+  if (itemProps === undefined) {
+    return "itemIndex";
+  }
+  return "nested__" + itemProps.indexVariableName;
 }

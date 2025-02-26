@@ -37,7 +37,6 @@ export const renderFormInputs = (schema: Bridge): FormElement<any>[] => {
   });
 
   ReactDOMServer.renderToString(inputsElement);
-
   return codegenCtx.rendered;
 };
 

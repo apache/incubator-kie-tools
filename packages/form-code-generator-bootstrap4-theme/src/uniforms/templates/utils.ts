@@ -26,12 +26,11 @@ export function flatFieldName(fieldName: string): string {
 }
 
 export function getItemValeuPath(name: string) {
-  // nested array
-  if (name.endsWith("${itemIndex}")) {
+  if (name.endsWith("$")) {
     return "";
   }
   // nested object
-  if (name.includes("${itemIndex}.")) {
+  if (name.includes("$.")) {
     return `?.${name.split(".").pop()}`;
   }
   return "";

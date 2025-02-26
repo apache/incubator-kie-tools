@@ -38,7 +38,7 @@ function addListItem(name, defaultValue, maxCount, childrenHtml, functionName) {
 
   const newItem = document.createElement("div");
   newItem.class = "row"
-  newItem.id = name + "." + itemIndex
+  newItem.id = `item-${name}.${itemIndex}`
   newItem.innerHTML = `
   <div class="col-1">
     <span id="remove-item-${name}" name="Remove Item" class="badge badge-pill" role="button" tabindex="0" onclick="onDelListItem${functionName}('${name}', ${itemIndex})" onkeydown="onDelListItem${functionName}('${name}', ${itemIndex})">

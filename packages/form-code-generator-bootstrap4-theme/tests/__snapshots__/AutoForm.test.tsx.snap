@@ -138,7 +138,9 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 		&lt;/div&gt;
 	&lt;/div&gt;
 	&lt;script&gt;
-		function delListItem(value, name, minCount, itemIndex, onDelListItem) {
+		function delListItem(name, minCount, itemIndex, onDelListItem) {
+			const formData = getFormData();
+			const value = accessObjectPath(formData, name) ?? [];
 			if ((minCount ?? 0) &lt;= value.length) {
 				document.getElementById(\`\${name}.\${itemIndex}\`).remove();
 			}
@@ -160,7 +162,9 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 					element.name = \`\${name}.\${index}\`;
 				});
 		}
-		function addListItem(value, name, defaultValue, maxCount, childrenHtml, functionName) {
+		function addListItem(name, defaultValue, maxCount, childrenHtml, functionName) {
+			const formData = getFormData();
+			let value = accessObjectPath(formData, name) ?? [];
 			const itemIndex = value.length;
 			if (maxCount !== undefined &amp;&amp; maxCount &gt; value.length) {
 				value = value.concat([defaultValue]);
@@ -170,7 +174,7 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			const listContainer = document.getElementById(name);
 			const newItem = document.createElement(&quot;div&quot;);
 			newItem.class = &quot;row&quot;;
-			newItem.id = name + &quot;.&quot; + itemIndex;
+			newItem.id = \`item-\${name}.\${itemIndex}\`;
 			newItem.innerHTML = \`
   &lt;div class=&quot;col-1&quot;&gt;
     &lt;span id=&quot;remove-item-\${name}&quot; name=&quot;Remove Item&quot; class=&quot;badge badge-pill&quot; role=&quot;button&quot; tabindex=&quot;0&quot; onclick=&quot;onDelListItem\${functionName}(&#39;\${name}&#39;, \${itemIndex})&quot; onkeydown=&quot;onDelListItem\${functionName}(&#39;\${name}&#39;, \${itemIndex})&quot;&gt;
@@ -295,20 +299,15 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			return objPath.split(&quot;.&quot;).reduce((acc, pathPiece) =&gt; acc[pathPiece], obj);
 		}
 		function onDelListItemFriends(name, itemIndex) {
-			const formData = getFormData();
-			const value = accessObjectPath(formData, name) ?? [];
 			const disabled = false;
 			if (!disabled) {
-				delListItem(value, name, undefined, itemIndex, onDelListItemFriends);
+				delListItem(name, undefined, itemIndex, onDelListItemFriends);
 			}
 		}
 		function onAddListItemFriends(name) {
-			const formData = getFormData();
-			const value = accessObjectPath(formData, name) ?? [];
 			const disabled = false;
 			if (!disabled) {
 				addListItem(
-					value,
 					name,
 					undefined,
 					undefined,
@@ -333,9 +332,49 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
     step=&quot;0.01&quot;
     value=&quot;&quot;/&gt;
 &lt;/div&gt;
+        &lt;div class=&quot;form-group&quot;&gt;
+    &lt;div class=&quot;card mb-3&quot;&gt;
+    &lt;div class=&quot;card-body&quot;&gt;
+        &lt;div class=&quot;card-title&quot;&gt;
+            &lt;label class=&quot;col-form-label&quot;&gt;Known&lt;/label&gt;
+            &lt;div id=&quot;add-item-friends.$.known&quot; name=&quot;Add Item&quot; class=&quot;badge badge-pill float-right&quot; role=&quot;button&quot; tabindex=&quot;0&quot; 
+                onclick=&quot;onAddListItemFriends$Known(&#39;friends.$.known&#39;)&quot;
+                onkeydown=&quot;onAddListItemFriends$Known(&#39;friends.$.known&#39;)&quot;&gt;
+                &lt;i className=&quot;octicon octicon-plus&quot;&gt;&lt;span&gt;+&lt;/span&gt;&lt;/i&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div role=&quot;list&quot; id=&quot;friends.$.known&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
     &lt;/div&gt;
 &lt;/fieldset&gt;\`,
 					&quot;Friends&quot;
+				);
+			}
+		}
+		function onDelListItemFriends$Known(name, itemIndex) {
+			const disabled = false;
+			if (!disabled) {
+				delListItem(name, undefined, itemIndex, onDelListItemFriends$Known);
+			}
+		}
+		function onAddListItemFriends$Known(name) {
+			const disabled = false;
+			if (!disabled) {
+				addListItem(
+					name,
+					undefined,
+					undefined,
+					\`&lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;item-friends.$.known.$&quot;&gt;Known&lt;/label&gt;
+    &lt;input type=&quot;text&quot;
+    id=&quot;friends.$.known.$&quot;
+    name=&quot;friends.$.known.$&quot;
+    class=&quot;form-control&quot;
+    value=&quot;&quot;/&gt;
+&lt;/div&gt;\`,
+					&quot;Friends$Known&quot;
 				);
 			}
 		}
@@ -395,10 +434,18 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			document.getElementById(&quot;interview.hiringDate&quot;).value = data?.interview?.hiringDate
 				? new Date(data?.interview?.hiringDate).toISOString().slice(0, 16)
 				: &quot;&quot;;
-			data?.friends?.forEach((value, itemIndex) =&gt; {
-				const currentItem = \`friends.\${itemIndex}\`;
-				document.getElementById(\`\${currentItem}.name\`).value = value ?? &quot;&quot;;
-				document.getElementById(\`\${currentItem}.age\`).value = value ?? &quot;&quot;;
+			data?.friends?.forEach((value, index) =&gt; {
+				// Add element;
+				onAddListItemFriends(\`friends\`);
+				const itemIndex__currentItem = \`friends.\${index}\`;
+				document.getElementById(\`\${itemIndex__currentItem}.name\`).value = value?.name ?? &quot;&quot;;
+				document.getElementById(\`\${itemIndex__currentItem}.age\`).value = value?.age ?? &quot;&quot;;
+				value?.known?.forEach((value, index) =&gt; {
+					// Add element;
+					onAddListItemFriends$Known(\`\${itemIndex__currentItem}.known\`);
+					const nested__itemIndex__currentItem = \`\${itemIndex__currentItem}.known.\${index}\`;
+					document.getElementById(\`\${nested__itemIndex__currentItem}\`).value = value ?? &quot;&quot;;
+				});
 			});
 		}
 		/* Utility function to generate the expected form output as a json object */

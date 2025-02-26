@@ -9,20 +9,7 @@
                 <i className="octicon octicon-plus"><span>+</span></i>
             </div>
         </div>
-        <div role="list" id="<%= name %>">
-            <% _.each(value, function(item, itemIndex) { %>
-                <div class="row" id="<%= label %>.<%= itemIndex%>">
-                    <div class="col-1">
-                        <span name="Remove Item" class="badge badge-pill" role="button" tabindex="0" onclick="onDelListItem(itemIndex)" onkeydown="onDelListItem(itemIndex)">
-                            <i className="octicon octicon-dash"></i>
-                        </span>
-                    </div>
-                    <div class="col-11">
-                        <%= childrenHtml %>
-                    </div>
-                </div>
-            <% }); %>
-        </div>
+        <div role="list" id="<%= name %>"></div>
     </div>
     </div>
 </div>

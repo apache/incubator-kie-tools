@@ -2,6 +2,13 @@
 <% _.each(props.children, function(child) { %>
     <%=child.html%>
 <% }); %>
+<% if (props.submit) { %>
+<input
+    class="btn btn-primary"
+    disabled={<%= props.disabled %>}
+    type="submit"
+/>
+<% } %>
     <script>
 <% const addedGlobalFunctionsCode = []; %>
 <%  _.each(props.children, function(child) { %>

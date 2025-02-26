@@ -24,6 +24,7 @@ import { renderListItemFragmentWithContext } from "./rendering/RenderingUtils";
 import { useBootstrapCodegenContext } from "./BootstrapCodeGenContext";
 import { LIST, renderCodeGenElement } from "./templates/templates";
 import { ListItemProps } from "./rendering/ListFieldInput";
+import { getNextIndexVariableName } from "./templates/ListFieldTemplate";
 
 export type ListFieldProps = HTMLFieldProps<
   unknown[],
@@ -72,15 +73,5 @@ const List: React.FunctionComponent<ListFieldProps> = ({
   codegenCtx?.rendered.push(element);
   return <>{JSON.stringify(element)}</>;
 };
-
-export const LIST_INDEX_VARIABLE_NAME = "itemIndex";
-export const NEST_PREFIX = "nested";
-
-function getNextIndexVariableName(itemProps: ListItemProps) {
-  if (itemProps?.indexVariableName === undefined) {
-    return LIST_INDEX_VARIABLE_NAME;
-  }
-  return NEST_PREFIX + "__" + itemProps?.indexVariableName;
-}
 
 export default connectField(List);
