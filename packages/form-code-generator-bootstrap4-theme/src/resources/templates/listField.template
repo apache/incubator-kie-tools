@@ -2,27 +2,14 @@
     <div class="card mb-3">
     <div class="card-body">
         <div class="card-title">
-        <label class="col-form-label" for="<%= id %>"><%=label%></label>
-        <div class="badge badge-pill float-right" role="button" tabindex="0" <%=disabled ? " disabled" : ""%>
-            onclick="onAddListItem<%= functionName %>('<%= name %>')"
-            onkeydown="onAddListItem<%= functionName %>('<%= name %>')">
-            <i className="octicon octicon-plus"><span>+</span></i>
+            <label class="col-form-label"><%=label%></label>
+            <div id="add-item-<%= id %>" name="Add Item" class="badge badge-pill float-right" role="button" tabindex="0" <%=disabled ? " disabled" : ""%>
+                onclick="onAddListItem<%= functionName %>('<%= name %>')"
+                onkeydown="onAddListItem<%= functionName %>('<%= name %>')">
+                <i className="octicon octicon-plus"><span>+</span></i>
+            </div>
         </div>
-        </div>
-        <div role="list" id="<%= name %>">
-            <% _.each(value, function(item, itemIndex) { %>
-                <div class="row" id="<%= label %>-<%= itemIndex%>">
-                    <div class="col-1">
-                        <span class="badge badge-pill" role="button" tabindex="0" onclick="onDelListItem<%= functionName %>('<%= name %>', itemIndex)" onkeydown="onDelListItem<%= functionName %>('<%= name %>', itemIndex)">
-                            <i className="octicon octicon-dash"><span>-</span></i>
-                        </span>
-                    </div>
-                    <div class="col-11">
-                        <%= childrenHtml %>
-                    </div>
-                </div>
-            <% }); %>
-        </div>
+        <div role="list" id="<%= name %>"></div>
     </div>
     </div>
 </div>

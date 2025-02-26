@@ -3,7 +3,7 @@ function onDelListItem<%= functionName %>(name, itemIndex) {
   const value = accessObjectPath(formData, name) ?? [];
   const disabled = <%= disabled %>
   if (!disabled) {
-    delListItem(value, `<%= name %>`, <%= minCount !== undefined ? minCount : "undefined" %>, itemIndex, onDelListItem<%= functionName %>)
+    delListItem(value, name, <%= minCount !== undefined ? minCount : "undefined" %>, itemIndex, onDelListItem<%= functionName %>)
   }
 }
 function onAddListItem<%= functionName %>(name) {
@@ -11,6 +11,6 @@ function onAddListItem<%= functionName %>(name) {
   const value = accessObjectPath(formData, name) ?? [];
   const disabled = <%= disabled %>
   if (!disabled) {
-    addListItem(value, <%= defaultValue %>, <%= maxCount !== undefined ? maxCount : "undefined" %>, `<%= name %>`, `<%= childrenHtml %>`, "<%= functionName %>")
+    addListItem(value, name, <%= defaultValue %>, <%= maxCount !== undefined ? maxCount : "undefined" %>, `<%= childrenHtml %>`, "<%= functionName %>")
   }
 }

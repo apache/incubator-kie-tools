@@ -62,7 +62,6 @@ const List: React.FunctionComponent<ListFieldProps> = ({
       "$",
       {
         isListItem: true,
-        parentIndexVariableName: itemProps?.indexVariableName,
         indexVariableName: getNextIndexVariableName(itemProps),
         listName: name,
       },

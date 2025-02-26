@@ -7,14 +7,10 @@ function delListItem(value, name, minCount, itemIndex, onDelListItem) {
   Array.from(
     document.getElementById(name).childNodes ?? []
   ).filter(node => node.nodeType === 1).forEach((element, index) => {
-    const delElement = element.querySelector(`span[name='Remove']`);
+    const delElement = element.querySelector(`span[name='Remove Item']`);
     delElement.onclick = function () { onDelListItem(name, `${index}`) };
     delElement.onkeydown = function () { onDelListItem(name, `${index}`) };
 
-    if (element && element.querySelector("label[for]")) {
-      element.querySelector("label[for]").htmlFor = `${name}.${index}`;
-    }
-    
     const inputOrSelect = element.querySelector("input, select")
     inputOrSelect.id = `${name}.${index}`;
     inputOrSelect.name = `${name}.${index}`;
@@ -24,7 +20,7 @@ function delListItem(value, name, minCount, itemIndex, onDelListItem) {
   });
 }
 
-function addListItem(value, defaultValue, maxCount, name, childrenHtml, functionName) {
+function addListItem(value, name, defaultValue, maxCount, childrenHtml, functionName) {
   const itemIndex = value.length;
 
   if (maxCount !== undefined && (maxCount > value.length)) {
@@ -40,7 +36,7 @@ function addListItem(value, defaultValue, maxCount, name, childrenHtml, function
   newItem.id = name + "." + itemIndex
   newItem.innerHTML = `
   <div class="col-1">
-    <span name="Remove" class="badge badge-pill" role="button" tabindex="0" onclick="onDelListItem${functionName}('${name}', ${itemIndex})" onkeydown="onDelListItem${functionName}('${name}', ${itemIndex})">
+    <span id="remove-item-${name}" name="Remove Item" class="badge badge-pill" role="button" tabindex="0" onclick="onDelListItem${functionName}('${name}', ${itemIndex})" onkeydown="onDelListItem${functionName}('${name}', ${itemIndex})">
       <i className="octicon octicon-dash"><span>-</span></i>
     </span>
   </div>
@@ -50,63 +46,132 @@ function addListItem(value, defaultValue, maxCount, name, childrenHtml, function
   `
 
   listContainer.appendChild(newItem);
+  const newItemElement = document.getElementById(newItem.id);
+  [...newItemElement.querySelectorAll('input[id*="$"], select[id*="$"]')].forEach((el) => {
+    if (el.id.split(".").pop() !== "$") {
+      el.id = `${name}.${itemIndex}.${el.id.split(".").pop()}`;
+      el.name = `${name}.${itemIndex}.${el.id.split(".").pop()}`;
+    } else {
+      el.id = `${name}.${itemIndex}`;
+      el.name = `${name}.${itemIndex}`;
+    }
+  });
+
+  const nestedListContainer = newItemElement.querySelector("div[role='list']");
+  if (nestedListContainer) {
+    nestedListContainer.id = nestedListContainer.id.replace(`${name}.$`, `${name}.${itemIndex}`)
+
+    const addItem = newItemElement.querySelector('[id^=add-item]');
+    addItem.id = addItem.id.replace(`${name}.$`, `${name}.${itemIndex}`);
+    const addItemOnClick = addItem.getAttribute('onclick');
+    if (addItemOnClick) {
+      addItem.setAttribute('onclick', addItemOnClick.replace(`${name}.$`, `${name}.${itemIndex}`));
+    }
+    const addItemOnKeydown = addItem.getAttribute('onkeydown');
+    if (addItemOnKeydown) {
+      addItem.setAttribute('onkeydown', addItemOnKeydown.replace(`${name}.$`, `${name}.${itemIndex}`));
+    }
+    const removeItem = newItemElement.querySelector('[id^=remove-item]');
+    removeItem.id = removeItem.id.replace(`${name}.$`, `${name}.${itemIndex}`);
+    const removeItemOnClick = removeItem.getAttribute('onclick');
+    if (removeItemOnClick) {
+      removeItem.setAttribute('onclick', removeItemOnClick.replace(`${name}.$`, `${name}.${itemIndex}`));
+    }
+    const removeItemOnKeydown = removeItem.getAttribute('onkeydown');
+    if (removeItemOnKeydown) {
+      removeItem.setAttribute('onkeydown', removeItemOnKeydown.replace(`${name}.$`, `${name}.${itemIndex}`));
+    }
+  }
 }
 function recursiveGetObjectListValues(objectElement) {
-  const nestedObjects = objectElement.querySelectorAll("div[role='group']");
-  if (nestedObjects.length) {
-    return Array.from(nestedObjects).reduce((acc, nestedObject) => {
-      return { ...acc, ...recursiveGetObjectListValues(nestedObject) };
+  const nested = objectElement.querySelector(
+    "div[role='group'], div[role='list']"
+  );
+  let results = {};
+  const inputValues = Array.from(objectElement.childNodes)
+    .filter((child) => child.nodeType === Node.ELEMENT_NODE)
+    .reduce((acc, potentialFormGroups) => {
+      if (!potentialFormGroups.matches(".form-group")) {
+        return acc;
+      }
+      const inputOrSelectElement =
+        potentialFormGroups.querySelector("input, select");
+        if (inputOrSelectElement) {
+          acc[inputOrSelectElement.id.split(".").pop()] =
+            getListValues(inputOrSelectElement);
+        }
+      return acc;
     }, {});
+
+  if (nested && nested.matches('[role="group"]')) {
+    results = { ...results, ...recursiveGetObjectListValues(nested) };
   }
-  return Array.from(objectElement.querySelectorAll("input, select"))
-    .reduce((acc, inputOrSelectElement) => {
-      acc[`${inputOrSelectElement.name.split(".").pop()}`] = getListValues(inputOrSelectElement);
-      return acc;
-    }, {});
+  if (nested && nested.matches('[role="list"]')) {
+    results[nested.id.split(".").pop()] = recursiveGetArrayListValues(nested);
+  }
+  return { ...inputValues, ...results };
 }
+
 function recursiveGetArrayListValues(arrayElement) {
-  return Array.from(arrayElement.childNodes).reduce((acc, childElement) => {
-    if (childElement.getAttribute("role") === "group") {
-      acc["$"] = recursiveGetObjectListValues(childElement);
-      return acc;
-    }
-    if (childElement.getAttribute("role") === "list") {
-      acc["$"] = recursiveGetArrayListValues(childElement);
-      return acc;
-    }
-    acc["$"] = getListValues(childElement.querySelector("input, select"));
-    return acc;
-  }, {});
+  return Array.from(arrayElement.childNodes)
+    .filter((child) => child.nodeType === Node.ELEMENT_NODE)
+    .map((childElement) => {
+      const nestedGroup = childElement.querySelector("div[role='group']");
+      if (nestedGroup) {
+        return recursiveGetObjectListValues(nestedGroup);
+      }
+      const nestedList = childElement.querySelector("div[role='list']");
+      if (nestedList) {
+        const nestedListChilds = [...nestedList.childNodes]
+          .filter((child) => child.nodeType === Node.ELEMENT_NODE)
+          .filter((el) => el.matches('[role="list"]')
+        );
+        return Array.from(nestedListChilds).map((list) =>
+          recursiveGetArrayListValues(list)
+        );
+      }
+      return getListValues(childElement.querySelector("input, select"));
+    });
 }
+
 function getListValues(inputOrSelectElement) {
   if (!inputOrSelectElement) {
     return null;
   }
 
   if (inputOrSelectElement.tagName === "INPUT") {
-    if (inputOrSelectElement.type === "text" || inputOrSelectElement.type === "number") {
+    if (
+      inputOrSelectElement.type === "text" ||
+      inputOrSelectElement.type === "number"
+    ) {
       return inputOrSelectElement.value;
     }
     if (inputOrSelectElement.type === "checkbox") {
-      return inputOrSelectElement.checked ? (inputOrSelectElement.value || true) : false;
+      return inputOrSelectElement.checked
+        ? inputOrSelectElement.value || true
+        : false;
     }
     if (inputOrSelectElement.type === "radio") {
       return inputOrSelectElement.checked ? inputOrSelectElement.value : null;
     }
   } else if (inputOrSelectElement.tagName === "SELECT") {
     if (inputOrSelectElement.multiple) {
-      return Array.from(inputOrSelectElement.selectedOptions).map(opt => opt.value);
+      return Array.from(inputOrSelectElement.selectedOptions).map(
+        (opt) => opt.value
+      );
     }
     return inputOrSelectElement.value;
   }
   return null;
 }
 function recursiveGetListValues(element) {
-  if (element.getAttribute("role") === "group") {
-    return recursiveGetObjectListValues(element);
+  const group = element.querySelector("div[role='group']");
+  if (group) {
+    return recursiveGetObjectListValues(group);
   }
-  if (element.getAttribute("role") === "list") {
-    return recursiveGetArrayListValues(element);
+  const list = element.querySelector("div[role='list']");
+  if (list) {
+    return recursiveGetArrayListValues(list);
   }
   return getListValues(element);
 }

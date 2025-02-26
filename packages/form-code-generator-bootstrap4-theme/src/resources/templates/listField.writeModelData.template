@@ -1,17 +1,3 @@
 formData.<%=name%> = Array.from(document.getElementById("<%=name%>").childNodes).reduce((values, element) => {
-  if (element.getAttribute("role") === "group") {
-    values.push(recursiveGetObjectListValues(element));
-    return values;
-  }
-
-  if (element.getAttribute("role") === "list") {
-    values.push(recursiveGetArrayListValues(element));
-    return values;
-  }
-
-  const inputs = element.querySelectorAll("input, select");
-  if (inputs.length) {
-    inputs.forEach(input => values.push(getListValues(input)));
-  }
-  return values;
+  return [...values, recursiveGetListValues(element)];
 }, []);

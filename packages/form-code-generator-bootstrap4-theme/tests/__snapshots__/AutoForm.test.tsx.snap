@@ -120,8 +120,10 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 		&lt;div class=&quot;card mb-3&quot;&gt;
 			&lt;div class=&quot;card-body&quot;&gt;
 				&lt;div class=&quot;card-title&quot;&gt;
-					&lt;label class=&quot;col-form-label&quot; for=&quot;friends&quot;&gt;Friends&lt;/label&gt;
+					&lt;label class=&quot;col-form-label&quot;&gt;Friends&lt;/label&gt;
 					&lt;div
+						id=&quot;add-item-friends&quot;
+						name=&quot;Add Item&quot;
 						class=&quot;badge badge-pill float-right&quot;
 						role=&quot;button&quot;
 						tabindex=&quot;0&quot;
@@ -137,27 +139,29 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 	&lt;/div&gt;
 	&lt;script&gt;
 		function delListItem(value, name, minCount, itemIndex, onDelListItem) {
-			if ((minCount ?? 0) &lt; value.length) {
+			if ((minCount ?? 0) &lt;= value.length) {
 				document.getElementById(\`\${name}.\${itemIndex}\`).remove();
 			}
 			// Re-organize list
-			Array.from(document.getElementById(name).childNodes ?? []).forEach((element, index) =&gt; {
-				const delElement = element.querySelector(\`span[name=&#39;Remove&#39;]\`);
-				delElement.onclick = function () {
-					onDelListItem(name, \`\${index}\`);
-				};
-				delElement.onkeydown = function () {
-					onDelListItem(name, \`\${index}\`);
-				};
-				element.querySelector(&quot;label[for]&quot;).htmlFor = \`\${name}.\${index}\`;
-				const inputOrSelect = element.querySelector(&quot;input, select&quot;);
-				inputOrSelect.id = \`\${name}.\${index}\`;
-				inputOrSelect.name = \`\${name}.\${index}\`;
-				element.id = \`\${name}.\${index}\`;
-				element.name = \`\${name}.\${index}\`;
-			});
+			Array.from(document.getElementById(name).childNodes ?? [])
+				.filter((node) =&gt; node.nodeType === 1)
+				.forEach((element, index) =&gt; {
+					const delElement = element.querySelector(\`span[name=&#39;Remove Item&#39;]\`);
+					delElement.onclick = function () {
+						onDelListItem(name, \`\${index}\`);
+					};
+					delElement.onkeydown = function () {
+						onDelListItem(name, \`\${index}\`);
+					};
+					const inputOrSelect = element.querySelector(&quot;input, select&quot;);
+					inputOrSelect.id = \`\${name}.\${index}\`;
+					inputOrSelect.name = \`\${name}.\${index}\`;
+					element.id = \`\${name}.\${index}\`;
+					element.name = \`\${name}.\${index}\`;
+				});
 		}
-		function addListItem(value, defaultValue, maxCount, name, itemIndex, childrenHtml, functionName) {
+		function addListItem(value, name, defaultValue, maxCount, childrenHtml, functionName) {
+			const itemIndex = value.length;
 			if (maxCount !== undefined &amp;&amp; maxCount &gt; value.length) {
 				value = value.concat([defaultValue]);
 			} else {
@@ -169,7 +173,7 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			newItem.id = name + &quot;.&quot; + itemIndex;
 			newItem.innerHTML = \`
   &lt;div class=&quot;col-1&quot;&gt;
-    &lt;span name=&quot;Remove&quot; class=&quot;badge badge-pill&quot; role=&quot;button&quot; tabindex=&quot;0&quot; onclick=&quot;onDelListItem\${functionName}(&#39;\${name}&#39;, \${itemIndex})&quot; onkeydown=&quot;onDelListItem\${functionName}(&#39;\${name}&#39;, \${itemIndex})&quot;&gt;
+    &lt;span id=&quot;remove-item-\${name}&quot; name=&quot;Remove Item&quot; class=&quot;badge badge-pill&quot; role=&quot;button&quot; tabindex=&quot;0&quot; onclick=&quot;onDelListItem\${functionName}(&#39;\${name}&#39;, \${itemIndex})&quot; onkeydown=&quot;onDelListItem\${functionName}(&#39;\${name}&#39;, \${itemIndex})&quot;&gt;
       &lt;i className=&quot;octicon octicon-dash&quot;&gt;&lt;span&gt;-&lt;/span&gt;&lt;/i&gt;
     &lt;/span&gt;
   &lt;/div&gt;
@@ -178,29 +182,81 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
   &lt;/div&gt;
   \`;
 			listContainer.appendChild(newItem);
+			const newItemElement = document.getElementById(newItem.id);
+			[...newItemElement.querySelectorAll(&#39;input[id*=&quot;$&quot;], select[id*=&quot;$&quot;]&#39;)].forEach((el) =&gt; {
+				if (el.id.split(&quot;.&quot;).pop() !== &quot;$&quot;) {
+					el.id = \`\${name}.\${itemIndex}.\${el.id.split(&quot;.&quot;).pop()}\`;
+					el.name = \`\${name}.\${itemIndex}.\${el.id.split(&quot;.&quot;).pop()}\`;
+				} else {
+					el.id = \`\${name}.\${itemIndex}\`;
+					el.name = \`\${name}.\${itemIndex}\`;
+				}
+			});
+			const nestedListContainer = newItemElement.querySelector(&quot;div[role=&#39;list&#39;]&quot;);
+			if (nestedListContainer) {
+				nestedListContainer.id = nestedListContainer.id.replace(\`\${name}.$\`, \`\${name}.\${itemIndex}\`);
+				const addItem = newItemElement.querySelector(&quot;[id^=add-item]&quot;);
+				addItem.id = addItem.id.replace(\`\${name}.$\`, \`\${name}.\${itemIndex}\`);
+				const addItemOnClick = addItem.getAttribute(&quot;onclick&quot;);
+				if (addItemOnClick) {
+					addItem.setAttribute(&quot;onclick&quot;, addItemOnClick.replace(\`\${name}.$\`, \`\${name}.\${itemIndex}\`));
+				}
+				const addItemOnKeydown = addItem.getAttribute(&quot;onkeydown&quot;);
+				if (addItemOnKeydown) {
+					addItem.setAttribute(&quot;onkeydown&quot;, addItemOnKeydown.replace(\`\${name}.$\`, \`\${name}.\${itemIndex}\`));
+				}
+				const removeItem = newItemElement.querySelector(&quot;[id^=remove-item]&quot;);
+				removeItem.id = removeItem.id.replace(\`\${name}.$\`, \`\${name}.\${itemIndex}\`);
+				const removeItemOnClick = removeItem.getAttribute(&quot;onclick&quot;);
+				if (removeItemOnClick) {
+					removeItem.setAttribute(&quot;onclick&quot;, removeItemOnClick.replace(\`\${name}.$\`, \`\${name}.\${itemIndex}\`));
+				}
+				const removeItemOnKeydown = removeItem.getAttribute(&quot;onkeydown&quot;);
+				if (removeItemOnKeydown) {
+					removeItem.setAttribute(&quot;onkeydown&quot;, removeItemOnKeydown.replace(\`\${name}.$\`, \`\${name}.\${itemIndex}\`));
+				}
+			}
 		}
 		function recursiveGetObjectListValues(objectElement) {
-			const nestedObjects = objectElement.querySelectorAll(&quot;div[role=&#39;group&#39;]&quot;);
-			if (nestedObjects.length) {
-				return Array.from(nestedObjects).reduce((acc, nestedObject) =&gt; {
-					return { ...acc, ...recursiveGetObjectListValues(nestedObject) };
+			const nested = objectElement.querySelector(&quot;div[role=&#39;group&#39;], div[role=&#39;list&#39;]&quot;);
+			let results = {};
+			const inputValues = Array.from(objectElement.childNodes)
+				.filter((child) =&gt; child.nodeType === Node.ELEMENT_NODE)
+				.reduce((acc, potentialFormGroups) =&gt; {
+					if (!potentialFormGroups.matches(&quot;.form-group&quot;)) {
+						return acc;
+					}
+					const inputOrSelectElement = potentialFormGroups.querySelector(&quot;input, select&quot;);
+					if (inputOrSelectElement) {
+						acc[inputOrSelectElement.id.split(&quot;.&quot;).pop()] = getListValues(inputOrSelectElement);
+					}
+					return acc;
 				}, {});
+			if (nested &amp;&amp; nested.matches(&#39;[role=&quot;group&quot;]&#39;)) {
+				results = { ...results, ...recursiveGetObjectListValues(nested) };
 			}
-			return Array.from(objectElement.querySelectorAll(&quot;input, select&quot;)).reduce((acc, inputOrSelectElement) =&gt; {
-				acc[\`\${inputOrSelectElement.name.split(&quot;.&quot;).pop()}\`] = getListValues(inputOrSelectElement);
-				return acc;
-			}, {});
+			if (nested &amp;&amp; nested.matches(&#39;[role=&quot;list&quot;]&#39;)) {
+				results[nested.id.split(&quot;.&quot;).pop()] = recursiveGetArrayListValues(nested);
+			}
+			return { ...inputValues, ...results };
 		}
 		function recursiveGetArrayListValues(arrayElement) {
-			return Array.from(arrayElement.childNodes).map((childElement) =&gt; {
-				if (childElement.getAttribute(&quot;role&quot;) === &quot;group&quot;) {
-					return recursiveGetObjectListValues(childElement);
-				}
-				if (childElement.getAttribute(&quot;role&quot;) === &quot;list&quot;) {
-					return recursiveGetArrayListValues(childElement);
-				}
-				return getListValues(childElement.querySelector(&quot;input, select&quot;));
-			});
+			return Array.from(arrayElement.childNodes)
+				.filter((child) =&gt; child.nodeType === Node.ELEMENT_NODE)
+				.map((childElement) =&gt; {
+					const nestedGroup = childElement.querySelector(&quot;div[role=&#39;group&#39;]&quot;);
+					if (nestedGroup) {
+						return recursiveGetObjectListValues(nestedGroup);
+					}
+					const nestedList = childElement.querySelector(&quot;div[role=&#39;list&#39;]&quot;);
+					if (nestedList) {
+						const nestedListChilds = [...nestedList.childNodes]
+							.filter((child) =&gt; child.nodeType === Node.ELEMENT_NODE)
+							.filter((el) =&gt; el.matches(&#39;[role=&quot;list&quot;]&#39;));
+						return Array.from(nestedListChilds).map((list) =&gt; recursiveGetArrayListValues(list));
+					}
+					return getListValues(childElement.querySelector(&quot;input, select&quot;));
+				});
 		}
 		function getListValues(inputOrSelectElement) {
 			if (!inputOrSelectElement) {
@@ -225,11 +281,13 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			return null;
 		}
 		function recursiveGetListValues(element) {
-			if (element.getAttribute(&quot;role&quot;) === &quot;group&quot;) {
-				return recursiveGetObjectListValues(element);
+			const group = element.querySelector(&quot;div[role=&#39;group&#39;]&quot;);
+			if (group) {
+				return recursiveGetObjectListValues(group);
 			}
-			if (element.getAttribute(&quot;role&quot;) === &quot;list&quot;) {
-				return recursiveGetArrayListValues(element);
+			const list = element.querySelector(&quot;div[role=&#39;list&#39;]&quot;);
+			if (list) {
+				return recursiveGetArrayListValues(list);
 			}
 			return getListValues(element);
 		}
@@ -238,42 +296,40 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 		}
 		function onDelListItemFriends(name, itemIndex) {
 			const formData = getFormData();
-			const value = accessObjectPath(formData, name) ?? [{}];
+			const value = accessObjectPath(formData, name) ?? [];
 			const disabled = false;
 			if (!disabled) {
-				delListItem(value, &quot;friends&quot;, undefined, itemIndex, onDelListItemFriends);
+				delListItem(value, name, undefined, itemIndex, onDelListItemFriends);
 			}
 		}
 		function onAddListItemFriends(name) {
 			const formData = getFormData();
-			const value = accessObjectPath(formData, name) ?? [{}];
-			const itemIndex = value.length;
+			const value = accessObjectPath(formData, name) ?? [];
 			const disabled = false;
 			if (!disabled) {
 				addListItem(
 					value,
+					name,
 					undefined,
 					undefined,
-					&quot;friends&quot;,
-					itemIndex,
 					\`&lt;fieldset&gt;
     &lt;legend&gt;Friends&lt;/legend&gt;
     &lt;div role=&quot;group&quot;&gt;
         &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;item-friends.\${itemIndex}.name&quot;&gt;Name&lt;/label&gt;
+    &lt;label for=&quot;item-friends.$.name&quot;&gt;Name&lt;/label&gt;
     &lt;input type=&quot;text&quot;
-    id=&quot;friends.\${itemIndex}.name&quot;
-    name=&quot;friends.\${itemIndex}.name&quot;
+    id=&quot;friends.$.name&quot;
+    name=&quot;friends.$.name&quot;
     class=&quot;form-control&quot;
     value=&quot;&quot;/&gt;
 &lt;/div&gt;
         &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;item-friends.\${itemIndex}.age&quot;&gt;Age&lt;/label&gt;
+    &lt;label for=&quot;item-friends.$.age&quot;&gt;Age&lt;/label&gt;
     &lt;input
     type=&quot;number&quot;
     class=&quot;form-control&quot;
-    id=&quot;friends.\${itemIndex}.age&quot;
-    name=&quot;friends.\${itemIndex}.age&quot;
+    id=&quot;friends.$.age&quot;
+    name=&quot;friends.$.age&quot;
     step=&quot;0.01&quot;
     value=&quot;&quot;/&gt;
 &lt;/div&gt;
@@ -340,8 +396,9 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 				? new Date(data?.interview?.hiringDate).toISOString().slice(0, 16)
 				: &quot;&quot;;
 			data?.friends?.forEach((value, itemIndex) =&gt; {
-				document.getElementById(\`friends.\${itemIndex}.name\`).value = value?.name ?? &quot;&quot;;
-				document.getElementById(\`friends.\${itemIndex}.age\`).value = value?.age ?? &quot;&quot;;
+				const currentItem = \`friends.\${itemIndex}\`;
+				document.getElementById(\`\${currentItem}.name\`).value = value ?? &quot;&quot;;
+				document.getElementById(\`\${currentItem}.age\`).value = value ?? &quot;&quot;;
 			});
 		}
 		/* Utility function to generate the expected form output as a json object */
@@ -396,19 +453,7 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			formData.interview.hire = document.getElementById(&quot;interview.hire&quot;).checked;
 			formData.interview.hiringDate = document.getElementById(&quot;interview.hiringDate&quot;).value;
 			formData.friends = Array.from(document.getElementById(&quot;friends&quot;).childNodes).reduce((values, element) =&gt; {
-				if (element.getAttribute(&quot;role&quot;) === &quot;group&quot;) {
-					values.push(recursiveGetObjectListValues(element));
-					return values;
-				}
-				if (element.getAttribute(&quot;role&quot;) === &quot;list&quot;) {
-					values.push(recursiveGetArrayListValues(element));
-					return values;
-				}
-				const inputs = element.querySelectorAll(&quot;input, select&quot;);
-				if (inputs.length) {
-					inputs.forEach((input) =&gt; values.push(getListValues(input)));
-				}
-				return values;
+				return [...values, recursiveGetListValues(element)];
 			}, []);
 			return formData;
 		}
