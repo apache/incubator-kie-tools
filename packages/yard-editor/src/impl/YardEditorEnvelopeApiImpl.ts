@@ -27,7 +27,7 @@ export type YardEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
   YardEditorEnvelopeApi,
   YardEditorChannelApi,
   EditorEnvelopeViewApi<YardEditorApi>,
-  KogitoEditorEnvelopeContextType<YardEditorChannelApi>
+  KogitoEditorEnvelopeContextType<YardEditorChannelApi, YardEditorEnvelopeApi>
 >;
 
 export class YardEditorEnvelopeApiImpl
@@ -36,7 +36,7 @@ export class YardEditorEnvelopeApiImpl
 {
   constructor(
     private readonly factoryArgs: YardEnvelopeApiFactoryArgs,
-    editorFactory: EditorFactory<YardEditorApi, YardEditorChannelApi>
+    editorFactory: EditorFactory<YardEditorApi, YardEditorChannelApi, YardEditorEnvelopeApi>
   ) {
     super(factoryArgs, editorFactory);
   }

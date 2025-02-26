@@ -45,7 +45,7 @@ import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dis
 export function init(args: {
   container: HTMLElement;
   bus: EnvelopeBus;
-  editorFactory: EditorFactory<Editor, KogitoEditorChannelApi>;
+  editorFactory: EditorFactory<Editor, KogitoEditorChannelApi, KogitoEditorEnvelopeApi>;
   keyboardShortcutsService?: KeyboardShortcutsService;
 }) {
   initCustom({
@@ -69,7 +69,7 @@ export function initCustom<
     EnvelopeApi,
     ChannelApi,
     EditorEnvelopeViewApi<E>,
-    KogitoEditorEnvelopeContextType<ChannelApi>
+    KogitoEditorEnvelopeContextType<ChannelApi, EnvelopeApi>
   >;
   keyboardShortcutsService?: KeyboardShortcutsService;
 }) {
@@ -80,7 +80,7 @@ export function initCustom<
     EnvelopeApi,
     ChannelApi,
     EditorEnvelopeViewApi<E>,
-    KogitoEditorEnvelopeContextType<ChannelApi>
+    KogitoEditorEnvelopeContextType<ChannelApi, EnvelopeApi>
   >(args.bus);
 
   return new KogitoEditorEnvelope(args.apiImplFactory, keyboardShortcutsService, i18nService, envelope).start(

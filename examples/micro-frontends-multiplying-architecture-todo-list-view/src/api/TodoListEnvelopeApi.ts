@@ -17,6 +17,8 @@
  * under the License.
  */
 
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
+
 /**
  * Methods provided by the Envelope that can be consumed by the Channel.
  */
@@ -25,6 +27,7 @@ export interface TodoListEnvelopeApi {
   todoList__addItem(item: string): Promise<void>;
   todoList__getItems(): Promise<Item[]>;
   todoList__markAllAsCompleted(): void;
+  todoList__itemsCount(): SharedValueProvider<number>;
 }
 
 export interface Association {

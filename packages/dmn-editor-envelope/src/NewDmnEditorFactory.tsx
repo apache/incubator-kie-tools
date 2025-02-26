@@ -21,10 +21,13 @@ import * as React from "react";
 import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { NewDmnEditorChannelApi } from "./NewDmnEditorChannelApi";
 import { DmnEditorInterface } from "./DmnEditorFactory";
+import { NewDmnEditorEnvelopeApi } from "./NewDmnEditorEnvelopeApi";
 
-export class NewDmnEditorFactory implements EditorFactory<NewDmnEditorInterface, NewDmnEditorChannelApi> {
+export class NewDmnEditorFactory
+  implements EditorFactory<NewDmnEditorInterface, NewDmnEditorChannelApi, NewDmnEditorEnvelopeApi>
+{
   public createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<NewDmnEditorChannelApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<NewDmnEditorChannelApi, NewDmnEditorEnvelopeApi>,
     initArgs: EditorInitArgs
   ): Promise<NewDmnEditorInterface> {
     return Promise.resolve(new NewDmnEditorInterface(envelopeContext, initArgs));

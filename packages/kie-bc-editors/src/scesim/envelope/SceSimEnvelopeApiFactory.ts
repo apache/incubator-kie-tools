@@ -28,7 +28,7 @@ export type SceSimEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
   SceSimEditorEnvelopeApi,
   SceSimEditorChannelApi,
   EditorEnvelopeViewApi<SceSimEditor>,
-  KogitoEditorEnvelopeContextType<SceSimEditorChannelApi>
+  KogitoEditorEnvelopeContextType<SceSimEditorChannelApi, SceSimEditorEnvelopeApi>
 >;
 
 export class SceSimEditorEnvelopeApiImpl
