@@ -24,7 +24,7 @@ import {
   useKogitoEditorEnvelopeContext,
 } from "@kie-tools-core/editor/dist/api";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
-import { editor } from "monaco-editor";
+import { editor } from "@kie-tools-core/monaco-editor";
 import { extname } from "path";
 import * as React from "react";
 import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
