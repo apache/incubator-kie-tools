@@ -1,0 +1,4 @@
+postgres:5432:kie1:hotel-user:hotel-pass
+postgres:5432:kie2:traveler-user:traveler-pass
+postgres:5432:postgres:hotel-user:hotel-pass
+postgres:5432:postgres:traveler-user:traveler-pass

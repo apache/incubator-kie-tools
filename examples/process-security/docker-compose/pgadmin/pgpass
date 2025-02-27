@@ -1,0 +1,6 @@
+postgres:5432:bamoe1:kie-user-1:kie-pass-1
+postgres:5432:bamoe2:kie-user-2:kie-pass-2
+postgres:5432:bamoe3:kie-user-3:kie-pass-3
+postgres:5432:postgres:kie-user-1:kie-pass-1
+postgres:5432:postgres:kie-user-2:kie-pass-2
+postgres:5432:postgres:kie-user-3:kie-pass-3

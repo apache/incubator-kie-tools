@@ -67,6 +67,9 @@ const TaskFormContainer: React.FC<Props & OUIAProps> = ({
         getCustomForm(): Promise<Form> {
           return gatewayApi.getCustomForm(userTask);
         },
+        getTaskPhases(): Promise<string[]> {
+          return gatewayApi.getTaskPhases(userTask);
+        },
       }}
       targetOrigin={appContext.getDevUIUrl()}
     />

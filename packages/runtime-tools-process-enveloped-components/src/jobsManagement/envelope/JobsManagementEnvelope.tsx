@@ -28,7 +28,7 @@ import { JobsManagementEnvelopeApiImpl } from "./JobsManagementEnvelopeApiImpl";
 /**
  * Function that starts an Envelope application.
  * @param args.config: This passes envelope div config
- * @param args.container: The HTML element in which the Jobs view will render
+ * @param args.container: The HTML element in which the Jobs Management View will render
  * @param args.bus: The implementation of a `bus` that knows how to send messages to the Channel.
  *
  */

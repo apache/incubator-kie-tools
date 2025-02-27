@@ -17,25 +17,17 @@
  * under the License.
  */
 
-import { Computed, State, TestScenarioDataObject } from "../TestScenarioEditorStore";
+import { State, TestScenarioDataObject } from "../TestScenarioEditorStore";
 
+/* The scope of this logic is to retrieve the Data Objects from the scesim file itself */
 export function computeTestScenarioDataObjects(
   factMappings: State["scesim"]["model"]["ScenarioSimulationModel"]["simulation"]["scesimModelDescriptor"]["factMappings"]["FactMapping"]
 ) {
-  /* To create the Data Object arrays we need an external source, in details: */
-  /* DMN Data: Retrieving DMN type from linked DMN file */
-  /* Java classes: Retrieving Java classes info from the user projects */
-  /* At this time, none of the above are supported */
-  /* Therefore, it tries to retrieve these info from the SCESIM file, if are present */
-
-  /* Retriving Data Object from the scesim file.       
-       That makes sense for previously created scesim files */
-
   const factsMappings = factMappings ?? [];
   const dataObjects: TestScenarioDataObject[] = [];
 
-  /* The first two FactMapping are related to the "Number" and "Description" columns. 
-        If those columns only are present, no Data Objects can be detected in the scesim file */
+  /* The first two FactMapping are related to the "Number" and "Description" columns.      */
+  /* If those columns only are present, no Data Objects can be detected in the scesim file */
   for (let i = 2; i < factsMappings.length; i++) {
     if (factsMappings[i].className!.__$$text === "java.lang.Void") {
       continue;
@@ -43,7 +35,7 @@ export function computeTestScenarioDataObjects(
     const factID = factsMappings[i].expressionElements!.ExpressionElement![0].step.__$$text;
     const dataObject = dataObjects.find((value) => value.id === factID);
     const isSimpleTypeFact = factsMappings[i].expressionElements!.ExpressionElement!.length === 1;
-    const propertyID = isSimpleTypeFact //POTENTIAL BUG
+    const propertyID = isSimpleTypeFact // TO BE REVIEWED IN https://github.com/apache/incubator-kie-issues/issues/1514
       ? factsMappings[i].expressionElements!.ExpressionElement![0].step.__$$text.concat(".")
       : factsMappings[i]
           .expressionElements!.ExpressionElement!.map((expressionElement) => expressionElement.step.__$$text)
@@ -51,6 +43,7 @@ export function computeTestScenarioDataObjects(
     const propertyName = isSimpleTypeFact
       ? "value"
       : factsMappings[i].expressionElements!.ExpressionElement!.slice(-1)[0].step.__$$text;
+
     if (dataObject) {
       if (!dataObject.children?.some((value) => value.id === propertyID)) {
         dataObject.children!.push({

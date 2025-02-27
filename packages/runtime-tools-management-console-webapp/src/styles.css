@@ -1,0 +1,97 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+.kie-tools--masthead-hoverable,
+.kie-tools--masthead-hoverable > .pf-c-select__toggle {
+  border-radius: 8px;
+}
+.kie-tools--masthead-hoverable:hover,
+.kie-tools--masthead-hoverable > .pf-c-select__toggle:hover {
+  background-color: rgb(235, 235, 235);
+}
+
+.kie-tools--masthead-hoverable-dark,
+.kie-tools--masthead-hoverable-dark > .pf-c-select__toggle {
+  color: white;
+  font-weight: bold;
+  background-color: var(--pf-c-page__header--BackgroundColor);
+  border-radius: 8px;
+}
+.kie-tools--masthead-hoverable-dark .pf-c-select__toggle-arrow {
+  color: lightgray;
+}
+.kie-tools--masthead-hoverable-dark:hover,
+.kie-tools--masthead-hoverable-dark > .pf-c-select__toggle:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.kogito-management-console__auth-session-select .pf-c-select__menu {
+  right: 0;
+}
+
+.kogito-management-console__auth-session-select-disabled {
+  opacity: 0.6;
+}
+
+.kogito-management-console__card-size {
+  height: 100%;
+  position: relative;
+}
+
+.kogito-management-console__full-size {
+  height: 100%;
+}
+
+.kogito-management-console__task-details-page {
+  margin-top: 21px;
+}
+
+.kogito-components-common__load-more {
+  margin-bottom: var(--pf-global--spacer--lg) !important;
+  text-align: center;
+}
+
+.pf-c-spinner .pf-m-md .kogito-components-common__load-more-spinner {
+  overflow: hidden;
+  margin-left: 5px;
+}
+
+.kogito-components-common__form-footer-padding-top {
+  padding-top: 20px;
+}
+
+.kogito-request-data-editor-container {
+  border: #d2d2d2 solid 1px;
+  height: 350px;
+  padding: 5px;
+}
+.kogito-consoles-common--aboutModalBox .pf-c-about-modal-box__hero {
+  background-attachment: unset;
+}
+
+.kogito-consoles-common--PageLayout .pf-c-page__header-brand-link .pf-c-brand {
+  --pf-c-page__header-brand-link--c-brand--MaxHeight: 42px;
+}
+
+.kogito-management-console__impersonation-hint {
+  width: 100%;
+  padding: 0;
+  margin-bottom: 24px;
+  border-radius: 16px;
+}

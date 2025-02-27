@@ -43,7 +43,7 @@ const FormDisplayerContainer: React.FC<FormDisplayerContainerProps> = ({ formCon
     return () => {
       unsubscribeUserChange.unSubscribe();
     };
-  }, []);
+  }, [appContext]);
 
   return (
     <EmbeddedFormDisplayer

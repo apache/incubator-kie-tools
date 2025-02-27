@@ -1,0 +1,65 @@
+CREATE ROLE "kie-user-1" WITH
+    LOGIN
+    SUPERUSER
+    INHERIT
+    CREATEDB
+    CREATEROLE
+    NOREPLICATION
+    PASSWORD 'kie-pass-1';
+
+CREATE DATABASE kie1
+    WITH
+    OWNER = "kie-user-1"
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'en_US.utf8'
+    LC_CTYPE = 'en_US.utf8'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1;
+
+CREATE ROLE "kie-user-2" WITH
+    LOGIN
+    SUPERUSER
+    INHERIT
+    CREATEDB
+    CREATEROLE
+    NOREPLICATION
+    PASSWORD 'kie-pass-2';
+
+CREATE DATABASE kie2
+    WITH
+    OWNER = "kie-user-2"
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'en_US.utf8'
+    LC_CTYPE = 'en_US.utf8'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1;
+
+CREATE ROLE "kie-user-3" WITH
+    LOGIN
+    SUPERUSER
+    INHERIT
+    CREATEDB
+    CREATEROLE
+    NOREPLICATION
+    PASSWORD 'kie-pass-3';
+
+CREATE DATABASE kie3
+    WITH
+    OWNER = "kie-user-3"
+    ENCODING = 'UTF8'
+    LC_COLLATE = 'en_US.utf8'
+    LC_CTYPE = 'en_US.utf8'
+    TABLESPACE = pg_default
+    CONNECTION LIMIT = -1;
+
+GRANT ALL PRIVILEGES ON DATABASE postgres TO "kie-user-1";
+GRANT ALL PRIVILEGES ON DATABASE kie1 TO "kie-user-1";
+GRANT ALL PRIVILEGES ON DATABASE kie1 TO postgres;
+
+GRANT ALL PRIVILEGES ON DATABASE postgres TO "kie-user-2";
+GRANT ALL PRIVILEGES ON DATABASE kie2 TO "kie-user-2";
+GRANT ALL PRIVILEGES ON DATABASE kie2 TO postgres;
+
+GRANT ALL PRIVILEGES ON DATABASE postgres TO "kie-user-3";
+GRANT ALL PRIVILEGES ON DATABASE kie3 TO "kie-user-3";
+GRANT ALL PRIVILEGES ON DATABASE kie3 TO postgres;
