@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useImperativeHandle, useState } from "react";
+import React, { useImperativeHandle, useMemo, useState } from "react";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import _ from "lodash";
 import { TaskInboxChannelApi, TaskInboxState } from "../api";
@@ -69,11 +69,13 @@ export const TaskInboxEnvelopeView = React.forwardRef<TaskInboxEnvelopeViewApi, 
     []
   );
 
+  const driver = useMemo(() => new TaskInboxEnvelopeViewDriver(props.channelApi), [props.channelApi]);
+
   return (
     <React.Fragment>
       <TaskInbox
         isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
-        driver={new TaskInboxEnvelopeViewDriver(props.channelApi)}
+        driver={driver}
         initialState={initialState}
         allTaskStates={allTaskStates}
         activeTaskStates={activeTaskStates}

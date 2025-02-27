@@ -19,13 +19,12 @@ FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.5
 
 ARG KOGITO_MANAGEMENT_CONSOLE_PORT=8080
 
-ENV RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE="PROD"
-
-COPY entrypoint.sh dist-dev/image-env-to-json-standalone dist-dev/EnvJson.schema.json /tmp/
+COPY entrypoint.sh dist-dev/image-env-to-json-linux-amd64 dist-dev/EnvJson.schema.json /tmp/
 
 RUN microdnf --disableplugin=subscription-manager -y install httpd \
   && microdnf --disableplugin=subscription-manager clean all \
   && echo "Mutex posixsem" >> /etc/httpd/conf/httpd.conf \
+  && echo "AllowEncodedSlashes NoDecode" >> /etc/httpd/conf/httpd.conf \
   && sed -i -e "/#ServerName www.example.com:80/aHeader set Content-Security-Policy \"frame-ancestors 'self';\"" /etc/httpd/conf/httpd.conf \
   && sed -i -e 's/Options Indexes FollowSymLinks/Options -Indexes +FollowSymLinks/' /etc/httpd/conf/httpd.conf \
   && sed -i "s/Listen 80/Listen ${KOGITO_MANAGEMENT_CONSOLE_PORT}/g" /etc/httpd/conf/httpd.conf \
@@ -35,10 +34,10 @@ RUN microdnf --disableplugin=subscription-manager -y install httpd \
   && sed -i -e '/<Directory "\/var\/www\/html">/a    RewriteEngine on\n    RewriteCond %{REQUEST_FILENAME} -f [OR]\n    RewriteCond %{REQUEST_FILENAME} -d\n    RewriteRule ^ - [L]\n    RewriteRule ^ index.html [L]' /etc/httpd/conf/httpd.conf \
   && chmod -R g=u /etc/httpd/conf \
   && mkdir /management-console \
-  && mv -t /management-console /tmp/entrypoint.sh /tmp/image-env-to-json-standalone /tmp/EnvJson.schema.json \
+  && mv -t /management-console /tmp/entrypoint.sh /tmp/image-env-to-json-linux-amd64 /tmp/EnvJson.schema.json \
   && chgrp -R 0 /var/log/httpd /var/run/httpd /var/www/html /management-console \
   && chmod -R g=u /var/log/httpd /var/run/httpd /var/www/html /management-console \
-  && chmod +x /management-console/entrypoint.sh /management-console/image-env-to-json-standalone
+  && chmod +x /management-console/entrypoint.sh /management-console/image-env-to-json-linux-amd64
 
 COPY dist-dev/runtime-tools-management-console-webapp /management-console/app
 

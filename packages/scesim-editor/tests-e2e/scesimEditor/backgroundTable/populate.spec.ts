@@ -33,27 +33,27 @@ test.describe("Populate decision background table", () => {
     await backgroundTable.fill({ content: "{foo}", columnNumber: 0 });
 
     await table.addPropertyColumn({
-      targetCellName: "PROPERTY (<Undefined>)",
+      targetCellName: "PROPERTY-1 (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       columnNumber: 0,
     });
     await table.addPropertyColumn({
-      targetCellName: "PROPERTY (<Undefined>)",
+      targetCellName: "PROPERTY-2 (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       columnNumber: 0,
     });
     await table.addPropertyColumn({
-      targetCellName: "PROPERTY (<Undefined>)",
+      targetCellName: "PROPERTY-3 (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       columnNumber: 0,
     });
     await table.addPropertyColumn({
-      targetCellName: "PROPERTY (<Undefined>)",
+      targetCellName: "PROPERTY-4 (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       columnNumber: 0,
     });
     await table.addPropertyColumn({
-      targetCellName: "PROPERTY (<Undefined>)",
+      targetCellName: "PROPERTY-5 (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       columnNumber: 0,
     });
@@ -81,27 +81,27 @@ test.describe("Populate rule background table", () => {
     await backgroundTable.fill({ content: "{foo}", columnNumber: 0 });
 
     await table.addPropertyColumn({
-      targetCellName: "PROPERTY (<Undefined>)",
+      targetCellName: "PROPERTY-1 (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       columnNumber: 0,
     });
     await table.addPropertyColumn({
-      targetCellName: "PROPERTY (<Undefined>)",
+      targetCellName: "PROPERTY-2 (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       columnNumber: 0,
     });
     await table.addPropertyColumn({
-      targetCellName: "PROPERTY (<Undefined>)",
+      targetCellName: "PROPERTY-3 (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       columnNumber: 0,
     });
     await table.addPropertyColumn({
-      targetCellName: "PROPERTY (<Undefined>)",
+      targetCellName: "PROPERTY-4 (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       columnNumber: 0,
     });
     await table.addPropertyColumn({
-      targetCellName: "PROPERTY (<Undefined>)",
+      targetCellName: "PROPERTY-5 (<Undefined>)",
       position: AddColumnPosition.RIGHT,
       columnNumber: 0,
     });

@@ -32,12 +32,34 @@ process-user-tasks-subsystem.iml
 Dockerfile.jvm
 # examples/process-user-tasks-subsystem/src/main/docker/Dockerfile.native
 Dockerfile.native
+# examples/process-accelerator/process-accelerator.iml
+process-accelerator.iml
+# examples/process-accelerator/src/main/resources/calculate.bpmn
+calculate.bpmn
+# examples/process-business-calendar/process-business-calendar.iml
+process-business-calendar.iml
+# examples/process-business-calendar/src/main/resources/bankTransaction.bpmn2
+bankTransaction.bpmn2
+# examples/process-compact-architecture/src/main/resources/NewHiringOffer.dmn
+NewHiringOffer.dmn
+# examples/process-compact-architecture/src/main/resources/hiring.bpmn
+hiring.bpmn
+# examples/process-compact-architecture/src/main/resources/META-INF/processSVG/hiring.svg
+hiring.svg
+# examples/process-event-driven/process-event-driven.iml
+process-event-driven.iml
+# examples/process-event-driven/hotels/src/main/resources/hotel.bpmn
+hotel.bpmn
+# examples/process-event-driven/travelers/src/main/resources/travelers.bpmn
+travelers.bpmn
+# examples/process-user-tasks-subsystem/src/main/resources/hiring.bpmn
+hiring.bpmn
+# examples/process-user-tasks-subsystem/src/main/resources/META-INF/processSVG/hiring.svg
+hiring.svg
 # examples/process-compact-architecture/.gitignore
 .gitignore
 # examples/process-compact-architecture/process-compact-architecture.iml
 process-compact-architecture.iml
-# examples/process-compact-architecture/docker-compose/startContainers.sh
-startContainers.sh
 # examples/process-compact-architecture/docker-compose/pgadmin/pgpass
 pgpass
 # examples/process-compact-architecture/docker-compose/sql/init.sql

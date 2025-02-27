@@ -1997,6 +1997,7 @@ export namespace GraphQL {
         outputs
         referenceName
         endpoint
+        externalReferenceId
       }
     }
   `;
@@ -2067,6 +2068,7 @@ export namespace GraphQL {
         referenceName
         endpoint
         lastUpdate
+        externalReferenceId
       }
     }
   `;
@@ -2141,6 +2143,7 @@ export namespace GraphQL {
         outputs
         lastUpdate
         endpoint
+        externalReferenceId
       }
     }
   `;
