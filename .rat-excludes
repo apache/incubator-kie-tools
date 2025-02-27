@@ -380,6 +380,8 @@ getCheckboxGroupValue.txt
 getMultipleSelectValue.txt
 # packages/form-code-generator-bootstrap4-theme/src/resources/staticCode/getRadioGroupValue.txt
 getRadioGroupValue.txt
+# packages/form-code-generator-bootstrap4-theme/src/resources/staticCode/listHelperFunctions.txt
+listHelperFunctions.txt
 # packages/form-code-generator-bootstrap4-theme/src/resources/staticCode/setCheckboxGroupValue.txt
 setCheckboxGroupValue.txt
 # packages/form-code-generator-bootstrap4-theme/src/resources/staticCode/setRadioGroupValue.txt
@@ -414,6 +416,14 @@ input.setModelData.template
 input.template
 # packages/form-code-generator-bootstrap4-theme/src/resources/templates/input.writeModelData.template
 input.writeModelData.template
+# packages/form-code-generator-bootstrap4-theme/src/resources/templates/listField.globalFunctions.template
+listField.globalFunctions.template
+# packages/form-code-generator-bootstrap4-theme/src/resources/templates/listField.setModelData.template
+listField.setModelData.template
+# packages/form-code-generator-bootstrap4-theme/src/resources/templates/listField.template
+listField.template
+# packages/form-code-generator-bootstrap4-theme/src/resources/templates/listField.writeModelData.template
+listField.writeModelData.template
 # packages/form-code-generator-bootstrap4-theme/src/resources/templates/nestField.setModelData.template
 nestField.setModelData.template
 # packages/form-code-generator-bootstrap4-theme/src/resources/templates/nestField.template
