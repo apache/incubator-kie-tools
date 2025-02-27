@@ -150,7 +150,7 @@ function dmnRunnerResultsReducer(dmnRunnerResults: DmnRunnerResults, action: Dmn
  *   }
  * ]
  */
-function transformDmnRunnerEvaluationResults(result: ExtendedServicesDmnResult) {
+function transformExtendedServicesDmnResult(result: ExtendedServicesDmnResult) {
   const transformedStructure: Map<
     string,
     { evaluationResult: "succeeded" | "failed" | "skipped"; evaluationHitsCount: Map<string, number> }
@@ -332,7 +332,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
               if (result) {
                 runnerResults.push(result.decisionResults);
 
-                evaluationResultsPerNode = transformDmnRunnerEvaluationResults(result);
+                evaluationResultsPerNode = transformExtendedServicesDmnResult(result);
               }
             }
             setDmnRunnerResults({ type: DmnRunnerResultsActionType.DEFAULT, newResults: runnerResults });
