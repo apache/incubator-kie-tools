@@ -21,6 +21,7 @@ import * as React from "react";
 import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { NewDmnEditorChannelApi } from "./NewDmnEditorChannelApi";
 import { DmnEditorInterface } from "./DmnEditorFactory";
+import { NodeEvaluationResults } from "@kie-tools/dmn-editor/dist/DmnEditor";
 
 export class NewDmnEditorFactory implements EditorFactory<NewDmnEditorInterface, NewDmnEditorChannelApi> {
   public createEditor(
@@ -38,5 +39,9 @@ export class NewDmnEditorInterface extends DmnEditorInterface {
    */
   public openBoxedExpressionEditor(nodeId: string): void {
     this.self.openBoxedExpressionEditor(nodeId);
+  }
+
+  public showDmnEvaluationStatus(statusPerNode: Map<string, NodeEvaluationResults>): void {
+    this.self.showDmnEvaluationStatus(statusPerNode);
   }
 }

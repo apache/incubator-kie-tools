@@ -18,6 +18,7 @@
  */
 
 import { KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
+import { NodeEvaluationResults } from "@kie-tools/dmn-editor/dist/DmnEditor";
 
 export interface NewDmnEditorEnvelopeApi extends KogitoEditorEnvelopeApi {
   /**
@@ -25,4 +26,5 @@ export interface NewDmnEditorEnvelopeApi extends KogitoEditorEnvelopeApi {
    * @param nodeId id of the node to open
    */
   dmnEditor_openBoxedExpressionEditor(nodeId: string): void;
+  newDmnEditor_showDmnEvaluationStatus(statusPerNode: Map<string, NodeEvaluationResults>): void;
 }

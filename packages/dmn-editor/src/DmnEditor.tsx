@@ -78,7 +78,12 @@ export type DmnEditorRef = {
  * - and (EvaluationResults)
  * https://github.com/apache/incubator-kie-issues/issues/1823
  */
-export type EvaluationResults = Record<string, "success" | "failure" | "skipped">;
+export type NodeEvaluationResults = {
+  evaluationResult: "succeeded" | "failed" | "skipped";
+  evaluationHitsCount: Map<string, number>;
+};
+
+export type EvaluationResults = Map<string, NodeEvaluationResults>;
 export type ValidationMessages = Record<string, any>;
 export type OnDmnModelChange = (model: Normalized<DmnLatestModel>) => void;
 

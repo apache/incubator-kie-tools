@@ -47,6 +47,7 @@ export interface EditorInitArgs {
   isReadOnly: boolean;
   channel: ChannelType;
   workspaceRootAbsolutePosixPath: string;
+  dmnResults?: Map<string, "succeeded" | "failed" | "skipped">;
 }
 
 export interface KogitoEditorEnvelopeApi extends KeyboardShortcutsEnvelopeApi, I18nEnvelopeApi {

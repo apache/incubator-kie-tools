@@ -73,6 +73,8 @@ import {
 import { extractDifferencesFromArray } from "@kie-tools/dmn-runner/dist/results";
 import { openapiSchemaToJsonSchema } from "@openapi-contrib/openapi-schema-to-json-schema";
 import type { JSONSchema4 } from "json-schema";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
 
 interface Props {
   isEditorReady?: boolean;
@@ -162,6 +164,8 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   );
   const status = useMemo(() => (isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE), [isExpanded]);
   const dmnRunnerAjv = useMemo(() => new DmnRunnerAjv().getAjv(), []);
+
+  const { envelopeServer } = useEditorDockContext();
 
   useLayoutEffect(() => {
     if (props.isEditorReady) {
@@ -264,6 +268,10 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             }
 
             const runnerResults: Array<DecisionResult[] | undefined> = [];
+            const evaluationStatusPerNode = new Map<
+              string,
+              { evaluationResult: "succeeded" | "failed" | "skipped"; evaluationHitsCount: Map<string, number> }
+            >();
             for (const result of results) {
               if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
                 setExtendedServicesError(true);
@@ -271,9 +279,24 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
               }
               if (result) {
                 runnerResults.push(result.decisionResults);
+
+                result.decisionResults?.forEach((dr) => {
+                  const evaluationHitsCount = new Map<string, number>();
+                  for (const [key, value] of Object.entries(dr.evaluationHitIds)) {
+                    evaluationHitsCount.set(`${key}`, value as number);
+                  }
+                  evaluationStatusPerNode.set(dr.decisionId, {
+                    evaluationResult: dr.evaluationStatus.toLowerCase() as "succeeded" | "failed" | "skipped",
+                    evaluationHitsCount: evaluationHitsCount,
+                  });
+                });
               }
             }
             setDmnRunnerResults({ type: DmnRunnerResultsActionType.DEFAULT, newResults: runnerResults });
+
+            const newDmnEditorEnvelopeApi = envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
+
+            newDmnEditorEnvelopeApi.notifications.newDmnEditor_showDmnEvaluationStatus.send(evaluationStatusPerNode);
           })
           .catch((err) => {
             console.log(err);
@@ -281,6 +304,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           });
       },
       [
+        envelopeServer,
         props.workspaceFile.extension,
         extendedServices.status,
         extendedServices.client,

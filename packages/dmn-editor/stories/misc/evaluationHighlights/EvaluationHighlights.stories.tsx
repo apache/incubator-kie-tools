@@ -837,8 +837,8 @@ export const EvaluationHighlightsStory: Story = {
     model: getMarshaller(initialModel, { upgradeTo: "latest" }).parser.parse(),
     originalVersion: "1.5",
     evaluationResults: {
-      "_F0DC8923-5FC7-4200-8BD1-461D5F3714BE": "success",
-      "_D6F4234F-15B3-4F5B-B814-5F6FF29D2907": "failure",
+      "_F0DC8923-5FC7-4200-8BD1-461D5F3714BE": "succeeded",
+      "_D6F4234F-15B3-4F5B-B814-5F6FF29D2907": "failed",
       "_2FE51DB1-3083-4BF7-AA71-0B0065310E72": "skipped",
     },
     externalContextDescription: "External context description",

@@ -24,6 +24,7 @@ import { NewDmnEditorInterface } from "./NewDmnEditorFactory";
 import { NewDmnEditorEnvelopeApi } from "./NewDmnEditorEnvelopeApi";
 import { NewDmnEditorChannelApi } from "./NewDmnEditorChannelApi";
 import { NewDmnEditorFactory } from "./NewDmnEditorFactory";
+import { NodeEvaluationResults } from "@kie-tools/dmn-editor/dist/DmnEditor";
 
 export type NewDmnEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
   NewDmnEditorEnvelopeApi,
@@ -42,5 +43,9 @@ export class NewDmnEditorEnvelopeApiImpl
 
   public dmnEditor_openBoxedExpressionEditor(nodeId: string): void {
     this.getEditorOrThrowError().openBoxedExpressionEditor(nodeId);
+  }
+
+  public newDmnEditor_showDmnEvaluationStatus(statusPerNode: Map<string, NodeEvaluationResults>): void {
+    this.getEditorOrThrowError().showDmnEvaluationStatus(statusPerNode);
   }
 }
