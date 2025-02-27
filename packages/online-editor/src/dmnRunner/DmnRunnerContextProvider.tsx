@@ -268,7 +268,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             }
 
             const runnerResults: Array<DecisionResult[] | undefined> = [];
-            const evaluationStatusPerNode = new Map<
+            const evaluationResultsPerNode = new Map<
               string,
               { evaluationResult: "succeeded" | "failed" | "skipped"; evaluationHitsCount: Map<string, number> }
             >();
@@ -285,7 +285,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                   for (const [key, value] of Object.entries(dr.evaluationHitIds)) {
                     evaluationHitsCount.set(`${key}`, value as number);
                   }
-                  evaluationStatusPerNode.set(dr.decisionId, {
+                  evaluationResultsPerNode.set(dr.decisionId, {
                     evaluationResult: dr.evaluationStatus.toLowerCase() as "succeeded" | "failed" | "skipped",
                     evaluationHitsCount: evaluationHitsCount,
                   });
@@ -296,7 +296,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
 
             const newDmnEditorEnvelopeApi = envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
 
-            newDmnEditorEnvelopeApi.notifications.newDmnEditor_showDmnEvaluationStatus.send(evaluationStatusPerNode);
+            newDmnEditorEnvelopeApi.notifications.newDmnEditor_showDmnEvaluationStatus.send(evaluationResultsPerNode);
           })
           .catch((err) => {
             console.log(err);
