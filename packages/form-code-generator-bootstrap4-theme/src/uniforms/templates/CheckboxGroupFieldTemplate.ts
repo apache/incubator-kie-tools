@@ -28,7 +28,7 @@ import { CompiledTemplate, template } from "underscore";
 import { FormInput } from "../../api";
 import { fieldNameToOptionalChain, getItemValeuPath } from "./utils";
 import { getInputReference } from "../utils/Utils";
-import { getCurrentItemSetModelData } from "./ListFieldTemplate";
+import { DEFAULT_LIST_INDEX_NAME, getCurrentItemSetModelData, getNormalizedListIdOrName } from "./ListFieldTemplate";
 
 export interface Option {
   value: string;
@@ -57,9 +57,14 @@ export class CheckBoxGroupFieldTemplate implements FormElementTemplate<FormInput
     return {
       ref: getInputReference(props),
       html: this.formGroupTemplate({
-        id: props.id,
+        id: props.itemProps?.isListItem ? getNormalizedListIdOrName(props.id) : props.id,
         label: props.label,
-        input: this.inputTemplate({ props: props }),
+        input: this.inputTemplate({
+          id: props.itemProps?.isListItem ? getNormalizedListIdOrName(props.id) : props.id,
+          name: props.itemProps?.isListItem ? getNormalizedListIdOrName(props.name) : props.name,
+          options: props.options,
+          disabled: props.disabled,
+        }),
         isListItem: props.itemProps?.isListItem ?? false,
       }),
       disabled: props.disabled,
@@ -68,7 +73,7 @@ export class CheckBoxGroupFieldTemplate implements FormElementTemplate<FormInput
         code: this.setValueFromModelTemplate({
           ...props,
           name: props.itemProps?.isListItem
-            ? getCurrentItemSetModelData(props.name, props.itemProps?.indexVariableName ?? "itemIndex")
+            ? getCurrentItemSetModelData(props.name, props.itemProps?.indexVariableName ?? DEFAULT_LIST_INDEX_NAME)
             : props.name,
           path: fieldNameToOptionalChain(props.name),
           valuePath: props.itemProps?.isListItem ? getItemValeuPath(props.name) : "",

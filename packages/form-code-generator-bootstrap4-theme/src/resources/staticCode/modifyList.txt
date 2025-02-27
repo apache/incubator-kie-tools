@@ -3,14 +3,14 @@ function delListItem(name, minCount, itemIndex, onDelListItem) {
   const value = accessObjectPath(formData, name) ?? [];
 
   if ((minCount ?? 0) <= value.length) {
-    document.getElementById(`${name}.${itemIndex}`).remove();
+    document.getElementById(`item-${name}.${itemIndex}`).remove();
   }
   
   // Re-organize list
   Array.from(
     document.getElementById(name).childNodes ?? []
   ).filter(node => node.nodeType === 1).forEach((element, index) => {
-    const delElement = element.querySelector(`span[name='Remove Item']`);
+    const delElement = element.getElementById(`remove-item-${name}`);
     delElement.onclick = function () { onDelListItem(name, `${index}`) };
     delElement.onkeydown = function () { onDelListItem(name, `${index}`) };
 
@@ -64,29 +64,47 @@ function addListItem(name, defaultValue, maxCount, childrenHtml, functionName) {
 
   const nestedListContainer = newItemElement.querySelector("div[role='list']");
   if (nestedListContainer) {
-    nestedListContainer.id = nestedListContainer.id.replace(`${name}.$`, `${name}.${itemIndex}`)
-
+    const nestedListPathWithIndex = splitLastOccurrence(nestedListContainer.id, "$")?.[1]?.replace("$", `${itemIndex}`);
+    nestedListContainer.id = nestedListPathWithIndex ? `${name}.${nestedListPathWithIndex}` : name;
+    
+    // Add Item
     const addItem = newItemElement.querySelector('[id^=add-item]');
-    addItem.id = addItem.id.replace(`${name}.$`, `${name}.${itemIndex}`);
+    const addItemPathWithIndex = splitLastOccurrence(addItem.id, "$")?.[1]?.replace("$", `${itemIndex}`);
+    addItem.id = addItemPathWithIndex ? `add-item-${name}.${addItemPathWithIndex}` : `add-item-${name}`;
     const addItemOnClick = addItem.getAttribute('onclick');
     if (addItemOnClick) {
-      addItem.setAttribute('onclick', addItemOnClick.replace(`${name}.$`, `${name}.${itemIndex}`));
+      addItem.setAttribute('onclick', getFunctionName(addItemOnClick, itemIndex));
     }
     const addItemOnKeydown = addItem.getAttribute('onkeydown');
     if (addItemOnKeydown) {
-      addItem.setAttribute('onkeydown', addItemOnKeydown.replace(`${name}.$`, `${name}.${itemIndex}`));
+      addItem.setAttribute('onkeydown', getFunctionName(addItemOnKeydown, itemIndex));
     }
+
+    // Remove Item
     const removeItem = newItemElement.querySelector('[id^=remove-item]');
-    removeItem.id = removeItem.id.replace(`${name}.$`, `${name}.${itemIndex}`);
+    const removeItemPathWithIndex = splitLastOccurrence(addItem.id, "$")?.[1]?.replace("$", `${itemIndex}`);
+    removeItem.id = removeItemPathWithIndex ? `remove-item-${name}.${removeItemPathWithIndex}` : `remove-item-${name}`;
     const removeItemOnClick = removeItem.getAttribute('onclick');
     if (removeItemOnClick) {
-      removeItem.setAttribute('onclick', removeItemOnClick.replace(`${name}.$`, `${name}.${itemIndex}`));
+      removeItem.setAttribute('onclick', getFunctionName(removeItemOnClick, itemIndex));
     }
     const removeItemOnKeydown = removeItem.getAttribute('onkeydown');
     if (removeItemOnKeydown) {
-      removeItem.setAttribute('onkeydown', removeItemOnKeydown.replace(`${name}.$`, `${name}.${itemIndex}`));
+      removeItem.setAttribute('onkeydown', getFunctionName(removeItemOnKeydown, itemIndex));
     }
   }
+}
+function getFunctionName(functionCall, itemIndex) {
+  const [call, argument, end] = functionCall.split('\'');
+  const [argumentName, argumentNameToReplace] = splitLastOccurrence(argument, "$");
+  return `${call}'${argumentName}${argumentNameToReplace?.replace("$", `${itemIndex}`) ?? ""}'${end}`
+}
+function splitLastOccurrence(str, char) {
+    const lastIndex = str.lastIndexOf(char);
+    if (lastIndex === -1) {
+      return [str]
+    }
+    return [str.substring(0, lastIndex), str.substring(lastIndex)];
 }
 function recursiveGetObjectListValues(objectElement) {
   const nested = objectElement.querySelector(

@@ -28,6 +28,8 @@ import { CompiledTemplate, template } from "underscore";
 import { fieldNameToOptionalChain } from "./utils";
 import { ListItemProps } from "../rendering/ListFieldInput";
 
+export const DEFAULT_LIST_INDEX_NAME = "itemIndex";
+
 interface ListFieldTemplateProps extends FormElementTemplateProps<any> {
   children: FormElement<any>;
   maxCount: number;
@@ -60,10 +62,9 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
     return {
       ref,
       html: this.listFieldTemplate({
-        id,
+        id: getNormalizedListIdOrName(id),
         disabled,
         label,
-        name,
         value,
         childrenHtml: children.html,
         functionName: getFunctionName(name),
@@ -88,7 +89,7 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
           path: getSetItemPath(name),
           indexVariableName: "index",
           itemsSetValueFromModel: children.setValueFromModelCode,
-          name: getCurrentItemSetModelData(name, itemProps?.indexVariableName ?? "itemIndex"),
+          name: getCurrentItemSetModelData(name, itemProps?.indexVariableName ?? DEFAULT_LIST_INDEX_NAME),
           functionName: getFunctionName(name),
           prefix: getNextIndexVariableName(itemProps),
         }),
@@ -118,11 +119,11 @@ function getSetItemPath(name: string) {
 
 // "currentItem" is the name used in the listField.setModelData.template
 export function getCurrentItemSetModelData(name: string, prefix: string) {
-  const splittedName = name.split(`.$`);
+  const [_, splittedName] = splitLastOccurrence(name, "$");
   // Is nested
-  if (splittedName.length > 1) {
+  if (splittedName !== undefined) {
     // ${currentItem}. with last part of the field name
-    return `\${${prefix}__currentItem}` + (splittedName?.[splittedName.length - 1] ?? "");
+    return `\${${prefix}__currentItem}${splittedName}`;
   }
   return name;
 }
@@ -136,7 +137,19 @@ function getFunctionName(name: string) {
 
 export function getNextIndexVariableName(itemProps: ListItemProps) {
   if (itemProps === undefined) {
-    return "itemIndex";
+    return DEFAULT_LIST_INDEX_NAME;
   }
   return "nested__" + itemProps.indexVariableName;
+}
+
+function splitLastOccurrence(str: string, char: string) {
+  const lastIndex = str.lastIndexOf(char);
+  if (lastIndex === -1) {
+    return [str];
+  }
+  return [str.substring(0, lastIndex), str.substring(lastIndex)];
+}
+
+export function getNormalizedListIdOrName(id: string) {
+  return `${splitLastOccurrence(id, "$")[1] ? `\${name}.${splitLastOccurrence(id, "$")[1]}` : id}`;
 }

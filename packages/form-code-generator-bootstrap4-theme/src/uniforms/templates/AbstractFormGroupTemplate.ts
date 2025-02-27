@@ -23,7 +23,7 @@ import { CompiledTemplate, template } from "underscore";
 import { getInputReference } from "../utils/Utils";
 import { fieldNameToOptionalChain, flatFieldName, getItemValeuPath } from "./utils";
 import { ListItemProps } from "../rendering/ListFieldInput";
-import { getCurrentItemSetModelData } from "./ListFieldTemplate";
+import { DEFAULT_LIST_INDEX_NAME, getCurrentItemSetModelData, getNormalizedListIdOrName } from "./ListFieldTemplate";
 
 export interface CodeGenTemplate<Element extends CodeGenElement, Properties> {
   render: (props: Properties) => Element;
@@ -36,6 +36,12 @@ export interface FormElementTemplateProps<Type> {
   disabled: boolean;
   value: Type;
   itemProps: ListItemProps;
+  type: string;
+  placeholder?: string;
+  autoComplete?: boolean;
+  min?: string | number;
+  max?: string | number;
+  step?: number;
 }
 
 export interface FormElementTemplate<
@@ -58,9 +64,20 @@ export abstract class AbstractFormGroupTemplate<Properties extends FormElementTe
     return {
       ref: getInputReference(props),
       html: template(formGroupTemplate)({
-        id: props.id,
+        id: props.itemProps?.isListItem ? getNormalizedListIdOrName(props.id) : props.id,
         label: props.label,
-        input: this.inputTemplate({ props: props }),
+        input: this.inputTemplate({
+          id: props.itemProps?.isListItem ? getNormalizedListIdOrName(props.id) : props.id,
+          name: props.itemProps?.isListItem ? getNormalizedListIdOrName(props.name) : props.name,
+          value: props.value,
+          type: props.type,
+          disabled: props.disabled,
+          placeholder: props.placeholder,
+          autoComplete: props.autoComplete,
+          min: props.min,
+          max: props.max,
+          step: props.step,
+        }),
         isListItem: props.itemProps?.isListItem ?? false,
       }),
       disabled: props.disabled,
@@ -69,7 +86,7 @@ export abstract class AbstractFormGroupTemplate<Properties extends FormElementTe
         code: this.setValueFromModelTemplate({
           ...props,
           id: props.itemProps?.isListItem
-            ? getCurrentItemSetModelData(props.id, props.itemProps?.indexVariableName ?? "itemIndex")
+            ? getCurrentItemSetModelData(props.id, props.itemProps?.indexVariableName ?? DEFAULT_LIST_INDEX_NAME)
             : props.id,
           isListItem: props.itemProps?.isListItem ?? false,
           path: fieldNameToOptionalChain(props.name),

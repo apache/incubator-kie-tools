@@ -142,13 +142,13 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			const formData = getFormData();
 			const value = accessObjectPath(formData, name) ?? [];
 			if ((minCount ?? 0) &lt;= value.length) {
-				document.getElementById(\`\${name}.\${itemIndex}\`).remove();
+				document.getElementById(\`item-\${name}.\${itemIndex}\`).remove();
 			}
 			// Re-organize list
 			Array.from(document.getElementById(name).childNodes ?? [])
 				.filter((node) =&gt; node.nodeType === 1)
 				.forEach((element, index) =&gt; {
-					const delElement = element.querySelector(\`span[name=&#39;Remove Item&#39;]\`);
+					const delElement = element.getElementById(\`remove-item-\${name}\`);
 					delElement.onclick = function () {
 						onDelListItem(name, \`\${index}\`);
 					};
@@ -198,28 +198,45 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			});
 			const nestedListContainer = newItemElement.querySelector(&quot;div[role=&#39;list&#39;]&quot;);
 			if (nestedListContainer) {
-				nestedListContainer.id = nestedListContainer.id.replace(\`\${name}.$\`, \`\${name}.\${itemIndex}\`);
+				const nestedListPathWithIndex = splitLastOccurrence(nestedListContainer.id, &quot;$&quot;)?.[1]?.replace(&quot;$&quot;, \`\${itemIndex}\`);
+				nestedListContainer.id = nestedListPathWithIndex ? \`\${name}.\${nestedListPathWithIndex}\` : name;
+				// Add Item
 				const addItem = newItemElement.querySelector(&quot;[id^=add-item]&quot;);
-				addItem.id = addItem.id.replace(\`\${name}.$\`, \`\${name}.\${itemIndex}\`);
+				const addItemPathWithIndex = splitLastOccurrence(addItem.id, &quot;$&quot;)?.[1]?.replace(&quot;$&quot;, \`\${itemIndex}\`);
+				addItem.id = addItemPathWithIndex ? \`add-item-\${name}.\${addItemPathWithIndex}\` : \`add-item-\${name}\`;
 				const addItemOnClick = addItem.getAttribute(&quot;onclick&quot;);
 				if (addItemOnClick) {
-					addItem.setAttribute(&quot;onclick&quot;, addItemOnClick.replace(\`\${name}.$\`, \`\${name}.\${itemIndex}\`));
+					addItem.setAttribute(&quot;onclick&quot;, getFunctionName(addItemOnClick, itemIndex));
 				}
 				const addItemOnKeydown = addItem.getAttribute(&quot;onkeydown&quot;);
 				if (addItemOnKeydown) {
-					addItem.setAttribute(&quot;onkeydown&quot;, addItemOnKeydown.replace(\`\${name}.$\`, \`\${name}.\${itemIndex}\`));
+					addItem.setAttribute(&quot;onkeydown&quot;, getFunctionName(addItemOnKeydown, itemIndex));
 				}
+				// Remove Item
 				const removeItem = newItemElement.querySelector(&quot;[id^=remove-item]&quot;);
-				removeItem.id = removeItem.id.replace(\`\${name}.$\`, \`\${name}.\${itemIndex}\`);
+				const removeItemPathWithIndex = splitLastOccurrence(addItem.id, &quot;$&quot;)?.[1]?.replace(&quot;$&quot;, \`\${itemIndex}\`);
+				removeItem.id = removeItemPathWithIndex ? \`remove-item-\${name}.\${removeItemPathWithIndex}\` : \`remove-item-\${name}\`;
 				const removeItemOnClick = removeItem.getAttribute(&quot;onclick&quot;);
 				if (removeItemOnClick) {
-					removeItem.setAttribute(&quot;onclick&quot;, removeItemOnClick.replace(\`\${name}.$\`, \`\${name}.\${itemIndex}\`));
+					removeItem.setAttribute(&quot;onclick&quot;, getFunctionName(removeItemOnClick, itemIndex));
 				}
 				const removeItemOnKeydown = removeItem.getAttribute(&quot;onkeydown&quot;);
 				if (removeItemOnKeydown) {
-					removeItem.setAttribute(&quot;onkeydown&quot;, removeItemOnKeydown.replace(\`\${name}.$\`, \`\${name}.\${itemIndex}\`));
+					removeItem.setAttribute(&quot;onkeydown&quot;, getFunctionName(removeItemOnKeydown, itemIndex));
 				}
 			}
+		}
+		function getFunctionName(functionCall, itemIndex) {
+			const [call, argument, end] = functionCall.split(&quot;&#39;&quot;);
+			const [argumentName, argumentNameToReplace] = splitLastOccurrence(argument, &quot;$&quot;);
+			return \`\${call}&#39;\${argumentName}\${argumentNameToReplace?.replace(&quot;$&quot;, \`\${itemIndex}\`) ?? &quot;&quot;}&#39;\${end}\`;
+		}
+		function splitLastOccurrence(str, char) {
+			const lastIndex = str.lastIndexOf(char);
+			if (lastIndex === -1) {
+				return [str];
+			}
+			return [str.substring(0, lastIndex), str.substring(lastIndex)];
 		}
 		function recursiveGetObjectListValues(objectElement) {
 			const nested = objectElement.querySelector(&quot;div[role=&#39;group&#39;], div[role=&#39;list&#39;]&quot;);
@@ -315,20 +332,20 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
     &lt;legend&gt;Friends&lt;/legend&gt;
     &lt;div role=&quot;group&quot;&gt;
         &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;item-friends.$.name&quot;&gt;Name&lt;/label&gt;
+    &lt;label for=&quot;item-\${name}.$.name&quot;&gt;Name&lt;/label&gt;
     &lt;input type=&quot;text&quot;
-    id=&quot;friends.$.name&quot;
-    name=&quot;friends.$.name&quot;
+    id=&quot;\${name}.$.name&quot;
+    name=&quot;\${name}.$.name&quot;
     class=&quot;form-control&quot;
     value=&quot;&quot;/&gt;
 &lt;/div&gt;
         &lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;item-friends.$.age&quot;&gt;Age&lt;/label&gt;
+    &lt;label for=&quot;item-\${name}.$.age&quot;&gt;Age&lt;/label&gt;
     &lt;input
     type=&quot;number&quot;
     class=&quot;form-control&quot;
-    id=&quot;friends.$.age&quot;
-    name=&quot;friends.$.age&quot;
+    id=&quot;\${name}.$.age&quot;
+    name=&quot;\${name}.$.age&quot;
     step=&quot;0.01&quot;
     value=&quot;&quot;/&gt;
 &lt;/div&gt;
@@ -337,13 +354,13 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
     &lt;div class=&quot;card-body&quot;&gt;
         &lt;div class=&quot;card-title&quot;&gt;
             &lt;label class=&quot;col-form-label&quot;&gt;Known&lt;/label&gt;
-            &lt;div id=&quot;add-item-friends.$.known&quot; name=&quot;Add Item&quot; class=&quot;badge badge-pill float-right&quot; role=&quot;button&quot; tabindex=&quot;0&quot; 
-                onclick=&quot;onAddListItemFriends$Known(&#39;friends.$.known&#39;)&quot;
-                onkeydown=&quot;onAddListItemFriends$Known(&#39;friends.$.known&#39;)&quot;&gt;
+            &lt;div id=&quot;add-item-\${name}.$.known&quot; name=&quot;Add Item&quot; class=&quot;badge badge-pill float-right&quot; role=&quot;button&quot; tabindex=&quot;0&quot; 
+                onclick=&quot;onAddListItemFriends$Known(&#39;\${name}.$.known&#39;)&quot;
+                onkeydown=&quot;onAddListItemFriends$Known(&#39;\${name}.$.known&#39;)&quot;&gt;
                 &lt;i className=&quot;octicon octicon-plus&quot;&gt;&lt;span&gt;+&lt;/span&gt;&lt;/i&gt;
             &lt;/div&gt;
         &lt;/div&gt;
-        &lt;div role=&quot;list&quot; id=&quot;friends.$.known&quot;&gt;&lt;/div&gt;
+        &lt;div role=&quot;list&quot; id=&quot;\${name}.$.known&quot;&gt;&lt;/div&gt;
     &lt;/div&gt;
     &lt;/div&gt;
 &lt;/div&gt;
@@ -367,10 +384,10 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 					undefined,
 					undefined,
 					\`&lt;div class=&quot;form-group&quot;&gt;
-    &lt;label for=&quot;item-friends.$.known.$&quot;&gt;Known&lt;/label&gt;
+    &lt;label for=&quot;item-\${name}.$&quot;&gt;Known&lt;/label&gt;
     &lt;input type=&quot;text&quot;
-    id=&quot;friends.$.known.$&quot;
-    name=&quot;friends.$.known.$&quot;
+    id=&quot;\${name}.$&quot;
+    name=&quot;\${name}.$&quot;
     class=&quot;form-control&quot;
     value=&quot;&quot;/&gt;
 &lt;/div&gt;\`,
@@ -438,13 +455,13 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 				// Add element;
 				onAddListItemFriends(\`friends\`);
 				const itemIndex__currentItem = \`friends.\${index}\`;
-				document.getElementById(\`\${itemIndex__currentItem}.name\`).value = value?.name ?? &quot;&quot;;
-				document.getElementById(\`\${itemIndex__currentItem}.age\`).value = value?.age ?? &quot;&quot;;
+				document.getElementById(\`\${itemIndex__currentItem}$.name\`).value = value?.name ?? &quot;&quot;;
+				document.getElementById(\`\${itemIndex__currentItem}$.age\`).value = value?.age ?? &quot;&quot;;
 				value?.known?.forEach((value, index) =&gt; {
 					// Add element;
-					onAddListItemFriends$Known(\`\${itemIndex__currentItem}.known\`);
-					const nested__itemIndex__currentItem = \`\${itemIndex__currentItem}.known.\${index}\`;
-					document.getElementById(\`\${nested__itemIndex__currentItem}\`).value = value ?? &quot;&quot;;
+					onAddListItemFriends$Known(\`\${itemIndex__currentItem}$.known\`);
+					const nested__itemIndex__currentItem = \`\${itemIndex__currentItem}$.known.\${index}\`;
+					document.getElementById(\`\${nested__itemIndex__currentItem}$\`).value = value ?? &quot;&quot;;
 				});
 			});
 		}

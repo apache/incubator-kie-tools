@@ -4,12 +4,12 @@
         <div class="card-title">
             <label class="col-form-label"><%=label%></label>
             <div id="add-item-<%= id %>" name="Add Item" class="badge badge-pill float-right" role="button" tabindex="0" <%=disabled ? " disabled" : ""%>
-                onclick="onAddListItem<%= functionName %>('<%= name %>')"
-                onkeydown="onAddListItem<%= functionName %>('<%= name %>')">
+                onclick="onAddListItem<%= functionName %>('<%= id %>')"
+                onkeydown="onAddListItem<%= functionName %>('<%= id %>')">
                 <i className="octicon octicon-plus"><span>+</span></i>
             </div>
         </div>
-        <div role="list" id="<%= name %>"></div>
+        <div role="list" id="<%= id %>"></div>
     </div>
     </div>
 </div>

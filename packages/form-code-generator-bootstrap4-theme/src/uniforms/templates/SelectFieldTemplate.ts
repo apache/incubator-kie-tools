@@ -29,7 +29,7 @@ import { CompiledTemplate, template } from "underscore";
 import { FormInput } from "../../api";
 import { fieldNameToOptionalChain, getItemValeuPath } from "./utils";
 import { getInputReference } from "../utils/Utils";
-import { getCurrentItemSetModelData } from "./ListFieldTemplate";
+import { DEFAULT_LIST_INDEX_NAME, getCurrentItemSetModelData, getNormalizedListIdOrName } from "./ListFieldTemplate";
 
 export interface Option {
   value: string;
@@ -60,9 +60,18 @@ export class SelectFieldTemplate implements FormElementTemplate<FormInput, Selec
     return {
       ref: getInputReference(props),
       html: this.formGroupTemplate({
-        id: props.id,
+        id: props.itemProps?.isListItem ? getNormalizedListIdOrName(props.id) : props.id,
         label: props.label,
-        input: this.inputTemplate({ props: props }),
+        input: this.inputTemplate({
+          id: props.itemProps?.isListItem ? getNormalizedListIdOrName(props.id) : props.id,
+          name: props.itemProps?.isListItem ? getNormalizedListIdOrName(props.name) : props.name,
+          placeHolder: props.placeHolder,
+          disabled: props.disabled,
+          multiple: props.multiple,
+          options: props.options,
+          value: props.value,
+          label: props.label,
+        }),
         isListItem: props.itemProps?.isListItem ?? false,
       }),
       disabled: props.disabled,
@@ -71,7 +80,7 @@ export class SelectFieldTemplate implements FormElementTemplate<FormInput, Selec
         code: this.setValueFromModelTemplate({
           ...props,
           id: props.itemProps?.isListItem
-            ? getCurrentItemSetModelData(props.id, props.itemProps?.indexVariableName ?? "itemIndex")
+            ? getCurrentItemSetModelData(props.id, props.itemProps?.indexVariableName ?? DEFAULT_LIST_INDEX_NAME)
             : props.id,
           path: fieldNameToOptionalChain(props.name),
           valuePath: props.itemProps?.isListItem ? getItemValeuPath(props.name) : "",
