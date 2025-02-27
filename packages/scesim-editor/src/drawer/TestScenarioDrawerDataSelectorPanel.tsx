@@ -52,6 +52,111 @@ const enum TestScenarioDataSelectorState {
   TREEVIEW_ENABLED_ONLY, // TreeView component is enabled only, in a read only mode (when a column is selected)
 }
 
+const filterDataObjectByExpressionElements = (
+  dataObject: TestScenarioDataObject,
+  allExpressionElements: SceSim__expressionElementsType[]
+) => {
+  let filtered = true;
+  for (const expressionElements of allExpressionElements) {
+    if (
+      !expressionElements ||
+      !expressionElements.ExpressionElement ||
+      expressionElements.ExpressionElement.length === 0
+    ) {
+      continue;
+    }
+    if (expressionElements.ExpressionElement[0].step.__$$text === dataObject.name) {
+      filtered = false;
+      break;
+    }
+  }
+  return filtered;
+};
+
+const filterDataObjectChildrenByExpressionElements = (
+  dataObject: TestScenarioDataObject,
+  allExpressionElements: SceSim__expressionElementsType[]
+) => {
+  if (dataObject.children) {
+    for (const expressionElements of allExpressionElements) {
+      if (
+        !expressionElements ||
+        !expressionElements.ExpressionElement ||
+        expressionElements.ExpressionElement.length === 0
+      ) {
+        continue;
+      }
+      if (expressionElements.ExpressionElement[0].step.__$$text === dataObject.name) {
+        const selected: TestScenarioDataObject[] = dataObject.children.filter((dataObjectChild) => {
+          const lastElementName = expressionElements.ExpressionElement!.at(-1)!.step.__$$text;
+          const isSimpleType = expressionElements.ExpressionElement!.length === 1;
+          const fieldName = isSimpleType ? "value" : lastElementName;
+
+          return dataObjectChild.name !== fieldName;
+        });
+        dataObject.children = selected;
+      }
+    }
+  }
+};
+
+const filterDataObjectsById = (item: TestScenarioDataObject, itemId: string) => {
+  if (item.id === itemId) {
+    return true;
+  }
+
+  if (item.children) {
+    const dataObjects: TestScenarioDataObject[] = item.children
+      .map((object: TestScenarioDataObject) => Object.assign({}, object))
+      .filter((child: TestScenarioDataObject) => filterDataObjectsById(child, itemId));
+
+    return dataObjects.length > 0;
+  }
+
+  return false;
+};
+
+const filterDataObjectsByName = (item: TestScenarioDataObject, name: string) => {
+  if (item.name.toLowerCase().includes(name.toLowerCase())) {
+    return true;
+  }
+
+  if (item.children) {
+    const dataObjects: TestScenarioDataObject[] = item.children
+      .map((object: TestScenarioDataObject) => Object.assign({}, object))
+      .filter((child: TestScenarioDataObject) => filterDataObjectsByName(child, name));
+
+    return dataObjects.length > 0;
+  }
+
+  return false;
+};
+
+const findDataObjectRootParent = (dataObjects: TestScenarioDataObject[], itemId: string) => {
+  const filtered = dataObjects
+    .map((object) => Object.assign({}, object))
+    .filter((item) => filterDataObjectsById(item, itemId));
+
+  return filtered[0];
+};
+
+const filterTypesItems = (dataObject: TestScenarioDataObject, factIdentifierName: string) => {
+  return dataObject.name === factIdentifierName;
+};
+
+/* It returns the TestScenarioDataObject that matches the provided ID serching over all TestScenarioDataObjects and its children */
+const findTestScenarioDataObjectById = (dataObjects: TestScenarioDataObject[], id: string): TestScenarioDataObject => {
+  let dataObjectToReturn = dataObjects.find((dataObject) => id.startsWith(dataObject.id));
+  if (dataObjectToReturn?.id !== id && dataObjectToReturn?.children) {
+    dataObjectToReturn = findTestScenarioDataObjectById(dataObjectToReturn.children, id);
+  }
+  return dataObjectToReturn!;
+};
+
+const isDataObjectRootParent = (dataObjects: TestScenarioDataObject[], itemID: string) => {
+  return dataObjects.map((object) => Object.assign({}, object)).filter((item) => item.id === itemID).length === 1;
+};
+
 function TestScenarioDataSelectorPanel() {
   const { i18n } = useTestScenarioEditorI18n();
   const { externalModelsByNamespace } = useExternalModels();
@@ -79,89 +184,6 @@ function TestScenarioDataSelectorPanel() {
     isExpanded: false,
   });
 
-  const filterDataObjectsByID = useCallback((item, itemID) => {
-    if (item.id === itemID) {
-      return true;
-    }
-
-    if (item.children) {
-      return (
-        (item.children = item.children
-          .map((object: TestScenarioDataObject) => Object.assign({}, object))
-          .filter((child: TestScenarioDataObject) => filterDataObjectsByID(child, itemID))).length > 0
-      );
-    }
-
-    return false;
-  }, []);
-
-  const findDataObjectRootParent = useCallback(
-    (dataObjects: TestScenarioDataObject[], itemId: string) => {
-      const filtered = dataObjects
-        .map((object) => Object.assign({}, object))
-        .filter((item) => filterDataObjectsByID(item, itemId));
-
-      return filtered[0];
-    },
-    [filterDataObjectsByID]
-  );
-
-  const isDataObjectRootParent = useCallback((dataObjects: TestScenarioDataObject[], itemID: string) => {
-    return dataObjects.map((object) => Object.assign({}, object)).filter((item) => item.id === itemID).length === 1;
-  }, []);
-
-  const filterTypesItems = useCallback((dataObject, factIdentifierName) => {
-    return dataObject.name === factIdentifierName;
-  }, []);
-
-  const filterDataObjectByExpressionElements = useCallback(
-    (dataObject: TestScenarioDataObject, allExpressionElements: SceSim__expressionElementsType[]) => {
-      let filtered = true;
-      for (const expressionElements of allExpressionElements) {
-        if (
-          !expressionElements ||
-          !expressionElements.ExpressionElement ||
-          expressionElements.ExpressionElement.length === 0
-        ) {
-          continue;
-        }
-        if (expressionElements.ExpressionElement[0].step.__$$text === dataObject.name) {
-          filtered = false;
-          break;
-        }
-      }
-      return filtered;
-    },
-    []
-  );
-
-  const filterDataObjectChildrenByExpressionElements = useCallback(
-    (dataObject: TestScenarioDataObject, allExpressionElements: SceSim__expressionElementsType[]) => {
-      if (dataObject.children) {
-        for (const expressionElements of allExpressionElements) {
-          if (
-            !expressionElements ||
-            !expressionElements.ExpressionElement ||
-            expressionElements.ExpressionElement.length === 0
-          ) {
-            continue;
-          }
-          if (expressionElements.ExpressionElement[0].step.__$$text === dataObject.name) {
-            const selected: TestScenarioDataObject[] = dataObject.children.filter((dataObjectChild) => {
-              const lastElementName = expressionElements.ExpressionElement!.at(-1)!.step.__$$text;
-              const isSimpleType = expressionElements.ExpressionElement!.length === 1;
-              const fieldName = isSimpleType ? "value" : lastElementName;
-
-              return dataObjectChild.name !== fieldName;
-            });
-            dataObject.children = selected;
-          }
-        }
-      }
-    },
-    []
-  );
-
   /** It filters out all the Data Objects and their Children already assigned in the table */
   const filterOutAlreadyAssignedDataObjectsAndChildren = useCallback(
     (expressionElement: SceSim__expressionElementsType, isBackground: boolean) => {
@@ -180,38 +202,7 @@ function TestScenarioDataSelectorPanel() {
       );
       return filteredDataObjects;
     },
-    [
-      dataObjects,
-      filterDataObjectByExpressionElements,
-      filterDataObjectChildrenByExpressionElements,
-      scesimModel.ScenarioSimulationModel,
-    ]
-  );
-
-  const filterItems = useCallback((item, input) => {
-    if (item.name.toLowerCase().includes(input.toLowerCase())) {
-      return true;
-    }
-
-    if (item.children) {
-      return (
-        (item.children = item.children
-          .map((object: TestScenarioDataObject) => Object.assign({}, object))
-          .filter((child: TestScenarioDataObject) => filterItems(child, input))).length > 0
-      );
-    }
-  }, []);
-
-  /* It returns the TestScenarioDataObject that matches the provided ID serching over all TestScenarioDataObjects and its children */
-  const findTestScenarioDataObjectById = useCallback(
-    (dataObjects: TestScenarioDataObject[], id: string): TestScenarioDataObject => {
-      let dataObjectToReturn = dataObjects.find((dataObject) => id.startsWith(dataObject.id));
-      if (dataObjectToReturn?.id !== id && dataObjectToReturn?.children) {
-        dataObjectToReturn = findTestScenarioDataObjectById(dataObjectToReturn.children, id);
-      }
-      return dataObjectToReturn!;
-    },
-    []
+    [dataObjects, scesimModel.ScenarioSimulationModel]
   );
 
   useEffect(() => {
@@ -267,7 +258,9 @@ function TestScenarioDataSelectorPanel() {
       /** Applying User search key to the filteredDataObjects, if present */
       const isUserFilterPresent = treeViewStatus.searchKey.trim() !== "";
       if (isUserFilterPresent) {
-        filteredDataObjects = filteredDataObjects.filter((item) => filterItems(item, treeViewStatus.searchKey));
+        filteredDataObjects = filteredDataObjects.filter((item) =>
+          filterDataObjectsByName(item, treeViewStatus.searchKey)
+        );
       }
 
       setDataSelectorStatus(TestScenarioDataSelectorState.ENABLED);
@@ -318,12 +311,7 @@ function TestScenarioDataSelectorPanel() {
     console.debug("=============USE EFFECT END===============");
   }, [
     dataObjects,
-    filterDataObjectByExpressionElements,
-    filterDataObjectChildrenByExpressionElements,
     filterOutAlreadyAssignedDataObjectsAndChildren,
-    filterItems,
-    filterTypesItems,
-    findTestScenarioDataObjectById,
     scesimModel,
     selectedColumnMetadata,
     treeViewStatus.searchKey,
@@ -451,15 +439,7 @@ function TestScenarioDataSelectorPanel() {
         isBackground: isBackground,
       });
     });
-  }, [
-    dataObjects,
-    findDataObjectRootParent,
-    findTestScenarioDataObjectById,
-    isDataObjectRootParent,
-    selectedColumnMetadata,
-    testScenarioEditorStoreApi,
-    treeViewStatus.activeItems,
-  ]);
+  }, [dataObjects, selectedColumnMetadata, testScenarioEditorStoreApi, treeViewStatus.activeItems]);
 
   const onClearSelectionClicked = useCallback((_event) => {
     setTreeViewStatus((prev) => {
