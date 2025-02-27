@@ -424,6 +424,8 @@ listField.setModelData.template
 listField.template
 # packages/form-code-generator-bootstrap4-theme/src/resources/templates/listField.writeModelData.template
 listField.writeModelData.template
+# packages/form-code-generator-bootstrap4-theme/src/resources/templates/nestField.globalFunctions.template
+nestField.globalFunctions.template
 # packages/form-code-generator-bootstrap4-theme/src/resources/templates/nestField.setModelData.template
 nestField.setModelData.template
 # packages/form-code-generator-bootstrap4-theme/src/resources/templates/nestField.template
