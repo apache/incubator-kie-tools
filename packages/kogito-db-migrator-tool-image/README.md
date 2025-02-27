@@ -28,7 +28,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 - Start up a clean container with:
 
   ```bash
-    docker run docker.io/apache/incubator-kie-kogito-db-migrator-tool:main
+    docker run docker.io/apache/kie-kogito-db-migrator-tool:main
   ```
 
 ## Customization
@@ -64,7 +64,7 @@ An example to use diverse environment variables
    --env QUARKUS_DATASOURCE_JOBSSERVICE_USERNAME=<jobs-service-db-user> \
    --env QUARKUS_DATASOURCE_JOBSSERVICE_PASSWORD=<jobs-service-db-password> \
    --env QUARKUS_FLYWAY_JOBSSERVICE_SCHEMAS=jobs-service \
-   docker.io/apache/incubator-kie-kogito-db-migrator-tool:main
+   docker.io/apache/kie-kogito-db-migrator-tool:main
 ```
 
 ---
