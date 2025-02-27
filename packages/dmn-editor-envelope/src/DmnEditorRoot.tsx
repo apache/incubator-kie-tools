@@ -107,7 +107,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     this.dmnEditorRef.current?.openBoxedExpressionEditor(nodeId);
   }
 
-  public showDmnEvaluationStatus(evaluationResultsPerNode: Map<string, DmnEditor.NodeEvaluationResults>): void {
+  public showDmnEvaluationResults(evaluationResultsPerNode: Map<string, DmnEditor.NodeEvaluationResults>): void {
     this.setState((prev) => ({ ...prev, evaluationResultsPerNode: evaluationResultsPerNode }));
   }
 

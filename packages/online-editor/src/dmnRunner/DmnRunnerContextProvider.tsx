@@ -296,7 +296,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
 
             const newDmnEditorEnvelopeApi = envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
 
-            newDmnEditorEnvelopeApi.notifications.newDmnEditor_showDmnEvaluationStatus.send(evaluationResultsPerNode);
+            newDmnEditorEnvelopeApi.notifications.newDmnEditor_showDmnEvaluationResults.send(evaluationResultsPerNode);
           })
           .catch((err) => {
             console.log(err);

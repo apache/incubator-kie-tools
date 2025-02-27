@@ -41,7 +41,7 @@ export class NewDmnEditorInterface extends DmnEditorInterface {
     this.self.openBoxedExpressionEditor(nodeId);
   }
 
-  public showDmnEvaluationStatus(statusPerNode: Map<string, NodeEvaluationResults>): void {
-    this.self.showDmnEvaluationStatus(statusPerNode);
+  public showDmnEvaluationResults(evaluationResultsPerNode: Map<string, NodeEvaluationResults>): void {
+    this.self.showDmnEvaluationResults(evaluationResultsPerNode);
   }
 }

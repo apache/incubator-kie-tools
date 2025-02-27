@@ -45,7 +45,7 @@ export class NewDmnEditorEnvelopeApiImpl
     this.getEditorOrThrowError().openBoxedExpressionEditor(nodeId);
   }
 
-  public newDmnEditor_showDmnEvaluationStatus(statusPerNode: Map<string, NodeEvaluationResults>): void {
-    this.getEditorOrThrowError().showDmnEvaluationStatus(statusPerNode);
+  public newDmnEditor_showDmnEvaluationResults(evaluationResultsPerNode: Map<string, NodeEvaluationResults>): void {
+    this.getEditorOrThrowError().showDmnEvaluationResults(evaluationResultsPerNode);
   }
 }
