@@ -50,13 +50,13 @@ export type TestScenarioAlert = {
 };
 
 export type TestScenarioDataObject = {
-  id: string; // UI-Scope only
+  id: string;
   children?: TestScenarioDataObject[];
   className?: string;
   collectionGenericType?: string[];
-  customBadgeContent?: string; // UI-Scoped only
+  customBadgeContent?: string;
   expressionElements: string[];
-  hasBadge?: boolean; // UI-Scoped only
+  hasBadge?: boolean;
   name: string;
 };
 

@@ -296,20 +296,20 @@ function TestScenarioDataSelectorPanel() {
     const isSimpleTypeFact =
       selectedColumnMetadata.factMapping.expressionElements!.ExpressionElement!.length === 1 &&
       selectedColumnMetadata.factMapping.className.__$$text !== "java.lang.Void";
-    let fieldID: string;
+    let fieldId: string;
     if (isExpressionType) {
-      fieldID = selectedColumnMetadata.factMapping.expressionElements!.ExpressionElement![0].step.__$$text;
+      fieldId = selectedColumnMetadata.factMapping.expressionElements!.ExpressionElement![0].step.__$$text;
     } else if (isSimpleTypeFact) {
-      fieldID = selectedColumnMetadata.factMapping
+      fieldId = selectedColumnMetadata.factMapping
         .expressionElements!.ExpressionElement![0].step.__$$text.concat(".")
         .concat("value");
     } else {
-      fieldID = selectedColumnMetadata.factMapping
+      fieldId = selectedColumnMetadata.factMapping
         .expressionElements!.ExpressionElement!.map((expressionElement) => expressionElement.step.__$$text)
         .join(".");
     }
 
-    const treeViewItemToActivate = findTestScenarioDataObjectById(filteredDataObjects, fieldID)!;
+    const treeViewItemToActivate = findTestScenarioDataObjectById(filteredDataObjects, fieldId)!;
 
     setDataSelectorStatus(TestScenarioDataSelectorState.TREEVIEW_ENABLED_ONLY);
     setFilteredItems(filteredDataObjects);
