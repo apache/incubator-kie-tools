@@ -53,9 +53,9 @@ export class KogitoEditorEnvelopeApiImpl<
       EnvelopeApi,
       ChannelApi,
       EditorEnvelopeViewApi<E>,
-      KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>
+      KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>
     >,
-    private readonly editorFactory: EditorFactory<E, KogitoEditorChannelApi>,
+    private readonly editorFactory: EditorFactory<E, KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
     private readonly i18n: I18n<EditorEnvelopeI18n> = new I18n<EditorEnvelopeI18n>(
       editorEnvelopeI18nDefaults,
       editorEnvelopeI18nDictionaries

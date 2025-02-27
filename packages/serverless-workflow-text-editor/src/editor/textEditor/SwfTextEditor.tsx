@@ -26,7 +26,7 @@ import { initAugmentationCommands } from "./augmentation/commands";
 import { ChannelType, EditorTheme, useKogitoEditorEnvelopeContext } from "@kie-tools-core/editor/dist/api";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { getFileLanguage } from "@kie-tools/serverless-workflow-language-service/dist/api";
-import { ServerlessWorkflowTextEditorChannelApi } from "../../api";
+import { ServerlessWorkflowTextEditorChannelApi, ServerlessWorkflowTextEditorEnvelopeApi } from "../../api";
 import { editor } from "monaco-editor";
 
 interface Props {
@@ -43,7 +43,10 @@ const RefForwardingSwfTextEditor: React.ForwardRefRenderFunction<SwfTextEditorAp
   forwardedRef
 ) => {
   const container = useRef<HTMLDivElement>(null);
-  const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<ServerlessWorkflowTextEditorChannelApi>();
+  const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<
+    ServerlessWorkflowTextEditorEnvelopeApi,
+    ServerlessWorkflowTextEditorChannelApi
+  >();
   const [theme] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoEditor_theme);
   const [services] = useSharedValue(editorEnvelopeCtx.channelApi?.shared.kogitoSwfServiceCatalog_services);
   const [serviceRegistriesSettings] = useSharedValue(

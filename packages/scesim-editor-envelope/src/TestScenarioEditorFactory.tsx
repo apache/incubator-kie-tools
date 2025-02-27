@@ -27,14 +27,17 @@ import {
   KogitoEditorChannelApi,
   EditorTheme,
   DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
+  KogitoEditorEnvelopeApi,
 } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { ResourceContent, ResourcesList, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { TestScenarioEditorRoot } from "./TestScenarioEditorRoot";
 
-export class TestScenarioEditorFactory implements EditorFactory<Editor, KogitoEditorChannelApi> {
+export class TestScenarioEditorFactory
+  implements EditorFactory<Editor, KogitoEditorEnvelopeApi, KogitoEditorChannelApi>
+{
   public createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<Editor> {
     return Promise.resolve(new TestScenarioEditorInterface(envelopeContext, initArgs));
@@ -48,7 +51,7 @@ export class TestScenarioEditorInterface implements Editor {
   public af_componentTitle: "Test Scenario Editor";
 
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>,
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
     private readonly initArgs: EditorInitArgs
   ) {}
 
@@ -106,7 +109,7 @@ function TestScenarioEditorRootWrapper({
   workspaceRootAbsolutePosixPath,
   isReadOnly,
 }: {
-  envelopeContext?: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>;
+  envelopeContext?: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>;
   exposing: (s: TestScenarioEditorRoot) => void;
   workspaceRootAbsolutePosixPath: string;
   isReadOnly: boolean;
