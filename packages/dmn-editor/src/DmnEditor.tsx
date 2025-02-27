@@ -72,11 +72,14 @@ export type DmnEditorRef = {
 };
 
 /**
- * TODO we need to implement mapping  between:
- * - DMN Runner engine
- * - and (extended-services-api/src/dmnResult.ts)
- * - and (EvaluationResults)
- * https://github.com/apache/incubator-kie-issues/issues/1823
+ * We need to keep in sync:
+ *   * dmn-editor/src/DmnEditor.tsx - NodeEvaluationResults
+ *   * dmn-editor-envelope/src/DmnEditorRoot.tsx -
+ *   * dmn-editor-envelope/src/NewDmnEditorEnvelopeApi.tsx - newDmnEditor_showDmnEvaluationResults
+ *   * dmn-editor-envelope/src/NewDmnEditorFactory.tsx - NewDmnEditorInterface#showDmnEvaluationResults
+ *   * extended-services-api/src/dmnResult.ts - DmnEvaluationStatus
+ *
+ * For more details see: https://github.com/apache/incubator-kie-issues/issues/1823
  */
 export type NodeEvaluationResults = {
   evaluationResult: "succeeded" | "failed" | "skipped";

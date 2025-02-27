@@ -35,7 +35,12 @@ import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStat
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
 import { InputRow } from "@kie-tools/form-dmn";
-import { DecisionResult, DmnEvaluationMessages, ExtendedServicesModelPayload } from "@kie-tools/extended-services-api";
+import {
+  DecisionResult,
+  DmnEvaluationMessages,
+  ExtendedServicesDmnResult,
+  ExtendedServicesModelPayload,
+} from "@kie-tools/extended-services-api";
 import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
 import { useDmnRunnerPersistence } from "../dmnRunnerPersistence/DmnRunnerPersistenceHook";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
@@ -119,6 +124,53 @@ function dmnRunnerResultsReducer(dmnRunnerResults: DmnRunnerResults, action: Dmn
   } else {
     throw new Error("Invalid use of dmnRunnerResultDispatcher");
   }
+}
+
+/**
+ * This transformation is needed for two reasons:
+ * ### -1- ###
+ * DMN Runner backend return upper case constants: "SUCCEEDED", "FAILED", "SKIPPED"
+ * DMN Editor code base uses lover case constants: "succeeded", "failed", "skipped"
+ *
+ * ### -2- ###
+ * DMN Runner backend return evaluationHitIds as Object:
+ * {
+ *   _F0DC8923-5FC7-4200-8BD1-461D5F3715CF: 1,
+ *   _F0DC8923-5FC7-4200-8BD1-461D5F3713AD: 2
+ * }
+ * DMN Editor code base uses evaluationHitIds as Map<string, number>
+ * [
+ *   {
+ *     key: "_F0DC8923-5FC7-4200-8BD1-461D5F3715CF,
+ *     value: 1
+ *   },
+ *   {
+ *     key: "_F0DC8923-5FC7-4200-8BD1-461D5F3713AD",
+ *     value: 2
+ *   }
+ * ]
+ */
+function transformDmnRunnerEvaluationResults(result: ExtendedServicesDmnResult) {
+  const transformedStructure: Map<
+    string,
+    { evaluationResult: "succeeded" | "failed" | "skipped"; evaluationHitsCount: Map<string, number> }
+  > = new Map<
+    string,
+    { evaluationResult: "succeeded" | "failed" | "skipped"; evaluationHitsCount: Map<string, number> }
+  >();
+
+  result.decisionResults?.forEach((dr) => {
+    const evaluationHitsCount = new Map<string, number>();
+    for (const [key, value] of Object.entries(dr.evaluationHitIds)) {
+      evaluationHitsCount.set(`${key}`, value as number);
+    }
+    transformedStructure.set(dr.decisionId, {
+      evaluationResult: dr.evaluationStatus.toLowerCase() as "succeeded" | "failed" | "skipped",
+      evaluationHitsCount: evaluationHitsCount,
+    });
+  });
+
+  return transformedStructure;
 }
 
 export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
@@ -268,10 +320,10 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             }
 
             const runnerResults: Array<DecisionResult[] | undefined> = [];
-            const evaluationResultsPerNode = new Map<
+            let evaluationResultsPerNode: Map<
               string,
               { evaluationResult: "succeeded" | "failed" | "skipped"; evaluationHitsCount: Map<string, number> }
-            >();
+            > = new Map();
             for (const result of results) {
               if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
                 setExtendedServicesError(true);
@@ -280,22 +332,12 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
               if (result) {
                 runnerResults.push(result.decisionResults);
 
-                result.decisionResults?.forEach((dr) => {
-                  const evaluationHitsCount = new Map<string, number>();
-                  for (const [key, value] of Object.entries(dr.evaluationHitIds)) {
-                    evaluationHitsCount.set(`${key}`, value as number);
-                  }
-                  evaluationResultsPerNode.set(dr.decisionId, {
-                    evaluationResult: dr.evaluationStatus.toLowerCase() as "succeeded" | "failed" | "skipped",
-                    evaluationHitsCount: evaluationHitsCount,
-                  });
-                });
+                evaluationResultsPerNode = transformDmnRunnerEvaluationResults(result);
               }
             }
             setDmnRunnerResults({ type: DmnRunnerResultsActionType.DEFAULT, newResults: runnerResults });
 
             const newDmnEditorEnvelopeApi = envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
-
             newDmnEditorEnvelopeApi.notifications.newDmnEditor_showDmnEvaluationResults.send(evaluationResultsPerNode);
           })
           .catch((err) => {
