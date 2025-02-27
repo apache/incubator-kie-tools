@@ -177,16 +177,17 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			newItem.class = &quot;row&quot;;
 			newItem.id = \`item-\${name}.\${itemIndex}\`;
 			newItem.innerHTML = \`
-  &lt;div class=&quot;col-1&quot;&gt;
-    &lt;span id=&quot;remove-item-\${name}&quot; name=&quot;Remove Item&quot; class=&quot;badge badge-pill&quot; role=&quot;button&quot; tabindex=&quot;0&quot; onclick=&quot;onDelListItem\${functionName}(&#39;\${name}&#39;, \${itemIndex})&quot; onkeydown=&quot;onDelListItem\${functionName}(&#39;\${name}&#39;, \${itemIndex})&quot;&gt;
-      &lt;i className=&quot;octicon octicon-dash&quot;&gt;&lt;span&gt;-&lt;/span&gt;&lt;/i&gt;
-    &lt;/span&gt;
-  &lt;/div&gt;
-  &lt;div class=&quot;col-11&quot;&gt;
-    \${childrenHtml}
-  &lt;/div&gt;
-  \`;
+&lt;div class=&quot;col-1&quot;&gt;
+&lt;span id=&quot;remove-item-\${name}&quot; name=&quot;Remove Item&quot; class=&quot;badge badge-pill&quot; role=&quot;button&quot; tabindex=&quot;0&quot; onclick=&quot;onDelListItem\${functionName}(&#39;\${name}&#39;, \${itemIndex})&quot; onkeydown=&quot;onDelListItem\${functionName}(&#39;\${name}&#39;, \${itemIndex})&quot;&gt;
+  &lt;i className=&quot;octicon octicon-dash&quot;&gt;&lt;span&gt;-&lt;/span&gt;&lt;/i&gt;
+&lt;/span&gt;
+&lt;/div&gt;
+&lt;div class=&quot;col-11&quot;&gt;
+\${childrenHtml}
+&lt;/div&gt;
+\`;
 			listContainer.appendChild(newItem);
+			// Replace all &quot;$&quot; from \`input\` and \`select\` with the \`itemIndex\`
 			const newItemElement = document.getElementById(newItem.id);
 			[...newItemElement.querySelectorAll(&#39;input[id*=&quot;$&quot;], select[id*=&quot;$&quot;]&#39;)].forEach((el) =&gt; {
 				if (el.id.split(&quot;.&quot;).pop() !== &quot;$&quot;) {
@@ -197,35 +198,41 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 					el.name = \`\${name}.\${itemIndex}\`;
 				}
 			});
-			const nestedListContainer = newItemElement.querySelector(&quot;div[role=&#39;list&#39;]&quot;);
-			if (nestedListContainer) {
+			// Get the root element of a nested list
+			[...newItemElement.querySelectorAll(&quot;div[role=&#39;list&#39;]&quot;)].forEach((nestedListContainer) =&gt; {
+				if (!nestedListContainer) {
+					return;
+				}
+				// Replace &quot;$&quot; from the root element if necessary
 				const nestedListPathWithIndex = splitLastOccurrence(nestedListContainer.id, &quot;$&quot;)?.[1]?.replace(&quot;$&quot;, \`\${itemIndex}\`);
 				nestedListContainer.id = nestedListPathWithIndex ? \`\${name}.\${nestedListPathWithIndex}\` : name;
-				// Add Item
-				const addItem = newItemElement.querySelector(&quot;[id^=add-item]&quot;);
-				const addItemPathWithIndex = splitLastOccurrence(addItem.id, &quot;$&quot;)?.[1]?.replace(&quot;$&quot;, \`\${itemIndex}\`);
-				addItem.id = addItemPathWithIndex ? \`add-item-\${name}.\${addItemPathWithIndex}\` : \`add-item-\${name}\`;
-				const addItemOnClick = addItem.getAttribute(&quot;onclick&quot;);
-				if (addItemOnClick) {
-					addItem.setAttribute(&quot;onclick&quot;, getFunctionName(addItemOnClick, itemIndex));
-				}
-				const addItemOnKeydown = addItem.getAttribute(&quot;onkeydown&quot;);
-				if (addItemOnKeydown) {
-					addItem.setAttribute(&quot;onkeydown&quot;, getFunctionName(addItemOnKeydown, itemIndex));
-				}
-				// Remove Item
-				const removeItem = newItemElement.querySelector(&quot;[id^=remove-item]&quot;);
-				const removeItemPathWithIndex = splitLastOccurrence(addItem.id, &quot;$&quot;)?.[1]?.replace(&quot;$&quot;, \`\${itemIndex}\`);
-				removeItem.id = removeItemPathWithIndex ? \`remove-item-\${name}.\${removeItemPathWithIndex}\` : \`remove-item-\${name}\`;
-				const removeItemOnClick = removeItem.getAttribute(&quot;onclick&quot;);
-				if (removeItemOnClick) {
-					removeItem.setAttribute(&quot;onclick&quot;, getFunctionName(removeItemOnClick, itemIndex));
-				}
-				const removeItemOnKeydown = removeItem.getAttribute(&quot;onkeydown&quot;);
-				if (removeItemOnKeydown) {
-					removeItem.setAttribute(&quot;onkeydown&quot;, getFunctionName(removeItemOnKeydown, itemIndex));
-				}
-			}
+				// Replace &quot;$&quot; from all nested Add Item element
+				[...newItemElement.querySelectorAll(&quot;[id^=add-item]&quot;)].forEach((addItem) =&gt; {
+					const addItemPathWithIndex = splitLastOccurrence(addItem.id, &quot;$&quot;)?.[1]?.replace(&quot;$&quot;, \`\${itemIndex}\`);
+					addItem.id = addItemPathWithIndex ? \`add-item-\${name}.\${addItemPathWithIndex}\` : \`add-item-\${name}\`;
+					const addItemOnClick = addItem.getAttribute(&quot;onclick&quot;);
+					if (addItemOnClick) {
+						addItem.setAttribute(&quot;onclick&quot;, getFunctionName(addItemOnClick, itemIndex));
+					}
+					const addItemOnKeydown = addItem.getAttribute(&quot;onkeydown&quot;);
+					if (addItemOnKeydown) {
+						addItem.setAttribute(&quot;onkeydown&quot;, getFunctionName(addItemOnKeydown, itemIndex));
+					}
+				});
+				// Replace &quot;$&quot; from the Remove Item element
+				[...newItemElement.querySelectorAll(&quot;[id^=remove-item]&quot;)].forEach((removeItem) =&gt; {
+					const removeItemPathWithIndex = splitLastOccurrence(removeItem.id, &quot;$&quot;)?.[1]?.replace(&quot;$&quot;, \`\${itemIndex}\`);
+					removeItem.id = removeItemPathWithIndex ? \`remove-item-\${name}.\${removeItemPathWithIndex}\` : \`remove-item-\${name}\`;
+					const removeItemOnClick = removeItem.getAttribute(&quot;onclick&quot;);
+					if (removeItemOnClick) {
+						removeItem.setAttribute(&quot;onclick&quot;, getFunctionName(removeItemOnClick, itemIndex));
+					}
+					const removeItemOnKeydown = removeItem.getAttribute(&quot;onkeydown&quot;);
+					if (removeItemOnKeydown) {
+						removeItem.setAttribute(&quot;onkeydown&quot;, getFunctionName(removeItemOnKeydown, itemIndex));
+					}
+				});
+			});
 		}
 		function getFunctionName(functionCall, itemIndex) {
 			const [call, argument, end] = functionCall.split(&quot;&#39;&quot;);
@@ -239,82 +246,40 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			}
 			return [str.substring(0, lastIndex), str.substring(lastIndex)];
 		}
-		function recursivelyGetDeepObjectValues(objectElement) {
-			const nested = objectElement.querySelector(&quot;div[role=&#39;group&#39;], div[role=&#39;list&#39;]&quot;);
-			let results = {};
-			const inputValues = Array.from(objectElement.childNodes)
-				.filter((child) =&gt; child.nodeType === Node.ELEMENT_NODE)
-				.reduce((acc, potentialFormGroups) =&gt; {
-					if (!potentialFormGroups.matches(&quot;.form-group&quot;)) {
-						return acc;
+		function getListValue(itemListElement) {
+			function setValue(obj, path, value) {
+				const keys = path.split(&quot;.&quot;);
+				let current = obj;
+				for (let i = 0; i &lt; keys.length; i++) {
+					const key = keys[i];
+					const isArray = !isNaN(keys[i + 1]);
+					if (i === keys.length - 1) {
+						current[key] = value;
+					} else {
+						if (!current[key]) {
+							current[key] = isArray ? [] : {};
+						}
+						if (isArray &amp;&amp; !Array.isArray(current[key])) {
+							current[key] = [];
+						}
+						current = current[key];
 					}
-					const inputOrSelectElement = potentialFormGroups.querySelector(&quot;:scope &gt; input, :scope &gt; select&quot;);
-					if (inputOrSelectElement) {
-						acc[inputOrSelectElement.id.split(&quot;.&quot;).pop()] = getValueFromInput(inputOrSelectElement);
-					}
-					return acc;
-				}, {});
-			if (nested &amp;&amp; nested.matches(&#39;[role=&quot;group&quot;]&#39;)) {
-				results = { ...results, ...recursivelyGetDeepObjectValues(nested) };
+				}
 			}
-			if (nested &amp;&amp; nested.matches(&#39;[role=&quot;list&quot;]&#39;)) {
-				results[nested.id.split(&quot;.&quot;).pop()] = recursivelyGetDeepListValues(nested);
-			}
-			return { ...inputValues, ...results };
-		}
-		function recursivelyGetDeepListValues(arrayElement) {
-			return Array.from(arrayElement.childNodes)
-				.filter((child) =&gt; child.nodeType === Node.ELEMENT_NODE)
-				.map((childElement) =&gt; {
-					const nestedObject = childElement.querySelector(&quot;div[role=&#39;group&#39;]&quot;);
-					if (nestedObject) {
-						return recursivelyGetDeepObjectValues(nestedObject);
+			function traverse(element, result, path = &quot;&quot;) {
+				element.querySelectorAll(&quot;input, select&quot;).forEach((input) =&gt; {
+					if (input.id) {
+						setValue(result, input.id, input.value || &quot;&quot;);
 					}
-					const nestedList = childElement.querySelector(&quot;div[role=&#39;list&#39;]&quot;);
-					if (nestedList) {
-						const nestedListChilds = [...nestedList.childNodes]
-							.filter((child) =&gt; child.nodeType === Node.ELEMENT_NODE)
-							.filter((el) =&gt; el.matches(&#39;[role=&quot;list&quot;]&#39;));
-						return Array.from(nestedListChilds).map((list) =&gt; recursivelyGetDeepListValues(list));
-					}
-					return getValueFromInput(childElement.querySelector(&quot;input, select&quot;));
 				});
-		}
-		function getValueFromInput(inputOrSelectElement) {
-			if (!inputOrSelectElement) {
-				return null;
 			}
-			if (inputOrSelectElement.tagName === &quot;INPUT&quot;) {
-				if (inputOrSelectElement.type === &quot;text&quot; || inputOrSelectElement.type === &quot;number&quot;) {
-					return inputOrSelectElement.value;
-				}
-				if (inputOrSelectElement.type === &quot;checkbox&quot;) {
-					return inputOrSelectElement.checked ? inputOrSelectElement.value || true : false;
-				}
-				if (inputOrSelectElement.type === &quot;radio&quot;) {
-					return inputOrSelectElement.checked ? inputOrSelectElement.value : null;
-				}
-			} else if (inputOrSelectElement.tagName === &quot;SELECT&quot;) {
-				if (inputOrSelectElement.multiple) {
-					return Array.from(inputOrSelectElement.selectedOptions).map((opt) =&gt; opt.value);
-				}
-				return inputOrSelectElement.value;
-			}
-			return null;
-		}
-		function getListValue(element) {
-			const object = element.querySelector(&quot;div[role=&#39;group&#39;]&quot;);
-			if (object) {
-				return recursivelyGetDeepObjectValues(object);
-			}
-			const list = element.querySelector(&quot;div[role=&#39;list&#39;]&quot;);
-			if (list) {
-				return recursivelyGetDeepListValues(list);
-			}
-			return getValueFromInput(element);
+			const result = {};
+			traverse(itemListElement, result);
+			const [_, path] = itemListElement.id.split(&quot;item-&quot;);
+			return accessObjectPath(result, path);
 		}
 		function accessObjectPath(obj, objPath) {
-			return objPath.split(&quot;.&quot;).reduce((acc, pathPiece) =&gt; acc[pathPiece], obj);
+			return objPath.split(&quot;.&quot;).reduce((acc, pathPiece) =&gt; acc?.[pathPiece], obj);
 		}
 		// List Field Helper functions -- END --
 		function onDelListItemFriends(name, itemIndex) {
