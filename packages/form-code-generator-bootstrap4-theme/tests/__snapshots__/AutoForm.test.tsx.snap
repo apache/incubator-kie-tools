@@ -138,6 +138,7 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 		&lt;/div&gt;
 	&lt;/div&gt;
 	&lt;script&gt;
+		// List Field Helper functions -- START --
 		function delListItem(name, minCount, itemIndex, onDelListItem) {
 			const formData = getFormData();
 			const value = accessObjectPath(formData, name) ?? [];
@@ -238,7 +239,7 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			}
 			return [str.substring(0, lastIndex), str.substring(lastIndex)];
 		}
-		function recursiveGetObjectListValues(objectElement) {
+		function recursivelyGetDeepObjectValues(objectElement) {
 			const nested = objectElement.querySelector(&quot;div[role=&#39;group&#39;], div[role=&#39;list&#39;]&quot;);
 			let results = {};
 			const inputValues = Array.from(objectElement.childNodes)
@@ -247,39 +248,39 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 					if (!potentialFormGroups.matches(&quot;.form-group&quot;)) {
 						return acc;
 					}
-					const inputOrSelectElement = potentialFormGroups.querySelector(&quot;input, select&quot;);
+					const inputOrSelectElement = potentialFormGroups.querySelector(&quot;:scope &gt; input, :scope &gt; select&quot;);
 					if (inputOrSelectElement) {
-						acc[inputOrSelectElement.id.split(&quot;.&quot;).pop()] = getListValues(inputOrSelectElement);
+						acc[inputOrSelectElement.id.split(&quot;.&quot;).pop()] = getValueFromInput(inputOrSelectElement);
 					}
 					return acc;
 				}, {});
 			if (nested &amp;&amp; nested.matches(&#39;[role=&quot;group&quot;]&#39;)) {
-				results = { ...results, ...recursiveGetObjectListValues(nested) };
+				results = { ...results, ...recursivelyGetDeepObjectValues(nested) };
 			}
 			if (nested &amp;&amp; nested.matches(&#39;[role=&quot;list&quot;]&#39;)) {
-				results[nested.id.split(&quot;.&quot;).pop()] = recursiveGetArrayListValues(nested);
+				results[nested.id.split(&quot;.&quot;).pop()] = recursivelyGetDeepListValues(nested);
 			}
 			return { ...inputValues, ...results };
 		}
-		function recursiveGetArrayListValues(arrayElement) {
+		function recursivelyGetDeepListValues(arrayElement) {
 			return Array.from(arrayElement.childNodes)
 				.filter((child) =&gt; child.nodeType === Node.ELEMENT_NODE)
 				.map((childElement) =&gt; {
-					const nestedGroup = childElement.querySelector(&quot;div[role=&#39;group&#39;]&quot;);
-					if (nestedGroup) {
-						return recursiveGetObjectListValues(nestedGroup);
+					const nestedObject = childElement.querySelector(&quot;div[role=&#39;group&#39;]&quot;);
+					if (nestedObject) {
+						return recursivelyGetDeepObjectValues(nestedObject);
 					}
 					const nestedList = childElement.querySelector(&quot;div[role=&#39;list&#39;]&quot;);
 					if (nestedList) {
 						const nestedListChilds = [...nestedList.childNodes]
 							.filter((child) =&gt; child.nodeType === Node.ELEMENT_NODE)
 							.filter((el) =&gt; el.matches(&#39;[role=&quot;list&quot;]&#39;));
-						return Array.from(nestedListChilds).map((list) =&gt; recursiveGetArrayListValues(list));
+						return Array.from(nestedListChilds).map((list) =&gt; recursivelyGetDeepListValues(list));
 					}
-					return getListValues(childElement.querySelector(&quot;input, select&quot;));
+					return getValueFromInput(childElement.querySelector(&quot;input, select&quot;));
 				});
 		}
-		function getListValues(inputOrSelectElement) {
+		function getValueFromInput(inputOrSelectElement) {
 			if (!inputOrSelectElement) {
 				return null;
 			}
@@ -301,20 +302,21 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			}
 			return null;
 		}
-		function recursiveGetListValues(element) {
-			const group = element.querySelector(&quot;div[role=&#39;group&#39;]&quot;);
-			if (group) {
-				return recursiveGetObjectListValues(group);
+		function getListValue(element) {
+			const object = element.querySelector(&quot;div[role=&#39;group&#39;]&quot;);
+			if (object) {
+				return recursivelyGetDeepObjectValues(object);
 			}
 			const list = element.querySelector(&quot;div[role=&#39;list&#39;]&quot;);
 			if (list) {
-				return recursiveGetArrayListValues(list);
+				return recursivelyGetDeepListValues(list);
 			}
-			return getListValues(element);
+			return getValueFromInput(element);
 		}
 		function accessObjectPath(obj, objPath) {
 			return objPath.split(&quot;.&quot;).reduce((acc, pathPiece) =&gt; acc[pathPiece], obj);
 		}
+		// List Field Helper functions -- END --
 		function onDelListItemFriends(name, itemIndex) {
 			const disabled = false;
 			if (!disabled) {
@@ -455,13 +457,13 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 				// Add element;
 				onAddListItemFriends(\`friends\`);
 				const itemIndex__currentItem = \`friends.\${index}\`;
-				document.getElementById(\`\${itemIndex__currentItem}$.name\`).value = value?.name ?? &quot;&quot;;
-				document.getElementById(\`\${itemIndex__currentItem}$.age\`).value = value?.age ?? &quot;&quot;;
+				document.getElementById(\`\${itemIndex__currentItem}.name\`).value = value?.name ?? &quot;&quot;;
+				document.getElementById(\`\${itemIndex__currentItem}.age\`).value = value?.age ?? &quot;&quot;;
 				value?.known?.forEach((value, index) =&gt; {
 					// Add element;
-					onAddListItemFriends$Known(\`\${itemIndex__currentItem}$.known\`);
-					const nested__itemIndex__currentItem = \`\${itemIndex__currentItem}$.known.\${index}\`;
-					document.getElementById(\`\${nested__itemIndex__currentItem}$\`).value = value ?? &quot;&quot;;
+					onAddListItemFriends$Known(\`\${itemIndex__currentItem}.known\`);
+					const nested__itemIndex__currentItem = \`\${itemIndex__currentItem}.known.\${index}\`;
+					document.getElementById(\`\${nested__itemIndex__currentItem}\`).value = value ?? &quot;&quot;;
 				});
 			});
 		}
@@ -517,7 +519,7 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			formData.interview.hire = document.getElementById(&quot;interview.hire&quot;).checked;
 			formData.interview.hiringDate = document.getElementById(&quot;interview.hiringDate&quot;).value;
 			formData.friends = Array.from(document.getElementById(&quot;friends&quot;).childNodes).reduce((values, element) =&gt; {
-				return [...values, recursiveGetListValues(element)];
+				return [...values, getListValue(element)];
 			}, []);
 			return formData;
 		}

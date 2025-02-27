@@ -21,7 +21,7 @@ import listField from "!!raw-loader!../../resources/templates/listField.template
 import globalFunctions from "!!raw-loader!../../resources/templates/listField.globalFunctions.template";
 import setValueFromModel from "!!raw-loader!../../resources/templates/listField.setModelData.template";
 import writeValueToModel from "!!raw-loader!../../resources/templates/listField.writeModelData.template";
-import modifyList from "!!raw-loader!../../resources/staticCode/modifyList.txt";
+import listHelperFunctions from "!!raw-loader!../../resources/staticCode/listHelperFunctions.txt";
 import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
 import { FormElement, FormInputContainer, InputReference } from "../../api";
 import { CompiledTemplate, template } from "underscore";
@@ -81,7 +81,7 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
             name,
             functionName: getFunctionName(name),
           }) + (children?.globalFunctions?.code !== undefined ? children?.globalFunctions?.code : ""),
-        requiredCode: [modifyList],
+        requiredCode: [listHelperFunctions],
       },
       setValueFromModelCode: {
         code: this.listFieldSetValueFromModelTemplate({
@@ -119,11 +119,11 @@ function getSetItemPath(name: string) {
 
 // "currentItem" is the name used in the listField.setModelData.template
 export function getCurrentItemSetModelData(name: string, prefix: string) {
-  const [_, splittedName] = splitLastOccurrence(name, "$");
+  const splittedName = name.split(`.$`);
   // Is nested
-  if (splittedName !== undefined) {
+  if (splittedName.length > 1) {
     // ${currentItem}. with last part of the field name
-    return `\${${prefix}__currentItem}${splittedName}`;
+    return `\${${prefix}__currentItem}` + (splittedName?.[splittedName.length - 1] ?? "");
   }
   return name;
 }

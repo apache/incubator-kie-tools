@@ -1,3 +1,4 @@
+// List Field Helper functions -- START --
 function delListItem(name, minCount, itemIndex, onDelListItem) {
   const formData = getFormData();
   const value = accessObjectPath(formData, name) ?? [];
@@ -106,7 +107,7 @@ function splitLastOccurrence(str, char) {
     }
     return [str.substring(0, lastIndex), str.substring(lastIndex)];
 }
-function recursiveGetObjectListValues(objectElement) {
+function recursivelyGetDeepObjectValues(objectElement) {
   const nested = objectElement.querySelector(
     "div[role='group'], div[role='list']"
   );
@@ -118,30 +119,30 @@ function recursiveGetObjectListValues(objectElement) {
         return acc;
       }
       const inputOrSelectElement =
-        potentialFormGroups.querySelector("input, select");
+        potentialFormGroups.querySelector(":scope > input, :scope > select");
         if (inputOrSelectElement) {
           acc[inputOrSelectElement.id.split(".").pop()] =
-            getListValues(inputOrSelectElement);
+            getValueFromInput(inputOrSelectElement);
         }
       return acc;
     }, {});
 
   if (nested && nested.matches('[role="group"]')) {
-    results = { ...results, ...recursiveGetObjectListValues(nested) };
+    results = { ...results, ...recursivelyGetDeepObjectValues(nested) };
   }
   if (nested && nested.matches('[role="list"]')) {
-    results[nested.id.split(".").pop()] = recursiveGetArrayListValues(nested);
+    results[nested.id.split(".").pop()] = recursivelyGetDeepListValues(nested);
   }
   return { ...inputValues, ...results };
 }
 
-function recursiveGetArrayListValues(arrayElement) {
+function recursivelyGetDeepListValues(arrayElement) {
   return Array.from(arrayElement.childNodes)
     .filter((child) => child.nodeType === Node.ELEMENT_NODE)
     .map((childElement) => {
-      const nestedGroup = childElement.querySelector("div[role='group']");
-      if (nestedGroup) {
-        return recursiveGetObjectListValues(nestedGroup);
+      const nestedObject = childElement.querySelector("div[role='group']");
+      if (nestedObject) {
+        return recursivelyGetDeepObjectValues(nestedObject);
       }
       const nestedList = childElement.querySelector("div[role='list']");
       if (nestedList) {
@@ -150,14 +151,14 @@ function recursiveGetArrayListValues(arrayElement) {
           .filter((el) => el.matches('[role="list"]')
         );
         return Array.from(nestedListChilds).map((list) =>
-          recursiveGetArrayListValues(list)
+          recursivelyGetDeepListValues(list)
         );
       }
-      return getListValues(childElement.querySelector("input, select"));
+      return getValueFromInput(childElement.querySelector("input, select"));
     });
 }
 
-function getListValues(inputOrSelectElement) {
+function getValueFromInput(inputOrSelectElement) {
   if (!inputOrSelectElement) {
     return null;
   }
@@ -187,17 +188,18 @@ function getListValues(inputOrSelectElement) {
   }
   return null;
 }
-function recursiveGetListValues(element) {
-  const group = element.querySelector("div[role='group']");
-  if (group) {
-    return recursiveGetObjectListValues(group);
+function getListValue(element) {
+  const object = element.querySelector("div[role='group']");
+  if (object) {
+    return recursivelyGetDeepObjectValues(object);
   }
   const list = element.querySelector("div[role='list']");
   if (list) {
-    return recursiveGetArrayListValues(list);
+    return recursivelyGetDeepListValues(list);
   }
-  return getListValues(element);
+  return getValueFromInput(element);
 }
 function accessObjectPath(obj, objPath) {
   return objPath.split(".").reduce((acc, pathPiece) => acc[pathPiece], obj);
 }
+// List Field Helper functions -- END --
