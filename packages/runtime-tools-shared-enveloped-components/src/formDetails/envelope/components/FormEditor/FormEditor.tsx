@@ -61,7 +61,7 @@ export const FormEditor = React.forwardRef<ResizableContent, FormEditorProps>(
     { code, formType, formContent, setFormContent, saveFormContent, isSource = false, isConfig = false },
     forwardedRef
   ) => {
-    const [formSourceCode, setFormSourceCode] = useState("");
+    const [formSourceCode, setFormSourceCode] = useState(formContent.source);
     const appContext = useFormDetailsContext();
     const container = useRef<HTMLDivElement>(null);
 
