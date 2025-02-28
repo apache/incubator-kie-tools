@@ -38,8 +38,6 @@ export function computeDmnDataObjects(
 
   const dmnModel = externalModelsByNamespace?.get(settings.dmnNamespace!.__$$text);
 
-  /* CHECKS external DMN */
-
   if (dmnModel) {
     const allItemDefinitionsMap = new Map(
       dmnModel.model.definitions.itemDefinition?.map(
