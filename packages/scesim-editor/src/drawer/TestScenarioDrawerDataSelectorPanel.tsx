@@ -154,10 +154,6 @@ function findTestScenarioDataObjectById(
   return undefined;
 }
 
-const isDataObjectRootParent = (dataObjects: TestScenarioDataObject[], itemID: string) => {
-  return dataObjects.map((object) => Object.assign({}, object)).filter((item) => item.id === itemID).length === 1;
-};
-
 function TestScenarioDataSelectorPanel() {
   const { i18n } = useTestScenarioEditorI18n();
   const { externalModelsByNamespace } = useExternalModels();
