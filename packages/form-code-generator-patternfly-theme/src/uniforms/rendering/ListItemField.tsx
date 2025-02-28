@@ -21,6 +21,9 @@ import { Context } from "uniforms";
 import * as React from "react";
 import { CodeGenContext, CodeGenContextProvider } from "../CodeGenContext";
 import AutoField from "../AutoField";
+import { NS_SEPARATOR } from "../utils/Utils";
+
+export const DEFAULT_ITEM_INDEX_NAME = "itemIndex";
 
 export interface ListItemProps {
   isListItem: boolean;
@@ -42,12 +45,15 @@ function getItemNameAndWithIsNested(name: string) {
 
 /**
  * This function can either return:
- * `listName.$`
+ * `listName.${index}`
  * `listName.${index}.itemName`
  */
 export const getListItemName = ({ itemProps, name }: { itemProps: ListItemProps; name: string }) => {
   const { itemName, isNested } = getItemNameAndWithIsNested(name);
-  return `\`${itemProps?.listName}${isNested ? `.$\{${itemProps?.indexVariableName}}.${itemName}` : `.$\{${itemProps?.indexVariableName}}`}\``;
+  if (isNested) {
+    return `\`${itemProps?.listStateName}.$\{${itemProps?.indexVariableName}}.${itemName}\``;
+  }
+  return `\`${itemProps?.listStateName}.$\{${itemProps?.indexVariableName}}\``;
 };
 
 /**
@@ -65,7 +71,8 @@ export const getListItemValue = ({
   callback?: (value: string) => string;
 }) => {
   const { itemName, isNested } = getItemNameAndWithIsNested(name);
-  const property = `${itemProps?.listStateName}[${itemProps?.indexVariableName}]${isNested ? `.${itemName}` : ""}`;
+  console.log(itemProps);
+  const property = `${itemProps?.listStateName}?.[${itemProps?.indexVariableName}]${isNested ? `.${itemName}` : ""}`;
   return `${callback ? callback(property) : property}`;
 };
 
@@ -96,6 +103,9 @@ export const getListItemOnChange = ({
   overrideNewValue?: string;
 }) => {
   const { itemName, isNested } = getItemNameAndWithIsNested(name);
+  if (itemProps?.indexVariableName !== DEFAULT_ITEM_INDEX_NAME) {
+    return `(${overrideParam ? overrideParam : "newValue"}) => ${itemProps?.listStateSetter}(${overrideParam ? overrideParam : "newValue"}, ${itemProps?.indexVariableName})`;
+  }
   return `
   ${overrideParam ? overrideParam : "newValue"} => {
     ${itemProps?.listStateSetter}(s => {
@@ -105,6 +115,13 @@ export const getListItemOnChange = ({
     })
   }`;
 };
+
+export function getNextIndexVariableName(itemProps?: ListItemProps) {
+  if (itemProps === undefined) {
+    return DEFAULT_ITEM_INDEX_NAME;
+  }
+  return `nested${NS_SEPARATOR}${itemProps.indexVariableName}`;
+}
 
 export interface Props {
   codegenCtx: CodeGenContext;

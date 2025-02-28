@@ -20,11 +20,22 @@
 import * as React from "react";
 import { DataType, FormElement, FormInput, InputReference, InputsContainer } from "../../api";
 import { DEFAULT_DATA_TYPE_OBJECT } from "./dataTypes";
+import { ListItemProps } from "../rendering/ListItemField";
 
 export const NS_SEPARATOR = "__";
 export const FIELD_SET_PREFFIX = `set`;
 
-export const getInputReference = (binding: string, dataType: DataType): InputReference => {
+// TODO CHANGE
+export const getInputReference = (binding: string, dataType: DataType, itemProps?: ListItemProps): InputReference => {
+  // handle nested lists
+  if (itemProps) {
+    return {
+      binding: binding,
+      stateName: itemProps.listStateName,
+      stateSetter: `${FIELD_SET_PREFFIX}${NS_SEPARATOR}${binding.split(".$").join("_").split(".").join("_")}`,
+      dataType,
+    };
+  }
   const stateName = binding.split(".").join(NS_SEPARATOR);
   const stateSetter = `${FIELD_SET_PREFFIX}${NS_SEPARATOR}${stateName}`;
   return {
@@ -43,8 +54,22 @@ export const getStateCode = (
   stateName: string,
   stateSetter: string,
   dataType: string,
-  defaultValue?: string
+  defaultValue?: string,
+  itemProps?: ListItemProps,
+  property?: string
 ): string => {
+  if (itemProps) {
+    const nestedProperty = property === "$" ? "" : `.${property}`;
+    return `const ${stateSetter} = useCallback(
+  (newValue, index) => {
+    ${itemProps.listStateSetter}(prev => {
+      const newState = [...prev];
+      newState[index] ??= [];
+      newState[index]${nestedProperty} = newValue;
+      return newState;
+    })
+}, [])`;
+  }
   return `const [ ${stateName}, ${stateSetter} ] = useState<${dataType}>(${defaultValue || ""});`;
 };
 

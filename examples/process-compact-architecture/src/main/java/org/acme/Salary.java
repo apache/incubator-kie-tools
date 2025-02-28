@@ -19,30 +19,28 @@
 
 package org.acme;
 
-import java.util.List;
+public class Salary {
 
-public class Offer {
+    private String currency;
 
-    private String category;
+    private String value;
 
-    private List<Salary> salary;
-
-    public Offer() {
+    public Salary() {
     }
 
-    public String getCategory() {
-        return category;
+    public String getCurrency() {
+        return currency;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
-    public List<Salary> getSalary() {
-        return salary;
+    public String getValue() {
+        return value;
     }
 
-    public void setSalary(List<Salary> salary) {
-        this.salary = salary;
+    public void setValue(String value) {
+        this.value = value;
     }
 }
