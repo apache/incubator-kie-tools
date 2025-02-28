@@ -26,6 +26,7 @@ const (
 	KnativeHealthEnabled                     = "org.kie.kogito.addons.knative.eventing.health-enabled"
 	KnativeInjectedEnvVar                    = "${K_SINK}"
 	TriggerFinalizer                         = "trigger-deletion"
+	WorkflowFinalizer                        = "workflow-deletion"
 	QuarkusDevUICorsEnabled                  = "quarkus.dev-ui.cors.enabled"
 	QuarkusHttpCors                          = "quarkus.http.cors"
 	QuarkusHttpCorsOrigins                   = "quarkus.http.cors.origins"
