@@ -62,6 +62,7 @@ export const en: BoxedExpressionEditorI18n = {
   editRelation: "Edit Relation",
   enterFunction: "Function name",
   enterText: "Enter Text",
+  expression: "Expression",
   function: "Function",
   hitPolicy: "Hit Policy",
   hitPolicyHelp: {
