@@ -36,12 +36,24 @@ export interface TaskFormGatewayApi {
 }
 
 export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
-  constructor(private readonly getCurrentUser: () => User) {}
+  constructor(
+    private readonly getCurrentUser: () => User,
+    private baseUrl?: string
+  ) {}
+
+  replaceEndpointBaseUrl(endpoint: string) {
+    if (this.baseUrl) {
+      const originalUrl = new URL(endpoint);
+      const newUrl = new URL(originalUrl.pathname, this.baseUrl);
+      return `${newUrl.toString()}${originalUrl.search}`;
+    }
+    return endpoint;
+  }
 
   submitTaskForm(endpoint: string, transition: UserTaskTransitionInfo, headers?: any) {
     return new Promise<any>((resolve, reject) => {
       axios
-        .post(endpoint, transition, {
+        .post(this.replaceEndpointBaseUrl(endpoint), transition, {
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
@@ -62,7 +74,7 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
   fetchTaskFormSchema(endpoint: string, headers?: any) {
     return new Promise<Record<string, any>>((resolve, reject) => {
       axios
-        .get(endpoint, {
+        .get(this.replaceEndpointBaseUrl(endpoint), {
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
@@ -83,7 +95,7 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
   fetchTaskTransitionPhases(endpoint: string, headers?: any) {
     return new Promise<string[]>((resolve, reject) => {
       axios
-        .get(endpoint, {
+        .get(this.replaceEndpointBaseUrl(endpoint), {
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
