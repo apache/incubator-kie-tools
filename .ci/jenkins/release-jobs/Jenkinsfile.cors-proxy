@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            image 'mirror.gcr.io/apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -43,7 +43,7 @@ pipeline {
         OPENSHIFT_PART_OF = 'kie-sandbox-app'
         OPENSHIFT_NAMESPACE = 'kie-sandbox'
 
-        CORS_PROXY_IMAGE__imageRegistry = 'docker.io'
+        CORS_PROXY_IMAGE__imageRegistry = 'mirror.gcr.io'
         CORS_PROXY_IMAGE__imageAccount = 'apache'
         CORS_PROXY_IMAGE__imageName = 'incubator-kie-cors-proxy'
         CORS_PROXY_IMAGE__imageBuildTag = "${params.RELEASE_VERSION}"
