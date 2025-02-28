@@ -22,6 +22,7 @@ import { useCallback, useState } from "react";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { basename } from "path";
 
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
@@ -280,7 +281,7 @@ function TestScenarioCreationPanel() {
               <>
                 <span>{i18n.creationPanel.testSkip}</span>
                 <Tooltip content={i18n.drawer.settings.testSkippedTooltip}>
-                  <Icon className={"kie-scesim-editor-creation-panel--info-icon"} size="sm" status="info">
+                  <Icon className="kie-scesim-editor-creation-panel--info-icon" size="sm" status="info">
                     <HelpIcon />
                   </Icon>
                 </Tooltip>
@@ -292,9 +293,16 @@ function TestScenarioCreationPanel() {
           />
         </FormGroup>
       </Form>
+      {assetType === "RULE" && (
+        <Alert
+          className="kie-scesim-editor-creation-panel--rule-scesim-alert"
+          variant="danger"
+          title="Rule based Test Scenario is not supported yet."
+        />
+      )}
       <Button
         icon={<AddIcon />}
-        isDisabled={assetType === "" || (assetType === "DMN" && !selectedDmnModel)}
+        isDisabled={assetType === "" || assetType === "RULE" || (assetType === "DMN" && !selectedDmnModel)}
         onClick={createTestScenario}
         variant="primary"
       >

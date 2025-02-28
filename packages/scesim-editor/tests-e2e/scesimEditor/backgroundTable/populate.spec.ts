@@ -70,6 +70,7 @@ test.describe("Populate decision background table", () => {
 });
 
 test.describe("Populate rule background table", () => {
+  test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1847");
   test("should correctly populate a rule-based background table", async ({
     editor,
     resizing,

@@ -25,8 +25,8 @@ import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normaliz
 import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";
 import { SIMPLE } from "../../examples/ExternalDmnModels";
 
-export const simpleFileName = "simple.scesim";
-export const simpleScesim = `<?xml version="1.0" encoding="UTF-8" ?>
+export const expressionFileName = "expression.scesim";
+export const expressionScesim = `<?xml version="1.0" encoding="UTF-8" ?>
 <ScenarioSimulationModel xmlns="https://kie.org/scesim/1.8" version="1.8">
   <simulation>
     <scesimModelDescriptor>
@@ -68,7 +68,7 @@ export const simpleScesim = `<?xml version="1.0" encoding="UTF-8" ?>
             </ExpressionElement>
           </expressionElements>
           <expressionIdentifier>
-            <name>_4F584C15-5873-426F-8F88-51E2E749967B</name>
+            <name>_EEFE5AF7-5422-4618-8709-474976310EBA</name>
             <type>GIVEN</type>
           </expressionIdentifier>
           <factIdentifier>
@@ -77,9 +77,9 @@ export const simpleScesim = `<?xml version="1.0" encoding="UTF-8" ?>
           </factIdentifier>
           <className>number</className>
           <factAlias>Input</factAlias>
-          <expressionAlias>value</expressionAlias>
-          <columnWidth>100</columnWidth>
-          <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
+          <expressionAlias>expression &lt;/&gt;</expressionAlias>
+          <columnWidth>300</columnWidth>
+          <factMappingValueType>EXPRESSION</factMappingValueType>
         </FactMapping>
         <FactMapping>
           <expressionElements>
@@ -88,7 +88,7 @@ export const simpleScesim = `<?xml version="1.0" encoding="UTF-8" ?>
             </ExpressionElement>
           </expressionElements>
           <expressionIdentifier>
-            <name>_45F692B9-E45C-473F-A4E3-13510250FF19</name>
+            <name>_897A9B62-F79C-48A7-AE65-4B414D1B6EB9</name>
             <type>EXPECT</type>
           </expressionIdentifier>
           <factIdentifier>
@@ -97,9 +97,9 @@ export const simpleScesim = `<?xml version="1.0" encoding="UTF-8" ?>
           </factIdentifier>
           <className>boolean</className>
           <factAlias>Decision</factAlias>
-          <expressionAlias>value</expressionAlias>
-          <columnWidth>100</columnWidth>
-          <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
+          <expressionAlias>expression &lt;/&gt;</expressionAlias>
+          <columnWidth>300</columnWidth>
+          <factMappingValueType>EXPRESSION</factMappingValueType>
         </FactMapping>
       </factMappings>
     </scesimModelDescriptor>
@@ -133,10 +133,10 @@ export const simpleScesim = `<?xml version="1.0" encoding="UTF-8" ?>
               <className>number</className>
             </factIdentifier>
             <expressionIdentifier>
-              <name>_4F584C15-5873-426F-8F88-51E2E749967B</name>
+              <name>_EEFE5AF7-5422-4618-8709-474976310EBA</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">17</rawValue>
+            <rawValue class="string">20</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -144,10 +144,10 @@ export const simpleScesim = `<?xml version="1.0" encoding="UTF-8" ?>
               <className>boolean</className>
             </factIdentifier>
             <expressionIdentifier>
-              <name>_45F692B9-E45C-473F-A4E3-13510250FF19</name>
+              <name>_897A9B62-F79C-48A7-AE65-4B414D1B6EB9</name>
               <type>EXPECT</type>
             </expressionIdentifier>
-            <rawValue class="string">false</rawValue>
+            <rawValue class="string">true</rawValue>
           </FactMappingValue>
         </factMappingValues>
       </Scenario>
@@ -204,7 +204,7 @@ export const simpleScesim = `<?xml version="1.0" encoding="UTF-8" ?>
 </ScenarioSimulationModel>`;
 
 const meta: Meta<{}> = {
-  title: "Misc/Simple",
+  title: "Misc/Expression",
   component: TestScenarioEditor,
   includeStories: /^[A-Z]/,
 };
@@ -212,7 +212,7 @@ const meta: Meta<{}> = {
 export default meta;
 type Story = StoryObj<StorybookTestScenarioEditorProps>;
 
-const marshaller = getMarshaller(simpleScesim);
+const marshaller = getMarshaller(expressionScesim);
 const currentModel = marshaller.parser.parse();
 const dmnModel = {
   normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/simple.dmn",
@@ -221,11 +221,11 @@ const dmnModel = {
   svg: "",
 };
 
-export const Simple: Story = {
+export const Expression: Story = {
   render: (args) => SceSimEditorWrapper(args),
   args: {
     model: marshaller.parser.parse(),
-    openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: simpleFileName,
+    openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: expressionFileName,
     externalModelsByNamespace: new Map([["https://kie.org/dmn/_0457D4F2-02B6-4A3D-957F-8F971A8321BC", dmnModel]]),
     xml: marshaller.builder.build(currentModel),
     onRequestExternalModelsAvailableToInclude: () => Promise.resolve(["simple.dmn"]),

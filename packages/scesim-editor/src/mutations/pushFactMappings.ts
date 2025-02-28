@@ -41,13 +41,17 @@ export function pushFactMappings({
     factAlias: string;
     factIdentifierName: string;
     factIdentifierClassName: string;
+    genericTypes?: string[];
   }[];
 }) {
   factMappingsToPush.forEach((factMappingToPush) => {
-    const expressionElementss = factMappingToPush.expressionElements.map((expressionElement) => ({
+    const expressionElements = factMappingToPush.expressionElements.map((expressionElement) => ({
       step: {
         __$$text: expressionElement,
       },
+    }));
+    const genericTypes = factMappingToPush.genericTypes?.map((genericType) => ({
+      __$$text: genericType,
     }));
 
     const newFactMapping = {
@@ -56,7 +60,7 @@ export function pushFactMappings({
       expressionAlias: { __$$text: factMappingToPush.expressionAlias },
       expressionElements: factMappingToPush.expressionElements
         ? {
-            ExpressionElement: expressionElementss,
+            ExpressionElement: expressionElements,
           }
         : undefined,
       expressionIdentifier: {
@@ -75,6 +79,11 @@ export function pushFactMappings({
         },
       },
       factMappingValueType: { __$$text: "NOT_EXPRESSION" },
+      genericTypes: factMappingToPush.genericTypes
+        ? {
+            string: genericTypes,
+          }
+        : undefined,
     };
 
     factMappingsModel.push(newFactMapping);

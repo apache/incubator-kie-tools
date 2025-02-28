@@ -35,34 +35,50 @@ export function computeTestScenarioDataObjects(
     const factID = factsMappings[i].expressionElements!.ExpressionElement![0].step.__$$text;
     const dataObject = dataObjects.find((value) => value.id === factID);
     const isSimpleTypeFact = factsMappings[i].expressionElements!.ExpressionElement!.length === 1;
-    const propertyID = isSimpleTypeFact // TO BE REVIEWED IN https://github.com/apache/incubator-kie-issues/issues/1514
-      ? factsMappings[i].expressionElements!.ExpressionElement![0].step.__$$text.concat(".")
+    const isCollection = (factsMappings[i].genericTypes?.string?.length ?? 0) > 0;
+    const propertyID = isSimpleTypeFact
+      ? factsMappings[i].expressionElements!.ExpressionElement![0].step.__$$text.concat(".").concat("value")
       : factsMappings[i]
           .expressionElements!.ExpressionElement!.map((expressionElement) => expressionElement.step.__$$text)
           .join(".");
     const propertyName = isSimpleTypeFact
       ? "value"
       : factsMappings[i].expressionElements!.ExpressionElement!.slice(-1)[0].step.__$$text;
+    const factClassName = factsMappings[i].factIdentifier.className!.__$$text ?? "<Undefined>";
+    const propertyClassName = factsMappings[i].className!.__$$text ?? "<Undefined>";
 
     if (dataObject) {
       if (!dataObject.children?.some((value) => value.id === propertyID)) {
         dataObject.children!.push({
           id: propertyID,
-          customBadgeContent: factsMappings[i].className.__$$text,
-          isSimpleTypeFact: isSimpleTypeFact,
+          className: propertyClassName,
+          customBadgeContent: isCollection
+            ? `${factsMappings[i].genericTypes!.string![0].__$$text}${isCollection ? "[]" : ""}`
+            : propertyClassName,
+          expressionElements: factsMappings[i].expressionElements!.ExpressionElement!.map(
+            (element) => element.step.__$$text
+          ),
           name: propertyName,
         });
       }
     } else {
       dataObjects.push({
         id: factID,
+        className: factClassName,
+        customBadgeContent: factClassName,
+        expressionElements: [factID],
         name: factsMappings[i].factAlias!.__$$text,
-        customBadgeContent: factsMappings[i].factIdentifier!.className!.__$$text,
         children: [
           {
             id: propertyID,
+            className: propertyClassName,
+            customBadgeContent: isCollection
+              ? `${factsMappings[i].genericTypes!.string![0].__$$text}${isCollection ? "[]" : ""}`
+              : propertyClassName,
+            expressionElements: factsMappings[i].expressionElements!.ExpressionElement!.map(
+              (element) => element.step.__$$text
+            ),
             name: propertyName,
-            customBadgeContent: factsMappings[i].className.__$$text,
           },
         ],
       });

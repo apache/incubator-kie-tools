@@ -28,7 +28,7 @@ test.describe("Keyboard", () => {
       table,
       testScenarioTable,
     }) => {
-      await editor.createTestScenario(AssetType.RULE);
+      await editor.createTestScenario(AssetType.DECISION);
       await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
       await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
       await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
