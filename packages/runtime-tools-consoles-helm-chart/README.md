@@ -35,7 +35,7 @@ This chart can be used to deploy the Management Console image on a [Kubernetes](
 To install the chart with the release name `runtime-tools-consoles`:
 
 ```console
-$ helm install runtime-tools-consoles ./src --set global.dataIndexUrl="<DATA_INDEX_SERVICE_URL>"
+$ helm install runtime-tools-consoles ./src"
 ```
 
 Following message should be displayed on your console.
@@ -61,7 +61,7 @@ In order to get runtime-tools-consoles running you need to run these commands:
 To install the chart with the release name `runtime-tools-consoles`:
 
 ```console
-$ helm install runtime-tools-consoles ./src --values ./src/values-minikube-nginx.yaml --set global.dataIndexUrl="<DATA_INDEX_SERVICE_URL>"
+$ helm install runtime-tools-consoles ./src --values ./src/values-minikube-nginx.yaml"
 ```
 
 Following message should be displayed on your console.
@@ -86,7 +86,7 @@ Run the following commands:
 To install the chart with the release name `runtime-tools-consoles`:
 
 ```console
-$ helm install runtime-tools-consoles ./src --values ./src/values-kubernetes.yaml --set global.dataIndexUrl="<DATA_INDEX_SERVICE_URL>" --set global.kubernetesClusterDomain="<YOUR_KUBERNETES_CLUSTER_DOMAIN>" --set global.kubernetesIngressClass="<YOUR_KUBERNETES_INGRESS_CLASS>"
+$ helm install runtime-tools-consoles ./src --values ./src/values-kubernetes.yaml --set global.kubernetesClusterDomain="<YOUR_KUBERNETES_CLUSTER_DOMAIN>" --set global.kubernetesIngressClass="<YOUR_KUBERNETES_INGRESS_CLASS>"
 ```
 
 Following message should be displayed on your console.
@@ -115,7 +115,7 @@ If you don't have access rigths to this config, try creating a dummy Route resou
 To install the chart with the release name `runtime-tools-consoles`:
 
 ```console
-$ helm install runtime-tools-consoles ./src --values ./src/values-openshift.yaml --set global.dataIndexUrl="<DATA_INDEX_SERVICE_URL>" --set global.openshiftRouteDomain="<YOUR_OCP_ROUTE_DOMAIN>"
+$ helm install runtime-tools-consoles ./src --values ./src/values-openshift.yaml --set global.openshiftRouteDomain="<YOUR_OCP_ROUTE_DOMAIN>"
 ```
 
 Following message should be displayed on your console.
@@ -145,21 +145,21 @@ $ helm install runtime-tools-consoles oci://docker.io/apache/incubator-kie-runti
 
 ```console
 $ helm pull oci://docker.io/apache/incubator-kie-runtime-tools-consoles-helm-chart --version=0.0.0-main --untar
-$ helm install runtime-tools-consoles ./incubator-kie-runtime-tools-consoles-helm-chart --values ./incubator-kie-runtime-tools-consoles-helm-chart/values-minikube-nginx.yaml --set global.dataIndexUrl="<DATA_INDEX_SERVICE_URL>"
+$ helm install runtime-tools-consoles ./incubator-kie-runtime-tools-consoles-helm-chart --values ./incubator-kie-runtime-tools-consoles-helm-chart/values-minikube-nginx.yaml
 ```
 
 ### Kubernetes install
 
 ```console
 $ helm pull oci://docker.io/apache/incubator-kie-runtime-tools-consoles-helm-chart --version=0.0.0-main --untar
-$ helm install runtime-tools-consoles ./incubator-kie-runtime-tools-consoles-helm-chart --values ./incubator-kie-runtime-tools-consoles-helm-chart/values-kubernetes.yaml --set global.dataIndexUrl="<DATA_INDEX_SERVICE_URL>" --set global.kubernetesClusterDomain="<YOUR_KUBERNETES_CLUSTER_DOMAIN>" --set global.kubernetesIngressClass="<YOUR_KUBERNETES_INGRESS_CLASS>"
+$ helm install runtime-tools-consoles ./incubator-kie-runtime-tools-consoles-helm-chart --values ./incubator-kie-runtime-tools-consoles-helm-chart/values-kubernetes.yaml --set global.kubernetesClusterDomain="<YOUR_KUBERNETES_CLUSTER_DOMAIN>" --set global.kubernetesIngressClass="<YOUR_KUBERNETES_INGRESS_CLASS>"
 ```
 
 ### OpenShift install
 
 ```console
 $ helm pull oci://docker.io/apache/incubator-kie--tools-consoles-helm-chart --version=0.0.0-main --untar
-$ helm install runtime-tools-consoles ./incubator-kie-runtime-tools-consoles-helm-chart --values ./incubator-kie-runtime-tools-consoles-helm-chart/values-openshift.yaml --set global.dataIndexUrl="<DATA_INDEX_SERVICE_URL>" --set global.openshiftRouteDomain="<YOUR_OCP_ROUTE_DOMAIN>"
+$ helm install runtime-tools-consoles ./incubator-kie-runtime-tools-consoles-helm-chart --values ./incubator-kie-runtime-tools-consoles-helm-chart/values-openshift.yaml --set global.openshiftRouteDomain="<YOUR_OCP_ROUTE_DOMAIN>"
 ```
 
 ## Uninstalling the Chart
