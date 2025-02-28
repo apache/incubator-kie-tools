@@ -379,9 +379,7 @@ function TestScenarioDataSelectorPanel() {
     const isAlreadyAssigined =
       filteredDataObjects.length === 1 &&
       treeViewStatus.activeItems[0]?.id &&
-      !filteredDataObjects[0].children?.find((child) =>
-        filterDataObjectsById(child, treeViewStatus.activeItems[0].id!)
-      );
+      !findTestScenarioDataObjectById(filteredDataObjects, treeViewStatus.activeItems[0].id!);
 
     if (oneActiveTreeViewItem && isAlreadyAssigined) {
       return {
