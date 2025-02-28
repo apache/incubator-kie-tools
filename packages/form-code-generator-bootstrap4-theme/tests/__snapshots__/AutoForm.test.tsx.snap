@@ -149,7 +149,7 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			Array.from(document.getElementById(name).childNodes ?? [])
 				.filter((node) =&gt; node.nodeType === 1)
 				.forEach((element, index) =&gt; {
-					const delElement = element.getElementById(\`remove-item-\${name}\`);
+					const delElement = element.querySelector(\`[id=&#39;remove-item-\${name}&#39;]\`);
 					delElement.onclick = function () {
 						onDelListItem(name, \`\${index}\`);
 					};
@@ -159,8 +159,7 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 					const inputOrSelect = element.querySelector(&quot;input, select&quot;);
 					inputOrSelect.id = \`\${name}.\${index}\`;
 					inputOrSelect.name = \`\${name}.\${index}\`;
-					element.id = \`\${name}.\${index}\`;
-					element.name = \`\${name}.\${index}\`;
+					element.id = \`item-\${name}.\${index}\`;
 				});
 		}
 		function addListItem(name, defaultValue, maxCount, childrenHtml, functionName) {
@@ -279,7 +278,7 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			return accessObjectPath(result, path);
 		}
 		function accessObjectPath(obj, objPath) {
-			return objPath.split(&quot;.&quot;).reduce((acc, pathPiece) =&gt; acc?.[pathPiece], obj);
+			return objPath.split(&quot;.&quot;)?.reduce((acc, pathPiece) =&gt; acc?.[pathPiece], obj);
 		}
 		// List Field Helper functions -- END --
 		function onDelListItemFriends(name, itemIndex) {

@@ -11,7 +11,7 @@ function delListItem(name, minCount, itemIndex, onDelListItem) {
   Array.from(document.getElementById(name).childNodes ?? [])
     .filter((node) => node.nodeType === 1)
     .forEach((element, index) => {
-      const delElement = element.getElementById(`remove-item-${name}`);
+      const delElement = element.querySelector(`[id='remove-item-${name}']`);
       delElement.onclick = function () {
         onDelListItem(name, `${index}`);
       };
@@ -23,8 +23,7 @@ function delListItem(name, minCount, itemIndex, onDelListItem) {
       inputOrSelect.id = `${name}.${index}`;
       inputOrSelect.name = `${name}.${index}`;
 
-      element.id = `${name}.${index}`;
-      element.name = `${name}.${index}`;
+      element.id = `item-${name}.${index}`;
     });
 }
 
@@ -188,6 +187,6 @@ function getListValue(itemListElement) {
   return accessObjectPath(result, path);
 }
 function accessObjectPath(obj, objPath) {
-  return objPath.split(".").reduce((acc, pathPiece) => acc?.[pathPiece], obj);
+  return objPath.split(".")?.reduce((acc, pathPiece) => acc?.[pathPiece], obj);
 }
 // List Field Helper functions -- END --
