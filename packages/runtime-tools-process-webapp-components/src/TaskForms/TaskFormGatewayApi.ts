@@ -95,7 +95,7 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
   fetchCustomForm(endpoint: string, headers?: any) {
     return new Promise<Form>((resolve, reject) => {
       axios
-        .get(endpoint, {
+        .get(this.replaceEndpointBaseUrl(endpoint), {
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
