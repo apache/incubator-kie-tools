@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import React, { useCallback, useEffect, useImperativeHandle, useState } from "react";
+import React, { useMemo, useCallback, useEffect, useImperativeHandle, useState } from "react";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { BallBeat } from "react-pure-loaders";
-import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/src/types";
+import { Form, FormResources } from "@kie-tools/runtime-tools-shared-gateway-api/src/types";
 import { FormOpened, FormOpenedState } from "../../../api";
 import ReactFormRenderer from "../ReactFormRenderer/ReactFormRenderer";
 import HtmlFormRenderer from "../HtmlFormRenderer/HtmlFormRenderer";
@@ -39,29 +39,27 @@ interface FormDisplayerProps {
 export const FormDisplayer = React.forwardRef<EmbeddedFormApi, FormDisplayerProps & OUIAProps>(
   ({ isEnvelopeConnectedToChannel, content, data, context, onOpenForm, ouiaId, ouiaSafe }, forwardedRef) => {
     const [source, setSource] = useState<string>();
-    const [resources, setResources] = useState<any>();
+    const [resources, setResources] = useState<FormResources>();
     const [formData, setFormData] = useState<string>();
     const [formApi, setFormApi] = useState<InternalFormDisplayerApi>({} as InternalFormDisplayerApi);
     const [isExecuting, setIsExecuting] = useState<boolean>(false);
 
-    const doOpenForm = (config: FormConfig): EmbeddedFormApi => {
-      const api: EmbeddedFormApi = {};
-      setFormApi(new InternalFormDisplayerApiImpl(api, config.onOpen!));
-      return api;
-    };
-
-    const canDisplayForm = useCallback(() => {
-      return isEnvelopeConnectedToChannel && !isExecuting && source;
-    }, [isEnvelopeConnectedToChannel, isExecuting, source]);
+    const canDisplayForm = useMemo(
+      () => isEnvelopeConnectedToChannel && !isExecuting && source && resources,
+      [isEnvelopeConnectedToChannel, isExecuting, source, resources]
+    );
 
     useEffect(() => {
       window.Form = {
-        openForm: doOpenForm,
+        openForm: (config: FormConfig): EmbeddedFormApi => {
+          const api: EmbeddedFormApi = {};
+          setFormApi(new InternalFormDisplayerApiImpl(api, config.onOpen!));
+          return api;
+        },
       };
     }, []);
 
     useEffect(() => {
-      /* istanbul ignore else */
       if (isEnvelopeConnectedToChannel) {
         setSource(content.source);
         setResources(content.configuration.resources);
@@ -85,18 +83,19 @@ export const FormDisplayer = React.forwardRef<EmbeddedFormApi, FormDisplayerProp
           });
         }, 500);
       }
+      // eslint-disable-next-line
     }, [formApi]);
 
     useImperativeHandle(forwardedRef, () => formApi, [formApi]);
 
     return (
       <div {...componentOuiaProps(ouiaId, "form-displayer", ouiaSafe)}>
-        {canDisplayForm() ? (
+        {canDisplayForm ? (
           <div id={"inner-form-container"}>
             {content.formInfo && content.formInfo.type === "TSX" ? (
-              <ReactFormRenderer source={source!} resources={resources} setIsExecuting={setIsExecuting} />
+              <ReactFormRenderer source={source!} resources={resources!} setIsExecuting={setIsExecuting} />
             ) : (
-              <HtmlFormRenderer source={source!} resources={resources} />
+              <HtmlFormRenderer source={source!} resources={resources!} />
             )}
           </div>
         ) : (

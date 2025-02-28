@@ -57,14 +57,10 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class FormsStorageImpl implements FormsStorage {
 
     public static final String PROJECT_FORM_STORAGE_PROP = "quarkus.kogito-runtime-tools.forms.folder";
-
     private static final String CONFIG_EXT = ".config";
-
     private static final String FORMS_STORAGE_PATH = "/custom-forms-dev";
-
     private static final String JAR_FORMS_STORAGE_PATH = "/target/classes" + FORMS_STORAGE_PATH;
     private static final String FS_FORMS_STORAGE_PATH = "/src/main/resources" + FORMS_STORAGE_PATH;
-
     private static final Logger LOGGER = LoggerFactory.getLogger(FormsStorageImpl.class);
 
     private final Map<String, FormInfo> formInfoMap = new HashMap<>();
@@ -179,13 +175,10 @@ public class FormsStorageImpl implements FormsStorage {
         }
 
         JsonObject configJSON = new JsonObject(configStr);
-
         FormResources resources = new FormResources();
-
         JsonObject resourcesJSON = configJSON.getJsonObject("resources");
 
         resourcesJSON.getJsonObject("scripts").stream().forEach(entry -> resources.getScripts().put(entry.getKey(), entry.getValue().toString()));
-
         resourcesJSON.getJsonObject("styles").stream().forEach(entry -> resources.getStyles().put(entry.getKey(), entry.getValue().toString()));
 
         return new FormConfiguration(configJSON.getString("schema"), resources);
@@ -225,14 +218,12 @@ public class FormsStorageImpl implements FormsStorage {
         }
 
         FileUtils.write(formFile, formContent.getSource(), StandardCharsets.UTF_8);
-
         FileUtils.write(configFile, JsonObject.mapFrom(formContent.getConfiguration()).encodePrettily(), StandardCharsets.UTF_8);
 
         LocalDateTime lastModified = LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), TimeZone.getDefault().toZoneId());
         FormInfo newInfo = new FormInfo(formName, formInfo.getType(), lastModified);
 
         formInfoMap.put(formName, newInfo);
-
         modifiedForms.put(formName, new Form(newInfo, formContent.getSource(), formContent.getConfiguration()));
     }
 

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { generateFormData } from "../utils/TaskFormDataUtils";
@@ -65,24 +65,27 @@ const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps & OUIAProps
   const [formOpened, setFormOpened] = useState<FormOpened>();
   const [submitted, setSubmitted] = useState<boolean>(false);
 
-  const doSubmit = async (phase: string, payload: any) => {
-    const formDisplayerApi = formDisplayerApiRef.current;
+  const doSubmit = useCallback(
+    async (phase: string, payload: any) => {
+      const formDisplayerApi = formDisplayerApiRef.current;
 
-    try {
-      const response = await driver.doSubmit(phase, payload);
-      formDisplayerApi!.notifySubmitResult({
-        type: FormSubmitResponseType.SUCCESS,
-        info: response,
-      });
-    } catch (error) {
-      formDisplayerApi!.notifySubmitResult({
-        type: FormSubmitResponseType.FAILURE,
-        info: error,
-      });
-    } finally {
-      setSubmitted(true);
-    }
-  };
+      try {
+        const response = await driver.doSubmit(phase, payload);
+        formDisplayerApi!.notifySubmitResult({
+          type: FormSubmitResponseType.SUCCESS,
+          info: response,
+        });
+      } catch (error) {
+        formDisplayerApi!.notifySubmitResult({
+          type: FormSubmitResponseType.FAILURE,
+          info: error,
+        });
+      } finally {
+        setSubmitted(true);
+      }
+    },
+    [driver]
+  );
 
   useEffect(() => {
     if (phases) {
@@ -104,13 +107,13 @@ const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps & OUIAProps
       });
       setFormActions(actions);
     }
-  }, []);
+  }, [doSubmit, phases]);
 
   useEffect(() => {
     if (formOpened) {
       document.getElementById(`${formUUID}-form`)!.style.visibility = "visible";
     }
-  }, [formOpened]);
+  }, [formOpened, formUUID]);
 
   return (
     <div {...componentOuiaProps(ouiaId, "custom-form-displayer", ouiaSafe)} style={{ height: "100%" }}>
