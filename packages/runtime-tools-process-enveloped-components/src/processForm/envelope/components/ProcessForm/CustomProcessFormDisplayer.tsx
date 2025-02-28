@@ -53,8 +53,6 @@ const CustomProcessFormDisplayer: React.FC<CustomProcessFormDisplayerProps & OUI
   const [formOpened, setFormOpened] = useState<FormOpened>();
   const [submitted, setSubmitted] = useState<boolean>(false);
 
-  // CUSTOM-FORMS-DEV
-
   const doSubmit = useCallback(
     async (payload: any) => {
       const formDisplayerApi = formDisplayerApiRef.current!;

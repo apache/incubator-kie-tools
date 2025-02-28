@@ -3571,7 +3571,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: [],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"Skippable":"true","trip":{"city":"Boston","country":"US","begin":"2020-02-19T23:00:00.000+01:00","end":"2020-02-26T23:00:00.000+01:00","visaRequired":true},"TaskName":"VisaApplication","NodeName":"Apply for visa","traveller":{"firstName":"Rachel","lastName":"White","email":"rwhite@gorle.com","nationality":"Polish","address":{"street":"Cabalone","city":"Zerf","zipCode":"765756","country":"Poland"}},"Priority":"1"}',
       outputs: "{}",
@@ -3598,7 +3597,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: [],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null}}',
       outputs: "{}",
@@ -3625,7 +3623,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: [],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null}}',
       outputs: "{}",
@@ -3651,7 +3648,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: [],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null}}',
       outputs: "{}",
@@ -3678,7 +3674,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: [],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"trip":{"city":"New York","country":"US","begin":"2019-12-09T23:00:00.000+01:00","end":"2019-12-14T23:00:00.000+01:00","visaRequired":true},"TaskName":"VisaApplication","NodeName":"Apply for visa","Priority":"1","Skippable":"true","traveller":{"firstName":"Jan","lastName":"Kowalski","email":"jan.kowalski@example.com","nationality":"Polish","address":{"street":"polna","city":"Krakow","zipCode":"32000","country":"Poland"}},"GroupId":"group1"}',
       outputs: "{}",
@@ -3705,7 +3700,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: [],
       potentialUsers: ["john", "poul"],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"trip":{"city":"New York","country":"US","begin":"2019-12-09T23:00:00.000+01:00","end":"2019-12-14T23:00:00.000+01:00","visaRequired":true},"TaskName":"VisaApplication","NodeName":"Apply for visa","Priority":"1","Skippable":"true","traveller":{"firstName":"Jan","lastName":"Kowalski","email":"jan.kowalski@example.com","nationality":"Polish","address":{"street":"polna","city":"Krakow","zipCode":"32000","country":"Poland"}},"GroupId":"group1"}',
       outputs: "{}",
@@ -3732,7 +3726,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: ["employees", "interns", "managers"],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"trip":{"city":"New York","country":"US","begin":"2019-12-09T23:00:00.000+01:00","end":"2019-12-14T23:00:00.000+01:00","visaRequired":true},"TaskName":"VisaApplication","NodeName":"Apply for visa","Priority":"1","Skippable":"true","traveller":{"firstName":"Jan","lastName":"Kowalski","email":"jan.kowalski@example.com","nationality":"Polish","address":{"street":"polna","city":"Krakow","zipCode":"32000","country":"Poland"}},"GroupId":"group1"}',
       outputs: "{}",
@@ -3759,7 +3752,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: ["employees", "interns", "managers"],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null},"GroupId":"group2"}',
       outputs: "{}",
@@ -3786,7 +3778,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: ["employees", "interns", "managers"],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null},"GroupId":"group2"}',
       outputs: "{}",
@@ -3813,7 +3804,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: ["employees", "interns", "managers"],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null},"GroupId":"group2"}',
       outputs: "{}",
@@ -3840,7 +3830,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: ["employees", "interns", "managers"],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null},"GroupId":"group2"}',
       outputs: "{}",
@@ -3867,7 +3856,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: ["employees", "interns", "managers"],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null},"GroupId":"group2"}',
       outputs: "{}",
@@ -3894,7 +3882,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: ["employees", "interns", "managers"],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null},"GroupId":"group2"}',
       outputs: "{}",
@@ -3921,7 +3908,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: ["employees", "interns", "managers"],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null},"GroupId":"group2"}',
       outputs: "{}",
@@ -3948,7 +3934,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: ["employees", "interns", "managers"],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"trip":{"city":"New York","country":"US","begin":"2019-12-09T23:00:00.000+01:00","end":"2019-12-14T23:00:00.000+01:00","visaRequired":true},"TaskName":"VisaApplication","NodeName":"Apply for visa","Priority":"1","Skippable":"true","traveller":{"firstName":"Jan","lastName":"Kowalski","email":"jan.kowalski@example.com","nationality":"Polish","address":{"street":"polna","city":"Krakow","zipCode":"32000","country":"Poland"}},"GroupId":"group1"}',
       outputs: "{}",
@@ -3975,7 +3960,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: ["employees", "interns", "managers"],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null},"GroupId":"group2"}',
       outputs: "{}",
@@ -4002,7 +3986,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: ["employees", "interns", "managers"],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null},"GroupId":"group2"}',
       outputs: "{}",
@@ -4029,7 +4012,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: ["employees", "interns", "managers"],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"trip":{"city":"New York","country":"US","begin":"2019-12-09T23:00:00.000+01:00","end":"2019-12-14T23:00:00.000+01:00","visaRequired":true},"TaskName":"VisaApplication","NodeName":"Apply for visa","Priority":"1","Skippable":"true","traveller":{"firstName":"Jan","lastName":"Kowalski","email":"jan.kowalski@example.com","nationality":"Polish","address":{"street":"polna","city":"Krakow","zipCode":"32000","country":"Poland"}},"GroupId":"group1"}',
       outputs: "{}",
@@ -4056,7 +4038,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: ["employees", "interns", "managers"],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null},"GroupId":"group2"}',
       outputs: "{}",
@@ -4083,7 +4064,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: ["employees", "interns", "managers"],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null},"GroupId":"group2"}',
       outputs: "{}",
@@ -4110,7 +4090,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: ["employees", "interns", "managers"],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null},"GroupId":"group2"}',
       outputs: "{}",
@@ -4137,7 +4116,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: ["employees", "interns", "managers"],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null},"GroupId":"group2"}',
       outputs: "{}",
@@ -4164,7 +4142,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: [],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null},"GroupId":"group2"}',
       outputs: "{}",
@@ -4191,7 +4168,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: [],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null},"GroupId":"group2"}',
       outputs: "{}",
@@ -4218,7 +4194,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: [],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"flight":{"flightNumber":"MX555","seat":null,"gate":null,"departure":"2019-12-09T23:00:00.000+01:00","arrival":"2019-12-14T23:00:00.000+01:00"},"TaskName":"ConfirmTravel","NodeName":"Confirm travel","Priority":"1","Skippable":"true","hotel":{"name":"Perfect hotel","address":{"street":"street","city":"New York","zipCode":"12345","country":"US"},"phone":"09876543","bookingNumber":"XX-012345","room":null},"GroupId":"group2"}',
       outputs: "{}",
@@ -4245,7 +4220,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: ["employees", "interns", "managers"],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"candidate": {"name": "Harry Potter", "email": "harrypotter@example.com", "salary": 30000,"skills": "Java, Kogito", "birthday": "2019-12-10T00:00:00.000+02:00"}}',
       outputs: "{}",
@@ -4272,7 +4246,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: ["employees", "interns", "managers"],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"candidate": {"name": "Harry Potter", "email": "harrypotter@example.com", "salary": 30000,"skills": "Java, Kogito", "birthday": "2019-12-10T00:00:00.000+02:00"}}',
       outputs: "{}",
@@ -4299,7 +4272,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: ["employees", "interns", "managers"],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"candidate": {"name": "Harry Potter", "email": "harrypotter@example.com", "salary": 30000,"skills": "Java, Kogito", "birthday": "2019-12-10T00:00:00.000+02:00"}}',
       outputs: "{}",
@@ -4326,7 +4298,6 @@ module.exports = {
       excludedUsers: [],
       potentialGroups: ["employees", "interns", "managers"],
       potentialUsers: [],
-      externalReferenceId: "external-reference-id",
       inputs:
         '{"candidate": {"name": "Harry Potter", "email": "harrypotter@example.com", "salary": 30000,"skills": "Java, Kogito", "birthday": "2019-12-10T00:00:00.000+02:00"}}',
       outputs: "{}",
