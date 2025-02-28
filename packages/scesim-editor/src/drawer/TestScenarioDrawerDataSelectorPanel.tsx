@@ -76,21 +76,18 @@ const isRootDataObjectAssignable = (
   return filtered;
 };
 
-const filterDataObjectChildrenByExpressionElements = (
+function filterOutDataObjectChildrenByExpressionElements(
   dataObject: TestScenarioDataObject,
-  allExpressionElements: string[] | undefined
-) => {
+  allExpressionElements: string[]
+): boolean {
   if (dataObject.children) {
-    const filteredChildren: TestScenarioDataObject[] = dataObject.children.filter((dataObjectChild) =>
-      filterDataObjectChildrenByExpressionElements(dataObjectChild, allExpressionElements)
-    );
-    dataObject.children = filteredChildren;
-    return filteredChildren && filteredChildren.length > 0;
+    dataObject.children = dataObject.children.filter((child) => {
+      return filterOutDataObjectChildrenByExpressionElements(child, allExpressionElements);
+    });
   }
-  {
-    return !allExpressionElements?.includes(dataObject.expressionElements.join("."));
-  }
-};
+
+  return !allExpressionElements.includes(dataObject.expressionElements.join("."));
+}
 
 const filterDataObjectsById = (item: TestScenarioDataObject, itemId: string) => {
   if (item.id === itemId) {
@@ -124,6 +121,7 @@ const filterDataObjectsByName = (item: TestScenarioDataObject, name: string) => 
   return false;
 };
 
+/* It returns the Root Data Object with its hierarchy given a set of Test Scenario Data Object and an itemId */
 const findDataObjectRootParent = (dataObjects: TestScenarioDataObject[], itemId: string) => {
   const filtered = dataObjects
     .map((object) => Object.assign({}, object))
@@ -136,7 +134,7 @@ const filterTypesItems = (dataObject: TestScenarioDataObject, factIdentifierName
   return dataObject.name === factIdentifierName;
 };
 
-/* It returns the TestScenarioDataObject that matches the provided ID serching over all TestScenarioDataObjects and its children */
+/* It returns the TestScenarioDataObject that matches the provided ID searching over all provided TestScenarioDataObjects and its children */
 function findTestScenarioDataObjectById(
   testScenarioDataObjects: TestScenarioDataObject[],
   id: string
@@ -191,7 +189,7 @@ function TestScenarioDataSelectorPanel() {
         (factMapping) => factMapping.expressionElements!
       );
 
-      const assignedExpressionElements2 = testScenarioDescriptor.factMappings
+      const assignedIds = testScenarioDescriptor.factMappings
         .FactMapping!.filter(
           (factMapping) => factMapping.expressionElements && factMapping.expressionElements.ExpressionElement
         )
@@ -200,7 +198,7 @@ function TestScenarioDataSelectorPanel() {
             .expressionElements!.ExpressionElement!.map((expressionElement) => expressionElement.step.__$$text)
             .join(".")
         )
-        .filter((asd) => asd);
+        .filter((ee) => ee);
 
       let filteredDataObjects: TestScenarioDataObject[] = [];
 
@@ -216,7 +214,7 @@ function TestScenarioDataSelectorPanel() {
           .map((object) => cloneDeep(object)) // Deep copy: the Objects may mutate due to children filtering
           .filter((dataObject) => !isRootDataObjectAssignable(dataObject, [selectedColumnExpressionElement]));
         filteredDataObjects.filter((dataObject) =>
-          filterDataObjectChildrenByExpressionElements(dataObject, assignedExpressionElements2)
+          filterOutDataObjectChildrenByExpressionElements(dataObject, assignedIds)
         );
       }
 
@@ -366,22 +364,24 @@ function TestScenarioDataSelectorPanel() {
     }
 
     const oneActiveTreeViewItem = treeViewStatus.activeItems.length === 1;
-    if (!oneActiveTreeViewItem) {
+    if (!treeViewStatus.activeItems === undefined || treeViewStatus.activeItems.length !== 1) {
       return { message: i18n.drawer.dataSelector.insertDataObjectTooltipDataObjectSelectionMessage, enabled: false };
     }
-
+    const activeItem = treeViewStatus.activeItems[0] as TestScenarioDataObject;
     const expressionElement = selectedColumnMetadata.factMapping.expressionElements!;
-
-    const filteredDataObjects: TestScenarioDataObject[] = filterOutAlreadyAssignedDataObjectsAndChildren(
+    const assegnedDataObjects: TestScenarioDataObject[] = filterOutAlreadyAssignedDataObjectsAndChildren(
       expressionElement,
       selectedColumnMetadata.isBackground
     );
-    const isAlreadyAssigined =
-      filteredDataObjects.length === 1 &&
-      treeViewStatus.activeItems[0]?.id &&
-      !findTestScenarioDataObjectById(filteredDataObjects, treeViewStatus.activeItems[0].id!);
 
-    if (oneActiveTreeViewItem && isAlreadyAssigined) {
+    const isActiveItemMiddleDataObject: boolean =
+      activeItem?.children != null && activeItem.children.length > 0 && activeItem.expressionElements.length > 1;
+
+    const isAssignabile =
+      !isActiveItemMiddleDataObject &&
+      findTestScenarioDataObjectById(assegnedDataObjects, activeItem.id!) !== undefined;
+
+    if (oneActiveTreeViewItem && !isAssignabile) {
       return {
         message: i18n.drawer.dataSelector.insertDataObjectTooltipDataObjectAlreadyAssignedMessage,
         enabled: false,
@@ -396,19 +396,22 @@ function TestScenarioDataSelectorPanel() {
   }, []);
 
   const onInsertDataObjectClick = useCallback(() => {
-    const isBackground = selectedColumnMetadata!.isBackground;
-    const selectedTestScenarioDataObject = findTestScenarioDataObjectById(
-      dataObjects,
-      treeViewStatus.activeItems[0].id!
-    )!;
+    const userSelectedTestScenarioObject = treeViewStatus.activeItems[0] as TestScenarioDataObject;
+
+    if (!userSelectedTestScenarioObject) {
+      console.warn("No Data Object selected in the item view.");
+      return;
+    }
+
     const rootSelectedTestScenarioDataObject = findDataObjectRootParent(
       dataObjects,
       treeViewStatus.activeItems[0].id!.toString()
     );
-    const isRootType = rootSelectedTestScenarioDataObject.id === selectedTestScenarioDataObject.id;
+    const isBackground = selectedColumnMetadata!.isBackground;
+    const isRootType = rootSelectedTestScenarioDataObject.id === userSelectedTestScenarioObject.id;
     const expressionAlias = isRootType
       ? "expression </>"
-      : selectedTestScenarioDataObject.id.replace(selectedTestScenarioDataObject.expressionElements[0] + ".", "");
+      : userSelectedTestScenarioObject.id.replace(userSelectedTestScenarioObject.expressionElements[0] + ".", "");
     const factMappingValueType = isRootType ? "EXPRESSION" : "NOT_EXPRESSION";
 
     testScenarioEditorStoreApi.setState((state) => {
@@ -420,9 +423,9 @@ function TestScenarioDataSelectorPanel() {
         : state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!;
 
       const { updatedFactMapping } = updateColumn({
-        className: selectedTestScenarioDataObject.className!,
+        className: userSelectedTestScenarioObject.className!,
         expressionAlias: expressionAlias,
-        expressionElementsSteps: selectedTestScenarioDataObject.expressionElements,
+        expressionElementsSteps: userSelectedTestScenarioObject.expressionElements,
         expressionIdentifierName: selectedColumnMetadata!.factMapping.expressionIdentifier.name?.__$$text,
         expressionIdentifierType: selectedColumnMetadata!.factMapping.expressionIdentifier.type?.__$$text,
         factMappings: factMappings,
@@ -432,7 +435,7 @@ function TestScenarioDataSelectorPanel() {
         factMappingValuesTypes: factMappingValuesTypes,
         factMappingValueType: factMappingValueType,
         factName: rootSelectedTestScenarioDataObject.name,
-        genericTypes: selectedTestScenarioDataObject.collectionGenericType ?? [],
+        genericTypes: userSelectedTestScenarioObject.collectionGenericType ?? [],
         selectedColumnIndex: selectedColumnMetadata!.index,
       });
 
