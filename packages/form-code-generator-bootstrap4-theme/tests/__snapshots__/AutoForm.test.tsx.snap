@@ -288,9 +288,9 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 				delListItem(name, undefined, itemIndex, onDelListItemFriends);
 			}
 		}
-		function onAddListItemFriends(name) {
+		function onAddListItemFriends(name, initialSetValues) {
 			const disabled = false;
-			if (!disabled) {
+			if (!disabled || initialSetValues) {
 				addListItem(
 					name,
 					undefined,
@@ -343,9 +343,9 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 				delListItem(name, undefined, itemIndex, onDelListItemFriends$Known);
 			}
 		}
-		function onAddListItemFriends$Known(name) {
+		function onAddListItemFriends$Known(name, initialSetValues) {
 			const disabled = false;
-			if (!disabled) {
+			if (!disabled || initialSetValues) {
 				addListItem(
 					name,
 					undefined,
@@ -420,13 +420,13 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 				: &quot;&quot;;
 			data?.friends?.forEach((value, index) =&gt; {
 				// Add element;
-				onAddListItemFriends(\`friends\`);
+				onAddListItemFriends(\`friends\`, true);
 				const itemIndex__currentItem = \`friends.\${index}\`;
 				document.getElementById(\`\${itemIndex__currentItem}.name\`).value = value?.name ?? &quot;&quot;;
 				document.getElementById(\`\${itemIndex__currentItem}.age\`).value = value?.age ?? &quot;&quot;;
 				value?.known?.forEach((value, index) =&gt; {
 					// Add element;
-					onAddListItemFriends$Known(\`\${itemIndex__currentItem}.known\`);
+					onAddListItemFriends$Known(\`\${itemIndex__currentItem}.known\`, true);
 					const nested__itemIndex__currentItem = \`\${itemIndex__currentItem}.known.\${index}\`;
 					document.getElementById(\`\${nested__itemIndex__currentItem}\`).value = value ?? &quot;&quot;;
 				});
