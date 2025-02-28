@@ -139,6 +139,7 @@
     <version.org.kie.j2cl.tools.yaml.mapper>0.4</version.org.kie.j2cl.tools.yaml.mapper>
     <version.j2cl.maven.plugin>0.23.0</version.j2cl.maven.plugin>
     <version.jacoco.maven.plugin>0.8.12</version.jacoco.maven.plugin>
+    <version.io.netty>4.1.118.Final</version.io.netty>
   </properties>
 
   <dependencyManagement>
@@ -207,6 +208,17 @@
       </dependency>
 
       <!-- 3rd party -->
+
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-handler</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-common</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
 
       <dependency>
         <groupId>junit</groupId>

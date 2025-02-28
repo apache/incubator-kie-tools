@@ -22,10 +22,13 @@ import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "
 import { NewDmnEditorChannelApi } from "./NewDmnEditorChannelApi";
 import { DmnEditorInterface } from "./DmnEditorFactory";
 import { NodeEvaluationResults } from "@kie-tools/dmn-editor/dist/DmnEditor";
+import { NewDmnEditorEnvelopeApi } from "./NewDmnEditorEnvelopeApi";
 
-export class NewDmnEditorFactory implements EditorFactory<NewDmnEditorInterface, NewDmnEditorChannelApi> {
+export class NewDmnEditorFactory
+  implements EditorFactory<NewDmnEditorInterface, NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>
+{
   public createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<NewDmnEditorChannelApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<NewDmnEditorInterface> {
     return Promise.resolve(new NewDmnEditorInterface(envelopeContext, initArgs));

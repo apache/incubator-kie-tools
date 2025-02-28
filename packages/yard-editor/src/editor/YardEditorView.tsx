@@ -20,7 +20,7 @@ import { Editor, EditorInitArgs, EditorTheme, KogitoEditorEnvelopeContextType } 
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
 import { YardEditor } from "./YardEditor";
-import { YardEditorApi, YardEditorChannelApi } from "../api";
+import { YardEditorApi, YardEditorChannelApi, YardEditorEnvelopeApi } from "../api";
 import { Position } from "monaco-editor";
 import { validationPromise } from "@kie-tools/yard-validator/dist/";
 
@@ -33,7 +33,7 @@ export class YardEditorView implements Editor {
   private path: string;
 
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<YardEditorChannelApi>,
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<YardEditorEnvelopeApi, YardEditorChannelApi>,
     initArgs: EditorInitArgs
   ) {
     this.editorRef = React.createRef<YardEditorApi>();

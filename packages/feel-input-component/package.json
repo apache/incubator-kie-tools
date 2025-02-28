@@ -22,8 +22,7 @@
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools/dmn-feel-antlr4-parser": "workspace:*",
     "@kie-tools/dmn-language-service": "workspace:*",
-    "@kie-tools/i18n-common-dictionary": "workspace:*",
-    "monaco-editor": "^0.39.0"
+    "@kie-tools/i18n-common-dictionary": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

@@ -21,7 +21,11 @@ import { EditorInitArgs, EditorTheme, KogitoEditorEnvelopeContextType } from "@k
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Position } from "monaco-editor";
 import * as React from "react";
-import { ServerlessWorkflowTextEditorApi, ServerlessWorkflowTextEditorChannelApi } from "../api";
+import {
+  ServerlessWorkflowTextEditorApi,
+  ServerlessWorkflowTextEditorChannelApi,
+  ServerlessWorkflowTextEditorEnvelopeApi,
+} from "../api";
 import { ServerlessWorkflowTextEditor } from "./ServerlessWorkflowTextEditor";
 
 export class ServerlessWorkflowTextEditorView implements ServerlessWorkflowTextEditorApi {
@@ -31,7 +35,10 @@ export class ServerlessWorkflowTextEditorView implements ServerlessWorkflowTextE
   public af_componentTitle: "Serverless Workflow Text Editor";
 
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<ServerlessWorkflowTextEditorChannelApi>,
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<
+      ServerlessWorkflowTextEditorEnvelopeApi,
+      ServerlessWorkflowTextEditorChannelApi
+    >,
     private readonly initArgs: EditorInitArgs
   ) {
     this.editorRef = React.createRef<ServerlessWorkflowTextEditorApi>();

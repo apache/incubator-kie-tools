@@ -17,23 +17,35 @@
  * under the License.
  */
 
-import { DashbuilderEditorView } from "./DashbuilderEditorView";
-import {
-  Editor,
-  EditorFactory,
-  EditorInitArgs,
-  KogitoEditorEnvelopeContextType,
-} from "@kie-tools-core/editor/dist/api";
-import { DashbuilderEditorChannelApi as DashbuilderEditorChannelApi } from "../api/DashbuilderEditorChannelApi";
-import { DashbuilderEditorEnvelopeApi } from "../api";
+.feel-input-textbox {
+  overflow: hidden;
+}
 
-export class DashbuilderEditorFactory
-  implements EditorFactory<Editor, DashbuilderEditorEnvelopeApi, DashbuilderEditorChannelApi>
-{
-  public async createEditor(
-    ctx: KogitoEditorEnvelopeContextType<DashbuilderEditorEnvelopeApi, DashbuilderEditorChannelApi>,
-    initArgs: EditorInitArgs
-  ) {
-    return new DashbuilderEditorView(ctx, initArgs);
-  }
+.feel-input-textbox .feel-input {
+  width: 100%;
+}
+
+/* This is a workaround for an issue when the Monaco editor is inside an object that have its position changed by a
+ transform. In our case, the Popup uses transform: translate() to position. So we are manual position the
+  suggest widget and its details just bellow the Textbox. */
+.feel-input-textbox .feel-input .suggest-widget {
+  top: 60px !important;
+  left: 14px !important;
+}
+.feel-input-textbox .feel-input .suggest-details-container {
+  top: 60px !important;
+  left: 430px !important;
+}
+
+.feel-input-textbox .feel-input {
+  position: relative;
+  top: 0;
+  left: 0;
+}
+
+.feel-input-textbox .feel-input,
+.feel-input-textbox .feel-input > div {
+  position: relative;
+  height: 100%;
+  text-align: left;
 }
