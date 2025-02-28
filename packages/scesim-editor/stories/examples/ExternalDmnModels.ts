@@ -1119,3 +1119,69 @@ export const COLLECTION = `<?xml version="1.0" encoding="UTF-8"?>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>
 </dmn:definitions>`;
+
+export const MIXED = `<?xml version="1.0" encoding="UTF-8"?>
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kie.apache.org/dmn/_1931BC43-1301-402C-BC9F-71BB53BCFCE4" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_AFA9A565-A5DD-4E81-BD39-238C9B883861" name="Mixed" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kie.apache.org/dmn/_1931BC43-1301-402C-BC9F-71BB53BCFCE4">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_A12C9187-482E-452F-9056-0F0442CBEE12" name="tPerson" isCollection="false">
+    <dmn:itemComponent id="_DDDA535A-8B9B-48A4-AAEC-0A6552C205F4" name="pilu" isCollection="false">
+      <dmn:typeRef>tPuppa</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_A809FEBD-76AA-429C-B41F-F788B08F9C3F" name="asd" isCollection="false">
+      <dmn:typeRef>boolean</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_51DDD487-674B-4E83-93A2-E2F3C20BCB6B" name="lol" isCollection="false">
+      <dmn:itemComponent id="_227DE176-0E22-494A-AEDE-177B8A6FD5E5" name="Insert a name" isCollection="false">
+        <dmn:typeRef>Any</dmn:typeRef>
+      </dmn:itemComponent>
+      <dmn:itemComponent id="_B5C5247B-3761-4B3C-AD63-6EC2916CF058" name="mimm" isCollection="false">
+        <dmn:typeRef>string</dmn:typeRef>
+      </dmn:itemComponent>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_3788741C-24FC-427E-9D5E-E9C2AFAE89A8" name="tPuppa" isCollection="false">
+    <dmn:itemComponent id="_DB77958D-204D-49AE-A1D9-581902C4D775" name="asd2" isCollection="false">
+      <dmn:typeRef>time</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:decision id="_3CA38BE7-A453-4A80-B148-A076F504C1BA" name="Decision-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_C876C460-CD7D-4310-803F-169214F65868" name="Decision-1" typeRef="tPerson"/>
+    <dmn:informationRequirement id="_A1DAAF90-D88D-4C7F-B501-15794E7D0CE0">
+      <dmn:requiredInput href="#_81F47FD0-58AD-4FEF-86A0-8B40797D5CBC"/>
+    </dmn:informationRequirement>
+  </dmn:decision>
+  <dmn:inputData id="_81F47FD0-58AD-4FEF-86A0-8B40797D5CBC" name="InputData-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_0D82E685-2D68-4ECA-88F7-280309E432CC" name="InputData-1"/>
+  </dmn:inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_10C4777A-A4D1-4D5F-BBAF-F36726F86E44" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension/>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_3CA38BE7-A453-4A80-B148-A076F504C1BA" dmnElementRef="_3CA38BE7-A453-4A80-B148-A076F504C1BA" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="157" y="103" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_81F47FD0-58AD-4FEF-86A0-8B40797D5CBC" dmnElementRef="_81F47FD0-58AD-4FEF-86A0-8B40797D5CBC" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="191" y="298" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_A1DAAF90-D88D-4C7F-B501-15794E7D0CE0-AUTO-TARGET" dmnElementRef="_A1DAAF90-D88D-4C7F-B501-15794E7D0CE0">
+        <di:waypoint x="241" y="323"/>
+        <di:waypoint x="207" y="153"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>`;
