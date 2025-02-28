@@ -17,23 +17,31 @@
  * under the License.
  */
 
+import { Context } from "uniforms";
 import * as React from "react";
-import escape from "lodash/escape";
-import { Bridge } from "uniforms";
-import { CodeGenElement } from "../api";
-import { FORM, renderCodeGenElement } from "./templates/templates";
-import { renderFormInputs } from "./rendering/RenderingUtils";
+import AutoField from "../AutoField";
+import { BootstrapCodeGenContext, CodeGenContextProvider } from "../BootstrapCodeGenContext";
 
-export type AutoFormProps = {
-  id: string;
+export interface ListItemProps {
+  isListItem: boolean;
+  indexVariableName: string;
+  listName: string;
+}
+
+export interface Props {
+  codegenCtx: BootstrapCodeGenContext;
+  uniformsContext: Context<any>;
+  fieldName: any;
+  itemProps: ListItemProps;
   disabled?: boolean;
-  placeholder?: boolean;
-  schema: Bridge;
+}
+
+export const ListFieldInput: React.FC<Props> = ({ codegenCtx, uniformsContext, fieldName, itemProps, disabled }) => {
+  return (
+    <CodeGenContextProvider schema={uniformsContext.schema} codegenCtx={codegenCtx} uniformsCtx={uniformsContext}>
+      <AutoField key={fieldName} name={fieldName} disabled={disabled} itemProps={itemProps} />
+    </CodeGenContextProvider>
+  );
 };
 
-const AutoForm: React.FC<AutoFormProps> = (props) => {
-  const form: CodeGenElement = renderCodeGenElement(FORM, { children: renderFormInputs(props.schema) });
-  return <>{escape(form.html)}</>;
-};
-
-export default AutoForm;
+export default ListFieldInput;

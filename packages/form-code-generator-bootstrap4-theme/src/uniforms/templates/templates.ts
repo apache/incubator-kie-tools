@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import { CodeGenElement, FormElement } from "../../api";
+import { CodeGenElement } from "../../api";
 import { TextFieldTemplate } from "./TextFieldTemplate";
 import { NumFieldTemplate } from "./NumFieldTemplate";
-import { CodeGenTemplate, FormElementTemplate } from "./types";
+import { CodeGenTemplate } from "./AbstractFormGroupTemplate";
 import { BoolFieldTemplate } from "./BoolFieldTemplate";
 import { DateFieldTemplate } from "./DateFieldTemplate";
 import { RadioGroupFieldTemplate } from "./RadioGroupFieldTemplate";
@@ -29,12 +29,14 @@ import { SelectFieldTemplate } from "./SelectFieldTemplate";
 import { NestFieldTemplate } from "./NestFieldTemplate";
 import { AutoFormTemplate } from "./AutoFormTemplate";
 import { UnsupportedFieldTemplate } from "./UnsupportedTemplate";
+import { ListFieldTemplate } from "./ListFieldTemplate";
 
 export const FORM: string = "form";
 export const CHECKBOX: string = "checkbox";
 export const CHECKBOXGROUP: string = "checkboxGroup";
 export const DATE: string = "date";
 export const INPUT: string = "input";
+export const LIST: string = "listField";
 export const NESTED: string = "nestField";
 export const NUMBER: string = "number";
 export const RADIOGROUP: string = "radioGroup";
@@ -48,6 +50,7 @@ try {
   _templates.set(CHECKBOX, new BoolFieldTemplate());
   _templates.set(CHECKBOXGROUP, new CheckBoxGroupFieldTemplate());
   _templates.set(DATE, new DateFieldTemplate());
+  _templates.set(LIST, new ListFieldTemplate());
   _templates.set(NESTED, new NestFieldTemplate());
   _templates.set(NUMBER, new NumFieldTemplate());
   _templates.set(RADIOGROUP, new RadioGroupFieldTemplate());

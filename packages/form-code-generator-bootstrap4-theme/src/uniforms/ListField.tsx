@@ -19,15 +19,24 @@
 
 import React, { useContext } from "react";
 import { connectField, context, HTMLFieldProps } from "uniforms/cjs";
-import { renderNestedInputFragmentWithContext } from "./rendering/RenderingUtils";
-import { FormElement, FormInput, FormInputContainer } from "../api";
+import { FormInputContainer } from "../api";
+import { renderListItemFragmentWithContext } from "./rendering/RenderingUtils";
 import { useBootstrapCodegenContext } from "./BootstrapCodeGenContext";
-import { NESTED, renderCodeGenElement } from "./templates/templates";
+import { LIST, renderCodeGenElement } from "./templates/templates";
 import { ListItemProps } from "./rendering/ListFieldInput";
+import { getNextIndexVariableName } from "./templates/ListFieldTemplate";
 
-export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { itemProps: ListItemProps }>;
+export type ListFieldProps = HTMLFieldProps<
+  unknown[],
+  HTMLDivElement,
+  {
+    itemProps: ListItemProps;
+    maxCount?: number;
+    minCount?: number;
+  }
+>;
 
-const Nest: React.FunctionComponent<NestFieldProps> = ({
+const List: React.FunctionComponent<ListFieldProps> = ({
   id,
   children,
   error,
@@ -39,30 +48,30 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
   showInlineError,
   disabled,
   ...props
-}: NestFieldProps) => {
+}: ListFieldProps) => {
   const uniformsContext = useContext(context);
   const codegenCtx = useBootstrapCodegenContext();
 
-  const element: FormInputContainer = renderCodeGenElement(NESTED, {
+  const element: FormInputContainer = renderCodeGenElement(LIST, {
     id: name,
     name: name,
     label: label,
     disabled: disabled,
     itemProps: itemProps,
-    children: fields
-      ? fields.reduce((nestedFields: FormElement<any>[], field) => {
-          const nestedElement = renderNestedInputFragmentWithContext(uniformsContext, field, itemProps, disabled);
-          if (nestedElement) {
-            nestedFields.push(nestedElement);
-          } else {
-            console.log(`Cannot render form field for: '${field}'`);
-          }
-          return nestedFields;
-        }, [])
-      : [],
+    children: renderListItemFragmentWithContext(
+      uniformsContext,
+      "$",
+      {
+        isListItem: true,
+        indexVariableName: getNextIndexVariableName(itemProps),
+        listName: name,
+      },
+      disabled
+    ),
   });
+
   codegenCtx?.rendered.push(element);
   return <>{JSON.stringify(element)}</>;
 };
 
-export default connectField(Nest);
+export default connectField(List);

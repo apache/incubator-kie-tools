@@ -1,0 +1,192 @@
+// List Field Helper functions -- START --
+function delListItem(name, minCount, itemIndex, onDelListItem) {
+  const formData = getFormData();
+  const value = accessObjectPath(formData, name) ?? [];
+
+  if ((minCount ?? 0) <= value.length) {
+    document.getElementById(`item-${name}.${itemIndex}`).remove();
+  }
+
+  // Re-organize list
+  Array.from(document.getElementById(name).childNodes ?? [])
+    .filter((node) => node.nodeType === 1)
+    .forEach((element, index) => {
+      const delElement = element.querySelector(`[id='remove-item-${name}']`);
+      delElement.onclick = function () {
+        onDelListItem(name, `${index}`);
+      };
+      delElement.onkeydown = function () {
+        onDelListItem(name, `${index}`);
+      };
+
+      const inputOrSelect = element.querySelector("input, select");
+      inputOrSelect.id = `${name}.${index}`;
+      inputOrSelect.name = `${name}.${index}`;
+
+      element.id = `item-${name}.${index}`;
+    });
+}
+
+function addListItem(name, defaultValue, maxCount, childrenHtml, functionName) {
+  const formData = getFormData();
+  let value = accessObjectPath(formData, name) ?? [];
+  const itemIndex = value.length;
+  if (maxCount !== undefined && maxCount > value.length) {
+    value = value.concat([defaultValue]);
+  } else {
+    value = value.concat([defaultValue]);
+  }
+  const listContainer = document.getElementById(name);
+  const newItem = document.createElement("div");
+  newItem.class = "row";
+  newItem.id = `item-${name}.${itemIndex}`;
+  newItem.innerHTML = `
+<div class="col-1">
+<span id="remove-item-${name}" name="Remove Item" class="badge badge-pill" role="button" tabindex="0" onclick="onDelListItem${functionName}('${name}', ${itemIndex})" onkeydown="onDelListItem${functionName}('${name}', ${itemIndex})">
+  <i className="octicon octicon-dash"><span>-</span></i>
+</span>
+</div>
+<div class="col-11">
+${childrenHtml}
+</div>
+`;
+  listContainer.appendChild(newItem);
+  // Replace all "$" from `input` and `select` with the `itemIndex`
+  const newItemElement = document.getElementById(newItem.id);
+  [
+    ...newItemElement.querySelectorAll('input[id*="$"], select[id*="$"]'),
+  ].forEach((el) => {
+    if (el.id.split(".").pop() !== "$") {
+      el.id = `${name}.${itemIndex}.${el.id.split(".").pop()}`;
+      el.name = `${name}.${itemIndex}.${el.id.split(".").pop()}`;
+    } else {
+      el.id = `${name}.${itemIndex}`;
+      el.name = `${name}.${itemIndex}`;
+    }
+  });
+  // Get the root element of a nested list
+  [...newItemElement.querySelectorAll("div[role='list']")].forEach(
+    (nestedListContainer) => {
+      if (!nestedListContainer) {
+        return;
+      }
+      // Replace "$" from the root element if necessary
+      const nestedListPathWithIndex = splitLastOccurrence(
+        nestedListContainer.id,
+        "$"
+      )?.[1]?.replace("$", `${itemIndex}`);
+      nestedListContainer.id = nestedListPathWithIndex
+        ? `${name}.${nestedListPathWithIndex}`
+        : name;
+      // Replace "$" from all nested Add Item element
+      [...newItemElement.querySelectorAll("[id^=add-item]")].forEach(
+        (addItem) => {
+          const addItemPathWithIndex = splitLastOccurrence(
+            addItem.id,
+            "$"
+          )?.[1]?.replace("$", `${itemIndex}`);
+          addItem.id = addItemPathWithIndex
+            ? `add-item-${name}.${addItemPathWithIndex}`
+            : `add-item-${name}`;
+          const addItemOnClick = addItem.getAttribute("onclick");
+          if (addItemOnClick) {
+            addItem.setAttribute(
+              "onclick",
+              getFunctionName(addItemOnClick, itemIndex)
+            );
+          }
+          const addItemOnKeydown = addItem.getAttribute("onkeydown");
+          if (addItemOnKeydown) {
+            addItem.setAttribute(
+              "onkeydown",
+              getFunctionName(addItemOnKeydown, itemIndex)
+            );
+          }
+        }
+      );
+      // Replace "$" from the Remove Item element
+      [...newItemElement.querySelectorAll("[id^=remove-item]")].forEach(
+        (removeItem) => {
+          const removeItemPathWithIndex = splitLastOccurrence(
+            removeItem.id,
+            "$"
+          )?.[1]?.replace("$", `${itemIndex}`);
+          removeItem.id = removeItemPathWithIndex
+            ? `remove-item-${name}.${removeItemPathWithIndex}`
+            : `remove-item-${name}`;
+          const removeItemOnClick = removeItem.getAttribute("onclick");
+          if (removeItemOnClick) {
+            removeItem.setAttribute(
+              "onclick",
+              getFunctionName(removeItemOnClick, itemIndex)
+            );
+          }
+          const removeItemOnKeydown = removeItem.getAttribute("onkeydown");
+          if (removeItemOnKeydown) {
+            removeItem.setAttribute(
+              "onkeydown",
+              getFunctionName(removeItemOnKeydown, itemIndex)
+            );
+          }
+        }
+      );
+    }
+  );
+}
+function getFunctionName(functionCall, itemIndex) {
+  const [call, argument, end] = functionCall.split("'");
+  const [argumentName, argumentNameToReplace] = splitLastOccurrence(
+    argument,
+    "$"
+  );
+  return `${call}'${argumentName}${
+    argumentNameToReplace?.replace("$", `${itemIndex}`) ?? ""
+  }'${end}`;
+}
+function splitLastOccurrence(str, char) {
+  const lastIndex = str.lastIndexOf(char);
+  if (lastIndex === -1) {
+    return [str];
+  }
+  return [str.substring(0, lastIndex), str.substring(lastIndex)];
+}
+function getListValue(itemListElement) {
+  function setValue(obj, path, value) {
+    const keys = path.split(".");
+    let current = obj;
+
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+      const isArray = !isNaN(keys[i + 1]);
+
+      if (i === keys.length - 1) {
+        current[key] = value;
+      } else {
+        if (!current[key]) {
+          current[key] = isArray ? [] : {};
+        }
+        if (isArray && !Array.isArray(current[key])) {
+          current[key] = [];
+        }
+        current = current[key];
+      }
+    }
+  }
+
+  function traverse(element, result, path = "") {
+    element.querySelectorAll("input, select").forEach((input) => {
+      if (input.id) {
+        setValue(result, input.id, input.value || "");
+      }
+    });
+  }
+
+  const result = {};
+  traverse(itemListElement, result);
+  const [_, path] = itemListElement.id.split("item-");
+  return accessObjectPath(result, path);
+}
+function accessObjectPath(obj, objPath) {
+  return objPath.split(".")?.reduce((acc, pathPiece) => acc?.[pathPiece], obj);
+}
+// List Field Helper functions -- END --
