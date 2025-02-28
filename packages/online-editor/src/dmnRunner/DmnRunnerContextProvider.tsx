@@ -162,7 +162,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   );
   const status = useMemo(() => (isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE), [isExpanded]);
   const dmnRunnerAjv = useMemo(() => new DmnRunnerAjv().getAjv(), []);
-  const [currentResponseMessage, setCurrentResponseMessage] = useState<Map<string, DmnEvaluationMessages[]>>(new Map());
+  const [currentResponseMessage, setCurrentResponseMessage] = useState<Map<string, DmnEvaluationMessages>>(new Map());
 
   useLayoutEffect(() => {
     if (props.isEditorReady) {
@@ -265,12 +265,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             }
             const currentResults = results[currentInputIndex];
             if (currentResults && currentResults.messages?.length > 0) {
-              const messagesMap = new Map(
-                (currentResults.decisionResults || []).map((decisionResult) => {
-                  const messages = currentResults.messages || [];
-                  return [decisionResult.decisionId, messages];
-                })
-              );
+              const messagesMap = new Map(currentResults.messages.map((message) => [message.sourceId, message]));
               setCurrentResponseMessage(messagesMap);
             } else {
               setCurrentResponseMessage(new Map());
@@ -355,15 +350,10 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       (acc: Map<string, string>, decisionResult) => acc.set(decisionResult.decisionId, decisionResult.decisionName),
       new Map<string, string>()
     );
-    const messagesBySourceId = Array.from(currentResponseMessage.values()).reduce((acc, messages) => {
-      messages.forEach((message) => {
-        const messageEntry = acc.get(message.sourceId) || [];
-        if (!messageEntry) {
-          acc.set(message.sourceId, [message]);
-        } else {
-          acc.set(message.sourceId, [...messageEntry, message]);
-        }
-      });
+
+    const messagesBySourceId = Array.from(currentResponseMessage.values()).reduce((acc, message) => {
+      const messageEntry = acc.get(message.sourceId) || [];
+      acc.set(message.sourceId, [...messageEntry, message]);
       return acc;
     }, new Map<string, DmnEvaluationMessages[]>());
 
