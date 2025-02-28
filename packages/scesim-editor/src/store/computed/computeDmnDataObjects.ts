@@ -69,8 +69,8 @@ function createTestScenarioObjects(
   allItemDefinitionsMap: Map<string, DMN15__tItemDefinition>
 ): TestScenarioDataObject {
   const drgElementName = drgElement["@_name"];
-  const drgElementTypeRef = drgElement!.variable?.["@_typeRef"] ?? "<Undefined>";
-  const itemDefinition = allItemDefinitionsMap.get(drgElementTypeRef!);
+  const drgElementTypeRef = drgElement!.variable?.["@_typeRef"];
+  const itemDefinition = drgElementTypeRef ? allItemDefinitionsMap.get(drgElementTypeRef) : undefined;
 
   return {
     id: drgElementName,
@@ -79,10 +79,10 @@ function createTestScenarioObjects(
       itemDefinition,
       allItemDefinitionsMap,
       [drgElementName],
-      drgElementTypeRef!
+      drgElementTypeRef
     ),
-    className: drgElementTypeRef!,
-    customBadgeContent: drgElementTypeRef,
+    className: drgElementTypeRef,
+    customBadgeContent: drgElementTypeRef ?? "<Undefined>",
     expressionElements: [drgElementName],
   };
 }
@@ -91,7 +91,7 @@ function createChildrenTestScenarioObjects(
   itemDefinition: DMN15__tItemDefinition | undefined,
   allItemDefinitionsMap: Map<string, DMN15__tItemDefinition>,
   expressionElements: string[],
-  rootDrgElementTypeRef: string
+  rootDrgElementTypeRef: string | undefined
 ) {
   const children: TestScenarioDataObject[] = [];
 
@@ -123,7 +123,7 @@ function createChildrenTestScenarioObjects(
         children: nestedChildren.length > 0 ? nestedChildren : undefined,
         className: className,
         collectionGenericType: isCollection ? [itemComponent.typeRef!.__$$text] : undefined,
-        customBadgeContent: `${itemComponent.typeRef?.__$$text}${isCollection ? "[]" : ""}`,
+        customBadgeContent: `${itemComponent.typeRef?.__$$text ?? "<Undefined>"}${isCollection ? "[]" : ""}`,
         expressionElements: [...expressionElements, name],
       };
     });
@@ -136,8 +136,8 @@ function createChildrenTestScenarioObjects(
       id: [...expressionElements, name].join("."),
       name: name,
       className: isCollection ? "java.util.List" : rootDrgElementTypeRef,
-      collectionGenericType: isCollection ? [rootDrgElementTypeRef] : undefined,
-      customBadgeContent: `${rootDrgElementTypeRef}${isCollection ? "[]" : ""}`,
+      collectionGenericType: isCollection && rootDrgElementTypeRef ? [rootDrgElementTypeRef] : undefined,
+      customBadgeContent: `${rootDrgElementTypeRef ?? "<Undefined>"}${isCollection && rootDrgElementTypeRef ? "[]" : ""}`,
       expressionElements: expressionElements,
     });
   }
