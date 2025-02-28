@@ -43,7 +43,11 @@ type Repository struct {
 	Url  string
 }
 
-var filesToRemove = []string{"mvnw", "mvnw.cmd", ".mvn"}
+var filesToRemove = []string{"mvnw", "mvnw.cmd", ".mvn",
+	"src/test/java/org/acme/GreetingResourceTest.java",
+	"src/test/java/org/acme/GreetingResourceIT.java",
+	"src/main/java/org/acme/GreetingResource.java",
+}
 
 func CreateQuarkusProject(cfg CreateQuarkusProjectConfig) error {
 	if err := common.CheckProjectName(cfg.ProjectName); err != nil {
