@@ -40,6 +40,10 @@ export class EnvelopeClient<
     return this.manager.clientApi;
   }
 
+  public get shared() {
+    return this.manager.shared;
+  }
+
   constructor(
     private readonly bus: EnvelopeBus,
     private readonly envelopeId?: string

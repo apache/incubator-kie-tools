@@ -21,13 +21,17 @@ import {
   Editor,
   EditorFactory,
   EditorInitArgs,
+  KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
 import { TextEditorChannelApi } from "../api";
 import { TextEditorView } from "./TextEditorView";
 
-export class TextEditorFactory implements EditorFactory<Editor, TextEditorChannelApi> {
-  public async createEditor(ctx: KogitoEditorEnvelopeContextType<TextEditorChannelApi>, initArgs: EditorInitArgs) {
+export class TextEditorFactory implements EditorFactory<Editor, KogitoEditorEnvelopeApi, TextEditorChannelApi> {
+  public async createEditor(
+    ctx: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, TextEditorChannelApi>,
+    initArgs: EditorInitArgs
+  ) {
     return new TextEditorView(ctx, initArgs);
   }
 }

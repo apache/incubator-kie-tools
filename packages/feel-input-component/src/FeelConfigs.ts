@@ -86,6 +86,7 @@ export const feelDefaultConfig = (
     },
     wordBasedSuggestions: false,
     "semanticHighlighting.enabled": true,
+
     ...options,
   };
 };
