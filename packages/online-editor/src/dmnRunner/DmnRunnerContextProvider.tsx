@@ -127,7 +127,7 @@ function dmnRunnerResultsReducer(dmnRunnerResults: DmnRunnerResults, action: Dmn
 }
 
 /**
- * This transformation is needed for two reasons:
+ * This transformation is needed for these reasons:
  * ### -1- ###
  * DMN Runner backend return upper case constants: "SUCCEEDED", "FAILED", "SKIPPED"
  * DMN Editor code base uses lover case constants: "succeeded", "failed", "skipped"
@@ -149,28 +149,56 @@ function dmnRunnerResultsReducer(dmnRunnerResults: DmnRunnerResults, action: Dmn
  *     value: 2
  *   }
  * ]
+ *
+ * ### -3- ###
+ * DMN Runner backend return data spilt into junks corresponding to table row or collection item
+ * DMN Editor want to show aggregated data for everything together
+ *
+ * @param result - DMN Runner backend data
+ * @param evaluationResultsPerNode - transformed data for DMN Editor
  */
-function transformExtendedServicesDmnResult(result: ExtendedServicesDmnResult) {
-  const transformedStructure: Map<
+function transformExtendedServicesDmnResult(
+  result: ExtendedServicesDmnResult,
+  evaluationResultsPerNode: Map<
     string,
     { evaluationResult: "succeeded" | "failed" | "skipped"; evaluationHitsCount: Map<string, number> }
-  > = new Map<
-    string,
-    { evaluationResult: "succeeded" | "failed" | "skipped"; evaluationHitsCount: Map<string, number> }
-  >();
-
+  >
+) {
   result.decisionResults?.forEach((dr) => {
     const evaluationHitsCount = new Map<string, number>();
+    // ### -2- ###
     for (const [key, value] of Object.entries(dr.evaluationHitIds)) {
       evaluationHitsCount.set(`${key}`, value as number);
     }
-    transformedStructure.set(dr.decisionId, {
-      evaluationResult: dr.evaluationStatus.toLowerCase() as "succeeded" | "failed" | "skipped",
-      evaluationHitsCount: evaluationHitsCount,
-    });
+    // We want to merge evaluation results that belongs to the same Decision
+    // So we need to check if the Decision wasn't already partially processed
+    if (!evaluationResultsPerNode.has(dr.decisionId)) {
+      evaluationResultsPerNode.set(dr.decisionId, {
+        // ### -1- ###
+        evaluationResult: dr.evaluationStatus.toLowerCase() as "succeeded" | "failed" | "skipped",
+        evaluationHitsCount: evaluationHitsCount,
+      });
+    } else {
+      const existingEvaluationHitsCount = evaluationResultsPerNode.get(dr.decisionId)?.evaluationHitsCount;
+      evaluationHitsCount.forEach((value, key) => {
+        // ### -3- ###
+        if (existingEvaluationHitsCount?.has(key)) {
+          existingEvaluationHitsCount.set(key, (existingEvaluationHitsCount?.get(key) ?? 0) + value);
+        } else {
+          existingEvaluationHitsCount?.set(key, value);
+        }
+      });
+      // TODO - Question
+      // Here is an issue of merging evaluation results that belongs to the same Decision
+      // For example, what to do if first time evaluation was 'succeeded' and second time 'skipped'?
+      evaluationResultsPerNode.set(dr.decisionId, {
+        evaluationResult: dr.evaluationStatus.toLowerCase() as "succeeded" | "failed" | "skipped",
+        evaluationHitsCount: existingEvaluationHitsCount ?? new Map(),
+      });
+    }
   });
 
-  return transformedStructure;
+  return evaluationResultsPerNode;
 }
 
 export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
@@ -320,7 +348,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             }
 
             const runnerResults: Array<DecisionResult[] | undefined> = [];
-            let evaluationResultsPerNode: Map<
+            const evaluationResultsPerNode: Map<
               string,
               { evaluationResult: "succeeded" | "failed" | "skipped"; evaluationHitsCount: Map<string, number> }
             > = new Map();
@@ -331,8 +359,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
               }
               if (result) {
                 runnerResults.push(result.decisionResults);
-
-                evaluationResultsPerNode = transformExtendedServicesDmnResult(result);
+                transformExtendedServicesDmnResult(result, evaluationResultsPerNode);
               }
             }
             setDmnRunnerResults({ type: DmnRunnerResultsActionType.DEFAULT, newResults: runnerResults });
