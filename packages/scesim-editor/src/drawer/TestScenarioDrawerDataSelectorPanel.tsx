@@ -203,7 +203,10 @@ function TestScenarioDataSelectorPanel() {
       let filteredDataObjects: TestScenarioDataObject[] = [];
 
       // An Empty column has been selected. Filtering out all assigined Instances
-      if (!selectedColumnExpressionElement || selectedColumnExpressionElement?.ExpressionElement?.length === 0) {
+      if (
+        !selectedColumnExpressionElement?.ExpressionElement ||
+        selectedColumnExpressionElement?.ExpressionElement?.length === 0
+      ) {
         filteredDataObjects = dataObjects
           .map((object) => cloneDeep(object)) // Deep copy: the Objects may mutate due to children filtering
           .filter((dataObject) => isRootDataObjectAssignable(dataObject, assignedExpressionElements));
