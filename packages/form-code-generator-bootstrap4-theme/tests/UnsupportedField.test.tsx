@@ -22,10 +22,7 @@ import { renderField } from "./_render";
 import { UnsupportedField } from "../src/uniforms";
 
 const schema = {
-  friends: { type: Array },
-  "friends.$": Object,
-  "friends.$.name": { type: String },
-  "friends.$.age": { type: Number },
+  friends: { type: "foo" },
 };
 
 describe("<UnsupportedField> tests", () => {
@@ -34,16 +31,15 @@ describe("<UnsupportedField> tests", () => {
       id: "id",
       label: "Friends?",
       name: "friends",
-      disabled: false,
     };
 
     const { container, formElement } = renderField(UnsupportedField, props, schema);
 
     expect(container).toMatchSnapshot();
 
-    expect(formElement.html).toContain("Unsupported field type: Array");
+    expect(formElement.html).toContain("Unsupported field type: ");
     expect(formElement.html).toContain(
-      `Cannot find form control for property <code>${props.name}</code> with type <code>Array</code>.</p>`
+      `Cannot find form control for property <code>${props.name}</code> with type <code></code>.</p>`
     );
 
     expect(formElement.setValueFromModelCode).toBeUndefined();

@@ -23,11 +23,13 @@ import getMultipleRequiredCode from "!!raw-loader!../../resources/staticCode/get
 import input from "!!raw-loader!../../resources/templates/select.template";
 import setValueFromModel from "!!raw-loader!../../resources/templates/select.setModelData.template";
 import writeValueToModel from "!!raw-loader!../../resources/templates/select.writeModelData.template";
-import { FORM_GROUP_TEMPLATE, FormElementTemplate, FormElementTemplateProps } from "./types";
+import formGroupTemplate from "!!raw-loader!../../resources/templates/formGroup.template";
+import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
 import { CompiledTemplate, template } from "underscore";
-import { CodeFragment, FormInput } from "../../api";
-import { fieldNameToOptionalChain } from "./utils";
+import { FormInput } from "../../api";
+import { fieldNameToOptionalChain, getItemValeuPath } from "./utils";
 import { getInputReference } from "../utils/Utils";
+import { DEFAULT_LIST_INDEX_NAME, getCurrentItemSetModelData, getNormalizedListIdOrName } from "./ListFieldTemplate";
 
 export interface Option {
   value: string;
@@ -45,47 +47,53 @@ export class SelectFieldTemplate implements FormElementTemplate<FormInput, Selec
   private readonly inputTemplate: CompiledTemplate;
   private readonly setValueFromModelTemplate: CompiledTemplate;
   private readonly writeValueToModelTemplate: CompiledTemplate;
+  private readonly formGroupTemplate: CompiledTemplate;
 
   constructor() {
     this.inputTemplate = template(input);
     this.setValueFromModelTemplate = template(setValueFromModel);
     this.writeValueToModelTemplate = template(writeValueToModel);
+    this.formGroupTemplate = template(formGroupTemplate);
   }
 
   render(props: SelectFieldProps): FormInput {
-    const data = {
-      props: props,
-      input: this.inputTemplate({ props: props }),
-    };
-
     return {
       ref: getInputReference(props),
-      html: FORM_GROUP_TEMPLATE(data),
+      html: this.formGroupTemplate({
+        id: props.itemProps?.isListItem ? getNormalizedListIdOrName(props.id) : props.id,
+        label: props.label,
+        input: this.inputTemplate({
+          id: props.itemProps?.isListItem ? getNormalizedListIdOrName(props.id) : props.id,
+          name: props.itemProps?.isListItem ? getNormalizedListIdOrName(props.name) : props.name,
+          placeHolder: props.placeHolder,
+          disabled: props.disabled,
+          multiple: props.multiple,
+          options: props.options,
+          value: props.value,
+          label: props.label,
+        }),
+        isListItem: props.itemProps?.isListItem ?? false,
+      }),
       disabled: props.disabled,
-      setValueFromModelCode: this.buildSetValueFromModelCode(props),
-      writeValueToModelCode: this.writeValueToModelCode(props),
-    };
-  }
-
-  protected buildSetValueFromModelCode(props: SelectFieldProps): CodeFragment {
-    const properties = {
-      ...props,
-      path: fieldNameToOptionalChain(props.name),
-    };
-    return {
-      code: this.setValueFromModelTemplate(properties),
-      requiredCode: props.multiple ? [setMultipleRequiredCode] : [setRequiredCode],
-    };
-  }
-
-  protected writeValueToModelCode(props: SelectFieldProps): CodeFragment | undefined {
-    if (props.disabled) {
-      return undefined;
-    }
-
-    return {
-      requiredCode: props.multiple ? [getMultipleRequiredCode] : undefined,
-      code: this.writeValueToModelTemplate(props),
+      globalFunctions: undefined,
+      setValueFromModelCode: {
+        code: this.setValueFromModelTemplate({
+          ...props,
+          id: props.itemProps?.isListItem
+            ? getCurrentItemSetModelData(props.id, props.itemProps?.indexVariableName ?? DEFAULT_LIST_INDEX_NAME)
+            : props.id,
+          path: fieldNameToOptionalChain(props.name),
+          valuePath: props.itemProps?.isListItem ? getItemValeuPath(props.name) : "",
+          isListItem: props.itemProps?.isListItem ?? false,
+        }),
+        requiredCode: props.multiple ? [setMultipleRequiredCode] : [setRequiredCode],
+      },
+      writeValueToModelCode: props.disabled
+        ? undefined
+        : {
+            requiredCode: props.multiple ? [getMultipleRequiredCode] : undefined,
+            code: this.writeValueToModelTemplate(props),
+          },
     };
   }
 }

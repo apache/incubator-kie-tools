@@ -22,6 +22,7 @@ import { connectField, HTMLFieldProps } from "uniforms/cjs";
 import { DATE, renderCodeGenElement } from "./templates/templates";
 import { useAddFormElementToBootstrapContext } from "./BootstrapCodeGenContext";
 import { FormInput } from "../api";
+import { ListItemProps } from "./rendering/ListFieldInput";
 
 export type DateFieldProps = HTMLFieldProps<
   Date,
@@ -32,6 +33,7 @@ export type DateFieldProps = HTMLFieldProps<
     required: boolean;
     max?: Date;
     min?: Date;
+    itemProps?: ListItemProps;
   }
 >;
 
@@ -40,7 +42,7 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
     return date?.toISOString().slice(0, -8);
   }
 
-  const properties = {
+  const element: FormInput = renderCodeGenElement(DATE, {
     id: props.name,
     name: props.name,
     label: props.label,
@@ -50,9 +52,8 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
     value: formatDate(props.value),
     max: formatDate(props.max),
     min: formatDate(props.min),
-  };
-
-  const element: FormInput = renderCodeGenElement(DATE, properties);
+    itemProps: props.itemProps,
+  });
   useAddFormElementToBootstrapContext(element);
   return <>{JSON.stringify(element)}</>;
 };

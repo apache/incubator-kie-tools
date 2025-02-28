@@ -1,4 +1,4 @@
 <div class="form-check">
-    <input type="checkbox" id="<%=props.id%>" name="<%=props.name%>" class="form-check-input"<%=props.disabled ? " disabled" : ""%><%=props.checked ? " checked" : ""%>/>
-    <label class="form-check-label" for="<%=props.id%>"><%=props.label%></label>
+    <input type="checkbox" id="<%=id%>" name="<%=name%>" class="form-check-input"<%=disabled ? " disabled" : ""%><%=checked ? " checked" : ""%>/>
+    <label class="form-check-label" for="<%=id%>"><%=label%></label>
 </div>

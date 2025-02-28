@@ -1,11 +1,11 @@
 <input
       type="datetime-local"
-      id="<%=props.id%>"
-      name="<%=props.name%>"
+      id="<%=id%>"
+      name="<%=name%>"
       class="form-control"
-      <%=props.autoComplete==='off' ? ' autoComplete="off"' : ''%>
-      <%=props.disabled ? "disabled" : ""%>
-      <%=props.placeholder ? `placeholder="${props.placeholder}"` : ''%>
-      <%=props.min ? `min="${props.min}"` : ''%>
-      <%=props.max ? `max="${props.max}"` : ''%>
-      <%=props.value ? `value="${props.value}"` : ''%>/>
+      <%=autoComplete==='off' ? ' autoComplete="off"' : ''%>
+      <%=disabled ? "disabled" : ""%>
+      <%=placeholder ? `placeholder="${placeholder}"` : ''%>
+      <%=min ? `min="${min}"` : ''%>
+      <%=max ? `max="${max}"` : ''%>
+      <%=value ? `value="${value}"` : ''%>/>

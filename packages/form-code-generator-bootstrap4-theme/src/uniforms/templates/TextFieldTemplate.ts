@@ -21,7 +21,7 @@ import input from "!!raw-loader!../../resources/templates/input.template";
 import inputBindModelData from "!!raw-loader!../../resources/templates/input.setModelData.template";
 import inputWriteModelData from "!!raw-loader!../../resources/templates/input.writeModelData.template";
 import { template } from "underscore";
-import { AbstractFormGroupInputTemplate, FormElementTemplateProps } from "./types";
+import { AbstractFormGroupTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
 
 interface TextFieldProps extends FormElementTemplateProps<string> {
   type: string;
@@ -29,7 +29,7 @@ interface TextFieldProps extends FormElementTemplateProps<string> {
   placeholder: string;
 }
 
-export class TextFieldTemplate extends AbstractFormGroupInputTemplate<TextFieldProps> {
+export class TextFieldTemplate extends AbstractFormGroupTemplate<TextFieldProps> {
   constructor() {
     super(template(input), template(inputBindModelData), template(inputWriteModelData));
   }

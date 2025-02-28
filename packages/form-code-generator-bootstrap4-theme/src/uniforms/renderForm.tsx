@@ -32,7 +32,5 @@ interface Args {
 }
 
 export function renderForm(args: Args): string {
-  const form = React.createElement(AutoForm, { ...args });
-
-  return unescape(ReactDOMServer.renderToString(form));
+  return unescape(ReactDOMServer.renderToString(React.createElement(AutoForm, { ...args })));
 }

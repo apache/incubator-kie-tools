@@ -1,0 +1,5 @@
+<% if(!disabled) { %>
+formData.<%=name%> = Array.from(document.getElementById("<%=name%>").childNodes).reduce((values, element) => {
+  return [...values, getListValue(element)];
+}, []);
+<% } %>

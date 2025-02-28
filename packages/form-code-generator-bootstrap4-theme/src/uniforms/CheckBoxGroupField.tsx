@@ -22,6 +22,7 @@ import { connectField, HTMLFieldProps } from "uniforms/cjs";
 import { CHECKBOXGROUP, renderCodeGenElement } from "./templates/templates";
 import { useAddFormElementToBootstrapContext } from "./BootstrapCodeGenContext";
 import { FormInput } from "../api";
+import { ListItemProps } from "./rendering/ListFieldInput";
 
 export type CheckBoxGroupProps = HTMLFieldProps<
   string[],
@@ -32,28 +33,25 @@ export type CheckBoxGroupProps = HTMLFieldProps<
     allowedValues?: string[];
     required: boolean;
     transform?(value: string): string;
+    itemProps?: ListItemProps;
   }
 >;
 
 const CheckBoxGroup: React.FC<CheckBoxGroupProps> = (props: CheckBoxGroupProps) => {
-  const options =
-    props.allowedValues?.map((option) => {
+  const element: FormInput = renderCodeGenElement(CHECKBOXGROUP, {
+    id: props.name,
+    name: props.name,
+    label: props.label,
+    disabled: props.disabled,
+    itemProps: props.itemProps,
+    options: (props.allowedValues ?? [])?.map((option) => {
       return {
         value: option,
         label: props.transform ? props.transform(option) : option,
         checked: props.value?.includes(option),
       };
-    }) || [];
-
-  const inputProps = {
-    id: props.name,
-    name: props.name,
-    label: props.label,
-    disabled: props.disabled,
-    options: options,
-  };
-
-  const element: FormInput = renderCodeGenElement(CHECKBOXGROUP, inputProps);
+    }),
+  });
   useAddFormElementToBootstrapContext(element);
   return <>{JSON.stringify(element)}</>;
 };

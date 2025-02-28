@@ -21,7 +21,7 @@ import number from "!!raw-loader!../../resources/templates/number.template";
 import setValueFromModel from "!!raw-loader!../../resources/templates/input.setModelData.template";
 import writeValueToModel from "!!raw-loader!../../resources/templates/number.writeModelData.template";
 import { template } from "underscore";
-import { AbstractFormGroupInputTemplate, FormElementTemplateProps } from "./types";
+import { AbstractFormGroupTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
 
 interface NumFieldProps extends FormElementTemplateProps<string> {
   autoComplete: boolean;
@@ -31,7 +31,7 @@ interface NumFieldProps extends FormElementTemplateProps<string> {
   step: number;
 }
 
-export class NumFieldTemplate extends AbstractFormGroupInputTemplate<NumFieldProps> {
+export class NumFieldTemplate extends AbstractFormGroupTemplate<NumFieldProps> {
   constructor() {
     super(template(number), template(setValueFromModel), template(writeValueToModel));
   }

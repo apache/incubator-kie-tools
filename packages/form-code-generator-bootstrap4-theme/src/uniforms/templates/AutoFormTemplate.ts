@@ -20,7 +20,7 @@
 import form from "!!raw-loader!../../resources/templates/form.template";
 import * as prettier from "prettier";
 import trim from "lodash/trim";
-import { CodeGenTemplate } from "./types";
+import { CodeGenTemplate } from "./AbstractFormGroupTemplate";
 import { CompiledTemplate, template } from "underscore";
 import { CodeGenElement, FormElement } from "../../api";
 
@@ -36,12 +36,8 @@ export class AutoFormTemplate implements CodeGenTemplate<CodeGenElement, AutoFor
   }
 
   render(props: AutoFormProps): CodeGenElement {
-    const data = {
-      props: props,
-    };
-
     const rawTemplate = trim(
-      this.formTemplate(data)
+      this.formTemplate({ props })
         .split("\n")
         .filter((line) => line && line.trim().length > 0)
         .join("\n")

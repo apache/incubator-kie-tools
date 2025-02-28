@@ -1,1 +1,1 @@
-setCheckboxGroupValues("<%=name%>", data?.<%=path%>);
+<% if (isListItem) { %>setCheckboxGroupValues(`<%=name%>`, value<%= valuePath %> ?? "");<% } else { %>setCheckboxGroupValues("<%=name%>", data?.<%=path%>);<% } %>
