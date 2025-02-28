@@ -24,7 +24,11 @@ import {
   EditorTheme,
 } from "@kie-tools-core/editor/dist/api";
 import { GwtEditorWrapperFactory } from "@kie-tools/kie-bc-editors/dist/common";
-import { getServerlessWorkflowLanguageData, ServerlessWorkflowDiagramEditorChannelApi } from "../api";
+import {
+  getServerlessWorkflowLanguageData,
+  ServerlessWorkflowDiagramEditorChannelApi,
+  ServerlessWorkflowDiagramEditorEnvelopeApi,
+} from "../api";
 import { DiagramExposedInteropApi } from "../api/DiagramExposedInteropApi";
 import { DiagramService } from "../api/DiagramService";
 import {
@@ -41,12 +45,20 @@ export interface CustomWindow {
 declare let window: CustomWindow;
 
 export class ServerlessWorkflowDiagramEditorFactory
-  implements EditorFactory<ServerlessWorkflowDiagramEditor, ServerlessWorkflowDiagramEditorChannelApi>
+  implements
+    EditorFactory<
+      ServerlessWorkflowDiagramEditor,
+      ServerlessWorkflowDiagramEditorEnvelopeApi,
+      ServerlessWorkflowDiagramEditorChannelApi
+    >
 {
   constructor(private readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }) {}
 
   public createEditor(
-    ctx: KogitoEditorEnvelopeContextType<ServerlessWorkflowDiagramEditorChannelApi>,
+    ctx: KogitoEditorEnvelopeContextType<
+      ServerlessWorkflowDiagramEditorEnvelopeApi,
+      ServerlessWorkflowDiagramEditorChannelApi
+    >,
     initArgs: EditorInitArgs
   ): Promise<ServerlessWorkflowDiagramEditor> {
     window.envelope = {

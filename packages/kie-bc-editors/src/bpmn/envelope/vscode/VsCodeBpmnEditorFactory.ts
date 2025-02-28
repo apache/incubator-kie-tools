@@ -22,6 +22,7 @@ import { BpmnEditor } from "../BpmnEditor";
 import { JavaCodeCompletionApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import { BpmnEditorFactory } from "../BpmnEditorFactory";
 import { VsCodeBpmnEditorChannelApi } from "./VsCodeBpmnEditorChannelApi";
+import { BpmnEditorEnvelopeApi } from "../../api";
 
 export interface CustomWindow extends Window {
   envelope: {
@@ -32,7 +33,9 @@ export interface CustomWindow extends Window {
 declare let window: CustomWindow;
 
 class JavaCodeCompletionService implements JavaCodeCompletionApi {
-  constructor(private readonly envelopeContext: KogitoEditorEnvelopeContextType<VsCodeBpmnEditorChannelApi>) {}
+  constructor(
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<BpmnEditorEnvelopeApi, VsCodeBpmnEditorChannelApi>
+  ) {}
   getAccessors(fqcn: string, query: string) {
     return this.envelopeContext.channelApi.requests.kogitoJavaCodeCompletion__getAccessors(fqcn, query);
   }
@@ -44,11 +47,13 @@ class JavaCodeCompletionService implements JavaCodeCompletionApi {
   }
 }
 
-export class VsCodeBpmnEditorFactory implements EditorFactory<BpmnEditor, VsCodeBpmnEditorChannelApi> {
+export class VsCodeBpmnEditorFactory
+  implements EditorFactory<BpmnEditor, BpmnEditorEnvelopeApi, VsCodeBpmnEditorChannelApi>
+{
   constructor(private readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }) {}
 
   public createEditor(
-    ctx: KogitoEditorEnvelopeContextType<VsCodeBpmnEditorChannelApi>,
+    ctx: KogitoEditorEnvelopeContextType<BpmnEditorEnvelopeApi, VsCodeBpmnEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<BpmnEditor> {
     window.envelope = {

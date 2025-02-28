@@ -24,14 +24,17 @@ import {
   EditorTheme,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
-import { ServerlessWorkflowTextEditorChannelApi } from "../api";
+import { ServerlessWorkflowTextEditorChannelApi, ServerlessWorkflowTextEditorEnvelopeApi } from "../api";
 import { ServerlessWorkflowTextEditorView } from "./ServerlessWorkflowTextEditorView";
 
 export class ServerlessWorkflowTextEditorFactory
-  implements EditorFactory<Editor, ServerlessWorkflowTextEditorChannelApi>
+  implements EditorFactory<Editor, ServerlessWorkflowTextEditorEnvelopeApi, ServerlessWorkflowTextEditorChannelApi>
 {
   public async createEditor(
-    ctx: KogitoEditorEnvelopeContextType<ServerlessWorkflowTextEditorChannelApi>,
+    ctx: KogitoEditorEnvelopeContextType<
+      ServerlessWorkflowTextEditorEnvelopeApi,
+      ServerlessWorkflowTextEditorChannelApi
+    >,
     initArgs: EditorInitArgs
   ) {
     ctx.supportedThemes = [EditorTheme.LIGHT, EditorTheme.DARK];

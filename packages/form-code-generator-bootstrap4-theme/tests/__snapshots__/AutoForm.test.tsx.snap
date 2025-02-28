@@ -5,7 +5,7 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
   &lt;div&gt;
 	&lt;fieldset&gt;
 		&lt;legend&gt;Personal data&lt;/legend&gt;
-		&lt;div&gt;
+		&lt;div role=&quot;group&quot;&gt;
 			&lt;div class=&quot;form-group&quot;&gt;
 				&lt;label for=&quot;personalData.name&quot;&gt;Name&lt;/label&gt;
 				&lt;input type=&quot;text&quot; id=&quot;personalData.name&quot; name=&quot;personalData.name&quot; class=&quot;form-control&quot; value=&quot;&quot; /&gt;
@@ -18,7 +18,7 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 	&lt;/fieldset&gt;
 	&lt;fieldset&gt;
 		&lt;legend&gt;Address&lt;/legend&gt;
-		&lt;div&gt;
+		&lt;div role=&quot;group&quot;&gt;
 			&lt;div class=&quot;form-group&quot;&gt;
 				&lt;label for=&quot;address.street&quot;&gt;Street&lt;/label&gt;
 				&lt;input type=&quot;text&quot; id=&quot;address.street&quot; name=&quot;address.street&quot; class=&quot;form-control&quot; value=&quot;&quot; /&gt;
@@ -39,7 +39,7 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 	&lt;/fieldset&gt;
 	&lt;fieldset&gt;
 		&lt;legend&gt;Interview&lt;/legend&gt;
-		&lt;div&gt;
+		&lt;div role=&quot;group&quot;&gt;
 			&lt;div class=&quot;form-group&quot;&gt;
 				&lt;label for=&quot;interview.position&quot;&gt;Position&lt;/label&gt;
 				&lt;select class=&quot;form-control&quot; id=&quot;interview.position&quot; name=&quot;interview.position&quot;&gt;
@@ -116,16 +116,251 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/fieldset&gt;
-	&lt;div class=&quot;alert alert-warning&quot; role=&quot;alert&quot;&gt;
-		&lt;h4 class=&quot;alert-heading&quot;&gt;Unsupported field type: Array&lt;/h4&gt;
-		&lt;p&gt;Cannot find form control for property &lt;code&gt;friends&lt;/code&gt; with type &lt;code&gt;Array&lt;/code&gt;.&lt;/p&gt;
-		&lt;hr /&gt;
-		&lt;p class=&quot;mb-0&quot;&gt;
-			Some complex property types, such as &lt;code&gt;Array&lt;/code&gt; aren&#39;t yet supported, however, you can still write your own component into the
-			form and manually bind it.
-		&lt;/p&gt;
+	&lt;div class=&quot;form-group&quot;&gt;
+		&lt;div class=&quot;card mb-3&quot;&gt;
+			&lt;div class=&quot;card-body&quot;&gt;
+				&lt;div class=&quot;card-title&quot;&gt;
+					&lt;label class=&quot;col-form-label&quot;&gt;Friends&lt;/label&gt;
+					&lt;div
+						id=&quot;add-item-friends&quot;
+						name=&quot;Add Item&quot;
+						class=&quot;badge badge-pill float-right&quot;
+						role=&quot;button&quot;
+						tabindex=&quot;0&quot;
+						onclick=&quot;onAddListItemFriends(&#39;friends&#39;)&quot;
+						onkeydown=&quot;onAddListItemFriends(&#39;friends&#39;)&quot;
+					&gt;
+						&lt;i className=&quot;octicon octicon-plus&quot;&gt;&lt;span&gt;+&lt;/span&gt;&lt;/i&gt;
+					&lt;/div&gt;
+				&lt;/div&gt;
+				&lt;div role=&quot;list&quot; id=&quot;friends&quot;&gt;&lt;/div&gt;
+			&lt;/div&gt;
+		&lt;/div&gt;
 	&lt;/div&gt;
 	&lt;script&gt;
+		// List Field Helper functions -- START --
+		function delListItem(name, minCount, itemIndex, onDelListItem) {
+			const formData = getFormData();
+			const value = accessObjectPath(formData, name) ?? [];
+			if ((minCount ?? 0) &lt;= value.length) {
+				document.getElementById(\`item-\${name}.\${itemIndex}\`).remove();
+			}
+			// Re-organize list
+			Array.from(document.getElementById(name).childNodes ?? [])
+				.filter((node) =&gt; node.nodeType === 1)
+				.forEach((element, index) =&gt; {
+					const delElement = element.querySelector(\`[id=&#39;remove-item-\${name}&#39;]\`);
+					delElement.onclick = function () {
+						onDelListItem(name, \`\${index}\`);
+					};
+					delElement.onkeydown = function () {
+						onDelListItem(name, \`\${index}\`);
+					};
+					const inputOrSelect = element.querySelector(&quot;input, select&quot;);
+					inputOrSelect.id = \`\${name}.\${index}\`;
+					inputOrSelect.name = \`\${name}.\${index}\`;
+					element.id = \`item-\${name}.\${index}\`;
+				});
+		}
+		function addListItem(name, defaultValue, maxCount, childrenHtml, functionName) {
+			const formData = getFormData();
+			let value = accessObjectPath(formData, name) ?? [];
+			const itemIndex = value.length;
+			if (maxCount !== undefined &amp;&amp; maxCount &gt; value.length) {
+				value = value.concat([defaultValue]);
+			} else {
+				value = value.concat([defaultValue]);
+			}
+			const listContainer = document.getElementById(name);
+			const newItem = document.createElement(&quot;div&quot;);
+			newItem.class = &quot;row&quot;;
+			newItem.id = \`item-\${name}.\${itemIndex}\`;
+			newItem.innerHTML = \`
+&lt;div class=&quot;col-1&quot;&gt;
+&lt;span id=&quot;remove-item-\${name}&quot; name=&quot;Remove Item&quot; class=&quot;badge badge-pill&quot; role=&quot;button&quot; tabindex=&quot;0&quot; onclick=&quot;onDelListItem\${functionName}(&#39;\${name}&#39;, \${itemIndex})&quot; onkeydown=&quot;onDelListItem\${functionName}(&#39;\${name}&#39;, \${itemIndex})&quot;&gt;
+  &lt;i className=&quot;octicon octicon-dash&quot;&gt;&lt;span&gt;-&lt;/span&gt;&lt;/i&gt;
+&lt;/span&gt;
+&lt;/div&gt;
+&lt;div class=&quot;col-11&quot;&gt;
+\${childrenHtml}
+&lt;/div&gt;
+\`;
+			listContainer.appendChild(newItem);
+			// Replace all &quot;$&quot; from \`input\` and \`select\` with the \`itemIndex\`
+			const newItemElement = document.getElementById(newItem.id);
+			[...newItemElement.querySelectorAll(&#39;input[id*=&quot;$&quot;], select[id*=&quot;$&quot;]&#39;)].forEach((el) =&gt; {
+				if (el.id.split(&quot;.&quot;).pop() !== &quot;$&quot;) {
+					el.id = \`\${name}.\${itemIndex}.\${el.id.split(&quot;.&quot;).pop()}\`;
+					el.name = \`\${name}.\${itemIndex}.\${el.id.split(&quot;.&quot;).pop()}\`;
+				} else {
+					el.id = \`\${name}.\${itemIndex}\`;
+					el.name = \`\${name}.\${itemIndex}\`;
+				}
+			});
+			// Get the root element of a nested list
+			[...newItemElement.querySelectorAll(&quot;div[role=&#39;list&#39;]&quot;)].forEach((nestedListContainer) =&gt; {
+				if (!nestedListContainer) {
+					return;
+				}
+				// Replace &quot;$&quot; from the root element if necessary
+				const nestedListPathWithIndex = splitLastOccurrence(nestedListContainer.id, &quot;$&quot;)?.[1]?.replace(&quot;$&quot;, \`\${itemIndex}\`);
+				nestedListContainer.id = nestedListPathWithIndex ? \`\${name}.\${nestedListPathWithIndex}\` : name;
+				// Replace &quot;$&quot; from all nested Add Item element
+				[...newItemElement.querySelectorAll(&quot;[id^=add-item]&quot;)].forEach((addItem) =&gt; {
+					const addItemPathWithIndex = splitLastOccurrence(addItem.id, &quot;$&quot;)?.[1]?.replace(&quot;$&quot;, \`\${itemIndex}\`);
+					addItem.id = addItemPathWithIndex ? \`add-item-\${name}.\${addItemPathWithIndex}\` : \`add-item-\${name}\`;
+					const addItemOnClick = addItem.getAttribute(&quot;onclick&quot;);
+					if (addItemOnClick) {
+						addItem.setAttribute(&quot;onclick&quot;, getFunctionName(addItemOnClick, itemIndex));
+					}
+					const addItemOnKeydown = addItem.getAttribute(&quot;onkeydown&quot;);
+					if (addItemOnKeydown) {
+						addItem.setAttribute(&quot;onkeydown&quot;, getFunctionName(addItemOnKeydown, itemIndex));
+					}
+				});
+				// Replace &quot;$&quot; from the Remove Item element
+				[...newItemElement.querySelectorAll(&quot;[id^=remove-item]&quot;)].forEach((removeItem) =&gt; {
+					const removeItemPathWithIndex = splitLastOccurrence(removeItem.id, &quot;$&quot;)?.[1]?.replace(&quot;$&quot;, \`\${itemIndex}\`);
+					removeItem.id = removeItemPathWithIndex ? \`remove-item-\${name}.\${removeItemPathWithIndex}\` : \`remove-item-\${name}\`;
+					const removeItemOnClick = removeItem.getAttribute(&quot;onclick&quot;);
+					if (removeItemOnClick) {
+						removeItem.setAttribute(&quot;onclick&quot;, getFunctionName(removeItemOnClick, itemIndex));
+					}
+					const removeItemOnKeydown = removeItem.getAttribute(&quot;onkeydown&quot;);
+					if (removeItemOnKeydown) {
+						removeItem.setAttribute(&quot;onkeydown&quot;, getFunctionName(removeItemOnKeydown, itemIndex));
+					}
+				});
+			});
+		}
+		function getFunctionName(functionCall, itemIndex) {
+			const [call, argument, end] = functionCall.split(&quot;&#39;&quot;);
+			const [argumentName, argumentNameToReplace] = splitLastOccurrence(argument, &quot;$&quot;);
+			return \`\${call}&#39;\${argumentName}\${argumentNameToReplace?.replace(&quot;$&quot;, \`\${itemIndex}\`) ?? &quot;&quot;}&#39;\${end}\`;
+		}
+		function splitLastOccurrence(str, char) {
+			const lastIndex = str.lastIndexOf(char);
+			if (lastIndex === -1) {
+				return [str];
+			}
+			return [str.substring(0, lastIndex), str.substring(lastIndex)];
+		}
+		function getListValue(itemListElement) {
+			function setValue(obj, path, value) {
+				const keys = path.split(&quot;.&quot;);
+				let current = obj;
+				for (let i = 0; i &lt; keys.length; i++) {
+					const key = keys[i];
+					const isArray = !isNaN(keys[i + 1]);
+					if (i === keys.length - 1) {
+						current[key] = value;
+					} else {
+						if (!current[key]) {
+							current[key] = isArray ? [] : {};
+						}
+						if (isArray &amp;&amp; !Array.isArray(current[key])) {
+							current[key] = [];
+						}
+						current = current[key];
+					}
+				}
+			}
+			function traverse(element, result, path = &quot;&quot;) {
+				element.querySelectorAll(&quot;input, select&quot;).forEach((input) =&gt; {
+					if (input.id) {
+						setValue(result, input.id, input.value || &quot;&quot;);
+					}
+				});
+			}
+			const result = {};
+			traverse(itemListElement, result);
+			const [_, path] = itemListElement.id.split(&quot;item-&quot;);
+			return accessObjectPath(result, path);
+		}
+		function accessObjectPath(obj, objPath) {
+			return objPath.split(&quot;.&quot;)?.reduce((acc, pathPiece) =&gt; acc?.[pathPiece], obj);
+		}
+		// List Field Helper functions -- END --
+		function onDelListItemFriends(name, itemIndex) {
+			const disabled = false;
+			if (!disabled) {
+				delListItem(name, undefined, itemIndex, onDelListItemFriends);
+			}
+		}
+		function onAddListItemFriends(name, initialSetValues) {
+			const disabled = false;
+			if (!disabled || initialSetValues) {
+				addListItem(
+					name,
+					undefined,
+					undefined,
+					\`&lt;fieldset&gt;
+    &lt;legend&gt;Friends&lt;/legend&gt;
+    &lt;div role=&quot;group&quot;&gt;
+        &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;item-\${name}.$.name&quot;&gt;Name&lt;/label&gt;
+    &lt;input type=&quot;text&quot;
+    id=&quot;\${name}.$.name&quot;
+    name=&quot;\${name}.$.name&quot;
+    class=&quot;form-control&quot;
+    value=&quot;&quot;/&gt;
+&lt;/div&gt;
+        &lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;item-\${name}.$.age&quot;&gt;Age&lt;/label&gt;
+    &lt;input
+    type=&quot;number&quot;
+    class=&quot;form-control&quot;
+    id=&quot;\${name}.$.age&quot;
+    name=&quot;\${name}.$.age&quot;
+    step=&quot;0.01&quot;
+    value=&quot;&quot;/&gt;
+&lt;/div&gt;
+        &lt;div class=&quot;form-group&quot;&gt;
+    &lt;div class=&quot;card mb-3&quot;&gt;
+    &lt;div class=&quot;card-body&quot;&gt;
+        &lt;div class=&quot;card-title&quot;&gt;
+            &lt;label class=&quot;col-form-label&quot;&gt;Known&lt;/label&gt;
+            &lt;div id=&quot;add-item-\${name}.$.known&quot; name=&quot;Add Item&quot; class=&quot;badge badge-pill float-right&quot; role=&quot;button&quot; tabindex=&quot;0&quot; 
+                onclick=&quot;onAddListItemFriends$Known(&#39;\${name}.$.known&#39;)&quot;
+                onkeydown=&quot;onAddListItemFriends$Known(&#39;\${name}.$.known&#39;)&quot;&gt;
+                &lt;i className=&quot;octicon octicon-plus&quot;&gt;&lt;span&gt;+&lt;/span&gt;&lt;/i&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+        &lt;div role=&quot;list&quot; id=&quot;\${name}.$.known&quot;&gt;&lt;/div&gt;
+    &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/fieldset&gt;\`,
+					&quot;Friends&quot;
+				);
+			}
+		}
+		function onDelListItemFriends$Known(name, itemIndex) {
+			const disabled = false;
+			if (!disabled) {
+				delListItem(name, undefined, itemIndex, onDelListItemFriends$Known);
+			}
+		}
+		function onAddListItemFriends$Known(name, initialSetValues) {
+			const disabled = false;
+			if (!disabled || initialSetValues) {
+				addListItem(
+					name,
+					undefined,
+					undefined,
+					\`&lt;div class=&quot;form-group&quot;&gt;
+    &lt;label for=&quot;item-\${name}.$&quot;&gt;Known&lt;/label&gt;
+    &lt;input type=&quot;text&quot;
+    id=&quot;\${name}.$&quot;
+    name=&quot;\${name}.$&quot;
+    class=&quot;form-control&quot;
+    value=&quot;&quot;/&gt;
+&lt;/div&gt;\`,
+					&quot;Friends$Known&quot;
+				);
+			}
+		}
 		/* Utility function that fills the form with the data received from the kogito runtime */
 		function setFormData(data) {
 			if (!data) {
@@ -182,6 +417,19 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			document.getElementById(&quot;interview.hiringDate&quot;).value = data?.interview?.hiringDate
 				? new Date(data?.interview?.hiringDate).toISOString().slice(0, 16)
 				: &quot;&quot;;
+			data?.friends?.forEach((value, index) =&gt; {
+				// Add element;
+				onAddListItemFriends(\`friends\`, true);
+				const itemIndex__currentItem = \`friends.\${index}\`;
+				document.getElementById(\`\${itemIndex__currentItem}.name\`).value = value?.name ?? &quot;&quot;;
+				document.getElementById(\`\${itemIndex__currentItem}.age\`).value = value?.age ?? &quot;&quot;;
+				value?.known?.forEach((value, index) =&gt; {
+					// Add element;
+					onAddListItemFriends$Known(\`\${itemIndex__currentItem}.known\`, true);
+					const nested__itemIndex__currentItem = \`\${itemIndex__currentItem}.known.\${index}\`;
+					document.getElementById(\`\${nested__itemIndex__currentItem}\`).value = value ?? &quot;&quot;;
+				});
+			});
 		}
 		/* Utility function to generate the expected form output as a json object */
 		function getFormData() {
@@ -234,6 +482,9 @@ exports[`<AutoForm> tests <AutoForm> - Full rendering 1`] = `
 			formData.interview.rating = getRadioButtonGroupValue(&quot;interview.rating&quot;);
 			formData.interview.hire = document.getElementById(&quot;interview.hire&quot;).checked;
 			formData.interview.hiringDate = document.getElementById(&quot;interview.hiringDate&quot;).value;
+			formData.friends = Array.from(document.getElementById(&quot;friends&quot;).childNodes).reduce((values, element) =&gt; {
+				return [...values, getListValue(element)];
+			}, []);
 			return formData;
 		}
 		/* Utility function to validate the form on the &#39;beforeSubmit&#39; Lifecycle Hook */

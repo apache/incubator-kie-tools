@@ -23,6 +23,7 @@ import {
   EditorFactory,
   EditorInitArgs,
   KogitoEditorChannelApi,
+  KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
@@ -60,7 +61,9 @@ export interface CustomWindow extends Window {
 
 declare let window: CustomWindow;
 
-export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements EditorFactory<E, KogitoEditorChannelApi> {
+export class GwtEditorWrapperFactory<E extends GwtEditorWrapper>
+  implements EditorFactory<E, KogitoEditorEnvelopeApi, KogitoEditorChannelApi>
+{
   constructor(
     private readonly languageData: GwtLanguageData,
     private readonly gwtEditorDelegate: (factory: GwtEditorWrapperFactory<E>, initArgs: EditorInitArgs) => E,
@@ -74,7 +77,7 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
   public gwtEditor: E;
 
   public createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
     initArgs: EditorInitArgs
   ) {
     this.kieBcEditorsI18n.setLocale(initArgs.initialLocale);
@@ -105,7 +108,7 @@ export class GwtEditorWrapperFactory<E extends GwtEditorWrapper> implements Edit
   }
 
   private exposeEnvelopeContext(
-    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
     initArgs: EditorInitArgs
   ) {
     window.gwt = {

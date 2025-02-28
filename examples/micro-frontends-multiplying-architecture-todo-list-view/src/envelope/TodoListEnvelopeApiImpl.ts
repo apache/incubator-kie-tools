@@ -21,6 +21,7 @@ import { TodoListEnvelopeContext } from "./TodoListEnvelopeContext";
 import { Association, TodoListChannelApi, TodoListEnvelopeApi, TodoListInitArgs } from "../api";
 import { TodoListEnvelopeViewApi } from "./TodoListEnvelopeView";
 import { EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
+import { SharedValueProvider } from "@kie-tools-core/envelope-bus/dist/api";
 
 /**
  * Implements the TodoListEnvelopeApi.
@@ -73,5 +74,14 @@ export class TodoListEnvelopeApiImpl implements TodoListEnvelopeApi {
    */
   public todoList__markAllAsCompleted() {
     this.view().markAllAsCompleted();
+  }
+
+  /**
+   * Holds the current count of items in the list
+   */
+  public todoList__itemsCount(): SharedValueProvider<number> {
+    return {
+      defaultValue: 0,
+    };
   }
 }

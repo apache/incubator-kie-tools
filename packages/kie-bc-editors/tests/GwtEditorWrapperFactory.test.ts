@@ -107,6 +107,7 @@ describe("GwtEditorWrapperFactory", () => {
 
     const editorCreation = gwtEditorWrapperFactory.createEditor(
       {
+        shared: {} as any,
         channelApi: channelApiMock,
         services: {
           keyboardShortcuts: {} as any,
