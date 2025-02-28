@@ -17,19 +17,35 @@
  * under the License.
  */
 
-export function getCookie(name: string) {
-  const value = "; " + document.cookie;
-  const parts = value.split("; " + name + "=");
-
-  if (parts.length === 2) {
-    return parts.pop()!.split(";").shift();
-  }
+.feel-input-textbox {
+  overflow: hidden;
 }
 
-export function setCookie(name: string, value: string) {
-  const date = new Date();
+.feel-input-textbox .feel-input {
+  width: 100%;
+}
 
-  date.setTime(date.getTime() + 10 * 365 * 24 * 60 * 60); // expires in 10 years
+/* This is a workaround for an issue when the Monaco editor is inside an object that have its position changed by a
+ transform. In our case, the Popup uses transform: translate() to position. So we are manual position the
+  suggest widget and its details just bellow the Textbox. */
+.feel-input-textbox .feel-input .suggest-widget {
+  top: 60px !important;
+  left: 14px !important;
+}
+.feel-input-textbox .feel-input .suggest-details-container {
+  top: 60px !important;
+  left: 430px !important;
+}
 
-  document.cookie = name + "=" + value + "; expires=" + date.toUTCString() + "; path=/";
+.feel-input-textbox .feel-input {
+  position: relative;
+  top: 0;
+  left: 0;
+}
+
+.feel-input-textbox .feel-input,
+.feel-input-textbox .feel-input > div {
+  position: relative;
+  height: 100%;
+  text-align: left;
 }

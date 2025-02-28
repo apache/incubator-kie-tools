@@ -38,6 +38,7 @@ import { getMarshaller, SceSimMarshaller, SceSimModel } from "@kie-tools/scesim-
 import { EMPTY_ONE_EIGHT } from "@kie-tools/scesim-editor/dist/resources/EmptyScesimFile";
 
 export const DMN_MODELS_SEARCH_GLOB_PATTERN = "**/*.dmn";
+export const TARGET_DIRECTORY = "target/classes/";
 
 export type TestScenarioEditorRootProps = {
   exposing: (s: TestScenarioEditorRoot) => void;
@@ -215,7 +216,10 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
       });
 
       return list.normalizedPosixPathsRelativeToTheWorkspaceRoot.flatMap((p) =>
-        __path.relative(__path.dirname(this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot!), p)
+        // Filter out assets into target/classes directory
+        p.includes(TARGET_DIRECTORY)
+          ? []
+          : __path.relative(__path.dirname(this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot!), p)
       );
     };
 
@@ -415,9 +419,8 @@ function ExternalModelsManager({
         for (let i = 0; i < list.normalizedPosixPathsRelativeToTheWorkspaceRoot.length; i++) {
           const normalizedPosixPathRelativeToTheWorkspaceRoot = list.normalizedPosixPathsRelativeToTheWorkspaceRoot[i];
 
-          if (
-            normalizedPosixPathRelativeToTheWorkspaceRoot === thisScesimNormalizedPosixPathRelativeToTheWorkspaceRoot
-          ) {
+          // Filter out assets into target/classes directory
+          if (normalizedPosixPathRelativeToTheWorkspaceRoot.includes(TARGET_DIRECTORY)) {
             continue;
           }
 

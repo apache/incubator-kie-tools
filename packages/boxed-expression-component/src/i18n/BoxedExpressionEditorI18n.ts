@@ -57,6 +57,7 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
   editRelation: string;
   enterFunction: string;
   enterText: string;
+  expression: string;
   delete: string;
   function: string;
   hitPolicy: string;
