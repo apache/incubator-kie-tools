@@ -32,12 +32,7 @@ export type AutoFormProps = {
 };
 
 const AutoForm: React.FC<AutoFormProps> = (props) => {
-  const properties = {
-    children: renderFormInputs(props.schema),
-  };
-
-  const form: CodeGenElement = renderCodeGenElement(FORM, properties);
-
+  const form: CodeGenElement = renderCodeGenElement(FORM, { children: renderFormInputs(props.schema) });
   return <>{escape(form.html)}</>;
 };
 

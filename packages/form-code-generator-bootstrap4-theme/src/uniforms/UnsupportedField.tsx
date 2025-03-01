@@ -22,6 +22,7 @@ import { FormInput } from "../api";
 import { connectField, HTMLFieldProps } from "uniforms/cjs";
 import { renderCodeGenElement, UNSUPPORTED } from "./templates/templates";
 import { useAddFormElementToBootstrapContext } from "./BootstrapCodeGenContext";
+import { ListItemProps } from "./rendering/ListFieldInput";
 
 export type UnsupportedFieldProps = HTMLFieldProps<
   any,
@@ -29,18 +30,17 @@ export type UnsupportedFieldProps = HTMLFieldProps<
   {
     label: string;
     required: boolean;
+    itemProps: ListItemProps;
   }
 >;
 
 const Unsupported: React.FC<UnsupportedFieldProps> = (props: UnsupportedFieldProps) => {
-  const properties = {
-    id: props.id,
-    label: props.label,
+  const element: FormInput = renderCodeGenElement(UNSUPPORTED, {
+    id: props.name,
     name: props.name,
+    label: props.label,
     fieldType: props.fieldType.name,
-  };
-
-  const element: FormInput = renderCodeGenElement(UNSUPPORTED, properties);
+  });
   useAddFormElementToBootstrapContext(element);
   return <>{JSON.stringify(element)}</>;
 };

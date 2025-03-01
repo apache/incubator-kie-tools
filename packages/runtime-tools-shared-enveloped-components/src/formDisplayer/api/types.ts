@@ -58,12 +58,3 @@ export interface Association {
   origin: string;
   envelopeServerId: string;
 }
-
-export interface FormResources {
-  scripts: {
-    [key: string]: string;
-  };
-  styles: {
-    [key: string]: string;
-  };
-}

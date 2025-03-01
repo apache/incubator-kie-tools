@@ -1,1 +1,1 @@
-document.getElementById("<%=id%>").value = data?.<%=path%> ? new Date(data?.<%=path%>).toISOString().slice(0, 16) : "";
+<% if (isListItem) { %>document.getElementById(`<%=id%>`).value = value<%= valuePath %> ? new Date(value<%= valuePath %>).toISOString().slice(0, 16) : "";<% } else { %>document.getElementById("<%=id%>").value = data?.<%=path%> ? new Date(data?.<%=path%>).toISOString().slice(0, 16) : "";<% } %>
