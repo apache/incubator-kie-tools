@@ -28,7 +28,7 @@ import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 export interface TaskFormGatewayApi {
   getTaskFormSchema(userTask: UserTaskInstance, headers?: any): Promise<Record<string, any>>;
 
-  getCustomForm(userTask: UserTaskInstance): Promise<Form>;
+  getCustomForm(userTask: UserTaskInstance, headers?: any): Promise<Form>;
 
   doSubmit(userTask: UserTaskInstance, phase: string, payload: any, headers?: any): Promise<any>;
 
@@ -92,6 +92,27 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
     });
   }
 
+  fetchCustomForm(endpoint: string, headers?: any) {
+    return new Promise<Form>((resolve, reject) => {
+      axios
+        .get(this.replaceEndpointBaseUrl(endpoint), {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            ...headers,
+          },
+        })
+        .then((response) => {
+          if (response.status == 200) {
+            resolve(response.data);
+          } else {
+            reject(response);
+          }
+        })
+        .catch((error) => reject(error));
+    });
+  }
+
   fetchTaskTransitionPhases(endpoint: string, headers?: any) {
     return new Promise<string[]>((resolve, reject) => {
       axios
@@ -128,8 +149,10 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
     return this.fetchTaskFormSchema(endpoint, headers);
   }
 
-  getCustomForm(userTask: UserTaskInstance): Promise<Form> {
-    return Promise.reject();
+  getCustomForm(userTask: UserTaskInstance, headers?: any): Promise<Form> {
+    const baseUrl = cleanUserTaskEndpoint(userTask);
+    const endpoint = `${baseUrl}/forms/${userTask.processId}_${userTask.name}`;
+    return this.fetchCustomForm(endpoint, headers);
   }
 
   getTaskPhases(userTask: UserTaskInstance, headers?: any): Promise<string[]> {
