@@ -32,20 +32,20 @@ import (
 
 	v1 "k8s.io/api/apps/v1"
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
+	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/meta"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/util/yaml"
-	"k8s.io/apimachinery/pkg/api/errors"
 
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/tools/portforward"
-	"k8s.io/client-go/transport/spdy"
 	"k8s.io/client-go/dynamic"
+	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/tools/clientcmd/api"
+	"k8s.io/client-go/tools/portforward"
+	"k8s.io/client-go/transport/spdy"
 )
 
 type GoAPI struct{}
@@ -273,7 +273,7 @@ func (m GoAPI) GetDeploymentStatus(namespace, deploymentName string) (v1.Deploym
 	if err != nil {
 		return v1.DeploymentStatus{}, fmt.Errorf("❌ ERROR: Failed to create k8s client: %v", err)
 	}
-	deployments, err := newConfig.AppsV1().Deployments("default").List(context.TODO(), metav1.ListOptions{
+	deployments, err := newConfig.AppsV1().Deployments(namespace).List(context.TODO(), metav1.ListOptions{
 		LabelSelector: fmt.Sprintf("sonataflow.org/workflow-app=%s", deploymentName),
 	})
 

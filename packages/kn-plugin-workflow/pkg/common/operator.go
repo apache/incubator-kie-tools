@@ -309,6 +309,24 @@ func (m OperatorManager) RemoveCSV() error {
 	return fmt.Errorf("❌ ERROR: CSV `sonataflow-operator` not found in namespace %s\n", m.namespace)
 }
 
+func (m OperatorManager) ListOperatorResources() ([]unstructured.Unstructured, error) {
+	resources, err := m.dynamicClient.Resource(clusterServiceVersionsGVR).List(context.Background(), v1.ListOptions{})
+	if err != nil {
+		return nil, fmt.Errorf("❌ ERROR: Failed to list resources: %v", err)
+	}
+
+	if len(resources.Items) == 0 {
+		return nil, fmt.Errorf("❌ No resources found")
+	}
+	var result []unstructured.Unstructured
+	for _, csv := range resources.Items {
+		if strings.HasPrefix(csv.GetName(), metadata.SonataFlowOperatorName) {
+			result = append(result, csv)
+		}
+	}
+	return result, nil
+}
+
 func (m OperatorManager) RemoveCRD() error {
 	subscription, err := ExecuteGet(subscriptionsGVR, metadata.SonataFlowOperatorName, m.namespace)
 	if err != nil {
