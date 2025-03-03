@@ -39,10 +39,13 @@ The editor is based on the following technology stack:
 - [Patternfly](https://www.patternfly.org/)
 - [Zustand](https://zustand-demo.pmnd.rs/) + [Immer](https://immerjs.github.io/immer/) frameworks to manage the editor's state
 
+# Project Structure
+
 Below, a brief description of the project's structure:
 
 | Directory            | Description                                                                                          |
 | -------------------- | ---------------------------------------------------------------------------------------------------- |
+| `src`                | Source root code. It contains the entrrypoint ´TestScenarioEditor` component.                        |
 | `src/creation`       | It contains the Test Scenario components used to create a new scesim file (i.e an empty scesim file) |
 | `src/drawer`         | It contains the Test Scenario components used in the right Drawer component of the editor            |
 | `src/externalModels` | It contains resources (Context) to manage external modules (DMN files)                               |
