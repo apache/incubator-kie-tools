@@ -60,8 +60,6 @@ hiring.svg
 .gitignore
 # examples/process-compact-architecture/process-compact-architecture.iml
 process-compact-architecture.iml
-# examples/process-compact-architecture/docker-compose/startContainers.sh
-startContainers.sh
 # examples/process-compact-architecture/docker-compose/pgadmin/pgpass
 pgpass
 # examples/process-compact-architecture/docker-compose/sql/init.sql
@@ -380,6 +378,8 @@ getCheckboxGroupValue.txt
 getMultipleSelectValue.txt
 # packages/form-code-generator-bootstrap4-theme/src/resources/staticCode/getRadioGroupValue.txt
 getRadioGroupValue.txt
+# packages/form-code-generator-bootstrap4-theme/src/resources/staticCode/listHelperFunctions.txt
+listHelperFunctions.txt
 # packages/form-code-generator-bootstrap4-theme/src/resources/staticCode/setCheckboxGroupValue.txt
 setCheckboxGroupValue.txt
 # packages/form-code-generator-bootstrap4-theme/src/resources/staticCode/setRadioGroupValue.txt
@@ -414,6 +414,16 @@ input.setModelData.template
 input.template
 # packages/form-code-generator-bootstrap4-theme/src/resources/templates/input.writeModelData.template
 input.writeModelData.template
+# packages/form-code-generator-bootstrap4-theme/src/resources/templates/listField.globalFunctions.template
+listField.globalFunctions.template
+# packages/form-code-generator-bootstrap4-theme/src/resources/templates/listField.setModelData.template
+listField.setModelData.template
+# packages/form-code-generator-bootstrap4-theme/src/resources/templates/listField.template
+listField.template
+# packages/form-code-generator-bootstrap4-theme/src/resources/templates/listField.writeModelData.template
+listField.writeModelData.template
+# packages/form-code-generator-bootstrap4-theme/src/resources/templates/nestField.globalFunctions.template
+nestField.globalFunctions.template
 # packages/form-code-generator-bootstrap4-theme/src/resources/templates/nestField.setModelData.template
 nestField.setModelData.template
 # packages/form-code-generator-bootstrap4-theme/src/resources/templates/nestField.template
@@ -500,6 +510,14 @@ README.md
 ImportJavaClasses.test.tsx.snap
 # packages/jbpm-quarkus-devui/jbpm-quarkus-devui-parent.iml
 jbpm-quarkus-devui-parent.iml
+# packages/jbpm-quarkus-devui/dev/src/main/resources/custom-forms-dev/hiring_ITInterview.html
+hiring_ITInterview.html
+# packages/jbpm-quarkus-devui/dev/src/main/resources/custom-forms-dev/hiring_ITInterview.config
+hiring_ITInterview.config
+# packages/jbpm-quarkus-devui/dev/src/main/resources/custom-forms-dev/hiring.tsx
+hiring.tsx
+# packages/jbpm-quarkus-devui/dev/src/main/resources/custom-forms-dev/hiring.config
+hiring.config
 # packages/jbpm-quarkus-devui/jbpm-quarkus-devui-runtime/src/test/resources/forms/hiring_HRInterview.config
 hiring_HRInterview.config
 # packages/jbpm-quarkus-devui/jbpm-quarkus-devui-runtime/src/test/resources/forms/hiring_ITInterview.config

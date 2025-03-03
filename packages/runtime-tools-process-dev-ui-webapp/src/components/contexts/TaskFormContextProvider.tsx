@@ -25,9 +25,12 @@ import {
 
 export const TaskFormContextProvider: React.FC = ({ children }) => {
   const appContext = useDevUIAppContext();
+  const baseUrl = appContext.transformQuarkusUrl(
+    `${appContext.getQuarkusAppOrigin()}${appContext.getQuarkusAppRootPath()}`
+  );
 
   return (
-    <TaskFormContext.Provider value={new TaskFormGatewayApiImpl(() => appContext.getCurrentUser())}>
+    <TaskFormContext.Provider value={new TaskFormGatewayApiImpl(() => appContext.getCurrentUser(), baseUrl)}>
       {children}
     </TaskFormContext.Provider>
   );

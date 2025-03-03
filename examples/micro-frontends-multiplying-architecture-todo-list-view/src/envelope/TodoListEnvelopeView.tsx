@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { ApiSharedValueConsumers, MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import * as React from "react";
-import { useCallback, useImperativeHandle, useMemo, useState } from "react";
-import { Item, TodoListChannelApi } from "../api";
+import { useCallback, useEffect, useImperativeHandle, useMemo, useState } from "react";
+import { Item, TodoListChannelApi, TodoListEnvelopeApi } from "../api";
 import "./styles.scss";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 
@@ -33,6 +33,7 @@ export interface TodoListEnvelopeViewApi {
 
 interface Props {
   channelApi: MessageBusClientApi<TodoListChannelApi>;
+  shared: ApiSharedValueConsumers<TodoListEnvelopeApi>;
 }
 
 /**
@@ -88,7 +89,36 @@ export const TodoListEnvelopeView = React.forwardRef<TodoListEnvelopeViewApi, Pr
     [items]
   );
 
+  // State that is updated whenever the Channel changes the `potentialNewItem` Shared value.
+  // Making the Envelope able to react to changes done to it.
   const [potentialNewItem, _] = useSharedValue(props.channelApi.shared.todoList__potentialNewItem);
+
+  // Keeps the `itemsCount` Shared value current.
+  useEffect(() => {
+    props.shared.todoList__itemsCount.set(items.length);
+  }, [items.length, props.shared.todoList__itemsCount]);
+
+  // Handles set operations to `itemsCount` that do not match items.length.
+  // As a Channel also has write access to a Shared value, there no way to tell if an
+  // invalid attempt to change this directly will be done, so we need to handle it properly.
+  useEffect(() => {
+    if (!props.shared.todoList__itemsCount) {
+      return;
+    }
+
+    const itemsCountSubs = props.shared.todoList__itemsCount.subscribe((newItemsCount) => {
+      if (newItemsCount !== items.length) {
+        console.log("Rejecting operation on `itemsCount` Shared value because it doesn't match the actual value.");
+        props.shared.todoList__itemsCount.set(items.length); // Reverts whatever value was set.
+      } else {
+        // Ignore, itemsCount matches actual value.
+      }
+    });
+
+    return () => {
+      props.shared.todoList__itemsCount.unsubscribe(itemsCountSubs);
+    };
+  }, [items.length, props.shared.todoList__itemsCount]);
 
   return (
     <>
