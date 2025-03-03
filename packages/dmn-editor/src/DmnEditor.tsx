@@ -86,7 +86,7 @@ export type NodeEvaluationResults = {
   evaluationHitsCount: Map<string, number>;
 };
 
-export type EvaluationResults = Map<string, NodeEvaluationResults>;
+export type EvaluationResultsByNodeId = Map<string, NodeEvaluationResults>;
 export type ValidationMessages = Record<string, any>;
 export type OnDmnModelChange = (model: Normalized<DmnLatestModel>) => void;
 
@@ -144,7 +144,7 @@ export type DmnEditorProps = {
   /**
    * To show information about execution results directly on the DMN diagram and/or Boxed Expression Editor, use this prop.
    */
-  evaluationResults?: EvaluationResults;
+  evaluationResultsByNodeId?: EvaluationResultsByNodeId;
   /**
    * To show information about validation messages directly on the DMN diagram and/or Boxed Expression Editor, use this prop.
    */

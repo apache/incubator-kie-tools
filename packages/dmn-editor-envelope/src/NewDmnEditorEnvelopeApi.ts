@@ -26,5 +26,5 @@ export interface NewDmnEditorEnvelopeApi extends KogitoEditorEnvelopeApi {
    * @param nodeId id of the node to open
    */
   dmnEditor_openBoxedExpressionEditor(nodeId: string): void;
-  newDmnEditor_showDmnEvaluationResults(evaluationResultsPerNode: Map<string, NodeEvaluationResults>): void;
+  newDmnEditor_showDmnEvaluationResults(evaluationResultsByNodeId: Map<string, NodeEvaluationResults>): void;
 }

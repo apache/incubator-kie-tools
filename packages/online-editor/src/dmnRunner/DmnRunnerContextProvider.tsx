@@ -155,11 +155,11 @@ function dmnRunnerResultsReducer(dmnRunnerResults: DmnRunnerResults, action: Dmn
  * DMN Editor want to show aggregated data for everything together
  *
  * @param result - DMN Runner backend data
- * @param evaluationResultsPerNode - transformed data for DMN Editor
+ * @param evaluationResultsByNodeId - transformed data for DMN Editor
  */
 function transformExtendedServicesDmnResult(
   result: ExtendedServicesDmnResult,
-  evaluationResultsPerNode: Map<
+  evaluationResultsByNodeId: Map<
     string,
     { evaluationResult: "succeeded" | "failed" | "skipped"; evaluationHitsCount: Map<string, number> }
   >
@@ -172,14 +172,14 @@ function transformExtendedServicesDmnResult(
     }
     // We want to merge evaluation results that belongs to the same Decision
     // So we need to check if the Decision wasn't already partially processed
-    if (!evaluationResultsPerNode.has(dr.decisionId)) {
-      evaluationResultsPerNode.set(dr.decisionId, {
+    if (!evaluationResultsByNodeId.has(dr.decisionId)) {
+      evaluationResultsByNodeId.set(dr.decisionId, {
         // ### -1- ###
         evaluationResult: dr.evaluationStatus.toLowerCase() as "succeeded" | "failed" | "skipped",
         evaluationHitsCount: evaluationHitsCount,
       });
     } else {
-      const existingEvaluationHitsCount = evaluationResultsPerNode.get(dr.decisionId)?.evaluationHitsCount;
+      const existingEvaluationHitsCount = evaluationResultsByNodeId.get(dr.decisionId)?.evaluationHitsCount;
       evaluationHitsCount.forEach((value, key) => {
         // ### -3- ###
         if (existingEvaluationHitsCount?.has(key)) {
@@ -191,14 +191,14 @@ function transformExtendedServicesDmnResult(
       // TODO - Question
       // Here is an issue of merging evaluation results that belongs to the same Decision
       // For example, what to do if first time evaluation was 'succeeded' and second time 'skipped'?
-      evaluationResultsPerNode.set(dr.decisionId, {
+      evaluationResultsByNodeId.set(dr.decisionId, {
         evaluationResult: dr.evaluationStatus.toLowerCase() as "succeeded" | "failed" | "skipped",
         evaluationHitsCount: existingEvaluationHitsCount ?? new Map(),
       });
     }
   });
 
-  return evaluationResultsPerNode;
+  return evaluationResultsByNodeId;
 }
 
 export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
@@ -348,7 +348,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             }
 
             const runnerResults: Array<DecisionResult[] | undefined> = [];
-            const evaluationResultsPerNode: Map<
+            const evaluationResultsByNodeId: Map<
               string,
               { evaluationResult: "succeeded" | "failed" | "skipped"; evaluationHitsCount: Map<string, number> }
             > = new Map();
@@ -359,13 +359,13 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
               }
               if (result) {
                 runnerResults.push(result.decisionResults);
-                transformExtendedServicesDmnResult(result, evaluationResultsPerNode);
+                transformExtendedServicesDmnResult(result, evaluationResultsByNodeId);
               }
             }
             setDmnRunnerResults({ type: DmnRunnerResultsActionType.DEFAULT, newResults: runnerResults });
 
             const newDmnEditorEnvelopeApi = envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
-            newDmnEditorEnvelopeApi.notifications.newDmnEditor_showDmnEvaluationResults.send(evaluationResultsPerNode);
+            newDmnEditorEnvelopeApi.notifications.newDmnEditor_showDmnEvaluationResults.send(evaluationResultsByNodeId);
           })
           .catch((err) => {
             console.log(err);

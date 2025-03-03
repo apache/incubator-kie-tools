@@ -74,7 +74,7 @@ export type DmnEditorRootState = {
   keyboardShortcutsRegisterIds: number[];
   keyboardShortcutsRegistered: boolean;
   error: Error | undefined;
-  evaluationResultsPerNode: Map<string, DmnEditor.NodeEvaluationResults>;
+  evaluationResultsByNodeId: Map<string, DmnEditor.NodeEvaluationResults>;
 };
 
 export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditorRootState> {
@@ -97,7 +97,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       keyboardShortcutsRegisterIds: [],
       keyboardShortcutsRegistered: false,
       error: undefined,
-      evaluationResultsPerNode: new Map<string, DmnEditor.NodeEvaluationResults>(),
+      evaluationResultsByNodeId: new Map<string, DmnEditor.NodeEvaluationResults>(),
     };
   }
 
@@ -107,8 +107,8 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     this.dmnEditorRef.current?.openBoxedExpressionEditor(nodeId);
   }
 
-  public showDmnEvaluationResults(evaluationResultsPerNode: Map<string, DmnEditor.NodeEvaluationResults>): void {
-    this.setState((prev) => ({ ...prev, evaluationResultsPerNode: evaluationResultsPerNode }));
+  public showDmnEvaluationResults(evaluationResultsByNodeId: Map<string, DmnEditor.NodeEvaluationResults>): void {
+    this.setState((prev) => ({ ...prev, evaluationResultsByNodeId: evaluationResultsByNodeId }));
   }
 
   public async undo(): Promise<void> {
@@ -485,7 +485,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
               originalVersion={this.state.marshaller?.originalVersion}
               model={this.model}
               externalModelsByNamespace={this.state.externalModelsByNamespace}
-              evaluationResults={this.state.evaluationResultsPerNode}
+              evaluationResultsByNodeId={this.state.evaluationResultsByNodeId}
               validationMessages={[]}
               externalContextName={""}
               externalContextDescription={""}

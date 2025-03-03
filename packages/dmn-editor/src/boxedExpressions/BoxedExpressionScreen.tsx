@@ -120,7 +120,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
     s.computed(s).getExternalDmnModelsByNamespaceMap(externalModelsByNamespace)
   );
 
-  const { evaluationResults } = useDmnEditor();
+  const { evaluationResultsByNodeId } = useDmnEditor();
   const isEvaluationHighlightsEnabled = useDmnEditorStore((s) => s.diagram.overlays.enableEvaluationHighlights);
 
   const onRequestFeelIdentifiers = useCallback(() => {
@@ -533,7 +533,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
             isReadOnly={settings.isReadOnly}
             evaluationHitsCountById={
               isEvaluationHighlightsEnabled
-                ? evaluationResults?.get(activeDrgElementId ?? "")?.evaluationHitsCount
+                ? evaluationResultsByNodeId?.get(activeDrgElementId ?? "")?.evaluationHitsCount
                 : undefined
             }
           />
