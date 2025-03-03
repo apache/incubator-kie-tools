@@ -346,7 +346,7 @@ This guide explains how to implement a custom business calendar allowing full fl
 ### Creating a Custom Business Calendar
 
 - By default, calendar.properties is used to configure default business calendar.
-- If a custom business calendar has to be implemented, calendar.properties should NOT exist. Instead, add the following property to application.properties: `kogito.processes.businessCalendar=org.kie.kogito.calendar.CustomCalendar`
+- If a custom business calendar has to be implemented, calendar.properties should NOT exist. Instead, add the following property to application.properties: `kogito.processes.businessCalendar=org.kie.kogito.calendar.custom.CustomCalendar`
 
 **Steps**
 
