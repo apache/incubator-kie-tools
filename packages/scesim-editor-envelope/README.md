@@ -22,24 +22,7 @@ Package responsible for creating the necessary pumbling for `scesim-editor` to b
 ## How to build it
 
 Like most of the projects of this repository, pnpm and NodeJS are mandatory to build the project. Please refer to the
-repository main README file to know more about the requested versions and installation steps. During the first project build,
-don't forget to bootstrap the project by launching ONE of the following:
-
-- `pnpm bootstrap`
-- `pnpm bootstrap -F @kie-tools/scesim-editor-envelope...` if you are interested in bootstrapping this module only.
-
-It's recommended to run a `pnpm bootstrap` every time a change in any direct or indirect modules' `packages.json` is applied.
-
-To build the project type in your terminal ONE of the below commands:
-
-- `pnpm -F @kie-tools/scesim-editor-envelope... build:dev` This is fast, but not as strict. It skips tests, linters, and some type checks. Recommended for dev purposes.
-- `pnpm -F @kie-tools/scesim-editor-envelope... build:prod` The default command to build production-ready packages. This is the recommended build for production purposes
-
-The above commands will build `scesim-editor-envelope` module AND its direct and indirect dependencies modules.
-To build the `scesim-editor-envelope` module ONLY, you can use ONE of the below commands:
-
-- `pnpm -F @kie-tools/scesim-editor-envelope build:dev` This is fast, but not as strict. It skips tests, linters, and some type checks. Recommended for dev purposes.
-- `pnpm -F @kie-tools/scesim-editor-envelope build:prod` The default command to build production-ready packages. This is the recommended build for production purposes
+repository main README file to know more about the requested versions and installation steps.
 
 ---
 
