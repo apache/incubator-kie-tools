@@ -130,7 +130,7 @@ function dmnRunnerResultsReducer(dmnRunnerResults: DmnRunnerResults, action: Dmn
  * This transformation is needed for these reasons:
  * ### -1- ###
  * DMN Runner backend return upper case constants: "SUCCEEDED", "FAILED", "SKIPPED"
- * DMN Editor code base uses lover case constants: "succeeded", "failed", "skipped"
+ * DMN Editor code base uses lower case constants: "succeeded", "failed", "skipped"
  *
  * ### -2- ###
  * DMN Runner backend return evaluationHitIds as Object:
