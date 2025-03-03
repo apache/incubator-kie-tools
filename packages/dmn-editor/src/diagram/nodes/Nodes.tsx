@@ -396,8 +396,8 @@ export const DecisionNode = React.memo(
     const evaluationResultsClassName = useMemo(
       () =>
         isEvaluationHighlightsEnabled &&
-        evaluationResultsByNodeId!.get(decision["@_id"])?.evaluationResult !== undefined
-          ? `kie-dmn-editor--decision-node--evaluation-status-${evaluationResultsByNodeId!.get(decision["@_id"])?.evaluationResult}`
+        evaluationResultsByNodeId?.get(decision["@_id"])?.evaluationResult !== undefined
+          ? `kie-dmn-editor--decision-node--evaluation-status-${evaluationResultsByNodeId?.get(decision["@_id"])?.evaluationResult}`
           : "",
       [decision, evaluationResultsByNodeId, isEvaluationHighlightsEnabled]
     );
