@@ -35,8 +35,9 @@ const (
 	DataIndexSchemaName      = "data-index-service"
 	SonataFlowPlatformName   = "db-migration-sonataflow-platform"
 	DBMigrationStrategyJob   = "job"
-	UserName                 = "postgres"
-	Password                 = "postgres"
+	DBSecretKeyRef           = "dbSecretName"
+	UserNameKey              = "postgresUserKey"
+	PasswordKey              = "postgresPasswordKey"
 	DbMigrationJobName       = "sonataflow-db-migrator-job"
 	DbMigrationContainerName = "db-migration-container"
 )
@@ -61,7 +62,7 @@ func TestDbMigratorJob(t *testing.T) {
 	})
 
 	t.Run("verify new quarkus data source", func(t *testing.T) {
-		quarkusDataSource := newQuarkusDataSource(DataIndexJdbcUrl, UserName, Password, DataIndexSchemaName)
+		quarkusDataSource := newQuarkusDataSource(DataIndexJdbcUrl, DBSecretKeyRef, UserNameKey, PasswordKey, DataIndexSchemaName)
 		assert.Equal(t, quarkusDataSource.Schema, DataIndexSchemaName)
 		assert.Equal(t, quarkusDataSource.JdbcUrl, DataIndexJdbcUrl)
 	})

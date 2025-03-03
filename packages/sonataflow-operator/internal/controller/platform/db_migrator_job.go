@@ -33,6 +33,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/version"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
 
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/container-builder/client"
@@ -44,10 +45,11 @@ import (
 )
 
 type QuarkusDataSource struct {
-	JdbcUrl  string
-	Username string
-	Password string
-	Schema   string
+	JdbcUrl           string
+	SecretRefName     string
+	SecretUserKey     string
+	SecretPasswordKey string
+	Schema            string
 }
 
 type DBMigratorJob struct {
@@ -99,38 +101,40 @@ func getJdbcUrl(env []corev1.EnvVar) string {
 }
 
 // getQuarkusDSFromServicePersistence Returns QuarkusDataSource from service level persistence config
-func getQuarkusDSFromServicePersistence(ctx context.Context, platform *operatorapi.SonataFlowPlatform, persistenceOptionsSpec *operatorapi.PersistenceOptionsSpec, defaultSchemaName string) *QuarkusDataSource {
+func getQuarkusDSFromServicePersistence(platform *operatorapi.SonataFlowPlatform, persistenceOptionsSpec *operatorapi.PersistenceOptionsSpec, defaultSchemaName string) *QuarkusDataSource {
 	klog.InfoS("Using service level persistence for PostgreSQL", "defaultSchemaName", defaultSchemaName)
 	quarkusDataSource := &QuarkusDataSource{}
 	env := persistence.ConfigurePostgreSQLEnv(persistenceOptionsSpec.PostgreSQL, defaultSchemaName, platform.Namespace)
 	quarkusDataSource.JdbcUrl = getJdbcUrl(env)
-	quarkusDataSource.Username, _ = services.GetSecretKeyValueString(ctx, persistenceOptionsSpec.PostgreSQL.SecretRef.Name, persistenceOptionsSpec.PostgreSQL.SecretRef.UserKey, platform.Namespace)
-	quarkusDataSource.Password, _ = services.GetSecretKeyValueString(ctx, persistenceOptionsSpec.PostgreSQL.SecretRef.Name, persistenceOptionsSpec.PostgreSQL.SecretRef.PasswordKey, platform.Namespace)
+	quarkusDataSource.SecretRefName = persistenceOptionsSpec.PostgreSQL.SecretRef.Name
+	quarkusDataSource.SecretUserKey = persistenceOptionsSpec.PostgreSQL.SecretRef.UserKey
+	quarkusDataSource.SecretPasswordKey = persistenceOptionsSpec.PostgreSQL.SecretRef.PasswordKey
 	quarkusDataSource.Schema = persistence.GetDBSchemaName(persistenceOptionsSpec.PostgreSQL, defaultSchemaName)
 	return quarkusDataSource
 }
 
 // getQuarkusDSFromPlatformPersistence Returns QuarkusDataSource from platform level persistence config
-func getQuarkusDSFromPlatformPersistence(ctx context.Context, platform *operatorapi.SonataFlowPlatform, defaultSchemaName string) *QuarkusDataSource {
+func getQuarkusDSFromPlatformPersistence(platform *operatorapi.SonataFlowPlatform, defaultSchemaName string) *QuarkusDataSource {
 	klog.InfoS("Using platform level persistence for PostgreSQL", "defaultSchemaName", defaultSchemaName)
 	quarkusDataSource := &QuarkusDataSource{}
 	postgresql := persistence.MapToPersistencePostgreSQL(platform, defaultSchemaName)
 
 	env := persistence.ConfigurePostgreSQLEnv(postgresql, defaultSchemaName, platform.Namespace)
 	quarkusDataSource.JdbcUrl = getJdbcUrl(env)
-	quarkusDataSource.Username, _ = services.GetSecretKeyValueString(ctx, platform.Spec.Persistence.PostgreSQL.SecretRef.Name, platform.Spec.Persistence.PostgreSQL.SecretRef.UserKey, platform.Namespace)
-	quarkusDataSource.Password, _ = services.GetSecretKeyValueString(ctx, platform.Spec.Persistence.PostgreSQL.SecretRef.Name, platform.Spec.Persistence.PostgreSQL.SecretRef.PasswordKey, platform.Namespace)
+	quarkusDataSource.SecretRefName = platform.Spec.Persistence.PostgreSQL.SecretRef.Name
+	quarkusDataSource.SecretUserKey = platform.Spec.Persistence.PostgreSQL.SecretRef.UserKey
+	quarkusDataSource.SecretPasswordKey = platform.Spec.Persistence.PostgreSQL.SecretRef.PasswordKey
 	quarkusDataSource.Schema = persistence.GetDBSchemaName(postgresql, defaultSchemaName)
 	return quarkusDataSource
 }
 
 // getQuarkusDataSourceFromPersistence PostgreSQL persistence can be defined at platform level (where both DI and JS will use the same DB defined at platform level) or db can defined at Service level. Service level config will take precedence over platform level config.
-func getQuarkusDataSourceFromPersistence(ctx context.Context, platform *operatorapi.SonataFlowPlatform, persistenceOptionsSpec *operatorapi.PersistenceOptionsSpec, defaultSchemaName string) *QuarkusDataSource {
+func getQuarkusDataSourceFromPersistence(platform *operatorapi.SonataFlowPlatform, persistenceOptionsSpec *operatorapi.PersistenceOptionsSpec, defaultSchemaName string) *QuarkusDataSource {
 
 	if persistenceOptionsSpec != nil && persistenceOptionsSpec.PostgreSQL != nil {
-		return getQuarkusDSFromServicePersistence(ctx, platform, persistenceOptionsSpec, defaultSchemaName)
+		return getQuarkusDSFromServicePersistence(platform, persistenceOptionsSpec, defaultSchemaName)
 	} else if platform != nil && platform.Spec.Persistence != nil && platform.Spec.Persistence.PostgreSQL != nil {
-		return getQuarkusDSFromPlatformPersistence(ctx, platform, defaultSchemaName)
+		return getQuarkusDSFromPlatformPersistence(platform, defaultSchemaName)
 	}
 
 	return nil
@@ -153,11 +157,11 @@ func NewDBMigratorJobData(ctx context.Context, client client.Client, platform *o
 		quarkusDataSourceJobService := &QuarkusDataSource{}
 
 		if diJobsBasedDBMigration {
-			quarkusDataSourceDataIndex = getQuarkusDataSourceFromPersistence(ctx, platform, platform.Spec.Services.DataIndex.Persistence, "data-index-service")
+			quarkusDataSourceDataIndex = getQuarkusDataSourceFromPersistence(platform, platform.Spec.Services.DataIndex.Persistence, pshDI.GetServiceName())
 		}
 
 		if jsJobsBasedDBMigration {
-			quarkusDataSourceJobService = getQuarkusDataSourceFromPersistence(ctx, platform, platform.Spec.Services.JobService.Persistence, "jobs-service")
+			quarkusDataSourceJobService = getQuarkusDataSourceFromPersistence(platform, platform.Spec.Services.JobService.Persistence, pshJS.GetServiceName())
 		}
 
 		return &DBMigratorJob{
@@ -192,6 +196,9 @@ func createOrUpdateDBMigrationJob(ctx context.Context, client client.Client, pla
 	if dbMigratorJob != nil {
 		job := createJobDBMigration(platform, dbMigratorJob)
 		klog.V(log.I).InfoS("Starting DB Migration Job: ", "namespace", platform.Namespace, "job", job.Name)
+		if err := controllerutil.SetControllerReference(platform, job, client.Scheme()); err != nil {
+			return nil, err
+		}
 		if op, err := controllerutil.CreateOrUpdate(ctx, client, job, func() error {
 			return nil
 		}); err != nil {
@@ -229,12 +236,13 @@ func HandleDBMigrationJob(ctx context.Context, client client.Client, platform *o
 	return platform, nil
 }
 
-func newQuarkusDataSource(jdbcURL string, userName string, password string, schema string) *QuarkusDataSource {
+func newQuarkusDataSource(jdbcURL string, secretRefName string, secretUserKey string, secretPasswordKey string, schema string) *QuarkusDataSource {
 	return &QuarkusDataSource{
-		JdbcUrl:  jdbcURL,
-		Username: userName,
-		Password: password,
-		Schema:   schema,
+		JdbcUrl:           jdbcURL,
+		SecretRefName:     secretRefName,
+		SecretUserKey:     secretUserKey,
+		SecretPasswordKey: secretPasswordKey,
+		Schema:            schema,
 	}
 }
 
@@ -242,21 +250,31 @@ func createJobDBMigration(platform *operatorapi.SonataFlowPlatform, dbmj *DBMigr
 	// In DB Migrator Tool, smallrye will throw error for empty string "" while initializing properties.
 	// So use an empty space as a default value. Please see more at: https://github.com/eclipse/microprofile-config/issues/671
 	nonEmptyValue := " "
-	diQuarkusDataSource := newQuarkusDataSource(nonEmptyValue, nonEmptyValue, nonEmptyValue, nonEmptyValue)
-	jsQuarkusDataSource := newQuarkusDataSource(nonEmptyValue, nonEmptyValue, nonEmptyValue, nonEmptyValue)
+	diQuarkusDataSource := newQuarkusDataSource(nonEmptyValue, nonEmptyValue, nonEmptyValue, nonEmptyValue, nonEmptyValue)
+	jsQuarkusDataSource := newQuarkusDataSource(nonEmptyValue, nonEmptyValue, nonEmptyValue, nonEmptyValue, nonEmptyValue)
 
 	if dbmj.MigrateDBDataIndex && dbmj.DataIndexDataSource != nil {
 		diQuarkusDataSource.JdbcUrl = dbmj.DataIndexDataSource.JdbcUrl
-		diQuarkusDataSource.Username = dbmj.DataIndexDataSource.Username
-		diQuarkusDataSource.Password = dbmj.DataIndexDataSource.Password
+		diQuarkusDataSource.SecretRefName = dbmj.DataIndexDataSource.SecretRefName
+		diQuarkusDataSource.SecretUserKey = dbmj.DataIndexDataSource.SecretUserKey
+		diQuarkusDataSource.SecretPasswordKey = dbmj.DataIndexDataSource.SecretPasswordKey
 		diQuarkusDataSource.Schema = dbmj.DataIndexDataSource.Schema
 	}
 
 	if dbmj.MigrateDBJobsService && dbmj.JobsServiceDataSource != nil {
 		jsQuarkusDataSource.JdbcUrl = dbmj.JobsServiceDataSource.JdbcUrl
-		jsQuarkusDataSource.Username = dbmj.JobsServiceDataSource.Username
-		jsQuarkusDataSource.Password = dbmj.JobsServiceDataSource.Password
+		jsQuarkusDataSource.SecretRefName = dbmj.JobsServiceDataSource.SecretRefName
+		jsQuarkusDataSource.SecretUserKey = dbmj.JobsServiceDataSource.SecretUserKey
+		jsQuarkusDataSource.SecretPasswordKey = dbmj.JobsServiceDataSource.SecretPasswordKey
 		jsQuarkusDataSource.Schema = dbmj.JobsServiceDataSource.Schema
+	}
+
+	diDBSecretRef := corev1.LocalObjectReference{
+		Name: diQuarkusDataSource.SecretRefName,
+	}
+
+	jsDBSecretRef := corev1.LocalObjectReference{
+		Name: jsQuarkusDataSource.SecretRefName,
 	}
 
 	dbMigrationJobCfg := newDBMigrationJobCfg()
@@ -264,6 +282,15 @@ func createJobDBMigration(platform *operatorapi.SonataFlowPlatform, dbmj *DBMigr
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      dbMigrationJobCfg.JobName,
 			Namespace: platform.Namespace,
+			Labels: map[string]string{
+				workflowproj.LabelApp:          platform.Name,
+				workflowproj.LabelAppNamespace: platform.Namespace,
+				workflowproj.LabelK8SComponent: fmt.Sprintf("%s-%s", platform.Name, dbMigrationJobCfg.JobName),
+				workflowproj.LabelK8SManagedBy: "sonataflow-operator",
+				workflowproj.LabelK8SName:      dbMigrationJobCfg.JobName,
+				workflowproj.LabelK8SPartOF:    platform.Name,
+				workflowproj.LabelService:      fmt.Sprintf("%s-%s", "sonataflow-db-job", dbMigrationJobCfg.JobName),
+			},
 		},
 		Spec: batchv1.JobSpec{
 			Template: corev1.PodTemplateSpec{
@@ -282,12 +309,22 @@ func createJobDBMigration(platform *operatorapi.SonataFlowPlatform, dbmj *DBMigr
 									Value: diQuarkusDataSource.JdbcUrl,
 								},
 								{
-									Name:  quarkusDataSourceDataIndexUserName,
-									Value: diQuarkusDataSource.Username,
+									Name: quarkusDataSourceDataIndexUserName,
+									ValueFrom: &corev1.EnvVarSource{
+										SecretKeyRef: &corev1.SecretKeySelector{
+											Key:                  diQuarkusDataSource.SecretUserKey,
+											LocalObjectReference: diDBSecretRef,
+										},
+									},
 								},
 								{
-									Name:  quarkusDataSourceDataIndexPassword,
-									Value: diQuarkusDataSource.Password,
+									Name: quarkusDataSourceDataIndexPassword,
+									ValueFrom: &corev1.EnvVarSource{
+										SecretKeyRef: &corev1.SecretKeySelector{
+											Key:                  diQuarkusDataSource.SecretPasswordKey,
+											LocalObjectReference: diDBSecretRef,
+										},
+									},
 								},
 								{
 									Name:  quarkusFlywayDataIndexSchemas,
@@ -302,12 +339,22 @@ func createJobDBMigration(platform *operatorapi.SonataFlowPlatform, dbmj *DBMigr
 									Value: jsQuarkusDataSource.JdbcUrl,
 								},
 								{
-									Name:  quarkusDataSourceJobsServiceUserName,
-									Value: jsQuarkusDataSource.Username,
+									Name: quarkusDataSourceJobsServiceUserName,
+									ValueFrom: &corev1.EnvVarSource{
+										SecretKeyRef: &corev1.SecretKeySelector{
+											Key:                  jsQuarkusDataSource.SecretUserKey,
+											LocalObjectReference: jsDBSecretRef,
+										},
+									},
 								},
 								{
-									Name:  quarkusDataSourceJobsServicePassword,
-									Value: jsQuarkusDataSource.Password,
+									Name: quarkusDataSourceJobsServicePassword,
+									ValueFrom: &corev1.EnvVarSource{
+										SecretKeyRef: &corev1.SecretKeySelector{
+											Key:                  jsQuarkusDataSource.SecretPasswordKey,
+											LocalObjectReference: jsDBSecretRef,
+										},
+									},
 								},
 								{
 									Name:  quarkusFlywayJobsServiceSchemas,
