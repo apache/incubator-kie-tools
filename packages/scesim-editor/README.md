@@ -67,7 +67,7 @@ repository main README file to know more about the requested versions and instal
 ## How to launch the Test Scenario Storybook Dev WebApp
 
 After building the project, you can benefit of the Storybook Dev Webapp for development or testing scope.
-The DevApp code lives in the `stories` directort
+The DevApp code lives in the `stories` directory.
 To launch it, simply type in your terminal the following command:
 
 `pnpm -F @kie-tools/scesim-editor start`
