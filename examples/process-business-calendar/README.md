@@ -375,7 +375,7 @@ public class CustomCalendar implements BusinessCalendar {
     @Override
     public long calculateBusinessTimeAsDuration(String timeExpression) {
         // Implement custom logic to calculate business time duration
-       // Note:The returned long value is in milliseconds. Duration can be set atleast 1000 m or longer to prevent immediate execution.
+       // Note:The returned long value is in milliseconds. Duration can be set at least 1000 ms or longer to prevent immediate execution.
         return 1000;
     }
 
