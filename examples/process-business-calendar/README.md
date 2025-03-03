@@ -398,7 +398,7 @@ To verify that your custom implementation works:
 `mvn clean compile quarkus:dev`
 
 - Verify in generated sources within target folder if it reflects the expected change
-<p align="center"><img width=75% height=50% src="docs/images/CustomCalendarTestClass.png"></p>
+<p align="center"><img width=75% height=50% src="docs/images/CustomCalendarClass.png"></p>
 
 ---
 
