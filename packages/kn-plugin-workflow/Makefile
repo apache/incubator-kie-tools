@@ -34,6 +34,7 @@ SET_KOGITO_VERSION            := $(METADATA_PATH).KogitoVersion=$(KOGITO_VERSION
 LDFLAGS                       := "-X $(SET_QUARKUS_PLATFORM_GROUP_ID) -X $(SET_QUARKUS_VERSION) -X $(SET_VERSION) -X $(SET_DEV_MODE_IMAGE) -X $(SET_KOGITO_VERSION)"
 
 KIND_VERSION ?= v0.20.0
+OLM_VERSION = v0.31.0
 
 ARCH := $(shell uname -m)
 ifeq ($(ARCH),arm64)
@@ -69,7 +70,7 @@ clean:
 test-e2e:
 	@$(MAKE) install-kind
 	@$(MAKE) create-cluster
-	@$(MAKE) install-operator
+	@$(MAKE) install-operator-framework
 	@$(MAKE) go-test-e2e
 	@$(MAKE) go-test-e2e-report
 
@@ -82,9 +83,9 @@ install-kind:
 create-cluster: install-kind
 	kind create cluster
 
-.PHONY: install-operator
-install-operator:
-	kubectl create -f ../sonataflow-operator/operator.yaml
+.PHONY: install-operator-framework
+install-operator-framework:
+	curl -sL https://github.com/operator-framework/operator-lifecycle-manager/releases/download/$(OLM_VERSION)/install.sh | bash -s $(OLM_VERSION)
 
 .PHONY: go-test-e2e
 go-test-e2e:
