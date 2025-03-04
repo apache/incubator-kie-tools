@@ -209,9 +209,14 @@ func (d *defaultObjectsEnsurer) Ensure(ctx context.Context, workflow *operatorap
 	return ensureResult
 }
 
-func setWorkflowFinalizer(ctx context.Context, c client.Client, workflow *operatorapi.SonataFlow) error {
-	if !controllerutil.ContainsFinalizer(workflow, constants.TriggerFinalizer) {
-		controllerutil.AddFinalizer(workflow, constants.TriggerFinalizer)
+func addWorkflowFinalizers(ctx context.Context, c client.Client, workflow *operatorapi.SonataFlow, finalizers []string) error {
+	var modified = false
+	for _, finalizer := range finalizers {
+		if controllerutil.AddFinalizer(workflow, finalizer) {
+			modified = true
+		}
+	}
+	if modified {
 		return c.Update(ctx, workflow)
 	}
 	return nil
@@ -220,6 +225,7 @@ func setWorkflowFinalizer(ctx context.Context, c client.Client, workflow *operat
 func ensureObject(ctx context.Context, workflow *operatorapi.SonataFlow, visitors []MutateVisitor, result controllerutil.OperationResult, c client.Client, object client.Object) (client.Object, controllerutil.OperationResult, error) {
 	if result, err := controllerutil.CreateOrPatch(ctx, c, object,
 		func() error {
+			var finalizers []string
 			for _, v := range visitors {
 				if visitorErr := v(object)(); visitorErr != nil {
 					return visitorErr
@@ -230,8 +236,13 @@ func ensureObject(ctx context.Context, workflow *operatorapi.SonataFlow, visitor
 				if workflow.Namespace != object.GetNamespace() {
 					// This is for Knative trigger in a different namespace
 					// Set the finalizer for trigger cleanup when the workflow is deleted
-					return setWorkflowFinalizer(ctx, c, workflow)
+					finalizers = append(finalizers, constants.TriggerFinalizer)
 				}
+			}
+			finalizers = append(finalizers, constants.WorkflowFinalizer)
+			// Other workflow finalization tasks
+			if err := addWorkflowFinalizers(ctx, c, workflow, finalizers); err != nil {
+				return err
 			}
 			return controllerutil.SetControllerReference(workflow, object, c.Scheme())
 		}); err != nil {

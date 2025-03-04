@@ -27477,10 +27477,18 @@ spec:
                 endpoint:
                   description: Endpoint is an externally accessible URL of the workflow
                   type: string
+                finalizerAttempts:
+                  type: integer
                 flowCRC:
                   format: int32
                   type: integer
+                lastTimeFinalizerAttempt:
+                  format: date-time
+                  type: string
                 lastTimeRecoverAttempt:
+                  format: date-time
+                  type: string
+                lastTimeStatusNotified:
                   format: date-time
                   type: string
                 observedGeneration:
