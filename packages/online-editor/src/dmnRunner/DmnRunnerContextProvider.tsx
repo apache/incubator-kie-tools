@@ -35,7 +35,12 @@ import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStat
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
 import { InputRow } from "@kie-tools/form-dmn";
-import { DecisionResult, DmnEvaluationMessages, ExtendedServicesModelPayload } from "@kie-tools/extended-services-api";
+import {
+  DecisionResult,
+  DmnEvaluationMessages,
+  ExtendedServicesDmnResult,
+  ExtendedServicesModelPayload,
+} from "@kie-tools/extended-services-api";
 import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
 import { useDmnRunnerPersistence } from "../dmnRunnerPersistence/DmnRunnerPersistenceHook";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
@@ -73,6 +78,8 @@ import {
 import { extractDifferencesFromArray } from "@kie-tools/dmn-runner/dist/results";
 import { openapiSchemaToJsonSchema } from "@openapi-contrib/openapi-schema-to-json-schema";
 import type { JSONSchema4 } from "json-schema";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
 
 interface Props {
   isEditorReady?: boolean;
@@ -119,6 +126,81 @@ function dmnRunnerResultsReducer(dmnRunnerResults: DmnRunnerResults, action: Dmn
   }
 }
 
+/**
+ * This transformation is needed for these reasons:
+ * ### -1- ###
+ * DMN Runner backend return upper case constants: "SUCCEEDED", "FAILED", "SKIPPED"
+ * DMN Editor code base uses lower case constants: "succeeded", "failed", "skipped"
+ *
+ * ### -2- ###
+ * DMN Runner backend return evaluationHitIds as Object:
+ * {
+ *   _F0DC8923-5FC7-4200-8BD1-461D5F3715CF: 1,
+ *   _F0DC8923-5FC7-4200-8BD1-461D5F3713AD: 2
+ * }
+ * DMN Editor code base uses evaluationHitIds as Map<string, number>
+ * [
+ *   {
+ *     key: "_F0DC8923-5FC7-4200-8BD1-461D5F3715CF,
+ *     value: 1
+ *   },
+ *   {
+ *     key: "_F0DC8923-5FC7-4200-8BD1-461D5F3713AD",
+ *     value: 2
+ *   }
+ * ]
+ *
+ * ### -3- ###
+ * DMN Runner backend return data spilt into junks corresponding to table row or collection item
+ * DMN Editor want to show aggregated data for everything together
+ *
+ * @param result - DMN Runner backend data
+ * @param evaluationResultsByNodeId - transformed data for DMN Editor
+ */
+function transformExtendedServicesDmnResult(
+  result: ExtendedServicesDmnResult,
+  evaluationResultsByNodeId: Map<
+    string,
+    { evaluationResult: "succeeded" | "failed" | "skipped"; evaluationHitsCount: Map<string, number> }
+  >
+) {
+  result.decisionResults?.forEach((dr) => {
+    const evaluationHitsCount = new Map<string, number>();
+    // ### -2- ###
+    for (const [key, value] of Object.entries(dr.evaluationHitIds)) {
+      evaluationHitsCount.set(`${key}`, value as number);
+    }
+    // We want to merge evaluation results that belongs to the same Decision
+    // So we need to check if the Decision wasn't already partially processed
+    if (!evaluationResultsByNodeId.has(dr.decisionId)) {
+      evaluationResultsByNodeId.set(dr.decisionId, {
+        // ### -1- ###
+        evaluationResult: dr.evaluationStatus.toLowerCase() as "succeeded" | "failed" | "skipped",
+        evaluationHitsCount: evaluationHitsCount,
+      });
+    } else {
+      const existingEvaluationHitsCount = evaluationResultsByNodeId.get(dr.decisionId)?.evaluationHitsCount;
+      evaluationHitsCount.forEach((value, key) => {
+        // ### -3- ###
+        if (existingEvaluationHitsCount?.has(key)) {
+          existingEvaluationHitsCount.set(key, (existingEvaluationHitsCount?.get(key) ?? 0) + value);
+        } else {
+          existingEvaluationHitsCount?.set(key, value);
+        }
+      });
+      // TODO - Question
+      // Here is an issue of merging evaluation results that belongs to the same Decision
+      // For example, what to do if first time evaluation was 'succeeded' and second time 'skipped'?
+      evaluationResultsByNodeId.set(dr.decisionId, {
+        evaluationResult: dr.evaluationStatus.toLowerCase() as "succeeded" | "failed" | "skipped",
+        evaluationHitsCount: existingEvaluationHitsCount ?? new Map(),
+      });
+    }
+  });
+
+  return evaluationResultsByNodeId;
+}
+
 export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   const { i18n } = useOnlineI18n();
   // Calling forceDmnRunnerReRender will cause a update in the dmnRunnerKey
@@ -162,6 +244,8 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   );
   const status = useMemo(() => (isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE), [isExpanded]);
   const dmnRunnerAjv = useMemo(() => new DmnRunnerAjv().getAjv(), []);
+
+  const { envelopeServer } = useEditorDockContext();
 
   useLayoutEffect(() => {
     if (props.isEditorReady) {
@@ -264,6 +348,10 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             }
 
             const runnerResults: Array<DecisionResult[] | undefined> = [];
+            const evaluationResultsByNodeId: Map<
+              string,
+              { evaluationResult: "succeeded" | "failed" | "skipped"; evaluationHitsCount: Map<string, number> }
+            > = new Map();
             for (const result of results) {
               if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
                 setExtendedServicesError(true);
@@ -271,9 +359,13 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
               }
               if (result) {
                 runnerResults.push(result.decisionResults);
+                transformExtendedServicesDmnResult(result, evaluationResultsByNodeId);
               }
             }
             setDmnRunnerResults({ type: DmnRunnerResultsActionType.DEFAULT, newResults: runnerResults });
+
+            const newDmnEditorEnvelopeApi = envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
+            newDmnEditorEnvelopeApi.notifications.newDmnEditor_showDmnEvaluationResults.send(evaluationResultsByNodeId);
           })
           .catch((err) => {
             console.log(err);
@@ -281,6 +373,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           });
       },
       [
+        envelopeServer,
         props.workspaceFile.extension,
         extendedServices.status,
         extendedServices.client,

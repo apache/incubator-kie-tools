@@ -103,7 +103,7 @@ function EmptyStoryWithIncludedModels(args: DmnEditorProps) {
         externalContextName: args.externalContextName,
         externalContextDescription: args.externalContextDescription,
         validationMessages: args.validationMessages,
-        evaluationResults: args.evaluationResults,
+        evaluationResultsByNodeId: args.evaluationResultsByNodeId,
         issueTrackerHref: args.issueTrackerHref,
       })}
     </>
@@ -124,7 +124,7 @@ export const EmptyWithAvailableExternalModels: Story = {
   args: {
     model: getMarshaller(initialModel, { upgradeTo: "latest" }).parser.parse(),
     originalVersion: "1.5",
-    evaluationResults: {},
+    evaluationResultsByNodeId: new Map(),
     externalContextDescription: "External context description",
     externalContextName: "Storybook - DMN Editor",
     externalModelsByNamespace: {},

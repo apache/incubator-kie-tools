@@ -58,7 +58,7 @@ export const de: TranslatedDictionary<FormDmnI18n> = {
   },
   result: {
     evaluation: {
-      success: "Erfolgreich evaluiert",
+      succeeded: "Erfolgreich evaluiert",
       skipped: "Evaluierung übersprungen",
       failed: "Evaluierung fehlgeschlagen",
     },

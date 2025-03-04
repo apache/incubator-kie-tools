@@ -112,10 +112,12 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
                 <CheckCircleIcon />
                 {props.notificationsPanel ? (
                   <a onClick={onOpenExecutionTab} className={"kogito--editor__dmn-form-result__evaluation-link"}>
-                    {i18n.result.evaluation.success}
+                    {i18n.result.evaluation.succeeded}
                   </a>
                 ) : (
-                  <p className={"kogito--editor__dmn-form-result__evaluation-link"}>{i18n.result.evaluation.success}</p>
+                  <p className={"kogito--editor__dmn-form-result__evaluation-link"}>
+                    {i18n.result.evaluation.succeeded}
+                  </p>
                 )}
               </div>
             </>
@@ -155,7 +157,7 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
     [
       i18n.result.evaluation.failed,
       i18n.result.evaluation.skipped,
-      i18n.result.evaluation.success,
+      i18n.result.evaluation.succeeded,
       onOpenExecutionTab,
       props.notificationsPanel,
     ]
