@@ -33,7 +33,6 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/version"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
 
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/container-builder/client"
@@ -278,19 +277,14 @@ func createJobDBMigration(platform *operatorapi.SonataFlowPlatform, dbmj *DBMigr
 	}
 
 	dbMigrationJobCfg := newDBMigrationJobCfg()
+
+	lbl, _ := getServicesLabelsMap(platform.Name, platform.Namespace, fmt.Sprintf("%s-%s", "sonataflow-db-job", dbMigrationJobCfg.JobName), dbMigrationJobCfg.JobName, fmt.Sprintf("%s-%s", platform.Name, dbMigrationJobCfg.JobName), platform.Name, "sonataflow-operator")
+
 	job := &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      dbMigrationJobCfg.JobName,
 			Namespace: platform.Namespace,
-			Labels: map[string]string{
-				workflowproj.LabelApp:          platform.Name,
-				workflowproj.LabelAppNamespace: platform.Namespace,
-				workflowproj.LabelK8SComponent: fmt.Sprintf("%s-%s", platform.Name, dbMigrationJobCfg.JobName),
-				workflowproj.LabelK8SManagedBy: "sonataflow-operator",
-				workflowproj.LabelK8SName:      dbMigrationJobCfg.JobName,
-				workflowproj.LabelK8SPartOF:    platform.Name,
-				workflowproj.LabelService:      fmt.Sprintf("%s-%s", "sonataflow-db-job", dbMigrationJobCfg.JobName),
-			},
+			Labels:    lbl,
 		},
 		Spec: batchv1.JobSpec{
 			Template: corev1.PodTemplateSpec{
