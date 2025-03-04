@@ -19,8 +19,6 @@
 
 package org.acme;
 
-import java.util.List;
-
 public class Offer {
 
     private String category;
