@@ -71,7 +71,6 @@ export const getListItemValue = ({
   callback?: (value: string) => string;
 }) => {
   const { itemName, isNested } = getItemNameAndWithIsNested(name);
-  console.log(itemProps);
   const property = `${itemProps?.listStateName}?.[${itemProps?.indexVariableName}]${isNested ? `.${itemName}` : ""}`;
   return `${callback ? callback(property) : property}`;
 };
@@ -103,14 +102,12 @@ export const getListItemOnChange = ({
   overrideNewValue?: string;
 }) => {
   const { itemName, isNested } = getItemNameAndWithIsNested(name);
-  if (itemProps?.indexVariableName !== DEFAULT_ITEM_INDEX_NAME) {
-    return `(${overrideParam ? overrideParam : "newValue"}) => ${itemProps?.listStateSetter}(${overrideParam ? overrideParam : "newValue"}, ${itemProps?.indexVariableName})`;
-  }
+  const propertyPath = itemProps?.listStateName.split(".").splice(1).join(".");
   return `
   ${overrideParam ? overrideParam : "newValue"} => {
     ${itemProps?.listStateSetter}(s => {
       const newState = [...s];
-      newState[${itemProps?.indexVariableName}]${isNested ? `.${itemName}` : ""} = ${callback ? callback(overrideNewValue ? overrideNewValue : "newValue") : overrideNewValue ? overrideNewValue : "newValue"};
+      newState${propertyPath}[${itemProps?.indexVariableName}]${isNested ? `.${itemName}` : ""} = ${callback ? callback(overrideNewValue ? overrideNewValue : "newValue") : overrideNewValue ? overrideNewValue : "newValue"};
       return newState;
     })
   }`;

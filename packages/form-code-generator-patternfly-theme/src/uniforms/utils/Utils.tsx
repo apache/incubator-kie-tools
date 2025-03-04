@@ -29,10 +29,11 @@ export const FIELD_SET_PREFFIX = `set`;
 export const getInputReference = (binding: string, dataType: DataType, itemProps?: ListItemProps): InputReference => {
   // handle nested lists
   if (itemProps) {
+    const [_, property] = binding.split("$");
     return {
-      binding: binding,
-      stateName: itemProps.listStateName,
-      stateSetter: `${FIELD_SET_PREFFIX}${NS_SEPARATOR}${binding.split(".$").join("_").split(".").join("_")}`,
+      binding: binding.replace("$", `[${itemProps.indexVariableName}]`),
+      stateName: `${itemProps.listStateName}?.[${itemProps.indexVariableName}]${property}`,
+      stateSetter: itemProps.listStateSetter,
       dataType,
     };
   }

@@ -87,7 +87,51 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
   };
   const listItemValue = getDefaultItemValue();
 
-  const stateName = props.itemProps ? props.itemProps.listStateName : ref.stateName;
+  const addElementsIsDisabled = `${
+    props.maxCount === undefined
+      ? props.disabled
+      : `${props.disabled} || !(${props.maxCount} <= (${ref.stateName}?.length ?? -1))`
+  }`;
+
+  const onAddElementCallback = (prefix: string) => {
+    return props.itemProps
+      ? `${prefix}${ref.stateSetter}((s) => {
+  const newState = [...s];
+  (newState${ref.stateName.split(".").splice(1).join(".")}) = [...(newState${ref.stateName.split(".").splice(1).join(".")} ?? []), {}];
+  return newState;
+})`
+      : `${prefix}${ref.stateSetter}((${ref.stateName} ?? []).concat([${listItemValue}]))`;
+  };
+
+  const onAddElement = `!${props.disabled} && 
+    ${
+      props.maxCount === undefined
+        ? onAddElementCallback("")
+        : onAddElementCallback(`!(${props.maxCount} <= (${ref.stateName}?.length ?? -1)) && `)
+    };`;
+
+  const removeElementIsDisabled = `${
+    props.minCount === undefined
+      ? props.disabled
+      : `${props.disabled} || (${props.minCount} >= (${ref.stateName}?.length ?? -1))`
+  }`;
+
+  const onRemoveElementCallback = (prefix: string) => {
+    return props.itemProps
+      ? `${prefix}${ref.stateSetter}((s) => {
+  const newState = [...s];
+  (newState${ref.stateName.split(".").splice(1).join(".")}) = value;
+  return newState;
+})`
+      : `${prefix}${ref.stateSetter}(value)`;
+  };
+
+  const onRemoveElement = `!${props.disabled} && 
+  ${
+    props.minCount === undefined
+      ? onRemoveElementCallback("")
+      : onRemoveElementCallback(`!(${props.minCount} >= (${ref.stateName}?.length ?? -1)) && `)
+  };`;
 
   const jsxCode = `<div>
       <Split hasGutter>
@@ -106,9 +150,9 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
             name='$'
             variant='plain'
             style={{ paddingLeft: '0', paddingRight: '0' }}
-            disabled={${props.maxCount === undefined ? props.disabled : `${props.disabled} || !(${props.maxCount} <= (${stateName}?.length ?? -1))`}}
+            disabled={${addElementsIsDisabled}}
             onClick={() => {
-              !${props.disabled} && ${props.maxCount === undefined ? `${ref.stateSetter}((${stateName} ?? []${props.itemProps?.indexVariableName ? `, ${props.itemProps?.indexVariableName}` : ""}).concat([${listItemValue}]))` : `!(${props.maxCount} <= (${stateName}?.length ?? -1)) && ${ref.stateSetter}((${stateName} ?? []${props.itemProps?.indexVariableName ? `, ${props.itemProps?.indexVariableName}` : ""}).concat([]))`};
+              ${onAddElement}
             }}
           >
             <PlusCircleIcon color='#0088ce' />
@@ -116,7 +160,7 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
         </SplitItem>
       </Split>
       <div>
-        {${stateName}?.map((_, ${indexVariableName}) =>
+        {${ref.stateName}?.map((_, ${indexVariableName}) =>
           (<div
             key={${indexVariableName}}
             style={{
@@ -128,13 +172,13 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
             <div style={{ width: '100%', marginRight: '10px' }}>${listItem?.jsxCode}</div>
             <div>
               <Button
-                disabled={${props.minCount === undefined ? props.disabled : `${props.disabled} || (${props.minCount} >= (${stateName}?.length ?? -1))`}}
+                disabled={${removeElementIsDisabled}}
                 variant='plain'
                 style={{ paddingLeft: '0', paddingRight: '0' }}
                 onClick={() => {
-                  const value = [...${stateName}]
+                  const value = [...${ref.stateName}]
                   value.splice(${indexVariableName}, 1);
-                  !${props.disabled} && ${props.minCount === undefined ? `${ref.stateSetter}(value)` : `!(${props.minCount} >= (${stateName}?.length ?? -1)) && ${ref.stateSetter}(value${props.itemProps?.indexVariableName ? `, ${props.itemProps?.indexVariableName}` : ""})`};
+                  ${onRemoveElement}
                 }}
               >
                 <MinusCircleIcon color='#cc0000' />
@@ -146,17 +190,7 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
     </div>`;
 
   const getListStateCode = () => {
-    if (props.itemProps) {
-      return getStateCode(
-        ref.stateName,
-        ref.stateSetter,
-        ref.dataType.name,
-        "[]",
-        props.itemProps,
-        props.name.split(".").pop()
-      );
-    }
-    return [getStateCode(ref.stateName, ref.stateSetter, ref.dataType.name, "[]"), listItem?.stateCode].join("\n");
+    return getStateCode(ref.stateName, ref.stateSetter, ref.dataType.name, "[]");
   };
 
   const element: FormInput = {
