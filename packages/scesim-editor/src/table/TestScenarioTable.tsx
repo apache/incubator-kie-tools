@@ -638,7 +638,7 @@ function TestScenarioTable({
             factMappings: factMappings,
             factMappingValues: factMappingValues,
             isInstance: isInstance,
-            insertDirection: InsertRowColumnsDirection.AboveOrRight,
+            insertDirection: InsertRowColumnsDirection.BelowOrLeft,
             selectedColumnFactMappingIndex: factMappingIndexToRemove,
           });
         } else {
