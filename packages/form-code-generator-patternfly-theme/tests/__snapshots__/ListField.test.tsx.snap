@@ -16,16 +16,6 @@ import { PlusCircleIcon, MinusCircleIcon } from &#39;@patternfly/react-icons&#39
 const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 	const [formApi, setFormApi] = useState&lt;any&gt;();
 	const [friends__list, set__friends__list] = useState&lt;object[]&gt;([]);
-	const [friends__list__$__test, set__friends__list__$__test] =
-		useState&lt;string&gt;(&#39;&#39;);
-	const set__friends_list__know = useCallback((newValue, index) =&gt; {
-		set__friends__list((prev) =&gt; {
-			const newState = [...prev];
-			newState[index] ??= [];
-			newState[index].know = newValue;
-			return newState;
-		});
-	}, []);
 	/* Utility function that fills the form with the data received from the kogito runtime */
 	const setFormData = (data) =&gt; {
 		if (!data) {
@@ -160,73 +150,91 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 																disabled={false}
 																onClick={() =&gt; {
 																	!false &amp;&amp;
-																		set__friends_list__know(
-																			(friends__list ?? [], itemIndex).concat([
+																		set__friends__list((s) =&gt; {
+																			const newState = [...s];
+																			newState[itemIndex].know = [
+																				...(newState[itemIndex].know ?? []),
 																				{},
-																			])
-																		);
+																			];
+																			return newState;
+																		});
 																}}&gt;
 																&lt;PlusCircleIcon color=&#39;#0088ce&#39; /&gt;
 															&lt;/Button&gt;
 														&lt;/SplitItem&gt;
 													&lt;/Split&gt;
 													&lt;div&gt;
-														{friends__list?.map((_, nested__itemIndex) =&gt; (
-															&lt;div
-																key={nested__itemIndex}
-																style={{
-																	marginBottom: &#39;1rem&#39;,
-																	display: &#39;flex&#39;,
-																	justifyContent: &#39;space-between&#39;,
-																}}&gt;
+														{friends__list?.[itemIndex].know?.map(
+															(_, nested__itemIndex) =&gt; (
 																&lt;div
+																	key={nested__itemIndex}
 																	style={{
-																		width: &#39;100%&#39;,
-																		marginRight: &#39;10px&#39;,
+																		marginBottom: &#39;1rem&#39;,
+																		display: &#39;flex&#39;,
+																		justifyContent: &#39;space-between&#39;,
 																	}}&gt;
-																	&lt;Card&gt;
-																		&lt;CardBody className=&#39;pf-c-form&#39;&gt;
-																			&lt;FormGroup
-																				fieldId={&#39;uniforms-0000-000b&#39;}
-																				label={&#39;Nested&#39;}
-																				isRequired={true}&gt;
-																				&lt;TextInput
-																					name={\`friends__list.\${nested__itemIndex}.nested\`}
-																					id={&#39;uniforms-0000-000b&#39;}
-																					isDisabled={false}
-																					placeholder={&#39;&#39;}
-																					type={&#39;text&#39;}
-																					value={
-																						friends__list?.[nested__itemIndex]
-																							.nested
-																					}
-																					onChange={set__friends_list__know(
-																						newValue,
-																						nested__itemIndex
-																					)}
-																				/&gt;
-																			&lt;/FormGroup&gt;
-																		&lt;/CardBody&gt;
-																	&lt;/Card&gt;
-																&lt;/div&gt;
-																&lt;div&gt;
-																	&lt;Button
-																		disabled={false}
-																		variant=&#39;plain&#39;
+																	&lt;div
 																		style={{
-																			paddingLeft: &#39;0&#39;,
-																			paddingRight: &#39;0&#39;,
-																		}}
-																		onClick={() =&gt; {
-																			const value = [...friends__list];
-																			value.splice(nested__itemIndex, 1);
-																			!false &amp;&amp; set__friends_list__know(value);
+																			width: &#39;100%&#39;,
+																			marginRight: &#39;10px&#39;,
 																		}}&gt;
-																		&lt;MinusCircleIcon color=&#39;#cc0000&#39; /&gt;
-																	&lt;/Button&gt;
+																		&lt;Card&gt;
+																			&lt;CardBody className=&#39;pf-c-form&#39;&gt;
+																				&lt;FormGroup
+																					fieldId={&#39;uniforms-0000-000b&#39;}
+																					label={&#39;Nested&#39;}
+																					isRequired={true}&gt;
+																					&lt;TextInput
+																						name={\`friends__list?.[itemIndex].know.\${nested__itemIndex}.nested\`}
+																						id={&#39;uniforms-0000-000b&#39;}
+																						isDisabled={false}
+																						placeholder={&#39;&#39;}
+																						type={&#39;text&#39;}
+																						value={
+																							friends__list?.[itemIndex].know?.[
+																								nested__itemIndex
+																							].nested
+																						}
+																						onChange={(newValue) =&gt; {
+																							set__friends__list((s) =&gt; {
+																								const newState = [...s];
+																								newState[itemIndex].know[
+																									nested__itemIndex
+																								].nested = newValue;
+																								return newState;
+																							});
+																						}}
+																					/&gt;
+																				&lt;/FormGroup&gt;
+																			&lt;/CardBody&gt;
+																		&lt;/Card&gt;
+																	&lt;/div&gt;
+																	&lt;div&gt;
+																		&lt;Button
+																			disabled={false}
+																			variant=&#39;plain&#39;
+																			style={{
+																				paddingLeft: &#39;0&#39;,
+																				paddingRight: &#39;0&#39;,
+																			}}
+																			onClick={() =&gt; {
+																				const value = [
+																					...friends__list?.[itemIndex].know,
+																				];
+																				value.splice(nested__itemIndex, 1);
+																				!false &amp;&amp;
+																					set__friends__list((s) =&gt; {
+																						const newState = [...s];
+																						newState[itemIndex].know = value;
+																						return newState;
+																					});
+																			}}&gt;
+																			&lt;MinusCircleIcon color=&#39;#cc0000&#39; /&gt;
+																		&lt;/Button&gt;
+																	&lt;/div&gt;
 																&lt;/div&gt;
-															&lt;/div&gt;
-														))}
+															)
+														)}
 													&lt;/div&gt;
 												&lt;/div&gt;
 											&lt;/CardBody&gt;
