@@ -25,9 +25,7 @@ import { ListItemProps } from "../rendering/ListItemField";
 export const NS_SEPARATOR = "__";
 export const FIELD_SET_PREFFIX = `set`;
 
-// TODO CHANGE
 export const getInputReference = (binding: string, dataType: DataType, itemProps?: ListItemProps): InputReference => {
-  // handle nested lists
   if (itemProps) {
     const [_, property] = binding.split("$");
     return {
