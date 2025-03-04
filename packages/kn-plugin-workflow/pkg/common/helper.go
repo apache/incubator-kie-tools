@@ -20,32 +20,24 @@
 package common
 
 import (
-	"bufio"
+	"bytes"
 	"fmt"
 	"github.com/spf13/cobra"
 	"html/template"
+	"io"
+	"os"
 	"os/exec"
 )
 
 func RunCommand(command *exec.Cmd, commandName string) error {
-	stdout, _ := command.StdoutPipe()
-	stderr, _ := command.StderrPipe()
+	var stdoutBuf, stderrBuf bytes.Buffer
+
+	command.Stdout = io.MultiWriter(os.Stdout, &stdoutBuf)
+	command.Stderr = io.MultiWriter(os.Stderr, &stderrBuf)
 
 	if err := command.Start(); err != nil {
 		fmt.Printf("ERROR: starting command \"%s\" failed\n", commandName)
 		return err
-	}
-
-	stdoutScanner := bufio.NewScanner(stdout)
-	for stdoutScanner.Scan() {
-		m := stdoutScanner.Text()
-		fmt.Println(m)
-	}
-
-	stderrScanner := bufio.NewScanner(stderr)
-	for stderrScanner.Scan() {
-		m := stderrScanner.Text()
-		fmt.Println(m)
 	}
 
 	if err := command.Wait(); err != nil {
