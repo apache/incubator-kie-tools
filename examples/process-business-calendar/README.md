@@ -352,9 +352,9 @@ This guide explains how to implement a custom business calendar allowing full fl
 
 1. **Navigate to**: _examples/process-business-calendar/src/main/java/org/kie/kogito/calendar/custom (create the org/kie/kogito/calendar/custom directory if it does not exist)_
 2. **Create a new custom business calendar class** (e.g., CustomCalendar.java).
-3. Ensure it implements the BusinessCalendar interface.The implementation should be a concrete class(not an interface or abstract class).
+3. Ensure it implements the `BusinessCalendar` interface.The implementation should be a concrete class(not an interface or abstract class).
 4. Set the property `kogito.processes.businessCalendar=org.kie.kogito.calendar.custom.CustomCalendar` in application.properties to the fully qualified class name of the custom business calendar.
-5. Remove the calendar.properties file within src/main/resources to allow the CustomCalendar class to be registered instead of the default BusinessCalendarImpl provided out of the box.
+5. Remove the `calendar.properties` file within `src/main/resources` to allow the `CustomCalendar` class to be registered instead of the default `BusinessCalendarImpl` provided out of the box.
 
 **Implement your custom business logic**
 
