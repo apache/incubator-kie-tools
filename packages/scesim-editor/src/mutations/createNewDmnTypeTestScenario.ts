@@ -39,6 +39,7 @@ const EMPTY_GIVEN_FACTMAPPING = {
   factAlias: "INSTANCE-1",
   factIdentifierName: "INSTANCE-1",
   factIdentifierClassName: "java.lang.Void",
+  genericTypes: undefined,
 };
 
 const EMPTY_EXPECT_FACTMAPPING = {
@@ -50,6 +51,7 @@ const EMPTY_EXPECT_FACTMAPPING = {
   factAlias: "INSTANCE-2",
   factIdentifierName: "INSTANCE-2",
   factIdentifierClassName: "java.lang.Void",
+  genericTypes: undefined,
 };
 
 type FactMapping = {
@@ -61,6 +63,7 @@ type FactMapping = {
   factAlias: string;
   factIdentifierName: string;
   factIdentifierClassName: string;
+  genericTypes: string[] | undefined;
 };
 
 /**
@@ -137,115 +140,78 @@ export function createNewDmnTypeTestScenario({
   });
 }
 
-function isSimpleType(type: string) {
-  return [
-    "Any",
-    "boolean",
-    "context",
-    "date",
-    "date and time",
-    "days and time duration",
-    "number",
-    "string",
-    "time",
-    "years and months duration",
-    "<Undefined>",
-  ].includes(type);
-}
-
 function generateFactMappingsAndFactMappingValuesFromDmnModel(
   drgElements: DMN15__tInputData[] | DMN15__tDecision[],
   expressionIdentifierType: "EXPECT" | "GIVEN",
-  itemDefinitionMap: Map<string, DMN15__tItemDefinition>
+  allItemDefinitionsMap: Map<string, DMN15__tItemDefinition>
 ) {
   const factMappingsToPush = [] as FactMapping[];
 
   drgElements.forEach((drgElement) => {
-    const itemDefinition = itemDefinitionMap.get(drgElement.variable!["@_typeRef"]!);
+    const itemDefinition = allItemDefinitionsMap.get(drgElement.variable!["@_typeRef"]!);
     if (!itemDefinition?.itemComponent || itemDefinition?.itemComponent.length === 0) {
-      factMappingsToPush.push(
-        generateSimpleTypeFactMapping(
-          drgElement.variable!["@_typeRef"]!,
-          100,
-          [drgElement.variable!["@_name"]!],
-          expressionIdentifierType,
-          drgElement.variable!["@_name"]!,
-          drgElement.variable!["@_typeRef"]!
-        )
-      );
+      factMappingsToPush.push({
+        className: itemDefinition?.["@_isCollection"] ? "java.util.List" : drgElement.variable!["@_typeRef"]!,
+        columnWidth: 100,
+        expressionAlias: "value",
+        expressionElements: [drgElement.variable!["@_name"]!],
+        expressionIdentifierType: expressionIdentifierType,
+        factAlias: drgElement.variable!["@_name"]!,
+        factIdentifierName: drgElement.variable!["@_name"]!,
+        factIdentifierClassName: drgElement.variable!["@_typeRef"]!,
+        genericTypes: itemDefinition?.["@_isCollection"] ? [drgElement.variable!["@_typeRef"]!] : undefined,
+      });
     } else {
-      if (itemDefinition?.typeRef && isSimpleType(itemDefinition?.typeRef?.__$$text)) {
-        generateSimpleTypeFactMapping(
-          itemDefinition?.typeRef?.__$$text,
-          100,
-          [drgElement.variable!["@_name"]!],
-          expressionIdentifierType,
-          drgElement.variable!["@_name"]!,
-          drgElement.variable!["@_typeRef"]!
-        );
-      } else {
-        itemDefinition?.itemComponent!.forEach((itemComponent) => {
-          recursevlyNavigateItemComponent(
+      itemDefinition?.itemComponent!.forEach((itemComponent) => {
+        factMappingsToPush.push(
+          ...recursevlyNavigateItemComponent(
+            allItemDefinitionsMap,
             100,
-            factMappingsToPush,
             [drgElement.variable!["@_name"]!],
             expressionIdentifierType,
             itemComponent,
             drgElement.variable!["@_name"]!,
             drgElement.variable!["@_typeRef"]!
-          );
-        });
-      }
+          )
+        );
+      });
     }
   });
 
   return factMappingsToPush.sort((a, b) => a.expressionElements.join().localeCompare(b.expressionElements.join()));
 }
 
-function generateSimpleTypeFactMapping(
-  className: string,
-  columnWidth: number,
-  expressionElements: string[],
-  expressionIdentifierType: "EXPECT" | "GIVEN",
-  name: string,
-  typeRef: string
-) {
-  return {
-    className,
-    columnWidth,
-    expressionAlias: "value",
-    expressionElements: expressionElements,
-    expressionIdentifierType,
-    factAlias: name,
-    factIdentifierName: name,
-    factIdentifierClassName: typeRef,
-  };
-}
-
 function recursevlyNavigateItemComponent(
+  allItemDefinitionsMap: Map<string, DMN15__tItemDefinition>,
   columnWidth: number,
-  factMappingsToReturn: FactMapping[],
   expressionElements: string[],
   expressionIdentifierType: "EXPECT" | "GIVEN",
   itemComponent: DMN15__tItemDefinition,
   name: string,
   typeRef: string
 ) {
-  if (!itemComponent.typeRef && itemComponent.itemComponent) {
-    itemComponent.itemComponent.forEach((nestedItemComponent) => {
-      recursevlyNavigateItemComponent(
-        columnWidth,
-        factMappingsToReturn,
-        [...expressionElements, itemComponent["@_name"]],
-        expressionIdentifierType,
-        nestedItemComponent,
-        name,
-        typeRef
+  const factMappingsToReturn: FactMapping[] = [];
+  const currentItemDefinition = allItemDefinitionsMap.has(itemComponent?.typeRef?.__$$text ?? "")
+    ? allItemDefinitionsMap.get(itemComponent?.typeRef?.__$$text ?? "")
+    : itemComponent;
+
+  if (!currentItemDefinition?.typeRef && currentItemDefinition?.itemComponent) {
+    currentItemDefinition.itemComponent.forEach((nestedItemComponent) => {
+      factMappingsToReturn.push(
+        ...recursevlyNavigateItemComponent(
+          allItemDefinitionsMap,
+          columnWidth,
+          [...expressionElements, itemComponent["@_name"]],
+          expressionIdentifierType,
+          nestedItemComponent,
+          name,
+          typeRef
+        )
       );
     });
   } else {
     factMappingsToReturn.push({
-      className: itemComponent.typeRef!.__$$text,
+      className: itemComponent?.["@_isCollection"] ? "java.util.List" : itemComponent.typeRef!.__$$text,
       columnWidth: columnWidth,
       expressionAlias: [...expressionElements.slice(1), itemComponent["@_name"]].join("."),
       expressionElements: [...expressionElements, itemComponent["@_name"]],
@@ -253,6 +219,9 @@ function recursevlyNavigateItemComponent(
       factAlias: name,
       factIdentifierName: name,
       factIdentifierClassName: typeRef,
+      genericTypes: itemComponent?.["@_isCollection"] ? [itemComponent!.typeRef!.__$$text] : undefined,
     });
   }
+
+  return factMappingsToReturn;
 }
