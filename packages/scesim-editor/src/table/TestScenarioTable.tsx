@@ -334,23 +334,19 @@ function TestScenarioTable({
       const isInstance =
         conditions.column?.groupType === TestScenarioTableColumnInstanceGroup.EXPECT ||
         conditions.column?.groupType === TestScenarioTableColumnInstanceGroup.GIVEN;
+      const isOther = conditions.column?.groupType === TestScenarioTableColumnFieldGroup.OTHER;
 
       if (!conditions.selection.selectionStart || !conditions.selection.selectionEnd || isHeader) {
         return [];
       }
 
       const columnIndex = conditions.selection.selectionStart.columnIndex;
-      const groupType = conditions.column?.groupType;
-
-      const atLeastTwoColumnsOfTheSameGroupType = groupType
-        ? _.groupBy(conditions.columns, (column) => column?.groupType)[groupType].length > 1
-        : true;
 
       const columnCanBeDeleted =
+        !isOther &&
         columnIndex > 0 &&
-        atLeastTwoColumnsOfTheSameGroupType &&
         ((isBackground && (conditions.columns?.length ?? 0) > 1) ||
-          (!isBackground && columnIndex > 0 && (conditions.columns?.length ?? 0) > 4));
+          (!isBackground && columnIndex > 0 && (conditions.columns?.length ?? 0) > 2));
 
       const columnsWithNoOperations = isBackground ? [0] : [0, 1];
       const columnOperations = (isInstance ? columnIndex in [0] : columnIndex in columnsWithNoOperations)
@@ -384,7 +380,13 @@ function TestScenarioTable({
           : []),
       ];
     },
-    [isBackground, TestScenarioTableColumnHeaderGroup, TestScenarioTableColumnInstanceGroup, tableRows.length]
+    [
+      TestScenarioTableColumnHeaderGroup,
+      TestScenarioTableColumnInstanceGroup,
+      TestScenarioTableColumnFieldGroup,
+      isBackground,
+      tableRows.length,
+    ]
   );
 
   const generateOperationConfig = useCallback(
@@ -616,15 +618,80 @@ function TestScenarioTable({
           selectedColumnIndex: args.columnIndex,
         });
 
-        /** Updating the selectedColumn. When deleting, BEETable automatically shifts the selected cell in the left */
-        const firstIndexOnTheLeft = Math.min(...deletedFactMappingIndexs);
-        const selectedColumnIndex = firstIndexOnTheLeft > 0 ? firstIndexOnTheLeft - 1 : 0;
+        console.log("AAAAAA");
+        console.log(factMappings);
+        console.log("BBBBBBBBB");
+        console.log(args.groupType);
 
-        state.dispatch(state).table.updateSelectedColumn({
-          factMapping: JSON.parse(JSON.stringify(factMappings[selectedColumnIndex])),
-          index: firstIndexOnTheLeft,
-          isBackground: isBackground,
-        });
+        /* If the last elements of factMappingGroup (i.e. "EXPECT" or "GIVEN") has been removed,
+           a new empty Instance must be created */
+        const factMappingGroupElementsAfterRemoval = _.groupBy(
+          factMappings,
+          (factMapping) => factMapping.expressionIdentifier.type!.__$$text
+        )[args.groupType.toUpperCase()];
+        const IsAtLeastOneGroupElementPresent =
+          factMappingGroupElementsAfterRemoval && factMappingGroupElementsAfterRemoval.length > 0;
+
+        if (!IsAtLeastOneGroupElementPresent) {
+          addColumn({
+            beforeIndex: factMappingIndexToRemove,
+            factMappings: factMappings,
+            factMappingValues: factMappingValues,
+            isInstance: isInstance,
+            insertDirection: InsertRowColumnsDirection.AboveOrRight,
+            selectedColumnFactMappingIndex: factMappingIndexToRemove,
+          });
+        } else {
+          // /* If the last elements of factMappingGroup (i.e. "EXPECT" or "GIVEN") has been removed,
+          //    * a new empty Instance must be created */
+          // const factMappingGroupElementsAfterRemoval = _.groupBy(
+          //   deepClonedFactMappings,
+          //   (factMapping) => factMapping.expressionIdentifier.type!.__$$text
+          // )[groupType];
+          // const areAllGroupElementsRemoved =
+          //   !Array.isArray(factMappingGroupElementsAfterRemoval) || !factMappingGroupElementsAfterRemoval.length;
+
+          // if (areAllGroupElementsRemoved) {
+          //   const instanceDefaultNames = factMappings
+          //     .filter((factMapping) => factMapping.factAlias!.__$$text.startsWith("INSTANCE-"))
+          //     .map((factMapping) => factMapping.factAlias!.__$$text);
+
+          //   const newFactMapping = {
+          //     className: { __$$text: EMPTY_TYPE },
+          //     columnWidth: { __$$text: 150 },
+          //     expressionAlias: { __$$text: "PROPERTY" },
+          //     expressionElements: undefined,
+          //     expressionIdentifier: {
+          //       name: { __$$text: `_${uuid()}`.toLocaleUpperCase() },
+          //       type: { __$$text: allFactMappingWithIndexesToRemove[0].factMapping!.expressionIdentifier.type!.__$$text },
+          //     },
+          //     factAlias: {
+          //       __$$text: getNextAvailablePrefixedName(instanceDefaultNames, "INSTANCE"),
+          //     },
+          //     factIdentifier: {
+          //       name: {
+          //         __$$text: getNextAvailablePrefixedName(instanceDefaultNames, "INSTANCE"),
+          //       },
+          //       className: {
+          //         __$$text: EMPTY_TYPE,
+          //       },
+          //     },
+          //     factMappingValueType: { __$$text: "NOT_EXPRESSION" },
+          //   };
+
+          //   deepClonedFactMappings.splice(allFactMappingWithIndexesToRemove[0].factMappingIndex, 0, newFactMapping);
+          // }
+
+          /** Updating the selectedColumn. When deleting, BEETable automatically shifts the selected cell in the left */
+          const firstIndexOnTheLeft = Math.min(...deletedFactMappingIndexs);
+          const selectedColumnIndex = firstIndexOnTheLeft > 0 ? firstIndexOnTheLeft - 1 : 0;
+
+          state.dispatch(state).table.updateSelectedColumn({
+            factMapping: JSON.parse(JSON.stringify(factMappings[selectedColumnIndex])),
+            index: firstIndexOnTheLeft,
+            isBackground: isBackground,
+          });
+        }
       });
     },
     [
