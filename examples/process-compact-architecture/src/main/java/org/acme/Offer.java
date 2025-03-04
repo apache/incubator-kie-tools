@@ -25,7 +25,7 @@ public class Offer {
 
     private String category;
 
-    private List<Salary> salary;
+    private Integer salary;
 
     public Offer() {
     }
@@ -38,11 +38,11 @@ public class Offer {
         this.category = category;
     }
 
-    public List<Salary> getSalary() {
+    public Integer getSalary() {
         return salary;
     }
 
-    public void setSalary(List<Salary> salary) {
+    public void setSalary(Integer salary) {
         this.salary = salary;
     }
 }

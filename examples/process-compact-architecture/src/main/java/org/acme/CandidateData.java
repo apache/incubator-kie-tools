@@ -34,18 +34,16 @@ public class CandidateData {
     private Integer experience;
 
     private List<String> skills;
-    private List<Offer> offers;
 
     public CandidateData() {
     }
 
-    public CandidateData(String name, String lastName, String email, Integer experience, List<String> skills, List<Offer> offers) {
+    public CandidateData(String name, String lastName, String email, Integer experience, List<String> skills) {
         this.name = name;
         this.lastName = lastName;
         this.email = email;
         this.experience = experience;
         this.skills = skills;
-        this.offers = offers;
     }
 
     public String getName() {
@@ -86,14 +84,6 @@ public class CandidateData {
 
     public void setSkills(List<String> skills) {
         this.skills = skills;
-    }
-
-    public List<Offer> getOffers() {
-        return offers;
-    }
-
-    public void setOffers(List<Offer> offers) {
-        this.offers = offers;
     }
 
     @JsonIgnore
