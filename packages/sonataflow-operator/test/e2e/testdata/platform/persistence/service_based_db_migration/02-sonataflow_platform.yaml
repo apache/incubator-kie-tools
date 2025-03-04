@@ -20,12 +20,6 @@ kind: SonataFlowPlatform
 metadata:
   name: sonataflow-platform
 spec:
-  eventing:
-    broker:
-      ref:
-        apiVersion: eventing.knative.dev/v1
-        kind: Broker
-        name: default
   build:
     config:
       strategyOptions:
@@ -33,11 +27,6 @@ spec:
   services:
     dataIndex:
       enabled: true
-      source:
-        ref:
-          apiVersion: eventing.knative.dev/v1
-          kind: Broker
-          name: di-source
       persistence:
         dbMigrationStrategy: service
         postgresql:
@@ -57,25 +46,8 @@ spec:
                 "-c",
                 'until (echo 1 > /dev/tcp/postgres.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local/5432) >/dev/null 2>&1; do echo "Waiting for postgres server"; sleep 3; done;',
               ]
-        container:
-          env:
-            - name: MY_CUSTOM_VARIABLE
-              value: "OKAY"
-            - name: QUARKUS_DATASOURCE_PASSWORD
-              #             This value should not be used since it's already set by the operator. If used, the test will fail.
-              value: "SHOULD_NOT_BE_USED"
     jobService:
       enabled: true
-      source:
-        ref:
-          apiVersion: eventing.knative.dev/v1
-          kind: Broker
-          name: js-source
-      sink:
-        ref:
-          apiVersion: eventing.knative.dev/v1
-          kind: Broker
-          name: js-sink
       persistence:
         dbMigrationStrategy: service
         postgresql:
@@ -95,10 +67,3 @@ spec:
                 "-c",
                 'until (echo 1 > /dev/tcp/postgres.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local/5432) >/dev/null 2>&1; do echo "Waiting for postgres server"; sleep 3; done;',
               ]
-        container:
-          env:
-            - name: MY_CUSTOM_VARIABLE
-              value: "OKAY"
-            - name: QUARKUS_DATASOURCE_PASSWORD
-              #             This value should not be used since it's already set by the operator. If used, the test will fail.
-              value: "SHOULD_NOT_BE_USED"

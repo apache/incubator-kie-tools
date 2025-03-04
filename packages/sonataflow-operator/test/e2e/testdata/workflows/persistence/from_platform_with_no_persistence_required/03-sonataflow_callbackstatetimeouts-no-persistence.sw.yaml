@@ -24,7 +24,6 @@ metadata:
     sonataflow.org/version: 0.0.1
     sonataflow.org/profile: gitops
 spec:
-  persistence: { migrateDBOnStartUp: true }
   podTemplate:
     replicas: 0
     container:
