@@ -1,268 +1,309 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<ListField> tests <ListField> 1`] = `
+"<div>
+      <Split hasGutter>
+        <SplitItem>
+          {'Friends' && (
+            <label className={"pf-c-form__label"}>
+              <span className={"pf-c-form__label-text"}>
+                Friends
+              </span>
+            </label>
+          )}
+        </SplitItem>
+        <SplitItem isFilled />
+        <SplitItem>
+          <Button
+            name='$'
+            variant='plain'
+            style={{ paddingLeft: '0', paddingRight: '0' }}
+            disabled={false}
+            onClick={() => {
+              !false && 
+    set__friends((friends ?? []).concat([{}]));
+            }}
+          >
+            <PlusCircleIcon color='#0088ce' />
+          </Button>
+        </SplitItem>
+      </Split>
+      <div>
+        {friends?.map((_, itemIndex) =>
+          (<div
+            key={itemIndex}
+            style={{
+              marginBottom: '1rem',
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div style={{ width: '100%', marginRight: '10px' }}><Card>
+          <CardBody className="pf-c-form">
+          
+          <FormGroup
+      fieldId={'uniforms-0000-0003'}
+      label={'Name'}
+      isRequired={true}
+    >
+      <TextInput
+        name={\`friends.\${itemIndex}.name\`}
+        id={'uniforms-0000-0003'}
+        isDisabled={false}
+        placeholder={''}
+        type={'text'}
+        value={friends?.[itemIndex].name}
+        onChange={
+  newValue => {
+    set__friends(s => {
+      const newState = [...s];
+      newState[itemIndex].name = newValue;
+      return newState;
+    })
+  }}
+        />
+    </FormGroup>
+<FormGroup
+      fieldId={'uniforms-0000-0005'}
+      label={'Age'}
+      isRequired={true}
+    >
+      <TextInput
+      type={'number'}
+      name={\`friends.\${itemIndex}.age\`}
+      isDisabled={false}
+      id={'uniforms-0000-0005'}
+      placeholder={''}
+      step={0.01}  
+      value={friends?.[itemIndex].age}
+      onChange={
+  newValue => {
+    set__friends(s => {
+      const newState = [...s];
+      newState[itemIndex].age = Number(newValue);
+      return newState;
+    })
+  }}
+    />
+    </FormGroup>
+<FormGroup
+      fieldId={'uniforms-0000-0007'}
+      label={'Country'}
+      isRequired={true}
+    ><Select
+      id={'uniforms-0000-0007'}
+      name={\`friends.\${itemIndex}.country\`}
+      variant={SelectVariant.single}
+      isDisabled={false}
+      placeholderText={''}
+      isOpen={friends__$__country__expanded}
+      selections={friends__$__country}
+      onToggle={(isOpen) => set__friends__$__country__expanded(isOpen)}
+      onSelect={
+  (event, value, isPlaceHolder) => {
+    set__friends(s => {
+      const newState = [...s];
+      newState[itemIndex].country = handleSelect(value, isPlaceHolder, friends__$__country, set__friends__$__country, set__friends__$__country__expanded);
+      return newState;
+    })
+  }}
+      value={friends?.[itemIndex].country}
+    >
+      <SelectOption key={'US'} value={'US'}>US</SelectOption>
+<SelectOption key={'Brazil'} value={'Brazil'}>Brazil</SelectOption>
+    </Select></FormGroup>
+<FormGroup fieldId='uniforms-0000-0009'>
+    <Checkbox
+      isChecked={friends?.[itemIndex].married}
+      isDisabled={false}
+      id={'uniforms-0000-0009'}
+      name={\`friends.\${itemIndex}.married\`}
+      label={'Married'}
+      onChange={
+  newValue => {
+    set__friends(s => {
+      const newState = [...s];
+      newState[itemIndex].married = newValue;
+      return newState;
+    })
+  }}
+    />
+  </FormGroup>
 <div>
-  import React, { useCallback, useEffect, useState } from &#39;react&#39;;
-import {
-	Card,
-	CardBody,
-	Split,
-	SplitItem,
-	Button,
-	TextInput,
-	FormGroup,
-} from &#39;@patternfly/react-core&#39;;
-import { PlusCircleIcon, MinusCircleIcon } from &#39;@patternfly/react-icons&#39;;
-const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
-	const [formApi, setFormApi] = useState&lt;any&gt;();
-	const [friends__list, set__friends__list] = useState&lt;object[]&gt;([]);
-	/* Utility function that fills the form with the data received from the kogito runtime */
-	const setFormData = (data) =&gt; {
-		if (!data) {
-			return;
-		}
-		set__friends__list(data?.friends?.list ?? []);
-	};
-	/* Utility function to generate the expected form output as a json object */
-	const getFormData = useCallback(() =&gt; {
-		const formData: any = {};
-		formData.friends = {};
-		formData.friends.list = friends__list;
-		return formData;
-	}, [friends__list]);
-	/* Utility function to validate the form on the &#39;beforeSubmit&#39; Lifecycle Hook */
-	const validateForm = useCallback(() =&gt; {}, []);
-	/* Utility function to perform actions on the on the &#39;afterSubmit&#39; Lifecycle Hook */
-	const afterSubmit = useCallback((result) =&gt; {}, []);
-	useEffect(() =&gt; {
-		if (formApi) {
-			/*
-        Form Lifecycle Hook that will be executed before the form is submitted.
-        Throwing an error will stop the form submit. Usually should be used to validate the form.
-      */
-			formApi.beforeSubmit = () =&gt; validateForm();
-			/*
-        Form Lifecycle Hook that will be executed after the form is submitted.
-        It will receive a response object containing the \`type\` flag indicating if the submit has been successful and \`info\` with extra information about the submit result.
-      */
-			formApi.afterSubmit = (result) =&gt; afterSubmit(result);
-			/* Generates the expected form output object to be posted */
-			formApi.getFormData = () =&gt; getFormData();
-		}
-	}, [getFormData, validateForm, afterSubmit]);
-	useEffect(() =&gt; {
-		/*
-      Call to the Kogito console form engine. It will establish the connection with the console embeding the form
-      and return an instance of FormAPI that will allow hook custom code into the form lifecycle.
-      The \`window.Form.openForm\` call expects an object with the following entries:
-        - onOpen: Callback that will be called after the connection with the console is established. The callback
-        will receive the following arguments:
-          - data: the data to be bound into the form
-          - ctx: info about the context where the form is being displayed. This will contain information such as the form JSON Schema, process/task, user...
-    */
-		const api = window.Form.openForm({
-			onOpen: (data, context) =&gt; {
-				setFormData(data);
-			},
-		});
-		setFormApi(api);
-	}, []);
-	return (
-		&lt;div className={&#39;pf-c-form&#39;}&gt;
-			&lt;Card&gt;
-				&lt;CardBody className=&#39;pf-c-form&#39;&gt;
-					&lt;label&gt;
-						&lt;b&gt;Friends&lt;/b&gt;
-					&lt;/label&gt;
-					&lt;div&gt;
-						&lt;Split hasGutter&gt;
-							&lt;SplitItem&gt;
-								{&#39;List&#39; &amp;&amp; (
-									&lt;label className={&#39;pf-c-form__label&#39;}&gt;
-										&lt;span className={&#39;pf-c-form__label-text&#39;}&gt;List&lt;/span&gt;
-									&lt;/label&gt;
-								)}
-							&lt;/SplitItem&gt;
-							&lt;SplitItem isFilled /&gt;
-							&lt;SplitItem&gt;
-								&lt;Button
-									name=&#39;$&#39;
-									variant=&#39;plain&#39;
-									style={{ paddingLeft: &#39;0&#39;, paddingRight: &#39;0&#39; }}
-									disabled={false}
-									onClick={() =&gt; {
-										!false &amp;&amp;
-											set__friends__list((friends__list ?? []).concat([{}]));
-									}}&gt;
-									&lt;PlusCircleIcon color=&#39;#0088ce&#39; /&gt;
-								&lt;/Button&gt;
-							&lt;/SplitItem&gt;
-						&lt;/Split&gt;
-						&lt;div&gt;
-							{friends__list?.map((_, itemIndex) =&gt; (
-								&lt;div
-									key={itemIndex}
-									style={{
-										marginBottom: &#39;1rem&#39;,
-										display: &#39;flex&#39;,
-										justifyContent: &#39;space-between&#39;,
-									}}&gt;
-									&lt;div style={{ width: &#39;100%&#39;, marginRight: &#39;10px&#39; }}&gt;
-										&lt;Card&gt;
-											&lt;CardBody className=&#39;pf-c-form&#39;&gt;
-												&lt;FormGroup
-													fieldId={&#39;uniforms-0000-0006&#39;}
-													label={&#39;Test&#39;}
-													isRequired={true}&gt;
-													&lt;TextInput
-														name={\`friends__list.\${itemIndex}.test\`}
-														id={&#39;uniforms-0000-0006&#39;}
-														isDisabled={false}
-														placeholder={&#39;&#39;}
-														type={&#39;text&#39;}
-														value={friends__list?.[itemIndex].test}
-														onChange={(newValue) =&gt; {
-															set__friends__list((s) =&gt; {
-																const newState = [...s];
-																newState[itemIndex].test = newValue;
-																return newState;
-															});
-														}}
-													/&gt;
-												&lt;/FormGroup&gt;
-												&lt;div&gt;
-													&lt;Split hasGutter&gt;
-														&lt;SplitItem&gt;
-															{&#39;Know&#39; &amp;&amp; (
-																&lt;label className={&#39;pf-c-form__label&#39;}&gt;
-																	&lt;span className={&#39;pf-c-form__label-text&#39;}&gt;
-																		Know
-																	&lt;/span&gt;
-																&lt;/label&gt;
-															)}
-														&lt;/SplitItem&gt;
-														&lt;SplitItem isFilled /&gt;
-														&lt;SplitItem&gt;
-															&lt;Button
-																name=&#39;$&#39;
-																variant=&#39;plain&#39;
-																style={{ paddingLeft: &#39;0&#39;, paddingRight: &#39;0&#39; }}
-																disabled={false}
-																onClick={() =&gt; {
-																	!false &amp;&amp;
-																		set__friends__list((s) =&gt; {
-																			const newState = [...s];
-																			newState[itemIndex].know = [
-																				...(newState[itemIndex].know ?? []),
-																				{},
-																			];
-																			return newState;
-																		});
-																}}&gt;
-																&lt;PlusCircleIcon color=&#39;#0088ce&#39; /&gt;
-															&lt;/Button&gt;
-														&lt;/SplitItem&gt;
-													&lt;/Split&gt;
-													&lt;div&gt;
-														{friends__list?.[itemIndex].know?.map(
-															(_, nested__itemIndex) =&gt; (
-																&lt;div
-																	key={nested__itemIndex}
-																	style={{
-																		marginBottom: &#39;1rem&#39;,
-																		display: &#39;flex&#39;,
-																		justifyContent: &#39;space-between&#39;,
-																	}}&gt;
-																	&lt;div
-																		style={{
-																			width: &#39;100%&#39;,
-																			marginRight: &#39;10px&#39;,
-																		}}&gt;
-																		&lt;Card&gt;
-																			&lt;CardBody className=&#39;pf-c-form&#39;&gt;
-																				&lt;FormGroup
-																					fieldId={&#39;uniforms-0000-000b&#39;}
-																					label={&#39;Nested&#39;}
-																					isRequired={true}&gt;
-																					&lt;TextInput
-																						name={\`friends__list?.[itemIndex].know.\${nested__itemIndex}.nested\`}
-																						id={&#39;uniforms-0000-000b&#39;}
-																						isDisabled={false}
-																						placeholder={&#39;&#39;}
-																						type={&#39;text&#39;}
-																						value={
-																							friends__list?.[itemIndex].know?.[
-																								nested__itemIndex
-																							].nested
-																						}
-																						onChange={(newValue) =&gt; {
-																							set__friends__list((s) =&gt; {
-																								const newState = [...s];
-																								newState[itemIndex].know[
-																									nested__itemIndex
-																								].nested = newValue;
-																								return newState;
-																							});
-																						}}
-																					/&gt;
-																				&lt;/FormGroup&gt;
-																			&lt;/CardBody&gt;
-																		&lt;/Card&gt;
-																	&lt;/div&gt;
-																	&lt;div&gt;
-																		&lt;Button
-																			disabled={false}
-																			variant=&#39;plain&#39;
-																			style={{
-																				paddingLeft: &#39;0&#39;,
-																				paddingRight: &#39;0&#39;,
-																			}}
-																			onClick={() =&gt; {
-																				const value = [
-																					...friends__list?.[itemIndex].know,
-																				];
-																				value.splice(nested__itemIndex, 1);
-																				!false &amp;&amp;
-																					set__friends__list((s) =&gt; {
-																						const newState = [...s];
-																						newState[itemIndex].know = value;
-																						return newState;
-																					});
-																			}}&gt;
-																			&lt;MinusCircleIcon color=&#39;#cc0000&#39; /&gt;
-																		&lt;/Button&gt;
-																	&lt;/div&gt;
-																&lt;/div&gt;
-															)
-														)}
-													&lt;/div&gt;
-												&lt;/div&gt;
-											&lt;/CardBody&gt;
-										&lt;/Card&gt;
-									&lt;/div&gt;
-									&lt;div&gt;
-										&lt;Button
-											disabled={false}
-											variant=&#39;plain&#39;
-											style={{ paddingLeft: &#39;0&#39;, paddingRight: &#39;0&#39; }}
-											onClick={() =&gt; {
-												const value = [...friends__list];
-												value.splice(itemIndex, 1);
-												!false &amp;&amp; set__friends__list(value);
-											}}&gt;
-											&lt;MinusCircleIcon color=&#39;#cc0000&#39; /&gt;
-										&lt;/Button&gt;
-									&lt;/div&gt;
-								&lt;/div&gt;
-							))}
-						&lt;/div&gt;
-					&lt;/div&gt;
-				&lt;/CardBody&gt;
-			&lt;/Card&gt;
-		&lt;/div&gt;
-	);
-};
-export default Form__HRInterview;
-
-</div>
+      <Split hasGutter>
+        <SplitItem>
+          {'Know' && (
+            <label className={"pf-c-form__label"}>
+              <span className={"pf-c-form__label-text"}>
+                Know
+              </span>
+            </label>
+          )}
+        </SplitItem>
+        <SplitItem isFilled />
+        <SplitItem>
+          <Button
+            name='$'
+            variant='plain'
+            style={{ paddingLeft: '0', paddingRight: '0' }}
+            disabled={false}
+            onClick={() => {
+              !false && 
+    set__friends((s) => {
+  const newState = [...s];
+  (newState[itemIndex].know) = [...(newState[itemIndex].know ?? []), {}];
+  return newState;
+});
+            }}
+          >
+            <PlusCircleIcon color='#0088ce' />
+          </Button>
+        </SplitItem>
+      </Split>
+      <div>
+        {friends?.[itemIndex].know?.map((_, nested__itemIndex) =>
+          (<div
+            key={nested__itemIndex}
+            style={{
+              marginBottom: '1rem',
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div style={{ width: '100%', marginRight: '10px' }}><FormGroup
+      fieldId={'uniforms-0000-000c'}
+      label={'Know'}
+      isRequired={false}
+    >
+      <TextInput
+        name={\`friends?.[itemIndex].know.\${nested__itemIndex}\`}
+        id={'uniforms-0000-000c'}
+        isDisabled={false}
+        placeholder={''}
+        type={'text'}
+        value={friends?.[itemIndex].know?.[nested__itemIndex]}
+        onChange={
+  newValue => {
+    set__friends(s => {
+      const newState = [...s];
+      newState[itemIndex].know[nested__itemIndex] = newValue;
+      return newState;
+    })
+  }}
+        />
+    </FormGroup></div>
+            <div>
+              <Button
+                disabled={false}
+                variant='plain'
+                style={{ paddingLeft: '0', paddingRight: '0' }}
+                onClick={() => {
+                  const value = [...friends?.[itemIndex].know]
+                  value.splice(nested__itemIndex, 1);
+                  !false && 
+  set__friends((s) => {
+  const newState = [...s];
+  (newState[itemIndex].know) = value;
+  return newState;
+});
+                }}
+              >
+                <MinusCircleIcon color='#cc0000' />
+              </Button>
+            </div>
+          </div>)
+        )}
+      </div>
+    </div>
+<FormGroup
+      fieldId={'uniforms-0000-000e'}
+      label={'Areas'}
+      isRequired={true}
+    ><Select
+      id={'uniforms-0000-000e'}
+      name={\`friends.\${itemIndex}.areas\`}
+      variant={SelectVariant.single}
+      isDisabled={false}
+      placeholderText={''}
+      isOpen={friends__$__areas__expanded}
+      selections={friends__$__areas}
+      onToggle={(isOpen) => set__friends__$__areas__expanded(isOpen)}
+      onSelect={
+  (event, value, isPlaceHolder) => {
+    set__friends(s => {
+      const newState = [...s];
+      newState[itemIndex].areas = handleSelect(value, isPlaceHolder, friends__$__areas, set__friends__$__areas, set__friends__$__areas__expanded);
+      return newState;
+    })
+  }}
+      value={friends?.[itemIndex].areas}
+    >
+      <SelectOption key={'Developer'} value={'Developer'}>Developer</SelectOption>
+<SelectOption key={'HR'} value={'HR'}>HR</SelectOption>
+<SelectOption key={'UX'} value={'UX'}>UX</SelectOption>
+    </Select></FormGroup>
+<FormGroup
+      fieldId={'uniforms-0000-000g'}
+      label={'Birthday'}
+      isRequired={true}
+    >
+      <Flex
+    direction={{ default: 'column' }}
+    id={'uniforms-0000-000g'}
+  >
+    <FlexItem>
+      <InputGroup style={{ background: 'transparent' }}>
+        <DatePicker
+          id={'date-picker-uniforms-0000-000g'}
+          isDisabled={false}
+          name={\`friends.\${itemIndex}.birthday\`}
+          onChange={
+  newValue => {
+    set__friends(s => {
+      const newState = [...s];
+      newState[itemIndex].birthday = onDateChange(newValue, set__friends__$__birthday,  friends__$__birthday);
+      return newState;
+    })
+  }}
+          value={parseDate(friends?.[itemIndex].birthday)}
+        />
+        <TimePicker
+          id={'time-picker-uniforms-0000-000g'}
+          isDisabled={false}
+          name={\`friends.\${itemIndex}.birthday\`}
+          onChange={
+  (time, hours?, minutes?) => {
+    set__friends(s => {
+      const newState = [...s];
+      newState[itemIndex].birthday = onTimeChange(time, set__friends__$__birthday, friends__$__birthday, hours, minutes);
+      return newState;
+    })
+  }}
+          style={{ width: '120px' }}
+          time={parseTime(friends?.[itemIndex].birthday)}
+        />
+      </InputGroup>
+    </FlexItem>
+  </Flex>
+    </FormGroup>
+          </CardBody></Card></div>
+            <div>
+              <Button
+                disabled={false}
+                variant='plain'
+                style={{ paddingLeft: '0', paddingRight: '0' }}
+                onClick={() => {
+                  const value = [...friends]
+                  value.splice(itemIndex, 1);
+                  !false && 
+  set__friends(value);
+                }}
+              >
+                <MinusCircleIcon color='#cc0000' />
+              </Button>
+            </div>
+          </div>)
+        )}
+      </div>
+    </div>"
 `;
