@@ -58,7 +58,6 @@ const isRootDataObjectAssignable = (
   dataObject: TestScenarioDataObject,
   assignedExpressionElements: SceSim__expressionElementsType[]
 ) => {
-  //TODO change this
   let filtered = true;
   for (const expressionElements of assignedExpressionElements) {
     if (
