@@ -122,7 +122,7 @@
     <version.org.glassfish.javax.el>3.0.0</version.org.glassfish.javax.el>
     <version.org.hibernate>5.4.24.Final</version.org.hibernate>
     <!-- Hibernate Validator strictly binded with provided version in GWT -->
-    <version.org.hibernate.validator>4.1.0.Final</version.org.hibernate.validator>
+    <version.org.hibernate.validator>6.0.23.Final</version.org.hibernate.validator>
     <version.org.hibernate.commons.annotations>5.0.5.Final</version.org.hibernate.commons.annotations>
     <version.org.javassist>3.23.2-GA</version.org.javassist>
     <version.org.jboss.arquillian>1.4.0.Final</version.org.jboss.arquillian>
