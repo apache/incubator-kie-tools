@@ -263,8 +263,9 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             if (canceled.get()) {
               return;
             }
-            const currentMessages = results[currentInputIndex]?.messages || [];
-            setCurrentResponseMessages(currentMessages);
+
+            const allMessages = results.flatMap((result) => result?.messages || []);
+            setCurrentResponseMessages(allMessages);
 
             const runnerResults: Array<DecisionResult[] | undefined> = [];
             for (const result of results) {
@@ -289,7 +290,6 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         extendedServices.client,
         dmnRunnerInputs,
         extendedServicesModelPayload,
-        currentInputIndex,
       ]
     )
   );
