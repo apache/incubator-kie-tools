@@ -263,9 +263,11 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             if (canceled.get()) {
               return;
             }
-
-            const allMessages = results.flatMap((result) => result?.messages || []);
-            setCurrentResponseMessages(allMessages);
+            if (dmnRunnerMode === DmnRunnerMode.TABLE) {
+              setCurrentResponseMessages(results.flatMap((result) => result?.messages || []));
+            } else {
+              setCurrentResponseMessages(results[currentInputIndex]?.messages || []);
+            }
 
             const runnerResults: Array<DecisionResult[] | undefined> = [];
             for (const result of results) {
@@ -290,6 +292,8 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         extendedServices.client,
         dmnRunnerInputs,
         extendedServicesModelPayload,
+        currentInputIndex,
+        dmnRunnerMode,
       ]
     )
   );
