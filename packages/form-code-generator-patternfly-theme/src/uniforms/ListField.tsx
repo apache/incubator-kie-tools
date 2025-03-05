@@ -30,7 +30,7 @@ import {
   DEFAULT_DATA_TYPE_STRING_ARRAY,
 } from "./utils/dataTypes";
 import { renderListItemFragmentWithContext } from "./rendering/RenderingUtils";
-import { getNextIndexVariableName, ListItemProps, DEFAULT_ITEM_INDEX_NAME } from "./rendering/ListItemField";
+import { getNextIndexVariableName, ListItemProps } from "./rendering/ListItemField";
 
 export type ListFieldProps = HTMLFieldProps<
   unknown[],
@@ -189,17 +189,13 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
       </div>
     </div>`;
 
-  const getListStateCode = () => {
-    return getStateCode(ref.stateName, ref.stateSetter, ref.dataType.name, "[]");
-  };
-
   const element: FormInput = {
     ref,
     pfImports: [...new Set(["Split", "SplitItem", "Button", ...(listItem?.pfImports ?? [])])],
     pfIconImports: [...new Set(["PlusCircleIcon", "MinusCircleIcon", ...(listItem?.pfIconImports ?? [])])],
     reactImports: [...new Set([...(listItem?.reactImports ?? [])])],
     jsxCode,
-    stateCode: getListStateCode(),
+    stateCode: [getStateCode(ref.stateName, ref.stateSetter, ref.dataType.name, "[]"), listItem?.stateCode].join("\n"),
     isReadonly: props.disabled,
   };
 

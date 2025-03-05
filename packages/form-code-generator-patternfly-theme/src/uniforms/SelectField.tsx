@@ -22,9 +22,13 @@ import { connectField, HTMLFieldProps } from "uniforms/cjs";
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
 import { getInputReference, getStateCode, getStateCodeFromRef, NS_SEPARATOR, renderField } from "./utils/Utils";
-import { MULTIPLE_SELECT_FUNCTIONS, SELECT_FUNCTIONS } from "./staticCode/staticCodeBlocks";
 import { DEFAULT_DATA_TYPE_STRING_ARRAY, DEFAULT_DATA_TYPE_STRING } from "./utils/dataTypes";
-import { getListItemName, getListItemOnChange, getListItemValue, ListItemProps } from "./rendering/ListItemField";
+import {
+  getItemNameAndWithIsNested,
+  getListItemName,
+  getListItemValue,
+  ListItemProps,
+} from "./rendering/ListItemField";
 
 export type SelectInputProps = HTMLFieldProps<
   string | string[],
@@ -60,20 +64,92 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
     selectedOptions.unshift(placeHolderOption);
   }
 
-  let stateCode = getStateCodeFromRef(ref);
-
   const expandedStateName = `${ref.stateName}${NS_SEPARATOR}expanded`;
   const expandedStateNameSetter = `${ref.stateSetter}${NS_SEPARATOR}expanded`;
-  const expandedState = getStateCode(expandedStateName, expandedStateNameSetter, "boolean", "false");
 
-  stateCode += `\n${expandedState}`;
-
-  let hanldeSelect;
-  if (isArray) {
-    hanldeSelect = `handleMultipleSelect(value, isPlaceHolder, ${ref.stateName}, ${ref.stateSetter})`;
-  } else {
-    hanldeSelect = `handleSelect(value, isPlaceHolder, ${ref.stateName}, ${ref.stateSetter}, ${expandedStateNameSetter})`;
+  function getHandleSelect() {
+    if (props.itemProps?.isListItem) {
+      const { itemName, isNested } = getItemNameAndWithIsNested(props.name);
+      const propertyPath = props.itemProps?.listStateName.split(".").splice(1).join(".");
+      const path = `${propertyPath}[${props.itemProps?.indexVariableName}]${isNested ? `.${itemName}` : ""}`;
+      if (isArray) {
+        return `(event, value, isPlaceHolder) => {
+          if (isPlaceHolder) {
+            ${props.itemProps?.listStateSetter}(prev => {
+              const newState = [...prev];
+              newState${path} = [];
+              return newState;
+            })
+          } else {
+            const selectedValue = newSelection.toString ? newSelection.toString() : newSelection as string;
+            ${props.itemProps?.listStateSetter}(prev => {
+              const newState = [...prev];
+              if (newState${path}.indexOf(selectedValue) != -1) {
+                const filtered = newState${path}.filter((s) => s !== selectedValue);
+                return newState${path} = filtered;
+              }
+              newState${path} = [selectedValue, ...newState${path}];
+              return newState;
+            })
+          }
+        }`;
+      } else {
+        return `(event, value, isPlaceHolder) => {
+          if (isPlaceHolder) {
+            ${props.itemProps?.listStateSetter}(prev => {
+              const newState = [...prev];
+              newState${path} = "";
+              return newState;
+            })
+            ${expandedStateNameSetter}(prev => {
+                const newState = [...prev];
+                newState[${props.itemProps.indexVariableName}] = false;
+                return newState;
+            });
+          } else {
+            const parsedSelection = value.toString ? value.toString() : value as string;
+            ${props.itemProps?.listStateSetter}(prev => {
+              const newState = [...prev];
+              newState${path} = parsedSelection || '';
+              return newState;
+            })
+            ${expandedStateNameSetter}(prev => {
+              const newState = [...prev];
+              newState[${props.itemProps.indexVariableName}] = false;
+              return newState;
+            });
+          }
+        }`;
+      }
+    }
+    if (isArray) {
+      return `(event, value, isPlaceHolder) => {
+        if (isPlaceHolder) {
+          ${ref.stateSetter}([]);
+        } else {
+          ${ref.stateSetter}(prev => {
+            const selectedValue = value.toString ? value.toString() : value as string;
+            if (prev.indexOf(selectedValue) != -1) {
+              return prev.filter((s) => s !== selectedValue);
+            }
+            return [selectedValue, ...prev];
+          });
+        }
+      }`;
+    } else {
+      return `(event, value, isPlaceHolder) => {
+        if (isPlaceHolder) {
+          ${ref.stateSetter}('');
+          ${expandedStateNameSetter}(false);
+        } else {
+          const parsedSelection = value.toString ? value.toString() : value as string;
+          ${ref.stateSetter}(parsedSelection || '');
+          ${expandedStateNameSetter}(false);
+        }
+      }`;
+    }
   }
+
   const jsxCode = `<FormGroup
       fieldId={'${props.id}'}
       label={'${props.label}'}
@@ -87,7 +163,7 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
       isOpen={${expandedStateName}}
       selections={${ref.stateName}}
       onToggle={(isOpen) => ${expandedStateNameSetter}(isOpen)}
-      onSelect={${props.itemProps?.isListItem ? getListItemOnChange({ itemProps: props.itemProps, name: props.name, callback: (value: string) => `${hanldeSelect}`, overrideParam: "(event, value, isPlaceHolder)" }) : `(event, value, isPlaceHolder) => ${hanldeSelect}`}}
+      onSelect={${getHandleSelect()}}
       value={${props.itemProps?.isListItem ? getListItemValue({ itemProps: props.itemProps, name: props.name }) : ref.stateName}}
     >
       ${selectedOptions.join("\n")}
@@ -97,9 +173,11 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
     ref,
     pfImports: SELECT_IMPORTS,
     reactImports: ["useState"],
-    requiredCode: [isArray ? MULTIPLE_SELECT_FUNCTIONS : SELECT_FUNCTIONS],
     jsxCode,
-    stateCode,
+    stateCode: props.itemProps?.isListItem
+      ? getStateCode(expandedStateName, expandedStateNameSetter, "[]boolean", "[]")
+      : `${getStateCodeFromRef(ref)}
+        ${getStateCode(expandedStateName, expandedStateNameSetter, "boolean", "false")}`,
     isReadonly: props.disabled,
   };
 

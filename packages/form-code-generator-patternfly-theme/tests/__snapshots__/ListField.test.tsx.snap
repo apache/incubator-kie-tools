@@ -53,8 +53,7 @@ exports[`<ListField> tests <ListField> 1`] = `
         placeholder={''}
         type={'text'}
         value={friends?.[itemIndex].name}
-        onChange={
-  newValue => {
+        onChange={newValue => {
     set__friends(s => {
       const newState = [...s];
       newState[itemIndex].name = newValue;
@@ -76,8 +75,7 @@ exports[`<ListField> tests <ListField> 1`] = `
       placeholder={''}
       step={0.01}  
       value={friends?.[itemIndex].age}
-      onChange={
-  newValue => {
+      onChange={newValue => {
     set__friends(s => {
       const newState = [...s];
       newState[itemIndex].age = Number(newValue);
@@ -99,31 +97,32 @@ exports[`<ListField> tests <ListField> 1`] = `
       isOpen={friends__$__country__expanded}
       selections={friends__$__country}
       onToggle={(isOpen) => set__friends__$__country__expanded(isOpen)}
-      onSelect={
-  (event, value, isPlaceHolder) => {
-    set__friends(s => {
-      const newState = [...s];
-      newState[itemIndex].country = (newValue) => {
+      onSelect={(event, value, isPlaceHolder) => {
           if (isPlaceHolder) {
-            set__friends('');
+            set__friends(prev => {
+              const newState = [...prev];
+              newState[itemIndex].country = "";
+              return newState;
+            })
             set__friends__$__country__expanded(prev => {
                 const newState = [...prev];
                 newState[itemIndex] = false;
                 return newState;
             });
           } else {
-            const parsedSelection = newSelection.toString ? newSelection.toString() : newSelection as string;
-            set__friends(parsedSelection || '');
+            const parsedSelection = value.toString ? value.toString() : value as string;
+            set__friends(prev => {
+              const newState = [...prev];
+              newState[itemIndex].country = parsedSelection || '';
+              return newState;
+            })
             set__friends__$__country__expanded(prev => {
               const newState = [...prev];
               newState[itemIndex] = false;
               return newState;
             });
           }
-        };
-      return newState;
-    })
-  }}
+        }}
       value={friends?.[itemIndex].country}
     >
       <SelectOption key={'US'} value={'US'}>US</SelectOption>
@@ -136,8 +135,7 @@ exports[`<ListField> tests <ListField> 1`] = `
       id={'uniforms-0000-0009'}
       name={\`friends.\${itemIndex}.married\`}
       label={'Married'}
-      onChange={
-  newValue => {
+      onChange={newValue => {
     set__friends(s => {
       const newState = [...s];
       newState[itemIndex].married = newValue;
@@ -199,8 +197,7 @@ exports[`<ListField> tests <ListField> 1`] = `
         placeholder={''}
         type={'text'}
         value={friends?.[itemIndex].know?.[nested__itemIndex]}
-        onChange={
-  newValue => {
+        onChange={newValue => {
     set__friends(s => {
       const newState = [...s];
       newState[itemIndex].know[nested__itemIndex] = newValue;
@@ -245,30 +242,26 @@ exports[`<ListField> tests <ListField> 1`] = `
       isOpen={friends__$__areas__expanded}
       selections={friends__$__areas}
       onToggle={(isOpen) => set__friends__$__areas__expanded(isOpen)}
-      onSelect={
-  (event, value, isPlaceHolder) => {
-    set__friends(s => {
-      const newState = [...s];
-      newState[itemIndex].areas = (newValue) => {
+      onSelect={(event, value, isPlaceHolder) => {
           if (isPlaceHolder) {
             set__friends(prev => {
               const newState = [...prev];
-              newState[] = false;
+              newState[itemIndex].areas = [];
               return newState;
-            });
+            })
           } else {
+            const selectedValue = newSelection.toString ? newSelection.toString() : newSelection as string;
             set__friends(prev => {
-              const selectedValue = newSelection.toString ? newSelection.toString() : newSelection as string;
-              if (prev.indexOf(selectedValue) != -1) {
-                return prev.filter((s) => s !== selectedValue);
+              const newState = [...prev];
+              if (newState[itemIndex].areas.indexOf(selectedValue) != -1) {
+                const filtered = newState[itemIndex].areas.filter((s) => s !== selectedValue);
+                return newState[itemIndex].areas = filtered;
               }
-              return [selectedValue, ...prev];
-            });
+              newState[itemIndex].areas = [selectedValue, ...newState[itemIndex].areas];
+              return newState;
+            })
           }
-        };
-      return newState;
-    })
-  }}
+        }}
       value={friends?.[itemIndex].areas}
     >
       <SelectOption key={'Developer'} value={'Developer'}>Developer</SelectOption>
@@ -290,8 +283,7 @@ exports[`<ListField> tests <ListField> 1`] = `
           id={'date-picker-uniforms-0000-000g'}
           isDisabled={false}
           name={\`friends.\${itemIndex}.birthday\`}
-          onChange={
-  newValue => {
+          onChange={newValue => {
     set__friends(s => {
       const newState = [...s];
       newState[itemIndex].birthday = onDateChange(newValue, set__friends__$__birthday,  friends__$__birthday);
@@ -304,8 +296,7 @@ exports[`<ListField> tests <ListField> 1`] = `
           id={'time-picker-uniforms-0000-000g'}
           isDisabled={false}
           name={\`friends.\${itemIndex}.birthday\`}
-          onChange={
-  (time, hours?, minutes?) => {
+          onChange={(time, hours?, minutes?) => {
     set__friends(s => {
       const newState = [...s];
       newState[itemIndex].birthday = onTimeChange(time, set__friends__$__birthday, friends__$__birthday, hours, minutes);

@@ -69,6 +69,7 @@ const CheckBoxGroup: React.FC<CheckBoxGroupProps> = (props: CheckBoxGroupProps) 
       required: props.required,
     },
     disabled: props.disabled,
+    itemProps: props.itemProps,
   });
 
   useAddFormElementToContext(element);

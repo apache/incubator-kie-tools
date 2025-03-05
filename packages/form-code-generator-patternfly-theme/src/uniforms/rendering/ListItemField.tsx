@@ -37,7 +37,7 @@ export interface ListItemProps {
  * The list item can be nested or not (be part of an object).
  * For non-nested items the `itemName` will have value "$", for nested items it will have its property name
  */
-function getItemNameAndWithIsNested(name: string) {
+export function getItemNameAndWithIsNested(name: string) {
   const itemName = name.split(".").pop() ?? "$";
   const isNested = itemName !== "$";
   return { itemName, isNested };
@@ -103,8 +103,7 @@ export const getListItemOnChange = ({
 }) => {
   const { itemName, isNested } = getItemNameAndWithIsNested(name);
   const propertyPath = itemProps?.listStateName.split(".").splice(1).join(".");
-  return `
-  ${overrideParam ? overrideParam : "newValue"} => {
+  return `${overrideParam ? overrideParam : "newValue"} => {
     ${itemProps?.listStateSetter}(s => {
       const newState = [...s];
       newState${propertyPath}[${itemProps?.indexVariableName}]${isNested ? `.${itemName}` : ""} = ${callback ? callback(overrideNewValue ? overrideNewValue : "newValue") : overrideNewValue ? overrideNewValue : "newValue"};

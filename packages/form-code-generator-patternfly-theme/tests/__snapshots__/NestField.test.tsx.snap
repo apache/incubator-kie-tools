@@ -116,8 +116,7 @@ exports[`<NestField> tests <NestField> - rendering 1`] = `
         placeholder={''}
         type={'text'}
         value={candidate__skills?.[itemIndex].name}
-        onChange={
-  newValue => {
+        onChange={newValue => {
     set__candidate__skills(s => {
       const newState = [...s];
       newState[itemIndex].name = newValue;

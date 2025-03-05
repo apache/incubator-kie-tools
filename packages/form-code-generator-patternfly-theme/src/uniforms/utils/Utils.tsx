@@ -80,6 +80,7 @@ type DefaultInputProps = {
   requiredCode?: string[];
   wrapper: WrapperProps;
   disabled: boolean;
+  itemProps: ListItemProps | undefined;
 };
 
 type WrapperProps = {
@@ -96,6 +97,7 @@ export const buildDefaultInputElement = ({
   wrapper,
   requiredCode,
   disabled,
+  itemProps,
 }: DefaultInputProps): FormInput => {
   const stateCode = getStateCodeFromRef(ref);
 
@@ -116,7 +118,7 @@ export const buildDefaultInputElement = ({
     reactImports: ["useState"],
     requiredCode: requiredCode,
     jsxCode,
-    stateCode,
+    stateCode: itemProps?.isListItem ? "" : getStateCodeFromRef(ref),
     isReadonly: disabled,
   };
 };
