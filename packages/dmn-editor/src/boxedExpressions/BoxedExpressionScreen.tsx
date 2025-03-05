@@ -278,7 +278,14 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
           setExpression({ definitions: state.dmn.model.definitions, expression: newExpression });
         } else {
           if (args.expressionChangedArgs.action === Action.VariableChanged) {
-            if (args.expressionChangedArgs.typeChange) {
+            if (args.expressionChangedArgs.typeChange && !args.expressionChangedArgs.nameChange) {
+              updateDrgElementType({
+                definitions: state.dmn.model.definitions,
+                expression: newExpression!,
+                drgElementIndex: expression?.drgElementIndex ?? 0,
+              });
+              setExpression({ definitions: state.dmn.model.definitions, expression: newExpression });
+            } else if (args.expressionChangedArgs.typeChange) {
               const identifiersRefactor = new IdentifiersRefactor({
                 writeableDmnDefinitions: state.dmn.model.definitions,
                 _readonly_externalDmnModelsByNamespaceMap: externalDmnModelsByNamespaceMap,

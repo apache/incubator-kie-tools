@@ -793,6 +793,13 @@ export class IdentifiersRepository {
       name: "",
       kind: FeelSyntacticSymbolNature.LocalVariable,
       parentContext: parent,
+      applyTypeRefToSource: (value) => {
+        if (typeof value === "string") {
+          decisionTable["@_typeRef"] = value;
+        } else {
+          decisionTable["@_typeRef"] = value?.typeRef;
+        }
+      },
     });
   }
 
