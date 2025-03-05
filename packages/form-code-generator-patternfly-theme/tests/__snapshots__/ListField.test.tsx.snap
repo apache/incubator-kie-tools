@@ -467,11 +467,11 @@ exports[`<ListField> tests <ListField> 2`] = `
 "const [ friends, set__friends ] = useState<object[]>([]);
 
 
-const [ friends__$__country__expanded, set__friends__$__country__expanded ] = useState<[]boolean>([]);
+const [ friends__$__country__expanded, set__friends__$__country__expanded ] = useState<boolean[]>([]);
 
 
-const [ friends__$__areas__expanded, set__friends__$__areas__expanded ] = useState<[]boolean>([]);
+const [ friends__$__areas__expanded, set__friends__$__areas__expanded ] = useState<boolean[]>([]);
 
 
-const [ friends__$__children__expanded, set__friends__$__children__expanded ] = useState<[]boolean>([]);"
+const [ friends__$__children__expanded, set__friends__$__children__expanded ] = useState<boolean[]>([]);"
 `;

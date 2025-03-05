@@ -185,7 +185,7 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
     reactImports: ["useState"],
     jsxCode,
     stateCode: props.itemProps?.isListItem
-      ? getStateCode(expandedStateName, expandedStateNameSetter, "[]boolean", "[]")
+      ? getStateCode(expandedStateName, expandedStateNameSetter, "boolean[]", "[]")
       : `${getStateCodeFromRef(ref)}
         ${getStateCode(expandedStateName, expandedStateNameSetter, "boolean", "false")}`,
     isReadonly: props.disabled,
