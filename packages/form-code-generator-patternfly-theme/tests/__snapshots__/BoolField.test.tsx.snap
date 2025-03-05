@@ -1,13 +1,27 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<BoolField> tests <BoolField> - rendering - disabled 1`] = `
-<div>
-  {"ref":{"binding":"hire","stateName":"hire","stateSetter":"set__hire","dataType":{"name":"boolean","defaultValue":"false"}},"pfImports":["Checkbox","FormGroup"],"reactImports":["useState"],"jsxCode":"&lt;FormGroup fieldId='id'&gt;\\n    &lt;Checkbox\\n      isChecked={hire}\\n      isDisabled={true}\\n      id={'id'}\\n      name={'hire'}\\n      label={'Hire?'}\\n      onChange={set__hire}\\n    /&gt;\\n  &lt;/FormGroup&gt;","stateCode":"const [ hire, set__hire ] = useState&lt;boolean&gt;(false);","isReadonly":true}
-</div>
+"<FormGroup fieldId='id'>
+    <Checkbox
+      isChecked={hire}
+      isDisabled={true}
+      id={'id'}
+      name={'hire'}
+      label={'Hire?'}
+      onChange={set__hire}
+    />
+  </FormGroup>"
 `;
 
 exports[`<BoolField> tests <BoolField> - rendering 1`] = `
-<div>
-  {"ref":{"binding":"hire","stateName":"hire","stateSetter":"set__hire","dataType":{"name":"boolean","defaultValue":"false"}},"pfImports":["Checkbox","FormGroup"],"reactImports":["useState"],"jsxCode":"&lt;FormGroup fieldId='id'&gt;\\n    &lt;Checkbox\\n      isChecked={hire}\\n      isDisabled={false}\\n      id={'id'}\\n      name={'hire'}\\n      label={'Hire?'}\\n      onChange={set__hire}\\n    /&gt;\\n  &lt;/FormGroup&gt;","stateCode":"const [ hire, set__hire ] = useState&lt;boolean&gt;(false);","isReadonly":false}
-</div>
+"<FormGroup fieldId='id'>
+    <Checkbox
+      isChecked={hire}
+      isDisabled={false}
+      id={'id'}
+      name={'hire'}
+      label={'Hire?'}
+      onChange={set__hire}
+    />
+  </FormGroup>"
 `;

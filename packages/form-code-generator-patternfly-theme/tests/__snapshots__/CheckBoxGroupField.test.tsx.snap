@@ -1,7 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<CheckBoxGroupField> tests <CheckBoxGroupField> - rendering 1`] = `
-<div>
-  {"ref":{"binding":"roles","stateName":"roles","stateSetter":"set__roles","dataType":{"name":"string[]","defaultValue":"[]"}},"pfImports":["Checkbox","FormGroup"],"reactImports":["useState"],"requiredCode":["checkbox_group_functions"],"jsxCode":"&lt;FormGroup\\n      fieldId={'id'}\\n      label={'Roles'}\\n      isRequired={true}\\n    &gt;\\n      &lt;Checkbox\\n  key={'id-Developer'}\\n  id={'id-Developer'}\\n  name={'roles'}\\n  aria-label={'roles'}\\n  label={'Developer'} \\n  isDisabled={false} \\n  isChecked={roles.indexOf('Developer') !== -1}\\n  onChange={() =&gt; handleCheckboxGroupChange('Developer', roles, set__roles)}\\n  value={'Developer'}\\n/&gt;\\n&lt;Checkbox\\n  key={'id-HR'}\\n  id={'id-HR'}\\n  name={'roles'}\\n  aria-label={'roles'}\\n  label={'HR'} \\n  isDisabled={false} \\n  isChecked={roles.indexOf('HR') !== -1}\\n  onChange={() =&gt; handleCheckboxGroupChange('HR', roles, set__roles)}\\n  value={'HR'}\\n/&gt;\\n&lt;Checkbox\\n  key={'id-UX'}\\n  id={'id-UX'}\\n  name={'roles'}\\n  aria-label={'roles'}\\n  label={'UX'} \\n  isDisabled={false} \\n  isChecked={roles.indexOf('UX') !== -1}\\n  onChange={() =&gt; handleCheckboxGroupChange('UX', roles, set__roles)}\\n  value={'UX'}\\n/&gt;\\n    &lt;/FormGroup&gt;","stateCode":"const [ roles, set__roles ] = useState&lt;string[]&gt;([]);","isReadonly":false}
-</div>
+"<FormGroup
+      fieldId={'id'}
+      label={'Roles'}
+      isRequired={true}
+    >
+      <Checkbox
+  key={'id-Developer'}
+  id={'id-Developer'}
+  name={'roles'}
+  aria-label={'roles'}
+  label={'Developer'} 
+  isDisabled={false} 
+  isChecked={roles.indexOf('Developer') !== -1}
+  onChange={() => handleCheckboxGroupChange('Developer', roles, set__roles)}
+  value={'Developer'}
+/>
+<Checkbox
+  key={'id-HR'}
+  id={'id-HR'}
+  name={'roles'}
+  aria-label={'roles'}
+  label={'HR'} 
+  isDisabled={false} 
+  isChecked={roles.indexOf('HR') !== -1}
+  onChange={() => handleCheckboxGroupChange('HR', roles, set__roles)}
+  value={'HR'}
+/>
+<Checkbox
+  key={'id-UX'}
+  id={'id-UX'}
+  name={'roles'}
+  aria-label={'roles'}
+  label={'UX'} 
+  isDisabled={false} 
+  isChecked={roles.indexOf('UX') !== -1}
+  onChange={() => handleCheckboxGroupChange('UX', roles, set__roles)}
+  value={'UX'}
+/>
+    </FormGroup>"
 `;

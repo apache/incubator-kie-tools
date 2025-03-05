@@ -44,9 +44,9 @@ describe("<CheckBoxGroupField> tests", () => {
       onChange: jest.fn(),
     };
 
-    const { container, formElement } = renderField(CheckBoxGroupField, props, schema);
+    const { formElement } = renderField(CheckBoxGroupField, props, schema);
 
-    expect(container).toMatchSnapshot();
+    expect(formElement.jsxCode).toMatchSnapshot();
 
     expect(formElement.reactImports).toContain("useState");
 

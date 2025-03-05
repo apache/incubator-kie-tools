@@ -46,13 +46,15 @@ describe("<ListField> tests", () => {
         },
         "friends.$.know.$": String,
         "friends.$.areas": {
-          type: String,
+          type: Array,
           allowedValues: ["Developer", "HR", "UX"],
         },
+        "friends.$.areas.$": String,
         "friends.$.birthday": { type: Date },
       }
     );
     expect(formElement.jsxCode).toMatchSnapshot();
+    expect(formElement.stateCode).toMatchSnapshot();
 
     const inputContainer = formElement as InputsContainer;
     expect(inputContainer.pfImports).toStrictEqual([

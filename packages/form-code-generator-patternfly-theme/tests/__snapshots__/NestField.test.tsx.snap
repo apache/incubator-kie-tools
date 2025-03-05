@@ -48,7 +48,16 @@ exports[`<NestField> tests <NestField> - rendering 1`] = `
       isOpen={candidate__role__expanded}
       selections={candidate__role}
       onToggle={(isOpen) => set__candidate__role__expanded(isOpen)}
-      onSelect={(event, value, isPlaceHolder) => handleSelect(value, isPlaceHolder, candidate__role, set__candidate__role, set__candidate__role__expanded)}
+      onSelect={(event, value, isPlaceHolder) => {
+        if (isPlaceHolder) {
+          set__candidate__role('');
+          set__candidate__role__expanded(false);
+        } else {
+          const parsedSelection = value.toString ? value.toString() : value as string;
+          set__candidate__role(parsedSelection || '');
+          set__candidate__role__expanded(false);
+        }
+      }}
       value={candidate__role}
     >
       <SelectOption key={'Developer'} value={'Developer'}>Developer</SelectOption>

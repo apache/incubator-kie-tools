@@ -21,13 +21,7 @@ import * as React from "react";
 import SimpleSchema from "simpl-schema";
 import { renderField } from "./_render";
 import { AutoField } from "../src/uniforms";
-import {
-  CHECKBOX_GROUP_FUNCTIONS,
-  DATE_FUNCTIONS,
-  MULTIPLE_SELECT_FUNCTIONS,
-  SELECT_FUNCTIONS,
-  TIME_FUNCTIONS,
-} from "../src/uniforms/staticCode/staticCodeBlocks";
+import { CHECKBOX_GROUP_FUNCTIONS, DATE_FUNCTIONS, TIME_FUNCTIONS } from "../src/uniforms/staticCode/staticCodeBlocks";
 import { SELECT_IMPORTS } from "../src/uniforms/SelectField";
 
 const schema = {
@@ -157,10 +151,6 @@ describe("<AutoField> tests", () => {
 
     expect(formElement.pfImports).toHaveLength(SELECT_IMPORTS.length);
     SELECT_IMPORTS.forEach((pfImport) => expect(formElement.pfImports).toContain(pfImport));
-
-    expect(formElement.requiredCode).not.toBeUndefined();
-    expect(formElement.requiredCode).toHaveLength(1);
-    expect(formElement.requiredCode).toContain(SELECT_FUNCTIONS);
   });
 
   it("<SelectField> - multiple value rendering", () => {
@@ -169,10 +159,6 @@ describe("<AutoField> tests", () => {
     expect(formElement.reactImports).toContain("useState");
     expect(formElement.pfImports).toHaveLength(SELECT_IMPORTS.length);
     SELECT_IMPORTS.forEach((pfImport) => expect(formElement.pfImports).toContain(pfImport));
-
-    expect(formElement.requiredCode).not.toBeUndefined();
-    expect(formElement.requiredCode).toHaveLength(1);
-    expect(formElement.requiredCode).toContain(MULTIPLE_SELECT_FUNCTIONS);
   });
 
   it("<TextField> - TextInput rendering", () => {

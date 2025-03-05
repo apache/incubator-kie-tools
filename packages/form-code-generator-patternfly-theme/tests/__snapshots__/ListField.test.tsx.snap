@@ -103,7 +103,24 @@ exports[`<ListField> tests <ListField> 1`] = `
   (event, value, isPlaceHolder) => {
     set__friends(s => {
       const newState = [...s];
-      newState[itemIndex].country = handleSelect(value, isPlaceHolder, friends__$__country, set__friends__$__country, set__friends__$__country__expanded);
+      newState[itemIndex].country = (newValue) => {
+          if (isPlaceHolder) {
+            set__friends('');
+            set__friends__$__country__expanded(prev => {
+                const newState = [...prev];
+                newState[itemIndex] = false;
+                return newState;
+            });
+          } else {
+            const parsedSelection = newSelection.toString ? newSelection.toString() : newSelection as string;
+            set__friends(parsedSelection || '');
+            set__friends__$__country__expanded(prev => {
+              const newState = [...prev];
+              newState[itemIndex] = false;
+              return newState;
+            });
+          }
+        };
       return newState;
     })
   }}
@@ -222,7 +239,7 @@ exports[`<ListField> tests <ListField> 1`] = `
     ><Select
       id={'uniforms-0000-000e'}
       name={\`friends.\${itemIndex}.areas\`}
-      variant={SelectVariant.single}
+      variant={SelectVariant.typeaheadMulti}
       isDisabled={false}
       placeholderText={''}
       isOpen={friends__$__areas__expanded}
@@ -232,7 +249,23 @@ exports[`<ListField> tests <ListField> 1`] = `
   (event, value, isPlaceHolder) => {
     set__friends(s => {
       const newState = [...s];
-      newState[itemIndex].areas = handleSelect(value, isPlaceHolder, friends__$__areas, set__friends__$__areas, set__friends__$__areas__expanded);
+      newState[itemIndex].areas = (newValue) => {
+          if (isPlaceHolder) {
+            set__friends(prev => {
+              const newState = [...prev];
+              newState[] = false;
+              return newState;
+            });
+          } else {
+            set__friends(prev => {
+              const selectedValue = newSelection.toString ? newSelection.toString() : newSelection as string;
+              if (prev.indexOf(selectedValue) != -1) {
+                return prev.filter((s) => s !== selectedValue);
+              }
+              return [selectedValue, ...prev];
+            });
+          }
+        };
       return newState;
     })
   }}
@@ -306,4 +339,15 @@ exports[`<ListField> tests <ListField> 1`] = `
         )}
       </div>
     </div>"
+`;
+
+exports[`<ListField> tests <ListField> 2`] = `
+"const [ friends, set__friends ] = useState<object[]>([]);
+
+
+const [ friends__$__country__expanded, set__friends__$__country__expanded ] = useState<[]boolean>([]);
+
+
+const [ friends__$__areas__expanded, set__friends__$__areas__expanded ] = useState<[]boolean>([]);
+"
 `;

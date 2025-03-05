@@ -159,10 +159,6 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 	}
 	{
 	}
-	{
-	}
-	{
-	}
 	return (
 		&lt;div className={&#39;pf-c-form&#39;}&gt;
 			&lt;Card&gt;
@@ -303,15 +299,18 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							isOpen={interview__position__expanded}
 							selections={interview__position}
 							onToggle={(isOpen) =&gt; set__interview__position__expanded(isOpen)}
-							onSelect={(event, value, isPlaceHolder) =&gt;
-								handleSelect(
-									value,
-									isPlaceHolder,
-									interview__position,
-									set__interview__position,
-									set__interview__position__expanded
-								)
-							}
+							onSelect={(event, value, isPlaceHolder) =&gt; {
+								if (isPlaceHolder) {
+									set__interview__position(&#39;&#39;);
+									set__interview__position__expanded(false);
+								} else {
+									const parsedSelection = value.toString
+										? value.toString()
+										: (value as string);
+									set__interview__position(parsedSelection || &#39;&#39;);
+									set__interview__position__expanded(false);
+								}
+							}}
 							value={interview__position}&gt;
 							&lt;SelectOption key={&#39;Developer&#39;} value={&#39;Developer&#39;}&gt;
 								Developer
@@ -339,14 +338,21 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							onToggle={(isOpen) =&gt;
 								set__interview__otherPositions__expanded(isOpen)
 							}
-							onSelect={(event, value, isPlaceHolder) =&gt;
-								handleMultipleSelect(
-									value,
-									isPlaceHolder,
-									interview__otherPositions,
-									set__interview__otherPositions
-								)
-							}
+							onSelect={(event, value, isPlaceHolder) =&gt; {
+								if (isPlaceHolder) {
+									set__interview__otherPositions([]);
+								} else {
+									set__interview__otherPositions((prev) =&gt; {
+										const selectedValue = value.toString
+											? value.toString()
+											: (value as string);
+										if (prev.indexOf(selectedValue) != -1) {
+											return prev.filter((s) =&gt; s !== selectedValue);
+										}
+										return [selectedValue, ...prev];
+									});
+								}
+							}}
 							value={interview__otherPositions}&gt;
 							&lt;SelectOption key={&#39;Developer&#39;} value={&#39;Developer&#39;}&gt;
 								Developer

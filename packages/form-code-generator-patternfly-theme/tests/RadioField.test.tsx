@@ -38,9 +38,9 @@ describe("<RadioField> tests", () => {
       allowedValues: ["Developer", "HR", "UX"],
       onChange: jest.fn(),
     };
-    const { container, formElement } = renderField(RadioField, props, schema);
+    const { formElement } = renderField(RadioField, props, schema);
 
-    expect(container).toMatchSnapshot();
+    expect(formElement.jsxCode).toMatchSnapshot();
 
     expect(formElement.reactImports).toContain("useState");
     expect(formElement.pfImports).toContain("FormGroup");
@@ -68,9 +68,9 @@ describe("<RadioField> tests", () => {
       onChange: jest.fn(),
     };
 
-    const { container, formElement } = renderField(RadioField, props, schema);
+    const { formElement } = renderField(RadioField, props, schema);
 
-    expect(container).toMatchSnapshot();
+    expect(formElement.jsxCode).toMatchSnapshot();
 
     expect(formElement.jsxCode).not.toBeNull();
     expect(formElement.jsxCode).toContain(`label={'${props.label}'}`);
