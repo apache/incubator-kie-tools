@@ -21,13 +21,6 @@ import * as React from "react";
 import { RadioField } from "../src/uniforms";
 import { renderField } from "./_render";
 
-const schema = {
-  role: {
-    type: String,
-    allowedValues: ["Developer", "HR", "UX"],
-  },
-};
-
 describe("<RadioField> tests", () => {
   it("<RadioField> - rendering", () => {
     const props = {
@@ -38,7 +31,12 @@ describe("<RadioField> tests", () => {
       allowedValues: ["Developer", "HR", "UX"],
       onChange: jest.fn(),
     };
-    const { formElement } = renderField(RadioField, props, schema);
+    const { formElement } = renderField(RadioField, props, {
+      role: {
+        type: String,
+        allowedValues: ["Developer", "HR", "UX"],
+      },
+    });
 
     expect(formElement.jsxCode).toMatchSnapshot();
 
@@ -68,7 +66,12 @@ describe("<RadioField> tests", () => {
       onChange: jest.fn(),
     };
 
-    const { formElement } = renderField(RadioField, props, schema);
+    const { formElement } = renderField(RadioField, props, {
+      role: {
+        type: String,
+        allowedValues: ["Developer", "HR", "UX"],
+      },
+    });
 
     expect(formElement.jsxCode).toMatchSnapshot();
 

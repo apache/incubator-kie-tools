@@ -51,6 +51,18 @@ describe("<ListField> tests", () => {
         },
         "friends.$.areas.$": String,
         "friends.$.birthday": { type: Date },
+        "friends.$.transport": {
+          type: Array,
+          allowedValues: ["Taxi", "Uber"],
+          uniforms: {
+            checkboxes: true,
+          },
+        },
+        "friends.$.transport.$": String,
+        "friends.$.children": {
+          type: String,
+          allowedValues: ["0", "1", "2+"],
+        },
       }
     );
     expect(formElement.jsxCode).toMatchSnapshot();

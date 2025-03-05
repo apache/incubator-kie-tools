@@ -19,19 +19,7 @@
 
 import * as React from "react";
 import { renderField } from "./_render";
-import { CHECKBOX_GROUP_FUNCTIONS } from "../src/uniforms/staticCode/staticCodeBlocks";
 import { CheckBoxGroupField } from "../src/uniforms";
-
-const schema = {
-  roles: {
-    type: Array,
-    allowedValues: ["Developer", "HR", "UX"],
-    uniforms: {
-      checkboxes: true,
-    },
-  },
-  "roles.$": String,
-};
 
 describe("<CheckBoxGroupField> tests", () => {
   it("<CheckBoxGroupField> - rendering", () => {
@@ -44,7 +32,16 @@ describe("<CheckBoxGroupField> tests", () => {
       onChange: jest.fn(),
     };
 
-    const { formElement } = renderField(CheckBoxGroupField, props, schema);
+    const { formElement } = renderField(CheckBoxGroupField, props, {
+      roles: {
+        type: Array,
+        allowedValues: ["Developer", "HR", "UX"],
+        uniforms: {
+          checkboxes: true,
+        },
+      },
+      "roles.$": String,
+    });
 
     expect(formElement.jsxCode).toMatchSnapshot();
 
@@ -53,9 +50,6 @@ describe("<CheckBoxGroupField> tests", () => {
     expect(formElement.pfImports).toContain("FormGroup");
     expect(formElement.pfImports).toContain("Checkbox");
 
-    expect(formElement.requiredCode).not.toBeUndefined();
-    expect(formElement.requiredCode).toHaveLength(1);
-    expect(formElement.requiredCode).toContain(CHECKBOX_GROUP_FUNCTIONS);
     expect(formElement.ref.binding).toBe(props.name);
     expect(formElement.ref.stateName).toBe(props.name);
     expect(formElement.ref.stateSetter).toBe(`set__${props.name}`);
@@ -74,9 +68,6 @@ describe("<CheckBoxGroupField> tests", () => {
       expect(formElement.jsxCode).toContain(checkbox);
       expect(formElement.jsxCode).toContain(`label={'${value}'}`);
       expect(formElement.jsxCode).toContain(`isChecked={${formElement.ref.stateName}.indexOf('${value}') !== -1}`);
-      expect(formElement.jsxCode).toContain(
-        `onChange={() => handleCheckboxGroupChange('${value}', ${formElement.ref.stateName}, ${formElement.ref.stateSetter})}`
-      );
       expect(formElement.jsxCode).toContain(`value={'${value}'}`);
     });
     expect(formElement.stateCode).not.toBeNull();
