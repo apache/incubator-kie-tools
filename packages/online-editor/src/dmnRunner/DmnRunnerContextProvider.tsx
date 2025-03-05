@@ -188,17 +188,29 @@ function transformExtendedServicesDmnResult(
           existingEvaluationHitsCount?.set(key, value);
         }
       });
-      // TODO - Question
-      // Here is an issue of merging evaluation results that belongs to the same Decision
-      // For example, what to do if first time evaluation was 'succeeded' and second time 'skipped'?
       evaluationResultsByNodeId.set(dr.decisionId, {
-        evaluationResult: dr.evaluationStatus.toLowerCase() as NewDmnEditorTypes.EvaluationResult,
+        // For a collection input or DMN Runner table mode one Decision may have multiple different evaluation results
+        // We keep the worst evaluation result.
+        evaluationResult: theWorstEvaluationResult(
+          evaluationResultsByNodeId.get(dr.decisionId)?.evaluationResult,
+          dr.evaluationStatus.toLowerCase() as NewDmnEditorTypes.EvaluationResult
+        ),
         evaluationHitsCountByRuleOrRowId: existingEvaluationHitsCount ?? new Map(),
       });
     }
   });
 
   return evaluationResultsByNodeId;
+}
+
+function theWorstEvaluationResult(a?: NewDmnEditorTypes.EvaluationResult, b?: NewDmnEditorTypes.EvaluationResult) {
+  if (a === "failed" || b === "failed") {
+    return "failed";
+  }
+  if (a === "skipped" || b === "skipped") {
+    return "skipped";
+  }
+  return "succeeded";
 }
 
 export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
