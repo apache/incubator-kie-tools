@@ -6,18 +6,6 @@ const parseDate = (date?: string): string => {
     return dateValue.toISOString().slice(0, -14);
 };
 
-const onDateChange = (newValue: string, setter: (newValue: string) => void, previousValue?: string ) => {
-    if (newValue) {
-        const newDate = new Date(newValue);
-        const time = parseTime(previousValue);
-        if (time !== '') {
-            newDate.setHours(parseInt(time && time.split(':')[0]));
-            newDate.setMinutes(parseInt(time && time.split(':')[1].split(' ')[0]));
-        }
-        setter(newDate.toISOString());
-    }
-};
-
 const parseTime = (date?: string): string => {
     if (!date) {
         return '';

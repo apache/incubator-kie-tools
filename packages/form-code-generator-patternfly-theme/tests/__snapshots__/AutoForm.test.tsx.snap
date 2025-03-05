@@ -553,13 +553,24 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 										id={&#39;date-picker-uniforms-0000-000v&#39;}
 										isDisabled={false}
 										name={&#39;interview.hiringDate&#39;}
-										onChange={(newDate) =&gt;
-											onDateChange(
-												newDate,
-												set__interview__hiringDate,
-												interview__hiringDate
-											)
-										}
+										onChange={(newDate) =&gt; {
+											set__interview__hiringDate((prev) =&gt; {
+												if (newValue) {
+													const newDate = new Date(newValue);
+													const time = parseTime(prev);
+													if (time !== &#39;&#39;) {
+														newDate.setHours(
+															parseInt(time &amp;&amp; time.split(&#39;:&#39;)[0])
+														);
+														newDate.setMinutes(
+															parseInt(time &amp;&amp; time.split(&#39;:&#39;)[1].split(&#39; &#39;)[0])
+														);
+													}
+													return newDate.toISOString();
+												}
+												return prev;
+											});
+										}}
 										value={parseDate(interview__hiringDate)}
 									/&gt;
 									&lt;TimePicker

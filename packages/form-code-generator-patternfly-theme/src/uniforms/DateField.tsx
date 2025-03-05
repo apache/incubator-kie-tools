@@ -28,7 +28,6 @@ import { DEFAULT_DATA_TYPE_DATE } from "./utils/dataTypes";
 import {
   getItemNameAndWithIsNested,
   getListItemName,
-  getListItemOnChange,
   getListItemValue,
   ListItemProps,
 } from "./rendering/ListItemField";
@@ -51,33 +50,44 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
 
   const pfImports = ["DatePicker", "Flex", "FlexItem", "InputGroup", "TimePicker"];
 
-  function getOnDateChange(value: string) {
+  function getOnDateChange() {
     if (props.itemProps?.isListItem) {
       const { itemName, isNested } = getItemNameAndWithIsNested(props.name);
       const propertyPath = props.itemProps?.listStateName.split(".").splice(1).join(".");
       const path = `${propertyPath}[${props.itemProps?.indexVariableName}]${isNested ? `.${itemName}` : ""}`;
-      return `
-          ${props.itemProps?.listStateSetter}(prev => {
+      return `newDate => {
+        ${props.itemProps?.listStateSetter}(prev => {
+          if (newValue) {
             const newState = [...prev];
-            const newValue = [...newState${path}]
-            if(newValue.indexOf('${value}') != -1) {
-              newValue.splice(index, 1);
-            } else {
-              newValue.push('${value}');
+            const currentDate = newState${path}
+            const newDate = new Date(newValue);
+            const time = parseTime(currentDate);
+            if (time !== '') {
+                newDate.setHours(parseInt(time && time.split(':')[0]));
+                newDate.setMinutes(parseInt(time && time.split(':')[1].split(' ')[0]));
             }
-            newState${path} = newValue
+            newState${path} = newDate.toISOString();
             return newState;
-          })`;
+          }
+          return prev;
+        })
+      }`;
     }
-    return `${ref.stateSetter}(prev => {
-        const newState = [...prev];
-        if(newState.indexOf('${value}') != -1) {
-          newState.splice(index, 1);
-        } else {
-          newState.push('${value}');
-        }
-        return newState;
-      })`;
+    return `newDate => {
+        ${ref.stateSetter}(prev => {
+          if (newValue) {
+            const newDate = new Date(newValue);
+            const time = parseTime(prev);
+            if (time !== '') {
+                newDate.setHours(parseInt(time && time.split(':')[0]));
+                newDate.setMinutes(parseInt(time && time.split(':')[1].split(' ')[0]));
+            }
+            return newDate.toISOString();
+          }
+          return prev;
+        })
+      }
+      `;
   }
 
   function getOnTimeChange() {
@@ -102,8 +112,9 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
             }
           }
           newState${path} = newDate.toISOString();
+          return newState;
         }
-        return newState;
+        return prev;
       })`;
     }
     return `(time, hours?, minutes?) => {
@@ -139,15 +150,7 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
           id={'date-picker-${props.id}'}
           isDisabled={${props.disabled || false}}
           name={${props.itemProps?.isListItem ? getListItemName({ itemProps: props.itemProps, name: props.name }) : `'${props.name}'`}}
-          onChange={${
-            props.itemProps?.isListItem
-              ? getListItemOnChange({
-                  itemProps: props.itemProps,
-                  name: props.name,
-                  callback: (value) => `onDateChange(${value}, ${ref.stateSetter},  ${ref.stateName})`,
-                })
-              : `newDate => onDateChange(newDate, ${ref.stateSetter},  ${ref.stateName})`
-          }}
+          onChange={${getOnDateChange()}}
           value={${props.itemProps?.isListItem ? getListItemValue({ itemProps: props.itemProps, name: props.name, callback: (value: string) => `parseDate(${value})` }) : `parseDate(${ref.stateName})`}}
         />
         <TimePicker

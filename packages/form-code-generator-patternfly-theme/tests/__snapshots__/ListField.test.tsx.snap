@@ -291,13 +291,23 @@ exports[`<ListField> tests <ListField> 1`] = `
           id={'date-picker-uniforms-0000-000g'}
           isDisabled={false}
           name={\`friends.\${itemIndex}.birthday\`}
-          onChange={newValue => {
-    set__friends(s => {
-      const newState = [...s];
-      newState[itemIndex].birthday = onDateChange(newValue, set__friends__$__birthday,  friends__$__birthday);
-      return newState;
-    })
-  }}
+          onChange={newDate => {
+        set__friends(prev => {
+          if (newValue) {
+            const newState = [...prev];
+            const currentDate = newState[itemIndex].birthday
+            const newDate = new Date(newValue);
+            const time = parseTime(currentDate);
+            if (time !== '') {
+                newDate.setHours(parseInt(time && time.split(':')[0]));
+                newDate.setMinutes(parseInt(time && time.split(':')[1].split(' ')[0]));
+            }
+            newState[itemIndex].birthday = newDate.toISOString();
+            return newState;
+          }
+          return prev;
+        })
+      }}
           value={parseDate(friends?.[itemIndex].birthday)}
         />
         <TimePicker
@@ -321,8 +331,9 @@ exports[`<ListField> tests <ListField> 1`] = `
             }
           }
           newState[itemIndex].birthday = newDate.toISOString();
+          return newState;
         }
-        return newState;
+        return prev;
       })}
           style={{ width: '120px' }}
           time={parseTime(friends?.[itemIndex].birthday)}

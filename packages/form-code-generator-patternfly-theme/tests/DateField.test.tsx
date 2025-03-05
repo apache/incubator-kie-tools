@@ -55,9 +55,6 @@ describe("<DateField> tests", () => {
     expect(formElement.jsxCode).toContain(`label={'${props.label}'}`);
     expect(formElement.jsxCode).toContain(`name={'${props.name}'}`);
     expect(formElement.jsxCode).toContain("isDisabled={false}");
-    expect(formElement.jsxCode).toContain(
-      `onChange={newDate => onDateChange(newDate, ${formElement.ref.stateSetter},  ${formElement.ref.stateName})}`
-    );
     expect(formElement.jsxCode).toContain(`value={parseDate(${formElement.ref.stateName})}`);
     expect(formElement.jsxCode).toContain(`time={parseTime(${formElement.ref.stateName})}`);
     expect(formElement.stateCode).not.toBeNull();

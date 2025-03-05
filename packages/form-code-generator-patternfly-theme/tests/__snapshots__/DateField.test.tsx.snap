@@ -16,7 +16,21 @@ exports[`<DateField> tests <DateField> - rendering - disabled 1`] = `
           id={'date-picker-id'}
           isDisabled={true}
           name={'birthday'}
-          onChange={newDate => onDateChange(newDate, set__birthday,  birthday)}
+          onChange={newDate => {
+        set__birthday(prev => {
+          if (newValue) {
+            const newDate = new Date(newValue);
+            const time = parseTime(prev);
+            if (time !== '') {
+                newDate.setHours(parseInt(time && time.split(':')[0]));
+                newDate.setMinutes(parseInt(time && time.split(':')[1].split(' ')[0]));
+            }
+            return newDate.toISOString();
+          }
+          return prev;
+        })
+      }
+      }
           value={parseDate(birthday)}
         />
         <TimePicker
@@ -69,7 +83,21 @@ exports[`<DateField> tests <DateField> - rendering 1`] = `
           id={'date-picker-id'}
           isDisabled={false}
           name={'birthday'}
-          onChange={newDate => onDateChange(newDate, set__birthday,  birthday)}
+          onChange={newDate => {
+        set__birthday(prev => {
+          if (newValue) {
+            const newDate = new Date(newValue);
+            const time = parseTime(prev);
+            if (time !== '') {
+                newDate.setHours(parseInt(time && time.split(':')[0]));
+                newDate.setMinutes(parseInt(time && time.split(':')[1].split(' ')[0]));
+            }
+            return newDate.toISOString();
+          }
+          return prev;
+        })
+      }
+      }
           value={parseDate(birthday)}
         />
         <TimePicker
