@@ -80,6 +80,7 @@ import { openapiSchemaToJsonSchema } from "@openapi-contrib/openapi-schema-to-js
 import type { JSONSchema4 } from "json-schema";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
+import { NewDmnEditorTypes } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorTypes";
 
 interface Props {
   isEditorReady?: boolean;
@@ -159,10 +160,7 @@ function dmnRunnerResultsReducer(dmnRunnerResults: DmnRunnerResults, action: Dmn
  */
 function transformExtendedServicesDmnResult(
   result: ExtendedServicesDmnResult,
-  evaluationResultsByNodeId: Map<
-    string,
-    { evaluationResult: "succeeded" | "failed" | "skipped"; evaluationHitsCount: Map<string, number> }
-  >
+  evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId
 ) {
   result.decisionResults?.forEach((dr) => {
     const evaluationHitsCount = new Map<string, number>();
@@ -348,10 +346,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             }
 
             const runnerResults: Array<DecisionResult[] | undefined> = [];
-            const evaluationResultsByNodeId: Map<
-              string,
-              { evaluationResult: "succeeded" | "failed" | "skipped"; evaluationHitsCount: Map<string, number> }
-            > = new Map();
+            const evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId = new Map();
             for (const result of results) {
               if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
                 setExtendedServicesError(true);

@@ -74,7 +74,7 @@ export type DmnEditorRootState = {
   keyboardShortcutsRegisterIds: number[];
   keyboardShortcutsRegistered: boolean;
   error: Error | undefined;
-  evaluationResultsByNodeId: Map<string, DmnEditor.NodeEvaluationResults>;
+  evaluationResultsByNodeId: DmnEditor.EvaluationResultsByNodeId;
 };
 
 export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditorRootState> {
@@ -97,7 +97,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       keyboardShortcutsRegisterIds: [],
       keyboardShortcutsRegistered: false,
       error: undefined,
-      evaluationResultsByNodeId: new Map<string, DmnEditor.NodeEvaluationResults>(),
+      evaluationResultsByNodeId: new Map(),
     };
   }
 
@@ -107,7 +107,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     this.dmnEditorRef.current?.openBoxedExpressionEditor(nodeId);
   }
 
-  public showDmnEvaluationResults(evaluationResultsByNodeId: Map<string, DmnEditor.NodeEvaluationResults>): void {
+  public showDmnEvaluationResults(evaluationResultsByNodeId: DmnEditor.EvaluationResultsByNodeId): void {
     this.setState((prev) => ({ ...prev, evaluationResultsByNodeId: evaluationResultsByNodeId }));
   }
 

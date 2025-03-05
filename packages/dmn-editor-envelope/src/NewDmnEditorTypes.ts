@@ -17,14 +17,6 @@
  * under the License.
  */
 
-import { KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
-import { NewDmnEditorTypes } from "./NewDmnEditorTypes";
+import type * as NewDmnEditorTypes from "@kie-tools/dmn-editor/dist/DmnEditor";
 
-export interface NewDmnEditorEnvelopeApi extends KogitoEditorEnvelopeApi {
-  /**
-   * Open boxed expression editor for given node
-   * @param nodeId id of the node to open
-   */
-  dmnEditor_openBoxedExpressionEditor(nodeId: string): void;
-  newDmnEditor_showDmnEvaluationResults(evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId): void;
-}
+export { NewDmnEditorTypes };
