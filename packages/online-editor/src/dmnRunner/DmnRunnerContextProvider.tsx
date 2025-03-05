@@ -163,10 +163,10 @@ function transformExtendedServicesDmnResult(
   evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId
 ) {
   result.decisionResults?.forEach((dr) => {
-    const evaluationHitsCount = new Map<string, number>();
+    const evaluationHitsCountByRuleOrRowId = new Map<string, number>();
     // ### -2- ###
     for (const [key, value] of Object.entries(dr.evaluationHitIds)) {
-      evaluationHitsCount.set(`${key}`, value as number);
+      evaluationHitsCountByRuleOrRowId.set(`${key}`, value as number);
     }
     // We want to merge evaluation results that belongs to the same Decision
     // So we need to check if the Decision wasn't already partially processed
@@ -174,11 +174,13 @@ function transformExtendedServicesDmnResult(
       evaluationResultsByNodeId.set(dr.decisionId, {
         // ### -1- ###
         evaluationResult: dr.evaluationStatus.toLowerCase() as NewDmnEditorTypes.EvaluationResult,
-        evaluationHitsCount: evaluationHitsCount,
+        evaluationHitsCountByRuleOrRowId: evaluationHitsCountByRuleOrRowId,
       });
     } else {
-      const existingEvaluationHitsCount = evaluationResultsByNodeId.get(dr.decisionId)?.evaluationHitsCount;
-      evaluationHitsCount.forEach((value, key) => {
+      const existingEvaluationHitsCount = evaluationResultsByNodeId.get(
+        dr.decisionId
+      )?.evaluationHitsCountByRuleOrRowId;
+      evaluationHitsCountByRuleOrRowId.forEach((value, key) => {
         // ### -3- ###
         if (existingEvaluationHitsCount?.has(key)) {
           existingEvaluationHitsCount.set(key, (existingEvaluationHitsCount?.get(key) ?? 0) + value);
@@ -191,7 +193,7 @@ function transformExtendedServicesDmnResult(
       // For example, what to do if first time evaluation was 'succeeded' and second time 'skipped'?
       evaluationResultsByNodeId.set(dr.decisionId, {
         evaluationResult: dr.evaluationStatus.toLowerCase() as NewDmnEditorTypes.EvaluationResult,
-        evaluationHitsCount: existingEvaluationHitsCount ?? new Map(),
+        evaluationHitsCountByRuleOrRowId: existingEvaluationHitsCount ?? new Map(),
       });
     }
   });

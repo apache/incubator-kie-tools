@@ -533,7 +533,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
             isReadOnly={settings.isReadOnly}
             evaluationHitsCountById={
               isEvaluationHighlightsEnabled
-                ? evaluationResultsByNodeId?.get(activeDrgElementId ?? "")?.evaluationHitsCount
+                ? evaluationResultsByNodeId?.get(activeDrgElementId ?? "")?.evaluationHitsCountByRuleOrRowId
                 : undefined
             }
           />

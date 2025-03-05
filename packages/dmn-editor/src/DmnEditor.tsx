@@ -83,7 +83,7 @@ export type DmnEditorRef = {
  */
 export type NodeEvaluationResults = {
   evaluationResult: EvaluationResult;
-  evaluationHitsCount: Map<string, number>;
+  evaluationHitsCountByRuleOrRowId: Map<string, number>;
 };
 
 export type EvaluationResult = "succeeded" | "failed" | "skipped";
