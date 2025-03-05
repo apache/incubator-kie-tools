@@ -24,7 +24,7 @@ import { AssetType } from "../../__fixtures__/editor";
 test.describe("Selection", () => {
   test.describe("Context menu", () => {
     test.beforeEach(async ({ editor, testScenarioTable }) => {
-      await editor.createTestScenario(AssetType.RULE);
+      await editor.createTestScenario(AssetType.DECISION);
       await testScenarioTable.fill({ content: '"test"', rowLocatorInfo: "1", columnNumber: 1 });
     });
 

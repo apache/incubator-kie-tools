@@ -100,8 +100,10 @@ export const en: TestScenarioEditorI18n = {
         "To edit a test scenario definition, select a grid's column and assign it a DMN Node attribute using the below selector",
       descriptionRule:
         "To edit a test scenario definition, select a grid's column and assign it a Java Class field using the below selector",
+      emptyDataObjectsTitle: "No more properties",
       emptyDataObjectsTitleDMN: "No DMN Nodes",
       emptyDataObjectsTitleRule: "No Java Classes",
+      emptyDataObjectsDescription: "All the properties have been already assigned",
       emptyDataObjectsDescriptionDMN: "Impossible to retrieve the DMN Nodes data from the linked DMN file.",
       emptyDataObjectsDescriptionRule: "Impossible to retrieve the Java Classes from the project.",
       expandAll: "Expand all",
