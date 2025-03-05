@@ -264,9 +264,20 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
               return;
             }
             if (dmnRunnerMode === DmnRunnerMode.TABLE) {
-              setCurrentResponseMessages(results.flatMap((result) => result?.messages || []));
+              const messagesWithRowNumbers = results.flatMap((result, rowIndex) =>
+                (result?.messages || []).map((message) => ({
+                  ...message,
+                  message: `Row ${rowIndex + 1} : ${message.messageType}: ${message.message}`,
+                }))
+              );
+              setCurrentResponseMessages(messagesWithRowNumbers);
             } else {
-              setCurrentResponseMessages(results[currentInputIndex]?.messages || []);
+              const messagesWithTypes =
+                results[currentInputIndex]?.messages?.map((message) => ({
+                  ...message,
+                  message: `${message.messageType}: ${message.message}`,
+                })) || [];
+              setCurrentResponseMessages(messagesWithTypes);
             }
 
             const runnerResults: Array<DecisionResult[] | undefined> = [];
@@ -365,7 +376,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         type: "PROBLEM",
         normalizedPosixPathRelativeToTheWorkspaceRoot: path,
         severity: message.severity,
-        message: `${message.messageType}: ${message.message}`,
+        message: `${message.message}`,
       }));
     });
 
