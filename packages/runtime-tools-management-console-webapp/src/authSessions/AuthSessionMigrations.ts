@@ -19,6 +19,7 @@
 
 import { decoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import {
+  AUTH_SESSION_OIDC_DEFAULT_SCOPES,
   AUTH_SESSIONS_FILE_PATH,
   AUTH_SESSIONS_FS_NAME,
   AUTH_SESSIONS_VERSION_NUMBER,
@@ -92,6 +93,9 @@ export async function applyAuthSessionMigrations(authSession: any): Promise<Auth
   switch (authSession.version) {
     case undefined:
     case 1:
+      newAuthSession.version = 2;
+      newAuthSession.scope = AUTH_SESSION_OIDC_DEFAULT_SCOPES;
+    case 2:
     // Already at current version. Nothing to do.
     default:
       break;
