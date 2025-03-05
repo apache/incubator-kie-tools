@@ -94,9 +94,13 @@ exports[`<ListField> tests <ListField> 1`] = `
       variant={SelectVariant.single}
       isDisabled={false}
       placeholderText={''}
-      isOpen={friends__$__country__expanded}
+      isOpen={friends__$__country__expanded[itemIndex]}
       selections={friends__$__country}
-      onToggle={(isOpen) => set__friends__$__country__expanded(isOpen)}
+      onToggle={(isOpen) => set__friends__$__country__expanded(prev => {
+          const newState = [...prev];
+          newState[itemIndex] = isOpen
+          return newState;
+        })}
       onSelect={(event, value, isPlaceHolder) => {
           if (isPlaceHolder) {
             set__friends(prev => {
@@ -239,9 +243,13 @@ exports[`<ListField> tests <ListField> 1`] = `
       variant={SelectVariant.typeaheadMulti}
       isDisabled={false}
       placeholderText={''}
-      isOpen={friends__$__areas__expanded}
+      isOpen={friends__$__areas__expanded[itemIndex]}
       selections={friends__$__areas}
-      onToggle={(isOpen) => set__friends__$__areas__expanded(isOpen)}
+      onToggle={(isOpen) => set__friends__$__areas__expanded(prev => {
+          const newState = [...prev];
+          newState[itemIndex] = isOpen
+          return newState;
+        })}
       onSelect={(event, value, isPlaceHolder) => {
           if (isPlaceHolder) {
             set__friends(prev => {

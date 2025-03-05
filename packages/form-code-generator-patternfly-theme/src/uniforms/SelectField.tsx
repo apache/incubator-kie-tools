@@ -160,9 +160,19 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
       variant={SelectVariant.${isArray ? "typeaheadMulti" : "single"}}
       isDisabled={${props.disabled || false}}
       placeholderText={'${props.placeholder || ""}'}
-      isOpen={${expandedStateName}}
+      isOpen={${
+        props.itemProps?.isListItem ? `${expandedStateName}[${props.itemProps.indexVariableName}]` : expandedStateName
+      }}
       selections={${ref.stateName}}
-      onToggle={(isOpen) => ${expandedStateNameSetter}(isOpen)}
+      onToggle={(isOpen) => ${
+        props.itemProps?.isListItem
+          ? `${expandedStateNameSetter}(prev => {
+          const newState = [...prev];
+          newState[${props.itemProps.indexVariableName}] = isOpen
+          return newState;
+        })`
+          : `${expandedStateNameSetter}(isOpen)`
+      }}
       onSelect={${getHandleSelect()}}
       value={${props.itemProps?.isListItem ? getListItemValue({ itemProps: props.itemProps, name: props.name }) : ref.stateName}}
     >
