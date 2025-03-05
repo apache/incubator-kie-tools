@@ -173,7 +173,7 @@ function transformExtendedServicesDmnResult(
     if (!evaluationResultsByNodeId.has(dr.decisionId)) {
       evaluationResultsByNodeId.set(dr.decisionId, {
         // ### -1- ###
-        evaluationResult: dr.evaluationStatus.toLowerCase() as "succeeded" | "failed" | "skipped",
+        evaluationResult: dr.evaluationStatus.toLowerCase() as NewDmnEditorTypes.EvaluationResult,
         evaluationHitsCount: evaluationHitsCount,
       });
     } else {
@@ -190,7 +190,7 @@ function transformExtendedServicesDmnResult(
       // Here is an issue of merging evaluation results that belongs to the same Decision
       // For example, what to do if first time evaluation was 'succeeded' and second time 'skipped'?
       evaluationResultsByNodeId.set(dr.decisionId, {
-        evaluationResult: dr.evaluationStatus.toLowerCase() as "succeeded" | "failed" | "skipped",
+        evaluationResult: dr.evaluationStatus.toLowerCase() as NewDmnEditorTypes.EvaluationResult,
         evaluationHitsCount: existingEvaluationHitsCount ?? new Map(),
       });
     }
