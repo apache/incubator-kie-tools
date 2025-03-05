@@ -21,7 +21,7 @@ import * as React from "react";
 import SimpleSchema from "simpl-schema";
 import { renderField } from "./_render";
 import { AutoField } from "../src/uniforms";
-import { DATE_FUNCTIONS, TIME_FUNCTIONS } from "../src/uniforms/staticCode/staticCodeBlocks";
+import { DATE_FUNCTIONS } from "../src/uniforms/staticCode/staticCodeBlocks";
 import { SELECT_IMPORTS } from "../src/uniforms/SelectField";
 
 const schema = {
@@ -99,9 +99,8 @@ describe("<AutoField> tests", () => {
     expect(formElement.pfImports).toContain("FormGroup");
     expect(formElement.pfImports).toContain("DatePicker");
     expect(formElement.pfImports).toContain("TimePicker");
-    expect(formElement.requiredCode).toHaveLength(2);
+    expect(formElement.requiredCode).toHaveLength(1);
     expect(formElement.requiredCode).toContain(DATE_FUNCTIONS);
-    expect(formElement.requiredCode).toContain(TIME_FUNCTIONS);
   });
 
   it("<ListField> - rendering", () => {

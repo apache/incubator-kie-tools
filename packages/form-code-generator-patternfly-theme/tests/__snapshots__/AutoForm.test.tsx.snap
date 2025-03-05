@@ -155,10 +155,6 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 	}, []);
 	{
 	}
-	{
-	}
-	{
-	}
 	return (
 		&lt;div className={&#39;pf-c-form&#39;}&gt;
 			&lt;Card&gt;
@@ -377,13 +373,15 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							label={&#39;Java&#39;}
 							isDisabled={false}
 							isChecked={interview__skills.indexOf(&#39;Java&#39;) !== -1}
-							onChange={() =&gt;
-								handleCheckboxGroupChange(
-									&#39;Java&#39;,
-									interview__skills,
-									set__interview__skills
-								)
-							}
+							onChange={set__interview__skills((prev) =&gt; {
+								const newState = [...prev];
+								if (newState.indexOf(&#39;Java&#39;) != -1) {
+									newState.splice(index, 1);
+								} else {
+									newState.push(&#39;Java&#39;);
+								}
+								return newState;
+							})}
 							value={&#39;Java&#39;}
 						/&gt;
 						&lt;Checkbox
@@ -394,13 +392,15 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							label={&#39;React&#39;}
 							isDisabled={false}
 							isChecked={interview__skills.indexOf(&#39;React&#39;) !== -1}
-							onChange={() =&gt;
-								handleCheckboxGroupChange(
-									&#39;React&#39;,
-									interview__skills,
-									set__interview__skills
-								)
-							}
+							onChange={set__interview__skills((prev) =&gt; {
+								const newState = [...prev];
+								if (newState.indexOf(&#39;React&#39;) != -1) {
+									newState.splice(index, 1);
+								} else {
+									newState.push(&#39;React&#39;);
+								}
+								return newState;
+							})}
 							value={&#39;React&#39;}
 						/&gt;
 						&lt;Checkbox
@@ -411,13 +411,15 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							label={&#39;TypeScript&#39;}
 							isDisabled={false}
 							isChecked={interview__skills.indexOf(&#39;TypeScript&#39;) !== -1}
-							onChange={() =&gt;
-								handleCheckboxGroupChange(
-									&#39;TypeScript&#39;,
-									interview__skills,
-									set__interview__skills
-								)
-							}
+							onChange={set__interview__skills((prev) =&gt; {
+								const newState = [...prev];
+								if (newState.indexOf(&#39;TypeScript&#39;) != -1) {
+									newState.splice(index, 1);
+								} else {
+									newState.push(&#39;TypeScript&#39;);
+								}
+								return newState;
+							})}
 							value={&#39;TypeScript&#39;}
 						/&gt;
 						&lt;Checkbox
@@ -428,13 +430,15 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							label={&#39;Quarkus&#39;}
 							isDisabled={false}
 							isChecked={interview__skills.indexOf(&#39;Quarkus&#39;) !== -1}
-							onChange={() =&gt;
-								handleCheckboxGroupChange(
-									&#39;Quarkus&#39;,
-									interview__skills,
-									set__interview__skills
-								)
-							}
+							onChange={set__interview__skills((prev) =&gt; {
+								const newState = [...prev];
+								if (newState.indexOf(&#39;Quarkus&#39;) != -1) {
+									newState.splice(index, 1);
+								} else {
+									newState.push(&#39;Quarkus&#39;);
+								}
+								return newState;
+							})}
 							value={&#39;Quarkus&#39;}
 						/&gt;
 					&lt;/FormGroup&gt;
@@ -562,15 +566,30 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 										id={&#39;time-picker-uniforms-0000-000v&#39;}
 										isDisabled={false}
 										name={&#39;interview.hiringDate&#39;}
-										onChange={(time, hours?, minutes?) =&gt;
-											onTimeChange(
-												time,
-												set__interview__hiringDate,
-												interview__hiringDate,
-												hours,
-												minutes
-											)
-										}
+										onChange={(time, hours?, minutes?) =&gt; {
+											set__interview__hiringDate((prev) =&gt; {
+												if (prev) {
+													const newDate = new Date(Date.parse(prev));
+													if (hours &amp;&amp; minutes) {
+														newDate.setHours(hours);
+														newDate.setMinutes(minutes);
+													} else if (time !== &#39;&#39;) {
+														const localeHours = parseInt(
+															time &amp;&amp; time.split(&#39;:&#39;)[0]
+														);
+														const localeMinutes = parseInt(
+															time &amp;&amp; time.split(&#39;:&#39;)[1].split(&#39; &#39;)[0]
+														);
+														if (!isNaN(localeHours) &amp;&amp; !isNaN(localeMinutes)) {
+															newDate.setHours(localeHours);
+															newDate.setMinutes(localeMinutes);
+														}
+													}
+													return newDate.toISOString();
+												}
+												return prev;
+											});
+										}}
 										style={{ width: &#39;120px&#39; }}
 										time={parseTime(interview__hiringDate)}
 									/&gt;

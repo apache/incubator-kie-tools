@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { renderField } from "./_render";
-import { DATE_FUNCTIONS, TIME_FUNCTIONS } from "../src/uniforms/staticCode/staticCodeBlocks";
+import { DATE_FUNCTIONS } from "../src/uniforms/staticCode/staticCodeBlocks";
 import { DateField } from "../src/uniforms";
 
 const schema = {
@@ -45,9 +45,8 @@ describe("<DateField> tests", () => {
     expect(formElement.pfImports).toContain("DatePicker");
     expect(formElement.pfImports).toContain("TimePicker");
     expect(formElement.requiredCode).not.toBeUndefined();
-    expect(formElement.requiredCode).toHaveLength(2);
+    expect(formElement.requiredCode).toHaveLength(1);
     expect(formElement.requiredCode).toContain(DATE_FUNCTIONS);
-    expect(formElement.requiredCode).toContain(TIME_FUNCTIONS);
     expect(formElement.ref.binding).toBe(props.name);
     expect(formElement.ref.stateName).toBe(props.name);
     expect(formElement.ref.stateSetter).toBe(`set__${props.name}`);
@@ -61,9 +60,6 @@ describe("<DateField> tests", () => {
     );
     expect(formElement.jsxCode).toContain(`value={parseDate(${formElement.ref.stateName})}`);
     expect(formElement.jsxCode).toContain(`time={parseTime(${formElement.ref.stateName})}`);
-    expect(formElement.jsxCode).toContain(
-      `onChange={(time, hours?, minutes?) => onTimeChange(time, ${formElement.ref.stateSetter}, ${formElement.ref.stateName}, hours, minutes)}`
-    );
     expect(formElement.stateCode).not.toBeNull();
   });
 

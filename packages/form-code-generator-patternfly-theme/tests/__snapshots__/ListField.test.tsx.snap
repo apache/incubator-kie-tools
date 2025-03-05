@@ -304,13 +304,26 @@ exports[`<ListField> tests <ListField> 1`] = `
           id={'time-picker-uniforms-0000-000g'}
           isDisabled={false}
           name={\`friends.\${itemIndex}.birthday\`}
-          onChange={(time, hours?, minutes?) => {
-    set__friends(s => {
-      const newState = [...s];
-      newState[itemIndex].birthday = onTimeChange(time, set__friends__$__birthday, friends__$__birthday, hours, minutes);
-      return newState;
-    })
-  }}
+          onChange={(time, hours?, minutes?) => set__friends(prev => {
+        const newState = [...prev];
+        const currentDate = newState[itemIndex].birthday
+        if (currentDate) {
+          const newDate = new Date(Date.parse(currentDate));
+          if (hours && minutes) {
+            newDate.setHours(hours);
+            newDate.setMinutes(minutes);
+          } else if (time !== '') {
+            const localeHours = parseInt(time && time.split(':')[0]);
+            const localeMinutes = parseInt(time && time.split(':')[1].split(' ')[0]);
+            if (!isNaN(localeHours) && !isNaN(localeMinutes)) {
+                newDate.setHours(localeHours);
+                newDate.setMinutes(localeMinutes);
+            }
+          }
+          newState[itemIndex].birthday = newDate.toISOString();
+        }
+        return newState;
+      })}
           style={{ width: '120px' }}
           time={parseTime(friends?.[itemIndex].birthday)}
         />
@@ -318,6 +331,105 @@ exports[`<ListField> tests <ListField> 1`] = `
     </FlexItem>
   </Flex>
     </FormGroup>
+<FormGroup
+      fieldId={'uniforms-0000-000i'}
+      label={'Transport'}
+      isRequired={true}
+    >
+      <Checkbox
+  key={'uniforms-0000-000i-Taxi'}
+  id={'uniforms-0000-000i-Taxi'}
+  name={\`friends.\${itemIndex}.transport\`}
+  aria-label={'friends.$.transport'}
+  label={'Taxi'} 
+  isDisabled={false} 
+  isChecked={friends?.[itemIndex].transport.indexOf('Taxi') !== -1}
+  onChange={
+        set__friends(prev => {
+          const newState = [...prev];
+          const newValue = [...newState[itemIndex].transport]
+          if(newValue.indexOf('Taxi') != -1) {
+            newValue.splice(index, 1);
+          } else {
+            newValue.push('Taxi');
+          }
+          newState[itemIndex].transport = newValue
+          return newState;
+        })}
+  value={friends?.[itemIndex].transport}
+/>
+<Checkbox
+  key={'uniforms-0000-000i-Uber'}
+  id={'uniforms-0000-000i-Uber'}
+  name={\`friends.\${itemIndex}.transport\`}
+  aria-label={'friends.$.transport'}
+  label={'Uber'} 
+  isDisabled={false} 
+  isChecked={friends?.[itemIndex].transport.indexOf('Uber') !== -1}
+  onChange={
+        set__friends(prev => {
+          const newState = [...prev];
+          const newValue = [...newState[itemIndex].transport]
+          if(newValue.indexOf('Uber') != -1) {
+            newValue.splice(index, 1);
+          } else {
+            newValue.push('Uber');
+          }
+          newState[itemIndex].transport = newValue
+          return newState;
+        })}
+  value={friends?.[itemIndex].transport}
+/>
+    </FormGroup>
+<FormGroup
+      fieldId={'uniforms-0000-000k'}
+      label={'Children'}
+      isRequired={true}
+    ><Select
+      id={'uniforms-0000-000k'}
+      name={\`friends.\${itemIndex}.children\`}
+      variant={SelectVariant.single}
+      isDisabled={false}
+      placeholderText={''}
+      isOpen={friends__$__children__expanded[itemIndex]}
+      selections={friends__$__children}
+      onToggle={(isOpen) => set__friends__$__children__expanded(prev => {
+          const newState = [...prev];
+          newState[itemIndex] = isOpen
+          return newState;
+        })}
+      onSelect={(event, value, isPlaceHolder) => {
+          if (isPlaceHolder) {
+            set__friends(prev => {
+              const newState = [...prev];
+              newState[itemIndex].children = "";
+              return newState;
+            })
+            set__friends__$__children__expanded(prev => {
+                const newState = [...prev];
+                newState[itemIndex] = false;
+                return newState;
+            });
+          } else {
+            const parsedSelection = value.toString ? value.toString() : value as string;
+            set__friends(prev => {
+              const newState = [...prev];
+              newState[itemIndex].children = parsedSelection || '';
+              return newState;
+            })
+            set__friends__$__children__expanded(prev => {
+              const newState = [...prev];
+              newState[itemIndex] = false;
+              return newState;
+            });
+          }
+        }}
+      value={friends?.[itemIndex].children}
+    >
+      <SelectOption key={'0'} value={'0'}>0</SelectOption>
+<SelectOption key={'1'} value={'1'}>1</SelectOption>
+<SelectOption key={'2+'} value={'2+'}>2+</SelectOption>
+    </Select></FormGroup>
           </CardBody></Card></div>
             <div>
               <Button
@@ -348,5 +460,7 @@ const [ friends__$__country__expanded, set__friends__$__country__expanded ] = us
 
 
 const [ friends__$__areas__expanded, set__friends__$__areas__expanded ] = useState<[]boolean>([]);
-"
+
+
+const [ friends__$__children__expanded, set__friends__$__children__expanded ] = useState<[]boolean>([]);"
 `;

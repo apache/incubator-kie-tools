@@ -14,7 +14,15 @@ exports[`<CheckBoxGroupField> tests <CheckBoxGroupField> - rendering 1`] = `
   label={'Developer'} 
   isDisabled={false} 
   isChecked={roles.indexOf('Developer') !== -1}
-  onChange={() => handleCheckboxGroupChange('Developer', roles, set__roles)}
+  onChange={set__roles(prev => {
+      const newState = [...prev];
+      if(newState.indexOf('Developer') != -1) {
+        newState.splice(index, 1);
+      } else {
+        newState.push('Developer');
+      }
+      return newState;
+    })}
   value={'Developer'}
 />
 <Checkbox
@@ -25,7 +33,15 @@ exports[`<CheckBoxGroupField> tests <CheckBoxGroupField> - rendering 1`] = `
   label={'HR'} 
   isDisabled={false} 
   isChecked={roles.indexOf('HR') !== -1}
-  onChange={() => handleCheckboxGroupChange('HR', roles, set__roles)}
+  onChange={set__roles(prev => {
+      const newState = [...prev];
+      if(newState.indexOf('HR') != -1) {
+        newState.splice(index, 1);
+      } else {
+        newState.push('HR');
+      }
+      return newState;
+    })}
   value={'HR'}
 />
 <Checkbox
@@ -36,7 +52,15 @@ exports[`<CheckBoxGroupField> tests <CheckBoxGroupField> - rendering 1`] = `
   label={'UX'} 
   isDisabled={false} 
   isChecked={roles.indexOf('UX') !== -1}
-  onChange={() => handleCheckboxGroupChange('UX', roles, set__roles)}
+  onChange={set__roles(prev => {
+      const newState = [...prev];
+      if(newState.indexOf('UX') != -1) {
+        newState.splice(index, 1);
+      } else {
+        newState.push('UX');
+      }
+      return newState;
+    })}
   value={'UX'}
 />
     </FormGroup>"

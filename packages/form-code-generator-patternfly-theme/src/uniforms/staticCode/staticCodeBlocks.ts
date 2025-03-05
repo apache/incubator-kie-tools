@@ -18,15 +18,12 @@
  */
 
 import dateFunctions from "!!raw-loader!../../resources/dateFunctions.txt";
-import timeFunctions from "!!raw-loader!../../resources/timeFunctions.txt";
 
 export const DATE_FUNCTIONS = "date_functions";
-export const TIME_FUNCTIONS = "time_functions";
 
 const _staticBlocks: Map<string, string> = new Map<string, string>();
 
 _staticBlocks.set(DATE_FUNCTIONS, dateFunctions);
-_staticBlocks.set(TIME_FUNCTIONS, timeFunctions);
 
 export const getStaticCodeBlock = (blockName: string): string | undefined => {
   return _staticBlocks.get(blockName);
