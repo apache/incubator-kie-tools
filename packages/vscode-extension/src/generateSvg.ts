@@ -76,12 +76,21 @@ export async function generateSvg(args: {
 
   const svgFileName = getInterpolatedConfigurationValue({
     currentFileAbsolutePosixPath: editor.document.document.uri.path,
-    value:
-      definitelyPosixPath(svgFilenameTemplate) || `${configurationTokenKeys["${fileBasenameNoExtension}"]}-svg.svg`,
+    value: definitelyPosixPath(svgFilenameTemplate) || `${configurationTokenKeys["${fileBasenameNoExtension}"]}.svg`,
   });
+
+  const defaultSvgDirname =
+    fileType === "bpmn" || fileType === "bpmn2" // force line-break;
+      ? "processSVG"
+      : fileType === "dmn"
+        ? "decisionSVG"
+        : "anySVG";
+
   const svgFilePath = getInterpolatedConfigurationValue({
     currentFileAbsolutePosixPath: editor.document.document.uri.path,
-    value: definitelyPosixPath(svgFilePathTemplate) || `${configurationTokenKeys["${fileDirname}"]}`,
+    value:
+      definitelyPosixPath(svgFilePathTemplate) ||
+      `${configurationTokenKeys["${workspaceFolder}"]}/src/main/resources/META-INF/${defaultSvgDirname}"`,
   });
 
   const svgUri = editor.document.document.uri.with({ path: __path.posix.resolve(svgFilePath, svgFileName) });
