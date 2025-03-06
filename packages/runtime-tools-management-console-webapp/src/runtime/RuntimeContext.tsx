@@ -221,7 +221,7 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
         setIsRefreshingToken(true);
         const reauthResponse = await AuthSessionsService.reauthenticate({
           authSession,
-          clientId: env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID,
+          fromUnauthorizedRequest: true,
         });
         const updatedAuthSession: AuthSession = {
           ...authSession,
@@ -242,7 +242,7 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
         setIsRefreshingToken(false);
       }
     },
-    [env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID, updateAuthSession, history, routes.home]
+    [updateAuthSession, history, routes.home]
   );
 
   const onUnauthorized = useCallback(
