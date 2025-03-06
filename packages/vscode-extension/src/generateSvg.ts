@@ -97,11 +97,13 @@ export async function generateSvg(args: {
       currentFileAbsolutePosixPath: editor.document.document.uri.path,
       value: definitelyPosixPath(svgFilePathTemplate),
     });
-  } else if (editor.document.document.uri.path.includes("src/main/resources") /* is inside Kogito app */) {
-    svgFilePath = getInterpolatedConfigurationValue({
-      currentFileAbsolutePosixPath: editor.document.document.uri.path,
-      value: `${configurationTokenKeys["${workspaceFolder}"]}/src/main/resources/META-INF/${kogitoCompatibleSvgDirname(fileType)}"`,
-    });
+  } else if (editor.document.document.uri.path.includes("/src/main/resources") /* is inside Kogito app */) {
+    const split = editor.document.document.uri.path.split("/src/main/resources");
+    svgFilePath = __path.posix.join(
+      split[0],
+      `src/main/resources/META-INF/${kogitoCompatibleSvgDirname(fileType)}`,
+      __path.dirname(split[1])
+    );
   } else {
     svgFilePath = getInterpolatedConfigurationValue({
       currentFileAbsolutePosixPath: editor.document.document.uri.path,
@@ -114,12 +116,15 @@ export async function generateSvg(args: {
   await vscode.workspace.fs.writeFile(svgFilePathUri, encoder.encode(previewSvg));
 
   if (args.displayNotification) {
-    vscode.window.showInformationMessage(i18n.savedSvg(svgFileName), i18n.openSvg).then((selection) => {
-      if (selection !== i18n.openSvg) {
-        return;
-      }
+    const svgFilePosixPathRelativeToOpenFile = __path.posix.relative(editor.document.document.uri.path, svgFilePath);
+    vscode.window
+      .showInformationMessage(i18n.savedSvg(svgFilePosixPathRelativeToOpenFile), i18n.openSvg)
+      .then((selection) => {
+        if (selection !== i18n.openSvg) {
+          return;
+        }
 
-      args.vscodeWorkspace.openFile(svgFilePathUri.fsPath);
-    });
+        args.vscodeWorkspace.openFile(svgFilePathUri.fsPath);
+      });
   }
 }

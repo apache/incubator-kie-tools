@@ -43,11 +43,11 @@ DMN files must be inside a `src/` folder on your Workspace to be visible on the 
 
 ### Settings
 
-| Setting                          | Description                                              | Default value                                                                                                                |
-| -------------------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `kogito.dmn.runOnSave`           | Execute a command on each save operation of the DMN file | _empty_                                                                                                                      |
-| `kogito.dmn.svgFilenameTemplate` | Filename template to be used when generating SVG files   | `${fileBasenameNoExtension}.svg`                                                                                             |
-| `kogito.dmn.svgFilePath`         | Where to save generated SVG files                        | `${fileDirname}` or `${workspaceFolder}/src/main/resources/META-INF/decisionSVG` if DMN model is inside `src/main/resources` |
+| Setting                          | Description                                              | Default value                                                                                             |
+| -------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `kogito.dmn.runOnSave`           | Execute a command on each save operation of the DMN file | _empty_                                                                                                   |
+| `kogito.dmn.svgFilenameTemplate` | Filename template to be used when generating SVG files   | `${fileBasenameNoExtension}.svg`                                                                          |
+| `kogito.dmn.svgFilePath`         | Where to save generated SVG files                        | `${fileDirname}` or `src/main/resources/META-INF/decisionSVG` if DMN model is inside `src/main/resources` |
 
 The `kogito.dmn.svgFilenameTemplate` and `kogito.dmn.svgFilePath` settings accept the following variables as tokens:
 
