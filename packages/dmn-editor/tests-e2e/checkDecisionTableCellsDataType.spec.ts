@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "./__fixtures__/base";
 import { DataType, RangeConstraintPosition } from "./__fixtures__/dataTypes";
 import { TabName } from "./__fixtures__/editor";
@@ -39,11 +40,11 @@ test.describe("Decision Table - Cells Data Type", () => {
       await bee.selectExpressionMenu.selectDecisionTable();
       await bee.expression.asDecisionTable().outputHeaderAt(0).select();
       await beePropertiesPanel.decisionTableOutputHeader.setExpressionDataType({
-        newDataType: DataType.DateTimeDuration,
+        newDataType: DataType.DaysTimeDuration,
       });
 
       await expect(beePropertiesPanel.decisionTableOutputHeader.getColumnDataType()).not.toBeAttached();
-      await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(DataType.DateTimeDuration);
+      await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(DataType.DaysTimeDuration);
     });
 
     test("Decision type should match expression header type and output column type should be hidden with a single output column - custom type", async ({
@@ -127,7 +128,7 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
       DataType.Context,
       DataType.Date,
       DataType.DateTime,
-      DataType.DateTimeDuration,
+      DataType.DaysTimeDuration,
       DataType.Number,
       DataType.String,
       DataType.Time,
@@ -1006,6 +1007,42 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         await expect(beePropertiesPanel.decisionTableOutputRule.getConstraintSection()).toBeAttached();
         await beePropertiesPanel.decisionTableOutputRule.expectConstraintButtonsToBeDisabled();
         await expect(beePropertiesPanel.decisionTableOutputRule.getNoneConstraint()).toBeAttached();
+      });
+    });
+
+    test.describe("Decision Table output header under context expression", () => {
+      test("Decision Table output header data type change", async ({ bee, editor, palette, nodes }) => {
+        test.info().annotations.push({
+          type: TestAnnotations.REGRESSION,
+          description: "https://github.com/apache/incubator-kie-issues/issues/1851",
+        });
+
+        await editor.open();
+
+        await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+        await nodes.edit({ name: DefaultNodeName.DECISION });
+
+        await bee.selectExpressionMenu.selectContext();
+        await bee.expression.asContext().entry(0).selectExpressionMenu.selectDecisionTable();
+
+        await bee.expression.asContext().entry(0).expression.asDecisionTable().expressionHeaderCell.open();
+
+        await bee.expression
+          .asContext()
+          .entry(0)
+          .expression.asDecisionTable()
+          .expressionHeaderCell.setDataType({ dataType: DataType.DaysTimeDuration, close: true });
+
+        expect(await bee.expression.asContext().entry(0).variable.content.textContent()).toEqual(
+          "ContextEntry-1(days and time duration)"
+        );
+        expect(
+          await bee.expression
+            .asContext()
+            .entry(0)
+            .expression.asDecisionTable()
+            .expressionHeaderCell.content.textContent()
+        ).toEqual("ContextEntry-1(days and time duration)");
       });
     });
   });
