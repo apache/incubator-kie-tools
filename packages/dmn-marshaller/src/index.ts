@@ -479,6 +479,18 @@ export function upgrade12to13(dmn12: { definitions: DMN12__tDefinitions }): { de
     })
   ] = kie10ns.get("")!;
 
+  // Upgrade FEEL namespace
+  dmn12.definitions[
+    getNsDeclarationPropName({
+      namespace: FEEL_NAMESPACES["1.2"],
+      atInstanceNs: instanceNs,
+      fallingBackToNs: new Map<string, string>([
+        ["feel:", FEEL_NAMESPACES["1.2"]],
+        [FEEL_NAMESPACES["1.2"], "feel:"],
+      ]),
+    })
+  ] = FEEL_NAMESPACES["1.3"];
+
   if (dmn12.definitions["@_typeLanguage"] === FEEL_NAMESPACES["1.2"]) {
     dmn12.definitions["@_typeLanguage"] = FEEL_NAMESPACES["1.3"];
   }
@@ -515,6 +527,18 @@ export function upgrade13to14(dmn13: { definitions: DMN13__tDefinitions }): { de
     })
   ] = dmn14ns.get("dmndi:")!;
 
+  // Upgrade FEEL namespace
+  dmn13.definitions[
+    getNsDeclarationPropName({
+      namespace: FEEL_NAMESPACES["1.3"],
+      atInstanceNs: instanceNs,
+      fallingBackToNs: new Map<string, string>([
+        ["feel:", FEEL_NAMESPACES["1.3"]],
+        [FEEL_NAMESPACES["1.3"], "feel:"],
+      ]),
+    })
+  ] = FEEL_NAMESPACES["1.4"];
+
   if (dmn13.definitions["@_typeLanguage"] === FEEL_NAMESPACES["1.3"]) {
     dmn13.definitions["@_typeLanguage"] = FEEL_NAMESPACES["1.4"];
   }
@@ -550,6 +574,18 @@ export function upgrade14to15(dmn14: { definitions: DMN14__tDefinitions }): { de
       fallingBackToNs: dmn14ns,
     })
   ] = dmn15ns.get("dmndi:")!;
+
+  // Upgrade FEEL namespace
+  dmn14.definitions[
+    getNsDeclarationPropName({
+      namespace: FEEL_NAMESPACES["1.4"],
+      atInstanceNs: instanceNs,
+      fallingBackToNs: new Map<string, string>([
+        ["feel:", FEEL_NAMESPACES["1.4"]],
+        [FEEL_NAMESPACES["1.4"], "feel:"],
+      ]),
+    })
+  ] = FEEL_NAMESPACES["1.5"];
 
   if (dmn14.definitions["@_typeLanguage"] === FEEL_NAMESPACES["1.4"]) {
     dmn14.definitions["@_typeLanguage"] = FEEL_NAMESPACES["1.5"];
