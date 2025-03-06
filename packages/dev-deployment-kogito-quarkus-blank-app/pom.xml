@@ -233,23 +233,6 @@
           <value>!true</value>
         </property>
       </activation>
-      <dependencyManagement>
-        <dependencies>
-          <dependency>
-            <groupId>org.jbpm</groupId>
-            <artifactId>jbpm-quarkus-devui-bom</artifactId>
-            <version>${project.version}</version>
-            <type>pom</type>
-            <scope>import</scope>
-          </dependency>
-        </dependencies>
-      </dependencyManagement>
-      <dependencies>
-        <dependency>
-          <groupId>org.jbpm</groupId>
-          <artifactId>jbpm-quarkus-devui</artifactId>
-        </dependency>
-      </dependencies>
     </profile>
     <profile>
       <!--  -->
