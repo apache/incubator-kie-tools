@@ -19,7 +19,7 @@
 
 import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
-import { editor, KeyCode, KeyMod } from "monaco-editor";
+import { editor, KeyCode, KeyMod } from "@kie-tools-core/monaco-editor";
 
 export interface MonacoEditorApi {
   show: (container: HTMLDivElement, theme?: EditorTheme) => editor.IStandaloneCodeEditor;

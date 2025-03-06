@@ -92,7 +92,7 @@ test.describe("Use Selector Panel on Test Scenario table based on are they old e
     await selectorPanel.assign({ name: "LoanApplication" });
 
     await table.addPropertyColumn({
-      targetCellName: "Expression </>",
+      targetCellName: "expression </>",
       position: AddColumnPosition.RIGHT,
       columnNumber: 0,
     });
@@ -100,7 +100,7 @@ test.describe("Use Selector Panel on Test Scenario table based on are they old e
     await table.selectColumnHeader({ name: "PROPERTY-4 (<Undefined>)", columnNumber: 0 });
     await selectorPanel.assign({ name: "approved" });
 
-    await table.selectColumnHeader({ name: "Expression </>" });
+    await table.selectColumnHeader({ name: "expression </>" });
     await selectorPanel.assign({ name: "explanation" });
 
     await expect(table.getColumnHeader({ name: "approved (Boolean)" })).toBeAttached();

@@ -38,10 +38,8 @@ export function computeDmnDataObjects(
 
   const dmnModel = externalModelsByNamespace?.get(settings.dmnNamespace!.__$$text);
 
-  /* CHECKS external DMN */
-
   if (dmnModel) {
-    const itemDefinitions = new Map(
+    const allItemDefinitionsMap = new Map(
       dmnModel.model.definitions.itemDefinition?.map(
         (itemDefinition) => [itemDefinition["@_name"], itemDefinition] as const
       )
@@ -55,10 +53,10 @@ export function computeDmnDataObjects(
     );
 
     const inpuDataObjects = inputDataElements?.map((inputDataElement) =>
-      createTestScenarioObjects(inputDataElement, itemDefinitions)
+      createTestScenarioObjects(inputDataElement, allItemDefinitionsMap)
     );
     const decisionDataObjects = decisionElements?.map((decisionElement) =>
-      createTestScenarioObjects(decisionElement, itemDefinitions)
+      createTestScenarioObjects(decisionElement, allItemDefinitionsMap)
     );
     dataObjects.push(...(inpuDataObjects ?? []), ...(decisionDataObjects ?? []));
   }
@@ -68,88 +66,81 @@ export function computeDmnDataObjects(
 
 function createTestScenarioObjects(
   drgElement: DMN15__tInputData | DMN15__tDecision,
-  itemDefinitionMap: Map<string, DMN15__tItemDefinition>
+  allItemDefinitionsMap: Map<string, DMN15__tItemDefinition>
 ): TestScenarioDataObject {
-  const children: TestScenarioDataObject[] = [];
-
   const drgElementName = drgElement["@_name"];
   const drgElementTypeRef = drgElement!.variable?.["@_typeRef"];
-  const isDrgElementSimpleType = isSimpleType(drgElementTypeRef!);
-
-  if (isDrgElementSimpleType) {
-    children.push({
-      id: drgElementName.concat("."), //TO BE REVIEWED IN https://github.com/apache/incubator-kie-issues/issues/1514
-      name: "value",
-      customBadgeContent: drgElementTypeRef,
-      isSimpleTypeFact: isDrgElementSimpleType,
-    });
-  } else {
-    const itemDefinition = itemDefinitionMap.get(drgElementTypeRef!);
-    children.push(...createChildrenTestScenarioObjects(itemDefinition, drgElementName, drgElementTypeRef!));
-  }
+  const itemDefinition = drgElementTypeRef ? allItemDefinitionsMap.get(drgElementTypeRef) : undefined;
 
   return {
     id: drgElementName,
     name: drgElementName,
-    customBadgeContent: drgElementTypeRef,
-    children: children,
+    children: createChildrenTestScenarioObjects(
+      itemDefinition,
+      allItemDefinitionsMap,
+      [drgElementName],
+      drgElementTypeRef
+    ),
+    className: drgElementTypeRef,
+    customBadgeContent: drgElementTypeRef ?? "<Undefined>",
+    expressionElements: [drgElementName],
   };
 }
 
 function createChildrenTestScenarioObjects(
   itemDefinition: DMN15__tItemDefinition | undefined,
-  drgElementName: string,
-  drgElementTypeRef: string
+  allItemDefinitionsMap: Map<string, DMN15__tItemDefinition>,
+  expressionElements: string[],
+  rootDrgElementTypeRef: string | undefined
 ) {
   const children: TestScenarioDataObject[] = [];
 
   if (itemDefinition?.itemComponent && itemDefinition.itemComponent.length > 0) {
     const childrenTestScenarioObjects = itemDefinition.itemComponent.map((itemComponent) => {
       const nestedChildren: TestScenarioDataObject[] = [];
+      const currentItemDefinition = allItemDefinitionsMap.has(itemComponent?.typeRef?.__$$text ?? "")
+        ? allItemDefinitionsMap.get(itemComponent?.typeRef?.__$$text ?? "")
+        : itemComponent;
 
-      if (!itemComponent.typeRef) {
+      if (!currentItemDefinition?.typeRef) {
         const ns = createChildrenTestScenarioObjects(
-          itemComponent,
-          drgElementName.concat(".").concat(itemComponent["@_name"]),
-          "?"
+          currentItemDefinition,
+          allItemDefinitionsMap,
+          [...expressionElements, itemComponent["@_name"]],
+          rootDrgElementTypeRef
         );
         nestedChildren.push(...ns);
       }
 
+      const isCollection = itemComponent["@_isCollection"] ?? false;
+      const name = itemComponent["@_name"];
+      const className = isCollection ? "java.util.List" : itemComponent.typeRef?.__$$text;
+
       return {
-        customBadgeContent: itemComponent.typeRef?.__$$text,
+        id: [...expressionElements, name].join("."),
+        hasBadge: !(className === undefined && nestedChildren.length > 0),
+        name: name,
         children: nestedChildren.length > 0 ? nestedChildren : undefined,
-        id: drgElementName.concat(".").concat(itemComponent["@_name"]),
-        isCollection: itemComponent["@_isCollection"],
-        name: itemComponent["@_name"],
+        className: className,
+        collectionGenericType: isCollection ? [itemComponent.typeRef!.__$$text] : undefined,
+        customBadgeContent: `${itemComponent.typeRef?.__$$text ?? "<Undefined>"}${isCollection ? "[]" : ""}`,
+        expressionElements: [...expressionElements, name],
       };
     });
     children.push(...childrenTestScenarioObjects);
   } else {
+    const isCollection = itemDefinition?.["@_isCollection"] ?? false;
+    const name = "value";
+
     children.push({
-      customBadgeContent: drgElementTypeRef,
-      id: drgElementName.concat("."), //TO BE REVIEWED IN https://github.com/apache/incubator-kie-issues/issues/1514
-      //isCollection: itemComponent["@_isCollection"],
-      name: "value",
-      //isSimpleTypeFact: isDrgElementSimpleType, TO DOUBLE CHECK
+      id: [...expressionElements, name].join("."),
+      name: name,
+      className: isCollection ? "java.util.List" : rootDrgElementTypeRef,
+      collectionGenericType: isCollection && rootDrgElementTypeRef ? [rootDrgElementTypeRef] : undefined,
+      customBadgeContent: `${rootDrgElementTypeRef ?? "<Undefined>"}${isCollection && rootDrgElementTypeRef ? "[]" : ""}`,
+      expressionElements: expressionElements,
     });
   }
 
   return children.sort((childA, childB) => childA.name.localeCompare(childB.name));
-}
-
-function isSimpleType(type: string) {
-  return [
-    "Any",
-    "boolean",
-    "context",
-    "date",
-    "date and time",
-    "days and time duration",
-    "number",
-    "string",
-    "time",
-    "years and months duration",
-    "<Undefined>",
-  ].includes(type);
 }

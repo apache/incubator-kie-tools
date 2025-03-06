@@ -22,6 +22,7 @@ import { connectField, HTMLFieldProps } from "uniforms/cjs";
 import { RADIOGROUP, renderCodeGenElement } from "./templates/templates";
 import { useAddFormElementToBootstrapContext } from "./BootstrapCodeGenContext";
 import { FormInput } from "../api";
+import { ListItemProps } from "./rendering/ListFieldInput";
 
 export type RadioFieldProps = HTMLFieldProps<
   string,
@@ -33,28 +34,25 @@ export type RadioFieldProps = HTMLFieldProps<
     allowedValues?: string[];
     required: boolean;
     disabled: boolean;
+    itemProps?: ListItemProps;
   }
 >;
 
 const Radio = (props: RadioFieldProps) => {
-  const options =
-    props.allowedValues?.map((option) => {
+  const element: FormInput = renderCodeGenElement(RADIOGROUP, {
+    id: props.name,
+    name: props.name,
+    label: props.label,
+    disabled: props.disabled,
+    itemProps: props.itemProps,
+    options: (props.allowedValues ?? [])?.map((option) => {
       return {
         value: option,
         label: props.transform ? props.transform(option) : option,
         checked: props.value === option,
       };
-    }) || [];
-
-  const inputProps = {
-    id: props.name,
-    name: props.name,
-    label: props.label,
-    disabled: props.disabled,
-    options: options,
-  };
-
-  const element: FormInput = renderCodeGenElement(RADIOGROUP, inputProps);
+    }),
+  });
   useAddFormElementToBootstrapContext(element);
   return <>{JSON.stringify(element)}</>;
 };

@@ -58,6 +58,8 @@ declare module "react-table" {
     dataType: string;
     /** It tells whether column is of type counter or not */
     isRowIndexColumn: boolean;
+    /** It tells if a header is a Feel Expression or just plain text */
+    isHeaderAFeelExpression?: boolean;
 
     cellDelegate?: (id: string) => React.ReactNode;
 

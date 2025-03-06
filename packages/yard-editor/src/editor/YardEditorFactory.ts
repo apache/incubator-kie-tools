@@ -24,10 +24,13 @@ import {
   EditorInitArgs,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
-import { YardEditorChannelApi } from "../api";
+import { YardEditorChannelApi, YardEditorEnvelopeApi } from "../api";
 
-export class YardEditorFactory implements EditorFactory<Editor, YardEditorChannelApi> {
-  public async createEditor(ctx: KogitoEditorEnvelopeContextType<YardEditorChannelApi>, initArgs: EditorInitArgs) {
+export class YardEditorFactory implements EditorFactory<Editor, YardEditorEnvelopeApi, YardEditorChannelApi> {
+  public async createEditor(
+    ctx: KogitoEditorEnvelopeContextType<YardEditorEnvelopeApi, YardEditorChannelApi>,
+    initArgs: EditorInitArgs
+  ) {
     return new YardEditorView(ctx, initArgs);
   }
 }

@@ -344,6 +344,7 @@ export function DecisionTableExpression({
         groupType: DecisionTableColumnType.InputClause,
         cssClasses: "decision-table--input",
         isRowIndexColumn: false,
+        isHeaderAFeelExpression: true,
       })
     );
 

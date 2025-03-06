@@ -2,6 +2,6 @@
 
 exports[`<UnsupportedField> tests <UnsupportedField> - rendering 1`] = `
 <div>
-  {"ref":{"id":"id","binding":"friends"},"html":"&lt;div class=\\"alert alert-warning\\" role=\\"alert\\"&gt;\\n  &lt;h4 class=\\"alert-heading\\"&gt;Unsupported field type: Array&lt;/h4&gt;\\n  &lt;p&gt;Cannot find form control for property &lt;code&gt;friends&lt;/code&gt; with type &lt;code&gt;Array&lt;/code&gt;.&lt;/p&gt;\\n  &lt;hr&gt;\\n  &lt;p class=\\"mb-0\\"&gt;Some complex property types, such as &lt;code&gt;Array&lt;/code&gt; aren't yet supported, however, you can still write your own component into the form and manually bind it.&lt;/p&gt;\\n&lt;/div&gt;"}
+  {"ref":{"id":"friends","binding":"friends"},"html":"&lt;div class=\\"alert alert-warning\\" role=\\"alert\\"&gt;\\n  &lt;h4 class=\\"alert-heading\\"&gt;Unsupported field type: &lt;/h4&gt;\\n  &lt;p&gt;Cannot find form control for property &lt;code&gt;friends&lt;/code&gt; with type &lt;code&gt;&lt;/code&gt;.&lt;/p&gt;\\n  &lt;hr&gt;\\n  &lt;p class=\\"mb-0\\"&gt;Some complex property types, such as &lt;code&gt;&lt;/code&gt; aren't yet supported, however, you can still write your own component into the form and manually bind it.&lt;/p&gt;\\n&lt;/div&gt;"}
 </div>
 `;
