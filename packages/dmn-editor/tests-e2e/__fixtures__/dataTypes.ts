@@ -27,7 +27,7 @@ export enum DataType {
   Context = "context",
   Date = "date",
   DateTime = "date and time",
-  DaysTimeDuration = "days and time duration",
+  DateTimeDuration = "days and time duration",
   Number = "number",
   String = "string",
   Time = "time",

@@ -40,11 +40,11 @@ test.describe("Decision Table - Cells Data Type", () => {
       await bee.selectExpressionMenu.selectDecisionTable();
       await bee.expression.asDecisionTable().outputHeaderAt(0).select();
       await beePropertiesPanel.decisionTableOutputHeader.setExpressionDataType({
-        newDataType: DataType.DaysTimeDuration,
+        newDataType: DataType.DateTimeDuration,
       });
 
       await expect(beePropertiesPanel.decisionTableOutputHeader.getColumnDataType()).not.toBeAttached();
-      await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(DataType.DaysTimeDuration);
+      await expect(beePropertiesPanel.decisionTableOutputHeader.getDataType()).toHaveValue(DataType.DateTimeDuration);
     });
 
     test("Decision type should match expression header type and output column type should be hidden with a single output column - custom type", async ({
@@ -128,7 +128,7 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
       DataType.Context,
       DataType.Date,
       DataType.DateTime,
-      DataType.DaysTimeDuration,
+      DataType.DateTimeDuration,
       DataType.Number,
       DataType.String,
       DataType.Time,
@@ -1031,7 +1031,7 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
           .asContext()
           .entry(0)
           .expression.asDecisionTable()
-          .expressionHeaderCell.setDataType({ dataType: DataType.DaysTimeDuration, close: true });
+          .expressionHeaderCell.setDataType({ dataType: DataType.DateTimeDuration, close: true });
 
         expect(await bee.expression.asContext().entry(0).variable.content.textContent()).toEqual(
           "ContextEntry-1(days and time duration)"
