@@ -189,8 +189,12 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
       </div>
     </div>`;
 
-  let stateCode = getStateCode(ref.stateName, ref.stateSetter, ref.dataType.name, "[]");
-  stateCode = (stateCode.includes("?.[itemIndex]") ? "" : stateCode) + (listItem?.stateCode ?? "") + "\n";
+  function getListStateCode() {
+    let stateCode = getStateCode(ref.stateName, ref.stateSetter, ref.dataType.name, "[]");
+    stateCode = stateCode.includes("?.[itemIndex]") ? "" : stateCode;
+    stateCode = stateCode + "\n" + (listItem?.stateCode ?? "");
+    return stateCode;
+  }
 
   const element: FormInput = {
     ref,
@@ -199,7 +203,7 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
     reactImports: [...new Set([...(listItem?.reactImports ?? [])])],
     requiredCode: [...new Set([...(listItem?.requiredCode ?? [])])],
     jsxCode,
-    stateCode,
+    stateCode: getListStateCode(),
     isReadonly: props.disabled,
   };
 

@@ -65,8 +65,35 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
     selectedOptions.unshift(placeHolderOption);
   }
 
-  const expandedStateName = `${ref.stateName}${NS_SEPARATOR}expanded`;
-  const expandedStateNameSetter = `${ref.stateSetter}${NS_SEPARATOR}expanded`;
+  function getExpandedStateCode() {
+    if (props.itemProps?.isListItem) {
+      const [, stateName] = props.itemProps.listStateSetter.split("set__");
+      return [`${stateName}${NS_SEPARATOR}expanded`, `${props.itemProps.listStateSetter}${NS_SEPARATOR}expanded`];
+    }
+    return [`${ref.stateName}${NS_SEPARATOR}expanded`, `${ref.stateSetter}${NS_SEPARATOR}expanded`];
+  }
+  const [expandedStateName, expandedStateNameSetter] = getExpandedStateCode();
+
+  // Creating a new item on the List will not add a new property to the `expandedStateName` for List items
+  // The code above will ensure the `expandedStateName` has the property before attributing it in a set state
+  function getVariableInitializer(path: string) {
+    // captures all `properties` and `indexNames` from "<property1>[<indexName2>].<property2>[<indexName2>]"
+    const parts = [...path.matchAll(/(\w*)(?:\[(\w*)\])?/g)];
+    let propertyPath = "newState";
+    return parts
+      .map(([_, property, indexName]) => {
+        if (property === "" && indexName !== undefined) {
+          propertyPath += `[${indexName}]`;
+          return `${propertyPath} ??= {};`;
+        }
+        if (property !== "" && indexName !== undefined) {
+          propertyPath += `.${property}`;
+          return `${propertyPath} ??= [];`;
+        }
+        return "";
+      })
+      .join("\n");
+  }
 
   function getHandleSelect() {
     if (props.itemProps?.isListItem) {
@@ -104,7 +131,8 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
             })
             ${expandedStateNameSetter}(prev => {
                 const newState = [...prev];
-                newState[${props.itemProps.indexVariableName}] = false;
+                ${getVariableInitializer(path)}
+                newState${path} = false;
                 return newState;
             });
           } else {
@@ -116,7 +144,8 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
             })
             ${expandedStateNameSetter}(prev => {
               const newState = [...prev];
-              newState[${props.itemProps.indexVariableName}] = false;
+              ${getVariableInitializer(path)}
+              newState${path} = false;
               return newState;
             });
           }
@@ -151,6 +180,30 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
     }
   }
 
+  function getIsOpen() {
+    if (props.itemProps?.isListItem) {
+      const { itemName, isNested } = getItemNameAndWithIsNested(props.name);
+      const propertyPath = props.itemProps?.listStateName.split(".").splice(1).join(".").replaceAll("].", "]?.");
+      return `${expandedStateName}${propertyPath}?.[${props.itemProps?.indexVariableName}]${isNested ? `?.${itemName}` : ""} ?? false`;
+    }
+    return expandedStateName;
+  }
+
+  function getOnToggle() {
+    if (props.itemProps?.isListItem) {
+      const { itemName, isNested } = getItemNameAndWithIsNested(props.name);
+      const propertyPath = props.itemProps?.listStateName.split(".").splice(1).join(".");
+      const path = `${propertyPath}[${props.itemProps?.indexVariableName}]${isNested ? `.${itemName}` : ""}`;
+      return `(isOpen) => ${expandedStateNameSetter}(prev => {
+          const newState = [...prev];
+          ${getVariableInitializer(path)}
+          newState${path} = isOpen
+          return newState;
+        })`;
+    }
+    return `(isOpen) => ${expandedStateNameSetter}(isOpen)`;
+  }
+
   const jsxCode = `<FormGroup
       fieldId={'${props.id}'}
       label={'${props.label}'}
@@ -161,19 +214,9 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
       variant={SelectVariant.${isArray ? "typeaheadMulti" : "single"}}
       isDisabled={${props.disabled || false}}
       placeholderText={'${props.placeholder || ""}'}
-      isOpen={${
-        props.itemProps?.isListItem ? `${expandedStateName}[${props.itemProps.indexVariableName}]` : expandedStateName
-      }}
+      isOpen={${getIsOpen()}}
       selections={${props.itemProps?.isListItem ? getListItemValue({ itemProps: props.itemProps, name: props.name }) : ref.stateName}}
-      onToggle={(isOpen) => ${
-        props.itemProps?.isListItem
-          ? `${expandedStateNameSetter}(prev => {
-          const newState = [...prev];
-          newState[${props.itemProps.indexVariableName}] = isOpen
-          return newState;
-        })`
-          : `${expandedStateNameSetter}(isOpen)`
-      }}
+      onToggle={${getOnToggle()}}
       onSelect={${getHandleSelect()}}
       value={${props.itemProps?.isListItem ? getListItemValue({ itemProps: props.itemProps, name: props.name }) : ref.stateName}}
     >
@@ -187,7 +230,7 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
     jsxCode,
     requiredCode: undefined,
     stateCode: props.itemProps?.isListItem
-      ? getStateCode(expandedStateName, expandedStateNameSetter, "boolean[]", "[]")
+      ? getStateCode(expandedStateName, expandedStateNameSetter, "object[]", "[]")
       : `${getStateCodeFromRef(ref)}
         ${getStateCode(expandedStateName, expandedStateNameSetter, "boolean", "false")}`,
     isReadonly: props.disabled,

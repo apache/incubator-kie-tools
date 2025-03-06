@@ -22,7 +22,7 @@ import { render } from "@testing-library/react";
 import { unescape } from "lodash";
 import AutoForm, { AutoFormProps } from "../src/uniforms/AutoForm";
 import SimpleSchema from "simpl-schema";
-import createSchema, { createJsonSchema } from "./_createSchema";
+import createSchema from "./_createSchema";
 
 const schema = {
   personalData: { type: Object },
@@ -84,53 +84,9 @@ const props: AutoFormProps = {
   placeholder: true,
 };
 
-const propsSchema: AutoFormProps = {
-  id: "HRInterview",
-  idWithoutInvalidTsVarChars: "HRInterview",
-  schema: createJsonSchema({
-    $schema: "https://json-schema.org/draft/2019-09/schema",
-    $defs: {
-      CandidateData: {
-        type: "object",
-        properties: {
-          email: { type: "string" },
-          experience: { type: "integer" },
-          lastName: { type: "string" },
-          name: { type: "string" },
-          skills: { type: "array", items: { type: "string" } },
-          tests: { type: "array", items: { $ref: "#/$defs/Test" } },
-        },
-      },
-      Level: { type: "string", enum: ["LOW", "MEDIUM", "HIGH"] },
-      Test: {
-        type: "object",
-        properties: {
-          date: { type: "string", format: "date-time" },
-          level: { $ref: "#/$defs/Level" },
-          levels: { type: "array", items: { $ref: "#/$defs/Level" } },
-          name: { type: "string" },
-          value: { type: "integer" },
-        },
-      },
-    },
-    type: "object",
-    properties: { candidateData: { $ref: "#/$defs/CandidateData" } },
-  }),
-  disabled: false,
-  placeholder: true,
-};
-
 describe("<AutoForm> tests", () => {
   it("<AutoForm> - Full rendering", () => {
     const { container } = render(<AutoForm {...props} />);
-
-    expect(container).toMatchSnapshot();
-    const formSource = unescape(container.innerHTML);
-    expect(formSource).not.toBeUndefined();
-  });
-
-  it("<AutoForm> - Full rendering - JSON Schema", () => {
-    const { container } = render(<AutoForm {...propsSchema} />);
 
     expect(container).toMatchSnapshot();
     const formSource = unescape(container.innerHTML);

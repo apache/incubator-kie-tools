@@ -94,11 +94,15 @@ exports[`<ListField> tests <ListField> 1`] = `
       variant={SelectVariant.single}
       isDisabled={false}
       placeholderText={''}
-      isOpen={friends__$__country__expanded[itemIndex]}
+      isOpen={friends__expanded?.[itemIndex]?.country ?? false}
       selections={friends?.[itemIndex].country}
-      onToggle={(isOpen) => set__friends__$__country__expanded(prev => {
+      onToggle={(isOpen) => set__friends__expanded(prev => {
           const newState = [...prev];
-          newState[itemIndex] = isOpen
+          newState[itemIndex] ??= {};
+
+
+
+          newState[itemIndex].country = isOpen
           return newState;
         })}
       onSelect={(event, value, isPlaceHolder) => {
@@ -108,9 +112,13 @@ exports[`<ListField> tests <ListField> 1`] = `
               newState[itemIndex].country = "";
               return newState;
             })
-            set__friends__$__country__expanded(prev => {
+            set__friends__expanded(prev => {
                 const newState = [...prev];
-                newState[itemIndex] = false;
+                newState[itemIndex] ??= {};
+
+
+
+                newState[itemIndex].country = false;
                 return newState;
             });
           } else {
@@ -120,9 +128,13 @@ exports[`<ListField> tests <ListField> 1`] = `
               newState[itemIndex].country = parsedSelection || '';
               return newState;
             })
-            set__friends__$__country__expanded(prev => {
+            set__friends__expanded(prev => {
               const newState = [...prev];
-              newState[itemIndex] = false;
+              newState[itemIndex] ??= {};
+
+
+
+              newState[itemIndex].country = false;
               return newState;
             });
           }
@@ -243,11 +255,15 @@ exports[`<ListField> tests <ListField> 1`] = `
       variant={SelectVariant.typeaheadMulti}
       isDisabled={false}
       placeholderText={''}
-      isOpen={friends__$__areas__expanded[itemIndex]}
+      isOpen={friends__expanded?.[itemIndex]?.areas ?? false}
       selections={friends?.[itemIndex].areas}
-      onToggle={(isOpen) => set__friends__$__areas__expanded(prev => {
+      onToggle={(isOpen) => set__friends__expanded(prev => {
           const newState = [...prev];
-          newState[itemIndex] = isOpen
+          newState[itemIndex] ??= {};
+
+
+
+          newState[itemIndex].areas = isOpen
           return newState;
         })}
       onSelect={(event, value, isPlaceHolder) => {
@@ -402,11 +418,15 @@ exports[`<ListField> tests <ListField> 1`] = `
       variant={SelectVariant.single}
       isDisabled={false}
       placeholderText={''}
-      isOpen={friends__$__children__expanded[itemIndex]}
+      isOpen={friends__expanded?.[itemIndex]?.children ?? false}
       selections={friends?.[itemIndex].children}
-      onToggle={(isOpen) => set__friends__$__children__expanded(prev => {
+      onToggle={(isOpen) => set__friends__expanded(prev => {
           const newState = [...prev];
-          newState[itemIndex] = isOpen
+          newState[itemIndex] ??= {};
+
+
+
+          newState[itemIndex].children = isOpen
           return newState;
         })}
       onSelect={(event, value, isPlaceHolder) => {
@@ -416,9 +436,13 @@ exports[`<ListField> tests <ListField> 1`] = `
               newState[itemIndex].children = "";
               return newState;
             })
-            set__friends__$__children__expanded(prev => {
+            set__friends__expanded(prev => {
                 const newState = [...prev];
-                newState[itemIndex] = false;
+                newState[itemIndex] ??= {};
+
+
+
+                newState[itemIndex].children = false;
                 return newState;
             });
           } else {
@@ -428,9 +452,13 @@ exports[`<ListField> tests <ListField> 1`] = `
               newState[itemIndex].children = parsedSelection || '';
               return newState;
             })
-            set__friends__$__children__expanded(prev => {
+            set__friends__expanded(prev => {
               const newState = [...prev];
-              newState[itemIndex] = false;
+              newState[itemIndex] ??= {};
+
+
+
+              newState[itemIndex].children = false;
               return newState;
             });
           }
@@ -466,13 +494,5 @@ exports[`<ListField> tests <ListField> 1`] = `
 exports[`<ListField> tests <ListField> 2`] = `
 "const [ friends, set__friends ] = useState<object[]>([]);
 
-const [ friends__$__country__expanded, set__friends__$__country__expanded ] = useState<boolean[]>([]);
-
-
-
-const [ friends__$__areas__expanded, set__friends__$__areas__expanded ] = useState<boolean[]>([]);
-
-
-const [ friends__$__children__expanded, set__friends__$__children__expanded ] = useState<boolean[]>([]);
-"
+const [ friends__expanded, set__friends__expanded ] = useState<object[]>([]);"
 `;
