@@ -47,7 +47,9 @@ export const FormNotification: React.FC<Props> = ({ notification }) => {
       actionLinks={
         <React.Fragment>
           {notification.details && (
-            <AlertActionLink onClick={() => setShowDetails(!showDetails)}>View details</AlertActionLink>
+            <AlertActionLink onClick={() => setShowDetails((currentValue) => !currentValue)}>
+              View details
+            </AlertActionLink>
           )}
           {notification.customAction && (
             <AlertActionLink onClick={notification.customAction.onClick}>
