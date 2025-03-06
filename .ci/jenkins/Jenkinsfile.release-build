@@ -493,7 +493,7 @@ def printRunners() {
 
 def devDeploymentKogitoQuarkusBlankAppImageBuildJob() {
     env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/dev-deployment-kogito-quarkus-blank-app-image',
+        job: 'KIE/kie-tools/kie-tools-release-jobs/dev-deployment-quarkus-blank-app-image',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),

@@ -48,7 +48,7 @@ pipeline {
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
-        PNPM_FILTER_STRING = '-F @kie-tools/dev-deployment-kogito-quarkus-blank-app-image...'
+        PNPM_FILTER_STRING = '-F @kie-tools/dev-deployment-quarkus-blank-app-image...'
     }
 
     stages {
@@ -136,7 +136,7 @@ pipeline {
             }
         }
 
-        stage('Push dev-deployment-kogito-quarkus-blank-app-image to Docker Hub') {
+        stage('Push dev-deployment-quarkus-blank-app-image to Docker Hub') {
             when {
                 expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
             }

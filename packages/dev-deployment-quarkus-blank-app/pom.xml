@@ -30,7 +30,7 @@
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.kie.kogito</groupId>
-  <artifactId>dev-deployment-kogito-quarkus-blank-app</artifactId>
+  <artifactId>dev-deployment-quarkus-blank-app</artifactId>
   <version>${revision}</version>
 
   <name>KIE Tools :: KIE Sandbox :: Dev deployment Kogito Quarkus blank app</name>

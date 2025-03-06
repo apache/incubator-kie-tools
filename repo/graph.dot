@@ -104,8 +104,8 @@ digraph G {
   "@kie-tools/form-dmn" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/image-env-to-json" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/dev-deployment-kogito-quarkus-blank-app" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/dev-deployment-quarkus-blank-app" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/dev-deployment-quarkus-blank-app-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/maven-m2-repo-via-http-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/pmml-editor-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -366,10 +366,10 @@ digraph G {
   "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/dev-deployment-dmn-form-webapp" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/image-env-to-json" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-dmn-form-webapp-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
-  "@kie-tools/dev-deployment-kogito-quarkus-blank-app" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "black" ];
-  "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" -> "@kie-tools/dev-deployment-base-image" [ style = "solid", color = "black" ];
-  "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" -> "@kie-tools/dev-deployment-kogito-quarkus-blank-app" [ style = "solid", color = "black" ];
-  "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" -> "@kie-tools/maven-m2-repo-via-http-image" [ style = "dashed", color = "black" ];
+  "@kie-tools/dev-deployment-quarkus-blank-app" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "black" ];
+  "@kie-tools/dev-deployment-quarkus-blank-app-image" -> "@kie-tools/dev-deployment-base-image" [ style = "solid", color = "black" ];
+  "@kie-tools/dev-deployment-quarkus-blank-app-image" -> "@kie-tools/dev-deployment-quarkus-blank-app" [ style = "solid", color = "black" ];
+  "@kie-tools/dev-deployment-quarkus-blank-app-image" -> "@kie-tools/maven-m2-repo-via-http-image" [ style = "dashed", color = "black" ];
   "@kie-tools/dev-deployment-upload-service" -> "@kie-tools/jest-base" [ style = "dashed", color = "black" ];
   "@kie-tools/dmn-editor" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-editor" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];

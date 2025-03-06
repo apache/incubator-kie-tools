@@ -105,7 +105,7 @@ module.exports = composeEnv([rootEnv, extendedServicesJavaEnv, corsProxyEnv, kie
       description: "Image account to be used by Dev Deployments when deploying models.",
     },
     ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageName: {
-      default: "incubator-kie-sandbox-dev-deployment-kogito-quarkus-blank-app",
+      default: "incubator-kie-sandbox-dev-deployment-quarkus-blank-app",
       description: "Image name to be used by Dev Deployments when deploying models.",
     },
     ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageTag: {

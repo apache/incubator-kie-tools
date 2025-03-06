@@ -347,7 +347,7 @@ pipeline {
             }
         }
 
-        stage('Push dev-deployment-kogito-quarkus-blank-app-image to Docker Hub') {
+        stage('Push dev-deployment-quarkus-blank-app-image to Docker Hub') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(

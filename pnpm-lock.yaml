@@ -4042,7 +4042,7 @@ importers:
         specifier: ^1.1.2
         version: 1.1.2
 
-  packages/dev-deployment-kogito-quarkus-blank-app:
+  packages/dev-deployment-quarkus-blank-app:
     dependencies:
       '@kie-tools/jbpm-quarkus-devui':
         specifier: workspace:*
@@ -4058,14 +4058,14 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
-  packages/dev-deployment-kogito-quarkus-blank-app-image:
+  packages/dev-deployment-quarkus-blank-app-image:
     dependencies:
       '@kie-tools/dev-deployment-base-image':
         specifier: workspace:*
         version: link:../dev-deployment-base-image
-      '@kie-tools/dev-deployment-kogito-quarkus-blank-app':
+      '@kie-tools/dev-deployment-quarkus-blank-app':
         specifier: workspace:*
-        version: link:../dev-deployment-kogito-quarkus-blank-app
+        version: link:../dev-deployment-quarkus-blank-app
     devDependencies:
       '@kie-tools/image-builder':
         specifier: workspace:*

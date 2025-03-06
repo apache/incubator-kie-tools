@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../packages/dashbuilder/dashbuilder-parent.iml" filepath="$PROJECT_DIR$/../packages/dashbuilder/dashbuilder-parent.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../packages/dev-deployment-kogito-quarkus-blank-app/dev-deployment-kogito-quarkus-blank-app.iml" filepath="$PROJECT_DIR$/../packages/dev-deployment-kogito-quarkus-blank-app/dev-deployment-kogito-quarkus-blank-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../packages/dev-deployment-quarkus-blank-app/dev-deployment-quarkus-blank-app.iml" filepath="$PROJECT_DIR$/../packages/dev-deployment-quarkus-blank-app/dev-deployment-quarkus-blank-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/../packages/dmn-marshaller-backend-compatibility-tester/dmn-marshaller-backend-compatibility-tester.iml" filepath="$PROJECT_DIR$/../packages/dmn-marshaller-backend-compatibility-tester/dmn-marshaller-backend-compatibility-tester.iml" />
       <module fileurl="file://$PROJECT_DIR$/../packages/dmn-testing-models/dmn-testing-models.iml" filepath="$PROJECT_DIR$/../packages/dmn-testing-models/dmn-testing-models.iml" />
       <module fileurl="file://$PROJECT_DIR$/../packages/extended-services-java/extended-services-java.iml" filepath="$PROJECT_DIR$/../packages/extended-services-java/extended-services-java.iml" />

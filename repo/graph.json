@@ -151,8 +151,8 @@
       { "id": "@kie-tools/form-dmn" },
       { "id": "@kie-tools/form" },
       { "id": "@kie-tools/dev-deployment-dmn-form-webapp-image" },
-      { "id": "@kie-tools/dev-deployment-kogito-quarkus-blank-app" },
-      { "id": "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" },
+      { "id": "@kie-tools/dev-deployment-quarkus-blank-app" },
+      { "id": "@kie-tools/dev-deployment-quarkus-blank-app-image" },
       { "id": "@kie-tools/maven-m2-repo-via-http-image" },
       { "id": "@kie-tools/dmn-feel-antlr4-parser" },
       { "id": "@kie-tools/dmn-marshaller" },
@@ -1574,22 +1574,22 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app",
+        "source": "@kie-tools/dev-deployment-quarkus-blank-app",
         "target": "@kie-tools/jbpm-quarkus-devui",
         "weight": 1
       },
       {
-        "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image",
+        "source": "@kie-tools/dev-deployment-quarkus-blank-app-image",
         "target": "@kie-tools/dev-deployment-base-image",
         "weight": 1
       },
       {
-        "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image",
-        "target": "@kie-tools/dev-deployment-kogito-quarkus-blank-app",
+        "source": "@kie-tools/dev-deployment-quarkus-blank-app-image",
+        "target": "@kie-tools/dev-deployment-quarkus-blank-app",
         "weight": 1
       },
       {
-        "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image",
+        "source": "@kie-tools/dev-deployment-quarkus-blank-app-image",
         "target": "@kie-tools/maven-m2-repo-via-http-image",
         "weight": 1
       },
@@ -2840,11 +2840,8 @@
     ["@kie-tools/dev-deployment-base-image", "packages/dev-deployment-base-image"],
     ["@kie-tools/dev-deployment-dmn-form-webapp", "packages/dev-deployment-dmn-form-webapp"],
     ["@kie-tools/dev-deployment-dmn-form-webapp-image", "packages/dev-deployment-dmn-form-webapp-image"],
-    ["@kie-tools/dev-deployment-kogito-quarkus-blank-app", "packages/dev-deployment-kogito-quarkus-blank-app"],
-    [
-      "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image",
-      "packages/dev-deployment-kogito-quarkus-blank-app-image"
-    ],
+    ["@kie-tools/dev-deployment-quarkus-blank-app", "packages/dev-deployment-quarkus-blank-app"],
+    ["@kie-tools/dev-deployment-quarkus-blank-app-image", "packages/dev-deployment-quarkus-blank-app-image"],
     ["@kie-tools/dev-deployment-upload-service", "packages/dev-deployment-upload-service"],
     ["@kie-tools/dmn-editor", "packages/dmn-editor"],
     ["@kie-tools/dmn-editor-envelope", "packages/dmn-editor-envelope"],

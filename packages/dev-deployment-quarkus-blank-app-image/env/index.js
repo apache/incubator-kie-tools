@@ -44,7 +44,7 @@ module.exports = composeEnv([rootEnv], {
       description: "E.g,. `apache` or `kie-tools-bot`",
     },
     DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name: {
-      default: "incubator-kie-sandbox-dev-deployment-kogito-quarkus-blank-app",
+      default: "incubator-kie-sandbox-dev-deployment-quarkus-blank-app",
       description: "Name of the image itself.",
     },
     DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTag: {

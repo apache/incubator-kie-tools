@@ -45,7 +45,7 @@ These files can decisions or processes, all of them will be used as resources fo
 
 Run the image with:
 
-- `docker run -p 8080:8080 -e DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=dev docker.io/apache/incubator-kie-sandbox-dev-deployment-kogito-quarkus-blank-app:main`
+- `docker run -p 8080:8080 -e DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=dev docker.io/apache/incubator-kie-sandbox-dev-deployment-quarkus-blank-app:main`
 
 Then upload a zip file containing the resources (DMN, BPMN, etc)
 
