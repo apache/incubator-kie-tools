@@ -119,13 +119,13 @@
           "type": "string"
         },
         "kogito.bpmn.svgFilePath": {
-          "default": "${fileDirname}",
-          "markdownDescription": "Where to save generated SVG files (defaults to same path as .bpmn file: `${fileDirname}`).",
+          "default": "",
+          "markdownDescription": "Where to save generated SVG files for BPMN models. (defaults to `${fileDirname}` or `src/main/resources/META-INF/processSVG` if BPMN model is inside `src/main/resources`).",
           "type": "string"
         },
         "kogito.bpmn.svgFilenameTemplate": {
-          "default": "${fileBasenameNoExtension}-svg.svg",
-          "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}-svg.svg`).",
+          "default": "",
+          "markdownDescription": "Filename template to be used when generating SVG files for BPMN models. (defaults to `${fileBasenameNoExtension}.svg`).",
           "type": "string"
         },
         "kogito.dmn.runOnSave": {
@@ -134,13 +134,13 @@
           "type": "string"
         },
         "kogito.dmn.svgFilePath": {
-          "default": "${fileDirname}",
-          "markdownDescription": "Where to save generated SVG files (defaults to same path as .dmn file: `${fileDirname}`).",
+          "default": "",
+          "markdownDescription": "Where to save generated SVG files for DMN models. (defaults to `${fileDirname}` or `src/main/resources/META-INF/decisionSVG` if DMN model is inside `src/main/resources`).",
           "type": "string"
         },
         "kogito.dmn.svgFilenameTemplate": {
-          "default": "${fileBasenameNoExtension}-svg.svg",
-          "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}-svg.svg`).",
+          "default": "${fileBasenameNoExtension}.svg",
+          "markdownDescription": "Filename template to be used when generating SVG files for DMN models. (defaults to `${fileBasenameNoExtension}.svg`).",
           "type": "string"
         }
       },
