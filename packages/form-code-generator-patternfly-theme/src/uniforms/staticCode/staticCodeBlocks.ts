@@ -17,13 +17,39 @@
  * under the License.
  */
 
-import dateFunctions from "!!raw-loader!../../resources/dateFunctions.txt";
-
 export const DATE_FUNCTIONS = "date_functions";
 
 const _staticBlocks: Map<string, string> = new Map<string, string>();
 
-_staticBlocks.set(DATE_FUNCTIONS, dateFunctions);
+_staticBlocks.set(
+  DATE_FUNCTIONS,
+  `
+const parseDate = (date?: string): string => {
+    if (!date) {
+        return '';
+    }
+    const dateValue: Date = new Date(Date.parse(date));
+    return dateValue.toISOString().slice(0, -14);
+}
+
+const parseTime = (date?: string): string => {
+    if (!date) {
+        return '';
+    }
+    const dateValue: Date = new Date(Date.parse(date));
+    let isAm = true;
+    let hours = dateValue.getHours();
+    if (hours > 12) {
+        hours %= 12;
+        isAm = false;
+    }
+    let minutes = dateValue.getMinutes().toString();
+    if (minutes.length == 1) {
+        minutes = '0' + minutes;
+    }
+    return \`\${hours}:\${minutes} \${isAm ? 'AM' : 'PM'}\`;
+}`
+);
 
 export const getStaticCodeBlock = (blockName: string): string | undefined => {
   return _staticBlocks.get(blockName);

@@ -59,7 +59,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
       const renderedInput = renderNestedInputFragmentWithContext(uniformsContext, field, itemProps, disabled);
 
       if (renderedInput) {
-        nestedStates.push(renderedInput.stateCode.includes("?.[itemIndex]") ? "" : renderedInput.stateCode);
+        nestedStates.push(renderedInput.stateCode);
         nestedJsx.push(renderedInput.jsxCode);
         nestedRefs.push(renderedInput.ref);
         if (renderedInput.ref.dataType === DEFAULT_DATA_TYPE_OBJECT) {
@@ -91,7 +91,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
     pfImports,
     pfIconImports,
     reactImports,
-    requiredCode: requiredCode,
+    requiredCode,
     stateCode,
     jsxCode,
     ref: getInputReference(name, DEFAULT_DATA_TYPE_OBJECT),

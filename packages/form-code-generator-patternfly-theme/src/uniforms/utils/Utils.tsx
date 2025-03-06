@@ -53,22 +53,8 @@ export const getStateCode = (
   stateName: string,
   stateSetter: string,
   dataType: string,
-  defaultValue?: string,
-  itemProps?: ListItemProps,
-  property?: string
+  defaultValue?: string
 ): string => {
-  if (itemProps) {
-    const nestedProperty = property === "$" ? "" : `.${property}`;
-    return `const ${stateSetter} = useCallback(
-  (newValue, index) => {
-    ${itemProps.listStateSetter}(prev => {
-      const newState = [...prev];
-      newState[index] ??= [];
-      newState[index]${nestedProperty} = newValue;
-      return newState;
-    })
-}, [])`;
-  }
   return `const [ ${stateName}, ${stateSetter} ] = useState<${dataType}>(${defaultValue || ""});`;
 };
 
@@ -116,9 +102,9 @@ export const buildDefaultInputElement = ({
     pfImports,
     pfIconImports,
     reactImports: ["useState"],
-    requiredCode: requiredCode,
+    requiredCode,
     jsxCode,
-    stateCode: itemProps?.isListItem ? "" : getStateCodeFromRef(ref),
+    stateCode: itemProps?.isListItem ? "" : stateCode,
     isReadonly: disabled,
   };
 };

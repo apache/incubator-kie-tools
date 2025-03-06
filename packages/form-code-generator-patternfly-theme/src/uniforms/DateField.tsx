@@ -57,10 +57,10 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
       const path = `${propertyPath}[${props.itemProps?.indexVariableName}]${isNested ? `.${itemName}` : ""}`;
       return `newDate => {
         ${props.itemProps?.listStateSetter}(prev => {
-          if (newValue) {
+          if (newDate) {
             const newState = [...prev];
             const currentDate = newState${path}
-            const newDate = new Date(newValue);
+            const newDate = new Date(newDate);
             const time = parseTime(currentDate);
             if (time !== '') {
                 newDate.setHours(parseInt(time && time.split(':')[0]));
@@ -75,8 +75,8 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
     }
     return `newDate => {
         ${ref.stateSetter}(prev => {
-          if (newValue) {
-            const newDate = new Date(newValue);
+          if (newDate) {
+            const newDate = new Date(newDate);
             const time = parseTime(prev);
             if (time !== '') {
                 newDate.setHours(parseInt(time && time.split(':')[0]));

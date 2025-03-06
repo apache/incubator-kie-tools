@@ -20,6 +20,7 @@
 import { renderField } from "./_render";
 import { ListField } from "../src/uniforms";
 import { InputsContainer } from "../src/api";
+import { DATE_FUNCTIONS } from "../src/uniforms/staticCode/staticCodeBlocks";
 
 describe("<ListField> tests", () => {
   it("<ListField>", () => {
@@ -89,5 +90,9 @@ describe("<ListField> tests", () => {
       "TimePicker",
     ]);
     expect(inputContainer.pfIconImports).toStrictEqual(["PlusCircleIcon", "MinusCircleIcon"]);
+
+    expect(inputContainer.requiredCode).not.toBeUndefined();
+    expect(inputContainer.requiredCode).toHaveLength(1);
+    expect(inputContainer.requiredCode).toContain(DATE_FUNCTIONS);
   });
 });

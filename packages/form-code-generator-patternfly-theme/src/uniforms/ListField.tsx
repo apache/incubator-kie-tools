@@ -189,13 +189,17 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
       </div>
     </div>`;
 
+  let stateCode = getStateCode(ref.stateName, ref.stateSetter, ref.dataType.name, "[]");
+  stateCode = (stateCode.includes("?.[itemIndex]") ? "" : stateCode) + (listItem?.stateCode ?? "") + "\n";
+
   const element: FormInput = {
     ref,
     pfImports: [...new Set(["Split", "SplitItem", "Button", ...(listItem?.pfImports ?? [])])],
     pfIconImports: [...new Set(["PlusCircleIcon", "MinusCircleIcon", ...(listItem?.pfIconImports ?? [])])],
     reactImports: [...new Set([...(listItem?.reactImports ?? [])])],
+    requiredCode: [...new Set([...(listItem?.requiredCode ?? [])])],
     jsxCode,
-    stateCode: [getStateCode(ref.stateName, ref.stateSetter, ref.dataType.name, "[]"), listItem?.stateCode].join("\n"),
+    stateCode,
     isReadonly: props.disabled,
   };
 

@@ -54,6 +54,7 @@ const Bool: React.FC<BoolFieldProps> = (props: BoolFieldProps) => {
     ref,
     pfImports: ["Checkbox", "FormGroup"],
     reactImports: ["useState"],
+    requiredCode: undefined,
     jsxCode,
     stateCode: props.itemProps ? "" : getStateCodeFromRef(ref),
     isReadonly: props.disabled,

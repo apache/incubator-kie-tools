@@ -29,6 +29,7 @@ import {
   getListItemValue,
   ListItemProps,
 } from "./rendering/ListItemField";
+import { REFUSED } from "dns";
 
 export type SelectInputProps = HTMLFieldProps<
   string | string[],
@@ -163,7 +164,7 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
       isOpen={${
         props.itemProps?.isListItem ? `${expandedStateName}[${props.itemProps.indexVariableName}]` : expandedStateName
       }}
-      selections={${ref.stateName}}
+      selections={${props.itemProps?.isListItem ? getListItemValue({ itemProps: props.itemProps, name: props.name }) : ref.stateName}}
       onToggle={(isOpen) => ${
         props.itemProps?.isListItem
           ? `${expandedStateNameSetter}(prev => {
@@ -184,6 +185,7 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
     pfImports: SELECT_IMPORTS,
     reactImports: ["useState"],
     jsxCode,
+    requiredCode: undefined,
     stateCode: props.itemProps?.isListItem
       ? getStateCode(expandedStateName, expandedStateNameSetter, "boolean[]", "[]")
       : `${getStateCodeFromRef(ref)}

@@ -19,7 +19,12 @@
 
 import SimpleSchema from "simpl-schema";
 import { SimpleSchema2Bridge } from "uniforms-bridge-simple-schema-2";
+import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
 
 export default function createSchema(schema = {}) {
   return new SimpleSchema2Bridge(new SimpleSchema(schema));
+}
+
+export function createJsonSchema(schema = {}) {
+  return new JSONSchemaBridge(schema, () => true);
 }
