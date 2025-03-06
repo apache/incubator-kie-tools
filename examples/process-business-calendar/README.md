@@ -169,9 +169,9 @@ curl -X GET http://localhost:8080/BusinessCalendarCreditBill/{id} \
 
 **Calculated Properties (Do not include in `calendar.properties` file)**:
 
-* **business.days.per.week**: calculated value, 7 - business.weekend.days.
+- **business.days.per.week**: calculated value, 7 - business.weekend.days.
 
-* **business.hours.per.day** : Calculated value, business.end.hour - business.start.hour.
+- **business.hours.per.day** : Calculated value, business.end.hour - business.start.hour.
 
 **Behavior**:
 
