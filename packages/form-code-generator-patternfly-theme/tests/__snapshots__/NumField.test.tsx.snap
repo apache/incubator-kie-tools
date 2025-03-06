@@ -1,19 +1,58 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<NumField> tests <NumField> - decimal rendering 1`] = `
-<div>
-  {"ref":{"binding":"salary","stateName":"salary","stateSetter":"set__salary","dataType":{"name":"number"}},"pfImports":["TextInput","FormGroup"],"reactImports":["useState"],"jsxCode":"&lt;FormGroup\\n      fieldId={'id'}\\n      label={'salary'}\\n      isRequired={true}\\n    &gt;\\n      &lt;TextInput\\n      type={'number'}\\n      name={'salary'}\\n      isDisabled={false}\\n      id={'id'}\\n      placeholder={''}\\n      step={0.01} max={900.5} min={400.5}\\n      value={salary}\\n      onChange={(newValue) =&gt; set__salary(Number(newValue))}\\n    /&gt;\\n    &lt;/FormGroup&gt;","stateCode":"const [ salary, set__salary ] = useState&lt;number&gt;();","isReadonly":false}
-</div>
+"<FormGroup
+      fieldId={'id'}
+      label={'salary'}
+      isRequired={true}
+    >
+      <TextInput
+      type={'number'}
+      name={'salary'}
+      isDisabled={false}
+      id={'id'}
+      placeholder={''}
+      step={0.01} max={900.5} min={400.5}
+      value={salary}
+      onChange={(newValue) => set__salary(Number(newValue))}
+    />
+    </FormGroup>"
 `;
 
 exports[`<NumField> tests <NumField> - integer rendering - disabled 1`] = `
-<div>
-  {"ref":{"binding":"age","stateName":"age","stateSetter":"set__age","dataType":{"name":"number"}},"pfImports":["TextInput","FormGroup"],"reactImports":["useState"],"jsxCode":"&lt;FormGroup\\n      fieldId={'id'}\\n      label={'age'}\\n      isRequired={true}\\n    &gt;\\n      &lt;TextInput\\n      type={'number'}\\n      name={'age'}\\n      isDisabled={true}\\n      id={'id'}\\n      placeholder={''}\\n      step={1} max={15} min={10}\\n      value={age}\\n      onChange={(newValue) =&gt; set__age(Number(newValue))}\\n    /&gt;\\n    &lt;/FormGroup&gt;","stateCode":"const [ age, set__age ] = useState&lt;number&gt;();","isReadonly":true}
-</div>
+"<FormGroup
+      fieldId={'id'}
+      label={'age'}
+      isRequired={true}
+    >
+      <TextInput
+      type={'number'}
+      name={'age'}
+      isDisabled={true}
+      id={'id'}
+      placeholder={''}
+      step={1} max={15} min={10}
+      value={age}
+      onChange={(newValue) => set__age(Number(newValue))}
+    />
+    </FormGroup>"
 `;
 
 exports[`<NumField> tests <NumField> - integer rendering 1`] = `
-<div>
-  {"ref":{"binding":"age","stateName":"age","stateSetter":"set__age","dataType":{"name":"number"}},"pfImports":["TextInput","FormGroup"],"reactImports":["useState"],"jsxCode":"&lt;FormGroup\\n      fieldId={'id'}\\n      label={'age'}\\n      isRequired={true}\\n    &gt;\\n      &lt;TextInput\\n      type={'number'}\\n      name={'age'}\\n      isDisabled={false}\\n      id={'id'}\\n      placeholder={''}\\n      step={1} max={15} min={10}\\n      value={age}\\n      onChange={(newValue) =&gt; set__age(Number(newValue))}\\n    /&gt;\\n    &lt;/FormGroup&gt;","stateCode":"const [ age, set__age ] = useState&lt;number&gt;();","isReadonly":false}
-</div>
+"<FormGroup
+      fieldId={'id'}
+      label={'age'}
+      isRequired={true}
+    >
+      <TextInput
+      type={'number'}
+      name={'age'}
+      isDisabled={false}
+      id={'id'}
+      placeholder={''}
+      step={1} max={15} min={10}
+      value={age}
+      onChange={(newValue) => set__age(Number(newValue))}
+    />
+    </FormGroup>"
 `;

@@ -39,8 +39,6 @@ export type BoolFieldProps = HTMLFieldProps<
 const Bool: React.FC<BoolFieldProps> = (props: BoolFieldProps) => {
   const ref: InputReference = getInputReference(props.name, DEFAULT_DATA_TYPE_BOOLEAN);
 
-  const stateCode = getStateCodeFromRef(ref);
-
   const jsxCode = `<FormGroup fieldId='${props.id}'>
     <Checkbox
       isChecked={${props.itemProps?.isListItem ? getListItemValue({ itemProps: props.itemProps, name: props.name }) : ref.stateName}}
@@ -56,8 +54,9 @@ const Bool: React.FC<BoolFieldProps> = (props: BoolFieldProps) => {
     ref,
     pfImports: ["Checkbox", "FormGroup"],
     reactImports: ["useState"],
+    requiredCode: undefined,
     jsxCode,
-    stateCode,
+    stateCode: props.itemProps ? "" : getStateCodeFromRef(ref),
     isReadonly: props.disabled,
   };
 
