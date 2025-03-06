@@ -70,6 +70,7 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import "./DecisionTableExpression.css";
 import { Unpacked } from "../../tsExt/tsExt";
+import { createDefaultRule } from "./createDefaultRule";
 
 type ROWTYPE = any; // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
 
@@ -417,26 +418,6 @@ export function DecisionTableExpression({
     widths,
   ]);
 
-  const createDefaultRule = () => {
-    const defaultRowToAdd: Normalized<DMN15__tDecisionRule> = {
-      "@_id": generateUuid(),
-      inputEntry: [
-        {
-          "@_id": generateUuid(),
-          text: { __$$text: DECISION_TABLE_INPUT_DEFAULT_VALUE },
-        },
-      ],
-      outputEntry: [
-        {
-          "@_id": generateUuid(),
-          text: { __$$text: DECISION_TABLE_OUTPUT_DEFAULT_VALUE },
-        },
-      ],
-      annotationEntry: [{ text: { __$$text: "// Your annotations here" } }],
-    };
-    return defaultRowToAdd;
-  };
-
   const beeTableRows = useMemo(() => {
     const mapRuleToRow = (rule: Normalized<DMN15__tDecisionRule>) => {
       const ruleRow = [
@@ -456,11 +437,10 @@ export function DecisionTableExpression({
         { id: rule["@_id"] }
       );
     };
-    const prevRules = decisionTableExpression.rule ?? [];
-    if (prevRules.length === 0) {
+    if (!decisionTableExpression.rule || decisionTableExpression.rule.length === 0) {
       return [mapRuleToRow(createDefaultRule())];
     }
-    return prevRules.map(mapRuleToRow);
+    return decisionTableExpression.rule.map(mapRuleToRow);
   }, [decisionTableExpression.rule, decisionTableExpression.output.length, beeTableColumns]);
 
   const onCellUpdates = useCallback(
@@ -468,7 +448,7 @@ export function DecisionTableExpression({
       setExpression({
         setExpressionAction: (prev: Normalized<BoxedDecisionTable>) => {
           let previousExpression: Normalized<BoxedDecisionTable> = { ...prev };
-          if (!previousExpression.rule) {
+          if (!previousExpression.rule || previousExpression.rule.length === 0) {
             previousExpression.rule = [createDefaultRule()];
           }
           cellUpdates.forEach((cellUpdate) => {
@@ -745,10 +725,11 @@ export function DecisionTableExpression({
     (args: { beforeIndex: number; rowsCount: number }) => {
       setExpression({
         setExpressionAction: (prev: Normalized<BoxedDecisionTable>) => {
-          if (!prev.rule) {
-            prev.rule = [createDefaultRule()];
+          let newRules = [...(prev.rule ?? [])];
+          if (newRules.length === 0) {
+            newRules = [createDefaultRule()];
           }
-          const newRules = [...(prev.rule ?? [])];
+
           const newItems: Normalized<DMN15__tDecisionRule>[] = [];
           for (let i = 0; i < args.rowsCount; i++) {
             newItems.push({

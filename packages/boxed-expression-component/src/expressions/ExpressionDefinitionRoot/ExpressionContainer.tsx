@@ -25,6 +25,7 @@ import { findAllIdsDeep } from "../../ids/ids";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { ExpressionDefinitionLogicTypeSelector } from "./ExpressionDefinitionLogicTypeSelector";
+import { createDefaultRule } from "../DecisionTableExpression/createDefaultRule";
 
 export interface ExpressionContainerProps {
   expression?: Normalized<BoxedExpression>;
@@ -107,10 +108,18 @@ export const ExpressionContainer: React.FunctionComponent<ExpressionContainerPro
 
   const getPlacementRef = useCallback(() => containerRef.current!, []);
 
+  const newExpression =
+    expression?.__$$element === "decisionTable"
+      ? {
+          ...expression,
+          rule: expression?.rule?.length === 0 ? [createDefaultRule()] : expression?.rule,
+        }
+      : expression;
+
   return (
     <div ref={containerRef} className={"expression-container-box"} data-testid="kie-tools--bee--expression-container">
       <ExpressionDefinitionLogicTypeSelector
-        expression={expression}
+        expression={newExpression}
         onLogicTypeSelected={onLogicTypeSelected}
         onLogicTypeReset={onLogicTypeReset}
         getPlacementRef={getPlacementRef}
