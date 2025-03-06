@@ -95,7 +95,7 @@ exports[`<ListField> tests <ListField> 1`] = `
       isDisabled={false}
       placeholderText={''}
       isOpen={friends__$__country__expanded[itemIndex]}
-      selections={friends__$__country}
+      selections={friends?.[itemIndex].country}
       onToggle={(isOpen) => set__friends__$__country__expanded(prev => {
           const newState = [...prev];
           newState[itemIndex] = isOpen
@@ -170,7 +170,7 @@ exports[`<ListField> tests <ListField> 1`] = `
               !false && 
     set__friends((s) => {
   const newState = [...s];
-  (newState[itemIndex].know) = [...(newState[itemIndex].know ?? []), {}];
+  (newState[itemIndex].know) = [...(newState[itemIndex].know ?? []), ""];
   return newState;
 });
             }}
@@ -244,7 +244,7 @@ exports[`<ListField> tests <ListField> 1`] = `
       isDisabled={false}
       placeholderText={''}
       isOpen={friends__$__areas__expanded[itemIndex]}
-      selections={friends__$__areas}
+      selections={friends?.[itemIndex].areas}
       onToggle={(isOpen) => set__friends__$__areas__expanded(prev => {
           const newState = [...prev];
           newState[itemIndex] = isOpen
@@ -293,10 +293,10 @@ exports[`<ListField> tests <ListField> 1`] = `
           name={\`friends.\${itemIndex}.birthday\`}
           onChange={newDate => {
         set__friends(prev => {
-          if (newValue) {
+          if (newDate) {
             const newState = [...prev];
             const currentDate = newState[itemIndex].birthday
-            const newDate = new Date(newValue);
+            const newDate = new Date(newDate);
             const time = parseTime(currentDate);
             if (time !== '') {
                 newDate.setHours(parseInt(time && time.split(':')[0]));
@@ -403,7 +403,7 @@ exports[`<ListField> tests <ListField> 1`] = `
       isDisabled={false}
       placeholderText={''}
       isOpen={friends__$__children__expanded[itemIndex]}
-      selections={friends__$__children}
+      selections={friends?.[itemIndex].children}
       onToggle={(isOpen) => set__friends__$__children__expanded(prev => {
           const newState = [...prev];
           newState[itemIndex] = isOpen
@@ -466,12 +466,13 @@ exports[`<ListField> tests <ListField> 1`] = `
 exports[`<ListField> tests <ListField> 2`] = `
 "const [ friends, set__friends ] = useState<object[]>([]);
 
-
 const [ friends__$__country__expanded, set__friends__$__country__expanded ] = useState<boolean[]>([]);
+
 
 
 const [ friends__$__areas__expanded, set__friends__$__areas__expanded ] = useState<boolean[]>([]);
 
 
-const [ friends__$__children__expanded, set__friends__$__children__expanded ] = useState<boolean[]>([]);"
+const [ friends__$__children__expanded, set__friends__$__children__expanded ] = useState<boolean[]>([]);
+"
 `;

@@ -41,6 +41,10 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 		candidateData__tests__$__level__expanded,
 		set__candidateData__tests__$__level__expanded,
 	] = useState&lt;boolean[]&gt;([]);
+	const [
+		candidateData__tests__$__levels__$__expanded,
+		set__candidateData__tests__$__levels__$__expanded,
+	] = useState&lt;boolean[]&gt;([]);
 	/* Utility function that fills the form with the data received from the kogito runtime */
 	const setFormData = (data) =&gt; {
 		if (!data) {
@@ -109,8 +113,30 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 		});
 		setFormApi(api);
 	}, []);
-	{
-	}
+	const parseDate = (date?: string): string =&gt; {
+		if (!date) {
+			return &#39;&#39;;
+		}
+		const dateValue: Date = new Date(Date.parse(date));
+		return dateValue.toISOString().slice(0, -14);
+	};
+	const parseTime = (date?: string): string =&gt; {
+		if (!date) {
+			return &#39;&#39;;
+		}
+		const dateValue: Date = new Date(Date.parse(date));
+		let isAm = true;
+		let hours = dateValue.getHours();
+		if (hours &gt; 12) {
+			hours %= 12;
+			isAm = false;
+		}
+		let minutes = dateValue.getMinutes().toString();
+		if (minutes.length == 1) {
+			minutes = &#39;0&#39; + minutes;
+		}
+		return \`\${hours}:\${minutes} \${isAm ? &#39;AM&#39; : &#39;PM&#39;}\`;
+	};
 	return (
 		&lt;div className={&#39;pf-c-form&#39;}&gt;
 			&lt;Card&gt;
@@ -304,11 +330,11 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 																	name={\`candidateData__tests.\${itemIndex}.date\`}
 																	onChange={(newDate) =&gt; {
 																		set__candidateData__tests((prev) =&gt; {
-																			if (newValue) {
+																			if (newDate) {
 																				const newState = [...prev];
 																				const currentDate =
 																					newState[itemIndex].date;
-																				const newDate = new Date(newValue);
+																				const newDate = new Date(newDate);
 																				const time = parseTime(currentDate);
 																				if (time !== &#39;&#39;) {
 																					newDate.setHours(
@@ -474,7 +500,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 																			const newState = [...s];
 																			newState[itemIndex].levels = [
 																				...(newState[itemIndex].levels ?? []),
-																				{},
+																				&#39;&#39;,
 																			];
 																			return newState;
 																		});
@@ -847,8 +873,30 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 		});
 		setFormApi(api);
 	}, []);
-	{
-	}
+	const parseDate = (date?: string): string =&gt; {
+		if (!date) {
+			return &#39;&#39;;
+		}
+		const dateValue: Date = new Date(Date.parse(date));
+		return dateValue.toISOString().slice(0, -14);
+	};
+	const parseTime = (date?: string): string =&gt; {
+		if (!date) {
+			return &#39;&#39;;
+		}
+		const dateValue: Date = new Date(Date.parse(date));
+		let isAm = true;
+		let hours = dateValue.getHours();
+		if (hours &gt; 12) {
+			hours %= 12;
+			isAm = false;
+		}
+		let minutes = dateValue.getMinutes().toString();
+		if (minutes.length == 1) {
+			minutes = &#39;0&#39; + minutes;
+		}
+		return \`\${hours}:\${minutes} \${isAm ? &#39;AM&#39; : &#39;PM&#39;}\`;
+	};
 	return (
 		&lt;div className={&#39;pf-c-form&#39;}&gt;
 			&lt;Card&gt;
@@ -1249,8 +1297,8 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 										name={&#39;interview.hiringDate&#39;}
 										onChange={(newDate) =&gt; {
 											set__interview__hiringDate((prev) =&gt; {
-												if (newValue) {
-													const newDate = new Date(newValue);
+												if (newDate) {
+													const newDate = new Date(newDate);
 													const time = parseTime(prev);
 													if (time !== &#39;&#39;) {
 														newDate.setHours(
@@ -1404,7 +1452,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 																	const newState = [...s];
 																	newState[itemIndex].know = [
 																		...(newState[itemIndex].know ?? []),
-																		{},
+																		&#39;&#39;,
 																	];
 																	return newState;
 																});

@@ -97,7 +97,7 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
     return props.itemProps
       ? `${prefix}${ref.stateSetter}((s) => {
   const newState = [...s];
-  (newState${ref.stateName.split(".").splice(1).join(".")}) = [...(newState${ref.stateName.split(".").splice(1).join(".")} ?? []), {}];
+  (newState${ref.stateName.split(".").splice(1).join(".")}) = [...(newState${ref.stateName.split(".").splice(1).join(".")} ?? []), ${listItemValue}];
   return newState;
 })`
       : `${prefix}${ref.stateSetter}((${ref.stateName} ?? []).concat([${listItemValue}]))`;
