@@ -47,7 +47,7 @@ import {
 
 import { useTestScenarioEditorI18n } from "../i18n";
 import { useTestScenarioEditorStore, useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
-import { addColumn } from "../mutations/addColumn";
+import { addColumnWithEmptyInstanceAndProperty, addColumnWithEmptyProperty } from "../mutations/addColumn";
 import { deleteColumn } from "../mutations/deleteColumn";
 
 import "./TestScenarioTable.css";
@@ -526,6 +526,68 @@ function TestScenarioTable({
     [isBackground, tableColumns.instancesGroup]
   );
 
+  /* It determines in which index position a column should be added. In case of a field, the new column index is simply 
+   in the right or in the left of the selected column. In case of a new instance, it's required to find the first column 
+   index outside the selected Instance group. */
+  const determineNewColumnTargetIndex = (
+    factMappings: SceSim__FactMappingType[],
+    insertDirection: InsertRowColumnsDirection,
+    isInstance: boolean,
+    selectedColumnIndex: number,
+    selectedFactMapping: SceSim__FactMappingType
+  ) => {
+    const groupType = selectedFactMapping.expressionIdentifier.type!.__$$text;
+    const instanceName = selectedFactMapping.factIdentifier.name!.__$$text;
+    const instanceType = selectedFactMapping.factIdentifier.className!.__$$text;
+
+    if (!isInstance) {
+      if (insertDirection === InsertRowColumnsDirection.AboveOrRight) {
+        return selectedColumnIndex + 1;
+      } else {
+        return selectedColumnIndex;
+      }
+    }
+
+    let newColumnTargetColumn = -1;
+
+    if (insertDirection === InsertRowColumnsDirection.AboveOrRight) {
+      for (let i = selectedColumnIndex; i < factMappings.length; i++) {
+        const currentFM = factMappings[i];
+        if (
+          currentFM.expressionIdentifier.type!.__$$text === groupType &&
+          currentFM.factIdentifier.name?.__$$text === instanceName &&
+          currentFM.factIdentifier.className?.__$$text === instanceType
+        ) {
+          if (i == factMappings.length - 1) {
+            newColumnTargetColumn = i + 1;
+          }
+        } else {
+          newColumnTargetColumn = i;
+          break;
+        }
+      }
+    } else {
+      for (let i = selectedColumnIndex; i >= 0; i--) {
+        const currentFM = factMappings[i];
+
+        if (
+          currentFM.expressionIdentifier.type!.__$$text === groupType &&
+          currentFM.factIdentifier.name?.__$$text === instanceName &&
+          currentFM.factIdentifier.className?.__$$text === instanceType
+        ) {
+          if (i == 0) {
+            newColumnTargetColumn = 0;
+          }
+        } else {
+          newColumnTargetColumn = i + 1;
+          break;
+        }
+      }
+    }
+
+    return newColumnTargetColumn;
+  };
+
   /**
    * It adds a new FactMapping (Column) in the Model Descriptor structure and adds the new column related FactMapping Value (Cell)
    */
@@ -563,14 +625,38 @@ function TestScenarioTable({
           isInstance
         );
 
-        addColumn({
-          beforeIndex: args.beforeIndex,
-          factMappings: factMappings,
-          factMappingValues: factMappingValues,
-          isInstance: isInstance,
-          insertDirection: args.insertDirection,
-          selectedColumnFactMappingIndex: selectedColumnFactMappingIndex,
-        });
+        const selectedColumnFactMapping = factMappings[selectedColumnFactMappingIndex];
+        const targetColumnIndex = determineNewColumnTargetIndex(
+          factMappings,
+          args.insertDirection,
+          isInstance,
+          selectedColumnFactMappingIndex,
+          selectedColumnFactMapping
+        );
+        const isNewInstance =
+          isInstance || selectedColumnFactMapping.factIdentifier.className?.__$$text === "java.lang.Void";
+
+        if (isNewInstance) {
+          addColumnWithEmptyInstanceAndProperty({
+            expressionIdentifierType: selectedColumnFactMapping.expressionIdentifier.type!.__$$text,
+            factMappings: factMappings,
+            factMappingValuesTypes: factMappingValues,
+            targetColumnIndex: targetColumnIndex,
+          });
+        } else {
+          addColumnWithEmptyProperty({
+            expressionElementsSteps: [
+              selectedColumnFactMapping.expressionElements!.ExpressionElement![0].step.__$$text,
+            ],
+            expressionIdentifierType: selectedColumnFactMapping.expressionIdentifier.type!.__$$text,
+            factAlias: selectedColumnFactMapping.factAlias.__$$text,
+            factIdentifierClassName: selectedColumnFactMapping.factIdentifier.className!.__$$text,
+            factIdentifierName: selectedColumnFactMapping.factIdentifier.name!.__$$text,
+            factMappings: factMappings,
+            factMappingValuesTypes: factMappingValues,
+            targetColumnIndex: targetColumnIndex,
+          });
+        }
       });
     },
     [
@@ -600,6 +686,7 @@ function TestScenarioTable({
       const isInstance =
         args.groupType === TestScenarioTableColumnInstanceGroup.EXPECT ||
         args.groupType === TestScenarioTableColumnInstanceGroup.GIVEN;
+
       testScenarioEditorStoreApi.setState((state) => {
         const factMappings = isBackground
           ? state.scesim.model.ScenarioSimulationModel.background.scesimModelDescriptor.factMappings.FactMapping!
@@ -608,6 +695,8 @@ function TestScenarioTable({
           ? state.scesim.model.ScenarioSimulationModel.background.scesimData.BackgroundData!
           : state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!;
         const factMappingIndexToRemove = determineSelectedColumnIndex(factMappings, args.columnIndex + 1, isInstance);
+        const factMappingExpressionIdentifierTypeToRemove =
+          factMappings[factMappingIndexToRemove].expressionIdentifier.type!.__$$text;
 
         const { deletedFactMappingIndexs } = deleteColumn({
           factMappingIndexToRemove: factMappingIndexToRemove,
@@ -618,80 +707,37 @@ function TestScenarioTable({
           selectedColumnIndex: args.columnIndex,
         });
 
-        console.log("AAAAAA");
-        console.log(factMappings);
-        console.log("BBBBBBBBB");
-        console.log(args.groupType);
-
         /* If the last elements of factMappingGroup (i.e. "EXPECT" or "GIVEN") has been removed,
            a new empty Instance must be created */
         const factMappingGroupElementsAfterRemoval = _.groupBy(
           factMappings,
           (factMapping) => factMapping.expressionIdentifier.type!.__$$text
-        )[args.groupType.toUpperCase()];
-        const IsAtLeastOneGroupElementPresent =
-          factMappingGroupElementsAfterRemoval && factMappingGroupElementsAfterRemoval.length > 0;
+        )[factMappingExpressionIdentifierTypeToRemove];
+        const isAtLeastOneGroupElementPresent =
+          !!factMappingGroupElementsAfterRemoval && factMappingGroupElementsAfterRemoval.length > 0;
 
-        if (!IsAtLeastOneGroupElementPresent) {
-          addColumn({
-            beforeIndex: factMappingIndexToRemove,
+        /* If all element of a group (i.e. "EXPECT" or "GIVEN") are deleted, a new empty column is created for that group */
+        if (!isAtLeastOneGroupElementPresent) {
+          addColumnWithEmptyInstanceAndProperty({
+            expressionIdentifierType: factMappingExpressionIdentifierTypeToRemove,
             factMappings: factMappings,
-            factMappingValues: factMappingValues,
-            isInstance: isInstance,
-            insertDirection: InsertRowColumnsDirection.BelowOrLeft,
-            selectedColumnFactMappingIndex: factMappingIndexToRemove,
-          });
-        } else {
-          // /* If the last elements of factMappingGroup (i.e. "EXPECT" or "GIVEN") has been removed,
-          //    * a new empty Instance must be created */
-          // const factMappingGroupElementsAfterRemoval = _.groupBy(
-          //   deepClonedFactMappings,
-          //   (factMapping) => factMapping.expressionIdentifier.type!.__$$text
-          // )[groupType];
-          // const areAllGroupElementsRemoved =
-          //   !Array.isArray(factMappingGroupElementsAfterRemoval) || !factMappingGroupElementsAfterRemoval.length;
-
-          // if (areAllGroupElementsRemoved) {
-          //   const instanceDefaultNames = factMappings
-          //     .filter((factMapping) => factMapping.factAlias!.__$$text.startsWith("INSTANCE-"))
-          //     .map((factMapping) => factMapping.factAlias!.__$$text);
-
-          //   const newFactMapping = {
-          //     className: { __$$text: EMPTY_TYPE },
-          //     columnWidth: { __$$text: 150 },
-          //     expressionAlias: { __$$text: "PROPERTY" },
-          //     expressionElements: undefined,
-          //     expressionIdentifier: {
-          //       name: { __$$text: `_${uuid()}`.toLocaleUpperCase() },
-          //       type: { __$$text: allFactMappingWithIndexesToRemove[0].factMapping!.expressionIdentifier.type!.__$$text },
-          //     },
-          //     factAlias: {
-          //       __$$text: getNextAvailablePrefixedName(instanceDefaultNames, "INSTANCE"),
-          //     },
-          //     factIdentifier: {
-          //       name: {
-          //         __$$text: getNextAvailablePrefixedName(instanceDefaultNames, "INSTANCE"),
-          //       },
-          //       className: {
-          //         __$$text: EMPTY_TYPE,
-          //       },
-          //     },
-          //     factMappingValueType: { __$$text: "NOT_EXPRESSION" },
-          //   };
-
-          //   deepClonedFactMappings.splice(allFactMappingWithIndexesToRemove[0].factMappingIndex, 0, newFactMapping);
-          // }
-
-          /** Updating the selectedColumn. When deleting, BEETable automatically shifts the selected cell in the left */
-          const firstIndexOnTheLeft = Math.min(...deletedFactMappingIndexs);
-          const selectedColumnIndex = firstIndexOnTheLeft > 0 ? firstIndexOnTheLeft - 1 : 0;
-
-          state.dispatch(state).table.updateSelectedColumn({
-            factMapping: JSON.parse(JSON.stringify(factMappings[selectedColumnIndex])),
-            index: firstIndexOnTheLeft,
-            isBackground: isBackground,
+            factMappingValuesTypes: factMappingValues,
+            targetColumnIndex: Math.min(...deletedFactMappingIndexs),
           });
         }
+
+        /** Updating the selectedColumn. When deleting, BEETable automatically shifts the selected cell in the left. */
+        const firstRemovedIndex = Math.min(...deletedFactMappingIndexs);
+        const selectedColumnIndex = Math.max(
+          0,
+          isAtLeastOneGroupElementPresent ? firstRemovedIndex - 1 : firstRemovedIndex
+        );
+
+        state.dispatch(state).table.updateSelectedColumn({
+          factMapping: _.cloneDeep(factMappings[selectedColumnIndex]),
+          index: selectedColumnIndex,
+          isBackground: isBackground,
+        });
       });
     },
     [

@@ -24,9 +24,8 @@ import {
   SceSim__FactMappingType,
   SceSim__FactMappingValuesTypes,
 } from "@kie-tools/scesim-marshaller/dist/schemas/scesim-1_8/ts-gen/types";
-import { InsertRowColumnsDirection } from "@kie-tools/boxed-expression-component/dist/api/BeeTable";
 
-export function addColumn({
+/*export function addColumn({
   beforeIndex,
   factMappings,
   factMappingValues,
@@ -112,69 +111,132 @@ export function addColumn({
       rawValue: { __$$text: "", "@_class": "string" },
     });
   });
+}*/
+
+/* To be called to create a new Column with a defined Instance and undefined Property */
+export function addColumnWithEmptyProperty({
+  expressionElementsSteps,
+  expressionIdentifierType,
+  factAlias,
+  factIdentifierClassName,
+  factIdentifierName,
+  factMappings,
+  factMappingValuesTypes,
+  targetColumnIndex,
+}: {
+  expressionElementsSteps: string[];
+  expressionIdentifierType: string;
+  factAlias: string;
+  factIdentifierClassName: string;
+  factIdentifierName: string;
+  factMappings: SceSim__FactMappingType[];
+  factMappingValuesTypes: SceSim__FactMappingValuesTypes[];
+  targetColumnIndex: number;
+}) {
+  addColumn({
+    expressionElementsSteps,
+    expressionIdentifierType,
+    factAlias,
+    factIdentifierClassName,
+    factIdentifierName,
+    factMappings: factMappings,
+    factMappingValuesTypes,
+    targetColumnIndex,
+  });
 }
 
-/* It determines in which index position a column should be added. In case of a field, the new column index is simply 
-   in the right or in the left of the selected column. In case of a new instance, it's required to find the first column 
-   index outside the selected Instance group. */
-const determineNewColumnTargetIndex = (
-  factMappings: SceSim__FactMappingType[],
-  insertDirection: InsertRowColumnsDirection,
-  isInstance: boolean,
-  selectedColumnIndex: number,
-  selectedFactMapping: SceSim__FactMappingType
-) => {
-  const groupType = selectedFactMapping.expressionIdentifier.type!.__$$text;
-  const instanceName = selectedFactMapping.factIdentifier.name!.__$$text;
-  const instanceType = selectedFactMapping.factIdentifier.className!.__$$text;
+/* To be called to create a new undefined Column, i.e. with a undefined Instance and undefined Property */
+export function addColumnWithEmptyInstanceAndProperty({
+  expressionIdentifierType,
+  factMappings,
+  factMappingValuesTypes,
+  targetColumnIndex,
+}: {
+  expressionIdentifierType: string;
+  factMappings: SceSim__FactMappingType[];
+  factMappingValuesTypes: SceSim__FactMappingValuesTypes[];
+  targetColumnIndex: number;
+}) {
+  addColumn({
+    expressionIdentifierType,
+    factMappings: factMappings,
+    factMappingValuesTypes,
+    targetColumnIndex,
+  });
+}
 
-  if (!isInstance) {
-    if (insertDirection === InsertRowColumnsDirection.AboveOrRight) {
-      return selectedColumnIndex + 1;
-    } else {
-      return selectedColumnIndex;
-    }
-  }
+function addColumn({
+  expressionElementsSteps,
+  expressionIdentifierType,
+  factAlias,
+  factIdentifierClassName,
+  factIdentifierName,
+  factMappings,
+  factMappingValuesTypes,
+  targetColumnIndex,
+}: {
+  expressionElementsSteps?: string[];
+  expressionIdentifierType: string;
+  factAlias?: string;
+  factIdentifierClassName?: string;
+  factIdentifierName?: string;
+  factMappings: SceSim__FactMappingType[];
+  factMappingValuesTypes: SceSim__FactMappingValuesTypes[];
+  targetColumnIndex: number;
+}) {
+  const instanceDefaultNames = factMappings
+    .filter((factMapping) => factMapping.factAlias!.__$$text.startsWith("INSTANCE-"))
+    .map((factMapping) => factMapping.factAlias!.__$$text);
 
-  let newColumnTargetColumn = -1;
+  const propertyDefaultNames = factMappings
+    .filter((factMapping) => factMapping.expressionAlias?.__$$text.startsWith("PROPERTY-"))
+    .map((factMapping) => factMapping.expressionAlias!.__$$text);
 
-  if (insertDirection === InsertRowColumnsDirection.AboveOrRight) {
-    for (let i = selectedColumnIndex; i < factMappings.length; i++) {
-      const currentFM = factMappings[i];
-      if (
-        currentFM.expressionIdentifier.type!.__$$text === groupType &&
-        currentFM.factIdentifier.name?.__$$text === instanceName &&
-        currentFM.factIdentifier.className?.__$$text === instanceType
-      ) {
-        if (i == factMappings.length - 1) {
-          newColumnTargetColumn = i + 1;
+  const newFactMapping = {
+    className: { __$$text: "java.lang.Void" },
+    columnWidth: { __$$text: 150 },
+    expressionAlias: { __$$text: getNextAvailablePrefixedName(propertyDefaultNames, "PROPERTY") },
+    expressionElements: expressionElementsSteps
+      ? {
+          ExpressionElement: expressionElementsSteps.map((ee) => {
+            return { step: { __$$text: ee } };
+          }),
         }
-      } else {
-        newColumnTargetColumn = i;
-        break;
-      }
-    }
-  } else {
-    for (let i = selectedColumnIndex; i >= 0; i--) {
-      const currentFM = factMappings[i];
+      : undefined,
+    expressionIdentifier: {
+      name: { __$$text: `_${uuid()}`.toLocaleUpperCase() },
+      type: { __$$text: expressionIdentifierType },
+    },
+    factAlias: {
+      __$$text: factAlias ?? getNextAvailablePrefixedName(instanceDefaultNames, "INSTANCE"),
+    },
+    factIdentifier: {
+      name: {
+        __$$text: factIdentifierName ?? getNextAvailablePrefixedName(instanceDefaultNames, "INSTANCE"),
+      },
+      className: {
+        __$$text: factIdentifierClassName ?? "java.lang.Void",
+      },
+    },
+    factMappingValueType: { __$$text: "NOT_EXPRESSION" },
+  };
 
-      if (
-        currentFM.expressionIdentifier.type!.__$$text === groupType &&
-        currentFM.factIdentifier.name?.__$$text === instanceName &&
-        currentFM.factIdentifier.className?.__$$text === instanceType
-      ) {
-        if (i == 0) {
-          newColumnTargetColumn = 0;
-        }
-      } else {
-        newColumnTargetColumn = i + 1;
-        break;
-      }
-    }
-  }
+  factMappings.splice(targetColumnIndex, 0, newFactMapping);
 
-  return newColumnTargetColumn;
-};
+  factMappingValuesTypes.forEach((fmvt) => {
+    fmvt.factMappingValues.FactMappingValue!.splice(targetColumnIndex, 0, {
+      expressionIdentifier: {
+        name: { __$$text: newFactMapping.expressionIdentifier.name.__$$text },
+        type: { __$$text: newFactMapping.expressionIdentifier.type.__$$text },
+      },
+      factIdentifier: {
+        name: { __$$text: newFactMapping.factIdentifier.name.__$$text },
+        className: { __$$text: newFactMapping.factIdentifier.className.__$$text },
+      },
+      rawValue: { __$$text: "", "@_class": "string" },
+    });
+  });
+}
 
 const getNextAvailablePrefixedName = (
   names: string[],
