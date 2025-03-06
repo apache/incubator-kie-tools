@@ -42,6 +42,7 @@ export const FormNotification: React.FC<IOwnProps & OUIAProps> = ({ notification
   const variant = notification.type === "error" ? "danger" : "success";
 
   const [showDetails, setShowDetails] = useState<boolean>(false);
+
   const content = useMemo(
     () => showDetails && notification.details && <p>{notification.details}</p>,
     [showDetails, notification.details]
@@ -54,7 +55,9 @@ export const FormNotification: React.FC<IOwnProps & OUIAProps> = ({ notification
       actionLinks={
         <React.Fragment>
           {notification.details && (
-            <AlertActionLink onClick={() => setShowDetails(!showDetails)}>View details</AlertActionLink>
+            <AlertActionLink onClick={() => setShowDetails((currentValue) => !currentValue)}>
+              View details
+            </AlertActionLink>
           )}
           {notification.customActions &&
             notification.customActions.length > 0 &&

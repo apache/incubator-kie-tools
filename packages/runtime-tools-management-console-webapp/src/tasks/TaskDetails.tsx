@@ -31,7 +31,6 @@ import {
 import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
