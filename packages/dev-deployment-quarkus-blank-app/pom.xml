@@ -33,7 +33,7 @@
   <artifactId>dev-deployment-quarkus-blank-app</artifactId>
   <version>${revision}</version>
 
-  <name>KIE Tools :: KIE Sandbox :: Dev deployment Kogito Quarkus blank app</name>
+  <name>KIE Tools :: KIE Sandbox :: Dev deployment Quarkus blank app</name>
 
   <properties>
     <maven.compiler.source>17</maven.compiler.source>

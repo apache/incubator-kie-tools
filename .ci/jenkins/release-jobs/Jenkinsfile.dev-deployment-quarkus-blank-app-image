@@ -39,10 +39,10 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry = 'docker.io'
-        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account = 'apache'
-        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name = 'incubator-kie-sandbox-dev-deployment-quarkus-blank-app'
-        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTag = "latest ${params.RELEASE_VERSION}"
+        DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__registry = 'docker.io'
+        DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__account = 'apache'
+        DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__name = 'incubator-kie-sandbox-dev-deployment-quarkus-blank-app'
+        DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__buildTag = "latest ${params.RELEASE_VERSION}"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
@@ -143,10 +143,10 @@ pipeline {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry}",
-                        "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account}",
-                        "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name}",
-                        "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTag}",
+                        "${env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__registry}",
+                        "${env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__account}",
+                        "${env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__name}",
+                        "${env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__buildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
@@ -164,7 +164,7 @@ pipeline {
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
-                    docker save "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry}/${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account}/${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name}:${params.RELEASE_VERSION}" | gzip > "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_IMAGE_TAR_FILE}"
+                    docker save "${env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__registry}/${env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__account}/${env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__name}:${params.RELEASE_VERSION}" | gzip > "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_IMAGE_TAR_FILE}"
                     """.trim()
                 }
             }

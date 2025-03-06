@@ -96,19 +96,19 @@ module.exports = composeEnv([rootEnv, extendedServicesJavaEnv, corsProxyEnv, kie
       default: rootEnv.env.root.streamName,
       description: "Image tag to be used by Dev Deployments when deploying models.",
     },
-    ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageRegistry: {
+    ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageRegistry: {
       default: "docker.io",
       description: "Image registry to be used by Dev Deployments when deploying models.",
     },
-    ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageAccount: {
+    ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageAccount: {
       default: "apache",
       description: "Image account to be used by Dev Deployments when deploying models.",
     },
-    ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageName: {
+    ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageName: {
       default: "incubator-kie-sandbox-dev-deployment-quarkus-blank-app",
       description: "Image name to be used by Dev Deployments when deploying models.",
     },
-    ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageTag: {
+    ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageTag: {
       default: rootEnv.env.root.streamName,
       description: "Image tag to be used by Dev Deployments when deploying models.",
     },
@@ -198,10 +198,10 @@ module.exports = composeEnv([rootEnv, extendedServicesJavaEnv, corsProxyEnv, kie
           name: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentBaseImageName),
         },
         kogitoQuarkusBlankAppImage: {
-          tag: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageTag),
-          registry: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageRegistry),
-          account: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageAccount),
-          name: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageName),
+          tag: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageTag),
+          registry: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageRegistry),
+          account: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageAccount),
+          name: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageName),
         },
         dmnFormWebappImage: {
           tag: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag),

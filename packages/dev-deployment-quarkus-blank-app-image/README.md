@@ -15,7 +15,7 @@
    under the License.
 -->
 
-# Dev Deployment Kogito Quarkus Blank App Image
+# Dev Deployment Quarkus Blank App Image
 
 This image is ready to be used for Dev Deployments on KIE Sandbox.
 It starts the dev-deployment-upload-service and then places the uploaded files inside a blank Kogito Quarkus app.

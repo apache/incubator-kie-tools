@@ -46,7 +46,7 @@ export const defaultEnvJson: EnvJson = {
   KIE_SANDBOX_EXTENDED_SERVICES_URL: buildEnv.onlineEditor.extendedServicesUrl,
   KIE_SANDBOX_DISABLE_EXTENDED_SERVICES_WIZARD: buildEnv.onlineEditor.disableExtendedServicesWizard,
   KIE_SANDBOX_DEV_DEPLOYMENT_BASE_IMAGE_URL: getDevDeploymentImageUrl(buildEnv.devDeployments.baseImage),
-  KIE_SANDBOX_DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE_URL: getDevDeploymentImageUrl(
+  KIE_SANDBOX_DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE_URL: getDevDeploymentImageUrl(
     buildEnv.devDeployments.kogitoQuarkusBlankAppImage
   ),
   KIE_SANDBOX_DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_URL: getDevDeploymentImageUrl(

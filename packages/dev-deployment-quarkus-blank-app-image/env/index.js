@@ -31,35 +31,35 @@ const {
 
 module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
-    DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__builderImage: {
+    DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__builderImage: {
       default: `${devDeploymentBaseImageEnv.registry}/${devDeploymentBaseImageEnv.account}/${devDeploymentBaseImageEnv.name}:${devDeploymentBaseImageEnv.buildTag}`,
       description: "The image used in the FROM import.",
     },
-    DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry: {
+    DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__registry: {
       default: "docker.io",
       description: "E.g., `docker.io` or `quay.io`.",
     },
-    DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account: {
+    DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__account: {
       default: "apache",
       description: "E.g,. `apache` or `kie-tools-bot`",
     },
-    DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name: {
+    DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__name: {
       default: "incubator-kie-sandbox-dev-deployment-quarkus-blank-app",
       description: "Name of the image itself.",
     },
-    DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTag: {
+    DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__buildTag: {
       default: rootEnv.env.root.streamName,
       description: "Tag version of this image. E.g., `main` or `10.0.x` or `10.0.0",
     },
   }),
   get env() {
     return {
-      devDeploymentKogitoQuarkusBlankAppImage: {
-        builderImage: getOrDefault(this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__builderImage),
-        registry: getOrDefault(this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry),
-        account: getOrDefault(this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account),
-        name: getOrDefault(this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name),
-        buildTag: getOrDefault(this.vars.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTag),
+      devDeploymentQuarkusBlankAppImage: {
+        builderImage: getOrDefault(this.vars.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__builderImage),
+        registry: getOrDefault(this.vars.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__registry),
+        account: getOrDefault(this.vars.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__account),
+        name: getOrDefault(this.vars.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__name),
+        buildTag: getOrDefault(this.vars.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__buildTag),
         version: require("../package.json").version,
         dev: {
           mavenM2RepoViaHttpImage: `${mavenM2RepoViaHttpImageEnv.registry}/${mavenM2RepoViaHttpImageEnv.account}/${mavenM2RepoViaHttpImageEnv.name}:${mavenM2RepoViaHttpImageEnv.buildTag}`,
