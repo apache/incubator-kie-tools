@@ -94,7 +94,7 @@
         },
         "kogito.dmn.svgFilePath": {
           "default": "",
-          "markdownDescription": "Where to save generated SVG files for BPMN models. (defaults to `${fileDirname}` or `src/main/resources/META-INF/decisionSVG` if DMN model is inside `src/main/resources`).",
+          "markdownDescription": "Where to save generated SVG files for DMN models. (defaults to `${fileDirname}` or `src/main/resources/META-INF/decisionSVG` if DMN model is inside `src/main/resources`).",
           "type": "string"
         },
         "kogito.dmn.svgFilenameTemplate": {
