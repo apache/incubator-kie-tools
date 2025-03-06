@@ -75,7 +75,7 @@ import { DMN13__tDefinitions } from "./schemas/dmn-1_3/ts-gen/types";
 import { DMN14__tDefinitions } from "./schemas/dmn-1_4/ts-gen/types";
 import { DMN15__tDefinitions } from "./schemas/dmn-1_5/ts-gen/types";
 import { ns as kie10ns } from "./schemas/kie-1_0/ts-gen/meta";
-import { LEGACY_KIE_NS__PRE_GWT_REMOVAL } from "./kie-extensions";
+import { KIE_NS, LEGACY_KIE_NS__PRE_GWT_REMOVAL } from "./kie-extensions";
 
 import "./kie-extensions"; // Necessary to include the type extensions and patch the ns maps. Do not remove.
 
@@ -194,6 +194,8 @@ export const DMN_PARSERS: Record<DmnVersions, XmlParserTs<any>> = {
   }),
 };
 
+const FEEL_NS = "feel:";
+
 export const FEEL_NAMESPACES: Record<DmnVersions, string> = {
   "1.0": "http://www.omg.org/spec/FEEL/20140401",
   "1.1": "http://www.omg.org/spec/FEEL/20140401",
@@ -204,23 +206,28 @@ export const FEEL_NAMESPACES: Record<DmnVersions, string> = {
 };
 
 const feel12ns = new Map<string, string>([
-  ["feel:", FEEL_NAMESPACES["1.2"]],
-  [FEEL_NAMESPACES["1.2"], "feel:"],
+  [FEEL_NS, FEEL_NAMESPACES["1.2"]],
+  [FEEL_NAMESPACES["1.2"], FEEL_NS],
 ]);
 
 const feel13ns = new Map<string, string>([
-  ["feel:", FEEL_NAMESPACES["1.3"]],
-  [FEEL_NAMESPACES["1.3"], "feel:"],
+  [FEEL_NS, FEEL_NAMESPACES["1.3"]],
+  [FEEL_NAMESPACES["1.3"], FEEL_NS],
 ]);
 
 const feel14ns = new Map<string, string>([
-  ["feel:", FEEL_NAMESPACES["1.4"]],
-  [FEEL_NAMESPACES["1.4"], "feel:"],
+  [FEEL_NS, FEEL_NAMESPACES["1.4"]],
+  [FEEL_NAMESPACES["1.4"], FEEL_NS],
 ]);
 
 const feel15ns = new Map<string, string>([
-  ["feel:", FEEL_NAMESPACES["1.5"]],
-  [FEEL_NAMESPACES["1.5"], "feel:"],
+  [FEEL_NS, FEEL_NAMESPACES["1.5"]],
+  [FEEL_NAMESPACES["1.5"], FEEL_NS],
+]);
+
+const kie10nsRelativeToDmns = new Map<string, string>([
+  [kie10ns.get("")!, KIE_NS],
+  [KIE_NS, kie10ns.get("")!],
 ]);
 
 export const DMN_VERSIONS_TIMELINE: DmnVersions[] = ["1.0", "1.1", "1.2", "1.3", "1.4", "1.5"];
@@ -558,7 +565,7 @@ export function upgrade13to14(dmn13: { definitions: DMN13__tDefinitions }): { de
     getNsDeclarationPropName({
       namespace: kie10ns.get("")!,
       atInstanceNs: instanceNs,
-      fallingBackToNs: kie10ns,
+      fallingBackToNs: kie10nsRelativeToDmns,
     })
   ] = kie10ns.get("")!;
 
@@ -612,7 +619,7 @@ export function upgrade14to15(dmn14: { definitions: DMN14__tDefinitions }): { de
     getNsDeclarationPropName({
       namespace: kie10ns.get("")!,
       atInstanceNs: instanceNs,
-      fallingBackToNs: kie10ns,
+      fallingBackToNs: kie10nsRelativeToDmns,
     })
   ] = kie10ns.get("")!;
 
