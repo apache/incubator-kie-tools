@@ -203,6 +203,11 @@ export const FEEL_NAMESPACES: Record<DmnVersions, string> = {
   "1.5": "https://www.omg.org/spec/DMN/20230324/FEEL/",
 };
 
+const feel12ns = new Map<string, string>([
+  ["feel:", FEEL_NAMESPACES["1.2"]],
+  [FEEL_NAMESPACES["1.2"], "feel:"],
+]);
+
 const feel13ns = new Map<string, string>([
   ["feel:", FEEL_NAMESPACES["1.3"]],
   [FEEL_NAMESPACES["1.3"], "feel:"],
@@ -499,10 +504,7 @@ export function upgrade12to13(dmn12: { definitions: DMN12__tDefinitions }): { de
     getNsDeclarationPropName({
       namespace: FEEL_NAMESPACES["1.2"],
       atInstanceNs: instanceNs,
-      fallingBackToNs: new Map<string, string>([
-        ["feel:", FEEL_NAMESPACES["1.2"]],
-        [FEEL_NAMESPACES["1.2"], "feel:"],
-      ]),
+      fallingBackToNs: feel12ns,
     })
   ] = FEEL_NAMESPACES["1.3"];
 
