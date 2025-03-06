@@ -203,6 +203,21 @@ export const FEEL_NAMESPACES: Record<DmnVersions, string> = {
   "1.5": "https://www.omg.org/spec/DMN/20230324/FEEL/",
 };
 
+const feel13ns = new Map<string, string>([
+  ["feel:", FEEL_NAMESPACES["1.3"]],
+  [FEEL_NAMESPACES["1.3"], "feel:"],
+]);
+
+const feel14ns = new Map<string, string>([
+  ["feel:", FEEL_NAMESPACES["1.4"]],
+  [FEEL_NAMESPACES["1.4"], "feel:"],
+]);
+
+const feel15ns = new Map<string, string>([
+  ["feel:", FEEL_NAMESPACES["1.5"]],
+  [FEEL_NAMESPACES["1.5"], "feel:"],
+]);
+
 export const DMN_VERSIONS_TIMELINE: DmnVersions[] = ["1.0", "1.1", "1.2", "1.3", "1.4", "1.5"];
 export const DMN_LATEST_VERSION = "1.5" as const;
 export type DmnLatestMarshaller = DmnMarshaller15;
@@ -470,7 +485,7 @@ export function upgrade12to13(dmn12: { definitions: DMN12__tDefinitions }): { de
     })
   ] = dmn13ns.get("dmndi:")!;
 
-  // Upgrade KIE namespace
+  // Upgrade or add KIE namespace if not there yet
   dmn12.definitions[
     getNsDeclarationPropName({
       namespace: LEGACY_KIE_NS__PRE_GWT_REMOVAL,
@@ -532,12 +547,18 @@ export function upgrade13to14(dmn13: { definitions: DMN13__tDefinitions }): { de
     getNsDeclarationPropName({
       namespace: FEEL_NAMESPACES["1.3"],
       atInstanceNs: instanceNs,
-      fallingBackToNs: new Map<string, string>([
-        ["feel:", FEEL_NAMESPACES["1.3"]],
-        [FEEL_NAMESPACES["1.3"], "feel:"],
-      ]),
+      fallingBackToNs: feel13ns,
     })
   ] = FEEL_NAMESPACES["1.4"];
+
+  // Add KIE namespace if not there yet.
+  dmn13.definitions[
+    getNsDeclarationPropName({
+      namespace: kie10ns.get("")!,
+      atInstanceNs: instanceNs,
+      fallingBackToNs: kie10ns,
+    })
+  ] = kie10ns.get("")!;
 
   if (dmn13.definitions["@_typeLanguage"] === FEEL_NAMESPACES["1.3"]) {
     dmn13.definitions["@_typeLanguage"] = FEEL_NAMESPACES["1.4"];
@@ -580,12 +601,18 @@ export function upgrade14to15(dmn14: { definitions: DMN14__tDefinitions }): { de
     getNsDeclarationPropName({
       namespace: FEEL_NAMESPACES["1.4"],
       atInstanceNs: instanceNs,
-      fallingBackToNs: new Map<string, string>([
-        ["feel:", FEEL_NAMESPACES["1.4"]],
-        [FEEL_NAMESPACES["1.4"], "feel:"],
-      ]),
+      fallingBackToNs: feel14ns,
     })
   ] = FEEL_NAMESPACES["1.5"];
+
+  // Add KIE namespace if not there yet.
+  dmn14.definitions[
+    getNsDeclarationPropName({
+      namespace: kie10ns.get("")!,
+      atInstanceNs: instanceNs,
+      fallingBackToNs: kie10ns,
+    })
+  ] = kie10ns.get("")!;
 
   if (dmn14.definitions["@_typeLanguage"] === FEEL_NAMESPACES["1.4"]) {
     dmn14.definitions["@_typeLanguage"] = FEEL_NAMESPACES["1.5"];
