@@ -330,7 +330,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   }, [dmnRunnerMode, isExpanded, onTogglePanel, panel]);
   // END
 
-  // Set execution tab on Problems panel;
+  // Set evaluation tab on Problems panel;
   useEffect(() => {
     if (props.workspaceFile.extension !== "dmn" || extendedServices.status !== ExtendedServicesStatus.RUNNING) {
       return;
@@ -364,10 +364,10 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       }));
     });
 
-    setNotifications(i18n.terms.execution, "", notifications as any);
+    setNotifications(i18n.terms.evaluation, "", notifications as any);
   }, [
     setNotifications,
-    i18n.terms.execution,
+    i18n.terms.evaluation,
     results,
     currentInputIndex,
     props.workspaceFile.extension,

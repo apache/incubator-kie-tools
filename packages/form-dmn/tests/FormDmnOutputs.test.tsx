@@ -27,7 +27,7 @@ const props: FormDmnOutputsProps = {
   differences: [{}],
   locale: "en",
   notificationsPanel: true,
-  openExecutionTab: () => {},
+  openEvaluationTab: () => {},
 };
 
 describe("FormDmnOutputs tests", () => {

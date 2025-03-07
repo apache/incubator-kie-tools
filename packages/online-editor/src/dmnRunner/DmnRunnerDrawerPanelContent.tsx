@@ -26,7 +26,7 @@ import { useDmnRunnerDispatch, useDmnRunnerState } from "./DmnRunnerContext";
 import { DmnRunnerMode } from "./DmnRunnerStatus";
 import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
 import { useOnlineI18n } from "../i18n";
-import { FormDmn, FormDmnOutputs, InputRow } from "@kie-tools/form-dmn";
+import { FormDmn, openEvaluationTab, InputRow } from "@kie-tools/form-dmn";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
@@ -106,10 +106,10 @@ export function DmnRunnerDrawerPanelContent() {
     notificationsPanel?.setActiveTab(i18n.terms.validation);
   }, [i18n.terms.validation, notificationsPanel, onOpenPanel]);
 
-  const openExecutionTab = useCallback(() => {
+  const openEvaluationTab = useCallback(() => {
     onOpenPanel(PanelId.NOTIFICATIONS_PANEL);
-    notificationsPanel?.setActiveTab(i18n.terms.execution);
-  }, [i18n.terms.execution, notificationsPanel, onOpenPanel]);
+    notificationsPanel?.setActiveTab(i18n.terms.evaluation);
+  }, [i18n.terms.evaluation, notificationsPanel, onOpenPanel]);
 
   useEffect(() => {
     setDrawerError(false);
@@ -324,12 +324,12 @@ export function DmnRunnerDrawerPanelContent() {
                   data-ouia-component-id={"dmn-runner-results"}
                 >
                   <PageSection className={"kogito--editor__dmn-runner-drawer-content-body-output"}>
-                    <FormDmnOutputs
+                    <openEvaluationTab
                       results={results[currentInputIndex]}
                       differences={resultsDifference[currentInputIndex]}
                       locale={locale}
                       notificationsPanel={true}
-                      openExecutionTab={openExecutionTab}
+                      openEvaluationTab={openEvaluationTab}
                       openBoxedExpressionEditor={
                         !isLegacyDmnEditor
                           ? (nodeId: string) => {
