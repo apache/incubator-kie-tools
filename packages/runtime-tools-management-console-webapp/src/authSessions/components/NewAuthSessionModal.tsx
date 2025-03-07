@@ -17,17 +17,18 @@
  * under the License.
  */
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Button, ButtonType, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useAuthSessions, useAuthSessionsDispatch } from "../AuthSessionsContext";
 import { AuthSessionsService } from "../AuthSessionsService";
 import { useEnv } from "../../env/hooks/EnvContext";
 import { useRoutes } from "../../navigation/Hooks";
-import { AuthSession } from "../AuthSessionApi";
+import { AUTH_SESSION_OIDC_DEFAULT_SCOPES, AuthSession } from "../AuthSessionApi";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Form, FormGroup, ActionGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
+import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
 
 type Props = {
   onAddAuthSession: (authSession: AuthSession) => void;
@@ -40,16 +41,24 @@ export const NewAuthSessionModal: React.FC<Props> = ({ onAddAuthSession }) => {
   const routes = useRoutes();
   const { env } = useEnv();
 
+  const [audience, setAudience] = useState<string>();
+  const [scope, setScope] = useState<string>(AUTH_SESSION_OIDC_DEFAULT_SCOPES);
+  const [clientId, setClientId] = useState<string>(env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID);
+
   const { isNewAuthSessionModalOpen } = useAuthSessions();
   const { setIsNewAuthSessionModalOpen, add } = useAuthSessionsDispatch();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setLoading] = useState(false);
+  const [isAdvancedOIDCSettingsExpanded, setIsAdvancedOIDCSettingsExpanded] = useState(false);
 
   const onCancel = useCallback(() => {
     setIsNewAuthSessionModalOpen(false);
     setRuntimeUrl("");
     setAlias("");
-  }, [setIsNewAuthSessionModalOpen]);
+    setClientId(env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID);
+    setScope(AUTH_SESSION_OIDC_DEFAULT_SCOPES);
+    setAudience("");
+  }, [env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID, setIsNewAuthSessionModalOpen]);
 
   const onConnect = useCallback<React.FormEventHandler>(
     (e) => {
@@ -78,9 +87,11 @@ export const NewAuthSessionModal: React.FC<Props> = ({ onAddAuthSession }) => {
             await AuthSessionsService.authenticate({
               runtimeUrl,
               authServerUrl: checkResults.authServerUrl,
-              clientId: env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID,
+              clientId,
               name: alias,
               forceLoginPrompt,
+              audience,
+              scope,
               loginSuccessRoute: routes.login.url({ base: window.location.origin, pathParams: {} }),
             });
           } else {
@@ -98,7 +109,7 @@ export const NewAuthSessionModal: React.FC<Props> = ({ onAddAuthSession }) => {
             setIsNewAuthSessionModalOpen(false);
           }
         } catch (e) {
-          console.log(e);
+          console.error(e);
           setError(`Could not communicate with runtime running at '${runtimeUrl}'`);
         } finally {
           setLoading(false);
@@ -111,8 +122,10 @@ export const NewAuthSessionModal: React.FC<Props> = ({ onAddAuthSession }) => {
     [
       runtimeUrl,
       alias,
+      clientId,
       forceLoginPrompt,
-      env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID,
+      audience,
+      scope,
       routes.login,
       add,
       onAddAuthSession,
@@ -135,7 +148,7 @@ export const NewAuthSessionModal: React.FC<Props> = ({ onAddAuthSession }) => {
             autoFocus={true}
             onChange={setAlias}
             placeholder="Enter an alias..."
-            tabIndex={1}
+            tabIndex={0}
           />
         </FormGroup>
         <FormGroup
@@ -145,7 +158,7 @@ export const NewAuthSessionModal: React.FC<Props> = ({ onAddAuthSession }) => {
           helperText={" "}
           validated={error ? "error" : "default"}
         >
-          <TextInput id="url" aria-label="URL" tabIndex={2} onChange={setRuntimeUrl} placeholder="Enter a URL..." />
+          <TextInput id="url" aria-label="URL" tabIndex={0} onChange={setRuntimeUrl} placeholder="Enter a URL..." />
         </FormGroup>
         <FormGroup
           isRequired={false}
@@ -164,9 +177,62 @@ export const NewAuthSessionModal: React.FC<Props> = ({ onAddAuthSession }) => {
                 Force login prompt <i>(for secured runtimes only)</i>
               </span>
             }
-            tabIndex={3}
+            tabIndex={0}
           />
         </FormGroup>
+
+        <ExpandableSection
+          toggleText={"Advanced OpenID Connect settings"}
+          onToggle={() => setIsAdvancedOIDCSettingsExpanded((currentValue) => !currentValue)}
+          isExpanded={isAdvancedOIDCSettingsExpanded}
+        >
+          <FormGroup
+            label="Client ID"
+            isRequired={true}
+            helperTextInvalid={error}
+            helperText={" "}
+            validated={error ? "error" : "default"}
+          >
+            <TextInput
+              id="clientId"
+              aria-label="Client ID"
+              value={clientId}
+              tabIndex={isAdvancedOIDCSettingsExpanded ? 0 : undefined}
+              onChange={setClientId}
+            />
+          </FormGroup>
+          <FormGroup
+            label="Scope"
+            isRequired={true}
+            helperTextInvalid={error}
+            helperText={" "}
+            validated={error ? "error" : "default"}
+          >
+            <TextInput
+              id="scope"
+              aria-label="Scope"
+              value={scope}
+              tabIndex={isAdvancedOIDCSettingsExpanded ? 0 : undefined}
+              onChange={setScope}
+            />
+          </FormGroup>
+          <FormGroup
+            label="Audience"
+            isRequired={false}
+            helperTextInvalid={error}
+            helperText={" "}
+            validated={error ? "error" : "default"}
+          >
+            <TextInput
+              id="audience"
+              aria-label="Audience"
+              value={audience}
+              tabIndex={isAdvancedOIDCSettingsExpanded ? 0 : undefined}
+              onChange={setAudience}
+              placeholder="The Audience (aud) or Identifier of the application."
+            />
+          </FormGroup>
+        </ExpandableSection>
 
         <ActionGroup>
           <Button

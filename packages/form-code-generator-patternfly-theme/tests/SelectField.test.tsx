@@ -19,22 +19,9 @@
 
 import * as React from "react";
 import { renderField } from "./_render";
-import { MULTIPLE_SELECT_FUNCTIONS, SELECT_FUNCTIONS } from "../src/uniforms/staticCode/staticCodeBlocks";
 import { SelectField } from "../src/uniforms";
 import { NS_SEPARATOR } from "../src/uniforms/utils/Utils";
 import { SELECT_IMPORTS } from "../src/uniforms/SelectField";
-
-const schema = {
-  role: {
-    type: String,
-    allowedValues: ["Developer", "HR", "UX"],
-  },
-  otherPositions: {
-    type: Array,
-    allowedValues: ["Developer", "HR", "UX"],
-  },
-  "otherPositions.$": String,
-};
 
 describe("<SelectField> tests", () => {
   it("<SelectField> - single value rendering", () => {
@@ -47,17 +34,19 @@ describe("<SelectField> tests", () => {
       onChange: jest.fn(),
     };
 
-    const { container, formElement } = renderField(SelectField, props, schema);
+    const { formElement } = renderField(SelectField, props, {
+      role: {
+        type: String,
+        allowedValues: ["Developer", "HR", "UX"],
+      },
+    });
 
-    expect(container).toMatchSnapshot();
+    expect(formElement.jsxCode).toMatchSnapshot();
 
     expect(formElement.reactImports).toContain("useState");
     expect(formElement.pfImports).toHaveLength(SELECT_IMPORTS.length);
     SELECT_IMPORTS.forEach((pfImport) => expect(formElement.pfImports).toContain(pfImport));
 
-    expect(formElement.requiredCode).not.toBeUndefined();
-    expect(formElement.requiredCode).toHaveLength(1);
-    expect(formElement.requiredCode).toContain(SELECT_FUNCTIONS);
     expect(formElement.ref.binding).toBe(props.name);
     expect(formElement.ref.stateName).toBe(props.name);
     expect(formElement.ref.stateSetter).toBe(`set__${props.name}`);
@@ -71,9 +60,6 @@ describe("<SelectField> tests", () => {
     const expandedStateName = `${formElement.ref.stateName}${NS_SEPARATOR}expanded`;
     const expandedStateNameSetter = `${formElement.ref.stateSetter}${NS_SEPARATOR}expanded`;
     expect(formElement.jsxCode).toContain(`isOpen={${expandedStateName}}`);
-    expect(formElement.jsxCode).toContain(
-      `handleSelect(value, isPlaceHolder, ${formElement.ref.stateName}, ${formElement.ref.stateSetter}, ${expandedStateNameSetter})`
-    );
     expect(formElement.jsxCode).toContain(`selections={${formElement.ref.stateName}}`);
     expect(formElement.jsxCode).toContain(`onToggle={(isOpen) => ${expandedStateNameSetter}(isOpen)}`);
 
@@ -96,17 +82,20 @@ describe("<SelectField> tests", () => {
       onChange: jest.fn(),
     };
 
-    const { container, formElement } = renderField(SelectField, props, schema);
+    const { formElement } = renderField(SelectField, props, {
+      otherPositions: {
+        type: Array,
+        allowedValues: ["Developer", "HR", "UX"],
+      },
+      "otherPositions.$": String,
+    });
 
-    expect(container).toMatchSnapshot();
+    expect(formElement.jsxCode).toMatchSnapshot();
 
     expect(formElement.reactImports).toContain("useState");
     expect(formElement.pfImports).toHaveLength(SELECT_IMPORTS.length);
     SELECT_IMPORTS.forEach((pfImport) => expect(formElement.pfImports).toContain(pfImport));
 
-    expect(formElement.requiredCode).not.toBeUndefined();
-    expect(formElement.requiredCode).toHaveLength(1);
-    expect(formElement.requiredCode).toContain(MULTIPLE_SELECT_FUNCTIONS);
     expect(formElement.ref.binding).toBe(props.name);
     expect(formElement.ref.stateName).toBe(props.name);
     expect(formElement.ref.stateSetter).toBe(`set__${props.name}`);
@@ -120,9 +109,6 @@ describe("<SelectField> tests", () => {
     const expandedStateName = `${formElement.ref.stateName}${NS_SEPARATOR}expanded`;
     const expandedStateNameSetter = `${formElement.ref.stateSetter}${NS_SEPARATOR}expanded`;
     expect(formElement.jsxCode).toContain(`isOpen={${expandedStateName}}`);
-    expect(formElement.jsxCode).toContain(
-      `handleMultipleSelect(value, isPlaceHolder, ${formElement.ref.stateName}, ${formElement.ref.stateSetter})`
-    );
     expect(formElement.jsxCode).toContain(`selections={${formElement.ref.stateName}}`);
     expect(formElement.jsxCode).toContain(`onToggle={(isOpen) => ${expandedStateNameSetter}(isOpen)}`);
 

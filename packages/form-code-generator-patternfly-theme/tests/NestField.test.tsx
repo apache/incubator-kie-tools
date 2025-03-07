@@ -39,7 +39,7 @@ const schema = {
 
 describe("<NestField> tests", () => {
   it("<NestField> - rendering", () => {
-    const { container, formElement } = renderField(
+    const { formElement } = renderField(
       NestField,
       {
         id: "id",
@@ -50,7 +50,7 @@ describe("<NestField> tests", () => {
       schema
     );
 
-    expect(container).toMatchSnapshot();
+    expect(formElement.jsxCode).toMatchSnapshot();
 
     const inputContainer = formElement as InputsContainer;
     expect(inputContainer.pfImports).toStrictEqual([

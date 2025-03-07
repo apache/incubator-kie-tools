@@ -161,9 +161,15 @@ export function AuthSessionDescriptionList(props: { authSession: AuthSession }) 
               <DescriptionListGroup>
                 <DescriptionListTerm>Refresh Token:</DescriptionListTerm>
                 <DescriptionListDescription>
-                  {obfuscate(props.authSession.tokens.refresh_token ?? "")}
-                  &nbsp;
-                  <small>{`(...plus ${(props.authSession.tokens.refresh_token ?? "").length - 16} hidden characters)`}</small>
+                  {props.authSession.tokens.refresh_token ? (
+                    <>
+                      {obfuscate(props.authSession.tokens.refresh_token ?? "")}
+                      &nbsp;
+                      <small>{`(...plus ${(props.authSession.tokens.refresh_token ?? "").length - 16} hidden characters)`}</small>
+                    </>
+                  ) : (
+                    "Not available. Manual reauthentication required once the access_token expires."
+                  )}
                 </DescriptionListDescription>
               </DescriptionListGroup>
               <DescriptionListGroup>
