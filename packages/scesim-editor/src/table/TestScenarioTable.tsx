@@ -783,7 +783,7 @@ function TestScenarioTable({
 
         deleteRow({ rowIndex: args.rowIndex, factMappingValues: factMappingValues });
 
-        /* If rows (i.e. factMappingValues) have been deleted, a new row is added */
+        /* If all rows (i.e. factMappingValues) have been deleted, a new row is added */
         if (factMappingValues.length === 0) {
           const factMappings =
             state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!;
