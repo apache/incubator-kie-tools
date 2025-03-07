@@ -727,10 +727,7 @@ function TestScenarioTable({
 
         /** Updating the selectedColumn. When deleting, BEETable automatically shifts the selected cell in the left. */
         const firstRemovedIndex = Math.min(...deletedFactMappingIndexs);
-        const selectedColumnIndex = Math.max(
-          0,
-          isAtLeastOneGroupElementPresent ? firstRemovedIndex - 1 : firstRemovedIndex
-        );
+        const selectedColumnIndex = Math.max(0, firstRemovedIndex - 1);
 
         state.dispatch(state).table.updateSelectedColumn({
           factMapping: _.cloneDeep(factMappings[selectedColumnIndex]),
