@@ -618,6 +618,11 @@ function TestScenarioTable({
         const factMappingValues = isBackground
           ? state.scesim.model.ScenarioSimulationModel.background.scesimData.BackgroundData!
           : state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!;
+        const selectedColumnFactMappingIndex = determineSelectedColumnIndex(
+          factMappings,
+          args.currentIndex,
+          isInstance
+        );
 
         const selectedColumnFactMapping = factMappings[selectedColumnFactMappingIndex];
         const targetColumnIndex = determineNewColumnTargetIndex(
