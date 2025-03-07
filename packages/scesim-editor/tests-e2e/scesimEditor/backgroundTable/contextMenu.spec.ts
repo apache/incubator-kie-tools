@@ -141,6 +141,11 @@ test.describe("Background table context menu", () => {
       contextMenu,
       table,
     }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1353",
+      });
+
       await contextMenu.openOnColumnHeader({ name: "INSTANCE-1 (<Undefined>)" });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_INSTANCE });
       await expect(table.getColumnHeader({ name: "INSTANCE-1 (<Undefined>)" })).not.toBeAttached();
@@ -155,6 +160,11 @@ test.describe("Background table context menu", () => {
       contextMenu,
       table,
     }) => {
+      test.info().annotations.push({
+        type: TestAnnotations.REGRESSION,
+        description: "https://github.com/apache/incubator-kie-issues/issues/1353",
+      });
+
       await contextMenu.openOnColumnHeader({ name: "PROPERTY-1 (<Undefined>)", columnNumber: 0 });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_FIELD });
       await expect(table.getColumnHeader({ name: "INSTANCE-1 (<Undefined>)" })).not.toBeAttached();
