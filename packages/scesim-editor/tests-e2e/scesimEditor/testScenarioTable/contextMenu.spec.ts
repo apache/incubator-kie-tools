@@ -136,11 +136,11 @@ test.describe("Test scenario table context menu", () => {
     });
 
     test("should not render context menu on the hash header", async ({ table, testScenarioTable, contextMenu }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1342");
-      test.info().annotations.push({
-        type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1342",
-      });
+      // test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1342");
+      // test.info().annotations.push({
+      //   type: TestAnnotations.REGRESSION,
+      //   description: "https://github.com/apache/incubator-kie-issues/issues/1342",
+      // });
 
       await table.getColumnHeader({ name: "#" }).click({ button: "right" });
       await expect(contextMenu.getHeading({ heading: HeadingType.SELECTION })).not.toBeAttached();
@@ -155,12 +155,6 @@ test.describe("Test scenario table context menu", () => {
       testScenarioTable,
       contextMenu,
     }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1342");
-      test.info().annotations.push({
-        type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1342",
-      });
-
       await table.getColumnHeader({ name: "Scenario Description" }).click({ button: "right" });
       await expect(contextMenu.getHeading({ heading: HeadingType.SELECTION })).not.toBeAttached();
       await expect(contextMenu.getHeading({ heading: HeadingType.SCENARIO })).not.toBeAttached();
@@ -172,12 +166,6 @@ test.describe("Test scenario table context menu", () => {
     });
 
     test("should not render context menu on the given header", async ({ table, testScenarioTable, contextMenu }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1342");
-      test.info().annotations.push({
-        type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1342",
-      });
-
       await table.getColumnHeader({ name: "GIVEN" }).click({ button: "right" });
       await expect(contextMenu.getHeading({ heading: HeadingType.SELECTION })).not.toBeAttached();
       await expect(contextMenu.getHeading({ heading: HeadingType.SCENARIO })).not.toBeAttached();
@@ -187,12 +175,6 @@ test.describe("Test scenario table context menu", () => {
     });
 
     test("should not render context menu on the expect header", async ({ table, testScenarioTable, contextMenu }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1342");
-      test.info().annotations.push({
-        type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1342",
-      });
-
       await table.getColumnHeader({ name: "EXPECT" }).click({ button: "right" });
       await expect(contextMenu.getHeading({ heading: HeadingType.SELECTION })).not.toBeAttached();
       await expect(contextMenu.getHeading({ heading: HeadingType.SCENARIO })).not.toBeAttached();
