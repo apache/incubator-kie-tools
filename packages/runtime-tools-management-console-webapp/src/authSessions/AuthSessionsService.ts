@@ -122,10 +122,24 @@ export class AuthSessionsService {
       AUTH_SESSION_RUNTIME_AUTH_SERVER_URL_ENDPOINT,
       AUTH_SESSION_RUNTIME_AUTH_SERVER_OPENID_CONFIGURATION_PATH
     );
+
     const oidcProxyUrl = new URL(newPath, runtimeUrl);
     const response = await fetch(oidcProxyUrl);
     if (response.status !== 200) {
-      throw new Error("No authentication endpoint found.");
+      // There's a bug in quarkus-oidc-proxy that if the application is running under a subpath
+      // the subpath is duplicated for quarkus-oidc-proxy routes.
+      const newPathSecondAttempt = path.join(
+        new URL(runtimeUrl).pathname,
+        new URL(runtimeUrl).pathname,
+        AUTH_SESSION_RUNTIME_AUTH_SERVER_URL_ENDPOINT,
+        AUTH_SESSION_RUNTIME_AUTH_SERVER_OPENID_CONFIGURATION_PATH
+      );
+      const oidcProxyUrlSecondAttempt = new URL(newPathSecondAttempt, runtimeUrl);
+      const responseSecondAttempt = await fetch(oidcProxyUrlSecondAttempt);
+      if (responseSecondAttempt.status !== 200) {
+        throw new Error("No authentication endpoint found.");
+      }
+      return new URL((await responseSecondAttempt.json()).issuer);
     }
     return new URL((await response.json()).issuer);
   }
