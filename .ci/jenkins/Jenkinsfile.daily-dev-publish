@@ -47,10 +47,10 @@ pipeline {
         DEV_DEPLOYMENT_BASE_IMAGE__name = 'incubator-kie-sandbox-dev-deployment-base'
         DEV_DEPLOYMENT_BASE_IMAGE__buildTag = "${params.BRANCH_NAME}"
 
-        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry = 'docker.io'
-        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account = 'apache'
-        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name = 'incubator-kie-sandbox-dev-deployment-quarkus-blank-app'
-        DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTag = "${params.BRANCH_NAME}"
+        DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__registry = 'docker.io'
+        DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__account = 'apache'
+        DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__name = 'incubator-kie-sandbox-dev-deployment-quarkus-blank-app'
+        DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__buildTag = "${params.BRANCH_NAME}"
 
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__registry = 'docker.io'
         DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE__account = 'apache'
@@ -65,10 +65,10 @@ pipeline {
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount = 'apache'
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageName = 'incubator-kie-sandbox-dev-deployment-dmn-form-webapp'
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = "${params.BRANCH_NAME}"
-        ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageRegistry = 'docker.io'
-        ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageAccount = 'apache'
-        ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageName = 'incubator-kie-sandbox-dev-deployment-quarkus-blank-app'
-        ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageTag = "${params.BRANCH_NAME}"
+        ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageRegistry = 'docker.io'
+        ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageAccount = 'apache'
+        ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageName = 'incubator-kie-sandbox-dev-deployment-quarkus-blank-app'
+        ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageTag = "${params.BRANCH_NAME}"
         ONLINE_EDITOR__corsProxyUrl = 'https://daily-dev-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud'
 
         EXTENDED_SERVICES__kieSandboxUrl = 'https://apache.github.io/incubator-kie-kogito-online/dev'
@@ -347,14 +347,14 @@ pipeline {
             }
         }
 
-        stage('Push dev-deployment-kogito-quarkus-blank-app-image to Docker Hub') {
+        stage('Push dev-deployment-quarkus-blank-app-image to Docker Hub') {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__registry}",
-                        "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__account}",
-                        "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__name}",
-                        "${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE__buildTag}",
+                        "${env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__registry}",
+                        "${env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__account}",
+                        "${env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__name}",
+                        "${env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE__buildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )

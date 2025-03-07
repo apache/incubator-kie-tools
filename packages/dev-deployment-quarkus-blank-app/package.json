@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "@kie-tools/dev-deployment-kogito-quarkus-blank-app",
+  "name": "@kie-tools/dev-deployment-quarkus-blank-app",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
