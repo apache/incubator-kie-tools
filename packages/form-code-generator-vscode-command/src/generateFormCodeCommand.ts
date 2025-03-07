@@ -221,7 +221,7 @@ function saveFormCode(projectPath: string, uiLibrary: string, formSchemas: FormS
       );
     });
     vscode.window.showInformationMessage(
-      `Success generating custom form code for the following files: ${formAssets.map((formAsset) => formAsset.fileName).join(", ")}`
+      `Success generating form code for the following files: ${formAssets.map((formAsset) => formAsset.fileName).join(", ")}`
     );
   }
 
@@ -232,7 +232,7 @@ function saveFormCode(projectPath: string, uiLibrary: string, formSchemas: FormS
   );
   if (formErrors.length > 0) {
     vscode.window.showErrorMessage(
-      `Error generating custom form code for the following files: ${formErrors.map((formError) => formError.fileName).join(", ")}`
+      `Error generating form code for the following files: ${formErrors.map((formError) => formError.fileName).join(", ")}`
     );
   }
 }
