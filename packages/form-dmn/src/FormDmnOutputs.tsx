@@ -66,11 +66,19 @@ export interface FormDmnOutputsProps {
   notificationsPanel: boolean;
   openExecutionTab?: () => void;
   openBoxedExpressionEditor?: (nodeId: string) => void;
+  openedBoxedExpressionId?: Promise<string>;
 }
 
-export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ...props }: FormDmnOutputsProps) {
+export function FormDmnOutputs({
+  openExecutionTab,
+  openBoxedExpressionEditor,
+  openedBoxedExpressionId,
+  ...props
+}: FormDmnOutputsProps) {
   const [formResultStatus, setFormResultStatus] = useState<FormDmnOutputsStatus>(FormDmnOutputsStatus.EMPTY);
   const [formResultError, setFormResultError] = useState<boolean>(false);
+  const [openedExpressionEditorForNodeId, setOpenedExpressionEditorForNodeId] = useState<string>("");
+
   const i18n = useMemo(() => {
     formDmnI18n.setLocale(props.locale ?? navigator.language);
     return formDmnI18n.getCurrent();
@@ -86,7 +94,11 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
       const updatedResult = document.getElementById(`${index}-dmn-result`);
       updatedResult?.classList.add("kogito--editor__dmn-form-result__leaf-updated");
     });
-  }, [props.differences]);
+
+    openedBoxedExpressionId?.then((v) => {
+      setOpenedExpressionEditorForNodeId(v);
+    });
+  }, [openedBoxedExpressionId, props.differences]);
 
   const onAnimationEnd = useCallback((e: React.AnimationEvent<HTMLElement>, index) => {
     e.preventDefault();
@@ -254,6 +266,7 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
 
   const onOpenBoxedExpressionEditor = useCallback(
     (nodeId: string) => {
+      setOpenedExpressionEditorForNodeId(nodeId);
       return openBoxedExpressionEditor?.(nodeId);
     },
     [openBoxedExpressionEditor]
@@ -266,7 +279,7 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
           <Card
             id={`${index}-dmn-result`}
             isFlat={true}
-            className={"kogito--editor__dmn-form-result__results-card"}
+            className={`kogito--editor__dmn-form-result__results-card${openedExpressionEditorForNodeId === dmnFormResult.decisionId ? "-highlight" : ""}`}
             onAnimationEnd={(e) => onAnimationEnd(e, index)}
           >
             <CardTitle>
@@ -287,7 +300,7 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
           </Card>
         </div>
       )),
-    [onAnimationEnd, onOpenBoxedExpressionEditor, props.results, result, resultStatus]
+    [onAnimationEnd, openedExpressionEditorForNodeId, onOpenBoxedExpressionEditor, props.results, result, resultStatus]
   );
 
   const formResultErrorMessage = useMemo(
