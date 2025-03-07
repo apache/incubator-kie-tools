@@ -46,7 +46,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
   const codegenCtx = useContext(codeGenContext);
 
   const nestedRefs: InputReference[] = [];
-  const nestedStates: string[] = [];
+  const nestedStates: Set<string> = new Set();
   const nestedJsx: string[] = [];
 
   let pfImports: string[] = ["Card", "CardBody"];
@@ -59,7 +59,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
       const renderedInput = renderNestedInputFragmentWithContext(uniformsContext, field, itemProps, disabled);
 
       if (renderedInput) {
-        nestedStates.push(renderedInput.stateCode);
+        nestedStates.add(renderedInput.stateCode.trim());
         nestedJsx.push(renderedInput.jsxCode);
         nestedRefs.push(renderedInput.ref);
         if (renderedInput.ref.dataType === DEFAULT_DATA_TYPE_OBJECT) {
@@ -80,7 +80,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
 
   const bodyLabel = label && !itemProps?.isListItem ? `<label><b>${label}</b></label>` : "";
 
-  const stateCode = nestedStates.join("\n");
+  const stateCode = [...nestedStates].join("\n");
   const jsxCode = `<Card>
           <CardBody className="pf-c-form">
           ${bodyLabel}
@@ -91,7 +91,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
     pfImports,
     pfIconImports,
     reactImports,
-    requiredCode: requiredCode,
+    requiredCode,
     stateCode,
     jsxCode,
     ref: getInputReference(name, DEFAULT_DATA_TYPE_OBJECT),

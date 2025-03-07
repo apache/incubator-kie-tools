@@ -24,7 +24,7 @@ export class VsCodeRecommendation {
     const message =
       "There is another extension available that might help you.\n" +
       "Click [here](command:vscode-extension.installExtendedServices) to install it.";
-    const action = "Install Extended-Services VS Code Extension";
+    const action = "Install Apache KIE™ Extended Services for VS Code";
 
     const disposable = vscode.commands.registerCommand("vscode-extension.installExtendedServices", () => {
       vscode.env.openExternal(vscode.Uri.parse("vscode:extension/kie-group.extended-services-vscode-extension"));

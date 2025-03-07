@@ -525,8 +525,8 @@ function TestScenarioTable({
     [isBackground, tableColumns.instancesGroup]
   );
 
-  /* It determines in which index position a column should be added. In case of a field, the new column index is simply 
-   in the right or in the left of the selected column. In case of a new instance, it's required to find the first column 
+  /* It determines in which index position a column should be added. In case of a field, the new column index is simply
+   in the right or in the left of the selected column. In case of a new instance, it's required to find the first column
    index outside the selected Instance group. */
   const determineNewColumnTargetIndex = (
     factMappings: SceSim__FactMappingType[],
@@ -618,11 +618,6 @@ function TestScenarioTable({
         const factMappingValues = isBackground
           ? state.scesim.model.ScenarioSimulationModel.background.scesimData.BackgroundData!
           : state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!;
-        const selectedColumnFactMappingIndex = determineSelectedColumnIndex(
-          factMappings,
-          args.currentIndex,
-          isInstance
-        );
 
         const selectedColumnFactMapping = factMappings[selectedColumnFactMappingIndex];
         const targetColumnIndex = determineNewColumnTargetIndex(
@@ -753,7 +748,7 @@ function TestScenarioTable({
    * It adds a Scenario (Row) at the given row index
    */
   const onRowAdded = useCallback(
-    (args: { beforeIndex: number }) => {
+    (args: { beforeIndex: number; insertDirection: InsertRowColumnsDirection; rowsCount: number }) => {
       if (isBackground) {
         throw new Error("Impossible state. Background table can have a single row only");
       }
@@ -762,7 +757,9 @@ function TestScenarioTable({
           state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!;
         const factMappingValues = state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!;
 
-        addRow({ beforeIndex: args.beforeIndex, factMappings: factMappings, factMappingValues: factMappingValues });
+        for (let rowIndex = 0; rowIndex < args.rowsCount; rowIndex++) {
+          addRow({ beforeIndex: args.beforeIndex, factMappings: factMappings, factMappingValues: factMappingValues });
+        }
       });
     },
     [isBackground, testScenarioEditorStoreApi]

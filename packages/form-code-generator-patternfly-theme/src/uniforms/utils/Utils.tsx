@@ -20,11 +20,21 @@
 import * as React from "react";
 import { DataType, FormElement, FormInput, InputReference, InputsContainer } from "../../api";
 import { DEFAULT_DATA_TYPE_OBJECT } from "./dataTypes";
+import { ListItemProps } from "../rendering/ListItemField";
 
 export const NS_SEPARATOR = "__";
 export const FIELD_SET_PREFFIX = `set`;
 
-export const getInputReference = (binding: string, dataType: DataType): InputReference => {
+export const getInputReference = (binding: string, dataType: DataType, itemProps?: ListItemProps): InputReference => {
+  if (itemProps) {
+    const [_, property] = binding.split("$");
+    return {
+      binding: binding.replace("$", `[${itemProps.indexVariableName}]`),
+      stateName: `${itemProps.listStateName}?.[${itemProps.indexVariableName}]${property}`,
+      stateSetter: itemProps.listStateSetter,
+      dataType,
+    };
+  }
   const stateName = binding.split(".").join(NS_SEPARATOR);
   const stateSetter = `${FIELD_SET_PREFFIX}${NS_SEPARATOR}${stateName}`;
   return {
@@ -56,6 +66,7 @@ type DefaultInputProps = {
   requiredCode?: string[];
   wrapper: WrapperProps;
   disabled: boolean;
+  itemProps: ListItemProps | undefined;
 };
 
 type WrapperProps = {
@@ -72,6 +83,7 @@ export const buildDefaultInputElement = ({
   wrapper,
   requiredCode,
   disabled,
+  itemProps,
 }: DefaultInputProps): FormInput => {
   const stateCode = getStateCodeFromRef(ref);
 
@@ -90,9 +102,9 @@ export const buildDefaultInputElement = ({
     pfImports,
     pfIconImports,
     reactImports: ["useState"],
-    requiredCode: requiredCode,
+    requiredCode,
     jsxCode,
-    stateCode,
+    stateCode: itemProps?.isListItem ? "" : stateCode,
     isReadonly: disabled,
   };
 };

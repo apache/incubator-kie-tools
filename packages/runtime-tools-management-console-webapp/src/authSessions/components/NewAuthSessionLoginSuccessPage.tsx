@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useAuthSessions, useAuthSessionsDispatch } from "../AuthSessionsContext";
 import { useHistory } from "react-router";
 import { AuthSessionsService } from "../AuthSessionsService";
@@ -26,6 +26,14 @@ import { useRoutes } from "../../navigation/Hooks";
 import { AuthSession } from "../AuthSessionApi";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateSecondaryActions,
+  EmptyStateVariant,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
 type Props = {
   onAddAuthSession?: (authSession: AuthSession) => void;
@@ -36,6 +44,7 @@ export const NewAuthSessionLoginSuccessPage: React.FC<Props> = ({ onAddAuthSessi
   const { isAuthSessionsReady } = useAuthSessions();
   const history = useHistory();
   const routes = useRoutes();
+  const [error, setError] = useState(false);
 
   // Since Code Grants can only be used once we want to make sure that the
   // addAuthSession function in the useEffect is only called once.
@@ -47,13 +56,19 @@ export const NewAuthSessionLoginSuccessPage: React.FC<Props> = ({ onAddAuthSessi
     }
     const addAuthSession = async () => {
       isGettingTokens.current = true;
-      const authSession = await AuthSessionsService.buildAuthSession(AuthSessionsService.getTemporaryAuthSessionData());
-      await add(authSession);
-      AuthSessionsService.cleanTemporaryAuthSessionData();
-      if (onAddAuthSession) {
-        onAddAuthSession(authSession);
-      } else {
-        history.push(routes.home.path({}));
+      try {
+        const authSession = await AuthSessionsService.buildAuthSession(
+          AuthSessionsService.getTemporaryAuthSessionData()
+        );
+        await add(authSession);
+        AuthSessionsService.cleanTemporaryAuthSessionData();
+        if (onAddAuthSession) {
+          onAddAuthSession(authSession);
+        } else {
+          history.push(routes.home.path({}));
+        }
+      } catch (e) {
+        setError(true);
       }
     };
 
@@ -64,8 +79,25 @@ export const NewAuthSessionLoginSuccessPage: React.FC<Props> = ({ onAddAuthSessi
     <ManagementConsolePageLayout>
       <PageSection>
         <Bullseye>
-          <h2>Login success!</h2>
-          <h3>Redirecting...</h3>
+          <EmptyState variant={EmptyStateVariant.large}>
+            <br />
+            <br />
+            <EmptyStateBody>
+              {error ? (
+                <>
+                  <p>Failed to get a token from the Identity Provider.</p>
+                  <p>Check your settings and try again!</p>
+                </>
+              ) : (
+                <p>Login success! Redirecting...</p>
+              )}
+            </EmptyStateBody>
+            {error && (
+              <EmptyStateSecondaryActions>
+                <Button onClick={() => history.push(routes.home.path({}))}>OK</Button>
+              </EmptyStateSecondaryActions>
+            )}
+          </EmptyState>
         </Bullseye>
       </PageSection>
     </ManagementConsolePageLayout>

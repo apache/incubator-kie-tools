@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { renderField } from "./_render";
-import { DATE_FUNCTIONS, TIME_FUNCTIONS } from "../src/uniforms/staticCode/staticCodeBlocks";
+import { DATE_FUNCTIONS } from "../src/uniforms/staticCode/staticCodeBlocks";
 import { DateField } from "../src/uniforms";
 
 const schema = {
@@ -36,18 +36,17 @@ describe("<DateField> tests", () => {
       onChange: jest.fn(),
     };
 
-    const { container, formElement } = renderField(DateField, props, schema);
+    const { formElement } = renderField(DateField, props, schema);
 
-    expect(container).toMatchSnapshot();
+    expect(formElement.jsxCode).toMatchSnapshot();
 
     expect(formElement.reactImports).toContain("useState");
     expect(formElement.pfImports).toContain("FormGroup");
     expect(formElement.pfImports).toContain("DatePicker");
     expect(formElement.pfImports).toContain("TimePicker");
     expect(formElement.requiredCode).not.toBeUndefined();
-    expect(formElement.requiredCode).toHaveLength(2);
+    expect(formElement.requiredCode).toHaveLength(1);
     expect(formElement.requiredCode).toContain(DATE_FUNCTIONS);
-    expect(formElement.requiredCode).toContain(TIME_FUNCTIONS);
     expect(formElement.ref.binding).toBe(props.name);
     expect(formElement.ref.stateName).toBe(props.name);
     expect(formElement.ref.stateSetter).toBe(`set__${props.name}`);
@@ -56,14 +55,8 @@ describe("<DateField> tests", () => {
     expect(formElement.jsxCode).toContain(`label={'${props.label}'}`);
     expect(formElement.jsxCode).toContain(`name={'${props.name}'}`);
     expect(formElement.jsxCode).toContain("isDisabled={false}");
-    expect(formElement.jsxCode).toContain(
-      `onChange={newDate => onDateChange(newDate, ${formElement.ref.stateSetter},  ${formElement.ref.stateName})}`
-    );
     expect(formElement.jsxCode).toContain(`value={parseDate(${formElement.ref.stateName})}`);
     expect(formElement.jsxCode).toContain(`time={parseTime(${formElement.ref.stateName})}`);
-    expect(formElement.jsxCode).toContain(
-      `onChange={(time, hours?, minutes?) => onTimeChange(time, ${formElement.ref.stateSetter}, ${formElement.ref.stateName}, hours, minutes)}`
-    );
     expect(formElement.stateCode).not.toBeNull();
   });
 
@@ -76,9 +69,9 @@ describe("<DateField> tests", () => {
       onChange: jest.fn(),
     };
 
-    const { container, formElement } = renderField(DateField, props, schema);
+    const { formElement } = renderField(DateField, props, schema);
 
-    expect(container).toMatchSnapshot();
+    expect(formElement.jsxCode).toMatchSnapshot();
 
     expect(formElement.jsxCode).not.toBeNull();
     expect(formElement.jsxCode).toContain(`label={'${props.label}'}`);

@@ -63,8 +63,8 @@ export const TaskForm: React.FC<Props> = ({
               if (error?.response?.status === 401) {
                 await onUnauthorized(error);
               }
-              const message = error.response ? error.response.data : error.message;
-              onSubmitFormError(phase ?? "", message);
+              const details = error.response?.data?.message ? error.response.data.message : error.message;
+              onSubmitFormError(phase ?? "", details);
             });
         },
         getTaskFormSchema(): Promise<Record<string, any>> {

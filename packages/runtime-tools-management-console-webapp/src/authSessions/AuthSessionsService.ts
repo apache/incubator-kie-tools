@@ -53,6 +53,8 @@ export class AuthSessionsService {
     config: client.Configuration;
     loginSuccessRoute: string;
     forceLoginPrompt?: boolean;
+    scope: string;
+    audience?: string;
   }) {
     const code_challenge_method = "S256";
     /**
@@ -69,11 +71,12 @@ export class AuthSessionsService {
     // redirect user to as.authorization_endpoint
     const parameters: OidcAuthUrlParameters = {
       redirect_uri: args.loginSuccessRoute,
-      scope: "openid email",
+      scope: args.scope,
       code_verifier,
       code_challenge,
       code_challenge_method,
       state: uuid(),
+      ...(args.audience ? { audience: args.audience } : {}),
       ...(args.forceLoginPrompt ? { prompt: "login" } : {}),
     };
 
@@ -164,6 +167,8 @@ export class AuthSessionsService {
     authServerUrl: string;
     clientId: string;
     name: string;
+    scope: string;
+    audience?: string;
     forceLoginPrompt?: boolean;
     loginSuccessRoute: string;
   }) {
@@ -173,6 +178,8 @@ export class AuthSessionsService {
       config,
       loginSuccessRoute: args.loginSuccessRoute,
       forceLoginPrompt: args.forceLoginPrompt,
+      scope: args.scope,
+      audience: args.audience,
     });
 
     await AuthSessionsService.redirectToIdentityProviderLogin({ ...args, config, parameters });
@@ -188,10 +195,6 @@ export class AuthSessionsService {
       clientId: args.clientId,
     });
 
-    if (!args.authSession.tokens.refresh_token) {
-      throw new Error(`No refresh_token found for AuthSession ${args.authSession.id}!`);
-    }
-
     const endSessionUrl = client.buildEndSessionUrl(config, {
       post_logout_redirect_uri: window.location.href,
       id_token_hint: args.authSession.tokens.id_token!,
@@ -200,14 +203,18 @@ export class AuthSessionsService {
     window.location.href = endSessionUrl.toString();
   }
 
-  static async reauthenticate(args: { authSession: OpenIDConnectAuthSession; clientId: string }) {
+  static async reauthenticate(args: { authSession: OpenIDConnectAuthSession; fromUnauthorizedRequest?: boolean }) {
     const config = await AuthSessionsService.getIdentityProviderConfig({
       authServerUrl: args.authSession.issuer,
-      clientId: args.clientId,
+      clientId: args.authSession.clientId,
     });
 
     if (!args.authSession.tokens.refresh_token) {
-      throw new Error(`No refresh_token found for AuthSession ${args.authSession.id}!`);
+      console.log(`No refresh_token found for AuthSession ${args.authSession.id}. Using old token!`);
+      // If reauthentication request came from a 401 Unauthorized response, force INVALID status.
+      return {
+        status: args.fromUnauthorizedRequest ? AuthSessionStatus.INVALID : AuthSessionStatus.VALID,
+      };
     }
 
     const tokens = await client.refreshTokenGrant(config, args.authSession.tokens.refresh_token);
@@ -216,6 +223,7 @@ export class AuthSessionsService {
     const claims = tokens.claims();
     if (!claims) {
       // expires_in was not returned by the authorization server
+      console.error(`Failed to extract claims from token for AuthSession: ${args.authSession.id}!`);
       throw new Error("Failed to extract claims from token.");
     }
     const { sub } = claims;
@@ -275,6 +283,7 @@ export class AuthSessionsService {
     const claims = tokens.claims();
     if (!claims) {
       // expires_in was not returned by the authorization server
+      console.error("Failed to extract claims from token");
       throw new Error("Failed to extract claims from token.");
     }
     const { sub } = claims;
@@ -285,12 +294,14 @@ export class AuthSessionsService {
       type: AuthSessionType.OPENID_CONNECT,
       version: AUTH_SESSIONS_VERSION_NUMBER,
       name: temporaryAuthSessionData.name,
-      username: userInfo.preferred_username,
-      // TODO: This changes between IdPs. Figure out how a generic way to list the users roles.
+      username: userInfo.preferred_username ?? userInfo.email ?? userInfo.sub,
+      // TODO: This changes between IdPs. Figure out a generic way to list the users roles.
       roles: [],
       // TODO: Somehow get this information from the Kogito application.
       impersonator: true,
       clientId: temporaryAuthSessionData.clientId,
+      audience: temporaryAuthSessionData.parameters.audience,
+      scope: temporaryAuthSessionData.parameters.scope,
       tokens,
       claims,
       runtimeUrl: temporaryAuthSessionData.runtimeUrl,

@@ -8653,12 +8653,9 @@ importers:
       history:
         specifier: ^4.9.0
         version: 4.10.1
-      oidc-client-ts:
-        specifier: ^3.1.0
-        version: 3.1.0
       openid-client:
-        specifier: ^6.1.3
-        version: 6.1.3
+        specifier: ^6.3.3
+        version: 6.3.3
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -25792,6 +25789,9 @@ packages:
   jose@5.9.6:
     resolution: {integrity: sha512-AMlnetc9+CV9asI19zHmrgS/WYsWUwCn2R7RzlbJWD7F9eWYUTGyBmU9o6PxngtLGOiDGPRu+Uc4fhKzbpteZQ==}
 
+  jose@6.0.8:
+    resolution: {integrity: sha512-EyUPtOKyTYq+iMOszO42eobQllaIjJnwkZ2U93aJzNyPibCy7CEvT9UQnaCVB51IAd49gbNdCew1c0LcLTCB2g==}
+
   js-sha256@0.10.1:
     resolution: {integrity: sha512-5obBtsz9301ULlsgggLg542s/jqtddfOpV5KJc4hajc9JV8GeY2gZHSVpYBn4nWqAUTJ9v+xwtbJ1mIBgIH5Vw==}
 
@@ -27178,8 +27178,8 @@ packages:
     engines: {node: ^18.12 || ^20 || ^22, yarn: ^1.15.2}
     hasBin: true
 
-  oauth4webapi@3.1.3:
-    resolution: {integrity: sha512-dik5wEMdFL5p3JlijYvM7wMNCgaPhblLIDCZtdXcaZp5wgu5Iwmsu7lMzgFhIDTi5d0BJo03LVoOoFQvXMeOeQ==}
+  oauth4webapi@3.3.0:
+    resolution: {integrity: sha512-ZlozhPlFfobzh3hB72gnBFLjXpugl/dljz1fJSRdqaV2r3D5dmi5lg2QWI0LmUYuazmE+b5exsloEv6toUtw9g==}
 
   object-assign@4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
@@ -27251,10 +27251,6 @@ packages:
   obuf@1.1.2:
     resolution: {integrity: sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==}
 
-  oidc-client-ts@3.1.0:
-    resolution: {integrity: sha512-IDopEXjiwjkmJLYZo6BTlvwOtnlSniWZkKZoXforC/oLZHC9wkIxd25Kwtmo5yKFMMVcsp3JY6bhcNJqdYk8+g==}
-    engines: {node: '>=18'}
-
   on-finished@2.3.0:
     resolution: {integrity: sha512-ikqdkGAAyf/X/gPhXGvfgAytDZtDbr+bkNUJ0N9h5MI/dmdgCs3l6hoHrcUv41sRKew3jIwrp4qQDXiK99Utww==}
     engines: {node: '>= 0.8'}
@@ -27312,8 +27308,8 @@ packages:
     resolution: {integrity: sha512-ur5UIdyw5Y7yEj9wLzhqXiy6GZ3Mwx0yGI+5sMn2r0N0v3cKJvUmFH5yPP+WXh9e0xfyzyJX95D8l088DNFj7A==}
     hasBin: true
 
-  openid-client@6.1.3:
-    resolution: {integrity: sha512-74sc0bR4ptfwCwMheLPaJHTQnds+97Yu6O8eQgoO3MRcd53xkfKyl3gNAsRsYSYoO+AVG3eCgnRMjRkZ6n2RYw==}
+  openid-client@6.3.3:
+    resolution: {integrity: sha512-lTK8AV8SjqCM4qznLX0asVESAwzV39XTVdfMAM185ekuaZCnkWdPzcxMTXNlsm9tsUAMa1Q30MBmKAykdT1LWw==}
 
   optimism@0.10.3:
     resolution: {integrity: sha512-9A5pqGoQk49H6Vhjb9kPgAeeECfUDF6aIICbMDL23kDLStBn1MWk3YvcZ4xWF9CsSf6XEgvRLkXy4xof/56vVw==}
@@ -51851,6 +51847,8 @@ snapshots:
 
   jose@5.9.6: {}
 
+  jose@6.0.8: {}
+
   js-sha256@0.10.1: {}
 
   js-tokens@4.0.0: {}
@@ -53586,7 +53584,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  oauth4webapi@3.1.3: {}
+  oauth4webapi@3.3.0: {}
 
   object-assign@4.1.1: {}
 
@@ -53675,10 +53673,6 @@ snapshots:
 
   obuf@1.1.2: {}
 
-  oidc-client-ts@3.1.0:
-    dependencies:
-      jwt-decode: 4.0.0
-
   on-finished@2.3.0:
     dependencies:
       ee-first: 1.1.1
@@ -53742,10 +53736,10 @@ snapshots:
 
   opener@1.5.2: {}
 
-  openid-client@6.1.3:
+  openid-client@6.3.3:
     dependencies:
-      jose: 5.9.6
-      oauth4webapi: 3.1.3
+      jose: 6.0.8
+      oauth4webapi: 3.3.0
 
   optimism@0.10.3:
     dependencies:
