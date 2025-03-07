@@ -42,7 +42,7 @@ export const en: CommonI18n = {
     download: "Download",
     edit: "Edit",
     edited: "Edited",
-    execution: "Execution",
+    evaluation: "Evaluation",
     exit: "Exit",
     file: "File",
     files: "Files",

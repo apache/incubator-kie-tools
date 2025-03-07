@@ -143,7 +143,7 @@ export type DmnEditorProps = {
    */
   externalModelsByNamespace?: ExternalModelsIndex;
   /**
-   * To show information about execution results directly on the DMN diagram and/or Boxed Expression Editor, use this prop.
+   * To show information about evaluation results directly on the DMN diagram and/or Boxed Expression Editor, use this prop.
    */
   evaluationResultsByNodeId?: EvaluationResultsByNodeId;
   /**

@@ -64,11 +64,11 @@ export interface FormDmnOutputsProps {
   differences?: Array<DeepPartial<DecisionResult>>;
   locale?: string;
   notificationsPanel: boolean;
-  openExecutionTab?: () => void;
+  openEvaluationTab?: () => void;
   openBoxedExpressionEditor?: (nodeId: string) => void;
 }
 
-export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ...props }: FormDmnOutputsProps) {
+export function FormDmnOutputs({ openEvaluationTab, openBoxedExpressionEditor, ...props }: FormDmnOutputsProps) {
   const [formResultStatus, setFormResultStatus] = useState<FormDmnOutputsStatus>(FormDmnOutputsStatus.EMPTY);
   const [formResultError, setFormResultError] = useState<boolean>(false);
   const i18n = useMemo(() => {
@@ -96,11 +96,11 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
     updatedResult?.classList.remove("kogito--editor__dmn-form-result__leaf-updated");
   }, []);
 
-  const onOpenExecutionTab = useCallback(() => {
+  const onOpenEvaluationTab = useCallback(() => {
     if (props.notificationsPanel) {
-      openExecutionTab?.();
+      openEvaluationTab?.();
     }
-  }, [props.notificationsPanel, openExecutionTab]);
+  }, [props.notificationsPanel, openEvaluationTab]);
 
   const resultStatus = useCallback(
     (evaluationStatus: DmnEvaluationStatus) => {
@@ -111,7 +111,7 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
               <div className={"kie-tools__dmn-form-result__evaluation"}>
                 <CheckCircleIcon />
                 {props.notificationsPanel ? (
-                  <a onClick={onOpenExecutionTab} className={"kogito--editor__dmn-form-result__evaluation-link"}>
+                  <a onClick={onOpenEvaluationTab} className={"kogito--editor__dmn-form-result__evaluation-link"}>
                     {i18n.result.evaluation.succeeded}
                   </a>
                 ) : (
@@ -128,7 +128,7 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
               <div className={"kie-tools__dmn-form-result__evaluation"}>
                 <Icon>&#8631;</Icon>
                 {props.notificationsPanel ? (
-                  <a onClick={onOpenExecutionTab} className={"kogito--editor__dmn-form-result__evaluation-link"}>
+                  <a onClick={onOpenEvaluationTab} className={"kogito--editor__dmn-form-result__evaluation-link"}>
                     {i18n.result.evaluation.skipped}
                   </a>
                 ) : (
@@ -143,7 +143,7 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
               <div className={"kie-tools__dmn-form-result__evaluation"}>
                 <ExclamationCircleIcon />
                 {props.notificationsPanel ? (
-                  <a onClick={onOpenExecutionTab} className={"kogito--editor__dmn-form-result__evaluation-link"}>
+                  <a onClick={onOpenEvaluationTab} className={"kogito--editor__dmn-form-result__evaluation-link"}>
                     {i18n.result.evaluation.failed}
                   </a>
                 ) : (
@@ -158,7 +158,7 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
       i18n.result.evaluation.failed,
       i18n.result.evaluation.skipped,
       i18n.result.evaluation.succeeded,
-      onOpenExecutionTab,
+      onOpenEvaluationTab,
       props.notificationsPanel,
     ]
   );

@@ -106,10 +106,10 @@ export function DmnRunnerDrawerPanelContent() {
     notificationsPanel?.setActiveTab(i18n.terms.validation);
   }, [i18n.terms.validation, notificationsPanel, onOpenPanel]);
 
-  const openExecutionTab = useCallback(() => {
+  const openEvaluationTab = useCallback(() => {
     onOpenPanel(PanelId.NOTIFICATIONS_PANEL);
-    notificationsPanel?.setActiveTab(i18n.terms.execution);
-  }, [i18n.terms.execution, notificationsPanel, onOpenPanel]);
+    notificationsPanel?.setActiveTab(i18n.terms.evaluation);
+  }, [i18n.terms.evaluation, notificationsPanel, onOpenPanel]);
 
   useEffect(() => {
     setDrawerError(false);
@@ -329,7 +329,7 @@ export function DmnRunnerDrawerPanelContent() {
                       differences={resultsDifference[currentInputIndex]}
                       locale={locale}
                       notificationsPanel={true}
-                      openExecutionTab={openExecutionTab}
+                      openEvaluationTab={openEvaluationTab}
                       openBoxedExpressionEditor={
                         !isLegacyDmnEditor
                           ? (nodeId: string) => {
