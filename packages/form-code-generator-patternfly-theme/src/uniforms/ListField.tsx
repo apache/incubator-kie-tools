@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useContext, useCallback } from "react";
+import React, { useContext } from "react";
 import { connectField, context, HTMLFieldProps } from "uniforms/cjs";
 import { getInputReference, getStateCode, renderField } from "./utils/Utils";
 import { codeGenContext } from "./CodeGenContext";
@@ -30,7 +30,7 @@ import {
   DEFAULT_DATA_TYPE_STRING_ARRAY,
 } from "./utils/dataTypes";
 import { renderListItemFragmentWithContext } from "./rendering/RenderingUtils";
-import { ListItemProps } from "./rendering/ListItemField";
+import { getNextIndexVariableName, ListItemProps } from "./rendering/ListItemField";
 
 export type ListFieldProps = HTMLFieldProps<
   unknown[],
@@ -43,17 +43,18 @@ export type ListFieldProps = HTMLFieldProps<
 >;
 
 const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
-  const ref: InputReference = getInputReference(props.name, DEFAULT_DATA_TYPE_ANY_ARRAY);
+  const ref: InputReference = getInputReference(props.name, DEFAULT_DATA_TYPE_ANY_ARRAY, props.itemProps);
 
   const uniformsContext = useContext(context);
   const codegenCtx = useContext(codeGenContext);
 
+  const indexVariableName = getNextIndexVariableName(props.itemProps);
   const listItem = renderListItemFragmentWithContext(
     uniformsContext,
     "$",
     {
       isListItem: true,
-      indexVariableName: "itemIndex",
+      indexVariableName,
       listName: props.name,
       listStateName: ref.stateName,
       listStateSetter: ref.stateSetter,
@@ -86,6 +87,52 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
   };
   const listItemValue = getDefaultItemValue();
 
+  const addElementsIsDisabled = `${
+    props.maxCount === undefined
+      ? props.disabled
+      : `${props.disabled} || !(${props.maxCount} <= (${ref.stateName}?.length ?? -1))`
+  }`;
+
+  const onAddElementCallback = (prefix: string) => {
+    return props.itemProps
+      ? `${prefix}${ref.stateSetter}((s) => {
+  const newState = [...s];
+  (newState${ref.stateName.split(".").splice(1).join(".")}) = [...(newState${ref.stateName.split(".").splice(1).join(".")} ?? []), ${listItemValue}];
+  return newState;
+})`
+      : `${prefix}${ref.stateSetter}((${ref.stateName} ?? []).concat([${listItemValue}]))`;
+  };
+
+  const onAddElement = `!${props.disabled} && 
+    ${
+      props.maxCount === undefined
+        ? onAddElementCallback("")
+        : onAddElementCallback(`!(${props.maxCount} <= (${ref.stateName}?.length ?? -1)) && `)
+    };`;
+
+  const removeElementIsDisabled = `${
+    props.minCount === undefined
+      ? props.disabled
+      : `${props.disabled} || (${props.minCount} >= (${ref.stateName}?.length ?? -1))`
+  }`;
+
+  const onRemoveElementCallback = (prefix: string) => {
+    return props.itemProps
+      ? `${prefix}${ref.stateSetter}((s) => {
+  const newState = [...s];
+  (newState${ref.stateName.split(".").splice(1).join(".")}) = value;
+  return newState;
+})`
+      : `${prefix}${ref.stateSetter}(value)`;
+  };
+
+  const onRemoveElement = `!${props.disabled} && 
+  ${
+    props.minCount === undefined
+      ? onRemoveElementCallback("")
+      : onRemoveElementCallback(`!(${props.minCount} >= (${ref.stateName}?.length ?? -1)) && `)
+  };`;
+
   const jsxCode = `<div>
       <Split hasGutter>
         <SplitItem>
@@ -103,9 +150,9 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
             name='$'
             variant='plain'
             style={{ paddingLeft: '0', paddingRight: '0' }}
-            disabled={${props.maxCount === undefined ? props.disabled : `${props.disabled} || !(${props.maxCount} <= (${ref.stateName}?.length ?? -1))`}}
+            disabled={${addElementsIsDisabled}}
             onClick={() => {
-              !${props.disabled} && ${props.maxCount === undefined ? `${ref.stateSetter}((${ref.stateName} ?? []).concat([${listItemValue}]))` : `!(${props.maxCount} <= (${ref.stateName}?.length ?? -1)) && ${ref.stateSetter}((${ref.stateName} ?? []).concat([]))`};
+              ${onAddElement}
             }}
           >
             <PlusCircleIcon color='#0088ce' />
@@ -113,9 +160,9 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
         </SplitItem>
       </Split>
       <div>
-        {${ref.stateName}?.map((_, itemIndex) =>
+        {${ref.stateName}?.map((_, ${indexVariableName}) =>
           (<div
-            key={itemIndex}
+            key={${indexVariableName}}
             style={{
               marginBottom: '1rem',
               display: 'flex',
@@ -125,13 +172,13 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
             <div style={{ width: '100%', marginRight: '10px' }}>${listItem?.jsxCode}</div>
             <div>
               <Button
-                disabled={${props.minCount === undefined ? props.disabled : `${props.disabled} || (${props.minCount} >= (${ref.stateName}?.length ?? -1))`}}
+                disabled={${removeElementIsDisabled}}
                 variant='plain'
                 style={{ paddingLeft: '0', paddingRight: '0' }}
                 onClick={() => {
                   const value = [...${ref.stateName}]
-                  value.splice(itemIndex, 1);
-                  !${props.disabled} && ${props.minCount === undefined ? `${ref.stateSetter}(value)` : `!(${props.minCount} >= (${ref.stateName}?.length ?? -1)) && ${ref.stateSetter}(value)`};
+                  value.splice(${indexVariableName}, 1);
+                  ${onRemoveElement}
                 }}
               >
                 <MinusCircleIcon color='#cc0000' />
@@ -142,13 +189,21 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
       </div>
     </div>`;
 
+  function getListStateCode() {
+    let stateCode = getStateCode(ref.stateName, ref.stateSetter, ref.dataType.name, "[]");
+    stateCode = stateCode.includes("?.[itemIndex]") ? "" : stateCode;
+    stateCode = stateCode + "\n" + (listItem?.stateCode ?? "");
+    return stateCode;
+  }
+
   const element: FormInput = {
     ref,
     pfImports: [...new Set(["Split", "SplitItem", "Button", ...(listItem?.pfImports ?? [])])],
     pfIconImports: [...new Set(["PlusCircleIcon", "MinusCircleIcon", ...(listItem?.pfIconImports ?? [])])],
     reactImports: [...new Set([...(listItem?.reactImports ?? [])])],
+    requiredCode: [...new Set([...(listItem?.requiredCode ?? [])])],
     jsxCode,
-    stateCode: getStateCode(ref.stateName, ref.stateSetter, ref.dataType.name, "[]"),
+    stateCode: getListStateCode(),
     isReadonly: props.disabled,
   };
 

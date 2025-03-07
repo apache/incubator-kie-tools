@@ -23,7 +23,7 @@ import { transform } from "@babel/standalone";
 import ReactDOM from "react-dom";
 import * as PatternflyReact from "@patternfly/react-core/dist/js";
 import * as PatternflyReactIcons from "@patternfly/react-icons/dist/js";
-import { FormResources } from "../../../api";
+import { FormResources } from "@kie-tools/runtime-tools-shared-gateway-api/src/types";
 import { sourceHandler } from "../../../utils";
 import ResourcesContainer from "../ResourcesContainer/ResourcesContainer";
 

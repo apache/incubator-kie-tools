@@ -249,6 +249,7 @@ runs:
         echo "STEP: Update bash for macOS (macOS Only)"
         brew update
         brew install bash
+        brew uninstall node@20
         echo "/usr/local/bin" >> $GITHUB_PATH
 
     - name: "Print storage usage (after setup)"

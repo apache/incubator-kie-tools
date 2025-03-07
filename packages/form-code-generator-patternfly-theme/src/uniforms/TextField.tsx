@@ -61,6 +61,7 @@ const Text: React.FC<TextFieldProps> = (props: TextFieldProps) => {
         required: props.required,
       },
       disabled: props.disabled,
+      itemProps: props.itemProps,
     });
   };
 
@@ -85,6 +86,7 @@ const Text: React.FC<TextFieldProps> = (props: TextFieldProps) => {
         required: props.required,
       },
       disabled: props.disabled,
+      itemProps: props.itemProps,
     });
   };
 

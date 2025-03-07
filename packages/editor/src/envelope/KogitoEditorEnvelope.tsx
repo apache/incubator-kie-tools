@@ -45,7 +45,7 @@ export class KogitoEditorEnvelope<
       EnvelopeApi,
       ChannelApi,
       EditorEnvelopeViewApi<E>,
-      KogitoEditorEnvelopeContextType<ChannelApi>
+      KogitoEditorEnvelopeContextType<EnvelopeApi, ChannelApi>
     >,
     private readonly keyboardShortcutsService: KeyboardShortcutsService,
     private readonly i18nService: I18nService,
@@ -53,9 +53,10 @@ export class KogitoEditorEnvelope<
       EnvelopeApi,
       ChannelApi,
       EditorEnvelopeViewApi<E>,
-      KogitoEditorEnvelopeContextType<ChannelApi>
+      KogitoEditorEnvelopeContextType<EnvelopeApi, ChannelApi>
     >,
-    private readonly context: KogitoEditorEnvelopeContextType<ChannelApi> = {
+    private readonly context: KogitoEditorEnvelopeContextType<EnvelopeApi, ChannelApi> = {
+      shared: envelope.shared,
       channelApi: envelope.channelApi,
       operatingSystem: getOperatingSystem(),
       services: {

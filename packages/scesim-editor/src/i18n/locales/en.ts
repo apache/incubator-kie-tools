@@ -23,12 +23,10 @@ import TestScenarioEditorI18n from "../TestScenarioEditorI18n";
 export const en: TestScenarioEditorI18n = {
   ...en_common,
   alerts: {
-    dmnDataNotAvailable:
-      "It's still not possibile to retrieve the DMN information from your DMN file. Work in progress.",
     ruleDataNotAvailable:
       "It's not possibile to retrieve the Java Classes from your project. This feature is still not supported.",
     dmnDataRetrievedFromScesim:
-      "Impossibile to retrieve DMN Nodes from the given DMN file, therefore they have been restored from the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose its related DMN Node data.",
+      "Impossibile to retrieve DMN Nodes from the referenced DMN file, therefore they have been restored from the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose its related DMN Node data. To fix this issue, go to the Setting panel and restore the link with the related DMN model.",
     ruleDataRetrievedFromScesim:
       "Impossibile to retrieve the Java Classes from your project, therefore they have been restored from the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose its related Java Class data.",
   },
@@ -45,8 +43,9 @@ export const en: TestScenarioEditorI18n = {
     createButton: "Create",
     dmnGroup: "Select DMN",
     dmnNoChoice: "Select a DMN file",
-    kieSessionGroup: "KIE Session",
-    kieAgendaGroup: "Group",
+    dmnNoPresent: "No DMN files found in the project",
+    kieSessionGroup: "KIE session",
+    kieAgendaGroup: "RuleFlow group",
     optional: "Optional",
     statelessSession: "Stateless Session",
     testSkip: "Skip this file during the test",
@@ -101,10 +100,12 @@ export const en: TestScenarioEditorI18n = {
         "To edit a test scenario definition, select a grid's column and assign it a DMN Node attribute using the below selector",
       descriptionRule:
         "To edit a test scenario definition, select a grid's column and assign it a Java Class field using the below selector",
+      emptyDataObjectsTitle: "No more properties",
       emptyDataObjectsTitleDMN: "No DMN Nodes",
       emptyDataObjectsTitleRule: "No Java Classes",
+      emptyDataObjectsDescription: "All the properties have been already assigned",
       emptyDataObjectsDescriptionDMN: "Impossible to retrieve the DMN Nodes data from the linked DMN file.",
-      emptyDataObjectsDescriptionRule: "Impossible to retrieve the Java Classes from project.",
+      emptyDataObjectsDescriptionRule: "Impossible to retrieve the Java Classes from the project.",
       expandAll: "Expand all",
       insertDataObject: "Assign",
       insertDataObjectTooltipColumnSelectionMessage:
@@ -119,14 +120,15 @@ export const en: TestScenarioEditorI18n = {
     settings: {
       assetType: "Type",
       dmnModel: "DMN Model",
+      dmnModelReferenceError: "Wrong DMN Model path",
       dmnName: "DMN Name",
       dmnNameSpace: "DMN Namespace",
       fileName: "Name",
       kieSessionRule: "KIE Session",
       kieSessionRulePlaceholder: "(Optional) KieSession",
       kieSessionRuleTooltip: "Optional value. If not specified, the default session will be used.",
-      ruleFlowGroup: "AgendaGroup/RuleFlowGroup",
-      ruleFlowGroupPlaceholder: "(Optional) AgendaGroup or RuleFlowGroup.",
+      ruleFlowGroup: "RuleFlow group",
+      ruleFlowGroupPlaceholder: "(Optional) RuleFlow group.",
       ruleFlowGroupTooltip:
         "Optional value. The defined Scenario will be executed against the provided Agenda Group or RuleFlowGroup.",
       statelessSessionRule: "Stateless Session",
@@ -139,7 +141,7 @@ export const en: TestScenarioEditorI18n = {
   },
   errorFallBack: {
     title: "An unexpected error happened",
-    body: "This is a bug. Please consider reporting it so the DMN Editor can continue improving. See the details below.",
+    body: "This is a bug. Please consider reporting it so the Test Scenario Editor can continue improving. See the details below.",
     lastActionButton: "Try undoing last action",
     fileIssueHref: "File an issue",
   },

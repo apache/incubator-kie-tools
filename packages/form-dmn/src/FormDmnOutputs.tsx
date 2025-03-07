@@ -19,6 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";
@@ -135,7 +136,7 @@ export function FormDmnOutputs({
           return (
             <>
               <div className={"kie-tools__dmn-form-result__evaluation"}>
-                <InfoCircleIcon />
+                <Icon>&#8631;</Icon>
                 {props.notificationsPanel ? (
                   <a onClick={onOpenExecutionTab} className={"kogito--editor__dmn-form-result__evaluation-link"}>
                     {i18n.result.evaluation.skipped}

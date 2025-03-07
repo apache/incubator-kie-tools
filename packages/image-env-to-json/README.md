@@ -19,7 +19,7 @@
 
 This package contains a CLI tool to convert environment variables to a JSON file.
 
-It is designed mainly to be used by container images.
+It is intended for use within a Linux container.
 
 ## Build
 
@@ -37,9 +37,9 @@ The output artifacts will be a JS version and a standalone executable in the `pa
 $ image-env-to-json [options]
 
 Options:
-  -V, --version                output the version number
+  -v, --version                output the version number
   -d, --directory <directory>  directory to create or update an existing env.json file
-  -n, --names <names...>       environment variable names to look for
+  --json-schema <directory>    directory of the JSON Schema to be used during the `env.json` creation/update
   -h, --help                   display help for command
 ```
 
@@ -55,10 +55,10 @@ ENV_B=value_b
 When running:
 
 ```bash
-$ image-env-to-json -d /my/directory -n ENV_A ENV_B ENV_C
+$ image-env-to-json --directory /path/to/env/json/dir --json-schema /path/to/schema.json
 ```
 
-The following JSON content will be written to `/my/directory/env.json`:
+The following JSON content will be written to `/path/to/env/json/dir/env.json`:
 
 ```json
 {

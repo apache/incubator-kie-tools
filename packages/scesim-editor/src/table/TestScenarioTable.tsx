@@ -112,12 +112,20 @@ function TestScenarioTable({
      In case of RULE Scenario, the Data Type is a FQCN (eg. java.lang.String). So, the label will take the class name only
      In any case, if the Data Type ends with a "Void", that means the type has not been assigned, so we show Undefined. */
   const determineDataTypeLabel = useCallback(
-    (dataType: string) => {
+    (dataType: string, genericTypes: string[]) => {
       let dataTypeLabel = dataType;
       if (testScenarioType === "RULE") {
         dataTypeLabel = dataTypeLabel.split(".").pop() ?? dataTypeLabel;
       }
-      return dataTypeLabel.endsWith("Void") ? "<Undefined>" : dataTypeLabel;
+      /* List Type */
+      if (genericTypes.length == 1) {
+        dataTypeLabel = testScenarioType === "RULE" ? `${dataTypeLabel}<${genericTypes[0]}>` : `${genericTypes[0]}[]`;
+      }
+      /* Map Type */
+      if (testScenarioType === "RULE" && genericTypes.length == 2) {
+        dataTypeLabel = `${dataTypeLabel}<${genericTypes[0]},${genericTypes[1]}>`;
+      }
+      return !dataTypeLabel || dataTypeLabel.endsWith("Void") ? "<Undefined>" : dataTypeLabel;
     },
     [testScenarioType]
   );
@@ -153,15 +161,13 @@ function TestScenarioTable({
         dataType:
           isDescriptionColumn || factMapping.factMappingValueType?.__$$text === "EXPRESSION"
             ? undefined
-            : determineDataTypeLabel(factMapping.className.__$$text),
+            : determineDataTypeLabel(
+                factMapping.className.__$$text,
+                factMapping.genericTypes?.string?.map((genericType) => genericType.__$$text) ?? []
+              ),
         groupType: factMapping.expressionIdentifier.type!.__$$text.toLowerCase(),
         id: factMapping!.expressionIdentifier.name!.__$$text,
         isRowIndexColumn: false,
-        // isInlineEditable: isDescriptionColumn         **TODO NOT SURE IF IT MAKES SENSE TO IMPLEMENT IT
-        //   ? false
-        //   : assetType === TestScenarioType[TestScenarioType.RULE]
-        //   ? true
-        //   : false,
         label: isDescriptionColumn ? factMapping.factAlias.__$$text : factMapping.expressionAlias!.__$$text,
         minWidth: isDescriptionColumn ? 300 : 100,
         setWidth: setColumnWidth(factMappingIndex),
@@ -183,7 +189,7 @@ function TestScenarioTable({
 
       return {
         accessor: instanceID,
-        dataType: determineDataTypeLabel(factMapping.factIdentifier.className!.__$$text),
+        dataType: determineDataTypeLabel(factMapping.factIdentifier.className!.__$$text, []),
         groupType: groupType.toLowerCase(),
         id: instanceID,
         isRowIndexColumn: false,
@@ -549,20 +555,17 @@ function TestScenarioTable({
         const factMappingValues = isBackground
           ? state.scesim.model.ScenarioSimulationModel.background.scesimData.BackgroundData!
           : state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!;
-        const selectedColumnFactMappingIndex = determineSelectedColumnIndex(
-          factMappings,
-          args.currentIndex,
-          isInstance
-        );
 
-        addColumn({
-          beforeIndex: args.beforeIndex,
-          factMappings: factMappings,
-          factMappingValues: factMappingValues,
-          isInstance: isInstance,
-          insertDirection: args.insertDirection,
-          selectedColumnFactMappingIndex: selectedColumnFactMappingIndex,
-        });
+        for (let columnIndex = 0; columnIndex < args.columnsCount; columnIndex++) {
+          addColumn({
+            beforeIndex: args.beforeIndex,
+            factMappings: factMappings,
+            factMappingValues: factMappingValues,
+            isInstance: isInstance,
+            insertDirection: args.insertDirection,
+            selectedColumnFactMappingIndex: determineSelectedColumnIndex(factMappings, args.currentIndex, isInstance),
+          });
+        }
       });
     },
     [
@@ -635,7 +638,7 @@ function TestScenarioTable({
    * It adds a Scenario (Row) at the given row index
    */
   const onRowAdded = useCallback(
-    (args: { beforeIndex: number }) => {
+    (args: { beforeIndex: number; insertDirection: InsertRowColumnsDirection; rowsCount: number }) => {
       if (isBackground) {
         throw new Error("Impossible state. Background table can have a single row only");
       }
@@ -644,7 +647,9 @@ function TestScenarioTable({
           state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!;
         const factMappingValues = state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!;
 
-        addRow({ beforeIndex: args.beforeIndex, factMappings: factMappings, factMappingValues: factMappingValues });
+        for (let rowIndex = 0; rowIndex < args.rowsCount; rowIndex++) {
+          addRow({ beforeIndex: args.beforeIndex, factMappings: factMappings, factMappingValues: factMappingValues });
+        }
       });
     },
     [isBackground, testScenarioEditorStoreApi]

@@ -22,6 +22,7 @@ import { connectField, HTMLFieldProps } from "uniforms/cjs";
 import { renderCodeGenElement, SELECT } from "./templates/templates";
 import { useAddFormElementToBootstrapContext } from "./BootstrapCodeGenContext";
 import { FormInput } from "../api";
+import { ListItemProps } from "./rendering/ListFieldInput";
 
 export type SelectInputProps = HTMLFieldProps<
   string[],
@@ -33,31 +34,28 @@ export type SelectInputProps = HTMLFieldProps<
     allowedValues?: string[];
     required: boolean;
     transform?(value: string): string;
+    itemProps?: ListItemProps;
   }
 >;
 
 const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
-  const options =
-    props.allowedValues?.map((option) => {
-      return {
-        value: option,
-        label: props.transform ? props.transform(option) : option,
-        checked: props.value?.includes(option),
-      };
-    }) || [];
-
-  const inputProps = {
+  const element: FormInput = renderCodeGenElement(SELECT, {
     id: props.name,
     name: props.name,
     label: props.label,
     multiple: props.fieldType === Array,
     placeHolder: props.placeHolder,
     disabled: props.disabled,
-    options: options,
     value: props.value,
-  };
-
-  const element: FormInput = renderCodeGenElement(SELECT, inputProps);
+    itemProps: props.itemProps,
+    options: (props.allowedValues ?? [])?.map((option) => {
+      return {
+        value: option,
+        label: props.transform ? props.transform(option) : option,
+        checked: props.value?.includes(option),
+      };
+    }),
+  });
   useAddFormElementToBootstrapContext(element);
   return <>{JSON.stringify(element)}</>;
 };

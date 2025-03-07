@@ -20,30 +20,43 @@
 import * as TestScenarioEditor from "../../src/TestScenarioEditor";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
-import { LOAN_PRE_QUALIFICATION, TRAFFIC_VIOLATION } from "./ExternalDmnModels";
+import { COLLECTION, EMPTY, LOAN_PRE_QUALIFICATION, MIXED, SIMPLE, TRAFFIC_VIOLATION } from "./ExternalDmnModels";
 
-export const loanPreQualification = normalize(
-  getMarshaller(LOAN_PRE_QUALIFICATION, { upgradeTo: "latest" }).parser.parse()
-);
-export const trafficViolationModel = normalize(
-  getMarshaller(TRAFFIC_VIOLATION, { upgradeTo: "latest" }).parser.parse()
-);
-
-export const avaiableModels: TestScenarioEditor.ExternalDmn[] = [
+export const availableModels: TestScenarioEditor.ExternalDmn[] = [
   {
-    model: loanPreQualification,
+    model: normalize(getMarshaller(COLLECTION, { upgradeTo: "latest" }).parser.parse()),
+    svg: "",
+    normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/collection.dmn",
+  },
+  {
+    model: normalize(getMarshaller(EMPTY, { upgradeTo: "latest" }).parser.parse()),
+    svg: "",
+    normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/empty.dmn",
+  },
+  {
+    model: normalize(getMarshaller(LOAN_PRE_QUALIFICATION, { upgradeTo: "latest" }).parser.parse()),
     svg: "",
     normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/loan-pre-qualification.dmn",
   },
   {
-    model: trafficViolationModel,
+    model: normalize(getMarshaller(MIXED, { upgradeTo: "latest" }).parser.parse()),
+    svg: "",
+    normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/mixed.dmn",
+  },
+  {
+    model: normalize(getMarshaller(SIMPLE, { upgradeTo: "latest" }).parser.parse()),
+    svg: "",
+    normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/simple.dmn",
+  },
+  {
+    model: normalize(getMarshaller(TRAFFIC_VIOLATION, { upgradeTo: "latest" }).parser.parse()),
     svg: "",
     normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/traffic-violation.dmn",
   },
 ];
 
 export const availableModelsByPath: Record<string, TestScenarioEditor.ExternalDmn> = Object.values(
-  avaiableModels
+  availableModels
 ).reduce(
   (acc, v) => {
     acc[v.normalizedPosixPathRelativeToTheOpenFile] = v;

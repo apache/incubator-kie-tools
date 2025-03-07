@@ -23,6 +23,7 @@ import { DashbuilderEditor } from "./DashbuilderEditor";
 import { DashbuilderEditorChannelApi } from "../api/DashbuilderEditorChannelApi";
 import { DashbuilderEditorApi } from "../api/DashbuilderEditorApi";
 import { Position } from "monaco-editor";
+import { DashbuilderEditorEnvelopeApi } from "../api";
 
 export class DashbuilderEditorView implements DashbuilderEditorApi {
   private readonly editorRef: React.RefObject<DashbuilderEditorApi>;
@@ -31,7 +32,10 @@ export class DashbuilderEditorView implements DashbuilderEditorApi {
   public af_componentTitle: "Dashbuilder Editor";
 
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<DashbuilderEditorChannelApi>,
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<
+      DashbuilderEditorEnvelopeApi,
+      DashbuilderEditorChannelApi
+    >,
     private readonly initArgs: EditorInitArgs
   ) {
     this.editorRef = React.createRef<DashbuilderEditorApi>();

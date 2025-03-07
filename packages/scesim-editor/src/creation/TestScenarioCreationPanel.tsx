@@ -18,8 +18,11 @@
  */
 
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
+import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { basename } from "path";
 
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
@@ -37,10 +40,31 @@ import CubesIcon from "@patternfly/react-icons/dist/esm/icons/cubes-icon";
 import { useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
 import { useTestScenarioEditorI18n } from "../i18n";
 
+import { useExternalModels } from "../externalModels/TestScenarioEditorDependenciesContext";
+import { ExternalDmn } from "../TestScenarioEditor";
+import { createNewDmnTypeTestScenario } from "../mutations/createNewDmnTypeTestScenario";
+import { createNewRuleTypeTestScenario } from "../mutations/createNewRuleTypeTestScenario";
+
 import "./TestScenarioCreationPanel.css";
 
 function TestScenarioCreationPanel() {
   const { i18n } = useTestScenarioEditorI18n();
+  const { onRequestExternalModelsAvailableToInclude, onRequestExternalModelByPath } = useExternalModels();
+  const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
+
+  const [allDmnModelNormalizedPosixRelativePaths, setAllDmnModelNormalizedPosixRelativePaths] = useState<
+    string[] | undefined
+  >(undefined);
+  const [assetType, setAssetType] = React.useState<"" | "DMN" | "RULE">("");
+  const [isAutoFillTableEnabled, setAutoFillTableEnabled] = React.useState(true);
+  const [isStatelessSessionRule, setStatelessSessionRule] = React.useState(false);
+  const [isTestSkipped, setTestSkipped] = React.useState(false);
+  const [kieSessionRule, setKieSessionRule] = React.useState("");
+  const [ruleFlowGroup, setRuleFlowGroup] = React.useState("");
+  const [selectedDmnModel, setSelectedDmnModel] = useState<ExternalDmn | undefined>(undefined);
+  const [selectedDmnModelPathRelativeToThisScesim, setSelectedDmnModelPathRelativeToThisScesim] = useState<
+    string | undefined
+  >(undefined);
 
   const assetsOption = [
     { value: "", label: i18n.creationPanel.assetsOption.noChoice, disabled: true },
@@ -48,34 +72,103 @@ function TestScenarioCreationPanel() {
     { value: "RULE", label: i18n.creationPanel.assetsOption.rule, disabled: false },
   ];
 
-  const [assetType, setAssetType] = React.useState<"" | "DMN" | "RULE">("");
-  const [isAutoFillTableEnabled, setAutoFillTableEnabled] = React.useState(true);
-  const [isStatelessSessionRule, setStatelessSessionRule] = React.useState(false);
-  const [isTestSkipped, setTestSkipped] = React.useState(false);
-  const [kieSessionRule, setKieSessionRule] = React.useState("");
-  const [ruleFlowGroup, setRuleFlowGroup] = React.useState("");
-  const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
+  /** It retrieves all the avaiable DMN files available in the user's project */
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        onRequestExternalModelsAvailableToInclude?.()
+          .then((dmnModelNormalizedPosixPathRelativePaths) => {
+            console.trace("[TestScenarioCreationPanel] The below external DMN models have been found");
+            console.trace(dmnModelNormalizedPosixPathRelativePaths);
+
+            if (canceled.get()) {
+              setAllDmnModelNormalizedPosixRelativePaths(undefined);
+              return;
+            }
+            setAllDmnModelNormalizedPosixRelativePaths(
+              dmnModelNormalizedPosixPathRelativePaths.sort((modelA, modelB) =>
+                basename(modelA).localeCompare(basename(modelB))
+              )
+            );
+          })
+          .catch((err) => {
+            console.error(
+              `[TestScenarioCreationPanel] The below error when trying to retrieve all the External DMN files from the project.`
+            );
+            console.error(err);
+            throw err;
+          });
+      },
+      [onRequestExternalModelsAvailableToInclude]
+    )
+  );
+
+  /** It returns the unmarshalled representation of a DMN model given its path */
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (!selectedDmnModelPathRelativeToThisScesim || onRequestExternalModelByPath === undefined) {
+          return;
+        }
+
+        onRequestExternalModelByPath(selectedDmnModelPathRelativeToThisScesim)
+          .then((externalDMNModel) => {
+            console.trace("[TestScenarioCreationPanel] The below external DMN model have been loaded");
+            console.trace(externalDMNModel);
+
+            if (canceled.get() || !externalDMNModel) {
+              setSelectedDmnModel(undefined);
+              return;
+            }
+
+            setSelectedDmnModel(externalDMNModel);
+          })
+          .catch((err) => {
+            console.error(
+              `[TestScenarioCreationPanel] An error occurred when parsing the selected model '${selectedDmnModelPathRelativeToThisScesim}'. Please double-check it is a non-empty valid model.`
+            );
+            console.error(err);
+            throw err;
+          });
+      },
+      [onRequestExternalModelByPath, selectedDmnModelPathRelativeToThisScesim]
+    )
+  );
 
   const createTestScenario = useCallback(
-    (
-      assetType: string,
-      isStatelessSessionRule: boolean,
-      isTestSkipped: boolean,
-      kieSessionRule: string,
-      ruleFlowGroup: string
-    ) =>
+    () =>
       testScenarioEditorStoreApi.setState((state) => {
-        const settings = state.scesim.model.ScenarioSimulationModel.settings;
-        settings.dmnFilePath = assetType === "DMN" ? { __$$text: "./MockedDMNName.dmn" } : undefined;
-        settings.dmnName = assetType === "DMN" ? { __$$text: "MockedDMNName.dmn" } : undefined;
-        settings.dmnNamespace = assetType === "DMN" ? { __$$text: "https:\\kie" } : undefined;
-        settings.dmoSession = assetType === "RULE" && kieSessionRule ? { __$$text: kieSessionRule } : undefined;
-        settings.ruleFlowGroup = assetType === "RULE" && ruleFlowGroup ? { __$$text: ruleFlowGroup } : undefined;
-        settings.skipFromBuild = { __$$text: isTestSkipped };
-        settings.stateless = assetType === "RULE" ? { __$$text: isStatelessSessionRule } : undefined;
-        settings.type = { __$$text: assetType };
+        assetType === "DMN"
+          ? createNewDmnTypeTestScenario({
+              dmnModel: selectedDmnModel!,
+              factMappingsModel:
+                state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!,
+              factMappingValuesModel: state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!,
+              isAutoFillTableEnabled,
+              isTestSkipped,
+              settingsModel: state.scesim.model.ScenarioSimulationModel.settings,
+            })
+          : createNewRuleTypeTestScenario({
+              factMappingsModel:
+                state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!,
+              factMappingValuesModel: state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!,
+              isStatelessSessionRule,
+              isTestSkipped,
+              kieSessionRule,
+              ruleFlowGroup,
+              settingsModel: state.scesim.model.ScenarioSimulationModel.settings,
+            });
       }),
-    [testScenarioEditorStoreApi]
+    [
+      assetType,
+      isAutoFillTableEnabled,
+      isStatelessSessionRule,
+      isTestSkipped,
+      kieSessionRule,
+      ruleFlowGroup,
+      selectedDmnModel,
+      testScenarioEditorStoreApi,
+    ]
   );
 
   return (
@@ -84,8 +177,8 @@ function TestScenarioCreationPanel() {
       <Title headingLevel={"h6"} size={"md"}>
         {i18n.creationPanel.title}
       </Title>
-      <Form isHorizontal className="kie-scesim-editor--creation-form">
-        <FormGroup label={i18n.creationPanel.assetsGroup} isRequired>
+      <Form className="kie-scesim-editor--creation-form" isHorizontal>
+        <FormGroup isRequired label={i18n.creationPanel.assetsGroup}>
           <FormSelect
             id="asset-type-select"
             name="asset-type-select"
@@ -99,9 +192,25 @@ function TestScenarioCreationPanel() {
         </FormGroup>
         {assetType === "DMN" && (
           <>
-            <FormGroup label={i18n.creationPanel.dmnGroup} isRequired>
-              <FormSelect id="dmn-select" name="dmn-select" value={""} isDisabled>
-                <FormSelectOption isDisabled={true} key={0} value={""} label={i18n.creationPanel.dmnNoChoice} />
+            <FormGroup isRequired label={i18n.creationPanel.dmnGroup}>
+              <FormSelect
+                id="dmn-select"
+                name="dmn-select"
+                onChange={(dmnModelPathRelativeToThisScesim) => {
+                  console.trace(`[TestScenarioCreationPanel] Selected path ${dmnModelPathRelativeToThisScesim}`);
+                  setSelectedDmnModelPathRelativeToThisScesim(dmnModelPathRelativeToThisScesim);
+                }}
+                value={selectedDmnModelPathRelativeToThisScesim}
+              >
+                <FormSelectOption key={undefined} isDisabled label={i18n.creationPanel.dmnNoChoice} />
+                {((allDmnModelNormalizedPosixRelativePaths?.length ?? 0) > 0 &&
+                  allDmnModelNormalizedPosixRelativePaths?.map((normalizedPosixPathRelativeToTheOpenFile) => (
+                    <FormSelectOption
+                      key={normalizedPosixPathRelativeToTheOpenFile}
+                      value={normalizedPosixPathRelativeToTheOpenFile}
+                      label={basename(normalizedPosixPathRelativeToTheOpenFile)}
+                    />
+                  ))) || <FormSelectOption key={undefined} isDisabled label={i18n.creationPanel.dmnNoPresent} />}
               </FormSelect>
             </FormGroup>
             <FormGroup>
@@ -172,7 +281,7 @@ function TestScenarioCreationPanel() {
               <>
                 <span>{i18n.creationPanel.testSkip}</span>
                 <Tooltip content={i18n.drawer.settings.testSkippedTooltip}>
-                  <Icon className={"kie-scesim-editor-creation-panel--info-icon"} size="sm" status="info">
+                  <Icon className="kie-scesim-editor-creation-panel--info-icon" size="sm" status="info">
                     <HelpIcon />
                   </Icon>
                 </Tooltip>
@@ -184,12 +293,17 @@ function TestScenarioCreationPanel() {
           />
         </FormGroup>
       </Form>
+      {assetType === "RULE" && (
+        <Alert
+          className="kie-scesim-editor-creation-panel--rule-scesim-alert"
+          variant="danger"
+          title="Rule based Test Scenario is not supported yet."
+        />
+      )}
       <Button
         icon={<AddIcon />}
-        isDisabled={assetType == ""}
-        onClick={() =>
-          createTestScenario(assetType, isStatelessSessionRule, isTestSkipped, kieSessionRule, ruleFlowGroup)
-        }
+        isDisabled={assetType === "" || assetType === "RULE" || (assetType === "DMN" && !selectedDmnModel)}
+        onClick={createTestScenario}
         variant="primary"
       >
         {i18n.creationPanel.createButton}

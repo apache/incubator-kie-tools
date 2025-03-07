@@ -783,11 +783,23 @@ export class IdentifiersRepository {
         ruleElement.outputEntry?.forEach((outputElement) => this.addDecisionTableEntryNode(parent, outputElement));
       }
     }
+    if (decisionTable.input) {
+      for (const inputClause of decisionTable.input) {
+        this.addDecisionTableEntryNode(parent, inputClause);
+      }
+    }
     this.addIdentifier({
       uuid: variableNode.uuid,
       name: "",
       kind: FeelSyntacticSymbolNature.LocalVariable,
       parentContext: parent,
+      applyTypeRefToSource: (value) => {
+        if (typeof value === "string") {
+          decisionTable["@_typeRef"] = value;
+        } else {
+          decisionTable["@_typeRef"] = value?.typeRef;
+        }
+      },
     });
   }
 

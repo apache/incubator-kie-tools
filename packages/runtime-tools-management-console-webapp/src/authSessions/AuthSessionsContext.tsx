@@ -36,7 +36,6 @@ import {
 } from "./AuthSessionApi";
 import { deleteOlderAuthSessionsStorage, migrateAuthSessions } from "./AuthSessionMigrations";
 import { AuthSessionsService } from "./AuthSessionsService";
-import { useEnv } from "../env/hooks/EnvContext";
 
 export type AuthSessionsContextType = {
   authSessions: Map<string, AuthSession>;
@@ -74,7 +73,6 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
   const [isAuthSessionsReady, setIsAuthSessionsReady] = useState<boolean>(false);
   const [currentAuthSession, setCurrentAuthSession] = useState<AuthSession>();
   const [onSelectAuthSession, setOnSelectAuthSession] = useState<(authSession: AuthSession) => void>();
-  const { env } = useEnv();
 
   const getAuthSessionsFromFile = useCallback(async () => {
     const fs = authSessionFsCache.getOrCreateFs(AUTH_SESSIONS_FS_NAME_WITH_VERSION);
@@ -153,36 +151,32 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
     authSessionBroadcastChannel.onmessage = refresh;
   }, [refresh]);
 
-  const reauthSessionsAndCalculateStatus = useCallback(
-    async (authSessions: Map<string, AuthSession>) => {
-      const updatedSessions = await Promise.all(
-        [...(authSessions?.values() ?? [])].map(async (authSession) => {
-          try {
-            if (isOpenIdConnectAuthSession(authSession)) {
-              const newAuthSessionData = await AuthSessionsService.reauthenticate({
-                authSession,
-                clientId: env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID,
-              });
-              return {
-                ...authSession,
-                ...newAuthSessionData,
-              };
-            } else {
-              return {
-                ...authSession,
-                status: AuthSessionStatus.VALID,
-              };
-            }
-          } catch (e) {
-            return { ...authSession, status: AuthSessionStatus.INVALID };
+  const reauthSessionsAndCalculateStatus = useCallback(async (authSessions: Map<string, AuthSession>) => {
+    const updatedSessions = await Promise.all(
+      [...(authSessions?.values() ?? [])].map(async (authSession) => {
+        try {
+          if (isOpenIdConnectAuthSession(authSession)) {
+            const newAuthSessionData = await AuthSessionsService.reauthenticate({
+              authSession,
+            });
+            return {
+              ...authSession,
+              ...newAuthSessionData,
+            };
+          } else {
+            return {
+              ...authSession,
+              status: AuthSessionStatus.VALID,
+            };
           }
-        })
-      );
+        } catch (e) {
+          return { ...authSession, status: AuthSessionStatus.INVALID };
+        }
+      })
+    );
 
-      return new Map(updatedSessions.map((authSession) => [authSession.id, authSession]));
-    },
-    [env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID]
-  );
+    return new Map(updatedSessions.map((authSession) => [authSession.id, authSession]));
+  }, []);
 
   // Init
   useCancelableEffect(

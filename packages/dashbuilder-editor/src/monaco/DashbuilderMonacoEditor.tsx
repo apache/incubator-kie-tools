@@ -26,6 +26,7 @@ import { EditorTheme } from "@kie-tools-core/editor/dist/api/EditorTheme";
 import { initCodeLenses } from "./augmentation/codeLenses";
 import { initAugmentationCommands } from "./augmentation/commands";
 import { initCompletion } from "./augmentation/completion";
+import { DashbuilderEditorEnvelopeApi } from "../api";
 
 interface Props {
   content: string;
@@ -39,7 +40,7 @@ const RefForwardingDashbuilderMonacoEditor: React.ForwardRefRenderFunction<
   Props
 > = ({ content, fileName, onContentChange, channelType }, forwardedRef) => {
   const container = useRef<HTMLDivElement>(null);
-  const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<DashbuilderEditorChannelApi>();
+  const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<DashbuilderEditorEnvelopeApi, DashbuilderEditorChannelApi>();
   const theme = EditorTheme.LIGHT;
 
   const controller: DashbuilderMonacoEditorApi = useMemo<DashbuilderMonacoEditorApi>(

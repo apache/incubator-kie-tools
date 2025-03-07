@@ -72,7 +72,14 @@ export type DmnEditorRef = {
   getCommands: () => Commands;
 };
 
-export type EvaluationResults = Record<string, any>;
+/**
+ * TODO we need to implement mapping  between:
+ * - DMN Runner engine
+ * - and (extended-services-api/src/dmnResult.ts)
+ * - and (EvaluationResults)
+ * https://github.com/apache/incubator-kie-issues/issues/1823
+ */
+export type EvaluationResults = Record<string, "success" | "failure" | "skipped">;
 export type ValidationMessages = Record<string, any>;
 export type OnDmnModelChange = (model: Normalized<DmnLatestModel>) => void;
 
