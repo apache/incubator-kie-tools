@@ -373,7 +373,7 @@ function TestScenarioTable({
               BeeTableOperation.RowInsertAbove,
               BeeTableOperation.RowInsertBelow,
               BeeTableOperation.RowInsertN,
-              ...(tableRows.length > 1 ? [BeeTableOperation.RowDelete] : []),
+              BeeTableOperation.RowDelete,
               BeeTableOperation.RowReset,
               BeeTableOperation.RowDuplicate,
             ]
@@ -385,7 +385,6 @@ function TestScenarioTable({
       TestScenarioTableColumnInstanceGroup,
       TestScenarioTableColumnFieldGroup,
       isBackground,
-      tableRows.length,
     ]
   );
 
@@ -781,6 +780,13 @@ function TestScenarioTable({
         const factMappingValues = state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!;
 
         deleteRow({ rowIndex: args.rowIndex, factMappingValues: factMappingValues });
+
+        /* If rows (i.e. factMappingValues) have been deleted, a new row is added */
+        if (factMappingValues.length === 0) {
+          const factMappings =
+            state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!;
+          addRow({ beforeIndex: args.rowIndex, factMappings: factMappings, factMappingValues: factMappingValues });
+        }
       });
     },
     [isBackground, testScenarioEditorStoreApi]
