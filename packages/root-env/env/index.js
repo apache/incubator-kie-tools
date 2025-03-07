@@ -46,6 +46,10 @@ module.exports = composeEnv([], {
       default: `${false}`,
       description: "Enables/disables running end-to-end tests during the build.",
     },
+    KIE_TOOLS_BUILD__containerizedEndToEndTests: {
+      default: `${true}`,
+      description: "Enables/disables running end-to-end tests inside a container during the test execution.",
+    },
     KIE_TOOLS_BUILD__ignoreEndToEndTestFailures: {
       default: `${false}`,
       description: "Ignores failures on end-to-end tests and continues with the build until the end.",
@@ -70,7 +74,7 @@ module.exports = composeEnv([], {
     },
     /* (begin) This part of the file is referenced in `scripts/update-kogito-version` */
     KOGITO_RUNTIME_version: {
-      default: "999-20250128-SNAPSHOT",
+      default: "999-20250223-SNAPSHOT",
       description: "Kogito version to be used on dependency declaration.",
     },
     /* (end) */
@@ -92,6 +96,7 @@ module.exports = composeEnv([], {
       endToEndTests: {
         run: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__runEndToEndTests)),
         ignoreFailures: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__ignoreEndToEndTestFailures)),
+        containerized: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__containerizedEndToEndTests)),
       },
       linters: {
         run: str2bool(getOrDefault(this.vars.KIE_TOOLS_BUILD__runLinters)),

@@ -18,7 +18,7 @@
  */
 import { EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
 import { JobsManagementEnvelopeViewApi } from "./JobsManagementEnvelopeView";
-import { Association, JobsManagementChannelApi, JobsManagementEnvelopeApi } from "../api";
+import { Association, JobsManagementChannelApi, JobsManagementEnvelopeApi, JobsManagementInitArgs } from "../api";
 import { JobsManagementEnvelopeContext } from "./JobsManagementEnvelopeContext";
 
 export class JobsManagementEnvelopeApiImpl implements JobsManagementEnvelopeApi {
@@ -41,7 +41,7 @@ export class JobsManagementEnvelopeApiImpl implements JobsManagementEnvelopeApi 
     this.capturedInitRequestYet = true;
   }
 
-  jobsManagement__init = async (association: Association): Promise<void> => {
+  jobsManagement__init = async (association: Association, initArgs: JobsManagementInitArgs): Promise<void> => {
     this.args.envelopeClient.associate(association.origin, association.envelopeServerId);
 
     if (this.hasCapturedInitRequestYet()) {
@@ -50,6 +50,6 @@ export class JobsManagementEnvelopeApiImpl implements JobsManagementEnvelopeApi 
 
     this.ackCapturedInitRequest();
     this.view = await this.args.viewDelegate();
-    this.view().initialize();
+    this.view().initialize(initArgs);
   };
 }

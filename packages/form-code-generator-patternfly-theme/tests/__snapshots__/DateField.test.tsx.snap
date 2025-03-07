@@ -1,13 +1,135 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<DateField> tests <DateField> - rendering - disabled 1`] = `
-<div>
-  {"ref":{"binding":"birthday","stateName":"birthday","stateSetter":"set__birthday","dataType":{"name":"string"}},"pfImports":["DatePicker","Flex","FlexItem","InputGroup","TimePicker","FormGroup"],"reactImports":["useState"],"requiredCode":["date_functions","time_functions"],"jsxCode":"&lt;FormGroup\\n      fieldId={'id'}\\n      label={'Birthday'}\\n      isRequired={true}\\n    &gt;\\n      &lt;Flex\\n    direction={{ default: 'column' }}\\n    id={'id'}\\n  &gt;\\n    &lt;FlexItem&gt;\\n      &lt;InputGroup style={{ background: 'transparent' }}&gt;\\n        &lt;DatePicker\\n          id={'date-picker-id'}\\n          isDisabled={true}\\n          name={'birthday'}\\n          onChange={newDate =&gt; onDateChange(newDate, set__birthday,  birthday)}\\n          value={parseDate(birthday)}\\n        /&gt;\\n        &lt;TimePicker\\n          id={'time-picker-id'}\\n          isDisabled={true}\\n          name={'birthday'}\\n          onChange={(time, hours?, minutes?) =&gt; onTimeChange(time, set__birthday, birthday, hours, minutes)}\\n          style={{ width: '120px' }}\\n          time={parseTime(birthday)}\\n        /&gt;\\n      &lt;/InputGroup&gt;\\n    &lt;/FlexItem&gt;\\n  &lt;/Flex&gt;\\n    &lt;/FormGroup&gt;","stateCode":"const [ birthday, set__birthday ] = useState&lt;string&gt;();","isReadonly":true}
-</div>
+"<FormGroup
+      fieldId={'id'}
+      label={'Birthday'}
+      isRequired={true}
+    >
+      <Flex
+    direction={{ default: 'column' }}
+    id={'id'}
+  >
+    <FlexItem>
+      <InputGroup style={{ background: 'transparent' }}>
+        <DatePicker
+          id={'date-picker-id'}
+          isDisabled={true}
+          name={'birthday'}
+          onChange={newDate => {
+        set__birthday(prev => {
+          if (newDate) {
+            const newDate = new Date(newDate);
+            const time = parseTime(prev);
+            if (time !== '') {
+                newDate.setHours(parseInt(time && time.split(':')[0]));
+                newDate.setMinutes(parseInt(time && time.split(':')[1].split(' ')[0]));
+            }
+            return newDate.toISOString();
+          }
+          return prev;
+        })
+      }
+      }
+          value={parseDate(birthday)}
+        />
+        <TimePicker
+          id={'time-picker-id'}
+          isDisabled={true}
+          name={'birthday'}
+          onChange={(time, hours?, minutes?) => {
+      set__birthday(prev => {
+        if (prev) {
+          const newDate = new Date(Date.parse(prev));
+          if (hours && minutes) {
+            newDate.setHours(hours);
+            newDate.setMinutes(minutes);
+          } else if (time !== '') {
+            const localeHours = parseInt(time && time.split(':')[0]);
+            const localeMinutes = parseInt(time && time.split(':')[1].split(' ')[0]);
+            if (!isNaN(localeHours) && !isNaN(localeMinutes)) {
+                newDate.setHours(localeHours);
+                newDate.setMinutes(localeMinutes);
+            }
+          }
+          return newDate.toISOString();
+        }
+        return prev;
+      })
+    }
+    }
+          style={{ width: '120px' }}
+          time={parseTime(birthday)}
+        />
+      </InputGroup>
+    </FlexItem>
+  </Flex>
+    </FormGroup>"
 `;
 
 exports[`<DateField> tests <DateField> - rendering 1`] = `
-<div>
-  {"ref":{"binding":"birthday","stateName":"birthday","stateSetter":"set__birthday","dataType":{"name":"string"}},"pfImports":["DatePicker","Flex","FlexItem","InputGroup","TimePicker","FormGroup"],"reactImports":["useState"],"requiredCode":["date_functions","time_functions"],"jsxCode":"&lt;FormGroup\\n      fieldId={'id'}\\n      label={'Birthday'}\\n      isRequired={true}\\n    &gt;\\n      &lt;Flex\\n    direction={{ default: 'column' }}\\n    id={'id'}\\n  &gt;\\n    &lt;FlexItem&gt;\\n      &lt;InputGroup style={{ background: 'transparent' }}&gt;\\n        &lt;DatePicker\\n          id={'date-picker-id'}\\n          isDisabled={false}\\n          name={'birthday'}\\n          onChange={newDate =&gt; onDateChange(newDate, set__birthday,  birthday)}\\n          value={parseDate(birthday)}\\n        /&gt;\\n        &lt;TimePicker\\n          id={'time-picker-id'}\\n          isDisabled={false}\\n          name={'birthday'}\\n          onChange={(time, hours?, minutes?) =&gt; onTimeChange(time, set__birthday, birthday, hours, minutes)}\\n          style={{ width: '120px' }}\\n          time={parseTime(birthday)}\\n        /&gt;\\n      &lt;/InputGroup&gt;\\n    &lt;/FlexItem&gt;\\n  &lt;/Flex&gt;\\n    &lt;/FormGroup&gt;","stateCode":"const [ birthday, set__birthday ] = useState&lt;string&gt;();","isReadonly":false}
-</div>
+"<FormGroup
+      fieldId={'id'}
+      label={'Birthday'}
+      isRequired={true}
+    >
+      <Flex
+    direction={{ default: 'column' }}
+    id={'id'}
+  >
+    <FlexItem>
+      <InputGroup style={{ background: 'transparent' }}>
+        <DatePicker
+          id={'date-picker-id'}
+          isDisabled={false}
+          name={'birthday'}
+          onChange={newDate => {
+        set__birthday(prev => {
+          if (newDate) {
+            const newDate = new Date(newDate);
+            const time = parseTime(prev);
+            if (time !== '') {
+                newDate.setHours(parseInt(time && time.split(':')[0]));
+                newDate.setMinutes(parseInt(time && time.split(':')[1].split(' ')[0]));
+            }
+            return newDate.toISOString();
+          }
+          return prev;
+        })
+      }
+      }
+          value={parseDate(birthday)}
+        />
+        <TimePicker
+          id={'time-picker-id'}
+          isDisabled={false}
+          name={'birthday'}
+          onChange={(time, hours?, minutes?) => {
+      set__birthday(prev => {
+        if (prev) {
+          const newDate = new Date(Date.parse(prev));
+          if (hours && minutes) {
+            newDate.setHours(hours);
+            newDate.setMinutes(minutes);
+          } else if (time !== '') {
+            const localeHours = parseInt(time && time.split(':')[0]);
+            const localeMinutes = parseInt(time && time.split(':')[1].split(' ')[0]);
+            if (!isNaN(localeHours) && !isNaN(localeMinutes)) {
+                newDate.setHours(localeHours);
+                newDate.setMinutes(localeMinutes);
+            }
+          }
+          return newDate.toISOString();
+        }
+        return prev;
+      })
+    }
+    }
+          style={{ width: '120px' }}
+          time={parseTime(birthday)}
+        />
+      </InputGroup>
+    </FlexItem>
+  </Flex>
+    </FormGroup>"
 `;

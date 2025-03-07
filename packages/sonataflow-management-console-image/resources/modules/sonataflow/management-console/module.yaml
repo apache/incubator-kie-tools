@@ -18,7 +18,7 @@
 #
 schema_version: 1
 name: org.kie.sonataflow.management.console
-version: "0.0.0"
+version: "main"
 description: "SonataFlow Management Console Launch Scripts and Configurations"
 
 execute:
@@ -33,8 +33,8 @@ artifacts:
     path: "../../../../../sonataflow-management-console-webapp/"
     dest: /home/kogito/management-console/app
     target: app
-  - name: image-env-to-json-standalone
-    path: "../../../../../image-env-to-json-standalone"
+  - name: image-env-to-json-linux-amd64
+    path: "../../../../../image-env-to-json-linux-amd64"
     dest: /home/kogito/management-console
   - name: EnvJson.schema.json
     path: "../../../../../EnvJson.schema.json"

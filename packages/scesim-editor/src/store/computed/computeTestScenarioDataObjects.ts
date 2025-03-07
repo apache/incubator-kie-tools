@@ -17,25 +17,17 @@
  * under the License.
  */
 
-import { Computed, State, TestScenarioDataObject } from "../TestScenarioEditorStore";
+import { State, TestScenarioDataObject } from "../TestScenarioEditorStore";
 
+/* The scope of this logic is to retrieve the Data Objects from the scesim file itself */
 export function computeTestScenarioDataObjects(
   factMappings: State["scesim"]["model"]["ScenarioSimulationModel"]["simulation"]["scesimModelDescriptor"]["factMappings"]["FactMapping"]
 ) {
-  /* To create the Data Object arrays we need an external source, in details: */
-  /* DMN Data: Retrieving DMN type from linked DMN file */
-  /* Java classes: Retrieving Java classes info from the user projects */
-  /* At this time, none of the above are supported */
-  /* Therefore, it tries to retrieve these info from the SCESIM file, if are present */
-
-  /* Retriving Data Object from the scesim file.       
-       That makes sense for previously created scesim files */
-
   const factsMappings = factMappings ?? [];
   const dataObjects: TestScenarioDataObject[] = [];
 
-  /* The first two FactMapping are related to the "Number" and "Description" columns. 
-        If those columns only are present, no Data Objects can be detected in the scesim file */
+  /* The first two FactMapping are related to the "Number" and "Description" columns.      */
+  /* If those columns only are present, no Data Objects can be detected in the scesim file */
   for (let i = 2; i < factsMappings.length; i++) {
     if (factsMappings[i].className!.__$$text === "java.lang.Void") {
       continue;
@@ -43,33 +35,50 @@ export function computeTestScenarioDataObjects(
     const factID = factsMappings[i].expressionElements!.ExpressionElement![0].step.__$$text;
     const dataObject = dataObjects.find((value) => value.id === factID);
     const isSimpleTypeFact = factsMappings[i].expressionElements!.ExpressionElement!.length === 1;
-    const propertyID = isSimpleTypeFact //POTENTIAL BUG
-      ? factsMappings[i].expressionElements!.ExpressionElement![0].step.__$$text.concat(".")
+    const isCollection = (factsMappings[i].genericTypes?.string?.length ?? 0) > 0;
+    const propertyID = isSimpleTypeFact
+      ? factsMappings[i].expressionElements!.ExpressionElement![0].step.__$$text.concat(".").concat("value")
       : factsMappings[i]
           .expressionElements!.ExpressionElement!.map((expressionElement) => expressionElement.step.__$$text)
           .join(".");
     const propertyName = isSimpleTypeFact
       ? "value"
       : factsMappings[i].expressionElements!.ExpressionElement!.slice(-1)[0].step.__$$text;
+    const factClassName = factsMappings[i].factIdentifier.className!.__$$text ?? "<Undefined>";
+    const propertyClassName = factsMappings[i].className!.__$$text ?? "<Undefined>";
+
     if (dataObject) {
       if (!dataObject.children?.some((value) => value.id === propertyID)) {
         dataObject.children!.push({
           id: propertyID,
-          customBadgeContent: factsMappings[i].className.__$$text,
-          isSimpleTypeFact: isSimpleTypeFact,
+          className: propertyClassName,
+          customBadgeContent: isCollection
+            ? `${factsMappings[i].genericTypes!.string![0].__$$text}${isCollection ? "[]" : ""}`
+            : propertyClassName,
+          expressionElements: factsMappings[i].expressionElements!.ExpressionElement!.map(
+            (element) => element.step.__$$text
+          ),
           name: propertyName,
         });
       }
     } else {
       dataObjects.push({
         id: factID,
+        className: factClassName,
+        customBadgeContent: factClassName,
+        expressionElements: [factID],
         name: factsMappings[i].factAlias!.__$$text,
-        customBadgeContent: factsMappings[i].factIdentifier!.className!.__$$text,
         children: [
           {
             id: propertyID,
+            className: propertyClassName,
+            customBadgeContent: isCollection
+              ? `${factsMappings[i].genericTypes!.string![0].__$$text}${isCollection ? "[]" : ""}`
+              : propertyClassName,
+            expressionElements: factsMappings[i].expressionElements!.ExpressionElement!.map(
+              (element) => element.step.__$$text
+            ),
             name: propertyName,
-            customBadgeContent: factsMappings[i].className.__$$text,
           },
         ],
       });

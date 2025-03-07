@@ -55,8 +55,8 @@ const TaskFormContainer: React.FC<Props & OUIAProps> = ({
                 resolve(response);
               })
               .catch((error) => {
-                const message = error.response ? error.response.data : error.message;
-                onSubmitError(phase, message);
+                const details = error.response?.data?.message ? error.response.data.message : error.message;
+                onSubmitError(phase ?? "", details);
                 reject(error);
               });
           });
@@ -66,6 +66,9 @@ const TaskFormContainer: React.FC<Props & OUIAProps> = ({
         },
         getCustomForm(): Promise<Form> {
           return gatewayApi.getCustomForm(userTask);
+        },
+        getTaskPhases(): Promise<string[]> {
+          return gatewayApi.getTaskPhases(userTask);
         },
       }}
       targetOrigin={appContext.getDevUIUrl()}

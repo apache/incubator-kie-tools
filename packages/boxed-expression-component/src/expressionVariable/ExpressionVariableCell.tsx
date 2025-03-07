@@ -52,13 +52,13 @@ export type OnExpressionWithVariableUpdated = (
 ) => void;
 
 export const ExpressionVariableCell: React.FunctionComponent<
-  BeeTableCellProps<ExpressionWithVariable & { index: number }> & {
+  BeeTableCellProps<ExpressionWithVariable & { index: number; isContentAFeelExpression?: boolean }> & {
     onExpressionWithVariableUpdated: OnExpressionWithVariableUpdated;
   }
 > = ({ data, rowIndex, columnIndex, onExpressionWithVariableUpdated }) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const { isReadOnly } = useBoxedExpressionEditor();
-  const { expression, variable, index } = data[rowIndex];
+  const { expression, variable, index, isContentAFeelExpression } = data[rowIndex];
 
   const onVariableUpdated = useCallback<OnExpressionVariableUpdated>(
     ({ name = DEFAULT_EXPRESSION_VARIABLE_NAME, typeRef = undefined }) => {
@@ -180,6 +180,7 @@ export const ExpressionVariableCell: React.FunctionComponent<
             selectedDataType={variable["@_typeRef"]}
             onVariableUpdated={onVariableUpdated}
             variableUuid={variable["@_id"]}
+            isContentAFeelExpression={isContentAFeelExpression}
           >
             {cellContent}
           </ExpressionVariableMenu>

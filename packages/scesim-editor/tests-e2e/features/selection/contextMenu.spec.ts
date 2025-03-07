@@ -24,7 +24,7 @@ import { AssetType } from "../../__fixtures__/editor";
 test.describe("Selection", () => {
   test.describe("Context menu", () => {
     test.beforeEach(async ({ editor, testScenarioTable }) => {
-      await editor.createTestScenario(AssetType.RULE);
+      await editor.createTestScenario(AssetType.DECISION);
       await testScenarioTable.fill({ content: '"test"', rowLocatorInfo: "1", columnNumber: 1 });
     });
 
@@ -38,6 +38,8 @@ test.describe("Selection", () => {
       });
 
       test("should use copy from selection context menu", async ({ clipboard, contextMenu, table }) => {
+        test.skip(true, "getCell() relies on an inconsistent API");
+
         await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
         await contextMenu.clickMenuItem({ menuItem: MenuItem.COPY });
         await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
@@ -50,6 +52,8 @@ test.describe("Selection", () => {
       });
 
       test("should use cut from selection context menu", async ({ clipboard, contextMenu, table }) => {
+        test.skip(true, "getCell() relies on an inconsistent API");
+
         await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
         await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
         await contextMenu.clickMenuItem({ menuItem: MenuItem.CUT });
@@ -65,7 +69,7 @@ test.describe("Selection", () => {
         await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
         await contextMenu.clickMenuItem({ menuItem: MenuItem.COPY });
 
-        await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
+        await expect(table.getCell({ rowNumber: "1", columnNumber: 2 })).toContainText("test");
 
         await table.deleteCellContent({ rowNumber: "1", columnNumber: 1 });
         await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).not.toContainText("test");
@@ -73,27 +77,27 @@ test.describe("Selection", () => {
         await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
         await contextMenu.clickMenuItem({ menuItem: MenuItem.PASTE });
 
-        await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
+        await expect(table.getCell({ rowNumber: "1", columnNumber: 2 })).toContainText("test");
       });
 
       test("should use cut and paste from selection context menu", async ({ contextMenu, table }) => {
         await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
         await contextMenu.clickMenuItem({ menuItem: MenuItem.CUT });
 
-        await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).not.toContainText("test");
+        await expect(table.getCell({ rowNumber: "1", columnNumber: 2 })).not.toContainText("test");
 
         await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
         await contextMenu.clickMenuItem({ menuItem: MenuItem.PASTE });
 
-        await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
+        await expect(table.getCell({ rowNumber: "1", columnNumber: 2 })).toContainText("test");
       });
     });
 
     test("should use reset from selection context menu", async ({ contextMenu, table }) => {
-      await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
+      await expect(table.getCell({ rowNumber: "1", columnNumber: 2 })).toContainText("test");
       await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.RESET });
-      await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).not.toContainText("test");
+      await expect(table.getCell({ rowNumber: "1", columnNumber: 2 })).not.toContainText("test");
     });
   });
 });

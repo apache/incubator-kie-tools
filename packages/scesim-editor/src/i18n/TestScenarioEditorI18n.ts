@@ -22,7 +22,6 @@ import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 
 interface TestScenarioEditorDictionary extends ReferenceDictionary {
   alerts: {
-    dmnDataNotAvailable: string;
     ruleDataNotAvailable: string;
     dmnDataRetrievedFromScesim: string;
     ruleDataRetrievedFromScesim: string;
@@ -39,6 +38,7 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
     createButton: string;
     dmnGroup: string;
     dmnNoChoice: string;
+    dmnNoPresent: string;
     kieSessionGroup: string;
     kieAgendaGroup: string;
     optional: string;
@@ -83,8 +83,10 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
       dataObjectsDescriptionRule: string;
       descriptionDMN: string;
       descriptionRule: string;
+      emptyDataObjectsTitle: string;
       emptyDataObjectsTitleDMN: string;
       emptyDataObjectsTitleRule: string;
+      emptyDataObjectsDescription: string;
       emptyDataObjectsDescriptionDMN: string;
       emptyDataObjectsDescriptionRule: string;
       expandAll: string;
@@ -99,6 +101,7 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
     settings: {
       assetType: string;
       dmnModel: string;
+      dmnModelReferenceError: string;
       dmnName: string;
       dmnNameSpace: string;
       fileName: string;

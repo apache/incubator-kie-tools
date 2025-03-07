@@ -37,4 +37,8 @@ export class TaskFormEnvelopeViewDriver implements TaskFormDriver {
   doSubmit(phase?: string, payload?: any): Promise<any> {
     return this.channelApi.requests.taskForm__doSubmit(phase, payload);
   }
+
+  getTaskPhases(): Promise<string[]> {
+    return this.channelApi.requests.taskForm__getTaskPhases();
+  }
 }

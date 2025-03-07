@@ -1,0 +1,51 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+.feel-input-textbox {
+  overflow: hidden;
+}
+
+.feel-input-textbox .feel-input {
+  width: 100%;
+}
+
+/* This is a workaround for an issue when the Monaco editor is inside an object that have its position changed by a
+ transform. In our case, the Popup uses transform: translate() to position. So we are manual position the
+  suggest widget and its details just bellow the Textbox. */
+.feel-input-textbox .feel-input .suggest-widget {
+  top: 60px !important;
+  left: 14px !important;
+}
+.feel-input-textbox .feel-input .suggest-details-container {
+  top: 60px !important;
+  left: 430px !important;
+}
+
+.feel-input-textbox .feel-input {
+  position: relative;
+  top: 0;
+  left: 0;
+}
+
+.feel-input-textbox .feel-input,
+.feel-input-textbox .feel-input > div {
+  position: relative;
+  height: 100%;
+  text-align: left;
+}
