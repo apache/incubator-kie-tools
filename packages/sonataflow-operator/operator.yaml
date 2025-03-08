@@ -1219,9 +1219,14 @@ spec:
                             by default.
                           maxProperties: 2
                           properties:
-                            migrateDBOnStartUp:
-                              description: Whether to migrate database on service startup?
-                              type: boolean
+                            dbMigrationStrategy:
+                              default: service
+                              description: |-
+                                DB Migration approach for data-index and jobs-service. Use the following values as described.
+                                job: use job based approach provided by the SonataFlow operator.
+                                service: service itself shall migrate the db and will not use SonataFlow operator.
+                                none: no database migration functionality needed.
+                              type: string
                             postgresql:
                               description: Connect configured services to a postgresql
                                 database.
@@ -9247,9 +9252,14 @@ spec:
                             by default.
                           maxProperties: 2
                           properties:
-                            migrateDBOnStartUp:
-                              description: Whether to migrate database on service startup?
-                              type: boolean
+                            dbMigrationStrategy:
+                              default: service
+                              description: |-
+                                DB Migration approach for data-index and jobs-service. Use the following values as described.
+                                job: use job based approach provided by the SonataFlow operator.
+                                service: service itself shall migrate the db and will not use SonataFlow operator.
+                                none: no database migration functionality needed.
+                              type: string
                             postgresql:
                               description: Connect configured services to a postgresql
                                 database.
@@ -17416,6 +17426,15 @@ spec:
                   description: The generation observed by the deployment controller.
                   format: int64
                   type: integer
+                sonataFlowPlatformDBMigrationPhase:
+                  properties:
+                    dbMigrationStatus:
+                      type: string
+                    message:
+                      type: string
+                    reason:
+                      type: string
+                  type: object
                 triggers:
                   description: Triggers list of triggers created for the SonataFlowPlatform
                   items:
@@ -19403,9 +19422,14 @@ spec:
                     for the workflow
                   maxProperties: 2
                   properties:
-                    migrateDBOnStartUp:
-                      description: Whether to migrate database on service startup?
-                      type: boolean
+                    dbMigrationStrategy:
+                      default: service
+                      description: |-
+                        DB Migration approach for data-index and jobs-service. Use the following values as described.
+                        job: use job based approach provided by the SonataFlow operator.
+                        service: service itself shall migrate the db and will not use SonataFlow operator.
+                        none: no database migration functionality needed.
+                      type: string
                     postgresql:
                       description: Connect configured services to a postgresql database.
                       maxProperties: 2
@@ -27739,6 +27763,18 @@ metadata:
   name: sonataflow-operator-manager-role
 rules:
   - apiGroups:
+      - batch
+    resources:
+      - jobs
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
       - monitoring.coreos.com
     resources:
       - servicemonitors
@@ -28148,6 +28184,8 @@ data:
     # The Data Index image to use, if empty the operator will use the default Apache Community one based on the current operator's version
     dataIndexPostgreSQLImageTag: "docker.io/apache/incubator-kie-kogito-data-index-postgresql:main"
     dataIndexEphemeralImageTag: "docker.io/apache/incubator-kie-kogito-data-index-ephemeral:main"
+    # The Kogito PostgreSQL DB Migrator image to use (TBD: to replace with apache image)
+    dbMigratorToolImageTag: "docker.io/apache/kie-kogito-db-migrator-tool:main"
     # SonataFlow base builder image used in the internal Dockerfile to build workflow applications in preview profile
     # Order of precedence is:
     # 1. SonataFlowPlatform in the given namespace

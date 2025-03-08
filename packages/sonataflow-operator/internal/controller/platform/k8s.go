@@ -69,13 +69,24 @@ func (action *serviceAction) Handle(ctx context.Context, platform *operatorapi.S
 	}
 
 	psDI := services.NewDataIndexHandler(platform)
+	psJS := services.NewJobServiceHandler(platform)
+
+	if IsJobsBasedDBMigration(platform, psDI, psJS) {
+		p, err := HandleDBMigrationJob(ctx, action.client, platform, psDI, psJS)
+		if p == nil && err == nil { // DB migration is in-progress
+			return nil, nil, nil
+		} else if p == nil && err != nil { // DB migration failed
+			klog.V(log.E).ErrorS(err, "Error handling DB migration job", "namespace", platform.Namespace)
+			return nil, nil, err
+		}
+	}
+
 	if psDI.IsServiceSetInSpec() {
 		if event, err := createOrUpdateServiceComponents(ctx, action.client, platform, psDI); err != nil {
 			return nil, event, err
 		}
 	}
 
-	psJS := services.NewJobServiceHandler(platform)
 	if psJS.IsServiceSetInSpec() {
 		if event, err := createOrUpdateServiceComponents(ctx, action.client, platform, psJS); err != nil {
 			return nil, event, err
@@ -254,20 +265,28 @@ func createOrUpdateService(ctx context.Context, client client.Client, platform *
 	return nil
 }
 
-func getLabels(platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) (map[string]string, map[string]string) {
+// getServicesLabelsMap A common utility function for use by SonataFlow Services (e.g. DI/JS and DB Migrator) to obtain standard common labels by passing parameters
+func getServicesLabelsMap(app string, appNamespace string, service string, k8sName string, k8sComponent string, k8sPartOf string, k8sManagedBy string) (map[string]string, map[string]string) {
 	lbl := map[string]string{
-		workflowproj.LabelApp:          platform.Name,
-		workflowproj.LabelAppNamespace: platform.Namespace,
-		workflowproj.LabelService:      psh.GetServiceName(),
-		workflowproj.LabelK8SName:      psh.GetContainerName(),
-		workflowproj.LabelK8SComponent: psh.GetServiceName(),
-		workflowproj.LabelK8SPartOF:    platform.Name,
-		workflowproj.LabelK8SManagedBy: "sonataflow-operator",
+		workflowproj.LabelApp:          app,
+		workflowproj.LabelAppNamespace: appNamespace,
+		workflowproj.LabelService:      service,
+		workflowproj.LabelK8SName:      k8sName,
+		workflowproj.LabelK8SComponent: k8sComponent,
+		workflowproj.LabelK8SPartOF:    k8sPartOf,
+		workflowproj.LabelK8SManagedBy: k8sManagedBy,
 	}
+
 	selectorLbl := map[string]string{
-		workflowproj.LabelService: psh.GetServiceName(),
+		workflowproj.LabelService: service,
 	}
+
 	return lbl, selectorLbl
+}
+
+// getLabels Specifically used by services implementing services.PlatformServiceHandler interface such as DI/JS
+func getLabels(platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) (map[string]string, map[string]string) {
+	return getServicesLabelsMap(platform.Name, platform.Namespace, psh.GetServiceName(), psh.GetContainerName(), psh.GetServiceName(), platform.Name, "sonataflow-operator")
 }
 
 func createOrUpdateConfigMap(ctx context.Context, client client.Client, platform *operatorapi.SonataFlowPlatform, psh services.PlatformServiceHandler) error {
