@@ -33,7 +33,7 @@ replicaCount: 1
 
 # -- Image source configuration for the KIE Sandbox image
 image:
-  registry: docker.io
+  registry: mirror.gcr.io
   account: apache
   name: incubator-kie-sandbox-webapp
   pullPolicy: IfNotPresent
