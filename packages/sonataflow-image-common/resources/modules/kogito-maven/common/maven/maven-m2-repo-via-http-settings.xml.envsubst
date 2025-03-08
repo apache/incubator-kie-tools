@@ -27,6 +27,14 @@
       </activation>
       <repositories>
         <repository>
+          <id>central</id>
+          <name>Central Repository</name>
+          <url>https://repo.maven.apache.org/maven2</url>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </repository>
+        <repository>
           <id>kie-tools--maven-m2-repo-via-http</id>
           <name>KIE Tools :: Maven M2 Repo via HTTP</name>
           <url>http://$M2_REPO_VIA_HTTP_URL_WITHOUT_PROTOCOL/</url>
@@ -52,14 +60,6 @@
           <snapshots>
             <enabled>true</enabled>
             <updatePolicy>never</updatePolicy>
-          </snapshots>
-        </repository>
-        <repository>
-          <id>central</id>
-          <name>Central Repository</name>
-          <url>https://repo.maven.apache.org/maven2</url>
-          <snapshots>
-            <enabled>false</enabled>
           </snapshots>
         </repository>
         <repository>
