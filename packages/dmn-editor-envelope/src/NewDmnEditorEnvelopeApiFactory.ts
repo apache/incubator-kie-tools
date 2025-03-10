@@ -45,6 +45,10 @@ export class NewDmnEditorEnvelopeApiImpl
     this.getEditorOrThrowError().openBoxedExpressionEditor(nodeId);
   }
 
+  public dmnEditor_getOpenedBoxedExpressionId(): Promise<string> {
+    return this.getEditorOrThrowError().getOpenedBoxedExpressionId();
+  }
+
   public newDmnEditor_showDmnEvaluationResults(
     evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId
   ): void {

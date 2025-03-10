@@ -107,6 +107,10 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     this.dmnEditorRef.current?.openBoxedExpressionEditor(nodeId);
   }
 
+  public async getOpenedBoxedExpressionId(): Promise<string> {
+    return this.dmnEditorRef.current?.getOpenedBoxedExpressionId() ?? Promise.resolve("");
+  }
+
   public showDmnEvaluationResults(evaluationResultsByNodeId: DmnEditor.EvaluationResultsByNodeId): void {
     this.setState((prev) => ({ ...prev, evaluationResultsByNodeId: evaluationResultsByNodeId }));
   }
