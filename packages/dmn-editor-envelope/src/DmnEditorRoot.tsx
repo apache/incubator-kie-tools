@@ -74,6 +74,7 @@ export type DmnEditorRootState = {
   keyboardShortcutsRegisterIds: number[];
   keyboardShortcutsRegistered: boolean;
   error: Error | undefined;
+  evaluationResultsByNodeId: DmnEditor.EvaluationResultsByNodeId;
 };
 
 export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditorRootState> {
@@ -96,6 +97,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       keyboardShortcutsRegisterIds: [],
       keyboardShortcutsRegistered: false,
       error: undefined,
+      evaluationResultsByNodeId: new Map(),
     };
   }
 
@@ -107,6 +109,10 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
 
   public async getOpenedBoxedExpressionId(): Promise<string> {
     return this.dmnEditorRef.current?.getOpenedBoxedExpressionId() ?? Promise.resolve("");
+  }
+
+  public showDmnEvaluationResults(evaluationResultsByNodeId: DmnEditor.EvaluationResultsByNodeId): void {
+    this.setState((prev) => ({ ...prev, evaluationResultsByNodeId: evaluationResultsByNodeId }));
   }
 
   public async undo(): Promise<void> {
@@ -483,7 +489,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
               originalVersion={this.state.marshaller?.originalVersion}
               model={this.model}
               externalModelsByNamespace={this.state.externalModelsByNamespace}
-              evaluationResults={{}}
+              evaluationResultsByNodeId={this.state.evaluationResultsByNodeId}
               validationMessages={[]}
               externalContextName={""}
               externalContextDescription={""}

@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
 import { test, expect } from "../../__fixtures__/base";
 import { MenuItem } from "../../__fixtures__/contextMenu";
 import { AssetType } from "../../__fixtures__/editor";
@@ -38,7 +39,11 @@ test.describe("Selection", () => {
       });
 
       test("should use copy from selection context menu", async ({ clipboard, contextMenu, table }) => {
-        test.skip(true, "getCell() relies on an inconsistent API");
+        test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1861");
+        test.info().annotations.push({
+          type: TestAnnotations.REGRESSION,
+          description: "https://github.com/apache/incubator-kie-issues/issues/1861",
+        });
 
         await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });
         await contextMenu.clickMenuItem({ menuItem: MenuItem.COPY });
@@ -52,7 +57,11 @@ test.describe("Selection", () => {
       });
 
       test("should use cut from selection context menu", async ({ clipboard, contextMenu, table }) => {
-        test.skip(true, "getCell() relies on an inconsistent API");
+        test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1861");
+        test.info().annotations.push({
+          type: TestAnnotations.REGRESSION,
+          description: "https://github.com/apache/incubator-kie-issues/issues/1861",
+        });
 
         await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
         await contextMenu.openOnCell({ rowNumber: "1", columnNumber: 1 });

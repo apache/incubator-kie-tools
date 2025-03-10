@@ -22,6 +22,7 @@ import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "
 import { NewDmnEditorChannelApi } from "./NewDmnEditorChannelApi";
 import { DmnEditorInterface } from "./DmnEditorFactory";
 import { NewDmnEditorEnvelopeApi } from "./NewDmnEditorEnvelopeApi";
+import { NewDmnEditorTypes } from "./NewDmnEditorTypes";
 
 export class NewDmnEditorFactory
   implements EditorFactory<NewDmnEditorInterface, NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>
@@ -45,5 +46,9 @@ export class NewDmnEditorInterface extends DmnEditorInterface {
 
   public getOpenedBoxedExpressionId(): Promise<string> {
     return this.self.getOpenedBoxedExpressionId();
+  }
+
+  public showDmnEvaluationResults(evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId): void {
+    this.self.showDmnEvaluationResults(evaluationResultsByNodeId);
   }
 }

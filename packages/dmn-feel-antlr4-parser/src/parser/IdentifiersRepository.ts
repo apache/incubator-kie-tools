@@ -33,6 +33,7 @@ import {
   DMN15__tFor,
   DMN15__tFunctionDefinition,
   DMN15__tInformationRequirement,
+  DMN15__tInputClause,
   DMN15__tInputData,
   DMN15__tInvocation,
   DMN15__tItemDefinition,
@@ -209,9 +210,9 @@ export class IdentifiersRepository {
   }
 
   private loadIdentifiersFromInputData(drg: DmnInputData) {
-    this.addIdentifier({
+    this.addIdentifierContext({
       uuid: drg["@_id"] ?? "",
-      name: drg["@_name"],
+      identifierDefinedByTheContext: drg["@_name"],
       kind: FeelSyntacticSymbolNature.GlobalVariable,
       parentContext: undefined,
       typeRef: drg.variable?.["@_typeRef"],
@@ -231,9 +232,9 @@ export class IdentifiersRepository {
   }
 
   private loadIdentifiersFromDecisionService(drg: DmnDecisionService) {
-    this.addIdentifier({
+    this.addIdentifierContext({
       uuid: drg["@_id"] ?? "",
-      name: drg["@_name"],
+      identifierDefinedByTheContext: drg["@_name"],
       kind: FeelSyntacticSymbolNature.Invocable,
       parentContext: undefined,
       typeRef: drg.variable?.["@_typeRef"],
@@ -253,9 +254,9 @@ export class IdentifiersRepository {
   }
 
   private loadIdentifiersFromBkm(drg: DmnBusinessKnowledgeModel) {
-    const parent = this.addIdentifier({
+    const parent = this.addIdentifierContext({
       uuid: drg["@_id"] ?? "",
-      name: drg["@_name"],
+      identifierDefinedByTheContext: drg["@_name"],
       kind: FeelSyntacticSymbolNature.Invocable,
       parentContext: undefined,
       typeRef: drg.variable?.["@_typeRef"],
@@ -278,9 +279,9 @@ export class IdentifiersRepository {
 
       if (drg.encapsulatedLogic.formalParameter) {
         for (const parameter of drg.encapsulatedLogic.formalParameter) {
-          parentElement = this.addIdentifier({
+          parentElement = this.addIdentifierContext({
             uuid: parameter["@_id"] ?? "",
-            name: parameter["@_name"] ?? "<parameter>",
+            identifierDefinedByTheContext: parameter["@_name"] ?? "<parameter>",
             kind: FeelSyntacticSymbolNature.Parameter,
             parentContext: parentElement,
             applyValueToSource: (value) => {
@@ -297,9 +298,9 @@ export class IdentifiersRepository {
   }
 
   private loadIdentifiersFromDecision(drg: DmnDecisionNode) {
-    const parent: IdentifierContext = this.addIdentifier({
+    const parent: IdentifierContext = this.addIdentifierContext({
       uuid: drg["@_id"] ?? "",
-      name: drg["@_name"],
+      identifierDefinedByTheContext: drg["@_name"],
       kind: FeelSyntacticSymbolNature.InvisibleVariables,
       parentContext: undefined,
       typeRef: drg.variable?.["@_typeRef"],
@@ -334,9 +335,9 @@ export class IdentifiersRepository {
     }
   }
 
-  private addIdentifier(args: {
+  private addIdentifierContext(args: {
     uuid: string;
-    name: string;
+    identifierDefinedByTheContext: string;
     kind: FeelSyntacticSymbolNature;
     parentContext?: IdentifierContext;
     typeRef?: string;
@@ -346,7 +347,7 @@ export class IdentifiersRepository {
   }) {
     const variableContext = this.createIdentifierContext(
       this.buildIdentifierUuid(args.uuid),
-      this.buildName(args.name),
+      this.buildName(args.identifierDefinedByTheContext),
       args.kind,
       args.parentContext,
       args.typeRef,
@@ -369,7 +370,7 @@ export class IdentifiersRepository {
 
   private createIdentifierContext(
     uuid: string,
-    name: string,
+    identifierDefinedByTheContext: string,
     variableType: FeelSyntacticSymbolNature,
     parent: IdentifierContext | undefined,
     typeRef: string | undefined,
@@ -384,7 +385,7 @@ export class IdentifiersRepository {
       inputIdentifiers: new Array<string>(),
       allowDynamicVariables: allowDynamicVariables,
       identifier: {
-        value: name,
+        value: identifierDefinedByTheContext,
         feelSyntacticSymbolNature: variableType,
         typeRef: this.getTypeRef(typeRef),
         expressionsThatUseTheIdentifier: new Map<string, Expression>(),
@@ -464,9 +465,9 @@ export class IdentifiersRepository {
     const id = element["@_id"] ?? "";
     const expression = new Expression(id, element);
     this._expressionsIndexedByUuid.set(id, expression);
-    this.addIdentifier({
+    this.addIdentifierContext({
       uuid: id,
-      name: "",
+      identifierDefinedByTheContext: "",
       kind: FeelSyntacticSymbolNature.LocalVariable,
       parentContext: parent,
     });
@@ -492,9 +493,9 @@ export class IdentifiersRepository {
   }
 
   private addContextEntry(parentNode: IdentifierContext, contextEntry: DmnContextEntry) {
-    const variableNode = this.addIdentifier({
+    const variableNode = this.addIdentifierContext({
       uuid: contextEntry.variable?.["@_id"] ?? "",
-      name: contextEntry.variable?.["@_name"] ?? "",
+      identifierDefinedByTheContext: contextEntry.variable?.["@_name"] ?? "",
       kind: FeelSyntacticSymbolNature.LocalVariable,
       parentContext: parentNode,
       typeRef: contextEntry.variable?.["@_typeRef"],
@@ -554,9 +555,9 @@ export class IdentifiersRepository {
 
     if (element.formalParameter) {
       for (const parameter of element.formalParameter) {
-        parentElement = this.addIdentifier({
+        parentElement = this.addIdentifierContext({
           uuid: parameter["@_id"] ?? "",
-          name: parameter["@_name"] ?? "<parameter>",
+          identifierDefinedByTheContext: parameter["@_name"] ?? "<parameter>",
           kind: FeelSyntacticSymbolNature.Parameter,
           parentContext: parentElement,
           applyValueToSource: (value) => {
@@ -635,9 +636,9 @@ export class IdentifiersRepository {
     if (expression.in.expression) {
       type = expression.in.expression["@_typeRef"];
     }
-    return this.addIdentifier({
+    return this.addIdentifierContext({
       uuid: expression["@_id"] ?? "",
-      name: "item",
+      identifierDefinedByTheContext: "item",
       kind: FeelSyntacticSymbolNature.LocalVariable,
       parentContext: parent,
       typeRef: type,
@@ -655,9 +656,9 @@ export class IdentifiersRepository {
       if (expression.in.expression) {
         type = expression.in.expression["@_typeRef"];
       }
-      localParent = this.addIdentifier({
+      localParent = this.addIdentifierContext({
         uuid: expression["@_id"] ?? "",
-        name: expression["@_iteratorVariable"],
+        identifierDefinedByTheContext: expression["@_iteratorVariable"],
         kind: FeelSyntacticSymbolNature.LocalVariable,
         parentContext: parent,
         typeRef: type,
@@ -759,9 +760,9 @@ export class IdentifiersRepository {
   }
 
   private addDecisionTableEntryNode(parent: IdentifierContext, entryNode: ExpressionSource) {
-    const ruleInputElementNode = this.addIdentifier({
+    const ruleInputElementNode = this.addIdentifierContext({
       uuid: entryNode["@_id"] ?? "",
-      name: "",
+      identifierDefinedByTheContext: "",
       kind: FeelSyntacticSymbolNature.LocalVariable,
       parentContext: parent,
     });
@@ -769,28 +770,47 @@ export class IdentifiersRepository {
     this.addExpression(parent, entryNode);
   }
 
-  private addDecisionTable(parent: IdentifierContext, decisionTable: DmnDecisionTable) {
-    const variableNode = this.addIdentifier({
-      uuid: decisionTable["@_id"] ?? "",
-      name: "",
+  private addDecisionTableInputEntryNode(parent: IdentifierContext, inputEntryNode: DMN15__tInputClause) {
+    const identifierContext = this.addIdentifierContext({
+      uuid: inputEntryNode["@_id"] ?? "",
+      identifierDefinedByTheContext: "",
       kind: FeelSyntacticSymbolNature.LocalVariable,
       parentContext: parent,
     });
-    parent.children.set(variableNode.uuid, variableNode);
+    parent.children.set(identifierContext.uuid, identifierContext);
+
+    // Notice that the expression of the inputEntryNode it is in an inner element, NOT in the inputEntryNode by itself.
+    this.addExpression(parent, inputEntryNode.inputExpression);
+  }
+
+  private addDecisionTable(parent: IdentifierContext, decisionTable: DmnDecisionTable) {
+    const addedIdentifierContext = this.addIdentifierContext({
+      uuid: decisionTable["@_id"] ?? "",
+      identifierDefinedByTheContext: "",
+      kind: FeelSyntacticSymbolNature.LocalVariable,
+      parentContext: parent,
+    });
+    parent.children.set(addedIdentifierContext.uuid, addedIdentifierContext);
+
+    // We need to create Identifier Context for each cell of the Decision Table to be able to have
+    // autocomplete and refactor inside of those, otherwise the parser will not find the context to get the identifiers.
     if (decisionTable.rule) {
       for (const ruleElement of decisionTable.rule) {
         ruleElement.inputEntry?.forEach((inputElement) => this.addDecisionTableEntryNode(parent, inputElement));
         ruleElement.outputEntry?.forEach((outputElement) => this.addDecisionTableEntryNode(parent, outputElement));
       }
     }
+
+    // The Decision Table inputs also have expressions and its own contexts.
     if (decisionTable.input) {
       for (const inputClause of decisionTable.input) {
-        this.addDecisionTableEntryNode(parent, inputClause);
+        this.addDecisionTableInputEntryNode(addedIdentifierContext, inputClause);
       }
     }
-    this.addIdentifier({
-      uuid: variableNode.uuid,
-      name: "",
+
+    this.addIdentifierContext({
+      uuid: addedIdentifierContext.uuid,
+      identifierDefinedByTheContext: "",
       kind: FeelSyntacticSymbolNature.LocalVariable,
       parentContext: parent,
       applyTypeRefToSource: (value) => {

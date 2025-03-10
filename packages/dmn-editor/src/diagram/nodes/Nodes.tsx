@@ -392,13 +392,14 @@ export const DecisionNode = React.memo(
     });
 
     const isEvaluationHighlightsEnabled = useDmnEditorStore((s) => s.diagram.overlays.enableEvaluationHighlights);
-    const { evaluationResults } = useDmnEditor();
+    const { evaluationResultsByNodeId } = useDmnEditor();
     const evaluationResultsClassName = useMemo(
       () =>
-        isEvaluationHighlightsEnabled && evaluationResults![decision["@_id"]] !== undefined
-          ? `kie-dmn-editor--decision-node--evaluation-status-${evaluationResults![decision["@_id"]]}`
+        isEvaluationHighlightsEnabled &&
+        evaluationResultsByNodeId?.get(decision["@_id"])?.evaluationResult !== undefined
+          ? `kie-dmn-editor--decision-node--evaluation-status-${evaluationResultsByNodeId?.get(decision["@_id"])?.evaluationResult}`
           : "",
-      [decision, evaluationResults, isEvaluationHighlightsEnabled]
+      [decision, evaluationResultsByNodeId, isEvaluationHighlightsEnabled]
     );
 
     return (

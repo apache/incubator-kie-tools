@@ -815,7 +815,7 @@ function EvaluationHighlights(args: DmnEditorProps) {
         externalContextName: args.externalContextName,
         externalContextDescription: args.externalContextDescription,
         validationMessages: args.validationMessages,
-        evaluationResults: args.evaluationResults,
+        evaluationResultsByNodeId: args.evaluationResultsByNodeId,
         issueTrackerHref: args.issueTrackerHref,
       })}
     </>
@@ -836,11 +836,23 @@ export const EvaluationHighlightsStory: Story = {
   args: {
     model: getMarshaller(initialModel, { upgradeTo: "latest" }).parser.parse(),
     originalVersion: "1.5",
-    evaluationResults: {
-      "_F0DC8923-5FC7-4200-8BD1-461D5F3714BE": "success",
-      "_D6F4234F-15B3-4F5B-B814-5F6FF29D2907": "failure",
-      "_2FE51DB1-3083-4BF7-AA71-0B0065310E72": "skipped",
-    },
+    evaluationResultsByNodeId: new Map([
+      [
+        "_F0DC8923-5FC7-4200-8BD1-461D5F3714BE",
+        { evaluationResult: "skipped", evaluationHitsCountByRuleOrRowId: new Map() },
+      ],
+      [
+        "_D6F4234F-15B3-4F5B-B814-5F6FF29D2907",
+        { evaluationResult: "failed", evaluationHitsCountByRuleOrRowId: new Map() },
+      ],
+      [
+        "_2FE51DB1-3083-4BF7-AA71-0B0065310E72",
+        {
+          evaluationResult: "succeeded",
+          evaluationHitsCountByRuleOrRowId: new Map([["_11976EBA-60BC-421B-A270-089A45E9B167", 10]]),
+        },
+      ],
+    ]),
     externalContextDescription: "External context description",
     externalContextName: "Storybook - DMN Editor",
     externalModelsByNamespace: {},

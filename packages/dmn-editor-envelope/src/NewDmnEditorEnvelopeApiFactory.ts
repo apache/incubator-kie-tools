@@ -24,6 +24,7 @@ import { NewDmnEditorInterface } from "./NewDmnEditorFactory";
 import { NewDmnEditorEnvelopeApi } from "./NewDmnEditorEnvelopeApi";
 import { NewDmnEditorChannelApi } from "./NewDmnEditorChannelApi";
 import { NewDmnEditorFactory } from "./NewDmnEditorFactory";
+import { NewDmnEditorTypes } from "./NewDmnEditorTypes";
 
 export type NewDmnEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
   NewDmnEditorEnvelopeApi,
@@ -46,5 +47,11 @@ export class NewDmnEditorEnvelopeApiImpl
 
   public dmnEditor_getOpenedBoxedExpressionId(): Promise<string> {
     return this.getEditorOrThrowError().getOpenedBoxedExpressionId();
+  }
+
+  public newDmnEditor_showDmnEvaluationResults(
+    evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId
+  ): void {
+    this.getEditorOrThrowError().showDmnEvaluationResults(evaluationResultsByNodeId);
   }
 }
