@@ -59,6 +59,7 @@ import { ConditionalExpression } from "../ConditionalExpression/ConditionalExpre
 import { IteratorExpressionComponent } from "../IteratorExpression/IteratorExpressionComponent";
 import { FilterExpressionComponent } from "../FilterExpression/FilterExpressionComponent";
 import FilterIcon from "@patternfly/react-icons/dist/esm/icons/filter-icon";
+import { createDefaultRule } from "../DecisionTableExpression/createDefaultRule";
 
 export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Expression properties */
@@ -147,7 +148,14 @@ export function ExpressionDefinitionLogicTypeSelector({
       case "context":
         return <ContextExpression expression={expression} isNested={isNested} parentElementId={parentElementId} />;
       case "decisionTable":
-        return <DecisionTableExpression expression={expression} isNested={isNested} />;
+        const newExpression =
+          !expression?.rule || expression?.rule?.length === 0
+            ? {
+                ...expression,
+                rule: [createDefaultRule()],
+              }
+            : expression;
+        return <DecisionTableExpression expression={newExpression} isNested={isNested} />;
       case "list":
         return <ListExpression expression={expression} isNested={isNested} parentElementId={parentElementId} />;
       case "invocation":
