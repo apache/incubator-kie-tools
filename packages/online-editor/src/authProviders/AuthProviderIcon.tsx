@@ -25,27 +25,55 @@ import OpenshiftIcon from "@patternfly/react-icons/dist/js/icons/openshift-icon"
 import QuestionIcon from "@patternfly/react-icons/dist/js/icons/question-icon";
 import UsersIcon from "@patternfly/react-icons/dist/js/icons/users-icon";
 import { AuthProvider } from "./AuthProvidersApi";
+import { Icon, IconComponentProps } from "@patternfly/react-core/dist/js/components/Icon";
 
-export function AuthProviderIcon(props: { authProvider: AuthProvider | undefined }) {
+export type AuthProviderIconProps = Pick<IconComponentProps, "size"> & {
+  authProvider: AuthProvider | undefined;
+};
+export function AuthProviderIcon(props: AuthProviderIconProps) {
   if (!props.authProvider) {
-    return <UsersIcon />;
+    return (
+      <Icon size={props.size}>
+        <UsersIcon />
+      </Icon>
+    );
   }
 
   if (props.authProvider.type === "github") {
-    return <GithubIcon />;
+    return (
+      <Icon size={props.size}>
+        <GithubIcon />
+      </Icon>
+    );
   }
 
   if (props.authProvider.type === "bitbucket") {
-    return <BitbucketIcon color="blue" />;
+    return (
+      <Icon size={props.size}>
+        <BitbucketIcon color="blue" />
+      </Icon>
+    );
   }
 
   if (props.authProvider.type === "gitlab") {
-    return <GitlabIcon color="orange" />;
+    return (
+      <Icon size={props.size}>
+        <GitlabIcon color="orange" />
+      </Icon>
+    );
   }
 
   if (props.authProvider.type === "openshift") {
-    return <OpenshiftIcon color="red" />;
+    return (
+      <Icon size={props.size}>
+        <OpenshiftIcon color="red" />
+      </Icon>
+    );
   }
 
-  return <QuestionIcon />;
+  return (
+    <Icon size={props.size}>
+      <QuestionIcon />
+    </Icon>
+  );
 }

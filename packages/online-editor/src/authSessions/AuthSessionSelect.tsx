@@ -245,9 +245,7 @@ export function AuthSessionSelect(props: {
                 if (authSession.type === "none") {
                   return [
                     <SelectOption key={AUTH_SESSION_NONE.id} value={AUTH_SESSION_NONE.id} description={<i>{}</i>}>
-                      <Icon iconSize="md">
-                        <AuthProviderIcon authProvider={undefined} />
-                      </Icon>
+                      <AuthProviderIcon authProvider={undefined} size="md" />
                       &nbsp;&nbsp;
                       {AUTH_SESSION_NONE.login}
                     </SelectOption>,
@@ -259,9 +257,7 @@ export function AuthSessionSelect(props: {
                     <SelectOption key={authSession.id} value={authSession.id} description={<i>{authProvider?.name}</i>}>
                       <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
                         <FlexItem>
-                          <Icon iconSize="md">
-                            <AuthProviderIcon authProvider={authProvider} />{" "}
-                          </Icon>
+                          <AuthProviderIcon authProvider={authProvider} size="md" />
                           &nbsp;&nbsp;
                           {authSession.login}
                         </FlexItem>
@@ -280,9 +276,7 @@ export function AuthSessionSelect(props: {
                     <SelectOption key={authSession.id} value={authSession.id} description={<i>{authProvider?.name}</i>}>
                       <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
                         <FlexItem>
-                          <Icon iconSize="md">
-                            <AuthProviderIcon authProvider={authProvider} />{" "}
-                          </Icon>
+                          <AuthProviderIcon authProvider={authProvider} size="md" />
                           &nbsp;&nbsp;
                           {authSession.namespace}
                         </FlexItem>

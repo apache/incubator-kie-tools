@@ -31,9 +31,7 @@ export function AuthSessionLabel(props: { authSession: AuthSession }) {
   return (
     <>
       <Flex alignItems={{ default: "alignItemsCenter" }} style={{ display: "inline-flex" }}>
-        <Icon iconSize="md">
-          <AuthProviderIcon authProvider={authProvider} />
-        </Icon>
+        <AuthProviderIcon authProvider={authProvider} size="md" />
         <TextContent>
           <Text component={TextVariants.h3}>
             {props.authSession.type === "git"

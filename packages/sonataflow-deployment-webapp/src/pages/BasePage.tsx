@@ -115,9 +115,7 @@ export function BasePage(props: { children?: React.ReactNode }) {
     <Page
       sidebar={
         <PageSidebar theme="dark">
-          {/* <PageSidebarBody> */}
           <BasePageNav />
-          {/* </PageSidebarBody> */}
         </PageSidebar>
       }
       header={masthead}

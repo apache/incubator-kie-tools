@@ -573,9 +573,7 @@ export function useImportableUrlValidation(
               {getGitRefName(gitRefName)}
             </FlexItem>
             <FlexItem style={{ minWidth: 0 }}>
-              <Icon iconSize="sm">
-                <AuthProviderIcon authProvider={authProvider} />
-              </Icon>
+              <AuthProviderIcon authProvider={authProvider} size="md" />
               &nbsp;&nbsp;
               {authSession?.login}
             </FlexItem>

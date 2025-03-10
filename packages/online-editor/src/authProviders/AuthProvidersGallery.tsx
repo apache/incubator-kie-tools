@@ -148,9 +148,9 @@ export function AuthProvidersGallery(props: {
                     </CardHeader>
                     <br />
                     <CardBody>
-                      <Icon size={"xl"}>
-                        <AuthProviderIcon authProvider={authProvider} />
-                      </Icon>
+                      {/* <Icon size={"xl"}> */}
+                      <AuthProviderIcon authProvider={authProvider} size="xl" />
+                      {/* </Icon> */}
                     </CardBody>
                   </Card>
                 ))}

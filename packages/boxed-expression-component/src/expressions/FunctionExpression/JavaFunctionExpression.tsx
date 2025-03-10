@@ -468,7 +468,7 @@ function JavaFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTable
             headerContent={label + " example"}
             bodyContent={getParameterLabelHelp}
           >
-            <Icon size="sm" style={{ marginLeft: "10px", marginTop: "5px" }}>
+            <Icon size="sm">
               <HelpIcon className="java-function-parameter-help-icon" />
             </Icon>
           </Popover>

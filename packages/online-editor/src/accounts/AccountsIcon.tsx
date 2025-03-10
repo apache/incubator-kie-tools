@@ -44,7 +44,6 @@ import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDi
 import { ConnectToOpenShiftSection } from "./openshift/ConnectToOpenShiftSection";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ConnectToKubernetesSection } from "./kubernetes/ConnectToKubernetesSection";
-import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 export function AccountsIcon() {
   const accounts = useAccounts();
@@ -187,61 +186,63 @@ export function AccountsIcon() {
             </div>
           }
         >
-          {/* <Page> */}
-          <PageSection variant={"light"}>
-            <>
-              {accounts.section === AccountsSection.HOME && (
-                <>
-                  {authSessions.size <= 0 && (
-                    <Bullseye>
-                      <EmptyState style={{ maxWidth: "400px" }}>
-                        <EmptyStateHeader
-                          titleText={<>{`Looks like you don't have any accounts connected yet`}</>}
-                          icon={<EmptyStateIcon icon={UsersIcon} />}
-                          headingLevel="h4"
-                        />
-                        <br />
-                        <br />
+          <Page>
+            <PageSection variant={"light"}>
+              <>
+                {accounts.section === AccountsSection.HOME && (
+                  <>
+                    {authSessions.size <= 0 && (
+                      <Bullseye>
+                        <EmptyState style={{ maxWidth: "400px" }}>
+                          <EmptyStateHeader
+                            titleText={<>{`Looks like you don't have any accounts connected yet`}</>}
+                            icon={<EmptyStateIcon icon={UsersIcon} />}
+                            headingLevel="h4"
+                          />
+                          <br />
+                          <br />
 
-                        <EmptyStateBody>{`Connecting to external accounts enables Git and Cloud integrations.`}</EmptyStateBody>
-                        <EmptyStateFooter>
-                          <EmptyStateBody>
-                            <small>{`The connected accounts credentials are stored locally in this browser and are not shared with anyone.`}</small>
-                          </EmptyStateBody>
-                          <Button
-                            variant="primary"
-                            onClick={() => accountsDispatch({ kind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER })}
-                          >
-                            Connect to an account
-                          </Button>
-                        </EmptyStateFooter>
-                      </EmptyState>
-                    </Bullseye>
-                  )}
-                  {authSessions.size > 0 && (
-                    <>
-                      <AuthSessionsList />
-                    </>
-                  )}
-                </>
-              )}
-              {accounts.section === AccountsSection.CONNECT_TO_AN_ACCOUNT && (
-                <AuthProvidersGallery
-                  backActionKind={AccountsDispatchActionKind.SELECT_AUTH_PROVIDER}
-                  authProviderGroup={accounts.authProviderGroup}
-                />
-              )}
-              {accounts.section === AccountsSection.CONNECT_TO_GITHUB && (
-                <ConnectToGitSection authProvider={accounts.selectedAuthProvider} />
-              )}
-              {accounts.section === AccountsSection.CONNECT_TO_BITBUCKET && (
-                <ConnectToGitSection authProvider={accounts.selectedAuthProvider} />
-              )}
-              {accounts.section === AccountsSection.CONNECT_TO_OPENSHIFT && <ConnectToOpenShiftSection />}
-              {accounts.section === AccountsSection.CONNECT_TO_KUBERNETES && <ConnectToKubernetesSection />}
-            </>
-          </PageSection>
-          {/* </Page> */}
+                          <EmptyStateBody>{`Connecting to external accounts enables Git and Cloud integrations.`}</EmptyStateBody>
+                          <EmptyStateFooter>
+                            <EmptyStateBody>
+                              <small>{`The connected accounts credentials are stored locally in this browser and are not shared with anyone.`}</small>
+                            </EmptyStateBody>
+                            <Button
+                              variant="primary"
+                              onClick={() =>
+                                accountsDispatch({ kind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER })
+                              }
+                            >
+                              Connect to an account
+                            </Button>
+                          </EmptyStateFooter>
+                        </EmptyState>
+                      </Bullseye>
+                    )}
+                    {authSessions.size > 0 && (
+                      <>
+                        <AuthSessionsList />
+                      </>
+                    )}
+                  </>
+                )}
+                {accounts.section === AccountsSection.CONNECT_TO_AN_ACCOUNT && (
+                  <AuthProvidersGallery
+                    backActionKind={AccountsDispatchActionKind.SELECT_AUTH_PROVIDER}
+                    authProviderGroup={accounts.authProviderGroup}
+                  />
+                )}
+                {accounts.section === AccountsSection.CONNECT_TO_GITHUB && (
+                  <ConnectToGitSection authProvider={accounts.selectedAuthProvider} />
+                )}
+                {accounts.section === AccountsSection.CONNECT_TO_BITBUCKET && (
+                  <ConnectToGitSection authProvider={accounts.selectedAuthProvider} />
+                )}
+                {accounts.section === AccountsSection.CONNECT_TO_OPENSHIFT && <ConnectToOpenShiftSection />}
+                {accounts.section === AccountsSection.CONNECT_TO_KUBERNETES && <ConnectToKubernetesSection />}
+              </>
+            </PageSection>
+          </Page>
         </Modal>
       )}
     </>
