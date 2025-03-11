@@ -65,21 +65,25 @@ export function SceSimEditorWrapper(props: Partial<StorybookTestScenarioEditorPr
   }, []);
 
   return (
-    <TestScenarioEditor
-      ref={ref}
-      issueTrackerHref={props?.issueTrackerHref ?? args.issueTrackerHref}
-      model={model}
-      onModelChange={onModelChange}
-      onModelDebounceStateChanged={onModelDebounceStateChanged}
-      onRequestExternalModelByPath={props?.onRequestExternalModelByPath ?? args.onRequestExternalModelByPath}
-      onRequestExternalModelsAvailableToInclude={
-        props?.onRequestExternalModelsAvailableToInclude ?? args.onRequestExternalModelsAvailableToInclude
-      }
-      openFileNormalizedPosixPathRelativeToTheWorkspaceRoot={
-        props?.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot ??
-        args.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot
-      }
-      onRequestToJumpToPath={props?.onRequestToJumpToPath ?? args.onRequestToJumpToPath}
-    />
+    <div style={{ position: "absolute", width: "100%", height: "100%", top: "0px", left: "0px" }}>
+      <TestScenarioEditor
+        ref={ref}
+        externalModelsByNamespace={props?.externalModelsByNamespace ?? args.externalModelsByNamespace}
+        issueTrackerHref={props?.issueTrackerHref ?? args.issueTrackerHref}
+        model={model}
+        onModelChange={onModelChange}
+        onModelDebounceStateChanged={onModelDebounceStateChanged}
+        onRequestExternalModelByPath={props?.onRequestExternalModelByPath ?? args.onRequestExternalModelByPath}
+        onRequestExternalModelsAvailableToInclude={
+          props?.onRequestExternalModelsAvailableToInclude ?? args.onRequestExternalModelsAvailableToInclude
+        }
+        openFileNormalizedPosixPathRelativeToTheWorkspaceRoot={
+          props?.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot ??
+          args.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot
+        }
+        onRequestToJumpToPath={props?.onRequestToJumpToPath ?? args.onRequestToJumpToPath}
+        onRequestToResolvePath={props?.onRequestToResolvePath ?? args.onRequestToResolvePath}
+      />
+    </div>
   );
 }

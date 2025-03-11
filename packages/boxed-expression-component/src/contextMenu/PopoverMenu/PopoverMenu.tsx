@@ -111,13 +111,23 @@ export const PopoverMenu = React.forwardRef(
         if (event instanceof KeyboardEvent && NavigationKeysUtils.isEsc(event.key)) {
           onCancel(event);
         } else {
-          onHide();
+          hideFunction?.();
         }
-
-        setCurrentlyOpenContextMenu(undefined);
-        hideFunction?.();
       },
-      [onCancel, onHide, setCurrentlyOpenContextMenu]
+      [onCancel]
+    );
+
+    const onHideCallback: PopoverProps["onHide"] = useCallback(
+      (tip): void => {
+        // This validation is to prevent this code of being called twice, because if the user clicks outside the
+        // Boxed Expression component the onHide() is called again by the Popover which is listen to clicks
+        // on the document to close all opened popups.
+        if (currentlyOpenContextMenu) {
+          onHide();
+          setCurrentlyOpenContextMenu(undefined);
+        }
+      },
+      [currentlyOpenContextMenu, onHide, setCurrentlyOpenContextMenu]
     );
 
     useImperativeHandle(
@@ -165,7 +175,7 @@ export const PopoverMenu = React.forwardRef(
         bodyContent={body}
         isVisible={isPopoverVisible}
         onShown={onPopoverShown}
-        onHide={shouldClose}
+        onHide={onHideCallback}
         shouldClose={shouldClose}
         shouldOpen={shouldOpen}
         flipBehavior={["bottom-start", "bottom", "bottom-end", "right-start", "left-start", "right-end", "left-end"]}

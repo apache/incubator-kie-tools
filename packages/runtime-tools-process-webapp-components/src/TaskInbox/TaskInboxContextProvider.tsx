@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { ReactElement } from "react";
+import React, { ReactElement, useMemo } from "react";
 import { ApolloClient } from "apollo-client";
 import TaskInboxContext from "./TaskInboxContext";
 import { TaskInboxGatewayApiImpl } from "./TaskInboxGatewayApi";
@@ -26,18 +26,17 @@ import { useKogitoAppContext } from "@kie-tools/runtime-tools-components/dist/co
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
   children: ReactElement;
+  options?: { transformEndpointBaseUrl?: (url?: string) => string };
 }
 
 export const TaskInboxContextProvider: React.FC<IOwnProps> = ({ apolloClient, children }) => {
   const appContext = useKogitoAppContext();
-
-  return (
-    <TaskInboxContext.Provider
-      value={new TaskInboxGatewayApiImpl(new GraphQLTaskInboxQueries(apolloClient), () => appContext.getCurrentUser())}
-    >
-      {children}
-    </TaskInboxContext.Provider>
+  const gatewayApi = useMemo(
+    () => new TaskInboxGatewayApiImpl(new GraphQLTaskInboxQueries(apolloClient), () => appContext.getCurrentUser()),
+    [apolloClient, appContext]
   );
+
+  return <TaskInboxContext.Provider value={gatewayApi}>{children}</TaskInboxContext.Provider>;
 };
 
 export default TaskInboxContextProvider;

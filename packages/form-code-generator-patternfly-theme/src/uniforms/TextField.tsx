@@ -24,7 +24,8 @@ import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
 import { DATE_FUNCTIONS } from "./staticCode/staticCodeBlocks";
-import { DATE, STRING } from "./utils/dataTypes";
+import { DEFAULT_DATA_TYPE_DATE, DEFAULT_DATA_TYPE_STRING } from "./utils/dataTypes";
+import { getListItemName, getListItemOnChange, getListItemValue, ListItemProps } from "./rendering/ListItemField";
 
 export type TextFieldProps = HTMLFieldProps<
   string,
@@ -32,21 +33,22 @@ export type TextFieldProps = HTMLFieldProps<
   {
     label: string;
     required: boolean;
+    itemProps?: ListItemProps;
   }
 >;
 
 const Text: React.FC<TextFieldProps> = (props: TextFieldProps) => {
   const isDate: boolean = props.type === "date" || props.field.format === "date";
 
-  const ref: InputReference = getInputReference(props.name, isDate ? DATE : STRING);
+  const ref: InputReference = getInputReference(props.name, isDate ? DEFAULT_DATA_TYPE_DATE : DEFAULT_DATA_TYPE_STRING);
 
   const getDateElement = (): FormInput => {
     const inputJsxCode = `<DatePicker
           id={'date-picker-${props.id}'}
           isDisabled={${props.disabled || false}}
-          name={'${props.name}'}
-          onChange={newDate => onDateChange(newDate, ${ref.stateSetter},  ${ref.stateName})}
-          value={parseDate(${ref.stateName})}
+          name={${props.itemProps?.isListItem ? getListItemName({ itemProps: props.itemProps, name: props.name }) : `'${props.name}'`}}
+          onChange={${props.itemProps?.isListItem ? getListItemOnChange({ itemProps: props.itemProps, name: props.name, callback: (value: string) => `onDateChange(${value}, ${ref.stateSetter},  ${ref.stateName})` }) : `newDate => onDateChange(newDate, ${ref.stateSetter},  ${ref.stateName})`}}
+          value={${props.itemProps?.isListItem ? `parseDate(${getListItemValue({ itemProps: props.itemProps, name: props.name })})` : `parseDate(${ref.stateName})`}}
         />`;
     return buildDefaultInputElement({
       pfImports: ["DatePicker"],
@@ -59,18 +61,19 @@ const Text: React.FC<TextFieldProps> = (props: TextFieldProps) => {
         required: props.required,
       },
       disabled: props.disabled,
+      itemProps: props.itemProps,
     });
   };
 
   const getTextInputElement = (): FormInput => {
     const inputJsxCode = `<TextInput
-        name={'${props.name}'}
+        name={${props.itemProps?.isListItem ? getListItemName({ itemProps: props.itemProps, name: props.name }) : `'${props.name}'`}}
         id={'${props.id}'}
         isDisabled={${props.disabled || "false"}}
         placeholder={'${props.placeholder}'}
         type={'${props.type || "text"}'}
-        value={${ref.stateName}}
-        onChange={${ref.stateSetter}}
+        value={${props.itemProps?.isListItem ? getListItemValue({ itemProps: props.itemProps, name: props.name }) : ref.stateName}}
+        onChange={${props.itemProps?.isListItem ? getListItemOnChange({ itemProps: props.itemProps, name: props.name }) : ref.stateSetter}}
         />`;
 
     return buildDefaultInputElement({
@@ -83,6 +86,7 @@ const Text: React.FC<TextFieldProps> = (props: TextFieldProps) => {
         required: props.required,
       },
       disabled: props.disabled,
+      itemProps: props.itemProps,
     });
   };
 

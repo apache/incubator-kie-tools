@@ -23,6 +23,7 @@ export { default as AutoForm } from "./AutoForm";
 export { default as BoolField } from "./BoolField";
 export { default as CheckBoxGroupField } from "./CheckBoxGroupField";
 export { default as DateField } from "./DateField";
+export { default as ListField } from "./ListField";
 export { default as NestField } from "./NestField";
 export { default as NumField } from "./NumField";
 export { default as RadioField } from "./RadioField";

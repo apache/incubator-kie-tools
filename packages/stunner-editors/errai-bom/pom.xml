@@ -99,7 +99,7 @@
 
     <sonar.skip>true</sonar.skip>
 
-    <version.com.fasterxml.jackson>2.14.0-rc1</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson>2.15.4</version.com.fasterxml.jackson>
     <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
     <version.com.google.code.gson>2.9.0</version.com.google.code.gson>
     <version.com.google.jsinterop>2.0.0</version.com.google.jsinterop>
@@ -167,7 +167,7 @@
     <version.org.jboss.weld.weld-api>3.1.SP2</version.org.jboss.weld.weld-api>
     <version.org.lesscss>1.7.0.1.1</version.org.lesscss>
     <version.org.mockito>2.12.0</version.org.mockito>
-    <version.org.mvel>2.4.8.Final</version.org.mvel>
+    <version.org.mvel>2.5.2.Final</version.org.mvel>
     <version.org.picketlink>2.6.0.Final</version.org.picketlink>
     <version.org.powermock>2.0.7</version.org.powermock>
     <version.org.quartz-scheduler>2.3.2</version.org.quartz-scheduler>

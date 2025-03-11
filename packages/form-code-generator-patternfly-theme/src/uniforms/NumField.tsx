@@ -23,7 +23,8 @@ import { connectField, HTMLFieldProps } from "uniforms/cjs";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { FormInput, InputReference } from "../api";
-import { NUMBER } from "./utils/dataTypes";
+import { DEFAULT_DATA_TYPE_NUMBER } from "./utils/dataTypes";
+import { getListItemName, getListItemOnChange, getListItemValue, ListItemProps } from "./rendering/ListItemField";
 
 export type NumFieldProps = HTMLFieldProps<
   string,
@@ -34,24 +35,25 @@ export type NumFieldProps = HTMLFieldProps<
     decimal?: boolean;
     min?: string;
     max?: string;
+    itemProps?: ListItemProps;
   }
 >;
 
 const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
-  const ref: InputReference = getInputReference(props.name, NUMBER);
+  const ref: InputReference = getInputReference(props.name, DEFAULT_DATA_TYPE_NUMBER);
 
   const max = props.max ? `max={${props.max}}` : "";
   const min = props.min ? `min={${props.min}}` : "";
 
   const inputJsxCode = `<TextInput
       type={'number'}
-      name={'${props.name}'}
+      name={${props.itemProps?.isListItem ? getListItemName({ itemProps: props.itemProps, name: props.name }) : `'${props.name}'`}}
       isDisabled={${props.disabled || "false"}}
       id={'${props.id}'}
       placeholder={'${props.placeholder}'}
       step={${props.decimal ? 0.01 : 1}} ${max} ${min}
-      value={${ref.stateName}}
-      onChange={(newValue) => ${ref.stateSetter}(Number(newValue))}
+      value={${props.itemProps?.isListItem ? getListItemValue({ itemProps: props.itemProps, name: props.name }) : ref.stateName}}
+      onChange={${props.itemProps?.isListItem ? getListItemOnChange({ itemProps: props.itemProps, name: props.name, callback: (value: string) => `Number(${value})` }) : `(newValue) => ${ref.stateSetter}(Number(newValue))`}}
     />`;
 
   const element: FormInput = buildDefaultInputElement({
@@ -64,6 +66,7 @@ const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
       required: props.required,
     },
     disabled: props.disabled,
+    itemProps: props.itemProps,
   });
 
   useAddFormElementToContext(element);

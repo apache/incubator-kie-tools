@@ -19,7 +19,7 @@
 
 import React, { ReactElement } from "react";
 import { Helmet } from "react-helmet";
-import { FormResources } from "../../../api";
+import { FormResources } from "@kie-tools/runtime-tools-shared-gateway-api/src/types";
 
 interface ResourcesContainerProps {
   resources: FormResources;

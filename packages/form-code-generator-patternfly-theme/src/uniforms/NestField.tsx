@@ -24,9 +24,10 @@ import { getInputReference, renderField } from "./utils/Utils";
 import { InputReference, InputsContainer } from "../api";
 import { codeGenContext } from "./CodeGenContext";
 import { union } from "lodash";
-import { OBJECT } from "./utils/dataTypes";
+import { DEFAULT_DATA_TYPE_OBJECT } from "./utils/dataTypes";
+import { ListItemProps } from "./rendering/ListItemField";
 
-export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { itemProps?: object }>;
+export type NestFieldProps = HTMLFieldProps<object, HTMLDivElement, { itemProps?: ListItemProps }>;
 
 const Nest: React.FunctionComponent<NestFieldProps> = ({
   id,
@@ -45,10 +46,11 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
   const codegenCtx = useContext(codeGenContext);
 
   const nestedRefs: InputReference[] = [];
-  const nestedStates: string[] = [];
+  const nestedStates: Set<string> = new Set();
   const nestedJsx: string[] = [];
 
   let pfImports: string[] = ["Card", "CardBody"];
+  let pfIconImports: string[] = [];
   let reactImports: string[] = [];
   let requiredCode: string[] = [];
 
@@ -57,14 +59,15 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
       const renderedInput = renderNestedInputFragmentWithContext(uniformsContext, field, itemProps, disabled);
 
       if (renderedInput) {
-        nestedStates.push(renderedInput.stateCode);
+        nestedStates.add(renderedInput.stateCode.trim());
         nestedJsx.push(renderedInput.jsxCode);
         nestedRefs.push(renderedInput.ref);
-        if (renderedInput.ref.dataType === OBJECT) {
+        if (renderedInput.ref.dataType === DEFAULT_DATA_TYPE_OBJECT) {
           const nestedContainer: InputsContainer = renderedInput as InputsContainer;
           nestedRefs.push(...nestedContainer.childRefs);
         }
         pfImports = union(pfImports, renderedInput.pfImports);
+        pfIconImports = union(pfIconImports, renderedInput.pfIconImports);
         reactImports = union(reactImports, renderedInput.reactImports);
         if (renderedInput.requiredCode) {
           requiredCode = union(requiredCode, renderedInput.requiredCode);
@@ -75,9 +78,9 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
     });
   }
 
-  const bodyLabel = label ? `<label><b>${label}</b></label>` : "";
+  const bodyLabel = label && !itemProps?.isListItem ? `<label><b>${label}</b></label>` : "";
 
-  const stateCode = nestedStates.join("\n");
+  const stateCode = [...nestedStates].join("\n");
   const jsxCode = `<Card>
           <CardBody className="pf-v5-c-form">
           ${bodyLabel}
@@ -86,11 +89,12 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
 
   const rendered: InputsContainer = {
     pfImports,
+    pfIconImports,
     reactImports,
-    requiredCode: requiredCode,
+    requiredCode,
     stateCode,
     jsxCode,
-    ref: getInputReference(name, OBJECT),
+    ref: getInputReference(name, DEFAULT_DATA_TYPE_OBJECT),
     childRefs: nestedRefs,
     isReadonly: disabled,
   };

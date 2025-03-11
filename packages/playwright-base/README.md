@@ -17,6 +17,68 @@
 
 ## @kie-tools/playwright-base
 
+## Overview
+
+This package collects common configurations to run end-to-end Playwright tests.
+
+## Installing Playwright deps
+
+Currently, all Playwright end-to-end tests run inside containers. If you need to debug a test, we recommend doing so on the host machine. To do this, you need to install the Playwright dependencies. Use the `PLAYWRIGHT_BASE__installDeps` environment variable during the bootstrap phase to install all the required dependencies.
+
+```sh
+# in the `kie-tools` root
+PLAYWRIGHT_BASE__installDeps=true pnpm bootstrap
+```
+
+or
+
+```sh
+# in the `kie-tools` root
+PLAYWRIGHT_BASE__installDeps=true pnpm bootstrap -F playwright-base
+```
+
+> **i NOTE**
+>
+> Since this step install the Playwright browsers, it requires sudo permision.
+
+## Using containers to generate screenshots
+
+Each operating system has slight variations in UI, even within the same browser. These differences can cause screenshot comparison tests to fail. To address this issue and ensure a stable environment with consistent test results locally and in CI, containers can be used. Running Playwright tests inside a container that is also used in the CI environment makes screenshot tests reproducible, regardless of the host OS.
+
+> **ℹ️ NOTE**
+>
+> Due to compatibility issues, this containerization solution cannot yet be used on native Windows and requires running it directly within WSL (Windows Subsystem for Linux). Also, Linux arm64 doesn't support Google Chrome, and due to this caveat, some tests will be disabled for this arch.
+
+---
+
+To run tests in a container, you first need to build the image using the Containerfile provided in this package. Use the `build:dev` script as shown below:
+
+```sh
+# In this package folder
+KIE_TOOLS_BUILD__buildContainerImages=true pnpm build:dev
+# or in any folder of the kie-tools monorepo
+KIE_TOOLS_BUILD__buildContainerImages=true pnpm -F @kie-tools/playwright-base build:dev
+```
+
+By default, tests run on using containers. To execute them in the native OS environment, set the `KIE_TOOLS_BUILD__containerizedEndToEndTests` environment variable to `false`.
+
+```sh
+KIE_TOOLS_BUILD__containerizedEndToEndTests=true pnpm test-e2e
+```
+
+## Updating Playwright screenshots
+
+By default, running tests does not automatically update screenshots. The `test-e2e` script launches the test suite with standard settings. For greater control over Playwright parameters, you can use the `test-e2e:container:shell` script, which opens a shell inside the container. This script will start the dev server (if not already running), initialize the Playwright container, and provide access to a new shell.
+
+To update screenshots, use the `-u` or `--update-snapshots` flags with the `test-e2e:run` script as shown below:
+
+```sh
+pnpm test-e2e:container:shell
+
+# Wait until the new shell is ready
+pnpm test-e2e:run --update-snapshots
+```
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software

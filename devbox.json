@@ -2,11 +2,11 @@
   "$schema": "https://raw.githubusercontent.com/jetpack-io/devbox/0.10.4/.schema/devbox.schema.json",
   "packages": {
     "temurin-bin-17": "17.0.9",
-    "nodejs": "20.12.2",
+    "nodejs": "22.11.0",
     "maven": "3.9.6",
     "kubernetes-helm": "3.13.3",
     "gnumake": "4.4.1",
-    "go": "1.22.9",
+    "go": "1.22.12",
     "python": "3.12.2",
     "libxml2": "2.13.3"
   },

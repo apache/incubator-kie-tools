@@ -40,8 +40,8 @@
     "@kie-tools/tsconfig": "workspace:*",
     "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*",
     "@types/vscode": "1.67.0",
-    "@vscode/test-web": "^0.0.30",
-    "@vscode/vsce": "^2.22.0",
+    "@vscode/test-web": "^0.0.66",
+    "@vscode/vsce": "^3.2.1",
     "copy-webpack-plugin": "^11.0.0",
     "process": "^0.11.10",
     "rimraf": "^3.0.2",
@@ -73,7 +73,7 @@
       },
       {
         "command": "extension.apache.kie.bpmnEditor.generateFormCode",
-        "title": "BPMN Editor: Generate form code for human interactions from jBPM project"
+        "title": "BPMN Editor: Generate form code for User Tasks"
       }
     ],
     "configuration": {
@@ -83,13 +83,13 @@
           "type": "string"
         },
         "kogito.bpmn.svgFilePath": {
-          "default": "${fileDirname}",
-          "markdownDescription": "Where to save generated SVG files (defaults to same path as .bpmn file: `${fileDirname}`).",
+          "default": "",
+          "markdownDescription": "Where to save generated SVG files for BPMN models. (defaults to `${fileDirname}` or `src/main/resources/META-INF/processSVG` if BPMN model is inside `src/main/resources`)",
           "type": "string"
         },
         "kogito.bpmn.svgFilenameTemplate": {
-          "default": "${fileBasenameNoExtension}-svg.svg",
-          "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}-svg.svg`).",
+          "default": "",
+          "markdownDescription": "Filename template to be used when generating SVG files for BPMN models. (defaults to `${fileBasenameNoExtension}.svg`).",
           "type": "string"
         }
       },

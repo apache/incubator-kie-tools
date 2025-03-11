@@ -26,13 +26,13 @@ import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { DocumentationLinksFormGroup } from "./DocumentationLinksFormGroup";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
-import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useDmnEditor } from "../DmnEditorContext";
 import { useResolvedTypeRef } from "../dataTypes/useResolvedTypeRef";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { useRefactor } from "../refactor/RefactorConfirmationDialog";
 
 export function BkmProperties({
   bkm,
@@ -45,7 +45,6 @@ export function BkmProperties({
 }) {
   const { setState } = useDmnEditorStoreApi();
   const settings = useSettings();
-
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const isReadOnly = settings.isReadOnly || (!!namespace && namespace !== thisDmnsNamespace);
 
@@ -53,26 +52,31 @@ export function BkmProperties({
 
   const resolvedTypeRef = useResolvedTypeRef(bkm.variable?.["@_typeRef"], namespace);
 
+  const identifierId = useMemo(() => bkm["@_id"], [bkm]);
+  const oldName = useMemo(() => bkm["@_label"] ?? bkm["@_name"], [bkm]);
+  const { setNewIdentifierNameCandidate, refactorConfirmationDialog, newName } = useRefactor({
+    index,
+    identifierId,
+    oldName,
+  });
+
+  const currentName = useMemo(() => {
+    return newName === "" ? oldName : newName;
+  }, [newName, oldName]);
+
   return (
     <>
+      {refactorConfirmationDialog}
       <FormGroup label="Name">
         <InlineFeelNameInput
           enableAutoFocusing={false}
           isPlain={false}
           id={bkm["@_id"]!}
-          name={bkm["@_name"]}
+          name={currentName}
           isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
           className={"pf-v5-c-form-control"}
-          onRenamed={(newName) => {
-            setState((state) => {
-              renameDrgElement({
-                definitions: state.dmn.model.definitions,
-                index,
-                newName,
-              });
-            });
-          }}
+          onRenamed={setNewIdentifierNameCandidate}
           allUniqueNames={useCallback((s) => s.computed(s).getAllFeelVariableUniqueNames(), [])}
         />
       </FormGroup>

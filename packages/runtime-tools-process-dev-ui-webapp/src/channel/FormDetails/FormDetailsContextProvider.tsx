@@ -27,7 +27,7 @@ interface IOwnProps {
 
 const FormDetailsContextProvider: React.FC<IOwnProps> = ({ children }) => {
   const appContext = useDevUIAppContext();
-  const baseUrl = appContext.transformQuarkusUrl(
+  const baseUrl = appContext.transformEndpointBaseUrl(
     `${appContext.getQuarkusAppOrigin()}${appContext.getQuarkusAppRootPath()}`
   );
   return (

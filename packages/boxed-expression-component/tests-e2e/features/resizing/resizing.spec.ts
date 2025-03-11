@@ -288,10 +288,12 @@ test.describe("Resizing", () => {
       expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 240);
     });
 
-    test("should change input column name and reset size", async ({ page, resizing, browserName }) => {
+    test("should change input column name and reset size", async ({ page, resizing, browserName, monaco }) => {
       await page.getByRole("columnheader", { name: "input-1 (<Undefined>)" }).click();
-      await page.getByPlaceholder("Expression Name").fill("Installment Calculation");
-      await page.keyboard.press("Enter");
+      await monaco.fill({
+        monacoParentLocator: page.getByTestId("kie-tools--bee--expression-popover-menu"),
+        content: "Installment Calculation",
+      });
 
       const inputHeader = page.getByRole("columnheader", { name: "Installment Calculation (<Undefined>)" });
       const outputHeader = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });

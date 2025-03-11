@@ -62,12 +62,14 @@ interface JobsManagementTableProps {
   selectedJobInstances: Job[];
   setModalTitle: (title: JSX.Element) => void;
   setModalContent: (content: string) => void;
-  setSelectedJobInstances: (selectedJobInstances: Job[]) => void;
+  setSelectedJobInstances: React.Dispatch<React.SetStateAction<Job[]>>;
   setSelectedJob: (job?: Job) => void;
   setSortBy: (sortObj: ISortBy) => void;
   setOrderBy: (orderBy: JobsSortBy) => void;
   sortBy: ISortBy;
 }
+
+const editableJobStatus: string[] = ["SCHEDULED", "ERROR"];
 
 const JobsManagementTable: React.FC<JobsManagementTableProps & OUIAProps> = ({
   jobs,
@@ -91,28 +93,31 @@ const JobsManagementTable: React.FC<JobsManagementTableProps & OUIAProps> = ({
   ouiaSafe,
 }) => {
   const [rows, setRows] = useState<IRow[]>([]);
-  const jobRow: IRow[] = [];
-  const editableJobStatus: string[] = ["SCHEDULED", "ERROR"];
-  const columns = [
+
+  const checkNotEmpty = useCallback(() => {
+    return jobs && jobs.length > 0 && !isLoading;
+  }, [jobs, isLoading]);
+
+  const [columns, setColumns] = useState<Array<{ title: string }>>([
     { title: "Id" },
     { title: "Status" },
     { title: "Expiration time" },
     { title: "Retries" },
     { title: "Execution counter" },
     { title: "Last update" },
-  ];
+  ]);
 
-  const checkNotEmpty = useCallback(() => {
-    return jobs && jobs.length > 0 && !isLoading;
-  }, [jobs, isLoading]);
+  useEffect(() => {
+    setColumns((currentColumns) => {
+      return [...currentColumns].map((column) => {
+        column["props"] = { className: "pf-v5-u-text-align-center" };
+        checkNotEmpty() && column.title !== "Id" ? (column["transforms"] = [sortable]) : "";
+        return column;
+      });
+    });
+  }, [checkNotEmpty]);
 
-  columns.map((column) => {
-    column["props"] = { className: "pf-v5-u-text-align-center" };
-    checkNotEmpty() && column.title !== "Id" ? (column["transforms"] = [sortable]) : "";
-    return column;
-  });
-
-  const getValues = (job): RetrievedValueType => {
+  const getValues = useCallback((job): RetrievedValueType => {
     const tempRows: RowTitle[] = [];
     let jobType: string = "";
     for (const item in job) {
@@ -171,174 +176,206 @@ const JobsManagementTable: React.FC<JobsManagementTableProps & OUIAProps> = ({
       }
     }
     return { tempRows, jobType };
-  };
+  }, []);
 
-  const onSelect = (_event, isSelected, rowId, _rowData): void => {
-    if (!checkNotEmpty()) {
-      return;
-    }
-    setIsActionPerformed(false);
-    const copyOfRows = [...rows];
-    if (rowId === -1) {
-      copyOfRows.forEach((row) => {
-        row.selected = isSelected;
-        return row;
-      });
-      if (selectedJobInstances.length === jobs.length) {
-        setSelectedJobInstances([]);
-      } else if (selectedJobInstances.length < jobs.length) {
-        /* istanbul ignore else*/
-        setSelectedJobInstances(_.cloneDeep(jobs));
+  const onSelect = useCallback(
+    (_event, isSelected, rowId, _rowData): void => {
+      if (!checkNotEmpty()) {
+        return;
       }
-    } else {
-      if (copyOfRows[rowId]) {
-        copyOfRows[rowId].selected = isSelected;
-        const row = [...jobs].filter((job) => job.id === copyOfRows[rowId].rowKey);
-        const rowData = _.find(selectedJobInstances, ["id", copyOfRows[rowId].rowKey]);
-        if (rowData === undefined) {
-          setSelectedJobInstances([...selectedJobInstances, row[0]]);
+      setIsActionPerformed(false);
+      setRows((currentRows) => {
+        const copyOfRows = [...currentRows];
+        if (rowId === -1) {
+          copyOfRows.forEach((row) => {
+            row.selected = isSelected;
+            return row;
+          });
+          setSelectedJobInstances((currentSelectedJobInstances) => {
+            if (currentSelectedJobInstances.length === jobs.length) {
+              return [];
+            } else if (currentSelectedJobInstances.length < jobs.length) {
+              return _.cloneDeep(jobs);
+            }
+            return currentSelectedJobInstances;
+          });
         } else {
-          const copyOfSelectedJobInstances = [...selectedJobInstances];
-          _.remove(copyOfSelectedJobInstances, (job) => job.id === copyOfRows[rowId].rowKey);
-          setSelectedJobInstances(copyOfSelectedJobInstances);
+          if (copyOfRows[rowId]) {
+            copyOfRows[rowId].selected = isSelected;
+            const row = [...jobs].filter((job) => job.id === copyOfRows[rowId].rowKey);
+            setSelectedJobInstances((currentSelectedJobInstances) => {
+              const rowData = _.find(currentSelectedJobInstances, ["id", copyOfRows[rowId].rowKey]);
+              if (rowData === undefined) {
+                return [...currentSelectedJobInstances, row[0]];
+              } else {
+                const copyOfSelectedJobInstances = [...currentSelectedJobInstances];
+                _.remove(copyOfSelectedJobInstances, (job) => job.id === copyOfRows[rowId].rowKey);
+                return copyOfSelectedJobInstances;
+              }
+            });
+          }
         }
-      }
-    }
-    setRows(copyOfRows);
-  };
-
-  const tableContent = (jobs): void => {
-    !isLoading &&
-      !_.isEmpty(jobs) &&
-      jobs.map((job) => {
-        const retrievedValue = getValues(
-          _.pick(job, ["id", "status", "expirationTime", "retries", "executionCounter", "lastUpdate"])
-        );
-        jobRow.push({
-          cells: retrievedValue.tempRows,
-          type: retrievedValue.jobType,
-          rowKey: job.id,
-          selected: false,
-        });
+        return copyOfRows;
       });
-    if (isLoading) {
-      const tempRows = [
-        {
-          rowKey: "1",
-          cells: [
-            {
-              props: { colSpan: 8 },
-              title: <KogitoSpinner spinnerText={"Loading jobs list..."} />,
-            },
-          ],
-        },
-      ];
-      setRows(tempRows);
-    } else {
-      if (jobRow.length === 0) {
+    },
+    [checkNotEmpty, jobs, setIsActionPerformed, setSelectedJobInstances]
+  );
+
+  const tableContent = useCallback(
+    (jobs): void => {
+      const jobRow: IRow[] = [];
+      if (!isLoading && !_.isEmpty(jobs)) {
+        jobs.map((job) => {
+          const retrievedValue = getValues(
+            _.pick(job, ["id", "status", "expirationTime", "retries", "executionCounter", "lastUpdate"])
+          );
+          jobRow.push({
+            cells: retrievedValue.tempRows,
+            type: retrievedValue.jobType,
+            rowKey: job.id,
+            selected: false,
+          });
+        });
+      }
+      if (isLoading) {
         const tempRows = [
           {
             rowKey: "1",
             cells: [
               {
                 props: { colSpan: 8 },
-                title: (
-                  <KogitoEmptyState
-                    type={KogitoEmptyStateType.Search}
-                    title="No results found"
-                    body="Try using different filters"
-                  />
-                ),
+                title: <KogitoSpinner spinnerText={"Loading jobs list..."} />,
               },
             ],
           },
         ];
         setRows(tempRows);
       } else {
-        setRows((prev) => [...prev, ...jobRow]);
+        if (jobRow.length === 0) {
+          const tempRows = [
+            {
+              rowKey: "1",
+              cells: [
+                {
+                  props: { colSpan: 8 },
+                  title: (
+                    <KogitoEmptyState
+                      type={KogitoEmptyStateType.Search}
+                      title="No results found"
+                      body="Try using different filters"
+                    />
+                  ),
+                },
+              ],
+            },
+          ];
+          setRows(tempRows);
+        } else {
+          setRows((prev) => [...prev, ...jobRow]);
+        }
       }
-    }
-  };
+    },
+    [getValues, isLoading]
+  );
 
-  const handleJobDetails = (id): void => {
-    const job = jobs.find((job) => job.id === id);
-    setSelectedJob(job);
-    handleDetailsToggle();
-  };
+  const handleJobDetails = useCallback(
+    (id): void => {
+      const job = jobs.find((job) => job.id === id);
+      setSelectedJob(job);
+      handleDetailsToggle();
+    },
+    [handleDetailsToggle, jobs, setSelectedJob]
+  );
 
-  const handleJobReschedule = (id): void => {
-    const job = jobs.find((job) => job.id === id);
-    setSelectedJob(job);
-    handleRescheduleToggle();
-  };
+  const handleJobReschedule = useCallback(
+    (id): void => {
+      const job = jobs.find((job) => job.id === id);
+      setSelectedJob(job);
+      handleRescheduleToggle();
+    },
+    [handleRescheduleToggle, jobs, setSelectedJob]
+  );
 
-  const handleCancelAction = async (id): Promise<void> => {
-    const job: any = jobs.find((job) => job.id === id);
-    const cancelResponse = await driver.cancelJob(job);
-    const title: JSX.Element = setTitle(cancelResponse.modalTitle, "Job cancel");
-    setModalTitle(title);
-    setModalContent(cancelResponse.modalContent);
-    handleCancelModalToggle();
-  };
+  const handleCancelAction = useCallback(
+    async (id): Promise<void> => {
+      const job: any = jobs.find((job) => job.id === id);
+      const cancelResponse = await driver.cancelJob(job);
+      const title: JSX.Element = setTitle(cancelResponse.modalTitle, "Job cancel");
+      setModalTitle(title);
+      setModalContent(cancelResponse.modalContent);
+      handleCancelModalToggle();
+    },
+    [driver, handleCancelModalToggle, jobs, setModalContent, setModalTitle]
+  );
 
-  const dynamicActions = (rowData) => {
-    if (rowData.type === "Editable") {
+  const dynamicActions = useCallback(
+    (rowData) => {
+      if (rowData.type === "Editable") {
+        return [
+          {
+            title: "Reschedule",
+            onClick: (_event, _rowId, rowData, _extra) => handleJobReschedule(rowData.rowKey),
+          },
+          {
+            title: "Cancel",
+            onClick: (_event, _rowId, rowData, _extra) => handleCancelAction(rowData.rowKey),
+          },
+        ];
+      } else {
+        return [];
+      }
+    },
+    [handleCancelAction, handleJobReschedule]
+  );
+
+  const actionResolver = useCallback(
+    (rowData): ActionsMeta[] => {
+      if (!checkNotEmpty()) {
+        return [];
+      }
+      const editActions = dynamicActions(rowData);
       return [
         {
-          title: "Reschedule",
-          onClick: (_event, _rowId, rowData, _extra) => handleJobReschedule(rowData.rowKey),
+          title: "Details",
+          onClick: (event, rowId, rowData, extra) => handleJobDetails(rowData.rowKey),
         },
-        {
-          title: "Cancel",
-          onClick: (_event, _rowId, rowData, _extra) => handleCancelAction(rowData.rowKey),
-        },
+        ...editActions,
       ];
-    } else {
-      return [];
-    }
-  };
+    },
+    [checkNotEmpty, dynamicActions, handleJobDetails]
+  );
 
-  const actionResolver = (rowData): ActionsMeta[] => {
-    if (!checkNotEmpty()) {
-      return [];
-    }
-    const editActions = dynamicActions(rowData);
-    return [
-      {
-        title: "Details",
-        onClick: (event, rowId, rowData, extra) => handleJobDetails(rowData.rowKey),
-      },
-      ...editActions,
-    ];
-  };
-
-  const onSort = async (event, index: number, direction: "asc" | "desc"): Promise<void> => {
-    setSortBy({ index, direction });
-    let sortingColumn: string = event.target.innerText;
-    sortingColumn = _.camelCase(sortingColumn);
-    const obj: JobsSortBy = {};
-    constructObject(obj, sortingColumn, direction.toUpperCase());
-    setOrderBy(obj);
-    await driver.sortBy(obj);
-    doQueryJobs(0, 10);
-  };
+  const onSort = useCallback(
+    async (event, index: number, direction: "asc" | "desc"): Promise<void> => {
+      setSortBy({ index, direction });
+      let sortingColumn: string = event.target.innerText;
+      sortingColumn = _.camelCase(sortingColumn);
+      const obj: JobsSortBy = {};
+      constructObject(obj, sortingColumn, direction.toUpperCase());
+      setOrderBy(obj);
+      await driver.sortBy(obj);
+      await doQueryJobs(0, 10);
+    },
+    [doQueryJobs, driver, setOrderBy, setSortBy]
+  );
 
   useEffect(() => {
-    /* istanbul ignore else*/
     if (isActionPerformed) {
-      const updatedRows = rows.filter((row) => {
-        row.selected = false;
-        return row;
-      });
       setSelectedJobInstances([]);
-      setRows(updatedRows);
+      setRows((curentRows) => {
+        const updatedRows = curentRows.filter((row) => {
+          row.selected = false;
+          return row;
+        });
+        return updatedRows;
+      });
     }
-  }, [isActionPerformed]);
+  }, [isActionPerformed, setSelectedJobInstances]);
 
   useEffect(() => {
     setRows([]);
     tableContent(jobs);
-  }, [isLoading, jobs]);
+  }, [isLoading, jobs, tableContent]);
 
   return (
     <Table
@@ -348,7 +385,7 @@ const JobsManagementTable: React.FC<JobsManagementTableProps & OUIAProps> = ({
       actionResolver={checkNotEmpty() ? actionResolver : undefined}
       sortBy={sortBy}
       onSort={onSort}
-      aria-label="Jobs table"
+      aria-label="Jobs management Table"
       className="kogito-jobs-management__table"
       {...componentOuiaProps(ouiaId, "jobs-management-table", ouiaSafe)}
     >

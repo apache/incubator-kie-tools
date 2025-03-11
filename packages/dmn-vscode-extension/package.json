@@ -30,7 +30,8 @@
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/vscode-extension": "workspace:*",
     "@kie-tools/dmn-editor-envelope": "workspace:*",
-    "@kie-tools/kie-bc-editors": "workspace:*"
+    "@kie-tools/kie-bc-editors": "workspace:*",
+    "@kie-tools/scesim-editor-envelope": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools-core/webpack-base": "workspace:*",
@@ -40,8 +41,8 @@
     "@kie-tools/tsconfig": "workspace:*",
     "@kie-tools/vscode-java-code-completion-extension-plugin": "workspace:*",
     "@types/vscode": "1.67.0",
-    "@vscode/test-web": "^0.0.30",
-    "@vscode/vsce": "^2.22.0",
+    "@vscode/test-web": "^0.0.66",
+    "@vscode/vsce": "^3.2.1",
     "buffer": "^6.0.3",
     "copy-webpack-plugin": "^11.0.0",
     "process": "^0.11.10",
@@ -61,18 +62,6 @@
   "contributes": {
     "commands": [
       {
-        "command": "extension.kogito.getPreviewSvgDmn",
-        "icon": {
-          "dark": "./static/svg-icon-dark.png",
-          "light": "./static/svg-icon-light.png"
-        },
-        "title": "Generate DMN Editor preview SVG (classic)"
-      },
-      {
-        "command": "extension.kogito.silentlyGenerateSvgDmn",
-        "title": "Generate DMN Editor preview SVG (classic) without any notification"
-      },
-      {
         "command": "extension.kie.tools.generatePreviewSvgDmn",
         "icon": {
           "dark": "./static/svg-icon-dark.png",
@@ -83,6 +72,18 @@
       {
         "command": "extension.kie.tools.silentlyGenerateSvgDmn",
         "title": "Generate DMN preview SVG without any notification"
+      },
+      {
+        "command": "extension.kogito.getPreviewSvgDmn",
+        "icon": {
+          "dark": "./static/svg-icon-dark.png",
+          "light": "./static/svg-icon-light.png"
+        },
+        "title": "Generate DMN Editor preview SVG (classic)"
+      },
+      {
+        "command": "extension.kogito.silentlyGenerateSvgDmn",
+        "title": "Generate DMN Editor preview SVG (classic) without any notification"
       }
     ],
     "configuration": {
@@ -92,13 +93,13 @@
           "type": "string"
         },
         "kogito.dmn.svgFilePath": {
-          "default": "${fileDirname}",
-          "markdownDescription": "Where to save generated SVG files (defaults to same path as .dmn file: `${fileDirname}`).",
+          "default": "",
+          "markdownDescription": "Where to save generated SVG files for DMN models. (defaults to `${fileDirname}` or `src/main/resources/META-INF/decisionSVG` if DMN model is inside `src/main/resources`).",
           "type": "string"
         },
         "kogito.dmn.svgFilenameTemplate": {
-          "default": "${fileBasenameNoExtension}-svg.svg",
-          "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}-svg.svg`).",
+          "default": "",
+          "markdownDescription": "Filename template to be used when generating SVG files for DMN models. (defaults to `${fileBasenameNoExtension}.svg`).",
           "type": "string"
         }
       },
@@ -106,22 +107,22 @@
     },
     "customEditors": [
       {
-        "displayName": "KIE DMN/SceSim Editors (classic)",
+        "displayName": "Apache KIE DMN/Test Scenario Editors",
+        "selector": [
+          {
+            "filenamePattern": "*.{dmn,scesim}"
+          }
+        ],
+        "viewType": "kieToolsDmnEditor"
+      },
+      {
+        "displayName": "Apache KIE DMN/Test Scenario Editors (classic)",
         "selector": [
           {
             "filenamePattern": "*.{dmn,scesim}"
           }
         ],
         "viewType": "kieKogitoWebviewEditorsDmn"
-      },
-      {
-        "displayName": "KIE DMN Editor",
-        "selector": [
-          {
-            "filenamePattern": "*.dmn"
-          }
-        ],
-        "viewType": "kieToolsDmnEditor"
       }
     ],
     "javaExtensions": [
@@ -179,6 +180,7 @@
     }
   },
   "activationEvents": [
+    "onCustomEditor:kieToolsDmnEditor",
     "onCustomEditor:kieKogitoWebviewEditorsDmn"
   ],
   "icon": "icon.png",

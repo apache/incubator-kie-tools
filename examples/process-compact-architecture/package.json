@@ -24,12 +24,12 @@
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "start": "run-script-os",
     "start:darwin:linux": "mvn quarkus:dev -DskipTests -Pdevelopment",
-    "start:win32": "mvn quarkus:dev `-DskipTests `-Pdevelopment",
-    "startContainers": "run-script-os || pnpm run stopContainers",
-    "startContainers:darwin:linux": "mvn clean install -Pcontainer && cd ./docker-compose && sh startContainers.sh",
+    "start:win32": "pnpm powershell mvn quarkus:dev `-DskipTests `-Pdevelopment",
+    "startContainers": "run-script-os",
+    "startContainers:darwin:linux": "mvn clean install -Pcontainer && docker-compose up",
     "startContainers:win32": "echo Running containers example is not supported on Windows",
     "stopContainers": "run-script-os",
-    "stopContainers:darwin:linux": "cd ./docker-compose && docker compose down"
+    "stopContainers:darwin:linux": "docker compose down"
   },
   "dependencies": {
     "@kie-tools/jbpm-quarkus-devui": "workspace:*",

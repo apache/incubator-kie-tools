@@ -30,11 +30,12 @@ import {
 } from "@patternfly/react-core/dist/js/components/Drawer";
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import isEmpty from "lodash/isEmpty";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Form, FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { FormDetailsDriver } from "../../../api/FormDetailsDriver";
 import FormDisplayerContainer from "../../containers/FormDisplayerContainer/FormDisplayerContainer";
 import FormEditor from "../FormEditor/FormEditor";
+import { useFormDetailsContext } from "../contexts/FormDetailsContext";
 
 export interface FormDetailsProps {
   isEnvelopeConnectedToChannel: boolean;
@@ -60,17 +61,16 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
   const [error, setError] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const editorResize = useRef<ResizableContent>({} as ResizableContent);
+  const appContext = useFormDetailsContext();
 
   useEffect(() => {
-    /* istanbul ignore else */
     if (isEnvelopeConnectedToChannel) {
       init();
     }
   }, [isEnvelopeConnectedToChannel]);
 
-  const init = async (): Promise<void> => {
+  const init = useCallback(async () => {
     try {
-      /* istanbul ignore else */
       if (formData) {
         const response = await driver.getFormContent(formData.name);
         setFormContent(response);
@@ -79,71 +79,98 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
     } catch (error) {
       setError(error);
     }
-  };
+  }, [driver, formData]);
 
-  const saveForm = async (form: Form): Promise<void> => {
-    try {
-      setFormContent(form);
-      await driver.saveFormContent(formData.name, {
-        configuration: form.configuration,
-        source: form.source,
-      });
-    } catch (error) {
-      setError(error);
-    }
-  };
-
-  const panelContent: JSX.Element = (
-    <DrawerPanelContent
-      isResizable
-      defaultSize={"800px"}
-      onResize={() => {
-        editorResize?.current?.doResize();
-      }}
-    >
-      <DrawerHead style={{ height: "100%" }}>
-        {formContent && Object.keys(formContent)[0] && Object.keys(formContent)[0].length > 0 && (
-          <span>
-            <FormDisplayerContainer formContent={formContent} targetOrigin={targetOrigin} />
-          </span>
-        )}
-      </DrawerHead>
-    </DrawerPanelContent>
+  const saveContent = useCallback(
+    (args: { isSource?: boolean; isConfig?: boolean }) => (content: string) => {
+      try {
+        setFormContent((prev) => {
+          if (args.isSource) {
+            const newForm = { ...prev, source: content };
+            driver.saveFormContent(formData.name, newForm);
+            appContext.updateContent(newForm);
+            return newForm;
+          }
+          if (args.isConfig) {
+            const newForm = { ...prev, configuration: { ...prev.configuration, resources: JSON.parse(content) } };
+            driver.saveFormContent(formData.name, newForm);
+            appContext.updateContent(newForm);
+            return newForm;
+          }
+          return prev;
+        });
+      } catch (error) {
+        setError(error);
+      }
+    },
+    [appContext, driver, formData.name]
   );
 
-  const onTabSelect = (_event: any, tabIndex: number): void => {
+  const onTabSelect = useCallback((_event: any, tabIndex: number): void => {
     setActiveTab(tabIndex);
-  };
+  }, []);
 
-  const getSource = (): string => {
-    /* istanbul ignore else */
+  const getSource = useCallback(() => {
     if (!isEmpty(formContent)) {
       return formContent?.source ?? "";
     }
     return "";
-  };
-  const getType = (): string => {
-    /* istanbul ignore else */
+  }, [formContent]);
+
+  const getType = useCallback(() => {
     if (!isEmpty(formData)) {
       return formData.type;
     }
     return "";
-  };
-  const getConfig = (): string => {
-    /* istanbul ignore else */
+  }, [formData]);
+
+  const getConfig = useCallback(() => {
     if (!isEmpty(formContent)) {
       return JSON.stringify(formContent?.configuration.resources, null, 2);
     }
     return "";
-  };
-  if (error) {
-    return <ServerErrors error={error} variant={"large"} />;
-  }
-  return (
-    <div {...componentOuiaProps(ouiaId, "form-details", ouiaSafe)}>
+  }, [formContent]);
+
+  const getFormLanguage = useCallback((args: { formType?: string; isSource?: boolean; isConfig?: boolean }) => {
+    if (args.isSource && args.formType) {
+      if (args.formType.toLowerCase() === "tsx") {
+        return "typescript";
+      }
+      if (args.formType.toLowerCase() === "html") {
+        return "html";
+      }
+    }
+    if (args.isConfig) {
+      return "json";
+    }
+    return "txt";
+  }, []);
+
+  return error ? (
+    <ServerErrors error={error} variant={"large"} />
+  ) : (
+    <div {...componentOuiaProps(ouiaId, "form-details", ouiaSafe)} style={{ height: "100%" }}>
       {!isLoading ? (
         <Drawer isStatic>
-          <DrawerContent panelContent={panelContent}>
+          <DrawerContent
+            panelContent={
+              <DrawerPanelContent
+                isResizable
+                defaultSize={"800px"}
+                onResize={() => {
+                  editorResize?.current?.doResize();
+                }}
+              >
+                <DrawerHead style={{ height: "100%" }}>
+                  {formContent && Object.keys(formContent)[0] && Object.keys(formContent)[0].length > 0 && (
+                    <span>
+                      <FormDisplayerContainer formContent={formContent} targetOrigin={targetOrigin} />
+                    </span>
+                  )}
+                </DrawerHead>
+              </DrawerPanelContent>
+            }
+          >
             <Tabs isFilled activeKey={activeTab} onSelect={onTabSelect}>
               <Tab
                 eventKey={0}
@@ -159,12 +186,9 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
                 >
                   {activeTab === 0 && (
                     <FormEditor
-                      code={getSource()}
-                      formContent={formContent}
-                      setFormContent={setFormContent}
-                      saveFormContent={saveForm}
-                      isSource
-                      formType={getType()}
+                      textContent={getSource()}
+                      saveContent={saveContent({ isSource: true })}
+                      formLanguage={getFormLanguage({ formType: getType(), isSource: true })}
                       ref={editorResize}
                     />
                   )}
@@ -184,11 +208,9 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
                 >
                   {activeTab === 1 && (
                     <FormEditor
-                      code={getConfig()}
-                      formContent={formContent}
-                      setFormContent={setFormContent}
-                      saveFormContent={saveForm}
-                      isConfig
+                      textContent={getConfig()}
+                      saveContent={saveContent({ isConfig: true })}
+                      formLanguage={getFormLanguage({ isConfig: true })}
                       ref={editorResize}
                     />
                   )}

@@ -29,6 +29,18 @@ To run the development app, use the following command:
 
 `pnpm start`
 
+# Configuration
+
+The `SonataFlow Dev App` can be configured via environment variables:
+
+- _SONATAFLOW_DEV_APP_DELAY_: Defines the server's response delay in milliseconds
+
+For example:
+
+```bash
+$ export SONATAFLOW_DEV_APP_DELAY=500
+```
+
 ### GraphQL Modifications
 
 This section covers modifications to the GraphQL database.

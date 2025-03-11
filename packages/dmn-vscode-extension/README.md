@@ -22,7 +22,7 @@
 
 Create and edit DMN and SceSim files.
 
-> NOTE: This extension provides two DMN Editors. The classic one will be removed in future versions. See the details of the new DMN Editor [here](https://github.com/apache/incubator-kie-issues/issues/439).
+> NOTE: This extension provides two sets of DMN and Test Scenario Editors. The classic ones are currently the default choice, but you can switch to the new Editor based on your need. The classic editors will be removed in future versions. See the details of the new DMN Editor [here](https://github.com/apache/incubator-kie-issues/issues/439) and the new Test Scenario Editor [here](https://github.com/apache/incubator-kie-issues/issues/453).
 
 ## Features
 
@@ -43,11 +43,11 @@ DMN files must be inside a `src/` folder on your Workspace to be visible on the 
 
 ### Settings
 
-| Setting                          | Description                                              | Default value                        |
-| -------------------------------- | -------------------------------------------------------- | ------------------------------------ |
-| `kogito.dmn.runOnSave`           | Execute a command on each save operation of the DMN file | _empty_                              |
-| `kogito.dmn.svgFilenameTemplate` | Filename template to be used when generating SVG files   | `${fileBasenameNoExtension}-svg.svg` |
-| `kogito.dmn.svgFilePath`         | Where to save generated SVG files                        | `${fileDirname}`                     |
+| Setting                          | Description                                              | Default value                                                                                             |
+| -------------------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `kogito.dmn.runOnSave`           | Execute a command on each save operation of the DMN file | _empty_                                                                                                   |
+| `kogito.dmn.svgFilenameTemplate` | Filename template to be used when generating SVG files   | `${fileBasenameNoExtension}.svg`                                                                          |
+| `kogito.dmn.svgFilePath`         | Where to save generated SVG files                        | `${fileDirname}` or `src/main/resources/META-INF/decisionSVG` if DMN model is inside `src/main/resources` |
 
 The `kogito.dmn.svgFilenameTemplate` and `kogito.dmn.svgFilePath` settings accept the following variables as tokens:
 

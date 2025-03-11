@@ -31,15 +31,8 @@
   </parent>
 
   <artifactId>process-compact-architecture</artifactId>
-  <version>${revision}</version>
-
   <name>KIE Tools :: Example :: Process Compact Architecture</name>
-
-  <properties>
-    <kogito.management-console.image
-    >docker.io/apache/incubator-kie-kogito-management-console:main</kogito.management-console.image>
-    <kogito.task-console.image>docker.io/apache/incubator-kie-kogito-task-console:main</kogito.task-console.image>
-  </properties>
+  <version>${revision}</version>
 
   <dependencies>
     <dependency>
@@ -119,6 +112,12 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-data-audit</artifactId>
+    </dependency>
+
+    <!-- User Task persistence -->
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-addons-quarkus-usertask-storage-jpa</artifactId>
     </dependency>
   </dependencies>
 

@@ -18,6 +18,7 @@
  */
 
 import {
+  Action,
   BeeGwtService,
   BoxedExpression,
   DmnDataType,
@@ -25,11 +26,12 @@ import {
   PmmlDocument,
 } from "@kie-tools/boxed-expression-component/dist/api";
 import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dist/BoxedExpressionEditor";
-import { FeelVariables } from "@kie-tools/dmn-feel-antlr4-parser";
-import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import { FeelIdentifiers } from "@kie-tools/dmn-feel-antlr4-parser";
+import { IdentifiersRefactor } from "@kie-tools/dmn-language-service";
 import {
   DMN15__tBusinessKnowledgeModel,
   DMN15__tDecision,
+  DMN15__tDefinitions,
   DMN15__tItemDefinition,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
@@ -65,7 +67,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { ArrowRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-right-icon";
 import { InfoIcon } from "@patternfly/react-icons/dist/js/icons/info-icon";
 import * as React from "react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import * as RF from "reactflow";
 import { builtInFeelTypes } from "../dataTypes/BuiltInFeelTypes";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
@@ -78,10 +80,19 @@ import { updateExpression } from "../mutations/updateExpression";
 import { updateExpressionWidths } from "../mutations/updateExpressionWidths";
 import { DmnEditorTab } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
-import { getDefaultColumnWidth } from "./getDefaultColumnWidth";
+import { getDefaultColumnWidth } from "@kie-tools/boxed-expression-component/dist/resizing/WidthsToFitData";
 import { getDefaultBoxedExpression } from "./getDefaultBoxedExpression";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { renameDrgElement } from "../mutations/renameNode";
+import { OnExpressionChange } from "@kie-tools/boxed-expression-component/dist/BoxedExpressionEditorContext";
+import { updateDrgElementType } from "../mutations/updateDrgElementType";
+import { VariableChangedArgs } from "@kie-tools/boxed-expression-component/dist/api/ExpressionChange";
+import {
+  isIdentifierReferencedInSomeExpression,
+  RefactorConfirmationDialog,
+} from "../refactor/RefactorConfirmationDialog";
 import { EvaluationHighlightsBadge } from "../evaluationHighlights/EvaluationHighlightsBadge";
+import { useDmnEditor } from "../DmnEditorContext";
 
 export function BoxedExpressionScreen({ container }: { container: React.RefObject<HTMLElement> }) {
   const { externalModelsByNamespace } = useExternalModels();
@@ -105,15 +116,19 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
   const isAlternativeInputDataShape = useDmnEditorStore((s) => s.computed(s).isAlternativeInputDataShape());
   const drdIndex = useDmnEditorStore((s) => s.computed(s).getDrdIndex());
 
-  const onRequestFeelVariables = useCallback(() => {
-    const externalModels = new Map<string, DmnLatestModel>();
+  const externalDmnModelsByNamespaceMap = useDmnEditorStore((s) =>
+    s.computed(s).getExternalDmnModelsByNamespaceMap(externalModelsByNamespace)
+  );
 
-    for (const [key, externalDmn] of externalDmnsByNamespace) {
-      externalModels.set(key, externalDmn.model);
-    }
+  const { evaluationResultsByNodeId } = useDmnEditor();
+  const isEvaluationHighlightsEnabled = useDmnEditorStore((s) => s.diagram.overlays.enableEvaluationHighlights);
 
-    return new FeelVariables(dmnEditorStoreApi.getState().dmn.model.definitions, externalModels);
-  }, [dmnEditorStoreApi, externalDmnsByNamespace]);
+  const onRequestFeelIdentifiers = useCallback(() => {
+    return new FeelIdentifiers({
+      _readonly_dmnDefinitions: dmnEditorStoreApi.getState().dmn.model.definitions,
+      _readonly_externalDefinitions: externalDmnModelsByNamespaceMap,
+    });
+  }, [dmnEditorStoreApi, externalDmnModelsByNamespaceMap]);
 
   const drgElementIndex = useMemo(() => {
     if (!activeDrgElementId) {
@@ -204,24 +219,113 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
     [dmnEditorStoreApi]
   );
 
-  const onExpressionChange: React.Dispatch<React.SetStateAction<Normalized<BoxedExpression>>> = useCallback(
-    (newExpressionAction) => {
-      dmnEditorStoreApi.setState((state) => {
-        const newExpression =
-          typeof newExpressionAction === "function"
-            ? newExpressionAction(boxedExpressionRef.current ?? undefined!)
-            : newExpressionAction;
-
-        boxedExpressionRef.current = newExpression;
-
-        updateExpression({
-          definitions: state.dmn.model.definitions,
-          expression: newExpression,
-          drgElementIndex: expression?.drgElementIndex ?? 0,
-        });
+  const setExpression = useCallback(
+    (args: { definitions: Normalized<DMN15__tDefinitions>; expression: Normalized<BoxedExpression | undefined> }) => {
+      boxedExpressionRef.current = args.expression;
+      updateExpression({
+        definitions: args.definitions,
+        expression: args.expression!,
+        drgElementIndex: expression?.drgElementIndex ?? 0,
+        externalDmnModelsByNamespaceMap,
       });
     },
-    [dmnEditorStoreApi, expression?.drgElementIndex]
+    [expression?.drgElementIndex, externalDmnModelsByNamespaceMap]
+  );
+
+  const [isRefactorModalOpen, setIsRefactorModalOpen] = useState(false);
+  const [variableChangedArgs, setVariableChangedArgs] = useState<VariableChangedArgs>();
+  const [newExpression, setNewExpression] = useState<Normalized<BoxedExpression | undefined>>();
+
+  const refactor = useCallback(() => {
+    if (!variableChangedArgs) {
+      throw new Error("Can not refactor because `variableChangedArgs` are not set in BoxedExpressionScreen.");
+    }
+
+    dmnEditorStoreApi.setState((state) => {
+      const drgElement = state.dmn.model.definitions.drgElement?.[expression?.drgElementIndex ?? 0];
+      if (drgElement?.["@_id"] === variableChangedArgs.variableUuid) {
+        renameDrgElement({
+          definitions: state.dmn.model.definitions,
+          newName: newExpression?.["@_label"] ?? drgElement!["@_name"]!,
+          index: expression?.drgElementIndex ?? 0,
+          externalDmnModelsByNamespaceMap,
+          shouldRenameReferencedExpressions: true,
+        });
+      } else {
+        const identifiersRefactor = new IdentifiersRefactor({
+          writeableDmnDefinitions: state.dmn.model.definitions,
+          _readonly_externalDmnModelsByNamespaceMap: externalDmnModelsByNamespaceMap,
+        });
+        identifiersRefactor.rename({
+          identifierUuid: variableChangedArgs.variableUuid,
+          newName: variableChangedArgs.nameChange?.to ?? "",
+        });
+      }
+    });
+  }, [
+    dmnEditorStoreApi,
+    expression?.drgElementIndex,
+    externalDmnModelsByNamespaceMap,
+    newExpression,
+    variableChangedArgs,
+  ]);
+
+  const onExpressionChange = useCallback<OnExpressionChange>(
+    (args) => {
+      dmnEditorStoreApi.setState((state) => {
+        const newExpression =
+          typeof args.setExpressionAction === "function"
+            ? args.setExpressionAction(boxedExpressionRef.current)
+            : args.setExpressionAction;
+
+        if (!args.expressionChangedArgs) {
+          setExpression({ definitions: state.dmn.model.definitions, expression: newExpression });
+        } else {
+          if (args.expressionChangedArgs.action === Action.VariableChanged) {
+            if (args.expressionChangedArgs.typeChange && !args.expressionChangedArgs.nameChange) {
+              updateDrgElementType({
+                definitions: state.dmn.model.definitions,
+                expression: newExpression!,
+                drgElementIndex: expression?.drgElementIndex ?? 0,
+              });
+              setExpression({ definitions: state.dmn.model.definitions, expression: newExpression });
+            } else if (args.expressionChangedArgs.typeChange) {
+              const identifiersRefactor = new IdentifiersRefactor({
+                writeableDmnDefinitions: state.dmn.model.definitions,
+                _readonly_externalDmnModelsByNamespaceMap: externalDmnModelsByNamespaceMap,
+              });
+              identifiersRefactor.changeType({
+                identifierUuid: args.expressionChangedArgs.variableUuid,
+                newType: args.expressionChangedArgs.typeChange.to,
+              });
+              updateDrgElementType({
+                definitions: state.dmn.model.definitions,
+                expression: newExpression!,
+                drgElementIndex: expression?.drgElementIndex ?? 0,
+              });
+            }
+            if (args.expressionChangedArgs.nameChange) {
+              setVariableChangedArgs(args.expressionChangedArgs);
+              setNewExpression(newExpression);
+              if (
+                isIdentifierReferencedInSomeExpression({
+                  identifierUuid: args.expressionChangedArgs.variableUuid,
+                  dmnDefinitions: state.dmn.model.definitions,
+                  externalDmnModelsByNamespaceMap,
+                })
+              ) {
+                setIsRefactorModalOpen(true);
+              } else {
+                setExpression({ definitions: state.dmn.model.definitions, expression: newExpression });
+              }
+            }
+          } else {
+            setExpression({ definitions: state.dmn.model.definitions, expression: newExpression });
+          }
+        }
+      });
+    },
+    [dmnEditorStoreApi, expression?.drgElementIndex, externalDmnModelsByNamespaceMap, setExpression]
   );
 
   // END (setState batching for `expression` and `widthsById`)
@@ -320,6 +424,28 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
     return NodeIcon({ nodeType, isAlternativeInputDataShape });
   }, [drgElement, isAlternativeInputDataShape]);
 
+  const onConfirmExpressionRefactor = useCallback(() => {
+    if (!variableChangedArgs) {
+      throw new Error(
+        "Can not update variable name because 'variableChangedArgs' is not set in the BoxedExpressionScreen."
+      );
+    }
+    refactor();
+
+    setVariableChangedArgs(undefined);
+    setNewExpression(undefined);
+    setIsRefactorModalOpen(false);
+  }, [refactor, variableChangedArgs]);
+
+  const onConfirmRenameOnly = useCallback(() => {
+    setVariableChangedArgs(undefined);
+    setNewExpression(undefined);
+    setIsRefactorModalOpen(false);
+    dmnEditorStoreApi.setState((state) => {
+      setExpression({ definitions: state.dmn.model.definitions, expression: newExpression });
+    });
+  }, [dmnEditorStoreApi, newExpression, setExpression]);
+
   return (
     <>
       <>
@@ -383,6 +509,18 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
             </aside>
           </Flex>
         </Flex>
+        <RefactorConfirmationDialog
+          onConfirmExpressionRefactor={onConfirmExpressionRefactor}
+          onConfirmRenameOnly={onConfirmRenameOnly}
+          isRefactorModalOpen={isRefactorModalOpen}
+          fromName={variableChangedArgs?.nameChange?.from}
+          toName={variableChangedArgs?.nameChange?.to}
+          onCancel={() => {
+            setIsRefactorModalOpen(false);
+            setVariableChangedArgs(undefined);
+            setNewExpression(undefined);
+          }}
+        />
 
         <div style={{ flexGrow: 1 }}>
           <BoxedExpressionEditor
@@ -396,10 +534,15 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
             onExpressionChange={onExpressionChange}
             dataTypes={dataTypes}
             scrollableParentRef={container}
-            onRequestFeelVariables={onRequestFeelVariables}
+            onRequestFeelIdentifiers={onRequestFeelIdentifiers}
             widthsById={widthsById}
             onWidthsChange={onWidthsChange}
             isReadOnly={settings.isReadOnly}
+            evaluationHitsCountById={
+              isEvaluationHighlightsEnabled
+                ? evaluationResultsByNodeId?.get(activeDrgElementId ?? "")?.evaluationHitsCountByRuleOrRowId
+                : undefined
+            }
           />
         </div>
       </>

@@ -26,15 +26,16 @@ import {
   KogitoEditorChannelApi,
   EditorTheme,
   DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
+  KogitoEditorEnvelopeApi,
 } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnEditorRoot } from "./DmnEditorRoot";
 import { ResourceContent, ResourcesList, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { useCallback } from "react";
 
-export class DmnEditorFactory implements EditorFactory<Editor, KogitoEditorChannelApi> {
+export class DmnEditorFactory implements EditorFactory<Editor, KogitoEditorEnvelopeApi, KogitoEditorChannelApi> {
   public createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<Editor> {
     return Promise.resolve(new DmnEditorInterface(envelopeContext, initArgs));
@@ -42,13 +43,13 @@ export class DmnEditorFactory implements EditorFactory<Editor, KogitoEditorChann
 }
 
 export class DmnEditorInterface implements Editor {
-  private self: DmnEditorRoot;
+  protected self: DmnEditorRoot;
   public af_isReact = true;
   public af_componentId: "dmn-editor";
   public af_componentTitle: "DMN Editor";
 
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>,
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
     private readonly initArgs: EditorInitArgs
   ) {}
 
@@ -106,7 +107,7 @@ function DmnEditorRootWrapper({
   workspaceRootAbsolutePosixPath,
   isReadOnly,
 }: {
-  envelopeContext?: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>;
+  envelopeContext?: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>;
   exposing: (s: DmnEditorRoot) => void;
   workspaceRootAbsolutePosixPath: string;
   isReadOnly: boolean;

@@ -26,6 +26,7 @@ import { MultipleNodeProperties } from "./MultipleNodeProperties";
 import { useDmnEditorStore } from "../store/StoreContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import "./DiagramPropertiesPanel.css";
+import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 
 export function DiagramPropertiesPanel() {
   const { externalModelsByNamespace } = useExternalModels();
@@ -39,7 +40,14 @@ export function DiagramPropertiesPanel() {
       isResizable={true}
       minSize={"300px"}
       defaultSize={"500px"}
-      onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
+      onKeyDown={(e) => {
+        // In macOS, we can not stopPropagation here because, otherwise, shortcuts are not handled
+        // See https://github.com/apache/incubator-kie-issues/issues/1164
+        if (!(getOperatingSystem() === OperatingSystem.MACOS && e.metaKey)) {
+          // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Properties Panel
+          e.stopPropagation();
+        }
+      }}
     >
       <DrawerHead>
         {selectedNodesById.size <= 0 && <GlobalDiagramProperties />}

@@ -17,9 +17,8 @@
  * under the License.
  */
 
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import { Modal, ModalVariant, ModalBoxBody } from "@patternfly/react-core/dist/js/components/Modal";
-import { TextContent, Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
@@ -64,86 +63,38 @@ export const JobsRescheduleModal: React.FC<IOwnProps & OUIAProps> = ({
   const [repeatLimit, setRepeatLimit] = React.useState<number | string>(job.repeatLimit);
   const [errorModalOpen, setErrorModalOpen] = React.useState<boolean>(false);
 
-  const handleIntervalChange = (value: number | string): void => {
+  const handleIntervalChange = useCallback((value: number | string): void => {
     setRepeatInterval(value);
-  };
+  }, []);
 
-  const handleLimitChange = (value: number | string): void => {
+  const handleLimitChange = useCallback((value: number | string): void => {
     setRepeatLimit(value);
-  };
+  }, []);
 
-  const handleDateChange = (value: Date): void => {
+  const handleDateChange = useCallback((value: Date): void => {
     setScheduleDate(value);
-  };
+  }, []);
 
-  const handleTimeNow = (): void => {
+  const handleTimeNow = useCallback((): void => {
     setScheduleDate(new Date());
-  };
+  }, []);
 
-  const onApplyReschedule = (): void => {
+  const onApplyReschedule = useCallback((): void => {
     handleJobReschedule(job, repeatInterval, repeatLimit, scheduleDate);
-  };
+  }, [handleJobReschedule, job, repeatInterval, repeatLimit, scheduleDate]);
 
-  const applyAction: JSX.Element[] = [
-    <Button key="apply-selection" variant="primary" id="apply-button" onClick={onApplyReschedule}>
-      Apply
-    </Button>,
-  ];
-  const modalContent = (): JSX.Element => {
-    return (
-      <ModalBoxBody className="kogito-management-console-shared--jobsModal__ModalBody">
-        <Form isHorizontal>
-          <FormGroup label="Expiration Time" fieldId="horizontal-form-name">
-            {scheduleDate && scheduleDate !== undefined && (
-              <DateTimePicker value={scheduleDate} minDate={new Date()} onChange={handleDateChange} />
-            )}
-            <Button
-              className="kogito-management-console-shared--jobsModal__TimeNow"
-              id="Time-now"
-              onClick={handleTimeNow}
-            >
-              <OutlinedClockIcon /> Now
-            </Button>
-          </FormGroup>
-          <FormGroup label="Repeat Interval" fieldId="repeat-interval">
-            <TextInput
-              type="text"
-              id="repeat-interval-input"
-              name="repeat-interval-input"
-              aria-describedby="repeat-interval"
-              value={repeatInterval || ""}
-              onChange={(_event, value: number | string) => handleIntervalChange(value)}
-              isDisabled={repeatInterval === null}
-            />
-            <HelperText>
-              {repeatInterval === null ? (
-                <HelperTextItem variant="error">Input disabled since it is an one-time run job</HelperTextItem>
-              ) : null}
-            </HelperText>
-          </FormGroup>
-          <FormGroup label="Repeat Limit" fieldId="repeat-limit">
-            <TextInput
-              type="text"
-              id="repeat-limit-input"
-              name="repeat-limit-input"
-              aria-describedby="repeat-limit"
-              value={repeatLimit || ""}
-              onChange={(_event, value: number | string) => handleLimitChange(value)}
-              isDisabled={repeatLimit === null}
-            />
-            <HelperText>
-              {repeatInterval === null ? (
-                <HelperTextItem variant="error">Input disabled since it is an one-time run job</HelperTextItem>
-              ) : null}
-            </HelperText>
-          </FormGroup>
-        </Form>
-      </ModalBoxBody>
-    );
-  };
-  const handleErrorModal = (): void => {
-    setErrorModalOpen(!errorModalOpen);
-  };
+  const applyAction: JSX.Element[] = useMemo(
+    () => [
+      <Button key="apply-selection" variant="primary" id="apply-button" onClick={onApplyReschedule}>
+        Apply
+      </Button>,
+    ],
+    [onApplyReschedule]
+  );
+
+  const handleErrorModal = useCallback((): void => {
+    setErrorModalOpen((currentErrorModalOpen) => !currentErrorModalOpen);
+  }, []);
 
   const errorModalAction: JSX.Element[] = [
     <Button
@@ -160,17 +111,8 @@ export const JobsRescheduleModal: React.FC<IOwnProps & OUIAProps> = ({
 
   React.useEffect(() => {
     rescheduleError.length > 0 && handleErrorModal();
-  }, [rescheduleError]);
+  }, [handleErrorModal, rescheduleError]);
 
-  const errorModalContent = (): JSX.Element => {
-    return (
-      <ModalBoxBody>
-        <TextContent>
-          <Text>{rescheduleError}</Text>
-        </TextContent>
-      </ModalBoxBody>
-    );
-  };
   return (
     <>
       <Modal
@@ -184,7 +126,52 @@ export const JobsRescheduleModal: React.FC<IOwnProps & OUIAProps> = ({
         actions={[...applyAction, ...modalAction]}
         {...componentOuiaProps(ouiaId, "job-reschedule-modal", ouiaSafe)}
       >
-        {modalContent()}
+        <ModalBoxBody className="kogito-management-console-shared--jobsModal__ModalBody">
+          <Form isHorizontal>
+            <FormGroup label="Expiration Time" fieldId="horizontal-form-name">
+              {scheduleDate && scheduleDate !== undefined && (
+                <DateTimePicker value={scheduleDate} minDate={new Date()} onChange={handleDateChange} />
+              )}
+              <Button
+                className="kogito-management-console-shared--jobsModal__TimeNow"
+                id="Time-now"
+                onClick={handleTimeNow}
+              >
+                <OutlinedClockIcon /> Now
+              </Button>
+            </FormGroup>
+            <FormGroup
+              label="Repeat Interval"
+              fieldId="repeat-interval"
+              helperText={repeatInterval === null ? "Input disabled since it is an one-time run job" : null}
+            >
+              <TextInput
+                type="text"
+                id="repeat-interval-input"
+                name="repeat-interval-input"
+                aria-describedby="repeat-interval"
+                value={repeatInterval || ""}
+                onChange={handleIntervalChange}
+                isDisabled={repeatInterval === null}
+              />
+            </FormGroup>
+            <FormGroup
+              label="Repeat Limit"
+              fieldId="repeat-limit"
+              helperText={repeatLimit === null ? "Input disabled since it is an one-time run job" : null}
+            >
+              <TextInput
+                type="text"
+                id="repeat-limit-input"
+                name="repeat-limit-input"
+                aria-describedby="repeat-limit"
+                value={repeatLimit || ""}
+                onChange={handleLimitChange}
+                isDisabled={repeatLimit === null}
+              />
+            </FormGroup>
+          </Form>
+        </ModalBoxBody>
       </Modal>
       <Modal
         variant={ModalVariant.small}
@@ -197,7 +184,16 @@ export const JobsRescheduleModal: React.FC<IOwnProps & OUIAProps> = ({
         actions={errorModalAction}
         {...componentOuiaProps(ouiaId, "job-reschedule-error-modal", ouiaSafe)}
       >
-        {errorModalContent()}
+        <Button
+          key="confirm-selection"
+          variant="primary"
+          onClick={() => {
+            handleErrorModal();
+            setRescheduleError("");
+          }}
+        >
+          OK
+        </Button>
       </Modal>
     </>
   );

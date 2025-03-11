@@ -65,6 +65,7 @@ import "./IncludedModels.css";
 import { Popover, PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
 import { AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 
 export const EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER = "<Default>";
 
@@ -487,6 +488,19 @@ function IncludedModelCard({
     [dmnEditorStoreApi, externalModelsByNamespace]
   );
 
+  const externalDmnsByNamespace = useDmnEditorStore(
+    (s) => s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns
+  );
+
+  const externalModelsByNamespaceMap = useMemo(() => {
+    const externalModels = new Map<string, Normalized<DmnLatestModel>>();
+
+    for (const [key, externalDmn] of externalDmnsByNamespace) {
+      externalModels.set(key, externalDmn.model);
+    }
+    return externalModels;
+  }, [externalDmnsByNamespace]);
+
   const rename = useCallback<OnInlineFeelNameRenamed>(
     (newName) => {
       dmnEditorStoreApi.setState((state) => {
@@ -496,10 +510,11 @@ function IncludedModelCard({
           newName,
           allTopLevelDataTypesByFeelName: state.computed(state).getDataTypes(externalModelsByNamespace)
             .allTopLevelDataTypesByFeelName,
+          externalModelsByNamespaceMap,
         });
       });
     },
-    [dmnEditorStoreApi, externalModelsByNamespace, index]
+    [dmnEditorStoreApi, externalModelsByNamespace, externalModelsByNamespaceMap, index]
   );
 
   const extension = useMemo(() => {

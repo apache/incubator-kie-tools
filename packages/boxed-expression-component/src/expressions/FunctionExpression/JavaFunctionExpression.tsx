@@ -23,6 +23,7 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
+  Action,
   BeeTableCellProps,
   BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
@@ -32,6 +33,7 @@ import {
   BoxedFunction,
   BoxedFunctionKind,
   DmnBuiltInDataType,
+  ExpressionChangedArgs,
   generateUuid,
   Normalized,
 } from "../../api";
@@ -186,17 +188,39 @@ export function JavaFunctionExpression({
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<JAVA_ROWTYPE>[]) => {
-      setExpression((prev: Normalized<BoxedFunctionJava>) => {
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedFunctionJava> = {
-          ...prev,
-          "@_label": name,
-          "@_typeRef": typeRef,
-        };
-        return ret;
+      const expressionChangedArgs: ExpressionChangedArgs = {
+        action: Action.VariableChanged,
+        variableUuid: expressionHolderId,
+        typeChange:
+          typeRef !== functionExpression["@_typeRef"]
+            ? {
+                from: functionExpression["@_typeRef"] ?? "",
+                to: typeRef,
+              }
+            : undefined,
+        nameChange:
+          name !== functionExpression["@_label"]
+            ? {
+                from: functionExpression["@_label"] ?? "",
+                to: name,
+              }
+            : undefined,
+      };
+
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedFunctionJava>) => {
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedFunctionJava> = {
+            ...prev,
+            "@_label": name,
+            "@_typeRef": typeRef,
+          };
+          return ret;
+        },
+        expressionChangedArgs,
       });
     },
-    [setExpression]
+    [expressionHolderId, functionExpression, setExpression]
   );
 
   // It is always a Context
@@ -237,14 +261,17 @@ export function JavaFunctionExpression({
   }, []);
 
   const onRowReset = useCallback(() => {
-    setExpression((prev: Normalized<BoxedFunctionJava>) => {
-      // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-      const ret: Normalized<BoxedFunctionJava> = {
-        ...prev,
-        expression: undefined!,
-      };
+    setExpression({
+      setExpressionAction: (prev: Normalized<BoxedFunctionJava>) => {
+        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+        const ret: Normalized<BoxedFunctionJava> = {
+          ...prev,
+          expression: undefined!,
+        };
 
-      return ret;
+        return ret;
+      },
+      expressionChangedArgs: { action: Action.RowReset, rowIndex: 0 },
     });
   }, [setExpression]);
 
@@ -332,58 +359,72 @@ export function JavaFunctionExpression({
 
         // Class
         if (u.rowIndex === 0) {
-          setExpression((prev: Normalized<BoxedFunctionJava>) => {
-            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-            const ret: Normalized<BoxedFunction> = {
-              ...prev,
-              expression: {
-                __$$element: "context",
-                ...context,
-                contextEntry: [
-                  {
-                    ...clazz,
-                    expression: {
-                      ...clazz.expression,
-                      __$$element: "literalExpression",
-                      text: {
-                        __$$text: u.value,
+          setExpression({
+            setExpressionAction: (prev: Normalized<BoxedFunctionJava>) => {
+              // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+              const ret: Normalized<BoxedFunction> = {
+                ...prev,
+                expression: {
+                  __$$element: "context",
+                  ...context,
+                  contextEntry: [
+                    {
+                      ...clazz,
+                      expression: {
+                        ...clazz.expression,
+                        __$$element: "literalExpression",
+                        text: {
+                          __$$text: u.value,
+                        },
                       },
                     },
-                  },
-                  method,
-                ],
-              },
-            };
+                    method,
+                  ],
+                },
+              };
 
-            return ret;
+              return ret;
+            },
+            expressionChangedArgs: {
+              action: Action.LiteralTextExpressionChanged,
+              from: clazz.expression.__$$element === "literalExpression" ? clazz.expression.text?.__$$text ?? "" : "",
+              to: u.value,
+            },
           });
         }
         // Method
         else if (u.rowIndex === 1) {
-          setExpression((prev: Normalized<BoxedFunctionJava>) => {
-            // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-            const ret: Normalized<BoxedFunction> = {
-              ...prev,
-              expression: {
-                __$$element: "context",
-                ...context,
-                contextEntry: [
-                  clazz,
-                  {
-                    ...method,
-                    expression: {
-                      ...method.expression,
-                      __$$element: "literalExpression",
-                      "@_id": method.expression["@_id"] ?? generateUuid(),
-                      text: {
-                        __$$text: u.value,
+          setExpression({
+            setExpressionAction: (prev: Normalized<BoxedFunctionJava>) => {
+              // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+              const ret: Normalized<BoxedFunction> = {
+                ...prev,
+                expression: {
+                  __$$element: "context",
+                  ...context,
+                  contextEntry: [
+                    clazz,
+                    {
+                      ...method,
+                      expression: {
+                        ...method.expression,
+                        __$$element: "literalExpression",
+                        "@_id": method.expression["@_id"] ?? generateUuid(),
+                        text: {
+                          __$$text: u.value,
+                        },
                       },
                     },
-                  },
-                ],
-              },
-            };
-            return ret;
+                  ],
+                },
+              };
+              return ret;
+            },
+            expressionChangedArgs: {
+              action: Action.LiteralTextExpressionChanged,
+              from: method.expression.__$$element === "literalExpression" ? method.expression.text?.__$$text ?? "" : "",
+              to: u.value,
+            },
           });
         }
       }

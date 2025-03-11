@@ -285,7 +285,10 @@ export class DecisionTableExpressionElement {
   }
 
   public inputHeaderAt(index: number) {
-    return new NameAndDataTypeCell(this.locator.getByTestId("kie-tools--bee--table-header-input").nth(index));
+    return new NameAndDataTypeCell(
+      this.locator.getByTestId("kie-tools--bee--table-header-input").nth(index),
+      this.monaco
+    );
   }
 
   public outputHeaderAt(index: number) {

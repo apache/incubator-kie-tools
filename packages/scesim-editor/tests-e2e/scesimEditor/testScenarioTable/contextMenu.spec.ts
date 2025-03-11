@@ -26,7 +26,7 @@ import { AddColumnPosition, AddRowPosition } from "../../__fixtures__/table";
 test.describe("Test scenario table context menu", () => {
   test.describe("Context menu checks", () => {
     test.beforeEach(async ({ editor, testScenarioTable, table }) => {
-      await editor.createTestScenario(AssetType.RULE);
+      await editor.createTestScenario(AssetType.DECISION);
       await table.addRow({ targetCellName: "1", position: AddRowPosition.ABOVE });
       await testScenarioTable.fill({ content: "test", rowLocatorInfo: "1", columnNumber: 1 });
     });
@@ -40,7 +40,7 @@ test.describe("Test scenario table context menu", () => {
     });
 
     test("should render field context menu", async ({ contextMenu }) => {
-      await contextMenu.openOnColumnHeader({ name: "PROPERTY (<Undefined>)", columnNumber: 1 });
+      await contextMenu.openOnColumnHeader({ name: "PROPERTY-1 (<Undefined>)" });
       await expect(contextMenu.getHeading({ heading: HeadingType.SELECTION })).not.toBeAttached();
       await expect(contextMenu.getHeading({ heading: HeadingType.SCENARIO })).not.toBeAttached();
       await expect(contextMenu.getHeading({ heading: HeadingType.FIELD })).toBeAttached();
@@ -83,35 +83,43 @@ test.describe("Test scenario table context menu", () => {
 
     test("should add and delete property column left", async ({ contextMenu, table, testScenarioTable }) => {
       await table.addPropertyColumn({
-        targetCellName: "PROPERTY (<Undefined>)",
+        targetCellName: "PROPERTY-1 (<Undefined>)",
         position: AddColumnPosition.LEFT,
         columnNumber: 0,
       });
-      await expect(table.getColumnHeader({ name: "PROPERTY (<Undefined>)", columnNumber: 2 })).toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-1 (<Undefined>)" })).toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-2 (<Undefined>)" })).toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-3 (<Undefined>)" })).toBeAttached();
       await expect(testScenarioTable.get()).toHaveScreenshot("test-scenario-table-add-property-column-left.png");
 
-      await contextMenu.openOnColumnHeader({ name: "PROPERTY (<Undefined>)", columnNumber: 1 });
+      await contextMenu.openOnColumnHeader({ name: "PROPERTY-3 (<Undefined>)" });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_FIELD });
-      await expect(table.getColumnHeader({ name: "PROPERTY (<Undefined>)", columnNumber: 2 })).not.toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-3 (<Undefined>)" })).not.toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-1 (<Undefined>)" })).toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-2 (<Undefined>)" })).toBeAttached();
     });
 
     test("should add and delete property column right", async ({ contextMenu, table, testScenarioTable }) => {
       await table.addPropertyColumn({
-        targetCellName: "PROPERTY (<Undefined>)",
+        targetCellName: "PROPERTY-1 (<Undefined>)",
         position: AddColumnPosition.RIGHT,
         columnNumber: 0,
       });
-      await expect(table.getColumnHeader({ name: "PROPERTY (<Undefined>)", columnNumber: 2 })).toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-1 (<Undefined>)" })).toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-2 (<Undefined>)" })).toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-3 (<Undefined>)" })).toBeAttached();
       await expect(testScenarioTable.get()).toHaveScreenshot("test-scenario-table-add-property-column-right.png");
 
-      await contextMenu.openOnColumnHeader({ name: "PROPERTY (<Undefined>)", columnNumber: 1 });
+      await contextMenu.openOnColumnHeader({ name: "PROPERTY-3 (<Undefined>)" });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_FIELD });
-      await expect(table.getColumnHeader({ name: "PROPERTY (<Undefined>)", columnNumber: 2 })).not.toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-3 (<Undefined>)" })).not.toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-1 (<Undefined>)" })).toBeAttached();
+      await expect(table.getColumnHeader({ name: "PROPERTY-2 (<Undefined>)" })).toBeAttached();
     });
 
     test("should add and delete row below", async ({ table, contextMenu }) => {
       await table.addRow({ targetCellName: "1", position: AddRowPosition.BELOW });
-      await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
+      await expect(table.getCell({ rowNumber: "1", columnNumber: 2 })).toContainText("test");
 
       await contextMenu.openOnCell({ rowNumber: "3", columnNumber: 0 });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_SCENARIO });
@@ -120,7 +128,7 @@ test.describe("Test scenario table context menu", () => {
 
     test("should add and delete row above", async ({ table, contextMenu }) => {
       await table.addRow({ targetCellName: "1", position: AddRowPosition.ABOVE });
-      await expect(table.getCell({ rowNumber: "2", columnNumber: 1 })).toContainText("test");
+      await expect(table.getCell({ rowNumber: "2", columnNumber: 2 })).toContainText("test");
 
       await contextMenu.openOnCell({ rowNumber: "3", columnNumber: 0 });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_SCENARIO });
@@ -197,10 +205,10 @@ test.describe("Test scenario table context menu", () => {
       contextMenu,
       table,
     }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1353");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1861");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1353",
+        description: "https://github.com/apache/incubator-kie-issues/issues/1861",
       });
 
       await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
@@ -213,14 +221,14 @@ test.describe("Test scenario table context menu", () => {
       contextMenu,
       table,
     }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1353");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1861");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1353",
+        description: "https://github.com/apache/incubator-kie-issues/issues/1861",
       });
 
       await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
-      await contextMenu.openOnColumnHeader({ name: "Property (<Undefined>)", columnNumber: 0 });
+      await contextMenu.openOnColumnHeader({ name: "PROPERTY-1 (<Undefined>)", columnNumber: 0 });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_FIELD });
       await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).not.toContainText("test");
     });
@@ -230,10 +238,10 @@ test.describe("Test scenario table context menu", () => {
       table,
       testScenarioTable,
     }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1353");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1861");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1353",
+        description: "https://github.com/apache/incubator-kie-issues/issues/1861",
       });
 
       await testScenarioTable.fill({ content: "test", rowLocatorInfo: "1 test test", columnNumber: 2 });
@@ -247,14 +255,14 @@ test.describe("Test scenario table context menu", () => {
       table,
       testScenarioTable,
     }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1353");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1861");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1353",
+        description: "https://github.com/apache/incubator-kie-issues/issues/1861",
       });
 
       await testScenarioTable.fill({ content: "test", rowLocatorInfo: "1 test test", columnNumber: 2 });
-      await contextMenu.openOnColumnHeader({ name: "Property (<Undefined>)", columnNumber: 1 });
+      await contextMenu.openOnColumnHeader({ name: "PROPERTY-1 (<Undefined>)", columnNumber: 1 });
       await contextMenu.clickMenuItem({ menuItem: MenuItem.DELETE_FIELD });
       await expect(table.getCell({ rowNumber: "1", columnNumber: 2 })).not.toContainText("test");
     });
@@ -263,10 +271,10 @@ test.describe("Test scenario table context menu", () => {
       contextMenu,
       table,
     }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1353");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1861");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1353",
+        description: "https://github.com/apache/incubator-kie-issues/issues/1861",
       });
 
       await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");

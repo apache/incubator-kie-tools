@@ -70,25 +70,17 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
    [comment]: <> (//TODO: Use EnvJson.schema.json to generate this documentation somehow.. See https://github.com/kiegroup/kie-issues/issues/16)
 
-   |                          Name                          |                          Description                          |                                            Default                                            |
-   | :----------------------------------------------------: | :-----------------------------------------------------------: | :-------------------------------------------------------------------------------------------: |
-   |   `RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_ENV_MODE`   | Env Mode: "PROD" or "DEV". PROD enables Keycloak integration. |                                            "PROD"                                             |
-   |   `RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_APP_NAME`   |                 Management Console app name.                  | See [ defaultEnvJson.js ](../runtime-tools-management-console-webapp/build/defaultEnvJson.js) |
-   | `RUNTIME_TOOLS_MANAGEMENT_CONSOLE_KOGITO_APP_VERSION`  |                Management Console app version.                | See [ defaultEnvJson.js ](../runtime-tools-management-console-webapp/build/defaultEnvJson.js) |
-   | `RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT` |        The URL that points to the Data Index service.         | See [ defaultEnvJson.js ](../runtime-tools-management-console-webapp/build/defaultEnvJson.js) |
-   |    `KOGITO_CONSOLES_KEYCLOAK_DISABLE_HEALTH_CHECK`     |                Disables Keycloak health-check.                | See [ defaultEnvJson.js ](../runtime-tools-management-console-webapp/build/defaultEnvJson.js) |
-   |    `KOGITO_CONSOLES_KEYCLOAK_UPDATE_TOKEN_VALIDITY`    |               Update token validity in minutes.               | See [ defaultEnvJson.js ](../runtime-tools-management-console-webapp/build/defaultEnvJson.js) |
-   |      `KOGITO_CONSOLES_KEYCLOAK_HEALTH_CHECK_URL`       |                  Keycloak health-check URL.                   | See [ defaultEnvJson.js ](../runtime-tools-management-console-webapp/build/defaultEnvJson.js) |
-   |            `KOGITO_CONSOLES_KEYCLOAK_REALM`            |                     Keycloak realm name.                      | See [ defaultEnvJson.js ](../runtime-tools-management-console-webapp/build/defaultEnvJson.js) |
-   |             `KOGITO_CONSOLES_KEYCLOAK_URL`             |                      Keycloak auth URL.                       | See [ defaultEnvJson.js ](../runtime-tools-management-console-webapp/build/defaultEnvJson.js) |
-   |          `KOGITO_CONSOLES_KEYCLOAK_CLIENT_ID`          |                      Keycloak Client ID.                      | See [ defaultEnvJson.js ](../runtime-tools-management-console-webapp/build/defaultEnvJson.js) |
+   |                           Name                           |                          Description                           |                                            Default                                            |
+   | :------------------------------------------------------: | :------------------------------------------------------------: | :-------------------------------------------------------------------------------------------: |
+   |       `RUNTIME_TOOLS_MANAGEMENT_CONSOLE_APP_NAME`        |                  Management Console app name.                  | See [ defaultEnvJson.js ](../runtime-tools-management-console-webapp/build/defaultEnvJson.js) |
+   | `RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID` | OpenID Connect client ID for connecting to Identity Providers. | See [ defaultEnvJson.js ](../runtime-tools-management-console-webapp/build/defaultEnvJson.js) |
 
    ### Examples
 
-   1. Using a different Data Index Service.
+   1. Using a different Client ID.
 
       ```bash
-      docker run -t -p 8080:8080 -e RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT=<my_value> -i --rm docker.io/apache/incubator-kie-kogito-management-console:main
+      docker run -t -p 8080:8080 -e RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID=<my_client_id> -i --rm docker.io/apache/incubator-kie-kogito-management-console:main
       ```
 
       _NOTE: Replace `docker` with `podman` if necessary._
@@ -98,7 +90,8 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
    ```docker
    FROM docker.io/apache/incubator-kie-kogito-management-console:main
 
-   ENV RUNTIME_TOOLS_MANAGEMENT_CONSOLE_DATA_INDEX_ENDPOINT=<my_value>
+   ENV RUNTIME_TOOLS_MANAGEMENT_CONSOLE_APP_NAME=<my_app_name>
+   ENV RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID=<my_client_id>
    ```
 
 3. Create the application from the image in OpenShift and set the deployment environment variable right from the OpenShift UI.

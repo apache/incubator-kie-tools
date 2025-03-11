@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useMemo, useState } from "react";
-import { Dropdown, DropdownItem, KebabToggle } from "@patternfly/react-core/deprecated";
+import React, { useCallback, useMemo, useState } from "react";
+import { Dropdown, DropdownItem, KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { checkProcessInstanceState } from "../utils/ProcessListUtils";
 import { ProcessInstance, ProcessInstanceState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
@@ -41,13 +41,13 @@ const ProcessListActionsKebab: React.FC<ProcessListActionsKebabProps & OUIAProps
 }) => {
   const [isKebabOpen, setIsKebabOpen] = useState<boolean>(false);
 
-  const onSelect = (): void => {
+  const onSelect = useCallback((): void => {
     setIsKebabOpen(!isKebabOpen);
-  };
+  }, [isKebabOpen]);
 
-  const onToggle = (isOpen: boolean): void => {
+  const onToggle = useCallback((isOpen: boolean): void => {
     setIsKebabOpen(isOpen);
-  };
+  }, []);
 
   const dropDownList = useMemo(() => {
     const result: JSX.Element[] = [];

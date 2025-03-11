@@ -20,11 +20,12 @@
 import checkbox from "!!raw-loader!../../resources/templates/checkbox.template";
 import checkboxSetValueFromModel from "!!raw-loader!../../resources/templates/checkbox.setModelData.template";
 import checkboxWriteModelData from "!!raw-loader!../../resources/templates/checkbox.writeModelData.template";
-import { FormElementTemplate, FormElementTemplateProps } from "./types";
-import { CodeFragment, FormInput } from "../../api";
+import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
+import { FormInput } from "../../api";
 import { CompiledTemplate, template } from "underscore";
 import { getInputReference } from "../utils/Utils";
-import { fieldNameToOptionalChain } from "./utils";
+import { fieldNameToOptionalChain, getItemValeuPath } from "./utils";
+import { DEFAULT_LIST_INDEX_NAME, getCurrentItemSetModelData, getNormalizedListIdOrName } from "./ListFieldTemplate";
 
 interface BoolFieldProps extends FormElementTemplateProps<boolean> {
   checked: boolean;
@@ -42,38 +43,35 @@ export class BoolFieldTemplate implements FormElementTemplate<FormInput, BoolFie
   }
 
   render(props: BoolFieldProps): FormInput {
-    const data = {
-      props: props,
-    };
     return {
       ref: getInputReference(props),
-      html: this.checkboxTemplate(data),
+      html: this.checkboxTemplate({
+        id: props.itemProps?.isListItem ? getNormalizedListIdOrName(props.id) : props.id,
+        name: props.itemProps?.isListItem ? getNormalizedListIdOrName(props.name) : props.name,
+        disabled: props.disabled,
+        checked: props.checked,
+        label: props.label,
+      }),
       disabled: props.disabled,
-      setValueFromModelCode: this.buildSetValueFromModelCode(props),
-      writeValueToModelCode: this.buildWriteModelDataCode(props),
-    };
-  }
-
-  protected buildSetValueFromModelCode(props: BoolFieldProps): CodeFragment {
-    const properties = {
-      id: props.id,
-      path: fieldNameToOptionalChain(props.name),
-    };
-    return {
-      code: this.checkboxSetValueFromModelTemplate(properties),
-    };
-  }
-
-  protected buildWriteModelDataCode(props: BoolFieldProps): CodeFragment | undefined {
-    if (props.disabled) {
-      return undefined;
-    }
-    const properties = {
-      id: props.id,
-      name: props.name,
-    };
-    return {
-      code: this.checkboxWriteModelTemplate(properties),
+      globalFunctions: undefined,
+      setValueFromModelCode: {
+        code: this.checkboxSetValueFromModelTemplate({
+          id: props.itemProps?.isListItem
+            ? getCurrentItemSetModelData(props.id, props.itemProps?.indexVariableName ?? DEFAULT_LIST_INDEX_NAME)
+            : props.id,
+          path: fieldNameToOptionalChain(props.name),
+          valuePath: props.itemProps?.isListItem ? getItemValeuPath(props.name) : "",
+          isListItem: props.itemProps?.isListItem ?? false,
+        }),
+      },
+      writeValueToModelCode: props.disabled
+        ? undefined
+        : {
+            code: this.checkboxWriteModelTemplate({
+              id: props.id,
+              name: props.name,
+            }),
+          },
     };
   }
 }

@@ -17,7 +17,7 @@
 # under the License.
 #
 
-name: "Setup Apache KIE Tools build environment"
+name: "Setup kie-tools build environment"
 description: ""
 
 inputs:
@@ -69,7 +69,7 @@ runs:
     - name: "Setup Node"
       uses: actions/setup-node@v4
       with:
-        node-version: 20.14.0
+        node-version: 22.13.1
 
     - name: "Setup JDK 17"
       uses: actions/setup-java@v4
@@ -77,10 +77,10 @@ runs:
         java-version: 17
         distribution: "temurin"
 
-    - name: "Set up GOLANG 1.22.9"
+    - name: "Set up GOLANG 1.22.12"
       uses: actions/setup-go@v5
       with:
-        go-version: "1.22.9"
+        go-version: "1.22.12"
 
     - name: "Set up Maven"
       uses: stCarolas/setup-maven@v5
@@ -154,15 +154,6 @@ runs:
         echo "STEP: Setup network timeout"
         cd ${{ inputs.working_dir }}
         pnpm config set network-timeout 1000000
-
-    - name: "Setup default Maven args"
-      shell: bash
-      run: |
-        echo "STEP: Setup default Maven args"
-        cd ${{ inputs.working_dir }}
-        pnpm -r exec 'bash' '-c' 'mkdir .mvn'
-        pnpm -r exec 'bash' '-c' 'echo -B > .mvn/maven.config'
-        pnpm -r exec 'bash' '-c' 'echo -Xmx2g > .mvn/jvm.config'
 
     - name: "Install s2i pre-reqs (Ubuntu only)"
       shell: bash
@@ -258,6 +249,7 @@ runs:
         echo "STEP: Update bash for macOS (macOS Only)"
         brew update
         brew install bash
+        brew uninstall node@20
         echo "/usr/local/bin" >> $GITHUB_PATH
 
     - name: "Print storage usage (after setup)"

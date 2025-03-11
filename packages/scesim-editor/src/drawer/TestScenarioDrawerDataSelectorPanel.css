@@ -31,12 +31,10 @@
 }
 
 .kie-scesim-editor-drawer-data-objects--selector {
-  height: 500px;
   overflow: scroll;
 }
 
 .kie-scesim-editor-drawer-data-objects--selector-disabled {
-  height: 500px;
   overflow: scroll;
   opacity: 0.25;
   pointer-events: none;

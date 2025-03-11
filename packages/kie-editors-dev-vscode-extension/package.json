@@ -61,8 +61,8 @@
     "@types/mocha": "^10.0.7",
     "@types/vscode": "1.67.0",
     "@vscode/test-electron": "^2.3.6",
-    "@vscode/test-web": "^0.0.30",
-    "@vscode/vsce": "^2.22.0",
+    "@vscode/test-web": "^0.0.66",
+    "@vscode/vsce": "^3.2.1",
     "chai": "^4.3.10",
     "copy-webpack-plugin": "^11.0.0",
     "cpr": "^3.0.1",
@@ -108,7 +108,7 @@
       },
       {
         "command": "extension.apache.kie.kogitoEditors.generateFormCode",
-        "title": "Kogito Editors: Generate form code for human interactions from jBPM project"
+        "title": "Kogito Editors: Generate form code for User Tasks"
       }
     ],
     "configuration": {
@@ -119,13 +119,13 @@
           "type": "string"
         },
         "kogito.bpmn.svgFilePath": {
-          "default": "${fileDirname}",
-          "markdownDescription": "Where to save generated SVG files (defaults to same path as .bpmn file: `${fileDirname}`).",
+          "default": "",
+          "markdownDescription": "Where to save generated SVG files for BPMN models. (defaults to `${fileDirname}` or `src/main/resources/META-INF/processSVG` if BPMN model is inside `src/main/resources`).",
           "type": "string"
         },
         "kogito.bpmn.svgFilenameTemplate": {
-          "default": "${fileBasenameNoExtension}-svg.svg",
-          "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}-svg.svg`).",
+          "default": "",
+          "markdownDescription": "Filename template to be used when generating SVG files for BPMN models. (defaults to `${fileBasenameNoExtension}.svg`).",
           "type": "string"
         },
         "kogito.dmn.runOnSave": {
@@ -134,13 +134,13 @@
           "type": "string"
         },
         "kogito.dmn.svgFilePath": {
-          "default": "${fileDirname}",
-          "markdownDescription": "Where to save generated SVG files (defaults to same path as .dmn file: `${fileDirname}`).",
+          "default": "",
+          "markdownDescription": "Where to save generated SVG files for DMN models. (defaults to `${fileDirname}` or `src/main/resources/META-INF/decisionSVG` if DMN model is inside `src/main/resources`).",
           "type": "string"
         },
         "kogito.dmn.svgFilenameTemplate": {
-          "default": "${fileBasenameNoExtension}-svg.svg",
-          "markdownDescription": "Filename template to be used when generating SVG files (defaults to `${fileBasenameNoExtension}-svg.svg`).",
+          "default": "${fileBasenameNoExtension}.svg",
+          "markdownDescription": "Filename template to be used when generating SVG files for DMN models. (defaults to `${fileBasenameNoExtension}.svg`).",
           "type": "string"
         }
       },

@@ -1,0 +1,5 @@
+<% _.each(props.children, function(child) { %>
+    <% if (child.globalFunctions) { %>
+        <%= child.globalFunctions.code %>
+    <% } %>
+<% }); %>

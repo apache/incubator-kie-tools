@@ -48,6 +48,9 @@ export class Editor {
     type === AssetType.DECISION
       ? await this.page.locator("#asset-type-select").selectOption("DMN")
       : await this.page.locator("#asset-type-select").selectOption("RULE");
+    if (type === AssetType.DECISION) {
+      await this.page.locator("#dmn-select").selectOption("empty.dmn");
+    }
     await this.page.getByRole("button", { name: "Create" }).click();
     await this.selectorPanel.close();
   }
@@ -61,6 +64,6 @@ export class Editor {
   }
 
   public get() {
-    return this.page.getByTestId("test-scenario-editor");
+    return this.page.getByTestId("kie-scesim-editor--container");
   }
 }

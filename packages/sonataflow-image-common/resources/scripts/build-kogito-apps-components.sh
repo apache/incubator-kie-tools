@@ -56,6 +56,9 @@ if [ ! -z "${CYPRESS_BINARY_URL}" ]; then
 fi
 
 case ${imageName} in
+    "kie-kogito-db-migrator-tool")
+        contextDir="db-migrator-tool/image"
+        ;;
     "incubator-kie-kogito-data-index-ephemeral")
         contextDir="data-index/data-index-service/data-index-service-inmemory"
         ;;
@@ -113,7 +116,7 @@ for ctx in ${contextDir}; do
     fi
     cd ${KOGITO_APPS_DIR} && echo "working dir `pwd`"
     echo "Got MAVEN_OPTIONS = ${MAVEN_OPTIONS}"
-    mvn_command="mvn -am -pl ${ctx} package ${MAVEN_OPTIONS} -Dmaven.repo.local=${mvn_local_repo} -Dquarkus.container-image.build=false"
+    mvn_command="\"${MAVEN_CMD}\" -am -pl ${ctx} package ${MAVEN_OPTIONS} -Dmaven.repo.local=${mvn_local_repo} -Dquarkus.container-image.build=false"
     echo "Building component(s) ${contextDir} with the following maven command [${mvn_command}]"
     export YARN_CACHE_FOLDER=/tmp/cache/yarn/${ctx} # Fix for building yarn apps in parallel
     export CYPRESS_CACHE_FOLDER=/tmp/cache/cypress/${ctx} # https://docs.cypress.io/guides/getting-started/installing-cypress#Advanced

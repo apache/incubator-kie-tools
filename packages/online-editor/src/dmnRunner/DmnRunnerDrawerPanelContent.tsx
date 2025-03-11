@@ -38,6 +38,9 @@ import { DmnRunnerLoading } from "./DmnRunnerLoading";
 import { DmnRunnerProviderActionType } from "./DmnRunnerTypes";
 import { PanelId, useEditorDockContext } from "../editor/EditorPageDockContextProvider";
 import { DmnRunnerExtendedServicesError } from "./DmnRunnerContextProvider";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
+import { useSettings } from "../settings/SettingsContext";
 
 enum ButtonPosition {
   INPUT,
@@ -68,11 +71,14 @@ export function DmnRunnerDrawerPanelContent() {
   const { currentInputIndex, dmnRunnerKey, extendedServicesError, inputs, jsonSchema, results, resultsDifference } =
     useDmnRunnerState();
   const { setDmnRunnerContextProviderState, onRowAdded, setDmnRunnerInputs, setDmnRunnerMode } = useDmnRunnerDispatch();
-  const { notificationsPanel, onOpenPanel } = useEditorDockContext();
+  const { envelopeServer, notificationsPanel, onOpenPanel } = useEditorDockContext();
 
   const formInputs: InputRow = useMemo(() => inputs[currentInputIndex], [inputs, currentInputIndex]);
 
-  const onResize = useCallback((event: MouseEvent | TouchEvent, width: number) => {
+  const { settings } = useSettings();
+  const isLegacyDmnEditor = useMemo(() => settings.editors.useLegacyDmnEditor, [settings.editors.useLegacyDmnEditor]);
+
+  const onResize = useCallback((width: number) => {
     // FIXME: PatternFly bug. The first interaction without resizing the splitter will result in width === 0.
     if (width === 0) {
       return;
@@ -100,10 +106,10 @@ export function DmnRunnerDrawerPanelContent() {
     notificationsPanel?.setActiveTab(i18n.terms.validation);
   }, [i18n.terms.validation, notificationsPanel, onOpenPanel]);
 
-  const openExecutionTab = useCallback(() => {
+  const openEvaluationTab = useCallback(() => {
     onOpenPanel(PanelId.NOTIFICATIONS_PANEL);
-    notificationsPanel?.setActiveTab(i18n.terms.execution);
-  }, [i18n.terms.execution, notificationsPanel, onOpenPanel]);
+    notificationsPanel?.setActiveTab(i18n.terms.evaluation);
+  }, [i18n.terms.evaluation, notificationsPanel, onOpenPanel]);
 
   useEffect(() => {
     setDrawerError(false);
@@ -323,7 +329,16 @@ export function DmnRunnerDrawerPanelContent() {
                       differences={resultsDifference[currentInputIndex]}
                       locale={locale}
                       notificationsPanel={true}
-                      openExecutionTab={openExecutionTab}
+                      openEvaluationTab={openEvaluationTab}
+                      openBoxedExpressionEditor={
+                        !isLegacyDmnEditor
+                          ? (nodeId: string) => {
+                              const newDmnEditorEnvelopeApi =
+                                envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
+                              newDmnEditorEnvelopeApi.notifications.dmnEditor_openBoxedExpressionEditor.send(nodeId);
+                            }
+                          : undefined
+                      }
                     />
                   </PageSection>
                 </div>

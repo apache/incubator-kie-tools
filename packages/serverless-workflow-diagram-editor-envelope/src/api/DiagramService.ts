@@ -20,13 +20,17 @@
 import { KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { DiagramExposedInteropApi } from "./DiagramExposedInteropApi";
 import { ServerlessWorkflowDiagramEditorChannelApi } from "./ServerlessWorkflowDiagramEditorChannelApi";
+import { ServerlessWorkflowDiagramEditorEnvelopeApi } from "./ServerlessWorkflowDiagramEditorEnvelopeApi";
 
 /**
  * Class for diagram window interactions.
  */
 export class DiagramService implements DiagramExposedInteropApi {
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<ServerlessWorkflowDiagramEditorChannelApi>
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<
+      ServerlessWorkflowDiagramEditorEnvelopeApi,
+      ServerlessWorkflowDiagramEditorChannelApi
+    >
   ) {}
 
   public onNodeSelected(nodeName: string) {

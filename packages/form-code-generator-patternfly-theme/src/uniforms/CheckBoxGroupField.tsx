@@ -22,8 +22,13 @@ import { connectField, HTMLFieldProps } from "uniforms/cjs";
 import { buildDefaultInputElement, getInputReference, renderField } from "./utils/Utils";
 import { FormInput, InputReference } from "../api";
 import { useAddFormElementToContext } from "./CodeGenContext";
-import { CHECKBOX_GROUP_FUNCTIONS } from "./staticCode/staticCodeBlocks";
-import { ARRAY } from "./utils/dataTypes";
+import { DEFAULT_DATA_TYPE_STRING_ARRAY } from "./utils/dataTypes";
+import {
+  getItemNameAndWithIsNested,
+  getListItemName,
+  getListItemValue,
+  ListItemProps,
+} from "./rendering/ListItemField";
 
 export type CheckBoxGroupProps = HTMLFieldProps<
   string[],
@@ -34,22 +39,55 @@ export type CheckBoxGroupProps = HTMLFieldProps<
     allowedValues?: string[];
     required: boolean;
     transform?(value: string): string;
+    itemProps: ListItemProps;
   }
 >;
 
 const CheckBoxGroup: React.FC<CheckBoxGroupProps> = (props: CheckBoxGroupProps) => {
-  const ref: InputReference = getInputReference(props.name, ARRAY);
+  const ref: InputReference = getInputReference(props.name, DEFAULT_DATA_TYPE_STRING_ARRAY);
+
+  function getOnChange(value: string) {
+    if (props.itemProps?.isListItem) {
+      const { itemName, isNested } = getItemNameAndWithIsNested(props.name);
+      const propertyPath = props.itemProps?.listStateName.split(".").splice(1).join(".");
+      const path = `${propertyPath}[${props.itemProps?.indexVariableName}]${isNested ? `.${itemName}` : ""}`;
+      return `
+        ${props.itemProps?.listStateSetter}(prev => {
+          const newState = [...prev];
+          const newValue = [...newState${path}]
+          if(newValue.indexOf('${value}') != -1) {
+            newValue.splice(index, 1);
+          } else {
+            newValue.push('${value}');
+          }
+          newState${path} = newValue
+          return newState;
+        })`;
+    }
+    return `${ref.stateSetter}(prev => {
+      const newState = [...prev];
+      if(newState.indexOf('${value}') != -1) {
+        newState.splice(index, 1);
+      } else {
+        newState.push('${value}');
+      }
+      return newState;
+    })`;
+  }
 
   const jsxCode = props.allowedValues
     ?.map((value) => {
-      return `<Checkbox key={'${props.id}-${value}'} id={'${props.id}-${value}'} name={'${props.name}'} aria-label={'${
-        props.name
-      }'}
-               label={'${props.transform ? props.transform(value) : value}'} 
-               isDisabled={${props.disabled || false}} 
-               isChecked={${ref.stateName}.indexOf('${value}') != -1}
-               onChange={() => handleCheckboxGroupChange('${value}', ${ref.stateName}, ${ref.stateSetter})}
-               value={'${value}'}/>`;
+      return `<Checkbox
+  key={'${props.id}-${value}'}
+  id={'${props.id}-${value}'}
+  name={${props.itemProps?.isListItem ? getListItemName({ itemProps: props.itemProps, name: props.name }) : `'${props.name}'`}}
+  aria-label={'${props.name}'}
+  label={'${props.transform ? props.transform(value) : value}'} 
+  isDisabled={${props.disabled || false}} 
+  isChecked={${props.itemProps?.isListItem ? `${getListItemValue({ itemProps: props.itemProps, name: props.name })}.indexOf('${value}') !== -1` : `${ref.stateName}.indexOf('${value}') !== -1`}}
+  onChange={${getOnChange(value)}}
+  value={${props.itemProps?.isListItem ? getListItemValue({ itemProps: props.itemProps, name: props.name }) : `'${value}'`}}
+/>`;
     })
     .join("\n");
 
@@ -57,13 +95,13 @@ const CheckBoxGroup: React.FC<CheckBoxGroupProps> = (props: CheckBoxGroupProps) 
     pfImports: ["Checkbox"],
     inputJsxCode: jsxCode || "",
     ref: ref,
-    requiredCode: [CHECKBOX_GROUP_FUNCTIONS],
     wrapper: {
       id: props.id,
       label: props.label,
       required: props.required,
     },
     disabled: props.disabled,
+    itemProps: props.itemProps,
   });
 
   useAddFormElementToContext(element);

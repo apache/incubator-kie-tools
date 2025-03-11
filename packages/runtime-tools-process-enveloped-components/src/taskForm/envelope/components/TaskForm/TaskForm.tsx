@@ -34,6 +34,7 @@ export interface TaskFormProps {
   userTask: UserTaskInstance;
   schema: Record<string, any>;
   driver: TaskFormDriver;
+  phases: string[];
 }
 
 enum State {
@@ -42,7 +43,14 @@ enum State {
   SUBMITTED,
 }
 
-export const TaskForm: React.FC<TaskFormProps & OUIAProps> = ({ userTask, schema, driver, ouiaId, ouiaSafe }) => {
+export const TaskForm: React.FC<TaskFormProps & OUIAProps> = ({
+  userTask,
+  schema,
+  driver,
+  phases,
+  ouiaId,
+  ouiaSafe,
+}) => {
   const [formData, setFormData] = useState<any>(null);
   const [formState, setFormState] = useState<State>(State.READY);
   const [taskFormSchema, setTaskFormSchema] = useState<Record<string, any>>();
@@ -97,7 +105,7 @@ export const TaskForm: React.FC<TaskFormProps & OUIAProps> = ({ userTask, schema
     if (!taskFormSchema) {
       return (
         <Bullseye {...componentOuiaProps((ouiaId ? ouiaId : "task-form-") + "-loading-spinner", "task-form", true)}>
-          <KogitoSpinner spinnerText={`Loading task form...`} />
+          <KogitoSpinner spinnerText={`Loading Task form...`} />
         </Bullseye>
       );
     }
@@ -121,6 +129,7 @@ export const TaskForm: React.FC<TaskFormProps & OUIAProps> = ({ userTask, schema
         formSchema={taskFormSchema}
         formData={formData}
         enabled={formState == State.READY}
+        phases={phases}
         submit={doSubmit}
       />
     );

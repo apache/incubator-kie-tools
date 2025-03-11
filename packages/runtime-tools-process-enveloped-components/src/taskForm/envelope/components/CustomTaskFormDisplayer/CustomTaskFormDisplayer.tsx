@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { generateFormData } from "../utils/TaskFormDataUtils";
@@ -43,6 +43,7 @@ export interface CustomTaskFormDisplayerProps {
   customForm: Form;
   user: User;
   driver: TaskFormDriver;
+  phases: string[];
   targetOrigin: string;
 }
 
@@ -52,6 +53,7 @@ const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps & OUIAProps
   schema,
   user,
   driver,
+  phases,
   targetOrigin,
   ouiaId,
   ouiaSafe,
@@ -63,28 +65,31 @@ const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps & OUIAProps
   const [formOpened, setFormOpened] = useState<FormOpened>();
   const [submitted, setSubmitted] = useState<boolean>(false);
 
-  const doSubmit = async (phase: string, payload: any) => {
-    const formDisplayerApi = formDisplayerApiRef.current;
+  const doSubmit = useCallback(
+    async (phase: string, payload: any) => {
+      const formDisplayerApi = formDisplayerApiRef.current;
 
-    try {
-      const response = await driver.doSubmit(phase, payload);
-      formDisplayerApi!.notifySubmitResult({
-        type: FormSubmitResponseType.SUCCESS,
-        info: response,
-      });
-    } catch (error) {
-      formDisplayerApi!.notifySubmitResult({
-        type: FormSubmitResponseType.FAILURE,
-        info: error,
-      });
-    } finally {
-      setSubmitted(true);
-    }
-  };
+      try {
+        const response = await driver.doSubmit(phase, payload);
+        formDisplayerApi!.notifySubmitResult({
+          type: FormSubmitResponseType.SUCCESS,
+          info: response,
+        });
+      } catch (error) {
+        formDisplayerApi!.notifySubmitResult({
+          type: FormSubmitResponseType.FAILURE,
+          info: error,
+        });
+      } finally {
+        setSubmitted(true);
+      }
+    },
+    [driver]
+  );
 
   useEffect(() => {
-    if (schema.phases) {
-      const actions = schema.phases.map((phase) => {
+    if (phases) {
+      const actions = phases.map((phase) => {
         return {
           name: phase,
           execute: () => {
@@ -102,13 +107,13 @@ const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps & OUIAProps
       });
       setFormActions(actions);
     }
-  }, []);
+  }, [doSubmit, phases]);
 
   useEffect(() => {
     if (formOpened) {
       document.getElementById(`${formUUID}-form`)!.style.visibility = "visible";
     }
-  }, [formOpened]);
+  }, [formOpened, formUUID]);
 
   return (
     <div {...componentOuiaProps(ouiaId, "custom-form-displayer", ouiaSafe)} style={{ height: "100%" }}>
@@ -116,7 +121,7 @@ const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps & OUIAProps
         <Bullseye
           {...componentOuiaProps((ouiaId ? ouiaId : "task-form-envelope-view") + "-loading-spinner", "task-form", true)}
         >
-          <KogitoSpinner spinnerText={`Loading task form...`} />
+          <KogitoSpinner spinnerText={`Loading Task form...`} />
         </Bullseye>
       )}
       <Stack hasGutter>

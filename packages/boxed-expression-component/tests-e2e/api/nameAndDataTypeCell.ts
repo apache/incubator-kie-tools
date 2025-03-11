@@ -19,9 +19,13 @@
 
 import { Locator } from "@playwright/test";
 import { ContextMenu } from "./expressionContainer";
+import { Monaco } from "../__fixtures__/monaco";
 
 export class NameAndDataTypeCell {
-  constructor(private locator: Locator) {}
+  constructor(
+    private locator: Locator,
+    private monaco?: Monaco
+  ) {}
 
   public async open() {
     await this.locator.nth(0).click();
@@ -32,9 +36,13 @@ export class NameAndDataTypeCell {
   }
 
   public async setName(params: { name: string; close: boolean }) {
-    await this.locator.getByRole("textbox").fill(params.name);
-    if (params.close) {
-      await this.locator.getByRole("textbox").press("Enter");
+    if (this.monaco) {
+      return await this.monaco.fill({ monacoParentLocator: this.locator, content: params.name, submit: params.close });
+    } else {
+      await this.locator.getByRole("textbox").fill(params.name);
+      if (params.close) {
+        await this.locator.getByRole("textbox").press("Enter");
+      }
     }
   }
 

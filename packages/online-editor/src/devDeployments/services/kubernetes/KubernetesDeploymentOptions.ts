@@ -62,11 +62,6 @@ export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<D
           {
             op: "add",
             path: "/spec/template/spec/containers/0/env/-",
-            value: { name: "BASE_URL", value: "http://localhost/${{ devDeployment.uniqueName }}" },
-          },
-          {
-            op: "add",
-            path: "/spec/template/spec/containers/0/env/-",
             value: { name: "ROOT_PATH", value: "/${{ devDeployment.uniqueName }}" },
           },
           {
@@ -85,8 +80,7 @@ export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<D
         id: "command",
         name: "Command",
         description: "The command to be executed when the container starts",
-        defaultValue:
-          "./mvnw quarkus:dev -Dquarkus.http.non-application-root-path=/${{ devDeployment.uniqueName }}/q -Dquarkus.http.root-path=/${{ devDeployment.uniqueName }}",
+        defaultValue: "./mvnw quarkus:dev -Dquarkus.http.root-path=/${{ devDeployment.uniqueName }}",
         type: "text",
         resourcePatches: [
           {
@@ -107,11 +101,6 @@ export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<D
       {
         testFilters: [{ op: "test", path: "/kind", value: "Deployment" }],
         jsonPatches: [
-          {
-            op: "add",
-            path: "/spec/template/spec/containers/0/env/-",
-            value: { name: "BASE_URL", value: "http://localhost/${{ devDeployment.uniqueName }}" },
-          },
           {
             op: "add",
             path: "/spec/template/spec/containers/0/env/-",

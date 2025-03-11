@@ -40,10 +40,10 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/vscode": "1.67.0",
-    "@vscode/test-web": "^0.0.30",
-    "@vscode/vsce": "^2.22.0",
+    "@vscode/test-web": "^0.0.66",
+    "@vscode/vsce": "^3.2.1",
     "copy-webpack-plugin": "^11.0.0",
-    "node-fetch": "^3.3.1",
+    "node-fetch": "^3.3.2",
     "rimraf": "^3.0.2",
     "webpack": "^5.94.0",
     "webpack-cli": "^4.10.0",
@@ -60,35 +60,36 @@
   "contributes": {
     "commands": [
       {
-        "category": "Extended-Services",
+        "category": "Apache KIE Extended Services",
         "command": "extended-services-vscode-extension.startExtendedServices",
         "title": "Connect Apache KIE™ Extended Services",
         "when": "extended-services-vscode-extension.connected"
       },
       {
-        "category": "Extended-Services",
+        "category": "Apache KIE Extended-Services",
         "command": "extended-services-vscode-extension.stopExtendedServices",
         "title": "Disconnect Apache KIE™ Extended Services"
       }
     ],
     "configuration": {
       "properties": {
-        "extendedServices.connectionHeartbeatIntervalinSecs": {
-          "default": 1,
+        "extendedServices.connectionHeartbeatIntervalInSecs": {
+          "default": 10,
           "description": "Specifies the interval (in seconds) between each connection check.",
           "format": "time",
+          "minimum": 10,
           "order": 2,
           "type": "integer"
         },
         "extendedServices.enableAutorun": {
           "default": true,
-          "description": "Automatically run a local instance of the service.",
+          "description": "Automatically runs a local instance of the Extended Service.",
           "order": 0,
           "type": "boolean"
         },
         "extendedServices.extendedServicesURL": {
-          "default": "http://localhost:21345",
-          "description": "Specifies the Exnteded Services URL.",
+          "default": "http://127.0.0.1:21345",
+          "description": "Specifies the Extended Services URL.",
           "format": "uri",
           "order": 1,
           "type": "string"

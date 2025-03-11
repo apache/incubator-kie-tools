@@ -67,8 +67,8 @@ export function OpenShiftDeploymentDropdownItem(props: Props) {
 
   const onDeploymentClicked = useCallback(() => {
     const endpoints = buildEndpoints(props.deployment.routeUrl);
-    window.open(endpoints.base, "_blank");
-  }, [props.deployment.routeUrl]);
+    window.open(props.deployment.devMode ? endpoints.swfDevUi : endpoints.base, "_blank");
+  }, [props.deployment.devMode, props.deployment.routeUrl]);
 
   const onRestoreClicked = useCallback(async () => {
     if (isRestoring) {

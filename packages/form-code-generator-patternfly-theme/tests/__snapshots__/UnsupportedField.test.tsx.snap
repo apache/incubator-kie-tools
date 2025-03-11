@@ -1,7 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<UnsupportedField> tests <UnsupportedField> - rendering 1`] = `
-<div>
-  {"ref":{"binding":"friends","stateName":"friends","stateSetter":"set__friends","dataType":{"name":"any[]"}},"pfImports":["Alert","FormGroup"],"reactImports":["useState"],"jsxCode":"&lt;FormGroup\\n      fieldId={'id'}\\n      label={'Friends?'}\\n      isRequired={true}\\n    &gt;\\n      &lt;Alert variant='warning' title='Unsupported field type: Array'&gt; \\n        Cannot find form control for property &lt;code&gt;friends&lt;/code&gt; with type &lt;code&gt;Array&lt;/code&gt;:&lt;br/&gt; \\n        Some complex property types, such as &lt;code&gt;Array&lt;object&gt;&lt;/code&gt; aren't yet supported, however, you can still write your \\n        own component into the form and use the already existing states &lt;code&gt;const [ friends, set__friends ]&lt;/code&gt;.\\n    &lt;/Alert&gt;\\n    &lt;/FormGroup&gt;","stateCode":"const [ friends, set__friends ] = useState&lt;any[]&gt;();","isReadonly":false}
-</div>
+"<FormGroup
+      fieldId={'id'}
+      label={'Friends?'}
+      isRequired={true}
+    >
+      <Alert variant='warning' title='Unsupported field type: Array'> 
+        Cannot find form control for property <code>friends</code> with type <code>Array</code>:<br/> 
+        Some complex property types, such as <code>Array&lt;object&gt;</code> aren't yet supported, however, you can still write your 
+        own component into the form and use the already existing states <code>const [ friends, set__friends ]</code>.
+    </Alert>
+    </FormGroup>"
 `;

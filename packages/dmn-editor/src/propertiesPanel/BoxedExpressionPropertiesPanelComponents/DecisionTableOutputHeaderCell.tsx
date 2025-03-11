@@ -34,7 +34,8 @@ import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constrai
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { State } from "../../store/Store";
-import { renameDrgElement } from "../../mutations/renameNode";
+
+import { useRefactor } from "../../refactor/RefactorConfirmationDialog";
 
 export function DecisionTableOutputHeaderCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
@@ -77,7 +78,7 @@ export function DecisionTableOutputHeaderCell(props: {
     [props.boxedExpressionIndex, selectedObjectInfos?.expressionPath]
   );
 
-  // In case the the output column is merged, the output column should have the same type as the Decision Node
+  // In case the output column is merged, the output column should have the same type as the Decision Node
   // It can happen to output column and Decision Node have different types, e.g. broken model.
   // For this case, the user will be able to fix it.
   const cellMustHaveSameTypeAsRoot = useMemo(
@@ -127,8 +128,18 @@ export function DecisionTableOutputHeaderCell(props: {
     }
   }, [selectedObjectInfos?.expressionPath]);
 
+  const identifierId = useMemo(() => root?.["@_id"] ?? "", [root]);
+  const oldName = useMemo(() => root?.["@_label"] ?? "", [root]);
+
+  const { setNewIdentifierNameCandidate, refactorConfirmationDialog } = useRefactor({
+    index: node?.data.index ?? 0,
+    identifierId,
+    oldName,
+  });
+
   return (
     <>
+      {refactorConfirmationDialog}
       <FormGroup label="ID">
         <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
           {selectedObjectId}
@@ -142,15 +153,7 @@ export function DecisionTableOutputHeaderCell(props: {
             id={root["@_id"]!}
             name={root?.["@_label"] ?? ""}
             getAllUniqueNames={getAllUniqueNames}
-            onChange={(newName) => {
-              dmnEditorStoreApi.setState((state) => {
-                renameDrgElement({
-                  definitions: state.dmn.model.definitions,
-                  index: node?.data.index ?? 0,
-                  newName,
-                });
-              });
-            }}
+            onChange={setNewIdentifierNameCandidate}
           />
           <TypeRefField
             alternativeFieldName={`${alternativeFieldName} Type`}
@@ -172,29 +175,35 @@ export function DecisionTableOutputHeaderCell(props: {
           />
         </>
       )}
-      <NameField
-        alternativeFieldName={root?.output.length === 1 ? "Column Name" : undefined}
-        isReadOnly={props.isReadOnly}
-        id={cell["@_id"]!}
-        name={cell?.["@_name"] ?? ""}
-        getAllUniqueNames={getAllUniqueNames}
-        onChange={(newName) =>
-          updater((dmnObject) => {
-            dmnObject["@_name"] = newName;
-          })
-        }
-      />
-      <TypeRefField
-        alternativeFieldName={root?.output.length === 1 ? "Column Type" : undefined}
-        isReadOnly={cellMustHaveSameTypeAsRoot ? true : props.isReadOnly}
-        dmnEditorRootElementRef={dmnEditorRootElementRef}
-        typeRef={cellMustHaveSameTypeAsRoot ? root?.["@_typeRef"] : cell?.["@_typeRef"]}
-        onChange={(newTypeRef) =>
-          updater((dmnObject) => {
-            dmnObject["@_typeRef"] = newTypeRef;
-          })
-        }
-      />
+      {root?.output && root.output.length > 1 ? (
+        <NameField
+          isReadOnly={props.isReadOnly}
+          id={cell["@_id"]!}
+          name={cell?.["@_name"] ?? ""}
+          getAllUniqueNames={getAllUniqueNames}
+          onChange={(newName) =>
+            updater((dmnObject) => {
+              dmnObject["@_name"] = newName;
+            })
+          }
+        />
+      ) : (
+        ""
+      )}
+      {root?.output && root.output.length > 1 ? (
+        <TypeRefField
+          isReadOnly={cellMustHaveSameTypeAsRoot ? true : props.isReadOnly}
+          dmnEditorRootElementRef={dmnEditorRootElementRef}
+          typeRef={cellMustHaveSameTypeAsRoot ? root?.["@_typeRef"] : cell?.["@_typeRef"]}
+          onChange={(newTypeRef) =>
+            updater((dmnObject) => {
+              dmnObject["@_typeRef"] = newTypeRef;
+            })
+          }
+        />
+      ) : (
+        ""
+      )}
       {itemDefinition && (
         <FormGroup label="Constraint">
           <ConstraintsFromTypeConstraintAttribute

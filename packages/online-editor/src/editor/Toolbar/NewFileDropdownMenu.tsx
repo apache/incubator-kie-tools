@@ -33,10 +33,7 @@ import {
   MenuList,
   MenuSearchInput,
 } from "@patternfly/react-core/dist/js/components/Menu";
-import {
-  SupportedFileExtensions,
-  useEditorEnvelopeLocator,
-} from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
+import { useEditorEnvelopeLocator } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
 import { basename, extname } from "path";

@@ -33,4 +33,8 @@ export class EmbeddedTaskFormChannelApiImpl implements TaskFormChannelApi {
   taskForm__getCustomForm(): Promise<Form> {
     return this.driver.getCustomForm();
   }
+
+  taskForm__getTaskPhases(): Promise<string[]> {
+    return this.driver.getTaskPhases();
+  }
 }

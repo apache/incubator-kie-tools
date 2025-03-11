@@ -45,11 +45,13 @@ const AutoForm: React.FC<AutoFormProps> = (props) => {
   const inputs: FormElement[] = renderFormInputs(props.schema);
 
   let pfImports: string[] = [];
+  let pfIconImports: string[] = [];
   let reactImports: string[] = ["useCallback", "useEffect"];
   let staticCodeArray: string[] = [];
 
   inputs.forEach((input) => {
     pfImports = union(pfImports, input.pfImports);
+    pfIconImports = union(pfIconImports, input.pfIconImports);
     reactImports = union(reactImports, input.reactImports);
     staticCodeArray = union(staticCodeArray, input.requiredCode);
   });
@@ -58,11 +60,11 @@ const AutoForm: React.FC<AutoFormProps> = (props) => {
   const formName = `Form${formId ? `${NS_SEPARATOR}${formId}` : ""}`;
   const hooks = inputs.map((input) => input.stateCode).join("\n");
   const elements = inputs.map((input) => input.jsxCode).join("\n");
-  const staticCodeStr: string = staticCodeArray.map((id) => JSON.stringify(getStaticCodeBlock(id))).join("\n");
-
+  const staticCodeStr: string = staticCodeArray.map((id) => getStaticCodeBlock(id)).join("\n");
   const formTemplate = `
-import React, { ${reactImports.join(", ")} }  from "react";
-    import { ${pfImports.join(", ")} } from "@patternfly/react-core";
+import React, { ${reactImports.join(", ")} } from "react";
+import { ${pfImports.join(", ")} } from "@patternfly/react-core";
+${pfIconImports.length > 0 ? `import { ${pfIconImports.join(", ")} } from "@patternfly/react-icons";` : ""}
     
 const ${formName}: React.FC<any> = ( props:any ) => {
   const [formApi, setFormApi] = useState<any>();

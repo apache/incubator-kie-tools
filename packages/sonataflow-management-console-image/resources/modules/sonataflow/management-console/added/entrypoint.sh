@@ -19,10 +19,10 @@
 #
 set -e
 
-# Copying the Task Console assets here is essential for when the container is running with the readOnlyRootFilesystem flag.
+# Copying the Management Console assets here is essential for when the container is running with the readOnlyRootFilesystem flag.
 # But, just like any other directory modified during runtime, the /var/www/html must be a mounted volume in the container in this case.
 cp -R "${KOGITO_HOME}/management-console/app/"* "${HTTPD_DATA_PATH}/html"
 
-"${KOGITO_HOME}/management-console/image-env-to-json-standalone" --directory "${HTTPD_DATA_PATH}/html" --json-schema "${KOGITO_HOME}/management-console/EnvJson.schema.json"
+"${KOGITO_HOME}/management-console/image-env-to-json-linux-amd64" --directory "${HTTPD_DATA_PATH}/html" --json-schema "${KOGITO_HOME}/management-console/EnvJson.schema.json"
 
 run-httpd

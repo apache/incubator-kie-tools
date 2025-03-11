@@ -32,12 +32,34 @@ process-user-tasks-subsystem.iml
 Dockerfile.jvm
 # examples/process-user-tasks-subsystem/src/main/docker/Dockerfile.native
 Dockerfile.native
+# examples/process-accelerator/process-accelerator.iml
+process-accelerator.iml
+# examples/process-accelerator/src/main/resources/calculate.bpmn
+calculate.bpmn
+# examples/process-business-calendar/process-business-calendar.iml
+process-business-calendar.iml
+# examples/process-business-calendar/src/main/resources/bankTransaction.bpmn2
+bankTransaction.bpmn2
+# examples/process-compact-architecture/src/main/resources/NewHiringOffer.dmn
+NewHiringOffer.dmn
+# examples/process-compact-architecture/src/main/resources/hiring.bpmn
+hiring.bpmn
+# examples/process-compact-architecture/src/main/resources/META-INF/processSVG/hiring.svg
+hiring.svg
+# examples/process-event-driven/process-event-driven.iml
+process-event-driven.iml
+# examples/process-event-driven/hotels/src/main/resources/hotel.bpmn
+hotel.bpmn
+# examples/process-event-driven/travelers/src/main/resources/travelers.bpmn
+travelers.bpmn
+# examples/process-user-tasks-subsystem/src/main/resources/hiring.bpmn
+hiring.bpmn
+# examples/process-user-tasks-subsystem/src/main/resources/META-INF/processSVG/hiring.svg
+hiring.svg
 # examples/process-compact-architecture/.gitignore
 .gitignore
 # examples/process-compact-architecture/process-compact-architecture.iml
 process-compact-architecture.iml
-# examples/process-compact-architecture/docker-compose/startContainers.sh
-startContainers.sh
 # examples/process-compact-architecture/docker-compose/pgadmin/pgpass
 pgpass
 # examples/process-compact-architecture/docker-compose/sql/init.sql
@@ -356,6 +378,8 @@ getCheckboxGroupValue.txt
 getMultipleSelectValue.txt
 # packages/form-code-generator-bootstrap4-theme/src/resources/staticCode/getRadioGroupValue.txt
 getRadioGroupValue.txt
+# packages/form-code-generator-bootstrap4-theme/src/resources/staticCode/listHelperFunctions.txt
+listHelperFunctions.txt
 # packages/form-code-generator-bootstrap4-theme/src/resources/staticCode/setCheckboxGroupValue.txt
 setCheckboxGroupValue.txt
 # packages/form-code-generator-bootstrap4-theme/src/resources/staticCode/setRadioGroupValue.txt
@@ -390,6 +414,16 @@ input.setModelData.template
 input.template
 # packages/form-code-generator-bootstrap4-theme/src/resources/templates/input.writeModelData.template
 input.writeModelData.template
+# packages/form-code-generator-bootstrap4-theme/src/resources/templates/listField.globalFunctions.template
+listField.globalFunctions.template
+# packages/form-code-generator-bootstrap4-theme/src/resources/templates/listField.setModelData.template
+listField.setModelData.template
+# packages/form-code-generator-bootstrap4-theme/src/resources/templates/listField.template
+listField.template
+# packages/form-code-generator-bootstrap4-theme/src/resources/templates/listField.writeModelData.template
+listField.writeModelData.template
+# packages/form-code-generator-bootstrap4-theme/src/resources/templates/nestField.globalFunctions.template
+nestField.globalFunctions.template
 # packages/form-code-generator-bootstrap4-theme/src/resources/templates/nestField.setModelData.template
 nestField.setModelData.template
 # packages/form-code-generator-bootstrap4-theme/src/resources/templates/nestField.template
@@ -452,6 +486,8 @@ BoolField.test.tsx.snap
 CheckBoxGroupField.test.tsx.snap
 # packages/form-code-generator-patternfly-theme/tests/__snapshots__/DateField.test.tsx.snap
 DateField.test.tsx.snap
+# packages/form-code-generator-patternfly-theme/tests/__snapshots__/ListField.test.tsx.snap
+ListField.test.tsx.snap
 # packages/form-code-generator-patternfly-theme/tests/__snapshots__/NestField.test.tsx.snap
 NestField.test.tsx.snap
 # packages/form-code-generator-patternfly-theme/tests/__snapshots__/NumField.test.tsx.snap
@@ -474,6 +510,14 @@ README.md
 ImportJavaClasses.test.tsx.snap
 # packages/jbpm-quarkus-devui/jbpm-quarkus-devui-parent.iml
 jbpm-quarkus-devui-parent.iml
+# packages/jbpm-quarkus-devui/dev/src/main/resources/custom-forms-dev/hiring_ITInterview.html
+hiring_ITInterview.html
+# packages/jbpm-quarkus-devui/dev/src/main/resources/custom-forms-dev/hiring_ITInterview.config
+hiring_ITInterview.config
+# packages/jbpm-quarkus-devui/dev/src/main/resources/custom-forms-dev/hiring.tsx
+hiring.tsx
+# packages/jbpm-quarkus-devui/dev/src/main/resources/custom-forms-dev/hiring.config
+hiring.config
 # packages/jbpm-quarkus-devui/jbpm-quarkus-devui-runtime/src/test/resources/forms/hiring_HRInterview.config
 hiring_HRInterview.config
 # packages/jbpm-quarkus-devui/jbpm-quarkus-devui-runtime/src/test/resources/forms/hiring_ITInterview.config
@@ -676,6 +720,16 @@ workflow-subflow-custom.sw.yaml
 workflow.sw.yaml
 # packages/kn-plugin-workflow/pkg/specs/testdata/workflow2.sw.yaml
 workflow2.sw.yaml
+# packages/kn-plugin-workflow/pkg/command/quarkus/testdata/docker/Dockerfile.jvm
+Dockerfile.jvm
+# packages/kn-plugin-workflow/pkg/command/quarkus/testdata/docker/Dockerfile.native
+Dockerfile.native
+# packages/kn-plugin-workflow/pkg/command/quarkus/testdata/docker/Dockerfile.legacy-jar
+Dockerfile.legacy-jar
+# packages/kn-plugin-workflow/pkg/command/quarkus/testdata/docker/Dockerfile.native-micro
+Dockerfile.native-micro
+packages/kn-plugin-workflow/pkg/command/quarkus/testdata/dockerignore
+dockerignore
 # packages/maven-base/kie-tools-maven-base.iml
 kie-tools-maven-base.iml
 # packages/maven-base/settings.xml
@@ -1003,6 +1057,8 @@ common.py
 # packages/sonataflow-management-console-webapp/resources/monitoring-webapp/MonitoringReport.dash.yml
 MonitoringReport.dash.yml
 # packages/sonataflow-management-console-webapp/resources/monitoring-webapp/WorkflowDetails.dash.yml
+sonataflow-management-console.feature
+# packages/sonataflow-management-console-image/test-resources/tests/features/sonataflow-management-console.feature
 WorkflowDetails.dash.yml
 # packages/sonataflow-operator/PROJECT
 PROJECT
@@ -1032,6 +1088,8 @@ go.sum
 sonataflow-quarkus-devui-parent.iml
 # packages/stunner-editors/stunner-editors-parent.iml
 stunner-editors-parent.iml
+# packages/kogito-db-migrator-tool/kogito-db-migrator-tool.iml
+kogito-db-migrator-tool.iml
 # packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-api/src/main/resources/META-INF/beans.xml
 beans.xml
 # packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-marshaller/src/main/java/.gitkeep

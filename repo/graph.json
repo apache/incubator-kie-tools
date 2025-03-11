@@ -72,14 +72,18 @@
       {
         "id": "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension"
       },
-      { "id": "@kie-tools-examples/process-compact-architecture" },
-      { "id": "@kie-tools/jbpm-quarkus-devui" },
-      { "id": "@kie-tools/kogito-management-console" },
+      { "id": "@kie-tools-examples/process-accelerator" },
       { "id": "@kie-tools/maven-base" },
+      { "id": "@kie-tools-examples/process-business-calendar" },
+      { "id": "@kie-tools/jbpm-quarkus-devui" },
       { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
+      { "id": "@kie-tools-examples/process-compact-architecture" },
+      { "id": "@kie-tools/kogito-management-console" },
       { "id": "@kie-tools/image-builder" },
       { "id": "@kie-tools/image-env-to-json" },
       { "id": "@kie-tools/runtime-tools-management-console-webapp" },
+      { "id": "@kie-tools-examples/process-event-driven" },
+      { "id": "@kie-tools-examples/process-security" },
       { "id": "@kie-tools-examples/process-user-tasks-subsystem" },
       {
         "id": "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp"
@@ -158,6 +162,8 @@
       { "id": "@kie-tools/dmn-runner" },
       { "id": "@kie-tools/extended-services-api" },
       { "id": "dmn-vscode-extension" },
+      { "id": "@kie-tools/scesim-editor-envelope" },
+      { "id": "@kie-tools/scesim-editor" },
       { "id": "@kie-tools/extended-services" },
       { "id": "@kie-tools/extended-services-java" },
       { "id": "extended-services-vscode-extension" },
@@ -192,6 +198,8 @@
       { "id": "@kie/kogito-base-builder-image" },
       { "id": "@kie-tools/sonataflow-image-common" },
       { "id": "@kie-tools/python-venv" },
+      { "id": "@kie-tools/kogito-db-migrator-tool" },
+      { "id": "@kie-tools/kogito-db-migrator-tool-image" },
       { "id": "@kie/kogito-jit-runner-image" },
       { "id": "@kie/kogito-jobs-service-allinone-image" },
       { "id": "@kie-tools/unitables" },
@@ -205,9 +213,7 @@
       { "id": "@kie-tools/runtime-tools-swf-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-swf-gateway-api" },
       { "id": "@kie-tools/runtime-tools-swf-webapp-components" },
-      { "id": "@kie-tools/scesim-editor" },
       { "id": "@kie-tools/scesim-marshaller" },
-      { "id": "@kie-tools/scesim-editor-envelope" },
       { "id": "@kie-tools/serverless-logic-web-tools" },
       { "id": "@kie-tools/text-editor" },
       { "id": "@kie-tools/yard-editor" },
@@ -673,13 +679,18 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools-examples/process-compact-architecture",
-        "target": "@kie-tools/jbpm-quarkus-devui",
+        "source": "@kie-tools-examples/process-accelerator",
+        "target": "@kie-tools/maven-base",
         "weight": 1
       },
       {
-        "source": "@kie-tools-examples/process-compact-architecture",
-        "target": "@kie-tools/kogito-management-console",
+        "source": "@kie-tools/maven-base",
+        "target": "@kie-tools/root-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-business-calendar",
+        "target": "@kie-tools/jbpm-quarkus-devui",
         "weight": 1
       },
       {
@@ -690,6 +701,26 @@
       {
         "source": "@kie-tools/jbpm-quarkus-devui",
         "target": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-compact-architecture",
+        "target": "@kie-tools/jbpm-quarkus-devui",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-compact-architecture",
+        "target": "@kie-tools/kogito-management-console",
         "weight": 1
       },
       {
@@ -708,38 +739,18 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/maven-base",
-        "target": "@kie-tools/root-env",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
-        "target": "@kie-tools/runtime-tools-process-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
-        "target": "@kie-tools/runtime-tools-shared-webapp-components",
-        "weight": 1
-      },
-      {
         "source": "@kie-tools/image-builder",
         "target": "@kie-tools/tsconfig",
         "weight": 1
       },
       {
         "source": "@kie-tools/image-env-to-json",
-        "target": "@kie-tools-core/webpack-base",
+        "target": "@kie-tools/root-env",
         "weight": 1
       },
       {
-        "source": "@kie-tools/image-env-to-json",
-        "target": "@kie-tools/eslint",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/image-env-to-json",
-        "target": "@kie-tools/tsconfig",
+        "source": "@kie-tools/runtime-tools-management-console-webapp",
+        "target": "@kie-tools-core/workspaces-git-fs",
         "weight": 1
       },
       {
@@ -753,8 +764,33 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/runtime-tools-management-console-webapp",
+        "target": "@kie-tools/maven-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-event-driven",
+        "target": "@kie-tools/jbpm-quarkus-devui",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-security",
+        "target": "@kie-tools/jbpm-quarkus-devui",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-security",
+        "target": "@kie-tools/kogito-management-console",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools-examples/process-user-tasks-subsystem",
         "target": "@kie-tools/jbpm-quarkus-devui",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-user-tasks-subsystem",
+        "target": "@kie-tools/kogito-management-console",
         "weight": 1
       },
       {
@@ -1654,12 +1690,42 @@
       },
       {
         "source": "dmn-vscode-extension",
+        "target": "@kie-tools/scesim-editor-envelope",
+        "weight": 1
+      },
+      {
+        "source": "dmn-vscode-extension",
         "target": "@kie-tools/stunner-editors",
         "weight": 1
       },
       {
         "source": "dmn-vscode-extension",
         "target": "@kie-tools/vscode-java-code-completion-extension-plugin",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/scesim-editor-envelope",
+        "target": "@kie-tools-core/editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/scesim-editor-envelope",
+        "target": "@kie-tools/scesim-editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/scesim-editor",
+        "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/scesim-editor",
+        "target": "@kie-tools/boxed-expression-component",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/scesim-editor",
+        "target": "@kie-tools/scesim-marshaller",
         "weight": 1
       },
       {
@@ -2103,6 +2169,21 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/kogito-db-migrator-tool",
+        "target": "@kie-tools/maven-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/kogito-db-migrator-tool-image",
+        "target": "@kie-tools/kogito-db-migrator-tool",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/kogito-db-migrator-tool-image",
+        "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
         "source": "@kie/kogito-jit-runner-image",
         "target": "@kie-tools/maven-base",
         "weight": 1
@@ -2184,6 +2265,11 @@
       },
       {
         "source": "@kie-tools/runtime-tools-process-enveloped-components",
+        "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-enveloped-components",
         "target": "@kie-tools/runtime-tools-process-gateway-api",
         "weight": 1
       },
@@ -2253,33 +2339,8 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/scesim-editor",
-        "target": "@kie-tools/boxed-expression-component",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/scesim-editor",
-        "target": "@kie-tools/scesim-marshaller",
-        "weight": 1
-      },
-      {
         "source": "@kie-tools/scesim-marshaller",
         "target": "@kie-tools/xml-parser-ts-codegen",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/scesim-editor-envelope",
-        "target": "@kie-tools-core/editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/scesim-editor-envelope",
-        "target": "@kie-tools-core/react-hooks",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/scesim-editor-envelope",
-        "target": "@kie-tools/scesim-editor",
         "weight": 1
       },
       {
@@ -2350,6 +2411,11 @@
       {
         "source": "@kie-tools/text-editor",
         "target": "@kie-tools-core/editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/text-editor",
+        "target": "@kie-tools-core/monaco-editor",
         "weight": 1
       },
       {
@@ -2579,11 +2645,6 @@
       },
       {
         "source": "@kie-tools/sonataflow-management-console-webapp",
-        "target": "@kie-tools-core/react-hooks",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/sonataflow-management-console-webapp",
         "target": "@kie-tools/runtime-tools-process-webapp-components",
         "weight": 1
       },
@@ -2733,7 +2794,11 @@
       "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension",
       "examples/micro-frontends-multiplying-architecture-todo-list-view-vscode-extension"
     ],
+    ["@kie-tools-examples/process-accelerator", "examples/process-accelerator"],
+    ["@kie-tools-examples/process-business-calendar", "examples/process-business-calendar"],
     ["@kie-tools-examples/process-compact-architecture", "examples/process-compact-architecture"],
+    ["@kie-tools-examples/process-event-driven", "examples/process-event-driven"],
+    ["@kie-tools-examples/process-security", "examples/process-security"],
     ["@kie-tools-examples/process-user-tasks-subsystem", "examples/process-user-tasks-subsystem"],
     [
       "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp",
@@ -2831,6 +2896,8 @@
     ["@kie/kogito-base-builder-image", "packages/kogito-base-builder-image"],
     ["@kie/kogito-data-index-ephemeral-image", "packages/kogito-data-index-ephemeral-image"],
     ["@kie/kogito-data-index-postgresql-image", "packages/kogito-data-index-postgresql-image"],
+    ["@kie-tools/kogito-db-migrator-tool", "packages/kogito-db-migrator-tool"],
+    ["@kie-tools/kogito-db-migrator-tool-image", "packages/kogito-db-migrator-tool-image"],
     ["@kie/kogito-jit-runner-image", "packages/kogito-jit-runner-image"],
     ["@kie/kogito-jobs-service-allinone-image", "packages/kogito-jobs-service-allinone-image"],
     ["@kie/kogito-jobs-service-ephemeral-image", "packages/kogito-jobs-service-ephemeral-image"],

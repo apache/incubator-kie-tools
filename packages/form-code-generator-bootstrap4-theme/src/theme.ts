@@ -22,9 +22,9 @@ import JSONSchemaBridge from "uniforms-bridge-json-schema";
 import unescape from "lodash/unescape";
 import { renderForm } from ".";
 
-export const BOOTSTRAP4_CSS_URL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css";
-export const BOOTSTRAP4_JS_URL = "https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js";
-export const JQUERY_URL = "https://code.jquery.com/jquery-3.2.1.slim.min.js";
+export const BOOTSTRAP4_CSS_URL = "https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css";
+export const BOOTSTRAP4_JS_URL = "https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js";
+export const JQUERY_URL = "https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js";
 
 export const BOOTSTRAP4_FILE_EXT = "html";
 

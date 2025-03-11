@@ -35,7 +35,6 @@ import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { useCallback, useMemo } from "react";
 import { DmnObjectListItem } from "../externalNodes/DmnObjectListItem";
-import { renameDrgElement } from "../mutations/renameNode";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { useDmnEditor } from "../DmnEditorContext";
@@ -48,6 +47,7 @@ import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ExternalDmn } from "../DmnEditor";
 import { Unpacked } from "../tsExt/tsExt";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { useRefactor } from "../refactor/RefactorConfirmationDialog";
 
 export type AllKnownDrgElementsByHref = Map<
   string,
@@ -66,9 +66,9 @@ export function DecisionServiceProperties({
 }) {
   const { setState } = useDmnEditorStoreApi();
   const settings = useSettings();
+  const { externalModelsByNamespace } = useExternalModels();
 
   const thisDmn = useDmnEditorStore((s) => s.dmn);
-  const { externalModelsByNamespace } = useExternalModels();
 
   const allExternalDmns = Object.entries(externalModelsByNamespace ?? {}).reduce((acc, [namespace, externalModel]) => {
     if (!externalModel) {
@@ -112,26 +112,30 @@ export function DecisionServiceProperties({
 
   const resolvedTypeRef = useResolvedTypeRef(decisionService.variable?.["@_typeRef"], namespace);
 
+  const identifierId = useMemo(() => decisionService["@_id"], [decisionService]);
+  const oldName = useMemo(() => decisionService["@_label"] ?? decisionService["@_name"], [decisionService]);
+  const { setNewIdentifierNameCandidate, refactorConfirmationDialog, newName } = useRefactor({
+    index,
+    identifierId,
+    oldName,
+  });
+  const currentName = useMemo(() => {
+    return newName === "" ? oldName : newName;
+  }, [newName, oldName]);
+
   return (
     <>
+      {refactorConfirmationDialog}
       <FormGroup label="Name">
         <InlineFeelNameInput
           enableAutoFocusing={false}
           isPlain={false}
           id={decisionService["@_id"]!}
-          name={decisionService["@_name"]}
+          name={currentName}
           isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
           className={"pf-v5-c-form-control"}
-          onRenamed={(newName) => {
-            setState((state) => {
-              renameDrgElement({
-                definitions: state.dmn.model.definitions,
-                index,
-                newName,
-              });
-            });
-          }}
+          onRenamed={setNewIdentifierNameCandidate}
           allUniqueNames={useCallback((s) => s.computed(s).getAllFeelVariableUniqueNames(), [])}
         />
       </FormGroup>

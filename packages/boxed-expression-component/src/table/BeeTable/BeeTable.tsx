@@ -38,13 +38,14 @@ import {
   BeeTableSelectionContextProvider,
   SELECTION_MIN_ACTIVE_DEPTH,
   SelectionPart,
+  useBeeTableSelection,
   useBeeTableSelectionDispatch,
 } from "../../selection/BeeTableSelectionContext";
 import { BeeTableCellWidthsToFitDataContextProvider } from "../../resizing/BeeTableCellWidthToFitDataContext";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 import "./BeeTable.css";
 
-const ROW_INDEX_COLUMN_ACCESOR = "#";
+const ROW_INDEX_COLUMN_ACCESSOR = "#";
 const ROW_INDEX_SUB_COLUMN_ACCESSOR = "0";
 
 export function getColumnsAtLastLevel<R extends ReactTable.Column<any> | ReactTable.ColumnInstance<any>>(
@@ -84,7 +85,7 @@ export function BeeTableInternal<R extends object>({
   onHeaderKeyUp,
   onDataCellClick,
   onDataCellKeyUp,
-  controllerCell = ROW_INDEX_COLUMN_ACCESOR,
+  controllerCell = ROW_INDEX_COLUMN_ACCESSOR,
   cellComponentByColumnAccessor,
   rows,
   columns,
@@ -111,6 +112,8 @@ export function BeeTableInternal<R extends object>({
     useBeeTableSelectionDispatch();
   const tableComposableRef = useRef<HTMLTableElement>(null);
   const { currentlyOpenContextMenu } = useBoxedExpressionEditor();
+
+  const { selectionStart, selectionEnd } = useBeeTableSelection();
 
   const tableRef = React.useRef<HTMLDivElement>(null);
 
@@ -154,7 +157,7 @@ export function BeeTableInternal<R extends object>({
     (currentControllerCell, columns) => {
       const rowIndexColumn: ReactTable.Column<R> = {
         label: currentControllerCell as any, //FIXME: https://github.com/apache/incubator-kie-issues/issues/169
-        accessor: ROW_INDEX_COLUMN_ACCESOR as any,
+        accessor: ROW_INDEX_COLUMN_ACCESSOR as any,
         width: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
         minWidth: BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
         isRowIndexColumn: true,
@@ -326,6 +329,12 @@ export function BeeTableInternal<R extends object>({
 
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      // This prevents keyboard events, specially shortcuts, from being handled here because if a cell is being edited,
+      // we want that the shortcuts to be handled by the cell.
+      if (selectionStart?.isEditing || selectionEnd?.isEditing) {
+        return;
+      }
+
       if (!enableKeyboardNavigation) {
         return;
       }
@@ -505,20 +514,22 @@ export function BeeTableInternal<R extends object>({
       }
     },
     [
+      selectionStart?.isEditing,
+      selectionEnd?.isEditing,
       enableKeyboardNavigation,
       currentlyOpenContextMenu,
+      isReadOnly,
       setCurrentDepth,
       mutateSelection,
-      rowCount,
-      reactTableInstance.allColumns.length,
-      reactTableInstance.rows.length,
       getColumnCount,
+      rowCount,
+      reactTableInstance.rows.length,
+      reactTableInstance.allColumns.length,
       erase,
       resetSelectionAt,
       copy,
       cut,
       paste,
-      isReadOnly,
     ]
   );
 

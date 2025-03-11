@@ -45,6 +45,7 @@ import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 
+import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 import ErrorIcon from "@patternfly/react-icons/dist/esm/icons/error-circle-o-icon";
@@ -71,7 +72,10 @@ import {
 } from "./store/TestScenarioStoreContext";
 import { TestScenarioEditorErrorFallback } from "./TestScenarioEditorErrorFallback";
 import { TestScenarioEditorContextProvider, useTestScenarioEditor } from "./TestScenarioEditorContext";
-import { TestScenarioEditorExternalModelsContextProvider } from "./externalModels/TestScenarioEditorDependenciesContext";
+import {
+  TestScenarioEditorExternalModelsContextProvider,
+  useExternalModels,
+} from "./externalModels/TestScenarioEditorDependenciesContext";
 import { useEffectAfterFirstRender } from "./hook/useEffectAfterFirstRender";
 import { INITIAL_COMPUTED_CACHE } from "./store/computed/initial";
 
@@ -100,8 +104,7 @@ export type OnSceSimModelChange = (model: SceSimModel) => void;
 export type OnRequestExternalModelByPath = (
   normalizedPosixPathRelativeToTheOpenFile: string
 ) => Promise<ExternalDmn | null>;
-
-export type ExternalDmnsIndex = Record<string /** normalizedPosixPathRelativeToTheOpenFile */, ExternalDmn | undefined>;
+export type ExternalDmnsIndex = Map<string, ExternalDmn | undefined>;
 
 export type ExternalDmn = {
   model: Normalized<DmnLatestModel>;
@@ -173,14 +176,31 @@ export type TestScenarioSelectedColumnMetaData = {
 function TestScenarioMainPanel() {
   const { i18n } = useTestScenarioEditorI18n();
   const { commandsRef } = useCommands();
+  const { externalModelsByNamespace } = useExternalModels();
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
-  const navigation = useTestScenarioEditorStore((s) => s.navigation);
-  const scesimModel = useTestScenarioEditorStore((s) => s.scesim.model);
-  const isAlertEnabled = true; // Will be managed in kie-issue#970
+  const navigation = useTestScenarioEditorStore((state) => state.navigation);
+  const scesimModel = useTestScenarioEditorStore((state) => state.scesim.model);
+  const testScenarioDmnNamespace = scesimModel.ScenarioSimulationModel.settings.dmnNamespace?.__$$text;
+  const testScenarioDmnFilePath = scesimModel.ScenarioSimulationModel.settings.dmnFilePath?.__$$text;
   const testScenarioType = scesimModel.ScenarioSimulationModel.settings.type?.__$$text.toUpperCase();
 
   const scenarioTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
   const backgroundTableScrollableElementRef = useRef<HTMLDivElement | null>(null);
+
+  /* RULE-based Test Scenario are still not supported. The Notification will always be active in such a case
+     In DMN-based Test Scenario, the notification will be active if: 
+     - The DMN model with the target reference is missing at all
+     - The DMN model with the target reference is found, but in a different location */
+  const isMissingDataObjectsNotificationEnabled = useMemo(() => {
+    const isReferencedDmnFileMissing =
+      externalModelsByNamespace &&
+      externalModelsByNamespace.has(testScenarioDmnNamespace!) &&
+      (!externalModelsByNamespace.get(testScenarioDmnNamespace!) ||
+        externalModelsByNamespace.get(testScenarioDmnNamespace!)?.normalizedPosixPathRelativeToTheOpenFile !==
+          testScenarioDmnFilePath);
+
+    return testScenarioType === "RULE" || isReferencedDmnFileMissing;
+  }, [externalModelsByNamespace, testScenarioDmnFilePath, testScenarioDmnNamespace, testScenarioType]);
 
   const onTabChanged = useCallback(
     (_event, tab) => {
@@ -221,10 +241,10 @@ function TestScenarioMainPanel() {
         <Drawer isExpanded={navigation.dock.isOpen} isInline={true} position={"right"}>
           <DrawerContent panelContent={<TestScenarioDrawerPanel onDrawerClose={() => showDockPanel(false)} />}>
             <DrawerContentBody>
-              {isAlertEnabled && (
+              {isMissingDataObjectsNotificationEnabled && (
                 <div className="kie-scesim-editor--content-alert">
                   <Alert
-                    variant={testScenarioType === "DMN" ? "warning" : "danger"}
+                    variant={"danger"}
                     title={
                       testScenarioType === "DMN"
                         ? i18n.alerts.dmnDataRetrievedFromScesim
@@ -339,7 +359,7 @@ export const TestScenarioEditorInternal = ({
       reset: () => {
         console.trace("[TestScenarioEditorInternal: Reset called!");
         const state = testScenarioEditorStoreApi.getState();
-        state.dispatch(state).scesim.reset();
+        state.dispatch(state).navigation.reset();
       },
       getCommands: () => commandsRef.current,
       getDiagramSvg: async () => undefined,
@@ -360,7 +380,6 @@ export const TestScenarioEditorInternal = ({
 
       state.scesim.model = model;
       testScenarioEditorModelBeforeEditingRef.current = model;
-      //state.dispatch(state).scesim.reset();
     });
   }, [testScenarioEditorStoreApi, model]);
 
@@ -407,7 +426,7 @@ export const TestScenarioEditorInternal = ({
   console.trace("[TestScenarioEditorInternal] File Status: " + TestScenarioFileStatus[scesimFileStatus]);
 
   return (
-    <div ref={testScenarioEditorRootElementRef}>
+    <div ref={testScenarioEditorRootElementRef} data-testid="kie-scesim-editor--container">
       {(() => {
         switch (scesimFileStatus) {
           case TestScenarioFileStatus.EMPTY:

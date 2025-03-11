@@ -26,4 +26,5 @@ export interface TaskFormDriver {
   getTaskFormSchema(): Promise<Record<string, any>>;
   getCustomForm(): Promise<Form>;
   doSubmit(phase?: string, payload?: any): Promise<any>;
+  getTaskPhases(): Promise<string[]>;
 }

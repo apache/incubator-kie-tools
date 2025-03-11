@@ -206,7 +206,15 @@ export function BeeTableThResizable<R extends object>({
       shouldShowColumnsInlineControls={shouldShowColumnsInlineControls}
       column={column}
     >
-      <div className="header-cell" data-ouia-component-type="expression-column-header" ref={headerCellRef}>
+      <div
+        className="header-cell"
+        data-ouia-component-type="expression-column-header"
+        ref={headerCellRef}
+        // We stop propagation here because if the user performs a double click on any component inside
+        // the ExpressionVariableMenu (for example, to select a word) we don't want that action to bubble
+        // to the parent component (BeeTableTh).
+        onDoubleClick={(e) => e.stopPropagation()}
+      >
         {!isReadOnly && column.dataType && isEditableHeader ? (
           <ExpressionVariableMenu
             position={PopoverPosition.bottom}
@@ -214,6 +222,8 @@ export function BeeTableThResizable<R extends object>({
             selectedDataType={column.dataType}
             onVariableUpdated={onExpressionHeaderUpdated}
             appendTo={getAppendToElement}
+            variableUuid={column.id}
+            isContentAFeelExpression={column.isHeaderAFeelExpression ?? false}
           >
             {headerCellInfo}
           </ExpressionVariableMenu>

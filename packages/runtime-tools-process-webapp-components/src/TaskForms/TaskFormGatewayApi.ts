@@ -16,33 +16,39 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import {
+  UserTaskInstance,
+  UserTaskTransition,
+  UserTaskTransitionInfo,
+} from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import axios from "axios";
 import { ANONYMOUS_USER, User } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface TaskFormGatewayApi {
-  getTaskFormSchema(userTask: UserTaskInstance): Promise<Record<string, any>>;
+  getTaskFormSchema(userTask: UserTaskInstance, headers?: any): Promise<Record<string, any>>;
 
-  getTaskFormSchemaAsAnonymous(userTask: UserTaskInstance): Promise<Record<string, any>>;
+  getCustomForm(userTask: UserTaskInstance, headers?: any): Promise<Form>;
 
-  getCustomForm(userTask: UserTaskInstance): Promise<Form>;
+  doSubmit(userTask: UserTaskInstance, phase: string, payload: any, headers?: any): Promise<any>;
 
-  doSubmit(userTask: UserTaskInstance, phase: string, payload: any): Promise<any>;
-
-  doSubmitAsAnonymous(userTask: UserTaskInstance, phase: string, payload: any): Promise<any>;
+  getTaskPhases(userTask: UserTaskInstance, headers?: any): Promise<string[]>;
 }
 
 export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
-  constructor(private readonly getCurrentUser: () => User) {}
+  constructor(
+    private readonly getCurrentUser: () => User,
+    private transformEndpointBaseUrl: (url: string) => string
+  ) {}
 
-  submitTaskForm(endpoint: string, payload: any) {
+  submitTaskForm(endpoint: string, transition: UserTaskTransitionInfo, headers?: any) {
     return new Promise<any>((resolve, reject) => {
       axios
-        .post(endpoint, payload, {
+        .post(this.transformEndpointBaseUrl(endpoint), transition, {
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
+            ...headers,
           },
         })
         .then((response) => {
@@ -56,13 +62,14 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
     });
   }
 
-  fetchTaskFormSchema(endpoint: string) {
+  fetchTaskFormSchema(endpoint: string, headers?: any) {
     return new Promise<Record<string, any>>((resolve, reject) => {
       axios
-        .get(endpoint, {
+        .get(this.transformEndpointBaseUrl(endpoint), {
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
+            ...headers,
           },
         })
         .then((response) => {
@@ -76,49 +83,96 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
     });
   }
 
-  doSubmit(userTask: UserTaskInstance, phase: string, payload: any): Promise<any> {
-    const endpoint = `${userTask.endpoint}?phase=${phase}&${getTaskEndpointSecurityParams(userTask, this.getCurrentUser())}`;
-    return this.submitTaskForm(endpoint, payload);
+  fetchCustomForm(endpoint: string, headers?: any) {
+    return new Promise<Form>((resolve, reject) => {
+      axios
+        .get(this.transformEndpointBaseUrl(endpoint), {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            ...headers,
+          },
+        })
+        .then((response) => {
+          if (response.status == 200) {
+            resolve(response.data);
+          } else {
+            reject(response);
+          }
+        })
+        .catch((error) => reject(error));
+    });
   }
 
-  getTaskFormSchema(userTask: UserTaskInstance): Promise<Record<string, any>> {
+  fetchTaskTransitionPhases(endpoint: string, headers?: any) {
+    return new Promise<string[]>((resolve, reject) => {
+      axios
+        .get(this.transformEndpointBaseUrl(endpoint), {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            ...headers,
+          },
+        })
+        .then((response) => {
+          if (response.status == 200) {
+            const transitions: UserTaskTransition[] = response.data;
+            resolve(transitions.map((transition) => transition.transitionId));
+          } else {
+            reject(response);
+          }
+        })
+        .catch((error) => reject(error));
+    });
+  }
+
+  doSubmit(userTask: UserTaskInstance, phase: string, payload: any, headers?: any): Promise<any> {
+    const endpoint = getTaskTransitionsEndpoint(userTask, this.getCurrentUser());
+    const transition: UserTaskTransitionInfo = {
+      transitionId: phase,
+      data: payload,
+    };
+    return this.submitTaskForm(endpoint, transition, headers);
+  }
+
+  getTaskFormSchema(userTask: UserTaskInstance, headers?: any): Promise<Record<string, any>> {
     const endpoint = getTaskSchemaEndPoint(userTask, this.getCurrentUser());
-    return this.fetchTaskFormSchema(endpoint);
+    return this.fetchTaskFormSchema(endpoint, headers);
   }
 
-  doSubmitAsAnonymous(userTask: UserTaskInstance, phase: string, payload: any): Promise<any> {
-    const endpoint = `${userTask.endpoint}?phase=${phase}&${getTaskEndpointSecurityParams(userTask)}`;
-    return this.submitTaskForm(endpoint, payload);
+  getCustomForm(userTask: UserTaskInstance, headers?: any): Promise<Form> {
+    const baseUrl = cleanUserTaskEndpoint(userTask);
+    const endpoint = `${baseUrl}/forms/${userTask.processId}_${userTask.name}`;
+    return this.fetchCustomForm(endpoint, headers);
   }
 
-  getTaskFormSchemaAsAnonymous(userTask: UserTaskInstance): Promise<Record<string, any>> {
-    const endpoint = getTaskSchemaEndPoint(userTask);
-    return this.fetchTaskFormSchema(endpoint);
-  }
-
-  getCustomForm(userTask: UserTaskInstance): Promise<Form> {
-    return Promise.reject();
+  getTaskPhases(userTask: UserTaskInstance, headers?: any): Promise<string[]> {
+    const endpoint = getTaskTransitionsEndpoint(userTask, this.getCurrentUser());
+    return this.fetchTaskTransitionPhases(endpoint, headers);
   }
 }
 
+function getTaskTransitionsEndpoint(task: UserTaskInstance, user?: User): string {
+  const baseUrl = cleanUserTaskEndpoint(task);
+
+  const params = getTaskEndpointSecurityParams(task, user);
+
+  return `${baseUrl}/usertasks/instance/${task.id}/transition?${params}`;
+}
+
 function getTaskSchemaEndPoint(task: UserTaskInstance, user?: User): string {
-  let params = "";
   let endpoint = task.endpoint;
 
-  if (task.completed) {
-    // if task is completed we load the schema for the task definition
-    endpoint = endpoint!.slice(0, -(task.id.length + 1));
-    endpoint = endpoint.replace(task.processInstanceId + "/", "");
-  } else {
-    params = `?${getTaskEndpointSecurityParams(task, user)}`;
-  }
+  // Getting the schema from the workItem schema endpoint to avoid phases calculation
+  endpoint = endpoint!.slice(0, -(task.id.length + 1));
+  endpoint = endpoint.replace(task.processInstanceId + "/", "");
 
-  return `${endpoint}/schema${params}`;
+  return `${endpoint}/schema`;
 }
 
 function getTaskEndpointSecurityParams(task: UserTaskInstance, user?: User): string {
   if (!user || user.id === ANONYMOUS_USER.id) {
-    return `user=${task.potentialUsers?.[0] ?? "admin"}`;
+    return `user=${task.potentialUsers?.[0] ?? "Dev User"}`;
   }
 
   let groups = "";
@@ -126,5 +180,14 @@ function getTaskEndpointSecurityParams(task: UserTaskInstance, user?: User): str
   if (user.groups && user.groups.length > 0) {
     groups = `&group=${user.groups.join("&group=")}`;
   }
-  return `user=${user.id}${groups}`;
+  return `${user.id ? `user=${user.id}` : ""}${groups}`;
+}
+
+function cleanUserTaskEndpoint(task: UserTaskInstance): string {
+  const suffix = calculateUserTaskEndpointSuffix(task);
+  return task.endpoint!.slice(0, -suffix.length);
+}
+
+function calculateUserTaskEndpointSuffix(task: UserTaskInstance): string {
+  return `/${task.processId}/${task.processInstanceId}/${task.name}/${task.externalReferenceId}`;
 }

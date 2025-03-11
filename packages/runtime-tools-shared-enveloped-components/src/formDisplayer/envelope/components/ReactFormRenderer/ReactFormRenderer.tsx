@@ -21,8 +21,9 @@ import React, { useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { transform } from "@babel/standalone";
 import ReactDOM from "react-dom";
-import * as Patternfly from "@patternfly/react-core/dist/js";
-import { FormResources } from "../../../api";
+import * as PatternflyReact from "@patternfly/react-core/dist/js";
+import * as PatternflyReactIcons from "@patternfly/react-icons/dist/js";
+import { FormResources } from "@kie-tools/runtime-tools-shared-gateway-api/src/types";
 import { sourceHandler } from "../../../utils";
 import ResourcesContainer from "../ResourcesContainer/ResourcesContainer";
 
@@ -37,6 +38,7 @@ interface ReactFormRendererProps {
 declare global {
   interface Window {
     PatternFlyReact: any;
+    PatternflyReactIcons: any;
     PatternFly: any;
   }
 }
@@ -57,7 +59,8 @@ const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({ source, resources
         window.React = React;
         window.ReactDOM = ReactDOM;
 
-        window.PatternFlyReact = Patternfly;
+        window.PatternFlyReact = PatternflyReact;
+        window.PatternflyReactIcons = PatternflyReactIcons;
 
         const container = document.getElementById("formContainer");
         if (!container) {
@@ -70,11 +73,13 @@ const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({ source, resources
 
         container.appendChild(formContainer);
 
-        const { reactElements, patternflyElements, formName, trimmedSource } = sourceHandler(source)!;
+        const { reactElements, patternflyElements, patternflyIconElements, formName, trimmedSource } =
+          sourceHandler(source)!;
 
         const content = `
         const {${reactElements}} = React;
         const {${patternflyElements}} = PatternFlyReact;
+        ${patternflyIconElements !== undefined ? `const {${patternflyIconElements}} = PatternflyReactIcons;` : ""}
         ${trimmedSource}
         const target = document.getElementById("${containerId}");
         const element = window.React.createElement(${formName}, {});

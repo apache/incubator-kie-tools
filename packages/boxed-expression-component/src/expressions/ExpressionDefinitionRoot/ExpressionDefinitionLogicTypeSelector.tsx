@@ -34,7 +34,7 @@ import { ResourcesAlmostEmptyIcon } from "@patternfly/react-icons/dist/js/icons/
 import { ResourcesFullIcon } from "@patternfly/react-icons/dist/js/icons/resources-full-icon";
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { BoxedExpression, Normalized } from "../../api";
+import { Action, BoxedExpression, Normalized } from "../../api";
 import { useCustomContextMenuHandler } from "../../contextMenu";
 import { MenuItemWithHelp } from "../../contextMenu/MenuWithHelp";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -321,10 +321,13 @@ export function ExpressionDefinitionLogicTypeSelector({
       const newIdsByOriginalId = mutateExpressionRandomizingIds(clipboard.expression);
 
       let oldExpression: Normalized<BoxedExpression> | undefined;
-      setExpression((prev: Normalized<BoxedExpression>) => {
-        oldExpression = prev;
-        return clipboard.expression;
-      }); // This is mutated to have new IDs by the ID randomizer above.
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedExpression>) => {
+          oldExpression = prev;
+          return clipboard.expression;
+        }, // This is mutated to have new IDs by the ID randomizer above.
+        expressionChangedArgs: { action: Action.ExpressionPastedFromClipboard },
+      });
 
       setWidthsById(({ newMap }) => {
         for (const id of findAllIdsDeep(oldExpression)) {

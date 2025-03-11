@@ -28,7 +28,7 @@ You can run it on developement mode:
 
 ## Parameters
 
-- `-Dquarkus.http.host=<HOST>` : Sets the Quarkus app host, the default value is `0.0.0.0`.
+- `-Dquarkus.http.host=<HOST>` : Sets the Quarkus app host, the default value is `127.0.0.1`.
 - `-Dquarkus.http.port=<PORT_NUMBER>` : Sets the Quarkus app port, the default value is `21345`.
 
 ### API

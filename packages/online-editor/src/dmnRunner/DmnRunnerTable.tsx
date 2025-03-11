@@ -32,6 +32,10 @@ import setObjectValueByPath from "lodash/set";
 import cloneDeep from "lodash/cloneDeep";
 import { DmnRunnerProviderActionType } from "./DmnRunnerTypes";
 import { DmnRunnerExtendedServicesError } from "./DmnRunnerContextProvider";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
+import { useSettings } from "../settings/SettingsContext";
+import { useEditorDockContext } from "../editor/EditorPageDockContextProvider";
 
 export function DmnRunnerTable() {
   // STATEs
@@ -114,6 +118,11 @@ export function DmnRunnerTable() {
     setDmnRunnerTableError(false);
   }, [jsonSchema]);
 
+  const { settings } = useSettings();
+  const isLegacyDmnEditor = useMemo(() => settings.editors.useLegacyDmnEditor, [settings.editors.useLegacyDmnEditor]);
+
+  const { envelopeServer } = useEditorDockContext();
+
   return (
     <>
       {extendedServicesError ? (
@@ -138,6 +147,18 @@ export function DmnRunnerTable() {
                           i18n={i18n.dmnRunner.table}
                           jsonSchemaBridge={jsonSchemaBridge}
                           results={results}
+                          openBoxedExpressionEditor={
+                            !isLegacyDmnEditor
+                              ? (nodeId: string) => {
+                                  const newDmnEditorEnvelopeApi =
+                                    envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
+
+                                  newDmnEditorEnvelopeApi.notifications.dmnEditor_openBoxedExpressionEditor.send(
+                                    nodeId
+                                  );
+                                }
+                              : undefined
+                          }
                         />
                       </div>
                     </DrawerPanelContent>

@@ -52,7 +52,7 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { VirtualMachineIcon } from "@patternfly/react-icons/dist/js/icons/virtual-machine-icon";
 import { useDmnEditor } from "../DmnEditorContext";
 import { AutolayoutButton } from "../autolayout/AutolayoutButton";
-import { getDefaultColumnWidth } from "../boxedExpressions/getDefaultColumnWidth";
+import { getDefaultColumnWidth } from "@kie-tools/boxed-expression-component/dist/resizing/WidthsToFitData";
 import { getDefaultBoxedExpression } from "../boxedExpressions/getDefaultBoxedExpression";
 import {
   ExternalNode,
@@ -1478,7 +1478,9 @@ function DmnDiagramEmptyState({
 }) {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { externalModelsByNamespace } = useExternalModels();
-
+  const externalDmnModelsByNamespaceMap = useDmnEditorStore((s) =>
+    s.computed(s).getExternalDmnModelsByNamespaceMap(externalModelsByNamespace)
+  );
   return (
     <Bullseye
       style={{
@@ -1561,6 +1563,7 @@ function DmnDiagramEmptyState({
                                 ...defaultExpression,
                                 "@_label": "New Decision",
                               },
+                              externalDmnModelsByNamespaceMap,
                             });
 
                             updateExpressionWidths({

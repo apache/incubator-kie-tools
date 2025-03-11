@@ -28,8 +28,15 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { NavigationKeysUtils } from "../keysUtils/keyUtils";
 import { PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
 import "./ExpressionVariableMenu.css";
+import { Action, ExpressionChangedArgs, VariableChangedArgs } from "../api";
+import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
+import { FeelInputTextbox } from "./FeelInputTextbox";
 
-export type OnExpressionVariableUpdated = (args: { name: string; typeRef: string | undefined }) => void;
+export type OnExpressionVariableUpdated = (args: {
+  name: string;
+  typeRef: string | undefined;
+  changes: VariableChangedArgs;
+}) => void;
 
 export interface ExpressionVariableMenuProps {
   /** Optional children element to be considered for triggering the edit expression menu */
@@ -51,6 +58,10 @@ export interface ExpressionVariableMenuProps {
   /** Function to be called when the expression gets updated, passing the most updated version of it */
   onVariableUpdated: OnExpressionVariableUpdated;
   position?: PopoverPosition;
+  /** The UUID of the variable. */
+  variableUuid: string;
+  /** If instead of plain text the content is a FEEL expression. */
+  isContentAFeelExpression?: boolean;
 }
 
 export const DEFAULT_EXPRESSION_VARIABLE_NAME = "Expression Name";
@@ -65,11 +76,13 @@ export function ExpressionVariableMenu({
   selectedExpressionName,
   onVariableUpdated,
   position,
+  variableUuid,
+  isContentAFeelExpression = false,
 }: ExpressionVariableMenuProps) {
   const { editorRef, beeGwtService } = useBoxedExpressionEditor();
   const { i18n } = useBoxedExpressionEditorI18n();
 
-  nameField = nameField ?? i18n.name;
+  nameField = nameField ?? isContentAFeelExpression ? i18n.expression : i18n.name;
   dataTypeField = dataTypeField ?? i18n.dataType;
   appendTo = appendTo ?? editorRef?.current ?? undefined;
 
@@ -100,17 +113,36 @@ export function ExpressionVariableMenu({
   }, [beeGwtService]);
 
   const saveExpression = useCallback(() => {
-    if (expressionName !== selectedExpressionName || dataType !== selectedDataType) {
-      onVariableUpdated({ name: expressionName, typeRef: dataType });
+    const expressionChangedArgs: ExpressionChangedArgs = {
+      action: Action.VariableChanged,
+      variableUuid: variableUuid,
+      typeChange:
+        dataType !== selectedDataType
+          ? {
+              from: dataType,
+              to: selectedDataType,
+            }
+          : undefined,
+      nameChange:
+        expressionName !== selectedExpressionName
+          ? {
+              from: expressionName,
+              to: selectedExpressionName,
+            }
+          : undefined,
+    };
+
+    if (expressionChangedArgs.nameChange || expressionChangedArgs.typeChange) {
+      onVariableUpdated({ name: expressionName, typeRef: dataType, changes: expressionChangedArgs });
     }
-  }, [expressionName, selectedExpressionName, dataType, selectedDataType, onVariableUpdated]);
+  }, [expressionName, selectedExpressionName, dataType, selectedDataType, variableUuid, onVariableUpdated]);
 
   const resetFormData = useCallback(() => {
     setExpressionName(selectedExpressionName);
     setDataType(selectedDataType);
   }, [selectedExpressionName, selectedDataType]);
 
-  // onCancel doens't prevent the onHide call
+  // onCancel doesn't prevent the onHide call
   // With this ref we ensure the "saveExpression" inside onHide will not be called
   const cancelEdit = useRef<boolean>(false);
 
@@ -130,12 +162,19 @@ export function ExpressionVariableMenu({
   }, [resetFormData]);
 
   const onShown = useCallback(() => {
+    // We need to refresh the expression name from the selectedExpressionName,
+    // otherwise it will show the older name set in expressionName.
+    setExpressionName(selectedExpressionName);
     expressionNameRef.current?.focus();
-  }, []);
+  }, [selectedExpressionName]);
 
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
-      e.stopPropagation();
+      // In macOS, we can not stopPropagation here because, otherwise, shortcuts are not handled
+      // See https://github.com/apache/incubator-kie-issues/issues/1164
+      if (!(getOperatingSystem() === OperatingSystem.MACOS && e.metaKey)) {
+        e.stopPropagation();
+      }
 
       if (NavigationKeysUtils.isEnter(e.key)) {
         saveExpression();
@@ -162,18 +201,26 @@ export function ExpressionVariableMenu({
         <div className="edit-expression-menu" onKeyDown={onKeyDown} onMouseDown={(e) => e.stopPropagation()}>
           <div className="expression-name">
             <label>{nameField}</label>
-            <input
-              ref={expressionNameRef}
-              type="text"
-              id="expression-name"
-              data-ouia-component-id="edit-expression-name"
-              value={expressionName}
-              onChange={onExpressionNameChange}
-              onBlur={onExpressionNameChange}
-              className="form-control pf-v5-c-form-control"
-              placeholder={DEFAULT_EXPRESSION_VARIABLE_NAME}
-              onKeyDown={onKeyDown}
-            />
+            {isContentAFeelExpression ? (
+              <FeelInputTextbox
+                value={expressionName}
+                onChange={(e) => setExpressionName(e)}
+                expressionId={variableUuid}
+              />
+            ) : (
+              <input
+                ref={expressionNameRef}
+                type="text"
+                id="expression-name"
+                data-ouia-component-id="edit-expression-name"
+                value={expressionName}
+                onChange={onExpressionNameChange}
+                onBlur={onExpressionNameChange}
+                className="form-control pf-v5-c-form-control"
+                placeholder={DEFAULT_EXPRESSION_VARIABLE_NAME}
+                onKeyDown={onKeyDown}
+              />
+            )}
           </div>
           <div className="expression-data-type">
             <label>{dataTypeField}</label>

@@ -163,7 +163,7 @@ export function DataTypes() {
           type: "DMN15__tDefinitions",
           attr: "itemDefinition",
         })
-        .randomize();
+        .randomize({ skipAlreadyAttributedIds: false });
 
       for (const itemDefinition of clipboard.itemDefinitions) {
         addTopLevelItemDefinition(itemDefinition);

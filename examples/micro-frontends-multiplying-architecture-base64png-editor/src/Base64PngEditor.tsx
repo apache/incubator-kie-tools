@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { EditorApi, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
+import { EditorApi, KogitoEditorEnvelopeApi, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { EmptyState, EmptyStateIcon, EmptyStateHeader } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
 import { Page } from "@patternfly/react-core/dist/js/components/Page";
@@ -40,7 +40,7 @@ const INITIAL_INVERT = "0";
  * envelopeContext All the features and information provided by the Apache KIE Tools Envelope.
  */
 interface Props {
-  envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>;
+  envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>;
 }
 
 /**

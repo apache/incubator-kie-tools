@@ -45,6 +45,7 @@ import {
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 
 export const EXTERNAL_MODELS_SEARCH_GLOB_PATTERN = "**/*.{dmn,pmml}";
+export const TARGET_DIRECTORY = "target/classes/";
 
 export const EMPTY_DMN = () => `<?xml version="1.0" encoding="UTF-8"?>
 <definitions
@@ -77,6 +78,7 @@ export type DmnEditorRootState = {
   keyboardShortcutsRegisterIds: number[];
   keyboardShortcutsRegistered: boolean;
   error: Error | undefined;
+  evaluationResultsByNodeId: DmnEditor.EvaluationResultsByNodeId;
 };
 
 export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditorRootState> {
@@ -99,10 +101,19 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       keyboardShortcutsRegisterIds: [],
       keyboardShortcutsRegistered: false,
       error: undefined,
+      evaluationResultsByNodeId: new Map(),
     };
   }
 
   // Exposed API
+
+  public openBoxedExpressionEditor(nodeId: string): void {
+    this.dmnEditorRef.current?.openBoxedExpressionEditor(nodeId);
+  }
+
+  public showDmnEvaluationResults(evaluationResultsByNodeId: DmnEditor.EvaluationResultsByNodeId): void {
+    this.setState((prev) => ({ ...prev, evaluationResultsByNodeId: evaluationResultsByNodeId }));
+  }
 
   public async undo(): Promise<void> {
     this.setState((prev) => ({ ...prev, pointer: Math.max(0, prev.pointer - 1) }));
@@ -230,8 +241,8 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     });
 
     return list.normalizedPosixPathsRelativeToTheWorkspaceRoot.flatMap((p) =>
-      // Do not show this DMN on the list
-      p === this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot
+      // Do not show this DMN on the list and filter out assets into target/classes directory
+      p === this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot || p.includes(TARGET_DIRECTORY)
         ? []
         : __path.relative(__path.dirname(this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot!), p)
     );
@@ -478,7 +489,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
               originalVersion={this.state.marshaller?.originalVersion}
               model={this.model}
               externalModelsByNamespace={this.state.externalModelsByNamespace}
-              evaluationResults={[]}
+              evaluationResultsByNodeId={this.state.evaluationResultsByNodeId}
               validationMessages={[]}
               externalContextName={""}
               externalContextDescription={""}
@@ -604,7 +615,11 @@ function ExternalModelsManager({
         for (let i = 0; i < list.normalizedPosixPathsRelativeToTheWorkspaceRoot.length; i++) {
           const normalizedPosixPathRelativeToTheWorkspaceRoot = list.normalizedPosixPathsRelativeToTheWorkspaceRoot[i];
 
-          if (normalizedPosixPathRelativeToTheWorkspaceRoot === thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot) {
+          // Do not show this DMN on the list and filter out assets into target/classes directory
+          if (
+            normalizedPosixPathRelativeToTheWorkspaceRoot === thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot ||
+            normalizedPosixPathRelativeToTheWorkspaceRoot.includes(TARGET_DIRECTORY)
+          ) {
             continue;
           }
 

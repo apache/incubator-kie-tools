@@ -26,7 +26,7 @@ import { GraphQLProcessDefinitionListQueries } from "./ProcessDefinitionListQuer
 interface ProcessDefinitionListContextProviderProps {
   apolloClient: ApolloClient<any>;
   children;
-  options?: { transformUrls?: (url?: string) => string };
+  options?: { transformEndpointBaseUrl?: (url?: string) => string };
 }
 
 const ProcessDefinitionListContextProvider: React.FC<ProcessDefinitionListContextProviderProps> = ({

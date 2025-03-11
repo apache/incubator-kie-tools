@@ -125,15 +125,15 @@ pipeline {
         SERVERLESS_LOGIC_WEB_TOOLS__swfDevModeImageBuildTag = "${params.BRANCH_NAME}"
         SERVERLESS_LOGIC_WEB_TOOLS__corsProxyUrl = 'https://daily-dev-cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud'
 
-        KOGITO_TASK_CONSOLE__registry = 'docker.io'
-        KOGITO_TASK_CONSOLE__account = 'apache'
-        KOGITO_TASK_CONSOLE__name = 'incubator-kie-kogito-task-console'
-        KOGITO_TASK_CONSOLE__buildTag = "${params.BRANCH_NAME}"
-
         KOGITO_MANAGEMENT_CONSOLE__registry = 'docker.io'
         KOGITO_MANAGEMENT_CONSOLE__account = 'apache'
         KOGITO_MANAGEMENT_CONSOLE__name = 'incubator-kie-kogito-management-console'
         KOGITO_MANAGEMENT_CONSOLE__buildTag = "${params.BRANCH_NAME}"
+
+        KIE_KOGITO_DB_MIGRATOR_TOOL__registry = 'docker.io'
+        KIE_KOGITO_DB_MIGRATOR_TOOL__account = 'apache'
+        KIE_KOGITO_DB_MIGRATOR_TOOL__name = 'kie-kogito-db-migrator-tool'
+        KIE_KOGITO_DB_MIGRATOR_TOOL__buildTag = "${params.BRANCH_NAME}"
 
         SONATAFLOW_BUILDER_IMAGE__registry = 'docker.io'
         SONATAFLOW_BUILDER_IMAGE__account = 'apache'
@@ -158,6 +158,8 @@ pipeline {
         BUILD_DATE = sh(script: "echo `date +'%Y-%m-%d %T'`", returnStdout: true).trim()
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
+
+        MAVEN_ARGS = "-Dmaven.repo.local=${WORKSPACE}/.maven -Dstyle.color=never"
     }
 
     stages {
@@ -220,7 +222,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap()
+                        buildUtils.pnpmBootstrap('', '${MAVEN_ARGS}')
                     }
                 }
             }
@@ -230,6 +232,9 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     sh """#!/bin/bash -el
+                    echo "Initializing git email and name with:"
+                    echo "git config user.email asf-ci-kie@jenkins.kie.apache.org"
+                    echo "git config user.name asf-ci-kie"
                     git config user.email asf-ci-kie@jenkins.kie.apache.org
                     git config user.name asf-ci-kie
                     export WEBPACK__minimize=true
@@ -244,6 +249,8 @@ pipeline {
                     export ONLINE_EDITOR__extendedServicesCompatibleVersion=${env.KIE_SANDBOX_EXTENDED_SERVICES_VERSION}
                     export ONLINE_EDITOR__buildInfo="${env.VERSION} (daily-dev) @ ${env.GIT_COMMIT} (${env.BUILD_DATE})"
                     export SERVERLESS_LOGIC_WEB_TOOLS__buildInfo="${env.VERSION} (daily-dev) @ ${env.GIT_COMMIT} (${env.BUILD_DATE})"
+                    export MAVEN_ARGS=\"${MAVEN_ARGS}\"
+                    echo "Running: pnpm -r --workspace-concurrency=1 build:prod"
                     pnpm -r --workspace-concurrency=1 build:prod
                     """.trim()
                 }
@@ -522,21 +529,6 @@ pipeline {
             }
         }
 
-        stage('Push kogito-task-console to Docker Hub') {
-            steps {
-                script {
-                    dockerUtils.pushImageToRegistry(
-                        "${env.KOGITO_TASK_CONSOLE__registry}",
-                        "${env.KOGITO_TASK_CONSOLE__account}",
-                        "${env.KOGITO_TASK_CONSOLE__name}",
-                        "${env.KOGITO_TASK_CONSOLE__buildTag}",
-                        "${pipelineVars.dockerHubUserCredentialsId}",
-                        "${pipelineVars.dockerHubTokenCredentialsId}"
-                    )
-                }
-            }
-        }
-
         stage('Push kogito-management-console to Docker Hub') {
             steps {
                 script {
@@ -545,6 +537,21 @@ pipeline {
                         "${env.KOGITO_MANAGEMENT_CONSOLE__account}",
                         "${env.KOGITO_MANAGEMENT_CONSOLE__name}",
                         "${env.KOGITO_MANAGEMENT_CONSOLE__buildTag}",
+                        "${pipelineVars.dockerHubUserCredentialsId}",
+                        "${pipelineVars.dockerHubTokenCredentialsId}"
+                    )
+                }
+            }
+        }
+
+        stage('Push kie-kogito-db-migrator-tool to Docker Hub') {
+            steps {
+                script {
+                    dockerUtils.pushImageToRegistry(
+                        "${env.KIE_KOGITO_DB_MIGRATOR_TOOL__registry}",
+                        "${env.KIE_KOGITO_DB_MIGRATOR_TOOL__account}",
+                        "${env.KIE_KOGITO_DB_MIGRATOR_TOOL__name}",
+                        "${env.KIE_KOGITO_DB_MIGRATOR_TOOL__buildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
@@ -621,8 +628,7 @@ pipeline {
                         configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsNightlyConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
                             sh """#!/bin/bash -el
                             export KIE_TOOLS_BUILD__mavenDeploySkip=false
-                            pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
-                            pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... exec 'bash' '-c' 'echo -Drevision=999-SNAPSHOT >> .mvn/maven.config'
+                            export MAVEN_ARGS=\"${MAVEN_ARGS} --settings=${MAVEN_SETTINGS_FILE} -Drevision=999-SNAPSHOT\"
                             pnpm -F jbpm-quarkus-devui... -F sonataflow-quarkus-devui... build:prod
                             """.trim()
                         }
