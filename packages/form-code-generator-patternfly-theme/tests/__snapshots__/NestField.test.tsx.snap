@@ -1,7 +1,149 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<NestField> tests <NestField> - rendering 1`] = `
+"<Card>
+          <CardBody className="pf-c-form">
+          <label><b>Candidate</b></label>
+          <FormGroup
+      fieldId={'uniforms-0000-0001'}
+      label={'Name'}
+      isRequired={true}
+    >
+      <TextInput
+        name={'candidate.name'}
+        id={'uniforms-0000-0001'}
+        isDisabled={false}
+        placeholder={''}
+        type={'text'}
+        value={candidate__name}
+        onChange={set__candidate__name}
+        />
+    </FormGroup>
+<FormGroup
+      fieldId={'uniforms-0000-0003'}
+      label={'Age'}
+      isRequired={true}
+    >
+      <TextInput
+      type={'number'}
+      name={'candidate.age'}
+      isDisabled={false}
+      id={'uniforms-0000-0003'}
+      placeholder={''}
+      step={1}  
+      value={candidate__age}
+      onChange={(newValue) => set__candidate__age(Number(newValue))}
+    />
+    </FormGroup>
+<FormGroup
+      fieldId={'uniforms-0000-0005'}
+      label={'Role'}
+      isRequired={true}
+    ><Select
+      id={'uniforms-0000-0005'}
+      name={'candidate.role'}
+      variant={SelectVariant.single}
+      isDisabled={false}
+      placeholderText={''}
+      isOpen={candidate__role__expanded}
+      selections={candidate__role}
+      onToggle={(isOpen) => set__candidate__role__expanded(isOpen)}
+      onSelect={(event, value, isPlaceHolder) => {
+        if (isPlaceHolder) {
+          set__candidate__role('');
+          set__candidate__role__expanded(false);
+        } else {
+          const parsedSelection = value.toString ? value.toString() : value as string;
+          set__candidate__role(parsedSelection || '');
+          set__candidate__role__expanded(false);
+        }
+      }}
+      value={candidate__role}
+    >
+      <SelectOption key={'Developer'} value={'Developer'}>Developer</SelectOption>
+<SelectOption key={'HR'} value={'HR'}>HR</SelectOption>
+<SelectOption key={'UX'} value={'UX'}>UX</SelectOption>
+    </Select></FormGroup>
 <div>
-  {"pfImports":["Card","CardBody","TextInput","FormGroup","SelectOption","SelectOptionObject","Select","SelectVariant","Split","SplitItem","Button"],"pfIconImports":["PlusCircleIcon","MinusCircleIcon"],"reactImports":["useState"],"requiredCode":["select_functions"],"stateCode":"const [ candidate__name, set__candidate__name ] = useState&lt;string&gt;(\\"\\");\\nconst [ candidate__age, set__candidate__age ] = useState&lt;number&gt;();\\nconst [ candidate__role, set__candidate__role ] = useState&lt;string&gt;(\\"\\");\\nconst [ candidate__role__expanded, set__candidate__role__expanded ] = useState&lt;boolean&gt;(false);\\nconst [ candidate__skills, set__candidate__skills ] = useState&lt;object[]&gt;([]);","jsxCode":"&lt;Card&gt;\\n          &lt;CardBody className=\\"pf-c-form\\"&gt;\\n          &lt;label&gt;&lt;b&gt;Candidate&lt;/b&gt;&lt;/label&gt;\\n          &lt;FormGroup\\n      fieldId={'uniforms-0000-0001'}\\n      label={'Name'}\\n      isRequired={true}\\n    &gt;\\n      &lt;TextInput\\n        name={'candidate.name'}\\n        id={'uniforms-0000-0001'}\\n        isDisabled={false}\\n        placeholder={''}\\n        type={'text'}\\n        value={candidate__name}\\n        onChange={set__candidate__name}\\n        /&gt;\\n    &lt;/FormGroup&gt;\\n&lt;FormGroup\\n      fieldId={'uniforms-0000-0003'}\\n      label={'Age'}\\n      isRequired={true}\\n    &gt;\\n      &lt;TextInput\\n      type={'number'}\\n      name={'candidate.age'}\\n      isDisabled={false}\\n      id={'uniforms-0000-0003'}\\n      placeholder={''}\\n      step={1}  \\n      value={candidate__age}\\n      onChange={(newValue) =&gt; set__candidate__age(Number(newValue))}\\n    /&gt;\\n    &lt;/FormGroup&gt;\\n&lt;FormGroup\\n      fieldId={'uniforms-0000-0005'}\\n      label={'Role'}\\n      isRequired={true}\\n    &gt;&lt;Select\\n      id={'uniforms-0000-0005'}\\n      name={'candidate.role'}\\n      variant={SelectVariant.single}\\n      isDisabled={false}\\n      placeholderText={''}\\n      isOpen={candidate__role__expanded}\\n      selections={candidate__role}\\n      onToggle={(isOpen) =&gt; set__candidate__role__expanded(isOpen)}\\n      onSelect={(event, value, isPlaceHolder) =&gt; handleSelect(value, isPlaceHolder, candidate__role, set__candidate__role, set__candidate__role__expanded)}\\n      value={candidate__role}\\n    &gt;\\n      &lt;SelectOption key={'Developer'} value={'Developer'}&gt;Developer&lt;/SelectOption&gt;\\n&lt;SelectOption key={'HR'} value={'HR'}&gt;HR&lt;/SelectOption&gt;\\n&lt;SelectOption key={'UX'} value={'UX'}&gt;UX&lt;/SelectOption&gt;\\n    &lt;/Select&gt;&lt;/FormGroup&gt;\\n&lt;div&gt;\\n      &lt;Split hasGutter&gt;\\n        &lt;SplitItem&gt;\\n          {'Skills' && (\\n            &lt;label className={\\"pf-c-form__label\\"}&gt;\\n              &lt;span className={\\"pf-c-form__label-text\\"}&gt;\\n                Skills\\n              &lt;/span&gt;\\n            &lt;/label&gt;\\n          )}\\n        &lt;/SplitItem&gt;\\n        &lt;SplitItem isFilled /&gt;\\n        &lt;SplitItem&gt;\\n          &lt;Button\\n            name='$'\\n            variant='plain'\\n            style={{ paddingLeft: '0', paddingRight: '0' }}\\n            disabled={false}\\n            onClick={() =&gt; {\\n              !false && set__candidate__skills((candidate__skills ?? []).concat([{}]));\\n            }}\\n          &gt;\\n            &lt;PlusCircleIcon color='#0088ce' /&gt;\\n          &lt;/Button&gt;\\n        &lt;/SplitItem&gt;\\n      &lt;/Split&gt;\\n      &lt;div&gt;\\n        {candidate__skills?.map((_, itemIndex) =&gt;\\n          (&lt;div\\n            key={itemIndex}\\n            style={{\\n              marginBottom: '1rem',\\n              display: 'flex',\\n              justifyContent: 'space-between',\\n            }}\\n          &gt;\\n            &lt;div style={{ width: '100%', marginRight: '10px' }}&gt;&lt;Card&gt;\\n          &lt;CardBody className=\\"pf-c-form\\"&gt;\\n          \\n          &lt;FormGroup\\n      fieldId={'uniforms-0000-000a'}\\n      label={'Name'}\\n      isRequired={true}\\n    &gt;\\n      &lt;TextInput\\n        name={\`candidate.skills.\${itemIndex}.name\`}\\n        id={'uniforms-0000-000a'}\\n        isDisabled={false}\\n        placeholder={''}\\n        type={'text'}\\n        value={candidate__skills[itemIndex].name}\\n        onChange={\\n  newValue =&gt; {\\n    set__candidate__skills(s =&gt; {\\n      const newState = [...s];\\n      newState[itemIndex].name = newValue;\\n      return newState;\\n    })\\n  }}\\n        /&gt;\\n    &lt;/FormGroup&gt;\\n          &lt;/CardBody&gt;&lt;/Card&gt;&lt;/div&gt;\\n            &lt;div&gt;\\n              &lt;Button\\n                disabled={false}\\n                variant='plain'\\n                style={{ paddingLeft: '0', paddingRight: '0' }}\\n                onClick={() =&gt; {\\n                  const value = [...candidate__skills]\\n                  value.splice(itemIndex, 1);\\n                  !false && set__candidate__skills(value);\\n                }}\\n              &gt;\\n                &lt;MinusCircleIcon color='#cc0000' /&gt;\\n              &lt;/Button&gt;\\n            &lt;/div&gt;\\n          &lt;/div&gt;)\\n        )}\\n      &lt;/div&gt;\\n    &lt;/div&gt;\\n          &lt;/CardBody&gt;&lt;/Card&gt;","ref":{"binding":"candidate","stateName":"candidate","stateSetter":"set__candidate","dataType":{"name":"object","defaultValue":"{}"}},"childRefs":[{"binding":"candidate.name","stateName":"candidate__name","stateSetter":"set__candidate__name","dataType":{"name":"string","defaultValue":"\\"\\""}},{"binding":"candidate.age","stateName":"candidate__age","stateSetter":"set__candidate__age","dataType":{"name":"number"}},{"binding":"candidate.role","stateName":"candidate__role","stateSetter":"set__candidate__role","dataType":{"name":"string","defaultValue":"\\"\\""}},{"binding":"candidate.skills","stateName":"candidate__skills","stateSetter":"set__candidate__skills","dataType":{"name":"object[]","defaultValue":"[]"}}],"isReadonly":false}
-</div>
+      <Split hasGutter>
+        <SplitItem>
+          {'Skills' && (
+            <label className={"pf-c-form__label"}>
+              <span className={"pf-c-form__label-text"}>
+                Skills
+              </span>
+            </label>
+          )}
+        </SplitItem>
+        <SplitItem isFilled />
+        <SplitItem>
+          <Button
+            name='$'
+            variant='plain'
+            style={{ paddingLeft: '0', paddingRight: '0' }}
+            disabled={false}
+            onClick={() => {
+              !false && 
+    set__candidate__skills((candidate__skills ?? []).concat([{}]));
+            }}
+          >
+            <PlusCircleIcon color='#0088ce' />
+          </Button>
+        </SplitItem>
+      </Split>
+      <div>
+        {candidate__skills?.map((_, itemIndex) =>
+          (<div
+            key={itemIndex}
+            style={{
+              marginBottom: '1rem',
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div style={{ width: '100%', marginRight: '10px' }}><Card>
+          <CardBody className="pf-c-form">
+          
+          <FormGroup
+      fieldId={'uniforms-0000-000a'}
+      label={'Name'}
+      isRequired={true}
+    >
+      <TextInput
+        name={\`candidate__skills.\${itemIndex}.name\`}
+        id={'uniforms-0000-000a'}
+        isDisabled={false}
+        placeholder={''}
+        type={'text'}
+        value={candidate__skills?.[itemIndex].name}
+        onChange={newValue => {
+    set__candidate__skills(s => {
+      const newState = [...s];
+      newState[itemIndex].name = newValue;
+      return newState;
+    })
+  }}
+        />
+    </FormGroup>
+          </CardBody></Card></div>
+            <div>
+              <Button
+                disabled={false}
+                variant='plain'
+                style={{ paddingLeft: '0', paddingRight: '0' }}
+                onClick={() => {
+                  const value = [...candidate__skills]
+                  value.splice(itemIndex, 1);
+                  !false && 
+  set__candidate__skills(value);
+                }}
+              >
+                <MinusCircleIcon color='#cc0000' />
+              </Button>
+            </div>
+          </div>)
+        )}
+      </div>
+    </div>
+          </CardBody></Card>"
 `;

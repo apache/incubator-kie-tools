@@ -165,7 +165,7 @@ const TaskDetailsPage: React.FC<RouteComponentProps<Props> & OUIAProps> = ({ oui
             <Card className={"Dev-ui__card-size"}>
               <ServerErrors error={error} variant="large">
                 <Button variant="primary" onClick={() => goToInbox()}>
-                  Go to Inbox
+                  Go to Tasks
                 </Button>
               </ServerErrors>
             </Card>

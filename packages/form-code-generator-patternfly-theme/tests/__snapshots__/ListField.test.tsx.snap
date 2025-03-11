@@ -1,7 +1,498 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<ListField> tests <ListField> 1`] = `
+"<div>
+      <Split hasGutter>
+        <SplitItem>
+          {'Friends' && (
+            <label className={"pf-c-form__label"}>
+              <span className={"pf-c-form__label-text"}>
+                Friends
+              </span>
+            </label>
+          )}
+        </SplitItem>
+        <SplitItem isFilled />
+        <SplitItem>
+          <Button
+            name='$'
+            variant='plain'
+            style={{ paddingLeft: '0', paddingRight: '0' }}
+            disabled={false}
+            onClick={() => {
+              !false && 
+    set__friends((friends ?? []).concat([{}]));
+            }}
+          >
+            <PlusCircleIcon color='#0088ce' />
+          </Button>
+        </SplitItem>
+      </Split>
+      <div>
+        {friends?.map((_, itemIndex) =>
+          (<div
+            key={itemIndex}
+            style={{
+              marginBottom: '1rem',
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div style={{ width: '100%', marginRight: '10px' }}><Card>
+          <CardBody className="pf-c-form">
+          
+          <FormGroup
+      fieldId={'uniforms-0000-0003'}
+      label={'Name'}
+      isRequired={true}
+    >
+      <TextInput
+        name={\`friends.\${itemIndex}.name\`}
+        id={'uniforms-0000-0003'}
+        isDisabled={false}
+        placeholder={''}
+        type={'text'}
+        value={friends?.[itemIndex].name}
+        onChange={newValue => {
+    set__friends(s => {
+      const newState = [...s];
+      newState[itemIndex].name = newValue;
+      return newState;
+    })
+  }}
+        />
+    </FormGroup>
+<FormGroup
+      fieldId={'uniforms-0000-0005'}
+      label={'Age'}
+      isRequired={true}
+    >
+      <TextInput
+      type={'number'}
+      name={\`friends.\${itemIndex}.age\`}
+      isDisabled={false}
+      id={'uniforms-0000-0005'}
+      placeholder={''}
+      step={0.01}  
+      value={friends?.[itemIndex].age}
+      onChange={newValue => {
+    set__friends(s => {
+      const newState = [...s];
+      newState[itemIndex].age = Number(newValue);
+      return newState;
+    })
+  }}
+    />
+    </FormGroup>
+<FormGroup
+      fieldId={'uniforms-0000-0007'}
+      label={'Country'}
+      isRequired={true}
+    ><Select
+      id={'uniforms-0000-0007'}
+      name={\`friends.\${itemIndex}.country\`}
+      variant={SelectVariant.single}
+      isDisabled={false}
+      placeholderText={''}
+      isOpen={friends__expanded?.[itemIndex]?.country ?? false}
+      selections={friends?.[itemIndex].country}
+      onToggle={(isOpen) => set__friends__expanded(prev => {
+          const newState = [...prev];
+          newState[itemIndex] ??= {};
+
+
+
+          newState[itemIndex].country = isOpen
+          return newState;
+        })}
+      onSelect={(event, value, isPlaceHolder) => {
+          if (isPlaceHolder) {
+            set__friends(prev => {
+              const newState = [...prev];
+              newState[itemIndex].country = "";
+              return newState;
+            })
+            set__friends__expanded(prev => {
+                const newState = [...prev];
+                newState[itemIndex] ??= {};
+
+
+
+                newState[itemIndex].country = false;
+                return newState;
+            });
+          } else {
+            const parsedSelection = value.toString ? value.toString() : value as string;
+            set__friends(prev => {
+              const newState = [...prev];
+              newState[itemIndex].country = parsedSelection || '';
+              return newState;
+            })
+            set__friends__expanded(prev => {
+              const newState = [...prev];
+              newState[itemIndex] ??= {};
+
+
+
+              newState[itemIndex].country = false;
+              return newState;
+            });
+          }
+        }}
+      value={friends?.[itemIndex].country}
+    >
+      <SelectOption key={'US'} value={'US'}>US</SelectOption>
+<SelectOption key={'Brazil'} value={'Brazil'}>Brazil</SelectOption>
+    </Select></FormGroup>
+<FormGroup fieldId='uniforms-0000-0009'>
+    <Checkbox
+      isChecked={friends?.[itemIndex].married}
+      isDisabled={false}
+      id={'uniforms-0000-0009'}
+      name={\`friends.\${itemIndex}.married\`}
+      label={'Married'}
+      onChange={newValue => {
+    set__friends(s => {
+      const newState = [...s];
+      newState[itemIndex].married = newValue;
+      return newState;
+    })
+  }}
+    />
+  </FormGroup>
 <div>
-  {"ref":{"binding":"friends","stateName":"friends","stateSetter":"set__friends","dataType":{"name":"object[]","defaultValue":"[]"}},"pfImports":["Split","SplitItem","Button","Card","CardBody","TextInput","FormGroup","SelectOption","SelectOptionObject","Select","SelectVariant","Checkbox","DatePicker","Flex","FlexItem","InputGroup","TimePicker"],"pfIconImports":["PlusCircleIcon","MinusCircleIcon"],"reactImports":["useState"],"jsxCode":"&lt;div&gt;\\n      &lt;Split hasGutter&gt;\\n        &lt;SplitItem&gt;\\n          {'Friends' && (\\n            &lt;label className={\\"pf-c-form__label\\"}&gt;\\n              &lt;span className={\\"pf-c-form__label-text\\"}&gt;\\n                Friends\\n              &lt;/span&gt;\\n            &lt;/label&gt;\\n          )}\\n        &lt;/SplitItem&gt;\\n        &lt;SplitItem isFilled /&gt;\\n        &lt;SplitItem&gt;\\n          &lt;Button\\n            name='$'\\n            variant='plain'\\n            style={{ paddingLeft: '0', paddingRight: '0' }}\\n            disabled={false}\\n            onClick={() =&gt; {\\n              !false && set__friends((friends ?? []).concat([{}]));\\n            }}\\n          &gt;\\n            &lt;PlusCircleIcon color='#0088ce' /&gt;\\n          &lt;/Button&gt;\\n        &lt;/SplitItem&gt;\\n      &lt;/Split&gt;\\n      &lt;div&gt;\\n        {friends?.map((_, itemIndex) =&gt;\\n          (&lt;div\\n            key={itemIndex}\\n            style={{\\n              marginBottom: '1rem',\\n              display: 'flex',\\n              justifyContent: 'space-between',\\n            }}\\n          &gt;\\n            &lt;div style={{ width: '100%', marginRight: '10px' }}&gt;&lt;Card&gt;\\n          &lt;CardBody className=\\"pf-c-form\\"&gt;\\n          \\n          &lt;FormGroup\\n      fieldId={'uniforms-0000-0003'}\\n      label={'Name'}\\n      isRequired={true}\\n    &gt;\\n      &lt;TextInput\\n        name={\`friends.\${itemIndex}.name\`}\\n        id={'uniforms-0000-0003'}\\n        isDisabled={false}\\n        placeholder={''}\\n        type={'text'}\\n        value={friends[itemIndex].name}\\n        onChange={\\n  newValue =&gt; {\\n    set__friends(s =&gt; {\\n      const newState = [...s];\\n      newState[itemIndex].name = newValue;\\n      return newState;\\n    })\\n  }}\\n        /&gt;\\n    &lt;/FormGroup&gt;\\n&lt;FormGroup\\n      fieldId={'uniforms-0000-0005'}\\n      label={'Age'}\\n      isRequired={true}\\n    &gt;\\n      &lt;TextInput\\n      type={'number'}\\n      name={\`friends.\${itemIndex}.age\`}\\n      isDisabled={false}\\n      id={'uniforms-0000-0005'}\\n      placeholder={''}\\n      step={0.01}  \\n      value={friends[itemIndex].age}\\n      onChange={\\n  newValue =&gt; {\\n    set__friends(s =&gt; {\\n      const newState = [...s];\\n      newState[itemIndex].age = Number(newValue);\\n      return newState;\\n    })\\n  }}\\n    /&gt;\\n    &lt;/FormGroup&gt;\\n&lt;FormGroup\\n      fieldId={'uniforms-0000-0007'}\\n      label={'Country'}\\n      isRequired={true}\\n    &gt;&lt;Select\\n      id={'uniforms-0000-0007'}\\n      name={\`friends.\${itemIndex}.country\`}\\n      variant={SelectVariant.single}\\n      isDisabled={false}\\n      placeholderText={''}\\n      isOpen={friends__$__country__expanded}\\n      selections={friends__$__country}\\n      onToggle={(isOpen) =&gt; set__friends__$__country__expanded(isOpen)}\\n      onSelect={\\n  (event, value, isPlaceHolder) =&gt; {\\n    set__friends(s =&gt; {\\n      const newState = [...s];\\n      newState[itemIndex].country = handleSelect(value, isPlaceHolder, friends__$__country, set__friends__$__country, set__friends__$__country__expanded);\\n      return newState;\\n    })\\n  }}\\n      value={friends[itemIndex].country}\\n    &gt;\\n      &lt;SelectOption key={'US'} value={'US'}&gt;US&lt;/SelectOption&gt;\\n&lt;SelectOption key={'Brazil'} value={'Brazil'}&gt;Brazil&lt;/SelectOption&gt;\\n    &lt;/Select&gt;&lt;/FormGroup&gt;\\n&lt;FormGroup fieldId='uniforms-0000-0009'&gt;\\n    &lt;Checkbox\\n      isChecked={friends[itemIndex].married}\\n      isDisabled={false}\\n      id={'uniforms-0000-0009'}\\n      name={\`friends.\${itemIndex}.married\`}\\n      label={'Married'}\\n      onChange={\\n  newValue =&gt; {\\n    set__friends(s =&gt; {\\n      const newState = [...s];\\n      newState[itemIndex].married = newValue;\\n      return newState;\\n    })\\n  }}\\n    /&gt;\\n  &lt;/FormGroup&gt;\\n&lt;FormGroup\\n      fieldId={'uniforms-0000-000b'}\\n      label={'Know'}\\n      isRequired={true}\\n    &gt;\\n      &lt;Checkbox\\n  key={'uniforms-0000-000b-Java'}\\n  id={'uniforms-0000-000b-Java'}\\n  name={\`friends.\${itemIndex}.know\`}\\n  aria-label={'friends.$.know'}\\n  label={'Java'} \\n  isDisabled={false} \\n  isChecked={friends__$__know.indexOf('Java') !== -1}\\n  onChange={\\n  newValue =&gt; {\\n    set__friends(s =&gt; {\\n      const newState = [...s];\\n      newState[itemIndex].know = handleCheckboxGroupChange('Java', friends__$__know, set__friends__$__know);\\n      return newState;\\n    })\\n  }}\\n  value={friends[itemIndex].know}\\n/&gt;\\n&lt;Checkbox\\n  key={'uniforms-0000-000b-Node'}\\n  id={'uniforms-0000-000b-Node'}\\n  name={\`friends.\${itemIndex}.know\`}\\n  aria-label={'friends.$.know'}\\n  label={'Node'} \\n  isDisabled={false} \\n  isChecked={friends__$__know.indexOf('Node') !== -1}\\n  onChange={\\n  newValue =&gt; {\\n    set__friends(s =&gt; {\\n      const newState = [...s];\\n      newState[itemIndex].know = handleCheckboxGroupChange('Node', friends__$__know, set__friends__$__know);\\n      return newState;\\n    })\\n  }}\\n  value={friends[itemIndex].know}\\n/&gt;\\n&lt;Checkbox\\n  key={'uniforms-0000-000b-Docker'}\\n  id={'uniforms-0000-000b-Docker'}\\n  name={\`friends.\${itemIndex}.know\`}\\n  aria-label={'friends.$.know'}\\n  label={'Docker'} \\n  isDisabled={false} \\n  isChecked={friends__$__know.indexOf('Docker') !== -1}\\n  onChange={\\n  newValue =&gt; {\\n    set__friends(s =&gt; {\\n      const newState = [...s];\\n      newState[itemIndex].know = handleCheckboxGroupChange('Docker', friends__$__know, set__friends__$__know);\\n      return newState;\\n    })\\n  }}\\n  value={friends[itemIndex].know}\\n/&gt;\\n    &lt;/FormGroup&gt;\\n&lt;FormGroup\\n      fieldId={'uniforms-0000-000d'}\\n      label={'Areas'}\\n      isRequired={true}\\n    &gt;&lt;Select\\n      id={'uniforms-0000-000d'}\\n      name={\`friends.\${itemIndex}.areas\`}\\n      variant={SelectVariant.single}\\n      isDisabled={false}\\n      placeholderText={''}\\n      isOpen={friends__$__areas__expanded}\\n      selections={friends__$__areas}\\n      onToggle={(isOpen) =&gt; set__friends__$__areas__expanded(isOpen)}\\n      onSelect={\\n  (event, value, isPlaceHolder) =&gt; {\\n    set__friends(s =&gt; {\\n      const newState = [...s];\\n      newState[itemIndex].areas = handleSelect(value, isPlaceHolder, friends__$__areas, set__friends__$__areas, set__friends__$__areas__expanded);\\n      return newState;\\n    })\\n  }}\\n      value={friends[itemIndex].areas}\\n    &gt;\\n      &lt;SelectOption key={'Developer'} value={'Developer'}&gt;Developer&lt;/SelectOption&gt;\\n&lt;SelectOption key={'HR'} value={'HR'}&gt;HR&lt;/SelectOption&gt;\\n&lt;SelectOption key={'UX'} value={'UX'}&gt;UX&lt;/SelectOption&gt;\\n    &lt;/Select&gt;&lt;/FormGroup&gt;\\n&lt;FormGroup\\n      fieldId={'uniforms-0000-000f'}\\n      label={'Birthday'}\\n      isRequired={true}\\n    &gt;\\n      &lt;Flex\\n    direction={{ default: 'column' }}\\n    id={'uniforms-0000-000f'}\\n  &gt;\\n    &lt;FlexItem&gt;\\n      &lt;InputGroup style={{ background: 'transparent' }}&gt;\\n        &lt;DatePicker\\n          id={'date-picker-uniforms-0000-000f'}\\n          isDisabled={false}\\n          name={\`friends.\${itemIndex}.birthday\`}\\n          onChange={\\n  newValue =&gt; {\\n    set__friends(s =&gt; {\\n      const newState = [...s];\\n      newState[itemIndex].birthday = onDateChange(newValue, set__friends__$__birthday,  friends__$__birthday);\\n      return newState;\\n    })\\n  }}\\n          value={parseDate(friends[itemIndex].birthday)}\\n        /&gt;\\n        &lt;TimePicker\\n          id={'time-picker-uniforms-0000-000f'}\\n          isDisabled={false}\\n          name={\`friends.\${itemIndex}.birthday\`}\\n          onChange={\\n  (time, hours?, minutes?) =&gt; {\\n    set__friends(s =&gt; {\\n      const newState = [...s];\\n      newState[itemIndex].birthday = onTimeChange(time, set__friends__$__birthday, friends__$__birthday, hours, minutes);\\n      return newState;\\n    })\\n  }}\\n          style={{ width: '120px' }}\\n          time={parseTime(friends[itemIndex].birthday)}\\n        /&gt;\\n      &lt;/InputGroup&gt;\\n    &lt;/FlexItem&gt;\\n  &lt;/Flex&gt;\\n    &lt;/FormGroup&gt;\\n          &lt;/CardBody&gt;&lt;/Card&gt;&lt;/div&gt;\\n            &lt;div&gt;\\n              &lt;Button\\n                disabled={false}\\n                variant='plain'\\n                style={{ paddingLeft: '0', paddingRight: '0' }}\\n                onClick={() =&gt; {\\n                  const value = [...friends]\\n                  value.splice(itemIndex, 1);\\n                  !false && set__friends(value);\\n                }}\\n              &gt;\\n                &lt;MinusCircleIcon color='#cc0000' /&gt;\\n              &lt;/Button&gt;\\n            &lt;/div&gt;\\n          &lt;/div&gt;)\\n        )}\\n      &lt;/div&gt;\\n    &lt;/div&gt;","stateCode":"const [ friends, set__friends ] = useState&lt;object[]&gt;([]);","isReadonly":false}
-</div>
+      <Split hasGutter>
+        <SplitItem>
+          {'Know' && (
+            <label className={"pf-c-form__label"}>
+              <span className={"pf-c-form__label-text"}>
+                Know
+              </span>
+            </label>
+          )}
+        </SplitItem>
+        <SplitItem isFilled />
+        <SplitItem>
+          <Button
+            name='$'
+            variant='plain'
+            style={{ paddingLeft: '0', paddingRight: '0' }}
+            disabled={false}
+            onClick={() => {
+              !false && 
+    set__friends((s) => {
+  const newState = [...s];
+  (newState[itemIndex].know) = [...(newState[itemIndex].know ?? []), ""];
+  return newState;
+});
+            }}
+          >
+            <PlusCircleIcon color='#0088ce' />
+          </Button>
+        </SplitItem>
+      </Split>
+      <div>
+        {friends?.[itemIndex].know?.map((_, nested__itemIndex) =>
+          (<div
+            key={nested__itemIndex}
+            style={{
+              marginBottom: '1rem',
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div style={{ width: '100%', marginRight: '10px' }}><FormGroup
+      fieldId={'uniforms-0000-000c'}
+      label={'Know'}
+      isRequired={false}
+    >
+      <TextInput
+        name={\`friends?.[itemIndex].know.\${nested__itemIndex}\`}
+        id={'uniforms-0000-000c'}
+        isDisabled={false}
+        placeholder={''}
+        type={'text'}
+        value={friends?.[itemIndex].know?.[nested__itemIndex]}
+        onChange={newValue => {
+    set__friends(s => {
+      const newState = [...s];
+      newState[itemIndex].know[nested__itemIndex] = newValue;
+      return newState;
+    })
+  }}
+        />
+    </FormGroup></div>
+            <div>
+              <Button
+                disabled={false}
+                variant='plain'
+                style={{ paddingLeft: '0', paddingRight: '0' }}
+                onClick={() => {
+                  const value = [...friends?.[itemIndex].know]
+                  value.splice(nested__itemIndex, 1);
+                  !false && 
+  set__friends((s) => {
+  const newState = [...s];
+  (newState[itemIndex].know) = value;
+  return newState;
+});
+                }}
+              >
+                <MinusCircleIcon color='#cc0000' />
+              </Button>
+            </div>
+          </div>)
+        )}
+      </div>
+    </div>
+<FormGroup
+      fieldId={'uniforms-0000-000e'}
+      label={'Areas'}
+      isRequired={true}
+    ><Select
+      id={'uniforms-0000-000e'}
+      name={\`friends.\${itemIndex}.areas\`}
+      variant={SelectVariant.typeaheadMulti}
+      isDisabled={false}
+      placeholderText={''}
+      isOpen={friends__expanded?.[itemIndex]?.areas ?? false}
+      selections={friends?.[itemIndex].areas}
+      onToggle={(isOpen) => set__friends__expanded(prev => {
+          const newState = [...prev];
+          newState[itemIndex] ??= {};
+
+
+
+          newState[itemIndex].areas = isOpen
+          return newState;
+        })}
+      onSelect={(event, value, isPlaceHolder) => {
+          if (isPlaceHolder) {
+            set__friends(prev => {
+              const newState = [...prev];
+              newState[itemIndex].areas = [];
+              return newState;
+            })
+          } else {
+            const selectedValue = newSelection.toString ? newSelection.toString() : newSelection as string;
+            set__friends(prev => {
+              const newState = [...prev];
+              if (newState[itemIndex].areas.indexOf(selectedValue) != -1) {
+                const filtered = newState[itemIndex].areas.filter((s) => s !== selectedValue);
+                return newState[itemIndex].areas = filtered;
+              }
+              newState[itemIndex].areas = [selectedValue, ...newState[itemIndex].areas];
+              return newState;
+            })
+          }
+        }}
+      value={friends?.[itemIndex].areas}
+    >
+      <SelectOption key={'Developer'} value={'Developer'}>Developer</SelectOption>
+<SelectOption key={'HR'} value={'HR'}>HR</SelectOption>
+<SelectOption key={'UX'} value={'UX'}>UX</SelectOption>
+    </Select></FormGroup>
+<FormGroup
+      fieldId={'uniforms-0000-000g'}
+      label={'Birthday'}
+      isRequired={true}
+    >
+      <Flex
+    direction={{ default: 'column' }}
+    id={'uniforms-0000-000g'}
+  >
+    <FlexItem>
+      <InputGroup style={{ background: 'transparent' }}>
+        <DatePicker
+          id={'date-picker-uniforms-0000-000g'}
+          isDisabled={false}
+          name={\`friends.\${itemIndex}.birthday\`}
+          onChange={newDate => {
+        set__friends(prev => {
+          if (newDate) {
+            const newState = [...prev];
+            const currentDate = newState[itemIndex].birthday
+            const newDate = new Date(newDate);
+            const time = parseTime(currentDate);
+            if (time !== '') {
+                newDate.setHours(parseInt(time && time.split(':')[0]));
+                newDate.setMinutes(parseInt(time && time.split(':')[1].split(' ')[0]));
+            }
+            newState[itemIndex].birthday = newDate.toISOString();
+            return newState;
+          }
+          return prev;
+        })
+      }}
+          value={parseDate(friends?.[itemIndex].birthday)}
+        />
+        <TimePicker
+          id={'time-picker-uniforms-0000-000g'}
+          isDisabled={false}
+          name={\`friends.\${itemIndex}.birthday\`}
+          onChange={(time, hours?, minutes?) => set__friends(prev => {
+        const newState = [...prev];
+        const currentDate = newState[itemIndex].birthday
+        if (currentDate) {
+          const newDate = new Date(Date.parse(currentDate));
+          if (hours && minutes) {
+            newDate.setHours(hours);
+            newDate.setMinutes(minutes);
+          } else if (time !== '') {
+            const localeHours = parseInt(time && time.split(':')[0]);
+            const localeMinutes = parseInt(time && time.split(':')[1].split(' ')[0]);
+            if (!isNaN(localeHours) && !isNaN(localeMinutes)) {
+                newDate.setHours(localeHours);
+                newDate.setMinutes(localeMinutes);
+            }
+          }
+          newState[itemIndex].birthday = newDate.toISOString();
+          return newState;
+        }
+        return prev;
+      })}
+          style={{ width: '120px' }}
+          time={parseTime(friends?.[itemIndex].birthday)}
+        />
+      </InputGroup>
+    </FlexItem>
+  </Flex>
+    </FormGroup>
+<FormGroup
+      fieldId={'uniforms-0000-000i'}
+      label={'Transport'}
+      isRequired={true}
+    >
+      <Checkbox
+  key={'uniforms-0000-000i-Taxi'}
+  id={'uniforms-0000-000i-Taxi'}
+  name={\`friends.\${itemIndex}.transport\`}
+  aria-label={'friends.$.transport'}
+  label={'Taxi'} 
+  isDisabled={false} 
+  isChecked={friends?.[itemIndex].transport.indexOf('Taxi') !== -1}
+  onChange={
+        set__friends(prev => {
+          const newState = [...prev];
+          const newValue = [...newState[itemIndex].transport]
+          if(newValue.indexOf('Taxi') != -1) {
+            newValue.splice(index, 1);
+          } else {
+            newValue.push('Taxi');
+          }
+          newState[itemIndex].transport = newValue
+          return newState;
+        })}
+  value={friends?.[itemIndex].transport}
+/>
+<Checkbox
+  key={'uniforms-0000-000i-Uber'}
+  id={'uniforms-0000-000i-Uber'}
+  name={\`friends.\${itemIndex}.transport\`}
+  aria-label={'friends.$.transport'}
+  label={'Uber'} 
+  isDisabled={false} 
+  isChecked={friends?.[itemIndex].transport.indexOf('Uber') !== -1}
+  onChange={
+        set__friends(prev => {
+          const newState = [...prev];
+          const newValue = [...newState[itemIndex].transport]
+          if(newValue.indexOf('Uber') != -1) {
+            newValue.splice(index, 1);
+          } else {
+            newValue.push('Uber');
+          }
+          newState[itemIndex].transport = newValue
+          return newState;
+        })}
+  value={friends?.[itemIndex].transport}
+/>
+    </FormGroup>
+<FormGroup
+      fieldId={'uniforms-0000-000k'}
+      label={'Children'}
+      isRequired={true}
+    ><Select
+      id={'uniforms-0000-000k'}
+      name={\`friends.\${itemIndex}.children\`}
+      variant={SelectVariant.single}
+      isDisabled={false}
+      placeholderText={''}
+      isOpen={friends__expanded?.[itemIndex]?.children ?? false}
+      selections={friends?.[itemIndex].children}
+      onToggle={(isOpen) => set__friends__expanded(prev => {
+          const newState = [...prev];
+          newState[itemIndex] ??= {};
+
+
+
+          newState[itemIndex].children = isOpen
+          return newState;
+        })}
+      onSelect={(event, value, isPlaceHolder) => {
+          if (isPlaceHolder) {
+            set__friends(prev => {
+              const newState = [...prev];
+              newState[itemIndex].children = "";
+              return newState;
+            })
+            set__friends__expanded(prev => {
+                const newState = [...prev];
+                newState[itemIndex] ??= {};
+
+
+
+                newState[itemIndex].children = false;
+                return newState;
+            });
+          } else {
+            const parsedSelection = value.toString ? value.toString() : value as string;
+            set__friends(prev => {
+              const newState = [...prev];
+              newState[itemIndex].children = parsedSelection || '';
+              return newState;
+            })
+            set__friends__expanded(prev => {
+              const newState = [...prev];
+              newState[itemIndex] ??= {};
+
+
+
+              newState[itemIndex].children = false;
+              return newState;
+            });
+          }
+        }}
+      value={friends?.[itemIndex].children}
+    >
+      <SelectOption key={'0'} value={'0'}>0</SelectOption>
+<SelectOption key={'1'} value={'1'}>1</SelectOption>
+<SelectOption key={'2+'} value={'2+'}>2+</SelectOption>
+    </Select></FormGroup>
+          </CardBody></Card></div>
+            <div>
+              <Button
+                disabled={false}
+                variant='plain'
+                style={{ paddingLeft: '0', paddingRight: '0' }}
+                onClick={() => {
+                  const value = [...friends]
+                  value.splice(itemIndex, 1);
+                  !false && 
+  set__friends(value);
+                }}
+              >
+                <MinusCircleIcon color='#cc0000' />
+              </Button>
+            </div>
+          </div>)
+        )}
+      </div>
+    </div>"
+`;
+
+exports[`<ListField> tests <ListField> 2`] = `
+"const [ friends, set__friends ] = useState<object[]>([]);
+
+const [ friends__expanded, set__friends__expanded ] = useState<object[]>([]);"
 `;

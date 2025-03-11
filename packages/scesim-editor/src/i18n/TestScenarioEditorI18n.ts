@@ -83,8 +83,10 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
       dataObjectsDescriptionRule: string;
       descriptionDMN: string;
       descriptionRule: string;
+      emptyDataObjectsTitle: string;
       emptyDataObjectsTitleDMN: string;
       emptyDataObjectsTitleRule: string;
+      emptyDataObjectsDescription: string;
       emptyDataObjectsDescriptionDMN: string;
       emptyDataObjectsDescriptionRule: string;
       expandAll: string;

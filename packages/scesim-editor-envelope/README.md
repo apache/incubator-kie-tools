@@ -19,6 +19,11 @@
 
 Package responsible for creating the necessary pumbling for `scesim-editor` to be used inside an Envelope.
 
+## How to build it
+
+Like most of the projects of this repository, pnpm and NodeJS are mandatory to build the project. Please refer to the
+repository main README file to know more about the requested versions and installation steps.
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software

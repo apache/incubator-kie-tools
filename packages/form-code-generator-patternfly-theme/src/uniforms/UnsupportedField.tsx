@@ -23,6 +23,7 @@ import { buildDefaultInputElement, getInputReference, renderField } from "./util
 import { connectField, HTMLFieldProps } from "uniforms/cjs";
 import { useAddFormElementToContext } from "./CodeGenContext";
 import { DEFAULT_DATA_TYPE_ANY_ARRAY, DEFAULT_DATA_TYPE_OBJECT } from "./utils/dataTypes";
+import { ListItemProps } from "./rendering/ListItemField";
 
 export type UnsupportedFieldProps = HTMLFieldProps<
   any,
@@ -30,6 +31,7 @@ export type UnsupportedFieldProps = HTMLFieldProps<
   {
     label: string;
     required: boolean;
+    itemProps?: ListItemProps;
   }
 >;
 
@@ -56,6 +58,7 @@ const Unsupported: React.FC<UnsupportedFieldProps> = (props: UnsupportedFieldPro
       required: props.required,
     },
     disabled: props.disabled,
+    itemProps: props.itemProps,
   });
 
   useAddFormElementToContext(element);

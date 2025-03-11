@@ -34,7 +34,7 @@ test.describe("Use Selector Panel on background table based on traffic violation
   }) => {
     await table.selectColumnHeader({ name: "INSTANCE 1 (<Undefined>)" });
     await selectorPanel.assign({ name: "Driver" });
-    await table.selectColumnHeader({ name: "Expression </>" });
+    await table.selectColumnHeader({ name: "expression </>" });
     await selectorPanel.assign({ name: "Points" });
 
     await table.addInstanceColumn({
@@ -122,12 +122,12 @@ test.describe("Use Selector Panel on background table based on traffic violation
     await selectorPanel.assign({ name: "Violation" });
 
     await table.addPropertyColumn({
-      targetCellName: "Expression </>",
+      targetCellName: "expression </>",
       position: AddColumnPosition.RIGHT,
       columnNumber: 0,
     });
 
-    await table.selectColumnHeader({ name: "Expression </>" });
+    await table.selectColumnHeader({ name: "expression </>" });
     await expect(selectorPanel.getAttribute({ name: "Speed Limit" })).toBeAttached();
     await selectorPanel.assign({ name: "Speed Limit" });
     await table.selectColumnHeader({ name: "PROPERTY-1 (<Undefined>)" });

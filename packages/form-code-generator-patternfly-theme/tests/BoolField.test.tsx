@@ -35,9 +35,9 @@ describe("<BoolField> tests", () => {
       onChange: jest.fn(),
     };
 
-    const { container, formElement } = renderField(BoolField, props, schema);
+    const { formElement } = renderField(BoolField, props, schema);
 
-    expect(container).toMatchSnapshot();
+    expect(formElement.jsxCode).toMatchSnapshot();
 
     expect(formElement.reactImports).toContain("useState");
     expect(formElement.pfImports).toContain("FormGroup");
@@ -63,9 +63,9 @@ describe("<BoolField> tests", () => {
       onChange: jest.fn(),
     };
 
-    const { container, formElement } = renderField(BoolField, props, schema);
+    const { formElement } = renderField(BoolField, props, schema);
 
-    expect(container).toMatchSnapshot();
+    expect(formElement.jsxCode).toMatchSnapshot();
 
     expect(formElement.jsxCode).not.toBeNull();
     expect(formElement.jsxCode).toContain(`label={'${props.label}'}`);

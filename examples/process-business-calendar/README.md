@@ -157,11 +157,7 @@ curl -X GET http://localhost:8080/BusinessCalendarCreditBill/{id} \
 
 **Default Behavior**: If you do not input custom values in a calendar.properties file, the system will use the following default settings:
 
-- **business.days.per.week** defaults to 5, meaning only Monday to Friday are considered working days.
-
-- **business.hours.per.day** defaults to 8, representing an 8-hour workday.
-
-- **business.start.hour** defaults to 9, and business.end.hour defaults to 17 (i.e.,9 AM to 5 PM workday).
+- **business.start.hour** defaults to 9, and **business.end.hour** defaults to 17 (i.e.,9 AM to 5 PM workday).
 
 - **business.weekend.days** defaults to Saturday and Sunday (Sunday-1, Monday-2, Tuesday-3, Wednesday-4, Thursday-5, Friday-6, Saturday-7).
 
@@ -169,7 +165,13 @@ curl -X GET http://localhost:8080/BusinessCalendarCreditBill/{id} \
 
 - **business.holidays** by default will be considered empty, meaning no predefined holidays unless specified, if specified, it should be in the format defined by business.holiday.date.format, Holidays can be specified as individual dates (e.g., 2024-12-25,2024-12-31) or as a range of dates (e.g., 2024-11-12:2024-11-14).
 
-- **business.cal.timezone** defaults to the system’s default timezone, if configured, valid time-zone as per Valid timezone as per https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html should be specfied.
+- **business.cal.timezone** defaults to the system’s default timezone, if configured, valid time-zone as per Valid timezone as per https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html should be specified.
+
+**Calculated Properties (Do not include in `calendar.properties` file)**:
+
+- **business.days.per.week**: calculated value, 7 - business.weekend.days.
+
+- **business.hours.per.day** : Calculated value, business.end.hour - business.start.hour.
 
 **Behavior**:
 
@@ -187,8 +189,6 @@ To override default values, configure calendar.properties file based on requirem
 | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `business.start.hour`          | 0-23                                                                                                                   | Start hour of the workday                                                                                                                                                                      |
 | `business.end.hour`            | 0-23                                                                                                                   | End hour of the workday                                                                                                                                                                        |
-| `business.hours.per.day`       | 1-24                                                                                                                   | Total working hours in a day                                                                                                                                                                   |
-| `business.days.per.week`       | 1-7                                                                                                                    | Total working days per week                                                                                                                                                                    |
 | `business.weekend.days`        | 0-7                                                                                                                    | Days considered as weekends (e.g., 1 = Sunday, 7 = Saturday). In case you want to consider all the days as working days i.e., no weekend days, input 0 as value considering working days as 7. |
 | `business.holiday.date.format` | (yyyy-MM-dd)                                                                                                           | List of holidays                                                                                                                                                                               |
 | `business.holidays`            | Dates aligned with business.holiday.date.format                                                                        | Date format for holidays                                                                                                                                                                       |
@@ -198,11 +198,9 @@ To override default values, configure calendar.properties file based on requirem
 
 ```Properties
 business.end.hour=23
-business.hours.per.day=24
 business.start.hour=0
 business.holiday.date.format=yyyy-MM-dd
 business.holidays=2024-10-30
-business.days.per.week=5
 business.weekend.days=6,7
 business.cal.timezone=America/Toronto
 ```
@@ -328,6 +326,77 @@ curl -X GET http://localhost:8080/BusinessCalendarCreditBill \
 - Due to mentioned "business.holidays property" in calendar.properties, timer does not trigger and the state remains active.
 
 - On next business day, timer will resume at the beginning of the next working hour/day, after the non-working hour/holiday has ended. The timer is set to fire after one second of active business time.
+
+---
+
+## Custom Business Calendar Flexibility
+
+**Why Create a Custom Business Calendar?**
+
+- Custom schedules that differ from the default behavior.
+- Modify, delay, or override time calculations.
+- Implement custom business logic for when tasks should be triggered.
+
+This guide explains how to implement a custom business calendar allowing full flexibility.
+
+---
+
+### Creating a Custom Business Calendar
+
+- By default, calendar.properties is used to configure default business calendar.
+- If a custom business calendar has to be implemented, calendar.properties should NOT exist. Instead, add the following property to application.properties: `kogito.processes.businessCalendar=org.kie.kogito.calendar.custom.CustomCalendar`
+
+**Steps**
+
+1. **Navigate to**: _examples/process-business-calendar/src/main/java/org/kie/kogito/calendar/custom (create the org/kie/kogito/calendar/custom directory if it does not exist)_
+2. **Create a new custom business calendar class** (e.g., CustomCalendar.java).
+3. Ensure it implements the `BusinessCalendar` interface.The implementation should be a concrete class(not an interface or abstract class).
+4. Set the property `kogito.processes.businessCalendar=org.kie.kogito.calendar.custom.CustomCalendar` in application.properties to the fully qualified class name of the custom business calendar.
+5. Remove the `calendar.properties` file within `src/main/resources` to allow the `CustomCalendar` class to be registered instead of the default `BusinessCalendarImpl` provided out of the box.
+
+**Implement your custom business logic**
+
+- For demonstration, an example is provided below. However, you are free to define your own logic.
+
+```java
+package org.kie.kogito.calendar.custom;
+
+import java.util.*;
+import org.kie.kogito.calendar.BusinessCalendar;
+
+/**
+ * Custom Business Calendar Example.
+ * Modify this class to implement your own scheduling logic.
+ */
+public class CustomCalendar implements BusinessCalendar {
+
+    @Override
+    public long calculateBusinessTimeAsDuration(String timeExpression) {
+        // Implement custom logic to calculate business time duration
+       // Note:The returned long value is in milliseconds. Duration can be set at least 1000 ms or longer to prevent immediate execution.
+        return 1000;
+    }
+
+    @Override
+    public Date calculateBusinessTimeAsDate(String timeExpression) {
+        // Implement custom logic to return the scheduled date.
+        return new Date();
+    }
+}
+```
+
+---
+
+### Testing custom calendar implementation
+
+To verify that your custom implementation works:
+
+1. Run:
+
+`mvn clean compile quarkus:dev`
+
+- Verify in generated sources within target folder if it reflects the expected change
+<p align="center"><img width=75% height=50% src="docs/images/CustomCalendarClass.png"></p>
 
 ---
 

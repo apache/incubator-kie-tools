@@ -26,7 +26,7 @@ import { AddColumnPosition, AddRowPosition } from "../../__fixtures__/table";
 test.describe("Test scenario table context menu", () => {
   test.describe("Context menu checks", () => {
     test.beforeEach(async ({ editor, testScenarioTable, table }) => {
-      await editor.createTestScenario(AssetType.RULE);
+      await editor.createTestScenario(AssetType.DECISION);
       await table.addRow({ targetCellName: "1", position: AddRowPosition.ABOVE });
       await testScenarioTable.fill({ content: "test", rowLocatorInfo: "1", columnNumber: 1 });
     });
@@ -205,10 +205,10 @@ test.describe("Test scenario table context menu", () => {
       contextMenu,
       table,
     }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1353");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1861");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1353",
+        description: "https://github.com/apache/incubator-kie-issues/issues/1861",
       });
 
       await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
@@ -221,10 +221,10 @@ test.describe("Test scenario table context menu", () => {
       contextMenu,
       table,
     }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1353");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1861");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1353",
+        description: "https://github.com/apache/incubator-kie-issues/issues/1861",
       });
 
       await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");
@@ -238,10 +238,10 @@ test.describe("Test scenario table context menu", () => {
       table,
       testScenarioTable,
     }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1353");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1861");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1353",
+        description: "https://github.com/apache/incubator-kie-issues/issues/1861",
       });
 
       await testScenarioTable.fill({ content: "test", rowLocatorInfo: "1 test test", columnNumber: 2 });
@@ -255,10 +255,10 @@ test.describe("Test scenario table context menu", () => {
       table,
       testScenarioTable,
     }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1353");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1861");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1353",
+        description: "https://github.com/apache/incubator-kie-issues/issues/1861",
       });
 
       await testScenarioTable.fill({ content: "test", rowLocatorInfo: "1 test test", columnNumber: 2 });
@@ -271,10 +271,10 @@ test.describe("Test scenario table context menu", () => {
       contextMenu,
       table,
     }) => {
-      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1353");
+      test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/1861");
       test.info().annotations.push({
         type: TestAnnotations.REGRESSION,
-        description: "https://github.com/apache/incubator-kie-issues/issues/1353",
+        description: "https://github.com/apache/incubator-kie-issues/issues/1861",
       });
 
       await expect(table.getCell({ rowNumber: "1", columnNumber: 1 })).toContainText("test");

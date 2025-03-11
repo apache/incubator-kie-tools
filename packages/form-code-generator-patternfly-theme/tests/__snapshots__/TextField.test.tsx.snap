@@ -1,25 +1,69 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<TextField> tests <TextField> - DatePicker rendering - disabled 1`] = `
-<div>
-  {"ref":{"binding":"name","stateName":"name","stateSetter":"set__name","dataType":{"name":"string"}},"pfImports":["DatePicker","FormGroup"],"reactImports":["useState"],"requiredCode":["date_functions"],"jsxCode":"&lt;FormGroup\\n      fieldId={'id'}\\n      label={'label'}\\n      isRequired={true}\\n    &gt;\\n      &lt;DatePicker\\n          id={'date-picker-id'}\\n          isDisabled={true}\\n          name={'name'}\\n          onChange={newDate =&gt; onDateChange(newDate, set__name,  name)}\\n          value={parseDate(name)}\\n        /&gt;\\n    &lt;/FormGroup&gt;","stateCode":"const [ name, set__name ] = useState&lt;string&gt;();","isReadonly":true}
-</div>
+"<FormGroup
+      fieldId={'id'}
+      label={'label'}
+      isRequired={true}
+    >
+      <DatePicker
+          id={'date-picker-id'}
+          isDisabled={true}
+          name={'name'}
+          onChange={newDate => onDateChange(newDate, set__name,  name)}
+          value={parseDate(name)}
+        />
+    </FormGroup>"
 `;
 
 exports[`<TextField> tests <TextField> - DatePicker rendering 1`] = `
-<div>
-  {"ref":{"binding":"name","stateName":"name","stateSetter":"set__name","dataType":{"name":"string"}},"pfImports":["DatePicker","FormGroup"],"reactImports":["useState"],"requiredCode":["date_functions"],"jsxCode":"&lt;FormGroup\\n      fieldId={'id'}\\n      label={'label'}\\n      isRequired={true}\\n    &gt;\\n      &lt;DatePicker\\n          id={'date-picker-id'}\\n          isDisabled={false}\\n          name={'name'}\\n          onChange={newDate =&gt; onDateChange(newDate, set__name,  name)}\\n          value={parseDate(name)}\\n        /&gt;\\n    &lt;/FormGroup&gt;","stateCode":"const [ name, set__name ] = useState&lt;string&gt;();","isReadonly":false}
-</div>
+"<FormGroup
+      fieldId={'id'}
+      label={'label'}
+      isRequired={true}
+    >
+      <DatePicker
+          id={'date-picker-id'}
+          isDisabled={false}
+          name={'name'}
+          onChange={newDate => onDateChange(newDate, set__name,  name)}
+          value={parseDate(name)}
+        />
+    </FormGroup>"
 `;
 
 exports[`<TextField> tests <TextField> - TextInput rendering - disabled 1`] = `
-<div>
-  {"ref":{"binding":"name","stateName":"name","stateSetter":"set__name","dataType":{"name":"string","defaultValue":"\\"\\""}},"pfImports":["TextInput","FormGroup"],"reactImports":["useState"],"jsxCode":"&lt;FormGroup\\n      fieldId={'id'}\\n      label={'label'}\\n      isRequired={true}\\n    &gt;\\n      &lt;TextInput\\n        name={'name'}\\n        id={'id'}\\n        isDisabled={true}\\n        placeholder={''}\\n        type={'text'}\\n        value={name}\\n        onChange={set__name}\\n        /&gt;\\n    &lt;/FormGroup&gt;","stateCode":"const [ name, set__name ] = useState&lt;string&gt;(\\"\\");","isReadonly":true}
-</div>
+"<FormGroup
+      fieldId={'id'}
+      label={'label'}
+      isRequired={true}
+    >
+      <TextInput
+        name={'name'}
+        id={'id'}
+        isDisabled={true}
+        placeholder={''}
+        type={'text'}
+        value={name}
+        onChange={set__name}
+        />
+    </FormGroup>"
 `;
 
 exports[`<TextField> tests <TextField> - TextInput rendering 1`] = `
-<div>
-  {"ref":{"binding":"name","stateName":"name","stateSetter":"set__name","dataType":{"name":"string","defaultValue":"\\"\\""}},"pfImports":["TextInput","FormGroup"],"reactImports":["useState"],"jsxCode":"&lt;FormGroup\\n      fieldId={'id'}\\n      label={'label'}\\n      isRequired={true}\\n    &gt;\\n      &lt;TextInput\\n        name={'name'}\\n        id={'id'}\\n        isDisabled={false}\\n        placeholder={''}\\n        type={'text'}\\n        value={name}\\n        onChange={set__name}\\n        /&gt;\\n    &lt;/FormGroup&gt;","stateCode":"const [ name, set__name ] = useState&lt;string&gt;(\\"\\");","isReadonly":false}
-</div>
+"<FormGroup
+      fieldId={'id'}
+      label={'label'}
+      isRequired={true}
+    >
+      <TextInput
+        name={'name'}
+        id={'id'}
+        isDisabled={false}
+        placeholder={''}
+        type={'text'}
+        value={name}
+        onChange={set__name}
+        />
+    </FormGroup>"
 `;

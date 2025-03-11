@@ -60,13 +60,13 @@
   "contributes": {
     "commands": [
       {
-        "category": "Extended-Services",
+        "category": "Apache KIE Extended Services",
         "command": "extended-services-vscode-extension.startExtendedServices",
         "title": "Connect Apache KIE™ Extended Services",
         "when": "extended-services-vscode-extension.connected"
       },
       {
-        "category": "Extended-Services",
+        "category": "Apache KIE Extended-Services",
         "command": "extended-services-vscode-extension.stopExtendedServices",
         "title": "Disconnect Apache KIE™ Extended Services"
       }

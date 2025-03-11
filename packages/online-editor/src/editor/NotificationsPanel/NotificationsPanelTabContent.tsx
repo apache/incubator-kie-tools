@@ -126,7 +126,7 @@ export const NotificationPanelTabContent = React.forwardRef<NotificationsChannel
                         </NotificationDrawerList>
                       ) : (
                         <NotificationTabDrawerGroup
-                          key={`execution-notification-group-${groupIndex}`}
+                          key={`evaluation-notification-group-${groupIndex}`}
                           path={path}
                           notifications={notifications}
                           allExpanded={expandAll}
@@ -178,7 +178,7 @@ export function NotificationTabDrawerGroup({
       onExpand={onExpand}
     >
       {notifications.map((notification, index) => (
-        <NotificationDrawerList key={`execution-notification-item-${path}-${index}`} isHidden={!isExpanded}>
+        <NotificationDrawerList key={`evaluation-notification-item-${path}-${index}`} isHidden={!isExpanded}>
           <NotificationDrawerListItem isRead={true} variant={variant(notification.severity)}>
             <NotificationDrawerListItemHeader title={notification.message} variant={variant(notification.severity)} />
           </NotificationDrawerListItem>

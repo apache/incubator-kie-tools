@@ -41,7 +41,6 @@ import {
 } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
 import { ApolloProvider } from "react-apollo";
 import { AuthSessionsService } from "../authSessions";
-import { useEnv } from "../env/hooks/EnvContext";
 import { ProcessListContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessList";
 import { JobsManagementContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/JobsManagement";
 import { ProcessDetailsContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
@@ -95,7 +94,6 @@ export interface RuntimeContextProviderProps {
 }
 
 export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (props) => {
-  const { env } = useEnv();
   const { authSessions } = useAuthSessions();
   const history = useHistory();
   const routes = useRoutes();
@@ -221,7 +219,7 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
         setIsRefreshingToken(true);
         const reauthResponse = await AuthSessionsService.reauthenticate({
           authSession,
-          clientId: env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID,
+          fromUnauthorizedRequest: true,
         });
         const updatedAuthSession: AuthSession = {
           ...authSession,
@@ -242,7 +240,7 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
         setIsRefreshingToken(false);
       }
     },
-    [env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID, updateAuthSession, history, routes.home]
+    [updateAuthSession, history, routes.home]
   );
 
   const onUnauthorized = useCallback(
@@ -363,17 +361,36 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
     [refreshToken, setRuntimePathSearchParams]
   );
 
+  const providerOptions = useMemo(
+    () => ({
+      transformEndpointBaseUrl: (url?: string) => {
+        if (!url) {
+          return undefined;
+        }
+        if (!runtimeUrl) {
+          return url;
+        }
+        const urlOrigin = new URL(url).origin;
+        const runtimeUrlOrigin = new URL(runtimeUrl).origin;
+
+        // Replacing only the origin keeps the URLSeachParameters intact
+        return url.replace(urlOrigin, runtimeUrlOrigin);
+      },
+    }),
+    [runtimeUrl]
+  );
+
   return (
     <RuntimeDispatchContext.Provider value={dispatch}>
       <RuntimeContext.Provider value={value}>
         {apolloClient && userContext && !isRefreshingToken ? (
           <ApolloProvider client={apolloClient}>
             <KogitoAppContextProvider userContext={userContext}>
-              <ProcessListContextProvider apolloClient={apolloClient}>
-                <ProcessDetailsContextProvider apolloClient={apolloClient}>
+              <ProcessListContextProvider apolloClient={apolloClient} options={providerOptions}>
+                <ProcessDetailsContextProvider apolloClient={apolloClient} options={providerOptions}>
                   <JobsManagementContextProvider apolloClient={apolloClient}>
                     <TaskInboxContextProvider apolloClient={apolloClient}>
-                      <TaskFormContextProvider>{props.children}</TaskFormContextProvider>
+                      <TaskFormContextProvider options={providerOptions}>{props.children}</TaskFormContextProvider>
                     </TaskInboxContextProvider>
                   </JobsManagementContextProvider>
                 </ProcessDetailsContextProvider>

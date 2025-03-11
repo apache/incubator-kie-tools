@@ -20,7 +20,7 @@
 services:
   postgres:
     container_name: process-security-postgres
-    image: postgres:16.7-alpine3.21
+    image: postgres:16.8-alpine3.21
     profiles: ["jvm", "container"]
     ports:
       - "5432:5432"
@@ -37,7 +37,7 @@ services:
 
   pgadmin:
     container_name: process-security-pgadmin
-    image: dpage/pgadmin4:8.14
+    image: dpage/pgadmin4:9.1
     profiles: ["jvm", "container"]
     ports:
       - "8055:80"

@@ -35,7 +35,12 @@ import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStat
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
 import { InputRow } from "@kie-tools/form-dmn";
-import { DecisionResult, DmnEvaluationMessages, ExtendedServicesModelPayload } from "@kie-tools/extended-services-api";
+import {
+  DecisionResult,
+  DmnEvaluationMessages,
+  ExtendedServicesDmnResult,
+  ExtendedServicesModelPayload,
+} from "@kie-tools/extended-services-api";
 import { DmnRunnerAjv } from "@kie-tools/dmn-runner/dist/ajv";
 import { useDmnRunnerPersistence } from "../dmnRunnerPersistence/DmnRunnerPersistenceHook";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
@@ -73,6 +78,9 @@ import {
 import { extractDifferencesFromArray } from "@kie-tools/dmn-runner/dist/results";
 import { openapiSchemaToJsonSchema } from "@openapi-contrib/openapi-schema-to-json-schema";
 import type { JSONSchema4 } from "json-schema";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
+import { NewDmnEditorTypes } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorTypes";
 
 interface Props {
   isEditorReady?: boolean;
@@ -119,6 +127,92 @@ function dmnRunnerResultsReducer(dmnRunnerResults: DmnRunnerResults, action: Dmn
   }
 }
 
+/**
+ * This transformation is needed for these reasons:
+ * ### -1- ###
+ * DMN Runner backend return upper case constants: "SUCCEEDED", "FAILED", "SKIPPED"
+ * DMN Editor code base uses lower case constants: "succeeded", "failed", "skipped"
+ *
+ * ### -2- ###
+ * DMN Runner backend return evaluationHitIds as Object:
+ * {
+ *   _F0DC8923-5FC7-4200-8BD1-461D5F3715CF: 1,
+ *   _F0DC8923-5FC7-4200-8BD1-461D5F3713AD: 2
+ * }
+ * DMN Editor code base uses evaluationHitIds as Map<string, number>
+ * [
+ *   {
+ *     key: "_F0DC8923-5FC7-4200-8BD1-461D5F3715CF,
+ *     value: 1
+ *   },
+ *   {
+ *     key: "_F0DC8923-5FC7-4200-8BD1-461D5F3713AD",
+ *     value: 2
+ *   }
+ * ]
+ *
+ * ### -3- ###
+ * DMN Runner backend return data spilt into junks corresponding to table row or collection item
+ * DMN Editor want to show aggregated data for everything together
+ *
+ * @param result - DMN Runner backend data
+ * @param evaluationResultsByNodeId - transformed data for DMN Editor
+ */
+function transformExtendedServicesDmnResult(
+  result: ExtendedServicesDmnResult,
+  evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId
+) {
+  result.decisionResults?.forEach((dr) => {
+    const evaluationHitsCountByRuleOrRowId = new Map<string, number>();
+    // ### -2- ###
+    for (const [key, value] of Object.entries(dr.evaluationHitIds)) {
+      evaluationHitsCountByRuleOrRowId.set(`${key}`, value as number);
+    }
+    // We want to merge evaluation results that belongs to the same Decision
+    // So we need to check if the Decision wasn't already partially processed
+    if (!evaluationResultsByNodeId.has(dr.decisionId)) {
+      evaluationResultsByNodeId.set(dr.decisionId, {
+        // ### -1- ###
+        evaluationResult: dr.evaluationStatus.toLowerCase() as NewDmnEditorTypes.EvaluationResult,
+        evaluationHitsCountByRuleOrRowId: evaluationHitsCountByRuleOrRowId,
+      });
+    } else {
+      const existingEvaluationHitsCount = evaluationResultsByNodeId.get(
+        dr.decisionId
+      )?.evaluationHitsCountByRuleOrRowId;
+      evaluationHitsCountByRuleOrRowId.forEach((value, key) => {
+        // ### -3- ###
+        if (existingEvaluationHitsCount?.has(key)) {
+          existingEvaluationHitsCount.set(key, (existingEvaluationHitsCount?.get(key) ?? 0) + value);
+        } else {
+          existingEvaluationHitsCount?.set(key, value);
+        }
+      });
+      evaluationResultsByNodeId.set(dr.decisionId, {
+        // For a collection input or DMN Runner table mode one Decision may have multiple different evaluation results
+        // We keep the worst evaluation result.
+        evaluationResult: theWorstEvaluationResult(
+          evaluationResultsByNodeId.get(dr.decisionId)?.evaluationResult,
+          dr.evaluationStatus.toLowerCase() as NewDmnEditorTypes.EvaluationResult
+        ),
+        evaluationHitsCountByRuleOrRowId: existingEvaluationHitsCount ?? new Map(),
+      });
+    }
+  });
+
+  return evaluationResultsByNodeId;
+}
+
+function theWorstEvaluationResult(a?: NewDmnEditorTypes.EvaluationResult, b?: NewDmnEditorTypes.EvaluationResult) {
+  if (a === "failed" || b === "failed") {
+    return "failed";
+  }
+  if (a === "skipped" || b === "skipped") {
+    return "skipped";
+  }
+  return "succeeded";
+}
+
 export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   const { i18n } = useOnlineI18n();
   // Calling forceDmnRunnerReRender will cause a update in the dmnRunnerKey
@@ -163,6 +257,8 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   const status = useMemo(() => (isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE), [isExpanded]);
   const dmnRunnerAjv = useMemo(() => new DmnRunnerAjv().getAjv(), []);
   const [currentResponseMessages, setCurrentResponseMessages] = useState<DmnEvaluationMessages[]>([]);
+
+  const { envelopeServer } = useEditorDockContext();
 
   useLayoutEffect(() => {
     if (props.isEditorReady) {
@@ -281,6 +377,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             }
 
             const runnerResults: Array<DecisionResult[] | undefined> = [];
+            const evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId = new Map();
             for (const result of results) {
               if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
                 setExtendedServicesError(true);
@@ -288,9 +385,13 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
               }
               if (result) {
                 runnerResults.push(result.decisionResults);
+                transformExtendedServicesDmnResult(result, evaluationResultsByNodeId);
               }
             }
             setDmnRunnerResults({ type: DmnRunnerResultsActionType.DEFAULT, newResults: runnerResults });
+
+            const newDmnEditorEnvelopeApi = envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
+            newDmnEditorEnvelopeApi.notifications.newDmnEditor_showDmnEvaluationResults.send(evaluationResultsByNodeId);
           })
           .catch((err) => {
             console.log(err);
@@ -298,6 +399,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           });
       },
       [
+        envelopeServer,
         props.workspaceFile.extension,
         extendedServices.status,
         extendedServices.client,
@@ -349,7 +451,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   }, [dmnRunnerMode, isExpanded, onTogglePanel, panel]);
   // END
 
-  // Set execution tab on Problems panel;
+  // Set evaluation tab on Problems panel;
   useEffect(() => {
     if (props.workspaceFile.extension !== "dmn" || extendedServices.status !== ExtendedServicesStatus.RUNNING) {
       return;
@@ -380,10 +482,10 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       }));
     });
 
-    setNotifications(i18n.terms.execution, "", notifications as any);
+    setNotifications(i18n.terms.evaluation, "", notifications as any);
   }, [
     setNotifications,
-    i18n.terms.execution,
+    i18n.terms.evaluation,
     results,
     currentInputIndex,
     props.workspaceFile.extension,

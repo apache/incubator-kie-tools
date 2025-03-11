@@ -525,7 +525,7 @@ export function DecisionTableExpression({
       if (updateNodeNameOrType.length === 1) {
         const expressionChangedArgs: ExpressionChangedArgs = {
           action: Action.VariableChanged,
-          variableUuid: expressionHolderId,
+          variableUuid: isNested ? decisionTableExpression["@_id"]! : expressionHolderId,
           typeChange:
             decisionTableExpression["@_typeRef"] !== updateNodeNameOrType[0].typeRef
               ? {
@@ -550,7 +550,7 @@ export function DecisionTableExpression({
         return expressionChangedArgs;
       }
     },
-    [decisionTableExpression, expressionHolderId]
+    [decisionTableExpression, expressionHolderId, isNested]
   );
 
   const onColumnUpdates = useCallback(

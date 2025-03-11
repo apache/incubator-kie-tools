@@ -17,4 +17,6 @@
  * under the License.
  */
 
-declare module "*.txt";
+import type * as NewDmnEditorTypes from "@kie-tools/dmn-editor/dist/DmnEditor";
+
+export { NewDmnEditorTypes };

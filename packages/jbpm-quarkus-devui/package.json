@@ -25,7 +25,9 @@
     "quarkus:dev": "run-script-os",
     "quarkus:dev:darwin:linux": "mvn clean package quarkus:dev -DskipTests",
     "quarkus:dev:win32": "mvn clean package quarkus:dev `-DskipTests",
-    "start": "pnpm build:dev && mvn -f ./dev/pom.xml quarkus:dev"
+    "start": "run-script-os",
+    "start:darwin:linux": "pnpm build:dev && mvn -f ./dev/pom.xml clean quarkus:dev",
+    "start:win32": "pnpm build:dev && mvn -f ./dev/pom.xml clean quarkus:dev -Dquarkus.http.host=127.0.0.1  -Dkogito.service.url=http://127.0.0.1:8080/kie -Dkogito.jobs-service.url=http://127.0.0.1:8080/kie -Dkogito.data-index.urll=http://127.0.0.1:8080/kie"
   },
   "dependencies": {
     "@kie-tools/maven-base": "workspace:*"

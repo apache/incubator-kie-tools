@@ -27,7 +27,14 @@ export const TaskFormContextProvider: React.FC = ({ children }) => {
   const appContext = useDevUIAppContext();
 
   return (
-    <TaskFormContext.Provider value={new TaskFormGatewayApiImpl(() => appContext.getCurrentUser())}>
+    <TaskFormContext.Provider
+      value={
+        new TaskFormGatewayApiImpl(
+          () => appContext.getCurrentUser(),
+          (url: string) => appContext.transformEndpointBaseUrl(url)
+        )
+      }
+    >
       {children}
     </TaskFormContext.Provider>
   );
