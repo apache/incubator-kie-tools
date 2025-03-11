@@ -20,6 +20,7 @@
 import * as https from "https";
 import fetch from "node-fetch";
 import { Request, Response } from "express";
+import { HttpsProxyAgent } from "https-proxy-agent";
 import { GIT_CORS_CONFIG, isGitOperation } from "./git";
 import { CorsProxyHeaderKeys, CorsConfig, CorsProxy } from "@kie-tools/cors-proxy-api/dist";
 
@@ -153,11 +154,23 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
   }
 
   private getProxyAgent(info: ProxyRequestInfo): https.Agent | undefined {
-    if (info.insecurelyDisableTLSCertificateValidation && info.proxyUrl.protocol === "https:") {
-      return new https.Agent({
-        rejectUnauthorized: false,
-      });
+    const proxyUrl = process.env.HTTPS_PROXY || process.env.HTTP_PROXY;
+
+    const agentOptions =
+      info.insecurelyDisableTLSCertificateValidation && info.proxyUrl.protocol === "https:"
+        ? { rejectUnauthorized: false }
+        : undefined;
+
+    if (proxyUrl) {
+      this.logger.log(`Using custom proxy for requests: ${proxyUrl}`);
+
+      return new HttpsProxyAgent(proxyUrl, agentOptions);
     }
+
+    if (agentOptions) {
+      return new https.Agent(agentOptions);
+    }
+
     return undefined;
   }
 
