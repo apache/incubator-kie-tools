@@ -25,6 +25,7 @@ import { NewDmnEditorEnvelopeApi } from "./NewDmnEditorEnvelopeApi";
 import { NewDmnEditorChannelApi } from "./NewDmnEditorChannelApi";
 import { NewDmnEditorFactory } from "./NewDmnEditorFactory";
 import { NewDmnEditorTypes } from "./NewDmnEditorTypes";
+import { SharedValueProvider } from "../../envelope-bus/dist/api";
 
 export type NewDmnEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
   NewDmnEditorEnvelopeApi,
@@ -45,8 +46,10 @@ export class NewDmnEditorEnvelopeApiImpl
     this.getEditorOrThrowError().openBoxedExpressionEditor(nodeId);
   }
 
-  public dmnEditor_getOpenedBoxedExpressionId(): Promise<string> {
-    return this.getEditorOrThrowError().getOpenedBoxedExpressionId();
+  public newDmnEditor_openedBoxedExpressionId(): SharedValueProvider<string> {
+    return {
+      defaultValue: "",
+    };
   }
 
   public newDmnEditor_showDmnEvaluationResults(

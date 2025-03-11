@@ -66,7 +66,7 @@ export interface FormDmnOutputsProps {
   notificationsPanel: boolean;
   openEvaluationTab?: () => void;
   openBoxedExpressionEditor?: (nodeId: string) => void;
-  openedBoxedExpressionId?: Promise<string>;
+  openedBoxedExpressionId?: string;
 }
 
 export function FormDmnOutputs({
@@ -95,9 +95,9 @@ export function FormDmnOutputs({
       updatedResult?.classList.add("kogito--editor__dmn-form-result__leaf-updated");
     });
 
-    openedBoxedExpressionId?.then((v) => {
-      setOpenedExpressionEditorForNodeId(v);
-    });
+    if (openedBoxedExpressionId) {
+      setOpenedExpressionEditorForNodeId(openedBoxedExpressionId);
+    }
   }, [openedBoxedExpressionId, props.differences]);
 
   const onAnimationEnd = useCallback((e: React.AnimationEvent<HTMLElement>, index) => {

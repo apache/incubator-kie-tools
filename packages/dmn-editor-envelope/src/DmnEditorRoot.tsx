@@ -58,6 +58,7 @@ export type DmnEditorRootProps = {
   onRequestWorkspaceFilesList: WorkspaceChannelApi["kogitoWorkspace_resourceListRequest"];
   onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot: WorkspaceChannelApi["kogitoWorkspace_openFile"];
+  onSelectedBoxedExpressionChanged: (newBoxedExpressionId: string) => void;
   workspaceRootAbsolutePosixPath: string;
   keyboardShortcutsService: KeyboardShortcutsService | undefined;
   isReadOnly: boolean;
@@ -105,10 +106,6 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
 
   public openBoxedExpressionEditor(nodeId: string): void {
     this.dmnEditorRef.current?.openBoxedExpressionEditor(nodeId);
-  }
-
-  public async getOpenedBoxedExpressionId(): Promise<string> {
-    return this.dmnEditorRef.current?.getOpenedBoxedExpressionId() ?? Promise.resolve("");
   }
 
   public showDmnEvaluationResults(evaluationResultsByNodeId: DmnEditor.EvaluationResultsByNodeId): void {
@@ -496,6 +493,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
               issueTrackerHref={""}
               isReadOnly={this.state.isReadOnly}
               onModelChange={this.onModelChange}
+              onSelectedChange={this.props.onSelectedBoxedExpressionChanged}
               onRequestExternalModelsAvailableToInclude={this.onRequestExternalModelsAvailableToInclude}
               // (begin) All paths coming from inside the DmnEditor component are paths relative to the open file.
               onRequestExternalModelByPath={this.onRequestExternalModelByPathsRelativeToTheOpenFile}

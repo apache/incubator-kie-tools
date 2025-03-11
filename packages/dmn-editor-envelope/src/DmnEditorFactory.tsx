@@ -26,16 +26,16 @@ import {
   KogitoEditorChannelApi,
   EditorTheme,
   DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
-  KogitoEditorEnvelopeApi,
 } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnEditorRoot } from "./DmnEditorRoot";
 import { ResourceContent, ResourcesList, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { useCallback } from "react";
+import { NewDmnEditorEnvelopeApi } from "./NewDmnEditorEnvelopeApi";
 
-export class DmnEditorFactory implements EditorFactory<Editor, KogitoEditorEnvelopeApi, KogitoEditorChannelApi> {
+export class DmnEditorFactory implements EditorFactory<Editor, NewDmnEditorEnvelopeApi, KogitoEditorChannelApi> {
   public createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<NewDmnEditorEnvelopeApi, KogitoEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<Editor> {
     return Promise.resolve(new DmnEditorInterface(envelopeContext, initArgs));
@@ -49,7 +49,7 @@ export class DmnEditorInterface implements Editor {
   public af_componentTitle: "DMN Editor";
 
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<NewDmnEditorEnvelopeApi, KogitoEditorChannelApi>,
     private readonly initArgs: EditorInitArgs
   ) {}
 
@@ -107,7 +107,7 @@ function DmnEditorRootWrapper({
   workspaceRootAbsolutePosixPath,
   isReadOnly,
 }: {
-  envelopeContext?: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>;
+  envelopeContext?: KogitoEditorEnvelopeContextType<NewDmnEditorEnvelopeApi, KogitoEditorChannelApi>;
   exposing: (s: DmnEditorRoot) => void;
   workspaceRootAbsolutePosixPath: string;
   isReadOnly: boolean;
@@ -153,6 +153,9 @@ function DmnEditorRootWrapper({
       onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot={
         onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot
       }
+      onSelectedBoxedExpressionChanged={(newBoxedExpressionId) => {
+        envelopeContext?.shared.newDmnEditor_openedBoxedExpressionId.set(newBoxedExpressionId);
+      }}
       workspaceRootAbsolutePosixPath={workspaceRootAbsolutePosixPath}
       keyboardShortcutsService={envelopeContext?.services.keyboardShortcuts}
       isReadOnly={isReadOnly}

@@ -68,7 +68,6 @@ export type DmnEditorRef = {
   reset: (mode: DmnLatestModel) => void;
   getDiagramSvg: () => Promise<string | undefined>;
   openBoxedExpressionEditor: (nodeId: string) => void;
-  getOpenedBoxedExpressionId: () => Promise<string>;
   getCommands: () => Commands;
 };
 
@@ -187,12 +186,15 @@ export type DmnEditorProps = {
    * Notifies the caller when the DMN Editor performs a new edit after the debounce time.
    */
   onModelDebounceStateChanged?: (changed: boolean) => void;
+
+  onSelectedChange: (newId: string) => void;
 };
 
 export const DmnEditorInternal = ({
   model,
   originalVersion,
   onModelChange,
+  onSelectedChange,
   onModelDebounceStateChanged,
   forwardRef,
 }: DmnEditorProps & { forwardRef?: React.Ref<DmnEditorRef> }) => {
@@ -207,6 +209,15 @@ export const DmnEditorInternal = ({
 
   const { dmnModelBeforeEditingRef, dmnEditorRootElementRef } = useDmnEditor();
   const { externalModelsByNamespace } = useExternalModels();
+
+  dmnEditorStoreApi.subscribe((newState, prevState) => {
+    const activeId = newState.boxedExpressionEditor.activeDrgElementId;
+    if (activeId !== undefined && activeId !== prevState.boxedExpressionEditor.activeDrgElementId) {
+      onSelectedChange(activeId);
+    } else {
+      onSelectedChange("");
+    }
+  });
 
   // Refs
   const diagramRef = useRef<DiagramRef>(null);
@@ -225,9 +236,6 @@ export const DmnEditorInternal = ({
         dmnEditorStoreApi.setState((state) => {
           state.dispatch(state).boxedExpressionEditor.open(nodeId);
         });
-      },
-      getOpenedBoxedExpressionId: async () => {
-        return dmnEditorStoreApi.getState().boxedExpressionEditor.activeDrgElementId ?? "";
       },
       getDiagramSvg: async () => {
         const nodes = diagramRef.current?.getReactFlowInstance()?.getNodes();
