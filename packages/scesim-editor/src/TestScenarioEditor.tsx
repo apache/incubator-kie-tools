@@ -395,9 +395,13 @@ export const TestScenarioEditorInternal = ({
   }, [onModelChange, scesim.model]);
 
   const scesimFileStatus = useMemo(() => {
-    if (scesim.model.ScenarioSimulationModel) {
+    if (scesim) {
       const parserErrorField = "parsererror" as keyof typeof scesim.model.ScenarioSimulationModel;
-      if (scesim.model.ScenarioSimulationModel[parserErrorField]) {
+      if (
+        !scesim.model ||
+        !scesim.model.ScenarioSimulationModel ||
+        scesim.model.ScenarioSimulationModel[parserErrorField]
+      ) {
         return TestScenarioFileStatus.ERROR;
       }
       if (scesim.model.ScenarioSimulationModel["@_version"] != CURRENT_SUPPORTED_VERSION) {
