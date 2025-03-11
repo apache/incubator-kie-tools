@@ -32,7 +32,7 @@ CREATE TABLE attachments (
 -- TABLE comments: user task instance comments
 CREATE TABLE comments (
     id character varying(255) NOT NULL,
-    content character varying(255),
+    content character varying(1000),
     updated_at timestamp without time zone,
     updated_by character varying(255),
     task_id character varying(255) NOT NULL
@@ -46,7 +46,8 @@ CREATE TABLE definitions (
     type character varying(255),
     source bytea,
     endpoint character varying(255),
-    description character varying(255)
+    description character varying(255),
+    metadata jsonb
 );
 
 -- TABLE definitions_addons: addons those process definitions were deployed with
@@ -61,14 +62,6 @@ CREATE TABLE definitions_annotations (
     annotation character varying(255) NOT NULL,
     process_id character varying(255) NOT NULL,
     process_version character varying(255) NOT NULL
-);
-
--- TABLE definitions_metadata
-CREATE TABLE definitions_metadata (
-    process_id character varying(255) NOT NULL,
-    process_version character varying(255) NOT NULL,
-    meta_value character varying(255),
-    name character varying(255) NOT NULL
 );
 
 -- TABLE definitions_nodes: last definitions of node executed by a process instance
@@ -246,9 +239,6 @@ ALTER TABLE ONLY definitions_addons
 ALTER TABLE ONLY definitions_annotations
     ADD CONSTRAINT definitions_annotations_pkey PRIMARY KEY (annotation, process_id, process_version);
 
-ALTER TABLE ONLY definitions_metadata
-    ADD CONSTRAINT definitions_metadata_pkey PRIMARY KEY (process_id, process_version, name);
-
 ALTER TABLE ONLY definitions_nodes_metadata
     ADD CONSTRAINT definitions_nodes_metadata_pkey PRIMARY KEY (node_id, process_id, process_version, name);
 
@@ -308,8 +298,6 @@ CREATE INDEX idx_definitions_addons_pid_pv ON definitions_addons USING btree (pr
 
 CREATE INDEX idx_definitions_annotations_pid_pv ON definitions_annotations USING btree (process_id, process_version);
 
-CREATE INDEX idx_definitions_metadata_pid_pv ON definitions_metadata USING btree (process_id, process_version);
-
 CREATE INDEX idx_definitions_nodes_metadata_pid_pv ON definitions_nodes_metadata USING btree (process_id, process_version);
 
 CREATE INDEX idx_definitions_nodes_pid_pv ON definitions_nodes USING btree (process_id, process_version);
@@ -345,9 +333,6 @@ ALTER TABLE ONLY definitions_addons
 
 ALTER TABLE ONLY definitions_annotations
     ADD CONSTRAINT fk_definitions_annotations FOREIGN KEY (process_id, process_version) REFERENCES definitions(id, version) ON DELETE CASCADE;
-
-ALTER TABLE ONLY definitions_metadata
-    ADD CONSTRAINT fk_definitions_metadata FOREIGN KEY (process_id, process_version) REFERENCES definitions(id, version) ON DELETE CASCADE;
 
 ALTER TABLE ONLY definitions_nodes
     ADD CONSTRAINT fk_definitions_nodes_definitions FOREIGN KEY (process_id, process_version) REFERENCES definitions(id, version) ON DELETE CASCADE;
