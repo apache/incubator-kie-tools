@@ -70,7 +70,6 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import "./DecisionTableExpression.css";
 import { Unpacked } from "../../tsExt/tsExt";
-import { createDefaultRule } from "./createDefaultRule";
 
 type ROWTYPE = any; // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
 
@@ -102,6 +101,26 @@ function createAnnotationEntry(): Unpacked<Normalized<DMN15__tDecisionRule["anno
     text: { __$$text: DECISION_TABLE_ANNOTATION_DEFAULT_VALUE },
   };
 }
+
+const createDefaultRule = (): Normalized<DMN15__tDecisionRule> => {
+  const defaultRowToAdd: Normalized<DMN15__tDecisionRule> = {
+    "@_id": generateUuid(),
+    inputEntry: [
+      {
+        "@_id": generateUuid(),
+        text: { __$$text: "-" },
+      },
+    ],
+    outputEntry: [
+      {
+        "@_id": generateUuid(),
+        text: { __$$text: "" },
+      },
+    ],
+    annotationEntry: [{ text: { __$$text: "// Your annotations here" } }],
+  };
+  return defaultRowToAdd;
+};
 
 export function DecisionTableExpression({
   isNested,
@@ -311,6 +330,10 @@ export function DecisionTableExpression({
     ]
   );
 
+  const rules = useMemo<DMN15__tDecisionRule[]>(() => {
+    return decisionTableExpression.rule ?? [];
+  }, [decisionTableExpression]);
+
   const beeTableRef = useRef<BeeTableRef>(null);
   const { onColumnResizingWidthChange, columnResizingWidths, isPivoting } = usePublishedBeeTableResizableColumns(
     decisionTableExpression["@_id"]!,
@@ -327,7 +350,7 @@ export function DecisionTableExpression({
     BEE_TABLE_ROW_INDEX_COLUMN_WIDTH,
     columns,
     columnResizingWidths,
-    decisionTableExpression.rule ?? []
+    rules
   );
 
   /// //////////////////////////////////////////////////////
