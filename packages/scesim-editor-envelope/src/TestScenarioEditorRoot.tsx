@@ -27,9 +27,6 @@ import {
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ResourceContent, SearchType, WorkspaceChannelApi, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
-import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { domParser } from "@kie-tools/xml-parser-ts";
 import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";
@@ -123,7 +120,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     this.setState((prev) => {
       savedStackPointer = [...prev.stack];
       return {
-        stack: [marshaller.parser.parse()],
+        stack: [scesimModel],
         openFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
         pointer: 0,
       };
@@ -359,11 +356,11 @@ function ExternalModelsManager({
   externalModelsManagerDoneBootstraping: PromiseImperativeHandle<void>;
 }) {
   const targetNamespace = useMemo(() => {
-    if (model.ScenarioSimulationModel.settings.type?.__$$text !== "DMN") {
-      return null;
-    }
-    if (model.ScenarioSimulationModel.settings.dmnNamespace?.__$$text) {
-      return model.ScenarioSimulationModel.settings.dmnNamespace?.__$$text;
+    // if (model.ScenarioSimulationModel.settings.type?.__$$text !== "DMN") {
+    //   return null;
+    // }
+    if (model?.ScenarioSimulationModel?.settings?.dmnNamespace?.__$$text) {
+      return model.ScenarioSimulationModel.settings.dmnNamespace.__$$text;
     }
     return null;
   }, [model.ScenarioSimulationModel.settings]);
