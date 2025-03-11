@@ -22,6 +22,7 @@ package common
 import (
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common/k8sclient"
 	v1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
@@ -31,6 +32,7 @@ type K8sApi interface {
 	IsCreateAllowed(resourcePath string, namespace string) (bool, error)
 	IsDeleteAllowed(resourcePath string, namespace string) error
 	GetCurrentNamespace() (string, error)
+	GetNamespace(namespace string) (*corev1.Namespace, error)
 	CheckContext() (string, error)
 	ExecuteApply(path, namespace string) error
 	ExecuteCreate(gvr schema.GroupVersionResource, object *unstructured.Unstructured, namespace string) (*unstructured.Unstructured, error)
@@ -59,6 +61,10 @@ func CheckContext() (string, error) {
 
 func GetCurrentNamespace() (string, error) {
 	return Current.GetCurrentNamespace()
+}
+
+func GetNamespace(namespace string) (*corev1.Namespace, error)  {
+	return Current.GetNamespace(namespace)
 }
 
 var ExecuteApply = func(path, namespace string) error {
