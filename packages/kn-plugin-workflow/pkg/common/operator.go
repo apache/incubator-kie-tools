@@ -87,6 +87,8 @@ type OperatorManager struct {
 	dynamicClient dynamic.Interface
 }
 
+var openshiftOperatorNamespaces = []string{"openshift-operators", "community-operators"}
+
 func NewOperatorManager(namespace string) *OperatorManager {
 	isOpenshift, err := isOpenshift()
 	if err != nil {
@@ -95,7 +97,11 @@ func NewOperatorManager(namespace string) *OperatorManager {
 	}
 
 	if namespace == "" {
-		namespace = guessOperatorNamespace(isOpenshift)
+		namespace, err = guessOperatorNamespace(isOpenshift)
+		if err != nil {
+			fmt.Printf("❌ ERROR: %v\n", err)
+			os.Exit(1)
+		}
 	}
 
 	dynamicClient, err := k8sclient.DynamicClient()
@@ -172,12 +178,12 @@ func (m OperatorManager) CheckOLMInstalled() error {
 	if err != nil {
 		return fmt.Errorf("❌ ERROR: OLM (Operator Lifecycle Manager) isn't installed, install OLM first : %v\n", err)
 	}
-	var operatorSource string
+	var operatorSources []string
 
 	if m.isOpenshift {
-		operatorSource = "community-operators"
+		operatorSources = append(operatorSources, openshiftOperatorNamespaces...)
 	} else {
-		operatorSource = "operatorhubio-catalog"
+		operatorSources = append(operatorSources, "operatorhubio-catalog")
 	}
 
 	for _, resource := range resources.Items {
@@ -186,9 +192,10 @@ func (m OperatorManager) CheckOLMInstalled() error {
 		if err != nil || !found {
 			continue
 		}
-
-		if name == operatorSource && metadata.OLMCatalogSourcesMap[name] == namespace {
-			return nil
+		for _, operatorSource := range operatorSources {
+			if name == operatorSource && metadata.OLMCatalogSourcesMap[name] == namespace {
+				return nil
+			}
 		}
 	}
 
@@ -430,9 +437,18 @@ func isOpenshift() (bool, error) {
 	return false, nil
 }
 
-func guessOperatorNamespace(isOpenshift bool) string {
+var possibleOpenshiftNamespaces = []string{"openshift-operators", "community-operators"}
+
+func guessOperatorNamespace(isOpenshift bool) (string, error) {
 	if isOpenshift {
-		return "openshift-operators"
+		for _, ns := range possibleOpenshiftNamespaces {
+			if _, err := GetNamespace(ns); err == nil {
+				return ns, nil
+			}
+		}
+	} else {
+		// In case of Minikube or Kind, with default OLM installation, the namespace is "operators"
+		return "operators", nil
 	}
-	return "operators"
+	return "", fmt.Errorf("❌ ERROR: No valid namespace found for the Operator, please provide a namespace with the --namespace flag")
 }

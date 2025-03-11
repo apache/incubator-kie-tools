@@ -31,6 +31,7 @@ import (
 	"strings"
 
 	v1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/meta"
@@ -97,6 +98,23 @@ func (m GoAPI) IsDeleteAllowed(name string, namespace string) error {
 
 func (m GoAPI) GetCurrentNamespace() (string, error) {
 	return GetCurrentNamespace()
+}
+
+func (m GoAPI) GetNamespace(namespace string) (*corev1.Namespace, error) {
+	config, err := KubeRestConfig()
+	if err != nil {
+		return nil, fmt.Errorf("❌ ERROR: Failed to create rest config for Kubernetes client: %v", err)
+	}
+
+	clientSet, err := kubernetes.NewForConfig(config)
+	if err != nil {
+		return nil, fmt.Errorf("❌ ERROR: Failed to create k8s client: %v", err)
+	}
+	ns, err := clientSet.CoreV1().Namespaces().Get(context.TODO(), namespace, metav1.GetOptions{})
+	if err != nil {
+		return nil, fmt.Errorf("❌ ERROR: Failed to get namespace: %v", err)
+	}
+	return ns, nil
 }
 
 func (m GoAPI) CheckContext() (string, error) {
