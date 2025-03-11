@@ -41,7 +41,7 @@ import { DmnRunnerExtendedServicesError } from "./DmnRunnerContextProvider";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
 import { useSettings } from "../settings/SettingsContext";
-import { useSharedValue, useStateAsSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
+import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 
 enum ButtonPosition {
   INPUT,
