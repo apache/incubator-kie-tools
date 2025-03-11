@@ -70,9 +70,16 @@ func waitForOperatorReady() {
 					os.Exit(1)
 				}
 
+				if(len(resources) == 0) {
+					continue
+				}
+
 				var ready = true
 				for _, resource := range resources {
-					phase, _, err := unstructured.NestedString(resource.Object, "status", "phase")
+					phase, found, err := unstructured.NestedString(resource.Object, "status", "phase")
+					if !found {
+						ready = false
+					}
 					if err != nil {
 						fmt.Println("Failed to get resource status:", err)
 						os.Exit(1)
