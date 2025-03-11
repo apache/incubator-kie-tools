@@ -356,9 +356,6 @@ function ExternalModelsManager({
   externalModelsManagerDoneBootstraping: PromiseImperativeHandle<void>;
 }) {
   const targetNamespace = useMemo(() => {
-    // if (model.ScenarioSimulationModel.settings.type?.__$$text !== "DMN") {
-    //   return null;
-    // }
     if (model?.ScenarioSimulationModel?.settings?.dmnNamespace?.__$$text) {
       return model.ScenarioSimulationModel.settings.dmnNamespace.__$$text;
     }
