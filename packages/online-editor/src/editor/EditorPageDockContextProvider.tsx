@@ -49,10 +49,10 @@ interface EditorPageDockContextType {
     normalizedPosixPathRelativeToTheWorkspaceRoot: string,
     notifications: Notification[]
   ) => void;
-  addToggleItem: (panelId: PanelId, newItem: JSX.Element) => void;
+  addToggleItem: (panelId: PanelId, newItem: JSX.onOpenedBoxedExpressionChange) => void;
   removeToggleItem: (panelId: PanelId) => void;
-  toggleGroupItems: Map<PanelId, JSX.Element>;
-  panelContent?: JSX.Element;
+  toggleGroupItems: Map<PanelId, JSX.onOpenedBoxedExpressionChange>;
+  panelContent?: JSX.onOpenedBoxedExpressionChange;
   notificationsPanel?: NotificationsPanelRef;
   error: boolean;
   setHasError: React.Dispatch<React.SetStateAction<boolean>>;
@@ -199,7 +199,7 @@ export function EditorPageDockContextProvider({
     }
   }, [notificationsPanelRef, notificationsPanelTabNames, panel]);
 
-  const addToggleItem = useCallback((panelId: PanelId, newItem: JSX.Element) => {
+  const addToggleItem = useCallback((panelId: PanelId, newItem: JSX.onOpenedBoxedExpressionChange) => {
     setToggleGroupItem((previousToggleGroupItems) => {
       const newPreviousToggleItems = new Map(previousToggleGroupItems);
       newPreviousToggleItems.set(panelId, newItem);

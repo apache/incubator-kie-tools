@@ -187,14 +187,14 @@ export type DmnEditorProps = {
    */
   onModelDebounceStateChanged?: (changed: boolean) => void;
 
-  onSelectedChange: (newId: string) => void;
+  onOpenedBoxedExpressionChange: (newOpenedBoxedExpressionId: string) => void;
 };
 
 export const DmnEditorInternal = ({
   model,
   originalVersion,
   onModelChange,
-  onSelectedChange,
+  onOpenedBoxedExpressionChange,
   onModelDebounceStateChanged,
   forwardRef,
 }: DmnEditorProps & { forwardRef?: React.Ref<DmnEditorRef> }) => {
@@ -211,11 +211,14 @@ export const DmnEditorInternal = ({
   const { externalModelsByNamespace } = useExternalModels();
 
   dmnEditorStoreApi.subscribe((newState, prevState) => {
-    const activeId = newState.boxedExpressionEditor.activeDrgElementId;
-    if (activeId !== undefined && activeId !== prevState.boxedExpressionEditor.activeDrgElementId) {
-      onSelectedChange(activeId);
+    const currentOpenedBoxedExpressionId = newState.boxedExpressionEditor.activeDrgElementId;
+    if (
+      currentOpenedBoxedExpressionId !== undefined &&
+      currentOpenedBoxedExpressionId !== prevState.boxedExpressionEditor.activeDrgElementId
+    ) {
+      onOpenedBoxedExpressionChange(currentOpenedBoxedExpressionId);
     } else {
-      onSelectedChange("");
+      onOpenedBoxedExpressionChange("");
     }
   });
 
