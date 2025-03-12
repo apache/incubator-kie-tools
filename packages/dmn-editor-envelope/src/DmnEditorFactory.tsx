@@ -153,8 +153,8 @@ function DmnEditorRootWrapper({
       onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot={
         onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot
       }
-      onSelectedBoxedExpressionChanged={(newBoxedExpressionId) => {
-        envelopeContext?.shared.newDmnEditor_openedBoxedExpressionId.set(newBoxedExpressionId);
+      onOpenedBoxedExpressionChange={(newOpenedBoxedExpressionId) => {
+        envelopeContext?.shared.newDmnEditor_openedBoxedExpressionId.set(newOpenedBoxedExpressionId);
       }}
       workspaceRootAbsolutePosixPath={workspaceRootAbsolutePosixPath}
       keyboardShortcutsService={envelopeContext?.services.keyboardShortcuts}
