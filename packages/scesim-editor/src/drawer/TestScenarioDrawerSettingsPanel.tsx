@@ -88,8 +88,10 @@ function TestScenarioDrawerSettingsPanel() {
         }
         onRequestExternalModelByPath(selectedDmnPathRelativeToThisScesim)
           .then((externalDmnModel) => {
-            console.trace("[TestScenarioDrawerSettingsPanel] The below external DMN model have been loaded");
-            console.trace(externalDmnModel);
+            console.debug(
+              "[TestScenarioDrawerSettingsPanel] The below external DMN model have been loaded ",
+              externalDmnModel
+            );
 
             if (canceled.get() || !externalDmnModel) {
               setSelectedDmnModel(undefined);
@@ -177,7 +179,7 @@ function TestScenarioDrawerSettingsPanel() {
                 throw new Error(`Invalid path for an included model ${JSON.stringify(path)}`);
               }
               setSelectedDmnPathRelativeToThisScesim(path);
-              console.trace(path);
+              console.debug("[TestScenarioDrawerSettingsPanel] Selected path: ", path);
             }}
             validated={isSelectedDmnValid ? undefined : "error"}
             value={isSelectedDmnValid ? settingsModel.dmnFilePath?.__$$text : undefined}
