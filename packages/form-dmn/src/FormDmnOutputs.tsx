@@ -287,7 +287,7 @@ export function FormDmnOutputs({
             <CardTitle>
               <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
                 <Title headingLevel={"h2"}>{dmnFormResult.decisionName}</Title>
-                {onOpenBoxedExpressionEditor !== undefined && (
+                {openBoxedExpressionEditor !== undefined && (
                   <Button
                     variant={"plain"}
                     title={`Open '${dmnFormResult.decisionName}' expression`}
@@ -302,7 +302,15 @@ export function FormDmnOutputs({
           </Card>
         </div>
       )),
-    [onAnimationEnd, openedExpressionEditorForNodeId, onOpenBoxedExpressionEditor, props.results, result, resultStatus]
+    [
+      onAnimationEnd,
+      openedExpressionEditorForNodeId,
+      openBoxedExpressionEditor,
+      onOpenBoxedExpressionEditor,
+      props.results,
+      result,
+      resultStatus,
+    ]
   );
 
   const formResultErrorMessage = useMemo(
