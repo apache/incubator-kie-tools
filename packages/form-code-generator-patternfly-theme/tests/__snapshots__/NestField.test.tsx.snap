@@ -2,7 +2,7 @@
 
 exports[`<NestField> tests <NestField> - rendering 1`] = `
 "<Card>
-          <CardBody className="pf-c-form">
+          <CardBody className="pf-v5-c-form">
           <label><b>Candidate</b></label>
           <FormGroup
       fieldId={'uniforms-0000-0001'}
@@ -102,7 +102,7 @@ exports[`<NestField> tests <NestField> - rendering 1`] = `
             }}
           >
             <div style={{ width: '100%', marginRight: '10px' }}><Card>
-          <CardBody className="pf-c-form">
+          <CardBody className="pf-v5-c-form">
           
           <FormGroup
       fieldId={'uniforms-0000-000a'}

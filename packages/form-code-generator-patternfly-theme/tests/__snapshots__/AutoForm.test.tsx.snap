@@ -666,7 +666,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							}}&gt;
 							&lt;div style={{ width: &#39;100%&#39;, marginRight: &#39;10px&#39; }}&gt;
 								&lt;Card&gt;
-									&lt;CardBody className=&#39;pf-c-form&#39;&gt;
+									&lt;CardBody className=&#39;pf-v5-c-form&#39;&gt;
 										&lt;FormGroup
 											fieldId={&#39;uniforms-0000-0010&#39;}
 											label={&#39;Name&#39;}
