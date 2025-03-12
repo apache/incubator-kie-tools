@@ -26,7 +26,7 @@ replicaCount: 1
 
 # -- Image source configuration for the CORS Proxy image
 image:
-  registry: docker.io
+  registry: mirror.gcr.io
   account: apache
   name: incubator-kie-cors-proxy
   pullPolicy: IfNotPresent
