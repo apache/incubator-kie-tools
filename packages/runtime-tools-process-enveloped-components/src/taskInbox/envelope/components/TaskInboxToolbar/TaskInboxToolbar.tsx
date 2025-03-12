@@ -158,7 +158,7 @@ const TaskInboxToolbar: React.FC<TaskInboxToolbarProps & OUIAProps> = ({
             <Select
               variant={SelectVariant.checkbox}
               aria-label="Status"
-              onToggle={setStatusExpanded}
+              onToggle={(_event, val) => setStatusExpanded(val)}
               onSelect={onSelectTaskState}
               selections={selectedTaskStates}
               isOpen={isStatusExpanded}
@@ -174,7 +174,7 @@ const TaskInboxToolbar: React.FC<TaskInboxToolbarProps & OUIAProps> = ({
                 id="taskName"
                 type="search"
                 aria-label="task name"
-                onChange={setTaskNameInput}
+                onChange={(_event, val) => setTaskNameInput(val)}
                 placeholder="Filter by Task name"
                 value={taskNameInput}
               />

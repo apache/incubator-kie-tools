@@ -17,7 +17,8 @@
  * under the License.
  */
 import { ProcessListDriver } from "../../../api";
-import { ICell, IRow, IRowCell, Table, TableBody, TableHeader } from "@patternfly/react-table/dist/js/components/Table";
+import { Table } from "@patternfly/react-table/deprecated";
+import { TableBody, TableHeader } from "@patternfly/react-table/dist/js/deprecated";
 import React, { useCallback, useEffect, useState } from "react";
 import { getProcessInstanceDescription, ProcessInstanceIconCreator } from "../utils/ProcessListUtils";
 import { HistoryIcon } from "@patternfly/react-icons/dist/js/icons/history-icon";
@@ -38,6 +39,7 @@ import {
   KogitoEmptyStateType,
 } from "@kie-tools/runtime-tools-components/dist/components/KogitoEmptyState";
 import _ from "lodash";
+import { ICell, IRow, IRowCell } from "@patternfly/react-table/dist/js/components";
 
 const columnNames: string[] = ["__Select", "Id", "Status", "Created", "Last update", "__Actions"];
 
