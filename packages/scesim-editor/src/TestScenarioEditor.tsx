@@ -36,6 +36,7 @@ import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
@@ -43,7 +44,6 @@ import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/di
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
-import ErrorIcon from "@patternfly/react-icons/dist/esm/icons/error-circle-o-icon";
 import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
 import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
 
@@ -73,7 +73,6 @@ import {
 } from "./externalModels/TestScenarioEditorDependenciesContext";
 import { useEffectAfterFirstRender } from "./hook/useEffectAfterFirstRender";
 import { INITIAL_COMPUTED_CACHE } from "./store/computed/initial";
-import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 /* Constants */
 
