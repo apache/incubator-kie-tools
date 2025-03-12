@@ -356,11 +356,11 @@ function ExternalModelsManager({
   externalModelsManagerDoneBootstraping: PromiseImperativeHandle<void>;
 }) {
   const targetNamespace = useMemo(() => {
-    if (model?.ScenarioSimulationModel?.settings?.dmnNamespace?.__$$text) {
+    if (model.ScenarioSimulationModel?.settings?.dmnNamespace?.__$$text) {
       return model.ScenarioSimulationModel.settings.dmnNamespace.__$$text;
     }
     return null;
-  }, [model.ScenarioSimulationModel.settings]);
+  }, [model.ScenarioSimulationModel?.settings?.dmnNamespace]);
 
   const [externalUpdatesCount, setExternalUpdatesCount] = useState(0);
 
