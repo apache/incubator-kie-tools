@@ -20,14 +20,15 @@ import * as React from "react";
 import { ChangeEvent } from "react";
 
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateSecondaryActions,
+  EmptyStateActions,
   EmptyStateVariant,
-} from "@patternfly/react-core/dist/js/components/EmptyState";
+  EmptyStateHeader,
+  EmptyStateFooter,
+} from "@patternfly/react-core";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 
 interface NewProps {
@@ -41,20 +42,19 @@ interface UploadProps {
 interface AllProps extends NewProps, UploadProps {}
 
 export const PMMLEmptyState = (props: AllProps) => (
-  <EmptyState variant={EmptyStateVariant.small}>
-    <EmptyStateIcon icon={CubesIcon} />
-    <Title headingLevel="h4" size="lg">
-      No PMML document
-    </Title>
+  <EmptyState variant={EmptyStateVariant.sm}>
+    <EmptyStateHeader titleText="No PMML document" icon={<EmptyStateIcon icon={CubesIcon} />} headingLevel="h4" />
     <EmptyStateBody>
       No PMML document has been selected. Please either upload an existing document or create a new one.
     </EmptyStateBody>
-    <FileChooser setContent={props.setContent} />
-    <EmptyStateSecondaryActions>
-      <Button variant="link" onClick={(e) => props.newContent()} ouiaId="new-button">
-        New
-      </Button>
-    </EmptyStateSecondaryActions>
+    <EmptyStateFooter>
+      <FileChooser setContent={props.setContent} />
+      <EmptyStateActions>
+        <Button variant="link" onClick={(e) => props.newContent()} ouiaId="new-button">
+          New
+        </Button>
+      </EmptyStateActions>
+    </EmptyStateFooter>
   </EmptyState>
 );
 
@@ -78,8 +78,8 @@ const FileChooser = (props: UploadProps) => {
   };
 
   return (
-    <div style={{ marginTop: "var(--pf-c-empty-state__primary--MarginTop)" }}>
-      <label htmlFor="file-upload" className="pf-c-button pf-m-primary" data-ouia-component-id="upload-button">
+    <div style={{ marginTop: "var(--pf-v5-c-empty-state__primary--MarginTop)" }}>
+      <label htmlFor="file-upload" className="pf-v5-c-button pf-m-primary" data-ouia-component-id="upload-button">
         <i className="fa fa-cloud-upload" />
         Upload
       </label>

@@ -30,7 +30,7 @@
     "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
-    "@patternfly/react-core": "^4.276.6",
+    "@patternfly/react-core": "^5.4.1",
     "monaco-yaml": "^4.0.4"
   },
   "devDependencies": {

@@ -38,7 +38,7 @@ export type TextFieldProps = {
 
 const timeRgx = /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:[0-5][0-9])?/;
 
-function TextField({ onChange, ...props }: TextFieldProps) {
+function TextField({ onChange, helperText, ...props }: TextFieldProps) {
   const isDateInvalid = useMemo(() => {
     if (typeof props.value !== "string") {
       return false;
@@ -124,7 +124,7 @@ function TextField({ onChange, ...props }: TextFieldProps) {
   }, [props.field?.format, props.type]);
 
   const onTextInputChange = useCallback(
-    (value, event) => {
+    (event, value) => {
       if (fieldType !== "time" || value === "") {
         onChange((event.target as any)?.value);
         return;
@@ -147,7 +147,7 @@ function TextField({ onChange, ...props }: TextFieldProps) {
   }, [fieldType, props.value]);
 
   return wrapField(
-    props,
+    { ...props, help: helperText },
     <>
       <TextInput
         aria-label={"uniforms text field"}

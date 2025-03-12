@@ -58,6 +58,7 @@ import {
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import "./JavaFunctionExpression.css";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 export type JAVA_ROWTYPE = {
   value: string;
@@ -508,7 +509,9 @@ function JavaFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTable
             headerContent={label + " example"}
             bodyContent={getParameterLabelHelp}
           >
-            <HelpIcon size="sm" className="java-function-parameter-help-icon" />
+            <Icon size="sm">
+              <HelpIcon className="java-function-parameter-help-icon" />
+            </Icon>
           </Popover>
         )}
       </div>

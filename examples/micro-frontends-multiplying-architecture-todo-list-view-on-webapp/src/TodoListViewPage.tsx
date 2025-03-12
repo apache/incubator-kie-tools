@@ -26,7 +26,8 @@ import {
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
-import { Page, PageHeader, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { PageHeader } from "@patternfly/react-core/deprecated";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button/Button";
 
 import { useSharedValue, useStateAsSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";

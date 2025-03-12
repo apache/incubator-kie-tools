@@ -17,11 +17,11 @@
  * under the License.
  */
 
-.pf-c-page__header {
+.pf-v5-c-page__header {
   /* this adjusts the max specifically for our logo */
-  --pf-c-page__header-brand-link--c-brand--MaxHeight: 39px;
+  --pf-v5-c-page__header-brand-link--c-brand--MaxHeight: 39px;
 }
-.pf-c-page__header-brand-link {
+.pf-v5-c-page__header-brand-link {
   text-decoration: none;
 }
 
@@ -36,8 +36,8 @@
 }
 
 .kogito--dmn-form__toolbar {
-  --pf-c-page__header--BackgroundColor: var(--pf-global--palette--blue-600);
-  --pf-c-page__header-nav--BackgroundColor: var(--pf-global--palette--blue-600);
+  --pf-v5-c-page__header--BackgroundColor: var(--pf-v5-global--palette--blue-600);
+  --pf-v5-c-page__header-nav--BackgroundColor: var(--pf-v5-global--palette--blue-600);
 }
 
 .kogito--dmn-form__toolbar-logo {
@@ -50,16 +50,16 @@
 }
 
 .kogito--dmn-form__toolbar-icon-button {
-  --pf-c-button--FontSize: var(--pf-global--icon--FontSize--md);
+  --pf-v5-c-button--FontSize: var(--pf-v5-global--icon--FontSize--md);
 }
 
 .kogito--dmn-form__toolbar-tooltip {
-  --pf-c-tooltip__content--Color: var(--pf-global--BackgroundColor--dark-100);
-  --pf-c-tooltip__content--BackgroundColor: var(--pf-global--BackgroundColor--light-100);
+  --pf-v5-c-tooltip__content--Color: var(--pf-v5-global--BackgroundColor--dark-100);
+  --pf-v5-c-tooltip__content--BackgroundColor: var(--pf-v5-global--BackgroundColor--light-100);
 }
 
 .kogito--dmn-form__toolbar.a {
-  color: var(--pf-global--Color--dark-100);
+  color: var(--pf-v5-global--Color--dark-100);
   text-decoration: none;
 }
 
@@ -70,9 +70,9 @@
 }
 
 .kogito--dmn-form__toolbar-title {
-  background-color: var(--pf-c-page__header-nav--BackgroundColor);
-  color: var(--pf-global--Color--light-100);
-  font-size: var(--pf-global--FontSize--xl);
+  background-color: var(--pf-v5-c-page__header-nav--BackgroundColor);
+  color: var(--pf-v5-global--Color--light-100);
+  font-size: var(--pf-v5-global--FontSize--xl);
   font-weight: bold;
   text-align: center;
   cursor: alias;
@@ -80,17 +80,17 @@
 
 @media screen and (min-width: 1200px) {
   .kogito--dmn-form__toolbar {
-    --pf-c-page__header--MinHeight: unset;
+    --pf-v5-c-page__header--MinHeight: unset;
   }
 
-  .kogito--dmn-form__toolbar .pf-c-page__header-nav {
+  .kogito--dmn-form__toolbar .pf-v5-c-page__header-nav {
     align-self: center;
     justify-content: center;
     height: 100%;
   }
 
   .kogito--dmn-form__toolbar-title {
-    font-size: var(--pf-global--FontSize--xl);
+    font-size: var(--pf-v5-global--FontSize--xl);
   }
 
   .kogito--dmn-form__content {
@@ -100,12 +100,12 @@
 }
 
 @media screen and (min-width: 0px) and (max-width: 1200px) {
-  .kogito--dmn-form__toolbar .pf-c-page__header-nav {
+  .kogito--dmn-form__toolbar .pf-v5-c-page__header-nav {
     display: none;
   }
 
   .kogito--dmn-form__toolbar-title {
-    font-size: var(--pf-global--FontSize--sm);
+    font-size: var(--pf-v5-global--FontSize--sm);
   }
 
   .kogito--dmn-form {

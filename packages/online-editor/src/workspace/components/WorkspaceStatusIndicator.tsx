@@ -116,27 +116,21 @@ export function GitStatusIndicator(
           pending: (
             <Title headingLevel={"h6"} style={{ display: "inline", cursor: "default" }}>
               <Tooltip content={`There are new changes since your last sync.`} position={"bottom"}>
-                <small>
-                  <SecurityIcon color={"gray"} />
-                </small>
+                <SecurityIcon color={"gray"} />
               </Tooltip>
             </Title>
           ),
           synced: (
             <Title headingLevel={"h6"} style={{ display: "inline", cursor: "default" }}>
               <Tooltip content={`All files are synced.`} position={"bottom"}>
-                <small>
-                  <CheckCircleIcon color={"green"} />
-                </small>
+                <CheckCircleIcon color={"green"} />
               </Tooltip>
             </Title>
           ),
           unknown: (
             <Title headingLevel={"h6"} style={{ display: "inline", cursor: "default" }}>
               <Tooltip content={"Checking status..."} position={"right"}>
-                <small>
-                  <OutlinedClockIcon color={"gray"} />
-                </small>
+                <OutlinedClockIcon color={"gray"} />
               </Tooltip>
             </Title>
           ),

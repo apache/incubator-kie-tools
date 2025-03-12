@@ -336,7 +336,7 @@ const WorkflowDetails: React.FC<WorkflowDetailsProps> = ({ isEnvelopeConnectedTo
         header={
           <>
             <Title headingLevel="h1" size={TitleSizes["2xl"]}>
-              <InfoCircleIcon className="pf-u-mr-sm" color="var(--pf-global--warning-color--100)" />
+              <InfoCircleIcon className="pf-v5-u-mr-sm" color="var(--pf-v5-global--warning-color--100)" />
               Refresh
             </Title>
           </>
@@ -383,7 +383,7 @@ const WorkflowDetails: React.FC<WorkflowDetailsProps> = ({ isEnvelopeConnectedTo
         header={
           <>
             <Title headingLevel="h1" size={TitleSizes["2xl"]}>
-              <InfoCircleIcon className="pf-u-mr-sm" color="var(--pf-global--danger-color--100)" />
+              <InfoCircleIcon className="pf-v5-u-mr-sm" color="var(--pf-v5-global--danger-color--100)" />
               Error
             </Title>
           </>
@@ -415,7 +415,7 @@ const WorkflowDetails: React.FC<WorkflowDetailsProps> = ({ isEnvelopeConnectedTo
             <>
               <Grid hasGutter md={1} span={12} lg={6} xl={4}>
                 <GridItem span={12}>
-                  <Split hasGutter={true} component={"div"} className="pf-u-align-items-center">
+                  <Split hasGutter={true} component={"div"} className="pf-v5-u-align-items-center">
                     <SplitItem isFilled={true}>
                       <Title headingLevel="h2" size="4xl" className="kogito-workflow-details--details__title">
                         <ItemDescriptor

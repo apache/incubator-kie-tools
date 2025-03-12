@@ -173,7 +173,7 @@ export const NewAuthSessionModal: React.FC<Props> = ({ onAddAuthSession }) => {
             isChecked={forceLoginPrompt}
             onChange={(checked) => setForceLoginPrompt(checked)}
             label={
-              <span className="pf-c-form__label pf-c-form__label-text">
+              <span className="pf-v5-c-form__label pf-v5-c-form__label-text">
                 Force login prompt <i>(for secured runtimes only)</i>
               </span>
             }

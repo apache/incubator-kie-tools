@@ -50,7 +50,7 @@ function NumField(props: NumFieldProps) {
       id={props.id}
       max={props.max}
       min={props.min}
-      onChange={onChange}
+      onChange={(event, value: string) => onChange(value, event)}
       placeholder={props.placeholder}
       ref={props.inputRef}
       step={props.step ?? (props.decimal ? 0.01 : 1)}

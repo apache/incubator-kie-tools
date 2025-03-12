@@ -18,8 +18,12 @@
  */
 
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {
+  EmptyState,
+  EmptyStateIcon,
+  EmptyStateHeader,
+  EmptyStateFooter,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { OutlinedTrashAltIcon } from "@patternfly/react-icons/dist/js/icons/outlined-trash-alt-icon";
 import * as React from "react";
@@ -86,11 +90,16 @@ export const ParametersPopover: React.FunctionComponent<ParametersPopoverProps> 
       ) : (
         <div className="parameters-container-empty">
           <EmptyState>
-            <EmptyStateIcon icon={CubesIcon} />
-            <Title headingLevel="h4">{i18n.noParametersDefined}</Title>
-            <Button variant="primary" onClickCapture={addParameter}>
-              {i18n.addParameter}
-            </Button>
+            <EmptyStateHeader
+              titleText={<>{i18n.noParametersDefined}</>}
+              icon={<EmptyStateIcon icon={CubesIcon} />}
+              headingLevel="h4"
+            />
+            <EmptyStateFooter>
+              <Button variant="primary" onClickCapture={addParameter}>
+                {i18n.addParameter}
+              </Button>
+            </EmptyStateFooter>
           </EmptyState>
         </div>
       )}

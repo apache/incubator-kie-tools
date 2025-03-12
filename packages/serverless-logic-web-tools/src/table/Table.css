@@ -17,8 +17,8 @@
  * under the License. 
  */
 
-.pf-c-question-circle-icon {
-  color: var(--pf-global--palette--black-600);
-  margin-left: var(--pf-global--spacer--sm);
+.pf-v5-c-question-circle-icon {
+  color: var(--pf-v5-global--palette--black-600);
+  margin-left: var(--pf-v5-global--spacer--sm);
   cursor: pointer;
 }

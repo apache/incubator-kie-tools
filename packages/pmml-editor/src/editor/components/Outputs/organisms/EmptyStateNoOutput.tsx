@@ -18,12 +18,14 @@
  */
 import * as React from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+
 import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
+  EmptyStateHeader,
+  EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { SignOutAltIcon } from "@patternfly/react-icons/dist/js/icons/sign-out-alt-icon";
 
@@ -32,16 +34,19 @@ interface EmptyStateNoOutputProps {
 }
 
 export const EmptyStateNoOutput = (props: EmptyStateNoOutputProps) => (
-  <EmptyState data-testid="empty-state-no-output" variant={EmptyStateVariant.small}>
-    <EmptyStateIcon icon={SignOutAltIcon} />
-    <Title headingLevel="h4" size="lg" ouiaId="no-outputs-title">
-      No Outputs have been defined for this model.
-    </Title>
+  <EmptyState data-testid="empty-state-no-output" variant={EmptyStateVariant.sm}>
+    <EmptyStateHeader
+      titleText="No Outputs have been defined for this model."
+      icon={<EmptyStateIcon icon={SignOutAltIcon} />}
+      headingLevel="h4"
+    />
     <EmptyStateBody>
       PMML uses Output elements to describe a set of result values that can be returned from a model.
     </EmptyStateBody>
-    <Button data-testid="empty-state-no-output__add-model" variant="primary" onClick={props.onAddOutputField}>
-      Add Output
-    </Button>
+    <EmptyStateFooter>
+      <Button data-testid="empty-state-no-output__add-model" variant="primary" onClick={props.onAddOutputField}>
+        Add Output
+      </Button>
+    </EmptyStateFooter>
   </EmptyState>
 );

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DropdownGroup } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownGroup } from "@patternfly/react-core/deprecated";
 import * as React from "react";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { useDeployDropdownItems } from "../hooks/useDeployDropdownItems";

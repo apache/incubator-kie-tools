@@ -19,7 +19,7 @@
 
 // The title text itself has padding-left of 8px to align with the Textbox content when editing.
 // Therefore the default PF Split Gutter spacing is too large so reduce. Total remains 16px.
-.pf-l-split__item.modelTitle__icon {
+.pf-v5-l-split__item.modelTitle__icon {
   margin-right: 8px !important;
   display: flex !important;
 }
@@ -57,7 +57,7 @@
     border-bottom 0.12s ease-in !important;
 
   &:not(.modelTitle--editing):hover {
-    border: 1px solid var(--pf-global--BorderColor--100) !important;
+    border: 1px solid var(--pf-v5-global--BorderColor--100) !important;
   }
 
   // Ensure the Textbox when editing does not affect content positioning below.
@@ -65,7 +65,7 @@
     padding-top: 2px !important;
   }
 
-  // Overrides for pf-c-form__group-label-help
+  // Overrides for pf-v5-c-form__group-label-help
   &__icon {
     padding: 0 0 2px 0 !important;
     margin: 0 !important;
@@ -76,7 +76,7 @@
     text-overflow: ellipsis !important;
 
     &--disabled {
-      color: var(--pf-global--Color--200) !important;
+      color: var(--pf-v5-global--Color--200) !important;
     }
   }
 }

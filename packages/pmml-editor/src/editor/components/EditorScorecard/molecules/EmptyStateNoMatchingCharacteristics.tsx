@@ -17,21 +17,22 @@
  * under the License.
  */
 import * as React from "react";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
+  EmptyStateHeader,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CalculatorIcon } from "@patternfly/react-icons/dist/js/icons/calculator-icon";
 
 export const EmptyStateNoMatchingCharacteristics = () => (
-  <EmptyState data-testid="empty-state-no-characteristics" variant={EmptyStateVariant.small}>
-    <EmptyStateIcon icon={CalculatorIcon} />
-    <Title headingLevel="h4" size="lg">
-      No Characteristics match filter
-    </Title>
+  <EmptyState data-testid="empty-state-no-characteristics" variant={EmptyStateVariant.sm}>
+    <EmptyStateHeader
+      titleText="No Characteristics match filter"
+      icon={<EmptyStateIcon icon={CalculatorIcon} />}
+      headingLevel="h4"
+    />
     <EmptyStateBody>
       There are no Characteristics that match the name entered in the filter. Please amend or remove the filter and try
       again.

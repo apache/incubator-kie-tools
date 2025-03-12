@@ -98,7 +98,7 @@ function AuthSessionCard({
         <CardActions>
           {authSession.status === AuthSessionStatus.INVALID && (
             <Tooltip content={"Could not authenticate using this session. Its Token was probably revoked, or expired."}>
-              <ExclamationCircleIcon style={{ color: "var(--pf-global--palette--red-100)" }} />
+              <ExclamationCircleIcon style={{ color: "var(--pf-v5-global--palette--red-100)" }} />
             </Tooltip>
           )}
           <Button

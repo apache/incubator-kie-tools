@@ -106,7 +106,7 @@ function DateField({ onChange, ...props }: DateFieldProps) {
         placeholder={props.placeholder}
         ref={props.inputRef}
         type="datetime-local"
-        onChange={(value) => {
+        onChange={(_event, value) => {
           props.disabled || dateParse(value, onChange);
         }}
         value={dateFormat(props.value, props.type) ?? ""}

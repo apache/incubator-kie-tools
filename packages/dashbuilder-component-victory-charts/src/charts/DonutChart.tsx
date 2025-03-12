@@ -24,7 +24,7 @@ import { PieBaseChart } from "./PieBaseChart";
 
 export class DonutChart extends PieBaseChart {
   render() {
-    const { width, height, themeColor, themeVariant } = this.props;
+    const { width, height, themeColor } = this.props;
     return (
       <ChartDonut
         ariaDesc={this.props.ariaDescription}
@@ -40,7 +40,6 @@ export class DonutChart extends PieBaseChart {
         subTitle={this.props.donutSubTitle || ""}
         title={this.props.donutTitle || ""}
         themeColor={themeColor}
-        themeVariant={themeVariant}
         width={width}
         height={height}
       />

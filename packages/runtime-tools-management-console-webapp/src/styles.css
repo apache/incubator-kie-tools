@@ -18,30 +18,30 @@
  */
 
 .kie-tools--masthead-hoverable,
-.kie-tools--masthead-hoverable > .pf-c-select__toggle {
+.kie-tools--masthead-hoverable > .pf-v5-c-select__toggle {
   border-radius: 8px;
 }
 .kie-tools--masthead-hoverable:hover,
-.kie-tools--masthead-hoverable > .pf-c-select__toggle:hover {
+.kie-tools--masthead-hoverable > .pf-v5-c-select__toggle:hover {
   background-color: rgb(235, 235, 235);
 }
 
 .kie-tools--masthead-hoverable-dark,
-.kie-tools--masthead-hoverable-dark > .pf-c-select__toggle {
+.kie-tools--masthead-hoverable-dark > .pf-v5-c-select__toggle {
   color: white;
   font-weight: bold;
-  background-color: var(--pf-c-page__header--BackgroundColor);
+  background-color: var(--pf-v5-c-page__header--BackgroundColor);
   border-radius: 8px;
 }
-.kie-tools--masthead-hoverable-dark .pf-c-select__toggle-arrow {
+.kie-tools--masthead-hoverable-dark .pf-v5-c-select__toggle-arrow {
   color: lightgray;
 }
 .kie-tools--masthead-hoverable-dark:hover,
-.kie-tools--masthead-hoverable-dark > .pf-c-select__toggle:hover {
+.kie-tools--masthead-hoverable-dark > .pf-v5-c-select__toggle:hover {
   background-color: rgba(255, 255, 255, 0.08);
 }
 
-.kogito-management-console__auth-session-select .pf-c-select__menu {
+.kogito-management-console__auth-session-select .pf-v5-c-select__menu {
   right: 0;
 }
 
@@ -63,11 +63,11 @@
 }
 
 .kogito-components-common__load-more {
-  margin-bottom: var(--pf-global--spacer--lg) !important;
+  margin-bottom: var(--pf-v5-global--spacer--lg) !important;
   text-align: center;
 }
 
-.pf-c-spinner .pf-m-md .kogito-components-common__load-more-spinner {
+.pf-v5-c-spinner .pf-m-md .kogito-components-common__load-more-spinner {
   overflow: hidden;
   margin-left: 5px;
 }
@@ -81,12 +81,12 @@
   height: 350px;
   padding: 5px;
 }
-.kogito-consoles-common--aboutModalBox .pf-c-about-modal-box__hero {
+.kogito-consoles-common--aboutModalBox .pf-v5-c-about-modal-box__hero {
   background-attachment: unset;
 }
 
-.kogito-consoles-common--PageLayout .pf-c-page__header-brand-link .pf-c-brand {
-  --pf-c-page__header-brand-link--c-brand--MaxHeight: 42px;
+.kogito-consoles-common--PageLayout .pf-v5-c-page__header-brand-link .pf-v5-c-brand {
+  --pf-v5-c-page__header-brand-link--c-brand--MaxHeight: 42px;
 }
 
 .kogito-management-console__impersonation-hint {
