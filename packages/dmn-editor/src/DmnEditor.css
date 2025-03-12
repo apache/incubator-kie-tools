@@ -20,7 +20,7 @@
 /* (begin) global */
 .kie-dmn-editor--root {
   height: 100%;
-  scrollbar-color: var(--vscode-scrollbarSlider-background) #f1f1f1;
+  scrollbar-color: rgba(121, 121, 121, 0.4) #f1f1f1;
 }
 
 .kie-tools--dmn-editor--diagram-container {
