@@ -95,9 +95,7 @@ export function FormDmnOutputs({
       updatedResult?.classList.add("kogito--editor__dmn-form-result__leaf-updated");
     });
 
-    if (openedBoxedExpressionId) {
-      setOpenedExpressionEditorForNodeId(openedBoxedExpressionId);
-    }
+    setOpenedExpressionEditorForNodeId(openedBoxedExpressionId ?? "");
   }, [openedBoxedExpressionId, props.differences]);
 
   const onAnimationEnd = useCallback((e: React.AnimationEvent<HTMLElement>, index) => {
