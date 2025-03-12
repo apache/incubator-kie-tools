@@ -156,7 +156,7 @@ export const LoadOrganizationsSelect = (props: Props) => {
   }, [loadOrganizations, setSelectedOption, authProvider]);
 
   const selectOptions = useMemo(() => {
-    const options: JSX.onOpenedBoxedExpressionChange[] = [];
+    const options: JSX.Element[] = [];
     if (!authProvider || !isSupportedGitAuthProviderType(authProvider.type)) {
       return options;
     }

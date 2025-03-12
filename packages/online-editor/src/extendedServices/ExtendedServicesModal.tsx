@@ -809,7 +809,7 @@ export function ExtendedServicesModal() {
 
 interface WizardImperativeControlProps {
   onClose: () => void;
-  steps: Array<{ component: JSX.onOpenedBoxedExpressionChange; name: string }>;
+  steps: Array<{ component: JSX.Element; name: string }>;
   setModalPage: React.Dispatch<ModalPage>;
 }
 

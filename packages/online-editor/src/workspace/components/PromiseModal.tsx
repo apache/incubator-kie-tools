@@ -28,7 +28,7 @@ export type PromiseModalChildren<ExpectedReturnType, ExtraArgs> = ({
   onReturn: (value: ExpectedReturnType) => void;
   onClose: () => void;
   args?: ExtraArgs;
-}) => JSX.onOpenedBoxedExpressionChange;
+}) => JSX.Element;
 
 export type PromiseModalProps<ExpectedReturnType, ExtraArgs> = Omit<ModalProps, "isOpen" | "ref" | "children"> & {
   children: PromiseModalChildren<ExpectedReturnType, ExtraArgs>;

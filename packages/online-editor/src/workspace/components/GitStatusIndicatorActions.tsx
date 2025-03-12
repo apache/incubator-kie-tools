@@ -65,8 +65,8 @@ type GitStatusIndicatorActionType = {
   id: SupportedActions;
   titleText: string;
   warningText: string;
-  titleIcon: JSX.onOpenedBoxedExpressionChange;
-  description: JSX.onOpenedBoxedExpressionChange;
+  titleIcon: JSX.Element;
+  description: JSX.Element;
   alertVariant: AlertVariant;
   confirmButtonText: string;
   onConfirm: () => void;
@@ -310,7 +310,7 @@ const MultipleActionsButtonsWithPopover = (props: {
 const MultipleActionsPopoverWithDropdown = (props: {
   actions: GitStatusIndicatorActionType[];
   title: React.ReactNode;
-  description: JSX.onOpenedBoxedExpressionChange;
+  description: JSX.Element;
   isOpen: boolean;
   setOpen: (isOpen: boolean) => void;
 }) => {
@@ -445,7 +445,7 @@ const SingleActionPopover = (props: {
 
 const ActionsAlert = (props: {
   titleText: string;
-  description: string | JSX.onOpenedBoxedExpressionChange;
+  description: string | JSX.Element;
   alertVariant: AlertVariant;
   confirmButtonText: string;
   onConfirm: () => void;
