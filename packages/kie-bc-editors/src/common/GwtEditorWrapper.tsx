@@ -75,7 +75,7 @@ export class GwtEditorWrapper implements Editor {
     return <></>;
   }
 
-  public async onOpenedBoxedExpressionChange() {
+  public async undo() {
     return this.stateControlService.undo();
   }
 
