@@ -236,10 +236,13 @@ function TestScenarioDataSelectorPanel() {
       return dataObjects
         .map((object) => cloneDeep(object)) // Deep copy: the Objects may mutate due to children filtering
         .filter((dataObject) => !isRootDataObjectAssignable(dataObject, [selectedColumnExpressionElement]))
-        .map((dataObject) => {
+        .reduce((acc, dataObject) => {
           filterOutDataObjectChildrenByExpressionElements(dataObject, [...assignedIds]);
-          return dataObject;
-        });
+          if (dataObject.children?.length === 0 && assignedIds.has(dataObject.id)) {
+            return acc;
+          }
+          return [...acc, dataObject];
+        }, []);
     },
     [dataObjects, scesimModel.ScenarioSimulationModel]
   );
