@@ -227,10 +227,8 @@ function TestScenarioDataSelectorPanel() {
 
   useEffect(() => {
     console.debug("========SELECTOR PANEL USE EFFECT===========");
-    console.debug("Selected Column:");
-    console.debug(selectedColumnMetadata);
-    console.debug("All Data Objects:");
-    console.debug(dataObjects);
+    console.debug("Selected Column:", selectedColumnMetadata);
+    console.debug("All Data Objects:", dataObjects);
 
     /**
      * Case 1: No columns selected OR a column of OTHER type (eg. Description column).
@@ -278,8 +276,7 @@ function TestScenarioDataSelectorPanel() {
         };
       });
       console.debug("Case 2");
-      console.debug("Filtered Data Objects:");
-      console.debug(filteredDataObjects);
+      console.debug("Filtered Data Objects:", filteredDataObjects);
       console.debug("=============USE EFFECT END===============");
       return;
     }

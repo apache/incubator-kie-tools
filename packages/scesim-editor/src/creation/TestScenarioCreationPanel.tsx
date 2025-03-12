@@ -78,8 +78,10 @@ function TestScenarioCreationPanel() {
       ({ canceled }) => {
         onRequestExternalModelsAvailableToInclude?.()
           .then((dmnModelNormalizedPosixPathRelativePaths) => {
-            console.trace("[TestScenarioCreationPanel] The below external DMN models have been found");
-            console.trace(dmnModelNormalizedPosixPathRelativePaths);
+            console.debug(
+              "[TestScenarioCreationPanel] The below external DMN models have been found ",
+              dmnModelNormalizedPosixPathRelativePaths
+            );
 
             if (canceled.get()) {
               setAllDmnModelNormalizedPosixRelativePaths(undefined);
@@ -113,8 +115,10 @@ function TestScenarioCreationPanel() {
 
         onRequestExternalModelByPath(selectedDmnModelPathRelativeToThisScesim)
           .then((externalDMNModel) => {
-            console.trace("[TestScenarioCreationPanel] The below external DMN model have been loaded");
-            console.trace(externalDMNModel);
+            console.debug(
+              "[TestScenarioCreationPanel] The below external DMN model have been loaded ",
+              externalDMNModel
+            );
 
             if (canceled.get() || !externalDMNModel) {
               setSelectedDmnModel(undefined);
@@ -197,7 +201,7 @@ function TestScenarioCreationPanel() {
                 id="dmn-select"
                 name="dmn-select"
                 onChange={(dmnModelPathRelativeToThisScesim) => {
-                  console.trace(`[TestScenarioCreationPanel] Selected path ${dmnModelPathRelativeToThisScesim}`);
+                  console.debug(`[TestScenarioCreationPanel] Selected path ${dmnModelPathRelativeToThisScesim}`);
                   setSelectedDmnModelPathRelativeToThisScesim(dmnModelPathRelativeToThisScesim);
                 }}
                 value={selectedDmnModelPathRelativeToThisScesim}

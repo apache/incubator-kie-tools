@@ -218,7 +218,7 @@ function TestScenarioMainPanel() {
       return;
     }
     commandsRef.current.toggleTestScenarioDock = async () => {
-      console.trace("Test Scenario Editor: COMMANDS: Toggle dock panel...");
+      console.debug("Test Scenario Editor: COMMANDS: Toggle dock panel...");
       testScenarioEditorStoreApi.setState((state) => {
         state.navigation.dock.isOpen = !state.navigation.dock.isOpen;
       });
@@ -332,7 +332,7 @@ export const TestScenarioEditorInternal = ({
   onModelChange,
   onModelDebounceStateChanged,
 }: TestScenarioEditorProps & { forwardRef?: React.Ref<TestScenarioEditorRef> }) => {
-  console.trace("[TestScenarioEditorInternal] Component creation ...");
+  console.debug("[TestScenarioEditorInternal] Component creation ...");
 
   const scesim = useTestScenarioEditorStore((s) => s.scesim);
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
@@ -346,7 +346,7 @@ export const TestScenarioEditorInternal = ({
     forwardRef,
     () => ({
       reset: () => {
-        console.trace("[TestScenarioEditorInternal: Reset called!");
+        console.debug("[TestScenarioEditorInternal: Reset called!");
         const state = testScenarioEditorStoreApi.getState();
         state.dispatch(state).navigation.reset();
       },
@@ -361,11 +361,11 @@ export const TestScenarioEditorInternal = ({
     testScenarioEditorStoreApi.setState((state) => {
       // Avoid unecessary state updates
       if (model === state.scesim.model) {
-        console.trace("[TestScenarioEditorInternal]: useEffectAfterFirstRender called, but the models are the same!");
+        console.debug("[TestScenarioEditorInternal]: useEffectAfterFirstRender called, but the models are the same!");
         return;
       }
 
-      console.trace("[TestScenarioEditorInternal]: Model updated!");
+      console.debug("[TestScenarioEditorInternal]: Model updated!");
 
       state.scesim.model = model;
       testScenarioEditorModelBeforeEditingRef.current = model;
@@ -384,8 +384,7 @@ export const TestScenarioEditorInternal = ({
       }
 
       onModelDebounceStateChanged?.(true);
-      console.trace("[TestScenarioEditorInternal: Debounce State changed!");
-      console.trace(scesim.model);
+      console.debug("[TestScenarioEditorInternal: Debounce State changed!", scesim.model);
       onModelChange?.(scesim.model);
     }, 500);
 
@@ -412,7 +411,7 @@ export const TestScenarioEditorInternal = ({
     }
   }, [scesim]);
 
-  console.trace("[TestScenarioEditorInternal] File Status: " + TestScenarioFileStatus[scesimFileStatus]);
+  console.debug("[TestScenarioEditorInternal] File Status: ", TestScenarioFileStatus[scesimFileStatus]);
 
   return (
     <div ref={testScenarioEditorRootElementRef} data-testid="kie-scesim-editor--container">
@@ -462,8 +461,7 @@ export const TestScenarioEditorInternal = ({
 
 export const TestScenarioEditor = React.forwardRef(
   (props: TestScenarioEditorProps, ref: React.Ref<TestScenarioEditorRef>) => {
-    console.trace("[TestScenarioEditor] Component creation ... ");
-    console.trace(props.model);
+    console.debug("[TestScenarioEditor] Component creation ... ", props.model);
 
     const store = useMemo(
       () => createTestScenarioEditorStore(props.model, new ComputedStateCache<Computed>(INITIAL_COMPUTED_CACHE)),
