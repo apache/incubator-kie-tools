@@ -119,10 +119,15 @@ export const PopoverMenu = React.forwardRef(
 
     const onHideCallback: PopoverProps["onHide"] = useCallback(
       (tip): void => {
-        onHide();
-        setCurrentlyOpenContextMenu(undefined);
+        // This validation is to prevent this code of being called twice, because if the user clicks outside the
+        // Boxed Expression component the onHide() is called again by the Popover which is listen to clicks
+        // on the document to close all opened popups.
+        if (currentlyOpenContextMenu) {
+          onHide();
+          setCurrentlyOpenContextMenu(undefined);
+        }
       },
-      [onHide, setCurrentlyOpenContextMenu]
+      [currentlyOpenContextMenu, onHide, setCurrentlyOpenContextMenu]
     );
 
     useImperativeHandle(

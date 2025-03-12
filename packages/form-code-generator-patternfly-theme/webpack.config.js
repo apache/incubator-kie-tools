@@ -28,7 +28,6 @@ module.exports = (webpackEnv, webpackArgv) => [
       index: "./src/index.ts",
       theme: "./src/theme.ts",
     },
-    plugins: [new CopyPlugin({ patterns: [{ from: "./src/resources", to: "./resources" }] })],
     output: {
       libraryTarget: "commonjs2",
     },

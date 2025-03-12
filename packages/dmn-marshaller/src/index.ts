@@ -75,7 +75,7 @@ import { DMN13__tDefinitions } from "./schemas/dmn-1_3/ts-gen/types";
 import { DMN14__tDefinitions } from "./schemas/dmn-1_4/ts-gen/types";
 import { DMN15__tDefinitions } from "./schemas/dmn-1_5/ts-gen/types";
 import { ns as kie10ns } from "./schemas/kie-1_0/ts-gen/meta";
-import { LEGACY_KIE_NS__PRE_GWT_REMOVAL } from "./kie-extensions";
+import { KIE_NS, LEGACY_KIE_NS__PRE_GWT_REMOVAL } from "./kie-extensions";
 
 import "./kie-extensions"; // Necessary to include the type extensions and patch the ns maps. Do not remove.
 
@@ -194,6 +194,8 @@ export const DMN_PARSERS: Record<DmnVersions, XmlParserTs<any>> = {
   }),
 };
 
+const FEEL_NS = "feel:";
+
 export const FEEL_NAMESPACES: Record<DmnVersions, string> = {
   "1.0": "http://www.omg.org/spec/FEEL/20140401",
   "1.1": "http://www.omg.org/spec/FEEL/20140401",
@@ -202,6 +204,31 @@ export const FEEL_NAMESPACES: Record<DmnVersions, string> = {
   "1.4": "https://www.omg.org/spec/DMN/20211108/FEEL/",
   "1.5": "https://www.omg.org/spec/DMN/20230324/FEEL/",
 };
+
+const feel12ns = new Map<string, string>([
+  [FEEL_NS, FEEL_NAMESPACES["1.2"]],
+  [FEEL_NAMESPACES["1.2"], FEEL_NS],
+]);
+
+const feel13ns = new Map<string, string>([
+  [FEEL_NS, FEEL_NAMESPACES["1.3"]],
+  [FEEL_NAMESPACES["1.3"], FEEL_NS],
+]);
+
+const feel14ns = new Map<string, string>([
+  [FEEL_NS, FEEL_NAMESPACES["1.4"]],
+  [FEEL_NAMESPACES["1.4"], FEEL_NS],
+]);
+
+const feel15ns = new Map<string, string>([
+  [FEEL_NS, FEEL_NAMESPACES["1.5"]],
+  [FEEL_NAMESPACES["1.5"], FEEL_NS],
+]);
+
+const kie10nsRelativeToDmns = new Map<string, string>([
+  [kie10ns.get("")!, KIE_NS],
+  [KIE_NS, kie10ns.get("")!],
+]);
 
 export const DMN_VERSIONS_TIMELINE: DmnVersions[] = ["1.0", "1.1", "1.2", "1.3", "1.4", "1.5"];
 export const DMN_LATEST_VERSION = "1.5" as const;
@@ -470,7 +497,7 @@ export function upgrade12to13(dmn12: { definitions: DMN12__tDefinitions }): { de
     })
   ] = dmn13ns.get("dmndi:")!;
 
-  // Upgrade KIE namespace
+  // Upgrade or add KIE namespace if not there yet
   dmn12.definitions[
     getNsDeclarationPropName({
       namespace: LEGACY_KIE_NS__PRE_GWT_REMOVAL,
@@ -478,6 +505,15 @@ export function upgrade12to13(dmn12: { definitions: DMN12__tDefinitions }): { de
       fallingBackToNs: kieLegacyNs,
     })
   ] = kie10ns.get("")!;
+
+  // Upgrade FEEL namespace
+  dmn12.definitions[
+    getNsDeclarationPropName({
+      namespace: FEEL_NAMESPACES["1.2"],
+      atInstanceNs: instanceNs,
+      fallingBackToNs: feel12ns,
+    })
+  ] = FEEL_NAMESPACES["1.3"];
 
   if (dmn12.definitions["@_typeLanguage"] === FEEL_NAMESPACES["1.2"]) {
     dmn12.definitions["@_typeLanguage"] = FEEL_NAMESPACES["1.3"];
@@ -515,6 +551,24 @@ export function upgrade13to14(dmn13: { definitions: DMN13__tDefinitions }): { de
     })
   ] = dmn14ns.get("dmndi:")!;
 
+  // Upgrade FEEL namespace
+  dmn13.definitions[
+    getNsDeclarationPropName({
+      namespace: FEEL_NAMESPACES["1.3"],
+      atInstanceNs: instanceNs,
+      fallingBackToNs: feel13ns,
+    })
+  ] = FEEL_NAMESPACES["1.4"];
+
+  // Add KIE namespace if not there yet.
+  dmn13.definitions[
+    getNsDeclarationPropName({
+      namespace: kie10ns.get("")!,
+      atInstanceNs: instanceNs,
+      fallingBackToNs: kie10nsRelativeToDmns,
+    })
+  ] = kie10ns.get("")!;
+
   if (dmn13.definitions["@_typeLanguage"] === FEEL_NAMESPACES["1.3"]) {
     dmn13.definitions["@_typeLanguage"] = FEEL_NAMESPACES["1.4"];
   }
@@ -550,6 +604,24 @@ export function upgrade14to15(dmn14: { definitions: DMN14__tDefinitions }): { de
       fallingBackToNs: dmn14ns,
     })
   ] = dmn15ns.get("dmndi:")!;
+
+  // Upgrade FEEL namespace
+  dmn14.definitions[
+    getNsDeclarationPropName({
+      namespace: FEEL_NAMESPACES["1.4"],
+      atInstanceNs: instanceNs,
+      fallingBackToNs: feel14ns,
+    })
+  ] = FEEL_NAMESPACES["1.5"];
+
+  // Add KIE namespace if not there yet.
+  dmn14.definitions[
+    getNsDeclarationPropName({
+      namespace: kie10ns.get("")!,
+      atInstanceNs: instanceNs,
+      fallingBackToNs: kie10nsRelativeToDmns,
+    })
+  ] = kie10ns.get("")!;
 
   if (dmn14.definitions["@_typeLanguage"] === FEEL_NAMESPACES["1.4"]) {
     dmn14.definitions["@_typeLanguage"] = FEEL_NAMESPACES["1.5"];

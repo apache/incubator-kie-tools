@@ -73,7 +73,7 @@
       },
       {
         "command": "extension.apache.kie.bpmnEditor.generateFormCode",
-        "title": "BPMN Editor: Generate form code for human interactions from jBPM project"
+        "title": "BPMN Editor: Generate form code for User Tasks"
       }
     ],
     "configuration": {

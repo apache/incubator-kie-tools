@@ -66,6 +66,7 @@ const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
       required: props.required,
     },
     disabled: props.disabled,
+    itemProps: props.itemProps,
   });
 
   useAddFormElementToContext(element);

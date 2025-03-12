@@ -31,6 +31,9 @@ import { BOOTSTRAP4_FILE_EXT } from "@kie-tools/form-code-generator-bootstrap4-t
 const FORM_CODE_GENERATION_DEST_PATH = "src/main/resources/custom-forms-dev";
 const JSON_SCHEMA_PATH = "target/classes/META-INF/jsonSchema";
 
+const BOOTSTRAP_UI_LIBRARY_NAME = "Bootstrap 4";
+const PATTERNFLY_UI_LIBRARY_NAME = "PatternFly";
+
 export async function generateFormsCommand() {
   // Get workspace path as default value
   const defaultPath = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.fsPath : undefined;
@@ -40,7 +43,7 @@ export async function generateFormsCommand() {
     canSelectFiles: false,
     canSelectFolders: true,
     canSelectMany: false,
-    title: "Select Project Folder",
+    title: "Select project folder",
     defaultUri: defaultPath ? vscode.Uri.file(defaultPath) : undefined,
   });
 
@@ -55,24 +58,25 @@ export async function generateFormsCommand() {
   // Check if project has a target folder
   if (fs.existsSync(`${projectPath}/target`) === false) {
     vscode.window.showErrorMessage(
-      `Couldn't find project's "target" folder. Please, install the project before using the command.`
+      `Couldn't find project's "target" folder. Please install your project before using this command.`
     );
     return;
   }
   // Check if project has the JSON Schemas folder
   if (fs.existsSync(`${projectPath}/${JSON_SCHEMA_PATH}`) === false) {
     vscode.window.showErrorMessage(
-      `Couldn't find any JSON Schema, did you install your project ("mvn clean install") using the jbpm dependency?`
+      `Couldn't find any JSON Schema, did you install your project ("mvn clean install")?`
     );
     return;
   }
 
-  // Select theme
-  const theme = await vscode.window.showQuickPick(["Bootstrap4", "Patternfly"], {
-    placeHolder: "Select the form theme",
+  // Select UI library
+  const uiLibrary = await vscode.window.showQuickPick([BOOTSTRAP_UI_LIBRARY_NAME, PATTERNFLY_UI_LIBRARY_NAME], {
+    placeHolder: "Select the UI library for the generated form(s)",
   });
-  // Check if a theme was selected
-  if (theme === undefined) {
+
+  // Check if a UI library was selected
+  if (uiLibrary === undefined) {
     return;
   }
 
@@ -98,7 +102,7 @@ export async function generateFormsCommand() {
   }
 
   if (existingFiles.length === 0) {
-    saveFormCode(projectPath, theme, formSchemas);
+    saveFormCode(projectPath, uiLibrary, formSchemas);
     return;
   }
 
@@ -113,14 +117,14 @@ export async function generateFormsCommand() {
         `${projectPath}/${FORM_CODE_GENERATION_DEST_PATH}/${removeInvalidVarChars(path.parse(fileName).name)}.${ext}`
       );
     });
-    saveFormCode(projectPath, theme, formSchemas);
+    saveFormCode(projectPath, uiLibrary, formSchemas);
   }
   return;
 }
 
 async function getFormSchemas(projectPath: string): Promise<FormSchema[]> {
-  const GENERATE_FOR_ALL_HUMAN_INTERACTIONS = "Generate form code for all human interactions";
-  const GENERATE_FOR_SPECIFIC_HUMAN_INTERACTIONS = "Generate form code for specific human interactions";
+  const GENERATE_FOR_ALL_HUMAN_INTERACTIONS = "Generate form code for all User Tasks";
+  const GENERATE_FOR_SPECIFIC_HUMAN_INTERACTIONS = "Generate form code for specific User Tasks";
 
   const generationChoice = await vscode.window.showQuickPick(
     [GENERATE_FOR_ALL_HUMAN_INTERACTIONS, GENERATE_FOR_SPECIFIC_HUMAN_INTERACTIONS],
@@ -137,7 +141,7 @@ async function getFormSchemas(projectPath: string): Promise<FormSchema[]> {
       })),
       {
         canPickMany: true,
-        placeHolder: "Choose the human interactions",
+        placeHolder: "Choose the User Tasks",
       }
     );
 
@@ -185,16 +189,16 @@ function readAndParseJsonSchemas(projectPath: string, jsonSchemaFilesName: strin
   return formSchemas;
 }
 
-function saveFormCode(projectPath: string, theme: string, formSchemas: FormSchema[]) {
+function saveFormCode(projectPath: string, uiLibrary: string, formSchemas: FormSchema[]) {
   const formCode =
-    theme.toLowerCase() === "bootstrap4"
+    uiLibrary.toLowerCase() === BOOTSTRAP_UI_LIBRARY_NAME.toLowerCase()
       ? generateFormCode({ formCodeGeneratorTheme: jbpmBootstrap4FormCodeGeneratorTheme, formSchemas })
-      : theme.toLowerCase() === "patternfly"
+      : uiLibrary.toLowerCase() === PATTERNFLY_UI_LIBRARY_NAME.toLowerCase()
         ? generateFormCode({ formCodeGeneratorTheme: jbpmPatternflyFormCodeGeneratorTheme, formSchemas })
         : undefined;
 
   if (formCode === undefined) {
-    vscode.window.showErrorMessage(`The "${theme}" theme isn't available.`);
+    vscode.window.showErrorMessage(`The "${uiLibrary}" UI library isn't available.`);
     return undefined;
   }
 
@@ -228,7 +232,7 @@ function saveFormCode(projectPath: string, theme: string, formSchemas: FormSchem
   );
   if (formErrors.length > 0) {
     vscode.window.showErrorMessage(
-      `Error generating the form code for the following files: ${formErrors.map((formError) => formError.fileName).join(", ")}`
+      `Error generating form code for the following files: ${formErrors.map((formError) => formError.fileName).join(", ")}`
     );
   }
 }

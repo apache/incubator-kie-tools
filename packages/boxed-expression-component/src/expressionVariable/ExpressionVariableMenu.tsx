@@ -153,12 +153,7 @@ export function ExpressionVariableMenu({
     }
     saveExpression();
     popoverMenuRef?.current?.setIsVisible(false);
-    // We reset the expression name to its default because the name change could be canceled outside.
-    // If we don't reset it, we will keep it an outdated name.
-    // If the change is confirmed, then the selectExpressionName will be updated to the new one in the next
-    // render of this component.
-    setExpressionName(selectedExpressionName);
-  }, [saveExpression, selectedExpressionName]);
+  }, [saveExpression]);
 
   const onCancel = useCallback(() => {
     cancelEdit.current = true;
@@ -167,8 +162,11 @@ export function ExpressionVariableMenu({
   }, [resetFormData]);
 
   const onShown = useCallback(() => {
+    // We need to refresh the expression name from the selectedExpressionName,
+    // otherwise it will show the older name set in expressionName.
+    setExpressionName(selectedExpressionName);
     expressionNameRef.current?.focus();
-  }, []);
+  }, [selectedExpressionName]);
 
   const onKeyDown = useCallback(
     (e: React.KeyboardEvent) => {

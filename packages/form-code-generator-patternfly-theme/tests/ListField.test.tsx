@@ -20,10 +20,11 @@
 import { renderField } from "./_render";
 import { ListField } from "../src/uniforms";
 import { InputsContainer } from "../src/api";
+import { DATE_FUNCTIONS } from "../src/uniforms/staticCode/staticCodeBlocks";
 
 describe("<ListField> tests", () => {
   it("<ListField>", () => {
-    const { container, formElement } = renderField(
+    const { formElement } = renderField(
       ListField,
       {
         id: "id",
@@ -40,21 +41,33 @@ describe("<ListField> tests", () => {
         "friends.$.married": { type: Boolean },
         "friends.$.know": {
           type: Array,
-          allowedValues: ["Java", "Node", "Docker"],
           uniforms: {
             checkboxes: true,
           },
         },
         "friends.$.know.$": String,
         "friends.$.areas": {
-          type: String,
+          type: Array,
           allowedValues: ["Developer", "HR", "UX"],
         },
+        "friends.$.areas.$": String,
         "friends.$.birthday": { type: Date },
+        "friends.$.transport": {
+          type: Array,
+          allowedValues: ["Taxi", "Uber"],
+          uniforms: {
+            checkboxes: true,
+          },
+        },
+        "friends.$.transport.$": String,
+        "friends.$.children": {
+          type: String,
+          allowedValues: ["0", "1", "2+"],
+        },
       }
     );
-
-    expect(container).toMatchSnapshot();
+    expect(formElement.jsxCode).toMatchSnapshot();
+    expect(formElement.stateCode).toMatchSnapshot();
 
     const inputContainer = formElement as InputsContainer;
     expect(inputContainer.pfImports).toStrictEqual([
@@ -77,5 +90,9 @@ describe("<ListField> tests", () => {
       "TimePicker",
     ]);
     expect(inputContainer.pfIconImports).toStrictEqual(["PlusCircleIcon", "MinusCircleIcon"]);
+
+    expect(inputContainer.requiredCode).not.toBeUndefined();
+    expect(inputContainer.requiredCode).toHaveLength(1);
+    expect(inputContainer.requiredCode).toContain(DATE_FUNCTIONS);
   });
 });
