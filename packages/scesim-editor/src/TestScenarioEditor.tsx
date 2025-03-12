@@ -73,6 +73,7 @@ import {
 } from "./externalModels/TestScenarioEditorDependenciesContext";
 import { useEffectAfterFirstRender } from "./hook/useEffectAfterFirstRender";
 import { INITIAL_COMPUTED_CACHE } from "./store/computed/initial";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 /* Constants */
 
@@ -316,13 +317,16 @@ function TestScenarioParserErrorPanel({
   parserErrorMessage: string;
 }) {
   return (
-    <EmptyState>
-      <EmptyStateIcon icon={ErrorIcon} />
-      <Title headingLevel="h4" size="lg">
-        {parserErrorTitle}
-      </Title>
-      <EmptyStateBody>{parserErrorMessage}</EmptyStateBody>
-    </EmptyState>
+    <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
+      <EmptyState style={{ maxWidth: "1280px" }}>
+        <EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />
+        <Title size={"lg"} headingLevel={"h4"}>
+          {parserErrorTitle}
+        </Title>
+        <br />
+        <EmptyStateBody>Error details: {parserErrorMessage}</EmptyStateBody>
+      </EmptyState>
+    </Flex>
   );
 }
 
