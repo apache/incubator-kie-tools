@@ -157,8 +157,8 @@ export const ImpersonationPageSection: React.FC<{}> = () => {
               <TextInput
                 className={
                   username && username === impersonationUsername
-                    ? "pf-c-form-control pf-m-success"
-                    : "pf-c-form-control pf-m-expanded"
+                    ? "pf-v5-c-form-control pf-m-success"
+                    : "pf-v5-c-form-control pf-m-expanded"
                 }
                 id="username"
                 aria-label="Username"
@@ -174,8 +174,8 @@ export const ImpersonationPageSection: React.FC<{}> = () => {
               <TextInput
                 className={
                   groups && groups === impersonationGroups
-                    ? "pf-c-form-control pf-m-success"
-                    : "pf-c-form-control pf-m-expanded"
+                    ? "pf-v5-c-form-control pf-m-success"
+                    : "pf-v5-c-form-control pf-m-expanded"
                 }
                 id="groups"
                 aria-label="Groups"

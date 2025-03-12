@@ -127,7 +127,7 @@ export function AuthSessionSelect({ isPlain, position, menuAppendTo }: AuthSessi
         </div>,
         <div
           key={"divider"}
-          style={{ boxShadow: "var(--pf-global--BoxShadow--sm-top)", marginTop: "8px", height: "8px" }}
+          style={{ boxShadow: "var(--pf-v5-global--BoxShadow--sm-top)", marginTop: "8px", height: "8px" }}
         />,
         ...unfilteredItems.map((item) => (
           <SelectOption
@@ -167,7 +167,7 @@ export function InvalidAuthSessionIcon() {
       content={"Could not authenticate using this session. Its Token was probably revoked, or expired."}
     >
       <>
-        <ExclamationCircleIcon style={{ color: "var(--pf-global--palette--red-100)" }} />
+        <ExclamationCircleIcon style={{ color: "var(--pf-v5-global--palette--red-100)" }} />
       </>
     </Tooltip>
   );
