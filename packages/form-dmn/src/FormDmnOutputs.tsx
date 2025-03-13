@@ -283,7 +283,7 @@ export function FormDmnOutputs({
             onAnimationEnd={(e) => onAnimationEnd(e, index)}
           >
             <CardTitle>
-              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }} flexWrap={{ default: "nowrap" }}>
                 <Title headingLevel={"h2"}>{dmnFormResult.decisionName}</Title>
                 {openBoxedExpressionEditor !== undefined && (
                   <Button
