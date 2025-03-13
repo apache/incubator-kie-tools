@@ -96,10 +96,7 @@ export class ListFieldTemplate implements FormElementTemplate<FormInputContainer
         requiredCode: [],
       },
       writeValueToModelCode: {
-        code: this.listFieldWriteValueToModelTemplate({
-          disabled,
-          name,
-        }),
+        code: this.listFieldWriteValueToModelTemplate({ name }),
         requiredCode: [],
       },
     };
