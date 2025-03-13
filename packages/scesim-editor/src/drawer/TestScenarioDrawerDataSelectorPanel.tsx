@@ -85,6 +85,9 @@ function filterOutDataObjectChildrenByExpressionElements(
     });
   }
 
+  if (dataObject.children === undefined && dataObject.name === "value") {
+    return !allExpressionElements.includes(dataObject.id);
+  }
   return !allExpressionElements.includes(dataObject.expressionElements.join("."));
 }
 
@@ -151,6 +154,14 @@ function findTestScenarioDataObjectById(
   return undefined;
 }
 
+interface TestScenarioTreeViewDataItem extends TreeViewDataItem {
+  id: string;
+  expressionElements: string[];
+  className?: string;
+  collectionGenericType?: string[];
+  children?: TestScenarioTreeViewDataItem[];
+}
+
 function TestScenarioDataSelectorPanel() {
   const { i18n } = useTestScenarioEditorI18n();
   const { externalModelsByNamespace } = useExternalModels();
@@ -173,7 +184,7 @@ function TestScenarioDataSelectorPanel() {
   const [dataSelectorStatus, setDataSelectorStatus] = useState(TestScenarioDataSelectorState.DISABLED);
   const [filteredItems, setFilteredItems] = useState(dataObjects);
   const [treeViewStatus, setTreeViewStatus] = useState({
-    activeItems: [] as TreeViewDataItem[],
+    activeItems: [] as TestScenarioTreeViewDataItem[],
     searchKey: "",
     isExpanded: false,
   });
@@ -184,43 +195,54 @@ function TestScenarioDataSelectorPanel() {
       const testScenarioDescriptor = isBackground
         ? scesimModel.ScenarioSimulationModel.background.scesimModelDescriptor
         : scesimModel.ScenarioSimulationModel.simulation.scesimModelDescriptor;
-      const assignedExpressionElements = testScenarioDescriptor.factMappings.FactMapping!.map(
-        (factMapping) => factMapping.expressionElements!
+      const assignedExpressionElements = (testScenarioDescriptor.factMappings.FactMapping ?? []).reduce(
+        (acc: SceSim__expressionElementsType[], factMapping) =>
+          factMapping.expressionElements ? [...acc, factMapping.expressionElements] : acc,
+        []
       );
 
-      const assignedIds = testScenarioDescriptor.factMappings
-        .FactMapping!.filter(
-          (factMapping) => factMapping.expressionElements && factMapping.expressionElements.ExpressionElement
-        )
-        .map((factMapping) =>
-          factMapping
-            .expressionElements!.ExpressionElement!.map((expressionElement) => expressionElement.step.__$$text)
-            .join(".")
-        )
-        .filter((ee) => ee);
+      const assignedIds = (testScenarioDescriptor.factMappings.FactMapping ?? [])
+        .filter((factMapping) => factMapping.expressionElements && factMapping.expressionElements.ExpressionElement)
+        .reduce((assignedIds, factMapping) => {
+          const assignedId = (factMapping.expressionElements?.ExpressionElement ?? [])
+            .map((expressionElement) => {
+              if (factMapping.expressionAlias?.__$$text === "value") {
+                return `${expressionElement.step.__$$text}.value`;
+              }
+              return expressionElement.step.__$$text;
+            })
+            .join(".");
 
-      let filteredDataObjects: TestScenarioDataObject[] = [];
+          // parent
+          if (factMapping.factIdentifier.name?.__$$text) {
+            assignedIds.add(factMapping.factIdentifier.name.__$$text);
+          }
+          assignedIds.add(assignedId);
+          return assignedIds;
+        }, new Set<string>());
 
       // An Empty column has been selected. Filtering out all assigined Instances
       if (
         !selectedColumnExpressionElement?.ExpressionElement ||
         selectedColumnExpressionElement?.ExpressionElement?.length === 0
       ) {
-        filteredDataObjects = dataObjects
+        return dataObjects
           .map((object) => cloneDeep(object)) // Deep copy: the Objects may mutate due to children filtering
           .filter((dataObject) => isRootDataObjectAssignable(dataObject, assignedExpressionElements));
-      } else {
-        // In case of not empty column, it keeps the selected root Fact Mapping (Instance) and then filtering out the already
-        // assigned children Data Objects.
-        filteredDataObjects = dataObjects
-          .map((object) => cloneDeep(object)) // Deep copy: the Objects may mutate due to children filtering
-          .filter((dataObject) => !isRootDataObjectAssignable(dataObject, [selectedColumnExpressionElement]));
-        filteredDataObjects.filter((dataObject) =>
-          filterOutDataObjectChildrenByExpressionElements(dataObject, assignedIds)
-        );
       }
 
-      return filteredDataObjects;
+      // In case of not empty column, it keeps the selected root Fact Mapping (Instance) and then filtering out the already
+      // assigned children Data Objects.
+      return dataObjects
+        .map((object) => cloneDeep(object)) // Deep copy: the Objects may mutate due to children filtering
+        .filter((dataObject) => !isRootDataObjectAssignable(dataObject, [selectedColumnExpressionElement]))
+        .reduce((acc, dataObject) => {
+          filterOutDataObjectChildrenByExpressionElements(dataObject, [...assignedIds]);
+          if (dataObject.children?.length === 0 && assignedIds.has(dataObject.id)) {
+            return acc;
+          }
+          return [...acc, dataObject];
+        }, []);
     },
     [dataObjects, scesimModel.ScenarioSimulationModel]
   );
@@ -362,25 +384,25 @@ function TestScenarioDataSelectorPanel() {
       };
     }
 
-    const oneActiveTreeViewItem = treeViewStatus.activeItems.length === 1;
     if (!treeViewStatus.activeItems === undefined || treeViewStatus.activeItems.length !== 1) {
-      return { message: i18n.drawer.dataSelector.insertDataObjectTooltipDataObjectSelectionMessage, enabled: false };
+      return {
+        message: i18n.drawer.dataSelector.insertDataObjectTooltipDataObjectSelectionMessage,
+        enabled: false,
+      };
     }
-    const activeItem = treeViewStatus.activeItems[0] as TestScenarioDataObject;
-    const expressionElement = selectedColumnMetadata.factMapping.expressionElements!;
-    const assegnedDataObjects: TestScenarioDataObject[] = filterOutAlreadyAssignedDataObjectsAndChildren(
-      expressionElement,
+    const activeItem = treeViewStatus.activeItems[0];
+    const unassignedDataObjects = filterOutAlreadyAssignedDataObjectsAndChildren(
+      selectedColumnMetadata.factMapping.expressionElements,
       selectedColumnMetadata.isBackground
     );
 
-    const isActiveItemMiddleDataObject: boolean =
-      activeItem?.children != null && activeItem.children.length > 0 && activeItem.expressionElements.length > 1;
+    const isAssignable =
+      (activeItem.children !== undefined &&
+        activeItem.children.length > 0 &&
+        activeItem.expressionElements.length > 1) === false &&
+      findTestScenarioDataObjectById(unassignedDataObjects, activeItem.id) !== undefined;
 
-    const isAssignabile =
-      !isActiveItemMiddleDataObject &&
-      findTestScenarioDataObjectById(assegnedDataObjects, activeItem.id!) !== undefined;
-
-    if (oneActiveTreeViewItem && !isAssignabile) {
+    if (treeViewStatus.activeItems.length === 1 && isAssignable === false) {
       return {
         message: i18n.drawer.dataSelector.insertDataObjectTooltipDataObjectAlreadyAssignedMessage,
         enabled: false,
@@ -395,16 +417,16 @@ function TestScenarioDataSelectorPanel() {
   }, []);
 
   const onInsertDataObjectClick = useCallback(() => {
-    const userSelectedTestScenarioObject = treeViewStatus.activeItems[0] as TestScenarioDataObject;
+    const userSelectedTestScenarioObject = treeViewStatus.activeItems[0];
 
-    if (!userSelectedTestScenarioObject) {
-      console.warn("No Data Object selected in the item view.");
+    if (userSelectedTestScenarioObject === undefined) {
+      console.error("No Data Object selected in the item view.");
       return;
     }
 
     const rootSelectedTestScenarioDataObject = findDataObjectRootParent(
       dataObjects,
-      treeViewStatus.activeItems[0].id!.toString()
+      treeViewStatus.activeItems[0].id.toString()
     );
     const isBackground = selectedColumnMetadata!.isBackground;
     const isRootType = rootSelectedTestScenarioDataObject.id === userSelectedTestScenarioObject.id;
@@ -466,7 +488,7 @@ function TestScenarioDataSelectorPanel() {
     []
   );
 
-  const onSelectTreeViewItem = useCallback((_event, treeViewItem: TreeViewDataItem) => {
+  const onSelectTreeViewItem = useCallback((_event, treeViewItem: TestScenarioTreeViewDataItem) => {
     setTreeViewStatus((prev) => {
       return {
         ...prev,
