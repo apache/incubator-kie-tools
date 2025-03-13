@@ -206,6 +206,8 @@ function TestScenarioCreationPanel() {
                 name="dmn-select"
                 onToggle={setModelSelectOpen}
                 isOpen={isModelSelectOpen}
+                typeAheadAriaLabel={"Select a model..."}
+                placeholderText={"Select a model..."}
                 onSelect={(e, dmnModelPathRelativeToThisScesim) => {
                   if (typeof dmnModelPathRelativeToThisScesim !== "string") {
                     throw new Error(
