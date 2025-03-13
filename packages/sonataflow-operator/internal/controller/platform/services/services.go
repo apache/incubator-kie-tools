@@ -21,6 +21,7 @@ package services
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/version"
 
@@ -45,6 +46,7 @@ import (
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils/kubernetes"
 
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/constants"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/persistence"
@@ -96,6 +98,8 @@ type PlatformServiceHandler interface {
 	IsServiceSetInSpec() bool
 	// IsServiceEnabledInSpec returns true if the service is enabled in the spec.
 	IsServiceEnabledInSpec() bool
+	// IsPersistenceEnabledtInSpec returns true if the service has persistence set in the spec.
+	IsPersistenceEnabledtInSpec() bool
 	// GetLocalServiceBaseUrl returns the base url of the local service
 	GetLocalServiceBaseUrl() string
 	// GetServiceBaseUrl returns the base url of the service, based on whether using local or cluster-scoped service.
@@ -112,10 +116,18 @@ type PlatformServiceHandler interface {
 
 	// Check if K_SINK has injected for Job Service. No Op for Data Index
 	CheckKSinkInjected() (bool, error)
+
+	// Returns whether job based, service based or no DB migration is needed
+	GetDBMigrationStrategy() operatorapi.DBMigrationStrategyType
 }
 
 type DataIndexHandler struct {
 	platform *operatorapi.SonataFlowPlatform
+}
+
+// GetDBMigrationStrategy returns DB migration approach
+func (d *DataIndexHandler) GetDBMigrationStrategy() operatorapi.DBMigrationStrategyType {
+	return GetDBMigrationStrategy(d.platform.Spec.Services.DataIndex.Persistence)
 }
 
 func NewDataIndexHandler(platform *operatorapi.SonataFlowPlatform) PlatformServiceHandler {
@@ -172,6 +184,10 @@ func (d DataIndexHandler) IsServiceSetInSpec() bool {
 
 func (d *DataIndexHandler) IsServiceEnabledInSpec() bool {
 	return isDataIndexEnabled(d.platform)
+}
+
+func (d DataIndexHandler) IsPersistenceEnabledtInSpec() bool {
+	return d.IsServiceSetInSpec() && d.platform.Spec.Services.DataIndex.Persistence != nil
 }
 
 func (d *DataIndexHandler) isServiceEnabledInStatus() bool {
@@ -233,18 +249,51 @@ func (d *DataIndexHandler) hasPostgreSQLConfigured() bool {
 			(d.platform.Spec.Persistence != nil && d.platform.Spec.Persistence.PostgreSQL != nil))
 }
 
+func GetDBMigrationStrategy(persistence *operatorapi.PersistenceOptionsSpec) operatorapi.DBMigrationStrategyType {
+	dbMigrationStrategy := operatorapi.DBMigrationStrategyNone
+
+	if persistence != nil {
+		return operatorapi.DBMigrationStrategyType(persistence.DBMigrationStrategy)
+	}
+
+	return dbMigrationStrategy
+}
+
+func IsServiceBasedDBMigration(persistence *operatorapi.PersistenceOptionsSpec) bool {
+	dbMigrationStrategy := GetDBMigrationStrategy(persistence)
+	return dbMigrationStrategy == operatorapi.DBMigrationStrategyService
+}
+
+func IsJobsBasedDBMigration(persistence *operatorapi.PersistenceOptionsSpec) bool {
+	dbMigrationStrategy := GetDBMigrationStrategy(persistence)
+	return dbMigrationStrategy == operatorapi.DBMigrationStrategyJob
+}
+
+func IsNoDBMigration(persistence *operatorapi.PersistenceOptionsSpec) bool {
+	dbMigrationStrategy := GetDBMigrationStrategy(persistence)
+	return dbMigrationStrategy == operatorapi.DBMigrationStrategyNone || dbMigrationStrategy == ""
+}
+
+func isDBMigrationStrategyService(persistence *v1alpha08.PersistenceOptionsSpec) string {
+	dbMigrationStrategyService := "true"
+	if persistence != nil {
+		dbMigrationStrategyService = strconv.FormatBool(IsServiceBasedDBMigration(persistence))
+	}
+
+	return dbMigrationStrategyService
+}
+
 func (d *DataIndexHandler) ConfigurePersistence(containerSpec *corev1.Container) *corev1.Container {
 	if d.hasPostgreSQLConfigured() {
 		p := persistence.RetrievePostgreSQLConfiguration(d.platform.Spec.Services.DataIndex.Persistence, d.platform.Spec.Persistence, d.GetServiceName())
 		c := containerSpec.DeepCopy()
 		c.Image = d.GetServiceImageName(constants.PersistenceTypePostgreSQL)
 		c.Env = append(c.Env, persistence.ConfigurePostgreSQLEnv(p.PostgreSQL, d.GetServiceName(), d.platform.Namespace)...)
-		// TODO upcoming work as part of the DB Migrator incorporation should continue where
-		// assignments like -> migrateDBOnStart := strconv.FormatBool(d.platform.Spec.Services.DataIndex.Persistence.MigrateDBOnStartUp) introduces nil pointer references,
-		// since Services, and services Persistence are optional references.
+
+		dbMigrationStrategyService := isDBMigrationStrategyService(d.platform.Spec.Services.DataIndex.Persistence)
 
 		// specific to DataIndex
-		c.Env = append(c.Env, corev1.EnvVar{Name: quarkusHibernateORMDatabaseGeneration, Value: "update"}, corev1.EnvVar{Name: quarkusFlywayMigrateAtStart, Value: "true"})
+		c.Env = append(c.Env, corev1.EnvVar{Name: quarkusHibernateORMDatabaseGeneration, Value: "update"}, corev1.EnvVar{Name: quarkusFlywayMigrateAtStart, Value: dbMigrationStrategyService})
 		return c
 	}
 	return containerSpec
@@ -289,6 +338,11 @@ func (d *DataIndexHandler) CheckKSinkInjected() (bool, error) {
 
 type JobServiceHandler struct {
 	platform *operatorapi.SonataFlowPlatform
+}
+
+// GetDBMigrationStrategy returns db migration approach otherwise
+func (j *JobServiceHandler) GetDBMigrationStrategy() operatorapi.DBMigrationStrategyType {
+	return GetDBMigrationStrategy(j.platform.Spec.Services.JobService.Persistence)
 }
 
 func NewJobServiceHandler(platform *operatorapi.SonataFlowPlatform) PlatformServiceHandler {
@@ -349,6 +403,10 @@ func (j JobServiceHandler) IsServiceSetInSpec() bool {
 
 func (j *JobServiceHandler) IsServiceEnabledInSpec() bool {
 	return isJobServiceEnabled(j.platform)
+}
+
+func (j JobServiceHandler) IsPersistenceEnabledtInSpec() bool {
+	return j.IsServiceSetInSpec() && j.platform.Spec.Services.JobService.Persistence != nil
 }
 
 func (j *JobServiceHandler) isServiceEnabledInStatus() bool {
@@ -424,12 +482,11 @@ func (j *JobServiceHandler) ConfigurePersistence(containerSpec *corev1.Container
 		c.Image = j.GetServiceImageName(constants.PersistenceTypePostgreSQL)
 		p := persistence.RetrievePostgreSQLConfiguration(j.platform.Spec.Services.JobService.Persistence, j.platform.Spec.Persistence, j.GetServiceName())
 		c.Env = append(c.Env, persistence.ConfigurePostgreSQLEnv(p.PostgreSQL, j.GetServiceName(), j.platform.Namespace)...)
-		// TODO upcoming work as part of the DB Migrator incorporation should continue where
-		// assignments like -> migrateDBOnStart := strconv.FormatBool(j.platform.Spec.Services.JobService.Persistence.MigrateDBOnStartUp) introduces nil pointer references,
-		// since Services, and services Persistence are optional references.
+
+		dbMigrationStrategyService := isDBMigrationStrategyService(j.platform.Spec.Services.JobService.Persistence)
 
 		// Specific to Job Service
-		c.Env = append(c.Env, corev1.EnvVar{Name: "QUARKUS_FLYWAY_MIGRATE_AT_START", Value: "true"})
+		c.Env = append(c.Env, corev1.EnvVar{Name: "QUARKUS_FLYWAY_MIGRATE_AT_START", Value: dbMigrationStrategyService})
 		c.Env = append(c.Env, corev1.EnvVar{Name: "KOGITO_JOBS_SERVICE_LOADJOBERRORSTRATEGY", Value: "FAIL_SERVICE"})
 		return c
 	}

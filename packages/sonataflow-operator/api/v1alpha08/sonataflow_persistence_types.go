@@ -17,6 +17,14 @@
 
 package v1alpha08
 
+type DBMigrationStrategyType string
+
+const (
+	DBMigrationStrategyService DBMigrationStrategyType = "service"
+	DBMigrationStrategyJob     DBMigrationStrategyType = "job"
+	DBMigrationStrategyNone    DBMigrationStrategyType = "none"
+)
+
 // PlatformPersistenceOptionsSpec configures the DataBase in the platform spec. This specification can
 // be used by workflows and platform services when they don't provide one of their own.
 // +optional
@@ -54,10 +62,13 @@ type PersistenceOptionsSpec struct {
 	// +optional
 	PostgreSQL *PersistencePostgreSQL `json:"postgresql,omitempty"`
 
-	// Whether to migrate database on service startup?
+	// DB Migration approach for data-index and jobs-service. Use the following values as described.
+	// job: use job based approach provided by the SonataFlow operator.
+	// service: service itself shall migrate the db and will not use SonataFlow operator.
+	// none: no database migration functionality needed.
 	// +optional
-	// +default: false
-	MigrateDBOnStartUp bool `json:"migrateDBOnStartUp"`
+	// +kubebuilder:default:=service
+	DBMigrationStrategy string `json:"dbMigrationStrategy,omitempty"`
 }
 
 // PersistencePostgreSQL configure postgresql connection for service(s).
