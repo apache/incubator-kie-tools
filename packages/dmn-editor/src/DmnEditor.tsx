@@ -187,7 +187,7 @@ export type DmnEditorProps = {
    */
   onModelDebounceStateChanged?: (changed: boolean) => void;
 
-  onOpenedBoxedExpressionChange: (newOpenedBoxedExpressionId: string) => void;
+  onOpenedBoxedExpressionChange?: (newOpenedBoxedExpressionId: string) => void;
 };
 
 export const DmnEditorInternal = ({
@@ -216,9 +216,9 @@ export const DmnEditorInternal = ({
       currentOpenedBoxedExpressionId !== undefined &&
       currentOpenedBoxedExpressionId !== prevState.boxedExpressionEditor.activeDrgElementId
     ) {
-      onOpenedBoxedExpressionChange(currentOpenedBoxedExpressionId);
+      onOpenedBoxedExpressionChange?.(currentOpenedBoxedExpressionId);
     } else {
-      onOpenedBoxedExpressionChange("");
+      onOpenedBoxedExpressionChange?.("");
     }
   });
 

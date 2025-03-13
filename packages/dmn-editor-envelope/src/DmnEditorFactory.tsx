@@ -26,16 +26,16 @@ import {
   KogitoEditorChannelApi,
   EditorTheme,
   DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
+  KogitoEditorEnvelopeApi,
 } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnEditorRoot } from "./DmnEditorRoot";
 import { ResourceContent, ResourcesList, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { useCallback } from "react";
-import { NewDmnEditorEnvelopeApi } from "./NewDmnEditorEnvelopeApi";
 
-export class DmnEditorFactory implements EditorFactory<Editor, NewDmnEditorEnvelopeApi, KogitoEditorChannelApi> {
+export class DmnEditorFactory implements EditorFactory<Editor, KogitoEditorEnvelopeApi, KogitoEditorChannelApi> {
   public createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<NewDmnEditorEnvelopeApi, KogitoEditorChannelApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<Editor> {
     return Promise.resolve(new DmnEditorInterface(envelopeContext, initArgs));
@@ -49,8 +49,11 @@ export class DmnEditorInterface implements Editor {
   public af_componentTitle: "DMN Editor";
 
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<NewDmnEditorEnvelopeApi, KogitoEditorChannelApi>,
-    private readonly initArgs: EditorInitArgs
+    protected readonly envelopeContext: KogitoEditorEnvelopeContextType<
+      KogitoEditorEnvelopeApi,
+      KogitoEditorChannelApi
+    >,
+    protected readonly initArgs: EditorInitArgs
   ) {}
 
   // Not in-editor
@@ -101,16 +104,18 @@ export class DmnEditorInterface implements Editor {
 }
 
 // This component is a wrapper. It memoizes the DmnEditorRoot props beforing rendering it.
-function DmnEditorRootWrapper({
+export function DmnEditorRootWrapper({
   envelopeContext,
   exposing,
   workspaceRootAbsolutePosixPath,
   isReadOnly,
+  onOpenedBoxedExpressionChange,
 }: {
-  envelopeContext?: KogitoEditorEnvelopeContextType<NewDmnEditorEnvelopeApi, KogitoEditorChannelApi>;
+  envelopeContext?: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>;
   exposing: (s: DmnEditorRoot) => void;
   workspaceRootAbsolutePosixPath: string;
   isReadOnly: boolean;
+  onOpenedBoxedExpressionChange?: (newOpenedBoxedExpressionId: string) => void;
 }) {
   const onNewEdit = useCallback(
     (workspaceEdit: WorkspaceEdit) => {
@@ -153,9 +158,7 @@ function DmnEditorRootWrapper({
       onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot={
         onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot
       }
-      onOpenedBoxedExpressionChange={(newOpenedBoxedExpressionId) => {
-        envelopeContext?.shared.newDmnEditor_openedBoxedExpressionId.set(newOpenedBoxedExpressionId);
-      }}
+      onOpenedBoxedExpressionChange={onOpenedBoxedExpressionChange}
       workspaceRootAbsolutePosixPath={workspaceRootAbsolutePosixPath}
       keyboardShortcutsService={envelopeContext?.services.keyboardShortcuts}
       isReadOnly={isReadOnly}

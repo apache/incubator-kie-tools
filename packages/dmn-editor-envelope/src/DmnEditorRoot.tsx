@@ -58,7 +58,7 @@ export type DmnEditorRootProps = {
   onRequestWorkspaceFilesList: WorkspaceChannelApi["kogitoWorkspace_resourceListRequest"];
   onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot: WorkspaceChannelApi["kogitoWorkspace_openFile"];
-  onOpenedBoxedExpressionChange: (newOpenedBoxedExpressionId: string) => void;
+  onOpenedBoxedExpressionChange?: (newOpenedBoxedExpressionId: string) => void;
   workspaceRootAbsolutePosixPath: string;
   keyboardShortcutsService: KeyboardShortcutsService | undefined;
   isReadOnly: boolean;
