@@ -211,14 +211,8 @@ export const DmnEditorInternal = ({
   const { externalModelsByNamespace } = useExternalModels();
 
   dmnEditorStoreApi.subscribe((newState, prevState) => {
-    const currentOpenedBoxedExpressionId = newState.boxedExpressionEditor.activeDrgElementId;
-    if (
-      currentOpenedBoxedExpressionId !== undefined &&
-      currentOpenedBoxedExpressionId !== prevState.boxedExpressionEditor.activeDrgElementId
-    ) {
-      onOpenedBoxedExpressionChange?.(currentOpenedBoxedExpressionId);
-    } else {
-      onOpenedBoxedExpressionChange?.("");
+    if (newState.boxedExpressionEditor.activeDrgElementId !== prevState.boxedExpressionEditor.activeDrgElementId) {
+      onOpenedBoxedExpressionChange?.(newState.boxedExpressionEditor.activeDrgElementId ?? "");
     }
   });
 

@@ -166,7 +166,7 @@ export function DmnRunnerDrawerPanelContent() {
     onOpenPanel(PanelId.DMN_RUNNER_TABLE);
   }, [onOpenPanel, setDmnRunnerMode]);
 
-  const [selected, _] = useSharedValue(
+  const [openedBoxedExpressionNodeId, _] = useSharedValue(
     (envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>).shared
       .newDmnEditor_openedBoxedExpressionId
   );
@@ -345,7 +345,7 @@ export function DmnRunnerDrawerPanelContent() {
                             }
                           : undefined
                       }
-                      openedBoxedExpressionId={selected ?? ""}
+                      openedBoxedExpressionId={openedBoxedExpressionNodeId ?? ""}
                     />
                   </PageSection>
                 </div>
