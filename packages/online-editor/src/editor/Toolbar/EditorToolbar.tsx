@@ -194,7 +194,9 @@ export function EditorToolbarWithWorkspace(
     if (props.workspace.files.length === 1) {
       // This was the last file, delete the workspace and return home
       await workspaces.deleteWorkspace({ workspaceId: props.workspaceFile.workspaceId });
-      history.push({ pathname: routes.home.path({}) });
+      navigationBlockersBypass.execute(() => {
+        history.push({ pathname: routes.home.path({}) });
+      });
       return;
     }
 
@@ -203,7 +205,15 @@ export function EditorToolbarWithWorkspace(
     });
 
     handleDeletedWorkspaceFile();
-  }, [props.workspace.files.length, props.workspaceFile, workspaces, handleDeletedWorkspaceFile, history, routes.home]);
+  }, [
+    props.workspace.files.length,
+    props.workspaceFile,
+    workspaces,
+    handleDeletedWorkspaceFile,
+    navigationBlockersBypass,
+    history,
+    routes.home,
+  ]);
 
   const deleteFileDropdownItem = useMemo(() => {
     return (
