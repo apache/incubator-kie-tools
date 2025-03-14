@@ -41,6 +41,7 @@ import { DmnRunnerExtendedServicesError } from "./DmnRunnerContextProvider";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
 import { useSettings } from "../settings/SettingsContext";
+import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 
 enum ButtonPosition {
   INPUT,
@@ -164,6 +165,11 @@ export function DmnRunnerDrawerPanelContent() {
     setDmnRunnerMode(DmnRunnerMode.TABLE);
     onOpenPanel(PanelId.DMN_RUNNER_TABLE);
   }, [onOpenPanel, setDmnRunnerMode]);
+
+  const [openedBoxedExpressionNodeId, _] = useSharedValue(
+    (envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>).shared
+      .newDmnEditor_openedBoxedExpressionId
+  );
 
   return (
     <DrawerPanelContent
@@ -339,6 +345,7 @@ export function DmnRunnerDrawerPanelContent() {
                             }
                           : undefined
                       }
+                      openedBoxedExpressionId={openedBoxedExpressionNodeId}
                     />
                   </PageSection>
                 </div>
