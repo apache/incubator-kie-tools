@@ -345,7 +345,7 @@ export function DmnRunnerDrawerPanelContent() {
                             }
                           : undefined
                       }
-                      openedBoxedExpressionId={openedBoxedExpressionNodeId ?? ""}
+                      openedBoxedExpressionId={openedBoxedExpressionNodeId}
                     />
                   </PageSection>
                 </div>

@@ -115,7 +115,7 @@ export function DmnEditorRootWrapper({
   exposing: (s: DmnEditorRoot) => void;
   workspaceRootAbsolutePosixPath: string;
   isReadOnly: boolean;
-  onOpenedBoxedExpressionChange?: (newOpenedBoxedExpressionId: string) => void;
+  onOpenedBoxedExpressionChange?: (newOpenedBoxedExpressionId: string | undefined) => void;
 }) {
   const onNewEdit = useCallback(
     (workspaceEdit: WorkspaceEdit) => {

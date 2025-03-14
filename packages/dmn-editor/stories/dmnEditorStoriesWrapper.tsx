@@ -51,7 +51,10 @@ export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
     [props?.onModelChange]
   );
 
-  const onOpenedBoxedExpressionChangeNoOperation = useMemo(() => (newOpenedBoxedExpressionId: string) => {}, []);
+  const onOpenedBoxedExpressionChangeNoOperation = useMemo(
+    () => (newOpenedBoxedExpressionId: string | undefined) => {},
+    []
+  );
 
   useEffect(() => {
     if (args.isReadOnly !== undefined) {
