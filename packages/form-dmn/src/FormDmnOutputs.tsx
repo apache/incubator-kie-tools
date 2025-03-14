@@ -77,7 +77,6 @@ export function FormDmnOutputs({
 }: FormDmnOutputsProps) {
   const [formResultStatus, setFormResultStatus] = useState<FormDmnOutputsStatus>(FormDmnOutputsStatus.EMPTY);
   const [formResultError, setFormResultError] = useState<boolean>(false);
-  const [openedExpressionEditorForNodeId, setOpenedExpressionEditorForNodeId] = useState<string>("");
 
   const i18n = useMemo(() => {
     formDmnI18n.setLocale(props.locale ?? navigator.language);
@@ -94,8 +93,6 @@ export function FormDmnOutputs({
       const updatedResult = document.getElementById(`${index}-dmn-result`);
       updatedResult?.classList.add("kogito--editor__dmn-form-result__leaf-updated");
     });
-
-    setOpenedExpressionEditorForNodeId(openedBoxedExpressionId ?? "");
   }, [openedBoxedExpressionId, props.differences]);
 
   const onAnimationEnd = useCallback((e: React.AnimationEvent<HTMLElement>, index) => {
@@ -266,7 +263,6 @@ export function FormDmnOutputs({
 
   const onOpenBoxedExpressionEditor = useCallback(
     (nodeId: string) => {
-      setOpenedExpressionEditorForNodeId(nodeId);
       return openBoxedExpressionEditor?.(nodeId);
     },
     [openBoxedExpressionEditor]
@@ -280,8 +276,8 @@ export function FormDmnOutputs({
             id={`${index}-dmn-result`}
             isFlat={true}
             className={
-            openedExpressionEditorForNodeId === dmnFormResult.decisionId 
-                ? "kogito--editor__dmn-form-result__results-card-highlight" 
+              openedBoxedExpressionId === dmnFormResult.decisionId
+                ? "kogito--editor__dmn-form-result__results-card-highlight"
                 : "kogito--editor__dmn-form-result__results-card"
             }
             onAnimationEnd={(e) => onAnimationEnd(e, index)}
@@ -305,13 +301,13 @@ export function FormDmnOutputs({
         </div>
       )),
     [
-      onAnimationEnd,
-      openedExpressionEditorForNodeId,
-      openBoxedExpressionEditor,
-      onOpenBoxedExpressionEditor,
       props.results,
+      openedBoxedExpressionId,
+      openBoxedExpressionEditor,
       result,
       resultStatus,
+      onAnimationEnd,
+      onOpenBoxedExpressionEditor,
     ]
   );
 
