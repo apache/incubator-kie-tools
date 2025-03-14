@@ -66,7 +66,7 @@ export interface FormDmnOutputsProps {
   notificationsPanel: boolean;
   openEvaluationTab?: () => void;
   openBoxedExpressionEditor?: (nodeId: string) => void;
-  openedBoxedExpressionId?: string;
+  openedBoxedExpressionId: string | undefined;
 }
 
 export function FormDmnOutputs({
