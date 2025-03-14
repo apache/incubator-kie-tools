@@ -46,13 +46,13 @@ To help bootstrapping the Infrastructure Services, the example provides a `docke
 
 ```
 PROJECT_VERSION=0.0.0
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
+MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
 COMPOSE_PROFILES=container
 HOST=127.0.0.1
 ```
 
 - `PROJECT_VERSION`: Should be set with the current version being used: `PROJECT_VERSION=0.0.0`
-- `KOGITO_MANAGEMENT_CONSOLE_IMAGE`: Should be set with the Kogito Management Console image `docker.io/apache/incubator-kie-kogito-management-console:main`
+- `MANAGEMENT_CONSOLE_IMAGE`: Should be set with the Kogito Management Console image `docker.io/apache/incubator-kie-kogito-management-console:main`
 - `COMPOSE_PROFILES`: filters which services will run.
 - `HOST`: The host used to communicate between the Management Console and the business service. For Windows Subsystem for Linux (WSL) users, use `localhost`.
 
@@ -62,7 +62,7 @@ For development mode, the `.env` must have the `COMPOSE_PROFILES=development`:
 
 ```
 PROJECT_VERSION=0.0.0
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
+MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
 COMPOSE_PROFILES=development
 HOST=127.0.0.1
 ```
@@ -73,7 +73,7 @@ For JVM mode, the `.env` must have the `COMPOSE_PROFILES=jvm`:
 
 ```
 PROJECT_VERSION=0.0.0
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
+MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
 COMPOSE_PROFILES=jvm
 HOST=127.0.0.1
 ```
@@ -84,7 +84,7 @@ For container mode, the `.env` must have the `COMPOSE_PROFILES=container`:
 
 ```
 PROJECT_VERSION=0.0.0
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
+MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
 COMPOSE_PROFILES=container
 HOST=127.0.0.1
 ```
