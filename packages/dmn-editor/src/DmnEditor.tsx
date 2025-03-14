@@ -231,6 +231,7 @@ export const DmnEditorInternal = ({
       },
       openBoxedExpressionEditor: (nodeId: string) => {
         dmnEditorStoreApi.setState((state) => {
+          state.navigation.tab = DmnEditorTab.EDITOR;
           state.dispatch(state).boxedExpressionEditor.open(nodeId);
         });
       },
