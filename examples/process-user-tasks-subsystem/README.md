@@ -139,17 +139,17 @@ Now, add an `.env` file with the content below:
 
 ```
 PROJECT_VERSION=
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=
+MANAGEMENT_CONSOLE_IMAGE=
 COMPOSE_PROFILES=
 ```
 
 - `PROJECT_VERSION`: Should be set with the current Apache KIE version being used: `PROJECT_VERSION=`
-- `KOGITO_MANAGEMENT_CONSOLE_IMAGE`: Should be set with the Apache KIE Management Console image `docker.io/apache/incubator-kie-kogito-management-console:main`
+- `MANAGEMENT_CONSOLE_IMAGE`: Should be set with the Apache KIE Management Console image `docker.io/apache/incubator-kie-kogito-management-console:main`
 - `COMPOSE_PROFILES`: filters which services will run.
 
 ```
 PROJECT_VERSION=0.0.0
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
+MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
 COMPOSE_PROFILES=container
 ```
 
