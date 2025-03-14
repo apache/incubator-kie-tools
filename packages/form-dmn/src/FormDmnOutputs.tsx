@@ -279,7 +279,11 @@ export function FormDmnOutputs({
           <Card
             id={`${index}-dmn-result`}
             isFlat={true}
-            className={`kogito--editor__dmn-form-result__results-card${openedExpressionEditorForNodeId === dmnFormResult.decisionId ? "-highlight" : ""}`}
+            className={
+            openedExpressionEditorForNodeId === dmnFormResult.decisionId 
+                ? "kogito--editor__dmn-form-result__results-card-highlight" 
+                : "kogito--editor__dmn-form-result__results-card"
+            }
             onAnimationEnd={(e) => onAnimationEnd(e, index)}
           >
             <CardTitle>
