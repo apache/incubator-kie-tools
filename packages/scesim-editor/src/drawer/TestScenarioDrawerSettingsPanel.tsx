@@ -177,6 +177,7 @@ function TestScenarioDrawerSettingsPanel() {
             ouiaId="BasicFormSelect"
             onToggle={setModelSelectOpen}
             isOpen={isModelSelectOpen}
+            maxHeight={"350px"}
             onSelect={(e, path) => {
               if (typeof path !== "string") {
                 throw new Error(`Invalid path for an included model ${JSON.stringify(path)}`);
