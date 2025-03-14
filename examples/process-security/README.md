@@ -170,6 +170,15 @@ After that, start all services (["Infrastructure requirements/Container mode"](#
 docker compose up
 ```
 
+### Important Note on Resource Usage
+
+This example relies on multiple services running via Docker Compose, including Keycloak, PostgreSQL, pgAdmin, and other kie services . Running all these services simultaneously _requires a significant amount of system memory_. If you experience frequent container restarts or failures without logs, it may indicate that system is running out of memory.
+
+**Recommendations**:
+
+- Increase Docker's allocated memory for your Docker VM based on system configuration.
+- Close unnecessary applications to free up system resources before running the example.
+
 ## Using
 
 ### Access Token
