@@ -339,7 +339,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         Promise.all(
           dmnRunnerInputs.map((dmnRunnerInput) => {
             // extendedServicesModelPayload triggers a re-run in this effect before the jsonSchema values is updated
-            // in the useLayoutEffect, making this effect to be triggered with the previous file dmnRunnerInputs.
+            // in the useLayoutEffect, making this effect to be triggered with the previous file.
             const input = hasJsonSchema.current === false ? {} : dmnRunnerInput;
             return extendedServicesModelPayload(input);
           })
@@ -360,7 +360,6 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             }
 
             const runnerResults: Array<DecisionResult[] | undefined> = [];
-            const evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId = new Map();
             for (const result of results) {
               if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
                 setExtendedServicesError(true);
@@ -368,11 +367,23 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
               }
               if (result) {
                 runnerResults.push(result.decisionResults);
-                transformExtendedServicesDmnResult(result, evaluationResultsByNodeId);
               }
             }
             setDmnRunnerResults({ type: DmnRunnerResultsActionType.DEFAULT, newResults: runnerResults });
 
+            const evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId = new Map();
+            if (dmnRunnerMode === DmnRunnerMode.FORM && results[currentInputIndex]) {
+              transformExtendedServicesDmnResult(results[currentInputIndex], evaluationResultsByNodeId);
+            } else {
+              for (const result of results) {
+                if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
+                  break;
+                }
+                if (result) {
+                  transformExtendedServicesDmnResult(result, evaluationResultsByNodeId);
+                }
+              }
+            }
             const newDmnEditorEnvelopeApi = envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
             newDmnEditorEnvelopeApi.notifications.newDmnEditor_showDmnEvaluationResults.send(evaluationResultsByNodeId);
           })
@@ -382,12 +393,14 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           });
       },
       [
-        envelopeServer,
         props.workspaceFile.extension,
         extendedServices.status,
         extendedServices.client,
         dmnRunnerInputs,
         extendedServicesModelPayload,
+        dmnRunnerMode,
+        currentInputIndex,
+        envelopeServer?.envelopeApi,
       ]
     )
   );
