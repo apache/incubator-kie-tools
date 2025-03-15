@@ -66,7 +66,7 @@ func checkEnvironment(cfg *DeployUndeployCmdConfig) error {
 
 	//setup namespace
 	if len(cfg.NameSpace) == 0 {
-		if defaultNamespace, err := common.GetNamespace(); err == nil {
+		if defaultNamespace, err := common.GetCurrentNamespace(); err == nil {
 			cfg.NameSpace = defaultNamespace
 		} else {
 			return err

@@ -91,19 +91,19 @@ func TestRunDeploy(t *testing.T) {
 	common.FS = afero.NewMemMapFs()
 	originalParseYamlFile := k8sclient.ParseYamlFile
 	originalDynamicClient := k8sclient.DynamicClient
-	originalGetNamespace := k8sclient.GetNamespace
+	originalGetNamespace := k8sclient.GetCurrentNamespace
 
 	fakeClient := k8sclient.Fake{FS: common.FS}
 
 	defer func() {
 		k8sclient.ParseYamlFile = originalParseYamlFile
 		k8sclient.DynamicClient = originalDynamicClient
-		k8sclient.GetNamespace = originalGetNamespace
+		k8sclient.GetCurrentNamespace = originalGetNamespace
 	}()
 
 	k8sclient.ParseYamlFile = fakeClient.FakeParseYamlFile
 	k8sclient.DynamicClient = fakeClient.FakeDynamicClient
-	k8sclient.GetNamespace = fakeClient.GetNamespace
+	k8sclient.GetCurrentNamespace = fakeClient.GetCurrentNamespace
 
 	for _, test := range testRunDeploy {
 		checkDeploy(t, test)
@@ -197,7 +197,7 @@ func knativeFixQuarkusVersionAndWriteToTestFolder(t *testing.T, test testDeploy)
 
 func checkObjectCreated(obj unstructured.Unstructured, namespace string) (bool, error) {
 	if namespace == "" {
-		currentNamespace, err := common.GetNamespace()
+		currentNamespace, err := common.GetCurrentNamespace()
 		if err != nil {
 			return false, fmt.Errorf("❌ ERROR: Failed to get current namespace: %v", err)
 		}
