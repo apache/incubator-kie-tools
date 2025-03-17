@@ -75,6 +75,7 @@ import { NODE_LAYERS } from "../../store/computed/computeDiagramData";
 import { useSettings } from "../../settings/DmnEditorSettingsContext";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useRefactor } from "../../refactor/RefactorConfirmationDialog";
+import { collapseOrExpand } from "../../mutations/collapseOrExpand";
 
 export type ElementFilter<E extends { __$$element: string }, Filter extends string> = E extends any
   ? E["__$$element"] extends Filter
@@ -883,6 +884,39 @@ export const DecisionServiceNode = React.memo(
       };
     }, [decisionService.encapsulatedDecision, decisionService.outputDecision, dmnEditorStoreApi, id]);
 
+    const handleExpand = () => {
+      // const openNodes: string[] = []
+      // for (const node of nodes) {
+      //   if (node.data?.dmnObject?.__$$element === "decisionService" && node.data.shape["@_isCollapsed"]===false) {
+      //     openNodes.push(...(node.data.dmnObject.outputDecision ?? []).map((od) => od["@_href"]),...(node.data.dmnObject.encapsulatedDecision ?? []).map((od) => od["@_href"]))
+      //   }
+      // }
+      // const clikcedNode = [...(decisionService.outputDecision ?? []),...(decisionService.encapsulatedDecision ?? [])]
+      // const displayNodes = openNodes.filter(node => clikcedNode.some(selected => selected["@_href"] === node))
+      // console.log(displayNodes)
+      // if(displayNodes.length===0){
+      dmnEditorStoreApi.setState((state) => {
+        collapseOrExpand({
+          definitions: state.dmn.model.definitions,
+          drdIndex: state.computed(state).getDrdIndex(),
+          collapse: false,
+          shapeIndex: shape.index,
+        });
+      });
+      //}
+    };
+
+    const handleCollapse = () => {
+      dmnEditorStoreApi.setState((state) => {
+        collapseOrExpand({
+          definitions: state.dmn.model.definitions,
+          drdIndex: state.computed(state).getDrdIndex(),
+          collapse: true,
+          shapeIndex: shape.index,
+        });
+      });
+    };
+
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
         dmnEditorStoreApi.setState((state) => {
@@ -980,6 +1014,11 @@ export const DecisionServiceNode = React.memo(
           data-nodelabel={decisionService["@_name"]}
         >
           <InfoNodePanel isVisible={!isTargeted && selected && !dragging} />
+          {!isCollapsed && !isTargeted && selected && !dragging && (
+            <div className={"kie-dmn-editor--decision-service-expanded-button"} onClick={handleCollapse}>
+              -
+            </div>
+          )}
           <OutgoingStuffNodePanel
             nodeHref={id}
             isVisible={!settings.isReadOnly && !isTargeted && selected && !dragging}
@@ -1008,7 +1047,11 @@ export const DecisionServiceNode = React.memo(
               nodeShapeIndex={shape.index}
             />
           )}
-          {isCollapsed && <div className={"kie-dmn-editor--decision-service-collapsed-button"}>+</div>}
+          {isCollapsed && (
+            <div className={"kie-dmn-editor--decision-service-collapsed-button"} onClick={handleExpand}>
+              +
+            </div>
+          )}
           <DataTypeNodePanel
             isVisible={!isTargeted && selected && !dragging}
             isReadOnly={settings.isReadOnly}

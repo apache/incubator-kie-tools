@@ -214,6 +214,25 @@
   text-align: center;
   bottom: 4px;
   line-height: 21px;
+  pointer-events: all;
+}
+.react-flow__node-node_decisionService.selected .kie-dmn-editor--decision-service-expanded-button {
+  border-color: #006ba4 !important;
+}
+.kie-dmn-editor--decision-service-node .kie-dmn-editor--decision-service-expanded-button {
+  border: 3px;
+  border-style: solid;
+  border-color: black;
+  font-weight: bold;
+  position: absolute;
+  right: calc(100% + 4px);
+  width: 24px;
+  height: 25px;
+  font-size: 24px;
+  text-align: center;
+  bottom: 4px;
+  line-height: 21px;
+  pointer-events: all;
 }
 .react-flow__node-node_decisionService .kie-dmn-editor--node-shape .kie-dmn-editor--decision-service-label {
   font-family: system-ui;

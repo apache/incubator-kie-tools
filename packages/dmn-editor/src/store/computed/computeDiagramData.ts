@@ -391,10 +391,24 @@ export function computeDiagramData(
     }
   }
 
+  const nodesToBeHidden: string[] = [];
+  for (const node of sortedNodes) {
+    if (node.data?.dmnObject?.__$$element === "decisionService" && node.data.shape["@_isCollapsed"] === true) {
+      nodesToBeHidden.push(
+        ...(node.data.dmnObject.outputDecision ?? []).map((od) => od["@_href"]),
+        ...(node.data.dmnObject.encapsulatedDecision ?? []).map((od) => od["@_href"])
+      );
+    }
+  }
+
+  console.log(sortedNodes);
+
+  const displayNodes = sortedNodes.filter((node) => !nodesToBeHidden.some((selected) => selected === node.id));
+
   return {
     drgEdges,
     drgAdjacencyList,
-    nodes: sortedNodes,
+    nodes: displayNodes,
     edges: sortedEdges,
     edgesById,
     externalNodesByNamespace,
