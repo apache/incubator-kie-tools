@@ -65,8 +65,16 @@ export class DecisionPropertiesPanel extends PropertiesPanelBase {
     await this.descriptionProperties.setDescription({ ...args });
   }
 
+  public async setDecisionDescription(args: { newDescription: string }) {
+    await this.beepanel().getByPlaceholder("Enter a description...").fill(args.newDescription);
+    await this.beepanel().getByPlaceholder("Enter a description...").press("Tab");
+  }
+
   public async getDescription() {
     return await this.descriptionProperties.getDescription();
+  }
+  public async getDecisionDescription() {
+    return await this.beepanel().getByPlaceholder("Enter a description...").inputValue();
   }
 
   public async addDocumentationLink(args: { linkText: string; linkHref: string }) {
@@ -82,8 +90,17 @@ export class DecisionPropertiesPanel extends PropertiesPanelBase {
     await this.panel().getByPlaceholder("Enter a question...").press("Tab");
   }
 
+  public async setDecisionQuestion(args: { newQuestion: string }) {
+    await this.beepanel().getByPlaceholder("Enter a question...").fill(args.newQuestion);
+    await this.beepanel().getByPlaceholder("Enter a question...").press("Tab");
+  }
+
   public async getQuestion() {
     return await this.panel().getByPlaceholder("Enter a question...").inputValue();
+  }
+
+  public async getDecisionQuestion() {
+    return await this.beepanel().getByPlaceholder("Enter a question...").inputValue();
   }
 
   public async setAllowedAnswers(args: { newAllowedAnswers: string }) {
@@ -91,8 +108,16 @@ export class DecisionPropertiesPanel extends PropertiesPanelBase {
     await this.panel().getByPlaceholder("Enter allowed answers...").press("Tab");
   }
 
+  public async setDecisionAllowedAnswers(args: { newAllowedAnswers: string }) {
+    await this.beepanel().getByPlaceholder("Enter allowed answers...").fill(args.newAllowedAnswers);
+    await this.beepanel().getByPlaceholder("Enter allowed answers...").press("Tab");
+  }
+
   public async getAllowedAnswers() {
     return await this.panel().getByPlaceholder("Enter allowed answers...").inputValue();
+  }
+  public async getDecisionAllowedAnswers() {
+    return await this.beepanel().getByPlaceholder("Enter allowed answers...").inputValue();
   }
 
   public async setFont(args: {

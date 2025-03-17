@@ -29,7 +29,7 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useDmnEditor } from "../DmnEditorContext";
 import { useResolvedTypeRef } from "../dataTypes/useResolvedTypeRef";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { useRefactor } from "../refactor/RefactorConfirmationDialog";
@@ -63,6 +63,7 @@ export function BkmProperties({
   const currentName = useMemo(() => {
     return newName === "" ? oldName : newName;
   }, [newName, oldName]);
+  const [localDescription, setLocalDescription] = useState(bkm.description?.__$$text || "");
 
   return (
     <>
@@ -103,15 +104,17 @@ export function BkmProperties({
           aria-label={"Description"}
           type={"text"}
           isDisabled={isReadOnly}
-          value={bkm.description?.__$$text}
+          value={localDescription}
           onChange={(newDescription) => {
+            setLocalDescription(newDescription);
+          }}
+          onBlur={() => {
             setState((state) => {
-              const drgElement = state.dmn.model.definitions.drgElement![
-                index
-              ] as Normalized<DMN15__tBusinessKnowledgeModel>;
-              if (drgElement && drgElement.description) {
-                drgElement.description.__$$text = newDescription;
-              }
+              (
+                state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tBusinessKnowledgeModel>
+              ).description = {
+                __$$text: localDescription,
+              };
             });
           }}
           placeholder={"Enter a description..."}

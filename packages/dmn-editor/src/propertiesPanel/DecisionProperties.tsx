@@ -29,7 +29,7 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useDmnEditor } from "../DmnEditorContext";
 import { useResolvedTypeRef } from "../dataTypes/useResolvedTypeRef";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { useRefactor } from "../refactor/RefactorConfirmationDialog";
@@ -63,6 +63,9 @@ export function DecisionProperties({
   const currentName = useMemo(() => {
     return newName === "" ? oldName : newName;
   }, [newName, oldName]);
+  const [localDescription, setLocalDescription] = useState(decision.description?.__$$text || "");
+  const [localQuestion, setLocalQuestion] = useState(decision.question?.__$$text || "");
+  const [localAllowedAnswers, setLocalAllowedAnswers] = useState(decision.allowedAnswers?.__$$text || "");
 
   return (
     <>
@@ -101,13 +104,15 @@ export function DecisionProperties({
           aria-label={"Description"}
           type={"text"}
           isDisabled={isReadOnly}
-          value={decision.description?.__$$text}
+          value={localDescription}
           onChange={(newDescription) => {
+            setLocalDescription(newDescription);
+          }}
+          onBlur={() => {
             setState((state) => {
-              const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>;
-              if (drgElement && drgElement.description) {
-                drgElement.description.__$$text = newDescription;
-              }
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).description = {
+                __$$text: localDescription,
+              };
             });
           }}
           placeholder={"Enter a description..."}
@@ -127,13 +132,15 @@ export function DecisionProperties({
           aria-label={"Question"}
           type={"text"}
           isDisabled={isReadOnly}
-          value={decision.question?.__$$text}
+          value={localQuestion}
           onChange={(newQuestion) => {
+            setLocalQuestion(newQuestion);
+          }}
+          onBlur={() => {
             setState((state) => {
-              const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>;
-              if (drgElement && drgElement.question) {
-                drgElement.question.__$$text = newQuestion;
-              }
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).question = {
+                __$$text: localQuestion,
+              };
             });
           }}
           placeholder={"Enter a question..."}
@@ -147,13 +154,15 @@ export function DecisionProperties({
           aria-label={"Allowed answers"}
           type={"text"}
           isDisabled={isReadOnly}
-          value={decision.allowedAnswers?.__$$text}
+          value={localAllowedAnswers}
           onChange={(newAllowedAnswers) => {
+            setLocalAllowedAnswers(newAllowedAnswers);
+          }}
+          onBlur={() => {
             setState((state) => {
-              const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>;
-              if (drgElement && drgElement.allowedAnswers) {
-                drgElement.allowedAnswers.__$$text = newAllowedAnswers;
-              }
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).allowedAnswers = {
+                __$$text: localAllowedAnswers,
+              };
             });
           }}
           placeholder={"Enter allowed answers..."}
