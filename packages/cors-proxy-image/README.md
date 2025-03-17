@@ -28,19 +28,19 @@ This package contains the `Containerfile` and scripts to build a container image
 Enable the image to be built:
 
 ```bash
-$ export KIE_TOOLS_BUILD__buildContainerImages=true
+export KIE_TOOLS_BUILD__buildContainerImages=true
 ```
 
 The image name, tags and port can be customized by setting the following environment variables:
 
 ```bash
-$ export CORS_PROXY_IMAGE__imageRegistry=<registry>
-$ export CORS_PROXY_IMAGE__imageAccount=<account>
-$ export CORS_PROXY_IMAGE__imageName=<image-name>
-$ export CORS_PROXY_IMAGE__imageBuildTag=<image-tag>
-$ export CORS_PROXY_IMAGE__imagePort=<port>
-$ export CORS_PROXY_IMAGE__imageOrigin=<origin>
-$ export CORS_PROXY_IMAGE__imageVerbose=<verbose>
+export CORS_PROXY_IMAGE__imageRegistry=<registry>
+export CORS_PROXY_IMAGE__imageAccount=<account>
+export CORS_PROXY_IMAGE__imageName=<image-name>
+export CORS_PROXY_IMAGE__imageBuildTag=<image-tag>
+export CORS_PROXY_IMAGE__imagePort=<port>
+export CORS_PROXY_IMAGE__imageOrigin=<origin>
+export CORS_PROXY_IMAGE__imageVerbose=<verbose>
 ```
 
 Default values can be found [here](./env/index.js).
@@ -48,13 +48,13 @@ Default values can be found [here](./env/index.js).
 After setting up the environment variables, run the following in the root folder of the repository to build the package:
 
 ```bash
-$ pnpm @kie-tools/cors-proxy-image... build:prod
+pnpm @kie-tools/cors-proxy-image... build:prod
 ```
 
 Then check out the image:
 
 ```bash
-$ docker images
+docker images
 ```
 
 ## Run
@@ -62,10 +62,36 @@ $ docker images
 Start up a new container with:
 
 ```bash
-$ docker run -p 8080:8080 -i --rm docker.io/apache/incubator-kie-cors-proxy:latest
+docker run -p 8080:8080 -i --rm docker.io/apache/incubator-kie-cors-proxy:main
 ```
 
 The service will be up at http://localhost:8080
+
+## Running with an external proxy
+
+When starting the container, pass the `HTTP_PROXY`/`HTTPS_PROXY` environment variable pointing to the URL of your proxy service:
+
+```bash
+docker run -p 8080:8080 -i --rm -e HTTPS_PROXY=<YOUR_PROXY_URL> docker.io/apache/incubator-kie-cors-proxy:main
+```
+
+While testing you might want to use a local proxy server with a local certificate, like [mitmproxy](https://mitmproxy.org/).
+
+After installing mitmproxy and starting it, run the `cors-proxy` container passing the `HTTPS_PROXY` and `NODE_EXTRA_CA_CERTS` environment variables to configure the proxy. Remember to mount a volume with the certificate inside of the container.
+
+Start the mitmproxy service:
+
+```bash
+mitmweb --set listen_port=<PORT> --showhost
+```
+
+Run the cors-proxy container:
+
+```bash
+docker run --rm -it --network host -e HTTPS_PROXY=http://localhost:<PORT> -e NODE_EXTRA_CA_CERTS=/tmp/certificates/mitmproxy-ca-cert.pem -v ~/.mitmproxy:/tmp/certificates -d -p 8080:8080 docker.io/apache/incubator-kie-cors-proxy:main
+```
+
+> Note that we are using `--network host` in this case because the proxy service is running locally and we want the cors-proxy service to reach it.
 
 ---
 

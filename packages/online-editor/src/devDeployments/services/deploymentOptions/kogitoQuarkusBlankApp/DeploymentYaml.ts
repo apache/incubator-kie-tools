@@ -52,7 +52,7 @@ spec:
           imagePullPolicy: ${args.imagePullPolicy}
           resources:
             limits:
-              memory: "2048Mi"
+              memory: "4Gi"
           ports:
             - containerPort: 8080
               protocol: TCP

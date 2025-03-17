@@ -20,7 +20,7 @@
 services:
   postgres:
     container_name: process-user-tasks-subsystem-postgres
-    image: postgres:16.7-alpine3.21
+    image: postgres:16.8-alpine3.21
     ports:
       - "5432:5432"
     volumes:
@@ -36,7 +36,7 @@ services:
 
   pgadmin:
     container_name: process-user-tasks-subsystem-pgadmin
-    image: dpage/pgadmin4:8.14
+    image: dpage/pgadmin4:9.1
     ports:
       - 8055:80
     depends_on:
@@ -81,7 +81,7 @@ services:
 
   management-console:
     container_name: process-user-tasks-subsystem-management-console
-    image: ${KOGITO_MANAGEMENT_CONSOLE_IMAGE}
+    image: ${MANAGEMENT_CONSOLE_IMAGE}
     ports:
       - 8280:8080
     depends_on:

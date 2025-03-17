@@ -20,6 +20,7 @@
 /* (begin) global */
 .kie-dmn-editor--root {
   height: 100%;
+  scrollbar-color: rgba(121, 121, 121, 0.4) #f1f1f1;
 }
 
 .kie-tools--dmn-editor--diagram-container {
@@ -105,7 +106,7 @@
 /* (end) nodes */
 
 /* (begin) decision node evaluation status */
-.kie-dmn-editor--decision-node--evaluation-status-failure::before {
+.kie-dmn-editor--decision-node--evaluation-status-failed::before {
   content: "\2716";
   font-size: 0.8em;
   text-align: left;
@@ -121,7 +122,7 @@
   padding-top: 2px;
 }
 
-.kie-dmn-editor--decision-node--evaluation-status-success::before {
+.kie-dmn-editor--decision-node--evaluation-status-succeeded::before {
   content: "\2714";
   font-size: 0.8em;
   text-align: left;

@@ -108,7 +108,7 @@
       },
       {
         "command": "extension.apache.kie.kogitoEditors.generateFormCode",
-        "title": "Kogito Editors: Generate form code for human interactions from jBPM project"
+        "title": "Kogito Editors: Generate form code for User Tasks"
       }
     ],
     "configuration": {
