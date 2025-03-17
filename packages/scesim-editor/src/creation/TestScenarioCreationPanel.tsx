@@ -208,6 +208,7 @@ function TestScenarioCreationPanel() {
                 isOpen={isModelSelectOpen}
                 typeAheadAriaLabel={"Select a model..."}
                 placeholderText={"Select a model..."}
+                maxHeight={"350px"}
                 onSelect={(e, dmnModelPathRelativeToThisScesim) => {
                   if (typeof dmnModelPathRelativeToThisScesim !== "string") {
                     throw new Error(
