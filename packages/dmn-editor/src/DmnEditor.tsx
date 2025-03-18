@@ -59,6 +59,7 @@ import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because 
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
 import { Commands, CommandsContextProvider, useCommands } from "./commands/CommandsContextProvider";
 import { DmnEditorSettingsContextProvider } from "./settings/DmnEditorSettingsContext";
+import { ChannelType } from "@kie-tools-core/editor/dist/api";
 
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
 
@@ -156,6 +157,10 @@ export type DmnEditorProps = {
    * but no changes can be made and the model itself is unaltered.
    */
   isReadOnly?: boolean;
+  /**
+   * ChannelType where the component is running.
+   */
+  channelType?: ChannelType;
   /**
    * When users want to jump to another file, this method is called, allowing the controller of this component decide what to do.
    * Links are only rendered if this is provided. Otherwise, paths will be rendered as text.
