@@ -38,6 +38,7 @@
     "test-e2e:run": "pnpm exec playwright test"
   },
   "dependencies": {
+    "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/monaco-editor": "workspace:*",
     "@kie-tools-core/operating-system": "workspace:*",
@@ -50,6 +51,7 @@
     "@kie-tools/dmn-marshaller": "workspace:*",
     "@kie-tools/feel-input-component": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",
+    "@kie-tools/import-java-classes-component": "workspace:*",
     "@kie-tools/pmml-editor-marshaller": "workspace:*",
     "@kie-tools/xml-parser-ts": "workspace:*",
     "@patternfly/react-core": "^4.276.6",
