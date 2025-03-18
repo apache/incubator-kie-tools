@@ -18,34 +18,88 @@
  */
 
 import * as React from "react";
+import { useCallback, useState } from "react";
 import {
   importJavaClassesWizardI18nDictionaries,
   ImportJavaClassesWizardI18nContext,
   importJavaClassesWizardI18nDefaults,
+  useImportJavaClassesWizardI18n,
 } from "../../i18n";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
-import { ImportJavaClassesWizard } from "./ImportJavaClassesWizard";
 import { GWTLayerService, JavaCodeCompletionService } from "./services";
+import { JavaClass } from "./model";
 
-export interface ImportJavaClassesProps {
+import {
+  ImportJavaClassesButton,
+  ImportJavaClassesWizard,
+  useLanguageServerAvailable,
+} from "./ImportJavaClassesWizard";
+
+interface ImportJavaClassesProps {
   /** Service class which contains all API method to dialog with GWT layer */
-  gwtLayerService: GWTLayerService;
+  gwtLayerService?: GWTLayerService;
   /** Service class which contains all API methods to dialog with Java Code Completion Extension*/
   javaCodeCompletionService: JavaCodeCompletionService;
+  /** Callback function triggered when the "Import" button for Java classes is clicked.*/
+  loadJavaClassesInDataTypeEditor?: (javaClasses: JavaClass[]) => void;
 }
 
-export const ImportJavaClasses = ({ gwtLayerService, javaCodeCompletionService }: ImportJavaClassesProps) => {
+const ImportJavaClassesI18nDictionariesProvider = (
+  props: Omit<
+    React.ComponentProps<typeof I18nDictionariesProvider>,
+    "defaults" | "dictionaries" | "initialLocale" | "ctx"
+  >
+) => (
+  <I18nDictionariesProvider
+    defaults={importJavaClassesWizardI18nDefaults}
+    dictionaries={importJavaClassesWizardI18nDictionaries}
+    initialLocale={navigator.language}
+    ctx={ImportJavaClassesWizardI18nContext}
+    {...props}
+  />
+);
+
+const ImportJavaClasses = ({
+  javaCodeCompletionService,
+  gwtLayerService,
+  loadJavaClassesInDataTypeEditor,
+}: ImportJavaClassesProps) => {
+  const [isOpen, setOpen] = useState(false);
+  const handleButtonClick = useCallback(() => setOpen((prevState) => !prevState), []);
+  const handleWizardSave = useCallback(
+    (javaClasses) => {
+      if (gwtLayerService) {
+        gwtLayerService?.importJavaClassesInDataTypeEditor?.(javaClasses);
+      } else {
+        loadJavaClassesInDataTypeEditor?.(javaClasses);
+      }
+    },
+    [gwtLayerService, loadJavaClassesInDataTypeEditor]
+  );
   return (
-    <I18nDictionariesProvider
-      defaults={importJavaClassesWizardI18nDefaults}
-      dictionaries={importJavaClassesWizardI18nDictionaries}
-      initialLocale={navigator.language}
-      ctx={ImportJavaClassesWizardI18nContext}
-    >
-      <ImportJavaClassesWizard
-        gwtLayerService={gwtLayerService}
+    <ImportJavaClassesI18nDictionariesProvider>
+      <ImportJavaClassesButton
+        handleButtonClick={handleButtonClick}
         javaCodeCompletionService={javaCodeCompletionService}
       />
-    </I18nDictionariesProvider>
+      {isOpen && (
+        <ImportJavaClassesWizard
+          javaCodeCompletionService={javaCodeCompletionService}
+          isOpen={isOpen}
+          onSave={handleWizardSave}
+          onClose={handleButtonClick}
+        />
+      )}
+    </ImportJavaClassesI18nDictionariesProvider>
   );
+};
+
+export {
+  ImportJavaClassesProps,
+  ImportJavaClassesI18nDictionariesProvider,
+  ImportJavaClasses,
+  ImportJavaClassesButton,
+  ImportJavaClassesWizard,
+  useLanguageServerAvailable,
+  useImportJavaClassesWizardI18n,
 };
