@@ -58,6 +58,12 @@ import {
 import { addTopLevelItemDefinition as _addTopLevelItemDefinition } from "../mutations/addTopLevelItemDefinition";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import {
+  ImportJavaClassesWizard,
+  ImportJavaClassesI18nDictionariesProvider,
+} from "@kie-tools/import-java-classes-component";
+import { ImportJavaClassesDropdownItem, useImportJavaClasses } from "./ImportJavaClasses";
+import { ChannelType } from "@kie-tools-core/editor/dist/api";
 
 export type DataType = {
   itemDefinition: Normalized<DMN15__tItemDefinition>;
@@ -104,6 +110,17 @@ export function DataTypes() {
     (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allDataTypesById
   );
   const dataTypesTree = useDmnEditorStore((s) => s.computed(s).getDataTypes(externalModelsByNamespace).dataTypesTree);
+
+  const [isOpen, setOpen] = useState(false);
+  const { importJavaClassesInDataTypeEditor, javaCodeCompletionService } = useImportJavaClasses();
+  const handleImportJavaClassButtonClick = useCallback(() => {
+    setOpen((prevState) => !prevState);
+  }, []);
+
+  const isVscode = useMemo(
+    () => settings.channelType === ChannelType.VSCODE_DESKTOP || settings.channelType === ChannelType.VSCODE_WEB,
+    [settings.channelType]
+  );
 
   const activeDataType = useMemo(() => {
     return activeItemDefinitionId ? allDataTypesById.get(activeItemDefinitionId) : undefined;
@@ -230,6 +247,11 @@ export function DataTypes() {
                         position={DropdownPosition.right}
                         isOpen={isAddDataTypeDropdownOpen}
                         dropdownItems={[
+                          isVscode && (
+                            <ImportJavaClassesI18nDictionariesProvider key={"import-java-classes"}>
+                              <ImportJavaClassesDropdownItem onClick={handleImportJavaClassButtonClick} />
+                            </ImportJavaClassesI18nDictionariesProvider>
+                          ),
                           <DropdownItem
                             key={"paste"}
                             onClick={() => pasteTopLevelItemDefinition()}
@@ -310,6 +332,16 @@ export function DataTypes() {
                   allDataTypesById={allDataTypesById}
                   editItemDefinition={editItemDefinition}
                 />
+              )}
+              {isOpen && (
+                <ImportJavaClassesI18nDictionariesProvider>
+                  <ImportJavaClassesWizard
+                    javaCodeCompletionService={javaCodeCompletionService}
+                    isOpen={isOpen}
+                    onSave={importJavaClassesInDataTypeEditor}
+                    onClose={handleImportJavaClassButtonClick}
+                  />
+                </ImportJavaClassesI18nDictionariesProvider>
               )}
             </DrawerContentBody>
           </DrawerContent>
