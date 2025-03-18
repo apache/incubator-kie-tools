@@ -106,7 +106,7 @@ export const en: TestScenarioEditorI18n = {
       emptyDataObjectsTitleRule: "No Java Classes",
       emptyDataObjectsDescription: "All the Data Objects have been already assigned",
       emptyDataObjectsMissingDescription:
-        "The selected column's Data Object is missing. Most likely, this scesim file is no longer synchronized with the referenced DMN file. Please manually remove this and update your file accordingly with the DMN file.",
+        "The selected column's Data Object is missing. Most likely, this scesim file is no longer synchronized with the referenced DMN file. Please manually remove it and update your table accordingly with the DMN file.",
       emptyDataObjectsDescriptionDMN: "Impossible to retrieve the DMN Nodes data from the linked DMN file.",
       emptyDataObjectsDescriptionRule: "Impossible to retrieve the Java Classes from the project.",
       expandAll: "Expand all",
