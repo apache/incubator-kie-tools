@@ -33,7 +33,7 @@ import { useCallback, useMemo, useState } from "react";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { useRefactor } from "../refactor/RefactorConfirmationDialog";
-import { TextField, TextFieldType } from "./BoxedExpressionPropertiesPanelComponents/Fields";
+import { TextField, TextFieldType } from "./Fields";
 
 export function BkmProperties({
   bkm,

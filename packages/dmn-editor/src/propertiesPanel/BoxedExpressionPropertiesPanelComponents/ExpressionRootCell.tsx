@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import { DescriptionField } from "./Fields";
+import { DescriptionField } from "../Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { AllExpressionsWithoutTypes } from "../../dataTypes/DataTypeSpec";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";

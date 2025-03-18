@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { DescriptionField, NameField, TypeRefField } from "./Fields";
+import { DescriptionField, NameField, TypeRefField } from "../Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
