@@ -44,8 +44,7 @@
     "monaco-editor": "^0.39.0",
     "react-datetime-picker": "^3.5.0",
     "react-moment": "0.9.7",
-    "react-router": "^5.3.4",
-    "react-router-dom": "^5.3.4",
+    "react-router-dom": "^6.29.0",
     "uniforms": "^3.10.2",
     "uniforms-bridge-json-schema": "^3.10.2",
     "uuid": "^8.3.2"
@@ -59,8 +58,6 @@
     "@types/react": "^17.0.6",
     "@types/react-datetime-picker": "^3.4.1",
     "@types/react-dom": "^17.0.5",
-    "@types/react-router": "^5.1.20",
-    "@types/react-router-dom": "^5.3.3",
     "@types/uuid": "^8.3.0",
     "rimraf": "^3.0.2",
     "typescript": "^5.5.3"

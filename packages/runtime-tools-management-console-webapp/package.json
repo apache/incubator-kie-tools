@@ -46,14 +46,13 @@
     "apollo-link-http": "1.5.17",
     "axios": "^1.7.4",
     "graphql": "14.3.1",
-    "history": "^4.9.0",
     "openid-client": "^6.3.3",
     "react": "^17.0.2",
     "react-apollo": "3.1.3",
     "react-apollo-hooks": "^0.5.0",
     "react-dom": "^17.0.2",
-    "react-router": "^5.3.4",
-    "react-router-dom": "^5.3.4"
+    "react-router": "^6.29.0",
+    "react-router-dom": "^6.29.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -72,11 +71,8 @@
     "@kie-tools/maven-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@types/history": "^4.7.3",
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
-    "@types/react-router": "^5.1.20",
-    "@types/react-router-dom": "^5.3.3",
     "@types/uuid": "^8.3.0",
     "apollo-server-express": "^3.13.0",
     "body-parser": "^1.20.3",
