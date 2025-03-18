@@ -33,6 +33,7 @@ import { useCallback, useMemo, useState } from "react";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { useRefactor } from "../refactor/RefactorConfirmationDialog";
+import { TextField, TextFieldType } from "./BoxedExpressionPropertiesPanelComponents/Fields";
 
 export function BkmProperties({
   bkm,
@@ -63,7 +64,6 @@ export function BkmProperties({
   const currentName = useMemo(() => {
     return newName === "" ? oldName : newName;
   }, [newName, oldName]);
-  const [localDescription, setLocalDescription] = useState(bkm.description?.__$$text || "");
 
   return (
     <>
@@ -99,29 +99,21 @@ export function BkmProperties({
         />
       </FormGroup>
 
-      <FormGroup label="Description">
-        <TextArea
-          aria-label={"Description"}
-          type={"text"}
-          isDisabled={isReadOnly}
-          value={localDescription}
-          onChange={(newDescription) => {
-            setLocalDescription(newDescription);
-          }}
-          onBlur={() => {
-            setState((state) => {
-              (
-                state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tBusinessKnowledgeModel>
-              ).description = {
-                __$$text: localDescription,
+      <TextField
+        title={"Description"}
+        type={TextFieldType.TEXT_AREA}
+        isReadOnly={isReadOnly}
+        initialValue={bkm.description?.__$$text || ""}
+        onChange={(newDescription) => {
+          setState((state) => {
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tBusinessKnowledgeModel>).description =
+              {
+                __$$text: newDescription,
               };
-            });
-          }}
-          placeholder={"Enter a description..."}
-          style={{ resize: "vertical", minHeight: "40px" }}
-          rows={6}
-        />
-      </FormGroup>
+          });
+        }}
+        placeholder={"Enter a description..."}
+      />
 
       <FormGroup label="ID">
         <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
