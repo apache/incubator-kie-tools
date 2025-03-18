@@ -280,7 +280,7 @@ NOTE: For debbuging purposes, you can add the `--dump-header - ` to the `curl` c
 
 ### Connecting to the Apache KIE business services in the Management Console
 
-To do so, open the Management Console in http://localhost:8380 and click on the `+ Connect to a runtime…` button and fill in the required information on the
+Management Console is only available in container mode. So if you would like to acess Management Console, make sure you are running this example in [container mode](#compile-and-run-using-docker-compose). After that, open the Management Console in http://localhost:8380 and click on the `+ Connect to a runtime…` button and fill in the required information on the
 modal:
 
 - **Alias**: The name to give your connected runtime instance (can be anything that helps you identify it).
