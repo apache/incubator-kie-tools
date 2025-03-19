@@ -77,20 +77,6 @@ pipeline {
             }
         }
 
-        stage('CI Image Build') {
-            steps {
-                script {
-                    build(
-                        job: "KIE/kie-tools/kie-tools-ci-jobs/kie-tools-ci-image-build/${params.CHECKOUT_BRANCH_NAME}",
-                        wait: false,
-                        parameters: [
-                            string(name: 'IMAGE_TAG', value: "${params.KIE_TOOLS_VERSION}")
-                        ]
-                    )
-                }
-            }
-        }
-
         stage('Setup PNPM') {
             steps {
                 dir('kie-tools') {
