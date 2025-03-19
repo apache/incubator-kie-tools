@@ -73,13 +73,7 @@ const MultipleDataTypeAdd = ({ onAdd, onCancel }: MultipleDataTypeAddProps) => {
         </StackItem>
         <StackItem>
           <Form onSubmit={handleSubmit} style={{ gridGap: 0 }}>
-            <FormGroup
-              label="Data Types"
-              fieldId="data-types"
-              isRequired={true}
-              // validated={inputValidation}
-              // helperTextInvalid={"Please enter at least one Data Type Name"}
-            >
+            <FormGroup label="Data Types" fieldId="data-types" isRequired={true}>
               <TextArea
                 className="data-dictionary__multiple-data-types"
                 data-ouia-component-id="multiple-data-types"

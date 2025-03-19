@@ -170,7 +170,7 @@ export function DmnRunnerDrawerPanelContent() {
       id={"kogito-panel-content"}
       className={"kogito--editor__drawer-content-panel"}
       defaultSize={`${DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION}px`}
-      onResize={onResize}
+      onResize={(_event, val) => onResize(val)}
       isResizable={true}
       minSize={"361px"}
     >

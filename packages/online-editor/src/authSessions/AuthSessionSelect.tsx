@@ -28,7 +28,6 @@ import {
 } from "@patternfly/react-core/deprecated";
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
 import { useAuthSession, useAuthSessions } from "./AuthSessionsContext";
-// import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
 import { AuthProvider, AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 import { useEffect, useMemo, useState } from "react";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
@@ -43,7 +42,6 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSessionApi";
 import { v4 as uuid } from "uuid";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
-import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 export type AuthSessionSelectItem = {
   groupLabel: string;

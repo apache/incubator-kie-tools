@@ -26,9 +26,7 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
-
 import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
-
 import { validateWorkflowData } from "./validateWorkflowData";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import {
@@ -37,6 +35,7 @@ import {
 } from "@kie-tools/runtime-tools-components/dist/components/RequestDataEditor";
 import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
+import { ExclamationCircleIcon } from "@patternfly/react-icons";
 
 export interface WorkflowFormProps {
   workflowDefinition: WorkflowDefinition;
@@ -113,9 +112,6 @@ const WorkflowForm: React.FC<WorkflowFormProps & OUIAProps> = ({ workflowDefinit
               label="Start Workflow Data"
               isRequired
               fieldId="workflowData"
-              // helperTextInvalid={!isValid && "The Workflow Data should have a JSON format."}
-              // helperTextInvalidIcon={<ExclamationCircleIcon />}  --> this needs to be checked what has to be done for this icon
-              // validated={!isValid ? ValidatedOptions.error : ValidatedOptions.default}
               labelIcon={
                 <Popover
                   id="workflow-form-data-help"
@@ -127,16 +123,18 @@ const WorkflowForm: React.FC<WorkflowFormProps & OUIAProps> = ({ workflowDefinit
                     onClick={(e) => e.preventDefault()}
                     className="pf-v5-c-form__group-label-help"
                   >
-                    {/* <HelpIcon noVerticalAlign /> */}
                     <HelpIcon />
                   </button>
                 </Popover>
               }
             >
+              {requestDataEditor}
               {!isValid ? (
                 <FormHelperText>
                   <HelperText>
-                    <HelperTextItem variant="error">The Workflow Data should have a JSON format.</HelperTextItem>
+                    <HelperTextItem variant="error" icon={<ExclamationCircleIcon />}>
+                      The Workflow Data should have a JSON format.
+                    </HelperTextItem>
                   </HelperText>
                 </FormHelperText>
               ) : (
@@ -146,7 +144,6 @@ const WorkflowForm: React.FC<WorkflowFormProps & OUIAProps> = ({ workflowDefinit
                   </HelperText>
                 </FormHelperText>
               )}
-              {requestDataEditor}
             </FormGroup>
             <ActionGroup>
               <Button variant="primary" onClick={onSubmit} data-testid="start-button">

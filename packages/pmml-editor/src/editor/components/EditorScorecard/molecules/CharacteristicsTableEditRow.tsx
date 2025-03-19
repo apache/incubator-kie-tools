@@ -210,9 +210,6 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                 label="Name"
                 isRequired={true}
                 fieldId="characteristic-form-name-helper"
-                // helperTextInvalid="Name is mandatory and must be unique"
-                // helperTextInvalidIcon={<ExclamationCircleIcon />}
-                // validated={name.valid ? "default" : "error"}
                 style={{ width: "18em" }}
               >
                 <TextInput

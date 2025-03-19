@@ -72,13 +72,7 @@ const OutputsBatchAdd = ({ onAdd, onCancel }: OutputsBatchAddProps) => {
         </StackItem>
         <StackItem>
           <Form onSubmit={handleSubmit} style={{ gridGap: 0 }}>
-            <FormGroup
-              label="Outputs"
-              fieldId="outputs"
-              isRequired={true}
-              // validated={inputValidation}
-              // helperTextInvalid={"Please enter at least one Output name"}
-            >
+            <FormGroup label="Outputs" fieldId="outputs" isRequired={true}>
               <TextArea
                 className="outputs-container__multiple-outputs"
                 value={input}

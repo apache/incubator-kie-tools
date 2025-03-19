@@ -17,7 +17,6 @@
  * under the License.
  */
 import React, { useCallback, useMemo, useState } from "react";
-// import { Dropdown, DropdownItem, KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Dropdown, DropdownItem, KebabToggle } from "@patternfly/react-core/deprecated";
 import { checkProcessInstanceState } from "../utils/ProcessListUtils";
 import { ProcessInstance, ProcessInstanceState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";

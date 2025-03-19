@@ -155,7 +155,6 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
       <FormGroup
         label="optype"
         fieldId="output-optype-helper"
-        // helperText="Indicates the admissible operations on the values."
         className="outputs-container__extended-properties__field"
       >
         {optypeEditor}
@@ -244,7 +243,6 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
       <FormGroup
         label="Value"
         fieldId="output-value-helper"
-        // helperText="Used in conjunction with result features referring to specific values."
         className="outputs-container__extended-properties__field"
         labelIcon={
           <Tooltip content={"Value property cannot be used together with Rank property"}>
@@ -284,7 +282,6 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
       <FormGroup
         label="Rank"
         fieldId="output-rank-helper"
-        // helperText="Specifies the rank of the feature value from the mining result that should be selected."
         className="outputs-container__extended-properties__field"
         labelIcon={
           <Tooltip content={"Rank property cannot be used together with Value property"}>
@@ -324,7 +321,6 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
       <FormGroup
         label="Rank order"
         fieldId="output-rankOrder-helper"
-        // helperText="Determines the sorting order when ranking the results."
         className="outputs-container__extended-properties__field"
       >
         {rankOrderEditor}
@@ -337,7 +333,6 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
       <FormGroup
         label="Segment Id"
         fieldId="output-segmentId-helper"
-        // helperText="Provides an approach to deliver results from Segments."
         className="outputs-container__extended-properties__field"
       >
         <TextInput
@@ -363,7 +358,6 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
       <FormGroup
         label="Final result?"
         fieldId="output-isFinalResult-helper"
-        // helperText="Should the field be returned to the user or is only used as input."
         className="outputs-container__extended-properties__field"
       >
         {isFinalResultEditor}

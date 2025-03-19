@@ -865,16 +865,7 @@ function ExtendedServicesPortForm() {
       </Text>
       <br />
       <Form isHorizontal={true}>
-        <FormGroup
-          fieldId={"extended-services-port"}
-          label={i18n.dmnRunner.modal.wizard.advancedSettings.label}
-          // validated={
-          //   config.port === "" || parseInt(config.port, 10) < 0 || parseInt(config.port, 10) > 65353
-          //     ? "error"
-          //     : "success"
-          // }
-          // helperTextInvalid={i18n.dmnRunner.modal.wizard.advancedSettings.helperTextInvalid}
-        >
+        <FormGroup fieldId={"extended-services-port"} label={i18n.dmnRunner.modal.wizard.advancedSettings.label}>
           <TextInput
             value={config.port}
             type={"number"}
@@ -885,12 +876,12 @@ function ExtendedServicesPortForm() {
             }
           />
           <HelperText>
-            {config.port === "error" ? (
+            {config.port === "" || parseInt(config.port, 10) < 0 || parseInt(config.port, 10) > 65353 ? (
               <HelperTextItem variant="error" icon={<ExclamationCircleIcon />}>
                 {i18n.dmnRunner.modal.wizard.advancedSettings.helperTextInvalid}
               </HelperTextItem>
             ) : (
-              <HelperTextItem icon={config.port === "success"}></HelperTextItem>
+              <HelperTextItem></HelperTextItem>
             )}
           </HelperText>
         </FormGroup>

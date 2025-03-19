@@ -22,7 +22,6 @@ import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-// import { IconSize } from "@patternfly/react-icons/dist/js/createIcon";
 
 import { extname } from "path";
 import * as React from "react";
@@ -40,6 +39,7 @@ import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/Wo
 import { GitServerRef } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/GitServerRef";
 import { GitRefTypeIcon } from "../gitRefs/GitRefTypeIcon";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 
 export enum UrlType {
   //git
@@ -538,14 +538,27 @@ export function useImportableUrlValidation(
     if (!url) {
       return {
         option: ValidatedOptions.default,
-        helperText: <FormHelperText />,
+        helperText: (
+          <FormHelperText>
+            <Icon size="sm" isInline style={{ display: "none" }}>
+              <Spinner />
+            </Icon>
+          </FormHelperText>
+        ),
       };
     }
 
     if (clonableUrl.gitServerRefsPromise.status === PromiseStateStatus.PENDING) {
       return {
         option: ValidatedOptions.default,
-        helperText: <FormHelperText>Loading...</FormHelperText>,
+        helperText: (
+          <FormHelperText>
+            <Icon size="sm" isInline>
+              <Spinner />
+            </Icon>
+            Loading...
+          </FormHelperText>
+        ),
       };
     }
 

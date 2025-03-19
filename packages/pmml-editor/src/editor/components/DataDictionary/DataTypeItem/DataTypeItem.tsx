@@ -222,9 +222,6 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                         <FormGroup
                           fieldId="name"
                           label="Name"
-                          // helperTextInvalid="Name is mandatory and must be unique"
-                          // helperTextInvalidIcon={<ExclamationCircleIcon />}
-                          // validated={validation}
                           style={{ width: 280 }}
                           isRequired={true}
                           data-ouia-component-type="field-name"

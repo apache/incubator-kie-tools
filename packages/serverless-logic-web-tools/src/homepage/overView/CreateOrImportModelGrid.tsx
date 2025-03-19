@@ -41,7 +41,6 @@ export function CreateOrImportModelGrid(props: { isNavOpen: boolean }) {
       <GridItem xl={12} xl2={force12Cols ? 12 : 6}>
         <Card className="Dev-ui__card-size" style={{ height: "100%" }}>
           <CardHeader>
-            actions=
             {
               <>
                 <CardTitle>
@@ -75,7 +74,6 @@ export function CreateOrImportModelGrid(props: { isNavOpen: boolean }) {
       <GridItem xl={12} xl2={force12Cols ? 12 : 6}>
         <Card className="Dev-ui__card-size" style={{ height: "100%" }}>
           <CardHeader>
-            actions=
             {
               <>
                 <CardTitle>

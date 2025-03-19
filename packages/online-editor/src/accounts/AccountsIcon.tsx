@@ -137,7 +137,7 @@ export function AccountsIcon() {
                         </TextContent>
                       </Flex>
                     </FlexItem>
-                    <AuthProviderIcon authProvider={accounts.selectedAuthProvider} />
+                    <AuthProviderIcon authProvider={accounts.selectedAuthProvider} size="sm" />
                   </Flex>
                 </>
               )}
@@ -163,7 +163,7 @@ export function AccountsIcon() {
                         </TextContent>
                       </Flex>
                     </FlexItem>
-                    <AuthProviderIcon authProvider={accounts.selectedAuthProvider} />
+                    <AuthProviderIcon authProvider={accounts.selectedAuthProvider} size="sm" />
                   </Flex>
                 </>
               )}

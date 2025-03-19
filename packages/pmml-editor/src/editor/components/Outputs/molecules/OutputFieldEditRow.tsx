@@ -152,14 +152,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
         <StackItem>
           <Split hasGutter={true}>
             <SplitItem>
-              <FormGroup
-                label="Name"
-                fieldId="output-name-helper"
-                isRequired={true}
-                // helperTextInvalid="Name is mandatory and must be unique"
-                // helperTextInvalidIcon={<ExclamationCircleIcon />}
-                // validated={name?.valid ? "default" : "error"}
-              >
+              <FormGroup label="Name" fieldId="output-name-helper" isRequired={true}>
                 <TextInput
                   type="text"
                   id="output-name"

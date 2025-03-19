@@ -28,8 +28,6 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { useExtendedServices } from "../extendedServices/ExtendedServicesContext";
 import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
-import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
-import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 
 export function ExtendedServicesSettingsTab() {
   const { settings } = useSettings();
@@ -73,13 +71,7 @@ export function ExtendedServicesSettingsTab() {
                   />
                 )}
               </FormAlert>
-              <FormGroup
-                isRequired={true}
-                // helperTextInvalid={""}
-                // validated={"default"}
-                label={"Host"}
-                fieldId={"host-input"}
-              >
+              <FormGroup isRequired={true} label={"Host"} fieldId={"host-input"}>
                 <InputGroup>
                   <InputGroupItem isFill>
                     <TextInput
@@ -94,21 +86,8 @@ export function ExtendedServicesSettingsTab() {
                     />
                   </InputGroupItem>
                 </InputGroup>
-                <HelperText>
-                  {/* (
-                  <HelperTextItem variant="default" icon={ValidatedOptions.default}>
-                    {""}
-                  </HelperTextItem>
-                  ) */}
-                </HelperText>
               </FormGroup>
-              <FormGroup
-                isRequired={false}
-                // helperTextInvalid={""}
-                // validated={"default"}
-                label={"Port"}
-                fieldId={"port-input"}
-              >
+              <FormGroup isRequired={false} label={"Port"} fieldId={"port-input"}>
                 <InputGroup>
                   <InputGroupItem isFill>
                     <TextInput
@@ -123,13 +102,6 @@ export function ExtendedServicesSettingsTab() {
                     />
                   </InputGroupItem>
                 </InputGroup>
-                <HelperText>
-                  {/* (
-                  <HelperTextItem variant="default" icon={ValidatedOptions.default}>
-                    {""}
-                  </HelperTextItem>
-                  ) */}
-                </HelperText>
               </FormGroup>
               <ActionGroup>
                 <Button

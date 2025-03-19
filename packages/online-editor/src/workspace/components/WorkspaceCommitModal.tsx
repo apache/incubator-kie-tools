@@ -117,11 +117,7 @@ export const WorkspaceCommitModal: PromiseModalChildren<string, WorkspaceCommitM
       <Text component={TextVariants.p}>{i18n.commitModal.description}</Text>
       <br />
       <Form onSubmit={onSubmit}>
-        <FormGroup
-          fieldId={"kie-sandbox-custom-commit-message"}
-          // validated={validation.result ? ValidatedOptions.success : ValidatedOptions.error}
-          // helperTextInvalid={<CommitValidationErrorMessages validations={validation.reasons} />}
-        >
+        <FormGroup fieldId={"kie-sandbox-custom-commit-message"}>
           <TextArea
             value={commitMessage}
             type={"text"}

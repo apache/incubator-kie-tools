@@ -25,8 +25,6 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useEnv } from "../env/hooks/EnvContext";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
-import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
-import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 
 export function CorsProxySettingsTab() {
   const { env } = useEnv();
@@ -41,13 +39,7 @@ export function CorsProxySettingsTab() {
         <PageSection>
           <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
             <Form onSubmit={onSubmit}>
-              <FormGroup
-                isRequired={true}
-                // helperTextInvalid={""}
-                // validated={"default"}
-                label={"URL"}
-                fieldId={"url-input"}
-              >
+              <FormGroup isRequired={true} label={"URL"} fieldId={"url-input"}>
                 <InputGroup>
                   <InputGroupItem isFill>
                     <TextInput
@@ -62,13 +54,6 @@ export function CorsProxySettingsTab() {
                     />
                   </InputGroupItem>
                 </InputGroup>
-                <HelperText>
-                  {/* (
-                  <HelperTextItem variant="default" icon={ValidatedOptions.default}>
-                    {""}
-                  </HelperTextItem>
-                  ) */}
-                </HelperText>
               </FormGroup>
               <TextContent>
                 <Text component={"small"}>

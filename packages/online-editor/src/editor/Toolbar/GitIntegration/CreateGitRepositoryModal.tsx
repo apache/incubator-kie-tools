@@ -367,13 +367,6 @@ export function CreateGitRepositoryModal(props: {
             description={i18n.createGitRepositoryModal.form.visibility.private.description}
             onChange={() => setPrivate(true)}
           />
-          {/* <FormHelperText>
-            <HelperText>
-              <HelperTextItem variant="error">
-                <ExclamationCircleIcon />{" "}
-              </HelperTextItem>
-            </HelperText>
-          </FormHelperText> */}
         </FormGroup>
       </Form>
     </Modal>
