@@ -21,3 +21,18 @@
 .expression-container .standalone-bee-table table thead th.dmn-runner-output .add-column-button {
   background-color: #bee1f4;
 }
+
+/* td .runner-column-highlight {
+  border-left: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
+  border-right: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
+}
+
+thead tr:nth-child(2) .runner-column-highlight {
+  border-top: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
+  border-left: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
+  border-right: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
+}
+
+tbody tr:last-child .runner-column-highlight {
+  border-bottom: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
+} */
