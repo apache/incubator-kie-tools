@@ -50,6 +50,7 @@ func TestNewRootCommand(t *testing.T) {
 			"undeploy",
 			"gen-manifest",
 			"version",
+			"operator",
 		}
 
 		cmd := NewRootCommand(cfgTestInputRoot)
