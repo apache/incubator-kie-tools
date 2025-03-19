@@ -59,7 +59,7 @@ func (k *sonataFlowBuildManager) GetOrCreateBuild(workflow *operatorapi.SonataFl
 	if err := k.client.Get(k.ctx, client.ObjectKeyFromObject(workflow), buildInstance); err != nil {
 		if errors.IsNotFound(err) {
 			plat := &operatorapi.SonataFlowPlatform{}
-			if plat, err = platform.GetActivePlatform(k.ctx, k.client, workflow.Namespace); err != nil {
+			if plat, err = platform.GetActivePlatform(k.ctx, k.client, workflow.Namespace, true); err != nil {
 				return nil, err
 			}
 			workflowBuildTemplate := plat.Spec.Build.Template.DeepCopy()

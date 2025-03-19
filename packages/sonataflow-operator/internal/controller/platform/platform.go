@@ -119,23 +119,41 @@ func GetOperatorLockName(operatorID string) string {
 }
 
 // GetActivePlatform returns the currently installed active platform in the local namespace.
-func GetActivePlatform(ctx context.Context, c ctrl.Client, namespace string) (*operatorapi.SonataFlowPlatform, error) {
-	return getLocalPlatform(ctx, c, namespace, true)
+// The parameter createIfNotExists determines if such platform must be created when not exists. Never nil when
+// createsIfNotExists is true, unless an error.
+func GetActivePlatform(ctx context.Context, c ctrl.Client, namespace string, createIfNotExists bool) (*operatorapi.SonataFlowPlatform, error) {
+	platform, err := getLocalPlatform(ctx, c, namespace, true)
+	if err != nil {
+		return nil, err
+	}
+	if platform != nil {
+		return platform, nil
+	}
+	klog.V(log.I).InfoS("No active SonataFlowPlatform was found in namespace", "Namespace", namespace)
+	if createIfNotExists {
+		klog.V(log.I).InfoS("Creating a default SonataFlowPlatform", "Namespace", namespace)
+		sfp := newEmptySonataFlowPlatform(namespace)
+		if err = CreateOrUpdateWithDefaults(ctx, sfp, false); err != nil {
+			return nil, err
+		}
+		return sfp, nil
+	}
+	return nil, nil
 }
 
-// getLocalPlatform returns the currently installed platform or any platform existing in local namespace.
+// getLocalPlatform returns the currently installed active platform, or any platform, existing in local namespace when no
+// active platform exists. When the active parameter is true, only active platforms are considered.
+// In other cases, a non-active platform might be returned as a second option.
 func getLocalPlatform(ctx context.Context, c ctrl.Client, namespace string, active bool) (*operatorapi.SonataFlowPlatform, error) {
-	klog.V(log.D).InfoS("Finding available platforms")
-
+	klog.V(log.D).InfoS("Finding available platforms in namespace", "namespace", namespace)
 	lst, err := listPrimaryPlatforms(ctx, c, namespace)
 	if err != nil {
 		return nil, err
 	}
-
 	for _, p := range lst.Items {
 		platform := p // pin
 		if IsActive(&platform) {
-			klog.V(log.D).InfoS("Found active local build platform", "platform", platform.Name)
+			klog.V(log.D).InfoS("Found active local platform", "platform", platform.Name)
 			return &platform, nil
 		}
 	}
@@ -143,16 +161,10 @@ func getLocalPlatform(ctx context.Context, c ctrl.Client, namespace string, acti
 	if !active && len(lst.Items) > 0 {
 		// does not require the platform to be active, just return one if present
 		res := lst.Items[0]
-		klog.V(log.D).InfoS("Found local build platform", "platform", res.Name)
+		klog.V(log.D).InfoS("Found non-active local platform", "platform", res.Name)
 		return &res, nil
 	}
-	klog.V(log.I).InfoS("Not found a local build platform", "Namespace", namespace)
-	klog.V(log.I).InfoS("Creating a default SonataFlowPlatform", "Namespace", namespace)
-	sfp := newEmptySonataFlowPlatform(namespace)
-	if err = CreateOrUpdateWithDefaults(ctx, sfp, false); err != nil {
-		return nil, err
-	}
-	return sfp, nil
+	return nil, nil
 }
 
 func newEmptySonataFlowPlatform(namespace string) *operatorapi.SonataFlowPlatform {

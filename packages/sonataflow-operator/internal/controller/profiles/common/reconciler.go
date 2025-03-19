@@ -53,7 +53,7 @@ type StateSupport struct {
 // PerformStatusUpdate updates the SonataFlow Status conditions
 func (s *StateSupport) PerformStatusUpdate(ctx context.Context, workflow *operatorapi.SonataFlow) (bool, error) {
 	var err error
-	pl, err := platform.GetActivePlatform(ctx, s.C, workflow.Namespace)
+	pl, err := platform.GetActivePlatform(ctx, s.C, workflow.Namespace, true)
 	if err != nil {
 		return false, err
 	}

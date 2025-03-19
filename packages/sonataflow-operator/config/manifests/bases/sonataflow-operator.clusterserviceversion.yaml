@@ -241,10 +241,18 @@ spec:
           - description: Endpoint is an externally accessible URL of the workflow
             displayName: endpoint
             path: endpoint
+          - displayName: finalizerAttempts
+            path: finalizerAttempts
+          - displayName: finalizerSucceed
+            path: finalizerSucceed
           - displayName: flowRevision
             path: flowCRC
+          - displayName: lastTimeFinalizerAttempt
+            path: lastTimeFinalizerAttempt
           - displayName: lastTimeRecoverAttempt
             path: lastTimeRecoverAttempt
+          - displayName: lastTimeStatusNotified
+            path: lastTimeStatusNotified
           - description: Platform displays which platform is being used by this workflow
             displayName: platform
             path: platform

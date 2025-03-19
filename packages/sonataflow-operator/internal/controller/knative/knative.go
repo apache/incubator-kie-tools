@@ -116,8 +116,8 @@ func GetKnativeAvailability(cfg *rest.Config) (*Availability, error) {
 	}
 }
 
-// getRemotePlatform returns the remote platfrom referred by a SonataFlowClusterPlatform
-func getRemotePlatform(pl *operatorapi.SonataFlowPlatform) (*operatorapi.SonataFlowPlatform, error) {
+// GetRemotePlatform returns the remote platform referred by a SonataFlowClusterPlatform if any.
+func GetRemotePlatform(pl *operatorapi.SonataFlowPlatform) (*operatorapi.SonataFlowPlatform, error) {
 	if pl.Status.ClusterPlatformRef != nil {
 		// Find the platform referred by the cluster platform
 		platform := &operatorapi.SonataFlowPlatform{}
@@ -172,12 +172,15 @@ func GetWorkflowSink(workflow *operatorapi.SonataFlow, pl *operatorapi.SonataFlo
 	if workflow.Spec.Sink != nil {
 		return getDestinationWithNamespace(workflow.Spec.Sink, workflow.Namespace), nil
 	}
-	if pl != nil && pl.Spec.Eventing != nil && pl.Spec.Eventing.Broker != nil {
+	if pl == nil {
+		return nil, nil
+	}
+	if pl.Spec.Eventing != nil && pl.Spec.Eventing.Broker != nil {
 		// no sink defined in the workflow, use the platform broker
 		return getDestinationWithNamespace(pl.Spec.Eventing.Broker, pl.Namespace), nil
 	}
 	// Find the remote platform referred by the cluster platform
-	platform, err := getRemotePlatform(pl)
+	platform, err := GetRemotePlatform(pl)
 	if err != nil {
 		return nil, err
 	}
@@ -289,4 +292,18 @@ func CheckKSinkInjected(name, namespace string) (bool, error) {
 		return true, nil
 	}
 	return false, nil // K_SINK has not been injected yet
+}
+
+// GetSinkBindingSinkURI returns the address of the sink referred by a SinkBinding.
+func GetSinkBindingSinkURI(name, namespace string) (*apis.URL, error) {
+	sbName := fmt.Sprintf("%s-sb", name)
+	sb := &sourcesv1.SinkBinding{}
+	if err := utils.GetClient().Get(context.TODO(), types.NamespacedName{Name: sbName, Namespace: namespace}, sb); err != nil {
+		return nil, err
+	}
+	cond := sb.Status.GetCondition(apis.ConditionType(apis.ConditionReady))
+	if cond == nil || cond.Status != corev1.ConditionTrue {
+		return nil, fmt.Errorf("SinkBinding name: %s, namespace: %s is not ready", sbName, namespace)
+	}
+	return sb.Status.SinkURI, nil
 }

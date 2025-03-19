@@ -202,6 +202,14 @@ type SonataFlowStatus struct {
 	Triggers []SonataFlowTriggerRef `json:"triggers,omitempty"`
 	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="flowRevision"
 	FlowCRC uint32 `json:"flowCRC,omitempty"`
+	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="finalizerAttempts"
+	FinalizerAttempts int `json:"finalizerAttempts,omitempty"`
+	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="finalizerSucceed"
+	FinalizerSucceed bool `json:"finalizerSucceed,omitempty"`
+	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="lastTimeFinalizerAttempt"
+	LastTimeFinalizerAttempt *metav1.Time `json:"lastTimeFinalizerAttempt,omitempty"`
+	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="lastTimeStatusNotified"
+	LastTimeStatusNotified *metav1.Time `json:"lastTimeStatusNotified,omitempty"`
 }
 
 // SonataFlowTriggerRef defines a trigger created for the SonataFlow.

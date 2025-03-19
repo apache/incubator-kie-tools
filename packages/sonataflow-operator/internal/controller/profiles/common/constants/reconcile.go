@@ -30,6 +30,11 @@ const (
 	// RequeueRecoverDeploymentErrorInterval interval between recovering from failures
 	RequeueRecoverDeploymentErrorInterval = RecoverDeploymentErrorInterval * time.Minute
 	RecoverDeploymentErrorInterval        = 10
-
-	DefaultHTTPWorkflowPortInt = 8080
+	DefaultHTTPWorkflowPortInt            = 8080
+	// MaxWorkflowFinalizerAttempts how many times the operator will try to execute a SonataFlow CRD finalizer.
+	MaxWorkflowFinalizerAttempts = 3
+	// WorkflowFinalizerRetryInterval interval between SonataFlow CRD finalizer execution attempts.
+	WorkflowFinalizerRetryInterval = 5 * time.Second
+	// EventDeliveryTimeout delivery timeout for the cloud events produced by the operator.
+	EventDeliveryTimeout = 30 * time.Second
 )
