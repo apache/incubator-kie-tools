@@ -40,7 +40,7 @@ services:
   # The nginx reverse-proxy is used to forward `host.docker.internal` requests to `localhost.
   reverse-proxy:
     image: nginx:1.27.3-alpine
-    container_name: kie-tools-playwright-containerization-scesim-editor-reverse-proxy
+    container_name: kie-tools-playwright-containerization-boxed-expression-component-reverse-proxy
     network_mode: host
     command: ["nginx", "-g", "daemon off;"]
     configs:
