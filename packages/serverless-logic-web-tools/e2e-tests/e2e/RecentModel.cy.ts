@@ -49,7 +49,7 @@ describe("Serverless Logic Web Tools - Recent model test", () => {
     cy.goToSidebarLink({ ouiaId: "recent-models-nav" });
 
     cy.ouia({ ouiaId: "OUIA-Generated-TableRow-2" })
-      .find("[data-label='Name'] > a")
+      .find("[data-label='Name'] a")
       .eq(0)
       .should(($item) => expect($item.text().trim()).equal("testJsonFile"))
       .click();
@@ -71,6 +71,6 @@ describe("Serverless Logic Web Tools - Recent model test", () => {
 
     // check the file is deleted (recent section is emtpy)
     cy.goToSidebarLink({ ouiaId: "recent-models-nav" });
-    cy.get(".pf-l-bullseye").should("contain.text", "Nothing here");
+    cy.get(".pf-v5-l-bullseye").should("contain.text", "Nothing here");
   });
 });

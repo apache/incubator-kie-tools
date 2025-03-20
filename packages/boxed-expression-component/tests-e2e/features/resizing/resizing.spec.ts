@@ -564,7 +564,7 @@ test.describe("Resizing", () => {
       const columnsHeader = page.getByRole("columnheader", { name: "Expression Name (<Undefined>)" });
       const column1 = page.getByRole("columnheader", { name: "Installment Calculation (<Undefined>)" });
       await column1.hover({ position: { x: 0, y: 0 } });
-      await column1.locator("svg").click();
+      await column1.locator(".add-column-button svg").click();
       const column2 = page.getByRole("columnheader", { name: "column-2 (<Undefined>)" });
 
       expect(await columnsHeader.boundingBox()).toHaveProperty("width", 200);

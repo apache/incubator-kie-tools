@@ -100,7 +100,7 @@ export function FilterExpressionMatchCell({
     <div className={"filter-expression-cell"}>
       <div
         className={"bracket-sign-container"}
-        style={{ borderRight: "1px solid var(--pf-global--palette--black-300)" }}
+        style={{ borderRight: "1px solid var(--pf-v5-global--palette--black-300)" }}
       >
         <div className={"bracket-sign"}>[</div>
       </div>
@@ -122,7 +122,7 @@ export function FilterExpressionMatchCell({
       </div>
       <div
         className={"bracket-sign-container"}
-        style={{ borderLeft: "1px solid var(--pf-global--palette--black-300)" }}
+        style={{ borderLeft: "1px solid var(--pf-v5-global--palette--black-300)" }}
       >
         <div className={"bracket-sign"}>]</div>
       </div>

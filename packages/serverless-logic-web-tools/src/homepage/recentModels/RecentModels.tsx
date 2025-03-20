@@ -21,12 +21,18 @@ import { GIT_DEFAULT_BRANCH } from "@kie-tools-core/workspaces-git-fs/dist/const
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
-import { Dropdown, DropdownToggle, ToolbarItem } from "@patternfly/react-core/dist/js";
+import { ToolbarItem } from "@patternfly/react-core/dist/js";
+import { Dropdown, DropdownToggle } from "@patternfly/react-core/deprecated";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { CaretDownIcon, PlusIcon } from "@patternfly/react-icons/dist/js/icons";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
@@ -289,7 +295,7 @@ export function RecentModels() {
                     isOpen={isNewFileDropdownMenuOpen}
                     toggle={
                       <DropdownToggle
-                        onToggle={setNewFileDropdownMenuOpen}
+                        onToggle={(_event, val) => setNewFileDropdownMenuOpen(val)}
                         toggleIndicator={CaretDownIcon}
                         toggleVariant="primary"
                       >
@@ -319,10 +325,11 @@ export function RecentModels() {
                 <PageSection variant={"light"} padding={{ default: "noPadding" }}>
                   <Bullseye>
                     <EmptyState>
-                      <EmptyStateIcon icon={CubesIcon} />
-                      <Title headingLevel="h4" size="lg">
-                        {`Nothing here`}
-                      </Title>
+                      <EmptyStateHeader
+                        titleText={<>{`Nothing here`}</>}
+                        icon={<EmptyStateIcon icon={CubesIcon} />}
+                        headingLevel="h4"
+                      />
                       <EmptyStateBody>
                         <TextContent>
                           <Text>

@@ -28,7 +28,7 @@ import {
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { FilterIcon } from "@patternfly/react-icons/dist/js/icons/filter-icon";
 import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
 import remove from "lodash/remove";
@@ -103,16 +103,18 @@ const ProcessDefinitionListToolbar: React.FC<ProcessDefinitionListToolbarProps &
           categoryName={Category.PROCESS_NAME}
         >
           <InputGroup>
-            <TextInput
-              name="processName"
-              id="processName"
-              type="search"
-              aria-label="process name"
-              onChange={setProcessNameInput}
-              onKeyPress={onEnterClicked}
-              placeholder={`Filter by ${singularProcessLabel.toLowerCase()} name`}
-              value={processNameInput}
-            />
+            <InputGroupItem isFill>
+              <TextInput
+                name="processName"
+                id="processName"
+                type="search"
+                aria-label="process name"
+                onChange={(_event, val) => setProcessNameInput(val)}
+                onKeyPress={onEnterClicked}
+                placeholder={`Filter by ${singularProcessLabel.toLowerCase()} name`}
+                value={processNameInput}
+              />
+            </InputGroupItem>
           </InputGroup>
         </ToolbarFilter>
         <ToolbarItem>

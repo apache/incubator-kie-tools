@@ -27,15 +27,10 @@ import {
   ToolbarChipGroup,
   ToolbarChip,
 } from "@patternfly/react-core/dist/js/components/Toolbar";
-import {
-  Select,
-  SelectOption,
-  SelectOptionObject,
-  SelectVariant,
-} from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectOptionObject, SelectVariant } from "@patternfly/react-core/deprecated";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { FilterIcon } from "@patternfly/react-icons/dist/js/icons/filter-icon";
 import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
@@ -163,7 +158,7 @@ const TaskInboxToolbar: React.FC<TaskInboxToolbarProps & OUIAProps> = ({
             <Select
               variant={SelectVariant.checkbox}
               aria-label="Status"
-              onToggle={setStatusExpanded}
+              onToggle={(_event, val) => setStatusExpanded(val)}
               onSelect={onSelectTaskState}
               selections={selectedTaskStates}
               isOpen={isStatusExpanded}
@@ -174,15 +169,17 @@ const TaskInboxToolbar: React.FC<TaskInboxToolbarProps & OUIAProps> = ({
           </ToolbarFilter>
           <ToolbarFilter chips={filterTaskNames} deleteChip={onDeleteFilterGroup} categoryName={Category.TASK_NAME}>
             <InputGroup>
-              <TextInput
-                name="taskName"
-                id="taskName"
-                type="search"
-                aria-label="task name"
-                onChange={setTaskNameInput}
-                placeholder="Filter by Task name"
-                value={taskNameInput}
-              />
+              <InputGroupItem isFill>
+                <TextInput
+                  name="taskName"
+                  id="taskName"
+                  type="search"
+                  aria-label="task name"
+                  onChange={(_event, val) => setTaskNameInput(val)}
+                  placeholder="Filter by Task name"
+                  value={taskNameInput}
+                />
+              </InputGroupItem>
             </InputGroup>
           </ToolbarFilter>
           <ToolbarItem>

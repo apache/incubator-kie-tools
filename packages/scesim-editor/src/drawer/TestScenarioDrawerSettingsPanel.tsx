@@ -38,7 +38,7 @@ import { ExternalDmn } from "../TestScenarioEditor";
 import { useTestScenarioEditor } from "../TestScenarioEditorContext";
 
 import "./TestScenarioDrawerSettingsPanel.css";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 
 function TestScenarioDrawerSettingsPanel() {
   const { i18n } = useTestScenarioEditorI18n();
@@ -175,7 +175,7 @@ function TestScenarioDrawerSettingsPanel() {
             aria-label="form-select-input"
             className={"kie-scesim-editor-drawer-settings--form-select"}
             ouiaId="BasicFormSelect"
-            onToggle={setModelSelectOpen}
+            onToggle={(_event, val) => setModelSelectOpen(val)}
             isOpen={isModelSelectOpen}
             maxHeight={"350px"}
             onSelect={(e, path) => {
@@ -244,7 +244,7 @@ function TestScenarioDrawerSettingsPanel() {
           <TextInput
             aria-label="rule-session"
             className={"kie-scesim-editor-drawer-settings--text-input"}
-            onChange={(value) => updateSettingsField("dmoSession", value)}
+            onChange={(_event, value) => updateSettingsField("dmoSession", value)}
             placeholder={i18n.drawer.settings.kieSessionRulePlaceholder}
             type="text"
             value={settingsModel.dmoSession?.__$$text}
@@ -260,7 +260,7 @@ function TestScenarioDrawerSettingsPanel() {
           <TextInput
             aria-label="rule-flow-group"
             className={"kie-scesim-editor-drawer-settings--text-input"}
-            onChange={(value) => updateSettingsField("ruleFlowGroup", value)}
+            onChange={(_event, value) => updateSettingsField("ruleFlowGroup", value)}
             placeholder={i18n.drawer.settings.ruleFlowGroupPlaceholder}
             type="text"
             value={settingsModel.ruleFlowGroup?.__$$text}
@@ -271,7 +271,7 @@ function TestScenarioDrawerSettingsPanel() {
                 id="stateless-session"
                 isChecked={settingsModel.stateless?.__$$text ?? false}
                 label={i18n.drawer.settings.statelessSessionRule}
-                onChange={(value) => updateSettingsField("stateless", value)}
+                onChange={(_event, value) => updateSettingsField("stateless", value)}
               />
             </div>
             <Tooltip content={i18n.drawer.settings.statelessSessionRuleTooltip}>
@@ -288,7 +288,7 @@ function TestScenarioDrawerSettingsPanel() {
             id="skip-test"
             isChecked={settingsModel.skipFromBuild?.__$$text ?? false}
             label={i18n.drawer.settings.testSkipped}
-            onChange={(value) => updateSettingsField("skipFromBuild", value)}
+            onChange={(_event, value) => updateSettingsField("skipFromBuild", value)}
           />
         </div>
         <Tooltip content={i18n.drawer.settings.testSkippedTooltip}>

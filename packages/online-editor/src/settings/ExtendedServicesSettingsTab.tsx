@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useCallback, useState } from "react";
 import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
@@ -71,44 +71,36 @@ export function ExtendedServicesSettingsTab() {
                   />
                 )}
               </FormAlert>
-              <FormGroup
-                isRequired={true}
-                helperTextInvalid={""}
-                validated={"default"}
-                label={"Host"}
-                fieldId={"host-input"}
-              >
+              <FormGroup isRequired={true} label={"Host"} fieldId={"host-input"}>
                 <InputGroup>
-                  <TextInput
-                    id="host-input"
-                    name="host"
-                    aria-describedby="host-text-input-helper"
-                    placeholder={""}
-                    validated={"default"}
-                    value={host}
-                    onChange={setHost}
-                    autoFocus={true}
-                  />
+                  <InputGroupItem isFill>
+                    <TextInput
+                      id="host-input"
+                      name="host"
+                      aria-describedby="host-text-input-helper"
+                      placeholder={""}
+                      validated={"default"}
+                      value={host}
+                      onChange={(_event, val) => setHost(val)}
+                      autoFocus={true}
+                    />
+                  </InputGroupItem>
                 </InputGroup>
               </FormGroup>
-              <FormGroup
-                isRequired={false}
-                helperTextInvalid={""}
-                validated={"default"}
-                label={"Port"}
-                fieldId={"port-input"}
-              >
+              <FormGroup isRequired={false} label={"Port"} fieldId={"port-input"}>
                 <InputGroup>
-                  <TextInput
-                    id="port-input"
-                    name="port"
-                    aria-describedby="port-text-input-helper"
-                    placeholder={""}
-                    validated={"default"}
-                    value={port}
-                    onChange={setPort}
-                    autoFocus={true}
-                  />
+                  <InputGroupItem isFill>
+                    <TextInput
+                      id="port-input"
+                      name="port"
+                      aria-describedby="port-text-input-helper"
+                      placeholder={""}
+                      validated={"default"}
+                      value={port}
+                      onChange={(_event, val) => setPort(val)}
+                      autoFocus={true}
+                    />
+                  </InputGroupItem>
                 </InputGroup>
               </FormGroup>
               <ActionGroup>

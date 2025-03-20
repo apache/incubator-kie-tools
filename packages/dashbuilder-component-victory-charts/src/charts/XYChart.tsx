@@ -26,7 +26,7 @@ export type ChartGroupType = typeof ChartGroup;
 
 export abstract class XYChart extends BaseChart {
   render() {
-    const { width, height, themeColor, themeVariant } = this.props;
+    const { width, height, themeColor } = this.props;
     return (
       <Chart
         ariaDesc={this.props.ariaDescription}
@@ -41,7 +41,6 @@ export abstract class XYChart extends BaseChart {
         animate={this.animationProp}
         padding={this.props.padding}
         themeColor={themeColor}
-        themeVariant={themeVariant}
       >
         <ChartAxis showGrid={this.props.grid.y} fixLabelOverlap={this.props.fixLabelsOverlap} />
         <ChartAxis

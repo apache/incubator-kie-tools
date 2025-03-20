@@ -24,7 +24,7 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+
 import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 import "./CharacteristicsTableRow.scss";
 import "../../EditorScorecard/templates/ScorecardEditorPage.scss";
@@ -42,6 +42,8 @@ import { useValidationRegistry } from "../../../validation";
 import { isEqual } from "lodash";
 import get = Reflect.get;
 import set = Reflect.set;
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 interface CharacteristicsTableEditRowProps {
   modelIndex: number;
@@ -208,9 +210,6 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                 label="Name"
                 isRequired={true}
                 fieldId="characteristic-form-name-helper"
-                helperTextInvalid="Name is mandatory and must be unique"
-                helperTextInvalidIcon={<ExclamationCircleIcon />}
-                validated={name.valid ? "default" : "error"}
                 style={{ width: "18em" }}
               >
                 <TextInput
@@ -222,7 +221,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   placeholder="Name"
                   validated={name.valid ? "default" : "error"}
                   autoFocus={true}
-                  onChange={(e) =>
+                  onChange={(_event, e) =>
                     setName({
                       value: e,
                       valid: validateCharacteristicName(e),
@@ -242,6 +241,19 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   }}
                   ouiaId="characteristic-name-input"
                 />
+                {name.valid === false ? (
+                  <FormHelperText>
+                    <HelperText>
+                      <HelperTextItem variant="warning">Name is mandatory and must be unique</HelperTextItem>
+                    </HelperText>
+                  </FormHelperText>
+                ) : (
+                  <FormHelperText>
+                    <HelperText>
+                      <HelperTextItem variant="default"></HelperTextItem>
+                    </HelperText>
+                  </FormHelperText>
+                )}
               </FormGroup>
             </SplitItem>
             <SplitItem>
@@ -263,14 +275,12 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                     <button
                       aria-label="More information for Reason code"
                       onClick={(e) => e.preventDefault()}
-                      className="pf-c-form__group-label-help"
+                      className="pf-v5-c-form__group-label-help"
                     >
-                      <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                      <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
                     </button>
                   </Tooltip>
                 }
-                validated={reasonCodeValidation.length > 0 ? "warning" : "default"}
-                helperText={reasonCodeValidation.length > 0 ? reasonCodeValidation[0].message : undefined}
               >
                 <TextInput
                   type="text"
@@ -278,7 +288,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   name="characteristic-reason-code"
                   aria-describedby="characteristic-reason-code-helper"
                   value={reasonCode ?? ""}
-                  onChange={(e) => setReasonCode(e)}
+                  onChange={(_event, e) => setReasonCode(e)}
                   onBlur={() => {
                     onCommit({
                       reasonCode: reasonCode === "" ? undefined : reasonCode,
@@ -288,6 +298,19 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   isDisabled={!areReasonCodesUsed || isReasonCodeProvidedByAttributes}
                   ouiaId="characteristic-reason-code-input"
                 />
+                {reasonCodeValidation.length > 0 ? (
+                  <FormHelperText>
+                    <HelperText>
+                      <HelperTextItem variant="warning">{reasonCodeValidation[0].message}</HelperTextItem>
+                    </HelperText>
+                  </FormHelperText>
+                ) : (
+                  <FormHelperText>
+                    <HelperText>
+                      <HelperTextItem variant="default"></HelperTextItem>
+                    </HelperText>
+                  </FormHelperText>
+                )}
               </FormGroup>
             </SplitItem>
             <SplitItem isFilled={true}>
@@ -308,14 +331,12 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                     <button
                       aria-label="More information for Baseline score"
                       onClick={(e) => e.preventDefault()}
-                      className="pf-c-form__group-label-help"
+                      className="pf-v5-c-form__group-label-help"
                     >
-                      <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                      <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
                     </button>
                   </Tooltip>
                 }
-                helperText={baselineScoreValidation.length > 0 ? baselineScoreValidation[0].message : undefined}
-                validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
                 style={{ width: "16em" }}
               >
                 <TextInput
@@ -325,7 +346,7 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   aria-describedby="characteristic-baseline-score-helper"
                   value={baselineScore ?? ""}
                   validated={baselineScoreValidation.length > 0 ? "warning" : "default"}
-                  onChange={(e) => setBaselineScore(toNumber(e))}
+                  onChange={(_event, e) => setBaselineScore(toNumber(e))}
                   onBlur={() => {
                     onCommit({
                       baselineScore: baselineScore,
@@ -334,6 +355,19 @@ export const CharacteristicsTableEditRow = (props: CharacteristicsTableEditRowPr
                   isDisabled={scorecardBaselineScore !== undefined}
                   ouiaId="characteristic-baseline-score-input"
                 />
+                {baselineScoreValidation.length > 0 ? (
+                  <FormHelperText>
+                    <HelperText>
+                      <HelperTextItem variant="warning">{baselineScoreValidation[0].message}</HelperTextItem>
+                    </HelperText>
+                  </FormHelperText>
+                ) : (
+                  <FormHelperText>
+                    <HelperText>
+                      <HelperTextItem variant="default"></HelperTextItem>
+                    </HelperText>
+                  </FormHelperText>
+                )}
               </FormGroup>
             </SplitItem>
 

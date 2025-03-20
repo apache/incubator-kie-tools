@@ -32,9 +32,11 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
+  EmptyStateHeader,
+  EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { SearchIcon } from "@patternfly/react-icons/dist/js/icons/search-icon";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { EmbeddedProcessDetails } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
@@ -127,14 +129,17 @@ export const ProcessDetails: React.FC<Props> = ({ processInstanceId, onReturnToP
   return (
     <Bullseye>
       <EmptyState variant={EmptyStateVariant.full}>
-        <EmptyStateIcon icon={SearchIcon} />
-        <Title headingLevel="h1" size="4xl">
-          Process instance not found
-        </Title>
+        <EmptyStateHeader
+          titleText="Process instance not found"
+          icon={<EmptyStateIcon icon={SearchIcon} />}
+          headingLevel="h1"
+        />
         <EmptyStateBody>{`Process instance with the id ${processInstanceId} not found`}</EmptyStateBody>
-        <Button variant="primary" onClick={onReturnToProcessList} data-testid="redirect-button">
-          Back to Process Instances
-        </Button>
+        <EmptyStateFooter>
+          <Button variant="primary" onClick={onReturnToProcessList} data-testid="redirect-button">
+            Back to Process Instances
+          </Button>
+        </EmptyStateFooter>
       </EmptyState>
     </Bullseye>
   );

@@ -37,7 +37,7 @@ export function TriggerCloudEventPage() {
     useCallback(({ close }, { message }) => {
       return (
         <Alert
-          className="pf-u-mb-md"
+          className="pf-v5-u-mb-md"
           variant="success"
           title={message}
           aria-live="polite"
@@ -52,7 +52,7 @@ export function TriggerCloudEventPage() {
     useCallback(({ close }, { message }) => {
       return (
         <Alert
-          className="pf-u-mb-md"
+          className="pf-v5-u-mb-md"
           variant="danger"
           title={
             <>

@@ -20,8 +20,8 @@
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Form, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
-import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
+
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
@@ -34,12 +34,14 @@ import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
 import { authSessionsSelectFilterCompatibleWithGitUrlDomain } from "../authSessions/CompatibleAuthSessions";
 import { getGitRefName, getGitRefType, getGitRefTypeLabel, GitRefType } from "../gitRefs/GitRefs";
 import { isPotentiallyGit, useClonableUrl } from "./ImportableUrlHooks";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+
 import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { useOnlineI18n } from "../i18n";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 export interface AdvancedImportModalRef {
   open(): void;
@@ -157,9 +159,11 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                           aria-label="More info for disable-tls-validation field"
                           onClick={(e) => e.preventDefault()}
                           aria-describedby="disable-tls-validation-field"
-                          className="pf-c-form__group-label-help"
+                          className="pf-v5-c-form__group-label-help"
                         >
-                          <HelpIcon noVerticalAlign />
+                          <Icon isInline>
+                            <HelpIcon />
+                          </Icon>
                         </button>
                       </Popover>
                     </>
@@ -167,53 +171,44 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                   aria-label="Disable TLS Certificate Validation"
                   tabIndex={4}
                   isChecked={props.insecurelyDisableTlsCertificateValidation}
-                  onChange={props.setInsecurelyDisableTlsCertificateValidation}
+                  onChange={(_event, val) => props.setInsecurelyDisableTlsCertificateValidation}
                 />
               </FormGroup>
-              <FormGroup
-                fieldId="url"
-                label="URL"
-                isRequired={true}
-                helperTextInvalid={props.validation.helperTextInvalid}
-                helperTextInvalidIcon={<ExclamationCircleIcon />}
-                helperText={
-                  props.validation.option !== ValidatedOptions.success ? (
-                    props.validation.helperText
-                  ) : (
-                    <FormHelperText isHidden={true} icon={<Spinner size={"sm"} />} />
-                  )
-                }
-                validated={props.validation.option}
-              >
+              <FormGroup fieldId="url" label="URL" isRequired={true}>
                 <TextInput
                   type="text"
                   id="import-modal-url"
                   name="import-modal-url"
                   validated={props.validation.option}
                   value={props.url}
-                  onChange={(value) => props.setUrl(value)}
+                  onChange={(_event, value) => props.setUrl(value)}
                 />
+                <HelperText>
+                  {props.validation.helperTextInvalid === "error" ? (
+                    <HelperTextItem variant="error" icon={<ExclamationCircleIcon />}>
+                      {props.validation.option !== ValidatedOptions.success ? (
+                        props.validation.helperText
+                      ) : (
+                        <FormHelperText />
+                      )}
+                    </HelperTextItem>
+                  ) : (
+                    <HelperTextItem icon={props.validation.option}></HelperTextItem>
+                  )}
+                </HelperText>
               </FormGroup>
               <FormGroup
                 style={!isPotentiallyGit(props.clonableUrl.clonableUrl.type) ? { visibility: "hidden" } : {}}
                 fieldId="gitRefName"
                 label="Branch/Tag"
                 isRequired={true}
-                helperText={
-                  <FormHelperText
-                    isHidden={!props.url || props.validation.option !== ValidatedOptions.default}
-                    icon={<Spinner size={"sm"} />}
-                  >
-                    Loading...
-                  </FormHelperText>
-                }
               >
                 <Select
                   isDisabled={props.validation.option !== ValidatedOptions.success}
                   variant={SelectVariant.typeahead}
                   selections={props.gitRefName}
                   isOpen={isGitRefNameSelectorOpen}
-                  onToggle={setGitRefNameSelectorOpen}
+                  onToggle={(_event, val) => setGitRefNameSelectorOpen(val)}
                   isGrouped={true}
                   onSelect={(e, value) => {
                     props.setGitRefName(value as string);
@@ -235,6 +230,11 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                       </SelectGroup>
                     ))}
                 </Select>
+                <HelperText>
+                  <HelperTextItem variant="error" icon={ValidatedOptions.default}>
+                    {<FormHelperText>Loading...</FormHelperText>}
+                  </HelperTextItem>
+                </HelperText>
               </FormGroup>
             </Form>
             <br />

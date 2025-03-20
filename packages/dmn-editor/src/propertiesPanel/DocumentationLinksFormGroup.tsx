@@ -200,8 +200,8 @@ export function DocumentationLinksFormGroup({
     <FormGroup
       label={
         <div style={{ display: "flex", flexDirection: "row" }}>
-          <label className={"pf-c-form__label"} style={{ flexGrow: 1, cursor: "auto" }}>
-            <span className={"pf-c-form__label-text"}>Documentation links</span>
+          <label className={"pf-v5-c-form__label"} style={{ flexGrow: 1, cursor: "auto" }}>
+            <span className={"pf-v5-c-form__label-text"}>Documentation links</span>
           </label>
           {!isReadOnly && (
             <Button variant={"plain"} icon={<PlusCircleIcon />} onClick={onAdd} title={"Add documentation link"} />
@@ -361,7 +361,7 @@ function DocumentationLinksInput({
                 )}
               </div>
               {!isUrlExpanded && (
-                <Tooltip content={urlDescriptionTooltip} position={TooltipPosition.topStart} reference={urlTitleRef} />
+                <Tooltip content={urlDescriptionTooltip} position={TooltipPosition.topStart} triggerRef={urlTitleRef} />
               )}
             </>
           ) : (

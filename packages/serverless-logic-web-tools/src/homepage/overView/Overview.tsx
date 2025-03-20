@@ -57,7 +57,7 @@ export function Overview(props: { isNavOpen: boolean }) {
             Welcome to Serverless Logic Web Tools
           </Title>
           <StackItem>
-            <Text className="appsrv-marketing--banner__tagline pf-u-color-200">
+            <Text className="appsrv-marketing--banner__tagline pf-v5-u-color-200">
               Add-on service to create and synchronize your Serverless Workflow, Decision files, and Dashbuilder files
             </Text>
             <Text component={TextVariants.p}>
@@ -87,7 +87,7 @@ export function Overview(props: { isNavOpen: boolean }) {
       </PageSection>
 
       <PageSection isWidthLimited className="appsrv-marketing--page-section--marketing" variant="light">
-        <Title className="pf-u-mb-lg" size="xl" headingLevel="h3">
+        <Title className="pf-v5-u-mb-lg" size="xl" headingLevel="h3">
           Use Serverless Logic Web Tools
         </Title>
         <Grid hasGutter>
@@ -105,7 +105,7 @@ export function Overview(props: { isNavOpen: boolean }) {
           </GridItem>
           <GridItem md={5}>
             <TextContent>
-              <Text className="pf-u-color-200 pf-u-ml-md">In this video, you will learn how to:</Text>
+              <Text className="pf-v5-u-color-200 pf-v5-u-ml-md">In this video, you will learn how to:</Text>
               <List className="app-services-ui--icon-list">
                 <ListItem>Create a Serverless Workflow, a Dashboard or a Serverless Decision.</ListItem>
                 <ListItem>Utilize Code Completions to complete the code.</ListItem>

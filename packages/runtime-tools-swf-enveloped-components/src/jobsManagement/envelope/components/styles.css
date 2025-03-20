@@ -16,28 +16,28 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-.kogito-jobs-management__state-dropdown-list .pf-c-data-toolbar__item:first-child .pf-c-chip__text::first-letter {
+.kogito-jobs-management__state-dropdown-list .pf-v5-c-data-toolbar__item:first-child .pf-v5-c-chip__text::first-letter {
   text-transform: uppercase;
 }
-.kogito-jobs-management__state-dropdown-list .pf-c-data-toolbar__item:first-child .pf-c-chip__text {
+.kogito-jobs-management__state-dropdown-list .pf-v5-c-data-toolbar__item:first-child .pf-v5-c-chip__text {
   text-transform: lowercase;
 }
 
-.kogito-jobs-management__state-dropdown-list .pf-c-check__label::first-letter {
+.kogito-jobs-management__state-dropdown-list .pf-v5-c-check__label::first-letter {
   text-transform: uppercase;
 }
 
-.kogito-jobs-management__state-dropdown-list .pf-c-check__label {
+.kogito-jobs-management__state-dropdown-list .pf-v5-c-check__label {
   text-transform: lowercase;
 }
 
-.kogito-jobs-management__table .pf-c-table__sort .pf-c-table__button {
+.kogito-jobs-management__table .pf-v5-c-table__sort .pf-v5-c-table__button {
   text-align: center;
   display: inline-block;
   margin-left: 0;
 }
 
-.pf-c-chip-group .pf-c-chip__text {
+.pf-v5-c-chip-group .pf-v5-c-chip__text {
   font-weight: 400 !important;
 }
 
@@ -45,7 +45,7 @@
   min-width: 10em;
 }
 
-.kogito-jobs-management__table .pf-c-table__action {
+.kogito-jobs-management__table .pf-v5-c-table__action {
   text-align: right;
 }
 

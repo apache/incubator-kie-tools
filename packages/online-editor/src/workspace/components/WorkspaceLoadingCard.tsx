@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Card, CardHeader, CardHeaderMain } from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Skeleton } from "@patternfly/react-core/dist/js/components/Skeleton";
@@ -36,7 +36,7 @@ export function WorkspaceLoadingMenuItem() {
   return (
     <MenuItem
       style={{
-        borderTop: "var(--pf-global--BorderWidth--sm) solid var(--pf-global--BorderColor--100)",
+        borderTop: "var(--pf-v5-global--BorderWidth--sm) solid var(--pf-v5-global--BorderColor--100)",
       }}
       className={"kie-tools--file-switcher-no-padding-menu-item"}
       direction={"down"}
@@ -113,11 +113,14 @@ export function WorkspaceLoadingListItem(props: { isBig: boolean }) {
 
 export function WorkspaceLoadingCard(props: { isBig: boolean }) {
   return (
-    <Card isHoverable={true} isCompact={true}>
+    <Card isCompact={true}>
       <CardHeader>
-        <CardHeaderMain style={{ width: "100%" }}>
-          <WorkspaceLoadingListItem isBig={props.isBig} />
-        </CardHeaderMain>
+        actions=
+        {
+          <>
+            <WorkspaceLoadingListItem isBig={props.isBig} />
+          </>
+        }
       </CardHeader>
     </Card>
   );

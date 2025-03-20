@@ -18,7 +18,7 @@
  */
 
 :root {
-  --masthead-bg: var(--pf-global--palette--blue-500);
+  --masthead-bg: var(--pf-v5-global--palette--blue-500);
   --sidebar-bg: #002f5e;
   --sidebar-bg-selected: #1f4e7d;
   --sidebar-bg-hover: #1c4671;
@@ -31,17 +31,17 @@
 
 .brand-name {
   color: #fff;
-  padding: 0 var(--pf-global--spacer--sm) 0 var(--pf-global--spacer--sm);
+  padding: 0 var(--pf-v5-global--spacer--sm) 0 var(--pf-v5-global--spacer--sm);
 }
 
-.app--masthead,
+/* .app--masthead,
 #toolbar {
   background-color: var(--masthead-bg);
-}
+} */
 
 .app--masterhead__disclaimer {
-  --pf-c-tooltip__content--Color: var(--pf-global--BackgroundColor--dark-100);
-  --pf-c-tooltip__content--BackgroundColor: var(--pf-global--BackgroundColor--light-100);
+  --pf-v5-c-tooltip__content--Color: var(--pf-v5-global--BackgroundColor--dark-100);
+  --pf-v5-c-tooltip__content--BackgroundColor: var(--pf-v5-global--BackgroundColor--light-100);
 }
 
 .app--masterhead__disclaimer-icon {
@@ -49,15 +49,15 @@
 }
 
 #page-sidebar {
-  --pf-c-page__sidebar--BackgroundColor: var(--sidebar-bg);
+  --pf-v5-c-page__sidebar--BackgroundColor: var(#212427);
 }
 
 #page-sidebar .pf-m-current {
-  --pf-c-nav__link--m-current--BackgroundColor: var(--sidebar-bg-selected);
+  --pf-v5-c-nav__link--m-current--BackgroundColor: var(--sidebar-bg-selected);
 }
-#page-sidebar .pf-c-nav__link:hover,
-#page-sidebar .pf-c-nav__link:active,
-#page-sidebar .pf-c-nav__link:focus {
+#page-sidebar .pf-v5-c-nav__link:hover,
+#page-sidebar .pf-v5-c-nav__link:active,
+#page-sidebar .pf-v5-c-nav__link:focus {
   background-color: var(--sidebar-bg-hover);
 }
 
@@ -65,6 +65,6 @@
   padding-top: 20px;
 }
 
-.pf-u-success-color-100 {
-  color: var(--pf-global--success-color--100) !important;
+.pf-v5-u-success-color-100 {
+  color: var(--pf-v5-global--success-color--100) !important;
 }

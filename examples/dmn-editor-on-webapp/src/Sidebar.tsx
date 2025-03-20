@@ -143,7 +143,7 @@ export function Sidebar({ editorEnvelopeLocator, editor, setFile, file, fileExte
             value={fileName}
             type={"text"}
             aria-label={"Edit file name"}
-            onChange={setFileName}
+            onChange={(_event, val) => setFileName(val)}
             onBlur={onChangeName}
           />
           <br />

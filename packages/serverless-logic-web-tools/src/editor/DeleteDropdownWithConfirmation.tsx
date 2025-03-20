@@ -25,7 +25,7 @@ import {
   DropdownItem,
   DropdownPosition,
   DropdownToggle,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+} from "@patternfly/react-core/deprecated";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 
 export function DeleteDropdownWithConfirmation(
@@ -49,7 +49,7 @@ export function DeleteDropdownWithConfirmation(
         <DropdownToggle
           icon={<TrashIcon />}
           toggleIndicator={null}
-          onToggle={setDeleteDropdownOpen}
+          onToggle={(_event, val) => setDeleteDropdownOpen(val)}
           onClick={(e) => e.stopPropagation()}
         >
           {props.label}

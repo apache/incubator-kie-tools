@@ -21,13 +21,12 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { CloudEventFormDefaultValues, CloudEventFormDriver } from "../../../api";
 import { ActionListGroup } from "@patternfly/react-core/dist/js/components/ActionList";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
-import ExclamationCircleIcon from "@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon";
 import { FormValidations, validateCloudEventRequest } from "./validateCloudEventRequest";
 import CloudEventCustomHeadersEditor, {
   CloudEventCustomHeadersEditorApi,
@@ -44,6 +43,9 @@ import {
   KOGITO_BUSINESS_KEY,
   KOGITO_PROCESS_REFERENCE_ID,
 } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
+import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 
 export interface CloudEventFormProps {
   driver: CloudEventFormDriver;
@@ -174,9 +176,6 @@ export const CloudEventForm: React.FC<CloudEventFormProps & OUIAProps> = ({
           label={"Event Endpoint"}
           isRequired
           fieldId={"endpoint"}
-          helperTextInvalid={getValidationMessage("endpoint")}
-          helperTextInvalidIcon={<ExclamationCircleIcon />}
-          validated={getValidatedOption("endpoint")}
           labelIcon={
             <CloudEventFieldLabelIcon
               fieldId={"endpoint"}
@@ -185,37 +184,53 @@ export const CloudEventForm: React.FC<CloudEventFormProps & OUIAProps> = ({
           }
         >
           <InputGroup>
-            <Select
-              id={"method"}
-              width={"100px"}
-              variant={SelectVariant.single}
-              selections={method}
-              onSelect={(event, value: "POST" | "PUT") => {
-                setMethod(CloudEventMethod[value] ?? CloudEventMethod.POST);
-                setIsMethodOpen(false);
-              }}
-              isOpen={isMethodOpen}
-              onToggle={() => setIsMethodOpen(!isMethodOpen)}
-            >
-              <SelectOption value={CloudEventMethod.POST} />
-              <SelectOption value={CloudEventMethod.PUT} />
-            </Select>
-            <TextInput
-              id={"endpoint"}
-              isRequired
-              value={endpoint}
-              onChange={setEndpoint}
-              validated={getValidatedOption("endpoint")}
-            />
+            <InputGroupItem>
+              <Select
+                id={"method"}
+                width={"100px"}
+                variant={SelectVariant.single}
+                selections={method}
+                onSelect={(event, value: "POST" | "PUT") => {
+                  setMethod(CloudEventMethod[value] ?? CloudEventMethod.POST);
+                  setIsMethodOpen(false);
+                }}
+                isOpen={isMethodOpen}
+                onToggle={() => setIsMethodOpen(!isMethodOpen)}
+              >
+                <SelectOption value={CloudEventMethod.POST} />
+                <SelectOption value={CloudEventMethod.PUT} />
+              </Select>
+            </InputGroupItem>
+            <InputGroupItem isFill>
+              <TextInput
+                id={"endpoint"}
+                isRequired
+                value={endpoint}
+                onChange={(_event, val) => setEndpoint(val)}
+                validated={getValidatedOption("endpoint")}
+              />
+            </InputGroupItem>
           </InputGroup>
+          {getValidatedOption("endpoint") === "error" ? (
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="error" icon={<ExclamationCircleIcon color="#c9190b" />}>
+                  {getValidationMessage("endpoint")}
+                </HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          ) : (
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="default"></HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          )}
         </FormGroup>
         <FormGroup
           label="Event Type"
           isRequired
           fieldId="eventType"
-          helperTextInvalid={getValidationMessage("eventType")}
-          helperTextInvalidIcon={<ExclamationCircleIcon />}
-          validated={getValidatedOption("eventType")}
           labelIcon={
             <CloudEventFieldLabelIcon
               fieldId={"eventType"}
@@ -229,9 +244,24 @@ export const CloudEventForm: React.FC<CloudEventFormProps & OUIAProps> = ({
             isRequired
             type="text"
             id="eventType"
-            onChange={setEventType}
+            onChange={(_event, val) => setEventType(val)}
             validated={getValidatedOption("eventType")}
           />
+          {getValidatedOption("eventType") === "error" ? (
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="error" icon={<ExclamationCircleIcon color="#c9190b" />}>
+                  {getValidationMessage("eventType")}
+                </HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          ) : (
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="default"></HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          )}
         </FormGroup>
         <FormGroup
           label="Event Source"
@@ -244,7 +274,13 @@ export const CloudEventForm: React.FC<CloudEventFormProps & OUIAProps> = ({
           }
           fieldId="eventSource"
         >
-          <TextInput value={eventSource} isRequired type="text" id="eventSource" onChange={setEventSource} />
+          <TextInput
+            value={eventSource}
+            isRequired
+            type="text"
+            id="eventSource"
+            onChange={(_event, val) => setEventSource(val)}
+          />
         </FormGroup>
         {!isNewInstanceEvent && (
           <FormGroup
@@ -258,7 +294,13 @@ export const CloudEventForm: React.FC<CloudEventFormProps & OUIAProps> = ({
               />
             }
           >
-            <TextInput value={instanceId} isRequired type="text" id="instanceId" onChange={setInstanceId} />
+            <TextInput
+              value={instanceId}
+              isRequired
+              type="text"
+              id="instanceId"
+              onChange={(_event, val) => setInstanceId(val)}
+            />
           </FormGroup>
         )}
         {isNewInstanceEvent && (
@@ -273,7 +315,13 @@ export const CloudEventForm: React.FC<CloudEventFormProps & OUIAProps> = ({
               />
             }
           >
-            <TextInput value={businessKey} isRequired type="text" id="businessKey" onChange={setBusinessKey} />
+            <TextInput
+              value={businessKey}
+              isRequired
+              type="text"
+              id="businessKey"
+              onChange={(_event, val) => setBusinessKey(val)}
+            />
           </FormGroup>
         )}
         <FormGroup
@@ -286,7 +334,7 @@ export const CloudEventForm: React.FC<CloudEventFormProps & OUIAProps> = ({
                 <div>
                   <p>Sets the custom headers that will be added into the Cloud Event.</p>
                   <p>
-                    Press the <span className="pf-u-link-color">Add Header</span> button to start adding new headers.
+                    Press the <span className="pf-v5-u-link-color">Add Header</span> button to start adding new headers.
                   </p>
                   <p>Headers with empty Name won&apos;t be added into the Cloud Event.</p>
                 </div>
@@ -299,10 +347,6 @@ export const CloudEventForm: React.FC<CloudEventFormProps & OUIAProps> = ({
         <FormGroup
           label="Event Data"
           fieldId="eventData"
-          isHelperTextBeforeField
-          helperTextInvalid={getValidationMessage("eventData")}
-          helperTextInvalidIcon={<ExclamationCircleIcon />}
-          validated={getValidatedOption("eventData")}
           labelIcon={
             <CloudEventFieldLabelIcon
               fieldId={"eventData"}
@@ -311,6 +355,21 @@ export const CloudEventForm: React.FC<CloudEventFormProps & OUIAProps> = ({
           }
         >
           {requestDataEditor}
+          {getValidatedOption("eventData") === "error" ? (
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="error" icon={<ExclamationCircleIcon color="#c9190b" />}>
+                  {getValidationMessage("eventData")}
+                </HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          ) : (
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="default"></HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          )}
         </FormGroup>
         <ActionListGroup>
           <Button key={"triggerCloudEventButton"} variant="primary" onClick={doTrigger}>

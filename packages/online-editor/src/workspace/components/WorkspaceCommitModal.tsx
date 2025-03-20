@@ -31,6 +31,7 @@ import {
   CommitMessageValidationService,
 } from "../commitMessageValidationService/CommitMessageValidationService";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 const CommitValidationErrorMessages = (props: { validations?: string[] }) => {
   if (!props.validations) {
@@ -44,7 +45,7 @@ const CommitValidationErrorMessages = (props: { validations?: string[] }) => {
             <li key={validation}>
               <Text
                 component={TextVariants.small}
-                style={{ whiteSpace: "pre-line", color: "var(--pf-global--danger-color--100)" }}
+                style={{ whiteSpace: "pre-line", color: "var(--pf-v5-global--danger-color--100)" }}
               >
                 {validation}
               </Text>
@@ -116,20 +117,25 @@ export const WorkspaceCommitModal: PromiseModalChildren<string, WorkspaceCommitM
       <Text component={TextVariants.p}>{i18n.commitModal.description}</Text>
       <br />
       <Form onSubmit={onSubmit}>
-        <FormGroup
-          fieldId={"kie-sandbox-custom-commit-message"}
-          validated={validation.result ? ValidatedOptions.success : ValidatedOptions.error}
-          helperTextInvalid={<CommitValidationErrorMessages validations={validation.reasons} />}
-        >
+        <FormGroup fieldId={"kie-sandbox-custom-commit-message"}>
           <TextArea
             value={commitMessage}
             type={"text"}
             id={"kie-sandbox-custom-commit-message"}
-            onChange={(value) => setCommitMessage(value)}
+            onChange={(_event, value) => setCommitMessage(value)}
             isRequired={true}
             style={{ minHeight: "10vw" }}
             placeholder={i18n.commitModal.placeholder}
           />
+          <HelperText>
+            {validation.result === false ? (
+              <HelperTextItem variant="error" icon={ValidatedOptions.error}>
+                {<CommitValidationErrorMessages validations={validation.reasons} />}
+              </HelperTextItem>
+            ) : (
+              <HelperTextItem icon={ValidatedOptions.success}></HelperTextItem>
+            )}
+          </HelperText>
         </FormGroup>
         <Flex justifyContent={{ default: "justifyContentFlexEnd" }}>
           <Button

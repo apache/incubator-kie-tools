@@ -21,9 +21,9 @@ import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import React from "react";
 import { OUIAProps, componentOuiaProps } from "../../ouiaTools";
 import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Title, TitleSizes } from "@patternfly/react-core/dist/js/components/Title";
+
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { EmptyState, EmptyStateIcon, EmptyStateHeader, EmptyStateFooter } from "@patternfly/react-core/components";
 import { ClusterIcon } from "@patternfly/react-icons/dist/js/icons/cluster-icon";
 
 export const KeycloakUnavailablePage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
@@ -32,17 +32,20 @@ export const KeycloakUnavailablePage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe 
       <PageSection>
         <Bullseye>
           <EmptyState {...componentOuiaProps(ouiaId, "server-unavailable", ouiaSafe)}>
-            <EmptyStateIcon icon={ClusterIcon} />
-            <Title headingLevel="h1" size={TitleSizes["2xl"]}>
-              503: We couldn&apos;t contact the server
-            </Title>
-            <Text component={TextVariants.blockquote}>
-              We could not reach the server, you can contact the administrator or try to reload the page by clicking on
-              the button below.
-            </Text>
-            <Button variant="primary" onClick={() => window.location.reload()} isInline>
-              Retry
-            </Button>
+            <EmptyStateHeader
+              titleText="503: We couldn't contact the server"
+              icon={<EmptyStateIcon icon={ClusterIcon} />}
+              headingLevel="h1"
+            />
+            <EmptyStateFooter>
+              <Text component={TextVariants.blockquote}>
+                We could not reach the server, you can contact the administrator or try to reload the page by clicking
+                on the button below.
+              </Text>
+              <Button variant="primary" onClick={() => window.location.reload()} isInline>
+                Retry
+              </Button>
+            </EmptyStateFooter>
           </EmptyState>
         </Bullseye>
       </PageSection>

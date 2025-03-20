@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Select, SelectDirection, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectDirection, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { OperatingSystem } from "@kie-tools-core/operating-system";

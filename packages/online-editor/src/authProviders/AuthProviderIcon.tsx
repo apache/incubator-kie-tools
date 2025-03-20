@@ -18,7 +18,6 @@
  */
 
 import * as React from "react";
-import { getSize, IconSize } from "@patternfly/react-icons/dist/js/createIcon";
 import BitbucketIcon from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
 import GithubIcon from "@patternfly/react-icons/dist/js/icons/github-icon";
 import GitlabIcon from "@patternfly/react-icons/dist/js/icons/gitlab-icon";
@@ -26,37 +25,55 @@ import OpenshiftIcon from "@patternfly/react-icons/dist/js/icons/openshift-icon"
 import QuestionIcon from "@patternfly/react-icons/dist/js/icons/question-icon";
 import UsersIcon from "@patternfly/react-icons/dist/js/icons/users-icon";
 import { AuthProvider } from "./AuthProvidersApi";
+import { Icon, IconComponentProps } from "@patternfly/react-core/dist/js/components/Icon";
 
-export function AuthProviderIcon(props: {
+export type AuthProviderIconProps = Pick<IconComponentProps, "size"> & {
   authProvider: AuthProvider | undefined;
-  size: IconSize | keyof typeof IconSize;
-}) {
+};
+export function AuthProviderIcon(props: AuthProviderIconProps) {
   if (!props.authProvider) {
-    return <UsersIcon size={props.size} />;
-  }
-
-  if (props.authProvider.iconPath) {
-    const baseAlign = -0.125 * Number.parseFloat(getSize(props.size)); // Copied from PatternFly
     return (
-      <img style={{ height: getSize(props.size), verticalAlign: `${baseAlign}em` }} src={props.authProvider.iconPath} />
+      <Icon size={props.size}>
+        <UsersIcon />
+      </Icon>
     );
   }
 
   if (props.authProvider.type === "github") {
-    return <GithubIcon size={props.size} />;
+    return (
+      <Icon size={props.size}>
+        <GithubIcon />
+      </Icon>
+    );
   }
 
   if (props.authProvider.type === "bitbucket") {
-    return <BitbucketIcon size={props.size} />;
+    return (
+      <Icon size={props.size}>
+        <BitbucketIcon color="blue" />
+      </Icon>
+    );
   }
 
   if (props.authProvider.type === "gitlab") {
-    return <GitlabIcon size={props.size} />;
+    return (
+      <Icon size={props.size}>
+        <GitlabIcon color="orange" />
+      </Icon>
+    );
   }
 
   if (props.authProvider.type === "openshift") {
-    return <OpenshiftIcon size={props.size} />;
+    return (
+      <Icon size={props.size}>
+        <OpenshiftIcon color="red" />
+      </Icon>
+    );
   }
 
-  return <QuestionIcon size={props.size} />;
+  return (
+    <Icon size={props.size}>
+      <QuestionIcon />
+    </Icon>
+  );
 }

@@ -24,26 +24,26 @@
   bottom: 0;
   width: 50px;
   border-left: 1px solid #d2d2d2;
-  background-color: var(--pf-global--BackgroundColor--100);
+  background-color: var(--pf-v5-global--BackgroundColor--100);
 }
 
-.kie-scesim-editor--side-bar .pf-c-button {
+.kie-scesim-editor--side-bar .pf-v5-c-button {
   margin-bottom: 10px;
 }
 
 .kie-scesim-editor-side-bar-menu--button {
   display: inline-block;
-  --pf-c-button--m-plain--Color: #06c;
-  --pf-c-button--m-plain--hover--Color: #06c;
+  --pf-v5-c-button--m-plain--Color: #06c;
+  --pf-v5-c-button--m-plain--hover--Color: #06c;
 }
 
 .kie-scesim-editor-side-bar-menu--button-selected {
   background-color: #06c;
   display: inline-block;
-  --pf-c-button--m-plain--BackgroundColor: #06c;
-  --pf-c-button--m-plain--Color: #fff;
-  --pf-c-button--m-plain--focus--BackgroundColor: #06c;
-  --pf-c-button--m-plain--focus--Color: #fff;
-  --pf-c-button--m-plain--hover--BackgroundColor: #06c;
-  --pf-c-button--m-plain--hover--Color: #fff;
+  --pf-v5-c-button--m-plain--BackgroundColor: #06c;
+  --pf-v5-c-button--m-plain--Color: #fff;
+  --pf-v5-c-button--m-plain--focus--BackgroundColor: #06c;
+  --pf-v5-c-button--m-plain--focus--Color: #fff;
+  --pf-v5-c-button--m-plain--hover--BackgroundColor: #06c;
+  --pf-v5-c-button--m-plain--hover--Color: #fff;
 }

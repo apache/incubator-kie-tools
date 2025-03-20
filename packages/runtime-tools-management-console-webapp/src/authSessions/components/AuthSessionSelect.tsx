@@ -18,13 +18,7 @@
  */
 
 import React, { useCallback } from "react";
-import {
-  Select,
-  SelectOption,
-  SelectPosition,
-  SelectProps,
-  SelectVariant,
-} from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectPosition, SelectProps, SelectVariant } from "@patternfly/react-core/deprecated";
 import { useAuthSessionsDispatch, useAuthSessions } from "../AuthSessionsContext";
 import { useMemo, useState } from "react";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
@@ -92,7 +86,7 @@ export function AuthSessionSelect({ isPlain, position, menuAppendTo }: AuthSessi
       variant={SelectVariant.single}
       selections={currentAuthSession?.id ?? "Select connected runtime"}
       isOpen={isAuthSessionSelectorOpen}
-      onToggle={setAuthSessionSelectorOpen}
+      onToggle={(_event, val) => setAuthSessionSelectorOpen(val)}
       isPlain={validated === ValidatedOptions.default ? isPlain : false}
       onSelect={onSelect}
       className={`kogito-management-console__auth-session-select ${isPlain ? "kie-tools--masthead-hoverable-dark" : ""}`}
@@ -127,7 +121,7 @@ export function AuthSessionSelect({ isPlain, position, menuAppendTo }: AuthSessi
         </div>,
         <div
           key={"divider"}
-          style={{ boxShadow: "var(--pf-global--BoxShadow--sm-top)", marginTop: "8px", height: "8px" }}
+          style={{ boxShadow: "var(--pf-v5-global--BoxShadow--sm-top)", marginTop: "8px", height: "8px" }}
         />,
         ...unfilteredItems.map((item) => (
           <SelectOption
@@ -167,7 +161,7 @@ export function InvalidAuthSessionIcon() {
       content={"Could not authenticate using this session. Its Token was probably revoked, or expired."}
     >
       <>
-        <ExclamationCircleIcon style={{ color: "var(--pf-global--palette--red-100)" }} />
+        <ExclamationCircleIcon style={{ color: "var(--pf-v5-global--palette--red-100)" }} />
       </>
     </Tooltip>
   );

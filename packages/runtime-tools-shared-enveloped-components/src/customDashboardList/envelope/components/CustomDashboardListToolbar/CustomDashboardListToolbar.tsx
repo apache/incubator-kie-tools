@@ -115,7 +115,7 @@ const CustomDashboardListToolbar: React.FC<CustomDashboardListToolbarProps & OUI
               id="customDashboardName"
               type="search"
               aria-label="Dashboard name"
-              onChange={setDashboardNameInput}
+              onChange={(_event, _val) => setDashboardNameInput}
               onKeyPress={onEnterClicked}
               placeholder="Filter by dashboard name"
               value={dashboardNameInput}
