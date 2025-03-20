@@ -20,7 +20,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:10.1.999'
             args '--shm-size=2g --privileged --group-add docker'
             label util.avoidFaultyNodes()
         }

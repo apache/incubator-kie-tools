@@ -18,7 +18,7 @@
 package version
 
 // Don't change it manually, use the make bump-version <version>
-const operatorVersion = "0.0.0"
+const operatorVersion = "10.1.999"
 
 const tagVersion = "main"
 

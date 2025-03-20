@@ -44,7 +44,7 @@ pipeline {
         stage('Check code quality') {
             agent {
                 docker {
-                    image "docker.io/apache/incubator-kie-tools-ci-build:${env.BRANCH_NAME}"
+                    image "docker.io/apache/incubator-kie-tools-ci-build:10.1.999'
                 }
             }
 

@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools-core/monaco-editor",
-  "version": "0.0.0",
+  "version": "10.1.999",
   "description": "Single-file build of monaco-editor",
   "license": "MIT",
   "keywords": [

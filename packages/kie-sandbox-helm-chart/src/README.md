@@ -17,17 +17,17 @@
 
 # incubator-kie-sandbox-helm-chart
 
-![Version: 0.0.0](https://img.shields.io/badge/Version-0.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 10.1.999](https://img.shields.io/badge/Version-10.1.999-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 10.1.999](https://img.shields.io/badge/AppVersion-10.1.999-informational?style=flat-square)
 
 A Helm chart to deploy KIE Sandbox and related services on Kubernetes
 
 ## Requirements
 
-| Repository | Name              | Version |
-| ---------- | ----------------- | ------- |
-|            | cors_proxy        | 0.0.0   |
-|            | extended_services | 0.0.0   |
-|            | kie_sandbox       | 0.0.0   |
+| Repository | Name              | Version  |
+| ---------- | ----------------- | -------- |
+|            | cors_proxy        | 10.1.999 |
+|            | extended_services | 10.1.999 |
+|            | kie_sandbox       | 10.1.999 |
 
 ## Values
 
