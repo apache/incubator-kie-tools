@@ -35,7 +35,7 @@ import {
 } from "@kie-tools/runtime-tools-components/dist/components/RequestDataEditor";
 import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
-import { ExclamationCircleIcon } from "@patternfly/react-icons";
+import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 
 export interface WorkflowFormProps {
   workflowDefinition: WorkflowDefinition;

@@ -45,7 +45,7 @@ import {
 } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
-import { ExclamationCircleIcon } from "@patternfly/react-icons";
+import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 
 export interface CloudEventFormProps {
   driver: CloudEventFormDriver;
