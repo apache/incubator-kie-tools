@@ -219,7 +219,7 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                       <table
                         aria-label="field-table"
                         class="pf-v5-c-table pf-m-grid-md"
-                        data-ouia-component-id="OUIA-Generated-Table-1"
+                        data-ouia-component-id="OUIA-Generated-Table-2"
                         data-ouia-component-type="PF5/Table"
                         data-ouia-safe="true"
                         role="grid"
@@ -749,7 +749,7 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                       <table
                         aria-label="field-table"
                         class="pf-v5-c-table pf-m-grid-md"
-                        data-ouia-component-id="OUIA-Generated-Table-3"
+                        data-ouia-component-id="OUIA-Generated-Table-6"
                         data-ouia-component-type="PF5/Table"
                         data-ouia-safe="true"
                         role="grid"
@@ -1303,7 +1303,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                         <table
                           aria-label="field-table"
                           class="pf-v5-c-table pf-m-grid-md"
-                          data-ouia-component-id="OUIA-Generated-Table-8"
+                          data-ouia-component-id="OUIA-Generated-Table-16"
                           data-ouia-component-type="PF5/Table"
                           data-ouia-safe="true"
                           role="grid"
