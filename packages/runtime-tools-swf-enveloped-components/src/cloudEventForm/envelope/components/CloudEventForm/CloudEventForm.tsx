@@ -214,7 +214,7 @@ export const CloudEventForm: React.FC<CloudEventFormProps & OUIAProps> = ({
           {getValidatedOption("endpoint") === "error" ? (
             <FormHelperText>
               <HelperText>
-                <HelperTextItem variant="warning" icon={<ExclamationCircleIcon color="#c9190b" />}>
+                <HelperTextItem variant="error" icon={<ExclamationCircleIcon color="#c9190b" />}>
                   {getValidationMessage("endpoint")}
                 </HelperTextItem>
               </HelperText>
@@ -250,7 +250,7 @@ export const CloudEventForm: React.FC<CloudEventFormProps & OUIAProps> = ({
           {getValidatedOption("eventType") === "error" ? (
             <FormHelperText>
               <HelperText>
-                <HelperTextItem variant="warning" icon={<ExclamationCircleIcon color="#c9190b" />}>
+                <HelperTextItem variant="error" icon={<ExclamationCircleIcon color="#c9190b" />}>
                   {getValidationMessage("eventType")}
                 </HelperTextItem>
               </HelperText>
@@ -358,7 +358,7 @@ export const CloudEventForm: React.FC<CloudEventFormProps & OUIAProps> = ({
           {getValidatedOption("eventData") === "error" ? (
             <FormHelperText>
               <HelperText>
-                <HelperTextItem variant="warning" icon={<ExclamationCircleIcon color="#c9190b" />}>
+                <HelperTextItem variant="error" icon={<ExclamationCircleIcon color="#c9190b" />}>
                   {getValidationMessage("eventData")}
                 </HelperTextItem>
               </HelperText>

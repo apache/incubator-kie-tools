@@ -27,7 +27,7 @@ import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
 
 import { UsersIcon } from "@patternfly/react-icons/dist/js/icons/users-icon";
 import { LockIcon } from "@patternfly/react-icons/dist/js/icons/lock-icon";
-import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { GIST_ORIGIN_REMOTE_NAME } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";

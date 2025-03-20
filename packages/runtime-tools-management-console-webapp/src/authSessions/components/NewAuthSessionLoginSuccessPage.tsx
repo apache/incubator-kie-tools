@@ -30,10 +30,10 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import {
   EmptyState,
   EmptyStateBody,
-  EmptyStateSecondaryActions,
   EmptyStateVariant,
+  EmptyStateActions,
+  EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
 type Props = {
   onAddAuthSession?: (authSession: AuthSession) => void;
@@ -79,7 +79,7 @@ export const NewAuthSessionLoginSuccessPage: React.FC<Props> = ({ onAddAuthSessi
     <ManagementConsolePageLayout>
       <PageSection>
         <Bullseye>
-          <EmptyState variant={EmptyStateVariant.large}>
+          <EmptyState variant={EmptyStateVariant.lg}>
             <br />
             <br />
             <EmptyStateBody>
@@ -92,11 +92,13 @@ export const NewAuthSessionLoginSuccessPage: React.FC<Props> = ({ onAddAuthSessi
                 <p>Login success! Redirecting...</p>
               )}
             </EmptyStateBody>
-            {error && (
-              <EmptyStateSecondaryActions>
-                <Button onClick={() => history.push(routes.home.path({}))}>OK</Button>
-              </EmptyStateSecondaryActions>
-            )}
+            <EmptyStateFooter>
+              {error && (
+                <EmptyStateActions>
+                  <Button onClick={() => history.push(routes.home.path({}))}>OK</Button>
+                </EmptyStateActions>
+              )}
+            </EmptyStateFooter>
           </EmptyState>
         </Bullseye>
       </PageSection>

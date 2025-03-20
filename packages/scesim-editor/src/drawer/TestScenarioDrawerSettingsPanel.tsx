@@ -38,7 +38,7 @@ import { ExternalDmn } from "../TestScenarioEditor";
 import { useTestScenarioEditor } from "../TestScenarioEditorContext";
 
 import "./TestScenarioDrawerSettingsPanel.css";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 
 function TestScenarioDrawerSettingsPanel() {
   const { i18n } = useTestScenarioEditorI18n();
@@ -175,7 +175,7 @@ function TestScenarioDrawerSettingsPanel() {
             aria-label="form-select-input"
             className={"kie-scesim-editor-drawer-settings--form-select"}
             ouiaId="BasicFormSelect"
-            onToggle={setModelSelectOpen}
+            onToggle={(_event, val) => setModelSelectOpen(val)}
             isOpen={isModelSelectOpen}
             maxHeight={"350px"}
             onSelect={(e, path) => {

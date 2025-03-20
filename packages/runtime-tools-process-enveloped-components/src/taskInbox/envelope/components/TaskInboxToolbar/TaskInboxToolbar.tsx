@@ -169,15 +169,17 @@ const TaskInboxToolbar: React.FC<TaskInboxToolbarProps & OUIAProps> = ({
           </ToolbarFilter>
           <ToolbarFilter chips={filterTaskNames} deleteChip={onDeleteFilterGroup} categoryName={Category.TASK_NAME}>
             <InputGroup>
-              <TextInput
-                name="taskName"
-                id="taskName"
-                type="search"
-                aria-label="task name"
-                onChange={(_event, val) => setTaskNameInput(val)}
-                placeholder="Filter by Task name"
-                value={taskNameInput}
-              />
+              <InputGroupItem isFill>
+                <TextInput
+                  name="taskName"
+                  id="taskName"
+                  type="search"
+                  aria-label="task name"
+                  onChange={(_event, val) => setTaskNameInput(val)}
+                  placeholder="Filter by Task name"
+                  value={taskNameInput}
+                />
+              </InputGroupItem>
             </InputGroup>
           </ToolbarFilter>
           <ToolbarItem>

@@ -17,13 +17,8 @@
  * under the License.
  */
 
-import {
-  Page,
-  PageHeader,
-  PageHeaderTools,
-  PageSection,
-  PageSidebar,
-} from "@patternfly/react-core/dist/js/components/Page";
+import { Page, PageSection, PageSidebar, PageSidebarBody } from "@patternfly/react-core/dist/js/components/Page";
+import { PageHeader, PageHeaderTools } from "@patternfly/react-core/deprecated";
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { useEnv } from "../env/hooks/EnvContext";
@@ -101,7 +96,12 @@ export const ManagementConsolePageLayout: React.FC<Props> = ({
   ]);
 
   const Sidebar = useMemo(
-    () => nav && <PageSidebar nav={nav} isNavOpen={isNavOpen} theme="dark" data-testid="page-sidebar" />,
+    () =>
+      nav && (
+        <PageSidebar isSidebarOpen={isNavOpen} theme="dark" data-testid="page-sidebar">
+          <PageSidebarBody>{nav}</PageSidebarBody>
+        </PageSidebar>
+      ),
     [isNavOpen, nav]
   );
 

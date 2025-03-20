@@ -217,7 +217,6 @@ export const OutputFieldExtendedProperties = (props: OutputFieldExtendedProperti
       <FormGroup
         label="Feature"
         fieldId="output-feature-helper"
-        // helperText="Specifies the value the output field takes from the computed mining result."
         className="outputs-container__extended-properties__field"
         labelIcon={
           <Tooltip content={"Decision and Transformed value are not supported by scorecards"}>

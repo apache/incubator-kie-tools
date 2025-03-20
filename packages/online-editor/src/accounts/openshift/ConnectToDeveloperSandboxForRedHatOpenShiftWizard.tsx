@@ -294,13 +294,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
             <br />
             <br />
             <Form className="pf-v5-u-mt-md">
-              <FormGroup
-                fieldId={"dev-deployments-config-host"}
-                label={i18n.terms.host}
-                // validated={isHostValidated ? "success" : "error"}
-                // helperTextInvalid={i18n.devDeployments.common.requiredField}
-                isRequired={true}
-              >
+              <FormGroup fieldId={"dev-deployments-config-host"} label={i18n.terms.host} isRequired={true}>
                 <InputGroup>
                   <InputGroupItem isFill>
                     <TextInput
@@ -331,13 +325,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
                   )}
                 </HelperText>
               </FormGroup>
-              <FormGroup
-                fieldId={"dev-deployments-config-token"}
-                label={i18n.terms.token}
-                // validated={isTokenValidated ? "success" : "error"}
-                // helperTextInvalid={i18n.devDeployments.common.requiredField}
-                isRequired={true}
-              >
+              <FormGroup fieldId={"dev-deployments-config-token"} label={i18n.terms.token} isRequired={true}>
                 <InputGroup>
                   <InputGroupItem isFill>
                     <TextInput

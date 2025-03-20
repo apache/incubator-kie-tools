@@ -26,9 +26,10 @@ import { useEnv } from "../../env/hooks/EnvContext";
 import { useRoutes } from "../../navigation/Hooks";
 import { AUTH_SESSION_OIDC_DEFAULT_SCOPES, AuthSession } from "../AuthSessionApi";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { Form, FormGroup, ActionGroup } from "@patternfly/react-core/dist/js/components/Form";
+import { Form, FormGroup, ActionGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 type Props = {
   onAddAuthSession: (authSession: AuthSession) => void;
@@ -146,32 +147,47 @@ export const NewAuthSessionModal: React.FC<Props> = ({ onAddAuthSession }) => {
             id="alias"
             aria-label="Alias"
             autoFocus={true}
-            onChange={setAlias}
+            onChange={(_event, val) => setAlias(val)}
             placeholder="Enter an alias..."
             tabIndex={0}
           />
         </FormGroup>
-        <FormGroup
-          label="URL"
-          isRequired={true}
-          helperTextInvalid={error}
-          helperText={" "}
-          validated={error ? "error" : "default"}
-        >
-          <TextInput id="url" aria-label="URL" tabIndex={0} onChange={setRuntimeUrl} placeholder="Enter a URL..." />
+        <FormGroup label="URL" isRequired={true}>
+          {error === "error" ? (
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="error">{error}</HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          ) : (
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="default"></HelperTextItem>
+              </HelperText>
+            </FormHelperText>
+          )}
+          <TextInput
+            id="url"
+            aria-label="URL"
+            tabIndex={0}
+            onChange={(_event, val) => setRuntimeUrl(val)}
+            placeholder="Enter a URL..."
+          />
         </FormGroup>
-        <FormGroup
-          isRequired={false}
-          helperText={
-            "Check this box if you are connecting to a secured runtime and intend to use a different user than the one currently logged in to your Identity Provider."
-          }
-          validated={"default"}
-        >
+        <FormGroup isRequired={false}>
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant="default">
+                Check this box if you are connecting to a secured runtime and intend to use a different user than the
+                one currently logged in to your Identity Provider.
+              </HelperTextItem>
+            </HelperText>
+          </FormHelperText>
           <Checkbox
             id="force-login-prompt"
             aria-label="Force Login Prompt"
             isChecked={forceLoginPrompt}
-            onChange={(checked) => setForceLoginPrompt(checked)}
+            onChange={(_event, checked) => setForceLoginPrompt(checked)}
             label={
               <span className="pf-v5-c-form__label pf-v5-c-form__label-text">
                 Force login prompt <i>(for secured runtimes only)</i>
@@ -186,49 +202,70 @@ export const NewAuthSessionModal: React.FC<Props> = ({ onAddAuthSession }) => {
           onToggle={() => setIsAdvancedOIDCSettingsExpanded((currentValue) => !currentValue)}
           isExpanded={isAdvancedOIDCSettingsExpanded}
         >
-          <FormGroup
-            label="Client ID"
-            isRequired={true}
-            helperTextInvalid={error}
-            helperText={" "}
-            validated={error ? "error" : "default"}
-          >
+          <FormGroup label="Client ID" isRequired={true}>
+            {error === "error" ? (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant="error">{error}</HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            ) : (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant="default"></HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
             <TextInput
               id="clientId"
               aria-label="Client ID"
               value={clientId}
               tabIndex={isAdvancedOIDCSettingsExpanded ? 0 : undefined}
-              onChange={setClientId}
+              onChange={(_event, val) => setClientId(val)}
             />
           </FormGroup>
-          <FormGroup
-            label="Scope"
-            isRequired={true}
-            helperTextInvalid={error}
-            helperText={" "}
-            validated={error ? "error" : "default"}
-          >
+          <FormGroup label="Scope" isRequired={true}>
+            {error === "error" ? (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant="error">{error}</HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            ) : (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant="default"></HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
             <TextInput
               id="scope"
               aria-label="Scope"
               value={scope}
               tabIndex={isAdvancedOIDCSettingsExpanded ? 0 : undefined}
-              onChange={setScope}
+              onChange={(_event, val) => setScope(val)}
             />
           </FormGroup>
-          <FormGroup
-            label="Audience"
-            isRequired={false}
-            helperTextInvalid={error}
-            helperText={" "}
-            validated={error ? "error" : "default"}
-          >
+          <FormGroup label="Audience" isRequired={false}>
+            {error === "error" ? (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant="error">{error}</HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            ) : (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant="default"></HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
             <TextInput
               id="audience"
               aria-label="Audience"
               value={audience}
               tabIndex={isAdvancedOIDCSettingsExpanded ? 0 : undefined}
-              onChange={setAudience}
+              onChange={(_event, val) => setAudience(val)}
               placeholder="The Audience (aud) or Identifier of the application."
             />
           </FormGroup>

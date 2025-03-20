@@ -35,13 +35,18 @@ import { SceSim__FactMappingType } from "@kie-tools/scesim-marshaller/dist/schem
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {} from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
@@ -322,10 +327,11 @@ function TestScenarioParserErrorPanel({
   return (
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
       <EmptyState style={{ maxWidth: "1280px" }}>
-        <EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />
-        <Title size={"lg"} headingLevel={"h4"}>
-          {parserErrorTitle}
-        </Title>
+        <EmptyStateHeader
+          titleText={<>{parserErrorTitle}</>}
+          icon={<EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />}
+          headingLevel={"h4"}
+        />
         <br />
         <EmptyStateBody>Error details: {parserErrorMessage}</EmptyStateBody>
       </EmptyState>

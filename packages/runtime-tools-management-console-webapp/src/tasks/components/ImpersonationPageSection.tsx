@@ -24,6 +24,7 @@ import {
   FormFieldGroupExpandable,
   FormFieldGroupHeader,
   FormGroup,
+  FormHelperText,
 } from "@patternfly/react-core/dist/js/components/Form";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
@@ -40,6 +41,7 @@ import {
   useRuntimeDispatch,
   useRuntimeInfo,
 } from "../../runtime/RuntimeContext";
+import { HelperText, HelperTextItem } from "@patternfly/react-core";
 
 export const ImpersonationPageSection: React.FC<{}> = () => {
   const { impersonationUsername, impersonationGroups } = useRuntime();
@@ -167,10 +169,10 @@ export const ImpersonationPageSection: React.FC<{}> = () => {
                 tabIndex={1}
                 style={{ maxWidth: "400px" }}
                 value={username ?? ""}
-                onChange={setUsername}
+                onChange={(_event, val) => setUsername(val)}
               />
             </FormGroup>
-            <FormGroup label={"Groups"} helperText={"Comma-separated list, no spaces."}>
+            <FormGroup label={"Groups"}>
               <TextInput
                 className={
                   groups && groups === impersonationGroups
@@ -182,9 +184,14 @@ export const ImpersonationPageSection: React.FC<{}> = () => {
                 tabIndex={2}
                 style={{ maxWidth: "400px" }}
                 value={groups ?? ""}
-                onChange={setGroups}
+                onChange={(_event, val) => setGroups(val)}
                 placeholder={`None (currently ${currentAuthSession?.type === AuthSessionType.OPENID_CONNECT ? currentAuthSession.roles?.join(",") ?? "empty" : "empty"})`}
               />
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem>Comma-separated list, no spaces.</HelperTextItem>
+                </HelperText>
+              </FormHelperText>
             </FormGroup>
             <ActionGroup>
               <Button type={ButtonType.submit} variant={ButtonVariant.secondary}>
