@@ -44,9 +44,7 @@ func SendCloudEventWithContext(event *cloudevents.Event, ctx context.Context, ur
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Before sending event to: %s\n", url)
 	res := c.Send(targetCtx, *event)
-	fmt.Printf("After sending event, res: %s\n", res.Error())
 	if cloudevents.IsUndelivered(res) {
 		return fmt.Errorf("failed to send cloud event to url: %s, err: %s", url, res.Error())
 	} else {

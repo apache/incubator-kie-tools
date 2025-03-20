@@ -19,14 +19,16 @@ package preview
 
 import (
 	"context"
+	"fmt"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/manager"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/eventing"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/constants"
 
-	controllercommon "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/common"
-
 	"k8s.io/client-go/util/retry"
 
-	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -217,15 +219,17 @@ func (d *DeploymentReconciler) updateLastTimeStatusNotified(workflow *operatorap
 	if previousRunningCondition == nil {
 		previousRunningCondition = currentRunningCondition
 	}
-	if previousRunningCondition.Status != currentRunningCondition.Status || workflow.Status.LastTimeStatusNotified != nil && workflow.Status.LastTimeStatusNotified.Time.Before(controllercommon.GetOperatorStartTime()) {
+	if previousRunningCondition.Status != currentRunningCondition.Status || workflow.Status.LastTimeStatusNotified != nil && workflow.Status.LastTimeStatusNotified.Time.Before(manager.GetOperatorStartTime()) {
 		workflow.Status.LastTimeStatusNotified = nil
 	}
 }
 
 func (d *DeploymentReconciler) scheduleWorkflowStatusChangeNotification(ctx context.Context, workflow *operatorapi.SonataFlow) {
 	if workflow.Status.LastTimeStatusNotified == nil {
-		controllercommon.GetSFCWorker().RunAsync(func() {
-			notifyWorkflowStatusChange(d.C, workflow.Name, workflow.Namespace)
+		manager.GetSFCWorker().RunAsync(func() {
+			if err := notifyWorkflowStatusChange(d.C, workflow.Name, workflow.Namespace); err != nil {
+				klog.V(log.E).ErrorS(err, "Failed to notify workflow status change, controller will schedule a new retry.", "workflow", "namespace", workflow.Name, workflow.Namespace, err)
+			}
 		})
 	}
 }
@@ -236,22 +240,15 @@ func notifyWorkflowStatusChange(cli client.Client, wfName, wfNamespace string) e
 	retryErr := retry.RetryOnConflict(retry.DefaultBackoff, func() error {
 		workflow := &operatorapi.SonataFlow{}
 		if err = cli.Get(context.Background(), types.NamespacedName{Name: wfName, Namespace: wfNamespace}, workflow); err != nil {
-			if errors.IsNotFound(err) {
-				klog.V(log.I).Infof("Workflow: %s, namespace: %s, was not found to send the workflow definition status update event.", wfName, wfNamespace)
-				return nil
-			} else {
-				klog.V(log.E).ErrorS(err, constants.SendWorkflowDefinitionsStatusUpdateEventError+" It was not possible to read the workflow.", "workflow", "namespace", wfName, wfNamespace)
-				return err
-			}
+			return err
 		}
 		workflow = workflow.DeepCopy()
 		available := workflow.Status.GetCondition(api.RunningConditionType).IsTrue()
-		if uri, err = common.GetWorkflowDefinitionEventsTargetURL(cli, workflow); err != nil {
-			klog.V(log.E).ErrorS(err, constants.SendWorkflowDefinitionsStatusUpdateEventError+" Workflow definition events target url calculation failed.", "workflow", "namespace", workflow.Name, workflow.Namespace)
-			return err
+		if uri, err = eventing.GetWorkflowDefinitionEventsTargetURL(cli, workflow); err != nil {
+			return fmt.Errorf("failed to get workflow definition events target url to send the workflow definition status update event: %v", err)
 		}
 		if len(uri) == 0 {
-			klog.V(log.E).Infof("No enabled DataIndex, nor Broker, nor Sink configuration was found to send the workflow definition status update event for workflow: %s, namespace: %s", workflow.Name, workflow.Namespace)
+			klog.V(log.D).Infof("No enabled DataIndex, nor Broker, nor Sink configuration was found to send the workflow definition status update event for workflow: %s, namespace: %s", workflow.Name, workflow.Namespace)
 			return nil
 		}
 
@@ -259,15 +256,13 @@ func notifyWorkflowStatusChange(cli client.Client, wfName, wfNamespace string) e
 		defer cancel()
 		evt := workflowdef.NewWorkflowDefinitionAvailabilityEvent(workflow, workflowdef.SonataFlowOperatorSource, properties.GetWorkflowEndpointUrl(workflow), available)
 		if err = utils.SendCloudEventWithContext(evt, ctx, uri); err != nil {
-			klog.V(log.E).ErrorS(err, constants.SendWorkflowDefinitionsStatusUpdateEventError+" Even delivery failed", "workflow", "namespace", workflow.Name, workflow.Namespace)
+			return fmt.Errorf("failed to send workflow definition status update event: %v", err)
 			// Controller handle to program a new notification based on the LastTimeStatusNotified.
-			return err
 		} else {
 			now := metav1.Now()
 			// Register the LastTimeStatusNotified, the controller knows how to react based on that value.
 			workflow.Status.LastTimeStatusNotified = &now
 			if err = cli.Status().Update(context.Background(), workflow); err != nil {
-				klog.V(log.E).ErrorS(err, constants.SendWorkflowDefinitionsStatusUpdateEventError+" Workflow status update failed.", "workflow", "namespace", workflow.Name, workflow.Namespace)
 				return err
 			}
 		}

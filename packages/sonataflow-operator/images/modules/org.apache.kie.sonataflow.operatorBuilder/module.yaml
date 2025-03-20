@@ -29,6 +29,10 @@ artifacts:
     path: "../../../../internal/controller"
     dest: /workspace/internal/controller
 
+  - name: manager
+    path: "../../../../internal/manager"
+    dest: /workspace/internal/manager
+
   - name: version
     path: "../../../../version"
     dest: /workspace/version

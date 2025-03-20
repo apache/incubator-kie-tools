@@ -24,7 +24,8 @@ import (
 	"flag"
 	"os"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/common"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/manager"
+
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/version"
 
 	prometheus "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
@@ -93,7 +94,7 @@ func main() {
 	flag.StringVar(&controllerCfgPath, "controller-cfg-path", "", "The controller config file path.")
 	flag.Parse()
 
-	common.SetOperatorStartTime()
+	manager.SetOperatorStartTime()
 
 	ctrl.SetLogger(klogr.New().WithName(controller.ComponentName))
 
@@ -156,7 +157,7 @@ func main() {
 	}
 
 	// Initialize the worker used by the SonataFlow reconciliations to execute auxiliary async operations.
-	common.InitializeSFCWorker(common.SonataFlowControllerWorkerSize)
+	manager.InitializeSFCWorker(manager.SonataFlowControllerWorkerSize)
 
 	if err = (&controller.SonataFlowReconciler{
 		Client:   mgr.GetClient(),

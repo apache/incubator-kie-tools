@@ -35,6 +35,8 @@ const (
 	MaxWorkflowFinalizerAttempts = 3
 	// WorkflowFinalizerRetryInterval interval between SonataFlow CRD finalizer execution attempts.
 	WorkflowFinalizerRetryInterval = 5 * time.Second
+	// WorkflowFinalizerSchedulingRetryInterval interval for the operator to retry to schedule a failing finalizer scheduling.
+	WorkflowFinalizerSchedulingRetryInterval = 5 * time.Second
 	// EventDeliveryTimeout delivery timeout for the cloud events produced by the operator.
 	EventDeliveryTimeout = 30 * time.Second
 )

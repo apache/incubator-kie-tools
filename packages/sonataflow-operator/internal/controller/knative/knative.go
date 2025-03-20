@@ -296,14 +296,13 @@ func CheckKSinkInjected(name, namespace string) (bool, error) {
 
 // GetSinkBindingSinkURI returns the address of the sink referred by a SinkBinding.
 func GetSinkBindingSinkURI(name, namespace string) (*apis.URL, error) {
-	sbName := fmt.Sprintf("%s-sb", name)
 	sb := &sourcesv1.SinkBinding{}
-	if err := utils.GetClient().Get(context.TODO(), types.NamespacedName{Name: sbName, Namespace: namespace}, sb); err != nil {
+	if err := utils.GetClient().Get(context.TODO(), types.NamespacedName{Name: name, Namespace: namespace}, sb); err != nil {
 		return nil, err
 	}
 	cond := sb.Status.GetCondition(apis.ConditionType(apis.ConditionReady))
 	if cond == nil || cond.Status != corev1.ConditionTrue {
-		return nil, fmt.Errorf("SinkBinding name: %s, namespace: %s is not ready", sbName, namespace)
+		return nil, fmt.Errorf("SinkBinding name: %s, namespace: %s is not ready", name, namespace)
 	}
 	return sb.Status.SinkURI, nil
 }

@@ -15,10 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package common
+package eventing
 
 import (
 	"context"
+	"fmt"
 
 	duckv1 "knative.dev/pkg/apis/duck/v1"
 
@@ -41,27 +42,25 @@ func GetWorkflowDefinitionEventsTargetURL(cli client.Client, workflow *operatora
 	var uri string
 
 	if sfp, err = platform.GetActivePlatform(context.Background(), cli, workflow.Namespace, false); err != nil {
-		klog.V(log.E).ErrorS(err, "It was not possible to get the active platform to calculate the workflow definition events target url.", "workflow", "namespace", workflow.Name, workflow.Namespace)
-		return "", err
+		return "", fmt.Errorf("failed to get active platform for workflow: %s, namespace: %s : %v", workflow.Name, workflow.Namespace, err)
 	}
 	if sfp == nil {
-		klog.V(log.I).Infof("No active platform was found to calculate the workflow definition events target url for the workflow: %s, namespace: %s.", workflow.Name, workflow.Namespace)
+		klog.V(log.D).Infof("No active platform was found to calculate the workflow definition events target url for workflow: %s, namespace: %s.", workflow.Name, workflow.Namespace)
 		return "", err
 	}
 	diHandler := services.NewDataIndexHandler(sfp)
 	if !diHandler.IsServiceEnabled() {
-		klog.V(log.I).Infof("DataIndex is not enabled for current workflow: %s, namespace: %s, neither in current platform: %s, or by a cluster platform reference.", workflow.Name, workflow.Namespace, sfp.Name)
+		klog.V(log.D).Infof("DataIndex is not enabled for current workflow: %s, namespace: %s, neither in current platform: %s, or by a cluster platform reference.", workflow.Name, workflow.Namespace, sfp.Name)
 		return "", nil
 	}
 
 	// First check if the workflow is connected with the knative eventing system.
 	if sink, err = knative.GetWorkflowSink(workflow, sfp); err != nil {
-		klog.V(log.E).ErrorS(err, "It was not possible to look for a potential sink configuration to calculate the workflow definition events target url.", "workflow", "namespace", workflow.Name, workflow.Namespace)
-		return "", err
+		return "", fmt.Errorf("failed to look for a potential sink configuration for workflow: %s, namespace: %s : %v", workflow.Name, workflow.Namespace, err)
 	}
 	if sink != nil {
 		// Workflow is connected via with knative eventing by using an operator managed SinkBinding.
-		if sinkURI, err := knative.GetSinkBindingSinkURI(workflow.Name, workflow.Namespace); err != nil {
+		if sinkURI, err := knative.GetSinkBindingSinkURI(workflow.Name+"-sb", workflow.Namespace); err != nil {
 			return "", err
 		} else {
 			uri = sinkURI.String()
