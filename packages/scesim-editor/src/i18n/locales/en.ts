@@ -100,10 +100,13 @@ export const en: TestScenarioEditorI18n = {
         "To edit a test scenario definition, select a grid's column and assign it a DMN Node attribute using the below selector",
       descriptionRule:
         "To edit a test scenario definition, select a grid's column and assign it a Java Class field using the below selector",
-      emptyDataObjectsTitle: "No more properties",
+      emptyDataObjectsTitle: "No Data Objects",
+      emptyDataObjectsMissingTitle: "Missing Data Object",
       emptyDataObjectsTitleDMN: "No DMN Nodes",
       emptyDataObjectsTitleRule: "No Java Classes",
-      emptyDataObjectsDescription: "All the properties have been already assigned",
+      emptyDataObjectsDescription: "All the Data Objects have been already assigned",
+      emptyDataObjectsMissingDescription:
+        "The selected column's Data Object is missing. Most likely, this scesim file is no longer synchronized with the referenced DMN file. Please manually remove it and update your table accordingly with the DMN file.",
       emptyDataObjectsDescriptionDMN: "Impossible to retrieve the DMN Nodes data from the linked DMN file.",
       emptyDataObjectsDescriptionRule: "Impossible to retrieve the Java Classes from the project.",
       expandAll: "Expand all",
