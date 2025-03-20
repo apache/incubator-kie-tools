@@ -277,7 +277,7 @@ export function FormDmnOutputs({ openEvaluationTab, openBoxedExpressionEditor, .
             onAnimationEnd={(e) => onAnimationEnd(e, index)}
           >
             <CardTitle>
-              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }} flexWrap={{ default: "nowrap" }}>
                 <Title headingLevel={"h2"}>{dmnFormResult.decisionName}</Title>
                 {onOpenBoxedExpressionEditor !== undefined && (
                   <Button

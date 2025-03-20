@@ -44,6 +44,10 @@
   margin-top: 50px;
 }
 
+.kie-scesim-editor--root {
+  scrollbar-color: rgba(121, 121, 121, 0.4) #f1f1f1;
+}
+
 .kie-scesim-editor--scenario-table-container {
   overflow: auto;
 }

@@ -46,13 +46,13 @@ To help bootstrapping the Infrastructure Services, the example provides a `docke
 
 ```
 PROJECT_VERSION=0.0.0
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
+MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
 COMPOSE_PROFILES=container
 HOST=127.0.0.1
 ```
 
 - `PROJECT_VERSION`: Should be set with the current version being used: `PROJECT_VERSION=0.0.0`
-- `KOGITO_MANAGEMENT_CONSOLE_IMAGE`: Should be set with the Kogito Management Console image `docker.io/apache/incubator-kie-kogito-management-console:main`
+- `MANAGEMENT_CONSOLE_IMAGE`: Should be set with the Kogito Management Console image `docker.io/apache/incubator-kie-kogito-management-console:main`
 - `COMPOSE_PROFILES`: filters which services will run.
 - `HOST`: The host used to communicate between the Management Console and the business service. For Windows Subsystem for Linux (WSL) users, use `localhost`.
 
@@ -62,7 +62,7 @@ For development mode, the `.env` must have the `COMPOSE_PROFILES=development`:
 
 ```
 PROJECT_VERSION=0.0.0
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
+MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
 COMPOSE_PROFILES=development
 HOST=127.0.0.1
 ```
@@ -73,7 +73,7 @@ For JVM mode, the `.env` must have the `COMPOSE_PROFILES=jvm`:
 
 ```
 PROJECT_VERSION=0.0.0
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
+MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
 COMPOSE_PROFILES=jvm
 HOST=127.0.0.1
 ```
@@ -84,7 +84,7 @@ For container mode, the `.env` must have the `COMPOSE_PROFILES=container`:
 
 ```
 PROJECT_VERSION=0.0.0
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
+MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
 COMPOSE_PROFILES=container
 HOST=127.0.0.1
 ```
@@ -169,6 +169,15 @@ After that, start all services (["Infrastructure requirements/Container mode"](#
 ```sh
 docker compose up
 ```
+
+### Important Note on Resource Usage
+
+This example relies on multiple services running via Docker Compose, including Keycloak, PostgreSQL, pgAdmin, and other kie services . Running all these services simultaneously _requires a significant amount of system memory_. If you experience frequent container restarts or failures without logs, it may indicate that system is running out of memory.
+
+**Recommendations**:
+
+- Increase Docker's allocated memory for your Docker VM based on system configuration.
+- Close unnecessary applications to free up system resources before running the example.
 
 ## Using
 
@@ -271,7 +280,7 @@ NOTE: For debbuging purposes, you can add the `--dump-header - ` to the `curl` c
 
 ### Connecting to the Apache KIE business services in the Management Console
 
-To do so, open the Management Console in http://localhost:8380 and click on the `+ Connect to a runtime…` button and fill in the required information on the
+Management Console is only available in container mode. So if you would like to acess Management Console, make sure you are running this example in [container mode](#compile-and-run-using-docker-compose). After that, open the Management Console in http://localhost:8380 and click on the `+ Connect to a runtime…` button and fill in the required information on the
 modal:
 
 - **Alias**: The name to give your connected runtime instance (can be anything that helps you identify it).

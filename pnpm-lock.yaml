@@ -2523,6 +2523,9 @@ importers:
       express:
         specifier: ^4.21.2
         version: 4.21.2
+      https-proxy-agent:
+        specifier: ^7.0.6
+        version: 7.0.6
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2

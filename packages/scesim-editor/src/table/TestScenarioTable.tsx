@@ -822,7 +822,7 @@ function TestScenarioTable({
 
   const onHeaderClick = useCallback(
     (columnKey: string) => {
-      console.log(columnKey);
+      console.debug("[TestScenarioTable] columnKey: ", columnKey);
       if (
         columnKey == TestScenarioTableColumnHeaderGroup.EXPECT ||
         columnKey == TestScenarioTableColumnHeaderGroup.GIVEN

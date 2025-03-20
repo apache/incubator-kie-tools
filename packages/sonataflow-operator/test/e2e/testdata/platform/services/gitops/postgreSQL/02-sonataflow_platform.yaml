@@ -34,7 +34,7 @@ spec:
     dataIndex:
       enabled: true
       persistence:
-        migrateDBOnStartUp: true
+        dbMigrationStrategy: service
         postgresql:
           jdbcUrl: jdbc:postgresql://postgres:5432/sonataflow?currentSchema=data-index-service
           secretRef:
@@ -62,7 +62,7 @@ spec:
     jobService:
       enabled: true
       persistence:
-        migrateDBOnStartUp: true
+        dbMigrationStrategy: service
         postgresql:
           jdbcUrl: jdbc:postgresql://postgres:5432/sonataflow?currentSchema=jobs-service
           secretRef:

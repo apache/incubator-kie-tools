@@ -22,6 +22,18 @@ metadata:
   name: manager-role
 rules:
   - apiGroups:
+      - batch
+    resources:
+      - jobs
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
       - monitoring.coreos.com
     resources:
       - servicemonitors

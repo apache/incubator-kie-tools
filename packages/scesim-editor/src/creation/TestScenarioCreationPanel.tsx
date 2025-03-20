@@ -51,7 +51,7 @@ import { createNewDmnTypeTestScenario } from "../mutations/createNewDmnTypeTestS
 import { createNewRuleTypeTestScenario } from "../mutations/createNewRuleTypeTestScenario";
 
 import "./TestScenarioCreationPanel.css";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 
 function TestScenarioCreationPanel() {
   const { i18n } = useTestScenarioEditorI18n();
@@ -84,8 +84,10 @@ function TestScenarioCreationPanel() {
       ({ canceled }) => {
         onRequestExternalModelsAvailableToInclude?.()
           .then((dmnModelNormalizedPosixPathRelativePaths) => {
-            console.trace("[TestScenarioCreationPanel] The below external DMN models have been found");
-            console.trace(dmnModelNormalizedPosixPathRelativePaths);
+            console.debug(
+              "[TestScenarioCreationPanel] The below external DMN models have been found ",
+              dmnModelNormalizedPosixPathRelativePaths
+            );
 
             if (canceled.get()) {
               setAllDmnModelNormalizedPosixRelativePaths(undefined);
@@ -119,8 +121,10 @@ function TestScenarioCreationPanel() {
 
         onRequestExternalModelByPath(selectedDmnModelPathRelativeToThisScesim)
           .then((externalDMNModel) => {
-            console.trace("[TestScenarioCreationPanel] The below external DMN model have been loaded");
-            console.trace(externalDMNModel);
+            console.debug(
+              "[TestScenarioCreationPanel] The below external DMN model have been loaded ",
+              externalDMNModel
+            );
 
             if (canceled.get() || !externalDMNModel) {
               setSelectedDmnModel(undefined);
@@ -177,6 +181,8 @@ function TestScenarioCreationPanel() {
     ]
   );
 
+  const [isModelSelectOpen, setModelSelectOpen] = useState(false);
+
   return (
     <EmptyState>
       <EmptyStateIcon icon={CubesIcon} />
@@ -199,25 +205,39 @@ function TestScenarioCreationPanel() {
         {assetType === "DMN" && (
           <>
             <FormGroup isRequired label={i18n.creationPanel.dmnGroup}>
-              <FormSelect
+              <Select
+                variant={SelectVariant.single}
                 id="dmn-select"
                 name="dmn-select"
-                onChange={(_event, dmnModelPathRelativeToThisScesim) => {
-                  console.trace(`[TestScenarioCreationPanel] Selected path ${dmnModelPathRelativeToThisScesim}`);
+                onToggle={setModelSelectOpen}
+                isOpen={isModelSelectOpen}
+                typeAheadAriaLabel={"Select a model..."}
+                placeholderText={"Select a model..."}
+                maxHeight={"350px"}
+                onSelect={(e, dmnModelPathRelativeToThisScesim) => {
+                  if (typeof dmnModelPathRelativeToThisScesim !== "string") {
+                    throw new Error(
+                      `Invalid path for an included model ${JSON.stringify(dmnModelPathRelativeToThisScesim)}`
+                    );
+                  }
+
+                  console.debug(`[TestScenarioCreationPanel] Selected path ${dmnModelPathRelativeToThisScesim}`);
                   setSelectedDmnModelPathRelativeToThisScesim(dmnModelPathRelativeToThisScesim);
+                  setModelSelectOpen(false);
                 }}
-                value={selectedDmnModelPathRelativeToThisScesim}
+                selections={selectedDmnModelPathRelativeToThisScesim}
               >
-                <FormSelectOption key={undefined} isDisabled label={i18n.creationPanel.dmnNoChoice} />
                 {((allDmnModelNormalizedPosixRelativePaths?.length ?? 0) > 0 &&
                   allDmnModelNormalizedPosixRelativePaths?.map((normalizedPosixPathRelativeToTheOpenFile) => (
-                    <FormSelectOption
+                    <SelectOption
                       key={normalizedPosixPathRelativeToTheOpenFile}
                       value={normalizedPosixPathRelativeToTheOpenFile}
-                      label={basename(normalizedPosixPathRelativeToTheOpenFile)}
-                    />
-                  ))) || <FormSelectOption key={undefined} isDisabled label={i18n.creationPanel.dmnNoPresent} />}
-              </FormSelect>
+                      description={normalizedPosixPathRelativeToTheOpenFile}
+                    >
+                      {basename(normalizedPosixPathRelativeToTheOpenFile)}
+                    </SelectOption>
+                  ))) || [<SelectOption key={undefined} isDisabled label={i18n.creationPanel.dmnNoPresent} />]}
+              </Select>
             </FormGroup>
             <FormGroup>
               <Checkbox
