@@ -30,10 +30,6 @@ export abstract class PropertiesPanelBase {
     return this.page.getByTestId("kie-tools--dmn-editor--properties-panel-container");
   }
 
-  public beepanel() {
-    return this.page.getByTestId("kie-tools--dmn-editor--bee-properties-panel-container");
-  }
-
   public async open() {
     await this.page.getByTitle("Properties panel").click();
   }
