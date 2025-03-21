@@ -112,6 +112,9 @@ type PlatformServiceHandler interface {
 	// SetServiceUrlInWorkflowStatus sets the service url in a workflow's status.
 	SetServiceUrlInWorkflowStatus(workflow *operatorapi.SonataFlow)
 
+	// GetServiceSource returns the source Broker configured for the given service by applying the following precedence rule.
+	// The source declared in the given service definition is returned first, if any, otherwise a source declared in the
+	// service platform is returned, if any.
 	GetServiceSource() *duckv1.Destination
 
 	// Check if K_SINK has injected for Job Service. No Op for Data Index
@@ -690,7 +693,7 @@ func (d *DataIndexHandler) GenerateKnativeResources(platform *operatorapi.Sonata
 		d.newTrigger(lbl, annotations, brokerName, namespace, serviceName, "process-node", "ProcessInstanceNodeDataEvent", constants.KogitoProcessInstancesEventsPath, platform),
 		d.newTrigger(lbl, annotations, brokerName, namespace, serviceName, "process-state", "ProcessInstanceStateDataEvent", constants.KogitoProcessInstancesEventsPath, platform),
 		d.newTrigger(lbl, annotations, brokerName, namespace, serviceName, "process-variable", "ProcessInstanceVariableDataEvent", constants.KogitoProcessInstancesEventsPath, platform),
-		d.newTrigger(lbl, annotations, brokerName, namespace, serviceName, "process-definition", "ProcessDefinitionEvent", constants.KogitoProcessDefinitionsEventsPath, platform),
+		d.newTrigger(lbl, managedAnnotations, brokerName, namespace, serviceName, "process-definition", "ProcessDefinitionEvent", constants.KogitoProcessDefinitionsEventsPath, platform),
 		d.newTrigger(lbl, annotations, brokerName, namespace, serviceName, "process-instance-multiple", "MultipleProcessInstanceDataEvent", constants.KogitoProcessInstancesMultiEventsPath, platform),
 		d.newTrigger(lbl, managedAnnotations, brokerName, namespace, serviceName, "jobs", "JobEvent", constants.KogitoJobsPath, platform)}, nil, nil
 }
