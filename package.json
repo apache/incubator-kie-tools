@@ -49,7 +49,6 @@
     },
     "patchedDependencies": {
       "immer@10.0.3": "patches/immer@10.0.3.patch",
-      "isomorphic-git@1.11.1": "patches/isomorphic-git@1.11.1.patch",
       "karma-firefox-launcher@2.1.2": "patches/karma-firefox-launcher@2.1.2.patch",
       "selenium-webdriver@4.15.0": "patches/selenium-webdriver@4.15.0.patch",
       "zustand@4.4.2": "patches/zustand@4.4.2.patch"
