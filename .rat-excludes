@@ -2100,8 +2100,6 @@ empty.yard.yaml
 empty.yard.yml
 # patches/immer@10.0.3.patch
 immer@10.0.3.patch
-# patches/isomorphic-git@1.11.1.patch
-isomorphic-git@1.11.1.patch
 # patches/karma-firefox-launcher@2.1.2.patch
 karma-firefox-launcher@2.1.2.patch
 # patches/selenium-webdriver@4.15.0.patch
