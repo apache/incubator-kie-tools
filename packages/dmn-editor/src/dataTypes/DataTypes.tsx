@@ -51,6 +51,11 @@ import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
 import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
 import {
+  ImportJavaClassesWizard,
+  ImportJavaClassesI18nDictionariesProvider,
+} from "@kie-tools/import-java-classes-component";
+import { ChannelType } from "@kie-tools-core/editor/dist/api";
+import {
   DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE,
   DmnEditorDataTypesClipboard,
   getClipboard,
@@ -58,12 +63,8 @@ import {
 import { addTopLevelItemDefinition as _addTopLevelItemDefinition } from "../mutations/addTopLevelItemDefinition";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
-import {
-  ImportJavaClassesWizard,
-  ImportJavaClassesI18nDictionariesProvider,
-} from "@kie-tools/import-java-classes-component";
-import { ImportJavaClassesDropdownItem, useImportJavaClasses } from "./ImportJavaClasses";
-import { ChannelType } from "@kie-tools-core/editor/dist/api";
+import { ImportJavaClassesDropdownItem, ImportJavaClassNameConflictsModal } from "./ImportJavaClasses";
+import { useImportJavaClasses } from "./useImportJavaClasses";
 
 export type DataType = {
   itemDefinition: Normalized<DMN15__tItemDefinition>;
@@ -112,7 +113,13 @@ export function DataTypes() {
   const dataTypesTree = useDmnEditorStore((s) => s.computed(s).getDataTypes(externalModelsByNamespace).dataTypesTree);
 
   const [isOpen, setOpen] = useState(false);
-  const { importJavaClassesInDataTypeEditor, javaCodeCompletionService } = useImportJavaClasses();
+  const {
+    javaCodeCompletionService,
+    conflictsClasses,
+    handleConflictAction,
+    handleImportJavaClasses,
+    isConflictsOccured,
+  } = useImportJavaClasses();
   const handleImportJavaClassButtonClick = useCallback(() => {
     setOpen((prevState) => !prevState);
   }, []);
@@ -338,10 +345,17 @@ export function DataTypes() {
                   <ImportJavaClassesWizard
                     javaCodeCompletionService={javaCodeCompletionService}
                     isOpen={isOpen}
-                    onSave={importJavaClassesInDataTypeEditor}
+                    onSave={handleImportJavaClasses}
                     onClose={handleImportJavaClassButtonClick}
                   />
                 </ImportJavaClassesI18nDictionariesProvider>
+              )}
+              {isConflictsOccured && conflictsClasses?.length > 0 && (
+                <ImportJavaClassNameConflictsModal
+                  isOpen={isConflictsOccured}
+                  handleConfirm={handleConflictAction}
+                  conflictsNames={conflictsClasses}
+                />
               )}
             </DrawerContentBody>
           </DrawerContent>

@@ -18,174 +18,46 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
-import {
-  ImportJavaClasses,
-  // JavaClass,
-  JavaCodeCompletionService,
-  useImportJavaClassesWizardI18n,
-  useLanguageServerAvailable,
-} from "@kie-tools/import-java-classes-component";
-import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
-import { DataType } from "./DataTypes";
-import { addTopLevelItemDefinition as _addTopLevelItemDefinition } from "../mutations/addTopLevelItemDefinition";
-import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
-import { getNewItemDefinition } from "./DataTypeSpec";
 import { Spinner } from "@patternfly/react-core/dist/esm/components/Spinner";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-
-type JavaField = {
-  /* Field Name */
-  name: string;
-  /* The Java Type of the field (eg. java.lang.String OR com.mypackace.Test) */
-  type: string;
-  /* List Type */
-  isList: boolean;
-  /* The DMN Type reference */
-  dmnTypeRef: string;
-};
-
-type JavaClass = {
-  /** Java Class Name (eg. java.lang.String OR com.mypackage.Test) */
-  name: string;
-  /** Java Fields of the class */
-  fields: JavaField[];
-  /** It indicates if the fields has been loaded, in order to support empty fields Java Classes */
-  fieldsLoaded: boolean;
-};
-
-const NAME_SEPARATOR: string = "-";
-
-const useImportJavaClasses = () => {
-  const dmnEditorStoreApi = useDmnEditorStoreApi();
-  const { externalModelsByNamespace } = useExternalModels();
-  const dataTypesTree = useDmnEditorStore((s) => s.computed(s).getDataTypes(externalModelsByNamespace).dataTypesTree);
-
-  const updatePropertiesReferences = useCallback(
-    (javaClasses: JavaClass[], javaClassNameToDMNTypeNameMap: Map<string, string>): JavaClass[] => {
-      return javaClasses.map((javaClass) => {
-        const updatedFields = (javaClass ?? [])?.fields?.map((field) => {
-          if (javaClassNameToDMNTypeNameMap.has(field.type)) {
-            const renamedFieldType = javaClassNameToDMNTypeNameMap.get(field.type)!;
-            return { ...field, dmnTypeRef: renamedFieldType };
-          }
-          return field;
-        });
-
-        return { ...javaClass, fields: updatedFields };
-      });
-    },
-    []
-  );
-
-  const buildName = useCallback(
-    (nameCandidate: string, namesCount: Map<string, number>, nameSeparator: string = NAME_SEPARATOR): string => {
-      if (namesCount.has(nameCandidate)) {
-        const occurrences = namesCount.get(nameCandidate)!;
-        namesCount.set(nameCandidate, occurrences + 1);
-        return nameCandidate + nameSeparator + occurrences;
-      }
-      namesCount.set(nameCandidate, 1);
-      return nameCandidate;
-    },
-    []
-  );
-  const renameJavaClassToDMNName = useCallback(
-    (javaClasses: JavaClass[]): JavaClass[] => {
-      const namesCount: Map<string, number> = new Map();
-      const javaClassNameToDMNTypeNameMap: Map<string, string> = new Map();
-
-      // Map the javaClasses to new renamed classes
-      const renamedJavaClasses = javaClasses.map((javaClass: JavaClass) => {
-        const nameCandidate = javaClass.name.substring(javaClass.name.lastIndexOf(".") + 1);
-        const newName = buildName(nameCandidate, namesCount);
-        javaClassNameToDMNTypeNameMap.set(javaClass.name, newName);
-        return { ...javaClass, name: newName };
-      });
-
-      // Return the updated Java classes with renamed types
-      return updatePropertiesReferences(renamedJavaClasses, javaClassNameToDMNTypeNameMap);
-    },
-    [updatePropertiesReferences, buildName]
-  );
-
-  const renameJavaClassIfExists = useCallback(
-    (javaClasses: JavaClass[], dataTypesTree: DataType[]): JavaClass[] => {
-      const namesCount: Map<string, number> = new Map();
-      return javaClasses?.map((javaClass: JavaClass) => {
-        console.log({ dataTypesTree });
-        const isExisting = dataTypesTree?.filter(
-          ({ feelName, itemDefinition }) => feelName === javaClass?.name || itemDefinition["@_name"] === javaClass?.name
-        );
-        console.log("same name exist", isExisting);
-        if (isExisting?.length > 0) {
-          console.log("enter is existing");
-          // const newName = buildName(javaClass?.name, namesCount);
-          // console.log("newName", newName);
-          return { ...javaClass, name: `${javaClass?.name}-${isExisting?.length}` };
-        }
-        return javaClass;
-      });
-    },
-    [buildName]
-  );
-
-  const mapJavaClassesToDMNItemDefinitions = useCallback(
-    (javaClasses: JavaClass[]): ReturnType<typeof getNewItemDefinition>[] => {
-      return javaClasses?.map((javaClass: JavaClass) => {
-        const itemsComponents = javaClass?.fields?.map((field) =>
-          getNewItemDefinition({ "@_name": field?.name, typeRef: { __$$text: field?.dmnTypeRef } })
-        );
-        return getNewItemDefinition({ "@_name": javaClass?.name, typeRef: undefined, itemComponent: itemsComponents });
-      });
-    },
-    []
-  );
-
-  const importJavaClassesInDataTypeEditor = useCallback(
-    (javaClasses: JavaClass[]) => {
-      if (javaClasses?.length === 0) return;
-      console.log("actualClasses", javaClasses);
-      const newDataType = renameJavaClassToDMNName(javaClasses);
-      console.log("newDataType", newDataType);
-      const updatedClasses = renameJavaClassIfExists(newDataType, dataTypesTree);
-      console.log("updatedClasses", updatedClasses);
-      const itemDefinitions = mapJavaClassesToDMNItemDefinitions(updatedClasses);
-      dmnEditorStoreApi.setState((state) => {
-        state.dmn.model.definitions.itemDefinition?.unshift(...itemDefinitions);
-        state.dataTypesEditor.activeItemDefinitionId = itemDefinitions?.[0]?.["@_id"];
-        state.focus.consumableId = itemDefinitions?.[0]?.["@_id"];
-      });
-    },
-    [
-      dataTypesTree,
-      dmnEditorStoreApi,
-      mapJavaClassesToDMNItemDefinitions,
-      renameJavaClassIfExists,
-      renameJavaClassToDMNName,
-    ]
-  );
-
-  const javaCodeCompletionService: JavaCodeCompletionService = useMemo(
-    () => ({
-      getClasses: (query: string) => window.envelope?.javaCodeCompletionService?.getClasses(query),
-      getFields: (fullClassName: string) => window.envelope?.javaCodeCompletionService?.getAccessors(fullClassName, ""),
-      isLanguageServerAvailable: () => window.envelope?.javaCodeCompletionService?.isLanguageServerAvailable(),
-    }),
-    []
-  );
-  return { javaCodeCompletionService, importJavaClassesInDataTypeEditor };
-};
+import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { TextContent, Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
+import {
+  ImportJavaClasses,
+  JavaClass,
+  useImportJavaClassesWizardI18n,
+  useLanguageServerAvailable,
+} from "@kie-tools/import-java-classes-component";
+import { addTopLevelItemDefinition as _addTopLevelItemDefinition } from "../mutations/addTopLevelItemDefinition";
+import { JavaClassConflictOptions, useImportJavaClasses } from "./useImportJavaClasses";
 
 const ImportJavaClassesWrapper = () => {
-  const { importJavaClassesInDataTypeEditor, javaCodeCompletionService } = useImportJavaClasses();
+  const {
+    javaCodeCompletionService,
+    handleConflictAction,
+    handleImportJavaClasses,
+    conflictsClasses,
+    isConflictsOccured,
+  } = useImportJavaClasses();
   return (
-    <ImportJavaClasses
-      loadJavaClassesInDataTypeEditor={importJavaClassesInDataTypeEditor}
-      javaCodeCompletionService={javaCodeCompletionService}
-    />
+    <>
+      <ImportJavaClasses
+        loadJavaClassesInDataTypeEditor={handleImportJavaClasses}
+        javaCodeCompletionService={javaCodeCompletionService}
+      />
+      {isConflictsOccured && conflictsClasses?.length > 0 && (
+        <ImportJavaClassNameConflictsModal
+          isOpen={isConflictsOccured}
+          handleConfirm={handleConflictAction}
+          conflictsNames={conflictsClasses}
+        />
+      )}
+    </>
   );
 };
 
@@ -234,4 +106,79 @@ const ImportJavaClassesDropdownItem = (props: React.ComponentProps<typeof Dropdo
   );
 };
 
-export { ImportJavaClassesWrapper, ImportJavaClassesDropdownItem, useImportJavaClasses };
+const ImportJavaClassNameConflictsModal = ({
+  isOpen,
+  handleConfirm,
+  conflictsNames,
+}: {
+  isOpen: boolean;
+  handleConfirm: (options: JavaClassConflictOptions) => void;
+  conflictsNames: JavaClass[];
+}) => {
+  const handleActionButtonClick = useCallback((e: any) => handleConfirm?.(e?.target?.name), [handleConfirm]);
+  const classNames = conflictsNames?.map((javaClass) => javaClass?.name);
+  return (
+    <Modal
+      title="Duplicate DMN Data Type Detected"
+      titleIconVariant="warning"
+      aria-describedby="modal-title-icon-description"
+      showClose={false}
+      isOpen={isOpen}
+      variant={ModalVariant.small}
+      position="top"
+      actions={[
+        <Button
+          name={JavaClassConflictOptions.OVERWRITE}
+          key={JavaClassConflictOptions.OVERWRITE}
+          variant="primary"
+          onClick={handleActionButtonClick}
+        >
+          {JavaClassConflictOptions.OVERWRITE}
+        </Button>,
+        <Button
+          name={JavaClassConflictOptions.CREATE_NEW}
+          key={JavaClassConflictOptions.CREATE_NEW}
+          variant="link"
+          onClick={handleActionButtonClick}
+        >
+          {JavaClassConflictOptions.CREATE_NEW}
+        </Button>,
+      ]}
+    >
+      <TextContent>
+        {classNames?.length === 1 ? (
+          <>
+            An existing DMN type named{" "}
+            <Text component={TextVariants.pre} style={{ display: "inline" }}>
+              <b>{classNames?.join()}</b>
+            </Text>{" "}
+            has been detected. This type is currently in use within the system. How would you like to proceed?
+          </>
+        ) : (
+          <>
+            Multiple DMN types have been detected in the list. The following DMN types are currently in use within the
+            system:{" "}
+            <Text component={TextVariants.pre} style={{ display: "inline" }}>
+              <b>{classNames?.join()}</b>
+            </Text>
+            . How would you like to proceed?
+          </>
+        )}
+        <Text component={TextVariants.blockquote} style={{ background: "none" }}>
+          <HelperText>
+            <HelperTextItem variant="indeterminate" hasIcon>
+              <b>{JavaClassConflictOptions.OVERWRITE}:</b> This option will replace the existing DMN type with the new
+              one.
+            </HelperTextItem>
+            <HelperTextItem variant="indeterminate" hasIcon>
+              <b>{JavaClassConflictOptions.CREATE_NEW}:</b> This option will preserve the existing DMN type and create a
+              new one with a unique name.
+            </HelperTextItem>
+          </HelperText>
+        </Text>
+      </TextContent>
+    </Modal>
+  );
+};
+
+export { ImportJavaClassesWrapper, ImportJavaClassesDropdownItem, ImportJavaClassNameConflictsModal };
