@@ -3689,9 +3689,6 @@ importers:
       react-dom:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
-      react-router:
-        specifier: ^6.29.0
-        version: 6.30.0(react@17.0.2)
       react-router-dom:
         specifier: ^6.29.0
         version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -32104,7 +32101,7 @@ snapshots:
     dependencies:
       '@babel/helper-validator-identifier': 7.25.9
       js-tokens: 4.0.0
-      picocolors: 1.1.0
+      picocolors: 1.1.1
 
   '@babel/compat-data@7.17.7': {}
 

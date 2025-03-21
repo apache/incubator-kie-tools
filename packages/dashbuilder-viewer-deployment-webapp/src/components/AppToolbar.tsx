@@ -28,7 +28,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { basename } from "path";
 import { useCallback, useMemo, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useAppI18n } from "../i18n";
 import { routes } from "../routes";
 import { Dashboard } from "../data";
@@ -47,17 +47,17 @@ interface Props {
 
 export function AppToolbar(props: Props) {
   const app = useApp();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { i18n } = useAppI18n();
   const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
 
   const openDashboard = useCallback(
     (uri: string) => {
-      history.push({
+      navigate({
         pathname: routes.dashboard.path({ filePath: uri }),
       });
     },
-    [history]
+    [navigate]
   );
 
   const modelDropdownItems = useMemo(() => {
@@ -94,7 +94,7 @@ export function AppToolbar(props: Props) {
       <MastheadMain style={{ justifyContent: "space-between" }}>
         <PageHeaderToolsItem className={"pf-l-flex"}>
           <MastheadBrand
-            onClick={() => history.push({ pathname: routes.root.path({}) })}
+            onClick={() => navigate({ pathname: routes.root.path({}) })}
             style={{ textDecoration: "none" }}
           >
             <TextContent>
