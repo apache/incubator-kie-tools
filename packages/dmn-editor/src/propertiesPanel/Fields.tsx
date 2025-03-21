@@ -20,13 +20,13 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { InlineFeelNameInput } from "../../feel/InlineFeelNameInput";
+import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
-import { ExpressionPath } from "../../boxedExpressions/boxedExpressionIndex";
+import { ExpressionPath } from "../boxedExpressions/boxedExpressionIndex";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { TypeRefSelector } from "../../dataTypes/TypeRefSelector";
+import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
-import { State } from "../../store/Store";
+import { State } from "../store/Store";
 
 export function ContentField(props: {
   initialValue: string;

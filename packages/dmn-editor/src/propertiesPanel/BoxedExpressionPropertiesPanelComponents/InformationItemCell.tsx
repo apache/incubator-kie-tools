@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { DescriptionField, NameField, TypeRefField } from "./Fields";
+import { DescriptionField, NameField, TypeRefField } from "../Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
