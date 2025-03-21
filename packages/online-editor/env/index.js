@@ -48,10 +48,6 @@ module.exports = composeEnv([rootEnv, extendedServicesJavaEnv, corsProxyEnv, kie
       description:
         "Version Extended Services compatile with KIE Sandbox. Exact match only. No version ranges are supported.",
     },
-    ONLINE_EDITOR__gtmId: {
-      default: undefined,
-      description: "Google Tag Manager ID. Used for analytics.",
-    },
     ONLINE_EDITOR__corsProxyUrl: {
       default: `http://localhost:${corsProxyEnv.env.corsProxy.dev.port}`,
       description: "CORS Proxy URL.",
@@ -163,7 +159,6 @@ module.exports = composeEnv([rootEnv, extendedServicesJavaEnv, corsProxyEnv, kie
         test: {
           skipForArm64: getOrDefault(this.vars.ONLINE_EDITOR__skipPlaywrightTestsForArm64),
         },
-        gtmId: getOrDefault(this.vars.ONLINE_EDITOR__gtmId),
         buildInfo: getOrDefault(this.vars.ONLINE_EDITOR__buildInfo),
         extendedServices: {
           compatibleVersion: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesCompatibleVersion),

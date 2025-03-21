@@ -56,7 +56,6 @@ pipeline {
         ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageAccount = 'apache'
         ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageName = 'incubator-kie-sandbox-dev-deployment-quarkus-blank-app'
         ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageTag = "${params.RELEASE_VERSION}"
-        ONLINE_EDITOR__gtmId = 'GTM-PQGMKNW'
         ONLINE_EDITOR__corsProxyUrl = 'https://cors-proxy-kie-sandbox.rhba-0ad6762cc85bcef5745bb684498c2436-0000.us-south.containers.appdomain.cloud'
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
