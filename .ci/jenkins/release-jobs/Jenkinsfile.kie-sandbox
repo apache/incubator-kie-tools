@@ -62,7 +62,6 @@ pipeline {
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageAccount = 'apache'
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageName = 'incubator-kie-sandbox-dev-deployment-dmn-form-webapp'
         ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag = "${params.RELEASE_VERSION}"
-        ONLINE_EDITOR__gtmId = 'GTM-PQGMKNW'
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 

@@ -53,10 +53,6 @@ module.exports = composeEnv(
         default: "main",
         description: "Tag/branch to fetch samples from `kiegroup/kie-samples` repository",
       },
-      SERVERLESS_LOGIC_WEB_TOOLS__gtmId: {
-        default: undefined,
-        description: "Google Tag Manager ID for Analytics",
-      },
       SERVERLESS_LOGIC_WEB_TOOLS__swfBuilderImageTag: {
         default: rootEnv.env.root.streamName,
         description:
@@ -89,7 +85,6 @@ module.exports = composeEnv(
         serverlessLogicWebTools: {
           version: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__version),
           buildInfo: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__buildInfo),
-          gtmId: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__gtmId),
           dev: {
             cypressUrl: getOrDefault(this.vars.SERVERLESS_LOGIC_WEB_TOOLS__cypressUrl),
             port: 9020,
