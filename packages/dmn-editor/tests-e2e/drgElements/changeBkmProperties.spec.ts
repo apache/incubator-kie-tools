@@ -137,4 +137,11 @@ test.describe("Change Properties - BKM", () => {
 
     await expect(diagram.get()).toHaveScreenshot("change-bkm-position.png");
   });
+  test("should change the BKM node description after selecting BKM node", async ({ nodes, beePropertiesPanel }) => {
+    await nodes.edit({ name: DefaultNodeName.BKM });
+    await beePropertiesPanel.expressionHeaderCell.select();
+
+    await beePropertiesPanel.setDescription({ newDescription: "New Description" });
+    expect(await beePropertiesPanel.getDescription()).toBe("New Description");
+  });
 });

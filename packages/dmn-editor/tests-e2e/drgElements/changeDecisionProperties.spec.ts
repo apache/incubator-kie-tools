@@ -158,4 +158,24 @@ test.describe("Change Properties - Decision", () => {
 
     await expect(diagram.get()).toHaveScreenshot("change-decision-position.png");
   });
+
+  test("should change the Decision node description after selecting Decision node", async ({
+    nodes,
+    bee,
+    beePropertiesPanel,
+  }) => {
+    await nodes.edit({ name: DefaultNodeName.DECISION });
+    await bee.selectExpressionMenu.selectContext();
+
+    await bee.expression.asContext().expressionHeaderCell.select();
+
+    await beePropertiesPanel.setDescription({ newDescription: "New Description" });
+    expect(await beePropertiesPanel.getDescription()).toBe("New Description");
+
+    await beePropertiesPanel.setAllowedAnswers({ newAllowedAnswers: "New Allowed Answers" });
+    expect(await beePropertiesPanel.getAllowedAnswers()).toBe("New Allowed Answers");
+
+    await beePropertiesPanel.setQuestion({ newQuestion: "New Question" });
+    expect(await beePropertiesPanel.getQuestion()).toBe("New Question");
+  });
 });

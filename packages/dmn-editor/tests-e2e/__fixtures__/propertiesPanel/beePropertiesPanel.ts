@@ -23,8 +23,10 @@ import { DecisionTableInputRulePropertiesPanel } from "./bee/decisionTableInputR
 import { DecisionTableOutputHeaderPropertiesPanel } from "./bee/decisionTableOutputHeaderPropertiesPanel";
 import { DecisionTableOutputRulePropertiesPanel } from "./bee/decisionTableOutputRulePropertiesPanel";
 import { Diagram } from "../diagram";
+import { BeePropertiesPanelBase } from "./bee/beePropertiesPanelBase";
+import { NameAndDataTypeCell } from "@kie-tools/boxed-expression-component/tests-e2e/api/nameAndDataTypeCell";
 
-export class BeePropertiesPanel {
+export class BeePropertiesPanel extends BeePropertiesPanelBase {
   public decisionTableInputHeader: DecisionTableInputHeaderPropertiesPanel;
   public decisionTableInputRule: DecisionTableInputRulePropertiesPanel;
   public decisionTableOutputHeader: DecisionTableOutputHeaderPropertiesPanel;
@@ -35,10 +37,48 @@ export class BeePropertiesPanel {
     public page: Page,
     public baseURL?: string
   ) {
+    super(diagram, page);
     this.decisionTableInputHeader = new DecisionTableInputHeaderPropertiesPanel(diagram, page);
     this.decisionTableInputRule = new DecisionTableInputRulePropertiesPanel(diagram, page);
     this.decisionTableOutputHeader = new DecisionTableOutputHeaderPropertiesPanel(diagram, page);
     this.decisionTableOutputRule = new DecisionTableOutputRulePropertiesPanel(diagram, page);
+  }
+
+  get expressionHeaderCell() {
+    return new NameAndDataTypeCell(this.page.getByRole("columnheader", { name: "New BKM (<Undefined>)" }));
+  }
+
+  public async setDescription(args: { newDescription: string }) {
+    const descriptionTextArea = this.panel().getByPlaceholder("Enter a description...");
+    await descriptionTextArea.focus();
+    await this.page.keyboard.type(args.newDescription);
+    await descriptionTextArea.press("Tab");
+  }
+
+  public async getDescription() {
+    return await this.panel().getByPlaceholder("Enter a description...").inputValue();
+  }
+
+  public async setQuestion(args: { newQuestion: string }) {
+    const questionTextArea = this.panel().getByPlaceholder("Enter a question...");
+    await questionTextArea.focus();
+    await this.page.keyboard.type(args.newQuestion);
+    await questionTextArea.press("Tab");
+  }
+
+  public async getQuestion() {
+    return await this.panel().getByPlaceholder("Enter a question...").inputValue();
+  }
+
+  public async setAllowedAnswers(args: { newAllowedAnswers: string }) {
+    const allowedAnswersTextArea = this.panel().getByPlaceholder("Enter allowed answers...");
+    await allowedAnswersTextArea.focus();
+    await this.page.keyboard.type(args.newAllowedAnswers);
+    await allowedAnswersTextArea.press("Tab");
+  }
+
+  public async getAllowedAnswers() {
+    return await this.panel().getByPlaceholder("Enter allowed answers...").inputValue();
   }
 
   public async open() {
