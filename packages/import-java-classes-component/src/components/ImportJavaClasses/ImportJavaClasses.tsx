@@ -36,11 +36,11 @@ import {
 } from "./ImportJavaClassesWizard";
 
 interface ImportJavaClassesProps {
-  /** Service class which contains all API method to dialog with GWT layer */
+  /** Service class which contains all API method to dialog with GWT layer  (can be removed when Stunner editor support is discontinued ) */
   gwtLayerService?: GWTLayerService;
   /** Service class which contains all API methods to dialog with Java Code Completion Extension*/
   javaCodeCompletionService: JavaCodeCompletionService;
-  /** Callback function triggered when the "Import" button for Java classes is clicked.*/
+  /** Callback function used to load Java classes into the data type editor.*/
   loadJavaClassesInDataTypeEditor?: (javaClasses: JavaClass[]) => void;
 }
 
@@ -68,6 +68,9 @@ const ImportJavaClasses = ({
   const handleButtonClick = useCallback(() => setOpen((prevState) => !prevState), []);
   const handleWizardSave = useCallback(
     (javaClasses) => {
+      /* If the GWT layer service is available, it uses the `importJavaClassesInDataTypeEditor` method.
+       * Otherwise, it calls the `loadJavaClassesInDataTypeEditor` callback with the provided Java classes.
+       */
       if (gwtLayerService) {
         gwtLayerService?.importJavaClassesInDataTypeEditor?.(javaClasses);
       } else {
