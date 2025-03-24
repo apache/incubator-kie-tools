@@ -28,7 +28,7 @@ const NAME_SEPARATOR: string = "-";
 
 export enum JavaClassConflictOptions {
   OVERWRITE = "Overwrite",
-  CREATE_NEW = "Create New",
+  CREATE_AS_NEW = "Create As New",
 }
 
 const useImportJavaClasses = () => {
@@ -50,22 +50,6 @@ const useImportJavaClasses = () => {
     return dataTypeNames;
   }, [dataTypesTree]);
 
-  const updatePropertiesReferences = useCallback(
-    (javaClasses: JavaClass[], javaClassNameToDMNTypeNameMap: Map<string, string>): JavaClass[] => {
-      return javaClasses.map((javaClass) => {
-        const updatedFields = (javaClass ?? [])?.fields?.map((field) => {
-          if (javaClassNameToDMNTypeNameMap.has(field.type)) {
-            const renamedFieldType = javaClassNameToDMNTypeNameMap.get(field.type)!;
-            return { ...field, dmnTypeRef: renamedFieldType };
-          }
-          return field;
-        });
-        return { ...javaClass, fields: updatedFields } as JavaClass;
-      });
-    },
-    []
-  );
-
   const buildName = useCallback(
     (nameCandidate: string, namesCount: Map<string, number>, nameSeparator: string = NAME_SEPARATOR): string => {
       if (namesCount.has(nameCandidate)) {
@@ -77,6 +61,24 @@ const useImportJavaClasses = () => {
       return nameCandidate;
     },
     []
+  );
+
+  const updatePropertiesReferences = useCallback(
+    (javaClasses: JavaClass[], javaClassNameToDMNTypeNameMap: Map<string, string>): JavaClass[] => {
+      return javaClasses.map((javaClass) => {
+        const namesCount: Map<string, number> = new Map();
+        const updatedFields = (javaClass ?? [])?.fields?.map((field) => {
+          const newFieldName = buildName(field?.name, namesCount);
+          if (javaClassNameToDMNTypeNameMap.has(field.type)) {
+            const renamedFieldType = javaClassNameToDMNTypeNameMap.get(field.type)!;
+            return { ...field, name: newFieldName, dmnTypeRef: renamedFieldType };
+          }
+          return { ...field, name: newFieldName };
+        });
+        return { ...javaClass, fields: updatedFields } as JavaClass;
+      });
+    },
+    [buildName]
   );
 
   const editItemDefinition = useCallback<EditItemDefinition>(
@@ -121,7 +123,6 @@ const useImportJavaClasses = () => {
 
       // Map the javaClasses to new renamed classes
       const renamedJavaClasses = javaClasses.map((javaClass: JavaClass) => {
-        // Use the full javaClass.name directly
         let newName = javaClass.name;
 
         // Check if the name already exists in dataTypeNames
@@ -221,7 +222,9 @@ const useImportJavaClasses = () => {
       if (javaClasses?.length === 0) return;
       const itemDefinitions = mapJavaClassesToDMNItemDefinitions(javaClasses);
       dmnEditorStoreApi.setState((state) => {
+        state.dmn.model.definitions.itemDefinition ??= [];
         state.dmn.model.definitions.itemDefinition?.unshift(...itemDefinitions);
+        // Keep the last selected if any. Default to first on list.
         state.dataTypesEditor.activeItemDefinitionId = itemDefinitions?.[0]?.["@_id"];
         state.focus.consumableId = itemDefinitions?.[0]?.["@_id"];
       });
@@ -246,7 +249,7 @@ const useImportJavaClasses = () => {
   const handleConflictAction = useCallback(
     (action: JavaClassConflictOptions) => {
       if (conflictsClasses?.length === 0) return;
-      if (action === JavaClassConflictOptions.CREATE_NEW) {
+      if (action === JavaClassConflictOptions.CREATE_AS_NEW) {
         const updatedJavaClasses = generateUniqueDMNTypeNames(conflictsClasses);
         importJavaClassesInDataTypeEditor(updatedJavaClasses);
       } else if (action === JavaClassConflictOptions.OVERWRITE) {
