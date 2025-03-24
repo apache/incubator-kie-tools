@@ -136,12 +136,12 @@ const ImportJavaClassNameConflictsModal = ({
           {JavaClassConflictOptions.OVERWRITE}
         </Button>,
         <Button
-          name={JavaClassConflictOptions.CREATE_NEW}
-          key={JavaClassConflictOptions.CREATE_NEW}
+          name={JavaClassConflictOptions.CREATE_AS_NEW}
+          key={JavaClassConflictOptions.CREATE_AS_NEW}
           variant="link"
           onClick={handleActionButtonClick}
         >
-          {JavaClassConflictOptions.CREATE_NEW}
+          {JavaClassConflictOptions.CREATE_AS_NEW}
         </Button>,
       ]}
     >
@@ -171,8 +171,8 @@ const ImportJavaClassNameConflictsModal = ({
               one.
             </HelperTextItem>
             <HelperTextItem variant="indeterminate" hasIcon>
-              <b>{JavaClassConflictOptions.CREATE_NEW}:</b> This option will preserve the existing DMN type and create a
-              new one with a unique name.
+              <b>{JavaClassConflictOptions.CREATE_AS_NEW}:</b> This option will preserve the existing DMN type and
+              create a new one with a unique name.
             </HelperTextItem>
           </HelperText>
         </Text>
