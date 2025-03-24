@@ -169,13 +169,13 @@ test.describe("Change Properties - Decision", () => {
 
     await bee.expression.asContext().expressionHeaderCell.select();
 
-    await beePropertiesPanel.setDescription({ newDescription: "New Description" });
-    expect(await beePropertiesPanel.getDescription()).toBe("New Description");
+    await beePropertiesPanel.decisionNode.setDescription({ newDescription: "New Description" });
+    expect(await beePropertiesPanel.decisionNode.getDescription()).toBe("New Description");
 
-    await beePropertiesPanel.setAllowedAnswers({ newAllowedAnswers: "New Allowed Answers" });
-    expect(await beePropertiesPanel.getAllowedAnswers()).toBe("New Allowed Answers");
+    await beePropertiesPanel.decisionNode.setAllowedAnswers({ newAllowedAnswers: "New Allowed Answers" });
+    expect(await beePropertiesPanel.decisionNode.getAllowedAnswers()).toBe("New Allowed Answers");
 
-    await beePropertiesPanel.setQuestion({ newQuestion: "New Question" });
-    expect(await beePropertiesPanel.getQuestion()).toBe("New Question");
+    await beePropertiesPanel.decisionNode.setQuestion({ newQuestion: "New Question" });
+    expect(await beePropertiesPanel.decisionNode.getQuestion()).toBe("New Question");
   });
 });

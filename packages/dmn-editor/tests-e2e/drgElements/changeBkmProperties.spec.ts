@@ -139,9 +139,9 @@ test.describe("Change Properties - BKM", () => {
   });
   test("should change the BKM node description after selecting BKM node", async ({ nodes, beePropertiesPanel }) => {
     await nodes.edit({ name: DefaultNodeName.BKM });
-    await beePropertiesPanel.expressionHeaderCell.select();
+    await beePropertiesPanel.bkmNode.expressionHeaderCell.select();
 
-    await beePropertiesPanel.setDescription({ newDescription: "New Description" });
-    expect(await beePropertiesPanel.getDescription()).toBe("New Description");
+    await beePropertiesPanel.bkmNode.setDescription({ newDescription: "New Description" });
+    expect(await beePropertiesPanel.bkmNode.getDescription()).toBe("New Description");
   });
 });
