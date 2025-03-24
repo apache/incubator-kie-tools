@@ -254,10 +254,12 @@ export function DataTypes() {
                         position={DropdownPosition.right}
                         isOpen={isAddDataTypeDropdownOpen}
                         dropdownItems={[
-                          isVscode && (
+                          isVscode ? (
                             <ImportJavaClassesI18nDictionariesProvider key={"import-java-classes"}>
                               <ImportJavaClassesDropdownItem onClick={handleImportJavaClassButtonClick} />
                             </ImportJavaClassesI18nDictionariesProvider>
+                          ) : (
+                            <></>
                           ),
                           <DropdownItem
                             key={"paste"}
