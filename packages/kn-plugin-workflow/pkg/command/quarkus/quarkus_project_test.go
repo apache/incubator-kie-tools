@@ -75,7 +75,7 @@ func TestManipulatePom(t *testing.T) {
 }
 
 func TestManipulateDockerFiles(t *testing.T) {
-	text := "COPY target/classes/workflow.sw.json /deployments/app/workflow.sw.json"
+	text := []string{"COPY --chown=185 target/classes/*.sw.json /deployments/app/", "COPY --chown=185 target/classes/*.sw.yaml /deployments/app/" }
 	tempDir, err := os.MkdirTemp("", "project")
 	if err != nil {
 		t.Fatalf("❌ ERROR: failed to create temporary directory: %v", err)
@@ -105,17 +105,19 @@ func TestManipulateDockerFiles(t *testing.T) {
 			t.Fatalf("Error manipulating Dockerfile: %v", err)
 		}
 
-		contains, err := checkFileContainsText(dockerFilePath, text)
-		if err != nil {
-			t.Fatalf("Failed to stat Dockerfile for extension %s: %v", extension, err)
-		}
-		if !contains {
-			t.Errorf("Dockerfile does not contain expected text")
+		for _, fragment := range text {
+			contains, err := checkFileContainsText(dockerFilePath, fragment)
+			if err != nil {
+				t.Fatalf("Failed to stat Dockerfile for extension %s: %v", extension, err)
+			}
+			if !contains {
+				t.Errorf("Dockerfile does not contain expected text")
+			}
 		}
 	}
 }
 func TestManipulateDockerIgnoreFile(t *testing.T) {
-	text := "!target/classes/workflow.sw.json"
+	text := []string{"!target/classes/*.sw.json", "!target/classes/*.sw.yaml"}
 	tempDir, err := os.MkdirTemp("", "project")
 	if err != nil {
 		t.Fatalf("❌ ERROR: failed to create temporary directory: %v", err)
@@ -130,12 +132,14 @@ func TestManipulateDockerIgnoreFile(t *testing.T) {
 	if err := manipulateDockerIgnore(dockerIgnorePath); err != nil {
 		t.Fatalf("Error manipulating .dockerignore: %v", err)
 	}
-	contains, err := checkFileContainsText(dockerIgnorePath, text)
-	if err != nil {
-		t.Fatalf("Error reading .dockerignore: %v", err)
-	}
-	if !contains {
-		t.Errorf(".dockerignore does not contain expected text")
+	for _, fragment := range text {
+		contains, err := checkFileContainsText(dockerIgnorePath, fragment)
+		if err != nil {
+			t.Fatalf("Error reading .dockerignore: %v", err)
+		}
+		if !contains {
+			t.Errorf(".dockerignore does not contain expected text")
+		}
 	}
 
 }
