@@ -159,11 +159,15 @@ test.describe("Change Properties - Decision", () => {
     await expect(diagram.get()).toHaveScreenshot("change-decision-position.png");
   });
 
-  test("should change the Decision node description after selecting Decision node", async ({
+  test("should change the Decision node properties using the BEE properties panel", async ({
     nodes,
     bee,
     beePropertiesPanel,
   }) => {
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/1459",
+    });
     await nodes.edit({ name: DefaultNodeName.DECISION });
     await bee.selectExpressionMenu.selectContext();
 

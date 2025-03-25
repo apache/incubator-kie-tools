@@ -42,7 +42,7 @@ export class BkmPropertiesPanel extends BeePropertiesPanelBase {
     return await this.descriptionProperties.getDescription();
   }
 
-  get expressionHeaderCell() {
+  public expressionHeaderCell() {
     return new NameAndDataTypeCell(this.page.getByRole("columnheader", { name: "New BKM (<Undefined>)" }));
   }
 }
