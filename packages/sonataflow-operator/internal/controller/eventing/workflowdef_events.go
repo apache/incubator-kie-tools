@@ -60,7 +60,7 @@ func GetWorkflowDefinitionEventsTargetURL(cli client.Client, workflow *operatora
 	}
 	if sink != nil {
 		// Workflow is connected via with knative eventing by using an operator managed SinkBinding.
-		if sinkURI, err := knative.GetSinkBindingSinkURI(workflow.Name+"-sb", workflow.Namespace); err != nil {
+		if sinkURI, err := knative.GetSinkURI(*sink); err != nil {
 			return "", err
 		} else {
 			uri = sinkURI.String()
