@@ -223,7 +223,7 @@ func manipulateDockerIgnore(filename string) error {
 }
 
 func manipulateDockerfile(filename string) error {
-	extensions := []string {"json", "yaml"}
+	extensions := []string {"json", "yaml", "yml"}
 	pattern := "COPY --chown=185 target/classes/*.sw.%s /deployments/app/"
 
 	file, err := os.Open(filename)
