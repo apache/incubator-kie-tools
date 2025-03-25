@@ -36,7 +36,7 @@ import {
 } from "./ImportJavaClassesWizard";
 
 interface ImportJavaClassesProps {
-  /** Service class which contains all API method to dialog with GWT layer  (can be removed when Stunner editor support is discontinued ) */
+  /** Service class which contains all API method to dialog with GWT layer (can be removed when Stunner editor support is discontinued ) */
   gwtLayerService?: GWTLayerService;
   /** Service class which contains all API methods to dialog with Java Code Completion Extension*/
   javaCodeCompletionService: JavaCodeCompletionService;

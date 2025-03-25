@@ -117,7 +117,7 @@ const useImportJavaClasses = () => {
   );
 
   const generateUniqueDMNTypeNames = useCallback(
-    (javaClasses: JavaClass[]): JavaClass[] => {
+    (javaClasses: JavaClass[], nameSeparator: string = NAME_SEPARATOR): JavaClass[] => {
       const namesCount: Map<string, number> = new Map();
       const javaClassNameToDMNTypeNameMap: Map<string, string> = new Map();
 
@@ -136,7 +136,7 @@ const useImportJavaClasses = () => {
           let counter = namesCount.get(newName)!;
           do {
             counter++;
-            newName = javaClass.name + NAME_SEPARATOR + counter;
+            newName = javaClass.name + nameSeparator + counter;
           } while (dataTypeNames.has(newName));
 
           // Update the counter for this base name
