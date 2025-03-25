@@ -108,6 +108,7 @@ digraph G {
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/maven-m2-repo-via-http-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dmn-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/import-java-classes-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/pmml-editor-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-feel-antlr4-parser" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dmn-marshaller" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -132,7 +133,6 @@ digraph G {
   "@kie-tools/form-code-generator-patternfly-theme" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/jbpm-form-code-generator-themes" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/i18n" [ color = "purple", fontcolor = "purple", style = "rounded" ];
-  "@kie-tools/import-java-classes-component" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools-core/vscode-java-code-completion" [ color = "purple", fontcolor = "purple", style = "rounded" ];
   "@kie-tools/runtime-tools-process-dev-ui-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/jobs-service-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -371,10 +371,11 @@ digraph G {
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" -> "@kie-tools/dev-deployment-kogito-quarkus-blank-app" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" -> "@kie-tools/maven-m2-repo-via-http-image" [ style = "dashed", color = "black" ];
   "@kie-tools/dev-deployment-upload-service" -> "@kie-tools/jest-base" [ style = "dashed", color = "black" ];
+  "@kie-tools/dmn-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-editor" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-editor" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
+  "@kie-tools/dmn-editor" -> "@kie-tools/import-java-classes-component" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-editor" -> "@kie-tools/pmml-editor-marshaller" [ style = "solid", color = "blue" ];
-  "@kie-tools/dmn-editor-envelope" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-editor-envelope" -> "@kie-tools/dmn-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-editor-standalone" -> "@kie-tools/dmn-editor-envelope" [ style = "dashed", color = "blue" ];
   "@kie-tools/dmn-feel-antlr4-parser" -> "@kie-tools/dmn-marshaller" [ style = "solid", color = "blue" ];
