@@ -1539,6 +1539,11 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/dev-deployment-dmn-form-webapp",
+        "target": "@kie-tools/maven-base",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/form-dmn",
         "target": "@kie-tools/form",
         "weight": 1

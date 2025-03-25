@@ -61,7 +61,7 @@ export function AppContextProvider(props: Props) {
             }
             setData(data);
           })
-          .catch((error: any) => console.error(error))
+          .catch((error: any) => console.error("aaaaaa", error))
           .finally(() => setFetchDone(true));
       },
       [quarkusAppOrigin, quarkusAppPath]
