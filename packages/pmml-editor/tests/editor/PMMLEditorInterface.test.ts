@@ -17,7 +17,11 @@
  * under the License.
  */
 
-import { KogitoEditorChannelApi, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
+import {
+  KogitoEditorChannelApi,
+  KogitoEditorEnvelopeApi,
+  KogitoEditorEnvelopeContextType,
+} from "@kie-tools-core/editor/dist/api";
 import { render } from "@testing-library/react";
 import { ReactElement } from "react";
 import { PMMLEditor, PMMLEditorInterface } from "@kie-tools/pmml-editor";
@@ -28,7 +32,8 @@ import { I18nService } from "@kie-tools-core/i18n/dist/envelope";
 
 const channelApi = messageBusClientApiMock<KogitoEditorChannelApi>();
 
-const envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi> = {
+const envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi> = {
+  shared: {} as any,
   channelApi: channelApi,
   operatingSystem: OperatingSystem.LINUX,
   services: {

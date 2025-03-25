@@ -42,7 +42,7 @@ Add the `quarkus-oidc-proxy` extension to your `pom.xml` to proxy the Identity P
 <dependency>
   <groupId>io.quarkiverse.oidc-proxy</groupId>
   <artifactId>quarkus-oidc-proxy</artifactId>
-  <version>0.1.1</version>
+  <version>0.1.2</version>
 </dependency>
 ```
 
@@ -58,10 +58,8 @@ quarkus.oidc.auth-server-url=<IDENTITY_PROVIDER_URL>
 quarkus.oidc.discovery-enabled=true
 quarkus.oidc.tenant-enabled=true
 quarkus.oidc.application-type=service
-quarkus.oidc.client-id=<CLIENT_ID> # Can be the same as the Management Console
-
-# Quarkus OIDC Proxy
-quarkus.oidc-proxy.external-client-id=<CLIENT_ID>
+quarkus.oidc.client-id=<CLIENT_ID> # Usually a client specific to your application
+quarkus.oidc.credentials.secret=<CLIENT_SECRET> # The secret configured in your Identity Provider for the client used
 
 # Authenticated and public paths
 quarkus.http.auth.permission.authenticated.paths=/*
@@ -87,7 +85,14 @@ To do so, click on the `+ Connect to a runtime…` button and fill in the requir
 modal:
 
 - **Alias**: The name to give your connected runtime instance (can be anything that helps you identify it).
-- **URL**: The runtime root URL (E.g., http://localhost:8080)
+- **URL**: The runtime root URL (E.g., http://localhost:8080).
+- **Force login prompt**: Check this if you are already logged in your Identity Provider but would like to log in again (maybe with a different user).
+
+More settings are available in the **Advanced OpenID Connect settings** section:
+
+- **Client ID**: Overrides the Client ID used for this connection. Defaults to the value of the `RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID` environment variable.
+- **Scope**: Overrides the scopes requested to the Identity Provider. Useful from some Identity Providers that will only grant a Refresh Token if the `offline_access` scope is included. Defaults to `openid email profile`.
+- **Audience**: This is the `audience` parameter in the Authorization request. Used to identify the service that the token is intended for. Empty by default.
 
 If your runtime uses OpenID Connect authentication, you should be redirected to the Identity Provider
 (IdP) login page or, if you’re already logged in, redirected back to the Management Console. If your
@@ -95,6 +100,17 @@ runtime is unsecured, it should connect directly.
 
 Once logged in, the management pages will be displayed in the side menu, listing Process Instances,
 Jobs, and Tasks.
+
+#### Connecting to the local dev apps
+
+- `secured-runtime`:
+
+  - **Alias**: Secured Runtime
+  - **URL**: http://localhost:8080/my-subpath
+
+- `unsecured-runtime`:
+  - **Alias**: Unsecured Runtime
+  - **URL**: http://localhost:8081
 
 ### Process instances
 

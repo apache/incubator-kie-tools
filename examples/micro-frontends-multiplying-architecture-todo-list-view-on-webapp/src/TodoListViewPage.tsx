@@ -24,11 +24,12 @@ import {
   EmbeddedTodoListRef,
 } from "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view/dist/embedded";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Page, PageHeader, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button/Button";
 
-import { useStateAsSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
+import { useSharedValue, useStateAsSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 
 export function TodoListViewPage() {
   const embeddedTodoListRef = useRef<EmbeddedTodoListRef>(null);
@@ -53,6 +54,10 @@ export function TodoListViewPage() {
     newItem,
     setNewItem,
     embeddedTodoListRef.current?.envelopeServer.shared.todoList__potentialNewItem
+  );
+
+  const [itemsCount, _] = useSharedValue(
+    embeddedTodoListRef.current?.envelopeServer.envelopeApi.shared.todoList__itemsCount
   );
 
   const apiImpl = useMemo(() => {
@@ -83,6 +88,12 @@ export function TodoListViewPage() {
             <Button variant={ButtonVariant.plain} onClick={embeddedTodoListRef.current?.markAllAsCompleted}>
               Mark all as completed
             </Button>
+          </StackItem>
+
+          <Divider />
+
+          <StackItem>
+            <span># of items: {itemsCount}</span>
           </StackItem>
         </Stack>
       }

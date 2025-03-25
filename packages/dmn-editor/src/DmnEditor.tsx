@@ -72,7 +72,23 @@ export type DmnEditorRef = {
   getCommands: () => Commands;
 };
 
-export type EvaluationResults = Record<string, any>;
+/**
+ * We need to keep in sync:
+ *   * dmn-editor/src/DmnEditor.tsx - NodeEvaluationResults
+ *   * dmn-editor-envelope/src/DmnEditorRoot.tsx -
+ *   * dmn-editor-envelope/src/NewDmnEditorEnvelopeApi.tsx - newDmnEditor_showDmnEvaluationResults
+ *   * dmn-editor-envelope/src/NewDmnEditorFactory.tsx - NewDmnEditorInterface#showDmnEvaluationResults
+ *   * extended-services-api/src/dmnResult.ts - DmnEvaluationStatus
+ *
+ * For more details see: https://github.com/apache/incubator-kie-issues/issues/1823
+ */
+export type NodeEvaluationResults = {
+  evaluationResult: EvaluationResult;
+  evaluationHitsCountByRuleOrRowId: Map<string, number>;
+};
+
+export type EvaluationResult = "succeeded" | "failed" | "skipped";
+export type EvaluationResultsByNodeId = Map<string, NodeEvaluationResults>;
 export type ValidationMessages = Record<string, any>;
 export type OnDmnModelChange = (model: Normalized<DmnLatestModel>) => void;
 
@@ -128,9 +144,9 @@ export type DmnEditorProps = {
    */
   externalModelsByNamespace?: ExternalModelsIndex;
   /**
-   * To show information about execution results directly on the DMN diagram and/or Boxed Expression Editor, use this prop.
+   * To show information about evaluation results directly on the DMN diagram and/or Boxed Expression Editor, use this prop.
    */
-  evaluationResults?: EvaluationResults;
+  evaluationResultsByNodeId?: EvaluationResultsByNodeId;
   /**
    * To show information about validation messages directly on the DMN diagram and/or Boxed Expression Editor, use this prop.
    */
@@ -211,6 +227,7 @@ export const DmnEditorInternal = ({
       },
       openBoxedExpressionEditor: (nodeId: string) => {
         dmnEditorStoreApi.setState((state) => {
+          state.navigation.tab = DmnEditorTab.EDITOR;
           state.dispatch(state).boxedExpressionEditor.open(nodeId);
         });
       },

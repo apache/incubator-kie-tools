@@ -17,25 +17,39 @@
  * under the License.
  */
 
-import dateFunctions from "!!raw-loader!../../resources/dateFunctions.txt";
-import timeFunctions from "!!raw-loader!../../resources/timeFunctions.txt";
-import selectFunctions from "!!raw-loader!../../resources/selectFunctions.txt";
-import multipleSelectFunctions from "!!raw-loader!../../resources/multipleSelectFunctions.txt";
-import checkboxGroupFunctions from "!!raw-loader!../../resources/checkboxGroupFunctions.txt";
-
 export const DATE_FUNCTIONS = "date_functions";
-export const TIME_FUNCTIONS = "time_functions";
-export const SELECT_FUNCTIONS = "select_functions";
-export const MULTIPLE_SELECT_FUNCTIONS = "multiple_select_functions";
-export const CHECKBOX_GROUP_FUNCTIONS = "checkbox_group_functions";
 
 const _staticBlocks: Map<string, string> = new Map<string, string>();
 
-_staticBlocks.set(DATE_FUNCTIONS, dateFunctions);
-_staticBlocks.set(TIME_FUNCTIONS, timeFunctions);
-_staticBlocks.set(SELECT_FUNCTIONS, selectFunctions);
-_staticBlocks.set(MULTIPLE_SELECT_FUNCTIONS, multipleSelectFunctions);
-_staticBlocks.set(CHECKBOX_GROUP_FUNCTIONS, checkboxGroupFunctions);
+_staticBlocks.set(
+  DATE_FUNCTIONS,
+  `
+const parseDate = (date?: string): string => {
+    if (!date) {
+        return '';
+    }
+    const dateValue: Date = new Date(Date.parse(date));
+    return dateValue.toISOString().slice(0, -14);
+}
+
+const parseTime = (date?: string): string => {
+    if (!date) {
+        return '';
+    }
+    const dateValue: Date = new Date(Date.parse(date));
+    let isAm = true;
+    let hours = dateValue.getHours();
+    if (hours > 12) {
+        hours %= 12;
+        isAm = false;
+    }
+    let minutes = dateValue.getMinutes().toString();
+    if (minutes.length == 1) {
+        minutes = '0' + minutes;
+    }
+    return \`\${hours}:\${minutes} \${isAm ? 'AM' : 'PM'}\`;
+}`
+);
 
 export const getStaticCodeBlock = (blockName: string): string | undefined => {
   return _staticBlocks.get(blockName);

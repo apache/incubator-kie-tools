@@ -1,1 +1,1 @@
-document.getElementById("<%=id%>").checked = data?.<%=path%>;
+<% if (isListItem) { %>document.getElementById(`<%=id%>`).checked = value<%= valuePath %> ?? "";<% } else { %>document.getElementById("<%=id%>").checked = data?.<%=path%>;<% } %>

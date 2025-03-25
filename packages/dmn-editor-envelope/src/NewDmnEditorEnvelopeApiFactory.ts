@@ -24,12 +24,13 @@ import { NewDmnEditorInterface } from "./NewDmnEditorFactory";
 import { NewDmnEditorEnvelopeApi } from "./NewDmnEditorEnvelopeApi";
 import { NewDmnEditorChannelApi } from "./NewDmnEditorChannelApi";
 import { NewDmnEditorFactory } from "./NewDmnEditorFactory";
+import { NewDmnEditorTypes } from "./NewDmnEditorTypes";
 
 export type NewDmnEnvelopeApiFactoryArgs = EnvelopeApiFactoryArgs<
   NewDmnEditorEnvelopeApi,
   NewDmnEditorChannelApi,
   EditorEnvelopeViewApi<NewDmnEditorInterface>,
-  KogitoEditorEnvelopeContextType<NewDmnEditorChannelApi>
+  KogitoEditorEnvelopeContextType<NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>
 >;
 
 export class NewDmnEditorEnvelopeApiImpl
@@ -42,5 +43,11 @@ export class NewDmnEditorEnvelopeApiImpl
 
   public dmnEditor_openBoxedExpressionEditor(nodeId: string): void {
     this.getEditorOrThrowError().openBoxedExpressionEditor(nodeId);
+  }
+
+  public newDmnEditor_showDmnEvaluationResults(
+    evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId
+  ): void {
+    this.getEditorOrThrowError().showDmnEvaluationResults(evaluationResultsByNodeId);
   }
 }

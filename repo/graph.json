@@ -72,14 +72,18 @@
       {
         "id": "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension"
       },
-      { "id": "@kie-tools-examples/process-compact-architecture" },
-      { "id": "@kie-tools/jbpm-quarkus-devui" },
-      { "id": "@kie-tools/kogito-management-console" },
+      { "id": "@kie-tools-examples/process-accelerator" },
       { "id": "@kie-tools/maven-base" },
+      { "id": "@kie-tools-examples/process-business-calendar" },
+      { "id": "@kie-tools/jbpm-quarkus-devui" },
       { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
+      { "id": "@kie-tools-examples/process-compact-architecture" },
+      { "id": "@kie-tools/kogito-management-console" },
       { "id": "@kie-tools/image-builder" },
       { "id": "@kie-tools/image-env-to-json" },
       { "id": "@kie-tools/runtime-tools-management-console-webapp" },
+      { "id": "@kie-tools-examples/process-event-driven" },
+      { "id": "@kie-tools-examples/process-security" },
       { "id": "@kie-tools-examples/process-user-tasks-subsystem" },
       {
         "id": "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp"
@@ -675,13 +679,18 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools-examples/process-compact-architecture",
-        "target": "@kie-tools/jbpm-quarkus-devui",
+        "source": "@kie-tools-examples/process-accelerator",
+        "target": "@kie-tools/maven-base",
         "weight": 1
       },
       {
-        "source": "@kie-tools-examples/process-compact-architecture",
-        "target": "@kie-tools/kogito-management-console",
+        "source": "@kie-tools/maven-base",
+        "target": "@kie-tools/root-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-business-calendar",
+        "target": "@kie-tools/jbpm-quarkus-devui",
         "weight": 1
       },
       {
@@ -692,6 +701,26 @@
       {
         "source": "@kie-tools/jbpm-quarkus-devui",
         "target": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-compact-architecture",
+        "target": "@kie-tools/jbpm-quarkus-devui",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-compact-architecture",
+        "target": "@kie-tools/kogito-management-console",
         "weight": 1
       },
       {
@@ -710,38 +739,13 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/maven-base",
-        "target": "@kie-tools/root-env",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
-        "target": "@kie-tools/runtime-tools-process-webapp-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-process-dev-ui-webapp",
-        "target": "@kie-tools/runtime-tools-shared-webapp-components",
-        "weight": 1
-      },
-      {
         "source": "@kie-tools/image-builder",
         "target": "@kie-tools/tsconfig",
         "weight": 1
       },
       {
         "source": "@kie-tools/image-env-to-json",
-        "target": "@kie-tools-core/webpack-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/image-env-to-json",
-        "target": "@kie-tools/eslint",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/image-env-to-json",
-        "target": "@kie-tools/tsconfig",
+        "target": "@kie-tools/root-env",
         "weight": 1
       },
       {
@@ -765,8 +769,28 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools-examples/process-event-driven",
+        "target": "@kie-tools/jbpm-quarkus-devui",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-security",
+        "target": "@kie-tools/jbpm-quarkus-devui",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-security",
+        "target": "@kie-tools/kogito-management-console",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools-examples/process-user-tasks-subsystem",
         "target": "@kie-tools/jbpm-quarkus-devui",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-user-tasks-subsystem",
+        "target": "@kie-tools/kogito-management-console",
         "weight": 1
       },
       {
@@ -1686,12 +1710,12 @@
       },
       {
         "source": "@kie-tools/scesim-editor-envelope",
-        "target": "@kie-tools-core/react-hooks",
+        "target": "@kie-tools/scesim-editor",
         "weight": 1
       },
       {
-        "source": "@kie-tools/scesim-editor-envelope",
-        "target": "@kie-tools/scesim-editor",
+        "source": "@kie-tools/scesim-editor",
+        "target": "@kie-tools-core/react-hooks",
         "weight": 1
       },
       {
@@ -2390,6 +2414,11 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/text-editor",
+        "target": "@kie-tools-core/monaco-editor",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/yard-editor",
         "target": "@kie-tools-core/editor",
         "weight": 1
@@ -2765,7 +2794,11 @@
       "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension",
       "examples/micro-frontends-multiplying-architecture-todo-list-view-vscode-extension"
     ],
+    ["@kie-tools-examples/process-accelerator", "examples/process-accelerator"],
+    ["@kie-tools-examples/process-business-calendar", "examples/process-business-calendar"],
     ["@kie-tools-examples/process-compact-architecture", "examples/process-compact-architecture"],
+    ["@kie-tools-examples/process-event-driven", "examples/process-event-driven"],
+    ["@kie-tools-examples/process-security", "examples/process-security"],
     ["@kie-tools-examples/process-user-tasks-subsystem", "examples/process-user-tasks-subsystem"],
     [
       "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp",

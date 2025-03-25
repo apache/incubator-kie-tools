@@ -20,6 +20,7 @@
 import {
   ChannelType,
   KogitoEditorChannelApi,
+  KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContext,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
@@ -34,7 +35,11 @@ import {
   editorEnvelopeI18nDictionaries,
 } from "@kie-tools-core/editor/dist/envelope/i18n";
 
-export const DEFAULT_TESTING_ENVELOPE_CONTEXT: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi> = {
+export const DEFAULT_TESTING_ENVELOPE_CONTEXT: KogitoEditorEnvelopeContextType<
+  KogitoEditorEnvelopeApi,
+  KogitoEditorChannelApi
+> = {
+  shared: {} as any,
   channelApi: {} as any,
   services: {
     keyboardShortcuts: new DefaultKeyboardShortcutsService({} as any),
@@ -45,7 +50,7 @@ export const DEFAULT_TESTING_ENVELOPE_CONTEXT: KogitoEditorEnvelopeContextType<K
 
 export function usingEnvelopeContext(
   children: React.ReactElement,
-  ctx?: Partial<KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>>
+  ctx?: Partial<KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>>
 ) {
   const usedCtx = { ...DEFAULT_TESTING_ENVELOPE_CONTEXT, ...ctx };
   return {

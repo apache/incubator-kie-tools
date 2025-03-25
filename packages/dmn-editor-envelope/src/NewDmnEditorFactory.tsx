@@ -21,10 +21,14 @@ import * as React from "react";
 import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { NewDmnEditorChannelApi } from "./NewDmnEditorChannelApi";
 import { DmnEditorInterface } from "./DmnEditorFactory";
+import { NewDmnEditorEnvelopeApi } from "./NewDmnEditorEnvelopeApi";
+import { NewDmnEditorTypes } from "./NewDmnEditorTypes";
 
-export class NewDmnEditorFactory implements EditorFactory<NewDmnEditorInterface, NewDmnEditorChannelApi> {
+export class NewDmnEditorFactory
+  implements EditorFactory<NewDmnEditorInterface, NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>
+{
   public createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<NewDmnEditorChannelApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<NewDmnEditorInterface> {
     return Promise.resolve(new NewDmnEditorInterface(envelopeContext, initArgs));
@@ -38,5 +42,9 @@ export class NewDmnEditorInterface extends DmnEditorInterface {
    */
   public openBoxedExpressionEditor(nodeId: string): void {
     this.self.openBoxedExpressionEditor(nodeId);
+  }
+
+  public showDmnEvaluationResults(evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId): void {
+    this.self.showDmnEvaluationResults(evaluationResultsByNodeId);
   }
 }

@@ -48,7 +48,6 @@
     "csstype": "^3.0.11",
     "immer": "^10.0.3",
     "lodash": "^4.17.21",
-    "monaco-editor": "^0.39.0",
     "react-cool-onclickoutside": "^1.6.1",
     "react-monaco-editor": "^0.49.0",
     "react-redux": "^7.2.4",

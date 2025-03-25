@@ -118,7 +118,7 @@
     <dependency>
       <groupId>io.quarkiverse.oidc-proxy</groupId>
       <artifactId>quarkus-oidc-proxy</artifactId>
-      <version>0.1.1</version>
+      <version>0.1.2</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

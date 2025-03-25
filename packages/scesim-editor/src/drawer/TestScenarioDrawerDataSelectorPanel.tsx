@@ -20,6 +20,7 @@
 import * as React from "react";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { cloneDeep } from "lodash";
 
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Button } from "@patternfly/react-core/dist/js/components/Button/";
@@ -40,9 +41,11 @@ import { SceSim__expressionElementsType } from "@kie-tools/scesim-marshaller/dis
 import { useTestScenarioEditorI18n } from "../i18n";
 
 import "./TestScenarioDrawerDataSelectorPanel.css";
+import { useExternalModels } from "../externalModels/TestScenarioEditorDependenciesContext";
 import { useTestScenarioEditorStore, useTestScenarioEditorStoreApi } from "../store/TestScenarioStoreContext";
 import { TestScenarioDataObject, TestScenarioEditorTab } from "../store/TestScenarioEditorStore";
 import { updateColumn } from "../mutations/updateColumn";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner/Spinner";
 
 const enum TestScenarioDataSelectorState {
   DISABLED, // All subcomponents are DISABLED
@@ -50,14 +53,127 @@ const enum TestScenarioDataSelectorState {
   TREEVIEW_ENABLED_ONLY, // TreeView component is enabled only, in a read only mode (when a column is selected)
 }
 
+/* It checks if the given root Data Object is already assigned */
+const isRootDataObjectAssignable = (
+  dataObject: TestScenarioDataObject,
+  assignedExpressionElements: SceSim__expressionElementsType[]
+) => {
+  let filtered = true;
+  for (const expressionElements of assignedExpressionElements) {
+    if (
+      !expressionElements ||
+      !expressionElements.ExpressionElement ||
+      expressionElements.ExpressionElement.length === 0
+    ) {
+      continue;
+    }
+    if (expressionElements.ExpressionElement[0].step.__$$text === dataObject.expressionElements[0]) {
+      filtered = false;
+      break;
+    }
+  }
+  return filtered;
+};
+
+function filterOutDataObjectChildrenByExpressionElements(
+  dataObject: TestScenarioDataObject,
+  allExpressionElements: string[]
+): boolean {
+  if (dataObject.children) {
+    dataObject.children = dataObject.children.filter((child) => {
+      return filterOutDataObjectChildrenByExpressionElements(child, allExpressionElements);
+    });
+  }
+
+  if (dataObject.children === undefined && dataObject.name === "value") {
+    return !allExpressionElements.includes(dataObject.id);
+  }
+  return !allExpressionElements.includes(dataObject.expressionElements.join("."));
+}
+
+const filterDataObjectsById = (item: TestScenarioDataObject, itemId: string) => {
+  if (item.id === itemId) {
+    return true;
+  }
+
+  if (item.children) {
+    const dataObjects: TestScenarioDataObject[] = item.children
+      .map((object: TestScenarioDataObject) => Object.assign({}, object))
+      .filter((child: TestScenarioDataObject) => filterDataObjectsById(child, itemId));
+
+    return dataObjects.length > 0;
+  }
+
+  return false;
+};
+
+const filterDataObjectsByName = (item: TestScenarioDataObject, name: string) => {
+  if (item.name.toLowerCase().includes(name.toLowerCase())) {
+    return true;
+  }
+
+  if (item.children) {
+    const dataObjects: TestScenarioDataObject[] = item.children
+      .map((object: TestScenarioDataObject) => Object.assign({}, object))
+      .filter((child: TestScenarioDataObject) => filterDataObjectsByName(child, name));
+
+    return dataObjects.length > 0;
+  }
+
+  return false;
+};
+
+/* It returns the Root Data Object with its hierarchy given a set of Test Scenario Data Object and an itemId */
+const findDataObjectRootParent = (dataObjects: TestScenarioDataObject[], itemId: string) => {
+  const filtered = dataObjects
+    .map((object) => Object.assign({}, object))
+    .filter((item) => filterDataObjectsById(item, itemId));
+
+  return filtered[0];
+};
+
+const filterTypesItems = (dataObject: TestScenarioDataObject, factIdentifierName: string) => {
+  return dataObject.name === factIdentifierName;
+};
+
+/* It returns the TestScenarioDataObject that matches the provided ID searching over all provided TestScenarioDataObjects and its children */
+function findTestScenarioDataObjectById(
+  testScenarioDataObjects: TestScenarioDataObject[],
+  id: string
+): TestScenarioDataObject | undefined {
+  for (const testScenarioDataObject of testScenarioDataObjects) {
+    if (testScenarioDataObject.id === id) {
+      return testScenarioDataObject;
+    } else if (testScenarioDataObject.children) {
+      const testScenarioDataObjectChild = findTestScenarioDataObjectById(testScenarioDataObject.children, id);
+      if (testScenarioDataObjectChild) {
+        return testScenarioDataObjectChild;
+      }
+    }
+  }
+  return undefined;
+}
+
+interface TestScenarioTreeViewDataItem extends TreeViewDataItem {
+  id: string;
+  expressionElements: string[];
+  className?: string;
+  collectionGenericType?: string[];
+  children?: TestScenarioTreeViewDataItem[];
+}
+
 function TestScenarioDataSelectorPanel() {
   const { i18n } = useTestScenarioEditorI18n();
-  const dataObjects = useTestScenarioEditorStore((state) => state.computed(state).getTestScenarioDataObjects());
+  const { externalModelsByNamespace } = useExternalModels();
+  const dataObjects = useTestScenarioEditorStore((state) =>
+    state.computed(state).getDataObjects(externalModelsByNamespace)
+  );
   const scesimModel = useTestScenarioEditorStore((state) => state.scesim.model);
   const tableStatus = useTestScenarioEditorStore((state) => state.table);
   const tabStatus = useTestScenarioEditorStore((state) => state.navigation.tab);
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const testScenarioType = scesimModel.ScenarioSimulationModel.settings.type?.__$$text.toUpperCase();
+  const referencedDmnNamespace = scesimModel.ScenarioSimulationModel.settings.dmnNamespace?.__$$text;
 
   const selectedColumnMetadata =
     tabStatus === TestScenarioEditorTab.SIMULATION
@@ -68,140 +184,73 @@ function TestScenarioDataSelectorPanel() {
   const [dataSelectorStatus, setDataSelectorStatus] = useState(TestScenarioDataSelectorState.DISABLED);
   const [filteredItems, setFilteredItems] = useState(dataObjects);
   const [treeViewStatus, setTreeViewStatus] = useState({
-    activeItems: [] as TreeViewDataItem[],
+    activeItems: [] as TestScenarioTreeViewDataItem[],
     searchKey: "",
     isExpanded: false,
   });
 
-  const filterDataObjectsByID = useCallback((item, itemID) => {
-    if (item.id === itemID) {
-      return true;
-    }
-
-    if (item.children) {
-      return (
-        (item.children = item.children
-          .map((object: TestScenarioDataObject) => Object.assign({}, object))
-          .filter((child: TestScenarioDataObject) => filterDataObjectsByID(child, itemID))).length > 0
-      );
-    }
-
-    return false;
-  }, []);
-
-  const findDataObjectRootParent = useCallback(
-    (dataObjects: TestScenarioDataObject[], itemId: string) => {
-      const filtered = dataObjects
-        .map((object) => Object.assign({}, object))
-        .filter((item) => filterDataObjectsByID(item, itemId));
-
-      return filtered[0];
-    },
-    [filterDataObjectsByID]
-  );
-
-  const isDataObjectRootParent = useCallback((dataObjects: TestScenarioDataObject[], itemID: string) => {
-    return dataObjects.map((object) => Object.assign({}, object)).filter((item) => item.id === itemID).length === 1;
-  }, []);
-
-  const filterTypesItems = useCallback((dataObject, factIdentifierName) => {
-    return dataObject.name === factIdentifierName;
-  }, []);
-
-  const filterDataObjectByExpressionElements = useCallback(
-    (dataObject: TestScenarioDataObject, allExpressionElements: SceSim__expressionElementsType[]) => {
-      let filtered = true;
-      for (const expressionElements of allExpressionElements) {
-        if (
-          !expressionElements ||
-          !expressionElements.ExpressionElement ||
-          expressionElements.ExpressionElement.length === 0
-        ) {
-          continue;
-        }
-        if (expressionElements.ExpressionElement[0].step.__$$text === dataObject.name) {
-          filtered = false;
-          break;
-        }
-      }
-      return filtered;
-    },
-    []
-  );
-
-  const filterDataObjectChildrenByExpressionElements = useCallback(
-    (dataObject: TestScenarioDataObject, allExpressionElements: SceSim__expressionElementsType[]) => {
-      if (dataObject.children) {
-        for (const expressionElements of allExpressionElements) {
-          if (
-            !expressionElements ||
-            !expressionElements.ExpressionElement ||
-            expressionElements.ExpressionElement.length === 0
-          ) {
-            continue;
-          }
-          if (expressionElements.ExpressionElement[0].step.__$$text === dataObject.name) {
-            const selected: TestScenarioDataObject[] = dataObject.children.filter((dataObjectChild) => {
-              const fieldName = expressionElements.ExpressionElement!.at(-1)!.step.__$$text;
-              if (dataObject.isSimpleTypeFact) {
-                fieldName.concat(".");
-              }
-              return dataObjectChild.name !== fieldName;
-            });
-            dataObject.children = selected;
-          }
-        }
-      }
-    },
-    []
-  );
-
   /** It filters out all the Data Objects and their Children already assigned in the table */
   const filterOutAlreadyAssignedDataObjectsAndChildren = useCallback(
-    (expressionElement: SceSim__expressionElementsType, isBackground: boolean) => {
+    (selectedColumnExpressionElement: SceSim__expressionElementsType | undefined, isBackground: boolean) => {
       const testScenarioDescriptor = isBackground
         ? scesimModel.ScenarioSimulationModel.background.scesimModelDescriptor
         : scesimModel.ScenarioSimulationModel.simulation.scesimModelDescriptor;
-      const assignedExpressionElements = testScenarioDescriptor.factMappings.FactMapping!.map(
-        (factMapping) => factMapping.expressionElements!
+      const assignedExpressionElements = (testScenarioDescriptor.factMappings.FactMapping ?? []).reduce(
+        (acc: SceSim__expressionElementsType[], factMapping) =>
+          factMapping.expressionElements ? [...acc, factMapping.expressionElements] : acc,
+        []
       );
 
-      const filteredDataObjects: TestScenarioDataObject[] = dataObjects
-        .map((object) => JSON.parse(JSON.stringify(object))) // Deep copy: the Objects may mutate due to children filtering
-        .filter((dataObject) => !filterDataObjectByExpressionElements(dataObject, [expressionElement]));
-      filteredDataObjects.forEach((dataObject) =>
-        filterDataObjectChildrenByExpressionElements(dataObject, assignedExpressionElements)
-      );
-      return filteredDataObjects;
+      const assignedIds = (testScenarioDescriptor.factMappings.FactMapping ?? [])
+        .filter((factMapping) => factMapping.expressionElements && factMapping.expressionElements.ExpressionElement)
+        .reduce((assignedIds, factMapping) => {
+          const assignedId = (factMapping.expressionElements?.ExpressionElement ?? [])
+            .map((expressionElement) => {
+              if (factMapping.expressionAlias?.__$$text === "value") {
+                return `${expressionElement.step.__$$text}.value`;
+              }
+              return expressionElement.step.__$$text;
+            })
+            .join(".");
+
+          // parent
+          if (factMapping.factIdentifier.name?.__$$text) {
+            assignedIds.add(factMapping.factIdentifier.name.__$$text);
+          }
+          assignedIds.add(assignedId);
+          return assignedIds;
+        }, new Set<string>());
+
+      // An Empty column has been selected. Filtering out all assigined Instances
+      if (
+        !selectedColumnExpressionElement?.ExpressionElement ||
+        selectedColumnExpressionElement?.ExpressionElement?.length === 0
+      ) {
+        return dataObjects
+          .map((object) => cloneDeep(object)) // Deep copy: the Objects may mutate due to children filtering
+          .filter((dataObject) => isRootDataObjectAssignable(dataObject, assignedExpressionElements));
+      }
+
+      // In case of not empty column, it keeps the selected root Fact Mapping (Instance) and then filtering out the already
+      // assigned children Data Objects.
+      return dataObjects
+        .map((object) => cloneDeep(object)) // Deep copy: the Objects may mutate due to children filtering
+        .filter((dataObject) => !isRootDataObjectAssignable(dataObject, [selectedColumnExpressionElement]))
+        .reduce((acc, dataObject) => {
+          filterOutDataObjectChildrenByExpressionElements(dataObject, [...assignedIds]);
+          if (dataObject.children?.length === 0 && assignedIds.has(dataObject.id)) {
+            return acc;
+          }
+          return [...acc, dataObject];
+        }, []);
     },
-    [
-      dataObjects,
-      filterDataObjectByExpressionElements,
-      filterDataObjectChildrenByExpressionElements,
-      scesimModel.ScenarioSimulationModel,
-    ]
+    [dataObjects, scesimModel.ScenarioSimulationModel]
   );
-
-  const filterItems = useCallback((item, input) => {
-    if (item.name.toLowerCase().includes(input.toLowerCase())) {
-      return true;
-    }
-
-    if (item.children) {
-      return (
-        (item.children = item.children
-          .map((object: TestScenarioDataObject) => Object.assign({}, object))
-          .filter((child: TestScenarioDataObject) => filterItems(child, input))).length > 0
-      );
-    }
-  }, []);
 
   useEffect(() => {
     console.debug("========SELECTOR PANEL USE EFFECT===========");
-    console.debug("Selected Column:");
-    console.debug(selectedColumnMetadata);
-    console.debug("All Data Objects:");
-    console.debug(dataObjects);
+    console.debug("Selected Column:", selectedColumnMetadata);
+    console.debug("All Data Objects:", dataObjects);
 
     /**
      * Case 1: No columns selected OR a column of OTHER type (eg. Description column).
@@ -226,30 +275,17 @@ function TestScenarioDataSelectorPanel() {
       const isFactIdentifierAssigned =
         selectedColumnMetadata.factMapping.factIdentifier.className!.__$$text !== "java.lang.Void";
 
-      let filteredDataObjects: TestScenarioDataObject[] = [];
-      if (isFactIdentifierAssigned) {
-        const expressionElement = selectedColumnMetadata.factMapping.expressionElements!;
-        filteredDataObjects = filterOutAlreadyAssignedDataObjectsAndChildren(
-          expressionElement,
-          selectedColumnMetadata.isBackground
-        );
-      } else {
-        const testScenarioDescriptor = selectedColumnMetadata.isBackground
-          ? scesimModel.ScenarioSimulationModel.background.scesimModelDescriptor
-          : scesimModel.ScenarioSimulationModel.simulation.scesimModelDescriptor;
-        const assignedExpressionElements = testScenarioDescriptor.factMappings.FactMapping!.map(
-          (factMapping) => factMapping.expressionElements!
-        );
-
-        filteredDataObjects = dataObjects
-          .map((object) => JSON.parse(JSON.stringify(object))) // Deep copy: the Objects may mutate due to children filtering
-          .filter((dataObject) => filterDataObjectByExpressionElements(dataObject, assignedExpressionElements));
-      }
+      let filteredDataObjects: TestScenarioDataObject[] = filterOutAlreadyAssignedDataObjectsAndChildren(
+        selectedColumnMetadata.factMapping.expressionElements,
+        selectedColumnMetadata.isBackground
+      );
 
       /** Applying User search key to the filteredDataObjects, if present */
       const isUserFilterPresent = treeViewStatus.searchKey.trim() !== "";
       if (isUserFilterPresent) {
-        filteredDataObjects = filteredDataObjects.filter((item) => filterItems(item, treeViewStatus.searchKey));
+        filteredDataObjects = filteredDataObjects.filter((item) =>
+          filterDataObjectsByName(item, treeViewStatus.searchKey)
+        );
       }
 
       setDataSelectorStatus(TestScenarioDataSelectorState.ENABLED);
@@ -262,8 +298,7 @@ function TestScenarioDataSelectorPanel() {
         };
       });
       console.debug("Case 2");
-      console.debug("Filtered Data Objects:");
-      console.debug(filteredDataObjects);
+      console.debug("Filtered Data Objects:", filteredDataObjects);
       console.debug("=============USE EFFECT END===============");
       return;
     }
@@ -278,65 +313,72 @@ function TestScenarioDataSelectorPanel() {
     const isSimpleTypeFact =
       selectedColumnMetadata.factMapping.expressionElements!.ExpressionElement!.length === 1 &&
       selectedColumnMetadata.factMapping.className.__$$text !== "java.lang.Void";
-    let fieldID: string;
+    let fieldId: string;
     if (isExpressionType) {
-      fieldID = selectedColumnMetadata.factMapping.expressionElements!.ExpressionElement![0].step.__$$text;
+      fieldId = selectedColumnMetadata.factMapping.expressionElements!.ExpressionElement![0].step.__$$text;
     } else if (isSimpleTypeFact) {
-      fieldID = selectedColumnMetadata.factMapping.expressionElements!.ExpressionElement![0].step.__$$text.concat(".");
+      fieldId = selectedColumnMetadata.factMapping
+        .expressionElements!.ExpressionElement![0].step.__$$text.concat(".")
+        .concat("value");
     } else {
-      fieldID = selectedColumnMetadata.factMapping
+      fieldId = selectedColumnMetadata.factMapping
         .expressionElements!.ExpressionElement!.map((expressionElement) => expressionElement.step.__$$text)
         .join(".");
     }
 
-    //TODO 1 This not work with multiple level and expressions fields. see kie-issues#1514
-    const treeViewItemToActivate = filteredDataObjects
-      .reduce((acc: TestScenarioDataObject[], item) => {
-        return item.children ? acc.concat(item.children) : acc;
-      }, [])
-      .filter((item) => item.id === fieldID);
+    const treeViewItemToActivate = findTestScenarioDataObjectById(dataObjects, fieldId)!;
 
     setDataSelectorStatus(TestScenarioDataSelectorState.TREEVIEW_ENABLED_ONLY);
     setFilteredItems(filteredDataObjects);
-    setTreeViewStatus({ activeItems: treeViewItemToActivate, searchKey: "", isExpanded: true });
+    setTreeViewStatus({ activeItems: [treeViewItemToActivate], searchKey: "", isExpanded: true });
     console.debug("Case 3");
     console.debug("=============USE EFFECT END===============");
   }, [
     dataObjects,
-    filterDataObjectByExpressionElements,
-    filterDataObjectChildrenByExpressionElements,
     filterOutAlreadyAssignedDataObjectsAndChildren,
-    filterItems,
-    filterTypesItems,
     scesimModel,
     selectedColumnMetadata,
     treeViewStatus.searchKey,
   ]);
 
   const treeViewEmptyStatus = useMemo(() => {
-    const isTreeViewNotEmpty = dataObjects.length > 0;
-    const treeViewEmptyIcon = filteredItems.length === 0 ? WarningTriangleIcon : WarningTriangleIcon;
+    const isReferencedFileLoaded =
+      testScenarioType === "RULE" || externalModelsByNamespace?.has(referencedDmnNamespace!);
+    const isTreeViewNotEmpty = filteredItems.length > 0;
+    const activeItem = treeViewStatus.activeItems[0];
+    const treeViewVisibleStatus = isReferencedFileLoaded ? (isTreeViewNotEmpty ? "visible" : "hidden") : "loading";
     const title =
       dataObjects.length === 0
         ? testScenarioType === "DMN"
           ? i18n.drawer.dataSelector.emptyDataObjectsTitleDMN
           : i18n.drawer.dataSelector.emptyDataObjectsTitleRule
-        : "No more properties"; //TODO CHANGE
+        : activeItem !== undefined
+          ? i18n.drawer.dataSelector.emptyDataObjectsTitle
+          : i18n.drawer.dataSelector.emptyDataObjectsMissingTitle;
     const description =
       dataObjects.length === 0
         ? testScenarioType === "DMN"
           ? i18n.drawer.dataSelector.emptyDataObjectsDescriptionDMN
           : i18n.drawer.dataSelector.emptyDataObjectsDescriptionRule
-        : "All the properties have been already assigned"; //TODO CHANGE
-
+        : activeItem !== undefined
+          ? i18n.drawer.dataSelector.emptyDataObjectsDescription
+          : i18n.drawer.dataSelector.emptyDataObjectsMissingDescription;
     {
       testScenarioType === "DMN"
         ? i18n.drawer.dataSelector.emptyDataObjectsTitleDMN
         : i18n.drawer.dataSelector.emptyDataObjectsTitleRule;
     }
 
-    return { description: description, enabled: isTreeViewNotEmpty, icon: treeViewEmptyIcon, title: title };
-  }, [testScenarioType, dataObjects.length, filteredItems.length, i18n]);
+    return { description: description, icon: WarningTriangleIcon, title: title, visibility: treeViewVisibleStatus };
+  }, [
+    dataObjects.length,
+    externalModelsByNamespace,
+    filteredItems.length,
+    i18n.drawer.dataSelector,
+    referencedDmnNamespace,
+    testScenarioType,
+    treeViewStatus,
+  ]);
 
   const insertDataObjectButtonStatus = useMemo(() => {
     if (!selectedColumnMetadata) {
@@ -346,22 +388,26 @@ function TestScenarioDataSelectorPanel() {
       };
     }
 
-    const oneActiveTreeViewItem = treeViewStatus.activeItems.length === 1;
-    if (!oneActiveTreeViewItem) {
-      return { message: i18n.drawer.dataSelector.insertDataObjectTooltipDataObjectSelectionMessage, enabled: false };
+    if (!treeViewStatus.activeItems === undefined || treeViewStatus.activeItems.length !== 1) {
+      return {
+        message: i18n.drawer.dataSelector.insertDataObjectTooltipDataObjectSelectionMessage,
+        enabled: false,
+      };
     }
-
-    const expressionElement = selectedColumnMetadata.factMapping.expressionElements!;
-
-    const filteredDataObjects: TestScenarioDataObject[] = filterOutAlreadyAssignedDataObjectsAndChildren(
-      expressionElement,
+    const activeItem = treeViewStatus.activeItems[0];
+    const unassignedDataObjects = filterOutAlreadyAssignedDataObjectsAndChildren(
+      selectedColumnMetadata.factMapping.expressionElements,
       selectedColumnMetadata.isBackground
     );
-    const isAlreadyAssigined =
-      filteredDataObjects.length === 1 &&
-      !filteredDataObjects[0].children?.find((child) => child.id === treeViewStatus.activeItems[0].id);
 
-    if (oneActiveTreeViewItem && isAlreadyAssigined) {
+    const isAssignable =
+      activeItem !== undefined &&
+      (activeItem.children !== undefined &&
+        activeItem.children.length > 0 &&
+        activeItem.expressionElements.length > 1) === false &&
+      findTestScenarioDataObjectById(unassignedDataObjects, activeItem.id) !== undefined;
+
+    if (treeViewStatus.activeItems.length === 1 && isAssignable === false) {
       return {
         message: i18n.drawer.dataSelector.insertDataObjectTooltipDataObjectAlreadyAssignedMessage,
         enabled: false,
@@ -369,68 +415,63 @@ function TestScenarioDataSelectorPanel() {
     }
 
     return { message: i18n.drawer.dataSelector.insertDataObjectTooltipDataObjectAssignMessage, enabled: true };
-  }, [filterOutAlreadyAssignedDataObjectsAndChildren, i18n, selectedColumnMetadata, treeViewStatus.activeItems]);
+  }, [filterOutAlreadyAssignedDataObjectsAndChildren, i18n, selectedColumnMetadata, treeViewStatus]);
 
   const onAllExpandedToggle = useCallback((_event) => {
     setAllExpanded((prev) => !prev);
   }, []);
 
-  // CHECK
-  const onInsertDataObjectClick = useCallback(
-    /** TODO 2 : NEED A POPUP ASKING IF WE WANT TO REPLACE VALUES OR NOT see kie-issues#1514 */
-    () => {
-      const isBackground = selectedColumnMetadata!.isBackground;
-      const isRootType = isDataObjectRootParent(dataObjects, treeViewStatus.activeItems[0].id!.toString());
-      const rootDataObject = findDataObjectRootParent(dataObjects, treeViewStatus.activeItems[0].id!.toString());
-      const className = treeViewStatus.activeItems[0].customBadgeContent!.toString();
-      const expressionAlias = isRootType ? "Expression </>" : treeViewStatus.activeItems[0].name!.toString();
-      const expressionElementsSteps = treeViewStatus.activeItems[0].id!.split(".").filter((step) => !!step.trim()); //WARNING !!!! THIS DOESN'T WORK WITH IMPORTED DATA OBJECTS see kie-issues#1514
-      const factName = treeViewStatus.activeItems[0].id!.split(".")[0]; //WARNING !!!! THIS DOESN'T WORK WITH IMPORTED DATA OBJECTS see kie-issues#1514
-      const factClassName = isRootType
-        ? treeViewStatus.activeItems[0].customBadgeContent!.toString()
-        : rootDataObject.customBadgeContent!.toString();
-      const factMappingValueType = isRootType ? "EXPRESSION" : "NOT_EXPRESSION";
+  const onInsertDataObjectClick = useCallback(() => {
+    const userSelectedTestScenarioObject = treeViewStatus.activeItems[0];
 
-      testScenarioEditorStoreApi.setState((state) => {
-        const factMappings = isBackground
-          ? state.scesim.model.ScenarioSimulationModel.background.scesimModelDescriptor.factMappings.FactMapping!
-          : state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!;
-        const factMappingValuesTypes = isBackground
-          ? state.scesim.model.ScenarioSimulationModel.background.scesimData.BackgroundData!
-          : state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!;
+    if (userSelectedTestScenarioObject === undefined) {
+      console.error("No Data Object selected in the item view.");
+      return;
+    }
 
-        const { updatedFactMapping } = updateColumn({
-          className: className,
-          expressionAlias: expressionAlias,
-          expressionElementsSteps: expressionElementsSteps,
-          expressionIdentifierName: selectedColumnMetadata!.factMapping.expressionIdentifier.name?.__$$text,
-          expressionIdentifierType: selectedColumnMetadata!.factMapping.expressionIdentifier.type?.__$$text,
-          factMappings: factMappings,
-          factClassName: factClassName,
-          factIdentifierClassName: selectedColumnMetadata!.factMapping.factIdentifier.className?.__$$text,
-          factIdentifierName: selectedColumnMetadata!.factMapping.factIdentifier.name?.__$$text,
-          factMappingValuesTypes: factMappingValuesTypes,
-          factMappingValueType: factMappingValueType,
-          factName: factName,
-          selectedColumnIndex: selectedColumnMetadata!.index,
-        });
-
-        state.dispatch(state).table.updateSelectedColumn({
-          factMapping: updatedFactMapping,
-          index: selectedColumnMetadata!.index,
-          isBackground: isBackground,
-        });
-      });
-    },
-    [
+    const rootSelectedTestScenarioDataObject = findDataObjectRootParent(
       dataObjects,
-      findDataObjectRootParent,
-      isDataObjectRootParent,
-      selectedColumnMetadata,
-      testScenarioEditorStoreApi,
-      treeViewStatus.activeItems,
-    ]
-  );
+      treeViewStatus.activeItems[0].id.toString()
+    );
+    const isBackground = selectedColumnMetadata!.isBackground;
+    const isRootType = rootSelectedTestScenarioDataObject.id === userSelectedTestScenarioObject.id;
+    const expressionAlias = isRootType
+      ? "expression </>"
+      : userSelectedTestScenarioObject.id.replace(userSelectedTestScenarioObject.expressionElements[0] + ".", "");
+    const factMappingValueType = isRootType ? "EXPRESSION" : "NOT_EXPRESSION";
+
+    testScenarioEditorStoreApi.setState((state) => {
+      const factMappings = isBackground
+        ? state.scesim.model.ScenarioSimulationModel.background.scesimModelDescriptor.factMappings.FactMapping!
+        : state.scesim.model.ScenarioSimulationModel.simulation.scesimModelDescriptor.factMappings.FactMapping!;
+      const factMappingValuesTypes = isBackground
+        ? state.scesim.model.ScenarioSimulationModel.background.scesimData.BackgroundData!
+        : state.scesim.model.ScenarioSimulationModel.simulation.scesimData.Scenario!;
+
+      const { updatedFactMapping } = updateColumn({
+        className: userSelectedTestScenarioObject.className!,
+        expressionAlias: expressionAlias,
+        expressionElementsSteps: userSelectedTestScenarioObject.expressionElements,
+        expressionIdentifierName: selectedColumnMetadata!.factMapping.expressionIdentifier.name?.__$$text,
+        expressionIdentifierType: selectedColumnMetadata!.factMapping.expressionIdentifier.type?.__$$text,
+        factMappings: factMappings,
+        factClassName: rootSelectedTestScenarioDataObject.className!,
+        factIdentifierClassName: selectedColumnMetadata!.factMapping.factIdentifier.className?.__$$text,
+        factIdentifierName: selectedColumnMetadata!.factMapping.factIdentifier.name?.__$$text,
+        factMappingValuesTypes: factMappingValuesTypes,
+        factMappingValueType: factMappingValueType,
+        factName: rootSelectedTestScenarioDataObject.name,
+        genericTypes: userSelectedTestScenarioObject.collectionGenericType ?? [],
+        selectedColumnIndex: selectedColumnMetadata!.index,
+      });
+
+      state.dispatch(state).table.updateSelectedColumn({
+        factMapping: updatedFactMapping,
+        index: selectedColumnMetadata!.index,
+        isBackground: isBackground,
+      });
+    });
+  }, [dataObjects, selectedColumnMetadata, testScenarioEditorStoreApi, treeViewStatus.activeItems]);
 
   const onClearSelectionClicked = useCallback((_event) => {
     setTreeViewStatus((prev) => {
@@ -452,7 +493,7 @@ function TestScenarioDataSelectorPanel() {
     []
   );
 
-  const onSelectTreeViewItem = useCallback((_event, treeViewItem: TreeViewDataItem) => {
+  const onSelectTreeViewItem = useCallback((_event, treeViewItem: TestScenarioTreeViewDataItem) => {
     setTreeViewStatus((prev) => {
       return {
         ...prev,
@@ -500,7 +541,7 @@ function TestScenarioDataSelectorPanel() {
       <Divider />
       <StackItem isFilled>
         <div className={"kie-scesim-editor-drawer-data-objects--selector"}>
-          {treeViewEmptyStatus.enabled ? (
+          {(treeViewEmptyStatus.visibility === "visible" && (
             <div aria-disabled={true}>
               <TreeView
                 activeItems={treeViewStatus.activeItems}
@@ -517,17 +558,23 @@ function TestScenarioDataSelectorPanel() {
                 toolbar={treeViewSearchToolbar}
               />
             </div>
-          ) : (
-            <Bullseye>
-              <EmptyState>
-                <EmptyStateIcon icon={treeViewEmptyStatus.icon} />
-                <Title headingLevel="h4" size="lg">
-                  {treeViewEmptyStatus.title}
-                </Title>
-                <EmptyStateBody>{treeViewEmptyStatus.description}</EmptyStateBody>
-              </EmptyState>
-            </Bullseye>
-          )}
+          )) ||
+            (treeViewEmptyStatus.visibility === "hidden" && (
+              <Bullseye>
+                <EmptyState>
+                  <EmptyStateIcon icon={treeViewEmptyStatus.icon} />
+                  <Title headingLevel="h4" size="lg">
+                    {treeViewEmptyStatus.title}
+                  </Title>
+                  <EmptyStateBody>{treeViewEmptyStatus.description}</EmptyStateBody>
+                </EmptyState>
+              </Bullseye>
+            )) ||
+            (treeViewEmptyStatus.visibility === "loading" && (
+              <Bullseye style={{ paddingTop: "10px" }}>
+                <Spinner aria-label="Data Objects loading" />
+              </Bullseye>
+            ))}
         </div>
       </StackItem>
       <Divider />

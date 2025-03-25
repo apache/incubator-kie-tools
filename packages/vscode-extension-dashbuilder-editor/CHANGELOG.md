@@ -15,6 +15,14 @@
    under the License.
 -->
 
+# 10.1.0
+
+- _(No new features)_
+
+# 10.0.0
+
+- _(No new features)_
+
 # 0.32.0 (alpha)
 
 - _(No new features)_

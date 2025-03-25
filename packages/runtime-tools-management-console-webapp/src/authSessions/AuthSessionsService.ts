@@ -19,6 +19,7 @@
 
 import * as client from "openid-client";
 import {
+  AUTH_SESSION_RUNTIME_AUTH_SERVER_OPENID_CONFIGURATION_PATH,
   AUTH_SESSION_RUNTIME_AUTH_SERVER_URL_ENDPOINT,
   AUTH_SESSION_TEMP_OPENID_AUTH_DATA_STORAGE_KEY,
   AUTH_SESSIONS_VERSION_NUMBER,
@@ -36,9 +37,15 @@ import { v4 as uuid } from "uuid";
 
 export class AuthSessionsService {
   static async getIdentityProviderConfig(args: { authServerUrl: string; clientId: string }) {
-    const authUrl = new URL(args.authServerUrl);
-    const options = authUrl.protocol === "http:" ? { execute: [client.allowInsecureRequests] } : {};
-    const config: client.Configuration = await client.discovery(authUrl, args.clientId, undefined, undefined, options);
+    const issuerUrl = new URL(args.authServerUrl);
+    const options = issuerUrl.protocol === "http:" ? { execute: [client.allowInsecureRequests] } : {};
+    const config: client.Configuration = await client.discovery(
+      issuerUrl,
+      args.clientId,
+      undefined,
+      undefined,
+      options
+    );
     return config;
   }
 
@@ -46,6 +53,8 @@ export class AuthSessionsService {
     config: client.Configuration;
     loginSuccessRoute: string;
     forceLoginPrompt?: boolean;
+    scope: string;
+    audience?: string;
   }) {
     const code_challenge_method = "S256";
     /**
@@ -57,31 +66,29 @@ export class AuthSessionsService {
      */
     const code_verifier = client.randomPKCECodeVerifier();
     const code_challenge = await client.calculatePKCECodeChallenge(code_verifier);
-    // TODO: quarkus-oidc-proxy doesn't support nonce
-    // let nonce: string | undefined = undefined;
+    let nonce: string | undefined = undefined;
 
     // redirect user to as.authorization_endpoint
     const parameters: OidcAuthUrlParameters = {
       redirect_uri: args.loginSuccessRoute,
-      scope: "openid email",
+      scope: args.scope,
       code_verifier,
       code_challenge,
       code_challenge_method,
       state: uuid(),
-      // TODO: quarkus-oidc-proxy doesn't support prompt
-      // ...(args.forceLoginPrompt ? { prompt: "login" } : {}),
+      ...(args.audience ? { audience: args.audience } : {}),
+      ...(args.forceLoginPrompt ? { prompt: "login" } : {}),
     };
 
-    // TODO: quarkus-oidc-proxy doesn't support nonce
-    // /**
-    //  * We cannot be sure the AS supports PKCE so we're going to use nonce too. Use
-    //  * of PKCE is backwards compatible even if the AS doesn't support it which is
-    //  * why we're using it regardless.
-    //  */
-    // if (!args.config.serverMetadata().supportsPKCE()) {
-    //   nonce = client.randomNonce();
-    //   parameters.nonce = nonce;
-    // }
+    /**
+     * We cannot be sure the AS supports PKCE so we're going to use nonce too. Use
+     * of PKCE is backwards compatible even if the AS doesn't support it which is
+     * why we're using it regardless.
+     */
+    if (!args.config.serverMetadata().supportsPKCE()) {
+      nonce = client.randomNonce();
+      parameters.nonce = nonce;
+    }
 
     return parameters;
   }
@@ -109,14 +116,32 @@ export class AuthSessionsService {
     window.location.href = redirectTo.href;
   }
 
-  static async getIdentityProviderUrl(runtimeUrl: string) {
-    const newPath = path.join(new URL(runtimeUrl).pathname, AUTH_SESSION_RUNTIME_AUTH_SERVER_URL_ENDPOINT);
-    const oidcUrl = new URL(newPath, runtimeUrl);
-    const response = await fetch(oidcUrl);
+  static async getIssuerUrlFromOidcProxy(runtimeUrl: string) {
+    const newPath = path.join(
+      new URL(runtimeUrl).pathname,
+      AUTH_SESSION_RUNTIME_AUTH_SERVER_URL_ENDPOINT,
+      AUTH_SESSION_RUNTIME_AUTH_SERVER_OPENID_CONFIGURATION_PATH
+    );
+
+    const oidcProxyUrl = new URL(newPath, runtimeUrl);
+    const response = await fetch(oidcProxyUrl);
     if (response.status !== 200) {
-      throw new Error("No authentication endpoint found.");
+      // There's a bug in quarkus-oidc-proxy that if the application is running under a subpath
+      // the subpath is duplicated for quarkus-oidc-proxy routes.
+      const newPathSecondAttempt = path.join(
+        new URL(runtimeUrl).pathname,
+        new URL(runtimeUrl).pathname,
+        AUTH_SESSION_RUNTIME_AUTH_SERVER_URL_ENDPOINT,
+        AUTH_SESSION_RUNTIME_AUTH_SERVER_OPENID_CONFIGURATION_PATH
+      );
+      const oidcProxyUrlSecondAttempt = new URL(newPathSecondAttempt, runtimeUrl);
+      const responseSecondAttempt = await fetch(oidcProxyUrlSecondAttempt);
+      if (responseSecondAttempt.status !== 200) {
+        throw new Error("No authentication endpoint found.");
+      }
+      return new URL((await responseSecondAttempt.json()).issuer);
     }
-    return oidcUrl;
+    return new URL((await response.json()).issuer);
   }
 
   static async checkIfAuthenticationRequired(runtimeUrl: string): Promise<
@@ -127,10 +152,10 @@ export class AuthSessionsService {
     | { isAuthenticationRequired: false }
   > {
     try {
-      const oidcUrl = await AuthSessionsService.getIdentityProviderUrl(runtimeUrl);
+      const issuerUrl = await AuthSessionsService.getIssuerUrlFromOidcProxy(runtimeUrl);
       return {
         isAuthenticationRequired: true,
-        authServerUrl: oidcUrl.toString(),
+        authServerUrl: issuerUrl.toString(),
       };
     } catch (authServerError) {
       // Maybe not required?
@@ -156,6 +181,8 @@ export class AuthSessionsService {
     authServerUrl: string;
     clientId: string;
     name: string;
+    scope: string;
+    audience?: string;
     forceLoginPrompt?: boolean;
     loginSuccessRoute: string;
   }) {
@@ -165,6 +192,8 @@ export class AuthSessionsService {
       config,
       loginSuccessRoute: args.loginSuccessRoute,
       forceLoginPrompt: args.forceLoginPrompt,
+      scope: args.scope,
+      audience: args.audience,
     });
 
     await AuthSessionsService.redirectToIdentityProviderLogin({ ...args, config, parameters });
@@ -180,10 +209,6 @@ export class AuthSessionsService {
       clientId: args.clientId,
     });
 
-    if (!args.authSession.tokens.refresh_token) {
-      throw new Error(`No refresh_token found for AuthSession ${args.authSession.id}!`);
-    }
-
     const endSessionUrl = client.buildEndSessionUrl(config, {
       post_logout_redirect_uri: window.location.href,
       id_token_hint: args.authSession.tokens.id_token!,
@@ -192,14 +217,18 @@ export class AuthSessionsService {
     window.location.href = endSessionUrl.toString();
   }
 
-  static async reauthenticate(args: { authSession: OpenIDConnectAuthSession; clientId: string }) {
+  static async reauthenticate(args: { authSession: OpenIDConnectAuthSession; fromUnauthorizedRequest?: boolean }) {
     const config = await AuthSessionsService.getIdentityProviderConfig({
       authServerUrl: args.authSession.issuer,
-      clientId: args.clientId,
+      clientId: args.authSession.clientId,
     });
 
     if (!args.authSession.tokens.refresh_token) {
-      throw new Error(`No refresh_token found for AuthSession ${args.authSession.id}!`);
+      console.log(`No refresh_token found for AuthSession ${args.authSession.id}. Using old token!`);
+      // If reauthentication request came from a 401 Unauthorized response, force INVALID status.
+      return {
+        status: args.fromUnauthorizedRequest ? AuthSessionStatus.INVALID : AuthSessionStatus.VALID,
+      };
     }
 
     const tokens = await client.refreshTokenGrant(config, args.authSession.tokens.refresh_token);
@@ -208,6 +237,7 @@ export class AuthSessionsService {
     const claims = tokens.claims();
     if (!claims) {
       // expires_in was not returned by the authorization server
+      console.error(`Failed to extract claims from token for AuthSession: ${args.authSession.id}!`);
       throw new Error("Failed to extract claims from token.");
     }
     const { sub } = claims;
@@ -247,13 +277,10 @@ export class AuthSessionsService {
       return Promise.resolve(authSession);
     }
 
-    const runtimeOidcProxyUrl = new URL(
-      path.join(new URL(temporaryAuthSessionData.runtimeUrl).pathname, AUTH_SESSION_RUNTIME_AUTH_SERVER_URL_ENDPOINT),
-      temporaryAuthSessionData.runtimeUrl
-    );
+    const issuer = new URL(temporaryAuthSessionData.serverMetadata.issuer);
 
     const config = new client.Configuration(temporaryAuthSessionData.serverMetadata, temporaryAuthSessionData.clientId);
-    if (runtimeOidcProxyUrl.protocol === "http:") {
+    if (issuer.protocol === "http:") {
       client.allowInsecureRequests(config);
     }
 
@@ -262,8 +289,7 @@ export class AuthSessionsService {
     const tokens = await client.authorizationCodeGrant(config, currentUrl, {
       pkceCodeVerifier: temporaryAuthSessionData.parameters.code_verifier,
       expectedState: temporaryAuthSessionData.parameters.state,
-      // TODO: quarkus-oidc-proxy doesn't support nonce
-      // expectedNonce: temporaryAuthSessionData.parameters.nonce,
+      expectedNonce: temporaryAuthSessionData.parameters.nonce,
       idTokenExpected: true,
     });
 
@@ -271,6 +297,7 @@ export class AuthSessionsService {
     const claims = tokens.claims();
     if (!claims) {
       // expires_in was not returned by the authorization server
+      console.error("Failed to extract claims from token");
       throw new Error("Failed to extract claims from token.");
     }
     const { sub } = claims;
@@ -281,16 +308,18 @@ export class AuthSessionsService {
       type: AuthSessionType.OPENID_CONNECT,
       version: AUTH_SESSIONS_VERSION_NUMBER,
       name: temporaryAuthSessionData.name,
-      username: userInfo.preferred_username,
-      // TODO: This changes between IdPs. Figure out how a generic way to list the users roles.
+      username: userInfo.preferred_username ?? userInfo.email ?? userInfo.sub,
+      // TODO: This changes between IdPs. Figure out a generic way to list the users roles.
       roles: [],
       // TODO: Somehow get this information from the Kogito application.
       impersonator: true,
       clientId: temporaryAuthSessionData.clientId,
+      audience: temporaryAuthSessionData.parameters.audience,
+      scope: temporaryAuthSessionData.parameters.scope,
       tokens,
       claims,
       runtimeUrl: temporaryAuthSessionData.runtimeUrl,
-      issuer: runtimeOidcProxyUrl.toString(),
+      issuer: issuer.toString(),
       userInfo: userInfo,
       status: AuthSessionStatus.VALID,
       createdAtDateISO: new Date(Date.now()).toISOString(),

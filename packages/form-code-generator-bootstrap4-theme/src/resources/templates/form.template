@@ -2,8 +2,30 @@
 <% _.each(props.children, function(child) { %>
     <%=child.html%>
 <% }); %>
-
+<% if (props.submit) { %>
+<input
+    class="btn btn-primary"
+    disabled={<%= props.disabled %>}
+    type="submit"
+/>
+<% } %>
     <script>
+<% const addedGlobalFunctionsCode = []; %>
+<%  _.each(props.children, function(child) { %>
+    <% if (child.globalFunctions && child.globalFunctions.requiredCode) { %>
+        <% _.each(child.globalFunctions.requiredCode, function(codeFragment) { %>
+            <% if (!addedGlobalFunctionsCode.includes(codeFragment)) { %>
+                <% addedGlobalFunctionsCode.push(codeFragment); %>
+                <%= codeFragment %>
+        <% } %>
+    <% }); %>
+    <% } %>
+<% }); %>
+<% _.each(props.children, function(child) { %>
+    <% if (child.globalFunctions) { %>
+            <%= child.globalFunctions.code %>
+    <% } %>
+<% }); %>
         /* Utility function that fills the form with the data received from the kogito runtime */
         function setFormData(data) {
             if(!data) {
@@ -32,7 +54,7 @@
         function getFormData() {
 <% const addedWriteValueCode = []; %>
 <%  _.each(props.children, function(child) { %>
-    <% if (!child.disabled && child.writeValueToModelCode && child.writeValueToModelCode.requiredCode) { %>
+    <% if (child.writeValueToModelCode && child.writeValueToModelCode.requiredCode) { %>
         <% _.each(child.writeValueToModelCode.requiredCode, function(codeFragment) { %>
             <% if (!addedWriteValueCode.includes(codeFragment)) { %>
                 <% addedWriteValueCode.push(codeFragment); %>
@@ -43,7 +65,7 @@
 <% }); %>
             const formData  = {};
 <% _.each(props.children, function(child) { %>
-    <% if (!child.disabled && child.writeValueToModelCode) { %>
+    <% if (child.writeValueToModelCode) { %>
             <%= child.writeValueToModelCode.code %>
     <% } %>
 <% }); %>

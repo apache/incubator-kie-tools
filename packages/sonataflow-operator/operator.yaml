@@ -19,7 +19,7 @@ apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    control-plane: sonataflow-operator
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-system
 ---
 apiVersion: apiextensions.k8s.io/v1
@@ -27,6 +27,8 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.4
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflowbuilds.sonataflow.org
 spec:
   group: sonataflow.org
@@ -419,6 +421,8 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.4
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflowclusterplatforms.sonataflow.org
 spec:
   group: sonataflow.org
@@ -551,6 +555,8 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.4
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflowplatforms.sonataflow.org
 spec:
   group: sonataflow.org
@@ -1219,9 +1225,14 @@ spec:
                             by default.
                           maxProperties: 2
                           properties:
-                            migrateDBOnStartUp:
-                              description: Whether to migrate database on service startup?
-                              type: boolean
+                            dbMigrationStrategy:
+                              default: service
+                              description: |-
+                                DB Migration approach for data-index and jobs-service. Use the following values as described.
+                                job: use job based approach provided by the SonataFlow operator.
+                                service: service itself shall migrate the db and will not use SonataFlow operator.
+                                none: no database migration functionality needed.
+                              type: string
                             postgresql:
                               description: Connect configured services to a postgresql
                                 database.
@@ -9247,9 +9258,14 @@ spec:
                             by default.
                           maxProperties: 2
                           properties:
-                            migrateDBOnStartUp:
-                              description: Whether to migrate database on service startup?
-                              type: boolean
+                            dbMigrationStrategy:
+                              default: service
+                              description: |-
+                                DB Migration approach for data-index and jobs-service. Use the following values as described.
+                                job: use job based approach provided by the SonataFlow operator.
+                                service: service itself shall migrate the db and will not use SonataFlow operator.
+                                none: no database migration functionality needed.
+                              type: string
                             postgresql:
                               description: Connect configured services to a postgresql
                                 database.
@@ -17416,6 +17432,15 @@ spec:
                   description: The generation observed by the deployment controller.
                   format: int64
                   type: integer
+                sonataFlowPlatformDBMigrationPhase:
+                  properties:
+                    dbMigrationStatus:
+                      type: string
+                    message:
+                      type: string
+                    reason:
+                      type: string
+                  type: object
                 triggers:
                   description: Triggers list of triggers created for the SonataFlowPlatform
                   items:
@@ -17448,6 +17473,8 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.4
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflows.sonataflow.org
 spec:
   group: sonataflow.org
@@ -19403,9 +19430,14 @@ spec:
                     for the workflow
                   maxProperties: 2
                   properties:
-                    migrateDBOnStartUp:
-                      description: Whether to migrate database on service startup?
-                      type: boolean
+                    dbMigrationStrategy:
+                      default: service
+                      description: |-
+                        DB Migration approach for data-index and jobs-service. Use the following values as described.
+                        job: use job based approach provided by the SonataFlow operator.
+                        service: service itself shall migrate the db and will not use SonataFlow operator.
+                        none: no database migration functionality needed.
+                      type: string
                     postgresql:
                       description: Connect configured services to a postgresql database.
                       maxProperties: 2
@@ -27553,12 +27585,16 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-controller-manager
   namespace: sonataflow-operator-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-leader-election-role
   namespace: sonataflow-operator-system
 rules:
@@ -27597,6 +27633,8 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-builder-manager-role
 rules:
   - apiGroups:
@@ -27665,6 +27703,8 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-knative-manager-role
 rules:
   - apiGroups:
@@ -27717,6 +27757,8 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-leases
 rules:
   - apiGroups:
@@ -27736,8 +27778,22 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-manager-role
 rules:
+  - apiGroups:
+      - batch
+    resources:
+      - jobs
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
   - apiGroups:
       - monitoring.coreos.com
     resources:
@@ -27796,6 +27852,8 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-metrics-reader
 rules:
   - nonResourceURLs:
@@ -27806,6 +27864,8 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-openshift-manager-role
 rules:
   - apiGroups:
@@ -27902,6 +27962,8 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-proxy-role
 rules:
   - apiGroups:
@@ -27920,6 +27982,8 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-service-discovery-role
 rules:
   - apiGroups:
@@ -27978,6 +28042,8 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-leader-election-rolebinding
   namespace: sonataflow-operator-system
 roleRef:
@@ -27992,6 +28058,8 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-builder-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -28005,6 +28073,8 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-knative-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -28018,6 +28088,8 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-leases-binding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -28031,6 +28103,8 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -28044,6 +28118,8 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-openshift-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -28057,6 +28133,8 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-proxy-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -28070,6 +28148,8 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-service-discovery-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -28110,6 +28190,8 @@ data:
     -Djava.util.logging.manager=org.jboss.logmanager.LogManager\"\nENV JAVA_APP_JAR=\"/deployments/quarkus-run.jar\"\n"
 kind: ConfigMap
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-builder-config
   namespace: sonataflow-operator-system
 ---
@@ -28148,6 +28230,8 @@ data:
     # The Data Index image to use, if empty the operator will use the default Apache Community one based on the current operator's version
     dataIndexPostgreSQLImageTag: "docker.io/apache/incubator-kie-kogito-data-index-postgresql:main"
     dataIndexEphemeralImageTag: "docker.io/apache/incubator-kie-kogito-data-index-ephemeral:main"
+    # The Kogito PostgreSQL DB Migrator image to use (TBD: to replace with apache image)
+    dbMigratorToolImageTag: "docker.io/apache/kie-kogito-db-migrator-tool:main"
     # SonataFlow base builder image used in the internal Dockerfile to build workflow applications in preview profile
     # Order of precedence is:
     # 1. SonataFlowPlatform in the given namespace
@@ -28180,6 +28264,8 @@ data:
     kogitoEventsGroupingCompress: false
 kind: ConfigMap
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-controllers-config
   namespace: sonataflow-operator-system
 ---
@@ -28187,7 +28273,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    control-plane: sonataflow-operator
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-controller-manager-metrics-service
   namespace: sonataflow-operator-system
 spec:
@@ -28197,27 +28283,26 @@ spec:
       protocol: TCP
       targetPort: https
   selector:
-    control-plane: sonataflow-operator
+    app.kubernetes.io/name: sonataflow-operator
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: sonataflow-operator
-    control-plane: sonataflow-operator
   name: sonataflow-operator-controller-manager
   namespace: sonataflow-operator-system
 spec:
   replicas: 1
   selector:
     matchLabels:
-      control-plane: sonataflow-operator
+      app.kubernetes.io/name: sonataflow-operator
   template:
     metadata:
       annotations:
         kubectl.kubernetes.io/default-container: manager
       labels:
-        control-plane: sonataflow-operator
+        app.kubernetes.io/name: sonataflow-operator
     spec:
       containers:
         - args:

@@ -43,7 +43,11 @@ type Repository struct {
 	Url  string
 }
 
-var filesToRemove = []string{"mvnw", "mvnw.cmd", ".mvn"}
+var filesToRemove = []string{"mvnw", "mvnw.cmd", ".mvn",
+	"src/test/java/org/acme/GreetingResourceTest.java",
+	"src/test/java/org/acme/GreetingResourceIT.java",
+	"src/main/java/org/acme/GreetingResource.java",
+}
 
 func CreateQuarkusProject(cfg CreateQuarkusProjectConfig) error {
 	if err := common.CheckProjectName(cfg.ProjectName); err != nil {
@@ -172,6 +176,7 @@ func manipulatePomToKogito(filename string, cfg CreateQuarkusProjectConfig) erro
 
 	//add apache repository after profiles declaration
 	var repositories = []Repository{
+		{Id: "central", Name: "Central Repository", Url: "https://repo.maven.apache.org/maven2"},
 		{Id: "apache-public-repository-group", Name: "Apache Public Repository Group", Url: "https://repository.apache.org/content/groups/public/"},
 		{Id: "apache-snapshot-repository-group", Name: "Apache Snapshot Repository Group", Url: "https://repository.apache.org/content/groups/snapshots/"},
 	}

@@ -40,7 +40,7 @@ export type CommonDictionary = {
   download: string;
   edit: string;
   edited: string;
-  execution: string;
+  evaluation: string;
   exit: string;
   file: string;
   files: string;

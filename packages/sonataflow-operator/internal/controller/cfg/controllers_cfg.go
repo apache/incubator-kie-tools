@@ -63,6 +63,7 @@ type ControllersCfg struct {
 	JobsServiceEphemeralImageTag    string            `yaml:"jobsServiceEphemeralImageTag,omitempty"`
 	DataIndexPostgreSQLImageTag     string            `yaml:"dataIndexPostgreSQLImageTag,omitempty"`
 	DataIndexEphemeralImageTag      string            `yaml:"dataIndexEphemeralImageTag,omitempty"`
+	DbMigratorToolImageTag          string            `yaml:"dbMigratorToolImageTag,omitempty"`
 	SonataFlowBaseBuilderImageTag   string            `yaml:"sonataFlowBaseBuilderImageTag,omitempty"`
 	SonataFlowDevModeImageTag       string            `yaml:"sonataFlowDevModeImageTag,omitempty"`
 	BuilderConfigMapName            string            `yaml:"builderConfigMapName,omitempty"`

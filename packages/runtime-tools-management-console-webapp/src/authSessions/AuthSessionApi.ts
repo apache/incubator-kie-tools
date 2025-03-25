@@ -27,11 +27,13 @@ export const authSessionBroadcastChannel = new BroadcastChannel("auth_sessions")
 
 export const AUTH_SESSIONS_FILE_PATH = "/authSessions.json";
 export const AUTH_SESSIONS_FS_NAME = "auth_sessions";
-export const AUTH_SESSIONS_VERSION_NUMBER = 1;
+export const AUTH_SESSIONS_VERSION_NUMBER = 2;
 export const AUTH_SESSIONS_FS_NAME_WITH_VERSION = `${AUTH_SESSIONS_FS_NAME}_v${AUTH_SESSIONS_VERSION_NUMBER.toString()}`;
 
 export const AUTH_SESSION_TEMP_OPENID_AUTH_DATA_STORAGE_KEY = "temporaryOpenIdAuthData";
-export const AUTH_SESSION_RUNTIME_AUTH_SERVER_URL_ENDPOINT = "q/oidc/.well-known/openid-configuration";
+export const AUTH_SESSION_RUNTIME_AUTH_SERVER_URL_ENDPOINT = "q/oidc";
+export const AUTH_SESSION_RUNTIME_AUTH_SERVER_OPENID_CONFIGURATION_PATH = ".well-known/openid-configuration";
+export const AUTH_SESSION_OIDC_DEFAULT_SCOPES = "openid email profile";
 
 export function mapSerializer(_: string, value: any) {
   if (value instanceof Map) {
@@ -89,6 +91,8 @@ export type OpenIDConnectAuthSession = {
   userInfo: UserInfoResponse;
   clientId: string;
   clientSecret?: string;
+  audience?: string;
+  scope: string;
   runtimeUrl: string;
   status: AuthSessionStatus;
   createdAtDateISO: string;
@@ -117,6 +121,7 @@ export type OidcAuthUrlParameters = {
   nonce?: string;
   prompt?: string;
   state?: string;
+  audience?: string;
 };
 
 export type TemporaryAuthSessionData =

@@ -1,0 +1,46 @@
+{/* Licensed to the Apache Software Foundation (ASF) under one */}
+{/* or more contributor license agreements. See the NOTICE file */}
+{/* distributed with this work for additional information */}
+{/* regarding copyright ownership. The ASF licenses this file */}
+{/* to you under the Apache License, Version 2.0 (the */}
+{/* "License"); you may not use this file except in compliance */}
+{/* with the License. You may obtain a copy of the License at */}
+{/*  */}
+{/* http://www.apache.org/licenses/LICENSE-2.0 */}
+{/*  */}
+{/* Unless required by applicable law or agreed to in writing, */}
+{/* software distributed under the License is distributed on an */}
+{/* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY */}
+{/* KIND, either express or implied. See the License for the */}
+{/* specific language governing permissions and limitations */}
+{/* under the License. */}
+
+import { Meta, Story } from "@storybook/blocks";
+import * as Simple from "./Simple.stories";
+
+<Meta title="MDX/Simple" of={Simple} />
+
+# Simple
+
+To start off, use contextual menus in the table to insert or edit or delete new columns and rows.
+
+Before defining the individual test scenarios, verify the instance and field mappings for each column. If any changes are necessary, use the DMN Nodes selector to update the mapping.
+
+If the same GIVEN data is shared with the multiple test scenarios, you can use the Background tab to define them only once. The way to create a column in the Background tab is the same as of the Test Scenario tab.
+
+Now, define the test scenarios. Each cell of the table must contain a valid expression.
+
+Values in the GIVEN part of the table are evaluated as literal expressions, whereas values in the EXPECT section are evaluated as unary expressions. The correctness of these unary tests is verified using the results from a DMN evaluation.
+
+DMN-based scenarios use the FEEL expression language. Supported data types are:
+
+- numbers and strings (strings must be delimited by quotation marks), for example "John Doe" or ""
+- boolean values (true, false, and null)
+- dates and time, for example date("2019-05-13") or time("14:10:00+02:00")
+- Days and time duration, for example duration("P1DT23H12M30S")
+- Years and months duration, for example duration("P3Y5M")
+- functions
+- contexts, for example \{x : 5, even : false, type : "integer number"\}
+- ranges and lists, for example [1 .. 10] or [2, 3, 4, 5]
+- In EXPECT section the type could also just a boolean with the result of the assertion and you can use ? identifier to access value to check.
+- An empty cell is skipped from the evaluation.

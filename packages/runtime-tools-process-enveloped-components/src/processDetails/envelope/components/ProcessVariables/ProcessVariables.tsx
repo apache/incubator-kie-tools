@@ -20,7 +20,7 @@ import { Card, CardBody, CardHeader } from "@patternfly/react-core/dist/js/compo
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import ReactJson from "@microlink/react-json-view";
 import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";
 import "../styles.css";
@@ -46,14 +46,21 @@ const ProcessVariables: React.FC<ProcessVariablesProps & OUIAProps> = ({
   updateJson,
   processInstance,
 }) => {
-  const handleVariablesChange = (e) => {
-    setUpdateJson({ ...updateJson, ...e.updated_src });
-    setDisplayLabel(true);
-  };
-  const checkProcessStatus =
-    processInstance.state === ProcessInstanceState.Completed || processInstance.state === ProcessInstanceState.Aborted
-      ? false
-      : handleVariablesChange;
+  const handleVariablesChange = useCallback(
+    (e) => {
+      setUpdateJson(e.updated_src);
+      setDisplayLabel(true);
+    },
+    [setDisplayLabel, setUpdateJson]
+  );
+
+  const checkProcessStatus = useMemo(
+    () =>
+      processInstance.state === ProcessInstanceState.Completed || processInstance.state === ProcessInstanceState.Aborted
+        ? false
+        : handleVariablesChange,
+    [handleVariablesChange, processInstance.state]
+  );
 
   return (
     <Card {...componentOuiaProps(ouiaId, "process-variables", ouiaSafe)}>

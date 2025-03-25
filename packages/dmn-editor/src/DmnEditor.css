@@ -20,6 +20,7 @@
 /* (begin) global */
 .kie-dmn-editor--root {
   height: 100%;
+  scrollbar-color: rgba(121, 121, 121, 0.4) #f1f1f1;
 }
 
 .kie-tools--dmn-editor--diagram-container {
@@ -103,6 +104,57 @@
   color: red;
 }
 /* (end) nodes */
+
+/* (begin) decision node evaluation status */
+.kie-dmn-editor--decision-node--evaluation-status-failed::before {
+  content: "\2716";
+  font-size: 0.8em;
+  text-align: left;
+  color: white;
+  background-color: rgb(134, 106, 212);
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  height: 40px;
+  width: 40px;
+  clip-path: polygon(0% 100%, 100% 0%, 0% 0%);
+  padding-left: 7px;
+  padding-top: 2px;
+}
+
+.kie-dmn-editor--decision-node--evaluation-status-succeeded::before {
+  content: "\2714";
+  font-size: 0.8em;
+  text-align: left;
+  color: white;
+  background-color: rgb(134, 106, 212);
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  height: 40px;
+  width: 40px;
+  clip-path: polygon(0% 100%, 100% 0%, 0% 0%);
+  padding-left: 7px;
+  padding-top: 2px;
+}
+
+.kie-dmn-editor--decision-node--evaluation-status-skipped::before {
+  content: "\21B7";
+  font-size: 0.8em;
+  text-align: left;
+  color: white;
+  background-color: rgb(134, 106, 212);
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  height: 40px;
+  width: 40px;
+  clip-path: polygon(0% 100%, 100% 0%, 0% 0%);
+  padding-left: 7px;
+  padding-top: 2px;
+}
+
+/* (end) decision node evaluation status */
 
 /* (begin) decisionService and group nodes */
 /* DECISION SERVICES AND GROUPS HAVE A SPECIFIC SELECTION MECHANISM TO ALLOW EDITING EDGES INSIDE THEM */

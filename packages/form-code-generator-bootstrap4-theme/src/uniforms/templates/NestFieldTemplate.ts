@@ -18,10 +18,11 @@
  */
 
 import nestField from "!!raw-loader!../../resources/templates/nestField.template";
+import globalFunctions from "!!raw-loader!../../resources/templates/nestField.globalFunctions.template";
 import setValueFromModel from "!!raw-loader!../../resources/templates/nestField.setModelData.template";
 import writeValueToModel from "!!raw-loader!../../resources/templates/nestField.writeModelData.template";
-import { FormElementTemplate, FormElementTemplateProps } from "./types";
-import { CodeFragment, FormElement, FormInputContainer, InputReference } from "../../api";
+import { FormElementTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
+import { FormElement, FormInputContainer, InputReference } from "../../api";
 import { CompiledTemplate, template } from "underscore";
 import { union } from "lodash";
 
@@ -31,12 +32,14 @@ interface NestFieldTemplateProps extends FormElementTemplateProps<any> {
 
 export class NestFieldTemplate implements FormElementTemplate<FormInputContainer, NestFieldTemplateProps> {
   private readonly nestFieldTemplate: CompiledTemplate = template(nestField);
+  private readonly nestFieldGlobalFunctionsTemplate: CompiledTemplate = template(globalFunctions);
   private readonly nestFieldSetValueFromModelTemplate: CompiledTemplate = template(setValueFromModel);
   private readonly nestFieldWriteValueToModelTemplate: CompiledTemplate = template(writeValueToModel);
 
   render(props: NestFieldTemplateProps): FormInputContainer {
     const ref: InputReference[] = [];
 
+    let globalFunctionsRequiredCode: string[] = [];
     let setValueFromModelRequiredCode: string[] = [];
     let writeValueToModelRequiredCode: string[] = [];
 
@@ -45,6 +48,10 @@ export class NestFieldTemplate implements FormElementTemplate<FormInputContainer
         child.ref.forEach((childRef) => ref.push(childRef));
       } else {
         ref.push(child.ref);
+      }
+
+      if (child.globalFunctions) {
+        globalFunctionsRequiredCode = union(globalFunctionsRequiredCode, child.globalFunctions.requiredCode);
       }
 
       if (child.setValueFromModelCode) {
@@ -60,31 +67,18 @@ export class NestFieldTemplate implements FormElementTemplate<FormInputContainer
       ref,
       html: this.nestFieldTemplate({ props: props }),
       disabled: props.disabled,
-      setValueFromModelCode: this.buildSetValueFromModelCode(props, setValueFromModelRequiredCode),
-      writeValueToModelCode: this.buildWriteValueFromModelCode(props, writeValueToModelRequiredCode),
-    };
-  }
-
-  protected buildSetValueFromModelCode(
-    props: NestFieldTemplateProps,
-    setValueFromModelRequiredCode: string[]
-  ): CodeFragment {
-    return {
-      code: this.nestFieldSetValueFromModelTemplate({ props: props }),
-      requiredCode: setValueFromModelRequiredCode,
-    };
-  }
-
-  protected buildWriteValueFromModelCode(
-    props: NestFieldTemplateProps,
-    writeValueToModelRequiredCode: string[]
-  ): CodeFragment | undefined {
-    if (props.disabled) {
-      return undefined;
-    }
-    return {
-      code: this.nestFieldWriteValueToModelTemplate({ props: props }),
-      requiredCode: writeValueToModelRequiredCode,
+      globalFunctions: {
+        code: this.nestFieldGlobalFunctionsTemplate({ props: props }),
+        requiredCode: globalFunctionsRequiredCode,
+      },
+      setValueFromModelCode: {
+        code: this.nestFieldSetValueFromModelTemplate({ props: props }),
+        requiredCode: setValueFromModelRequiredCode,
+      },
+      writeValueToModelCode: {
+        code: this.nestFieldWriteValueToModelTemplate({ props: props }),
+        requiredCode: writeValueToModelRequiredCode,
+      },
     };
   }
 }
