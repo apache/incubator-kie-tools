@@ -206,7 +206,7 @@ func manipulatePomToKogito(filename string, cfg CreateQuarkusProjectConfig) erro
 
 func manipulateDockerIgnore(filename string) error {
 	pattern := "\n!target/classes/*.sw.%s"
-	extensions := []string{"json", "yaml"}
+	extensions := []string{"json", "yaml", "yml"}
 	f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0644)
 	defer f.Close()
 
