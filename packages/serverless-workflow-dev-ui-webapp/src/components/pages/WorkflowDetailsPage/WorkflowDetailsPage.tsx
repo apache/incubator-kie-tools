@@ -35,14 +35,9 @@ import {
   WorkflowDetailsGatewayApi,
   useWorkflowDetailsGatewayApi,
 } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDetails/";
-import * as H from "history";
 import "../../styles.css";
 import { WorkflowInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
-
-interface MatchProps {
-  instanceID: string;
-}
 
 const WorkflowDetailsPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
   useEffect(() => {
