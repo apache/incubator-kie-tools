@@ -30,8 +30,8 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import UserTagIcon from "@patternfly/react-icons/dist/esm/icons/user-tag-icon";
 import UserIcon from "@patternfly/react-icons/dist/js/icons/user-icon";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { useHistory } from "react-router";
-import { AuthSessionType, getAuthSessionDisplayInfo, useAuthSession, useAuthSessions } from "../../authSessions";
+import { useLocation, useNavigate } from "react-router-dom";
+import { AuthSessionType, getAuthSessionDisplayInfo, useAuthSessions } from "../../authSessions";
 import { QueryParams } from "../../navigation/Routes";
 import { useQueryParams } from "../../navigation/queryParams/QueryParamsContext";
 import {
@@ -45,7 +45,8 @@ export const ImpersonationPageSection: React.FC<{}> = () => {
   const { impersonationUsername, impersonationGroups } = useRuntime();
   const { canImpersonate } = useRuntimeInfo();
   const queryParams = useQueryParams();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const {
     setImpersonationUsername,
@@ -84,15 +85,25 @@ export const ImpersonationPageSection: React.FC<{}> = () => {
         return new Map(currentRuntimePathSearchParams);
       });
 
-      history.replace({
-        pathname: history.location.pathname,
-        search: queryParams
-          .with(QueryParams.IMPERSONATION_USER, newQueryParams[QueryParams.IMPERSONATION_USER])
-          .with(QueryParams.IMPERSONATION_GROUPS, newQueryParams[QueryParams.IMPERSONATION_GROUPS])
-          .toString(),
-      });
+      navigate(
+        {
+          pathname: location.pathname,
+          search: queryParams
+            .with(QueryParams.IMPERSONATION_USER, newQueryParams[QueryParams.IMPERSONATION_USER])
+            .with(QueryParams.IMPERSONATION_GROUPS, newQueryParams[QueryParams.IMPERSONATION_GROUPS])
+            .toString(),
+        },
+        { replace: true }
+      );
     },
-    [history, queryParams, setImpersonationGroup, setImpersonationUsername, setRuntimePathSearchParams]
+    [
+      location.pathname,
+      navigate,
+      queryParams,
+      setImpersonationGroup,
+      setImpersonationUsername,
+      setRuntimePathSearchParams,
+    ]
   );
 
   const onClear = useCallback(() => {

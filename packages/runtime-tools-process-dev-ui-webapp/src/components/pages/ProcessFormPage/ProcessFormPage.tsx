@@ -21,7 +21,7 @@ import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import ProcessFormContainer from "../../containers/ProcessFormContainer/ProcessFormContainer";
 import "../../styles.css";
-import { useHistory } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import InlineEdit from "./components/InlineEdit/InlineEdit";
 import { useProcessFormGatewayApi } from "../../../channel/ProcessForm/ProcessFormContext";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
@@ -36,10 +36,11 @@ import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/P
 const ProcessFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const [notification, setNotification] = useState<Notification>();
 
-  const history = useHistory();
+  const location = useLocation();
+  const navigate = useNavigate();
   const gatewayApi = useProcessFormGatewayApi();
 
-  const processDefinition: ProcessDefinition = history.location.state["processDefinition"];
+  const processDefinition: ProcessDefinition = location.state["processDefinition"];
 
   let processId: string;
 
@@ -48,7 +49,7 @@ const ProcessFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   });
 
   const goToProcessDefinition = () => {
-    history.push("/Processes");
+    navigate({ pathname: "/Processes" });
   };
 
   const showNotification = (
@@ -98,11 +99,11 @@ const ProcessFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
 
   const handleClick = useCallback(() => {
     const goToProcessDetails = () => {
-      history.push(`/Process/${processId}`);
+      navigate({ pathname: `/Process/${processId}` });
     };
     setNotification(null);
     goToProcessDetails();
-  }, [setNotification, history, processId]);
+  }, [setNotification, navigate, processId]);
 
   return (
     <React.Fragment>

@@ -28,7 +28,7 @@ import {
   isUnauthenticatedAuthSession,
   OpenIDConnectAuthSession,
 } from "../authSessions/AuthSessionApi";
-import { useHistory } from "react-router";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useRoutes } from "../navigation/Hooks";
 import ApolloClient from "apollo-client";
 import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
@@ -95,7 +95,8 @@ export interface RuntimeContextProviderProps {
 
 export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (props) => {
   const { authSessions } = useAuthSessions();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
   const routes = useRoutes();
   const user = useQueryParam(QueryParams.USER);
   const impersonationUsernameQueryParam = useQueryParam(QueryParams.IMPERSONATION_USER);
@@ -125,7 +126,7 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
     if (!props.runtimeUrl) {
       // TODO: No runtimeUrl set, show some warning.
       // runtimeUrl not set, going home
-      history.push(routes.home.path({}));
+      navigate(routes.home.path({}));
       setCurrentAuthSession(undefined);
       return;
     }
@@ -140,7 +141,7 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
     if (!validRuntimeAuthSessions.length) {
       // TODO: Navigate to page to add the runtime as an AuthSession
       // Going home for now.
-      history.push(routes.home.path({}));
+      navigate(routes.home.path({}));
       setCurrentAuthSession(undefined);
       return;
     }
@@ -150,7 +151,7 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
       // Compatible AuthSession found but it's authenticated. Redirect to the same route with the first matched AuthSession's user.
       if (isOpenIdConnectAuthSession(validRuntimeAuthSessions[0])) {
         const updatedQueryParams = queryParams.with("user", validRuntimeAuthSessions[0].username);
-        history.push({ pathname: history.location.pathname, search: updatedQueryParams.toString() });
+        navigate({ pathname: location.pathname, search: updatedQueryParams.toString() });
         return;
       }
       // First matched AuthSession is not authenticated, use it.
@@ -176,8 +177,8 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
       // Redirecting to it.
       if (possibleAuthenticatedAuthSession) {
         const updatedQueryParams = queryParams.with("user", possibleAuthenticatedAuthSession.username);
-        history.push({
-          pathname: history.location.pathname,
+        navigate({
+          pathname: location.pathname,
           search: updatedQueryParams.toString(),
         });
         return;
@@ -192,7 +193,7 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
     if (unauthenticatedAuthSession) {
       // Compatible AuthSession found but it's unauthenticated. Redirect to the same route without specifying user.
       const updatedQueryParams = queryParams.without("user");
-      history.push({ pathname: history.location.pathname, search: updatedQueryParams.toString() });
+      navigate({ pathname: location.pathname, search: updatedQueryParams.toString() });
       setCurrentAuthSession(undefined);
       return;
     }
@@ -200,11 +201,12 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
     // Compatible AuthSession not found
     // TODO: Navigate to page to add the runtime as an AuthSession
     // Going home for now.
-    history.push(routes.home.path({}));
+    navigate(routes.home.path({}));
     setCurrentAuthSession(undefined);
   }, [
     authSessions,
-    history,
+    navigate,
+    location.pathname,
     props.runtimeUrl,
     user,
     isRefreshingToken,
@@ -235,12 +237,12 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
           ...authSession,
           status: AuthSessionStatus.INVALID,
         });
-        history.push(routes.home.path({}));
+        navigate(routes.home.path({}));
       } finally {
         setIsRefreshingToken(false);
       }
     },
-    [updateAuthSession, history, routes.home]
+    [updateAuthSession, navigate, routes.home]
   );
 
   const onUnauthorized = useCallback(

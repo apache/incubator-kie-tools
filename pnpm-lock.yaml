@@ -8426,9 +8426,6 @@ importers:
       copyfiles:
         specifier: ^2.4.1
         version: 2.4.1
-      history:
-        specifier: ^4.9.0
-        version: 4.10.1
       keycloak-js:
         specifier: ^23.0.5
         version: 23.0.7
@@ -8472,9 +8469,6 @@ importers:
       '@kie-tools/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
-      '@types/history':
-        specifier: ^4.7.3
-        version: 4.7.5
       '@types/lodash':
         specifier: ^4.14.168
         version: 4.14.169
@@ -8599,9 +8593,6 @@ importers:
       react-dom:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
-      react-router:
-        specifier: ^6.29.0
-        version: 6.30.0(react@17.0.2)
       react-router-dom:
         specifier: ^6.29.0
         version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -8858,9 +8849,6 @@ importers:
       react-moment:
         specifier: 0.9.7
         version: 0.9.7(moment@2.29.4)(prop-types@15.8.1)(react@17.0.2)
-      react-router:
-        specifier: ^6.29.0
-        version: 6.30.0(react@17.0.2)
       react-router-dom:
         specifier: ^6.29.0
         version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -9544,9 +9532,9 @@ importers:
       react:
         specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
-      react-router:
+      react-router-dom:
         specifier: ^6.29.0
-        version: 6.30.0(react@17.0.2)
+        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0

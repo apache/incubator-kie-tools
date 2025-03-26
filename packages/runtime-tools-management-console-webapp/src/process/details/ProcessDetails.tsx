@@ -17,7 +17,7 @@
  * under the License.
  */
 import * as React from "react";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
@@ -39,7 +39,7 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { EmbeddedProcessDetails } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
 import { useRuntimeSpecificRoutes } from "../../runtime/RuntimeContext";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   processInstanceId: string;
@@ -49,7 +49,7 @@ interface Props {
 export const ProcessDetails: React.FC<Props> = ({ processInstanceId, onReturnToProcessList }) => {
   const gatewayApi: ProcessDetailsGatewayApi = useProcessDetailsGatewayApi();
   const runtimeRoutes = useRuntimeSpecificRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [processInstance, setProcessInstance] = useState<ProcessInstance>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>();
@@ -84,14 +84,14 @@ export const ProcessDetails: React.FC<Props> = ({ processInstanceId, onReturnToP
   useEffect(() => {
     const unSubscribeHandler = gatewayApi.onOpenProcessInstanceDetailsListener({
       onOpen(id: string) {
-        history.push(runtimeRoutes.processDetails(id));
+        navigate(runtimeRoutes.processDetails(id));
       },
     });
 
     return () => {
       unSubscribeHandler.unSubscribe();
     };
-  }, [gatewayApi, history, runtimeRoutes]);
+  }, [gatewayApi, navigate, runtimeRoutes]);
 
   // Loading State
   if (isLoading) {

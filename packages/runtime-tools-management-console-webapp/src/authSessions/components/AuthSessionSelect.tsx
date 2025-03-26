@@ -34,9 +34,9 @@ import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exc
 import { UserIcon } from "@patternfly/react-icons/dist/js/icons/user-icon";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { AuthSession, AuthSessionStatus, getAuthSessionDisplayInfo } from "../AuthSessionApi";
+import { AuthSessionStatus, getAuthSessionDisplayInfo } from "../AuthSessionApi";
 import { useRoutes } from "../../navigation/Hooks";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 export type AuthSessionSelectProps = {
   isPlain: boolean;
@@ -50,7 +50,7 @@ export function AuthSessionSelect({ isPlain, position, menuAppendTo }: AuthSessi
   const { setIsNewAuthSessionModalOpen } = useAuthSessionsDispatch();
   const { currentAuthSession, onSelectAuthSession } = useAuthSessions();
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const validated = useMemo(() => {
     if (!currentAuthSession) {
@@ -119,7 +119,7 @@ export function AuthSessionSelect({ isPlain, position, menuAppendTo }: AuthSessi
           <Button
             style={{ width: "100%", textAlign: "left" }}
             onClick={() => {
-              history.push(routes.home.path({}));
+              navigate(routes.home.path({}));
             }}
           >
             Manage...

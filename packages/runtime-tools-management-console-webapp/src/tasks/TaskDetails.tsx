@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useCallback, useMemo, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Drawer,
   DrawerActions,
@@ -60,7 +60,7 @@ interface Props {
 
 export const TaskDetails: React.FC<Props> = ({ taskId }) => {
   const taskInboxGatewayApi: TaskInboxGatewayApi = useTaskInboxGatewayApi();
-  const history = useHistory();
+  const navigate = useNavigate();
   const runtimeRoutes = useRuntimeSpecificRoutes();
   const { username, accessToken } = useRuntimeInfo();
   const { impersonationUsername } = useRuntime();
@@ -110,8 +110,8 @@ export const TaskDetails: React.FC<Props> = ({ taskId }) => {
 
   const goToTasks = useCallback(() => {
     taskInboxGatewayApi.clearOpenTask();
-    history.push(runtimeRoutes.tasks());
-  }, [history, runtimeRoutes, taskInboxGatewayApi]);
+    navigate(runtimeRoutes.tasks());
+  }, [navigate, runtimeRoutes, taskInboxGatewayApi]);
 
   const showNotification = useCallback(
     (notificationType: "error" | "success", submitMessage: string, notificationDetails?: string) => {

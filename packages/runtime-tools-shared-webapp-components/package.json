@@ -26,7 +26,7 @@
     "@kie-tools/runtime-tools-components": "workspace:*",
     "@patternfly/react-core": "^4.276.6",
     "@patternfly/react-icons": "^4.93.6",
-    "react-router": "^6.29.0"
+    "react-router-dom": "^6.29.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

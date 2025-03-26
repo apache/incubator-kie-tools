@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import { ProcessListState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
@@ -33,17 +33,21 @@ interface ProcessListContainerProps {
 }
 
 const ProcessListContainer: React.FC<ProcessListContainerProps & OUIAProps> = ({ initialState, ouiaId, ouiaSafe }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const gatewayApi: ProcessListGatewayApi = useProcessListGatewayApi();
   const appContext = useDevUIAppContext();
 
   useEffect(() => {
     const onOpenInstanceUnsubscriber = gatewayApi.onOpenProcessListen({
       onOpen(process: ProcessInstance) {
-        history.push({
-          pathname: `/Process/${process.id}`,
-          state: gatewayApi.processListState,
-        });
+        navigate(
+          {
+            pathname: `../Process/${process.id}`,
+          },
+          {
+            state: gatewayApi.processListState,
+          }
+        );
       },
     });
     return () => {

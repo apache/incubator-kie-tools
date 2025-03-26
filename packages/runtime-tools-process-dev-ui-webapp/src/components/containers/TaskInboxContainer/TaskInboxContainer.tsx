@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import {
@@ -29,7 +29,7 @@ import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/d
 import { getActiveTaskStates, getAllTaskStates } from "@kie-tools/runtime-tools-process-webapp-components/dist/utils";
 
 const TaskInboxContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const gatewayApi: TaskInboxGatewayApi = useTaskInboxGatewayApi();
   const taskInboxApiRef = React.useRef<TaskInboxApi>();
   const appContext = useDevUIAppContext();
@@ -37,7 +37,7 @@ const TaskInboxContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   useEffect(() => {
     const unsubscriber = gatewayApi.onOpenTaskListen({
       onOpen(task: UserTaskInstance) {
-        history.push(`/TaskDetails/${task.id}`);
+        navigate({ pathname: `/TaskDetails/${task.id}` });
       },
     });
 

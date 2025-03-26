@@ -24,11 +24,11 @@ import {
   PageSection,
   PageSidebar,
 } from "@patternfly/react-core/dist/js/components/Page";
-import React, { useState, useMemo, useCallback, useEffect } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { useEnv } from "../env/hooks/EnvContext";
 import { useRoutes } from "../navigation/Hooks";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { ManagementConsoleToolbar } from "./ManagementConsoleToolbar";
 import { AboutButton } from "../aboutModal/AboutButton";
 import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/components/PageSectionHeader";
@@ -53,7 +53,7 @@ export const ManagementConsolePageLayout: React.FC<Props> = ({
 }) => {
   const { env } = useEnv();
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [isNavOpen, setIsNavOpen] = useState(true);
 
   const onNavToggle = useCallback(() => {
@@ -61,8 +61,8 @@ export const ManagementConsolePageLayout: React.FC<Props> = ({
   }, []);
 
   const onClickBrand = useCallback(() => {
-    history.push(routes.home.path({}));
-  }, [history, routes.home]);
+    navigate(routes.home.path({}));
+  }, [navigate, routes.home]);
 
   const Header = useMemo(() => {
     return (

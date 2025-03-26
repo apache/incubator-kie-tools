@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useEffect, useMemo } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   TaskInboxGatewayApi,
   useTaskInboxGatewayApi,
@@ -33,6 +33,7 @@ import {
 import { RuntimePathSearchParamsRoutes, useRuntimeDispatch } from "../runtime/RuntimeContext";
 import { useQueryParam, useQueryParams } from "../navigation/queryParams/QueryParamsContext";
 import { QueryParams } from "../navigation/Routes";
+import { useLocation } from "react-router-dom";
 
 interface Props {
   onNavigateToTaskDetails: (taskId: string) => void;
@@ -50,7 +51,8 @@ const defaultOrderBy: SortBy = {
 
 export const Tasks: React.FC<Props> = ({ onNavigateToTaskDetails }) => {
   const gatewayApi: TaskInboxGatewayApi = useTaskInboxGatewayApi();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
   const filters = useQueryParam(QueryParams.FILTERS);
   const sortBy = useQueryParam(QueryParams.SORT_BY);
   const queryParams = useQueryParams();
@@ -90,14 +92,14 @@ export const Tasks: React.FC<Props> = ({ onNavigateToTaskDetails }) => {
         const newQueryParams = queryParams
           .with(QueryParams.FILTERS, newSearchParams[QueryParams.FILTERS])
           .with(QueryParams.ORDER_BY, newSearchParams[QueryParams.ORDER_BY]);
-        history.replace({ pathname: history.location.pathname, search: newQueryParams.toString() });
+        navigate({ pathname: location.pathname, search: newQueryParams.toString() }, { replace: true });
       },
     });
 
     return () => {
       unsubscriber.unSubscribe();
     };
-  }, [gatewayApi, history, queryParams, setRuntimePathSearchParams]);
+  }, [gatewayApi, navigate, location.pathname, queryParams, setRuntimePathSearchParams]);
 
   useEffect(() => {
     const unsubscriber = gatewayApi.onOpenTaskListen({
