@@ -63,7 +63,7 @@ func (h *newBuilderState) CanReconcile(workflow *operatorapi.SonataFlow) bool {
 }
 
 func (h *newBuilderState) Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
-	pl, err := platform.GetActivePlatform(ctx, h.C, workflow.Namespace)
+	pl, err := platform.GetActivePlatform(ctx, h.C, workflow.Namespace, true)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.WaitingForPlatformReason,
@@ -198,7 +198,7 @@ func (h *deployWithBuildWorkflowState) Do(ctx context.Context, workflow *operato
 	// Guard to avoid errors while getting a new builder manager.
 	// Maybe we can do typed errors in the buildManager and
 	// have something like sonataerr.IsPlatformNotFound(err) instead.
-	_, err := platform.GetActivePlatform(ctx, h.C, workflow.Namespace)
+	_, err := platform.GetActivePlatform(ctx, h.C, workflow.Namespace, true)
 	if err != nil {
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForPlatformReason,
 			"No active Platform for namespace %s so the resWorkflowDef cannot be deployed. Waiting for an active platform", workflow.Namespace)

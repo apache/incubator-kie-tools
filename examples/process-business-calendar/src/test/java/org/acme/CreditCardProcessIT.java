@@ -58,7 +58,7 @@ public class CreditCardProcessIT {
         Thread.sleep(2000);
         BusinessCalendar businessCalendar = processConfig.getBusinessCalendar();
         assertThat(businessCalendar).isNotNull();
-        long timeDuration = businessCalendar.calculateBusinessTimeAsDuration("1s");
+        long timeDuration = businessCalendar.calculateBusinessTimeAsDuration("15s");
         if (timeDuration > 1000L) {
             given()
                     .when()

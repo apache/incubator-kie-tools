@@ -47,7 +47,7 @@ type BuildManager interface {
 }
 
 func NewBuildManager(ctx context.Context, client client.Client, cliConfig *rest.Config, targetName, targetNamespace string) (BuildManager, error) {
-	p, err := platform.GetActivePlatform(ctx, client, targetNamespace)
+	p, err := platform.GetActivePlatform(ctx, client, targetNamespace, true)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			return nil, err
