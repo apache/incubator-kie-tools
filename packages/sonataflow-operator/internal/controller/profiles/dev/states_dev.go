@@ -71,7 +71,7 @@ func (e *ensureRunningWorkflowState) Do(ctx context.Context, workflow *operatora
 
 	devBaseContainerImage := workflowdef.GetDefaultWorkflowDevModeImageTag()
 	// check if the Platform available
-	pl, err := platform.GetActivePlatform(context.TODO(), e.C, workflow.Namespace)
+	pl, err := platform.GetActivePlatform(context.TODO(), e.C, workflow.Namespace, true)
 	if err != nil {
 		return ctrl.Result{Requeue: false}, objs, err
 	}

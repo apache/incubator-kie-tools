@@ -19,7 +19,7 @@ apiVersion: v1
 kind: Namespace
 metadata:
   labels:
-    control-plane: sonataflow-operator
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-system
 ---
 apiVersion: apiextensions.k8s.io/v1
@@ -27,6 +27,8 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.4
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflowbuilds.sonataflow.org
 spec:
   group: sonataflow.org
@@ -419,6 +421,8 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.4
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflowclusterplatforms.sonataflow.org
 spec:
   group: sonataflow.org
@@ -551,6 +555,8 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.4
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflowplatforms.sonataflow.org
 spec:
   group: sonataflow.org
@@ -17467,6 +17473,8 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.16.4
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflows.sonataflow.org
 spec:
   group: sonataflow.org
@@ -27501,10 +27509,20 @@ spec:
                 endpoint:
                   description: Endpoint is an externally accessible URL of the workflow
                   type: string
+                finalizerAttempts:
+                  type: integer
+                finalizerSucceed:
+                  type: boolean
                 flowCRC:
                   format: int32
                   type: integer
+                lastTimeFinalizerAttempt:
+                  format: date-time
+                  type: string
                 lastTimeRecoverAttempt:
+                  format: date-time
+                  type: string
+                lastTimeStatusNotified:
                   format: date-time
                   type: string
                 observedGeneration:
@@ -27577,12 +27595,16 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-controller-manager
   namespace: sonataflow-operator-system
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-leader-election-role
   namespace: sonataflow-operator-system
 rules:
@@ -27621,6 +27643,8 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-builder-manager-role
 rules:
   - apiGroups:
@@ -27689,6 +27713,8 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-knative-manager-role
 rules:
   - apiGroups:
@@ -27741,6 +27767,8 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-leases
 rules:
   - apiGroups:
@@ -27760,6 +27788,8 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-manager-role
 rules:
   - apiGroups:
@@ -27832,6 +27862,8 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-metrics-reader
 rules:
   - nonResourceURLs:
@@ -27842,6 +27874,8 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-openshift-manager-role
 rules:
   - apiGroups:
@@ -27938,6 +27972,8 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-proxy-role
 rules:
   - apiGroups:
@@ -27956,6 +27992,8 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-service-discovery-role
 rules:
   - apiGroups:
@@ -28014,6 +28052,8 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-leader-election-rolebinding
   namespace: sonataflow-operator-system
 roleRef:
@@ -28028,6 +28068,8 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-builder-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -28041,6 +28083,8 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-knative-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -28054,6 +28098,8 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-leases-binding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -28067,6 +28113,8 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -28080,6 +28128,8 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-openshift-manager-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -28093,6 +28143,8 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-proxy-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -28106,6 +28158,8 @@ subjects:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-service-discovery-rolebinding
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -28146,6 +28200,8 @@ data:
     -Djava.util.logging.manager=org.jboss.logmanager.LogManager\"\nENV JAVA_APP_JAR=\"/deployments/quarkus-run.jar\"\n"
 kind: ConfigMap
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-builder-config
   namespace: sonataflow-operator-system
 ---
@@ -28218,6 +28274,8 @@ data:
     kogitoEventsGroupingCompress: false
 kind: ConfigMap
 metadata:
+  labels:
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-controllers-config
   namespace: sonataflow-operator-system
 ---
@@ -28225,7 +28283,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    control-plane: sonataflow-operator
+    app.kubernetes.io/name: sonataflow-operator
   name: sonataflow-operator-controller-manager-metrics-service
   namespace: sonataflow-operator-system
 spec:
@@ -28235,27 +28293,26 @@ spec:
       protocol: TCP
       targetPort: https
   selector:
-    control-plane: sonataflow-operator
+    app.kubernetes.io/name: sonataflow-operator
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: sonataflow-operator
-    control-plane: sonataflow-operator
   name: sonataflow-operator-controller-manager
   namespace: sonataflow-operator-system
 spec:
   replicas: 1
   selector:
     matchLabels:
-      control-plane: sonataflow-operator
+      app.kubernetes.io/name: sonataflow-operator
   template:
     metadata:
       annotations:
         kubectl.kubernetes.io/default-container: manager
       labels:
-        control-plane: sonataflow-operator
+        app.kubernetes.io/name: sonataflow-operator
     spec:
       containers:
         - args:
