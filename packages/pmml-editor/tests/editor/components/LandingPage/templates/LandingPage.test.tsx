@@ -25,8 +25,8 @@ import { PMML, Scorecard, TreeModel } from "@kie-tools/pmml-editor-marshaller";
 
 const PATH: string = "path";
 
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
   useHistory: () => ({
     push: jest.fn(),
   }),
