@@ -187,7 +187,7 @@ export type DmnEditorProps = {
    */
   onModelDebounceStateChanged?: (changed: boolean) => void;
 
-  onOpenedBoxedExpressionChange?: (newOpenedBoxedExpressionId: string) => void;
+  onOpenedBoxedExpressionChange?: (newOpenedBoxedExpressionId: string | undefined) => void;
 };
 
 export const DmnEditorInternal = ({
@@ -214,7 +214,7 @@ export const DmnEditorInternal = ({
   // Code to keep FormDmnOutputs.tsx selected card highlight in proper state
   useEffect(() => {
     onOpenedBoxedExpressionChange?.(
-      dmnEditorActiveTab === DmnEditorTab.EDITOR ? boxedExpressionEditorActiveDrgElementId ?? "" : ""
+      dmnEditorActiveTab === DmnEditorTab.EDITOR ? boxedExpressionEditorActiveDrgElementId : undefined
     );
   }, [boxedExpressionEditorActiveDrgElementId, dmnEditorActiveTab, onOpenedBoxedExpressionChange]);
 

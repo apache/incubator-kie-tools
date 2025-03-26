@@ -167,8 +167,8 @@ export function DmnRunnerDrawerPanelContent() {
   }, [onOpenPanel, setDmnRunnerMode]);
 
   const [openedBoxedExpressionNodeId, _] = useSharedValue(
-    (envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>).shared
-      .newDmnEditor_openedBoxedExpressionId
+    (envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>)?.shared
+      ?.newDmnEditor_openedBoxedExpressionId ?? undefined
   );
 
   return (
