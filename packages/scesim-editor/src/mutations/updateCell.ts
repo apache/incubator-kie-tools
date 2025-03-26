@@ -48,5 +48,6 @@ export function updateCell({
       factMappingValue.expressionIdentifier.type?.__$$text === factMapping!.expressionIdentifier.type?.__$$text
   );
   const factMappingValueToUpdate = factMappingValues[factMappingValueToUpdateIndex];
-  factMappingValueToUpdate.rawValue = { __$$text: value, "@_class": "string" };
+  factMappingValueToUpdate.rawValue =
+    value !== undefined && value !== "" ? { __$$text: value, "@_class": "string" } : undefined;
 }

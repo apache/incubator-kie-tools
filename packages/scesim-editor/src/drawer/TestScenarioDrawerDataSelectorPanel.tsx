@@ -344,36 +344,40 @@ function TestScenarioDataSelectorPanel() {
   const treeViewEmptyStatus = useMemo(() => {
     const isReferencedFileLoaded =
       testScenarioType === "RULE" || externalModelsByNamespace?.has(referencedDmnNamespace!);
-    const isTreeViewNotEmpty = dataObjects.length > 0;
+    const isTreeViewNotEmpty = filteredItems.length > 0;
+    const activeItem = treeViewStatus.activeItems[0];
     const treeViewVisibleStatus = isReferencedFileLoaded ? (isTreeViewNotEmpty ? "visible" : "hidden") : "loading";
-    const treeViewEmptyIcon = filteredItems.length === 0 ? WarningTriangleIcon : WarningTriangleIcon;
     const title =
       dataObjects.length === 0
         ? testScenarioType === "DMN"
           ? i18n.drawer.dataSelector.emptyDataObjectsTitleDMN
           : i18n.drawer.dataSelector.emptyDataObjectsTitleRule
-        : i18n.drawer.dataSelector.emptyDataObjectsTitle;
+        : activeItem !== undefined
+          ? i18n.drawer.dataSelector.emptyDataObjectsTitle
+          : i18n.drawer.dataSelector.emptyDataObjectsMissingTitle;
     const description =
       dataObjects.length === 0
         ? testScenarioType === "DMN"
           ? i18n.drawer.dataSelector.emptyDataObjectsDescriptionDMN
           : i18n.drawer.dataSelector.emptyDataObjectsDescriptionRule
-        : i18n.drawer.dataSelector.emptyDataObjectsDescription;
-
+        : activeItem !== undefined
+          ? i18n.drawer.dataSelector.emptyDataObjectsDescription
+          : i18n.drawer.dataSelector.emptyDataObjectsMissingDescription;
     {
       testScenarioType === "DMN"
         ? i18n.drawer.dataSelector.emptyDataObjectsTitleDMN
         : i18n.drawer.dataSelector.emptyDataObjectsTitleRule;
     }
 
-    return { description: description, icon: treeViewEmptyIcon, title: title, visibility: treeViewVisibleStatus };
+    return { description: description, icon: WarningTriangleIcon, title: title, visibility: treeViewVisibleStatus };
   }, [
-    externalModelsByNamespace,
-    referencedDmnNamespace,
-    filteredItems.length,
     dataObjects.length,
-    testScenarioType,
+    externalModelsByNamespace,
+    filteredItems.length,
     i18n.drawer.dataSelector,
+    referencedDmnNamespace,
+    testScenarioType,
+    treeViewStatus,
   ]);
 
   const insertDataObjectButtonStatus = useMemo(() => {
@@ -397,6 +401,7 @@ function TestScenarioDataSelectorPanel() {
     );
 
     const isAssignable =
+      activeItem !== undefined &&
       (activeItem.children !== undefined &&
         activeItem.children.length > 0 &&
         activeItem.expressionElements.length > 1) === false &&

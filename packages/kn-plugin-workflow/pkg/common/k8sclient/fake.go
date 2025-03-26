@@ -47,7 +47,7 @@ func (m Fake) FakeDynamicClient() (dynamic.Interface, error) {
 	return currentDynamicClient, nil
 }
 
-func (m Fake) GetNamespace() (string, error) {
+func (m Fake) GetCurrentNamespace() (string, error) {
 	return "default", nil
 }
 
