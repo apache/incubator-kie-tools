@@ -28,7 +28,7 @@ import {
 import "../../styles.css";
 import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
 import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
-import { useHistory } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { CloudEventFormContainer } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventFormContainer";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 
@@ -46,14 +46,15 @@ const CloudEventFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
 
   const context = useDevUIAppContext();
 
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const initialState = history.location && (history.location.state as CloudEventPageState);
+  const initialState = location && (location.state as CloudEventPageState);
 
   const isTriggerNewInstance = useMemo(() => {
     const source = initialState.source;
     return source !== CloudEventPageSource.INSTANCES;
-  }, [history]);
+  }, [initialState.source]);
 
   const showNotification = useCallback(
     (notificationType: "error" | "success", submitMessage: string, notificationDetails?: string) => {
@@ -66,7 +67,7 @@ const CloudEventFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
             label: "Go to workflow list",
             onClick: () => {
               setNotification(undefined);
-              history.push("/Workflows");
+              navigate("/Workflows");
             },
           },
         ],

@@ -44,7 +44,7 @@ import { useEnv } from "../../env/EnvContext";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 import { useEditor } from "../hooks/EditorContext";
 import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { routes } from "../../navigation/Routes";
 
 const FETCH_DEV_MODE_DEPLOYMENT_POLLING_TIME = 2000;
@@ -66,7 +66,7 @@ export function useDeployDropdownItems(props: Props) {
   const { needsDependencyDeployment } = useVirtualServiceRegistryDependencies({
     workspace: props.workspace,
   });
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     props.workspaceFile.getFileContentsAsString().then((content) => {
@@ -202,8 +202,8 @@ export function useDeployDropdownItems(props: Props) {
   );
 
   const onSetup = useCallback(() => {
-    history.push(routes.settings.openshift.path({}));
-  }, [history]);
+    navigate(routes.settings.openshift.path({}));
+  }, [navigate]);
 
   const onDeploy = useCallback(() => {
     openshift.setConfirmDeployModalOpen(true);

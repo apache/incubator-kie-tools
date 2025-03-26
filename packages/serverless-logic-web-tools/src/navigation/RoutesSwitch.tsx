@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useMemo, useRef, useState } from "react";
-import { Route, Switch, useRouteMatch } from "react-router-dom";
+import { Route, Routes, useMatch } from "react-router-dom";
 import { useRoutes } from "./Hooks";
 import { OnlineEditorPage } from "../homepage/pageTemplate/OnlineEditorPage";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
@@ -28,33 +28,32 @@ import { SettingsPageRoutes } from "../settings/routes/SettingsPageRoutes";
 
 export function RoutesSwitch() {
   const routes = useRoutes();
-  const isRouteInSettingsSection = useRouteMatch(routes.settings.home.path({}));
+  const isRouteInSettingsSection = useMatch(routes.settings.home.path({}));
   const buildInfo = useMemo(() => {
     return process.env["WEBPACK_REPLACE__buildInfo"];
   }, []);
   const pageContainerRef = useRef<HTMLDivElement>(null);
   const [isNavOpen, setIsNavOpen] = useState(true);
 
-  const renderPage = () => {
-    return (
-      <OnlineEditorPage pageContainerRef={pageContainerRef} isNavOpen={isNavOpen} setIsNavOpen={setIsNavOpen}>
-        {!isRouteInSettingsSection ? (
-          <HomePageRoutes isNavOpen={isNavOpen} />
-        ) : (
-          <SettingsPageRoutes pageContainerRef={pageContainerRef} />
-        )}
-        {buildInfo && (
-          <div className={"kie-tools--build-info"}>
-            <Label>{buildInfo}</Label>
-          </div>
-        )}
-      </OnlineEditorPage>
-    );
-  };
-
   return (
-    <Switch>
-      <Route path={routes.home.path({})} render={renderPage}></Route>
-    </Switch>
+    <Routes>
+      <Route
+        path={routes.home.path({})}
+        element={
+          <OnlineEditorPage pageContainerRef={pageContainerRef} isNavOpen={isNavOpen} setIsNavOpen={setIsNavOpen}>
+            {!isRouteInSettingsSection ? (
+              <HomePageRoutes isNavOpen={isNavOpen} />
+            ) : (
+              <SettingsPageRoutes pageContainerRef={pageContainerRef} />
+            )}
+            {buildInfo && (
+              <div className={"kie-tools--build-info"}>
+                <Label>{buildInfo}</Label>
+              </div>
+            )}
+          </OnlineEditorPage>
+        }
+      />
+    </Routes>
   );
 }

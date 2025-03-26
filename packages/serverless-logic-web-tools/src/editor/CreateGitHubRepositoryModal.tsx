@@ -39,7 +39,7 @@ import {
   GIT_DEFAULT_BRANCH,
   GIT_ORIGIN_REMOTE_NAME,
 } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useRoutes } from "../navigation/Hooks";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
@@ -62,7 +62,7 @@ export function CreateGitHubRepositoryModal(props: {
   onSuccess: (args: { url: string }) => void;
   currentFile: WorkspaceFile;
 }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const routes = useRoutes();
   const workspaces = useWorkspaces();
   const settingsDispatch = useSettingsDispatch();
@@ -153,26 +153,32 @@ export function CreateGitHubRepositoryModal(props: {
       props.onSuccess({ url: repo.data.html_url });
 
       if (applyAcceleratorResult?.success) {
-        history.replace({
-          pathname: routes.workspaceWithFilePath.path({
-            workspaceId: props.workspace.descriptor.workspaceId,
-            fileRelativePath: applyAcceleratorResult.currentFileAfterMoving.relativePathWithoutExtension,
-            extension: applyAcceleratorResult.currentFileAfterMoving.extension,
-          }),
-        });
+        navigate(
+          {
+            pathname: routes.workspaceWithFilePath.path({
+              workspaceId: props.workspace.descriptor.workspaceId,
+              fileRelativePath: applyAcceleratorResult.currentFileAfterMoving.relativePathWithoutExtension,
+              extension: applyAcceleratorResult.currentFileAfterMoving.extension,
+            }),
+          },
+          { replace: true }
+        );
       }
     } catch (err) {
       if (applyAcceleratorResult?.success) {
         await rollbackApply({ ...applyAcceleratorResult });
       }
 
-      history.replace({
-        pathname: routes.workspaceWithFilePath.path({
-          extension: props.currentFile.extension,
-          fileRelativePath: props.currentFile.relativePathWithoutExtension,
-          workspaceId: props.workspace.descriptor.workspaceId,
-        }),
-      });
+      navigate(
+        {
+          pathname: routes.workspaceWithFilePath.path({
+            extension: props.currentFile.extension,
+            fileRelativePath: props.currentFile.relativePathWithoutExtension,
+            workspaceId: props.workspace.descriptor.workspaceId,
+          }),
+        },
+        { replace: true }
+      );
 
       console.error(err);
       setError(err);
@@ -196,7 +202,7 @@ export function CreateGitHubRepositoryModal(props: {
     workspaces,
     props,
     applyAccelerator,
-    history,
+    navigate,
     routes.workspaceWithFilePath,
     rollbackApply,
     cleanUpTempResources,

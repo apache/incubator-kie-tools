@@ -34,8 +34,7 @@ import { Page, PageToggleButton } from "@patternfly/react-core/dist/js/component
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { BarsIcon, ExclamationIcon } from "@patternfly/react-icons/dist/js/icons";
 import { useMemo, useState } from "react";
-import { useHistory, useRouteMatch } from "react-router";
-import { useLocation } from "react-router-dom";
+import { useNavigate, useMatch, useLocation } from "react-router-dom";
 import { useRoutes } from "../../navigation/Hooks";
 import { SettingsPageNav } from "../../settings/uiNav/SettingsPageNav";
 import { OpenshiftDeploymentsDropdown } from "../../openshift/dropdown/OpenshiftDeploymentsDropdown";
@@ -57,9 +56,9 @@ export type OnlineEditorPageProps = {
 };
 
 export function OnlineEditorPage(props: OnlineEditorPageProps) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const routes = useRoutes();
-  const isRouteInSettingsSection = useRouteMatch(routes.settings.home.path({}));
+  const isRouteInSettingsSection = useMatch(routes.settings.home.path({}));
   const [activeQuickStartID, setActiveQuickStartID] = useState("");
   const [allQuickStartStates, setAllQuickStartStates] = useState({});
 
@@ -119,10 +118,7 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
         </PageToggleButton>
       </MastheadToggle>
       <MastheadMain>
-        <MastheadBrand
-          onClick={() => history.push({ pathname: routes.home.path({}) })}
-          style={{ textDecoration: "none" }}
-        >
+        <MastheadBrand onClick={() => navigate({ pathname: routes.home.path({}) })} style={{ textDecoration: "none" }}>
           <Brand className="kogito-tools-common--brand" src="favicon.svg" alt="Kie logo"></Brand>
           <div className="brand-name" data-ouia-component-id="app-title">
             {APP_NAME}

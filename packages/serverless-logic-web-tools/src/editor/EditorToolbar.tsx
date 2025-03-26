@@ -59,10 +59,9 @@ import { SaveIcon } from "@patternfly/react-icons/dist/js/icons/save-icon";
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { OutlinedClockIcon } from "@patternfly/react-icons/dist/js/icons/outlined-clock-icon";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
-import { Location } from "history";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useHistory } from "react-router";
+import { Link, useNavigate, Location } from "react-router-dom";
 import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { useAppI18n } from "../i18n";
 import {
@@ -97,7 +96,6 @@ import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocat
 import { UrlType, useImportableUrl } from "../workspace/hooks/ImportableUrlHooks";
 import { useEnv } from "../env/EnvContext";
 import { useGlobalAlert, useGlobalAlertsDispatchContext } from "../alerts/GlobalAlertsContext";
-import { Link } from "react-router-dom";
 import { routes } from "../navigation/Routes";
 import { isEditable } from "../extension";
 import { ConfirmDeleteModal } from "../table";
@@ -137,7 +135,7 @@ export function EditorToolbar(props: Props) {
   const routes = useRoutes();
   const settings = useSettings();
   const settingsDispatch = useSettingsDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const workspaces = useWorkspaces();
   const [isShareDropdownOpen, setShareDropdownOpen] = useState(false);
   const [isSyncGitHubGistDropdownOpen, setSyncGitHubGistDropdownOpen] = useState(false);
@@ -573,7 +571,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 
       // Redirect to import workspace
       navigationBlockersBypass.execute(() => {
-        history.push({
+        navigate({
           pathname: routes.importModel.path({}),
           search: routes.importModel.queryString({ url: gist.data.html_url }),
         });
@@ -591,7 +589,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     workspaces,
     props.workspaceFile.workspaceId,
     navigationBlockersBypass,
-    history,
+    navigate,
     routes.importModel,
     errorAlert,
   ]);
@@ -780,7 +778,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
 
     if (workspacePromise.data.files.length === 1) {
       await workspaces.deleteWorkspace({ workspaceId: props.workspaceFile.workspaceId });
-      history.push({ pathname: routes.home.path({}) });
+      navigate({ pathname: routes.home.path({}) });
       return;
     }
 
@@ -795,18 +793,18 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     });
 
     if (!nextFile) {
-      history.push({ pathname: routes.home.path({}) });
+      navigate({ pathname: routes.home.path({}) });
       return;
     }
 
-    history.push({
+    navigate({
       pathname: routes.workspaceWithFilePath.path({
         workspaceId: nextFile.workspaceId,
         fileRelativePath: nextFile.relativePathWithoutExtension,
         extension: nextFile.extension,
       }),
     });
-  }, [routes, history, workspacePromise.data, props.workspaceFile, workspaces]);
+  }, [routes, navigate, workspacePromise.data, props.workspaceFile, workspaces]);
 
   const workspaceNameRef = useRef<HTMLInputElement>(null);
 
@@ -1057,7 +1055,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           authInfo: githubAuthInfo,
         });
 
-        history.push({
+        navigate({
           pathname: routes.importModel.path({}),
           search: routes.importModel.queryString({
             url: `${workspacePromise.data.descriptor.origin.url}`,
@@ -1068,7 +1066,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         pushingAlert.close();
       }
     },
-    [githubAuthInfo, routes, history, props.workspaceFile.workspaceId, workspacePromise, workspaces, pushingAlert]
+    [githubAuthInfo, routes, navigate, props.workspaceFile.workspaceId, workspacePromise, workspaces, pushingAlert]
   );
 
   const pullErrorAlert = useGlobalAlert<{ newBranchName: string }>(
@@ -1092,7 +1090,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                 )}
 
                 {!canPushToGitRepository && (
-                  <AlertActionLink onClick={() => history.push(routes.settings.github.path({}))}>
+                  <AlertActionLink onClick={() => navigate(routes.settings.github.path({}))}>
                     {`Configure GitHub token...`}
                   </AlertActionLink>
                 )}
@@ -1108,7 +1106,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           </Alert>
         );
       },
-      [canPushToGitRepository, pushNewBranch, workspacePromise, history, routes]
+      [canPushToGitRepository, pushNewBranch, workspacePromise, navigate, routes]
     )
   );
 
@@ -1255,7 +1253,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                 data-testid="unsaved-alert-close-without-save-button"
                 onClick={() =>
                   navigationBlockersBypass.execute(() => {
-                    history.push(lastBlockedLocation);
+                    navigate(lastBlockedLocation);
                   })
                 }
               >
@@ -1281,7 +1279,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         updateGitHubGist,
         pushToGitRepository,
         navigationBlockersBypass,
-        history,
+        navigate,
       ]
     )
   );
@@ -1357,7 +1355,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                   <Button
                     className={"kie-tools--masthead-hoverable"}
                     variant={ButtonVariant.plain}
-                    onClick={() => history.push({ pathname: routes.workspaceWithFiles.path(props.workspaceFile) })}
+                    onClick={() => navigate({ pathname: routes.workspaceWithFiles.path(props.workspaceFile) })}
                   >
                     <AngleLeftIcon />
                   </Button>
@@ -1578,7 +1576,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                               return;
                             }
 
-                            history.push({
+                            navigate({
                               pathname: routes.workspaceWithFilePath.path({
                                 workspaceId: file.workspaceId,
                                 fileRelativePath: file.relativePathWithoutExtension,
@@ -1651,7 +1649,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                   {!canPushToGitRepository && (
                                     <>
                                       <Divider />
-                                      <DropdownItem onClick={() => history.push(routes.settings.github.path({}))}>
+                                      <DropdownItem onClick={() => navigate(routes.settings.github.path({}))}>
                                         <Button isInline={true} variant={ButtonVariant.link}>
                                           Configure GitHub token...
                                         </Button>
@@ -1709,7 +1707,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                                   {!canPushToGitRepository && (
                                     <>
                                       <Divider />
-                                      <DropdownItem onClick={() => history.push(routes.settings.github.path({}))}>
+                                      <DropdownItem onClick={() => navigate(routes.settings.github.path({}))}>
                                         <Button isInline={true} variant={ButtonVariant.link}>
                                           Configure GitHub token...
                                         </Button>
@@ -1818,7 +1816,7 @@ export function PushToGitHubAlertActionLinks(props: {
   kind?: WorkspaceKind;
   remoteRef?: string;
 }) {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   if (props.kind === WorkspaceKind.GIT && !props.remoteRef) {
     throw new Error("Should specify remoteRef for GIT workspaces");
@@ -1827,7 +1825,7 @@ export function PushToGitHubAlertActionLinks(props: {
   return (
     <>
       {!props.canPush && (
-        <AlertActionLink onClick={() => history.push(routes.settings.github.path({}))}>
+        <AlertActionLink onClick={() => navigate(routes.settings.github.path({}))}>
           {`Configure GitHub token...`}
         </AlertActionLink>
       )}

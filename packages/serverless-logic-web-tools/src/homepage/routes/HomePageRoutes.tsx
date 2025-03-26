@@ -18,10 +18,9 @@
  */
 
 import React, { useMemo } from "react";
-import { Switch } from "react-router";
+import { Routes, Route } from "react-router-dom";
 import { Overview } from "../overView/Overview";
 import { RecentModels } from "../recentModels/RecentModels";
-import { Route } from "react-router-dom";
 import { useRoutes } from "../../navigation/Hooks";
 import { supportedFileExtensionArray } from "../../extension";
 import { NewWorkspaceFromSample } from "../../workspace/components/NewWorkspaceFromSample";
@@ -41,63 +40,44 @@ export function HomePageRoutes(props: { isNavOpen: boolean }) {
   const routes = useRoutes();
   const supportedExtensions = useMemo(() => supportedFileExtensionArray.join("|"), []);
   return (
-    <Switch>
-      <Route path={routes.newModel.path({ extension: `:extension(${supportedExtensions})` })}>
-        {({ match }) => <NewWorkspaceWithEmptyFilePage extension={match!.params.extension!} />}
-      </Route>
-      <Route path={routes.importModel.path({})}>
-        <NewWorkspaceFromUrlPage />
-      </Route>
-      <Route path={routes.sampleShowcase.path({})}>
-        <NewWorkspaceFromSample />
-      </Route>
+    <Routes>
+      <Route
+        path={routes.newModel.path({ extension: `:extension(${supportedExtensions})` })}
+        element={<NewWorkspaceWithEmptyFilePage />}
+      />
+      <Route path={routes.importModel.path({})} element={<NewWorkspaceFromUrlPage />} />
+      <Route path={routes.sampleShowcase.path({})} element={<NewWorkspaceFromSample />} />
       <Route
         path={routes.workspaceWithFilePath.path({
           workspaceId: ":workspaceId",
           fileRelativePath: `:fileRelativePath*`,
           extension: `:extension?`,
         })}
-      >
-        {({ match }) => (
-          <EditorPage
-            workspaceId={match!.params.workspaceId!}
-            fileRelativePath={`${match!.params.fileRelativePath ?? ""}${
-              match!.params.extension ? `.${match!.params.extension}` : ""
-            }`}
-          />
-        )}
-      </Route>
-      <Route path={routes.home.path({})} exact>
-        <Overview isNavOpen={props.isNavOpen} />
-      </Route>
-      <Route path={routes.recentModels.path({})}>
-        <RecentModels />
-      </Route>
-      <Route path={routes.workspaceWithFiles.path({ workspaceId: ":workspaceId" })}>
-        {({ match }) => <WorkspaceFiles workspaceId={match!.params.workspaceId!} />}
-      </Route>
-      <Route path={routes.sampleCatalog.path({})}>
-        <SamplesCatalog />
-      </Route>
-      <Route path={routes.runtimeToolsTriggerCloudEventForWorkflowInstance.path({ workflowId: ":workflowId" })}>
-        {({ match }) => <RuntimeToolsTriggerCloudEvent />}
-      </Route>
-      <Route path={routes.runtimeToolsTriggerCloudEventForWorkflowDefinition.path({ workflowName: ":workflowName" })}>
-        {({ match }) => <RuntimeToolsTriggerCloudEvent />}
-      </Route>
-      <Route path={routes.runtimeToolsWorkflowDetails.path({ workflowId: ":workflowId" })}>
-        {({ match }) => <RuntimeToolsWorkflowDetails workflowId={match!.params.workflowId!} />}
-      </Route>
-      <Route path={routes.runtimeToolsWorkflowForm.path({ workflowName: ":workflowName" })}>
-        <RuntimeToolsWorkflowForm />
-      </Route>
-      <Route path={routes.runtimeToolsWorkflowDefinitions.path({})}>
-        <RuntimeToolsWorkflowDefinitions />
-      </Route>
-      <Route path={routes.runtimeToolsWorkflowInstances.path({})}>
-        <RuntimeToolsWorkflowInstances />
-      </Route>
-      <Route component={NoMatchPage} />
-    </Switch>
+        element={<EditorPage />}
+      />
+      <Route path={routes.home.path({})} element={<Overview isNavOpen={props.isNavOpen} />} />
+      <Route path={routes.recentModels.path({})} element={<RecentModels />} />
+      <Route path={routes.workspaceWithFiles.path({ workspaceId: ":workspaceId" })} element={<WorkspaceFiles />} />
+      <Route path={routes.sampleCatalog.path({})} element={<SamplesCatalog />} />
+      <Route
+        path={routes.runtimeToolsTriggerCloudEventForWorkflowInstance.path({ workflowId: ":workflowId" })}
+        element={<RuntimeToolsTriggerCloudEvent />}
+      />
+      <Route
+        path={routes.runtimeToolsTriggerCloudEventForWorkflowDefinition.path({ workflowName: ":workflowName" })}
+        element={<RuntimeToolsTriggerCloudEvent />}
+      />
+      <Route
+        path={routes.runtimeToolsWorkflowDetails.path({ workflowId: ":workflowId" })}
+        element={<RuntimeToolsWorkflowDetails />}
+      />
+      <Route
+        path={routes.runtimeToolsWorkflowForm.path({ workflowName: ":workflowName" })}
+        element={<RuntimeToolsWorkflowForm />}
+      />
+      <Route path={routes.runtimeToolsWorkflowDefinitions.path({})} element={<RuntimeToolsWorkflowDefinitions />} />
+      <Route path={routes.runtimeToolsWorkflowInstances.path({})} element={<RuntimeToolsWorkflowInstances />} />
+      <Route element={<NoMatchPage />} />
+    </Routes>
   );
 }

@@ -18,8 +18,7 @@
  */
 
 import React from "react";
-import { Redirect, Switch } from "react-router";
-import { Route } from "react-router-dom";
+import { Navigate, Routes, Route } from "react-router-dom";
 import { useRoutes } from "../../navigation/Hooks";
 import { GitHubSettings } from "../github/GitHubSettings";
 import { OpenShiftSettings } from "../openshift/OpenShiftSettings";
@@ -36,28 +35,20 @@ export function SettingsPageRoutes(props: {} & SettingsPageProps) {
   };
 
   return (
-    <Switch>
-      <Route path={routes.settings.github.path({})}>
-        <GitHubSettings {...settingsPageProps} />
-      </Route>
-      <Route path={routes.settings.openshift.path({})}>
-        <OpenShiftSettings {...settingsPageProps} />
-      </Route>
-      <Route path={routes.settings.service_account.path({})}>
-        <ServiceAccountSettings {...settingsPageProps} />
-      </Route>
-      <Route path={routes.settings.service_registry.path({})}>
-        <ServiceRegistrySettings {...settingsPageProps} />
-      </Route>
-      <Route path={routes.settings.storage.path({})}>
-        <StorageSettings />
-      </Route>
-      <Route path={routes.settings.runtime_tools.path({})}>
-        <RuntimeToolsSettings {...settingsPageProps} />
-      </Route>
-      <Route>
-        <Redirect to={routes.settings.github.path({})} />
-      </Route>
-    </Switch>
+    <Routes>
+      <Route path={routes.settings.github.path({})} element={<GitHubSettings {...settingsPageProps} />} />
+      <Route path={routes.settings.openshift.path({})} element={<OpenShiftSettings {...settingsPageProps} />} />
+      <Route
+        path={routes.settings.service_account.path({})}
+        element={<ServiceAccountSettings {...settingsPageProps} />}
+      />
+      <Route
+        path={routes.settings.service_registry.path({})}
+        element={<ServiceRegistrySettings {...settingsPageProps} />}
+      />
+      <Route path={routes.settings.storage.path({})} element={<StorageSettings />} />
+      <Route path={routes.settings.runtime_tools.path({})} element={<RuntimeToolsSettings {...settingsPageProps} />} />
+      <Route element={<Navigate replace to={routes.settings.github.path({})} />} />
+    </Routes>
   );
 }
