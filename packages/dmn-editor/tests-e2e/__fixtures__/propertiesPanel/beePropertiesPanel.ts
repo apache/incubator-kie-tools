@@ -23,12 +23,16 @@ import { DecisionTableInputRulePropertiesPanel } from "./bee/decisionTableInputR
 import { DecisionTableOutputHeaderPropertiesPanel } from "./bee/decisionTableOutputHeaderPropertiesPanel";
 import { DecisionTableOutputRulePropertiesPanel } from "./bee/decisionTableOutputRulePropertiesPanel";
 import { Diagram } from "../diagram";
+import { DecisionPropertiesPanel } from "./bee/decisionPropertiesPanel";
+import { BkmPropertiesPanel } from "./bee/bkmPropertiesPanel";
 
 export class BeePropertiesPanel {
   public decisionTableInputHeader: DecisionTableInputHeaderPropertiesPanel;
   public decisionTableInputRule: DecisionTableInputRulePropertiesPanel;
   public decisionTableOutputHeader: DecisionTableOutputHeaderPropertiesPanel;
   public decisionTableOutputRule: DecisionTableOutputRulePropertiesPanel;
+  public decisionNode: DecisionPropertiesPanel;
+  public bkmNode: BkmPropertiesPanel;
 
   constructor(
     public diagram: Diagram,
@@ -39,6 +43,8 @@ export class BeePropertiesPanel {
     this.decisionTableInputRule = new DecisionTableInputRulePropertiesPanel(diagram, page);
     this.decisionTableOutputHeader = new DecisionTableOutputHeaderPropertiesPanel(diagram, page);
     this.decisionTableOutputRule = new DecisionTableOutputRulePropertiesPanel(diagram, page);
+    this.decisionNode = new DecisionPropertiesPanel(diagram, page);
+    this.bkmNode = new BkmPropertiesPanel(diagram, page);
   }
 
   public async open() {
