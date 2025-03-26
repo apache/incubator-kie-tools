@@ -29,7 +29,7 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Form, FormGroup, ActionGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { ExpandableSection } from "@patternfly/react-core/dist/js/components/ExpandableSection";
-import { HelperText, HelperTextItem } from "@patternfly/react-core";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 type Props = {
   onAddAuthSession: (authSession: AuthSession) => void;

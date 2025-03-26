@@ -24,6 +24,8 @@ import (
 	"flag"
 	"os"
 
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/manager"
+
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/version"
 
 	prometheus "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
@@ -92,6 +94,8 @@ func main() {
 	flag.StringVar(&controllerCfgPath, "controller-cfg-path", "", "The controller config file path.")
 	flag.Parse()
 
+	manager.SetOperatorStartTime()
+
 	ctrl.SetLogger(klogr.New().WithName(controller.ComponentName))
 
 	// if the enable-http2 flag is false (the default), http/2 should be disabled
@@ -151,6 +155,9 @@ func main() {
 		klog.V(log.E).ErrorS(err, "unable to read controllers configuration file")
 		os.Exit(1)
 	}
+
+	// Initialize the worker used by the SonataFlow reconciliations to execute auxiliary async operations.
+	manager.InitializeSFCWorker(manager.SonataFlowControllerWorkerSize)
 
 	if err = (&controller.SonataFlowReconciler{
 		Client:   mgr.GetClient(),

@@ -41,7 +41,7 @@ import {
   useRuntimeDispatch,
   useRuntimeInfo,
 } from "../../runtime/RuntimeContext";
-import { HelperText, HelperTextItem } from "@patternfly/react-core";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 export const ImpersonationPageSection: React.FC<{}> = () => {
   const { impersonationUsername, impersonationGroups } = useRuntime();
