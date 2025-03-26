@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
 import { Spinner } from "@patternfly/react-core/dist/esm/components/Spinner";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
@@ -35,6 +35,7 @@ import {
 } from "@kie-tools/import-java-classes-component";
 import { addTopLevelItemDefinition as _addTopLevelItemDefinition } from "../mutations/addTopLevelItemDefinition";
 import { JavaClassConflictOptions, useImportJavaClasses } from "./useImportJavaClasses";
+import { Radio } from "@patternfly/react-core/dist/esm/components/Radio";
 
 const ImportJavaClassesWrapper = () => {
   const {
@@ -115,66 +116,59 @@ const ImportJavaClassNameConflictsModal = ({
   handleConfirm: (options: JavaClassConflictOptions) => void;
   conflictsNames: JavaClass[];
 }) => {
-  const handleActionButtonClick = useCallback((e: any) => handleConfirm?.(e?.target?.name), [handleConfirm]);
+  const [action, setAction] = useState<JavaClassConflictOptions>(JavaClassConflictOptions.REPLACE);
+  const handleActionButtonClick = useCallback(() => handleConfirm?.(action), [handleConfirm, action]);
+  const handleRadioBtnClick = useCallback((_, e) => setAction?.(e?.target?.name), []);
   const classNames = conflictsNames?.map((javaClass) => javaClass?.name);
   return (
     <Modal
       title="Duplicate DMN Data Type Detected"
       titleIconVariant="warning"
-      aria-describedby="modal-title-icon-description"
+      aria-describedby="modal-import-java-classes-conflict-description"
       showClose={false}
       isOpen={isOpen}
       variant={ModalVariant.small}
       position="top"
       actions={[
-        <Button
-          name={JavaClassConflictOptions.OVERWRITE}
-          key={JavaClassConflictOptions.OVERWRITE}
-          variant="primary"
-          onClick={handleActionButtonClick}
-        >
-          {JavaClassConflictOptions.OVERWRITE}
-        </Button>,
-        <Button
-          name={JavaClassConflictOptions.CREATE_AS_NEW}
-          key={JavaClassConflictOptions.CREATE_AS_NEW}
-          variant="link"
-          onClick={handleActionButtonClick}
-        >
-          {JavaClassConflictOptions.CREATE_AS_NEW}
+        <Button key="import-java-classes-conflict-btn" variant="primary" onClick={handleActionButtonClick}>
+          Import
         </Button>,
       ]}
     >
       <TextContent>
         {classNames?.length === 1 ? (
-          <>
-            An existing DMN type named{" "}
-            <Text component={TextVariants.pre} style={{ display: "inline" }}>
-              <b>{classNames?.join()}</b>
-            </Text>{" "}
-            has been detected. This type is currently in use within the system. How would you like to proceed?
-          </>
+          <Text component={TextVariants.p}>
+            An existing DMN type named <b>{classNames?.join()}</b> has been detected. This type is currently in use
+            within the system. How would you like to proceed?
+          </Text>
         ) : (
-          <>
+          <Text component={TextVariants.p}>
             Multiple DMN types have been detected in the list. The following DMN types are currently in use within the
-            system:{" "}
-            <Text component={TextVariants.pre} style={{ display: "inline" }}>
-              <b>{classNames?.join()}</b>
-            </Text>
-            . How would you like to proceed?
-          </>
+            system <b>{classNames?.join()}</b>. How would you like to proceed?
+          </Text>
         )}
-        <Text component={TextVariants.blockquote} style={{ background: "none" }}>
-          <HelperText>
-            <HelperTextItem variant="indeterminate" hasIcon>
-              <b>{JavaClassConflictOptions.OVERWRITE}:</b> This option will replace the existing DMN type with the new
-              one.
-            </HelperTextItem>
-            <HelperTextItem variant="indeterminate" hasIcon>
-              <b>{JavaClassConflictOptions.CREATE_AS_NEW}:</b> This option will preserve the existing DMN type and
-              create a new one with a unique name.
-            </HelperTextItem>
-          </HelperText>
+        <Text
+          component={TextVariants.blockquote}
+          style={{ background: "none", display: "flex", flexDirection: "column", gap: "1rem" }}
+        >
+          <Radio
+            isChecked={action === JavaClassConflictOptions.REPLACE}
+            id={`radio-${JavaClassConflictOptions.REPLACE}`}
+            label={JavaClassConflictOptions.REPLACE}
+            name={JavaClassConflictOptions.REPLACE}
+            onChange={handleRadioBtnClick}
+            description="This option will replace the existing DMN type with the new one."
+            isLabelWrapped={true}
+          />
+          <Radio
+            isChecked={action === JavaClassConflictOptions.KEEP_BOTH}
+            id={`radio-${JavaClassConflictOptions.KEEP_BOTH}`}
+            label={JavaClassConflictOptions.KEEP_BOTH}
+            name={JavaClassConflictOptions.KEEP_BOTH}
+            onChange={handleRadioBtnClick}
+            description="This option will preserve the existing DMN type and create a new one with a unique name."
+            isLabelWrapped={true}
+          />
         </Text>
       </TextContent>
     </Modal>

@@ -27,8 +27,8 @@ import { EditItemDefinition } from "./DataTypes";
 const NAME_SEPARATOR: string = "-";
 
 export enum JavaClassConflictOptions {
-  OVERWRITE = "Overwrite",
-  CREATE_AS_NEW = "Create As New",
+  REPLACE = "Replace",
+  KEEP_BOTH = "Keep Both",
 }
 
 const useImportJavaClasses = () => {
@@ -249,10 +249,10 @@ const useImportJavaClasses = () => {
   const handleConflictAction = useCallback(
     (action: JavaClassConflictOptions) => {
       if (conflictsClasses?.length === 0) return;
-      if (action === JavaClassConflictOptions.CREATE_AS_NEW) {
+      if (action === JavaClassConflictOptions.KEEP_BOTH) {
         const updatedJavaClasses = generateUniqueDMNTypeNames(conflictsClasses);
         importJavaClassesInDataTypeEditor(updatedJavaClasses);
-      } else if (action === JavaClassConflictOptions.OVERWRITE) {
+      } else if (action === JavaClassConflictOptions.REPLACE) {
         overwriteExistingDMNTypes(conflictsClasses);
       }
       setIsConflictsOccured(false);
