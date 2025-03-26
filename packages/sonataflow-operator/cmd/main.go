@@ -152,12 +152,12 @@ func main() {
 	// Set global assessors
 	utils.SetIsOpenShift(mgr.GetConfig())
 	utils.SetClient(mgr.GetClient())
-	if cli, err := dynamic.NewForConfig(mgr.GetConfig()); err != nil {
+	cli, err := dynamic.NewForConfig(mgr.GetConfig())
+	if err != nil {
 		// shouldn't fail, since config is provided by the cluster, if fails, SetIsOpenShift should probably fail before.
 		panic(fmt.Sprintf("Impossible to get new dynamic client for config to support controller operations: %s", err))
-	} else {
-		utils.SetDynamicClient(cli)
 	}
+	utils.SetDynamicClient(cli)
 
 	// Fail fast, we can change this behavior in the future to read from defaults instead.
 	if _, err = cfg.InitializeControllersCfgAt(controllerCfgPath); err != nil {
