@@ -26,15 +26,16 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
-import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
-import ExclamationCircleIcon from "@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon";
 import { validateWorkflowData } from "./validateWorkflowData";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import {
   RequestDataEditor,
   RequestDataEditorApi,
 } from "@kie-tools/runtime-tools-components/dist/components/RequestDataEditor";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
+import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 
 export interface WorkflowFormProps {
   workflowDefinition: WorkflowDefinition;
@@ -111,9 +112,6 @@ const WorkflowForm: React.FC<WorkflowFormProps & OUIAProps> = ({ workflowDefinit
               label="Start Workflow Data"
               isRequired
               fieldId="workflowData"
-              helperTextInvalid={!isValid && "The Workflow Data should have a JSON format."}
-              helperTextInvalidIcon={<ExclamationCircleIcon />}
-              validated={!isValid ? ValidatedOptions.error : ValidatedOptions.default}
               labelIcon={
                 <Popover
                   id="workflow-form-data-help"
@@ -123,14 +121,29 @@ const WorkflowForm: React.FC<WorkflowFormProps & OUIAProps> = ({ workflowDefinit
                     type="button"
                     aria-label="More info for data field"
                     onClick={(e) => e.preventDefault()}
-                    className="pf-c-form__group-label-help"
+                    className="pf-v5-c-form__group-label-help"
                   >
-                    <HelpIcon noVerticalAlign />
+                    <HelpIcon />
                   </button>
                 </Popover>
               }
             >
               {requestDataEditor}
+              {!isValid ? (
+                <FormHelperText>
+                  <HelperText>
+                    <HelperTextItem variant="error" icon={<ExclamationCircleIcon />}>
+                      The Workflow Data should have a JSON format.
+                    </HelperTextItem>
+                  </HelperText>
+                </FormHelperText>
+              ) : (
+                <FormHelperText>
+                  <HelperText>
+                    <HelperTextItem variant="default"></HelperTextItem>
+                  </HelperText>
+                </FormHelperText>
+              )}
             </FormGroup>
             <ActionGroup>
               <Button variant="primary" onClick={onSubmit} data-testid="start-button">

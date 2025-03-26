@@ -35,7 +35,7 @@
     "@kie-tools-core/workspace": "workspace:*",
     "@kie-tools/dmn-language-service": "workspace:*",
     "@kie-tools/pmml-editor-marshaller": "workspace:*",
-    "@patternfly/react-core": "^4.276.6"
+    "@patternfly/react-core": "^5.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

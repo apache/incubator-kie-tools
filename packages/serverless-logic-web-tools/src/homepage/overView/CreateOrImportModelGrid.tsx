@@ -19,7 +19,7 @@
 import React from "react";
 import { FileTypes } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
 import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
-import { Card, CardBody, CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody, CardHeader, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
@@ -41,11 +41,9 @@ export function CreateOrImportModelGrid(props: { isNavOpen: boolean }) {
       <GridItem xl={12} xl2={force12Cols ? 12 : 6}>
         <Card className="Dev-ui__card-size" style={{ height: "100%" }}>
           <CardHeader>
-            <CardHeaderMain>
-              <CardTitle>
-                <Title headingLevel="h2">Create</Title>
-              </CardTitle>
-            </CardHeaderMain>
+            <CardTitle>
+              <Title headingLevel="h2">Create</Title>
+            </CardTitle>
           </CardHeader>
           <CardBody>
             <Grid>
@@ -72,11 +70,9 @@ export function CreateOrImportModelGrid(props: { isNavOpen: boolean }) {
       <GridItem xl={12} xl2={force12Cols ? 12 : 6}>
         <Card className="Dev-ui__card-size" style={{ height: "100%" }}>
           <CardHeader>
-            <CardHeaderMain>
-              <CardTitle>
-                <Title headingLevel="h2">Import</Title>
-              </CardTitle>
-            </CardHeaderMain>
+            <CardTitle>
+              <Title headingLevel="h2">Import</Title>
+            </CardTitle>
           </CardHeader>
           <CardBody>
             <Gallery

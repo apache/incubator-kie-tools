@@ -75,7 +75,7 @@ export function BkmProperties({
           name={currentName}
           isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
-          className={"pf-c-form-control"}
+          className={"pf-v5-c-form-control"}
           onRenamed={setNewIdentifierNameCandidate}
           allUniqueNames={useCallback((s) => s.computed(s).getAllFeelVariableUniqueNames(), [])}
         />
@@ -104,7 +104,7 @@ export function BkmProperties({
           type={"text"}
           isDisabled={isReadOnly}
           value={bkm.description?.__$$text}
-          onChange={(newDescription) => {
+          onChange={(_event, newDescription) => {
             setState((state) => {
               (
                 state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tBusinessKnowledgeModel>

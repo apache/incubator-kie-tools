@@ -20,7 +20,12 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Title, TitleSizes } from "@patternfly/react-core/dist/js/components/Title";
@@ -182,10 +187,11 @@ export const YardUIEditor = ({ yardData, isReadOnly }: Props) => {
   }) => {
     return (
       <EmptyState>
-        <EmptyStateIcon icon={CubesIcon} />
-        <Title headingLevel={"h6"} size={"md"}>
-          {emptyStateTitleText}
-        </Title>
+        <EmptyStateHeader
+          titleText={<>{emptyStateTitleText}</>}
+          icon={<EmptyStateIcon icon={CubesIcon} />}
+          headingLevel={"h6"}
+        />
         <EmptyStateBody>{emptyStateBodyText}</EmptyStateBody>
       </EmptyState>
     );
@@ -272,9 +278,9 @@ export const YardUIEditor = ({ yardData, isReadOnly }: Props) => {
             </Title>
             <TextInput
               id={"name-text-input"}
-              isReadOnly={isReadOnly}
               value={yardData?.name ? yardData.name : ""}
               ouiaId={"yard-name-input"}
+              readOnlyVariant="default"
             ></TextInput>
             <div className={"separator"}></div>
             <Title headingLevel="h6" size={TitleSizes.md}>
@@ -282,9 +288,9 @@ export const YardUIEditor = ({ yardData, isReadOnly }: Props) => {
             </Title>
             <TextInput
               id={"kind-text-input"}
-              isReadOnly={isReadOnly}
               value={yardData?.kind ? yardData.kind : ""}
               ouiaId={"yard-type-input"}
+              readOnlyVariant="default"
             ></TextInput>
             <div className={"separator"}></div>
             <Title headingLevel="h6" size={TitleSizes.md}>
@@ -292,9 +298,9 @@ export const YardUIEditor = ({ yardData, isReadOnly }: Props) => {
             </Title>
             <TextInput
               id={"expression-lang-text-input"}
-              isReadOnly={isReadOnly}
               value={yardData?.expressionLang ? yardData.expressionLang : ""}
               ouiaId={"yard-expr-lang-version-input"}
+              readOnlyVariant="default"
             ></TextInput>
             <div className={"separator"}></div>
             <Title headingLevel="h6" size={TitleSizes.md}>
@@ -302,9 +308,9 @@ export const YardUIEditor = ({ yardData, isReadOnly }: Props) => {
             </Title>
             <TextInput
               id={"specVersion-text-input"}
-              isReadOnly={isReadOnly}
               value={yardData?.specVersion ? yardData.specVersion : ""}
               ouiaId={"yard-spec-version-input"}
+              readOnlyVariant="default"
             ></TextInput>
           </div>
         </Tab>
@@ -323,9 +329,9 @@ export const YardUIEditor = ({ yardData, isReadOnly }: Props) => {
                     </Title>
                     <TextInput
                       id={"expression-lang-text-input"}
-                      isReadOnly={isReadOnly}
                       value={input?.name ? input.name : ""}
                       ouiaId={"decison-input-name"}
+                      readOnlyVariant="default"
                     ></TextInput>
                     <div className={"separator"}></div>
                     <Title headingLevel="h6" size={TitleSizes.md}>
@@ -333,9 +339,9 @@ export const YardUIEditor = ({ yardData, isReadOnly }: Props) => {
                     </Title>
                     <TextInput
                       id={"expression-lang-text-input"}
-                      isReadOnly={isReadOnly}
                       value={input?.type ? input.type : ""}
                       ouiaId={"decison-input-type"}
+                      readOnlyVariant="default"
                     ></TextInput>
                     <Divider />
                   </div>

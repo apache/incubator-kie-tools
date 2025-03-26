@@ -20,14 +20,14 @@ import React from "react";
 import { Toolbar, ToolbarGroup, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import accessibleStyles from "@patternfly/react-styles/css/utilities/Accessibility/accessibility";
 import { css } from "@patternfly/react-styles";
-import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
+import { SelectPosition } from "@patternfly/react-core/deprecated";
 import { AuthSessionSelect } from "../authSessions/components/AuthSessionSelect";
 
 export const ManagementConsoleToolbar: React.FunctionComponent = () => {
   return (
     <React.Fragment>
       <Toolbar>
-        <ToolbarGroup alignment={{ default: "alignRight" }}>
+        <ToolbarGroup align={{ default: "alignRight" }}>
           <ToolbarItem className={css(accessibleStyles.screenReader, accessibleStyles.visibleOnMd)}>
             <AuthSessionSelect isPlain={true} position={SelectPosition.right} />
           </ToolbarItem>

@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useState, ReactElement } from "react";
-import { DropdownGroup, DropdownItem, DropdownPosition } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownGroup, DropdownItem, DropdownPosition } from "@patternfly/react-core/deprecated";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";

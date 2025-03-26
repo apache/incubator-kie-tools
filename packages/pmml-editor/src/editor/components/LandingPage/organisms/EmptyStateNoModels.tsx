@@ -18,12 +18,13 @@
  */
 import * as React from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
+  EmptyStateHeader,
+  EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { BoxesIcon } from "@patternfly/react-icons/dist/js/icons/boxes-icon";
 
@@ -32,16 +33,19 @@ interface EmptyStateNoModelsProps {
 }
 
 export const EmptyStateNoModels = (props: EmptyStateNoModelsProps) => (
-  <EmptyState data-testid="empty-state-no-models" variant={EmptyStateVariant.small}>
-    <EmptyStateIcon icon={BoxesIcon} />
-    <Title headingLevel="h4" size="lg">
-      {"You don't have any PMML Models"}
-    </Title>
+  <EmptyState data-testid="empty-state-no-models" variant={EmptyStateVariant.sm}>
+    <EmptyStateHeader
+      titleText={<>{"You don't have any PMML Models"}</>}
+      icon={<EmptyStateIcon icon={BoxesIcon} />}
+      headingLevel="h4"
+    />
     <EmptyStateBody>
       PMML uses XML to represent predictive models. One or more predictive models can be contained in a PMML document.
     </EmptyStateBody>
-    <Button data-testid="empty-state-no-models__create-model" variant="primary" onClick={props.createModel}>
-      Create Model
-    </Button>
+    <EmptyStateFooter>
+      <Button data-testid="empty-state-no-models__create-model" variant="primary" onClick={props.createModel}>
+        Create Model
+      </Button>
+    </EmptyStateFooter>
   </EmptyState>
 );

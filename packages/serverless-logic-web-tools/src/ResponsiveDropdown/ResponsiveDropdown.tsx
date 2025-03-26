@@ -18,12 +18,7 @@
  */
 
 import React, { useMemo } from "react";
-import {
-  Dropdown,
-  DropdownProps,
-  DropdownItem,
-  DropdownSeparator,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownProps, DropdownItem, DropdownSeparator } from "@patternfly/react-core/deprecated";
 
 import { useWindowSizeRelationToBreakpoint, Breakpoint, RelationToBreakpoint } from "./hooks";
 import { ResponsiveDropdownContext } from "./ResponsiveDropdownContext";

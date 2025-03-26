@@ -95,7 +95,7 @@ export const InlineEditableTextInput: React.FunctionComponent<InlineEditableText
 
   return !isEditing || isReadOnly ? (
     <p
-      className={"inline-editable-preview pf-u-text-truncate"}
+      className={"inline-editable-preview pf-v5-u-text-truncate"}
       style={{ ...textStyle, width: "100%" }}
       onClick={isReadOnly ? undefined : onLabelClick}
     >

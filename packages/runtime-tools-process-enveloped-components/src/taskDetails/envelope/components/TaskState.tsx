@@ -51,11 +51,11 @@ export const TaskState: React.FC<Props & OUIAProps> = ({ task, variant, ouiaId, 
 
 function resolveTaskStateIcon(task: UserTaskInstance): JSX.Element {
   if (task.state === "Aborted") {
-    return <BanIcon className="pf-u-mr-sm" />;
+    return <BanIcon className="pf-v5-u-mr-sm" />;
   } else if (task.completed) {
-    return <CheckCircleIcon className="pf-u-mr-sm" color="var(--pf-global--success-color--100)" />;
+    return <CheckCircleIcon className="pf-v5-u-mr-sm" color="var(--pf-v5-global--success-color--100)" />;
   } else {
-    return <OnRunningIcon className="pf-u-mr-sm" />;
+    return <OnRunningIcon className="pf-v5-u-mr-sm" />;
   }
 }
 

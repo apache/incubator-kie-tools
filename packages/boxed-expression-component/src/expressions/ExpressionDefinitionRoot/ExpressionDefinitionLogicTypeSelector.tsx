@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/esm/components/Dropdown";
+import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/esm/deprecated/components/Dropdown";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Menu } from "@patternfly/react-core/dist/js/components/Menu/Menu";
 import { MenuGroup } from "@patternfly/react-core/dist/js/components/Menu/MenuGroup";
@@ -59,6 +59,7 @@ import { ConditionalExpression } from "../ConditionalExpression/ConditionalExpre
 import { IteratorExpressionComponent } from "../IteratorExpression/IteratorExpressionComponent";
 import { FilterExpressionComponent } from "../FilterExpression/FilterExpressionComponent";
 import FilterIcon from "@patternfly/react-icons/dist/esm/icons/filter-icon";
+import { Icon } from "@patternfly/react-core/dist/js";
 
 export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Expression properties */
@@ -534,9 +535,13 @@ export function ExpressionDefinitionLogicTypeSelector({
               toggle={
                 <DropdownToggle
                   data-testid={"kie-tools--bee--expression-header-dropdown"}
-                  icon={<>{logicTypeIcon(expression.__$$element)}</>}
+                  icon={
+                    <Icon style={{ marginRight: "5px" }}>
+                      <>{logicTypeIcon(expression.__$$element)}</>
+                    </Icon>
+                  }
                   style={{ padding: 0 }}
-                  onToggle={setDropdownOpen}
+                  onToggle={(_event, val) => setDropdownOpen(val)}
                   tabIndex={-1}
                 >
                   {getLogicTypeLabel(expression?.__$$element)}

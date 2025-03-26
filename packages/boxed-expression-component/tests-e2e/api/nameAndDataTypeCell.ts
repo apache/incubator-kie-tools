@@ -31,6 +31,12 @@ export class NameAndDataTypeCell {
     await this.locator.nth(0).click();
   }
 
+  public async close() {
+    const popover = await this.getPopoverMenu();
+    await this.locator.page().keyboard.press("Enter");
+    await popover.waitFor({ state: "detached" });
+  }
+
   public async getPopoverMenu() {
     return this.locator.page().getByTestId("kie-tools--bee--expression-popover-menu");
   }
@@ -41,7 +47,7 @@ export class NameAndDataTypeCell {
     } else {
       await this.locator.getByRole("textbox").fill(params.name);
       if (params.close) {
-        await this.locator.getByRole("textbox").press("Enter");
+        await this.close();
       }
     }
   }
@@ -51,7 +57,7 @@ export class NameAndDataTypeCell {
     await this.locator.getByPlaceholder("Choose...").nth(0).fill(params.dataType);
     await this.locator.getByRole("group").nth(0).getByRole("option").nth(0).click();
     if (params.close) {
-      await this.locator.page().keyboard.press("Enter");
+      await this.close();
     }
   }
 

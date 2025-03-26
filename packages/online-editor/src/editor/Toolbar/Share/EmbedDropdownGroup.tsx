@@ -18,7 +18,7 @@
  */
 
 import React, { useCallback, useMemo } from "react";
-import { DropdownGroup, DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownGroup, DropdownItem } from "@patternfly/react-core/deprecated";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";

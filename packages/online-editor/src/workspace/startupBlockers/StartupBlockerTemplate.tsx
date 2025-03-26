@@ -19,11 +19,11 @@
 
 import * as React from "react";
 import { useRoutes } from "../../navigation/Hooks";
-import { Page, PageHeaderToolsItem } from "@patternfly/react-core/dist/js/components/Page";
+import { Page } from "@patternfly/react-core/dist/js/components/Page";
+import { PageHeaderToolsItem } from "@patternfly/react-core/deprecated";
 import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
 export function StartupBlockerTemplate(props: { children?: React.ReactNode }) {
   const routes = useRoutes();
@@ -33,7 +33,7 @@ export function StartupBlockerTemplate(props: { children?: React.ReactNode }) {
         <Masthead aria-label={"Page header"} display={{ default: "stack" }}>
           <MastheadMain style={{ justifyContent: "space-between" }}>
             <PageHeaderToolsItem className={"kie-sandbox--logo"}>
-              <MastheadBrand style={{ textDecoration: "none" }}>
+              <MastheadBrand component="a" style={{ textDecoration: "none" }}>
                 <Flex alignItems={{ default: "alignItemsCenter" }}>
                   <FlexItem style={{ display: "flex", alignItems: "center" }}>
                     <Brand

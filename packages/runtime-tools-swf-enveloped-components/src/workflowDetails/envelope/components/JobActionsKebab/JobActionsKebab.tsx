@@ -18,7 +18,7 @@
  */
 
 import React, { useState } from "react";
-import { DropdownItem, Dropdown, KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownItem, Dropdown, KebabToggle } from "@patternfly/react-core/deprecated";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Job } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
@@ -165,7 +165,7 @@ const JobActionsKebab: React.FC<IOwnProps & OUIAProps> = ({ job, driver, ouiaId,
 
       <Dropdown
         onSelect={onSelect}
-        toggle={<KebabToggle onToggle={onToggle} id="kebab-toggle" />}
+        toggle={<KebabToggle onToggle={(_event, isOpen: boolean) => onToggle(isOpen)} id="kebab-toggle" />}
         isOpen={isKebabOpen}
         isPlain
         position="right"
