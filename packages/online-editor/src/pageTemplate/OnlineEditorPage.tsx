@@ -21,13 +21,12 @@ import { Page, PageHeaderToolsItem } from "@patternfly/react-core/dist/js/compon
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import * as React from "react";
 import { useRoutes } from "../navigation/Hooks";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
 import { SettingsButton } from "../settings/SettingsButton";
-import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { ExtendedServicesIcon } from "../extendedServices/ExtendedServicesIcon";
 import { DevDeploymentsDropdown } from "../devDeployments/DevDeploymentsDropdown";
-import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { AccountsIcon } from "../accounts/AccountsIcon";
 import { AboutButton } from "../aboutModal/AboutButton";
 import { MastheadContent } from "@patternfly/react-core/dist/js/components/Masthead";
@@ -35,7 +34,7 @@ import { Toolbar, ToolbarContent } from "@patternfly/react-core/dist/js/componen
 import { ToolbarGroup, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 
 export function OnlineEditorPage(props: { children?: React.ReactNode; onKeyDown?: (ke: React.KeyboardEvent) => void }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const routes = useRoutes();
 
   return (
@@ -47,7 +46,7 @@ export function OnlineEditorPage(props: { children?: React.ReactNode; onKeyDown?
             <PageHeaderToolsItem className={"kie-sandbox--logo"}>
               <Flex justifyContent={{ default: "justifyContentFlexEnd" }} flexWrap={{ default: "nowrap" }}>
                 <MastheadBrand
-                  onClick={() => history.push({ pathname: routes.home.path({}) })}
+                  onClick={() => navigate({ pathname: routes.home.path({}) })}
                   style={{ textDecoration: "none" }}
                 >
                   <img alt={"Logo"} src={routes.static.images.appLogoReverse.path({})} style={{ height: "38px" }} />

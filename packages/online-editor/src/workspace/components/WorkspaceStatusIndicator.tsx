@@ -30,7 +30,7 @@ import { OutlinedClockIcon } from "@patternfly/react-icons/dist/js/icons/outline
 import { SecurityIcon } from "@patternfly/react-icons/dist/js/icons/security-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { useNavigationBlocker, useRoutes } from "../../navigation/Hooks";
-import { matchPath } from "react-router";
+import { matchPath } from "react-router-dom";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -192,16 +192,16 @@ export function WorkspaceStatusIndicator(props: {
     `block-navigation-for-${props.gitStatusProps.workspaceDescriptor.workspaceId}`,
     useCallback(
       ({ location }) => {
-        const match = matchPath<{ workspaceId: string }>(location.pathname, {
-          strict: true,
-          exact: true,
-          sensitive: false,
-          path: routes.workspaceWithFilePath.path({
-            workspaceId: ":workspaceId",
-            fileRelativePath: ":fileRelativePath*",
-            extension: ":extension",
-          }),
-        });
+        const match = matchPath(
+          {
+            end: true,
+            path: routes.workspaceWithFilePath.path({
+              workspaceId: ":workspaceId",
+              fileRelativePath: "*",
+            }),
+          },
+          location.pathname
+        );
 
         if (match?.params.workspaceId === props.gitStatusProps.workspaceDescriptor.workspaceId) {
           return false;

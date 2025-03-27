@@ -31,7 +31,7 @@ import {
 } from "./AcceleratorsApi";
 import { WorkspaceFile, useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { dirname, join } from "path";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useRoutes } from "../navigation/Hooks";
 import { useGlobalAlert } from "../alerts";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
@@ -62,7 +62,7 @@ export function useAvailableAccelerators() {
 export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
   const { env } = useEnv();
   const workspaces = useWorkspaces();
-  const history = useHistory();
+  const navigate = useNavigate();
   const routes = useRoutes();
   const { i18n } = useOnlineI18n();
   const { gitConfig } = useAuthSession(workspace.descriptor.gitAuthSessionId);
@@ -315,13 +315,15 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
 
         attemptToDeleteTemporaryBranches();
 
-        history.replace({
-          pathname: routes.workspaceWithFilePath.path({
-            extension: currentFileAfterAccelerator.extension,
-            fileRelativePath: currentFileAfterAccelerator.relativePathWithoutExtension,
-            workspaceId,
-          }),
-        });
+        navigate(
+          {
+            pathname: routes.workspaceWithFilePath.path({
+              fileRelativePath: currentFileAfterAccelerator.relativePath,
+              workspaceId,
+            }),
+          },
+          { replace: true }
+        );
       } catch (e) {
         applyingAcceleratorAlert.close();
         applyAcceleratorFailAlert.show({ acceleratorName: accelerator.name });
@@ -359,13 +361,15 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         );
 
         // Reload to currentFile file
-        history.replace({
-          pathname: routes.workspaceWithFilePath.path({
-            extension: currentFile.extension,
-            fileRelativePath: currentFile.relativePathWithoutExtension,
-            workspaceId,
-          }),
-        });
+        navigate(
+          {
+            pathname: routes.workspaceWithFilePath.path({
+              fileRelativePath: currentFile.relativePath,
+              workspaceId,
+            }),
+          },
+          { replace: true }
+        );
       }
     },
     [
@@ -375,7 +379,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
       attemptToDeleteTemporaryBranches,
       env.KIE_SANDBOX_APP_NAME,
       gitConfig,
-      history,
+      navigate,
       i18n.accelerators,
       routes.workspaceWithFilePath,
       workspace.descriptor.origin.branch,
