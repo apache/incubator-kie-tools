@@ -28196,8 +28196,10 @@ data:
     /deployments/lib/\nCOPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/*.jar
     /deployments/\nCOPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/app/
     /deployments/app/\nCOPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/quarkus/
-    /deployments/quarkus/\nCOPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/classes/workflow.sw.json
-    /deployments/app/workflow.sw.json\n\nEXPOSE 8080\nUSER 185\nENV AB_JOLOKIA_OFF=\"\"\nENV
+    /deployments/quarkus/\nCOPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/classes/*.sw.json
+    /deployments/app/\nCOPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/classes/*.sw.yaml
+    /deployments/app/\nCOPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/classes/*.sw.yml
+    /deployments/app/\n\nEXPOSE 8080\nUSER 185\nENV AB_JOLOKIA_OFF=\"\"\nENV
     JAVA_OPTS=\"-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager\"\nENV
     JAVA_APP_JAR=\"/deployments/quarkus-run.jar\"\n"
 kind: ConfigMap

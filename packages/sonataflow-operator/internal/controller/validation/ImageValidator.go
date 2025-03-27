@@ -19,6 +19,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"regexp"
 
 	"github.com/google/go-cmp/cmp"
 	"github.com/google/go-containerregistry/pkg/name"
@@ -33,7 +34,10 @@ import (
 
 type ImageValidator struct{}
 
-var workflowName = "deployments/app/workflow.sw.json"
+var pattern = `^.*\.sw\.(yaml|yml|json)$`
+
+var readablePattern = `*.sw.(yaml|yml|json)`
+var compiled = regexp.MustCompile(pattern)
 
 func (v ImageValidator) Validate(ctx context.Context, client client.Client, sonataflow *operatorapi.SonataFlow, req ctrl.Request) error {
 	if sonataflow.HasContainerSpecImage() {
@@ -60,7 +64,7 @@ func validateImage(sonataflow *operatorapi.SonataFlow, image string) (bool, erro
 		return false, err
 	}
 
-	reader, err := readLayers(ref, workflowName)
+	reader, err := readLayers(ref)
 	if err != nil {
 		return false, err
 	}
@@ -73,23 +77,23 @@ func validateImage(sonataflow *operatorapi.SonataFlow, image string) (bool, erro
 	return cmp.Equal(workflowDockerImage, sonataflow.Spec.Flow), nil
 }
 
-func readLayers(image v1.Image, workflow string) (*tar.Reader, error) {
+func readLayers(image v1.Image) (*tar.Reader, error) {
 	layers, err := image.Layers()
 	if err != nil {
 		return nil, err
 	}
 
 	for i := len(layers) - 1; i >= 0; i-- {
-		if reader, err := readLayer(layers[i], workflow); err == nil && reader != nil {
+		if reader, err := readLayer(layers[i]); err == nil && reader != nil {
 			return reader, nil
 		} else if err != nil {
 			return nil, err
 		}
 	}
-	return nil, fmt.Errorf("file not found %s in docker image", workflow)
+	return nil, fmt.Errorf("file matching the pattern %s,  not found in container image", readablePattern)
 }
 
-func readLayer(layer v1.Layer, workflow string) (*tar.Reader, error) {
+func readLayer(layer v1.Layer) (*tar.Reader, error) {
 	uncompressedLayer, err := layer.Uncompressed()
 	if err != nil {
 		return nil, fmt.Errorf("failed to get uncompressed layer: %v", err)
@@ -106,7 +110,7 @@ func readLayer(layer v1.Layer, workflow string) (*tar.Reader, error) {
 			return nil, fmt.Errorf("error reading tar: %v", err)
 		}
 
-		if header.Typeflag == '0' && header.Name == workflow {
+		if header.Typeflag == '0' && compiled.MatchString(header.Name) {
 			return tarReader, nil
 		}
 	}
