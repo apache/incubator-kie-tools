@@ -22,6 +22,7 @@ import {
   EditorFactory,
   EditorInitArgs,
   KogitoEditorChannelApi,
+  KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
 import {
@@ -53,9 +54,11 @@ export interface CustomWindow extends Window {
 
 declare let window: CustomWindow;
 
-export class VsCodeNewDmnEditorFactory implements EditorFactory<Editor, VsCodeNewDmnEditorChannelApi> {
+export class VsCodeNewDmnEditorFactory
+  implements EditorFactory<Editor, KogitoEditorEnvelopeApi, VsCodeNewDmnEditorChannelApi>
+{
   public createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<VsCodeNewDmnEditorChannelApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, VsCodeNewDmnEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<Editor> {
     const exposedInteropApi: CustomWindow["envelope"] = {
