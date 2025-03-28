@@ -23,6 +23,8 @@ import (
 	"context"
 	"fmt"
 
+	config "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
+
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/manager"
@@ -37,6 +39,8 @@ import (
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/workflowdef"
 
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/validation"
 
 	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
 	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
@@ -116,6 +120,11 @@ func (r *SonataFlowReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		}
 		klog.V(log.E).ErrorS(err, "Failed to get SonataFlow")
 		return ctrl.Result{}, err
+	}
+
+	if err := r.Validate(ctx, workflow, req); err != nil {
+		klog.V(log.E).ErrorS(err, "Failed to validate SonataFlow")
+		return reconcile.Result{}, nil
 	}
 
 	r.setDefaults(workflow)
@@ -381,4 +390,13 @@ func (r *SonataFlowReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	}
 
 	return builder.Complete(r)
+}
+
+func (r *SonataFlowReconciler) Validate(ctx context.Context, sonataflow *operatorapi.SonataFlow, req ctrl.Request) error {
+	if config.GetCfg().ValidateWorkflowImage && sonataflow.Status.ObservedGeneration < sonataflow.Generation {
+		if err := validation.Validate(ctx, r.Client, sonataflow, req); err != nil {
+			return err
+		}
+	}
+	return nil
 }
