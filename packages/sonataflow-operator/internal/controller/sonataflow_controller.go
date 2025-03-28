@@ -23,6 +23,8 @@ import (
 	"context"
 	"fmt"
 
+	config "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
+
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/manager"
@@ -391,7 +393,7 @@ func (r *SonataFlowReconciler) SetupWithManager(mgr ctrl.Manager) error {
 }
 
 func (r *SonataFlowReconciler) Validate(ctx context.Context, sonataflow *operatorapi.SonataFlow, req ctrl.Request) error {
-	if sonataflow.Status.ObservedGeneration < sonataflow.Generation {
+	if config.GetCfg().ValidateWorkflowImage && sonataflow.Status.ObservedGeneration < sonataflow.Generation {
 		if err := validation.Validate(ctx, r.Client, sonataflow, req); err != nil {
 			return err
 		}
