@@ -4121,6 +4121,9 @@ importers:
 
   packages/dmn-editor:
     dependencies:
+      '@kie-tools-core/editor':
+        specifier: workspace:*
+        version: link:../editor
       '@kie-tools-core/i18n':
         specifier: workspace:*
         version: link:../i18n
@@ -4157,6 +4160,9 @@ importers:
       '@kie-tools/i18n-common-dictionary':
         specifier: workspace:*
         version: link:../i18n-common-dictionary
+      '@kie-tools/import-java-classes-component':
+        specifier: workspace:*
+        version: link:../import-java-classes-component
       '@kie-tools/pmml-editor-marshaller':
         specifier: workspace:*
         version: link:../pmml-editor-marshaller
@@ -4374,6 +4380,9 @@ importers:
       '@kie-tools-core/react-hooks':
         specifier: workspace:*
         version: link:../react-hooks
+      '@kie-tools-core/vscode-java-code-completion':
+        specifier: workspace:*
+        version: link:../vscode-java-code-completion
       '@kie-tools-core/workspace':
         specifier: workspace:*
         version: link:../workspace

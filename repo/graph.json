@@ -154,6 +154,7 @@
       { "id": "@kie-tools/dev-deployment-kogito-quarkus-blank-app" },
       { "id": "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" },
       { "id": "@kie-tools/maven-m2-repo-via-http-image" },
+      { "id": "@kie-tools/import-java-classes-component" },
       { "id": "@kie-tools/dmn-feel-antlr4-parser" },
       { "id": "@kie-tools/dmn-marshaller" },
       { "id": "@kie-tools/dmn-marshaller-backend-compatibility-tester" },
@@ -170,7 +171,6 @@
       { "id": "@kie-tools/form-code-generator" },
       { "id": "@kie-tools/form-code-generator-bootstrap4-theme" },
       { "id": "@kie-tools/form-code-generator-patternfly-theme" },
-      { "id": "@kie-tools/import-java-classes-component" },
       { "id": "@kie-tools/runtime-tools-process-webapp-components" },
       { "id": "@kie-tools/runtime-tools-shared-webapp-components" },
       { "id": "@kie-tools/jobs-service-webapp" },
@@ -445,12 +445,12 @@
       },
       {
         "source": "@kie-tools/dmn-editor-envelope",
-        "target": "@kie-tools-core/editor",
+        "target": "@kie-tools/dmn-editor",
         "weight": 1
       },
       {
-        "source": "@kie-tools/dmn-editor-envelope",
-        "target": "@kie-tools/dmn-editor",
+        "source": "@kie-tools/dmn-editor",
+        "target": "@kie-tools-core/editor",
         "weight": 1
       },
       {
@@ -461,6 +461,11 @@
       {
         "source": "@kie-tools/dmn-editor",
         "target": "@kie-tools/boxed-expression-component",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-editor",
+        "target": "@kie-tools/import-java-classes-component",
         "weight": 1
       },
       {
@@ -1604,6 +1609,31 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/import-java-classes-component",
+        "target": "@kie-tools-core/vscode-java-code-completion",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/import-java-classes-component",
+        "target": "@kie-tools/i18n-common-dictionary",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/import-java-classes-component",
+        "target": "@kie-tools-core/monaco-editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/import-java-classes-component",
+        "target": "@kie-tools-core/patternfly-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/import-java-classes-component",
+        "target": "@kie-tools-core/webpack-base",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/dmn-feel-antlr4-parser",
         "target": "@kie-tools/dmn-marshaller",
         "weight": 1
@@ -1785,31 +1815,6 @@
       },
       {
         "source": "@kie-tools/form-code-generator-patternfly-theme",
-        "target": "@kie-tools-core/webpack-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/import-java-classes-component",
-        "target": "@kie-tools-core/vscode-java-code-completion",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/import-java-classes-component",
-        "target": "@kie-tools/i18n-common-dictionary",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/import-java-classes-component",
-        "target": "@kie-tools-core/monaco-editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/import-java-classes-component",
-        "target": "@kie-tools-core/patternfly-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/import-java-classes-component",
         "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },

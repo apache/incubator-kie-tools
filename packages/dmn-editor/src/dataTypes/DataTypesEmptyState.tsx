@@ -31,9 +31,16 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { ImportJavaClassesWrapper } from "./ImportJavaClasses";
+import { ChannelType } from "@kie-tools-core/editor/dist/api";
 
 export function DataTypesEmptyState({ onAdd, onPaste }: { onAdd: () => void; onPaste: () => void }) {
   const settings = useSettings();
+
+  const isVscode = React.useMemo(
+    () => settings.channelType === ChannelType.VSCODE_DESKTOP || settings.channelType === ChannelType.VSCODE_WEB,
+    [settings.channelType]
+  );
 
   return (
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
@@ -54,9 +61,17 @@ export function DataTypesEmptyState({ onAdd, onPaste }: { onAdd: () => void; onP
               </Button>
             </EmptyStatePrimary>
             <br />
-            <br />
+            {isVscode && (
+              <>
+                or
+                <br />
+                <br />
+                <ImportJavaClassesWrapper />
+                <br />
+                <br />
+              </>
+            )}
             or
-            <br />
             <EmptyStateSecondaryActions>
               <Button variant={ButtonVariant.link} onClick={onPaste} icon={<PasteIcon />}>
                 Paste data type
