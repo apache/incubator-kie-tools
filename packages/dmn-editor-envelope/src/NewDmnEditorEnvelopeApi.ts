@@ -19,6 +19,7 @@
 
 import { KogitoEditorEnvelopeApi } from "@kie-tools-core/editor/dist/api";
 import { NewDmnEditorTypes } from "./NewDmnEditorTypes";
+import { SharedValueProvider } from "../../envelope-bus/dist/api";
 
 export interface NewDmnEditorEnvelopeApi extends KogitoEditorEnvelopeApi {
   /**
@@ -26,5 +27,8 @@ export interface NewDmnEditorEnvelopeApi extends KogitoEditorEnvelopeApi {
    * @param nodeId id of the node to open
    */
   dmnEditor_openBoxedExpressionEditor(nodeId: string): void;
+
+  newDmnEditor_openedBoxedExpressionId(): SharedValueProvider<string | undefined>;
+
   newDmnEditor_showDmnEvaluationResults(evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId): void;
 }
