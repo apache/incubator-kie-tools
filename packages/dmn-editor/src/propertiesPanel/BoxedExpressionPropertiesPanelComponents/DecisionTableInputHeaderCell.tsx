@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
-import { ContentField, DescriptionField, ExpressionLanguageField, NameField, TypeRefField } from "./Fields";
+import { ContentField, DescriptionField, ExpressionLanguageField, NameField, TypeRefField } from "../Fields";
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { DMN15__tInputClause } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";

@@ -33,6 +33,7 @@ interface ServerlessWorkflowResources extends EditorResources {
 export class ServerlessWorkflowTextEditorResources extends BaseEditorResources {
   private readonly JS_RESOURCES_EXPR = "(\\wmonaco-editor.*)(\\wjso|\\wyaml)";
   private readonly JS_WORKER_EXPR = ".worker.js";
+  private readonly JS_BUNDLES_EXPR = ".bundle.js";
 
   public get(args: { resourcesPathPrefix: string }) {
     const swfTextEditorResources: ServerlessWorkflowResources = {
@@ -48,7 +49,10 @@ export class ServerlessWorkflowTextEditorResources extends BaseEditorResources {
   }
 
   public getReferencedJSPaths(resourcesPathPrefix: string) {
-    return this.getJSResources(resourcesPathPrefix, this.JS_RESOURCES_EXPR);
+    return [
+      ...this.getJSResources(resourcesPathPrefix, this.JS_RESOURCES_EXPR),
+      ...this.getJSResources(resourcesPathPrefix, this.JS_BUNDLES_EXPR),
+    ];
   }
 
   public getWorkersJSResources(resourcesPathPrefix: string) {
