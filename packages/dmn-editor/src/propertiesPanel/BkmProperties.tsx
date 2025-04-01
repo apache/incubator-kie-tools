@@ -22,7 +22,6 @@ import { DMN15__tBusinessKnowledgeModel } from "@kie-tools/dmn-marshaller/dist/s
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { DocumentationLinksFormGroup } from "./DocumentationLinksFormGroup";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
@@ -33,6 +32,7 @@ import { useCallback, useMemo } from "react";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { useRefactor } from "../refactor/RefactorConfirmationDialog";
+import { TextField, TextFieldType } from "./Fields";
 
 export function BkmProperties({
   bkm,
@@ -98,26 +98,21 @@ export function BkmProperties({
         />
       </FormGroup>
 
-      <FormGroup label="Description">
-        <TextArea
-          aria-label={"Description"}
-          type={"text"}
-          isDisabled={isReadOnly}
-          value={bkm.description?.__$$text}
-          onChange={(_event, newDescription) => {
-            setState((state) => {
-              (
-                state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tBusinessKnowledgeModel>
-              ).description = {
+      <TextField
+        title={"Description"}
+        type={TextFieldType.TEXT_AREA}
+        isReadOnly={isReadOnly}
+        initialValue={bkm.description?.__$$text || ""}
+        onChange={(newDescription) => {
+          setState((state) => {
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tBusinessKnowledgeModel>).description =
+              {
                 __$$text: newDescription,
               };
-            });
-          }}
-          placeholder={"Enter a description..."}
-          style={{ resize: "vertical", minHeight: "40px" }}
-          rows={6}
-        />
-      </FormGroup>
+          });
+        }}
+        placeholder={"Enter a description..."}
+      />
 
       <FormGroup label="ID">
         <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
