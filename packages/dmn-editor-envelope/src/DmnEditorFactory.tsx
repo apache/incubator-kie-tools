@@ -109,13 +109,13 @@ export function DmnEditorRootWrapper({
   exposing,
   workspaceRootAbsolutePosixPath,
   isReadOnly,
-  onOpenedBoxedExpressionChange,
+  onOpenedDrgElementChange,
 }: {
   envelopeContext?: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>;
   exposing: (s: DmnEditorRoot) => void;
   workspaceRootAbsolutePosixPath: string;
   isReadOnly: boolean;
-  onOpenedBoxedExpressionChange?: (newOpenedBoxedExpressionId: string | undefined) => void;
+  onOpenedDrgElementChange?: (newOpenedDrgElementId: string | undefined) => void;
 }) {
   const onNewEdit = useCallback(
     (workspaceEdit: WorkspaceEdit) => {
@@ -158,7 +158,7 @@ export function DmnEditorRootWrapper({
       onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot={
         onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot
       }
-      onOpenedBoxedExpressionChange={onOpenedBoxedExpressionChange}
+      onOpenedDrgElementChange={onOpenedDrgElementChange}
       workspaceRootAbsolutePosixPath={workspaceRootAbsolutePosixPath}
       keyboardShortcutsService={envelopeContext?.services.keyboardShortcuts}
       isReadOnly={isReadOnly}

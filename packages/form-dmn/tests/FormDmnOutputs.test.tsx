@@ -28,7 +28,7 @@ const props: FormDmnOutputsProps = {
   locale: "en",
   notificationsPanel: true,
   openEvaluationTab: () => {},
-  openedBoxedExpressionId: undefined,
+  openedDrgElementId: undefined,
 };
 
 describe("FormDmnOutputs tests", () => {

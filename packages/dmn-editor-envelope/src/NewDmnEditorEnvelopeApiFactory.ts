@@ -46,7 +46,7 @@ export class NewDmnEditorEnvelopeApiImpl
     this.getEditorOrThrowError().openBoxedExpressionEditor(nodeId);
   }
 
-  public newDmnEditor_openedBoxedExpressionId(): SharedValueProvider<string | undefined> {
+  public newDmnEditor_openedDrgElementId(): SharedValueProvider<string | undefined> {
     return {
       defaultValue: undefined,
     };
