@@ -60,7 +60,6 @@ export function UploadCard() {
         pathname: routes.workspaceWithFilePath.path({
           workspaceId: val.workspaceId,
           fileRelativePath: val.fileRelativePath,
-          extension: val.extension,
         }),
       });
     },

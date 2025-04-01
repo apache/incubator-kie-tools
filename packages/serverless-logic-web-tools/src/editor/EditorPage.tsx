@@ -54,18 +54,16 @@ export function EditorPage() {
   const routes = useRoutes();
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const navigate = useNavigate();
-  const { workspaceId, fileRelativePath, extension } = useParams<{
+  const { workspaceId, "*": fileRelativePath } = useParams<{
     workspaceId: string;
-    fileRelativePath: string;
-    extension: string;
+    "*": string;
   }>();
-  const fileRelativePathWithExtension = `${fileRelativePath ?? ""}${extension ? `.${extension}` : ""}`;
   const workspaces = useWorkspaces();
   const { i18n, locale } = useAppI18n();
   const [webToolsEditor, webToolsEditorRef] = useController<WebToolsEmbeddedEditorRef>();
   const [editorPageDock, editorPageDockRef] = useController<EditorPageDockDrawerRef>();
   const lastContent = useRef<string>();
-  const workspaceFilePromise = useWorkspaceFilePromise(workspaceId, fileRelativePathWithExtension);
+  const workspaceFilePromise = useWorkspaceFilePromise(workspaceId, fileRelativePath);
   const workspacePromise = useWorkspacePromise(workspaceId);
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
   const isEditorReady = useMemo(() => webToolsEditor?.editor?.isReady, [webToolsEditor]);
@@ -75,7 +73,7 @@ export function EditorPage() {
   const { notifications, onLazyValidate } = useEditorNotifications({
     webToolsEditor,
     content: lastContent.current,
-    fileRelativePath: fileRelativePathWithExtension,
+    fileRelativePath: fileRelativePath!,
   });
 
   useEffect(() => {
@@ -95,8 +93,7 @@ export function EditorPage() {
       {
         pathname: routes.workspaceWithFilePath.path({
           workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
-          fileRelativePath: workspaceFilePromise.data.workspaceFile.relativePathWithoutExtension,
-          extension: workspaceFilePromise.data.workspaceFile.extension,
+          fileRelativePath: workspaceFilePromise.data.workspaceFile.relativePath,
         }),
         search: queryParams.toString(),
       },
@@ -229,12 +226,12 @@ export function EditorPage() {
   );
 
   return workspacePromise.status === PromiseStateStatus.REJECTED ? (
-    <ErrorPage kind="File" errors={workspacePromise.error} filePath={fileRelativePathWithExtension} />
+    <ErrorPage kind="File" errors={workspacePromise.error} filePath={fileRelativePath!} />
   ) : (
     <PromiseStateWrapper
       promise={workspaceFilePromise}
       pending={<LoadingSpinner />}
-      rejected={(errors) => <ErrorPage kind="File" errors={errors} filePath={fileRelativePathWithExtension} />}
+      rejected={(errors) => <ErrorPage kind="File" errors={errors} filePath={fileRelativePath!} />}
       resolved={(file) => (
         <>
           <Page>

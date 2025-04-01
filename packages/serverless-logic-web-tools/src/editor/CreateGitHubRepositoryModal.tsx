@@ -157,8 +157,7 @@ export function CreateGitHubRepositoryModal(props: {
           {
             pathname: routes.workspaceWithFilePath.path({
               workspaceId: props.workspace.descriptor.workspaceId,
-              fileRelativePath: applyAcceleratorResult.currentFileAfterMoving.relativePathWithoutExtension,
-              extension: applyAcceleratorResult.currentFileAfterMoving.extension,
+              fileRelativePath: applyAcceleratorResult.currentFileAfterMoving.relativePath,
             }),
           },
           { replace: true }
@@ -172,8 +171,7 @@ export function CreateGitHubRepositoryModal(props: {
       navigate(
         {
           pathname: routes.workspaceWithFilePath.path({
-            extension: props.currentFile.extension,
-            fileRelativePath: props.currentFile.relativePathWithoutExtension,
+            fileRelativePath: props.currentFile.relativePath,
             workspaceId: props.workspace.descriptor.workspaceId,
           }),
         },

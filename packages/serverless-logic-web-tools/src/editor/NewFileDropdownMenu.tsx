@@ -230,7 +230,6 @@ export function NewFileDropdownMenu(props: {
         pathname: routes.workspaceWithFilePath.path({
           workspaceId: workspaceData.workspaceId,
           fileRelativePath: workspaceData.fileRelativePath,
-          extension: workspaceData.extension,
         }),
       });
     },

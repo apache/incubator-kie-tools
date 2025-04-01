@@ -98,8 +98,7 @@ export function NewWorkspaceFromUrlPage() {
         {
           pathname: routes.workspaceWithFilePath.path({
             workspaceId: workspace.workspaceId,
-            fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-            extension: suggestedFirstFile.extension,
+            fileRelativePath: suggestedFirstFile.relativePath,
           }),
         },
         { replace: true }
@@ -119,8 +118,7 @@ export function NewWorkspaceFromUrlPage() {
           {
             pathname: routes.workspaceWithFilePath.path({
               workspaceId: workspace.workspaceId,
-              fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-              extension: suggestedFirstFile.extension,
+              fileRelativePath: suggestedFirstFile.relativePath,
             }),
           },
           { replace: true }
@@ -218,8 +216,7 @@ export function NewWorkspaceFromUrlPage() {
             {
               pathname: routes.workspaceWithFilePath.path({
                 workspaceId: workspace.workspaceId,
-                fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-                extension: suggestedFirstFile.extension,
+                fileRelativePath: suggestedFirstFile.relativePath,
               }),
             },
             { replace: true }

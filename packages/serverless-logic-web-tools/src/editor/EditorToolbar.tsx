@@ -800,8 +800,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     navigate({
       pathname: routes.workspaceWithFilePath.path({
         workspaceId: nextFile.workspaceId,
-        fileRelativePath: nextFile.relativePathWithoutExtension,
-        extension: nextFile.extension,
+        fileRelativePath: nextFile.relativePath,
       }),
     });
   }, [routes, navigate, workspacePromise.data, props.workspaceFile, workspaces]);
@@ -1579,8 +1578,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
                             navigate({
                               pathname: routes.workspaceWithFilePath.path({
                                 workspaceId: file.workspaceId,
-                                fileRelativePath: file.relativePathWithoutExtension,
-                                extension: file.extension,
+                                fileRelativePath: file.relativePath,
                               }),
                             });
                           }}

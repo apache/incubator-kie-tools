@@ -34,7 +34,7 @@ import { Page, PageToggleButton } from "@patternfly/react-core/dist/js/component
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { BarsIcon, ExclamationIcon } from "@patternfly/react-icons/dist/js/icons";
 import { useMemo, useState } from "react";
-import { useNavigate, useMatch, useLocation } from "react-router-dom";
+import { useNavigate, useMatch, useLocation, Outlet } from "react-router-dom";
 import { useRoutes } from "../../navigation/Hooks";
 import { SettingsPageNav } from "../../settings/uiNav/SettingsPageNav";
 import { OpenshiftDeploymentsDropdown } from "../../openshift/dropdown/OpenshiftDeploymentsDropdown";
@@ -47,9 +47,9 @@ import { SettingsButton } from "../../settings/SettingsButton";
 import { HomePageNav } from "../uiNav/HomePageNav";
 import { APP_NAME } from "../../AppConstants";
 import { isBrowserChromiumBased } from "../../workspace/startupBlockers/SupportedBrowsers";
+import { Label } from "@patternfly/react-core/dist/js/components/Label";
 
 export type OnlineEditorPageProps = {
-  children?: React.ReactNode;
   pageContainerRef: React.RefObject<HTMLDivElement>;
   isNavOpen: boolean;
   setIsNavOpen: (value: boolean) => void;
@@ -144,6 +144,9 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
   const mainContainerId = "main-content-page-layout-tertiary-nav";
 
   const pageSkipToContent = <SkipToContent href={`#${mainContainerId}`}>Skip to content</SkipToContent>;
+  const buildInfo = useMemo(() => {
+    return process.env["WEBPACK_REPLACE__buildInfo"];
+  }, []);
 
   return (
     <QuickStartContainer {...drawerProps}>
@@ -155,7 +158,12 @@ export function OnlineEditorPage(props: OnlineEditorPageProps) {
           mainContainerId={mainContainerId}
           isManagedSidebar
         >
-          {props.children}
+          <Outlet />
+          {buildInfo && (
+            <div className={"kie-tools--build-info"}>
+              <Label>{buildInfo}</Label>
+            </div>
+          )}
         </Page>
       </div>
     </QuickStartContainer>

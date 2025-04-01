@@ -48,8 +48,7 @@ export function NewWorkspaceWithEmptyFilePage() {
           {
             pathname: routes.workspaceWithFilePath.path({
               workspaceId: file.workspaceId,
-              fileRelativePath: file.relativePathWithoutExtension,
-              extension: file.extension,
+              fileRelativePath: file.relativePath,
             }),
           },
           { replace: true }

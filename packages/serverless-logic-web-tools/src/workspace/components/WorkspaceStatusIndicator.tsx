@@ -93,8 +93,7 @@ export function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) 
             end: true,
             path: routes.workspaceWithFilePath.path({
               workspaceId: ":workspaceId",
-              fileRelativePath: ":fileRelativePath*",
-              extension: ":extension",
+              fileRelativePath: "*",
             }),
           },
           location.pathname
