@@ -42,7 +42,7 @@ export class NewDmnEditorEnvelopeApiImpl
     super(dmnArgs, new NewDmnEditorFactory());
   }
 
-  public dmnEditor_openBoxedExpressionEditor(nodeId: string): void {
+  public newDmnEditor_openBoxedExpressionEditor(nodeId: string): void {
     this.getEditorOrThrowError().openBoxedExpressionEditor(nodeId);
   }
 

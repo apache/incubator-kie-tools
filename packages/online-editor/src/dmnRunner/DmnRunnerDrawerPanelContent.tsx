@@ -341,7 +341,7 @@ export function DmnRunnerDrawerPanelContent() {
                           ? (nodeId: string) => {
                               const newDmnEditorEnvelopeApi =
                                 envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
-                              newDmnEditorEnvelopeApi.notifications.dmnEditor_openBoxedExpressionEditor.send(nodeId);
+                              newDmnEditorEnvelopeApi.notifications.newDmnEditor_openBoxedExpressionEditor.send(nodeId);
                             }
                           : undefined
                       }
