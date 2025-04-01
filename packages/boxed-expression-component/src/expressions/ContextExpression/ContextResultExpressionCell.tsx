@@ -66,8 +66,6 @@ export function ContextResultExpressionCell(props: {
           const ret: Normalized<BoxedContext> = {
             ...prev,
             contextEntry: newContextEntries,
-            "@_label": newExpression?.["@_label"] ?? prev["@_label"],
-            "@_typeRef": newExpression?.["@_typeRef"] ?? prev["@_typeRef"],
           };
 
           return ret;
