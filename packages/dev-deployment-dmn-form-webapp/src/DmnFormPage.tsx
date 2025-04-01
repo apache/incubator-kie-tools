@@ -220,7 +220,7 @@ export function DmnFormPage(props: Props) {
                       differences={formOutputDiffs}
                       locale={locale}
                       notificationsPanel={false}
-                      openedDrgElementId={undefined}
+                      openedBoxedExpressionEditorDrgElementId={undefined}
                     />
                   </PageSection>
                 </div>

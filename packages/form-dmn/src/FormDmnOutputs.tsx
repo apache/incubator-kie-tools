@@ -66,13 +66,13 @@ export interface FormDmnOutputsProps {
   notificationsPanel: boolean;
   openEvaluationTab?: () => void;
   openBoxedExpressionEditor?: (nodeId: string) => void;
-  openedDrgElementId: string | undefined;
+  openedBoxedExpressionEditorDrgElementId: string | undefined;
 }
 
 export function FormDmnOutputs({
   openEvaluationTab,
   openBoxedExpressionEditor,
-  openedDrgElementId,
+  openedBoxedExpressionEditorDrgElementId,
   ...props
 }: FormDmnOutputsProps) {
   const [formResultStatus, setFormResultStatus] = useState<FormDmnOutputsStatus>(FormDmnOutputsStatus.EMPTY);
@@ -93,7 +93,7 @@ export function FormDmnOutputs({
       const updatedResult = document.getElementById(`${index}-dmn-result`);
       updatedResult?.classList.add("kogito--editor__dmn-form-result__leaf-updated");
     });
-  }, [openedDrgElementId, props.differences]);
+  }, [openedBoxedExpressionEditorDrgElementId, props.differences]);
 
   const onAnimationEnd = useCallback((e: React.AnimationEvent<HTMLElement>, index) => {
     e.preventDefault();
@@ -276,7 +276,7 @@ export function FormDmnOutputs({
             id={`${index}-dmn-result`}
             isFlat={true}
             className={
-              openedDrgElementId === dmnFormResult.decisionId
+              openedBoxedExpressionEditorDrgElementId === dmnFormResult.decisionId
                 ? "kogito--editor__dmn-form-result__results-card-highlight"
                 : "kogito--editor__dmn-form-result__results-card"
             }
@@ -302,7 +302,7 @@ export function FormDmnOutputs({
       )),
     [
       props.results,
-      openedDrgElementId,
+      openedBoxedExpressionEditorDrgElementId,
       openBoxedExpressionEditor,
       result,
       resultStatus,

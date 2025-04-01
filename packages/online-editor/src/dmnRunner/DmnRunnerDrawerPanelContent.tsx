@@ -168,7 +168,7 @@ export function DmnRunnerDrawerPanelContent() {
 
   const [openedBoxedExpressionNodeId, _] = useSharedValue(
     (envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>)?.shared
-      ?.newDmnEditor_openedDrgElementId ?? undefined
+      ?.newDmnEditor_openedBoxedExpressionEditorDrgElementId ?? undefined
   );
 
   return (
@@ -345,7 +345,7 @@ export function DmnRunnerDrawerPanelContent() {
                             }
                           : undefined
                       }
-                      openedDrgElementId={openedBoxedExpressionNodeId}
+                      openedBoxedExpressionEditorDrgElementId={openedBoxedExpressionNodeId}
                     />
                   </PageSection>
                 </div>
