@@ -36,7 +36,6 @@ import {
   EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { SearchIcon } from "@patternfly/react-icons/dist/js/icons/search-icon";
-import {} from "@patternfly/react-core/dist/js/components/Title";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { EmbeddedProcessDetails } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";

@@ -112,7 +112,6 @@ function AuthSessionCard({
           return setExpanded((prev) => !prev);
         }}
       >
-        actions=
         {
           <>
             <Flex alignItems={{ default: "alignItemsCenter" }} style={{ display: "inline-flex" }}>

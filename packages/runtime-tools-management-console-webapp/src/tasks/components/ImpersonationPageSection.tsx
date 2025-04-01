@@ -155,34 +155,32 @@ export const ImpersonationPageSection: React.FC<{}> = () => {
               />
             }
           >
-            <FormGroup label={"User"}>
+            <FormGroup label={"User"} style={{ maxWidth: "500px" }}>
               <TextInput
                 className={
                   username && username === impersonationUsername
-                    ? "pf-v5-c-form-control pf-m-success"
-                    : "pf-v5-c-form-control pf-m-expanded"
+                    ? "pf-v5-c-form-control pf-v5-m-success"
+                    : "pf-v5-c-form-control pf-v5-m-expanded"
                 }
                 id="username"
                 aria-label="Username"
                 autoFocus={false}
                 placeholder={`None (currently as '${authSessionInfo.username}')`}
                 tabIndex={1}
-                style={{ maxWidth: "400px" }}
                 value={username ?? ""}
                 onChange={(_event, val) => setUsername(val)}
               />
             </FormGroup>
-            <FormGroup label={"Groups"}>
+            <FormGroup label={"Groups"} style={{ maxWidth: "500px" }}>
               <TextInput
                 className={
                   groups && groups === impersonationGroups
-                    ? "pf-v5-c-form-control pf-m-success"
-                    : "pf-v5-c-form-control pf-m-expanded"
+                    ? "pf-v5-c-form-control pf-v5-m-success"
+                    : "pf-v5-c-form-control pf-v5-m-expanded"
                 }
                 id="groups"
                 aria-label="Groups"
                 tabIndex={2}
-                style={{ maxWidth: "400px" }}
                 value={groups ?? ""}
                 onChange={(_event, val) => setGroups(val)}
                 placeholder={`None (currently ${currentAuthSession?.type === AuthSessionType.OPENID_CONNECT ? currentAuthSession.roles?.join(",") ?? "empty" : "empty"})`}

@@ -153,7 +153,14 @@ export const NewAuthSessionModal: React.FC<Props> = ({ onAddAuthSession }) => {
           />
         </FormGroup>
         <FormGroup label="URL" isRequired={true}>
-          {error === "error" ? (
+          <TextInput
+            id="url"
+            aria-label="URL"
+            tabIndex={0}
+            onChange={(_event, val) => setRuntimeUrl(val)}
+            placeholder="Enter a URL..."
+          />
+          {error !== null ? (
             <FormHelperText>
               <HelperText>
                 <HelperTextItem variant="error">{error}</HelperTextItem>
@@ -166,13 +173,6 @@ export const NewAuthSessionModal: React.FC<Props> = ({ onAddAuthSession }) => {
               </HelperText>
             </FormHelperText>
           )}
-          <TextInput
-            id="url"
-            aria-label="URL"
-            tabIndex={0}
-            onChange={(_event, val) => setRuntimeUrl(val)}
-            placeholder="Enter a URL..."
-          />
         </FormGroup>
         <FormGroup isRequired={false}>
           <FormHelperText>

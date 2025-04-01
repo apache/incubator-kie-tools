@@ -330,13 +330,6 @@ If you are, it means that creating this Snippet failed and it can safely be dele
             description={i18n.createGistOrSnippetModal.form.visibility.private.description}
             onChange={() => setPrivate(true)}
           />
-          {/* <FormHelperText>
-            <HelperText>
-              <HelperTextItem variant="error">
-                <ExclamationCircleIcon />{" "}
-              </HelperTextItem>
-            </HelperText>
-          </FormHelperText> */}
         </FormGroup>
       </Form>
     </Modal>

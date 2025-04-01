@@ -567,7 +567,6 @@ function TestScenarioDataSelectorPanel() {
             (treeViewEmptyStatus.visibility === "hidden" && (
               <Bullseye>
                 <EmptyState>
-                  <EmptyStateHeader icon={<EmptyStateIcon icon={treeViewEmptyStatus.icon} />} />
                   <EmptyStateHeader
                     titleText={<>{treeViewEmptyStatus.title}</>}
                     icon={<EmptyStateIcon icon={treeViewEmptyStatus.icon} />}
