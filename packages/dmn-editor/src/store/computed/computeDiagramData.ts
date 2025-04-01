@@ -391,17 +391,24 @@ export function computeDiagramData(
     }
   }
 
-  const nodesToBeHidden: string[] = [];
+  //Handling contained decisions
+  const collapsedServiceContainedNodes: string[] = [];
+  const expandedServiceContainedNodes: string[] = [];
   for (const node of sortedNodes) {
     if (node.data?.dmnObject?.__$$element === "decisionService" && node.data.shape["@_isCollapsed"] === true) {
-      nodesToBeHidden.push(
-        ...(node.data.dmnObject.outputDecision ?? []).map((od) => od["@_href"]),
-        ...(node.data.dmnObject.encapsulatedDecision ?? []).map((od) => od["@_href"])
+      collapsedServiceContainedNodes.push(
+        ...(node.data.dmnObject?.outputDecision ?? []).map((od) => od["@_href"]),
+        ...(node.data.dmnObject?.encapsulatedDecision ?? []).map((od) => od["@_href"])
+      );
+    } else if (node.data?.dmnObject?.__$$element === "decisionService" && node.data.shape["@_isCollapsed"] === false) {
+      expandedServiceContainedNodes.push(
+        ...(node.data.dmnObject?.outputDecision ?? []).map((od) => od["@_href"]),
+        ...(node.data.dmnObject?.encapsulatedDecision ?? []).map((od) => od["@_href"])
       );
     }
   }
 
-  console.log(sortedNodes);
+  const nodesToBeHidden = collapsedServiceContainedNodes.filter((val) => !expandedServiceContainedNodes.includes(val));
 
   const displayNodes = sortedNodes.filter((node) => !nodesToBeHidden.some((selected) => selected === node.id));
 

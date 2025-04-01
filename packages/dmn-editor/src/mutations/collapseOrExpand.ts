@@ -20,6 +20,7 @@
 import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { addOrGetDrd, addOrGetDrd as getDefaultDiagram } from "./addOrGetDrd";
+import { DECISION_SERVICE_COLLAPSED_DIMENSIONS } from "../diagram/nodes/DefaultSizes";
 
 export function collapseOrExpand({
   definitions,
@@ -37,5 +38,14 @@ export function collapseOrExpand({
 
   if (shape !== undefined && shape !== null) {
     shape["@_isCollapsed"] = collapse;
+    if (shape["dc:Bounds"]) {
+      if (collapse) {
+        (shape["dc:Bounds"]["@_width"] = DECISION_SERVICE_COLLAPSED_DIMENSIONS.width),
+          (shape["dc:Bounds"]["@_height"] = DECISION_SERVICE_COLLAPSED_DIMENSIONS.height);
+      } else {
+        // shape["dc:Bounds"]["@_width"] = currentBound["@_width"],
+        // shape["dc:Bounds"]["@_height"] = currentBound["@_height"]
+      }
+    }
   }
 }

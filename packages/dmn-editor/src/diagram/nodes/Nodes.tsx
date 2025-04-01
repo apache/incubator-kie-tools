@@ -848,6 +848,13 @@ export const DecisionServiceNode = React.memo(
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
 
+    const isConflict = useDmnEditorStore((s) => s.diagram.conflictedNodes).includes(id);
+
+    let expandButtonClassname = "kie-dmn-editor--decision-service-collapsed-button";
+    if (isConflict) {
+      expandButtonClassname += " button-inactive";
+    }
+
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const settings = useSettings();
 
@@ -1048,7 +1055,7 @@ export const DecisionServiceNode = React.memo(
             />
           )}
           {isCollapsed && (
-            <div className={"kie-dmn-editor--decision-service-collapsed-button"} onClick={handleExpand}>
+            <div className={expandButtonClassname} onClick={handleExpand}>
               +
             </div>
           )}

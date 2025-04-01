@@ -54,6 +54,10 @@ export interface DmnEditorDiagramDividerLineStatus {
   moving: boolean;
 }
 
+export interface ConflictedNodeStatus {
+  conflict: boolean;
+}
+
 export interface SnapGrid {
   isEnabled: boolean;
   x: number;
@@ -117,6 +121,7 @@ export interface State {
     _selectedEdges: Array<string>;
     draggingNodes: Array<string>;
     resizingNodes: Array<string>;
+    conflictedNodes: Array<string>;
     draggingWaypoints: Array<string>;
     movingDividerLines: Array<string>;
     isEditingStyle: boolean;
@@ -174,6 +179,7 @@ export type Dispatch = {
     setNodeStatus: (nodeId: string, status: Partial<DmnEditorDiagramNodeStatus>) => void;
     setEdgeStatus: (edgeId: string, status: Partial<DmnEditorDiagramEdgeStatus>) => void;
     setDividerLineStatus: (decisionServiceId: string, status: Partial<DmnEditorDiagramDividerLineStatus>) => void;
+    setConflictStatus: (decisionServiceId: string, status: Partial<ConflictedNodeStatus>) => void;
   };
 };
 
@@ -232,6 +238,7 @@ export const defaultStaticState = (): Omit<State, "dmn" | "dispatch" | "computed
     _selectedEdges: [],
     draggingNodes: [],
     resizingNodes: [],
+    conflictedNodes: [],
     draggingWaypoints: [],
     movingDividerLines: [],
     isEditingStyle: false,
@@ -332,6 +339,16 @@ export function createDmnEditorStore(model: DmnLatestModel, computedCache: Compu
                   s.diagram.movingDividerLines.push(decisionServiceId);
                 } else {
                   s.diagram.movingDividerLines = s.diagram.movingDividerLines.filter((s) => s !== decisionServiceId);
+                }
+              }
+            },
+            setConflictStatus: (decisionServiceId, newStatus) => {
+              //conflicted
+              if (newStatus.conflict !== undefined) {
+                if (newStatus.conflict) {
+                  s.diagram.conflictedNodes.push(decisionServiceId);
+                } else {
+                  s.diagram.conflictedNodes = s.diagram.conflictedNodes.filter((s) => s !== decisionServiceId);
                 }
               }
             },
