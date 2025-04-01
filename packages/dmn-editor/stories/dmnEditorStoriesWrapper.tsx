@@ -51,8 +51,8 @@ export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
     [props?.onModelChange]
   );
 
-  const onOpenedBoxedExpressionEditorDrgElementChangeNoOperation = useMemo(
-    () => (newOpenedDrgElementId: string | undefined) => {},
+  const onOpenedBoxedExpressionEditorNodeChangeNoOperation = useMemo(
+    () => (newOpenedNodeId: string | undefined) => {},
     []
   );
 
@@ -108,7 +108,7 @@ export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
           originalVersion={props?.originalVersion ?? args.originalVersion}
           isReadOnly={isReadOnly}
           onModelChange={onModelChange}
-          onOpenedBoxedExpressionEditorDrgElementChange={onOpenedBoxedExpressionEditorDrgElementChangeNoOperation}
+          onOpenedBoxedExpressionEditorNodeChange={onOpenedBoxedExpressionEditorNodeChangeNoOperation}
           onRequestExternalModelByPath={props?.onRequestExternalModelByPath ?? args.onRequestExternalModelByPath}
           onRequestExternalModelsAvailableToInclude={
             props?.onRequestExternalModelsAvailableToInclude ?? args.onRequestExternalModelsAvailableToInclude

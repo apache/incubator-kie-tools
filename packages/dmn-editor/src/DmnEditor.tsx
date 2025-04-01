@@ -187,14 +187,14 @@ export type DmnEditorProps = {
    */
   onModelDebounceStateChanged?: (changed: boolean) => void;
 
-  onOpenedBoxedExpressionEditorDrgElementChange?: (newOpenedDrgElementId: string | undefined) => void;
+  onOpenedBoxedExpressionEditorNodeChange?: (newOpenedNodeId: string | undefined) => void;
 };
 
 export const DmnEditorInternal = ({
   model,
   originalVersion,
   onModelChange,
-  onOpenedBoxedExpressionEditorDrgElementChange,
+  onOpenedBoxedExpressionEditorNodeChange,
   onModelDebounceStateChanged,
   forwardRef,
 }: DmnEditorProps & { forwardRef?: React.Ref<DmnEditorRef> }) => {
@@ -213,10 +213,10 @@ export const DmnEditorInternal = ({
 
   // Code to keep FormDmnOutputs.tsx selected card highlight in proper state
   useEffect(() => {
-    onOpenedBoxedExpressionEditorDrgElementChange?.(
+    onOpenedBoxedExpressionEditorNodeChange?.(
       dmnEditorActiveTab === DmnEditorTab.EDITOR ? boxedExpressionEditorActiveDrgElementId : undefined
     );
-  }, [boxedExpressionEditorActiveDrgElementId, dmnEditorActiveTab, onOpenedBoxedExpressionEditorDrgElementChange]);
+  }, [boxedExpressionEditorActiveDrgElementId, dmnEditorActiveTab, onOpenedBoxedExpressionEditorNodeChange]);
 
   // Refs
   const diagramRef = useRef<DiagramRef>(null);
