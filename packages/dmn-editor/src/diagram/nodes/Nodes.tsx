@@ -844,6 +844,7 @@ export const DecisionServiceNode = React.memo(
       (s) => (isHovered || isResizing) && s.diagram.draggingNodes.length === 0
     );
     const isDropTarget = useDmnEditorStore((s) => s.diagram.dropTargetNode?.id === id);
+    const currentBound = useDmnEditorStore((s) => s.diagram.currentBound);
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
@@ -892,34 +893,30 @@ export const DecisionServiceNode = React.memo(
     }, [decisionService.encapsulatedDecision, decisionService.outputDecision, dmnEditorStoreApi, id]);
 
     const handleExpand = () => {
-      // const openNodes: string[] = []
-      // for (const node of nodes) {
-      //   if (node.data?.dmnObject?.__$$element === "decisionService" && node.data.shape["@_isCollapsed"]===false) {
-      //     openNodes.push(...(node.data.dmnObject.outputDecision ?? []).map((od) => od["@_href"]),...(node.data.dmnObject.encapsulatedDecision ?? []).map((od) => od["@_href"]))
-      //   }
-      // }
-      // const clikcedNode = [...(decisionService.outputDecision ?? []),...(decisionService.encapsulatedDecision ?? [])]
-      // const displayNodes = openNodes.filter(node => clikcedNode.some(selected => selected["@_href"] === node))
-      // console.log(displayNodes)
-      // if(displayNodes.length===0){
       dmnEditorStoreApi.setState((state) => {
         collapseOrExpand({
           definitions: state.dmn.model.definitions,
           drdIndex: state.computed(state).getDrdIndex(),
           collapse: false,
           shapeIndex: shape.index,
+          currentBound: currentBound,
         });
       });
-      //}
     };
 
     const handleCollapse = () => {
       dmnEditorStoreApi.setState((state) => {
+        if (shape["dc:Bounds"]) {
+          state
+            .dispatch(state)
+            .diagram.setCurrentBound(shape.index, shape["dc:Bounds"]["@_width"], shape["dc:Bounds"]["@_height"]);
+        }
         collapseOrExpand({
           definitions: state.dmn.model.definitions,
           drdIndex: state.computed(state).getDrdIndex(),
           collapse: true,
           shapeIndex: shape.index,
+          currentBound: currentBound,
         });
       });
     };
