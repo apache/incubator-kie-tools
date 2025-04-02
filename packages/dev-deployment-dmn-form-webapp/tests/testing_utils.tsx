@@ -21,6 +21,7 @@ import { I18nDictionariesProvider, I18nDictionariesProviderProps } from "@kie-to
 import React from "react";
 import { AppContext, AppContextType } from "../src/AppContext";
 import { DmnFormI18n, DmnFormI18nContext, dmnFormI18nDefaults, dmnFormI18nDictionaries } from "../src/i18n";
+import { BrowserRouter } from "react-router-dom";
 
 export function usingTestingDmnFormI18nContext(
   children: React.ReactElement,
@@ -51,6 +52,10 @@ export function usingTestingAppContext(children: React.ReactElement, ctx: Omit<A
 
   return {
     ctx: usedCtx,
-    wrapper: <AppContext.Provider value={usedCtx}>{children}</AppContext.Provider>,
+    wrapper: (
+      <AppContext.Provider value={usedCtx}>
+        <BrowserRouter>{children}</BrowserRouter>
+      </AppContext.Provider>
+    ),
   };
 }
