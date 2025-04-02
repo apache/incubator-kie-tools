@@ -32,7 +32,7 @@ import UserTagIcon from "@patternfly/react-icons/dist/esm/icons/user-tag-icon";
 import UserIcon from "@patternfly/react-icons/dist/js/icons/user-icon";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router";
-import { AuthSessionType, getAuthSessionDisplayInfo, useAuthSession, useAuthSessions } from "../../authSessions";
+import { AuthSessionType, getAuthSessionDisplayInfo, useAuthSessions } from "../../authSessions";
 import { QueryParams } from "../../navigation/Routes";
 import { useQueryParams } from "../../navigation/queryParams/QueryParamsContext";
 import {
@@ -157,11 +157,7 @@ export const ImpersonationPageSection: React.FC<{}> = () => {
           >
             <FormGroup label={"User"} style={{ maxWidth: "500px" }}>
               <TextInput
-                className={
-                  username && username === impersonationUsername
-                    ? "pf-v5-c-form-control pf-v5-m-success"
-                    : "pf-v5-c-form-control pf-v5-m-expanded"
-                }
+                validated={username && username === impersonationUsername ? "success" : "error"}
                 id="username"
                 aria-label="Username"
                 autoFocus={false}
@@ -173,11 +169,7 @@ export const ImpersonationPageSection: React.FC<{}> = () => {
             </FormGroup>
             <FormGroup label={"Groups"} style={{ maxWidth: "500px" }}>
               <TextInput
-                className={
-                  groups && groups === impersonationGroups
-                    ? "pf-v5-c-form-control pf-v5-m-success"
-                    : "pf-v5-c-form-control pf-v5-m-expanded"
-                }
+                validated={groups && groups === impersonationGroups ? "success" : "error"}
                 id="groups"
                 aria-label="Groups"
                 tabIndex={2}
