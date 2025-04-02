@@ -23,17 +23,32 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/manager"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/eventing"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
+
+	"k8s.io/client-go/util/retry"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/properties"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/workflowdef"
+
+	"sigs.k8s.io/controller-runtime/pkg/predicate"
+
 	sourcesv1 "knative.dev/eventing/pkg/apis/sources/v1"
 	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
+
+	"k8s.io/klog/v2"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/knative"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/monitoring"
 
-	"k8s.io/klog/v2"
-
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/constants"
-	profiles "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/factory"
+	profilesfactory "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/factory"
 
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -104,14 +119,19 @@ func (r *SonataFlowReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 	}
 
 	r.setDefaults(workflow)
-	// If the workflow is being deleted, clean up the triggers on a different namespace
-	if workflow.DeletionTimestamp != nil && controllerutil.ContainsFinalizer(workflow, constants.TriggerFinalizer) {
-		err := r.cleanupTriggers(ctx, workflow)
-		if err != nil {
-			klog.V(log.E).ErrorS(err, "Failed to clean up triggers for workflow %s", workflow.Name)
-			return ctrl.Result{}, err
+	// If the workflow is being deleted, execute the associated finalizers
+	if workflow.DeletionTimestamp != nil {
+		return r.applyFinalizers(ctx, workflow)
+	}
+
+	// If first recon cycle, add the WorkflowFinalizer
+	if !profiles.IsDevProfile(workflow) {
+		if controllerutil.AddFinalizer(workflow, constants.WorkflowFinalizer) {
+			if err := r.Client.Update(ctx, workflow); err != nil {
+				klog.V(log.E).ErrorS(err, "Failed to add workflow finalizer.", "workflow", "namespace", "finalizer", workflow.Name, workflow.Namespace, constants.WorkflowFinalizer)
+				return ctrl.Result{}, err
+			}
 		}
-		return ctrl.Result{}, nil
 	}
 
 	// Only process resources assigned to the operator
@@ -119,7 +139,7 @@ func (r *SonataFlowReconciler) Reconcile(ctx context.Context, req ctrl.Request) 
 		klog.V(log.I).InfoS("Ignoring request because resource is not assigned to current operator")
 		return reconcile.Result{}, nil
 	}
-	return profiles.NewReconciler(r.Client, r.Config, r.Recorder, workflow).Reconcile(ctx, workflow)
+	return profilesfactory.NewReconciler(r.Client, r.Config, r.Recorder, workflow).Reconcile(ctx, workflow)
 }
 
 // TODO: move to webhook see https://github.com/apache/incubator-kie-tools/packages/sonataflow-operator/pull/239
@@ -132,6 +152,91 @@ func (r *SonataFlowReconciler) setDefaults(workflow *operatorapi.SonataFlow) {
 	if profile == metadata.DevProfile {
 		workflow.Spec.PodTemplate.DeploymentModel = operatorapi.KubernetesDeploymentModel
 	}
+}
+
+// applyFinalizers Manages the execution of the workflow finalizers.
+func (r *SonataFlowReconciler) applyFinalizers(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, error) {
+	if controllerutil.ContainsFinalizer(workflow, constants.TriggerFinalizer) {
+		if err := r.cleanupTriggers(ctx, workflow); err != nil {
+			return ctrl.Result{}, err
+		}
+	}
+	if controllerutil.ContainsFinalizer(workflow, constants.WorkflowFinalizer) {
+		var wasScheduled = false
+		var err error
+		if !workflow.Status.FinalizerSucceed && workflow.Status.FinalizerAttempts < constants.MaxWorkflowFinalizerAttempts {
+			now := metav1.Now()
+			workflow.Status.FinalizerAttempts = workflow.Status.FinalizerAttempts + 1
+			workflow.Status.LastTimeFinalizerAttempt = &now
+			if err = r.Client.Status().Update(ctx, workflow); err != nil {
+				return ctrl.Result{}, err
+			}
+			if wasScheduled, err = scheduleWorkflowDeletionNotification(r.Client, workflow); err != nil {
+				remaining := constants.MaxWorkflowFinalizerAttempts - workflow.Status.FinalizerAttempts
+				if remaining > 0 {
+					klog.V(log.E).ErrorS(err, fmt.Sprintf("Failed to schedule workflow deletion notification, %d remaining attempts are left", remaining))
+				} else {
+					klog.V(log.E).ErrorS(err, "Failed to schedule workflow deletion notification, no attempts are left.", "workflow", "namespace", workflow.Name, workflow.Namespace)
+				}
+				return ctrl.Result{RequeueAfter: constants.WorkflowFinalizerSchedulingRetryInterval}, nil
+			}
+		}
+		if wasScheduled {
+			return ctrl.Result{RequeueAfter: constants.WorkflowFinalizerRetryInterval}, nil
+		} else {
+			controllerutil.RemoveFinalizer(workflow, constants.WorkflowFinalizer)
+			if err := r.Client.Update(ctx, workflow); err != nil {
+				return ctrl.Result{}, err
+			}
+		}
+	}
+	return ctrl.Result{}, nil
+}
+
+func scheduleWorkflowDeletionNotification(cli client.Client, workflow *operatorapi.SonataFlow) (bool, error) {
+	if eventTargetUrl, err := eventing.GetWorkflowDefinitionEventsTargetURL(cli, workflow); err != nil {
+		return false, fmt.Errorf("failed to get workflow definition events target url to send the workflow definition status update event: %v", err)
+	} else {
+		if len(eventTargetUrl) > 0 {
+			manager.GetSFCWorker().RunAsync(func() {
+				wf := *workflow.DeepCopy()
+				if err := notifyWorkflowDeletion(cli, &wf, eventTargetUrl); err != nil {
+					klog.V(log.E).ErrorS(err, "Failed to notify workflow deletion, controller will schedule a new retry if remaining attempts > 0.", "workflow", "namespace", workflow.Name, workflow.Namespace)
+				}
+			})
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
+func notifyWorkflowDeletion(cli client.Client, workflow *operatorapi.SonataFlow, eventTargetUrl string) error {
+	retryErr := retry.RetryOnConflict(retry.DefaultBackoff, func() error {
+		var err error
+		evt := workflowdef.NewWorkflowDefinitionAvailabilityEvent(workflow, workflowdef.SonataFlowOperatorSource, properties.GetWorkflowEndpointUrlWithNameAndNamespace(workflow.Name, workflow.Namespace), false)
+		ctx, cancel := context.WithTimeout(context.Background(), constants.EventDeliveryTimeout)
+		defer cancel()
+
+		if err = utils.SendCloudEventWithContext(evt, ctx, eventTargetUrl); err != nil {
+			// controller handles to program a new notification based on the remainder FinalizerAttempts if needed.
+			return fmt.Errorf("failed to send workflow definition status update event: %v", err)
+		}
+
+		wfName := workflow.Name
+		wfNamespace := workflow.Namespace
+		workflow = &operatorapi.SonataFlow{}
+		if err = cli.Get(context.Background(), types.NamespacedName{Name: wfName, Namespace: wfNamespace}, workflow); err != nil {
+			return err
+		}
+
+		workflow = workflow.DeepCopy()
+		workflow.Status.FinalizerSucceed = true
+		if err = cli.Status().Update(context.Background(), workflow); err != nil {
+			return err
+		}
+		return nil
+	})
+	return retryErr
 }
 
 func (r *SonataFlowReconciler) cleanupTriggers(ctx context.Context, workflow *operatorapi.SonataFlow) error {
@@ -225,6 +330,15 @@ func buildEnqueueRequestsFromMapFunc(c client.Client, b *operatorapi.SonataFlowB
 func (r *SonataFlowReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	builder := ctrl.NewControllerManagedBy(mgr).
 		For(&operatorapi.SonataFlow{}).
+		WithEventFilter(predicate.Funcs{
+			UpdateFunc: func(e event.UpdateEvent) bool {
+				oldGeneration := e.ObjectOld.GetGeneration()
+				newGeneration := e.ObjectNew.GetGeneration()
+				// Generation is only updated on spec changes (also on deletion), not upon metadata or status changes.
+				// Filter out events where the generation hasn't changed to avoid being triggered by status updates.
+				return oldGeneration != newGeneration
+			},
+		}).
 		Owns(&appsv1.Deployment{}).
 		Owns(&corev1.Service{}).
 		Owns(&corev1.ConfigMap{}).
