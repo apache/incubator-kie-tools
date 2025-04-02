@@ -187,6 +187,29 @@ var _ = Describe("Platform Use Cases :: ", Label("platform"), Ordered, func() {
 					return verifyWorkflowIsInRunningState(sf, targetNamespace)
 				}, 10*time.Minute, 5*time.Second).Should(BeTrue())
 			}
+
+			if profile != metadata.DevProfile {
+				By("Verify that the workflow definition is available")
+				cmd = exec.Command("kubectl", "get", "pod", "-l", "app.kubernetes.io/name in (data-index-service)", "-n", targetNamespace, "-ojsonpath={.items[*].metadata.name}")
+				output, err = utils.Run(cmd)
+				Expect(err).NotTo(HaveOccurred())
+				dataIndexPod := string(output)
+
+				EventuallyWithOffset(1, func() bool {
+					return verifyWorkflowDefinitionIsInStatus(dataIndexPod, "data-index-service", targetNamespace, "sonataflow-platform-data-index-service", "callbackstatetimeouts", "available")
+				}, 10*time.Minute, 5*time.Second).Should(BeTrue())
+
+				By("Undeploy the SonataFlow CR")
+				cmd = exec.Command("kubectl", "delete", "-n", targetNamespace, "-f", filepath.Join(projectDir,
+					testcaseDir, profile.String(), persistenceType, "sonataflow"))
+				manifests, err = utils.Run(cmd)
+				Expect(err).NotTo(HaveOccurred())
+
+				By("Verify that the workflow definition is unavailable")
+				EventuallyWithOffset(1, func() bool {
+					return verifyWorkflowDefinitionIsInStatus(dataIndexPod, "data-index-service", targetNamespace, "sonataflow-platform-data-index-service", "callbackstatetimeouts", "unavailable")
+				}, 10*time.Minute, 5*time.Second).Should(BeTrue())
+			}
 		},
 			Entry("with both Job Service and Data Index and ephemeral persistence and the workflow in a dev profile", test.GetPathFromE2EDirectory("platform", "services"), metadata.DevProfile, ephemeral),
 			Entry("with both Job Service and Data Index and ephemeral persistence and the workflow in a gitops profile", test.GetPathFromE2EDirectory("platform", "services"), metadata.GitOpsProfile, ephemeral),

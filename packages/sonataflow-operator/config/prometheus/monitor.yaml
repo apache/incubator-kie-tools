@@ -19,8 +19,6 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  labels:
-    control-plane: sonataflow-operator
   name: controller-manager-metrics-monitor
   namespace: system
 spec:
@@ -33,4 +31,4 @@ spec:
         insecureSkipVerify: true
   selector:
     matchLabels:
-      control-plane: sonataflow-operator
+      app.kubernetes.io/name: sonataflow-operator

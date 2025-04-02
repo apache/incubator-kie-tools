@@ -19,11 +19,13 @@ package utils
 
 import (
 	"k8s.io/client-go/discovery"
+	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 var k8sClient client.Client
+var k8sDynamicClient *dynamic.DynamicClient
 var discoveryClient discovery.DiscoveryInterface
 
 // TODO: consider refactor the internals as we progress adding features to rely on this client instead of passing it through all the functions
@@ -37,6 +39,17 @@ func GetClient() client.Client {
 // SetClient is meant for internal use only. Don't call it!
 func SetClient(client client.Client) {
 	k8sClient = client
+}
+
+// GetDynamicClient default dynamic client created by the main operator's thread.
+// It's safe to use since it's set when the operator main function runs.
+func GetDynamicClient() *dynamic.DynamicClient {
+	return k8sDynamicClient
+}
+
+// SetDynamicClient is meant for internal use only. Don't call it!
+func SetDynamicClient(cli *dynamic.DynamicClient) {
+	k8sDynamicClient = cli
 }
 
 func GetDiscoveryClient(cfg *rest.Config) (discovery.DiscoveryInterface, error) {
