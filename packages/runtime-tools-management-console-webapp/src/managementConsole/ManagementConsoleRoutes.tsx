@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { FC, useCallback } from "react";
-import { Route } from "react-router-dom";
+import { Outlet, Route } from "react-router-dom";
 import { ProcessListPage } from "../process";
 import { Routes, useNavigate, useLocation, useParams } from "react-router-dom";
 import { ManagementConsoleHome } from "./ManagementConsoleHome";
@@ -49,38 +49,44 @@ export const ManagementConsoleRoutes: FC = () => {
   return (
     <>
       <Routes>
-        <Route
-          path={routes.login.path({})}
-          element={<NewAuthSessionLoginSuccessPage onAddAuthSession={onAddAuthSession} />}
-        />
-        <Route
-          path={routes.runtime.context.path({
-            runtimeUrl: ":runtimeUrl",
-          })}
-          element={<RuntimeContextRouteElement />}
-        />
-        <Route path={routes.home.path({})} element={<ManagementConsoleHome />} />
+        <Route element={<RuntimeRoutesContext />}>
+          <Route
+            path={routes.login.path({})}
+            element={<NewAuthSessionLoginSuccessPage onAddAuthSession={onAddAuthSession} />}
+          />
+          <Route path={routes.runtime.processes.path({ runtimeUrl: ":runtimeUrl" })} element={<ProcessListPage />} />
+          <Route
+            path={routes.runtime.processDetails.path({
+              runtimeUrl: ":runtimeUrl",
+              processInstanceId: ":processInstanceId",
+            })}
+            element={<ProcessDetailsPage />}
+          />
+          <Route path={routes.runtime.jobs.path({ runtimeUrl: ":runtimeUrl" })} element={<JobsPage />} />
+          <Route path={routes.runtime.tasks.path({ runtimeUrl: ":runtimeUrl" })} element={<TasksPage />} />
+          <Route
+            path={routes.runtime.taskDetails.path({ runtimeUrl: ":runtimeUrl", taskId: ":taskId" })}
+            element={<TaskDetailsPage />}
+          />
+          <Route path={routes.home.path({})} element={<ManagementConsoleHome />} />
+        </Route>
       </Routes>
       <NewAuthSessionModal onAddAuthSession={onAddAuthSession} />
     </>
   );
 };
 
-function RuntimeContextRouteElement() {
+function RuntimeRoutesContext() {
   const { runtimeUrl } = useParams<{ runtimeUrl?: string }>();
   const { pathname } = useLocation();
 
-  return (
+  return runtimeUrl && pathname ? (
     <RuntimeContextProvider runtimeUrl={runtimeUrl && decodeURIComponent(runtimeUrl)} fullPath={pathname}>
       <RuntimePageLayoutContextProvider>
-        <Routes>
-          <Route path={"/processes"} element={<ProcessListPage />} />
-          <Route path={"/process/:processInstanceId"} element={<ProcessDetailsPage />} />
-          <Route path={"/jobs"} element={<JobsPage />} />
-          <Route path={"/tasks"} element={<TasksPage />} />
-          <Route path={"/task/:taskId"} element={<TaskDetailsPage />} />
-        </Routes>
+        <Outlet />
       </RuntimePageLayoutContextProvider>
     </RuntimeContextProvider>
+  ) : (
+    <Outlet />
   );
 }

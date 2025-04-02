@@ -127,9 +127,8 @@ export const routes = {
 
   runtime: {
     context: new Route<{
-      pathParams: PathParams.RUNTIME_URL;
       queryParams: QueryParams.USER;
-    }>(({ runtimeUrl }) => `/${runtimeUrl}/*`),
+    }>(() => ``),
 
     processes: new Route<{
       pathParams: PathParams.RUNTIME_URL;
