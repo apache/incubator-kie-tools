@@ -24,14 +24,21 @@ import { NoMatchPage } from "../pages/NoMatchPage";
 import { CloudEventFormPage } from "../pages/Workflows/CloudEventFormPage";
 import { WorkflowFormPage } from "../pages/Workflows/WorkflowFormPage";
 import { routes } from "../routes";
-import { RuntimeToolsRoutesSwitch } from "./RuntimeToolsRoutesSwitch";
+import { RuntimeToolsWorkflowDefinitions } from "../runtimeTools/pages/RuntimeToolsWorkflowDefinitions";
+import { RuntimeToolsWorkflowInstances } from "../runtimeTools/pages/RuntimeToolsWorkflowInstances";
+import { RuntimeToolsWorkflowDetails } from "../runtimeTools/pages/RuntimeToolsWorkflowDetails";
 
 export function RoutesSwitch() {
   return (
     <Routes>
       <Route path={routes.workflows.form.path({ workflowId: ":workflowId" })} element={<WorkflowFormPage />} />
       <Route path={routes.workflows.cloudEvent.path({})} element={<CloudEventFormPage />} />
-      <Route path={routes.runtimeTools.home.path({})} element={<RuntimeToolsRoutesSwitch />} />
+      <Route path={routes.runtimeTools.workflowDefinitions.path({})} element={<RuntimeToolsWorkflowDefinitions />} />
+      <Route path={routes.runtimeTools.workflowInstances.path({})} element={<RuntimeToolsWorkflowInstances />} />
+      <Route
+        path={routes.runtimeTools.workflowDetails.path({ workflowId: ":workflowId" })}
+        element={<RuntimeToolsWorkflowDetails />}
+      />
       <Route
         path={routes.dataJsonError.path({})}
         element={
@@ -42,7 +49,7 @@ export function RoutesSwitch() {
         path={routes.home.path({})}
         element={<Navigate replace to={routes.runtimeTools.workflowDefinitions.path({})} />}
       />
-      <Route element={<NoMatchPage />} />
+      <Route path={"*"} element={<NoMatchPage />} />
     </Routes>
   );
 }

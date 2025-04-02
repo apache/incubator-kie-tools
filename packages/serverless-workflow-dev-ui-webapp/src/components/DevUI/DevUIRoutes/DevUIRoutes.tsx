@@ -45,10 +45,8 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ dataIndexUrl, navigate }) => {
       <Route path="/WorkflowDefinition/Form/:workflowName" element={<WorkflowFormPage />} />,
       <Route path="/CustomDashboard" element={<CustomDashboardListPage />} />,
       <Route path="/CustomDashboard/:customDashboardName" element={<CustomDashboardViewPage />} />,
-      <Route path="/Monitoring">
-        <MonitoringPage dataIndexUrl={dataIndexUrl} />
-      </Route>
-      <Route path="/Workflows/CloudEvent/:instanceId?" element={<CloudEventFormPage />} />,
+      <Route path="/Monitoring" element={<MonitoringPage dataIndexUrl={dataIndexUrl} />} />
+      <Route path="/Workflows/CloudEvent/:instanceId" element={<CloudEventFormPage />} />,
       <Route path="/WorkflowDefinitions/CloudEvent" element={<CloudEventFormPage />} />,
     </Routes>
   );
