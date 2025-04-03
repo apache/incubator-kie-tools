@@ -19,20 +19,21 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { EnvelopeBus } from "@kie-tools-core/envelope-bus/dist/api";
-import { ProcessDefinitionListChannelApi, ProcessDefinitionListEnvelopeApi } from "../api";
-import { ProcessDefinitionListEnvelopeContext } from "./ProcessDefinitionListEnvelopeContext";
-import {
-  ProcessDefinitionListEnvelopeView,
-  ProcessDefinitionListEnvelopeViewApi,
-} from "./ProcessDefinitionListEnvelopeView";
-import { ProcessDefinitionListEnvelopeApiImpl } from "./ProcessDefinitionListEnvelopeApiImpl";
+import { ProcessDefinitionsListChannelApi, ProcessDefinitionsListEnvelopeApi } from "../api";
 import { Envelope, EnvelopeDivConfig } from "@kie-tools-core/envelope";
+import { ProcessDefinitionsListEnvelopeContext } from "./ProcessDefinitionsListEnvelopeContext";
+import {
+  ProcessDefinitionsListEnvelopeView,
+  ProcessDefinitionsListEnvelopeViewApi,
+} from "./ProcessDefinitionsListEnvelopeView";
+import { ProcessDefinitionsListEnvelopeApiImpl } from "./ProcessDefinitionsListEnvelopeApiImpl";
 
 /**
  * Function that starts an Envelope application.
  *
- * @param args.container: The HTML element in which the ProcessDefinitionList will render
+ * @param args.container: The HTML element in which the process list View will render
  * @param args.bus: The implementation of a `bus` that knows how to send messages to the Channel.
+ * @param args.config: The config which contains the container type and the envelope id.
  *
  */
 export function init(args: { config: EnvelopeDivConfig; container: HTMLDivElement; bus: EnvelopeBus }) {
@@ -40,31 +41,25 @@ export function init(args: { config: EnvelopeDivConfig; container: HTMLDivElemen
    * Creates a new generic Envelope, typed with the right interfaces.
    */
   const envelope = new Envelope<
-    ProcessDefinitionListEnvelopeApi,
-    ProcessDefinitionListChannelApi,
-    ProcessDefinitionListEnvelopeViewApi,
-    ProcessDefinitionListEnvelopeContext
+    ProcessDefinitionsListEnvelopeApi,
+    ProcessDefinitionsListChannelApi,
+    ProcessDefinitionsListEnvelopeViewApi,
+    ProcessDefinitionsListEnvelopeContext
   >(args.bus, args.config);
 
-  /**
-   * Function that knows how to render a ProcessDefinitionList.
-   * In this case, it's a React application, but any other framework can be used.
-   *
-   * Returns a Promise<() => ProcessDefinitionListEnvelopeViewApi> that can be used in ProcessDefinitionListEnvelopeApiImpl.
-   */
   const envelopeViewDelegate = async () => {
-    const ref = React.createRef<ProcessDefinitionListEnvelopeViewApi>();
-    return new Promise<() => ProcessDefinitionListEnvelopeViewApi>((res) => {
+    const ref = React.createRef<ProcessDefinitionsListEnvelopeViewApi>();
+    return new Promise<() => ProcessDefinitionsListEnvelopeViewApi>((res) => {
       ReactDOM.render(
-        <ProcessDefinitionListEnvelopeView ref={ref} channelApi={envelope.channelApi} />,
+        <ProcessDefinitionsListEnvelopeView ref={ref} channelApi={envelope.channelApi} />,
         args.container,
         () => res(() => ref.current!)
       );
     });
   };
 
-  const context: ProcessDefinitionListEnvelopeContext = {};
+  const context: ProcessDefinitionsListEnvelopeContext = {};
   return envelope.start(envelopeViewDelegate, context, {
-    create: (apiFactoryArgs) => new ProcessDefinitionListEnvelopeApiImpl(apiFactoryArgs),
+    create: (apiFactoryArgs) => new ProcessDefinitionsListEnvelopeApiImpl(apiFactoryArgs),
   });
 }

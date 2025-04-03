@@ -17,27 +17,29 @@
  * under the License.
  */
 import { ApolloClient } from "apollo-client";
-import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { ProcessDefinitionsFilter, ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { getProcessDefinitions } from "@kie-tools/runtime-tools-process-gateway-api/dist/gatewayApi";
 
-export interface ProcessDefinitionListQueries {
-  getProcessDefinitions(): Promise<ProcessDefinition[]>;
+export interface ProcessDefinitionsListQueries {
+  getProcessDefinitions(filters: ProcessDefinitionsFilter): Promise<ProcessDefinition[]>;
 }
 
-export class GraphQLProcessDefinitionListQueries implements ProcessDefinitionListQueries {
+export class GraphQLProcessDefinitionsListQueries implements ProcessDefinitionsListQueries {
   constructor(
     private readonly client: ApolloClient<any>,
-    private readonly options?: { transformEndpointBaseUrl?: (url?: string) => string }
-  ) {
-    this.client = client;
-  }
+    private readonly options?: { transformEndpointBaseUrl?: (url?: string) => string | undefined }
+  ) {}
 
-  getProcessDefinitions(): Promise<ProcessDefinition[]> {
-    return getProcessDefinitions(this.client).then((processDefinitions) =>
-      processDefinitions.map((definition) => ({
-        ...definition,
-        endpoint: this.options?.transformEndpointBaseUrl?.(definition.endpoint) ?? definition.endpoint,
-      }))
-    );
+  getProcessDefinitions(filters: ProcessDefinitionsFilter): Promise<ProcessDefinition[]> {
+    return getProcessDefinitions(this.client).then((processInstances) => {
+      return processInstances
+        .map((process) => ({
+          ...process,
+          endpoint: this.options?.transformEndpointBaseUrl?.(process.endpoint) ?? process.endpoint,
+        }))
+        .filter(
+          (definition) => filters?.processNames?.length === 0 || filters.processNames.includes(definition.processName)
+        );
+    });
   }
 }

@@ -17,7 +17,8 @@
  * under the License.
  */
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
-import { ProcessDefinition, ProcessFormChannelApi, ProcessFormDriver } from "../api";
+import { ProcessFormChannelApi, ProcessFormDriver } from "../api";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export class EmbeddedProcessFormChannelApiImpl implements ProcessFormChannelApi {
   constructor(private readonly driver: ProcessFormDriver) {}

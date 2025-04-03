@@ -46,10 +46,12 @@ import { JobsManagementContextProvider } from "@kie-tools/runtime-tools-process-
 import { ProcessDetailsContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
 import { TaskInboxContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskInbox";
 import { TaskFormContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskForms";
+import { ProcessDefinitionsListContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDefinitionsList";
 
 export type RuntimePathSearchParams = Partial<Record<QueryParams, string>>;
 export enum RuntimePathSearchParamsRoutes {
   PROCESSES = "processes",
+  PROCESS_DEFINITIONS = "processDefinitions",
   JOBS = "jobs",
   TASKS = "tasks",
   TASK_DETAILS = "taskDetails",
@@ -388,11 +390,13 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
             <KogitoAppContextProvider userContext={userContext}>
               <ProcessListContextProvider apolloClient={apolloClient} options={providerOptions}>
                 <ProcessDetailsContextProvider apolloClient={apolloClient} options={providerOptions}>
-                  <JobsManagementContextProvider apolloClient={apolloClient}>
-                    <TaskInboxContextProvider apolloClient={apolloClient}>
-                      <TaskFormContextProvider options={providerOptions}>{props.children}</TaskFormContextProvider>
-                    </TaskInboxContextProvider>
-                  </JobsManagementContextProvider>
+                  <ProcessDefinitionsListContextProvider apolloClient={apolloClient} options={providerOptions}>
+                    <JobsManagementContextProvider apolloClient={apolloClient}>
+                      <TaskInboxContextProvider apolloClient={apolloClient}>
+                        <TaskFormContextProvider options={providerOptions}>{props.children}</TaskFormContextProvider>
+                      </TaskInboxContextProvider>
+                    </JobsManagementContextProvider>
+                  </ProcessDefinitionsListContextProvider>
                 </ProcessDetailsContextProvider>
               </ProcessListContextProvider>
             </KogitoAppContextProvider>
@@ -468,6 +472,33 @@ export function useRuntimeSpecificRoutes() {
           return buildRouteUrl(
             routes.runtime.processDetails,
             { runtimeUrl: pathRuntimeUrl, processInstanceId },
+            { user: pathUsername }
+          );
+        }
+        // Should never come to this...
+        return buildRouteUrl(routes.home);
+      },
+      processDefinitions: (authSession?: AuthSession) => {
+        const pathRuntimeUrl = authSession ? authSession.runtimeUrl : runtimeUrl;
+        const pathUsername = authSession && isOpenIdConnectAuthSession(authSession) ? authSession.username : username;
+        if (pathRuntimeUrl) {
+          return buildRouteUrl(
+            routes.runtime.processDefinitions,
+            { runtimeUrl: pathRuntimeUrl },
+            { user: pathUsername },
+            runtimePathSearchParams.get(RuntimePathSearchParamsRoutes.PROCESS_DEFINITIONS)
+          );
+        }
+        // Should never come to this...
+        return buildRouteUrl(routes.home);
+      },
+      processDefinitionForm: (processName: string, authSession?: AuthSession) => {
+        const pathRuntimeUrl = authSession ? authSession.runtimeUrl : runtimeUrl;
+        const pathUsername = authSession && isOpenIdConnectAuthSession(authSession) ? authSession.username : username;
+        if (pathRuntimeUrl) {
+          return buildRouteUrl(
+            routes.runtime.processDefinitionForm,
+            { runtimeUrl: pathRuntimeUrl, processName },
             { user: pathUsername }
           );
         }

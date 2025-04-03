@@ -16,31 +16,27 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useMemo } from "react";
-import { DevUIAppContext, useDevUIAppContext } from "../../components/contexts/DevUIAppContext";
-import ProcessDefinitionListContext from "./ProcessDefinitionListContext";
-import { ProcessDefinitionListGatewayApiImpl } from "./ProcessDefinitionListGatewayApi";
+import React, { useMemo, FC, ReactElement } from "react";
 import { ApolloClient } from "apollo-client";
-import { GraphQLProcessDefinitionListQueries } from "./ProcessDefinitionListQueries";
+import ProcessListContext from "./ProcessDefinitionsListContext";
+import { ProcessDefinitionsListGatewayApiImpl } from "./ProcessDefinitionsListGatewayApi";
+import { GraphQLProcessDefinitionsListQueries } from "./ProcessDefinitionsListQueries";
 
-interface ProcessDefinitionListContextProviderProps {
+interface ProcessDefinitionsListContextProviderProps {
   apolloClient: ApolloClient<any>;
-  children;
-  options?: { transformEndpointBaseUrl?: (url?: string) => string };
+  children: ReactElement;
+  options?: { transformEndpointBaseUrl?: (url?: string) => string | undefined };
 }
 
-const ProcessDefinitionListContextProvider: React.FC<ProcessDefinitionListContextProviderProps> = ({
+export const ProcessDefinitionsListContextProvider: FC<ProcessDefinitionsListContextProviderProps> = ({
   apolloClient,
   children,
   options,
 }) => {
   const gatewayApiImpl = useMemo(() => {
-    return new ProcessDefinitionListGatewayApiImpl(new GraphQLProcessDefinitionListQueries(apolloClient, options));
+    return new ProcessDefinitionsListGatewayApiImpl(new GraphQLProcessDefinitionsListQueries(apolloClient, options));
   }, [apolloClient, options]);
-
-  return (
-    <ProcessDefinitionListContext.Provider value={gatewayApiImpl}>{children}</ProcessDefinitionListContext.Provider>
-  );
+  return <ProcessListContext.Provider value={gatewayApiImpl}>{children}</ProcessListContext.Provider>;
 };
 
-export default ProcessDefinitionListContextProvider;
+export default ProcessDefinitionsListContextProvider;

@@ -16,40 +16,41 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tools-core/envelope/dist/embedded";
 import {
-  ProcessDefinitionListApi,
-  ProcessDefinitionListChannelApi,
-  ProcessDefinitionListEnvelopeApi,
-  ProcessDefinitionListDriver,
+  ProcessDefinitionsListApi,
+  ProcessDefinitionsListChannelApi,
+  ProcessDefinitionsListEnvelopeApi,
+  ProcessDefinitionsListDriver,
 } from "../api";
-import { ProcessDefinitionListChannelApiImpl } from "./ProcessDefinitionListChannelApiImpl";
+import { ProcessDefinitionsListChannelApiImpl } from "./ProcessDefinitionsListChannelApiImpl";
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
 import { init } from "../envelope";
+import { ProcessDefinitionsListState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export interface Props {
   targetOrigin: string;
-  driver: ProcessDefinitionListDriver;
+  driver: ProcessDefinitionsListDriver;
+  initialState: ProcessDefinitionsListState;
   singularProcessLabel: string;
-  isTriggerCloudEventEnabled?: boolean;
 }
 
-export const EmbeddedProcessDefinitionList = React.forwardRef(
-  (props: Props, forwardedRef: React.Ref<ProcessDefinitionListApi>) => {
+export const EmbeddedProcessDefinitionsList = React.forwardRef(
+  (props: Props, forwardedRef: React.Ref<ProcessDefinitionsListApi>) => {
     const refDelegate = useCallback(
       (
-        envelopeServer: EnvelopeServer<ProcessDefinitionListChannelApi, ProcessDefinitionListEnvelopeApi>
-      ): ProcessDefinitionListApi => ({}),
+        envelopeServer: EnvelopeServer<ProcessDefinitionsListChannelApi, ProcessDefinitionsListEnvelopeApi>
+      ): ProcessDefinitionsListApi => ({}),
       []
     );
     const pollInit = useCallback(
-      (
-        envelopeServer: EnvelopeServer<ProcessDefinitionListChannelApi, ProcessDefinitionListEnvelopeApi>,
+      async (
+        envelopeServer: EnvelopeServer<ProcessDefinitionsListChannelApi, ProcessDefinitionsListEnvelopeApi>,
         container: () => HTMLDivElement
       ) => {
-        init({
+        await init({
           config: {
             containerType: ContainerType.DIV,
             envelopeId: envelopeServer.id,
@@ -61,23 +62,28 @@ export const EmbeddedProcessDefinitionList = React.forwardRef(
             },
           },
         });
-        return envelopeServer.envelopeApi.requests.processDefinitionList__init(
+        return envelopeServer.envelopeApi.requests.processDefinitionsList__init(
           {
             origin: envelopeServer.origin,
             envelopeServerId: envelopeServer.id,
           },
           {
+            initialState: { ...props.initialState },
             singularProcessLabel: props.singularProcessLabel,
           }
         );
       },
-      []
+      [props.initialState, props.singularProcessLabel]
     );
 
+    const apiImpl = useMemo(() => {
+      return new ProcessDefinitionsListChannelApiImpl(props.driver);
+    }, [props.driver]);
+
     return (
-      <EmbeddedProcessDefinitionListEnvelope
+      <EmbeddedProcessDefinitionsListEnvelope
         ref={forwardedRef}
-        apiImpl={new ProcessDefinitionListChannelApiImpl(props.driver)}
+        apiImpl={apiImpl}
         origin={props.targetOrigin}
         refDelegate={refDelegate}
         pollInit={pollInit}
@@ -87,7 +93,7 @@ export const EmbeddedProcessDefinitionList = React.forwardRef(
   }
 );
 
-const EmbeddedProcessDefinitionListEnvelope = React.forwardRef<
-  ProcessDefinitionListApi,
-  EmbeddedEnvelopeProps<ProcessDefinitionListChannelApi, ProcessDefinitionListEnvelopeApi, ProcessDefinitionListApi>
+const EmbeddedProcessDefinitionsListEnvelope = React.forwardRef<
+  ProcessDefinitionsListApi,
+  EmbeddedEnvelopeProps<ProcessDefinitionsListChannelApi, ProcessDefinitionsListEnvelopeApi, ProcessDefinitionsListApi>
 >(RefForwardingEmbeddedEnvelope);

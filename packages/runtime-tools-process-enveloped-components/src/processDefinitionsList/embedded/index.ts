@@ -16,7 +16,4 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export * from "./ProcessDefinitionListApi";
-export * from "./ProcessDefinitionListChannelApi";
-export * from "./ProcessDefinitionListEnvelopeApi";
-export * from "./ProcessDefinitionListDriver";
+export * from "./EmbeddedProcessDefinitionsList";

@@ -16,20 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export interface ProcessDefinitionListEnvelopeApi {
-  processDefinitionList__init(association: Association, initArgs: ProcessDefinitionListInitArgs): Promise<void>;
+.kogito-management-console__state-dropdown-list .pf-c-data-toolbar__item:first-child .pf-c-chip__text::first-letter {
+  text-transform: uppercase;
+}
+.kogito-management-console__state-dropdown-list .pf-c-data-toolbar__item:first-child .pf-c-chip__text {
+  text-transform: lowercase;
 }
 
-export interface Association {
-  origin: string;
-  envelopeServerId: string;
+.kogito-management-console__state-dropdown-list .pf-c-check__label::first-letter {
+  text-transform: uppercase;
 }
 
-export interface ProcessDefinition {
-  processName: string;
-  endpoint: string;
+.kogito-management-console__state-dropdown-list .pf-c-check__label {
+  text-transform: lowercase;
 }
 
-export interface ProcessDefinitionListInitArgs {
-  singularProcessLabel: string;
+.kogito-process-list__link {
+  display: block;
+}
+
+.kogito-management-console__compact-table {
+  border-left: solid;
+  border-left-color: var(--pf-global--active-color--100);
+}
+
+.kogito-process-list__emptyState-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }

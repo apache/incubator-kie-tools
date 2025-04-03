@@ -19,16 +19,11 @@
 import React, { useCallback } from "react";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tools-core/envelope/dist/embedded";
-import {
-  ProcessDefinition,
-  ProcessFormApi,
-  ProcessFormChannelApi,
-  ProcessFormDriver,
-  ProcessFormEnvelopeApi,
-} from "../api";
+import { ProcessFormApi, ProcessFormChannelApi, ProcessFormDriver, ProcessFormEnvelopeApi } from "../api";
 import { EmbeddedProcessFormChannelApiImpl } from "./EmbeddedProcessFormChannelApiImpl";
 import { init } from "../envelope";
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export interface EmbeddedProcessFormProps {
   targetOrigin: string;

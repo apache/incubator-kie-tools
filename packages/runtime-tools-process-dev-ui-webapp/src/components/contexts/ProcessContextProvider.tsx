@@ -21,7 +21,7 @@ import { ApolloClient } from "apollo-client";
 import { useDevUIAppContext } from "../../components/contexts/DevUIAppContext";
 import { ProcessListContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessList";
 import { ProcessDetailsContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
-import { ProcessDefinitionListContextProvider } from "../../channel/ProcessDefinitionList";
+import { ProcessDefinitionsListContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDefinitionsList";
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
@@ -40,12 +40,12 @@ export const ProcessContextProvider: React.FC<IOwnProps> = ({ apolloClient, chil
         apolloClient={apolloClient}
         options={{ transformEndpointBaseUrl: (url) => appContext.transformEndpointBaseUrl(url) }}
       >
-        <ProcessDefinitionListContextProvider
+        <ProcessDefinitionsListContextProvider
           apolloClient={apolloClient}
           options={{ transformEndpointBaseUrl: (url) => appContext.transformEndpointBaseUrl(url) }}
         >
           {children}
-        </ProcessDefinitionListContextProvider>
+        </ProcessDefinitionsListContextProvider>
       </ProcessDetailsContextProvider>
     </ProcessListContextProvider>
   );

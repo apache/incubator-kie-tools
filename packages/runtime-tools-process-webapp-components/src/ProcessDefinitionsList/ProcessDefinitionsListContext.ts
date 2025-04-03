@@ -16,6 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export { ProcessDefinitionListGatewayApi } from "./ProcessDefinitionListGatewayApi";
-export * from "./ProcessDefinitionListContext";
-export { default as ProcessDefinitionListContextProvider } from "./ProcessDefinitionListContextProvider";
+import React, { useContext, createContext } from "react";
+import { ProcessDefinitionsListGatewayApi } from "./ProcessDefinitionsListGatewayApi";
+
+export const ProcessDefinitionsListContext = createContext<ProcessDefinitionsListGatewayApi>(
+  {} as ProcessDefinitionsListGatewayApi
+);
+
+export const useProcessDefinitionsListGatewayApi = (): ProcessDefinitionsListGatewayApi =>
+  useContext<ProcessDefinitionsListGatewayApi>(ProcessDefinitionsListContext);
+
+export default ProcessDefinitionsListContext;

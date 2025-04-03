@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useContext } from "react";
-import { ProcessDefinitionListGatewayApi } from "./ProcessDefinitionListGatewayApi";
 
-const ProcessDefinitionListContext = React.createContext<ProcessDefinitionListGatewayApi>(null);
+import { ProcessDefinition, ProcessDefinitionsFilter } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
-export const useProcessDefinitionListGatewayApi = (): ProcessDefinitionListGatewayApi =>
-  useContext<ProcessDefinitionListGatewayApi>(ProcessDefinitionListContext);
-
-export default ProcessDefinitionListContext;
+export interface ProcessDefinitionsListDriver {
+  initialLoad(filter: ProcessDefinitionsFilter): Promise<void>;
+  openProcessDefinitionForm(processDefinition: ProcessDefinition): Promise<void>;
+  applyFilter(filter: ProcessDefinitionsFilter): Promise<void>;
+  query(): Promise<ProcessDefinition[]>;
+}

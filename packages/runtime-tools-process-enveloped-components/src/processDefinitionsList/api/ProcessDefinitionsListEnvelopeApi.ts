@@ -16,14 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ProcessDefinition } from "./ProcessDefinitionListEnvelopeApi";
 
-/**
- * Channel Api for Process Definition List
- */
-export interface ProcessDefinitionListChannelApi {
-  processDefinitionList__getProcessDefinitionsQuery(): Promise<ProcessDefinition[]>;
-  processDefinitionList__setProcessDefinitionFilter(filter: string[]): Promise<void>;
-  processDefinitionList__getProcessDefinitionFilter(): Promise<string[]>;
-  processDefinitionList__openProcessForm(processDefinition: ProcessDefinition): Promise<void>;
+import { ProcessDefinitionsListState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+
+export interface ProcessDefinitionsListEnvelopeApi {
+  processDefinitionsList__init(association: Association, initArgs: ProcessDefinitionsListInitArgs): Promise<void>;
+}
+
+export interface Association {
+  origin: string;
+  envelopeServerId: string;
+}
+
+export interface ProcessDefinitionsListInitArgs {
+  initialState: ProcessDefinitionsListState;
+  singularProcessLabel: string;
 }

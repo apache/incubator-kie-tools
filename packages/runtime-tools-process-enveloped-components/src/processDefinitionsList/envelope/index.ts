@@ -16,14 +16,4 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
-
-/**
- * Interface that defines a Driver for ProcessForm views.
- */
-export interface ProcessFormDriver {
-  getProcessFormSchema(processDefinitionData: ProcessDefinition): Promise<Record<string, any>>;
-  getCustomForm(processDefinitionData: ProcessDefinition): Promise<Form>;
-  startProcess(formData: any): Promise<void>;
-}
+export * from "./ProcessDefinitionsListEnvelope";

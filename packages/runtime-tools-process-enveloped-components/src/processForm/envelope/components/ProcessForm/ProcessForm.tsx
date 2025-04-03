@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useCallback, useEffect, useState } from "react";
-import { ProcessDefinition, ProcessFormDriver } from "../../../api";
+import { ProcessFormDriver } from "../../../api";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import CustomProcessFormDisplayer from "./CustomProcessFormDisplayer";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
@@ -26,6 +26,7 @@ import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { FormAction } from "@kie-tools/runtime-tools-components/dist/utils";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export interface ProcessFormProps {
   processDefinition: ProcessDefinition;

@@ -16,4 +16,5 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export * from "./EmbeddedProcessDefinitionList";
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface ProcessDefinitionsListApi {}

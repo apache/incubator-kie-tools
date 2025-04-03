@@ -17,8 +17,9 @@
  * under the License.
  */
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { ProcessDefinition, ProcessFormChannelApi, ProcessFormDriver } from "../api";
+import { ProcessFormChannelApi, ProcessFormDriver } from "../api";
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 /**
  * Implementation of ProcessFormDriver to be used on ProcessFormEnvelopeView

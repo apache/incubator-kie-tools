@@ -16,14 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ProcessDefinition } from "./ProcessDefinitionListEnvelopeApi";
-
-/**
- * Interface that defines a Driver for ProcessDefinitionList views.
- */
-export interface ProcessDefinitionListDriver {
-  getProcessDefinitionsQuery(): Promise<ProcessDefinition[]>;
-  setProcessDefinitionFilter(filter: string[]): Promise<void>;
-  getProcessDefinitionFilter(): Promise<string[]>;
-  openProcessForm(processDefinition: ProcessDefinition): Promise<void>;
-}
+export * from "./ProcessDefinitionsListGatewayApi";
+export * from "./ProcessDefinitionsListContext";
+export * from "./ProcessDefinitionsListContextProvider";

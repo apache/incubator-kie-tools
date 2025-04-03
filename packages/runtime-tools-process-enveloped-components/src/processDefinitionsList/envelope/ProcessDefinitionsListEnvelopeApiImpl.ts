@@ -17,27 +17,25 @@
  * under the License.
  */
 import { EnvelopeApiFactoryArgs } from "@kie-tools-core/envelope";
-import { ProcessDefinitionListEnvelopeViewApi } from "./ProcessDefinitionListEnvelopeView";
+import { ProcessDefinitionsListEnvelopeViewApi } from "./ProcessDefinitionsListEnvelopeView";
 import {
   Association,
-  ProcessDefinitionListChannelApi,
-  ProcessDefinitionListEnvelopeApi,
-  ProcessDefinitionListInitArgs,
+  ProcessDefinitionsListChannelApi,
+  ProcessDefinitionsListEnvelopeApi,
+  ProcessDefinitionsListInitArgs,
 } from "../api";
-import { ProcessDefinitionListEnvelopeContext } from "./ProcessDefinitionListEnvelopeContext";
+import { ProcessDefinitionsListEnvelopeContext } from "./ProcessDefinitionsListEnvelopeContext";
 
-/**
- * Implementation of the ProcessDefinitionListEnvelopeApi
- */
-export class ProcessDefinitionListEnvelopeApiImpl implements ProcessDefinitionListEnvelopeApi {
-  private view: () => ProcessDefinitionListEnvelopeViewApi;
+export class ProcessDefinitionsListEnvelopeApiImpl implements ProcessDefinitionsListEnvelopeApi {
+  private view: () => ProcessDefinitionsListEnvelopeViewApi;
   private capturedInitRequestYet = false;
+
   constructor(
     private readonly args: EnvelopeApiFactoryArgs<
-      ProcessDefinitionListEnvelopeApi,
-      ProcessDefinitionListChannelApi,
-      ProcessDefinitionListEnvelopeViewApi,
-      ProcessDefinitionListEnvelopeContext
+      ProcessDefinitionsListEnvelopeApi,
+      ProcessDefinitionsListChannelApi,
+      ProcessDefinitionsListEnvelopeViewApi,
+      ProcessDefinitionsListEnvelopeContext
     >
   ) {}
 
@@ -49,12 +47,11 @@ export class ProcessDefinitionListEnvelopeApiImpl implements ProcessDefinitionLi
     this.capturedInitRequestYet = true;
   }
 
-  processDefinitionList__init = async (
+  public processDefinitionsList__init = async (
     association: Association,
-    initArgs: ProcessDefinitionListInitArgs
+    initArgs: ProcessDefinitionsListInitArgs
   ): Promise<void> => {
     this.args.envelopeClient.associate(association.origin, association.envelopeServerId);
-
     if (this.hasCapturedInitRequestYet()) {
       return;
     }

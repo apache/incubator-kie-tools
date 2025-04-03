@@ -18,17 +18,17 @@
   ~ under the License.
 -->
 <dmn:definitions
-  xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/"
+  xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
   xmlns="https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB"
   xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
-  xmlns:kie="https://kie.org/dmn/extensions/1.0"
-  xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
+  xmlns:kie="http://www.drools.org/kie/dmn/1.2"
+  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
   xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
   xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
   id="_C6CBECEB-2BBC-4E14-80B0-17F576B2CF92"
   name="loan_pre_qualification"
-  expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
-  typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+  expressionLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
   namespace="https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB"
 >
   <dmn:extensionElements />
@@ -49,7 +49,7 @@
   <dmn:itemDefinition id="_2B4E9593-3239-4E04-A213-345F0AA0AF9D" name="Marital_Status" isCollection="false">
     <dmn:typeRef>string</dmn:typeRef>
     <dmn:allowedValues id="_5BD13D9D-412F-4E6B-914A-3D8AAAC6A705">
-      <dmn:text>&quot;M&quot;,&quot;D&quot;,&quot;S&quot;</dmn:text>
+      <dmn:text>"M","D","S"</dmn:text>
     </dmn:allowedValues>
   </dmn:itemDefinition>
   <dmn:itemDefinition id="_F090CBB7-F5C3-4C54-9905-517DC1469B52" name="Applicant_Data" isCollection="false">
@@ -62,7 +62,7 @@
     <dmn:itemComponent id="_701117b8-2f8d-4e94-a5db-d503f0fba3af" name="Employment Status" isCollection="false">
       <dmn:typeRef>string</dmn:typeRef>
       <dmn:allowedValues id="_4A8E36FC-A40C-4CB5-9AE1-73082DA24D13">
-        <dmn:text>&quot;Unemployed&quot;,&quot;Employed&quot;,&quot;Self-employed&quot;,&quot;Student&quot;</dmn:text>
+        <dmn:text>"Unemployed","Employed","Self-employed","Student"</dmn:text>
       </dmn:allowedValues>
     </dmn:itemComponent>
     <dmn:itemComponent id="_17ad2a24-425f-4df7-92fc-609e10217b8b" name="Existing Customer" isCollection="false">
@@ -105,55 +105,55 @@
   <dmn:itemDefinition id="_9AEAE50E-67BF-4428-A6CD-B48D299FD73C" name="Eligibility" isCollection="false">
     <dmn:typeRef>string</dmn:typeRef>
     <dmn:allowedValues id="_79C7F45D-228F-437B-AF7E-615FC72A5354">
-      <dmn:text>&quot;Ineligible&quot;,&quot;Eligible&quot;</dmn:text>
+      <dmn:text>"Ineligible","Eligible"</dmn:text>
     </dmn:allowedValues>
   </dmn:itemDefinition>
   <dmn:itemDefinition id="_FBF245E7-9A93-4D52-9F02-AF6893011A5F" name="Strategy" isCollection="false">
     <dmn:typeRef>string</dmn:typeRef>
     <dmn:allowedValues id="_0B005355-19D0-447B-B2DE-6D1290C7504C">
-      <dmn:text>&quot;Decline&quot;,&quot;Bureau&quot;,&quot;Through&quot;</dmn:text>
+      <dmn:text>"Decline","Bureau","Through"</dmn:text>
     </dmn:allowedValues>
   </dmn:itemDefinition>
   <dmn:itemDefinition id="_5D34E713-E94E-403E-A681-DD6948BE4F79" name="Bureau_Call_Type" isCollection="false">
     <dmn:typeRef>string</dmn:typeRef>
     <dmn:allowedValues id="_947DBBA1-70A0-42DA-BC37-FD2FD93BF61B">
-      <dmn:text>&quot;Full&quot;,&quot;Mini&quot;,&quot;None&quot;</dmn:text>
+      <dmn:text>"Full","Mini","None"</dmn:text>
     </dmn:allowedValues>
   </dmn:itemDefinition>
   <dmn:itemDefinition id="_9AF58ED6-A526-4346-8780-0D1E6038CA6F" name="Product_Type" isCollection="false">
     <dmn:typeRef>string</dmn:typeRef>
     <dmn:allowedValues id="_A2554140-8060-4F66-BA16-3A8DFE12C17C">
-      <dmn:text>&quot;Standard Loan&quot;,&quot;Special Loan&quot;</dmn:text>
+      <dmn:text>"Standard Loan","Special Loan"</dmn:text>
     </dmn:allowedValues>
   </dmn:itemDefinition>
   <dmn:itemDefinition id="_4D36A25E-9A37-47AE-B9BF-94338AE67609" name="Risk_Category" isCollection="false">
     <dmn:typeRef>string</dmn:typeRef>
     <dmn:allowedValues id="_041426C2-B9D2-4C18-9AC3-5A508D000839">
-      <dmn:text>&quot;High&quot;,&quot;Medium&quot;,&quot;Low&quot;,&quot;Very Low&quot;,&quot;Decline&quot;</dmn:text>
+      <dmn:text>"High","Medium","Low","Very Low","Decline"</dmn:text>
     </dmn:allowedValues>
   </dmn:itemDefinition>
   <dmn:itemDefinition id="_46C870FC-2A99-43A0-9D1B-3D3C5516FB23" name="Credit_Score_Rating" isCollection="false">
     <dmn:typeRef>string</dmn:typeRef>
     <dmn:allowedValues id="_8470AE69-2814-4911-953D-3FC61A681063">
-      <dmn:text>&quot;Poor&quot;,&quot;Bad&quot;,&quot;Fair&quot;,&quot;Good&quot;,&quot;Excellent&quot;</dmn:text>
+      <dmn:text>"Poor","Bad","Fair","Good","Excellent"</dmn:text>
     </dmn:allowedValues>
   </dmn:itemDefinition>
   <dmn:itemDefinition id="_7641A6FA-BCF3-45D1-A0B6-71B0634ABB3E" name="Back_End_Ratio" isCollection="false">
     <dmn:typeRef>string</dmn:typeRef>
     <dmn:allowedValues id="_CA1C6F0E-186F-41DD-8D8D-D405789BA3F1">
-      <dmn:text>&quot;Insufficient&quot;,&quot;Sufficient&quot;</dmn:text>
+      <dmn:text>"Insufficient","Sufficient"</dmn:text>
     </dmn:allowedValues>
   </dmn:itemDefinition>
   <dmn:itemDefinition id="_B5E00A2D-3C95-4A9C-BCA6-BDE852939F6D" name="Front_End_Ratio" isCollection="false">
     <dmn:typeRef>string</dmn:typeRef>
     <dmn:allowedValues id="_B8658CA2-F472-4390-8AB0-1DD49100B20C">
-      <dmn:text>&quot;Sufficient&quot;,&quot;Insufficient&quot;</dmn:text>
+      <dmn:text>"Sufficient","Insufficient"</dmn:text>
     </dmn:allowedValues>
   </dmn:itemDefinition>
   <dmn:itemDefinition id="_B8ACE210-2C55-4C66-B3D8-4885EE1C52A0" name="Qualification" isCollection="false">
     <dmn:typeRef>string</dmn:typeRef>
     <dmn:allowedValues id="_1F66B8BF-6AB7-4965-8A69-897DDC1A8B34">
-      <dmn:text>&quot;Not Qualified&quot;,&quot;Qualified&quot;</dmn:text>
+      <dmn:text>"Not Qualified","Qualified"</dmn:text>
     </dmn:allowedValues>
   </dmn:itemDefinition>
   <dmn:itemDefinition id="_2CC2E8D7-1BE2-4E4A-8072-55A1EC94DB6E" name="Credit_Score" isCollection="false">
@@ -168,7 +168,7 @@
     <dmn:itemComponent id="_e11c3ac3-7370-4378-967b-91e9cb221fe1" name="Qualification" isCollection="false">
       <dmn:typeRef>string</dmn:typeRef>
       <dmn:allowedValues id="_B0AD0641-0023-461D-B20E-41CAE02F9BE4">
-        <dmn:text>&quot;Qualified&quot;,&quot;Not Qualified&quot;</dmn:text>
+        <dmn:text>"Qualified","Not Qualified"</dmn:text>
       </dmn:allowedValues>
     </dmn:itemComponent>
     <dmn:itemComponent id="_b3541f82-5bc9-4fab-ba9b-c423a9a2cd6c" name="Reason" isCollection="false">
@@ -204,7 +204,7 @@
       <dmn:requiredKnowledge href="#_C98BE939-B9C7-43E0-83E8-EE7A16C5276D" />
     </dmn:knowledgeRequirement>
     <dmn:context id="_08A9C33D-719F-4B05-AC42-D15464798BC4">
-      <dmn:contextEntry id="_0C8CEE82-12D5-451D-9229-5300D36B5020">
+      <dmn:contextEntry>
         <dmn:variable id="_C8F98D0F-218F-4B60-BD99-7FD98078FE56" name="Client PITI" typeRef="number" />
         <dmn:invocation id="_EB658586-C3C8-488E-8118-E69E31583106">
           <dmn:literalExpression id="_6E79E4D9-BBFB-4E90-8AA3-A6C153C3C946">
@@ -237,11 +237,11 @@
           </dmn:binding>
         </dmn:invocation>
       </dmn:contextEntry>
-      <dmn:contextEntry id="_A4988043-A4FA-4EC0-8942-B0D2D9CBFB29">
+      <dmn:contextEntry>
         <dmn:literalExpression id="_3F95EFD0-94D7-4D1A-9EA9-C8E12982D7E8">
           <dmn:text>if Client PITI &lt;= Lender Acceptable PITI()
-  then &quot;Sufficient&quot;
-  else &quot;Insufficient&quot;</dmn:text>
+  then "Sufficient"
+  else "Insufficient"</dmn:text>
         </dmn:literalExpression>
       </dmn:contextEntry>
     </dmn:context>
@@ -276,7 +276,7 @@
       <dmn:requiredKnowledge href="#_DA5CCF62-90A8-4CFC-A137-98B528522588" />
     </dmn:knowledgeRequirement>
     <dmn:context id="_5F9FEA4E-B3FC-4BC2-913E-36B8071FA777">
-      <dmn:contextEntry id="_B0C0C097-CCCF-4950-9AF4-00B4955A0FD1">
+      <dmn:contextEntry>
         <dmn:variable id="_F3ED9059-400F-4BE8-B250-C2ABCD9FF022" name="Client DTI" typeRef="number" />
         <dmn:invocation id="_4A7FC8E0-25EF-4DAF-845A-93BD89C2BC8C">
           <dmn:literalExpression id="_F0E80900-1964-4142-9A05-73E7A2E0F2CD">
@@ -296,11 +296,11 @@
           </dmn:binding>
         </dmn:invocation>
       </dmn:contextEntry>
-      <dmn:contextEntry id="_742BDFC6-A753-4E9A-ADEB-183D98DE91A8">
+      <dmn:contextEntry>
         <dmn:literalExpression id="_D1F96102-4158-45BB-8C9A-B7A3BE2C0206">
           <dmn:text>if Client DTI &lt;= Lender Acceptable DTI()
-  then &quot;Sufficient&quot;
-  else &quot;Insufficient&quot;</dmn:text>
+  then "Sufficient"
+  else "Insufficient"</dmn:text>
         </dmn:literalExpression>
       </dmn:contextEntry>
     </dmn:context>
@@ -324,7 +324,7 @@
           <dmn:text>&gt;= 750</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_A1FF2B2D-EF34-42AD-A45A-5FFDFA21FA6D">
-          <dmn:text>&quot;Excellent&quot;</dmn:text>
+          <dmn:text>"Excellent"</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
           <dmn:text />
@@ -335,7 +335,7 @@
           <dmn:text>[700..750)</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_833307A2-B924-422C-A4F5-BFFAB27D86D5">
-          <dmn:text>&quot;Good&quot;</dmn:text>
+          <dmn:text>"Good"</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
           <dmn:text />
@@ -346,7 +346,7 @@
           <dmn:text>[650..700)</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_E18FE2B2-729C-41F0-B5CC-0E5E5EA431E3">
-          <dmn:text>&quot;Fair&quot;</dmn:text>
+          <dmn:text>"Fair"</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
           <dmn:text />
@@ -357,7 +357,7 @@
           <dmn:text>[600..650)</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_75135F4C-6BA7-4180-B726-A0D795B3D7FF">
-          <dmn:text>&quot;Poor&quot;</dmn:text>
+          <dmn:text>"Poor"</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
           <dmn:text />
@@ -368,7 +368,7 @@
           <dmn:text>&lt; 600</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_1FB7308A-E37B-46EA-8070-C67E2388A869">
-          <dmn:text>&quot;Bad&quot;</dmn:text>
+          <dmn:text>"Bad"</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
           <dmn:text />
@@ -413,7 +413,7 @@
       <dmn:annotation name="Annotations" />
       <dmn:rule id="_B49E1642-F352-4D2E-92B6-E5DFA59AAFAC">
         <dmn:inputEntry id="_6C83C446-1A9A-4FFC-B30C-23915FF9CC43">
-          <dmn:text>&quot;Poor&quot;, &quot;Bad&quot;</dmn:text>
+          <dmn:text>"Poor", "Bad"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_0BC93CB9-FD20-45C8-A498-39E4464B6224">
           <dmn:text>-</dmn:text>
@@ -422,10 +422,10 @@
           <dmn:text>-</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_7B39B964-4E25-4717-92FE-A36F2B39FAB9">
-          <dmn:text>&quot;Not Qualified&quot;</dmn:text>
+          <dmn:text>"Not Qualified"</dmn:text>
         </dmn:outputEntry>
         <dmn:outputEntry id="_A852F5B6-C5DF-4ADD-8B93-9701F0724912">
-          <dmn:text>&quot;Credit Score too low.&quot;</dmn:text>
+          <dmn:text>"Credit Score too low."</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
           <dmn:text />
@@ -436,16 +436,16 @@
           <dmn:text>-</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_5C70BB81-CAFD-4695-A241-68F441FF9A29">
-          <dmn:text>&quot;Insufficient&quot;</dmn:text>
+          <dmn:text>"Insufficient"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_78A3C3A0-EEBC-448B-B1C1-5CFF6C7F2AC5">
-          <dmn:text>&quot;Sufficient&quot;</dmn:text>
+          <dmn:text>"Sufficient"</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_3C38D181-CCA1-4678-A3DD-0A5CE6D59FDC">
-          <dmn:text>&quot;Not Qualified&quot;</dmn:text>
+          <dmn:text>"Not Qualified"</dmn:text>
         </dmn:outputEntry>
         <dmn:outputEntry id="_F4284B9F-C77A-429B-A689-E212CFB19CB7">
-          <dmn:text>&quot;Debt to income ratio is too high.&quot;</dmn:text>
+          <dmn:text>"Debt to income ratio is too high."</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
           <dmn:text />
@@ -456,16 +456,16 @@
           <dmn:text>-</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_B7F59A5C-4AF1-4E90-BB0D-83C63A8390E6">
-          <dmn:text>&quot;Sufficient&quot;</dmn:text>
+          <dmn:text>"Sufficient"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_09A23FD4-9A98-4C34-9E9B-9E8EE652ABBC">
-          <dmn:text>&quot;Insufficient&quot;</dmn:text>
+          <dmn:text>"Insufficient"</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_9BF1096A-1AF3-4D21-9273-460DE555F0B6">
-          <dmn:text>&quot;Not Qualified&quot;</dmn:text>
+          <dmn:text>"Not Qualified"</dmn:text>
         </dmn:outputEntry>
         <dmn:outputEntry id="_4D805BB2-B79E-42C2-A562-674ECBDFA01C">
-          <dmn:text>&quot;Mortgage payment to income ratio is too high.&quot;</dmn:text>
+          <dmn:text>"Mortgage payment to income ratio is too high."</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
           <dmn:text />
@@ -476,17 +476,16 @@
           <dmn:text>-</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_FF3E9782-BE9C-4B0C-A63B-E906F6116251">
-          <dmn:text>&quot;Insufficient&quot;</dmn:text>
+          <dmn:text>"Insufficient"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_544687CD-F3A2-46C7-8439-E5E2E7B6483D">
-          <dmn:text>&quot;Insufficient&quot;</dmn:text>
+          <dmn:text>"Insufficient"</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_5A958D2E-B310-4AB9-BF5B-49623BE5DB55">
-          <dmn:text>&quot;Not Qualified&quot;</dmn:text>
+          <dmn:text>"Not Qualified"</dmn:text>
         </dmn:outputEntry>
         <dmn:outputEntry id="_F0BD7DC2-A1B6-4CF4-95D0-906DBB540EFC">
-          <dmn:text
-          >&quot;Debt to income ratio is too high AND mortgage payment to income ratio is too high.&quot;</dmn:text>
+          <dmn:text>"Debt to income ratio is too high AND mortgage payment to income ratio is too high."</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
           <dmn:text />
@@ -494,19 +493,19 @@
       </dmn:rule>
       <dmn:rule id="_C8FA33B1-AF6E-4A59-B7B9-6FDF1F495C44">
         <dmn:inputEntry id="_82FBCEE2-C16C-4FFF-A7F3-5512C211E29B">
-          <dmn:text>&quot;Fair&quot;, &quot;Good&quot;, &quot;Excellent&quot;</dmn:text>
+          <dmn:text>"Fair", "Good", "Excellent"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_BF7CDAE1-66E3-4B06-8729-896453AD7867">
-          <dmn:text>&quot;Sufficient&quot;</dmn:text>
+          <dmn:text>"Sufficient"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_41CB6123-8122-4FA4-A5C1-548B92CA31AE">
-          <dmn:text>&quot;Sufficient&quot;</dmn:text>
+          <dmn:text>"Sufficient"</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_9E0497D0-F2F2-419E-A558-366452B379A1">
-          <dmn:text>&quot;Qualified&quot;</dmn:text>
+          <dmn:text>"Qualified"</dmn:text>
         </dmn:outputEntry>
         <dmn:outputEntry id="_113CA566-6044-4858-B8D9-5ACBA4A91CF4">
-          <dmn:text>&quot;The borrower has been successfully prequalified for the requested loan.&quot;</dmn:text>
+          <dmn:text>"The borrower has been successfully prequalified for the requested loan."</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
           <dmn:text />
@@ -539,7 +538,7 @@
     </dmn:encapsulatedLogic>
   </dmn:businessKnowledgeModel>
   <dmndi:DMNDI>
-    <dmndi:DMNDiagram id="_1608585F-01C8-4A66-B3E5-F4422D4DD2CA" name="DRG" useAlternativeInputDataShape="false">
+    <dmndi:DMNDiagram id="_1608585F-01C8-4A66-B3E5-F4422D4DD2CA" name="DRG">
       <di:extension>
         <kie:ComponentsWidthsExtension>
           <kie:ComponentWidths dmnElementRef="_21E8FA38-C947-4733-9E52-CF81A97ADF91">
@@ -638,143 +637,143 @@
         dmnElementRef="_4C89E59C-FDDA-438C-8D1F-0B1194EF6DAE"
         isCollapsed="false"
       >
-        <dmndi:DMNStyle id="_7BF23A17-5597-4891-9B9E-1BF527187E38">
+        <dmndi:DMNStyle>
           <dmndi:FillColor red="255" green="255" blue="255" />
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
         <dc:Bounds x="963" y="359" width="134" height="61" />
-        <dmndi:DMNLabel id="_417625CD-3E7A-4123-B9C8-5954C832F2EE" />
+        <dmndi:DMNLabel />
       </dmndi:DMNShape>
       <dmndi:DMNShape
         id="dmnshape-drg-_4C788DBD-C672-4F41-9AFE-9C7D2C145734"
         dmnElementRef="_4C788DBD-C672-4F41-9AFE-9C7D2C145734"
         isCollapsed="false"
       >
-        <dmndi:DMNStyle id="_383501F2-7256-4258-B674-09F1140505C5">
+        <dmndi:DMNStyle>
           <dmndi:FillColor red="255" green="255" blue="255" />
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
         <dc:Bounds x="99.09345794392524" y="223.67105263157896" width="136" height="63" />
-        <dmndi:DMNLabel id="_765B84A2-AEFE-402F-A592-DCF6F7AA8849" />
+        <dmndi:DMNLabel />
       </dmndi:DMNShape>
       <dmndi:DMNShape
         id="dmnshape-drg-_F0DC8923-5FC7-4200-8BD1-461D5F3714BE"
         dmnElementRef="_F0DC8923-5FC7-4200-8BD1-461D5F3714BE"
         isCollapsed="false"
       >
-        <dmndi:DMNStyle id="_861A6F13-CEA4-4F57-8DA1-25FEB7A7B954">
+        <dmndi:DMNStyle>
           <dmndi:FillColor red="255" green="255" blue="255" />
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
         <dc:Bounds x="531" y="225" width="136" height="62" />
-        <dmndi:DMNLabel id="_659FE712-B1F3-4B5D-8BE4-4912BB07702B" />
+        <dmndi:DMNLabel />
       </dmndi:DMNShape>
       <dmndi:DMNShape
         id="dmnshape-drg-_FAF9080E-F4EF-49F7-AEFD-0D2990D8FFDA"
         dmnElementRef="_FAF9080E-F4EF-49F7-AEFD-0D2990D8FFDA"
         isCollapsed="false"
       >
-        <dmndi:DMNStyle id="_83EACC03-C711-437F-8A75-FEFEDB46517A">
+        <dmndi:DMNStyle>
           <dmndi:FillColor red="255" green="255" blue="255" />
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
         <dc:Bounds x="747" y="359.3421052631579" width="135" height="63" />
-        <dmndi:DMNLabel id="_6DEE1575-4A37-456F-B7A2-EA693AF510E2" />
+        <dmndi:DMNLabel />
       </dmndi:DMNShape>
       <dmndi:DMNShape
         id="dmnshape-drg-_1CF5CEFA-AF97-46F9-9CD5-9A8AEBB20B4E"
         dmnElementRef="_1CF5CEFA-AF97-46F9-9CD5-9A8AEBB20B4E"
         isCollapsed="false"
       >
-        <dmndi:DMNStyle id="_7FD5178A-ECAB-49F3-BCBD-82B8D74024FC">
+        <dmndi:DMNStyle>
           <dmndi:FillColor red="255" green="255" blue="255" />
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
         <dc:Bounds x="316.0607476635514" y="361" width="134" height="61" />
-        <dmndi:DMNLabel id="_A2FDB624-D4F0-4A6B-8ECF-B57765AB71FE" />
+        <dmndi:DMNLabel />
       </dmndi:DMNShape>
       <dmndi:DMNShape
         id="dmnshape-drg-_D6F4234F-15B3-4F5B-B814-5F6FF29D2907"
         dmnElementRef="_D6F4234F-15B3-4F5B-B814-5F6FF29D2907"
         isCollapsed="false"
       >
-        <dmndi:DMNStyle id="_679A92AF-5B12-4890-8BA4-11D8A149A8A4">
+        <dmndi:DMNStyle>
           <dmndi:FillColor red="255" green="255" blue="255" />
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
         <dc:Bounds x="317" y="224" width="136" height="62" />
-        <dmndi:DMNLabel id="_344F25EF-16A0-453E-B2B3-F3569AD4B424" />
+        <dmndi:DMNLabel />
       </dmndi:DMNShape>
       <dmndi:DMNShape
         id="dmnshape-drg-_2FE51DB1-3083-4BF7-AA71-0B0065310E72"
         dmnElementRef="_2FE51DB1-3083-4BF7-AA71-0B0065310E72"
         isCollapsed="false"
       >
-        <dmndi:DMNStyle id="_EB5EB687-B356-4C41-862A-4DC1DE6E29E8">
+        <dmndi:DMNStyle>
           <dmndi:FillColor red="255" green="255" blue="255" />
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
         <dc:Bounds x="963" y="225" width="136" height="62" />
-        <dmndi:DMNLabel id="_7C8C7776-FE76-4A18-A5F3-9CCBE7AEF360" />
+        <dmndi:DMNLabel />
       </dmndi:DMNShape>
       <dmndi:DMNShape
         id="dmnshape-drg-_21C50763-E49F-4D83-A824-16DA6AA87C64"
         dmnElementRef="_21C50763-E49F-4D83-A824-16DA6AA87C64"
         isCollapsed="false"
       >
-        <dmndi:DMNStyle id="_BF8BA3BE-ECD5-4B2F-9965-85E06BDEAD2E">
+        <dmndi:DMNStyle>
           <dmndi:FillColor red="255" green="255" blue="255" />
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
         <dc:Bounds x="532" y="89" width="136" height="62" />
-        <dmndi:DMNLabel id="_432F9A67-2D10-4E4B-8D43-2812B4CC5880" />
+        <dmndi:DMNLabel />
       </dmndi:DMNShape>
       <dmndi:DMNShape
         id="dmnshape-drg-_6E3205AF-7E3D-4ABE-A367-96F3F6E8210E"
         dmnElementRef="_6E3205AF-7E3D-4ABE-A367-96F3F6E8210E"
         isCollapsed="false"
       >
-        <dmndi:DMNStyle id="_0761C2E1-AED8-48C5-BC63-2CFB347A28AC">
+        <dmndi:DMNStyle>
           <dmndi:FillColor red="255" green="255" blue="255" />
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
         <dc:Bounds x="531.1214953271028" y="360" width="134" height="61" />
-        <dmndi:DMNLabel id="_2CC8034C-E853-4BD0-8CDC-B3EBD56F73D5" />
+        <dmndi:DMNLabel />
       </dmndi:DMNShape>
       <dmndi:DMNShape
         id="dmnshape-drg-_DA5CCF62-90A8-4CFC-A137-98B528522588"
         dmnElementRef="_DA5CCF62-90A8-4CFC-A137-98B528522588"
         isCollapsed="false"
       >
-        <dmndi:DMNStyle id="_CB9F203F-202E-4CFD-B8B0-638C842FD59A">
+        <dmndi:DMNStyle>
           <dmndi:FillColor red="255" green="255" blue="255" />
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
         <dc:Bounds x="99.09345794392524" y="359" width="136" height="63" />
-        <dmndi:DMNLabel id="_029C1A53-4498-4513-9378-66C66F2DBC77" />
+        <dmndi:DMNLabel />
       </dmndi:DMNShape>
       <dmndi:DMNShape
         id="dmnshape-drg-_C98BE939-B9C7-43E0-83E8-EE7A16C5276D"
         dmnElementRef="_C98BE939-B9C7-43E0-83E8-EE7A16C5276D"
         isCollapsed="false"
       >
-        <dmndi:DMNStyle id="_E5C26E53-71F5-4F74-863C-99D836F514CD">
+        <dmndi:DMNStyle>
           <dmndi:FillColor red="255" green="255" blue="255" />
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
         <dc:Bounds x="747" y="224.64473684210526" width="134" height="65" />
-        <dmndi:DMNLabel id="_844AF704-0130-452B-9E18-EAAB5B717B4C" />
+        <dmndi:DMNLabel />
       </dmndi:DMNShape>
       <dmndi:DMNEdge
         id="dmnedge-drg-_89EEAF9F-5A5D-4F59-91B7-EA418A7229AF"

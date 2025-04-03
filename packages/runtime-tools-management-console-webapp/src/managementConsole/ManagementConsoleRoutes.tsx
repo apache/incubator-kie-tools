@@ -18,7 +18,7 @@
  */
 import React, { FC, useCallback } from "react";
 import { Route } from "react-router-dom";
-import { ProcessListPage } from "../process";
+import { ProcessListPage, ProcessDefinitionsListPage } from "../process";
 import { Switch, useHistory } from "react-router";
 import { ManagementConsoleHome } from "./ManagementConsoleHome";
 import { NewAuthSessionLoginSuccessPage, NewAuthSessionModal } from "../authSessions/components";
@@ -81,6 +81,23 @@ export const ManagementConsoleRoutes: FC = () => {
                     >
                       {({ match }) => {
                         return <ProcessDetailsPage processInstanceId={match?.params.processInstanceId} />;
+                      }}
+                    </Route>
+                    <Route
+                      path={routes.runtime.processDefinitions.path({
+                        runtimeUrl: ":runtimeUrl",
+                      })}
+                    >
+                      <ProcessDefinitionsListPage />
+                    </Route>
+                    <Route
+                      path={routes.runtime.taskDetails.path({
+                        runtimeUrl: ":runtimeUrl",
+                        taskId: ":taskId",
+                      })}
+                    >
+                      {({ match }) => {
+                        return <TaskDetailsPage taskId={match?.params.taskId} />;
                       }}
                     </Route>
                     <Route

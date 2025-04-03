@@ -16,4 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export * from "./ProcessDefinitionListEnvelope";
+
+import { ProcessDefinition, ProcessDefinitionsFilter } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+
+export interface ProcessDefinitionsListChannelApi {
+  processDefinitionsList__initialLoad(filter: ProcessDefinitionsFilter): Promise<void>;
+  processDefinitionsList__openProcessDefinitionForm(processDefinition: ProcessDefinition): Promise<void>;
+  processDefinitionsList__applyFilter(filter: ProcessDefinitionsFilter): Promise<void>;
+  processDefinitionsList__query(): Promise<ProcessDefinition[]>;
+}

@@ -20,8 +20,8 @@ import React from "react";
 import { PlayIcon } from "@patternfly/react-icons/dist/js/icons/play-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { ProcessDefinition } from "../../../api/ProcessDefinitionListEnvelopeApi";
 import { DataTableColumn } from "@kie-tools/runtime-tools-components/dist/components/DataTable";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export const getColumn = (columnPath: string, columnLabel: string): DataTableColumn => {
   return {
