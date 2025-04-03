@@ -42,11 +42,11 @@ export class NewDmnEditorEnvelopeApiImpl
     super(dmnArgs, new NewDmnEditorFactory());
   }
 
-  public dmnEditor_openBoxedExpressionEditor(nodeId: string): void {
+  public newDmnEditor_openBoxedExpressionEditor(nodeId: string): void {
     this.getEditorOrThrowError().openBoxedExpressionEditor(nodeId);
   }
 
-  public newDmnEditor_openedBoxedExpressionId(): SharedValueProvider<string | undefined> {
+  public newDmnEditor_openedBoxedExpressionEditorNodeId(): SharedValueProvider<string | undefined> {
     return {
       defaultValue: undefined,
     };

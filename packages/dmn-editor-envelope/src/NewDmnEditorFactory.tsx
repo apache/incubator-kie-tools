@@ -62,10 +62,10 @@ export class NewDmnEditorInterface extends DmnEditorInterface {
           this.initArgs.workspaceRootAbsolutePosixPath ?? DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH
         }
         isReadOnly={this.initArgs.isReadOnly}
-        onOpenedBoxedExpressionChange={(newOpenedBoxedExpressionId) => {
+        onOpenedBoxedExpressionEditorNodeChange={(newOpenedNodeId) => {
           (
             this.envelopeContext as KogitoEditorEnvelopeContextType<NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>
-          )?.shared.newDmnEditor_openedBoxedExpressionId.set(newOpenedBoxedExpressionId);
+          )?.shared.newDmnEditor_openedBoxedExpressionEditorNodeId.set(newOpenedNodeId);
         }}
       />
     );

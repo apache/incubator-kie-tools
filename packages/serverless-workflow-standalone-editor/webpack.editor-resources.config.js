@@ -56,6 +56,7 @@ module.exports = (webpackEnv) => [
             copy: [
               { source: "./dist/*monaco-editor*.js", destination: "./dist/resources/swf/js/" },
               { source: "./dist/*worker*.js", destination: "./dist/resources/swf/js/" },
+              { source: "./dist/*.bundle.js", destination: "./dist/resources/swf/js/" },
             ],
             delete: ["./dist/*monaco-editor*.js", "./dist/*worker*.js"],
           },
