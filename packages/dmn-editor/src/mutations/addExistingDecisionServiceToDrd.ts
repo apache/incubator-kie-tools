@@ -160,12 +160,17 @@ export function addConflictingDecisionServiceToDrd({
   __readonly_drdIndex,
   __readonly_dropPoint,
   __readonly_decisionServiceHrefRelativeToThisDmn,
+  __readonly_snapGrid,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   __readonly_drdIndex: number;
   __readonly_dropPoint: { x: number; y: number };
   __readonly_decisionServiceHrefRelativeToThisDmn: string;
+  __readonly_snapGrid: SnapGrid;
 }) {
+  const minNodeSize = MIN_NODE_SIZES[NODE_TYPES.decisionService]({
+    snapGrid: __readonly_snapGrid,
+  });
   addShape({
     definitions: definitions,
     drdIndex: __readonly_drdIndex,
@@ -177,8 +182,8 @@ export function addConflictingDecisionServiceToDrd({
       "dc:Bounds": {
         "@_x": __readonly_dropPoint.x,
         "@_y": __readonly_dropPoint.y,
-        "@_width": DECISION_SERVICE_COLLAPSED_DIMENSIONS.width,
-        "@_height": DECISION_SERVICE_COLLAPSED_DIMENSIONS.height,
+        "@_width": minNodeSize["@_width"],
+        "@_height": minNodeSize["@_height"],
       },
     },
   });

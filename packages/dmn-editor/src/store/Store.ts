@@ -58,12 +58,6 @@ export interface ConflictedNodeStatus {
   conflict: boolean;
 }
 
-export interface CurrentBound {
-  id: number;
-  width: number;
-  height: number;
-}
-
 export interface SnapGrid {
   isEnabled: boolean;
   x: number;
@@ -136,7 +130,6 @@ export interface State {
       y: number;
       zoom: number;
     };
-    currentBound: CurrentBound[];
   };
 }
 
@@ -187,7 +180,6 @@ export type Dispatch = {
     setEdgeStatus: (edgeId: string, status: Partial<DmnEditorDiagramEdgeStatus>) => void;
     setDividerLineStatus: (decisionServiceId: string, status: Partial<DmnEditorDiagramDividerLineStatus>) => void;
     setConflictStatus: (decisionServiceId: string, status: Partial<ConflictedNodeStatus>) => void;
-    setCurrentBound: (shapeId: number, width: number, height: number) => void;
   };
 };
 
@@ -249,7 +241,6 @@ export const defaultStaticState = (): Omit<State, "dmn" | "dispatch" | "computed
     conflictedNodes: [],
     draggingWaypoints: [],
     movingDividerLines: [],
-    currentBound: [],
     isEditingStyle: false,
     viewport: DEFAULT_VIEWPORT,
   },
@@ -360,15 +351,6 @@ export function createDmnEditorStore(model: DmnLatestModel, computedCache: Compu
                   s.diagram.conflictedNodes = s.diagram.conflictedNodes.filter((s) => s !== decisionServiceId);
                 }
               }
-            },
-            setCurrentBound: (shapeId, width, height) => {
-              let currentBound: CurrentBound = {
-                id: shapeId,
-                width: width,
-                height: height,
-              };
-              console.log(s.diagram.currentBound);
-              s.diagram.currentBound.push(currentBound);
             },
           },
         };

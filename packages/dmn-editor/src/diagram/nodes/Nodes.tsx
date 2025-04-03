@@ -844,7 +844,6 @@ export const DecisionServiceNode = React.memo(
       (s) => (isHovered || isResizing) && s.diagram.draggingNodes.length === 0
     );
     const isDropTarget = useDmnEditorStore((s) => s.diagram.dropTargetNode?.id === id);
-    const currentBound = useDmnEditorStore((s) => s.diagram.currentBound);
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
@@ -899,24 +898,17 @@ export const DecisionServiceNode = React.memo(
           drdIndex: state.computed(state).getDrdIndex(),
           collapse: false,
           shapeIndex: shape.index,
-          currentBound: currentBound,
         });
       });
     };
 
     const handleCollapse = () => {
       dmnEditorStoreApi.setState((state) => {
-        if (shape["dc:Bounds"]) {
-          state
-            .dispatch(state)
-            .diagram.setCurrentBound(shape.index, shape["dc:Bounds"]["@_width"], shape["dc:Bounds"]["@_height"]);
-        }
         collapseOrExpand({
           definitions: state.dmn.model.definitions,
           drdIndex: state.computed(state).getDrdIndex(),
           collapse: true,
           shapeIndex: shape.index,
-          currentBound: currentBound,
         });
       });
     };
