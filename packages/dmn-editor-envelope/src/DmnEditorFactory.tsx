@@ -18,6 +18,7 @@
  */
 
 import * as React from "react";
+import { useCallback, useMemo } from "react";
 import {
   Editor,
   EditorFactory,
@@ -32,7 +33,6 @@ import {
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnEditorRoot } from "./DmnEditorRoot";
 import { ResourceContent, ResourcesList, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
-import { useCallback } from "react";
 
 export class DmnEditorFactory implements EditorFactory<Editor, KogitoEditorEnvelopeApi, KogitoEditorChannelApi> {
   public createEditor(
@@ -148,6 +148,11 @@ function DmnEditorRootWrapper({
     [envelopeContext]
   );
 
+  const isImportDataTypesFromJavaClassesSupported = useMemo(
+    (): boolean => channelType === ChannelType.VSCODE_DESKTOP || channelType === ChannelType.VSCODE_WEB,
+    [channelType]
+  );
+
   return (
     <DmnEditorRoot
       exposing={exposing}
@@ -160,7 +165,7 @@ function DmnEditorRootWrapper({
       workspaceRootAbsolutePosixPath={workspaceRootAbsolutePosixPath}
       keyboardShortcutsService={envelopeContext?.services.keyboardShortcuts}
       isReadOnly={isReadOnly}
-      channelType={channelType}
+      isImportDataTypesFromJavaClassesSupported={isImportDataTypesFromJavaClassesSupported}
     />
   );
 }

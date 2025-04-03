@@ -54,7 +54,6 @@ import {
   ImportJavaClassesWizard,
   ImportJavaClassesI18nDictionariesProvider,
 } from "@kie-tools/import-java-classes-component";
-import { ChannelType } from "@kie-tools-core/editor/dist/api";
 import {
   DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE,
   DmnEditorDataTypesClipboard,
@@ -123,11 +122,6 @@ export function DataTypes() {
   const handleImportJavaClassButtonClick = useCallback(() => {
     setOpen((prevState) => !prevState);
   }, []);
-
-  const isVscode = useMemo(
-    () => settings.channelType === ChannelType.VSCODE_DESKTOP || settings.channelType === ChannelType.VSCODE_WEB,
-    [settings.channelType]
-  );
 
   const activeDataType = useMemo(() => {
     return activeItemDefinitionId ? allDataTypesById.get(activeItemDefinitionId) : undefined;
@@ -254,7 +248,7 @@ export function DataTypes() {
                         position={DropdownPosition.right}
                         isOpen={isAddDataTypeDropdownOpen}
                         dropdownItems={[
-                          isVscode ? (
+                          settings?.isImportDataTypesFromJavaClassesSupported ? (
                             <ImportJavaClassesI18nDictionariesProvider key={"import-java-classes"}>
                               <ImportJavaClassesDropdownItem onClick={handleImportJavaClassButtonClick} />
                             </ImportJavaClassesI18nDictionariesProvider>

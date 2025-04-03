@@ -371,11 +371,11 @@ digraph G {
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" -> "@kie-tools/dev-deployment-kogito-quarkus-blank-app" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" -> "@kie-tools/maven-m2-repo-via-http-image" [ style = "dashed", color = "black" ];
   "@kie-tools/dev-deployment-upload-service" -> "@kie-tools/jest-base" [ style = "dashed", color = "black" ];
-  "@kie-tools/dmn-editor" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-editor" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-editor" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-editor" -> "@kie-tools/import-java-classes-component" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-editor" -> "@kie-tools/pmml-editor-marshaller" [ style = "solid", color = "blue" ];
+  "@kie-tools/dmn-editor-envelope" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-editor-envelope" -> "@kie-tools/dmn-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/dmn-editor-standalone" -> "@kie-tools/dmn-editor-envelope" [ style = "dashed", color = "blue" ];
   "@kie-tools/dmn-feel-antlr4-parser" -> "@kie-tools/dmn-marshaller" [ style = "solid", color = "blue" ];

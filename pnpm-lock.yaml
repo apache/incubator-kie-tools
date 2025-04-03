@@ -4121,9 +4121,6 @@ importers:
 
   packages/dmn-editor:
     dependencies:
-      '@kie-tools-core/editor':
-        specifier: workspace:*
-        version: link:../editor
       '@kie-tools-core/i18n':
         specifier: workspace:*
         version: link:../i18n

@@ -38,7 +38,6 @@
     "test-e2e:run": "pnpm exec playwright test"
   },
   "dependencies": {
-    "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/monaco-editor": "workspace:*",
     "@kie-tools-core/operating-system": "workspace:*",

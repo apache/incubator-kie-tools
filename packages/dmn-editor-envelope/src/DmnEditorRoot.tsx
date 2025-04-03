@@ -39,7 +39,6 @@ import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dis
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { ChannelType } from "@kie-tools-core/editor/dist/api";
 
 export const EXTERNAL_MODELS_SEARCH_GLOB_PATTERN = "**/*.{dmn,pmml}";
 export const TARGET_DIRECTORY = "target/classes/";
@@ -62,7 +61,7 @@ export type DmnEditorRootProps = {
   workspaceRootAbsolutePosixPath: string;
   keyboardShortcutsService: KeyboardShortcutsService | undefined;
   isReadOnly: boolean;
-  channelType?: ChannelType;
+  isImportDataTypesFromJavaClassesSupported?: boolean;
 };
 
 export type DmnEditorRootState = {
@@ -76,7 +75,6 @@ export type DmnEditorRootState = {
   keyboardShortcutsRegisterIds: number[];
   keyboardShortcutsRegistered: boolean;
   error: Error | undefined;
-  channelType?: ChannelType;
   evaluationResultsByNodeId: DmnEditor.EvaluationResultsByNodeId;
 };
 
@@ -100,7 +98,6 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       keyboardShortcutsRegisterIds: [],
       keyboardShortcutsRegistered: false,
       error: undefined,
-      channelType: props?.channelType,
       evaluationResultsByNodeId: new Map(),
     };
   }
@@ -495,7 +492,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
               externalContextDescription={""}
               issueTrackerHref={""}
               isReadOnly={this.state.isReadOnly}
-              channelType={this.state.channelType}
+              isImportDataTypesFromJavaClassesSupported={this.props?.isImportDataTypesFromJavaClassesSupported}
               onModelChange={this.onModelChange}
               onRequestExternalModelsAvailableToInclude={this.onRequestExternalModelsAvailableToInclude}
               // (begin) All paths coming from inside the DmnEditor component are paths relative to the open file.

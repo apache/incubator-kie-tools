@@ -19,11 +19,10 @@
 
 import * as React from "react";
 import { useContext, useMemo } from "react";
-import { ChannelType } from "@kie-tools-core/editor/dist/api";
 
 export interface DmnEditorSettingsContextType {
   isReadOnly: boolean;
-  channelType?: ChannelType;
+  isImportDataTypesFromJavaClassesSupported?: boolean;
 }
 
 const DmnEditorSettingsContext = React.createContext<DmnEditorSettingsContextType>({} as any);
@@ -33,16 +32,16 @@ export function useSettings() {
 }
 
 export function DmnEditorSettingsContextProvider(
-  _props: React.PropsWithChildren<{ isReadOnly?: boolean; channelType?: ChannelType }>
+  _props: React.PropsWithChildren<{ isReadOnly?: boolean; isImportDataTypesFromJavaClassesSupported?: boolean }>
 ) {
   const { children, ...props } = _props;
 
   const value = useMemo<DmnEditorSettingsContextType>(
     () => ({
       isReadOnly: props.isReadOnly ?? false,
-      channelType: props?.channelType,
+      isImportDataTypesFromJavaClassesSupported: props?.isImportDataTypesFromJavaClassesSupported,
     }),
-    [props.isReadOnly, props?.channelType]
+    [props.isReadOnly, props?.isImportDataTypesFromJavaClassesSupported]
   );
 
   return <DmnEditorSettingsContext.Provider value={value}>{children}</DmnEditorSettingsContext.Provider>;
