@@ -64,8 +64,8 @@ const ImportJavaClasses = ({
   gwtLayerService,
   loadJavaClassesInDataTypeEditor,
 }: ImportJavaClassesProps) => {
-  const [isOpen, setOpen] = useState(false);
-  const handleButtonClick = useCallback(() => setOpen((prevState) => !prevState), []);
+  const [isOpenImportJavaClassesWizard, setOpenImportJavaClassesWizard] = useState(false);
+  const handleButtonClick = useCallback(() => setOpenImportJavaClassesWizard((prevState) => !prevState), []);
   const handleWizardSave = useCallback(
     (javaClasses) => {
       /* If the GWT layer service is available, it uses the `importJavaClassesInDataTypeEditor` method.
@@ -85,10 +85,10 @@ const ImportJavaClasses = ({
         handleButtonClick={handleButtonClick}
         javaCodeCompletionService={javaCodeCompletionService}
       />
-      {isOpen && (
+      {isOpenImportJavaClassesWizard && (
         <ImportJavaClassesWizard
           javaCodeCompletionService={javaCodeCompletionService}
-          isOpen={isOpen}
+          isOpen={isOpenImportJavaClassesWizard}
           onSave={handleWizardSave}
           onClose={handleButtonClick}
         />

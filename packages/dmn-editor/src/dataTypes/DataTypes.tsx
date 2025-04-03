@@ -111,7 +111,7 @@ export function DataTypes() {
   );
   const dataTypesTree = useDmnEditorStore((s) => s.computed(s).getDataTypes(externalModelsByNamespace).dataTypesTree);
 
-  const [isOpen, setOpen] = useState(false);
+  const [isOpenImportJavaClassesWizard, setOpenImportJavaClassesWizard] = useState(false);
   const {
     javaCodeCompletionService,
     conflictsClasses,
@@ -120,7 +120,7 @@ export function DataTypes() {
     isConflictsOccured,
   } = useImportJavaClasses();
   const handleImportJavaClassButtonClick = useCallback(() => {
-    setOpen((prevState) => !prevState);
+    setOpenImportJavaClassesWizard((prevState) => !prevState);
   }, []);
 
   const activeDataType = useMemo(() => {
@@ -336,11 +336,11 @@ export function DataTypes() {
                   editItemDefinition={editItemDefinition}
                 />
               )}
-              {isOpen && (
+              {isOpenImportJavaClassesWizard && (
                 <ImportJavaClassesI18nDictionariesProvider>
                   <ImportJavaClassesWizard
                     javaCodeCompletionService={javaCodeCompletionService}
-                    isOpen={isOpen}
+                    isOpen={isOpenImportJavaClassesWizard}
                     onSave={handleImportJavaClasses}
                     onClose={handleImportJavaClassButtonClick}
                   />
