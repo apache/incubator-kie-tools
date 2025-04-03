@@ -22,7 +22,12 @@ package main
 import (
 	"crypto/tls"
 	"flag"
+	"fmt"
 	"os"
+
+	"k8s.io/client-go/dynamic"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/manager"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/version"
 
@@ -92,6 +97,8 @@ func main() {
 	flag.StringVar(&controllerCfgPath, "controller-cfg-path", "", "The controller config file path.")
 	flag.Parse()
 
+	manager.SetOperatorStartTime()
+
 	ctrl.SetLogger(klogr.New().WithName(controller.ComponentName))
 
 	// if the enable-http2 flag is false (the default), http/2 should be disabled
@@ -145,12 +152,21 @@ func main() {
 	// Set global assessors
 	utils.SetIsOpenShift(mgr.GetConfig())
 	utils.SetClient(mgr.GetClient())
+	cli, err := dynamic.NewForConfig(mgr.GetConfig())
+	if err != nil {
+		// shouldn't fail, since config is provided by the cluster, if fails, SetIsOpenShift should probably fail before.
+		panic(fmt.Sprintf("Impossible to get new dynamic client for config to support controller operations: %s", err))
+	}
+	utils.SetDynamicClient(cli)
 
 	// Fail fast, we can change this behavior in the future to read from defaults instead.
 	if _, err = cfg.InitializeControllersCfgAt(controllerCfgPath); err != nil {
 		klog.V(log.E).ErrorS(err, "unable to read controllers configuration file")
 		os.Exit(1)
 	}
+
+	// Initialize the worker used by the SonataFlow reconciliations to execute auxiliary async operations.
+	manager.InitializeSFCWorker(manager.SonataFlowControllerWorkerSize)
 
 	if err = (&controller.SonataFlowReconciler{
 		Client:   mgr.GetClient(),

@@ -14,9 +14,6 @@ patchedDependencies:
   immer@10.0.3:
     hash: utu5oov26wz5mjuays57tp3ybu
     path: patches/immer@10.0.3.patch
-  isomorphic-git@1.11.1:
-    hash: j7cg2tlxujycdt53drg3qdvfbi
-    path: patches/isomorphic-git@1.11.1.patch
   karma-firefox-launcher@2.1.2:
     hash: 33rb3z4iahwgdqfruk4pr3teue
     path: patches/karma-firefox-launcher@2.1.2.patch
@@ -57525,7 +57522,7 @@ snapshots:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
       '@types/node': 22.10.7
-      acorn: 8.10.0
+      acorn: 8.12.1
       acorn-walk: 8.2.0
       arg: 4.1.0
       create-require: 1.1.1
