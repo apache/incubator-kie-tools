@@ -110,10 +110,7 @@ export function DataTypes() {
   }, [activeItemDefinitionId, allDataTypesById]);
 
   const filteredTree = useMemo(
-    () =>
-      dataTypesTree.filter(({ itemDefinition: dataType }) =>
-        dataType["@_name"].toLowerCase().includes(filter.toLowerCase())
-      ),
+    () => dataTypesTree.filter(({ feelName: dataType }) => dataType.toLowerCase().includes(filter.toLowerCase())),
     [filter, dataTypesTree]
   );
 
