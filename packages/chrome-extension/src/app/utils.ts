@@ -50,12 +50,12 @@ export function runAfterUriChange(logger: Logger, callback: () => void) {
 
   runScriptOnPage(chrome.runtime.getURL("scripts/check_url_change.js"));
 
-  window.addEventListener("replaceState", () => {
-    logger.log("replaceState event happened");
-    checkUriThenCallback();
-  });
   window.addEventListener("popstate", () => {
     logger.log("popstate event happened");
+    checkUriThenCallback();
+  });
+  window.addEventListener("pushState", () => {
+    logger.log("pushState event happened");
     checkUriThenCallback();
   });
 }
