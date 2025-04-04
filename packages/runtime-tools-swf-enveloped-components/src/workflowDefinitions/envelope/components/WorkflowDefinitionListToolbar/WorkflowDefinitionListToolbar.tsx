@@ -29,7 +29,7 @@ import {
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { FilterIcon } from "@patternfly/react-icons/dist/js/icons/filter-icon";
 import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
 import remove from "lodash/remove";
@@ -100,17 +100,19 @@ const WorkflowDefinitionListToolbar: React.FC<WorkflowDefinitionListToolbarProps
           categoryName={Category.PROCESS_NAME}
         >
           <InputGroup>
-            <TextInput
-              name="workflowName"
-              id="workflowName"
-              type="search"
-              aria-label="workflow name"
-              onChange={setWorkflowNameInput}
-              onKeyPress={onEnterClicked}
-              placeholder={`Filter by workflow name`}
-              value={workflowNameInput}
-              data-testid="workflow-filter-input"
-            />
+            <InputGroupItem isFill>
+              <TextInput
+                name="workflowName"
+                id="workflowName"
+                type="search"
+                aria-label="workflow name"
+                onChange={(_event, val) => setWorkflowNameInput(val)}
+                onKeyPress={onEnterClicked}
+                placeholder={`Filter by workflow name`}
+                value={workflowNameInput}
+                data-testid="workflow-filter-input"
+              />
+            </InputGroupItem>
           </InputGroup>
         </ToolbarFilter>
         <ToolbarItem>

@@ -46,6 +46,8 @@ import "./AttributeEditor.scss";
 import { ValidationIndicator } from "../../EditorCore/atoms";
 import set = Reflect.set;
 import get = Reflect.get;
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 interface AttributeEditorContent {
   partialScore?: number;
@@ -179,30 +181,38 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
       <Form>
         <Split hasGutter={true}>
           <SplitItem isFilled={true}>
-            <FormGroup
-              label="Predicate"
-              isRequired={true}
-              fieldId="attribute-predicate-helper"
-              validated={predicateValidation.length > 0 ? "warning" : "default"}
-            >
+            <FormGroup label="Predicate" isRequired={true} fieldId="attribute-predicate-helper">
               <div ref={ref} data-ouia-component-id="predicate">
                 <PredicateEditor text={text} setText={setText} />
                 <>
                   {predicateValidation.length > 0 && (
                     <div>
                       <ValidationIndicator validations={predicateValidation} />
-                      <span className="pf-c-form__helper-text pf-m-warning attribute-editor__validation-message">
+                      <span className="pf-v5-c-form__helper-text pf-m-warning attribute-editor__validation-message">
                         {predicateValidation[0].message}
                       </span>
                     </div>
                   )}
                   {predicateValidation.length === 0 && (
-                    <div className="pf-c-form__helper-text">
+                    <div className="pf-v5-c-form__helper-text">
                       The condition upon which the mapping between input attribute and partial score takes place.
                     </div>
                   )}
                 </>
               </div>
+              {predicateValidation.length > 0 ? (
+                <FormHelperText>
+                  <HelperText>
+                    <HelperTextItem variant="warning"></HelperTextItem>
+                  </HelperText>
+                </FormHelperText>
+              ) : (
+                <FormHelperText>
+                  <HelperText>
+                    <HelperTextItem variant="default"></HelperTextItem>
+                  </HelperText>
+                </FormHelperText>
+              )}
             </FormGroup>
           </SplitItem>
           <SplitItem>
@@ -211,12 +221,6 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                 <FormGroup
                   label="Reason code"
                   fieldId="attribute-reason-code-helper"
-                  validated={reasonCodeValidation.length > 0 ? "warning" : "default"}
-                  helperText={
-                    reasonCodeValidation.length > 0
-                      ? reasonCodeValidation[0].message
-                      : "A Reason Code is mapped to a Business reason."
-                  }
                   labelIcon={
                     <Tooltip
                       content={
@@ -229,9 +233,9 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                       <button
                         aria-label="More information for Partial Score"
                         onClick={(e) => e.preventDefault()}
-                        className="pf-c-form__group-label-help"
+                        className="pf-v5-c-form__group-label-help"
                       >
-                        <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                        <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
                       </button>
                     </Tooltip>
                   }
@@ -242,7 +246,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                     name="attribute-reason-code"
                     aria-describedby="attribute-reason-code-helper"
                     value={reasonCode ?? ""}
-                    onChange={(e) => setReasonCode(e)}
+                    onChange={(_event, e) => setReasonCode(e)}
                     onBlur={() => {
                       commit({ reasonCode: reasonCode !== "" ? reasonCode : undefined });
                     }}
@@ -250,18 +254,29 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                     isDisabled={!areReasonCodesUsed || characteristic?.reasonCode !== undefined}
                     ouiaId="attribute-reason-code"
                   />
+                  {reasonCodeValidation.length > 0 ? (
+                    <FormHelperText>
+                      <HelperText>
+                        <HelperTextItem variant="warning">
+                          {reasonCodeValidation.length > 0
+                            ? reasonCodeValidation[0].message
+                            : "A Reason Code is mapped to a Business reason."}
+                        </HelperTextItem>
+                      </HelperText>
+                    </FormHelperText>
+                  ) : (
+                    <FormHelperText>
+                      <HelperText>
+                        <HelperTextItem variant="default"></HelperTextItem>
+                      </HelperText>
+                    </FormHelperText>
+                  )}
                 </FormGroup>
               </StackItem>
               <StackItem>
                 <FormGroup
                   label="Partial score"
                   fieldId="attribute-partial-score-helper"
-                  validated={partialScoreValidation.length > 0 ? "warning" : "default"}
-                  helperText={
-                    partialScoreValidation.length > 0
-                      ? partialScoreValidation[0].message
-                      : "Defines the score points awarded to the Attribute."
-                  }
                   labelIcon={
                     <Tooltip
                       content={
@@ -271,9 +286,9 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                       <button
                         aria-label="More information for Partial Score"
                         onClick={(e) => e.preventDefault()}
-                        className="pf-c-form__group-label-help"
+                        className="pf-v5-c-form__group-label-help"
                       >
-                        <HelpIcon style={{ color: "var(--pf-global--info-color--100)" }} />
+                        <HelpIcon style={{ color: "var(--pf-v5-global--info-color--100)" }} />
                       </button>
                     </Tooltip>
                   }
@@ -284,7 +299,7 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                     name="attribute-partial-score"
                     aria-describedby="attribute-partial-score-helper"
                     value={partialScore ?? ""}
-                    onChange={(e) => setPartialScore(toNumber(e))}
+                    onChange={(_event, e) => setPartialScore(toNumber(e))}
                     onBlur={() => {
                       commit({
                         partialScore: partialScore,
@@ -293,6 +308,23 @@ export const AttributeEditor = (props: AttributeEditorProps) => {
                     validated={partialScoreValidation.length > 0 ? "warning" : "default"}
                     ouiaId="attribute-partial-score"
                   />
+                  {partialScoreValidation.length > 0 ? (
+                    <FormHelperText>
+                      <HelperText>
+                        <HelperTextItem variant="warning">
+                          {partialScoreValidation.length > 0
+                            ? partialScoreValidation[0].message
+                            : "Defines the score points awarded to the Attribute."}
+                        </HelperTextItem>
+                      </HelperText>
+                    </FormHelperText>
+                  ) : (
+                    <FormHelperText>
+                      <HelperText>
+                        <HelperTextItem variant="default"></HelperTextItem>
+                      </HelperText>
+                    </FormHelperText>
+                  )}
                 </FormGroup>
               </StackItem>
             </Stack>

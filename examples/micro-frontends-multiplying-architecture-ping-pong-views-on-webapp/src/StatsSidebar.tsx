@@ -21,7 +21,6 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
 interface Props {
   lastPing: string;

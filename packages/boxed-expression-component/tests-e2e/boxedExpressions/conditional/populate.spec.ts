@@ -29,9 +29,9 @@ test.describe("Populate Boxed Conditional", () => {
       .asConditional()
       .expressionHeaderCell.setName({ name: "Conditional Expression Name", close: true });
 
-    expect(await bee.expression.asConditional().expressionHeaderCell.content.textContent()).toEqual(
-      "Conditional Expression Name(<Undefined>)"
-    );
+    expect(
+      await bee.expression.asConditional().expressionHeaderCell.content.locator(".header-cell-info").textContent()
+    ).toEqual("Conditional Expression Name(<Undefined>)");
   });
 
   test("should change a Conditional data type", async ({ bee, stories }) => {

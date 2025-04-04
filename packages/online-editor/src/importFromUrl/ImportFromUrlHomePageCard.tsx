@@ -38,6 +38,7 @@ import { useRoutes } from "../navigation/Hooks";
 import { AdvancedImportModal, AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import { isPotentiallyGit, useClonableUrl, useImportableUrl, useImportableUrlValidation } from "./ImportableUrlHooks";
 import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 export function ImportFromUrlCard() {
   const routes = useRoutes();
@@ -154,7 +155,7 @@ export function ImportFromUrlCard() {
             </FlexItem>
             <FlexItem style={{ minWidth: 0 }}>
               <Button
-                isSmall={true}
+                size="sm"
                 variant={ButtonVariant.link}
                 style={{ paddingBottom: 0, fontWeight: "lighter" }}
                 onClick={() => advancedImportModalRef.current?.open()}
@@ -172,13 +173,7 @@ export function ImportFromUrlCard() {
           </TextContent>
           <br />
           <Form onSubmit={onSubmit}>
-            <FormGroup
-              helperTextInvalid={validation.helperTextInvalid}
-              helperText={validation.helperText}
-              helperTextInvalidIcon={<ExclamationCircleIcon />}
-              validated={validation.option}
-              fieldId="url"
-            >
+            <FormGroup fieldId="url">
               <TextInput
                 id={"url"}
                 ouiaId={"import-from-url-input"}
@@ -186,8 +181,17 @@ export function ImportFromUrlCard() {
                 isRequired={true}
                 placeholder={"URL"}
                 value={url}
-                onChange={setUrl}
+                onChange={(_event, val) => setUrl(val)}
               />
+              <HelperText>
+                {validation.option === "error" ? (
+                  <HelperTextItem variant="error" icon={<ExclamationCircleIcon />}>
+                    {validation.helperTextInvalid}
+                  </HelperTextItem>
+                ) : (
+                  validation.helperText
+                )}
+              </HelperText>
             </FormGroup>
           </Form>
         </CardBody>

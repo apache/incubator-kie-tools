@@ -19,17 +19,16 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDevDeployments as useDevDeployments } from "./DevDeploymentsContext";
-import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownItem } from "@patternfly/react-core/deprecated";
 import { DevDeploymentsDropdownItem } from "./DevDeploymentsDropdownItem";
 import { PficonSatelliteIcon } from "@patternfly/react-icons/dist/js/icons/pficon-satellite-icon";
-import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { EmptyState, EmptyStateIcon, EmptyStateHeader } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
 import CaretDownIcon from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
-import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
+import { SelectPosition } from "@patternfly/react-core/deprecated";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
 import { PromiseStateStatus, useLivePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { useAuthSession, useAuthSessions } from "../authSessions/AuthSessionsContext";
@@ -43,6 +42,7 @@ import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useOnlineI18n } from "../i18n";
 import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { KieSandboxDeployment } from "./services/types";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 const REFRESH_COUNTDOWN_INITIAL_VALUE_IN_SECONDS = 30;
 
@@ -141,10 +141,15 @@ export function DevDeploymentsDropdown() {
           <DropdownItem key="disabled link" isDisabled>
             <Bullseye>
               <EmptyState>
-                <EmptyStateIcon icon={PficonSatelliteIcon} />
-                <Title headingLevel="h4" size="md">
-                  {`Error fetching Dev Deployments.`}
-                </Title>
+                <EmptyStateHeader
+                  titleText={<>{`Error fetching Dev Deployments.`}</>}
+                  icon={
+                    <Icon size="lg" color="darkgrey">
+                      <EmptyStateIcon icon={PficonSatelliteIcon} />
+                    </Icon>
+                  }
+                  headingLevel="h4"
+                />
               </EmptyState>
             </Bullseye>
           </DropdownItem>,
@@ -154,10 +159,15 @@ export function DevDeploymentsDropdown() {
           <DropdownItem key="disabled link" isDisabled>
             <Bullseye>
               <EmptyState>
-                <EmptyStateIcon icon={PficonSatelliteIcon} />
-                <Title headingLevel="h4" size="md">
-                  {`No Dev Deployments found`}
-                </Title>
+                <EmptyStateHeader
+                  titleText={<>{`No Dev Deployments found`}</>}
+                  icon={
+                    <Icon size="lg" color="darkgrey">
+                      <EmptyStateIcon icon={PficonSatelliteIcon} />
+                    </Icon>
+                  }
+                  headingLevel="h5"
+                />
               </EmptyState>
             </Bullseye>
           </DropdownItem>,
@@ -180,10 +190,10 @@ export function DevDeploymentsDropdown() {
             component={"button"}
             onClick={deleteAllDeployments}
             ouiaId={"delete-all-deployments-dropdown-button"}
-            style={{ color: "var(--pf-global--danger-color--100)" }}
+            style={{ color: "var(--pf-v5-global--danger-color--100)" }}
             icon={
               <small>
-                <TrashIcon size={"sm"} />
+                <TrashIcon />
               </small>
             }
           >
@@ -195,10 +205,15 @@ export function DevDeploymentsDropdown() {
       return [
         <div key={"empty-deployments"}>
           <EmptyState>
-            <EmptyStateIcon icon={PficonSatelliteIcon} />
-            <Title headingLevel="h4" size="md" style={{ color: "darkgray" }}>
-              {`Choose a Cloud provider to see your Dev Deployments.`}
-            </Title>
+            <EmptyStateHeader
+              titleText={<>{`Choose a Cloud provider to see your Dev Deployments.`}</>}
+              icon={
+                <Icon size="lg" color="darkgrey">
+                  <EmptyStateIcon icon={PficonSatelliteIcon} />
+                </Icon>
+              }
+              headingLevel="h4"
+            />
           </EmptyState>
         </div>,
       ];

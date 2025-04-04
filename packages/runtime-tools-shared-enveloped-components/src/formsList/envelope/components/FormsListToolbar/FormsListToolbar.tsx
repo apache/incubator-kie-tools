@@ -114,7 +114,7 @@ const FormsListToolbar: React.FC<FormsListToolbarProps & OUIAProps> = ({
               id="formName"
               type="search"
               aria-label="form name"
-              onChange={setFormNameInput}
+              onChange={(_event, _val) => setFormNameInput}
               onKeyPress={onEnterClicked}
               placeholder="Filter by Form name"
               value={formNameInput}

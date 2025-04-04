@@ -18,7 +18,12 @@
  */
 
 import * as React from "react";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
@@ -45,7 +50,7 @@ export function EmptyFormStatus({ i18n }: EmptyFormStatusProps) {
   return (
     <div>
       <EmptyState>
-        <EmptyStateIcon icon={CubesIcon} />
+        <EmptyStateHeader icon={<EmptyStateIcon icon={CubesIcon} />} />
         <TextContent>
           <Text component={"h2"}>{i18n.form.status.emptyForm.title}</Text>
         </TextContent>
@@ -76,7 +81,7 @@ export function AutoGenerationErrorFormStatus(props: AutoGenerationErrorFormStat
   return (
     <div>
       <EmptyState>
-        <EmptyStateIcon icon={ExclamationIcon} />
+        <EmptyStateHeader icon={<EmptyStateIcon icon={ExclamationIcon} />} />
         <TextContent>
           <Text component={"h2"}>{props.i18n.form.status.autoGenerationError.title}</Text>
         </TextContent>
@@ -104,7 +109,7 @@ export function ValidatorErrorFormStatus({ i18n }: ValidatorErrorFormStatusProps
   return (
     <div>
       <EmptyState>
-        <EmptyStateIcon icon={ExclamationTriangleIcon} />
+        <EmptyStateHeader icon={<EmptyStateIcon icon={ExclamationTriangleIcon} />} />
         <TextContent>
           <Text component={"h2"}>{i18n.form.status.validatorError.title}</Text>
         </TextContent>

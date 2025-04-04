@@ -492,7 +492,7 @@ export function BeeTableContextMenuHandler({
         inputAriaLabel="number input"
         minusBtnAriaLabel="minus"
         plusBtnAriaLabel="plus"
-        allowEmptyInput={false}
+        // allowEmptyInput={false}
         min={1}
         max={MAXIMUM_ROWS_COLUMNS_PER_INSERTION}
         style={{ textAlign: "center" }}

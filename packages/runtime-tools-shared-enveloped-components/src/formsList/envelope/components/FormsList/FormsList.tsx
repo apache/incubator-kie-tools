@@ -84,7 +84,7 @@ const FormsList: React.FC<FormsListProps & OUIAProps> = ({
     init();
   };
 
-  const handleItemClick: ToggleGroupItemProps["onChange"] = (_isChosen, event): void => {
+  const handleItemClick: ToggleGroupItemProps["onChange"] = (event, _isChosen): void => {
     const toggleButtonId = event.currentTarget.id;
     if (toggleButtonId === "tableView") {
       setIsSelected({

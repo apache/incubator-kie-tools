@@ -70,7 +70,7 @@ export function KnowledgeSourceProperties({
           name={currentName}
           isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
-          className={"pf-c-form-control"}
+          className={"pf-v5-c-form-control"}
           onRenamed={setNewIdentifierNameCandidate}
           allUniqueNames={useCallback((s) => s.computed(s).getAllFeelVariableUniqueNames(), [])}
         />
@@ -82,7 +82,7 @@ export function KnowledgeSourceProperties({
           type={"text"}
           isDisabled={isReadOnly}
           value={knowledgeSource.description?.__$$text}
-          onChange={(newDescription) => {
+          onChange={(_event, newDescription) => {
             setState((state) => {
               (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>).description = {
                 __$$text: newDescription,
@@ -107,7 +107,7 @@ export function KnowledgeSourceProperties({
           type={"text"}
           isDisabled={isReadOnly}
           value={knowledgeSource.type?.__$$text}
-          onChange={(newType) => {
+          onChange={(_event, newType) => {
             setState((state) => {
               (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>).type = {
                 __$$text: newType,
@@ -124,7 +124,7 @@ export function KnowledgeSourceProperties({
           type={"text"}
           isDisabled={isReadOnly}
           value={knowledgeSource["@_locationURI"]}
-          onChange={(newLocationUri) => {
+          onChange={(_event, newLocationUri) => {
             setState((state) => {
               (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>)["@_locationURI"] =
                 newLocationUri;
