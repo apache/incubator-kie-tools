@@ -18,15 +18,12 @@
  */
 import React from "react";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import { ouiaAttribute } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 
-interface IOwnProps {
-  pathname: string;
-}
-
-const DevUINav: React.FC<IOwnProps> = ({ pathname }) => {
+const DevUINav: React.FC = () => {
+  const location = useLocation();
   const { isProcessEnabled, customLabels, availablePages } = useDevUIAppContext();
 
   return (
@@ -35,28 +32,28 @@ const DevUINav: React.FC<IOwnProps> = ({ pathname }) => {
         {isProcessEnabled && (
           <>
             {(!availablePages || availablePages.includes("Processes")) && (
-              <NavItem key={"processes-nav"} isActive={pathname === "/Processes"}>
+              <NavItem key={"processes-nav"} isActive={location.pathname === "/Processes"}>
                 <Link to="/Processes" {...ouiaAttribute("data-ouia-navigation-name", "processes-nav")}>
                   {customLabels.pluralProcessLabel}
                 </Link>
               </NavItem>
             )}
             {(!availablePages || availablePages.includes("Jobs")) && (
-              <NavItem key={"jobs-management-nav"} isActive={pathname === "/Jobs"}>
+              <NavItem key={"jobs-management-nav"} isActive={location.pathname === "/Jobs"}>
                 <Link to="/Jobs" {...ouiaAttribute("data-ouia-navigation-name", "jobs-management-nav")}>
                   Jobs
                 </Link>
               </NavItem>
             )}
             {(!availablePages || availablePages.includes("Tasks")) && (
-              <NavItem key={"tasks-nav"} isActive={pathname === "/Tasks"}>
+              <NavItem key={"tasks-nav"} isActive={location.pathname === "/Tasks"}>
                 <Link to="/Tasks" {...ouiaAttribute("data-ouia-navigation-name", "tasks-nav")}>
                   Tasks
                 </Link>
               </NavItem>
             )}
             {(!availablePages || availablePages.includes("Forms")) && (
-              <NavItem key={"forms-list-nav"} isActive={pathname === "/Forms"}>
+              <NavItem key={"forms-list-nav"} isActive={location.pathname === "/Forms"}>
                 <Link to="/Forms" {...ouiaAttribute("data-ouia-navigation-name", "forms-list-nav")}>
                   Forms
                 </Link>

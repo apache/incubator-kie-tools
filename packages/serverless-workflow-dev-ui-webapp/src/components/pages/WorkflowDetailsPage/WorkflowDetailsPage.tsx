@@ -28,28 +28,18 @@ import {
   ouiaPageTypeAndObjectId,
   componentOuiaProps,
 } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { RouteComponentProps } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/components/PageSectionHeader";
 import { WorkflowDetailsContainer } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDetailsContainer";
 import {
   WorkflowDetailsGatewayApi,
   useWorkflowDetailsGatewayApi,
 } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDetails/";
-import { StaticContext, useHistory } from "react-router";
-import * as H from "history";
 import "../../styles.css";
 import { WorkflowInstance } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 
-interface MatchProps {
-  instanceID: string;
-}
-
-const WorkflowDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.LocationState> & OUIAProps> = ({
-  ouiaId,
-  ouiaSafe,
-  ...props
-}) => {
+const WorkflowDetailsPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
   useEffect(() => {
     return ouiaPageTypeAndObjectId("workflow-details");
   });
@@ -57,15 +47,16 @@ const WorkflowDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContex
   const gatewayApi: WorkflowDetailsGatewayApi = useWorkflowDetailsGatewayApi();
   const appContext = useDevUIAppContext();
 
-  const history = useHistory();
-  const workflowId = props.match.params.instanceID;
+  const navigate = useNavigate();
+  const { instanceID: workflowId } = useParams<{ instanceID: string }>();
+  const location = useLocation();
   const [workflowInstance, setWorkflowInstance] = useState<WorkflowInstance>({} as WorkflowInstance);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [fetchError, setFetchError] = useState<string>("");
   let currentPage = JSON.parse(window.localStorage.getItem("state") ?? "null");
   useEffect(() => {
     window.onpopstate = () => {
-      props.history.push({ state: Object.assign({}, props.location.state) });
+      navigate({}, { state: Object.assign({}, location.state) });
     };
   });
 
@@ -74,7 +65,7 @@ const WorkflowDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContex
     let responseError: string = "";
     try {
       setIsLoading(true);
-      response = await gatewayApi.workflowDetailsQuery(workflowId);
+      response = await gatewayApi.workflowDetailsQuery(workflowId!);
       setWorkflowInstance(response);
     } catch (error) {
       responseError = error;
@@ -84,25 +75,29 @@ const WorkflowDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContex
       if (responseError.length === 0 && fetchError.length === 0 && Object.keys(response).length === 0) {
         let prevPath;
         if (currentPage) {
-          currentPage = Object.assign({}, currentPage, props.location.state);
+          currentPage = Object.assign({}, currentPage, location.state);
           const tempPath = currentPage.prev.split("/");
           prevPath = tempPath.filter((item: string) => item);
         }
-        history.push({
-          pathname: "/NoData",
-          state: {
-            prev: currentPage ? currentPage.prev : "/WorkflowInstances",
-            title: "Workflow not found",
-            description: `Workflow instance with the id ${workflowId} not found`,
-            buttonText: currentPage
-              ? `Go to ${prevPath[0]
-                  .replace(/([A-Z])/g, " $1")
-                  .trim()
-                  .toLowerCase()}`
-              : "Go to workflow instances",
-            rememberedData: Object.assign({}, props.location.state),
+        navigate(
+          {
+            pathname: "/NoData",
           },
-        });
+          {
+            state: {
+              prev: currentPage ? currentPage.prev : "/WorkflowInstances",
+              title: "Workflow not found",
+              description: `Workflow instance with the id ${workflowId} not found`,
+              buttonText: currentPage
+                ? `Go to ${prevPath[0]
+                    .replace(/([A-Z])/g, " $1")
+                    .trim()
+                    .toLowerCase()}`
+                : "Go to workflow instances",
+              rememberedData: Object.assign({}, location.state),
+            },
+          }
+        );
       }
     }
   }

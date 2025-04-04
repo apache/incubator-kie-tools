@@ -19,7 +19,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useAuthSessions, useAuthSessionsDispatch } from "../AuthSessionsContext";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { AuthSessionsService } from "../AuthSessionsService";
 import { ManagementConsolePageLayout } from "../../managementConsole/ManagementConsolePageLayout";
 import { useRoutes } from "../../navigation/Hooks";
@@ -33,7 +33,6 @@ import {
   EmptyStateSecondaryActions,
   EmptyStateVariant,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 
 type Props = {
   onAddAuthSession?: (authSession: AuthSession) => void;
@@ -42,7 +41,7 @@ type Props = {
 export const NewAuthSessionLoginSuccessPage: React.FC<Props> = ({ onAddAuthSession }) => {
   const { add } = useAuthSessionsDispatch();
   const { isAuthSessionsReady } = useAuthSessions();
-  const history = useHistory();
+  const location = useNavigate();
   const routes = useRoutes();
   const [error, setError] = useState(false);
 
@@ -65,7 +64,7 @@ export const NewAuthSessionLoginSuccessPage: React.FC<Props> = ({ onAddAuthSessi
         if (onAddAuthSession) {
           onAddAuthSession(authSession);
         } else {
-          history.push(routes.home.path({}));
+          location(routes.home.path({}));
         }
       } catch (e) {
         setError(true);
@@ -73,7 +72,7 @@ export const NewAuthSessionLoginSuccessPage: React.FC<Props> = ({ onAddAuthSessi
     };
 
     addAuthSession();
-  }, [add, history, isAuthSessionsReady, onAddAuthSession, routes.home]);
+  }, [add, location, isAuthSessionsReady, onAddAuthSession, routes.home]);
 
   return (
     <ManagementConsolePageLayout>
@@ -94,7 +93,7 @@ export const NewAuthSessionLoginSuccessPage: React.FC<Props> = ({ onAddAuthSessi
             </EmptyStateBody>
             {error && (
               <EmptyStateSecondaryActions>
-                <Button onClick={() => history.push(routes.home.path({}))}>OK</Button>
+                <Button onClick={() => location(routes.home.path({}))}>OK</Button>
               </EmptyStateSecondaryActions>
             )}
           </EmptyState>

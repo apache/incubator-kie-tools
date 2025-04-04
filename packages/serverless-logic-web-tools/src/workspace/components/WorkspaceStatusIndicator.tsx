@@ -30,7 +30,7 @@ import { SecurityIcon } from "@patternfly/react-icons/dist/js/icons/security-ico
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { usePrevious } from "@kie-tools-core/react-hooks/dist/usePrevious";
 import { useNavigationBlocker, useRoutes } from "../../navigation/Hooks";
-import { matchPath } from "react-router";
+import { matchPath } from "react-router-dom";
 
 function Indicator(props: { workspace: ActiveWorkspace; isSynced: boolean; hasLocalChanges: boolean }) {
   return (
@@ -87,16 +87,17 @@ export function WorkspaceStatusIndicator(props: { workspace: ActiveWorkspace }) 
     `block-navigation-for-${props.workspace.descriptor.workspaceId}`,
     useCallback(
       ({ location }) => {
-        const match = matchPath<{ workspaceId: string }>(location.pathname, {
-          strict: true,
-          exact: true,
-          sensitive: false,
-          path: routes.workspaceWithFilePath.path({
-            workspaceId: ":workspaceId",
-            fileRelativePath: ":fileRelativePath*",
-            extension: ":extension",
-          }),
-        });
+        const match = matchPath(
+          {
+            caseSensitive: false,
+            end: true,
+            path: routes.workspaceWithFilePath.path({
+              workspaceId: ":workspaceId",
+              fileRelativePath: "*",
+            }),
+          },
+          location.pathname
+        );
 
         if (match?.params.workspaceId === props.workspace.descriptor.workspaceId) {
           return false;

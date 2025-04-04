@@ -25,7 +25,7 @@ import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate, useParams } from "react-router-dom";
 import { LoadingSpinner } from "./LoadingSpinner";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/EditorEnvelopeLocatorContext";
 import { isEditable } from "../extension";
@@ -47,25 +47,24 @@ import { useGlobalAlertsDispatchContext } from "../alerts/GlobalAlertsContext";
 import { setPageTitle } from "../PageTitle";
 import { useWorkspacePromise } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
 
-export interface Props {
-  workspaceId: string;
-  fileRelativePath: string;
-}
-
 let saveVersion = 1;
 let refreshVersion = 0;
 
-export function EditorPage(props: Props) {
+export function EditorPage() {
   const routes = useRoutes();
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const { workspaceId, "*": fileRelativePath } = useParams<{
+    workspaceId: string;
+    "*": string;
+  }>();
   const workspaces = useWorkspaces();
   const { i18n, locale } = useAppI18n();
   const [webToolsEditor, webToolsEditorRef] = useController<WebToolsEmbeddedEditorRef>();
   const [editorPageDock, editorPageDockRef] = useController<EditorPageDockDrawerRef>();
   const lastContent = useRef<string>();
-  const workspaceFilePromise = useWorkspaceFilePromise(props.workspaceId, props.fileRelativePath);
-  const workspacePromise = useWorkspacePromise(props.workspaceId);
+  const workspaceFilePromise = useWorkspaceFilePromise(workspaceId, fileRelativePath);
+  const workspacePromise = useWorkspacePromise(workspaceId);
   const [embeddedEditorFile, setEmbeddedEditorFile] = useState<EmbeddedEditorFile>();
   const isEditorReady = useMemo(() => webToolsEditor?.editor?.isReady, [webToolsEditor]);
   const queryParams = useQueryParams();
@@ -74,7 +73,7 @@ export function EditorPage(props: Props) {
   const { notifications, onLazyValidate } = useEditorNotifications({
     webToolsEditor,
     content: lastContent.current,
-    fileRelativePath: props.fileRelativePath,
+    fileRelativePath: fileRelativePath!,
   });
 
   useEffect(() => {
@@ -90,15 +89,17 @@ export function EditorPage(props: Props) {
       return;
     }
 
-    history.replace({
-      pathname: routes.workspaceWithFilePath.path({
-        workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
-        fileRelativePath: workspaceFilePromise.data.workspaceFile.relativePathWithoutExtension,
-        extension: workspaceFilePromise.data.workspaceFile.extension,
-      }),
-      search: queryParams.toString(),
-    });
-  }, [history, routes, workspaceFilePromise, queryParams]);
+    navigate(
+      {
+        pathname: routes.workspaceWithFilePath.path({
+          workspaceId: workspaceFilePromise.data.workspaceFile.workspaceId,
+          fileRelativePath: workspaceFilePromise.data.workspaceFile.relativePath,
+        }),
+        search: queryParams.toString(),
+      },
+      { replace: true }
+    );
+  }, [navigate, routes, workspaceFilePromise, queryParams]);
 
   // begin (REFRESH)
   // Update EmbeddedEditorFile, but only if content is different from what was saved
@@ -225,12 +226,12 @@ export function EditorPage(props: Props) {
   );
 
   return workspacePromise.status === PromiseStateStatus.REJECTED ? (
-    <ErrorPage kind="File" errors={workspacePromise.error} filePath={props.fileRelativePath} />
+    <ErrorPage kind="File" errors={workspacePromise.error} filePath={fileRelativePath!} />
   ) : (
     <PromiseStateWrapper
       promise={workspaceFilePromise}
       pending={<LoadingSpinner />}
-      rejected={(errors) => <ErrorPage kind="File" errors={errors} filePath={props.fileRelativePath} />}
+      rejected={(errors) => <ErrorPage kind="File" errors={errors} filePath={fileRelativePath!} />}
       resolved={(file) => (
         <>
           <Page>

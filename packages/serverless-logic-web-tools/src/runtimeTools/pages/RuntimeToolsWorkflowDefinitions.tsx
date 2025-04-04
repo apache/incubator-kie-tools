@@ -22,7 +22,7 @@ import { WorkflowDefinitionListContainer } from "@kie-tools/runtime-tools-swf-we
 import { Card } from "@patternfly/react-core/dist/esm/components/Card";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { routes } from "../../navigation/Routes";
 import { WorkflowDefinition } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { CloudEventPageSource } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventForm";
@@ -30,41 +30,49 @@ import { CloudEventPageSource } from "@kie-tools/runtime-tools-swf-webapp-compon
 const PAGE_TITLE = "Workflow Definitions";
 
 export function RuntimeToolsWorkflowDefinitions() {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const onOpenWorkflowForm = useCallback(
     (workflowDefinition: WorkflowDefinition) => {
-      history.push({
-        pathname: routes.runtimeToolsWorkflowForm.path({ workflowName: workflowDefinition.workflowName }),
-        state: {
-          workflowDefinition: {
-            workflowName: workflowDefinition.workflowName,
-            endpoint: workflowDefinition.endpoint,
-            serviceUrl: workflowDefinition.serviceUrl,
-          },
+      navigate(
+        {
+          pathname: routes.runtimeToolsWorkflowForm.path({ workflowName: workflowDefinition.workflowName }),
         },
-      });
+        {
+          state: {
+            workflowDefinition: {
+              workflowName: workflowDefinition.workflowName,
+              endpoint: workflowDefinition.endpoint,
+              serviceUrl: workflowDefinition.serviceUrl,
+            },
+          },
+        }
+      );
     },
-    [history]
+    [navigate]
   );
 
   const onOpenTriggerCloudEventForWorkflow = useCallback(
     (workflowDefinition: WorkflowDefinition) => {
-      history.push({
-        pathname: routes.runtimeToolsTriggerCloudEventForWorkflowDefinition.path({
-          workflowName: workflowDefinition.workflowName,
-        }),
-        state: {
-          workflowDefinition: {
+      navigate(
+        {
+          pathname: routes.runtimeToolsTriggerCloudEventForWorkflowDefinition.path({
             workflowName: workflowDefinition.workflowName,
-            endpoint: workflowDefinition.endpoint,
-            serviceUrl: workflowDefinition.serviceUrl,
-          },
-          source: CloudEventPageSource.DEFINITIONS,
+          }),
         },
-      });
+        {
+          state: {
+            workflowDefinition: {
+              workflowName: workflowDefinition.workflowName,
+              endpoint: workflowDefinition.endpoint,
+              serviceUrl: workflowDefinition.serviceUrl,
+            },
+            source: CloudEventPageSource.DEFINITIONS,
+          },
+        }
+      );
     },
-    [history]
+    [navigate]
   );
 
   return (

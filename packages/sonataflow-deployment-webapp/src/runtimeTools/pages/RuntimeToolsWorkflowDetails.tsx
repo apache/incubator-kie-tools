@@ -33,17 +33,15 @@ import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { BasePage } from "../../pages/BasePage";
 import { useApp } from "../../context/AppContext";
-import { useHistory } from "react-router";
+import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "../../routes";
 
 const PAGE_TITLE = "Workflow Details";
 
-interface WorkflowListContainerProps {
-  workflowId: string;
-}
-export function RuntimeToolsWorkflowDetails(props: WorkflowListContainerProps) {
+export function RuntimeToolsWorkflowDetails() {
   const gatewayApi: WorkflowDetailsGatewayApi = useWorkflowDetailsGatewayApi();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const { workflowId } = useParams<{ workflowId?: string }>();
   const app = useApp();
 
   const [workflowInstance, setWorkflowInstance] = useState<WorkflowInstance>({} as WorkflowInstance);
@@ -52,10 +50,10 @@ export function RuntimeToolsWorkflowDetails(props: WorkflowListContainerProps) {
 
   useEffect(() => {
     gatewayApi
-      .workflowDetailsQuery(props.workflowId)
+      .workflowDetailsQuery(workflowId!)
       .then((response) => {
         if (!response) {
-          return setFetchError(`There was an error opening the instance with id "${props.workflowId}".`);
+          return setFetchError(`There was an error opening the instance with id "${workflowId}".`);
         }
         setWorkflowInstance(response);
       })
@@ -65,7 +63,7 @@ export function RuntimeToolsWorkflowDetails(props: WorkflowListContainerProps) {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [gatewayApi, props.workflowId]);
+  }, [gatewayApi, workflowId]);
 
   useEffect(() => {
     return ouiaPageTypeAndObjectId("workflow-details");
@@ -73,10 +71,10 @@ export function RuntimeToolsWorkflowDetails(props: WorkflowListContainerProps) {
 
   const onOpenWorkflowInstanceDetails = useCallback(
     (workflowId: string) => {
-      history.push(`/`);
-      history.push(routes.runtimeTools.workflowDetails.path({ workflowId }));
+      navigate(`/`);
+      navigate(routes.runtimeTools.workflowDetails.path({ workflowId }));
     },
-    [history]
+    [navigate]
   );
 
   return (

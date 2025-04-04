@@ -65,8 +65,7 @@ export function WorkspacesTableRow(props: WorkspacesTableRowProps) {
     return !isWsFolder
       ? routes.workspaceWithFilePath.path({
           workspaceId: descriptor.workspaceId,
-          fileRelativePath: editableFiles[0].relativePathWithoutExtension,
-          extension: editableFiles[0].extension,
+          fileRelativePath: editableFiles[0].relativePath,
         })
       : routes.workspaceWithFiles.path({ workspaceId: descriptor.workspaceId });
   }, [descriptor.workspaceId, editableFiles, isWsFolder, totalFiles]);

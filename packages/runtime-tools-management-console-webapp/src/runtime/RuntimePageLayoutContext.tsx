@@ -18,11 +18,10 @@
  */
 
 import React, { createContext, PropsWithChildren, useContext, useMemo, useState } from "react";
-import { Location, LocationDescriptor } from "history";
 import { ManagementConsolePageLayout } from "../managementConsole/ManagementConsolePageLayout";
 import { RuntimeNav } from "./RuntimeNav";
 
-export type BreadcrumbPathType = Array<Pick<Location, "pathname" | "state"> | LocationDescriptor>;
+export type BreadcrumbPathType = Array<Partial<Location> | string>;
 
 export type RuntimePageLayoutContextType = {
   currentPageTitle: string;

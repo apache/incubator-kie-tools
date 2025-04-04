@@ -20,14 +20,14 @@ import React, { useEffect } from "react";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { Jobs } from "./Jobs";
 import { AuthSession, useAuthSessionsDispatch } from "../authSessions";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useRuntimeInfo, useRuntimeSpecificRoutes } from "../runtime/RuntimeContext";
 import { useEnv } from "../env/hooks/EnvContext";
 import { useRuntimePageLayoutDispatch } from "../runtime/RuntimePageLayoutContext";
 import { useRoutes } from "../navigation/Hooks";
 
 export const JobsPage: React.FC = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const runtimeRoutes = useRuntimeSpecificRoutes();
   const routes = useRoutes();
   const { runtimeDisplayInfo } = useRuntimeInfo();
@@ -37,12 +37,12 @@ export const JobsPage: React.FC = () => {
 
   useEffect(() => {
     setOnSelectAuthSession(() => (authSession: AuthSession) => {
-      history.push(runtimeRoutes.jobs(authSession));
+      navigate(runtimeRoutes.jobs(authSession));
     });
     return () => {
       setOnSelectAuthSession(undefined);
     };
-  }, [history, runtimeRoutes, setOnSelectAuthSession]);
+  }, [navigate, runtimeRoutes, setOnSelectAuthSession]);
 
   useEffect(() => {
     setCurrentPageTitle("Jobs");
