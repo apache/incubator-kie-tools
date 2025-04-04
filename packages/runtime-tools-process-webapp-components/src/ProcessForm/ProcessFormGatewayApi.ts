@@ -20,15 +20,14 @@
 import {
   getCustomForm,
   getProcessSchema,
+  getProcessSvg,
   startProcessInstance,
 } from "@kie-tools/runtime-tools-process-gateway-api/dist/gatewayApi";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { ProcessFormDriver } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processForm";
 
-export interface ProcessFormGatewayApi {
-  getProcessFormSchema(processDefinitionData: ProcessDefinition): Promise<any>;
-  getCustomForm(processDefinitionData: ProcessDefinition): Promise<Form>;
-  startProcess(formData: any, processDefinitionData: ProcessDefinition): Promise<string>;
+export interface ProcessFormGatewayApi extends ProcessFormDriver {
   setBusinessKey(bk: string): void;
   getBusinessKey(): string;
 }
@@ -55,7 +54,11 @@ export class ProcessFormGatewayApiImpl implements ProcessFormGatewayApi {
     return getCustomForm(processDefinitionData);
   }
 
-  startProcess(formData: any, processDefinitionData: ProcessDefinition): Promise<string> {
-    return startProcessInstance(formData, this.businessKey, processDefinitionData);
+  startProcess(processDefinitionData: ProcessDefinition, formData: any): Promise<string> {
+    return startProcessInstance(processDefinitionData, formData, this.businessKey);
+  }
+
+  getProcessDefinitionSvg(processDefinition: ProcessDefinition): Promise<string> {
+    return getProcessSvg(processDefinition);
   }
 }

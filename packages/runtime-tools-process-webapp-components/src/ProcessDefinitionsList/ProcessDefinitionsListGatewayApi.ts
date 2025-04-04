@@ -22,13 +22,10 @@ import {
   ProcessDefinitionsListState,
 } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { ProcessDefinitionsListQueries } from "./ProcessDefinitionsListQueries";
+import { ProcessDefinitionsListDriver } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDefinitionsList";
 
-export interface ProcessDefinitionsListGatewayApi {
+export interface ProcessDefinitionsListGatewayApi extends ProcessDefinitionsListDriver {
   processDefinitionsListState: ProcessDefinitionsListState;
-  initialLoad: (filter: ProcessDefinitionsFilter) => Promise<void>;
-  openProcessDefinitionForm: (processDefinition: ProcessDefinition) => Promise<void>;
-  applyFilter: (filter: ProcessDefinitionsFilter) => Promise<void>;
-  query(): Promise<ProcessDefinition[]>;
   onOpenProcessDefinitionListen: (listener: OnOpenProcessDefinitionListener) => UnSubscribeHandler;
   onUpdateProcessDefinitionsListState: (listener: OnUpdateProcessDefinitionsListStateListener) => UnSubscribeHandler;
 }
@@ -81,10 +78,23 @@ export class ProcessDefinitionsListGatewayApiImpl implements ProcessDefinitionsL
     return Promise.resolve();
   };
 
-  query(): Promise<ProcessDefinition[]> {
+  getProcessDefinitions(): Promise<ProcessDefinition[]> {
     return new Promise<ProcessDefinition[]>((resolve, reject) => {
       this.queries
         .getProcessDefinitions(this._ProcessDefinitionsListState.filters)
+        .then((value) => {
+          resolve(value);
+        })
+        .catch((reason) => {
+          reject(reason);
+        });
+    });
+  }
+
+  getProcessDefinitionByName(processName: string): Promise<ProcessDefinition> {
+    return new Promise<ProcessDefinition>((resolve, reject) => {
+      this.queries
+        .getProcessDefinitionByName(processName)
         .then((value) => {
           resolve(value);
         })

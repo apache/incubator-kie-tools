@@ -34,7 +34,11 @@ export class ProcessDefinitionsListChannelApiImpl implements ProcessDefinitionsL
     return this.driver.applyFilter(filter);
   }
 
-  processDefinitionsList__query(): Promise<ProcessDefinition[]> {
-    return this.driver.query();
+  processDefinitionsList__getProcessDefinitions(): Promise<ProcessDefinition[]> {
+    return this.driver.getProcessDefinitions();
+  }
+
+  processDefinitionsList__getProcessDefinitionByName(processName: string): Promise<ProcessDefinition> {
+    return this.driver.getProcessDefinitionByName(processName);
   }
 }

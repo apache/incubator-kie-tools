@@ -23,5 +23,6 @@ export interface ProcessDefinitionsListChannelApi {
   processDefinitionsList__initialLoad(filter: ProcessDefinitionsFilter): Promise<void>;
   processDefinitionsList__openProcessDefinitionForm(processDefinition: ProcessDefinition): Promise<void>;
   processDefinitionsList__applyFilter(filter: ProcessDefinitionsFilter): Promise<void>;
-  processDefinitionsList__query(): Promise<ProcessDefinition[]>;
+  processDefinitionsList__getProcessDefinitions(): Promise<ProcessDefinition[]>;
+  processDefinitionsList__getProcessDefinitionByName(processName: string): Promise<ProcessDefinition>;
 }

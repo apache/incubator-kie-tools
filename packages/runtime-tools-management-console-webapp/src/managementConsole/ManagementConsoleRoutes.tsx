@@ -29,6 +29,7 @@ import { ProcessDetailsPage } from "../process/details/ProcessDetailsPage";
 import { JobsPage } from "../jobs";
 import { TaskDetailsPage, TasksPage } from "../tasks";
 import { RuntimePageLayoutContextProvider } from "../runtime/RuntimePageLayoutContext";
+import { ProcessDefinitionFormPage } from "../process/form/ProcessDefinitionFormPage";
 
 export const ManagementConsoleRoutes: FC = () => {
   const routes = useRoutes();
@@ -87,17 +88,18 @@ export const ManagementConsoleRoutes: FC = () => {
                       path={routes.runtime.processDefinitions.path({
                         runtimeUrl: ":runtimeUrl",
                       })}
+                      exact={true}
                     >
                       <ProcessDefinitionsListPage />
                     </Route>
                     <Route
-                      path={routes.runtime.taskDetails.path({
+                      path={routes.runtime.processDefinitionForm.path({
                         runtimeUrl: ":runtimeUrl",
-                        taskId: ":taskId",
+                        processName: ":processName",
                       })}
                     >
                       {({ match }) => {
-                        return <TaskDetailsPage taskId={match?.params.taskId} />;
+                        return <ProcessDefinitionFormPage processName={match?.params.processName} />;
                       }}
                     </Route>
                     <Route

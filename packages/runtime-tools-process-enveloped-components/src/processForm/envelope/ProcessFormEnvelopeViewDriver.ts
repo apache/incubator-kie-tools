@@ -35,7 +35,11 @@ export class ProcessFormEnvelopeViewDriver implements ProcessFormDriver {
     return this.channelApi.requests.processForm__getCustomForm(processDefinitionData);
   }
 
-  startProcess(formData: any): Promise<void> {
-    return this.channelApi.requests.processForm__startProcess(formData);
+  startProcess(processDefinition: ProcessDefinition, formData: any): Promise<string> {
+    return this.channelApi.requests.processForm__startProcess(processDefinition, formData);
+  }
+
+  getProcessDefinitionSvg(processDefinitionData: ProcessDefinition): Promise<string> {
+    return this.channelApi.requests.processForm__getProcessDefinitionSvg(processDefinitionData);
   }
 }

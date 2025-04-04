@@ -25,5 +25,6 @@ import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 export interface ProcessFormDriver {
   getProcessFormSchema(processDefinitionData: ProcessDefinition): Promise<Record<string, any>>;
   getCustomForm(processDefinitionData: ProcessDefinition): Promise<Form>;
-  startProcess(formData: any): Promise<void>;
+  startProcess(processDefinitionData: ProcessDefinition, formData: any): Promise<string>;
+  getProcessDefinitionSvg(processDefinitionData: ProcessDefinition): Promise<string>;
 }

@@ -38,11 +38,11 @@ export const EmbeddedProcessForm = React.forwardRef(
       []
     );
     const pollInit = useCallback(
-      (
+      async (
         envelopeServer: EnvelopeServer<ProcessFormChannelApi, ProcessFormEnvelopeApi>,
         container: () => HTMLDivElement
       ) => {
-        init({
+        await init({
           config: {
             containerType: ContainerType.DIV,
             envelopeId: envelopeServer.id,
@@ -63,7 +63,7 @@ export const EmbeddedProcessForm = React.forwardRef(
           { ...props.processDefinition }
         );
       },
-      []
+      [props.processDefinition, props.targetOrigin]
     );
 
     return (

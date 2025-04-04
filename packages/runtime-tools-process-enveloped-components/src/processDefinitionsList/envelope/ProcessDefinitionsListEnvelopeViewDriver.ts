@@ -31,7 +31,10 @@ export default class ProcessDefinitionsListEnvelopeViewDriver implements Process
   applyFilter(filter: ProcessDefinitionsFilter): Promise<void> {
     return this.channelApi.requests.processDefinitionsList__applyFilter(filter);
   }
-  query(): Promise<ProcessDefinition[]> {
-    return this.channelApi.requests.processDefinitionsList__query();
+  getProcessDefinitions(): Promise<ProcessDefinition[]> {
+    return this.channelApi.requests.processDefinitionsList__getProcessDefinitions();
+  }
+  getProcessDefinitionByName(processName: string): Promise<ProcessDefinition> {
+    return this.channelApi.requests.processDefinitionsList__getProcessDefinitionByName(processName);
   }
 }

@@ -79,7 +79,13 @@ export const EmbeddedProcessDetails = React.forwardRef((props: Props, forwardedR
         }
       );
     },
-    []
+    [
+      props.diagramPreviewSize,
+      props.omittedProcessTimelineEvents,
+      props.pluralProcessLabel,
+      props.processInstance,
+      props.singularProcessLabel,
+    ]
   );
 
   return (

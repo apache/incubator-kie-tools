@@ -16,28 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-import { ProcessInstanceFilter } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-
-const formatSearchWords = (searchWords: string[]) => {
-  const tempSearchWordsArray: { businessKey: { like: string } }[] = [];
-  searchWords.forEach((word) => {
-    tempSearchWordsArray.push({ businessKey: { like: word } });
-  });
-  return tempSearchWordsArray;
-};
-
-export const buildProcessListWhereArgument = (filters: ProcessInstanceFilter) => {
-  if (filters.businessKey!.length === 0) {
-    return {
-      parentProcessInstanceId: { isNull: true },
-      state: { in: filters.status },
-    };
-  } else {
-    return {
-      parentProcessInstanceId: { isNull: true },
-      state: { in: filters.status },
-      or: formatSearchWords(filters.businessKey!),
-    };
-  }
-};
+export * from "./ProcessFormContext";
+export * from "./ProcessFormContextProvider";
+export * from "./ProcessFormGatewayApi";

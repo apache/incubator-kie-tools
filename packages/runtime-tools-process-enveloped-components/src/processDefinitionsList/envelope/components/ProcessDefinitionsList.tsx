@@ -71,7 +71,7 @@ const ProcessDefinitionsList: React.FC<ProcessDefinitionsListProps> = ({
     setIsLoading(true);
     setError(undefined);
     try {
-      const response: ProcessDefinition[] = await driver.query();
+      const response: ProcessDefinition[] = await driver.getProcessDefinitions();
       setProcessDefinitions(response);
     } catch (err) {
       setError(JSON.parse(JSON.parse(err.message).errorMessage));

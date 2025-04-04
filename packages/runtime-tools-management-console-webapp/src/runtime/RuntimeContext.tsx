@@ -47,6 +47,7 @@ import { ProcessDetailsContextProvider } from "@kie-tools/runtime-tools-process-
 import { TaskInboxContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskInbox";
 import { TaskFormContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskForms";
 import { ProcessDefinitionsListContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDefinitionsList";
+import ProcessFormContextProvider from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessForm/ProcessFormContextProvider";
 
 export type RuntimePathSearchParams = Partial<Record<QueryParams, string>>;
 export enum RuntimePathSearchParamsRoutes {
@@ -391,11 +392,13 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
               <ProcessListContextProvider apolloClient={apolloClient} options={providerOptions}>
                 <ProcessDetailsContextProvider apolloClient={apolloClient} options={providerOptions}>
                   <ProcessDefinitionsListContextProvider apolloClient={apolloClient} options={providerOptions}>
-                    <JobsManagementContextProvider apolloClient={apolloClient}>
-                      <TaskInboxContextProvider apolloClient={apolloClient}>
-                        <TaskFormContextProvider options={providerOptions}>{props.children}</TaskFormContextProvider>
-                      </TaskInboxContextProvider>
-                    </JobsManagementContextProvider>
+                    <ProcessFormContextProvider>
+                      <JobsManagementContextProvider apolloClient={apolloClient}>
+                        <TaskInboxContextProvider apolloClient={apolloClient}>
+                          <TaskFormContextProvider options={providerOptions}>{props.children}</TaskFormContextProvider>
+                        </TaskInboxContextProvider>
+                      </JobsManagementContextProvider>
+                    </ProcessFormContextProvider>
                   </ProcessDefinitionsListContextProvider>
                 </ProcessDetailsContextProvider>
               </ProcessListContextProvider>

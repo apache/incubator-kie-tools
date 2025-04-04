@@ -23,5 +23,6 @@ export interface ProcessDefinitionsListDriver {
   initialLoad(filter: ProcessDefinitionsFilter): Promise<void>;
   openProcessDefinitionForm(processDefinition: ProcessDefinition): Promise<void>;
   applyFilter(filter: ProcessDefinitionsFilter): Promise<void>;
-  query(): Promise<ProcessDefinition[]>;
+  getProcessDefinitions(): Promise<ProcessDefinition[]>;
+  getProcessDefinitionByName(processName: string): Promise<ProcessDefinition>;
 }

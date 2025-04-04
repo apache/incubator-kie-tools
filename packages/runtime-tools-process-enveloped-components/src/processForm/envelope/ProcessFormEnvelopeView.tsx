@@ -20,7 +20,7 @@ import React, { useImperativeHandle, useState } from "react";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { ProcessFormChannelApi } from "../api";
 import "@patternfly/patternfly/patternfly.css";
-import ProcessForm from "./components/ProcessForm/ProcessForm";
+import ProcessForm from "./components/ProcessForm";
 import { ProcessFormEnvelopeViewDriver } from "./ProcessFormEnvelopeViewDriver";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 

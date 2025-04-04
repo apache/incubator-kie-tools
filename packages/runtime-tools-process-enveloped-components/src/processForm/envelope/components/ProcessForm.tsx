@@ -16,17 +16,20 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useCallback, useEffect, useState } from "react";
-import { ProcessFormDriver } from "../../../api";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { ProcessFormDriver } from "../../api";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import CustomProcessFormDisplayer from "./CustomProcessFormDisplayer";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { FormRenderer, FormRendererApi } from "@kie-tools/runtime-tools-components/dist/components/FormRenderer";
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { FormAction } from "@kie-tools/runtime-tools-components/dist/utils";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import SVG from "react-inlinesvg";
+import ProcessDiagram from "../../../processDetails/envelope/components/ProcessDiagram/ProcessDiagram";
+import { Card } from "@patternfly/react-core/dist/js/components/Card";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export interface ProcessFormProps {
   processDefinition: ProcessDefinition;
@@ -35,25 +38,24 @@ export interface ProcessFormProps {
   targetOrigin: string;
 }
 
-const ProcessForm: React.FC<ProcessFormProps & OUIAProps> = ({
+const formAction: FormAction[] = [
+  {
+    name: "Start",
+  },
+];
+
+const ProcessForm: React.FC<ProcessFormProps> = ({
   processDefinition,
   driver,
   isEnvelopeConnectedToChannel,
   targetOrigin,
-  ouiaId,
-  ouiaSafe,
 }) => {
   const formRendererApi = React.useRef<FormRendererApi>(null);
   const [processFormSchema, setProcessFormSchema] = useState<any>({});
   const [processCustomForm, setProcessCustomForm] = useState<Form>();
+  const [svg, setSvg] = useState<JSX.Element>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>();
-
-  const formAction: FormAction[] = [
-    {
-      name: "Start",
-    },
-  ];
 
   const init = useCallback(async (): Promise<void> => {
     if (!isEnvelopeConnectedToChannel) {
@@ -95,11 +97,40 @@ const ProcessForm: React.FC<ProcessFormProps & OUIAProps> = ({
     init();
   }, [init, isEnvelopeConnectedToChannel]);
 
-  const onSubmit = (value: any): void => {
-    driver.startProcess(value).then(() => {
-      formRendererApi?.current?.doReset();
-    });
-  };
+  const onSubmit = useCallback(
+    (value: any): void => {
+      driver.startProcess(processDefinition, value).then(() => {
+        formRendererApi?.current?.doReset();
+      });
+    },
+    [driver, processDefinition]
+  );
+
+  useEffect(() => {
+    const handleSvgApi = async (): Promise<void> => {
+      try {
+        const response = await driver.getProcessDefinitionSvg(processDefinition);
+        const temp = <SVG src={response} style={{ width: "100%" }} />;
+        setSvg(temp);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (isEnvelopeConnectedToChannel) {
+      handleSvgApi();
+    }
+  }, [driver, isEnvelopeConnectedToChannel, processDefinition]);
+
+  const processDiagramBlock = useMemo(
+    () =>
+      svg &&
+      svg.props.src && (
+        <Card>
+          <ProcessDiagram svg={svg} />
+        </Card>
+      ),
+    [svg]
+  );
 
   if (isLoading) {
     return (
@@ -115,26 +146,34 @@ const ProcessForm: React.FC<ProcessFormProps & OUIAProps> = ({
 
   if (!processCustomForm) {
     return (
-      <div {...componentOuiaProps(ouiaId, "process-form", ouiaSafe ? ouiaSafe : !isLoading)}>
-        <FormRenderer
-          formSchema={processFormSchema}
-          model={{}}
-          readOnly={false}
-          onSubmit={onSubmit}
-          formActions={formAction}
-          ref={formRendererApi}
-        />
-      </div>
+      <Flex>
+        <FlexItem>{processDiagramBlock}</FlexItem>
+        <FlexItem>
+          <FormRenderer
+            formSchema={processFormSchema}
+            model={{}}
+            readOnly={false}
+            onSubmit={onSubmit}
+            formActions={formAction}
+            ref={formRendererApi}
+          />
+        </FlexItem>
+      </Flex>
     );
   } else {
     return (
-      <CustomProcessFormDisplayer
-        {...componentOuiaProps(ouiaId, "process-form", ouiaSafe ? ouiaSafe : !isLoading)}
-        schema={processFormSchema}
-        customForm={processCustomForm}
-        driver={driver}
-        targetOrigin={targetOrigin}
-      />
+      <Flex>
+        <FlexItem>{processDiagramBlock}</FlexItem>
+        <FlexItem>
+          <CustomProcessFormDisplayer
+            processDefinition={processDefinition}
+            schema={processFormSchema}
+            customForm={processCustomForm}
+            driver={driver}
+            targetOrigin={targetOrigin}
+          />
+        </FlexItem>
+      </Flex>
     );
   }
 };

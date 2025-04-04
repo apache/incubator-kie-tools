@@ -31,7 +31,11 @@ export class EmbeddedProcessFormChannelApiImpl implements ProcessFormChannelApi 
     return this.driver.getCustomForm(processDefinitionData);
   }
 
-  processForm__startProcess(formData: any): Promise<void> {
-    return this.driver.startProcess(formData);
+  processForm__startProcess(processDefinition: ProcessDefinition, formData: any): Promise<string> {
+    return this.driver.startProcess(processDefinition, formData);
+  }
+
+  processForm__getProcessDefinitionSvg(processDefinition: ProcessDefinition): Promise<string> {
+    return this.driver.getProcessDefinitionSvg(processDefinition);
   }
 }

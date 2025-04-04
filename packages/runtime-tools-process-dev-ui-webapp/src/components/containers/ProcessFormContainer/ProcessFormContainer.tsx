@@ -18,11 +18,13 @@
  */
 import React from "react";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { ProcessFormGatewayApi } from "../../../channel/ProcessForm/ProcessFormGatewayApi";
-import { useProcessFormGatewayApi } from "../../../channel/ProcessForm/ProcessFormContext";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { EmbeddedProcessForm } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processForm";
+import {
+  ProcessFormGatewayApi,
+  useProcessFormGatewayApi,
+} from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessForm";
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 interface ProcessFormContainerProps {
@@ -42,6 +44,7 @@ const ProcessFormContainer: React.FC<ProcessFormContainerProps & OUIAProps> = ({
   return (
     <EmbeddedProcessForm
       {...componentOuiaProps(ouiaId, "process-form-container", ouiaSafe)}
+      processDefinition={processDefinitionData}
       driver={{
         getProcessFormSchema(processDefinitionData: ProcessDefinition): Promise<any> {
           return gatewayApi.getProcessFormSchema(processDefinitionData);
@@ -49,21 +52,25 @@ const ProcessFormContainer: React.FC<ProcessFormContainerProps & OUIAProps> = ({
         getCustomForm(processDefinitionData: ProcessDefinition): Promise<Form> {
           return gatewayApi.getCustomForm(processDefinitionData);
         },
-        async startProcess(formData: any): Promise<void> {
+        getProcessDefinitionSvg(processDefinition: ProcessDefinition): Promise<string> {
+          return gatewayApi.getProcessDefinitionSvg(processDefinition);
+        },
+        async startProcess(formData: any): Promise<string> {
           return gatewayApi
             .startProcess(formData, processDefinitionData)
             .then((id: string) => {
               gatewayApi.setBusinessKey("");
               onSubmitSuccess(id);
+              return id;
             })
             .catch((error) => {
               const message = error.response ? `${error.response.statusText} : ${error.message}` : error.message;
               onSubmitError(message);
+              return "";
             });
         },
       }}
       targetOrigin={appContext.getDevUIUrl()}
-      processDefinition={processDefinitionData}
     />
   );
 };

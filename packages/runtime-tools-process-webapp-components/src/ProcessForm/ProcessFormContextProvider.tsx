@@ -16,12 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useContext } from "react";
-import { ProcessFormGatewayApi } from "./ProcessFormGatewayApi";
+import React, { ReactElement } from "react";
+import ProcessFormContext from "./ProcessFormContext";
+import { ProcessFormGatewayApiImpl } from "./ProcessFormGatewayApi";
 
-const ProcessFormContext = React.createContext<ProcessFormGatewayApi>(null);
+interface ProcessFormContextProviderProps {
+  children: ReactElement;
+}
 
-export const useProcessFormGatewayApi = (): ProcessFormGatewayApi =>
-  useContext<ProcessFormGatewayApi>(ProcessFormContext);
+const ProcessFormContextProvider: React.FC<ProcessFormContextProviderProps> = ({ children }) => {
+  return <ProcessFormContext.Provider value={new ProcessFormGatewayApiImpl()}>{children}</ProcessFormContext.Provider>;
+};
 
-export default ProcessFormContext;
+export default ProcessFormContextProvider;

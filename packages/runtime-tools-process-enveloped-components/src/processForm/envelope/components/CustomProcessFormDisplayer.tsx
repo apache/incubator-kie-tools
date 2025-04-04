@@ -20,7 +20,7 @@ import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { Stack, StackItem } from "@patternfly/react-core/layouts/Stack";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { ProcessFormDriver } from "../../../api";
+import { ProcessFormDriver } from "../../api";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import {
   EmbeddedFormDisplayer,
@@ -31,12 +31,14 @@ import {
 } from "@kie-tools/runtime-tools-shared-enveloped-components/dist/formDisplayer";
 import { FormAction } from "@kie-tools/runtime-tools-components/dist/utils";
 import { FormFooter } from "@kie-tools/runtime-tools-components/dist/components/FormFooter";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export interface CustomProcessFormDisplayerProps {
   schema: Record<string, any>;
   customForm: Form;
   driver: ProcessFormDriver;
   targetOrigin: string;
+  processDefinition: ProcessDefinition;
 }
 
 const CustomProcessFormDisplayer: React.FC<CustomProcessFormDisplayerProps & OUIAProps> = ({
@@ -45,6 +47,7 @@ const CustomProcessFormDisplayer: React.FC<CustomProcessFormDisplayerProps & OUI
   targetOrigin,
   ouiaId,
   ouiaSafe,
+  processDefinition,
 }) => {
   const formDisplayerApiRef = useRef<FormDisplayerApi>(null);
   const [formUUID] = useState<string>(uuidv4());
@@ -58,7 +61,7 @@ const CustomProcessFormDisplayer: React.FC<CustomProcessFormDisplayerProps & OUI
       const formDisplayerApi = formDisplayerApiRef.current!;
 
       try {
-        const response = await driver.startProcess(payload);
+        const response = await driver.startProcess(processDefinition, payload);
         formDisplayerApi.notifySubmitResult({
           type: FormSubmitResponseType.SUCCESS,
           info: response,
@@ -72,7 +75,7 @@ const CustomProcessFormDisplayer: React.FC<CustomProcessFormDisplayerProps & OUI
         setSubmitted(true);
       }
     },
-    [driver]
+    [driver, processDefinition]
   );
 
   useEffect(() => {
