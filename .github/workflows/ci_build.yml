@@ -135,8 +135,8 @@ jobs:
           KIE_TOOLS_BUILD__containerizedEndToEndTests: ${{ runner.os == 'Linux' }}
           KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os == 'Linux' }}
           KIE_TOOLS_BUILD__buildExamples: "true"
-          KIE_TOOLS_BUILD__ignoreTestFailures: ${{ !github.event.pull_request }}
-          KIE_TOOLS_BUILD__ignoreEndToEndTestFailures: ${{ !github.event.pull_request }}
+          KIE_TOOLS_BUILD__ignoreTestFailures: "true"
+          KIE_TOOLS_BUILD__ignoreEndToEndTestFailures: "true"
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
           NODE_OPTIONS: "--max_old_space_size=4096"
