@@ -61,13 +61,10 @@ export function ContextResultExpressionCell(props: {
           } else {
             newContextEntries.splice(resultIndex, 1);
           }
-
           // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
           const ret: Normalized<BoxedContext> = {
             ...prev,
             contextEntry: newContextEntries,
-            "@_label": newExpression?.["@_label"] ?? prev["@_label"],
-            "@_typeRef": newExpression?.["@_typeRef"] ?? prev["@_typeRef"],
           };
 
           return ret;
