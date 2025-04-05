@@ -391,10 +391,31 @@ export function computeDiagramData(
     }
   }
 
+  //Handling contained decisions
+  const collapsedServiceContainedNodes: string[] = [];
+  const expandedServiceContainedNodes: string[] = [];
+  for (const node of sortedNodes) {
+    if (node.data?.dmnObject?.__$$element === "decisionService" && node.data.shape["@_isCollapsed"] === true) {
+      collapsedServiceContainedNodes.push(
+        ...(node.data.dmnObject?.outputDecision ?? []).map((od) => od["@_href"]),
+        ...(node.data.dmnObject?.encapsulatedDecision ?? []).map((od) => od["@_href"])
+      );
+    } else if (node.data?.dmnObject?.__$$element === "decisionService" && node.data.shape["@_isCollapsed"] === false) {
+      expandedServiceContainedNodes.push(
+        ...(node.data.dmnObject?.outputDecision ?? []).map((od) => od["@_href"]),
+        ...(node.data.dmnObject?.encapsulatedDecision ?? []).map((od) => od["@_href"])
+      );
+    }
+  }
+
+  const nodesToBeHidden = collapsedServiceContainedNodes.filter((val) => !expandedServiceContainedNodes.includes(val));
+
+  const displayNodes = sortedNodes.filter((node) => !nodesToBeHidden.some((selected) => selected === node.id));
+
   return {
     drgEdges,
     drgAdjacencyList,
-    nodes: sortedNodes,
+    nodes: displayNodes,
     edges: sortedEdges,
     edgesById,
     externalNodesByNamespace,
