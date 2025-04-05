@@ -29,8 +29,8 @@ import {
   GistEnabledAuthProviderType,
   GitAuthProviderType,
 } from "../../../authProviders/AuthProvidersApi";
-import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
-import { DropdownGroup, DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { SelectPosition } from "@patternfly/react-core/deprecated";
+import { DropdownGroup, DropdownItem } from "@patternfly/react-core/deprecated";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { AuthSessionSelect } from "../../../authSessions/AuthSessionSelect";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../../../accounts/AccountsContext";

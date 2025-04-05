@@ -75,7 +75,7 @@ export function DecisionProperties({
           name={currentName}
           isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
-          className={"pf-c-form-control"}
+          className={"pf-v5-c-form-control"}
           onRenamed={setNewIdentifierNameCandidate}
           allUniqueNames={useCallback((s) => s.computed(s).getAllFeelVariableUniqueNames(), [])}
         />

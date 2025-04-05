@@ -128,7 +128,7 @@ const WorkflowFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
         {...componentOuiaProps(`content${ouiaId ? "-" + ouiaId : ""}`, "workflow-form-page-section", ouiaSafe)}
       >
         <Card className="Dev-ui__card-size">
-          <CardBody className="pf-u-h-100">
+          <CardBody className="pf-v5-u-h-100">
             <WorkflowFormContainer
               workflowDefinitionData={workflowDefinition}
               onResetForm={onResetForm}

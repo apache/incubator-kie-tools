@@ -18,22 +18,24 @@
  */
 
 import * as React from "react";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+
 import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
+  EmptyStateHeader,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { BoxesIcon } from "@patternfly/react-icons/dist/js/icons/boxes-icon";
 
 const NoMiningSchemaFieldsOptions = () => {
   return (
-    <EmptyState variant={EmptyStateVariant.large}>
-      <EmptyStateIcon icon={BoxesIcon} />
-      <Title headingLevel="h4" size="lg" ouiaId="mining-schema-no-data-fields-title">
-        No Data Fields defined
-      </Title>
+    <EmptyState variant={EmptyStateVariant.lg}>
+      <EmptyStateHeader
+        titleText="No Data Fields defined"
+        icon={<EmptyStateIcon icon={BoxesIcon} />}
+        headingLevel="h4"
+      />
       <EmptyStateBody>
         Mining schema can only include fields from the Data Dictionary. It seems there are none yet. Go to the Data
         Dictionary and come back after creating them.

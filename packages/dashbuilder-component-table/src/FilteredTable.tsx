@@ -17,7 +17,7 @@
  * under the License.
  */
 import * as React from "react";
-import { TableComposable, Thead, Tbody, Tr, Th, Td, selectable } from "@patternfly/react-table";
+import { Table /* data-codemods */, Thead, Tbody, Tr, Th, Td, selectable } from "@patternfly/react-table";
 
 import { useState, useCallback, useMemo } from "react";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -181,7 +181,7 @@ export const FilteredTable = (props: Props) => {
           </FlexItem>
         </Flex>
       )}
-      <TableComposable aria-label="Filtered Table" variant="compact">
+      <Table aria-label="Filtered Table" variant="compact">
         <Thead>
           <Tr>
             {props.columns.map((column, columnIndex) => {
@@ -207,7 +207,7 @@ export const FilteredTable = (props: Props) => {
           {rows?.slice((page - 1) * perPage, (page - 1) * perPage + perPage).map((row, rowIndex) => (
             <Tr
               key={rowIndex}
-              isHoverable={props.selectable}
+              isClickable={props.selectable}
               className={isSelectedRow(row) && props.selectable ? "selected-row" : ""}
               onClick={() => {
                 if (props.selectable) {
@@ -247,7 +247,7 @@ export const FilteredTable = (props: Props) => {
             </Tr>
           ))}
         </Tbody>
-      </TableComposable>
+      </Table>
     </>
   );
 };

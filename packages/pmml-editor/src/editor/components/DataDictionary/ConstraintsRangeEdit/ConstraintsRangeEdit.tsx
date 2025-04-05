@@ -32,6 +32,8 @@ import { RangeConstraint } from "../DataDictionaryContainer/DataDictionaryContai
 import "./ConstraintsRangeEdit.scss";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 interface ConstraintsRangeEditProps {
   dataFieldIndex: number | undefined;
@@ -90,7 +92,7 @@ const ConstraintsRangeEdit = (props: ConstraintsRangeEditProps) => {
           variant="secondary"
           onClick={addRange}
           isDisabled={countLimit !== undefined && ranges.length >= countLimit}
-          isSmall={true}
+          size="sm"
           ouiaId="add-another-interval"
         >
           Add another interval
@@ -176,23 +178,26 @@ const RangeEdit = (props: RangeEditProps) => {
     <section ref={rangeRef} data-ouia-component-id={`interval-${index}`} data-ouia-component-type="interval-item">
       <Split hasGutter={true} className="constraints__range-item">
         <SplitItem isFilled={true}>
-          <FormGroup
-            label="Start Value"
-            fieldId={`start-value-${index}`}
-            helperText={validations[0] ? "Please enter start and/or end value" : ""}
-          >
+          <FormGroup label="Start Value" fieldId={`start-value-${index}`}>
             <TextInput
               type="number"
               id={`start-value-${index}`}
               name="start-value"
               value={rangeValues.start.value}
               validated={validations.length === 0 ? "default" : "warning"}
-              onChange={handleRangeChange}
+              onChange={(event, value: string | boolean) => handleRangeChange(value, event)}
               onBlur={saveChange}
               tabIndex={(index + 1) * 10 + 1}
               autoComplete="off"
               ouiaId="start-value"
             />
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="error">
+                  {validations[0] ? "Please enter start and/or end value" : ""}
+                </HelperTextItem>
+              </HelperText>
+            </FormHelperText>
           </FormGroup>
           <FormGroup fieldId={`start-included-${index}`} className="constraints__include-range">
             <Checkbox
@@ -201,7 +206,7 @@ const RangeEdit = (props: RangeEditProps) => {
               id={`start-included-${index}`}
               name="start-included"
               isChecked={rangeValues.start.included}
-              onChange={handleRangeChange}
+              onChange={(event, value: string | boolean) => handleRangeChange(value, event)}
               onClick={saveChange}
               tabIndex={(index + 1) * 10 + 3}
               ouiaId="is-start-included"
@@ -209,23 +214,26 @@ const RangeEdit = (props: RangeEditProps) => {
           </FormGroup>
         </SplitItem>
         <SplitItem isFilled={true}>
-          <FormGroup
-            label="End Value"
-            fieldId={`end-value-${index}`}
-            helperText={validations[0] ? "Please enter start and/or end value" : ""}
-          >
+          <FormGroup label="End Value" fieldId={`end-value-${index}`}>
             <TextInput
               type="number"
               id={`end-value-${index}`}
               name="end-value"
               value={rangeValues.end.value}
               validated={validations.length === 0 ? "default" : "warning"}
-              onChange={handleRangeChange}
+              onChange={(event, value: string | boolean) => handleRangeChange(value, event)}
               onBlur={saveChange}
               tabIndex={(index + 1) * 10 + 2}
               autoComplete="off"
               ouiaId="end-value"
             />
+            <FormHelperText>
+              <HelperText>
+                <HelperTextItem variant="error">
+                  {validations[0] ? "Please enter start and/or end value" : ""}
+                </HelperTextItem>
+              </HelperText>
+            </FormHelperText>
           </FormGroup>
           <FormGroup fieldId={`end-included-${index}`} className="constraints__include-range">
             <Checkbox
@@ -234,7 +242,7 @@ const RangeEdit = (props: RangeEditProps) => {
               id={`end-included-${index}`}
               name="end-included"
               isChecked={rangeValues.end.included}
-              onChange={handleRangeChange}
+              onChange={(event, value: string | boolean) => handleRangeChange(value, event)}
               onClick={saveChange}
               tabIndex={(index + 1) * 10 + 4}
               ouiaId="is-end-included"

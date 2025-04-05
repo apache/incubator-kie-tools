@@ -23,7 +23,7 @@ import { TimePicker } from "@patternfly/react-core/dist/js/components/TimePicker
 import "./Constraint.css";
 import "./ConstraintTime.css";
 import { ConstraintProps } from "./Constraint";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useInViewSelect } from "../../responsiveness/useInViewSelect";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
@@ -175,7 +175,7 @@ export function ConstraintTime({ value, onChange, isValid }: ConstraintProps) {
           variant={SelectVariant.single}
           placeholderText="Select timezone"
           aria-label="Select timezone"
-          onToggle={(isExpanded) => setSelectTimezoneOpen(isExpanded)}
+          onToggle={(_event, isExpanded) => setSelectTimezoneOpen(isExpanded)}
           onSelect={onSelectTimezone}
           selections={timezone}
           isOpen={isSelectTimezoneOpen}

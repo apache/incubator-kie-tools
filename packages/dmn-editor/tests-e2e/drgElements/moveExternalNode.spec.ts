@@ -42,7 +42,7 @@ test.describe("Move external node - Decision", () => {
     await includedModels.includeModel();
 
     await editor.changeTab({ tab: TabName.EDITOR });
-    await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 400, y: 200 } });
+    await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 300, y: 200 } });
 
     await palette.toggleExternalNodesPanel();
 
@@ -181,7 +181,7 @@ test.describe("Move external node - Decision", () => {
     await includedModels.includeModel();
 
     await editor.changeTab({ tab: TabName.EDITOR });
-    await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 400, y: 200 } });
+    await palette.dragNewNode({ type: NodeType.DECISION_SERVICE, targetPosition: { x: 300, y: 200 } });
 
     await palette.toggleExternalNodesPanel();
 
