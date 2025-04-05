@@ -51,6 +51,10 @@ import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
 import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
 import {
+  ImportJavaClassesWizard,
+  ImportJavaClassesI18nDictionariesProvider,
+} from "@kie-tools/import-java-classes-component";
+import {
   DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE,
   DmnEditorDataTypesClipboard,
   getClipboard,
@@ -58,6 +62,8 @@ import {
 import { addTopLevelItemDefinition as _addTopLevelItemDefinition } from "../mutations/addTopLevelItemDefinition";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { ImportJavaClassesDropdownItem, ImportJavaClassNameConflictsModal } from "./ImportJavaClasses";
+import { useImportJavaClasses } from "./useImportJavaClasses";
 
 export type DataType = {
   itemDefinition: Normalized<DMN15__tItemDefinition>;
@@ -104,6 +110,18 @@ export function DataTypes() {
     (s) => s.computed(s).getDataTypes(externalModelsByNamespace).allDataTypesById
   );
   const dataTypesTree = useDmnEditorStore((s) => s.computed(s).getDataTypes(externalModelsByNamespace).dataTypesTree);
+
+  const [isOpenImportJavaClassesWizard, setOpenImportJavaClassesWizard] = useState(false);
+  const {
+    javaCodeCompletionService,
+    conflictsClasses,
+    handleConflictAction,
+    handleImportJavaClasses,
+    isConflictsOccured,
+  } = useImportJavaClasses();
+  const handleImportJavaClassButtonClick = useCallback(() => {
+    setOpenImportJavaClassesWizard((prevState) => !prevState);
+  }, []);
 
   const activeDataType = useMemo(() => {
     return activeItemDefinitionId ? allDataTypesById.get(activeItemDefinitionId) : undefined;
@@ -230,6 +248,13 @@ export function DataTypes() {
                         position={DropdownPosition.right}
                         isOpen={isAddDataTypeDropdownOpen}
                         dropdownItems={[
+                          settings?.isImportDataTypesFromJavaClassesSupported ? (
+                            <ImportJavaClassesI18nDictionariesProvider key={"import-java-classes"}>
+                              <ImportJavaClassesDropdownItem onClick={handleImportJavaClassButtonClick} />
+                            </ImportJavaClassesI18nDictionariesProvider>
+                          ) : (
+                            <></>
+                          ),
                           <DropdownItem
                             key={"paste"}
                             onClick={() => pasteTopLevelItemDefinition()}
@@ -309,6 +334,23 @@ export function DataTypes() {
                   dataType={activeDataType}
                   allDataTypesById={allDataTypesById}
                   editItemDefinition={editItemDefinition}
+                />
+              )}
+              {isOpenImportJavaClassesWizard && (
+                <ImportJavaClassesI18nDictionariesProvider>
+                  <ImportJavaClassesWizard
+                    javaCodeCompletionService={javaCodeCompletionService}
+                    isOpen={isOpenImportJavaClassesWizard}
+                    onSave={handleImportJavaClasses}
+                    onClose={handleImportJavaClassButtonClick}
+                  />
+                </ImportJavaClassesI18nDictionariesProvider>
+              )}
+              {isConflictsOccured && conflictsClasses?.length > 0 && (
+                <ImportJavaClassNameConflictsModal
+                  isOpen={isConflictsOccured}
+                  handleConfirm={handleConflictAction}
+                  conflictsNames={conflictsClasses}
                 />
               )}
             </DrawerContentBody>

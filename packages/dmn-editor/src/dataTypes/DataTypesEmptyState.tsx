@@ -31,6 +31,7 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { ImportJavaClassesWrapper } from "./ImportJavaClasses";
 
 export function DataTypesEmptyState({ onAdd, onPaste }: { onAdd: () => void; onPaste: () => void }) {
   const settings = useSettings();
@@ -54,9 +55,17 @@ export function DataTypesEmptyState({ onAdd, onPaste }: { onAdd: () => void; onP
               </Button>
             </EmptyStatePrimary>
             <br />
-            <br />
+            {settings?.isImportDataTypesFromJavaClassesSupported && (
+              <>
+                or
+                <br />
+                <br />
+                <ImportJavaClassesWrapper />
+                <br />
+                <br />
+              </>
+            )}
             or
-            <br />
             <EmptyStateSecondaryActions>
               <Button variant={ButtonVariant.link} onClick={onPaste} icon={<PasteIcon />}>
                 Paste data type

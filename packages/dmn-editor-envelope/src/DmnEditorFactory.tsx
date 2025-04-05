@@ -18,6 +18,7 @@
  */
 
 import * as React from "react";
+import { useCallback, useMemo } from "react";
 import {
   Editor,
   EditorFactory,
@@ -26,12 +27,12 @@ import {
   KogitoEditorChannelApi,
   EditorTheme,
   DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
+  ChannelType,
   KogitoEditorEnvelopeApi,
 } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { DmnEditorRoot } from "./DmnEditorRoot";
 import { ResourceContent, ResourcesList, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
-import { useCallback } from "react";
 
 export class DmnEditorFactory implements EditorFactory<Editor, KogitoEditorEnvelopeApi, KogitoEditorChannelApi> {
   public createEditor(
@@ -95,6 +96,7 @@ export class DmnEditorInterface implements Editor {
           this.initArgs.workspaceRootAbsolutePosixPath ?? DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH
         }
         isReadOnly={this.initArgs.isReadOnly}
+        channelType={this.initArgs?.channel}
       />
     );
   }
@@ -106,11 +108,13 @@ function DmnEditorRootWrapper({
   exposing,
   workspaceRootAbsolutePosixPath,
   isReadOnly,
+  channelType,
 }: {
   envelopeContext?: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>;
   exposing: (s: DmnEditorRoot) => void;
   workspaceRootAbsolutePosixPath: string;
   isReadOnly: boolean;
+  channelType?: ChannelType;
 }) {
   const onNewEdit = useCallback(
     (workspaceEdit: WorkspaceEdit) => {
@@ -144,6 +148,11 @@ function DmnEditorRootWrapper({
     [envelopeContext]
   );
 
+  const isImportDataTypesFromJavaClassesSupported = useMemo(
+    (): boolean => channelType === ChannelType.VSCODE_DESKTOP || channelType === ChannelType.VSCODE_WEB,
+    [channelType]
+  );
+
   return (
     <DmnEditorRoot
       exposing={exposing}
@@ -156,6 +165,7 @@ function DmnEditorRootWrapper({
       workspaceRootAbsolutePosixPath={workspaceRootAbsolutePosixPath}
       keyboardShortcutsService={envelopeContext?.services.keyboardShortcuts}
       isReadOnly={isReadOnly}
+      isImportDataTypesFromJavaClassesSupported={isImportDataTypesFromJavaClassesSupported}
     />
   );
 }

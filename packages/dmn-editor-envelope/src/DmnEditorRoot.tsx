@@ -61,6 +61,7 @@ export type DmnEditorRootProps = {
   workspaceRootAbsolutePosixPath: string;
   keyboardShortcutsService: KeyboardShortcutsService | undefined;
   isReadOnly: boolean;
+  isImportDataTypesFromJavaClassesSupported?: boolean;
 };
 
 export type DmnEditorRootState = {
@@ -491,6 +492,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
               externalContextDescription={""}
               issueTrackerHref={""}
               isReadOnly={this.state.isReadOnly}
+              isImportDataTypesFromJavaClassesSupported={this.props?.isImportDataTypesFromJavaClassesSupported}
               onModelChange={this.onModelChange}
               onRequestExternalModelsAvailableToInclude={this.onRequestExternalModelsAvailableToInclude}
               // (begin) All paths coming from inside the DmnEditor component are paths relative to the open file.

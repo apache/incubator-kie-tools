@@ -173,6 +173,10 @@ export type DmnEditorProps = {
    */
   isReadOnly?: boolean;
   /**
+   * Boolean flag to check whether the "Import DataTypes From JavaClasses" feature is available.
+   */
+  isImportDataTypesFromJavaClassesSupported?: boolean;
+  /**
    * When users want to jump to another file, this method is called, allowing the controller of this component decide what to do.
    * Links are only rendered if this is provided. Otherwise, paths will be rendered as text.
    */
