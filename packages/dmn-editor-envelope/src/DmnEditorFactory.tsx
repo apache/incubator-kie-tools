@@ -49,8 +49,11 @@ export class DmnEditorInterface implements Editor {
   public af_componentTitle: "DMN Editor";
 
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
-    private readonly initArgs: EditorInitArgs
+    protected readonly envelopeContext: KogitoEditorEnvelopeContextType<
+      KogitoEditorEnvelopeApi,
+      KogitoEditorChannelApi
+    >,
+    protected readonly initArgs: EditorInitArgs
   ) {}
 
   // Not in-editor
@@ -101,16 +104,18 @@ export class DmnEditorInterface implements Editor {
 }
 
 // This component is a wrapper. It memoizes the DmnEditorRoot props beforing rendering it.
-function DmnEditorRootWrapper({
+export function DmnEditorRootWrapper({
   envelopeContext,
   exposing,
   workspaceRootAbsolutePosixPath,
   isReadOnly,
+  onOpenedBoxedExpressionEditorNodeChange,
 }: {
   envelopeContext?: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>;
   exposing: (s: DmnEditorRoot) => void;
   workspaceRootAbsolutePosixPath: string;
   isReadOnly: boolean;
+  onOpenedBoxedExpressionEditorNodeChange?: (newOpenedNodeId: string | undefined) => void;
 }) {
   const onNewEdit = useCallback(
     (workspaceEdit: WorkspaceEdit) => {
@@ -153,6 +158,7 @@ function DmnEditorRootWrapper({
       onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot={
         onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot
       }
+      onOpenedBoxedExpressionEditorNodeChange={onOpenedBoxedExpressionEditorNodeChange}
       workspaceRootAbsolutePosixPath={workspaceRootAbsolutePosixPath}
       keyboardShortcutsService={envelopeContext?.services.keyboardShortcuts}
       isReadOnly={isReadOnly}

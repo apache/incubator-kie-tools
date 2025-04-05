@@ -186,16 +186,20 @@ export type DmnEditorProps = {
    * Notifies the caller when the DMN Editor performs a new edit after the debounce time.
    */
   onModelDebounceStateChanged?: (changed: boolean) => void;
+
+  onOpenedBoxedExpressionEditorNodeChange?: (newOpenedNodeId: string | undefined) => void;
 };
 
 export const DmnEditorInternal = ({
   model,
   originalVersion,
   onModelChange,
+  onOpenedBoxedExpressionEditorNodeChange,
   onModelDebounceStateChanged,
   forwardRef,
 }: DmnEditorProps & { forwardRef?: React.Ref<DmnEditorRef> }) => {
   const boxedExpressionEditorActiveDrgElementId = useDmnEditorStore((s) => s.boxedExpressionEditor.activeDrgElementId);
+  const dmnEditorActiveTab = useDmnEditorStore((s) => s.navigation.tab);
   const isBeePropertiesPanelOpen = useDmnEditorStore((s) => s.boxedExpressionEditor.propertiesPanel.isOpen);
   const isDiagramPropertiesPanelOpen = useDmnEditorStore((s) => s.diagram.propertiesPanel.isOpen);
   const navigationTab = useDmnEditorStore((s) => s.navigation.tab);
@@ -206,6 +210,13 @@ export const DmnEditorInternal = ({
 
   const { dmnModelBeforeEditingRef, dmnEditorRootElementRef } = useDmnEditor();
   const { externalModelsByNamespace } = useExternalModels();
+
+  // Code to keep FormDmnOutputs.tsx selected card highlight in proper state
+  useEffect(() => {
+    onOpenedBoxedExpressionEditorNodeChange?.(
+      dmnEditorActiveTab === DmnEditorTab.EDITOR ? boxedExpressionEditorActiveDrgElementId : undefined
+    );
+  }, [boxedExpressionEditorActiveDrgElementId, dmnEditorActiveTab, onOpenedBoxedExpressionEditorNodeChange]);
 
   // Refs
   const diagramRef = useRef<DiagramRef>(null);
