@@ -30,19 +30,12 @@ import (
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
-	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/stretchr/testify/require"
-	
 	"gopkg.in/yaml.v2"
 )
 
 type cfgTestInputDeploy struct {
 	input command.DeployUndeployCmdConfig
-}
-
-var cfgTestInputDeploy_Success = []cfgTestInputDeploy{
-	{input: command.DeployUndeployCmdConfig{}},
-	{input: command.DeployUndeployCmdConfig{Image: metadata.DevModeImage}},
 }
 
 type Config struct {
@@ -55,6 +48,12 @@ type Config struct {
 		} `yaml:"podTemplate"`
 	} `yaml:"spec"`
 }
+
+var cfgTestInputDeploy_Success = []cfgTestInputDeploy{
+	{input: command.DeployUndeployCmdConfig{}},
+}
+
+var my_test_image = "my_test_image"
 
 func transformDeployCmdCfgToArgs(cfg command.DeployUndeployCmdConfig) []string {
 	args := []string{"deploy"}
@@ -72,11 +71,47 @@ func TestDeployProjectSuccess(t *testing.T) {
 		return nil
 	}
 
+	var executeApplyOriginal = common.ExecuteApply
+	defer func() { common.ExecuteApply = executeApplyOriginal }()
+
+	common.ExecuteApply = func(crd, namespace string) error {
+		return nil
+	}
+
 	defer os.Chdir(dir)
 	for testIndex := range cfgTestInputDeploy_Success {
-		var executeApplyOriginal = common.ExecuteApply
-		defer func() { common.ExecuteApply = executeApplyOriginal }()
+		t.Run(fmt.Sprintf("Test deploy project success index: %d", testIndex), func(t *testing.T) {
+			RunCreateTest(t, CfgTestInputCreate_Success[testIndex])
+			projectName := GetCreateProjectName(t, CfgTestInputCreate_Success[testIndex])
+			projectDir := filepath.Join(TempTestsPath, projectName)
+			defer os.RemoveAll(projectDir)
 
+			err = os.Chdir(projectDir)
+			require.NoErrorf(t, err, "Expected nil error, got %v", err)
+
+			cmd := command.NewDeployCommand()
+			err = cmd.Execute()
+			require.NoError(t, err)
+		})
+	}
+}
+
+func TestDeployProjectSuccessWithImageDefined(t *testing.T) {
+	dir, err := os.Getwd()
+	require.NoError(t, err)
+
+	var originalCheckCrds = command.CheckCRDs
+	defer func() { command.CheckCRDs = originalCheckCrds }()
+
+	command.CheckCRDs = func(crds []string, typeName string) error {
+		return nil
+	}
+
+	var executeApplyOriginal = common.ExecuteApply
+	defer func() { common.ExecuteApply = executeApplyOriginal }()
+
+	defer os.Chdir(dir)
+	for testIndex := range cfgTestInputDeploy_Success {
 		common.ExecuteApply = func(path, namespace string) error {
 			if cfgTestInputDeploy_Success[testIndex].input.Image != "" {
 				file, err := os.Open(path)
@@ -99,8 +134,8 @@ func TestDeployProjectSuccess(t *testing.T) {
 					return nil
 				}
 
-				if cfg.Spec.PodTemplate.Container.Image != metadata.DevModeImage {
-					t.Fatalf("❌ ERROR: Expected image %s, got %s", metadata.DevModeImage, cfg.Spec.PodTemplate.Container.Image)
+				if cfg.Spec.PodTemplate.Container.Image != my_test_image {
+					t.Fatalf("❌ ERROR: Expected image %s, got %s", my_test_image, cfg.Spec.PodTemplate.Container.Image)
 				}
 			}
 			return nil
@@ -108,7 +143,7 @@ func TestDeployProjectSuccess(t *testing.T) {
 
 		t.Run(fmt.Sprintf("Test deploy project success index: %d", testIndex), func(t *testing.T) {
 			RunCreateTest(t, CfgTestInputCreate_Success[testIndex])
-			projectName := GetCreateProjectName(t, CfgTestInputCreate_Success[0])
+			projectName := GetCreateProjectName(t, CfgTestInputCreate_Success[testIndex])
 			projectDir := filepath.Join(TempTestsPath, projectName)
 			defer os.RemoveAll(projectDir)
 
@@ -116,6 +151,7 @@ func TestDeployProjectSuccess(t *testing.T) {
 			require.NoErrorf(t, err, "Expected nil error, got %v", err)
 
 			cmd := command.NewDeployCommand()
+			cmd.SetArgs([]string{"--image", my_test_image})
 			err = cmd.Execute()
 			require.NoError(t, err)
 		})

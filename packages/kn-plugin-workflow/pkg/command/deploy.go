@@ -134,6 +134,10 @@ func runDeployUndeploy(cmd *cobra.Command, args []string) error {
 		fmt.Printf("🛠 Using manifests located at %s\n", cfg.CustomManifestsFileDir)
 	}
 
+	if cfg.Image != "" {
+		metadata.DevModeImage = cfg.Image
+	}
+
 	if err = deploy(&cfg); err != nil {
 		return fmt.Errorf("❌ ERROR: applying deploy: %w", err)
 	}
