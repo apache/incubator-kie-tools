@@ -755,6 +755,9 @@ the cursor is inside it. By making it adimensional, that never happens.  */
 .kie-dmn-editor--info-label > .pf-v5-c-label__content::before {
   border: 1px solid black;
 }
+.kie-dmn-editor--info-label .pf-v5-c-label__text {
+  line-height: 0;
+}
 .kie-dmn-editor--info-label:hover {
   filter: brightness(95%);
 }
