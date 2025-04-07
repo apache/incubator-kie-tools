@@ -365,7 +365,7 @@ func GetSinkURI(destination duckv1.Destination) (*apis.URL, error) {
 // service revisions that weren't properly initialized (i.e. doesn't have the K_SINK injected) will be cleaned-up.
 // Note that revisions in that situation are not valid, since workflows without the K_SINK injected will never pass
 // the health checks, etc.
-func CleanupOutdatedRevisions(ctx context.Context, cli client.Client, cfg *rest.Config, workflow *operatorapi.SonataFlow) error {
+func CleanupOutdatedRevisions(ctx context.Context, cfg *rest.Config, workflow *operatorapi.SonataFlow) error {
 	if !workflow.IsKnativeDeployment() {
 		return nil
 	}
@@ -393,7 +393,7 @@ func CleanupOutdatedRevisions(ctx context.Context, cli client.Client, cfg *rest.
 		Namespace: workflow.Namespace,
 	}
 	revisionList := &servingv1.RevisionList{}
-	if err := cli.List(ctx, revisionList, opts); err != nil {
+	if err := utils.GetClient().List(ctx, revisionList, opts); err != nil {
 		return err
 	}
 	// Sort the revisions based on creation timestamp
@@ -403,7 +403,7 @@ func CleanupOutdatedRevisions(ctx context.Context, cli client.Client, cfg *rest.
 		revision := &revisionList.Items[i]
 		if !containsKSink(revision) {
 			klog.V(log.I).InfoS("Revision %s does not have K_SINK injected and can be cleaned up.", revision.Name)
-			if err := cli.Delete(ctx, revision, &client.DeleteOptions{}); err != nil {
+			if err := utils.GetClient().Delete(ctx, revision, &client.DeleteOptions{}); err != nil {
 				return err
 			}
 		}
