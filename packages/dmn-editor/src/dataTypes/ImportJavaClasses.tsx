@@ -26,7 +26,6 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { TextContent, Text, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 import {
   ImportJavaClasses,
   JavaClass,
