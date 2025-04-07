@@ -105,6 +105,8 @@ export class VsCodeKieEditorController implements EditorApi {
         return EditorTheme.DARK;
       case ColorThemeKind.HighContrast:
         return EditorTheme.HIGH_CONTRAST;
+      case ColorThemeKind.HighContrastLight:
+        return EditorTheme.HIGH_CONTRAST_LIGHT;
       default:
         return EditorTheme.LIGHT;
     }
