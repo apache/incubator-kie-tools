@@ -17,9 +17,17 @@
  * under the License.
  */
 
-export enum EditorTheme {
-  DARK,
-  LIGHT,
-  HIGH_CONTRAST,
-  HIGH_CONTRAST_LIGHT,
+import { Locator } from "@playwright/test";
+
+export class AllowedAnswersProperties {
+  constructor(public panel: Locator) {}
+
+  public async setAllowedAnswers(args: { newAllowedAnswers: string }) {
+    await this.panel.getByPlaceholder("Enter allowed answers...").fill(args.newAllowedAnswers);
+    await this.panel.getByPlaceholder("Enter allowed answers...").press("Tab");
+  }
+
+  public async getAllowedAnswers() {
+    return await this.panel.getByPlaceholder("Enter allowed answers...").inputValue();
+  }
 }

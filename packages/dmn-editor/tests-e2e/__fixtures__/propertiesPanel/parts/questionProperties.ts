@@ -17,9 +17,17 @@
  * under the License.
  */
 
-export enum EditorTheme {
-  DARK,
-  LIGHT,
-  HIGH_CONTRAST,
-  HIGH_CONTRAST_LIGHT,
+import { Locator } from "@playwright/test";
+
+export class QuestionProperties {
+  constructor(public panel: Locator) {}
+
+  public async setQuestion(args: { newQuestion: string }) {
+    await this.panel.getByPlaceholder("Enter a question...").fill(args.newQuestion);
+    await this.panel.getByPlaceholder("Enter a question...").press("Tab");
+  }
+
+  public async getQuestion() {
+    return await this.panel.getByPlaceholder("Enter a question...").inputValue();
+  }
 }

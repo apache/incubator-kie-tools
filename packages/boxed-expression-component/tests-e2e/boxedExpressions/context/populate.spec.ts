@@ -98,4 +98,30 @@ test.describe("Populate Boxed Context", () => {
 
     await expect(bee.getContainer()).toHaveScreenshot("boxed-context-pre-bureau-risk-category.png");
   });
+
+  test("should not revert context header when '<result>' cell is edited", async ({ stories, bee }) => {
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/1512",
+    });
+
+    await stories.openBoxedContext();
+
+    // edit '<result>' cell for the fist time
+    await bee.expression.asContext().result.selectExpressionMenu.selectLiteral();
+    await bee.expression.asContext().result.expression.asLiteral().fill("1");
+
+    // change the context header
+    await bee.expression.asContext().expressionHeaderCell.open();
+    await bee.expression.asContext().expressionHeaderCell.setName({ name: "New Expression Name", close: false });
+    await bee.expression.asContext().expressionHeaderCell.setDataType({ dataType: "number", close: true });
+
+    // edit '<result>' cell for the second time
+    await bee.expression.asContext().result.expression.asLiteral().fill("2");
+
+    // check the context header is not changed since last edit
+    expect(await bee.expression.asContext().expressionHeaderCell.getName()).toBe("New Expression Name");
+    expect(await bee.expression.asContext().expressionHeaderCell.getDataType()).toBe("(number)");
+    await expect(bee.expression.asContext().result.expression.asLiteral().cell.content).toContainText("2");
+  });
 });
