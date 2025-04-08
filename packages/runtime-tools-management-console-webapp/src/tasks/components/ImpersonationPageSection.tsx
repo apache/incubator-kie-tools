@@ -157,7 +157,7 @@ export const ImpersonationPageSection: React.FC<{}> = () => {
           >
             <FormGroup label={"User"} style={{ maxWidth: "500px" }}>
               <TextInput
-                validated={username && username === impersonationUsername ? "success" : "error"}
+                validated={username && username === impersonationUsername ? "success" : "default"}
                 id="username"
                 aria-label="Username"
                 autoFocus={false}
@@ -169,7 +169,7 @@ export const ImpersonationPageSection: React.FC<{}> = () => {
             </FormGroup>
             <FormGroup label={"Groups"} style={{ maxWidth: "500px" }}>
               <TextInput
-                validated={groups && groups === impersonationGroups ? "success" : "error"}
+                validated={groups && groups === impersonationGroups ? "success" : "default"}
                 id="groups"
                 aria-label="Groups"
                 tabIndex={2}
