@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -16,16 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import { UserContext } from "./auth/Auth";
-import KogitoAppContext, { AppContextImpl } from "./KogitoAppContext";
+package org.acme.travel;
 
-interface IOwnProps {
-  userContext: UserContext;
+import org.drools.ruleunits.api.*;
+
+public class TravelerValidationService implements RuleUnitData {
+    private final SingletonStore<Traveler> traveler = DataSource.createSingleton();
+
+    public SingletonStore<Traveler> getTraveler() {
+        return traveler;
+    }
 }
-
-const KogitoAppContextProvider: React.FC<IOwnProps> = ({ userContext, children }) => {
-  return <KogitoAppContext.Provider value={new AppContextImpl(userContext)}>{children}</KogitoAppContext.Provider>;
-};
-
-export default KogitoAppContextProvider;

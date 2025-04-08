@@ -16,7 +16,26 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export { default as KogitoAppContext, AppContext, useKogitoAppContext } from "./KogitoAppContext";
-export { default as KogitoAppContextProvider } from "./KogitoAppContextProvider";
-export * from "./TestUserContext";
-export * from "./auth";
+import React, { useContext } from "react";
+import { User, UserContext } from "./auth";
+
+export interface AppContext {
+  getCurrentUser(): User;
+  readonly userContext: UserContext;
+}
+
+export class AppContextImpl implements AppContext {
+  public readonly userContext: UserContext;
+
+  constructor(userSystem: UserContext) {
+    this.userContext = userSystem;
+  }
+
+  getCurrentUser(): User {
+    return this.userContext.getCurrentUser();
+  }
+}
+
+export const KogitoAppContext = React.createContext<AppContext>({} as AppContext);
+
+export const useKogitoAppContext = () => useContext<AppContext>(KogitoAppContext);

@@ -71,6 +71,7 @@ const ProcessFormContainer: React.FC<ProcessFormContainerProps & OUIAProps> = ({
         },
       }}
       targetOrigin={appContext.getDevUIUrl()}
+      customFormDisplayerEnvelopePath="resources/form-displayer.html"
     />
   );
 };

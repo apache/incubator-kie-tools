@@ -39,6 +39,7 @@ export function init(args: {
   container: HTMLDivElement;
   bus: EnvelopeBus;
   targetOrigin: string;
+  customFormDisplayerEnvelopePath?: string;
 }) {
   /**
    * Creates a new generic Envelope, typed with the right interfaces.
@@ -61,7 +62,12 @@ export function init(args: {
     return new Promise<() => ProcessFormEnvelopeViewApi>((res) => {
       args.container.className = "kogito-process-form-container";
       ReactDOM.render(
-        <ProcessFormEnvelopeView ref={ref} channelApi={envelope.channelApi} targetOrigin={args.targetOrigin} />,
+        <ProcessFormEnvelopeView
+          ref={ref}
+          channelApi={envelope.channelApi}
+          targetOrigin={args.targetOrigin}
+          customFormDisplayerEnvelopePath={args.customFormDisplayerEnvelopePath}
+        />,
         args.container,
         () => res(() => ref.current!)
       );

@@ -72,7 +72,7 @@ const Form__hiring: React.FC<any> = (props: any) => {
           onChange={set__candidate}
         />
       </FormGroup>
-      <FormGroup fieldId={"uniforms-0006-0002"} label={"Experience Level"} isRequired={false}>
+      <FormGroup fieldId={"uniforms-0006-0002"} label={"Experience"} isRequired={false}>
         <TextInput
           type={"number"}
           name={"experience"}

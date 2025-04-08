@@ -24,7 +24,7 @@ import {
   PageSection,
   PageSidebar,
 } from "@patternfly/react-core/dist/js/components/Page";
-import React, { useState, useMemo, useCallback, useEffect } from "react";
+import React, { useState, useMemo, useCallback, useEffect, ReactElement } from "react";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { useEnv } from "../env/hooks/EnvContext";
 import { useRoutes } from "../navigation/Hooks";
@@ -37,8 +37,8 @@ import { BreadcrumbPathType } from "../runtime/RuntimePageLayoutContext";
 type Props = {
   children: React.ReactNode;
   disabledHeader?: boolean;
-  currentPageTile?: string;
-  breadcrumbText?: string[];
+  currentPageTile?: string | ReactElement;
+  breadcrumbText?: (string | ReactElement)[];
   breadcrumbPath?: BreadcrumbPathType;
   nav?: React.ReactNode;
 };

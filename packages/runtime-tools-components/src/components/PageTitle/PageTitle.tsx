@@ -29,7 +29,7 @@ export interface IOwnProps {
 
 export const PageTitle: React.FC<IOwnProps & OUIAProps> = ({ title, extra, ouiaId, ouiaSafe }) => {
   return (
-    <Flex {...componentOuiaProps(ouiaId, "page-title", ouiaSafe)}>
+    <Flex {...componentOuiaProps(ouiaId, "page-title", ouiaSafe)} style={{ marginTop: "8px" }}>
       <FlexItem spacer={{ default: "spacerSm" }}>
         <Title headingLevel="h1" size="4xl">
           {title}

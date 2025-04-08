@@ -32,6 +32,8 @@ import {
 import { FormAction } from "@kie-tools/runtime-tools-components/dist/utils";
 import { FormFooter } from "@kie-tools/runtime-tools-components/dist/components/FormFooter";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { Card, CardBody, CardFooter } from "@patternfly/react-core/dist/js/components/Card";
+import { FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export interface CustomProcessFormDisplayerProps {
   schema: Record<string, any>;
@@ -39,6 +41,7 @@ export interface CustomProcessFormDisplayerProps {
   driver: ProcessFormDriver;
   targetOrigin: string;
   processDefinition: ProcessDefinition;
+  envelopePath?: string;
 }
 
 const CustomProcessFormDisplayer: React.FC<CustomProcessFormDisplayerProps & OUIAProps> = ({
@@ -48,6 +51,7 @@ const CustomProcessFormDisplayer: React.FC<CustomProcessFormDisplayerProps & OUI
   ouiaId,
   ouiaSafe,
   processDefinition,
+  envelopePath = "resources/forms-displayer.html",
 }) => {
   const formDisplayerApiRef = useRef<FormDisplayerApi>(null);
   const [formUUID] = useState<string>(uuidv4());
@@ -96,26 +100,26 @@ const CustomProcessFormDisplayer: React.FC<CustomProcessFormDisplayerProps & OUI
   }, [doSubmit]);
 
   return (
-    <div {...componentOuiaProps(ouiaId, "custom-form-displayer", ouiaSafe)} style={{ height: "100%" }}>
-      <Stack hasGutter>
-        <StackItem id={`${formUUID}-form`} style={{ visibility: "visible", height: "inherit" }}>
+    <FlexItem {...componentOuiaProps(ouiaId, "custom-form-displayer", ouiaSafe)} grow={{ default: "grow" }}>
+      <Card>
+        <CardBody id={`${formUUID}-form`} style={{ visibility: "visible" }}>
           <EmbeddedFormDisplayer
             targetOrigin={targetOrigin}
-            envelopePath={"resources/form-displayer.html"}
+            envelopePath={envelopePath}
             formContent={customForm}
             data={formData}
             context={{}}
             onOpenForm={(opened) => setFormOpened(opened)}
             ref={formDisplayerApiRef}
           />
-        </StackItem>
+        </CardBody>
         {formOpened && formOpened.state === FormOpenedState.OPENED && (
-          <StackItem>
+          <CardFooter>
             <FormFooter actions={formActions} enabled={!submitted} />
-          </StackItem>
+          </CardFooter>
         )}
-      </Stack>
-    </div>
+      </Card>
+    </FlexItem>
   );
 };
 

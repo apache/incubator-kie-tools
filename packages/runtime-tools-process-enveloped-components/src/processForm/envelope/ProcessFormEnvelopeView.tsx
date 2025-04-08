@@ -31,6 +31,7 @@ export interface ProcessFormEnvelopeViewApi {
 interface Props {
   channelApi: MessageBusClientApi<ProcessFormChannelApi>;
   targetOrigin: string;
+  customFormDisplayerEnvelopePath?: string;
 }
 
 export const ProcessFormEnvelopeView = React.forwardRef<ProcessFormEnvelopeViewApi, Props>((props, forwardedRef) => {
@@ -57,6 +58,7 @@ export const ProcessFormEnvelopeView = React.forwardRef<ProcessFormEnvelopeViewA
       processDefinition={processDefinition}
       driver={new ProcessFormEnvelopeViewDriver(props.channelApi)}
       targetOrigin={props.targetOrigin}
+      customFormDisplayerEnvelopePath={props.customFormDisplayerEnvelopePath}
     />
   );
 });

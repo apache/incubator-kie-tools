@@ -29,6 +29,7 @@ export interface EmbeddedProcessFormProps {
   targetOrigin: string;
   driver: ProcessFormDriver;
   processDefinition: ProcessDefinition;
+  customFormDisplayerEnvelopePath?: string;
 }
 
 export const EmbeddedProcessForm = React.forwardRef(
@@ -54,6 +55,7 @@ export const EmbeddedProcessForm = React.forwardRef(
             },
           },
           targetOrigin: props.targetOrigin,
+          customFormDisplayerEnvelopePath: props.customFormDisplayerEnvelopePath,
         });
         return envelopeServer.envelopeApi.requests.processForm__init(
           {
@@ -63,7 +65,7 @@ export const EmbeddedProcessForm = React.forwardRef(
           { ...props.processDefinition }
         );
       },
-      [props.processDefinition, props.targetOrigin]
+      [props.customFormDisplayerEnvelopePath, props.processDefinition, props.targetOrigin]
     );
 
     return (

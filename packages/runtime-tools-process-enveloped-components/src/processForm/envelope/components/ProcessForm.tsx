@@ -26,9 +26,7 @@ import { FormAction } from "@kie-tools/runtime-tools-components/dist/utils";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import SVG from "react-inlinesvg";
-import ProcessDiagram from "../../../processDetails/envelope/components/ProcessDiagram/ProcessDiagram";
-import { Card } from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export interface ProcessFormProps {
@@ -36,6 +34,7 @@ export interface ProcessFormProps {
   driver: ProcessFormDriver;
   isEnvelopeConnectedToChannel: boolean;
   targetOrigin: string;
+  customFormDisplayerEnvelopePath?: string;
 }
 
 const formAction: FormAction[] = [
@@ -49,6 +48,7 @@ const ProcessForm: React.FC<ProcessFormProps> = ({
   driver,
   isEnvelopeConnectedToChannel,
   targetOrigin,
+  customFormDisplayerEnvelopePath,
 }) => {
   const formRendererApi = React.useRef<FormRendererApi>(null);
   const [processFormSchema, setProcessFormSchema] = useState<any>({});
@@ -110,8 +110,12 @@ const ProcessForm: React.FC<ProcessFormProps> = ({
     const handleSvgApi = async (): Promise<void> => {
       try {
         const response = await driver.getProcessDefinitionSvg(processDefinition);
-        const temp = <SVG src={response} style={{ width: "100%" }} />;
-        setSvg(temp);
+        if (response) {
+          const temp = <img src={`data:image/svg+xml;utf8,${encodeURIComponent(response)}`} />;
+          setSvg(temp);
+        } else {
+          setSvg(undefined);
+        }
       } catch (error) {
         console.log(error);
       }
@@ -123,10 +127,9 @@ const ProcessForm: React.FC<ProcessFormProps> = ({
 
   const processDiagramBlock = useMemo(
     () =>
-      svg &&
-      svg.props.src && (
+      svg && (
         <Card>
-          <ProcessDiagram svg={svg} />
+          <CardBody>{svg}</CardBody>
         </Card>
       ),
     [svg]
@@ -146,33 +149,36 @@ const ProcessForm: React.FC<ProcessFormProps> = ({
 
   if (!processCustomForm) {
     return (
-      <Flex>
+      <Flex direction={{ default: "column" }}>
         <FlexItem>{processDiagramBlock}</FlexItem>
         <FlexItem>
-          <FormRenderer
-            formSchema={processFormSchema}
-            model={{}}
-            readOnly={false}
-            onSubmit={onSubmit}
-            formActions={formAction}
-            ref={formRendererApi}
-          />
+          <Card>
+            <CardBody>
+              <FormRenderer
+                formSchema={processFormSchema}
+                model={{}}
+                readOnly={false}
+                onSubmit={onSubmit}
+                formActions={formAction}
+                ref={formRendererApi}
+              />
+            </CardBody>
+          </Card>
         </FlexItem>
       </Flex>
     );
   } else {
     return (
-      <Flex>
+      <Flex direction={{ default: "column" }}>
         <FlexItem>{processDiagramBlock}</FlexItem>
-        <FlexItem>
-          <CustomProcessFormDisplayer
-            processDefinition={processDefinition}
-            schema={processFormSchema}
-            customForm={processCustomForm}
-            driver={driver}
-            targetOrigin={targetOrigin}
-          />
-        </FlexItem>
+        <CustomProcessFormDisplayer
+          processDefinition={processDefinition}
+          schema={processFormSchema}
+          customForm={processCustomForm}
+          driver={driver}
+          targetOrigin={targetOrigin}
+          envelopePath={customFormDisplayerEnvelopePath}
+        />
       </Flex>
     );
   }

@@ -21,7 +21,7 @@ import {
   QueryFilter,
   SortBy,
   TaskInboxState,
-} from "@kie-tools/runtime-tools-process-enveloped-components/src/taskInbox";
+} from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskInbox";
 import { TaskInboxQueries } from "./TaskInboxQueries";
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { User } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";

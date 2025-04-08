@@ -66,7 +66,11 @@ export const ProcessDefinitionFormPage: React.FC<{ processName?: string }> = ({ 
   }, [onNavigateToProcessDefinitionForm, setOnSelectAuthSession]);
 
   useEffect(() => {
-    setCurrentPageTitle("Process Definition Form");
+    setCurrentPageTitle(
+      <>
+        New <b>{processName}</b> process
+      </>
+    );
     setBreadcrumbText([
       "Home",
       runtimeDisplayInfo?.fullDisplayName ?? "Runtime",

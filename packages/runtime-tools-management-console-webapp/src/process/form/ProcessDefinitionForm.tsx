@@ -38,8 +38,6 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { EmbeddedProcessForm } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processForm";
-import { useRuntimeSpecificRoutes } from "../../runtime/RuntimeContext";
-import { useHistory } from "react-router";
 import {
   ProcessDefinitionsListGatewayApi,
   useProcessDefinitionsListGatewayApi,
@@ -142,6 +140,7 @@ export const ProcessDefinitionForm: React.FC<Props> = ({
         driver={processFormDriver}
         targetOrigin={window.location.origin}
         processDefinition={processDefinition}
+        customFormDisplayerEnvelopePath="/resources/form-displayer.html"
       />
     );
   }
