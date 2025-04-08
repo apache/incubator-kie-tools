@@ -9719,9 +9719,6 @@ importers:
       '@kie-tools/runtime-tools-components':
         specifier: workspace:*
         version: link:../runtime-tools-components
-      '@kie-tools/runtime-tools-shared-enveloped-components':
-        specifier: workspace:*
-        version: link:../runtime-tools-shared-enveloped-components
       '@kie-tools/runtime-tools-shared-gateway-api':
         specifier: workspace:*
         version: link:../runtime-tools-shared-gateway-api
@@ -9979,9 +9976,6 @@ importers:
       '@kie-tools/runtime-tools-components':
         specifier: workspace:*
         version: link:../runtime-tools-components
-      '@kie-tools/runtime-tools-shared-enveloped-components':
-        specifier: workspace:*
-        version: link:../runtime-tools-shared-enveloped-components
       '@kie-tools/runtime-tools-shared-gateway-api':
         specifier: workspace:*
         version: link:../runtime-tools-shared-gateway-api
@@ -12028,9 +12022,6 @@ importers:
       '@kie-tools/runtime-tools-components':
         specifier: workspace:*
         version: link:../runtime-tools-components
-      '@kie-tools/runtime-tools-shared-enveloped-components':
-        specifier: workspace:*
-        version: link:../runtime-tools-shared-enveloped-components
       '@kie-tools/runtime-tools-shared-gateway-api':
         specifier: workspace:*
         version: link:../runtime-tools-shared-gateway-api

@@ -554,8 +554,10 @@ digraph G {
   "@kie-tools/runtime-tools-shared-gateway-api" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/runtime-tools-shared-gateway-api" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools/runtime-tools-shared-webapp-components" -> "@kie-tools/runtime-tools-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools-core/monaco-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools/dashbuilder-client" [ style = "solid", color = "blue" ];
-  "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools/runtime-tools-shared-enveloped-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools/runtime-tools-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools/runtime-tools-swf-gateway-api" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-swf-gateway-api" -> "@kie-tools/runtime-tools-shared-gateway-api" [ style = "solid", color = "blue" ];
@@ -571,6 +573,7 @@ digraph G {
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/cors-proxy" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/dashbuilder-editor" [ style = "solid", color = "black" ];
+  "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/runtime-tools-shared-enveloped-components" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/runtime-tools-swf-webapp-components" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/text-editor" [ style = "solid", color = "black" ];
@@ -597,6 +600,7 @@ digraph G {
   "@kie-tools/serverless-workflow-combined-editor" -> "@kie-tools/serverless-workflow-diagram-editor-assets" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-combined-editor" -> "@kie-tools/serverless-workflow-text-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp" -> "@kie-tools/dashbuilder-client" [ style = "solid", color = "black" ];
+  "@kie-tools/serverless-workflow-dev-ui-webapp" -> "@kie-tools/runtime-tools-shared-enveloped-components" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-workflow-dev-ui-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-workflow-dev-ui-webapp" -> "@kie-tools/runtime-tools-swf-webapp-components" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-workflow-dev-ui-webapp" -> "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp" [ style = "solid", color = "black" ];
