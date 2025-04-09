@@ -90,7 +90,7 @@ export function BeeTableThResizable<R extends object>({
     }
 
     cssClasses.push(column.groupType ?? "");
-    cssClasses.push(column.cssClasses ?? ""); // FIXME: Breaking Decision tables because of positioning of rowSpan=2 column headers (See https://github.com/apache/incubator-kie-issues/issues/162)
+    cssClasses.push(column.cssClasses ?? "");
     return cssClasses.join(" ");
   }, [columnKey, column.cssClasses, column.dataType, column.groupType]);
 
