@@ -522,6 +522,14 @@ hiring.config
 hiring_HRInterview.config
 # packages/jbpm-quarkus-devui/jbpm-quarkus-devui-runtime/src/test/resources/forms/hiring_ITInterview.config
 hiring_ITInterview.config
+# packages/runtime-tools-management-console-webapp/dev-webapp/unsecured-runtime/src/main/resources/custom-forms-dev/hiring_ITInterview.html
+hiring_ITInterview.html
+# packages/runtime-tools-management-console-webapp/dev-webapp/unsecured-runtime/src/main/resources/custom-forms-dev/hiring_ITInterview.config
+hiring_ITInterview.config
+# packages/runtime-tools-management-console-webapp/dev-webapp/unsecured-runtime/src/main/resources/custom-forms-dev/hiring.tsx
+hiring.tsx
+# packages/runtime-tools-management-console-webapp/dev-webapp/unsecured-runtime/src/main/resources/custom-forms-dev/hiring.config
+hiring.config
 # packages/json-yaml-language-service/tests/__snapshots__/EditorJsonLanguageService.test.ts.snap
 EditorJsonLanguageService.test.ts.snap
 # packages/json-yaml-language-service/tests/__snapshots__/EditorYamlLanguageService.test.ts.snap
