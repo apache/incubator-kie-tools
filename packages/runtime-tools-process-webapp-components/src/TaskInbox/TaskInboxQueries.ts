@@ -20,7 +20,7 @@ import { ApolloClient } from "apollo-client";
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { GraphQL } from "@kie-tools/runtime-tools-process-gateway-api/dist/graphql";
 import { User } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
-import { QueryFilter, SortBy } from "@kie-tools/runtime-tools-process-enveloped-components/src/taskInbox";
+import { QueryFilter, SortBy } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskInbox";
 import { buildTaskInboxWhereArgument, getOrderByObject } from "../utils/QueryUtils";
 
 export interface TaskInboxQueries {

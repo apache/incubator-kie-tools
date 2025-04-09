@@ -23,7 +23,6 @@ import ProcessFormContainer from "../../containers/ProcessFormContainer/ProcessF
 import "../../styles.css";
 import { useHistory } from "react-router-dom";
 import InlineEdit from "./components/InlineEdit/InlineEdit";
-import { useProcessFormGatewayApi } from "../../../channel/ProcessForm/ProcessFormContext";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import {
   OUIAProps,
@@ -32,6 +31,7 @@ import {
 } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
+import { useProcessFormGatewayApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessForm";
 
 const ProcessFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const [notification, setNotification] = useState<Notification>();
@@ -128,15 +128,11 @@ const ProcessFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
       <PageSection
         {...componentOuiaProps(`content${ouiaId ? "-" + ouiaId : ""}`, "process-form-page-section", ouiaSafe)}
       >
-        <Card className="Dev-ui__card-size">
-          <CardBody className="pf-u-h-100">
-            <ProcessFormContainer
-              processDefinitionData={processDefinition}
-              onSubmitSuccess={onSubmitSuccess}
-              onSubmitError={onSubmitError}
-            />
-          </CardBody>
-        </Card>
+        <ProcessFormContainer
+          processDefinitionData={processDefinition}
+          onSubmitSuccess={onSubmitSuccess}
+          onSubmitError={onSubmitError}
+        />
       </PageSection>
     </React.Fragment>
   );

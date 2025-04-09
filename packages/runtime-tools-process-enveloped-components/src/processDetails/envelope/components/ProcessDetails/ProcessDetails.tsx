@@ -61,12 +61,10 @@ interface ProcessDetailsProps {
   processDetails: ProcessInstance;
   omittedProcessTimelineEvents: string[];
   diagramPreviewSize?: DiagramPreviewSize;
-  showSwfDiagram: boolean;
   singularProcessLabel: string;
-  pluralProcessLabel: string;
 }
 
-type svgResponse = SvgSuccessResponse | SvgErrorResponse;
+type SvgResponse = SvgSuccessResponse | SvgErrorResponse;
 
 const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   isEnvelopeConnectedToChannel,
@@ -74,9 +72,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   processDetails,
   omittedProcessTimelineEvents,
   diagramPreviewSize,
-  showSwfDiagram,
   singularProcessLabel,
-  pluralProcessLabel,
 }) => {
   const [data, setData] = useState<ProcessInstance>({} as ProcessInstance);
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -121,7 +117,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   useEffect(() => {
     const handleSvgApi = async (): Promise<void> => {
       if (data && data.id === processDetails.id) {
-        const response: svgResponse = await driver.getProcessDiagram(data);
+        const response: SvgResponse = await driver.getProcessDiagram(data);
         if (response && response.svg) {
           const temp = <SVG src={response.svg} />;
           setSvg(temp);
@@ -142,10 +138,10 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   }, [driver, data, isEnvelopeConnectedToChannel, processDetails.id]);
 
   useEffect(() => {
-    if (svgError && svgError.length > 0 && !showSwfDiagram) {
+    if (svgError && svgError.length > 0) {
       setSvgErrorModalOpen(true);
     }
-  }, [svgError, showSwfDiagram]);
+  }, [svgError]);
 
   useEffect(() => {
     if (variableError && variableError.length > 0) {

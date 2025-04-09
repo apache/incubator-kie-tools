@@ -29,7 +29,7 @@ import {
   QueryFilter,
   TaskInboxState,
   SortBy,
-} from "@kie-tools/runtime-tools-process-enveloped-components/src/taskInbox";
+} from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskInbox";
 import { RuntimePathSearchParamsRoutes, useRuntimeDispatch } from "../runtime/RuntimeContext";
 import { useQueryParam, useQueryParams } from "../navigation/queryParams/QueryParamsContext";
 import { QueryParams } from "../navigation/Routes";

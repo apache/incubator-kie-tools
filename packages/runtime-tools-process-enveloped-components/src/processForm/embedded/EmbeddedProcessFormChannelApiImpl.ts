@@ -17,7 +17,8 @@
  * under the License.
  */
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
-import { ProcessDefinition, ProcessFormChannelApi, ProcessFormDriver } from "../api";
+import { ProcessFormChannelApi, ProcessFormDriver } from "../api";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export class EmbeddedProcessFormChannelApiImpl implements ProcessFormChannelApi {
   constructor(private readonly driver: ProcessFormDriver) {}
@@ -30,7 +31,11 @@ export class EmbeddedProcessFormChannelApiImpl implements ProcessFormChannelApi 
     return this.driver.getCustomForm(processDefinitionData);
   }
 
-  processForm__startProcess(formData: any): Promise<void> {
-    return this.driver.startProcess(formData);
+  processForm__startProcess(processDefinition: ProcessDefinition, formData: any): Promise<string> {
+    return this.driver.startProcess(processDefinition, formData);
+  }
+
+  processForm__getProcessDefinitionSvg(processDefinition: ProcessDefinition): Promise<string> {
+    return this.driver.getProcessDefinitionSvg(processDefinition);
   }
 }

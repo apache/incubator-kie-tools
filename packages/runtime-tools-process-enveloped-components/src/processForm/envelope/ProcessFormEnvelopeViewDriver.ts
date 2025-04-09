@@ -17,8 +17,9 @@
  * under the License.
  */
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { ProcessDefinition, ProcessFormChannelApi, ProcessFormDriver } from "../api";
+import { ProcessFormChannelApi, ProcessFormDriver } from "../api";
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 /**
  * Implementation of ProcessFormDriver to be used on ProcessFormEnvelopeView
@@ -34,7 +35,11 @@ export class ProcessFormEnvelopeViewDriver implements ProcessFormDriver {
     return this.channelApi.requests.processForm__getCustomForm(processDefinitionData);
   }
 
-  startProcess(formData: any): Promise<void> {
-    return this.channelApi.requests.processForm__startProcess(formData);
+  startProcess(processDefinition: ProcessDefinition, formData: any): Promise<string> {
+    return this.channelApi.requests.processForm__startProcess(processDefinition, formData);
+  }
+
+  getProcessDefinitionSvg(processDefinitionData: ProcessDefinition): Promise<string> {
+    return this.channelApi.requests.processForm__getProcessDefinitionSvg(processDefinitionData);
   }
 }

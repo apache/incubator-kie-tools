@@ -40,7 +40,6 @@ import {
 import { ApolloClient } from "apollo-client";
 import { buildProcessListWhereArgument } from "./QueryUtils";
 import axios from "axios";
-import SwaggerParser from "@apidevtools/swagger-parser";
 
 export const getProcessInstances = async (
   offset: number,
@@ -535,12 +534,40 @@ export const getProcessDefinitions = (client: ApolloClient<any>): Promise<Proces
   });
 };
 
+export const getProcessDefinitionByName = (
+  processName: string,
+  client: ApolloClient<any>
+): Promise<ProcessDefinition> => {
+  return new Promise<ProcessDefinition>((resolve, reject) => {
+    client
+      .query({
+        query: GraphQL.GetProcessDefinitionByIdDocument,
+        variables: {
+          id: processName,
+        },
+        fetchPolicy: "network-only",
+      })
+      .then((value) => {
+        resolve(
+          (value.data.ProcessDefinitions ?? []).map((item: { id: string; endpoint: string }) => {
+            return {
+              processName: item.id,
+              endpoint: item.endpoint,
+            };
+          })[0]
+        );
+      })
+      .catch((error) => {
+        reject(error["graphQLErrors"][0]["message"]);
+      });
+  });
+};
+
 export const getProcessSchema = (processDefinitionData: ProcessDefinition): Promise<Record<string, any>> => {
   return new Promise((resolve, reject) => {
     axios
       .get(`${processDefinitionData.endpoint}/schema`)
       .then((response) => {
-        /* istanbul ignore else*/
         if (response.status === 200) {
           resolve(response.data);
         }
@@ -569,10 +596,27 @@ export const getCustomForm = (processDefinitionData: ProcessDefinition): Promise
   });
 };
 
+export const getProcessSvg = (processDefinitionData: ProcessDefinition): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const lastIndex = processDefinitionData.endpoint.lastIndexOf(`/${processDefinitionData.processName}`);
+    const baseEndpoint = processDefinitionData.endpoint.slice(0, lastIndex);
+    axios
+      .get(`${baseEndpoint}/svg/processes/${processDefinitionData.processName}`)
+      .then((response) => {
+        if (response.status === 200) {
+          resolve(response.data);
+        }
+      })
+      .catch((error) => {
+        reject(error);
+      });
+  });
+};
+
 export const startProcessInstance = (
+  processDefinitionData: ProcessDefinition,
   formData: any,
-  businessKey: string,
-  processDefinitionData: ProcessDefinition
+  businessKey: string
 ): Promise<string> => {
   return new Promise((resolve, reject) => {
     const requestURL = `${processDefinitionData.endpoint}${

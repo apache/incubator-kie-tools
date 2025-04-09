@@ -65,7 +65,6 @@ export interface ProcessListTableProps {
   setIsAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
   singularProcessLabel: string;
   pluralProcessLabel: string;
-  isTriggerCloudEventEnabled?: boolean;
 }
 
 const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
@@ -83,7 +82,6 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
   setIsAllChecked,
   singularProcessLabel,
   pluralProcessLabel,
-  isTriggerCloudEventEnabled,
   driver,
   ouiaId,
   ouiaSafe,

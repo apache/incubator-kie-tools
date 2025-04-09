@@ -24,7 +24,6 @@
   },
   "dependencies": {
     "@kie-tools/runtime-tools-components": "workspace:*",
-    "@kie-tools/runtime-tools-shared-enveloped-components": "workspace:*",
     "@kie-tools/runtime-tools-shared-gateway-api": "workspace:*",
     "@kie-tools/runtime-tools-swf-enveloped-components": "workspace:*",
     "@kie-tools/runtime-tools-swf-gateway-api": "workspace:*",

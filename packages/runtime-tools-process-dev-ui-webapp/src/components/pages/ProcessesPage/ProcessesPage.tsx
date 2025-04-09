@@ -25,7 +25,6 @@ import { StaticContext } from "react-router";
 import * as H from "history";
 import ProcessListContainer from "../../containers/ProcessListContainer/ProcessListContainer";
 import "../../styles.css";
-import ProcessDefinitionListContainer from "../../containers/ProcessDefinitionListContainer/ProcessDefinitionListContainer";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import {
   OUIAProps,
@@ -34,6 +33,7 @@ import {
 } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { ProcessListState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/components/PageSectionHeader";
+import ProcessDefinitionsListContainer from "../../containers/ProcessDefinitionListContainer/ProcessDefinitionListContainer";
 
 interface MatchProps {
   instanceID: string;
@@ -92,7 +92,7 @@ const ProcessesPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.L
           >
             <PageSection {...componentOuiaProps(ouiaId, "process-definition-list-page-section", ouiaSafe)}>
               <Card className="Dev-ui__card-size">
-                <ProcessDefinitionListContainer />
+                <ProcessDefinitionsListContainer />
               </Card>
             </PageSection>
           </Tab>
