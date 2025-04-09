@@ -116,7 +116,7 @@ const useImportJavaClasses = () => {
     [updatePropertiesReferences, buildName]
   );
 
-  const generateUniqueDMNTypeNames = useCallback(
+  const generateUniqueDmnTypeNames = useCallback(
     (javaClasses: JavaClass[], nameSeparator: string = NAME_SEPARATOR): JavaClass[] => {
       const namesCount: Map<string, number> = new Map();
       const javaClassNameToDMNTypeNameMap: Map<string, string> = new Map();
@@ -250,7 +250,7 @@ const useImportJavaClasses = () => {
     (action: JavaClassConflictOptions) => {
       if (conflictsClasses?.length === 0) return;
       if (action === JavaClassConflictOptions.KEEP_BOTH) {
-        const updatedJavaClasses = generateUniqueDMNTypeNames(conflictsClasses);
+        const updatedJavaClasses = generateUniqueDmnTypeNames(conflictsClasses);
         importJavaClassesInDataTypeEditor(updatedJavaClasses);
       } else if (action === JavaClassConflictOptions.REPLACE) {
         overwriteExistingDMNTypes(conflictsClasses);
@@ -258,7 +258,7 @@ const useImportJavaClasses = () => {
       setIsConflictsOccured(false);
       setConflictsClasses([]);
     },
-    [conflictsClasses, generateUniqueDMNTypeNames, importJavaClassesInDataTypeEditor, overwriteExistingDMNTypes]
+    [conflictsClasses, generateUniqueDmnTypeNames, importJavaClassesInDataTypeEditor, overwriteExistingDMNTypes]
   );
 
   const javaCodeCompletionService: JavaCodeCompletionService = useMemo(
