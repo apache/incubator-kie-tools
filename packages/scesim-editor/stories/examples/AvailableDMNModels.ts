@@ -20,13 +20,26 @@
 import * as TestScenarioEditor from "../../src/TestScenarioEditor";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
 import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
-import { COLLECTION, EMPTY, LOAN_PRE_QUALIFICATION, MIXED, SIMPLE, TRAFFIC_VIOLATION } from "./ExternalDmnModels";
+import {
+  COLLECTION,
+  COMPLEX_COLLECTION,
+  EMPTY,
+  LOAN_PRE_QUALIFICATION,
+  MIXED,
+  SIMPLE,
+  TRAFFIC_VIOLATION,
+} from "./ExternalDmnModels";
 
 export const availableModels: TestScenarioEditor.ExternalDmn[] = [
   {
     model: normalize(getMarshaller(COLLECTION, { upgradeTo: "latest" }).parser.parse()),
     svg: "",
     normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/collection.dmn",
+  },
+  {
+    model: normalize(getMarshaller(COMPLEX_COLLECTION, { upgradeTo: "latest" }).parser.parse()),
+    svg: "",
+    normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/complex_collection.dmn",
   },
   {
     model: normalize(getMarshaller(EMPTY, { upgradeTo: "latest" }).parser.parse()),
