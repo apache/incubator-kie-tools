@@ -125,7 +125,7 @@ export function DmnRunnerTable() {
 
   const [openedBoxedExpressionNodeId, _] = useSharedValue(
     (envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>).shared
-      .newDmnEditor_openedBoxedExpressionId
+      .newDmnEditor_openedBoxedExpressionEditorNodeId
   );
 
   return (
