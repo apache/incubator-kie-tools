@@ -32,6 +32,7 @@ interface Props {
   channelApi: MessageBusClientApi<ProcessFormChannelApi>;
   targetOrigin: string;
   customFormDisplayerEnvelopePath?: string;
+  shouldLoadCustomForms?: boolean;
 }
 
 export const ProcessFormEnvelopeView = React.forwardRef<ProcessFormEnvelopeViewApi, Props>((props, forwardedRef) => {
@@ -59,6 +60,7 @@ export const ProcessFormEnvelopeView = React.forwardRef<ProcessFormEnvelopeViewA
       driver={new ProcessFormEnvelopeViewDriver(props.channelApi)}
       targetOrigin={props.targetOrigin}
       customFormDisplayerEnvelopePath={props.customFormDisplayerEnvelopePath}
+      shouldLoadCustomForms={props.shouldLoadCustomForms}
     />
   );
 });

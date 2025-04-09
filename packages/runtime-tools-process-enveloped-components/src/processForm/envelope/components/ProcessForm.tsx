@@ -35,6 +35,7 @@ export interface ProcessFormProps {
   isEnvelopeConnectedToChannel: boolean;
   targetOrigin: string;
   customFormDisplayerEnvelopePath?: string;
+  shouldLoadCustomForms?: boolean;
 }
 
 const formAction: FormAction[] = [
@@ -49,6 +50,7 @@ const ProcessForm: React.FC<ProcessFormProps> = ({
   isEnvelopeConnectedToChannel,
   targetOrigin,
   customFormDisplayerEnvelopePath,
+  shouldLoadCustomForms = false,
 }) => {
   const formRendererApi = React.useRef<FormRendererApi>(null);
   const [processFormSchema, setProcessFormSchema] = useState<any>({});
@@ -62,6 +64,10 @@ const ProcessForm: React.FC<ProcessFormProps> = ({
       return;
     }
     const customFormPromise: Promise<void> = new Promise<void>((resolve) => {
+      if (!shouldLoadCustomForms) {
+        resolve();
+        return;
+      }
       driver
         .getCustomForm(processDefinition)
         .then((customForm) => {
@@ -87,7 +93,7 @@ const ProcessForm: React.FC<ProcessFormProps> = ({
     Promise.all([customFormPromise, schemaPromise]).finally(() => {
       setIsLoading(false);
     });
-  }, [driver, isEnvelopeConnectedToChannel, processDefinition]);
+  }, [driver, isEnvelopeConnectedToChannel, processDefinition, shouldLoadCustomForms]);
 
   useEffect(() => {
     if (!isEnvelopeConnectedToChannel) {

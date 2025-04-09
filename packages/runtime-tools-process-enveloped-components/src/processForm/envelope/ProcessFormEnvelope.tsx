@@ -40,6 +40,7 @@ export function init(args: {
   bus: EnvelopeBus;
   targetOrigin: string;
   customFormDisplayerEnvelopePath?: string;
+  shouldLoadCustomForms?: boolean;
 }) {
   /**
    * Creates a new generic Envelope, typed with the right interfaces.
@@ -67,6 +68,7 @@ export function init(args: {
           channelApi={envelope.channelApi}
           targetOrigin={args.targetOrigin}
           customFormDisplayerEnvelopePath={args.customFormDisplayerEnvelopePath}
+          shouldLoadCustomForms={args.shouldLoadCustomForms}
         />,
         args.container,
         () => res(() => ref.current!)

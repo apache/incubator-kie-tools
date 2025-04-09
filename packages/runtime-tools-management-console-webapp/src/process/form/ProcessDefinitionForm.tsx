@@ -141,6 +141,7 @@ export const ProcessDefinitionForm: React.FC<Props> = ({
         targetOrigin={window.location.origin}
         processDefinition={processDefinition}
         customFormDisplayerEnvelopePath="/resources/form-displayer.html"
+        shouldLoadCustomForms={false}
       />
     );
   }
