@@ -72,9 +72,12 @@ func NewDeployCommand() *cobra.Command {
 	# Wait for the deployment to complete and open the browser to the deployed workflow.
 	{{.Name}} deploy --wait
 
+	# Specify a custom container dev image to use for the deployment.
+	{{.Name}} deploy --image=<your_image>
+
 		`,
 
-		PreRunE:    common.BindEnv("namespace", "custom-manifests-dir", "custom-generated-manifests-dir", "specs-dir", "schemas-dir", "subflows-dir", "wait"),
+		PreRunE:    common.BindEnv("namespace", "custom-manifests-dir", "custom-generated-manifests-dir", "specs-dir", "schemas-dir", "subflows-dir", "wait", "image"),
 		SuggestFor: []string{"delpoy", "deplyo"},
 	}
 
@@ -90,6 +93,7 @@ func NewDeployCommand() *cobra.Command {
 	cmd.Flags().StringP("schemas-dir", "t", "", "Specify a custom schemas files directory")
 	cmd.Flags().BoolP("minify", "f", true, "Minify the OpenAPI specs files before deploying")
 	cmd.Flags().BoolP("wait", "w", false, "Wait for the deployment to complete and open the browser to the deployed workflow")
+	cmd.Flags().StringP("image", "i", "", "Specify a custom image to use for the deployment")
 
 	if err := viper.BindPFlag("minify", cmd.Flags().Lookup("minify")); err != nil {
 		fmt.Println("❌ ERROR: failed to bind minify flag")
@@ -128,6 +132,10 @@ func runDeployUndeploy(cmd *cobra.Command, args []string) error {
 		}
 	} else {
 		fmt.Printf("🛠 Using manifests located at %s\n", cfg.CustomManifestsFileDir)
+	}
+
+	if cfg.Image != "" {
+		metadata.DevModeImage = cfg.Image
 	}
 
 	if err = deploy(&cfg); err != nil {
@@ -263,6 +271,7 @@ func runDeployCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, err er
 		SubflowsDir:                viper.GetString("subflows-dir"),
 		Minify:                     viper.GetBool("minify"),
 		Wait:                       viper.GetBool("wait"),
+		Image:                      viper.GetString("image"),
 	}
 
 	if len(cfg.SubflowsDir) == 0 {
