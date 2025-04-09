@@ -70,7 +70,7 @@ export function RuntimeToolsWorkflowForm() {
 
         return (
           <Alert
-            className="pf-u-mb-md"
+            className="pf-v5-u-mb-md"
             variant="success"
             title={`A workflow with id ${workflowId} was started successfully.`}
             aria-live="polite"
@@ -93,7 +93,7 @@ export function RuntimeToolsWorkflowForm() {
     useCallback(({ close }, { message }) => {
       return (
         <Alert
-          className="pf-u-mb-md"
+          className="pf-v5-u-mb-md"
           variant="danger"
           title={
             <>

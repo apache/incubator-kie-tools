@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useState } from "react";
-import { Dropdown, DropdownToggle, DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownToggle, DropdownItem } from "@patternfly/react-core/deprecated";
 import { UserIcon } from "@patternfly/react-icons/dist/js/icons/user-icon";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { useDevUIAppContext } from "../../../contexts/DevUIAppContext";
@@ -58,7 +58,7 @@ const TaskInboxSwitchUser: React.FC<IOwnProps & OUIAProps> = ({ user, ouiaId, ou
       onSelect={onSelect}
       toggle={
         <DropdownToggle
-          onToggle={onToggle}
+          onToggle={(_event, isOpen) => onToggle(isOpen)}
           aria-label="Applications"
           id="toggle-id-7"
           toggleIndicator={CaretDownIcon}

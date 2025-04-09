@@ -173,17 +173,17 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
   return (
     <>
       {/* {width && (
-        <div className="pf-c-drawer" style={{ position: "absolute", left: width - 10 }}>
-          <div className={`pf-c-drawer__splitter pf-m-vertical actual`}>
-            <div className={`pf-c-drawer__splitter-handle`} />
+        <div className="pf-v5-c-drawer" style={{ position: "absolute", left: width - 10 }}>
+          <div className={`pf-v5-c-drawer__splitter pf-m-vertical actual`}>
+            <div className={`pf-v5-c-drawer__splitter-handle`} />
           </div>
         </div>
       )}
 
       {width && minWidth && (
-        <div className="pf-c-drawer" style={{ position: "absolute", left: minWidth - 10 }}>
-          <div className={`pf-c-drawer__splitter pf-m-vertical min-basis`}>
-            <div className={`pf-c-drawer__splitter-handle`} />
+        <div className="pf-v5-c-drawer" style={{ position: "absolute", left: minWidth - 10 }}>
+          <div className={`pf-v5-c-drawer__splitter pf-m-vertical min-basis`}>
+            <div className={`pf-v5-c-drawer__splitter-handle`} />
           </div>
         </div>
       )} */}
@@ -199,9 +199,13 @@ export const Resizer: React.FunctionComponent<ResizerProps> = ({
           className={"resizable-div"}
           axis={"x"}
           handle={
-            <div className="pf-c-drawer" onDoubleClick={onDoubleClick} data-testid={"kie-tools--bee--resizer-handle"}>
-              <div className={`pf-c-drawer__splitter pf-m-vertical ${debuggingHandleClassNames}`}>
-                <div className={`pf-c-drawer__splitter-handle`} />
+            <div
+              className="pf-v5-c-drawer"
+              onDoubleClick={onDoubleClick}
+              data-testid={"kie-tools--bee--resizer-handle"}
+            >
+              <div className={`pf-v5-c-drawer__splitter pf-m-vertical ${debuggingHandleClassNames}`}>
+                <div className={`pf-v5-c-drawer__splitter-handle`} />
               </div>
             </div>
           }

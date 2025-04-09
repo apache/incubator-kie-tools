@@ -20,7 +20,12 @@
 import React from "react";
 import { KubernetesConnection } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
@@ -78,7 +83,9 @@ export function OpenShiftSettings(props: SettingsPageProps) {
         <PageSection variant={"light"}>
           {settings.openshift.status === OpenShiftInstanceStatus.CONNECTED ? (
             <EmptyState>
-              <EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-global--success-color--100)"} />
+              <EmptyStateHeader
+                icon={<EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-v5-global--success-color--100)"} />}
+              />
               <TextContent>
                 <Text component={"h2"}>{"You're connected to OpenShift."}</Text>
               </TextContent>
@@ -107,7 +114,7 @@ export function OpenShiftSettings(props: SettingsPageProps) {
             </EmptyState>
           ) : (
             <EmptyState>
-              <EmptyStateIcon icon={AddCircleOIcon} />
+              <EmptyStateHeader icon={<EmptyStateIcon icon={AddCircleOIcon} />} />
               <TextContent>
                 <Text component={"h2"}>You are not connected to OpenShift.</Text>
               </TextContent>

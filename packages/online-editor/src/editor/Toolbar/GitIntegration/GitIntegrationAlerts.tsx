@@ -198,7 +198,7 @@ export function useGitIntegrationAlerts(workspace: ActiveWorkspace) {
                 onClick={() => pushNewBranch(newBranchName)}
                 variant={ButtonVariant.link}
                 style={{ paddingLeft: 0 }}
-                isSmall={true}
+                size="sm"
                 isDisabled={!canPushToGitRepository}
               >
                 {`Switch to '${newBranchName}'`}

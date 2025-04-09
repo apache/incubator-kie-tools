@@ -19,7 +19,8 @@
 
 import * as React from "react";
 import "./ImportJavaClassesWizardFieldListTable.css";
-import { ExpandableRowContent, TableComposable, Tbody, Td, Tr } from "@patternfly/react-table";
+import { ExpandableRowContent, Tbody, Td, Tr } from "@patternfly/react-table";
+import { Table } from "@patternfly/react-table/deprecated";
 import { JavaClass } from "./model/JavaClass";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { JavaField } from "./model/JavaField";
@@ -37,7 +38,7 @@ export interface ImportJavaClassesWizardFieldListTableProps {
 
 export const ImportJavaClassesWizardFieldListTable = (props: ImportJavaClassesWizardFieldListTableProps) => {
   return (
-    <TableComposable aria-label="field-table">
+    <Table aria-label="field-table">
       {props.selectedJavaClassFields.map((javaClass, index) => {
         return (
           <TableJavaClassItem
@@ -48,7 +49,7 @@ export const ImportJavaClassesWizardFieldListTable = (props: ImportJavaClassesWi
           />
         );
       })}
-    </TableComposable>
+    </Table>
   );
 };
 
@@ -106,7 +107,7 @@ const TableJavaClassItem = ({
                       className={"fetch-button"}
                       onClick={() => loadJavaClass(field.type)}
                       variant="primary"
-                      isSmall
+                      size="sm"
                     >
                       {`${i18n.modalWizard.fieldTable.fetchButtonLabel} "${getJavaClassSimpleName(field.type)}" class`}
                     </Button>

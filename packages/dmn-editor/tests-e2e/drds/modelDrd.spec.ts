@@ -236,6 +236,7 @@ test.describe("Model DRD", () => {
         await drgNodes.toggle();
         await drgNodes.dragNode({ name: DefaultNodeName.DECISION, targetPosition: { x: 300, y: 300 } });
         await drgNodes.dragNode({ name: DefaultNodeName.INPUT_DATA, targetPosition: { x: 300, y: 500 } });
+        await drds.toggle();
         await nodes.dragNewConnectedEdge({
           type: EdgeType.INFORMATION_REQUIREMENT,
           from: DefaultNodeName.INPUT_DATA,
@@ -450,7 +451,7 @@ test.describe("Model DRD", () => {
           await drds.toggle();
           await drds.navigateTo({ name: "First DRD" });
           await drds.toggle();
-          await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 400, y: 300 }, thenRenameTo: "A" });
+          await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 300, y: 300 }, thenRenameTo: "A" });
           await palette.dragNewNode({ type: NodeType.BKM, targetPosition: { x: 100, y: 300 }, thenRenameTo: "B" });
           await palette.dragNewNode({
             type: NodeType.DECISION_SERVICE,
@@ -464,7 +465,7 @@ test.describe("Model DRD", () => {
           await drds.navigateTo({ name: "Second DRD" });
           await drds.toggle();
           await drgNodes.toggle();
-          await drgNodes.dragNode({ name: "A", targetPosition: { x: 400, y: 300 } });
+          await drgNodes.dragNode({ name: "A", targetPosition: { x: 300, y: 300 } });
           await drgNodes.dragNode({ name: "B", targetPosition: { x: 100, y: 300 } });
           await drgNodes.dragNode({ name: "C", targetPosition: { x: 600, y: 300 } });
           await drgNodes.toggle();
@@ -498,7 +499,7 @@ test.describe("Model DRD", () => {
           await drds.toggle();
           await drds.navigateTo({ name: "First DRD" });
           await drds.toggle();
-          await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 400, y: 300 }, thenRenameTo: "A" });
+          await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 300, y: 300 }, thenRenameTo: "A" });
           await palette.dragNewNode({
             type: NodeType.KNOWLEDGE_SOURCE,
             targetPosition: { x: 100, y: 300 },
@@ -516,7 +517,7 @@ test.describe("Model DRD", () => {
           await drds.navigateTo({ name: "Second DRD" });
           await drds.toggle();
           await drgNodes.toggle();
-          await drgNodes.dragNode({ name: "A", targetPosition: { x: 400, y: 300 } });
+          await drgNodes.dragNode({ name: "A", targetPosition: { x: 300, y: 300 } });
           await drgNodes.dragNode({ name: "B", targetPosition: { x: 100, y: 300 } });
           await drgNodes.dragNode({ name: "C", targetPosition: { x: 600, y: 300 } });
           await drgNodes.toggle();

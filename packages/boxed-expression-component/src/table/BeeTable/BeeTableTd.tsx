@@ -33,6 +33,7 @@ import {
 } from "../../selection/BeeTableSelectionContext";
 import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 import { InsertRowColumnsDirection } from "../../api";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 export interface BeeTableTdProps<R extends object> {
   // Individual cells are not immutable references, By referencing the row, we avoid multiple re-renders and bugs.
@@ -299,7 +300,9 @@ export function BeeTableTd<R extends object>({
                 className={"add-row-button"}
                 style={addRowButtonStyle}
               >
-                <PlusIcon size="sm" />
+                <Icon size="sm">
+                  <PlusIcon />
+                </Icon>
               </div>
             </div>
           )}

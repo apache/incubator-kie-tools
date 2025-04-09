@@ -19,17 +19,24 @@
 
 import * as React from "react";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
-import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateIcon,
+  EmptyStateHeader,
+  EmptyStateFooter,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import CubeIcon from "@patternfly/react-icons/dist/js/icons/cube-icon";
 
 export function WithoutPropertiesCell() {
   return (
     <>
       <EmptyState>
-        <EmptyStateIcon icon={CubeIcon} />
-        <TextContent>
-          <Text component={"h2"}>No properties to display</Text>
-        </TextContent>
+        <EmptyStateHeader icon={<EmptyStateIcon icon={CubeIcon} />} />
+        <EmptyStateFooter>
+          <TextContent>
+            <Text component={"h2"}>No properties to display</Text>
+          </TextContent>
+        </EmptyStateFooter>
       </EmptyState>
     </>
   );

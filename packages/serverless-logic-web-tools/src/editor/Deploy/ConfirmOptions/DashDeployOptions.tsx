@@ -55,7 +55,7 @@ const RefForwardingDashDeployOptions: ForwardRefRenderFunction<ConfirmDeployOpti
         label="Deploy workspace"
         description={"All files in the workspace will be deployed along with this dashboard."}
         isChecked={shouldDeployWorkspace}
-        onChange={(checked) => setShouldDeployWorkspace(checked)}
+        onChange={(_event, checked) => setShouldDeployWorkspace(checked)}
       />
     </>
   );

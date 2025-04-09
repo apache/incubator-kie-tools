@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import { Page, PageHeader, PageHeaderTools, PageSidebar } from "@patternfly/react-core/dist/js/components/Page";
+import { Page, PageSidebar, PageSidebarBody } from "@patternfly/react-core/dist/js/components/Page";
+import { PageHeader, PageHeaderTools } from "@patternfly/react-core/deprecated";
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { componentOuiaProps, ouiaAttribute, OUIAProps } from "../../ouiaTools";
 import "../styles.css";
@@ -90,12 +91,13 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
 
   const Sidebar = (
     <PageSidebar
-      nav={PageNav}
-      isNavOpen={isNavOpen}
+      isSidebarOpen={isNavOpen}
       theme="dark"
       {...ouiaAttribute("data-ouia-navigation", "true")}
       data-testid="page-sidebar"
-    />
+    >
+      <PageSidebarBody>{PageNav}</PageSidebarBody>
+    </PageSidebar>
   );
 
   return (

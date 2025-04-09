@@ -19,14 +19,7 @@
 import React from "react";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
-import {
-  TableComposable,
-  Tbody,
-  Th,
-  Thead,
-  ThProps,
-  Tr,
-} from "@patternfly/react-table/dist/js/components/TableComposable";
+import { Table /* data-codemods */, Tbody, Th, Thead, ThProps, Tr } from "@patternfly/react-table";
 import { useCallback, useMemo, useState } from "react";
 import { ErrorBoundary } from "../../reactExt/ErrorBoundary";
 import { TablePaginationProps, TableRowEmptyState } from "../../table";
@@ -117,7 +110,7 @@ export function WorkspacesTable(props: WorkspacesTableProps) {
 
   return (
     <>
-      <TableComposable aria-label="Selectable table">
+      <Table aria-label="Selectable table">
         <Thead>
           <Tr>
             <Th>&nbsp;</Th>
@@ -155,7 +148,7 @@ export function WorkspacesTable(props: WorkspacesTableProps) {
             ))
           )}
         </Tbody>
-      </TableComposable>
+      </Table>
     </>
   );
 }
