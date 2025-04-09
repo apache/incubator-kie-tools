@@ -60,7 +60,7 @@ export function DataTypesEmptyState({ onAdd, onPaste }: { onAdd: () => void; onP
                 or
                 <br />
                 <br />
-                <ImportJavaClassesWrapper />
+                <ImportJavaClassesWrapper javaCodeCompletionService={settings?.javaCodeCompletionService!} />
                 <br />
                 <br />
               </>

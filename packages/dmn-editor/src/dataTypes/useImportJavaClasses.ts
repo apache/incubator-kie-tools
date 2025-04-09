@@ -18,7 +18,7 @@
  */
 
 import { useCallback, useMemo, useState } from "react";
-import { JavaClass, JavaCodeCompletionService } from "@kie-tools/import-java-classes-component";
+import { JavaClass } from "@kie-tools/import-java-classes-component";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { findDataTypeById, getNewItemDefinition } from "./DataTypeSpec";
@@ -261,17 +261,7 @@ const useImportJavaClasses = () => {
     [conflictsClasses, generateUniqueDmnTypeNames, importJavaClassesInDataTypeEditor, overwriteExistingDMNTypes]
   );
 
-  const javaCodeCompletionService: JavaCodeCompletionService = useMemo(
-    () => ({
-      getClasses: (query: string) => window.envelope?.javaCodeCompletionService?.getClasses(query),
-      getFields: (fullClassName: string) => window.envelope?.javaCodeCompletionService?.getAccessors(fullClassName, ""),
-      isLanguageServerAvailable: () => window.envelope?.javaCodeCompletionService?.isLanguageServerAvailable(),
-    }),
-    []
-  );
-
   return {
-    javaCodeCompletionService,
     handleImportJavaClasses,
     handleConflictAction,
     conflictsClasses,

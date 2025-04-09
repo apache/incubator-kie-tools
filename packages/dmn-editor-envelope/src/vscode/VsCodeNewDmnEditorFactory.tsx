@@ -38,47 +38,23 @@ import { DmnEditorInterface } from "../DmnEditorFactory";
  *
  * This API is exposed from the Envelope to be consumed on Java code.
  */
-interface JavaCodeCompletionExposedInteropApi {
-  getAccessors(fqcn: string, query: string): Promise<JavaCodeCompletionAccessor[]>;
+export interface JavaCodeCompletionExposedInteropApi {
+  getFields(fqcn: string): Promise<JavaCodeCompletionAccessor[]>;
   getClasses(query: string): Promise<JavaCodeCompletionClass[]>;
   isLanguageServerAvailable(): Promise<boolean>;
 }
 
 export interface VsCodeNewDmnEditorChannelApi extends KogitoEditorChannelApi, JavaCodeCompletionChannelApi {}
 
-export interface CustomWindow extends Window {
-  envelope: {
-    javaCodeCompletionService: JavaCodeCompletionExposedInteropApi;
-  };
-}
-
-declare let window: CustomWindow;
+export type VsCodeNewDmnEditorEnvelopeContext = KogitoEditorEnvelopeContextType<
+  KogitoEditorEnvelopeApi,
+  VsCodeNewDmnEditorChannelApi
+>;
 
 export class VsCodeNewDmnEditorFactory
   implements EditorFactory<Editor, KogitoEditorEnvelopeApi, VsCodeNewDmnEditorChannelApi>
 {
-  public createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, VsCodeNewDmnEditorChannelApi>,
-    initArgs: EditorInitArgs
-  ): Promise<Editor> {
-    const exposedInteropApi: CustomWindow["envelope"] = {
-      javaCodeCompletionService: {
-        getAccessors: (fqcn: string, query: string) => {
-          return envelopeContext.channelApi.requests.kogitoJavaCodeCompletion__getAccessors(fqcn, query);
-        },
-        getClasses: (query: string) => {
-          return envelopeContext.channelApi.requests.kogitoJavaCodeCompletion__getClasses(query);
-        },
-        isLanguageServerAvailable: () => {
-          return envelopeContext.channelApi.requests.kogitoJavaCodeCompletion__isLanguageServerAvailable();
-        },
-      },
-    };
-
-    window.envelope = {
-      ...(window.envelope ?? {}),
-      ...exposedInteropApi,
-    };
+  public createEditor(envelopeContext: VsCodeNewDmnEditorEnvelopeContext, initArgs: EditorInitArgs): Promise<Editor> {
     return Promise.resolve(new DmnEditorInterface(envelopeContext, initArgs));
   }
 }

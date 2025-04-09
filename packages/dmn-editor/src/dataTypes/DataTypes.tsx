@@ -112,13 +112,8 @@ export function DataTypes() {
   const dataTypesTree = useDmnEditorStore((s) => s.computed(s).getDataTypes(externalModelsByNamespace).dataTypesTree);
 
   const [isOpenImportJavaClassesWizard, setOpenImportJavaClassesWizard] = useState(false);
-  const {
-    javaCodeCompletionService,
-    conflictsClasses,
-    handleConflictAction,
-    handleImportJavaClasses,
-    isConflictsOccured,
-  } = useImportJavaClasses();
+  const { conflictsClasses, handleConflictAction, handleImportJavaClasses, isConflictsOccured } =
+    useImportJavaClasses();
   const handleImportJavaClassButtonClick = useCallback(() => {
     setOpenImportJavaClassesWizard((prevState) => !prevState);
   }, []);
@@ -250,7 +245,10 @@ export function DataTypes() {
                         dropdownItems={[
                           settings?.isImportDataTypesFromJavaClassesSupported ? (
                             <ImportJavaClassesI18nDictionariesProvider key={"import-java-classes"}>
-                              <ImportJavaClassesDropdownItem onClick={handleImportJavaClassButtonClick} />
+                              <ImportJavaClassesDropdownItem
+                                javaCodeCompletionService={settings?.javaCodeCompletionService!}
+                                onClick={handleImportJavaClassButtonClick}
+                              />
                             </ImportJavaClassesI18nDictionariesProvider>
                           ) : (
                             <></>
@@ -339,7 +337,7 @@ export function DataTypes() {
               {isOpenImportJavaClassesWizard && (
                 <ImportJavaClassesI18nDictionariesProvider>
                   <ImportJavaClassesWizard
-                    javaCodeCompletionService={javaCodeCompletionService}
+                    javaCodeCompletionService={settings?.javaCodeCompletionService!}
                     isOpen={isOpenImportJavaClassesWizard}
                     onSave={handleImportJavaClasses}
                     onClose={handleImportJavaClassButtonClick}

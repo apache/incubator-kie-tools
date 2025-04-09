@@ -31,8 +31,12 @@ import {
   KogitoEditorEnvelopeApi,
 } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { DmnEditorRoot } from "./DmnEditorRoot";
 import { ResourceContent, ResourcesList, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
+import { DmnEditorRoot } from "./DmnEditorRoot";
+import {
+  JavaCodeCompletionExposedInteropApi,
+  VsCodeNewDmnEditorEnvelopeContext,
+} from "./vscode/VsCodeNewDmnEditorFactory";
 
 export class DmnEditorFactory implements EditorFactory<Editor, KogitoEditorEnvelopeApi, KogitoEditorChannelApi> {
   public createEditor(
@@ -158,6 +162,18 @@ export function DmnEditorRootWrapper({
     [channelType]
   );
 
+  const javaCodeCompletionService = useMemo((): JavaCodeCompletionExposedInteropApi | undefined => {
+    if (isImportDataTypesFromJavaClassesSupported) {
+      const { channelApi } = envelopeContext as VsCodeNewDmnEditorEnvelopeContext;
+      return {
+        getFields: (fqcn: string, query: string = "") =>
+          channelApi?.requests?.kogitoJavaCodeCompletion__getAccessors(fqcn, query),
+        getClasses: (query: string) => channelApi?.requests?.kogitoJavaCodeCompletion__getClasses(query),
+        isLanguageServerAvailable: () => channelApi?.requests?.kogitoJavaCodeCompletion__isLanguageServerAvailable(),
+      };
+    }
+  }, [envelopeContext, isImportDataTypesFromJavaClassesSupported]);
+
   return (
     <DmnEditorRoot
       exposing={exposing}
@@ -172,6 +188,7 @@ export function DmnEditorRootWrapper({
       keyboardShortcutsService={envelopeContext?.services.keyboardShortcuts}
       isReadOnly={isReadOnly}
       isImportDataTypesFromJavaClassesSupported={isImportDataTypesFromJavaClassesSupported}
+      javaCodeCompletionService={javaCodeCompletionService}
     />
   );
 }

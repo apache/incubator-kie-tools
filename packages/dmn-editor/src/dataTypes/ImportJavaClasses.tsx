@@ -29,6 +29,7 @@ import { TextContent, Text, TextVariants } from "@patternfly/react-core/dist/js/
 import {
   ImportJavaClasses,
   JavaClass,
+  JavaCodeCompletionService,
   useImportJavaClassesWizardI18n,
   useLanguageServerAvailable,
 } from "@kie-tools/import-java-classes-component";
@@ -36,14 +37,13 @@ import { addTopLevelItemDefinition as _addTopLevelItemDefinition } from "../muta
 import { JavaClassConflictOptions, useImportJavaClasses } from "./useImportJavaClasses";
 import { Radio } from "@patternfly/react-core/dist/esm/components/Radio";
 
-const ImportJavaClassesWrapper = () => {
-  const {
-    javaCodeCompletionService,
-    handleConflictAction,
-    handleImportJavaClasses,
-    conflictsClasses,
-    isConflictsOccured,
-  } = useImportJavaClasses();
+const ImportJavaClassesWrapper = ({
+  javaCodeCompletionService,
+}: {
+  javaCodeCompletionService: JavaCodeCompletionService;
+}) => {
+  const { handleConflictAction, handleImportJavaClasses, conflictsClasses, isConflictsOccured } =
+    useImportJavaClasses();
   return (
     <>
       <ImportJavaClasses
@@ -61,9 +61,11 @@ const ImportJavaClassesWrapper = () => {
   );
 };
 
-const ImportJavaClassesDropdownItem = (props: React.ComponentProps<typeof DropdownItem>) => {
+const ImportJavaClassesDropdownItem = ({
+  javaCodeCompletionService,
+  ...props
+}: React.ComponentProps<typeof DropdownItem> & { javaCodeCompletionService: JavaCodeCompletionService }) => {
   const { i18n } = useImportJavaClassesWizardI18n();
-  const { javaCodeCompletionService } = useImportJavaClasses();
   const { isLanguageServerLoading, isLanguageServerDisabled, isLanguageServerError } =
     useLanguageServerAvailable(javaCodeCompletionService);
   const defineTooltipMessage = React.useCallback(() => {
