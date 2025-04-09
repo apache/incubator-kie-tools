@@ -164,7 +164,7 @@ export function DmnRunnerTable() {
                                 }
                               : undefined
                           }
-                          openedBoxedExpressionId={openedBoxedExpressionNodeId}
+                          openedBoxedExpressionEditorNodeId={openedBoxedExpressionNodeId}
                         />
                       </div>
                     </DrawerPanelContent>
