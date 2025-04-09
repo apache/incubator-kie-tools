@@ -45,7 +45,7 @@ export function DmnEditorSettingsContextProvider(
   const value = useMemo<DmnEditorSettingsContextType>(
     () => ({
       isReadOnly: props.isReadOnly ?? false,
-      isImportDataTypesFromJavaClassesSupported: props?.isImportDataTypesFromJavaClassesSupported,
+      isImportDataTypesFromJavaClassesSupported: props?.isImportDataTypesFromJavaClassesSupported ?? false,
       javaCodeCompletionService: props?.javaCodeCompletionService,
     }),
     [props.isReadOnly, props?.isImportDataTypesFromJavaClassesSupported, props?.javaCodeCompletionService]

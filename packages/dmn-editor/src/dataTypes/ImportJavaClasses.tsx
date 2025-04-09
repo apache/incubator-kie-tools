@@ -54,7 +54,7 @@ const ImportJavaClassesWrapper = ({
         <ImportJavaClassNameConflictsModal
           isOpen={isConflictsOccured}
           handleConfirm={handleConflictAction}
-          conflictsNames={conflictsClasses}
+          confliectedJavaClasses={conflictsClasses}
         />
       )}
     </>
@@ -111,16 +111,16 @@ const ImportJavaClassesDropdownItem = ({
 const ImportJavaClassNameConflictsModal = ({
   isOpen,
   handleConfirm,
-  conflictsNames,
+  confliectedJavaClasses,
 }: {
   isOpen: boolean;
   handleConfirm: (options: JavaClassConflictOptions) => void;
-  conflictsNames: JavaClass[];
+  confliectedJavaClasses: JavaClass[];
 }) => {
   const [action, setAction] = useState<JavaClassConflictOptions>(JavaClassConflictOptions.REPLACE);
   const handleActionButtonClick = useCallback(() => handleConfirm?.(action), [handleConfirm, action]);
   const handleRadioBtnClick = useCallback((_, e) => setAction?.(e?.target?.name), []);
-  const classNames = conflictsNames?.map((javaClass) => javaClass?.name);
+  const classNames = confliectedJavaClasses?.map((javaClass) => javaClass?.name);
   return (
     <Modal
       title="Duplicate DMN Data Type Detected"

@@ -99,7 +99,7 @@ export function DataTypes() {
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const activeItemDefinitionId = useDmnEditorStore((s) => s.dataTypesEditor.activeItemDefinitionId);
-  const settings = useSettings();
+  const { isReadOnly, isImportDataTypesFromJavaClassesSupported, javaCodeCompletionService } = useSettings();
 
   const [filter, setFilter] = useState("");
   const { externalModelsByNamespace } = useExternalModels();
@@ -161,7 +161,7 @@ export function DataTypes() {
   );
 
   const pasteTopLevelItemDefinition = useCallback(() => {
-    if (settings.isReadOnly) {
+    if (isReadOnly) {
       return;
     }
     navigator.clipboard.readText().then((text) => {
@@ -182,12 +182,36 @@ export function DataTypes() {
         addTopLevelItemDefinition(itemDefinition);
       }
     });
-  }, [addTopLevelItemDefinition, settings.isReadOnly]);
+  }, [addTopLevelItemDefinition, isReadOnly]);
 
   const [isAddDataTypeDropdownOpen, setAddDataTypeDropdownOpen] = useState(false);
 
   // Using this object because DropdownToggleAction's props doesn't accept a 'title'.
   const extraPropsForDropdownToggleAction = { title: "New Data Type" };
+
+  const addDataTypesDropdownItems = useMemo(() => {
+    const dropdownItems = [
+      <DropdownItem
+        key={"paste"}
+        onClick={() => pasteTopLevelItemDefinition()}
+        style={{ minWidth: "240px" }}
+        icon={<PasteIcon />}
+      >
+        Paste
+      </DropdownItem>,
+    ];
+    if (isImportDataTypesFromJavaClassesSupported && javaCodeCompletionService) {
+      dropdownItems.unshift(
+        <ImportJavaClassesI18nDictionariesProvider key={"import-java-classes"}>
+          <ImportJavaClassesDropdownItem
+            javaCodeCompletionService={javaCodeCompletionService}
+            onClick={handleImportJavaClassButtonClick}
+          />
+        </ImportJavaClassesI18nDictionariesProvider>
+      );
+    }
+    return dropdownItems;
+  }, [isImportDataTypesFromJavaClassesSupported, javaCodeCompletionService]);
 
   return (
     <>
@@ -219,7 +243,7 @@ export function DataTypes() {
                       onClear={() => setFilter("")}
                     />
 
-                    {!settings.isReadOnly && (
+                    {!isReadOnly && (
                       <Dropdown
                         onSelect={() => setAddDataTypeDropdownOpen(false)}
                         menuAppendTo={document.body}
@@ -242,26 +266,7 @@ export function DataTypes() {
                         }
                         position={DropdownPosition.right}
                         isOpen={isAddDataTypeDropdownOpen}
-                        dropdownItems={[
-                          settings?.isImportDataTypesFromJavaClassesSupported ? (
-                            <ImportJavaClassesI18nDictionariesProvider key={"import-java-classes"}>
-                              <ImportJavaClassesDropdownItem
-                                javaCodeCompletionService={settings?.javaCodeCompletionService!}
-                                onClick={handleImportJavaClassButtonClick}
-                              />
-                            </ImportJavaClassesI18nDictionariesProvider>
-                          ) : (
-                            <></>
-                          ),
-                          <DropdownItem
-                            key={"paste"}
-                            onClick={() => pasteTopLevelItemDefinition()}
-                            style={{ minWidth: "240px" }}
-                            icon={<PasteIcon />}
-                          >
-                            Paste
-                          </DropdownItem>,
-                        ]}
+                        dropdownItems={addDataTypesDropdownItems}
                       />
                     )}
                   </InputGroup>
@@ -292,7 +297,7 @@ export function DataTypes() {
                         {(namespace === thisDmnsNamespace && (
                           <DataTypeName
                             relativeToNamespace={thisDmnsNamespace}
-                            isReadOnly={settings.isReadOnly || namespace !== thisDmnsNamespace}
+                            isReadOnly={isReadOnly || namespace !== thisDmnsNamespace}
                             itemDefinition={itemDefinition}
                             isActive={isActive}
                             editMode={"double-click"}
@@ -328,16 +333,16 @@ export function DataTypes() {
             <DrawerContentBody>
               {activeDataType && (
                 <DataTypePanel
-                  isReadOnly={settings.isReadOnly || activeDataType.namespace !== thisDmnsNamespace}
+                  isReadOnly={isReadOnly || activeDataType.namespace !== thisDmnsNamespace}
                   dataType={activeDataType}
                   allDataTypesById={allDataTypesById}
                   editItemDefinition={editItemDefinition}
                 />
               )}
-              {isOpenImportJavaClassesWizard && (
+              {isOpenImportJavaClassesWizard && javaCodeCompletionService && (
                 <ImportJavaClassesI18nDictionariesProvider>
                   <ImportJavaClassesWizard
-                    javaCodeCompletionService={settings?.javaCodeCompletionService!}
+                    javaCodeCompletionService={javaCodeCompletionService}
                     isOpen={isOpenImportJavaClassesWizard}
                     onSave={handleImportJavaClasses}
                     onClose={handleImportJavaClassButtonClick}
@@ -348,7 +353,7 @@ export function DataTypes() {
                 <ImportJavaClassNameConflictsModal
                   isOpen={isConflictsOccured}
                   handleConfirm={handleConflictAction}
-                  conflictsNames={conflictsClasses}
+                  confliectedJavaClasses={conflictsClasses}
                 />
               )}
             </DrawerContentBody>

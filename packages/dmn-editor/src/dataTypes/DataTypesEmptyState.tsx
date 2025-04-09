@@ -34,7 +34,7 @@ import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { ImportJavaClassesWrapper } from "./ImportJavaClasses";
 
 export function DataTypesEmptyState({ onAdd, onPaste }: { onAdd: () => void; onPaste: () => void }) {
-  const settings = useSettings();
+  const { isReadOnly, isImportDataTypesFromJavaClassesSupported, javaCodeCompletionService } = useSettings();
 
   return (
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
@@ -47,7 +47,7 @@ export function DataTypesEmptyState({ onAdd, onPaste }: { onAdd: () => void; onP
           {`Data types are referenced in the input and output values for decision tables. Custom data types allow you to reference more complex data types, beyond the simple "default" types.`}
         </EmptyStateBody>
         <br />
-        {!settings.isReadOnly && (
+        {!isReadOnly && (
           <>
             <EmptyStatePrimary>
               <Button variant={ButtonVariant.primary} onClick={onAdd}>
@@ -55,12 +55,12 @@ export function DataTypesEmptyState({ onAdd, onPaste }: { onAdd: () => void; onP
               </Button>
             </EmptyStatePrimary>
             <br />
-            {settings?.isImportDataTypesFromJavaClassesSupported && (
+            {isImportDataTypesFromJavaClassesSupported && javaCodeCompletionService && (
               <>
                 or
                 <br />
                 <br />
-                <ImportJavaClassesWrapper javaCodeCompletionService={settings?.javaCodeCompletionService!} />
+                <ImportJavaClassesWrapper javaCodeCompletionService={javaCodeCompletionService} />
                 <br />
                 <br />
               </>
