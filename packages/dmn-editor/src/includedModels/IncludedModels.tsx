@@ -23,14 +23,19 @@ import { ns as dmn12ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_2/ts
 import { DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { Card, CardActions, CardBody, CardHeader, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody, CardHeader, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+  EmptyStateFooter,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
@@ -51,7 +56,7 @@ import { allPmmlImportNamespaces, getPmmlNamespace } from "../pmml/pmml";
 import { allDmnImportNamespaces } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { getNamespaceOfDmnImport } from "./importNamespaces";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert/Alert";
-import { KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { KebabToggle } from "@patternfly/react-core/deprecated";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
@@ -292,7 +297,7 @@ export function IncludedModels() {
                       variant={SelectVariant.typeahead}
                       typeAheadAriaLabel={"Select a model to include..."}
                       placeholderText={"Select a model to include..."}
-                      onToggle={setModelSelectOpen}
+                      onToggle={(_event, val) => setModelSelectOpen(val)}
                       onClear={() => setSelectedPathRelativeToThisDmn(undefined)}
                       onSelect={(e, path) => {
                         if (typeof path !== "string") {
@@ -357,7 +362,7 @@ export function IncludedModels() {
                       name={importName}
                       isReadOnly={false}
                       shouldCommitOnBlur={true}
-                      className={"pf-c-form-control"}
+                      // className={"pf-v5-c-form-control"}
                       onRenamed={setImportName}
                       allUniqueNames={getAllUniqueNames}
                     />
@@ -424,21 +429,24 @@ export function IncludedModels() {
       {thisDmnsImports.length <= 0 && (
         <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
           <EmptyState style={{ maxWidth: "1280px" }}>
-            <EmptyStateIcon icon={CubesIcon} />
-            <Title size={"lg"} headingLevel={"h4"}>
-              No external models have been included.
-            </Title>
+            <EmptyStateHeader
+              titleText="No external models have been included."
+              icon={<EmptyStateIcon icon={CubesIcon} />}
+              headingLevel={"h4"}
+            />
             <EmptyStateBody>
               Included models are externally defined models that have been added to this DMN file. Included DMN models
               have their decision requirements diagram (DRD) or decision requirements graph (DRG) components available
               in this DMN file. Included PMML models can be invoked through DMN Boxed Functions, usually inside Business
               Knowledge Model nodes (BKMs)
             </EmptyStateBody>
-            {!settings.isReadOnly && (
-              <Button onClick={openModal} variant={ButtonVariant.primary}>
-                Include model
-              </Button>
-            )}
+            <EmptyStateFooter>
+              {!settings.isReadOnly && (
+                <Button onClick={openModal} variant={ButtonVariant.primary}>
+                  Include model
+                </Button>
+              )}
+            </EmptyStateFooter>
           </EmptyState>
         </Flex>
       )}
@@ -547,97 +555,104 @@ function IncludedModelCard({
   );
 
   return (
-    <Card isHoverable={true} isCompact={false}>
-      <CardHeader>
-        {!isReadOnly && (
-          <CardActions>
-            <Popover
-              bodyContent={
-                shouldRenderConfirmationMessage ? (
-                  <Alert
-                    isInline
-                    variant={AlertVariant.warning}
-                    title={"This action have major impact to your model"}
-                    actionClose={
-                      <AlertActionCloseButton
-                        onClose={() => {
-                          setRemovePopoverOpen(false);
-                          setConfirmationPopoverOpen(false);
+    <Card isCompact={false}>
+      <CardHeader
+        {...(!isReadOnly && {
+          actions: {
+            actions: (
+              <>
+                <Popover
+                  bodyContent={
+                    shouldRenderConfirmationMessage ? (
+                      <Alert
+                        isInline
+                        variant={AlertVariant.warning}
+                        title={"This action have major impact to your model"}
+                        actionClose={
+                          <AlertActionCloseButton
+                            onClose={() => {
+                              setRemovePopoverOpen(false);
+                              setConfirmationPopoverOpen(false);
+                            }}
+                          />
+                        }
+                        actionLinks={
+                          <>
+                            <AlertActionLink
+                              onClick={(ev) => {
+                                remove(index);
+                                ev.stopPropagation();
+                                ev.preventDefault();
+                              }}
+                              variant={"link"}
+                              style={{ color: "var(--pf-v5-global--danger-color--200)", fontWeight: "bold" }}
+                            >
+                              {`Yes, remove included ${extension.toUpperCase()}`}
+                            </AlertActionLink>
+                          </>
+                        }
+                      >
+                        {extension === "dmn" && (
+                          <>
+                            Removing an included DMN will erase all its imported nodes and connected edges from your
+                            model. The references to item definitions, Business Knowledge Model functions, and Decision
+                            expressions will remain, requiring to be manually removed.
+                          </>
+                        )}
+                        {extension === "pmml" && (
+                          <>
+                            Removing an included PMML will not erase references on Boxed Function expressions, requiring
+                            it to be manually removed.
+                          </>
+                        )}
+                      </Alert>
+                    ) : (
+                      <Button
+                        variant={"plain"}
+                        onClick={(ev) => {
+                          ev.stopPropagation();
+                          ev.preventDefault();
+                          if (isReadOnly) {
+                            return;
+                          }
+                          setConfirmationPopoverOpen(true);
                         }}
-                      />
-                    }
-                    actionLinks={
-                      <>
-                        <AlertActionLink
-                          onClick={(ev) => {
-                            remove(index);
-                            ev.stopPropagation();
-                            ev.preventDefault();
-                          }}
-                          variant={"link"}
-                          style={{ color: "var(--pf-global--danger-color--200)", fontWeight: "bold" }}
-                        >
-                          {`Yes, remove included ${extension.toUpperCase()}`}
-                        </AlertActionLink>
-                      </>
-                    }
-                  >
-                    {extension === "dmn" && (
-                      <>
-                        Removing an included DMN will erase all its imported nodes and connected edges from your model.
-                        The references to item definitions, Business Knowledge Model functions, and Decision expressions
-                        will remain, requiring to be manually removed.
-                      </>
-                    )}
-                    {extension === "pmml" && (
-                      <>
-                        Removing an included PMML will not erase references on Boxed Function expressions, requiring it
-                        to be manually removed.
-                      </>
-                    )}
-                  </Alert>
-                ) : (
+                      >
+                        <TrashIcon />
+                        {"  "}
+                        Remove
+                      </Button>
+                    )
+                  }
+                  hasNoPadding={shouldRenderConfirmationMessage}
+                  maxWidth={shouldRenderConfirmationMessage ? "300px" : "150px"}
+                  minWidth={shouldRenderConfirmationMessage ? "300px" : "150px"}
+                  isVisible={isRemovePopoverOpen}
+                  showClose={false}
+                  shouldClose={() => {
+                    setRemovePopoverOpen(false);
+                    setConfirmationPopoverOpen(false);
+                  }}
+                  position={PopoverPosition.bottom}
+                  shouldOpen={() => setRemovePopoverOpen(true)}
+                >
                   <Button
                     variant={"plain"}
                     onClick={(ev) => {
                       ev.stopPropagation();
                       ev.preventDefault();
-                      if (isReadOnly) {
-                        return;
-                      }
-                      setConfirmationPopoverOpen(true);
                     }}
                   >
-                    <TrashIcon />
-                    {"  "}
-                    Remove
+                    <KebabToggle />
                   </Button>
-                )
-              }
-              hasNoPadding={shouldRenderConfirmationMessage}
-              maxWidth={shouldRenderConfirmationMessage ? "300px" : "150px"}
-              minWidth={shouldRenderConfirmationMessage ? "300px" : "150px"}
-              isVisible={isRemovePopoverOpen}
-              showClose={false}
-              shouldClose={() => {
-                setRemovePopoverOpen(false);
-                setConfirmationPopoverOpen(false);
-              }}
-              position={PopoverPosition.bottom}
-              shouldOpen={() => setRemovePopoverOpen(true)}
-            >
-              <div
-                className="kie-dmn-editor--model-card-kebabtoggle-wrapper"
-                onClick={(ev) => {
-                  ev.stopPropagation();
-                  ev.preventDefault();
-                }}
-              >
-                <KebabToggle />
-              </div>
-            </Popover>
-          </CardActions>
-        )}
+                </Popover>
+              </>
+            ),
+            hasNoOffset: false,
+            className: undefined,
+          },
+        })}
+      >
         <CardTitle>
           <InlineFeelNameInput
             placeholder={EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER}

@@ -82,7 +82,7 @@ export const PopoverMenu = React.forwardRef(
       appendTo,
       className,
       hasAutoWidth,
-      minWidth,
+      minWidth = `var(--pf-v5-c-popover--MinWidth)`,
       onHide = () => {},
       onCancel = () => {},
       onShown = () => {},
@@ -102,12 +102,12 @@ export const PopoverMenu = React.forwardRef(
       onShown();
     }, [setCurrentlyOpenContextMenu, id, onShown]);
 
-    const shouldOpen: PopoverProps["shouldOpen"] = useCallback((showFunction) => {
+    const shouldOpen: PopoverProps["shouldOpen"] = useCallback((_event, showFunction) => {
       showFunction?.();
     }, []);
 
     const shouldClose: PopoverProps["shouldClose"] = useCallback(
-      (tip, hideFunction, event): void => {
+      (event, hideFunction): void => {
         if (event instanceof KeyboardEvent && NavigationKeysUtils.isEsc(event.key)) {
           onCancel(event);
         } else {
@@ -168,7 +168,7 @@ export const PopoverMenu = React.forwardRef(
         minWidth={minWidth}
         position={popupPosition}
         distance={distance ?? 0}
-        reference={arrowPlacement}
+        triggerRef={arrowPlacement}
         appendTo={appendTo}
         // Need this 1px to render something and not break it.
         headerContent={<div style={{ height: "1px" }}></div>}

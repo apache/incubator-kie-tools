@@ -46,7 +46,7 @@ import { createNewDmnTypeTestScenario } from "../mutations/createNewDmnTypeTestS
 import { createNewRuleTypeTestScenario } from "../mutations/createNewRuleTypeTestScenario";
 
 import "./TestScenarioCreationPanel.css";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 
 function TestScenarioCreationPanel() {
   const { i18n } = useTestScenarioEditorI18n();
@@ -189,7 +189,7 @@ function TestScenarioCreationPanel() {
           <FormSelect
             id="asset-type-select"
             name="asset-type-select"
-            onChange={(value: "" | "DMN" | "RULE") => setAssetType(value)}
+            onChange={(_event, value: "" | "DMN" | "RULE") => setAssetType(value)}
             value={assetType}
           >
             {assetsOption.map((option, index) => (
@@ -204,7 +204,7 @@ function TestScenarioCreationPanel() {
                 variant={SelectVariant.single}
                 id="dmn-select"
                 name="dmn-select"
-                onToggle={setModelSelectOpen}
+                onToggle={(_event, val) => setModelSelectOpen(val)}
                 isOpen={isModelSelectOpen}
                 typeAheadAriaLabel={"Select a model..."}
                 placeholderText={"Select a model..."}
@@ -248,7 +248,7 @@ function TestScenarioCreationPanel() {
                     </Tooltip>
                   </>
                 }
-                onChange={(value: boolean) => {
+                onChange={(_event, value: boolean) => {
                   setAutoFillTableEnabled(value);
                 }}
               />
@@ -259,7 +259,7 @@ function TestScenarioCreationPanel() {
           <>
             <FormGroup label={i18n.creationPanel.kieSessionGroup}>
               <TextInput
-                onChange={(value) => setKieSessionRule(value)}
+                onChange={(_event, value) => setKieSessionRule(value)}
                 placeholder={"<" + i18n.creationPanel.optional + ">"}
                 type="text"
                 value={kieSessionRule}
@@ -267,7 +267,7 @@ function TestScenarioCreationPanel() {
             </FormGroup>
             <FormGroup label={i18n.creationPanel.kieAgendaGroup}>
               <TextInput
-                onChange={(value) => setRuleFlowGroup(value)}
+                onChange={(_event, value) => setRuleFlowGroup(value)}
                 placeholder={"<" + i18n.creationPanel.optional + ">"}
                 type="text"
                 value={ruleFlowGroup}
@@ -287,7 +287,7 @@ function TestScenarioCreationPanel() {
                     </Tooltip>
                   </>
                 }
-                onChange={(value) => {
+                onChange={(_event, value) => {
                   setStatelessSessionRule(value);
                 }}
               />
@@ -308,7 +308,7 @@ function TestScenarioCreationPanel() {
                 </Tooltip>
               </>
             }
-            onChange={(value: boolean) => {
+            onChange={(_event, value: boolean) => {
               setTestSkipped(value);
             }}
           />

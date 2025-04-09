@@ -38,8 +38,8 @@ export const ItemDescriptor: React.FC<IOwnProps & OUIAProps> = ({ itemDescriptio
 
   const idStringModifier = (strId: string) => {
     return (
-      <TextContent className="pf-u-display-inline">
-        <Text component={TextVariants.small} className="pf-u-display-inline">
+      <TextContent className="pf-v5-u-display-inline">
+        <Text component={TextVariants.small} className="pf-v5-u-display-inline">
           {strId.substring(0, 5)}
         </Text>
       </TextContent>

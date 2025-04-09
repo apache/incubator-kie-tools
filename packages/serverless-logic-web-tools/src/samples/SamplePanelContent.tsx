@@ -18,7 +18,7 @@
  */
 import React from "react";
 import { Chip } from "@patternfly/react-core/dist/js/components/Chip";
-import { ChipGroup } from "@patternfly/react-core/dist/js/components/ChipGroup";
+import { ChipGroup } from "@patternfly/react-core/dist/js/components/Chip";
 import {
   DescriptionList,
   DescriptionListDescription,
@@ -77,7 +77,7 @@ export function SamplesPanelContent(props: SamplePanelContentProps) {
   return (
     <DrawerPanelContent isResizable minSize="400px" defaultSize="567px">
       <DrawerHead
-        style={{ borderBottom: "var(--pf-global--BorderWidth--sm) solid var(--pf-global--BorderColor--100)" }}
+        style={{ borderBottom: "var(--pf-v5-global--BorderWidth--sm) solid var(--pf-v5-global--BorderColor--100)" }}
       >
         <TextContent>
           <Text component={TextVariants.h2}>{title}</Text>

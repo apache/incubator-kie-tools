@@ -104,6 +104,6 @@ describe("LandingPageToolbar", () => {
 
     fireEvent.click(input);
 
-    expect(setShowUnsupportedModels).toHaveBeenCalledWith(false, expect.any(Object));
+    expect(setShowUnsupportedModels).toHaveBeenCalledWith(false);
   });
 });

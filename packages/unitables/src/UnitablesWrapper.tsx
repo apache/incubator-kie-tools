@@ -21,7 +21,12 @@ import * as React from "react";
 import { useEffect, useRef } from "react";
 import { Unitables, UnitablesProps } from "./Unitables";
 import { UnitablesContextProvider } from "./UnitablesContextProvider";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { ErrorBoundary } from "@kie-tools/dmn-runner/dist/ErrorBoundary";
@@ -51,7 +56,7 @@ function InputError() {
   return (
     <div style={{ width: "50vw" }}>
       <EmptyState>
-        <EmptyStateIcon icon={ExclamationIcon} />
+        <EmptyStateHeader icon={<EmptyStateIcon icon={ExclamationIcon} />} />
         <TextContent>
           <Text component={"h2"}>Error</Text>
         </TextContent>

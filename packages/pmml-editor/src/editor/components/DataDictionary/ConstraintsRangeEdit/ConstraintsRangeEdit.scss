@@ -18,17 +18,17 @@
  */
 .constraints {
   &__range-item {
-    border-top: 1px solid var(--pf-global--BorderColor--100);
+    border-top: 1px solid var(--pf-v5-global--BorderColor--100);
     &:last-of-type {
-      border-bottom: 1px solid var(--pf-global--BorderColor--100);
+      border-bottom: 1px solid var(--pf-v5-global--BorderColor--100);
     }
     padding: 1rem;
   }
   &__include-range {
     margin-top: 1em;
     label {
-      font-weight: var(--pf-c-form__label-text--FontWeight);
-      font-size: var(--pf-c-form__label--FontSize);
+      font-weight: var(--pf-v5-c-form__label-text--FontWeight);
+      font-size: var(--pf-v5-c-form__label--FontSize);
     }
   }
 }

@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { SelectDirection, SelectProps } from "@patternfly/react-core/dist/js/components/Select";
+import { SelectDirection, SelectProps } from "@patternfly/react-core/deprecated";
 import { connectField, FieldProps } from "uniforms";
 import SelectCheckboxField from "./SelectCheckboxField";
 import SelectInputsField from "./SelectInputsField";

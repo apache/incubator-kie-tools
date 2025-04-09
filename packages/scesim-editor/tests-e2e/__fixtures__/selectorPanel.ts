@@ -28,6 +28,7 @@ export class SelectorPanel {
 
   public async close() {
     await this.page.getByLabel("Close drawer panel").click();
+    await this.page.getByLabel("Close drawer panel").waitFor({ state: "detached" });
   }
   public getAttribute(args: { name: string }) {
     return this.page.getByRole("button", { name: args.name, exact: true });

@@ -34,7 +34,12 @@ import { diff } from "deep-object-diff";
 import cloneDeep from "lodash/cloneDeep";
 import { useUnitablesContext } from "./UnitablesContext";
 import { UnitablesInputsConfigs } from "./UnitablesTypes";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { usePreviousRef } from "@kie-tools-core/react-hooks/dist/usePreviousRef";
@@ -298,7 +303,7 @@ function EmptyUnitables() {
   return (
     <div style={{ width: "50vw" }}>
       <EmptyState>
-        <EmptyStateIcon icon={CubeIcon} />
+        <EmptyStateHeader icon={<EmptyStateIcon icon={CubeIcon} />} />
         <TextContent>
           <Text component={"h2"}>No inputs node yet...</Text>
         </TextContent>

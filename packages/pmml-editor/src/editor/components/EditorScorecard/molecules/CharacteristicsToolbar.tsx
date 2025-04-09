@@ -22,7 +22,7 @@ import { TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { SearchIcon } from "@patternfly/react-icons/dist/js/icons/search-icon";
 import "./CharacteristicsToolbar.scss";
@@ -52,30 +52,32 @@ export const CharacteristicsToolbar = (props: CharacteristicsToolbarProps) => {
           <SplitItem>
             <ToolbarItem>
               <InputGroup>
-                <form onSubmit={(e) => e.preventDefault()}>
-                  <span style={{ display: "flex" }}>
-                    <TextInput
-                      id="characteristics-filter-input"
-                      name="characteristics-filter-input"
-                      data-testid="characteristics-toolbar__characteristics-filter"
-                      type="search"
-                      aria-label="filter characteristics"
-                      placeholder="Filter by name"
-                      value={filter}
-                      onChange={(e) => setFilter(e)}
-                    />
-                    <Button
-                      id="characteristics-filter"
-                      type="submit"
-                      data-testid="characteristics-toolbar__submit"
-                      variant={ButtonVariant.control}
-                      aria-label="filter button for filter input"
-                      onClick={() => onFilter()}
-                    >
-                      <SearchIcon />
-                    </Button>
-                  </span>
-                </form>
+                <InputGroupItem>
+                  <form onSubmit={(e) => e.preventDefault()}>
+                    <span style={{ display: "flex" }}>
+                      <TextInput
+                        id="characteristics-filter-input"
+                        name="characteristics-filter-input"
+                        data-testid="characteristics-toolbar__characteristics-filter"
+                        type="search"
+                        aria-label="filter characteristics"
+                        placeholder="Filter by name"
+                        value={filter}
+                        onChange={(_event, e) => setFilter(e)}
+                      />
+                      <Button
+                        id="characteristics-filter"
+                        type="submit"
+                        data-testid="characteristics-toolbar__submit"
+                        variant={ButtonVariant.control}
+                        aria-label="filter button for filter input"
+                        onClick={() => onFilter()}
+                      >
+                        <SearchIcon />
+                      </Button>
+                    </span>
+                  </form>
+                </InputGroupItem>
               </InputGroup>
             </ToolbarItem>
           </SplitItem>

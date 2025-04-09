@@ -193,7 +193,7 @@ export function HitPolicySelector({
 
           {selectedHitPolicy === "COLLECT" && (
             <>
-              <Divider isVertical={true} />
+              <Divider orientation={{ default: "vertical" }} />
               <div className="hit-policy-aggregator-section">
                 <Menu onSelect={builtInAggregatorSelectionCallback} selected={selectedBuiltInAggregator}>
                   <MenuGroup className="menu-with-help" label="Aggregator function">

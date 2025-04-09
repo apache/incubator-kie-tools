@@ -27,7 +27,7 @@ import {
   useAvailableAccelerators,
   useCurrentAccelerator,
 } from "../../../accelerators/AcceleratorsHooks";
-import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownItem } from "@patternfly/react-core/deprecated";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { AcceleratorConfig } from "../../../accelerators/AcceleratorsApi";
 import { useOnlineI18n } from "../../../i18n";
