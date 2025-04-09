@@ -21,4 +21,5 @@ export enum EditorTheme {
   DARK,
   LIGHT,
   HIGH_CONTRAST,
+  HIGH_CONTRAST_LIGHT,
 }
