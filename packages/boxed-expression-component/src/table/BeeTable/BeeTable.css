@@ -85,8 +85,6 @@
 
 .expression-container .table-component table thead th,
 .expression-container .table-component table tbody td {
-  /* border-left: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
-  border-right: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200); */
   border-top: 1px solid var(--pf-global--palette--black-300);
   border-left: 1px solid var(--pf-global--palette--black-300);
   border-right: 0;
