@@ -17,34 +17,39 @@
  * under the License.
  */
 import React from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { APPDATA_JSON_FILENAME } from "../AppConstants";
 import { ErrorKind, ErrorPage } from "../pages/ErrorPage";
 import { NoMatchPage } from "../pages/NoMatchPage";
 import { CloudEventFormPage } from "../pages/Workflows/CloudEventFormPage";
 import { WorkflowFormPage } from "../pages/Workflows/WorkflowFormPage";
 import { routes } from "../routes";
-import { RuntimeToolsRoutesSwitch } from "./RuntimeToolsRoutesSwitch";
+import { RuntimeToolsWorkflowDefinitions } from "../runtimeTools/pages/RuntimeToolsWorkflowDefinitions";
+import { RuntimeToolsWorkflowInstances } from "../runtimeTools/pages/RuntimeToolsWorkflowInstances";
+import { RuntimeToolsWorkflowDetails } from "../runtimeTools/pages/RuntimeToolsWorkflowDetails";
 
 export function RoutesSwitch() {
   return (
-    <Switch>
-      <Route path={routes.workflows.form.path({ workflowId: ":workflowId" })}>
-        {({ match }) => <WorkflowFormPage workflowId={match!.params.workflowId!} />}
-      </Route>
-      <Route path={routes.workflows.cloudEvent.path({})}>
-        <CloudEventFormPage />
-      </Route>
-      <Route path={routes.runtimeTools.home.path({})}>
-        <RuntimeToolsRoutesSwitch />
-      </Route>
-      <Route path={routes.dataJsonError.path({})}>
-        <ErrorPage kind={ErrorKind.APPDATA_JSON} errors={[`There was an error with the ${APPDATA_JSON_FILENAME}`]} />
-      </Route>
-      <Route path={routes.home.path({})}>
-        <Redirect to={routes.runtimeTools.workflowDefinitions.path({})} />
-      </Route>
-      <Route component={NoMatchPage} />
-    </Switch>
+    <Routes>
+      <Route path={routes.workflows.form.path({ workflowId: ":workflowId" })} element={<WorkflowFormPage />} />
+      <Route path={routes.workflows.cloudEvent.path({})} element={<CloudEventFormPage />} />
+      <Route path={routes.runtimeTools.workflowDefinitions.path({})} element={<RuntimeToolsWorkflowDefinitions />} />
+      <Route path={routes.runtimeTools.workflowInstances.path({})} element={<RuntimeToolsWorkflowInstances />} />
+      <Route
+        path={routes.runtimeTools.workflowDetails.path({ workflowId: ":workflowId" })}
+        element={<RuntimeToolsWorkflowDetails />}
+      />
+      <Route
+        path={routes.dataJsonError.path({})}
+        element={
+          <ErrorPage kind={ErrorKind.APPDATA_JSON} errors={[`There was an error with the ${APPDATA_JSON_FILENAME}`]} />
+        }
+      />
+      <Route
+        path={routes.home.path({})}
+        element={<Navigate replace to={routes.runtimeTools.workflowDefinitions.path({})} />}
+      />
+      <Route path={"*"} element={<NoMatchPage />} />
+    </Routes>
   );
 }

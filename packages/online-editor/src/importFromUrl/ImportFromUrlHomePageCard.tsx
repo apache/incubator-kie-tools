@@ -28,7 +28,7 @@ import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../accounts/AccountsContext";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { AUTH_SESSION_NONE, AuthSession } from "../authSessions/AuthSessionApi";
@@ -41,7 +41,7 @@ import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 
 export function ImportFromUrlCard() {
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
   const accountsDispatch = useAccountsDispatch();
 
   const [authSessionId, setAuthSessionId] = useState<string | undefined>(AUTH_SESSION_NONE.id);
@@ -111,7 +111,7 @@ export function ImportFromUrlCard() {
         return;
       }
 
-      history.push({
+      navigate({
         pathname: routes.import.path({}),
         search: routes.import.queryString({
           url,
@@ -121,7 +121,7 @@ export function ImportFromUrlCard() {
         }),
       });
     },
-    [authSessionId, gitRefName, history, isValid, routes.import, url, insecurelyDisableTlsCertificateValidation]
+    [authSessionId, gitRefName, navigate, isValid, routes.import, url, insecurelyDisableTlsCertificateValidation]
   );
 
   const buttonLabel = useMemo(() => {

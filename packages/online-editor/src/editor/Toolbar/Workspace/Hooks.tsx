@@ -32,12 +32,12 @@ import { PushToGitAlertActionLinks } from "../GitIntegration/PushToGitAlertActio
 import { useGitIntegration } from "../GitIntegration/GitIntegrationContextProvider";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { GIT_ORIGIN_REMOTE_NAME } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useEditorToolbarContext } from "../EditorToolbarContextProvider";
 
 export function useWorkspaceNavigationBlocker(workspace: ActiveWorkspace) {
   const { i18n } = useOnlineI18n();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const {
     auth: { changeGitAuthSessionId, authSessionSelectFilter },
@@ -109,7 +109,7 @@ export function useWorkspaceNavigationBlocker(workspace: ActiveWorkspace) {
                 data-testid="unsaved-alert-close-without-save-button"
                 onClick={() =>
                   navigationBlockersBypass.execute(() => {
-                    history.push(lastBlockedLocation);
+                    navigate(lastBlockedLocation);
                   })
                 }
               >
@@ -140,7 +140,7 @@ export function useWorkspaceNavigationBlocker(workspace: ActiveWorkspace) {
         updateGistOrSnippet,
         pushToGitRepository,
         navigationBlockersBypass,
-        history,
+        navigate,
       ]
     )
   );

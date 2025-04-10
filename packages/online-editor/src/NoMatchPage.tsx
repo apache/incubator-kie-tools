@@ -27,16 +27,16 @@ import {
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useRoutes } from "./navigation/Hooks";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 
 export function NoMatchPage() {
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const returnHome = useCallback(() => {
-    history.push({ pathname: routes.home.path({}) });
-  }, [history, routes]);
+    navigate({ pathname: routes.home.path({}) });
+  }, [navigate, routes]);
 
   return (
     <Bullseye>

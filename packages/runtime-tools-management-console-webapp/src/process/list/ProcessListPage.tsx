@@ -21,14 +21,14 @@ import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { ProcessList } from "./ProcessList";
 import { useRuntimeInfo, useRuntimeSpecificRoutes } from "../../runtime/RuntimeContext";
 import { AuthSession, useAuthSessionsDispatch } from "../../authSessions";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useRoutes } from "../../navigation/Hooks";
 import { useEnv } from "../../env/hooks/EnvContext";
 import { useRuntimePageLayoutDispatch } from "../../runtime/RuntimePageLayoutContext";
 
 export const ProcessListPage: React.FC = () => {
   const { env } = useEnv();
-  const history = useHistory();
+  const navigate = useNavigate();
   const runtimeRoutes = useRuntimeSpecificRoutes();
   const routes = useRoutes();
   const { runtimeDisplayInfo } = useRuntimeInfo();
@@ -37,13 +37,13 @@ export const ProcessListPage: React.FC = () => {
 
   useEffect(() => {
     setOnSelectAuthSession(() => (authSession: AuthSession) => {
-      history.push(runtimeRoutes.processes(authSession));
+      navigate(runtimeRoutes.processes(authSession));
     });
 
     return () => {
       setOnSelectAuthSession(undefined);
     };
-  }, [history, runtimeRoutes, setOnSelectAuthSession]);
+  }, [navigate, runtimeRoutes, setOnSelectAuthSession]);
 
   useEffect(() => {
     setCurrentPageTitle("Process Instances");
@@ -66,9 +66,9 @@ export const ProcessListPage: React.FC = () => {
 
   const onNavigateToProcessDetails = useCallback(
     (processInstanceId: string) => {
-      history.push(runtimeRoutes.processDetails(processInstanceId));
+      navigate(runtimeRoutes.processDetails(processInstanceId));
     },
-    [history, runtimeRoutes]
+    [navigate, runtimeRoutes]
   );
 
   useEffect(() => {

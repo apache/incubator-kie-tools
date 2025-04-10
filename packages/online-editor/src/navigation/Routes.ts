@@ -145,8 +145,8 @@ export const routes = {
   }>(() => `/import`),
 
   workspaceWithFilePath: new Route<{
-    pathParams: PathParams.WORKSPACE_ID | PathParams.FILE_RELATIVE_PATH | PathParams.EXTENSION;
-  }>(({ workspaceId, fileRelativePath, extension }) => `/${workspaceId}/file/${fileRelativePath}.${extension}`),
+    pathParams: PathParams.WORKSPACE_ID | PathParams.FILE_RELATIVE_PATH;
+  }>(({ workspaceId, fileRelativePath }) => `/${workspaceId}/file/${fileRelativePath}`),
 
   static: {
     sample: new Route<{ pathParams: "type" }>(({ type }) => `samples/Sample.${type}`),

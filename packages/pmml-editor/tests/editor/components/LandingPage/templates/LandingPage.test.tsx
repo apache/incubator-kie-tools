@@ -22,11 +22,12 @@ import { LandingPage } from "@kie-tools/pmml-editor/dist/editor/components/Landi
 import { Provider } from "react-redux";
 import { createStore, Store } from "redux";
 import { PMML, Scorecard, TreeModel } from "@kie-tools/pmml-editor-marshaller";
+import { BrowserRouter } from "react-router-dom";
 
 const PATH: string = "path";
 
-jest.mock("react-router", () => ({
-  ...jest.requireActual("react-router"),
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
   useHistory: () => ({
     push: jest.fn(),
   }),
@@ -39,7 +40,9 @@ describe("LandingPage", () => {
 
     const { getByTestId } = render(
       <Provider store={store}>
-        <LandingPage path={PATH} />
+        <BrowserRouter>
+          <LandingPage path={PATH} />
+        </BrowserRouter>
       </Provider>
     );
     expect(getByTestId("landing-page")).toMatchSnapshot();
@@ -63,7 +66,9 @@ describe("LandingPage", () => {
 
     const { getByTestId, getAllByTestId } = render(
       <Provider store={store}>
-        <LandingPage path={PATH} />
+        <BrowserRouter>
+          <LandingPage path={PATH} />
+        </BrowserRouter>
       </Provider>
     );
     expect(getByTestId("landing-page")).toMatchSnapshot();
@@ -91,7 +96,9 @@ describe("LandingPage", () => {
 
     const { getByTestId, getAllByTestId } = render(
       <Provider store={store}>
-        <LandingPage path={PATH} />
+        <BrowserRouter>
+          <LandingPage path={PATH} />
+        </BrowserRouter>
       </Provider>
     );
     expect(getAllByTestId("landing-page__model-card").length).toBe(1);
@@ -128,7 +135,9 @@ describe("LandingPage", () => {
 
     const { getByTestId, getAllByTestId } = render(
       <Provider store={store}>
-        <LandingPage path={PATH} />
+        <BrowserRouter>
+          <LandingPage path={PATH} />
+        </BrowserRouter>
       </Provider>
     );
     expect(getAllByTestId("landing-page__model-card").length).toBe(1);

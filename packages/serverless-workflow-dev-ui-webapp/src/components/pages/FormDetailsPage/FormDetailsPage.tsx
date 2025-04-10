@@ -25,7 +25,7 @@ import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Te
 import { OUIAProps, ouiaPageTypeAndObjectId } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import FormDetailsContainer from "../../containers/FormDetailsContainer/FormDetailsContainer";
 import "../../styles.css";
-import { useHistory } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
 import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
@@ -42,8 +42,8 @@ const FormDetailsPage: React.FC<OUIAProps> = () => {
   useEffect(() => {
     return ouiaPageTypeAndObjectId("form-detail");
   });
-  const history = useHistory();
-  const initialState = history.location && (history.location.state as FormDetailsPageState);
+  const location = useLocation();
+  const initialState = location && (location.state as FormDetailsPageState);
   const formData: FormInfo = initialState.formData;
 
   const onSuccess = () => {
