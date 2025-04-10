@@ -207,7 +207,7 @@ export function BeeTableThResizable<R extends object>({
       column={column}
     >
       <div
-        className="header-cell"
+        className={`header-cell ${cssClasses}`}
         data-ouia-component-type="expression-column-header"
         ref={headerCellRef}
         // We stop propagation here because if the user performs a double click on any component inside
