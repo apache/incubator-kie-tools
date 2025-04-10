@@ -75,6 +75,7 @@ import { NODE_LAYERS } from "../../store/computed/computeDiagramData";
 import { useSettings } from "../../settings/DmnEditorSettingsContext";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useRefactor } from "../../refactor/RefactorConfirmationDialog";
+import { collapseOrExpand } from "../../mutations/collapseOrExpand";
 
 export type ElementFilter<E extends { __$$element: string }, Filter extends string> = E extends any
   ? E["__$$element"] extends Filter
@@ -847,6 +848,13 @@ export const DecisionServiceNode = React.memo(
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
 
+    const isConflict = useDmnEditorStore((s) => s.diagram.conflictedNodes).includes(id);
+
+    let expandButtonClassname = "kie-dmn-editor--decision-service-collapsed-button";
+    if (isConflict) {
+      expandButtonClassname += " button-inactive";
+    }
+
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const settings = useSettings();
 
@@ -882,6 +890,28 @@ export const DecisionServiceNode = React.memo(
         r?.removeEventListener("dblclick", onDoubleClick);
       };
     }, [decisionService.encapsulatedDecision, decisionService.outputDecision, dmnEditorStoreApi, id]);
+
+    const handleExpand = () => {
+      dmnEditorStoreApi.setState((state) => {
+        collapseOrExpand({
+          definitions: state.dmn.model.definitions,
+          drdIndex: state.computed(state).getDrdIndex(),
+          collapse: false,
+          shapeIndex: shape.index,
+        });
+      });
+    };
+
+    const handleCollapse = () => {
+      dmnEditorStoreApi.setState((state) => {
+        collapseOrExpand({
+          definitions: state.dmn.model.definitions,
+          drdIndex: state.computed(state).getDrdIndex(),
+          collapse: true,
+          shapeIndex: shape.index,
+        });
+      });
+    };
 
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
@@ -980,6 +1010,11 @@ export const DecisionServiceNode = React.memo(
           data-nodelabel={decisionService["@_name"]}
         >
           <InfoNodePanel isVisible={!isTargeted && selected && !dragging} />
+          {!isCollapsed && !isTargeted && selected && !dragging && (
+            <div className={"kie-dmn-editor--decision-service-expanded-button"} onClick={handleCollapse}>
+              -
+            </div>
+          )}
           <OutgoingStuffNodePanel
             nodeHref={id}
             isVisible={!settings.isReadOnly && !isTargeted && selected && !dragging}
@@ -1008,7 +1043,11 @@ export const DecisionServiceNode = React.memo(
               nodeShapeIndex={shape.index}
             />
           )}
-          {isCollapsed && <div className={"kie-dmn-editor--decision-service-collapsed-button"}>+</div>}
+          {isCollapsed && (
+            <div className={expandButtonClassname} onClick={handleExpand}>
+              +
+            </div>
+          )}
           <DataTypeNodePanel
             isVisible={!isTargeted && selected && !dragging}
             isReadOnly={settings.isReadOnly}
