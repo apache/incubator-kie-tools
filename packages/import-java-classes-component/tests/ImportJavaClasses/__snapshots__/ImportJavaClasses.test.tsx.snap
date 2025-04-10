@@ -10,7 +10,7 @@ exports[`ImportJavaClasses component tests Should close Modal after opening it a
     <button
       aria-disabled="false"
       class="pf-c-button pf-m-secondary pf-m-progress"
-      data-ouia-component-id="OUIA-Generated-Button-secondary-5"
+      data-ouia-component-id="OUIA-Generated-Button-secondary-10"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe="true"
       data-testid="modal-wizard-button"
@@ -32,7 +32,7 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
     <button
       aria-disabled="false"
       class="pf-c-button pf-m-secondary pf-m-progress"
-      data-ouia-component-id="OUIA-Generated-Button-secondary-6"
+      data-ouia-component-id="OUIA-Generated-Button-secondary-12"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe="true"
       data-testid="modal-wizard-button"
@@ -498,7 +498,7 @@ exports[`ImportJavaClasses component tests Should move to second step 1`] = `
                   <button
                     aria-disabled="false"
                     class="pf-c-button pf-m-secondary"
-                    data-ouia-component-id="OUIA-Generated-Button-secondary-7"
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-13"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe="true"
                     type="button"
@@ -540,7 +540,7 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
     <button
       aria-disabled="false"
       class="pf-c-button pf-m-secondary pf-m-progress"
-      data-ouia-component-id="OUIA-Generated-Button-secondary-8"
+      data-ouia-component-id="OUIA-Generated-Button-secondary-15"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe="true"
       data-testid="modal-wizard-button"
@@ -1025,7 +1025,7 @@ exports[`ImportJavaClasses component tests Should move to second step and fetch 
                   <button
                     aria-disabled="false"
                     class="pf-c-button pf-m-secondary"
-                    data-ouia-component-id="OUIA-Generated-Button-secondary-9"
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-16"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe="true"
                     type="button"
@@ -1067,7 +1067,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
     <button
       aria-disabled="false"
       class="pf-c-button pf-m-secondary pf-m-progress"
-      data-ouia-component-id="OUIA-Generated-Button-secondary-13"
+      data-ouia-component-id="OUIA-Generated-Button-secondary-22"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe="true"
       data-testid="modal-wizard-button"
@@ -1527,7 +1527,7 @@ exports[`ImportJavaClasses component tests Should move to third step 1`] = `
                   <button
                     aria-disabled="false"
                     class="pf-c-button pf-m-secondary"
-                    data-ouia-component-id="OUIA-Generated-Button-secondary-14"
+                    data-ouia-component-id="OUIA-Generated-Button-secondary-23"
                     data-ouia-component-type="PF4/Button"
                     data-ouia-safe="true"
                     type="button"
@@ -1569,7 +1569,7 @@ exports[`ImportJavaClasses component tests Should search box with results works 
     <button
       aria-disabled="false"
       class="pf-c-button pf-m-secondary pf-m-progress"
-      data-ouia-component-id="OUIA-Generated-Button-secondary-4"
+      data-ouia-component-id="OUIA-Generated-Button-secondary-8"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe="true"
       data-testid="modal-wizard-button"
@@ -1942,7 +1942,7 @@ exports[`ImportJavaClasses component tests Should show Modal after clicking on t
     <button
       aria-disabled="false"
       class="pf-c-button pf-m-secondary pf-m-progress"
-      data-ouia-component-id="OUIA-Generated-Button-secondary-2"
+      data-ouia-component-id="OUIA-Generated-Button-secondary-4"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe="true"
       data-testid="modal-wizard-button"
@@ -2248,7 +2248,7 @@ exports[`ImportJavaClasses component tests should render ImportJavaClasses Butto
     <button
       aria-disabled="false"
       class="pf-c-button pf-m-secondary pf-m-progress"
-      data-ouia-component-id="OUIA-Generated-Button-secondary-1"
+      data-ouia-component-id="OUIA-Generated-Button-secondary-2"
       data-ouia-component-type="PF4/Button"
       data-ouia-safe="true"
       data-testid="modal-wizard-button"

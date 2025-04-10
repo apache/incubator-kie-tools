@@ -39,6 +39,7 @@ import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dis
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import { JavaCodeCompletionExposedInteropApi } from "./vscode/VsCodeNewDmnEditorFactory";
 
 export const EXTERNAL_MODELS_SEARCH_GLOB_PATTERN = "**/*.{dmn,pmml}";
 export const TARGET_DIRECTORY = "target/classes/";
@@ -62,6 +63,8 @@ export type DmnEditorRootProps = {
   workspaceRootAbsolutePosixPath: string;
   keyboardShortcutsService: KeyboardShortcutsService | undefined;
   isReadOnly: boolean;
+  isImportDataTypesFromJavaClassesSupported?: boolean;
+  javaCodeCompletionService?: JavaCodeCompletionExposedInteropApi;
 };
 
 export type DmnEditorRootState = {
@@ -492,6 +495,8 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
               externalContextDescription={""}
               issueTrackerHref={""}
               isReadOnly={this.state.isReadOnly}
+              isImportDataTypesFromJavaClassesSupported={this.props?.isImportDataTypesFromJavaClassesSupported}
+              javaCodeCompletionService={this.props?.javaCodeCompletionService}
               onModelChange={this.onModelChange}
               onOpenedBoxedExpressionEditorNodeChange={this.props.onOpenedBoxedExpressionEditorNodeChange}
               onRequestExternalModelsAvailableToInclude={this.onRequestExternalModelsAvailableToInclude}
