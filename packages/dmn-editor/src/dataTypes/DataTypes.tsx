@@ -211,7 +211,12 @@ export function DataTypes() {
       );
     }
     return dropdownItems;
-  }, [isImportDataTypesFromJavaClassesSupported, javaCodeCompletionService]);
+  }, [
+    isImportDataTypesFromJavaClassesSupported,
+    javaCodeCompletionService,
+    handleImportJavaClassButtonClick,
+    pasteTopLevelItemDefinition,
+  ]);
 
   return (
     <>
