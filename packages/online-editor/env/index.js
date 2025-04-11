@@ -192,7 +192,7 @@ module.exports = composeEnv([rootEnv, extendedServicesJavaEnv, corsProxyEnv, kie
           account: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentBaseImageAccount),
           name: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentBaseImageName),
         },
-        kogitoQuarkusBlankAppImage: {
+        quarkusBlankAppImage: {
           tag: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageTag),
           registry: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageRegistry),
           account: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageAccount),

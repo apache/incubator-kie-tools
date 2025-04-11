@@ -20,13 +20,13 @@
 import { DeploymentOptionArgs } from "../types";
 import { DeploymentOption, DeploymentOptionOpts } from "../deploymentOptions/types";
 import { CustomImageOption } from "../deploymentOptions/customImage";
-import { KogitoQuarkusBlankAppOption } from "../deploymentOptions/kogitoQuarkusBlankApp";
-import { FormWebappServiceYaml } from "../deploymentOptions/kogitoQuarkusBlankApp/FormWebappServiceYaml";
-import { FormWebappIngressYaml } from "../deploymentOptions/kogitoQuarkusBlankApp/FormWebappIngressYaml";
-import { IngressYaml } from "../deploymentOptions/kogitoQuarkusBlankApp/IngressYaml";
+import { QuarkusBlankAppOption } from "../deploymentOptions/quarkusBlankApp";
+import { FormWebappServiceYaml } from "../deploymentOptions/quarkusBlankApp/FormWebappServiceYaml";
+import { FormWebappIngressYaml } from "../deploymentOptions/quarkusBlankApp/FormWebappIngressYaml";
+import { IngressYaml } from "../deploymentOptions/quarkusBlankApp/IngressYaml";
 
 export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<DeploymentOption> {
-  const kogitoQuarkusBlankAppOpts: DeploymentOptionOpts = {
+  const quarkusBlankAppOpts: DeploymentOptionOpts = {
     parameters: {
       includeDmnFormWebapp: {
         id: "includeDmnFormWebapp",
@@ -115,5 +115,5 @@ export function KubernetesDeploymentOptions(args: DeploymentOptionArgs): Array<D
       },
     ],
   };
-  return [KogitoQuarkusBlankAppOption(args, kogitoQuarkusBlankAppOpts), CustomImageOption(args, customImageOptionOpts)];
+  return [QuarkusBlankAppOption(args, quarkusBlankAppOpts), CustomImageOption(args, customImageOptionOpts)];
 }
