@@ -27,7 +27,8 @@ const props: FormDmnOutputsProps = {
   differences: [{}],
   locale: "en",
   notificationsPanel: true,
-  openExecutionTab: () => {},
+  openEvaluationTab: () => {},
+  openedBoxedExpressionEditorNodeId: undefined,
 };
 
 describe("FormDmnOutputs tests", () => {
@@ -45,6 +46,7 @@ describe("FormDmnOutputs tests", () => {
         result: null,
         messages: [],
         evaluationStatus: DmnEvaluationStatus.FAILED,
+        evaluationHitIds: {},
       },
     ];
 
@@ -61,6 +63,7 @@ describe("FormDmnOutputs tests", () => {
         result: null,
         messages: [],
         evaluationStatus: DmnEvaluationStatus.FAILED,
+        evaluationHitIds: {},
       },
       {
         decisionId: "_9BD7BB23-0B23-488F-8DED-F5462CF89E0B",
@@ -68,6 +71,7 @@ describe("FormDmnOutputs tests", () => {
         result: null,
         messages: [],
         evaluationStatus: DmnEvaluationStatus.SUCCEEDED,
+        evaluationHitIds: {},
       },
       {
         decisionId: "_9BD7BB23-0B23-488F-8DED-F5462CF89E0B",
@@ -75,6 +79,7 @@ describe("FormDmnOutputs tests", () => {
         result: null,
         messages: [],
         evaluationStatus: DmnEvaluationStatus.SKIPPED,
+        evaluationHitIds: {},
       },
     ];
 
@@ -93,6 +98,7 @@ describe("FormDmnOutputs tests", () => {
         result: null,
         messages: [],
         evaluationStatus: DmnEvaluationStatus.FAILED,
+        evaluationHitIds: {},
       },
     ];
 
@@ -110,6 +116,7 @@ describe("FormDmnOutputs tests", () => {
         result: null,
         messages: [],
         evaluationStatus: DmnEvaluationStatus.FAILED,
+        evaluationHitIds: {},
       },
     ];
 

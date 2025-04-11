@@ -108,14 +108,14 @@ export function EditorPageDockContextProvider({
 
   const notificationsPanelTabNames = useMemo(() => {
     if (workspaceFile.extension.toLowerCase() === "dmn") {
-      return [i18n.terms.validation, i18n.terms.execution];
+      return [i18n.terms.validation, i18n.terms.evaluation];
     }
     return [i18n.terms.validation];
-  }, [workspaceFile.extension, i18n.terms.validation, i18n.terms.execution]);
+  }, [workspaceFile.extension, i18n.terms.validation, i18n.terms.evaluation]);
 
   useEffect(() => {
-    if (!notificationsPanelTabNames.includes(i18n.terms.execution)) {
-      notificationsToggle?.deleteNotificationsFromTab(i18n.terms.execution);
+    if (!notificationsPanelTabNames.includes(i18n.terms.evaluation)) {
+      notificationsToggle?.deleteNotificationsFromTab(i18n.terms.evaluation);
     }
     if (notificationsPanel && notificationsToggle) {
       const notifications = notificationsToggle.getNotifications();

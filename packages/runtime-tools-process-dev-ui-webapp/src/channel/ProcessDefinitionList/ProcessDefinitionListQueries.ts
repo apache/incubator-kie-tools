@@ -27,7 +27,7 @@ export interface ProcessDefinitionListQueries {
 export class GraphQLProcessDefinitionListQueries implements ProcessDefinitionListQueries {
   constructor(
     private readonly client: ApolloClient<any>,
-    private readonly options?: { transformUrls?: (url?: string) => string }
+    private readonly options?: { transformEndpointBaseUrl?: (url?: string) => string }
   ) {
     this.client = client;
   }
@@ -36,7 +36,7 @@ export class GraphQLProcessDefinitionListQueries implements ProcessDefinitionLis
     return getProcessDefinitions(this.client).then((processDefinitions) =>
       processDefinitions.map((definition) => ({
         ...definition,
-        endpoint: this.options?.transformUrls?.(definition.endpoint) ?? definition.endpoint,
+        endpoint: this.options?.transformEndpointBaseUrl?.(definition.endpoint) ?? definition.endpoint,
       }))
     );
   }

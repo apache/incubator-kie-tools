@@ -25,15 +25,15 @@ test.beforeEach(async ({ overlays, editor }) => {
 });
 
 test.describe("Evaluation Highlights on Nodes", () => {
-  test("should highlight node evaluation result - success", async ({ nodes }) => {
-    await expect(nodes.get({ name: "Front End Ratio" })).toHaveScreenshot("evaluation-highlights-success.png");
+  test("should highlight node evaluation result - skipped", async ({ nodes }) => {
+    await expect(nodes.get({ name: "Front End Ratio" })).toHaveScreenshot("evaluation-highlights-skipped.png");
   });
 
   test("should highlight node evaluation result - failure", async ({ nodes }) => {
     await expect(nodes.get({ name: "Back End Ratio" })).toHaveScreenshot("evaluation-highlights-failure.png");
   });
 
-  test("should highlight node evaluation result - skipped", async ({ nodes }) => {
-    await expect(nodes.get({ name: "Credit Score Rating" })).toHaveScreenshot("evaluation-highlights-skipped.png");
+  test("should highlight node evaluation result - succeeded", async ({ nodes }) => {
+    await expect(nodes.get({ name: "Credit Score Rating" })).toHaveScreenshot("evaluation-highlights-succeeded.png");
   });
 });

@@ -27,7 +27,7 @@ interface FormsListContextProviderProps {
 
 const FormsListContextProvider: React.FC<FormsListContextProviderProps> = ({ children }) => {
   const appContext = useDevUIAppContext();
-  const baseUrl = appContext.transformQuarkusUrl(
+  const baseUrl = appContext.transformEndpointBaseUrl(
     `${appContext.getQuarkusAppOrigin()}${appContext.getQuarkusAppRootPath()}`
   );
 

@@ -92,6 +92,7 @@ import {
   RefactorConfirmationDialog,
 } from "../refactor/RefactorConfirmationDialog";
 import { EvaluationHighlightsBadge } from "../evaluationHighlights/EvaluationHighlightsBadge";
+import { useDmnEditor } from "../DmnEditorContext";
 
 export function BoxedExpressionScreen({ container }: { container: React.RefObject<HTMLElement> }) {
   const { externalModelsByNamespace } = useExternalModels();
@@ -118,6 +119,9 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
   const externalDmnModelsByNamespaceMap = useDmnEditorStore((s) =>
     s.computed(s).getExternalDmnModelsByNamespaceMap(externalModelsByNamespace)
   );
+
+  const { evaluationResultsByNodeId } = useDmnEditor();
+  const isEvaluationHighlightsEnabled = useDmnEditorStore((s) => s.diagram.overlays.enableEvaluationHighlights);
 
   const onRequestFeelIdentifiers = useCallback(() => {
     return new FeelIdentifiers({
@@ -278,7 +282,14 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
           setExpression({ definitions: state.dmn.model.definitions, expression: newExpression });
         } else {
           if (args.expressionChangedArgs.action === Action.VariableChanged) {
-            if (args.expressionChangedArgs.typeChange) {
+            if (args.expressionChangedArgs.typeChange && !args.expressionChangedArgs.nameChange) {
+              updateDrgElementType({
+                definitions: state.dmn.model.definitions,
+                expression: newExpression!,
+                drgElementIndex: expression?.drgElementIndex ?? 0,
+              });
+              setExpression({ definitions: state.dmn.model.definitions, expression: newExpression });
+            } else if (args.expressionChangedArgs.typeChange) {
               const identifiersRefactor = new IdentifiersRefactor({
                 writeableDmnDefinitions: state.dmn.model.definitions,
                 _readonly_externalDmnModelsByNamespaceMap: externalDmnModelsByNamespaceMap,
@@ -527,6 +538,11 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
             widthsById={widthsById}
             onWidthsChange={onWidthsChange}
             isReadOnly={settings.isReadOnly}
+            evaluationHitsCountById={
+              isEvaluationHighlightsEnabled
+                ? evaluationResultsByNodeId?.get(activeDrgElementId ?? "")?.evaluationHitsCountByRuleOrRowId
+                : undefined
+            }
           />
         </div>
       </>

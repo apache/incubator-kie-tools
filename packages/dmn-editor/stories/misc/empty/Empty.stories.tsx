@@ -51,7 +51,7 @@ export const Empty: Story = {
   args: {
     model: model,
     originalVersion: "1.5",
-    evaluationResults: {},
+    evaluationResultsByNodeId: new Map(),
     externalContextDescription: "",
     externalContextName: "Storybook - DMN Editor",
     externalModelsByNamespace: {},

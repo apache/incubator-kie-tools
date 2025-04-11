@@ -84,6 +84,6 @@ describe("<NestField> tests", () => {
     expect(inputContainer.ref[2].binding).toEqual("candidate.role");
 
     expect(formElement.setValueFromModelCode).not.toBeUndefined();
-    expect(formElement.writeValueToModelCode).toBeUndefined();
+    expect(formElement.writeValueToModelCode).not.toBeUndefined();
   });
 });

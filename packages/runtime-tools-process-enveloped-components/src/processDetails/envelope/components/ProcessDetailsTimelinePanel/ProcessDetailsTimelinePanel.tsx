@@ -444,7 +444,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
                           {content.name}
                           <span>
                             {content.type === "HumanTaskNode" && (
-                              <Tooltip content={"Human task"}>
+                              <Tooltip content={"User Task"}>
                                 <UserIcon className="pf-u-ml-sm" color="var(--pf-global--icon--Color--light)" />
                               </Tooltip>
                             )}

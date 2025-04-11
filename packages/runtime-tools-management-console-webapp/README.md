@@ -101,6 +101,17 @@ runtime is unsecured, it should connect directly.
 Once logged in, the management pages will be displayed in the side menu, listing Process Instances,
 Jobs, and Tasks.
 
+#### Connecting to the local dev apps
+
+- `secured-runtime`:
+
+  - **Alias**: Secured Runtime
+  - **URL**: http://localhost:8080/my-subpath
+
+- `unsecured-runtime`:
+  - **Alias**: Unsecured Runtime
+  - **URL**: http://localhost:8081
+
 ### Process instances
 
 The process instances page shows the list of process instances available. The list is an expandable list , which shows all the child process instance of the particular process instance when expanded. Each row in the list contains the information about the process instances. The info includes details like _name_, _status_, _endpoint_ etc... The list also provides many ways to [filter](#filters) out the process instances and also to perform [process-management](#process-management) operations to the processes. The details of them are mentioned below.

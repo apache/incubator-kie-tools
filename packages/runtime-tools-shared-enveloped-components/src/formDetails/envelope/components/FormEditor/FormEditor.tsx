@@ -23,10 +23,7 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { UndoIcon } from "@patternfly/react-icons/dist/js/icons/undo-icon";
 import { SaveIcon } from "@patternfly/react-icons/dist/js/icons/save-icon";
 import { RedoIcon } from "@patternfly/react-icons/dist/js/icons/redo-icon";
-import { PlayIcon } from "@patternfly/react-icons/dist/js/icons/play-icon";
 import React, { useEffect, useImperativeHandle, useMemo, useRef, useState, useCallback } from "react";
-import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
-import { useFormDetailsContext } from "../contexts/FormDetailsContext";
 import { ResizableContent } from "../FormDetails/FormDetails";
 import "../styles.css";
 import { FormEditorEditorApi, FormEditorEditorController } from "./FormEditorController";
@@ -47,40 +44,19 @@ function FormEditorControl(props: {
 }
 
 export interface FormEditorProps {
-  formType?: string;
-  isSource?: boolean;
-  isConfig?: boolean;
-  formContent: Form;
-  code: string;
-  setFormContent: (formContent: Form) => void;
-  saveFormContent: (formContent: Form) => void;
+  formLanguage: string;
+  textContent: string;
+  saveContent: (content: string) => void;
 }
 
 export const FormEditor = React.forwardRef<ResizableContent, FormEditorProps>(
-  (
-    { code, formType, formContent, setFormContent, saveFormContent, isSource = false, isConfig = false },
-    forwardedRef
-  ) => {
-    const [formSourceCode, setFormSourceCode] = useState(formContent.source);
-    const appContext = useFormDetailsContext();
+  ({ textContent, formLanguage, saveContent }, forwardedRef) => {
+    const [content, setContent] = useState<string>(textContent);
     const container = useRef<HTMLDivElement>(null);
 
-    const formLanguage = useMemo<string | undefined>(() => {
-      if (isSource && formType) {
-        switch (formType.toLowerCase()) {
-          case "tsx":
-            return "typescript";
-          case "html":
-            return "html";
-        }
-      } else if (isConfig) {
-        return "json";
-      }
-    }, [formType, isSource, isConfig]);
-
     const controller: FormEditorEditorApi = useMemo<FormEditorEditorApi>(() => {
-      return new FormEditorEditorController(code, (args) => setFormSourceCode(args.content), formLanguage, false);
-    }, [code, formLanguage]);
+      return new FormEditorEditorController(textContent, (args) => setContent(args.content), formLanguage, false);
+    }, [textContent, formLanguage]);
 
     useEffect(() => {
       if (container.current) {
@@ -95,11 +71,8 @@ export const FormEditor = React.forwardRef<ResizableContent, FormEditorProps>(
     useImperativeHandle(forwardedRef, () => controller, [controller]);
 
     const onSaveFormContent = useCallback(() => {
-      const newFormContent = { ...formContent, source: formSourceCode };
-      saveFormContent(newFormContent);
-      appContext.updateContent(newFormContent);
-      setFormContent(newFormContent);
-    }, [appContext, formContent, formSourceCode, saveFormContent, setFormContent]);
+      saveContent(content);
+    }, [content, saveContent]);
 
     const onUndo = useCallback(() => {
       controller.undo();

@@ -151,6 +151,10 @@ export function useWorkspaceNavigationBlocker(workspace: ActiveWorkspace) {
     } else {
       confirmNavigationAlert.close();
     }
+
+    return () => {
+      confirmNavigationAlert.close();
+    };
   }, [confirmNavigationAlert, navigationStatus]);
 
   return;

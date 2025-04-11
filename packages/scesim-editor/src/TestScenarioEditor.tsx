@@ -36,6 +36,7 @@ import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Drawer, DrawerContent, DrawerContentBody } from "@patternfly/react-core/dist/js/components/Drawer";
 import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
@@ -43,7 +44,6 @@ import { Tabs, Tab, TabTitleIcon, TabTitleText } from "@patternfly/react-core/di
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
-import ErrorIcon from "@patternfly/react-icons/dist/esm/icons/error-circle-o-icon";
 import TableIcon from "@patternfly/react-icons/dist/esm/icons/table-icon";
 import HelpIcon from "@patternfly/react-icons/dist/esm/icons/help-icon";
 
@@ -218,7 +218,7 @@ function TestScenarioMainPanel() {
       return;
     }
     commandsRef.current.toggleTestScenarioDock = async () => {
-      console.trace("Test Scenario Editor: COMMANDS: Toggle dock panel...");
+      console.debug("Test Scenario Editor: COMMANDS: Toggle dock panel...");
       testScenarioEditorStoreApi.setState((state) => {
         state.navigation.dock.isOpen = !state.navigation.dock.isOpen;
       });
@@ -316,13 +316,16 @@ function TestScenarioParserErrorPanel({
   parserErrorMessage: string;
 }) {
   return (
-    <EmptyState>
-      <EmptyStateIcon icon={ErrorIcon} />
-      <Title headingLevel="h4" size="lg">
-        {parserErrorTitle}
-      </Title>
-      <EmptyStateBody>{parserErrorMessage}</EmptyStateBody>
-    </EmptyState>
+    <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
+      <EmptyState style={{ maxWidth: "1280px" }}>
+        <EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />
+        <Title size={"lg"} headingLevel={"h4"}>
+          {parserErrorTitle}
+        </Title>
+        <br />
+        <EmptyStateBody>Error details: {parserErrorMessage}</EmptyStateBody>
+      </EmptyState>
+    </Flex>
   );
 }
 
@@ -332,7 +335,7 @@ export const TestScenarioEditorInternal = ({
   onModelChange,
   onModelDebounceStateChanged,
 }: TestScenarioEditorProps & { forwardRef?: React.Ref<TestScenarioEditorRef> }) => {
-  console.trace("[TestScenarioEditorInternal] Component creation ...");
+  console.debug("[TestScenarioEditorInternal] Component creation ...");
 
   const scesim = useTestScenarioEditorStore((s) => s.scesim);
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
@@ -346,7 +349,7 @@ export const TestScenarioEditorInternal = ({
     forwardRef,
     () => ({
       reset: () => {
-        console.trace("[TestScenarioEditorInternal: Reset called!");
+        console.debug("[TestScenarioEditorInternal: Reset called!");
         const state = testScenarioEditorStoreApi.getState();
         state.dispatch(state).navigation.reset();
       },
@@ -361,11 +364,11 @@ export const TestScenarioEditorInternal = ({
     testScenarioEditorStoreApi.setState((state) => {
       // Avoid unecessary state updates
       if (model === state.scesim.model) {
-        console.trace("[TestScenarioEditorInternal]: useEffectAfterFirstRender called, but the models are the same!");
+        console.debug("[TestScenarioEditorInternal]: useEffectAfterFirstRender called, but the models are the same!");
         return;
       }
 
-      console.trace("[TestScenarioEditorInternal]: Model updated!");
+      console.debug("[TestScenarioEditorInternal]: Model updated!");
 
       state.scesim.model = model;
       testScenarioEditorModelBeforeEditingRef.current = model;
@@ -384,8 +387,7 @@ export const TestScenarioEditorInternal = ({
       }
 
       onModelDebounceStateChanged?.(true);
-      console.trace("[TestScenarioEditorInternal: Debounce State changed!");
-      console.trace(scesim.model);
+      console.debug("[TestScenarioEditorInternal: Debounce State changed!", scesim.model);
       onModelChange?.(scesim.model);
     }, 500);
 
@@ -395,9 +397,13 @@ export const TestScenarioEditorInternal = ({
   }, [onModelChange, scesim.model]);
 
   const scesimFileStatus = useMemo(() => {
-    if (scesim.model.ScenarioSimulationModel) {
+    if (scesim) {
       const parserErrorField = "parsererror" as keyof typeof scesim.model.ScenarioSimulationModel;
-      if (scesim.model.ScenarioSimulationModel[parserErrorField]) {
+      if (
+        !scesim.model ||
+        !scesim.model.ScenarioSimulationModel ||
+        scesim.model.ScenarioSimulationModel[parserErrorField]
+      ) {
         return TestScenarioFileStatus.ERROR;
       }
       if (scesim.model.ScenarioSimulationModel["@_version"] != CURRENT_SUPPORTED_VERSION) {
@@ -412,10 +418,14 @@ export const TestScenarioEditorInternal = ({
     }
   }, [scesim]);
 
-  console.trace("[TestScenarioEditorInternal] File Status: " + TestScenarioFileStatus[scesimFileStatus]);
+  console.debug("[TestScenarioEditorInternal] File Status: ", TestScenarioFileStatus[scesimFileStatus]);
 
   return (
-    <div ref={testScenarioEditorRootElementRef} data-testid="kie-scesim-editor--container">
+    <div
+      ref={testScenarioEditorRootElementRef}
+      className="kie-scesim-editor--root"
+      data-testid="kie-scesim-editor--container"
+    >
       {(() => {
         switch (scesimFileStatus) {
           case TestScenarioFileStatus.EMPTY:
@@ -462,8 +472,7 @@ export const TestScenarioEditorInternal = ({
 
 export const TestScenarioEditor = React.forwardRef(
   (props: TestScenarioEditorProps, ref: React.Ref<TestScenarioEditorRef>) => {
-    console.trace("[TestScenarioEditor] Component creation ... ");
-    console.trace(props.model);
+    console.debug("[TestScenarioEditor] Component creation ... ", props.model);
 
     const store = useMemo(
       () => createTestScenarioEditorStore(props.model, new ComputedStateCache<Computed>(INITIAL_COMPUTED_CACHE)),

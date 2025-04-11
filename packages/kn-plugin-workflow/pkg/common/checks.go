@@ -22,6 +22,7 @@ package common
 import (
 	"context"
 	"fmt"
+	"github.com/docker/docker/api/types/container"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -29,7 +30,6 @@ import (
 	"strings"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
-	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
 )
 
@@ -98,7 +98,7 @@ func CheckDocker() error {
 		fmt.Println("Error creating docker client")
 		return err
 	}
-	_, err = cli.ContainerList(context.Background(), types.ContainerListOptions{})
+	_, err = cli.ContainerList(context.Background(), container.ListOptions{})
 	if err != nil {
 		fmt.Println("ERROR: Docker not found.")
 		fmt.Println("Download from https://docs.docker.com/get-docker/")

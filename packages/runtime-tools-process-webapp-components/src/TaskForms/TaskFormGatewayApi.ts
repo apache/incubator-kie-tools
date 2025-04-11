@@ -38,22 +38,13 @@ export interface TaskFormGatewayApi {
 export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
   constructor(
     private readonly getCurrentUser: () => User,
-    private baseUrl?: string
+    private transformEndpointBaseUrl: (url: string) => string
   ) {}
-
-  replaceEndpointBaseUrl(endpoint: string) {
-    if (this.baseUrl) {
-      const originalUrl = new URL(endpoint);
-      const newUrl = new URL(originalUrl.pathname, this.baseUrl);
-      return `${newUrl.toString()}${originalUrl.search}`;
-    }
-    return endpoint;
-  }
 
   submitTaskForm(endpoint: string, transition: UserTaskTransitionInfo, headers?: any) {
     return new Promise<any>((resolve, reject) => {
       axios
-        .post(this.replaceEndpointBaseUrl(endpoint), transition, {
+        .post(this.transformEndpointBaseUrl(endpoint), transition, {
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
@@ -74,7 +65,7 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
   fetchTaskFormSchema(endpoint: string, headers?: any) {
     return new Promise<Record<string, any>>((resolve, reject) => {
       axios
-        .get(this.replaceEndpointBaseUrl(endpoint), {
+        .get(this.transformEndpointBaseUrl(endpoint), {
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
@@ -95,7 +86,7 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
   fetchCustomForm(endpoint: string, headers?: any) {
     return new Promise<Form>((resolve, reject) => {
       axios
-        .get(this.replaceEndpointBaseUrl(endpoint), {
+        .get(this.transformEndpointBaseUrl(endpoint), {
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",
@@ -116,7 +107,7 @@ export class TaskFormGatewayApiImpl implements TaskFormGatewayApi {
   fetchTaskTransitionPhases(endpoint: string, headers?: any) {
     return new Promise<string[]>((resolve, reject) => {
       axios
-        .get(this.replaceEndpointBaseUrl(endpoint), {
+        .get(this.transformEndpointBaseUrl(endpoint), {
           headers: {
             "Content-Type": "application/json",
             Accept: "application/json",

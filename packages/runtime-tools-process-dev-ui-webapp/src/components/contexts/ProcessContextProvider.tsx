@@ -34,15 +34,15 @@ export const ProcessContextProvider: React.FC<IOwnProps> = ({ apolloClient, chil
   return (
     <ProcessListContextProvider
       apolloClient={apolloClient}
-      options={{ transformUrls: (url) => appContext.transformQuarkusUrl(url) }}
+      options={{ transformEndpointBaseUrl: (url) => appContext.transformEndpointBaseUrl(url) }}
     >
       <ProcessDetailsContextProvider
         apolloClient={apolloClient}
-        options={{ transformUrls: (url) => appContext.transformQuarkusUrl(url) }}
+        options={{ transformEndpointBaseUrl: (url) => appContext.transformEndpointBaseUrl(url) }}
       >
         <ProcessDefinitionListContextProvider
           apolloClient={apolloClient}
-          options={{ transformUrls: (url) => appContext.transformQuarkusUrl(url) }}
+          options={{ transformEndpointBaseUrl: (url) => appContext.transformEndpointBaseUrl(url) }}
         >
           {children}
         </ProcessDefinitionListContextProvider>

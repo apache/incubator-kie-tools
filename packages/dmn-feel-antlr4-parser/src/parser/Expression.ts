@@ -35,7 +35,9 @@ export class Expression {
   }
 
   public applyChangesToExpressionSource() {
-    this.source.text = { __$$text: this._fullExpression };
+    if (this.source.text) {
+      this.source.text = { __$$text: this._fullExpression };
+    }
   }
 
   public renameIdentifier(identifier: Identifier, newName: String) {

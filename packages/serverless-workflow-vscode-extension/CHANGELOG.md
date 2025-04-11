@@ -15,6 +15,14 @@
    under the License.
 -->
 
+# 10.1.0
+
+- _(No new features)_
+
+# 10.0.0
+
+- _(No new features)_
+
 # 0.32.0 (alpha)
 
 - [KOGITO-9668](https://issues.redhat.com/browse/KOGITO-9668) - SWF Editor - In VSCode the diagram reloads if a user clicks on any area of the canvas

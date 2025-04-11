@@ -48,6 +48,7 @@ export interface DecisionResult {
   result: DmnEvaluationResult;
   messages?: DmnEvaluationMessages[];
   evaluationStatus: DmnEvaluationStatus;
+  evaluationHitIds: Object;
 }
 
 // Result returned from extended-services /jitdmn/dmnresult;

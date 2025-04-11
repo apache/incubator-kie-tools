@@ -381,6 +381,8 @@ public class ScenarioSimulationEditorKogitoWrapper extends MultiPageEditorContai
     }
 
     protected void unmarshallContent(String toUnmarshal) {
+        /* Removing the default namespace introduced in the new Test Scenario editor, that is incompatible with this unmarshaller implementation. */
+        toUnmarshal = toUnmarshal.replace("xmlns=\"https://kie.org/scesim/1.8\"", "");
         SCESIMMainJs.unmarshall(toUnmarshal, SCESIM, getJSInteropUnmarshallCallback());
     }
 

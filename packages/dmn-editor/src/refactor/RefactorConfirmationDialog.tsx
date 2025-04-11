@@ -51,6 +51,7 @@ export function RefactorConfirmationDialog({
       isOpen={isRefactorModalOpen}
       showClose={true}
       onClose={onCancel}
+      title={"Renaming identifier"}
       actions={[
         <Button key="confirm" variant={ButtonVariant.primary} onClick={onConfirmExpressionRefactor}>
           Yes, rename and replace
@@ -58,19 +59,39 @@ export function RefactorConfirmationDialog({
         <Button key="rename" variant={ButtonVariant.secondary} onClick={onConfirmRenameOnly}>
           No, just rename
         </Button>,
-        <Button key="cancel" variant={ButtonVariant.danger} onClick={onCancel}>
+        <Button key="cancel" variant={ButtonVariant.link} onClick={onCancel}>
           Cancel
         </Button>,
       ]}
     >
-      The identifier `{fromName ?? "<undefined>"}` was renamed to `{toName ?? "<undefined>"}`.
+      The identifier{" "}
+      <pre style={{ display: "inline" }}>
+        {'"'}
+        {fromName ?? "<undefined>"}
+        {'"'}
+      </pre>{" "}
+      was renamed to{" "}
+      <pre style={{ display: "inline" }}>
+        {'"'}
+        {toName ?? "<undefined>"}
+        {'"'}
+      </pre>
+      , and it is used by one or more expressions.
       <br />
       <br />
-      This identifier is used in one or more expressions.
-      <br />
-      <br />
-      Would you like to automatically replace all instances of `{fromName ?? "<undefined>"}` with `
-      {toName ?? "<undefined>"}`?
+      Would you like to automatically replace all occurrences of{" "}
+      <pre style={{ display: "inline" }}>
+        {'"'}
+        {fromName ?? "<undefined>"}
+        {'"'}
+      </pre>{" "}
+      with{" "}
+      <pre style={{ display: "inline" }}>
+        {'"'}
+        {toName ?? "<undefined>"}
+        {'"'}
+      </pre>
+      ?
     </Modal>
   );
 }

@@ -55,7 +55,7 @@ export interface ProcessListQueries {
 export class GraphQLProcessListQueries implements ProcessListQueries {
   constructor(
     private readonly client: ApolloClient<any>,
-    private readonly options?: { transformUrls?: (url?: string) => string }
+    private readonly options?: { transformEndpointBaseUrl?: (url?: string) => string | undefined }
   ) {}
 
   getProcessInstances(
@@ -67,8 +67,8 @@ export class GraphQLProcessListQueries implements ProcessListQueries {
     return getProcessInstances(offset, limit, filters, sortBy, this.client).then((processInstances) => {
       return processInstances.map((process) => ({
         ...process,
-        endpoint: this.options?.transformUrls?.(process.endpoint) ?? process.endpoint,
-        serviceUrl: this.options?.transformUrls?.(process.serviceUrl) ?? process.serviceUrl,
+        endpoint: this.options?.transformEndpointBaseUrl?.(process.endpoint) ?? process.endpoint,
+        serviceUrl: this.options?.transformEndpointBaseUrl?.(process.serviceUrl) ?? process.serviceUrl,
       }));
     });
   }

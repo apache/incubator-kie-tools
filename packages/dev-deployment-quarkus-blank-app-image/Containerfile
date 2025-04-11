@@ -22,7 +22,7 @@ FROM --platform=linux/amd64 ${BUILDER_IMAGE_ARG}
 
 USER root
 
-ENV ROOT_PATH=""
+ENV ROOT_PATH="/"
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=$HOME_PATH/app/src/main/resources
 ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=8080
 
@@ -30,7 +30,7 @@ COPY --chown=$USER_ID:$USER_ID dist-dev/quarkus-app $HOME_PATH/app/
 COPY --chown=$USER_ID:$USER_ID dist-dev/settings.xml /tmp/kogito/.m2/settings.xml
 
 # Pre-populate local Maven repository for faster startup
-RUN ./mvnw -Dmaven=3.9.6 clean package -B -nsu --settings /tmp/kogito/.m2/settings.xml -Dmaven.test.skip -Dmaven.repo.local=/tmp/kogito/.m2/repository -Dquarkus.http.non-application-root-path=${ROOT_PATH}/q -Dquarkus.http.root-path=${ROOT_PATH} \
+RUN ./mvnw -Dmaven=3.9.6 clean package -B -nsu --settings /tmp/kogito/.m2/settings.xml -Dmaven.test.skip -Dmaven.repo.local=/tmp/kogito/.m2/repository -Dquarkus.http.root-path=${ROOT_PATH} \
   && chgrp -R 0 $HOME_PATH/app && chmod -R g=u $HOME_PATH/app && chgrp -R 0 /tmp/kogito && chmod -R g=u /tmp/kogito && chgrp -R 0 /.m2 && chmod -R g=u /.m2
 
 USER $USER_ID
@@ -39,4 +39,4 @@ EXPOSE 8080
 
 ENTRYPOINT ["/bin/bash", "-c"]
 
-CMD ["dev-deployment-upload-service && cp -r $HOME_PATH/app/. /tmp/app && cd /tmp/app && ./mvnw -Dmaven=3.9.6 quarkus:dev -o -s=/tmp/kogito/.m2/settings.xml -Dquarkus.analytics.disabled=true -Ddebug=false -Dmaven.repo.local=/tmp/kogito/.m2/repository -Dquarkus.http.non-application-root-path=${ROOT_PATH}/q -Dquarkus.http.root-path=${ROOT_PATH}"]
+CMD ["dev-deployment-upload-service && cp -r $HOME_PATH/app/. /tmp/app && cd /tmp/app && ./mvnw -Dmaven=3.9.6 quarkus:dev -o -s=/tmp/kogito/.m2/settings.xml -Dquarkus.analytics.disabled=true -Ddebug=false -Dmaven.repo.local=/tmp/kogito/.m2/repository -Dquarkus.http.root-path=${ROOT_PATH}"]

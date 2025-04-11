@@ -22,7 +22,6 @@ import { DMN15__tDecision } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { DocumentationLinksFormGroup } from "./DocumentationLinksFormGroup";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
@@ -33,6 +32,7 @@ import { useCallback, useMemo } from "react";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { useRefactor } from "../refactor/RefactorConfirmationDialog";
+import { TextField, TextFieldType } from "./Fields";
 
 export function DecisionProperties({
   decision,
@@ -96,24 +96,20 @@ export function DecisionProperties({
         />
       </FormGroup>
 
-      <FormGroup label="Description">
-        <TextArea
-          aria-label={"Description"}
-          type={"text"}
-          isDisabled={isReadOnly}
-          value={decision.description?.__$$text}
-          onChange={(newDescription) => {
-            setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).description = {
-                __$$text: newDescription,
-              };
-            });
-          }}
-          placeholder={"Enter a description..."}
-          style={{ resize: "vertical", minHeight: "40px" }}
-          rows={6}
-        />
-      </FormGroup>
+      <TextField
+        title={"Description"}
+        type={TextFieldType.TEXT_AREA}
+        isReadOnly={isReadOnly}
+        initialValue={decision.description?.__$$text || ""}
+        onChange={(newDescription) => {
+          setState((state) => {
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).description = {
+              __$$text: newDescription,
+            };
+          });
+        }}
+        placeholder={"Enter a description..."}
+      />
 
       <FormGroup label="ID">
         <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
@@ -121,43 +117,35 @@ export function DecisionProperties({
         </ClipboardCopy>
       </FormGroup>
 
-      <FormGroup label="Question">
-        <TextArea
-          aria-label={"Question"}
-          type={"text"}
-          isDisabled={isReadOnly}
-          value={decision.question?.__$$text}
-          onChange={(newQuestion) => {
-            setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).question = {
-                __$$text: newQuestion,
-              };
-            });
-          }}
-          placeholder={"Enter a question..."}
-          style={{ resize: "vertical", minHeight: "40px" }}
-          rows={6}
-        />
-      </FormGroup>
+      <TextField
+        title={"Question"}
+        type={TextFieldType.TEXT_AREA}
+        isReadOnly={isReadOnly}
+        initialValue={decision.question?.__$$text || ""}
+        onChange={(newQuestion) => {
+          setState((state) => {
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).question = {
+              __$$text: newQuestion,
+            };
+          });
+        }}
+        placeholder={"Enter a question..."}
+      />
 
-      <FormGroup label="Allowed answers">
-        <TextArea
-          aria-label={"Allowed answers"}
-          type={"text"}
-          isDisabled={isReadOnly}
-          value={decision.allowedAnswers?.__$$text}
-          onChange={(newAllowedAnswers) => {
-            setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).allowedAnswers = {
-                __$$text: newAllowedAnswers,
-              };
-            });
-          }}
-          placeholder={"Enter allowed answers..."}
-          style={{ resize: "vertical", minHeight: "40px" }}
-          rows={3}
-        />
-      </FormGroup>
+      <TextField
+        title={"Allowed answers"}
+        type={TextFieldType.TEXT_AREA}
+        isReadOnly={isReadOnly}
+        initialValue={decision.allowedAnswers?.__$$text || ""}
+        onChange={(newAllowedAnswers) => {
+          setState((state) => {
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).allowedAnswers = {
+              __$$text: newAllowedAnswers,
+            };
+          });
+        }}
+        placeholder={"Enter allowed answers..."}
+      />
 
       <DocumentationLinksFormGroup
         isReadOnly={isReadOnly}

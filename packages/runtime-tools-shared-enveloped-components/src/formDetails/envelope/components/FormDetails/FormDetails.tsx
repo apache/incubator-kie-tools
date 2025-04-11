@@ -35,6 +35,7 @@ import { Form, FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist
 import { FormDetailsDriver } from "../../../api/FormDetailsDriver";
 import FormDisplayerContainer from "../../containers/FormDisplayerContainer/FormDisplayerContainer";
 import FormEditor from "../FormEditor/FormEditor";
+import { useFormDetailsContext } from "../contexts/FormDetailsContext";
 
 export interface FormDetailsProps {
   isEnvelopeConnectedToChannel: boolean;
@@ -60,6 +61,7 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
   const [error, setError] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const editorResize = useRef<ResizableContent>({} as ResizableContent);
+  const appContext = useFormDetailsContext();
 
   useEffect(() => {
     if (isEnvelopeConnectedToChannel) {
@@ -79,19 +81,29 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
     }
   }, [driver, formData]);
 
-  const saveForm = useCallback(
-    (form: Form) => {
+  const saveContent = useCallback(
+    (args: { isSource?: boolean; isConfig?: boolean }) => (content: string) => {
       try {
-        setFormContent(form);
-        driver.saveFormContent(formData.name, {
-          configuration: form.configuration,
-          source: form.source,
+        setFormContent((prev) => {
+          if (args.isSource) {
+            const newForm = { ...prev, source: content };
+            driver.saveFormContent(formData.name, newForm);
+            appContext.updateContent(newForm);
+            return newForm;
+          }
+          if (args.isConfig) {
+            const newForm = { ...prev, configuration: { ...prev.configuration, resources: JSON.parse(content) } };
+            driver.saveFormContent(formData.name, newForm);
+            appContext.updateContent(newForm);
+            return newForm;
+          }
+          return prev;
         });
       } catch (error) {
         setError(error);
       }
     },
-    [driver, formData.name]
+    [appContext, driver, formData.name]
   );
 
   const onTabSelect = useCallback((_event: any, tabIndex: number): void => {
@@ -119,10 +131,25 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
     return "";
   }, [formContent]);
 
+  const getFormLanguage = useCallback((args: { formType?: string; isSource?: boolean; isConfig?: boolean }) => {
+    if (args.isSource && args.formType) {
+      if (args.formType.toLowerCase() === "tsx") {
+        return "typescript";
+      }
+      if (args.formType.toLowerCase() === "html") {
+        return "html";
+      }
+    }
+    if (args.isConfig) {
+      return "json";
+    }
+    return "txt";
+  }, []);
+
   return error ? (
     <ServerErrors error={error} variant={"large"} />
   ) : (
-    <div {...componentOuiaProps(ouiaId, "form-details", ouiaSafe)}>
+    <div {...componentOuiaProps(ouiaId, "form-details", ouiaSafe)} style={{ height: "100%" }}>
       {!isLoading ? (
         <Drawer isStatic>
           <DrawerContent
@@ -159,12 +186,9 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
                 >
                   {activeTab === 0 && (
                     <FormEditor
-                      code={getSource()}
-                      formContent={formContent}
-                      setFormContent={setFormContent}
-                      saveFormContent={saveForm}
-                      isSource
-                      formType={getType()}
+                      textContent={getSource()}
+                      saveContent={saveContent({ isSource: true })}
+                      formLanguage={getFormLanguage({ formType: getType(), isSource: true })}
                       ref={editorResize}
                     />
                   )}
@@ -184,11 +208,9 @@ const FormDetails: React.FC<FormDetailsProps & OUIAProps> = ({
                 >
                   {activeTab === 1 && (
                     <FormEditor
-                      code={getConfig()}
-                      formContent={formContent}
-                      setFormContent={setFormContent}
-                      saveFormContent={saveForm}
-                      isConfig
+                      textContent={getConfig()}
+                      saveContent={saveContent({ isConfig: true })}
+                      formLanguage={getFormLanguage({ isConfig: true })}
                       ref={editorResize}
                     />
                   )}
