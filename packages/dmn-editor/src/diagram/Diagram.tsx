@@ -34,10 +34,11 @@ import { buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import {
   EmptyState,
-  EmptyStateActions,
+  EmptyStateIcon,
   EmptyStateBody,
   EmptyStateFooter,
-  EmptyStateIcon,
+  EmptyStateHeader,
+  EmptyStateActions,
   EmptyStateVariant,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
@@ -1372,10 +1373,11 @@ function DmnDiagramWithoutDrd() {
         />
 
         <EmptyState variant={EmptyStateVariant.sm}>
-          <EmptyStateIcon icon={BlueprintIcon} />
-          <Title size={"md"} headingLevel={"h4"}>
-            Empty Diagram
-          </Title>
+          <EmptyStateHeader icon={<EmptyStateIcon icon={BlueprintIcon} />}>
+            <Title size={"md"} headingLevel={"h4"}>
+              Empty Diagram
+            </Title>
+          </EmptyStateHeader>
           <EmptyStateBody>
             The current DMN does not have any Diagram associated with it. Do you want to auto-generate it?
           </EmptyStateBody>
@@ -1503,10 +1505,11 @@ function DmnDiagramEmptyState({
         />
 
         <EmptyState>
-          <EmptyStateIcon icon={MousePointerIcon} />
-          <Title size={"md"} headingLevel={"h4"}>
-            {`This DMN's Diagram is empty`}
-          </Title>
+          <EmptyStateHeader icon={<EmptyStateIcon icon={MousePointerIcon} />}>
+            <Title size={"md"} headingLevel={"h4"}>
+              {`This DMN's Diagram is empty`}
+            </Title>
+          </EmptyStateHeader>
           {isReadOnly ? (
             <>
               <EmptyStateBody>Make sure the DMN has nodes or try opening another file</EmptyStateBody>
