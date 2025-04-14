@@ -49,7 +49,8 @@ export class Editor {
       ? await this.page.locator("#asset-type-select").selectOption("DMN")
       : await this.page.locator("#asset-type-select").selectOption("RULE");
     if (type === AssetType.DECISION) {
-      await this.page.locator("#dmn-select").selectOption("empty.dmn");
+      await this.page.getByLabel("Select a model...").click();
+      await this.page.getByRole("option", { name: "empty.dmn empty.dmn" }).click();
     }
     await this.page.getByRole("button", { name: "Create" }).click();
     await this.selectorPanel.close();

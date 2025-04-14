@@ -20,11 +20,12 @@
 import { expect, test } from "../__fixtures__/base";
 
 test.describe("Copy, Cut and Paste expressions", () => {
-  test.beforeEach(async ({ bee, browserName, clipboard }) => {
+  test.beforeEach(async ({ bee, clipboard }, testInfo) => {
     test.skip(
-      browserName !== "chromium",
+      testInfo.project.name === "webkit",
       "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
     );
+    test.skip(testInfo.project.name === "Google Chrome", "https://github.com/apache/incubator-kie-issues/issues/1873");
 
     // This is required to enable Playwright to access browser Clipboard
     clipboard.use();

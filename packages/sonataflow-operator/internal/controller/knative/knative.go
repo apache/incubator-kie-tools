@@ -22,7 +22,22 @@ package knative
 import (
 	"context"
 	"fmt"
+	"sort"
 	"strings"
+
+	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/klog/v2"
+	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
+
+	"knative.dev/pkg/resolver"
+
+	"knative.dev/pkg/tracker"
+
+	"knative.dev/pkg/injection/clients/dynamicclient"
+
+	"knative.dev/pkg/client/injection/ducks/duck/v1/addressable"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -63,7 +78,33 @@ const (
 	knativeSinkProvided                      = "SinkProvided"
 	KafkaKnativeEventingDeliveryOrder        = "kafka.eventing.knative.dev/delivery.order"
 	KafkaKnativeEventingDeliveryOrderOrdered = "ordered"
+	workflowContainer                        = "workflow"
 )
+
+// noOpTracker no operations tracker for querying operations based on resolver.URIResolver, that don't require any
+// resource tracking but only resolving the URL.
+// Note: knative team was asked, and it's valid to use a dummy tracker at the same time we benefit from the uri resolution.
+// see: resolver.URIResolver
+type noOpTracker struct {
+}
+
+func (n noOpTracker) Track(ref corev1.ObjectReference, obj interface{}) error {
+	return nil
+}
+
+func (n noOpTracker) TrackReference(ref tracker.Reference, obj interface{}) error {
+	return nil
+}
+
+func (n noOpTracker) OnChanged(obj interface{}) {
+}
+
+func (n noOpTracker) GetObservers(obj interface{}) []types.NamespacedName {
+	return nil
+}
+
+func (n noOpTracker) OnDeletedObserver(obj interface{}) {
+}
 
 func GetKnativeServingClient(cfg *rest.Config) (clientservingv1.ServingV1Interface, error) {
 	if servingClient == nil {
@@ -116,8 +157,8 @@ func GetKnativeAvailability(cfg *rest.Config) (*Availability, error) {
 	}
 }
 
-// getRemotePlatform returns the remote platfrom referred by a SonataFlowClusterPlatform
-func getRemotePlatform(pl *operatorapi.SonataFlowPlatform) (*operatorapi.SonataFlowPlatform, error) {
+// GetRemotePlatform returns the remote platform referred by a SonataFlowClusterPlatform if any.
+func GetRemotePlatform(pl *operatorapi.SonataFlowPlatform) (*operatorapi.SonataFlowPlatform, error) {
 	if pl.Status.ClusterPlatformRef != nil {
 		// Find the platform referred by the cluster platform
 		platform := &operatorapi.SonataFlowPlatform{}
@@ -172,12 +213,15 @@ func GetWorkflowSink(workflow *operatorapi.SonataFlow, pl *operatorapi.SonataFlo
 	if workflow.Spec.Sink != nil {
 		return getDestinationWithNamespace(workflow.Spec.Sink, workflow.Namespace), nil
 	}
-	if pl != nil && pl.Spec.Eventing != nil && pl.Spec.Eventing.Broker != nil {
+	if pl == nil {
+		return nil, nil
+	}
+	if pl.Spec.Eventing != nil && pl.Spec.Eventing.Broker != nil {
 		// no sink defined in the workflow, use the platform broker
 		return getDestinationWithNamespace(pl.Spec.Eventing.Broker, pl.Namespace), nil
 	}
 	// Find the remote platform referred by the cluster platform
-	platform, err := getRemotePlatform(pl)
+	platform, err := GetRemotePlatform(pl)
 	if err != nil {
 		return nil, err
 	}
@@ -289,4 +333,106 @@ func CheckKSinkInjected(name, namespace string) (bool, error) {
 		return true, nil
 	}
 	return false, nil // K_SINK has not been injected yet
+}
+
+// GetSinkBindingSinkURI returns the address of the sink referred by a SinkBinding.
+func GetSinkBindingSinkURI(name, namespace string) (*apis.URL, error) {
+	sb := &sourcesv1.SinkBinding{}
+	if err := utils.GetClient().Get(context.TODO(), types.NamespacedName{Name: name, Namespace: namespace}, sb); err != nil {
+		return nil, err
+	}
+	cond := sb.Status.GetCondition(apis.ConditionType(apis.ConditionReady))
+	if cond == nil || cond.Status != corev1.ConditionTrue {
+		return nil, fmt.Errorf("SinkBinding name: %s, namespace: %s is not ready", name, namespace)
+	}
+	return sb.Status.SinkURI, nil
+}
+
+// GetSinkURI returns the address of the sink referred by a Destination.
+func GetSinkURI(destination duckv1.Destination) (*apis.URL, error) {
+	ctx := context.WithValue(context.TODO(), dynamicclient.Key{}, utils.GetDynamicClient())
+	ctx = addressable.WithDuck(ctx)
+	uriResolver := resolver.NewURIResolverFromTracker(ctx, &noOpTracker{})
+	if url, err := uriResolver.URIFromDestinationV1(ctx, destination, nil); err != nil {
+		return nil, err
+	} else {
+		return url, nil
+	}
+}
+
+// CleanupOutdatedRevisions Given a deployed workflow, analyses if the configured deployment model is knative.
+// If that is the case, and the corresponding SinkBinding was created and properly injected, all the previous knative
+// service revisions that weren't properly initialized (i.e. doesn't have the K_SINK injected) will be cleaned-up.
+// Note that revisions in that situation are not valid, since workflows without the K_SINK injected will never pass
+// the health checks, etc.
+func CleanupOutdatedRevisions(ctx context.Context, cfg *rest.Config, workflow *operatorapi.SonataFlow) error {
+	if !workflow.IsKnativeDeployment() {
+		return nil
+	}
+	avail, err := GetKnativeAvailability(cfg)
+	if err != nil {
+		return err
+	}
+	if !avail.Serving || !avail.Eventing {
+		return nil
+	}
+	injected, err := CheckKSinkInjected(workflow.Name, workflow.Namespace)
+	if err != nil {
+		return err
+	}
+	if !injected {
+		return fmt.Errorf("waiting for Sinkbinding K_SINK injection to complete")
+	}
+	opts := &client.ListOptions{
+		LabelSelector: labels.SelectorFromSet(
+			map[string]string{
+				workflowproj.LabelWorkflow:          workflow.Name,
+				workflowproj.LabelWorkflowNamespace: workflow.Namespace,
+			},
+		),
+		Namespace: workflow.Namespace,
+	}
+	revisionList := &servingv1.RevisionList{}
+	if err := utils.GetClient().List(ctx, revisionList, opts); err != nil {
+		return err
+	}
+	// Sort the revisions based on creation timestamp
+	sortRevisions(revisionList.Items)
+	// Clean up previous revisions that do not have K_SINK injected
+	for i := 0; i < len(revisionList.Items)-1; i++ {
+		revision := &revisionList.Items[i]
+		if !containsKSink(revision) {
+			klog.V(log.I).InfoS("Revision %s does not have K_SINK injected and can be cleaned up.", revision.Name)
+			if err := utils.GetClient().Delete(ctx, revision, &client.DeleteOptions{}); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func containsKSink(revision *servingv1.Revision) bool {
+	for _, container := range revision.Spec.PodSpec.Containers {
+		if container.Name == workflowContainer {
+			for _, env := range container.Env {
+				if env.Name == kSink {
+					return true
+				}
+			}
+			break
+		}
+	}
+	return false
+}
+
+type CreationTimestamp []servingv1.Revision
+
+func (a CreationTimestamp) Len() int { return len(a) }
+func (a CreationTimestamp) Less(i, j int) bool {
+	return a[i].CreationTimestamp.Before(&a[j].CreationTimestamp)
+}
+func (a CreationTimestamp) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+
+func sortRevisions(revisions []servingv1.Revision) {
+	sort.Sort(CreationTimestamp(revisions))
 }

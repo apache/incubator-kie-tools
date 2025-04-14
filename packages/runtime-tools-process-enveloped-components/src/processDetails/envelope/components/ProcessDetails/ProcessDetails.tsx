@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { ReactElement, useCallback, useEffect, useState } from "react";
+import React, { ReactElement, useCallback, useEffect, useMemo, useState } from "react";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
@@ -84,7 +84,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   const [displayLabel, setDisplayLabel] = useState<boolean>(false);
   const [displaySuccess, setDisplaySuccess] = useState<boolean>(false);
   const [errorModalOpen, setErrorModalOpen] = useState<boolean>(false);
-  const [confirmationModal, setConfirmationModal] = useState<boolean>(false);
+  const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState<boolean>(false);
   const [variableError, setVariableError] = useState("");
   const [svg, setSvg] = useState<JSX.Element>();
   const [svgError, setSvgError] = useState<string>("");
@@ -95,7 +95,13 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   const [infoModalTitle, setInfoModalTitle] = useState<string>("");
   const [titleType, setTitleType] = useState<string>("");
   const [infoModalContent, setInfoModalContent] = useState<string>("");
-  const handleReload = async (): Promise<void> => {
+
+  const loadJobs = useCallback(async () => {
+    const jobsResponse: Job[] = await driver.jobsQuery(processDetails.id);
+    jobsResponse && setJobs(jobsResponse);
+  }, [processDetails.id, driver]);
+
+  const handleReload = useCallback(async () => {
     setIsLoading(true);
     try {
       const processResponse: ProcessInstance = await driver.processDetailsQuery(processDetails.id);
@@ -106,22 +112,11 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
       setError(errorString);
       setIsLoading(false);
     }
-  };
+  }, [driver, loadJobs, processDetails.id]);
 
-  const loadJobs = useCallback(async () => {
-    const jobsResponse: Job[] = await driver.jobsQuery(processDetails.id);
-    jobsResponse && setJobs(jobsResponse);
-  }, [processDetails.id, driver]);
-
-  const handleSvgErrorModal = (): void => {
-    setSvgErrorModalOpen(!svgErrorModalOpen);
-  };
-
-  const errorModalAction: JSX.Element[] = [
-    <Button data-testid="svg-error-modal" key="confirm-selection" variant="primary" onClick={handleSvgErrorModal}>
-      OK
-    </Button>,
-  ];
+  const handleSvgErrorModal = useCallback(() => {
+    setSvgErrorModalOpen((currentSvgErrorModalOpen) => !currentSvgErrorModalOpen);
+  }, []);
 
   useEffect(() => {
     const handleSvgApi = async (): Promise<void> => {
@@ -140,7 +135,6 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
         setUpdateJson(data.variables);
       }
     };
-    /* istanbul ignore else*/
     if (isEnvelopeConnectedToChannel) {
       handleSvgApi();
       getVariableJSON();
@@ -160,16 +154,14 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   }, [variableError]);
 
   useEffect(() => {
-    /* istanbul ignore else*/
     if (isEnvelopeConnectedToChannel) {
       setData(processDetails);
       loadJobs();
     }
   }, [isEnvelopeConnectedToChannel, loadJobs, processDetails]);
 
-  /* istanbul ignore next */
-  const handleSave = (): void => {
-    driver
+  const handleSave = useCallback(async () => {
+    return driver
       .handleProcessVariableUpdate(data, updateJson)
       .then((updatedJson: Record<string, unknown>) => {
         setUpdateJson(updatedJson);
@@ -179,13 +171,12 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
           setDisplaySuccess(false);
         }, 2000);
       })
-      .catch((errorMessage: string) => {
-        setVariableError(errorMessage);
+      .catch((errorMessage) => {
+        setVariableError(errorMessage?.message ?? "Failed to save process instance changes.");
       });
-  };
+  }, [data, driver, updateJson]);
 
-  const updateVariablesButton = (): ReactElement => {
-    /* istanbul ignore else*/
+  const updateVariablesButton = useMemo(() => {
     if (data.serviceUrl !== null) {
       return (
         <Button
@@ -201,18 +192,18 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
       );
     }
     return <></>;
-  };
+  }, [data.serviceUrl, displayLabel, handleSave]);
 
-  const handleRefresh = (): void => {
+  const handleRefresh = useCallback(() => {
     if (displayLabel) {
-      setConfirmationModal(true);
+      setIsConfirmationModalOpen(true);
     } else {
       handleReload();
     }
-  };
+  }, [displayLabel, handleReload]);
 
-  const refreshButton = (): ReactElement => {
-    return (
+  const refreshButton = useMemo(
+    () => (
       <Button
         variant="plain"
         onClick={() => {
@@ -224,35 +215,40 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
       >
         <SyncIcon />
       </Button>
-    );
-  };
+    ),
+    [handleRefresh]
+  );
 
-  const handleInfoModalToggle = (): void => {
-    setIsInfoModalOpen(!isInfoModalOpen);
-  };
+  const handleInfoModalToggle = useCallback(() => {
+    setIsInfoModalOpen((currentValue) => !currentValue);
+  }, []);
 
-  const onAbortClick = async (processInstance: ProcessInstance): Promise<void> => {
-    try {
-      await driver.handleProcessAbort(processInstance);
-      setTitleType(TitleType.SUCCESS);
-      setInfoModalTitle("Abort operation");
-      setInfoModalContent(
-        `The ${singularProcessLabel.toLowerCase()} ${processInstance.processName} was successfully aborted.`
-      );
-    } catch (abortError) {
-      setTitleType(TitleType.FAILURE);
-      setInfoModalTitle("Abort operation");
-      setInfoModalContent(
-        `Failed to abort ${singularProcessLabel.toLowerCase()} ${processInstance.processName}. Message: ${
-          abortError.message
-        }`
-      );
-    } finally {
-      handleInfoModalToggle();
-    }
-  };
+  const onAbortClick = useCallback(
+    async (processInstance: ProcessInstance): Promise<void> => {
+      try {
+        await driver.handleProcessAbort(processInstance);
+        setTitleType(TitleType.SUCCESS);
+        setInfoModalTitle("Abort operation");
+        setInfoModalContent(
+          `The ${singularProcessLabel.toLowerCase()} ${processInstance.processName} was successfully aborted.`
+        );
+      } catch (abortError) {
+        setTitleType(TitleType.FAILURE);
+        setInfoModalTitle("Abort operation");
+        setInfoModalContent(
+          `Failed to abort ${singularProcessLabel.toLowerCase()} ${processInstance.processName}. Message: ${
+            abortError.message
+          }`
+        );
+      } finally {
+        setIsInfoModalOpen(true);
+        handleReload();
+      }
+    },
+    [driver, singularProcessLabel, handleReload]
+  );
 
-  const abortButton = (): JSX.Element => {
+  const abortButton = useMemo(() => {
     if (
       (data.state === ProcessInstanceState.Active ||
         data.state === ProcessInstanceState.Error ||
@@ -272,10 +268,10 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
         </Button>
       );
     }
-  };
+  }, [data, onAbortClick]);
 
-  const renderProcessDiagram = (): JSX.Element => {
-    return (
+  const processDiagramBlock = useMemo(
+    () => (
       <Flex>
         <FlexItem>
           {svg && svg.props.src && (
@@ -286,11 +282,12 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
           )}
         </FlexItem>
       </Flex>
-    );
-  };
+    ),
+    [diagramPreviewSize?.height, diagramPreviewSize?.width, svg]
+  );
 
-  const renderProcessTimeline = (): JSX.Element => {
-    return (
+  const processTimelineBlock = useMemo(
+    () => (
       <FlexItem>
         <ProcessDetailsTimelinePanel
           data={data}
@@ -299,11 +296,12 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
           omittedProcessTimelineEvents={omittedProcessTimelineEvents}
         />
       </FlexItem>
-    );
-  };
+    ),
+    [data, driver, jobs, omittedProcessTimelineEvents]
+  );
 
-  const renderProcessDetails = (): JSX.Element => {
-    return (
+  const processDetailsBlock = useMemo(
+    () => (
       <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
         <FlexItem>
           <ProcessDetailsPanel processInstance={data} driver={driver} />
@@ -314,11 +312,12 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
           </FlexItem>
         )}
       </Flex>
-    );
-  };
+    ),
+    [data, driver]
+  );
 
-  const renderProcessVariables = (): JSX.Element => {
-    return (
+  const processVariablesBlock = useMemo(
+    () => (
       <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
         {updateJson && Object.keys(updateJson).length > 0 && (
           <FlexItem>
@@ -333,45 +332,45 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
           </FlexItem>
         )}
       </Flex>
-    );
-  };
+    ),
+    [data, displayLabel, displaySuccess, updateJson]
+  );
 
-  const renderPanels = (): JSX.Element => {
+  const panels = useMemo(() => {
     if (svg && svg.props.src) {
       return (
         <Flex direction={{ default: "column" }}>
-          {renderProcessDiagram()}
+          {processDiagramBlock}
           <Flex>
-            {renderProcessDetails()}
-            {renderProcessVariables()}
+            {processDetailsBlock}
+            {processVariablesBlock}
           </Flex>
         </Flex>
       );
     } else {
       return (
         <>
-          {renderProcessDetails()}
-          {renderProcessVariables()}
+          {processDetailsBlock}
+          {processVariablesBlock}
         </>
       );
     }
-  };
+  }, [processDetailsBlock, processVariablesBlock, processDiagramBlock, svg]);
 
-  const handleConfirmationModal = (): void => {
-    setConfirmationModal(!confirmationModal);
-  };
+  const handleConfirm = useCallback(() => {
+    handleReload();
+    setDisplayLabel(false);
+    setIsConfirmationModalOpen(false);
+  }, [handleReload]);
 
-  const handleConfirm = (): void => {
-    window.location.reload();
-    handleConfirmationModal();
-  };
+  const handleCancel = useCallback(() => {
+    setVariableError("");
+    handleReload();
+    setIsConfirmationModalOpen(false);
+  }, [handleReload]);
 
-  const handleCancel = (): void => {
-    handleConfirmationModal();
-  };
-
-  const RenderConfirmationModal = (): JSX.Element => {
-    return (
+  const confirmationModal = useMemo(
+    () => (
       <Modal
         title=""
         header={
@@ -383,8 +382,8 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
           </>
         }
         variant={ModalVariant.small}
-        isOpen={confirmationModal}
-        onClose={handleConfirmationModal}
+        isOpen={isConfirmationModalOpen}
+        onClose={handleCancel}
         actions={[
           <Button key="Ok" variant="primary" id="confirm-button" onClick={handleConfirm}>
             Ok
@@ -398,27 +397,27 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
       >
         This action discards changes made on process variables.
       </Modal>
-    );
-  };
+    ),
+    [handleCancel, handleConfirm, isConfirmationModalOpen]
+  );
 
-  const handleErrorModal = (): void => {
-    setErrorModalOpen(!errorModalOpen);
-  };
-
-  const handleRetry = (): void => {
-    handleErrorModal();
+  const handleErrorModal = useCallback(() => {
     setVariableError("");
-    // tslint:disable-next-line: no-floating-promises
-    handleSave();
-  };
+    setErrorModalOpen(false);
+  }, []);
 
-  const handleDiscard = (): void => {
+  const handleRetry = useCallback(() => {
+    handleErrorModal();
+    handleSave();
+  }, [handleSave, handleErrorModal]);
+
+  const handleDiscard = useCallback(() => {
     handleErrorModal();
     handleRefresh();
-  };
+  }, [handleRefresh, handleErrorModal]);
 
-  const errorModal = (): JSX.Element => {
-    return (
+  const errorModal = useMemo(
+    () => (
       <Modal
         title=""
         header={
@@ -445,8 +444,9 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
       >
         {variableError}
       </Modal>
-    );
-  };
+    ),
+    [errorModalOpen, handleDiscard, handleErrorModal, handleRetry, variableError]
+  );
 
   return (
     <>
@@ -473,9 +473,9 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
                         <OverflowMenuContent isPersistent>
                           <OverflowMenuGroup groupType="button" isPersistent>
                             <>
-                              {updateVariablesButton()}
-                              {abortButton()}
-                              {refreshButton()}
+                              {updateVariablesButton}
+                              {abortButton}
+                              {refreshButton}
                             </>
                           </OverflowMenuGroup>
                         </OverflowMenuContent>
@@ -488,9 +488,9 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
                 direction={{ default: "column", lg: "row" }}
                 className="kogito-process-details--details__marginSpaces"
               >
-                {renderPanels()}
+                {panels}
                 <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
-                  {renderProcessTimeline()}
+                  {processTimelineBlock}
                   <FlexItem>
                     <JobsPanel jobs={jobs} driver={driver} />
                   </FlexItem>
@@ -504,8 +504,8 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
                       </FlexItem>
                     )}
                 </Flex>
-                {errorModal()}
-                {RenderConfirmationModal()}
+                {errorModal}
+                {confirmationModal}
               </Flex>
             </>
           ) : (
@@ -517,7 +517,16 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
             <ProcessDetailsErrorModal
               errorString={svgError}
               errorModalOpen={svgErrorModalOpen}
-              errorModalAction={errorModalAction}
+              errorModalAction={[
+                <Button
+                  data-testid="svg-error-modal"
+                  key="confirm-selection"
+                  variant="primary"
+                  onClick={handleSvgErrorModal}
+                >
+                  OK
+                </Button>,
+              ]}
               handleErrorModal={handleSvgErrorModal}
               label="svg error modal"
               title={setTitle("failure", "Process Diagram")}

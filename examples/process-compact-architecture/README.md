@@ -188,12 +188,12 @@ To help bootstrapping the Infrastructure Services, the example provides a `docke
 
 ```
 PROJECT_VERSION=
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=
+MANAGEMENT_CONSOLE_IMAGE=
 COMPOSE_PROFILES=
 ```
 
 - `PROJECT_VERSION`: Should be set with the current Apache KIE version being used: `PROJECT_VERSION=`
-- `KOGITO_MANAGEMENT_CONSOLE_IMAGE`: Should be set with the Apache KIE Management Console image `docker.io/apache/incubator-kie-kogito-management-console:main`
+- `MANAGEMENT_CONSOLE_IMAGE`: Should be set with the Apache KIE Management Console image `docker.io/apache/incubator-kie-kogito-management-console:main`
 - `COMPOSE_PROFILES`: filters which services will run.
 
 ### Development mode
@@ -202,7 +202,7 @@ For development mode, the `.env` must have the `COMPOSE_PROFILES=development`:
 
 ```
 PROJECT_VERSION=0.0.0
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
+MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
 COMPOSE_PROFILES=development
 ```
 
@@ -212,7 +212,7 @@ For example mode, the `.env` must have the `COMPOSE_PROFILES=example`:
 
 ```
 PROJECT_VERSION=0.0.0
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
+MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
 COMPOSE_PROFILES=example
 ```
 
@@ -222,7 +222,7 @@ For container mode, the `.env` must have the `COMPOSE_PROFILES=container`:
 
 ```
 PROJECT_VERSION=0.0.0
-KOGITO_MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
+MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
 COMPOSE_PROFILES=container
 ```
 

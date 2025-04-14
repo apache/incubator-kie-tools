@@ -145,6 +145,9 @@ module.exports = async (webpackEnv) => {
       },
       allowedHosts: "all",
     },
+    watchOptions: {
+      poll: 1000,
+    },
   });
 };
 

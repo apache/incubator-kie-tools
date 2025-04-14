@@ -81,7 +81,7 @@ services:
 
   management-console:
     container_name: process-user-tasks-subsystem-management-console
-    image: ${KOGITO_MANAGEMENT_CONSOLE_IMAGE}
+    image: ${MANAGEMENT_CONSOLE_IMAGE}
     ports:
       - 8280:8080
     depends_on:

@@ -27,20 +27,22 @@ The `cors-proxy` can be configured via environment variables:
 - CORS_PROXY_ORIGIN: Sets the value of the 'Access-Control-Allow-Origin' header. Defaults to `*`.
 - CORS_PROXY_VERBOSE: Allows the proxy to run in verbose mode... useful to trace requests on development environments. Defaults to `false`
 - CORS_PROXY_USE_HTTP_FOR_HOSTS: Comma-separated list of hosts that should use the `http` protocol for proxied requests. Defaults to an empty list.
+- HTTP_PROXY or HTTPS_PROXY: Url of a proxy that will be used to proxy the requests `cors-proxy` is already proxying.
+- NODE_EXTRA_CA_CERTS: This is used by NodeJS itself to add cartificates to the chain. See more at https://nodejs.org/api/cli.html#node_extra_ca_certsfile
 
 For example:
 
 ```bash
-$ export CORS_PROXY_HTTP_PORT=8080
-$ export CORS_PROXY_ORIGIN=*
-$ export CORS_PROXY_VERBOSE=false
-$ export CORS_PROXY_USE_HTTP_FOR_HOSTS="localhost:8080,localhost:8081"
+export CORS_PROXY_HTTP_PORT=8080
+export CORS_PROXY_ORIGIN=*
+export CORS_PROXY_VERBOSE=false
+export CORS_PROXY_USE_HTTP_FOR_HOSTS="localhost:8080,localhost:8081"
 ```
 
 # Build
 
 ```bash
-$ pnpm -F @kie-tools/cors-proxy... build:prod
+pnpm -F @kie-tools/cors-proxy... build:prod
 ```
 
 # Running `cors-proxy`
@@ -48,25 +50,53 @@ $ pnpm -F @kie-tools/cors-proxy... build:prod
 After building the package and setting up the environment variables, in the package folder run the following command:
 
 ```bash
-$ node ./dist/index.js
+node ./dist/index.js
 ```
 
 # Running `cors-proxy` in dev mode.
 
 ```bash
-$ pnpm -F @kie-tools/cors-proxy start
+pnpm -F @kie-tools/cors-proxy start
 ```
 
 You can also use the following envs to configure `cors-proxy` when starting in dev-mode:
 
 ```bash
-$ export CORS_PROXY__port=*
-$ export CORS_PROXY__origin=*
-$ export CORS_PROXY__verbose=false
-$ export CORS_PROXY__useHttpForHosts="localhost:8080,localhost:8081"
+export CORS_PROXY__port=*
+export CORS_PROXY__origin=*
+export CORS_PROXY__verbose=false
+export CORS_PROXY__useHttpForHosts="localhost:8080,localhost:8081"
 ```
 
 Default values can be found [here](./env/index.js).
+
+# Running `cors-proxy` with a proxy
+
+Have a remote or local proxy service for testing. We recommend [mitmproxy](https://mitmproxy.org/), as it's local and easy to configure.
+
+Start it with: (you might need sudo)
+
+```bash
+mitmweb --set listen_port=<PORT> --showhost
+```
+
+Now set the HTTPS_PROXY and NODE_EXTRA_CA_CERTS environment variables before starting the `cors-proxy` service:
+
+```bash
+export HTTPS_PROXY=http://localhost:<PORT
+export NODE_EXTRA_CA_CERTS=~/.mitmproxy/mitmproxy-ca-cert.pem
+```
+
+> `~/.mitmproxy/mitmproxy-ca-cert.pem` is the default location for the certifcate. For more information check https://docs.mitmproxy.org/stable/concepts-certificates/#about-certificates
+
+Set the rest of the environment variables and start the `cors-proxy` service:
+
+```bash
+export CORS_PROXY__port=*
+export CORS_PROXY__origin=*
+
+pnpm -F @kie-tools/cors-proxy start
+```
 
 ---
 

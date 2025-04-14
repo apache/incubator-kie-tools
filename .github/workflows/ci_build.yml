@@ -84,6 +84,7 @@ jobs:
 
           bun ./.github/supporting-files/ci/build-partitioning/build_partitioning.ts \
             --outputPath='/tmp/partitions.json' \
+            --tmpPartitionFilterPath='/tmp/partition-filter.txt' \
             --forceFull='${{ !github.event.pull_request }}' \
             --baseSha='${{ steps.checkout_pr.outputs.base_sha }}' \
             --headSha='${{steps.checkout_pr.outputs.head_sha }}' \

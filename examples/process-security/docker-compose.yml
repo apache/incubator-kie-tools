@@ -173,7 +173,7 @@ services:
 
   managment-console:
     container_name: process-security-management-console
-    image: ${KOGITO_MANAGEMENT_CONSOLE_IMAGE}
+    image: ${MANAGEMENT_CONSOLE_IMAGE}
     profiles: ["container"]
     ports:
       - "8380:8080"

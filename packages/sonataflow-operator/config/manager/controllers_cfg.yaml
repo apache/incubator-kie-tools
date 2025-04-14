@@ -30,6 +30,8 @@ jobsServiceEphemeralImageTag: "docker.io/apache/incubator-kie-kogito-jobs-servic
 # The Data Index image to use, if empty the operator will use the default Apache Community one based on the current operator's version
 dataIndexPostgreSQLImageTag: "docker.io/apache/incubator-kie-kogito-data-index-postgresql:main"
 dataIndexEphemeralImageTag: "docker.io/apache/incubator-kie-kogito-data-index-ephemeral:main"
+# The Kogito PostgreSQL DB Migrator image to use (TBD: to replace with apache image)
+dbMigratorToolImageTag: "docker.io/apache/kie-kogito-db-migrator-tool:main"
 # SonataFlow base builder image used in the internal Dockerfile to build workflow applications in preview profile
 # Order of precedence is:
 # 1. SonataFlowPlatform in the given namespace

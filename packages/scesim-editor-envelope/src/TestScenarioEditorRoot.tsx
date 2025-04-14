@@ -27,9 +27,6 @@ import {
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ResourceContent, SearchType, WorkspaceChannelApi, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
-import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { domParser } from "@kie-tools/xml-parser-ts";
 import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";
@@ -52,7 +49,6 @@ export type TestScenarioEditorRootProps = {
 };
 
 export type TestScenarioEditorRootState = {
-  error: Error | undefined;
   externalModelsByNamespace: TestScenarioEditor.ExternalDmnsIndex;
   externalModelsManagerDoneBootstraping: boolean;
   isReadOnly: boolean;
@@ -74,7 +70,6 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     props.exposing(this);
     this.testScenarioEditorRef = React.createRef();
     this.state = {
-      error: undefined,
       externalModelsByNamespace: new Map(),
       externalModelsManagerDoneBootstraping: false,
       isReadOnly: props.isReadOnly,
@@ -115,7 +110,8 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: string,
     content: string
   ): Promise<void> {
-    const marshaller = this.getMarshaller(content);
+    const marshaller = getMarshaller(content || EMPTY_ONE_EIGHT);
+    const scesimModel = marshaller.parser.parse();
 
     // Save stack
     let savedStackPointer: SceSimModel[] = [];
@@ -124,11 +120,21 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
     this.setState((prev) => {
       savedStackPointer = [...prev.stack];
       return {
-        stack: [marshaller.parser.parse()],
+        stack: [scesimModel],
         openFileNormalizedPosixPathRelativeToTheWorkspaceRoot,
         pointer: 0,
       };
     });
+
+    if (
+      !scesimModel ||
+      !scesimModel.ScenarioSimulationModel ||
+      scesimModel.ScenarioSimulationModel["parsererror" as keyof typeof scesimModel.ScenarioSimulationModel]
+    ) {
+      throw new Error(
+        "Impossibile to correctly parse the provided scesim file. Most likely, the XML structure of the file is invalid."
+      );
+    }
 
     // Wait the external manager models to load.
     await this.externalModelsManagerDoneBootstraping.promise;
@@ -167,20 +173,6 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
 
   public get model(): SceSimModel | undefined {
     return this.state.stack[this.state.pointer];
-  }
-
-  // Internal methods
-
-  private getMarshaller(content: string) {
-    try {
-      return getMarshaller(content || EMPTY_ONE_EIGHT);
-    } catch (e) {
-      this.setState((s) => ({
-        ...s,
-        error: e,
-      }));
-      throw e;
-    }
   }
 
   private setExternalModelsByNamespace = (externalModelsByNamespace: TestScenarioEditor.ExternalDmnsIndex) => {
@@ -310,7 +302,6 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
   public render() {
     return (
       <>
-        {this.state.error && <TestScenarioMarshallerFallbackError error={this.state.error} />}
         {this.model && (
           <>
             <TestScenarioEditor.TestScenarioEditor
@@ -365,14 +356,11 @@ function ExternalModelsManager({
   externalModelsManagerDoneBootstraping: PromiseImperativeHandle<void>;
 }) {
   const targetNamespace = useMemo(() => {
-    if (model.ScenarioSimulationModel.settings.type?.__$$text !== "DMN") {
-      return null;
-    }
-    if (model.ScenarioSimulationModel.settings.dmnNamespace?.__$$text) {
-      return model.ScenarioSimulationModel.settings.dmnNamespace?.__$$text;
+    if (model.ScenarioSimulationModel?.settings?.dmnNamespace?.__$$text) {
+      return model.ScenarioSimulationModel.settings.dmnNamespace.__$$text;
     }
     return null;
-  }, [model.ScenarioSimulationModel.settings]);
+  }, [model.ScenarioSimulationModel?.settings?.dmnNamespace]);
 
   const [externalUpdatesCount, setExternalUpdatesCount] = useState(0);
 
@@ -502,19 +490,4 @@ function ExternalModelsManager({
   ]);
 
   return <></>;
-}
-
-function TestScenarioMarshallerFallbackError({ error }: { error: Error }) {
-  return (
-    <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
-      <EmptyState style={{ maxWidth: "1280px" }}>
-        <EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />
-        <Title size={"lg"} headingLevel={"h4"}>
-          Unable to open file.
-        </Title>
-        <br />
-        <EmptyStateBody>Error details: {error.message}</EmptyStateBody>
-      </EmptyState>
-    </Flex>
-  );
 }

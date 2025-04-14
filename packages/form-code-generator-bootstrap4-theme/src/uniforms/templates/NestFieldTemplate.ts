@@ -75,12 +75,10 @@ export class NestFieldTemplate implements FormElementTemplate<FormInputContainer
         code: this.nestFieldSetValueFromModelTemplate({ props: props }),
         requiredCode: setValueFromModelRequiredCode,
       },
-      writeValueToModelCode: props.disabled
-        ? undefined
-        : {
-            code: this.nestFieldWriteValueToModelTemplate({ props: props }),
-            requiredCode: writeValueToModelRequiredCode,
-          },
+      writeValueToModelCode: {
+        code: this.nestFieldWriteValueToModelTemplate({ props: props }),
+        requiredCode: writeValueToModelRequiredCode,
+      },
     };
   }
 }

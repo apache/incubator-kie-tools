@@ -21,7 +21,6 @@ import { useCallback, useMemo, useState } from "react";
 import { basename } from "path";
 
 import { Checkbox } from "@patternfly/react-core/dist/esm/components/Checkbox";
-import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/esm/components/FormSelect";
 import { HelpIcon } from "@patternfly/react-icons/dist/esm/icons/help-icon";
 import { Icon } from "@patternfly/react-core/dist/esm/components/Icon/Icon";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
@@ -39,6 +38,7 @@ import { ExternalDmn } from "../TestScenarioEditor";
 import { useTestScenarioEditor } from "../TestScenarioEditorContext";
 
 import "./TestScenarioDrawerSettingsPanel.css";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 
 function TestScenarioDrawerSettingsPanel() {
   const { i18n } = useTestScenarioEditorI18n();
@@ -88,8 +88,10 @@ function TestScenarioDrawerSettingsPanel() {
         }
         onRequestExternalModelByPath(selectedDmnPathRelativeToThisScesim)
           .then((externalDmnModel) => {
-            console.trace("[TestScenarioDrawerSettingsPanel] The below external DMN model have been loaded");
-            console.trace(externalDmnModel);
+            console.debug(
+              "[TestScenarioDrawerSettingsPanel] The below external DMN model have been loaded ",
+              externalDmnModel
+            );
 
             if (canceled.get() || !externalDmnModel) {
               setSelectedDmnModel(undefined);
@@ -140,7 +142,7 @@ function TestScenarioDrawerSettingsPanel() {
       }),
     [testScenarioEditorStoreApi]
   );
-
+  const [isModelSelectOpen, setModelSelectOpen] = useState(false);
   return (
     <>
       <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
@@ -168,32 +170,46 @@ function TestScenarioDrawerSettingsPanel() {
           <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
             {i18n.drawer.settings.dmnModel}
           </Title>
-          <FormSelect
+          <Select
+            variant={SelectVariant.single}
             aria-label="form-select-input"
             className={"kie-scesim-editor-drawer-settings--form-select"}
             ouiaId="BasicFormSelect"
-            onChange={(path) => {
+            onToggle={setModelSelectOpen}
+            isOpen={isModelSelectOpen}
+            maxHeight={"350px"}
+            onSelect={(e, path) => {
               if (typeof path !== "string") {
                 throw new Error(`Invalid path for an included model ${JSON.stringify(path)}`);
               }
               setSelectedDmnPathRelativeToThisScesim(path);
-              console.trace(path);
+              console.debug("[TestScenarioDrawerSettingsPanel] Selected path: ", path);
+              setModelSelectOpen(false);
             }}
             validated={isSelectedDmnValid ? undefined : "error"}
-            value={isSelectedDmnValid ? settingsModel.dmnFilePath?.__$$text : undefined}
+            selections={isSelectedDmnValid ? settingsModel.dmnFilePath?.__$$text : undefined}
           >
-            {!selectedDmnModel && (
-              <FormSelectOption key={undefined} isDisabled label={i18n.drawer.settings.dmnModelReferenceError} />
-            )}
-            {((allDmnModelNormalizedPosixRelativePaths?.length ?? 0) > 0 &&
-              allDmnModelNormalizedPosixRelativePaths?.map((normalizedPosixPathRelativeToTheOpenFile) => (
-                <FormSelectOption
-                  key={normalizedPosixPathRelativeToTheOpenFile}
-                  value={normalizedPosixPathRelativeToTheOpenFile}
-                  label={basename(normalizedPosixPathRelativeToTheOpenFile)}
-                />
-              ))) || <FormSelectOption key={undefined} isDisabled label={i18n.creationPanel.dmnNoPresent} />}
-          </FormSelect>
+            {!selectedDmnModel
+              ? [
+                  <SelectOption key={undefined} isDisabled>
+                    {i18n.drawer.settings.dmnModelReferenceError}
+                  </SelectOption>,
+                ]
+              : ((allDmnModelNormalizedPosixRelativePaths?.length ?? 0) > 0 &&
+                  allDmnModelNormalizedPosixRelativePaths?.map((normalizedPosixPathRelativeToTheOpenFile) => (
+                    <SelectOption
+                      key={normalizedPosixPathRelativeToTheOpenFile}
+                      value={normalizedPosixPathRelativeToTheOpenFile}
+                      description={normalizedPosixPathRelativeToTheOpenFile}
+                    >
+                      {basename(normalizedPosixPathRelativeToTheOpenFile)}
+                    </SelectOption>
+                  ))) || [
+                  <SelectOption key={"none-dmn"} isDisabled={true} description={""} value={undefined}>
+                    {i18n.creationPanel.dmnNoPresent}
+                  </SelectOption>,
+                ]}
+          </Select>
           <Title className={"kie-scesim-editor-drawer-settings--title"} headingLevel={"h6"}>
             {i18n.drawer.settings.dmnName}
           </Title>

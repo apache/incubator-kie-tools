@@ -101,8 +101,9 @@ function createChildrenTestScenarioObjects(
       const currentItemDefinition = allItemDefinitionsMap.has(itemComponent?.typeRef?.__$$text ?? "")
         ? allItemDefinitionsMap.get(itemComponent?.typeRef?.__$$text ?? "")
         : itemComponent;
+      const isCollection = itemComponent["@_isCollection"] ?? false;
 
-      if (!currentItemDefinition?.typeRef) {
+      if (!currentItemDefinition?.typeRef && !isCollection) {
         const ns = createChildrenTestScenarioObjects(
           currentItemDefinition,
           allItemDefinitionsMap,
@@ -112,7 +113,6 @@ function createChildrenTestScenarioObjects(
         nestedChildren.push(...ns);
       }
 
-      const isCollection = itemComponent["@_isCollection"] ?? false;
       const name = itemComponent["@_name"];
       const className = isCollection ? "java.util.List" : itemComponent.typeRef?.__$$text;
 

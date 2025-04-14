@@ -21,6 +21,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/manager"
+
 	"github.com/magiconair/properties"
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/api/apps/v1"
@@ -69,6 +71,8 @@ func Test_CheckDeploymentModelIsKnative(t *testing.T) {
 }
 
 func Test_CheckPodTemplateChangesReflectDeployment(t *testing.T) {
+	manager.InitializeSFCWorker(manager.SonataFlowControllerWorkerSize)
+	manager.SetOperatorStartTime()
 	workflow := test.GetBaseSonataFlowWithPreviewProfile(t.Name())
 
 	client := test.NewSonataFlowClientBuilder().

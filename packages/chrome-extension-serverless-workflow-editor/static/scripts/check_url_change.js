@@ -30,4 +30,4 @@ var _wr = function (type) {
     return rv;
   };
 };
-history.replaceState = _wr("replaceState");
+history.pushState = _wr("pushState");

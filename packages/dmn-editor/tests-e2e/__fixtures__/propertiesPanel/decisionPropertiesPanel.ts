@@ -27,6 +27,8 @@ import { DescriptionProperties } from "./parts/descriptionProperties";
 import { DataTypeProperties } from "./parts/dataTypeProperties";
 import { DataType } from "../dataTypes";
 import { NameProperties } from "./parts/nameProperties";
+import { QuestionProperties } from "./parts/questionProperties";
+import { AllowedAnswersProperties } from "./parts/allowedAnswersProperties";
 
 export class DecisionPropertiesPanel extends PropertiesPanelBase {
   private nameProperties: NameProperties;
@@ -35,6 +37,8 @@ export class DecisionPropertiesPanel extends PropertiesPanelBase {
   private documentationProperties: DocumentationProperties;
   private fontProperties: FontProperties;
   private shapeProperties: ShapeProperties;
+  private questionProperties: QuestionProperties;
+  private allowedAnswersProperties: AllowedAnswersProperties;
 
   constructor(
     public diagram: Diagram,
@@ -47,6 +51,8 @@ export class DecisionPropertiesPanel extends PropertiesPanelBase {
     this.documentationProperties = new DocumentationProperties(this.panel(), page);
     this.fontProperties = new FontProperties(this.panel());
     this.shapeProperties = new ShapeProperties(this.panel());
+    this.questionProperties = new QuestionProperties(this.panel());
+    this.allowedAnswersProperties = new AllowedAnswersProperties(this.panel());
   }
 
   public async setName(args: { newName: string }) {
@@ -78,21 +84,19 @@ export class DecisionPropertiesPanel extends PropertiesPanelBase {
   }
 
   public async setQuestion(args: { newQuestion: string }) {
-    await this.panel().getByPlaceholder("Enter a question...").fill(args.newQuestion);
-    await this.panel().getByPlaceholder("Enter a question...").press("Tab");
+    await this.questionProperties.setQuestion({ ...args });
   }
 
   public async getQuestion() {
-    return await this.panel().getByPlaceholder("Enter a question...").inputValue();
+    return await this.questionProperties.getQuestion();
   }
 
   public async setAllowedAnswers(args: { newAllowedAnswers: string }) {
-    await this.panel().getByPlaceholder("Enter allowed answers...").fill(args.newAllowedAnswers);
-    await this.panel().getByPlaceholder("Enter allowed answers...").press("Tab");
+    await this.allowedAnswersProperties.setAllowedAnswers({ ...args });
   }
 
   public async getAllowedAnswers() {
-    return await this.panel().getByPlaceholder("Enter allowed answers...").inputValue();
+    return await this.allowedAnswersProperties.getAllowedAnswers();
   }
 
   public async setFont(args: {

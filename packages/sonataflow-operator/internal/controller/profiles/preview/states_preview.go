@@ -22,12 +22,9 @@ package preview
 import (
 	"context"
 	"fmt"
-	"sort"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/labels"
-	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
@@ -43,12 +40,6 @@ import (
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/constants"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj"
-)
-
-const (
-	kSink             = "K_SINK"
-	workflowContainer = "workflow"
 )
 
 type newBuilderState struct {
@@ -63,7 +54,7 @@ func (h *newBuilderState) CanReconcile(workflow *operatorapi.SonataFlow) bool {
 }
 
 func (h *newBuilderState) Do(ctx context.Context, workflow *operatorapi.SonataFlow) (ctrl.Result, []client.Object, error) {
-	pl, err := platform.GetActivePlatform(ctx, h.C, workflow.Namespace)
+	pl, err := platform.GetActivePlatform(ctx, h.C, workflow.Namespace, true)
 	if err != nil {
 		if errors.IsNotFound(err) {
 			workflow.Status.Manager().MarkFalse(api.BuiltConditionType, api.WaitingForPlatformReason,
@@ -198,7 +189,7 @@ func (h *deployWithBuildWorkflowState) Do(ctx context.Context, workflow *operato
 	// Guard to avoid errors while getting a new builder manager.
 	// Maybe we can do typed errors in the buildManager and
 	// have something like sonataerr.IsPlatformNotFound(err) instead.
-	_, err := platform.GetActivePlatform(ctx, h.C, workflow.Namespace)
+	_, err := platform.GetActivePlatform(ctx, h.C, workflow.Namespace, true)
 	if err != nil {
 		workflow.Status.Manager().MarkFalse(api.RunningConditionType, api.WaitingForPlatformReason,
 			"No active Platform for namespace %s so the resWorkflowDef cannot be deployed. Waiting for an active platform", workflow.Namespace)
@@ -238,7 +229,10 @@ func (h *deployWithBuildWorkflowState) Do(ctx context.Context, workflow *operato
 
 func (h *deployWithBuildWorkflowState) PostReconcile(ctx context.Context, workflow *operatorapi.SonataFlow) error {
 	// Clean up the outdated Knative revisions, if any
-	return h.cleanupOutdatedRevisions(ctx, workflow)
+	if err := knative.CleanupOutdatedRevisions(ctx, h.Cfg, workflow); err != nil {
+		return fmt.Errorf("failied to cleanup workflow outdated revisions, workflow: %s, namespace: %s - %v", workflow.Name, workflow.Namespace, err)
+	}
+	return nil
 }
 
 // isWorkflowChanged checks whether the contents of .spec.flow of the given workflow has changed.
@@ -253,76 +247,4 @@ func (h *deployWithBuildWorkflowState) isWorkflowChanged(workflow *operatorapi.S
 		return false, err
 	}
 	return actualCRC != workflow.Status.FlowCRC, nil
-}
-
-func (h *deployWithBuildWorkflowState) cleanupOutdatedRevisions(ctx context.Context, workflow *operatorapi.SonataFlow) error {
-	if !workflow.IsKnativeDeployment() {
-		return nil
-	}
-	avail, err := knative.GetKnativeAvailability(h.Cfg)
-	if err != nil {
-		return err
-	}
-	if !avail.Serving || !avail.Eventing {
-		return nil
-	}
-	injected, err := knative.CheckKSinkInjected(workflow.Name, workflow.Namespace)
-	if err != nil {
-		return err
-	}
-	if !injected {
-		return fmt.Errorf("waiting for Sinkbinding K_SINK injection to complete")
-	}
-	opts := &client.ListOptions{
-		LabelSelector: labels.SelectorFromSet(
-			map[string]string{
-				workflowproj.LabelWorkflow:          workflow.Name,
-				workflowproj.LabelWorkflowNamespace: workflow.Namespace,
-			},
-		),
-		Namespace: workflow.Namespace,
-	}
-	revisionList := &servingv1.RevisionList{}
-	if err := h.C.List(ctx, revisionList, opts); err != nil {
-		return err
-	}
-	// Sort the revisions based on creation timestamp
-	sortRevisions(revisionList.Items)
-	// Clean up previous revisions that do not have K_SINK injected
-	for i := 0; i < len(revisionList.Items)-1; i++ {
-		revision := &revisionList.Items[i]
-		if !containsKSink(revision) {
-			klog.V(log.I).InfoS("Revision %s does not have K_SINK injected and can be cleaned up.", revision.Name)
-			if err := h.C.Delete(ctx, revision, &client.DeleteOptions{}); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
-}
-
-func containsKSink(revision *servingv1.Revision) bool {
-	for _, container := range revision.Spec.PodSpec.Containers {
-		if container.Name == workflowContainer {
-			for _, env := range container.Env {
-				if env.Name == kSink {
-					return true
-				}
-			}
-			break
-		}
-	}
-	return false
-}
-
-type CreationTimestamp []servingv1.Revision
-
-func (a CreationTimestamp) Len() int { return len(a) }
-func (a CreationTimestamp) Less(i, j int) bool {
-	return a[i].CreationTimestamp.Before(&a[j].CreationTimestamp)
-}
-func (a CreationTimestamp) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
-
-func sortRevisions(revisions []servingv1.Revision) {
-	sort.Sort(CreationTimestamp(revisions))
 }
