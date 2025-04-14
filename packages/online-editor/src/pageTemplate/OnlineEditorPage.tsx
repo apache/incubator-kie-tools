@@ -46,7 +46,11 @@ export function OnlineEditorPage(props: { children?: React.ReactNode; onKeyDown?
         <Masthead aria-label={"Page header"} display={{ default: "inline" }}>
           <MastheadMain style={{ justifyContent: "space-between" }}>
             <PageHeaderToolsItem className={"kie-sandbox--logo"}>
-              <Flex justifyContent={{ default: "justifyContentFlexEnd" }} flexWrap={{ default: "nowrap" }}>
+              <Flex
+                justifyContent={{ default: "justifyContentFlexEnd" }}
+                flexWrap={{ default: "nowrap" }}
+                gap={{ default: "gapMd" }}
+              >
                 <MastheadBrand
                   component="a"
                   onClick={() => history.push({ pathname: routes.home.path({}) })}

@@ -21,7 +21,7 @@ import React, { useEffect, useMemo } from "react";
 import { EmbeddedEditorRef, useDirtyState } from "@kie-tools-core/editor/dist/embedded";
 import { WorkspaceFile, useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
-import { FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import OutlinedClockIcon from "@patternfly/react-icons/dist/js/icons/outlined-clock-icon";
@@ -61,7 +61,7 @@ export function FileStatus(props: Props) {
   }, [isSaved]);
 
   return (
-    <>
+    <Flex gap={{ default: "gapMd" }}>
       <FlexItem>
         {(isEdited && (
           <Tooltip content={"Saving in memory..."} position={"bottom"}>
@@ -72,7 +72,7 @@ export function FileStatus(props: Props) {
                 data-testid="is-saving-in-memory-indicator"
                 component={TextVariants.small}
               >
-                <Icon size={"sm"}>
+                <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
                   <OutlinedClockIcon style={{ margin: 0 }} />
                 </Icon>
               </Text>
@@ -87,7 +87,7 @@ export function FileStatus(props: Props) {
                 data-testid="is-saved-in-memory-indicator"
                 component={TextVariants.small}
               >
-                <Icon size={"sm"}>
+                <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
                   <DesktopIcon style={{ margin: 0 }} />
                 </Icon>
               </Text>
@@ -105,7 +105,7 @@ export function FileStatus(props: Props) {
                 data-testid="is-writing-indicator"
                 component={TextVariants.small}
               >
-                <Icon size={"sm"}>
+                <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
                   <OutlinedClockIcon style={{ margin: 0 }} />
                 </Icon>
               </Text>
@@ -120,7 +120,7 @@ export function FileStatus(props: Props) {
                 data-testid="is-written-indicator"
                 component={TextVariants.small}
               >
-                <Icon size={"sm"}>
+                <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
                   <OutlinedHddIcon style={{ margin: 0 }} />
                 </Icon>
               </Text>
@@ -128,6 +128,6 @@ export function FileStatus(props: Props) {
           </Tooltip>
         )}
       </FlexItem>
-    </>
+    </Flex>
   );
 }
