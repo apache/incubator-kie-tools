@@ -34,7 +34,9 @@ export interface ProcessFormGatewayApi extends ProcessFormDriver {
 
 export class ProcessFormGatewayApiImpl implements ProcessFormGatewayApi {
   private businessKey: string;
-  constructor() {
+  private token?: string;
+  constructor(token?: string) {
+    this.token = token;
     this.businessKey = "";
   }
 
@@ -47,18 +49,18 @@ export class ProcessFormGatewayApiImpl implements ProcessFormGatewayApi {
   }
 
   getProcessFormSchema(processDefinitionData: ProcessDefinition): Promise<Record<string, any>> {
-    return getProcessSchema(processDefinitionData);
+    return getProcessSchema(processDefinitionData, this.token);
   }
 
   getCustomForm(processDefinitionData: ProcessDefinition): Promise<Form> {
-    return getCustomForm(processDefinitionData);
+    return getCustomForm(processDefinitionData, this.token);
   }
 
   startProcess(processDefinitionData: ProcessDefinition, formData: any): Promise<string> {
-    return startProcessInstance(processDefinitionData, formData, this.businessKey);
+    return startProcessInstance(processDefinitionData, formData, this.businessKey, this.token);
   }
 
   getProcessDefinitionSvg(processDefinition: ProcessDefinition): Promise<string> {
-    return getProcessSvg(processDefinition);
+    return getProcessSvg(processDefinition, this.token);
   }
 }

@@ -22,10 +22,13 @@ import { ProcessFormGatewayApiImpl } from "./ProcessFormGatewayApi";
 
 interface ProcessFormContextProviderProps {
   children: ReactElement;
+  token?: string;
 }
 
-const ProcessFormContextProvider: React.FC<ProcessFormContextProviderProps> = ({ children }) => {
-  return <ProcessFormContext.Provider value={new ProcessFormGatewayApiImpl()}>{children}</ProcessFormContext.Provider>;
+const ProcessFormContextProvider: React.FC<ProcessFormContextProviderProps> = ({ children, token }) => {
+  return (
+    <ProcessFormContext.Provider value={new ProcessFormGatewayApiImpl(token)}>{children}</ProcessFormContext.Provider>
+  );
 };
 
 export default ProcessFormContextProvider;

@@ -392,7 +392,7 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
               <ProcessListContextProvider apolloClient={apolloClient} options={providerOptions}>
                 <ProcessDetailsContextProvider apolloClient={apolloClient} options={providerOptions}>
                   <ProcessDefinitionsListContextProvider apolloClient={apolloClient} options={providerOptions}>
-                    <ProcessFormContextProvider>
+                    <ProcessFormContextProvider token={accessToken}>
                       <JobsManagementContextProvider apolloClient={apolloClient}>
                         <TaskInboxContextProvider apolloClient={apolloClient}>
                           <TaskFormContextProvider options={providerOptions}>{props.children}</TaskFormContextProvider>

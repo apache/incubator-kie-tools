@@ -39,7 +39,6 @@ import {
 } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { ApolloClient } from "apollo-client";
 import { buildProcessListWhereArgument } from "./QueryUtils";
-import axios from "axios";
 
 export const getProcessInstances = async (
   offset: number,
@@ -473,43 +472,6 @@ export const getJobsWithFilters = async (
   }
 };
 
-export const getForms = (baseUrl: string, formFilter: string[]): Promise<FormInfo[]> => {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(new URL(`forms/list`, baseUrl).toString(), {
-        params: {
-          names: formFilter.join(";"),
-        },
-      })
-      .then((result) => {
-        resolve(result.data);
-      })
-      .catch((error) => reject(error));
-  });
-};
-
-export const getFormContent = (baseUrl: string, formName: string): Promise<Form> => {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(new URL(`forms/${formName}`, baseUrl).toString())
-      .then((result) => {
-        resolve(result.data);
-      })
-      .catch((error) => reject(error));
-  });
-};
-
-export const saveFormContent = (baseUrl: string, formName: string, content: FormContent): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    axios
-      .post(new URL(`forms/${formName}`, baseUrl).toString(), content)
-      .then((result) => {
-        resolve();
-      })
-      .catch((error) => reject(error));
-  });
-};
-
 export const getProcessDefinitions = (client: ApolloClient<any>): Promise<ProcessDefinition[]> => {
   return new Promise<ProcessDefinition[]>((resolve, reject) => {
     client
@@ -560,77 +522,5 @@ export const getProcessDefinitionByName = (
       .catch((error) => {
         reject(error["graphQLErrors"][0]["message"]);
       });
-  });
-};
-
-export const getProcessSchema = (processDefinitionData: ProcessDefinition): Promise<Record<string, any>> => {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(`${processDefinitionData.endpoint}/schema`)
-      .then((response) => {
-        if (response.status === 200) {
-          resolve(response.data);
-        }
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-};
-
-export const getCustomForm = (processDefinitionData: ProcessDefinition): Promise<Form> => {
-  return new Promise((resolve, reject) => {
-    const lastIndex = processDefinitionData.endpoint.lastIndexOf(`/${processDefinitionData.processName}`);
-    const baseEndpoint = processDefinitionData.endpoint.slice(0, lastIndex);
-    axios
-      .get(`${baseEndpoint}/forms/${processDefinitionData.processName}`)
-      .then((response) => {
-        /* istanbul ignore else*/
-        if (response.status === 200) {
-          resolve(response.data);
-        }
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-};
-
-export const getProcessSvg = (processDefinitionData: ProcessDefinition): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const lastIndex = processDefinitionData.endpoint.lastIndexOf(`/${processDefinitionData.processName}`);
-    const baseEndpoint = processDefinitionData.endpoint.slice(0, lastIndex);
-    axios
-      .get(`${baseEndpoint}/svg/processes/${processDefinitionData.processName}`)
-      .then((response) => {
-        if (response.status === 200) {
-          resolve(response.data);
-        }
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
-};
-
-export const startProcessInstance = (
-  processDefinitionData: ProcessDefinition,
-  formData: any,
-  businessKey: string
-): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const requestURL = `${processDefinitionData.endpoint}${
-      businessKey.length > 0 ? `?businessKey=${businessKey}` : ""
-    }`;
-    axios
-      .post(requestURL, formData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        resolve(response.data.id);
-      })
-      .catch((error) => reject(error));
   });
 };
