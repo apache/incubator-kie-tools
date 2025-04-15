@@ -263,9 +263,12 @@ digraph G {
   "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension" -> "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/process-accelerator" -> "@kie-tools/maven-base" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/process-business-calendar" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
+  "@kie-tools-examples/process-compact-architecture" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/process-compact-architecture" -> "@kie-tools/kogito-management-console" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/process-event-driven" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
+  "@kie-tools-examples/process-security" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/process-security" -> "@kie-tools/kogito-management-console" [ style = "dashed", color = "orange" ];
+  "@kie-tools-examples/process-user-tasks-subsystem" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/process-user-tasks-subsystem" -> "@kie-tools/kogito-management-console" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp" -> "@kie-tools-core/react-hooks" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp" -> "@kie-tools/serverless-workflow-standalone-editor" [ style = "dashed", color = "orange" ];
@@ -538,7 +541,9 @@ digraph G {
   "@kie-tools/runtime-tools-components" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-consoles-helm-chart" -> "@kie-tools/kogito-management-console" [ style = "solid", color = "black" ];
   "@kie-tools/runtime-tools-management-console-webapp" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "blue" ];
-  "@kie-tools/runtime-tools-management-console-webapp" -> "@kie-tools/jbpm-quarkus-devui" [ style = "dashed", color = "blue" ];
+  "@kie-tools/runtime-tools-management-console-webapp" -> "@kie-tools/runtime-tools-process-webapp-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-management-console-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-management-console-webapp" -> "@kie-tools/maven-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/runtime-tools-process-dev-ui-webapp" -> "@kie-tools/runtime-tools-process-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-process-dev-ui-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-process-enveloped-components" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];

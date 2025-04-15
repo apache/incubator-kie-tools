@@ -8714,9 +8714,6 @@ importers:
       '@kie-tools/eslint':
         specifier: workspace:*
         version: link:../eslint
-      '@kie-tools/jbpm-quarkus-devui':
-        specifier: workspace:*
-        version: link:../jbpm-quarkus-devui
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base

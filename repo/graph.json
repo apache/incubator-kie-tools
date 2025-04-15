@@ -715,6 +715,11 @@
       },
       {
         "source": "@kie-tools-examples/process-compact-architecture",
+        "target": "@kie-tools/jbpm-quarkus-devui",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-compact-architecture",
         "target": "@kie-tools/kogito-management-console",
         "weight": 1
       },
@@ -750,7 +755,17 @@
       },
       {
         "source": "@kie-tools/runtime-tools-management-console-webapp",
-        "target": "@kie-tools/jbpm-quarkus-devui",
+        "target": "@kie-tools/runtime-tools-process-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-management-console-webapp",
+        "target": "@kie-tools/runtime-tools-shared-webapp-components",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-management-console-webapp",
+        "target": "@kie-tools/maven-base",
         "weight": 1
       },
       {
@@ -760,7 +775,17 @@
       },
       {
         "source": "@kie-tools-examples/process-security",
+        "target": "@kie-tools/jbpm-quarkus-devui",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-security",
         "target": "@kie-tools/kogito-management-console",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-examples/process-user-tasks-subsystem",
+        "target": "@kie-tools/jbpm-quarkus-devui",
         "weight": 1
       },
       {
