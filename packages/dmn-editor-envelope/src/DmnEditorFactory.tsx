@@ -32,11 +32,8 @@ import {
 } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { ResourceContent, ResourcesList, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
-import { DmnEditorRoot } from "./DmnEditorRoot";
-import {
-  JavaCodeCompletionExposedInteropApi,
-  VsCodeNewDmnEditorEnvelopeContext,
-} from "./vscode/VsCodeNewDmnEditorFactory";
+import { DmnEditorRoot, JavaCodeCompletionExposedInteropApi } from "./DmnEditorRoot";
+import { VsCodeNewDmnEditorEnvelopeContext } from "./vscode/VsCodeNewDmnEditorFactory";
 
 export class DmnEditorFactory implements EditorFactory<Editor, KogitoEditorEnvelopeApi, KogitoEditorChannelApi> {
   public createEditor(

@@ -25,24 +25,8 @@ import {
   KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
-import {
-  JavaCodeCompletionAccessor,
-  JavaCodeCompletionClass,
-  JavaCodeCompletionChannelApi,
-} from "@kie-tools-core/vscode-java-code-completion/dist/api";
-
+import { JavaCodeCompletionChannelApi } from "@kie-tools-core/vscode-java-code-completion/dist/api";
 import { DmnEditorInterface } from "../DmnEditorFactory";
-
-/**
- * EXPOSED INTEROP API
- *
- * This API is exposed from the Envelope to be consumed on Java code.
- */
-export interface JavaCodeCompletionExposedInteropApi {
-  getFields(fqcn: string): Promise<JavaCodeCompletionAccessor[]>;
-  getClasses(query: string): Promise<JavaCodeCompletionClass[]>;
-  isLanguageServerAvailable(): Promise<boolean>;
-}
 
 export interface VsCodeNewDmnEditorChannelApi extends KogitoEditorChannelApi, JavaCodeCompletionChannelApi {}
 
