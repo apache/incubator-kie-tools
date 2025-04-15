@@ -23,11 +23,11 @@ import { TestScenarioEditor } from "../../../src/TestScenarioEditor";
 import { SceSimEditorWrapper, StorybookTestScenarioEditorProps } from "../../scesimEditorStoriesWrapper";
 import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";
-import { COLLECTION } from "../../examples/ExternalDmnModels";
+import { COMPLEX_COLLECTION } from "../../examples/ExternalDmnModels";
 
-export const collectionFileName = "collection.scesim";
+export const collectionFileName = "complex_collection.scesim";
 export const collectionScesim = `<?xml version="1.0" encoding="UTF-8" ?>
-<ScenarioSimulationModel xmlns="https://kie.org/scesim/1.8" version="1.8">
+<ScenarioSimulationModel version="1.8">
   <simulation>
     <scesimModelDescriptor>
       <factMappings>
@@ -64,68 +64,68 @@ export const collectionScesim = `<?xml version="1.0" encoding="UTF-8" ?>
         <FactMapping>
           <expressionElements>
             <ExpressionElement>
-              <step>input</step>
+              <step>Team</step>
+            </ExpressionElement>
+            <ExpressionElement>
+              <step>name</step>
             </ExpressionElement>
           </expressionElements>
           <expressionIdentifier>
-            <name>_33694C8E-C795-435F-B0F0-F1101F9DE403</name>
+            <name>_39AB4241-7722-4608-A36B-39063D1CE681</name>
             <type>GIVEN</type>
           </expressionIdentifier>
           <factIdentifier>
-            <name>input</name>
-            <className>tNumber</className>
+            <name>Team</name>
+            <className>tTeam</className>
           </factIdentifier>
-          <className>java.util.List</className>
-          <factAlias>input</factAlias>
-          <expressionAlias>value</expressionAlias>
-          <genericTypes>
-            <string>tNumber</string>
-          </genericTypes>
-          <columnWidth>141</columnWidth>
+          <className>string</className>
+          <factAlias>Team</factAlias>
+          <expressionAlias>name</expressionAlias>
+          <columnWidth>100</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
         <FactMapping>
           <expressionElements>
             <ExpressionElement>
-              <step>input2</step>
+              <step>Team</step>
             </ExpressionElement>
             <ExpressionElement>
-              <step>nums</step>
+              <step>people</step>
             </ExpressionElement>
           </expressionElements>
           <expressionIdentifier>
-            <name>_11DBB39A-5749-420D-A007-3A0D19A66916</name>
+            <name>_DB037929-348D-4631-92AB-77A9565E4646</name>
             <type>GIVEN</type>
           </expressionIdentifier>
           <factIdentifier>
-            <name>input2</name>
-            <className>tComplex</className>
+            <name>Team</name>
+            <className>tTeam</className>
           </factIdentifier>
           <className>java.util.List</className>
-          <factAlias>input2</factAlias>
-          <expressionAlias>nums</expressionAlias>
+          <factAlias>Team</factAlias>
+          <expressionAlias>people</expressionAlias>
           <genericTypes>
-            <string>number</string>
+            <string>tPerson</string>
           </genericTypes>
-          <columnWidth>157</columnWidth>
+          <columnWidth>289</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
         </FactMapping>
         <FactMapping>
           <expressionElements>
             <ExpressionElement>
-              <step>output</step>
+              <step>isHuge</step>
             </ExpressionElement>
           </expressionElements>
           <expressionIdentifier>
-            <name>_E38BFF0C-040B-464E-8C18-7BD1C7372EEA</name>
+            <name>_4C87F59F-DBD2-42E6-A884-4D700AEDC2D0</name>
             <type>EXPECT</type>
           </expressionIdentifier>
           <factIdentifier>
-            <name>output</name>
+            <name>isHuge</name>
             <className>boolean</className>
           </factIdentifier>
           <className>boolean</className>
-          <factAlias>output</factAlias>
+          <factAlias>isHuge</factAlias>
           <expressionAlias>value</expressionAlias>
           <columnWidth>100</columnWidth>
           <factMappingValueType>NOT_EXPRESSION</factMappingValueType>
@@ -155,36 +155,153 @@ export const collectionScesim = `<?xml version="1.0" encoding="UTF-8" ?>
               <name>Description</name>
               <type>OTHER</type>
             </expressionIdentifier>
+            <rawValue class="string">Empty team</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
-              <name>input</name>
-              <className>tNumber</className>
+              <name>Team</name>
+              <className>tTeam</className>
             </factIdentifier>
             <expressionIdentifier>
-              <name>_33694C8E-C795-435F-B0F0-F1101F9DE403</name>
+              <name>_39AB4241-7722-4608-A36B-39063D1CE681</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">[10,20,30]</rawValue>
+            <rawValue class="string">&quot;Team1&quot;</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
-              <name>input2</name>
-              <className>tComplex</className>
+              <name>Team</name>
+              <className>tTeam</className>
             </factIdentifier>
             <expressionIdentifier>
-              <name>_11DBB39A-5749-420D-A007-3A0D19A66916</name>
+              <name>_DB037929-348D-4631-92AB-77A9565E4646</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">[40,50,60]</rawValue>
+            <rawValue class="string">[]</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
-              <name>output</name>
+              <name>isHuge</name>
               <className>boolean</className>
             </factIdentifier>
             <expressionIdentifier>
-              <name>_E38BFF0C-040B-464E-8C18-7BD1C7372EEA</name>
+              <name>_4C87F59F-DBD2-42E6-A884-4D700AEDC2D0</name>
+              <type>EXPECT</type>
+            </expressionIdentifier>
+            <rawValue class="string">false</rawValue>
+          </FactMappingValue>
+        </factMappingValues>
+      </Scenario>
+      <Scenario>
+        <factMappingValues>
+          <FactMappingValue>
+            <factIdentifier>
+              <name>#</name>
+              <className>java.lang.Integer</className>
+            </factIdentifier>
+            <expressionIdentifier>
+              <name>Index</name>
+              <type>OTHER</type>
+            </expressionIdentifier>
+          </FactMappingValue>
+          <FactMappingValue>
+            <factIdentifier>
+              <name>Scenario description</name>
+              <className>java.lang.String</className>
+            </factIdentifier>
+            <expressionIdentifier>
+              <name>Description</name>
+              <type>OTHER</type>
+            </expressionIdentifier>
+            <rawValue class="string">A tiny little team</rawValue>
+          </FactMappingValue>
+          <FactMappingValue>
+            <factIdentifier>
+              <name>Team</name>
+              <className>tTeam</className>
+            </factIdentifier>
+            <expressionIdentifier>
+              <name>_39AB4241-7722-4608-A36B-39063D1CE681</name>
+              <type>GIVEN</type>
+            </expressionIdentifier>
+            <rawValue class="string">&quot;Team 2&quot;</rawValue>
+          </FactMappingValue>
+          <FactMappingValue>
+            <factIdentifier>
+              <name>Team</name>
+              <className>tTeam</className>
+            </factIdentifier>
+            <expressionIdentifier>
+              <name>_DB037929-348D-4631-92AB-77A9565E4646</name>
+              <type>GIVEN</type>
+            </expressionIdentifier>
+            <rawValue class="string">[{&quot;name&quot;: &quot;\&quot;John\&quot;&quot;, &quot;age&quot;: &quot;10&quot;}, {&quot;name&quot;: &quot;\&quot;Ashley\&quot;&quot;, &quot;age&quot;: &quot;10&quot;}, {&quot;name&quot;: &quot;\&quot;Pete\&quot;&quot;, &quot;age&quot;: &quot;10&quot;}]</rawValue>
+          </FactMappingValue>
+          <FactMappingValue>
+            <factIdentifier>
+              <name>isHuge</name>
+              <className>boolean</className>
+            </factIdentifier>
+            <expressionIdentifier>
+              <name>_4C87F59F-DBD2-42E6-A884-4D700AEDC2D0</name>
+              <type>EXPECT</type>
+            </expressionIdentifier>
+            <rawValue class="string">false</rawValue>
+          </FactMappingValue>
+        </factMappingValues>
+      </Scenario>
+      <Scenario>
+        <factMappingValues>
+          <FactMappingValue>
+            <factIdentifier>
+              <name>#</name>
+              <className>java.lang.Integer</className>
+            </factIdentifier>
+            <expressionIdentifier>
+              <name>Index</name>
+              <type>OTHER</type>
+            </expressionIdentifier>
+          </FactMappingValue>
+          <FactMappingValue>
+            <factIdentifier>
+              <name>Scenario description</name>
+              <className>java.lang.String</className>
+            </factIdentifier>
+            <expressionIdentifier>
+              <name>Description</name>
+              <type>OTHER</type>
+            </expressionIdentifier>
+            <rawValue class="string">A Huge team</rawValue>
+          </FactMappingValue>
+          <FactMappingValue>
+            <factIdentifier>
+              <name>Team</name>
+              <className>tTeam</className>
+            </factIdentifier>
+            <expressionIdentifier>
+              <name>_39AB4241-7722-4608-A36B-39063D1CE681</name>
+              <type>GIVEN</type>
+            </expressionIdentifier>
+            <rawValue class="string">&quot;Team 3&quot;</rawValue>
+          </FactMappingValue>
+          <FactMappingValue>
+            <factIdentifier>
+              <name>Team</name>
+              <className>tTeam</className>
+            </factIdentifier>
+            <expressionIdentifier>
+              <name>_DB037929-348D-4631-92AB-77A9565E4646</name>
+              <type>GIVEN</type>
+            </expressionIdentifier>
+            <rawValue class="string">[{&quot;name&quot;: &quot;\&quot;John\&quot;&quot;, &quot;age&quot;: &quot;10&quot;}, {&quot;name&quot;: &quot;\&quot;Ashley\&quot;&quot;, &quot;age&quot;: &quot;10&quot;}, {&quot;name&quot;: &quot;\&quot;Pete\&quot;&quot;, &quot;age&quot;: &quot;10&quot;}, {&quot;name&quot;: &quot;\&quot;Becky\&quot;&quot;, &quot;age&quot;: &quot;24&quot;}]</rawValue>
+          </FactMappingValue>
+          <FactMappingValue>
+            <factIdentifier>
+              <name>isHuge</name>
+              <className>boolean</className>
+            </factIdentifier>
+            <expressionIdentifier>
+              <name>_4C87F59F-DBD2-42E6-A884-4D700AEDC2D0</name>
               <type>EXPECT</type>
             </expressionIdentifier>
             <rawValue class="string">true</rawValue>
@@ -232,10 +349,10 @@ export const collectionScesim = `<?xml version="1.0" encoding="UTF-8" ?>
     </scesimData>
   </background>
   <settings>
-    <dmnFilePath>dev-webapp/available-dmn-models/collection.dmn</dmnFilePath>
+    <dmnFilePath>../../main/resources/ComplexCollection.dmn</dmnFilePath>
     <type>DMN</type>
-    <dmnNamespace>https://kie.apache.org/dmn/_D1C37750-2078-4CB7-AF77-850947718867</dmnNamespace>
-    <dmnName>Collection</dmnName>
+    <dmnNamespace>https://kie.org/dmn/_8D6316E7-ED43-4528-BB0B-2A7587B20853</dmnNamespace>
+    <dmnName>DMN_EE8B8820-C396-45D8-BB02-3317B5C43C3F</dmnName>
     <skipFromBuild>false</skipFromBuild>
   </settings>
   <imports>
@@ -245,7 +362,7 @@ export const collectionScesim = `<?xml version="1.0" encoding="UTF-8" ?>
 `;
 
 const meta: Meta<{}> = {
-  title: "Misc/Collection",
+  title: "Misc/ComplexCollection",
   component: TestScenarioEditor,
   includeStories: /^[A-Z]/,
 };
@@ -256,22 +373,20 @@ type Story = StoryObj<StorybookTestScenarioEditorProps>;
 const marshaller = getMarshaller(collectionScesim);
 const currentModel = marshaller.parser.parse();
 const dmnModel = {
-  normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/collection.dmn",
+  normalizedPosixPathRelativeToTheOpenFile: "dev-webapp/available-dmn-models/complex_collection.dmn",
   type: "dmn",
-  model: normalize(getDmnMarshaller(COLLECTION ?? "", { upgradeTo: "latest" }).parser.parse()),
+  model: normalize(getDmnMarshaller(COMPLEX_COLLECTION ?? "", { upgradeTo: "latest" }).parser.parse()),
   svg: "",
 };
 
-export const Collection: Story = {
+export const ComplexCollection: Story = {
   render: (args) => SceSimEditorWrapper(args),
   args: {
     model: marshaller.parser.parse(),
     openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: collectionFileName,
-    externalModelsByNamespace: new Map([
-      ["https://kie.apache.org/dmn/_D1C37750-2078-4CB7-AF77-850947718867", dmnModel],
-    ]),
+    externalModelsByNamespace: new Map([["https://kie.org/dmn/_8D6316E7-ED43-4528-BB0B-2A7587B20853", dmnModel]]),
     xml: marshaller.builder.build(currentModel),
-    onRequestExternalModelsAvailableToInclude: () => Promise.resolve(["collection.dmn"]),
+    onRequestExternalModelsAvailableToInclude: () => Promise.resolve(["complex_collection.dmn"]),
     onRequestExternalModelByPath: () => Promise.resolve(dmnModel),
   },
 };
