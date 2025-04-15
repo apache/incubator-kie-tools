@@ -22,9 +22,9 @@ import { DeploymentOption, DeploymentOptionOpts } from "../types";
 import { DeploymentYaml } from "./DeploymentYaml";
 import { ServiceYaml } from "./ServiceYaml";
 
-export function KogitoQuarkusBlankAppOption(args: DeploymentOptionArgs, opts?: DeploymentOptionOpts): DeploymentOption {
+export function QuarkusBlankAppOption(args: DeploymentOptionArgs, opts?: DeploymentOptionOpts): DeploymentOption {
   return {
-    name: "Kogito Quarkus Blank App",
+    name: "Quarkus Blank App",
     content: `
 ${DeploymentYaml(args)}
 ---
