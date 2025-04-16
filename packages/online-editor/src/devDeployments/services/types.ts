@@ -91,7 +91,7 @@ export type Tokens = DevDeploymentTokens & {
 export type TokensArg = Omit<Tokens, "labels" | "annotations"> & Partial<Tokens>;
 
 export type DeploymentOptionArgs = {
-  kogitoQuarkusBlankAppImageUrl: string;
+  quarkusBlankAppImageUrl: string;
   baseImageUrl: string;
   dmnFormWebappImageUrl: string;
   imagePullPolicy: string;
