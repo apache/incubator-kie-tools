@@ -26,7 +26,11 @@ import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normali
 import { buildXmlHref, parseXmlHref, xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml";
 import { ExternalModelsIndex } from "../DmnEditor";
 import { getAutoLayoutedInfo } from "../autolayout/autoLayoutInfo";
-import { DECISION_SERVICE_COLLAPSED_DIMENSIONS, MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
+import {
+  DECISION_SERVICE_COLLAPSED_DIMENSIONS,
+  DEFAULT_NODE_SIZES,
+  MIN_NODE_SIZES,
+} from "../diagram/nodes/DefaultSizes";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { Computed, SnapGrid, State } from "../store/Store";
 import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeContainingDecisionServiceHrefsByDecisionHrefs.ts";
@@ -182,8 +186,12 @@ export function addConflictingDecisionServiceToDrd({
       "dc:Bounds": {
         "@_x": __readonly_dropPoint.x,
         "@_y": __readonly_dropPoint.y,
-        "@_width": minNodeSize["@_width"],
-        "@_height": minNodeSize["@_height"],
+        "@_width": DEFAULT_NODE_SIZES[NODE_TYPES.decisionService]({
+          snapGrid: __readonly_snapGrid,
+        })["@_width"],
+        "@_height": DEFAULT_NODE_SIZES[NODE_TYPES.decisionService]({
+          snapGrid: __readonly_snapGrid,
+        })["@_height"],
       },
     },
   });

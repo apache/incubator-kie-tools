@@ -848,12 +848,26 @@ export const DecisionServiceNode = React.memo(
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
 
-    const isConflict = useDmnEditorStore((s) => s.diagram.conflictedNodes).includes(id);
-
     let expandButtonClassname = "kie-dmn-editor--decision-service-collapsed-button";
-    if (isConflict) {
-      expandButtonClassname += " button-inactive";
-    }
+    const { decisionsMap, decisionServiceMap, conflictedDecisionIds } = useDmnEditorStore((s) =>
+      s.computed(s).getConflictedDecisionServices(externalModelsByNamespace)
+    );
+
+    conflictedDecisionIds.forEach((key) => {
+      const values = decisionsMap.get(key) ?? [];
+      if (values.length > 1) {
+        const exists = values.some((item) => item.id === id);
+
+        values.forEach((node) => {
+          const isOtherNode = node.id !== id;
+          const isCollapsedMismatch = shape["@_isCollapsed"] && node.data.shape["@_isCollapsed"] === false;
+
+          if (exists && isOtherNode && isCollapsedMismatch) {
+            expandButtonClassname += " button-inactive";
+          }
+        });
+      }
+    });
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
     const settings = useSettings();

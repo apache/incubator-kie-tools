@@ -402,11 +402,6 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             });
 
             if (strategyForAddingDecisionServiceToDrd === StrategyForAddingDecisionServiceToDrd.CONFLICT) {
-              dmnEditorStoreApi.setState((state) =>
-                state
-                  .dispatch(state)
-                  .diagram.setConflictStatus(decisionServiceHrefRelativeToThisDmn, { conflict: true })
-              );
               addConflictingDecisionServiceToDrd({
                 definitions: dereferencedState.dmn.model.definitions,
                 __readonly_drdIndex: drdIndex,
@@ -507,11 +502,6 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
               __readonly_namespace: dereferencedState.dmn.model.definitions["@_namespace"],
             });
             if (strategyForAddingDecisionServiceToDrd === StrategyForAddingDecisionServiceToDrd.CONFLICT) {
-              dmnEditorStoreApi.setState((state) =>
-                state
-                  .dispatch(state)
-                  .diagram.setConflictStatus(decisionServiceHrefRelativeToThisDmn, { conflict: true })
-              );
               addConflictingDecisionServiceToDrd({
                 definitions: dereferencedState.dmn.model.definitions,
                 __readonly_drdIndex: drdIndex,

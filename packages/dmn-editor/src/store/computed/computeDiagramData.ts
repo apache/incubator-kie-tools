@@ -425,6 +425,7 @@ export function computeDiagramData(
     selectedNodesById,
     selectedEdgesById,
     drgElementsWithoutVisualRepresentationOnCurrentDrd,
+    sortedNodes,
   };
 }
 

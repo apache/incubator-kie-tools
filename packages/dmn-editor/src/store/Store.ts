@@ -36,6 +36,7 @@ import { computeIndexedDrd } from "./computed/computeIndexes";
 import { computeIsDropTargetNodeValidForSelection } from "./computed/computeIsDropTargetNodeValidForSelection";
 import { DEFAULT_VIEWPORT } from "../diagram/Diagram";
 import { computeExternalDmnModelsByNamespaceMap } from "./computed/computeExternalDmnModelsByNamespaceMap";
+import { computeConflictedDecisionServices } from "./computed/computeConflictedDecisionServices";
 
 enableMapSet(); // Necessary because `Computed` has a lot of Maps and Sets.
 
@@ -52,10 +53,6 @@ export interface DmnEditorDiagramEdgeStatus {
 
 export interface DmnEditorDiagramDividerLineStatus {
   moving: boolean;
-}
-
-export interface ConflictedNodeStatus {
-  conflict: boolean;
 }
 
 export interface SnapGrid {
@@ -121,7 +118,6 @@ export interface State {
     _selectedEdges: Array<string>;
     draggingNodes: Array<string>;
     resizingNodes: Array<string>;
-    conflictedNodes: Array<string>;
     draggingWaypoints: Array<string>;
     movingDividerLines: Array<string>;
     isEditingStyle: boolean;
@@ -165,6 +161,10 @@ export type Computed = {
   getDataTypes(e: ExternalModelsIndex | undefined): ReturnType<typeof computeDataTypes>;
 
   getAllFeelVariableUniqueNames(): ReturnType<typeof computeAllFeelVariableUniqueNames>;
+
+  getConflictedDecisionServices(
+    e: ExternalModelsIndex | undefined
+  ): ReturnType<typeof computeConflictedDecisionServices>;
 };
 
 export type Dispatch = {
@@ -179,7 +179,6 @@ export type Dispatch = {
     setNodeStatus: (nodeId: string, status: Partial<DmnEditorDiagramNodeStatus>) => void;
     setEdgeStatus: (edgeId: string, status: Partial<DmnEditorDiagramEdgeStatus>) => void;
     setDividerLineStatus: (decisionServiceId: string, status: Partial<DmnEditorDiagramDividerLineStatus>) => void;
-    setConflictStatus: (decisionServiceId: string, status: Partial<ConflictedNodeStatus>) => void;
   };
 };
 
@@ -238,7 +237,6 @@ export const defaultStaticState = (): Omit<State, "dmn" | "dispatch" | "computed
     _selectedEdges: [],
     draggingNodes: [],
     resizingNodes: [],
-    conflictedNodes: [],
     draggingWaypoints: [],
     movingDividerLines: [],
     isEditingStyle: false,
@@ -342,16 +340,6 @@ export function createDmnEditorStore(model: DmnLatestModel, computedCache: Compu
                 }
               }
             },
-            setConflictStatus: (decisionServiceId, newStatus) => {
-              //conflicted
-              if (newStatus.conflict !== undefined) {
-                if (newStatus.conflict) {
-                  s.diagram.conflictedNodes.push(decisionServiceId);
-                } else {
-                  s.diagram.conflictedNodes = s.diagram.conflictedNodes.filter((s) => s !== decisionServiceId);
-                }
-              }
-            },
           },
         };
       },
@@ -452,6 +440,11 @@ export function createDmnEditorStore(model: DmnLatestModel, computedCache: Compu
           getExternalDmnModelsByNamespaceMap: (externalModelsByNamespace: ExternalModelsIndex | undefined) =>
             computedCache.cached("getExternalDmnModelsByNamespaceMap", computeExternalDmnModelsByNamespaceMap, [
               s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
+            ]),
+          getConflictedDecisionServices: (externalModelsByNamespace: ExternalModelsIndex | undefined) =>
+            computedCache.cached("getConflictedDecisionServices", computeConflictedDecisionServices, [
+              s.dmn.model.definitions,
+              s.computed(s).getDiagramData(externalModelsByNamespace),
             ]),
         };
       },
