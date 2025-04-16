@@ -63,6 +63,7 @@ pnpm start https://api.to.my.openshift.cluster.com:6443 my-project sha256~MGnPXM
   console.info("Start mapping API Server endpoints by Resource kinds...");
   const k8sApiServerEndpointsByResourceKind = await buildK8sApiServerEndpointsByResourceKind(
     args.k8sApiServerUrl,
+    false,
     args.k8sServiceAccountToken
   );
   console.info("Done.");

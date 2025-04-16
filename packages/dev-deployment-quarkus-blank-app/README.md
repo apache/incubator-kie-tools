@@ -15,7 +15,9 @@
    under the License.
 -->
 
-## @kie-tools/dev-deployment-kogito-quarkus-blank-app
+## @kie-tools/dev-deployment-quarkus-blank-app
+
+A blank Quarkus-based application capable of running BPMN and DMN models when put inside `src/main/resources` directory.
 
 ---
 
