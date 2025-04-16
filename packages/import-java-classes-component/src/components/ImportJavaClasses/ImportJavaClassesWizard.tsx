@@ -18,71 +18,133 @@
  */
 
 import * as React from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Button } from "@patternfly/react-core/dist/js/components/Button";
+import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
+import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { Wizard } from "@patternfly/react-core/dist/js/deprecated/components/Wizard";
 import { useImportJavaClassesWizardI18n } from "../../i18n";
 import { ImportJavaClassesWizardFirstStep } from "./ImportJavaClassesWizardFirstStep";
 import { ImportJavaClassesWizardSecondStep } from "./ImportJavaClassesWizardSecondStep";
 import { ImportJavaClassesWizardThirdStep } from "./ImportJavaClassesWizardThirdStep";
-import { useCallback, useEffect, useState } from "react";
 import { JavaClass } from "./model/JavaClass";
 import { JavaField } from "./model/JavaField";
 import { DMNSimpleType } from "./model/DMNSimpleType";
 import { getJavaClassSimpleName } from "./model/JavaClassUtils";
-import { GWTLayerService, JavaCodeCompletionService } from "./services";
-import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { Wizard } from "@patternfly/react-core/deprecated";
+import { JavaCodeCompletionService } from "./services";
 
-export interface ImportJavaClassesWizardProps {
-  /** Service class which contains all API methods to dialog with GWT layer */
-  gwtLayerService: GWTLayerService;
-  /** Service class which contains all API methods to dialog with Java Code Completion Extension*/
+export type LanguageServerStatus = "disable" | "enable" | "loading" | "error";
+
+export type ImportJavaClassesWizardProps = Pick<React.ComponentProps<typeof Modal>, "isOpen"> & {
+  onSave: (javaClass: JavaClass[]) => void;
+  onClose: () => void;
   javaCodeCompletionService: JavaCodeCompletionService;
+};
+
+export interface ImportJavaClassesButtonProps {
+  javaCodeCompletionService: JavaCodeCompletionService;
+  handleButtonClick: () => void;
 }
 
-export const ImportJavaClassesWizard = ({
-  gwtLayerService,
-  javaCodeCompletionService,
-}: ImportJavaClassesWizardProps) => {
-  type ButtonStatus = "disable" | "enable" | "loading" | "error";
-  const { i18n } = useImportJavaClassesWizardI18n();
-  const [javaClasses, setJavaClasses] = useState<JavaClass[]>([]);
-  const [isOpen, setOpen] = useState(false);
-  const [buttonStatus, setButtonStatus] = useState<ButtonStatus>("loading");
-
+export const useLanguageServerAvailable = (
+  javaCodeCompletionService: JavaCodeCompletionService
+): {
+  languageServerStatus: LanguageServerStatus;
+  isLanguageServerDisabled: boolean;
+  isLanguageServerLoading: boolean;
+  isLanguageServerError: boolean;
+} => {
+  const [languageServerStatus, setLanguageServerStatus] = useState<LanguageServerStatus>("loading");
   useEffect(() => {
     try {
       javaCodeCompletionService
         .isLanguageServerAvailable()
         .then((available: boolean) => {
-          setButtonStatus(available ? "enable" : "disable");
+          setLanguageServerStatus(available ? "enable" : "disable");
         })
         .catch((reason) => {
-          setButtonStatus("error");
+          setLanguageServerStatus("error");
           console.error(reason);
         });
     } catch (error) {
-      setButtonStatus("error");
+      setLanguageServerStatus("error");
       console.error(error);
     }
   }, [javaCodeCompletionService]);
+  const isLanguageServerDisabled = useMemo(() => {
+    return "enable" !== languageServerStatus;
+  }, [languageServerStatus]);
 
-  const isButtonDisabled = useCallback(() => {
-    return "enable" !== buttonStatus;
-  }, [buttonStatus]);
+  const isLanguageServerLoading = useMemo(() => {
+    return "loading" == languageServerStatus;
+  }, [languageServerStatus]);
 
-  const isButtonLoading = useCallback(() => {
-    return "loading" == buttonStatus;
-  }, [buttonStatus]);
+  const isLanguageServerError = useMemo(() => {
+    return "error" == languageServerStatus;
+  }, [languageServerStatus]);
+
+  return { languageServerStatus, isLanguageServerDisabled, isLanguageServerLoading, isLanguageServerError };
+};
+
+export const ImportJavaClassesButton = ({
+  javaCodeCompletionService,
+  handleButtonClick,
+}: ImportJavaClassesButtonProps) => {
+  const { i18n } = useImportJavaClassesWizardI18n();
+  const { isLanguageServerDisabled, isLanguageServerLoading, isLanguageServerError } =
+    useLanguageServerAvailable(javaCodeCompletionService);
 
   const defineTooltipMessage = useCallback(() => {
-    if ("disable" === buttonStatus) {
+    if (isLanguageServerDisabled) {
       return i18n.modalButton.disabledMessage;
-    } else if ("error" === buttonStatus) {
+    } else if (isLanguageServerError) {
       return i18n.modalButton.errorMessage;
     }
     return undefined;
-  }, [buttonStatus, i18n.modalButton.disabledMessage, i18n.modalButton.errorMessage]);
+  }, [
+    isLanguageServerDisabled,
+    isLanguageServerError,
+    i18n.modalButton.disabledMessage,
+    i18n.modalButton.errorMessage,
+  ]);
+
+  return (
+    <>
+      {defineTooltipMessage() ? (
+        <Tooltip content={defineTooltipMessage()}>
+          <Button
+            data-testid={"modal-wizard-button"}
+            isAriaDisabled={isLanguageServerDisabled}
+            isLoading={isLanguageServerLoading}
+            onClick={handleButtonClick}
+            variant={"secondary"}
+          >
+            {i18n.modalButton.text}
+          </Button>
+        </Tooltip>
+      ) : (
+        <Button
+          data-testid={"modal-wizard-button"}
+          isAriaDisabled={isLanguageServerDisabled}
+          isLoading={isLanguageServerLoading}
+          onClick={handleButtonClick}
+          variant={"secondary"}
+        >
+          {i18n.modalButton.text}
+        </Button>
+      )}
+    </>
+  );
+};
+
+export const ImportJavaClassesWizard = ({
+  javaCodeCompletionService,
+  isOpen,
+  onClose,
+  onSave,
+}: ImportJavaClassesWizardProps) => {
+  const { i18n } = useImportJavaClassesWizardI18n();
+  const [javaClasses, setJavaClasses] = useState<JavaClass[]>([]);
 
   const updateJavaFieldsReferences = useCallback(
     (updatedJavaClasses: JavaClass[], previousJavaClasses: JavaClass[]) => {
@@ -145,17 +207,15 @@ export const ImportJavaClassesWizard = ({
     return javaClasses.length > 0 && javaClasses.every((javaClass) => javaClass.fieldsLoaded);
   }, [javaClasses]);
 
-  const handleButtonClick = useCallback(() => setOpen((prevState) => !prevState), []);
-
   const handleWizardClose = useCallback(() => {
-    handleButtonClick();
     setJavaClasses([]);
-  }, [handleButtonClick]);
+    onClose?.();
+  }, [onClose]);
 
   const handleWizardSave = useCallback(() => {
+    onSave?.(javaClasses);
     handleWizardClose();
-    gwtLayerService.importJavaClassesInDataTypeEditor(javaClasses);
-  }, [javaClasses, handleWizardClose, gwtLayerService]);
+  }, [javaClasses, handleWizardClose, onSave]);
 
   const steps = [
     {
@@ -194,47 +254,20 @@ export const ImportJavaClassesWizard = ({
   ];
 
   return (
-    <>
-      {defineTooltipMessage() ? (
-        <Tooltip content={defineTooltipMessage()}>
-          <Button
-            data-testid={"modal-wizard-button"}
-            isAriaDisabled={isButtonDisabled()}
-            isLoading={isButtonLoading()}
-            onClick={handleButtonClick}
-            variant={"secondary"}
-          >
-            {i18n.modalButton.text}
-          </Button>
-        </Tooltip>
-      ) : (
-        <Button
-          data-testid={"modal-wizard-button"}
-          isAriaDisabled={isButtonDisabled()}
-          isLoading={isButtonLoading()}
-          onClick={handleButtonClick}
-          variant={"secondary"}
-        >
-          {i18n.modalButton.text}
-        </Button>
-      )}
-      {isOpen ? (
-        <Modal
-          description={i18n.modalWizard.description}
-          isOpen={isOpen}
-          onClose={handleWizardClose}
-          title={i18n.modalWizard.title}
-          variant={ModalVariant.large}
-        >
-          <Wizard
-            className={"import-java-classes"}
-            height={600}
-            onClose={handleWizardClose}
-            onSave={handleWizardSave}
-            steps={steps}
-          />
-        </Modal>
-      ) : null}
-    </>
+    <Modal
+      description={i18n.modalWizard.description}
+      isOpen={isOpen}
+      onClose={handleWizardClose}
+      title={i18n.modalWizard.title}
+      variant={ModalVariant.large}
+    >
+      <Wizard
+        className={"import-java-classes"}
+        height={600}
+        onClose={handleWizardClose}
+        onSave={handleWizardSave}
+        steps={steps}
+      />
+    </Modal>
   );
 };
