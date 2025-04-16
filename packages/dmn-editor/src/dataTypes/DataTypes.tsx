@@ -199,7 +199,7 @@ export function DataTypes() {
                   className={"kie-dmn-editor--data-types-filter kie-dmn-editor--sticky-top-glass-header"}
                 >
                   <InputGroup>
-                    <InputGroupItem>
+                    <InputGroupItem isFill>
                       <SearchInput
                         placeholder="Filter..."
                         value={filter}
