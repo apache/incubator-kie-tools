@@ -24,10 +24,7 @@ import {
   ProcessInstanceFilter,
   ProcessListSortBy,
 } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import {
-  ProcessListGatewayApi,
-  useProcessListGatewayApi,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessList";
+import { useProcessListGatewayApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessList";
 import { EmbeddedProcessList } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processList";
 import { useHistory } from "react-router";
 import { OrderBy } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
@@ -49,7 +46,7 @@ interface Props {
 }
 
 export const ProcessList: React.FC<Props> = ({ onNavigateToProcessDetails }) => {
-  const gatewayApi: ProcessListGatewayApi = useProcessListGatewayApi();
+  const gatewayApi = useProcessListGatewayApi();
   const history = useHistory();
   const filters = useQueryParam(QueryParams.FILTERS);
   const sortBy = useQueryParam(QueryParams.SORT_BY);

@@ -17,11 +17,11 @@
  * under the License.
  */
 import React, { useContext, createContext } from "react";
-import { ProcessListGatewayApi } from "./ProcessListGatewayApi";
+import { ProcessListRuntimeApiClient } from "./ProcessListRuntimeApiClient";
 
-export const ProcessListContext = createContext<ProcessListGatewayApi>({} as ProcessListGatewayApi);
+export const ProcessListContext = createContext<ProcessListRuntimeApiClient>({} as ProcessListRuntimeApiClient);
 
-export const useProcessListGatewayApi = (): ProcessListGatewayApi =>
-  useContext<ProcessListGatewayApi>(ProcessListContext);
+export const useProcessListGatewayApi = (): ProcessListRuntimeApiClient =>
+  useContext<ProcessListRuntimeApiClient>(ProcessListContext);
 
 export default ProcessListContext;
