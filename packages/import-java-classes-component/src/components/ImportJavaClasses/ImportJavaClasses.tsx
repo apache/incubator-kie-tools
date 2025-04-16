@@ -18,34 +18,91 @@
  */
 
 import * as React from "react";
+import { useCallback, useState } from "react";
 import {
   importJavaClassesWizardI18nDictionaries,
   ImportJavaClassesWizardI18nContext,
   importJavaClassesWizardI18nDefaults,
+  useImportJavaClassesWizardI18n,
 } from "../../i18n";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
-import { ImportJavaClassesWizard } from "./ImportJavaClassesWizard";
 import { GWTLayerService, JavaCodeCompletionService } from "./services";
+import { JavaClass } from "./model";
 
-export interface ImportJavaClassesProps {
-  /** Service class which contains all API method to dialog with GWT layer */
-  gwtLayerService: GWTLayerService;
+import {
+  ImportJavaClassesButton,
+  ImportJavaClassesWizard,
+  useLanguageServerAvailable,
+} from "./ImportJavaClassesWizard";
+
+interface ImportJavaClassesProps {
+  /** Service class which contains all API method to dialog with GWT layer (can be removed when Stunner editor support is discontinued ) */
+  gwtLayerService?: GWTLayerService;
   /** Service class which contains all API methods to dialog with Java Code Completion Extension*/
   javaCodeCompletionService: JavaCodeCompletionService;
+  /** Callback function used to load Java classes into the data type editor.*/
+  loadJavaClassesInDataTypeEditor?: (javaClasses: JavaClass[]) => void;
 }
 
-export const ImportJavaClasses = ({ gwtLayerService, javaCodeCompletionService }: ImportJavaClassesProps) => {
+const ImportJavaClassesI18nDictionariesProvider = (
+  props: Omit<
+    React.ComponentProps<typeof I18nDictionariesProvider>,
+    "defaults" | "dictionaries" | "initialLocale" | "ctx"
+  >
+) => (
+  <I18nDictionariesProvider
+    defaults={importJavaClassesWizardI18nDefaults}
+    dictionaries={importJavaClassesWizardI18nDictionaries}
+    initialLocale={navigator.language}
+    ctx={ImportJavaClassesWizardI18nContext}
+    {...props}
+  />
+);
+
+const ImportJavaClasses = ({
+  javaCodeCompletionService,
+  gwtLayerService,
+  loadJavaClassesInDataTypeEditor,
+}: ImportJavaClassesProps) => {
+  const [isOpenImportJavaClassesWizard, setOpenImportJavaClassesWizard] = useState(false);
+  const handleButtonClick = useCallback(() => setOpenImportJavaClassesWizard((prevState) => !prevState), []);
+  const handleWizardSave = useCallback(
+    (javaClasses) => {
+      /* If the GWT layer service is available, it uses the `importJavaClassesInDataTypeEditor` method.
+       * Otherwise, it calls the `loadJavaClassesInDataTypeEditor` callback with the provided Java classes.
+       */
+      if (gwtLayerService) {
+        gwtLayerService?.importJavaClassesInDataTypeEditor?.(javaClasses);
+      } else {
+        loadJavaClassesInDataTypeEditor?.(javaClasses);
+      }
+    },
+    [gwtLayerService, loadJavaClassesInDataTypeEditor]
+  );
   return (
-    <I18nDictionariesProvider
-      defaults={importJavaClassesWizardI18nDefaults}
-      dictionaries={importJavaClassesWizardI18nDictionaries}
-      initialLocale={navigator.language}
-      ctx={ImportJavaClassesWizardI18nContext}
-    >
-      <ImportJavaClassesWizard
-        gwtLayerService={gwtLayerService}
+    <ImportJavaClassesI18nDictionariesProvider>
+      <ImportJavaClassesButton
+        handleButtonClick={handleButtonClick}
         javaCodeCompletionService={javaCodeCompletionService}
       />
-    </I18nDictionariesProvider>
+      {isOpenImportJavaClassesWizard && (
+        <ImportJavaClassesWizard
+          javaCodeCompletionService={javaCodeCompletionService}
+          isOpen={isOpenImportJavaClassesWizard}
+          onSave={handleWizardSave}
+          onClose={handleButtonClick}
+        />
+      )}
+    </ImportJavaClassesI18nDictionariesProvider>
   );
+};
+
+export {
+  ImportJavaClassesProps,
+  ImportJavaClassesI18nDictionariesProvider,
+  ImportJavaClasses,
+  ImportJavaClassesButton,
+  ImportJavaClassesWizard,
+  useLanguageServerAvailable,
+  useImportJavaClassesWizardI18n,
 };

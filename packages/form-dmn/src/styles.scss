@@ -57,3 +57,7 @@
 .kogito--editor__dmn-form-result__results-card {
   border: 0 !important;
 }
+
+.pf-c-card.pf-m-flat.kogito--editor__dmn-form-result__results-card-highlight {
+  border: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
+}

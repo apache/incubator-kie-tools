@@ -194,8 +194,9 @@ function recursevlyNavigateItemComponent(
   const currentItemDefinition = allItemDefinitionsMap.has(itemComponent?.typeRef?.__$$text ?? "")
     ? allItemDefinitionsMap.get(itemComponent?.typeRef?.__$$text ?? "")
     : itemComponent;
+  const isCollection = itemComponent?.["@_isCollection"] ?? false;
 
-  if (!currentItemDefinition?.typeRef && currentItemDefinition?.itemComponent) {
+  if (!currentItemDefinition?.typeRef && currentItemDefinition?.itemComponent && !isCollection) {
     currentItemDefinition.itemComponent.forEach((nestedItemComponent) => {
       factMappingsToReturn.push(
         ...recursevlyNavigateItemComponent(
