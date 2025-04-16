@@ -28,6 +28,7 @@
     "@kie-tools-core/keyboard-shortcuts": "workspace:*",
     "@kie-tools-core/notifications": "workspace:*",
     "@kie-tools-core/react-hooks": "workspace:*",
+    "@kie-tools-core/vscode-java-code-completion": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
     "@kie-tools/boxed-expression-component": "workspace:*",
     "@kie-tools/dmn-editor": "workspace:*",

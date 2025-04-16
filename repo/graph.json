@@ -151,9 +151,10 @@
       { "id": "@kie-tools/form-dmn" },
       { "id": "@kie-tools/form" },
       { "id": "@kie-tools/dev-deployment-dmn-form-webapp-image" },
-      { "id": "@kie-tools/dev-deployment-kogito-quarkus-blank-app" },
-      { "id": "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image" },
+      { "id": "@kie-tools/dev-deployment-quarkus-blank-app" },
+      { "id": "@kie-tools/dev-deployment-quarkus-blank-app-image" },
       { "id": "@kie-tools/maven-m2-repo-via-http-image" },
+      { "id": "@kie-tools/import-java-classes-component" },
       { "id": "@kie-tools/dmn-feel-antlr4-parser" },
       { "id": "@kie-tools/dmn-marshaller" },
       { "id": "@kie-tools/dmn-marshaller-backend-compatibility-tester" },
@@ -170,7 +171,6 @@
       { "id": "@kie-tools/form-code-generator" },
       { "id": "@kie-tools/form-code-generator-bootstrap4-theme" },
       { "id": "@kie-tools/form-code-generator-patternfly-theme" },
-      { "id": "@kie-tools/import-java-classes-component" },
       { "id": "@kie-tools/runtime-tools-process-webapp-components" },
       { "id": "@kie-tools/runtime-tools-shared-webapp-components" },
       { "id": "@kie-tools/jobs-service-webapp" },
@@ -461,6 +461,11 @@
       {
         "source": "@kie-tools/dmn-editor",
         "target": "@kie-tools/boxed-expression-component",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/dmn-editor",
+        "target": "@kie-tools/import-java-classes-component",
         "weight": 1
       },
       {
@@ -1574,22 +1579,22 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app",
+        "source": "@kie-tools/dev-deployment-quarkus-blank-app",
         "target": "@kie-tools/jbpm-quarkus-devui",
         "weight": 1
       },
       {
-        "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image",
+        "source": "@kie-tools/dev-deployment-quarkus-blank-app-image",
         "target": "@kie-tools/dev-deployment-base-image",
         "weight": 1
       },
       {
-        "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image",
-        "target": "@kie-tools/dev-deployment-kogito-quarkus-blank-app",
+        "source": "@kie-tools/dev-deployment-quarkus-blank-app-image",
+        "target": "@kie-tools/dev-deployment-quarkus-blank-app",
         "weight": 1
       },
       {
-        "source": "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image",
+        "source": "@kie-tools/dev-deployment-quarkus-blank-app-image",
         "target": "@kie-tools/maven-m2-repo-via-http-image",
         "weight": 1
       },
@@ -1601,6 +1606,31 @@
       {
         "source": "@kie-tools/maven-m2-repo-via-http-image",
         "target": "@kie-tools/root-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/import-java-classes-component",
+        "target": "@kie-tools-core/vscode-java-code-completion",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/import-java-classes-component",
+        "target": "@kie-tools/i18n-common-dictionary",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/import-java-classes-component",
+        "target": "@kie-tools-core/monaco-editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/import-java-classes-component",
+        "target": "@kie-tools-core/patternfly-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/import-java-classes-component",
+        "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
       {
@@ -1785,31 +1815,6 @@
       },
       {
         "source": "@kie-tools/form-code-generator-patternfly-theme",
-        "target": "@kie-tools-core/webpack-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/import-java-classes-component",
-        "target": "@kie-tools-core/vscode-java-code-completion",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/import-java-classes-component",
-        "target": "@kie-tools/i18n-common-dictionary",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/import-java-classes-component",
-        "target": "@kie-tools-core/monaco-editor",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/import-java-classes-component",
-        "target": "@kie-tools-core/patternfly-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/import-java-classes-component",
         "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
@@ -2840,11 +2845,8 @@
     ["@kie-tools/dev-deployment-base-image", "packages/dev-deployment-base-image"],
     ["@kie-tools/dev-deployment-dmn-form-webapp", "packages/dev-deployment-dmn-form-webapp"],
     ["@kie-tools/dev-deployment-dmn-form-webapp-image", "packages/dev-deployment-dmn-form-webapp-image"],
-    ["@kie-tools/dev-deployment-kogito-quarkus-blank-app", "packages/dev-deployment-kogito-quarkus-blank-app"],
-    [
-      "@kie-tools/dev-deployment-kogito-quarkus-blank-app-image",
-      "packages/dev-deployment-kogito-quarkus-blank-app-image"
-    ],
+    ["@kie-tools/dev-deployment-quarkus-blank-app", "packages/dev-deployment-quarkus-blank-app"],
+    ["@kie-tools/dev-deployment-quarkus-blank-app-image", "packages/dev-deployment-quarkus-blank-app-image"],
     ["@kie-tools/dev-deployment-upload-service", "packages/dev-deployment-upload-service"],
     ["@kie-tools/dmn-editor", "packages/dmn-editor"],
     ["@kie-tools/dmn-editor-envelope", "packages/dmn-editor-envelope"],
