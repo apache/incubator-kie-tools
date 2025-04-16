@@ -6523,6 +6523,9 @@ importers:
       '@babel/preset-react':
         specifier: ^7.16.0
         version: 7.22.15(@babel/core@7.23.0)
+      '@kie-tools/cors-proxy-api':
+        specifier: workspace:*
+        version: link:../cors-proxy-api
       '@kie-tools/eslint':
         specifier: workspace:*
         version: link:../eslint
@@ -57528,7 +57531,7 @@ snapshots:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
       '@types/node': 22.10.7
-      acorn: 8.12.1
+      acorn: 8.10.0
       acorn-walk: 8.2.0
       arg: 4.1.0
       create-require: 1.1.1
