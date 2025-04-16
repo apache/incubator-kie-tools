@@ -22,7 +22,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import { Wizard } from "@patternfly/react-core/dist/js/components/Wizard";
+import { Wizard } from "@patternfly/react-core/dist/js/deprecated/components/Wizard";
 import { useImportJavaClassesWizardI18n } from "../../i18n";
 import { ImportJavaClassesWizardFirstStep } from "./ImportJavaClassesWizardFirstStep";
 import { ImportJavaClassesWizardSecondStep } from "./ImportJavaClassesWizardSecondStep";
@@ -35,8 +35,9 @@ import { JavaCodeCompletionService } from "./services";
 
 export type LanguageServerStatus = "disable" | "enable" | "loading" | "error";
 
-export type ImportJavaClassesWizardProps = Pick<React.ComponentProps<typeof Modal>, "isOpen" | "onClose"> & {
+export type ImportJavaClassesWizardProps = Pick<React.ComponentProps<typeof Modal>, "isOpen"> & {
   onSave: (javaClass: JavaClass[]) => void;
+  onClose: () => void;
   javaCodeCompletionService: JavaCodeCompletionService;
 };
 
