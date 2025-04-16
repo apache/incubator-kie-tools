@@ -60,7 +60,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
 
   const deploymentOptionsArgs: DeploymentOptionArgs = useMemo(
     () => ({
-      kogitoQuarkusBlankAppImageUrl: env.KIE_SANDBOX_DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE_URL,
+      quarkusBlankAppImageUrl: env.KIE_SANDBOX_DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE_URL,
       baseImageUrl: env.KIE_SANDBOX_DEV_DEPLOYMENT_BASE_IMAGE_URL,
       dmnFormWebappImageUrl: env.KIE_SANDBOX_DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_URL,
       imagePullPolicy: env.KIE_SANDBOX_DEV_DEPLOYMENT_IMAGE_PULL_POLICY,

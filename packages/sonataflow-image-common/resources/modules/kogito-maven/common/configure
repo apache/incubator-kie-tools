@@ -34,7 +34,7 @@ else
     echo "---> Maven already present in the current context"
     # TODO: Remove this temporary solution in favor of the -DnoMavenVersionCheck flag once it's available
     # https://github.com/quarkusio/quarkus/issues/46105
-    # Installs Maven Wrapper for version 3.8.6 in order to be compatible with the quarkus-maven-plugin minimum requirements (on Quarkus 3.15.3).
+    # Installs Maven Wrapper for version 3.8.6 in order to be compatible with the quarkus-maven-plugin minimum requirements (on Quarkus 3.15.3.1).
     echo "---> Installing Maven wrapper for Maven 3.8.6"
     cd "${MAVEN_HOME}"/bin
     mvn wrapper:wrapper -Dmaven=3.8.6 -Dtype=source

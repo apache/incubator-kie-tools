@@ -19,6 +19,7 @@
 
 import * as jsYaml from "js-yaml";
 import { K8sApiServerEndpointByResourceKind, K8sResourceYaml, consoleDebugMessage } from "./common";
+import { CorsProxyHeaderKeys } from "@kie-tools/cors-proxy-api";
 
 export async function callK8sApiServer(args: {
   k8sApiServerEndpointsByResourceKind: K8sApiServerEndpointByResourceKind;
@@ -26,6 +27,7 @@ export async function callK8sApiServer(args: {
   k8sApiServerUrl: string;
   k8sNamespace: string;
   k8sServiceAccountToken: string;
+  insecurelyDisableTlsCertificateValidation?: boolean;
 }) {
   const apiCalls = args.k8sResourceYamls.map((yamlDocument) => {
     const rawEndpoints = args.k8sApiServerEndpointsByResourceKind
@@ -66,6 +68,13 @@ export async function callK8sApiServer(args: {
         headers: {
           Authorization: `Bearer ${args.k8sServiceAccountToken}`,
           "Content-Type": "application/yaml",
+          ...(args.insecurelyDisableTlsCertificateValidation
+            ? {
+                [CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION]: Boolean(
+                  args.insecurelyDisableTlsCertificateValidation
+                ).toString(),
+              }
+            : {}),
         },
         method: "POST",
         body: jsYaml.dump(apiCall.yaml),

@@ -18,6 +18,7 @@
  */
 
 import * as React from "react";
+import { useCallback, useMemo } from "react";
 import {
   Editor,
   EditorFactory,
@@ -26,12 +27,13 @@ import {
   KogitoEditorChannelApi,
   EditorTheme,
   DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
+  ChannelType,
   KogitoEditorEnvelopeApi,
 } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
-import { DmnEditorRoot } from "./DmnEditorRoot";
 import { ResourceContent, ResourcesList, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
-import { useCallback } from "react";
+import { DmnEditorRoot, JavaCodeCompletionExposedInteropApi } from "./DmnEditorRoot";
+import { VsCodeNewDmnEditorEnvelopeContext } from "./vscode/VsCodeNewDmnEditorFactory";
 
 export class DmnEditorFactory implements EditorFactory<Editor, KogitoEditorEnvelopeApi, KogitoEditorChannelApi> {
   public createEditor(
@@ -49,8 +51,11 @@ export class DmnEditorInterface implements Editor {
   public af_componentTitle: "DMN Editor";
 
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
-    private readonly initArgs: EditorInitArgs
+    protected readonly envelopeContext: KogitoEditorEnvelopeContextType<
+      KogitoEditorEnvelopeApi,
+      KogitoEditorChannelApi
+    >,
+    protected readonly initArgs: EditorInitArgs
   ) {}
 
   // Not in-editor
@@ -95,22 +100,27 @@ export class DmnEditorInterface implements Editor {
           this.initArgs.workspaceRootAbsolutePosixPath ?? DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH
         }
         isReadOnly={this.initArgs.isReadOnly}
+        channelType={this.initArgs?.channel}
       />
     );
   }
 }
 
 // This component is a wrapper. It memoizes the DmnEditorRoot props beforing rendering it.
-function DmnEditorRootWrapper({
+export function DmnEditorRootWrapper({
   envelopeContext,
   exposing,
   workspaceRootAbsolutePosixPath,
   isReadOnly,
+  channelType,
+  onOpenedBoxedExpressionEditorNodeChange,
 }: {
   envelopeContext?: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>;
   exposing: (s: DmnEditorRoot) => void;
   workspaceRootAbsolutePosixPath: string;
   isReadOnly: boolean;
+  channelType?: ChannelType;
+  onOpenedBoxedExpressionEditorNodeChange?: (newOpenedNodeId: string | undefined) => void;
 }) {
   const onNewEdit = useCallback(
     (workspaceEdit: WorkspaceEdit) => {
@@ -144,6 +154,23 @@ function DmnEditorRootWrapper({
     [envelopeContext]
   );
 
+  const isImportDataTypesFromJavaClassesSupported = useMemo(
+    (): boolean => channelType === ChannelType.VSCODE_DESKTOP || channelType === ChannelType.VSCODE_WEB,
+    [channelType]
+  );
+
+  const javaCodeCompletionService = useMemo((): JavaCodeCompletionExposedInteropApi | undefined => {
+    if (isImportDataTypesFromJavaClassesSupported) {
+      const { channelApi } = envelopeContext as VsCodeNewDmnEditorEnvelopeContext;
+      return {
+        getFields: (fqcn: string, query: string = "") =>
+          channelApi?.requests?.kogitoJavaCodeCompletion__getAccessors(fqcn, query),
+        getClasses: (query: string) => channelApi?.requests?.kogitoJavaCodeCompletion__getClasses(query),
+        isLanguageServerAvailable: () => channelApi?.requests?.kogitoJavaCodeCompletion__isLanguageServerAvailable(),
+      };
+    }
+  }, [envelopeContext, isImportDataTypesFromJavaClassesSupported]);
+
   return (
     <DmnEditorRoot
       exposing={exposing}
@@ -153,9 +180,12 @@ function DmnEditorRootWrapper({
       onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot={
         onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot
       }
+      onOpenedBoxedExpressionEditorNodeChange={onOpenedBoxedExpressionEditorNodeChange}
       workspaceRootAbsolutePosixPath={workspaceRootAbsolutePosixPath}
       keyboardShortcutsService={envelopeContext?.services.keyboardShortcuts}
       isReadOnly={isReadOnly}
+      isImportDataTypesFromJavaClassesSupported={isImportDataTypesFromJavaClassesSupported}
+      javaCodeCompletionService={javaCodeCompletionService}
     />
   );
 }

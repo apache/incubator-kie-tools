@@ -17,29 +17,19 @@
  * under the License.
  */
 
-import { Page } from "@playwright/test";
-import { Diagram } from "./diagram";
+import { DeploymentOptionArgs } from "../../types";
+import { DeploymentOption, DeploymentOptionOpts } from "../types";
+import { DeploymentYaml } from "./DeploymentYaml";
+import { ServiceYaml } from "./ServiceYaml";
 
-export class DrgNodes {
-  constructor(
-    public diagram: Diagram,
-    public page: Page
-  ) {}
-
-  public async toggle() {
-    await this.page.getByTitle("DRG Nodes").click();
-  }
-
-  public popover() {
-    return this.page.getByTestId("kie-tools--dmn-editor--palette-nodes-popover");
-  }
-
-  public async dragNode(args: { name: string; targetPosition: { x: number; y: number } }) {
-    // This short delay prevents issues where the diagram container gets moved outside the viewport during drag operations.
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    await this.popover()
-      .getByText(args.name, { exact: true })
-      .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });
-  }
+export function QuarkusBlankAppOption(args: DeploymentOptionArgs, opts?: DeploymentOptionOpts): DeploymentOption {
+  return {
+    name: "Quarkus Blank App",
+    content: `
+${DeploymentYaml(args)}
+---
+${ServiceYaml()}
+`,
+    ...opts,
+  };
 }

@@ -153,7 +153,7 @@ export function DmnRunnerTable() {
                                   const newDmnEditorEnvelopeApi =
                                     envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>;
 
-                                  newDmnEditorEnvelopeApi.notifications.dmnEditor_openBoxedExpressionEditor.send(
+                                  newDmnEditorEnvelopeApi.notifications.newDmnEditor_openBoxedExpressionEditor.send(
                                     nodeId
                                   );
                                 }

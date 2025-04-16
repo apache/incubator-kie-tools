@@ -31,9 +31,10 @@ import {
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { ImportJavaClassesWrapper } from "./ImportJavaClasses";
 
 export function DataTypesEmptyState({ onAdd, onPaste }: { onAdd: () => void; onPaste: () => void }) {
-  const settings = useSettings();
+  const { isReadOnly, isImportDataTypesFromJavaClassesSupported, javaCodeCompletionService } = useSettings();
 
   return (
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
@@ -48,7 +49,7 @@ export function DataTypesEmptyState({ onAdd, onPaste }: { onAdd: () => void; onP
         </EmptyStateBody>
         <EmptyStateFooter>
           <br />
-          {!settings.isReadOnly && (
+          {!isReadOnly && (
             <>
               <EmptyStateActions>
                 <Button variant={ButtonVariant.primary} onClick={onAdd}>
@@ -56,9 +57,17 @@ export function DataTypesEmptyState({ onAdd, onPaste }: { onAdd: () => void; onP
                 </Button>
               </EmptyStateActions>
               <br />
-              <br />
+              {isImportDataTypesFromJavaClassesSupported && javaCodeCompletionService && (
+                <>
+                  or
+                  <br />
+                  <br />
+                  <ImportJavaClassesWrapper javaCodeCompletionService={javaCodeCompletionService} />
+                  <br />
+                  <br />
+                </>
+              )}
               or
-              <br />
               <EmptyStateActions>
                 <Button variant={ButtonVariant.link} onClick={onPaste} icon={<PasteIcon />}>
                   Paste data type
