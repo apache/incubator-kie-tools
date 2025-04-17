@@ -31,24 +31,15 @@ import {
   getProcessInstances,
   getChildProcessInstances,
 } from "@kie-tools/runtime-tools-process-gateway-api/dist/gatewayApi";
+import {
+  ProcessListChannelApi,
+  OnOpenProcessListener,
+  OnUpdateProcessListStateListener,
+  ProcessListState,
+  UnSubscribeHandler,
+} from "@kie-tools/runtime-tools-process-enveloped-components/dist/processList";
 
-export interface ProcessListState {
-  filters: ProcessInstanceFilter;
-  sortBy: ProcessListSortBy;
-}
-
-export interface OnOpenProcessListener {
-  onOpen: (process: ProcessInstance) => void;
-}
-
-export interface OnUpdateProcessListStateListener {
-  onUpdate: (processListState: ProcessListState) => void;
-}
-
-export interface UnSubscribeHandler {
-  unSubscribe: () => void;
-}
-export class ProcessListRuntimeApiClient {
+export class ProcessListChannelApiImpl implements ProcessListChannelApi {
   private readonly onOpenProcessListeners: OnOpenProcessListener[] = [];
   private readonly onUpdateProcessListStateListeners: OnUpdateProcessListStateListener[] = [];
   private _ProcessListState: ProcessListState;
@@ -66,11 +57,11 @@ export class ProcessListRuntimeApiClient {
     };
   }
 
-  get processListState(): ProcessListState {
+  get processList__processListState(): ProcessListState {
     return this._ProcessListState;
   }
 
-  async getProcessInstances(
+  async processList__getProcessInstances(
     offset: number,
     limit: number,
     filters: ProcessInstanceFilter,
@@ -85,46 +76,46 @@ export class ProcessListRuntimeApiClient {
     });
   }
 
-  async openProcess(process: ProcessInstance) {
-    this.onOpenProcessListeners.forEach((listener) => listener.onOpen(process));
+  async processList__openProcess(process: ProcessInstance) {
+    this.onOpenProcessListeners.forEach((listener) => listener.onOpen(process, this._ProcessListState));
     return Promise.resolve();
   }
 
-  async initialLoad(filter: ProcessInstanceFilter, sortBy: ProcessListSortBy) {
+  async processList__initialLoad(filter: ProcessInstanceFilter, sortBy: ProcessListSortBy) {
     this._ProcessListState.filters = filter;
     this._ProcessListState.sortBy = sortBy;
     return Promise.resolve();
   }
 
-  async applyFilter(filter: ProcessInstanceFilter) {
-    this.processListState.filters = filter;
-    this.onUpdateProcessListStateListeners.forEach((listener) => listener.onUpdate(this.processListState));
+  async processList__applyFilter(filter: ProcessInstanceFilter) {
+    this._ProcessListState.filters = filter;
+    this.onUpdateProcessListStateListeners.forEach((listener) => listener.onUpdate(this._ProcessListState));
     return Promise.resolve();
   }
 
-  async applySorting(sortBy: ProcessListSortBy) {
+  async processList__applySorting(sortBy: ProcessListSortBy) {
     this._ProcessListState.sortBy = sortBy;
-    this.onUpdateProcessListStateListeners.forEach((listener) => listener.onUpdate(this.processListState));
+    this.onUpdateProcessListStateListeners.forEach((listener) => listener.onUpdate(this._ProcessListState));
     return Promise.resolve();
   }
 
-  async handleProcessSkip(processInstance: ProcessInstance) {
+  async processList__handleProcessSkip(processInstance: ProcessInstance) {
     return handleProcessSkip(processInstance, this.client);
   }
 
-  async handleProcessRetry(processInstance: ProcessInstance) {
+  async processList__handleProcessRetry(processInstance: ProcessInstance) {
     return handleProcessRetry(processInstance, this.client);
   }
 
-  async handleProcessAbort(processInstance: ProcessInstance) {
+  async processList__handleProcessAbort(processInstance: ProcessInstance) {
     return handleProcessAbort(processInstance, this.client);
   }
 
-  async handleProcessMultipleAction(processInstances: ProcessInstance[], operationType: OperationType) {
+  async processList__handleProcessMultipleAction(processInstances: ProcessInstance[], operationType: OperationType) {
     return handleProcessMultipleAction(processInstances, operationType, this.client);
   }
 
-  async query(offset: number, limit: number) {
+  async processList__query(offset: number, limit: number) {
     return getProcessInstances(
       offset,
       limit,
@@ -140,33 +131,33 @@ export class ProcessListRuntimeApiClient {
     });
   }
 
-  async getChildProcessesQuery(rootProcessInstanceId: string) {
+  async processList__getChildProcessesQuery(rootProcessInstanceId: string) {
     return getChildProcessInstances(rootProcessInstanceId, this.client);
   }
 
-  onOpenProcessListen(listener: OnOpenProcessListener): UnSubscribeHandler {
+  async processList__onOpenProcessListen(listener: OnOpenProcessListener) {
     this.onOpenProcessListeners.push(listener);
 
-    return {
+    return Promise.resolve({
       unSubscribe: () => {
         const index = this.onOpenProcessListeners.indexOf(listener);
         if (index > -1) {
           this.onOpenProcessListeners.splice(index, 1);
         }
       },
-    };
+    });
   }
 
-  onUpdateProcessListState(listener: OnUpdateProcessListStateListener): UnSubscribeHandler {
+  async processList__onUpdateProcessListState(listener: OnUpdateProcessListStateListener) {
     this.onUpdateProcessListStateListeners.push(listener);
 
-    return {
+    return Promise.resolve({
       unSubscribe: () => {
         const index = this.onUpdateProcessListStateListeners.indexOf(listener);
         if (index > -1) {
           this.onUpdateProcessListStateListeners.splice(index, 1);
         }
       },
-    };
+    });
   }
 }

@@ -24,7 +24,7 @@ import {
   ProcessInstanceFilter,
   ProcessListSortBy,
 } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { useProcessListGatewayApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessList";
+import { useProcessListChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessList";
 import { EmbeddedProcessList } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processList";
 import { useHistory } from "react-router";
 import { OrderBy } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
@@ -46,7 +46,7 @@ interface Props {
 }
 
 export const ProcessList: React.FC<Props> = ({ onNavigateToProcessDetails }) => {
-  const gatewayApi = useProcessListGatewayApi();
+  const channelApi = useProcessListChannelApi();
   const history = useHistory();
   const filters = useQueryParam(QueryParams.FILTERS);
   const sortBy = useQueryParam(QueryParams.SORT_BY);
@@ -71,19 +71,19 @@ export const ProcessList: React.FC<Props> = ({ onNavigateToProcessDetails }) => 
   }, [initialState, setRuntimePathSearchParams]);
 
   useEffect(() => {
-    const unsubscriber = gatewayApi.onOpenProcessListen({
+    const unsubscriber = channelApi.processList__onOpenProcessListen({
       onOpen(process: ProcessInstance) {
         onNavigateToProcessDetails(process.id);
       },
     });
 
     return () => {
-      unsubscriber.unSubscribe();
+      unsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
     };
-  }, [gatewayApi, onNavigateToProcessDetails]);
+  }, [channelApi, onNavigateToProcessDetails]);
 
   useEffect(() => {
-    const unsubscriber = gatewayApi.onUpdateProcessListState({
+    const unsubscriber = channelApi.processList__onUpdateProcessListState({
       onUpdate(processListState: ProcessListState) {
         const newSearchParams = {
           [QueryParams.FILTERS]: JSON.stringify(processListState.filters),
@@ -100,13 +100,13 @@ export const ProcessList: React.FC<Props> = ({ onNavigateToProcessDetails }) => 
     });
 
     return () => {
-      unsubscriber.unSubscribe();
+      unsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
     };
-  }, [gatewayApi, history, queryParams, setRuntimePathSearchParams]);
+  }, [channelApi, history, queryParams, setRuntimePathSearchParams]);
 
   return (
     <EmbeddedProcessList
-      driver={gatewayApi}
+      channelApi={channelApi}
       targetOrigin={window.location.origin}
       initialState={initialState}
       singularProcessLabel={"Process"}

@@ -20,7 +20,6 @@ import React, { useImperativeHandle, useState, useMemo } from "react";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { ProcessListChannelApi, ProcessListInitArgs } from "../api";
 import ProcessList from "./components/ProcessList/ProcessList";
-import ProcessListEnvelopeViewDriver from "./ProcessListEnvelopeViewDriver";
 import "@patternfly/patternfly/patternfly.css";
 import { ProcessInstanceState, ProcessListState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OrderBy } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
@@ -63,13 +62,11 @@ export const ProcessListEnvelopeView = React.forwardRef<ProcessListEnvelopeViewA
     []
   );
 
-  const driver = useMemo(() => new ProcessListEnvelopeViewDriver(props.channelApi), [props.channelApi]);
-
   return (
     <React.Fragment>
       <ProcessList
         isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
-        driver={driver}
+        channelApi={props.channelApi.requests}
         initialState={processInitialArgs.initialState}
         singularProcessLabel={processInitialArgs?.singularProcessLabel}
         pluralProcessLabel={processInitialArgs?.pluralProcessLabel}

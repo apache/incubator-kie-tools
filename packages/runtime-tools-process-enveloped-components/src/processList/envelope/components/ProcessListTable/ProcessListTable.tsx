@@ -24,7 +24,6 @@ import ProcessListChildTable from "../ProcessListChildTable/ProcessListChildTabl
 import { HistoryIcon } from "@patternfly/react-icons/dist/js/icons/history-icon";
 import Moment from "react-moment";
 import { getProcessInstanceDescription, ProcessInstanceIconCreator } from "../utils/ProcessListUtils";
-import { ProcessListDriver } from "../../../api";
 import ProcessListActionsKebab from "../ProcessListActionsKebab/ProcessListActionsKebab";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import DisablePopup from "../DisablePopup/DisablePopup";
@@ -42,6 +41,7 @@ import {
 import { ItemDescriptor } from "@kie-tools/runtime-tools-components/dist/components/ItemDescriptor";
 import { EndpointLink } from "@kie-tools/runtime-tools-components/dist/components/EndpointLink";
 import { TitleType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { ProcessListChannelApi } from "../../../api";
 
 export interface ProcessListTableProps {
   processInstances: ProcessInstance[];
@@ -54,7 +54,7 @@ export interface ProcessListTableProps {
       [key: number]: boolean;
     }>
   >;
-  driver: ProcessListDriver;
+  channelApi: ProcessListChannelApi;
   onSort: (event: React.SyntheticEvent<EventTarget>, index: number, direction: "desc" | "asc") => Promise<void>;
   sortBy: any;
   setProcessInstances: React.Dispatch<React.SetStateAction<ProcessInstance[]>>;
@@ -82,7 +82,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
   setIsAllChecked,
   singularProcessLabel,
   pluralProcessLabel,
-  driver,
+  channelApi,
   ouiaId,
   ouiaSafe,
 }) => {
@@ -112,7 +112,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
   const onSkipClick = useCallback(
     async (processInstance: ProcessInstance): Promise<void> => {
       try {
-        await driver.handleProcessSkip(processInstance);
+        await channelApi.processList__handleProcessSkip(processInstance);
         onShowMessage(
           "Skip operation",
           `The ${singularProcessLabel?.toLowerCase()} ${processInstance.processName} was successfully skipped.`,
@@ -132,13 +132,13 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
         handleModalToggle();
       }
     },
-    [driver, handleModalToggle, onShowMessage, singularProcessLabel]
+    [channelApi, handleModalToggle, onShowMessage, singularProcessLabel]
   );
 
   const onRetryClick = useCallback(
     async (processInstance: ProcessInstance): Promise<void> => {
       try {
-        await driver.handleProcessRetry(processInstance);
+        await channelApi.processList__handleProcessRetry(processInstance);
         onShowMessage(
           "Retry operation",
           `The ${singularProcessLabel?.toLowerCase()} ${processInstance.processName} was successfully re-executed.`,
@@ -158,13 +158,13 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
         handleModalToggle();
       }
     },
-    [driver, handleModalToggle, onShowMessage, singularProcessLabel]
+    [channelApi, handleModalToggle, onShowMessage, singularProcessLabel]
   );
 
   const onAbortClick = useCallback(
     async (processInstance: ProcessInstance): Promise<void> => {
       try {
-        await driver.handleProcessAbort(processInstance);
+        await channelApi.processList__handleProcessAbort(processInstance);
         onShowMessage(
           "Abort operation",
           `The ${singularProcessLabel?.toLowerCase()} ${processInstance.processName} was successfully aborted.`,
@@ -193,14 +193,14 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
         handleModalToggle();
       }
     },
-    [driver, handleModalToggle, onShowMessage, setProcessInstances, singularProcessLabel]
+    [channelApi, handleModalToggle, onShowMessage, setProcessInstances, singularProcessLabel]
   );
 
   const handleClick = useCallback(
     (processInstance: ProcessInstance): void => {
-      driver.openProcess(processInstance);
+      channelApi.processList__openProcess(processInstance);
     },
-    [driver]
+    [channelApi]
   );
 
   const checkBoxSelect = useCallback(
@@ -316,7 +316,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
           setSelectableInstances={setSelectableInstances}
           singularProcessLabel={singularProcessLabel}
           pluralProcessLabel={pluralProcessLabel}
-          driver={driver}
+          channelApi={channelApi}
           onSkipClick={onSkipClick}
           onRetryClick={onRetryClick}
           onAbortClick={onAbortClick}

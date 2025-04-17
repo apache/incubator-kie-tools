@@ -19,7 +19,7 @@
 import React, { useMemo, FC, ReactElement } from "react";
 import { ApolloClient } from "apollo-client";
 import ProcessListContext from "./ProcessListContext";
-import { ProcessListRuntimeApiClient } from "./ProcessListRuntimeApiClient";
+import { ProcessListChannelApiImpl } from "./ProcessListChannelApiImpl";
 
 interface ProcessListContextProviderProps {
   apolloClient: ApolloClient<any>;
@@ -32,8 +32,8 @@ export const ProcessListContextProvider: FC<ProcessListContextProviderProps> = (
   children,
   options,
 }) => {
-  const processListRuntimeApiClient = useMemo(() => {
-    return new ProcessListRuntimeApiClient(apolloClient, options);
+  const processListChannelApiImpl = useMemo(() => {
+    return new ProcessListChannelApiImpl(apolloClient, options);
   }, [apolloClient, options]);
-  return <ProcessListContext.Provider value={processListRuntimeApiClient}>{children}</ProcessListContext.Provider>;
+  return <ProcessListContext.Provider value={processListChannelApiImpl}>{children}</ProcessListContext.Provider>;
 };

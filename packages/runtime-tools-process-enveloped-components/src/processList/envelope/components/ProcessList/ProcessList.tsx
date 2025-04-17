@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useCallback, useEffect, useState, useMemo } from "react";
-import { ProcessListDriver } from "../../../api";
+import { ProcessListChannelApi } from "../../../api";
 import ProcessListTable from "../ProcessListTable/ProcessListTable";
 import ProcessListToolbar from "../ProcessListToolbar/ProcessListToolbar";
 import { ISortBy } from "@patternfly/react-table/dist/js/components/Table";
@@ -43,13 +43,13 @@ import { OrderBy } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types"
 
 interface ProcessListProps {
   isEnvelopeConnectedToChannel: boolean;
-  driver: ProcessListDriver;
+  channelApi: ProcessListChannelApi;
   initialState: ProcessListState;
   singularProcessLabel: string;
   pluralProcessLabel: string;
 }
 const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
-  driver,
+  channelApi,
   isEnvelopeConnectedToChannel,
   initialState,
   singularProcessLabel,
@@ -130,7 +130,7 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
       setSelectedInstances([]);
       setError(undefined);
       try {
-        const response: ProcessInstance[] = await driver.query(_offset, _limit);
+        const response: ProcessInstance[] = await channelApi.processList__query(_offset, _limit);
         setLimit(response.length);
         if (_resetProcesses) {
           countExpandableRows(response);
@@ -152,7 +152,7 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
         setIsLoadingMore(false);
       }
     },
-    [countExpandableRows, driver]
+    [countExpandableRows, channelApi]
   );
 
   useCancelableEffect(
@@ -160,8 +160,8 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
       ({ canceled }) => {
         if (isEnvelopeConnectedToChannel && !isInitialLoadDone) {
           setFilters(defaultFilters);
-          driver
-            .initialLoad(defaultFilters, defaultOrderBy)
+          channelApi
+            .processList__initialLoad(defaultFilters, defaultOrderBy)
             .then(() => {
               if (canceled.get()) {
                 return;
@@ -176,7 +176,7 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
             });
         }
       },
-      [defaultFilters, defaultOrderBy, doQuery, driver, isEnvelopeConnectedToChannel, isInitialLoadDone]
+      [defaultFilters, defaultOrderBy, doQuery, channelApi, isEnvelopeConnectedToChannel, isInitialLoadDone]
     )
   );
 
@@ -199,10 +199,10 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
   const applyFilter = useCallback(
     async (filter: ProcessInstanceFilter): Promise<void> => {
       setProcessInstances([]);
-      await driver.applyFilter(filter);
+      await channelApi.processList__applyFilter(filter);
       await doQuery(0, defaultPageSize, true, true);
     },
-    [defaultPageSize, doQuery, driver]
+    [defaultPageSize, doQuery, channelApi]
   );
 
   const applySorting = useCallback(
@@ -213,10 +213,10 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
       sortingColumn = _.camelCase(sortingColumn);
       let sortByObj = _.set({}, sortingColumn, direction.toUpperCase());
       sortByObj = alterOrderByObj(sortByObj);
-      await driver.applySorting(sortByObj);
+      await channelApi.processList__applySorting(sortByObj);
       await doQuery(0, defaultPageSize, true, true);
     },
-    [defaultPageSize, doQuery, driver]
+    [defaultPageSize, doQuery, channelApi]
   );
 
   const doRefresh = useCallback(async (): Promise<void> => {
@@ -256,7 +256,7 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
         setProcessInstances={setProcessInstances}
         isAllChecked={isAllChecked}
         setIsAllChecked={setIsAllChecked}
-        driver={driver}
+        channelApi={channelApi}
         defaultStatusFilter={processListDefaultStatusFilter}
         singularProcessLabel={singularProcessLabel}
         pluralProcessLabel={pluralProcessLabel}
@@ -268,7 +268,7 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
             isLoading={isLoading}
             expanded={expanded}
             setExpanded={setExpanded}
-            driver={driver}
+            channelApi={channelApi}
             onSort={applySorting}
             sortBy={sortBy}
             setProcessInstances={setProcessInstances}

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ProcessListDriver } from "../../../api";
+import { ProcessListChannelApi } from "../../../api";
 import { ICell, IRow, IRowCell, Table, TableBody, TableHeader } from "@patternfly/react-table/dist/js/components/Table";
 import React, { useCallback, useEffect, useState } from "react";
 import { getProcessInstanceDescription, ProcessInstanceIconCreator } from "../utils/ProcessListUtils";
@@ -47,7 +47,7 @@ export interface ProcessListChildTableProps {
   setProcessInstances: React.Dispatch<React.SetStateAction<ProcessInstance[]>>;
   selectedInstances: ProcessInstance[];
   setSelectedInstances: React.Dispatch<React.SetStateAction<ProcessInstance[]>>;
-  driver: ProcessListDriver;
+  channelApi: ProcessListChannelApi;
   onSkipClick: (processInstance: ProcessInstance) => Promise<void>;
   onRetryClick: (processInstance: ProcessInstance) => Promise<void>;
   onAbortClick: (processInstance: ProcessInstance) => Promise<void>;
@@ -61,7 +61,7 @@ const ProcessListChildTable: React.FC<ProcessListChildTableProps & OUIAProps> = 
   setSelectedInstances,
   processInstances,
   setProcessInstances,
-  driver,
+  channelApi,
   onSkipClick,
   onRetryClick,
   onAbortClick,
@@ -81,9 +81,9 @@ const ProcessListChildTable: React.FC<ProcessListChildTableProps & OUIAProps> = 
 
   const handleClick = useCallback(
     (childProcessInstance: ProcessInstance): void => {
-      driver.openProcess(childProcessInstance);
+      channelApi.processList__openProcess(childProcessInstance);
     },
-    [driver]
+    [channelApi]
   );
 
   const checkBoxSelect = useCallback(
@@ -217,7 +217,7 @@ const ProcessListChildTable: React.FC<ProcessListChildTableProps & OUIAProps> = 
   const getChildProcessInstances = useCallback(async (): Promise<void> => {
     try {
       setIsLoading(true);
-      const response: ProcessInstance[] = await driver.getChildProcessesQuery(parentProcessId);
+      const response: ProcessInstance[] = await channelApi.processList__getChildProcessesQuery(parentProcessId);
       processInstances.forEach((processInstance: ProcessInstance) => {
         if (processInstance.id === parentProcessId) {
           response.forEach((child: ProcessInstance) => {
@@ -235,7 +235,7 @@ const ProcessListChildTable: React.FC<ProcessListChildTableProps & OUIAProps> = 
     } finally {
       setIsLoading(false);
     }
-  }, [createRows, driver, parentProcessId, processInstances, setSelectableInstances]);
+  }, [createRows, channelApi, parentProcessId, processInstances, setSelectableInstances]);
 
   useEffect(() => {
     if (processInstances.length > 0) {
