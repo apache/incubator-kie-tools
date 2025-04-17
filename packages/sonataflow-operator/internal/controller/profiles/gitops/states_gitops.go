@@ -19,9 +19,6 @@ package gitops
 
 import (
 	"context"
-	"fmt"
-
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/knative"
 
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -73,8 +70,5 @@ func (f *followDeployWorkflowState) Do(ctx context.Context, workflow *operatorap
 
 func (f *followDeployWorkflowState) PostReconcile(ctx context.Context, workflow *operatorapi.SonataFlow) error {
 	// Clean up the outdated Knative revisions, if any
-	if err := knative.CleanupOutdatedRevisions(ctx, f.Cfg, workflow); err != nil {
-		return fmt.Errorf("failied to cleanup workflow outdated revisions, workflow: %s, namespace: %s - %v", workflow.Name, workflow.Namespace, err)
-	}
-	return nil
+	return common.CleanupOutdatedRevisions(ctx, f.Cfg, workflow)
 }
