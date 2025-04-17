@@ -102,9 +102,18 @@ func ToCNCFWorkflow(workflowCR *SonataFlow, context context.Context) (*cncfmodel
 	}
 
 	cncfWorkflow.ID = workflowCR.ObjectMeta.Name
-	cncfWorkflow.Key = workflowCR.ObjectMeta.Annotations[metadata.Key]
-	cncfWorkflow.Description = workflowCR.ObjectMeta.Annotations[metadata.Description]
-	cncfWorkflow.Version = workflowCR.ObjectMeta.Annotations[metadata.Version]
+	if key, ok := workflowCR.ObjectMeta.Annotations[metadata.Key]; ok {
+		cncfWorkflow.Key = key
+	}
+	if name, ok := workflowCR.ObjectMeta.Annotations[metadata.Name]; ok {
+		cncfWorkflow.Name = name
+	}
+	if description, ok := workflowCR.ObjectMeta.Annotations[metadata.Description]; ok {
+		cncfWorkflow.Description = description
+	}
+	if version, ok := workflowCR.ObjectMeta.Annotations[metadata.Version]; ok {
+		cncfWorkflow.Version = version
+	}
 	cncfWorkflow.SpecVersion = extractSpecVersion(workflowCR)
 	cncfWorkflow.ExpressionLang = cncfmodel.ExpressionLangType(extractExpressionLang(workflowCR.ObjectMeta.Annotations))
 
