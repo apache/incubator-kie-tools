@@ -20,14 +20,14 @@
 import { DeploymentOptionArgs } from "../types";
 import { DeploymentOption, DeploymentOptionOpts, DeploymentParameter } from "../deploymentOptions/types";
 import { CustomImageOption } from "../deploymentOptions/customImage";
-import { KogitoQuarkusBlankAppOption } from "../deploymentOptions/kogitoQuarkusBlankApp";
-import { FormWebappServiceYaml } from "../deploymentOptions/kogitoQuarkusBlankApp/FormWebappServiceYaml";
-import { RouteYaml as KogitoQuarkusBlankAppRouteYaml } from "../deploymentOptions/kogitoQuarkusBlankApp/RouteYaml";
-import { FormWebappRouteYaml } from "../deploymentOptions/kogitoQuarkusBlankApp/FormWebappRouteYaml";
+import { QuarkusBlankAppOption } from "../deploymentOptions/quarkusBlankApp";
+import { FormWebappServiceYaml } from "../deploymentOptions/quarkusBlankApp/FormWebappServiceYaml";
+import { RouteYaml as QuarkusBlankAppRouteYaml } from "../deploymentOptions/quarkusBlankApp/RouteYaml";
+import { FormWebappRouteYaml } from "../deploymentOptions/quarkusBlankApp/FormWebappRouteYaml";
 import { RouteYaml as CustomImageRouteYaml } from "../deploymentOptions/customImage/RouteYaml";
 
 export function OpenShiftDeploymentOptions(args: DeploymentOptionArgs): Array<DeploymentOption> {
-  const kogitoQuarkusBlankAppOpts: DeploymentOptionOpts = {
+  const quarkusBlankAppOpts: DeploymentOptionOpts = {
     parameters: {
       includeDmnFormWebapp: {
         id: "includeDmnFormWebapp",
@@ -56,10 +56,10 @@ export function OpenShiftDeploymentOptions(args: DeploymentOptionArgs): Array<De
         appendYamls: [FormWebappServiceYaml(), FormWebappRouteYaml()],
       },
     },
-    appendYamls: [KogitoQuarkusBlankAppRouteYaml()],
+    appendYamls: [QuarkusBlankAppRouteYaml()],
   };
   const customImageOptionOpts: DeploymentOptionOpts = {
     appendYamls: [CustomImageRouteYaml()],
   };
-  return [KogitoQuarkusBlankAppOption(args, kogitoQuarkusBlankAppOpts), CustomImageOption(args, customImageOptionOpts)];
+  return [QuarkusBlankAppOption(args, quarkusBlankAppOpts), CustomImageOption(args, customImageOptionOpts)];
 }

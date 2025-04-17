@@ -4042,7 +4042,7 @@ importers:
         specifier: ^1.1.2
         version: 1.1.2
 
-  packages/dev-deployment-kogito-quarkus-blank-app:
+  packages/dev-deployment-quarkus-blank-app:
     dependencies:
       '@kie-tools/jbpm-quarkus-devui':
         specifier: workspace:*
@@ -4058,14 +4058,14 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
-  packages/dev-deployment-kogito-quarkus-blank-app-image:
+  packages/dev-deployment-quarkus-blank-app-image:
     dependencies:
       '@kie-tools/dev-deployment-base-image':
         specifier: workspace:*
         version: link:../dev-deployment-base-image
-      '@kie-tools/dev-deployment-kogito-quarkus-blank-app':
+      '@kie-tools/dev-deployment-quarkus-blank-app':
         specifier: workspace:*
-        version: link:../dev-deployment-kogito-quarkus-blank-app
+        version: link:../dev-deployment-quarkus-blank-app
     devDependencies:
       '@kie-tools/image-builder':
         specifier: workspace:*
@@ -4157,6 +4157,9 @@ importers:
       '@kie-tools/i18n-common-dictionary':
         specifier: workspace:*
         version: link:../i18n-common-dictionary
+      '@kie-tools/import-java-classes-component':
+        specifier: workspace:*
+        version: link:../import-java-classes-component
       '@kie-tools/pmml-editor-marshaller':
         specifier: workspace:*
         version: link:../pmml-editor-marshaller
@@ -4374,6 +4377,9 @@ importers:
       '@kie-tools-core/react-hooks':
         specifier: workspace:*
         version: link:../react-hooks
+      '@kie-tools-core/vscode-java-code-completion':
+        specifier: workspace:*
+        version: link:../vscode-java-code-completion
       '@kie-tools-core/workspace':
         specifier: workspace:*
         version: link:../workspace
@@ -6517,6 +6523,9 @@ importers:
       '@babel/preset-react':
         specifier: ^7.16.0
         version: 7.22.15(@babel/core@7.23.0)
+      '@kie-tools/cors-proxy-api':
+        specifier: workspace:*
+        version: link:../cors-proxy-api
       '@kie-tools/eslint':
         specifier: workspace:*
         version: link:../eslint

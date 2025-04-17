@@ -17,19 +17,4 @@
  * under the License.
  */
 
-import { DeploymentOptionArgs } from "../../types";
-import { DeploymentOption, DeploymentOptionOpts } from "../types";
-import { DeploymentYaml } from "./DeploymentYaml";
-import { ServiceYaml } from "./ServiceYaml";
-
-export function KogitoQuarkusBlankAppOption(args: DeploymentOptionArgs, opts?: DeploymentOptionOpts): DeploymentOption {
-  return {
-    name: "Kogito Quarkus Blank App",
-    content: `
-${DeploymentYaml(args)}
----
-${ServiceYaml()}
-`,
-    ...opts,
-  };
-}
+export * from "./VsCodeNewDmnEditorFactory";
