@@ -23,7 +23,8 @@
 }
 
 .expression-container .table-component table thead th.runner-column-highlight,
-.expression-container .table-component table tbody td.runner-column-highlight {
+.expression-container .table-component table tbody td.runner-column-highlight,
+.expression-container .table-component table tbody td:first-child.runner-column-highlight {
   border-left: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
   border-right: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
 }
