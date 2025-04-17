@@ -130,6 +130,7 @@ import { applyAutoLayoutToDrd } from "../mutations/applyAutoLayoutToDrd";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { EvaluationHighlightsBadge } from "../evaluationHighlights/EvaluationHighlightsBadge";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { Text } from "@patternfly/react-core/dist/js/components/Text";
 
 const isFirefox = typeof (window as any).InstallTrigger !== "undefined"; // See https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers
 
@@ -1459,10 +1460,12 @@ function DmnDiagramWithoutDrd() {
             </EmptyStateActions>
 
             <br />
-            <EmptyStateBody style={{ fontSize: "12px", wordBreak: "break-word" }}>
+            <Text
+              style={{ fontSize: "12px", wordBreak: "break-word", color: "var(--pf-v5-c-empty-state__body--Color)" }}
+            >
               Auto generating the diagram will automatically place the nodes with the default size and shape. You can
               also manually build your diagram using the &quot;DRG Nodes&quot; option from the palette.
-            </EmptyStateBody>
+            </Text>
           </EmptyStateFooter>
         </EmptyState>
       </div>
