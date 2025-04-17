@@ -366,7 +366,6 @@ export function DecisionTableExpression({
         setWidth: setInputColumnWidth(inputIndex),
         minWidth: DECISION_TABLE_INPUT_MIN_WIDTH,
         groupType: DecisionTableColumnType.InputClause,
-        cssClasses: "decision-table--input",
         isRowIndexColumn: false,
         isHeaderAFeelExpression: true,
       })
@@ -388,7 +387,6 @@ export function DecisionTableExpression({
         setWidth: setOutputColumnWidth(outputIndex),
         minWidth: DECISION_TABLE_OUTPUT_MIN_WIDTH,
         groupType: DecisionTableColumnType.OutputClause,
-        cssClasses: "decision-table--output",
         isRowIndexColumn: false,
       })
     );
@@ -399,7 +397,6 @@ export function DecisionTableExpression({
       accessor: "decision-table-expression" as any, // FIXME: https://github.com/apache/incubator-kie-issues/issues/169
       label: decisionTableExpression["@_label"] ?? DEFAULT_EXPRESSION_VARIABLE_NAME,
       dataType: decisionTableExpression["@_typeRef"] ?? DmnBuiltInDataType.Undefined,
-      cssClasses: "decision-table--output",
       isRowIndexColumn: false,
       width: undefined,
       columns: outputColumns,
@@ -417,7 +414,6 @@ export function DecisionTableExpression({
           minWidth: DECISION_TABLE_ANNOTATION_MIN_WIDTH,
           isInlineEditable: true,
           groupType: DecisionTableColumnType.Annotation,
-          cssClasses: "decision-table--annotation",
           isRowIndexColumn: false,
           dataType: undefined!,
         };

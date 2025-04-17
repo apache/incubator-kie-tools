@@ -21,3 +21,18 @@
 .expression-container .standalone-bee-table table thead th.dmn-runner-output .add-column-button {
   background-color: #bee1f4;
 }
+
+.expression-container .table-component table thead th.runner-column-highlight,
+.expression-container .table-component table tbody td.runner-column-highlight,
+.expression-container .table-component table tbody td:first-child.runner-column-highlight {
+  border-left: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
+  border-right: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
+}
+
+.expression-container .table-component table thead tr:last-child th.runner-column-highlight {
+  border-top: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
+}
+
+.expression-container .table-component table tbody tr:last-child td.runner-column-highlight {
+  border-bottom: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
+}
