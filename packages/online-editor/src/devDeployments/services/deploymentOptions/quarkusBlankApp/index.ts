@@ -17,13 +17,19 @@
  * under the License.
  */
 
-import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
-import { VsCodeNewDmnEditorFactory } from "@kie-tools/dmn-editor-envelope/dist/vscode";
+import { DeploymentOptionArgs } from "../../types";
+import { DeploymentOption, DeploymentOptionOpts } from "../types";
+import { DeploymentYaml } from "./DeploymentYaml";
+import { ServiceYaml } from "./ServiceYaml";
 
-declare const acquireVsCodeApi: any;
-
-EditorEnvelope.init({
-  container: document.getElementById("envelope-app")!,
-  bus: acquireVsCodeApi(),
-  editorFactory: new VsCodeNewDmnEditorFactory(),
-});
+export function QuarkusBlankAppOption(args: DeploymentOptionArgs, opts?: DeploymentOptionOpts): DeploymentOption {
+  return {
+    name: "Quarkus Blank App",
+    content: `
+${DeploymentYaml(args)}
+---
+${ServiceYaml()}
+`,
+    ...opts,
+  };
+}
