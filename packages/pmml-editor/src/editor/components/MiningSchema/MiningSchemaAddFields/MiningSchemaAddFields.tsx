@@ -22,12 +22,7 @@ import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
-import {
-  Select,
-  SelectOption,
-  SelectOptionObject,
-  SelectVariant,
-} from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectOptionObject, SelectVariant } from "@patternfly/react-core/deprecated";
 import { MiningSchemaOption } from "../MiningSchemaContainer/MiningSchemaContainer";
 
 interface MiningSchemaAddFieldsProps {
@@ -93,7 +88,7 @@ const MiningSchemaAddFields = ({ options, onAdd, isDisabled }: MiningSchemaAddFi
             key={selectKey}
             variant={SelectVariant.typeaheadMulti}
             typeAheadAriaLabel="Select fields"
-            onToggle={onToggle}
+            onToggle={(_event, openStatus: boolean) => onToggle(openStatus)}
             toggleId="select-mining-field"
             onSelect={onSelect}
             onClear={clearSelection}

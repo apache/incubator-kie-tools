@@ -19,10 +19,10 @@
 
 .properties-labels {
   &__item {
-    margin-bottom: var(--pf-global--spacer--xs);
-    margin-top: var(--pf-global--spacer--xs);
+    margin-bottom: var(--pf-v5-global--spacer--xs);
+    margin-top: var(--pf-v5-global--spacer--xs);
     &:not(:last-of-type) {
-      margin-right: var(--pf-global--spacer--xs);
+      margin-right: var(--pf-v5-global--spacer--xs);
     }
   }
 }

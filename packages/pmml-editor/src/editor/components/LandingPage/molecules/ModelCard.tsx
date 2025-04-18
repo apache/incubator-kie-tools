@@ -18,14 +18,7 @@
  */
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
-import {
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  CardHeaderMain,
-  CardTitle,
-} from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody, CardFooter, CardHeader, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { ModelType } from "../../..";
 import * as React from "react";
 import { useCallback, useMemo, MouseEvent } from "react";
@@ -67,11 +60,14 @@ export const ModelCard = (props: ModelCardProps) => {
   const _modelName = useMemo(() => (modelName === "" ? MODEL_NAME_NOT_SET : modelName), [modelName]);
 
   return (
-    <Card data-testid="model-card" isHoverable={true} className="model-card" onClick={onClickModel}>
+    <Card data-testid="model-card" className="model-card" onClick={onClickModel}>
       <CardHeader>
-        <CardHeaderMain>
-          <ModelCardIcon type={modelType} />
-        </CardHeaderMain>
+        actions=
+        {
+          <>
+            <ModelCardIcon type={modelType} />
+          </>
+        }
       </CardHeader>
       <Tooltip content={<div>{_modelName}</div>}>
         <CardTitle className="model-card__title">

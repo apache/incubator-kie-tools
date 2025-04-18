@@ -21,7 +21,7 @@ import * as React from "react";
 import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { extractExtension } from "@kie-tools-core/workspaces-git-fs/dist/relativePath/WorkspaceFileRelativePathParser";
 import { Masthead, MastheadBrand, MastheadMain } from "@patternfly/react-core/dist/js/components/Masthead";
-import { PageHeaderToolsItem } from "@patternfly/react-core/dist/js/components/Page";
+import { PageHeaderToolsItem } from "@patternfly/react-core/deprecated";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -32,12 +32,7 @@ import { useHistory } from "react-router";
 import { useAppI18n } from "../i18n";
 import { routes } from "../routes";
 import { Dashboard } from "../data";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownPosition,
-  DropdownToggle,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownItem, DropdownPosition, DropdownToggle } from "@patternfly/react-core/deprecated";
 import { useApp } from "../context/AppContext";
 
 interface Props {
@@ -92,8 +87,9 @@ export function AppToolbar(props: Props) {
   return (
     <Masthead aria-label={"Page header"} display={{ default: "stack" }} className="app--masthead">
       <MastheadMain style={{ justifyContent: "space-between" }}>
-        <PageHeaderToolsItem className={"pf-l-flex"}>
+        <PageHeaderToolsItem className={"pf-v5-l-flex"}>
           <MastheadBrand
+            component="a"
             onClick={() => history.push({ pathname: routes.root.path({}) })}
             style={{ textDecoration: "none" }}
           >
@@ -128,7 +124,7 @@ export function AppToolbar(props: Props) {
                   toggle={
                     <DropdownToggle
                       className="app--toolbar-dropdown-hoverable-dark"
-                      onToggle={(isOpen) => setModelDropdownOpen(isOpen)}
+                      onToggle={(_event, isOpen) => setModelDropdownOpen(isOpen)}
                     >
                       {filename}
                     </DropdownToggle>

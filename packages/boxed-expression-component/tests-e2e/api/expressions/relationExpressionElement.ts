@@ -98,7 +98,7 @@ export class RelationExpressionElement {
     await this.locator
       .getByRole("columnheader")
       .nth(index + 1)
-      .locator("svg")
+      .locator(".add-column-button svg")
       .click();
   }
 

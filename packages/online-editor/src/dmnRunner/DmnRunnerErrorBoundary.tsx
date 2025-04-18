@@ -22,7 +22,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ErrorBoundary } from "../reactExt/ErrorBoundary";
 import { useDmnRunnerState } from "./DmnRunnerContext";
 import { useOnlineI18n } from "../i18n";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
@@ -43,7 +48,7 @@ export function DmnRunnerErrorBoundary({ children }: React.PropsWithChildren<{}>
     () => (
       <div>
         <EmptyState>
-          <EmptyStateIcon icon={ExclamationTriangleIcon} />
+          <EmptyStateHeader icon={<EmptyStateIcon icon={ExclamationTriangleIcon} />} />
           <TextContent>
             <Text component={"h2"}>{i18n.dmnRunner.error.title}</Text>
           </TextContent>

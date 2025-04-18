@@ -26,16 +26,11 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import {
-  Select,
-  SelectOption,
-  SelectOptionObject,
-  SelectVariant,
-} from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectOptionObject, SelectVariant } from "@patternfly/react-core/deprecated";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
 import { ArrowAltCircleRightIcon } from "@patternfly/react-icons/dist/js/icons/arrow-alt-circle-right-icon";
-import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+
 import { DDDataField } from "../DataDictionaryContainer/DataDictionaryContainer";
 import "./DataTypeItem.scss";
 import ConstraintsLabel from "../ConstraintsLabel/ConstraintsLabel";
@@ -44,6 +39,8 @@ import PropertiesLabels from "../PropertiesLabels/PropertiesLabels";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
 import { ValidationIndicator } from "../../EditorCore/atoms";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 interface DataTypeItemProps {
   dataType: DDDataField;
@@ -225,9 +222,6 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                         <FormGroup
                           fieldId="name"
                           label="Name"
-                          helperTextInvalid="Name is mandatory and must be unique"
-                          helperTextInvalidIcon={<ExclamationCircleIcon />}
-                          validated={validation}
                           style={{ width: 280 }}
                           isRequired={true}
                           data-ouia-component-type="field-name"
@@ -237,12 +231,25 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                             id="name"
                             name="name"
                             value={name}
-                            onChange={handleNameChange}
+                            onChange={(_event, value: string) => handleNameChange(value)}
                             placeholder="Name"
                             validated={validation}
                             onBlur={handleNameSave}
                             autoComplete="off"
                           />
+                          {validation === "error" ? (
+                            <FormHelperText>
+                              <HelperText>
+                                <HelperTextItem variant="error">Name is mandatory and must be unique</HelperTextItem>
+                              </HelperText>
+                            </FormHelperText>
+                          ) : (
+                            <FormHelperText>
+                              <HelperText>
+                                <HelperTextItem variant="success"></HelperTextItem>
+                              </HelperText>
+                            </FormHelperText>
+                          )}
                         </FormGroup>
                       </SplitItem>
                       <SplitItem>
@@ -251,7 +258,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                             id="type"
                             variant={SelectVariant.single}
                             aria-label="Select Input Type"
-                            onToggle={typeToggle}
+                            onToggle={(_event, isOpen: boolean) => typeToggle(isOpen)}
                             onSelect={typeSelect}
                             selections={typeSelection}
                             isOpen={isTypeSelectOpen}
@@ -281,7 +288,7 @@ const DataTypeItem = (props: DataTypeItemProps) => {
                             id="optype"
                             variant={SelectVariant.single}
                             aria-label="Select Op Type"
-                            onToggle={optypeToggle}
+                            onToggle={(_event, isOpen: boolean) => optypeToggle(isOpen)}
                             onSelect={optypeSelect}
                             selections={optypeSelection}
                             isOpen={isOptypeSelectOpen}

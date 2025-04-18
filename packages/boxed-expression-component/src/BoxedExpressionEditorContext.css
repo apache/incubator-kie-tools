@@ -22,11 +22,11 @@
 }
 
 .boxed-expression-provider {
-  background-color: var(--pf-global--BackgroundColor--100);
-  font-family: var(--pf-global--FontFamily--sans-serif);
-  font-size: var(--pf-global--FontSize--md);
-  font-weight: var(--pf-global--FontWeight--normal);
-  line-height: var(--pf-global--LineHeight--md);
+  background-color: var(--pf-v5-global--BackgroundColor--100);
+  font-family: var(--pf-v5-global--FontFamily--sans-serif);
+  font-size: var(--pf-v5-global--FontSize--md);
+  font-weight: var(--pf-v5-global--FontWeight--normal);
+  line-height: var(--pf-v5-global--LineHeight--md);
   text-align: left;
   user-select: none;
   touch-action: none;
@@ -56,8 +56,8 @@
 .boxed-expression-provider label {
   font-family: inherit;
   font-size: 100%;
-  line-height: var(--pf-global--LineHeight--md);
-  color: var(--pf-global--Color--100);
+  line-height: var(--pf-v5-global--LineHeight--md);
+  color: var(--pf-v5-global--Color--100);
 }
 
 .boxed-expression-provider blockquote,
@@ -87,7 +87,7 @@
 
 .expression-container .expression-info .expression-info-name {
   font-weight: 700;
-  color: var(--pf-global--palette--black-600);
+  color: var(--pf-v5-global--palette--black-600);
   font-family: Menlo, monospace;
   font-size: 0.8em;
   white-space: pre !important;

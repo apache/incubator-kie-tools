@@ -24,15 +24,10 @@ import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form"
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { List, ListItem } from "@patternfly/react-core/dist/js/components/List";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { SelectDirection } from "@patternfly/react-core/dist/js/components/Select";
+import { SelectDirection } from "@patternfly/react-core/deprecated";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import {
-  Wizard,
-  WizardContext,
-  WizardContextConsumer,
-  WizardFooter,
-} from "@patternfly/react-core/dist/js/components/Wizard";
+import { Wizard, WizardContext, WizardContextConsumer, WizardFooter } from "@patternfly/react-core/deprecated";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
 import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
@@ -46,6 +41,7 @@ import { ExtendedServicesStatus } from "./ExtendedServicesStatus";
 import { useRoutes } from "../navigation/Hooks";
 import { useSettingsDispatch } from "../settings/SettingsContext";
 import { useEnv } from "../env/hooks/EnvContext";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 enum ModalPage {
   INITIAL,
@@ -676,7 +672,7 @@ export function ExtendedServicesModal() {
         <>
           {modalPage === ModalPage.INITIAL && (
             <Button
-              className="pf-u-mt-xl kogito--editor__extended-services-modal-initial-center"
+              className="pf-v5-u-mt-xl kogito--editor__extended-services-modal-initial-center"
               onClick={() =>
                 env.KIE_SANDBOX_DISABLE_EXTENDED_SERVICES_WIZARD === false
                   ? setModalPage(ModalPage.WIZARD)
@@ -689,7 +685,7 @@ export function ExtendedServicesModal() {
           {modalPage === ModalPage.WIZARD && (
             <div className={"kogito--editor__extended-services-modal-footer"}>
               <Alert
-                variant={"default"}
+                variant={"custom"}
                 isInline={true}
                 className={"kogito--editor__extended-services-modal-footer-alert"}
                 title={
@@ -713,23 +709,23 @@ export function ExtendedServicesModal() {
             </TextContent>
           </div>
           <div>
-            <TextContent className="pf-u-mt-sm pf-u-mb-md">
+            <TextContent className="pf-v5-u-mt-sm pf-v5-u-mb-md">
               <Text component={TextVariants.p}>{i18n.extendedServices.modal.initial.subHeader}</Text>
             </TextContent>
           </div>
           <br />
           {extendedServices.installTriggeredBy === DependentFeature.DMN_RUNNER && (
-            <div className="pf-u-display-flex pf-u-flex-direction-row">
-              <div className="pf-u-w-25 pf-u-ml-sm">
+            <div className="pf-v5-u-display-flex pf-v5-u-flex-direction-row">
+              <div className="pf-v5-u-w-25 pf-v5-u-ml-sm">
                 <TextContent>
                   <Text component={TextVariants.p}>{i18n.dmnRunner.modal.initial.runDmnModels}</Text>
                 </TextContent>
                 <br />
-                <TextContent className="pf-u-mt-md">
+                <TextContent className="pf-v5-u-mt-md">
                   <Text component={TextVariants.p}>{i18n.dmnRunner.modal.initial.explanation}</Text>
                 </TextContent>
                 <br />
-                <TextContent className="pf-u-mt-md">
+                <TextContent className="pf-v5-u-mt-md">
                   <Text component={TextVariants.p}>
                     <I18nWrapped components={{ icon: <ExclamationCircleIcon /> }}>
                       {i18n.dmnRunner.modal.initial.notificationPanelExplanation}
@@ -738,9 +734,9 @@ export function ExtendedServicesModal() {
                 </TextContent>
               </div>
               <br />
-              <div className="pf-u-w-75 pf-u-p-sm">
+              <div className="pf-v5-u-w-75 pf-v5-u-p-sm">
                 <img
-                  className="pf-u-h-100"
+                  className="pf-v5-u-h-100"
                   src={routes.static.images.dmnRunnerGif.path({})}
                   alt={"DMN Runner usage"}
                   width={"100%"}
@@ -749,22 +745,22 @@ export function ExtendedServicesModal() {
             </div>
           )}
           {extendedServices.installTriggeredBy === DependentFeature.DEV_DEPLOYMENTS && (
-            <div className="pf-u-mt-xl pf-u-display-flex pf-u-flex-direction-row">
-              <div className="pf-u-w-25 pf-u-mr-sm">
+            <div className="pf-v5-u-mt-xl pf-v5-u-display-flex pf-v5-u-flex-direction-row">
+              <div className="pf-v5-u-w-25 pf-v5-u-mr-sm">
                 <TextContent>
                   <Text component={TextVariants.p}>{i18n.devDeployments.introduction.explanation}</Text>
                 </TextContent>
                 <br />
-                <TextContent className="pf-u-mt-md">
+                <TextContent className="pf-v5-u-mt-md">
                   <Text component={TextVariants.p}>
                     <I18nHtml>{i18n.devDeployments.introduction.disclaimer}</I18nHtml>
                   </Text>
                 </TextContent>
               </div>
               <br />
-              <div className="pf-u-w-75">
+              <div className="pf-v5-u-w-75">
                 <img
-                  className="pf-u-h-100"
+                  className="pf-v5-u-h-100"
                   src={routes.static.images.dmnDevDeploymentGif.path({})}
                   alt={"DMN Dev Deployments usage"}
                   width={"100%"}
@@ -869,25 +865,25 @@ function ExtendedServicesPortForm() {
       </Text>
       <br />
       <Form isHorizontal={true}>
-        <FormGroup
-          fieldId={"extended-services-port"}
-          label={i18n.dmnRunner.modal.wizard.advancedSettings.label}
-          validated={
-            config.port === "" || parseInt(config.port, 10) < 0 || parseInt(config.port, 10) > 65353
-              ? "error"
-              : "success"
-          }
-          helperTextInvalid={i18n.dmnRunner.modal.wizard.advancedSettings.helperTextInvalid}
-        >
+        <FormGroup fieldId={"extended-services-port"} label={i18n.dmnRunner.modal.wizard.advancedSettings.label}>
           <TextInput
             value={config.port}
             type={"number"}
-            onChange={(value) =>
+            onChange={(_event, value) =>
               settingsDispatch.set((settings) => {
                 settings.extendedServices.port = `${value}`;
               })
             }
           />
+          <HelperText>
+            {config.port === "" || parseInt(config.port, 10) < 0 || parseInt(config.port, 10) > 65353 ? (
+              <HelperTextItem variant="error" icon={<ExclamationCircleIcon />}>
+                {i18n.dmnRunner.modal.wizard.advancedSettings.helperTextInvalid}
+              </HelperTextItem>
+            ) : (
+              <HelperTextItem></HelperTextItem>
+            )}
+          </HelperText>
         </FormGroup>
       </Form>
     </>

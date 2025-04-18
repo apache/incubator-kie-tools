@@ -159,7 +159,7 @@ export class DecisionServicePropertiesPanel extends PropertiesPanelBase {
       .getByTestId("kie-tools--dmn-editor--draggable-icon")
       .nth(args.fromIndex);
 
-    await source.hover();
+    await target.scrollIntoViewIfNeeded();
     await source.dispatchEvent("dragstart");
     await source.dragTo(target);
   }
@@ -185,6 +185,7 @@ export class DecisionServicePropertiesPanel extends PropertiesPanelBase {
       .nth(args.fromIndex);
 
     await source.hover();
+    await target.scrollIntoViewIfNeeded();
     await source.dispatchEvent("dragstart");
     await source.dragTo(target);
   }

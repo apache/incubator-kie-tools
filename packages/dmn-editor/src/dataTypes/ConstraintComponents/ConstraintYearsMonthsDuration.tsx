@@ -82,7 +82,7 @@ export function ConstraintYearsMonthsDuration({
             style={{ flex: "1 1 0px" }}
             className={`kie-dmn-editor--constraint-input ${isValid ? "" : "kie-dmn-editor--constraint-invalid"}`}
             value={years}
-            onChange={onYearsChange}
+            onChange={(_event, _val) => onYearsChange}
             autoFocus={true}
             isDisabled={isDisabled}
           />
@@ -96,7 +96,7 @@ export function ConstraintYearsMonthsDuration({
             style={{ flex: "1 1 0px" }}
             className={`kie-dmn-editor--constraint-input ${isValid ? "" : "kie-dmn-editor--constraint-invalid"}`}
             value={months}
-            onChange={onMonthsChange}
+            onChange={(_event, _val) => onMonthsChange}
             isDisabled={isDisabled}
           />
         </div>

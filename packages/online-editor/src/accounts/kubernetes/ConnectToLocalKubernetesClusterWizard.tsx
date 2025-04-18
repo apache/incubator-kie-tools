@@ -21,12 +21,12 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { InputGroup, InputGroupText, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { List, ListComponent, ListItem, OrderType } from "@patternfly/react-core/dist/js/components/List";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { Wizard, WizardContextConsumer, WizardFooter } from "@patternfly/react-core/dist/js/components/Wizard";
+import { Wizard, WizardContextConsumer, WizardFooter } from "@patternfly/react-core/deprecated";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { useOnlineI18n } from "../../i18n";
 import { KubernetesSettingsTabMode } from "./ConnectToKubernetesSection";
@@ -48,12 +48,14 @@ import {
 } from "@kie-tools-core/kubernetes-bridge/dist/service";
 import { OperatingSystem, getOperatingSystem } from "@kie-tools-core/operating-system";
 import { SelectOs } from "../../os/SelectOs";
-import { SelectDirection } from "@patternfly/react-core/dist/js/components/Select";
+import { SelectDirection } from "@patternfly/react-core/deprecated";
 import { KieSandboxKubernetesService } from "../../devDeployments/services/kubernetes/KieSandboxKubernetesService";
 import { Tab, TabTitleText, Tabs } from "@patternfly/react-core/dist/js/components/Tabs";
 import ExternalLinkAltIcon from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { useRoutes } from "../../navigation/Hooks";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
+import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 
 enum WizardStepIds {
   CREATE_CLUSTER = "CREATE_CLUSTER",
@@ -199,21 +201,21 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
   }, [props, previousConnection]);
 
   const onNamespaceInputChanged = useCallback(
-    (newValue: string) => {
+    (event: React.FormEvent<HTMLInputElement>, newValue: string) => {
       props.setConnection((c) => ({ ...c, namespace: newValue }));
     },
     [props]
   );
 
   const onHostInputChanged = useCallback(
-    (newValue: string) => {
+    (event: React.FormEvent<HTMLInputElement>, newValue: string) => {
       props.setConnection((c) => ({ ...c, host: newValue }));
     },
     [props]
   );
 
   const onTokenInputChanged = useCallback(
-    (newValue: string) => {
+    (event: React.FormEvent<HTMLInputElement>, newValue: string) => {
       props.setConnection((c) => ({ ...c, token: newValue }));
     },
     [props]
@@ -277,14 +279,14 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
     () => (
       <>
         <br />
-        <List component={ListComponent.ol} type={OrderType.number} className="pf-u-mt-md">
+        <List component={ListComponent.ol} type={OrderType.number} className="pf-v5-u-mt-md">
           <ListItem>
             <TextContent>
               <Text component={TextVariants.p}>
                 <a href={FLAVOR_INSTALL_DOCS[kubernetesFlavor]} target={"_blank"} rel="noreferrer">
                   {i18n.devDeployments.kubernetesConfigWizard.steps.first.installFlavor(kubernetesFlavor)}
                   &nbsp;
-                  <ExternalLinkAltIcon className="pf-u-mx-sm" />
+                  <ExternalLinkAltIcon className="pf-v5-u-mx-sm" />
                 </a>
               </Text>
             </TextContent>
@@ -295,7 +297,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                 <a href={KUBECTL_INSTALL_DOCS[operatingSystem]} target={"_blank"} rel="noreferrer">
                   {i18n.devDeployments.kubernetesConfigWizard.steps.first.installKubectl}
                   &nbsp;
-                  <ExternalLinkAltIcon className="pf-u-mx-sm" />
+                  <ExternalLinkAltIcon className="pf-v5-u-mx-sm" />
                 </a>
               </Text>
             </TextContent>
@@ -401,37 +403,44 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
             <Text component={TextVariants.p}>
               {i18n.devDeployments.kubernetesConfigWizard.steps.second.introduction}
             </Text>
-            <Text component={TextVariants.small} style={{ color: "var(--pf-global--palette--red-100)" }}>
+            <Text component={TextVariants.small} style={{ color: "var(--pf-v5-global--palette--red-100)" }}>
               {i18n.devDeployments.kubernetesConfigWizard.steps.second.disclaimer}
             </Text>
             <br />
             <br />
-            <Form className="pf-u-mt-md" onSubmit={(e) => e.preventDefault()}>
+            <Form className="pf-v5-u-mt-md" onSubmit={(e) => e.preventDefault()}>
               <FormGroup
                 fieldId={"dev-deployments-config-namespace"}
                 label={i18n.devDeployments.kubernetesConfigWizard.fields.namespace}
-                validated={isNamespaceValidated ? "success" : "error"}
-                helperTextInvalid={i18n.devDeployments.common.requiredField}
                 isRequired={true}
               >
                 <InputGroup>
-                  <TextInput
-                    autoFocus={true}
-                    autoComplete={"off"}
-                    type="text"
-                    id="namespace-field"
-                    name="namespace-field"
-                    aria-label="namespace field"
-                    value={props.connection.namespace}
-                    placeholder={i18n.devDeployments.kubernetesConfigWizard.steps.second.namespacePlaceholder}
-                    onChange={onNamespaceInputChanged}
-                  />
+                  <InputGroupItem isFill>
+                    <TextInput
+                      autoFocus={true}
+                      autoComplete={"off"}
+                      type="text"
+                      id="namespace-field"
+                      name="namespace-field"
+                      aria-label="namespace field"
+                      value={props.connection.namespace}
+                      placeholder={i18n.devDeployments.kubernetesConfigWizard.steps.second.namespacePlaceholder}
+                      onChange={onNamespaceInputChanged}
+                    />
+                  </InputGroupItem>
                   <InputGroupText>
-                    <Button isSmall variant="plain" aria-label="Clear namespace button" onClick={onClearNamespace}>
+                    <Button size="sm" variant="plain" aria-label="Clear namespace button" onClick={onClearNamespace}>
                       <TimesIcon />
                     </Button>
                   </InputGroupText>
                 </InputGroup>
+                <HelperText>
+                  {isNamespaceValidated === true ? (
+                    <HelperTextItem variant="error">{i18n.devDeployments.common.requiredField}</HelperTextItem>
+                  ) : (
+                    <HelperTextItem icon={ValidatedOptions.success}></HelperTextItem>
+                  )}
+                </HelperText>
               </FormGroup>
               <Text component={TextVariants.p}>
                 {i18n.devDeployments.kubernetesConfigWizard.steps.second.namespaceInputReason}
@@ -439,29 +448,36 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
               <FormGroup
                 fieldId={"dev-deployments-config-host"}
                 label={i18n.devDeployments.kubernetesConfigWizard.fields.kubernetesApiServerUrl}
-                validated={isHostValidated ? "success" : "error"}
-                helperTextInvalid={i18n.devDeployments.common.requiredField}
                 isRequired={true}
               >
                 <InputGroup>
-                  <TextInput
-                    autoFocus={true}
-                    autoComplete={"off"}
-                    isRequired
-                    type="text"
-                    id="host-field"
-                    name="host-field"
-                    aria-label="Host field"
-                    value={props.connection.host}
-                    placeholder={i18n.devDeployments.kubernetesConfigWizard.steps.second.hostPlaceholder}
-                    onChange={onHostInputChanged}
-                  />
+                  <InputGroupItem isFill>
+                    <TextInput
+                      autoFocus={true}
+                      autoComplete={"off"}
+                      isRequired
+                      type="text"
+                      id="host-field"
+                      name="host-field"
+                      aria-label="Host field"
+                      value={props.connection.host}
+                      placeholder={i18n.devDeployments.kubernetesConfigWizard.steps.second.hostPlaceholder}
+                      onChange={onHostInputChanged}
+                    />
+                  </InputGroupItem>
                   <InputGroupText>
-                    <Button isSmall variant="plain" aria-label="Clear host button" onClick={onClearHost}>
+                    <Button size="sm" variant="plain" aria-label="Clear host button" onClick={onClearHost}>
                       <TimesIcon />
                     </Button>
                   </InputGroupText>
                 </InputGroup>
+                <HelperText>
+                  {isHostValidated === true ? (
+                    <HelperTextItem variant="error">{i18n.devDeployments.common.requiredField}</HelperTextItem>
+                  ) : (
+                    <HelperTextItem icon={ValidatedOptions.success}></HelperTextItem>
+                  )}
+                </HelperText>
               </FormGroup>
               <Text component={TextVariants.p}>
                 {i18n.devDeployments.kubernetesConfigWizard.steps.second.hostInputReason}
@@ -485,33 +501,36 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
             <CommandCopyBlock command={clusterConfigCommands.getSecret()} />
             <br />
             <br />
-            <Form className="pf-u-mt-md">
-              <FormGroup
-                fieldId={"dev-deployments-config-token"}
-                label={i18n.terms.token}
-                validated={isTokenValidated ? "success" : "error"}
-                helperTextInvalid={i18n.devDeployments.common.requiredField}
-                isRequired={true}
-              >
+            <Form className="pf-v5-u-mt-md">
+              <FormGroup fieldId={"dev-deployments-config-token"} label={i18n.terms.token} isRequired={true}>
                 <InputGroup>
-                  <TextInput
-                    autoComplete={"off"}
-                    isRequired
-                    type="text"
-                    id="token-field"
-                    name="token-field"
-                    aria-label="Token field"
-                    value={props.connection.token}
-                    placeholder={i18n.devDeployments.kubernetesConfigWizard.steps.third.tokenPlaceholder}
-                    onChange={onTokenInputChanged}
-                    tabIndex={2}
-                  />
+                  <InputGroupItem isFill>
+                    <TextInput
+                      autoComplete={"off"}
+                      isRequired
+                      type="text"
+                      id="token-field"
+                      name="token-field"
+                      aria-label="Token field"
+                      value={props.connection.token}
+                      placeholder={i18n.devDeployments.kubernetesConfigWizard.steps.third.tokenPlaceholder}
+                      onChange={onTokenInputChanged}
+                      tabIndex={2}
+                    />
+                  </InputGroupItem>
                   <InputGroupText>
-                    <Button isSmall variant="plain" aria-label="Clear host button" onClick={onClearToken}>
+                    <Button size="sm" variant="plain" aria-label="Clear host button" onClick={onClearToken}>
                       <TimesIcon />
                     </Button>
                   </InputGroupText>
                 </InputGroup>
+                <HelperText>
+                  {isTokenValidated === true ? (
+                    <HelperTextItem variant="error">{i18n.devDeployments.common.requiredField}</HelperTextItem>
+                  ) : (
+                    <HelperTextItem icon={ValidatedOptions.success}></HelperTextItem>
+                  )}
+                </HelperText>
               </FormGroup>
               {/* 
               TODO: uncomment when enabling kubernetes deployment to use cors-proxy
@@ -528,7 +547,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                 />
               </FormGroup> */}
             </Form>
-            <Text className="pf-u-my-md" component={TextVariants.p}>
+            <Text className="pf-v5-u-my-md" component={TextVariants.p}>
               {i18n.devDeployments.kubernetesConfigWizard.steps.third.tokenInputReason}
             </Text>
           </div>
@@ -541,22 +560,22 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
           <>
             {isConnectLoading && (
               <div className="kogito--editor__dev-deployments-wizard-loading-spinner">
-                <Spinner isSVG size="xl" />
+                <Spinner size="xl" />
               </div>
             )}
             {!isConnectLoading && isConnectionValidated && (
               <div>
                 <Alert
-                  variant={"default"}
+                  variant={"custom"}
                   isInline={true}
                   title={i18n.devDeployments.kubernetesConfigWizard.steps.final.connectionSuccess}
                 />
                 <br />
-                <Text className="pf-u-mt-md" component={TextVariants.p}>
+                <Text className="pf-v5-u-mt-md" component={TextVariants.p}>
                   {i18n.devDeployments.kubernetesConfigWizard.steps.final.introduction}
                 </Text>
                 <br />
-                <Text className="pf-u-mt-md" component={TextVariants.p}>
+                <Text className="pf-v5-u-mt-md" component={TextVariants.p}>
                   {i18n.devDeployments.kubernetesConfigWizard.steps.final.configNote}
                 </Text>
               </div>
@@ -569,15 +588,15 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                   title={i18n.devDeployments.kubernetesConfigWizard.steps.final.connectionError}
                 />
                 <br />
-                <Text className="pf-u-mt-md" component={TextVariants.p}>
+                <Text className="pf-v5-u-mt-md" component={TextVariants.p}>
                   {i18n.devDeployments.kubernetesConfigWizard.steps.final.connectionErrorLong}
                 </Text>
                 <br />
-                <Text className="pf-u-mt-md" component={TextVariants.p}>
+                <Text className="pf-v5-u-mt-md" component={TextVariants.p}>
                   {i18n.devDeployments.kubernetesConfigWizard.steps.final.possibleErrorReasons.introduction}
                 </Text>
                 <br />
-                <List className="pf-u-my-md">
+                <List className="pf-v5-u-my-md">
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
@@ -605,7 +624,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
                 </List>
                 <br />
                 <br />
-                <Text className="pf-u-mt-md" component={TextVariants.p}>
+                <Text className="pf-v5-u-mt-md" component={TextVariants.p}>
                   {i18n.devDeployments.kubernetesConfigWizard.steps.final.checkInfo}
                 </Text>
               </div>
