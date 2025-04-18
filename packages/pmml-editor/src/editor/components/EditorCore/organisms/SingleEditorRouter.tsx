@@ -27,9 +27,7 @@ import { UnsupportedModelPage } from "../templates";
 import { Operation, useOperation } from "../../EditorScorecard";
 import { LinearRegressionViewerPage } from "../../LinearRegressionViewer/templates";
 
-interface ModelParams {
-  index?: string;
-}
+type ModelParams = { index?: string };
 
 interface SingleEditorRouterProps {
   path: string;

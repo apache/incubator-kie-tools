@@ -35,8 +35,8 @@ export function BasePageNav() {
           key={"Workflows-nav"}
           isActive={
             location.pathname === routes.workflows.home.path({}) ||
-            matchPath(location.pathname, { path: routes.workflows.form.path({ workflowId: ":workflowId" }) })
-              ?.isExact ||
+            matchPath({ path: routes.workflows.form.path({ workflowId: ":workflowId" }) }, location.pathname) !==
+              null ||
             location.pathname === routes.workflows.cloudEvent.path({})
           }
           ouiaId="workflows-nav"
@@ -49,9 +49,12 @@ export function BasePageNav() {
           key={"RuntimeToolsWorkflowInstances-nav"}
           isActive={
             location.pathname === routes.runtimeTools.workflowInstances.path({}) ||
-            matchPath(location.pathname, {
-              path: routes.runtimeTools.workflowDetails.path({ workflowId: ":workflowId" }),
-            })?.isExact
+            matchPath(
+              {
+                path: routes.runtimeTools.workflowDetails.path({ workflowId: ":workflowId" }),
+              },
+              location.pathname
+            ) !== null
           }
           ouiaId="runtime-tools-workflow-instances-nav"
         >

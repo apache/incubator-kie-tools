@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { matchPath } from "react-router";
+import { matchPath } from "react-router-dom";
 import { extname } from "path";
 import { useMemo } from "react";
 
@@ -108,19 +108,11 @@ export function useImportableUrl(args: {
     }
 
     if (url.host === "github.com" || url.host === "raw.githubusercontent.com") {
-      const defaultBranchMatch = matchPath<{ org: string; repo: string }>(url.pathname, {
-        path: "/:org/:repo",
-        exact: true,
-        strict: true,
-        sensitive: false,
-      });
-
-      const customBranchMatch = matchPath<{ org: string; repo: string; tree: string }>(url.pathname, {
-        path: "/:org/:repo/tree/:tree",
-        exact: true,
-        strict: true,
-        sensitive: false,
-      });
+      const defaultBranchMatch = matchPath({ path: "/:org/:repo", end: true, caseSensitive: false }, url.pathname);
+      const customBranchMatch = matchPath(
+        { path: "/:org/:repo/tree/:tree", end: true, caseSensitive: false },
+        url.pathname
+      );
 
       if (defaultBranchMatch) {
         return ifAllowed({ type: UrlType.GITHUB, url });
@@ -133,39 +125,47 @@ export function useImportableUrl(args: {
         return ifAllowed({ type: UrlType.GITHUB, url: customBranchUrl, branch });
       }
 
-      const gitHubFileMatch = matchPath<{ org: string; repo: string; tree: string; path: string }>(url.pathname, {
-        path: "/:org/:repo/blob/:tree/:path*",
-        exact: true,
-        strict: true,
-        sensitive: false,
-      });
+      const gitHubFileMatch = matchPath(
+        { path: "/:org/:repo/blob/:tree/:path*", end: true, caseSensitive: false },
+        url.pathname
+      );
 
-      if (gitHubFileMatch) {
+      if (
+        gitHubFileMatch !== null &&
+        gitHubFileMatch.params.org &&
+        gitHubFileMatch.params.repo &&
+        gitHubFileMatch.params.tree &&
+        gitHubFileMatch.params["path*"]
+      ) {
         return ifAllowed({
           type: UrlType.GITHUB_FILE,
           url: url,
           org: gitHubFileMatch.params.org,
           repo: gitHubFileMatch.params.repo,
           branch: gitHubFileMatch.params.tree,
-          filePath: gitHubFileMatch.params.path,
+          filePath: gitHubFileMatch.params["path*"],
         });
       }
 
-      const gitHubRawFileMatch = matchPath<{ org: string; repo: string; tree: string; path: string }>(url.pathname, {
-        path: "/:org/:repo/refs/heads/:tree/:path*",
-        exact: true,
-        strict: true,
-        sensitive: false,
-      });
+      const gitHubRawFileMatch = matchPath(
+        { path: "/:org/:repo/refs/heads/:tree/:path*", end: true, caseSensitive: false },
+        url.pathname
+      );
 
-      if (gitHubRawFileMatch) {
+      if (
+        gitHubRawFileMatch !== null &&
+        gitHubRawFileMatch.params.org &&
+        gitHubRawFileMatch.params.repo &&
+        gitHubRawFileMatch.params.tree &&
+        gitHubRawFileMatch.params["path*"]
+      ) {
         return ifAllowed({
           type: UrlType.GITHUB_FILE,
           url: url,
           org: gitHubRawFileMatch.params.org,
           repo: gitHubRawFileMatch.params.repo,
           branch: gitHubRawFileMatch.params.tree,
-          filePath: gitHubRawFileMatch.params.path,
+          filePath: gitHubRawFileMatch.params["path*"],
         });
       }
 
@@ -173,29 +173,15 @@ export function useImportableUrl(args: {
     }
 
     if (url.host === "gist.github.com" || url.host === "gist.githubusercontent.com") {
-      const gistMatch = matchPath<{ user: string; gistId: string }>(url.pathname, {
-        path: "/:user/:gistId",
-        exact: true,
-        strict: true,
-      });
-
-      const rawGistMatch = matchPath<{ user: string; gistId: string; fileId: string; fileName: string }>(url.pathname, {
-        path: "/:user/:gistId/raw/:fileId/:fileName",
-        exact: true,
-        strict: true,
-      });
-
-      const directGistMatch = matchPath<{ gistId: string }>(url.pathname, {
-        path: "/:gistId",
-        exact: true,
-        strict: true,
-      });
+      const gistMatch = matchPath({ path: "/:user/:gistId", end: true }, url.pathname);
+      const rawGistMatch = matchPath({ path: "/:user/:gistId/raw/:fileId/:fileName", end: true }, url.pathname);
+      const directGistMatch = matchPath({ path: "/:gistId", end: true }, url.pathname);
 
       if (!gistMatch && !rawGistMatch && !directGistMatch) {
         return { type: UrlType.INVALID, error: "Unsupported Gist URL", url: args.urlString };
       }
 
-      if (gistMatch && url.hash) {
+      if (gistMatch !== null && gistMatch.params.gistId && url.hash) {
         return ifAllowed({
           type: UrlType.GIST_FILE,
           url: url,
@@ -204,7 +190,7 @@ export function useImportableUrl(args: {
         });
       }
 
-      if (rawGistMatch) {
+      if (rawGistMatch !== null && rawGistMatch.params.gistId && rawGistMatch.params.fileName) {
         return ifAllowed({
           type: UrlType.GIST_FILE,
           url: url,
@@ -216,7 +202,7 @@ export function useImportableUrl(args: {
       return ifAllowed({
         type: UrlType.GIST,
         url,
-        gistId: (gistMatch ?? directGistMatch)?.params.gistId.replace(".git", ""),
+        gistId: (gistMatch ?? directGistMatch)?.params?.gistId?.replace(".git", ""),
       });
     }
 

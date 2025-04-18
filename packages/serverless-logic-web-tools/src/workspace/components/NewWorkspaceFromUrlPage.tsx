@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useRoutes } from "../../navigation/Hooks";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
@@ -42,7 +42,7 @@ import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
   const githubAuthInfo = useGitHubAuthInfo();
   const settingsDispatch = useSettingsDispatch();
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
@@ -90,20 +90,22 @@ export function NewWorkspaceFromUrlPage() {
       }
 
       if (!suggestedFirstFile) {
-        history.replace({ pathname: routes.home.path({}) });
+        navigate({ pathname: routes.home.path({}) }, { replace: true });
         return res;
       }
 
-      history.replace({
-        pathname: routes.workspaceWithFilePath.path({
-          workspaceId: workspace.workspaceId,
-          fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-          extension: suggestedFirstFile.extension,
-        }),
-      });
+      navigate(
+        {
+          pathname: routes.workspaceWithFilePath.path({
+            workspaceId: workspace.workspaceId,
+            fileRelativePath: suggestedFirstFile.relativePath,
+          }),
+        },
+        { replace: true }
+      );
       return res;
     },
-    [removeRemote, renameWorkspace, history, routes.workspaceWithFilePath, routes.home, workspaces, queryParamBranch]
+    [removeRemote, renameWorkspace, navigate, routes.workspaceWithFilePath, routes.home, workspaces, queryParamBranch]
   );
 
   const createWorkspaceForFile = useCallback(
@@ -112,16 +114,18 @@ export function NewWorkspaceFromUrlPage() {
         if (!suggestedFirstFile) {
           return;
         }
-        history.replace({
-          pathname: routes.workspaceWithFilePath.path({
-            workspaceId: workspace.workspaceId,
-            fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-            extension: suggestedFirstFile.extension,
-          }),
-        });
+        navigate(
+          {
+            pathname: routes.workspaceWithFilePath.path({
+              workspaceId: workspace.workspaceId,
+              fileRelativePath: suggestedFirstFile.relativePath,
+            }),
+          },
+          { replace: true }
+        );
       });
     },
-    [routes, history, workspaces]
+    [routes, navigate, workspaces]
   );
 
   const importableUrl = useImportableUrl({
@@ -204,17 +208,19 @@ export function NewWorkspaceFromUrlPage() {
           });
 
           if (!suggestedFirstFile) {
-            history.replace({ pathname: routes.home.path({}) });
+            navigate({ pathname: routes.home.path({}) }, { replace: true });
             return;
           }
 
-          history.replace({
-            pathname: routes.workspaceWithFilePath.path({
-              workspaceId: workspace.workspaceId,
-              fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-              extension: suggestedFirstFile.extension,
-            }),
-          });
+          navigate(
+            {
+              pathname: routes.workspaceWithFilePath.path({
+                workspaceId: workspace.workspaceId,
+                fileRelativePath: suggestedFirstFile.relativePath,
+              }),
+            },
+            { replace: true }
+          );
         }
 
         // any
@@ -275,7 +281,7 @@ export function NewWorkspaceFromUrlPage() {
   }, [
     createWorkspaceForFile,
     routes,
-    history,
+    navigate,
     importGitWorkspace,
     importableUrl,
     queryParamBranch,

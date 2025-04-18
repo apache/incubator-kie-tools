@@ -27,7 +27,7 @@ import { useSelector } from "react-redux";
 import { getModelName, getModelType, isSupportedModelType, ModelType } from "../../..";
 import { LandingPageHeader, LandingPageToolbar, ModelCard } from "../molecules";
 import { Actions } from "../../../reducers";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useBatchDispatch, useHistoryService } from "../../../history";
 
 interface LandingPageProps {
@@ -35,7 +35,7 @@ interface LandingPageProps {
 }
 
 export const LandingPage = (props: LandingPageProps) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { service, getCurrentState } = useHistoryService();
   const dispatch = useBatchDispatch(service, getCurrentState);
 
@@ -64,11 +64,11 @@ export const LandingPage = (props: LandingPageProps) => {
 
   const goToModel = useCallback(
     (index: number) => {
-      history.push({
+      navigate({
         pathname: "editor/" + index,
       });
     },
-    [history]
+    [navigate]
   );
 
   const onDelete = useCallback((index: number, modelName: string) => {

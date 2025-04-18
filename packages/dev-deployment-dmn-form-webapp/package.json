@@ -18,7 +18,7 @@
     "build:dev": "rimraf dist && webpack --env dev",
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
-    "start": "cross-env WEBPACK__sourceMaps=false node ./dev-webapp/start.js",
+    "start": "cross-env WEBPACK__sourceMaps=true node ./dev-webapp/start.js",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose\""
   },
   "dependencies": {
@@ -35,8 +35,7 @@
     "@readme/openapi-parser": "^2.5.0",
     "json-refs": "^3.0.15",
     "lodash": "^4.17.21",
-    "react-router": "^5.3.4",
-    "react-router-dom": "^5.3.4"
+    "react-router-dom": "^6.29.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -45,6 +44,7 @@
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/jest-base": "workspace:*",
+    "@kie-tools/maven-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@testing-library/jest-dom": "^6.4.6",
@@ -55,8 +55,6 @@
     "@types/lodash": "^4.14.168",
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
-    "@types/react-router": "^5.1.20",
-    "@types/react-router-dom": "^5.3.3",
     "copy-webpack-plugin": "^11.0.0",
     "cross-env": "^7.0.3",
     "html-webpack-plugin": "^5.3.2",
