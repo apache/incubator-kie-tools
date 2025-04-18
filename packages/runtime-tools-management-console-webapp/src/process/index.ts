@@ -20,3 +20,5 @@ export * from "./details/ProcessDetails";
 export * from "./details/ProcessDetailsPage";
 export * from "./list/ProcessList";
 export * from "./list/ProcessListPage";
+export * from "./definitions/ProcessDefinitionsList";
+export * from "./definitions/ProcessDefinitionsListPage";

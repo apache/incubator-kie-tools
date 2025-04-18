@@ -70,7 +70,6 @@ export const ProcessDetails: React.FC<Props> = ({ processInstanceId, onReturnToP
             setProcessInstance(response);
           })
           .catch((error) => {
-            console.log("DEU ERROR!");
             setError(error);
           })
           .finally(() => {

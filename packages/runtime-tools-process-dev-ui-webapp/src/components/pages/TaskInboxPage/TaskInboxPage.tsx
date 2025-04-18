@@ -17,7 +17,6 @@
  * under the License.
  */
 import React, { useEffect } from "react";
-import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import TaskInboxContainer from "../../containers/TaskInboxContainer/TaskInboxContainer";

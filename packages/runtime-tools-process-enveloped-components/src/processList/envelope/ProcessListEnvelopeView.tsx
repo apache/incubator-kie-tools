@@ -16,8 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import * as React from "react";
-import { useImperativeHandle, useState } from "react";
+import React, { useImperativeHandle, useState, useMemo } from "react";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { ProcessListChannelApi, ProcessListInitArgs } from "../api";
 import ProcessList from "./components/ProcessList/ProcessList";
@@ -27,7 +26,7 @@ import { ProcessInstanceState, ProcessListState } from "@kie-tools/runtime-tools
 import { OrderBy } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface ProcessListEnvelopeViewApi {
-  initialize: (initArgs?: ProcessListInitArgs) => void;
+  initialize: (initArgs: ProcessListInitArgs) => void;
 }
 interface Props {
   channelApi: MessageBusClientApi<ProcessListChannelApi>;
@@ -57,18 +56,20 @@ export const ProcessListEnvelopeView = React.forwardRef<ProcessListEnvelopeViewA
     () => ({
       initialize: (initArgs) => {
         setEnvelopeConnectedToChannel(false);
-        setProcessInitialArgs(initArgs!);
+        setProcessInitialArgs(initArgs);
         setEnvelopeConnectedToChannel(true);
       },
     }),
     []
   );
 
+  const driver = useMemo(() => new ProcessListEnvelopeViewDriver(props.channelApi), [props.channelApi]);
+
   return (
     <React.Fragment>
       <ProcessList
         isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
-        driver={new ProcessListEnvelopeViewDriver(props.channelApi)}
+        driver={driver}
         initialState={processInitialArgs.initialState}
         singularProcessLabel={processInitialArgs?.singularProcessLabel}
         pluralProcessLabel={processInitialArgs?.pluralProcessLabel}

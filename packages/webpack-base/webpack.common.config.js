@@ -57,7 +57,7 @@ module.exports = (webpackEnv) => {
       ]
     : [];
 
-  const importsNotUsedAsValues = live ? { importsNotUsedAsValues: "preserve" } : {};
+  const verbatimModuleSyntax = live ? { verbatimModuleSyntax: "preserve" } : {};
 
   return {
     mode,
@@ -82,7 +82,7 @@ module.exports = (webpackEnv) => {
               options: {
                 transpileOnly,
                 compilerOptions: {
-                  ...importsNotUsedAsValues,
+                  ...verbatimModuleSyntax,
                   sourceMap: sourceMaps,
                 },
               },

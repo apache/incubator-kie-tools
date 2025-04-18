@@ -18,3 +18,4 @@
  */
 
 export * from "./apis";
+export * from "./dataIndexQueries";

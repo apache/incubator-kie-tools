@@ -142,6 +142,14 @@ export interface ProcessListState {
   sortBy: ProcessListSortBy;
 }
 
+export interface ProcessDefinitionsFilter {
+  processNames: string[];
+}
+
+export interface ProcessDefinitionsListState {
+  filters: ProcessDefinitionsFilter;
+}
+
 export interface ProcessDefinition {
   processName: string;
   endpoint: string;

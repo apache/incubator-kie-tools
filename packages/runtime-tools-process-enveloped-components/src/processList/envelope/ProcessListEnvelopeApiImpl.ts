@@ -44,7 +44,6 @@ export class ProcessListEnvelopeApiImpl implements ProcessListEnvelopeApi {
 
   public processList__init = async (association: Association, initArgs: ProcessListInitArgs): Promise<void> => {
     this.args.envelopeClient.associate(association.origin, association.envelopeServerId);
-    /* istanbul ignore if*/
     if (this.hasCapturedInitRequestYet()) {
       return;
     }
