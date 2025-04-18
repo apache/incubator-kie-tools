@@ -71,6 +71,7 @@ export type DmnEditorRootProps = {
   onOpenedBoxedExpressionEditorNodeChange?: (newOpenedNodeId: string | undefined) => void;
   workspaceRootAbsolutePosixPath: string;
   keyboardShortcutsService: KeyboardShortcutsService | undefined;
+  isEvaluationHighlightsSupported?: boolean;
   isReadOnly: boolean;
   isImportDataTypesFromJavaClassesSupported?: boolean;
   javaCodeCompletionService?: JavaCodeCompletionExposedInteropApi;
@@ -503,6 +504,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
               externalContextName={""}
               externalContextDescription={""}
               issueTrackerHref={""}
+              isEvaluationHighlightsSupported={this.props?.isEvaluationHighlightsSupported}
               isReadOnly={this.state.isReadOnly}
               isImportDataTypesFromJavaClassesSupported={this.props?.isImportDataTypesFromJavaClassesSupported}
               javaCodeCompletionService={this.props?.javaCodeCompletionService}

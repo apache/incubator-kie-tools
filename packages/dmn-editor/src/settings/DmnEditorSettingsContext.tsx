@@ -23,6 +23,7 @@ import { JavaCodeCompletionService } from "@kie-tools/import-java-classes-compon
 
 export interface DmnEditorSettingsContextType {
   isReadOnly: boolean;
+  isEvaluationHighlightsSupported?: boolean;
   isImportDataTypesFromJavaClassesSupported?: boolean;
   javaCodeCompletionService?: JavaCodeCompletionService;
 }
@@ -36,6 +37,7 @@ export function useSettings() {
 export function DmnEditorSettingsContextProvider(
   _props: React.PropsWithChildren<{
     isReadOnly?: boolean;
+    isEvaluationHighlightsSupported?: boolean;
     isImportDataTypesFromJavaClassesSupported?: boolean;
     javaCodeCompletionService?: JavaCodeCompletionService;
   }>
@@ -45,10 +47,16 @@ export function DmnEditorSettingsContextProvider(
   const value = useMemo<DmnEditorSettingsContextType>(
     () => ({
       isReadOnly: props.isReadOnly ?? false,
+      isEvaluationHighlightsSupported: props?.isEvaluationHighlightsSupported ?? false,
       isImportDataTypesFromJavaClassesSupported: props?.isImportDataTypesFromJavaClassesSupported ?? false,
       javaCodeCompletionService: props?.javaCodeCompletionService,
     }),
-    [props.isReadOnly, props?.isImportDataTypesFromJavaClassesSupported, props?.javaCodeCompletionService]
+    [
+      props.isReadOnly,
+      props?.isEvaluationHighlightsSupported,
+      props?.isImportDataTypesFromJavaClassesSupported,
+      props?.javaCodeCompletionService,
+    ]
   );
 
   return <DmnEditorSettingsContext.Provider value={value}>{children}</DmnEditorSettingsContext.Provider>;

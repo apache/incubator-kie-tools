@@ -19,6 +19,7 @@
 
 import * as React from "react";
 import {
+  ChannelType,
   DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
   EditorFactory,
   EditorInitArgs,
@@ -60,6 +61,9 @@ export class NewDmnEditorInterface extends DmnEditorInterface {
         envelopeContext={this.envelopeContext}
         workspaceRootAbsolutePosixPath={
           this.initArgs.workspaceRootAbsolutePosixPath ?? DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH
+        }
+        isEvaluationHighlightsSupported={
+          this.initArgs.channel === ChannelType.ONLINE || this.initArgs.channel === ChannelType.ONLINE_MULTI_FILE
         }
         isReadOnly={this.initArgs.isReadOnly}
         onOpenedBoxedExpressionEditorNodeChange={(newOpenedNodeId) => {

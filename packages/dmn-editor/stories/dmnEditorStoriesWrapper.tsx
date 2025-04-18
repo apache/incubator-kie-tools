@@ -106,6 +106,9 @@ export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
           ref={ref}
           model={model}
           originalVersion={props?.originalVersion ?? args.originalVersion}
+          isEvaluationHighlightsSupported={
+            props?.isEvaluationHighlightsSupported ?? args.isEvaluationHighlightsSupported
+          }
           isReadOnly={isReadOnly}
           onModelChange={onModelChange}
           onOpenedBoxedExpressionEditorNodeChange={onOpenedBoxedExpressionEditorNodeChangeNoOperation}
