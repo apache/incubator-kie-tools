@@ -19,7 +19,7 @@
 schema_version: 1
 name: org.kie.sonataflow.builder.runtime.community
 version: "main"
-description: "Sonataflow builder runtime module"
+description: "Apache KIE SonataFlow builder runtime module"
 
 artifacts:
   - image: builder
