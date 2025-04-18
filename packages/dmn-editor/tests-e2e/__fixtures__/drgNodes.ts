@@ -35,6 +35,9 @@ export class DrgNodes {
   }
 
   public async dragNode(args: { name: string; targetPosition: { x: number; y: number } }) {
+    // This short delay prevents issues where the diagram container gets moved outside the viewport during drag operations.
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
     await this.popover()
       .getByText(args.name, { exact: true })
       .dragTo(this.diagram.get(), { targetPosition: args.targetPosition });

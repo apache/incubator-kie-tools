@@ -24,6 +24,8 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { ActionGroup, Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import "./OutputsBatchAdd.scss";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 interface OutputsBatchAddProps {
   onAdd: (types: string) => void;
@@ -70,22 +72,29 @@ const OutputsBatchAdd = ({ onAdd, onCancel }: OutputsBatchAddProps) => {
         </StackItem>
         <StackItem>
           <Form onSubmit={handleSubmit} style={{ gridGap: 0 }}>
-            <FormGroup
-              label="Outputs"
-              fieldId="outputs"
-              isRequired={true}
-              validated={inputValidation}
-              helperTextInvalid={"Please enter at least one Output name"}
-            >
+            <FormGroup label="Outputs" fieldId="outputs" isRequired={true}>
               <TextArea
                 className="outputs-container__multiple-outputs"
                 value={input}
-                onChange={handleInputChange}
+                onChange={(_event, value: string) => handleInputChange(value)}
                 name="outputs"
                 isRequired={true}
                 id="outputs"
                 placeholder={"First Output\nSecond Output\n..."}
               />
+              {inputValidation === "error" ? (
+                <FormHelperText>
+                  <HelperText>
+                    <HelperTextItem variant="error">Please enter at least one Output name</HelperTextItem>
+                  </HelperText>
+                </FormHelperText>
+              ) : (
+                <FormHelperText>
+                  <HelperText>
+                    <HelperTextItem variant="default"></HelperTextItem>
+                  </HelperText>
+                </FormHelperText>
+              )}
             </FormGroup>
             <ActionGroup>
               <Button variant="primary" type="submit">

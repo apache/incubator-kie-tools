@@ -100,7 +100,7 @@ export const BulkList: React.FC<IOwnProps & OUIAProps> = ({ operationResult, oui
             {iterateItems(operationResult.results.successItems)}
           </TextContent>
           {operationResult.results.successItems.length !== 0 && operationResult.messages.warningMessage && (
-            <TextContent className="pf-u-mt-sm">
+            <TextContent className="pf-v5-u-mt-sm">
               <Text component={TextVariants.small}>{operationResult.messages.warningMessage}</Text>
             </TextContent>
           )}
@@ -112,14 +112,14 @@ export const BulkList: React.FC<IOwnProps & OUIAProps> = ({ operationResult, oui
       )}
       {operationResult.results.ignoredItems.length !== 0 && (
         <>
-          <Divider component="div" className="pf-u-my-xl" />
+          <Divider component="div" className="pf-v5-u-my-xl" />
           <TextContent>
             <Text component={TextVariants.h2}>
               {operationResult.type === BulkListType.PROCESS_INSTANCE && <span>Ignored process instances:</span>}
               {operationResult.type === BulkListType.WORKFLOW && <span>Ignored workflows:</span>}
               {operationResult.type === BulkListType.JOB && <span>Ignored jobs:</span>}
             </Text>
-            <Text component={TextVariants.small} className="pf-u-mt-sm">
+            <Text component={TextVariants.small} className="pf-v5-u-mt-sm">
               <span>{operationResult.messages.ignoredMessage}</span>
             </Text>
             {iterateItems(operationResult.results.ignoredItems)}
@@ -128,7 +128,7 @@ export const BulkList: React.FC<IOwnProps & OUIAProps> = ({ operationResult, oui
       )}
       {operationResult.results.failedItems.length !== 0 && (
         <>
-          <Divider component="div" className="pf-u-my-xl" />
+          <Divider component="div" className="pf-v5-u-my-xl" />
           <TextContent>
             <Text component={TextVariants.h2}>Errors:</Text>
             {iterateItems(operationResult.results.failedItems)}

@@ -108,7 +108,7 @@ const CloudEventFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
         {...componentOuiaProps(`content${ouiaId ? "-" + ouiaId : ""}`, "cloud-event-form-page-section", ouiaSafe)}
       >
         <Card className="Dev-ui__card-size">
-          <CardBody className="pf-u-h-100">
+          <CardBody className="pf-v5-u-h-100">
             <CloudEventFormContainer
               isTriggerNewInstance={isTriggerNewInstance}
               cloudEventSource={"/local/devui"}

@@ -25,7 +25,7 @@ import {
   DropdownPosition,
   DropdownToggle,
   DropdownToggleCheckbox,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+} from "@patternfly/react-core/deprecated";
 import {
   Toolbar,
   ToolbarItem,
@@ -42,9 +42,9 @@ import {
 } from "@patternfly/react-core/dist/js/components/OverflowMenu";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { FilterIcon } from "@patternfly/react-icons/dist/js/icons/filter-icon";
 import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
 import _ from "lodash";
@@ -530,7 +530,7 @@ const WorkflowListToolbar: React.FC<WorkflowListToolbarProps & OUIAProps> = ({
       <OverflowMenuControl>
         <Dropdown
           onSelect={onWorkflowManagementButtonSelect}
-          toggle={<KebabToggle onToggle={onWorkflowManagementKebabToggle} />}
+          toggle={<KebabToggle onToggle={(_event, isOpen: boolean) => onWorkflowManagementKebabToggle(isOpen)} />}
           isOpen={isKebabOpen}
           isPlain
           dropdownItems={dropdownItemsProcesManagementButtons()}
@@ -570,14 +570,14 @@ const WorkflowListToolbar: React.FC<WorkflowListToolbarProps & OUIAProps> = ({
         <ToolbarFilter
           chips={filters.status}
           deleteChip={onDeleteChip}
-          className="kogito-management-console__state-dropdown-list pf-u-mr-sm"
+          className="kogito-management-console__state-dropdown-list pf-v5-u-mr-sm"
           categoryName="Status"
           id="datatoolbar-filter-status"
         >
           <Select
             variant={SelectVariant.checkbox}
             aria-label="Status"
-            onToggle={onStatusToggle}
+            onToggle={(_event, isExpandedItem: boolean) => onStatusToggle(isExpandedItem)}
             onSelect={onSelect}
             selections={workflowStates}
             isOpen={isExpanded}
@@ -589,16 +589,18 @@ const WorkflowListToolbar: React.FC<WorkflowListToolbarProps & OUIAProps> = ({
         </ToolbarFilter>
         <ToolbarFilter chips={filters.businessKey} deleteChip={onDeleteChip} categoryName={Category.BUSINESS_KEY}>
           <InputGroup>
-            <TextInput
-              name="businessKey"
-              id="businessKey"
-              type="search"
-              aria-label="business key"
-              onChange={setBusinessKeyInput}
-              onKeyPress={onEnterClicked}
-              placeholder="Filter by business key"
-              value={businessKeyInput}
-            />
+            <InputGroupItem isFill>
+              <TextInput
+                name="businessKey"
+                id="businessKey"
+                type="search"
+                aria-label="business key"
+                onChange={(_event, val) => setBusinessKeyInput(val)}
+                onKeyPress={onEnterClicked}
+                placeholder="Filter by business key"
+                value={businessKeyInput}
+              />
+            </InputGroupItem>
           </InputGroup>
         </ToolbarFilter>
         <ToolbarItem>
@@ -609,7 +611,7 @@ const WorkflowListToolbar: React.FC<WorkflowListToolbarProps & OUIAProps> = ({
       </ToolbarGroup>
       <ToolbarGroup>
         <ToolbarItem variant="separator" />
-        <ToolbarGroup className="pf-u-ml-md" id="workflow-management-buttons">
+        <ToolbarGroup className="pf-v5-u-ml-md" id="workflow-management-buttons">
           {buttonItems}
         </ToolbarGroup>
       </ToolbarGroup>

@@ -50,6 +50,7 @@ import { useDmnEditor } from "../DmnEditorContext";
 import { getDrdId } from "./drd/drdId";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_NEW_NODE_FROM_PALETTE = "application/kie-dmn-editor--new-node-from-palette";
 
@@ -142,7 +143,7 @@ export function Palette({ pulse }: { pulse: boolean }) {
             key={DiagramLhsPanel.DRD_SELECTOR}
             aria-label={"DRD Selector Popover"}
             isVisible={diagram.openLhsPanel === DiagramLhsPanel.DRD_SELECTOR}
-            reference={() => drdSelectorPopoverRef.current!}
+            triggerRef={() => drdSelectorPopoverRef.current!}
             shouldClose={() => {
               dmnEditorStoreApi.setState((state) => {
                 state.diagram.openLhsPanel = DiagramLhsPanel.NONE;
@@ -262,7 +263,9 @@ export function Palette({ pulse }: { pulse: boolean }) {
                 });
               }}
             >
-              <BarsIcon size={"sm"} />
+              <Icon>
+                <BarsIcon />
+              </Icon>
             </button>
           </aside>
           <br />
@@ -291,7 +294,10 @@ export function Palette({ pulse }: { pulse: boolean }) {
                 });
               }}
             >
-              <MigrationIcon size={"sm"} />
+              <Icon>
+                {" "}
+                <MigrationIcon />
+              </Icon>
             </button>
           </aside>
         </RF.Panel>
