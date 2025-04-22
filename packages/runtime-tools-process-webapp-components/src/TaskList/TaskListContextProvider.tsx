@@ -1,4 +1,4 @@
-/*
+/**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,6 +16,21 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import React, { ReactElement, useMemo } from "react";
+import { ApolloClient } from "apollo-client";
+import TaskListContext from "./TaskListContext";
+import { TaskListChannelApiImpl } from "./TaskListChannelApiImpl";
 
-export * from "./restApis";
-export * from "./dataIndexQueries";
+interface IOwnProps {
+  apolloClient: ApolloClient<any>;
+  children: ReactElement;
+  options?: { transformEndpointBaseUrl?: (url?: string) => string };
+}
+
+export const TaskListContextProvider: React.FC<IOwnProps> = ({ apolloClient, children }) => {
+  const channelApi = useMemo(() => new TaskListChannelApiImpl(apolloClient), [apolloClient]);
+
+  return <TaskListContext.Provider value={channelApi}>{children}</TaskListContext.Provider>;
+};
+
+export default TaskListContextProvider;

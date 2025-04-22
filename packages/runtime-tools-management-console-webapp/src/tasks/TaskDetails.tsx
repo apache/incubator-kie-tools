@@ -34,10 +34,7 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import {
-  TaskInboxGatewayApi,
-  useTaskInboxGatewayApi,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskInbox";
+import { useTaskListChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskList";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
 import {
@@ -59,7 +56,7 @@ interface Props {
 }
 
 export const TaskDetails: React.FC<Props> = ({ taskId }) => {
-  const taskInboxGatewayApi: TaskInboxGatewayApi = useTaskInboxGatewayApi();
+  const channelApi = useTaskListChannelApi();
   const history = useHistory();
   const runtimeRoutes = useRuntimeSpecificRoutes();
   const { username, accessToken } = useRuntimeInfo();
@@ -80,8 +77,8 @@ export const TaskDetails: React.FC<Props> = ({ taskId }) => {
         }
         setIsLoading(true);
         setIsDetailsExpanded(false);
-        taskInboxGatewayApi
-          .getTaskById(taskId)
+        channelApi
+          .taskList__getTaskById(taskId)
           .then((taskData) => {
             if (canceled.get()) {
               return;
@@ -104,14 +101,14 @@ export const TaskDetails: React.FC<Props> = ({ taskId }) => {
             setIsLoading(false);
           });
       },
-      [impersonationUsername, taskId, taskInboxGatewayApi, username]
+      [impersonationUsername, taskId, channelApi, username]
     )
   );
 
   const goToTasks = useCallback(() => {
-    taskInboxGatewayApi.clearOpenTask();
+    channelApi.taskList__clearOpenTask();
     history.push(runtimeRoutes.tasks());
-  }, [history, runtimeRoutes, taskInboxGatewayApi]);
+  }, [history, runtimeRoutes, channelApi]);
 
   const showNotification = useCallback(
     (notificationType: "error" | "success", submitMessage: string, notificationDetails?: string) => {

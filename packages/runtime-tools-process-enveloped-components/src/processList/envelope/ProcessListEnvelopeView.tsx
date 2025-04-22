@@ -18,10 +18,10 @@
  */
 import React, { useImperativeHandle, useState, useMemo } from "react";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { ProcessListChannelApi, ProcessListInitArgs } from "../api";
+import { ProcessListChannelApi, ProcessListInitArgs, ProcessListState } from "../api";
 import ProcessList from "./components/ProcessList/ProcessList";
 import "@patternfly/patternfly/patternfly.css";
-import { ProcessInstanceState, ProcessListState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { ProcessInstanceState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OrderBy } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface ProcessListEnvelopeViewApi {

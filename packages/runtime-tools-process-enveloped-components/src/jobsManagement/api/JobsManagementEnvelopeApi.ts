@@ -26,11 +26,6 @@ export interface Association {
   envelopeServerId: string;
 }
 
-export interface QueryPage {
-  offset: number;
-  limit: number;
-}
-
 export interface JobsManagementInitArgs {
   initialState?: JobsManagementState;
 }

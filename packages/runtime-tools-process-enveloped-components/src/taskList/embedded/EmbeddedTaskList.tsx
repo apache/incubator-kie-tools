@@ -19,26 +19,28 @@
 import React, { useCallback, useMemo } from "react";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tools-core/envelope/dist/embedded";
-import { ProcessListApi, ProcessListChannelApi, ProcessListEnvelopeApi, ProcessListState } from "../api";
+import { TaskListApi, TaskListChannelApi, TaskListEnvelopeApi, TaskListState } from "../api";
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
 import { init } from "../envelope";
 
 export interface Props {
   targetOrigin: string;
-  channelApi: ProcessListChannelApi;
-  initialState: ProcessListState;
-  singularProcessLabel: string;
-  pluralProcessLabel: string;
+  initialState?: TaskListState;
+  channelApi: TaskListChannelApi;
+  allTaskStates?: string[];
+  activeTaskStates?: string[];
 }
 
-export const EmbeddedProcessList = React.forwardRef((props: Props, forwardedRef: React.Ref<ProcessListApi>) => {
+export const EmbeddedTaskList = React.forwardRef((props: Props, forwardedRef: React.Ref<TaskListApi>) => {
   const refDelegate = useCallback(
-    (envelopeServer: EnvelopeServer<ProcessListChannelApi, ProcessListEnvelopeApi>): ProcessListApi => ({}),
+    (envelopeServer: EnvelopeServer<TaskListChannelApi, TaskListEnvelopeApi>): TaskListApi => ({
+      taskList__notify: (userName) => envelopeServer.envelopeApi.requests.taskList__notify(userName),
+    }),
     []
   );
   const pollInit = useCallback(
     async (
-      envelopeServer: EnvelopeServer<ProcessListChannelApi, ProcessListEnvelopeApi>,
+      envelopeServer: EnvelopeServer<TaskListChannelApi, TaskListEnvelopeApi>,
       container: () => HTMLDivElement
     ) => {
       await init({
@@ -53,23 +55,23 @@ export const EmbeddedProcessList = React.forwardRef((props: Props, forwardedRef:
           },
         },
       });
-      return envelopeServer.envelopeApi.requests.processList__init(
+      return await envelopeServer.envelopeApi.requests.taskList__init(
         {
           origin: envelopeServer.origin,
           envelopeServerId: envelopeServer.id,
         },
         {
-          initialState: { ...props.initialState },
-          singularProcessLabel: props.singularProcessLabel,
-          pluralProcessLabel: props.pluralProcessLabel,
+          initialState: props.initialState,
+          allTaskStates: props.allTaskStates,
+          activeTaskStates: props.activeTaskStates,
         }
       );
     },
-    [props.initialState, props.pluralProcessLabel, props.singularProcessLabel]
+    [props.initialState, props.allTaskStates, props.activeTaskStates]
   );
 
   return (
-    <EmbeddedProcessListEnvelope
+    <EmbeddedTaskListEnvelope
       ref={forwardedRef}
       apiImpl={props.channelApi}
       origin={props.targetOrigin}
@@ -80,7 +82,7 @@ export const EmbeddedProcessList = React.forwardRef((props: Props, forwardedRef:
   );
 });
 
-const EmbeddedProcessListEnvelope = React.forwardRef<
-  ProcessListApi,
-  EmbeddedEnvelopeProps<ProcessListChannelApi, ProcessListEnvelopeApi, ProcessListApi>
+const EmbeddedTaskListEnvelope = React.forwardRef<
+  TaskListApi,
+  EmbeddedEnvelopeProps<TaskListChannelApi, TaskListEnvelopeApi, TaskListApi>
 >(RefForwardingEmbeddedEnvelope);

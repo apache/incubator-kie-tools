@@ -31,7 +31,7 @@ import { DiagramPreviewSize } from "@kie-tools/runtime-tools-process-enveloped-c
 import { PageLayout } from "@kie-tools/runtime-tools-components/dist/components/PageLayout";
 import { JobsManagementContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/JobsManagement";
 import { TaskFormContextProvider } from "../../contexts/TaskFormContextProvider";
-import { TaskInboxContextProvider } from "../../contexts/TaskInboxContextProvider";
+import { TaskListContextProvider } from "../../contexts/TaskListContextProvider";
 import ProcessContextProvider from "../../contexts/ProcessContextProvider";
 import ProcessFormContextProvider from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessForm/ProcessFormContextProvider";
 
@@ -89,7 +89,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
         omittedProcessTimelineEvents={omittedProcessTimelineEvents}
         diagramPreviewSize={diagramPreviewSize}
       >
-        <TaskInboxContextProvider apolloClient={apolloClient}>
+        <TaskListContextProvider apolloClient={apolloClient}>
           <TaskFormContextProvider>
             <ProcessContextProvider apolloClient={apolloClient}>
               <JobsManagementContextProvider apolloClient={apolloClient}>
@@ -107,7 +107,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
               </JobsManagementContextProvider>
             </ProcessContextProvider>
           </TaskFormContextProvider>
-        </TaskInboxContextProvider>
+        </TaskListContextProvider>
       </DevUIAppContextProvider>
     </ApolloProvider>
   );

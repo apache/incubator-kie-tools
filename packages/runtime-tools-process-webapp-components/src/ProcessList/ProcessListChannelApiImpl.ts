@@ -36,29 +36,24 @@ import {
   OnOpenProcessListener,
   OnUpdateProcessListStateListener,
   ProcessListState,
-  UnSubscribeHandler,
 } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processList";
 
 export class ProcessListChannelApiImpl implements ProcessListChannelApi {
   private readonly onOpenProcessListeners: OnOpenProcessListener[] = [];
   private readonly onUpdateProcessListStateListeners: OnUpdateProcessListStateListener[] = [];
-  private _ProcessListState: ProcessListState;
+  private _processListState: ProcessListState;
 
   constructor(
     private readonly client: ApolloClient<any>,
     private readonly options?: { transformEndpointBaseUrl?: (url?: string) => string | undefined }
   ) {
-    this._ProcessListState = {
+    this._processListState = {
       filters: {
         status: [],
         businessKey: [],
       },
       sortBy: {},
     };
-  }
-
-  get processList__processListState(): ProcessListState {
-    return this._ProcessListState;
   }
 
   async processList__getProcessInstances(
@@ -77,25 +72,25 @@ export class ProcessListChannelApiImpl implements ProcessListChannelApi {
   }
 
   async processList__openProcess(process: ProcessInstance) {
-    this.onOpenProcessListeners.forEach((listener) => listener.onOpen(process, this._ProcessListState));
+    this.onOpenProcessListeners.forEach((listener) => listener.onOpen(process, this._processListState));
     return Promise.resolve();
   }
 
   async processList__initialLoad(filter: ProcessInstanceFilter, sortBy: ProcessListSortBy) {
-    this._ProcessListState.filters = filter;
-    this._ProcessListState.sortBy = sortBy;
+    this._processListState.filters = filter;
+    this._processListState.sortBy = sortBy;
     return Promise.resolve();
   }
 
   async processList__applyFilter(filter: ProcessInstanceFilter) {
-    this._ProcessListState.filters = filter;
-    this.onUpdateProcessListStateListeners.forEach((listener) => listener.onUpdate(this._ProcessListState));
+    this._processListState.filters = filter;
+    this.onUpdateProcessListStateListeners.forEach((listener) => listener.onUpdate(this._processListState));
     return Promise.resolve();
   }
 
   async processList__applySorting(sortBy: ProcessListSortBy) {
-    this._ProcessListState.sortBy = sortBy;
-    this.onUpdateProcessListStateListeners.forEach((listener) => listener.onUpdate(this._ProcessListState));
+    this._processListState.sortBy = sortBy;
+    this.onUpdateProcessListStateListeners.forEach((listener) => listener.onUpdate(this._processListState));
     return Promise.resolve();
   }
 
@@ -119,8 +114,8 @@ export class ProcessListChannelApiImpl implements ProcessListChannelApi {
     return getProcessInstances(
       offset,
       limit,
-      this._ProcessListState.filters,
-      this._ProcessListState.sortBy,
+      this._processListState.filters,
+      this._processListState.sortBy,
       this.client
     ).then((processInstances) => {
       return processInstances.map((process) => ({

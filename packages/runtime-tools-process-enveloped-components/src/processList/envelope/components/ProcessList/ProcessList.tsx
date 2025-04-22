@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useCallback, useEffect, useState, useMemo } from "react";
-import { ProcessListChannelApi } from "../../../api";
+import { ProcessListChannelApi, ProcessListState } from "../../../api";
 import ProcessListTable from "../ProcessListTable/ProcessListTable";
 import ProcessListToolbar from "../ProcessListToolbar/ProcessListToolbar";
 import { ISortBy } from "@patternfly/react-table/dist/js/components/Table";
@@ -30,7 +30,6 @@ import {
   ProcessInstanceFilter,
   ProcessInstanceState,
   ProcessListSortBy,
-  ProcessListState,
 } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";

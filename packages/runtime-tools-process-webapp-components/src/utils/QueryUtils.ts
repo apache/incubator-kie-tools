@@ -17,8 +17,8 @@
  * under the License.
  */
 import { User } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
-import { QueryFilter, SortBy } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskInbox";
 import { GraphQL } from "@kie-tools/runtime-tools-process-gateway-api/dist/graphql/types";
+import { TaskListQueryFilter, TaskListSortBy } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import _ from "lodash";
 
 const createSearchTextArray = (taskNames: string[]) => {
@@ -60,8 +60,8 @@ const createUserAssignmentClause = (currentUser?: User) => {
   };
 };
 
-export const buildTaskInboxWhereArgument = (
-  activeFilters: QueryFilter,
+export const buildTaskListWhereArgument = (
+  activeFilters: TaskListQueryFilter,
   currentUser?: User
 ): GraphQL.UserTaskInstanceArgument => {
   if (activeFilters) {
@@ -89,7 +89,7 @@ export const buildTaskInboxWhereArgument = (
   return createUserAssignmentClause(currentUser);
 };
 
-export const getOrderByObject = (sortBy: SortBy) => {
+export const getOrderByObject = (sortBy: TaskListSortBy) => {
   if (!_.isEmpty(sortBy)) {
     return _.set({}, sortBy.property, sortBy.direction.toUpperCase());
   }

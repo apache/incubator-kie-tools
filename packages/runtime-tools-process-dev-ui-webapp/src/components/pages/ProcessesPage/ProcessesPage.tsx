@@ -31,9 +31,9 @@ import {
   componentOuiaProps,
   ouiaPageTypeAndObjectId,
 } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { ProcessListState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/components/PageSectionHeader";
 import ProcessDefinitionsListContainer from "../../containers/ProcessDefinitionListContainer/ProcessDefinitionListContainer";
+import { ProcessListState } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processList";
 
 interface MatchProps {
   instanceID: string;

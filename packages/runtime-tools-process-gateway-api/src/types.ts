@@ -125,23 +125,6 @@ export interface ProcessInstance {
   source?: string;
 }
 
-export interface ProcessInstanceFilter {
-  status: ProcessInstanceState[];
-  businessKey?: string[];
-}
-
-export interface ProcessListSortBy {
-  processName?: OrderBy;
-  state?: OrderBy;
-  start?: OrderBy;
-  lastUpdate?: OrderBy;
-}
-
-export interface ProcessListState {
-  filters: ProcessInstanceFilter;
-  sortBy: ProcessListSortBy;
-}
-
 export interface ProcessDefinitionsFilter {
   processNames: string[];
 }
@@ -158,6 +141,18 @@ export interface ProcessDefinition {
 export interface ProcessResponse {
   id: string;
   processdata: JsonType;
+}
+
+export interface ProcessInstanceFilter {
+  status: ProcessInstanceState[];
+  businessKey?: string[];
+}
+
+export interface ProcessListSortBy {
+  processName?: OrderBy;
+  state?: OrderBy;
+  start?: OrderBy;
+  lastUpdate?: OrderBy;
 }
 
 export type UserTaskInstance = {
@@ -201,3 +196,18 @@ export type UserTaskTransitionInfo = {
   transitionId: string;
   data: any;
 };
+
+export interface TaskListQueryFilter {
+  taskStates: string[];
+  taskNames: string[];
+}
+
+export interface TaskListSortBy {
+  property: string;
+  direction: "asc" | "desc";
+}
+
+export interface QueryPage {
+  offset: number;
+  limit: number;
+}

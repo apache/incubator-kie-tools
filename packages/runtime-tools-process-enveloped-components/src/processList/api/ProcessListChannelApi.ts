@@ -24,11 +24,7 @@ import {
   ProcessListSortBy,
 } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OperationType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
-
-export interface ProcessListState {
-  filters: ProcessInstanceFilter;
-  sortBy: ProcessListSortBy;
-}
+import { ProcessListState } from "./ProcessListApi";
 
 export interface OnOpenProcessListener {
   onOpen: (process: ProcessInstance, processListState: ProcessListState) => void;

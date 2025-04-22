@@ -44,7 +44,7 @@ import { AuthSessionsService } from "../authSessions";
 import { ProcessListContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessList";
 import { JobsManagementContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/JobsManagement";
 import { ProcessDetailsContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
-import { TaskInboxContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskInbox";
+import { TaskListContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskList";
 import { TaskFormContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskForms";
 import { ProcessDefinitionsListContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDefinitionsList";
 import ProcessFormContextProvider from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessForm/ProcessFormContextProvider";
@@ -394,9 +394,9 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
                   <ProcessDefinitionsListContextProvider apolloClient={apolloClient} options={providerOptions}>
                     <ProcessFormContextProvider token={accessToken}>
                       <JobsManagementContextProvider apolloClient={apolloClient}>
-                        <TaskInboxContextProvider apolloClient={apolloClient}>
+                        <TaskListContextProvider apolloClient={apolloClient}>
                           <TaskFormContextProvider options={providerOptions}>{props.children}</TaskFormContextProvider>
-                        </TaskInboxContextProvider>
+                        </TaskListContextProvider>
                       </JobsManagementContextProvider>
                     </ProcessFormContextProvider>
                   </ProcessDefinitionsListContextProvider>

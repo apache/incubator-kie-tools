@@ -21,7 +21,7 @@ import { Form, FormContent } from "@kie-tools/runtime-tools-shared-gateway-api/d
 import { FormDetailsDriver, FormDetailsChannelApi } from "../api";
 
 /**
- * Implementation of the TaskInboxChannelApi delegating to a TaskInboxDriver
+ * Implementation of the FormDetailsChannelApi delegating to a FormDetailsDriver
  */
 export class FormDetailsChannelApiImpl implements FormDetailsChannelApi {
   constructor(protected readonly driver: FormDetailsDriver) {}

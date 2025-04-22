@@ -77,7 +77,7 @@ export const TaskForm: React.FC<Props> = ({
         },
         getCustomForm(): Promise<Form> {
           // No-op
-          return gatewayApi.getCustomForm(userTask);
+          return Promise.reject();
         },
         getTaskPhases(): Promise<string[]> {
           return gatewayApi.getTaskPhases(userTask, requestHeaders).catch(async (error) => {

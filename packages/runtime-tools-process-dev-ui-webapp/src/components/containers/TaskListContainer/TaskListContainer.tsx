@@ -20,46 +20,49 @@ import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { useTaskListChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskList";
 import {
-  EmbeddedProcessList,
-  ProcessListState,
-} from "@kie-tools/runtime-tools-process-enveloped-components/dist/processList";
-import { useProcessListChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessList";
-import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+  EmbeddedTaskList,
+  TaskListApi,
+  TaskListChannelApi,
+} from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskList";
+import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { getActiveTaskStates, getAllTaskStates } from "@kie-tools/runtime-tools-process-webapp-components/dist/utils";
 
-interface ProcessListContainerProps {
-  initialState: ProcessListState;
-}
-
-const ProcessListContainer: React.FC<ProcessListContainerProps & OUIAProps> = ({ initialState, ouiaId, ouiaSafe }) => {
+const TaskListContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const history = useHistory();
-  const channelApi = useProcessListChannelApi();
+  const channelApi = useTaskListChannelApi();
+  const taskListApiRef = React.useRef<TaskListApi>();
   const appContext = useDevUIAppContext();
 
   useEffect(() => {
-    const onOpenInstanceUnsubscriber = channelApi.processList__onOpenProcessListen({
-      onOpen(process: ProcessInstance) {
-        history.push({
-          pathname: `/Process/${process.id}`,
-          // state: channelApi.processList__processListState,
-        });
+    const unsubscriber = channelApi.taskList__onOpenTaskListen({
+      onOpen(task: UserTaskInstance) {
+        history.push(`/TaskDetails/${task.id}`);
+      },
+    });
+
+    const unsubscribeUserChange = appContext.onUserChange({
+      onUserChange(user) {
+        taskListApiRef.current.taskList__notify(user.id);
       },
     });
     return () => {
-      onOpenInstanceUnsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
+      unsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
+      unsubscribeUserChange.unSubscribe();
     };
   }, []);
 
   return (
-    <EmbeddedProcessList
-      {...componentOuiaProps(ouiaId, "process-list-container", ouiaSafe)}
+    <EmbeddedTaskList
+      {...componentOuiaProps(ouiaId, "tasks-container", ouiaSafe)}
       channelApi={channelApi}
+      allTaskStates={getAllTaskStates()}
+      activeTaskStates={getActiveTaskStates()}
       targetOrigin={appContext.getDevUIUrl()}
-      initialState={initialState}
-      singularProcessLabel={appContext.customLabels.singularProcessLabel}
-      pluralProcessLabel={appContext.customLabels.pluralProcessLabel}
+      ref={taskListApiRef}
     />
   );
 };
 
-export default ProcessListContainer;
+export default TaskListContainer;

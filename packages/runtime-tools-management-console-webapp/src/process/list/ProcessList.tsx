@@ -18,14 +18,16 @@
  */
 import React, { useEffect, useMemo } from "react";
 import {
-  ProcessListState,
   ProcessInstance,
   ProcessInstanceState,
   ProcessInstanceFilter,
   ProcessListSortBy,
 } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { useProcessListChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessList";
-import { EmbeddedProcessList } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processList";
+import {
+  EmbeddedProcessList,
+  ProcessListState,
+} from "@kie-tools/runtime-tools-process-enveloped-components/dist/processList";
 import { useHistory } from "react-router";
 import { OrderBy } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { useQueryParam, useQueryParams } from "../../navigation/queryParams/QueryParamsContext";
