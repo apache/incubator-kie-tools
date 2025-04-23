@@ -23,18 +23,28 @@ import {
   JobOperationResult,
   JobsSortBy,
 } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { JobsManagementState } from "./JobsManagementApi";
+
+export interface OnUpdateJobsManagementStateListener {
+  onUpdate: (jobsManagementState: JobsManagementState) => void;
+}
+
+export interface UnSubscribeHandler {
+  unSubscribe: () => void;
+}
 
 export interface JobsManagementChannelApi {
   jobList__initialLoad(filter: JobStatus[], orderBy: JobsSortBy): Promise<void>;
   jobList__applyFilter(filter: JobStatus[]): Promise<void>;
   jobList__bulkCancel(jobsToBeActioned: Job[]): Promise<BulkCancel>;
-  jobList_cancelJob(job: Pick<Job, "id" | "endpoint">): Promise<JobOperationResult>;
-  jobList_rescheduleJob(
+  jobList__cancelJob(job: Pick<Job, "id" | "endpoint">): Promise<JobOperationResult>;
+  jobList__rescheduleJob(
     job: Job,
     repeatInterval: number | string,
     repeatLimit: number | string,
     scheduleDate: Date
   ): Promise<{ modalTitle: string; modalContent: string }>;
-  jobList_sortBy(orderBy: JobsSortBy): Promise<void>;
+  jobList__sortBy(orderBy: JobsSortBy): Promise<void>;
   jobList__query(offset: number, limit: number): Promise<Job[]>;
+  jobList__onUpdateJobsManagementState(listener: OnUpdateJobsManagementStateListener): Promise<UnSubscribeHandler>;
 }

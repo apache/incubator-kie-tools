@@ -36,7 +36,6 @@ import {
 import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
 
 import { JobStatus, Job } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { JobsManagementDriver } from "../../../api";
 import "../styles.css";
 import { IOperations } from "@kie-tools/runtime-tools-components/dist/components/BulkList";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
@@ -44,7 +43,6 @@ import { OperationType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/
 
 interface JobsManagementToolbarProps {
   chips: JobStatus[];
-  driver: JobsManagementDriver;
   doQueryJobs: (offset: number, limit: number) => Promise<void>;
   jobOperations: IOperations;
   onResetToDefault: () => void;
@@ -60,7 +58,6 @@ interface JobsManagementToolbarProps {
 }
 const JobsManagementToolbar: React.FC<JobsManagementToolbarProps & OUIAProps> = ({
   chips,
-  driver,
   doQueryJobs,
   onResetToDefault,
   jobOperations,

@@ -1,5 +1,3 @@
-import { JobsManagementState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-
 /**
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -18,6 +16,9 @@ import { JobsManagementState } from "@kie-tools/runtime-tools-process-gateway-ap
  * specific language governing permissions and limitations
  * under the License.
  */
+
+import { JobsManagementState } from "./JobsManagementApi";
+
 export interface JobsManagementEnvelopeApi {
   jobsManagement__init(association: Association, initArgs: JobsManagementInitArgs): Promise<void>;
 }

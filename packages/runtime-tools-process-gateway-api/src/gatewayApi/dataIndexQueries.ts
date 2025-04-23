@@ -118,7 +118,10 @@ export const performMultipleCancel = async (
 };
 
 //Rest Api to Cancel a Job
-export const jobCancel = async (job: Job, client: ApolloClient<any>): Promise<JobOperationResult> => {
+export const jobCancel = async (
+  job: Pick<Job, "id" | "endpoint">,
+  client: ApolloClient<any>
+): Promise<JobOperationResult> => {
   let modalTitle: string;
   let modalContent: string;
   return new Promise<JobOperationResult>((resolve, reject) => {
