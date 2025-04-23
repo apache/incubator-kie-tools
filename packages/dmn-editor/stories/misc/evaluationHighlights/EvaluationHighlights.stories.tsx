@@ -817,6 +817,7 @@ function EvaluationHighlights(args: DmnEditorProps) {
         validationMessages: args.validationMessages,
         evaluationResultsByNodeId: args.evaluationResultsByNodeId,
         issueTrackerHref: args.issueTrackerHref,
+        isEvaluationHighlightsSupported: args.isEvaluationHighlightsSupported,
       })}
     </>
   );
@@ -858,5 +859,6 @@ export const EvaluationHighlightsStory: Story = {
     externalModelsByNamespace: {},
     issueTrackerHref: "",
     validationMessages: {},
+    isEvaluationHighlightsSupported: true,
   },
 };
