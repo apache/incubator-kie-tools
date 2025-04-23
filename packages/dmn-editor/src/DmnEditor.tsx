@@ -168,11 +168,7 @@ export type DmnEditorProps = {
    */
   issueTrackerHref?: string;
   /**
-   * Dmn Editor Overlays panel contains 'Evaluation Highlights' toggle
-   * However this toggle is supported only for specific channels, (currently Sandbox only)
-   * The Dmn Editor should not have knowledge about the channel it is opened in.
-   * Use this boolean flag to allow or disallow the feature use.
-   * Default value is false.
+   * A flag to enable 'Evaluation Highlights' on supported channels (only ONLINE for now)
    */
   isEvaluationHighlightsSupported?: boolean;
   /**
