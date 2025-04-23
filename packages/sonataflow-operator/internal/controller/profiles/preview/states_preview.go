@@ -35,7 +35,6 @@ import (
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api"
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/builder"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/knative"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/platform"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/profiles/common/constants"
@@ -229,10 +228,7 @@ func (h *deployWithBuildWorkflowState) Do(ctx context.Context, workflow *operato
 
 func (h *deployWithBuildWorkflowState) PostReconcile(ctx context.Context, workflow *operatorapi.SonataFlow) error {
 	// Clean up the outdated Knative revisions, if any
-	if err := knative.CleanupOutdatedRevisions(ctx, h.Cfg, workflow); err != nil {
-		return fmt.Errorf("failied to cleanup workflow outdated revisions, workflow: %s, namespace: %s - %v", workflow.Name, workflow.Namespace, err)
-	}
-	return nil
+	return common.CleanupOutdatedRevisions(ctx, h.Cfg, workflow)
 }
 
 // isWorkflowChanged checks whether the contents of .spec.flow of the given workflow has changed.
