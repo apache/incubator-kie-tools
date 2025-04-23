@@ -32,7 +32,7 @@
     "rename:app": "run-script-os",
     "rename:app:linux:darwin": "mv dist/quarkus-app dist/extended-services-java",
     "rename:app:win32": "ren dist\\quarkus-app extended-services-java",
-    "start": "mvn quarkus:dev"
+    "start": "mvn quarkus:dev -Dquarkus.http.host=$(build-env extendedServicesJava.host) -Dquarkus.http.port=$(build-env extendedServicesJava.port)"
   },
   "dependencies": {
     "@kie-tools/maven-base": "workspace:*"
