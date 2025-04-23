@@ -46,18 +46,18 @@ const ProcessFormContainer: React.FC<ProcessFormContainerProps & OUIAProps> = ({
       {...componentOuiaProps(ouiaId, "process-form-container", ouiaSafe)}
       processDefinition={processDefinitionData}
       driver={{
-        getProcessFormSchema(processDefinitionData: ProcessDefinition): Promise<any> {
-          return gatewayApi.getProcessFormSchema(processDefinitionData);
+        getProcessFormSchema(processDefinition: ProcessDefinition): Promise<any> {
+          return gatewayApi.getProcessFormSchema(processDefinition);
         },
-        getCustomForm(processDefinitionData: ProcessDefinition): Promise<Form> {
-          return gatewayApi.getCustomForm(processDefinitionData);
+        getCustomForm(processDefinition: ProcessDefinition): Promise<Form> {
+          return gatewayApi.getCustomForm(processDefinition);
         },
         getProcessDefinitionSvg(processDefinition: ProcessDefinition): Promise<string> {
           return gatewayApi.getProcessDefinitionSvg(processDefinition);
         },
-        async startProcess(formData: any): Promise<string> {
+        async startProcess(processDefinition: ProcessDefinition, formData: any): Promise<string> {
           return gatewayApi
-            .startProcess(formData, processDefinitionData)
+            .startProcess(processDefinition, formData)
             .then((id: string) => {
               gatewayApi.setBusinessKey("");
               onSubmitSuccess(id);
