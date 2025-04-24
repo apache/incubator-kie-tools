@@ -50,6 +50,8 @@ export class VsCodeKieEditorCustomDocument implements CustomDocument {
   private readonly _onDidChange = new EventEmitter<CustomDocumentEditEvent<VsCodeKieEditorCustomDocument>>();
   public readonly onDidChange = this._onDidChange.event;
 
+  private _isDirty: boolean;
+
   public constructor(
     public readonly uri: Uri,
     public readonly initialBackup: Uri | undefined,
@@ -67,6 +69,10 @@ export class VsCodeKieEditorCustomDocument implements CustomDocument {
 
   get normalizedPosixPathRelativeToTheWorkspaceRoot() {
     return getNormalizedPosixPathRelativeToWorkspaceRoot(this);
+  }
+
+  get isDirty(): boolean {
+    return this._isDirty;
   }
 
   get fileExtension() {
@@ -113,6 +119,7 @@ export class VsCodeKieEditorCustomDocument implements CustomDocument {
 
       await vscode.workspace.fs.writeFile(destination, this.encoder.encode(content));
       executeOnSaveHook(this.fileType);
+      this._isDirty = false;
       vscode.window.setStatusBarMessage(i18n.savedSuccessfully, 3000);
     } catch (e) {
       this.vsCodeLogger.error(`Error saving. ${e}`);
@@ -145,6 +152,7 @@ export class VsCodeKieEditorCustomDocument implements CustomDocument {
     const input = await vscode.workspace.fs.readFile(this.uri);
     const editor = this.editorStore.get(this.uri);
     if (editor) {
+      this._isDirty = false;
       return editor.setContent(this.normalizedPosixPathRelativeToTheWorkspaceRoot, this.decoder.decode(input));
     }
   }
@@ -156,5 +164,6 @@ export class VsCodeKieEditorCustomDocument implements CustomDocument {
       undo: async () => editor.undo(),
       redo: async () => editor.redo(),
     });
+    this._isDirty = true;
   }
 }
