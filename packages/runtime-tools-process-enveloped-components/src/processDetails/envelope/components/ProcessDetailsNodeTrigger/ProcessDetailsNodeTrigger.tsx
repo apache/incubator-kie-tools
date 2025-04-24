@@ -27,22 +27,23 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import ProcessDetailsErrorModal from "../ProcessDetailsErrorModal/ProcessDetailsErrorModal";
 import "../styles.css";
-import { ProcessDetailsDriver } from "../../../api";
 import { TriggerableNode } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { ProcessDetailsChannelApi } from "../../../api";
 
 interface ProcessDetailsNodeTriggerProps {
   processInstanceData: ProcessInstance;
-  driver: ProcessDetailsDriver;
+  channelApi: MessageBusClientApi<ProcessDetailsChannelApi>;
 }
 
 const BANNED_NODE_TYPES = ["BoundaryEventNode", "EndNode", "Join", "StartNode", "Split"];
 
 const ProcessDetailsNodeTrigger: React.FC<ProcessDetailsNodeTriggerProps & OUIAProps> = ({
   processInstanceData,
-  driver,
+  channelApi,
   ouiaId,
   ouiaSafe,
 }) => {
@@ -57,8 +58,8 @@ const ProcessDetailsNodeTrigger: React.FC<ProcessDetailsNodeTriggerProps & OUIAP
 
   useEffect(() => {
     (async () => {
-      await driver
-        .getTriggerableNodes(processInstanceData)
+      await channelApi.requests
+        .processDetails__getTriggerableNodes(processInstanceData)
         .then((nodeInstances: TriggerableNode[]) => {
           setIsError(false);
           setNodes(nodeInstances);
@@ -68,10 +69,10 @@ const ProcessDetailsNodeTrigger: React.FC<ProcessDetailsNodeTriggerProps & OUIAP
           setModalTitle("Node trigger Error");
           setModalContent(`Retrieval of nodes failed with error: ${error.message}`);
           setTitleType("failure");
-          handleModalToggle();
+          setIsModalOpen(true);
         });
     })();
-  }, []);
+  }, [channelApi.requests, processInstanceData]);
 
   const handleModalToggle = (): void => {
     setIsModalOpen(!isModalOpen);
@@ -107,8 +108,8 @@ const ProcessDetailsNodeTrigger: React.FC<ProcessDetailsNodeTriggerProps & OUIAP
 
   const onTriggerClick = (): void => {
     setModalTitle("Node trigger process");
-    driver
-      .handleNodeTrigger(processInstanceData, selectedNode!)
+    channelApi.requests
+      .processDetails__handleNodeTrigger(processInstanceData, selectedNode!)
       .then(() => {
         setTitleType("success");
         setModalContent(`The node ${selectedNode?.name} was triggered successfully`);
@@ -118,7 +119,7 @@ const ProcessDetailsNodeTrigger: React.FC<ProcessDetailsNodeTriggerProps & OUIAP
         setModalContent(`The node ${selectedNode?.name} trigger failed. ErrorMessage : ${error.message}`);
       })
       .finally(() => {
-        handleModalToggle();
+        setIsModalOpen(true);
       });
   };
 

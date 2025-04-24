@@ -21,19 +21,13 @@ import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tools-core/envelope/dist/embedded";
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
 import { init } from "../envelope";
-import {
-  ProcessDetailsApi,
-  ProcessDetailsChannelApi,
-  ProcessDetailsEnvelopeApi,
-  ProcessDetailsDriver,
-  DiagramPreviewSize,
-} from "../api";
-import { ProcessDetailsChannelApiImpl } from "./ProcessDetailsChannelApiImpl";
+import { ProcessDetailsApi, ProcessDetailsChannelApi, ProcessDetailsEnvelopeApi, DiagramPreviewSize } from "../api";
 import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 export interface Props {
   targetOrigin: string;
-  driver: ProcessDetailsDriver;
+  channelApi: ProcessDetailsChannelApi;
   processInstance: ProcessInstance;
   omittedProcessTimelineEvents?: string[];
   diagramPreviewSize?: DiagramPreviewSize;
@@ -91,7 +85,7 @@ export const EmbeddedProcessDetails = React.forwardRef((props: Props, forwardedR
   return (
     <EmbeddedProcessDetailsEnvelope
       ref={forwardedRef}
-      apiImpl={new ProcessDetailsChannelApiImpl(props.driver)}
+      apiImpl={props.channelApi}
       origin={props.targetOrigin}
       refDelegate={refDelegate}
       pollInit={pollInit}

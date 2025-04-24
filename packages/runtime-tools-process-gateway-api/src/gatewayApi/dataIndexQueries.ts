@@ -378,7 +378,10 @@ export const handleNodeInstanceRetrigger = async (
   });
 };
 
-export const getSVG = async (processInstance: ProcessInstance, client: ApolloClient<any>): Promise<any> => {
+export const getProcessDetailsSVG = async (
+  processInstance: ProcessInstance,
+  client: ApolloClient<any>
+): Promise<any> => {
   return client
     .query({
       query: GraphQL.GetProcessInstanceSvgDocument,

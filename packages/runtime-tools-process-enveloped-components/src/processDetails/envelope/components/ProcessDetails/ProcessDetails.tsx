@@ -32,7 +32,7 @@ import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { Title, TitleSizes } from "@patternfly/react-core/dist/js/components/Title";
 import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
 import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";
-import { DiagramPreviewSize, ProcessDetailsDriver } from "../../../api";
+import { DiagramPreviewSize, ProcessDetailsChannelApi } from "../../../api";
 import ProcessDiagram from "../ProcessDiagram/ProcessDiagram";
 import JobsPanel from "../JobsPanel/JobsPanel";
 import ProcessDetailsErrorModal from "../ProcessDetailsErrorModal/ProcessDetailsErrorModal";
@@ -54,10 +54,11 @@ import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
 import { ProcessInfoModal } from "@kie-tools/runtime-tools-components/dist/components/ProcessInfoModal";
 import { Job, ProcessInstance, ProcessInstanceState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 interface ProcessDetailsProps {
   isEnvelopeConnectedToChannel: boolean;
-  driver: ProcessDetailsDriver;
+  channelApi: MessageBusClientApi<ProcessDetailsChannelApi>;
   processDetails: ProcessInstance;
   omittedProcessTimelineEvents: string[];
   diagramPreviewSize?: DiagramPreviewSize;
@@ -68,7 +69,7 @@ type SvgResponse = SvgSuccessResponse | SvgErrorResponse;
 
 const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   isEnvelopeConnectedToChannel,
-  driver,
+  channelApi,
   processDetails,
   omittedProcessTimelineEvents,
   diagramPreviewSize,
@@ -93,14 +94,16 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   const [infoModalContent, setInfoModalContent] = useState<string>("");
 
   const loadJobs = useCallback(async () => {
-    const jobsResponse: Job[] = await driver.jobsQuery(processDetails.id);
+    const jobsResponse: Job[] = await channelApi.requests.processDetails__getJobs(processDetails.id);
     jobsResponse && setJobs(jobsResponse);
-  }, [processDetails.id, driver]);
+  }, [processDetails.id, channelApi.requests]);
 
   const handleReload = useCallback(async () => {
     setIsLoading(true);
     try {
-      const processResponse: ProcessInstance = await driver.processDetailsQuery(processDetails.id);
+      const processResponse: ProcessInstance = await channelApi.requests.processDetails__getProcessDetails(
+        processDetails.id
+      );
       processResponse && setData(processResponse);
       loadJobs();
       setIsLoading(false);
@@ -108,7 +111,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
       setError(errorString);
       setIsLoading(false);
     }
-  }, [driver, loadJobs, processDetails.id]);
+  }, [channelApi.requests, loadJobs, processDetails.id]);
 
   const handleSvgErrorModal = useCallback(() => {
     setSvgErrorModalOpen((currentSvgErrorModalOpen) => !currentSvgErrorModalOpen);
@@ -117,7 +120,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   useEffect(() => {
     const handleSvgApi = async (): Promise<void> => {
       if (data && data.id === processDetails.id) {
-        const response: SvgResponse = await driver.getProcessDiagram(data);
+        const response: SvgResponse = await channelApi.requests.processDetails__getProcessDiagram(data);
         if (response && response.svg) {
           const temp = <SVG src={response.svg} />;
           setSvg(temp);
@@ -135,7 +138,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
       handleSvgApi();
       getVariableJSON();
     }
-  }, [driver, data, isEnvelopeConnectedToChannel, processDetails.id]);
+  }, [channelApi.requests, data, isEnvelopeConnectedToChannel, processDetails.id]);
 
   useEffect(() => {
     if (svgError && svgError.length > 0) {
@@ -157,9 +160,9 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   }, [isEnvelopeConnectedToChannel, loadJobs, processDetails]);
 
   const handleSave = useCallback(async () => {
-    return driver
-      .handleProcessVariableUpdate(data, updateJson)
-      .then((updatedJson: Record<string, unknown>) => {
+    return channelApi.requests
+      .processDetails__handleProcessVariableUpdate(data, updateJson)
+      .then((updatedJson) => {
         setUpdateJson(updatedJson);
         setDisplayLabel(false);
         setDisplaySuccess(true);
@@ -170,7 +173,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
       .catch((errorMessage) => {
         setVariableError(errorMessage?.message ?? "Failed to save process instance changes.");
       });
-  }, [data, driver, updateJson]);
+  }, [data, channelApi.requests, updateJson]);
 
   const updateVariablesButton = useMemo(() => {
     if (data.serviceUrl !== null) {
@@ -222,7 +225,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   const onAbortClick = useCallback(
     async (processInstance: ProcessInstance): Promise<void> => {
       try {
-        await driver.handleProcessAbort(processInstance);
+        await channelApi.requests.processDetails__handleProcessAbort(processInstance);
         setTitleType(TitleType.SUCCESS);
         setInfoModalTitle("Abort operation");
         setInfoModalContent(
@@ -241,7 +244,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
         handleReload();
       }
     },
-    [driver, singularProcessLabel, handleReload]
+    [channelApi.requests, singularProcessLabel, handleReload]
   );
 
   const abortButton = useMemo(() => {
@@ -288,19 +291,19 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
         <ProcessDetailsTimelinePanel
           data={data}
           jobs={jobs}
-          driver={driver}
+          channelApi={channelApi}
           omittedProcessTimelineEvents={omittedProcessTimelineEvents}
         />
       </FlexItem>
     ),
-    [data, driver, jobs, omittedProcessTimelineEvents]
+    [data, channelApi, jobs, omittedProcessTimelineEvents]
   );
 
   const processDetailsBlock = useMemo(
     () => (
       <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
         <FlexItem>
-          <ProcessDetailsPanel processInstance={data} driver={driver} />
+          <ProcessDetailsPanel processInstance={data} channelApi={channelApi} />
         </FlexItem>
         {data.milestones && data.milestones.length > 0 && (
           <FlexItem>
@@ -309,7 +312,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
         )}
       </Flex>
     ),
-    [data, driver]
+    [data, channelApi]
   );
 
   const processVariablesBlock = useMemo(
@@ -488,7 +491,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
                 <Flex direction={{ default: "column" }} flex={{ default: "flex_1" }}>
                   {processTimelineBlock}
                   <FlexItem>
-                    <JobsPanel jobs={jobs} driver={driver} />
+                    <JobsPanel jobs={jobs} channelApi={channelApi} />
                   </FlexItem>
                   {data.addons?.includes("process-management") &&
                     data.state !== ProcessInstanceState.Completed &&
@@ -496,7 +499,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
                     data.serviceUrl &&
                     data.addons.includes("process-management") && (
                       <FlexItem>
-                        <ProcessDetailsNodeTrigger driver={driver} processInstanceData={data} />
+                        <ProcessDetailsNodeTrigger channelApi={channelApi} processInstanceData={data} />
                       </FlexItem>
                     )}
                 </Flex>

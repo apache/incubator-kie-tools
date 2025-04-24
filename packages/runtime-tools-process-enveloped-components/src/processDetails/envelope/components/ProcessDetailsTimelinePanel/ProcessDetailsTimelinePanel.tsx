@@ -32,7 +32,6 @@ import { OnRunningIcon } from "@patternfly/react-icons/dist/js/icons/on-running-
 import { OutlinedClockIcon } from "@patternfly/react-icons/dist/js/icons/outlined-clock-icon";
 import React, { useCallback, useState } from "react";
 import "../styles.css";
-import { ProcessDetailsDriver } from "../../../api";
 import {
   handleJobRescheduleUtil,
   handleNodeInstanceCancel,
@@ -49,10 +48,12 @@ import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/di
 import { JobsDetailsModal } from "../../../../jobsManagement/envelope/components/JobsDetailsModal";
 import { JobsRescheduleModal } from "../../../../jobsManagement/envelope/components/JobsRescheduleModal";
 import { JobsCancelModal } from "../../../../jobsManagement/envelope/components/JobsCancelModal";
+import { ProcessDetailsChannelApi } from "../../../api";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 export interface IOwnProps {
   data: Pick<ProcessInstance, "id" | "nodes" | "addons" | "error" | "serviceUrl" | "processId" | "state">;
-  driver: ProcessDetailsDriver;
+  channelApi: MessageBusClientApi<ProcessDetailsChannelApi>;
   jobs: Job[];
   omittedProcessTimelineEvents?: string[];
 }
@@ -63,7 +64,7 @@ enum TitleType {
 const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
   data,
   jobs,
-  driver,
+  channelApi,
   omittedProcessTimelineEvents,
   ouiaId,
   ouiaSafe,
@@ -136,13 +137,13 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
       scheduleDate,
       selectedJob,
       handleRescheduleAction,
-      driver,
+      channelApi,
       setRescheduleError
     );
   };
 
   const handleCancelAction = async (job: Job): Promise<void> => {
-    await jobCancel(driver, job, setCancelModalTitle, setModalContent);
+    await jobCancel(channelApi, job, setCancelModalTitle, setModalContent);
     handleCancelModalToggle();
   };
 
@@ -210,7 +211,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
           onClick={() =>
             handleRetry(
               processInstanceData,
-              driver,
+              channelApi,
               () =>
                 onShowMessage(
                   "Retry operation",
@@ -235,7 +236,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
           onClick={() =>
             handleSkip(
               processInstanceData,
-              driver,
+              channelApi,
               () =>
                 onShowMessage("Skip operation", `The node ${node.name} was successfully skipped.`, TitleType.SUCCESS),
               (errorMessage: string) =>
@@ -261,7 +262,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
           onClick={() =>
             handleNodeInstanceRetrigger(
               processInstanceData,
-              driver,
+              channelApi,
               node,
               () =>
                 onShowMessage(
@@ -287,7 +288,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
           onClick={() =>
             handleNodeInstanceCancel(
               processInstanceData,
-              driver,
+              channelApi,
               node,
               () =>
                 onShowMessage(

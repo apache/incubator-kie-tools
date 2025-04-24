@@ -21,7 +21,6 @@ import { useImperativeHandle, useState } from "react";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { DiagramPreviewSize, ProcessDetailsChannelApi, ProcessDetailsInitArgs } from "../api";
 import ProcessDetails from "./components/ProcessDetails/ProcessDetails";
-import ProcessDetailsEnvelopeViewDriver from "./ProcessDetailsEnvelopeViewDriver";
 import "@patternfly/patternfly/patternfly.css";
 import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
@@ -58,7 +57,7 @@ export const ProcessDetailsEnvelopeView = React.forwardRef<ProcessDetailsEnvelop
       <React.Fragment>
         <ProcessDetails
           isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
-          driver={new ProcessDetailsEnvelopeViewDriver(props.channelApi)}
+          channelApi={props.channelApi}
           processDetails={processInstance}
           omittedProcessTimelineEvents={omittedProcessTimelineEvents}
           diagramPreviewSize={diagramPreviewSize}

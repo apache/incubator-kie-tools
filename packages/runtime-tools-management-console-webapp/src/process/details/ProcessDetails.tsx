@@ -24,10 +24,6 @@ import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/di
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import {
-  useProcessDetailsGatewayApi,
-  ProcessDetailsGatewayApi,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
-import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
@@ -38,6 +34,7 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { EmbeddedProcessDetails } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
+import { useProcessDetailsChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
 import { useRuntimeSpecificRoutes } from "../../runtime/RuntimeContext";
 import { useHistory } from "react-router";
 
@@ -47,7 +44,7 @@ interface Props {
 }
 
 export const ProcessDetails: React.FC<Props> = ({ processInstanceId, onReturnToProcessList }) => {
-  const gatewayApi: ProcessDetailsGatewayApi = useProcessDetailsGatewayApi();
+  const channelApi = useProcessDetailsChannelApi();
   const runtimeRoutes = useRuntimeSpecificRoutes();
   const history = useHistory();
   const [processInstance, setProcessInstance] = useState<ProcessInstance>();
@@ -61,8 +58,8 @@ export const ProcessDetails: React.FC<Props> = ({ processInstanceId, onReturnToP
           return;
         }
         setIsLoading(true);
-        gatewayApi
-          .processDetailsQuery(processInstanceId)
+        channelApi
+          .processDetails__getProcessDetails(processInstanceId)
           .then((response) => {
             if (canceled.get()) {
               return;
@@ -76,21 +73,21 @@ export const ProcessDetails: React.FC<Props> = ({ processInstanceId, onReturnToP
             setIsLoading(false);
           });
       },
-      [gatewayApi, processInstanceId]
+      [channelApi, processInstanceId]
     )
   );
 
   useEffect(() => {
-    const unSubscribeHandler = gatewayApi.onOpenProcessInstanceDetailsListener({
+    const unsubscriber = channelApi.processDetails__onOpenProcessInstanceDetailsListener({
       onOpen(id: string) {
         history.push(runtimeRoutes.processDetails(id));
       },
     });
 
     return () => {
-      unSubscribeHandler.unSubscribe();
+      unsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
     };
-  }, [gatewayApi, history, runtimeRoutes]);
+  }, [channelApi, history, runtimeRoutes]);
 
   // Loading State
   if (isLoading) {
@@ -114,7 +111,7 @@ export const ProcessDetails: React.FC<Props> = ({ processInstanceId, onReturnToP
   if (processInstance) {
     return (
       <EmbeddedProcessDetails
-        driver={gatewayApi}
+        channelApi={channelApi}
         targetOrigin={window.location.origin}
         processInstance={processInstance}
         singularProcessLabel={"process"}
