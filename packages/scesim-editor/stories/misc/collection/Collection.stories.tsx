@@ -165,7 +165,7 @@ export const collectionScesim = `<?xml version="1.0" encoding="UTF-8" ?>
               <name>_33694C8E-C795-435F-B0F0-F1101F9DE403</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">&quot;[10,20,30]&quot;</rawValue>
+            <rawValue class="string">[10,20,30]</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>
@@ -176,7 +176,7 @@ export const collectionScesim = `<?xml version="1.0" encoding="UTF-8" ?>
               <name>_11DBB39A-5749-420D-A007-3A0D19A66916</name>
               <type>GIVEN</type>
             </expressionIdentifier>
-            <rawValue class="string">&quot;[40,50,60]&quot;</rawValue>
+            <rawValue class="string">[40,50,60]</rawValue>
           </FactMappingValue>
           <FactMappingValue>
             <factIdentifier>

@@ -50,6 +50,7 @@
     "@kie-tools/dmn-marshaller": "workspace:*",
     "@kie-tools/feel-input-component": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",
+    "@kie-tools/import-java-classes-component": "workspace:*",
     "@kie-tools/pmml-editor-marshaller": "workspace:*",
     "@kie-tools/xml-parser-ts": "workspace:*",
     "@patternfly/react-core": "^5.4.1",

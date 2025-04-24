@@ -212,7 +212,7 @@ export function DataTypePanel({
         direction={{ default: "row" }}
       >
         <FlexItem>
-          <Flex direction={{ default: "column" }}>
+          <Flex direction={{ default: "column" }} gap={{ default: "gapMd" }}>
             <FlexItem>
               <Flex direction={{ default: "row" }}>
                 {dataType.namespace !== thisDmnsNamespace && (
@@ -324,7 +324,7 @@ export function DataTypePanel({
         </FlexItem>
       </Flex>
       {/* This padding was necessary because PF4 has a @media query that doesn't run inside iframes, for some reason. */}
-      <PageSection style={{ padding: "24px" }}>
+      <PageSection style={{ padding: "24px" }} variant="light">
         <TextArea
           isDisabled={isReadOnly}
           key={dataType.itemDefinition["@_id"]}
@@ -334,7 +334,6 @@ export function DataTypePanel({
           resizeOrientation={"vertical"}
           aria-label={"Data type description"}
         />
-        <br />
         <br />
         <Divider inset={{ default: "insetMd" }} />
         <br />

@@ -31,6 +31,7 @@ import {
 import Path from "path";
 import { DeploymentState } from "./common";
 import { ResourceActions } from "./types";
+import { CorsProxyHeaderKeys } from "@kie-tools/cors-proxy-api";
 
 export interface KubernetesConnection {
   namespace: string;
@@ -185,7 +186,11 @@ export class KubernetesService {
     args: Omit<KubernetesServiceArgs, "k8sApiServerEndpointsByResourceKind">
   ) {
     const baseUrl = KubernetesService.getBaseUrl(args);
-    return await buildK8sApiServerEndpointsByResourceKind(baseUrl, args.connection.token);
+    return await buildK8sApiServerEndpointsByResourceKind(
+      baseUrl,
+      args.connection.insecurelyDisableTlsCertificateValidation,
+      args.connection.token
+    );
   }
 
   public static getBaseUrl(args: Omit<KubernetesServiceArgs, "k8sApiServerEndpointsByResourceKind">) {
@@ -194,8 +199,19 @@ export class KubernetesService {
 
   public async kubernetesFetch(path: string, init?: RequestInit): Promise<Response> {
     const url = new URL(Path.join(this.baseUrl, path));
+    const headers = {
+      Authorization: `Bearer ${this.args.connection.token}`,
+      ...(this.args.connection.insecurelyDisableTlsCertificateValidation
+        ? {
+            [CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION]: Boolean(
+              this.args.connection.insecurelyDisableTlsCertificateValidation
+            ).toString(),
+          }
+        : {}),
+      ...init?.headers,
+    };
     return await fetch(url, {
-      headers: { Authorization: `Bearer ${this.args.connection.token}`, ...init?.headers },
+      headers,
       ...init,
     });
   }
@@ -235,6 +251,7 @@ export class KubernetesService {
       k8sApiServerUrl: this.args.connection.host,
       k8sNamespace: this.args.connection.namespace,
       k8sServiceAccountToken: this.args.connection.token,
+      insecurelyDisableTlsCertificateValidation: this.args.connection.insecurelyDisableTlsCertificateValidation,
     });
   }
 

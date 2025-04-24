@@ -69,6 +69,6 @@ func (f *followDeployWorkflowState) Do(ctx context.Context, workflow *operatorap
 }
 
 func (f *followDeployWorkflowState) PostReconcile(ctx context.Context, workflow *operatorapi.SonataFlow) error {
-	//By default, we don't want to perform anything after the reconciliation, and so we will simply return no error
-	return nil
+	// Clean up the outdated Knative revisions, if any
+	return common.CleanupOutdatedRevisions(ctx, f.Cfg, workflow)
 }

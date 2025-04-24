@@ -40,12 +40,12 @@ docker run -p 8081:8081 docker.io/apache/incubator-kie-sandbox-dev-deployment-dm
 To develop this webapp you can start the webapp container and a quarkus app container to be used as backend:
 
 ```bash
-docker run -d -p 8080:8080 -e DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=dev docker.io/apache/incubator-kie-sandbox-dev-deployment-kogito-quarkus-blank-app:main
+docker run -d -p 8080:8080 -e DEV_DEPLOYMENT__UPLOAD_SERVICE_API_KEY=dev docker.io/apache/incubator-kie-sandbox-dev-deployment-quarkus-blank-app:main
 
 docker run -d -p 8081:8081 -e DEV_DEPLOYMENT_DMN_FORM_WEBAPP_QUARKUS_APP_ORIGIN=http://localhost:8080 docker.io/apache/incubator-kie-sandbox-dev-deployment-dmn-form-webapp:main
 ```
 
-The Quarkus app will be running on port 8080 and you will have to upload some DMNs to it (check the [dev-deployment-kogito-quarkus-blank-app-image README](../dev-deployment-kogito-quarkus-blank-app-image/README.md));
+The Quarkus app will be running on port 8080 and you will have to upload some DMNs to it (check the [dev-deployment-quarkus-blank-app-image README](../dev-deployment-quarkus-blank-app-image/README.md));
 
 The DMN Form Webapp will be running on port 8081 and will be using the Quarkus app on port 8080 as it's backend.
 
