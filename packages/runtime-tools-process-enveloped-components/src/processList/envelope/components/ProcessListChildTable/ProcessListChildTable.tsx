@@ -38,6 +38,7 @@ import {
   KogitoEmptyStateType,
 } from "@kie-tools/runtime-tools-components/dist/components/KogitoEmptyState";
 import _ from "lodash";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 const columnNames: string[] = ["__Select", "Id", "Status", "Created", "Last update", "__Actions"];
 
@@ -47,7 +48,7 @@ export interface ProcessListChildTableProps {
   setProcessInstances: React.Dispatch<React.SetStateAction<ProcessInstance[]>>;
   selectedInstances: ProcessInstance[];
   setSelectedInstances: React.Dispatch<React.SetStateAction<ProcessInstance[]>>;
-  channelApi: ProcessListChannelApi;
+  channelApi: MessageBusClientApi<ProcessListChannelApi>;
   onSkipClick: (processInstance: ProcessInstance) => Promise<void>;
   onRetryClick: (processInstance: ProcessInstance) => Promise<void>;
   onAbortClick: (processInstance: ProcessInstance) => Promise<void>;
@@ -81,7 +82,7 @@ const ProcessListChildTable: React.FC<ProcessListChildTableProps & OUIAProps> = 
 
   const handleClick = useCallback(
     (childProcessInstance: ProcessInstance): void => {
-      channelApi.processList__openProcess(childProcessInstance);
+      channelApi.notifications.processList__openProcess.send(childProcessInstance);
     },
     [channelApi]
   );
@@ -217,7 +218,8 @@ const ProcessListChildTable: React.FC<ProcessListChildTableProps & OUIAProps> = 
   const getChildProcessInstances = useCallback(async (): Promise<void> => {
     try {
       setIsLoading(true);
-      const response: ProcessInstance[] = await channelApi.processList__getChildProcessesQuery(parentProcessId);
+      const response: ProcessInstance[] =
+        await channelApi.requests.processList__getChildProcessesQuery(parentProcessId);
       processInstances.forEach((processInstance: ProcessInstance) => {
         if (processInstance.id === parentProcessId) {
           response.forEach((child: ProcessInstance) => {

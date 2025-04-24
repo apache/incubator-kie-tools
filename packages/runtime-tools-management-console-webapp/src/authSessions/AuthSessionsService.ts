@@ -303,6 +303,8 @@ export class AuthSessionsService {
     const { sub } = claims;
     const userInfo = await client.fetchUserInfo(config, access_token, sub);
 
+    console.log({ claims });
+
     const authSession: OpenIDConnectAuthSession = {
       id: uuid(),
       type: AuthSessionType.OPENID_CONNECT,

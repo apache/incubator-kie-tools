@@ -28,7 +28,6 @@ import { CaretDownIcon } from "@patternfly/react-icons/dist/js/icons/caret-down-
 import ProcessDetailsErrorModal from "../ProcessDetailsErrorModal/ProcessDetailsErrorModal";
 import "../styles.css";
 import { TriggerableNode } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
@@ -41,12 +40,7 @@ interface ProcessDetailsNodeTriggerProps {
 
 const BANNED_NODE_TYPES = ["BoundaryEventNode", "EndNode", "Join", "StartNode", "Split"];
 
-const ProcessDetailsNodeTrigger: React.FC<ProcessDetailsNodeTriggerProps & OUIAProps> = ({
-  processInstanceData,
-  channelApi,
-  ouiaId,
-  ouiaSafe,
-}) => {
+const ProcessDetailsNodeTrigger: React.FC<ProcessDetailsNodeTriggerProps> = ({ processInstanceData, channelApi }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedNode, setSelectedNode] = useState<TriggerableNode>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -139,7 +133,7 @@ const ProcessDetailsNodeTrigger: React.FC<ProcessDetailsNodeTriggerProps & OUIAP
         title={setTitle(titleType, modalTitle)}
       />
       {!isError ? (
-        <Card {...componentOuiaProps(ouiaId, "node-trigger", ouiaSafe)}>
+        <Card className="node-trigger" style={{ height: "100%" }}>
           <CardHeader>
             <Title headingLevel="h3" size="xl">
               Node Trigger

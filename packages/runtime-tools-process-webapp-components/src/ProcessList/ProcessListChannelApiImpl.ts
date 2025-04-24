@@ -73,7 +73,6 @@ export class ProcessListChannelApiImpl implements ProcessListChannelApi {
 
   async processList__openProcess(process: ProcessInstance) {
     this.onOpenProcessListeners.forEach((listener) => listener.onOpen(process, this._processListState));
-    return Promise.resolve();
   }
 
   async processList__initialLoad(filter: ProcessInstanceFilter, sortBy: ProcessListSortBy) {

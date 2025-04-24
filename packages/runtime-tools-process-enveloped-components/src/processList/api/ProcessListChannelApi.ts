@@ -40,7 +40,7 @@ export interface UnSubscribeHandler {
 
 export interface ProcessListChannelApi {
   processList__initialLoad(filter: ProcessInstanceFilter, sortBy: ProcessListSortBy): Promise<void>;
-  processList__openProcess(process: ProcessInstance): Promise<void>;
+  processList__openProcess(process: ProcessInstance): void;
   processList__applyFilter(filter: ProcessInstanceFilter): Promise<void>;
   processList__applySorting(sortBy: ProcessListSortBy): Promise<void>;
   processList__handleProcessSkip(processInstance: ProcessInstance): Promise<void>;

@@ -39,10 +39,11 @@ import {
   KogitoEmptyStateType,
 } from "@kie-tools/runtime-tools-components/dist/components/KogitoEmptyState";
 import { OrderBy } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 interface ProcessListProps {
   isEnvelopeConnectedToChannel: boolean;
-  channelApi: ProcessListChannelApi;
+  channelApi: MessageBusClientApi<ProcessListChannelApi>;
   initialState: ProcessListState;
   singularProcessLabel: string;
   pluralProcessLabel: string;
@@ -129,7 +130,7 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
       setSelectedInstances([]);
       setError(undefined);
       try {
-        const response: ProcessInstance[] = await channelApi.processList__query(_offset, _limit);
+        const response: ProcessInstance[] = await channelApi.requests.processList__query(_offset, _limit);
         setLimit(response.length);
         if (_resetProcesses) {
           countExpandableRows(response);
@@ -159,7 +160,7 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
       ({ canceled }) => {
         if (isEnvelopeConnectedToChannel && !isInitialLoadDone) {
           setFilters(defaultFilters);
-          channelApi
+          channelApi.requests
             .processList__initialLoad(defaultFilters, defaultOrderBy)
             .then(() => {
               if (canceled.get()) {
@@ -175,7 +176,7 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
             });
         }
       },
-      [defaultFilters, defaultOrderBy, doQuery, channelApi, isEnvelopeConnectedToChannel, isInitialLoadDone]
+      [defaultFilters, defaultOrderBy, doQuery, channelApi.requests, isEnvelopeConnectedToChannel, isInitialLoadDone]
     )
   );
 
@@ -198,10 +199,10 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
   const applyFilter = useCallback(
     async (filter: ProcessInstanceFilter): Promise<void> => {
       setProcessInstances([]);
-      await channelApi.processList__applyFilter(filter);
+      await channelApi.requests.processList__applyFilter(filter);
       await doQuery(0, defaultPageSize, true, true);
     },
-    [defaultPageSize, doQuery, channelApi]
+    [defaultPageSize, doQuery, channelApi.requests]
   );
 
   const applySorting = useCallback(
@@ -212,10 +213,10 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
       sortingColumn = _.camelCase(sortingColumn);
       let sortByObj = _.set({}, sortingColumn, direction.toUpperCase());
       sortByObj = alterOrderByObj(sortByObj);
-      await channelApi.processList__applySorting(sortByObj);
+      await channelApi.requests.processList__applySorting(sortByObj);
       await doQuery(0, defaultPageSize, true, true);
     },
-    [defaultPageSize, doQuery, channelApi]
+    [defaultPageSize, doQuery, channelApi.requests]
   );
 
   const doRefresh = useCallback(async (): Promise<void> => {

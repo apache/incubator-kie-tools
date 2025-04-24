@@ -103,7 +103,7 @@ const JobsPanel: React.FC<JobsPanelProps> = ({ jobs, channelApi }) => {
 
   if (jobs.length > 0) {
     return (
-      <Card className="process-details-jobs-panel">
+      <Card className="process-details-jobs-panel" style={{ height: "100%" }}>
         <CardHeader>
           <Title headingLevel="h3" size="xl">
             Jobs

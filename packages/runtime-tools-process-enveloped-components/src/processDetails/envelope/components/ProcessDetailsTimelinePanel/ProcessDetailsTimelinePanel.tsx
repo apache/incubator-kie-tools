@@ -41,7 +41,6 @@ import {
   jobCancel,
 } from "../../../utils/Utils";
 import { Job } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { ProcessInfoModal } from "@kie-tools/runtime-tools-components/dist/components/ProcessInfoModal";
 import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
@@ -51,7 +50,7 @@ import { JobsCancelModal } from "../../../../jobsManagement/envelope/components/
 import { ProcessDetailsChannelApi } from "../../../api";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
-export interface IOwnProps {
+export interface Props {
   data: Pick<ProcessInstance, "id" | "nodes" | "addons" | "error" | "serviceUrl" | "processId" | "state">;
   channelApi: MessageBusClientApi<ProcessDetailsChannelApi>;
   jobs: Job[];
@@ -61,14 +60,7 @@ enum TitleType {
   SUCCESS = "success",
   FAILURE = "failure",
 }
-const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
-  data,
-  jobs,
-  channelApi,
-  omittedProcessTimelineEvents,
-  ouiaId,
-  ouiaSafe,
-}) => {
+const ProcessDetailsTimelinePanel: React.FC<Props> = ({ data, jobs, channelApi, omittedProcessTimelineEvents }) => {
   const [kebabOpenArray, setKebabOpenArray] = useState<string[]>([]);
   const [modalTitle, setModalTitle] = useState<JSX.Element>();
   const setCancelModalTitle = () => {
@@ -393,7 +385,7 @@ const ProcessDetailsTimelinePanel: React.FC<IOwnProps & OUIAProps> = ({
   }, []);
 
   return (
-    <Card {...componentOuiaProps(ouiaId ? ouiaId : data.id, "timeline", ouiaSafe)}>
+    <Card className="timeline" style={{ height: "100%" }}>
       <ProcessInfoModal
         isModalOpen={isModalOpen}
         handleModalToggle={handleModalToggle}

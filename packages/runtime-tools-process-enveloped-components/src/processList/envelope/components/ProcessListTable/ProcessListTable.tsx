@@ -42,6 +42,7 @@ import { ItemDescriptor } from "@kie-tools/runtime-tools-components/dist/compone
 import { EndpointLink } from "@kie-tools/runtime-tools-components/dist/components/EndpointLink";
 import { TitleType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { ProcessListChannelApi } from "../../../api";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 export interface ProcessListTableProps {
   processInstances: ProcessInstance[];
@@ -54,7 +55,7 @@ export interface ProcessListTableProps {
       [key: number]: boolean;
     }>
   >;
-  channelApi: ProcessListChannelApi;
+  channelApi: MessageBusClientApi<ProcessListChannelApi>;
   onSort: (event: React.SyntheticEvent<EventTarget>, index: number, direction: "desc" | "asc") => Promise<void>;
   sortBy: any;
   setProcessInstances: React.Dispatch<React.SetStateAction<ProcessInstance[]>>;
@@ -112,7 +113,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
   const onSkipClick = useCallback(
     async (processInstance: ProcessInstance): Promise<void> => {
       try {
-        await channelApi.processList__handleProcessSkip(processInstance);
+        await channelApi.requests.processList__handleProcessSkip(processInstance);
         onShowMessage(
           "Skip operation",
           `The ${singularProcessLabel?.toLowerCase()} ${processInstance.processName} was successfully skipped.`,
@@ -132,13 +133,13 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
         handleModalToggle();
       }
     },
-    [channelApi, handleModalToggle, onShowMessage, singularProcessLabel]
+    [channelApi.requests, handleModalToggle, onShowMessage, singularProcessLabel]
   );
 
   const onRetryClick = useCallback(
     async (processInstance: ProcessInstance): Promise<void> => {
       try {
-        await channelApi.processList__handleProcessRetry(processInstance);
+        await channelApi.requests.processList__handleProcessRetry(processInstance);
         onShowMessage(
           "Retry operation",
           `The ${singularProcessLabel?.toLowerCase()} ${processInstance.processName} was successfully re-executed.`,
@@ -158,13 +159,13 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
         handleModalToggle();
       }
     },
-    [channelApi, handleModalToggle, onShowMessage, singularProcessLabel]
+    [channelApi.requests, handleModalToggle, onShowMessage, singularProcessLabel]
   );
 
   const onAbortClick = useCallback(
     async (processInstance: ProcessInstance): Promise<void> => {
       try {
-        await channelApi.processList__handleProcessAbort(processInstance);
+        await channelApi.requests.processList__handleProcessAbort(processInstance);
         onShowMessage(
           "Abort operation",
           `The ${singularProcessLabel?.toLowerCase()} ${processInstance.processName} was successfully aborted.`,
@@ -193,14 +194,14 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
         handleModalToggle();
       }
     },
-    [channelApi, handleModalToggle, onShowMessage, setProcessInstances, singularProcessLabel]
+    [channelApi.requests, handleModalToggle, onShowMessage, setProcessInstances, singularProcessLabel]
   );
 
   const handleClick = useCallback(
     (processInstance: ProcessInstance): void => {
-      channelApi.processList__openProcess(processInstance);
+      channelApi.notifications.processList__openProcess.send(processInstance);
     },
-    [channelApi]
+    [channelApi.notifications]
   );
 
   const checkBoxSelect = useCallback(

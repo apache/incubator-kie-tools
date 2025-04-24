@@ -66,7 +66,7 @@ export const ProcessListEnvelopeView = React.forwardRef<ProcessListEnvelopeViewA
     <React.Fragment>
       <ProcessList
         isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
-        channelApi={props.channelApi.requests}
+        channelApi={props.channelApi}
         initialState={processInitialArgs.initialState}
         singularProcessLabel={processInitialArgs?.singularProcessLabel}
         pluralProcessLabel={processInitialArgs?.pluralProcessLabel}

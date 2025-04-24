@@ -90,7 +90,7 @@ interface ProcessListToolbarProps {
   setProcessInstances: React.Dispatch<React.SetStateAction<ProcessInstance[]>>;
   isAllChecked: boolean;
   setIsAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
-  channelApi: ProcessListChannelApi;
+  channelApi: MessageBusClientApi<ProcessListChannelApi>;
   defaultStatusFilter: ProcessInstanceState[];
   singularProcessLabel: string;
   pluralProcessLabel: string;
@@ -168,7 +168,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
               return true;
             }
           });
-          await channelApi
+          await channelApi.requests
             .processList__handleProcessMultipleAction(remainingInstances, OperationType.ABORT)
             .then((result) => {
               onShowMessage(
@@ -208,7 +208,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
               return true;
             }
           });
-          await channelApi
+          await channelApi.requests
             .processList__handleProcessMultipleAction(remainingInstances, OperationType.SKIP)
             .then((result) => {
               onShowMessage(
@@ -240,7 +240,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
               return true;
             }
           });
-          await channelApi
+          await channelApi.requests
             .processList__handleProcessMultipleAction(remainingInstances, OperationType.RETRY)
             .then((result) => {
               onShowMessage(
