@@ -365,7 +365,7 @@ func GetSinkURI(destination duckv1.Destination) (*apis.URL, error) {
 // service revisions that weren't properly initialized (i.e. doesn't have the K_SINK injected) will be cleaned-up.
 // Note that revisions in that situation are not valid, since workflows without the K_SINK injected will never pass
 // the health checks, etc.
-func CleanupOutdatedRevisions(ctx context.Context, cfg *rest.Config, workflow *operatorapi.SonataFlow) error {
+func CleanupOutdatedRevisions(ctx context.Context, cfg *rest.Config, workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) error {
 	if !workflow.IsKnativeDeployment() {
 		return nil
 	}
@@ -374,6 +374,14 @@ func CleanupOutdatedRevisions(ctx context.Context, cfg *rest.Config, workflow *o
 		return err
 	}
 	if !avail.Serving || !avail.Eventing {
+		return nil
+	}
+	sink, err := GetWorkflowSink(workflow, platform)
+	if err != nil {
+		return fmt.Errorf("failed to get workflow sink for workflow : %s, namespace: %s : %v", workflow.Name, workflow.Namespace, err)
+	}
+	if sink == nil {
+		// no sink?, then no SinkBinding required/created for this workflow, and thus no dangling revisions to clean.
 		return nil
 	}
 	injected, err := CheckKSinkInjected(workflow.Name, workflow.Namespace)

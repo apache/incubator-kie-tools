@@ -39,7 +39,9 @@ func NewWorkflowDefinitionAvailabilityEvent(workflow *operatorapi.SonataFlow, ev
 	event.SetExtension("partitionkey", workflow.Name)
 	data := make(map[string]interface{})
 	data["id"] = workflow.Name
-	data["name"] = workflow.Name
+	if name, ok := workflow.ObjectMeta.Annotations[metadata.Name]; ok {
+		data["name"] = name
+	}
 	version := workflow.ObjectMeta.Annotations[metadata.Version]
 	data["version"] = version
 	data["type"] = "SW"
