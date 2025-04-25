@@ -71,7 +71,7 @@ func TestHelperRunBuildImage(t *testing.T) {
 	if err != nil {
 		return
 	}
-	fmt.Fprintf(os.Stdout, testsRunBuildImageSuccess[testIndex].expected)
+	fmt.Fprintf(os.Stdout, "%s", testsRunBuildImageSuccess[testIndex].expected)
 	os.Exit(0)
 }
 
