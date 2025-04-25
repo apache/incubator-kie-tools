@@ -111,6 +111,7 @@ export function DmnEditorRootWrapper({
   envelopeContext,
   exposing,
   workspaceRootAbsolutePosixPath,
+  isEvaluationHighlightsSupported,
   isReadOnly,
   channelType,
   onOpenedBoxedExpressionEditorNodeChange,
@@ -118,6 +119,7 @@ export function DmnEditorRootWrapper({
   envelopeContext?: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>;
   exposing: (s: DmnEditorRoot) => void;
   workspaceRootAbsolutePosixPath: string;
+  isEvaluationHighlightsSupported?: boolean;
   isReadOnly: boolean;
   channelType?: ChannelType;
   onOpenedBoxedExpressionEditorNodeChange?: (newOpenedNodeId: string | undefined) => void;
@@ -183,6 +185,7 @@ export function DmnEditorRootWrapper({
       onOpenedBoxedExpressionEditorNodeChange={onOpenedBoxedExpressionEditorNodeChange}
       workspaceRootAbsolutePosixPath={workspaceRootAbsolutePosixPath}
       keyboardShortcutsService={envelopeContext?.services.keyboardShortcuts}
+      isEvaluationHighlightsSupported={isEvaluationHighlightsSupported ?? false}
       isReadOnly={isReadOnly}
       isImportDataTypesFromJavaClassesSupported={isImportDataTypesFromJavaClassesSupported}
       javaCodeCompletionService={javaCodeCompletionService}

@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
+Bundle-Vendor: Apache KIE
 Bundle-ManifestVersion: 2
 Bundle-Name: vscode-java-code-completion-extension-plugin-core
 Bundle-SymbolicName: vscode-java-code-completion-extension-plugin-core;singleton:=true
