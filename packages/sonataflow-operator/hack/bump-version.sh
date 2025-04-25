@@ -44,6 +44,6 @@ node -p "require('replace-in-file').sync({ from: /\bversion: .*\b/g, to: 'versio
 node -p "require('replace-in-file').sync({ from: /\boperatorVersion = .*/g, to: 'operatorVersion = \"${version}\"', files: ['version/version.go'] });"
 node -p "require('replace-in-file').sync({ from: /\btagVersion = .*/g, to: 'tagVersion = \"${imageTag}\"', files: ['version/version.go'] });"
 
-make generate-all
+make manifests
 
 echo "Version bumped to ${version}"

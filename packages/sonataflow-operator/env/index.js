@@ -25,6 +25,7 @@ const kogitoJobsServiceEphemeralImageEnv = require("@kie/kogito-jobs-service-eph
 const kogitoJobsServicePostgresqlImageEnv = require("@kie/kogito-jobs-service-postgresql-image/env");
 const kogitoDataIndexEphemeralImageEnv = require("@kie/kogito-data-index-ephemeral-image/env");
 const kogitoDataIndexPostgresqlImageEnv = require("@kie/kogito-data-index-postgresql-image/env");
+const kogitoDBMigratorToolImageEnv = require("@kie-tools/kogito-db-migrator-tool-image/env");
 const rootEnv = require("@kie-tools/root-env/env");
 
 module.exports = composeEnv([rootEnv, sonataflowBuilderImageEnv, sonataflowDevModeImageEnv], {
@@ -69,6 +70,10 @@ module.exports = composeEnv([rootEnv, sonataflowBuilderImageEnv, sonataflowDevMo
       default: `${kogitoDataIndexPostgresqlImageEnv.env.kogitoDataIndexPostgresqlImage.registry}/${kogitoDataIndexPostgresqlImageEnv.env.kogitoDataIndexPostgresqlImage.account}/${kogitoDataIndexPostgresqlImageEnv.env.kogitoDataIndexPostgresqlImage.name}:${kogitoDataIndexPostgresqlImageEnv.env.kogitoDataIndexPostgresqlImage.buildTag}`,
       description: "Kogito Data Index PostgreSQL image",
     },
+    SONATAFLOW_OPERATOR__kogitoDBMigratorToolImage: {
+      default: `${kogitoDBMigratorToolImageEnv.env.kogitoDbMigratorToolImage.registry}/${kogitoDBMigratorToolImageEnv.env.kogitoDbMigratorToolImage.account}/${kogitoDBMigratorToolImageEnv.env.kogitoDbMigratorToolImage.name}:${kogitoDBMigratorToolImageEnv.env.kogitoDbMigratorToolImage.buildTag}`,
+      description: "Kogito DB Migrator image",
+    },
   }),
   get env() {
     return {
@@ -84,6 +89,7 @@ module.exports = composeEnv([rootEnv, sonataflowBuilderImageEnv, sonataflowDevMo
         kogitoJobsServicePostgresqlImage: getOrDefault(this.vars.SONATAFLOW_OPERATOR__kogitoJobsServicePostgresqlImage),
         kogitoDataIndexEphemeralImage: getOrDefault(this.vars.SONATAFLOW_OPERATOR__kogitoDataIndexEphemeralImage),
         kogitoDataIndexPostgresqlImage: getOrDefault(this.vars.SONATAFLOW_OPERATOR__kogitoDataIndexPostgresqlImage),
+        kogitoDBMigratorToolImage: getOrDefault(this.vars.SONATAFLOW_OPERATOR__kogitoDBMigratorToolImage),
       },
     };
   },

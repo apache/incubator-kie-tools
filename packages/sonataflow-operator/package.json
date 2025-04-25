@@ -42,6 +42,7 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "@kie-tools/kogito-db-migrator-tool-image": "workspace:*",
     "@kie-tools/python-venv": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/sonataflow-builder-image": "workspace:*",
