@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build:dev": "run-script-if --bool true --then run-script-os --finally \"pnpm format\"",
-    "build:dev:darwin:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && make generate-all && make build && pnpm image:build",
+    "build:dev:darwin:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && pnpm bump-version && make generate-all && make build && pnpm image:build",
     "build:dev:win32": "echo 'Build not supported on Windows'",
     "build:prod": "run-script-if --bool true --then run-script-os --finally \"pnpm format\"",
     "build:prod:darwin:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && make generate-all && make build && pnpm image:build && pnpm test && pnpm test-e2e",
@@ -31,7 +31,7 @@
     "image:bundle:build:darwin:win32": "echo 'Build Operator bundle image not supported on Windows and macOS'",
     "image:bundle:build:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && run-script-if --bool \"$(build-env containerImages.build)\" --then \"make bundle bundle-build\"",
     "install": "run-script-os",
-    "install:darwin:linux": "rimraf bin && go work sync && go mod tidy && pnpm controllers:update:cfg && pnpm format && pnpm bump-version && pnpm format",
+    "install:darwin:linux": "rimraf bin && go work sync && go mod tidy && pnpm controllers:update:cfg && pnpm format",
     "install:win32": "echo 'Install not supported on Windows'",
     "test": "run-script-os",
     "test:darwin:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"make test\"",
