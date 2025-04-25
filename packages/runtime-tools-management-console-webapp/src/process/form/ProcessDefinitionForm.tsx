@@ -38,11 +38,8 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { EmbeddedProcessForm } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processForm";
-import {
-  ProcessDefinitionsListGatewayApi,
-  useProcessDefinitionsListGatewayApi,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDefinitionsList";
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { useProcessDefinitionsListChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDefinitionsList";
 
 interface Props {
   processName: string;
@@ -56,7 +53,7 @@ export const ProcessDefinitionForm: React.FC<Props> = ({
   onCreateNewProcessInstance,
 }) => {
   const processFormGatewayApi: ProcessFormGatewayApi = useProcessFormGatewayApi();
-  const processDefinitionGatewayApi: ProcessDefinitionsListGatewayApi = useProcessDefinitionsListGatewayApi();
+  const processDefinitionChannelApi = useProcessDefinitionsListChannelApi();
   const [processDefinition, setProcessDefinition] = useState<ProcessDefinition>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>();
@@ -68,8 +65,8 @@ export const ProcessDefinitionForm: React.FC<Props> = ({
           return;
         }
         setIsLoading(true);
-        processDefinitionGatewayApi
-          .getProcessDefinitionByName(processName)
+        processDefinitionChannelApi
+          .processDefinitionsList__getProcessDefinitionByName(processName)
           .then((response) => {
             if (canceled.get()) {
               return;
@@ -83,7 +80,7 @@ export const ProcessDefinitionForm: React.FC<Props> = ({
             setIsLoading(false);
           });
       },
-      [processDefinitionGatewayApi, processName]
+      [processDefinitionChannelApi, processName]
     )
   );
 

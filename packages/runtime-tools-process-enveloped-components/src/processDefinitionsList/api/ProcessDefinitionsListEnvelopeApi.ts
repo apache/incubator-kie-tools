@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ProcessDefinitionsListState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { ProcessDefinitionsListState } from "./ProcessDefinitionsListApi";
 
 export interface ProcessDefinitionsListEnvelopeApi {
   processDefinitionsList__init(association: Association, initArgs: ProcessDefinitionsListInitArgs): Promise<void>;

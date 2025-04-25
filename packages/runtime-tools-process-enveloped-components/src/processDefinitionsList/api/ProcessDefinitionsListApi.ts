@@ -18,3 +18,11 @@
  */
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ProcessDefinitionsListApi {}
+
+export interface ProcessDefinitionsFilter {
+  processNames: string[];
+}
+
+export interface ProcessDefinitionsListState {
+  filters: ProcessDefinitionsFilter;
+}

@@ -17,30 +17,27 @@
  * under the License.
  */
 import React, { useCallback, useEffect, useState, useMemo } from "react";
-import { ProcessDefinitionsListDriver } from "../../api";
+import { ProcessDefinitionsFilter, ProcessDefinitionsListChannelApi, ProcessDefinitionsListState } from "../../api";
 import ProcessDefinitionsListToolbar from "./ProcessDefinitionsListToolbar";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import "./styles.css";
-import {
-  ProcessDefinitionsListState,
-  ProcessDefinitionsFilter,
-  ProcessDefinition,
-} from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { DataTable, DataTableColumn } from "@kie-tools/runtime-tools-components/dist/components/DataTable";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { getActionColumn, getColumn } from "./ProcessDefinitionsListUtils";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 interface ProcessDefinitionsListProps {
   isEnvelopeConnectedToChannel: boolean;
-  driver: ProcessDefinitionsListDriver;
+  channelApi: MessageBusClientApi<ProcessDefinitionsListChannelApi>;
   initialState: ProcessDefinitionsListState;
   singularProcessLabel: string;
 }
 const ProcessDefinitionsList: React.FC<ProcessDefinitionsListProps> = ({
-  driver,
+  channelApi,
   isEnvelopeConnectedToChannel,
   initialState,
   singularProcessLabel,
@@ -71,22 +68,22 @@ const ProcessDefinitionsList: React.FC<ProcessDefinitionsListProps> = ({
     setIsLoading(true);
     setError(undefined);
     try {
-      const response: ProcessDefinition[] = await driver.getProcessDefinitions();
+      const response: ProcessDefinition[] = await channelApi.requests.processDefinitionsList__getProcessDefinitions();
       setProcessDefinitions(response);
     } catch (err) {
       setError(JSON.parse(JSON.parse(err.message).errorMessage));
     } finally {
       setIsLoading(false);
     }
-  }, [driver]);
+  }, [channelApi.requests]);
 
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
         if (isEnvelopeConnectedToChannel && !isInitialLoadDone) {
           setFilters(defaultFilters);
-          driver
-            .initialLoad(defaultFilters)
+          channelApi.requests
+            .processDefinitionsList__initialLoad(defaultFilters)
             .then(() => {
               if (canceled.get()) {
                 return;
@@ -101,7 +98,7 @@ const ProcessDefinitionsList: React.FC<ProcessDefinitionsListProps> = ({
             });
         }
       },
-      [defaultFilters, doQuery, driver, isEnvelopeConnectedToChannel, isInitialLoadDone]
+      [defaultFilters, doQuery, channelApi.requests, isEnvelopeConnectedToChannel, isInitialLoadDone]
     )
   );
 
@@ -114,10 +111,10 @@ const ProcessDefinitionsList: React.FC<ProcessDefinitionsListProps> = ({
   const applyFilter = useCallback(
     async (filter: ProcessDefinitionsFilter): Promise<void> => {
       setProcessDefinitions([]);
-      await driver.applyFilter(filter);
+      await channelApi.requests.processDefinitionsList__applyFilter(filter);
       await doQuery();
     },
-    [doQuery, driver]
+    [doQuery, channelApi.requests]
   );
 
   const doRefresh = useCallback(async (): Promise<void> => {
@@ -130,10 +127,10 @@ const ProcessDefinitionsList: React.FC<ProcessDefinitionsListProps> = ({
       getColumn("processName", `${singularProcessLabel} Name`),
       getColumn("endpoint", "Endpoint"),
       getActionColumn((processDefinition) => {
-        driver.openProcessDefinitionForm(processDefinition);
+        channelApi.notifications.processDefinitionsList__openProcessDefinitionForm.send(processDefinition);
       }, singularProcessLabel),
     ],
-    [driver, singularProcessLabel]
+    [channelApi.notifications, singularProcessLabel]
   );
 
   if (error) {

@@ -23,16 +23,14 @@ import {
   ProcessDefinitionsListApi,
   ProcessDefinitionsListChannelApi,
   ProcessDefinitionsListEnvelopeApi,
-  ProcessDefinitionsListDriver,
+  ProcessDefinitionsListState,
 } from "../api";
-import { ProcessDefinitionsListChannelApiImpl } from "./ProcessDefinitionsListChannelApiImpl";
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
 import { init } from "../envelope";
-import { ProcessDefinitionsListState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export interface Props {
   targetOrigin: string;
-  driver: ProcessDefinitionsListDriver;
+  channelApi: ProcessDefinitionsListChannelApi;
   initialState: ProcessDefinitionsListState;
   singularProcessLabel: string;
 }
@@ -76,14 +74,10 @@ export const EmbeddedProcessDefinitionsList = React.forwardRef(
       [props.initialState, props.singularProcessLabel]
     );
 
-    const apiImpl = useMemo(() => {
-      return new ProcessDefinitionsListChannelApiImpl(props.driver);
-    }, [props.driver]);
-
     return (
       <EmbeddedProcessDefinitionsListEnvelope
         ref={forwardedRef}
-        apiImpl={apiImpl}
+        apiImpl={props.channelApi}
         origin={props.targetOrigin}
         refDelegate={refDelegate}
         pollInit={pollInit}

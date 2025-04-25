@@ -31,7 +31,7 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { FilterIcon } from "@patternfly/react-icons/dist/js/icons/filter-icon";
 import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
-import { ProcessDefinitionsFilter } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { ProcessDefinitionsFilter } from "../../api";
 
 enum Category {
   PROCESS_NAME = "Process Definition name",

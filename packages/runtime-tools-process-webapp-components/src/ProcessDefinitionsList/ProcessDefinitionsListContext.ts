@@ -17,13 +17,13 @@
  * under the License.
  */
 import React, { useContext, createContext } from "react";
-import { ProcessDefinitionsListGatewayApi } from "./ProcessDefinitionsListGatewayApi";
+import { ProcessDefinitionsListChannelApi } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDefinitionsList";
 
-export const ProcessDefinitionsListContext = createContext<ProcessDefinitionsListGatewayApi>(
-  {} as ProcessDefinitionsListGatewayApi
+export const ProcessDefinitionsListContext = createContext<ProcessDefinitionsListChannelApi>(
+  {} as ProcessDefinitionsListChannelApi
 );
 
-export const useProcessDefinitionsListGatewayApi = (): ProcessDefinitionsListGatewayApi =>
-  useContext<ProcessDefinitionsListGatewayApi>(ProcessDefinitionsListContext);
+export const useProcessDefinitionsListChannelApi = (): ProcessDefinitionsListChannelApi =>
+  useContext<ProcessDefinitionsListChannelApi>(ProcessDefinitionsListContext);
 
 export default ProcessDefinitionsListContext;

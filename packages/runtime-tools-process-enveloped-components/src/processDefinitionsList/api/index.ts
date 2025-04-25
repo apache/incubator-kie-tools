@@ -18,5 +18,4 @@
  */
 export * from "./ProcessDefinitionsListApi";
 export * from "./ProcessDefinitionsListChannelApi";
-export * from "./ProcessDefinitionsListDriver";
 export * from "./ProcessDefinitionsListEnvelopeApi";

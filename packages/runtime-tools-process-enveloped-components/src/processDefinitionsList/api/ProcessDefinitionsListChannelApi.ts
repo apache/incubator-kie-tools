@@ -17,12 +17,31 @@
  * under the License.
  */
 
-import { ProcessDefinition, ProcessDefinitionsFilter } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { ProcessDefinitionsFilter, ProcessDefinitionsListState } from "./ProcessDefinitionsListApi";
+
+export interface OnOpenProcessDefinitionListener {
+  onOpen: (processDefinition: ProcessDefinition) => void;
+}
+
+export interface OnUpdateProcessDefinitionsListStateListener {
+  onUpdate: (processDefinitionsListState: ProcessDefinitionsListState) => void;
+}
+
+export interface UnSubscribeHandler {
+  unSubscribe: () => void;
+}
 
 export interface ProcessDefinitionsListChannelApi {
   processDefinitionsList__initialLoad(filter: ProcessDefinitionsFilter): Promise<void>;
-  processDefinitionsList__openProcessDefinitionForm(processDefinition: ProcessDefinition): Promise<void>;
+  processDefinitionsList__openProcessDefinitionForm(processDefinition: ProcessDefinition): void;
   processDefinitionsList__applyFilter(filter: ProcessDefinitionsFilter): Promise<void>;
   processDefinitionsList__getProcessDefinitions(): Promise<ProcessDefinition[]>;
   processDefinitionsList__getProcessDefinitionByName(processName: string): Promise<ProcessDefinition>;
+  processDefinitionsList__onOpenProcessDefinitionListen(
+    listener: OnOpenProcessDefinitionListener
+  ): Promise<UnSubscribeHandler>;
+  processDefinitionsList__onUpdateProcessDefinitionsListState(
+    listener: OnUpdateProcessDefinitionsListStateListener
+  ): Promise<UnSubscribeHandler>;
 }

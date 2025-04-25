@@ -18,20 +18,17 @@
  */
 import React, { useEffect, useMemo } from "react";
 import {
+  EmbeddedProcessDefinitionsList,
   ProcessDefinitionsFilter,
   ProcessDefinitionsListState,
-} from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { EmbeddedProcessDefinitionsList } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDefinitionsList";
+} from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDefinitionsList";
 import { useHistory } from "react-router";
 import { useQueryParam, useQueryParams } from "../../navigation/queryParams/QueryParamsContext";
 import { QueryParams } from "../../navigation/Routes";
 import { RuntimePathSearchParamsRoutes, useRuntimeDispatch } from "../../runtime/RuntimeContext";
 
-import {
-  ProcessDefinitionsListGatewayApi,
-  useProcessDefinitionsListGatewayApi,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDefinitionsList";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { useProcessDefinitionsListChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDefinitionsList";
 
 const defaultFilters = {
   processNames: [],
@@ -42,7 +39,7 @@ interface Props {
 }
 
 export const ProcessDefinitionsList: React.FC<Props> = ({ onNavigateToProcessDefinitionForm }) => {
-  const gatewayApi: ProcessDefinitionsListGatewayApi = useProcessDefinitionsListGatewayApi();
+  const channelApi = useProcessDefinitionsListChannelApi();
   const history = useHistory();
   const filters = useQueryParam(QueryParams.FILTERS);
   const queryParams = useQueryParams();
@@ -64,19 +61,19 @@ export const ProcessDefinitionsList: React.FC<Props> = ({ onNavigateToProcessDef
   }, [initialState, setRuntimePathSearchParams]);
 
   useEffect(() => {
-    const onOpenInstanceUnsubscriber = gatewayApi.onOpenProcessDefinitionListen({
+    const onOpenInstanceUnsubscriber = channelApi.processDefinitionsList__onOpenProcessDefinitionListen({
       onOpen(processDefinition: ProcessDefinition) {
         onNavigateToProcessDefinitionForm(processDefinition.processName);
       },
     });
 
     return () => {
-      onOpenInstanceUnsubscriber.unSubscribe();
+      onOpenInstanceUnsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
     };
-  }, [gatewayApi, onNavigateToProcessDefinitionForm]);
+  }, [channelApi, onNavigateToProcessDefinitionForm]);
 
   useEffect(() => {
-    const unsubscriber = gatewayApi.onUpdateProcessDefinitionsListState({
+    const unsubscriber = channelApi.processDefinitionsList__onUpdateProcessDefinitionsListState({
       onUpdate(processDefinitionsListState: ProcessDefinitionsListState) {
         const newSearchParams = {
           [QueryParams.FILTERS]: JSON.stringify(processDefinitionsListState.filters),
@@ -90,13 +87,13 @@ export const ProcessDefinitionsList: React.FC<Props> = ({ onNavigateToProcessDef
     });
 
     return () => {
-      unsubscriber.unSubscribe();
+      unsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
     };
-  }, [gatewayApi, history, queryParams, setRuntimePathSearchParams]);
+  }, [channelApi, history, queryParams, setRuntimePathSearchParams]);
 
   return (
     <EmbeddedProcessDefinitionsList
-      driver={gatewayApi}
+      channelApi={channelApi}
       targetOrigin={window.location.origin}
       singularProcessLabel={"Process Definition"}
       initialState={initialState}
