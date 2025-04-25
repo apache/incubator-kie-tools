@@ -1,6 +1,6 @@
 module github.com/apache/incubator-kie-tools/packages/extended-services
 
-go 1.21
+go 1.23.0
 
 require (
 	fyne.io/systray v1.10.1-0.20230710085509-436a931baccf
