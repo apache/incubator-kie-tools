@@ -285,7 +285,7 @@ export class VsCodeKieEditorController implements EditorApi {
     this.hasPendingExternalChanges = false;
   }
 
-  public startListenToFileChanges() {
+  public startListeningToExternalFileChanges() {
     this.fileWatcher?.dispose();
     this.fileWatcher = vscode.workspace.createFileSystemWatcher("**/*.{dmn,bpmn,scesim}");
 
