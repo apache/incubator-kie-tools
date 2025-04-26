@@ -43,7 +43,6 @@ import { OperationType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/
 
 interface JobsManagementToolbarProps {
   chips: JobStatus[];
-  doQueryJobs: (offset: number, limit: number) => Promise<void>;
   jobOperations: IOperations;
   onResetToDefault: () => void;
   onRefresh: () => void;
@@ -52,21 +51,16 @@ interface JobsManagementToolbarProps {
   setSelectedJobInstances: (selectedJobInstances: Job[]) => void;
   setSelectedStatus: (selectedStatus: ((selectedStatus: JobStatus[]) => JobStatus[]) | JobStatus[]) => void;
   setChips: (chips: ((chip: JobStatus[]) => JobStatus[]) | JobStatus[]) => void;
-  setDisplayTable: (displayTable: boolean) => void;
-  setIsLoading: (isLoading: boolean) => void;
   onApplyFilter: () => void;
 }
 const JobsManagementToolbar: React.FC<JobsManagementToolbarProps & OUIAProps> = ({
   chips,
-  doQueryJobs,
   onResetToDefault,
   jobOperations,
   onRefresh,
   selectedStatus,
   selectedJobInstances,
   setChips,
-  setDisplayTable,
-  setIsLoading,
   setSelectedStatus,
   setSelectedJobInstances,
   onApplyFilter,

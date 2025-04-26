@@ -21,7 +21,6 @@ import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { ProcessFormChannelApi } from "../api";
 import "@patternfly/patternfly/patternfly.css";
 import ProcessForm from "./components/ProcessForm";
-import { ProcessFormEnvelopeViewDriver } from "./ProcessFormEnvelopeViewDriver";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export interface ProcessFormEnvelopeViewApi {
@@ -57,7 +56,7 @@ export const ProcessFormEnvelopeView = React.forwardRef<ProcessFormEnvelopeViewA
     <ProcessForm
       isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
       processDefinition={processDefinition}
-      driver={new ProcessFormEnvelopeViewDriver(props.channelApi)}
+      channelApi={props.channelApi}
       targetOrigin={props.targetOrigin}
       customFormDisplayerEnvelopePath={props.customFormDisplayerEnvelopePath}
       shouldLoadCustomForms={props.shouldLoadCustomForms}

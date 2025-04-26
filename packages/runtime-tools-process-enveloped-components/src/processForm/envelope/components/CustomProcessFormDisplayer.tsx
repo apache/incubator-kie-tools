@@ -17,16 +17,16 @@
  * under the License.
  */
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
-import { Stack, StackItem } from "@patternfly/react-core/layouts/Stack";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { ProcessFormDriver } from "../../api";
+import { ProcessFormChannelApi } from "../../api";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import {
   EmbeddedFormDisplayer,
   FormDisplayerApi,
   FormOpened,
   FormOpenedState,
+  FormSubmitResponse,
   FormSubmitResponseType,
 } from "@kie-tools/runtime-tools-shared-enveloped-components/dist/formDisplayer";
 import { FormAction } from "@kie-tools/runtime-tools-components/dist/utils";
@@ -34,11 +34,12 @@ import { FormFooter } from "@kie-tools/runtime-tools-components/dist/components/
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { Card, CardBody, CardFooter } from "@patternfly/react-core/dist/js/components/Card";
 import { FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 export interface CustomProcessFormDisplayerProps {
   schema: Record<string, any>;
   customForm: Form;
-  driver: ProcessFormDriver;
+  channelApi: MessageBusClientApi<ProcessFormChannelApi>;
   targetOrigin: string;
   processDefinition: ProcessDefinition;
   envelopePath?: string;
@@ -46,7 +47,7 @@ export interface CustomProcessFormDisplayerProps {
 
 const CustomProcessFormDisplayer: React.FC<CustomProcessFormDisplayerProps & OUIAProps> = ({
   customForm,
-  driver,
+  channelApi,
   targetOrigin,
   ouiaId,
   ouiaSafe,
@@ -58,29 +59,6 @@ const CustomProcessFormDisplayer: React.FC<CustomProcessFormDisplayerProps & OUI
   const [formData] = useState({});
   const [formActions, setFormActions] = useState<FormAction[]>([]);
   const [formOpened, setFormOpened] = useState<FormOpened>();
-  const [submitted, setSubmitted] = useState<boolean>(false);
-
-  const doSubmit = useCallback(
-    async (payload: any) => {
-      const formDisplayerApi = formDisplayerApiRef.current!;
-
-      try {
-        const response = await driver.startProcess(processDefinition, payload);
-        formDisplayerApi.notifySubmitResult({
-          type: FormSubmitResponseType.SUCCESS,
-          info: response,
-        });
-      } catch (error) {
-        formDisplayerApi.notifySubmitResult({
-          type: FormSubmitResponseType.FAILURE,
-          info: error,
-        });
-      } finally {
-        setSubmitted(true);
-      }
-    },
-    [driver, processDefinition]
-  );
 
   useEffect(() => {
     setFormActions([
@@ -92,12 +70,23 @@ const CustomProcessFormDisplayer: React.FC<CustomProcessFormDisplayerProps & OUI
             .startSubmit({
               params: {},
             })
-            .then((formOutput) => doSubmit(formOutput))
-            .catch((error) => console.log(`Couldn't submit form due to: ${error}`));
+            .then((formOutput) => channelApi.requests.processForm__startProcess(processDefinition, formOutput))
+            .then((response) => {
+              formDisplayerApi.notifySubmitResult({
+                type: FormSubmitResponseType.SUCCESS,
+                info: response,
+              });
+            })
+            .catch((error) => {
+              formDisplayerApi.notifySubmitResult({
+                type: FormSubmitResponseType.FAILURE,
+                info: error,
+              });
+            });
         },
       },
     ]);
-  }, [doSubmit]);
+  }, [channelApi.requests, processDefinition]);
 
   return (
     <FlexItem {...componentOuiaProps(ouiaId, "custom-form-displayer", ouiaSafe)} grow={{ default: "grow" }}>
@@ -115,7 +104,7 @@ const CustomProcessFormDisplayer: React.FC<CustomProcessFormDisplayerProps & OUI
         </CardBody>
         {formOpened && formOpened.state === FormOpenedState.OPENED && (
           <CardFooter>
-            <FormFooter actions={formActions} enabled={!submitted} />
+            <FormFooter actions={formActions} />
           </CardFooter>
         )}
       </Card>

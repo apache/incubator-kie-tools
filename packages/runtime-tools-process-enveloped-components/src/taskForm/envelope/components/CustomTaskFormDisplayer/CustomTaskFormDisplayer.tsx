@@ -28,7 +28,6 @@ import { buildTaskFormContext } from "./utils/utils";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { FormFooter } from "@kie-tools/runtime-tools-components/dist/components/FormFooter";
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import {
   EmbeddedFormDisplayer,
   FormDisplayerApi,
@@ -47,7 +46,7 @@ export interface CustomTaskFormDisplayerProps {
   targetOrigin: string;
 }
 
-const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps & OUIAProps> = ({
+const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps> = ({
   userTask,
   customForm,
   schema,
@@ -55,8 +54,6 @@ const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps & OUIAProps
   driver,
   phases,
   targetOrigin,
-  ouiaId,
-  ouiaSafe,
 }) => {
   const formDisplayerApiRef = useRef<FormDisplayerApi>(null);
   const [formUUID] = useState<string>(uuidv4());
@@ -116,11 +113,9 @@ const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps & OUIAProps
   }, [formOpened, formUUID]);
 
   return (
-    <div {...componentOuiaProps(ouiaId, "custom-form-displayer", ouiaSafe)} style={{ height: "100%" }}>
+    <div style={{ height: "100%" }}>
       {!formOpened && (
-        <Bullseye
-          {...componentOuiaProps((ouiaId ? ouiaId : "task-form-envelope-view") + "-loading-spinner", "task-form", true)}
-        >
+        <Bullseye>
           <KogitoSpinner spinnerText={`Loading Task form...`} />
         </Bullseye>
       )}

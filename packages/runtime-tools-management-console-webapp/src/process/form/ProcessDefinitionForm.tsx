@@ -17,16 +17,13 @@
  * under the License.
  */
 import * as React from "react";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, ReactElement } from "react";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { ProcessDefinition, ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
-import {
-  useProcessFormGatewayApi,
-  ProcessFormGatewayApi,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessForm";
+import { useProcessFormChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessForm";
 import {
   EmptyState,
   EmptyStateBody,
@@ -38,25 +35,91 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { EmbeddedProcessForm } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processForm";
-import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { useProcessDefinitionsListChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDefinitionsList";
+import {
+  Action,
+  FormNotification,
+  Notification,
+} from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 
 interface Props {
   processName: string;
   onReturnToProcessDefinitionsList: () => void;
-  onCreateNewProcessInstance: (processInstanceId: string) => void;
+  onNavigateToProcessInstanceDetails?: (processInstanceId: string) => void;
 }
 
 export const ProcessDefinitionForm: React.FC<Props> = ({
   processName,
   onReturnToProcessDefinitionsList,
-  onCreateNewProcessInstance,
+  onNavigateToProcessInstanceDetails,
 }) => {
-  const processFormGatewayApi: ProcessFormGatewayApi = useProcessFormGatewayApi();
+  const processFormChannelApi = useProcessFormChannelApi();
   const processDefinitionChannelApi = useProcessDefinitionsListChannelApi();
   const [processDefinition, setProcessDefinition] = useState<ProcessDefinition>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>();
+  const [error, setError] = useState<ReactElement | string>();
+  const [notification, setNotification] = useState<Notification>();
+
+  const showNotification = useCallback(
+    (
+      notificationType: "error" | "success",
+      submitMessage: string,
+      notificationDetails?: ReactElement | string,
+      customActions?: Action[]
+    ) => {
+      setNotification({
+        type: notificationType,
+        message: submitMessage,
+        details: notificationDetails,
+        customActions,
+        close: () => {
+          setNotification(undefined);
+        },
+      });
+    },
+    []
+  );
+
+  useEffect(() => {
+    const unsubscriber = processFormChannelApi.processForm__onStartProcessListen({
+      onSuccess(processInstanceId) {
+        processFormChannelApi.processForm__setBusinessKey("");
+        const message = `The process with id: ${processInstanceId} has started successfully`;
+        showNotification("success", message, undefined, [
+          {
+            label: "Go to Process Instance",
+            onClick: () => {
+              setNotification(undefined);
+              onNavigateToProcessInstanceDetails?.(processInstanceId);
+            },
+          },
+        ]);
+      },
+      onError(error) {
+        const message = "Failed to start the process.";
+        const details = error.response ? (
+          <>
+            <b>
+              {error.response.statusText}: {error.message}
+            </b>
+            {error.response.data?.message && (
+              <>
+                <br />
+                {error.response.data.message}
+              </>
+            )}
+          </>
+        ) : (
+          error.message
+        );
+        showNotification("error", message, details);
+      },
+    });
+
+    return () => {
+      unsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
+    };
+  }, [onNavigateToProcessInstanceDetails, processFormChannelApi, showNotification]);
 
   useCancelableEffect(
     useCallback(
@@ -84,35 +147,6 @@ export const ProcessDefinitionForm: React.FC<Props> = ({
     )
   );
 
-  const processFormDriver = useMemo(
-    () => ({
-      getProcessFormSchema(processDefinitionData: ProcessDefinition): Promise<any> {
-        return processFormGatewayApi.getProcessFormSchema(processDefinitionData);
-      },
-      getCustomForm(processDefinitionData: ProcessDefinition): Promise<Form> {
-        return processFormGatewayApi.getCustomForm(processDefinitionData);
-      },
-      getProcessDefinitionSvg(processDefinition: ProcessDefinition): Promise<string> {
-        return processFormGatewayApi.getProcessDefinitionSvg(processDefinition);
-      },
-      startProcess(processDefinitionData: ProcessDefinition, formData: any): Promise<string> {
-        return processFormGatewayApi
-          .startProcess(processDefinitionData, formData)
-          .then((id: string) => {
-            processFormGatewayApi.setBusinessKey("");
-            onCreateNewProcessInstance(id);
-            return id;
-          })
-          .catch((error) => {
-            const message = error.response ? `${error.response.statusText} : ${error.message}` : error.message;
-            setError(message);
-            return "";
-          });
-      },
-    }),
-    [processFormGatewayApi, onCreateNewProcessInstance]
-  );
-
   // Loading State
   if (isLoading) {
     return (
@@ -124,22 +158,25 @@ export const ProcessDefinitionForm: React.FC<Props> = ({
 
   // Error State
   if (error) {
-    return (
-      <Bullseye>
-        <ServerErrors error={error} variant="large" />
-      </Bullseye>
-    );
+    return <ServerErrors error={error} variant="large" onGoBack={() => setError(undefined)} />;
   }
 
   if (processDefinition) {
     return (
-      <EmbeddedProcessForm
-        driver={processFormDriver}
-        targetOrigin={window.location.origin}
-        processDefinition={processDefinition}
-        customFormDisplayerEnvelopePath="/resources/form-displayer.html"
-        shouldLoadCustomForms={false}
-      />
+      <>
+        {notification && (
+          <div style={{ marginBottom: "16px" }}>
+            <FormNotification notification={notification} />
+          </div>
+        )}
+        <EmbeddedProcessForm
+          channelApi={processFormChannelApi}
+          targetOrigin={window.location.origin}
+          processDefinition={processDefinition}
+          customFormDisplayerEnvelopePath="/resources/form-displayer.html"
+          shouldLoadCustomForms={false}
+        />
+      </>
     );
   }
 

@@ -24,6 +24,7 @@ import {
   EmptyStateIcon,
   EmptyStateVariant,
   EmptyStateBody,
+  EmptyStateSecondaryActions,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -31,14 +32,14 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
-import { componentOuiaProps, OUIAProps } from "../../ouiaTools";
 
-interface IOwnProps {
+interface Props {
   error: any;
   variant: string;
   children?: React.ReactElement;
+  onGoBack?: () => void;
 }
-export const ServerErrors: React.FC<IOwnProps & OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
+export const ServerErrors: React.FC<Props> = (props) => {
   const [displayError, setDisplayError] = useState(false);
 
   const getErrorSubTitle = () => {
@@ -77,7 +78,7 @@ export const ServerErrors: React.FC<IOwnProps & OUIAProps> = ({ ouiaId, ouiaSafe
   };
 
   const renderContent = () => (
-    <Bullseye {...componentOuiaProps(ouiaId, "server-errors", ouiaSafe)}>
+    <Bullseye>
       <EmptyState variant={EmptyStateVariant.full}>
         <EmptyStateIcon icon={ExclamationCircleIcon} color="var(--pf-global--danger-color--100)" />
         <Title headingLevel="h1" size="4xl">
@@ -100,6 +101,13 @@ export const ServerErrors: React.FC<IOwnProps & OUIAProps> = ({ ouiaId, ouiaSafe
               {getErrorContent()}
             </ClipboardCopy>
           </EmptyStateBody>
+        )}
+        {props.onGoBack && (
+          <EmptyStateSecondaryActions>
+            <Button variant="link" onClick={props.onGoBack}>
+              Go back
+            </Button>
+          </EmptyStateSecondaryActions>
         )}
         {props.children}
       </EmptyState>

@@ -26,30 +26,24 @@ export const buildHeaders = (token?: string) => ({
 });
 
 export const getForms = (baseUrl: string, formFilter: string[], token?: string): Promise<FormInfo[]> => {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(new URL(`forms/list`, baseUrl).toString(), {
-        params: {
-          names: formFilter.join(";"),
-        },
-        headers: buildHeaders(token),
-      })
-      .then((result) => {
-        resolve(result.data);
-      })
-      .catch((error) => reject(error));
-  });
+  return axios
+    .get(new URL(`forms/list`, baseUrl).toString(), {
+      params: {
+        names: formFilter.join(";"),
+      },
+      headers: buildHeaders(token),
+    })
+    .then((result) => {
+      return result.data;
+    });
 };
 
 export const getFormContent = (baseUrl: string, formName: string, token?: string): Promise<Form> => {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(new URL(`forms/${formName}`, baseUrl).toString(), { headers: buildHeaders(token) })
-      .then((result) => {
-        resolve(result.data);
-      })
-      .catch((error) => reject(error));
-  });
+  return axios
+    .get(new URL(`forms/${formName}`, baseUrl).toString(), { headers: buildHeaders(token) })
+    .then((result) => {
+      return result.data;
+    });
 };
 
 export const saveFormContent = (
@@ -58,67 +52,45 @@ export const saveFormContent = (
   content: FormContent,
   token?: string
 ): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    axios
-      .post(new URL(`forms/${formName}`, baseUrl).toString(), content, { headers: buildHeaders(token) })
-      .then((result) => {
-        resolve();
-      })
-      .catch((error) => reject(error));
-  });
+  return axios.post(new URL(`forms/${formName}`, baseUrl).toString(), content, { headers: buildHeaders(token) });
 };
 
 export const getProcessSchema = (
   processDefinitionData: ProcessDefinition,
   token?: string
 ): Promise<Record<string, any>> => {
-  return new Promise((resolve, reject) => {
-    axios
-      .get(`${processDefinitionData.endpoint}/schema`, { headers: buildHeaders(token) })
-      .then((response) => {
-        if (response.status === 200) {
-          resolve(response.data);
-        }
-      })
-      .catch((error) => {
-        reject(error);
-      });
+  return axios.get(`${processDefinitionData.endpoint}/schema`, { headers: buildHeaders(token) }).then((response) => {
+    if (response.status === 200) {
+      return response.data;
+    }
+    return response;
   });
 };
 
 export const getCustomForm = (processDefinitionData: ProcessDefinition, token?: string): Promise<Form> => {
-  return new Promise((resolve, reject) => {
-    const lastIndex = processDefinitionData.endpoint.lastIndexOf(`/${processDefinitionData.processName}`);
-    const baseEndpoint = processDefinitionData.endpoint.slice(0, lastIndex);
-    axios
-      .get(`${baseEndpoint}/forms/${processDefinitionData.processName}`, { headers: buildHeaders(token) })
-      .then((response) => {
-        /* istanbul ignore else*/
-        if (response.status === 200) {
-          resolve(response.data);
-        }
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
+  const lastIndex = processDefinitionData.endpoint.lastIndexOf(`/${processDefinitionData.processName}`);
+  const baseEndpoint = processDefinitionData.endpoint.slice(0, lastIndex);
+  return axios
+    .get(`${baseEndpoint}/forms/${processDefinitionData.processName}`, { headers: buildHeaders(token) })
+    .then((response) => {
+      if (response.status === 200) {
+        return response.data;
+      }
+      return response;
+    });
 };
 
 export const getProcessSvg = (processDefinitionData: ProcessDefinition, token?: string): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const lastIndex = processDefinitionData.endpoint.lastIndexOf(`/${processDefinitionData.processName}`);
-    const baseEndpoint = processDefinitionData.endpoint.slice(0, lastIndex);
-    axios
-      .get(`${baseEndpoint}/svg/processes/${processDefinitionData.processName}`, { headers: buildHeaders(token) })
-      .then((response) => {
-        if (response.status === 200) {
-          resolve(response.data);
-        }
-      })
-      .catch((error) => {
-        reject(error);
-      });
-  });
+  const lastIndex = processDefinitionData.endpoint.lastIndexOf(`/${processDefinitionData.processName}`);
+  const baseEndpoint = processDefinitionData.endpoint.slice(0, lastIndex);
+  return axios
+    .get(`${baseEndpoint}/svg/processes/${processDefinitionData.processName}`, { headers: buildHeaders(token) })
+    .then((response) => {
+      if (response.status === 200) {
+        return response.data;
+      }
+      return response;
+    });
 };
 
 export const startProcessInstance = (
@@ -127,20 +99,15 @@ export const startProcessInstance = (
   businessKey: string,
   token?: string
 ): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const requestURL = `${processDefinitionData.endpoint}${
-      businessKey.length > 0 ? `?businessKey=${businessKey}` : ""
-    }`;
-    axios
-      .post(requestURL, formData, {
-        headers: {
-          "Content-Type": "application/json",
-          ...buildHeaders(token),
-        },
-      })
-      .then((response) => {
-        resolve(response.data.id);
-      })
-      .catch((error) => reject(error));
-  });
+  const requestURL = `${processDefinitionData.endpoint}${businessKey.length > 0 ? `?businessKey=${businessKey}` : ""}`;
+  return axios
+    .post(requestURL, formData, {
+      headers: {
+        "Content-Type": "application/json",
+        ...buildHeaders(token),
+      },
+    })
+    .then((response) => {
+      return response.data.id;
+    });
 };

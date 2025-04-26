@@ -25,6 +25,7 @@ import DevUINav from "../DevUINav/DevUINav";
 import FormsListContextProvider from "../../../channel/FormsList/FormsListContextProvider";
 import FormDetailsContextProvider from "../../../channel/FormDetails/FormDetailsContextProvider";
 import DevUIAppContextProvider from "../../contexts/DevUIAppContextProvider";
+import ProcessContextProvider from "../../contexts/ProcessContextProvider";
 import { CustomLabels } from "../../../api/CustomLabels";
 import { User } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskForm";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
@@ -32,8 +33,7 @@ import { PageLayout } from "@kie-tools/runtime-tools-components/dist/components/
 import { JobsManagementContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/JobsManagement";
 import { TaskFormContextProvider } from "../../contexts/TaskFormContextProvider";
 import { TaskListContextProvider } from "../../contexts/TaskListContextProvider";
-import ProcessContextProvider from "../../contexts/ProcessContextProvider";
-import ProcessFormContextProvider from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessForm/ProcessFormContextProvider";
+import { ProcessFormContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessForm/ProcessFormContextProvider";
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;

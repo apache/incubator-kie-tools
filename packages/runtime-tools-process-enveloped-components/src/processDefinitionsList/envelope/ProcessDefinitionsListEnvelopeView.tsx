@@ -40,7 +40,6 @@ export const ProcessDefinitionsListEnvelopeView = React.forwardRef<ProcessDefini
       initialState: {
         filters: defaultFilters,
       } as ProcessDefinitionsListState,
-      singularProcessLabel: "Process",
     });
     useImperativeHandle(
       forwardedRef,
@@ -60,7 +59,6 @@ export const ProcessDefinitionsListEnvelopeView = React.forwardRef<ProcessDefini
           isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
           channelApi={props.channelApi}
           initialState={processInitialArgs.initialState}
-          singularProcessLabel={processInitialArgs?.singularProcessLabel}
         />
       </React.Fragment>
     );

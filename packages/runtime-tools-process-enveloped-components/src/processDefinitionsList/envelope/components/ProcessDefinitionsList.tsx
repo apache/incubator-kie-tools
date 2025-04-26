@@ -34,13 +34,11 @@ interface ProcessDefinitionsListProps {
   isEnvelopeConnectedToChannel: boolean;
   channelApi: MessageBusClientApi<ProcessDefinitionsListChannelApi>;
   initialState: ProcessDefinitionsListState;
-  singularProcessLabel: string;
 }
 const ProcessDefinitionsList: React.FC<ProcessDefinitionsListProps> = ({
   channelApi,
   isEnvelopeConnectedToChannel,
   initialState,
-  singularProcessLabel,
 }) => {
   const defaultFilters: ProcessDefinitionsFilter = useMemo(
     () =>
@@ -124,13 +122,13 @@ const ProcessDefinitionsList: React.FC<ProcessDefinitionsListProps> = ({
 
   const columns: DataTableColumn[] = useMemo(
     () => [
-      getColumn("processName", `${singularProcessLabel} Name`),
+      getColumn("processName", "Process Definition Name"),
       getColumn("endpoint", "Endpoint"),
       getActionColumn((processDefinition) => {
         channelApi.notifications.processDefinitionsList__openProcessDefinitionForm.send(processDefinition);
-      }, singularProcessLabel),
+      }, "Process Definition"),
     ],
-    [channelApi.notifications, singularProcessLabel]
+    [channelApi.notifications]
   );
 
   if (error) {
@@ -154,7 +152,7 @@ const ProcessDefinitionsList: React.FC<ProcessDefinitionsListProps> = ({
         LoadingComponent={
           <Bullseye>
             <KogitoSpinner
-              spinnerText={`Loading ${singularProcessLabel.toLowerCase()} definitions...`}
+              spinnerText={`Loading Process Definitions...`}
               ouiaId="forms-list-loading-process-definitions"
             />
           </Bullseye>

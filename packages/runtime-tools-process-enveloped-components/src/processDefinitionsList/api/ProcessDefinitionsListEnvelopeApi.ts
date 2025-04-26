@@ -30,5 +30,4 @@ export interface Association {
 
 export interface ProcessDefinitionsListInitArgs {
   initialState: ProcessDefinitionsListState;
-  singularProcessLabel: string;
 }

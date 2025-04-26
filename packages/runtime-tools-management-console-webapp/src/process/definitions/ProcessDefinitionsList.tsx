@@ -95,7 +95,6 @@ export const ProcessDefinitionsList: React.FC<Props> = ({ onNavigateToProcessDef
     <EmbeddedProcessDefinitionsList
       channelApi={channelApi}
       targetOrigin={window.location.origin}
-      singularProcessLabel={"Process Definition"}
       initialState={initialState}
     />
   );

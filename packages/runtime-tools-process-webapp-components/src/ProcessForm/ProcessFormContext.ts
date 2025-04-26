@@ -17,11 +17,9 @@
  * under the License.
  */
 import React, { useContext } from "react";
-import { ProcessFormGatewayApi } from "./ProcessFormGatewayApi";
+import { ProcessFormChannelApi } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processForm";
 
-const ProcessFormContext = React.createContext<ProcessFormGatewayApi>({} as ProcessFormGatewayApi);
+export const ProcessFormContext = React.createContext<ProcessFormChannelApi>({} as ProcessFormChannelApi);
 
-export const useProcessFormGatewayApi = (): ProcessFormGatewayApi =>
-  useContext<ProcessFormGatewayApi>(ProcessFormContext);
-
-export default ProcessFormContext;
+export const useProcessFormChannelApi = (): ProcessFormChannelApi =>
+  useContext<ProcessFormChannelApi>(ProcessFormContext);

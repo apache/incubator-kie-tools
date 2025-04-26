@@ -26,7 +26,6 @@ import {
   KogitoEmptyState,
   KogitoEmptyStateType,
 } from "@kie-tools/runtime-tools-components/dist/components/KogitoEmptyState";
-import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools/OuiaUtils";
 import { BulkCancel, Job, JobStatus, JobsSortBy } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import {
   BulkListItem,
@@ -45,6 +44,8 @@ import { JobsRescheduleModal } from "../JobsRescheduleModal";
 import { JobsCancelModal } from "../JobsCancelModal";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { Card } from "@patternfly/react-core/dist/js/components/Card";
+import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 
 export const formatForBulkListJob = (jobsList: (Job & { errorMessage?: string })[]): BulkListItem[] => {
   const formattedItems: BulkListItem[] = [];
@@ -69,13 +70,7 @@ interface JobsManagementProps {
 const defaultPageSize: number = 10;
 const defaultSortBy: ISortBy = { index: 6, direction: "asc" };
 
-const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
-  ouiaId,
-  ouiaSafe,
-  channelApi,
-  isEnvelopeConnectedToChannel,
-  initialState,
-}) => {
+const JobsManagement: React.FC<JobsManagementProps> = ({ channelApi, isEnvelopeConnectedToChannel, initialState }) => {
   const defaultStatus: JobStatus[] = useMemo(
     () => (initialState && initialState.filters ? [...initialState.filters] : [JobStatus.Scheduled]),
     [initialState]
@@ -95,7 +90,6 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
   const [selectedStatus, setSelectedStatus] = useState<JobStatus[]>(defaultStatus);
   const [selectedJobInstances, setSelectedJobInstances] = useState<Job[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [displayTable, setDisplayTable] = useState(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState("");
   const [isActionPerformed, setIsActionPerformed] = useState<boolean>(false);
@@ -304,7 +298,7 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
     };
     setSelectedStatus(defaultState.filters);
     setChips(defaultState.filters);
-    setOrderBy(defaultState.orderBy), setDisplayTable(true);
+    setOrderBy(defaultState.orderBy);
     setIsLoading(true);
     await channelApi.requests.jobList__initialLoad(defaultState.filters, defaultState.orderBy);
     await doQueryJobs(0, 10);
@@ -329,26 +323,36 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
   );
 
   return (
-    <div {...componentOuiaProps(ouiaId, "JobsManagementPage", ouiaSafe ? ouiaSafe : !isLoading)}>
+    <div>
       {error.length === 0 ? (
         <>
           <JobsManagementToolbar
             chips={chips}
             onResetToDefault={onResetToDefault}
-            doQueryJobs={doQueryJobs}
             onApplyFilter={onApplyFilter}
             jobOperations={jobOperations}
             onRefresh={onRefresh}
             selectedStatus={selectedStatus}
             selectedJobInstances={selectedJobInstances}
             setChips={setChips}
-            setDisplayTable={setDisplayTable}
-            setIsLoading={setIsLoading}
             setSelectedJobInstances={setSelectedJobInstances}
             setSelectedStatus={setSelectedStatus}
           />
           <Divider />
-          {isInitialLoadDone && displayTable ? (
+          {isLoading ? (
+            <Card>
+              <KogitoSpinner spinnerText="Loading Jobs..." />
+            </Card>
+          ) : isInitialLoadDone && selectedStatus.length === 0 ? (
+            <div className="kogito-jobs-management__emptyState">
+              <KogitoEmptyState
+                type={KogitoEmptyStateType.Reset}
+                title="No filter applied."
+                body="Try applying at least one filter to see results"
+                onClick={() => onResetToDefault()}
+              />
+            </div>
+          ) : (
             <JobsManagementTable
               jobs={jobs}
               channelApi={channelApi.requests}
@@ -368,19 +372,6 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
               sortBy={sortBy}
               setOrderBy={setOrderBy}
             />
-          ) : (
-            <>
-              {selectedStatus.length === 0 && (
-                <div className="kogito-jobs-management__emptyState">
-                  <KogitoEmptyState
-                    type={KogitoEmptyStateType.Reset}
-                    title="No filter applied."
-                    body="Try applying at least one filter to see results"
-                    onClick={() => onResetToDefault()}
-                  />
-                </div>
-              )}
-            </>
           )}
           {isInitialLoadDone && (!isLoading || isLoadingMore) && (limit === pageSize || isLoadingMore) && (
             <LoadMore

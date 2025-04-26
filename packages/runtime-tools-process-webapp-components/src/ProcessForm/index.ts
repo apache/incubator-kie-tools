@@ -18,4 +18,4 @@
  */
 export * from "./ProcessFormContext";
 export * from "./ProcessFormContextProvider";
-export * from "./ProcessFormGatewayApi";
+export * from "./ProcessFormChannelApiImpl";

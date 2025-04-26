@@ -100,11 +100,7 @@ export const ProcessDetails: React.FC<Props> = ({ processInstanceId, onReturnToP
 
   // Error State
   if (error) {
-    return (
-      <Bullseye>
-        <ServerErrors error={error} variant="large" />
-      </Bullseye>
-    );
+    return <ServerErrors error={error} variant="large" onGoBack={() => history.push(runtimeRoutes.processes())} />;
   }
 
   // Process Instance Details

@@ -17,14 +17,14 @@
  * under the License.
  */
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, ReactElement } from "react";
 import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { componentOuiaProps, OUIAProps } from "../../ouiaTools";
 
 export interface Notification {
   type: "success" | "error";
   message: string;
-  details?: string;
+  details?: ReactElement | string;
   customActions?: Action[];
   close: () => void;
 }

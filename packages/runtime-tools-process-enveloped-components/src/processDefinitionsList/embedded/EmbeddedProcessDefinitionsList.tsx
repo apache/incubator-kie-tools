@@ -32,7 +32,6 @@ export interface Props {
   targetOrigin: string;
   channelApi: ProcessDefinitionsListChannelApi;
   initialState: ProcessDefinitionsListState;
-  singularProcessLabel: string;
 }
 
 export const EmbeddedProcessDefinitionsList = React.forwardRef(
@@ -67,11 +66,10 @@ export const EmbeddedProcessDefinitionsList = React.forwardRef(
           },
           {
             initialState: { ...props.initialState },
-            singularProcessLabel: props.singularProcessLabel,
           }
         );
       },
-      [props.initialState, props.singularProcessLabel]
+      [props.initialState]
     );
 
     return (

@@ -16,19 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { ReactElement } from "react";
-import ProcessFormContext from "./ProcessFormContext";
-import { ProcessFormGatewayApiImpl } from "./ProcessFormGatewayApi";
+import React, { ReactElement, useMemo, useState } from "react";
+import { ProcessFormContext } from "./ProcessFormContext";
+import { ProcessFormChannelApiImpl } from "./ProcessFormChannelApiImpl";
 
-interface ProcessFormContextProviderProps {
+export interface ProcessFormContextProviderProps {
   children: ReactElement;
   token?: string;
 }
 
-const ProcessFormContextProvider: React.FC<ProcessFormContextProviderProps> = ({ children, token }) => {
-  return (
-    <ProcessFormContext.Provider value={new ProcessFormGatewayApiImpl(token)}>{children}</ProcessFormContext.Provider>
-  );
-};
+export const ProcessFormContextProvider: React.FC<ProcessFormContextProviderProps> = ({ children, token }) => {
+  const channelApi = useMemo(() => new ProcessFormChannelApiImpl(token), [token]);
 
-export default ProcessFormContextProvider;
+  return <ProcessFormContext.Provider value={channelApi}>{children}</ProcessFormContext.Provider>;
+};

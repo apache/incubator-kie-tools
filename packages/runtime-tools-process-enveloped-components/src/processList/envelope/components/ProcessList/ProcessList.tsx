@@ -294,7 +294,7 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
           )}
         </>
       ) : (
-        <div className="kogito-process-list__emptyState-card">
+        <div>
           <KogitoEmptyState
             type={KogitoEmptyStateType.Reset}
             title="No filters applied."

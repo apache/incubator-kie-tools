@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { ProcessFormDriver } from "../../api";
+import { ProcessFormChannelApi } from "../../api";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import CustomProcessFormDisplayer from "./CustomProcessFormDisplayer";
 import { FormRenderer, FormRendererApi } from "@kie-tools/runtime-tools-components/dist/components/FormRenderer";
@@ -28,10 +28,11 @@ import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/component
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 export interface ProcessFormProps {
   processDefinition: ProcessDefinition;
-  driver: ProcessFormDriver;
+  channelApi: MessageBusClientApi<ProcessFormChannelApi>;
   isEnvelopeConnectedToChannel: boolean;
   targetOrigin: string;
   customFormDisplayerEnvelopePath?: string;
@@ -46,7 +47,7 @@ const formAction: FormAction[] = [
 
 const ProcessForm: React.FC<ProcessFormProps> = ({
   processDefinition,
-  driver,
+  channelApi,
   isEnvelopeConnectedToChannel,
   targetOrigin,
   customFormDisplayerEnvelopePath,
@@ -68,8 +69,8 @@ const ProcessForm: React.FC<ProcessFormProps> = ({
         resolve();
         return;
       }
-      driver
-        .getCustomForm(processDefinition)
+      channelApi.requests
+        .processForm__getCustomForm(processDefinition)
         .then((customForm) => {
           setProcessCustomForm(customForm);
           resolve();
@@ -78,8 +79,8 @@ const ProcessForm: React.FC<ProcessFormProps> = ({
     });
 
     const schemaPromise: Promise<void> = new Promise<void>((resolve, reject) => {
-      driver
-        .getProcessFormSchema(processDefinition)
+      channelApi.requests
+        .processForm__getProcessFormSchema(processDefinition)
         .then((schema) => {
           setProcessFormSchema(schema);
           resolve();
@@ -93,7 +94,7 @@ const ProcessForm: React.FC<ProcessFormProps> = ({
     Promise.all([customFormPromise, schemaPromise]).finally(() => {
       setIsLoading(false);
     });
-  }, [driver, isEnvelopeConnectedToChannel, processDefinition, shouldLoadCustomForms]);
+  }, [channelApi.requests, isEnvelopeConnectedToChannel, processDefinition, shouldLoadCustomForms]);
 
   useEffect(() => {
     if (!isEnvelopeConnectedToChannel) {
@@ -105,17 +106,17 @@ const ProcessForm: React.FC<ProcessFormProps> = ({
 
   const onSubmit = useCallback(
     (value: any): void => {
-      driver.startProcess(processDefinition, value).then(() => {
+      channelApi.requests.processForm__startProcess(processDefinition, value).then(() => {
         formRendererApi?.current?.doReset();
       });
     },
-    [driver, processDefinition]
+    [channelApi.requests, processDefinition]
   );
 
   useEffect(() => {
     const handleSvgApi = async (): Promise<void> => {
       try {
-        const response = await driver.getProcessDefinitionSvg(processDefinition);
+        const response = await channelApi.requests.processForm__getProcessDefinitionSvg(processDefinition);
         if (response) {
           const temp = <img src={`data:image/svg+xml;utf8,${encodeURIComponent(response)}`} />;
           setSvg(temp);
@@ -129,7 +130,7 @@ const ProcessForm: React.FC<ProcessFormProps> = ({
     if (isEnvelopeConnectedToChannel) {
       handleSvgApi();
     }
-  }, [driver, isEnvelopeConnectedToChannel, processDefinition]);
+  }, [channelApi, isEnvelopeConnectedToChannel, processDefinition]);
 
   const processDiagramBlock = useMemo(
     () =>
@@ -181,7 +182,7 @@ const ProcessForm: React.FC<ProcessFormProps> = ({
           processDefinition={processDefinition}
           schema={processFormSchema}
           customForm={processCustomForm}
-          driver={driver}
+          channelApi={channelApi}
           targetOrigin={targetOrigin}
           envelopePath={customFormDisplayerEnvelopePath}
         />

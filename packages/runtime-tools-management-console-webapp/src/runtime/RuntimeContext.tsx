@@ -47,7 +47,7 @@ import { ProcessDetailsContextProvider } from "@kie-tools/runtime-tools-process-
 import { TaskListContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskList";
 import { TaskFormContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskForms";
 import { ProcessDefinitionsListContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDefinitionsList";
-import ProcessFormContextProvider from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessForm/ProcessFormContextProvider";
+import { ProcessFormContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessForm";
 
 export type RuntimePathSearchParams = Partial<Record<QueryParams, string>>;
 export enum RuntimePathSearchParamsRoutes {

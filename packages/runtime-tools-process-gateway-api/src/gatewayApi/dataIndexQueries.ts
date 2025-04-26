@@ -29,14 +29,7 @@ import {
   ProcessListSortBy,
   ProcessDefinition,
 } from "../types";
-import {
-  NodeInstance,
-  TriggerableNode,
-  OperationType,
-  FormInfo,
-  Form,
-  FormContent,
-} from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { NodeInstance, TriggerableNode, OperationType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { ApolloClient } from "apollo-client";
 import { buildProcessListWhereArgument } from "./QueryUtils";
 
@@ -47,45 +40,36 @@ export const getProcessInstances = async (
   sortBy: ProcessListSortBy,
   client: ApolloClient<any>
 ): Promise<ProcessInstance[]> => {
-  return new Promise<ProcessInstance[]>((resolve, reject) => {
-    client
-      .query({
-        query: GraphQL.GetProcessInstancesDocument,
-        variables: {
-          where: buildProcessListWhereArgument(filters),
-          offset: offset,
-          limit: limit,
-          orderBy: sortBy,
-        },
-        fetchPolicy: "network-only",
-        errorPolicy: "all",
-      })
-      .then((value) => {
-        resolve(value.data.ProcessInstances);
-      })
-      .catch((reason) => {
-        reject({ errorMessage: JSON.stringify(reason) });
-      });
-  });
+  return client
+    .query({
+      query: GraphQL.GetProcessInstancesDocument,
+      variables: {
+        where: buildProcessListWhereArgument(filters),
+        offset: offset,
+        limit: limit,
+        orderBy: sortBy,
+      },
+      fetchPolicy: "network-only",
+      errorPolicy: "all",
+    })
+    .then((value) => value.data.ProcessInstances)
+    .catch((reason) => {
+      throw { errorMessage: JSON.stringify(reason, null, 2) };
+    });
 };
 
 export const getChildProcessInstances = async (
   rootProcessInstanceId: string,
   client: ApolloClient<any>
 ): Promise<ProcessInstance[]> => {
-  return new Promise<ProcessInstance[]>((resolve, reject) => {
-    client
-      .query({
-        query: GraphQL.GetChildInstancesDocument,
-        variables: {
-          rootProcessInstanceId,
-        },
-      })
-      .then((value) => {
-        resolve(value.data.ProcessInstances);
-      })
-      .catch((reason) => reject(reason));
-  });
+  return client
+    .query({
+      query: GraphQL.GetChildInstancesDocument,
+      variables: {
+        rootProcessInstanceId,
+      },
+    })
+    .then((value) => value.data.ProcessInstances);
 };
 
 //Rest Api to Cancel multiple Jobs
@@ -94,27 +78,21 @@ export const performMultipleCancel = async (
   client: ApolloClient<any>
 ): Promise<any> => {
   const multipleCancel: Promise<any>[] = jobsToBeActioned.map((job) => {
-    return new Promise((resolve, reject) => {
-      client
-        .mutate({
-          mutation: GraphQL.JobCancelDocument,
-          variables: {
-            jobId: job.id,
-          },
-          fetchPolicy: "no-cache",
-        })
-        .then((value) => {
-          resolve({ successJob: job });
-        })
-        .catch((reason) => {
-          job.errorMessage = JSON.stringify(reason.message);
-          reject({ failedJob: job });
-        });
-    });
+    return client
+      .mutate({
+        mutation: GraphQL.JobCancelDocument,
+        variables: {
+          jobId: job.id,
+        },
+        fetchPolicy: "no-cache",
+      })
+      .then(() => ({ successJob: job }))
+      .catch((reason) => {
+        job.errorMessage = JSON.stringify(reason.message, null, 2);
+        throw { failedJob: job };
+      });
   });
-  return Promise.all(multipleCancel.map((mc) => mc.catch((error) => error))).then((result) => {
-    return Promise.resolve(result);
-  });
+  return Promise.all(multipleCancel.map((mc) => mc.catch((error) => error)));
 };
 
 //Rest Api to Cancel a Job
@@ -124,26 +102,24 @@ export const jobCancel = async (
 ): Promise<JobOperationResult> => {
   let modalTitle: string;
   let modalContent: string;
-  return new Promise<JobOperationResult>((resolve, reject) => {
-    client
-      .mutate({
-        mutation: GraphQL.JobCancelDocument,
-        variables: {
-          jobId: job.id,
-        },
-        fetchPolicy: "no-cache",
-      })
-      .then((value) => {
-        modalTitle = "success";
-        modalContent = `The job: ${job.id} is canceled successfully`;
-        resolve({ modalTitle, modalContent });
-      })
-      .catch((reason) => {
-        modalTitle = "failure";
-        modalContent = `The job: ${job.id} failed to cancel. Error message: ${reason.message}`;
-        reject({ modalTitle, modalContent });
-      });
-  });
+  return client
+    .mutate({
+      mutation: GraphQL.JobCancelDocument,
+      variables: {
+        jobId: job.id,
+      },
+      fetchPolicy: "no-cache",
+    })
+    .then(() => {
+      modalTitle = "success";
+      modalContent = `The job: ${job.id} is canceled successfully`;
+      return { modalTitle, modalContent };
+    })
+    .catch((reason) => {
+      modalTitle = "failure";
+      modalContent = `The job: ${job.id} failed to cancel. Error message: ${reason.message}`;
+      throw { modalTitle, modalContent };
+    });
 };
 
 // Rest Api to Reschedule a Job
@@ -169,45 +145,38 @@ export const handleJobReschedule = async (
     };
   }
 
-  return new Promise<JobOperationResult>((resolve, reject) => {
-    client
-      .mutate({
-        mutation: GraphQL.HandleJobRescheduleDocument,
-        variables: {
-          jobId: job.id,
-          data: JSON.stringify(parameter),
-        },
-        fetchPolicy: "no-cache",
-      })
-      .then((value) => {
-        modalTitle = "success";
-        modalContent = `Reschedule of job: ${job.id} is successful`;
-        resolve({ modalTitle, modalContent });
-      })
-      .catch((reason) => {
-        modalTitle = "failure";
-        modalContent = `Reschedule of job ${job.id} failed. Message: ${reason.message}`;
-        reject({ modalTitle, modalContent });
-      });
-  });
+  return client
+    .mutate({
+      mutation: GraphQL.HandleJobRescheduleDocument,
+      variables: {
+        jobId: job.id,
+        data: JSON.stringify(parameter),
+      },
+      fetchPolicy: "no-cache",
+    })
+    .then(() => {
+      modalTitle = "success";
+      modalContent = `Reschedule of job: ${job.id} is successful`;
+      return { modalTitle, modalContent };
+    })
+    .catch((reason) => {
+      modalTitle = "failure";
+      modalContent = `Reschedule of job ${job.id} failed. Message: ${reason.message}`;
+      throw { modalTitle, modalContent };
+    });
 };
 
 // Rest Api to skip a process in error state
 export const handleProcessSkip = async (processInstance: ProcessInstance, client: ApolloClient<any>): Promise<void> => {
-  return new Promise<void>((resolve, reject) => {
-    client
-      .mutate({
-        mutation: GraphQL.AbortProcessInstanceDocument,
-        variables: {
-          processId: processInstance.id,
-        },
-        fetchPolicy: "no-cache",
-      })
-      .then((value) => {
-        resolve(value.data);
-      })
-      .catch((reason) => reject(reason));
-  });
+  return client
+    .mutate({
+      mutation: GraphQL.AbortProcessInstanceDocument,
+      variables: {
+        processId: processInstance.id,
+      },
+      fetchPolicy: "no-cache",
+    })
+    .then((value) => value.data);
 };
 
 // Rest Api to retrigger a process in error state
@@ -215,20 +184,15 @@ export const handleProcessRetry = async (
   processInstance: ProcessInstance,
   client: ApolloClient<any>
 ): Promise<void> => {
-  return new Promise<void>((resolve, reject) => {
-    client
-      .mutate({
-        mutation: GraphQL.RetryProcessInstanceDocument,
-        variables: {
-          processId: processInstance.id,
-        },
-        fetchPolicy: "no-cache",
-      })
-      .then((value) => {
-        resolve(value.data);
-      })
-      .catch((reason) => reject(reason));
-  });
+  return client
+    .mutate({
+      mutation: GraphQL.RetryProcessInstanceDocument,
+      variables: {
+        processId: processInstance.id,
+      },
+      fetchPolicy: "no-cache",
+    })
+    .then((value) => value.data);
 };
 
 // Rest Api to abort a process
@@ -236,21 +200,22 @@ export const handleProcessAbort = async (
   processInstance: ProcessInstance,
   client: ApolloClient<any>
 ): Promise<void> => {
-  return new Promise<void>((resolve, reject) => {
-    client
-      .mutate({
-        mutation: GraphQL.AbortProcessInstanceDocument,
-        variables: {
-          processId: processInstance.id,
-        },
-        fetchPolicy: "no-cache",
-      })
-      .then((value) => {
-        resolve(value.data);
-      })
-      .catch((reason) => reject(reason));
-  });
+  return client
+    .mutate({
+      mutation: GraphQL.AbortProcessInstanceDocument,
+      variables: {
+        processId: processInstance.id,
+      },
+      fetchPolicy: "no-cache",
+    })
+    .then((value) => value.data);
 };
+
+const operations: Record<string, (processInstance: ProcessInstance, client: ApolloClient<any>) => Promise<void>> = {
+  [OperationType.ABORT]: handleProcessAbort,
+  [OperationType.SKIP]: handleProcessSkip,
+  [OperationType.RETRY]: handleProcessRetry,
+} as const;
 
 // function to handle multiple actions(abort, skip and retry) on processes
 export const handleProcessMultipleAction = async (
@@ -258,35 +223,24 @@ export const handleProcessMultipleAction = async (
   operationType: OperationType,
   client: ApolloClient<any>
 ): Promise<BulkProcessInstanceActionResponse> => {
-  let operation: (processInstance: ProcessInstance, client: ApolloClient<any>) => Promise<void>;
-  // eslint-disable-next-line no-async-promise-executor
-  return new Promise(async (resolve, reject) => {
-    const successProcessInstances: ProcessInstance[] = [];
-    const failedProcessInstances: ProcessInstance[] = [];
-    switch (operationType) {
-      case OperationType.ABORT:
-        operation = handleProcessAbort;
-        break;
-      case OperationType.SKIP:
-        operation = handleProcessSkip;
-        break;
-      case OperationType.RETRY:
-        operation = handleProcessRetry;
-        break;
-    }
-    for (const processInstance of processInstances) {
-      await operation(processInstance, client)
-        .then(() => {
-          successProcessInstances.push(processInstance);
-        })
-        .catch((error) => {
-          processInstance.errorMessage = error.message;
-          failedProcessInstances.push(processInstance);
-        });
-    }
+  if (!operations[operationType]) {
+    return Promise.reject(`Invalid operation type: ${operationType}`);
+  }
+  const successProcessInstances: ProcessInstance[] = [];
+  const failedProcessInstances: ProcessInstance[] = [];
 
-    resolve({ successProcessInstances, failedProcessInstances });
-  });
+  for (const processInstance of processInstances) {
+    await operations[operationType](processInstance, client)
+      .then(() => {
+        successProcessInstances.push(processInstance);
+      })
+      .catch((error) => {
+        processInstance.errorMessage = error.message;
+        failedProcessInstances.push(processInstance);
+      });
+  }
+
+  return { successProcessInstances, failedProcessInstances };
 };
 
 export const handleNodeTrigger = async (
@@ -294,21 +248,16 @@ export const handleNodeTrigger = async (
   node: TriggerableNode,
   client: ApolloClient<any>
 ): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    client
-      .mutate({
-        mutation: GraphQL.HandleNodeTriggerDocument,
-        variables: {
-          processId: processInstance.id,
-          nodeId: node.id,
-        },
-        fetchPolicy: "no-cache",
-      })
-      .then((value) => {
-        resolve(value.data);
-      })
-      .catch((reason) => reject(reason));
-  });
+  return client
+    .mutate({
+      mutation: GraphQL.HandleNodeTriggerDocument,
+      variables: {
+        processId: processInstance.id,
+        nodeId: node.id,
+      },
+      fetchPolicy: "no-cache",
+    })
+    .then((value) => value.data);
 };
 
 // function containing Api call to update process variables
@@ -317,65 +266,56 @@ export const handleProcessVariableUpdate = async (
   updatedJson: Record<string, unknown>,
   client: ApolloClient<any>
 ): Promise<Record<string, unknown>> => {
-  return new Promise((resolve, reject) => {
-    client
-      .mutate({
-        mutation: GraphQL.HandleProcessVariableUpdateDocument,
-        variables: {
-          processId: processInstance.id,
-          processInstanceVariables: JSON.stringify(updatedJson),
-        },
-        fetchPolicy: "no-cache",
-      })
-      .then((value) => {
-        resolve(JSON.parse(value.data.ProcessInstanceUpdateVariables));
-      })
-      .catch((reason) => reject(reason));
-  });
+  return client
+    .mutate({
+      mutation: GraphQL.HandleProcessVariableUpdateDocument,
+      variables: {
+        processId: processInstance.id,
+        processInstanceVariables: JSON.stringify(updatedJson, null, 2),
+      },
+      fetchPolicy: "no-cache",
+    })
+    .then((value) => {
+      throw JSON.parse(value.data.ProcessInstanceUpdateVariables);
+    });
 };
 
 export const handleNodeInstanceCancel = async (
   processInstance: ProcessInstance,
   node: NodeInstance,
   client: ApolloClient<any>
-): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    client
-      .mutate({
-        mutation: GraphQL.HandleNodeInstanceCancelDocument,
-        variables: {
-          processId: processInstance.id,
-          nodeInstanceId: node.id,
-        },
-        fetchPolicy: "no-cache",
-      })
-      .then((value) => {
-        resolve();
-      })
-      .catch((reason) => reject(JSON.stringify(reason.message)));
-  });
+): Promise<any> => {
+  return client
+    .mutate({
+      mutation: GraphQL.HandleNodeInstanceCancelDocument,
+      variables: {
+        processId: processInstance.id,
+        nodeInstanceId: node.id,
+      },
+      fetchPolicy: "no-cache",
+    })
+    .catch((reason) => {
+      throw JSON.stringify(reason.message, null, 2);
+    });
 };
 
 export const handleNodeInstanceRetrigger = async (
   processInstance: Pick<ProcessInstance, "id" | "serviceUrl" | "processId">,
   node: Pick<NodeInstance, "id">,
   client: ApolloClient<any>
-): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    client
-      .mutate({
-        mutation: GraphQL.HandleNodeInstanceRetriggerDocument,
-        variables: {
-          processId: processInstance.id,
-          nodeInstanceId: node.id,
-        },
-        fetchPolicy: "no-cache",
-      })
-      .then((value) => {
-        resolve();
-      })
-      .catch((reason) => reject(JSON.stringify(reason.message)));
-  });
+): Promise<any> => {
+  return client
+    .mutate({
+      mutation: GraphQL.HandleNodeInstanceRetriggerDocument,
+      variables: {
+        processId: processInstance.id,
+        nodeInstanceId: node.id,
+      },
+      fetchPolicy: "no-cache",
+    })
+    .catch((reason) => {
+      throw JSON.stringify(reason.message, null, 2);
+    });
 };
 
 export const getProcessDetailsSVG = async (
@@ -390,31 +330,25 @@ export const getProcessDetailsSVG = async (
       },
       fetchPolicy: "network-only",
     })
-    .then((value) => {
-      return { svg: value.data.ProcessInstances[0].diagram };
-    })
+    .then((value) => ({ svg: value.data.ProcessInstances[0].diagram }))
     .catch((reason) => {
-      return { error: reason.message };
+      throw { error: reason.message };
     });
 };
 
 export const getProcessDetails = async (id: string, client: ApolloClient<any>): Promise<any> => {
-  return new Promise((resolve, reject) => {
-    client
-      .query({
-        query: GraphQL.GetProcessInstanceByIdDocument,
-        variables: {
-          id,
-        },
-        fetchPolicy: "network-only",
-      })
-      .then((value) => {
-        resolve(value.data.ProcessInstances[0]);
-      })
-      .catch((error) => {
-        reject(error["graphQLErrors"][0]["message"]);
-      });
-  });
+  return client
+    .query({
+      query: GraphQL.GetProcessInstanceByIdDocument,
+      variables: {
+        id,
+      },
+      fetchPolicy: "network-only",
+    })
+    .then((value) => value.data.ProcessInstances[0])
+    .catch((error) => {
+      throw error["graphQLErrors"][0]["message"];
+    });
 };
 
 export const getJobs = async (id: string, client: ApolloClient<any>): Promise<any> => {
@@ -426,18 +360,10 @@ export const getJobs = async (id: string, client: ApolloClient<any>): Promise<an
       },
       fetchPolicy: "network-only",
     })
-    .then((value) => {
-      return value.data.Jobs;
-    })
-    .catch((error) => {
-      return error;
-    });
+    .then((value) => value.data.Jobs);
 };
 
-export const getTriggerableNodes = async (
-  processInstance: ProcessInstance,
-  client: ApolloClient<any>
-): Promise<any> => {
+export const getTriggerableNodes = (processInstance: ProcessInstance, client: ApolloClient<any>): Promise<any> => {
   return client
     .query({
       query: GraphQL.GetProcessDefinitionNodesDocument,
@@ -446,23 +372,18 @@ export const getTriggerableNodes = async (
       },
       fetchPolicy: "no-cache",
     })
-    .then((value) => {
-      return value.data.ProcessDefinitions[0].nodes;
-    })
-    .catch((reason) => {
-      return reason;
-    });
+    .then((value) => value.data.ProcessDefinitions[0].nodes);
 };
 
-export const getJobsWithFilters = async (
+export const getJobsWithFilters = (
   offset: number,
   limit: number,
   filters: JobStatus[],
   orderBy: JobsSortBy,
   client: ApolloClient<any>
 ): Promise<Job[]> => {
-  try {
-    const response = await client.query({
+  return client
+    .query({
       query: GraphQL.GetJobsWithFiltersDocument,
       variables: {
         values: filters,
@@ -471,62 +392,51 @@ export const getJobsWithFilters = async (
         orderBy,
       },
       fetchPolicy: "network-only",
-    });
-    return Promise.resolve(response.data.Jobs);
-  } catch (error) {
-    return Promise.reject(error);
-  }
+    })
+    .then((response) => response.data.Jobs);
 };
 
 export const getProcessDefinitions = (client: ApolloClient<any>): Promise<ProcessDefinition[]> => {
-  return new Promise<ProcessDefinition[]>((resolve, reject) => {
-    client
-      .query({
-        query: GraphQL.GetProcessDefinitionsDocument,
-        fetchPolicy: "network-only",
-        errorPolicy: "all",
-      })
-      .then((value) => {
-        resolve(
-          (value.data.ProcessDefinitions ?? []).map((item: { id: string; endpoint: string }) => {
-            return {
-              processName: item.id,
-              endpoint: item.endpoint,
-            };
-          })
-        );
-      })
-      .catch((reason) => {
-        reject({ errorMessage: JSON.stringify(reason) });
+  return client
+    .query({
+      query: GraphQL.GetProcessDefinitionsDocument,
+      fetchPolicy: "network-only",
+      errorPolicy: "all",
+    })
+    .then((value) => {
+      return (value.data.ProcessDefinitions ?? []).map((item: { id: string; endpoint: string }) => {
+        return {
+          processName: item.id,
+          endpoint: item.endpoint,
+        };
       });
-  });
+    })
+    .catch((reason) => {
+      throw { errorMessage: JSON.stringify(reason, null, 2) };
+    });
 };
 
 export const getProcessDefinitionByName = (
   processName: string,
   client: ApolloClient<any>
 ): Promise<ProcessDefinition> => {
-  return new Promise<ProcessDefinition>((resolve, reject) => {
-    client
-      .query({
-        query: GraphQL.GetProcessDefinitionByIdDocument,
-        variables: {
-          id: processName,
-        },
-        fetchPolicy: "network-only",
-      })
-      .then((value) => {
-        resolve(
-          (value.data.ProcessDefinitions ?? []).map((item: { id: string; endpoint: string }) => {
-            return {
-              processName: item.id,
-              endpoint: item.endpoint,
-            };
-          })[0]
-        );
-      })
-      .catch((error) => {
-        reject(error["graphQLErrors"][0]["message"]);
-      });
-  });
+  return client
+    .query({
+      query: GraphQL.GetProcessDefinitionByIdDocument,
+      variables: {
+        id: processName,
+      },
+      fetchPolicy: "network-only",
+    })
+    .then((value) => {
+      return (value.data.ProcessDefinitions ?? []).map((item: { id: string; endpoint: string }) => {
+        return {
+          processName: item.id,
+          endpoint: item.endpoint,
+        };
+      })[0];
+    })
+    .catch((error) => {
+      throw error["graphQLErrors"][0]["message"];
+    });
 };

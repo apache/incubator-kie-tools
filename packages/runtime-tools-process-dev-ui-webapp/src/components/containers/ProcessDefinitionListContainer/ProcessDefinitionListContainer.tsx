@@ -19,7 +19,6 @@
 import React, { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import {
   EmbeddedProcessDefinitionsList,
@@ -31,7 +30,7 @@ const defaultFilters = {
   processNames: [],
 };
 
-const ProcessDefinitionsListContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
+const ProcessDefinitionsListContainer: React.FC = () => {
   const history = useHistory();
   const channelApi = useProcessDefinitionsListChannelApi();
   const appContext = useDevUIAppContext();
@@ -63,11 +62,9 @@ const ProcessDefinitionsListContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe
 
   return (
     <EmbeddedProcessDefinitionsList
-      {...componentOuiaProps(ouiaId, "process-definition-list-container", ouiaSafe)}
       initialState={initialState}
       channelApi={channelApi}
       targetOrigin={appContext.getDevUIUrl()}
-      singularProcessLabel={appContext.customLabels.singularProcessLabel}
     />
   );
 };

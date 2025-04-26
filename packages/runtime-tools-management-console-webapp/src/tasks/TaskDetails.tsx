@@ -46,10 +46,10 @@ import { EmbeddedTaskDetails } from "@kie-tools/runtime-tools-process-enveloped-
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { TaskState } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskDetails";
 import { TaskForm } from "./TaskForm";
-import { FormNotification, Notification } from "./components";
 import { useRuntime, useRuntimeDispatch, useRuntimeInfo, useRuntimeSpecificRoutes } from "../runtime/RuntimeContext";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { isOpenIdConnectAuthSession, useAuthSessions } from "../authSessions";
+import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 
 interface Props {
   taskId?: string;
@@ -116,13 +116,15 @@ export const TaskDetails: React.FC<Props> = ({ taskId }) => {
         type: notificationType,
         message: submitMessage,
         details: notificationDetails,
-        customAction: {
-          label: "Go to Tasks",
-          onClick: () => {
-            setNotification(undefined);
-            goToTasks();
+        customActions: [
+          {
+            label: "Go to Tasks",
+            onClick: () => {
+              setNotification(undefined);
+              goToTasks();
+            },
           },
-        },
+        ],
         close: () => {
           setNotification(undefined);
         },

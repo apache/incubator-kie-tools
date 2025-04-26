@@ -16,60 +16,60 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import React, { ReactElement, useEffect } from "react";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { EmbeddedProcessForm } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processForm";
-import {
-  ProcessFormGatewayApi,
-  useProcessFormGatewayApi,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessForm";
-import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { useProcessFormChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessForm";
 
 interface ProcessFormContainerProps {
   processDefinitionData: ProcessDefinition;
   onSubmitSuccess: (id: string) => void;
-  onSubmitError: (details?: string) => void;
+  onSubmitError: (details?: ReactElement | string) => void;
 }
-const ProcessFormContainer: React.FC<ProcessFormContainerProps & OUIAProps> = ({
+const ProcessFormContainer: React.FC<ProcessFormContainerProps> = ({
   processDefinitionData,
   onSubmitSuccess,
   onSubmitError,
-  ouiaId,
-  ouiaSafe,
 }) => {
-  const gatewayApi: ProcessFormGatewayApi = useProcessFormGatewayApi();
+  const channelApi = useProcessFormChannelApi();
   const appContext = useDevUIAppContext();
+
+  useEffect(() => {
+    const unsubscriber = channelApi.processForm__onStartProcessListen({
+      onSuccess(processInstanceId) {
+        channelApi.processForm__setBusinessKey("");
+        onSubmitSuccess(processInstanceId);
+      },
+      onError(error) {
+        const details = error.response ? (
+          <>
+            <b>
+              {error.response.statusText}: {error.message}
+            </b>
+            {error.response.data?.message && (
+              <>
+                <br />
+                {error.response.data.message}
+              </>
+            )}
+          </>
+        ) : (
+          error.message
+        );
+        onSubmitError(details);
+      },
+    });
+
+    return () => {
+      unsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
+    };
+  }, [channelApi, onSubmitError, onSubmitSuccess]);
+
   return (
     <EmbeddedProcessForm
-      {...componentOuiaProps(ouiaId, "process-form-container", ouiaSafe)}
       processDefinition={processDefinitionData}
-      driver={{
-        getProcessFormSchema(processDefinition: ProcessDefinition): Promise<any> {
-          return gatewayApi.getProcessFormSchema(processDefinition);
-        },
-        getCustomForm(processDefinition: ProcessDefinition): Promise<Form> {
-          return gatewayApi.getCustomForm(processDefinition);
-        },
-        getProcessDefinitionSvg(processDefinition: ProcessDefinition): Promise<string> {
-          return gatewayApi.getProcessDefinitionSvg(processDefinition);
-        },
-        async startProcess(processDefinition: ProcessDefinition, formData: any): Promise<string> {
-          return gatewayApi
-            .startProcess(processDefinition, formData)
-            .then((id: string) => {
-              gatewayApi.setBusinessKey("");
-              onSubmitSuccess(id);
-              return id;
-            })
-            .catch((error) => {
-              const message = error.response ? `${error.response.statusText} : ${error.message}` : error.message;
-              onSubmitError(message);
-              return "";
-            });
-        },
-      }}
+      channelApi={channelApi}
       targetOrigin={appContext.getDevUIUrl()}
       customFormDisplayerEnvelopePath="resources/form-displayer.html"
       shouldLoadCustomForms={true}

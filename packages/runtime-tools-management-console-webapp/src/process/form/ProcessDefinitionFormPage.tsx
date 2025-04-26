@@ -109,7 +109,7 @@ export const ProcessDefinitionFormPage: React.FC<{ processName?: string }> = ({ 
         <ProcessDefinitionForm
           processName={processName}
           onReturnToProcessDefinitionsList={onNavigateToProcessDefinitionsList}
-          onCreateNewProcessInstance={onNavigateToProcessInstanceDetails}
+          onNavigateToProcessInstanceDetails={onNavigateToProcessInstanceDetails}
         />
       ) : (
         <KogitoSpinner spinnerText="Loading process details..." />
