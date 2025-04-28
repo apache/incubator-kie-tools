@@ -54,6 +54,7 @@ func TestInitializeControllersCfgAt_ValidFile(t *testing.T) {
 	assert.True(t, cfg.KogitoEventsGrouping)
 	assert.True(t, cfg.KogitoEventsGroupingBinary)
 	assert.False(t, cfg.KogitoEventsGroupingCompress)
+	assert.False(t, cfg.ValidateWorkflowImage)
 }
 
 func TestInitializeControllersCfgAt_FileNotFound(t *testing.T) {

@@ -71,6 +71,7 @@ type ControllersCfg struct {
 	KogitoEventsGrouping            bool              `yaml:"kogitoEventsGrouping,omitempty"`
 	KogitoEventsGroupingBinary      bool              `yaml:"KogitoEventsGroupingBinary,omitempty"`
 	KogitoEventsGroupingCompress    bool              `yaml:"KogitoEventsGroupingCompress,omitempty"`
+	ValidateWorkflowImage           bool              `yaml:"ValidateWorkflowImage,omitempty"`
 }
 
 // InitializeControllersCfg initializes the platform configuration for this instance.

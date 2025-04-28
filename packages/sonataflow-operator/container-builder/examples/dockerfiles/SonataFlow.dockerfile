@@ -40,6 +40,9 @@ COPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/
 COPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/*.jar /deployments/
 COPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/app/ /deployments/app/
 COPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/quarkus-app/quarkus/ /deployments/quarkus/
+COPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/classes/*.sw.json /deployments/app/
+COPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/classes/*.sw.yaml /deployments/app/
+COPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/classes/*.sw.yml /deployments/app/
 
 EXPOSE 8080
 USER 185
