@@ -189,6 +189,7 @@
       { "id": "@kie-tools/unitables-dmn" },
       { "id": "@kie-tools/kn-plugin-workflow" },
       { "id": "@kie-tools/sonataflow-operator" },
+      { "id": "@kie-tools/kogito-db-migrator-tool-image" },
       { "id": "@kie-tools/sonataflow-builder-image" },
       { "id": "@kie-tools/sonataflow-devmode-image" },
       { "id": "@kie/kogito-data-index-ephemeral-image" },
@@ -199,7 +200,6 @@
       { "id": "@kie-tools/sonataflow-image-common" },
       { "id": "@kie-tools/python-venv" },
       { "id": "@kie-tools/kogito-db-migrator-tool" },
-      { "id": "@kie-tools/kogito-db-migrator-tool-image" },
       { "id": "@kie/kogito-jit-runner-image" },
       { "id": "@kie/kogito-jobs-service-allinone-image" },
       { "id": "@kie-tools/unitables" },
@@ -2050,6 +2050,11 @@
       },
       {
         "source": "@kie-tools/sonataflow-operator",
+        "target": "@kie-tools/kogito-db-migrator-tool-image",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-operator",
         "target": "@kie-tools/sonataflow-builder-image",
         "weight": 1
       },
@@ -2076,6 +2081,16 @@
       {
         "source": "@kie-tools/sonataflow-operator",
         "target": "@kie/kogito-jobs-service-postgresql-image",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/kogito-db-migrator-tool-image",
+        "target": "@kie-tools/kogito-db-migrator-tool",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/kogito-db-migrator-tool-image",
+        "target": "@kie-tools/sonataflow-image-common",
         "weight": 1
       },
       {
@@ -2166,16 +2181,6 @@
       {
         "source": "@kie-tools/kogito-db-migrator-tool",
         "target": "@kie-tools/maven-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/kogito-db-migrator-tool-image",
-        "target": "@kie-tools/kogito-db-migrator-tool",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/kogito-db-migrator-tool-image",
-        "target": "@kie-tools/sonataflow-image-common",
         "weight": 1
       },
       {

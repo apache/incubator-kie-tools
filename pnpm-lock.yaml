@@ -12606,6 +12606,9 @@ importers:
 
   packages/sonataflow-operator:
     devDependencies:
+      '@kie-tools/kogito-db-migrator-tool-image':
+        specifier: workspace:*
+        version: link:../kogito-db-migrator-tool-image
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
