@@ -249,7 +249,7 @@ export function BeeTableTd<R extends object>({
         onKeyUp={isReadOnly ? undefined : onKeyUp}
         ref={tdRef}
         tabIndex={-1}
-        className={`${cssClass} ${cssClasses}`}
+        className={`${cssClass} ${cssClasses} ${column.cssClasses}`}
         data-testid={`kie-tools--bee--expression-column-${columnIndex}`}
         data-ouia-component-id={`expression-column-${columnIndex}`}
         style={{

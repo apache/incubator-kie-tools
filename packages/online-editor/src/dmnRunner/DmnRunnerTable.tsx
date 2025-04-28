@@ -36,6 +36,7 @@ import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
 import { useSettings } from "../settings/SettingsContext";
 import { useEditorDockContext } from "../editor/EditorPageDockContextProvider";
+import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 
 export function DmnRunnerTable() {
   // STATEs
@@ -123,6 +124,11 @@ export function DmnRunnerTable() {
 
   const { envelopeServer } = useEditorDockContext();
 
+  const [openedBoxedExpressionNodeId, _] = useSharedValue(
+    (envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>).shared
+      .newDmnEditor_openedBoxedExpressionEditorNodeId
+  );
+
   return (
     <>
       {extendedServicesError ? (
@@ -159,6 +165,7 @@ export function DmnRunnerTable() {
                                 }
                               : undefined
                           }
+                          openedBoxedExpressionEditorNodeId={openedBoxedExpressionNodeId}
                         />
                       </div>
                     </DrawerPanelContent>

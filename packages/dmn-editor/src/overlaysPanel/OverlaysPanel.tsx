@@ -27,6 +27,7 @@ import { useLayoutEffect, useRef } from "react";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
+import { useSettings } from "../settings/DmnEditorSettingsContext";
 
 const MIN_SNAP = 5;
 const MAX_SNAP = 50;
@@ -41,6 +42,7 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
   const diagram = useDmnEditorStore((s) => s.diagram);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const overlayPanelContainer = useRef<HTMLDivElement>(null);
+  const { isEvaluationHighlightsSupported } = useSettings();
   useLayoutEffect(() => {
     if (overlayPanelContainer.current && availableHeight) {
       if (overlayPanelContainer.current.scrollHeight <= availableHeight) {
@@ -152,30 +154,32 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
             }
           />
         </FormGroup>
-        <FormGroup
-          label={"Enable evaluation highlights"}
-          labelIcon={
-            <Tooltip
-              content={
-                "Enable highlighting Decision Table rules and Boxed Conditional Expression branches based on evaluation results, also showing success/error status badges on Decision nodes."
-              }
-            >
-              <Icon size="sm" status="info">
-                <HelpIcon />
-              </Icon>
-            </Tooltip>
-          }
-        >
-          <Switch
-            data-testid={"kie-tools--dmn-editor--evaluation-highlights-control"}
-            isChecked={diagram.overlays.enableEvaluationHighlights}
-            onChange={(_event, newValue) =>
-              dmnEditorStoreApi.setState((state) => {
-                state.diagram.overlays.enableEvaluationHighlights = newValue;
-              })
+        {isEvaluationHighlightsSupported && (
+          <FormGroup
+            label={"Enable evaluation highlights"}
+            labelIcon={
+              <Tooltip
+                content={
+                  "Enable highlighting Decision Table rules and Boxed Conditional Expression branches based on evaluation results, also showing success/error status badges on Decision nodes."
+                }
+              >
+                <Icon size="sm" status="info">
+                  <HelpIcon />
+                </Icon>
+              </Tooltip>
             }
-          />
-        </FormGroup>
+          >
+            <Switch
+              data-testid={"kie-tools--dmn-editor--evaluation-highlights-control"}
+              isChecked={diagram.overlays.enableEvaluationHighlights}
+              onChange={(_event, newValue) =>
+                dmnEditorStoreApi.setState((state) => {
+                  state.diagram.overlays.enableEvaluationHighlights = newValue;
+                })
+              }
+            />
+          </FormGroup>
+        )}
       </Form>
     </div>
   );

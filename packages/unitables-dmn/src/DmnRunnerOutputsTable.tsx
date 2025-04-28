@@ -59,6 +59,7 @@ interface Props {
   jsonSchemaBridge: DmnUnitablesJsonSchemaBridge;
   scrollableParentRef: React.RefObject<HTMLElement>;
   openBoxedExpressionEditor?: (nodeId: string) => void;
+  openedBoxedExpressionEditorNodeId: string | undefined;
 }
 
 export function DmnRunnerOutputsTable({
@@ -67,6 +68,7 @@ export function DmnRunnerOutputsTable({
   results,
   scrollableParentRef,
   openBoxedExpressionEditor,
+  openedBoxedExpressionEditorNodeId,
 }: Props) {
   const outputUid = useMemo(() => nextId(), []);
   const outputErrorBoundaryRef = useRef<ErrorBoundary>(null);
@@ -96,6 +98,7 @@ export function DmnRunnerOutputsTable({
             results={results}
             id={outputUid}
             openBoxedExpressionEditor={openBoxedExpressionEditor}
+            openedBoxedExpressionEditorNodeId={openedBoxedExpressionEditorNodeId}
           />
         </ErrorBoundary>
       ) : (
@@ -144,6 +147,7 @@ interface OutputsTableProps {
   outputsPropertiesMap: Map<string, OutputField>;
   scrollableParentRef: React.RefObject<HTMLElement>;
   openBoxedExpressionEditor?: (nodeId: string) => void;
+  openedBoxedExpressionEditorNodeId: string | undefined;
 }
 
 function OutputsBeeTable({
@@ -153,6 +157,7 @@ function OutputsBeeTable({
   results,
   scrollableParentRef,
   openBoxedExpressionEditor,
+  openedBoxedExpressionEditorNodeId,
 }: OutputsTableProps) {
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
@@ -308,6 +313,7 @@ function OutputsBeeTable({
         return [
           {
             originalId: `${outputProperties?.name}-${generateUuid()}`,
+            cssClasses: decisionId === openedBoxedExpressionEditorNodeId ? "runner-column-highlight" : "",
             headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
             label: parentLabel,
             accessor: (`output-object-parent-${outputProperties?.name}-` + generateUuid()) as any,
@@ -367,6 +373,7 @@ function OutputsBeeTable({
             columns: [
               {
                 originalId: `${outputProperties?.name}-${generateUuid()}-${outputProperties?.properties?.id}`,
+                cssClasses: decisionId === openedBoxedExpressionEditorNodeId ? "runner-column-highlight" : "",
                 headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
                 label: label,
                 accessor: (`output-${outputProperties?.name}-` + generateUuid()) as any,
@@ -387,6 +394,7 @@ function OutputsBeeTable({
         return [
           {
             originalId: `${outputProperties?.name}-${generateUuid()}`,
+            cssClasses: decisionId === openedBoxedExpressionEditorNodeId ? "runner-column-highlight" : "",
             headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
             label: parentLabel,
             accessor: (`output-array-parent-${outputProperties?.name}-` + generateUuid()) as any,
@@ -419,6 +427,7 @@ function OutputsBeeTable({
         return [
           {
             originalId: `${outputProperties?.name}-${generateUuid()}`,
+            cssClasses: decisionId === openedBoxedExpressionEditorNodeId ? "runner-column-highlight" : "",
             headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
             label: parentLabel,
             accessor: (`output-object-parent-${outputProperties?.name}-` + generateUuid()) as any,
@@ -435,6 +444,7 @@ function OutputsBeeTable({
     deepFlattenObjectColumn,
     getDefaultDmnRunnerOutputColumnWidth,
     openBoxedExpressionHeaderButton,
+    openedBoxedExpressionEditorNodeId,
     outputsPropertiesMap,
     results,
   ]);
