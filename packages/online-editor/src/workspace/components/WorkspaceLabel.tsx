@@ -45,7 +45,7 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
     if (workspaceImportableUrl.type === UrlType.GITHUB_DOT_COM) {
       return (
         <Label>
-          <Icon size="md">
+          <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
             <GithubIcon />
           </Icon>
           &nbsp;&nbsp;Repository
@@ -54,7 +54,7 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
     } else if (props.descriptor?.origin.url.toString().includes("gitlab")) {
       return (
         <Label>
-          <Icon size="md">
+          <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
             <GitlabIcon />
           </Icon>
           &nbsp;&nbsp;Repository
@@ -63,7 +63,7 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
     } else if (props.descriptor?.origin.url.toString().includes("bitbucket")) {
       return (
         <Label>
-          <Icon size="md">
+          <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
             <BitbucketIcon />
           </Icon>
           &nbsp;&nbsp;Repository
@@ -72,7 +72,7 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
     } else {
       return (
         <Label>
-          <Icon size="md">
+          <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
             <CodeIcon />
           </Icon>
           &nbsp;&nbsp;Git repository
@@ -101,7 +101,7 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
             </FlexItem>
             <FlexItem>
               <Label>
-                <Icon size="md">
+                <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
                   <CodeBranchIcon />
                 </Icon>
                 &nbsp;&nbsp;{props.descriptor?.origin.branch}
@@ -116,7 +116,7 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
               position={"right"}
             >
               <Label>
-                <Icon size="md">
+                <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
                   <GithubIcon />
                 </Icon>
                 &nbsp;&nbsp;Gist
@@ -131,7 +131,7 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
               position={"right"}
             >
               <Label>
-                <Icon size="md">
+                <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
                   <BitbucketIcon />
                 </Icon>
                 &nbsp;&nbsp;Snippet
@@ -146,7 +146,7 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
               position={"right"}
             >
               <Label>
-                <Icon size="md">
+                <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
                   <PendingIcon />
                 </Icon>
                 &nbsp;&nbsp;Ephemeral

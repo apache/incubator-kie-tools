@@ -81,10 +81,7 @@ export const ModelTitle = (props: ModelTitleProps) => {
   );
 
   const modelTitleClassNames = useMemo(
-    () =>
-      `${
-        commitModelName !== undefined ? "modelTitle" : "modelTitle modelTitle--editing"
-      } pf-v5-c-title pf-m-2xl pf-v5-c-form-control`,
+    () => `${commitModelName !== undefined ? "modelTitle" : "modelTitle modelTitle--editing"} pf-v5-c-title pf-m-2xl`,
     [commitModelName]
   );
 
