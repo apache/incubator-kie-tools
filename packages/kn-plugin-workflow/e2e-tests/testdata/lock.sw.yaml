@@ -1,0 +1,77 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/serverlessworkflow/specification/refs/heads/0.8.x/schema/workflow.json
+id: lock-flow
+specVersion: "0.8"
+key: lock-flow
+version: "1.0.0"
+events:
+  - type: lock-event
+    kind: consumed
+    name: lock-event
+    source: local
+    correlation:
+      - contextAttributeName: lockid
+  - type: release-event
+    kind: consumed
+    name: release-event
+    source: local
+    correlation:
+      - contextAttributeName: lockid
+  - type: notify-event
+    kind: produced
+    name: notify-event
+    correlation:
+      - contextAttributeName: lockid
+  - type: released-event
+    kind: produced
+    name: released-event
+    correlation:
+      - contextAttributeName: lockid
+functions:
+  - name: sysLog
+    type: custom
+    operation: sysout:INFO
+start: listenToLock
+states:
+  - name: listenToLock
+    type: event
+    onEvents:
+      - eventRefs:
+          - lock-event
+        actions:
+          - functionRef:
+              refName: sysLog
+              arguments:
+                message: ${ "Lock received " + .name }
+    transition: notifyLock
+  - name: notifyLock
+    type: operation
+    actions:
+      - eventRef:
+          data: ${ "Workflow " + $WORKFLOW.id + " has now the lock " + .name }
+          triggerEventRef: notify-event
+      - functionRef:
+          refName: sysLog
+          arguments:
+            message: ${ "Notified lock release " + .name }
+    transition: waitForRelease
+  - name: waitForRelease
+    type: callback
+    action:
+      functionRef:
+        refName: sysLog
+        arguments:
+          message: ${ "Waiting lock release " + .name }
+    eventRef: release-event
+    timeouts:
+      eventTimeout: PT3M
+    transition: releaseLock
+  - name: releaseLock
+    type: operation
+    actions:
+      - functionRef:
+          refName: sysLog
+          arguments:
+            message: ${ "Lock " +  .name +  " released" }
+    end:
+      produceEvents:
+        - eventRef: released-event

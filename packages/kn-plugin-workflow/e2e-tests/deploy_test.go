@@ -157,3 +157,44 @@ func TestDeployProjectSuccessWithImageDefined(t *testing.T) {
 		})
 	}
 }
+
+func TestDeployProjectSuccessWithoutResultEventRef(t *testing.T) {
+	dir, err := os.Getwd()
+	require.NoError(t, err)
+
+	src := filepath.Join(dir, "testdata", "lock.sw.yaml")
+	data, err := os.ReadFile(src)
+	require.NoError(t, err)
+
+	var originalCheckCrds = command.CheckCRDs
+	defer func() { command.CheckCRDs = originalCheckCrds }()
+
+	command.CheckCRDs = func(crds []string, typeName string) error {
+		return nil
+	}
+
+	var executeApplyOriginal = common.ExecuteApply
+	defer func() { common.ExecuteApply = executeApplyOriginal }()
+
+	common.ExecuteApply = func(path, namespace string) error {
+		return nil
+	}
+
+	defer os.Chdir(dir)
+
+	tmpRoot := t.TempDir()
+	destDir := filepath.Join(tmpRoot, "workspace")
+	require.NoError(t, os.MkdirAll(destDir, 0o755))
+
+	dst := filepath.Join(destDir, "lock.sw.yaml")
+
+	require.NoError(t, os.WriteFile(dst, data, 0644))
+
+	require.NoError(t, os.Chdir(destDir))
+
+	t.Run(fmt.Sprintf("Test deploy project with resultEventRef"), func(t *testing.T) {
+		cmd := command.NewDeployCommand()
+		err = cmd.Execute()
+		require.NoError(t, err)
+	})
+}
