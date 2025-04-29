@@ -6,6 +6,7 @@ settings:
 
 overrides:
   '@types/react': ^17.0.6
+  cross-spawn: ^7.0.6
   react-dropzone: ^11.4.2
 
 packageExtensionsChecksum: 662bbd7c100aa81b6a285b3204e4d9e4
@@ -22703,6 +22704,10 @@ packages:
     resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
     engines: {node: '>= 8'}
 
+  cross-spawn@7.0.6:
+    resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
+    engines: {node: '>= 8'}
+
   crypt@0.0.2:
     resolution: {integrity: sha512-mCxBlsHFYh9C+HVpiEacem8FEBnMXgU9gy4zmNC+SXAZNB/1idgp/aulFJ4FgCi7GPEVbfyng092GqL2k2rmow==}
 
@@ -44520,7 +44525,7 @@ snapshots:
       chalk: 3.0.0
       ci-info: 3.3.2
       clipanion: 3.2.0-rc.11(typanion@3.9.0)
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       diff: 4.0.1
       globby: 11.1.0
       got: 11.8.2
@@ -44557,7 +44562,7 @@ snapshots:
       chalk: 3.0.0
       ci-info: 3.3.2
       clipanion: 3.2.0-rc.11(typanion@3.9.0)
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       diff: 5.1.0
       globby: 11.1.0
       got: 11.8.2
@@ -44592,7 +44597,7 @@ snapshots:
       chalk: 3.0.0
       ci-info: 3.9.0
       clipanion: 4.0.0-rc.3(typanion@3.9.0)
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       diff: 5.2.0
       dotenv: 16.4.5
       fast-glob: 3.3.2
@@ -44680,7 +44685,7 @@ snapshots:
       '@yarnpkg/parsers': 2.5.1
       chalk: 3.0.0
       clipanion: 3.2.0-rc.11(typanion@3.9.0)
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       fast-glob: 3.2.11
       micromatch: 4.0.5
       stream-buffers: 3.0.2
@@ -44694,7 +44699,7 @@ snapshots:
       '@yarnpkg/parsers': 2.5.1
       chalk: 3.0.0
       clipanion: 3.2.0-rc.11(typanion@3.9.0)
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       fast-glob: 3.2.11
       micromatch: 4.0.5
       stream-buffers: 3.0.2
@@ -44708,7 +44713,7 @@ snapshots:
       '@yarnpkg/parsers': 3.0.2
       chalk: 3.0.0
       clipanion: 4.0.0-rc.3(typanion@3.9.0)
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       fast-glob: 3.3.2
       micromatch: 4.0.8
       tslib: 2.7.0
@@ -47401,6 +47406,12 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
+  cross-spawn@7.0.6:
+    dependencies:
+      path-key: 3.1.1
+      shebang-command: 2.0.0
+      which: 2.0.2
+
   crypt@0.0.2: {}
 
   crypto-browserify@3.12.0:
@@ -49126,7 +49137,7 @@ snapshots:
 
   execa@5.1.1:
     dependencies:
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       get-stream: 6.0.1
       human-signals: 2.1.0
       is-stream: 2.0.1
@@ -53995,7 +54006,7 @@ snapshots:
     dependencies:
       '@yarnpkg/lockfile': 1.1.0
       chalk: 2.4.2
-      cross-spawn: 6.0.5
+      cross-spawn: 7.0.6
       find-yarn-workspace-root: 2.0.0
       fs-extra: 7.0.1
       is-ci: 2.0.0
@@ -57534,7 +57545,7 @@ snapshots:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
       '@types/node': 22.10.7
-      acorn: 8.10.0
+      acorn: 8.12.1
       acorn-walk: 8.2.0
       arg: 4.1.0
       create-require: 1.1.1
