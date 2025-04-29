@@ -78,16 +78,16 @@ export const OutputsHandler = (props: OutputsHandlerProps) => {
     <>
       {validations.length === 0 && (
         <Button variant="secondary" onClick={toggleModal} data-title="Outputs">
-          Set Outputs
+          <span style={{ marginLeft: "0.25rem" }}>Set Outputs</span>
         </Button>
       )}
       {validations.length > 0 && (
         <ValidationIndicatorTooltip validations={validations}>
           <Button variant="secondary" onClick={toggleModal} data-title="Outputs">
-            <Icon size="sm">
+            <Icon size="md">
               <WarningTriangleIcon color={"orange"} />
             </Icon>
-            Set Outputs
+            <span style={{ marginLeft: "0.25rem" }}>Set Outputs</span>
           </Button>
         </ValidationIndicatorTooltip>
       )}

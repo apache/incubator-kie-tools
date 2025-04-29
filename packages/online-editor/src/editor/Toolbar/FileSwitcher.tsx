@@ -273,7 +273,11 @@ export function FileSwitcher(props: {
                 }
                 id={"editor-page-masthead-files-dropdown-toggle"}
               >
-                <Flex flexWrap={{ default: "nowrap" }} alignItems={{ default: "alignItemsCenter" }}>
+                <Flex
+                  flexWrap={{ default: "nowrap" }}
+                  alignItems={{ default: "alignItemsCenter" }}
+                  gap={{ default: "gapMd" }}
+                >
                   <FlexItem />
                   <FlexItem>
                     <b>

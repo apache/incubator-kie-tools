@@ -20,7 +20,7 @@
 import * as React from "react";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { Switch } from "@patternfly/react-core/dist/esm/components/Switch";
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { useCallback } from "react";
@@ -41,32 +41,30 @@ export function EditorsSettingsTab() {
 
   return (
     <>
-      <Page>
-        <PageSection>
-          <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
-            <Form>
-              <FormGroup label={"Use classic DMN Editor?"}>
-                <Switch isChecked={settings.editors.useLegacyDmnEditor} onChange={onChange} />
-              </FormGroup>
-              <TextContent>
-                <Text component={"small"}>
-                  The classic DMN Editor will be removed in future versions, but it is going to be available for some
-                  time until the new DMN Editor gets stable.
-                </Text>
-                <Text component={"small"}>
-                  <ExclamationTriangleIcon />
-                  &nbsp; Files created and/or modified on the new DMN Editor will{" "}
-                  <u>
-                    <b>not</b>
-                  </u>{" "}
-                  be compatible with the classic DMN Editor, as they always saved as DMN 1.5. The classic DMN Editor is
-                  only compatible with DMN 1.0, 1.1, and 1.2.
-                </Text>
-              </TextContent>
-            </Form>
-          </PageSection>
+      <PageSection>
+        <PageSection variant={"light"} isFilled={true}>
+          <Form>
+            <FormGroup label={"Use classic DMN Editor?"}>
+              <Switch isChecked={settings.editors.useLegacyDmnEditor} onChange={onChange} />
+            </FormGroup>
+            <TextContent>
+              <Text component={"small"}>
+                The classic DMN Editor will be removed in future versions, but it is going to be available for some time
+                until the new DMN Editor gets stable.
+              </Text>
+              <Text component={"small"}>
+                <ExclamationTriangleIcon />
+                &nbsp; Files created and/or modified on the new DMN Editor will{" "}
+                <u>
+                  <b>not</b>
+                </u>{" "}
+                be compatible with the classic DMN Editor, as they always saved as DMN 1.5. The classic DMN Editor is
+                only compatible with DMN 1.0, 1.1, and 1.2.
+              </Text>
+            </TextContent>
+          </Form>
         </PageSection>
-      </Page>
+      </PageSection>
     </>
   );
 }

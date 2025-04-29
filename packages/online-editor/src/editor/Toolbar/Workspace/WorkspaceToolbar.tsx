@@ -138,10 +138,7 @@ export function WorkspaceToolbar(props: Props) {
         style={{ minWidth: 0, padding: "0 8px 0 8px", flexShrink: 0 }}
         className={"kie-tools--masthead-hoverable"}
       >
-        <Icon size="lg" style={{ marginRight: "8px", verticalAlign: "middle" }}>
-          <FolderIcon />
-        </Icon>
-
+        <FolderIcon style={{ marginRight: "8px", verticalAlign: "middle" }} />
         <div
           data-testid={"toolbar-title-workspace"}
           className={"kogito--editor__toolbar-name-container"}

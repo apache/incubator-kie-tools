@@ -22,6 +22,36 @@
   --pf-v5-c-page__header-brand-link--c-brand--MaxHeight: 39px;
 }
 
+.pf-v5-c-card__title-text {
+  font-weight: bold;
+}
+
+.pf-v5-c-card.pf-m-selectable {
+  box-shadow:
+    0 0.0625rem 0.125rem 0 rgba(3, 3, 3, 0.12),
+    0 0 0.125rem 0 rgba(3, 3, 3, 0.06);
+}
+
+.pf-v5-c-card.pf-m-selectable:hover {
+  box-shadow:
+    0 0.5rem 1rem 0 rgba(3, 3, 3, 0.16),
+    0 0 0.375rem 0 rgba(3, 3, 3, 0.08);
+}
+
+.pf-v5-c-card__actions {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.pf-v5-c-card.pf-m-selectable:hover .pf-v5-c-card__actions {
+  visibility: visible;
+  opacity: 1;
+}
+
+.pf-v5-c-dropdown__toggle-image {
+  margin-right: 0.5rem;
+}
+
 .kie-sandbox--logo {
   display: flex;
 }
@@ -57,7 +87,7 @@
   display: inline-block;
   visibility: hidden;
   white-space: pre;
-  border: var(--pf-v5-global--BorderWidth--md) solid var(--pf-v5-c-page__main-section--m-light--BackgroundColor);
+  border: 1px solid var(--pf-v5-c-page__main-section--m-light--BackgroundColor);
   padding: var(--pf-v5-global--spacer--xs);
 }
 
@@ -68,7 +98,7 @@
 }
 
 .kogito--editor__toolbar-name-container span {
-  border: var(--pf-v5-global--BorderWidth--md) solid var(--pf-v5-c-page__main-section--m-light--BackgroundColor);
+  border: 1px solid var(--pf-v5-c-page__main-section--m-light--BackgroundColor);
   border-radius: var(--pf-v5-global--BorderRadius--sm);
   padding: var(--pf-v5-global--spacer--xs);
   position: absolute;
@@ -87,13 +117,14 @@
 }
 
 .kogito--editor__toolbar-name-container span:focus-within {
-  outline-width: 1px;
+  outline-width: 0;
   outline-style: auto;
 }
 
 .kogito--editor__toolbar-name-container span input {
   outline-width: 0;
   padding: 0;
+  line-height: 0;
 }
 
 .kogito--full-screen__toolbar {
@@ -326,9 +357,11 @@
   0% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.66;
   }
+
   100% {
     opacity: 1;
   }
@@ -342,6 +375,7 @@
   0% {
     opacity: 1;
   }
+
   100% {
     opacity: 1;
   }
@@ -454,6 +488,7 @@
   0% {
     opacity: 0;
   }
+
   100% {
     opacity: 1;
   }
@@ -526,12 +561,15 @@
   color: var(--pf-v5-global--danger-color--200);
 }
 
-@-webkit-keyframes rotating /* Safari and Chrome */ {
+@-webkit-keyframes rotating
+
+/* Safari and Chrome */ {
   from {
     -webkit-transform: rotate(0deg);
     -o-transform: rotate(0deg);
     transform: rotate(0deg);
   }
+
   to {
     -webkit-transform: rotate(360deg);
     -o-transform: rotate(360deg);
@@ -547,6 +585,7 @@
     -o-transform: rotate(0deg);
     transform: rotate(0deg);
   }
+
   to {
     -ms-transform: rotate(360deg);
     -moz-transform: rotate(360deg);
@@ -636,6 +675,7 @@ section.kie-tools--settings-tab {
 .kie-tools--dmn-runner-table--drawer .pf-v5-c-drawer__panel .pf-v5-c-drawer__panel-main {
   overflow: scroll;
 }
+
 .kie-tools--dmn-runner-table--drawer .pf-v5-c-drawer__content {
   overflow: scroll !important;
 }
@@ -643,6 +683,7 @@ section.kie-tools--settings-tab {
 .kie-tools--dmn-runner-table--drawer .pf-v5-c-drawer__content::-webkit-scrollbar {
   display: none;
 }
+
 .kie-tools--dmn-runner-table--drawer .pf-v5-c-drawer__panel-main::-webkit-scrollbar {
   display: none;
 }
@@ -682,9 +723,11 @@ section.kie-tools--settings-tab {
 .kie-tools--file-list-item-enabled {
   cursor: pointer;
 }
+
 .kie-tools--file-list-item-enabled:hover .pf-v5-c-content {
   text-decoration: underline;
 }
+
 .kie-tools--file-list-item-deleted {
   cursor: not-allowed;
 }
@@ -698,9 +741,11 @@ section.kie-tools--settings-tab {
 .kie-tools--git-status-indicator-children-hoverable {
   visibility: hidden;
 }
+
 .kie-tools--git-status-indicator:hover .kie-tools--git-status-indicator-children-hoverable {
   visibility: visible;
 }
+
 /* GitStatusIndicatorActions popover render */
 
 /* remove padding so that inline alert fills whole popover */
@@ -708,6 +753,7 @@ section.kie-tools--settings-tab {
 .kie-tools--git-status-indicator__popover-no-padding > .pf-v5-c-popover__content > .pf-v5-c-popover__body {
   padding: 0;
 }
+
 .kie-sandbox--files-menu .kie-tools--git-status-indicator button {
   /* For the padding not to mess with surrounding layout */
   margin-top: -4px;
@@ -723,10 +769,4 @@ section.kie-tools--settings-tab {
 .kie-sandbox--copy-command-block input {
   font-family: var(--pf-v5-global--FontFamily--monospace);
   font-size: revert;
-}
-
-#new-dmn-editor-dropdown-toggle {
-  padding-left: 0;
-  padding-top: 0;
-  padding-bottom: 0;
 }

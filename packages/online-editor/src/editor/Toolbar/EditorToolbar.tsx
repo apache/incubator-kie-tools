@@ -307,25 +307,24 @@ export function EditorToolbarWithWorkspace(
           justifyContent={{ default: "justifyContentSpaceBetween" }}
           alignItems={{ default: "alignItemsCenter" }}
           flexWrap={{ default: "nowrap" }}
+          gap={{ default: "gapMd" }}
         >
           <FlexItem style={{ minWidth: 0 }}>
             <PageHeaderToolsItem visibility={{ default: "visible" }}>
               <Flex flexWrap={{ default: "nowrap" }} alignItems={{ default: "alignItemsCenter" }}>
-                <FlexItem style={{ minWidth: 0 }}>
-                  <FileSwitcher
-                    workspace={props.workspace}
-                    gitStatusProps={
-                      canSeeWorkspaceToolbar
-                        ? {
-                            workspaceDescriptor: props.workspace.descriptor,
-                            workspaceGitStatusPromise: props.workspaceGitStatusPromise,
-                          }
-                        : undefined
-                    }
-                    workspaceFile={props.workspaceFile}
-                    onDeletedWorkspaceFile={handleDeletedWorkspaceFile}
-                  />
-                </FlexItem>
+                <FileSwitcher
+                  workspace={props.workspace}
+                  gitStatusProps={
+                    canSeeWorkspaceToolbar
+                      ? {
+                          workspaceDescriptor: props.workspace.descriptor,
+                          workspaceGitStatusPromise: props.workspaceGitStatusPromise,
+                        }
+                      : undefined
+                  }
+                  workspaceFile={props.workspaceFile}
+                  onDeletedWorkspaceFile={handleDeletedWorkspaceFile}
+                />
                 <FileStatus workspace={props.workspace} workspaceFile={props.workspaceFile} editor={props.editor} />
               </Flex>
             </PageHeaderToolsItem>
@@ -341,6 +340,7 @@ export function EditorToolbarWithWorkspace(
                           <DropdownToggle
                             onToggle={(_event, val) => setNewDmnEditorDropdownOpen(val)}
                             id="new-dmn-editor-dropdown-toggle"
+                            toggleIndicator={null}
                           >
                             <Label color="cyan" variant={"outline"}>
                               &nbsp;{`New DMN Editor`}&nbsp;&nbsp;

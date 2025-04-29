@@ -22,7 +22,7 @@ import { useCallback, useState } from "react";
 import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { useSettings, useSettingsDispatch } from "./SettingsContext";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
@@ -49,75 +49,68 @@ export function ExtendedServicesSettingsTab() {
 
   return (
     <>
-      <Page>
-        <PageSection>
-          <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
-            <Form onSubmit={onSubmit}>
-              <FormAlert>
-                {extendedServices.status === ExtendedServicesStatus.RUNNING && (
-                  <Alert
-                    variant="success"
-                    title={"You are connected to Extended Services"}
-                    aria-live="polite"
-                    isInline
+      <PageSection>
+        <PageSection variant={"light"} isFilled={true}>
+          <Form onSubmit={onSubmit}>
+            <FormAlert>
+              {extendedServices.status === ExtendedServicesStatus.RUNNING && (
+                <Alert variant="success" title={"You are connected to Extended Services"} aria-live="polite" isInline />
+              )}
+              {extendedServices.status !== ExtendedServicesStatus.RUNNING && (
+                <Alert
+                  variant="danger"
+                  title={"You are not connected to Extended Services"}
+                  aria-live="polite"
+                  isInline
+                />
+              )}
+            </FormAlert>
+            <FormGroup isRequired={true} label={"Host"} fieldId={"host-input"}>
+              <InputGroup>
+                <InputGroupItem isFill>
+                  <TextInput
+                    id="host-input"
+                    name="host"
+                    aria-describedby="host-text-input-helper"
+                    placeholder={""}
+                    validated={"default"}
+                    value={host}
+                    onChange={(_event, val) => setHost(val)}
+                    autoFocus={true}
                   />
-                )}
-                {extendedServices.status !== ExtendedServicesStatus.RUNNING && (
-                  <Alert
-                    variant="danger"
-                    title={"You are not connected to Extended Services"}
-                    aria-live="polite"
-                    isInline
+                </InputGroupItem>
+              </InputGroup>
+            </FormGroup>
+            <FormGroup isRequired={false} label={"Port"} fieldId={"port-input"}>
+              <InputGroup>
+                <InputGroupItem isFill>
+                  <TextInput
+                    id="port-input"
+                    name="port"
+                    aria-describedby="port-text-input-helper"
+                    placeholder={""}
+                    validated={"default"}
+                    value={port}
+                    onChange={(_event, val) => setPort(val)}
+                    autoFocus={true}
                   />
-                )}
-              </FormAlert>
-              <FormGroup isRequired={true} label={"Host"} fieldId={"host-input"}>
-                <InputGroup>
-                  <InputGroupItem isFill>
-                    <TextInput
-                      id="host-input"
-                      name="host"
-                      aria-describedby="host-text-input-helper"
-                      placeholder={""}
-                      validated={"default"}
-                      value={host}
-                      onChange={(_event, val) => setHost(val)}
-                      autoFocus={true}
-                    />
-                  </InputGroupItem>
-                </InputGroup>
-              </FormGroup>
-              <FormGroup isRequired={false} label={"Port"} fieldId={"port-input"}>
-                <InputGroup>
-                  <InputGroupItem isFill>
-                    <TextInput
-                      id="port-input"
-                      name="port"
-                      aria-describedby="port-text-input-helper"
-                      placeholder={""}
-                      validated={"default"}
-                      value={port}
-                      onChange={(_event, val) => setPort(val)}
-                      autoFocus={true}
-                    />
-                  </InputGroupItem>
-                </InputGroup>
-              </FormGroup>
-              <ActionGroup>
-                <Button
-                  id="extended-services-config-save-button"
-                  key="save"
-                  variant="primary"
-                  onClick={onSubmit}
-                  data-testid="save-config-button"
-                >
-                  Change
-                </Button>
-              </ActionGroup>
-            </Form>
-          </PageSection>
+                </InputGroupItem>
+              </InputGroup>
+            </FormGroup>
+            <ActionGroup>
+              <Button
+                id="extended-services-config-save-button"
+                key="save"
+                variant="primary"
+                onClick={onSubmit}
+                data-testid="save-config-button"
+              >
+                Change
+              </Button>
+            </ActionGroup>
+          </Form>
         </PageSection>
-      </Page>
+      </PageSection>
     </>
   );
 }
