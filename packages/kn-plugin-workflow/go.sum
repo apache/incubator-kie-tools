@@ -249,8 +249,8 @@ github.com/santhosh-tekuri/jsonschema/v5 v5.3.1/go.mod h1:uToXkOrWAZ6/Oc07xWQrPO
 github.com/sergi/go-diff v1.1.0/go.mod h1:STckp+ISIX8hZLjrqAeVduY0gWCT9IjLuqbuNXdaHfM=
 github.com/sergi/go-diff v1.2.0 h1:XU+rvMAioB0UC3q1MFrIQy4Vo5/4VsRDQQXHsEya6xQ=
 github.com/sergi/go-diff v1.2.0/go.mod h1:STckp+ISIX8hZLjrqAeVduY0gWCT9IjLuqbuNXdaHfM=
-github.com/serverlessworkflow/sdk-go/v2 v2.4.2 h1:dqRa/i5J885rk0bGIXzUVLwEFfRWB9gpQfOdXlbejsI=
-github.com/serverlessworkflow/sdk-go/v2 v2.4.2/go.mod h1:WGJR0YhXp035Y/toMKwHeIT5/EDEkDEDozn6VIGSUqI=
+github.com/serverlessworkflow/sdk-go/v2 v2.5.0 h1:bvD461rbaj0PcRjRwsBt7tqHie2M10otryB+BjzHg5Q=
+github.com/serverlessworkflow/sdk-go/v2 v2.5.0/go.mod h1:kuvTQCTAb9vzDaeJ1JPY+sBGiHr9OX1g/Rxuk82c8mI=
 github.com/sirupsen/logrus v1.9.3 h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ=
 github.com/sirupsen/logrus v1.9.3/go.mod h1:naHLuLoDiP4jHNo9R0sCBMtWGeIprob74mVsIT4qYEQ=
 github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d/go.mod h1:OnSkiWE9lh6wB0YB77sQom3nweQdgAjqCqsofrRNTgc=
