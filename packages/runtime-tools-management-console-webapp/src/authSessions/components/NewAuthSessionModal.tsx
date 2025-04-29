@@ -24,7 +24,7 @@ import { useAuthSessions, useAuthSessionsDispatch } from "../AuthSessionsContext
 import { AuthSessionsService } from "../AuthSessionsService";
 import { useEnv } from "../../env/hooks/EnvContext";
 import { useRoutes } from "../../navigation/Hooks";
-import { AUTH_SESSION_OIDC_DEFAULT_SCOPES, AuthSession } from "../AuthSessionApi";
+import { AuthSession } from "../AuthSessionApi";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Form, FormGroup, ActionGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
@@ -42,7 +42,7 @@ export const NewAuthSessionModal: React.FC<Props> = ({ onAddAuthSession }) => {
   const { env } = useEnv();
 
   const [audience, setAudience] = useState<string>();
-  const [scope, setScope] = useState<string>(AUTH_SESSION_OIDC_DEFAULT_SCOPES);
+  const [scope, setScope] = useState<string>(env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_DEFAULT_SCOPES);
   const [clientId, setClientId] = useState<string>(env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID);
 
   const { isNewAuthSessionModalOpen } = useAuthSessions();
@@ -56,9 +56,13 @@ export const NewAuthSessionModal: React.FC<Props> = ({ onAddAuthSession }) => {
     setRuntimeUrl("");
     setAlias("");
     setClientId(env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID);
-    setScope(AUTH_SESSION_OIDC_DEFAULT_SCOPES);
+    setScope(env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_DEFAULT_SCOPES);
     setAudience("");
-  }, [env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID, setIsNewAuthSessionModalOpen]);
+  }, [
+    env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID,
+    env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_DEFAULT_SCOPES,
+    setIsNewAuthSessionModalOpen,
+  ]);
 
   const onConnect = useCallback<React.FormEventHandler>(
     (e) => {

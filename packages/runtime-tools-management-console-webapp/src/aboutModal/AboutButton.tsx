@@ -94,6 +94,12 @@ export const AboutButton: React.FunctionComponent = () => {
               </DescriptionListDescription>
             </DescriptionListGroup>
             <DescriptionListGroup>
+              <DescriptionListTerm>OIDC Client (default scopes): </DescriptionListTerm>
+              <DescriptionListDescription>
+                {env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_DEFAULT_SCOPES}
+              </DescriptionListDescription>
+            </DescriptionListGroup>
+            <DescriptionListGroup>
               <DescriptionListTerm>Commit SHA: </DescriptionListTerm>
               <DescriptionListDescription>{commitSha}</DescriptionListDescription>
             </DescriptionListGroup>
