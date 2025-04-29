@@ -52,6 +52,8 @@ EXPOSE 8080
 
 USER $USER_ID
 
+HEALTHCHECK --interval=1m --timeout=5s CMD curl -f http://localhost:${DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT}/upload-status || exit 1
+
 ENTRYPOINT ["/bin/bash", "-c"]
 
 CMD ["dev-deployment-upload-service && pwd && ls -la"]
