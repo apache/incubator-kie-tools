@@ -18,20 +18,13 @@
  */
 import React from "react";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { useJobsManagementChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/JobsManagement";
 import { EmbeddedJobsManagement } from "@kie-tools/runtime-tools-process-enveloped-components/dist/jobsManagement";
 
-const JobsManagementContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
+const JobsManagementContainer: React.FC = () => {
   const channelApi = useJobsManagementChannelApi();
   const appContext = useDevUIAppContext();
-  return (
-    <EmbeddedJobsManagement
-      channelApi={channelApi}
-      targetOrigin={appContext.getDevUIUrl()}
-      {...componentOuiaProps(ouiaId, "jobs-management-container", ouiaSafe)}
-    />
-  );
+  return <EmbeddedJobsManagement channelApi={channelApi} targetOrigin={appContext.getDevUIUrl()} />;
 };
 
 export default JobsManagementContainer;

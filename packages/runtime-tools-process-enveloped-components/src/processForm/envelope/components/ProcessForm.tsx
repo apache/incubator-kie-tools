@@ -178,14 +178,16 @@ const ProcessForm: React.FC<ProcessFormProps> = ({
     return (
       <Flex direction={{ default: "column" }}>
         <FlexItem>{processDiagramBlock}</FlexItem>
-        <CustomProcessFormDisplayer
-          processDefinition={processDefinition}
-          schema={processFormSchema}
-          customForm={processCustomForm}
-          channelApi={channelApi}
-          targetOrigin={targetOrigin}
-          envelopePath={customFormDisplayerEnvelopePath}
-        />
+        <FlexItem grow={{ default: "grow" }}>
+          <CustomProcessFormDisplayer
+            processDefinition={processDefinition}
+            schema={processFormSchema}
+            customForm={processCustomForm}
+            channelApi={channelApi}
+            targetOrigin={targetOrigin}
+            envelopePath={customFormDisplayerEnvelopePath}
+          />
+        </FlexItem>
       </Flex>
     );
   }

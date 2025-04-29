@@ -19,7 +19,7 @@
 
 import React from "react";
 import InnerHTML from "dangerously-set-html-content";
-import { FormResources } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { FormResources } from "@kie-tools/runtime-tools-shared-gateway-api/src/types";
 import ResourcesContainer from "../ResourcesContainer/ResourcesContainer";
 
 interface HtmlFormRendererProps {

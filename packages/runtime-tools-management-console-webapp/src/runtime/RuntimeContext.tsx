@@ -379,8 +379,9 @@ export const RuntimeContextProvider: React.FC<RuntimeContextProviderProps> = (pr
         // Replacing only the origin keeps the URLSeachParameters intact
         return url.replace(urlOrigin, runtimeUrlOrigin);
       },
+      token: accessToken,
     }),
-    [runtimeUrl]
+    [runtimeUrl, accessToken]
   );
 
   return (

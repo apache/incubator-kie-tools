@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import _ from "lodash";
 import {
   EmptyState,
@@ -28,29 +28,22 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { convertActionsToButton } from "@kie-tools/runtime-tools-components/dist/utils";
 
-interface IOwnProps {
+interface Props {
   userTask: UserTaskInstance;
   formSchema: Record<string, any>;
   enabled: boolean;
   submit: (phase: string) => void;
 }
 
-const EmptyTaskForm: React.FC<IOwnProps & OUIAProps> = ({
-  userTask,
-  formSchema,
-  enabled,
-  submit,
-  ouiaId,
-  ouiaSafe,
-}) => {
-  const canTransition = (): boolean => {
-    return !userTask.completed && !_.isEmpty(formSchema.phases);
-  };
+const EmptyTaskForm: React.FC<Props> = ({ userTask, formSchema, enabled, submit }) => {
+  const canTransition = useMemo(
+    (): boolean => !userTask.completed && !_.isEmpty(formSchema.phases),
+    [formSchema.phases, userTask.completed]
+  );
 
-  const buildFormActions = () => {
+  const buildFormActions = useCallback(() => {
     return formSchema.phases.map((phase) => {
       return {
         name: phase,
@@ -59,14 +52,10 @@ const EmptyTaskForm: React.FC<IOwnProps & OUIAProps> = ({
         },
       };
     });
-  };
-
-  const actions = canTransition() ? (
-    <EmptyStateSecondaryActions>{convertActionsToButton(buildFormActions(), enabled)}</EmptyStateSecondaryActions>
-  ) : null;
+  }, [formSchema.phases, submit]);
 
   return (
-    <Bullseye {...componentOuiaProps(ouiaId, "empty-task-form", ouiaSafe)}>
+    <Bullseye>
       <EmptyState variant={"large"}>
         <EmptyStateIcon icon={InfoCircleIcon} color="var(--pf-global--info-color--100)" />
         <Title headingLevel="h4" size="lg">
@@ -81,14 +70,16 @@ const EmptyTaskForm: React.FC<IOwnProps & OUIAProps> = ({
             &nbsp;doesn&apos;t have a form to show. This usually means that it doesn&apos;t require data to be filled by
             the user.
           </p>
-          {canTransition() && (
+          {canTransition && (
             <>
               <br />
               <p>You can still use the actions bellow to move the task to the next phase.</p>
             </>
           )}
         </EmptyStateBody>
-        {actions}
+        {canTransition && (
+          <EmptyStateSecondaryActions>{convertActionsToButton(buildFormActions(), enabled)}</EmptyStateSecondaryActions>
+        )}
       </EmptyState>
     </Bullseye>
   );

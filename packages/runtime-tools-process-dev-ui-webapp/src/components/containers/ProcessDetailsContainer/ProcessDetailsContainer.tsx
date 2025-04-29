@@ -20,7 +20,6 @@ import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { useProcessDetailsChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
 import { EmbeddedProcessDetails } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
 
@@ -28,11 +27,7 @@ interface ProcessDetailsContainerProps {
   processInstance: ProcessInstance;
 }
 
-const ProcessDetailsContainer: React.FC<ProcessDetailsContainerProps & OUIAProps> = ({
-  processInstance,
-  ouiaId,
-  ouiaSafe,
-}) => {
+const ProcessDetailsContainer: React.FC<ProcessDetailsContainerProps> = ({ processInstance }) => {
   const history = useHistory();
   const appContext = useDevUIAppContext();
   const channelApi = useProcessDetailsChannelApi();
@@ -52,7 +47,6 @@ const ProcessDetailsContainer: React.FC<ProcessDetailsContainerProps & OUIAProps
 
   return (
     <EmbeddedProcessDetails
-      {...componentOuiaProps(ouiaId, "process-details-container", ouiaSafe)}
       channelApi={channelApi}
       targetOrigin={appContext.getDevUIUrl()}
       processInstance={processInstance}

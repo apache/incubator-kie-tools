@@ -22,7 +22,7 @@ import { ApolloProvider } from "react-apollo";
 import { ApolloClient } from "apollo-client";
 import { MemoryRouter } from "react-router";
 import DevUINav from "../DevUINav/DevUINav";
-import FormsListContextProvider from "../../../channel/FormsList/FormsListContextProvider";
+import { FormsListContextProvider } from "../../../channel/FormsList/FormsListContextProvider";
 import FormDetailsContextProvider from "../../../channel/FormDetails/FormDetailsContextProvider";
 import DevUIAppContextProvider from "../../contexts/DevUIAppContextProvider";
 import ProcessContextProvider from "../../contexts/ProcessContextProvider";

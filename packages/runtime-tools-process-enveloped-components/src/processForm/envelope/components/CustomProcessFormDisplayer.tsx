@@ -17,24 +17,21 @@
  * under the License.
  */
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { ProcessFormChannelApi } from "../../api";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { FormAction } from "@kie-tools/runtime-tools-components/dist/utils";
+import { FormFooter } from "@kie-tools/runtime-tools-components/dist/components/FormFooter";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { Card, CardBody, CardFooter } from "@patternfly/react-core/dist/js/components/Card";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import {
   EmbeddedFormDisplayer,
   FormDisplayerApi,
   FormOpened,
   FormOpenedState,
-  FormSubmitResponse,
   FormSubmitResponseType,
-} from "@kie-tools/runtime-tools-shared-enveloped-components/dist/formDisplayer";
-import { FormAction } from "@kie-tools/runtime-tools-components/dist/utils";
-import { FormFooter } from "@kie-tools/runtime-tools-components/dist/components/FormFooter";
-import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { Card, CardBody, CardFooter } from "@patternfly/react-core/dist/js/components/Card";
-import { FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+} from "../../../formDisplayer";
 
 export interface CustomProcessFormDisplayerProps {
   schema: Record<string, any>;
@@ -45,12 +42,10 @@ export interface CustomProcessFormDisplayerProps {
   envelopePath?: string;
 }
 
-const CustomProcessFormDisplayer: React.FC<CustomProcessFormDisplayerProps & OUIAProps> = ({
+const CustomProcessFormDisplayer: React.FC<CustomProcessFormDisplayerProps> = ({
   customForm,
   channelApi,
   targetOrigin,
-  ouiaId,
-  ouiaSafe,
   processDefinition,
   envelopePath = "resources/forms-displayer.html",
 }) => {
@@ -89,26 +84,24 @@ const CustomProcessFormDisplayer: React.FC<CustomProcessFormDisplayerProps & OUI
   }, [channelApi.requests, processDefinition]);
 
   return (
-    <FlexItem {...componentOuiaProps(ouiaId, "custom-form-displayer", ouiaSafe)} grow={{ default: "grow" }}>
-      <Card>
-        <CardBody id={`${formUUID}-form`} style={{ visibility: "visible" }}>
-          <EmbeddedFormDisplayer
-            targetOrigin={targetOrigin}
-            envelopePath={envelopePath}
-            formContent={customForm}
-            data={formData}
-            context={{}}
-            onOpenForm={(opened) => setFormOpened(opened)}
-            ref={formDisplayerApiRef}
-          />
-        </CardBody>
-        {formOpened && formOpened.state === FormOpenedState.OPENED && (
-          <CardFooter>
-            <FormFooter actions={formActions} />
-          </CardFooter>
-        )}
-      </Card>
-    </FlexItem>
+    <Card>
+      <CardBody id={`${formUUID}-form`} style={{ visibility: "visible" }}>
+        <EmbeddedFormDisplayer
+          targetOrigin={targetOrigin}
+          envelopePath={envelopePath}
+          formContent={customForm}
+          data={formData}
+          context={{}}
+          onOpenForm={(opened) => setFormOpened(opened)}
+          ref={formDisplayerApiRef}
+        />
+      </CardBody>
+      {formOpened && formOpened.state === FormOpenedState.OPENED && (
+        <CardFooter>
+          <FormFooter actions={formActions} />
+        </CardFooter>
+      )}
+    </Card>
   );
 };
 

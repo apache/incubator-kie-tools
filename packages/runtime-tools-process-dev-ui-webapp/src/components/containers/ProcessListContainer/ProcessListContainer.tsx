@@ -19,7 +19,6 @@
 import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import {
   EmbeddedProcessList,
   ProcessListState,
@@ -31,7 +30,7 @@ interface ProcessListContainerProps {
   initialState: ProcessListState;
 }
 
-const ProcessListContainer: React.FC<ProcessListContainerProps & OUIAProps> = ({ initialState, ouiaId, ouiaSafe }) => {
+const ProcessListContainer: React.FC<ProcessListContainerProps> = ({ initialState }) => {
   const history = useHistory();
   const channelApi = useProcessListChannelApi();
   const appContext = useDevUIAppContext();
@@ -41,18 +40,16 @@ const ProcessListContainer: React.FC<ProcessListContainerProps & OUIAProps> = ({
       onOpen(process: ProcessInstance) {
         history.push({
           pathname: `/Process/${process.id}`,
-          // state: channelApi.processList__processListState,
         });
       },
     });
     return () => {
       onOpenInstanceUnsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
     };
-  }, []);
+  }, [channelApi, history]);
 
   return (
     <EmbeddedProcessList
-      {...componentOuiaProps(ouiaId, "process-list-container", ouiaSafe)}
       channelApi={channelApi}
       targetOrigin={appContext.getDevUIUrl()}
       initialState={initialState}

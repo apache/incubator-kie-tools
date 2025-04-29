@@ -8888,9 +8888,6 @@ importers:
       '@kie-tools/runtime-tools-process-webapp-components':
         specifier: workspace:*
         version: link:../runtime-tools-process-webapp-components
-      '@kie-tools/runtime-tools-shared-enveloped-components':
-        specifier: workspace:*
-        version: link:../runtime-tools-shared-enveloped-components
       '@kie-tools/runtime-tools-shared-gateway-api':
         specifier: workspace:*
         version: link:../runtime-tools-shared-gateway-api
@@ -9177,9 +9174,6 @@ importers:
       '@kie-tools/runtime-tools-process-gateway-api':
         specifier: workspace:*
         version: link:../runtime-tools-process-gateway-api
-      '@kie-tools/runtime-tools-shared-enveloped-components':
-        specifier: workspace:*
-        version: link:../runtime-tools-shared-enveloped-components
       '@kie-tools/runtime-tools-shared-gateway-api':
         specifier: workspace:*
         version: link:../runtime-tools-shared-gateway-api

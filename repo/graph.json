@@ -208,8 +208,8 @@
       { "id": "@kie-tools/runtime-tools-shared-gateway-api" },
       { "id": "@kie-tools/runtime-tools-consoles-helm-chart" },
       { "id": "@kie-tools/runtime-tools-process-enveloped-components" },
-      { "id": "@kie-tools/runtime-tools-process-gateway-api" },
       { "id": "@kie-tools/runtime-tools-shared-enveloped-components" },
+      { "id": "@kie-tools/runtime-tools-process-gateway-api" },
       { "id": "@kie-tools/runtime-tools-swf-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-swf-gateway-api" },
       { "id": "@kie-tools/runtime-tools-swf-webapp-components" },
@@ -1829,6 +1829,11 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/runtime-tools-process-webapp-components",
+        "target": "@kie-tools/runtime-tools-shared-enveloped-components",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/runtime-tools-shared-webapp-components",
         "target": "@kie-tools/runtime-tools-components",
         "weight": 1
@@ -2265,7 +2270,22 @@
       },
       {
         "source": "@kie-tools/runtime-tools-process-enveloped-components",
+        "target": "@kie-tools-core/monaco-editor",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-enveloped-components",
         "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-enveloped-components",
+        "target": "@kie-tools/i18n-common-dictionary",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-enveloped-components",
+        "target": "@kie-tools/runtime-tools-components",
         "weight": 1
       },
       {
@@ -2275,12 +2295,7 @@
       },
       {
         "source": "@kie-tools/runtime-tools-process-enveloped-components",
-        "target": "@kie-tools/runtime-tools-shared-enveloped-components",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/runtime-tools-process-gateway-api",
-        "target": "@kie-tools/runtime-tools-shared-gateway-api",
+        "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
       {
@@ -2301,6 +2316,11 @@
       {
         "source": "@kie-tools/runtime-tools-shared-enveloped-components",
         "target": "@kie-tools-core/webpack-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/runtime-tools-process-gateway-api",
+        "target": "@kie-tools/runtime-tools-shared-gateway-api",
         "weight": 1
       },
       {

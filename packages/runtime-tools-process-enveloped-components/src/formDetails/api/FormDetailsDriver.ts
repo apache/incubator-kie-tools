@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,21 +18,11 @@
  */
 
 import { Form, FormContent } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
-import { getFormContent, saveFormContent } from "@kie-tools/runtime-tools-process-gateway-api/dist/gatewayApi";
 
-export interface FormDetailsGatewayApi {
-  getFormContent: (formName: string) => Promise<Form>;
-  saveFormContent: (formName: string, content: FormContent) => Promise<void>;
-}
-
-export class FormDetailsGatewayApiImpl implements FormDetailsGatewayApi {
-  constructor(private baseUrl: string) {}
-
-  getFormContent(formName: string): Promise<Form> {
-    return getFormContent(this.baseUrl, formName);
-  }
-
-  saveFormContent(formName: string, content: FormContent): Promise<void> {
-    return saveFormContent(this.baseUrl, formName, content);
-  }
+/**
+ * Interface that defines a Driver for FormDetails views.
+ */
+export interface FormDetailsDriver {
+  getFormContent(formName: string): Promise<Form>;
+  saveFormContent(formName: string, content: FormContent): void;
 }

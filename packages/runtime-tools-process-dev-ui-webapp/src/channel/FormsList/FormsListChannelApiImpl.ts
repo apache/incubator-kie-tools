@@ -18,52 +18,39 @@
  */
 
 import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
-import { FormFilter } from "@kie-tools/runtime-tools-shared-enveloped-components/dist/formsList";
+import {
+  FormFilter,
+  FormsListChannelApi,
+  OnOpenFormListener,
+  UnSubscribeHandler,
+} from "@kie-tools/runtime-tools-process-enveloped-components/dist/formsList";
 import { getForms } from "@kie-tools/runtime-tools-process-gateway-api/dist/gatewayApi";
 
-export interface FormsListGatewayApi {
-  getFormFilter(): Promise<FormFilter>;
-  applyFilter(formList: FormFilter): Promise<void>;
-  getFormsQuery(): Promise<FormInfo[]>;
-  openForm: (formData: FormInfo) => Promise<void>;
-  onOpenFormListen: (listener: OnOpenFormListener) => UnSubscribeHandler;
-}
-
-export interface OnOpenFormListener {
-  onOpen: (formData: FormInfo) => void;
-}
-
-export interface UnSubscribeHandler {
-  unSubscribe: () => void;
-}
-
-export class FormsListGatewayApiImpl implements FormsListGatewayApi {
-  constructor(private baseUrl: string) {}
-
-  private _FormFilter: FormFilter = {
+export class FormsListChannelApiImpl implements FormsListChannelApi {
+  private _formFilter: FormFilter = {
     formNames: [],
   };
   private readonly listeners: OnOpenFormListener[] = [];
 
-  getFormFilter = (): Promise<FormFilter> => {
-    return Promise.resolve(this._FormFilter);
-  };
+  constructor(private baseUrl: string) {}
 
-  applyFilter = (formFilter: FormFilter): Promise<void> => {
-    this._FormFilter = formFilter;
-    return Promise.resolve();
-  };
-
-  getFormsQuery(): Promise<FormInfo[]> {
-    return getForms(this.baseUrl, this._FormFilter.formNames);
+  formsList__getFormFilter(): Promise<FormFilter> {
+    return Promise.resolve(this._formFilter);
   }
 
-  openForm = (formData: FormInfo): Promise<void> => {
-    this.listeners.forEach((listener) => listener.onOpen(formData));
-    return Promise.resolve();
-  };
+  formsList__applyFilter(formFilter: FormFilter): void {
+    this._formFilter = formFilter;
+  }
 
-  onOpenFormListen(listener: OnOpenFormListener): UnSubscribeHandler {
+  formsList__getFormsQuery(): Promise<FormInfo[]> {
+    return getForms(this.baseUrl, this._formFilter.formNames);
+  }
+
+  formsList__openForm(formData: FormInfo): void {
+    this.listeners.forEach((listener) => listener.onOpen(formData));
+  }
+
+  formsList__onOpenFormListen(listener: OnOpenFormListener): Promise<UnSubscribeHandler> {
     this.listeners.push(listener);
 
     const unSubscribe = () => {
@@ -73,8 +60,8 @@ export class FormsListGatewayApiImpl implements FormsListGatewayApi {
       }
     };
 
-    return {
+    return Promise.resolve({
       unSubscribe,
-    };
+    });
   }
 }

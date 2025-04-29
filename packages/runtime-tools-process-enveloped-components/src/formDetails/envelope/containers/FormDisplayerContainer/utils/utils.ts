@@ -1,4 +1,4 @@
-/**
+/*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
  * distributed with this work for additional information
@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   http://www.apache.org/licenses/LICENSE-2.0
+ *  http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -18,13 +18,30 @@
  */
 
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { v4 as uuidv4 } from "uuid";
 
-/**
- * Interface that defines a Driver for TaskForm views.
- */
-export interface TaskFormDriver {
-  getTaskFormSchema(): Promise<Record<string, any>>;
-  getCustomForm(): Promise<Form>;
-  doSubmit(phase?: string, payload?: any): Promise<any>;
-  getTaskPhases(): Promise<string[]>;
+export function buildTestContext(form: Form) {
+  return {
+    user: {
+      id: "test",
+      groups: ["group1", "group2"],
+    },
+    schema: JSON.parse(form.configuration.schema),
+    task: {
+      id: uuidv4(),
+      description: "task description",
+      name: "TaskName",
+      referenceName: "Task Name",
+      priority: "1",
+      processInstanceId: uuidv4(),
+      processId: "process",
+      rootProcessInstanceId: null,
+      rootProcessId: null,
+      state: "Ready",
+      completed: null,
+      started: Date.now(),
+      lastUpdate: Date.now(),
+    },
+    phases: ["abort", "claim", "complete", "skip"],
+  };
 }

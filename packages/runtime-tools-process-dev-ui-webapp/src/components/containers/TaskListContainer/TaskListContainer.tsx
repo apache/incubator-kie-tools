@@ -19,17 +19,12 @@
 import React, { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { useTaskListChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskList";
-import {
-  EmbeddedTaskList,
-  TaskListApi,
-  TaskListChannelApi,
-} from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskList";
+import { EmbeddedTaskList, TaskListApi } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskList";
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { getActiveTaskStates, getAllTaskStates } from "@kie-tools/runtime-tools-process-webapp-components/dist/utils";
 
-const TaskListContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
+const TaskListContainer: React.FC = () => {
   const history = useHistory();
   const channelApi = useTaskListChannelApi();
   const taskListApiRef = React.useRef<TaskListApi>();
@@ -55,7 +50,6 @@ const TaskListContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
 
   return (
     <EmbeddedTaskList
-      {...componentOuiaProps(ouiaId, "tasks-container", ouiaSafe)}
       channelApi={channelApi}
       allTaskStates={getAllTaskStates()}
       activeTaskStates={getActiveTaskStates()}

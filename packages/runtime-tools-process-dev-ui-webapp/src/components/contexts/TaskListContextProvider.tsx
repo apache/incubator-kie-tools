@@ -23,12 +23,12 @@ import {
   TaskListChannelApiImpl,
 } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskList";
 
-interface IOwnProps {
+interface Props {
   apolloClient: ApolloClient<any>;
   children;
 }
 
-export const TaskListContextProvider: React.FC<IOwnProps> = ({ apolloClient, children }) => {
+export const TaskListContextProvider: React.FC<Props> = ({ apolloClient, children }) => {
   return (
     <TaskListContext.Provider value={new TaskListChannelApiImpl(apolloClient)}>{children}</TaskListContext.Provider>
   );

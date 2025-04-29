@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback } from "react";
 import {
   FormDisplayerApi,
   FormDisplayerChannelApi,
@@ -55,15 +55,11 @@ export const EmbeddedFormDisplayer = React.forwardRef((props: Props, forwardedRe
     []
   );
 
-  const formDisplayerIframe = useRef<HTMLIFrameElement>();
-
   const pollInit = useCallback(
     (
       // eslint-disable-next-line
-      envelopeServer: EnvelopeServer<FormDisplayerChannelApi, FormDisplayerEnvelopeApi>,
-      container: () => HTMLIFrameElement
+      envelopeServer: EnvelopeServer<FormDisplayerChannelApi, FormDisplayerEnvelopeApi>
     ) => {
-      formDisplayerIframe.current = container();
       return envelopeServer.envelopeApi.requests.formDisplayer__init(
         {
           origin: envelopeServer.origin,
@@ -78,33 +74,6 @@ export const EmbeddedFormDisplayer = React.forwardRef((props: Props, forwardedRe
     },
     [props.context, props.data, props.formContent]
   );
-
-  useEffect(() => {
-    const targetNode = formDisplayerIframe.current?.contentWindow?.document.body;
-
-    if (targetNode) {
-      // First update
-      formDisplayerIframe.current!.style.height =
-        formDisplayerIframe.current?.contentWindow?.document.body?.scrollHeight + "px";
-
-      const config = { attributes: false, childList: true, subtree: true };
-      const callback: MutationCallback = (mutationList, observer) => {
-        for (const mutation of mutationList) {
-          if (mutation.type === "childList") {
-            formDisplayerIframe.current!.style.height =
-              formDisplayerIframe.current?.contentWindow?.document.body?.scrollHeight + "px";
-          }
-        }
-      };
-
-      const observer = new MutationObserver(callback);
-      observer.observe(targetNode, config);
-
-      return () => {
-        observer.disconnect();
-      };
-    }
-  }, [formDisplayerIframe.current?.contentWindow?.document.body?.scrollHeight]);
 
   return (
     <EmbeddedFormDisplayerEnvelope
