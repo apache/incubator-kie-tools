@@ -31,7 +31,6 @@
     "@kie-tools/runtime-tools-process-enveloped-components": "workspace:*",
     "@kie-tools/runtime-tools-process-gateway-api": "workspace:*",
     "@kie-tools/runtime-tools-process-webapp-components": "workspace:*",
-    "@kie-tools/runtime-tools-shared-enveloped-components": "workspace:*",
     "@kie-tools/runtime-tools-shared-gateway-api": "workspace:*",
     "@kie-tools/runtime-tools-shared-webapp-components": "workspace:*",
     "@patternfly/patternfly": "^4.224.2",
