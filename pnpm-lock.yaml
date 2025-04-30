@@ -57763,7 +57763,7 @@ snapshots:
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
-      '@types/node': 22.10.7
+      '@types/node': 22.13.10
       acorn: 8.12.1
       acorn-walk: 8.2.0
       arg: 4.1.0
