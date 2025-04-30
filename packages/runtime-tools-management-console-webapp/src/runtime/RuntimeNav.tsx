@@ -44,8 +44,6 @@ export const RuntimeNav: React.FC = () => {
         >
           <Link to={runtimeRoutes.jobs()}>Jobs</Link>
         </NavItem>
-      </NavList>
-      <NavList>
         <NavItem
           key={"task-nav"}
           isActive={[runtimeRoutes.tasks().pathname, runtimeRoutes.taskDetails("").pathname].some((path) =>
