@@ -20,7 +20,7 @@
 import { Page, PageSection, PageSidebar, PageSidebarBody } from "@patternfly/react-core/dist/js/components/Page";
 import { PageHeader, PageHeaderTools } from "@patternfly/react-core/deprecated";
 import React, { useState, useMemo, useCallback, useEffect } from "react";
-import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
+
 import { useEnv } from "../env/hooks/EnvContext";
 import { useRoutes } from "../navigation/Hooks";
 import { useHistory } from "react-router";
