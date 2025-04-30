@@ -1,77 +1,46 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/serverlessworkflow/specification/refs/heads/0.8.x/schema/workflow.json
-id: lock-flow
+id: sendcloudeventonprovision
+version: 1.0.0
 specVersion: "0.8"
-key: lock-flow
-version: "1.0.0"
+name: Send CloudEvent on provision completion
+start: ProvisionOrdersState
 events:
-  - type: lock-event
-    kind: consumed
-    name: lock-event
-    source: local
-    correlation:
-      - contextAttributeName: lockid
-  - type: release-event
-    kind: consumed
-    name: release-event
-    source: local
-    correlation:
-      - contextAttributeName: lockid
-  - type: notify-event
+  - name: provisioningCompleteEvent
+    type: provisionCompleteType
     kind: produced
-    name: notify-event
-    correlation:
-      - contextAttributeName: lockid
-  - type: released-event
+  - name: MakeVetAppointment
+    source: VetServiceSource
+    type: events.vet.appointments
     kind: produced
-    name: released-event
-    correlation:
-      - contextAttributeName: lockid
+  - name: VetAppointmentInfo
+    source: VetServiceSource
+    type: events.vet.appointments
+    kind: consumed
 functions:
-  - name: sysLog
-    type: custom
-    operation: sysout:INFO
-start: listenToLock
+  - name: provisionOrderFunction
+    operation: http://myapis.org/provisioning.json#doProvision
+  - name: makeVetAppointmentFunction
+    operation: http://vetapi.org/appointments.json#makeAppointment
 states:
-  - name: listenToLock
-    type: event
-    onEvents:
-      - eventRefs:
-          - lock-event
-        actions:
-          - functionRef:
-              refName: sysLog
-              arguments:
-                message: ${ "Lock received " + .name }
-    transition: notifyLock
-  - name: notifyLock
+  - name: ProvisionOrdersState
+    type: foreach
+    inputCollection: ${ .orders }
+    iterationParam: singleorder
+    outputCollection: ${ .provisionedOrders }
+    actions:
+      - functionRef:
+          refName: provisionOrderFunction
+          arguments:
+            order: ${ .singleorder }
+          resultEventRef: provisioningCompleteEvent
+    end:
+      produceEvents:
+        - eventRef: provisioningCompleteEvent
+          data: ${ .provisionedOrders }
+        - eventRef: VetAppointmentInfo
+  - name: MakeVetAppointmentState
     type: operation
     actions:
       - eventRef:
-          data: ${ "Workflow " + $WORKFLOW.id + " has now the lock " + .name }
-          triggerEventRef: notify-event
-      - functionRef:
-          refName: sysLog
-          arguments:
-            message: ${ "Notified lock release " + .name }
-    transition: waitForRelease
-  - name: waitForRelease
-    type: callback
-    action:
-      functionRef:
-        refName: sysLog
-        arguments:
-          message: ${ "Waiting lock release " + .name }
-    eventRef: release-event
-    timeouts:
-      eventTimeout: PT3M
-    transition: releaseLock
-  - name: releaseLock
-    type: operation
-    actions:
-      - functionRef:
-          refName: sysLog
-          arguments:
-            message: ${ "Lock " +  .name +  " released" }
-    end:
-      produceEvents:
-        - eventRef: released-event
+          refName: MakeVetAppointment
+          triggerEventRef: VetAppointmentInfo
+    end: true

@@ -26,6 +26,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/command"
@@ -159,11 +160,18 @@ func TestDeployProjectSuccessWithImageDefined(t *testing.T) {
 }
 
 func TestDeployProjectSuccessWithoutResultEventRef(t *testing.T) {
-	dir, err := os.Getwd()
-	require.NoError(t, err)
+	_, file, _, ok := runtime.Caller(0)
+	if !ok {
+		t.Fatal("cannot determine current test file path")
+	}
+	baseDir := filepath.Dir(file)
+	dataPath := filepath.Join(baseDir, "testdata", "lock.sw.yaml")
+	data, err := os.ReadFile(dataPath)
+	if err != nil {
+		t.Fatalf("❌ ERROR: Failed to read file %q: %v", dataPath, err)
+	}
 
-	src := filepath.Join(dir, "testdata", "lock.sw.yaml")
-	data, err := os.ReadFile(src)
+	dir, err := os.Getwd()
 	require.NoError(t, err)
 
 	var originalCheckCrds = command.CheckCRDs
@@ -184,7 +192,7 @@ func TestDeployProjectSuccessWithoutResultEventRef(t *testing.T) {
 
 	tmpRoot := t.TempDir()
 	destDir := filepath.Join(tmpRoot, "workspace")
-	require.NoError(t, os.MkdirAll(destDir, 0o755))
+	require.NoError(t, os.MkdirAll(destDir, 0755))
 
 	dst := filepath.Join(destDir, "lock.sw.yaml")
 
