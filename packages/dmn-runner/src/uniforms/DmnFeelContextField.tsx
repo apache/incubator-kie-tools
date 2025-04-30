@@ -44,7 +44,7 @@ function DmnFeelContext({ onChange, ...props }: DmnFeelContextComponentProps) {
   }, [props.value]);
 
   const onTextInputChange = useCallback(
-    (value: string, event: React.FormEvent<HTMLInputElement>) => {
+    (event: React.FormEvent<HTMLInputElement>, value: string) => {
       try {
         const parsedObject = JSON.parse((event.target as any).value);
         onChange(parsedObject);
@@ -63,7 +63,7 @@ function DmnFeelContext({ onChange, ...props }: DmnFeelContextComponentProps) {
         name={props.name}
         isDisabled={props.disabled}
         validated={props.error ? "error" : "default"}
-        onChange={(_event, _val) => onTextInputChange}
+        onChange={onTextInputChange}
         placeholder={props.placeholder}
         ref={props.inputRef}
         type={props.type ?? "text"}

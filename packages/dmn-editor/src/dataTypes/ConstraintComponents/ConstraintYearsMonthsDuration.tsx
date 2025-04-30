@@ -55,7 +55,7 @@ export function ConstraintYearsMonthsDuration({
   );
 
   const onYearsChange = useCallback(
-    (newValue: string, e: React.FormEvent<HTMLInputElement>) => {
+    (e: React.FormEvent<HTMLInputElement>, newValue: string) => {
       onInternalChange({ years: newValue });
       setFocusOwner?.(e.currentTarget.id);
     },
@@ -63,7 +63,7 @@ export function ConstraintYearsMonthsDuration({
   );
 
   const onMonthsChange = useCallback(
-    (newValue: string, e: React.FormEvent<HTMLInputElement>) => {
+    (e: React.FormEvent<HTMLInputElement>, newValue: string) => {
       onInternalChange({ months: newValue });
       setFocusOwner?.(e.currentTarget.id);
     },
@@ -82,7 +82,7 @@ export function ConstraintYearsMonthsDuration({
             style={{ flex: "1 1 0px" }}
             className={`kie-dmn-editor--constraint-input ${isValid ? "" : "kie-dmn-editor--constraint-invalid"}`}
             value={years}
-            onChange={(_event, _val) => onYearsChange}
+            onChange={onYearsChange}
             autoFocus={true}
             isDisabled={isDisabled}
           />
@@ -96,7 +96,7 @@ export function ConstraintYearsMonthsDuration({
             style={{ flex: "1 1 0px" }}
             className={`kie-dmn-editor--constraint-input ${isValid ? "" : "kie-dmn-editor--constraint-invalid"}`}
             value={months}
-            onChange={(_event, _val) => onMonthsChange}
+            onChange={onMonthsChange}
             isDisabled={isDisabled}
           />
         </div>

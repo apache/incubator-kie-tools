@@ -79,7 +79,7 @@ function AuthSessionCard({
       key={authSession.id}
       isCompact={true}
       isExpanded={isExpanded}
-      isSelectable={authSession.status === AuthSessionStatus.VALID && !!onSelectAuthSession}
+      style={authSession.status === AuthSessionStatus.VALID && !!onSelectAuthSession ? { cursor: "pointer" } : {}}
       onClick={onSelect}
     >
       <CardHeader
@@ -112,15 +112,11 @@ function AuthSessionCard({
           return setExpanded((prev) => !prev);
         }}
       >
-        {
-          <>
-            <Flex alignItems={{ default: "alignItemsCenter" }} style={{ display: "inline-flex" }}>
-              <TextContent>
-                <Text component={TextVariants.h3}>{`${getAuthSessionDisplayInfo(authSession).userFriendlyName}`}</Text>
-              </TextContent>
-            </Flex>
-          </>
-        }
+        <Flex alignItems={{ default: "alignItemsCenter" }} style={{ display: "inline-flex" }}>
+          <TextContent>
+            <Text component={TextVariants.h3}>{`${getAuthSessionDisplayInfo(authSession).userFriendlyName}`}</Text>
+          </TextContent>
+        </Flex>
       </CardHeader>
       <CardExpandableContent>
         <CardBody>

@@ -28,6 +28,7 @@ import { ManagementConsoleToolbar } from "./ManagementConsoleToolbar";
 import { AboutButton } from "../aboutModal/AboutButton";
 import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/components/PageSectionHeader";
 import { BreadcrumbPathType } from "../runtime/RuntimePageLayoutContext";
+import { MastheadBrand } from "@patternfly/react-core/dist/js/components/Masthead";
 
 type Props = {
   children: React.ReactNode;
@@ -64,11 +65,14 @@ export const ManagementConsolePageLayout: React.FC<Props> = ({
       <PageHeader
         logo={
           <>
-            <Brand
-              src={routes.static.images.appLogoReverse.path({})}
-              alt={env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_APP_NAME}
+            <MastheadBrand
+              component="a"
               onClick={onClickBrand}
-            />
+              style={{ textDecoration: "none" }}
+              alt={env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_APP_NAME}
+            >
+              <img alt={"Logo"} src={routes.static.images.appLogoReverse.path({})} style={{ height: "38px" }} />
+            </MastheadBrand>
             <AboutButton />
           </>
         }

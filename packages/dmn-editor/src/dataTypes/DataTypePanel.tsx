@@ -329,7 +329,7 @@ export function DataTypePanel({
           isDisabled={isReadOnly}
           key={dataType.itemDefinition["@_id"]}
           value={dataType.itemDefinition.description?.__$$text}
-          onChange={(_event, _val) => changeDescription}
+          onChange={(_event, val) => changeDescription(val)}
           placeholder={"Enter a description..."}
           resizeOrientation={"vertical"}
           aria-label={"Data type description"}
@@ -340,7 +340,7 @@ export function DataTypePanel({
         <Switch
           label={"Is collection?"}
           isChecked={!!dataType.itemDefinition["@_isCollection"]}
-          onChange={(_event, _val) => toggleCollection}
+          onChange={(_event, val) => toggleCollection(val)}
           isDisabled={isReadOnly}
         />
         <br />
@@ -348,7 +348,7 @@ export function DataTypePanel({
         <Switch
           label={"Is struct?"}
           isChecked={isStruct(dataType.itemDefinition)}
-          onChange={(_event, _val) => toggleStruct}
+          onChange={(_event, val) => toggleStruct(val)}
           isDisabled={isReadOnly}
         ></Switch>
         <br />
