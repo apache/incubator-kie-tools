@@ -287,7 +287,8 @@ export class VsCodeKieEditorController implements EditorApi {
 
   public startListenToFileChanges() {
     this.fileWatcher?.dispose();
-    this.fileWatcher = vscode.workspace.createFileSystemWatcher("**/*.{dmn,bpmn,scesim}");
+    const fileTypes = this.getFileTypes();
+    this.fileWatcher = vscode.workspace.createFileSystemWatcher(`**/*.{${fileTypes}}`);
 
     this.fileWatcher.onDidChange(async (e) => {
       if (!(this.document.document as VsCodeKieEditorCustomDocument).isDirty) {
@@ -300,6 +301,10 @@ export class VsCodeKieEditorController implements EditorApi {
         }
       }
     });
+  }
+
+  private getFileTypes() {
+    return this.envelopeLocator.envelopeMappings.flatMap((m) => m.type).join();
   }
 
   public startListeningToDocumentChanges() {
