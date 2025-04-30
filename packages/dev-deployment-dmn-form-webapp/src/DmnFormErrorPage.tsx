@@ -50,7 +50,7 @@ export function DmnFormErrorPage() {
             <I18nWrapped
               components={{
                 jira: (
-                  <a href={ISSUES_URL} target={"_blank"} rel={"noopener noreferrer"}>
+                  <a href={ISSUES_URL} key="github-issues" target={"_blank"} rel={"noopener noreferrer"}>
                     {ISSUES_URL}
                   </a>
                 ),
