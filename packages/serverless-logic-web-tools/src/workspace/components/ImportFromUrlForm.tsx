@@ -97,7 +97,7 @@ export function ImportFromUrlForm(props: {
           isRequired={true}
           placeholder={"URL"}
           value={props.url}
-          onChange={(_event, val) => props.onChange}
+          onChange={(_event, val) => props.onChange(val)}
         />
         {validatedOption === "error" ? (
           <FormHelperText>

@@ -306,7 +306,7 @@ export function FileSwitcher(props: { workspace: ActiveWorkspace; workspaceFile:
                               }
                             }}
                             onKeyDown={handleWorkspaceFileNameKeyDown}
-                            onChange={(_event, value) => checkNewFileName}
+                            onChange={(_event, value) => checkNewFileName(value)}
                             readOnlyVariant={!isEditable(props.workspaceFile.name) ? "plain" : undefined}
                             ref={workspaceFileNameRef}
                             type={"text"}
