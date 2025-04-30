@@ -93,7 +93,7 @@ export class VsCodeKieEditorControllerFactory {
     editor.setupWebviewContent();
     editor.startListeningToThemeChanges();
     editor.startListeningToDocumentChanges();
-    editor.startListenToFileChanges();
+    editor.startListeningToExternalFileChanges();
   }
 
   public createResourceContentService(document: KogitoEditorDocument): ResourceContentService {
