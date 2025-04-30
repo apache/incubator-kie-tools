@@ -19,8 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useHistory } from "react-router";
-import { Location, LocationDescriptorObject } from "history";
+import { useBlocker, Location } from "react-router-dom";
 
 export type BlockerDelegate = (args: { location: Location }) => boolean;
 
@@ -39,15 +38,13 @@ export interface NavigationStatus {
 }
 
 export interface NavigationStatusHelpers {
-  shouldBlockNavigationTo: (location: LocationDescriptorObject) => boolean;
+  shouldBlockNavigationTo: (location: Partial<Location>) => boolean;
 }
 
 export const NavigationBlockerContext = React.createContext<NavigationBlockerContextType>({} as any);
 export const NavigationStatusContext = React.createContext<NavigationStatus & NavigationStatusHelpers>({} as any);
 
 export function NavigationContextProvider(props: { children: React.ReactNode }) {
-  const history = useHistory();
-
   const [status, setStatus] = useState<NavigationStatus>({
     blockers: new Map(),
     lastBlockedLocation: undefined,
@@ -97,31 +94,30 @@ export function NavigationContextProvider(props: { children: React.ReactNode }) 
     [status.blockers]
   );
 
-  useEffect(() => {
-    const cleanup = history.block((location, action) => {
-      // history.replace is usually necessary for plumbing, so no reason to block.
-      if (action === "REPLACE") {
-        return;
-      }
-
-      blockerCtx.unblock();
-
-      if (status.bypassBlockers) {
-        return;
-      }
-
-      if (!shouldBlockNavigationTo(location)) {
-        return;
-      }
-
-      blockerCtx.block(location);
+  const blocker = useBlocker(({ nextLocation, historyAction }) => {
+    if (historyAction === "REPLACE") {
       return false;
-    });
+    }
 
-    return () => {
-      cleanup();
-    };
-  }, [blockerCtx, history, shouldBlockNavigationTo, status.bypassBlockers]);
+    blockerCtx.unblock();
+
+    if (status.bypassBlockers) {
+      return false;
+    }
+
+    if (!shouldBlockNavigationTo(nextLocation)) {
+      return false;
+    }
+
+    blockerCtx.block(nextLocation);
+    return true;
+  });
+
+  useEffect(() => {
+    if (blocker.state === "blocked") {
+      blocker.reset();
+    }
+  }, [blocker]);
 
   const statusCtx = useMemo(
     () => ({

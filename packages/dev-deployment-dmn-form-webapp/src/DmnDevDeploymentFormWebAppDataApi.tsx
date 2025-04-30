@@ -20,6 +20,7 @@
 import { ExtendedServicesFormSchema } from "@kie-tools/extended-services-api";
 import OpenAPIParser from "@readme/openapi-parser";
 import { routes } from "./Routes";
+import path from "path";
 
 export interface FormData {
   modelName: string;
@@ -37,13 +38,20 @@ export async function fetchAppData(args: { quarkusAppOrigin: string; quarkusAppP
     await fetch(routes.quarkusApp.openApiJson.path({}, args.quarkusAppOrigin, args.quarkusAppPath))
   ).json();
 
+  // Save all `/dmnresult` routes.
+  const dmnResultPaths = new Set(
+    Object.keys(openApiSpec.paths).filter((modelPath) => modelPath.endsWith("/dmnresult"))
+  );
+
   // Append origin to schema $refs, but only on DMN paths
   //
   // It's important to skip paths not ending on `/dmnresult` because the application
   // being deployed may have other paths that we don't control, and not all of them
   // will have valid JSON Schemas.
   Object.keys(openApiSpec.paths).forEach((modelPath) => {
-    if (!modelPath.endsWith("/dmnresult")) {
+    // Remove any route that doesn't have a respective `/dmnresult` route.
+    if (!modelPath.endsWith("/dmnresult") && !dmnResultPaths.has(`${modelPath}/dmnresult`)) {
+      delete openApiSpec.paths[modelPath];
       return;
     }
 

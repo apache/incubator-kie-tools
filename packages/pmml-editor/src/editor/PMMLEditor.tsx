@@ -35,8 +35,7 @@ import mergeReducers from "combine-reducer";
 import { HistoryContext, HistoryService } from "./history";
 import { LandingPage } from "./components/LandingPage/templates";
 import { Page } from "@patternfly/react-core/dist/js/components/Page";
-import { HashRouter } from "react-router-dom";
-import { Redirect, Route, Switch } from "react-router";
+import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import { EmptyStateNoContent } from "./components/LandingPage/organisms";
 import { SingleEditorRouter } from "./components/EditorCore/organisms";
 import { PMMLModelMapping, PMMLModels, SupportedCapability } from "./PMMLModelHelper";
@@ -253,26 +252,34 @@ export class PMMLEditor extends React.Component<Props, State> {
                     getCurrentState: () => this.store?.getState(),
                   }}
                 >
-                  <Switch>
-                    <Route exact={true} path={"/"}>
-                      {!isSingleModel && <LandingPage path={path} />}
-                      {isSingleModel && <Redirect from={"/"} to={"/editor/0"} />}
-                    </Route>
-                    <Route exact={true} path={"/editor/:index"}>
-                      <OperationContext.Provider
-                        value={{
-                          activeOperation: this.state.activeOperation,
-                          setActiveOperation: (operation) =>
-                            this.setState({
-                              ...this.state,
-                              activeOperation: operation,
-                            }),
-                        }}
-                      >
-                        <SingleEditorRouter path={path} />
-                      </OperationContext.Provider>
-                    </Route>
-                  </Switch>
+                  <Routes>
+                    <Route
+                      path={"/"}
+                      element={
+                        <>
+                          {!isSingleModel && <LandingPage path={path} />}
+                          {isSingleModel && <Navigate replace to={"/editor/0"} />}
+                        </>
+                      }
+                    />
+                    <Route
+                      path={"/editor/:index"}
+                      element={
+                        <OperationContext.Provider
+                          value={{
+                            activeOperation: this.state.activeOperation,
+                            setActiveOperation: (operation) =>
+                              this.setState({
+                                ...this.state,
+                                activeOperation: operation,
+                              }),
+                          }}
+                        >
+                          <SingleEditorRouter path={path} />
+                        </OperationContext.Provider>
+                      }
+                    />
+                  </Routes>
                 </HistoryContext.Provider>
               </ValidationContext.Provider>
             </Provider>

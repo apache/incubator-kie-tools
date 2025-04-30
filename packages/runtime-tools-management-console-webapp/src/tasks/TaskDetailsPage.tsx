@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useCallback, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useRuntimeInfo, useRuntimeSpecificRoutes } from "../runtime/RuntimeContext";
 import { AuthSession, useAuthSessionsDispatch } from "../authSessions";
 import { useEnv } from "../env/hooks/EnvContext";
@@ -26,12 +26,9 @@ import { TaskDetails } from "./TaskDetails";
 import { useRuntimePageLayoutDispatch } from "../runtime/RuntimePageLayoutContext";
 import { ImpersonationPageSection } from "./components/ImpersonationPageSection";
 
-interface Props {
-  taskId?: string;
-}
-
-export const TaskDetailsPage: React.FC<Props> = ({ taskId }) => {
-  const history = useHistory();
+export const TaskDetailsPage: React.FC = () => {
+  const { taskId } = useParams<{ taskId?: string }>();
+  const navigate = useNavigate();
   const runtimeRoutes = useRuntimeSpecificRoutes();
   const { runtimeDisplayInfo } = useRuntimeInfo();
   const { env } = useEnv();
@@ -46,12 +43,12 @@ export const TaskDetailsPage: React.FC<Props> = ({ taskId }) => {
   const onNavigateToTaskDetails = useCallback(
     (authSession?: AuthSession) => {
       if (taskId) {
-        history.push(runtimeRoutes.taskDetails(taskId, authSession));
+        navigate(runtimeRoutes.taskDetails(taskId, authSession));
       } else {
-        history.push(runtimeRoutes.tasks(authSession));
+        navigate(runtimeRoutes.tasks(authSession));
       }
     },
-    [history, taskId, runtimeRoutes]
+    [navigate, taskId, runtimeRoutes]
   );
 
   useEffect(() => {
@@ -60,7 +57,7 @@ export const TaskDetailsPage: React.FC<Props> = ({ taskId }) => {
     return () => {
       setOnSelectAuthSession(undefined);
     };
-  }, [history, onNavigateToTaskDetails, setOnSelectAuthSession]);
+  }, [navigate, onNavigateToTaskDetails, setOnSelectAuthSession]);
 
   useEffect(() => {
     setBreadcrumbText(["Home", runtimeDisplayInfo?.fullDisplayName ?? "Runtime", "Tasks", taskId ?? ""]);

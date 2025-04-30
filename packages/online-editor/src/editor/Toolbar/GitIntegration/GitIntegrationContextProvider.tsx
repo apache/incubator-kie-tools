@@ -51,7 +51,7 @@ import {
   GIT_ORIGIN_REMOTE_NAME,
 } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
 import { useNavigationBlockersBypass, useRoutes } from "../../../navigation/Hooks";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useGitIntegrationAlerts } from "./GitIntegrationAlerts";
 import { AuthProviderGroup, isGistEnabledAuthProviderType } from "../../../authProviders/AuthProvidersApi";
 import { useEditorToolbarDispatchContext } from "../EditorToolbarContextProvider";
@@ -93,7 +93,7 @@ export type GitIntegrationContextProviderProps = {
 export function GitIntegrationContextProvider(props: GitIntegrationContextProviderProps) {
   const workspaces = useWorkspaces();
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { authSession, authInfo, gitConfig } = useAuthSession(props.workspace.descriptor.gitAuthSessionId);
   const authProvider = useAuthProvider(authSession);
   const workspaceImportableUrl = useImportableUrl(props.workspace.descriptor.origin.url?.toString());
@@ -303,7 +303,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
           insecurelyDisableTlsCertificateValidation,
         });
 
-        history.push({
+        navigate({
           pathname: routes.import.path({}),
           search: routes.import.queryString({
             url: `${props.workspace.descriptor.origin.url}`,
@@ -324,7 +324,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
       alerts.pushErrorAlert,
       workspaces,
       gitConfig,
-      history,
+      navigate,
       routes.import,
       insecurelyDisableTlsCertificateValidation,
     ]
@@ -563,7 +563,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
 
       // Redirect to import workspace
       navigationBlockersBypass.execute(() => {
-        history.push({
+        navigate({
           pathname: routes.import.path({}),
           search: routes.import.queryString({
             url: gist.data.html_url,
@@ -586,7 +586,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     workspaces,
     gitConfig,
     navigationBlockersBypass,
-    history,
+    navigate,
     routes.import,
     alerts.errorAlert,
     insecurelyDisableTlsCertificateValidation,

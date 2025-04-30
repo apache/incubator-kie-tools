@@ -29,7 +29,7 @@ import {
   useProcessListGatewayApi,
 } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessList";
 import { EmbeddedProcessList } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processList";
-import { useHistory } from "react-router";
+import { useLocation, useNavigate } from "react-router-dom";
 import { OrderBy } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { useQueryParam, useQueryParams } from "../../navigation/queryParams/QueryParamsContext";
 import { QueryParams } from "../../navigation/Routes";
@@ -50,7 +50,8 @@ interface Props {
 
 export const ProcessList: React.FC<Props> = ({ onNavigateToProcessDetails }) => {
   const gatewayApi: ProcessListGatewayApi = useProcessListGatewayApi();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
   const filters = useQueryParam(QueryParams.FILTERS);
   const sortBy = useQueryParam(QueryParams.SORT_BY);
   const queryParams = useQueryParams();
@@ -98,14 +99,14 @@ export const ProcessList: React.FC<Props> = ({ onNavigateToProcessDetails }) => 
         const newQueryParams = queryParams
           .with(QueryParams.FILTERS, newSearchParams[QueryParams.FILTERS])
           .with(QueryParams.SORT_BY, newSearchParams[QueryParams.SORT_BY]);
-        history.replace({ pathname: history.location.pathname, search: newQueryParams.toString() });
+        navigate({ pathname: location.pathname, search: newQueryParams.toString() }, { replace: true });
       },
     });
 
     return () => {
       unsubscriber.unSubscribe();
     };
-  }, [gatewayApi, history, queryParams, setRuntimePathSearchParams]);
+  }, [gatewayApi, navigate, location.pathname, queryParams, setRuntimePathSearchParams]);
 
   return (
     <EmbeddedProcessList

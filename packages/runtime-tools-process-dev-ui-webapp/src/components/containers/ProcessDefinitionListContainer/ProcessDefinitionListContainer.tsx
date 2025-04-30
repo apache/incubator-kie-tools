@@ -21,26 +21,30 @@ import {
   ProcessDefinitionListGatewayApi,
   useProcessDefinitionListGatewayApi,
 } from "../../../channel/ProcessDefinitionList";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { EmbeddedProcessDefinitionList } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDefinitionList";
 
 const ProcessDefinitionListContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const gatewayApi: ProcessDefinitionListGatewayApi = useProcessDefinitionListGatewayApi();
   const appContext = useDevUIAppContext();
 
   useEffect(() => {
     const onOpenProcess = {
       onOpen(processDefinition: ProcessDefinition) {
-        history.push({
-          pathname: `ProcessDefinition/Form/${processDefinition.processName}`,
-          state: {
-            processDefinition: processDefinition,
+        navigate(
+          {
+            pathname: `../ProcessDefinition/Form/${processDefinition.processName}`,
           },
-        });
+          {
+            state: {
+              processDefinition: processDefinition,
+            },
+          }
+        );
       },
     };
 

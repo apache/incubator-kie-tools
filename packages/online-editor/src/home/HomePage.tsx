@@ -24,7 +24,7 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
-import { useHistory } from "react-router";
+import { useNavigate, Link } from "react-router-dom";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import {
   Card,
@@ -60,7 +60,6 @@ import {
   DrawerPanelContent,
   DrawerSection,
 } from "@patternfly/react-core/dist/js/components/Drawer";
-import { Link } from "react-router-dom";
 import { DeleteDropdownWithConfirmation } from "../editor/DeleteDropdownWithConfirmation";
 import { useQueryParam, useQueryParams } from "../queryParams/QueryParamsContext";
 import { QueryParams } from "../navigation/Routes";
@@ -94,7 +93,7 @@ import { BellIcon } from "@patternfly/react-icons/dist/js/icons/bell-icon";
 
 export function HomePage() {
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
   const workspaceDescriptorsPromise = useWorkspaceDescriptorsPromise();
   const expandedWorkspaceId = useQueryParam(QueryParams.EXPAND);
   const queryParams = useQueryParams();
@@ -102,11 +101,14 @@ export function HomePage() {
   const { env } = useEnv();
 
   const closeExpandedWorkspace = useCallback(() => {
-    history.replace({
-      pathname: routes.home.path({}),
-      search: queryParams.without(QueryParams.EXPAND).toString(),
-    });
-  }, [history, routes, queryParams]);
+    navigate(
+      {
+        pathname: routes.home.path({}),
+        search: queryParams.without(QueryParams.EXPAND).toString(),
+      },
+      { replace: true }
+    );
+  }, [navigate, routes, queryParams]);
 
   const expandWorkspace = useCallback(
     (workspaceId: string) => {
@@ -116,12 +118,15 @@ export function HomePage() {
         return;
       }
 
-      history.replace({
-        pathname: routes.home.path({}),
-        search: routes.home.queryString({ expand }),
-      });
+      navigate(
+        {
+          pathname: routes.home.path({}),
+          search: routes.home.queryString({ expand }),
+        },
+        { replace: true }
+      );
     },
-    [closeExpandedWorkspace, history, routes, expandedWorkspaceId]
+    [closeExpandedWorkspace, navigate, routes, expandedWorkspaceId]
   );
 
   useEffect(() => {
@@ -301,7 +306,7 @@ export function WorkspaceCard(props: {
 }) {
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
   const workspaces = useWorkspaces();
   const [isHovered, setHovered] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceId);
@@ -329,11 +334,10 @@ export function WorkspaceCard(props: {
                 isCompact={true}
                 style={{ cursor: "pointer" }}
                 onClick={() => {
-                  history.push({
+                  navigate({
                     pathname: routes.workspaceWithFilePath.path({
                       workspaceId: editableFiles[0].workspaceId,
-                      fileRelativePath: editableFiles[0].relativePathWithoutExtension,
-                      extension: editableFiles[0].extension,
+                      fileRelativePath: editableFiles[0].relativePath,
                     }),
                   });
                 }}

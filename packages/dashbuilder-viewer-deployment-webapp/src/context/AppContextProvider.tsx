@@ -18,14 +18,14 @@
  */
 
 import React, { PropsWithChildren, useEffect, useMemo, useState } from "react";
-import { useHistory, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Dashboard } from "../data";
 import { useAppDataPromise } from "../hooks/useAppDataPromise";
 import { routes } from "../routes";
 import { AppContext } from "./AppContext";
 
 export function AppContextProvider(props: PropsWithChildren<{}>) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const appDataPromise = useAppDataPromise();
   const [current, setCurrent] = useState<Dashboard>();
@@ -43,12 +43,15 @@ export function AppContextProvider(props: PropsWithChildren<{}>) {
     setCurrent(current);
     setDashboards(dashboards);
 
-    history.replace({
-      pathname: routes.dashboard.path({
-        filePath: current.uri,
-      }),
-    });
-  }, [appDataPromise.data, history, location.pathname]);
+    navigate(
+      {
+        pathname: routes.dashboard.path({
+          filePath: current.uri,
+        }),
+      },
+      { replace: true }
+    );
+  }, [appDataPromise.data, navigate, location.pathname]);
 
   const value = useMemo(
     () => ({

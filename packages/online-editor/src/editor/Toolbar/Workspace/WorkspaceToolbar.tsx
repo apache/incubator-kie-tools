@@ -21,7 +21,7 @@ import React, { useCallback, useEffect, useRef } from "react";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useRoutes } from "../../../navigation/Hooks";
 import AngleLeftIcon from "@patternfly/react-icons/dist/js/icons/angle-left-icon";
 import { AuthSessionSelect } from "../../../authSessions/AuthSessionSelect";
@@ -46,7 +46,7 @@ type Props = {
 };
 
 export function WorkspaceToolbar(props: Props) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const routes = useRoutes();
   const workspaces = useWorkspaces();
 
@@ -109,7 +109,7 @@ export function WorkspaceToolbar(props: Props) {
         <Button
           className={"kie-tools--masthead-hoverable"}
           variant={ButtonVariant.plain}
-          onClick={() => history.push({ pathname: routes.home.path({}) })}
+          onClick={() => navigate({ pathname: routes.home.path({}) })}
         >
           <AngleLeftIcon />
         </Button>
