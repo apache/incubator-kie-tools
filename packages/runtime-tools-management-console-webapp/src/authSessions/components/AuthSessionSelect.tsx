@@ -94,31 +94,29 @@ export function AuthSessionSelect({ isPlain, position, menuAppendTo }: AuthSessi
       maxHeight={"400px"}
       style={{ minWidth: "400px" }}
       footer={
-        <>
-          <Button
-            variant={ButtonVariant.link}
-            isInline={true}
-            icon={<PlusIcon />}
-            onClick={() => {
-              setIsNewAuthSessionModalOpen(true);
-            }}
-          >
-            Connect to a runtime...
-          </Button>
-        </>
+        <Button
+          variant={ButtonVariant.link}
+          style={{ width: "100%", textAlign: "left", padding: "0" }}
+          icon={<PlusIcon />}
+          onClick={() => {
+            setIsNewAuthSessionModalOpen(true);
+          }}
+        >
+          Connect to a runtime...
+        </Button>
       }
     >
       {[
-        <div key={"title"}>
-          <Button
-            style={{ width: "100%", textAlign: "left" }}
-            onClick={() => {
-              history.push(routes.home.path({}));
-            }}
-          >
-            Manage...
-          </Button>
-        </div>,
+        <Button
+          key={"title"}
+          style={{ width: "100%", textAlign: "left" }}
+          onClick={() => {
+            history.push(routes.home.path({}));
+          }}
+          variant={ButtonVariant.link}
+        >
+          Manage...
+        </Button>,
         <div
           key={"divider"}
           style={{ boxShadow: "var(--pf-v5-global--BoxShadow--sm-top)", marginTop: "8px", height: "8px" }}

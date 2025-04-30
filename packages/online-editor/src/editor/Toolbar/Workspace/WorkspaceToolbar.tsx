@@ -37,7 +37,6 @@ import { WorkspaceStatusIndicator } from "../../../workspace/components/Workspac
 import { AcceleratorIndicator } from "../Accelerators/AcceleratorIndicator";
 import { PromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import { WorkspaceGitStatusType } from "@kie-tools-core/workspaces-git-fs/dist/hooks/WorkspaceHooks";
-import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 type Props = {
   workspace: ActiveWorkspace;
