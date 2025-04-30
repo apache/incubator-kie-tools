@@ -18,10 +18,10 @@
  */
 
 .yard-drawer {
-  --pf-c-drawer--child--PaddingTop: 5px;
-  --pf-c-drawer--child--PaddingRight: 5px;
-  --pf-c-drawer--child--PaddingBottom: 5px;
-  --pf-c-drawer--child--PaddingLeft: 5px;
+  --pf-v5-c-drawer--child--PaddingTop: 5px;
+  --pf-v5-c-drawer--child--PaddingRight: 5px;
+  --pf-v5-c-drawer--child--PaddingBottom: 5px;
+  --pf-v5-c-drawer--child--PaddingLeft: 5px;
 }
 
 .yard-drawer .drawer-content-body {

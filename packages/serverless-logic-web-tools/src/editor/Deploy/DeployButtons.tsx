@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Dropdown, DropdownPosition, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownPosition, DropdownToggle } from "@patternfly/react-core/deprecated";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { useOpenShift } from "../../openshift/OpenShiftContext";
@@ -41,7 +41,10 @@ export function DeployButtons(props: Props) {
   const settings = useSettings();
 
   const toggleDeployDropdown = useCallback(
-    (isOpen: boolean) => {
+    (
+      event: MouseEvent | TouchEvent | KeyboardEvent | React.KeyboardEvent<any> | React.MouseEvent<HTMLButtonElement>,
+      isOpen: boolean
+    ) => {
       openshift.setDeployDropdownOpen(isOpen);
     },
     [openshift]

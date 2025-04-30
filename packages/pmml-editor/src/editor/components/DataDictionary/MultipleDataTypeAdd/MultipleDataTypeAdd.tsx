@@ -25,6 +25,8 @@ import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { ActionGroup, Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import "./MultipleDataTypesAdd.scss";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 interface MultipleDataTypeAddProps {
   onAdd: (types: string) => void;
@@ -71,23 +73,30 @@ const MultipleDataTypeAdd = ({ onAdd, onCancel }: MultipleDataTypeAddProps) => {
         </StackItem>
         <StackItem>
           <Form onSubmit={handleSubmit} style={{ gridGap: 0 }}>
-            <FormGroup
-              label="Data Types"
-              fieldId="data-types"
-              isRequired={true}
-              validated={inputValidation}
-              helperTextInvalid={"Please enter at least one Data Type Name"}
-            >
+            <FormGroup label="Data Types" fieldId="data-types" isRequired={true}>
               <TextArea
                 className="data-dictionary__multiple-data-types"
                 data-ouia-component-id="multiple-data-types"
                 value={input}
-                onChange={handleInputChange}
+                onChange={(_event, value: string) => handleInputChange(value)}
                 name="data-types"
                 isRequired={true}
                 id="data-types"
                 placeholder={"First Data Type\nSecond Data Type\n..."}
               />
+              {inputValidation === "error" ? (
+                <FormHelperText>
+                  <HelperText>
+                    <HelperTextItem variant="error">Please enter at least one Data Type Name</HelperTextItem>
+                  </HelperText>
+                </FormHelperText>
+              ) : (
+                <FormHelperText>
+                  <HelperText>
+                    <HelperTextItem variant="success"></HelperTextItem>
+                  </HelperText>
+                </FormHelperText>
+              )}
             </FormGroup>
             <ActionGroup>
               <Button variant="primary" type="submit" ouiaId="add-them">

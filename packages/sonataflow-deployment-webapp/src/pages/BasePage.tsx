@@ -44,6 +44,7 @@ import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 export function BasePage(props: { children?: React.ReactNode }) {
   const history = useHistory();
   const app = useApp();
+  const tooltipRef = React.useRef<HTMLButtonElement>(null);
 
   const masthead = useMemo(
     () => (
@@ -55,6 +56,7 @@ export function BasePage(props: { children?: React.ReactNode }) {
         </MastheadToggle>
         <MastheadMain>
           <MastheadBrand
+            component="a"
             onClick={() => history.push({ pathname: routes.home.path({}) })}
             style={{ textDecoration: "none" }}
           >
@@ -73,11 +75,12 @@ export function BasePage(props: { children?: React.ReactNode }) {
           <Toolbar id="toolbar" isFullHeight isStatic>
             <ToolbarContent>
               {app.data.showDisclaimer && (
-                <ToolbarItem alignment={{ default: "alignRight" }}>
+                <ToolbarItem align={{ default: "alignRight" }}>
                   <Tooltip
                     className="app--masterhead__disclaimer"
                     position="bottom-end"
                     key="disclaimer-tooltip"
+                    triggerRef={tooltipRef}
                     content={
                       <>
                         This deployment is intended to be used during <b>development</b>, so users should not use the
@@ -109,7 +112,15 @@ export function BasePage(props: { children?: React.ReactNode }) {
   }, [history, app.appDataPromise]);
 
   return (
-    <Page sidebar={<PageSidebar nav={<BasePageNav />} theme="dark" />} header={masthead} isManagedSidebar>
+    <Page
+      sidebar={
+        <PageSidebar theme="dark">
+          <BasePageNav />
+        </PageSidebar>
+      }
+      header={masthead}
+      isManagedSidebar
+    >
       {props.children}
     </Page>
   );

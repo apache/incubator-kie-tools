@@ -55,7 +55,7 @@ export function ConstraintYearsMonthsDuration({
   );
 
   const onYearsChange = useCallback(
-    (newValue: string, e: React.FormEvent<HTMLInputElement>) => {
+    (e: React.FormEvent<HTMLInputElement>, newValue: string) => {
       onInternalChange({ years: newValue });
       setFocusOwner?.(e.currentTarget.id);
     },
@@ -63,7 +63,7 @@ export function ConstraintYearsMonthsDuration({
   );
 
   const onMonthsChange = useCallback(
-    (newValue: string, e: React.FormEvent<HTMLInputElement>) => {
+    (e: React.FormEvent<HTMLInputElement>, newValue: string) => {
       onInternalChange({ months: newValue });
       setFocusOwner?.(e.currentTarget.id);
     },

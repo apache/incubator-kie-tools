@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { SelectDirection } from "@patternfly/react-core/dist/js/components/Select";
+import { SelectDirection } from "@patternfly/react-core/deprecated";
 import { UnitablesI18n } from "../i18n";
 import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
 import { joinName } from "uniforms";

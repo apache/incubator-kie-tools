@@ -39,7 +39,7 @@ exports[`<ListField> tests <ListField> 1`] = `
             }}
           >
             <div style={{ width: '100%', marginRight: '10px' }}><Card>
-          <CardBody className="pf-c-form">
+          <CardBody className="pf-v5-c-form">
           
           <FormGroup
       fieldId={'uniforms-0000-0003'}
