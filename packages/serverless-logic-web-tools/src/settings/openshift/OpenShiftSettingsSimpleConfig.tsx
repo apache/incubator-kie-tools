@@ -221,7 +221,7 @@ export function OpenShiftSettingsSimpleConfig() {
                 aria-label="Namespace field"
                 aria-describedby="namespace-field-helper"
                 value={config.namespace}
-                onChange={(_event, value) => onNamespaceChanged}
+                onChange={(_event, value) => onNamespaceChanged(value)}
                 isDisabled={isConnecting}
                 tabIndex={1}
                 data-testid="namespace-text-field"
@@ -265,7 +265,7 @@ export function OpenShiftSettingsSimpleConfig() {
                 aria-label="Host field"
                 aria-describedby="host-field-helper"
                 value={config.host}
-                onChange={(_event, value) => onHostChanged}
+                onChange={(_event, value) => onHostChanged(value)}
                 isDisabled={isConnecting}
                 tabIndex={2}
                 data-testid="host-text-field"
@@ -309,7 +309,7 @@ export function OpenShiftSettingsSimpleConfig() {
                 aria-label="Token field"
                 aria-describedby="token-field-helper"
                 value={config.token}
-                onChange={(_event, value) => onTokenChanged}
+                onChange={(_event, value) => onTokenChanged(value)}
                 isDisabled={isConnecting}
                 tabIndex={3}
                 data-testid="token-text-field"
@@ -352,7 +352,7 @@ export function OpenShiftSettingsSimpleConfig() {
             aria-label="Disable TLS Certificate Validation"
             tabIndex={4}
             isChecked={config.insecurelyDisableTlsCertificateValidation}
-            onChange={(_event, value) => onInsecurelyDisableTlsCertificateValidationChange}
+            onChange={(_event, value) => onInsecurelyDisableTlsCertificateValidationChange(value)}
           />
           <br />
           <Button
@@ -398,7 +398,7 @@ export function OpenShiftSettingsSimpleConfig() {
               "Be sure to set up at least 4GB of ram for your OpenShift deployments, otherwise, the Dev Mode deployment may run into issues."
             }
             isChecked={isDevModeConfigEnabled}
-            onChange={(_event, value) => onEnableDevModeConfigChanged}
+            onChange={(_event, value) => onEnableDevModeConfigChanged(value)}
           />
         </FormGroup>
         <ActionGroup>
