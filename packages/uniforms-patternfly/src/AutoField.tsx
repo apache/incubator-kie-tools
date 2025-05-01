@@ -27,6 +27,7 @@ import NumField from "./NumField";
 import RadioField from "./RadioField";
 import SelectField from "./SelectField";
 import TextField from "./TextField";
+import MonacoTextField from "./MonacoTextField";
 
 export type AutoFieldProps = Parameters<typeof AutoField>[0];
 
@@ -47,7 +48,7 @@ const AutoField = createAutoField((props) => {
     case Object:
       return NestField;
     case String:
-      return TextField;
+      return props.field.format === "json" ? MonacoTextField : TextField;
   }
 
   return invariant(false, "Unsupported field type: %s", props.fieldType);

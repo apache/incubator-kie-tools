@@ -60,6 +60,10 @@ const schema = {
           max: "2000-04-04T10:30:00.000Z",
           description: "this is the date and time field",
         },
+        customData: {
+          type: "string",
+          format: "json",
+        },
       },
       disabled: false,
     },

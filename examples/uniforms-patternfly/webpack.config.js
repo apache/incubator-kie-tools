@@ -19,6 +19,7 @@
 
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const patternflyBase = require("@kie-tools-core/patternfly-base");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { merge } = require("webpack-merge");
@@ -36,6 +37,9 @@ module.exports = (webpackEnv) => [
       rules: [...patternflyBase.webpackModuleRules],
     },
     plugins: [
+      new MonacoWebpackPlugin({
+        languages: ["json"],
+      }),
       new CopyPlugin({
         patterns: [{ from: "./static", to: "." }],
       }),

@@ -31,6 +31,7 @@
     "@types/invariant": "^2.2.35",
     "invariant": "^2.2.4",
     "lodash": "^4.17.21",
+    "monaco-editor": "^0.39.0",
     "uniforms": "^3.10.2"
   },
   "devDependencies": {
