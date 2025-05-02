@@ -11,33 +11,32 @@ exports[`LoadingScreen when just made not visible 1`] = `
       data-testid="loading-screen-div"
     >
       <div
-        class="pf-l-bullseye"
+        class="pf-v5-l-bullseye"
       >
         <div
           class="kie-tools--loading-screen-spinner"
         >
           <div>
-            <span
+            <svg
               aria-label="Contents"
               aria-valuetext="Loading..."
-              class="pf-c-spinner pf-m-xl"
+              class="pf-v5-c-spinner pf-m-xl"
               role="progressbar"
+              viewBox="0 0 100 100"
             >
-              <span
-                class="pf-c-spinner__clipper"
+              <circle
+                class="pf-v5-c-spinner__path"
+                cx="50"
+                cy="50"
+                fill="none"
+                r="45"
               />
-              <span
-                class="pf-c-spinner__lead-ball"
-              />
-              <span
-                class="pf-c-spinner__tail-ball"
-              />
-            </span>
+            </svg>
           </div>
           <h5
-            class="pf-c-title pf-m-md"
+            class="pf-v5-c-title pf-m-md"
             data-ouia-component-id="OUIA-Generated-Title-2"
-            data-ouia-component-type="PF4/Title"
+            data-ouia-component-type="PF5/Title"
             data-ouia-safe="true"
           >
             Loading...
@@ -60,33 +59,32 @@ exports[`LoadingScreen when not visible after fadeout delay 1`] = `
       data-testid="loading-screen-div"
     >
       <div
-        class="pf-l-bullseye"
+        class="pf-v5-l-bullseye"
       >
         <div
           class="kie-tools--loading-screen-spinner"
         >
           <div>
-            <span
+            <svg
               aria-label="Contents"
               aria-valuetext="Loading..."
-              class="pf-c-spinner pf-m-xl"
+              class="pf-v5-c-spinner pf-m-xl"
               role="progressbar"
+              viewBox="0 0 100 100"
             >
-              <span
-                class="pf-c-spinner__clipper"
+              <circle
+                class="pf-v5-c-spinner__path"
+                cx="50"
+                cy="50"
+                fill="none"
+                r="45"
               />
-              <span
-                class="pf-c-spinner__lead-ball"
-              />
-              <span
-                class="pf-c-spinner__tail-ball"
-              />
-            </span>
+            </svg>
           </div>
           <h5
-            class="pf-c-title pf-m-md"
+            class="pf-v5-c-title pf-m-md"
             data-ouia-component-id="OUIA-Generated-Title-3"
-            data-ouia-component-type="PF4/Title"
+            data-ouia-component-type="PF5/Title"
             data-ouia-safe="true"
           >
             Loading...
@@ -109,33 +107,32 @@ exports[`LoadingScreen when visible 1`] = `
       data-testid="loading-screen-div"
     >
       <div
-        class="pf-l-bullseye"
+        class="pf-v5-l-bullseye"
       >
         <div
           class="kie-tools--loading-screen-spinner"
         >
           <div>
-            <span
+            <svg
               aria-label="Contents"
               aria-valuetext="Loading..."
-              class="pf-c-spinner pf-m-xl"
+              class="pf-v5-c-spinner pf-m-xl"
               role="progressbar"
+              viewBox="0 0 100 100"
             >
-              <span
-                class="pf-c-spinner__clipper"
+              <circle
+                class="pf-v5-c-spinner__path"
+                cx="50"
+                cy="50"
+                fill="none"
+                r="45"
               />
-              <span
-                class="pf-c-spinner__lead-ball"
-              />
-              <span
-                class="pf-c-spinner__tail-ball"
-              />
-            </span>
+            </svg>
           </div>
           <h5
-            class="pf-c-title pf-m-md"
+            class="pf-v5-c-title pf-m-md"
             data-ouia-component-id="OUIA-Generated-Title-1"
-            data-ouia-component-type="PF4/Title"
+            data-ouia-component-type="PF5/Title"
             data-ouia-safe="true"
           >
             Loading...

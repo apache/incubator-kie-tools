@@ -19,7 +19,12 @@
 
 import * as React from "react";
 import { ErrorBoundary } from "@kie-tools/dmn-runner/dist/ErrorBoundary";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
@@ -54,6 +59,7 @@ interface Props {
   jsonSchemaBridge: DmnUnitablesJsonSchemaBridge;
   scrollableParentRef: React.RefObject<HTMLElement>;
   openBoxedExpressionEditor?: (nodeId: string) => void;
+  openedBoxedExpressionEditorNodeId: string | undefined;
 }
 
 export function DmnRunnerOutputsTable({
@@ -62,6 +68,7 @@ export function DmnRunnerOutputsTable({
   results,
   scrollableParentRef,
   openBoxedExpressionEditor,
+  openedBoxedExpressionEditorNodeId,
 }: Props) {
   const outputUid = useMemo(() => nextId(), []);
   const outputErrorBoundaryRef = useRef<ErrorBoundary>(null);
@@ -91,11 +98,12 @@ export function DmnRunnerOutputsTable({
             results={results}
             id={outputUid}
             openBoxedExpressionEditor={openBoxedExpressionEditor}
+            openedBoxedExpressionEditorNodeId={openedBoxedExpressionEditorNodeId}
           />
         </ErrorBoundary>
       ) : (
         <EmptyState>
-          <EmptyStateIcon icon={CubeIcon} />
+          <EmptyStateHeader icon={<EmptyStateIcon icon={CubeIcon} />} />
           <TextContent>
             <Text component={"h2"}>No Decision results yet...</Text>
           </TextContent>
@@ -114,7 +122,7 @@ function OutputError() {
   return (
     <div>
       <EmptyState>
-        <EmptyStateIcon icon={ExclamationIcon} />
+        <EmptyStateHeader icon={<EmptyStateIcon icon={ExclamationIcon} />} />
         <TextContent>
           <Text component={"h2"}>Error</Text>
         </TextContent>
@@ -139,6 +147,7 @@ interface OutputsTableProps {
   outputsPropertiesMap: Map<string, OutputField>;
   scrollableParentRef: React.RefObject<HTMLElement>;
   openBoxedExpressionEditor?: (nodeId: string) => void;
+  openedBoxedExpressionEditorNodeId: string | undefined;
 }
 
 function OutputsBeeTable({
@@ -148,6 +157,7 @@ function OutputsBeeTable({
   results,
   scrollableParentRef,
   openBoxedExpressionEditor,
+  openedBoxedExpressionEditorNodeId,
 }: OutputsTableProps) {
   const beeTableOperationConfig = useMemo<BeeTableOperationConfig>(
     () => [
@@ -303,6 +313,7 @@ function OutputsBeeTable({
         return [
           {
             originalId: `${outputProperties?.name}-${generateUuid()}`,
+            cssClasses: decisionId === openedBoxedExpressionEditorNodeId ? "runner-column-highlight" : "",
             headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
             label: parentLabel,
             accessor: (`output-object-parent-${outputProperties?.name}-` + generateUuid()) as any,
@@ -362,6 +373,7 @@ function OutputsBeeTable({
             columns: [
               {
                 originalId: `${outputProperties?.name}-${generateUuid()}-${outputProperties?.properties?.id}`,
+                cssClasses: decisionId === openedBoxedExpressionEditorNodeId ? "runner-column-highlight" : "",
                 headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
                 label: label,
                 accessor: (`output-${outputProperties?.name}-` + generateUuid()) as any,
@@ -382,6 +394,7 @@ function OutputsBeeTable({
         return [
           {
             originalId: `${outputProperties?.name}-${generateUuid()}`,
+            cssClasses: decisionId === openedBoxedExpressionEditorNodeId ? "runner-column-highlight" : "",
             headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
             label: parentLabel,
             accessor: (`output-array-parent-${outputProperties?.name}-` + generateUuid()) as any,
@@ -414,6 +427,7 @@ function OutputsBeeTable({
         return [
           {
             originalId: `${outputProperties?.name}-${generateUuid()}`,
+            cssClasses: decisionId === openedBoxedExpressionEditorNodeId ? "runner-column-highlight" : "",
             headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
             label: parentLabel,
             accessor: (`output-object-parent-${outputProperties?.name}-` + generateUuid()) as any,
@@ -430,6 +444,7 @@ function OutputsBeeTable({
     deepFlattenObjectColumn,
     getDefaultDmnRunnerOutputColumnWidth,
     openBoxedExpressionHeaderButton,
+    openedBoxedExpressionEditorNodeId,
     outputsPropertiesMap,
     results,
   ]);

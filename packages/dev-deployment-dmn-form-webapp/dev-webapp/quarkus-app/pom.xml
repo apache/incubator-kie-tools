@@ -199,7 +199,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>${version.maven.surefire.plugin}</version>
+          <version>${version.maven.surefire}</version>
           <dependencies>
             <dependency>
               <groupId>org.iq80.snappy</groupId>
@@ -238,7 +238,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${version.maven.surefire.plugin}</version>
+        <version>${version.maven.surefire}</version>
         <configuration>
           <systemPropertyVariables>
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>

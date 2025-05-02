@@ -20,13 +20,13 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { InlineFeelNameInput } from "../../feel/InlineFeelNameInput";
+import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
-import { ExpressionPath } from "../../boxedExpressions/boxedExpressionIndex";
+import { ExpressionPath } from "../boxedExpressions/boxedExpressionIndex";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { TypeRefSelector } from "../../dataTypes/TypeRefSelector";
+import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
-import { State } from "../../store/Store";
+import { State } from "../store/Store";
 
 export function ContentField(props: {
   initialValue: string;
@@ -81,7 +81,7 @@ export function NameField(props: {
         name={props.name}
         isReadOnly={props.isReadOnly}
         shouldCommitOnBlur={true}
-        className={"pf-c-form-control"}
+        className={"pf-v5-c-form-control"}
         onRenamed={(newName) => props.onChange?.(newName)}
         allUniqueNames={props.getAllUniqueNames}
       />
@@ -163,7 +163,7 @@ export function TextField({
           type={"text"}
           isDisabled={props.isReadOnly}
           value={value}
-          onChange={(newContent) => {
+          onChange={(_event, newContent) => {
             setValue(newContent);
             valueRef.current = newContent;
             isEditing.current = true;
@@ -186,7 +186,7 @@ export function TextField({
           type={"text"}
           isDisabled={props.isReadOnly}
           value={value}
-          onChange={(newContent) => {
+          onChange={(_event, newContent) => {
             setValue(newContent);
             valueRef.current = newContent;
             isEditing.current = true;

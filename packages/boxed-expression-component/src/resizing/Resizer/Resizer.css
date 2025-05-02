@@ -29,10 +29,10 @@
   pointer-events: auto;
 }
 
-.expression-container .pf-c-drawer__splitter::after {
+.expression-container .pf-v5-c-drawer__splitter::after {
   border: none;
 }
 
-.expression-container .pf-c-drawer__splitter-handle::after {
+.expression-container .pf-v5-c-drawer__splitter-handle::after {
   display: none;
 }

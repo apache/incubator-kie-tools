@@ -20,7 +20,7 @@
 import React from "react";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { TextVariants, Text } from "@patternfly/react-core/dist/js/components/Text";
-import { Card, CardBody, CardHeaderMain, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
 import { FormGroup, Form } from "@patternfly/react-core/dist/js/components/Form";
 import { CustomDashboardInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { CustomDashboardListDriver } from "../../../api/CustomDashboardListDriver";
@@ -47,16 +47,14 @@ const CustomDashboardCard: React.FC<CustomDashboardCardProps & OUIAProps> = ({
       onClick={handleCardClick}
       data-testid="card"
     >
+      <CardHeader>Empty</CardHeader>
       <CardHeader>
-        <CardHeaderMain>Empty</CardHeaderMain>
-      </CardHeader>
-      <CardHeader>
-        <Text component={TextVariants.h1} className="pf-u-font-weight-bold">
+        <Text component={TextVariants.h1} className="pf-v5-u-font-weight-bold">
           {customDashboardData.name}
         </Text>
       </CardHeader>
       <CardBody>
-        <div className="pf-u-mt-md">
+        <div className="pf-v5-u-mt-md">
           <Form>
             <FormGroup label="Path" fieldId="path">
               <Text component={TextVariants.p}>{customDashboardData.path}</Text>

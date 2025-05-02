@@ -17,6 +17,7 @@
  * under the License.
  */
 
+
 import { DmnBuiltInDataType, DmnDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
 import * as React from "react";
@@ -218,7 +219,7 @@ export function TypeRefSelector({
         isDisabled={isDisabled}
         variant={SelectVariant.typeahead}
         typeAheadAriaLabel={DmnBuiltInDataType.Undefined}
-        onToggle={_onToggle}
+        onToggle={(_event, val) => _onToggle(val)}
         onFilter={onFilter}
         onSelect={(e, v) => {
           _onToggle(false);

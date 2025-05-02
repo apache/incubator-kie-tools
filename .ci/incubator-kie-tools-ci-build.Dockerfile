@@ -50,9 +50,9 @@ apt-get clean autoclean && apt-get autoremove --yes && \
 rm -rf /var/lib/{apt,cache,log}/
 
 # Install firefox
-RUN wget -O /tmp/firefox-latest.tar.bz2 "https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US" && \
-    tar xjf /tmp/firefox-latest.tar.bz2 -C /tmp && mv /tmp/firefox /opt/firefox-latest && \
-    rm /tmp/firefox-latest.tar.bz2 && \
+RUN wget -O /tmp/firefox-latest.tar.xz "https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US" && \
+    tar xf /tmp/firefox-latest.tar.xz -C /tmp && mv /tmp/firefox /opt/firefox-latest && \
+    rm /tmp/firefox-latest.tar.xz && \
     ln -s /opt/firefox-latest/firefox /usr/bin/firefox
 
 # Install chromedriver
@@ -100,8 +100,8 @@ RUN curl -s "https://get.sdkman.io" | bash && \
     sdk flush
 
 # Golang setup
-RUN wget https://go.dev/dl/go1.22.12.linux-amd64.tar.gz -P /tmp && \
-    sudo tar xzf /tmp/go1.22.12.linux-amd64.tar.gz -C /opt && rm /tmp/go1.22.12.linux-amd64.tar.gz && \
+RUN wget https://go.dev/dl/go1.23.8.linux-amd64.tar.gz -P /tmp && \
+    sudo tar xzf /tmp/go1.23.8.linux-amd64.tar.gz -C /opt && rm /tmp/go1.23.8.linux-amd64.tar.gz && \
     echo 'export GOPATH=${HOME}/go' | sudo tee /etc/profile.d/go.sh && \
     echo 'export PATH=${PATH}:/opt/go/bin:${GOPATH}/bin' | sudo tee -a /etc/profile.d/go.sh && \
     echo "source /etc/profile.d/go.sh" >> $HOME/.bashrc && \
@@ -135,7 +135,7 @@ ENV JAVA_HOME="${HOME}/.sdkman/candidates/java/current/"
 ENV MAVEN_HOME="${HOME}/.sdkman/candidates/maven/current/"
 ENV NODE_HOME="${HOME}/.nvm/versions/node/v22.13.1"
 ENV DISPLAY=":99"
-ENV NODE_OPTIONS="--max_old_space_size=4096"
+ENV NODE_OPTIONS="--max_old_space_size=6144"
 ENV GOPATH="${HOME}/go"
 ENV GOROOT="/opt/go"
 ENV PATH="${PATH}:${GOROOT}/bin:${GOPATH}/bin"

@@ -20,7 +20,7 @@ import * as React from "react";
 import { useState } from "react";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Toolbar, ToolbarContent, ToolbarItem } from "@patternfly/react-core/dist/js/components/Toolbar";
 import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
 import { SearchIcon } from "@patternfly/react-icons/dist/js/icons/search-icon";
@@ -41,29 +41,31 @@ export const LandingPageToolbar = (props: LandingPageToolbarProps) => {
       <ToolbarContent>
         <ToolbarItem>
           <InputGroup>
-            <form onSubmit={(e) => e.preventDefault()}>
-              <span style={{ display: "flex" }}>
-                <TextInput
-                  id="model-filter-input"
-                  name="model-filter-input"
-                  data-testid="landing-page-toolbar__model-filter"
-                  type="search"
-                  aria-label="filter models"
-                  placeholder="Filter models by name"
-                  onChange={(e) => setFilter(e)}
-                />
-                <Button
-                  id="models-filter"
-                  type="submit"
-                  data-testid="landing-page-toolbar__submit"
-                  variant={ButtonVariant.control}
-                  aria-label="filter button for filter input"
-                  onClick={(e) => onFilter(filter)}
-                >
-                  <SearchIcon />
-                </Button>
-              </span>
-            </form>
+            <InputGroupItem>
+              <form onSubmit={(e) => e.preventDefault()}>
+                <span style={{ display: "flex" }}>
+                  <TextInput
+                    id="model-filter-input"
+                    name="model-filter-input"
+                    data-testid="landing-page-toolbar__model-filter"
+                    type="search"
+                    aria-label="filter models"
+                    placeholder="Filter models by name"
+                    onChange={(_event, e) => setFilter(e)}
+                  />
+                  <Button
+                    id="models-filter"
+                    type="submit"
+                    data-testid="landing-page-toolbar__submit"
+                    variant={ButtonVariant.control}
+                    aria-label="filter button for filter input"
+                    onClick={(e) => onFilter(filter)}
+                  >
+                    <SearchIcon />
+                  </Button>
+                </span>
+              </form>
+            </InputGroupItem>
           </InputGroup>
         </ToolbarItem>
         {hasUnsupportedModels && (
@@ -73,7 +75,7 @@ export const LandingPageToolbar = (props: LandingPageToolbarProps) => {
               data-testid="landing-page-toolbar__supported-models"
               label="Show unsupported models"
               isChecked={showUnsupportedModels}
-              onChange={onShowUnsupportedModels}
+              onChange={(_event, val) => onShowUnsupportedModels(val)}
             />
           </ToolbarItem>
         )}

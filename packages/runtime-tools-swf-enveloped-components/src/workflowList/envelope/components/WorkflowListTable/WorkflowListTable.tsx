@@ -19,7 +19,8 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import { ExpandableRowContent } from "@patternfly/react-table/dist/js/components/Table";
-import { TableComposable, Thead, Tbody, Tr, Th, Td } from "@patternfly/react-table/dist/js/components/TableComposable";
+import { Thead, Tbody, Tr, Th, Td } from "@patternfly/react-table/dist/js/components/Table";
+import { Table } from "@patternfly/react-table/deprecated";
 import _ from "lodash";
 import { WorkflowInstance, WorkflowInstanceState } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
@@ -235,7 +236,7 @@ const WorkflowListTable: React.FC<WorkflowListTableProps & OUIAProps> = ({
             workflowInstance.start ? <Moment fromNow>{new Date(`${workflowInstance.start}`)}</Moment> : "",
             workflowInstance.lastUpdate ? (
               <span>
-                <HistoryIcon className="pf-u-mr-sm" /> {"Updated "}
+                <HistoryIcon className="pf-v5-u-mr-sm" /> {"Updated "}
                 <Moment fromNow>{new Date(`${workflowInstance.lastUpdate}`)}</Moment>
               </span>
             ) : (
@@ -353,7 +354,7 @@ const WorkflowListTable: React.FC<WorkflowListTableProps & OUIAProps> = ({
         workflowName={selectedWorkflowInstance?.processName}
         ouiaId={selectedWorkflowInstance ? "workflow-" + selectedWorkflowInstance.id : undefined}
       />
-      <TableComposable
+      <Table
         aria-label="Workflow List Table"
         {...componentOuiaProps(ouiaId, "workflow-list-table", ouiaSafe ? ouiaSafe : !isLoading)}
       >
@@ -463,7 +464,7 @@ const WorkflowListTable: React.FC<WorkflowListTableProps & OUIAProps> = ({
             </Tr>
           </tbody>
         )}
-      </TableComposable>
+      </Table>
     </React.Fragment>
   );
 };

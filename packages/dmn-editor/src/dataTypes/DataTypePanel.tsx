@@ -29,12 +29,7 @@ import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { TypeRefSelector } from "./TypeRefSelector";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownSeparator,
-  KebabToggle,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownItem, DropdownSeparator, KebabToggle } from "@patternfly/react-core/deprecated";
 import { DataType, DataTypeIndex, EditItemDefinition, AddItemComponent } from "./DataTypes";
 import { DataTypeName } from "./DataTypeName";
 import { ItemComponentsTable } from "./ItemComponentsTable";
@@ -217,7 +212,7 @@ export function DataTypePanel({
         direction={{ default: "row" }}
       >
         <FlexItem>
-          <Flex direction={{ default: "column" }}>
+          <Flex direction={{ default: "column" }} gap={{ default: "gapMd" }}>
             <FlexItem>
               <Flex direction={{ default: "row" }}>
                 {dataType.namespace !== thisDmnsNamespace && (
@@ -272,7 +267,9 @@ export function DataTypePanel({
             <span>|</span>
             <Button variant={ButtonVariant.link}>View usages</Button> */}
           <Dropdown
-            toggle={<KebabToggle id={"toggle-kebab-top-level"} onToggle={setTopLevelDropdownOpen} />}
+            toggle={
+              <KebabToggle id={"toggle-kebab-top-level"} onToggle={(_event, val) => setTopLevelDropdownOpen(val)} />
+            }
             onSelect={() => setTopLevelDropdownOpen(false)}
             isOpen={topLevelDropdownOpen}
             menuAppendTo={document.body}
@@ -327,24 +324,23 @@ export function DataTypePanel({
         </FlexItem>
       </Flex>
       {/* This padding was necessary because PF4 has a @media query that doesn't run inside iframes, for some reason. */}
-      <PageSection style={{ padding: "24px" }}>
+      <PageSection style={{ padding: "24px" }} variant="light">
         <TextArea
           isDisabled={isReadOnly}
           key={dataType.itemDefinition["@_id"]}
           value={dataType.itemDefinition.description?.__$$text}
-          onChange={changeDescription}
+          onChange={(_event, val) => changeDescription(val)}
           placeholder={"Enter a description..."}
           resizeOrientation={"vertical"}
           aria-label={"Data type description"}
         />
-        <br />
         <br />
         <Divider inset={{ default: "insetMd" }} />
         <br />
         <Switch
           label={"Is collection?"}
           isChecked={!!dataType.itemDefinition["@_isCollection"]}
-          onChange={toggleCollection}
+          onChange={(_event, val) => toggleCollection(val)}
           isDisabled={isReadOnly}
         />
         <br />
@@ -352,7 +348,7 @@ export function DataTypePanel({
         <Switch
           label={"Is struct?"}
           isChecked={isStruct(dataType.itemDefinition)}
-          onChange={toggleStruct}
+          onChange={(_event, val) => toggleStruct(val)}
           isDisabled={isReadOnly}
         ></Switch>
         <br />

@@ -17,19 +17,17 @@
  * under the License.
  */
 
-import { DeploymentOptionArgs } from "../../types";
-import { DeploymentOption, DeploymentOptionOpts } from "../types";
-import { DeploymentYaml } from "./DeploymentYaml";
-import { ServiceYaml } from "./ServiceYaml";
+import { Locator } from "@playwright/test";
 
-export function KogitoQuarkusBlankAppOption(args: DeploymentOptionArgs, opts?: DeploymentOptionOpts): DeploymentOption {
-  return {
-    name: "Kogito Quarkus Blank App",
-    content: `
-${DeploymentYaml(args)}
----
-${ServiceYaml()}
-`,
-    ...opts,
-  };
+export class QuestionProperties {
+  constructor(public panel: Locator) {}
+
+  public async setQuestion(args: { newQuestion: string }) {
+    await this.panel.getByPlaceholder("Enter a question...").fill(args.newQuestion);
+    await this.panel.getByPlaceholder("Enter a question...").press("Tab");
+  }
+
+  public async getQuestion() {
+    return await this.panel.getByPlaceholder("Enter a question...").inputValue();
+  }
 }

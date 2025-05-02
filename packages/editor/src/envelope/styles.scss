@@ -18,15 +18,15 @@
  */
 
 :not(.vscode-dark) {
-  .kie-tools--loading-screen .pf-l-bullseye {
-    color: var(--pf-global--Color--dark-100);
-    background-color: var(--pf-global--BackgroundColor--light-100);
+  .kie-tools--loading-screen .pf-v5-l-bullseye {
+    color: var(--pf-v5-global--Color--dark-100);
+    background-color: var(--pf-v5-global--BackgroundColor--light-100);
   }
 }
 
-.vscode-dark .kie-tools--loading-screen .pf-l-bullseye {
-  color: var(--pf-global--Color--light-100);
-  background-color: var(--pf-global--BackgroundColor--dark-100);
+.vscode-dark .kie-tools--loading-screen .pf-v5-l-bullseye {
+  color: var(--pf-v5-global--Color--light-100);
+  background-color: var(--pf-v5-global--BackgroundColor--dark-100);
 }
 
 .kie-tools--loading-screen {
@@ -76,15 +76,15 @@
 /* PF3 -> PF4 overrides */
 
 .kie-tools--keyboard-shortcuts {
-  font-family: var(--pf-global--FontFamily--sans-serif);
-  color: var(--pf-global--Color--dark-100);
+  font-family: var(--pf-v5-global--FontFamily--sans-serif);
+  color: var(--pf-v5-global--Color--dark-100);
 }
 
 .kie-tools--keyboard-shortcuts.kie-tools--keyboard-shortcuts-icon.dark {
   color: #979797;
 }
 
-.pf-c-modal-box.kie-tools--keyboard-shortcuts.dark {
+.pf-v5-c-modal-box.kie-tools--keyboard-shortcuts.dark {
   background-color: #313131;
   .h1,
   .h2,
@@ -104,16 +104,16 @@
   dd {
     color: #cccccc;
   }
-  .pf-c-button.pf-m-plain {
+  .pf-v5-c-button.pf-m-plain {
     color: #cccccc;
   }
-  .pf-c-button.pf-m-plain:hover {
+  .pf-v5-c-button.pf-m-plain:hover {
     color: #000;
   }
 }
 
 body {
-  color: var(--pf-global--Color-dark--100);
+  color: var(--pf-v5-global--Color-dark--100);
 }
 
 dl {
@@ -122,5 +122,5 @@ dl {
 
 dt,
 dd {
-  line-height: var(--pf-global--LineHeight--md) !important;
+  line-height: var(--pf-v5-global--LineHeight--md) !important;
 }

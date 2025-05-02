@@ -158,4 +158,28 @@ test.describe("Change Properties - Decision", () => {
 
     await expect(diagram.get()).toHaveScreenshot("change-decision-position.png");
   });
+
+  test("should change the Decision node properties using the BEE properties panel", async ({
+    nodes,
+    bee,
+    beePropertiesPanel,
+  }) => {
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/1459",
+    });
+    await nodes.edit({ name: DefaultNodeName.DECISION });
+    await bee.selectExpressionMenu.selectContext();
+
+    await bee.expression.asContext().expressionHeaderCell.select();
+
+    await beePropertiesPanel.decisionNode.setDescription({ newDescription: "New Description" });
+    expect(await beePropertiesPanel.decisionNode.getDescription()).toBe("New Description");
+
+    await beePropertiesPanel.decisionNode.setAllowedAnswers({ newAllowedAnswers: "New Allowed Answers" });
+    expect(await beePropertiesPanel.decisionNode.getAllowedAnswers()).toBe("New Allowed Answers");
+
+    await beePropertiesPanel.decisionNode.setQuestion({ newQuestion: "New Question" });
+    expect(await beePropertiesPanel.decisionNode.getQuestion()).toBe("New Question");
+  });
 });

@@ -189,7 +189,7 @@ ENTRYPOINT ["/bin/bash", "-c"]
 # The CMD directive is not necessary since KIE Sandbox will overwrite it.
 ```
 
-As an example of a template Quarkus app, checkout [dev-deployment-kogito-quarkus-blank-app](../../dev-deployment-kogito-quarkus-blank-app).
+As an example of a template Quarkus app, checkout [dev-deployment-quarkus-blank-app](../../dev-deployment-quarkus-blank-app).
 
 Now all you have to do is build and publish your image.
 
@@ -236,7 +236,7 @@ When creating a Dev Deployment on KIE Tools you'll be met with this modal:
 
 ![Deploy modal](./images/create_dev_deployment.png)
 
-By default, it's going to use the pre-configured `Kogito Quarkus Blank App` option, but we want to use our custom image, so we need to open the dropdown and select `Custom Image`.
+By default, it's going to use the pre-configured `Quarkus Blank App` option, but we want to use our custom image, so we need to open the dropdown and select `Custom Image`.
 
 ![Deploy modal with custom image](./images/create_dev_deployment_custom_image.png)
 
@@ -263,7 +263,7 @@ Before any deployment is made when adding a new Kubernetes or OpenShift cluster 
 When you click on "Deploy" a lot has to happen behind the scenes so that your Dev Deployment happens. Here's a basic step-by-step:
 
 1. KIE Sandbox will zip all the files in the workspace being deployed (ignoring .git directories);
-2. Then it will load the chosen deployment option (Custom Image or Kogito Quarkus Blank app) YAML files and modify them dynamically:
+2. Then it will load the chosen deployment option (Custom Image or Quarkus Blank app) YAML files and modify them dynamically:
    - Applying the required patches to set KIE Sandbox labels, annotations, and resource names;
    - Applying patches related to the parameters set in the deployment modal (each parameter corresponds to a set of patches and tokens);
    - Interpolate all tokens with their corresponding values, including parameters;
@@ -277,6 +277,6 @@ When you click on "Deploy" a lot has to happen behind the scenes so that your De
 6. The Dev Deployment Upload Service receives the .zip file and extracts it to the defined path (this path is set using the configured environment variables on the container). After the extraction is over, the service ends with a status code 0 and calls the next defined command (usually `mvn quarkus:dev` or whatever is defined in the Custom Image option parameter);
 7. A quarkus application starts loading inside the container, while KIE Sandbox starts polling the container to check if the quarkus app is ready;
 8. When quarkus finishes loading and the polling succeeds, KIE Sandbox updates the Dev Deployment icon to a success icon and provides a link to the Dev Deployment endpoint, which can be either:
-   - The Quarkus swagger-ui if deployed via Custom Image or Kogito Quarkus Blank App options, without the DMN Form Webapp parameter;
+   - The Quarkus swagger-ui if deployed via Custom Image or Quarkus Blank App options, without the DMN Form Webapp parameter;
    - The DMN Form Webapp if the checkbox for it was checked;
 9. Users can interact with the Dev Deployment and test/validate their decisions and processes, after that's finished it's possible to delete a deployment by hovering over it in the Dev Deployments list and clicking on the trash icon.

@@ -43,7 +43,7 @@ export const AboutButton: React.FunctionComponent = () => {
   const kogitoRuntimesVersion = process.env.WEBPACK_REPLACE__kogitoRuntimeVersion;
   const quarkusVersion = process.env.WEBPACK_REPLACE__quarkusPlatformVersion;
   const devDeploymentsBaseImageUrl = env.KIE_SANDBOX_DEV_DEPLOYMENT_BASE_IMAGE_URL;
-  const devDeploymentsKogitoQuarkusBlankAppImageUrl = env.KIE_SANDBOX_DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE_URL;
+  const devDeploymentsQuarkusBlankAppImageUrl = env.KIE_SANDBOX_DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE_URL;
   const devDeploymentsDmnFormWebappImageUrl = env.KIE_SANDBOX_DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_URL;
   const extendedServicesVersion = process.env.WEBPACK_REPLACE__extendedServicesCompatibleVersion;
   const commitSha = process.env.WEBPACK_REPLACE__commitHash;
@@ -64,7 +64,7 @@ export const AboutButton: React.FunctionComponent = () => {
       </Button>
       <Modal
         header={
-          <MastheadBrand style={{ textDecoration: "none" }}>
+          <MastheadBrand component="a" style={{ textDecoration: "none" }}>
             <Flex alignItems={{ default: "alignItemsCenter" }}>
               <FlexItem style={{ display: "flex", alignItems: "center" }}>
                 <Brand src={routes.static.images.appLogoDefault.path({})} alt={"Logo"} heights={{ default: "80px" }}>
@@ -101,8 +101,8 @@ export const AboutButton: React.FunctionComponent = () => {
               <DescriptionListDescription>{devDeploymentsBaseImageUrl}</DescriptionListDescription>
             </DescriptionListGroup>
             <DescriptionListGroup>
-              <DescriptionListTerm>Dev Deployments Kogito Quarkus Blank App image URL: </DescriptionListTerm>
-              <DescriptionListDescription>{devDeploymentsKogitoQuarkusBlankAppImageUrl}</DescriptionListDescription>
+              <DescriptionListTerm>Dev Deployments Quarkus Blank App image URL: </DescriptionListTerm>
+              <DescriptionListDescription>{devDeploymentsQuarkusBlankAppImageUrl}</DescriptionListDescription>
             </DescriptionListGroup>
             <DescriptionListGroup>
               <DescriptionListTerm>Dev Deployments DMN Form webapp image URL: </DescriptionListTerm>

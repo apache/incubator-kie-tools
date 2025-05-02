@@ -9,7 +9,7 @@ exports[`DataDictionaryContainer DataField:Render 1`] = `
     class="data-dictionary__overview"
   >
     <div
-      class="pf-l-flex data-dictionary__toolbar"
+      class="pf-v5-l-flex data-dictionary__toolbar"
       data-ouia-component-id="dd-toolbar"
     >
       <div
@@ -17,21 +17,21 @@ exports[`DataDictionaryContainer DataField:Render 1`] = `
       >
         <button
           aria-disabled="false"
-          class="pf-c-button pf-m-primary"
+          class="pf-v5-c-button pf-m-primary"
           data-ouia-component-id="add-data-type"
-          data-ouia-component-type="PF4/Button"
+          data-ouia-component-type="PF5/Button"
           data-ouia-safe="true"
           type="button"
         >
           <span
-            class="pf-c-button__icon pf-m-start"
+            class="pf-v5-c-button__icon pf-m-start"
           >
             <svg
               aria-hidden="true"
+              class="pf-v5-svg"
               fill="currentColor"
               height="1em"
               role="img"
-              style="vertical-align: -0.125em;"
               viewBox="0 0 448 512"
               width="1em"
             >
@@ -48,21 +48,21 @@ exports[`DataDictionaryContainer DataField:Render 1`] = `
       >
         <button
           aria-disabled="false"
-          class="pf-c-button pf-m-secondary"
+          class="pf-v5-c-button pf-m-secondary"
           data-ouia-component-id="add-multiple-data-type"
-          data-ouia-component-type="PF4/Button"
+          data-ouia-component-type="PF5/Button"
           data-ouia-safe="true"
           type="button"
         >
           <span
-            class="pf-c-button__icon pf-m-start"
+            class="pf-v5-c-button__icon pf-m-start"
           >
             <svg
               aria-hidden="true"
+              class="pf-v5-svg"
               fill="currentColor"
               height="1em"
               role="img"
-              style="vertical-align: -0.125em;"
               viewBox="0 0 320 512"
               width="1em"
             >
@@ -79,21 +79,21 @@ exports[`DataDictionaryContainer DataField:Render 1`] = `
       >
         <button
           aria-disabled="false"
-          class="pf-c-button pf-m-secondary"
+          class="pf-v5-c-button pf-m-secondary"
           data-ouia-component-id="order-toggle"
-          data-ouia-component-type="PF4/Button"
+          data-ouia-component-type="PF5/Button"
           data-ouia-safe="true"
           type="button"
         >
           <span
-            class="pf-c-button__icon pf-m-start"
+            class="pf-v5-c-button__icon pf-m-start"
           >
             <svg
               aria-hidden="true"
+              class="pf-v5-svg"
               fill="currentColor"
               height="1em"
               role="img"
-              style="vertical-align: -0.125em;"
               viewBox="0 0 320 512"
               width="1em"
             >
@@ -122,10 +122,10 @@ exports[`DataDictionaryContainer DataField:Render 1`] = `
           class="editable-item__inner"
         >
           <div
-            class="pf-l-split pf-m-gutter"
+            class="pf-v5-l-split pf-m-gutter"
           >
             <div
-              class="pf-l-split__item"
+              class="pf-v5-l-split__item"
             >
               <span
                 class="data-type-item__name"
@@ -134,41 +134,49 @@ exports[`DataDictionaryContainer DataField:Render 1`] = `
               </span>
             </div>
             <div
-              class="pf-l-split__item pf-m-fill"
+              class="pf-v5-l-split__item pf-m-fill"
             >
               <span
-                class="pf-c-label pf-m-blue data-type-item__type-label"
+                class="pf-v5-c-label pf-m-blue data-type-item__type-label"
                 data-ouia-component-id="string"
                 data-ouia-component-type="data-type-label"
               >
                 <span
-                  class="pf-c-label__content"
+                  class="pf-v5-c-label__content"
                 >
-                  string
+                  <span
+                    class="pf-v5-c-label__text"
+                  >
+                    string
+                  </span>
                 </span>
               </span>
                
               <span
-                class="pf-c-label pf-m-blue data-type-item__type-label"
+                class="pf-v5-c-label pf-m-blue data-type-item__type-label"
                 data-ouia-component-id="categorical"
                 data-ouia-component-type="data-optype-label"
               >
                 <span
-                  class="pf-c-label__content"
+                  class="pf-v5-c-label__content"
                 >
-                  categorical
+                  <span
+                    class="pf-v5-c-label__text"
+                  >
+                    categorical
+                  </span>
                 </span>
               </span>
                
             </div>
             <div
-              class="pf-l-split__item"
+              class="pf-v5-l-split__item"
             >
               <button
                 aria-disabled="false"
-                class="pf-c-button pf-m-plain editable-item__delete"
+                class="pf-v5-c-button pf-m-plain editable-item__delete"
                 data-ouia-component-id="delete-field"
-                data-ouia-component-type="PF4/Button"
+                data-ouia-component-type="PF5/Button"
                 data-ouia-safe="true"
                 data-testid="data-type-item-n0__delete"
                 id="data-type-item-n0__delete"
@@ -176,10 +184,10 @@ exports[`DataDictionaryContainer DataField:Render 1`] = `
               >
                 <svg
                   aria-hidden="true"
+                  class="pf-v5-svg"
                   fill="currentColor"
                   height="1em"
                   role="img"
-                  style="vertical-align: -0.125em;"
                   viewBox="0 0 448 512"
                   width="1em"
                 >
@@ -204,10 +212,10 @@ exports[`DataDictionaryContainer DataField:Render 1`] = `
           class="editable-item__inner"
         >
           <div
-            class="pf-l-split pf-m-gutter"
+            class="pf-v5-l-split pf-m-gutter"
           >
             <div
-              class="pf-l-split__item"
+              class="pf-v5-l-split__item"
             >
               <span
                 class="data-type-item__name"
@@ -216,41 +224,49 @@ exports[`DataDictionaryContainer DataField:Render 1`] = `
               </span>
             </div>
             <div
-              class="pf-l-split__item pf-m-fill"
+              class="pf-v5-l-split__item pf-m-fill"
             >
               <span
-                class="pf-c-label pf-m-blue data-type-item__type-label"
+                class="pf-v5-c-label pf-m-blue data-type-item__type-label"
                 data-ouia-component-id="string"
                 data-ouia-component-type="data-type-label"
               >
                 <span
-                  class="pf-c-label__content"
+                  class="pf-v5-c-label__content"
                 >
-                  string
+                  <span
+                    class="pf-v5-c-label__text"
+                  >
+                    string
+                  </span>
                 </span>
               </span>
                
               <span
-                class="pf-c-label pf-m-blue data-type-item__type-label"
+                class="pf-v5-c-label pf-m-blue data-type-item__type-label"
                 data-ouia-component-id="categorical"
                 data-ouia-component-type="data-optype-label"
               >
                 <span
-                  class="pf-c-label__content"
+                  class="pf-v5-c-label__content"
                 >
-                  categorical
+                  <span
+                    class="pf-v5-c-label__text"
+                  >
+                    categorical
+                  </span>
                 </span>
               </span>
                
             </div>
             <div
-              class="pf-l-split__item"
+              class="pf-v5-l-split__item"
             >
               <button
                 aria-disabled="false"
-                class="pf-c-button pf-m-plain editable-item__delete"
+                class="pf-v5-c-button pf-m-plain editable-item__delete"
                 data-ouia-component-id="delete-field"
-                data-ouia-component-type="PF4/Button"
+                data-ouia-component-type="PF5/Button"
                 data-ouia-safe="true"
                 data-testid="data-type-item-n1__delete"
                 id="data-type-item-n1__delete"
@@ -258,10 +274,10 @@ exports[`DataDictionaryContainer DataField:Render 1`] = `
               >
                 <svg
                   aria-hidden="true"
+                  class="pf-v5-svg"
                   fill="currentColor"
                   height="1em"
                   role="img"
-                  style="vertical-align: -0.125em;"
                   viewBox="0 0 448 512"
                   width="1em"
                 >

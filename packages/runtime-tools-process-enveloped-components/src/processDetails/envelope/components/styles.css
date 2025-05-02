@@ -17,10 +17,10 @@
  * under the License.
  */
 .kogito-process-details--details__title small {
-  --pf-c-content--small--Color: var(--pf-global--Color--100) !important;
+  --pf-v5-c-content--small--Color: var(--pf-v5-global--Color--100) !important;
 }
 .kogito-process-details--details__buttonMargin {
-  margin-right: var(--pf-global--spacer--md) !important;
+  margin-right: var(--pf-v5-global--spacer--md) !important;
 }
 .kogito-process-details--details__marginSpaces {
   margin-top: 20px;
@@ -77,18 +77,18 @@
 }
 /* This adds the line extending the length of the timeline, while the items are pushed left to overlap it halfway. The first child is pushed up to hide the top of the dashed line. The status icon must be given a background so that the line doesn't show through the icon. */
 .kogito-process-details--timeline {
-  border-left: var(--pf-global--BorderWidth--md) dashed var(--pf-global--BorderColor--300);
-  margin-left: var(--pf-global--spacer--sm);
-  margin-top: var(--pf-global--spacer--sm);
+  border-left: var(--pf-v5-global--BorderWidth--md) dashed var(--pf-v5-global--BorderColor--300);
+  margin-left: var(--pf-v5-global--spacer--sm);
+  margin-top: var(--pf-v5-global--spacer--sm);
 }
 .kogito-process-details--timeline-item {
   background-color: transparent;
-  margin-left: calc(-1 * var(--pf-global--spacer--sm));
+  margin-left: calc(-1 * var(--pf-v5-global--spacer--sm));
 }
 .kogito-process-details--timeline-item:first-child {
-  margin-top: calc(-1 * var(--pf-global--spacer--sm));
+  margin-top: calc(-1 * var(--pf-v5-global--spacer--sm));
 }
 .kogito-process-details--timeline-status {
-  background-color: var(--pf-global--BackgroundColor--100);
-  margin-left: calc(-1 * var(--pf-global--spacer--sm));
+  background-color: var(--pf-v5-global--BackgroundColor--100);
+  margin-left: calc(-1 * var(--pf-v5-global--spacer--sm));
 }

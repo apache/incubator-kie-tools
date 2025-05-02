@@ -22,16 +22,18 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import "./OutputFieldRow.scss";
 import { DataType, OpType, OutputField, RankOrder, ResultFeature } from "@kie-tools/pmml-editor-marshaller";
 import { OutputLabelsEditMode } from "../atoms";
-import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+
 import { ValidatedType } from "../../../types";
 import useOnclickOutside from "react-cool-onclickoutside";
 import { Operation, useOperation } from "../../EditorScorecard";
 import { useValidationRegistry } from "../../../validation";
 import { Builder } from "../../../paths";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 interface OutputFieldEditRowProps {
   modelIndex: number;
@@ -150,14 +152,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
         <StackItem>
           <Split hasGutter={true}>
             <SplitItem>
-              <FormGroup
-                label="Name"
-                fieldId="output-name-helper"
-                isRequired={true}
-                helperTextInvalid="Name is mandatory and must be unique"
-                helperTextInvalidIcon={<ExclamationCircleIcon />}
-                validated={name?.valid ? "default" : "error"}
-              >
+              <FormGroup label="Name" fieldId="output-name-helper" isRequired={true}>
                 <TextInput
                   type="text"
                   id="output-name"
@@ -167,7 +162,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                   placeholder="Name"
                   validated={name?.valid ? "default" : "error"}
                   autoFocus={true}
-                  onChange={(e) => {
+                  onChange={(_event, e) => {
                     setName({
                       value: e,
                       valid: validateOutputName(e),
@@ -187,6 +182,19 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                   }}
                   ouiaId="set-output-field-name"
                 />
+                {name?.valid === true ? (
+                  <FormHelperText>
+                    <HelperText>
+                      <HelperTextItem variant="default"></HelperTextItem>
+                    </HelperText>
+                  </FormHelperText>
+                ) : (
+                  <FormHelperText>
+                    <HelperText>
+                      <HelperTextItem variant="error">Name is mandatory and must be unique</HelperTextItem>
+                    </HelperText>
+                  </FormHelperText>
+                )}
               </FormGroup>
             </SplitItem>
             <SplitItem isFilled={true}>
@@ -204,7 +212,7 @@ const OutputFieldEditRow = (props: OutputFieldEditRowProps) => {
                   aria-describedby="output-dataType-helper"
                   className="ignore-onclickoutside"
                   variant={SelectVariant.single}
-                  onToggle={typeToggle}
+                  onToggle={(_event, isOpen: boolean) => typeToggle(isOpen)}
                   onSelect={(event: any, selection: any, isPlaceholder: boolean) => {
                     setIsTypeSelectOpen(false);
                     setDataType(isPlaceholder ? undefined : selection);

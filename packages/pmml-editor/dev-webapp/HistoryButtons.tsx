@@ -68,7 +68,7 @@ export const HistoryButtons = (props: HistoryButtonsProps) => {
             label="Dark"
             labelOff="Light"
             checked={theme === Theme.DARK}
-            onChange={(checked) => {
+            onChange={(_event, checked) => {
               setTheme(checked ? Theme.DARK : Theme.LIGHT);
               props.setTheme(checked ? Theme.DARK : Theme.LIGHT);
             }}

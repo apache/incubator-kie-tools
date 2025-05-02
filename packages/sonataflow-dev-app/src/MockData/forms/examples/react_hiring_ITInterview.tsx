@@ -63,7 +63,7 @@ const Form__hiring_ITInterview: React.FC<any> = (props: any) => {
     setFormApi(api);
   }, []);
   return (
-    <div className={"pf-c-form"}>
+    <div className={"pf-v5-c-form"}>
       <FormGroup fieldId="uniforms-0001-0001">
         <Checkbox
           isChecked={approve}
@@ -71,11 +71,11 @@ const Form__hiring_ITInterview: React.FC<any> = (props: any) => {
           id={"uniforms-0001-0001"}
           name={"approve"}
           label={"Approve"}
-          onChange={set__approve}
+          onChange={(_event, val) => set__approve(val)}
         />
       </FormGroup>
       <Card>
-        <CardBody className="pf-c-form">
+        <CardBody className="pf-v5-c-form">
           <label>
             <b>Candidate</b>
           </label>
@@ -87,7 +87,7 @@ const Form__hiring_ITInterview: React.FC<any> = (props: any) => {
               placeholder={""}
               type={"text"}
               value={candidate__email}
-              onChange={set__candidate__email}
+              onChange={(_event, val) => set__candidate__email(val)}
             />
           </FormGroup>
           <FormGroup fieldId={"uniforms-0001-0005"} label={"Name"} isRequired={false}>
@@ -98,7 +98,7 @@ const Form__hiring_ITInterview: React.FC<any> = (props: any) => {
               placeholder={""}
               type={"text"}
               value={candidate__name}
-              onChange={set__candidate__name}
+              onChange={(_event, val) => set__candidate__name(val)}
             />
           </FormGroup>
           <FormGroup fieldId={"uniforms-0001-0007"} label={"Salary"} isRequired={false}>
@@ -110,7 +110,7 @@ const Form__hiring_ITInterview: React.FC<any> = (props: any) => {
               placeholder={""}
               step={1}
               value={candidate__salary}
-              onChange={set__candidate__salary}
+              onChange={(_event, val) => set__candidate__salary(val)}
             />
           </FormGroup>
           <FormGroup fieldId={"uniforms-0001-0008"} label={"Skills"} isRequired={false}>
@@ -121,7 +121,7 @@ const Form__hiring_ITInterview: React.FC<any> = (props: any) => {
               placeholder={""}
               type={"text"}
               value={candidate__skills}
-              onChange={set__candidate__skills}
+              onChange={(_event, val) => set__candidate__skills(val)}
             />
           </FormGroup>
         </CardBody>
