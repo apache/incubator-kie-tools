@@ -37,8 +37,12 @@ import {
 } from "@kie-tools-core/react-hooks/dist/useImperativePromiseHandler";
 import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import {
   JavaCodeCompletionAccessor,
   JavaCodeCompletionClass,
@@ -71,6 +75,7 @@ export type DmnEditorRootProps = {
   onOpenedBoxedExpressionEditorNodeChange?: (newOpenedNodeId: string | undefined) => void;
   workspaceRootAbsolutePosixPath: string;
   keyboardShortcutsService: KeyboardShortcutsService | undefined;
+  isEvaluationHighlightsSupported?: boolean;
   isReadOnly: boolean;
   isImportDataTypesFromJavaClassesSupported?: boolean;
   javaCodeCompletionService?: JavaCodeCompletionExposedInteropApi;
@@ -503,6 +508,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
               externalContextName={""}
               externalContextDescription={""}
               issueTrackerHref={""}
+              isEvaluationHighlightsSupported={this.props?.isEvaluationHighlightsSupported}
               isReadOnly={this.state.isReadOnly}
               isImportDataTypesFromJavaClassesSupported={this.props?.isImportDataTypesFromJavaClassesSupported}
               javaCodeCompletionService={this.props?.javaCodeCompletionService}
@@ -737,10 +743,11 @@ function DmnMarshallerFallbackError({ error }: { error: Error }) {
   return (
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
       <EmptyState style={{ maxWidth: "1280px" }}>
-        <EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />
-        <Title size={"lg"} headingLevel={"h4"}>
-          Unable to open file.
-        </Title>
+        <EmptyStateHeader
+          titleText="Unable to open file."
+          icon={<EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />}
+          headingLevel={"h4"}
+        />
         <br />
         <EmptyStateBody>Error details: {error.message}</EmptyStateBody>
       </EmptyState>

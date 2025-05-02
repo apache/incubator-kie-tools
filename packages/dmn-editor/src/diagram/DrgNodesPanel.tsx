@@ -33,8 +33,12 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { Unpacked } from "../tsExt/tsExt";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { computeContainingDecisionServiceHrefsByDecisionHrefs } from "../store/computed/computeContainingDecisionServiceHrefsByDecisionHrefs.ts";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE = "kie-dmn-editor--drg-node";
@@ -109,10 +113,11 @@ export function DrgNodesPanel() {
       {(nodes.length <= 0 && (
         <>
           <EmptyState>
-            <EmptyStateIcon icon={CubesIcon} />
-            <Title size={"md"} headingLevel={"h4"}>
-              No DRG nodes yet
-            </Title>
+            <EmptyStateHeader
+              titleText="No DRG nodes yet"
+              icon={<EmptyStateIcon icon={CubesIcon} />}
+              headingLevel={"h4"}
+            />
             <EmptyStateBody>Use the Palette on the left-hand-side to drag new nodes into the Diagram.</EmptyStateBody>
           </EmptyState>
         </>

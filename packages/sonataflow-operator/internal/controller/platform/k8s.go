@@ -396,7 +396,7 @@ func createOrUpdateKnativeResources(ctx context.Context, client client.Client, p
 					Reason:  services.WaitingKnativeEventing,
 					Message: msg,
 				}
-				return event, fmt.Errorf(msg)
+				return event, fmt.Errorf("%s", msg)
 			}
 		}
 	}

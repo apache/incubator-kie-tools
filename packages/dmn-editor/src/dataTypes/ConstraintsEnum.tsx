@@ -246,7 +246,7 @@ function EnumElement({
         icon={<TimesIcon />}
         onClick={() => onRemove()}
       />
-      {hovered && <Tooltip content={"Remove"} reference={removeButtonRef} />}
+      {hovered && <Tooltip content={"Remove"} triggerRef={removeButtonRef} />}
     </div>
   );
 }

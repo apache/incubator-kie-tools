@@ -445,9 +445,7 @@ digraph G {
   "@kie-tools/jest-base" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/jobs-service-webapp" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/json-yaml-language-service" -> "@kie-tools/yaml-language-server" [ style = "solid", color = "blue" ];
-  "@kie-tools-core/k8s-yaml-to-apiserver-requests" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
-  "@kie-tools-core/k8s-yaml-to-apiserver-requests" -> "@kie-tools/root-env" [ style = "dashed", color = "purple" ];
-  "@kie-tools-core/k8s-yaml-to-apiserver-requests" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
+  "@kie-tools-core/k8s-yaml-to-apiserver-requests" -> "@kie-tools/cors-proxy-api" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/keyboard-shortcuts" -> "@kie-tools-core/envelope-bus" [ style = "solid", color = "purple" ];
   "@kie-tools-core/keyboard-shortcuts" -> "@kie-tools-core/operating-system" [ style = "solid", color = "purple" ];
   "@kie-tools/kie-bc-editors" -> "@kie-tools-core/editor" [ style = "solid", color = "blue" ];
@@ -647,6 +645,7 @@ digraph G {
   "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/runtime-tools-swf-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/sonataflow-dev-app" [ style = "dashed", color = "blue" ];
+  "@kie-tools/sonataflow-operator" -> "@kie-tools/kogito-db-migrator-tool-image" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-operator" -> "@kie-tools/sonataflow-builder-image" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-operator" -> "@kie-tools/sonataflow-devmode-image" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-operator" -> "@kie/kogito-data-index-ephemeral-image" [ style = "dashed", color = "black" ];

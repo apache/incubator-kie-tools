@@ -44,7 +44,7 @@ function UnitablesNestField({
     <div style={{ display: "flex" }}>
       {children ||
         fields?.map((field) => (
-          <div key={field} style={{ width: "100%", borderRight: "1px solid var(--pf-global--palette--black-300)" }}>
+          <div key={field} style={{ width: "100%", borderRight: "1px solid var(--pf-v5-global--palette--black-300)" }}>
             <AutoField disabled={disabled} name={field} {...itemProps} />
           </div>
         ))}

@@ -18,6 +18,7 @@
  */
 
 import { K8sApiServerEndpointByResourceKind, consoleDebugMessage } from "./common";
+import { CorsProxyHeaderKeys } from "@kie-tools/cors-proxy-api";
 
 type K8sApiResourceList = {
   resources: Array<{
@@ -32,10 +33,26 @@ type K8sApiGroups = {
   groups: Array<{ versions: { groupVersion: string } }>;
 };
 
-export async function buildK8sApiServerEndpointsByResourceKind(kubeApiServerUrl: string, token?: string) {
-  const fetchOpts = token // Optional, as local k8s won't require authentication...
-    ? { headers: { Authorization: `Bearer ${token}` } }
-    : {};
+export async function buildK8sApiServerEndpointsByResourceKind(
+  kubeApiServerUrl: string,
+  insecurelyDisableTlsCertificateValidation?: boolean,
+  token?: string
+) {
+  const fetchOpts =
+    token || insecurelyDisableTlsCertificateValidation // Optional, as local k8s won't require authentication...
+      ? {
+          headers: {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            ...(insecurelyDisableTlsCertificateValidation
+              ? {
+                  [CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION]: Boolean(
+                    insecurelyDisableTlsCertificateValidation
+                  ).toString(),
+                }
+              : {}),
+          },
+        }
+      : {};
 
   // Resource kind --> API Group version --> URLs (global and namespaced)
   const map: K8sApiServerEndpointByResourceKind = new Map();

@@ -28,7 +28,7 @@ import { TableIcon } from "@patternfly/react-icons/dist/js/icons/table-icon";
 import { useOnlineI18n } from "../i18n";
 import { FormDmn, FormDmnOutputs, InputRow } from "@kie-tools/form-dmn";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownItem, DropdownToggle } from "@patternfly/react-core/deprecated";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
@@ -176,7 +176,7 @@ export function DmnRunnerDrawerPanelContent() {
       id={"kogito-panel-content"}
       className={"kogito--editor__drawer-content-panel"}
       defaultSize={`${DMN_RUNNER_MIN_WIDTH_TO_ROW_DIRECTION}px`}
-      onResize={onResize}
+      onResize={(_event, val) => onResize(val)}
       isResizable={true}
       minSize={"361px"}
     >

@@ -24,7 +24,7 @@
   xmlns:kie="https://kie.org/dmn/extensions/1.0"
   xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
   xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
-  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
+  xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/"
   id="_C6CBECEB-2BBC-4E14-80B0-17F576B2CF92"
   name="loan_pre_qualification"
   expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"

@@ -19,6 +19,11 @@
 
 .feel-input-textbox {
   overflow: hidden;
+  height: 36px;
+  padding-block-start: var(--pf-v5-c-form-control--PaddingTop);
+  padding-block-end: var(--pf-v5-c-form-control--PaddingBottom);
+  padding-inline-start: var(--pf-v5-c-form-control--PaddingLeft);
+  padding-inline-end: var(--pf-v5-c-form-control--PaddingRight);
 }
 
 .feel-input-textbox .feel-input {

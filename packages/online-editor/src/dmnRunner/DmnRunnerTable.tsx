@@ -36,6 +36,7 @@ import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { NewDmnEditorEnvelopeApi } from "@kie-tools/dmn-editor-envelope/dist/NewDmnEditorEnvelopeApi";
 import { useSettings } from "../settings/SettingsContext";
 import { useEditorDockContext } from "../editor/EditorPageDockContextProvider";
+import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 
 export function DmnRunnerTable() {
   // STATEs
@@ -97,9 +98,10 @@ export function DmnRunnerTable() {
 
   useEffect(() => {
     inputsScrollableElementRef.current.current =
-      document.querySelector(".kie-tools--dmn-runner-table--drawer")?.querySelector(".pf-c-drawer__content") ?? null;
+      document.querySelector(".kie-tools--dmn-runner-table--drawer")?.querySelector(".pf-v5-c-drawer__content") ?? null;
     outputsScrollableElementRef.current.current =
-      document.querySelector(".kie-tools--dmn-runner-table--drawer")?.querySelector(".pf-c-drawer__panel-main") ?? null;
+      document.querySelector(".kie-tools--dmn-runner-table--drawer")?.querySelector(".pf-v5-c-drawer__panel-main") ??
+      null;
   }, []);
 
   const setWidth = useCallback(
@@ -121,6 +123,11 @@ export function DmnRunnerTable() {
   const isLegacyDmnEditor = useMemo(() => settings.editors.useLegacyDmnEditor, [settings.editors.useLegacyDmnEditor]);
 
   const { envelopeServer } = useEditorDockContext();
+
+  const [openedBoxedExpressionNodeId, _] = useSharedValue(
+    (envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>).shared
+      .newDmnEditor_openedBoxedExpressionEditorNodeId
+  );
 
   return (
     <>
@@ -158,6 +165,7 @@ export function DmnRunnerTable() {
                                 }
                               : undefined
                           }
+                          openedBoxedExpressionEditorNodeId={openedBoxedExpressionNodeId}
                         />
                       </div>
                     </DrawerPanelContent>
@@ -319,7 +327,7 @@ function useAnchoredUnitablesDrawerPanel(args: {
   useIntervalUntil(
     useCallback(async () => {
       const resizer = document.querySelector(
-        ".kie-tools--dmn-runner-table--drawer .pf-c-drawer__panel .pf-c-drawer__splitter.pf-m-vertical"
+        ".kie-tools--dmn-runner-table--drawer .pf-v5-c-drawer__panel .pf-v5-c-drawer__splitter.pf-m-vertical"
       ) as HTMLElement | undefined;
 
       if (!resizer) {
@@ -342,11 +350,11 @@ function useAnchoredUnitablesDrawerPanel(args: {
 
   // Keep scrolls in sync and set scrollbarWidth
   useEffect(() => {
-    const content = document.querySelector(".kie-tools--dmn-runner-table--drawer .pf-c-drawer__content") as
+    const content = document.querySelector(".kie-tools--dmn-runner-table--drawer .pf-v5-c-drawer__content") as
       | HTMLElement
       | undefined;
 
-    const panel = document.querySelector(".kie-tools--dmn-runner-table--drawer .pf-c-drawer__panel-main") as
+    const panel = document.querySelector(".kie-tools--dmn-runner-table--drawer .pf-v5-c-drawer__panel-main") as
       | HTMLElement
       | undefined;
 

@@ -46,6 +46,7 @@ import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { AuthOptionsType, getBitbucketClient } from "../../bitbucket/Hooks";
 import { useEnv } from "../../env/hooks/EnvContext";
 import { getGitlabClient } from "../../gitlab/useGitlabClient";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 export const BITBUCKET_OAUTH_TOKEN_SIZE = 40;
@@ -306,7 +307,7 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
                     name="usernameInput"
                     aria-describedby="username-text-input-helper"
                     placeholder={i18n.connectToGitModal[props.authProvider.type].form.username?.placeHolder}
-                    onChange={(v) => setUsernameInput(v.trim())}
+                    onChange={(_event, v) => setUsernameInput(v.trim())}
                   />
                 </FormGroup>
               ),
@@ -314,11 +315,6 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
             })}
             <FormGroup
               isRequired={true}
-              helperTextIcon={validation.helperTextIcon}
-              helperTextInvalidIcon={validation.helperTextInvalidIcon}
-              helperTextInvalid={validation.helperTextInvalid}
-              helperText={validation.helperText}
-              validated={validation.validated}
               label={i18n.connectToGitModal[props.authProvider.type].form.token.label}
               fieldId={"github-pat"}
             >
@@ -334,6 +330,15 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
                 onPaste={(e) => setTokenInput(e.clipboardData.getData("text/plain").slice(0, tokenSize()))}
                 autoFocus={true}
               />
+              <HelperText>
+                {validation.validated === "error" ? (
+                  <HelperTextItem variant="error" icon={validation.helperTextInvalidIcon}>
+                    {validation.helperTextInvalid}
+                  </HelperTextItem>
+                ) : (
+                  <HelperTextItem icon={validation.helperTextIcon}>{validation.helperText}</HelperTextItem>
+                )}
+              </HelperText>
             </FormGroup>
           </Form>
           <br />
@@ -349,7 +354,7 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
             >
               {i18n.connectToGitModal[props.authProvider.type].footer.createNewToken}
               &nbsp;
-              <ExternalLinkAltIcon className="pf-u-mx-sm" />
+              <ExternalLinkAltIcon className="pf-v5-u-mx-sm" />
             </a>
           </h3>
           <br />
@@ -358,7 +363,7 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
             <Text component={TextVariants.blockquote}>
               <InfoAltIcon />
               &nbsp;
-              <span className="pf-u-mr-sm">{i18n.connectToGitModal.auth.disclaimer}&nbsp;</span>
+              <span className="pf-v5-u-mr-sm">{i18n.connectToGitModal.auth.disclaimer}&nbsp;</span>
               <a
                 href={switchExpression(props.authProvider.type, {
                   bitbucket: BITBUCKET_TOKENS_HOW_TO_URL,
@@ -370,7 +375,7 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
               >
                 {i18n.connectToGitModal[props.authProvider.type].body.learnMore}
                 &nbsp;
-                <ExternalLinkAltIcon className="pf-u-mx-sm" />
+                <ExternalLinkAltIcon className="pf-v5-u-mx-sm" />
               </a>
             </Text>
           </TextContent>
