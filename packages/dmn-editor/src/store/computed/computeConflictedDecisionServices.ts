@@ -28,7 +28,7 @@ export function computeConflictedDecisionServices(
 ) {
   const decisionsMap = new Map<string, Array<RF.Node<DmnDiagramNodeData>>>();
   const decisionServiceMap = new Map<string, string[]>();
-  for (const node of diagramData.sortedNodes) {
+  for (const node of diagramData.nodes) {
     if (node.data.dmnObject?.__$$element === "decisionService") {
       const { containedDecisionHrefsRelativeToThisDmn } = getDecisionServicePropertiesRelativeToThisDmn({
         thisDmnsNamespace: definitions["@_namespace"],
@@ -37,7 +37,7 @@ export function computeConflictedDecisionServices(
       });
       for (let i = 0; i < containedDecisionHrefsRelativeToThisDmn.length; i++) {
         if (decisionsMap.has(containedDecisionHrefsRelativeToThisDmn[i])) {
-          let currentArray = decisionsMap.get(containedDecisionHrefsRelativeToThisDmn[i]);
+          const currentArray = decisionsMap.get(containedDecisionHrefsRelativeToThisDmn[i]);
           currentArray?.push(node);
           if (currentArray) decisionsMap.set(containedDecisionHrefsRelativeToThisDmn[i], [...currentArray]);
         } else {
@@ -46,7 +46,7 @@ export function computeConflictedDecisionServices(
       }
       for (let i = 0; i < containedDecisionHrefsRelativeToThisDmn.length; i++) {
         if (decisionServiceMap.has(node.id)) {
-          let currentArray = decisionServiceMap.get(node.id);
+          const currentArray = decisionServiceMap.get(node.id);
           currentArray?.push(containedDecisionHrefsRelativeToThisDmn[i]);
           if (currentArray) decisionServiceMap.set(node.id, [...currentArray]);
         } else {
@@ -57,7 +57,7 @@ export function computeConflictedDecisionServices(
   }
 
   const containedDecisionNodes: string[] = [];
-  for (const node of diagramData.sortedNodes) {
+  for (const node of diagramData.nodes) {
     if (node.data?.dmnObject?.__$$element === "decisionService") {
       containedDecisionNodes.push(
         ...(node.data.dmnObject?.outputDecision ?? []).map((od) => od["@_href"]),
@@ -69,7 +69,7 @@ export function computeConflictedDecisionServices(
   const conflictedDecisionIds = containedDecisionNodes.filter(
     (item, index) => containedDecisionNodes.indexOf(item) !== index
   );
-  const conflictedDecisions = diagramData.sortedNodes.filter((obj) => conflictedDecisionIds.includes(obj.id));
+  const conflictedDecisions = diagramData.nodes.filter((obj) => conflictedDecisionIds.includes(obj.id));
 
   return { decisionsMap, decisionServiceMap, conflictedDecisionIds };
 }
