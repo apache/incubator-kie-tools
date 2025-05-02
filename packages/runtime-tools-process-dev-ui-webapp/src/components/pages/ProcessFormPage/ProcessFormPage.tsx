@@ -19,13 +19,13 @@
 import React, { useState, useCallback, useMemo, ReactElement } from "react";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import ProcessFormContainer from "../../containers/ProcessFormContainer/ProcessFormContainer";
-import "../../styles.css";
 import { useHistory } from "react-router-dom";
-import InlineEdit from "./components/InlineEdit/InlineEdit";
+import { InlineEdit } from "./components/InlineEdit/InlineEdit";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
 import { useProcessFormChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessForm";
+import "../../styles.css";
 
 const ProcessFormPage: React.FC = () => {
   const [notification, setNotification] = useState<Notification>();

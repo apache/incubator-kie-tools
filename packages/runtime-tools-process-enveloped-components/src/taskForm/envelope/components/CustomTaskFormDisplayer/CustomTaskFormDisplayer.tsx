@@ -20,15 +20,15 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { generateFormData } from "../utils/TaskFormDataUtils";
-import { TaskFormChannelApi, User } from "../../../api";
-import { Stack, StackItem } from "@patternfly/react-core/layouts/Stack";
-import { Bullseye } from "@patternfly/react-core/layouts/Bullseye";
+import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
+import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { FormAction } from "@kie-tools/runtime-tools-components/dist/utils";
 import { buildTaskFormContext } from "./utils/utils";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { FormFooter } from "@kie-tools/runtime-tools-components/dist/components/FormFooter";
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { TaskFormChannelApi, User } from "../../../api";
 import {
   EmbeddedFormDisplayer,
   FormDisplayerApi,

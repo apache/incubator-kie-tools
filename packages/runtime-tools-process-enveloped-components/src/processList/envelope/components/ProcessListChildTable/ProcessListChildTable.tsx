@@ -16,9 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ProcessListChannelApi } from "../../../api";
-import { ICell, IRow, IRowCell, Table, TableBody, TableHeader } from "@patternfly/react-table/dist/js/components/Table";
 import React, { useCallback, useEffect, useState } from "react";
+import { Table, TableBody, TableHeader } from "@patternfly/react-table/dist/js/deprecated/components/Table";
 import { getProcessInstanceDescription, ProcessInstanceIconCreator } from "../utils/ProcessListUtils";
 import { HistoryIcon } from "@patternfly/react-icons/dist/js/icons/history-icon";
 import Moment from "react-moment";
@@ -28,7 +27,6 @@ import DisablePopup from "../DisablePopup/DisablePopup";
 import ErrorPopover from "../ErrorPopover/ErrorPopover";
 import "../styles.css";
 import { ProcessInstance, ProcessInstanceState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { ItemDescriptor } from "@kie-tools/runtime-tools-components/dist/components/ItemDescriptor";
 import { EndpointLink } from "@kie-tools/runtime-tools-components/dist/components/EndpointLink";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
@@ -39,6 +37,8 @@ import {
 } from "@kie-tools/runtime-tools-components/dist/components/KogitoEmptyState";
 import _ from "lodash";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { ICell, IRow, IRowCell } from "@patternfly/react-table/dist/js/components";
+import { ProcessListChannelApi } from "../../../api";
 
 const columnNames: string[] = ["__Select", "Id", "Status", "Created", "Last update", "__Actions"];
 
@@ -56,7 +56,7 @@ export interface ProcessListChildTableProps {
   singularProcessLabel: string;
   pluralProcessLabel: string;
 }
-const ProcessListChildTable: React.FC<ProcessListChildTableProps & OUIAProps> = ({
+const ProcessListChildTable: React.FC<ProcessListChildTableProps> = ({
   parentProcessId,
   selectedInstances,
   setSelectedInstances,
@@ -69,8 +69,6 @@ const ProcessListChildTable: React.FC<ProcessListChildTableProps & OUIAProps> = 
   setSelectableInstances,
   singularProcessLabel,
   pluralProcessLabel,
-  ouiaId,
-  ouiaSafe,
 }) => {
   const [rows, setRows] = useState<(IRow | string[])[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -150,11 +148,7 @@ const ProcessListChildTable: React.FC<ProcessListChildTableProps & OUIAProps> = 
             {
               title: (
                 <>
-                  <a
-                    className="kogito-process-list__link"
-                    onClick={() => handleClick(child)}
-                    {...componentOuiaProps(ouiaId, "process-description", ouiaSafe)}
-                  >
+                  <a className="kogito-process-list__link" onClick={() => handleClick(child)}>
                     <strong>
                       <ItemDescriptor itemDescription={getProcessInstanceDescription(child)} />
                     </strong>
@@ -197,9 +191,7 @@ const ProcessListChildTable: React.FC<ProcessListChildTableProps & OUIAProps> = 
               ),
             },
           ];
-          cells.forEach((cellInRow, index) => {
-            cellInRow.props = componentOuiaProps(columnNames[index].toLowerCase(), "process-list-cell", true);
-          });
+          cells.forEach((cellInRow, index) => {});
           tempRows.push({
             // props are not passed to the actual <tr> element (to set OUIA attributes).
             // Seems that only solution is to use TableComposable instead.
@@ -212,7 +204,7 @@ const ProcessListChildTable: React.FC<ProcessListChildTableProps & OUIAProps> = 
         setShowNoDataEmptyState(true);
       }
     },
-    [checkBoxSelect, handleClick, onAbortClick, onRetryClick, onSkipClick, ouiaId, ouiaSafe]
+    [checkBoxSelect, handleClick, onAbortClick, onRetryClick, onSkipClick]
   );
 
   const getChildProcessInstances = useCallback(async (): Promise<void> => {
@@ -275,7 +267,6 @@ const ProcessListChildTable: React.FC<ProcessListChildTableProps & OUIAProps> = 
       rows={rows}
       variant={"compact"}
       className="kogito-management-console__compact-table"
-      {...componentOuiaProps(ouiaId, "process-list-child-table", ouiaSafe ? ouiaSafe : !isLoading)}
     >
       <TableHeader />
       <TableBody />

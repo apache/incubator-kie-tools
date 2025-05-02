@@ -234,7 +234,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
         header={
           <>
             <Title headingLevel="h1" size={TitleSizes["2xl"]}>
-              <InfoCircleIcon className="pf-u-mr-sm" color="var(--pf-global--warning-color--100)" />
+              <InfoCircleIcon className="pf-v5-u-mr-sm" color="var(--pf-v5-global--warning-color--100)" />
               Refresh
             </Title>
           </>
@@ -281,7 +281,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
         header={
           <>
             <Title headingLevel="h1" size={TitleSizes["2xl"]}>
-              <InfoCircleIcon className="pf-u-mr-sm" color="var(--pf-global--danger-color--100)" />
+              <InfoCircleIcon className="pf-v5-u-mr-sm" color="var(--pf-v5-global--danger-color--100)" />
               Error
             </Title>
           </>

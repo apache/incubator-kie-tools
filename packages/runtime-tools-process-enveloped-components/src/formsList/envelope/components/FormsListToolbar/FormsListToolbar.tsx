@@ -19,7 +19,6 @@
 
 import React, { useState } from "react";
 import _ from "lodash";
-import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { FormFilter } from "../../../api";
 import {
   Toolbar,
@@ -29,11 +28,13 @@ import {
   ToolbarItem,
   ToolbarToggleGroup,
 } from "@patternfly/react-core/dist/js/components/Toolbar";
-import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { FilterIcon, SyncIcon } from "@patternfly/react-icons/dist/js/icons";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
+import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
+import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { FilterIcon } from "@patternfly/react-icons/dist/js/icons/filter-icon";
+import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
+import remove from "lodash/remove";
 
 interface FormsListToolbarProps {
   filterFormNames: string[];
@@ -45,13 +46,7 @@ enum Category {
   FORM_NAME = "Form name",
 }
 
-const FormsListToolbar: React.FC<FormsListToolbarProps & OUIAProps> = ({
-  applyFilter,
-  filterFormNames,
-  setFilterFormNames,
-  ouiaSafe,
-  ouiaId,
-}) => {
+const FormsListToolbar: React.FC<FormsListToolbarProps> = ({ applyFilter, filterFormNames, setFilterFormNames }) => {
   const [formNameInput, setFormNameInput] = useState<string>("");
 
   const doResetFilter = (): void => {
@@ -109,16 +104,18 @@ const FormsListToolbar: React.FC<FormsListToolbarProps & OUIAProps> = ({
           categoryName={Category.FORM_NAME}
         >
           <InputGroup>
-            <TextInput
-              name="formName"
-              id="formName"
-              type="search"
-              aria-label="form name"
-              onChange={setFormNameInput}
-              onKeyPress={onEnterClicked}
-              placeholder="Filter by Form name"
-              value={formNameInput}
-            />
+            <InputGroupItem isFill>
+              <TextInput
+                name="formName"
+                id="formName"
+                type="search"
+                aria-label="form name"
+                onChange={(_event, val) => setFormNameInput(val)}
+                onKeyPress={onEnterClicked}
+                placeholder={`Filter by Form name`}
+                value={formNameInput}
+              />
+            </InputGroupItem>
           </InputGroup>
         </ToolbarFilter>
         <ToolbarItem>
@@ -150,11 +147,10 @@ const FormsListToolbar: React.FC<FormsListToolbarProps & OUIAProps> = ({
   return (
     <Toolbar
       id="forms-list-with-filter"
-      className="pf-m-toggle-group-container"
+      className="pf-v5-m-toggle-group-container"
       collapseListedFiltersBreakpoint="xl"
       clearAllFilters={doResetFilter}
       clearFiltersButtonText="Reset to default"
-      {...componentOuiaProps(ouiaId, "forms-list-toolbar", ouiaSafe)}
     >
       <ToolbarContent>{toolbarItems}</ToolbarContent>
     </Toolbar>

@@ -24,11 +24,13 @@ import {
   EmptyStateIcon,
   EmptyStateVariant,
   EmptyStateBody,
-  EmptyStateSecondaryActions,
+  EmptyStateHeader,
+  EmptyStateFooter,
+  EmptyStateActions,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
@@ -80,36 +82,39 @@ export const ServerErrors: React.FC<Props> = (props) => {
   const renderContent = () => (
     <Bullseye>
       <EmptyState variant={EmptyStateVariant.full}>
-        <EmptyStateIcon icon={ExclamationCircleIcon} color="var(--pf-global--danger-color--100)" />
-        <Title headingLevel="h1" size="4xl">
-          Error fetching data
-        </Title>
+        <EmptyStateHeader
+          titleText="Error fetching data"
+          icon={<EmptyStateIcon icon={ExclamationCircleIcon} color="var(--pf-v5-global--danger-color--100)" />}
+          headingLevel="h1"
+        />
         <EmptyStateBody>
           {getErrorSubTitle()}{" "}
           <Button variant="link" isInline id="display-error" onClick={() => setDisplayError(!displayError)}>
             See more details
           </Button>
         </EmptyStateBody>
-        {displayError && (
-          <EmptyStateBody>
-            <ClipboardCopy
-              isCode
-              variant={ClipboardCopyVariant.expansion}
-              isExpanded={true}
-              className="pf-u-text-align-left"
-            >
-              {getErrorContent()}
-            </ClipboardCopy>
-          </EmptyStateBody>
-        )}
-        {props.onGoBack && (
-          <EmptyStateSecondaryActions>
-            <Button variant="link" onClick={props.onGoBack}>
-              Go back
-            </Button>
-          </EmptyStateSecondaryActions>
-        )}
-        {props.children}
+        <EmptyStateFooter>
+          {displayError && (
+            <EmptyStateBody>
+              <ClipboardCopy
+                isCode
+                variant={ClipboardCopyVariant.expansion}
+                isExpanded={true}
+                className="pf-v5-u-text-align-left"
+              >
+                {getErrorContent()}
+              </ClipboardCopy>
+            </EmptyStateBody>
+          )}
+          {props.onGoBack && (
+            <EmptyStateActions>
+              <Button variant="link" onClick={props.onGoBack}>
+                Go back
+              </Button>
+            </EmptyStateActions>
+          )}
+          {props.children}
+        </EmptyStateFooter>
       </EmptyState>
     </Bullseye>
   );

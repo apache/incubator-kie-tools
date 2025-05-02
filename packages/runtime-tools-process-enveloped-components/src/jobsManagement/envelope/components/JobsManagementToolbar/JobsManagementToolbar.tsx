@@ -17,9 +17,9 @@
  * under the License.
  */
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import { DropdownItem, Dropdown, KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownItem, Dropdown, KebabToggle } from "@patternfly/react-core/deprecated";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import {
   Toolbar,
   ToolbarContent,
@@ -238,7 +238,7 @@ const JobsManagementToolbar: React.FC<JobsManagementToolbarProps & OUIAProps> = 
           </ToolbarItem>
         </ToolbarGroup>
         <ToolbarItem variant="separator" />
-        <ToolbarGroup className="pf-u-ml-md" id="jobs-management-buttons">
+        <ToolbarGroup className="pf-v5-u-ml-md" id="jobs-management-buttons">
           {cancelJobsOption}
         </ToolbarGroup>
       </ToolbarContent>

@@ -24,9 +24,9 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStateSecondaryActions,
+  EmptyStateActions,
   EmptyStateVariant,
-} from "@patternfly/react-core/dist/js/components/EmptyState";
+} from "@patternfly/react-core";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 
 interface NewProps {
@@ -40,7 +40,7 @@ interface UploadProps {
 interface AllProps extends NewProps, UploadProps {}
 
 export const YardEmptyState = (props: AllProps) => (
-  <EmptyState variant={EmptyStateVariant.small}>
+  <EmptyState variant={EmptyStateVariant.sm}>
     <EmptyStateIcon icon={CubesIcon} />
     <Title headingLevel="h4" size="lg">
       No YARD document
@@ -50,14 +50,14 @@ export const YardEmptyState = (props: AllProps) => (
       select a sample.
     </EmptyStateBody>
     <FileChooser setContent={props.setContent} />
-    <EmptyStateSecondaryActions>
+    <EmptyStateActions>
       <Button variant="link" onClick={(e) => props.newContent("yaml")} ouiaId="new-button">
         New YAML
       </Button>
       <Button variant="link" ouiaId="new-button" isDisabled={true}>
         Try YAML sample (not yet available)
       </Button>
-    </EmptyStateSecondaryActions>
+    </EmptyStateActions>
   </EmptyState>
 );
 

@@ -18,7 +18,7 @@
  */
 
 import React from "react";
-import { Dropdown, DropdownProps } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownProps } from "@patternfly/react-core/deprecated";
 
 import { useWindowSizeRelationToBreakpoint } from "./hooks";
 import { ResponsiveDropdownContext } from "./ResponsiveDropdownContext";

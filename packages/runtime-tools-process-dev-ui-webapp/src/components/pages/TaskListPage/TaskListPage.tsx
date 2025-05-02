@@ -16,27 +16,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useEffect } from "react";
+import React from "react";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import TaskListContainer from "../../containers/TaskListContainer/TaskListContainer";
 import TaskListSwitchUser from "./components/TaskListSwitchUser";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
-import "../../styles.css";
-import {
-  OUIAProps,
-  componentOuiaProps,
-  ouiaPageTypeAndObjectId,
-} from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
+import "../../styles.css";
 
-const TaskListPage: React.FC<OUIAProps> = (ouiaId, ouiaSafe) => {
+const TaskListPage: React.FC = () => {
   const appContext = useDevUIAppContext();
   const user: string = appContext.getCurrentUser().id;
-  useEffect(() => {
-    return ouiaPageTypeAndObjectId("tasks-page");
-  });
 
   const renderTaskList = (): JSX.Element => {
     return <TaskListContainer />;
@@ -44,16 +36,13 @@ const TaskListPage: React.FC<OUIAProps> = (ouiaId, ouiaSafe) => {
 
   return (
     <React.Fragment>
-      <PageSection
-        variant="light"
-        {...componentOuiaProps("header" + (ouiaId ? "-" + ouiaId : ""), "tasks-page", ouiaSafe)}
-      >
+      <PageSection variant="light">
         <Flex alignItems={{ default: "alignItemsCenter" }}>
           <PageTitle title="Tasks" />
           {user.length > 0 && <TaskListSwitchUser user={user} />}
         </Flex>
       </PageSection>
-      <PageSection {...componentOuiaProps("content" + (ouiaId ? "-" + ouiaId : ""), "tasks-page-section", ouiaSafe)}>
+      <PageSection>
         <Card className="Dev-ui__card-size">{renderTaskList()}</Card>
       </PageSection>
     </React.Fragment>

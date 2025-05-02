@@ -245,7 +245,7 @@ export const TaskDetails: React.FC<Props> = ({ taskId }) => {
         <Drawer isExpanded={isDetailsExpanded}>
           <DrawerContent panelContent={taskDetailsPanel}>
             <DrawerContentBody>
-              <CardBody className="pf-u-h-100">{taskFormContent}</CardBody>
+              <CardBody className="pf-v5-u-h-100">{taskFormContent}</CardBody>
             </DrawerContentBody>
           </DrawerContent>
         </Drawer>

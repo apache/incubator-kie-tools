@@ -26,7 +26,9 @@ import {
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
-  EmptyStateSecondaryActions,
+  EmptyStateActions,
+  EmptyStateHeader,
+  EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
@@ -74,21 +76,24 @@ export const ManagementConsoleHome = () => {
     <ManagementConsolePageLayout>
       <PageSection>
         {authSessions.size <= 0 ? (
-          <EmptyState variant={EmptyStateVariant.large}>
+          <EmptyState variant={EmptyStateVariant.lg}>
             <br />
             <br />
-            <EmptyStateIcon icon={CubesIcon} />
-            <Title headingLevel="h4" size="lg">
-              {`Welcome to ${env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_APP_NAME}`}
-            </Title>
+            <EmptyStateHeader
+              titleText={<>{`Welcome to ${env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_APP_NAME}`}</>}
+              icon={<EmptyStateIcon icon={CubesIcon} />}
+              headingLevel="h4"
+            />
             <EmptyStateBody>
               Start by connecting to a runtime to manage Process Instances, Tasks, and Jobs.
             </EmptyStateBody>
-            <EmptyStateSecondaryActions>
-              <Button onClick={() => setIsNewAuthSessionModalOpen(true)} icon={<PlusIcon />}>
-                Connect to a runtime...
-              </Button>
-            </EmptyStateSecondaryActions>
+            <EmptyStateFooter>
+              <EmptyStateActions>
+                <Button onClick={() => setIsNewAuthSessionModalOpen(true)} icon={<PlusIcon />}>
+                  Connect to a runtime...
+                </Button>
+              </EmptyStateActions>
+            </EmptyStateFooter>
           </EmptyState>
         ) : (
           <Flex justifyContent={{ default: "justifyContentCenter" }}>

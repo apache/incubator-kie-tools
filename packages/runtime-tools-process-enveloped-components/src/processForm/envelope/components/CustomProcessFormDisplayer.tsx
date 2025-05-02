@@ -16,8 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import React, { useEffect, useRef, useState } from "react";
+import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { v4 as uuidv4 } from "uuid";
 import { ProcessFormChannelApi } from "../../api";
 import { FormAction } from "@kie-tools/runtime-tools-components/dist/utils";

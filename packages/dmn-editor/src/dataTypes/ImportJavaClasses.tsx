@@ -19,8 +19,8 @@
 
 import * as React from "react";
 import { useCallback, useState } from "react";
-import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
-import { Spinner } from "@patternfly/react-core/dist/esm/components/Spinner";
+import { DropdownItem } from "@patternfly/react-core/dist/js/deprecated/components/Dropdown/DropdownItem";
+import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";

@@ -17,7 +17,7 @@
  * under the License.
  */
 import Moment from "react-moment";
-import { Dropdown, KebabToggle, DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, KebabToggle, DropdownItem } from "@patternfly/react-core/deprecated";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { Stack } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -320,7 +320,7 @@ const ProcessDetailsTimelinePanel: React.FC<Props> = ({ data, jobs, channelApi, 
           onSelect={() => onDropdownSelect("timeline-kebab-toggle-" + index)}
           toggle={
             <KebabToggle
-              onToggle={(isOpen) => onKebabToggle(isOpen, "timeline-kebab-toggle-" + index)}
+              onToggle={(_event, isOpen) => onKebabToggle(isOpen, "timeline-kebab-toggle-" + index)}
               id={"timeline-kebab-toggle-" + index}
               data-testid={"timeline-kebab-toggle-" + index}
             />
@@ -340,8 +340,8 @@ const ProcessDetailsTimelinePanel: React.FC<Props> = ({ data, jobs, channelApi, 
       return (
         <Tooltip content={"Node has job"} key={`${id}-job-tooltip-${job.id}`}>
           <OutlinedClockIcon
-            className="pf-u-ml-sm"
-            color="var(--pf-global--icon--Color--dark)"
+            className="pf-v5-u-ml-sm"
+            color="var(--pf-v5-global--icon--Color--dark)"
             onClick={() => handleJobDetails(job)}
           />
         </Tooltip>
@@ -412,7 +412,7 @@ const ProcessDetailsTimelinePanel: React.FC<Props> = ({ data, jobs, channelApi, 
                           {data.error && content.definitionId === data.error.nodeDefinitionId ? (
                             <Tooltip content={data.error.message}>
                               <ErrorCircleOIcon
-                                color="var(--pf-global--danger-color--100)"
+                                color="var(--pf-v5-global--danger-color--100)"
                                 className="kogito-process-details--timeline-status"
                               />
                             </Tooltip>
@@ -423,7 +423,7 @@ const ProcessDetailsTimelinePanel: React.FC<Props> = ({ data, jobs, channelApi, 
                           ) : (
                             <Tooltip content={"Completed"}>
                               <CheckCircleIcon
-                                color="var(--pf-global--success-color--100)"
+                                color="var(--pf-v5-global--success-color--100)"
                                 className="kogito-process-details--timeline-status"
                               />
                             </Tooltip>

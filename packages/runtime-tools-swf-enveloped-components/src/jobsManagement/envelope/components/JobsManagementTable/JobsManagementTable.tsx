@@ -17,14 +17,8 @@
  * under the License.
  */
 import React, { useState, useEffect } from "react";
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  sortable,
-  IRow,
-  ISortBy,
-} from "@patternfly/react-table/dist/js/components/Table";
+import { sortable, IRow, ISortBy } from "@patternfly/react-table/dist/js/components/Table";
+import { Table, TableHeader, TableBody } from "@patternfly/react-table/dist/js/deprecated";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 
 import { Job, JobsSortBy } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
@@ -117,7 +111,7 @@ const JobsManagementTable: React.FC<JobsManagementTableProps & OUIAProps> = ({
   };
 
   columns.map((column) => {
-    column["props"] = { className: "pf-u-text-align-center" };
+    column["props"] = { className: "pf-v5-u-text-align-center" };
     checkNotEmpty() && column.title !== "Id" ? (column["transforms"] = [sortable]) : "";
     return column;
   });
@@ -168,7 +162,7 @@ const JobsManagementTable: React.FC<JobsManagementTableProps & OUIAProps> = ({
         const ele = {
           title: (
             <>
-              <HistoryIcon className="pf-u-mr-sm" /> Updated <Moment fromNow>{job.lastUpdate}</Moment>
+              <HistoryIcon className="pf-v5-u-mr-sm" /> Updated <Moment fromNow>{job.lastUpdate}</Moment>
             </>
           ),
         };

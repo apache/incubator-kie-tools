@@ -19,9 +19,8 @@
 
 import React, { useCallback, useMemo } from "react";
 import { FormGroup, Form } from "@patternfly/react-core/dist/js/components/Form";
-import { Card, CardBody, CardHeaderMain, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
 import { TextVariants, Text } from "@patternfly/react-core/dist/js/components/Text";
-import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import Moment from "react-moment";
 import { FormsListChannelApi } from "../../../api";
@@ -42,9 +41,7 @@ const FormCard: React.FC<FormCardProps> = ({ formData, channelApi }) => {
 
   return (
     <Card isSelectable onClick={handleCardClick}>
-      <CardHeader>
-        <CardHeaderMain>{label}</CardHeaderMain>
-      </CardHeader>
+      <CardHeader>{label}</CardHeader>
       <CardHeader>
         <Text component={TextVariants.h1} className="pf-u-font-weight-bold">
           {formData.name}

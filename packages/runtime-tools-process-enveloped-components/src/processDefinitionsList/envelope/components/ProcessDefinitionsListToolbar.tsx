@@ -116,7 +116,7 @@ const ProcessDefinitionsListToolbar: React.FC<ProcessDefinitionsListToolbarProps
                 data-testid="processName"
                 type="search"
                 aria-label="process definition name"
-                onChange={setProcessNameInput}
+                onChange={(_event, value) => setProcessNameInput(value)}
                 onKeyPress={onEnterClicked}
                 placeholder="Filter by Process Definition name"
                 value={processNameInput}

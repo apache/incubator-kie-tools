@@ -82,7 +82,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
 
   const stateCode = [...nestedStates].join("\n");
   const jsxCode = `<Card>
-          <CardBody className="pf-c-form">
+          <CardBody className="pf-v5-c-form">
           ${bodyLabel}
           ${nestedJsx.join("\n")}
           </CardBody></Card>`;
