@@ -26,16 +26,26 @@ export function collapseOrExpand({
   drdIndex,
   collapse,
   shapeIndex,
+  width,
+  height,
+  autoLayout,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
   collapse: boolean;
   shapeIndex: number;
+  width: number;
+  height: number;
+  autoLayout: boolean;
 }) {
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
   const shape = diagramElements?.[shapeIndex] as Normalized<DMNDI15__DMNShape> | undefined;
 
   if (shape !== undefined && shape !== null) {
     shape["@_isCollapsed"] = collapse;
+    if (collapse === false && shape["dc:Bounds"] && !autoLayout) {
+      shape["dc:Bounds"]["@_width"] = width;
+      shape["dc:Bounds"]["@_height"] = height;
+    }
   }
 }

@@ -459,6 +459,7 @@ export function addExistingDecisionServiceToDrd({
     shape: {
       "@_id": generateUuid(),
       "@_dmnElementRef": xmlHrefToQName(__readonly_decisionServiceHrefRelativeToThisDmn, definitions),
+      "@_isCollapsed": false,
       "dc:Bounds": {
         "@_x": __readonly_dropPoint.x,
         "@_y": __readonly_dropPoint.y,

@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { StringIterator } from "lodash";
 import { DmnDiagramNodeData } from "../../diagram/nodes/Nodes";
 import { getDecisionServicePropertiesRelativeToThisDmn } from "../../mutations/addExistingDecisionServiceToDrd";
 import { Computed, State } from "../Store";

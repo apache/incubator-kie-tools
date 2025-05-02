@@ -40,7 +40,7 @@ import { OnCreateDataType, OnTypeRefChange } from "../../dataTypes/TypeRefSelect
 import { addTopLevelItemDefinition } from "../../mutations/addTopLevelItemDefinition";
 import { renameGroupNode, updateTextAnnotation } from "../../mutations/renameNode";
 import { updateDecisionServiceDividerLine } from "../../mutations/updateDecisionServiceDividerLine";
-import { DmnEditorTab, SnapGrid, State } from "../../store/Store";
+import { Computed, DmnEditorTab, SnapGrid, State } from "../../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { Unpacked } from "../../tsExt/tsExt";
 import { snapShapeDimensions } from "../SnapGrid";
@@ -51,7 +51,7 @@ import { DmnDiagramEdgeData } from "../edges/Edges";
 import { getContainmentRelationship, getDecisionServiceDividerLineLocalY } from "../maths/DmnMaths";
 import { useIsHovered } from "../useIsHovered";
 import { DataTypeNodePanel } from "./DataTypeNodePanel";
-import { DECISION_SERVICE_COLLAPSED_DIMENSIONS, MIN_NODE_SIZES } from "./DefaultSizes";
+import { DECISION_SERVICE_COLLAPSED_DIMENSIONS, DEFAULT_NODE_SIZES, MIN_NODE_SIZES } from "./DefaultSizes";
 import { EditExpressionNodePanel } from "./EditExpressionNodePanel";
 import { EditableNodeLabel, OnEditableNodeLabelChange, useEditableNodeLabel } from "./EditableNodeLabel";
 import { InfoNodePanel } from "./InfoNodePanel";
@@ -84,6 +84,8 @@ import { addShape } from "../../mutations/addShape";
 import { xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml";
 import { deleteNode, NodeDeletionMode } from "../../mutations/deleteNode";
 import { nodeNatures } from "../../mutations/NodeNature";
+import { computeIndexedDrd } from "../../store/computed/computeIndexes";
+import { addOrGetDrd } from "../../mutations/addOrGetDrd";
 
 export type ElementFilter<E extends { __$$element: string }, Filter extends string> = E extends any
   ? E["__$$element"] extends Filter
@@ -853,7 +855,6 @@ export const DecisionServiceNode = React.memo(
     );
     const isDropTarget = useDmnEditorStore((s) => s.diagram.dropTargetNode?.id === id);
     const dmnEditorStoreApi = useDmnEditorStoreApi();
-    const { computed, ...state } = dmnEditorStoreApi.getState();
 
     const dropPoint = {
       x: shape["dc:Bounds"]?.["@_x"] ?? 0,
@@ -924,72 +925,136 @@ export const DecisionServiceNode = React.memo(
       };
     }, [decisionService.encapsulatedDecision, decisionService.outputDecision, dmnEditorStoreApi, id]);
 
+    const defaultSizeNode = DEFAULT_NODE_SIZES[NODE_TYPES.decisionService]({
+      snapGrid: snapGrid,
+    });
+
+    const { computed, ...state } = dmnEditorStoreApi.getState();
+    const dereferencedState: State = { computed, ...JSON.parse(JSON.stringify(state)) };
+    const drdIndex = dereferencedState.computed(dereferencedState).getDrdIndex();
+    const externalDmnsIndex = dereferencedState
+      .computed(dereferencedState)
+      .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns;
+
+    const drds = dereferencedState.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
+    let indexedDrd: ReturnType<Computed["indexedDrd"]> | undefined;
+    for (let i = 0; i < drds.length; i++) {
+      if (
+        dereferencedState.dmn.model.definitions["@_namespace"] ===
+          dereferencedState.dmn.model.definitions["@_namespace"] &&
+        i === drdIndex
+      ) {
+        continue;
+      }
+
+      const _indexedDrd = computeIndexedDrd(
+        dereferencedState.dmn.model.definitions["@_namespace"],
+        dereferencedState.dmn.model.definitions,
+        i
+      );
+      const dsShape = _indexedDrd.dmnShapesByHref.get(id);
+      const hasCompleteExpandedDepictionOfDecisionService =
+        dsShape &&
+        !(dsShape["@_isCollapsed"] ?? false) &&
+        currentContainedNodes.every((dHref) => _indexedDrd.dmnShapesByHref.has(dHref));
+      if (hasCompleteExpandedDepictionOfDecisionService) {
+        indexedDrd = _indexedDrd;
+        break;
+      }
+    }
+
+    const indexedDrdContainingDecisionServiceDepiction = indexedDrd;
+    const autoLayout = indexedDrdContainingDecisionServiceDepiction ? false : true;
+
     const handleExpand = async () => {
-      dmnEditorStoreApi.setState((state) => {
-        collapseOrExpand({
-          definitions: state.dmn.model.definitions,
-          drdIndex: state.computed(state).getDrdIndex(),
-          collapse: false,
-          shapeIndex: shape.index,
-        });
-        const minNodeSize = MIN_NODE_SIZES[NODE_TYPES.decision]({
-          snapGrid: snapGrid,
-        });
+      const dsShapeOnOtherDrd = indexedDrdContainingDecisionServiceDepiction?.dmnShapesByHref.get(id);
+      if (indexedDrdContainingDecisionServiceDepiction !== undefined) {
         for (const decisionHref of currentContainedNodes) {
-          addShape({
+          const decisionShapeOnOtherDrd =
+            indexedDrdContainingDecisionServiceDepiction?.dmnShapesByHref.get(decisionHref);
+
+          if (
+            dsShapeOnOtherDrd &&
+            dsShapeOnOtherDrd["dc:Bounds"] &&
+            decisionShapeOnOtherDrd &&
+            decisionShapeOnOtherDrd["dc:Bounds"]
+          ) {
+            const x =
+              dropPoint.x + (decisionShapeOnOtherDrd["dc:Bounds"]["@_x"] - dsShapeOnOtherDrd["dc:Bounds"]["@_x"]);
+            const y =
+              dropPoint.y + (decisionShapeOnOtherDrd["dc:Bounds"]["@_y"] - dsShapeOnOtherDrd["dc:Bounds"]["@_y"]);
+
+            const minNodeSize = MIN_NODE_SIZES[NODE_TYPES.decision]({
+              snapGrid: snapGrid,
+            });
+            dmnEditorStoreApi.setState((state) => {
+              addShape({
+                definitions: state.dmn.model.definitions,
+                drdIndex: state.computed(state).getDrdIndex(),
+                nodeType: NODE_TYPES.decision,
+                shape: {
+                  "@_id": generateUuid(),
+                  "@_dmnElementRef": xmlHrefToQName(decisionHref, state.dmn.model.definitions),
+                  "dc:Bounds": {
+                    "@_x": x,
+                    "@_y": y,
+                    ...minNodeSize,
+                  },
+                },
+              });
+            });
+          }
+        }
+
+        dmnEditorStoreApi.setState((state) => {
+          collapseOrExpand({
             definitions: state.dmn.model.definitions,
             drdIndex: state.computed(state).getDrdIndex(),
-            nodeType: NODE_TYPES.decision,
-            shape: {
-              "@_id": generateUuid(),
-              "@_dmnElementRef": xmlHrefToQName(decisionHref, state.dmn.model.definitions),
-              "dc:Bounds": {
-                "@_x": dropPoint.x,
-                "@_y": dropPoint.y,
-                ...minNodeSize,
-              },
-            },
+            collapse: false,
+            shapeIndex: shape.index,
+            width: dsShapeOnOtherDrd?.["dc:Bounds"]?.["@_width"] ?? defaultSizeNode["@_width"],
+            height: dsShapeOnOtherDrd?.["dc:Bounds"]?.["@_height"] ?? defaultSizeNode["@_height"],
+            autoLayout: autoLayout,
           });
-        }
-      });
-      const dereferencedState: State = { computed, ...JSON.parse(JSON.stringify(state)) };
-      const drdIndex = dereferencedState.computed(dereferencedState).getDrdIndex();
+        });
+      } else {
+        dmnEditorStoreApi.setState((state) => {
+          const { diagramElements } = addOrGetDrd({
+            definitions: state.dmn.model.definitions,
+            drdIndex: state.computed(state).getDrdIndex(),
+          });
+          const dmnShapeIndex = (diagramElements ?? []).findIndex(
+            (d) => d["@_dmnElementRef"] === dmnObjectQName.localPart
+          );
+          diagramElements?.splice(dmnShapeIndex, 1);
+        });
+        const { computed, ...state } = dmnEditorStoreApi.getState();
+        const dereferencedState: State = { computed, ...JSON.parse(JSON.stringify(state)) };
 
-      const externalDmnsIndex = dereferencedState
-        .computed(dereferencedState)
-        .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns;
-
-      const {
-        strategyForAddingDecisionServiceToDrd,
-        decisionServiceHrefRelativeToThisDmn,
-        containedDecisionHrefsRelativeToThisDmn,
-      } = getStrategyToAddExistingDecisionServiceToDrd({
-        __readonly_definitions: dereferencedState.dmn.model.definitions,
-        __readonly_drgElement: decisionService,
-        __readonly_decisionServiceNamespace: dereferencedState.dmn.model.definitions["@_namespace"],
-        __readonly_drdIndex: drdIndex,
-        __readonly_externalDmnsIndex: externalDmnsIndex,
-        __readonly_indexedDrd: dereferencedState.computed(dereferencedState).indexedDrd(),
-        __readonly_namespace: dereferencedState.dmn.model.definitions["@_namespace"],
-      });
-      await addAutoGeneratedDecisionServiceToDrd({
-        state: dereferencedState,
-        __readonly_decisionServiceNamespace: dereferencedState.dmn.model.definitions["@_namespace"],
-        __readonly_drdIndex: drdIndex,
-        __readonly_externalDmnsIndex: externalDmnsIndex,
-        __readonly_containedDecisionHrefsRelativeToThisDmn: containedDecisionHrefsRelativeToThisDmn,
-        __readonly_decisionServiceHrefRelativeToThisDmn: decisionServiceHrefRelativeToThisDmn,
-        __readonly_snapGrid: dereferencedState.diagram.snapGrid,
-        __readonly_dropPoint: dropPoint,
-        __readonly_externalModelsByNamespace: externalModelsByNamespace,
-        __readonly_isAlternativeInputDataShape: dereferencedState
+        const drdIndex = dereferencedState.computed(dereferencedState).getDrdIndex();
+        const externalDmnsIndex = dereferencedState
           .computed(dereferencedState)
-          .isAlternativeInputDataShape(),
-      });
+          .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns;
 
-      dmnEditorStoreApi.setState((state) => {
-        state.dmn.model = JSON.parse(JSON.stringify(dereferencedState.dmn.model));
-      });
+        await addAutoGeneratedDecisionServiceToDrd({
+          state: dereferencedState,
+          __readonly_decisionServiceNamespace: dereferencedState.dmn.model.definitions["@_namespace"],
+          __readonly_drdIndex: drdIndex,
+          __readonly_externalDmnsIndex: externalDmnsIndex,
+          __readonly_containedDecisionHrefsRelativeToThisDmn: currentContainedNodes,
+          __readonly_decisionServiceHrefRelativeToThisDmn: id,
+          __readonly_snapGrid: dereferencedState.diagram.snapGrid,
+          __readonly_dropPoint: dropPoint,
+          __readonly_externalModelsByNamespace: externalModelsByNamespace,
+          __readonly_isAlternativeInputDataShape: dereferencedState
+            .computed(dereferencedState)
+            .isAlternativeInputDataShape(),
+        });
+
+        dmnEditorStoreApi.setState((state) => {
+          state.dmn.model = JSON.parse(JSON.stringify(dereferencedState.dmn.model));
+        });
+      }
     };
 
     const handleCollapse = () => {
@@ -999,23 +1064,18 @@ export const DecisionServiceNode = React.memo(
           drdIndex: state.computed(state).getDrdIndex(),
           collapse: true,
           shapeIndex: shape.index,
+          width: defaultSizeNode["@_width"],
+          height: defaultSizeNode["@_height"],
+          autoLayout: autoLayout,
         });
+        const { diagramElements } = addOrGetDrd({ definitions: state.dmn.model.definitions, drdIndex: drdIndex });
+
         for (const decisionHref of currentContainedNodes) {
           const node = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById.get(decisionHref)!;
-          deleteNode({
-            definitions: state.dmn.model.definitions,
-            __readonly_drgEdges: state.computed(state).getDiagramData(externalModelsByNamespace).drgEdges,
-            __readonly_drdIndex: state.computed(state).getDrdIndex(),
-            __readonly_dmnObjectNamespace: node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
-            __readonly_dmnObjectQName: node.data.dmnObjectQName,
-            __readonly_dmnObjectId: node.data.dmnObject?.["@_id"],
-            __readonly_nodeNature: nodeNatures[node.type as NodeType],
-            __readonly_mode: NodeDeletionMode.FROM_CURRENT_DRD_ONLY,
-            __readonly_externalDmnsIndex: state
-              .computed(state)
-              .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
-            __readonly_externalModelsByNamespace: externalModelsByNamespace,
-          });
+          const dmnShapeIndex = (diagramElements ?? []).findIndex(
+            (d) => d["@_dmnElementRef"] === node.data.dmnObjectQName.localPart
+          );
+          diagramElements?.splice(dmnShapeIndex, 1);
         }
       });
     };
