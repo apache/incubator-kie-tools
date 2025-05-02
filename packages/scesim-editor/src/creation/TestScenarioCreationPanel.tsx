@@ -25,7 +25,14 @@ import { basename } from "path";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
-import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateIcon,
+  EmptyStateBody,
+  EmptyStateFooter,
+  EmptyStateHeader,
+  EmptyStateActions,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { FormSelect, FormSelectOption } from "@patternfly/react-core/dist/js/components/FormSelect";
 import { HelpIcon } from "@patternfly/react-icons/dist/esm/icons/help-icon";
@@ -46,7 +53,7 @@ import { createNewDmnTypeTestScenario } from "../mutations/createNewDmnTypeTestS
 import { createNewRuleTypeTestScenario } from "../mutations/createNewRuleTypeTestScenario";
 
 import "./TestScenarioCreationPanel.css";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 
 function TestScenarioCreationPanel() {
   const { i18n } = useTestScenarioEditorI18n();
@@ -180,155 +187,163 @@ function TestScenarioCreationPanel() {
 
   return (
     <EmptyState>
-      <EmptyStateIcon icon={CubesIcon} />
-      <Title headingLevel={"h6"} size={"md"}>
-        {i18n.creationPanel.title}
-      </Title>
-      <Form className="kie-scesim-editor--creation-form" isHorizontal>
-        <FormGroup isRequired label={i18n.creationPanel.assetsGroup}>
-          <FormSelect
-            id="asset-type-select"
-            name="asset-type-select"
-            onChange={(value: "" | "DMN" | "RULE") => setAssetType(value)}
-            value={assetType}
-          >
-            {assetsOption.map((option, index) => (
-              <FormSelectOption isDisabled={option.disabled} key={index} label={option.label} value={option.value} />
-            ))}
-          </FormSelect>
-        </FormGroup>
-        {assetType === "DMN" && (
-          <>
-            <FormGroup isRequired label={i18n.creationPanel.dmnGroup}>
-              <Select
-                variant={SelectVariant.single}
-                id="dmn-select"
-                name="dmn-select"
-                onToggle={setModelSelectOpen}
-                isOpen={isModelSelectOpen}
-                typeAheadAriaLabel={"Select a model..."}
-                placeholderText={"Select a model..."}
-                maxHeight={"350px"}
-                onSelect={(e, dmnModelPathRelativeToThisScesim) => {
-                  if (typeof dmnModelPathRelativeToThisScesim !== "string") {
-                    throw new Error(
-                      `Invalid path for an included model ${JSON.stringify(dmnModelPathRelativeToThisScesim)}`
-                    );
-                  }
+      <EmptyStateHeader icon={<EmptyStateIcon icon={CubesIcon} />}>
+        <Title headingLevel={"h6"} size={"md"}>
+          {i18n.creationPanel.title}
+        </Title>
+      </EmptyStateHeader>
+      <EmptyStateBody>
+        <Form className="kie-scesim-editor--creation-form" isHorizontal>
+          <FormGroup isRequired label={<span style={{ color: "black" }}>{i18n.creationPanel.assetsGroup}</span>}>
+            <FormSelect
+              id="asset-type-select"
+              name="asset-type-select"
+              onChange={(_event, value: "" | "DMN" | "RULE") => setAssetType(value)}
+              value={assetType}
+            >
+              {assetsOption.map((option, index) => (
+                <FormSelectOption isDisabled={option.disabled} key={index} label={option.label} value={option.value} />
+              ))}
+            </FormSelect>
+          </FormGroup>
+          {assetType === "DMN" && (
+            <>
+              <FormGroup isRequired label={i18n.creationPanel.dmnGroup}>
+                <Select
+                  variant={SelectVariant.single}
+                  id="dmn-select"
+                  name="dmn-select"
+                  onToggle={(_event, val) => setModelSelectOpen(val)}
+                  isOpen={isModelSelectOpen}
+                  typeAheadAriaLabel={"Select a model..."}
+                  placeholderText={"Select a model..."}
+                  maxHeight={"350px"}
+                  onSelect={(e, dmnModelPathRelativeToThisScesim) => {
+                    if (typeof dmnModelPathRelativeToThisScesim !== "string") {
+                      throw new Error(
+                        `Invalid path for an included model ${JSON.stringify(dmnModelPathRelativeToThisScesim)}`
+                      );
+                    }
 
-                  console.debug(`[TestScenarioCreationPanel] Selected path ${dmnModelPathRelativeToThisScesim}`);
-                  setSelectedDmnModelPathRelativeToThisScesim(dmnModelPathRelativeToThisScesim);
-                  setModelSelectOpen(false);
-                }}
-                selections={selectedDmnModelPathRelativeToThisScesim}
-              >
-                {((allDmnModelNormalizedPosixRelativePaths?.length ?? 0) > 0 &&
-                  allDmnModelNormalizedPosixRelativePaths?.map((normalizedPosixPathRelativeToTheOpenFile) => (
-                    <SelectOption
-                      key={normalizedPosixPathRelativeToTheOpenFile}
-                      value={normalizedPosixPathRelativeToTheOpenFile}
-                      description={normalizedPosixPathRelativeToTheOpenFile}
-                    >
-                      {basename(normalizedPosixPathRelativeToTheOpenFile)}
-                    </SelectOption>
-                  ))) || [<SelectOption key={undefined} isDisabled label={i18n.creationPanel.dmnNoPresent} />]}
-              </Select>
-            </FormGroup>
-            <FormGroup>
-              <Checkbox
-                id="auto-fill-table-checkbox"
-                isChecked={isAutoFillTableEnabled}
-                label={
-                  <>
-                    <span>{i18n.creationPanel.autoFillTable}</span>
-                    <Tooltip content={i18n.creationPanel.autoFillTableTooltip}>
-                      <Icon className={"kie-scesim-editor-creation-panel--info-icon"} size="sm" status="info">
-                        <HelpIcon />
-                      </Icon>
-                    </Tooltip>
-                  </>
-                }
-                onChange={(value: boolean) => {
-                  setAutoFillTableEnabled(value);
-                }}
-              />
-            </FormGroup>
-          </>
-        )}
+                    console.debug(`[TestScenarioCreationPanel] Selected path ${dmnModelPathRelativeToThisScesim}`);
+                    setSelectedDmnModelPathRelativeToThisScesim(dmnModelPathRelativeToThisScesim);
+                    setModelSelectOpen(false);
+                  }}
+                  selections={selectedDmnModelPathRelativeToThisScesim}
+                >
+                  {((allDmnModelNormalizedPosixRelativePaths?.length ?? 0) > 0 &&
+                    allDmnModelNormalizedPosixRelativePaths?.map((normalizedPosixPathRelativeToTheOpenFile) => (
+                      <SelectOption
+                        key={normalizedPosixPathRelativeToTheOpenFile}
+                        value={normalizedPosixPathRelativeToTheOpenFile}
+                        description={normalizedPosixPathRelativeToTheOpenFile}
+                      >
+                        {basename(normalizedPosixPathRelativeToTheOpenFile)}
+                      </SelectOption>
+                    ))) || [<SelectOption key={undefined} isDisabled label={i18n.creationPanel.dmnNoPresent} />]}
+                </Select>
+              </FormGroup>
+              <FormGroup>
+                <Checkbox
+                  id="auto-fill-table-checkbox"
+                  isChecked={isAutoFillTableEnabled}
+                  label={
+                    <>
+                      <span>{i18n.creationPanel.autoFillTable}</span>
+                      <Tooltip content={i18n.creationPanel.autoFillTableTooltip}>
+                        <Icon className={"kie-scesim-editor-creation-panel--info-icon"} size="sm" status="info">
+                          <HelpIcon />
+                        </Icon>
+                      </Tooltip>
+                    </>
+                  }
+                  onChange={(_event, value: boolean) => {
+                    setAutoFillTableEnabled(value);
+                  }}
+                />
+              </FormGroup>
+            </>
+          )}
+          {assetType === "RULE" && (
+            <>
+              <FormGroup label={i18n.creationPanel.kieSessionGroup}>
+                <TextInput
+                  onChange={(_event, value) => setKieSessionRule(value)}
+                  placeholder={`<${i18n.creationPanel.optional}>`}
+                  type="text"
+                  value={kieSessionRule}
+                />
+              </FormGroup>
+              <FormGroup label={i18n.creationPanel.kieAgendaGroup}>
+                <TextInput
+                  onChange={(_event, value) => setRuleFlowGroup(value)}
+                  placeholder={`<${i18n.creationPanel.optional}>`}
+                  type="text"
+                  value={ruleFlowGroup}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Checkbox
+                  id="stateless-session-checkbox"
+                  isChecked={isStatelessSessionRule}
+                  label={
+                    <>
+                      <span>{i18n.creationPanel.statelessSession}</span>
+                      <Tooltip content={i18n.drawer.settings.statelessSessionRuleTooltip}>
+                        <Icon className={"kie-scesim-editor-creation-panel--info-icon"} size="sm" status="info">
+                          <HelpIcon />
+                        </Icon>
+                      </Tooltip>
+                    </>
+                  }
+                  onChange={(_event, value) => {
+                    setStatelessSessionRule(value);
+                  }}
+                />
+              </FormGroup>
+            </>
+          )}
+          <FormGroup>
+            <Checkbox
+              id="test-skipped-checkbox"
+              isChecked={isTestSkipped}
+              label={
+                <>
+                  <span>{i18n.creationPanel.testSkip}</span>
+                  <Tooltip content={i18n.drawer.settings.testSkippedTooltip}>
+                    <Icon className="kie-scesim-editor-creation-panel--info-icon" size="sm" status="info">
+                      <HelpIcon />
+                    </Icon>
+                  </Tooltip>
+                </>
+              }
+              onChange={(_event, value: boolean) => {
+                setTestSkipped(value);
+              }}
+            />
+          </FormGroup>
+        </Form>
         {assetType === "RULE" && (
-          <>
-            <FormGroup label={i18n.creationPanel.kieSessionGroup}>
-              <TextInput
-                onChange={(value) => setKieSessionRule(value)}
-                placeholder={"<" + i18n.creationPanel.optional + ">"}
-                type="text"
-                value={kieSessionRule}
-              />
-            </FormGroup>
-            <FormGroup label={i18n.creationPanel.kieAgendaGroup}>
-              <TextInput
-                onChange={(value) => setRuleFlowGroup(value)}
-                placeholder={"<" + i18n.creationPanel.optional + ">"}
-                type="text"
-                value={ruleFlowGroup}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Checkbox
-                id="stateless-session-checkbox"
-                isChecked={isStatelessSessionRule}
-                label={
-                  <>
-                    <span>{i18n.creationPanel.statelessSession}</span>
-                    <Tooltip content={i18n.drawer.settings.statelessSessionRuleTooltip}>
-                      <Icon className={"kie-scesim-editor-creation-panel--info-icon"} size="sm" status="info">
-                        <HelpIcon />
-                      </Icon>
-                    </Tooltip>
-                  </>
-                }
-                onChange={(value) => {
-                  setStatelessSessionRule(value);
-                }}
-              />
-            </FormGroup>
-          </>
-        )}
-        <FormGroup>
-          <Checkbox
-            id="test-skipped-checkbox"
-            isChecked={isTestSkipped}
-            label={
-              <>
-                <span>{i18n.creationPanel.testSkip}</span>
-                <Tooltip content={i18n.drawer.settings.testSkippedTooltip}>
-                  <Icon className="kie-scesim-editor-creation-panel--info-icon" size="sm" status="info">
-                    <HelpIcon />
-                  </Icon>
-                </Tooltip>
-              </>
-            }
-            onChange={(value: boolean) => {
-              setTestSkipped(value);
-            }}
+          <Alert
+            className="kie-scesim-editor-creation-panel--rule-scesim-alert"
+            variant="danger"
+            title="Rule based Test Scenario is not supported yet."
           />
-        </FormGroup>
-      </Form>
-      {assetType === "RULE" && (
-        <Alert
-          className="kie-scesim-editor-creation-panel--rule-scesim-alert"
-          variant="danger"
-          title="Rule based Test Scenario is not supported yet."
-        />
-      )}
-      <Button
-        icon={<AddIcon />}
-        isDisabled={assetType === "" || assetType === "RULE" || (assetType === "DMN" && !selectedDmnModel)}
-        onClick={createTestScenario}
-        variant="primary"
-      >
-        {i18n.creationPanel.createButton}
-      </Button>
+        )}
+      </EmptyStateBody>
+
+      <EmptyStateFooter>
+        <EmptyStateActions>
+          <Button
+            icon={<AddIcon />}
+            isDisabled={assetType === "" || assetType === "RULE" || (assetType === "DMN" && !selectedDmnModel)}
+            onClick={createTestScenario}
+            variant="primary"
+          >
+            {i18n.creationPanel.createButton}
+          </Button>
+        </EmptyStateActions>
+      </EmptyStateFooter>
     </EmptyState>
   );
 }

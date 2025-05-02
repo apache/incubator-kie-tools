@@ -57,7 +57,7 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/storybook-base": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@patternfly/react-core": "^4.276.6",
+    "@patternfly/react-core": "^5.4.1",
     "@playwright/test": "^1.45.2",
     "@storybook/addon-links": "^7.3.2",
     "@storybook/addon-webpack5-compiler-babel": "^3.0.5",

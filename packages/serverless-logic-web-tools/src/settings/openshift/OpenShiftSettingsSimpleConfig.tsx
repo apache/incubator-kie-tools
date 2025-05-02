@@ -28,7 +28,7 @@ import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { InputGroup, InputGroupText, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
@@ -42,6 +42,7 @@ import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { EMPTY_CONFIG, saveConfigCookie, saveDevModeEnabledConfigCookie } from "./OpenShiftSettingsConfig";
 import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { OutlinedQuestionCircleIcon } from "@patternfly/react-icons/dist/js/icons";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 enum FormValiationOptions {
   INITIAL = "INITIAL",
@@ -198,32 +199,36 @@ export function OpenShiftSettingsSimpleConfig() {
                 aria-label="More info for namespace field"
                 onClick={(e) => e.preventDefault()}
                 aria-describedby="namespace-field"
-                className="pf-c-form__group-label-help"
+                className="pf-v5-c-form__group-label-help"
               >
-                <HelpIcon noVerticalAlign />
+                <Icon isInline>
+                  <HelpIcon />
+                </Icon>
               </button>
             </Popover>
           }
           isRequired
           fieldId="namespace-field"
         >
-          <InputGroup className="pf-u-mt-sm">
-            <TextInput
-              autoComplete={"off"}
-              isRequired
-              type="text"
-              id="namespace-field"
-              name="namespace-field"
-              aria-label="Namespace field"
-              aria-describedby="namespace-field-helper"
-              value={config.namespace}
-              onChange={onNamespaceChanged}
-              isDisabled={isConnecting}
-              tabIndex={1}
-              data-testid="namespace-text-field"
-            />
+          <InputGroup className="pf-v5-u-mt-sm">
+            <InputGroupItem isFill>
+              <TextInput
+                autoComplete={"off"}
+                isRequired
+                type="text"
+                id="namespace-field"
+                name="namespace-field"
+                aria-label="Namespace field"
+                aria-describedby="namespace-field-helper"
+                value={config.namespace}
+                onChange={(_event, value) => onNamespaceChanged(value)}
+                isDisabled={isConnecting}
+                tabIndex={1}
+                data-testid="namespace-text-field"
+              />
+            </InputGroupItem>
             <InputGroupText>
-              <Button isSmall variant="plain" aria-label="Clear namespace button" onClick={onClearNamespace}>
+              <Button size="sm" variant="plain" aria-label="Clear namespace button" onClick={onClearNamespace}>
                 <TimesIcon />
               </Button>
             </InputGroupText>
@@ -238,32 +243,36 @@ export function OpenShiftSettingsSimpleConfig() {
                 aria-label="More info for host field"
                 onClick={(e) => e.preventDefault()}
                 aria-describedby="host-field"
-                className="pf-c-form__group-label-help"
+                className="pf-v5-c-form__group-label-help"
               >
-                <HelpIcon noVerticalAlign />
+                <Icon isInline>
+                  <HelpIcon />
+                </Icon>
               </button>
             </Popover>
           }
           isRequired
           fieldId="host-field"
         >
-          <InputGroup className="pf-u-mt-sm">
-            <TextInput
-              autoComplete={"off"}
-              isRequired
-              type="text"
-              id="host-field"
-              name="host-field"
-              aria-label="Host field"
-              aria-describedby="host-field-helper"
-              value={config.host}
-              onChange={onHostChanged}
-              isDisabled={isConnecting}
-              tabIndex={2}
-              data-testid="host-text-field"
-            />
+          <InputGroup className="pf-v5-u-mt-sm">
+            <InputGroupItem isFill>
+              <TextInput
+                autoComplete={"off"}
+                isRequired
+                type="text"
+                id="host-field"
+                name="host-field"
+                aria-label="Host field"
+                aria-describedby="host-field-helper"
+                value={config.host}
+                onChange={(_event, value) => onHostChanged(value)}
+                isDisabled={isConnecting}
+                tabIndex={2}
+                data-testid="host-text-field"
+              />
+            </InputGroupItem>
             <InputGroupText>
-              <Button isSmall variant="plain" aria-label="Clear host button" onClick={onClearHost}>
+              <Button size="sm" variant="plain" aria-label="Clear host button" onClick={onClearHost}>
                 <TimesIcon />
               </Button>
             </InputGroupText>
@@ -278,32 +287,36 @@ export function OpenShiftSettingsSimpleConfig() {
                 aria-label="More info for token field"
                 onClick={(e) => e.preventDefault()}
                 aria-describedby="token-field"
-                className="pf-c-form__group-label-help"
+                className="pf-v5-c-form__group-label-help"
               >
-                <HelpIcon noVerticalAlign />
+                <Icon isInline>
+                  <HelpIcon />
+                </Icon>
               </button>
             </Popover>
           }
           isRequired
           fieldId="token-field"
         >
-          <InputGroup className="pf-u-mt-sm">
-            <TextInput
-              autoComplete={"off"}
-              isRequired
-              type="text"
-              id="token-field"
-              name="token-field"
-              aria-label="Token field"
-              aria-describedby="token-field-helper"
-              value={config.token}
-              onChange={onTokenChanged}
-              isDisabled={isConnecting}
-              tabIndex={3}
-              data-testid="token-text-field"
-            />
+          <InputGroup className="pf-v5-u-mt-sm">
+            <InputGroupItem isFill>
+              <TextInput
+                autoComplete={"off"}
+                isRequired
+                type="text"
+                id="token-field"
+                name="token-field"
+                aria-label="Token field"
+                aria-describedby="token-field-helper"
+                value={config.token}
+                onChange={(_event, value) => onTokenChanged(value)}
+                isDisabled={isConnecting}
+                tabIndex={3}
+                data-testid="token-text-field"
+              />
+            </InputGroupItem>
             <InputGroupText>
-              <Button isSmall variant="plain" aria-label="Clear token button" onClick={onClearToken}>
+              <Button size="sm" variant="plain" aria-label="Clear token button" onClick={onClearToken}>
                 <TimesIcon />
               </Button>
             </InputGroupText>
@@ -329,7 +342,7 @@ export function OpenShiftSettingsSimpleConfig() {
                     aria-label="Insecurely disable tls certificate validation info"
                     onClick={(e) => e.preventDefault()}
                     aria-describedby="disable-tls-validation"
-                    className="pf-c-form__group-label-help"
+                    className="pf-v5-c-form__group-label-help"
                   >
                     <OutlinedQuestionCircleIcon />
                   </button>
@@ -339,7 +352,7 @@ export function OpenShiftSettingsSimpleConfig() {
             aria-label="Disable TLS Certificate Validation"
             tabIndex={4}
             isChecked={config.insecurelyDisableTlsCertificateValidation}
-            onChange={onInsecurelyDisableTlsCertificateValidationChange}
+            onChange={(_event, value) => onInsecurelyDisableTlsCertificateValidationChange(value)}
           />
           <br />
           <Button
@@ -367,9 +380,11 @@ export function OpenShiftSettingsSimpleConfig() {
                 aria-label="More info for Dev Mode field"
                 onClick={(e) => e.preventDefault()}
                 aria-describedby="dev-mode-field"
-                className="pf-c-form__group-label-help"
+                className="pf-v5-c-form__group-label-help"
               >
-                <HelpIcon noVerticalAlign />
+                <Icon isInline>
+                  <HelpIcon />
+                </Icon>
               </button>
             </Popover>
           }
@@ -383,7 +398,7 @@ export function OpenShiftSettingsSimpleConfig() {
               "Be sure to set up at least 4GB of ram for your OpenShift deployments, otherwise, the Dev Mode deployment may run into issues."
             }
             isChecked={isDevModeConfigEnabled}
-            onChange={onEnableDevModeConfigChanged}
+            onChange={(_event, value) => onEnableDevModeConfigChanged(value)}
           />
         </FormGroup>
         <ActionGroup>

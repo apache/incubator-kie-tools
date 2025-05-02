@@ -100,7 +100,7 @@ const Form__hiring: React.FC<any> = (props: any) => {
               placeholder={""}
               type={"text"}
               value={candidateData__email}
-              onChange={set__candidateData__email}
+              onChange={(_event, val) => set__candidateData__email(val)}
             />
           </FormGroup>
           <FormGroup fieldId={"uniforms-0000-0004"} label={"Experience"} isRequired={false}>
@@ -112,7 +112,7 @@ const Form__hiring: React.FC<any> = (props: any) => {
               placeholder={""}
               step={1}
               value={candidateData__experience}
-              onChange={(newValue) => set__candidateData__experience(Number(newValue))}
+              onChange={(_event, newValue) => set__candidateData__experience(Number(newValue))}
             />
           </FormGroup>
           <FormGroup fieldId={"uniforms-0000-0005"} label={"Last name"} isRequired={false}>
@@ -123,7 +123,7 @@ const Form__hiring: React.FC<any> = (props: any) => {
               placeholder={""}
               type={"text"}
               value={candidateData__lastName}
-              onChange={set__candidateData__lastName}
+              onChange={(_event, val) => set__candidateData__lastName(val)}
             />
           </FormGroup>
           <FormGroup fieldId={"uniforms-0000-0006"} label={"Name"} isRequired={false}>
@@ -134,7 +134,7 @@ const Form__hiring: React.FC<any> = (props: any) => {
               placeholder={""}
               type={"text"}
               value={candidateData__name}
-              onChange={set__candidateData__name}
+              onChange={(_event, val) => set__candidateData__name(val)}
             />
           </FormGroup>
           <FormGroup fieldId={"uniforms-0000-0008"} label={"Skills"} isRequired={false}>

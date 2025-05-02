@@ -50,9 +50,9 @@ apt-get clean autoclean && apt-get autoremove --yes && \
 rm -rf /var/lib/{apt,cache,log}/
 
 # Install firefox
-RUN wget -O /tmp/firefox-latest.tar.bz2 "https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US" && \
-    tar xjf /tmp/firefox-latest.tar.bz2 -C /tmp && mv /tmp/firefox /opt/firefox-latest && \
-    rm /tmp/firefox-latest.tar.bz2 && \
+RUN wget -O /tmp/firefox-latest.tar.xz "https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US" && \
+    tar xf /tmp/firefox-latest.tar.xz -C /tmp && mv /tmp/firefox /opt/firefox-latest && \
+    rm /tmp/firefox-latest.tar.xz && \
     ln -s /opt/firefox-latest/firefox /usr/bin/firefox
 
 # Install chromedriver
@@ -135,7 +135,7 @@ ENV JAVA_HOME="${HOME}/.sdkman/candidates/java/current/"
 ENV MAVEN_HOME="${HOME}/.sdkman/candidates/maven/current/"
 ENV NODE_HOME="${HOME}/.nvm/versions/node/v22.13.1"
 ENV DISPLAY=":99"
-ENV NODE_OPTIONS="--max_old_space_size=4096"
+ENV NODE_OPTIONS="--max_old_space_size=6144"
 ENV GOPATH="${HOME}/go"
 ENV GOROOT="/opt/go"
 ENV PATH="${PATH}:${GOROOT}/bin:${GOPATH}/bin"

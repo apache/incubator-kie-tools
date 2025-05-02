@@ -30,35 +30,35 @@ export const ProcessInstanceIconCreator = (state: ProcessInstanceState): JSX.Ele
     case ProcessInstanceState.Active:
       return (
         <>
-          <OnRunningIcon className="pf-u-mr-sm" />
+          <OnRunningIcon className="pf-v5-u-mr-sm" />
           Active
         </>
       );
     case ProcessInstanceState.Completed:
       return (
         <>
-          <CheckCircleIcon className="pf-u-mr-sm" color="var(--pf-global--success-color--100)" />
+          <CheckCircleIcon className="pf-v5-u-mr-sm" color="var(--pf-v5-global--success-color--100)" />
           Completed
         </>
       );
     case ProcessInstanceState.Aborted:
       return (
         <>
-          <BanIcon className="pf-u-mr-sm" />
+          <BanIcon className="pf-v5-u-mr-sm" />
           Aborted
         </>
       );
     case ProcessInstanceState.Suspended:
       return (
         <>
-          <PausedIcon className="pf-u-mr-sm" />
+          <PausedIcon className="pf-v5-u-mr-sm" />
           Suspended
         </>
       );
     case ProcessInstanceState.Error:
       return (
         <>
-          <ErrorCircleOIcon className="pf-u-mr-sm" color="var(--pf-global--danger-color--100)" />
+          <ErrorCircleOIcon className="pf-v5-u-mr-sm" color="var(--pf-v5-global--danger-color--100)" />
           Error
         </>
       );

@@ -18,14 +18,14 @@
  */
 
 import { Form, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
-import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
-import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import * as React from "react";
 import { useEffect, FormEvent, useCallback, useMemo } from "react";
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers/constants";
 import { useEditorEnvelopeLocator } from "../../envelopeLocator/EditorEnvelopeLocatorContext";
 import { UrlType, useImportableUrl } from "../hooks/ImportableUrlHooks";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 export function ImportFromUrlForm(props: {
   allowedTypes?: UrlType[];
@@ -88,13 +88,7 @@ export function ImportFromUrlForm(props: {
 
   return (
     <Form onSubmit={onSubmit}>
-      <FormGroup
-        helperTextInvalid={displayError}
-        helperText={<FormHelperText icon={<CheckCircleIcon />} isHidden={false} style={{ visibility: "hidden" }} />}
-        helperTextInvalidIcon={<ExclamationCircleIcon />}
-        fieldId="import-url-form-input"
-        validated={validatedOption}
-      >
+      <FormGroup fieldId="import-url-form-input">
         <TextInput
           ref={props.urlInputRef}
           id={"import-url-form-input"}
@@ -103,8 +97,21 @@ export function ImportFromUrlForm(props: {
           isRequired={true}
           placeholder={"URL"}
           value={props.url}
-          onChange={props.onChange}
+          onChange={(_event, val) => props.onChange(val)}
         />
+        {validatedOption === "error" ? (
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant="error">{displayError}</HelperTextItem>
+            </HelperText>
+          </FormHelperText>
+        ) : (
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant="success"></HelperTextItem>
+            </HelperText>
+          </FormHelperText>
+        )}
       </FormGroup>
     </Form>
   );

@@ -176,7 +176,7 @@ export function SettingsContextProvider(props: any) {
         connection: openshiftConfig,
         proxyUrl: env.SERVERLESS_LOGIC_WEB_TOOLS_CORS_PROXY_URL,
       }),
-    [openshiftConfig]
+    [openshiftConfig, env.SERVERLESS_LOGIC_WEB_TOOLS_CORS_PROXY_URL]
   );
 
   const [isOpenShiftDevModeEnabled, setOpenShiftDevModeEnabled] = useState(readDevModeEnabledConfigCookie());
@@ -188,7 +188,7 @@ export function SettingsContextProvider(props: any) {
         serviceRegistry: serviceRegistryConfig,
         proxyUrl: env.SERVERLESS_LOGIC_WEB_TOOLS_CORS_PROXY_URL,
       }),
-    [serviceAccountConfig, serviceRegistryConfig]
+    [serviceAccountConfig, serviceRegistryConfig, env.SERVERLESS_LOGIC_WEB_TOOLS_CORS_PROXY_URL]
   );
 
   const dispatch = useMemo(() => {
