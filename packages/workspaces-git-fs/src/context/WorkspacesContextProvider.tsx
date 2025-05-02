@@ -22,7 +22,14 @@ import { useCallback, useMemo } from "react";
 import { ResourceContentOptions } from "@kie-tools-core/workspace/dist/api";
 import { WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
 import { LocalFile } from "../worker/api/LocalFile";
-import { BitbucketOrigin, GistOrigin, GitHubOrigin, SnippetOrigin } from "../worker/api/WorkspaceOrigin";
+import {
+  BitbucketOrigin,
+  BitbucketSnippetOrigin,
+  GistOrigin,
+  GitHubOrigin,
+  GitlabOrigin,
+  GitlabSnippetOrigin,
+} from "../worker/api/WorkspaceOrigin";
 import { WorkspaceWorkerFileDescriptor } from "../worker/api/WorkspaceWorkerFileDescriptor";
 import { WorkspacesSharedWorker } from "../worker/WorkspacesSharedWorker";
 
@@ -303,7 +310,7 @@ export function WorkspacesContextProvider(props: Props) {
 
   const createWorkspaceFromGitRepository = useCallback(
     async (args: {
-      origin: GistOrigin | GitHubOrigin | BitbucketOrigin | SnippetOrigin;
+      origin: GistOrigin | GitHubOrigin | BitbucketOrigin | BitbucketSnippetOrigin | GitlabOrigin | GitlabSnippetOrigin;
       gitConfig?: { email: string; name: string };
       gitAuthSessionId: string | undefined;
       authInfo?: {
@@ -566,6 +573,24 @@ export function WorkspacesContextProvider(props: Props) {
     [workspacesSharedWorker]
   );
 
+  const initGilabSnippetOnWorkspace = useCallback(
+    async (args: {
+      workspaceId: string;
+      remoteUrl: URL;
+      branch: string;
+      insecurelyDisableTlsCertificateValidation?: boolean;
+    }) =>
+      workspacesSharedWorker.withBus((workspacesWorkerBus) =>
+        workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesGit_initGitlabSnippetOnExistingWorkspace({
+          workspaceId: args.workspaceId,
+          remoteUrl: args.remoteUrl.toString(),
+          branch: args.branch,
+          insecurelyDisableTlsCertificateValidation: args.insecurelyDisableTlsCertificateValidation,
+        })
+      ),
+    [workspacesSharedWorker]
+  );
+
   const changeGitAuthSessionId = useCallback(
     async (args: {
       workspaceId: string;
@@ -634,6 +659,7 @@ export function WorkspacesContextProvider(props: Props) {
       initGitOnWorkspace,
       initGistOnWorkspace,
       initSnippetOnWorkspace,
+      initGilabSnippetOnWorkspace,
       changeGitAuthSessionId,
       initLocalOnWorkspace,
       isFileModified,
@@ -679,6 +705,7 @@ export function WorkspacesContextProvider(props: Props) {
       initGitOnWorkspace,
       initGistOnWorkspace,
       initSnippetOnWorkspace,
+      initGilabSnippetOnWorkspace,
       changeGitAuthSessionId,
       initLocalOnWorkspace,
       isFileModified,

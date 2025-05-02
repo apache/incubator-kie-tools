@@ -36,9 +36,11 @@ import { LocalFile } from "./api/LocalFile";
 import { WorkspaceDescriptor } from "./api/WorkspaceDescriptor";
 import {
   BitbucketOrigin,
+  BitbucketSnippetOrigin,
   GistOrigin,
   GitHubOrigin,
-  SnippetOrigin,
+  GitlabOrigin,
+  GitlabSnippetOrigin,
   WorkspaceKind,
   WorkspaceOrigin,
 } from "./api/WorkspaceOrigin";
@@ -113,6 +115,23 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
   }): Promise<void> {
     return this.args.services.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
       return this.args.services.descriptorService.turnIntoSnippet(
+        fs,
+        args.workspaceId,
+        new URL(args.remoteUrl),
+        args.branch,
+        args.insecurelyDisableTlsCertificateValidation
+      );
+    });
+  }
+
+  public async kieSandboxWorkspacesGit_initGitlabSnippetOnExistingWorkspace(args: {
+    workspaceId: string;
+    remoteUrl: string;
+    branch: string;
+    insecurelyDisableTlsCertificateValidation?: boolean;
+  }): Promise<void> {
+    return this.args.services.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
+      return this.args.services.descriptorService.turnIntoGitlabSnippet(
         fs,
         args.workspaceId,
         new URL(args.remoteUrl),
@@ -511,7 +530,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
   }
 
   public async kieSandboxWorkspacesGit_clone(args: {
-    origin: GistOrigin | GitHubOrigin | BitbucketOrigin | SnippetOrigin;
+    origin: GistOrigin | GitHubOrigin | BitbucketOrigin | BitbucketSnippetOrigin | GitlabOrigin | GitlabSnippetOrigin;
     gitConfig?: { email: string; name: string };
     authInfo?: { username: string; password: string };
     gitAuthSessionId: string | undefined;

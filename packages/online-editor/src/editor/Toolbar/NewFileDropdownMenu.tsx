@@ -51,6 +51,7 @@ import { useBitbucketClient } from "../../bitbucket/Hooks";
 import { isEditable } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
 import { useEditorsConfig } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { useEnv } from "../../env/hooks/EnvContext";
+import { useGitlabClient } from "../../gitlab/useGitlabClient";
 
 const ROOT_MENU_ID = "addFileRootMenu";
 
@@ -199,6 +200,8 @@ export function NewFileDropdownMenu(props: {
         UrlType.GITHUB_DOT_COM_FILE,
         UrlType.BITBUCKET_DOT_ORG_FILE,
         UrlType.BITBUCKET_DOT_ORG_SNIPPET_FILE,
+        UrlType.GITLAB_DOT_COM_FILE,
+        UrlType.GITLAB_DOT_COM_SNIPPET_FILE,
       ],
       []
     )
@@ -207,6 +210,7 @@ export function NewFileDropdownMenu(props: {
   const { authSession } = useAuthSession(authSessionId);
   const gitHubClient = useGitHubClient(authSession);
   const bitbucketClient = useBitbucketClient(authSession);
+  const gitlabClient = useGitlabClient(authSession);
 
   // Select authSession based on the importableUrl domain (begin)
   const authProviders = useAuthProviders();
@@ -239,7 +243,12 @@ export function NewFileDropdownMenu(props: {
       setImportingError(undefined);
 
       try {
-        const { error, rawUrl, content } = await fetchSingleFileContent(importableUrl, gitHubClient, bitbucketClient);
+        const { error, rawUrl, content } = await fetchSingleFileContent(
+          importableUrl,
+          gitHubClient,
+          bitbucketClient,
+          gitlabClient
+        );
         if (error) {
           setImportingError(error);
           return;
@@ -262,7 +271,7 @@ export function NewFileDropdownMenu(props: {
         setImporting(false);
       }
     },
-    [gitHubClient, bitbucketClient, workspaces, props]
+    [gitHubClient, bitbucketClient, gitlabClient, workspaces, props]
   );
 
   const sampleUrl = useCallback(

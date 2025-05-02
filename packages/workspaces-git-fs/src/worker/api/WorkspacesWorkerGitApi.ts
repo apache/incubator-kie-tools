@@ -18,7 +18,14 @@
  */
 
 import { WorkspaceDescriptor } from "./WorkspaceDescriptor";
-import { BitbucketOrigin, GistOrigin, GitHubOrigin, SnippetOrigin } from "./WorkspaceOrigin";
+import {
+  BitbucketOrigin,
+  BitbucketSnippetOrigin,
+  GistOrigin,
+  GitHubOrigin,
+  GitlabOrigin,
+  GitlabSnippetOrigin,
+} from "./WorkspaceOrigin";
 import { LocalFile } from "./LocalFile";
 import { WorkspaceWorkerFileDescriptor } from "./WorkspaceWorkerFileDescriptor";
 import { GitServerRef } from "./GitServerRef";
@@ -56,7 +63,7 @@ export interface WorkspacesWorkerGitApi {
   }>;
 
   kieSandboxWorkspacesGit_clone(args: {
-    origin: GistOrigin | GitHubOrigin | BitbucketOrigin | SnippetOrigin;
+    origin: GistOrigin | GitHubOrigin | BitbucketOrigin | BitbucketSnippetOrigin | GitlabOrigin | GitlabSnippetOrigin;
     gitAuthSessionId: string | undefined;
     gitConfig?: {
       email: string;
@@ -163,6 +170,13 @@ export interface WorkspacesWorkerGitApi {
   }): Promise<void>;
 
   kieSandboxWorkspacesGit_initSnippetOnExistingWorkspace(args: {
+    workspaceId: string;
+    remoteUrl: string;
+    branch: string;
+    insecurelyDisableTlsCertificateValidation?: boolean;
+  }): Promise<void>;
+
+  kieSandboxWorkspacesGit_initGitlabSnippetOnExistingWorkspace(args: {
     workspaceId: string;
     remoteUrl: string;
     branch: string;

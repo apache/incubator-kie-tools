@@ -38,6 +38,7 @@ import { useAuthSession } from "../../../authSessions/AuthSessionsContext";
 import { useBitbucketClient } from "../../../bitbucket/Hooks";
 import { BitbucketIcon } from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
 import { GithubIcon } from "@patternfly/react-icons/dist/js/icons/github-icon";
+import { GitlabIcon } from "@patternfly/react-icons/dist/js/icons/gitlab-icon";
 import { useGitHubClient } from "../../../github/Hooks";
 import { AuthProviderGroup, isSupportedGitAuthProviderType } from "../../../authProviders/AuthProvidersApi";
 import { useAuthProvider } from "../../../authProviders/AuthProvidersContext";
@@ -45,6 +46,7 @@ import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { useOnlineI18n } from "../../../i18n";
 import { LoadOrganizationsSelect, SelectOptionObjectType } from "./LoadOrganizationsSelect";
 import { useGitIntegration } from "./GitIntegrationContextProvider";
+import { useGitlabClient } from "../../../gitlab/useGitlabClient";
 
 export interface CreateRepositoryResponse {
   cloneUrl: string;
@@ -68,6 +70,7 @@ export function CreateGitRepositoryModal(props: {
   const authProvider = useAuthProvider(authSession);
   const bitbucketClient = useBitbucketClient(authSession);
   const gitHubClient = useGitHubClient(authSession);
+  const gitlabClient = useGitlabClient(authSession);
 
   const [isPrivate, setPrivate] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -88,7 +91,12 @@ export function CreateGitRepositoryModal(props: {
     if (selectedOrganization?.kind !== "organization") {
       throw new Error("No workspace was selected for Bitbucket Repository.");
     }
-    const repoResponse = await bitbucketClient.createRepo({ name, workspace: selectedOrganization.value, isPrivate });
+    const bitbucketWorkspace = (selectedOrganization as SelectOptionObjectType<"organization">).selectedOption;
+    const repoResponse = await bitbucketClient.createRepo({
+      name,
+      workspace: bitbucketWorkspace.name,
+      isPrivate,
+    });
     if (!repoResponse.ok) {
       throw new Error(
         `Bitbucket repository creation request failed with: ${repoResponse.status} ${repoResponse.statusText}`
@@ -107,13 +115,33 @@ export function CreateGitRepositoryModal(props: {
     return { cloneUrl, htmlUrl: repo.links.html.href };
   }, [bitbucketClient, isPrivate, name, selectedOrganization]);
 
+  const createGitlabRepository = useCallback(async (): Promise<CreateRepositoryResponse> => {
+    const gitlabGroup = (selectedOrganization as SelectOptionObjectType<"organization">).selectedOption;
+    const repoResponse = await gitlabClient.createRepository({
+      name,
+      groupId: gitlabGroup.value,
+      visibility: isPrivate ? "private" : "public",
+    });
+    if (!(repoResponse.status === 201)) {
+      throw new Error(
+        `Gitlab repository creation request failed with: ${repoResponse.status} ${repoResponse.statusText}`
+      );
+    }
+    const repo = await repoResponse.json();
+    if (!repo?.http_url_to_repo || !repo?.web_url) {
+      throw new Error("Unexpected contents of the Gitlab repository creation response.");
+    }
+    return { cloneUrl: repo?.http_url_to_repo, htmlUrl: repo?.web_url };
+  }, [gitlabClient, isPrivate, name, selectedOrganization]);
+
   const createGitHubRepository = useCallback(async (): Promise<CreateRepositoryResponse> => {
+    const githubOrg = (selectedOrganization as SelectOptionObjectType<"organization">).selectedOption;
     const repo =
       selectedOrganization?.kind === "organization"
         ? await gitHubClient.repos.createInOrg({
             name,
             private: isPrivate,
-            org: selectedOrganization.value,
+            org: githubOrg.name,
           })
         : await gitHubClient.repos.createForAuthenticatedUser({ name, private: isPrivate });
 
@@ -133,11 +161,12 @@ export function CreateGitRepositoryModal(props: {
     if (selectedOrganization?.kind !== "organization") {
       throw new Error("No workspace was selected for Bitbucket Repository.");
     }
+    const org = (selectedOrganization as SelectOptionObjectType<"organization">).selectedOption;
     // need an empty commit push through REST API first
     await bitbucketClient
       .pushEmptyCommit({
         repository: name,
-        workspace: selectedOrganization.value,
+        workspace: org.name,
         branch: props.workspace.origin.branch,
       })
       .then((response) => {
@@ -162,6 +191,7 @@ export function CreateGitRepositoryModal(props: {
       const createRepositoryCommand: () => Promise<CreateRepositoryResponse> = switchExpression(authProvider?.type, {
         bitbucket: createBitbucketRepository,
         github: createGitHubRepository,
+        gitlab: createGitlabRepository,
       });
 
       if (!createRepositoryCommand) {
@@ -194,6 +224,7 @@ export function CreateGitRepositoryModal(props: {
         force: switchExpression(authProvider?.type, {
           github: false,
           bitbucket: true,
+          gitlab: true,
         }),
         authInfo,
         insecurelyDisableTlsCertificateValidation,
@@ -227,6 +258,7 @@ export function CreateGitRepositoryModal(props: {
     authProvider,
     createBitbucketRepository,
     createGitHubRepository,
+    createGitlabRepository,
     pushEmptyCommitIntoBitbucket,
     workspaces,
     props,
@@ -263,6 +295,7 @@ export function CreateGitRepositoryModal(props: {
       titleIconVariant={switchExpression(authProvider.type, {
         bitbucket: BitbucketIcon,
         github: GithubIcon,
+        gitlab: GitlabIcon,
       })}
       description={i18n.createGitRepositoryModal[authProvider.type].description(props.workspace.name)}
       actions={[
@@ -274,6 +307,7 @@ export function CreateGitRepositoryModal(props: {
           isDisabled={switchExpression(authProvider.type, {
             bitbucket: !isNameValid || selectedOrganization === undefined,
             github: !isNameValid,
+            gitlab: !isNameValid,
           })}
         >
           {i18n.createGitRepositoryModal.form.buttonCreate}
@@ -305,7 +339,11 @@ export function CreateGitRepositoryModal(props: {
           helperText={i18n.createGitRepositoryModal[authProvider.type].form.select.description}
           fieldId="organization"
         >
-          <LoadOrganizationsSelect workspace={props.workspace} onSelect={setSelectedOrganization} />
+          <LoadOrganizationsSelect
+            workspace={props.workspace}
+            onSelect={setSelectedOrganization}
+            actionType="repository"
+          />
         </FormGroup>
         <FormGroup
           label={i18n.createGitRepositoryModal.form.nameField.label}

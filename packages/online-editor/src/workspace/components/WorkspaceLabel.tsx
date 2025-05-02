@@ -124,6 +124,19 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
             </Tooltip>
           </FlexItem>
         ),
+        GITLAB_SNIPPET: (
+          <FlexItem>
+            <Tooltip
+              content={`'${props.descriptor?.name}' is linked to a Gitlab Snippet. ${props.descriptor?.origin.url}`}
+              position={"right"}
+            >
+              <Label>
+                <GitlabIcon />
+                &nbsp;&nbsp;Snippet
+              </Label>
+            </Tooltip>
+          </FlexItem>
+        ),
         LOCAL: (
           <FlexItem>
             <Tooltip

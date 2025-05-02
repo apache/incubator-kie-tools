@@ -39,6 +39,7 @@ import { PromiseStateStatus, useLivePromiseState } from "@kie-tools-core/react-h
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { GitServerRef } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/GitServerRef";
 import { GitRefTypeIcon } from "../gitRefs/GitRefTypeIcon";
+import { parseGitLabUrl } from "../gitlab/ParseGitLabUrl";
 
 export enum UrlType {
   //git
@@ -47,12 +48,16 @@ export enum UrlType {
   GIST_DOT_GITHUB_DOT_COM,
   BITBUCKET_DOT_ORG,
   BITBUCKET_DOT_ORG_SNIPPET,
+  GITLAB_DOT_COM,
+  GITLAB_DOT_COM_SNIPPET,
 
   //single file
   GIST_DOT_GITHUB_DOT_COM_FILE,
   GITHUB_DOT_COM_FILE,
   BITBUCKET_DOT_ORG_FILE,
   BITBUCKET_DOT_ORG_SNIPPET_FILE,
+  GITLAB_DOT_COM_FILE,
+  GITLAB_DOT_COM_SNIPPET_FILE,
   FILE,
 
   //other
@@ -67,7 +72,9 @@ export function isCertainlyGit(urlType: UrlType): boolean {
     urlType === UrlType.GITHUB_DOT_COM ||
     urlType === UrlType.GIST_DOT_GITHUB_DOT_COM ||
     urlType === UrlType.BITBUCKET_DOT_ORG ||
-    urlType === UrlType.BITBUCKET_DOT_ORG_SNIPPET
+    urlType === UrlType.BITBUCKET_DOT_ORG_SNIPPET ||
+    urlType === UrlType.GITLAB_DOT_COM ||
+    urlType === UrlType.GITLAB_DOT_COM_SNIPPET
   );
 }
 
@@ -81,7 +88,9 @@ export function isSingleFile(urlType: UrlType) {
     urlType === UrlType.GIST_DOT_GITHUB_DOT_COM_FILE ||
     urlType === UrlType.GITHUB_DOT_COM_FILE ||
     urlType === UrlType.BITBUCKET_DOT_ORG_FILE ||
-    urlType === UrlType.BITBUCKET_DOT_ORG_SNIPPET_FILE
+    urlType === UrlType.BITBUCKET_DOT_ORG_SNIPPET_FILE ||
+    urlType === UrlType.GITLAB_DOT_COM_FILE ||
+    urlType === UrlType.GITLAB_DOT_COM_SNIPPET_FILE
   );
 }
 
@@ -155,6 +164,42 @@ export type ImportableUrl =
       url: URL;
       org: string;
       filename: string;
+    }
+  | {
+      type: UrlType.GITLAB_DOT_COM;
+      project: string;
+      url: URL;
+      group?: string;
+      branch?: string;
+      error?: undefined;
+    }
+  | {
+      type: UrlType.GITLAB_DOT_COM_FILE;
+      error?: undefined;
+      url: URL;
+      group?: string;
+      project: string;
+      branch: string;
+      filePath: string;
+    }
+  | {
+      type: UrlType.GITLAB_DOT_COM_SNIPPET;
+      url: URL;
+      snippetId: string;
+      group?: string;
+      project?: string;
+      branch?: string;
+      error?: undefined;
+    }
+  | {
+      type: UrlType.GITLAB_DOT_COM_SNIPPET_FILE;
+      url: URL;
+      snippetId: string;
+      error?: undefined;
+      group?: string;
+      project?: string;
+      branch?: string;
+      filePath?: string;
     }
   | {
       type: UrlType.NOT_SUPPORTED;
@@ -400,6 +445,12 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
         url,
         gistId: (gistMatch ?? directGistMatch)?.params.gistId.replace(".git", ""),
       });
+    }
+
+    // Gitlab
+    const gitlabImportUrl = parseGitLabUrl(url);
+    if (gitlabImportUrl) {
+      return ifAllowed(gitlabImportUrl);
     }
 
     const extension = extname(url.pathname).replace(".", "");

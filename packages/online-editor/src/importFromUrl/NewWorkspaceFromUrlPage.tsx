@@ -54,6 +54,7 @@ import { PromiseStateStatus } from "@kie-tools-core/react-hooks/dist/PromiseStat
 import { AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
 import { useBitbucketClient } from "../bitbucket/Hooks";
 import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
+import { useGitlabClient } from "../gitlab/useGitlabClient";
 
 export function NewWorkspaceFromUrlPage() {
   const workspaces = useWorkspaces();
@@ -275,10 +276,16 @@ export function NewWorkspaceFromUrlPage() {
 
   const gitHubClient = useGitHubClient(authSession);
   const bitbucketClient = useBitbucketClient(authSession);
+  const gitlabClient = useGitlabClient(authSession);
 
   const doImportAsSingleFile = useCallback(
     async (importableUrl: ImportableUrl) => {
-      const singleFileContent = await fetchSingleFileContent(importableUrl, gitHubClient, bitbucketClient);
+      const singleFileContent = await fetchSingleFileContent(
+        importableUrl,
+        gitHubClient,
+        bitbucketClient,
+        gitlabClient
+      );
 
       if (singleFileContent.error) {
         setImportingError(singleFileContent.error);
@@ -290,7 +297,7 @@ export function NewWorkspaceFromUrlPage() {
         fileContents: encoder.encode(singleFileContent.content!),
       });
     },
-    [bitbucketClient, createWorkspaceForFile, gitHubClient]
+    [bitbucketClient, createWorkspaceForFile, gitHubClient, gitlabClient]
   );
 
   const doImport = useCallback(async () => {
@@ -330,6 +337,7 @@ export function NewWorkspaceFromUrlPage() {
       else if (
         importableUrl.type === UrlType.GITHUB_DOT_COM ||
         importableUrl.type === UrlType.BITBUCKET_DOT_ORG ||
+        importableUrl.type === UrlType.GITLAB_DOT_COM ||
         importableUrl.type === UrlType.GIT
       ) {
         if (gitServerRefsPromise.data?.defaultBranch) {
@@ -373,12 +381,18 @@ export function NewWorkspaceFromUrlPage() {
       }
 
       // snippet
-      else if (importableUrl.type === UrlType.BITBUCKET_DOT_ORG_SNIPPET) {
+      else if (
+        importableUrl.type === UrlType.BITBUCKET_DOT_ORG_SNIPPET ||
+        importableUrl.type === UrlType.GITLAB_DOT_COM_SNIPPET
+      ) {
         importableUrl.url.hash = "";
         if (gitServerRefsPromise.data?.defaultBranch) {
           await cloneGitRepository({
             origin: {
-              kind: WorkspaceKind.BITBUCKET_SNIPPET,
+              kind:
+                importableUrl.type === UrlType.BITBUCKET_DOT_ORG_SNIPPET
+                  ? WorkspaceKind.BITBUCKET_SNIPPET
+                  : WorkspaceKind.GITLAB_SNIPPET,
               url: importableUrl.url.toString(),
               branch: queryParamBranch ?? selectedGitRefName ?? gitServerRefsPromise.data.defaultBranch,
             },
