@@ -50,7 +50,6 @@ def setupPnpm(String mavenSettingsFileId = '') {
     sh """#!/bin/bash -el
     pnpm config set network-timeout 1000000
     pnpm -r exec 'bash' '-c' 'mkdir .mvn'
-    pnpm -r exec 'bash' '-c' 'echo -B > .mvn/maven.config'
     pnpm -r exec 'bash' '-c' 'echo -Xmx2g > .mvn/jvm.config'
     """.trim()
 
@@ -58,7 +57,7 @@ def setupPnpm(String mavenSettingsFileId = '') {
         configFileProvider([configFile(fileId: mavenSettingsFileId, variable: 'MAVEN_SETTINGS_FILE')]) {
             sh """#!/bin/bash -el
             cp ${MAVEN_SETTINGS_FILE} ${WORKSPACE}/kie-settings.xml
-            pnpm -r exec 'bash' '-c' 'echo --settings=${WORKSPACE}/kie-settings.xml >> .mvn/maven.config'
+            export MAVEN_ARGS="-s ${WORKSPACE}/kie-settings.xml"
             """.trim()
         }
     }
@@ -96,27 +95,33 @@ def pnpmBuild(String filters, Integer workspaceConcurrency = 1) {
 * PNPM update project version to
 */
 def pnpmUpdateProjectVersion(String projectVersion) {
-    sh """#!/bin/bash -el
-    pnpm update-version-to ${projectVersion}
-    """.trim()
+    withEnv(["MAVEN_ARGS=${env.MAVEN_ARGS}"]){
+        sh """#!/bin/bash -el
+        pnpm update-version-to ${projectVersion}
+        """.trim()
+    }
 }
 
 /**
 * PNPM update kogito version to
 */
 def pnpmUpdateKogitoVersion(String kogitoVersion, String imagesTag) {
+    withEnv(["MAVEN_ARGS=${env.MAVEN_ARGS}"]){
     sh """#!/bin/bash -el
     pnpm update-kogito-version-to --maven ${kogitoVersion}
     """.trim()
+    }
 }
 
 /**
 * PNPM update stream name to
 */
 def pnpmUpdateStreamName(String streamName) {
-    sh """#!/bin/bash -el
-    pnpm update-stream-name-to ${streamName}
-    """.trim()
+    withEnv(["MAVEN_ARGS=${env.MAVEN_ARGS}"]){
+        sh """#!/bin/bash -el
+        pnpm update-stream-name-to ${streamName}
+        """.trim()
+    }
 }
 
 /**

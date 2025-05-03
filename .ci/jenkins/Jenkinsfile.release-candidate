@@ -30,6 +30,10 @@ pipeline {
         timeout(time: 180, unit: 'MINUTES')
     }
 
+    environment {
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
+    }
+
     parameters {
         string(name: 'BRANCH_NAME', description: 'Set the Git branch to checkout (0.0.x)', trim: true)
         string(name: 'RELEASE_VERSION', description: 'Release version', trim: true)
