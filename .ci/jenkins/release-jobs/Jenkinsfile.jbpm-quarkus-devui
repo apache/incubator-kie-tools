@@ -98,7 +98,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}", "${env.MAVEN_ARGS}")
                     }
                 }
             }

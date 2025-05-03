@@ -77,14 +77,11 @@ def getUpstreamImagesArtifactsList(String artifactsDir, String releaseVersion) {
         "kogito-jobs-service-postgresql"
     ]
 
-    def isRC = releaseVersion.toLowerCase().contains("rc")
+    // clean -rc suffix if present
+    def versionClean = releaseVersion.replaceAll(/(?i)-rc\d*/, '')
 
     return components.collect { component ->
-        if (isRC) {
-            return "${artifactsDir}/incubator-kie-${component}-image.tar.gz"
-        } else {
-            return "${artifactsDir}/incubator-kie-${releaseVersion}-${component}-image.tar.gz"
-        }
+        "${artifactsDir}/incubator-kie-${versionClean}-${component}-image.tar.gz"
     }
 }
 
