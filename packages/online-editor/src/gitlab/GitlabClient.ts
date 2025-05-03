@@ -211,13 +211,13 @@ export class GitlabClient implements GitlabClientApi {
 
   listGroups = () =>
     this.request({
-      urlContext: "/groups",
+      urlContext: "/groups?active=true",
       method: "get",
     });
 
   listProjects = () =>
     this.request({
-      urlContext: "/projects?membership=true",
+      urlContext: "/projects?membership=true&&active=true",
       method: "get",
     });
 }
