@@ -49,6 +49,7 @@ pipeline {
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
         PNPM_FILTER_STRING = '-F @kie-tools/serverless-logic-web-tools-base-builder-image...'
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
     }
 
     stages {

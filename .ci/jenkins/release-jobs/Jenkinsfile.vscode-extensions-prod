@@ -41,6 +41,7 @@ pipeline {
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
     }
 
     stages {
@@ -96,17 +97,19 @@ pipeline {
         stage('PNPM Bootstrap') {
             steps {
                 dir('kie-tools') {
-                    sh '''#!/bin/bash -el
-                    pnpm bootstrap -F bpmn-vscode-extension... \
-                    -F dmn-vscode-extension... \
-                    -F pmml-vscode-extension... \
-                    -F vscode-extension-kogito-bundle... \
-                    -F swf-vscode-extension... \
-                    -F vscode-extension-kie-ba-bundle... \
-                    -F vscode-extension-dashbuilder-editor... \
-                    -F yard-vscode-extension... \
-                    -F extended-services-vscode-extension...
-                    '''.trim()
+                    withEnv(["MAVEN_ARGS=${env.MAVEN_ARGS}"]){
+                        sh '''#!/bin/bash -el
+                        pnpm bootstrap -F bpmn-vscode-extension... \
+                        -F dmn-vscode-extension... \
+                        -F pmml-vscode-extension... \
+                        -F vscode-extension-kogito-bundle... \
+                        -F swf-vscode-extension... \
+                        -F vscode-extension-kie-ba-bundle... \
+                        -F vscode-extension-dashbuilder-editor... \
+                        -F yard-vscode-extension... \
+                        -F extended-services-vscode-extension...
+                        '''.trim()
+                    }
                 }
             }
         }
@@ -114,18 +117,20 @@ pipeline {
         stage('Build') {
             steps {
                 dir('kie-tools') {
-                    sh '''#!/bin/bash -el
-                    pnpm -F bpmn-vscode-extension... \
-                    -F dmn-vscode-extension... \
-                    -F pmml-vscode-extension... \
-                    -F vscode-extension-kogito-bundle... \
-                    -F swf-vscode-extension... \
-                    -F vscode-extension-kie-ba-bundle... \
-                    -F vscode-extension-dashbuilder-editor... \
-                    -F yard-vscode-extension... \
-                    -F extended-services-vscode-extension... \
-                    build:prod
-                    '''.trim()
+                    withEnv(["MAVEN_ARGS=${env.MAVEN_ARGS}"]){
+                        sh '''#!/bin/bash -el
+                        pnpm -F bpmn-vscode-extension... \
+                        -F dmn-vscode-extension... \
+                        -F pmml-vscode-extension... \
+                        -F vscode-extension-kogito-bundle... \
+                        -F swf-vscode-extension... \
+                        -F vscode-extension-kie-ba-bundle... \
+                        -F vscode-extension-dashbuilder-editor... \
+                        -F yard-vscode-extension... \
+                        -F extended-services-vscode-extension... \
+                        build:prod
+                        '''.trim()
+                    }
                 }
             }
         }
