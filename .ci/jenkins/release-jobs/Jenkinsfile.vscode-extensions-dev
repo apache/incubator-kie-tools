@@ -40,6 +40,7 @@ pipeline {
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
         PNPM_FILTER_STRING = '-F kie-editors-dev-vscode-extension...'
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
     }
 
     stages {
