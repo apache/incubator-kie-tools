@@ -493,7 +493,7 @@ def printRunners() {
 
 def devDeploymentQuarkusBlankAppImageBuildJob() {
     env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/dev-deployment-quarkus-blank-app-image',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/dev-deployment-kogito-quarkus-blank-app-image',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -505,7 +505,7 @@ def devDeploymentQuarkusBlankAppImageBuildJob() {
 
 def devDeploymentUploadServiceBuildJob() {
     env.DEV_DEPLOYMENT_UPLOAD_SERVICE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/dev-deployment-upload-service',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/dev-deployment-upload-service',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -519,7 +519,7 @@ def devDeploymentUploadServiceBuildJob() {
 def vscodeExtensionsDevBuildJob() {
     env.VSCODE_EXTENSIONS_DEV_JOB_RESULT = build(
         wait: true,
-        job: 'KIE/kie-tools/kie-tools-release-jobs/vscode-extensions-dev',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/vscode-extensions-dev',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -531,7 +531,7 @@ def vscodeExtensionsDevBuildJob() {
 
 def vscodeExtensionsProdBuildJob() {
     env.VSCODE_EXTENSIONS_PROD_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/vscode-extensions-prod',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/vscode-extensions-prod',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -544,7 +544,7 @@ def vscodeExtensionsProdBuildJob() {
 
 def npmPackagesBuildJob() {
     env.NPM_PACKAGES_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/npm-packages',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/npm-packages',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -556,7 +556,7 @@ def npmPackagesBuildJob() {
 
 def knPluginWorkflowBuildJob() {
     env.KN_PLUGIN_WORKFLOW_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/kn-plugin-workflow',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kn-plugin-workflow',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -569,7 +569,7 @@ def knPluginWorkflowBuildJob() {
 
 def serverlessLogicWebToolsSwfBuilderImageBuildJob() {
     env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/serverless-logic-web-tools-swf-builder-image',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/serverless-logic-web-tools-swf-builder-image',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -581,7 +581,7 @@ def serverlessLogicWebToolsSwfBuilderImageBuildJob() {
 
 def serverlessLogicWebToolsSwfDevModeImageBuildJob() {
     env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_DEV_MODE_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/serverless-logic-web-tools-swf-dev-mode-image',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/serverless-logic-web-tools-swf-dev-mode-image',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -593,7 +593,7 @@ def serverlessLogicWebToolsSwfDevModeImageBuildJob() {
 
 def serverlessLogicWebToolsBaseBuilderImageBuildJob() {
     env.SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/serverless-logic-web-tools-base-builder-image',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/serverless-logic-web-tools-base-builder-image',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -605,7 +605,7 @@ def serverlessLogicWebToolsBaseBuilderImageBuildJob() {
 
 def dashbuilderViewerImageBuildJob() {
     env.DASHBUILDER_VIEWER_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/dashbuilder-viewer-image',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/dashbuilder-viewer-image',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -617,7 +617,7 @@ def dashbuilderViewerImageBuildJob() {
 
 def serverlessLogicWebToolsBuildJob() {
     env.SERVERLESS_LOGIC_WEB_TOOLS_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/serverless-logic-web-tools',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/serverless-logic-web-tools',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -628,7 +628,7 @@ def serverlessLogicWebToolsBuildJob() {
 
 def kogitoManagementConsoleBuildJob() {
     env.KOGITO_MANAGEMENT_CONSOLE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/kogito-management-console',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kogito-management-console',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -640,7 +640,7 @@ def kogitoManagementConsoleBuildJob() {
 
 def kogitoSwfBuilderBuildJob() {
     env.KOGITO_SWF_BUILDER_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/kogito-swf-builder',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kogito-swf-builder',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -652,7 +652,7 @@ def kogitoSwfBuilderBuildJob() {
 
 def kogitoSwfDevmodeBuildJob() {
     env.KOGITO_SWF_DEVMODE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/kogito-swf-devmode',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kogito-swf-devmode',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -664,7 +664,7 @@ def kogitoSwfDevmodeBuildJob() {
 
 def kogitoServerlessOperatorBuildJob() {
     env.KOGITO_SERVERLESS_OPERATOR_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/kogito-serverless-operator',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kogito-serverless-operator',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -676,7 +676,7 @@ def kogitoServerlessOperatorBuildJob() {
 
 def jbpmQuarkusDevuiBuildJob() {
     env.JBPM_QUARKUS_DEVUI_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/jbpm-quarkus-devui',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/jbpm-quarkus-devui',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -687,7 +687,7 @@ def jbpmQuarkusDevuiBuildJob() {
 
 def sonataflowQuarkusDevuiBuildJob() {
     env.SONATAFLOW_QUARKUS_DEVUI_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/sonataflow-quarkus-devui',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/sonataflow-quarkus-devui',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -698,7 +698,7 @@ def sonataflowQuarkusDevuiBuildJob() {
 
 def devDeploymentBaseImageBuildJob() {
     env.DEV_DEPLOYMENT_BASE_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/dev-deployment-base-image',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/dev-deployment-base-image',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -710,7 +710,7 @@ def devDeploymentBaseImageBuildJob() {
 
 def devDeploymentDmnFormWebappImageBuildJob() {
     env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/dev-deployment-dmn-form-webapp-image',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/dev-deployment-dmn-form-webapp-image',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -722,7 +722,7 @@ def devDeploymentDmnFormWebappImageBuildJob() {
 
 def extendedServicesBuildJob() {
     env.EXTENDED_SERVICES_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/extended-services',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/extended-services',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -735,7 +735,7 @@ def extendedServicesBuildJob() {
 
 def onlineEditorBuildJob() {
     env.ONLINE_EDITOR_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/online-editor',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/online-editor',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -747,7 +747,7 @@ def onlineEditorBuildJob() {
 
 def chromeExtensionsBuildJob() {
     env.CHROME_EXTENSIONS_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/chrome-extensions',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/chrome-extensions',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -760,7 +760,7 @@ def chromeExtensionsBuildJob() {
 
 def standaloneEditorsCdnBuildJob() {
     env.STANDALONE_EDITORS_CDN_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/standalone-editors-cdn',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/standalone-editors-cdn',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -772,7 +772,7 @@ def standaloneEditorsCdnBuildJob() {
 
 def kieSandboxExtendedServicesImageBuildJob() {
     env.KIE_SANDBOX_EXTENDED_SERVICES_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/kie-sandbox-extended-services',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kie-sandbox-extended-services',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -785,7 +785,7 @@ def kieSandboxExtendedServicesImageBuildJob() {
 
 def corsProxyImageBuildJob() {
     env.CORS_PROXY_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/cors-proxy',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/cors-proxy',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -798,7 +798,7 @@ def corsProxyImageBuildJob() {
 
 def kieSandboxImageBuildJob() {
     env.KIE_SANDBOX_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/kie-sandbox',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kie-sandbox',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -813,7 +813,7 @@ def kieSandboxImageBuildJob() {
 
 def kieSandboxAcceleratorQuarkusBuildJob() {
     env.KIE_SANDBOX_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/kie-sandbox-accelerator-quarkus',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kie-sandbox-accelerator-quarkus',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -826,7 +826,7 @@ def kieSandboxAcceleratorQuarkusBuildJob() {
 
 def kieSandboxHelmChartBuildJob() {
     env.KIE_SANDBOX_HELM_CHART_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/kie-sandbox-helm-chart',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kie-sandbox-helm-chart',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
@@ -839,7 +839,7 @@ def kieSandboxHelmChartBuildJob() {
 def runtimeToolsConsolesHelmChartBuildJob() {
     env.RUNTIME_TOOLS_CONSOLES_HELM_CHART_JOB_RESULT = build(
         wait: true,
-        job: 'KIE/kie-tools/kie-tools-release-jobs/runtime-tools-consoles-helm-chart',
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/runtime-tools-consoles-helm-chart',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
