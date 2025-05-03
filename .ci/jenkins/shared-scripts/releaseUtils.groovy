@@ -67,15 +67,25 @@ def downloadReleaseArtifacts(String releaseRepository, String artifactsDir, Stri
 * Return a list of upstream images artifacts
 */
 def getUpstreamImagesArtifactsList(String artifactsDir, String releaseVersion) {
-    return [
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-base-builder-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-data-index-ephemeral-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-data-index-postgresql-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jit-runner-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jobs-service-allinone-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jobs-service-ephemeral-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jobs-service-postgresql-image.tar.gz"
+    def components = [
+        "kogito-base-builder",
+        "kogito-data-index-ephemeral",
+        "kogito-data-index-postgresql",
+        "kogito-jit-runner",
+        "kogito-jobs-service-allinone",
+        "kogito-jobs-service-ephemeral",
+        "kogito-jobs-service-postgresql"
     ]
+
+    def isRC = releaseVersion.toLowerCase().contains("rc")
+
+    return components.collect { component ->
+        if (isRC) {
+            return "${artifactsDir}/incubator-kie-${component}-image.tar.gz"
+        } else {
+            return "${artifactsDir}/incubator-kie-${releaseVersion}-${component}-image.tar.gz"
+        }
+    }
 }
 
 return this
