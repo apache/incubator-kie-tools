@@ -86,9 +86,11 @@ def pnpmBuildFull(Integer workspaceConcurrency = 1) {
 * PNPM build a set of packages
 */
 def pnpmBuild(String filters, Integer workspaceConcurrency = 1) {
-    sh """#!/bin/bash -el
-    pnpm ${filters} --workspace-concurrency=${workspaceConcurrency} build:prod
-    """.trim()
+    withEnv(["MAVEN_ARGS=${env.MAVEN_ARGS}"]){
+        sh """#!/bin/bash -el
+        pnpm ${filters} --workspace-concurrency=${workspaceConcurrency} build:prod
+        """.trim()
+    }
 }
 
 /**
