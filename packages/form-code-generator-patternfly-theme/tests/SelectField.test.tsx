@@ -21,7 +21,6 @@ import * as React from "react";
 import { renderField } from "./_render";
 import { SelectField } from "../src/uniforms";
 import { NS_SEPARATOR } from "../src/uniforms/utils/Utils";
-import { SELECT_IMPORTS } from "../src/uniforms/SelectField";
 
 describe("<SelectField> tests", () => {
   it("<SelectField> - single value rendering", () => {
@@ -44,8 +43,12 @@ describe("<SelectField> tests", () => {
     expect(formElement.jsxCode).toMatchSnapshot();
 
     expect(formElement.reactImports).toContain("useState");
-    expect(formElement.pfImports).toHaveLength(SELECT_IMPORTS.length);
-    SELECT_IMPORTS.forEach((pfImport) => expect(formElement.pfImports).toContain(pfImport));
+    expect(formElement.pfImports).toHaveLength(1);
+    expect(formElement.pfDeprecatedImports).toHaveLength(4);
+    ["FormGroup"].forEach((pfImport) => expect(formElement.pfImports).toContain(pfImport));
+    ["SelectOption", "SelectOptionObject", "Select", "SelectVariant"].forEach((pfImport) =>
+      expect(formElement.pfDeprecatedImports).toContain(pfImport)
+    );
 
     expect(formElement.ref.binding).toBe(props.name);
     expect(formElement.ref.stateName).toBe(props.name);
@@ -93,8 +96,12 @@ describe("<SelectField> tests", () => {
     expect(formElement.jsxCode).toMatchSnapshot();
 
     expect(formElement.reactImports).toContain("useState");
-    expect(formElement.pfImports).toHaveLength(SELECT_IMPORTS.length);
-    SELECT_IMPORTS.forEach((pfImport) => expect(formElement.pfImports).toContain(pfImport));
+    expect(formElement.pfImports).toHaveLength(1);
+    expect(formElement.pfDeprecatedImports).toHaveLength(4);
+    ["FormGroup"].forEach((pfImport) => expect(formElement.pfImports).toContain(pfImport));
+    ["SelectOption", "SelectOptionObject", "Select", "SelectVariant"].forEach((pfImport) =>
+      expect(formElement.pfDeprecatedImports).toContain(pfImport)
+    );
 
     expect(formElement.ref.binding).toBe(props.name);
     expect(formElement.ref.stateName).toBe(props.name);
