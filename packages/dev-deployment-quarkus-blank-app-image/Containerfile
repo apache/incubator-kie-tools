@@ -39,4 +39,6 @@ EXPOSE 8080
 
 ENTRYPOINT ["/bin/bash", "-c"]
 
+HEALTHCHECK --interval=1m --timeout=5s CMD curl -f http://localhost:$DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT/upload-status || curl -f http://localhost:8080/q/health || exit 1
+
 CMD ["dev-deployment-upload-service && cp -r $HOME_PATH/app/. /tmp/app && cd /tmp/app && ./mvnw -Dmaven=3.9.6 quarkus:dev -o -s=/tmp/kogito/.m2/settings.xml -Dquarkus.analytics.disabled=true -Ddebug=false -Dmaven.repo.local=/tmp/kogito/.m2/repository -Dquarkus.http.root-path=${ROOT_PATH}"]
