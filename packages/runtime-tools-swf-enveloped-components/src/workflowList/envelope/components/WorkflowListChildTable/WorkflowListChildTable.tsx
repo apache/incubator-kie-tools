@@ -18,7 +18,8 @@
  */
 
 import { WorkflowListDriver } from "../../../api";
-import { ICell, IRow, IRowCell, Table, TableBody, TableHeader } from "@patternfly/react-table/dist/js/components/Table";
+import { ICell, IRow, IRowCell } from "@patternfly/react-table/dist/js/components/Table";
+import { Table, TableBody, TableHeader } from "@patternfly/react-table/dist/js/deprecated";
 import React, { useEffect, useState } from "react";
 import { WorkflowInstance, WorkflowInstanceState } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import _ from "lodash";
@@ -164,7 +165,7 @@ const WorkflowListChildTable: React.FC<WorkflowListChildTableProps & OUIAProps> 
             title: child.lastUpdate ? (
               <span>
                 {" "}
-                <HistoryIcon className="pf-u-mr-sm" /> Updated{" "}
+                <HistoryIcon className="pf-v5-u-mr-sm" /> Updated{" "}
                 <Moment fromNow>{new Date(`${child.lastUpdate}`)}</Moment>
               </span>
             ) : (

@@ -24,12 +24,14 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
-  EmptyStatePrimary,
+  EmptyStateActions,
+  EmptyStateHeader,
+  EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+
 import { FallbackProps } from "react-error-boundary";
 import { useTestScenarioEditorI18n } from "./i18n";
 import { useTestScenarioEditor } from "./TestScenarioEditorContext";
@@ -49,44 +51,47 @@ export function TestScenarioEditorErrorFallback({ error, resetErrorBoundary }: F
   return (
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
       <EmptyState style={{ maxWidth: "1280px" }}>
-        <EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />
-        <Title size={"lg"} headingLevel={"h4"}>
-          {i18n.errorFallBack.title}
-        </Title>
+        <EmptyStateHeader
+          titleText={<>{i18n.errorFallBack.title}</>}
+          icon={<EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />}
+          headingLevel={"h4"}
+        />
         <EmptyStateBody>{i18n.errorFallBack.body}</EmptyStateBody>
-        <br />
-        <ClipboardCopy
-          isReadOnly={true}
-          isExpanded={false}
-          hoverTip={"Copy"}
-          clickTip={"Copied"}
-          variant={ClipboardCopyVariant.expansion}
-          style={{ textAlign: "left", whiteSpace: "pre-wrap", fontFamily: "monospace" }}
-        >
-          {JSON.stringify(
-            {
-              name: error.name,
-              message: error.message,
-              cause: error.cause,
-              stack: error.stack,
-            },
-            null,
-            2
-          ).replaceAll("\\n", "\n")}
-        </ClipboardCopy>
-        <br />
-        <EmptyStatePrimary>
-          <Button variant={ButtonVariant.link} onClick={resetToLastWorkingState}>
-            {i18n.errorFallBack.lastActionButton}
-          </Button>
-          {issueTrackerHref && (
-            <a href={issueTrackerHref} target={"_blank"}>
-              <Button variant={ButtonVariant.link} icon={<ExternalLinkAltIcon />}>
-                {i18n.errorFallBack.fileIssueHref}...
-              </Button>
-            </a>
-          )}
-        </EmptyStatePrimary>
+        <EmptyStateFooter>
+          <br />
+          <ClipboardCopy
+            isReadOnly={true}
+            isExpanded={false}
+            hoverTip={"Copy"}
+            clickTip={"Copied"}
+            variant={ClipboardCopyVariant.expansion}
+            style={{ textAlign: "left", whiteSpace: "pre-wrap", fontFamily: "monospace" }}
+          >
+            {JSON.stringify(
+              {
+                name: error.name,
+                message: error.message,
+                cause: error.cause,
+                stack: error.stack,
+              },
+              null,
+              2
+            ).replaceAll("\\n", "\n")}
+          </ClipboardCopy>
+          <br />
+          <EmptyStateActions>
+            <Button variant={ButtonVariant.link} onClick={resetToLastWorkingState}>
+              {i18n.errorFallBack.lastActionButton}
+            </Button>
+            {issueTrackerHref && (
+              <a href={issueTrackerHref} target={"_blank"}>
+                <Button variant={ButtonVariant.link} icon={<ExternalLinkAltIcon />}>
+                  {i18n.errorFallBack.fileIssueHref}...
+                </Button>
+              </a>
+            )}
+          </EmptyStateActions>
+        </EmptyStateFooter>
       </EmptyState>
     </Flex>
   );

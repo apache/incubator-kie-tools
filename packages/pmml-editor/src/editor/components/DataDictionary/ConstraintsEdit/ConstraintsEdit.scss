@@ -21,10 +21,10 @@
   &__form {
     overflow-y: auto;
     flex: 1 1 0;
-    background-color: var(--pf-global--BackgroundColor--200);
-    // overriding disabled select background color because it doesn't play nice with --pf-global--BackgroundColor--200
-    .pf-c-select__toggle.pf-m-disabled {
-      --pf-c-select__toggle--disabled--BackgroundColor: var(--pf-global--disabled-color--200);
+    background-color: var(--pf-v5-global--BackgroundColor--200);
+    // overriding disabled select background color because it doesn't play nice with --pf-v5-global--BackgroundColor--200
+    .pf-v5-c-select__toggle.pf-m-disabled {
+      --pf-v5-c-select__toggle--disabled--BackgroundColor: var(--pf-v5-global--disabled-color--200);
     }
   }
   &__card {

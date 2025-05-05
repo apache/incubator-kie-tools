@@ -178,9 +178,9 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 		return \`\${hours}:\${minutes} \${isAm ? &#39;AM&#39; : &#39;PM&#39;}\`;
 	};
 	return (
-		&lt;div className={&#39;pf-c-form&#39;}&gt;
+		&lt;div className={&#39;pf-v5-c-form&#39;}&gt;
 			&lt;Card&gt;
-				&lt;CardBody className=&#39;pf-c-form&#39;&gt;
+				&lt;CardBody className=&#39;pf-v5-c-form&#39;&gt;
 					&lt;label&gt;
 						&lt;b&gt;Personal data&lt;/b&gt;
 					&lt;/label&gt;
@@ -213,7 +213,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 						/&gt;
 					&lt;/FormGroup&gt;
 					&lt;Card&gt;
-						&lt;CardBody className=&#39;pf-c-form&#39;&gt;
+						&lt;CardBody className=&#39;pf-v5-c-form&#39;&gt;
 							&lt;label&gt;
 								&lt;b&gt;Child&lt;/b&gt;
 							&lt;/label&gt;
@@ -236,7 +236,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 				&lt;/CardBody&gt;
 			&lt;/Card&gt;
 			&lt;Card&gt;
-				&lt;CardBody className=&#39;pf-c-form&#39;&gt;
+				&lt;CardBody className=&#39;pf-v5-c-form&#39;&gt;
 					&lt;label&gt;
 						&lt;b&gt;Address&lt;/b&gt;
 					&lt;/label&gt;
@@ -300,7 +300,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 				&lt;/CardBody&gt;
 			&lt;/Card&gt;
 			&lt;Card&gt;
-				&lt;CardBody className=&#39;pf-c-form&#39;&gt;
+				&lt;CardBody className=&#39;pf-v5-c-form&#39;&gt;
 					&lt;label&gt;
 						&lt;b&gt;Interview&lt;/b&gt;
 					&lt;/label&gt;
@@ -666,7 +666,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							}}&gt;
 							&lt;div style={{ width: &#39;100%&#39;, marginRight: &#39;10px&#39; }}&gt;
 								&lt;Card&gt;
-									&lt;CardBody className=&#39;pf-c-form&#39;&gt;
+									&lt;CardBody className=&#39;pf-v5-c-form&#39;&gt;
 										&lt;FormGroup
 											fieldId={&#39;uniforms-0000-0010&#39;}
 											label={&#39;Name&#39;}

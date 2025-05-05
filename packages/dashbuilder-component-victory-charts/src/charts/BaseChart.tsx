@@ -78,7 +78,6 @@ export interface ChartProps {
   width: number;
   height: number;
   themeColor: ThemeColorType;
-  themeVariant: ThemeVariantType;
   dataSet: DataSet;
   legendPosition: LegendPosition;
   legendOrientation?: LegendOrientation;

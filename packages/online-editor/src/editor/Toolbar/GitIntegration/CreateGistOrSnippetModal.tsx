@@ -24,10 +24,10 @@ import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/work
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { Form, FormAlert, FormGroup, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
-import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
+
 import { UsersIcon } from "@patternfly/react-icons/dist/js/icons/users-icon";
 import { LockIcon } from "@patternfly/react-icons/dist/js/icons/lock-icon";
-import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
+
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { GIST_ORIGIN_REMOTE_NAME } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
@@ -49,6 +49,7 @@ import { useOnlineI18n } from "../../../i18n";
 import { LoadOrganizationsSelect, SelectOptionObjectType } from "./LoadOrganizationsSelect";
 import { useGitIntegration } from "./GitIntegrationContextProvider";
 import { useEnv } from "../../../env/hooks/EnvContext";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 export interface CreateGistOrSnippetResponse {
   cloneUrl: string;
@@ -287,22 +288,21 @@ If you are, it means that creating this Snippet failed and it can safely be dele
             <br />
           </FormAlert>
         )}
-        <FormGroup
-          label={i18n.createGistOrSnippetModal[authProvider.type].form.select.label}
-          helperText={i18n.createGistOrSnippetModal[authProvider.type].form.select.description}
-          fieldId="organization"
-        >
+        <FormGroup label={i18n.createGistOrSnippetModal[authProvider.type].form.select.label} fieldId="organization">
           <LoadOrganizationsSelect
             workspace={props.workspace}
             onSelect={setSelectedOrganization}
             readonly={authProvider.type === AuthProviderType.github}
           />
+          <FormHelperText>
+            <HelperText>
+              <HelperTextItem variant="default">
+                {i18n.createGistOrSnippetModal[authProvider.type].form.select.description}
+              </HelperTextItem>
+            </HelperText>
+          </FormHelperText>
         </FormGroup>
-        <FormGroup
-          helperText={<FormHelperText icon={<CheckCircleIcon />} isHidden={false} style={{ visibility: "hidden" }} />}
-          helperTextInvalidIcon={<ExclamationCircleIcon />}
-          fieldId="gist-or-snippet-visibility"
-        >
+        <FormGroup fieldId="gist-or-snippet-visibility">
           <Radio
             isChecked={!isPrivate}
             id={"gist-or-snippet-public"}

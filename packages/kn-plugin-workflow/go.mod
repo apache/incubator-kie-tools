@@ -93,7 +93,7 @@ require (
 	github.com/relvacode/iso8601 v1.4.0 // indirect
 	github.com/santhosh-tekuri/jsonschema/v5 v5.3.1 // indirect
 	github.com/sergi/go-diff v1.2.0 // indirect
-	github.com/serverlessworkflow/sdk-go/v2 v2.4.2 // indirect
+	github.com/serverlessworkflow/sdk-go/v2 v2.5.0 // indirect
 	github.com/sosodev/duration v1.3.1 // indirect
 	github.com/spf13/cast v1.5.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect

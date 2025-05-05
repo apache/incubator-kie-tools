@@ -730,6 +730,8 @@ Dockerfile.legacy-jar
 Dockerfile.native-micro
 packages/kn-plugin-workflow/pkg/command/quarkus/testdata/dockerignore
 dockerignore
+# packages/kn-plugin-workflow/e2e-tests/testdata/lock.sw.yaml
+lock.sw.yaml
 # packages/maven-base/kie-tools-maven-base.iml
 kie-tools-maven-base.iml
 # packages/maven-base/settings.xml

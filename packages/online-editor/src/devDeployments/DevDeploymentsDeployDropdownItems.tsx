@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DropdownItem } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownItem } from "@patternfly/react-core/deprecated";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useDevDeployments as useDevDeployments } from "./DevDeploymentsContext";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
@@ -29,7 +29,7 @@ import { AuthProviderGroup } from "../authProviders/AuthProvidersApi";
 import { useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
 import { cloudAuthSessionSelectFilter } from "../authSessions/CompatibleAuthSessions";
-import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
+import { SelectPosition } from "@patternfly/react-core/deprecated";
 
 export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace | undefined) {
   const devDeployments = useDevDeployments();

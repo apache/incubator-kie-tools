@@ -43,7 +43,7 @@ function variant(severity: NotificationSeverity) {
     case "ERROR":
       return "danger";
     case "HINT":
-      return "default";
+      return "custom";
     case "SUCCESS":
       return "success";
     case "WARNING":
