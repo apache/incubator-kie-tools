@@ -158,11 +158,13 @@ export const LoadOrganizationsSelect = ({ onSelect, workspace, readonly, actionT
       if (!isSupportedGitAuthProviderType(authProvider?.type)) {
         return;
       }
+      const defaultSelectedOptionValue = orgs?.organizations?.[0] ?? authInfo?.username;
+      const defaultSelectedOptionKind = orgs?.organizations?.[0] ? "organization" : "user";
       setSelectedOption(
         switchExpression(authProvider?.type, {
           bitbucket: getSelectOptionValue(orgs.organizations[0], "organization"),
           github: getSelectOptionValue(authInfo!.username, "user"),
-          gitlab: getSelectOptionValue(orgs.organizations[0], "organization"),
+          gitlab: getSelectOptionValue(defaultSelectedOptionValue, defaultSelectedOptionKind),
         })
       );
     },
