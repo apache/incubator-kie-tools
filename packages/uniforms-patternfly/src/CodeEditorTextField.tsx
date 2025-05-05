@@ -21,7 +21,7 @@ import * as React from "react";
 import { CodeEditor, Language } from "@patternfly/react-code-editor";
 import { connectField, filterDOMProps, HTMLFieldProps } from "uniforms";
 
-export type MonacoTextFieldProps = HTMLFieldProps<
+export type CodeEditorTextFieldProps = HTMLFieldProps<
   string,
   HTMLDivElement,
   {
@@ -32,7 +32,7 @@ export type MonacoTextFieldProps = HTMLFieldProps<
   }
 >;
 
-function MonacoTextField({
+function CodeEditorTextField({
   disabled,
   height,
   label,
@@ -41,9 +41,9 @@ function MonacoTextField({
   value,
   language,
   ...props
-}: MonacoTextFieldProps) {
+}: CodeEditorTextFieldProps) {
   return (
-    <div data-testid={"monaco-field"} {...filterDOMProps(props)}>
+    <div data-testid={"code-ditor-field"} {...filterDOMProps(props)}>
       {label && (
         <label>
           <b>{label}</b>
@@ -60,4 +60,4 @@ function MonacoTextField({
   );
 }
 
-export default connectField(MonacoTextField);
+export default connectField(CodeEditorTextField);

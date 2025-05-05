@@ -62,7 +62,7 @@ const schema = {
         },
         customData: {
           type: "string",
-          format: "json",
+          uniforms: { language: "json" },
         },
       },
       disabled: false,
