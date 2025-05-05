@@ -57,6 +57,8 @@ module.exports = (webpackEnv) => {
       ]
     : [];
 
+  // importsNotUsedAsValues was deprecated, verbatimModuleSyntax replaces it
+  // see https://www.typescriptlang.org/tsconfig/#importsNotUsedAsValues
   const verbatimModuleSyntax = live ? { verbatimModuleSyntax: "preserve" } : {};
 
   return {
