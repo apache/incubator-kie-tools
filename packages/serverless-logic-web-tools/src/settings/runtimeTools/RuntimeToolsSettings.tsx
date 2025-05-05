@@ -239,7 +239,7 @@ export function RuntimeToolsSettings(props: SettingsPageProps) {
                     aria-label="Data Index URL field"
                     aria-describedby="data-index-url-field-helper"
                     value={config.dataIndexUrl}
-                    onChange={(_event, value) => onDataIndexURLChanged}
+                    onChange={(_event, value) => onDataIndexURLChanged(value)}
                     tabIndex={1}
                     data-testid="data-index-url-text-field"
                   />

@@ -192,7 +192,7 @@ export function ServiceRegistrySettings(props: SettingsPageProps) {
                     aria-label="Name field"
                     aria-describedby="name-field-helper"
                     value={config.name}
-                    onChange={(_event, value) => onNameChanged}
+                    onChange={(_event, value) => onNameChanged(value)}
                     tabIndex={1}
                     data-testid="name-text-field"
                   />
@@ -235,7 +235,7 @@ export function ServiceRegistrySettings(props: SettingsPageProps) {
                     aria-label="Core Registry API field"
                     aria-describedby="core-registry-api-field-helper"
                     value={config.coreRegistryApi}
-                    onChange={(_event, value) => onCoreRegistryApiChanged}
+                    onChange={(_event, value) => onCoreRegistryApiChanged(value)}
                     tabIndex={2}
                     data-testid="core-registry-api-text-field"
                   />

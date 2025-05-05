@@ -189,7 +189,7 @@ export function ServiceAccountSettings(props: SettingsPageProps) {
                     aria-label="Client ID field"
                     aria-describedby="client-id-field-helper"
                     value={config.clientId}
-                    onChange={(_event, value) => onClientIdChanged}
+                    onChange={(_event, value) => onClientIdChanged(value)}
                     tabIndex={1}
                     data-testid="client-id-text-field"
                   />
@@ -232,7 +232,7 @@ export function ServiceAccountSettings(props: SettingsPageProps) {
                     aria-label="Client secret field"
                     aria-describedby="client-secret-field-helper"
                     value={config.clientSecret}
-                    onChange={(_event, value) => onClientSecretChanged}
+                    onChange={(_event, value) => onClientSecretChanged(value)}
                     tabIndex={2}
                     data-testid="client-secret-text-field"
                   />

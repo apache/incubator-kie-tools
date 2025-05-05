@@ -333,7 +333,7 @@ export function WorkspaceFiles(props: WorkspaceFilesProps) {
                                 label="View readonly files"
                                 isChecked={isViewRoFilesChecked}
                                 isDisabled={isViewRoFilesDisabled}
-                                onChange={(_event, value) => handleViewRoCheckboxChange}
+                                onChange={(_event, value) => handleViewRoCheckboxChange(value)}
                               ></Checkbox>
                             </ToolbarItem>
                           </>
