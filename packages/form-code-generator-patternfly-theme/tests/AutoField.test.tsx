@@ -22,7 +22,6 @@ import SimpleSchema from "simpl-schema";
 import { renderField } from "./_render";
 import { AutoField } from "../src/uniforms";
 import { DATE_FUNCTIONS } from "../src/uniforms/staticCode/staticCodeBlocks";
-import { SELECT_IMPORTS } from "../src/uniforms/SelectField";
 
 const schema = {
   name: { type: String },
@@ -144,16 +143,24 @@ describe("<AutoField> tests", () => {
   it("<SelectField> - single value rendering", () => {
     const { formElement } = doRenderField("selectRole");
 
-    expect(formElement.pfImports).toHaveLength(SELECT_IMPORTS.length);
-    SELECT_IMPORTS.forEach((pfImport) => expect(formElement.pfImports).toContain(pfImport));
+    expect(formElement.pfImports).toHaveLength(1);
+    expect(formElement.pfDeprecatedImports).toHaveLength(4);
+    ["FormGroup"].forEach((pfImport) => expect(formElement.pfImports).toContain(pfImport));
+    ["SelectOption", "SelectOptionObject", "Select", "SelectVariant"].forEach((pfImport) =>
+      expect(formElement.pfDeprecatedImports).toContain(pfImport)
+    );
   });
 
   it("<SelectField> - multiple value rendering", () => {
     const { formElement } = doRenderField("otherPositions");
 
     expect(formElement.reactImports).toContain("useState");
-    expect(formElement.pfImports).toHaveLength(SELECT_IMPORTS.length);
-    SELECT_IMPORTS.forEach((pfImport) => expect(formElement.pfImports).toContain(pfImport));
+    expect(formElement.pfImports).toHaveLength(1);
+    expect(formElement.pfDeprecatedImports).toHaveLength(4);
+    ["FormGroup"].forEach((pfImport) => expect(formElement.pfImports).toContain(pfImport));
+    ["SelectOption", "SelectOptionObject", "Select", "SelectVariant"].forEach((pfImport) =>
+      expect(formElement.pfDeprecatedImports).toContain(pfImport)
+    );
   });
 
   it("<TextField> - TextInput rendering", () => {
