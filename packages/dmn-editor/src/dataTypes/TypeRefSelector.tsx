@@ -17,11 +17,10 @@
  * under the License.
  */
 
-
 import { DmnBuiltInDataType, DmnDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import * as React from "react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useRef, useState, useMemo } from "react";
 import { TypeRefLabel } from "./TypeRefLabel";
 import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon";
 import { DmnEditorTab } from "../store/Store";
