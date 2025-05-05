@@ -26,14 +26,17 @@ import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/M
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { AcceleratorIcon } from "./AcceleratorIcon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
+import { AuthSession, GitAuthSession } from "../../../authSessions/AuthSessionApi";
+import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 
-type Props = {
+interface Props {
   accelerator: AcceleratorAppliedConfig;
   isOpen: boolean;
-  onClose: () => any;
+  onClose: () => void;
   isApplying?: boolean;
   onApplyAccelerator?: () => void;
-};
+  authSession?: AuthSession;
+}
 
 export function AcceleratorModal(props: Props) {
   const { i18n } = useOnlineI18n();
@@ -46,7 +49,13 @@ export function AcceleratorModal(props: Props) {
       variant={ModalVariant.medium}
       actions={
         props.isApplying && [
-          <Button key="apply" variant="primary" onClick={props.onApplyAccelerator}>
+          <Button
+            key="apply"
+            variant="primary"
+            onClick={props.onApplyAccelerator}
+            isDisabled={!props.authSession}
+            isLoading={props.isApplying}
+          >
             {i18n.terms.apply}
           </Button>,
           <Button key="cancel" variant="link" onClick={props.onClose}>
@@ -62,15 +71,25 @@ export function AcceleratorModal(props: Props) {
       </Title>
       <Grid style={{ margin: "1rem 0" }} hasGutter>
         {props.isApplying && (
-          <GridItem span={12}>
-            <i>{i18n.accelerators.acceleratorDescription}</i>
-          </GridItem>
+          <>
+            <GridItem span={12}>
+              <i>{i18n.accelerators.acceleratorDescription}</i>
+            </GridItem>
+            {props.authSession && (
+              <GridItem span={12}>
+                <Alert variant="info" isInline title="Authentication Status">
+                  Using {(props.authSession as GitAuthSession).authProviderId} credentials for{" "}
+                  {(props.authSession as GitAuthSession).login}
+                </Alert>
+              </GridItem>
+            )}
+          </>
         )}
         <GridItem span={12}>
           <p>
             {i18n.accelerators.acceleratorDetails}
             &nbsp;
-            <a href={props.accelerator.gitRepositoryUrl} target="__blank">
+            <a href={props.accelerator.gitRepositoryUrl} target="_blank" rel="noopener noreferrer">
               {props.accelerator.gitRepositoryUrl}
             </a>
           </p>

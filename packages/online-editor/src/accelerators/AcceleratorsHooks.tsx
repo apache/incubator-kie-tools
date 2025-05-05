@@ -128,20 +128,26 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
   }, [workspace.descriptor.workspaceId, workspaces]);
 
   const applyAcceleratorToWorkspace = useCallback(
-    async (accelerator: AcceleratorConfig, currentFile: WorkspaceFile) => {
+    async (
+      accelerator: AcceleratorConfig,
+      currentFile: WorkspaceFile,
+      options: {
+        authInfo: {
+          username: string;
+          password: string;
+        };
+        gitRef: string;
+        insecurelyDisableTlsCertificateValidation: boolean;
+      }
+    ) => {
       applyingAcceleratorAlert.show({ acceleratorName: accelerator.name });
 
       const workspaceId = workspace.descriptor.workspaceId;
-
       let movedFiles: WorkspaceFile[] = [];
-
-      // Attempt to delete branches
-      // This is a workaround, as isomorphic-git doesn't necessarilly deletes the branch, even though it resolves
       attemptToDeleteTemporaryBranches();
 
-      let configFile: WorkspaceFile | undefined = undefined;
-
       try {
+        // Validate destination paths
         const destinationPathValidation = {
           dmnDestinationFolder: validateAcceleratorDestinationFolderPaths(accelerator.dmnDestinationFolder),
           bpmnDestinationFolder: validateAcceleratorDestinationFolderPaths(accelerator.bpmnDestinationFolder),
@@ -158,27 +164,22 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
           throw new ApplyAcceleratorError(accelerator.name, JSON.stringify(destinationPathValidation));
         }
 
-        const workspaceFiles = await workspaces.getFiles({ workspaceId });
-        // Create a backup branch with the current files, but stay on main
+        // Create backup branch
         await workspaces.branch({ workspaceId, name: BACKUP_BRANCH_NAME, checkout: false });
-
-        // Adds all files to the staging area
-        await workspaces.stageFile({
-          workspaceId,
-          relativePath: ".",
-        });
-
-        // Commit staged changes to the backup branch
+        await workspaces.stageFile({ workspaceId, relativePath: "." });
         await workspaces.commit({
           workspaceId,
           commitMessage: `${env.KIE_SANDBOX_APP_NAME}: Backup files before applying ${accelerator.name} Accelerator`,
           targetBranch: BACKUP_BRANCH_NAME,
         });
-        // Create and checkout new temporary branch for moved files
+
+        // Create and checkout moved files branch
         await workspaces.branch({ workspaceId, name: MOVED_FILES_BRANCH_NAME, checkout: true });
 
-        // Move files
+        // Move files to their new locations
+        const workspaceFiles = await workspaces.getFiles({ workspaceId });
         let currentFileAfterAccelerator: WorkspaceFile | undefined;
+
         movedFiles = await Promise.all(
           workspaceFiles.map(async (file) => {
             let fileNewDestination: string;
@@ -205,27 +206,25 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
           })
         );
 
-        const movedFilesPaths = movedFiles.map((file) => file.relativePath);
-
         if (!currentFileAfterAccelerator) {
           throw new ApplyAcceleratorError(accelerator.name, "Failed to find current file after moving.");
         }
 
-        // Commit moved files to moved files branch (this commit will never be pushed, as this branch will be deleted)
+        // Commit moved files
         await workspaces.commit({
           workspaceId,
           commitMessage: `${env.KIE_SANDBOX_APP_NAME}: Moving files to apply ${accelerator.name} Accelerator.`,
           targetBranch: MOVED_FILES_BRANCH_NAME,
         });
 
-        // Go back to original branch
+        // Checkout original branch
         await workspaces.checkout({
           workspaceId,
           ref: workspace.descriptor.origin.branch,
           remote: GIT_ORIGIN_REMOTE_NAME,
         });
 
-        // Add Accelerator remote and fetch it
+        // Add and fetch accelerator remote with authentication
         await workspaces.addRemote({
           workspaceId,
           name: TEMP_ACCELERATOR_REMOTE_NAME,
@@ -236,27 +235,26 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         const fetchResult = await workspaces.fetch({
           workspaceId,
           remote: TEMP_ACCELERATOR_REMOTE_NAME,
-          ref: accelerator.gitRepositoryGitRef,
+          ref: options.gitRef,
+          authInfo: options.authInfo,
+          insecurelyDisableTlsCertificateValidation: options.insecurelyDisableTlsCertificateValidation,
         });
 
         if (!fetchResult.fetchHead) {
-          throw new ApplyAcceleratorError(
-            accelerator.name,
-            `Unable to find remote HEAD for ${accelerator.gitRepositoryGitRef} ref.`
-          );
+          throw new ApplyAcceleratorError(accelerator.name, `Unable to find remote HEAD for ${options.gitRef} ref.`);
         }
 
-        // Checkout Accelerator files, wiping everything else
+        // Checkout accelerator files
         await workspaces.checkoutFilesFromLocalHead({
           workspaceId,
           ref: fetchResult.fetchHead,
           filepaths: ["."],
         });
 
-        // Delete Accelerator remote
+        // Clean up remote
         await workspaces.deleteRemote({ workspaceId, name: TEMP_ACCELERATOR_REMOTE_NAME });
 
-        // Stage all Accelerator files
+        // Stage all accelerator files
         const acceleratorFiles = await workspaces.getFiles({ workspaceId });
         await Promise.all(
           acceleratorFiles.map(async (file) => {
@@ -267,14 +265,15 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
           })
         );
 
-        // Bring moved user files back
+        // Bring back moved user files
+        const movedFilesPaths = movedFiles.map((file) => file.relativePath);
         await workspaces.checkoutFilesFromLocalHead({
           workspaceId,
           ref: MOVED_FILES_BRANCH_NAME,
           filepaths: movedFilesPaths,
         });
 
-        // Stage all moved files
+        // Stage moved files
         await Promise.all(
           movedFiles.map(async (file) => {
             return workspaces.stageFile({
@@ -284,11 +283,11 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
           })
         );
 
-        // Add Accelerator YAML config
+        // Add accelerator config file
         const content = `# This file was automatically created by ${
           env.KIE_SANDBOX_APP_NAME
         }. Please don't modify it.\n${yaml.dump({ ...accelerator, appliedAt: new Date().toISOString() })}`;
-        configFile = await workspaces.addFile({
+        const configFile = await workspaces.addFile({
           workspaceId,
           name: ACCELERATOR_CONFIG_FILE_NAME,
           destinationDirRelativePath: KIE_SANDBOX_DIRECTORY_PATH,
@@ -301,7 +300,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
           relativePath: ACCELERATOR_CONFIG_FILE_RELATIVE_PATH,
         });
 
-        // Create commit
+        // Create final commit
         await workspaces.createSavePoint({
           workspaceId,
           gitConfig,
@@ -310,9 +309,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         });
 
         applyingAcceleratorAlert.close();
-
         applyAcceleratorSuccessAlert.show({ acceleratorName: accelerator.name });
-
         attemptToDeleteTemporaryBranches();
 
         history.replace({
@@ -329,9 +326,9 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
         console.error(e);
 
         // Delete config file
-        if (configFile) {
-          await workspaces.deleteFile({ file: configFile });
-        }
+        // if (configFile) {
+        //   await workspaces.deleteFile({ file: configFile });
+        // }
 
         // Return to original branch
         await workspaces.checkout({
