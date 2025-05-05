@@ -92,6 +92,11 @@ test("<AutoField> - renders TextField", () => {
   expect(screen.getByTestId("text-field")).toBeInTheDocument();
 });
 
+test("<CodeEditor> - renders CodeEditor", () => {
+  render(usingUniformsContext(<AutoField name="x" />, { x: { type: String, uniforms: { language: "json" } } }));
+  expect(screen.getByTestId("monaco-field")).toBeInTheDocument();
+});
+
 test("<AutoField> - renders BoolField", () => {
   render(usingUniformsContext(<AutoField name="x" />, { x: { type: Boolean } }));
   expect(screen.getByTestId("bool-field")).toBeInTheDocument();

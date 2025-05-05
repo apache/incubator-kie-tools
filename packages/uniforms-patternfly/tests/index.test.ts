@@ -35,6 +35,7 @@ it("exports everything", () => {
     ListField: expect.any(Function),
     ListItemField: expect.any(Function),
     LongTextField: expect.any(Function),
+    MonacoTextField: expect.any(Function),
     NestField: expect.any(Function),
     NumField: expect.any(Function),
     QuickForm: expect.any(Function),

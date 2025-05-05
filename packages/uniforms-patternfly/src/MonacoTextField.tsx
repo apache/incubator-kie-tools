@@ -18,47 +18,30 @@
  */
 
 import * as React from "react";
-import { useEffect, useImperativeHandle, useMemo, useRef } from "react";
-import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
-// import * as Monaco from "@kie-tools-core/monaco-editor";
-import * as Monaco from "monaco-editor";
+import { CodeEditor, Language } from "@patternfly/react-code-editor";
 import { connectField, filterDOMProps, HTMLFieldProps } from "uniforms";
 
 export type MonacoTextFieldProps = HTMLFieldProps<
   string,
   HTMLDivElement,
   {
-    inputRef?: React.RefObject<HTMLTextAreaElement>;
-    onChange: (value: string, event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+    onChange: (value?: string) => void;
     value?: string;
     prefix?: string;
+    language?: Language;
   }
 >;
 
 function MonacoTextField({
   disabled,
-  id,
-  inputRef,
+  height,
   label,
-  name,
   onChange,
   placeholder,
   value,
+  language,
   ...props
 }: MonacoTextFieldProps) {
-  const container = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const editor = Monaco.editor.create(container.current!, {
-      value: `{"name":"John", "age":30, "car":null}`,
-      language: "json",
-    });
-    editor.onDidChangeModelContent(() => {
-      const newValue = editor.getValue();
-      onChange?.(newValue, {} as React.ChangeEvent<HTMLTextAreaElement>);
-    });
-  }, []);
-
   return (
     <div data-testid={"monaco-field"} {...filterDOMProps(props)}>
       {label && (
@@ -66,7 +49,13 @@ function MonacoTextField({
           <b>{label}</b>
         </label>
       )}
-      <div id={id} aria-label={name} style={{ height: "250px" }} ref={container} />
+      <CodeEditor
+        code={value ?? ""}
+        height={typeof height === undefined ? `${height}` : "200px"}
+        isReadOnly={disabled}
+        language={language ?? Language.json}
+        onChange={onChange}
+      />
     </div>
   );
 }
