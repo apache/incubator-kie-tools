@@ -279,8 +279,10 @@ export class VsCodeKieEditorController implements EditorApi {
       this.yesKeepTheChanges,
       this.noDiscardTheChanges
     );
+
     if (selection === this.noDiscardTheChanges) {
       await (this.document.document as VsCodeKieEditorCustomDocument).revert(undefined!);
+      await vscode.commands.executeCommand("workbench.action.files.save");
     }
     this.hasPendingExternalChanges = false;
   }
