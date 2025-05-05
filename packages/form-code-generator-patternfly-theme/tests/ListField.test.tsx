@@ -78,16 +78,18 @@ describe("<ListField> tests", () => {
       "CardBody",
       "TextInput",
       "FormGroup",
-      "SelectOption",
-      "SelectOptionObject",
-      "Select",
-      "SelectVariant",
       "Checkbox",
       "DatePicker",
       "Flex",
       "FlexItem",
       "InputGroup",
       "TimePicker",
+    ]);
+    expect(inputContainer.pfDeprecatedImports).toStrictEqual([
+      "SelectOption",
+      "SelectOptionObject",
+      "Select",
+      "SelectVariant",
     ]);
     expect(inputContainer.pfIconImports).toStrictEqual(["PlusCircleIcon", "MinusCircleIcon"]);
 

@@ -103,7 +103,7 @@ describe("<TextField> tests", () => {
     expect(formElement.jsxCode).toContain(`name={'${props.name}'}`);
     expect(formElement.jsxCode).toContain("isDisabled={false}");
     expect(formElement.jsxCode).toContain(
-      `onChange={newDate => onDateChange(newDate, ${formElement.ref.stateSetter},  ${formElement.ref.stateName})}`
+      `onChange={(e, newDate) => onDateChange(newDate, ${formElement.ref.stateSetter},  ${formElement.ref.stateName})}`
     );
     expect(formElement.jsxCode).toContain(`value={parseDate(${formElement.ref.stateName})}`);
     expect(formElement.stateCode).not.toBeNull();
