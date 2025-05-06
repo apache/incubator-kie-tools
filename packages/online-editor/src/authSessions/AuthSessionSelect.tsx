@@ -74,6 +74,7 @@ export function AuthSessionSelect(props: {
   filter: AuthSessionSelectFilter;
   menuAppendTo?: SelectProps["menuAppendTo"];
   showOnlyThisAuthProviderGroupWhenConnectingToNewAccount: AuthProviderGroup | undefined;
+  hideConnectToAccountButton?: boolean;
 }) {
   const [isAuthSessionSelectorOpen, setAuthSessionSelectorOpen] = useState(false);
   const [showMore, setShowMore] = useState(false);
@@ -169,20 +170,22 @@ export function AuthSessionSelect(props: {
               <Divider style={{ margin: "16px 0" }} />
             </>
           )}
-          <Button
-            variant={ButtonVariant.link}
-            isInline={true}
-            icon={<PlusIcon />}
-            onClick={() =>
-              accountsDispatch({
-                kind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER,
-                authProviderGroup: props.showOnlyThisAuthProviderGroupWhenConnectingToNewAccount,
-                onNewAuthSession: (newAuthSession) => props.setAuthSessionId(newAuthSession.id),
-              })
-            }
-          >
-            Connect to an account...
-          </Button>
+          {!props.hideConnectToAccountButton && (
+            <Button
+              variant={ButtonVariant.link}
+              isInline={true}
+              icon={<PlusIcon />}
+              onClick={() =>
+                accountsDispatch({
+                  kind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER,
+                  authProviderGroup: props.showOnlyThisAuthProviderGroupWhenConnectingToNewAccount,
+                  onNewAuthSession: (newAuthSession) => props.setAuthSessionId(newAuthSession.id),
+                })
+              }
+            >
+              Connect to an account...
+            </Button>
+          )}
         </>
       }
     >

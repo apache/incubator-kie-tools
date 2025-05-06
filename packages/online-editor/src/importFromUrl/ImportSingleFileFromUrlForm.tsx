@@ -89,6 +89,7 @@ export function ImportSingleFileFromUrlForm(props: {
           isPlain={false}
           filter={gitAuthSessionSelectFilter()}
           showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.GIT}
+          hideConnectToAccountButton={false}
         />
       </FormGroup>
       <FormGroup autoFocus={true} label={"URL"} isRequired={true} fieldId="url">

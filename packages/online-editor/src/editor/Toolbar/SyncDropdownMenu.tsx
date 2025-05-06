@@ -155,6 +155,7 @@ export function SyncDropdownMenu(props: Props) {
                               }, 0);
                             }}
                             filter={authSessionSelectFilter}
+                            hideConnectToAccountButton={false}
                           />
                         </Alert>
                       </li>
@@ -185,6 +186,7 @@ export function SyncDropdownMenu(props: Props) {
                               }, 0);
                             }}
                             filter={authSessionSelectFilter}
+                            hideConnectToAccountButton={false}
                           />
                         }
                       >
@@ -264,6 +266,7 @@ export function SyncDropdownMenu(props: Props) {
                               });
                             }}
                             filter={authSessionSelectFilter}
+                            hideConnectToAccountButton={false}
                           />
                         }
                       >

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { AcceleratorAppliedConfig } from "../../../accelerators/AcceleratorsApi";
 import { useOnlineI18n } from "../../../i18n";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
@@ -26,20 +26,83 @@ import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/M
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { AcceleratorIcon } from "./AcceleratorIcon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { AuthSession, GitAuthSession } from "../../../authSessions/AuthSessionApi";
+import { AuthSession, AuthSessionStatus, GitAuthSession, isGitAuthSession } from "../../../authSessions/AuthSessionApi";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
+import {
+  getCompatibleAuthSessionWithUrlDomain,
+  gitAuthSessionSelectFilter,
+  isAuthSessionCompatibleWithUrlDomain,
+} from "../../../authSessions/CompatibleAuthSessions";
+import { AuthProvider } from "../../../authProviders/AuthProvidersApi";
+import { AuthSessionSelect } from "../../../authSessions/AuthSessionSelect";
 
 interface Props {
   accelerator: AcceleratorAppliedConfig;
   isOpen: boolean;
   onClose: () => void;
   isApplying?: boolean;
-  onApplyAccelerator?: () => void;
-  authSession?: AuthSession;
+  onApplyAccelerator?: (authSessionId?: string) => void;
+  authProviders: AuthProvider[];
+  authSessions: Map<string, AuthSession>;
+  authSessionStatus: Map<string, AuthSessionStatus>;
+}
+
+function getDomainFromUrl(url: string | undefined): string | undefined {
+  if (!url) return undefined;
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return undefined;
+  }
 }
 
 export function AcceleratorModal(props: Props) {
   const { i18n } = useOnlineI18n();
+
+  const urlDomain = useMemo(
+    () => getDomainFromUrl(props.accelerator.gitRepositoryUrl),
+    [props.accelerator.gitRepositoryUrl]
+  );
+
+  const [selectedAuthSessionId, setSelectedAuthSessionId] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const { compatible } = getCompatibleAuthSessionWithUrlDomain({
+      authProviders: props.authProviders,
+      authSessions: props.authSessions,
+      authSessionStatus: props.authSessionStatus,
+      urlDomain,
+    });
+
+    setSelectedAuthSessionId(compatible.length > 0 ? compatible[0].id : "");
+  }, [props.authProviders, props.authSessions, props.authSessionStatus, urlDomain]);
+
+  const selectedAuthSession = useMemo(() => {
+    return selectedAuthSessionId ? props.authSessions.get(selectedAuthSessionId) : undefined;
+  }, [selectedAuthSessionId, props.authSessions]);
+
+  const selectedAuthProvider = useMemo(() => {
+    if (selectedAuthSession && isGitAuthSession(selectedAuthSession)) {
+      return props.authProviders.find((p) => p.id === selectedAuthSession.authProviderId);
+    }
+    return undefined;
+  }, [selectedAuthSession, props.authProviders]);
+
+  const selectedStatus = useMemo(() => {
+    return selectedAuthSession ? props.authSessionStatus.get(selectedAuthSession.id) : undefined;
+  }, [selectedAuthSession, props.authSessionStatus]);
+
+  const isCompatibleAuthSession = useMemo(() => {
+    return (
+      selectedAuthSession &&
+      isAuthSessionCompatibleWithUrlDomain({
+        authSession: selectedAuthSession,
+        authProvider: selectedAuthProvider,
+        status: selectedStatus,
+        urlDomain,
+      })
+    );
+  }, [selectedAuthSession, selectedAuthProvider, selectedStatus, urlDomain]);
 
   return (
     <Modal
@@ -52,9 +115,8 @@ export function AcceleratorModal(props: Props) {
           <Button
             key="apply"
             variant="primary"
-            onClick={props.onApplyAccelerator}
-            isDisabled={!props.authSession}
-            isLoading={props.isApplying}
+            onClick={() => props.onApplyAccelerator?.(selectedAuthSessionId)}
+            isDisabled={!isCompatibleAuthSession}
           >
             {i18n.terms.apply}
           </Button>,
@@ -75,12 +137,32 @@ export function AcceleratorModal(props: Props) {
             <GridItem span={12}>
               <i>{i18n.accelerators.acceleratorDescription}</i>
             </GridItem>
-            {props.authSession && (
+
+            <GridItem span={12}>
+              <label htmlFor="auth-session-select">Select Authentication Session:</label>
+              <AuthSessionSelect
+                menuAppendTo={document.body}
+                title={"Select authentication session"}
+                authSessionId={selectedAuthSessionId}
+                setAuthSessionId={setSelectedAuthSessionId}
+                isPlain={false}
+                filter={gitAuthSessionSelectFilter()}
+                showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={undefined}
+                hideConnectToAccountButton={true}
+              />
+            </GridItem>
+
+            {selectedAuthSession && (
               <GridItem span={12}>
-                <Alert variant="info" isInline title="Authentication Status">
-                  Using {(props.authSession as GitAuthSession).authProviderId} credentials for{" "}
-                  {(props.authSession as GitAuthSession).login}
-                </Alert>
+                {isCompatibleAuthSession ? (
+                  <Alert variant="info" isInline title="Authentication Status">
+                    Using {selectedAuthProvider?.domain} credentials for {(selectedAuthSession as GitAuthSession).login}
+                  </Alert>
+                ) : (
+                  <Alert variant="danger" isInline title="Authentication Status">
+                    Selected auth session is not compatible with repository domain: {urlDomain}
+                  </Alert>
+                )}
               </GridItem>
             )}
           </>

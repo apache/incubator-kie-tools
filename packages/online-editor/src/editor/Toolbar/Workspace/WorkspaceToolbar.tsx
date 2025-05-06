@@ -125,6 +125,7 @@ export function WorkspaceToolbar(props: Props) {
             accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
           }}
           filter={authSessionSelectFilter}
+          hideConnectToAccountButton={false}
         />
       </FlexItem>
       <FlexItem>

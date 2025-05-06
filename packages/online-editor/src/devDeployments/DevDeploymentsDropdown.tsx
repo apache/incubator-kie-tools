@@ -257,6 +257,7 @@ export function DevDeploymentsDropdown() {
               title={"Select Cloud provider..."}
               filter={cloudAuthSessionSelectFilter()}
               showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.CLOUD}
+              hideConnectToAccountButton={false}
             />
             {authSessionId && (
               <>

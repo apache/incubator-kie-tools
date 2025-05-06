@@ -17,178 +17,80 @@
  * under the License.
  */
 
-import React, { useCallback, useState, useEffect } from "react";
+import * as React from "react";
+import { useCallback, useState } from "react";
 import { ResponsiveDropdown } from "../../../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../../../ResponsiveDropdown/ResponsiveDropdownToggle";
-import { useEditorToolbarContext } from "../EditorToolbarContextProvider";
+import { useEditorToolbarContext, useEditorToolbarDispatchContext } from "../EditorToolbarContextProvider";
 import CaretDownIcon from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import {
   useAcceleratorsDispatch,
   useAvailableAccelerators,
   useCurrentAccelerator,
 } from "../../../accelerators/AcceleratorsHooks";
-import { DropdownItem, Select, SelectOption } from "@patternfly/react-core/deprecated";
+import { DropdownItem } from "@patternfly/react-core/deprecated";
 import { WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { AcceleratorConfig } from "../../../accelerators/AcceleratorsApi";
 import { useOnlineI18n } from "../../../i18n";
 import { AcceleratorModal } from "./AcceleratorModal";
 import { AcceleratorIcon } from "./AcceleratorIcon";
-import { useClonableUrl, useImportableUrlValidation } from "../../../importFromUrl/ImportableUrlHooks";
-import { GitAuthSession, isGitAuthSession } from "../../../authSessions/AuthSessionApi";
-import { Divider, Tooltip } from "@patternfly/react-core/components";
-import { CheckCircleIcon, TimesCircleIcon } from "@patternfly/react-icons/dist/js";
-import { useAuthSession, useAuthSessions } from "../../../authSessions/AuthSessionsContext";
-import { AuthProviderType } from "../../../authProviders/AuthProvidersApi";
+import { useAuthSessions } from "../../../authSessions/AuthSessionsContext";
+import { useAuthProviders } from "../../../authProviders/AuthProvidersContext";
+import { GitAuthSession } from "../../../authSessions/AuthSessionApi";
 
-interface AcceleratorAccessibilityResult {
-  acceleratorName: string;
-  validated: boolean;
-  success: boolean;
-  errorMessage?: string;
-}
-
-interface Props {
+type Props = {
   workspaceFile: WorkspaceFile;
-}
-
-const AcceleratorDropdownItem: React.FC<{
-  accelerator: AcceleratorConfig;
-  authInfo: any;
-  authSession: any;
-  selectedAuthSessionId?: string;
-  onOpenApplyAccelerator: (accelerator: AcceleratorConfig) => void;
-}> = ({ accelerator, authInfo, authSession, selectedAuthSessionId, onOpenApplyAccelerator }) => {
-  const clonableUrl = useClonableUrl(
-    accelerator.gitRepositoryUrl,
-    authInfo,
-    accelerator.gitRepositoryGitRef ?? "main",
-    false
-  );
-
-  const validation = useImportableUrlValidation(
-    authSession,
-    accelerator.gitRepositoryUrl,
-    accelerator.gitRepositoryGitRef ?? "main",
-    clonableUrl,
-    React.useRef(null)
-  );
-
-  const isDisabled = !selectedAuthSessionId || validation.option === "error";
-  const errorMessage = validation.helperTextInvalid;
-
-  // Tooltip content for the main dropdown item
-  const dropdownItemTooltip = isDisabled
-    ? !selectedAuthSessionId
-      ? "Please select an authentication session first"
-      : errorMessage ?? "You don't have access to this Git repository."
-    : undefined;
-
-  return (
-    <Tooltip
-      content={dropdownItemTooltip}
-      position="right"
-      isVisible={isDisabled} // Force show when disabled
-    >
-      <div>
-        {" "}
-        {/* Wrapper needed for tooltip positioning */}
-        <DropdownItem
-          key={accelerator.name}
-          icon={<AcceleratorIcon iconUrl={accelerator.iconUrl} />}
-          isDisabled={isDisabled}
-          onClick={() => !isDisabled && onOpenApplyAccelerator(accelerator)}
-        >
-          <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span>{accelerator.name}</span>
-            {selectedAuthSessionId && validation.option === "error" && (
-              <Tooltip content={errorMessage}>
-                <TimesCircleIcon color="red" />
-              </Tooltip>
-            )}
-            {selectedAuthSessionId && validation.option === "success" && (
-              <Tooltip content="You can clone this accelerator.">
-                <CheckCircleIcon color="green" />
-              </Tooltip>
-            )}
-          </span>
-        </DropdownItem>
-      </div>
-    </Tooltip>
-  );
 };
 
 export function AcceleratorsDropdown(props: Props) {
   const { i18n } = useOnlineI18n();
   const { workspace } = useEditorToolbarContext();
+  const { setAcceleratorsDropdownOpen } = useEditorToolbarDispatchContext();
   const accelerators = useAvailableAccelerators();
   const { applyAcceleratorToWorkspace } = useAcceleratorsDispatch(workspace);
-  const workspaceAuthSession = useAuthSession(workspace.descriptor.gitAuthSessionId).authSession;
+
+  const currentAccelerator = useCurrentAccelerator(props.workspaceFile.workspaceId);
+  const { authSessions, authSessionStatus } = useAuthSessions();
+  const authProviders = useAuthProviders();
 
   const [isApplyModalOpen, setApplyModalOpen] = useState(false);
   const [selectedAccelerator, setSelectedAccelerator] = useState<AcceleratorConfig | undefined>();
-  const { authSessions } = useAuthSessions();
-  const [selectedAuthSessionId, setSelectedAuthSessionId] = useState<string | undefined>();
-  const { authInfo, authSession } = useAuthSession(selectedAuthSessionId);
   const [isAcceleratorsDropdownOpen, setIsAcceleratorsDropdownOpen] = useState(false);
-  const [isAuthSelectOpen, setIsAuthSelectOpen] = useState(false);
-
-  const currentAccelerator = useCurrentAccelerator(props.workspaceFile.workspaceId);
-
-  useEffect(() => {
-    if (isAcceleratorsDropdownOpen && !selectedAuthSessionId && workspaceAuthSession) {
-      setSelectedAuthSessionId(workspaceAuthSession.id);
-    }
-  }, [isAcceleratorsDropdownOpen, selectedAuthSessionId, workspaceAuthSession]);
-  useEffect(() => {
-    if (isAcceleratorsDropdownOpen && !selectedAuthSessionId) {
-      if (workspaceAuthSession) {
-        setSelectedAuthSessionId(workspaceAuthSession.id);
-      } else if (authSessions.size > 0) {
-        const firstSessionId = Array.from(authSessions.keys())[0];
-        setSelectedAuthSessionId(firstSessionId);
-      }
-    }
-  }, [isAcceleratorsDropdownOpen, selectedAuthSessionId, workspaceAuthSession, authSessions]);
 
   const onOpenApplyAccelerator = useCallback(
     (accelerator: AcceleratorConfig) => {
-      if (!selectedAuthSessionId) {
-        console.warn("No auth session selected");
-        return;
-      }
+      setAcceleratorsDropdownOpen(false);
       setSelectedAccelerator(accelerator);
       setApplyModalOpen(true);
-      setIsAcceleratorsDropdownOpen(false);
     },
-    [selectedAuthSessionId]
+    [setAcceleratorsDropdownOpen]
   );
 
-  const onApplyAccelerator = useCallback(async () => {
-    if (!selectedAccelerator || !selectedAuthSessionId) {
-      console.error("Missing required parameters to apply accelerator");
-      return;
-    }
-    const authSession = authSessions.get(selectedAuthSessionId);
-    try {
-      await applyAcceleratorToWorkspace(selectedAccelerator, props.workspaceFile, {
-        authInfo: { username: (authSession as GitAuthSession).login, password: (authSession as GitAuthSession).token },
-        gitRef: selectedAccelerator.gitRepositoryGitRef ?? "main",
-        insecurelyDisableTlsCertificateValidation: false,
-      });
-    } catch (error) {
-      console.error("Failed to apply accelerator:", error);
-    } finally {
-      setSelectedAccelerator(undefined);
-      setApplyModalOpen(false);
-    }
-  }, [applyAcceleratorToWorkspace, authSessions, props.workspaceFile, selectedAccelerator, selectedAuthSessionId]);
-
-  const mapAuthProviderId = (authProviderId: string): AuthProviderType | undefined => {
-    if (authProviderId.includes("github")) return AuthProviderType.github;
-    if (authProviderId.includes("bitbucket")) return AuthProviderType.bitbucket;
-    if (authProviderId.includes("gitlab")) return AuthProviderType.gitlab;
-    return undefined;
-  };
+  const onApplyAccelerator = useCallback(
+    async (authSessionId?: string) => {
+      if (!selectedAccelerator || !authSessionId) {
+        console.error("Missing required parameters to apply accelerator");
+        return;
+      }
+      const authSessionObj = authSessions.get(authSessionId);
+      try {
+        await applyAcceleratorToWorkspace(selectedAccelerator, props.workspaceFile, {
+          authInfo: {
+            username: (authSessionObj as GitAuthSession)?.login,
+            password: (authSessionObj as GitAuthSession)?.token,
+          },
+          gitRef: selectedAccelerator.gitRepositoryGitRef ?? "main",
+          insecurelyDisableTlsCertificateValidation: false,
+        });
+      } catch (error) {
+        console.error("Failed to apply accelerator:", error);
+      } finally {
+        setSelectedAccelerator(undefined);
+        setApplyModalOpen(false);
+      }
+    },
+    [applyAcceleratorToWorkspace, authSessions, props.workspaceFile, selectedAccelerator]
+  );
 
   if (currentAccelerator) {
     return <></>;
@@ -198,11 +100,10 @@ export function AcceleratorsDropdown(props: Props) {
     <>
       <ResponsiveDropdown
         title="Accelerators"
-        className="kie-tools--masthead-hoverable"
-        isPlain
-        onClose={() => setIsAcceleratorsDropdownOpen(false)}
-        onSelect={() => setIsAcceleratorsDropdownOpen(false)}
-        position="right"
+        className={"kie-tools--masthead-hoverable"}
+        isPlain={true}
+        onClose={() => setAcceleratorsDropdownOpen(false)}
+        position={"right"}
         isOpen={isAcceleratorsDropdownOpen}
         toggle={
           <ResponsiveDropdownToggle
@@ -213,42 +114,15 @@ export function AcceleratorsDropdown(props: Props) {
             {i18n.accelerators.applyAccelerator}
           </ResponsiveDropdownToggle>
         }
-        dropdownItems={[
-          <div style={{ padding: "8px 16px", minWidth: "400px" }} key={"auth-session-select"}>
-            <Select
-              aria-label="Auth session"
-              variant="single"
-              isDisabled={authSessions.size === 0}
-              onToggle={() => setIsAuthSelectOpen((prev) => !prev)}
-              onSelect={(_, value) => {
-                setSelectedAuthSessionId(value as string);
-                setIsAuthSelectOpen(false);
-              }}
-              selections={selectedAuthSessionId}
-              isOpen={isAuthSelectOpen}
-              placeholderText="Select authentication"
-            >
-              {Array.from(authSessions.entries())
-                .filter(([_, session]) => isGitAuthSession(session))
-                .map(([id, session]) => (
-                  <SelectOption key={id} value={id}>
-                    {`${mapAuthProviderId((session as GitAuthSession).authProviderId)} : ${(session as GitAuthSession).login}`}
-                  </SelectOption>
-                ))}
-            </Select>
-            <Divider />
-          </div>,
-          ...accelerators.map((acc) => (
-            <AcceleratorDropdownItem
-              key={acc.name}
-              accelerator={acc}
-              authInfo={authInfo}
-              authSession={authSession}
-              selectedAuthSessionId={selectedAuthSessionId}
-              onOpenApplyAccelerator={onOpenApplyAccelerator}
-            />
-          )),
-        ]}
+        dropdownItems={accelerators.map((accelerator) => (
+          <DropdownItem
+            key={accelerator.name}
+            icon={<AcceleratorIcon iconUrl={accelerator.iconUrl} />}
+            onClick={() => onOpenApplyAccelerator(accelerator)}
+          >
+            {accelerator.name}...
+          </DropdownItem>
+        ))}
       />
       {selectedAccelerator && (
         <AcceleratorModal
@@ -257,7 +131,9 @@ export function AcceleratorsDropdown(props: Props) {
           onApplyAccelerator={onApplyAccelerator}
           accelerator={selectedAccelerator}
           isApplying={true}
-          authSession={authSession}
+          authSessions={authSessions}
+          authProviders={authProviders}
+          authSessionStatus={authSessionStatus}
         />
       )}
     </>

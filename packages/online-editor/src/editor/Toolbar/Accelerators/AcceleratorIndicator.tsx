@@ -24,6 +24,8 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { AcceleratorModal } from "./AcceleratorModal";
 import { AcceleratorIcon } from "./AcceleratorIcon";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
+import { useAuthSessions } from "../../../authSessions/AuthSessionsContext";
+import { useAuthProviders } from "../../../authProviders/AuthProvidersContext";
 
 type Props = {
   workspaceId: string;
@@ -32,6 +34,8 @@ type Props = {
 export function AcceleratorIndicator(props: Props) {
   const [isAcceleratorDetailsModalOpen, setAcceleratorDetailsModalOpen] = useState(false);
   const currentAccelerator = useCurrentAccelerator(props.workspaceId);
+  const { authSessions, authSessionStatus } = useAuthSessions();
+  const authProviders = useAuthProviders();
 
   if (!currentAccelerator) {
     return <></>;
@@ -64,6 +68,10 @@ export function AcceleratorIndicator(props: Props) {
           isOpen={isAcceleratorDetailsModalOpen}
           onClose={() => setAcceleratorDetailsModalOpen(false)}
           accelerator={currentAccelerator}
+          isApplying={true}
+          authProviders={authProviders}
+          authSessions={authSessions}
+          authSessionStatus={authSessionStatus}
         />
       </>
     </Tooltip>
