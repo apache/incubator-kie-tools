@@ -48,7 +48,7 @@ const AutoField = createAutoField((props) => {
     case Object:
       return NestField;
     case String:
-      return props.field.uniforms?.language === "json" ? CodeEditorTextField : TextField;
+      return props.field.uniforms?.language ? CodeEditorTextField : TextField;
   }
 
   return invariant(false, "Unsupported field type: %s", props.fieldType);

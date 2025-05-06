@@ -34,10 +34,10 @@ export type CodeEditorTextFieldProps = HTMLFieldProps<
 >;
 
 function CodeEditorTextField({ disabled, height, label, language, name, value, ...props }: CodeEditorTextFieldProps) {
-  const [hiddenValue, setHiddenValue] = useState(value);
+  const [hiddenValue, setHiddenValue] = useState(value ?? "");
 
   const onChange = useCallback(
-    (val?: string) => {
+    (val: string) => {
       setHiddenValue(val);
       props.onChange(val);
     },
