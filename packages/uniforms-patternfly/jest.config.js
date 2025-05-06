@@ -24,6 +24,8 @@ module.exports = {
   ...config,
   testEnvironment: "jsdom",
   moduleNameMapper: {
+    "^@patternfly/react-code-editor/dist/js/components/CodeEditor$":
+      "<rootDir>/tests/__mocks__/@patternfly/react-code-editor.tsx",
     ...styleMock,
   },
   setupFilesAfterEnv: [jestSetupPath],

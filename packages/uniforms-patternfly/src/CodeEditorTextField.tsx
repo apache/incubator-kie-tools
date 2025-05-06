@@ -18,7 +18,8 @@
  */
 
 import * as React from "react";
-import { CodeEditor, Language } from "@patternfly/react-code-editor";
+import { useCallback, useState } from "react";
+import { CodeEditor, Language } from "@patternfly/react-code-editor/dist/js/components/CodeEditor";
 import { connectField, filterDOMProps, HTMLFieldProps } from "uniforms";
 
 export type CodeEditorTextFieldProps = HTMLFieldProps<
@@ -32,18 +33,19 @@ export type CodeEditorTextFieldProps = HTMLFieldProps<
   }
 >;
 
-function CodeEditorTextField({
-  disabled,
-  height,
-  label,
-  onChange,
-  placeholder,
-  value,
-  language,
-  ...props
-}: CodeEditorTextFieldProps) {
+function CodeEditorTextField({ disabled, height, label, language, name, value, ...props }: CodeEditorTextFieldProps) {
+  const [hiddenValue, setHiddenValue] = useState(value);
+
+  const onChange = useCallback(
+    (val?: string) => {
+      setHiddenValue(val);
+      props.onChange(val);
+    },
+    [props]
+  );
+
   return (
-    <div data-testid={"code-ditor-field"} {...filterDOMProps(props)}>
+    <div data-testid={"code-editor-field"} {...filterDOMProps(props)}>
       {label && (
         <label>
           <b>{label}</b>
@@ -51,11 +53,12 @@ function CodeEditorTextField({
       )}
       <CodeEditor
         code={value ?? ""}
-        height={typeof height === undefined ? `${height}` : "200px"}
+        height={height ? `${height}` : "200px"}
         isReadOnly={disabled}
         language={language ?? Language.json}
         onChange={onChange}
       />
+      <input type="hidden" name={name} value={hiddenValue} data-testid={"code-editor-hidden-field"} />
     </div>
   );
 }

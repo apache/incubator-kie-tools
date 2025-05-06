@@ -18,19 +18,18 @@
  */
 
 import * as React from "react";
+import { CodeEditor as PFCodeEditor, CodeEditorProps } from "@patternfly/react-code-editor";
+export { Language, CodeEditorProps } from "@patternfly/react-code-editor";
 
-export const Language = {
-  json: "json",
-};
-
-export const CodeEditor = ({ code, onChange, isReadOnly, height = "200px" }: any) => {
+export const CodeEditor = ({ isReadOnly, height, label, language, name, value, code, onChange }: CodeEditorProps) => {
   return (
     <textarea
       data-testid="code-editor-textarea"
       value={code}
       readOnly={isReadOnly}
-      onChange={(e) => onChange?.(e.target.value)}
+      onChange={(e) => onChange?.(e.target.value, e as any)}
       style={{ height }}
+      data-language={language}
     />
   );
 };
