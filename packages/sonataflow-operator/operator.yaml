@@ -28322,6 +28322,24 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: RELATED_IMAGE_KANIKO_WARMER
+              value: gcr.io/kaniko-project/warmer:v1.9.0
+            - name: RELATED_IMAGE_KANIKO_EXECUTOR
+              value: gcr.io/kaniko-project/executor:v1.9.0
+            - name: RELATED_IMAGE_JOBS_SERVICE_POSTGRESQL
+              value: docker.io/apache/incubator-kie-kogito-jobs-service-postgresql:main
+            - name: RELATED_IMAGE_JOBS_SERVICE_EPHEMERAL
+              value: docker.io/apache/incubator-kie-kogito-jobs-service-ephemeral:main
+            - name: RELATED_IMAGE_DATA_INDEX_POSTGRESQL
+              value: docker.io/apache/incubator-kie-kogito-data-index-postgresql:main
+            - name: RELATED_IMAGE_DATA_INDEX_EPHEMERAL
+              value: docker.io/apache/incubator-kie-kogito-data-index-ephemeral:main
+            - name: RELATED_IMAGE_DB_MIGRATOR_TOOL
+              value: docker.io/apache/kie-kogito-db-migrator-tool:main
+            - name: RELATED_IMAGE_BASE_BUILDER
+              value: docker.io/apache/incubator-kie-sonataflow-builder:main
+            - name: RELATED_IMAGE_DEVMODE
+              value: docker.io/apache/incubator-kie-sonataflow-devmode:main
           image: docker.io/apache/incubator-kie-sonataflow-operator:main
           livenessProbe:
             httpGet:
@@ -28357,7 +28375,10 @@ spec:
             - --upstream=http://127.0.0.1:8080/
             - --logtostderr=true
             - --v=0
-          image: gcr.io/kubebuilder/kube-rbac-proxy:v0.13.1
+          env:
+            - name: RELATED_IMAGE_KUBE_RBAC_PROXY
+              value: gcr.io/kubebuilder/kube-rbac-proxy:v0.13.1
+          image: ${RELATED_IMAGE_KUBE_RBAC_PROXY}
           name: kube-rbac-proxy
           ports:
             - containerPort: 8443

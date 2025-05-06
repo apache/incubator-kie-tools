@@ -27,7 +27,10 @@ spec:
     spec:
       containers:
         - name: kube-rbac-proxy
-          image: gcr.io/kubebuilder/kube-rbac-proxy:v0.13.1
+          image: ${RELATED_IMAGE_KUBE_RBAC_PROXY}
+          env:
+            - name: RELATED_IMAGE_KUBE_RBAC_PROXY
+              value: gcr.io/kubebuilder/kube-rbac-proxy:v0.13.1
           args:
             - "--secure-listen-address=0.0.0.0:8443"
             - "--upstream=http://127.0.0.1:8080/"
