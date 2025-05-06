@@ -171,7 +171,7 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                   aria-label="Disable TLS Certificate Validation"
                   tabIndex={4}
                   isChecked={props.insecurelyDisableTlsCertificateValidation}
-                  onChange={(_event, val) => props.setInsecurelyDisableTlsCertificateValidation}
+                  onChange={(_event, val) => props.setInsecurelyDisableTlsCertificateValidation(val)}
                 />
               </FormGroup>
               <FormGroup fieldId="url" label="URL" isRequired={true}>
