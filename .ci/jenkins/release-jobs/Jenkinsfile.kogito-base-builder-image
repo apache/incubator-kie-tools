@@ -39,16 +39,18 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        DEV_DEPLOYMENT_BASE_IMAGE__registry = 'docker.io'
-        DEV_DEPLOYMENT_BASE_IMAGE__account = 'apache'
-        DEV_DEPLOYMENT_BASE_IMAGE__name = 'incubator-kie-sandbox-dev-deployment-base'
-        DEV_DEPLOYMENT_BASE_IMAGE__buildTag = "latest ${params.RELEASE_VERSION}"
+        KOGITO_BASE_BUILDER_IMAGE__registry = 'docker.io'
+        KOGITO_BASE_BUILDER_IMAGE__registry = 'apache'
+        KOGITO_BASE_BUILDER_IMAGE__name = 'incubator-kie-sandbox-dev-deployment-base'
+        KOGITO_BASE_BUILDER_IMAGE__buildTag = "latest ${params.RELEASE_VERSION}"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
         PNPM_FILTER_STRING = '-F @kie-tools/dev-deployment-base-image...'
+
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
     }
 
     stages {
@@ -122,28 +124,7 @@ pipeline {
             }
         }
 
-        stage('Push dev-deployment-base-image to Docker Hub') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
-            }
-            steps {
-                script {
-                    dockerUtils.pushImageToRegistry(
-                        "${env.DEV_DEPLOYMENT_BASE_IMAGE__registry}",
-                        "${env.DEV_DEPLOYMENT_BASE_IMAGE__account}",
-                        "${env.DEV_DEPLOYMENT_BASE_IMAGE__name}",
-                        "${env.DEV_DEPLOYMENT_BASE_IMAGE__buildTag}",
-                        "${pipelineVars.dockerHubUserCredentialsId}",
-                        "${pipelineVars.dockerHubTokenCredentialsId}"
-                    )
-                }
-            }
-        }
-
         stage('Setup release candidate artifacts') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
-            }
             steps {
                 script {
                     env.RELEASE_IMAGE_TAR_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-dev-deployment-base-image.tar.gz"
@@ -157,9 +138,6 @@ pipeline {
         }
 
         stage('Sign artifact for Apache release') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
-            }
             steps {
                 dir("${env.RELEASE_ARTIFACTS_DIR}") {
                     script {
@@ -171,9 +149,6 @@ pipeline {
         }
 
         stage('Publish Release Candidate artifacts') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
-            }
             steps {
                 script {
                     releaseUtils.publishArtifacts(

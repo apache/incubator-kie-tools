@@ -35,7 +35,7 @@ pipeline {
         string(description: 'Base Ref', name: 'BASE_REF')
         string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Upload asset url', name: 'UPLOAD_ASSET_URL', defaultValue: '')
-        string(description: 'Runners', name: 'RUNNERS', defaultValue: '{"chrome_extensions":"false","cors_proxy_image":"false","dashbuilder_viewer_image":"false","dev_deployment_base_image":"false","dev_deployment_dmn_form_webapp_image":"false","dev_deployment_kogito_quakus_blank_app_image":"false","dev_deployment_upload_service":"false","extended_services":"false","jbpm_quarkus_devui":"false","kie_sandbox_extended_services_image":"false","kie_sandbox_helm_chart":"false","kie_sandbox_image":"false","kn_plugin_workflow":"false","kogito_management_console":"false","kogito_swf_builder":"false","kogito_swf_devmode":"false","kogito_serverless_operator":"false","npm_packages":"false","online_editor":"false","runtime_tools_consoles_helm_chart": "false","serverless_logic_web_tools":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","standalone_editors_cdn":"false","sonataflow_quarkus_devui":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false"}')
+        string(description: 'Runners', name: 'RUNNERS', defaultValue: '{"kogito_base_builder_image":"false","chrome_extensions":"false","cors_proxy_image":"false","dashbuilder_viewer_image":"false","dev_deployment_base_image":"false","dev_deployment_dmn_form_webapp_image":"false","dev_deployment_kogito_quakus_blank_app_image":"false","dev_deployment_upload_service":"false","extended_services":"false","jbpm_quarkus_devui":"false","kie_sandbox_extended_services_image":"false","kie_sandbox_helm_chart":"false","kie_sandbox_image":"false","kn_plugin_workflow":"false","kogito_management_console":"false","kogito_swf_builder":"false","kogito_swf_devmode":"false","kogito_serverless_operator":"false","npm_packages":"false","online_editor":"false","runtime_tools_consoles_helm_chart": "false","serverless_logic_web_tools":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","standalone_editors_cdn":"false","sonataflow_quarkus_devui":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false","kogito_db_migrator_tool":"false"}')
         string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
     }
 
@@ -87,6 +87,17 @@ pipeline {
 
         stage('Parallel - Builds') {
             parallel {
+                stage('KIE Kogito Base Builder Image') {
+                    when {
+                        expression { env.KOGITO_BASE_BUILDER_IMAGE == 'true' }
+                    }
+                    steps {
+                        script {
+                            kogitoBaseBuilderImageBuildJob()
+                        }
+                    }
+                }
+
                 stage('KIE Sandbox Accelerator Quarkus') {
                     when {
                         expression { env.KIE_SANDBOX_ACCELERATOR_QUARKUS == 'true' }
@@ -411,6 +422,18 @@ pipeline {
                                 }
                             }
                         }
+
+                        stage('DB Migrator Tool') {
+                            when {
+                                expression { env.KOGITO_DB_MIGRATOR_TOOL == 'true' }
+                            }
+                            steps {
+                                script {
+                                    kogitoDbMigratorToolBuildJob()
+                                }
+                            }
+                        }
+
                     }
                 }
             }
@@ -426,6 +449,7 @@ pipeline {
 
 def setRunners() {
     runners = readJSON text: "${params.RUNNERS}"
+    env.KOGITO_BASE_BUILDER_IMAGE = runners.kogito_base_builder_image
     env.KIE_SANDBOX_ACCELERATOR_QUARKUS = runners.kie_sandbox_accelerator_quarkus
     env.DEV_DEPLOYMENT_BASE_IMAGE = runners.dev_deployment_base_image
     env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE = runners.dev_deployment_kogito_quakus_blank_app_image
@@ -444,13 +468,14 @@ def setRunners() {
     env.SERVERLESS_LOGIC_WEB_TOOLS = runners.serverless_logic_web_tools
     env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE = runners.serverless_logic_web_tools_swf_builder_image
     env.SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE = runners.serverless_logic_web_tools_base_builder_image
-    env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_DEV_MODE_IMAGE = runners.serverless_logic_web_tools_swf_dev_mode_image
+    env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_DEV_MODE_IMAGE = runners.serverless_logic_web_tools_swf_dev_mode_image    
     env.DASHBUILDER_VIEWER_IMAGE = runners.dashbuilder_viewer_image
     env.KN_PLUGIN_WORKFLOW = runners.kn_plugin_workflow
     env.KIE_SANDBOX_HELM_CHART = runners.kie_sandbox_helm_chart
     env.KOGITO_MANAGEMENT_CONSOLE = runners.kogito_management_console
     env.KOGITO_SWF_BUILDER = runners.kogito_swf_builder
     env.KOGITO_SWF_DEVMODE = runners.kogito_swf_devmode
+    env.KOGITO_DB_MIGRATOR_TOOL = runners.kogito_db_migrator_tool
     env.KOGITO_SERVERLESS_OPERATOR = runners.kogito_serverless_operator
     env.JBPM_QUARKUS_DEVUI = runners.jbpm_quarkus_devui
     env.SONATAFLOW_QUARKUS_DEVUI = runners.sonataflow_quarkus_devui
@@ -459,6 +484,7 @@ def setRunners() {
 
 def printRunners() {
     sh """
+    echo "kogito_base_builder_image: ${env.KOGITO_BASE_BUILDER_IMAGE}"
     echo "kie_sandbox_accelerator_quarkus: ${env.KIE_SANDBOX_ACCELERATOR_QUARKUS}"
     echo "dev_deployment_base_image: ${env.DEV_DEPLOYMENT_BASE_IMAGE}"
     echo "dev_deployment_kogito_quakus_blank_app_image: ${env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE}"
@@ -485,10 +511,23 @@ def printRunners() {
     echo "kogito_swf_builder: ${env.KOGITO_SWF_BUILDER}"
     echo "kogito_swf_devmode: ${env.KOGITO_SWF_DEVMODE}"
     echo "kogito_serverless_operator: ${env.KOGITO_SERVERLESS_OPERATOR}"
+    echo "kogito_db_migrator_tool: ${env.KOGITO_DB_MIGRATOR_TOOL}"
     echo "jbpm_quarkus_devui: ${env.JBPM_QUARKUS_DEVUI}"
     echo "sonataflow_quarkus_devui: ${env.SONATAFLOW_QUARKUS_DEVUI}"
     echo "runtime_tools_consoles_helm_chart: ${env.RUNTIME_TOOLS_CONSOLES_HELM_CHART}"
     """.trim()
+}
+
+def kogitoBaseBuilderImageBuildJob() {
+    env.KOGITO_BASE_BUILDER_IMAGE_JOB_RESULT = build(
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kogito-base-builder-image',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
 }
 
 def devDeploymentQuarkusBlankAppImageBuildJob() {
@@ -840,6 +879,18 @@ def runtimeToolsConsolesHelmChartBuildJob() {
     env.RUNTIME_TOOLS_CONSOLES_HELM_CHART_JOB_RESULT = build(
         wait: true,
         job: 'KIE/kie-tools/individual-release-artifacts-jobs/runtime-tools-consoles-helm-chart',
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+        ]
+    ).result
+}
+
+def kogitoDbMigratorToolBuildJob() {
+    env.KOGITO_DB_MIGRATOR_TOOL_JOB_RESULT = build(
+        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kogito-db-migrator-tool',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
