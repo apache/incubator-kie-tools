@@ -191,7 +191,7 @@ export interface WorkspacesContextType {
     workspaceId: string;
     remote: string;
     ref: string;
-    authInfo: {
+    authInfo?: {
       username: string;
       password: string;
     };
