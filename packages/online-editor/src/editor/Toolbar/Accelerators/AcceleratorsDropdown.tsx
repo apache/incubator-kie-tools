@@ -44,18 +44,16 @@ type Props = {
 
 export function AcceleratorsDropdown(props: Props) {
   const { i18n } = useOnlineI18n();
-  const { workspace } = useEditorToolbarContext();
+  const { isAcceleratorsDropdownOpen, workspace } = useEditorToolbarContext();
   const { setAcceleratorsDropdownOpen } = useEditorToolbarDispatchContext();
   const accelerators = useAvailableAccelerators();
   const { applyAcceleratorToWorkspace } = useAcceleratorsDispatch(workspace);
+  const [isApplyModalOpen, setApplyModalOpen] = useState(false);
+  const [selectedAccelerator, setSelectedAccelerator] = useState<AcceleratorConfig | undefined>();
 
   const currentAccelerator = useCurrentAccelerator(props.workspaceFile.workspaceId);
   const { authSessions, authSessionStatus } = useAuthSessions();
   const authProviders = useAuthProviders();
-
-  const [isApplyModalOpen, setApplyModalOpen] = useState(false);
-  const [selectedAccelerator, setSelectedAccelerator] = useState<AcceleratorConfig | undefined>();
-  const [isAcceleratorsDropdownOpen, setIsAcceleratorsDropdownOpen] = useState(false);
 
   const onOpenApplyAccelerator = useCallback(
     (accelerator: AcceleratorConfig) => {
@@ -79,8 +77,6 @@ export function AcceleratorsDropdown(props: Props) {
             username: (authSessionObj as GitAuthSession)?.login,
             password: (authSessionObj as GitAuthSession)?.token,
           },
-          gitRef: selectedAccelerator.gitRepositoryGitRef ?? "main",
-          insecurelyDisableTlsCertificateValidation: false,
         });
       } catch (error) {
         console.error("Failed to apply accelerator:", error);
@@ -107,7 +103,7 @@ export function AcceleratorsDropdown(props: Props) {
         isOpen={isAcceleratorsDropdownOpen}
         toggle={
           <ResponsiveDropdownToggle
-            onToggle={() => setIsAcceleratorsDropdownOpen((prev) => !prev)}
+            onToggle={() => setAcceleratorsDropdownOpen((prev) => !prev)}
             toggleIndicator={CaretDownIcon}
             icon={<i>🚀</i>}
           >

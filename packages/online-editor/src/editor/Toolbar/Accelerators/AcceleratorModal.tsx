@@ -36,7 +36,7 @@ import {
 import { AuthProvider } from "../../../authProviders/AuthProvidersApi";
 import { AuthSessionSelect } from "../../../authSessions/AuthSessionSelect";
 
-interface Props {
+type Props = {
   accelerator: AcceleratorAppliedConfig;
   isOpen: boolean;
   onClose: () => void;
@@ -45,7 +45,7 @@ interface Props {
   authProviders: AuthProvider[];
   authSessions: Map<string, AuthSession>;
   authSessionStatus: Map<string, AuthSessionStatus>;
-}
+};
 
 function getDomainFromUrl(url: string | undefined): string | undefined {
   if (!url) return undefined;
@@ -171,7 +171,7 @@ export function AcceleratorModal(props: Props) {
           <p>
             {i18n.accelerators.acceleratorDetails}
             &nbsp;
-            <a href={props.accelerator.gitRepositoryUrl} target="_blank" rel="noopener noreferrer">
+            <a href={props.accelerator.gitRepositoryUrl} target="__blank">
               {props.accelerator.gitRepositoryUrl}
             </a>
           </p>
