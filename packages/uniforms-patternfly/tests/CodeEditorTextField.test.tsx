@@ -32,7 +32,7 @@ test("<CodeEditorTextField> - renders an editor", () => {
     })
   );
 
-  expect(screen.getByTestId("code-editor-field")).toBeInTheDocument();
+  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
 });
 
 test("<CodeEditorTextField> - renders an editor with correct disabled state", () => {
@@ -42,7 +42,7 @@ test("<CodeEditorTextField> - renders an editor with correct disabled state", ()
     })
   );
 
-  expect(screen.getByTestId("code-editor-field")).toBeInTheDocument();
+  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
   expect(screen.getByTestId("code-editor-textarea").getAttribute("readOnly")).not.toBe(null);
 });
 
@@ -53,7 +53,7 @@ test("<CodeEditorTextField> - renders an editor with correct name", () => {
     })
   );
 
-  expect(screen.getByTestId("code-editor-field")).toBeInTheDocument();
+  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
   expect(screen.getByTestId("code-editor-hidden-field").getAttribute("name")).toBe("x");
 });
 
@@ -64,7 +64,7 @@ test("<CodeEditorTextField> - renders an editor with correct value (default)", (
     })
   );
 
-  expect(screen.getByTestId("code-editor-field")).toBeInTheDocument();
+  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
   const editor = screen.getByTestId("code-editor-textarea") as HTMLTextAreaElement;
   expect(editor.value).toBe("");
   expect(screen.getByTestId("code-editor-hidden-field").getAttribute("value")).toBe("");
@@ -79,7 +79,7 @@ test("<CodeEditorTextField> - renders an editor with correct value (model)", () 
     )
   );
 
-  expect(screen.getByTestId("code-editor-field")).toBeInTheDocument();
+  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
   expect(screen.getByText(jsonMock)).toBeInTheDocument();
   expect(screen.getByTestId("code-editor-hidden-field").getAttribute("value")).toBe(jsonMock);
 });
@@ -91,7 +91,7 @@ test("<CodeEditorTextField> - renders an editor with correct value (specified)",
     })
   );
 
-  expect(screen.getByTestId("code-editor-field")).toBeInTheDocument();
+  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
   expect(screen.getByText("y")).toBeInTheDocument();
   expect(screen.getByTestId("code-editor-hidden-field").getAttribute("value")).toBe("y");
 });
@@ -107,7 +107,7 @@ test("<CodeEditorTextField> - renders an editor which correctly reacts on change
     )
   );
 
-  expect(screen.getByTestId("code-editor-field")).toBeInTheDocument();
+  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
   const editor = screen.getByTestId("code-editor-textarea");
   fireEvent.change(editor, { target: { value: "y" } });
   expect(onChange).toHaveBeenLastCalledWith("x", "y");
@@ -125,7 +125,7 @@ test("<CodeEditorTextField> - renders an editor which correctly reacts on change
     )
   );
 
-  expect(screen.getByTestId("code-editor-field")).toBeInTheDocument();
+  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
   const editor = screen.getByTestId("code-editor-textarea");
   fireEvent.change(editor, { target: { value: "" } });
   expect(onChange).not.toHaveBeenCalled();
@@ -142,7 +142,7 @@ test("<CodeEditorTextField> - renders an editor which correctly reacts on change
     )
   );
 
-  expect(screen.getByTestId("code-editor-field")).toBeInTheDocument();
+  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
   const editor = screen.getByTestId("code-editor-textarea");
   fireEvent.change(editor, { target: { value: "y" } });
   expect(screen.getByText("y")).toBeInTheDocument();
@@ -156,7 +156,7 @@ test("<CodeEditorTextField> - renders a label", () => {
     })
   );
 
-  expect(screen.getByTestId("code-editor-field")).toBeInTheDocument();
+  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
   expect(screen.getByText("y")).toBeInTheDocument();
 });
 
@@ -167,7 +167,7 @@ test("<CodeEditorTextField> - renders an editor with correct height (default)", 
     })
   );
 
-  expect(screen.getByTestId("code-editor-field")).toBeInTheDocument();
+  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
   expect(screen.getByTestId("code-editor-textarea").style.height).toBe("200px");
 });
 
@@ -178,7 +178,7 @@ test("<CodeEditorTextField> - renders an editor with correct height (specified)"
     })
   );
 
-  expect(screen.getByTestId("code-editor-field")).toBeInTheDocument();
+  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
   expect(screen.getByTestId("code-editor-textarea").style.height).toBe("300px");
 });
 
@@ -187,7 +187,7 @@ test("<CodeEditorTextField> - renders an editor with correct language (default)"
     usingUniformsContext(<CodeEditorTextField name="x" />, { x: { type: String, uniforms: { language: "json" } } })
   );
 
-  expect(screen.getByTestId("code-editor-field")).toBeInTheDocument();
+  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
   expect(screen.getByTestId("code-editor-textarea").getAttribute("data-language")).toBe("json");
 });
 
@@ -198,6 +198,6 @@ test("<CodeEditorTextField> - renders an editor with correct language (specified
     })
   );
 
-  expect(screen.getByTestId("code-editor-field")).toBeInTheDocument();
+  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
   expect(screen.getByTestId("code-editor-textarea").getAttribute("data-language")).toBe("graphql");
 });

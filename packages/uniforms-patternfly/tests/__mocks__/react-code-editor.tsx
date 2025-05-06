@@ -21,7 +21,7 @@ import * as React from "react";
 import { CodeEditor as PFCodeEditor, CodeEditorProps } from "@patternfly/react-code-editor";
 export { Language, CodeEditorProps } from "@patternfly/react-code-editor";
 
-export const CodeEditor = ({ isReadOnly, height, label, language, name, value, code, onChange }: CodeEditorProps) => {
+export const CodeEditor = ({ isReadOnly, height, language, name, value, code, onChange }: CodeEditorProps) => {
   return (
     <textarea
       data-testid="code-editor-textarea"

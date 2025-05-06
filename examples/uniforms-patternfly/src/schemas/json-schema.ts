@@ -62,6 +62,7 @@ const schema = {
         },
         customData: {
           type: "string",
+          description: "this is a JSON Code Editor",
           uniforms: { language: "json" },
         },
       },
