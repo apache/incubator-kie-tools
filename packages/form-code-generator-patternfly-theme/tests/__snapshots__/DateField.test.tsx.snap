@@ -16,7 +16,7 @@ exports[`<DateField> tests <DateField> - rendering - disabled 1`] = `
           id={'date-picker-id'}
           isDisabled={true}
           name={'birthday'}
-          onChange={newDate => {
+          onChange={(e, newDate) => {
         set__birthday(prev => {
           if (newDate) {
             const newDate = new Date(newDate);
@@ -37,7 +37,7 @@ exports[`<DateField> tests <DateField> - rendering - disabled 1`] = `
           id={'time-picker-id'}
           isDisabled={true}
           name={'birthday'}
-          onChange={(time, hours?, minutes?) => {
+          onChange={(e, time, hours?, minutes?) => {
       set__birthday(prev => {
         if (prev) {
           const newDate = new Date(Date.parse(prev));
@@ -83,7 +83,7 @@ exports[`<DateField> tests <DateField> - rendering 1`] = `
           id={'date-picker-id'}
           isDisabled={false}
           name={'birthday'}
-          onChange={newDate => {
+          onChange={(e, newDate) => {
         set__birthday(prev => {
           if (newDate) {
             const newDate = new Date(newDate);
@@ -104,7 +104,7 @@ exports[`<DateField> tests <DateField> - rendering 1`] = `
           id={'time-picker-id'}
           isDisabled={false}
           name={'birthday'}
-          onChange={(time, hours?, minutes?) => {
+          onChange={(e, time, hours?, minutes?) => {
       set__birthday(prev => {
         if (prev) {
           const newDate = new Date(Date.parse(prev));

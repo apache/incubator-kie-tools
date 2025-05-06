@@ -16,7 +16,7 @@ exports[`<NestField> tests <NestField> - rendering 1`] = `
         placeholder={''}
         type={'text'}
         value={candidate__name}
-        onChange={set__candidate__name}
+        onChange={(e, newValue) => set__candidate__name(newValue)}
         />
     </FormGroup>
 <FormGroup
@@ -32,7 +32,7 @@ exports[`<NestField> tests <NestField> - rendering 1`] = `
       placeholder={''}
       step={1}  
       value={candidate__age}
-      onChange={(newValue) => set__candidate__age(Number(newValue))}
+      onChange={(e, newValue) => set__candidate__age(Number(newValue))}
     />
     </FormGroup>
 <FormGroup
@@ -116,7 +116,7 @@ exports[`<NestField> tests <NestField> - rendering 1`] = `
         placeholder={''}
         type={'text'}
         value={candidate__skills?.[itemIndex].name}
-        onChange={newValue => {
+        onChange={(e, newValue) => {
     set__candidate__skills(s => {
       const newState = [...s];
       newState[itemIndex].name = newValue;

@@ -46,12 +46,14 @@ const AutoForm: React.FC<AutoFormProps> = (props) => {
 
   let pfImports: string[] = [];
   let pfIconImports: string[] = [];
+  let pfDeprecatedImports: string[] = [];
   let reactImports: string[] = ["useCallback", "useEffect"];
   let staticCodeArray: string[] = [];
 
   inputs.forEach((input) => {
     pfImports = union(pfImports, input.pfImports);
     pfIconImports = union(pfIconImports, input.pfIconImports);
+    pfDeprecatedImports = union(pfDeprecatedImports, input.pfDeprecatedImports);
     reactImports = union(reactImports, input.reactImports);
     staticCodeArray = union(staticCodeArray, input.requiredCode);
   });
@@ -65,6 +67,7 @@ const AutoForm: React.FC<AutoFormProps> = (props) => {
 import React, { ${reactImports.join(", ")} } from "react";
 import { ${pfImports.join(", ")} } from "@patternfly/react-core";
 ${pfIconImports.length > 0 ? `import { ${pfIconImports.join(", ")} } from "@patternfly/react-icons";` : ""}
+${pfDeprecatedImports.length > 0 ? `import { ${pfDeprecatedImports.join(", ")} } from "@patternfly/react-core/deprecated";` : ""}
     
 const ${formName}: React.FC<any> = ( props:any ) => {
   const [formApi, setFormApi] = useState<any>();

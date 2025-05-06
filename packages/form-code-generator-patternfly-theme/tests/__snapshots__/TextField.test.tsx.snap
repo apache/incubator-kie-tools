@@ -10,8 +10,8 @@ exports[`<TextField> tests <TextField> - DatePicker rendering - disabled 1`] = `
           id={'date-picker-id'}
           isDisabled={true}
           name={'name'}
-          onChange={newDate => onDateChange(newDate, set__name,  name)}
           value={parseDate(name)}
+          onChange={(e, newDate) => onDateChange(newDate, set__name,  name)}
         />
     </FormGroup>"
 `;
@@ -26,8 +26,8 @@ exports[`<TextField> tests <TextField> - DatePicker rendering 1`] = `
           id={'date-picker-id'}
           isDisabled={false}
           name={'name'}
-          onChange={newDate => onDateChange(newDate, set__name,  name)}
           value={parseDate(name)}
+          onChange={(e, newDate) => onDateChange(newDate, set__name,  name)}
         />
     </FormGroup>"
 `;
@@ -45,7 +45,7 @@ exports[`<TextField> tests <TextField> - TextInput rendering - disabled 1`] = `
         placeholder={''}
         type={'text'}
         value={name}
-        onChange={set__name}
+        onChange={(e, newValue) => set__name(newValue)}
         />
     </FormGroup>"
 `;
@@ -63,7 +63,7 @@ exports[`<TextField> tests <TextField> - TextInput rendering 1`] = `
         placeholder={''}
         type={'text'}
         value={name}
-        onChange={set__name}
+        onChange={(e, newValue) => set__name(newValue)}
         />
     </FormGroup>"
 `;
