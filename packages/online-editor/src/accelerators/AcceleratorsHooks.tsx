@@ -131,11 +131,9 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
     async (
       accelerator: AcceleratorConfig,
       currentFile: WorkspaceFile,
-      options: {
-        authInfo: {
-          username: string;
-          password: string;
-        };
+      authInfo: {
+        username: string;
+        password: string;
       }
     ) => {
       applyingAcceleratorAlert.show({ acceleratorName: accelerator.name });
@@ -246,7 +244,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
           workspaceId,
           remote: TEMP_ACCELERATOR_REMOTE_NAME,
           ref: accelerator.gitRepositoryGitRef,
-          authInfo: options.authInfo,
+          authInfo: authInfo,
         });
 
         if (!fetchResult.fetchHead) {

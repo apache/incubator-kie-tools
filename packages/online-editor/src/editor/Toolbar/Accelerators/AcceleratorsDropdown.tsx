@@ -70,13 +70,11 @@ export function AcceleratorsDropdown(props: Props) {
         console.error("Missing required parameters to apply accelerator");
         return;
       }
-      const authSessionObj = authSessions.get(authSessionId);
+      const authSessionObj = authSessions.get(authSessionId) as GitAuthSession;
       try {
         await applyAcceleratorToWorkspace(selectedAccelerator, props.workspaceFile, {
-          authInfo: {
-            username: (authSessionObj as GitAuthSession)?.login,
-            password: (authSessionObj as GitAuthSession)?.token,
-          },
+          username: authSessionObj?.login,
+          password: authSessionObj?.token,
         });
       } catch (error) {
         console.error("Failed to apply accelerator:", error);

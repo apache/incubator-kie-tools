@@ -117,24 +117,6 @@ export const defaultEnvJson: EnvJson = {
       bpmnDestinationFolder: "src/main/resources/bpmn",
       otherFilesDestinationFolder: "src/main/resources/others",
     },
-    {
-      name: "testing",
-      iconUrl: "images/quarkus-logo.png",
-      gitRepositoryUrl: "https://github.com/Kusuma04-dev/Sample",
-      gitRepositoryGitRef: "main",
-      dmnDestinationFolder: "src/main/resources/dmn",
-      bpmnDestinationFolder: "src/main/resources/bpmn",
-      otherFilesDestinationFolder: "src/main/resources/others",
-    },
-    {
-      name: "sample quarkus",
-      iconUrl: "images/quarkus-logo.png",
-      gitRepositoryUrl: "https://github.com/apache/incubator-kie-sandbox-quarkus-accelerator",
-      gitRepositoryGitRef: "10.0.x",
-      dmnDestinationFolder: "src/main/resources/dmn",
-      bpmnDestinationFolder: "src/main/resources/bpmn",
-      otherFilesDestinationFolder: "src/main/resources/others",
-    },
   ],
   KIE_SANDBOX_EDITORS: [
     {
