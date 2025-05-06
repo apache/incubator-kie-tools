@@ -79,6 +79,10 @@ module.exports = composeEnv([rootEnv, sonataflowBuilderImageEnv, sonataflowDevMo
       default: `${kogitoDBMigratorToolImageEnv.env.kogitoDbMigratorToolImage.registry}/${kogitoDBMigratorToolImageEnv.env.kogitoDbMigratorToolImage.account}/${kogitoDBMigratorToolImageEnv.env.kogitoDbMigratorToolImage.name}:${kogitoDBMigratorToolImageEnv.env.kogitoDbMigratorToolImage.buildTag}`,
       description: "Kogito DB Migrator image",
     },
+    SONATAFLOW_OPERATOR_kubeProxyImage: {
+      default: "gcr.io/kubebuilder/kube-rbac-proxy:v0.16.0",
+      description: "Kube Proxy Image for the Manager controller",
+    },
   }),
   get env() {
     return {
