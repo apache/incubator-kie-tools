@@ -26,15 +26,22 @@ const buildEnv: any = env; // build-env is not typed
 
 const customConfig = defineConfig({
   use: {
-    baseURL: `http://localhost:${buildEnv.dmnEditor.storybook.port}`,
+    baseURL: `http://localhost:${buildEnv.dmnEditorEnvelope.storybook.port}`,
   },
   /* Run your local dev server before starting the tests */
   webServer: {
     command: "pnpm start",
-    url: `http://localhost:${buildEnv.dmnEditor.storybook.port}/iframe.html?args=&id=dev-web-app--web&viewMode=story`,
+    url: `http://localhost:${buildEnv.dmnEditorEnvelope.storybook.port}/iframe.html?args=&id=dev-web-app--web&viewMode=story`,
     reuseExistingServer: !process.env.CI || true,
     stdout: "pipe",
     timeout: 180000,
+  },
+  expect: {
+    toHaveScreenshot: {
+      // An acceptable ratio of pixels that are different to the
+      // total amount of pixels, between 0 and 1.
+      maxDiffPixelRatio: 0.001,
+    },
   },
 });
 
