@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: kube-rbac-proxy
-          image: ${RELATED_IMAGE_KUBE_RBAC_PROXY}
+          image: gcr.io/kubebuilder/kube-rbac-proxy:v0.13.1
           env:
             - name: RELATED_IMAGE_KUBE_RBAC_PROXY
               value: gcr.io/kubebuilder/kube-rbac-proxy:v0.13.1

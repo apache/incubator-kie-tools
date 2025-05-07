@@ -23,6 +23,7 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/imdario/mergo"
 	"k8s.io/apimachinery/pkg/util/yaml"
@@ -40,7 +41,19 @@ var controllersCfg *ControllersCfg
 var defaultControllersCfg = &ControllersCfg{
 	HealthFailureThresholdDevMode: 50,
 	DefaultPvcKanikoSize:          "1Gi",
+	KanikoDefaultWarmerImageTag:   "gcr.io/kaniko-project/warmer:v1.9.0",
+	KanikoExecutorImageTag:        "gcr.io/kaniko-project/executor:v1.9.0",
+	JobsServicePostgreSQLImageTag: getEnvOrDefault("RELATED_IMAGE_JOBS_SERVICE_PG", ""),
+	JobsServiceEphemeralImageTag:  getEnvOrDefault("RELATED_IMAGE_JOBS_SERVICE_EPHEMERAL", ""),
+	DataIndexPostgreSQLImageTag:   getEnvOrDefault("RELATED_IMAGE_DATA_INDEX_PG", ""),
+	DataIndexEphemeralImageTag:    getEnvOrDefault("RELATED_IMAGE_DATA_INDEX_EPHEMERAL", ""),
+	DbMigratorToolImageTag:        getEnvOrDefault("RELATED_IMAGE_DB_MIGRATOR", ""),
+	SonataFlowBaseBuilderImageTag: getEnvOrDefault("RELATED_IMAGE_BUILDER", ""),
+	SonataFlowDevModeImageTag:     getEnvOrDefault("RELATED_IMAGE_DEVMODE", ""),
 	BuilderConfigMapName:          "sonataflow-operator-builder-config",
+	KogitoEventsGrouping:          true,
+	KogitoEventsGroupingBinary:    true,
+	KogitoEventsGroupingCompress:  false,
 }
 
 type GroupArtifactId struct {
@@ -55,19 +68,20 @@ func (g *GroupArtifactId) String() string {
 type ControllersCfg struct {
 	DefaultPvcKanikoSize            string            `yaml:"defaultPvcKanikoSize,omitempty"`
 	HealthFailureThresholdDevMode   int32             `yaml:"healthFailureThresholdDevMode,omitempty"`
+	KanikoDefaultWarmerImageTag     string            `yaml:"kanikoDefaultWarmerImageTag,omitempty"`
+	KanikoExecutorImageTag          string            `yaml:"kanikoExecutorImageTag,omitempty"`
+	JobsServicePostgreSQLImageTag   string            `yaml:"jobsServicePostgreSQLImageTag,omitempty"`
+	JobsServiceEphemeralImageTag    string            `yaml:"jobsServiceEphemeralImageTag,omitempty"`
+	DataIndexPostgreSQLImageTag     string            `yaml:"dataIndexPostgreSQLImageTag,omitempty"`
+	DataIndexEphemeralImageTag      string            `yaml:"dataIndexEphemeralImageTag,omitempty"`
+	DbMigratorToolImageTag          string            `yaml:"dbMigratorToolImageTag,omitempty"`
+	SonataFlowBaseBuilderImageTag   string            `yaml:"sonataFlowBaseBuilderImageTag,omitempty"`
+	SonataFlowDevModeImageTag       string            `yaml:"sonataFlowDevModeImageTag,omitempty"`
 	BuilderConfigMapName            string            `yaml:"builderConfigMapName,omitempty"`
 	PostgreSQLPersistenceExtensions []GroupArtifactId `yaml:"postgreSQLPersistenceExtensions,omitempty"`
 	KogitoEventsGrouping            bool              `yaml:"kogitoEventsGrouping,omitempty"`
 	KogitoEventsGroupingBinary      bool              `yaml:"KogitoEventsGroupingBinary,omitempty"`
 	KogitoEventsGroupingCompress    bool              `yaml:"KogitoEventsGroupingCompress,omitempty"`
-	// Image fields overridden by environment variables if present
-	JobsServicePostgreSQLImageTag string `yaml:"-"`
-	JobsServiceEphemeralImageTag  string `yaml:"-"`
-	DataIndexPostgreSQLImageTag   string `yaml:"-"`
-	DataIndexEphemeralImageTag    string `yaml:"-"`
-	DbMigratorToolImageTag        string `yaml:"-"`
-	SonataFlowBaseBuilderImageTag string `yaml:"-"`
-	SonataFlowDevModeImageTag     string `yaml:"-"`
 }
 
 // InitializeControllersCfg initializes the platform configuration for this instance.
@@ -88,43 +102,20 @@ func InitializeControllersCfgAt(configFilePath string) (*ControllersCfg, error) 
 	yamlFile, err := os.ReadFile(configFilePath)
 	if err != nil {
 		klog.V(log.E).ErrorS(err, "Failed to read controllers config file", "YAML file location", defaultConfigMountPath)
-		controllersCfg = defaultControllersCfg
-	} else {
-		err = yaml.NewYAMLOrJSONDecoder(bytes.NewReader(yamlFile), 100).Decode(&controllersCfg)
-		if err != nil {
-			klog.V(log.E).ErrorS(err, "Failed to unmarshal controllers config file", "YAML file location", defaultConfigMountPath)
-			controllersCfg = defaultControllersCfg
-		}
+		return defaultControllersCfg, err
+	}
+	err = yaml.NewYAMLOrJSONDecoder(bytes.NewReader(yamlFile), 100).Decode(&controllersCfg)
+	if err != nil {
+		klog.V(log.E).ErrorS(err, "Failed to unmarshal controllers config file", "YAML file location", defaultConfigMountPath)
+		return defaultControllersCfg, err
 	}
 
-	_ = mergo.Merge(controllersCfg, defaultControllersCfg)
-	injectEnvOverrides(controllersCfg)
+	useEnvVarIfConfigEmpty(controllersCfg)
 
+	if err = mergo.Merge(controllersCfg, defaultControllersCfg); err != nil {
+		return defaultControllersCfg, err
+	}
 	return controllersCfg, nil
-}
-
-func injectEnvOverrides(cfg *ControllersCfg) {
-	if val := os.Getenv("RELATED_IMAGE_JOBS_SERVICE_POSTGRESQL"); val != "" {
-		cfg.JobsServicePostgreSQLImageTag = val
-	}
-	if val := os.Getenv("RELATED_IMAGE_JOBS_SERVICE_EPHEMERAL"); val != "" {
-		cfg.JobsServiceEphemeralImageTag = val
-	}
-	if val := os.Getenv("RELATED_IMAGE_DATA_INDEX_POSTGRESQL"); val != "" {
-		cfg.DataIndexPostgreSQLImageTag = val
-	}
-	if val := os.Getenv("RELATED_IMAGE_DATA_INDEX_EPHEMERAL"); val != "" {
-		cfg.DataIndexEphemeralImageTag = val
-	}
-	if val := os.Getenv("RELATED_IMAGE_DB_MIGRATOR_TOOL"); val != "" {
-		cfg.DbMigratorToolImageTag = val
-	}
-	if val := os.Getenv("RELATED_IMAGE_SONATAFLOW_BUILDER"); val != "" {
-		cfg.SonataFlowBaseBuilderImageTag = val
-	}
-	if val := os.Getenv("RELATED_IMAGE_SONATAFLOW_DEV_MODE"); val != "" {
-		cfg.SonataFlowDevModeImageTag = val
-	}
 }
 
 func GetCfg() *ControllersCfg {
@@ -134,4 +125,29 @@ func GetCfg() *ControllersCfg {
 		return defaultControllersCfg
 	}
 	return controllersCfg
+}
+
+// useEnvVarIfConfigEmpty overrides the image tags in case the YAML configuration is empty or null with env vars injected into the pod by the OLM Operator.
+func useEnvVarIfConfigEmpty(cfg *ControllersCfg) {
+	cfg.JobsServicePostgreSQLImageTag = fallback(cfg.JobsServicePostgreSQLImageTag, os.Getenv("RELATED_IMAGE_JOBS_SERVICE_PG"))
+	cfg.JobsServiceEphemeralImageTag = fallback(cfg.JobsServiceEphemeralImageTag, os.Getenv("RELATED_IMAGE_JOBS_SERVICE_EPHEMERAL"))
+	cfg.DataIndexPostgreSQLImageTag = fallback(cfg.DataIndexPostgreSQLImageTag, os.Getenv("RELATED_IMAGE_DATA_INDEX_PG"))
+	cfg.DataIndexEphemeralImageTag = fallback(cfg.DataIndexEphemeralImageTag, os.Getenv("RELATED_IMAGE_DATA_INDEX_EPHEMERAL"))
+	cfg.DbMigratorToolImageTag = fallback(cfg.DbMigratorToolImageTag, os.Getenv("RELATED_IMAGE_DB_MIGRATOR"))
+	cfg.SonataFlowBaseBuilderImageTag = fallback(cfg.SonataFlowBaseBuilderImageTag, os.Getenv("RELATED_IMAGE_BUILDER"))
+	cfg.SonataFlowDevModeImageTag = fallback(cfg.SonataFlowDevModeImageTag, os.Getenv("RELATED_IMAGE_DEVMODE"))
+}
+
+func getEnvOrDefault(envKey, defaultVal string) string {
+	if val := strings.TrimSpace(os.Getenv(envKey)); val != "" {
+		return val
+	}
+	return defaultVal
+}
+
+func fallback(currentVal, envVal string) string {
+	if strings.TrimSpace(currentVal) != "" {
+		return currentVal
+	}
+	return strings.TrimSpace(envVal)
 }
