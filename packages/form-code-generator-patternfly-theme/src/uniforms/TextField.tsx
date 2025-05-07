@@ -47,8 +47,8 @@ const Text: React.FC<TextFieldProps> = (props: TextFieldProps) => {
           id={'date-picker-${props.id}'}
           isDisabled={${props.disabled || false}}
           name={${props.itemProps?.isListItem ? getListItemName({ itemProps: props.itemProps, name: props.name }) : `'${props.name}'`}}
-          onChange={${props.itemProps?.isListItem ? getListItemOnChange({ itemProps: props.itemProps, name: props.name, callback: (value: string) => `onDateChange(${value}, ${ref.stateSetter},  ${ref.stateName})` }) : `newDate => onDateChange(newDate, ${ref.stateSetter},  ${ref.stateName})`}}
           value={${props.itemProps?.isListItem ? `parseDate(${getListItemValue({ itemProps: props.itemProps, name: props.name })})` : `parseDate(${ref.stateName})`}}
+          onChange={${props.itemProps?.isListItem ? getListItemOnChange({ itemProps: props.itemProps, name: props.name, callback: (value: string) => `onDateChange(${value}, ${ref.stateSetter},  ${ref.stateName})` }) : `(e, newDate) => onDateChange(newDate, ${ref.stateSetter},  ${ref.stateName})`}}
         />`;
     return buildDefaultInputElement({
       pfImports: ["DatePicker"],
@@ -73,7 +73,7 @@ const Text: React.FC<TextFieldProps> = (props: TextFieldProps) => {
         placeholder={'${props.placeholder}'}
         type={'${props.type || "text"}'}
         value={${props.itemProps?.isListItem ? getListItemValue({ itemProps: props.itemProps, name: props.name }) : ref.stateName}}
-        onChange={${props.itemProps?.isListItem ? getListItemOnChange({ itemProps: props.itemProps, name: props.name }) : ref.stateSetter}}
+        onChange={${props.itemProps?.isListItem ? getListItemOnChange({ itemProps: props.itemProps, name: props.name }) : `(e, newValue) => ${ref.stateSetter}(newValue)`}}
         />`;
 
     return buildDefaultInputElement({

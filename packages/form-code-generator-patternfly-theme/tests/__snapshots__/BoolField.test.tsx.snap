@@ -8,7 +8,7 @@ exports[`<BoolField> tests <BoolField> - rendering - disabled 1`] = `
       id={'id'}
       name={'hire'}
       label={'Hire?'}
-      onChange={set__hire}
+      onChange={(e, newValue) => set__hire(newValue)}
     />
   </FormGroup>"
 `;
@@ -21,7 +21,7 @@ exports[`<BoolField> tests <BoolField> - rendering 1`] = `
       id={'id'}
       name={'hire'}
       label={'Hire?'}
-      onChange={set__hire}
+      onChange={(e, newValue) => set__hire(newValue)}
     />
   </FormGroup>"
 `;

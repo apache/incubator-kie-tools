@@ -8,10 +8,6 @@ import {
 	CardBody,
 	TextInput,
 	FormGroup,
-	SelectOption,
-	SelectOptionObject,
-	Select,
-	SelectVariant,
 	Checkbox,
 	Radio,
 	DatePicker,
@@ -24,6 +20,12 @@ import {
 	Button,
 } from &#39;@patternfly/react-core&#39;;
 import { PlusCircleIcon, MinusCircleIcon } from &#39;@patternfly/react-icons&#39;;
+import {
+	SelectOption,
+	SelectOptionObject,
+	Select,
+	SelectVariant,
+} from &#39;@patternfly/react-core/deprecated&#39;;
 const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 	const [formApi, setFormApi] = useState&lt;any&gt;();
 	const [personalData__name, set__personalData__name] = useState&lt;string&gt;(&#39;&#39;);
@@ -195,7 +197,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							placeholder={&#39;&#39;}
 							type={&#39;text&#39;}
 							value={personalData__name}
-							onChange={set__personalData__name}
+							onChange={(e, newValue) =&gt; set__personalData__name(newValue)}
 						/&gt;
 					&lt;/FormGroup&gt;
 					&lt;FormGroup
@@ -209,7 +211,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							placeholder={&#39;&#39;}
 							type={&#39;text&#39;}
 							value={personalData__email}
-							onChange={set__personalData__email}
+							onChange={(e, newValue) =&gt; set__personalData__email(newValue)}
 						/&gt;
 					&lt;/FormGroup&gt;
 					&lt;Card&gt;
@@ -228,7 +230,9 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 									placeholder={&#39;&#39;}
 									type={&#39;text&#39;}
 									value={personalData__child__name}
-									onChange={set__personalData__child__name}
+									onChange={(e, newValue) =&gt;
+										set__personalData__child__name(newValue)
+									}
 								/&gt;
 							&lt;/FormGroup&gt;
 						&lt;/CardBody&gt;
@@ -251,7 +255,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							placeholder={&#39;&#39;}
 							type={&#39;text&#39;}
 							value={address__street}
-							onChange={set__address__street}
+							onChange={(e, newValue) =&gt; set__address__street(newValue)}
 						/&gt;
 					&lt;/FormGroup&gt;
 					&lt;FormGroup
@@ -266,7 +270,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							placeholder={&#39;&#39;}
 							step={1}
 							value={address__num}
-							onChange={(newValue) =&gt; set__address__num(Number(newValue))}
+							onChange={(e, newValue) =&gt; set__address__num(Number(newValue))}
 						/&gt;
 					&lt;/FormGroup&gt;
 					&lt;FormGroup
@@ -280,7 +284,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							placeholder={&#39;&#39;}
 							type={&#39;text&#39;}
 							value={address__cp}
-							onChange={set__address__cp}
+							onChange={(e, newValue) =&gt; set__address__cp(newValue)}
 						/&gt;
 					&lt;/FormGroup&gt;
 					&lt;FormGroup
@@ -294,7 +298,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							placeholder={&#39;&#39;}
 							type={&#39;text&#39;}
 							value={address__city}
-							onChange={set__address__city}
+							onChange={(e, newValue) =&gt; set__address__city(newValue)}
 						/&gt;
 					&lt;/FormGroup&gt;
 				&lt;/CardBody&gt;
@@ -478,7 +482,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							max={99}
 							min={18}
 							value={interview__age}
-							onChange={(newValue) =&gt; set__interview__age(Number(newValue))}
+							onChange={(e, newValue) =&gt; set__interview__age(Number(newValue))}
 						/&gt;
 					&lt;/FormGroup&gt;
 					&lt;FormGroup
@@ -494,7 +498,9 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							step={0.01}
 							max={1000.5}
 							value={interview__salary}
-							onChange={(newValue) =&gt; set__interview__salary(Number(newValue))}
+							onChange={(e, newValue) =&gt;
+								set__interview__salary(Number(newValue))
+							}
 						/&gt;
 					&lt;/FormGroup&gt;
 					&lt;FormGroup
@@ -561,7 +567,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 							id={&#39;uniforms-0000-000t&#39;}
 							name={&#39;interview.hire&#39;}
 							label={&#39;Hire&#39;}
-							onChange={set__interview__hire}
+							onChange={(e, newValue) =&gt; set__interview__hire(newValue)}
 						/&gt;
 					&lt;/FormGroup&gt;
 					&lt;FormGroup
@@ -575,7 +581,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 										id={&#39;date-picker-uniforms-0000-000v&#39;}
 										isDisabled={false}
 										name={&#39;interview.hiringDate&#39;}
-										onChange={(newDate) =&gt; {
+										onChange={(e, newDate) =&gt; {
 											set__interview__hiringDate((prev) =&gt; {
 												if (newDate) {
 													const newDate = new Date(newDate);
@@ -599,7 +605,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 										id={&#39;time-picker-uniforms-0000-000v&#39;}
 										isDisabled={false}
 										name={&#39;interview.hiringDate&#39;}
-										onChange={(time, hours?, minutes?) =&gt; {
+										onChange={(e, time, hours?, minutes?) =&gt; {
 											set__interview__hiringDate((prev) =&gt; {
 												if (prev) {
 													const newDate = new Date(Date.parse(prev));
@@ -678,7 +684,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 												placeholder={&#39;&#39;}
 												type={&#39;text&#39;}
 												value={friends?.[itemIndex].name}
-												onChange={(newValue) =&gt; {
+												onChange={(e, newValue) =&gt; {
 													set__friends((s) =&gt; {
 														const newState = [...s];
 														newState[itemIndex].name = newValue;
@@ -699,7 +705,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 												placeholder={&#39;&#39;}
 												step={0.01}
 												value={friends?.[itemIndex].age}
-												onChange={(newValue) =&gt; {
+												onChange={(e, newValue) =&gt; {
 													set__friends((s) =&gt; {
 														const newState = [...s];
 														newState[itemIndex].age = Number(newValue);
@@ -768,7 +774,7 @@ const Form__HRInterview: React.FC&lt;any&gt; = (props: any) =&gt; {
 																				nested__itemIndex
 																			]
 																		}
-																		onChange={(newValue) =&gt; {
+																		onChange={(e, newValue) =&gt; {
 																			set__friends((s) =&gt; {
 																				const newState = [...s];
 																				newState[itemIndex].know[
