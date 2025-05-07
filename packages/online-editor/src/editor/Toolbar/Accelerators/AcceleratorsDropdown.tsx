@@ -34,9 +34,8 @@ import { AcceleratorConfig } from "../../../accelerators/AcceleratorsApi";
 import { useOnlineI18n } from "../../../i18n";
 import { AcceleratorModal } from "./AcceleratorModal";
 import { AcceleratorIcon } from "./AcceleratorIcon";
-import { useAuthSessions } from "../../../authSessions/AuthSessionsContext";
-import { useAuthProviders } from "../../../authProviders/AuthProvidersContext";
-import { GitAuthSession } from "../../../authSessions/AuthSessionApi";
+import { useAuthSession, useAuthSessions } from "../../../authSessions/AuthSessionsContext";
+import { GitAuthSession, isGitAuthSession } from "../../../authSessions/AuthSessionApi";
 
 type Props = {
   workspaceFile: WorkspaceFile;
@@ -52,8 +51,7 @@ export function AcceleratorsDropdown(props: Props) {
   const [selectedAccelerator, setSelectedAccelerator] = useState<AcceleratorConfig | undefined>();
 
   const currentAccelerator = useCurrentAccelerator(props.workspaceFile.workspaceId);
-  const { authSessions, authSessionStatus } = useAuthSessions();
-  const authProviders = useAuthProviders();
+  const { authSessions } = useAuthSessions();
 
   const onOpenApplyAccelerator = useCallback(
     (accelerator: AcceleratorConfig) => {
@@ -70,12 +68,14 @@ export function AcceleratorsDropdown(props: Props) {
         console.error("Missing required parameters to apply accelerator");
         return;
       }
-      const authSessionObj = authSessions.get(authSessionId || "") as GitAuthSession;
+      const authSession = authSessions.get(authSessionId || "");
+      const authInfo =
+        authSession && isGitAuthSession(authSession)
+          ? { username: authSession.login, password: authSession.token }
+          : undefined;
+
       try {
-        await applyAcceleratorToWorkspace(selectedAccelerator, props.workspaceFile, {
-          username: authSessionObj?.login,
-          password: authSessionObj?.token,
-        });
+        await applyAcceleratorToWorkspace(selectedAccelerator, props.workspaceFile, authInfo);
       } catch (error) {
         console.error("Failed to apply accelerator:", error);
       } finally {
@@ -125,9 +125,6 @@ export function AcceleratorsDropdown(props: Props) {
           onApplyAccelerator={onApplyAccelerator}
           accelerator={selectedAccelerator}
           isApplying={true}
-          authSessions={authSessions}
-          authProviders={authProviders}
-          authSessionStatus={authSessionStatus}
         />
       )}
     </>

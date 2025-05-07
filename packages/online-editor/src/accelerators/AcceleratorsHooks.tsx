@@ -131,7 +131,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
     async (
       accelerator: AcceleratorConfig,
       currentFile: WorkspaceFile,
-      authInfo: {
+      authInfo?: {
         username: string;
         password: string;
       }

@@ -150,7 +150,6 @@ export function AuthSessionSelect(props: {
       }}
       className={props.isPlain ? "kie-tools--masthead-hoverable" : ""}
       menuAppendTo={props.menuAppendTo ?? "parent"}
-      maxHeight={"400px"}
       style={{ minWidth: "300px", maxHeight: "300px", overflowY: "scroll" }}
       footer={
         <>

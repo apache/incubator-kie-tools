@@ -36,8 +36,8 @@ import {
 import { AuthProvider, AuthProviderGroup, AuthProviderType } from "../../../authProviders/AuthProvidersApi";
 import { AuthSessionSelect } from "../../../authSessions/AuthSessionSelect";
 import { SelectPosition } from "@patternfly/react-core/deprecated";
-import { useAuthProvider } from "../../../authProviders/AuthProvidersContext";
-import { useAuthSession } from "../../../authSessions/AuthSessionsContext";
+import { useAuthProvider, useAuthProviders } from "../../../authProviders/AuthProvidersContext";
+import { useAuthSession, useAuthSessions } from "../../../authSessions/AuthSessionsContext";
 import { AccountsDispatchActionKind, useAccountsDispatch } from "../../../accounts/AccountsContext";
 
 type Props = {
@@ -46,9 +46,6 @@ type Props = {
   onClose: () => any;
   isApplying?: boolean;
   onApplyAccelerator?: (authSessionId?: string) => void;
-  authProviders: AuthProvider[];
-  authSessions: Map<string, AuthSession>;
-  authSessionStatus: Map<string, AuthSessionStatus>;
 };
 
 function getDomainFromUrl(url: string | undefined): string | undefined {
@@ -68,25 +65,28 @@ export function AcceleratorModal(props: Props) {
     [props.accelerator.gitRepositoryUrl]
   );
 
+  const { authSessions, authSessionStatus } = useAuthSessions();
+  const authProviders = useAuthProviders();
+
   const [selectedAuthSessionId, setSelectedAuthSessionId] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     const { compatible } = getCompatibleAuthSessionWithUrlDomain({
-      authProviders: props.authProviders,
-      authSessions: props.authSessions,
-      authSessionStatus: props.authSessionStatus,
+      authProviders: authProviders,
+      authSessions: authSessions,
+      authSessionStatus: authSessionStatus,
       urlDomain,
     });
 
     setSelectedAuthSessionId(compatible.length > 0 ? compatible[0].id : "");
-  }, [props.authProviders, props.authSessions, props.authSessionStatus, urlDomain]);
+  }, [authProviders, authSessions, authSessionStatus, urlDomain]);
 
   const accountsDispatch = useAccountsDispatch();
   const { authSession } = useAuthSession(selectedAuthSessionId);
   const selectedAuthProvider = useAuthProvider(authSession);
   const selectedStatus = useMemo(() => {
-    return authSession ? props.authSessionStatus.get(authSession.id) : undefined;
-  }, [authSession, props.authSessionStatus]);
+    return authSession ? authSessionStatus.get(authSession.id) : undefined;
+  }, [authSession, authSessionStatus]);
 
   const isCompatibleAuthSession = useMemo(() => {
     return (
@@ -108,12 +108,7 @@ export function AcceleratorModal(props: Props) {
       variant={ModalVariant.medium}
       actions={
         props.isApplying && [
-          <Button
-            key="apply"
-            variant="primary"
-            onClick={() => props.onApplyAccelerator?.(selectedAuthSessionId)}
-            isDisabled={!isCompatibleAuthSession}
-          >
+          <Button key="apply" variant="primary" onClick={() => props.onApplyAccelerator?.(selectedAuthSessionId)}>
             {i18n.terms.apply}
           </Button>,
           <Button key="cancel" variant="link" onClick={props.onClose}>
@@ -157,7 +152,7 @@ export function AcceleratorModal(props: Props) {
                   </Alert>
                 ) : (
                   <Alert variant="danger" isInline title="Authentication Status">
-                    Selected account is not compatible with {urlDomain} , where {props.accelerator.name} Accelerator is
+                    Selected account is not compatible with {urlDomain}, where {props.accelerator.name} Accelerator is
                     hosted.
                   </Alert>
                 )}
