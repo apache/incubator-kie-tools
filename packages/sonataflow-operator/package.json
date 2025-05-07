@@ -22,7 +22,7 @@
     "bump-version": "run-script-os",
     "bump-version:darwin:linux": "./hack/bump-version.sh",
     "bump-version:win32": "echo 'Bumping version not supported on Windows'",
-    "controllers:update:cfg": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && make update-config",
+    "controllers:update:cfg": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && make update-patch",
     "format": "prettier --write . --ignore-path=../../.prettierignore --ignore-path=../../.gitignore",
     "image:build": "run-script-os",
     "image:build:darwin:linux": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && run-script-if --bool \"$(build-env containerImages.build)\" --then \"make container-build\"",
