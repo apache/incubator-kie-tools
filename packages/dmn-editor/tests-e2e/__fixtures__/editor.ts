@@ -62,4 +62,12 @@ export class Editor {
   public async changeTab(args: { tab: TabName }) {
     await this.page.getByRole("tab", { name: args.tab }).click();
   }
+
+  public async collapseDecisionService() {
+    await this.page.locator(".kie-dmn-editor--decision-service-expanded-button").click();
+  }
+
+  public async expandDecisionService() {
+    await this.page.locator(".kie-dmn-editor--decision-service-collapsed-button").click();
+  }
 }
