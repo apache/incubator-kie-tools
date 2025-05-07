@@ -74,7 +74,6 @@ export function AuthSessionSelect(props: {
   filter: AuthSessionSelectFilter;
   menuAppendTo?: SelectProps["menuAppendTo"];
   showOnlyThisAuthProviderGroupWhenConnectingToNewAccount: AuthProviderGroup | undefined;
-  hideConnectToAccountButton?: boolean;
 }) {
   const [isAuthSessionSelectorOpen, setAuthSessionSelectorOpen] = useState(false);
   const [showMore, setShowMore] = useState(false);
@@ -152,7 +151,7 @@ export function AuthSessionSelect(props: {
       className={props.isPlain ? "kie-tools--masthead-hoverable" : ""}
       menuAppendTo={props.menuAppendTo ?? "parent"}
       maxHeight={"400px"}
-      style={{ minWidth: "400px" }}
+      style={{ minWidth: "300px", maxHeight: "300px", overflowY: "scroll" }}
       footer={
         <>
           {showedGroups?.length !== groups?.length && (
@@ -170,22 +169,20 @@ export function AuthSessionSelect(props: {
               <Divider style={{ margin: "16px 0" }} />
             </>
           )}
-          {!props.hideConnectToAccountButton && (
-            <Button
-              variant={ButtonVariant.link}
-              isInline={true}
-              icon={<PlusIcon />}
-              onClick={() =>
-                accountsDispatch({
-                  kind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER,
-                  authProviderGroup: props.showOnlyThisAuthProviderGroupWhenConnectingToNewAccount,
-                  onNewAuthSession: (newAuthSession) => props.setAuthSessionId(newAuthSession.id),
-                })
-              }
-            >
-              Connect to an account...
-            </Button>
-          )}
+          <Button
+            variant={ButtonVariant.link}
+            isInline={true}
+            icon={<PlusIcon />}
+            onClick={() =>
+              accountsDispatch({
+                kind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER,
+                authProviderGroup: props.showOnlyThisAuthProviderGroupWhenConnectingToNewAccount,
+                onNewAuthSession: (newAuthSession) => props.setAuthSessionId(newAuthSession.id),
+              })
+            }
+          >
+            Connect to an account...
+          </Button>
         </>
       }
     >

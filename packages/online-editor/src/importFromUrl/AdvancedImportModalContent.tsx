@@ -140,7 +140,6 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                   isPlain={false}
                   showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.GIT}
                   filter={authSessionsSelectFilterCompatibleWithGitUrlDomain(props.clonableUrl.clonableUrl.url?.host)}
-                  hideConnectToAccountButton={false}
                 />
               </FormGroup>
               <FormGroup fieldId="disable-tls-validation">

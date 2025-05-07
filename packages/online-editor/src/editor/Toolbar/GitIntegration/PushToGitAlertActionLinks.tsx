@@ -76,7 +76,6 @@ export function PushToGitAlertActionLinks(props: {
                   accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
                 }}
                 filter={props.authSessionSelectFilter}
-                hideConnectToAccountButton={false}
               />
               <br />
               <br />

@@ -92,7 +92,6 @@ export const GitDropdownGroup = (props: Props) => {
                 }, 0);
               }}
               filter={authSessionSelectFilter}
-              hideConnectToAccountButton={false}
             />
           }
         >

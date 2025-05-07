@@ -68,7 +68,6 @@ export function AcceleratorIndicator(props: Props) {
           isOpen={isAcceleratorDetailsModalOpen}
           onClose={() => setAcceleratorDetailsModalOpen(false)}
           accelerator={currentAccelerator}
-          isApplying={true}
           authProviders={authProviders}
           authSessions={authSessions}
           authSessionStatus={authSessionStatus}

@@ -66,11 +66,11 @@ export function AcceleratorsDropdown(props: Props) {
 
   const onApplyAccelerator = useCallback(
     async (authSessionId?: string) => {
-      if (!selectedAccelerator || !authSessionId) {
+      if (!selectedAccelerator) {
         console.error("Missing required parameters to apply accelerator");
         return;
       }
-      const authSessionObj = authSessions.get(authSessionId) as GitAuthSession;
+      const authSessionObj = authSessions.get(authSessionId || "") as GitAuthSession;
       try {
         await applyAcceleratorToWorkspace(selectedAccelerator, props.workspaceFile, {
           username: authSessionObj?.login,

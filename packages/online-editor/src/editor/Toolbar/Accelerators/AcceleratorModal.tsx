@@ -33,13 +33,17 @@ import {
   gitAuthSessionSelectFilter,
   isAuthSessionCompatibleWithUrlDomain,
 } from "../../../authSessions/CompatibleAuthSessions";
-import { AuthProvider } from "../../../authProviders/AuthProvidersApi";
+import { AuthProvider, AuthProviderGroup, AuthProviderType } from "../../../authProviders/AuthProvidersApi";
 import { AuthSessionSelect } from "../../../authSessions/AuthSessionSelect";
+import { SelectPosition } from "@patternfly/react-core/deprecated";
+import { useAuthProvider } from "../../../authProviders/AuthProvidersContext";
+import { useAuthSession } from "../../../authSessions/AuthSessionsContext";
+import { AccountsDispatchActionKind, useAccountsDispatch } from "../../../accounts/AccountsContext";
 
 type Props = {
   accelerator: AcceleratorAppliedConfig;
   isOpen: boolean;
-  onClose: () => void;
+  onClose: () => any;
   isApplying?: boolean;
   onApplyAccelerator?: (authSessionId?: string) => void;
   authProviders: AuthProvider[];
@@ -77,32 +81,24 @@ export function AcceleratorModal(props: Props) {
     setSelectedAuthSessionId(compatible.length > 0 ? compatible[0].id : "");
   }, [props.authProviders, props.authSessions, props.authSessionStatus, urlDomain]);
 
-  const selectedAuthSession = useMemo(() => {
-    return selectedAuthSessionId ? props.authSessions.get(selectedAuthSessionId) : undefined;
-  }, [selectedAuthSessionId, props.authSessions]);
-
-  const selectedAuthProvider = useMemo(() => {
-    if (selectedAuthSession && isGitAuthSession(selectedAuthSession)) {
-      return props.authProviders.find((p) => p.id === selectedAuthSession.authProviderId);
-    }
-    return undefined;
-  }, [selectedAuthSession, props.authProviders]);
-
+  const accountsDispatch = useAccountsDispatch();
+  const { authSession } = useAuthSession(selectedAuthSessionId);
+  const selectedAuthProvider = useAuthProvider(authSession);
   const selectedStatus = useMemo(() => {
-    return selectedAuthSession ? props.authSessionStatus.get(selectedAuthSession.id) : undefined;
-  }, [selectedAuthSession, props.authSessionStatus]);
+    return authSession ? props.authSessionStatus.get(authSession.id) : undefined;
+  }, [authSession, props.authSessionStatus]);
 
   const isCompatibleAuthSession = useMemo(() => {
     return (
-      selectedAuthSession &&
+      authSession &&
       isAuthSessionCompatibleWithUrlDomain({
-        authSession: selectedAuthSession,
+        authSession: authSession,
         authProvider: selectedAuthProvider,
         status: selectedStatus,
         urlDomain,
       })
     );
-  }, [selectedAuthSession, selectedAuthProvider, selectedStatus, urlDomain]);
+  }, [authSession, selectedAuthProvider, selectedStatus, urlDomain]);
 
   return (
     <Modal
@@ -139,28 +135,30 @@ export function AcceleratorModal(props: Props) {
             </GridItem>
 
             <GridItem span={12}>
-              <label htmlFor="auth-session-select">Select Authentication Session:</label>
               <AuthSessionSelect
-                menuAppendTo={document.body}
-                title={"Select authentication session"}
+                title={`Select Git authentication for '${props.accelerator.name}' Accelerator`}
                 authSessionId={selectedAuthSessionId}
-                setAuthSessionId={setSelectedAuthSessionId}
+                setAuthSessionId={(newSelectedAuthSessionId) => {
+                  setSelectedAuthSessionId(newSelectedAuthSessionId);
+                  accountsDispatch({ kind: AccountsDispatchActionKind.CLOSE });
+                }}
                 isPlain={false}
+                position={SelectPosition.right}
                 filter={gitAuthSessionSelectFilter()}
-                showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={undefined}
-                hideConnectToAccountButton={true}
+                showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.GIT}
               />
             </GridItem>
 
-            {selectedAuthSession && (
+            {authSession && (
               <GridItem span={12}>
                 {isCompatibleAuthSession ? (
                   <Alert variant="info" isInline title="Authentication Status">
-                    Using {selectedAuthProvider?.domain} credentials for {(selectedAuthSession as GitAuthSession).login}
+                    Using {selectedAuthProvider?.domain} credentials for {(authSession as GitAuthSession).login}
                   </Alert>
                 ) : (
                   <Alert variant="danger" isInline title="Authentication Status">
-                    Selected auth session is not compatible with repository domain: {urlDomain}
+                    Selected account is not compatible with {urlDomain} , where {props.accelerator.name} Accelerator is
+                    hosted.
                   </Alert>
                 )}
               </GridItem>
