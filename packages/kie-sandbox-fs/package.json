@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/kie-sandbox-fs",
-  "version": "10.1.999",
+  "version": "10.1.0",
   "description": "In-browser FS based on KieSandboxFs",
   "license": "MIT",
   "contributors": [

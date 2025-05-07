@@ -18,7 +18,7 @@
 #
 schema_version: 1
 name: org.kie.kogito.db-migrator-tool.db-migration-deps
-version: "main"
+version: "10.1.0"
 artifacts:
   # The following artifact comes from the package kogito-db-migrator-tool during the pnpm build:dev phase
   - name: kogito-db-migrator-tool-quarkus-app

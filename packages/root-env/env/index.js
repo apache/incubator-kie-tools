@@ -64,7 +64,7 @@ module.exports = composeEnv([], {
     },
     /* (begin) This part of the file is referenced in `scripts/update-stream-name` */
     KIE_TOOLS_BUILD__streamName: {
-      default: "10.1.x",
+      default: "10.1.0",
       description: `Name of the release/development stream. E.g, 'main', or '10.0.x' etc. Useful for publishing "nightly" or "snapshot" artifacts. Created to reflect the Git branch name without coupling with Git itself.`,
     },
     /* (end) */
@@ -74,7 +74,7 @@ module.exports = composeEnv([], {
     },
     /* (begin) This part of the file is referenced in `scripts/update-kogito-version` */
     KOGITO_RUNTIME_version: {
-      default: "10.1.999-SNAPSHOT",
+      default: "10.1.0",
       description: "Kogito version to be used on dependency declaration.",
     },
     /* (end) */

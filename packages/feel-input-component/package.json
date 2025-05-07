@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/feel-input-component",
-  "version": "10.1.999",
+  "version": "10.1.0",
   "description": "FEEL (Friendly Enough Expression Language) input component (with code-completion/highlight support)",
   "license": "Apache-2.0",
   "keywords": [],

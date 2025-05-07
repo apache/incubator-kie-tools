@@ -17,7 +17,7 @@
 # under the License.
 #
 name: "docker.io/apache/kie-kogito-db-migrator-tool"
-version: "main"
+version: "10.1.0"
 from: registry.access.redhat.com/ubi8/openjdk-17-runtime:1.20
 description: DBMigratorTool image for Data Index and Jobs Service database migration
 

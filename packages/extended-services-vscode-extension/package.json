@@ -1,6 +1,6 @@
 {
   "name": "extended-services-vscode-extension",
-  "version": "10.1.999",
+  "version": "10.1.0",
   "description": "Enhance KIE DMN and BPMN editors capabilities",
   "license": "Apache-2.0",
   "publisher": "kie-group",

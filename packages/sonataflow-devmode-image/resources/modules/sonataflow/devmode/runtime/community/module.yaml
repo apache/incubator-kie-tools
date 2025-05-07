@@ -18,7 +18,7 @@
 #
 schema_version: 1
 name: org.kie.sonataflow.devmode.runtime.community
-version: "main"
+version: "10.1.0"
 description: "Kogito Serverless Workflow devmode with required extensions"
 
 envs:

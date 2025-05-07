@@ -18,7 +18,7 @@
 #
 schema_version: 1
 name: org.kie.kogito.jobs.service.allinone
-version: "main"
+version: "10.1.0"
 
 artifacts:
   - path: ../../../../app/ephemeral/target/quarkus-app
