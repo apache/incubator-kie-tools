@@ -16,18 +16,3 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
-
-module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools-core/webpack-base/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      dmnEditorEnvelope: {
-        storybook: {
-          port: "9901",
-        },
-      },
-    };
-  },
-});

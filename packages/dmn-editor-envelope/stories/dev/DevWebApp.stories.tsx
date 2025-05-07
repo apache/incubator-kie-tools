@@ -17,17 +17,25 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import * as React from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
+import type { Meta, StoryObj } from "@storybook/react";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools-core/webpack-base/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      dmnEditorEnvelope: {
-        storybook: {
-          port: "9901",
-        },
-      },
-    };
-  },
-});
+function DevWebApp() {
+  return <>Test</>;
+}
+
+// More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
+const meta: Meta<typeof DevWebApp> = {
+  title: "Dev/Web App",
+  component: DevWebApp,
+};
+
+export default meta;
+type Story = StoryObj<typeof DevWebApp>;
+
+// More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
+export const WebApp: Story = {
+  render: (args) => DevWebApp(),
+  args: {},
+};
