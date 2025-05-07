@@ -179,13 +179,55 @@ test.describe("Model Decision Services - DRD", () => {
     // TODO
   });
 
-  test("892 expand - same depiction as other DRDs", async ({ drds }) => {
-    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/892");
+  test("892 expand - same depiction as other DRDs", async ({
+    drds,
+    drgNodes,
+    palette,
+    nodes,
+    diagram,
+    editor,
+    decisionServicePropertiesPanel,
+  }) => {
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
       description: "https://github.com/apache/incubator-kie-issues/issues/892",
     });
-    // TODO
+    await drds.toggle();
+    await drds.create({ name: "First DRD" });
+    await drgNodes.toggle();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION_SERVICE,
+      targetPosition: { x: 400, y: 200 },
+      thenRenameTo: "DS1",
+    });
+    await expect(nodes.get({ name: "DS1" })).toBeAttached();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION,
+      targetPosition: { x: 200, y: 200 },
+      thenRenameTo: "D1",
+    });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+
+    await nodes.move({ name: "D1", targetPosition: { x: 500, y: 300 } });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+    await nodes.select({ name: "DS1", position: NodePosition.TOP });
+    await editor.collapseDecisionService();
+
+    await drds.toggle();
+    await drds.create({ name: "Second DRD" });
+    await drgNodes.dragNode({ name: "DS1", targetPosition: { x: 400, y: 200 } });
+    await drgNodes.toggle();
+
+    await drds.toggle();
+    await drds.navigateTo({ name: "First DRD" });
+    await drds.toggle();
+
+    await nodes.select({ name: "DS1", position: NodePosition.TOP });
+    await editor.expandDecisionService();
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+    await expect(diagram.get()).toHaveScreenshot("decision-service-from-other-drd.png");
   });
 
   test("892 expand - allow only if no other DS is collpased in the DRD", async ({ drds }) => {
