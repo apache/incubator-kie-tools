@@ -25,24 +25,24 @@ kanikoDefaultWarmerImageTag: gcr.io/kaniko-project/warmer:v1.9.0
 # Default image used internally by the Operator Managed Kaniko builder to create the executor pods
 kanikoExecutorImageTag: gcr.io/kaniko-project/executor:v1.9.0
 # The Jobs Service image to use, if empty the operator will use the default Apache Community one based on the current operator's version
-jobsServicePostgreSQLImageTag: "docker.io/apache/incubator-kie-kogito-jobs-service-postgresql:main"
-jobsServiceEphemeralImageTag: "docker.io/apache/incubator-kie-kogito-jobs-service-ephemeral:main"
+jobsServicePostgreSQLImageTag: ""
+jobsServiceEphemeralImageTag: ""
 # The Data Index image to use, if empty the operator will use the default Apache Community one based on the current operator's version
-dataIndexPostgreSQLImageTag: "docker.io/apache/incubator-kie-kogito-data-index-postgresql:main"
-dataIndexEphemeralImageTag: "docker.io/apache/incubator-kie-kogito-data-index-ephemeral:main"
-# The Kogito PostgreSQL DB Migrator image to use (TBD: to replace with apache image)
-dbMigratorToolImageTag: "docker.io/apache/kie-kogito-db-migrator-tool:main"
+dataIndexPostgreSQLImageTag: ""
+dataIndexEphemeralImageTag: ""
+# The Kogito PostgreSQL DB Migrator image to use
+dbMigratorToolImageTag: ""
 # SonataFlow base builder image used in the internal Dockerfile to build workflow applications in preview profile
 # Order of precedence is:
 # 1. SonataFlowPlatform in the given namespace
 # 2. This configuration
 # 3. The FROM in the Dockerfile in the operator's namespace "sonataflow-operator-builder-config" configMap.
-# If 1 or 2, the FROM tag will be replaced by the tag se there.
+# If 1 or 2, the FROM tag will be replaced by the tag there.
 # If empty the operator will use the default Apache Community one based on the current operator's version.
-sonataFlowBaseBuilderImageTag: "docker.io/apache/incubator-kie-sonataflow-builder:main"
+sonataFlowBaseBuilderImageTag: ""
 # The image to use to deploy SonataFlow workflow images in devmode profile.
 # If empty the operator will use the default Apache Community one based on the current operator's version.
-sonataFlowDevModeImageTag: "docker.io/apache/incubator-kie-sonataflow-devmode:main"
+sonataFlowDevModeImageTag: ""
 # The default name of the builder configMap in the operator's namespace
 builderConfigMapName: "sonataflow-operator-builder-config"
 # Quarkus extensions required for workflows persistence. These extensions are used by the SonataFlow build system,
