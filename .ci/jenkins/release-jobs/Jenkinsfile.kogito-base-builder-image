@@ -40,9 +40,9 @@ pipeline {
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
         KOGITO_BASE_BUILDER_IMAGE__registry = 'docker.io'
-        KOGITO_BASE_BUILDER_IMAGE__registry = 'apache'
-        KOGITO_BASE_BUILDER_IMAGE__name = 'incubator-kie-sandbox-dev-deployment-base'
-        KOGITO_BASE_BUILDER_IMAGE__buildTag = "latest ${params.RELEASE_VERSION}"
+        KOGITO_BASE_BUILDER_IMAGE__account = 'apache'
+        KOGITO_BASE_BUILDER_IMAGE__name = 'incubator-kie-kogito-base-builder'
+        KOGITO_BASE_BUILDER_IMAGE__buildTag = "${params.RELEASE_VERSION}"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
