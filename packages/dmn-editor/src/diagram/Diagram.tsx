@@ -752,9 +752,8 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                     })
                   );
                   if (
-                    (snappedShape.width !== change.dimensions.width ||
-                      snappedShape.height !== change.dimensions.height) &&
-                    !node.data.shape["@_isCollapsed"]
+                    snappedShape.width !== change.dimensions.width ||
+                    snappedShape.height !== change.dimensions.height
                   ) {
                     resizeNode({
                       definitions: state.dmn.model.definitions,
