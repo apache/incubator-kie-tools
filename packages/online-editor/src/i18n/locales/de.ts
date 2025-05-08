@@ -366,12 +366,11 @@ export const de: OnlineI18n = {
       },
       body: {
         learnMore: `Erfahren Sie mehr über ${de_common.names.gitlab}-Token`,
-        note: `Sie sollten ein Token mit der Berechtigung ${"'api' 'read_api' 'read_user' 'read_repository' 'write_repository'"} bereitstellen.`,
+        note: `Sie sollten ein Token mit der Berechtigung ${"'api' 'read_user' 'read_repository' 'write_repository'"} bereitstellen.`,
       },
       validation: {
         scopes: {
-          helper:
-            "Ihr Token muss die Bereiche 'api' 'read_api' 'read_user' 'read_repository' 'write_repository' enthalten.",
+          helper: "Ihr Token muss die Bereiche 'api' 'read_user' 'read_repository' 'write_repository' enthalten.",
         },
       },
       form: {

@@ -68,7 +68,7 @@ export const BITBUCKET_OAUTH_SCOPES = [
   "snippet:write",
 ];
 
-export const GITLAB_OAUTH_SCOPES = ["api", "read_user", "read_api", "read_repository", "write_repository"];
+export const GITLAB_OAUTH_SCOPES = ["api", "read_user", "read_repository", "write_repository"];
 
 export type AuthenticatedUserResponse = {
   headers: {
@@ -507,7 +507,7 @@ export const fetchAuthenticatedGitlabUser = async (
       login: jsonResponse?.username,
       email: jsonResponse?.email,
     },
-    // TODO change how ths scope is readed from header
-    headers: { scopes: response.headers.get("x-oauth-scopes")?.split(", ") ?? [] },
+    // GitLab does not expose PAT scopes in the response
+    headers: { scopes: [] },
   };
 };

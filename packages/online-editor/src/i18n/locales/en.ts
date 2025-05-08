@@ -355,11 +355,11 @@ export const en: OnlineI18n = {
       },
       body: {
         learnMore: `Learn more about ${en_common.names.gitlab} tokens`,
-        note: `You should provide a token with the ${"'api' 'read_api' 'read_user' 'read_repository' 'write_repository'"} permission.`,
+        note: `You should provide a token with the ${"'api' 'read_user' 'read_repository' 'write_repository'"} permission.`,
       },
       validation: {
         scopes: {
-          helper: `Your token must include the ${"'api' 'read_api' 'read_user' 'read_repository' 'write_repository'"} scopes.`,
+          helper: `Your token must include the ${"'api' 'read_user' 'read_repository' 'write_repository'"} scopes.`,
         },
       },
       form: {
