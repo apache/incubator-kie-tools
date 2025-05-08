@@ -201,13 +201,31 @@ export function useDeployDropdownItems(props: Props) {
     [devMode.isEnabled, props.workspaceFile.name]
   );
 
+  const onDeployWarningAlert = useGlobalAlert(
+    useCallback(({ close }) => {
+      return (
+        <Alert
+          className="pf-v5-u-mb-md"
+          variant="warning"
+          title={<>Please resolve validation errors in your workflow.</>}
+          aria-live="polite"
+          data-testid="alert-dev-mode-updating"
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      );
+    }, [])
+  );
+
   const onSetup = useCallback(() => {
     history.push(routes.settings.openshift.path({}));
   }, [history]);
 
   const onDeploy = useCallback(() => {
+    if (notifications.length > 0) {
+      onDeployWarningAlert.show();
+    }
     openshift.setConfirmDeployModalOpen(true);
-  }, [openshift]);
+  }, [openshift, onDeployWarningAlert]);
 
   const onUploadDevMode = useCallback(async () => {
     devModeUploadingAlert.show();

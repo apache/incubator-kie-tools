@@ -32,6 +32,7 @@ import { useOpenShift } from "../../openshift/OpenShiftContext";
 import { SwfDeployOptions } from "./ConfirmOptions/SwfDeployOptions";
 import { DashDeployOptions } from "./ConfirmOptions/DashDeployOptions";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
+import { useEditor } from "../hooks/EditorContext";
 
 interface ConfirmDeployModalProps {
   workspace: ActiveWorkspace;
@@ -47,6 +48,7 @@ export type ConfirmDeployOptionsProps = Omit<ConfirmDeployModalProps, "alerts">;
 export function ConfirmDeployModal(props: ConfirmDeployModalProps) {
   const { i18n } = useAppI18n();
   const openshift = useOpenShift();
+  const { notifications } = useEditor();
   const [isConfirmLoading, setConfirmLoading] = useState(false);
   const [deployOptions, deployOptionsRef] = useController<ConfirmDeployOptionsRef>();
 
@@ -106,25 +108,52 @@ export function ConfirmDeployModal(props: ConfirmDeployModalProps) {
     { durationInSeconds: 5 }
   );
 
+  const onDeployDangerAlert = useGlobalAlert(
+    useCallback(({ close }) => {
+      return (
+        <Alert
+          className="pf-v5-u-mb-md"
+          variant="danger"
+          title={<>Please resolve validation errors in your workflow before deployment.</>}
+          aria-live="polite"
+          data-testid="alert-dev-mode-updating"
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      );
+    }, [])
+  );
+
   const onConfirm = useCallback(async () => {
-    if (isConfirmLoading || !deployOptions) {
-      return;
+    if (notifications.length == 0) {
+      if (isConfirmLoading || !deployOptions) {
+        return;
+      }
+
+      setConfirmLoading(true);
+      const resourceName = await deployOptions.deploy();
+      setConfirmLoading(false);
+
+      openshift.setConfirmDeployModalOpen(false);
+
+      if (!resourceName) {
+        deployStartedErrorAlert.show();
+        return;
+      }
+
+      openshift.setDeploymentsDropdownOpen(true);
+      deployStartedSuccessAlert.show();
+    } else {
+      onDeployDangerAlert.show();
+      onCancel();
     }
-
-    setConfirmLoading(true);
-    const resourceName = await deployOptions.deploy();
-    setConfirmLoading(false);
-
-    openshift.setConfirmDeployModalOpen(false);
-
-    if (!resourceName) {
-      deployStartedErrorAlert.show();
-      return;
-    }
-
-    openshift.setDeploymentsDropdownOpen(true);
-    deployStartedSuccessAlert.show();
-  }, [isConfirmLoading, deployOptions, openshift, deployStartedSuccessAlert, deployStartedErrorAlert]);
+  }, [
+    isConfirmLoading,
+    deployOptions,
+    openshift,
+    deployStartedSuccessAlert,
+    deployStartedErrorAlert,
+    onDeployDangerAlert,
+  ]);
 
   const onCancel = useCallback(() => {
     openshift.setConfirmDeployModalOpen(false);
