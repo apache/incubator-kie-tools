@@ -129,12 +129,12 @@ func GetCfg() *ControllersCfg {
 
 // useEnvVarIfConfigEmpty overrides the image tags in case the YAML configuration is empty or null with env vars injected into the pod by the OLM Operator.
 func useEnvVarIfConfigEmpty(cfg *ControllersCfg) {
-	cfg.JobsServicePostgreSQLImageTag = fallback(cfg.JobsServicePostgreSQLImageTag, os.Getenv("RELATED_IMAGE_JOBS_SERVICE_PG"))
+	cfg.JobsServicePostgreSQLImageTag = fallback(cfg.JobsServicePostgreSQLImageTag, os.Getenv("RELATED_IMAGE_JOBS_SERVICE_POSTGRESQL"))
 	cfg.JobsServiceEphemeralImageTag = fallback(cfg.JobsServiceEphemeralImageTag, os.Getenv("RELATED_IMAGE_JOBS_SERVICE_EPHEMERAL"))
-	cfg.DataIndexPostgreSQLImageTag = fallback(cfg.DataIndexPostgreSQLImageTag, os.Getenv("RELATED_IMAGE_DATA_INDEX_PG"))
+	cfg.DataIndexPostgreSQLImageTag = fallback(cfg.DataIndexPostgreSQLImageTag, os.Getenv("RELATED_IMAGE_DATA_INDEX_POSTGRESQL"))
 	cfg.DataIndexEphemeralImageTag = fallback(cfg.DataIndexEphemeralImageTag, os.Getenv("RELATED_IMAGE_DATA_INDEX_EPHEMERAL"))
-	cfg.DbMigratorToolImageTag = fallback(cfg.DbMigratorToolImageTag, os.Getenv("RELATED_IMAGE_DB_MIGRATOR"))
-	cfg.SonataFlowBaseBuilderImageTag = fallback(cfg.SonataFlowBaseBuilderImageTag, os.Getenv("RELATED_IMAGE_BUILDER"))
+	cfg.DbMigratorToolImageTag = fallback(cfg.DbMigratorToolImageTag, os.Getenv("RELATED_IMAGE_DB_MIGRATOR_TOOL"))
+	cfg.SonataFlowBaseBuilderImageTag = fallback(cfg.SonataFlowBaseBuilderImageTag, os.Getenv("RELATED_IMAGE_BASE_BUILDER"))
 	cfg.SonataFlowDevModeImageTag = fallback(cfg.SonataFlowDevModeImageTag, os.Getenv("RELATED_IMAGE_DEVMODE"))
 }
 
