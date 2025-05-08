@@ -5,7 +5,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
-import { DmnEditorRoot, DmnEditorRootProps } from "../../dist/DmnEditorRoot";
+import { DmnEditorRoot, DmnEditorRootProps } from "../dist/DmnEditorRoot";
 import { DefaultKeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/DefaultKeyboardShortcutsService";
 import { KeyBindingsHelpOverlay } from "@kie-tools-core/editor/dist/envelope/KeyBindingsHelpOverlay";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
@@ -27,18 +27,21 @@ const sampleDmn = `<?xml version="1.0" encoding="UTF-8"?>
   name="DMN${generateUuid()}">
 </definitions>`;
 
-export type StorybookDmnEditorRootProps = DmnEditorRootProps & { showKeyBindingsOverlay: boolean };
+export type StorybookDmnEditorRootProps = DmnEditorRootProps & {
+  initialContent: string;
+  showKeyBindingsOverlay: boolean;
+};
 
-function DevWebApp({ showKeyBindingsOverlay, ...props }: StorybookDmnEditorRootProps) {
+function DevWebApp(args: StorybookDmnEditorRootProps) {
   const editorRef = useRef<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (editorRef.current) {
-      editorRef.current.setContent("example.dmn", sampleDmn);
+      editorRef.current.setContent("example.dmn", args.initialContent ?? sampleDmn);
       setLoading(false);
     }
-  }, []);
+  }, [args.initialContent]);
 
   const envelopeContext: KogitoEditorEnvelopeContextType<any, any> = {
     shared: {} as any,
@@ -95,14 +98,14 @@ function DevWebApp({ showKeyBindingsOverlay, ...props }: StorybookDmnEditorRootP
           ctx={EditorEnvelopeI18nContext}
           initialLocale={navigator.language}
         >
-          {!loading && showKeyBindingsOverlay && <KeyBindingsHelpOverlay />}
+          {/* {!loading && args.showKeyBindingsOverlay && <KeyBindingsHelpOverlay />} */}
           <DmnEditorRoot
-            {...props}
+            {...args}
             exposing={(api) => {
               editorRef.current = api;
             }}
             onNewEdit={(edit) => console.log("Storybook: New edit", edit)}
-            workspaceRootAbsolutePosixPath={props.workspaceRootAbsolutePosixPath ?? ""}
+            workspaceRootAbsolutePosixPath={args.workspaceRootAbsolutePosixPath ?? "/"}
             onRequestWorkspaceFileContent={async () => ({
               content: sampleDmn,
               normalizedPosixPathRelativeToTheWorkspaceRoot: "example.dmn",
@@ -116,7 +119,7 @@ function DevWebApp({ showKeyBindingsOverlay, ...props }: StorybookDmnEditorRootP
               console.log("Storybook: Request to open file", path);
             }}
             keyboardShortcutsService={new DefaultKeyboardShortcutsService({ os: getOperatingSystem() })}
-            isReadOnly={props.isReadOnly ?? false}
+            isReadOnly={args.isReadOnly ?? false}
           />
         </I18nDictionariesProvider>
       </KogitoEditorEnvelopeContext.Provider>
@@ -134,5 +137,9 @@ type Story = StoryObj<typeof DevWebApp>;
 
 export const WebApp: Story = {
   render: (args) => <DevWebApp {...args} />,
-  args: { showKeyBindingsOverlay: true },
+  args: {
+    showKeyBindingsOverlay: true,
+    initialContent: sampleDmn,
+    isReadOnly: false,
+  },
 };
