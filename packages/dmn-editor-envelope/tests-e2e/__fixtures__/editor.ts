@@ -34,7 +34,7 @@ export class Editor {
   ) {}
 
   public async open() {
-    await this.page.goto(`${this.baseURL}/iframe.html?args=&id=misc-empty--empty&viewMode=story`);
+    await this.page.goto(`${this.baseURL}/iframe.html?args=&id=dev-web-app--web-app&viewMode=story`);
   }
 
   public async openLoanPreQualification() {
