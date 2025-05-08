@@ -96,13 +96,22 @@ test.describe("Keyboard Shortcuts", () => {
     await expect(diagram.get()).toHaveScreenshot("unselected-all-nodes.png");
   });
 
-  test("Zoom - Hold Control Or Meta", async ({ palette, diagram, page }) => {
+  test("Zoom in - Hold Control Or Meta", async ({ palette, diagram, page }) => {
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 200, y: 100 } });
-    await expect(diagram.get()).toHaveScreenshot("added-decision-node-to-zoom.png");
+    await expect(diagram.get()).toHaveScreenshot("added-decision-node-to-zoom-in.png");
     await page.keyboard.down("ControlOrMeta");
     await page.mouse.wheel(0, 100);
     await page.keyboard.up("ControlOrMeta");
     await expect(diagram.get()).toHaveScreenshot("zoomed-drd-using-shortcut.png");
+  });
+
+  test("Zoom out - Hold Control Or Meta", async ({ palette, diagram, page }) => {
+    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 200, y: 100 } });
+    await expect(diagram.get()).toHaveScreenshot("added-decision-node-to-zoom-out.png");
+    await page.keyboard.down("ControlOrMeta");
+    await page.mouse.wheel(0, -100);
+    await page.keyboard.up("ControlOrMeta");
+    await expect(diagram.get()).toHaveScreenshot("zoomed-out-drd-using-shortcut.png");
   });
 
   test("Cut node - Control Or Meta + X", async ({ palette, nodes, diagram, page }) => {
@@ -156,5 +165,16 @@ test.describe("Keyboard Shortcuts", () => {
     await expect(diagram.get()).toHaveScreenshot("show-properties-using-shoftcut.png");
     await page.keyboard.press("I");
     await expect(diagram.get()).toHaveScreenshot("hide-properties-using-shoftcut.png");
+  });
+
+  test("Right mouse button - Hold and drag to pan", async ({ palette, diagram, page }) => {
+    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+    await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 200 } });
+    await expect(diagram.get()).toHaveScreenshot("before-pan-using-shoftcut.png");
+    await page.mouse.move(300, 200);
+    await page.mouse.down({ button: "right" });
+    await page.mouse.move(500, 300);
+    await page.mouse.up({ button: "right" });
+    await expect(diagram.get()).toHaveScreenshot("hold-and-drag-to-pan-using-shoftcut.png");
   });
 });
