@@ -28,9 +28,9 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { matchPath } from "react-router";
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
-import { useAuthProvider } from "../authProviders/AuthProvidersContext";
+import { useAuthProvider, useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { AuthSession, AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
-import { AuthInfo } from "../authSessions/AuthSessionsContext";
+import { AuthInfo, useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import { getGitRefName, getGitRefType } from "../gitRefs/GitRefs";
@@ -41,6 +41,8 @@ import { GitRefTypeIcon } from "../gitRefs/GitRefTypeIcon";
 import { parseGitLabUrl } from "../gitlab/ParseGitLabUrl";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { getCompatibleAuthSessionWithUrlDomain } from "../authSessions/CompatibleAuthSessions";
+import { AuthProviderType } from "../authProviders/AuthProvidersApi";
 
 export enum UrlType {
   //git
@@ -220,6 +222,8 @@ export type ImportableUrl =
 
 export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]): ImportableUrl {
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
+  const { authSessions, authSessionStatus } = useAuthSessions();
+  const authProviders = useAuthProviders();
 
   const ifAllowed = useCallback(
     (url: ImportableUrl): ImportableUrl => {
@@ -230,6 +234,40 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       return url;
     },
     [allowedUrlTypes]
+  );
+
+  const isGitRemoteDomainAllowed = useCallback(
+    (
+      url: URL,
+      hostname: string | string[],
+      authProvider: AuthProviderType.bitbucket | AuthProviderType.github | AuthProviderType.gitlab
+    ) => {
+      const hostnames = Array.isArray(hostname) ? hostname : [hostname];
+      // allow if exact match
+      if (hostnames.includes(url.host)) {
+        return true;
+      }
+      // Step 1: Determine which auth sessions are compatible with the given URL domain
+      const { compatible } = getCompatibleAuthSessionWithUrlDomain({
+        authProviders,
+        authSessions,
+        authSessionStatus,
+        urlDomain: url.host,
+      });
+      // Step 2: Find the first compatible auth provider (if any)
+      const selectedAuthProvider = authProviders?.find(
+        ({ id }) => compatible?.[0]?.type !== "none" && id === compatible?.[0]?.authProviderId
+      );
+      if (!selectedAuthProvider || selectedAuthProvider.type !== AuthProviderType[authProvider]) {
+        return false;
+      }
+      // Step 3: Validate whether the hostname is allowed for the selected provider
+      return (
+        selectedAuthProvider?.domain === url.host || // match primary domain
+        selectedAuthProvider?.supportedGitRemoteDomains?.some((supportedDomain) => supportedDomain === url.host) // match against supported domains
+      );
+    },
+    [authProviders, authSessionStatus, authSessions]
   );
 
   return useMemo(() => {
@@ -244,7 +282,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       return { type: UrlType.INVALID, error: "Invalid URL" };
     }
 
-    if (url.host === "github.com") {
+    if (isGitRemoteDomainAllowed(url, "github.com", AuthProviderType.github)) {
       const defaultBranchMatch = matchPath<{ org: string; repo: string }>(url.pathname, {
         path: "/:org/:repo",
         exact: true,
@@ -291,7 +329,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       return { type: UrlType.NOT_SUPPORTED, error: "Unsupported GitHub URL", url };
     }
 
-    if (url.host === "bitbucket.org") {
+    if (isGitRemoteDomainAllowed(url, "bitbucket.org", AuthProviderType.bitbucket)) {
       const defaultBranchMatch = matchPath<{ org: string; repo: string }>(url.pathname, {
         path: "/:org/:repo",
         exact: true,
@@ -378,7 +416,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       return { type: UrlType.NOT_SUPPORTED, error: "Unsupported Bitbucket URL", url };
     }
 
-    if (url.host === "raw.githubusercontent.com") {
+    if (isGitRemoteDomainAllowed(url, "raw.githubusercontent.com", AuthProviderType.github)) {
       const gitHubRawFileMatch = matchPath<{ org: string; repo: string; tree: string; path: string }>(url.pathname, {
         path: "/:org/:repo/refs/heads/:tree/:path*",
         exact: true,
@@ -400,7 +438,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       return { type: UrlType.NOT_SUPPORTED, error: "Unsupported GitHub raw URL", url };
     }
 
-    if (url.host === "gist.github.com" || url.host === "gist.githubusercontent.com") {
+    if (isGitRemoteDomainAllowed(url, ["gist.github.com", "gist.githubusercontent.com"], AuthProviderType.github)) {
       const gistMatch = matchPath<{ user: string; gistId: string }>(url.pathname, {
         path: "/:user/:gistId",
         exact: true,
@@ -449,8 +487,8 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
     }
 
     // Gitlab
-    const gitlabImportUrl = parseGitLabUrl(url);
-    if (gitlabImportUrl) {
+    if (isGitRemoteDomainAllowed(url, "gitlab.com", AuthProviderType.gitlab)) {
+      const gitlabImportUrl = parseGitLabUrl(url);
       return ifAllowed(gitlabImportUrl);
     }
 
@@ -468,7 +506,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
     }
 
     return { type: UrlType.UNKNOWN, url };
-  }, [urlString, ifAllowed, editorEnvelopeLocator]);
+  }, [urlString, ifAllowed, editorEnvelopeLocator, isGitRemoteDomainAllowed]);
 }
 
 export function useClonableUrl(
