@@ -28178,8 +28178,8 @@ data:
     under the License is distributed on an\n# \"AS IS\" BASIS, WITHOUT WARRANTIES
     OR CONDITIONS OF ANY\n# KIND, either express or implied.  See the License for
     the\n# specific language governing permissions and limitations\n# under the License.\n\nFROM
-    docker.io/apache/incubator-kie-sonataflow-builder:main\n\n# variables that can
-    be overridden by the builder\n# To add a Quarkus extension to your application\nARG
+    docker.io/apache/incubator-kie-sonataflow-builder:main AS builder\n\n# variables
+    that can be overridden by the builder\n# To add a Quarkus extension to your application\nARG
     QUARKUS_EXTENSIONS\n# Args to pass to the Quarkus CLI add extension command\nARG
     QUARKUS_ADD_EXTENSION_ARGS\n# Additional java/mvn arguments to pass to the builder\nARG
     MAVEN_ARGS_APPEND\n\n# Copy from build context to skeleton resources project\nCOPY
