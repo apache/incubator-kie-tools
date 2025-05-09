@@ -28,6 +28,8 @@ import {
 } from "@kie-tools-core/editor/dist/envelope/i18n";
 import {
   DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
+  KogitoEditorChannelApi,
+  KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContext,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
@@ -41,7 +43,8 @@ import { getOperatingSystem } from "@kie-tools-core/operating-system";
 import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
 import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { DmnEditorRoot, DmnEditorRootProps } from "../../src/DmnEditorRoot";
+import { ApiDefinition, MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { DmnEditorRoot, DmnEditorRootProps } from "../../dist/DmnEditorRoot";
 
 const emptyDmn = `<?xml version="1.0" encoding="UTF-8"?>
 <definitions
@@ -54,7 +57,6 @@ const emptyDmn = `<?xml version="1.0" encoding="UTF-8"?>
 
 export type StorybookDmnEditorRootProps = DmnEditorRootProps & {
   initialContent: string;
-  showKeyBindingsOverlay: boolean;
 };
 
 function DevWebApp(args: StorybookDmnEditorRootProps) {
@@ -62,16 +64,19 @@ function DevWebApp(args: StorybookDmnEditorRootProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!loading && editorRef.current) return;
     if (editorRef.current) {
       editorRef.current.setContent("example.dmn", args.initialContent ?? emptyDmn);
       setLoading(false);
     }
-  }, [args.initialContent]);
+  }, [args.initialContent, loading]);
 
-  const envelopeContext = useMemo<KogitoEditorEnvelopeContextType<any, any>>(() => {
+  const envelopeContext = useMemo<
+    KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>
+  >(() => {
     return {
       shared: {} as any,
-      channelApi: { shared: {} as any } as any,
+      channelApi: messageBusClientApiMock<KogitoEditorChannelApi>(),
       services: {
         keyboardShortcuts: new DefaultKeyboardShortcutsService({ os: getOperatingSystem() }),
         i18n: new I18nService(),
@@ -113,7 +118,7 @@ function DevWebApp(args: StorybookDmnEditorRootProps) {
   );
 
   return (
-    <div style={{ position: "absolute", width: "100vw", height: "100vh", top: "0", left: "0" }}>
+    <div style={{ position: "absolute", width: "100%", height: "100%", top: "0px", left: "0px" }}>
       <KogitoEditorEnvelopeContext.Provider value={envelopeContext}>
         <I18nDictionariesProvider
           defaults={editorEnvelopeI18nDefaults}
@@ -144,6 +149,30 @@ function DevWebApp(args: StorybookDmnEditorRootProps) {
   );
 }
 
+function messageBusClientApiMock<T extends ApiDefinition<T>>(): MessageBusClientApi<T> {
+  const mocks = new Map<any, any>();
+  const proxyMock = (value: any) =>
+    new Proxy({} as any, {
+      get: (target, name) => {
+        return mocks.get(name) ?? mocks.set(name, value).get(name);
+      },
+    });
+
+  return {
+    notifications: proxyMock({
+      send: () => {},
+      subscribe: () => {},
+      unsubscribe: () => {},
+    }),
+    requests: proxyMock(() => Promise.resolve()),
+    shared: proxyMock({
+      set: () => {},
+      subscribe: () => {},
+      unsubscribe: () => {},
+    }),
+  };
+}
+
 const meta: Meta<typeof DevWebApp> = {
   title: "Dev/Web App",
   component: DevWebApp,
@@ -153,10 +182,10 @@ export default meta;
 type Story = StoryObj<typeof DevWebApp>;
 
 export const WebApp: Story = {
-  render: (args) => <DevWebApp {...args} />,
+  render: (args) => DevWebApp(args),
   args: {
     initialContent: emptyDmn,
-    workspaceRootAbsolutePosixPath: "/",
+    workspaceRootAbsolutePosixPath: "path1/subpath/newModel1.dmn",
     isEvaluationHighlightsSupported: true,
     isReadOnly: false,
   },

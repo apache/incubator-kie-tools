@@ -76,11 +76,8 @@ test.describe("Keyboard Shortcuts", () => {
   });
 
   test("Reset position to origin - Space", async ({ palette, diagram, page }) => {
-    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 10 } });
+    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 300, y: 200 } });
     await diagram.resetFocus();
-    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 110 } });
-    await diagram.resetFocus();
-    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 210 } });
     await diagram.zoomIn({ clicks: 1 });
     await expect(diagram.get()).toHaveScreenshot("zoomed-in-diagram.png");
     await page.keyboard.press("Space");
