@@ -338,7 +338,6 @@ packages/python-venv/venv
 
 # devbox
 .devbox
-.venv
 
 # turbo
 .turbo
