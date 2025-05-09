@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -16,12 +17,13 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-schema_version: 1
-name: org.kie.sonataflow.common.build
-version: "main"
-description: "Kogito Serverless Workflow image build process"
 
-# Requires org.kie.sonataflow.common.scripts module
+set -e
 
-execute:
-  - script: configure.sh
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+mkdir -p ${KOGITO_HOME}/.quarkus
+cp -v ${SCRIPT_DIR}/.quarkus/config.yaml ${KOGITO_HOME}/.quarkus/
+
+chown -R 1001:0 "${KOGITO_HOME}/.quarkus"
+chmod -R ug+rwX "${KOGITO_HOME}/.quarkus"

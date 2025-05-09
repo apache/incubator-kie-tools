@@ -48,6 +48,12 @@ else
     log_warning "-> Nothing to copy from ${resources_path}"
 fi
 
+# Overwrite Quarkus Registry config if necessary
+if [ -n "$QUARKUS_REGISTRY_CONFIG_PATH" ] && [ -f "$QUARKUS_REGISTRY_CONFIG_PATH" ]; then
+  log_info "-> Using custom Quarkus registry config: $QUARKUS_REGISTRY_CONFIG_PATH"
+  cp -v "$QUARKUS_REGISTRY_CONFIG_PATH" "${KOGITO_HOME}/.quarkus/config.yaml"
+fi
+
 source "${script_dir_path}"/configure-jvm-mvn.sh
 
 if [ ! -z "${QUARKUS_EXTENSIONS}" ]; then

@@ -25,7 +25,7 @@ setup() {
     mkdir -p "${KOGITO_HOME}"/serverless-workflow-project/src/main/resources/
     cp $BATS_TEST_DIRNAME/../../../../kogito-logging/added/logging.sh "${KOGITO_HOME}"/launch/
     cp $BATS_TEST_DIRNAME/../../../common/scripts/added/jvm-settings.sh "${KOGITO_HOME}"/launch/
-    cp $BATS_TEST_DIRNAME/../../../common/scripts/added/build-app.sh "${KOGITO_HOME}"/launch/
+    cp $BATS_TEST_DIRNAME/../../runtime/added/build-app.sh "${KOGITO_HOME}"/launch/
 }
 
 teardown() {
