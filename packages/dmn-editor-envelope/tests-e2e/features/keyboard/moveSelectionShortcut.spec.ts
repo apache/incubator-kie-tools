@@ -18,7 +18,6 @@
  */
 
 import { test, expect } from "../../__fixtures__/base";
-import { DefaultNodeName, NodeType } from "../../__fixtures__/nodes";
 
 test.beforeEach(async ({ editor, nodes }) => {
   await editor.openLoanPreQualification();
@@ -27,48 +26,48 @@ test.beforeEach(async ({ editor, nodes }) => {
 });
 
 test.describe("Move selection - keyboard shortcut", () => {
-  test("Move selection up", async ({ nodes, diagram, page }) => {
+  test("Move selection up", async ({ diagram, page }) => {
     await page.keyboard.press("ArrowUp");
     await expect(diagram.get()).toHaveScreenshot("selected-node-moved-up.png");
   });
 
-  test("Move selection down", async ({ nodes, diagram, page }) => {
+  test("Move selection down", async ({ diagram, page }) => {
     await page.keyboard.press("ArrowDown");
     await expect(diagram.get()).toHaveScreenshot("selected-node-moved-down.png");
   });
 
-  test("Move selection left", async ({ nodes, diagram, page }) => {
+  test("Move selection left", async ({ diagram, page }) => {
     await page.keyboard.press("ArrowLeft");
     await expect(diagram.get()).toHaveScreenshot("selected-node-moved-left.png");
   });
 
-  test("Move selection right", async ({ nodes, diagram, page }) => {
+  test("Move selection right", async ({ diagram, page }) => {
     await page.keyboard.press("ArrowRight");
     await expect(diagram.get()).toHaveScreenshot("selected-node-moved-right.png");
   });
 
-  test("Move selection up a big distance", async ({ nodes, diagram, page }) => {
+  test("Move selection up a big distance", async ({ diagram, page }) => {
     await page.keyboard.down("Shift");
     await page.keyboard.press("ArrowUp");
     await page.keyboard.up("Shift");
     await expect(diagram.get()).toHaveScreenshot("selected-node-moved-up-big-distance.png");
   });
 
-  test("Move selection down a big distance", async ({ nodes, diagram, page }) => {
+  test("Move selection down a big distance", async ({ diagram, page }) => {
     await page.keyboard.down("Shift");
     await page.keyboard.press("ArrowDown");
     await page.keyboard.up("Shift");
     await expect(diagram.get()).toHaveScreenshot("selected-node-moved-down-big-distance.png");
   });
 
-  test("Move selection left a big distance", async ({ nodes, diagram, page }) => {
+  test("Move selection left a big distance", async ({ diagram, page }) => {
     await page.keyboard.down("Shift");
     await page.keyboard.press("ArrowLeft");
     await page.keyboard.up("Shift");
     await expect(diagram.get()).toHaveScreenshot("selected-node-moved-left-big-distance.png");
   });
 
-  test("Move selection right a big distance", async ({ nodes, diagram, page }) => {
+  test("Move selection right a big distance", async ({ diagram, page }) => {
     await page.keyboard.down("Shift");
     await page.keyboard.press("ArrowRight");
     await page.keyboard.up("Shift");

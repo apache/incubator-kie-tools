@@ -24,20 +24,12 @@ import { Nodes } from "./nodes";
 import { Editor } from "./editor";
 import { Edges } from "./edges";
 import { JsonModel } from "./jsonModel";
-import { Drds } from "./drds";
-import { DrgNodes } from "./drgNodes";
-import { DataTypes } from "./dataTypes";
-import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/tests-e2e/__fixtures__/boxedExpression";
 import { Monaco } from "@kie-tools/boxed-expression-component/tests-e2e/__fixtures__/monaco";
 import { ProjectName } from "@kie-tools/playwright-base/projectNames";
 import { Stories } from "./stories";
 
 type DmnEditorFixtures = {
-  bee: BoxedExpressionEditor;
-  dataTypes: DataTypes;
   diagram: Diagram;
-  drds: Drds;
-  drgNodes: DrgNodes;
   edges: Edges;
   editor: Editor;
   jsonModel: JsonModel;
@@ -48,18 +40,6 @@ type DmnEditorFixtures = {
 };
 
 export const test = base.extend<DmnEditorFixtures>({
-  bee: async ({ page, baseURL, monaco }, use) => {
-    await use(new BoxedExpressionEditor(page, monaco, baseURL));
-  },
-  dataTypes: async ({ page, monaco }, use) => {
-    await use(new DataTypes(page, monaco));
-  },
-  drds: async ({ page }, use) => {
-    await use(new Drds(page));
-  },
-  drgNodes: async ({ diagram, page }, use) => {
-    await use(new DrgNodes(diagram, page));
-  },
   diagram: async ({ page }, use) => {
     await use(new Diagram(page));
   },

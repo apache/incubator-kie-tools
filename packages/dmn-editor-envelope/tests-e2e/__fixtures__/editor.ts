@@ -39,12 +39,8 @@ export class Editor {
 
   public async openLoanPreQualification() {
     await this.page.goto(
-      `${this.baseURL}/iframe.html?args=&id=dev-loan-pre-qualification--loan-pre-qualification&viewMode=story`
+      `${this.baseURL}/iframe.html?args=&id=use-cases-loan-pre-qualification--loan-pre-qualification&viewMode=story`
     );
-  }
-
-  public async openEvaluationHighlights() {
-    await this.page.goto(`${this.baseURL}/iframe.html?args=&id=misc-evaluationhighlights--evaluation-highlights-story`);
   }
 
   public async setIsReadOnly(newState: boolean) {

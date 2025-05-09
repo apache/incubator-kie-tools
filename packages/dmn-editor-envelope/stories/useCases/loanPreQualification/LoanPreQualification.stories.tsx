@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import * as React from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import "@patternfly/react-core/dist/styles/base.css";
-import { WebApp, StorybookDmnEditorRootProps } from "./DevWebApp.stories";
+import { getMarshaller } from "@kie-tools/dmn-marshaller";
+import { WebApp, StorybookDmnEditorRootProps } from "../../dev/DevWebApp.stories";
 
 const loanPreQualificationDmn = `<?xml version="1.0" encoding="UTF-8" ?>
 <dmn:definitions
@@ -866,18 +866,21 @@ const loanPreQualificationDmn = `<?xml version="1.0" encoding="UTF-8" ?>
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta: Meta<StorybookDmnEditorRootProps> = {
-  title: "Dev/Loan Pre Qualification",
+  title: "Use cases/Loan Pre Qualification",
 };
 
 export default meta;
 type Story = StoryObj<StorybookDmnEditorRootProps>;
+
+const marshaller = getMarshaller(loanPreQualificationDmn, { upgradeTo: "latest" });
+const model = marshaller.parser.parse();
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const LoanPreQualification: Story = {
   render: WebApp.render,
   args: {
     workspaceRootAbsolutePosixPath: "path1/subpath/newModel1.dmn",
-    initialContent: loanPreQualificationDmn,
+    initialContent: marshaller.builder.build(model),
     isReadOnly: false,
   },
 };

@@ -27,6 +27,13 @@ const buildEnv: any = env; // build-env is not typed
 
 const config = {
   ...baseConfig(buildEnv.webpack.dev, common(buildEnv.webpack)),
+  webpack: (c) => {
+    c.module.rules.push({
+      test: /\.scss$/,
+      use: ["style-loader", "css-loader", "sass-loader"],
+    });
+    return c;
+  },
 };
 
 export default config;
