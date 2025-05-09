@@ -23,6 +23,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
+
 	openshiftv1 "github.com/openshift/api/route/v1"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
@@ -55,7 +57,7 @@ func statusEnricher(ctx context.Context, c client.Client, workflow *operatorapi.
 			podList := &v1.PodList{}
 			opts := []client.ListOption{
 				client.InNamespace(workflow.Namespace),
-				client.MatchingLabels{workflowproj.LabelK8SName: labels[workflowproj.LabelK8SName]},
+				client.MatchingLabels{metadata.KubernetesLabelName: labels[metadata.KubernetesLabelName]},
 			}
 			err := c.List(ctx, podList, opts...)
 			if err != nil {
