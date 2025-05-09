@@ -20,11 +20,13 @@
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import { Page } from "@playwright/test";
 import { DrgElement } from "./jsonModel/drgElement";
+import { drgDataType } from "./jsonModel/drgDataType";
 import { Drd } from "./jsonModel/drd";
 
 export const STORYBOOK__DMN_EDITOR_MODEL = "div[data-testid='storybook--dmn-editor-model']";
 
 export class JsonModel {
+  public drgDataType: drgDataType;
   public drgElements: DrgElement;
   public drd: Drd;
 
@@ -32,6 +34,7 @@ export class JsonModel {
     public page: Page,
     public baseURL?: string
   ) {
+    this.drgDataType = new drgDataType(page);
     this.drgElements = new DrgElement(page);
     this.drd = new Drd(page, this.drgElements);
   }

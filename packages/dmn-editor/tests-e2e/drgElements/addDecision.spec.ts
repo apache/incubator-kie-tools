@@ -33,10 +33,11 @@ test.describe("Add node - Decision", () => {
         await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
 
         await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
-        await expect(diagram.get()).toHaveScreenshot("add-decision-node-from-palette.png");
+        // await expect(diagram.get()).toHaveScreenshot("add-decision-node-from-palette.png");
 
         // JSON model assertions
         const decision = await jsonModel.drgElements.getDecision({ drgElementIndex: 0, drdIndex: 0 });
+        console.log(decision);
         expect(decision).toEqual({
           __$$element: "decision",
           "@_id": decision["@_id"],

@@ -56,6 +56,14 @@ export class DataTypes {
     return this.page.getByTestId("kie-tools--dmn-editor--data-types-container");
   }
 
+  public resetFocus() {
+    return this.get().click({ position: { x: 0, y: 0 } });
+  }
+
+  public getDataType(args: { name: string }) {
+    return this.page.getByTestId("kie-tools--dmn-editor--data-types-list").getByText(args.name, { exact: true });
+  }
+
   public getNoneConstraintButton() {
     return this.get().getByRole("button", { name: ConstraintType.NONE, exact: true });
   }
@@ -72,8 +80,29 @@ export class DataTypes {
     return this.get().getByRole("button", { name: ConstraintType.RANGE, exact: true });
   }
 
+  public getReadonlyExpressionConstraintValue() {
+    return this.page.getByTestId("kie-tools--dmn-editor--readonly-expression-constraint-with-value");
+  }
+
+  public enableDataTypeStruct() {
+    this.get().locator("span", { hasText: "Is struct?" }).last().click();
+  }
+
+  public async addDataTypeStructProperty(args: { name: string }) {
+    await this.get().getByTitle("Add item component (at the top)").click();
+    await this.changeDataTypePropertiesTable({ name: args.name });
+  }
+
+  public changeDataTypePropertiesTable(args: { name: string }) {
+    return this.get().getByRole("table").getByPlaceholder("Enter a name...").first().fill(args.name);
+  }
+
   public async createFirstCustonDataType() {
     await this.get().getByRole("button", { name: "Create a custom data type" }).click();
+  }
+
+  public async pasteFirstDataType() {
+    await this.get().getByRole("button", { name: "Paste data type" }).click();
   }
 
   public async createNewDataType() {
@@ -86,6 +115,10 @@ export class DataTypes {
 
   public async changeDataTypeName(args: { newName: string }) {
     await this.get().getByPlaceholder("Enter a name...").fill(args.newName);
+  }
+
+  public async addDataTypeDescription(args: { newDescription: string }) {
+    await this.get().getByPlaceholder("Enter a description...").fill(args.newDescription);
   }
 
   public async changeDataTypeBaseType(args: { newBaseType: DataType }) {
