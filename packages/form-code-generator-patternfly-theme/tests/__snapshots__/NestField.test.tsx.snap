@@ -2,7 +2,7 @@
 
 exports[`<NestField> tests <NestField> - rendering 1`] = `
 "<Card>
-          <CardBody className="pf-c-form">
+          <CardBody className="pf-v5-c-form">
           <label><b>Candidate</b></label>
           <FormGroup
       fieldId={'uniforms-0000-0001'}
@@ -16,7 +16,7 @@ exports[`<NestField> tests <NestField> - rendering 1`] = `
         placeholder={''}
         type={'text'}
         value={candidate__name}
-        onChange={set__candidate__name}
+        onChange={(e, newValue) => set__candidate__name(newValue)}
         />
     </FormGroup>
 <FormGroup
@@ -32,7 +32,7 @@ exports[`<NestField> tests <NestField> - rendering 1`] = `
       placeholder={''}
       step={1}  
       value={candidate__age}
-      onChange={(newValue) => set__candidate__age(Number(newValue))}
+      onChange={(e, newValue) => set__candidate__age(Number(newValue))}
     />
     </FormGroup>
 <FormGroup
@@ -102,7 +102,7 @@ exports[`<NestField> tests <NestField> - rendering 1`] = `
             }}
           >
             <div style={{ width: '100%', marginRight: '10px' }}><Card>
-          <CardBody className="pf-c-form">
+          <CardBody className="pf-v5-c-form">
           
           <FormGroup
       fieldId={'uniforms-0000-000a'}
@@ -116,7 +116,7 @@ exports[`<NestField> tests <NestField> - rendering 1`] = `
         placeholder={''}
         type={'text'}
         value={candidate__skills?.[itemIndex].name}
-        onChange={newValue => {
+        onChange={(e, newValue) => {
     set__candidate__skills(s => {
       const newState = [...s];
       newState[itemIndex].name = newValue;

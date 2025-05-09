@@ -53,7 +53,7 @@ const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
       placeholder={'${props.placeholder}'}
       step={${props.decimal ? 0.01 : 1}} ${max} ${min}
       value={${props.itemProps?.isListItem ? getListItemValue({ itemProps: props.itemProps, name: props.name }) : ref.stateName}}
-      onChange={${props.itemProps?.isListItem ? getListItemOnChange({ itemProps: props.itemProps, name: props.name, callback: (value: string) => `Number(${value})` }) : `(newValue) => ${ref.stateSetter}(Number(newValue))`}}
+      onChange={${props.itemProps?.isListItem ? getListItemOnChange({ itemProps: props.itemProps, name: props.name, callback: (value: string) => `Number(${value})` }) : `(e, newValue) => ${ref.stateSetter}(Number(newValue))`}}
     />`;
 
   const element: FormInput = buildDefaultInputElement({

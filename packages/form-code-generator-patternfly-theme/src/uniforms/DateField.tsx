@@ -55,7 +55,7 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
       const { itemName, isNested } = getItemNameAndWithIsNested(props.name);
       const propertyPath = props.itemProps?.listStateName.split(".").splice(1).join(".");
       const path = `${propertyPath}[${props.itemProps?.indexVariableName}]${isNested ? `.${itemName}` : ""}`;
-      return `newDate => {
+      return `(e, newDate) => {
         ${props.itemProps?.listStateSetter}(prev => {
           if (newDate) {
             const newState = [...prev];
@@ -73,7 +73,7 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
         })
       }`;
     }
-    return `newDate => {
+    return `(e, newDate) => {
         ${ref.stateSetter}(prev => {
           if (newDate) {
             const newDate = new Date(newDate);
@@ -95,7 +95,7 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
       const { itemName, isNested } = getItemNameAndWithIsNested(props.name);
       const propertyPath = props.itemProps?.listStateName.split(".").splice(1).join(".");
       const path = `${propertyPath}[${props.itemProps?.indexVariableName}]${isNested ? `.${itemName}` : ""}`;
-      return `(time, hours?, minutes?) => ${props.itemProps?.listStateSetter}(prev => {
+      return `(e, time, hours?, minutes?) => ${props.itemProps?.listStateSetter}(prev => {
         const newState = [...prev];
         const currentDate = newState${path}
         if (currentDate) {
@@ -117,7 +117,7 @@ const Date: React.FC<DateFieldProps> = (props: DateFieldProps) => {
         return prev;
       })`;
     }
-    return `(time, hours?, minutes?) => {
+    return `(e, time, hours?, minutes?) => {
       ${ref.stateSetter}(prev => {
         if (prev) {
           const newDate = new Date(Date.parse(prev));

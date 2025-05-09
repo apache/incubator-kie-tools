@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Card, CardBody, CardHeader, CardHeaderMain, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody, CardHeader, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import * as React from "react";
@@ -126,26 +126,28 @@ export function AuthProvidersGallery(props: {
                     }}
                   >
                     <CardHeader>
-                      <CardHeaderMain>
-                        <CardTitle>{authProvider.name}</CardTitle>
-                        <TextContent>
-                          {(!authProvider.enabled && (
-                            <TextContent>
+                      {
+                        <>
+                          <CardTitle>{authProvider.name}</CardTitle>
+                          <TextContent>
+                            {(!authProvider.enabled && (
+                              <TextContent>
+                                <Text component={TextVariants.small}>
+                                  <i>Available soon!</i>
+                                </Text>
+                              </TextContent>
+                            )) || (
                               <Text component={TextVariants.small}>
-                                <i>Available soon!</i>
+                                <i>{authProvider.domain ?? <>&nbsp;</>}</i>
                               </Text>
-                            </TextContent>
-                          )) || (
-                            <Text component={TextVariants.small}>
-                              <i>{authProvider.domain ?? <>&nbsp;</>}</i>
-                            </Text>
-                          )}
-                        </TextContent>
-                      </CardHeaderMain>
+                            )}
+                          </TextContent>
+                        </>
+                      }
                     </CardHeader>
                     <br />
                     <CardBody>
-                      <AuthProviderIcon authProvider={authProvider} size={"xl"} />
+                      <AuthProviderIcon authProvider={authProvider} size="xl" />
                     </CardBody>
                   </Card>
                 ))}

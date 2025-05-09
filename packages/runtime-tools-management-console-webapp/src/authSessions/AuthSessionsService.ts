@@ -233,20 +233,16 @@ export class AuthSessionsService {
 
     const tokens = await client.refreshTokenGrant(config, args.authSession.tokens.refresh_token);
 
-    const { access_token } = tokens;
     const claims = tokens.claims();
     if (!claims) {
       // expires_in was not returned by the authorization server
       console.error(`Failed to extract claims from token for AuthSession: ${args.authSession.id}!`);
       throw new Error("Failed to extract claims from token.");
     }
-    const { sub } = claims;
-    const userInfo = await client.fetchUserInfo(config, access_token, sub);
 
     return {
       tokens,
       claims,
-      userInfo,
       tokensRefreshedAtDateISO: new Date(Date.now()).toISOString(),
       status: AuthSessionStatus.VALID,
     };
@@ -293,22 +289,23 @@ export class AuthSessionsService {
       idTokenExpected: true,
     });
 
-    const { access_token } = tokens;
     const claims = tokens.claims();
     if (!claims) {
       // expires_in was not returned by the authorization server
       console.error("Failed to extract claims from token");
       throw new Error("Failed to extract claims from token.");
     }
-    const { sub } = claims;
-    const userInfo = await client.fetchUserInfo(config, access_token, sub);
 
     const authSession: OpenIDConnectAuthSession = {
       id: uuid(),
       type: AuthSessionType.OPENID_CONNECT,
       version: AUTH_SESSIONS_VERSION_NUMBER,
       name: temporaryAuthSessionData.name,
-      username: userInfo.preferred_username ?? userInfo.email ?? userInfo.sub,
+      username:
+        this.getClaimAsString(claims.preferred_username) ??
+        this.getClaimAsString(claims.name) ??
+        this.getClaimAsString(claims.email) ??
+        claims.sub,
       // TODO: This changes between IdPs. Figure out a generic way to list the users roles.
       roles: [],
       // TODO: Somehow get this information from the Kogito application.
@@ -320,12 +317,18 @@ export class AuthSessionsService {
       claims,
       runtimeUrl: temporaryAuthSessionData.runtimeUrl,
       issuer: issuer.toString(),
-      userInfo: userInfo,
       status: AuthSessionStatus.VALID,
       createdAtDateISO: new Date(Date.now()).toISOString(),
       tokensRefreshedAtDateISO: new Date(Date.now()).toISOString(),
     };
 
     return authSession;
+  }
+
+  private static getClaimAsString(claim: client.JsonValue | undefined): string | undefined {
+    if (typeof claim === "string") {
+      return claim;
+    }
+    return undefined;
   }
 }

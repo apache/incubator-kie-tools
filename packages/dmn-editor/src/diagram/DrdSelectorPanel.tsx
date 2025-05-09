@@ -30,7 +30,7 @@ import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Form, FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
 import { ToggleGroup, ToggleGroupItem } from "@patternfly/react-core/dist/js/components/ToggleGroup";
 import { AlternativeInputDataIcon, InputDataIcon } from "../icons/Icons";
-import { EmptyState, EmptyStateBody } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { EmptyState, EmptyStateBody, EmptyStateHeader } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useCallback } from "react";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
@@ -110,9 +110,7 @@ export function DrdSelectorPanel() {
         {(drds.length <= 0 && (
           <>
             <EmptyState>
-              <Title size={"md"} headingLevel={"h4"}>
-                {"You're on the default DRD"}
-              </Title>
+              <EmptyStateHeader titleText={<>{"You're on the default DRD"}</>} headingLevel={"h4"} />
               <EmptyStateBody>
                 {"Adding nodes or making changes to the Diagram will automatically create a DRD for you."}
               </EmptyStateBody>

@@ -46,9 +46,9 @@ import {
   DropdownPosition,
   DropdownToggle,
   DropdownToggleAction,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+} from "@patternfly/react-core/deprecated";
 import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
-import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { SearchInput } from "@patternfly/react-core/dist/js/components/SearchInput";
 import {
   ImportJavaClassesWizard,
@@ -123,10 +123,7 @@ export function DataTypes() {
   }, [activeItemDefinitionId, allDataTypesById]);
 
   const filteredTree = useMemo(
-    () =>
-      dataTypesTree.filter(({ itemDefinition: dataType }) =>
-        dataType["@_name"].toLowerCase().includes(filter.toLowerCase())
-      ),
+    () => dataTypesTree.filter(({ feelName: dataType }) => dataType.toLowerCase().includes(filter.toLowerCase())),
     [filter, dataTypesTree]
   );
 
@@ -241,12 +238,14 @@ export function DataTypes() {
                   className={"kie-dmn-editor--data-types-filter kie-dmn-editor--sticky-top-glass-header"}
                 >
                   <InputGroup>
-                    <SearchInput
-                      placeholder="Filter..."
-                      value={filter}
-                      onChange={(_event, value) => setFilter(value)}
-                      onClear={() => setFilter("")}
-                    />
+                    <InputGroupItem isFill>
+                      <SearchInput
+                        placeholder="Filter..."
+                        value={filter}
+                        onChange={(_event, value) => setFilter(value)}
+                        onClear={() => setFilter("")}
+                      />
+                    </InputGroupItem>
 
                     {!isReadOnly && (
                       <Dropdown
@@ -266,7 +265,7 @@ export function DataTypes() {
                               </DropdownToggleAction>,
                             ]}
                             splitButtonVariant="action"
-                            onToggle={setAddDataTypeDropdownOpen}
+                            onToggle={(_event, val) => setAddDataTypeDropdownOpen(val)}
                           />
                         }
                         position={DropdownPosition.right}

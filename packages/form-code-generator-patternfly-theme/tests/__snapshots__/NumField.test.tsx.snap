@@ -14,7 +14,7 @@ exports[`<NumField> tests <NumField> - decimal rendering 1`] = `
       placeholder={''}
       step={0.01} max={900.5} min={400.5}
       value={salary}
-      onChange={(newValue) => set__salary(Number(newValue))}
+      onChange={(e, newValue) => set__salary(Number(newValue))}
     />
     </FormGroup>"
 `;
@@ -33,7 +33,7 @@ exports[`<NumField> tests <NumField> - integer rendering - disabled 1`] = `
       placeholder={''}
       step={1} max={15} min={10}
       value={age}
-      onChange={(newValue) => set__age(Number(newValue))}
+      onChange={(e, newValue) => set__age(Number(newValue))}
     />
     </FormGroup>"
 `;
@@ -52,7 +52,7 @@ exports[`<NumField> tests <NumField> - integer rendering 1`] = `
       placeholder={''}
       step={1} max={15} min={10}
       value={age}
-      onChange={(newValue) => set__age(Number(newValue))}
+      onChange={(e, newValue) => set__age(Number(newValue))}
     />
     </FormGroup>"
 `;

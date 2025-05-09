@@ -51,6 +51,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
 
   let pfImports: string[] = ["Card", "CardBody"];
   let pfIconImports: string[] = [];
+  let pfDeprecatedImports: string[] = [];
   let reactImports: string[] = [];
   let requiredCode: string[] = [];
 
@@ -68,6 +69,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
         }
         pfImports = union(pfImports, renderedInput.pfImports);
         pfIconImports = union(pfIconImports, renderedInput.pfIconImports);
+        pfDeprecatedImports = union(pfDeprecatedImports, renderedInput.pfDeprecatedImports);
         reactImports = union(reactImports, renderedInput.reactImports);
         if (renderedInput.requiredCode) {
           requiredCode = union(requiredCode, renderedInput.requiredCode);
@@ -82,7 +84,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
 
   const stateCode = [...nestedStates].join("\n");
   const jsxCode = `<Card>
-          <CardBody className="pf-c-form">
+          <CardBody className="pf-v5-c-form">
           ${bodyLabel}
           ${nestedJsx.join("\n")}
           </CardBody></Card>`;
@@ -90,6 +92,7 @@ const Nest: React.FunctionComponent<NestFieldProps> = ({
   const rendered: InputsContainer = {
     pfImports,
     pfIconImports,
+    pfDeprecatedImports,
     reactImports,
     requiredCode,
     stateCode,

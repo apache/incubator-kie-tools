@@ -32,6 +32,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import BitbucketIcon from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
 import { UrlType, useImportableUrl } from "../../importFromUrl/ImportableUrlHooks";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
   const workspaceImportableUrl = useImportableUrl(props.descriptor?.origin.url?.toString());
@@ -44,28 +45,36 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
     if (workspaceImportableUrl.type === UrlType.GITHUB_DOT_COM) {
       return (
         <Label>
-          <GithubIcon />
+          <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
+            <GithubIcon />
+          </Icon>
           &nbsp;&nbsp;Repository
         </Label>
       );
     } else if (props.descriptor?.origin.url.toString().includes("gitlab")) {
       return (
         <Label>
-          <GitlabIcon />
+          <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
+            <GitlabIcon />
+          </Icon>
           &nbsp;&nbsp;Repository
         </Label>
       );
     } else if (props.descriptor?.origin.url.toString().includes("bitbucket")) {
       return (
         <Label>
-          <BitbucketIcon />
+          <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
+            <BitbucketIcon />
+          </Icon>
           &nbsp;&nbsp;Repository
         </Label>
       );
     } else {
       return (
         <Label>
-          <CodeIcon />
+          <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
+            <CodeIcon />
+          </Icon>
           &nbsp;&nbsp;Git repository
         </Label>
       );
@@ -92,7 +101,9 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
             </FlexItem>
             <FlexItem>
               <Label>
-                <CodeBranchIcon />
+                <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
+                  <CodeBranchIcon />
+                </Icon>
                 &nbsp;&nbsp;{props.descriptor?.origin.branch}
               </Label>
             </FlexItem>
@@ -105,7 +116,9 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
               position={"right"}
             >
               <Label>
-                <GithubIcon />
+                <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
+                  <GithubIcon />
+                </Icon>
                 &nbsp;&nbsp;Gist
               </Label>
             </Tooltip>
@@ -118,7 +131,9 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
               position={"right"}
             >
               <Label>
-                <BitbucketIcon />
+                <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
+                  <BitbucketIcon />
+                </Icon>
                 &nbsp;&nbsp;Snippet
               </Label>
             </Tooltip>
@@ -131,7 +146,9 @@ export function WorkspaceLabel(props: { descriptor?: WorkspaceDescriptor }) {
               position={"right"}
             >
               <Label>
-                <PendingIcon />
+                <Icon style={{ fontSize: "0.875rem", margin: 0 }}>
+                  <PendingIcon />
+                </Icon>
                 &nbsp;&nbsp;Ephemeral
               </Label>
             </Tooltip>

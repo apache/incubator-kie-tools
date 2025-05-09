@@ -40,8 +40,8 @@ const CloudEventFieldLabelIcon: React.FC<CloudEventFieldLabelIconProps> = ({
           <div>{helpMessage}</div>
           {cloudEventHeader && (
             <div>
-              The value will be set in the <span className={"pf-u-success-color-100"}>{`'${cloudEventHeader}'`}</span>{" "}
-              header.
+              The value will be set in the{" "}
+              <span className={"pf-v5-u-success-color-100"}>{`'${cloudEventHeader}'`}</span> header.
             </div>
           )}
         </div>
@@ -51,9 +51,10 @@ const CloudEventFieldLabelIcon: React.FC<CloudEventFieldLabelIconProps> = ({
         type="button"
         aria-label={`More info for ${fieldId} field`}
         onClick={(e) => e.preventDefault()}
-        className="pf-c-form__group-label-help"
+        className="pf-v5-c-form__group-label-help"
       >
-        <HelpIcon noVerticalAlign />
+        {/* <HelpIcon noVerticalAlign /> */}
+        <HelpIcon />
       </button>
     </Popover>
   );

@@ -25,6 +25,10 @@ ENV HOME          /home/kie-sandbox
 ENV NVM_DIR       $HOME/.nvm
 ENV NODE_VERSION  v22.13.1
 
+ENV CORS_PROXY_HTTP_PORT=$CORS_PROXY_DEFAULT_PORT
+ENV CORS_PROXY_ORIGIN=$CORS_PROXY_DEFAULT_ORIGIN
+ENV CORS_PROXY_VERBOSE=$CORS_PROXY_DEFAULT_VERBOSE
+
 RUN mkdir $HOME \
   && chgrp -R 0 $HOME \
   && chmod -R g=u $HOME \
@@ -32,10 +36,7 @@ RUN mkdir $HOME \
   && microdnf --disableplugin=subscription-manager install -y tar gzip \
   && microdnf --disableplugin=subscription-manager clean all \
   && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash \
-  && /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION" \
-  && export CORS_PROXY_HTTP_PORT=$CORS_PROXY_DEFAULT_PORT \
-  && export CORS_PROXY_ORIGIN=CORS_PROXY_DEFAULT_ORIGIN \
-  && export CORS_PROXY_VERBOSE=CORS_PROXY_DEFAULT_VERBOSE
+  && /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION"
 
 
 ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/bin
@@ -46,5 +47,7 @@ COPY --chown=1000:0 dist-dev/cors-proxy $HOME/cors-proxy
 EXPOSE $CORS_PROXY_DEFAULT_PORT
 
 USER 1000
+
+HEALTHCHECK --interval=1m --timeout=5s CMD curl -f http://localhost:${CORS_PROXY_HTTP_PORT}/ping || exit 1
 
 CMD node $HOME/cors-proxy/index.js

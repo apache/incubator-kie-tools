@@ -23,7 +23,7 @@
 
 .brand-name {
   color: #fff;
-  padding: 0 var(--pf-global--spacer--sm) 0 var(--pf-global--spacer--sm);
+  padding: 0 var(--pf-v5-global--spacer--sm) 0 var(--pf-v5-global--spacer--sm);
 }
 
 .kogito-management-console__card-size {
@@ -55,11 +55,17 @@
   transform: translateX(-50%);
 }
 
-.kogito--alert-container .pf-c-alert {
+.kogito--alert-container .pf-v5-c-alert {
   pointer-events: visible;
 }
 
 .Dev-ui__card-size,
 .Dev-ui__custom-dashboard-viewer > div {
   height: 100%;
+}
+
+.app--masthead {
+  justify-content: space-between;
+  justify-items: end;
+  padding-right: 0px;
 }

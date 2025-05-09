@@ -110,7 +110,7 @@ export function OutgoingStuffNodePanel(props: {
 
   return (
     <>
-      <Flex className={"kie-dmn-editor--outgoing-stuff-node-panel"} style={style}>
+      <Flex className={"kie-dmn-editor--outgoing-stuff-node-panel"} style={style} gap={{ default: "gapNone" }}>
         {props.edgeTypes.length > 0 && (
           <FlexItem>
             {props.edgeTypes.map((edgeType) => (

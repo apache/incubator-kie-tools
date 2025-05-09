@@ -139,7 +139,7 @@ jobs:
           KIE_TOOLS_BUILD__ignoreEndToEndTestFailures: ${{ !github.event.pull_request }}
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
-          NODE_OPTIONS: "--max_old_space_size=4096"
+          NODE_OPTIONS: "--max_old_space_size=6144"
           MAVEN_ARGS: "-B -Puse-maven-repo-local-tail"
           MAVEN_OPTS: "-Xmx2g"
         run: >-
@@ -151,6 +151,7 @@ jobs:
         env:
           KIE_TOOLS_BUILD__buildContainerImages: ${{ runner.os == 'Linux' }}
           KIE_TOOLS_BUILD__buildExamples: "true"
+          NODE_OPTIONS: "--max_old_space_size=6144"
           MAVEN_ARGS: "-B -Puse-maven-repo-local-tail"
           MAVEN_OPTS: "-Xmx2g"
         run: |
@@ -168,7 +169,7 @@ jobs:
           KIE_TOOLS_BUILD__buildExamples: "true"
           DISPLAY: ":99.0"
           START_SERVER_AND_TEST_INSECURE: "true"
-          NODE_OPTIONS: "--max_old_space_size=4096"
+          NODE_OPTIONS: "--max_old_space_size=6144"
           MAVEN_ARGS: "-B -Puse-maven-repo-local-tail"
           MAVEN_OPTS: "-Xmx2g"
         run: |

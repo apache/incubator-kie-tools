@@ -18,12 +18,13 @@
  */
 import * as React from "react";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import {
   EmptyState,
   EmptyStateBody,
   EmptyStateIcon,
   EmptyStateVariant,
+  EmptyStateHeader,
+  EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { CalculatorIcon } from "@patternfly/react-icons/dist/js/icons/calculator-icon";
 
@@ -32,24 +33,27 @@ interface EmptyStateNoCharacteristicsProps {
 }
 
 export const EmptyStateNoCharacteristics = (props: EmptyStateNoCharacteristicsProps) => (
-  <EmptyState data-testid="empty-state-no-characteristics" variant={EmptyStateVariant.small}>
-    <EmptyStateIcon icon={CalculatorIcon} />
-    <Title headingLevel="h4" size="lg" ouiaId="no-characteristics-defined-title">
-      No Characteristics defined
-    </Title>
+  <EmptyState data-testid="empty-state-no-characteristics" variant={EmptyStateVariant.sm}>
+    <EmptyStateHeader
+      titleText="No Characteristics defined"
+      icon={<EmptyStateIcon icon={CalculatorIcon} />}
+      headingLevel="h4"
+    />
     <EmptyStateBody>
       {`Characteristics define the point allocation strategy for the scorecard. Once point allocation between input
       attributes and partial scores takes place, each scorecard characteristic is assigned a single partial score which
       is used to compute the overall score. The overall score is simply the sum of all partial scores. Partial scores
       are assumed to be continuous values of type "double".`}
     </EmptyStateBody>
-    <Button
-      data-testid="empty-state-no-characteristics__create-characteristic"
-      variant="primary"
-      onClick={props.addCharacteristic}
-      ouiaId="add-characteristic"
-    >
-      Add Characteristic
-    </Button>
+    <EmptyStateFooter>
+      <Button
+        data-testid="empty-state-no-characteristics__create-characteristic"
+        variant="primary"
+        onClick={props.addCharacteristic}
+        ouiaId="add-characteristic"
+      >
+        Add Characteristic
+      </Button>
+    </EmptyStateFooter>
   </EmptyState>
 );

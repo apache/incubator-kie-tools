@@ -463,8 +463,8 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
                   state.dispatch(state).boxedExpressionEditor.close();
                 });
               }}
+              icon={<ArrowRightIcon style={{ transform: "scale(-1, -1)", marginRight: "8px", marginTop: "4px" }} />}
             >
-              <ArrowRightIcon style={{ transform: "scale(-1, -1)", marginRight: "12px" }} />
               <p>Back to Diagram</p>
             </Label>
           </FlexItem>
@@ -504,7 +504,7 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
                   });
                 }}
               >
-                <InfoIcon size={"sm"} />
+                <InfoIcon />
               </button>
             </aside>
           </Flex>
