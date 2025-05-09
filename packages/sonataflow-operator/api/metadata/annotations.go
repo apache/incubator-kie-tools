@@ -20,6 +20,13 @@
 package metadata
 
 const (
+	KubernetesDomain            = "app.kubernetes.io"
+	KubernetesLabelName         = KubernetesDomain + "/name"
+	KubernetesLabelVersion      = KubernetesDomain + "/version"
+	KubernetesLabelInstance     = KubernetesDomain + "/instance"
+	KubernetesLabelPartOf       = KubernetesDomain + "/part-of"
+	KubernetesLabelManagedBy    = KubernetesDomain + "/managed-by"
+	KubernetesLabelComponent    = KubernetesDomain + "/component"
 	Domain                      = "sonataflow.org"
 	Key                         = Domain + "/key"
 	Name                        = Domain + "/name"
