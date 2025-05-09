@@ -16,10 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import React, { useEffect, useRef, useState } from "react";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Card, CardBody, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
-import React from "react";
 import { UncontrolledReactSVGPanZoom } from "react-svg-pan-zoom";
 import { ReactSvgPanZoomLoader, SvgLoaderSelectElement } from "react-svg-pan-zoom-loader";
 
@@ -35,38 +34,59 @@ interface IOwnProps {
   height?: number;
 }
 
-const ProcessDiagram: React.FC<IOwnProps & OUIAProps> = ({ svg, width, height, ouiaId, ouiaSafe }) => {
+const ProcessDiagram: React.FC<IOwnProps> = ({ svg, width, height }) => {
+  const reactSvgPanZoomLoaderRefContainer = useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = useState<number>(width || 1000);
+
+  useEffect(() => {
+    if (reactSvgPanZoomLoaderRefContainer.current) {
+      const observer = new ResizeObserver((entries) => {
+        for (const entry of entries) {
+          setContainerWidth(entry.contentRect.width);
+        }
+      });
+
+      observer.observe(reactSvgPanZoomLoaderRefContainer.current);
+
+      return () => {
+        observer.disconnect();
+      };
+    }
+  }, []);
+
   return (
     <>
-      <Card {...componentOuiaProps(ouiaId, "process-diagram", ouiaSafe)}>
+      <Card className="process-diagram">
         <CardHeader>
           <Title headingLevel="h3" size="xl">
             Diagram
           </Title>
         </CardHeader>
         <CardBody>
-          <ReactSvgPanZoomLoader
-            src={svg.props.src}
-            width={width ?? 1000}
-            height={height ?? 400}
-            proxy={
-              <>
-                <SvgLoaderSelectElement />
-              </>
-            }
-            render={() => (
-              <UncontrolledReactSVGPanZoom
-                width={width ?? 1000}
-                height={height ?? 400}
-                detectAutoPan={false}
-                background="#fff"
-              >
-                <svg width={width ?? 1000} height={height ?? 400}>
-                  {svg}
-                </svg>
-              </UncontrolledReactSVGPanZoom>
-            )}
-          />
+          <div style={{ width: "100%" }} ref={reactSvgPanZoomLoaderRefContainer}>
+            <ReactSvgPanZoomLoader
+              src={svg.props.src}
+              width={containerWidth}
+              height={height ?? 400}
+              proxy={
+                <>
+                  <SvgLoaderSelectElement />
+                </>
+              }
+              render={() => (
+                <UncontrolledReactSVGPanZoom
+                  width={containerWidth}
+                  height={height ?? 400}
+                  detectAutoPan={false}
+                  background="#fff"
+                >
+                  <svg width={containerWidth} height={height ?? 400}>
+                    {svg}
+                  </svg>
+                </UncontrolledReactSVGPanZoom>
+              )}
+            />
+          </div>
         </CardBody>
       </Card>
     </>

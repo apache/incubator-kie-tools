@@ -16,12 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
-import { FormDetailsGatewayApi } from "../../../channel/FormDetails";
-import { useFormDetailsGatewayApi } from "../../../channel/FormDetails/FormDetailsContext";
-import { Form, FormInfo, FormContent } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { EmbeddedFormDetails } from "@kie-tools/runtime-tools-shared-enveloped-components/dist/formDetails";
+import React, { useMemo } from "react";
+import { FormInfo, FormContent } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import {
+  EmbeddedFormDetails,
+  FormDetailsChannelApi,
+} from "@kie-tools/runtime-tools-process-enveloped-components/dist/formDetails";
+import { useFormDetailsChannelApi } from "../../../channel/FormDetails";
 
 interface FormDetailsContainerProps {
   formData: FormInfo;
@@ -29,37 +30,28 @@ interface FormDetailsContainerProps {
   onError: (details?: string) => void;
   targetOrigin: string;
 }
-const FormDetailsContainer: React.FC<FormDetailsContainerProps & OUIAProps> = ({
-  formData,
-  onSuccess,
-  onError,
-  ouiaId,
-  ouiaSafe,
-  targetOrigin,
-}) => {
-  const gatewayApi: FormDetailsGatewayApi = useFormDetailsGatewayApi();
+const FormDetailsContainer: React.FC<FormDetailsContainerProps> = ({ formData, onSuccess, onError, targetOrigin }) => {
+  const channelApi = useFormDetailsChannelApi();
 
-  return (
-    <EmbeddedFormDetails
-      {...componentOuiaProps(ouiaId, "form-details-container", ouiaSafe)}
-      driver={{
-        getFormContent: function (formName: string): Promise<Form> {
-          return gatewayApi.getFormContent(formName);
-        },
-        saveFormContent(formName: string, content: FormContent): void {
-          gatewayApi
-            .saveFormContent(formName, content)
-            .then((value) => onSuccess())
-            .catch((error) => {
-              const message = error.response ? error.response.data : error.message;
-              onError(message);
-            });
-        },
-      }}
-      targetOrigin={targetOrigin}
-      formData={formData}
-    />
+  const extendedChannelApi: FormDetailsChannelApi = useMemo(
+    () => ({
+      formDetails__getFormContent: function (formName: string) {
+        return channelApi.formDetails__getFormContent(formName);
+      },
+      formDetails__saveFormContent(formName: string, formContent: FormContent) {
+        return channelApi
+          .formDetails__saveFormContent(formName, formContent)
+          .then(() => onSuccess())
+          .catch((error) => {
+            const message = error.response ? error.response.data : error.message;
+            onError(message);
+          });
+      },
+    }),
+    [channelApi, onError, onSuccess]
   );
+
+  return <EmbeddedFormDetails channelApi={extendedChannelApi} targetOrigin={targetOrigin} formData={formData} />;
 };
 
 export default FormDetailsContainer;

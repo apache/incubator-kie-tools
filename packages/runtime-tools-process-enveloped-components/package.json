@@ -38,7 +38,6 @@
     "@kie-tools/i18n-common-dictionary": "workspace:*",
     "@kie-tools/runtime-tools-components": "workspace:*",
     "@kie-tools/runtime-tools-process-gateway-api": "workspace:*",
-    "@kie-tools/runtime-tools-shared-enveloped-components": "workspace:*",
     "@kie-tools/runtime-tools-shared-gateway-api": "workspace:*",
     "@microlink/react-json-view": "^1.24.0",
     "@patternfly/patternfly": "^5.4.1",

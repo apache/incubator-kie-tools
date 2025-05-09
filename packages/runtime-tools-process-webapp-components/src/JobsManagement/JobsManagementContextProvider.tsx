@@ -19,8 +19,7 @@
 import React, { useMemo } from "react";
 import { ApolloClient } from "apollo-client";
 import JobsManagementContext from "./JobsManagementContext";
-import { JobsManagementGatewayApiImpl } from "./JobsManagementGatewayApi";
-import { GraphQLJobsManagementQueries } from "./JobsManagementQueries";
+import { JobsManagementChannelApiImpl } from "./JobsManagementChannelApiImpl";
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
@@ -28,11 +27,8 @@ interface IOwnProps {
 }
 
 export const JobsManagementContextProvider: React.FC<IOwnProps> = ({ apolloClient, children }) => {
-  const gatewayApi = useMemo(
-    () => new JobsManagementGatewayApiImpl(new GraphQLJobsManagementQueries(apolloClient)),
-    [apolloClient]
-  );
-  return <JobsManagementContext.Provider value={gatewayApi}>{children}</JobsManagementContext.Provider>;
+  const channelApi = useMemo(() => new JobsManagementChannelApiImpl(apolloClient), [apolloClient]);
+  return <JobsManagementContext.Provider value={channelApi}>{children}</JobsManagementContext.Provider>;
 };
 
 export default JobsManagementContextProvider;

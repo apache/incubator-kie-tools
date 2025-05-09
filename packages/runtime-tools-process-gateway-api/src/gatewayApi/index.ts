@@ -17,4 +17,5 @@
  * under the License.
  */
 
-export * from "./apis";
+export * from "./restApis";
+export * from "./dataIndexQueries";

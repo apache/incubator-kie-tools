@@ -16,18 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import * as React from "react";
-import { useImperativeHandle, useState } from "react";
+import React, { useImperativeHandle, useState, useMemo } from "react";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { ProcessListChannelApi, ProcessListInitArgs } from "../api";
+import { ProcessListChannelApi, ProcessListInitArgs, ProcessListState } from "../api";
 import ProcessList from "./components/ProcessList/ProcessList";
-import ProcessListEnvelopeViewDriver from "./ProcessListEnvelopeViewDriver";
 import "@patternfly/patternfly/patternfly.css";
-import { ProcessInstanceState, ProcessListState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { ProcessInstanceState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OrderBy } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface ProcessListEnvelopeViewApi {
-  initialize: (initArgs?: ProcessListInitArgs) => void;
+  initialize: (initArgs: ProcessListInitArgs) => void;
 }
 interface Props {
   channelApi: MessageBusClientApi<ProcessListChannelApi>;
@@ -57,7 +55,7 @@ export const ProcessListEnvelopeView = React.forwardRef<ProcessListEnvelopeViewA
     () => ({
       initialize: (initArgs) => {
         setEnvelopeConnectedToChannel(false);
-        setProcessInitialArgs(initArgs!);
+        setProcessInitialArgs(initArgs);
         setEnvelopeConnectedToChannel(true);
       },
     }),
@@ -68,7 +66,7 @@ export const ProcessListEnvelopeView = React.forwardRef<ProcessListEnvelopeViewA
     <React.Fragment>
       <ProcessList
         isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
-        driver={new ProcessListEnvelopeViewDriver(props.channelApi)}
+        channelApi={props.channelApi}
         initialState={processInitialArgs.initialState}
         singularProcessLabel={processInitialArgs?.singularProcessLabel}
         pluralProcessLabel={processInitialArgs?.pluralProcessLabel}

@@ -17,29 +17,20 @@
  * under the License.
  */
 import React, { ReactElement, useCallback } from "react";
-import { TaskFormGatewayApiImpl } from "./TaskFormGatewayApi";
+import { TaskFormChannelApiImpl } from "./TaskFormChannelApiImpl";
 import TaskFormContext from "./TaskFormContext";
 import { useKogitoAppContext } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
 
 export interface TaskFormContextArgs {
   children: ReactElement;
-  options?: { transformEndpointBaseUrl?: (url?: string) => string | undefined };
+  options?: { transformEndpointBaseUrl?: (url?: string) => string | undefined; token?: string };
 }
 
 export const TaskFormContextProvider: React.FC<TaskFormContextArgs> = ({ children, options }) => {
   const appContext = useKogitoAppContext();
 
-  const transformEndpointBaseUrl = useCallback(
-    (url: string) => {
-      return options?.transformEndpointBaseUrl && url ? options.transformEndpointBaseUrl(url)! : url;
-    },
-    [options]
-  );
-
   return (
-    <TaskFormContext.Provider
-      value={new TaskFormGatewayApiImpl(() => appContext.getCurrentUser(), transformEndpointBaseUrl)}
-    >
+    <TaskFormContext.Provider value={new TaskFormChannelApiImpl(() => appContext.getCurrentUser(), options)}>
       {children}
     </TaskFormContext.Provider>
   );

@@ -26,7 +26,7 @@ import { getFormNameColumn, getDateColumn, getFormTypeColumn } from "../FormsLis
 import _ from "lodash";
 import { ISortBy } from "@patternfly/react-table/dist/js/components/Table";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/src/types";
+import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface FormsTableProps {
   driver: FormsListDriver;

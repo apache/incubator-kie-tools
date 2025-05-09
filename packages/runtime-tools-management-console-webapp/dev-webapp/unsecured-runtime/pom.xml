@@ -32,7 +32,20 @@
 
   <!-- This is a development app. It's better that we use an arbitrary string to not make this more complicated than it has to be. -->
   <artifactId>management-console-dev-webapp-runtime</artifactId>
+  <name>KIE Tools :: Management Console Web App :: Unsecured Runtime</name>
   <version>999-dev</version>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.jbpm</groupId>
+        <artifactId>jbpm-quarkus-devui-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -112,6 +125,22 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kogito-addons-quarkus-data-audit</artifactId>
+    </dependency>
+
+    <!-- DevUI -->
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-quarkus-devui</artifactId>
+    </dependency>
+
+    <!-- Messaging -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-reactive-messaging-kafka</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-addons-quarkus-messaging</artifactId>
     </dependency>
   </dependencies>
 

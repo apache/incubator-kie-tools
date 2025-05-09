@@ -18,48 +18,45 @@
  */
 import React, { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
-import {
-  TaskInboxGatewayApi,
-  useTaskInboxGatewayApi,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskInbox";
-import { EmbeddedTaskInbox } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskInbox";
+import { EmbeddedTaskList } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskList";
 import { getActiveTaskStates, getAllTaskStates } from "@kie-tools/runtime-tools-process-webapp-components/dist/utils";
-import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import {
-  QueryFilter,
-  TaskInboxState,
-  SortBy,
-} from "@kie-tools/runtime-tools-process-enveloped-components/src/taskInbox";
+  TaskListQueryFilter,
+  TaskListSortBy,
+  UserTaskInstance,
+} from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { TaskListState } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskList";
 import { RuntimePathSearchParamsRoutes, useRuntimeDispatch } from "../runtime/RuntimeContext";
 import { useQueryParam, useQueryParams } from "../navigation/queryParams/QueryParamsContext";
 import { QueryParams } from "../navigation/Routes";
+import { useTaskListChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskList";
 
 interface Props {
   onNavigateToTaskDetails: (taskId: string) => void;
 }
 
-const defaultFilter: QueryFilter = {
+const defaultFilter: TaskListQueryFilter = {
   taskNames: [],
   taskStates: getActiveTaskStates(),
 };
 
-const defaultOrderBy: SortBy = {
+const defaultOrderBy: TaskListSortBy = {
   property: "lastUpdate",
   direction: "desc",
 };
 
 export const Tasks: React.FC<Props> = ({ onNavigateToTaskDetails }) => {
-  const gatewayApi: TaskInboxGatewayApi = useTaskInboxGatewayApi();
+  const channelApi = useTaskListChannelApi();
   const history = useHistory();
   const filters = useQueryParam(QueryParams.FILTERS);
   const sortBy = useQueryParam(QueryParams.SORT_BY);
   const queryParams = useQueryParams();
   const { setRuntimePathSearchParams } = useRuntimeDispatch();
 
-  const initialState: TaskInboxState = useMemo(() => {
+  const initialState: TaskListState = useMemo(() => {
     return {
-      filters: filters ? (JSON.parse(filters) as TaskInboxState["filters"]) : defaultFilter,
-      sortBy: sortBy ? (JSON.parse(sortBy) as TaskInboxState["sortBy"]) : defaultOrderBy,
+      filters: filters ? (JSON.parse(filters) as TaskListState["filters"]) : defaultFilter,
+      sortBy: sortBy ? (JSON.parse(sortBy) as TaskListState["sortBy"]) : defaultOrderBy,
       currentPage: {
         offset: 0,
         limit: 10,
@@ -78,8 +75,8 @@ export const Tasks: React.FC<Props> = ({ onNavigateToTaskDetails }) => {
   }, [initialState, setRuntimePathSearchParams]);
 
   useEffect(() => {
-    const unsubscriber = gatewayApi.onUpdateTaskListState({
-      onUpdate(taskListState: TaskInboxState) {
+    const unsubscriber = channelApi.taskList__onUpdateTaskListState({
+      onUpdate(taskListState: TaskListState) {
         const newSearchParams = {
           [QueryParams.FILTERS]: JSON.stringify(taskListState.filters),
           [QueryParams.ORDER_BY]: JSON.stringify(taskListState.sortBy),
@@ -95,26 +92,26 @@ export const Tasks: React.FC<Props> = ({ onNavigateToTaskDetails }) => {
     });
 
     return () => {
-      unsubscriber.unSubscribe();
+      unsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
     };
-  }, [gatewayApi, history, queryParams, setRuntimePathSearchParams]);
+  }, [channelApi, history, queryParams, setRuntimePathSearchParams]);
 
   useEffect(() => {
-    const unsubscriber = gatewayApi.onOpenTaskListen({
+    const unsubscriber = channelApi.taskList__onOpenTaskListen({
       onOpen(task: UserTaskInstance) {
         onNavigateToTaskDetails(task.id);
       },
     });
 
     return () => {
-      unsubscriber.unSubscribe();
+      unsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
     };
-  }, [gatewayApi, onNavigateToTaskDetails]);
+  }, [channelApi, onNavigateToTaskDetails]);
 
   return (
-    <EmbeddedTaskInbox
+    <EmbeddedTaskList
       initialState={initialState}
-      driver={gatewayApi}
+      channelApi={channelApi}
       allTaskStates={getAllTaskStates()}
       activeTaskStates={getActiveTaskStates()}
       targetOrigin={window.location.origin}

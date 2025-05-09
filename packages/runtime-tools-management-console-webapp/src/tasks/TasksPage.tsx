@@ -26,6 +26,7 @@ import { useRoutes } from "../navigation/Hooks";
 import { AuthSession, useAuthSessionsDispatch } from "../authSessions";
 import { useRuntimePageLayoutDispatch } from "../runtime/RuntimePageLayoutContext";
 import { ImpersonationPageSection } from "./components/ImpersonationPageSection";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export const TasksPage: React.FC = (ouiaId, ouiaSafe) => {
   const { env } = useEnv();
@@ -77,11 +78,15 @@ export const TasksPage: React.FC = (ouiaId, ouiaSafe) => {
   );
 
   return (
-    <>
-      <ImpersonationPageSection />
-      <Card className="kogito-management-console__card-size">
-        <Tasks onNavigateToTaskDetails={onNavigateToTaskDetails} />
-      </Card>
-    </>
+    <Flex direction={{ default: "column" }} style={{ height: "100%" }}>
+      <FlexItem>
+        <ImpersonationPageSection />
+      </FlexItem>
+      <FlexItem grow={{ default: "grow" }}>
+        <Card className="kogito-management-console__card-size">
+          <Tasks onNavigateToTaskDetails={onNavigateToTaskDetails} />
+        </Card>
+      </FlexItem>
+    </Flex>
   );
 };

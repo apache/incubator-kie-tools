@@ -25,23 +25,24 @@ import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Te
 import React from "react";
 import { LevelDownAltIcon } from "@patternfly/react-icons/dist/js/icons/level-down-alt-icon";
 import { LevelUpAltIcon } from "@patternfly/react-icons/dist/js/icons/level-up-alt-icon";
-import { ProcessDetailsDriver } from "../../../api";
+import { ProcessDetailsChannelApi } from "../../../api";
 import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import {
   ProcessInstanceIconCreator,
   getProcessInstanceDescription,
 } from "../../../../processList/envelope/components/utils/ProcessListUtils";
 import { EndpointLink } from "@kie-tools/runtime-tools-components/dist/components/EndpointLink";
 import { ItemDescriptor } from "@kie-tools/runtime-tools-components/dist/components/ItemDescriptor";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
-interface IOwnProps {
+interface Props {
   processInstance: ProcessInstance;
-  driver: ProcessDetailsDriver;
+  channelApi: MessageBusClientApi<ProcessDetailsChannelApi>;
 }
-const ProcessDetailsPanel: React.FC<IOwnProps & OUIAProps> = ({ processInstance, driver, ouiaId, ouiaSafe }) => {
+
+const ProcessDetailsPanel: React.FC<Props> = ({ processInstance, channelApi }) => {
   return (
-    <Card {...componentOuiaProps(ouiaId ? ouiaId : processInstance.id, "process-details", ouiaSafe)}>
+    <Card className="process-details" style={{ height: "100%" }}>
       <CardHeader>
         <Title headingLevel="h3" size="xl">
           Details
@@ -106,14 +107,11 @@ const ProcessDetailsPanel: React.FC<IOwnProps & OUIAProps> = ({ processInstance,
                   data-testid="open-parent-process"
                   variant="link"
                   icon={<LevelUpAltIcon />}
-                  onClick={(): void => {
-                    driver.openProcessInstanceDetails(processInstance.parentProcessInstance!.id);
+                  onClick={() => {
+                    channelApi.notifications.processDetails__openProcessDetails.send(
+                      processInstance.parentProcessInstance!.id
+                    );
                   }}
-                  {...componentOuiaProps(
-                    ouiaId ? ouiaId : processInstance.parentProcessInstance!.id,
-                    "process-details",
-                    ouiaSafe
-                  )}
                 >
                   <ItemDescriptor
                     itemDescription={getProcessInstanceDescription(processInstance.parentProcessInstance!)}
@@ -131,9 +129,8 @@ const ProcessDetailsPanel: React.FC<IOwnProps & OUIAProps> = ({ processInstance,
                     variant="link"
                     icon={<LevelDownAltIcon />}
                     onClick={(): void => {
-                      driver.openProcessInstanceDetails(child.id);
+                      channelApi.notifications.processDetails__openProcessDetails.send(child.id);
                     }}
-                    {...componentOuiaProps(ouiaId ? ouiaId : child.id, "process-details", ouiaSafe)}
                   >
                     <ItemDescriptor itemDescription={getProcessInstanceDescription(child)} />
                   </Button>

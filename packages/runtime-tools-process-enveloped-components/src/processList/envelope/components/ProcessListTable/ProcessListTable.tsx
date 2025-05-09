@@ -25,14 +25,12 @@ import ProcessListChildTable from "../ProcessListChildTable/ProcessListChildTabl
 import { HistoryIcon } from "@patternfly/react-icons/dist/js/icons/history-icon";
 import Moment from "react-moment";
 import { getProcessInstanceDescription, ProcessInstanceIconCreator } from "../utils/ProcessListUtils";
-import { ProcessListDriver } from "../../../api";
 import ProcessListActionsKebab from "../ProcessListActionsKebab/ProcessListActionsKebab";
 import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import DisablePopup from "../DisablePopup/DisablePopup";
 import "../styles.css";
 import ErrorPopover from "../ErrorPopover/ErrorPopover";
 import { ProcessInstance, ProcessInstanceState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { ProcessInfoModal } from "@kie-tools/runtime-tools-components/dist/components/ProcessInfoModal";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
@@ -43,6 +41,8 @@ import {
 import { ItemDescriptor } from "@kie-tools/runtime-tools-components/dist/components/ItemDescriptor";
 import { EndpointLink } from "@kie-tools/runtime-tools-components/dist/components/EndpointLink";
 import { TitleType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { ProcessListChannelApi } from "../../../api";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 export interface ProcessListTableProps {
   processInstances: ProcessInstance[];
@@ -55,7 +55,7 @@ export interface ProcessListTableProps {
       [key: number]: boolean;
     }>
   >;
-  driver: ProcessListDriver;
+  channelApi: MessageBusClientApi<ProcessListChannelApi>;
   onSort: (event: React.SyntheticEvent<EventTarget>, index: number, direction: "desc" | "asc") => Promise<void>;
   sortBy: any;
   setProcessInstances: React.Dispatch<React.SetStateAction<ProcessInstance[]>>;
@@ -66,10 +66,9 @@ export interface ProcessListTableProps {
   setIsAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
   singularProcessLabel: string;
   pluralProcessLabel: string;
-  isTriggerCloudEventEnabled?: boolean;
 }
 
-const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
+const ProcessListTable: React.FC<ProcessListTableProps> = ({
   isLoading,
   expanded,
   setExpanded,
@@ -84,10 +83,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
   setIsAllChecked,
   singularProcessLabel,
   pluralProcessLabel,
-  isTriggerCloudEventEnabled,
-  driver,
-  ouiaId,
-  ouiaSafe,
+  channelApi,
 }) => {
   const [rowPairs, setRowPairs] = useState<any>([]);
   const columns: string[] = ["__Toggle", "__Select", "Id", "Status", "Created", "Last update", "__Actions"];
@@ -115,7 +111,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
   const onSkipClick = useCallback(
     async (processInstance: ProcessInstance): Promise<void> => {
       try {
-        await driver.handleProcessSkip(processInstance);
+        await channelApi.requests.processList__handleProcessSkip(processInstance);
         onShowMessage(
           "Skip operation",
           `The ${singularProcessLabel?.toLowerCase()} ${processInstance.processName} was successfully skipped.`,
@@ -135,13 +131,13 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
         handleModalToggle();
       }
     },
-    [driver, handleModalToggle, onShowMessage, singularProcessLabel]
+    [channelApi.requests, handleModalToggle, onShowMessage, singularProcessLabel]
   );
 
   const onRetryClick = useCallback(
     async (processInstance: ProcessInstance): Promise<void> => {
       try {
-        await driver.handleProcessRetry(processInstance);
+        await channelApi.requests.processList__handleProcessRetry(processInstance);
         onShowMessage(
           "Retry operation",
           `The ${singularProcessLabel?.toLowerCase()} ${processInstance.processName} was successfully re-executed.`,
@@ -161,13 +157,13 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
         handleModalToggle();
       }
     },
-    [driver, handleModalToggle, onShowMessage, singularProcessLabel]
+    [channelApi.requests, handleModalToggle, onShowMessage, singularProcessLabel]
   );
 
   const onAbortClick = useCallback(
     async (processInstance: ProcessInstance): Promise<void> => {
       try {
-        await driver.handleProcessAbort(processInstance);
+        await channelApi.requests.processList__handleProcessAbort(processInstance);
         onShowMessage(
           "Abort operation",
           `The ${singularProcessLabel?.toLowerCase()} ${processInstance.processName} was successfully aborted.`,
@@ -196,14 +192,14 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
         handleModalToggle();
       }
     },
-    [driver, handleModalToggle, onShowMessage, setProcessInstances, singularProcessLabel]
+    [channelApi.requests, handleModalToggle, onShowMessage, setProcessInstances, singularProcessLabel]
   );
 
   const handleClick = useCallback(
     (processInstance: ProcessInstance): void => {
-      driver.openProcess(processInstance);
+      channelApi.notifications.processList__openProcess.send(processInstance);
     },
-    [driver]
+    [channelApi.notifications]
   );
 
   const checkBoxSelect = useCallback(
@@ -259,11 +255,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
               )}
             </>,
             <>
-              <a
-                className="kogito-process-list__link"
-                onClick={() => handleClick(processInstance)}
-                {...componentOuiaProps(ouiaId, "process-description", ouiaSafe)}
-              >
+              <a className="kogito-process-list__link" onClick={() => handleClick(processInstance)}>
                 <strong>
                   <ItemDescriptor itemDescription={getProcessInstanceDescription(processInstance)} />
                 </strong>
@@ -303,7 +295,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
     } else {
       setRowPairs([]);
     }
-  }, [checkBoxSelect, handleClick, onAbortClick, onRetryClick, onSkipClick, ouiaId, ouiaSafe, processInstances]);
+  }, [checkBoxSelect, handleClick, onAbortClick, onRetryClick, onSkipClick, processInstances]);
 
   const loadChild = (parentId: string, parentIndex: number): JSX.Element | null => {
     if (!expanded[parentIndex]) {
@@ -319,11 +311,10 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
           setSelectableInstances={setSelectableInstances}
           singularProcessLabel={singularProcessLabel}
           pluralProcessLabel={pluralProcessLabel}
-          driver={driver}
+          channelApi={channelApi}
           onSkipClick={onSkipClick}
           onRetryClick={onRetryClick}
           onAbortClick={onAbortClick}
-          ouiaId={parentId}
         />
       );
     }
@@ -381,15 +372,10 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
         modalTitle={setTitle(titleType, modalTitle)}
         modalContent={modalContent}
         processName={selectedProcessInstance && selectedProcessInstance.processName}
-        ouiaId={selectedProcessInstance && "process-" + selectedProcessInstance.id}
       />
-      <Table
-        data-testid="process-list-table"
-        aria-label="Process List Table"
-        {...componentOuiaProps(ouiaId, "process-list-table", ouiaSafe ? ouiaSafe : !isLoading)}
-      >
+      <Table data-testid="process-list-table" aria-label="Process List Table">
         <Thead>
-          <Tr ouiaId="process-list-table-header">
+          <Tr>
             {columns.map((column, columnIndex) => {
               let sortParams = {};
               if (!isLoading && rowPairs.length > 0) {
@@ -427,7 +413,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
         {!isLoading && !_.isEmpty(rowPairs) ? (
           rowPairs.map((pair, pairIndex) => {
             const parentRow = (
-              <Tr key={`${pair.id}-parent`} {...componentOuiaProps(pair.id, "process-list-row", true)}>
+              <Tr key={`${pair.id}-parent`}>
                 <Td
                   key={`${pair.id}-parent-0`}
                   expand={{
@@ -435,25 +421,16 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
                     isExpanded: expanded[pairIndex],
                     onToggle: () => onToggle(pairIndex, pair),
                   }}
-                  {...componentOuiaProps(columns[0].toLowerCase(), "process-list-cell", true)}
                 />
                 {pair.parent.map((cell, cellIndex) => (
-                  <Td
-                    key={`${pair.id}-parent-${columns[cellIndex + 1]}`}
-                    dataLabel={columns[cellIndex + 1]}
-                    {...componentOuiaProps(columns[cellIndex + 1].toLowerCase(), "process-list-cell", true)}
-                  >
+                  <Td key={`${pair.id}-parent-${columns[cellIndex + 1]}`} dataLabel={columns[cellIndex + 1]}>
                     {cell}
                   </Td>
                 ))}
               </Tr>
             );
             const childRow = (
-              <Tr
-                key={`${pair.id}-child`}
-                isExpanded={expanded[pairIndex] === true}
-                {...componentOuiaProps(pair.id, "process-list-row-expanded", true)}
-              >
+              <Tr key={`${pair.id}-child`} isExpanded={expanded[pairIndex] === true}>
                 <Td key={`${pair.id}-child-0`} />
                 {rowPairs[pairIndex].child.map((cell, cellIndex) => (
                   <Td

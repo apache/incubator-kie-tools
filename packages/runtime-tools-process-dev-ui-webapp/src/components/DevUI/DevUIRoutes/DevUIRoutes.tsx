@@ -20,7 +20,7 @@ import React, { useMemo } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import { JobsManagementPage, ProcessesPage } from "../../pages";
 import ProcessDetailsPage from "../../pages/ProcessDetailsPage/ProcessDetailsPage";
-import TaskInboxPage from "../../pages/TaskInboxPage/TaskInboxPage";
+import TaskListPage from "../../pages/TaskListPage/TaskListPage";
 import TaskDetailsPage from "../../pages/TaskDetailsPage/TaskDetailsPage";
 import FormsListPage from "../../pages/FormsListPage/FormsListPage";
 import FormDetailPage from "../../pages/FormDetailsPage/FormDetailsPage";
@@ -62,7 +62,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ navigate }) => {
       },
       {
         enabled: () => context.isProcessEnabled,
-        node: <Route key="4" exact path="/Tasks" component={TaskInboxPage} />,
+        node: <Route key="4" exact path="/Tasks" component={TaskListPage} />,
       },
       {
         enabled: () => context.isProcessEnabled,

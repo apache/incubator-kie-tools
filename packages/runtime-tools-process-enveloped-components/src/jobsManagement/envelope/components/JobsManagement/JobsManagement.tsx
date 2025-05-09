@@ -26,14 +26,7 @@ import {
   KogitoEmptyState,
   KogitoEmptyStateType,
 } from "@kie-tools/runtime-tools-components/dist/components/KogitoEmptyState";
-import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools/OuiaUtils";
-import {
-  BulkCancel,
-  Job,
-  JobStatus,
-  JobsManagementState,
-  JobsSortBy,
-} from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { BulkCancel, Job, JobStatus, JobsSortBy } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import {
   BulkListItem,
   BulkListType,
@@ -41,7 +34,7 @@ import {
   IOperations,
 } from "@kie-tools/runtime-tools-components/dist/components/BulkList";
 import { OperationType, OrderBy } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
-import { JobsManagementDriver } from "../../../api";
+import { JobsManagementChannelApi, JobsManagementState } from "../../../api";
 import JobsManagementTable from "../JobsManagementTable/JobsManagementTable";
 import JobsManagementToolbar from "../JobsManagementToolbar/JobsManagementToolbar";
 import "../styles.css";
@@ -50,6 +43,9 @@ import { JobsDetailsModal } from "../JobsDetailsModal";
 import { JobsRescheduleModal } from "../JobsRescheduleModal";
 import { JobsCancelModal } from "../JobsCancelModal";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { Card } from "@patternfly/react-core/dist/js/components/Card";
+import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 
 export const formatForBulkListJob = (jobsList: (Job & { errorMessage?: string })[]): BulkListItem[] => {
   const formattedItems: BulkListItem[] = [];
@@ -67,20 +63,14 @@ export const formatForBulkListJob = (jobsList: (Job & { errorMessage?: string })
 
 interface JobsManagementProps {
   isEnvelopeConnectedToChannel: boolean;
-  driver: JobsManagementDriver;
+  channelApi: MessageBusClientApi<JobsManagementChannelApi>;
   initialState?: JobsManagementState;
 }
 
 const defaultPageSize: number = 10;
 const defaultSortBy: ISortBy = { index: 6, direction: "asc" };
 
-const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
-  ouiaId,
-  ouiaSafe,
-  driver,
-  isEnvelopeConnectedToChannel,
-  initialState,
-}) => {
+const JobsManagement: React.FC<JobsManagementProps> = ({ channelApi, isEnvelopeConnectedToChannel, initialState }) => {
   const defaultStatus: JobStatus[] = useMemo(
     () => (initialState && initialState.filters ? [...initialState.filters] : [JobStatus.Scheduled]),
     [initialState]
@@ -100,7 +90,6 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
   const [selectedStatus, setSelectedStatus] = useState<JobStatus[]>(defaultStatus);
   const [selectedJobInstances, setSelectedJobInstances] = useState<Job[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [displayTable, setDisplayTable] = useState(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState("");
   const [isActionPerformed, setIsActionPerformed] = useState<boolean>(false);
@@ -129,7 +118,7 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
   const doQueryJobs = useCallback(
     async (_offset: number, _limit: number) => {
       try {
-        const jobsResponse: Job[] = await driver.query(_offset, _limit);
+        const jobsResponse: Job[] = await channelApi.requests.jobList__query(_offset, _limit);
         setLimit(jobsResponse.length);
         setJobs((currentJobs) => {
           if (_offset > 0 && currentJobs.length > 0) {
@@ -143,27 +132,27 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
         setError(err);
       }
     },
-    [driver]
+    [channelApi.requests]
   );
 
   const onRefresh = useCallback(async () => {
     setIsLoading(true);
-    await driver.applyFilter(selectedStatus);
-    await driver.sortBy(orderBy);
+    await channelApi.requests.jobList__applyFilter(selectedStatus);
+    await channelApi.requests.jobList__sortBy(orderBy);
     setOffset(0);
     await doQueryJobs(0, 10);
     setIsLoading(false);
-  }, [doQueryJobs, driver, orderBy, selectedStatus]);
+  }, [doQueryJobs, channelApi.requests, orderBy, selectedStatus]);
 
   const onApplyFilter = useCallback(async () => {
     setIsLoading(true);
-    await driver.applyFilter(selectedStatus);
-    await driver.sortBy(orderBy);
+    await channelApi.requests.jobList__applyFilter(selectedStatus);
+    await channelApi.requests.jobList__sortBy(orderBy);
     setChips(selectedStatus);
     setOffset(0);
     await doQueryJobs(0, 10);
     setIsLoading(false);
-  }, [doQueryJobs, driver, orderBy, selectedStatus]);
+  }, [doQueryJobs, channelApi.requests, orderBy, selectedStatus]);
 
   useEffect(() => {
     if (!isEnvelopeConnectedToChannel) {
@@ -182,8 +171,8 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
           if (canceled.get()) {
             return;
           }
-          driver
-            .initialLoad(defaultStatus, defaultOrderBy)
+          channelApi.requests
+            .jobList__initialLoad(defaultStatus, defaultOrderBy)
             .then(() => {
               if (canceled.get()) {
                 return;
@@ -199,7 +188,7 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
             });
         }
       },
-      [defaultOrderBy, defaultStatus, doQueryJobs, driver, isEnvelopeConnectedToChannel]
+      [defaultOrderBy, defaultStatus, doQueryJobs, channelApi.requests, isEnvelopeConnectedToChannel]
     )
   );
 
@@ -227,11 +216,11 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
       setIsLoadingMore(true);
       setOffset(initVal);
       setPageSize(_pageSize);
-      await driver.initialLoad(selectedStatus, orderBy);
+      await channelApi.requests.jobList__initialLoad(selectedStatus, orderBy);
       await doQueryJobs(initVal, _pageSize);
       setIsLoadingMore(false);
     },
-    [doQueryJobs, driver, orderBy, selectedStatus]
+    [doQueryJobs, channelApi.requests, orderBy, selectedStatus]
   );
 
   const handleBulkCancel = useCallback(
@@ -275,13 +264,13 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
                 return true;
               }
             });
-            const cancelResults = await driver.bulkCancel(remainingInstances);
+            const cancelResults = await channelApi.requests.jobList__bulkCancel(remainingInstances);
             handleBulkCancel(cancelResults, ignoredJobs);
           },
         },
       },
     }),
-    [driver, handleBulkCancel, jobOperationResults, selectedJobInstances]
+    [channelApi.requests, handleBulkCancel, jobOperationResults, selectedJobInstances]
   );
 
   const detailsAction: JSX.Element[] = useMemo(
@@ -309,16 +298,16 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
     };
     setSelectedStatus(defaultState.filters);
     setChips(defaultState.filters);
-    setOrderBy(defaultState.orderBy), setDisplayTable(true);
+    setOrderBy(defaultState.orderBy);
     setIsLoading(true);
-    await driver.initialLoad(defaultState.filters, defaultState.orderBy);
+    await channelApi.requests.jobList__initialLoad(defaultState.filters, defaultState.orderBy);
     await doQueryJobs(0, 10);
     setIsLoading(false);
-  }, [doQueryJobs, driver]);
+  }, [doQueryJobs, channelApi.requests]);
 
   const handleJobReschedule = useCallback(
     async (job: Job, repeatInterval: string | number, repeatLimit: string | number, scheduleDate: Date) => {
-      const response = await driver.rescheduleJob(job, repeatInterval, repeatLimit, scheduleDate);
+      const response = await channelApi.requests.jobList__rescheduleJob(job, repeatInterval, repeatLimit, scheduleDate);
       setIsLoading(true);
       if (response && response.modalTitle === "success") {
         handleRescheduleToggle();
@@ -330,34 +319,43 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
       }
       setIsLoading(false);
     },
-    [doQueryJobs, driver, handleRescheduleToggle]
+    [doQueryJobs, channelApi.requests, handleRescheduleToggle]
   );
 
   return (
-    <div {...componentOuiaProps(ouiaId, "JobsManagementPage", ouiaSafe ? ouiaSafe : !isLoading)}>
+    <div>
       {error.length === 0 ? (
         <>
           <JobsManagementToolbar
             chips={chips}
             onResetToDefault={onResetToDefault}
-            driver={driver}
-            doQueryJobs={doQueryJobs}
             onApplyFilter={onApplyFilter}
             jobOperations={jobOperations}
             onRefresh={onRefresh}
             selectedStatus={selectedStatus}
             selectedJobInstances={selectedJobInstances}
             setChips={setChips}
-            setDisplayTable={setDisplayTable}
-            setIsLoading={setIsLoading}
             setSelectedJobInstances={setSelectedJobInstances}
             setSelectedStatus={setSelectedStatus}
           />
           <Divider />
-          {isInitialLoadDone && displayTable ? (
+          {isLoading ? (
+            <Card>
+              <KogitoSpinner spinnerText="Loading Jobs..." />
+            </Card>
+          ) : isInitialLoadDone && selectedStatus.length === 0 ? (
+            <div className="kogito-jobs-management__emptyState">
+              <KogitoEmptyState
+                type={KogitoEmptyStateType.Reset}
+                title="No filter applied."
+                body="Try applying at least one filter to see results"
+                onClick={() => onResetToDefault()}
+              />
+            </div>
+          ) : (
             <JobsManagementTable
               jobs={jobs}
-              driver={driver}
+              channelApi={channelApi.requests}
               doQueryJobs={doQueryJobs}
               handleCancelModalToggle={handleCancelModalToggle}
               handleDetailsToggle={handleDetailsToggle}
@@ -374,19 +372,6 @@ const JobsManagement: React.FC<JobsManagementProps & OUIAProps> = ({
               sortBy={sortBy}
               setOrderBy={setOrderBy}
             />
-          ) : (
-            <>
-              {selectedStatus.length === 0 && (
-                <div className="kogito-jobs-management__emptyState">
-                  <KogitoEmptyState
-                    type={KogitoEmptyStateType.Reset}
-                    title="No filter applied."
-                    body="Try applying at least one filter to see results"
-                    onClick={() => onResetToDefault()}
-                  />
-                </div>
-              )}
-            </>
           )}
           {isInitialLoadDone && (!isLoading || isLoadingMore) && (limit === pageSize || isLoadingMore) && (
             <LoadMore

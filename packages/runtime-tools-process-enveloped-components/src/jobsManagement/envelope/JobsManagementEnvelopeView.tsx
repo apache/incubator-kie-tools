@@ -19,11 +19,10 @@
 import React, { useMemo } from "react";
 import { useImperativeHandle, useState } from "react";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { JobsManagementChannelApi, JobsManagementInitArgs } from "../api";
+import { JobsManagementChannelApi, JobsManagementInitArgs, JobsManagementState } from "../api";
 import JobsManagement from "./components/JobsManagement/JobsManagement";
-import JobsManagementEnvelopeViewDriver from "./JobsManagementEnvelopeViewDriver";
 import "@patternfly/patternfly/patternfly.css";
-import { JobsManagementState, JobStatus } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { JobStatus } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OrderBy } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface JobsManagementEnvelopeViewApi {
@@ -48,7 +47,7 @@ export const JobsManagementEnvelopeView = React.forwardRef<JobsManagementEnvelop
       } as JobsManagementState,
     });
     const [isEnvelopeConnectedToChannel, setEnvelopeConnectedToChannel] = useState<boolean>(false);
-    const driver = useMemo(() => new JobsManagementEnvelopeViewDriver(props.channelApi), [props.channelApi]);
+
     useImperativeHandle(
       forwardedRef,
       () => ({
@@ -66,7 +65,7 @@ export const JobsManagementEnvelopeView = React.forwardRef<JobsManagementEnvelop
         <JobsManagement
           isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
           initialState={jobsManagementInitArgs.initialState}
-          driver={driver}
+          channelApi={props.channelApi}
         />
       </>
     );

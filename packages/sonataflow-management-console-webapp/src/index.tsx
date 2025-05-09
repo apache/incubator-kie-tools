@@ -28,7 +28,7 @@ import { onError } from "apollo-link-error";
 import { InMemoryCache, NormalizedCacheObject } from "apollo-cache-inmemory";
 import ManagementConsole from "./components/console/ManagementConsole/ManagementConsole";
 import ManagementConsoleRoutes from "./components/console/ManagementConsoleRoutes/ManagementConsoleRoutes";
-import { KeycloakUnavailablePage } from "@kie-tools/runtime-tools-components/src/common/components/KeycloakUnavailablePage";
+import { KeycloakUnavailablePage } from "@kie-tools/runtime-tools-components/dist/components/KeycloakUnavailablePage";
 import { ServerUnavailablePage } from "@kie-tools/runtime-tools-shared-webapp-components/dist/ServerUnavailablePage";
 import { UserContext } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
 import {

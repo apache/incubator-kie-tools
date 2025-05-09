@@ -30,7 +30,6 @@
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/react-hooks": "workspace:*",
     "@kie-tools/runtime-tools-components": "workspace:*",
-    "@kie-tools/runtime-tools-shared-enveloped-components": "workspace:*",
     "@kie-tools/runtime-tools-shared-gateway-api": "workspace:*",
     "@kie-tools/runtime-tools-shared-webapp-components": "workspace:*",
     "@kie-tools/runtime-tools-swf-enveloped-components": "workspace:*",

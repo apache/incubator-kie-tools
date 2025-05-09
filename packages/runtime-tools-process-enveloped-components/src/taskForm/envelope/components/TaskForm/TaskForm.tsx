@@ -16,24 +16,24 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import get from "lodash/get";
 import has from "lodash/has";
 import isEmpty from "lodash/isEmpty";
 import set from "lodash/set";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { TaskFormDriver } from "../../../api";
+import { TaskFormChannelApi } from "../../../api";
 import EmptyTaskForm from "../EmptyTaskForm/EmptyTaskForm";
 import TaskFormRenderer from "../TaskFormRenderer/TaskFormRenderer";
 import { parseTaskSchema, TaskDataAssignments } from "../utils/TaskFormDataUtils";
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 export interface TaskFormProps {
   userTask: UserTaskInstance;
   schema: Record<string, any>;
-  driver: TaskFormDriver;
+  channelApi: MessageBusClientApi<TaskFormChannelApi>;
   phases: string[];
 }
 
@@ -43,14 +43,7 @@ enum State {
   SUBMITTED,
 }
 
-export const TaskForm: React.FC<TaskFormProps & OUIAProps> = ({
-  userTask,
-  schema,
-  driver,
-  phases,
-  ouiaId,
-  ouiaSafe,
-}) => {
+export const TaskForm: React.FC<TaskFormProps> = ({ userTask, schema, channelApi, phases }) => {
   const [formData, setFormData] = useState<any>(null);
   const [formState, setFormState] = useState<State>(State.READY);
   const [taskFormSchema, setTaskFormSchema] = useState<Record<string, any>>();
@@ -60,23 +53,10 @@ export const TaskForm: React.FC<TaskFormProps & OUIAProps> = ({
     const parsedSchema = parseTaskSchema(schema);
     setTaskFormSchema(parsedSchema.schema);
     setTaskFormAssignments(parsedSchema.assignments);
-  }, []);
+  }, [schema]);
 
-  if (formState === State.SUBMITTING) {
-    return (
-      <Bullseye {...componentOuiaProps((ouiaId ? ouiaId : "task-form") + "-submit-spinner", "task-form", true)}>
-        <KogitoSpinner spinnerText={`Submitting for task ${userTask.referenceName} (${userTask.id.substring(0, 5)})`} />
-      </Bullseye>
-    );
-  }
-
-  if (formState === State.READY || formState === State.SUBMITTED) {
-    const doSubmit = async (
-      phase: string,
-      data: any,
-      onSuccess?: (response: any) => void,
-      onFailure?: (response: any) => void
-    ) => {
+  const doSubmit = useCallback(
+    async (phase: string, data: any, onSuccess?: (response: any) => void, onFailure?: (response: any) => void) => {
       try {
         setFormState(State.SUBMITTING);
         setFormData(data);
@@ -89,7 +69,7 @@ export const TaskForm: React.FC<TaskFormProps & OUIAProps> = ({
           }
         });
 
-        const result = await driver.doSubmit(phase, payload);
+        const result = await channelApi.requests.taskForm__doSubmit(userTask, phase, payload);
         if (onSuccess) {
           onSuccess(result);
         }
@@ -100,11 +80,22 @@ export const TaskForm: React.FC<TaskFormProps & OUIAProps> = ({
       } finally {
         setFormState(State.SUBMITTED);
       }
-    };
+    },
+    [channelApi.requests, taskFormAssignments, userTask]
+  );
 
+  if (formState === State.SUBMITTING) {
+    return (
+      <Bullseye>
+        <KogitoSpinner spinnerText={`Submitting for task ${userTask.referenceName} (${userTask.id.substring(0, 5)})`} />
+      </Bullseye>
+    );
+  }
+
+  if (formState === State.READY || formState === State.SUBMITTED) {
     if (!taskFormSchema) {
       return (
-        <Bullseye {...componentOuiaProps((ouiaId ? ouiaId : "task-form-") + "-loading-spinner", "task-form", true)}>
+        <Bullseye>
           <KogitoSpinner spinnerText={`Loading Task form...`} />
         </Bullseye>
       );
@@ -113,7 +104,6 @@ export const TaskForm: React.FC<TaskFormProps & OUIAProps> = ({
     if (isEmpty(taskFormSchema.properties)) {
       return (
         <EmptyTaskForm
-          {...componentOuiaProps((ouiaId ? ouiaId : "task-form") + "-empty-form", "task-form", ouiaSafe)}
           userTask={userTask}
           enabled={formState == State.READY}
           formSchema={taskFormSchema}
@@ -124,7 +114,6 @@ export const TaskForm: React.FC<TaskFormProps & OUIAProps> = ({
 
     return (
       <TaskFormRenderer
-        {...componentOuiaProps((ouiaId ? ouiaId : "task-form") + "-form-renderer", "task-form", ouiaSafe)}
         userTask={userTask}
         formSchema={taskFormSchema}
         formData={formData}

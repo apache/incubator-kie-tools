@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/src/types";
+import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { FormFilter } from "./FormsListEnvelopeApi";
 /**
  * Channel Api for Forms List

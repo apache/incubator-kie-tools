@@ -19,21 +19,21 @@
 import React, { ReactElement, useMemo, useState } from "react";
 import { DropdownItem, Dropdown, KebabToggle } from "@patternfly/react-core/deprecated";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { ProcessDetailsDriver } from "../../../api";
+import { ProcessDetailsChannelApi } from "../../../api";
 import { handleJobRescheduleUtil, jobCancel } from "../../../utils/Utils";
 import { Job } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { JobsDetailsModal } from "../../../../jobsManagement/envelope/components/JobsDetailsModal";
 import { JobsRescheduleModal } from "../../../../jobsManagement/envelope/components/JobsRescheduleModal";
 import { JobsCancelModal } from "../../../../jobsManagement/envelope/components/JobsCancelModal";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 interface IOwnProps {
   job: Job;
-  driver: ProcessDetailsDriver;
+  channelApi: MessageBusClientApi<ProcessDetailsChannelApi>;
 }
 
-const JobActionsKebab: React.FC<IOwnProps & OUIAProps> = ({ job, driver, ouiaId, ouiaSafe }) => {
+const JobActionsKebab: React.FC<IOwnProps> = ({ job, channelApi }) => {
   const [isKebabOpen, setIsKebabOpen] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [rescheduleError, setRescheduleError] = useState<string>("");
@@ -79,13 +79,13 @@ const JobActionsKebab: React.FC<IOwnProps & OUIAProps> = ({ job, driver, ouiaId,
       scheduleDate,
       job,
       handleRescheduleAction,
-      driver,
+      channelApi,
       setRescheduleError
     );
   };
 
   const handleCancelAction = async (): Promise<void> => {
-    await jobCancel(driver, job, setModalTitle, setModalContent);
+    await jobCancel(channelApi, job, setModalTitle, setModalContent);
     handleCancelModalToggle();
   };
 
@@ -171,7 +171,7 @@ const JobActionsKebab: React.FC<IOwnProps & OUIAProps> = ({ job, driver, ouiaId,
         aria-label="Job actions dropdown"
         aria-labelledby="Job actions dropdown"
         dropdownItems={dropdownItems()}
-        {...componentOuiaProps(ouiaId, "job-actions-kebab", ouiaSafe)}
+        className="job-actions-kebab"
       />
     </>
   );

@@ -19,8 +19,7 @@
 import React, { useMemo, FC, ReactElement } from "react";
 import { ApolloClient } from "apollo-client";
 import ProcessListContext from "./ProcessListContext";
-import { ProcessListGatewayApiImpl } from "./ProcessListGatewayApi";
-import { GraphQLProcessListQueries } from "./ProcessListQueries";
+import { ProcessListChannelApiImpl } from "./ProcessListChannelApiImpl";
 
 interface ProcessListContextProviderProps {
   apolloClient: ApolloClient<any>;
@@ -33,10 +32,8 @@ export const ProcessListContextProvider: FC<ProcessListContextProviderProps> = (
   children,
   options,
 }) => {
-  const gatewayApiImpl = useMemo(() => {
-    return new ProcessListGatewayApiImpl(new GraphQLProcessListQueries(apolloClient, options));
+  const processListChannelApiImpl = useMemo(() => {
+    return new ProcessListChannelApiImpl(apolloClient, options);
   }, [apolloClient, options]);
-  return <ProcessListContext.Provider value={gatewayApiImpl}>{children}</ProcessListContext.Provider>;
+  return <ProcessListContext.Provider value={processListChannelApiImpl}>{children}</ProcessListContext.Provider>;
 };
-
-export default ProcessListContextProvider;

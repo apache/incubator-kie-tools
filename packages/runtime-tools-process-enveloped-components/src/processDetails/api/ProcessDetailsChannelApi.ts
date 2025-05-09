@@ -25,9 +25,20 @@ import {
   TriggerableNode,
 } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
+export interface OnOpenProcessInstanceDetailsListener {
+  onOpen(id: string): void;
+}
+
+export interface ProcessDetailsUnSubscribeHandler {
+  unSubscribe: () => void;
+}
+
 export interface ProcessDetailsChannelApi {
-  processDetails__getProcessDiagram(data: ProcessInstance): Promise<SvgSuccessResponse | SvgErrorResponse>;
-  processDetails__handleProcessAbort(processInstance: ProcessInstance): Promise<void>;
+  processDetails__openProcessDetails(id: string): void;
+  processDetails__getProcessDetails(id: string): Promise<ProcessInstance>;
+  processDetails__getProcessDiagram(processInstance: ProcessInstance): Promise<SvgSuccessResponse | SvgErrorResponse>;
+  processDetails__getJobs(id: string): Promise<Job[]>;
+  processDetails__getTriggerableNodes(processInstance: ProcessInstance): Promise<TriggerableNode[]>;
   processDetails__cancelJob(job: Pick<Job, "id" | "endpoint">): Promise<JobOperationResult>;
   processDetails__rescheduleJob(
     job,
@@ -35,12 +46,12 @@ export interface ProcessDetailsChannelApi {
     repeatLimit: number | string,
     scheduleDate: Date
   ): Promise<{ modalTitle: string; modalContent: string }>;
-  processDetails__getTriggerableNodes(processInstance: ProcessInstance): Promise<TriggerableNode[]>;
+  processDetails__handleProcessAbort(processInstance: ProcessInstance): Promise<void>;
   processDetails__handleNodeTrigger(processInstance: ProcessInstance, node: TriggerableNode): Promise<void>;
-  processDetails__handleProcessVariableUpdate(processInstance: ProcessInstance, updatedJson: Record<string, unknown>);
-  processDetails__processDetailsQuery(id: string): Promise<ProcessInstance>;
-  processDetails__jobsQuery(id: string): Promise<Job[]>;
-  processDetails__openProcessDetails(id: string): void;
+  processDetails__handleProcessVariableUpdate(
+    processInstance: ProcessInstance,
+    updatedJson: Record<string, unknown>
+  ): Promise<Record<string, unknown>>;
   processDetails__handleProcessRetry(processInstance: ProcessInstance): Promise<void>;
   processDetails__handleNodeInstanceCancel(processInstance: ProcessInstance, node: NodeInstance): Promise<void>;
   processDetails__handleProcessSkip(processInstance: ProcessInstance): Promise<void>;
@@ -48,4 +59,7 @@ export interface ProcessDetailsChannelApi {
     processInstance: ProcessInstance,
     node: Pick<NodeInstance, "id">
   ): Promise<void>;
+  processDetails__onOpenProcessInstanceDetailsListener(
+    listener: OnOpenProcessInstanceDetailsListener
+  ): Promise<ProcessDetailsUnSubscribeHandler>;
 }

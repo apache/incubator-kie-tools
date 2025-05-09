@@ -17,11 +17,11 @@
  * under the License.
  */
 import React, { useContext } from "react";
-import { FormDetailsGatewayApi } from "./FormDetailsGatewayApi";
+import { FormDetailsChannelApi } from "@kie-tools/runtime-tools-process-enveloped-components/dist/formDetails";
 
-const FormDetailsContext = React.createContext<FormDetailsGatewayApi>(null);
+const FormDetailsContext = React.createContext<FormDetailsChannelApi>(null);
 
-export const useFormDetailsGatewayApi = (): FormDetailsGatewayApi =>
-  useContext<FormDetailsGatewayApi>(FormDetailsContext);
+export const useFormDetailsChannelApi = (): FormDetailsChannelApi =>
+  useContext<FormDetailsChannelApi>(FormDetailsContext);
 
 export default FormDetailsContext;

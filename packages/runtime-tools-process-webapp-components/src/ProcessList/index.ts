@@ -16,6 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export * from "./ProcessListGatewayApi";
+export * from "./ProcessListChannelApiImpl";
 export * from "./ProcessListContext";
 export * from "./ProcessListContextProvider";

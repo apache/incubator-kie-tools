@@ -18,10 +18,10 @@
  */
 import React, { useImperativeHandle, useState } from "react";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { ProcessDefinition, ProcessFormChannelApi } from "../api";
+import { ProcessFormChannelApi } from "../api";
 import "@patternfly/patternfly/patternfly.css";
-import ProcessForm from "./components/ProcessForm/ProcessForm";
-import { ProcessFormEnvelopeViewDriver } from "./ProcessFormEnvelopeViewDriver";
+import ProcessForm from "./components/ProcessForm";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export interface ProcessFormEnvelopeViewApi {
   initialize: (processDefinitionData: ProcessDefinition) => void;
@@ -30,6 +30,8 @@ export interface ProcessFormEnvelopeViewApi {
 interface Props {
   channelApi: MessageBusClientApi<ProcessFormChannelApi>;
   targetOrigin: string;
+  customFormDisplayerEnvelopePath?: string;
+  shouldLoadCustomForms?: boolean;
 }
 
 export const ProcessFormEnvelopeView = React.forwardRef<ProcessFormEnvelopeViewApi, Props>((props, forwardedRef) => {
@@ -54,8 +56,10 @@ export const ProcessFormEnvelopeView = React.forwardRef<ProcessFormEnvelopeViewA
     <ProcessForm
       isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
       processDefinition={processDefinition}
-      driver={new ProcessFormEnvelopeViewDriver(props.channelApi)}
+      channelApi={props.channelApi}
       targetOrigin={props.targetOrigin}
+      customFormDisplayerEnvelopePath={props.customFormDisplayerEnvelopePath}
+      shouldLoadCustomForms={props.shouldLoadCustomForms}
     />
   );
 });

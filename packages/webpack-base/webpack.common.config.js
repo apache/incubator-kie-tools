@@ -57,7 +57,9 @@ module.exports = (webpackEnv) => {
       ]
     : [];
 
-  const importsNotUsedAsValues = live ? { importsNotUsedAsValues: "preserve" } : {};
+  // importsNotUsedAsValues was deprecated, verbatimModuleSyntax replaces it
+  // see https://www.typescriptlang.org/tsconfig/#importsNotUsedAsValues
+  const verbatimModuleSyntax = live ? { verbatimModuleSyntax: "preserve" } : {};
 
   return {
     mode,
@@ -82,7 +84,7 @@ module.exports = (webpackEnv) => {
               options: {
                 transpileOnly,
                 compilerOptions: {
-                  ...importsNotUsedAsValues,
+                  ...verbatimModuleSyntax,
                   sourceMap: sourceMaps,
                 },
               },

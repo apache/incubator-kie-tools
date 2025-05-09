@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ProcessListState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { ProcessListState } from "./ProcessListApi";
 
 export interface ProcessListEnvelopeApi {
   processList__init(association: Association, initArgs: ProcessListInitArgs): Promise<void>;
@@ -26,11 +26,6 @@ export interface ProcessListEnvelopeApi {
 export interface Association {
   origin: string;
   envelopeServerId: string;
-}
-
-export interface QueryPage {
-  offset: number;
-  limit: number;
 }
 
 export interface ProcessListInitArgs {

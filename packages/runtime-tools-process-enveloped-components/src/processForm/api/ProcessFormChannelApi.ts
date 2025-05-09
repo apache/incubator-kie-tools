@@ -16,11 +16,33 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
-import { ProcessDefinition } from "./ProcessFormEnvelopeApi";
+
+export interface OnStartProcessListener {
+  onSuccess: (processInstanceId: string) => void;
+  onError: (error: {
+    response: {
+      ok?: boolean;
+      statusText?: string;
+      data?: {
+        message: string;
+      };
+    };
+    message: string;
+  }) => void;
+}
+
+export interface UnSubscribeHandler {
+  unSubscribe: () => void;
+}
 
 export interface ProcessFormChannelApi {
   processForm__getProcessFormSchema(processDefinitionData: ProcessDefinition): Promise<Record<string, any>>;
   processForm__getCustomForm(processDefinitionData: ProcessDefinition): Promise<Form>;
-  processForm__startProcess(formData: any): Promise<void>;
+  processForm__startProcess(processDefinitionData: ProcessDefinition, formData: any): Promise<string>;
+  processForm__getProcessDefinitionSvg(processDefinitionData: ProcessDefinition): Promise<string>;
+  processForm__setBusinessKey(bk: string): void;
+  processForm__getBusinessKey(): Promise<string>;
+  processForm__onStartProcessListen(listener: OnStartProcessListener): Promise<UnSubscribeHandler>;
 }

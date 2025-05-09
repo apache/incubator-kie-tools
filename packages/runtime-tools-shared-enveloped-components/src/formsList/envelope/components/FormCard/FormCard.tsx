@@ -23,7 +23,7 @@ import { FormGroup, Form } from "@patternfly/react-core/dist/js/components/Form"
 import { Card, CardBody, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
 import { TextVariants, Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/src/types";
+import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { FormsListDriver } from "../../../api/FormsListDriver";
 import Moment from "react-moment";
 export interface FormCardProps {

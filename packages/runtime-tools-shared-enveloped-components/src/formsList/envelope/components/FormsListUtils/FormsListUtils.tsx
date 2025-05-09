@@ -21,7 +21,7 @@ import React from "react";
 import Moment from "react-moment";
 import { DataTableColumn } from "@kie-tools/runtime-tools-components/dist/components/DataTable";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/src/types";
+import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export const getFormTypeLabel = (value: string) => {
   switch (value) {

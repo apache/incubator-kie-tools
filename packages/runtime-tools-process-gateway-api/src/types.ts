@@ -72,11 +72,6 @@ export interface JobsSortBy {
   executionCounter?: OrderBy;
 }
 
-export interface JobsManagementState {
-  filters: JobStatus[];
-  orderBy: JobsSortBy;
-}
-
 export interface BulkProcessInstanceActionResponse {
   successProcessInstances: ProcessInstance[];
   failedProcessInstances: ProcessInstance[];
@@ -125,6 +120,16 @@ export interface ProcessInstance {
   source?: string;
 }
 
+export interface ProcessDefinition {
+  processName: string;
+  endpoint: string;
+}
+
+export interface ProcessResponse {
+  id: string;
+  processdata: JsonType;
+}
+
 export interface ProcessInstanceFilter {
   status: ProcessInstanceState[];
   businessKey?: string[];
@@ -135,21 +140,6 @@ export interface ProcessListSortBy {
   state?: OrderBy;
   start?: OrderBy;
   lastUpdate?: OrderBy;
-}
-
-export interface ProcessListState {
-  filters: ProcessInstanceFilter;
-  sortBy: ProcessListSortBy;
-}
-
-export interface ProcessDefinition {
-  processName: string;
-  endpoint: string;
-}
-
-export interface ProcessResponse {
-  id: string;
-  processdata: JsonType;
 }
 
 export type UserTaskInstance = {
@@ -193,3 +183,18 @@ export type UserTaskTransitionInfo = {
   transitionId: string;
   data: any;
 };
+
+export interface TaskListQueryFilter {
+  taskStates: string[];
+  taskNames: string[];
+}
+
+export interface TaskListSortBy {
+  property: string;
+  direction: "asc" | "desc";
+}
+
+export interface QueryPage {
+  offset: number;
+  limit: number;
+}

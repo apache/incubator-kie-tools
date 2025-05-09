@@ -17,10 +17,8 @@
  * under the License.
  */
 import React, { useContext } from "react";
-import { FormsListGatewayApi } from "./FormsListGatewayApi";
+import { FormsListChannelApi } from "@kie-tools/runtime-tools-process-enveloped-components/dist/formsList";
 
-const FormsListContext = React.createContext<FormsListGatewayApi>(null);
+export const FormsListContext = React.createContext<FormsListChannelApi>(null);
 
-export const useFormsListGatewayApi = (): FormsListGatewayApi => useContext<FormsListGatewayApi>(FormsListContext);
-
-export default FormsListContext;
+export const useFormsListChannelApi = (): FormsListChannelApi => useContext<FormsListChannelApi>(FormsListContext);

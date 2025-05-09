@@ -22,7 +22,6 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { PencilAltIcon } from "@patternfly/react-icons/dist/js/icons/pencil-alt-icon";
 import { CheckIcon } from "@patternfly/react-icons/dist/js/icons/check-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 
 export interface InlineEditApi {
   reset: () => void;
@@ -30,14 +29,18 @@ export interface InlineEditApi {
 
 interface InlineEditProps {
   setBusinessKey: (businessKey: string) => void;
-  getBusinessKey: () => string;
+  getBusinessKey: () => Promise<string>;
 }
 
-export const InlineEdit = React.forwardRef<InlineEditApi, InlineEditProps & OUIAProps>(
-  ({ setBusinessKey, getBusinessKey, ouiaId, ouiaSafe }, forwardedRef) => {
+export const InlineEdit = React.forwardRef<InlineEditApi, InlineEditProps>(
+  ({ setBusinessKey, getBusinessKey }, forwardedRef) => {
     const [isEditable, setIsEditable] = useState<boolean>(false);
     const [inputValue, setInputValue] = useState<string>("");
-    const [currentBusinessKey, setCurrentBusinessKey] = useState<string>(getBusinessKey());
+    const [currentBusinessKey, setCurrentBusinessKey] = useState<string>("");
+
+    useEffect(() => {
+      getBusinessKey().then((key) => setCurrentBusinessKey(key));
+    }, [getBusinessKey]);
 
     useEffect(() => {
       if (currentBusinessKey.length === 0) {
@@ -69,11 +72,7 @@ export const InlineEdit = React.forwardRef<InlineEditApi, InlineEditProps & OUIA
     );
 
     return (
-      <div
-        {...componentOuiaProps(ouiaId, "inline-edit", ouiaSafe)}
-        className={`pf-v5-c-inline-edit ${isEditable && "pf-m-inline-editable"}`}
-        id="inline-edit-toggle-example"
-      >
+      <div className={`pf-v5-c-inline-edit ${isEditable && "pf-v5-m-inline-editable"}`} id="inline-edit-toggle-example">
         <div className="pf-v5-c-inline-edit__group">
           <div className="pf-v5-c-inline-edit__value" id="single-editable-example-label">
             {currentBusinessKey.length > 0 ? (
@@ -116,5 +115,3 @@ export const InlineEdit = React.forwardRef<InlineEditApi, InlineEditProps & OUIA
     );
   }
 );
-
-export default InlineEdit;

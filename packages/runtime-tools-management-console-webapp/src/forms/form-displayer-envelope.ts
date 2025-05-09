@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import * as FormDisplayerEnvelope from "@kie-tools/runtime-tools-shared-enveloped-components/dist/formDisplayer";
+import * as FormDisplayerEnvelope from "@kie-tools/runtime-tools-process-enveloped-components/dist/formDisplayer";
 import type { EnvelopeBusMessage } from "@kie-tools-core/envelope-bus/dist/api";
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
 

@@ -18,3 +18,7 @@
  */
 // eslint-disable-next-line  @typescript-eslint/no-empty-interface
 export interface ProcessDetailsApi {}
+
+export interface ProcessDetailsState {
+  id: string;
+}
