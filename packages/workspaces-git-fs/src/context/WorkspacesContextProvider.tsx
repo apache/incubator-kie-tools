@@ -168,6 +168,7 @@ export function WorkspacesContextProvider(props: Props) {
       workspaceId: string;
       remote: string;
       ref: string;
+      authInfo?: { username: string; password: string };
       insecurelyDisableTlsCertificateValidation?: boolean;
     }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
