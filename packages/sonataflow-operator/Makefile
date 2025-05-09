@@ -511,6 +511,7 @@ delete-cluster: install-kind
 .PHONY: update-patch
 update-patch:
 	@echo "🔧 Updating Kustomize patch file..."
+	$(eval PIN_TOOL ?= $$(shell build-env sonataFlowOperator.pinImageSHABundleTool)) # set to docker, podman, or skopeo if needed
 	$(eval PARAMS := \
 		RELATED_IMAGE_JOBS_SERVICE_POSTGRESQL=$$(shell build-env sonataFlowOperator.kogitoJobsServicePostgresqlImage) \
 		RELATED_IMAGE_JOBS_SERVICE_EPHEMERAL=$$(shell build-env sonataFlowOperator.kogitoJobsServiceEphemeralImage) \
@@ -523,6 +524,6 @@ update-patch:
 		echo "⚠️  No variables resolved. Skipping updates."; \
 	else \
 		echo "✅ Resolved:"; echo "$(PARAMS)" | tr ' ' '\n'; \
-		python ./hack/update_patch_env.py $(PARAMS); \
+		python ./hack/update_patch_env.py "$(PIN_TOOL)" $(PARAMS); \
 		echo "✅ Patch updated!"; \
 	fi

@@ -18,12 +18,49 @@
 from ruamel.yaml import YAML
 import re
 import sys
+import subprocess
 
 PATCH_FILE = "config/manager/manager_env_patch.yaml"
 BUILDER_DOCKERFILE = "config/manager/SonataFlow-Builder.containerfile"
 
 yaml = YAML()
 yaml.preserve_quotes = True
+
+def resolve_digest(tool, image):
+    if not tool:
+        return image  # no digest pinning if tool is empty
+    if tool not in ["docker", "podman", "skopeo"]:
+        raise ValueError(f"Unsupported tool for digest resolution: {tool}")
+
+    try:
+        if tool == "docker":
+            inspect = subprocess.check_output([
+                "docker", "buildx", "imagetools", "inspect", image
+            ], stderr=subprocess.DEVNULL, text=True)
+            match = re.search(r'sha256:[a-f0-9]+', inspect)
+            if match:
+                digest = match.group(0)
+                return f"{image.split('@')[0].split(':')[0]}@{digest}"
+        elif tool == "podman":
+            inspect = subprocess.check_output([
+                "podman", "image", "inspect", "--format", "{{.Digest}}", image
+            ], stderr=subprocess.DEVNULL, text=True).strip()
+            if inspect.startswith("sha256"):
+                return f"{image.split('@')[0].split(':')[0]}@{inspect}"
+        elif tool == "skopeo":
+            inspect = subprocess.check_output([
+                "skopeo", "inspect", f"docker://{image}"
+            ], stderr=subprocess.DEVNULL, text=True)
+            match = re.search(r'"Digest":\s*"(sha256:[a-f0-9]+)"', inspect)
+            if match:
+                digest = match.group(1)
+                return f"{image.split('@')[0].split(':')[0]}@{digest}"
+
+        print(f"⚠️ Could not resolve digest for {image}, using as-is")
+        return image
+    except subprocess.CalledProcessError:
+        print(f"⚠️ Could not resolve digest for {image}, using as-is")
+        return image
 
 def update_kustomize_patch(env_var_mappings):
     with open(PATCH_FILE, "r") as file:
@@ -65,13 +102,16 @@ def update_dockerfile(base_image_tag):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python update_patch_env.py <ENV_VAR1=value1> <ENV_VAR2=value2> ...")
+        print("Usage: python update_patch_env.py <TOOL> <ENV_VAR1=value1> <ENV_VAR2=value2> ...")
         sys.exit(1)
 
+    tool = sys.argv[1]
+    mappings = sys.argv[2:]
+
     env_mappings = {}
-    for mapping in sys.argv[1:]:
+    for mapping in mappings:
         k, v = mapping.split("=", 1)
-        env_mappings[k] = v
+        env_mappings[k] = resolve_digest(tool, v) if k.startswith("RELATED_IMAGE_") else v
 
     update_kustomize_patch(env_mappings)
 
