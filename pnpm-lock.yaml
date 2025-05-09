@@ -4570,6 +4570,9 @@ importers:
       '@types/react-dom':
         specifier: ^17.0.5
         version: 17.0.8
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
