@@ -39,7 +39,7 @@ export class ExtendedServicesClient {
 
   public async result(payload: ExtendedServicesModelPayload): Promise<ExtendedServicesDmnResult> {
     if (!this.isPayloadValid(payload)) {
-      return { messages: [] };
+      return { messages: [], invalidElementPaths: [] };
     }
 
     const response = await fetch(this.DMN_JIT_EXECUTOR_DMN_RESULT_URL, {
