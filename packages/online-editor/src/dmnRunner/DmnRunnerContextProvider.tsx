@@ -330,11 +330,11 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     [props.dmnLanguageService, props.workspaceFile.relativePath, props.workspaceFile.workspaceId, workspaces]
   );
 
-  const findDecisionIdIdBySourceId = useMemo(
-    () => (sourceid: any) => {
+  const findDecisionIdIdBySourceId = useCallback(
+    (sourceId: string) => {
       if (!Array.isArray(invalidElementPaths)) return "";
       for (const path of invalidElementPaths) {
-        if (path.includes(sourceid)) {
+        if (path.includes(sourceId)) {
           return path[0];
         }
       }
