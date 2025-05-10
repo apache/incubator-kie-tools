@@ -46,6 +46,11 @@ module.exports = composeEnv([rootEnv, sonataflowBuilderImageEnv, sonataflowDevMo
       default: rootEnv.env.root.streamName,
       description: "Tag version of this image. E.g., `main` or `10.0.x` or `10.0.0",
     },
+    SONATAFLOW_OPERATOR__platformTag: {
+      default: rootEnv.env.root.streamName,
+      description:
+        "Tag version the platform Tag - The default tag used for all the images managed by the operator. It changes the version.go file. E.g., `main` or `10.0.x` or `10.0.0",
+    },
     SONATAFLOW_OPERATOR__sonataflowBuilderImage: {
       default: `${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.registry}/${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.account}/${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.name}:${sonataflowBuilderImageEnv.env.sonataflowBuilderImage.buildTag}`,
       description: "Sonataflow Builder image",
@@ -82,6 +87,7 @@ module.exports = composeEnv([rootEnv, sonataflowBuilderImageEnv, sonataflowDevMo
         account: getOrDefault(this.vars.SONATAFLOW_OPERATOR__account),
         name: getOrDefault(this.vars.SONATAFLOW_OPERATOR__name),
         buildTag: getOrDefault(this.vars.SONATAFLOW_OPERATOR__buildTag),
+        platformTag: getOrDefault(this.vars.SONATAFLOW_OPERATOR__platformTag),
         version: require("../package.json").version,
         sonataflowBuilderImage: getOrDefault(this.vars.SONATAFLOW_OPERATOR__sonataflowBuilderImage),
         sonataflowDevModeImage: getOrDefault(this.vars.SONATAFLOW_OPERATOR__sonataflowDevModeImage),

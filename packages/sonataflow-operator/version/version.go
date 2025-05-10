@@ -20,7 +20,8 @@ package version
 // Don't change it manually, use the make bump-version <version>
 const operatorVersion = "0.0.0"
 
-const tagVersion = "main"
+// Don't change it manually, it depends on the bump-version recipe
+const platformTagVersion = "main"
 
 // GetOperatorVersion gets the current operator version
 func GetOperatorVersion() string {
@@ -29,5 +30,5 @@ func GetOperatorVersion() string {
 
 // GetImageTagVersion gets the current tag version for the published images
 func GetImageTagVersion() string {
-	return tagVersion
+	return platformTagVersion
 }
