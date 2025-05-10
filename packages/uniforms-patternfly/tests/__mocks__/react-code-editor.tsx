@@ -17,18 +17,19 @@
  * under the License.
  */
 
-const { config, jestSetupPath, styleMock, typescriptTransform } = require("@kie-tools/jest-base/jest.config");
+import * as React from "react";
+import { CodeEditor as PFCodeEditor, CodeEditorProps } from "@patternfly/react-code-editor";
+export { Language, CodeEditorProps } from "@patternfly/react-code-editor";
 
-/** @type {import('ts-jest').JestConfigWithTsJest} */
-module.exports = {
-  ...config,
-  testEnvironment: "jsdom",
-  moduleNameMapper: {
-    "^@patternfly/react-code-editor/dist/js/components/CodeEditor$": "<rootDir>/tests/__mocks__/react-code-editor.tsx",
-    ...styleMock,
-  },
-  setupFilesAfterEnv: [jestSetupPath],
-  transform: {
-    ...typescriptTransform,
-  },
+export const CodeEditor = ({ isReadOnly, height, language, name, value, code, onChange }: CodeEditorProps) => {
+  return (
+    <textarea
+      data-testid="code-editor-textarea"
+      value={code}
+      readOnly={isReadOnly}
+      onChange={(e) => onChange?.(e.target.value, e as any)}
+      style={{ height }}
+      data-language={language}
+    />
+  );
 };
