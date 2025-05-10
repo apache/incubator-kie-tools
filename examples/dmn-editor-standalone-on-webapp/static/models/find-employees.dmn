@@ -1,34 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!--
-  ~ Licensed to the Apache Software Foundation (ASF) under one
-  ~ or more contributor license agreements.  See the NOTICE file
-  ~ distributed with this work for additional information
-  ~ regarding copyright ownership.  The ASF licenses this file
-  ~ to you under the Apache License, Version 2.0 (the
-  ~ "License"); you may not use this file except in compliance
-  ~ with the License.  You may obtain a copy of the License at
-  ~ 
-  ~   http://www.apache.org/licenses/LICENSE-2.0
-  ~ 
-  ~ Unless required by applicable law or agreed to in writing,
-  ~ software distributed under the License is distributed on an
-  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  ~ KIND, either express or implied.  See the License for the
-  ~ specific language governing permissions and limitations
-  ~ under the License.      
--->
 <dmn:definitions
-  xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/"
+  xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/"
   xmlns="https://kie.apache.org/dmn/_B0DC5D03-19D0-4469-83F7-635BB38EFE1A"
-  xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
-  xmlns:kie="https://kie.apache.org/dmn/extensions/1.0"
-  xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/"
+  xmlns:feel="https://www.omg.org/spec/DMN/20230324/FEEL/"
+  xmlns:kie="https://kie.org/dmn/extensions/1.0"
+  xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
   xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
   xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
-  id="_8587712A-CB7A-44D8-8D0E-1F855A953BE2"
+  id="_E0E67615-1C50-455C-8737-18ED979F0B75"
   name="Find Employees"
-  typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/"
-  namespace="https://kie.apache.org/dmn/_B0DC5D03-19D0-4469-83F7-635BB38EFE1A"
+  typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+  namespace="https://kie.apache.org/dmn/_CD364A4A-7414-4136-BB98-16CE5B73B134"
 >
   <dmn:extensionElements />
   <dmn:itemDefinition id="_376095D6-1F86-4217-9D48-EDD96D0B3018" name="tEmployee" isCollection="false">
@@ -51,7 +33,7 @@
   <dmn:itemDefinition id="_D9772276-370E-4DD3-A41B-9403A8D65DE1" name="tDept" isCollection="false">
     <dmn:typeRef>string</dmn:typeRef>
     <dmn:allowedValues kie:constraintType="enumeration" id="_B58F7E50-3BB3-49BF-8037-D7BB67F2D5A7">
-      <dmn:text>"Sales", "Engineering", "Management"</dmn:text>
+      <dmn:text>&quot;Sales&quot;, &quot;Engineering&quot;, &quot;Management&quot;</dmn:text>
     </dmn:allowedValues>
   </dmn:itemDefinition>
   <dmn:itemDefinition id="_86032558-6446-47EA-94FF-9EED2DE49500" name="tEmployees" isCollection="true">
@@ -60,7 +42,7 @@
   <dmn:itemDefinition id="_565D43BF-6A26-445F-B74D-2E0E068C3469" name="tKnowledge" isCollection="false">
     <dmn:typeRef>string</dmn:typeRef>
     <dmn:allowedValues kie:constraintType="enumeration" id="_1C55BD13-18E9-4C36-8114-C3B780A0442D">
-      <dmn:text>"Git", "Java", "Scrum", "TypeScript"</dmn:text>
+      <dmn:text>&quot;Git&quot;, &quot;Java&quot;, &quot;Scrum&quot;, &quot;TypeScript&quot;</dmn:text>
     </dmn:allowedValues>
   </dmn:itemDefinition>
   <dmn:itemDefinition id="_8F50694C-1210-42B7-AB93-C839B8DA61CF" name="tKnowledges" isCollection="true">
@@ -74,13 +56,13 @@
       <dmn:formalParameter id="_2B8160CE-1F54-42D7-B111-706FE3BF2012" name="knowledge" typeRef="tKnowledge" />
       <dmn:formalParameter id="_810CD0CE-7F46-4827-B19B-BFBD543BB3D9" name="dept" typeRef="tDept" />
       <dmn:context id="_1B96445B-523F-49B3-99BE-308A2F3CFBA5">
-        <dmn:contextEntry>
+        <dmn:contextEntry id="_54DD3DCF-15EA-4C5B-A655-3862338F886A">
           <dmn:variable id="_A762CB8E-56C3-45AE-B59F-731E4A0CA73F" name="Employees by" typeRef="tEmployees" />
           <dmn:literalExpression id="_BC626016-B599-47A1-ABD6-67A2C7F761CE">
             <dmn:text>employees[item.Dept = dept]</dmn:text>
           </dmn:literalExpression>
         </dmn:contextEntry>
-        <dmn:contextEntry>
+        <dmn:contextEntry id="_4E0B4DD7-AD3C-42D7-9207-2C34C7B8FC69">
           <dmn:variable
             id="_C772ADED-2499-4AF1-9C99-63AA17901EBB"
             name="Employees with Knowledge"
@@ -93,7 +75,7 @@ then e
 else null</dmn:text>
           </dmn:literalExpression>
         </dmn:contextEntry>
-        <dmn:contextEntry>
+        <dmn:contextEntry id="_0F2D2A4D-7C04-4DDA-913D-26F923F7A2B7">
           <dmn:literalExpression id="_049ECA86-1971-48B7-86FF-7E89B399074A">
             <dmn:text>for e in Employees with Knowledge[item != null] return e</dmn:text>
           </dmn:literalExpression>
@@ -114,13 +96,13 @@ else null</dmn:text>
           <dmn:text>32</dmn:text>
         </dmn:literalExpression>
         <dmn:literalExpression id="_7797EE7A-674F-4C23-9492-8978F7DD1F21">
-          <dmn:text>"Jane Doe"</dmn:text>
+          <dmn:text>&quot;Jane Doe&quot;</dmn:text>
         </dmn:literalExpression>
         <dmn:literalExpression id="_CFBB6D19-68E2-4195-AF33-90EBD1617BBE">
-          <dmn:text>"Management"</dmn:text>
+          <dmn:text>&quot;Management&quot;</dmn:text>
         </dmn:literalExpression>
         <dmn:literalExpression id="_2AC6F43D-DE71-4E4C-8A6B-7AEBBF34F66F">
-          <dmn:text>["Scrum", "Git"]</dmn:text>
+          <dmn:text>[&quot;Scrum&quot;, &quot;Git&quot;]</dmn:text>
         </dmn:literalExpression>
       </dmn:row>
       <dmn:row id="_358F4D9D-7F2D-4C0D-B1E0-2AD0ACB0DC87">
@@ -128,13 +110,13 @@ else null</dmn:text>
           <dmn:text>555</dmn:text>
         </dmn:literalExpression>
         <dmn:literalExpression id="_4C2A6CE6-51E7-4E96-9CB3-F7036DD72913">
-          <dmn:text>"John Doe"</dmn:text>
+          <dmn:text>&quot;John Doe&quot;</dmn:text>
         </dmn:literalExpression>
         <dmn:literalExpression id="_5A6A6B53-A84F-4358-BF59-B653F9C9394E">
-          <dmn:text>"Engineering"</dmn:text>
+          <dmn:text>&quot;Engineering&quot;</dmn:text>
         </dmn:literalExpression>
         <dmn:literalExpression id="_56769F77-9DA7-4FEF-8940-A5416DF8D869">
-          <dmn:text>["TypeScript", "Java", "Git"]</dmn:text>
+          <dmn:text>[&quot;TypeScript&quot;, &quot;Java&quot;, &quot;Git&quot;]</dmn:text>
         </dmn:literalExpression>
       </dmn:row>
       <dmn:row id="_AAA8DCAB-C979-4028-AE29-262975C9DEE2">
@@ -142,13 +124,13 @@ else null</dmn:text>
           <dmn:text>4567</dmn:text>
         </dmn:literalExpression>
         <dmn:literalExpression id="_02142673-C3DB-42C2-BE0C-B4D984015691">
-          <dmn:text>"Richard Roe"</dmn:text>
+          <dmn:text>&quot;Richard Roe&quot;</dmn:text>
         </dmn:literalExpression>
         <dmn:literalExpression id="_0544709B-37E7-4741-9D88-4D8D7E1C1342">
-          <dmn:text>"Sales"</dmn:text>
+          <dmn:text>&quot;Sales&quot;</dmn:text>
         </dmn:literalExpression>
         <dmn:literalExpression id="_37E83F66-710D-427E-87D4-DC1547E67153">
-          <dmn:text>["Scrum"]</dmn:text>
+          <dmn:text>[&quot;Scrum&quot;]</dmn:text>
         </dmn:literalExpression>
       </dmn:row>
       <dmn:row id="_DBF7C3FB-251B-4194-AB3A-5E196D433CA4">
@@ -156,13 +138,13 @@ else null</dmn:text>
           <dmn:text>612</dmn:text>
         </dmn:literalExpression>
         <dmn:literalExpression id="_008B8BAA-D9B8-48AB-A6A6-DFD259960738">
-          <dmn:text>"Foo Bar"</dmn:text>
+          <dmn:text>&quot;Foo Bar&quot;</dmn:text>
         </dmn:literalExpression>
         <dmn:literalExpression id="_1F184F9F-BD11-4A38-A199-10CD59793279">
-          <dmn:text>"Engineering"</dmn:text>
+          <dmn:text>&quot;Engineering&quot;</dmn:text>
         </dmn:literalExpression>
         <dmn:literalExpression id="_FA1293F9-4059-4928-9528-CA8D89956CFE">
-          <dmn:text>["TypeScript", "Git"]</dmn:text>
+          <dmn:text>[&quot;TypeScript&quot;, &quot;Git&quot;]</dmn:text>
         </dmn:literalExpression>
       </dmn:row>
     </dmn:relation>
@@ -281,65 +263,65 @@ else null</dmn:text>
         dmnElementRef="_F08537C6-DD4C-46F2-9709-61B43DF7AB0C"
         isCollapsed="false"
       >
-        <dmndi:DMNStyle>
+        <dmndi:DMNStyle id="_900F3A92-E0E7-4FEF-BA6D-997E8CE72AAF">
           <dmndi:FillColor red="255" green="255" blue="255" />
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
         <dc:Bounds x="430" y="233" width="100" height="50" />
-        <dmndi:DMNLabel />
+        <dmndi:DMNLabel id="_1DCA8415-3C11-4C70-832F-E29A7783B5E3" />
       </dmndi:DMNShape>
       <dmndi:DMNShape
         id="dmnshape-drg-_7E27D2CF-13CA-4EF5-945C-0E7EB26E89CF"
         dmnElementRef="_7E27D2CF-13CA-4EF5-945C-0E7EB26E89CF"
         isCollapsed="false"
       >
-        <dmndi:DMNStyle>
+        <dmndi:DMNStyle id="_B536CAA8-0D4F-42E0-A5E7-E380E1DEF23F">
           <dmndi:FillColor red="255" green="255" blue="255" />
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
         <dc:Bounds x="617" y="341" width="100" height="50" />
-        <dmndi:DMNLabel />
+        <dmndi:DMNLabel id="_EF90A65F-328F-4177-B295-EC41397D4F01" />
       </dmndi:DMNShape>
       <dmndi:DMNShape
         id="dmnshape-drg-_387B7263-7122-468B-9757-F1F617ABCA6B"
         dmnElementRef="_387B7263-7122-468B-9757-F1F617ABCA6B"
         isCollapsed="false"
       >
-        <dmndi:DMNStyle>
+        <dmndi:DMNStyle id="_1EEEAA8B-A3D4-42BD-9E5B-B85FEF9B7530">
           <dmndi:FillColor red="255" green="255" blue="255" />
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
         <dc:Bounds x="431" y="341" width="100" height="50" />
-        <dmndi:DMNLabel />
+        <dmndi:DMNLabel id="_F3442E38-6EBC-4218-BD8F-A9EAD69D0E4C" />
       </dmndi:DMNShape>
       <dmndi:DMNShape
         id="dmnshape-drg-_FC002A20-9A6F-4461-A568-01946BE5CD6C"
         dmnElementRef="_FC002A20-9A6F-4461-A568-01946BE5CD6C"
         isCollapsed="false"
       >
-        <dmndi:DMNStyle>
+        <dmndi:DMNStyle id="_47B67698-7CFC-4FFA-B470-795519268D05">
           <dmndi:FillColor red="255" green="255" blue="255" />
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
         <dc:Bounds x="430" y="473" width="100" height="50" />
-        <dmndi:DMNLabel />
+        <dmndi:DMNLabel id="_0B3B0D67-4E6A-4B32-B91F-D0AA7262885B" />
       </dmndi:DMNShape>
       <dmndi:DMNShape
         id="dmnshape-drg-_F50A02B2-37C8-4824-B416-161A42F7D389"
         dmnElementRef="_F50A02B2-37C8-4824-B416-161A42F7D389"
         isCollapsed="false"
       >
-        <dmndi:DMNStyle>
+        <dmndi:DMNStyle id="_DE0D2C4D-C800-43EB-A856-22493B406809">
           <dmndi:FillColor red="255" green="255" blue="255" />
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
         <dc:Bounds x="244" y="473" width="100" height="50" />
-        <dmndi:DMNLabel />
+        <dmndi:DMNLabel id="_56AD0E86-5A30-41B3-B431-B342D55057A5" />
       </dmndi:DMNShape>
       <dmndi:DMNEdge
         id="dmnedge-drg-_94DFCFD0-CB4E-4CDC-A73E-8278FA1E32FB-AUTO-TARGET"
