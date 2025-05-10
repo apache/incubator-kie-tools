@@ -201,44 +201,67 @@ export function useDeployDropdownItems(props: Props) {
     [devMode.isEnabled, props.workspaceFile.name]
   );
 
+  const validationWarningAlert = useGlobalAlert(
+    useCallback(({ close }) => {
+      return (
+        <Alert
+          className="pf-v5-u-mb-md"
+          variant="warning"
+          title={<>Please resolve the validation errors in your workflow.</>}
+          aria-live="polite"
+          data-testid="alert-validation-warning"
+          actionClose={<AlertActionCloseButton onClose={close} />}
+        />
+      );
+    }, [])
+  );
+
   const onSetup = useCallback(() => {
     history.push(routes.settings.openshift.path({}));
   }, [history]);
 
   const onDeploy = useCallback(() => {
-    openshift.setConfirmDeployModalOpen(true);
-  }, [openshift]);
+    if (notifications.length > 0) {
+      validationWarningAlert.show();
+    } else {
+      openshift.setConfirmDeployModalOpen(true);
+    }
+  }, [openshift, validationWarningAlert, notifications]);
 
   const onUploadDevMode = useCallback(async () => {
-    devModeUploadingAlert.show();
-    const result = await devModeDispatch.upload({
-      targetSwfFile: props.workspaceFile,
-      allFiles: props.workspace.files,
-    });
-    devModeUploadingAlert.close();
-
-    if (result.success) {
-      uploadToDevModeSuccessAlert.show();
-
-      let attemptsLeft = 15;
-      const fetchDevModeDeploymentTask = window.setInterval(async () => {
-        const isReady = await devModeDispatch.checkHealthReady();
-        attemptsLeft--;
-        if (attemptsLeft === 0) {
-          uploadToDevModeSuccessAlert.close();
-          uploadToDevModeTimeoutErrorAlert.show();
-          window.clearInterval(fetchDevModeDeploymentTask);
-          return;
-        }
-        if (!isReady) {
-          return;
-        }
-        uploadToDevModeSuccessAlert.close();
-        devModeReadyAlert.show({ routeUrl: devMode.endpoints!.swfDevUi, filePaths: result.uploadedPaths });
-        window.clearInterval(fetchDevModeDeploymentTask);
-      }, FETCH_DEV_MODE_DEPLOYMENT_POLLING_TIME);
+    if (notifications.length > 0) {
+      validationWarningAlert.show();
     } else {
-      uploadToDevModeErrorAlert.show({ messages: result.messages });
+      devModeUploadingAlert.show();
+      const result = await devModeDispatch.upload({
+        targetSwfFile: props.workspaceFile,
+        allFiles: props.workspace.files,
+      });
+      devModeUploadingAlert.close();
+
+      if (result.success) {
+        uploadToDevModeSuccessAlert.show();
+
+        let attemptsLeft = 15;
+        const fetchDevModeDeploymentTask = window.setInterval(async () => {
+          const isReady = await devModeDispatch.checkHealthReady();
+          attemptsLeft--;
+          if (attemptsLeft === 0) {
+            uploadToDevModeSuccessAlert.close();
+            uploadToDevModeTimeoutErrorAlert.show();
+            window.clearInterval(fetchDevModeDeploymentTask);
+            return;
+          }
+          if (!isReady) {
+            return;
+          }
+          uploadToDevModeSuccessAlert.close();
+          devModeReadyAlert.show({ routeUrl: devMode.endpoints!.swfDevUi, filePaths: result.uploadedPaths });
+          window.clearInterval(fetchDevModeDeploymentTask);
+        }, FETCH_DEV_MODE_DEPLOYMENT_POLLING_TIME);
+      } else {
+        uploadToDevModeErrorAlert.show({ messages: result.messages });
+      }
     }
   }, [
     devModeUploadingAlert,
@@ -250,6 +273,8 @@ export function useDeployDropdownItems(props: Props) {
     devMode.endpoints,
     uploadToDevModeErrorAlert,
     uploadToDevModeTimeoutErrorAlert,
+    validationWarningAlert,
+    notifications,
   ]);
 
   return useMemo(() => {
