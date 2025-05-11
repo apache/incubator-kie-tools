@@ -94,7 +94,7 @@ export function EmbedModal(props: {
   const isGist = useMemo(() => props.workspace.origin.kind === WorkspaceKind.GITHUB_GIST, [props.workspace]);
 
   const getCurrentContentScript = useCallback((content: string, libraryName: string) => {
-    const fileContent = content.replace(/(\r\n|\n|\r)/gm, "");
+    const fileContent = content.replace(/(\r\n|\n|\r)/gm, "").replace(/'/g, "\\'");
     return `
 <script>
   ${libraryName}.open({container: document.body, readOnly: true, initialContent: '${fileContent}', origin: "*" })
