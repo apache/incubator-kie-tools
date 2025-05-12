@@ -1,6 +1,10 @@
 {
   "lockfile_version": "1",
   "packages": {
+    "github:NixOS/nixpkgs/nixpkgs-unstable": {
+      "last_modified": "2025-05-04T22:22:57Z",
+      "resolved": "github:NixOS/nixpkgs/ed30f8aba41605e3ab46421e3dcb4510ec560ff8?lastModified=1746397377&narHash=sha256-5oLdRa3vWSRbuqPIFFmQBGGUqaYZBxX%2BGGtN9f%2Fn4lU%3D"
+    },
     "gnumake@4.4.1": {
       "last_modified": "2024-10-13T23:44:06Z",
       "resolved": "github:NixOS/nixpkgs/d4f247e89f6e10120f911e2e2d2254a050d0f732#gnumake",

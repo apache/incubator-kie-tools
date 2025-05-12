@@ -1092,16 +1092,6 @@ sonataflow-quarkus-devui-parent.iml
 stunner-editors-parent.iml
 # packages/kogito-db-migrator-tool/kogito-db-migrator-tool.iml
 kogito-db-migrator-tool.iml
-# packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-api/src/main/resources/META-INF/beans.xml
-beans.xml
-# packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-marshaller/src/main/java/.gitkeep
-.gitkeep
-# packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-marshaller/src/main/resources/bindings.xjb
-bindings.xjb
-# packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-marshaller/src/main/resources/scesim.xsd
-scesim.xsd
-# packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-marshaller/src/main/resources/org/drools/workbench/scenariosimulation/kogito/marshaller/js/SCESIMMainJs.js
-SCESIMMainJs.js
 # packages/stunner-editors/errai-common/src/main/java/org/jboss/errai/common/client/util/Base64Util.java
 Base64Util.java
 # packages/stunner-editors/errai-common/src/main/java/org/jboss/errai/common/client/util/TimeUnit.java

@@ -94,10 +94,6 @@
     <module>kie-wb-common-dmn</module>
     <module>kie-wb-common-kogito</module>
 
-    <!-- DROOLS-WB -->
-    <module>drools-wb-bom</module>
-    <module>drools-wb-screens</module>
-
     <!-- LIENZO -->
     <module>lienzo-core</module>
     <module>lienzo-tests</module>
@@ -328,15 +324,6 @@
       <dependency>
         <groupId>org.kie.kogito.stunner.editors</groupId>
         <artifactId>kie-wb-common-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-
-      <!-- All drools-wb's modules and third-party versions are defined in this POM -->
-      <dependency>
-        <groupId>org.kie.kogito.stunner.editors</groupId>
-        <artifactId>drools-wb-bom</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>

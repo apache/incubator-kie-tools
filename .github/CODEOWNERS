@@ -2,10 +2,6 @@ packages/stunner-editors/appformer-bom/ @yesamer
 
 packages/stunner-editors/docs/ @yesamer @jomarko
 
-packages/stunner-editors/drools-wb-bom/ @yesamer
-
-packages/stunner-editors/drools-wb-screens/ @yesamer
-
 packages/stunner-editors/kie-wb-common-bom/ @yesamer @romartin
 
 packages/stunner-editors/kie-wb-common-dmn/ @yesamer
