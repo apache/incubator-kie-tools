@@ -144,6 +144,10 @@ export interface WorkspacesWorkerGitApi {
   kieSandboxWorkspacesGit_fetch(args: {
     workspaceId: string;
     remote: string;
+    authInfo?: {
+      username: string;
+      password: string;
+    };
     ref: string;
     insecurelyDisableTlsCertificateValidation?: boolean;
   }): Promise<FetchResult>;
