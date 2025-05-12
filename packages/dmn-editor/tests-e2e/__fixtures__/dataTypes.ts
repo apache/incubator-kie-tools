@@ -18,6 +18,8 @@
  */
 
 import { Monaco } from "@kie-tools/boxed-expression-component/tests-e2e/__fixtures__/monaco";
+import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+
 import { Page } from "@playwright/test";
 
 export enum DataType {
@@ -45,6 +47,22 @@ export enum RangeConstraintPosition {
   START = "start",
   END = "end",
 }
+
+export enum DefaultDataTypeName {
+  Undefined = "New Data type - <Undefined>",
+  Any = "New Data type - Any",
+  Boolean = "New Data type - boolean",
+  Context = "New Data type - context",
+  Date = "New Data type - date",
+  DateTime = "New Data type - date and time",
+  DateTimeDuration = "New Data type - days and time duration",
+  Number = "New Data type - number",
+  String = "New Data type - string",
+  Time = "New Data type - time",
+  YearsMonthsDuration = "New Data type - years and months duration",
+}
+
+export const DMN15_SPEC_TYPE_LANGUAGE = DMN15_SPEC.typeLanguage.default;
 
 export class DataTypes {
   constructor(
@@ -78,10 +96,6 @@ export class DataTypes {
 
   public getRangeConstraintButton() {
     return this.get().getByRole("button", { name: ConstraintType.RANGE, exact: true });
-  }
-
-  public getReadonlyExpressionConstraintValue() {
-    return this.page.getByTestId("kie-tools--dmn-editor--readonly-expression-constraint-with-value");
   }
 
   public enableDataTypeStruct() {

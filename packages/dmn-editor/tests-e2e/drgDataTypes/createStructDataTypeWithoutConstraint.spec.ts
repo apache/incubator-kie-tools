@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DataType } from "../__fixtures__/dataTypes";
+import { DataType, DMN15_SPEC_TYPE_LANGUAGE } from "../__fixtures__/dataTypes";
 import { TabName } from "../__fixtures__/editor";
 
 test.describe("Create Struct Data Types - Without Constraint", () => {
@@ -29,14 +29,30 @@ test.describe("Create Struct Data Types - Without Constraint", () => {
   });
 
   test.describe("Create struct data type without constraint", () => {
-    test(`create struct data type`, async ({ dataTypes, page }) => {
+    test(`Create Struct data type`, async ({ jsonModel, dataTypes, page }) => {
       await dataTypes.changeDataTypeName({ newName: "Custom data type - Struct" });
-      await dataTypes.addDataTypeDescription({ newDescription: "Custom struct data type description" });
       await dataTypes.enableDataTypeStruct();
+
+      //add property
       await expect(await page.getByRole("checkbox").last()).toBeChecked();
       await dataTypes.addDataTypeStructProperty({ name: "Property 1" });
-      await dataTypes.addDataTypeStructProperty({ name: "Property 2" });
-      await expect(dataTypes.getDataType({ name: "Custom data type - Struct" })).toBeAttached();
+      await dataTypes.resetFocus();
+
+      const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+      expect(dataType).toEqual({
+        "@_id": dataType["@_id"],
+        "@_name": "Custom data type - Struct",
+        "@_isCollection": dataType["@_isCollection"],
+        "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
+        itemComponent: [
+          {
+            "@_id": dataType.itemComponent?.[0]["@_id"],
+            "@_name": "Property 1",
+            "@_isCollection": dataType.itemComponent?.[0]["@_isCollection"],
+            "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
+          },
+        ],
+      });
     });
   });
 });

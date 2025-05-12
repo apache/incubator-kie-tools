@@ -18,7 +18,7 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DataType } from "../__fixtures__/dataTypes";
+import { DataType, DefaultDataTypeName, DMN15_SPEC_TYPE_LANGUAGE } from "../__fixtures__/dataTypes";
 import { TabName } from "../__fixtures__/editor";
 
 test.describe("Create Data Types - Without Constraint", () => {
@@ -28,74 +28,147 @@ test.describe("Create Data Types - Without Constraint", () => {
     await dataTypes.createFirstCustonDataType();
   });
 
-  test.describe("Create custom data type without constraint", () => {
-    test(`Create Undefined data type`, async ({ jsonModel, dataTypes }) => {
-      await dataTypes.changeDataTypeName({ newName: "Custom data type - Undefined" });
-      await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
-      await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Undefined });
-      const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 1, drdIndex: 0 });
-      console.log(dataType);
-      //await expect(dataTypes.getDataType({ name: "Custom data type - Undefined" })).toBeAttached();
+  test(`Create data type - Undefined`, async ({ jsonModel, dataTypes }) => {
+    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Undefined });
+    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
+    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Undefined });
+    const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).toEqual({
+      "@_id": dataType["@_id"],
+      "@_name": DefaultDataTypeName.Undefined,
+      "@_isCollection": dataType["@_isCollection"],
+      description: { __$$text: "New Data Type Description" },
+      "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
     });
+  });
 
-    test(`Create Any data type`, async ({ dataTypes }) => {
-      await dataTypes.changeDataTypeName({ newName: "Custom data type - Any" });
-      await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Any });
-      await expect(dataTypes.getDataType({ name: "Custom data type - Any" })).toBeAttached();
+  test(`Create data type - Any`, async ({ jsonModel, dataTypes }) => {
+    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Any });
+    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Any });
+    const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).toEqual({
+      "@_id": dataType["@_id"],
+      "@_name": DefaultDataTypeName.Any,
+      "@_isCollection": dataType["@_isCollection"],
+      "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
+      typeRef: dataType["typeRef"],
     });
+  });
 
-    test(`Create Boolean data type`, async ({ dataTypes }) => {
-      await dataTypes.changeDataTypeName({ newName: "Custom data type - Boolean" });
-      await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Boolean });
-      await expect(dataTypes.getDataType({ name: "Custom data type - Boolean" })).toBeAttached();
+  test(`Create data type - Boolean`, async ({ jsonModel, dataTypes }) => {
+    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Boolean });
+    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Boolean });
+    const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).toEqual({
+      "@_id": dataType["@_id"],
+      "@_isCollection": dataType["@_isCollection"],
+      "@_name": DefaultDataTypeName.Boolean,
+      "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
+      typeRef: dataType["typeRef"],
     });
+  });
 
-    test(`Create Context data type`, async ({ dataTypes }) => {
-      await dataTypes.changeDataTypeName({ newName: "Custom data type - Context" });
-      await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Context });
-      await expect(dataTypes.getDataType({ name: "Custom data type - Context" })).toBeAttached();
+  test(`Create data type - Context`, async ({ jsonModel, dataTypes }) => {
+    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Context });
+    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Context });
+    const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).toEqual({
+      "@_id": dataType["@_id"],
+      "@_isCollection": dataType["@_isCollection"],
+      "@_name": DefaultDataTypeName.Context,
+      "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
+      typeRef: dataType["typeRef"],
     });
+  });
 
-    test(`Custom Date data type`, async ({ dataTypes }) => {
-      await dataTypes.changeDataTypeName({ newName: "Custom data type - Date" });
-      await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Date });
-      await expect(dataTypes.getDataType({ name: "Custom data type - Date" })).toBeAttached();
+  test(`Custom data type - Date`, async ({ jsonModel, dataTypes }) => {
+    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Date });
+    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Date });
+    const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).toEqual({
+      "@_id": dataType["@_id"],
+      "@_isCollection": dataType["@_isCollection"],
+      "@_name": DefaultDataTypeName.Date,
+      "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
+      typeRef: dataType["typeRef"],
     });
+  });
 
-    test(`create DateTime data type`, async ({ dataTypes }) => {
-      await dataTypes.changeDataTypeName({ newName: "Custom data type - DateTime" });
-      await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.DateTime });
-      await expect(dataTypes.getDataType({ name: "Custom data type - DateTime" })).toBeAttached();
+  test(`Create data type - DateTime`, async ({ jsonModel, dataTypes }) => {
+    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.DateTime });
+    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.DateTime });
+    const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).toEqual({
+      "@_id": dataType["@_id"],
+      "@_isCollection": dataType["@_isCollection"],
+      "@_name": DefaultDataTypeName.DateTime,
+      "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
+      typeRef: dataType["typeRef"],
     });
+  });
 
-    test(`create DateTimeDuration data type`, async ({ dataTypes }) => {
-      await dataTypes.changeDataTypeName({ newName: "Custom data type - DateTimeDuration" });
-      await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.DateTimeDuration });
-      await expect(dataTypes.getDataType({ name: "Custom data type - DateTimeDuration" })).toBeAttached();
+  test(`Create data type - DateTimeDuration`, async ({ jsonModel, dataTypes }) => {
+    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.DateTimeDuration });
+    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.DateTimeDuration });
+    const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).toEqual({
+      "@_id": dataType["@_id"],
+      "@_isCollection": dataType["@_isCollection"],
+      "@_name": DefaultDataTypeName.DateTimeDuration,
+      "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
+      typeRef: dataType["typeRef"],
     });
+  });
 
-    test(`create Number data type`, async ({ dataTypes }) => {
-      await dataTypes.changeDataTypeName({ newName: "Custom data type - Number" });
-      await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Number });
-      await expect(dataTypes.getDataType({ name: "Custom data type - Number" })).toBeAttached();
+  test(`Create data type - Number`, async ({ jsonModel, dataTypes }) => {
+    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Number });
+    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Number });
+    const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).toEqual({
+      "@_id": dataType["@_id"],
+      "@_isCollection": dataType["@_isCollection"],
+      "@_name": DefaultDataTypeName.Number,
+      "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
+      typeRef: dataType["typeRef"],
     });
+  });
 
-    test(`create String data type`, async ({ dataTypes }) => {
-      await dataTypes.changeDataTypeName({ newName: "Custom data type - String" });
-      await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.String });
-      await expect(dataTypes.getDataType({ name: "Custom data type - String" })).toBeAttached();
+  test(`Create data type - String`, async ({ jsonModel, dataTypes }) => {
+    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.String });
+    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.String });
+    const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).toEqual({
+      "@_id": dataType["@_id"],
+      "@_isCollection": dataType["@_isCollection"],
+      "@_name": DefaultDataTypeName.String,
+      "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
+      typeRef: dataType["typeRef"],
     });
+  });
 
-    test(`create Time data type`, async ({ dataTypes }) => {
-      await dataTypes.changeDataTypeName({ newName: "Custom data type - Time" });
-      await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Time });
-      await expect(dataTypes.getDataType({ name: "Custom data type - Time" })).toBeAttached();
+  test(`Create data type - Time`, async ({ jsonModel, dataTypes }) => {
+    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Time });
+    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Time });
+    const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).toEqual({
+      "@_id": dataType["@_id"],
+      "@_isCollection": dataType["@_isCollection"],
+      "@_name": DefaultDataTypeName.Time,
+      "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
+      typeRef: dataType["typeRef"],
     });
+  });
 
-    test(`create YearsMonthsDuration data type`, async ({ dataTypes }) => {
-      await dataTypes.changeDataTypeName({ newName: "Custom data type - YearsMonthsDuration" });
-      await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.YearsMonthsDuration });
-      await expect(dataTypes.getDataType({ name: "Custom data type - YearsMonthsDuration" })).toBeAttached();
+  test(`Create data type - YearsMonthsDuration`, async ({ jsonModel, dataTypes }) => {
+    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.YearsMonthsDuration });
+    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.YearsMonthsDuration });
+    const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).toEqual({
+      "@_id": dataType["@_id"],
+      "@_isCollection": dataType["@_isCollection"],
+      "@_name": DefaultDataTypeName.YearsMonthsDuration,
+      "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
+      typeRef: dataType["typeRef"],
     });
   });
 });

@@ -18,18 +18,24 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DataType } from "../__fixtures__/dataTypes";
+import { DataType, DefaultDataTypeName, DMN15_SPEC_TYPE_LANGUAGE } from "../__fixtures__/dataTypes";
 import { TabName } from "../__fixtures__/editor";
 
-test.describe("Delete - Custom Data Type", () => {
-  test(`should delete a custom data type `, async ({ editor, diagram, dataTypes, page }) => {
+test.describe("Delete - Data Type", () => {
+  test(`Should delete a data type `, async ({ jsonModel, editor, dataTypes, page }) => {
     await editor.open();
     await editor.changeTab({ tab: TabName.DATA_TYPES });
     await dataTypes.createFirstCustonDataType();
-    await dataTypes.changeDataTypeName({ newName: "Custom data type" });
-    await dataTypes.addDataTypeDescription({ newDescription: "Custom data type description" });
+    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Any });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Any });
-    await expect(dataTypes.getDataType({ name: "Custom data type" })).toBeAttached();
+    const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).toEqual({
+      "@_id": dataType["@_id"],
+      "@_name": DefaultDataTypeName.Any,
+      "@_isCollection": dataType["@_isCollection"],
+      "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
+      typeRef: dataType["typeRef"],
+    });
     await dataTypes.get().getByLabel("Action").click();
     await page.getByRole("menuitem").getByText("Remove").click();
     await expect(dataTypes.get()).toHaveScreenshot("delete-custom-data-type-after-delete.png");
