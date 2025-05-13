@@ -51,15 +51,13 @@ const ManagementConsole: React.FC<IOwnProps> = ({ apolloClient, userContext, chi
           <CloudEventFormContextProvider>
             <WorkflowDetailsContextProviderWithApolloClient apolloClient={apolloClient}>
               <WorkflowListContextProviderWithApolloClient apolloClient={apolloClient}>
-                <WorkflowDefinitionListContextProviderWithApolloClient apolloClient={apolloClient}>
-                  <WorkflowFormContextProvider>
-                    <Router>
-                      <Switch>
-                        <Route path="/" render={renderPage} />
-                      </Switch>
-                    </Router>
-                  </WorkflowFormContextProvider>
-                </WorkflowDefinitionListContextProviderWithApolloClient>
+                <WorkflowFormContextProvider>
+                  <Router>
+                    <Switch>
+                      <Route path="/" render={renderPage} />
+                    </Switch>
+                  </Router>
+                </WorkflowFormContextProvider>
               </WorkflowListContextProviderWithApolloClient>
             </WorkflowDetailsContextProviderWithApolloClient>
           </CloudEventFormContextProvider>
