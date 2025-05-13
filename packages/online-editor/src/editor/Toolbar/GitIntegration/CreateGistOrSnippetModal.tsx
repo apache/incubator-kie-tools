@@ -192,7 +192,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         await workspaces.getGitServerRefs({
           url: new URL(gistOrSnippet.cloneUrl).toString(),
           authInfo,
-          insecurelyDisableTlsCertificateValidation: true,
+          insecurelyDisableTlsCertificateValidation,
         })
       )
         .find((serverRef) => serverRef.ref === "HEAD")!
