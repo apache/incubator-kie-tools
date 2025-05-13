@@ -200,6 +200,7 @@ const List: React.FC<ListFieldProps> = (props: ListFieldProps) => {
     ref,
     pfImports: [...new Set(["Split", "SplitItem", "Button", ...(listItem?.pfImports ?? [])])],
     pfIconImports: [...new Set(["PlusCircleIcon", "MinusCircleIcon", ...(listItem?.pfIconImports ?? [])])],
+    pfDeprecatedImports: [...new Set([...(listItem?.pfDeprecatedImports ?? [])])],
     reactImports: [...new Set([...(listItem?.reactImports ?? [])])],
     requiredCode: [...new Set([...(listItem?.requiredCode ?? [])])],
     jsxCode,

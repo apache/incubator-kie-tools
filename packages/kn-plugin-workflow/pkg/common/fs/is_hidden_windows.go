@@ -1,3 +1,6 @@
+//go:build windows
+// +build windows
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,8 +20,21 @@
  * under the License.
  */
 
-export interface EnvJson {
-  RUNTIME_TOOLS_MANAGEMENT_CONSOLE_APP_NAME: string;
-  RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID: string;
-  RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_DEFAULT_SCOPES: string;
+package fsutils
+
+import (
+	"golang.org/x/sys/windows"
+	"os"
+)
+
+func IsHidden(info os.FileInfo, path string) bool {
+	p, err := windows.UTF16PtrFromString(path)
+	if err != nil {
+		return false
+	}
+	attrs, err := windows.GetFileAttributes(p)
+	if err != nil {
+		return false
+	}
+	return attrs&windows.FILE_ATTRIBUTE_HIDDEN != 0
 }

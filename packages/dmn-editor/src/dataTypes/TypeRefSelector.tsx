@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { DmnBuiltInDataType, DmnDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { Select, SelectGroup, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import * as React from "react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, useMemo } from "react";
 import { TypeRefLabel } from "./TypeRefLabel";
 import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon";
 import { DmnEditorTab } from "../store/Store";
@@ -106,6 +106,90 @@ export function TypeRefSelector({
 
   const { maxHeight, direction } = useInViewSelect(heightRef ?? { current: document.body }, toggleRef, zoom ?? 1);
 
+  const buildSelectGroups = useMemo(
+    () =>
+      (
+        builtInFeelTypes: DmnDataType[],
+        customDataTypes: DataType[],
+        externalDataTypes: DataType[],
+        searchText = ""
+      ): React.ReactElement[] => {
+        const filteredBuiltInFeelTypes = builtInFeelTypes.filter(
+          (dt) => !searchText || (dt.name || "").toLowerCase().includes(searchText.toLowerCase())
+        );
+        const filteredCustomDataTypes = customDataTypes.filter(
+          (dt) => !searchText || (dt.feelName || "").toLowerCase().includes(searchText.toLowerCase())
+        );
+        const filteredExternalDataTypes = externalDataTypes.filter(
+          (dt) => !searchText || (dt.feelName || "").toLowerCase().includes(searchText.toLowerCase())
+        );
+
+        const selectGroups = [];
+        if (filteredBuiltInFeelTypes.length > 0 || !searchText) {
+          selectGroups.push(
+            <SelectGroup label="Built-in" key="builtin" style={{ minWidth: "300px" }}>
+              {filteredBuiltInFeelTypes.map((dt) => (
+                <SelectOption key={dt.name} value={dt.name}>
+                  {dt.name}
+                </SelectOption>
+              ))}
+            </SelectGroup>
+          );
+        }
+        if (filteredCustomDataTypes.length > 0 || !searchText) {
+          selectGroups.push(
+            <SelectGroup label="Custom" key="custom" style={{ minWidth: "300px" }}>
+              {filteredCustomDataTypes.length > 0 ? (
+                filteredCustomDataTypes.map((dt) => (
+                  <SelectOption key={dt.feelName} value={dt.feelName}>
+                    {dt.feelName}
+                    &nbsp;
+                    <TypeRefLabel
+                      typeRef={dt.itemDefinition.typeRef?.__$$text}
+                      relativeToNamespace={dt.namespace}
+                      isCollection={dt.itemDefinition?.["@_isCollection"]}
+                    />
+                  </SelectOption>
+                ))
+              ) : (
+                <SelectOption key={"None"} value={"None"} isDisabled={true} />
+              )}
+            </SelectGroup>
+          );
+        }
+        if (filteredExternalDataTypes.length > 0 || !searchText) {
+          selectGroups.push(
+            <SelectGroup label="External" key="external" style={{ minWidth: "300px" }}>
+              {filteredExternalDataTypes.length > 0 ? (
+                filteredExternalDataTypes.map((dt) => (
+                  <SelectOption key={dt.feelName} value={dt.feelName}>
+                    {dt.feelName}
+                    &nbsp;
+                    <TypeRefLabel
+                      typeRef={dt.itemDefinition.typeRef?.__$$text}
+                      relativeToNamespace={dt.namespace}
+                      isCollection={dt.itemDefinition?.["@_isCollection"]}
+                    />
+                  </SelectOption>
+                ))
+              ) : (
+                <SelectOption key={"None"} value={"None"} isDisabled={true} />
+              )}
+            </SelectGroup>
+          );
+        }
+        return selectGroups;
+      },
+    []
+  );
+
+  const onFilter = useCallback(
+    (_event: React.ChangeEvent<HTMLInputElement> | null, textInput: string) => {
+      return buildSelectGroups(builtInFeelTypes, customDataTypes, externalDataTypes, textInput);
+    },
+    [buildSelectGroups, customDataTypes, externalDataTypes]
+  );
+
   return (
     <Flex
       id={id}
@@ -135,6 +219,7 @@ export function TypeRefSelector({
         variant={SelectVariant.typeahead}
         typeAheadAriaLabel={DmnBuiltInDataType.Undefined}
         onToggle={(_event, val) => _onToggle(val)}
+        onFilter={onFilter}
         onSelect={(e, v) => {
           _onToggle(false);
           onChange(v === DmnBuiltInDataType.Undefined ? undefined : (v as string));
@@ -152,41 +237,7 @@ export function TypeRefSelector({
         direction={direction}
         onWheelCapture={(e) => e.stopPropagation()} // Necessary so that Reactflow doesn't mess with this event.
       >
-        <SelectGroup label="Built-in" key="builtin" style={{ minWidth: "300px" }}>
-          {builtInFeelTypes.map((dt) => (
-            <SelectOption key={dt.name} value={dt.name}>
-              {dt.name}
-            </SelectOption>
-          ))}
-        </SelectGroup>
-        <SelectGroup label="Custom" key="custom" style={{ minWidth: "300px" }}>
-          {(customDataTypes.length > 0 &&
-            customDataTypes.map((dt) => (
-              <SelectOption key={dt.feelName} value={dt.feelName}>
-                {dt.feelName}
-                &nbsp;
-                <TypeRefLabel
-                  typeRef={dt.itemDefinition.typeRef?.__$$text}
-                  relativeToNamespace={dt.namespace}
-                  isCollection={dt.itemDefinition?.["@_isCollection"]}
-                />
-              </SelectOption>
-            ))) || <SelectOption key={"None"} value={"None"} isDisabled={true} />}
-        </SelectGroup>
-        <SelectGroup label="External" key="external" style={{ minWidth: "300px" }}>
-          {(externalDataTypes.length > 0 &&
-            externalDataTypes.map((dt) => (
-              <SelectOption key={dt.feelName} value={dt.feelName}>
-                {dt.feelName}
-                &nbsp;
-                <TypeRefLabel
-                  typeRef={dt.itemDefinition.typeRef?.__$$text}
-                  relativeToNamespace={dt.namespace}
-                  isCollection={dt.itemDefinition?.["@_isCollection"]}
-                />
-              </SelectOption>
-            ))) || <SelectOption key={"None"} value={"None"} isDisabled={true} />}
-        </SelectGroup>
+        {buildSelectGroups(builtInFeelTypes, customDataTypes, externalDataTypes)}
       </Select>
     </Flex>
   );

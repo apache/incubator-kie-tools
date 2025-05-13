@@ -41,6 +41,10 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "management-console-dev-webapp",
       description: "Client ID used for OpenID Connect client configuration.",
     },
+    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__oidcClientDefaultScopes: {
+      default: "openid email profile",
+      description: "Default scopes used for OpenID Connect client configuration.",
+    },
   }),
   get env() {
     return {
@@ -60,6 +64,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
         },
         oidcClient: {
           clientId: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__oidcClientClientId),
+          defaultScopes: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__oidcClientDefaultScopes),
         },
         appName: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__appName),
         buildInfo: getOrDefault(this.vars.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__buildInfo),
