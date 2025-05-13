@@ -237,11 +237,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         remote: GIST_ORIGIN_REMOTE_NAME,
         ref: gistOrSnippetDefaultBranch,
         remoteRef: `refs/heads/${gistOrSnippetDefaultBranch}`,
-        force: switchExpression(authProvider?.type, {
-          github: true,
-          bitbucket: true,
-          gitlab: false,
-        }),
+        force: true,
         authInfo,
         insecurelyDisableTlsCertificateValidation,
       });
