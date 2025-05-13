@@ -25,19 +25,19 @@ test.describe("Delete - Data Type", () => {
   test(`Should delete a data type `, async ({ jsonModel, editor, dataTypes, page }) => {
     await editor.open();
     await editor.changeTab({ tab: TabName.DATA_TYPES });
+
     await dataTypes.createFirstCustonDataType();
     await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Any });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Any });
-    const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
-    expect(dataType).toEqual({
-      "@_id": dataType["@_id"],
-      "@_name": DefaultDataTypeName.Any,
-      "@_isCollection": dataType["@_isCollection"],
-      "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
-      typeRef: dataType["typeRef"],
-    });
+
+    // Delete the data type
     await dataTypes.get().getByLabel("Action").click();
     await page.getByRole("menuitem").getByText("Remove").click();
+
+    // Assert the data type is removed from the model
+    const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).toBeUndefined();
+
     await expect(dataTypes.get()).toHaveScreenshot("delete-custom-data-type-after-delete.png");
   });
 });

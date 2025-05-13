@@ -44,12 +44,14 @@ test.describe("Create Data Types - Without Constraint", () => {
 
   test(`Create data type - Any`, async ({ jsonModel, dataTypes }) => {
     await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Any });
+    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Any });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_name": DefaultDataTypeName.Any,
       "@_isCollection": dataType["@_isCollection"],
+      description: { __$$text: "New Data Type Description" },
       "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
       typeRef: dataType["typeRef"],
     });
@@ -57,12 +59,14 @@ test.describe("Create Data Types - Without Constraint", () => {
 
   test(`Create data type - Boolean`, async ({ jsonModel, dataTypes }) => {
     await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Boolean });
+    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Boolean });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_isCollection": dataType["@_isCollection"],
       "@_name": DefaultDataTypeName.Boolean,
+      description: { __$$text: "New Data Type Description" },
       "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
       typeRef: dataType["typeRef"],
     });
@@ -70,12 +74,14 @@ test.describe("Create Data Types - Without Constraint", () => {
 
   test(`Create data type - Context`, async ({ jsonModel, dataTypes }) => {
     await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Context });
+    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Context });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_isCollection": dataType["@_isCollection"],
       "@_name": DefaultDataTypeName.Context,
+      description: { __$$text: "New Data Type Description" },
       "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
       typeRef: dataType["typeRef"],
     });
@@ -83,12 +89,14 @@ test.describe("Create Data Types - Without Constraint", () => {
 
   test(`Custom data type - Date`, async ({ jsonModel, dataTypes }) => {
     await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Date });
+    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Date });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_isCollection": dataType["@_isCollection"],
       "@_name": DefaultDataTypeName.Date,
+      description: { __$$text: "New Data Type Description" },
       "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
       typeRef: dataType["typeRef"],
     });
@@ -96,12 +104,14 @@ test.describe("Create Data Types - Without Constraint", () => {
 
   test(`Create data type - DateTime`, async ({ jsonModel, dataTypes }) => {
     await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.DateTime });
+    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.DateTime });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_isCollection": dataType["@_isCollection"],
       "@_name": DefaultDataTypeName.DateTime,
+      description: { __$$text: "New Data Type Description" },
       "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
       typeRef: dataType["typeRef"],
     });
@@ -109,12 +119,14 @@ test.describe("Create Data Types - Without Constraint", () => {
 
   test(`Create data type - DateTimeDuration`, async ({ jsonModel, dataTypes }) => {
     await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.DateTimeDuration });
+    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.DateTimeDuration });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_isCollection": dataType["@_isCollection"],
       "@_name": DefaultDataTypeName.DateTimeDuration,
+      description: { __$$text: "New Data Type Description" },
       "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
       typeRef: dataType["typeRef"],
     });
@@ -122,12 +134,14 @@ test.describe("Create Data Types - Without Constraint", () => {
 
   test(`Create data type - Number`, async ({ jsonModel, dataTypes }) => {
     await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Number });
+    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Number });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_isCollection": dataType["@_isCollection"],
       "@_name": DefaultDataTypeName.Number,
+      description: { __$$text: "New Data Type Description" },
       "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
       typeRef: dataType["typeRef"],
     });
@@ -135,12 +149,14 @@ test.describe("Create Data Types - Without Constraint", () => {
 
   test(`Create data type - String`, async ({ jsonModel, dataTypes }) => {
     await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.String });
+    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.String });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_isCollection": dataType["@_isCollection"],
       "@_name": DefaultDataTypeName.String,
+      description: { __$$text: "New Data Type Description" },
       "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
       typeRef: dataType["typeRef"],
     });
@@ -148,12 +164,14 @@ test.describe("Create Data Types - Without Constraint", () => {
 
   test(`Create data type - Time`, async ({ jsonModel, dataTypes }) => {
     await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Time });
+    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Time });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_isCollection": dataType["@_isCollection"],
       "@_name": DefaultDataTypeName.Time,
+      description: { __$$text: "New Data Type Description" },
       "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
       typeRef: dataType["typeRef"],
     });
@@ -161,12 +179,14 @@ test.describe("Create Data Types - Without Constraint", () => {
 
   test(`Create data type - YearsMonthsDuration`, async ({ jsonModel, dataTypes }) => {
     await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.YearsMonthsDuration });
+    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.YearsMonthsDuration });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_isCollection": dataType["@_isCollection"],
       "@_name": DefaultDataTypeName.YearsMonthsDuration,
+      description: { __$$text: "New Data Type Description" },
       "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
       typeRef: dataType["typeRef"],
     });

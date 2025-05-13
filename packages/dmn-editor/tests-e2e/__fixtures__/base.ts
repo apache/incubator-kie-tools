@@ -24,6 +24,7 @@ import { Nodes } from "./nodes";
 import { Editor } from "./editor";
 import { Edges } from "./edges";
 import { JsonModel } from "./jsonModel";
+import { Clipboard } from "./clipboard";
 import { DecisionServicePropertiesPanel } from "./propertiesPanel/decisionServicePropertiesPanel";
 import { DecisionPropertiesPanel } from "./propertiesPanel/decisionPropertiesPanel";
 import { KnowledgeSourcePropertiesPanel } from "./propertiesPanel/knowledgeSourcePropertiesPanel";
@@ -69,6 +70,7 @@ type DmnEditorFixtures = {
   textAnnotationPropertiesPanel: TextAnnotationPropertiesPanel;
   stories: Stories;
   includedModels: IncludedModels;
+  clipboard: Clipboard;
 };
 
 export const test = base.extend<DmnEditorFixtures>({
@@ -143,6 +145,11 @@ export const test = base.extend<DmnEditorFixtures>({
   },
   includedModels: async ({ page }, use) => {
     await use(new IncludedModels(page));
+  },
+  clipboard: async ({ browserName, context, page }, use) => {
+    const clipboard = new Clipboard(page);
+    await clipboard.setup(context, browserName);
+    await use(clipboard);
   },
 });
 

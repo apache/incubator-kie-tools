@@ -35,9 +35,6 @@ export class drgDataType {
     })) as DMN15__tItemDefinition & {
       __$$element: string;
     };
-    if (drgElement === undefined) {
-      throw new Error("Couldn't find DRG data type");
-    }
     return drgElement;
   }
 

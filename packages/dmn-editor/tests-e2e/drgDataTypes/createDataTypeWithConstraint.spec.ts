@@ -42,8 +42,8 @@ test.describe("Create Data Types - With Constraint", () => {
       typeRef: dataType["typeRef"],
       typeConstraint: {
         "@_id": dataType.typeConstraint?.["@_id"],
-        text: { __$$text: dataType.typeConstraint?.text.__$$text },
-        "@_kie:constraintType": dataType.typeConstraint?.["@_kie:constraintType"],
+        text: { __$$text: "> 20" },
+        "@_kie:constraintType": "expression",
       },
     });
   });
@@ -62,8 +62,8 @@ test.describe("Create Data Types - With Constraint", () => {
       typeRef: dataType["typeRef"],
       typeConstraint: {
         "@_id": dataType.typeConstraint?.["@_id"],
-        text: { __$$text: dataType.typeConstraint?.text.__$$text },
-        "@_kie:constraintType": dataType.typeConstraint?.["@_kie:constraintType"],
+        text: { __$$text: 'date("2025-04-14")' },
+        "@_kie:constraintType": "expression",
       },
     });
   });
@@ -82,8 +82,8 @@ test.describe("Create Data Types - With Constraint", () => {
       typeRef: dataType["typeRef"],
       typeConstraint: {
         "@_id": dataType.typeConstraint?.["@_id"],
-        text: { __$$text: dataType.typeConstraint?.text.__$$text },
-        "@_kie:constraintType": dataType.typeConstraint?.["@_kie:constraintType"],
+        text: { __$$text: 'date("2025-01-14"), date("2025-04-15")' },
+        "@_kie:constraintType": "enumeration",
       },
     });
   });
@@ -102,8 +102,8 @@ test.describe("Create Data Types - With Constraint", () => {
       typeRef: dataType["typeRef"],
       typeConstraint: {
         "@_id": dataType.typeConstraint?.["@_id"],
-        text: { __$$text: dataType.typeConstraint?.text.__$$text },
-        "@_kie:constraintType": dataType.typeConstraint?.["@_kie:constraintType"],
+        text: { __$$text: '[date("2025-01-14")..date("2025-04-15"))' },
+        "@_kie:constraintType": "range",
       },
     });
   });
@@ -122,8 +122,8 @@ test.describe("Create Data Types - With Constraint", () => {
       typeRef: dataType["typeRef"],
       typeConstraint: {
         "@_id": dataType.typeConstraint?.["@_id"],
-        text: { __$$text: dataType.typeConstraint?.text.__$$text },
-        "@_kie:constraintType": dataType.typeConstraint?.["@_kie:constraintType"],
+        text: { __$$text: "20" },
+        "@_kie:constraintType": "expression",
       },
     });
   });
@@ -142,8 +142,8 @@ test.describe("Create Data Types - With Constraint", () => {
       typeRef: dataType["typeRef"],
       typeConstraint: {
         "@_id": dataType.typeConstraint?.["@_id"],
-        text: { __$$text: dataType.typeConstraint?.text.__$$text },
-        "@_kie:constraintType": dataType.typeConstraint?.["@_kie:constraintType"],
+        text: { __$$text: "10, 20" },
+        "@_kie:constraintType": "enumeration",
       },
     });
   });
@@ -162,8 +162,8 @@ test.describe("Create Data Types - With Constraint", () => {
       typeRef: dataType["typeRef"],
       typeConstraint: {
         "@_id": dataType.typeConstraint?.["@_id"],
-        text: { __$$text: dataType.typeConstraint?.text.__$$text },
-        "@_kie:constraintType": dataType.typeConstraint?.["@_kie:constraintType"],
+        text: { __$$text: "[10..20)" },
+        "@_kie:constraintType": "range",
       },
     });
   });
@@ -182,8 +182,8 @@ test.describe("Create Data Types - With Constraint", () => {
       typeRef: dataType["typeRef"],
       typeConstraint: {
         "@_id": dataType.typeConstraint?.["@_id"],
-        text: { __$$text: dataType.typeConstraint?.text.__$$text },
-        "@_kie:constraintType": dataType.typeConstraint?.["@_kie:constraintType"],
+        text: { __$$text: "20" },
+        "@_kie:constraintType": "expression",
       },
     });
   });
@@ -202,8 +202,8 @@ test.describe("Create Data Types - With Constraint", () => {
       typeRef: dataType["typeRef"],
       typeConstraint: {
         "@_id": dataType.typeConstraint?.["@_id"],
-        text: { __$$text: dataType.typeConstraint?.text.__$$text },
-        "@_kie:constraintType": dataType.typeConstraint?.["@_kie:constraintType"],
+        text: { __$$text: '"10", "20"' },
+        "@_kie:constraintType": "enumeration",
       },
     });
   });
@@ -222,8 +222,8 @@ test.describe("Create Data Types - With Constraint", () => {
       typeRef: dataType["typeRef"],
       typeConstraint: {
         "@_id": dataType.typeConstraint?.["@_id"],
-        text: { __$$text: dataType.typeConstraint?.text.__$$text },
-        "@_kie:constraintType": dataType.typeConstraint?.["@_kie:constraintType"],
+        text: { __$$text: '["10".."20")' },
+        "@_kie:constraintType": "range",
       },
     });
   });
