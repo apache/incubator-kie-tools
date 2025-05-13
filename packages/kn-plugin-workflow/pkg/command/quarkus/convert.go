@@ -21,6 +21,7 @@ package quarkus
 
 import (
 	"fmt"
+	fsutils "github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common/fs"
 	"io"
 	"os"
 	"path/filepath"
@@ -167,6 +168,14 @@ func moveSWFFilesToQuarkusProject(cfg CreateQuarkusProjectConfig, rootFolder str
 			continue
 		}
 
+		info, err := item.Info()
+		if err != nil {
+			return err
+		}
+		if fsutils.IsHidden(info, item.Name()) && info.IsDir() {
+			continue
+		}
+
 		srcPath := filepath.Join(rootFolder, item.Name())
 		dstPath := filepath.Join(targetFolder, item.Name())
 
@@ -203,6 +212,10 @@ func copyDir(src, dst string) error {
 	err := filepath.Walk(src, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
+		}
+
+		if fsutils.IsHidden(info, path) && info.IsDir() {
+			return nil
 		}
 
 		dstPath := filepath.Join(dst, path[len(src):])
