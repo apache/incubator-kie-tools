@@ -335,7 +335,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     [props.dmnLanguageService, props.workspaceFile.relativePath, props.workspaceFile.workspaceId, workspaces]
   );
 
-  const findDecisionIdIdBySourceId = useCallback(
+  const findDecisionIdBySourceId = useCallback(
     (sourceId: string) => {
       if (!Array.isArray(invalidElementPaths)) return "";
       for (const path of invalidElementPaths) {
@@ -513,7 +513,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     }, new Map<string, DmnEvaluationMessages[]>());
 
     const notifications: Notification[] = [...messagesBySourceId.entries()].flatMap(([sourceId, messages]) => {
-      const decisionId = findDecisionIdIdBySourceId(sourceId);
+      const decisionId = findDecisionIdBySourceId(sourceId);
       const path = decisionNameByDecisionId?.get(decisionId) ?? "";
       return messages.map((message: any) => ({
         type: "PROBLEM",
@@ -533,7 +533,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     extendedServices.status,
     currentResponseMessages,
     decisionNameByDecisionId,
-    findDecisionIdIdBySourceId,
+    findDecisionIdBySourceId,
   ]);
 
   const setDmnRunnerPersistenceJson = useCallback(
