@@ -52,7 +52,7 @@ export function parseGitLabUrl(url: URL): ImportableUrl {
     };
   }
 
-  // 2. Standalone Snippet File: eg: https://gitlab.com/snippets/123/raw/main/code.js
+  // 2. Standalone Snippet File: eg: https://gitlab.com/snippets/123/raw/main/sample.dmn
   const standaloneSnippetFile = matchPath<{ snippetId: string; tree: string; fileName: string }>(pathname, {
     path: "/snippets/:snippetId/raw/:tree/:fileName",
     exact: true,
@@ -84,7 +84,7 @@ export function parseGitLabUrl(url: URL): ImportableUrl {
     return { type: UrlType.GITLAB_DOT_COM_SNIPPET, snippetId, group, project, url: customProjectSnippetUrl };
   }
 
-  // 4. Project Snippet File: eg: https://gitlab.com/group/project/-/snippets/123/raw/main/code.js
+  // 4. Project Snippet File: eg: https://gitlab.com/group/project/-/snippets/123/raw/main/sample.dmn
   const projectSnippetFile = matchPath<{
     group: string;
     project: string;
@@ -123,7 +123,7 @@ export function parseGitLabUrl(url: URL): ImportableUrl {
     return { type: UrlType.GITLAB_DOT_COM, group, project, branch: tree, url: customGitRefNameUrl };
   }
 
-  // 6. File in branch: eg: https://gitlab.com/group/project/-/blob/main/src/index.js
+  // 6. File in branch: eg: https://gitlab.com/group/project/-/blob/main/src/sample.dmn
   const repoFileView = matchPath<{ group: string; project: string; tree: string; path: string }>(pathname, {
     path: "/:group*/:project/blob/:tree/:path*",
     exact: true,
