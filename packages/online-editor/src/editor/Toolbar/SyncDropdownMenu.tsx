@@ -117,7 +117,7 @@ export function SyncDropdownMenu(props: Props) {
                     {switchExpression(props.workspace.descriptor.origin.kind as WorkspaceKindGistLike, {
                       BITBUCKET_SNIPPET: "Bitbucket Snippet",
                       GITHUB_GIST: "GitHub Gist",
-                      GITLAB_SNIPPET: "Gitlab Snippet",
+                      GITLAB_SNIPPET: "GitLab Snippet",
                     })}
                   </DropdownItem>
                   {canForkGitHubGist && (
@@ -173,7 +173,7 @@ export function SyncDropdownMenu(props: Props) {
                         title={`Can't Update ${switchExpression(authProvider?.type as GitAuthProviderType, {
                           github: "GitHub repository",
                           bitbucket: "Bitbucket repository",
-                          gitlab: "Gitlab repository",
+                          gitlab: "GitLab repository",
                           default: "Git repository",
                         })} without selecting a matching authentication source`}
                         actionLinks={
@@ -200,7 +200,7 @@ export function SyncDropdownMenu(props: Props) {
                           {
                             GITHUB_GIST: "Github Gist",
                             BITBUCKET_SNIPPET: "Bitbucket Snippet",
-                            GITLAB_SNIPPET: "Gitlab Snippet",
+                            GITLAB_SNIPPET: "GitLab Snippet",
                           }
                         )}.`}
                       </Alert>

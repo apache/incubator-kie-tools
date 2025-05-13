@@ -227,7 +227,7 @@ export const LoadOrganizationsSelect = ({ onSelect, workspace, readonly, actionT
       }
       options.push(
         <SelectGroup
-          label={isGitlabSnippet ? "Gitlab Projects" : i18n.loadOrganizationsSelect[authProvider.type].organizations}
+          label={isGitlabSnippet ? "GitLab Projects" : i18n.loadOrganizationsSelect[authProvider.type].organizations}
           key="group2"
         >
           {organizations?.map((it, index) => (

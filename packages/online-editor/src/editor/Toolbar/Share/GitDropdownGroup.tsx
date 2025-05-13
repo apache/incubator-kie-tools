@@ -122,7 +122,7 @@ export const GitDropdownGroup = (props: Props) => {
               {switchExpression(authProvider?.type as GitAuthProviderType, {
                 github: "GitHub repository",
                 bitbucket: "Bitbucket repository",
-                gitlab: "Gitlab repository",
+                gitlab: "GitLab repository",
                 default: "Git repository",
               })}
               ...
