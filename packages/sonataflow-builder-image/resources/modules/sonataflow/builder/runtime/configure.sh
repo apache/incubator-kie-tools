@@ -20,10 +20,15 @@
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SOURCES_DIR=/tmp/artifacts
+ADDED_DIR="${SCRIPT_DIR}"/added
+LAUNCH_DIR="${KOGITO_HOME}"/launch
 
 mkdir -p "${KOGITO_HOME}"/.m2/repository
 mkdir -p "${KOGITO_HOME}/${PROJECT_ARTIFACT_ID}"
+
+cp -v "${ADDED_DIR}"/* "${LAUNCH_DIR}"
 
 # Unzip Quarkus app and Maven repository
 tar xf "${SOURCES_DIR}"/kogito-swf-quarkus-app.tar -C "${KOGITO_HOME}/${PROJECT_ARTIFACT_ID}"
