@@ -105,7 +105,6 @@ export class GitlabClient implements GitlabClientApi {
   token: string;
   domain: string;
   headers: Record<string, string>;
-  username?: string;
   proxyUrl?: string;
 
   request = async (props: {
