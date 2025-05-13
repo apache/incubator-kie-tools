@@ -22,41 +22,19 @@ import { DataType, DefaultDataTypeName, DMN15_SPEC_TYPE_LANGUAGE } from "../__fi
 import { TabName } from "../__fixtures__/editor";
 
 test.describe("Copy and Paste Data Type", () => {
-  test.beforeEach(async ({ editor, dataTypes }) => {
+  test.beforeEach(async ({ editor, dataTypes, clipboard, context, browserName }) => {
     await editor.open();
     await editor.changeTab({ tab: TabName.DATA_TYPES });
     await dataTypes.createFirstCustonDataType();
+    clipboard.setup(context, browserName);
   });
-
-  test("Should copy and paste data type - empty state", async ({
-    jsonModel,
-    browserName,
-    context,
-    dataTypes,
-    page,
-  }) => {
-    test.skip(
-      browserName === "webkit",
-      "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
-    );
-
+  test("Should copy and paste data type - empty state", async ({ jsonModel, dataTypes, page }) => {
     //create any data type without constaint
     await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Any });
     await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Any });
 
-    const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
-    expect(dataType).toEqual({
-      "@_id": dataType["@_id"],
-      "@_name": DefaultDataTypeName.Any,
-      "@_isCollection": dataType["@_isCollection"],
-      "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
-      description: { __$$text: "New Data Type Description" },
-      typeRef: dataType["typeRef"],
-    });
-
     //copy data type
-    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
     await dataTypes.get().getByLabel("Action").click();
     await page.getByRole("menuitem").getByText("Copy", { exact: true }).click();
 
@@ -67,25 +45,6 @@ test.describe("Copy and Paste Data Type", () => {
 
     //paste copied first data type
     await dataTypes.pasteFirstDataType();
-    await expect(dataTypes.get()).toHaveScreenshot("copy-paste-data-type-empty-state.png");
-  });
-
-  test(`Should copy and paste data type - non empty state`, async ({
-    jsonModel,
-    browserName,
-    context,
-    dataTypes,
-    page,
-  }) => {
-    test.skip(
-      browserName === "webkit",
-      "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
-    );
-
-    //create any data type without constaint
-    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Any });
-    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
-    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Any });
 
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).toEqual({
@@ -96,15 +55,34 @@ test.describe("Copy and Paste Data Type", () => {
       description: { __$$text: "New Data Type Description" },
       typeRef: dataType["typeRef"],
     });
+    await expect(dataTypes.get()).toHaveScreenshot("copy-paste-data-type-empty-state.png");
+  });
+
+  test(`Should copy and paste data type - non empty state`, async ({ jsonModel, dataTypes, page }) => {
+    //create any data type without constaint
+    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Any });
+    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
+    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Any });
 
     //copy data type
-    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
     await dataTypes.get().getByLabel("Action").click();
     await page.getByRole("menuitem").getByText("Copy", { exact: true }).click();
 
     //paste copied data type
     await dataTypes.get().getByRole("button", { name: "Select", exact: true }).click();
     await page.getByRole("menuitem").getByText("Paste", { exact: true }).click();
+
+    for (let i = 0; i < 2; i++) {
+      const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: i, drdIndex: 0 });
+      expect(dataType).toEqual({
+        "@_id": dataType["@_id"],
+        "@_name": DefaultDataTypeName.Any,
+        "@_isCollection": dataType["@_isCollection"],
+        "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
+        description: { __$$text: "New Data Type Description" },
+        typeRef: dataType["typeRef"],
+      });
+    }
     await expect(dataTypes.get()).toHaveScreenshot("copy-paste-data-type-non-empty-state.png");
   });
 });
