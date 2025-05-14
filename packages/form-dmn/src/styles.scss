@@ -25,10 +25,10 @@
 
 @keyframes highlight {
   0% {
-    background-color: var(--pf-global--palette--black-600);
+    background-color: var(--pf-v5-global--palette--black-600);
   }
   100% {
-    background-color: var(--pf-global--palette--black-100);
+    background-color: var(--pf-v5-global--palette--black-100);
   }
 }
 
@@ -56,4 +56,8 @@
 
 .kogito--editor__dmn-form-result__results-card {
   border: 0 !important;
+}
+
+.pf-c-card.pf-m-flat.kogito--editor__dmn-form-result__results-card-highlight {
+  border: var(--pf-global--BorderWidth--md) solid var(--pf-global--BorderColor--200);
 }

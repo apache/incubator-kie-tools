@@ -1040,6 +1040,60 @@ export const EMPTY = `<?xml version="1.0" encoding="UTF-8" ?>
 <definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_14487CEE-1B30-453E-976D-C11ED911548F" id="_6FEE4554-BE5D-4F30-B523-6DFDA563221A" name="Empty" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" />
 `;
 
+export const COMPLEX_COLLECTION = `<?xml version="1.0" encoding="UTF-8" ?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_8D6316E7-ED43-4528-BB0B-2A7587B20853" id="_A736BA8A-E346-48F8-8504-421B0CB288AD" name="DMN_EE8B8820-C396-45D8-BB02-3317B5C43C3F" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
+  <itemDefinition id="_41EE4053-C229-4E41-BD2D-832953944AB0" name="tPerson" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+    <itemComponent id="_58BA4949-52D2-4482-978A-D7C0D48209F7" name="name" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+      <typeRef>string</typeRef>
+    </itemComponent>
+    <itemComponent id="_45828076-7AB5-4F38-A40C-DEB2E9A098AF" name="age" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+      <typeRef>number</typeRef>
+    </itemComponent>
+  </itemDefinition>
+  <itemDefinition id="_0072B1FA-04DA-4759-9933-50513F26B4EF" name="tTeam" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+    <itemComponent id="_17166342-0AF1-4005-83BE-B5EBDE3CBF77" name="name" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+      <typeRef>string</typeRef>
+    </itemComponent>
+    <itemComponent id="_B39FD1B3-05BA-4F9F-A240-4B2DC14E6530" name="people" isCollection="true" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+      <typeRef>tPerson</typeRef>
+    </itemComponent>
+  </itemDefinition>
+  <decision name="isHuge" id="_982FFEA7-F410-4EDD-8BB1-340FAA1C0F1F">
+    <variable name="isHuge" id="_AB149C33-D656-4887-A0FC-52DDA521C9A9" typeRef="boolean" />
+    <informationRequirement id="_4C988496-B381-43C3-8187-F54A433BEFAB">
+      <requiredInput href="#_2CDCFED2-6202-49F5-8724-26331747F477" />
+    </informationRequirement>
+    <literalExpression id="_AB8BFDDB-5A6F-41EB-B91B-EAC05AE1D03A" typeRef="boolean" label="isHuge">
+      <text>count(Team.people) &gt; 3</text>
+    </literalExpression>
+  </decision>
+  <inputData name="Team" id="_2CDCFED2-6202-49F5-8724-26331747F477">
+    <variable name="Team" id="_0F9E50E7-F90D-4B58-B208-34C0898D6B33" typeRef="tTeam" />
+  </inputData>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_FBF98DC8-E60B-47F1-8CC8-853F72D7B324" name="Default DRD" useAlternativeInputDataShape="false">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_AB8BFDDB-5A6F-41EB-B91B-EAC05AE1D03A">
+            <kie:width>190</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="_33C12334-6CD6-4171-827E-B522C04EA7C1" dmnElementRef="_982FFEA7-F410-4EDD-8BB1-340FAA1C0F1F" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="340" y="100" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="_AF43A8F2-23F1-40C5-A1E1-CF7CF7027EDB" dmnElementRef="_2CDCFED2-6202-49F5-8724-26331747F477" isCollapsed="false" isListedInputData="false">
+        <dc:Bounds x="340" y="320" width="160" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="_BF3354A2-BD20-448B-A4C7-A29F63867F75" dmnElementRef="_4C988496-B381-43C3-8187-F54A433BEFAB" sourceElement="_AF43A8F2-23F1-40C5-A1E1-CF7CF7027EDB" targetElement="_33C12334-6CD6-4171-827E-B522C04EA7C1">
+        <di:waypoint x="420" y="360" />
+        <di:waypoint x="420" y="180" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+`;
+
 export const COLLECTION = `<?xml version="1.0" encoding="UTF-8"?>
 <dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kie.apache.org/dmn/_D1C37750-2078-4CB7-AF77-850947718867" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_DF7B05D2-BB62-417C-B852-48E260429F21" name="Collection" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kie.apache.org/dmn/_D1C37750-2078-4CB7-AF77-850947718867">
   <dmn:extensionElements/>

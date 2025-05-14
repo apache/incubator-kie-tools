@@ -1,6 +1,6 @@
 module github.com/apache/incubator-kie-tools/packages/sonataflow-operator
 
-go 1.22.0
+go 1.23.0
 
 // Internal dependencies
 replace (
@@ -25,7 +25,7 @@ require (
 	github.com/openshift/client-go v0.0.0-20240528061634-b054aa794d87
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.55.1
-	github.com/serverlessworkflow/sdk-go/v2 v2.4.2
+	github.com/serverlessworkflow/sdk-go/v2 v2.5.0
 	github.com/stretchr/testify v1.9.0
 	k8s.io/api v0.31.1
 	k8s.io/apimachinery v0.31.1
@@ -107,14 +107,14 @@ require (
 	go.opencensus.io v0.24.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.26.0 // indirect
-	golang.org/x/crypto v0.28.0 // indirect
+	golang.org/x/crypto v0.35.0 // indirect
 	golang.org/x/exp v0.0.0-20230713183714-613f0c0eb8a1 // indirect
-	golang.org/x/net v0.28.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/oauth2 v0.21.0 // indirect
-	golang.org/x/sync v0.8.0 // indirect
-	golang.org/x/sys v0.26.0 // indirect
-	golang.org/x/term v0.25.0 // indirect
-	golang.org/x/text v0.19.0 // indirect
+	golang.org/x/sync v0.11.0 // indirect
+	golang.org/x/sys v0.30.0 // indirect
+	golang.org/x/term v0.29.0 // indirect
+	golang.org/x/text v0.22.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	golang.org/x/tools v0.21.1-0.20240508182429-e35e4ccd0d2d // indirect
 	gomodules.xyz/jsonpatch/v2 v2.4.0 // indirect

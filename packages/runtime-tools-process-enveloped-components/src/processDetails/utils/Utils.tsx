@@ -33,35 +33,35 @@ export const JobsIconCreator = (state: JobStatus): JSX.Element => {
     case JobStatus.Error:
       return (
         <>
-          <ErrorCircleOIcon className="pf-u-mr-sm" color="var(--pf-global--danger-color--100)" />
+          <ErrorCircleOIcon className="pf-v5-u-mr-sm" color="var(--pf-v5-global--danger-color--100)" />
           Error
         </>
       );
     case JobStatus.Canceled:
       return (
         <>
-          <BanIcon className="pf-u-mr-sm" />
+          <BanIcon className="pf-v5-u-mr-sm" />
           Canceled
         </>
       );
     case JobStatus.Executed:
       return (
         <>
-          <CheckCircleIcon className="pf-u-mr-sm" color="var(--pf-global--success-color--100)" />
+          <CheckCircleIcon className="pf-v5-u-mr-sm" color="var(--pf-v5-global--success-color--100)" />
           Executed
         </>
       );
     case JobStatus.Retry:
       return (
         <>
-          <UndoIcon className="pf-u-mr-sm" />
+          <UndoIcon className="pf-v5-u-mr-sm" />
           Retry
         </>
       );
     case JobStatus.Scheduled:
       return (
         <>
-          <ClockIcon className="pf-u-mr-sm" />
+          <ClockIcon className="pf-v5-u-mr-sm" />
           Scheduled
         </>
       );

@@ -220,7 +220,7 @@ const EnumItem = SortableElement(({ enumValue, enumsCount, position, onUpdate, o
             name={`enum-value-${position}`}
             placeholder="Please enter a value"
             value={enumeration}
-            onChange={handleChange}
+            onChange={(_event, value: string) => handleChange(value)}
             onBlur={handleSave}
             onKeyDown={handleTabNavigation}
             autoComplete="off"

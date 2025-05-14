@@ -23,6 +23,7 @@ import { transform } from "@babel/standalone";
 import ReactDOM from "react-dom";
 import * as PatternflyReact from "@patternfly/react-core/dist/js";
 import * as PatternflyReactIcons from "@patternfly/react-icons/dist/js";
+import * as PatternflyReactDeprecated from "@patternfly/react-core/dist/js/deprecated";
 import { FormResources } from "@kie-tools/runtime-tools-shared-gateway-api/src/types";
 import { sourceHandler } from "../../../utils";
 import ResourcesContainer from "../ResourcesContainer/ResourcesContainer";
@@ -39,6 +40,7 @@ declare global {
   interface Window {
     PatternFlyReact: any;
     PatternflyReactIcons: any;
+    PatternflyReactDeprecated: any;
     PatternFly: any;
   }
 }
@@ -61,6 +63,7 @@ const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({ source, resources
 
         window.PatternFlyReact = PatternflyReact;
         window.PatternflyReactIcons = PatternflyReactIcons;
+        window.PatternflyReactDeprecated = PatternflyReactDeprecated;
 
         const container = document.getElementById("formContainer");
         if (!container) {
@@ -73,13 +76,20 @@ const ReactFormRenderer: React.FC<ReactFormRendererProps> = ({ source, resources
 
         container.appendChild(formContainer);
 
-        const { reactElements, patternflyElements, patternflyIconElements, formName, trimmedSource } =
-          sourceHandler(source)!;
+        const {
+          reactElements,
+          patternflyElements,
+          patternflyIconElements,
+          patternflyDeprecatedElements,
+          formName,
+          trimmedSource,
+        } = sourceHandler(source)!;
 
         const content = `
         const {${reactElements}} = React;
         const {${patternflyElements}} = PatternFlyReact;
         ${patternflyIconElements !== undefined ? `const {${patternflyIconElements}} = PatternflyReactIcons;` : ""}
+        ${patternflyDeprecatedElements !== undefined ? `const {${patternflyDeprecatedElements}} = PatternflyReactDeprecated;` : ""}
         ${trimmedSource}
         const target = document.getElementById("${containerId}");
         const element = window.React.createElement(${formName}, {});

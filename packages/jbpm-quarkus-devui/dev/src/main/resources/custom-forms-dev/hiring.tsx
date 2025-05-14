@@ -69,7 +69,7 @@ const Form__hiring: React.FC<any> = (props: any) => {
           placeholder={""}
           type={"text"}
           value={candidate}
-          onChange={set__candidate}
+          onChange={(_event, val) => set__candidate(val)}
         />
       </FormGroup>
       <FormGroup fieldId={"uniforms-0006-0002"} label={"Experience Level"} isRequired={false}>
@@ -81,7 +81,7 @@ const Form__hiring: React.FC<any> = (props: any) => {
           placeholder={""}
           step={1}
           value={experience}
-          onChange={(newValue) => set__experience(Number(newValue))}
+          onChange={(_event, newValue) => set__experience(Number(newValue))}
         />
       </FormGroup>
       <FormGroup fieldId={"uniforms-0006-0003"} label={"Skills"} isRequired={false}>
@@ -92,7 +92,7 @@ const Form__hiring: React.FC<any> = (props: any) => {
           placeholder={""}
           type={"text"}
           value={skills}
-          onChange={set__skills}
+          onChange={(_event, val) => set__skills(val)}
         />
       </FormGroup>
     </div>

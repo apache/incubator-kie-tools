@@ -18,12 +18,7 @@
  */
 
 import React, { useState } from "react";
-import {
-  Dropdown,
-  DropdownGroup,
-  DropdownItem,
-  DropdownToggle,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownGroup, DropdownItem, DropdownToggle } from "@patternfly/react-core/deprecated";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
@@ -70,7 +65,7 @@ export function VsCodeDropdownMenu(props: { workspace: ActiveWorkspace }) {
         isOpen={isVsCodeDropdownOpen}
         position={"right"}
         toggle={
-          <DropdownToggle toggleIndicator={null} onToggle={setVsCodeDropdownOpen}>
+          <DropdownToggle toggleIndicator={null} onToggle={(_event, val) => setVsCodeDropdownOpen(val)}>
             <Flex flexWrap={{ default: "nowrap" }}>
               <FlexItem
                 style={{

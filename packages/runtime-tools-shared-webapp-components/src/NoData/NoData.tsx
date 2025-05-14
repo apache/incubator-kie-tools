@@ -23,9 +23,11 @@ import {
   EmptyStateIcon,
   EmptyStateVariant,
   EmptyStateBody,
+  EmptyStateHeader,
+  EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { SearchIcon } from "@patternfly/react-icons/dist/js/icons/search-icon";
@@ -54,14 +56,17 @@ export const NoData: React.FC<IOwnProps & OUIAProps> = ({ ouiaId, ouiaSafe, ...p
       <PageSection isFilled={true} {...componentOuiaProps(ouiaId, "no-data", ouiaSafe ? ouiaSafe : !isRedirect)}>
         <Bullseye>
           <EmptyState variant={EmptyStateVariant.full}>
-            <EmptyStateIcon icon={SearchIcon} />
-            <Title headingLevel="h1" size="4xl">
-              {location.state ? location.state.title : "No matches"}
-            </Title>
+            <EmptyStateHeader
+              titleText={<>{location.state ? location.state.title : "No matches"}</>}
+              icon={<EmptyStateIcon icon={SearchIcon} />}
+              headingLevel="h1"
+            />
             <EmptyStateBody>{location.state ? location.state.description : "No data to display"}</EmptyStateBody>
-            <Button variant="primary" onClick={redirectHandler} data-testid="redirect-button">
-              {location.state ? location.state.buttonText : props.defaultButton}
-            </Button>
+            <EmptyStateFooter>
+              <Button variant="primary" onClick={redirectHandler} data-testid="redirect-button">
+                {location.state ? location.state.buttonText : props.defaultButton}
+              </Button>
+            </EmptyStateFooter>
           </EmptyState>
         </Bullseye>
       </PageSection>

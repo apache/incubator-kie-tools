@@ -18,12 +18,7 @@
  */
 
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownPosition,
-  DropdownToggle,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownItem, DropdownPosition, DropdownToggle } from "@patternfly/react-core/deprecated";
 import {
   Toolbar,
   ToolbarContent,
@@ -41,7 +36,8 @@ import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { NewFileDropdownMenu } from "./NewFileDropdownMenu";
-import { PageHeaderToolsItem, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { PageHeaderToolsItem } from "@patternfly/react-core/deprecated";
 import { FileLabel } from "../../filesList/FileLabel";
 import {
   useWorkspaceGitStatusPromise,
@@ -82,7 +78,7 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { useSettings, useSettingsDispatch } from "../../settings/SettingsContext";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
-import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggle";
+// import { Toggle } from "@patternfly/react-core/dist/js/components/Dropdown/Toggle";
 import BellIcon from "@patternfly/react-icons/dist/js/icons/bell-icon";
 import { SettingsTabs } from "../../settings/SettingsModalBody";
 
@@ -310,25 +306,24 @@ export function EditorToolbarWithWorkspace(
           justifyContent={{ default: "justifyContentSpaceBetween" }}
           alignItems={{ default: "alignItemsCenter" }}
           flexWrap={{ default: "nowrap" }}
+          gap={{ default: "gapMd" }}
         >
           <FlexItem style={{ minWidth: 0 }}>
             <PageHeaderToolsItem visibility={{ default: "visible" }}>
               <Flex flexWrap={{ default: "nowrap" }} alignItems={{ default: "alignItemsCenter" }}>
-                <FlexItem style={{ minWidth: 0 }}>
-                  <FileSwitcher
-                    workspace={props.workspace}
-                    gitStatusProps={
-                      canSeeWorkspaceToolbar
-                        ? {
-                            workspaceDescriptor: props.workspace.descriptor,
-                            workspaceGitStatusPromise: props.workspaceGitStatusPromise,
-                          }
-                        : undefined
-                    }
-                    workspaceFile={props.workspaceFile}
-                    onDeletedWorkspaceFile={handleDeletedWorkspaceFile}
-                  />
-                </FlexItem>
+                <FileSwitcher
+                  workspace={props.workspace}
+                  gitStatusProps={
+                    canSeeWorkspaceToolbar
+                      ? {
+                          workspaceDescriptor: props.workspace.descriptor,
+                          workspaceGitStatusPromise: props.workspaceGitStatusPromise,
+                        }
+                      : undefined
+                  }
+                  workspaceFile={props.workspaceFile}
+                  onDeletedWorkspaceFile={handleDeletedWorkspaceFile}
+                />
                 <FileStatus workspace={props.workspace} workspaceFile={props.workspaceFile} editor={props.editor} />
               </Flex>
             </PageHeaderToolsItem>
@@ -341,12 +336,16 @@ export function EditorToolbarWithWorkspace(
                     <>
                       <Dropdown
                         toggle={
-                          <Toggle onToggle={setNewDmnEditorDropdownOpen} id="new-dmn-editor-dropdown-toggle">
+                          <DropdownToggle
+                            onToggle={(_event, val) => setNewDmnEditorDropdownOpen(val)}
+                            id="new-dmn-editor-dropdown-toggle"
+                            toggleIndicator={null}
+                          >
                             <Label color="cyan" variant={"outline"}>
                               &nbsp;{`New DMN Editor`}&nbsp;&nbsp;
                               <CaretDownIcon />
                             </Label>
-                          </Toggle>
+                          </DropdownToggle>
                         }
                         onSelect={() => setNewDmnEditorDropdownOpen(false)}
                         isOpen={isNewDmnEditorDropdownOpen}
@@ -404,7 +403,8 @@ export function EditorToolbarWithWorkspace(
                       toggle={
                         <ResponsiveDropdownToggle
                           onToggle={() => setNewFileDropdownMenuOpen((prev) => !prev)}
-                          isPrimary={true}
+                          // isPrimary={true}
+                          toggleVariant="primary"
                           toggleIndicator={CaretDownIcon}
                         >
                           <PlusIcon />
@@ -451,7 +451,7 @@ export function EditorToolbarWithWorkspace(
                         <DropdownToggle
                           id={"share-dropdown"}
                           data-testid={"share-dropdown"}
-                          onToggle={(isOpen) => setShareDropdownOpen(isOpen)}
+                          onToggle={(_event, isOpen) => setShareDropdownOpen(isOpen)}
                         >
                           {i18n.editorToolbar.share}
                         </DropdownToggle>

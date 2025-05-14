@@ -18,14 +18,7 @@
  */
 
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import {
-  Card,
-  CardActions,
-  CardBody,
-  CardExpandableContent,
-  CardHeader,
-  CardHeaderMain,
-} from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody, CardExpandableContent, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
 import { Stack } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { useAuthSessions, useAuthSessionsDispatch } from "../AuthSessionsContext";
 import React, { useCallback, useState } from "react";
@@ -86,40 +79,44 @@ function AuthSessionCard({
       key={authSession.id}
       isCompact={true}
       isExpanded={isExpanded}
-      isSelectable={authSession.status === AuthSessionStatus.VALID && !!onSelectAuthSession}
+      style={authSession.status === AuthSessionStatus.VALID && !!onSelectAuthSession ? { cursor: "pointer" } : {}}
       onClick={onSelect}
     >
       <CardHeader
+        actions={{
+          actions: (
+            <>
+              {authSession.status === AuthSessionStatus.INVALID && (
+                <Tooltip
+                  content={"Could not authenticate using this session. Its Token was probably revoked, or expired."}
+                >
+                  <ExclamationCircleIcon style={{ color: "var(--pf-v5-global--palette--red-100)" }} />
+                </Tooltip>
+              )}
+              <Button
+                variant={ButtonVariant.link}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  return authSessionsDispatch.remove(authSession);
+                }}
+              >
+                Remove
+              </Button>
+            </>
+          ),
+          hasNoOffset: false,
+          className: undefined,
+        }}
         onExpand={(e) => {
           e.stopPropagation();
           return setExpanded((prev) => !prev);
         }}
       >
-        <CardActions>
-          {authSession.status === AuthSessionStatus.INVALID && (
-            <Tooltip content={"Could not authenticate using this session. Its Token was probably revoked, or expired."}>
-              <ExclamationCircleIcon style={{ color: "var(--pf-global--palette--red-100)" }} />
-            </Tooltip>
-          )}
-          <Button
-            variant={ButtonVariant.link}
-            onClick={(e) => {
-              e.stopPropagation();
-              return authSessionsDispatch.remove(authSession);
-            }}
-          >
-            Remove
-          </Button>
-        </CardActions>
-        <CardHeaderMain
-          style={{ display: "flex", opacity: authSession.status === AuthSessionStatus.INVALID ? 0.6 : 1 }}
-        >
-          <Flex alignItems={{ default: "alignItemsCenter" }} style={{ display: "inline-flex" }}>
-            <TextContent>
-              <Text component={TextVariants.h3}>{`${getAuthSessionDisplayInfo(authSession).userFriendlyName}`}</Text>
-            </TextContent>
-          </Flex>
-        </CardHeaderMain>
+        <Flex alignItems={{ default: "alignItemsCenter" }} style={{ display: "inline-flex" }}>
+          <TextContent>
+            <Text component={TextVariants.h3}>{`${getAuthSessionDisplayInfo(authSession).userFriendlyName}`}</Text>
+          </TextContent>
+        </Flex>
       </CardHeader>
       <CardExpandableContent>
         <CardBody>

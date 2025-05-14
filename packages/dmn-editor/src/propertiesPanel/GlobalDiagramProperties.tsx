@@ -82,7 +82,7 @@ export function GlobalDiagramProperties() {
                   name={thisDmn.model.definitions["@_name"]}
                   isReadOnly={settings.isReadOnly}
                   shouldCommitOnBlur={true}
-                  className={"pf-c-form-control"}
+                  className={"pf-v5-c-form-control"}
                   onRenamed={(newName) => {
                     dmnEditorStoreApi.setState((state) => {
                       state.dmn.model.definitions["@_name"] = newName;
@@ -100,7 +100,7 @@ export function GlobalDiagramProperties() {
                   rows={6}
                   placeholder={"Enter a description..."}
                   value={thisDmn.model.definitions.description?.__$$text}
-                  onChange={(newDescription) =>
+                  onChange={(_event, newDescription) =>
                     dmnEditorStoreApi.setState((state) => {
                       state.dmn.model.definitions.description = { __$$text: newDescription };
                     })
@@ -115,7 +115,7 @@ export function GlobalDiagramProperties() {
                   isDisabled={settings.isReadOnly}
                   placeholder={"Enter an expression language..."}
                   value={thisDmn.model.definitions["@_expressionLanguage"]}
-                  onChange={(newExprLang) =>
+                  onChange={(_event, newExprLang) =>
                     dmnEditorStoreApi.setState((state) => {
                       state.dmn.model.definitions["@_expressionLanguage"] = newExprLang;
                     })
@@ -158,7 +158,7 @@ export function GlobalDiagramProperties() {
                   isReadOnly={settings.isReadOnly}
                   hoverTip="Copy"
                   clickTip="Copied"
-                  onChange={(newId) => {
+                  onChange={(_event, newId) => {
                     dmnEditorStoreApi.setState((state) => {
                       state.dmn.model.definitions["@_id"] = `${newId}`;
                     });
@@ -174,7 +174,7 @@ export function GlobalDiagramProperties() {
                   isReadOnly={settings.isReadOnly}
                   hoverTip="Copy"
                   clickTip="Copied"
-                  onChange={(newNamespace) => {
+                  onChange={(_event, newNamespace) => {
                     dmnEditorStoreApi.setState((state) => {
                       state.dmn.model.definitions["@_namespace"] = `${newNamespace}`;
                     });

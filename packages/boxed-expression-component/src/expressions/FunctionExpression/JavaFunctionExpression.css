@@ -48,11 +48,11 @@
 .java-function-expression-label .java-function-parameter-help-icon {
   bottom: 10px;
   right: 10px;
-  color: var(--pf-global--info-color--100);
+  color: var(--pf-v5-global--info-color--100);
   cursor: pointer;
   position: absolute;
 }
 
-.java-function-parameter-help-popover .pf-c-title {
+.java-function-parameter-help-popover .pf-v5-c-title {
   margin-top: 0px;
 }

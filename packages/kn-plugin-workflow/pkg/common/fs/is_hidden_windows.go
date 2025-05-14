@@ -1,3 +1,6 @@
+//go:build windows
+// +build windows
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,19 +20,21 @@
  * under the License.
  */
 
-import { DeploymentOptionArgs } from "../../types";
-import { DeploymentOption, DeploymentOptionOpts } from "../types";
-import { DeploymentYaml } from "./DeploymentYaml";
-import { ServiceYaml } from "./ServiceYaml";
+package fsutils
 
-export function KogitoQuarkusBlankAppOption(args: DeploymentOptionArgs, opts?: DeploymentOptionOpts): DeploymentOption {
-  return {
-    name: "Kogito Quarkus Blank App",
-    content: `
-${DeploymentYaml(args)}
----
-${ServiceYaml()}
-`,
-    ...opts,
-  };
+import (
+	"golang.org/x/sys/windows"
+	"os"
+)
+
+func IsHidden(info os.FileInfo, path string) bool {
+	p, err := windows.UTF16PtrFromString(path)
+	if err != nil {
+		return false
+	}
+	attrs, err := windows.GetFileAttributes(p)
+	if err != nil {
+		return false
+	}
+	return attrs&windows.FILE_ATTRIBUTE_HIDDEN != 0
 }

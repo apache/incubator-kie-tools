@@ -29,11 +29,11 @@ import WorkflowForm from "@kie-tools/runtime-tools-swf-enveloped-components/dist
 import WorkflowResult from "@kie-tools/runtime-tools-swf-enveloped-components/dist/workflowForm/envelope/components/WorkflowResult/WorkflowResult";
 import { WorkflowDefinition, WorkflowResponse } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
-import { EmptyState, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import { EmptyState, EmptyStateIcon, EmptyStateHeader } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useOpenApi } from "../../context/OpenApiContext";
@@ -201,10 +201,15 @@ export function WorkflowFormPage() {
           <CardBody isFilled>
             {openApi.openApiPromise.status === PromiseStateStatus.PENDING ? (
               <EmptyState>
-                <EmptyStateIcon variant="container" component={Spinner} />
-                <Title size="lg" headingLevel="h4">
-                  Loading...
-                </Title>
+                <EmptyStateHeader
+                  titleText={
+                    <>
+                      Loading...
+                      <EmptyStateIcon icon={Spinner} />
+                    </>
+                  }
+                  headingLevel="h4"
+                />
               </EmptyState>
             ) : workflowResponse ? (
               <WorkflowResult response={workflowResponse} />

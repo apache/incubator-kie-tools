@@ -128,7 +128,14 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
   }, [workspace.descriptor.workspaceId, workspaces]);
 
   const applyAcceleratorToWorkspace = useCallback(
-    async (accelerator: AcceleratorConfig, currentFile: WorkspaceFile) => {
+    async (
+      accelerator: AcceleratorConfig,
+      currentFile: WorkspaceFile,
+      authInfo?: {
+        username: string;
+        password: string;
+      }
+    ) => {
       applyingAcceleratorAlert.show({ acceleratorName: accelerator.name });
 
       const workspaceId = workspace.descriptor.workspaceId;
@@ -237,6 +244,7 @@ export function useAcceleratorsDispatch(workspace: ActiveWorkspace) {
           workspaceId,
           remote: TEMP_ACCELERATOR_REMOTE_NAME,
           ref: accelerator.gitRepositoryGitRef,
+          authInfo: authInfo,
         });
 
         if (!fetchResult.fetchHead) {

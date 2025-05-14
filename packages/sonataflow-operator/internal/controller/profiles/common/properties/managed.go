@@ -22,6 +22,7 @@ package properties
 import (
 	"context"
 	"fmt"
+	"net/url"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
 
@@ -239,8 +240,11 @@ func setDevProfileDiscoveryProperties(ctx context.Context, catalog discovery.Ser
 		if err != nil {
 			klog.V(log.E).ErrorS(err, "An error was produced while getting workflow route url. ", "workflow", workflow.Name)
 		} else {
-			props.Set(constants.QuarkusHttpCors, "true")
-			props.Set(constants.QuarkusHttpCorsOrigins, routeUrl)
+			if url, err := url.Parse(routeUrl); err != nil {
+				klog.V(log.E).ErrorS(err, "An error was produced while parsing workflow route url. ", "workflow", workflow.Name)
+			} else {
+				props.Set(constants.QuarkusDevUIHosts, url.Host)
+			}
 		}
 	}
 }

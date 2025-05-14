@@ -17,27 +17,33 @@
 
 # End to End tests
 
-There is a set of cypress tests in `e2e-tests` folder. To run them, please refer to one option bellow.
+There is a set of playwright tests in `tests-e2e` directory. To run them, please refer to one option bellow.
 
-## Run tests manually
+## Run nativelly
 
-More suitable for running particular tests from `e2e-tests`.
+- `KIE_TOOLS_BUILD__runEndToEndTests=true KIE_TOOLS_BUILD__containerizedEndToEndTests=false pnpm test-e2e`
 
-- `packages/extended-services$ pnpm start`
-- `packages/online-editor$ pnpm start`
-- `packages/online-editor$ pnpm cy:open`
+## Run in a container (recommended for more compatibility)
 
-## Run tests automatically
-
-More suitable for running `e2e-tests` completely.
-
-- `packages/online-editor$ KIE_TOOLS_BUILD__runEndToEndTests=true pnpm test-e2e`
+- `KIE_TOOLS_BUILD__runEndToEndTests=true KIE_TOOLS_BUILD__containerizedEndToEndTests=true pnpm test-e2e`
 
 > **NOTE:**
 > Before test development, you may need to build `online-editor` as:
 >
 > - `kie-tools$ pnpm bootstrap`
 > - `kie-tools$ pnpm -F @kie-tools/online-editor... build:dev`
+
+# Extended Services, CORS Proxy, and KIE Sandbox Accelerator Quarkus dependencies
+
+These dependencies are required for full functionality. `pnpm start` will automatically start all of them, but everything can be started individually with:
+
+- `pnpm start:kie-sandbox`
+- `pnpm start:kie-sandbox-accelerator-quarkus`
+- `pnpm start:cors-proxy`
+- `pnpm start:extended-services`
+
+> **NOTE:** > `pnpm start:extended-services` will force the Extended Services application to start with host `0.0.0.0` (by setting `EXTENDED_SERVICES_JAVA__host="0.0.0.0"`).
+> This is important due to networking issues when running on WSL (Windows Subsystem for Linux).
 
 ## Testing insecure/invalid TLS certificates with Git providers
 

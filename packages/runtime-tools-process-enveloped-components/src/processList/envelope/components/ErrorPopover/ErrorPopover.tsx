@@ -52,7 +52,7 @@ const ErrorPopover: React.FC<ErrorPopoverProps & OUIAProps> = ({
             data-testid="skip-button"
             variant="secondary"
             onClick={() => onSkipClick(processInstanceData)}
-            className="pf-u-mr-sm"
+            className="pf-v5-u-mr-sm"
           >
             Skip
           </Button>,
@@ -62,7 +62,7 @@ const ErrorPopover: React.FC<ErrorPopoverProps & OUIAProps> = ({
             id="retry-button"
             data-testid="retry-button"
             onClick={() => onRetryClick(processInstanceData)}
-            className="pf-u-mr-sm"
+            className="pf-v5-u-mr-sm"
           >
             Retry
           </Button>,

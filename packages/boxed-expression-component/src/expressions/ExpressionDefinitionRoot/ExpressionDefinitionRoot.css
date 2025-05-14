@@ -19,7 +19,7 @@
 
 .expression-container > .expression-container-box {
   display: inline-block;
-  border: 2px solid var(--pf-global--palette--black-300);
+  border: 2px solid var(--pf-v5-global--palette--black-300);
   margin-top: 5px;
 }
 
