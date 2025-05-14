@@ -23,6 +23,10 @@ import { TabName } from "../__fixtures__/editor";
 
 test.describe("Copy and Paste Data Type", () => {
   test.beforeEach(async ({ editor, dataTypes, clipboard, context, browserName }) => {
+    test.skip(
+      browserName === "webkit",
+      "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
+    );
     await editor.open();
     await editor.changeTab({ tab: TabName.DATA_TYPES });
     await dataTypes.createFirstCustonDataType();
@@ -47,6 +51,7 @@ test.describe("Copy and Paste Data Type", () => {
     await dataTypes.pasteFirstDataType();
 
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_name": DefaultDataTypeName.Any,

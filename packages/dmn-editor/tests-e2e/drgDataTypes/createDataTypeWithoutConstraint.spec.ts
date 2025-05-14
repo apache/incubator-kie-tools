@@ -33,6 +33,7 @@ test.describe("Create Data Types - Without Constraint", () => {
     await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Undefined });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_name": DefaultDataTypeName.Undefined,
@@ -47,6 +48,7 @@ test.describe("Create Data Types - Without Constraint", () => {
     await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Any });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_name": DefaultDataTypeName.Any,
@@ -62,6 +64,7 @@ test.describe("Create Data Types - Without Constraint", () => {
     await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Boolean });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_isCollection": dataType["@_isCollection"],
@@ -77,6 +80,7 @@ test.describe("Create Data Types - Without Constraint", () => {
     await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Context });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_isCollection": dataType["@_isCollection"],
@@ -92,6 +96,7 @@ test.describe("Create Data Types - Without Constraint", () => {
     await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Date });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_isCollection": dataType["@_isCollection"],
@@ -107,6 +112,7 @@ test.describe("Create Data Types - Without Constraint", () => {
     await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.DateTime });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_isCollection": dataType["@_isCollection"],
@@ -122,6 +128,7 @@ test.describe("Create Data Types - Without Constraint", () => {
     await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.DateTimeDuration });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_isCollection": dataType["@_isCollection"],
@@ -137,6 +144,7 @@ test.describe("Create Data Types - Without Constraint", () => {
     await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Number });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_isCollection": dataType["@_isCollection"],
@@ -152,6 +160,7 @@ test.describe("Create Data Types - Without Constraint", () => {
     await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.String });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_isCollection": dataType["@_isCollection"],
@@ -167,6 +176,7 @@ test.describe("Create Data Types - Without Constraint", () => {
     await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Time });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_isCollection": dataType["@_isCollection"],
@@ -182,6 +192,7 @@ test.describe("Create Data Types - Without Constraint", () => {
     await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.YearsMonthsDuration });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_isCollection": dataType["@_isCollection"],

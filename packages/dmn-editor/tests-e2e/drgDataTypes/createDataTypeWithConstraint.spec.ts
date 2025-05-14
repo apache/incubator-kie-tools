@@ -34,6 +34,7 @@ test.describe("Create Data Types - With Constraint", () => {
     await dataTypes.getExpressionConstraintButton().click();
     await dataTypes.addExpressionConstraint({ value: "> 20" });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_name": DefaultDataTypeName.Any,
@@ -54,6 +55,7 @@ test.describe("Create Data Types - With Constraint", () => {
     await dataTypes.getExpressionConstraintButton().click();
     await dataTypes.addExpressionConstraint({ value: 'date("2025-04-14")' });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_name": DefaultDataTypeName.Date,
@@ -74,6 +76,7 @@ test.describe("Create Data Types - With Constraint", () => {
     await dataTypes.getEnumerationConstraintButton().click();
     await dataTypes.addEnumerationConstraint({ values: ["2025-01-14", "2025-04-15"] });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_name": DefaultDataTypeName.Date,
@@ -94,6 +97,7 @@ test.describe("Create Data Types - With Constraint", () => {
     await dataTypes.getRangeConstraintButton().click();
     await dataTypes.addRangeConstraint({ values: ["2025-01-14", "2025-04-15"] });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_name": DefaultDataTypeName.Date,
@@ -114,6 +118,7 @@ test.describe("Create Data Types - With Constraint", () => {
     await dataTypes.getExpressionConstraintButton().click();
     await dataTypes.addExpressionConstraint({ value: "20" });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_name": DefaultDataTypeName.Number,
@@ -134,6 +139,7 @@ test.describe("Create Data Types - With Constraint", () => {
     await dataTypes.getEnumerationConstraintButton().click();
     await dataTypes.addEnumerationConstraint({ values: ["10", "20"] });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_name": DefaultDataTypeName.Number,
@@ -154,6 +160,7 @@ test.describe("Create Data Types - With Constraint", () => {
     await dataTypes.getRangeConstraintButton().click();
     await dataTypes.addRangeConstraint({ values: ["10", "20"] });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_name": DefaultDataTypeName.Number,
@@ -174,6 +181,7 @@ test.describe("Create Data Types - With Constraint", () => {
     await dataTypes.getExpressionConstraintButton().click();
     await dataTypes.addExpressionConstraint({ value: "20" });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_name": DefaultDataTypeName.String,
@@ -194,6 +202,7 @@ test.describe("Create Data Types - With Constraint", () => {
     await dataTypes.getEnumerationConstraintButton().click();
     await dataTypes.addEnumerationConstraint({ values: ["10", "20"] });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_name": DefaultDataTypeName.String,
@@ -214,6 +223,7 @@ test.describe("Create Data Types - With Constraint", () => {
     await dataTypes.getRangeConstraintButton().click();
     await dataTypes.addRangeConstraint({ values: ["10", "20"] });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
       "@_name": DefaultDataTypeName.String,
