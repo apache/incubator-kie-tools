@@ -50,7 +50,6 @@ cd "${PROJECT_ARTIFACT_ID}"
 source "${script_dir_path}"/configure-jvm-mvn.sh
 
 # Fix as we cannot rely on Quarkus platform
-# Should be removed once https://issues.redhat.com/browse/KOGITO-9120 is implemented
 if [ ! -z ${KOGITO_VERSION} ]; then
     echo "Replacing Kogito Platform BOM with version ${KOGITO_VERSION}"
     # [ ]* -> is a regexp pattern to match any number of spaces

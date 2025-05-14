@@ -59,7 +59,7 @@ export const AboutButton: React.FunctionComponent = () => {
       </Button>
       <Modal
         header={
-          <MastheadBrand style={{ textDecoration: "none" }}>
+          <MastheadBrand component="a" style={{ textDecoration: "none" }}>
             <Flex alignItems={{ default: "alignItemsCenter" }}>
               <FlexItem style={{ display: "flex", alignItems: "center" }}>
                 <Brand src={routes.static.images.appLogoDefault.path({})} alt={"Logo"} heights={{ default: "80px" }}>
@@ -91,6 +91,12 @@ export const AboutButton: React.FunctionComponent = () => {
               <DescriptionListTerm>OIDC Client (client_id): </DescriptionListTerm>
               <DescriptionListDescription>
                 {env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID}
+              </DescriptionListDescription>
+            </DescriptionListGroup>
+            <DescriptionListGroup>
+              <DescriptionListTerm>OIDC Client (default scopes): </DescriptionListTerm>
+              <DescriptionListDescription>
+                {env.RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_DEFAULT_SCOPES}
               </DescriptionListDescription>
             </DescriptionListGroup>
             <DescriptionListGroup>

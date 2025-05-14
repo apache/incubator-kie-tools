@@ -19,7 +19,7 @@
 
 import { LfsFsCache } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsFsCache";
 import { LfsStorageService } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsStorageService";
-import { IDToken, ServerMetadata, TokenEndpointResponse, UserInfoResponse } from "openid-client";
+import { IDToken, ServerMetadata, TokenEndpointResponse } from "openid-client";
 
 export const authSessionFsCache = new LfsFsCache();
 export const authSessionFsService = new LfsStorageService();
@@ -88,7 +88,6 @@ export type OpenIDConnectAuthSession = {
   impersonator?: boolean;
   claims: IDToken;
   issuer: string;
-  userInfo: UserInfoResponse;
   clientId: string;
   clientSecret?: string;
   audience?: string;

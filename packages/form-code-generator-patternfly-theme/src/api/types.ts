@@ -21,6 +21,7 @@ export interface FormElement {
   reactImports: string[];
   pfImports: string[];
   pfIconImports?: string[];
+  pfDeprecatedImports?: string[];
   requiredCode: string[] | undefined;
   ref: InputReference;
   stateCode: string;
@@ -32,6 +33,7 @@ abstract class AbstractFormElement implements FormElement {
   jsxCode: string;
   pfImports: string[];
   pfIconImports?: string[];
+  pfDeprecatedImports?: string[];
   reactImports: string[];
   requiredCode: string[] | undefined;
   ref: InputReference;

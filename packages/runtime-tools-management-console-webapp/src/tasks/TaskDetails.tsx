@@ -243,7 +243,7 @@ export const TaskDetails: React.FC<Props> = ({ taskId }) => {
             <Grid hasGutter md={1} className={"kogito-management-console__full-size"}>
               <GridItem span={12} className={"kogito-management-console__full-size"}>
                 <Card isPlain className={"kogito-management-console__full-size"}>
-                  <CardBody className="pf-u-h-100">
+                  <CardBody className="pf-v5-u-h-100">
                     <TaskForm
                       userTask={userTask}
                       onSubmitFormSuccess={onSubmitSuccess}
@@ -297,7 +297,7 @@ export const TaskDetails: React.FC<Props> = ({ taskId }) => {
       <Card
         isPlain
         className="kogito-management-console__card-size"
-        style={{ paddingTop: "var(--pf-global--spacer--md)" }}
+        style={{ paddingTop: "var(--pf-v5-global--spacer--md)" }}
       >
         {content}
       </Card>

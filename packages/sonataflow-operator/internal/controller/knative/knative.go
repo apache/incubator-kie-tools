@@ -22,7 +22,14 @@ package knative
 import (
 	"context"
 	"fmt"
+	"sort"
 	"strings"
+
+	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/klog/v2"
+	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/log"
 
 	"knative.dev/pkg/resolver"
 
@@ -71,6 +78,7 @@ const (
 	knativeSinkProvided                      = "SinkProvided"
 	KafkaKnativeEventingDeliveryOrder        = "kafka.eventing.knative.dev/delivery.order"
 	KafkaKnativeEventingDeliveryOrderOrdered = "ordered"
+	workflowContainer                        = "workflow"
 )
 
 // noOpTracker no operations tracker for querying operations based on resolver.URIResolver, that don't require any
@@ -350,4 +358,89 @@ func GetSinkURI(destination duckv1.Destination) (*apis.URL, error) {
 	} else {
 		return url, nil
 	}
+}
+
+// CleanupOutdatedRevisions Given a deployed workflow, analyses if the configured deployment model is knative.
+// If that is the case, and the corresponding SinkBinding was created and properly injected, all the previous knative
+// service revisions that weren't properly initialized (i.e. doesn't have the K_SINK injected) will be cleaned-up.
+// Note that revisions in that situation are not valid, since workflows without the K_SINK injected will never pass
+// the health checks, etc.
+func CleanupOutdatedRevisions(ctx context.Context, cfg *rest.Config, workflow *operatorapi.SonataFlow, platform *operatorapi.SonataFlowPlatform) error {
+	if !workflow.IsKnativeDeployment() {
+		return nil
+	}
+	avail, err := GetKnativeAvailability(cfg)
+	if err != nil {
+		return err
+	}
+	if !avail.Serving || !avail.Eventing {
+		return nil
+	}
+	sink, err := GetWorkflowSink(workflow, platform)
+	if err != nil {
+		return fmt.Errorf("failed to get workflow sink for workflow : %s, namespace: %s : %v", workflow.Name, workflow.Namespace, err)
+	}
+	if sink == nil {
+		// no sink?, then no SinkBinding required/created for this workflow, and thus no dangling revisions to clean.
+		return nil
+	}
+	injected, err := CheckKSinkInjected(workflow.Name, workflow.Namespace)
+	if err != nil {
+		return err
+	}
+	if !injected {
+		return fmt.Errorf("waiting for Sinkbinding K_SINK injection to complete")
+	}
+	opts := &client.ListOptions{
+		LabelSelector: labels.SelectorFromSet(
+			map[string]string{
+				workflowproj.LabelWorkflow:          workflow.Name,
+				workflowproj.LabelWorkflowNamespace: workflow.Namespace,
+			},
+		),
+		Namespace: workflow.Namespace,
+	}
+	revisionList := &servingv1.RevisionList{}
+	if err := utils.GetClient().List(ctx, revisionList, opts); err != nil {
+		return err
+	}
+	// Sort the revisions based on creation timestamp
+	sortRevisions(revisionList.Items)
+	// Clean up previous revisions that do not have K_SINK injected
+	for i := 0; i < len(revisionList.Items)-1; i++ {
+		revision := &revisionList.Items[i]
+		if !containsKSink(revision) {
+			klog.V(log.I).InfoS("Revision %s does not have K_SINK injected and can be cleaned up.", revision.Name)
+			if err := utils.GetClient().Delete(ctx, revision, &client.DeleteOptions{}); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
+func containsKSink(revision *servingv1.Revision) bool {
+	for _, container := range revision.Spec.PodSpec.Containers {
+		if container.Name == workflowContainer {
+			for _, env := range container.Env {
+				if env.Name == kSink {
+					return true
+				}
+			}
+			break
+		}
+	}
+	return false
+}
+
+type CreationTimestamp []servingv1.Revision
+
+func (a CreationTimestamp) Len() int { return len(a) }
+func (a CreationTimestamp) Less(i, j int) bool {
+	return a[i].CreationTimestamp.Before(&a[j].CreationTimestamp)
+}
+func (a CreationTimestamp) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+
+func sortRevisions(revisions []servingv1.Revision) {
+	sort.Sort(CreationTimestamp(revisions))
 }

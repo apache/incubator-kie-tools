@@ -23,5 +23,7 @@ module.exports = {
   defaultEnvJson: {
     RUNTIME_TOOLS_MANAGEMENT_CONSOLE_APP_NAME: env.runtimeToolsManagementConsoleWebapp.appName,
     RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID: env.runtimeToolsManagementConsoleWebapp.oidcClient.clientId,
+    RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_DEFAULT_SCOPES:
+      env.runtimeToolsManagementConsoleWebapp.oidcClient.defaultScopes,
   },
 };

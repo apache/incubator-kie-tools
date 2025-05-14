@@ -249,7 +249,7 @@ const TaskDetailsPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
               <Grid hasGutter md={1} className={"Dev-ui__card-size"}>
                 <GridItem span={12} className={"Dev-ui__card-size"}>
                   <Card className={"Dev-ui__card-size"}>
-                    <CardBody className="pf-u-h-100">
+                    <CardBody className="pf-v5-u-h-100">
                       <TaskFormContainer
                         userTask={userTask}
                         onSubmitSuccess={onSubmitSuccess}

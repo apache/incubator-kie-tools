@@ -24,6 +24,7 @@ export const sourceHandler = (
       reactElements: string;
       patternflyElements: string;
       patternflyIconElements: string | undefined;
+      patternflyDeprecatedElements: string | undefined;
       formName: string;
       trimmedSource: string;
     }
@@ -48,6 +49,10 @@ export const sourceHandler = (
   const patternflyIconImports = new RegExp(patternflyIconImportsRegExp).exec(source);
   const patternflyIconElements = importsReg.exec(patternflyIconImports?.[0] ?? "")?.[1];
 
+  const patternflyDeprecatedImportsRegExp = /import {[^}]*}.*(?=['"]@patternfly\/react-core\/deprecated['"]).*/gim;
+  const patternflyDeprecatedImports = new RegExp(patternflyDeprecatedImportsRegExp).exec(source);
+  const patternflyDeprecatedElements = importsReg.exec(patternflyDeprecatedImports?.[0] ?? "")?.[1];
+
   const trimmedSource = source
     .split(reactImportsRegExp)
     .join("")
@@ -57,6 +62,9 @@ export const sourceHandler = (
     .trim()
     .split(patternflyIconImportsRegExp)
     .join("")
+    .trim()
+    .split(patternflyDeprecatedImportsRegExp)
+    .join("")
     .trim();
   const formName = trimmedSource.split(": React.FC")[0].split("const ")[1];
 
@@ -64,6 +72,7 @@ export const sourceHandler = (
     reactElements: reactElements!,
     patternflyElements: patternflyElements!,
     patternflyIconElements: patternflyIconElements,
+    patternflyDeprecatedElements: patternflyDeprecatedElements,
     formName,
     trimmedSource,
   };

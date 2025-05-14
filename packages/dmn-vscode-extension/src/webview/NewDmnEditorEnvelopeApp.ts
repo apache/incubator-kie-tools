@@ -18,12 +18,12 @@
  */
 
 import * as EditorEnvelope from "@kie-tools-core/editor/dist/envelope";
-import { DmnEditorFactory } from "@kie-tools/dmn-editor-envelope/dist/DmnEditorFactory";
+import { VsCodeNewDmnEditorFactory } from "@kie-tools/dmn-editor-envelope/dist/vscode";
 
 declare const acquireVsCodeApi: any;
 
 EditorEnvelope.init({
   container: document.getElementById("envelope-app")!,
   bus: acquireVsCodeApi(),
-  editorFactory: new DmnEditorFactory(),
+  editorFactory: new VsCodeNewDmnEditorFactory(),
 });

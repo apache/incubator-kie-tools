@@ -22,6 +22,7 @@ set -e
 
 imageName=$(pnpm build-env sonataFlowOperator.registry)/$(pnpm build-env sonataFlowOperator.account)/$(pnpm build-env sonataFlowOperator.name)
 imageTag=$(pnpm build-env sonataFlowOperator.buildTag)
+platformTag=$(pnpm build-env sonataFlowOperator.platformTag)
 version=$(pnpm build-env sonataFlowOperator.version)
 
 if [ -z "${version}" ]; then
@@ -42,8 +43,6 @@ node -p "require('replace-in-file').sync({ from: /\bversion: .*\b/g, to: 'versio
 node -p "require('replace-in-file').sync({ from: /\bversion: .*\b/g, to: 'version: ${version}', files: ['./images/manager.yaml'] });"
 
 node -p "require('replace-in-file').sync({ from: /\boperatorVersion = .*/g, to: 'operatorVersion = \"${version}\"', files: ['version/version.go'] });"
-node -p "require('replace-in-file').sync({ from: /\btagVersion = .*/g, to: 'tagVersion = \"${imageTag}\"', files: ['version/version.go'] });"
-
-make generate-all
+node -p "require('replace-in-file').sync({ from: /\bplatformTagVersion = .*/g, to: 'platformTagVersion = \"${platformTag}\"', files: ['version/version.go'] });"
 
 echo "Version bumped to ${version}"

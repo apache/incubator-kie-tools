@@ -46,7 +46,7 @@ const Bool: React.FC<BoolFieldProps> = (props: BoolFieldProps) => {
       id={'${props.id}'}
       name={${props.itemProps?.isListItem ? getListItemName({ itemProps: props.itemProps, name: props.name }) : `'${props.name}'`}}
       label={'${props.label}'}
-      onChange={${props.itemProps?.isListItem ? getListItemOnChange({ itemProps: props.itemProps, name: props.name }) : ref.stateSetter}}
+      onChange={${props.itemProps?.isListItem ? getListItemOnChange({ itemProps: props.itemProps, name: props.name }) : `(e, newValue) => ${ref.stateSetter}(newValue)`}}
     />
   </FormGroup>`;
 

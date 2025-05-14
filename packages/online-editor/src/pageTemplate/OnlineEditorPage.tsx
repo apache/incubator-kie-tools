@@ -17,8 +17,9 @@
  * under the License.
  */
 
-import { Page, PageHeaderToolsItem } from "@patternfly/react-core/dist/js/components/Page";
-import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
+import { Page } from "@patternfly/react-core/dist/js/components/Page";
+import { PageHeaderToolsItem } from "@patternfly/react-core/deprecated";
+
 import * as React from "react";
 import { useRoutes } from "../navigation/Hooks";
 import { useNavigate } from "react-router-dom";
@@ -27,6 +28,7 @@ import { SettingsButton } from "../settings/SettingsButton";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { ExtendedServicesIcon } from "../extendedServices/ExtendedServicesIcon";
 import { DevDeploymentsDropdown } from "../devDeployments/DevDeploymentsDropdown";
+
 import { AccountsIcon } from "../accounts/AccountsIcon";
 import { AboutButton } from "../aboutModal/AboutButton";
 import { MastheadContent } from "@patternfly/react-core/dist/js/components/Masthead";
@@ -44,8 +46,13 @@ export function OnlineEditorPage(props: { children?: React.ReactNode; onKeyDown?
         <Masthead aria-label={"Page header"} display={{ default: "inline" }}>
           <MastheadMain style={{ justifyContent: "space-between" }}>
             <PageHeaderToolsItem className={"kie-sandbox--logo"}>
-              <Flex justifyContent={{ default: "justifyContentFlexEnd" }} flexWrap={{ default: "nowrap" }}>
+              <Flex
+                justifyContent={{ default: "justifyContentFlexEnd" }}
+                flexWrap={{ default: "nowrap" }}
+                gap={{ default: "gapMd" }}
+              >
                 <MastheadBrand
+                  component="a"
                   onClick={() => navigate({ pathname: routes.home.path({}) })}
                   style={{ textDecoration: "none" }}
                 >
@@ -58,7 +65,7 @@ export function OnlineEditorPage(props: { children?: React.ReactNode; onKeyDown?
           <MastheadContent>
             <Toolbar isStatic>
               <ToolbarContent>
-                <ToolbarGroup alignment={{ default: "alignRight" }} spacer={{ default: "spacerNone", md: "spacerMd" }}>
+                <ToolbarGroup align={{ default: "alignRight" }} spacer={{ default: "spacerNone", md: "spacerMd" }}>
                   <ToolbarItem>
                     <DevDeploymentsDropdown />
                   </ToolbarItem>

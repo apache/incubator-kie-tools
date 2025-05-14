@@ -37,8 +37,16 @@ import {
 } from "@kie-tools-core/react-hooks/dist/useImperativePromiseHandler";
 import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  JavaCodeCompletionAccessor,
+  JavaCodeCompletionClass,
+} from "@kie-tools-core/vscode-java-code-completion/dist/api";
 
 export const EXTERNAL_MODELS_SEARCH_GLOB_PATTERN = "**/*.{dmn,pmml}";
 export const TARGET_DIRECTORY = "target/classes/";
@@ -52,15 +60,25 @@ export const EMPTY_DMN = () => `<?xml version="1.0" encoding="UTF-8"?>
   name="DMN${generateUuid()}">
 </definitions>`;
 
+export interface JavaCodeCompletionExposedInteropApi {
+  getFields(fqcn: string): Promise<JavaCodeCompletionAccessor[]>;
+  getClasses(query: string): Promise<JavaCodeCompletionClass[]>;
+  isLanguageServerAvailable(): Promise<boolean>;
+}
+
 export type DmnEditorRootProps = {
   exposing: (s: DmnEditorRoot) => void;
   onNewEdit: (edit: WorkspaceEdit) => void;
   onRequestWorkspaceFilesList: WorkspaceChannelApi["kogitoWorkspace_resourceListRequest"];
   onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot: WorkspaceChannelApi["kogitoWorkspace_openFile"];
+  onOpenedBoxedExpressionEditorNodeChange?: (newOpenedNodeId: string | undefined) => void;
   workspaceRootAbsolutePosixPath: string;
   keyboardShortcutsService: KeyboardShortcutsService | undefined;
+  isEvaluationHighlightsSupported?: boolean;
   isReadOnly: boolean;
+  isImportDataTypesFromJavaClassesSupported?: boolean;
+  javaCodeCompletionService?: JavaCodeCompletionExposedInteropApi;
 };
 
 export type DmnEditorRootState = {
@@ -490,8 +508,12 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
               externalContextName={""}
               externalContextDescription={""}
               issueTrackerHref={""}
+              isEvaluationHighlightsSupported={this.props?.isEvaluationHighlightsSupported}
               isReadOnly={this.state.isReadOnly}
+              isImportDataTypesFromJavaClassesSupported={this.props?.isImportDataTypesFromJavaClassesSupported}
+              javaCodeCompletionService={this.props?.javaCodeCompletionService}
               onModelChange={this.onModelChange}
+              onOpenedBoxedExpressionEditorNodeChange={this.props.onOpenedBoxedExpressionEditorNodeChange}
               onRequestExternalModelsAvailableToInclude={this.onRequestExternalModelsAvailableToInclude}
               // (begin) All paths coming from inside the DmnEditor component are paths relative to the open file.
               onRequestExternalModelByPath={this.onRequestExternalModelByPathsRelativeToTheOpenFile}
@@ -721,10 +743,11 @@ function DmnMarshallerFallbackError({ error }: { error: Error }) {
   return (
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
       <EmptyState style={{ maxWidth: "1280px" }}>
-        <EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />
-        <Title size={"lg"} headingLevel={"h4"}>
-          Unable to open file.
-        </Title>
+        <EmptyStateHeader
+          titleText="Unable to open file."
+          icon={<EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />}
+          headingLevel={"h4"}
+        />
         <br />
         <EmptyStateBody>Error details: {error.message}</EmptyStateBody>
       </EmptyState>

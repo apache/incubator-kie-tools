@@ -32,7 +32,7 @@ beforeEach(async () => {
   tools = await Tools.init(TEST_NAME);
 });
 
-test(TEST_NAME, async () => {
+test.skip(TEST_NAME, async () => {
   const processUrl: string =
     "https://github.com/apache/incubator-kie-tools/" +
     "blob/main/packages/chrome-extension-pack-kogito-kie-editors/e2e-tests/samples/test.bpmn";

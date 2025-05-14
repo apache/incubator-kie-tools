@@ -45,12 +45,20 @@ export async function fetchAppData(args: { quarkusAppOrigin: string; quarkusAppP
 
   // Append origin to schema $refs, but only on DMN paths
   //
-  // It's important to skip paths not ending on `/dmnresult` because the application
-  // being deployed may have other paths that we don't control, and not all of them
+  // It's important to skip paths not ending on `/dmnresult` (or paths that don't
+  // have a matching `/dmnresult` path) because the application being
+  // deployed may have other paths that we don't control, and not all of them
   // will have valid JSON Schemas.
+  // Beyond that, we want to delete these paths from the openApiSpec to avoid trying to
+  // dereferencing them.
   Object.keys(openApiSpec.paths).forEach((modelPath) => {
     // Remove any route that doesn't have a respective `/dmnresult` route.
-    if (!modelPath.endsWith("/dmnresult") && !dmnResultPaths.has(`${modelPath}/dmnresult`)) {
+    if (
+      !modelPath.endsWith("/dmnresult") &&
+      !dmnResultPaths.has(`${modelPath}/dmnresult`) &&
+      !Object.keys(openApiSpec.paths).find((path) => path === `${modelPath}/dmnresult`)
+    ) {
+      delete openApiSpec.paths?.[modelPath];
       delete openApiSpec.paths[modelPath];
       return;
     }

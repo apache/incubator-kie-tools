@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -16,16 +17,25 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-schema_version: 1
-name: org.kie.sonataflow.builder.runtime.community
-version: "main"
-description: "Sonataflow builder runtime module"
 
-artifacts:
-  - image: builder
-    path: /home/kogito/build_output/kogito-swf-quarkus-app.tar
-  - image: builder
-    path: /home/kogito/build_output/kogito-swf-maven-repo.tar
+set -e
 
-execute:
-  - script: configure.sh
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SOURCES_DIR=/tmp/artifacts
+ADDED_DIR="${SCRIPT_DIR}"/added
+LAUNCH_DIR="${KOGITO_HOME}"/launch
+
+mkdir -p "${KOGITO_HOME}"/.m2/repository
+mkdir -p "${KOGITO_HOME}/${PROJECT_ARTIFACT_ID}"
+
+cp -v "${ADDED_DIR}"/* "${LAUNCH_DIR}"
+
+# Unzip Quarkus app and Maven repository
+tar xf "${SOURCES_DIR}"/kogito-swf-quarkus-app.tar -C "${KOGITO_HOME}/${PROJECT_ARTIFACT_ID}"
+tar xf "${SOURCES_DIR}"/kogito-swf-maven-repo.tar -C "${KOGITO_HOME}"/.m2/repository
+
+chown -R 1001:0 "${KOGITO_HOME}"
+chmod -R ug+rwX "${KOGITO_HOME}"
+
+# Cleanup Maven M2 Repo Via HTTP Settings XML
+rm ${MAVEN_CONTAINER_BUILD_SETTINGS_PATH}

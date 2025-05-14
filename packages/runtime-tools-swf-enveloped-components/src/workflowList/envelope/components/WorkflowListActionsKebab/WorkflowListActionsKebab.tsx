@@ -18,7 +18,7 @@
  */
 
 import React, { useMemo, useState } from "react";
-import { Dropdown, DropdownItem, KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { Dropdown, DropdownItem, KebabToggle } from "@patternfly/react-core/deprecated";
 import { WorkflowInstance, WorkflowInstanceState } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { checkWorkflowInstanceState } from "../utils/WorkflowListUtils";
@@ -86,7 +86,11 @@ const WorkflowListActionsKebab: React.FC<WorkflowListActionsKebabProps & OUIAPro
     <Dropdown
       onSelect={onSelect}
       toggle={
-        <KebabToggle isDisabled={checkWorkflowInstanceState(workflowInstance)} onToggle={onToggle} id="kebab-toggle" />
+        <KebabToggle
+          isDisabled={checkWorkflowInstanceState(workflowInstance)}
+          onToggle={(_event, isOpen: boolean) => onToggle(isOpen)}
+          id="kebab-toggle"
+        />
       }
       isOpen={isKebabOpen}
       isPlain

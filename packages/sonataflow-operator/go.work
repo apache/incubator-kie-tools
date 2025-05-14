@@ -1,4 +1,4 @@
-go 1.22.0
+go 1.23.0
 
 use (
 	.
@@ -13,7 +13,7 @@ replace (
 	github.com/openshift/client-go => github.com/openshift/client-go v0.0.0-20230503144108-75015d2347cb
 
 	// Main dependencies sync
-	github.com/serverlessworkflow/sdk-go/v2 => github.com/serverlessworkflow/sdk-go/v2 v2.4.2
+	github.com/serverlessworkflow/sdk-go/v2 => github.com/serverlessworkflow/sdk-go/v2 v2.5.0
 	k8s.io/api => k8s.io/api v0.31.1
 	k8s.io/apimachinery => k8s.io/apimachinery v0.31.1
 	k8s.io/client-go => k8s.io/client-go v0.31.1

@@ -63,7 +63,7 @@ export function HomePageNav(props: { pathname: string }) {
         <Link to={routes.settings.runtime_tools.path({})}>Runtime Tools</Link>
       </NavItem>
     );
-  }, [settings]);
+  }, [settings, props.pathname]);
 
   return (
     <>

@@ -95,7 +95,7 @@ export function FeelInputTextbox({ value, onChange, expressionId }: FeelInputCom
   );
 
   return (
-    <div className="form-control pf-c-form-control feel-input-textbox">
+    <div className="form-control pf-v5-c-form-control feel-input-textbox">
       <FeelInput
         ref={feelInputRef}
         enabled={true}

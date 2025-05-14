@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { ReactElement, useMemo, useState } from "react";
-import { DropdownItem, Dropdown, KebabToggle } from "@patternfly/react-core/dist/js/components/Dropdown";
+import { DropdownItem, Dropdown, KebabToggle } from "@patternfly/react-core/deprecated";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ProcessDetailsDriver } from "../../../api";
 import { handleJobRescheduleUtil, jobCancel } from "../../../utils/Utils";
@@ -164,7 +164,7 @@ const JobActionsKebab: React.FC<IOwnProps & OUIAProps> = ({ job, driver, ouiaId,
 
       <Dropdown
         onSelect={onSelect}
-        toggle={<KebabToggle onToggle={onToggle} id="kebab-toggle" />}
+        toggle={<KebabToggle onToggle={(_event, isOpen) => onToggle(isOpen)} id="kebab-toggle" />}
         isOpen={isKebabOpen}
         isPlain
         position="right"

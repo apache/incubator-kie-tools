@@ -51,6 +51,11 @@ export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
     [props?.onModelChange]
   );
 
+  const onOpenedBoxedExpressionEditorNodeChangeNoOperation = useMemo(
+    () => (newOpenedNodeId: string | undefined) => {},
+    []
+  );
+
   useEffect(() => {
     if (args.isReadOnly !== undefined) {
       setIsReadOnly(args.isReadOnly);
@@ -101,8 +106,12 @@ export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
           ref={ref}
           model={model}
           originalVersion={props?.originalVersion ?? args.originalVersion}
+          isEvaluationHighlightsSupported={
+            props?.isEvaluationHighlightsSupported ?? args.isEvaluationHighlightsSupported
+          }
           isReadOnly={isReadOnly}
           onModelChange={onModelChange}
+          onOpenedBoxedExpressionEditorNodeChange={onOpenedBoxedExpressionEditorNodeChangeNoOperation}
           onRequestExternalModelByPath={props?.onRequestExternalModelByPath ?? args.onRequestExternalModelByPath}
           onRequestExternalModelsAvailableToInclude={
             props?.onRequestExternalModelsAvailableToInclude ?? args.onRequestExternalModelsAvailableToInclude

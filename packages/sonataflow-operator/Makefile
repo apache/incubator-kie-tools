@@ -517,7 +517,8 @@ update-config:
 		dataIndexPostgreSQLImageTag=$$(shell build-env sonataFlowOperator.kogitoDataIndexPostgresqlImage) \
 		dataIndexEphemeralImageTag=$$(shell build-env sonataFlowOperator.kogitoDataIndexEphemeralImage) \
 		sonataFlowBaseBuilderImageTag=$$(shell build-env sonataFlowOperator.sonataflowBuilderImage) \
-		sonataFlowDevModeImageTag=$$(shell build-env sonataFlowOperator.sonataflowDevModeImage))
+		sonataFlowDevModeImageTag=$$(shell build-env sonataFlowOperator.sonataflowDevModeImage) \
+		dbMigratorToolImageTag=$$(shell build-env sonataFlowOperator.kogitoDBMigratorToolImage))
 	@if [ -z "$(strip $(PARAMS))" ]; then \
 		echo "⚠️  No variables resolved. Skipping updates to controllers config file."; \
 	else \

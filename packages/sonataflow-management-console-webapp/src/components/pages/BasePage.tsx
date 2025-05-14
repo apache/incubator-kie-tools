@@ -50,6 +50,7 @@ export function BasePage(props: { children?: React.ReactNode }) {
         </MastheadToggle>
         <MastheadMain>
           <MastheadBrand
+            component="a"
             onClick={() => navigate({ pathname: routes.home.path({}) })}
             style={{ textDecoration: "none" }}
           >
@@ -64,12 +65,16 @@ export function BasePage(props: { children?: React.ReactNode }) {
         </MastheadContent>
       </Masthead>
     ),
-    []
+    [history]
   );
 
   return (
     <Page
-      sidebar={<PageSidebar nav={<ManagementConsoleNav pathname={location.pathname} />} theme="dark" />}
+      sidebar={
+        <PageSidebar theme="dark">
+          <ManagementConsoleNav pathname={location.pathname} />
+        </PageSidebar>
+      }
       header={masthead}
       isManagedSidebar
     >

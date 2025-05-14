@@ -58,13 +58,15 @@ describe("<NestField> tests", () => {
       "CardBody",
       "TextInput",
       "FormGroup",
+      "Split",
+      "SplitItem",
+      "Button",
+    ]);
+    expect(inputContainer.pfDeprecatedImports).toStrictEqual([
       "SelectOption",
       "SelectOptionObject",
       "Select",
       "SelectVariant",
-      "Split",
-      "SplitItem",
-      "Button",
     ]);
     expect(inputContainer.pfIconImports).toStrictEqual(["PlusCircleIcon", "MinusCircleIcon"]);
     expect(inputContainer.childRefs).toHaveLength(4);

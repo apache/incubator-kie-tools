@@ -20,9 +20,14 @@
 import React from "react";
 import { QuickStartContext, QuickStartContextValues } from "@patternfly/quickstarts";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ActionGroup, Form, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { InputGroup, InputGroupText } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { InputGroup, InputGroupText, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
@@ -38,6 +43,7 @@ import { useSettings, useSettingsDispatch } from "../SettingsContext";
 import { SettingsPageContainer } from "../SettingsPageContainer";
 import { SettingsPageProps } from "../types";
 import { EMPTY_CONFIG, isServiceAccountConfigValid, resetConfigCookie, saveConfigCookie } from "./ServiceAccountConfig";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 
 const PAGE_TITLE = "Service Account";
 
@@ -103,7 +109,9 @@ export function ServiceAccountSettings(props: SettingsPageProps) {
         <PageSection variant={"light"}>
           {isStoredConfigValid ? (
             <EmptyState>
-              <EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-global--success-color--100)"} />
+              <EmptyStateHeader
+                icon={<EmptyStateIcon icon={CheckCircleIcon} color={"var(--pf-v5-global--success-color--100)"} />}
+              />
               <TextContent>
                 <Text component={"h2"}>{"Your Service Account information is set."}</Text>
               </TextContent>
@@ -124,7 +132,7 @@ export function ServiceAccountSettings(props: SettingsPageProps) {
             </EmptyState>
           ) : (
             <EmptyState>
-              <EmptyStateIcon icon={AddCircleOIcon} />
+              <EmptyStateHeader icon={<EmptyStateIcon icon={AddCircleOIcon} />} />
               <TextContent>
                 <Text component={"h2"}>No Service Accounts yet</Text>
               </TextContent>
@@ -159,31 +167,35 @@ export function ServiceAccountSettings(props: SettingsPageProps) {
                     aria-label="More info for client id field"
                     onClick={(e) => e.preventDefault()}
                     aria-describedby="client-id-field"
-                    className="pf-c-form__group-label-help"
+                    className="pf-v5-c-form__group-label-help"
                   >
-                    <HelpIcon noVerticalAlign />
+                    <Icon isInline>
+                      <HelpIcon />
+                    </Icon>
                   </button>
                 </Popover>
               }
               isRequired
               fieldId="client-id-field"
             >
-              <InputGroup className="pf-u-mt-sm">
-                <TextInput
-                  autoComplete={"off"}
-                  isRequired
-                  type="text"
-                  id="client-id-field"
-                  name="client-id-field"
-                  aria-label="Client ID field"
-                  aria-describedby="client-id-field-helper"
-                  value={config.clientId}
-                  onChange={onClientIdChanged}
-                  tabIndex={1}
-                  data-testid="client-id-text-field"
-                />
+              <InputGroup className="pf-v5-u-mt-sm">
+                <InputGroupItem isFill>
+                  <TextInput
+                    autoComplete={"off"}
+                    isRequired
+                    type="text"
+                    id="client-id-field"
+                    name="client-id-field"
+                    aria-label="Client ID field"
+                    aria-describedby="client-id-field-helper"
+                    value={config.clientId}
+                    onChange={(_event, value) => onClientIdChanged(value)}
+                    tabIndex={1}
+                    data-testid="client-id-text-field"
+                  />
+                </InputGroupItem>
                 <InputGroupText>
-                  <Button isSmall variant="plain" aria-label="Clear client id button" onClick={onClearClientId}>
+                  <Button size="sm" variant="plain" aria-label="Clear client id button" onClick={onClearClientId}>
                     <TimesIcon />
                   </Button>
                 </InputGroupText>
@@ -198,31 +210,40 @@ export function ServiceAccountSettings(props: SettingsPageProps) {
                     aria-label="More info for client secret field"
                     onClick={(e) => e.preventDefault()}
                     aria-describedby="client-secret-field"
-                    className="pf-c-form__group-label-help"
+                    className="pf-v5-c-form__group-label-help"
                   >
-                    <HelpIcon noVerticalAlign />
+                    <Icon isInline>
+                      <HelpIcon />
+                    </Icon>
                   </button>
                 </Popover>
               }
               isRequired
               fieldId="client-secret-field"
             >
-              <InputGroup className="pf-u-mt-sm">
-                <TextInput
-                  autoComplete={"off"}
-                  isRequired
-                  type="text"
-                  id="client-secret-field"
-                  name="client-secret-field"
-                  aria-label="Client secret field"
-                  aria-describedby="client-secret-field-helper"
-                  value={config.clientSecret}
-                  onChange={onClientSecretChanged}
-                  tabIndex={2}
-                  data-testid="client-secret-text-field"
-                />
+              <InputGroup className="pf-v5-u-mt-sm">
+                <InputGroupItem isFill>
+                  <TextInput
+                    autoComplete={"off"}
+                    isRequired
+                    type="text"
+                    id="client-secret-field"
+                    name="client-secret-field"
+                    aria-label="Client secret field"
+                    aria-describedby="client-secret-field-helper"
+                    value={config.clientSecret}
+                    onChange={(_event, value) => onClientSecretChanged(value)}
+                    tabIndex={2}
+                    data-testid="client-secret-text-field"
+                  />
+                </InputGroupItem>
                 <InputGroupText>
-                  <Button isSmall variant="plain" aria-label="Clear client secret button" onClick={onClearClientSecret}>
+                  <Button
+                    size="sm"
+                    variant="plain"
+                    aria-label="Clear client secret button"
+                    onClick={onClearClientSecret}
+                  >
                     <TimesIcon />
                   </Button>
                 </InputGroupText>

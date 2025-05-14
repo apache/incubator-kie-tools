@@ -27,7 +27,7 @@ import { useDevDeployments } from "./DevDeploymentsContext";
 import { useGlobalAlert } from "../alerts";
 import { useAuthSession } from "../authSessions/AuthSessionsContext";
 import { CloudAuthSessionType, isCloudAuthSession } from "../authSessions/AuthSessionApi";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { DeploymentOption, DeploymentParameter } from "./services/deploymentOptions/types";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
@@ -39,6 +39,8 @@ import { Checkbox } from "@patternfly/react-core/dist/js/components/Checkbox";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { DevDeploymentsTokensList } from "./DevDeploymentsTokensList";
+import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 interface Props {
   workspaceFile: WorkspaceFile;
@@ -58,7 +60,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
 
   const deploymentOptionsArgs: DeploymentOptionArgs = useMemo(
     () => ({
-      kogitoQuarkusBlankAppImageUrl: env.KIE_SANDBOX_DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE_URL,
+      quarkusBlankAppImageUrl: env.KIE_SANDBOX_DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE_URL,
       baseImageUrl: env.KIE_SANDBOX_DEV_DEPLOYMENT_BASE_IMAGE_URL,
       dmnFormWebappImageUrl: env.KIE_SANDBOX_DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_URL,
       imagePullPolicy: env.KIE_SANDBOX_DEV_DEPLOYMENT_IMAGE_PULL_POLICY,
@@ -184,62 +186,60 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
         Object.values(deploymentOption.parameters).map((parameter) => {
           if (parameter.type === "boolean") {
             return (
-              <FormGroup
-                key={parameter.id}
-                helperText={
-                  <small>
-                    <i>{parameter.description}</i>
-                  </small>
-                }
-              >
+              <FormGroup key={parameter.id}>
                 <Checkbox
                   id={parameter.id}
                   name={parameter.name}
                   label={parameter.name}
                   aria-label={parameter.name}
                   isChecked={Boolean(deploymentParameters[parameter.id])}
-                  onChange={(checked) => updateParameters(parameter, checked)}
+                  onChange={(_event, checked) => updateParameters(parameter, checked)}
                 />
+                <FormHelperText>
+                  <HelperText>
+                    <HelperTextItem>
+                      <i>{parameter.description}</i>
+                    </HelperTextItem>
+                  </HelperText>
+                </FormHelperText>
               </FormGroup>
             );
           } else if (parameter.type === "text") {
             return (
-              <FormGroup
-                label={<b>{parameter.name}:</b>}
-                key={parameter.id}
-                helperText={
-                  <small>
-                    <i>{parameter.description}</i>
-                  </small>
-                }
-              >
+              <FormGroup label={<b>{parameter.name}:</b>} key={parameter.id}>
                 <TextArea
                   id={parameter.id}
                   value={String(deploymentParameters[parameter.id])}
                   aria-label={parameter.name}
-                  onChange={(value) => updateParameters(parameter, value)}
+                  onChange={(_event, value) => updateParameters(parameter, value)}
                   autoResize={true}
                 />
+                <FormHelperText>
+                  <HelperText>
+                    <HelperTextItem>
+                      <i>{parameter.description}</i>
+                    </HelperTextItem>
+                  </HelperText>
+                </FormHelperText>
               </FormGroup>
             );
           } else if (parameter.type === "number") {
             return (
-              <FormGroup
-                label={<b>{parameter.name}:</b>}
-                key={parameter.id}
-                helperText={
-                  <small>
-                    <i>{parameter.description}</i>
-                  </small>
-                }
-              >
+              <FormGroup label={<b>{parameter.name}:</b>} key={parameter.id}>
                 <TextInput
                   id={parameter.id}
                   value={Number(deploymentParameters[parameter.id])}
                   aria-label={parameter.name}
                   type="number"
-                  onChange={(value) => updateParameters(parameter, Number(value))}
+                  onChange={(_event, value) => updateParameters(parameter, Number(value))}
                 />
+                <FormHelperText>
+                  <HelperText>
+                    <HelperTextItem>
+                      <i>{parameter.description}</i>
+                    </HelperTextItem>
+                  </HelperText>
+                </FormHelperText>
               </FormGroup>
             );
           }
@@ -281,7 +281,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
             <Select
               variant={SelectVariant.single}
               menuAppendTo={"parent"}
-              onToggle={setDeploymentOptionsDropdownOpen}
+              onToggle={(_event, val) => setDeploymentOptionsDropdownOpen(val)}
               isOpen={isDeploymentOptionsDropdownOpen}
               onSelect={onSelectDeploymentOptions}
               selections={deploymentOption.name}

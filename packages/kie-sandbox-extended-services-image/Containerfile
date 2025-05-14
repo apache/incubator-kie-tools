@@ -32,4 +32,6 @@ USER 1000
 
 WORKDIR /kie-sandbox/kie_sandbox_extended_services
 
+HEALTHCHECK --interval=1m --timeout=5s CMD curl -f http://localhost:$EXTENDED_SERVICES_PORT/ping || exit 1
+
 CMD java -Dquarkus.http.port=$EXTENDED_SERVICES_PORT -jar quarkus-run.jar
