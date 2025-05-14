@@ -21,31 +21,34 @@ import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshalle
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { addOrGetDrd, addOrGetDrd as getDefaultDiagram } from "./addOrGetDrd";
 
-export function collapseOrExpand({
+export function setDecisionServiceVisiblity({
   definitions,
-  drdIndex,
-  collapse,
-  shapeIndex,
-  width,
-  height,
-  autoLayout,
+  __readonly_drdIndex,
+  __readonly_collapse,
+  __readonly_shapeIndex,
+  __readonly_width,
+  __readonly_height,
+  __readonly_autoLayout,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
-  drdIndex: number;
-  collapse: boolean;
-  shapeIndex: number;
-  width: number;
-  height: number;
-  autoLayout: boolean;
+  __readonly_drdIndex: number;
+  __readonly_collapse: boolean;
+  __readonly_shapeIndex: number;
+  __readonly_width: number;
+  __readonly_height: number;
+  __readonly_autoLayout: boolean;
 }) {
-  const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
-  const shape = diagramElements?.[shapeIndex] as Normalized<DMNDI15__DMNShape> | undefined;
+  const { diagramElements } = addOrGetDrd({
+    definitions: definitions,
+    drdIndex: __readonly_drdIndex,
+  });
+  const shape = diagramElements?.[__readonly_shapeIndex] as Normalized<DMNDI15__DMNShape> | undefined;
 
   if (shape !== undefined && shape !== null) {
-    shape["@_isCollapsed"] = collapse;
-    if (collapse === false && shape["dc:Bounds"] && !autoLayout) {
-      shape["dc:Bounds"]["@_width"] = width;
-      shape["dc:Bounds"]["@_height"] = height;
+    shape["@_isCollapsed"] = __readonly_collapse;
+    if (__readonly_collapse === false && shape["dc:Bounds"] && !__readonly_autoLayout) {
+      shape["dc:Bounds"]["@_width"] = __readonly_width;
+      shape["dc:Bounds"]["@_height"] = __readonly_height;
     }
   }
 }

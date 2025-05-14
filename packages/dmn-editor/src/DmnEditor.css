@@ -220,10 +220,6 @@
   pointer-events: none !important;
   opacity: 0.4;
 }
-.kie-dmn-editor--decision-service-node .button-inactive {
-  pointer-events: none !important;
-  opacity: 0.4;
-}
 .react-flow__node-node_decisionService.selected .kie-dmn-editor--decision-service-expanded-button {
   border-color: #006ba4 !important;
 }

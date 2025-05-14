@@ -49,7 +49,13 @@ test.describe("Model Decision Services - DRD", () => {
     // its content should be automatically layout-ed
   });
 
-  test("888 add to DRD, mix of collapsed and expanded", async ({ drds, palette, nodes, diagram, drgNodes }) => {
+  test("A Decision Service with conflicting contained Decisions should be added to the DRD in a collapsed state", async ({
+    drds,
+    palette,
+    nodes,
+    diagram,
+    drgNodes,
+  }) => {
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
       description: "https://github.com/apache/incubator-kie-issues/issues/888",
@@ -145,7 +151,7 @@ test.describe("Model Decision Services - DRD", () => {
     // TODO, question, not understand
   });
 
-  test("892 collapse - remove its content", async ({ editor, palette, nodes, diagram }) => {
+  test("Collapsing a decision service removes all of its content", async ({ editor, palette, nodes, diagram }) => {
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
       description: "https://github.com/apache/incubator-kie-issues/issues/892",
@@ -163,8 +169,7 @@ test.describe("Model Decision Services - DRD", () => {
     await nodes.move({ name: "User Decision", targetPosition: { x: 500, y: 300 } });
     await expect(nodes.get({ name: "User Decision" })).toBeAttached();
 
-    await nodes.select({ name: DefaultNodeName.DECISION_SERVICE, position: NodePosition.TOP });
-    await editor.collapseDecisionService();
+    await nodes.selectAndCollapseDecisionService({ name: DefaultNodeName.DECISION_SERVICE });
 
     await expect(nodes.get({ name: "User Decision" })).not.toBeAttached();
     await expect(diagram.get()).toHaveScreenshot("collapse-decision-service.png");
@@ -179,14 +184,13 @@ test.describe("Model Decision Services - DRD", () => {
     // TODO
   });
 
-  test("892 expand - same depiction as other DRDs", async ({
+  test("Expanding a decision service shows the same depiction as in other drd", async ({
     drds,
     drgNodes,
     palette,
     nodes,
     diagram,
     editor,
-    decisionServicePropertiesPanel,
   }) => {
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
@@ -212,8 +216,7 @@ test.describe("Model Decision Services - DRD", () => {
 
     await nodes.move({ name: "D1", targetPosition: { x: 500, y: 300 } });
     await expect(nodes.get({ name: "D1" })).toBeAttached();
-    await nodes.select({ name: "DS1", position: NodePosition.TOP });
-    await editor.collapseDecisionService();
+    await nodes.selectAndCollapseDecisionService({ name: "DS1" });
 
     await drds.toggle();
     await drds.create({ name: "Second DRD" });
@@ -224,8 +227,7 @@ test.describe("Model Decision Services - DRD", () => {
     await drds.navigateTo({ name: "First DRD" });
     await drds.toggle();
 
-    await nodes.select({ name: "DS1", position: NodePosition.TOP });
-    await editor.expandDecisionService();
+    await nodes.selectAndExpandDecisionService({ name: "DS1" });
     await expect(nodes.get({ name: "D1" })).toBeAttached();
     await expect(diagram.get()).toHaveScreenshot("decision-service-from-other-drd.png");
   });

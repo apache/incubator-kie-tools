@@ -284,4 +284,14 @@ export class Nodes {
         return "Add Knowledge Requirement edge";
     }
   }
+
+  public async selectAndCollapseDecisionService(args: { name: string }) {
+    await this.select({ name: args.name });
+    await this.page.locator(".kie-dmn-editor--decision-service-expanded-button").click();
+  }
+
+  public async selectAndExpandDecisionService(args: { name: string }) {
+    await this.select({ name: args.name });
+    await this.page.locator(".kie-dmn-editor--decision-service-collapsed-button").click();
+  }
 }
