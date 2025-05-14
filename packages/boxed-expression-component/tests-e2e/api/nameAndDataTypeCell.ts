@@ -21,6 +21,11 @@ import { Locator } from "@playwright/test";
 import { ContextMenu } from "./expressionContainer";
 import { Monaco } from "../__fixtures__/monaco";
 
+export enum CloseOption {
+  PRESS_ENTER = "press-enter",
+  CLICK_OUTSIDE = "click-outside",
+}
+
 export class NameAndDataTypeCell {
   constructor(
     private locator: Locator,
@@ -31,9 +36,16 @@ export class NameAndDataTypeCell {
     await this.locator.nth(0).click();
   }
 
-  public async close() {
+  public async close(closeOption: CloseOption) {
     const popover = await this.getPopoverMenu();
-    await this.locator.page().keyboard.press("Enter");
+    if (closeOption === CloseOption.PRESS_ENTER) {
+      await this.locator.page().keyboard.press("Enter");
+    } else if (closeOption === CloseOption.CLICK_OUTSIDE) {
+      await this.locator
+        .page()
+        .locator("html")
+        .click({ position: { x: 0, y: 0 } });
+    }
     await popover.waitFor({ state: "detached" });
   }
 
@@ -41,23 +53,23 @@ export class NameAndDataTypeCell {
     return this.locator.page().getByTestId("kie-tools--bee--expression-popover-menu");
   }
 
-  public async setName(params: { name: string; close: boolean }) {
+  public async setName(params: { name: string; close?: CloseOption }) {
     if (this.monaco) {
-      return await this.monaco.fill({ monacoParentLocator: this.locator, content: params.name, submit: params.close });
+      await this.monaco.fill({ monacoParentLocator: this.locator, content: params.name, submit: false });
     } else {
       await this.locator.getByRole("textbox").fill(params.name);
-      if (params.close) {
-        await this.close();
-      }
+    }
+    if (params.close) {
+      await this.close(params.close);
     }
   }
 
-  public async setDataType(params: { dataType: string; close: boolean }) {
+  public async setDataType(params: { dataType: string; close?: CloseOption }) {
     await this.locator.getByTestId("kie-tools--bee--edit-expression-data-type").click();
     await this.locator.getByPlaceholder("Choose...").nth(0).fill(params.dataType);
     await this.locator.getByRole("group").nth(0).getByRole("option").nth(0).click();
     if (params.close) {
-      await this.close();
+      await this.close(params.close);
     }
   }
 
