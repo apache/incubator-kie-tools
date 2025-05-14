@@ -212,4 +212,105 @@ export class DataTypes {
   public async deleteConstraint() {
     await this.getNoneConstraintButton().click();
   }
+
+  // The current method only supports "Date",
+  public async addEnumerationDateConstraint(args: { values: string[] }) {
+    const enumerationList = this.get().getByTestId("kie-tools--dmn-editor--enumeration-constraint-list");
+    const firstElementValue = await enumerationList
+      .getByTestId("kie-tools--dmn-editor--draggable-row-0")
+      .locator("input")
+      .getAttribute("value");
+    let append = false;
+    if (firstElementValue !== "" || firstElementValue === null) {
+      append = true;
+    }
+
+    if (append) {
+      // add at the end of a list;
+      const listCount = await enumerationList.getByRole("listitem").count();
+      await this.get().getByRole("button", { name: "Add value" }).click();
+      await this.addEnumerationDateValue({
+        values: args.values,
+        initial: listCount,
+        total: args.values.length + listCount,
+      });
+    } else {
+      // initialize a new list of values;
+      await this.addEnumerationDateValue({ values: args.values, initial: 0, total: args.values.length });
+    }
+  }
+
+  private async addEnumerationDateValue(args: { values: string[]; initial: number; total: number }) {
+    let valueIndex = 0;
+    for (let index = args.initial; index < args.total; index++) {
+      console.log(args.values[valueIndex]);
+      const dateDetails = args.values[valueIndex].split("-");
+      const year = dateDetails[0];
+      const month = dateDetails[1];
+      const date = dateDetails[2];
+
+      await this.get()
+        .getByTestId("kie-tools--dmn-editor--enumeration-constraint-list")
+        .getByLabel("Toggle date picker")
+        .click();
+
+      const selectYear = this.get()
+        .getByTestId("kie-tools--dmn-editor--enumeration-constraint-list")
+        .locator('input[type="number"]');
+      await selectYear.fill(year ?? ""); // Change the value to 42
+
+      await this.get()
+        .getByTestId("kie-tools--dmn-editor--enumeration-constraint-list")
+        .locator('button[aria-expanded="false"]')
+        .click();
+
+      await this.get()
+        .getByTestId("kie-tools--dmn-editor--enumeration-constraint-list")
+        .getByRole("option", { name: this.getMonthName(month) })
+        .click();
+
+      const dates = await this.get()
+        .getByTestId("kie-tools--dmn-editor--draggable-children")
+        .nth(valueIndex)
+        .getByRole("button")
+        .all();
+      console.log(dates);
+
+      if (index !== args.total - 1) {
+        await this.get().getByRole("button", { name: "Add value" }).click();
+      }
+      valueIndex++;
+    }
+  }
+
+  private getMonthName(month: string) {
+    switch (month) {
+      case "01":
+        return "January";
+      case "02":
+        return "February";
+      case "03":
+        return "March";
+      case "04":
+        return "April";
+      case "05":
+        return "May";
+      case "06":
+        return "June";
+      case "07":
+        return "July";
+      case "08":
+        return "August";
+      case "09":
+        return "September";
+      case "10":
+        return "October";
+      case "11":
+        return "November";
+      case "12":
+        return "December";
+      default:
+        throw new Error("Invalid month");
+    }
+  }
 }

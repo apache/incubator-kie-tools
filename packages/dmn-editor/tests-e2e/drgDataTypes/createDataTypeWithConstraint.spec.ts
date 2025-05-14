@@ -180,6 +180,7 @@ test.describe("Create Data Types - With Constraint", () => {
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Date });
     await dataTypes.getExpressionConstraintButton().click();
     await dataTypes.addExpressionConstraint({ value: 'date("2025-04-14")' });
+
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
@@ -189,8 +190,8 @@ test.describe("Create Data Types - With Constraint", () => {
       typeRef: dataType["typeRef"],
       typeConstraint: {
         "@_id": dataType.typeConstraint?.["@_id"],
-        text: { __$$text: dataType.typeConstraint?.text.__$$text },
-        "@_kie:constraintType": dataType.typeConstraint?.["@_kie:constraintType"],
+        text: { __$$text: 'date("2025-04-14")' },
+        "@_kie:constraintType": "expression",
       },
     });
   });
@@ -199,7 +200,7 @@ test.describe("Create Data Types - With Constraint", () => {
     await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Date });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Date });
     await dataTypes.getEnumerationConstraintButton().click();
-    await dataTypes.addEnumerationConstraint({ values: ["2025-01-14", "2025-04-15"] });
+    await dataTypes.addEnumerationDateConstraint({ values: ["2022-01-02", "2022-01-05"] });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).toEqual({
       "@_id": dataType["@_id"],
@@ -210,7 +211,7 @@ test.describe("Create Data Types - With Constraint", () => {
       typeConstraint: {
         "@_id": dataType.typeConstraint?.["@_id"],
         text: { __$$text: dataType.typeConstraint?.text.__$$text },
-        "@_kie:constraintType": dataType.typeConstraint?.["@_kie:constraintType"],
+        "@_kie:constraintType": "enumeration",
       },
     });
   });
@@ -230,7 +231,7 @@ test.describe("Create Data Types - With Constraint", () => {
       typeConstraint: {
         "@_id": dataType.typeConstraint?.["@_id"],
         text: { __$$text: dataType.typeConstraint?.text.__$$text },
-        "@_kie:constraintType": dataType.typeConstraint?.["@_kie:constraintType"],
+        "@_kie:constraintType": "range",
       },
     });
   });
