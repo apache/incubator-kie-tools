@@ -146,7 +146,7 @@ export function ExpressionVariableMenu({
   // With this ref we ensure the "saveExpression" inside onHide will not be called
   const cancelEdit = useRef<boolean>(false);
 
-  const onHide = useCallback(() => {
+  const onHidden = useCallback(() => {
     if (cancelEdit.current) {
       cancelEdit.current = false;
       return;
@@ -193,7 +193,7 @@ export function ExpressionVariableMenu({
       arrowPlacement={arrowPlacement}
       appendTo={appendTo}
       onCancel={onCancel}
-      onHide={onHide}
+      onHidden={onHidden}
       onShown={onShown}
       position={position}
       distance={25}

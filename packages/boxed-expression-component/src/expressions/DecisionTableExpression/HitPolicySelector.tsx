@@ -156,7 +156,7 @@ export function HitPolicySelector({
     hitPolicyCell
   ) : (
     <PopoverMenu
-      onHide={() => {
+      onHidden={() => {
         setVisibleHelpAggregatorFunction("");
         setVisibleHelpHitPolicy("");
       }}
