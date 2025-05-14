@@ -39,6 +39,7 @@ test.describe("Create Struct Data Types - Without Constraint", () => {
       await dataTypes.resetFocus();
 
       const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+      expect(dataType).not.toBeUndefined();
       expect(dataType).toEqual({
         "@_id": dataType["@_id"],
         "@_name": "Custom data type - Struct",

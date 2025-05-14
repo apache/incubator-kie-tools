@@ -18,26 +18,24 @@
  */
 
 import { test, expect } from "../__fixtures__/base";
-import { DataType, DefaultDataTypeName, DMN15_SPEC_TYPE_LANGUAGE } from "../__fixtures__/dataTypes";
+import { DataType, DefaultDataTypeName } from "../__fixtures__/dataTypes";
 import { TabName } from "../__fixtures__/editor";
 
-test.describe("Delete - Data Type", () => {
-  test(`Should delete a data type `, async ({ jsonModel, editor, dataTypes, page }) => {
-    await editor.open();
-    await editor.changeTab({ tab: TabName.DATA_TYPES });
+test(`Should delete a data type`, async ({ jsonModel, editor, dataTypes, page }) => {
+  await editor.open();
+  await editor.changeTab({ tab: TabName.DATA_TYPES });
 
-    await dataTypes.createFirstCustonDataType();
-    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Any });
-    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Any });
+  await dataTypes.createFirstCustonDataType();
+  await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Any });
+  await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Any });
 
-    // Delete the data type
-    await dataTypes.get().getByLabel("Action").click();
-    await page.getByRole("menuitem").getByText("Remove").click();
+  // Delete the data type
+  await dataTypes.get().getByLabel("Action").click();
+  await page.getByRole("menuitem").getByText("Remove").click();
 
-    // Assert the data type is removed from the model
-    const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
-    expect(dataType).toBeUndefined();
+  // Assert the data type is removed from the model
+  const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+  expect(dataType).toBeUndefined();
 
-    await expect(dataTypes.get()).toHaveScreenshot("delete-custom-data-type-after-delete.png");
-  });
+  await expect(dataTypes.get()).toHaveScreenshot("delete-custom-data-type-after-delete.png");
 });
