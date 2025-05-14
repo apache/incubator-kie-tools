@@ -997,12 +997,6 @@ importers:
       '@types/react-dom':
         specifier: ^17.0.5
         version: 17.0.8
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.94.0(webpack-cli@4.10.0))
@@ -1013,8 +1007,8 @@ importers:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
+        specifier: ^6.29.0
+        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -1463,12 +1457,6 @@ importers:
       '@types/react-dom':
         specifier: ^17.0.5
         version: 17.0.8
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.94.0(webpack-cli@4.10.0))
@@ -1479,8 +1467,8 @@ importers:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
+        specifier: ^6.29.0
+        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -1681,21 +1669,12 @@ importers:
       '@types/react-dom':
         specifier: ^17.0.5
         version: 17.0.8
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/simpl-schema':
         specifier: ^1.12.0
         version: 1.12.0
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.94.0(webpack-cli@4.10.0))
-      react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -3809,12 +3788,9 @@ importers:
       react-dom:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
-      react-router:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
+        specifier: ^6.29.0
+        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -3846,12 +3822,6 @@ importers:
       '@types/react-dom':
         specifier: ^17.0.5
         version: 17.0.8
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.94.0(webpack-cli@4.10.0))
@@ -4006,12 +3976,9 @@ importers:
       react-dom:
         specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2(react@17.0.2)
-      react-router:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
+        specifier: ^6.29.0
+        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -4031,6 +3998,9 @@ importers:
       '@kie-tools/jest-base':
         specifier: workspace:*
         version: link:../jest-base
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -4061,12 +4031,6 @@ importers:
       '@types/react-dom':
         specifier: ^17.0.5
         version: 17.0.8
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0))
@@ -6640,12 +6604,6 @@ importers:
       '@types/js-yaml':
         specifier: ^4.0.5
         version: 4.0.5
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
-      react-router:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -7042,9 +7000,6 @@ importers:
       '@types/react-dom':
         specifier: ^17.0.5
         version: 17.0.8
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/underscore':
         specifier: ^1.11.2
         version: 1.11.2
@@ -7100,8 +7055,8 @@ importers:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
+        specifier: ^6.29.0
+        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -7909,9 +7864,6 @@ importers:
       deep-object-diff:
         specifier: ^1.1.9
         version: 1.1.9
-      history:
-        specifier: ^4.9.0
-        version: 4.10.1
       isomorphic-git:
         specifier: ^1.30.1
         version: 1.30.1
@@ -7936,12 +7888,9 @@ importers:
       react-dropzone:
         specifier: ^11.4.2
         version: 11.4.2(react@17.0.2)
-      react-router:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
+        specifier: ^6.29.0
+        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react-virtualized-auto-sizer:
         specifier: ^1.0.7
         version: 1.0.7(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -8003,9 +7952,6 @@ importers:
       '@testing-library/react':
         specifier: ^12.1.5
         version: 12.1.5(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      '@types/history':
-        specifier: ^4.7.3
-        version: 4.7.5
       '@types/jest':
         specifier: ^29.5.12
         version: 29.5.12
@@ -8024,12 +7970,6 @@ importers:
       '@types/react-dom':
         specifier: ^17.0.5
         version: 17.0.8
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/react-virtualized-auto-sizer':
         specifier: ^1.0.1
         version: 1.0.1
@@ -8225,12 +8165,9 @@ importers:
       react-redux:
         specifier: ^7.2.4
         version: 7.2.4(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      react-router:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
+        specifier: ^6.29.0
+        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react-sortable-hoc:
         specifier: ^2.0.0
         version: 2.0.0(prop-types@15.8.1)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -8307,12 +8244,6 @@ importers:
       '@types/react-redux':
         specifier: ^7.1.16
         version: 7.1.16
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/react-transition-group':
         specifier: ^4.4.1
         version: 4.4.1
@@ -8594,9 +8525,6 @@ importers:
       copyfiles:
         specifier: ^2.4.1
         version: 2.4.1
-      history:
-        specifier: ^4.9.0
-        version: 4.10.1
       keycloak-js:
         specifier: ^23.0.5
         version: 23.0.7
@@ -8618,12 +8546,9 @@ importers:
       react-moment:
         specifier: 0.9.7
         version: 0.9.7(moment@2.29.4)(prop-types@15.8.1)(react@17.0.2)
-      react-router:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
+        specifier: ^6.29.0
+        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       uniforms:
         specifier: ^3.10.2
         version: 3.10.2(react@17.0.2)
@@ -8643,9 +8568,6 @@ importers:
       '@kie-tools/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
-      '@types/history':
-        specifier: ^4.7.3
-        version: 4.7.5
       '@types/lodash':
         specifier: ^4.14.168
         version: 4.14.169
@@ -8658,12 +8580,6 @@ importers:
       '@types/react-dom':
         specifier: ^17.0.5
         version: 17.0.8
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/uuid':
         specifier: ^8.3.0
         version: 8.3.0
@@ -8761,9 +8677,6 @@ importers:
       graphql:
         specifier: 14.3.1
         version: 14.3.1
-      history:
-        specifier: ^4.9.0
-        version: 4.10.1
       openid-client:
         specifier: ^6.3.3
         version: 6.3.3
@@ -8779,12 +8692,9 @@ importers:
       react-dom:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
-      react-router:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
+        specifier: ^6.29.0
+        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -8834,21 +8744,12 @@ importers:
       '@kie-tools/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
-      '@types/history':
-        specifier: ^4.7.3
-        version: 4.7.11
       '@types/react':
         specifier: ^17.0.6
         version: 17.0.21
       '@types/react-dom':
         specifier: ^17.0.5
         version: 17.0.8
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/uuid':
         specifier: ^8.3.0
         version: 8.3.0
@@ -9029,9 +8930,6 @@ importers:
       axios:
         specifier: ^1.7.4
         version: 1.7.4
-      history:
-        specifier: ^4.9.0
-        version: 4.10.1
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -9050,12 +8948,9 @@ importers:
       react-moment:
         specifier: 0.9.7
         version: 0.9.7(moment@2.29.4)(prop-types@15.8.1)(react@17.0.2)
-      react-router:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
+        specifier: ^6.29.0
+        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       util:
         specifier: ^0.12.5
         version: 0.12.5
@@ -9102,21 +8997,12 @@ importers:
       '@kie-tools/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
-      '@types/history':
-        specifier: ^4.7.3
-        version: 4.7.5
       '@types/react':
         specifier: ^17.0.6
         version: 17.0.21
       '@types/react-dom':
         specifier: ^17.0.5
         version: 17.0.8
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/uuid':
         specifier: ^8.3.0
         version: 8.3.0
@@ -9742,15 +9628,12 @@ importers:
       '@patternfly/react-icons':
         specifier: ^5.4.1
         version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      history:
-        specifier: ^4.9.0
-        version: 4.10.1
       react:
         specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
-      react-router:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
+      react-router-dom:
+        specifier: ^6.29.0
+        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -9770,15 +9653,9 @@ importers:
       '@kie-tools/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
-      '@types/history':
-        specifier: ^4.7.3
-        version: 4.7.5
       '@types/react':
         specifier: ^17.0.6
         version: 17.0.21
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -10114,15 +9991,9 @@ importers:
       apollo-link-http:
         specifier: 1.5.17
         version: 1.5.17(graphql@14.3.1)
-      history:
-        specifier: ^4.9.0
-        version: 4.10.1
       react:
         specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
-      react-router:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -10142,15 +10013,9 @@ importers:
       '@kie-tools/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
-      '@types/history':
-        specifier: ^4.7.3
-        version: 4.7.5
       '@types/react':
         specifier: ^17.0.6
         version: 17.0.21
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -10616,9 +10481,6 @@ importers:
       fuse.js:
         specifier: ^6.6.2
         version: 6.6.2
-      history:
-        specifier: ^4.9.0
-        version: 4.10.1
       kubernetes-models:
         specifier: ^4.1.0
         version: 4.1.0
@@ -10643,12 +10505,9 @@ importers:
       react-if:
         specifier: ^4.1.4
         version: 4.1.4(react@17.0.2)
-      react-router:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
+        specifier: ^6.29.0
+        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       short-unique-id:
         specifier: ^4.4.4
         version: 4.4.4
@@ -10713,9 +10572,6 @@ importers:
       '@testing-library/jest-dom':
         specifier: ^6.4.6
         version: 6.4.6(@jest/globals@29.7.0)(@types/jest@29.5.12)(jest@29.7.0(@types/node@22.13.10)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@22.13.10)(typescript@5.5.3)))
-      '@types/history':
-        specifier: ^4.7.3
-        version: 4.7.5
       '@types/jest':
         specifier: ^29.5.12
         version: 29.5.12
@@ -10731,12 +10587,6 @@ importers:
       '@types/react-dom':
         specifier: ^17.0.5
         version: 17.0.8
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/uuid':
         specifier: ^8.3.0
         version: 8.3.0
@@ -11154,9 +11004,6 @@ importers:
       apollo-link-http:
         specifier: 1.5.17
         version: 1.5.17(graphql@14.3.1)
-      history:
-        specifier: ^4.9.0
-        version: 4.10.1
       react:
         specifier: ^17.0.2
         version: 17.0.2
@@ -11169,12 +11016,9 @@ importers:
       react-moment:
         specifier: 0.9.7
         version: 0.9.7(moment@2.29.4)(prop-types@15.8.1)(react@17.0.2)
-      react-router:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
+        specifier: ^6.29.0
+        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -11203,9 +11047,6 @@ importers:
       '@kie-tools/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
-      '@types/history':
-        specifier: ^4.7.3
-        version: 4.7.5
       '@types/jest':
         specifier: ^29.5.12
         version: 29.5.12
@@ -11215,12 +11056,6 @@ importers:
       '@types/react-dom':
         specifier: ^17.0.5
         version: 17.0.8
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/testing-library__jest-dom':
         specifier: ^5.9.1
         version: 5.14.9
@@ -11714,9 +11549,6 @@ importers:
       '@types/react-dom':
         specifier: ^17.0.5
         version: 17.0.8
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/underscore':
         specifier: ^1.11.2
         version: 1.11.2
@@ -11762,9 +11594,6 @@ importers:
       react-dom:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
-      react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -12184,12 +12013,9 @@ importers:
       react-dom:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
-      react-router:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
+        specifier: ^6.29.0
+        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       typescript:
         specifier: ^5.5.3
         version: 5.5.3
@@ -12230,12 +12056,6 @@ importers:
       '@types/react-dom':
         specifier: ^17.0.5
         version: 17.0.8
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       concurrently:
         specifier: ^8.2.2
         version: 8.2.2
@@ -12509,9 +12329,6 @@ importers:
       graphql:
         specifier: 14.3.1
         version: 14.3.1
-      history:
-        specifier: ^4.9.0
-        version: 4.10.1
       monaco-editor:
         specifier: ^0.39.0
         version: 0.39.0
@@ -12527,12 +12344,9 @@ importers:
       react-dom:
         specifier: ^17.0.2
         version: 17.0.2(react@17.0.2)
-      react-router:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
       react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
+        specifier: ^6.29.0
+        version: 6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
     devDependencies:
       '@babel/core':
         specifier: ^7.16.0
@@ -12588,12 +12402,6 @@ importers:
       '@types/react-dom':
         specifier: ^17.0.5
         version: 17.0.8
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
       '@types/webpack':
         specifier: ^4.41.33
         version: 4.41.39
@@ -13843,9 +13651,6 @@ importers:
       react:
         specifier: '>=17.0.2 <19.0.0'
         version: 17.0.2
-      react-router:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
       uuid:
         specifier: ^8.3.2
         version: 8.3.2
@@ -13889,9 +13694,6 @@ importers:
       '@types/react':
         specifier: ^17.0.6
         version: 17.0.21
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
       '@types/uuid':
         specifier: ^8.3.0
         version: 8.3.0
@@ -19300,6 +19102,10 @@ packages:
       selenium-webdriver: '>=4.6.1'
       typescript: '>=4.6.2'
 
+  '@remix-run/router@1.23.0':
+    resolution: {integrity: sha512-O3rHJzAQKamUz1fvE0Qaw0xSFqsA/yafi2iqeE0pvdFtCO1viYx8QL6f3Ln/aCCTLxs68SLf0KPM9eSeM8yBnA==}
+    engines: {node: '>=14.0.0'}
+
   '@repeaterjs/repeater@3.0.4':
     resolution: {integrity: sha512-AW8PKd6iX3vAZ0vA43nOUOnbq/X5ihgU+mSXXqunMkeQADGiqw/PY0JNeYtD5sr0PAy51YPgAPbDoeapv9r8WA==}
 
@@ -20449,9 +20255,6 @@ packages:
 
   '@types/history@4.7.11':
     resolution: {integrity: sha512-qjDJRrmvBMiTx+jyLxvLfJU7UznFuokDv4f3WRuriHKERccVpFU+8XMQUAbDzoiJCsmexxRExQeMwwCdamSKDA==}
-
-  '@types/history@4.7.5':
-    resolution: {integrity: sha512-wLD/Aq2VggCJXSjxEwrMafIP51Z+13H78nXIX0ABEuIGhmB5sNGbR113MOKo+yfw+RDo1ZU3DM6yfnnRF/+ouw==}
 
   '@types/hoist-non-react-statics@3.3.1':
     resolution: {integrity: sha512-iMIqiko6ooLrTh1joXodJK5X9xeEALT1kM5G3ZLhD3hszxBdIEd5C75U834D9mLcINgD4OyZf5uQXjkuYydWvA==}
@@ -22844,17 +22647,6 @@ packages:
 
   cross-fetch@3.1.5:
     resolution: {integrity: sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==}
-
-  cross-spawn@5.1.0:
-    resolution: {integrity: sha512-pTgQJ5KC0d2hcY8eyL1IzlBPYjTkyH72XRZPnLyKus2mBfNjQs3klqbJU2VILqZryAZUt9JOb3h/mWMy23/f5A==}
-
-  cross-spawn@6.0.5:
-    resolution: {integrity: sha512-eTVLrBSt7fjbDygz805pMnstIs2VTBNkRm0qxZd+M7A5XDdxVRWO5MxGBXZhjY4cqLYLdtrGqRf8mBPmzwSpWQ==}
-    engines: {node: '>=4.8'}
-
-  cross-spawn@7.0.3:
-    resolution: {integrity: sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==}
-    engines: {node: '>= 8'}
 
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
@@ -26573,9 +26365,6 @@ packages:
     resolution: {integrity: sha512-CgeuL5uom6j/ZVrg7G/+1IXqRY8JXX4Hghfy5YE0EhoYQWvndP1kufu58cmZLNIDKnRhZrXfdS9urVWx98AipQ==}
     engines: {node: 20 || >=22}
 
-  lru-cache@4.1.5:
-    resolution: {integrity: sha512-sWZlbEP2OsHNkXrMl5GYk/jKk70MBng6UU4YI/qGDYbgf6YbP4EvmqISbXCoJiRKs+1bSpFHVgQxvJ17F2li5g==}
-
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
@@ -27116,9 +26905,6 @@ packages:
   nice-napi@1.0.2:
     resolution: {integrity: sha512-px/KnJAJZf5RuBGcfD+Sp2pAKq0ytz8j+1NehvgIGFkvtvFrDM3T8E4x/JJODXK9WZow8RRGrbA9QQ3hs+pDhA==}
     os: ['!win32']
-
-  nice-try@1.0.5:
-    resolution: {integrity: sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==}
 
   no-case@3.0.4:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
@@ -28312,9 +28098,6 @@ packages:
     engines: {node: '>= 0.10'}
     hasBin: true
 
-  pseudomap@1.0.2:
-    resolution: {integrity: sha512-b/YwNhb8lk1Zz2+bXXpS/LK9OisiZZ1SNsSLxN1x2OXVEhW2Ckr/7mWE5vrC1ZTiJlD9g19jWszTmJsB+oEpFQ==}
-
   psl@1.8.0:
     resolution: {integrity: sha512-RIdOzyoavK+hA18OGGWDqUTsCLhtA7IcZ/6NCs4fFJaHBDab+pDDmDIByWFRQJq2Cd7r1OoQxBGKOaztq+hjIQ==}
 
@@ -28692,10 +28475,23 @@ packages:
     peerDependencies:
       react: '>=15'
 
+  react-router-dom@6.30.0:
+    resolution: {integrity: sha512-x30B78HV5tFk8ex0ITwzC9TTZMua4jGyA9IUlH1JLQYQTFyxr/ZxwOJq7evg1JX1qGVUcvhsmQSKdPncQrjTgA==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      react: '>=16.8'
+      react-dom: '>=16.8'
+
   react-router@5.3.4:
     resolution: {integrity: sha512-Ys9K+ppnJah3QuaRiLxk+jDWOR1MekYQrlytiXxC1RyfbdsZkS5pvKAzCCr031xHixZwpnsYNT5xysdFHQaYsA==}
     peerDependencies:
       react: '>=15'
+
+  react-router@6.30.0:
+    resolution: {integrity: sha512-D3X8FyH9nBcTSHGdEKurK7r8OYE1kKFn3d/CF+CoxbSHkxU7o37+Uh7eAHRXr6k2tSExXYO++07PeXJtA/dEhQ==}
+    engines: {node: '>=14.0.0'}
+    peerDependencies:
+      react: '>=16.8'
 
   react-shallow-renderer@16.15.0:
     resolution: {integrity: sha512-oScf2FqQ9LFVQgA73vr86xl2NaOIX73rh+YFqcOp68CWj56tSfgtGKrEbyhCj0rSijyG9M1CYprTh39fBi5hzA==}
@@ -29443,17 +29239,9 @@ packages:
     resolution: {integrity: sha512-/6KqX+GVUdqPuPPd2LxDDxzX6CAbjJehAAOKlNpqqUpAqPM6HeL8f+o3a+JsyGjn2lv0WY8UsTgUJjU9Ok55NA==}
     engines: {node: '>=8'}
 
-  shebang-command@1.2.0:
-    resolution: {integrity: sha512-EV3L1+UQWGor21OmnvojK36mhg+TyIKDh3iFBKBohr5xeXIhNBcx8oWdgkTEEQ+BEFFYdLRuqMfd5L84N1V5Vg==}
-    engines: {node: '>=0.10.0'}
-
   shebang-command@2.0.0:
     resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}
     engines: {node: '>=8'}
-
-  shebang-regex@1.0.0:
-    resolution: {integrity: sha512-wpoSFAxys6b2a2wHZ1XpDSgD7N9iVjg29Ph9uV/uaP9Ex/KXlkTZTeddxDPSYQpgvzKLGJke2UU0AzoGCjNIvQ==}
-    engines: {node: '>=0.10.0'}
 
   shebang-regex@3.0.0:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
@@ -31463,9 +31251,6 @@ packages:
   y18n@5.0.8:
     resolution: {integrity: sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==}
     engines: {node: '>=10'}
-
-  yallist@2.1.2:
-    resolution: {integrity: sha512-ncTzHV7NvsQZkYe1DW7cbDLm0YpzHmZF5r/iyP3ZnQtMiJ+pjzisCiMNI+Sj+xQF5pXhSHxSB3uDbsBTzY/c2A==}
 
   yallist@3.1.1:
     resolution: {integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==}
@@ -41284,6 +41069,8 @@ snapshots:
       type-fest: 4.30.1
       typescript: 5.5.3
 
+  '@remix-run/router@1.23.0': {}
+
   '@repeaterjs/repeater@3.0.4': {}
 
   '@rhoas/registry-instance-sdk@0.34.4':
@@ -42115,7 +41902,7 @@ snapshots:
       '@yarnpkg/libzip': 2.3.0
       chalk: 4.1.2
       commander: 6.2.1
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       detect-indent: 6.1.0
       envinfo: 7.8.1
       execa: 5.1.1
@@ -42164,7 +41951,7 @@ snapshots:
       '@yarnpkg/libzip': 2.3.0
       chalk: 4.1.2
       commander: 6.2.1
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       detect-indent: 6.1.0
       envinfo: 7.8.1
       execa: 5.1.1
@@ -42213,7 +42000,7 @@ snapshots:
       '@yarnpkg/libzip': 2.3.0
       chalk: 4.1.2
       commander: 6.2.1
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       detect-indent: 6.1.0
       envinfo: 7.8.1
       execa: 5.1.1
@@ -42265,7 +42052,7 @@ snapshots:
       '@storybook/node-logger': 7.4.6
       '@storybook/types': 7.4.6
       '@types/cross-spawn': 6.0.3
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       globby: 11.1.0
       jscodeshift: 0.14.0(@babel/preset-env@7.24.7(@babel/core@7.24.9))
       lodash: 4.17.21
@@ -42284,7 +42071,7 @@ snapshots:
       '@storybook/node-logger': 7.6.13
       '@storybook/types': 7.6.13
       '@types/cross-spawn': 6.0.3
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       globby: 11.1.0
       jscodeshift: 0.15.1(@babel/preset-env@7.24.7(@babel/core@7.24.9))
       lodash: 4.17.21
@@ -43915,8 +43702,6 @@ snapshots:
       '@types/leaflet': 0.7.35
 
   '@types/history@4.7.11': {}
-
-  '@types/history@4.7.5': {}
 
   '@types/hoist-non-react-statics@3.3.1':
     dependencies:
@@ -47598,33 +47383,13 @@ snapshots:
 
   cross-env@7.0.3:
     dependencies:
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
 
   cross-fetch@3.1.5(encoding@0.1.13):
     dependencies:
       node-fetch: 2.6.7(encoding@0.1.13)
     transitivePeerDependencies:
       - encoding
-
-  cross-spawn@5.1.0:
-    dependencies:
-      lru-cache: 4.1.5
-      shebang-command: 1.2.0
-      which: 1.3.1
-
-  cross-spawn@6.0.5:
-    dependencies:
-      nice-try: 1.0.5
-      path-key: 2.0.1
-      semver: 5.7.1
-      shebang-command: 1.2.0
-      which: 1.3.1
-
-  cross-spawn@7.0.3:
-    dependencies:
-      path-key: 3.1.1
-      shebang-command: 2.0.0
-      which: 2.0.2
 
   cross-spawn@7.0.6:
     dependencies:
@@ -49229,7 +48994,7 @@ snapshots:
       '@ungap/structured-clone': 1.2.0
       ajv: 6.12.6
       chalk: 4.1.2
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       debug: 4.3.4
       doctrine: 3.0.0
       escape-string-regexp: 4.0.0
@@ -49321,7 +49086,7 @@ snapshots:
 
   execa@0.7.0:
     dependencies:
-      cross-spawn: 5.1.0
+      cross-spawn: 7.0.6
       get-stream: 3.0.0
       is-stream: 1.1.0
       npm-run-path: 2.0.2
@@ -49331,7 +49096,7 @@ snapshots:
 
   execa@1.0.0:
     dependencies:
-      cross-spawn: 6.0.5
+      cross-spawn: 7.0.6
       get-stream: 4.1.0
       is-stream: 1.1.0
       npm-run-path: 2.0.2
@@ -49341,7 +49106,7 @@ snapshots:
 
   execa@4.1.0:
     dependencies:
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       get-stream: 5.2.0
       human-signals: 1.1.1
       is-stream: 2.0.1
@@ -49365,7 +49130,7 @@ snapshots:
 
   execa@8.0.1:
     dependencies:
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       get-stream: 8.0.1
       human-signals: 5.0.0
       is-stream: 3.0.0
@@ -49864,12 +49629,12 @@ snapshots:
 
   foreground-child@2.0.0:
     dependencies:
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       signal-exit: 3.0.7
 
   foreground-child@3.1.1:
     dependencies:
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       signal-exit: 4.1.0
 
   forever-agent@0.6.1: {}
@@ -52886,11 +52651,6 @@ snapshots:
 
   lru-cache@11.0.1: {}
 
-  lru-cache@4.1.5:
-    dependencies:
-      pseudomap: 1.0.2
-      yallist: 2.1.2
-
   lru-cache@5.1.1:
     dependencies:
       yallist: 3.1.1
@@ -53496,8 +53256,6 @@ snapshots:
       node-addon-api: 3.2.1
       node-gyp-build: 4.3.0
     optional: true
-
-  nice-try@1.0.5: {}
 
   no-case@3.0.4:
     dependencies:
@@ -54809,8 +54567,6 @@ snapshots:
     dependencies:
       event-stream: 3.3.4
 
-  pseudomap@1.0.2: {}
-
   psl@1.8.0: {}
 
   pstree.remy@1.1.8: {}
@@ -55325,6 +55081,13 @@ snapshots:
       tiny-invariant: 1.3.1
       tiny-warning: 1.0.3
 
+  react-router-dom@6.30.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2):
+    dependencies:
+      '@remix-run/router': 1.23.0
+      react: 17.0.2
+      react-dom: 17.0.2(react@17.0.2)
+      react-router: 6.30.0(react@17.0.2)
+
   react-router@5.3.4(react@17.0.2):
     dependencies:
       '@babel/runtime': 7.24.7
@@ -55337,6 +55100,11 @@ snapshots:
       react-is: 16.13.1
       tiny-invariant: 1.3.1
       tiny-warning: 1.0.3
+
+  react-router@6.30.0(react@17.0.2):
+    dependencies:
+      '@remix-run/router': 1.23.0
+      react: 17.0.2
 
   react-shallow-renderer@16.15.0(react@17.0.2):
     dependencies:
@@ -56283,15 +56051,9 @@ snapshots:
     dependencies:
       kind-of: 6.0.3
 
-  shebang-command@1.2.0:
-    dependencies:
-      shebang-regex: 1.0.0
-
   shebang-command@2.0.0:
     dependencies:
       shebang-regex: 3.0.0
-
-  shebang-regex@1.0.0: {}
 
   shebang-regex@3.0.0: {}
 
@@ -57764,7 +57526,7 @@ snapshots:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.3
       '@types/node': 22.13.10
-      acorn: 8.12.1
+      acorn: 8.10.0
       acorn-walk: 8.2.0
       arg: 4.1.0
       create-require: 1.1.1
@@ -58694,7 +58456,7 @@ snapshots:
       '@webpack-cli/serve': 1.7.0(webpack-cli@4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))
       colorette: 2.0.16
       commander: 7.2.0
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       fastest-levenshtein: 1.0.12
       import-local: 3.0.2
       interpret: 2.2.0
@@ -58713,7 +58475,7 @@ snapshots:
       '@webpack-cli/serve': 1.7.0(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))
       colorette: 2.0.16
       commander: 7.2.0
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       fastest-levenshtein: 1.0.12
       import-local: 3.0.2
       interpret: 2.2.0
@@ -58731,7 +58493,7 @@ snapshots:
       '@webpack-cli/serve': 1.7.0(webpack-cli@4.10.0(webpack@5.94.0))
       colorette: 2.0.16
       commander: 7.2.0
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       fastest-levenshtein: 1.0.12
       import-local: 3.0.2
       interpret: 2.2.0
@@ -59441,8 +59203,6 @@ snapshots:
   y18n@4.0.3: {}
 
   y18n@5.0.8: {}
-
-  yallist@2.1.2: {}
 
   yallist@3.1.1: {}
 
