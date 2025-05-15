@@ -1046,13 +1046,16 @@ export const DecisionServiceNode = React.memo(
         });
       }
     }, [
-      dmnEditorStoreApi,
-      shape,
-      decisionsInCurrentDecisionService,
-      defaultSizeNode,
-      drdIndex,
-      externalModelsByNamespace,
       indexedDrdContainingDecisionServiceDepiction,
+      id,
+      dmnEditorStoreApi,
+      decisionsInCurrentDecisionService,
+      snapGrid,
+      dropPoint,
+      shape.index,
+      defaultSizeNode,
+      externalModelsByNamespace,
+      dmnObjectQName.localPart,
     ]);
 
     const onCollapse = useCallback(() => {
@@ -1078,12 +1081,12 @@ export const DecisionServiceNode = React.memo(
       });
     }, [
       dmnEditorStoreApi,
-      shape,
-      decisionsInCurrentDecisionService,
+      shape.index,
       defaultSizeNode,
-      drdIndex,
-      externalModelsByNamespace,
       indexedDrdContainingDecisionServiceDepiction,
+      drdIndex,
+      decisionsInCurrentDecisionService,
+      externalModelsByNamespace,
     ]);
 
     const onTypeRefChange = useCallback<OnTypeRefChange>(
