@@ -55,7 +55,7 @@ pipeline {
 
         PNPM_FILTER_STRING = '-F @kie-tools/cors-proxy-image...'
 
-        MAVEN_ARGS = "-Dmaven.repo.local=${WORKSPACE}/.maven -Dstyle.color=never"
+        MAVEN_ARGS = "-Dmaven.repo.local=${WORKSPACE}/.maven"
     }
 
     stages {
