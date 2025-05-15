@@ -104,7 +104,7 @@ pipeline {
                     ]
                     def runnersJson = JsonOutput.toJson(runnersMap)
 
-                    build job: 'KIE/kie-tools/${params.PIPELINE_PATH}/kie-tools-release-build', parameters: [
+                    build job: "KIE/kie-tools/${params.PIPELINE_PATH}/kie-tools-release-build", parameters: [
                         booleanParam(name: 'DRY_RUN', value: params.DRY_RUN),
                         string(name: 'PIPELINE_PATH', value: params.PIPELINE_PATH),
                         string(name: 'BASE_REF', value: params.BASE_REF),
