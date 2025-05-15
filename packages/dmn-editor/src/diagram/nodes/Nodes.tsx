@@ -1045,7 +1045,15 @@ export const DecisionServiceNode = React.memo(
           state.dmn.model = JSON.parse(JSON.stringify(dereferencedState.dmn.model));
         });
       }
-    }, [dmnEditorStoreApi, shape]);
+    }, [
+      dmnEditorStoreApi,
+      shape,
+      decisionsInCurrentDecisionService,
+      defaultSizeNode,
+      drdIndex,
+      externalModelsByNamespace,
+      indexedDrdContainingDecisionServiceDepiction,
+    ]);
 
     const onCollapse = useCallback(() => {
       dmnEditorStoreApi.setState((state) => {
@@ -1068,7 +1076,15 @@ export const DecisionServiceNode = React.memo(
           diagramElements?.splice(dmnShapeIndex, 1);
         }
       });
-    }, [dmnEditorStoreApi, shape]);
+    }, [
+      dmnEditorStoreApi,
+      shape,
+      decisionsInCurrentDecisionService,
+      defaultSizeNode,
+      drdIndex,
+      externalModelsByNamespace,
+      indexedDrdContainingDecisionServiceDepiction,
+    ]);
 
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
