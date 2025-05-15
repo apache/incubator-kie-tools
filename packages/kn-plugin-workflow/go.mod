@@ -13,7 +13,7 @@ require (
 	github.com/distribution/reference v0.6.0
 	github.com/docker/docker v28.0.1+incompatible
 	github.com/docker/go-connections v0.5.0
-	github.com/getkin/kin-openapi v0.128.0
+	github.com/getkin/kin-openapi v0.131.0
 	github.com/jstemmer/go-junit-report/v2 v2.1.0
 	github.com/ory/viper v1.7.5
 	github.com/spf13/afero v1.12.0
