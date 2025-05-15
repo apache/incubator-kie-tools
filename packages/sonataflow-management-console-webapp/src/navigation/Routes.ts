@@ -18,7 +18,6 @@
  */
 
 const IS_HASH_ROUTER = true;
-const SETTINGS_ROUTE = "/settings";
 
 export enum QueryParams {
   SETTINGS = "settings",
