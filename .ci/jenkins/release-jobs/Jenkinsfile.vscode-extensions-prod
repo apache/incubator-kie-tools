@@ -42,7 +42,8 @@ pipeline {
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
-        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
+        
+        MAVEN_ARGS = "-Dmaven.repo.local=${WORKSPACE}/.maven"
     }
 
     stages {
@@ -89,7 +90,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsReleaseConfigFileId}", "${env.MAVEN_ARGS}")
+                        buildUtils.setupPnpm()
                     }
                 }
             }
