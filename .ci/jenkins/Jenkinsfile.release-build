@@ -829,7 +829,7 @@ def kieSandboxExtendedServicesImageBuildJob() {
 
 def corsProxyImageBuildJob() {
     env.CORS_PROXY_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/cors-proxy',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/cors-proxy",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
