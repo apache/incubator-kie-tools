@@ -865,7 +865,7 @@ export const DecisionServiceNode = React.memo(
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
 
     let expandButtonClassname = "kie-dmn-editor--decision-service-collapsed-button";
-    const { decisionsMap, decisionServiceMap, conflictedDecisionIds } = useDmnEditorStore((s) =>
+    const { decisionsMap, conflictedDecisionIds } = useDmnEditorStore((s) =>
       s.computed(s).getConflictedDecisionServices(externalModelsByNamespace)
     );
 
@@ -887,7 +887,7 @@ export const DecisionServiceNode = React.memo(
 
     const settings = useSettings();
 
-    const currentContainedNodes = [
+    const decisionsInCurrentDecisionService = [
       ...(decisionService.outputDecision ?? []).map((od) => od["@_href"]),
       ...(decisionService.encapsulatedDecision ?? []).map((ed) => ed["@_href"]),
     ];
@@ -932,12 +932,9 @@ export const DecisionServiceNode = React.memo(
     const { computed, ...state } = dmnEditorStoreApi.getState();
     const dereferencedState: State = { computed, ...JSON.parse(JSON.stringify(state)) };
     const drdIndex = dereferencedState.computed(dereferencedState).getDrdIndex();
-    const externalDmnsIndex = dereferencedState
-      .computed(dereferencedState)
-      .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns;
 
     const drds = dereferencedState.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
-    let indexedDrd: ReturnType<Computed["indexedDrd"]> | undefined;
+    let indexedDrdContainingDecisionServiceDepiction: ReturnType<Computed["indexedDrd"]> | undefined;
     for (let i = 0; i < drds.length; i++) {
       if (
         dereferencedState.dmn.model.definitions["@_namespace"] ===
@@ -956,20 +953,17 @@ export const DecisionServiceNode = React.memo(
       const hasCompleteExpandedDepictionOfDecisionService =
         dsShape &&
         !(dsShape["@_isCollapsed"] ?? false) &&
-        currentContainedNodes.every((dHref) => _indexedDrd.dmnShapesByHref.has(dHref));
+        decisionsInCurrentDecisionService.every((dHref) => _indexedDrd.dmnShapesByHref.has(dHref));
       if (hasCompleteExpandedDepictionOfDecisionService) {
-        indexedDrd = _indexedDrd;
+        indexedDrdContainingDecisionServiceDepiction = _indexedDrd;
         break;
       }
     }
 
-    const indexedDrdContainingDecisionServiceDepiction = indexedDrd;
-    const autoLayout = indexedDrdContainingDecisionServiceDepiction ? false : true;
-
-    const handleExpand = async () => {
+    const onExpand = useCallback(async () => {
       const dsShapeOnOtherDrd = indexedDrdContainingDecisionServiceDepiction?.dmnShapesByHref.get(id);
       if (indexedDrdContainingDecisionServiceDepiction !== undefined) {
-        for (const decisionHref of currentContainedNodes) {
+        for (const decisionHref of decisionsInCurrentDecisionService) {
           const decisionShapeOnOtherDrd =
             indexedDrdContainingDecisionServiceDepiction?.dmnShapesByHref.get(decisionHref);
 
@@ -979,11 +973,6 @@ export const DecisionServiceNode = React.memo(
             decisionShapeOnOtherDrd &&
             decisionShapeOnOtherDrd["dc:Bounds"]
           ) {
-            const x =
-              dropPoint.x + (decisionShapeOnOtherDrd["dc:Bounds"]["@_x"] - dsShapeOnOtherDrd["dc:Bounds"]["@_x"]);
-            const y =
-              dropPoint.y + (decisionShapeOnOtherDrd["dc:Bounds"]["@_y"] - dsShapeOnOtherDrd["dc:Bounds"]["@_y"]);
-
             const minNodeSize = MIN_NODE_SIZES[NODE_TYPES.decision]({
               snapGrid: snapGrid,
             });
@@ -996,8 +985,12 @@ export const DecisionServiceNode = React.memo(
                   "@_id": generateUuid(),
                   "@_dmnElementRef": xmlHrefToQName(decisionHref, state.dmn.model.definitions),
                   "dc:Bounds": {
-                    "@_x": x,
-                    "@_y": y,
+                    "@_x":
+                      dropPoint.x +
+                      (decisionShapeOnOtherDrd["dc:Bounds"]!["@_x"] - dsShapeOnOtherDrd["dc:Bounds"]!["@_x"]),
+                    "@_y":
+                      dropPoint.y +
+                      (decisionShapeOnOtherDrd["dc:Bounds"]!["@_y"] - dsShapeOnOtherDrd["dc:Bounds"]!["@_y"]),
                     ...minNodeSize,
                   },
                 },
@@ -1014,7 +1007,7 @@ export const DecisionServiceNode = React.memo(
             __readonly_shapeIndex: shape.index,
             __readonly_width: dsShapeOnOtherDrd?.["dc:Bounds"]?.["@_width"] ?? defaultSizeNode["@_width"],
             __readonly_height: dsShapeOnOtherDrd?.["dc:Bounds"]?.["@_height"] ?? defaultSizeNode["@_height"],
-            __readonly_autoLayout: autoLayout,
+            __readonly_autoLayout: indexedDrdContainingDecisionServiceDepiction ? false : true,
           });
         });
       } else {
@@ -1031,17 +1024,14 @@ export const DecisionServiceNode = React.memo(
         const { computed, ...state } = dmnEditorStoreApi.getState();
         const dereferencedState: State = { computed, ...JSON.parse(JSON.stringify(state)) };
 
-        const drdIndex = dereferencedState.computed(dereferencedState).getDrdIndex();
-        const externalDmnsIndex = dereferencedState
-          .computed(dereferencedState)
-          .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns;
-
         await addAutoGeneratedDecisionServiceToDrd({
           state: dereferencedState,
           __readonly_decisionServiceNamespace: dereferencedState.dmn.model.definitions["@_namespace"],
-          __readonly_drdIndex: drdIndex,
-          __readonly_externalDmnsIndex: externalDmnsIndex,
-          __readonly_containedDecisionHrefsRelativeToThisDmn: currentContainedNodes,
+          __readonly_drdIndex: dereferencedState.computed(dereferencedState).getDrdIndex(),
+          __readonly_externalDmnsIndex: dereferencedState
+            .computed(dereferencedState)
+            .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
+          __readonly_containedDecisionHrefsRelativeToThisDmn: decisionsInCurrentDecisionService,
           __readonly_decisionServiceHrefRelativeToThisDmn: id,
           __readonly_snapGrid: dereferencedState.diagram.snapGrid,
           __readonly_dropPoint: dropPoint,
@@ -1055,9 +1045,9 @@ export const DecisionServiceNode = React.memo(
           state.dmn.model = JSON.parse(JSON.stringify(dereferencedState.dmn.model));
         });
       }
-    };
+    }, [dmnEditorStoreApi, shape]);
 
-    const handleCollapse = () => {
+    const onCollapse = useCallback(() => {
       dmnEditorStoreApi.setState((state) => {
         setDecisionServiceVisiblity({
           definitions: state.dmn.model.definitions,
@@ -1066,19 +1056,19 @@ export const DecisionServiceNode = React.memo(
           __readonly_shapeIndex: shape.index,
           __readonly_width: defaultSizeNode["@_width"],
           __readonly_height: defaultSizeNode["@_height"],
-          __readonly_autoLayout: autoLayout,
+          __readonly_autoLayout: indexedDrdContainingDecisionServiceDepiction ? false : true,
         });
         const { diagramElements } = addOrGetDrd({ definitions: state.dmn.model.definitions, drdIndex: drdIndex });
 
-        for (const decisionHref of currentContainedNodes) {
+        for (const decisionHref of decisionsInCurrentDecisionService) {
           const node = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById.get(decisionHref)!;
           const dmnShapeIndex = (diagramElements ?? []).findIndex(
-            (d) => d["@_dmnElementRef"] === node.data.dmnObjectQName.localPart
+            (d) => d["@_dmnElementRef"] === node?.data.dmnObjectQName.localPart
           );
           diagramElements?.splice(dmnShapeIndex, 1);
         }
       });
-    };
+    }, [dmnEditorStoreApi, shape]);
 
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
@@ -1178,7 +1168,11 @@ export const DecisionServiceNode = React.memo(
         >
           <InfoNodePanel isVisible={!isTargeted && selected && !dragging} />
           {!isCollapsed && !isTargeted && selected && !dragging && (
-            <div className={"kie-dmn-editor--decision-service-expanded-button"} onClick={handleCollapse}>
+            <div
+              className={"kie-dmn-editor--decision-service-expanded-button"}
+              onClick={onCollapse}
+              data-testid={`kie-tools--dmn-editor--${decisionService["@_label"] ?? decisionService["@_name"] ?? ""}-expanded-button`}
+            >
               -
             </div>
           )}
@@ -1211,7 +1205,11 @@ export const DecisionServiceNode = React.memo(
             />
           )}
           {isCollapsed && (
-            <div className={expandButtonClassname} onClick={handleExpand}>
+            <div
+              className={expandButtonClassname}
+              onClick={onExpand}
+              data-testid={`kie-tools--dmn-editor--${decisionService["@_label"] ?? decisionService["@_name"] ?? ""}-collapsed-button`}
+            >
               +
             </div>
           )}

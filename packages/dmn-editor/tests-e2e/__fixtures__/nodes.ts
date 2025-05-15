@@ -286,12 +286,12 @@ export class Nodes {
   }
 
   public async selectAndCollapseDecisionService(args: { name: string }) {
-    await this.select({ name: args.name });
-    await this.page.locator(".kie-dmn-editor--decision-service-expanded-button").click();
+    await this.select({ name: args.name, position: NodePosition.TOP });
+    await this.page.getByTestId(`kie-tools--dmn-editor--${args.name}-expanded-button`).click();
   }
 
   public async selectAndExpandDecisionService(args: { name: string }) {
-    await this.select({ name: args.name });
-    await this.page.locator(".kie-dmn-editor--decision-service-collapsed-button").click();
+    await this.select({ name: args.name, position: NodePosition.TOP });
+    await this.page.getByTestId(`kie-tools--dmn-editor--${args.name}-collapsed-button`).click();
   }
 }

@@ -151,7 +151,11 @@ test.describe("Model Decision Services - DRD", () => {
     // TODO, question, not understand
   });
 
-  test("Collapsing a decision service removes all of its content", async ({ editor, palette, nodes, diagram }) => {
+  test("Collapsing a Decision Service hides all of its contained Decisions from the DRD", async ({
+    palette,
+    nodes,
+    diagram,
+  }) => {
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
       description: "https://github.com/apache/incubator-kie-issues/issues/892",
@@ -184,13 +188,12 @@ test.describe("Model Decision Services - DRD", () => {
     // TODO
   });
 
-  test("Expanding a decision service shows the same depiction as in other drd", async ({
+  test("Expanding a Decision Service shows the same depiction as in other DRD", async ({
     drds,
     drgNodes,
     palette,
     nodes,
     diagram,
-    editor,
   }) => {
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
