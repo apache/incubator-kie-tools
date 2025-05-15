@@ -50,6 +50,7 @@ def setupPnpm(String mavenSettingsFileId = '') {
     sh """#!/bin/bash -el
     pnpm config set network-timeout 1000000
     pnpm -r exec 'bash' '-c' 'mkdir .mvn'
+    pnpm -r exec 'bash' '-c' 'echo -B > .mvn/maven.config'
     pnpm -r exec 'bash' '-c' 'echo -Xmx2g > .mvn/jvm.config'
     """.trim()
 
@@ -57,7 +58,7 @@ def setupPnpm(String mavenSettingsFileId = '') {
         configFileProvider([configFile(fileId: mavenSettingsFileId, variable: 'MAVEN_SETTINGS_FILE')]) {
             sh """#!/bin/bash -el
             cp ${MAVEN_SETTINGS_FILE} ${WORKSPACE}/kie-settings.xml
-            export MAVEN_ARGS="-s ${WORKSPACE}/kie-settings.xml"
+            pnpm -r exec 'bash' '-c' 'echo --settings=${WORKSPACE}/kie-settings.xml >> .mvn/maven.config'
             """.trim()
         }
     }
@@ -88,6 +89,7 @@ def pnpmBuildFull(Integer workspaceConcurrency = 1) {
 def pnpmBuild(String filters, Integer workspaceConcurrency = 1) {
     withEnv(["MAVEN_ARGS=${env.MAVEN_ARGS}"]){
         sh """#!/bin/bash -el
+        export MAVEN_ARGS=${env.MAVEN_ARGS}
         pnpm ${filters} --workspace-concurrency=${workspaceConcurrency} build:prod
         """.trim()
     }

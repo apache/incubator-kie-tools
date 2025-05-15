@@ -17,6 +17,8 @@
 
 @Library('jenkins-pipeline-shared-libraries')_
 
+import groovy.json.JsonOutput
+
 pipeline {
     agent {
         docker {
@@ -29,14 +31,84 @@ pipeline {
         timeout(time: 900, unit: 'MINUTES')
     }
 
+    parameters {
+        booleanParam(name: 'DRY_RUN', description: 'Dry run', defaultValue: true)
+        string(name: 'BASE_REF', description: 'GitHub Base Ref (tag or branch)', defaultValue: '10.1.x')
+
+        booleanParam(name: 'chrome_extensions', description: 'Build chrome extensions', defaultValue: false)
+        booleanParam(name: 'cors_proxy_image', description: 'Build cors proxy image', defaultValue: false)
+        booleanParam(name: 'dashbuilder_viewer_image', description: 'Build dashbuilder viewer image', defaultValue: false)
+        booleanParam(name: 'dev_deployment_base_image', description: 'Build dev deployment base image', defaultValue: false)
+        booleanParam(name: 'kie_sandbox_accelerator_quarkus', description: 'Build kie sandbox accelerator quarkus', defaultValue: false)
+        booleanParam(name: 'dev_deployment_dmn_form_webapp_image', description: 'Build dev deployment dmn form webapp image', defaultValue: false)
+        booleanParam(name: 'dev_deployment_quakus_blank_app_image', description: 'Build dev deployment quakus blank app image', defaultValue: false)
+        booleanParam(name: 'dev_deployment_upload_service', description: 'Build dev deployment upload service', defaultValue: false)
+        booleanParam(name: 'extended_services', description: 'Build extended services', defaultValue: false)
+        booleanParam(name: 'jbpm_quarkus_devui', description: 'Build jbpm quarkus devui', defaultValue: false)
+        booleanParam(name: 'kie_sandbox_extended_services_image', description: 'Build kie sandbox extended services image', defaultValue: false)
+        booleanParam(name: 'kie_sandbox_helm_chart', description: 'Build kie sandbox helm chart', defaultValue: false)
+        booleanParam(name: 'kie_sandbox_image', description: 'Build kie sandbox image', defaultValue: false)
+        booleanParam(name: 'kn_plugin_workflow', description: 'Build kn plugin workflow', defaultValue: false)
+        booleanParam(name: 'kogito_management_console', description: 'Build kogito management console', defaultValue: false)
+        booleanParam(name: 'kogito_swf_builder', description: 'Build kogito swf builder', defaultValue: false)
+        booleanParam(name: 'kogito_swf_devmode', description: 'Build kogito swf devmode', defaultValue: false)
+        booleanParam(name: 'kogito_serverless_operator', description: 'Build kogito serverless operator', defaultValue: false)
+        booleanParam(name: 'npm_packages', description: 'Build npm packages', defaultValue: false)
+        booleanParam(name: 'online_editor', description: 'Build online editor', defaultValue: false)
+        booleanParam(name: 'runtime_tools_consoles_helm_chart', description: 'Build runtime tools consoles helm chart', defaultValue: false)
+        booleanParam(name: 'serverless_logic_web_tools', description: 'Build serverless logic web tools', defaultValue: false)
+        booleanParam(name: 'serverless_logic_web_tools_base_builder_image', description: 'Build serverless logic web tools base builder image', defaultValue: false)
+        booleanParam(name: 'serverless_logic_web_tools_swf_builder_image', description: 'Build serverless logic web tools swf builder image', defaultValue: false)
+        booleanParam(name: 'serverless_logic_web_tools_swf_dev_mode_image', description: 'Build serverless logic web tools swf dev mode image', defaultValue: false)
+        booleanParam(name: 'standalone_editors_cdn', description: 'Build standalone editors cdn', defaultValue: false)
+        booleanParam(name: 'sonataflow_quarkus_devui', description: 'Build sonataflow quarkus devui', defaultValue: false)
+        booleanParam(name: 'vscode_extensions_dev', description: 'Build vscode extensions dev', defaultValue: false)
+        booleanParam(name: 'vscode_extensions_prod', description: 'Build vscode extensions prod', defaultValue: false)
+    }
+
     stages {
         stage('Release (dry run)') {
             steps {
-                build job: 'KIE/kie-tools/kie-tools-release-build', parameters: [
-                    booleanParam(name: 'DRY_RUN', value: true),
-                    string(name: 'BASE_REF', value: 'main'),
-                    string(name: 'RUNNERS', value: '{"chrome_extensions":"true","cors_proxy_image":"true","dashbuilder_viewer_image":"true","dev_deployment_base_image":"true","kie_sandbox_accelerator_quarkus":"true","dev_deployment_dmn_form_webapp_image":"true","dev_deployment_kogito_quakus_blank_app_image":"true","dev_deployment_upload_service":"true","extended_services":"true","jbpm_quarkus_devui":"true","kie_sandbox_extended_services_image":"true","kie_sandbox_helm_chart":"true","kie_sandbox_image":"true","kn_plugin_workflow":"true","kogito_management_console":"true","kogito_swf_builder":"true","kogito_swf_devmode":"true","kogito_serverless_operator":"true","npm_packages":"true","online_editor":"true","runtime_tools_consoles_helm_chart":"true","serverless_logic_web_tools":"true","serverless_logic_web_tools_base_builder_image":"true","serverless_logic_web_tools_swf_builder_image":"true","serverless_logic_web_tools_swf_dev_mode_image":"true","standalone_editors_cdn":"true","sonataflow_quarkus_devui":"true","vscode_extensions_dev":"true","vscode_extensions_prod":"true"}')
-                ]
+                script {
+                    def runnersMap = [
+                        chrome_extensions: params.chrome_extensions,
+                        cors_proxy_image: params.cors_proxy_image,
+                        dashbuilder_viewer_image: params.dashbuilder_viewer_image,
+                        dev_deployment_base_image: params.dev_deployment_base_image,
+                        kie_sandbox_accelerator_quarkus: params.kie_sandbox_accelerator_quarkus,
+                        dev_deployment_dmn_form_webapp_image: params.dev_deployment_dmn_form_webapp_image,
+                        dev_deployment_quakus_blank_app_image: params.dev_deployment_quakus_blank_app_image,
+                        dev_deployment_upload_service: params.dev_deployment_upload_service,
+                        extended_services: params.extended_services,
+                        jbpm_quarkus_devui: params.jbpm_quarkus_devui,
+                        kie_sandbox_extended_services_image: params.kie_sandbox_extended_services_image,
+                        kie_sandbox_helm_chart: params.kie_sandbox_helm_chart,
+                        kie_sandbox_image: params.kie_sandbox_image,
+                        kn_plugin_workflow: params.kn_plugin_workflow,
+                        kogito_management_console: params.kogito_management_console,
+                        kogito_swf_builder: params.kogito_swf_builder,
+                        kogito_swf_devmode: params.kogito_swf_devmode,
+                        kogito_serverless_operator: params.kogito_serverless_operator,
+                        npm_packages: params.npm_packages,
+                        online_editor: params.online_editor,
+                        runtime_tools_consoles_helm_chart: params.runtime_tools_consoles_helm_chart,
+                        serverless_logic_web_tools: params.serverless_logic_web_tools,
+                        serverless_logic_web_tools_base_builder_image: params.serverless_logic_web_tools_base_builder_image,
+                        serverless_logic_web_tools_swf_builder_image: params.serverless_logic_web_tools_swf_builder_image,
+                        serverless_logic_web_tools_swf_dev_mode_image: params.serverless_logic_web_tools_swf_dev_mode_image,
+                        standalone_editors_cdn: params.standalone_editors_cdn,
+                        sonataflow_quarkus_devui: params.sonataflow_quarkus_devui,
+                        vscode_extensions_dev: params.vscode_extensions_dev,
+                        vscode_extensions_prod: params.vscode_extensions_prod
+                    ]
+                    def runnersJson = JsonOutput.toJson(runnersMap)
+
+                    build job: 'KIE/kie-tools/kie-tools-release-build', parameters: [
+                        booleanParam(name: 'DRY_RUN', value: params.DRY_RUN),
+                        string(name: 'BASE_REF', value: params.BASE_REF),
+                        string(name: 'RUNNERS', value: runnersJson)
+                    ]
+                }
             }
         }
     }
