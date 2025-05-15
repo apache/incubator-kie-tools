@@ -31,6 +31,7 @@ pipeline {
         string(name: 'RELEASE_VERSION', description: 'Release Version', defaultValue: '0.0.0')
         string(name: 'BASE_REF', description: 'GitHub Base Ref (tag or branch)', defaultValue: '10.1.x')
         string(name: 'RELEASE_CANDIDATE_VERSION', description: 'Release Candidate Version', defaultValue: '')
+        string(name: 'PIPELINE_PATH', description: 'Path to run the pipeline')
     }
 
     environment {
@@ -127,7 +128,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}", "${env.MAVEN_ARGS}")
+                        buildUtils.pnpmBootstrap(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                     }
                 }
             }
