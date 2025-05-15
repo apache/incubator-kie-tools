@@ -40,20 +40,22 @@ pipeline {
         booleanParam(name: 'cors_proxy_image', description: 'Build cors proxy image', defaultValue: false)
         booleanParam(name: 'dashbuilder_viewer_image', description: 'Build dashbuilder viewer image', defaultValue: false)
         booleanParam(name: 'dev_deployment_base_image', description: 'Build dev deployment base image', defaultValue: false)
-        booleanParam(name: 'kie_sandbox_accelerator_quarkus', description: 'Build kie sandbox accelerator quarkus', defaultValue: false)
         booleanParam(name: 'dev_deployment_dmn_form_webapp_image', description: 'Build dev deployment dmn form webapp image', defaultValue: false)
         booleanParam(name: 'dev_deployment_quakus_blank_app_image', description: 'Build dev deployment quakus blank app image', defaultValue: false)
         booleanParam(name: 'dev_deployment_upload_service', description: 'Build dev deployment upload service', defaultValue: false)
         booleanParam(name: 'extended_services', description: 'Build extended services', defaultValue: false)
         booleanParam(name: 'jbpm_quarkus_devui', description: 'Build jbpm quarkus devui', defaultValue: false)
+        booleanParam(name: 'kie_sandbox_image', description: 'Build kie sandbox image', defaultValue: false)        
+        booleanParam(name: 'kie_sandbox_accelerator_quarkus', description: 'Build kie sandbox accelerator quarkus', defaultValue: false)
         booleanParam(name: 'kie_sandbox_extended_services_image', description: 'Build kie sandbox extended services image', defaultValue: false)
         booleanParam(name: 'kie_sandbox_helm_chart', description: 'Build kie sandbox helm chart', defaultValue: false)
-        booleanParam(name: 'kie_sandbox_image', description: 'Build kie sandbox image', defaultValue: false)
         booleanParam(name: 'kn_plugin_workflow', description: 'Build kn plugin workflow', defaultValue: false)
+        booleanParam(name: 'kogito_base_builder_image', description: 'Build kogito base builder image', defaultValue: false)
+        booleanParam(name: 'kogito_db_migrator_tool', description: 'Build kogito db migrator tool', defaultValue: false)
         booleanParam(name: 'kogito_management_console', description: 'Build kogito management console', defaultValue: false)
+        booleanParam(name: 'kogito_serverless_operator', description: 'Build kogito serverless operator', defaultValue: false)
         booleanParam(name: 'kogito_swf_builder', description: 'Build kogito swf builder', defaultValue: false)
         booleanParam(name: 'kogito_swf_devmode', description: 'Build kogito swf devmode', defaultValue: false)
-        booleanParam(name: 'kogito_serverless_operator', description: 'Build kogito serverless operator', defaultValue: false)
         booleanParam(name: 'npm_packages', description: 'Build npm packages', defaultValue: false)
         booleanParam(name: 'online_editor', description: 'Build online editor', defaultValue: false)
         booleanParam(name: 'runtime_tools_consoles_helm_chart', description: 'Build runtime tools consoles helm chart', defaultValue: false)
@@ -61,8 +63,9 @@ pipeline {
         booleanParam(name: 'serverless_logic_web_tools_base_builder_image', description: 'Build serverless logic web tools base builder image', defaultValue: false)
         booleanParam(name: 'serverless_logic_web_tools_swf_builder_image', description: 'Build serverless logic web tools swf builder image', defaultValue: false)
         booleanParam(name: 'serverless_logic_web_tools_swf_dev_mode_image', description: 'Build serverless logic web tools swf dev mode image', defaultValue: false)
-        booleanParam(name: 'standalone_editors_cdn', description: 'Build standalone editors cdn', defaultValue: false)
+        booleanParam(name: 'sonataflow_management_console', description: 'Build sonataflow management console', defaultValue: false)
         booleanParam(name: 'sonataflow_quarkus_devui', description: 'Build sonataflow quarkus devui', defaultValue: false)
+        booleanParam(name: 'standalone_editors_cdn', description: 'Build standalone editors cdn', defaultValue: false)        
         booleanParam(name: 'vscode_extensions_dev', description: 'Build vscode extensions dev', defaultValue: false)
         booleanParam(name: 'vscode_extensions_prod', description: 'Build vscode extensions prod', defaultValue: false)
     }
@@ -76,20 +79,22 @@ pipeline {
                         cors_proxy_image: params.cors_proxy_image,
                         dashbuilder_viewer_image: params.dashbuilder_viewer_image,
                         dev_deployment_base_image: params.dev_deployment_base_image,
-                        kie_sandbox_accelerator_quarkus: params.kie_sandbox_accelerator_quarkus,
                         dev_deployment_dmn_form_webapp_image: params.dev_deployment_dmn_form_webapp_image,
                         dev_deployment_quakus_blank_app_image: params.dev_deployment_quakus_blank_app_image,
                         dev_deployment_upload_service: params.dev_deployment_upload_service,
                         extended_services: params.extended_services,
                         jbpm_quarkus_devui: params.jbpm_quarkus_devui,
+                        kie_sandbox_image: params.kie_sandbox_image,                                                
+                        kie_sandbox_accelerator_quarkus: params.kie_sandbox_accelerator_quarkus,
                         kie_sandbox_extended_services_image: params.kie_sandbox_extended_services_image,
                         kie_sandbox_helm_chart: params.kie_sandbox_helm_chart,
-                        kie_sandbox_image: params.kie_sandbox_image,
                         kn_plugin_workflow: params.kn_plugin_workflow,
+                        kogito_base_builder_image: params.kogito_base_builder_image,
+                        kogito_db_migrator_tool: params.kogito_db_migrator_tool,
                         kogito_management_console: params.kogito_management_console,
+                        kogito_serverless_operator: params.kogito_serverless_operator,
                         kogito_swf_builder: params.kogito_swf_builder,
                         kogito_swf_devmode: params.kogito_swf_devmode,
-                        kogito_serverless_operator: params.kogito_serverless_operator,
                         npm_packages: params.npm_packages,
                         online_editor: params.online_editor,
                         runtime_tools_consoles_helm_chart: params.runtime_tools_consoles_helm_chart,
@@ -97,8 +102,9 @@ pipeline {
                         serverless_logic_web_tools_base_builder_image: params.serverless_logic_web_tools_base_builder_image,
                         serverless_logic_web_tools_swf_builder_image: params.serverless_logic_web_tools_swf_builder_image,
                         serverless_logic_web_tools_swf_dev_mode_image: params.serverless_logic_web_tools_swf_dev_mode_image,
-                        standalone_editors_cdn: params.standalone_editors_cdn,
+                        sonataflow_management_console: params.sonataflow_management_console,
                         sonataflow_quarkus_devui: params.sonataflow_quarkus_devui,
+                        standalone_editors_cdn: params.standalone_editors_cdn,                                                
                         vscode_extensions_dev: params.vscode_extensions_dev,
                         vscode_extensions_prod: params.vscode_extensions_prod
                     ]
