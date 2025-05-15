@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:10.1.999'
+            image 'apache/incubator-kie-tools-ci-build:10.1.999'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -27,11 +27,12 @@ pipeline {
     }
 
     parameters {
-        booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
-        string(description: 'Base Ref', name: 'BASE_REF')
-        string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL')
-        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
+        booleanParam(name: 'DRY_RUN', description: 'Dry run', defaultValue: true)
+        string(name: 'RELEASE_VERSION', description: 'Release Version', defaultValue: '0.0.0')
+        string(name: 'BASE_REF', description: 'GitHub Base Ref (tag or branch)')
+        string(name: 'RELEASE_CANDIDATE_VERSION', description: 'Release Candidate Version', defaultValue: '')
+        string(name: 'PIPELINE_PATH', description: 'Path to run the pipeline')
+        string(name: 'UPLOAD_ASSET_URL', description: 'Upload Asset Url')
     }
 
     environment {
@@ -51,6 +52,8 @@ pipeline {
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
         PNPM_FILTER_STRING = '-F chrome-extension-pack-kogito-kie-editors... -F chrome-extension-serverless-workflow-editor...'
+        
+        MAVEN_ARGS = "-Dmaven.repo.local=${WORKSPACE}/.maven"
     }
 
     stages {
@@ -113,7 +116,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsReleaseConfigFileId}")
+                        buildUtils.setupPnpm()
                     }
                 }
             }
@@ -123,7 +126,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBootstrap(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                     }
                 }
             }
@@ -133,7 +136,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBuild(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                     }
                 }
             }
