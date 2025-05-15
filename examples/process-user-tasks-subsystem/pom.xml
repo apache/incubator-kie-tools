@@ -113,6 +113,10 @@
           <groupId>org.kie</groupId>
           <artifactId>kie-addons-quarkus-persistence-jdbc</artifactId>
         </dependency>
+        <dependency>
+          <groupId>org.jbpm</groupId>
+          <artifactId>jbpm-addons-quarkus-usertask-storage-jpa</artifactId>
+        </dependency>
 
         <!-- Data-Index Addon -->
         <dependency>
@@ -166,6 +170,15 @@
         <dependency>
           <groupId>io.quarkus</groupId>
           <artifactId>quarkus-jdbc-h2</artifactId>
+        </dependency>
+
+        <dependency>
+          <groupId>org.kie</groupId>
+          <artifactId>kie-addons-quarkus-persistence-jdbc</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.jbpm</groupId>
+          <artifactId>jbpm-addons-quarkus-usertask-storage-jpa</artifactId>
         </dependency>
 
         <!-- Data-Index Addon -->
