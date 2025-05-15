@@ -525,37 +525,40 @@ def printRunners() {
 
 def kogitoBaseBuilderImageBuildJob() {
     env.KOGITO_BASE_BUILDER_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kogito-base-builder-image',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/kogito-base-builder-image",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def devDeploymentQuarkusBlankAppImageBuildJob() {
     env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/dev-deployment-quarkus-blank-app-image',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/dev-deployment-quarkus-blank-app-image",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def devDeploymentUploadServiceBuildJob() {
     env.DEV_DEPLOYMENT_UPLOAD_SERVICE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/dev-deployment-upload-service',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/dev-deployment-upload-service",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
             string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
@@ -563,265 +566,287 @@ def devDeploymentUploadServiceBuildJob() {
 def vscodeExtensionsDevBuildJob() {
     env.VSCODE_EXTENSIONS_DEV_JOB_RESULT = build(
         wait: true,
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/vscode-extensions-dev',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/vscode-extensions-dev",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}")
+            string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def vscodeExtensionsProdBuildJob() {
     env.VSCODE_EXTENSIONS_PROD_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/vscode-extensions-prod',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/vscode-extensions-prod",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
             string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def npmPackagesBuildJob() {
     env.NPM_PACKAGES_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/npm-packages',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/npm-packages",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def knPluginWorkflowBuildJob() {
     env.KN_PLUGIN_WORKFLOW_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kn-plugin-workflow',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/kn-plugin-workflow",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
             string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def serverlessLogicWebToolsSwfBuilderImageBuildJob() {
     env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/serverless-logic-web-tools-swf-builder-image',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/serverless-logic-web-tools-swf-builder-image",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def serverlessLogicWebToolsSwfDevModeImageBuildJob() {
     env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_DEV_MODE_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/serverless-logic-web-tools-swf-dev-mode-image',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/serverless-logic-web-tools-swf-dev-mode-image",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def serverlessLogicWebToolsBaseBuilderImageBuildJob() {
     env.SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/serverless-logic-web-tools-base-builder-image',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/serverless-logic-web-tools-base-builder-image",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def dashbuilderViewerImageBuildJob() {
     env.DASHBUILDER_VIEWER_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/dashbuilder-viewer-image',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/dashbuilder-viewer-image",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def serverlessLogicWebToolsBuildJob() {
     env.SERVERLESS_LOGIC_WEB_TOOLS_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/serverless-logic-web-tools',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/serverless-logic-web-tools",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def kogitoManagementConsoleBuildJob() {
     env.KOGITO_MANAGEMENT_CONSOLE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kogito-management-console',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/kogito-management-console",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def kogitoSwfBuilderBuildJob() {
     env.KOGITO_SWF_BUILDER_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kogito-swf-builder',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/kogito-swf-builder",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def kogitoSwfDevmodeBuildJob() {
     env.KOGITO_SWF_DEVMODE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kogito-swf-devmode',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/kogito-swf-devmode",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def kogitoServerlessOperatorBuildJob() {
     env.KOGITO_SERVERLESS_OPERATOR_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kogito-serverless-operator',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/kogito-serverless-operator",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def jbpmQuarkusDevuiBuildJob() {
     env.JBPM_QUARKUS_DEVUI_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/jbpm-quarkus-devui',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/jbpm-quarkus-devui",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def sonataflowQuarkusDevuiBuildJob() {
     env.SONATAFLOW_QUARKUS_DEVUI_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/sonataflow-quarkus-devui',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/sonataflow-quarkus-devui",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
-            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}")
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def devDeploymentBaseImageBuildJob() {
     env.DEV_DEPLOYMENT_BASE_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/dev-deployment-base-image',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/dev-deployment-base-image",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def devDeploymentDmnFormWebappImageBuildJob() {
     env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/dev-deployment-dmn-form-webapp-image',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/dev-deployment-dmn-form-webapp-image",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def extendedServicesBuildJob() {
     env.EXTENDED_SERVICES_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/extended-services',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/extended-services",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
             string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def onlineEditorBuildJob() {
     env.ONLINE_EDITOR_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/online-editor',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/online-editor",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def chromeExtensionsBuildJob() {
     env.CHROME_EXTENSIONS_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/chrome-extensions',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/chrome-extensions",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
             string(name: 'UPLOAD_ASSET_URL', value: "${params.UPLOAD_ASSET_URL}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def standaloneEditorsCdnBuildJob() {
     env.STANDALONE_EDITORS_CDN_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/standalone-editors-cdn',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/standalone-editors-cdn",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def kieSandboxExtendedServicesImageBuildJob() {
     env.KIE_SANDBOX_EXTENDED_SERVICES_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kie-sandbox-extended-services',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/kie-sandbox-extended-services",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
     env.KIE_SANDBOX_EXTENDED_SERVICES_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", 'kie-sandbox-extended-services', "${pipelineVars.openshiftCredentialsId}")
@@ -834,7 +859,8 @@ def corsProxyImageBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
     env.KIE_SANDBOX_CORS_PROXY_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", 'cors-proxy', "${pipelineVars.openshiftCredentialsId}")
@@ -842,14 +868,15 @@ def corsProxyImageBuildJob() {
 
 def kieSandboxImageBuildJob() {
     env.KIE_SANDBOX_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kie-sandbox',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/kie-sandbox",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
             string(name: 'KIE_SANDBOX_EXTENDED_SERVICES_URL', value: "${env.KIE_SANDBOX_EXTENDED_SERVICES_URL}"),
             string(name: 'KIE_SANDBOX_CORS_PROXY_URL', value: "${env.KIE_SANDBOX_CORS_PROXY_URL}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
     env.KIE_SANDBOX_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", 'kie-sandbox', "${pipelineVars.openshiftCredentialsId}")
@@ -857,12 +884,13 @@ def kieSandboxImageBuildJob() {
 
 def kieSandboxAcceleratorQuarkusBuildJob() {
     env.KIE_SANDBOX_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kie-sandbox-accelerator-quarkus',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/kie-sandbox-accelerator-quarkus",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
     env.KIE_SANDBOX_URL = openShiftUtils.getAppRoute("${env.OPENSHIFT_NAMESPACE}", 'kie-sandbox', "${pipelineVars.openshiftCredentialsId}")
@@ -870,12 +898,13 @@ def kieSandboxAcceleratorQuarkusBuildJob() {
 
 def kieSandboxHelmChartBuildJob() {
     env.KIE_SANDBOX_HELM_CHART_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kie-sandbox-helm-chart',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/kie-sandbox-helm-chart",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
@@ -883,24 +912,26 @@ def kieSandboxHelmChartBuildJob() {
 def runtimeToolsConsolesHelmChartBuildJob() {
     env.RUNTIME_TOOLS_CONSOLES_HELM_CHART_JOB_RESULT = build(
         wait: true,
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/runtime-tools-consoles-helm-chart',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/runtime-tools-consoles-helm-chart",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }
 
 def kogitoDbMigratorToolBuildJob() {
     env.KOGITO_DB_MIGRATOR_TOOL_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/kogito-db-migrator-tool',
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/kogito-db-migrator-tool",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
 }

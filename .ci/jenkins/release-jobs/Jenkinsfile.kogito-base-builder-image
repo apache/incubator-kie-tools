@@ -31,6 +31,7 @@ pipeline {
         string(name: 'RELEASE_VERSION', description: 'Release Version', defaultValue: '0.0.0')
         string(name: 'BASE_REF', description: 'GitHub Base Ref (tag or branch)')
         string(name: 'RELEASE_CANDIDATE_VERSION', description: 'Release Candidate Version', defaultValue: '')
+        string(name: 'PIPELINE_PATH', description: 'Path to run the pipeline')
     }
 
     environment {
@@ -50,7 +51,7 @@ pipeline {
 
         PNPM_FILTER_STRING = '-F @kie-tools/dev-deployment-base-image...'
 
-        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
+        MAVEN_ARGS = "-Dmaven.repo.local=${WORKSPACE}/.maven"
     }
 
     stages {
@@ -98,7 +99,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsReleaseConfigFileId}")
+                        buildUtils.setupPnpm()
                     }
                 }
             }
@@ -108,7 +109,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}", "${env.MAVEN_ARGS}")
+                        buildUtils.pnpmBootstrap(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                     }
                 }
             }
@@ -118,7 +119,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBuild(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                     }
                 }
             }
