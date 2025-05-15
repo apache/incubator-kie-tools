@@ -22,7 +22,7 @@ import groovy.json.JsonOutput
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:10.1.999'
+            image 'apache/incubator-kie-tools-ci-build:10.1.999'
             label util.avoidFaultyNodes()
         }
     }
@@ -33,6 +33,7 @@ pipeline {
 
     parameters {
         booleanParam(name: 'DRY_RUN', description: 'Dry run', defaultValue: true)
+        string(name: 'PIPELINE_PATH', description: 'Path to run the pipeline', defaultValue: '10.1.x/release')
         string(name: 'BASE_REF', description: 'GitHub Base Ref (tag or branch)', defaultValue: '10.1.x')
 
         booleanParam(name: 'chrome_extensions', description: 'Build chrome extensions', defaultValue: false)
@@ -103,8 +104,9 @@ pipeline {
                     ]
                     def runnersJson = JsonOutput.toJson(runnersMap)
 
-                    build job: 'KIE/kie-tools/kie-tools-release-build', parameters: [
+                    build job: 'KIE/kie-tools/${params.PIPELINE_PATH}/kie-tools-release-build', parameters: [
                         booleanParam(name: 'DRY_RUN', value: params.DRY_RUN),
+                        string(name: 'PIPELINE_PATH', value: params.PIPELINE_PATH),
                         string(name: 'BASE_REF', value: params.BASE_REF),
                         string(name: 'RUNNERS', value: runnersJson)
                     ]

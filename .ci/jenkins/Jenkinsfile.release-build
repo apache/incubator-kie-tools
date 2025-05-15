@@ -20,7 +20,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:10.1.999'
+            image 'apache/incubator-kie-tools-ci-build:10.1.999'
             args '--shm-size=2g --privileged --group-add docker'
             label util.avoidFaultyNodes()
         }
@@ -32,6 +32,7 @@ pipeline {
 
     parameters {
         booleanParam(name: 'DRY_RUN', description: 'Dry run', defaultValue: true)
+        string(name: 'PIPELINE_PATH', description: 'Path to run the pipeline')
         string(name: 'BASE_REF', description: 'GitHub Base Ref (tag or branch)')
         string(name: 'RELEASE_VERSION', description: 'Release Version', defaultValue: '0.0.0')
         string(name: 'UPLOAD_ASSET_URL', description: 'Upload asset url', defaultValue: '')
@@ -828,7 +829,7 @@ def kieSandboxExtendedServicesImageBuildJob() {
 
 def corsProxyImageBuildJob() {
     env.CORS_PROXY_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/individual-release-artifacts-jobs/cors-proxy',
+        job: 'KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/cors-proxy',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
