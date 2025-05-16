@@ -55,6 +55,7 @@ public class FormsService {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFormsList(@QueryParam("names") FormFilter filter) {
         try {
+            storage.refresh();
             return Response.ok(storage.getFormInfoList(filter)).build();
         } catch (Exception e) {
             LOGGER.warn("Error while getting forms list: ", e);

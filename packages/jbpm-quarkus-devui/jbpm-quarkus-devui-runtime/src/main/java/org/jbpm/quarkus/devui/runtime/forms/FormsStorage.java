@@ -35,4 +35,6 @@ public interface FormsStorage {
     Form getFormContent(String formName) throws IOException;
 
     void updateFormContent(String formName, FormContent formContent) throws IOException;
+
+    void refresh();
 }

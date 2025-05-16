@@ -115,6 +115,7 @@ public class FormsStorageImpl implements FormsStorage {
         return null;
     }
 
+
     @Override
     public int getFormsCount() {
         return formInfoMap.keySet().size();
@@ -243,6 +244,10 @@ public class FormsStorageImpl implements FormsStorage {
                     formInfoMap.put(FilenameUtils.removeExtension(file.getName()),
                             new FormInfo(FilenameUtils.removeExtension(file.getName()), getFormType(FilenameUtils.getExtension(file.getName())), lastModified));
                 });
+    }
+
+    public void refresh() {
+        this.init();
     }
 
     private Collection<File> readFormResources() {
