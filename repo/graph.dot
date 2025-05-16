@@ -263,12 +263,9 @@ digraph G {
   "kie-tools-examples-micro-frontends-multiplying-architecture-todo-list-view-vscode-extension" -> "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/process-accelerator" -> "@kie-tools/maven-base" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/process-business-calendar" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
-  "@kie-tools-examples/process-compact-architecture" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/process-compact-architecture" -> "@kie-tools/kogito-management-console" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/process-event-driven" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
-  "@kie-tools-examples/process-security" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/process-security" -> "@kie-tools/kogito-management-console" [ style = "dashed", color = "orange" ];
-  "@kie-tools-examples/process-user-tasks-subsystem" -> "@kie-tools/jbpm-quarkus-devui" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/process-user-tasks-subsystem" -> "@kie-tools/kogito-management-console" [ style = "solid", color = "orange" ];
   "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp" -> "@kie-tools-core/react-hooks" [ style = "dashed", color = "orange" ];
   "@kie-tools-examples/serverless-workflow-editor-standalone-on-webapp" -> "@kie-tools/serverless-workflow-standalone-editor" [ style = "dashed", color = "orange" ];
@@ -541,14 +538,15 @@ digraph G {
   "@kie-tools/runtime-tools-components" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-consoles-helm-chart" -> "@kie-tools/kogito-management-console" [ style = "solid", color = "black" ];
   "@kie-tools/runtime-tools-management-console-webapp" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "blue" ];
-  "@kie-tools/runtime-tools-management-console-webapp" -> "@kie-tools/runtime-tools-process-webapp-components" [ style = "solid", color = "blue" ];
-  "@kie-tools/runtime-tools-management-console-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
-  "@kie-tools/runtime-tools-management-console-webapp" -> "@kie-tools/maven-base" [ style = "dashed", color = "blue" ];
+  "@kie-tools/runtime-tools-management-console-webapp" -> "@kie-tools/jbpm-quarkus-devui" [ style = "dashed", color = "blue" ];
   "@kie-tools/runtime-tools-process-dev-ui-webapp" -> "@kie-tools/runtime-tools-process-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-process-dev-ui-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-process-enveloped-components" -> "@kie-tools-core/monaco-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-process-enveloped-components" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-process-enveloped-components" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-process-enveloped-components" -> "@kie-tools/runtime-tools-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-process-enveloped-components" -> "@kie-tools/runtime-tools-process-gateway-api" [ style = "solid", color = "blue" ];
-  "@kie-tools/runtime-tools-process-enveloped-components" -> "@kie-tools/runtime-tools-shared-enveloped-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-process-enveloped-components" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/runtime-tools-process-gateway-api" -> "@kie-tools/runtime-tools-shared-gateway-api" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-process-webapp-components" -> "@kie-tools/runtime-tools-process-enveloped-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-shared-enveloped-components" -> "@kie-tools-core/monaco-editor" [ style = "solid", color = "blue" ];
@@ -559,8 +557,10 @@ digraph G {
   "@kie-tools/runtime-tools-shared-gateway-api" -> "@kie-tools/root-env" [ style = "dashed", color = "blue" ];
   "@kie-tools/runtime-tools-shared-gateway-api" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];
   "@kie-tools/runtime-tools-shared-webapp-components" -> "@kie-tools/runtime-tools-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools-core/monaco-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools/dashbuilder-client" [ style = "solid", color = "blue" ];
-  "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools/runtime-tools-shared-enveloped-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools/runtime-tools-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools/runtime-tools-swf-gateway-api" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-swf-gateway-api" -> "@kie-tools/runtime-tools-shared-gateway-api" [ style = "solid", color = "blue" ];
@@ -576,6 +576,7 @@ digraph G {
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools-core/workspaces-git-fs" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/cors-proxy" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/dashbuilder-editor" [ style = "solid", color = "black" ];
+  "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/runtime-tools-shared-enveloped-components" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/runtime-tools-swf-webapp-components" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-logic-web-tools" -> "@kie-tools/text-editor" [ style = "solid", color = "black" ];
@@ -602,6 +603,7 @@ digraph G {
   "@kie-tools/serverless-workflow-combined-editor" -> "@kie-tools/serverless-workflow-diagram-editor-assets" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-combined-editor" -> "@kie-tools/serverless-workflow-text-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp" -> "@kie-tools/dashbuilder-client" [ style = "solid", color = "black" ];
+  "@kie-tools/serverless-workflow-dev-ui-webapp" -> "@kie-tools/runtime-tools-shared-enveloped-components" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-workflow-dev-ui-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-workflow-dev-ui-webapp" -> "@kie-tools/runtime-tools-swf-webapp-components" [ style = "solid", color = "black" ];
   "@kie-tools/serverless-workflow-dev-ui-webapp" -> "@kie-tools/serverless-workflow-dev-ui-monitoring-webapp" [ style = "solid", color = "black" ];
@@ -643,6 +645,7 @@ digraph G {
   "@kie-tools/sonataflow-management-console-image" -> "@kie-tools/sonataflow-management-console-webapp" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-management-console-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/runtime-tools-process-webapp-components" [ style = "solid", color = "blue" ];
+  "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/runtime-tools-shared-enveloped-components" [ style = "solid", color = "blue" ];
   "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/runtime-tools-swf-webapp-components" [ style = "solid", color = "blue" ];
   "@kie-tools/sonataflow-management-console-webapp" -> "@kie-tools/sonataflow-dev-app" [ style = "dashed", color = "blue" ];

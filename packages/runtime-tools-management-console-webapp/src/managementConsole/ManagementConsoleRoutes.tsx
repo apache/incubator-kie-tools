@@ -18,7 +18,7 @@
  */
 import React, { FC, useCallback } from "react";
 import { Outlet, Route } from "react-router-dom";
-import { ProcessListPage } from "../process";
+import { ProcessListPage, ProcessDefinitionsListPage } from "../process";
 import { Routes, useNavigate, useLocation, useParams } from "react-router-dom";
 import { ManagementConsoleHome } from "./ManagementConsoleHome";
 import { NewAuthSessionLoginSuccessPage, NewAuthSessionModal } from "../authSessions/components";
@@ -29,6 +29,7 @@ import { ProcessDetailsPage } from "../process/details/ProcessDetailsPage";
 import { JobsPage } from "../jobs";
 import { TaskDetailsPage, TasksPage } from "../tasks";
 import { RuntimePageLayoutContextProvider } from "../runtime/RuntimePageLayoutContext";
+import { ProcessDefinitionFormPage } from "../process/form/ProcessDefinitionFormPage";
 
 export const ManagementConsoleRoutes: FC = () => {
   const routes = useRoutes();
@@ -64,6 +65,23 @@ export const ManagementConsoleRoutes: FC = () => {
           />
           <Route path={routes.runtime.jobs.path({ runtimeUrl: ":runtimeUrl" })} element={<JobsPage />} />
           <Route path={routes.runtime.tasks.path({ runtimeUrl: ":runtimeUrl" })} element={<TasksPage />} />
+          <Route
+            path={routes.runtime.processDefinitions.path({
+              runtimeUrl: ":runtimeUrl",
+            })}
+          >
+            <ProcessDefinitionsListPage />
+          </Route>
+          <Route
+            path={routes.runtime.processDefinitionForm.path({
+              runtimeUrl: ":runtimeUrl",
+              processName: ":processName",
+            })}
+          >
+            {({ match }) => {
+              return <ProcessDefinitionFormPage processName={match?.params.processName} />;
+            }}
+          </Route>
           <Route
             path={routes.runtime.taskDetails.path({ runtimeUrl: ":runtimeUrl", taskId: ":taskId" })}
             element={<TaskDetailsPage />}

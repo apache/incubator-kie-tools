@@ -20,7 +20,7 @@ import React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { JobsManagementPage, ProcessesPage } from "../../pages";
 import ProcessDetailsPage from "../../pages/ProcessDetailsPage/ProcessDetailsPage";
-import TaskInboxPage from "../../pages/TaskInboxPage/TaskInboxPage";
+import TaskListPage from "../../pages/TaskListPage/TaskListPage";
 import TaskDetailsPage from "../../pages/TaskDetailsPage/TaskDetailsPage";
 import FormsListPage from "../../pages/FormsListPage/FormsListPage";
 import FormDetailPage from "../../pages/FormDetailsPage/FormDetailsPage";
@@ -43,7 +43,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ navigate }) => {
       <Route path={"Process/:processId"} element={<ProcessDetailsPage />} />,
       <Route path={"ProcessDefinition/Form/:processName"} element={<ProcessFormPage />} />,
       <Route path={"Jobs"} element={<JobsManagementPage />} />,
-      <Route path={"Tasks"} element={<TaskInboxPage />} />,
+      <Route path={"Tasks"} element={<TaskListPage />} />,
       <Route path={"TaskDetails/:taskId"} element={<TaskDetailsPage />} />
       <Route path={"Forms"} element={<FormsListPage />} />,
       <Route path={"Forms/:formName"} element={<FormDetailPage />} />,

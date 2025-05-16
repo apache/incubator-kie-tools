@@ -30,7 +30,7 @@ import {
   componentOuiaProps,
   ouiaPageTypeAndObjectId,
 } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { ProcessListState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { ProcessListState } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processList";
 import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/components/PageSectionHeader";
 
 const ProcessesPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
@@ -43,7 +43,7 @@ const ProcessesPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const location = useLocation();
   const initialState: ProcessListState = location && (location.state as ProcessListState);
 
-  const handleTabClick = (event, tabIndex) => {
+  const handleTabClick = (_event, tabIndex) => {
     setActiveTabKey(tabIndex);
   };
   return (

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
@@ -24,10 +24,7 @@ import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/comp
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import ProcessDetailsContainer from "../../containers/ProcessDetailsContainer/ProcessDetailsContainer";
-import {
-  ProcessDetailsGatewayApi,
-  useProcessDetailsGatewayApi,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
+import { useProcessDetailsChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "../../styles.css";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
@@ -43,7 +40,7 @@ const ProcessDetailsPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe, ...props })
     return ouiaPageTypeAndObjectId("process-details");
   });
 
-  const gatewayApi: ProcessDetailsGatewayApi = useProcessDetailsGatewayApi();
+  const channelApi = useProcessDetailsChannelApi();
   const appContext = useDevUIAppContext();
 
   const navigate = useNavigate();
@@ -52,32 +49,31 @@ const ProcessDetailsPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe, ...props })
   const [processInstance, setProcessInstance] = useState<ProcessInstance>({} as ProcessInstance);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [fetchError, setFetchError] = useState<string>("");
-  let currentPage = JSON.parse(window.localStorage.getItem("state"));
+  const currentPage = useRef(JSON.parse(window.localStorage.getItem("state")));
+
   useEffect(() => {
     window.onpopstate = () => {
       navigate({}, { state: Object.assign({}, location.state) });
     };
   });
 
-  async function fetchDetails() {
+  const fetchDetails = useCallback(async () => {
     let response: ProcessInstance = {} as ProcessInstance;
     let responseError: string = "";
     try {
       setIsLoading(true);
-      response = await gatewayApi.processDetailsQuery(processId);
+      response = await channelApi.processDetails__getProcessDetails(processId);
       setProcessInstance(response);
     } catch (error) {
       responseError = error;
       setFetchError(error);
     } finally {
       setIsLoading(false);
-      /* istanbul ignore else */
       if (responseError.length === 0 && fetchError.length === 0 && Object.keys(response).length === 0) {
         let prevPath;
-        /* istanbul ignore else */
-        if (currentPage) {
-          currentPage = Object.assign({}, currentPage, location.state);
-          const tempPath = currentPage.prev.split("/");
+        if (currentPage.current) {
+          currentPage.current = Object.assign({}, currentPage.current, location.state);
+          const tempPath = currentPage.current.prev.split("/");
           prevPath = tempPath.filter((item) => item);
         }
         navigate(
@@ -86,7 +82,7 @@ const ProcessDetailsPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe, ...props })
           },
           {
             state: {
-              prev: currentPage ? currentPage.prev : "/ProcessInstances",
+              prev: currentPage ? currentPage.current.prev : "/ProcessInstances",
               title: "Process not found",
               description: `Process instance with the id ${processId} not found`,
               buttonText: currentPage
@@ -101,14 +97,13 @@ const ProcessDetailsPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe, ...props })
         );
       }
     }
-  }
+  }, [channelApi, fetchError.length, navigate, processId, location.state]);
 
   useEffect(() => {
-    /* istanbul ignore else */
     if (processId) {
       fetchDetails();
     }
-  }, [processId]);
+  }, [fetchDetails, processId]);
 
   const renderItems = () => {
     if (!isLoading) {
