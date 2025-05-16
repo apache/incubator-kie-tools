@@ -19,3 +19,7 @@
 .kogito-process-form-container {
   height: 100%;
 }
+
+.kogito-process-form-container .pf-c-card .pf-c-form .pf-c-card {
+  box-shadow: none;
+}

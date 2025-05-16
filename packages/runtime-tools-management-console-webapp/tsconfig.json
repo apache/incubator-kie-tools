@@ -2,9 +2,8 @@
   "extends": "@kie-tools/tsconfig/tsconfig.esm.json",
   "compilerOptions": {
     "esModuleInterop": true,
-    "declaration": false,
-    "declarationMap": false,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "noImplicitAny": false
   },
   "preserveSymlinks": true
 }
