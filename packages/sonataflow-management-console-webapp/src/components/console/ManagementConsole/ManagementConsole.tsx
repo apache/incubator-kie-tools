@@ -26,7 +26,6 @@ import {
   UserContext,
 } from "@kie-tools/runtime-tools-components/dist/contexts/KogitoAppContext";
 import { WorkflowListContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowList";
-import { WorkflowDefinitionListContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDefinitionList";
 import { WorkflowFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowForm";
 import { WorkflowDetailsContextProviderWithApolloClient } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowDetails";
 import { CloudEventFormContextProvider } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventForm";
@@ -51,15 +50,13 @@ const ManagementConsole: React.FC<IOwnProps> = ({ apolloClient, userContext, chi
           <CloudEventFormContextProvider>
             <WorkflowDetailsContextProviderWithApolloClient apolloClient={apolloClient}>
               <WorkflowListContextProviderWithApolloClient apolloClient={apolloClient}>
-                <WorkflowDefinitionListContextProviderWithApolloClient apolloClient={apolloClient}>
-                  <WorkflowFormContextProvider>
-                    <Router>
-                      <Switch>
-                        <Route path="/" render={renderPage} />
-                      </Switch>
-                    </Router>
-                  </WorkflowFormContextProvider>
-                </WorkflowDefinitionListContextProviderWithApolloClient>
+                <WorkflowFormContextProvider>
+                  <Router>
+                    <Switch>
+                      <Route path="/" render={renderPage} />
+                    </Switch>
+                  </Router>
+                </WorkflowFormContextProvider>
               </WorkflowListContextProviderWithApolloClient>
             </WorkflowDetailsContextProviderWithApolloClient>
           </CloudEventFormContextProvider>
