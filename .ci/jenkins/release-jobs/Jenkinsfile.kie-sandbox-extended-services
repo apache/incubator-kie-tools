@@ -54,6 +54,8 @@ pipeline {
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
         PNPM_FILTER_STRING = '-F @kie-tools/kie-sandbox-extended-services-image...'
+
+        MAVEN_ARGS = "-Dmaven.repo.local=${WORKSPACE}/.maven"
     }
 
     stages {
@@ -116,7 +118,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsReleaseConfigFileId}")
+                        buildUtils.setupPnpm()
                     }
                 }
             }
@@ -126,7 +128,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBootstrap(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                     }
                 }
             }
@@ -136,7 +138,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBuild(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                     }
                 }
             }
