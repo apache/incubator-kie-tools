@@ -26,7 +26,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { extname } from "path";
 import * as React from "react";
 import { useCallback, useMemo } from "react";
-import { matchPath } from "react-router";
+import { matchPath } from "react-router-dom";
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
 import { useAuthProvider } from "../authProviders/AuthProvidersContext";
 import { AuthSession, AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
@@ -200,23 +200,27 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
     }
 
     if (url.host === "github.com") {
-      const defaultBranchMatch = matchPath<{ org: string; repo: string }>(url.pathname, {
-        path: "/:org/:repo",
-        exact: true,
-        strict: true,
-        sensitive: false,
-      });
+      const defaultBranchMatch = matchPath(
+        {
+          path: "/:org/:repo",
+          end: true,
+          caseSensitive: true,
+        },
+        url.pathname
+      );
 
       if (defaultBranchMatch) {
         return ifAllowed({ type: UrlType.GITHUB_DOT_COM, url });
       }
 
-      const customRefNameMatch = matchPath<{ org: string; repo: string; tree: string }>(url.pathname, {
-        path: "/:org/:repo/tree/:tree",
-        exact: true,
-        strict: true,
-        sensitive: false,
-      });
+      const customRefNameMatch = matchPath(
+        {
+          path: "/:org/:repo/tree/:tree",
+          end: true,
+          caseSensitive: true,
+        },
+        url.pathname
+      );
 
       if (customRefNameMatch) {
         const gitRefName = customRefNameMatch.params.tree;
@@ -225,21 +229,29 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
         return ifAllowed({ type: UrlType.GITHUB_DOT_COM, url: customGitRefNameUrl, branch: gitRefName });
       }
 
-      const gitHubFileMatch = matchPath<{ org: string; repo: string; tree: string; path: string }>(url.pathname, {
-        path: "/:org/:repo/blob/:tree/:path*",
-        exact: true,
-        strict: true,
-        sensitive: false,
-      });
+      const gitHubFileMatch = matchPath(
+        {
+          path: "/:org/:repo/blob/:tree/:path*",
+          end: true,
+          caseSensitive: true,
+        },
+        url.pathname
+      );
 
-      if (gitHubFileMatch) {
+      if (
+        gitHubFileMatch !== null &&
+        gitHubFileMatch.params.org &&
+        gitHubFileMatch.params.repo &&
+        gitHubFileMatch.params.tree &&
+        gitHubFileMatch.params["path*"]
+      ) {
         return ifAllowed({
           type: UrlType.GITHUB_DOT_COM_FILE,
           url: url,
           org: gitHubFileMatch.params.org,
           repo: gitHubFileMatch.params.repo,
           branch: gitHubFileMatch.params.tree,
-          filePath: gitHubFileMatch.params.path,
+          filePath: gitHubFileMatch.params["path*"],
         });
       }
 
@@ -247,23 +259,27 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
     }
 
     if (url.host === "bitbucket.org") {
-      const defaultBranchMatch = matchPath<{ org: string; repo: string }>(url.pathname, {
-        path: "/:org/:repo",
-        exact: true,
-        strict: true,
-        sensitive: false,
-      });
+      const defaultBranchMatch = matchPath(
+        {
+          path: "/:org/:repo",
+          end: true,
+          caseSensitive: true,
+        },
+        url.pathname
+      );
 
       if (defaultBranchMatch) {
         return ifAllowed({ type: UrlType.BITBUCKET_DOT_ORG, url });
       }
 
-      const customRefNameMatch = matchPath<{ org: string; repo: string; tree: string }>(url.pathname, {
-        path: "/:org/:repo/src/:tree",
-        exact: true,
-        strict: true,
-        sensitive: false,
-      });
+      const customRefNameMatch = matchPath(
+        {
+          path: "/:org/:repo/src/:tree",
+          end: true,
+          caseSensitive: true,
+        },
+        url.pathname
+      );
 
       if (customRefNameMatch) {
         const gitRefName = customRefNameMatch.params.tree;
@@ -272,30 +288,47 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
         return ifAllowed({ type: UrlType.BITBUCKET_DOT_ORG, url: customGitRefNameUrl, branch: gitRefName });
       }
 
-      const bitbucketFileMatch = matchPath<{ org: string; repo: string; tree: string; path: string }>(url.pathname, {
-        path: "/:org/:repo/src/:tree/:path*",
-        exact: true,
-        strict: true,
-        sensitive: false,
-      });
+      const bitbucketFileMatch = matchPath(
+        {
+          path: "/:org/:repo/src/:tree/:path*",
+          end: true,
+          caseSensitive: true,
+        },
+        url.pathname
+      );
 
-      if (bitbucketFileMatch) {
+      if (
+        bitbucketFileMatch !== null &&
+        bitbucketFileMatch.params.org &&
+        bitbucketFileMatch.params.repo &&
+        bitbucketFileMatch.params.tree &&
+        bitbucketFileMatch.params["path*"]
+      ) {
         return ifAllowed({
           type: UrlType.BITBUCKET_DOT_ORG_FILE,
           url: url,
           org: bitbucketFileMatch.params.org,
           repo: bitbucketFileMatch.params.repo,
           branch: bitbucketFileMatch.params.tree,
-          filePath: bitbucketFileMatch.params.path,
+          filePath: bitbucketFileMatch.params["path*"],
         });
       }
 
-      const snippetMatch = matchPath<{ org: string; snippetId: string; snippetName: string }>(url.pathname, {
-        path: "/:org/workspace/snippets/:snippetId/:snippetName",
-        exact: true,
-        strict: true,
-      });
-      if (snippetMatch && url.hash) {
+      const snippetMatch = matchPath(
+        {
+          path: "/:org/workspace/snippets/:snippetId/:snippetName",
+          end: true,
+          caseSensitive: true,
+        },
+        url.pathname
+      );
+      if (
+        snippetMatch !== null &&
+        snippetMatch.params.org &&
+        snippetMatch.params.snippetId &&
+        snippetMatch.params.snippetName &&
+        url.hash
+      ) {
         return ifAllowed({
           type: UrlType.BITBUCKET_DOT_ORG_SNIPPET_FILE,
           url: url,
@@ -304,7 +337,12 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
           org: snippetMatch.params.org,
           filename: url.hash.replace("#file-", ""),
         });
-      } else if (snippetMatch) {
+      } else if (
+        snippetMatch !== null &&
+        snippetMatch.params.org &&
+        snippetMatch.params.snippetId &&
+        snippetMatch.params.snippetName
+      ) {
         const newURL = new URL(url);
         newURL.pathname = `/snippets/${snippetMatch.params.org}/${snippetMatch.params.snippetId}/${snippetMatch.params.snippetName}.git`;
         return ifAllowed({
@@ -315,12 +353,20 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
           org: snippetMatch.params.org,
         });
       }
-      const snippetCloneUrlMatch = matchPath<{ org: string; snippetId: string; snippetName: string }>(url.pathname, {
-        path: "/snippets/:org/:snippetId/:snippetName",
-        exact: true,
-        strict: true,
-      });
-      if (snippetCloneUrlMatch) {
+      const snippetCloneUrlMatch = matchPath(
+        {
+          path: "/snippets/:org/:snippetId/:snippetName",
+          end: true,
+          caseSensitive: true,
+        },
+        url.pathname
+      );
+      if (
+        snippetCloneUrlMatch !== null &&
+        snippetCloneUrlMatch.params.org &&
+        snippetCloneUrlMatch.params.snippetId &&
+        snippetCloneUrlMatch.params.snippetName
+      ) {
         return ifAllowed({
           type: UrlType.BITBUCKET_DOT_ORG_SNIPPET,
           url: url,
@@ -334,21 +380,29 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
     }
 
     if (url.host === "raw.githubusercontent.com") {
-      const gitHubRawFileMatch = matchPath<{ org: string; repo: string; tree: string; path: string }>(url.pathname, {
-        path: "/:org/:repo/refs/heads/:tree/:path*",
-        exact: true,
-        strict: true,
-        sensitive: false,
-      });
+      const gitHubRawFileMatch = matchPath(
+        {
+          path: "/:org/:repo/refs/heads/:tree/:path*",
+          end: true,
+          caseSensitive: true,
+        },
+        url.pathname
+      );
 
-      if (gitHubRawFileMatch) {
+      if (
+        gitHubRawFileMatch !== null &&
+        gitHubRawFileMatch.params.org &&
+        gitHubRawFileMatch.params.repo &&
+        gitHubRawFileMatch.params.tree &&
+        gitHubRawFileMatch.params["path*"]
+      ) {
         return ifAllowed({
           type: UrlType.GITHUB_DOT_COM_FILE,
           url: url,
           org: gitHubRawFileMatch.params.org,
           repo: gitHubRawFileMatch.params.repo,
           branch: gitHubRawFileMatch.params.tree,
-          filePath: gitHubRawFileMatch.params.path,
+          filePath: gitHubRawFileMatch.params["path*"],
         });
       }
 
@@ -356,29 +410,38 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
     }
 
     if (url.host === "gist.github.com" || url.host === "gist.githubusercontent.com") {
-      const gistMatch = matchPath<{ user: string; gistId: string }>(url.pathname, {
-        path: "/:user/:gistId",
-        exact: true,
-        strict: true,
-      });
+      const gistMatch = matchPath(
+        {
+          path: "/:user/:gistId",
+          end: true,
+          caseSensitive: true,
+        },
+        url.pathname
+      );
 
-      const rawGistMatch = matchPath<{ user: string; gistId: string; fileId: string; fileName: string }>(url.pathname, {
-        path: "/:user/:gistId/raw/:fileId/:fileName",
-        exact: true,
-        strict: true,
-      });
+      const rawGistMatch = matchPath(
+        {
+          path: "/:user/:gistId/raw/:fileId/:fileName",
+          end: true,
+          caseSensitive: true,
+        },
+        url.pathname
+      );
 
-      const directGistMatch = matchPath<{ gistId: string }>(url.pathname, {
-        path: "/:gistId",
-        exact: true,
-        strict: true,
-      });
+      const directGistMatch = matchPath(
+        {
+          path: "/:gistId",
+          end: true,
+          caseSensitive: true,
+        },
+        url.pathname
+      );
 
       if (!gistMatch && !rawGistMatch && !directGistMatch) {
         return { type: UrlType.NOT_SUPPORTED, error: "Unsupported Gist URL", url };
       }
 
-      if (gistMatch && url.hash) {
+      if (gistMatch !== null && gistMatch.params.gistId && url.hash) {
         return ifAllowed({
           type: UrlType.GIST_DOT_GITHUB_DOT_COM_FILE,
           url: url,
@@ -387,7 +450,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
         });
       }
 
-      if (rawGistMatch) {
+      if (rawGistMatch !== null && rawGistMatch.params.gistId && rawGistMatch.params.fileName) {
         return ifAllowed({
           type: UrlType.GIST_DOT_GITHUB_DOT_COM_FILE,
           url: url,
@@ -399,7 +462,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       return ifAllowed({
         type: UrlType.GIST_DOT_GITHUB_DOT_COM,
         url,
-        gistId: (gistMatch ?? directGistMatch)?.params.gistId.replace(".git", ""),
+        gistId: (gistMatch ?? directGistMatch)?.params?.gistId?.replace(".git", ""),
       });
     }
 

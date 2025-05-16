@@ -18,36 +18,8 @@
  */
 
 import * as React from "react";
-import { useContext, useEffect, useMemo } from "react";
-import { BlockerDelegate, NavigationBlockerContext, NavigationStatusContext } from "./NavigationContextProvider";
+import { useMemo } from "react";
 import { routes } from "./Routes";
-
-function useNavigationBlockerContext() {
-  return useContext(NavigationBlockerContext);
-}
-
-export function useNavigationStatus() {
-  return useContext(NavigationStatusContext);
-}
-
-export function useNavigationBlockersBypass() {
-  const { bypass } = useNavigationBlockerContext();
-  return useMemo(() => ({ execute: bypass }), [bypass]);
-}
-
-export function useNavigationStatusToggle() {
-  const { unblock } = useNavigationBlockerContext();
-  return useMemo(() => ({ unblock }), [unblock]);
-}
-
-export function useNavigationBlocker(key: string, blocker: BlockerDelegate) {
-  const { addBlocker, removeBlocker } = useNavigationBlockerContext();
-
-  useEffect(() => {
-    addBlocker(key, blocker);
-    return () => removeBlocker(key);
-  }, [addBlocker, removeBlocker, key, blocker]);
-}
 
 export function useRoutes() {
   return useMemo(() => routes, []);

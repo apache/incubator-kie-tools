@@ -16,14 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useMemo } from "react";
+import React from "react";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useRuntimeSpecificRoutes } from "./RuntimeContext";
 
 export const RuntimeNav: React.FC = () => {
   const runtimeRoutes = useRuntimeSpecificRoutes();
-  const history = useHistory();
+  const location = useLocation();
 
   return (
     <Nav aria-label="Nav" theme="dark" ouiaId="navigation-list">
@@ -31,7 +31,7 @@ export const RuntimeNav: React.FC = () => {
         <NavItem
           key={"process-instances-nav"}
           isActive={[runtimeRoutes.processes().pathname, runtimeRoutes.processDetails("").pathname].some((path) =>
-            history.location.pathname.includes(path)
+            location.pathname.includes(path)
           )}
         >
           <Link to={runtimeRoutes.processes()}>Process Instances</Link>
@@ -41,17 +41,17 @@ export const RuntimeNav: React.FC = () => {
           isActive={[
             runtimeRoutes.processDefinitions().pathname,
             runtimeRoutes.processDefinitionForm("").pathname,
-          ].some((path) => history.location.pathname.includes(path))}
+          ].some((path) => location.pathname.includes(path))}
         >
           <Link to={runtimeRoutes.processDefinitions()}>Process Definitions</Link>
         </NavItem>
-        <NavItem key={"jobs-nav"} isActive={history.location.pathname.includes(runtimeRoutes.jobs().pathname)}>
+        <NavItem key={"jobs-nav"} isActive={location.pathname.includes(runtimeRoutes.jobs().pathname)}>
           <Link to={runtimeRoutes.jobs()}>Jobs</Link>
         </NavItem>
         <NavItem
           key={"task-nav"}
           isActive={[runtimeRoutes.tasks().pathname, runtimeRoutes.taskDetails("").pathname].some((path) =>
-            history.location.pathname.includes(path)
+            location.pathname.includes(path)
           )}
         >
           <Link to={runtimeRoutes.tasks()}>Tasks</Link>

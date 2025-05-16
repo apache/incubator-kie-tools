@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import { useTaskListChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskList";
 import { EmbeddedTaskList, TaskListApi } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskList";
@@ -25,7 +25,7 @@ import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/d
 import { getActiveTaskStates, getAllTaskStates } from "@kie-tools/runtime-tools-process-webapp-components/dist/utils";
 
 const TaskListContainer: React.FC = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const channelApi = useTaskListChannelApi();
   const taskListApiRef = React.useRef<TaskListApi>();
   const appContext = useDevUIAppContext();
@@ -33,7 +33,7 @@ const TaskListContainer: React.FC = () => {
   useEffect(() => {
     const unsubscriber = channelApi.taskList__onOpenTaskListen({
       onOpen(task: UserTaskInstance) {
-        history.push(`/TaskDetails/${task.id}`);
+        navigate({ pathname: `/TaskDetails/${task.id}` });
       },
     });
 

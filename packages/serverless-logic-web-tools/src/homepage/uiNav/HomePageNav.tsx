@@ -83,8 +83,8 @@ export function HomePageNav(props: { pathname: string }) {
             key={"Recent-models-nav"}
             isActive={
               props.pathname === routes.recentModels.path({}) ||
-              matchPath(props.pathname, { path: routes.workspaceWithFiles.path({ workspaceId: ":workspaceId" }) })
-                ?.isExact
+              matchPath({ path: routes.workspaceWithFiles.path({ workspaceId: ":workspaceId" }) }, props.pathname) !==
+                null
             }
             ouiaId="recent-models-nav"
           >

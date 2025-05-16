@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import {
   EmbeddedProcessList,
@@ -31,16 +31,19 @@ interface ProcessListContainerProps {
 }
 
 const ProcessListContainer: React.FC<ProcessListContainerProps> = ({ initialState }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const channelApi = useProcessListChannelApi();
   const appContext = useDevUIAppContext();
 
   useEffect(() => {
     const onOpenInstanceUnsubscriber = channelApi.processList__onOpenProcessListen({
       onOpen(process: ProcessInstance) {
-        history.push({
-          pathname: `/Process/${process.id}`,
-        });
+        navigate(
+          {
+            pathname: `../Process/${process.id}`,
+          },
+          {}
+        );
       },
     });
     return () => {

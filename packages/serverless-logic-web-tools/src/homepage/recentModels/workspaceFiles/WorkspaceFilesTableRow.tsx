@@ -56,8 +56,7 @@ export function WorkspaceFilesTableRow(props: WorkspaceFilesTableRowProps) {
     () =>
       routes.workspaceWithFilePath.path({
         workspaceId: fileDescriptor.workspaceId,
-        fileRelativePath: fileDescriptor.relativePathWithoutExtension,
-        extension: fileDescriptor.extension,
+        fileRelativePath: fileDescriptor.relativePath,
       }),
     [fileDescriptor]
   );

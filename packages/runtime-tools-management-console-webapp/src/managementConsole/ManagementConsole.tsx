@@ -22,7 +22,6 @@ import { BrowserRouter } from "react-router-dom";
 import { AuthSessionsContextProvider } from "../authSessions/AuthSessionsContext";
 import { ManagementConsoleRoutes } from "./ManagementConsoleRoutes";
 import { EnvContextProvider } from "../env/hooks/EnvContextProvider";
-import { NavigationContextProvider } from "../navigation/NavigationContextProvider";
 
 export const App: React.FC = () => {
   return (
@@ -35,11 +34,9 @@ export const App: React.FC = () => {
 export const ManagementConsole: React.FC = () => {
   return (
     <EnvContextProvider>
-      <NavigationContextProvider>
-        <AuthSessionsContextProvider>
-          <ManagementConsoleRoutes />
-        </AuthSessionsContextProvider>
-      </NavigationContextProvider>
+      <AuthSessionsContextProvider>
+        <ManagementConsoleRoutes />
+      </AuthSessionsContextProvider>
     </EnvContextProvider>
   );
 };

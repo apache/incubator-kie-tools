@@ -24,7 +24,7 @@ import { Text, TextVariants } from "@patternfly/react-core/dist/js/components/Te
 import { OUIAProps, ouiaPageTypeAndObjectId } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import FormDetailsContainer from "../../containers/FormDetailsContainer/FormDetailsContainer";
 import "../../styles.css";
-import { useHistory } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Moment from "react-moment";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
@@ -38,8 +38,8 @@ const FormDetailsPage: React.FC<OUIAProps> = () => {
   useEffect(() => {
     return ouiaPageTypeAndObjectId("form-detail");
   });
-  const history = useHistory();
-  const formData: FormInfo = history.location.state["formData"];
+  const location = useLocation();
+  const formData: FormInfo = location.state["formData"];
 
   const onSuccess = () => {
     const message = `The form '${formData.name}.${formData.type}' has been successfully saved.`;

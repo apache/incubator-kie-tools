@@ -32,12 +32,13 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { BarsIcon } from "@patternfly/react-icons/dist/js/icons";
 import PageToolbar from "@kie-tools/runtime-tools-components/dist/components/PageToolbar/PageToolbar";
 import { useMemo } from "react";
-import { useHistory } from "react-router";
+import { useNavigate, useLocation } from "react-router-dom";
 import { routes } from "../../navigation/Routes";
 import { ManagementConsoleNav } from "../console";
 
 export function BasePage(props: { children?: React.ReactNode }) {
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const masthead = useMemo(
     () => (
@@ -50,7 +51,7 @@ export function BasePage(props: { children?: React.ReactNode }) {
         <MastheadMain>
           <MastheadBrand
             component="a"
-            onClick={() => history.push({ pathname: routes.home.path({}) })}
+            onClick={() => navigate({ pathname: routes.home.path({}) })}
             style={{ textDecoration: "none" }}
           >
             <Brand className="sonataflow-management-console-common--brand" src="favicon.svg" alt="Kie logo"></Brand>
@@ -71,7 +72,7 @@ export function BasePage(props: { children?: React.ReactNode }) {
     <Page
       sidebar={
         <PageSidebar theme="dark">
-          <ManagementConsoleNav pathname={history.location.pathname} />
+          <ManagementConsoleNav pathname={location.pathname} />
         </PageSidebar>
       }
       header={masthead}

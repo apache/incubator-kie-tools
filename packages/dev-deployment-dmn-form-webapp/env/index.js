@@ -41,6 +41,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
           webpackPort: 9008,
           quarkusPort: 9009,
         },
+        version: require("../package.json").version,
       },
     };
   },

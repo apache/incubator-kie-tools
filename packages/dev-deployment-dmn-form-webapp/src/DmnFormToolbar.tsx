@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useState, useEffect } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Dropdown, DropdownItem, DropdownPosition, DropdownToggle } from "@patternfly/react-core/deprecated";
@@ -33,7 +33,7 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { EllipsisVIcon } from "@patternfly/react-icons/dist/js/icons/ellipsis-v-icon";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useApp } from "./AppContext";
 import { useDmnFormI18n } from "./i18n";
 import { routes } from "./Routes";
@@ -52,7 +52,7 @@ function truncateText(text: string) {
 
 export function DmnFormToolbar(props: Props) {
   const app = useApp();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { i18n } = useDmnFormI18n();
   const [isLgKebabOpen, setLgKebabOpen] = useState(false);
   const [isSmKebabOpen, setSmKebabOpen] = useState(false);
@@ -64,11 +64,11 @@ export function DmnFormToolbar(props: Props) {
 
   const openForm = useCallback(
     (modelName: string) => {
-      history.push({
+      navigate({
         pathname: routes.form.path({ modelName }),
       });
     },
-    [history]
+    [navigate]
   );
 
   const disclaimer = useMemo(() => {

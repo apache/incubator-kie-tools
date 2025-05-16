@@ -24,7 +24,7 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
 import React, { useCallback, useMemo, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { CloudEventRequest } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 import { CloudEventForm } from "@kie-tools/runtime-tools-swf-enveloped-components/dist/cloudEventForm/envelope/components/CloudEventForm/CloudEventForm";
@@ -45,13 +45,13 @@ const defaultValues: CloudEventFormDefaultValues = {
 export function CloudEventFormPage() {
   const [notification, setNotification] = useState<Notification>();
   const openApi = useOpenApi();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const gatewayApi = useMemo(() => new CloudEventFormGatewayApiImpl(window.location.href.split("/#")[0]), []);
 
   const goToWorkflowList = useCallback(() => {
-    history.push(routes.workflows.home.path({}));
-  }, [history]);
+    navigate(routes.workflows.home.path({}));
+  }, [navigate]);
 
   const showNotification = useCallback(
     (notificationType: "error" | "success", submitMessage: string, notificationDetails?: string) => {

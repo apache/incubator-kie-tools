@@ -35,14 +35,14 @@ import { BarsIcon } from "@patternfly/react-icons/dist/js/icons";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import * as React from "react";
 import { useMemo, useEffect } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useApp } from "../context/AppContext";
 import { routes } from "../routes";
 import { BasePageNav } from "./basePage/BasePageNav";
 import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 
 export function BasePage(props: { children?: React.ReactNode }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const app = useApp();
   const tooltipRef = React.useRef<HTMLButtonElement>(null);
 
@@ -57,7 +57,7 @@ export function BasePage(props: { children?: React.ReactNode }) {
         <MastheadMain>
           <MastheadBrand
             component="a"
-            onClick={() => history.push({ pathname: routes.home.path({}) })}
+            onClick={() => navigate({ pathname: routes.home.path({}) })}
             style={{ textDecoration: "none" }}
           >
             <Brand className="sonataflow-deployment-common--brand" src="favicon.svg" alt="Kie logo"></Brand>
@@ -102,14 +102,14 @@ export function BasePage(props: { children?: React.ReactNode }) {
         </MastheadContent>
       </Masthead>
     ),
-    [app.data.appName, history, app.appDataPromise.status, app.data.showDisclaimer]
+    [app.data.appName, navigate, app.appDataPromise.status, app.data.showDisclaimer]
   );
 
   useEffect(() => {
     if (app.appDataPromise.status === PromiseStateStatus.REJECTED) {
-      history.replace(routes.dataJsonError.path({}));
+      navigate(routes.dataJsonError.path({}), { replace: true });
     }
-  }, [history, app.appDataPromise]);
+  }, [navigate, app.appDataPromise]);
 
   return (
     <Page

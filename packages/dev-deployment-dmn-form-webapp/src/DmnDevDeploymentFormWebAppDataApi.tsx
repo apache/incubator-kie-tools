@@ -20,6 +20,7 @@
 import { ExtendedServicesFormSchema } from "@kie-tools/extended-services-api";
 import OpenAPIParser from "@readme/openapi-parser";
 import { routes } from "./Routes";
+import path from "path";
 
 export interface FormData {
   modelName: string;
@@ -37,6 +38,11 @@ export async function fetchAppData(args: { quarkusAppOrigin: string; quarkusAppP
     await fetch(routes.quarkusApp.openApiJson.path({}, args.quarkusAppOrigin, args.quarkusAppPath))
   ).json();
 
+  // Save all `/dmnresult` routes.
+  const dmnResultPaths = new Set(
+    Object.keys(openApiSpec.paths).filter((modelPath) => modelPath.endsWith("/dmnresult"))
+  );
+
   // Append origin to schema $refs, but only on DMN paths
   //
   // It's important to skip paths not ending on `/dmnresult` (or paths that don't
@@ -46,11 +52,14 @@ export async function fetchAppData(args: { quarkusAppOrigin: string; quarkusAppP
   // Beyond that, we want to delete these paths from the openApiSpec to avoid trying to
   // dereferencing them.
   Object.keys(openApiSpec.paths).forEach((modelPath) => {
+    // Remove any route that doesn't have a respective `/dmnresult` route.
     if (
       !modelPath.endsWith("/dmnresult") &&
+      !dmnResultPaths.has(`${modelPath}/dmnresult`) &&
       !Object.keys(openApiSpec.paths).find((path) => path === `${modelPath}/dmnresult`)
     ) {
       delete openApiSpec.paths?.[modelPath];
+      delete openApiSpec.paths[modelPath];
       return;
     }
 

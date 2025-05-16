@@ -23,7 +23,7 @@ import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
 import { Page } from "@patternfly/react-core/dist/js/components/Page";
 import { PageHeader } from "@patternfly/react-core/deprecated";
-import { HashRouter as Router, Link, Route, Switch } from "react-router-dom";
+import { HashRouter as Router, Link, Route, Routes } from "react-router-dom";
 import { SwfStandaloneEditorPage } from "./Pages/SwfStandaloneEditorPage";
 import { SwfStandaloneDiagramOnlyEditorPage } from "./Pages/SwfStandaloneDiagramOnlyEditorPage";
 import { SwfStandaloneTextOnlyEditorPage } from "./Pages/SwfStandaloneTextOnlyEditorPage";
@@ -84,20 +84,12 @@ export function App() {
           />
         }
       >
-        <Switch>
-          <Route exact={true} path={"/"}>
-            <p>Select a page</p>
-          </Route>
-          <Route path={Location.SWF_STANDALONE_EDITOR}>
-            <SwfStandaloneEditorPage />
-          </Route>
-          <Route path={Location.SWF_STANDALONE_EDITOR_DIAGRAM_ONLY}>
-            <SwfStandaloneDiagramOnlyEditorPage />
-          </Route>
-          <Route path={Location.SWF_STANDALONE_EDITOR_TEXT_ONLY}>
-            <SwfStandaloneTextOnlyEditorPage />
-          </Route>
-        </Switch>
+        <Routes>
+          <Route path={"/"} element={<p>Select a page</p>} />
+          <Route path={Location.SWF_STANDALONE_EDITOR} element={<SwfStandaloneEditorPage />} />
+          <Route path={Location.SWF_STANDALONE_EDITOR_DIAGRAM_ONLY} element={<SwfStandaloneDiagramOnlyEditorPage />} />
+          <Route path={Location.SWF_STANDALONE_EDITOR_TEXT_ONLY} element={<SwfStandaloneTextOnlyEditorPage />} />
+        </Routes>
       </Page>
     </Router>
   );

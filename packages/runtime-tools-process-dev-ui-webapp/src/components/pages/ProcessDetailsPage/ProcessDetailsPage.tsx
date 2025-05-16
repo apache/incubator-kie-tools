@@ -20,14 +20,12 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { RouteComponentProps } from "react-router-dom";
 import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/components/PageSectionHeader";
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import ProcessDetailsContainer from "../../containers/ProcessDetailsContainer/ProcessDetailsContainer";
 import { useProcessDetailsChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
-import { StaticContext, useHistory } from "react-router";
-import * as H from "history";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "../../styles.css";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import {
@@ -37,15 +35,7 @@ import {
 } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
-interface MatchProps {
-  instanceID: string;
-}
-
-const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.LocationState> & OUIAProps> = ({
-  ouiaId,
-  ouiaSafe,
-  ...props
-}) => {
+const ProcessDetailsPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
   useEffect(() => {
     return ouiaPageTypeAndObjectId("process-details");
   });
@@ -53,8 +43,9 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
   const channelApi = useProcessDetailsChannelApi();
   const appContext = useDevUIAppContext();
 
-  const history = useHistory();
-  const processId = props.match.params.instanceID;
+  const navigate = useNavigate();
+  const { processId } = useParams<{ processId?: string }>();
+  const location = useLocation();
   const [processInstance, setProcessInstance] = useState<ProcessInstance>({} as ProcessInstance);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [fetchError, setFetchError] = useState<string>("");
@@ -62,7 +53,7 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
 
   useEffect(() => {
     window.onpopstate = () => {
-      props.history.push({ state: Object.assign({}, props.location.state) });
+      navigate({}, { state: Object.assign({}, location.state) });
     };
   });
 
@@ -81,28 +72,32 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext
       if (responseError.length === 0 && fetchError.length === 0 && Object.keys(response).length === 0) {
         let prevPath;
         if (currentPage.current) {
-          currentPage.current = Object.assign({}, currentPage.current, props.location.state);
+          currentPage.current = Object.assign({}, currentPage.current, location.state);
           const tempPath = currentPage.current.prev.split("/");
           prevPath = tempPath.filter((item) => item);
         }
-        history.push({
-          pathname: "/NoData",
-          state: {
-            prev: currentPage ? currentPage.current.prev : "/ProcessInstances",
-            title: "Process not found",
-            description: `Process instance with the id ${processId} not found`,
-            buttonText: currentPage
-              ? `Go to ${prevPath[0]
-                  .replace(/([A-Z])/g, " $1")
-                  .trim()
-                  .toLowerCase()}`
-              : "Go to process instances",
-            rememberedData: Object.assign({}, props.location.state),
+        navigate(
+          {
+            pathname: "../NoData",
           },
-        });
+          {
+            state: {
+              prev: currentPage ? currentPage.current.prev : "/ProcessInstances",
+              title: "Process not found",
+              description: `Process instance with the id ${processId} not found`,
+              buttonText: currentPage
+                ? `Go to ${prevPath[0]
+                    .replace(/([A-Z])/g, " $1")
+                    .trim()
+                    .toLowerCase()}`
+                : "Go to process instances",
+              rememberedData: Object.assign({}, location.state),
+            },
+          }
+        );
       }
     }
-  }, [channelApi, fetchError.length, history, processId, props.location.state]);
+  }, [channelApi, fetchError.length, navigate, processId, location.state]);
 
   useEffect(() => {
     if (processId) {

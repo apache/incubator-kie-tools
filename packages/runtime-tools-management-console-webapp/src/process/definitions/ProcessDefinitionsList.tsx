@@ -22,7 +22,7 @@ import {
   ProcessDefinitionsFilter,
   ProcessDefinitionsListState,
 } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDefinitionsList";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useQueryParam, useQueryParams } from "../../navigation/queryParams/QueryParamsContext";
 import { QueryParams } from "../../navigation/Routes";
 import { RuntimePathSearchParamsRoutes, useRuntimeDispatch } from "../../runtime/RuntimeContext";
@@ -40,7 +40,7 @@ interface Props {
 
 export const ProcessDefinitionsList: React.FC<Props> = ({ onNavigateToProcessDefinitionForm }) => {
   const channelApi = useProcessDefinitionsListChannelApi();
-  const history = useHistory();
+  const navigate = useNavigate();
   const filters = useQueryParam(QueryParams.FILTERS);
   const queryParams = useQueryParams();
   const { setRuntimePathSearchParams } = useRuntimeDispatch();
@@ -82,14 +82,14 @@ export const ProcessDefinitionsList: React.FC<Props> = ({ onNavigateToProcessDef
           return currentRuntimePathSearchParams.set(RuntimePathSearchParamsRoutes.PROCESS_DEFINITIONS, newSearchParams);
         });
         const newQueryParams = queryParams.with(QueryParams.FILTERS, newSearchParams[QueryParams.FILTERS]);
-        history.replace({ pathname: history.location.pathname, search: newQueryParams.toString() });
+        navigate({ pathname: location.pathname, search: newQueryParams.toString() });
       },
     });
 
     return () => {
       unsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
     };
-  }, [channelApi, history, queryParams, setRuntimePathSearchParams]);
+  }, [channelApi, navigate, queryParams, setRuntimePathSearchParams]);
 
   return (
     <EmbeddedProcessDefinitionsList

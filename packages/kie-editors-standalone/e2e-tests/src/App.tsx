@@ -18,10 +18,9 @@
  */
 
 import * as React from "react";
-import { BrowserRouter as Router, Link, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Link, Route, Routes } from "react-router-dom";
 import { DmnEditorComponent } from "./components/DmnEditorComponent";
 import { BpmnEditorComponent } from "./components/BpmnEditorComponent";
-import { ContentType } from "@kie-tools-core/workspace/dist/api";
 import processWithWidDefinition from "raw-loader!./resources/processWithWidDefinition.bpmn2";
 import customWorkItemWid from "raw-loader!./resources/widDefinitions.wid";
 
@@ -38,11 +37,10 @@ export function App() {
           <Link to="/both-bpmn-dmn">Both BPMN DMN</Link>
         </div>
         <br />
-        <Switch>
+        <Routes>
           <Route
-            exact={true}
             path="/dmn-read-only"
-            render={() => (
+            element={
               <DmnEditorComponent
                 origin={"*"}
                 key="dmn-read-only"
@@ -50,12 +48,11 @@ export function App() {
                 readOnly={true}
                 initialContent={Promise.resolve("")}
               />
-            )}
+            }
           />
           <Route
-            exact={true}
             path="/dmn-editable"
-            render={() => (
+            element={
               <DmnEditorComponent
                 origin={"*"}
                 key="dmn-editable"
@@ -63,12 +60,11 @@ export function App() {
                 readOnly={false}
                 initialContent={Promise.resolve("")}
               />
-            )}
+            }
           />
           <Route
-            exact={true}
             path="/bpmn-editable"
-            render={() => (
+            element={
               <BpmnEditorComponent
                 origin={"*"}
                 key="bpmn-editable"
@@ -76,12 +72,11 @@ export function App() {
                 readOnly={false}
                 initialContent={Promise.resolve("")}
               />
-            )}
+            }
           />
           <Route
-            exact={true}
             path="/bpmn-read-only"
-            render={() => (
+            element={
               <BpmnEditorComponent
                 origin={"*"}
                 key="bpmn-read-only"
@@ -89,12 +84,11 @@ export function App() {
                 readOnly={true}
                 initialContent={Promise.resolve("")}
               />
-            )}
+            }
           />
           <Route
-            exact={true}
             path="/bpmn-workitem"
-            render={() => (
+            element={
               <BpmnEditorComponent
                 origin={"*"}
                 id="bpmn-workitem"
@@ -112,12 +106,11 @@ export function App() {
                   ])
                 }
               />
-            )}
+            }
           />
           <Route
-            exact={true}
             path="/both-bpmn-dmn"
-            render={() => (
+            element={
               <>
                 <BpmnEditorComponent
                   origin={"*"}
@@ -127,9 +120,9 @@ export function App() {
                 />
                 <DmnEditorComponent origin={"*"} id="both-dmn" readOnly={false} initialContent={Promise.resolve("")} />
               </>
-            )}
+            }
           />
-        </Switch>
+        </Routes>
       </>
     </Router>
   );

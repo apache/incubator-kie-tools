@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useCallback, useMemo, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Drawer,
   DrawerActions,
@@ -56,7 +56,7 @@ interface Props {
 
 export const TaskDetails: React.FC<Props> = ({ taskId }) => {
   const channelApi = useTaskListChannelApi();
-  const history = useHistory();
+  const navigate = useNavigate();
   const runtimeRoutes = useRuntimeSpecificRoutes();
   const { username } = useRuntimeInfo();
   const { impersonationUsername } = useRuntime();
@@ -106,8 +106,8 @@ export const TaskDetails: React.FC<Props> = ({ taskId }) => {
 
   const goToTasks = useCallback(() => {
     channelApi.taskList__clearOpenTask();
-    history.push(runtimeRoutes.tasks());
-  }, [history, runtimeRoutes, channelApi]);
+    navigate(runtimeRoutes.tasks());
+  }, [navigate, runtimeRoutes, channelApi]);
 
   const showNotification = useCallback(
     (notificationType: "error" | "success", submitMessage: string, notificationDetails?: string) => {

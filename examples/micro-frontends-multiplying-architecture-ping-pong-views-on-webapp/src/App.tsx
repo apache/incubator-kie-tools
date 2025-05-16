@@ -23,7 +23,7 @@ import { Brand } from "@patternfly/react-core/dist/js/components/Brand";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
 import { Page } from "@patternfly/react-core/dist/js/components/Page";
 import { PageHeader } from "@patternfly/react-core/deprecated";
-import { HashRouter as Router, Link, Route, Switch } from "react-router-dom";
+import { HashRouter as Router, Link, Route, Routes } from "react-router-dom";
 import { PingPongReactIFrameViewsPage } from "./React/PingPongReactIFrameViewsPage";
 import { PingPongReactDivViewsPage } from "./React/PingPongReactDivViewsPage";
 import { PingPongAngularIFrameViewsPage } from "./Angular/PingPongAngularIFrameViewsPage";
@@ -100,26 +100,14 @@ export function App() {
           />
         }
       >
-        <Switch>
-          <Route exact={true} path={"/"}>
-            <p>Select a page</p>
-          </Route>
-          <Route path={Location.PING_PONG_REACT_IFRAME_PAGES}>
-            <PingPongReactIFrameViewsPage />
-          </Route>
-          <Route path={Location.PING_PONG_REACT_DIV_PAGES}>
-            <PingPongReactDivViewsPage />
-          </Route>
-          <Route path={Location.PING_PONG_ANGULAR_IFRAME_PAGES}>
-            <PingPongAngularIFrameViewsPage />
-          </Route>
-          <Route path={Location.PING_PONG_ANGULAR_DIV_PAGES}>
-            <PingPongAngularDivViewsPage />
-          </Route>
-          <Route path={Location.PING_PONG_MIXED_PAGES}>
-            <PingPongMixedViewsPage />
-          </Route>
-        </Switch>
+        <Routes>
+          <Route path={"/"} element={<p>Select a page</p>} />
+          <Route path={Location.PING_PONG_REACT_IFRAME_PAGES} element={<PingPongReactIFrameViewsPage />} />
+          <Route path={Location.PING_PONG_REACT_DIV_PAGES} element={<PingPongReactDivViewsPage />} />
+          <Route path={Location.PING_PONG_ANGULAR_IFRAME_PAGES} element={<PingPongAngularIFrameViewsPage />} />
+          <Route path={Location.PING_PONG_ANGULAR_DIV_PAGES} element={<PingPongAngularDivViewsPage />} />
+          <Route path={Location.PING_PONG_MIXED_PAGES} element={<PingPongMixedViewsPage />} />
+        </Routes>
       </Page>
     </Router>
   );

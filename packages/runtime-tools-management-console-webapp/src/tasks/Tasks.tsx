@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useEffect, useMemo } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { EmbeddedTaskList } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskList";
 import { getActiveTaskStates, getAllTaskStates } from "@kie-tools/runtime-tools-process-webapp-components/dist/utils";
 import {
@@ -29,6 +29,7 @@ import { TaskListState } from "@kie-tools/runtime-tools-process-enveloped-compon
 import { RuntimePathSearchParamsRoutes, useRuntimeDispatch } from "../runtime/RuntimeContext";
 import { useQueryParam, useQueryParams } from "../navigation/queryParams/QueryParamsContext";
 import { QueryParams } from "../navigation/Routes";
+import { useLocation } from "react-router-dom";
 import { useTaskListChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskList";
 
 interface Props {
@@ -47,7 +48,8 @@ const defaultOrderBy: TaskListSortBy = {
 
 export const Tasks: React.FC<Props> = ({ onNavigateToTaskDetails }) => {
   const channelApi = useTaskListChannelApi();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
   const filters = useQueryParam(QueryParams.FILTERS);
   const sortBy = useQueryParam(QueryParams.SORT_BY);
   const queryParams = useQueryParams();
@@ -87,14 +89,14 @@ export const Tasks: React.FC<Props> = ({ onNavigateToTaskDetails }) => {
         const newQueryParams = queryParams
           .with(QueryParams.FILTERS, newSearchParams[QueryParams.FILTERS])
           .with(QueryParams.ORDER_BY, newSearchParams[QueryParams.ORDER_BY]);
-        history.replace({ pathname: history.location.pathname, search: newQueryParams.toString() });
+        navigate({ pathname: location.pathname, search: newQueryParams.toString() }, { replace: true });
       },
     });
 
     return () => {
       unsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
     };
-  }, [channelApi, history, queryParams, setRuntimePathSearchParams]);
+  }, [channelApi, navigate, location.pathname, queryParams, setRuntimePathSearchParams]);
 
   useEffect(() => {
     const unsubscriber = channelApi.taskList__onOpenTaskListen({

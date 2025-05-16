@@ -30,7 +30,7 @@ import { useCallback, useRef, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { CreateWorkspaceFromUploadedFolder } from "../../editor/CreateWorkspaceFromUploadedFolder";
 import { useRoutes } from "../../navigation/Hooks";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 
 enum UploadType {
@@ -42,7 +42,7 @@ enum UploadType {
 
 export function UploadCard() {
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
   const workspaces = useWorkspaces();
 
   const [uploading, setUploading] = useState(UploadType.NONE);
@@ -56,15 +56,14 @@ export function UploadCard() {
         return;
       }
 
-      history.push({
+      navigate({
         pathname: routes.workspaceWithFilePath.path({
           workspaceId: val.workspaceId,
           fileRelativePath: val.fileRelativePath,
-          extension: val.extension,
         }),
       });
     },
-    [history, routes, workspaces]
+    [navigate, routes, workspaces]
   );
 
   const { acceptedFiles, getRootProps, getInputProps, isDragActive, draggedFiles } = useDropzone({

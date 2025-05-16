@@ -31,7 +31,7 @@ import { Gallery } from "@patternfly/react-core/dist/js/layouts/Gallery";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useHistory, useLocation } from "react-router";
+import { useNavigate, useLocation } from "react-router-dom";
 import { ErrorPage } from "../error/ErrorPage";
 import { QueryParams } from "../navigation/Routes";
 import { setPageTitle } from "../PageTitle";
@@ -81,7 +81,7 @@ export function SamplesCatalog() {
   const [isCategoryFilterDropdownOpen, setCategoryFilterDropdownOpen] = useState(false);
   const [isDrawerExpanded, setIsDrawerExpanded] = React.useState(false);
   const [selectedSample, setSelectedSample] = useState<Sample>();
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
 
   const categoryFilter = useQueryParam(QueryParams.SAMPLES_CATEGORY) as SampleCategory;
@@ -117,9 +117,9 @@ export function SamplesCatalog() {
         searchParams.delete(QueryParams.SAMPLES_CATEGORY);
       }
       const newSearchString = searchParams.toString();
-      history.push({ search: newSearchString });
+      navigate({ search: newSearchString });
     },
-    [history, location]
+    [navigate, location]
   );
 
   const onSearch = useCallback(
