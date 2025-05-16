@@ -19,8 +19,7 @@
 import * as React from "react";
 import { ApolloClient } from "apollo-client";
 import ProcessDetailsContext from "./ProcessDetailsContext";
-import { ProcessDetailsGatewayApiImpl } from "./ProcessDetailsGatewayApi";
-import { GraphQLProcessDetailsQueries } from "./ProcessDetailsQueries";
+import { ProcessDetailsChannelApiImpl } from "./ProcessDetailsChannelApiImpl";
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
@@ -30,9 +29,7 @@ interface IOwnProps {
 
 export const ProcessDetailsContextProvider: React.FC<IOwnProps> = ({ apolloClient, children, options }) => {
   return (
-    <ProcessDetailsContext.Provider
-      value={new ProcessDetailsGatewayApiImpl(new GraphQLProcessDetailsQueries(apolloClient, options))}
-    >
+    <ProcessDetailsContext.Provider value={new ProcessDetailsChannelApiImpl(apolloClient, options)}>
       {children}
     </ProcessDetailsContext.Provider>
   );

@@ -17,21 +17,19 @@
  * under the License.
  */
 import React from "react";
-import FormsListContext from "./FormsListContext";
-import { FormsListGatewayApiImpl } from "./FormsListGatewayApi";
+import { FormsListContext } from "./FormsListContext";
+import { FormsListChannelApiImpl } from "./FormsListChannelApiImpl";
 import { useDevUIAppContext } from "../../components/contexts/DevUIAppContext";
 
 interface FormsListContextProviderProps {
   children;
 }
 
-const FormsListContextProvider: React.FC<FormsListContextProviderProps> = ({ children }) => {
+export const FormsListContextProvider: React.FC<FormsListContextProviderProps> = ({ children }) => {
   const appContext = useDevUIAppContext();
   const baseUrl = appContext.transformEndpointBaseUrl(
     `${appContext.getQuarkusAppOrigin()}${appContext.getQuarkusAppRootPath()}`
   );
 
-  return <FormsListContext.Provider value={new FormsListGatewayApiImpl(baseUrl)}>{children}</FormsListContext.Provider>;
+  return <FormsListContext.Provider value={new FormsListChannelApiImpl(baseUrl)}>{children}</FormsListContext.Provider>;
 };
-
-export default FormsListContextProvider;

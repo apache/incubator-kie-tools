@@ -72,6 +72,7 @@
       - name: org.kie.kogito.project.versions
       - name: org.kie.sonataflow.common.scripts
       - name: org.kie.sonataflow.devmode.runtime.common
+      - name: org.kie.sonataflow.common.quarkus.registry
       - name: org.kie.sonataflow.devmode.runtime.community
 
   ports:

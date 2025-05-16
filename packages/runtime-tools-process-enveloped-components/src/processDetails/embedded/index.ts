@@ -17,4 +17,3 @@
  * under the License.
  */
 export * from "./EmbeddedProcessDetails";
-export * from "./ProcessDetailsChannelApiImpl";
