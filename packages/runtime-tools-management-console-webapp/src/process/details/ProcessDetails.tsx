@@ -101,7 +101,7 @@ export const ProcessDetails: React.FC<Props> = ({ processInstanceId, onReturnToP
 
   // Error State
   if (error) {
-    return <ServerErrors error={error} variant="large" onGoBack={() => history.push(runtimeRoutes.processes())} />;
+    return <ServerErrors error={error} variant="large" onGoBack={() => navigate(runtimeRoutes.processes())} />;
   }
 
   // Process Instance Details

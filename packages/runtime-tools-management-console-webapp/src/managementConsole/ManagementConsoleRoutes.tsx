@@ -69,7 +69,6 @@ export const ManagementConsoleRoutes: FC = () => {
             path={routes.runtime.processDefinitions.path({
               runtimeUrl: ":runtimeUrl",
             })}
-            exact={true}
           >
             <ProcessDefinitionsListPage />
           </Route>
