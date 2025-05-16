@@ -33,11 +33,19 @@ export const RuntimeNav: React.FC = () => {
           isActive={[runtimeRoutes.processes().pathname, runtimeRoutes.processDetails("").pathname].some((path) =>
             location.pathname.includes(path)
           )}
-          ouiaId="process-instances"
         >
           <Link to={runtimeRoutes.processes()}>Process Instances</Link>
         </NavItem>
-        <NavItem key={"jobs-nav"} isActive={location.pathname.includes(runtimeRoutes.jobs().pathname)} ouiaId="jobs">
+        <NavItem
+          key={"process-definitions-nav"}
+          isActive={[
+            runtimeRoutes.processDefinitions().pathname,
+            runtimeRoutes.processDefinitionForm("").pathname,
+          ].some((path) => location.pathname.includes(path))}
+        >
+          <Link to={runtimeRoutes.processDefinitions()}>Process Definitions</Link>
+        </NavItem>
+        <NavItem key={"jobs-nav"} isActive={location.pathname.includes(runtimeRoutes.jobs().pathname)}>
           <Link to={runtimeRoutes.jobs()}>Jobs</Link>
         </NavItem>
         <NavItem

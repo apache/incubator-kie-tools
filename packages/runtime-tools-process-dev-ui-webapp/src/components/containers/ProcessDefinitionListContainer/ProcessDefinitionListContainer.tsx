@@ -16,20 +16,23 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useEffect } from "react";
-import {
-  ProcessDefinitionListGatewayApi,
-  useProcessDefinitionListGatewayApi,
-} from "../../../channel/ProcessDefinitionList";
+import React, { useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { EmbeddedProcessDefinitionList } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDefinitionList";
+import {
+  EmbeddedProcessDefinitionsList,
+  ProcessDefinitionsListState,
+} from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDefinitionsList";
+import { useProcessDefinitionsListChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDefinitionsList";
 
-const ProcessDefinitionListContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
+const defaultFilters = {
+  processNames: [],
+};
+
+const ProcessDefinitionsListContainer: React.FC = () => {
   const navigate = useNavigate();
-  const gatewayApi: ProcessDefinitionListGatewayApi = useProcessDefinitionListGatewayApi();
+  const channelApi = useProcessDefinitionsListChannelApi();
   const appContext = useDevUIAppContext();
 
   useEffect(() => {
@@ -48,21 +51,26 @@ const ProcessDefinitionListContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe 
       },
     };
 
-    const onOpenInstanceUnsubscriber = gatewayApi.onOpenProcessFormListen(onOpenProcess);
+    const onOpenInstanceUnsubscriber = channelApi.processDefinitionsList__onOpenProcessDefinitionListen(onOpenProcess);
 
     return () => {
-      onOpenInstanceUnsubscriber.unSubscribe();
+      onOpenInstanceUnsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
+    };
+  }, [channelApi, history]);
+
+  const initialState: ProcessDefinitionsListState = useMemo(() => {
+    return {
+      filters: defaultFilters,
     };
   }, []);
 
   return (
-    <EmbeddedProcessDefinitionList
-      {...componentOuiaProps(ouiaId, "process-definition-list-container", ouiaSafe)}
-      driver={gatewayApi}
+    <EmbeddedProcessDefinitionsList
+      initialState={initialState}
+      channelApi={channelApi}
       targetOrigin={appContext.getDevUIUrl()}
-      singularProcessLabel={appContext.customLabels.singularProcessLabel}
     />
   );
 };
 
-export default ProcessDefinitionListContainer;
+export default ProcessDefinitionsListContainer;

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { init } from "@kie-tools/runtime-tools-shared-enveloped-components/dist/formDisplayer";
+import { init } from "@kie-tools/runtime-tools-process-enveloped-components/dist/formDisplayer";
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
 
 init({

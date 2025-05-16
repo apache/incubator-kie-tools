@@ -20,27 +20,20 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import {
-  useProcessDetailsGatewayApi,
-  ProcessDetailsGatewayApi,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
+import { useProcessDetailsChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
 import { EmbeddedProcessDetails } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
 
 interface ProcessDetailsContainerProps {
   processInstance: ProcessInstance;
 }
 
-const ProcessDetailsContainer: React.FC<ProcessDetailsContainerProps & OUIAProps> = ({
-  processInstance,
-  ouiaId,
-  ouiaSafe,
-}) => {
+const ProcessDetailsContainer: React.FC<ProcessDetailsContainerProps> = ({ processInstance }) => {
   const navigate = useNavigate();
   const appContext = useDevUIAppContext();
-  const gatewayApi: ProcessDetailsGatewayApi = useProcessDetailsGatewayApi();
+  const channelApi = useProcessDetailsChannelApi();
+
   useEffect(() => {
-    const unSubscribeHandler = gatewayApi.onOpenProcessInstanceDetailsListener({
+    const unsubscriber = channelApi.processDetails__onOpenProcessInstanceDetailsListener({
       onOpen(id: string) {
         navigate({ pathname: `/` });
         navigate({ pathname: `/Process/${id}` });
@@ -48,13 +41,13 @@ const ProcessDetailsContainer: React.FC<ProcessDetailsContainerProps & OUIAProps
     });
 
     return () => {
-      unSubscribeHandler.unSubscribe();
+      unsubscriber.then((unSubscribeHandler) => unSubscribeHandler.unSubscribe());
     };
-  }, [processInstance]);
+  }, [channelApi, history, processInstance]);
+
   return (
     <EmbeddedProcessDetails
-      {...componentOuiaProps(ouiaId, "process-details-container", ouiaSafe)}
-      driver={gatewayApi}
+      channelApi={channelApi}
       targetOrigin={appContext.getDevUIUrl()}
       processInstance={processInstance}
       omittedProcessTimelineEvents={appContext.omittedProcessTimelineEvents}

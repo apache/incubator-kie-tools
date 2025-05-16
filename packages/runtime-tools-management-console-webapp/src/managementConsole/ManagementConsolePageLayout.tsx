@@ -17,10 +17,9 @@
  * under the License.
  */
 
+import React, { useState, useMemo, useCallback, ReactElement } from "react";
 import { Page, PageSection, PageSidebar, PageSidebarBody } from "@patternfly/react-core/dist/js/components/Page";
 import { PageHeader, PageHeaderTools } from "@patternfly/react-core/deprecated";
-import React, { useState, useMemo, useCallback } from "react";
-
 import { useEnv } from "../env/hooks/EnvContext";
 import { useRoutes } from "../navigation/Hooks";
 import { useNavigate } from "react-router-dom";
@@ -33,8 +32,8 @@ import { MastheadBrand } from "@patternfly/react-core/dist/js/components/Masthea
 type Props = {
   children: React.ReactNode;
   disabledHeader?: boolean;
-  currentPageTile?: string;
-  breadcrumbText?: string[];
+  currentPageTile?: string | ReactElement;
+  breadcrumbText?: (string | ReactElement)[];
   breadcrumbPath?: BreadcrumbPathType;
   nav?: React.ReactNode;
 };

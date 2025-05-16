@@ -43,7 +43,7 @@ const ProcessesPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const location = useLocation();
   const initialState: ProcessListState = location && (location.state as ProcessListState);
 
-  const handleTabClick = (event, tabIndex) => {
+  const handleTabClick = (_event, tabIndex) => {
     setActiveTabKey(tabIndex);
   };
   return (

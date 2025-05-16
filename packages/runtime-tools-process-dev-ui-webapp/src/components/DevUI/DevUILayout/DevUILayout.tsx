@@ -21,18 +21,18 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { ApolloProvider } from "react-apollo";
 import { ApolloClient } from "apollo-client";
 import DevUINav from "../DevUINav/DevUINav";
-import FormsListContextProvider from "../../../channel/FormsList/FormsListContextProvider";
+import { FormsListContextProvider } from "../../../channel/FormsList/FormsListContextProvider";
 import FormDetailsContextProvider from "../../../channel/FormDetails/FormDetailsContextProvider";
 import DevUIAppContextProvider from "../../contexts/DevUIAppContextProvider";
-import ProcessFormContextProvider from "../../../channel/ProcessForm/ProcessFormContextProvider";
+import ProcessContextProvider from "../../contexts/ProcessContextProvider";
 import { CustomLabels } from "../../../api/CustomLabels";
 import { User } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskForm";
 import { DiagramPreviewSize } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
 import { PageLayout } from "@kie-tools/runtime-tools-components/dist/components/PageLayout";
 import { JobsManagementContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/JobsManagement";
 import { TaskFormContextProvider } from "../../contexts/TaskFormContextProvider";
-import { TaskInboxContextProvider } from "../../contexts/TaskInboxContextProvider";
-import ProcessContextProvider from "../../contexts/ProcessContextProvider";
+import { TaskListContextProvider } from "../../contexts/TaskListContextProvider";
+import { ProcessFormContextProvider } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessForm/ProcessFormContextProvider";
 
 interface IOwnProps {
   apolloClient: ApolloClient<any>;
@@ -80,7 +80,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
         omittedProcessTimelineEvents={omittedProcessTimelineEvents}
         diagramPreviewSize={diagramPreviewSize}
       >
-        <TaskInboxContextProvider apolloClient={apolloClient}>
+        <TaskListContextProvider apolloClient={apolloClient}>
           <TaskFormContextProvider>
             <ProcessContextProvider apolloClient={apolloClient}>
               <JobsManagementContextProvider apolloClient={apolloClient}>
@@ -105,7 +105,7 @@ const DevUILayout: React.FC<IOwnProps> = ({
               </JobsManagementContextProvider>
             </ProcessContextProvider>
           </TaskFormContextProvider>
-        </TaskInboxContextProvider>
+        </TaskListContextProvider>
       </DevUIAppContextProvider>
     </ApolloProvider>
   );

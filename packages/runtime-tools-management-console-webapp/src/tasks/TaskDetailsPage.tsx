@@ -25,6 +25,7 @@ import { useRoutes } from "../navigation/Hooks";
 import { TaskDetails } from "./TaskDetails";
 import { useRuntimePageLayoutDispatch } from "../runtime/RuntimePageLayoutContext";
 import { ImpersonationPageSection } from "./components/ImpersonationPageSection";
+import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export const TaskDetailsPage: React.FC = () => {
   const { taskId } = useParams<{ taskId?: string }>();
@@ -83,9 +84,11 @@ export const TaskDetailsPage: React.FC = () => {
   ]);
 
   return (
-    <>
-      <ImpersonationPageSection />
+    <Flex direction={{ default: "column" }} style={{ height: "100%" }}>
+      <FlexItem>
+        <ImpersonationPageSection />
+      </FlexItem>
       <TaskDetails taskId={taskId} />
-    </>
+    </Flex>
   );
 };

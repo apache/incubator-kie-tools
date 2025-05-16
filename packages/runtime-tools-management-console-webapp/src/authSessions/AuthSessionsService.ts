@@ -296,6 +296,8 @@ export class AuthSessionsService {
       throw new Error("Failed to extract claims from token.");
     }
 
+    console.log({ claims });
+
     const authSession: OpenIDConnectAuthSession = {
       id: uuid(),
       type: AuthSessionType.OPENID_CONNECT,
