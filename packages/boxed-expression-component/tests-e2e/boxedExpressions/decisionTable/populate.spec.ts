@@ -19,43 +19,53 @@
 
 import { test, expect } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
+import { CloseOption } from "../../api/nameAndDataTypeCell";
 
 test.describe("Populate Decision table", () => {
   test("should correctly create a routing decision table", async ({ stories, page, bee, resizing }) => {
     await stories.openDecisionTable();
 
     await bee.expression.asDecisionTable().inputHeaderAt(0).open();
+    await bee.expression.asDecisionTable().inputHeaderAt(0).setName({ name: "Post-bureau risk category" });
     await bee.expression
       .asDecisionTable()
       .inputHeaderAt(0)
-      .setName({ name: "Post-bureau risk category", close: false });
-    await bee.expression.asDecisionTable().inputHeaderAt(0).setDataType({ dataType: "string", close: true });
+      .setDataType({ dataType: "string", close: CloseOption.PRESS_ENTER });
     await resizing.reset(page.getByRole("columnheader", { name: "Post-bureau risk category (string)" }));
     await bee.expression.asDecisionTable().addInputAtStart();
 
     await bee.expression.asDecisionTable().inputHeaderAt(0).open();
+    await bee.expression.asDecisionTable().inputHeaderAt(0).setName({ name: "Post-bureau affordability" });
     await bee.expression
       .asDecisionTable()
       .inputHeaderAt(0)
-      .setName({ name: "Post-bureau affordability", close: false });
-    await bee.expression.asDecisionTable().inputHeaderAt(0).setDataType({ dataType: "boolean", close: true });
+      .setDataType({ dataType: "boolean", close: CloseOption.PRESS_ENTER });
     await resizing.reset(page.getByRole("columnheader", { name: "Post-bureau affordability (boolean)" }));
     await bee.expression.asDecisionTable().addInputAtStart();
 
     await bee.expression.asDecisionTable().inputHeaderAt(0).open();
-    await bee.expression.asDecisionTable().inputHeaderAt(0).setName({ name: "Credit Score", close: false });
-    await bee.expression.asDecisionTable().inputHeaderAt(0).setDataType({ dataType: "number", close: true });
+    await bee.expression.asDecisionTable().inputHeaderAt(0).setName({ name: "Credit Score" });
+    await bee.expression
+      .asDecisionTable()
+      .inputHeaderAt(0)
+      .setDataType({ dataType: "number", close: CloseOption.PRESS_ENTER });
     await resizing.reset(page.getByRole("columnheader", { name: "Credit Score (number)" }));
     await bee.expression.asDecisionTable().addInputAtStart();
 
     await bee.expression.asDecisionTable().inputHeaderAt(0).open();
-    await bee.expression.asDecisionTable().inputHeaderAt(0).setName({ name: "Bankrupt", close: false });
-    await bee.expression.asDecisionTable().inputHeaderAt(0).setDataType({ dataType: "boolean", close: true });
+    await bee.expression.asDecisionTable().inputHeaderAt(0).setName({ name: "Bankrupt" });
+    await bee.expression
+      .asDecisionTable()
+      .inputHeaderAt(0)
+      .setDataType({ dataType: "boolean", close: CloseOption.PRESS_ENTER });
     await resizing.reset(page.getByRole("columnheader", { name: "Bankrupt (boolean)" }));
 
     await bee.expression.asDecisionTable().outputHeaderAt(0).open();
-    await bee.expression.asDecisionTable().outputHeaderAt(0).setName({ name: "Routing", close: false });
-    await bee.expression.asDecisionTable().outputHeaderAt(0).setDataType({ dataType: "string", close: true });
+    await bee.expression.asDecisionTable().outputHeaderAt(0).setName({ name: "Routing" });
+    await bee.expression
+      .asDecisionTable()
+      .outputHeaderAt(0)
+      .setDataType({ dataType: "string", close: CloseOption.PRESS_ENTER });
     await resizing.reset(page.getByRole("columnheader", { name: "Routing (string)" }));
 
     test.info().annotations.push({

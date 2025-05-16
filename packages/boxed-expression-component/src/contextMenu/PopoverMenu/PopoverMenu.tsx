@@ -47,7 +47,7 @@ export interface PopoverMenuProps {
   /**
    * Lifecycle function invoked when the popover has fully transitioned out, called when the user click outside the popover.
    */
-  onHide?: () => void;
+  onHidden?: () => void;
   /**
    * Lifecycle function invoked when the popover has fully transitioned out, called when the user press "Esc" key.
    */
@@ -83,7 +83,7 @@ export const PopoverMenu = React.forwardRef(
       className,
       hasAutoWidth,
       minWidth = `var(--pf-v5-c-popover--MinWidth)`,
-      onHide = () => {},
+      onHidden = () => {},
       onCancel = () => {},
       onShown = () => {},
     }: PopoverMenuProps,
@@ -117,18 +117,15 @@ export const PopoverMenu = React.forwardRef(
       [onCancel]
     );
 
-    const onHideCallback: PopoverProps["onHide"] = useCallback(
-      (tip): void => {
-        // This validation is to prevent this code of being called twice, because if the user clicks outside the
-        // Boxed Expression component the onHide() is called again by the Popover which is listen to clicks
-        // on the document to close all opened popups.
-        if (currentlyOpenContextMenu) {
-          onHide();
-          setCurrentlyOpenContextMenu(undefined);
-        }
-      },
-      [currentlyOpenContextMenu, onHide, setCurrentlyOpenContextMenu]
-    );
+    const onHiddenCallback: PopoverProps["onHidden"] = useCallback((): void => {
+      // This validation is to prevent this code of being called twice, because if the user clicks outside the
+      // Boxed Expression component the onHidden() is called again by the Popover which is listen to clicks
+      // on the document to close all opened popups.
+      if (currentlyOpenContextMenu) {
+        onHidden();
+        setCurrentlyOpenContextMenu(undefined);
+      }
+    }, [currentlyOpenContextMenu, onHidden, setCurrentlyOpenContextMenu]);
 
     useImperativeHandle(
       ref,
@@ -175,7 +172,7 @@ export const PopoverMenu = React.forwardRef(
         bodyContent={body}
         isVisible={isPopoverVisible}
         onShown={onPopoverShown}
-        onHide={onHideCallback}
+        onHidden={onHiddenCallback}
         shouldClose={shouldClose}
         shouldOpen={shouldOpen}
         flipBehavior={["bottom-start", "bottom", "bottom-end", "right-start", "left-start", "right-end", "left-end"]}

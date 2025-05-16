@@ -88,7 +88,7 @@ export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorP
 
   return (
     <PopoverMenu
-      onHide={() => setVisibleHelp("")}
+      onHidden={() => setVisibleHelp("")}
       appendTo={editorRef?.current ?? undefined}
       className="function-kind-popover"
       position={PopoverPosition.leftEnd}

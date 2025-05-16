@@ -18,6 +18,7 @@
  */
 
 import { test, expect } from "../../__fixtures__/base";
+import { CloseOption } from "../../api/nameAndDataTypeCell";
 
 test.describe("Populate Boxed List", () => {
   test("should correctly create an age group boxed list", async ({ stories, bee, page, monaco }) => {
@@ -35,8 +36,10 @@ test.describe("Populate Boxed List", () => {
     await bee.expression.asList().row(4).selectExpressionMenu.selectLiteral();
 
     await bee.expression.asList().expressionHeaderCell.open();
-    await bee.expression.asList().expressionHeaderCell.setName({ name: "Age groups", close: false });
-    await bee.expression.asList().expressionHeaderCell.setDataType({ dataType: "number", close: true });
+    await bee.expression.asList().expressionHeaderCell.setName({ name: "Age groups" });
+    await bee.expression
+      .asList()
+      .expressionHeaderCell.setDataType({ dataType: "number", close: CloseOption.PRESS_ENTER });
 
     await monaco.fill({ monacoParentLocator: page, nth: 0, content: "<18" });
     await monaco.fill({ monacoParentLocator: page, nth: 1, content: "[18..30)" });

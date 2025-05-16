@@ -18,6 +18,7 @@
  */
 
 import { expect, test } from "../../__fixtures__/base";
+import { CloseOption } from "../../api/nameAndDataTypeCell";
 
 test.describe("Populate Boxed Invocation", () => {
   test("should correctly create pre-bureau-affordability boxed invocation", async ({
@@ -30,8 +31,10 @@ test.describe("Populate Boxed Invocation", () => {
     await stories.openBoxedInvocation();
 
     await bee.expression.asInvocation().expressionHeaderCell.open();
-    await bee.expression.asInvocation().expressionHeaderCell.setName({ name: "Installment calculation", close: false });
-    await bee.expression.asInvocation().expressionHeaderCell.setDataType({ dataType: "number", close: true });
+    await bee.expression.asInvocation().expressionHeaderCell.setName({ name: "Installment calculation" });
+    await bee.expression
+      .asInvocation()
+      .expressionHeaderCell.setDataType({ dataType: "number", close: CloseOption.PRESS_ENTER });
 
     await bee.expression.asInvocation().addParameterBelowOfEntryAtIndex(0);
     await bee.expression.asInvocation().addParameterBelowOfEntryAtIndex(0);

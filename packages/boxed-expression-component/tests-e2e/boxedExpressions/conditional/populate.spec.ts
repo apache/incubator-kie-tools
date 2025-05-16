@@ -19,6 +19,7 @@
 
 import _ from "lodash";
 import { test, expect } from "../../__fixtures__/base";
+import { CloseOption } from "../../api/nameAndDataTypeCell";
 
 test.describe("Populate Boxed Conditional", () => {
   test("should rename a Conditional", async ({ bee, stories }) => {
@@ -27,7 +28,7 @@ test.describe("Populate Boxed Conditional", () => {
     await bee.expression.asConditional().expressionHeaderCell.open();
     await bee.expression
       .asConditional()
-      .expressionHeaderCell.setName({ name: "Conditional Expression Name", close: true });
+      .expressionHeaderCell.setName({ name: "Conditional Expression Name", close: CloseOption.PRESS_ENTER });
 
     expect(
       await bee.expression.asConditional().expressionHeaderCell.content.locator(".header-cell-info").textContent()
@@ -38,7 +39,9 @@ test.describe("Populate Boxed Conditional", () => {
     await stories.openBoxedConditional();
 
     await bee.expression.asConditional().expressionHeaderCell.open();
-    await bee.expression.asConditional().expressionHeaderCell.setDataType({ dataType: "boolean", close: true });
+    await bee.expression
+      .asConditional()
+      .expressionHeaderCell.setDataType({ dataType: "boolean", close: CloseOption.PRESS_ENTER });
 
     await expect(await bee.expression.asConditional().expressionHeaderCell.getPopoverMenu()).not.toBeAttached();
 
@@ -52,8 +55,10 @@ test.describe("Populate Boxed Conditional", () => {
 
     // HEADER
     await bee.expression.asConditional().expressionHeaderCell.open();
-    await bee.expression.asConditional().expressionHeaderCell.setName({ name: "MonthlyFee", close: false });
-    await bee.expression.asConditional().expressionHeaderCell.setDataType({ dataType: "number", close: true });
+    await bee.expression.asConditional().expressionHeaderCell.setName({ name: "MonthlyFee" });
+    await bee.expression
+      .asConditional()
+      .expressionHeaderCell.setDataType({ dataType: "number", close: CloseOption.PRESS_ENTER });
 
     // IF
     await bee.expression.asConditional().if.expression.asLiteral().fill('ProdctType = "STANDARD LOAN"');
