@@ -85,6 +85,21 @@ function DevWebApp(args: StorybookDmnEditorRootProps) {
     };
   }, []);
 
+  useEffect(() => {
+    const redoId = envelopeContext.services.keyboardShortcuts.registerKeyPress("shift+ctrl+z", ``, async () => {
+      editorRef.current?.redo();
+    });
+
+    const undoId = envelopeContext.services.keyboardShortcuts.registerKeyPress("ctrl+z", ``, async () => {
+      editorRef.current?.undo();
+    });
+
+    return () => {
+      envelopeContext.services.keyboardShortcuts.deregister(redoId);
+      envelopeContext.services.keyboardShortcuts.deregister(undoId);
+    };
+  }, [envelopeContext]);
+
   const onNewEdit = useCallback(
     (workspaceEdit: WorkspaceEdit) => {
       envelopeContext?.channelApi.notifications.kogitoWorkspace_newEdit.send(workspaceEdit);
