@@ -30,7 +30,7 @@ import {
   componentOuiaProps,
   ouiaPageTypeAndObjectId,
 } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { ProcessListState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { ProcessListState } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processList";
 import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/components/PageSectionHeader";
 
 const ProcessesPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {

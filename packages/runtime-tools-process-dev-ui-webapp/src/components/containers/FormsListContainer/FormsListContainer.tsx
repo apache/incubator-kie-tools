@@ -47,7 +47,7 @@ const FormsListContainer: React.FC = () => {
     return () => {
       unsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
     };
-  }, [channelApi, history]);
+  }, [channelApi, navigate]);
 
   return <EmbeddedFormsList channelApi={channelApi} targetOrigin={appContext.getDevUIUrl()} />;
 };

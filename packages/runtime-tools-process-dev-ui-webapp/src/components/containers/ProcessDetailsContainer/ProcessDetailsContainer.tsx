@@ -43,7 +43,7 @@ const ProcessDetailsContainer: React.FC<ProcessDetailsContainerProps> = ({ proce
     return () => {
       unsubscriber.then((unSubscribeHandler) => unSubscribeHandler.unSubscribe());
     };
-  }, [channelApi, history, processInstance]);
+  }, [channelApi, navigate, processInstance]);
 
   return (
     <EmbeddedProcessDetails

@@ -97,7 +97,7 @@ const ProcessDetailsPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe, ...props })
         );
       }
     }
-  }, [channelApi, fetchError.length, history, processId, props.location.state]);
+  }, [channelApi, fetchError.length, navigate, processId, location.state]);
 
   useEffect(() => {
     if (processId) {

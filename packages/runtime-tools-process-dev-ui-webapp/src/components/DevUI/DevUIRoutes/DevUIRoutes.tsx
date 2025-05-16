@@ -47,10 +47,7 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ navigate }) => {
       <Route path={"TaskDetails/:taskId"} element={<TaskDetailsPage />} />
       <Route path={"Forms"} element={<FormsListPage />} />,
       <Route path={"Forms/:formName"} element={<FormDetailPage />} />,
-      <Route
-        path={"NoData"}
-        element={<NoData defaultPath={DEFAULT_PATH} defaultButton={DEFAULT_BUTTON} location={undefined} />}
-      />
+      <Route path={"NoData"} element={<NoData defaultPath={DEFAULT_PATH} defaultButton={DEFAULT_BUTTON} />} />
       <Route path={"*"} element={<PageNotFound defaultPath={DEFAULT_PATH} defaultButton={DEFAULT_BUTTON} />} />
     </Routes>
   );

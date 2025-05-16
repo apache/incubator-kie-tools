@@ -56,7 +56,7 @@ const ProcessDefinitionsListContainer: React.FC = () => {
     return () => {
       onOpenInstanceUnsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
     };
-  }, [channelApi, history]);
+  }, [channelApi, navigate]);
 
   const initialState: ProcessDefinitionsListState = useMemo(() => {
     return {
