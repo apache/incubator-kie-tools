@@ -159,6 +159,35 @@ export class WorkspaceDescriptorService {
     });
   }
 
+  public async turnIntoGitlabSnippet(
+    fs: KieSandboxWorkspacesFs,
+    workspaceId: string,
+    snippetUrl: URL,
+    branch: string,
+    insecurelyDisableTlsCertificateValidation?: boolean
+  ) {
+    const file = this.toStorageFile({
+      ...(await this.get(fs, workspaceId)),
+      origin: {
+        kind: WorkspaceKind.GITLAB_SNIPPET,
+        url: snippetUrl.toString(),
+        branch,
+      },
+      gitInsecurelyDisableTlsCertificateValidation: insecurelyDisableTlsCertificateValidation,
+    });
+    await this.storageService.updateFile(fs, file.path, file.getFileContents);
+
+    new Broadcaster().broadcast({
+      channel: workspaceId,
+      message: async () => ({ type: "WS_UPDATE_DESCRIPTOR" }),
+    });
+
+    new Broadcaster().broadcast({
+      channel: WORKSPACES_BROADCAST_CHANNEL,
+      message: async () => ({ type: "WSS_UPDATE", workspaceId }),
+    });
+  }
+
   public async turnIntoGit(
     fs: KieSandboxWorkspacesFs,
     workspaceId: string,

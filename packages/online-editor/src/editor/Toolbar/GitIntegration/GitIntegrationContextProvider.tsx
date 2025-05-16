@@ -55,6 +55,7 @@ import { useHistory } from "react-router";
 import { useGitIntegrationAlerts } from "./GitIntegrationAlerts";
 import { AuthProviderGroup, isGistEnabledAuthProviderType } from "../../../authProviders/AuthProvidersApi";
 import { useEditorToolbarDispatchContext } from "../EditorToolbarContextProvider";
+import { useGitlabClient } from "../../../gitlab/useGitlabClient";
 
 export type GitIntegrationContextType = {
   workspaceImportableUrl: ImportableUrl;
@@ -103,12 +104,14 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
 
   const gitHubClient = useGitHubClient(authSession);
   const bitbucketClient = useBitbucketClient(authSession);
+  const gitlabClient = useGitlabClient(authSession);
 
   const [isGistOrSnippetLoading, setGistOrSnippetLoading] = useState(false);
   const [gitHubGist, setGitHubGist] = useState<
     OctokitRestEndpointMethodTypes["gists"]["get"]["response"]["data"] | undefined
   >(undefined);
   const [bitbucketSnippet, setBitbucketSnippet] = useState<any>(undefined);
+  const [gitlabSnippet, setGitlabSnippet] = useState<any>(undefined);
 
   const insecurelyDisableTlsCertificateValidation = useMemo(() => {
     if (authProvider?.group === AuthProviderGroup.GIT) {
@@ -169,6 +172,31 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     )
   );
 
+  useCancelableEffect(
+    useCallback(
+      ({ canceled }) => {
+        if (gitlabSnippet || workspaceImportableUrl.type !== UrlType.GITLAB_DOT_COM_SNIPPET) {
+          return;
+        }
+
+        const { snippetId, group, project } = workspaceImportableUrl;
+
+        if (!snippetId) {
+          return;
+        }
+
+        gitlabClient.getSnippet({ snippetId, group, project }).then(async (response) => {
+          if (canceled.get()) {
+            return;
+          }
+          const json = await response.json();
+          setGitlabSnippet(json);
+        });
+      },
+      [gitlabSnippet, workspaceImportableUrl, gitlabClient]
+    )
+  );
+
   const authSessionSelectFilter = useMemo(() => {
     if (!props.workspace) {
       return gitAuthSessionSelectFilter();
@@ -220,9 +248,11 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
 
   const canCreateBitbucketRepository = useMemo(() => authProvider?.type === "bitbucket", [authProvider?.type]);
 
+  const canCreateGitlabRepository = useMemo(() => authProvider?.type === "gitlab", [authProvider?.type]);
+
   const canCreateGitRepository = useMemo(
-    () => canCreateGitHubRepository || canCreateBitbucketRepository,
-    [canCreateGitHubRepository, canCreateBitbucketRepository]
+    () => canCreateGitHubRepository || canCreateBitbucketRepository || canCreateGitlabRepository,
+    [canCreateGitHubRepository, canCreateBitbucketRepository, canCreateGitlabRepository]
   );
 
   const canPushToGitRepository = useMemo(
@@ -238,7 +268,11 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     return authInfo?.uuid && bitbucketSnippet?.creator.uuid === authInfo.uuid;
   }, [authInfo, bitbucketSnippet]);
 
-  const isGistOrSnippetOwner = isGitHubGistOwner || isBitbucketSnippetOwner;
+  const isGitlabSnippetOwner = useMemo(() => {
+    return authInfo?.username && gitlabSnippet?.author?.username === authInfo.username;
+  }, [authInfo, gitlabSnippet]);
+
+  const isGistOrSnippetOwner = isGitHubGistOwner || isBitbucketSnippetOwner || isGitlabSnippetOwner;
 
   const canCreateGistOrSnippet = useMemo(
     () =>
