@@ -4528,6 +4528,9 @@ importers:
       '@babel/preset-react':
         specifier: ^7.16.0
         version: 7.22.15(@babel/core@7.23.0)
+      '@babel/preset-typescript':
+        specifier: ^7.22.5
+        version: 7.23.0(@babel/core@7.23.0)
       '@kie-tools-core/patternfly-base':
         specifier: workspace:*
         version: link:../patternfly-base

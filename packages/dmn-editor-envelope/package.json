@@ -58,6 +58,7 @@
     "@babel/core": "^7.16.0",
     "@babel/preset-env": "^7.16.0",
     "@babel/preset-react": "^7.16.0",
+    "@babel/preset-typescript": "^7.22.5",
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/eslint": "workspace:*",

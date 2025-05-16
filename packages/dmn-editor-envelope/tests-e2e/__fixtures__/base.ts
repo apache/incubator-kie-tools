@@ -27,6 +27,7 @@ import { JsonModel } from "./jsonModel";
 import { Monaco } from "@kie-tools/boxed-expression-component/tests-e2e/__fixtures__/monaco";
 import { ProjectName } from "@kie-tools/playwright-base/projectNames";
 import { Stories } from "./stories";
+import { Clipboard } from "./clipboard";
 
 type DmnEditorFixtures = {
   diagram: Diagram;
@@ -37,6 +38,7 @@ type DmnEditorFixtures = {
   nodes: Nodes;
   palette: Palette;
   stories: Stories;
+  clipboard: Clipboard;
 };
 
 export const test = base.extend<DmnEditorFixtures>({
@@ -63,6 +65,11 @@ export const test = base.extend<DmnEditorFixtures>({
   },
   stories: async ({ baseURL, page }, use) => {
     await use(new Stories(page, baseURL));
+  },
+  clipboard: async ({ browserName, context, page }, use) => {
+    const clipboard = new Clipboard(page);
+    await clipboard.setup(context, browserName);
+    await use(clipboard);
   },
 });
 

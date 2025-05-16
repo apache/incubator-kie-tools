@@ -20,8 +20,9 @@
 import { test, expect } from "../../__fixtures__/base";
 import { DefaultNodeName, NodeType } from "../../__fixtures__/nodes";
 
-test.beforeEach(async ({ editor }) => {
+test.beforeEach(async ({ editor, clipboard, context, browserName }) => {
   await editor.open();
+  clipboard.setup(context, browserName);
 });
 
 test.describe("Keyboard Shortcuts", () => {
@@ -44,15 +45,17 @@ test.describe("Keyboard Shortcuts", () => {
 
   test("Delete node - Backspace", async ({ palette, nodes, diagram, page }) => {
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
-    await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
-    await expect(diagram.get()).toHaveScreenshot("selected-decision-node-to-delete.png");
+    await diagram.resetFocus();
+    await nodes.select({ name: DefaultNodeName.DECISION });
+    await expect(diagram.get()).toHaveScreenshot("selected-decision-node-to-delete-backspace.png");
     await page.keyboard.press("Backspace");
     await expect(diagram.get()).toHaveScreenshot("deleted-decision-node-using-backspace.png");
   });
 
   test("Delete node - Delete", async ({ palette, nodes, diagram, page }) => {
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
-    await expect(nodes.get({ name: DefaultNodeName.DECISION })).toBeAttached();
+    await diagram.resetFocus();
+    await nodes.select({ name: DefaultNodeName.DECISION });
     await expect(diagram.get()).toHaveScreenshot("selected-decision-node-to-delete.png");
     await page.keyboard.press("Delete");
     await expect(diagram.get()).toHaveScreenshot("deleted-decision-node-delete.png");
@@ -69,6 +72,7 @@ test.describe("Keyboard Shortcuts", () => {
 
   test("Hide from DRD - X", async ({ palette, nodes, diagram, page }) => {
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+    await diagram.resetFocus();
     await nodes.select({ name: DefaultNodeName.DECISION });
     await expect(diagram.get()).toHaveScreenshot("selected-decision-node-to-hide.png");
     await page.keyboard.press("X");
@@ -78,7 +82,7 @@ test.describe("Keyboard Shortcuts", () => {
   test("Reset position to origin - Space", async ({ palette, diagram, page }) => {
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 300, y: 200 } });
     await diagram.resetFocus();
-    await diagram.zoomIn({ clicks: 1 });
+    await diagram.zoomIn({ clicks: 2 });
     await expect(diagram.get()).toHaveScreenshot("zoomed-in-diagram.png");
     await page.keyboard.press("Space");
     await expect(diagram.get()).toHaveScreenshot("reset-position-to-origin.png");
@@ -87,63 +91,70 @@ test.describe("Keyboard Shortcuts", () => {
   test("Select/Deselect all - A", async ({ palette, diagram, page }) => {
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 200, y: 100 } });
     await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 200, y: 200 } });
+    await diagram.resetFocus();
     await page.keyboard.press("A");
     await expect(diagram.get()).toHaveScreenshot("selected-all-nodes.png");
     await page.keyboard.press("A");
     await expect(diagram.get()).toHaveScreenshot("unselected-all-nodes.png");
   });
 
-  test("Zoom in - Hold Control Or Meta", async ({ palette, diagram, page }) => {
-    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 200, y: 100 } });
+  test("Zoom in - Hold control and scroll up", async ({ palette, diagram, page }) => {
+    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 200, y: 200 } });
+    await diagram.resetFocus();
     await expect(diagram.get()).toHaveScreenshot("added-decision-node-to-zoom-in.png");
     await page.keyboard.down("ControlOrMeta");
-    await page.mouse.wheel(0, 100);
+    await page.mouse.wheel(0, -100);
     await page.keyboard.up("ControlOrMeta");
     await expect(diagram.get()).toHaveScreenshot("zoomed-drd-using-shortcut.png");
   });
 
-  test("Zoom out - Hold Control Or Meta", async ({ palette, diagram, page }) => {
-    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 200, y: 100 } });
+  test("Zoom out - Hold control and scroll down", async ({ palette, diagram, page }) => {
+    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 200, y: 200 } });
+    await diagram.resetFocus();
     await expect(diagram.get()).toHaveScreenshot("added-decision-node-to-zoom-out.png");
     await page.keyboard.down("ControlOrMeta");
-    await page.mouse.wheel(0, -100);
+    await page.mouse.wheel(0, 100);
     await page.keyboard.up("ControlOrMeta");
     await expect(diagram.get()).toHaveScreenshot("zoomed-out-drd-using-shortcut.png");
   });
 
   test("Cut node - Control Or Meta + X", async ({ palette, nodes, diagram, page }) => {
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+    await diagram.resetFocus();
     await nodes.select({ name: DefaultNodeName.DECISION });
     await expect(diagram.get()).toHaveScreenshot("selected-decision-node-to-cut.png");
-    await page.keyboard.press("ControlOrMeta+X");
+    await page.keyboard.press(`ControlOrMeta+KeyX`);
     await expect(diagram.get()).toHaveScreenshot("decision-node-cut-from-drd-using-cmd-key.png");
   });
 
-  test("Copy/Paste node using shotcuts", async ({ palette, nodes, diagram, browserName, page }) => {
+  test("Copy/Paste node using shortcuts", async ({ palette, nodes, diagram, browserName, page }) => {
     test.skip(
       browserName === "webkit",
       "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
     );
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+    await diagram.resetFocus();
     await nodes.select({ name: DefaultNodeName.DECISION });
     await expect(diagram.get()).toHaveScreenshot("selected-decision-node-to-copy.png");
-    await page.keyboard.press("ControlOrMeta+C");
-    await page.keyboard.press("ControlOrMeta+V");
-    await nodes.select({ name: DefaultNodeName.DECISION });
-    await expect(diagram.get()).toHaveScreenshot("changed-decision-position.png");
+    await page.keyboard.press("ControlOrMeta+KeyC");
+    await nodes.delete({ name: DefaultNodeName.DECISION });
+    await page.keyboard.press("ControlOrMeta+KeyV");
+    await expect(diagram.get()).toHaveScreenshot("pasted-node-using-shortcut.png");
   });
 
   test("Horizontal navigation - Hold Shift", async ({ palette, diagram, page }) => {
-    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 300, y: 200 } });
+    await diagram.resetFocus();
     await expect(diagram.get()).toHaveScreenshot("added-decision-node-to-scroll-horizontal.png");
     await page.keyboard.down("Shift");
-    await page.mouse.wheel(200, 0);
+    await page.mouse.wheel(100, 0);
     await page.keyboard.up("Shift");
-    await expect(diagram.get()).toHaveScreenshot("scrolled-horizontal-using-shotcut.png");
+    await expect(diagram.get()).toHaveScreenshot("scrolled-horizontal-using-shortcut.png");
   });
 
   test("Undo/Redo actions using shortcuts", async ({ palette, diagram, page }) => {
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+    await diagram.resetFocus();
     await palette.dragNewNode({
       type: NodeType.DECISION,
       targetPosition: { x: 300, y: 300 },
@@ -151,27 +162,30 @@ test.describe("Keyboard Shortcuts", () => {
     });
     await expect(diagram.get()).toHaveScreenshot("added-decision-for-undo-redo-action.png");
     await page.keyboard.press("ControlOrMeta+Z");
-    await expect(diagram.get()).toHaveScreenshot("undo-decision-rename-using-shoftcut.png");
+    await expect(diagram.get()).toHaveScreenshot("undo-decision-rename-using-shortcut.png");
     await page.keyboard.press("ControlOrMeta+Shift+Z");
-    await expect(diagram.get()).toHaveScreenshot("redo-decision-rename-using-shoftcut.png");
+    await expect(diagram.get()).toHaveScreenshot("redo-decision-rename-using-shortcut.png");
   });
 
-  test("Toggle properties panel - I", async ({ palette, diagram, page }) => {
+  test("Toggle properties panel - I", async ({ palette, diagram, page, nodes }) => {
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
+    await diagram.resetFocus();
+    await nodes.select({ name: DefaultNodeName.DECISION });
     await page.keyboard.press("I");
-    await expect(diagram.get()).toHaveScreenshot("show-properties-using-shoftcut.png");
+    await expect(page.getByTestId("kie-tools--dmn-editor--properties-panel-container")).toBeVisible();
     await page.keyboard.press("I");
-    await expect(diagram.get()).toHaveScreenshot("hide-properties-using-shoftcut.png");
+    await expect(page.getByTestId("kie-tools--dmn-editor--properties-panel-container")).not.toBeVisible();
   });
 
   test("Right mouse button - Hold and drag to pan", async ({ palette, diagram, page }) => {
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
     await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 100, y: 200 } });
-    await expect(diagram.get()).toHaveScreenshot("before-pan-using-shoftcut.png");
+    await diagram.resetFocus();
+    await expect(diagram.get()).toHaveScreenshot("before-pan-using-shortcut.png");
     await page.mouse.move(300, 200);
     await page.mouse.down({ button: "right" });
     await page.mouse.move(500, 300);
     await page.mouse.up({ button: "right" });
-    await expect(diagram.get()).toHaveScreenshot("hold-and-drag-to-pan-using-shoftcut.png");
+    await expect(diagram.get()).toHaveScreenshot("hold-and-drag-to-pan-using-shortcut.png");
   });
 });

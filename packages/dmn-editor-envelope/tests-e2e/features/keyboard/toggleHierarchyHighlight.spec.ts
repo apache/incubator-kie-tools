@@ -22,11 +22,11 @@ import { test, expect } from "../../__fixtures__/base";
 test.beforeEach(async ({ editor, nodes }) => {
   await editor.openLoanPreQualification();
   await expect(nodes.get({ name: "Loan Pre-Qualification" })).toBeVisible();
+  await nodes.select({ name: "Loan Pre-Qualification" });
 });
 
 test("Toggle hierarchy highlight - H", async ({ nodes, diagram, page }) => {
   await page.keyboard.press("H");
-  await nodes.select({ name: "Loan Pre-Qualification" });
   await expect(diagram.get()).toHaveScreenshot("enable-hierarchy-highlight-using-shoftcut.png");
   await page.keyboard.press("H");
   await expect(diagram.get()).toHaveScreenshot("disable-hierarchy-highlight-using-shoftcut.png");
