@@ -44,7 +44,7 @@ export class NameAndDataTypeCell {
       await this.locator
         .page()
         .locator("html")
-        .click({ position: { x: 0, y: 0 } });
+        .click({ position: { x: 1, y: 1 } });
     }
     await popover.waitFor({ state: "detached" });
   }
