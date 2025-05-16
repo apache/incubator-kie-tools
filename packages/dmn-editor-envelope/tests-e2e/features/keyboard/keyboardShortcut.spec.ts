@@ -66,7 +66,7 @@ test.describe("Keyboard Shortcuts", () => {
     await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 200, y: 200 } });
     await nodes.select({ name: DefaultNodeName.DECISION });
     await expect(diagram.get()).toHaveScreenshot("selected-decision-node-to-focus.png");
-    await page.keyboard.press("B");
+    await page.keyboard.press("KeyB");
     await expect(diagram.get()).toHaveScreenshot("focused-on-selection-using-shortcut.png");
   });
 
@@ -75,7 +75,7 @@ test.describe("Keyboard Shortcuts", () => {
     await diagram.resetFocus();
     await nodes.select({ name: DefaultNodeName.DECISION });
     await expect(diagram.get()).toHaveScreenshot("selected-decision-node-to-hide.png");
-    await page.keyboard.press("X");
+    await page.keyboard.press("KeyX");
     await expect(diagram.get()).toHaveScreenshot("hide-decision-node-from-drd.png");
   });
 
@@ -92,9 +92,9 @@ test.describe("Keyboard Shortcuts", () => {
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 200, y: 100 } });
     await palette.dragNewNode({ type: NodeType.INPUT_DATA, targetPosition: { x: 200, y: 200 } });
     await diagram.resetFocus();
-    await page.keyboard.press("A");
+    await page.keyboard.press("KeyA");
     await expect(diagram.get()).toHaveScreenshot("selected-all-nodes.png");
-    await page.keyboard.press("A");
+    await page.keyboard.press("KeyA");
     await expect(diagram.get()).toHaveScreenshot("unselected-all-nodes.png");
   });
 
@@ -138,6 +138,7 @@ test.describe("Keyboard Shortcuts", () => {
     await expect(diagram.get()).toHaveScreenshot("selected-decision-node-to-copy.png");
     await page.keyboard.press("ControlOrMeta+KeyC");
     await nodes.delete({ name: DefaultNodeName.DECISION });
+    await expect(diagram.get().getByText("This DMN's Diagram is empty")).toBeAttached();
     await page.keyboard.press("ControlOrMeta+KeyV");
     await expect(diagram.get()).toHaveScreenshot("pasted-node-using-shortcut.png");
   });
@@ -147,7 +148,7 @@ test.describe("Keyboard Shortcuts", () => {
     await diagram.resetFocus();
     await expect(diagram.get()).toHaveScreenshot("added-decision-node-to-scroll-horizontal.png");
     await page.keyboard.down("Shift");
-    await page.mouse.wheel(100, 0);
+    await page.mouse.wheel(0, 200);
     await page.keyboard.up("Shift");
     await expect(diagram.get()).toHaveScreenshot("scrolled-horizontal-using-shortcut.png");
   });
@@ -161,9 +162,9 @@ test.describe("Keyboard Shortcuts", () => {
       thenRenameTo: "Second Decision",
     });
     await expect(diagram.get()).toHaveScreenshot("added-decision-for-undo-redo-action.png");
-    await page.keyboard.press("ControlOrMeta+Z");
+    await page.keyboard.press("ControlOrMeta+KeyZ");
     await expect(diagram.get()).toHaveScreenshot("undo-decision-rename-using-shortcut.png");
-    await page.keyboard.press("ControlOrMeta+Shift+Z");
+    await page.keyboard.press("ControlOrMeta+Shift+KeyZ");
     await expect(diagram.get()).toHaveScreenshot("redo-decision-rename-using-shortcut.png");
   });
 
@@ -171,9 +172,9 @@ test.describe("Keyboard Shortcuts", () => {
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
     await diagram.resetFocus();
     await nodes.select({ name: DefaultNodeName.DECISION });
-    await page.keyboard.press("I");
+    await page.keyboard.press("KeyI");
     await expect(page.getByTestId("kie-tools--dmn-editor--properties-panel-container")).toBeVisible();
-    await page.keyboard.press("I");
+    await page.keyboard.press("KeyI");
     await expect(page.getByTestId("kie-tools--dmn-editor--properties-panel-container")).not.toBeVisible();
   });
 
