@@ -21,13 +21,11 @@ import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tools-core/envelope/dist/embedded";
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
 import { init } from "../envelope";
-import { JobsManagementApi, JobsManagementChannelApi, JobsManagementEnvelopeApi, JobsManagementDriver } from "../api";
-import { JobsManagementChannelApiImpl } from "./JobsManagementChannelApiImpl";
-import { JobsManagementState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { JobsManagementApi, JobsManagementChannelApi, JobsManagementEnvelopeApi, JobsManagementState } from "../api";
 
 export interface Props {
   targetOrigin: string;
-  driver: JobsManagementDriver;
+  channelApi: JobsManagementChannelApi;
   initialState?: JobsManagementState;
 }
 
@@ -68,12 +66,11 @@ export const EmbeddedJobsManagement = React.forwardRef((props: Props, forwardedR
     },
     [props.initialState]
   );
-  const apiImpl = useMemo(() => new JobsManagementChannelApiImpl(props.driver), [props.driver]);
 
   return (
     <EmbeddedJobsManagementEnvelope
       ref={forwardedRef}
-      apiImpl={apiImpl}
+      apiImpl={props.channelApi}
       origin={props.targetOrigin}
       refDelegate={refDelegate}
       pollInit={pollInit}

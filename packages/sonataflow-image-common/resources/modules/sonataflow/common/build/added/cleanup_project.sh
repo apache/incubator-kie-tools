@@ -39,5 +39,4 @@ find "${KOGITO_HOME}"/.m2/repository -name '*.lastUpdated' -type f -delete
 
 # Remove files that include build timestamps to have reproducible images
 find "${KOGITO_HOME}"/.m2/ -name resolver-status.properties -delete 
-# Remove quarkus registry
-rm -rf "${KOGITO_HOME}"/.m2/repository/io/quarkus/registry/
+

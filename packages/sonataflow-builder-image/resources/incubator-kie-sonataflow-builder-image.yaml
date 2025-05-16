@@ -67,7 +67,8 @@
       - name: org.kie.kogito.maven.common
       - name: org.kie.kogito.project.versions
       - name: org.kie.sonataflow.common.scripts
-      - name: org.kie.sonataflow.builder.runtime.community
+      - name: org.kie.sonataflow.common.quarkus.registry
+      - name: org.kie.sonataflow.builder.runtime
 
   run:
     workdir: "/home/kogito/${PROJECT_ARTIFACT_ID}"

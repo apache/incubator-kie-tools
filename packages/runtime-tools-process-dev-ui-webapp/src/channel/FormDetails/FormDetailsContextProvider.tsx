@@ -16,22 +16,25 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
+import React, { useMemo } from "react";
 import FormDetailsContext from "./FormDetailsContext";
-import { FormDetailsGatewayApiImpl } from "./FormDetailsGatewayApi";
 import { useDevUIAppContext } from "../../components/contexts/DevUIAppContext";
+import { FormDetailsChannelApiImpl } from "./FormDetailsChannelApiImpl";
 
-interface IOwnProps {
+interface Props {
   children;
 }
 
-const FormDetailsContextProvider: React.FC<IOwnProps> = ({ children }) => {
+const FormDetailsContextProvider: React.FC<Props> = ({ children }) => {
   const appContext = useDevUIAppContext();
-  const baseUrl = appContext.transformEndpointBaseUrl(
-    `${appContext.getQuarkusAppOrigin()}${appContext.getQuarkusAppRootPath()}`
+  const baseUrl = useMemo(
+    () =>
+      appContext.transformEndpointBaseUrl(`${appContext.getQuarkusAppOrigin()}${appContext.getQuarkusAppRootPath()}`),
+    [appContext]
   );
+
   return (
-    <FormDetailsContext.Provider value={new FormDetailsGatewayApiImpl(baseUrl)}>{children}</FormDetailsContext.Provider>
+    <FormDetailsContext.Provider value={new FormDetailsChannelApiImpl(baseUrl)}>{children}</FormDetailsContext.Provider>
   );
 };
 
