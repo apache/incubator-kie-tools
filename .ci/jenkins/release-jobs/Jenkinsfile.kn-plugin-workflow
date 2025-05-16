@@ -48,28 +48,6 @@ pipeline {
     }
 
     stages {
-        stage("debug") {
-            steps {
-                script {
-                    sh """
-                    #!/bin/bash -el
-                    pwd
-                    ls -laht
-                    echo "--------------------------------"
-                    ls -laht ${env.WORKSPACE}
-                    echo "--------------------------------"
-                    ls -laht ${env.MAVEN_ARGS}
-                    echo "--------------------------------"
-                    cat ${env.MAVEN_SETTINGS_PATH}
-                    echo "--------------------------------"
-                    cat ${env.MAVEN_SETTINGS_PATH}
-
-                    exit 1
-                    """            
-                }
-            }
-        }
-
         stage('Load local shared scripts') {
             steps {
                 script {
@@ -114,7 +92,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm()
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsReleaseConfigFileId}")
                     }
                 }
             }
