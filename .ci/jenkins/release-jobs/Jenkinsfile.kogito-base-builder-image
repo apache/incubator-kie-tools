@@ -126,6 +126,9 @@ pipeline {
         }
 
         stage('Setup release candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+            }
             steps {
                 script {
                     env.RELEASE_IMAGE_TAR_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-dev-deployment-base-image.tar.gz"
@@ -139,6 +142,9 @@ pipeline {
         }
 
         stage('Sign artifact for Apache release') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+            }
             steps {
                 dir("${env.RELEASE_ARTIFACTS_DIR}") {
                     script {
@@ -150,6 +156,9 @@ pipeline {
         }
 
         stage('Publish Release Candidate artifacts') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+            }
             steps {
                 script {
                     releaseUtils.publishArtifacts(
