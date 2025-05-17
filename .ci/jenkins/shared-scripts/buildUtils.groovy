@@ -85,13 +85,7 @@ def pnpmBootstrap(String filters = '', String mavenArgs = '') {
 */
 def pnpmBuildFull(Integer workspaceConcurrency = 1) {
     sh """
-    #!/bin/bash -el
-    
-    echo "--------------------------------"
-    echo "DEBUG: KIE_TOOLS_BUILD"
-    env | grep KIE_TOOLS_BUILD
-    echo "--------------------------------"
-    
+    #!/bin/bash -el    
     pnpm -r --workspace-concurrency=${workspaceConcurrency} build:prod
     """.trim()
 }
@@ -103,6 +97,18 @@ def pnpmBuild(String filters, String mavenArgs = '') {
     sh """
     #!/bin/bash -el
     export MAVEN_ARGS="${mavenArgs}"
+
+    echo "--------------------------------"
+    echo "DEBUG: MAVEN_ARGS"
+    echo "${MAVEN_ARGS}"
+    echo "--------------------------------"
+
+    echo "--------------------------------"
+    echo "DEBUG: KIE_TOOLS_BUILD"
+    env | grep KIE_TOOLS_BUILD
+    echo "--------------------------------"    
+    echo "--------------------------------"
+
     pnpm ${filters} --workspace-concurrency=1 build:prod
     """.trim()    
 }

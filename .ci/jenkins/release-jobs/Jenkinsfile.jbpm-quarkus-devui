@@ -120,10 +120,10 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        if (!params.DRY_RUN) {
-                            env.KIE_TOOLS_BUILD__mavenDeploySkip = 'false'
+                        env.KIE_TOOLS_BUILD__mavenDeploySkip = params.DRY_RUN ? 'true' : 'false'
+                        withEnv(["KIE_TOOLS_BUILD__mavenDeploySkip=${env.KIE_TOOLS_BUILD__mavenDeploySkip}"]) {
+                            buildUtils.pnpmBuild(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                         }
-                        buildUtils.pnpmBuild(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                     }
                 }
             }
