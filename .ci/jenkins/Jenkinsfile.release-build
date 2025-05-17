@@ -752,7 +752,8 @@ def jbpmQuarkusDevuiBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
-            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}")
         ]
     ).result
 }

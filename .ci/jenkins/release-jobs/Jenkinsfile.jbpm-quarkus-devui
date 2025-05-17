@@ -30,6 +30,7 @@ pipeline {
         booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
         string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
+        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
         string(name: 'PIPELINE_PATH', description: 'Path to run the pipeline')
     }
 
@@ -37,7 +38,6 @@ pipeline {
         KIE_TOOLS_BUILD__runLinters = 'false'
         KIE_TOOLS_BUILD__runTests = 'false'
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
-        KIE_TOOLS_BUILD__mavenDeploySkip = 'false'
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
@@ -106,6 +106,9 @@ pipeline {
         }
 
         stage('Setup signing key') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+            }
             steps {
                 script {
                     releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
@@ -117,16 +120,10 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        if (params.DRY_RUN) {
-                            env.KIE_TOOLS_BUILD__mavenDeploySkip = 'true'
+                        if (!params.DRY_RUN) {
+                            env.KIE_TOOLS_BUILD__mavenDeploySkip = 'false'
                         }
-                        configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsReleaseConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
-                            sh """#!/bin/bash -el
-                            pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
-                            pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Papache-release >> .mvn/maven.config'
-                            pnpm ${env.PNPM_FILTER_STRING} build:prod
-                            """.trim()
-                        }
+                        buildUtils.pnpmBuild(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                     }
                 }
             }
