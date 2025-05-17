@@ -81,7 +81,6 @@ pipeline {
                             "${params.BASE_REF}",
                             "${pipelineVars.kieToolsBotGithubCredentialsId}"
                         )
-
                         githubUtils.setupGitConfig()
                     }
                 }

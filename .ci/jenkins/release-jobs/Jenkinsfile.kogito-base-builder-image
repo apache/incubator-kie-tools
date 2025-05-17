@@ -46,12 +46,9 @@ pipeline {
         KOGITO_BASE_BUILDER_IMAGE__buildTag = "${params.RELEASE_VERSION}"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
-
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
-
         PNPM_FILTER_STRING = '-F @kie/kogito-base-builder-image...'
-
-        MAVEN_ARGS = "-Dmaven.repo.local=${WORKSPACE}/.maven"
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
     }
 
     stages {
@@ -90,6 +87,7 @@ pipeline {
                             "${params.BASE_REF}",
                             "${pipelineVars.kieToolsBotGithubCredentialsId}"
                         )
+                        githubUtils.setupGitConfig()
                     }
                 }
             }
@@ -99,7 +97,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm()
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsReleaseConfigFileId}")
                     }
                 }
             }
@@ -119,7 +117,10 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBuild(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
+                        env.KIE_TOOLS_BUILD__mavenDeploySkip = params.DRY_RUN ? 'true' : 'false'
+                        withEnv(["KIE_TOOLS_BUILD__mavenDeploySkip=${env.KIE_TOOLS_BUILD__mavenDeploySkip}"]) {
+                            buildUtils.pnpmBuild(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
+                        }
                     }
                 }
             }
