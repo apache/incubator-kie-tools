@@ -86,6 +86,12 @@ def pnpmBootstrap(String filters = '', String mavenArgs = '') {
 def pnpmBuildFull(Integer workspaceConcurrency = 1) {
     sh """
     #!/bin/bash -el
+    
+    echo "--------------------------------"
+    echo "DEBUG: KIE_TOOLS_BUILD"
+    env | grep KIE_TOOLS_BUILD
+    echo "--------------------------------"
+    
     pnpm -r --workspace-concurrency=${workspaceConcurrency} build:prod
     """.trim()
 }

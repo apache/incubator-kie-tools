@@ -165,17 +165,6 @@ pipeline {
                     }
                 }
 
-                stage('Kn Plugin Workflow') {
-                    when {
-                        expression { env.KN_PLUGIN_WORKFLOW == 'true' }
-                    }
-                    steps {
-                        script {
-                            knPluginWorkflowBuildJob()
-                        }
-                    }
-                }
-
                 stage('Serverless Logic Web Tools Swf Builder Image') {
                     when {
                         expression { env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE == 'true' }
@@ -297,6 +286,17 @@ pipeline {
                     }
                 }
 
+                stage('Sonataflow Management Console') {
+                    when {
+                        expression { env.SONATAFLOW_MANAGEMENT_CONSOLE == 'true' }
+                    }
+                    steps {
+                        script {
+                            sonataflowManagementConsoleBuildJob()
+                        }
+                    }
+                }
+
                 stage('Dependant build #1') {
                     stages {
                         stage('Dev Deployment Base Image') {
@@ -361,6 +361,17 @@ pipeline {
                             steps {
                                 script {
                                     standaloneEditorsCdnBuildJob()
+                                }
+                            }
+                        }
+
+                        stage('Kn Plugin Workflow') {
+                            when {
+                                expression { env.KN_PLUGIN_WORKFLOW == 'true' && (env.SONATAFLOW_QUARKUS_DEVUI_JOB_RESULT == 'SUCCESS') }
+                            }
+                            steps {
+                                script {
+                                    knPluginWorkflowBuildJob()
                                 }
                             }
                         }
@@ -753,6 +764,20 @@ def sonataflowQuarkusDevuiBuildJob() {
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
             string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
+        ]
+    ).result
+}
+
+def sonataflowManagementConsoleBuildJob() {
+    env.SONATAFLOW_MANAGEMENT_CONSOLE_JOB_RESULT = build(
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/sonataflow-management-console",
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
             string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
         ]
     ).result
