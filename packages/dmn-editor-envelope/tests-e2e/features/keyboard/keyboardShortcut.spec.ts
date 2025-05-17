@@ -20,9 +20,8 @@
 import { test, expect } from "../../__fixtures__/base";
 import { DefaultNodeName, NodeType } from "../../__fixtures__/nodes";
 
-test.beforeEach(async ({ editor, clipboard, context, browserName }) => {
+test.beforeEach(async ({ editor }) => {
   await editor.open();
-  clipboard.setup(context, browserName);
 });
 
 test.describe("Keyboard Shortcuts", () => {
@@ -127,11 +126,20 @@ test.describe("Keyboard Shortcuts", () => {
     await expect(diagram.get()).toHaveScreenshot("decision-node-cut-from-drd-using-cmd-key.png");
   });
 
-  test("Copy/Paste node using shortcuts", async ({ palette, nodes, diagram, browserName, page }) => {
+  test("Copy/Paste node using shortcuts", async ({
+    palette,
+    nodes,
+    diagram,
+    browserName,
+    page,
+    clipboard,
+    context,
+  }) => {
     test.skip(
       browserName === "webkit",
       "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
     );
+    clipboard.setup(context, browserName);
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
     await diagram.resetFocus();
     await nodes.select({ name: DefaultNodeName.DECISION });
@@ -154,12 +162,15 @@ test.describe("Keyboard Shortcuts", () => {
   });
 
   test("Undo/Redo actions using shortcuts", async ({ palette, diagram, page }) => {
-    await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
-    await diagram.resetFocus();
+    await palette.dragNewNode({
+      type: NodeType.INPUT_DATA,
+      targetPosition: { x: 100, y: 100 },
+      thenRenameTo: DefaultNodeName.INPUT_DATA,
+    });
     await palette.dragNewNode({
       type: NodeType.DECISION,
-      targetPosition: { x: 300, y: 300 },
-      thenRenameTo: "Second Decision",
+      targetPosition: { x: 300, y: 100 },
+      thenRenameTo: DefaultNodeName.DECISION,
     });
     await expect(diagram.get()).toHaveScreenshot("added-decision-for-undo-redo-action.png");
     await page.keyboard.press("ControlOrMeta+KeyZ");

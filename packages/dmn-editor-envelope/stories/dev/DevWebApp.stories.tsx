@@ -60,21 +60,11 @@ export type StorybookDmnEditorRootProps = DmnEditorRootProps & {
 };
 
 function DevWebApp(args: StorybookDmnEditorRootProps) {
-  const editorRef = useRef<DmnEditorRoot>();
+  const editor = useRef<DmnEditorRoot | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!loading && editorRef.current) return;
-    if (editorRef.current) {
-      editorRef.current.setContent("example.dmn", args.initialContent ?? emptyDmn);
-      setLoading(false);
-    }
-  }, [args.initialContent, loading]);
-
-  const envelopeContext = useMemo<
-    KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>
-  >(() => {
-    return {
+  const envelopeContext = useMemo<KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>>(
+    () => ({
       shared: {} as any,
       channelApi: messageBusClientApiMock<KogitoEditorChannelApi>(),
       services: {
@@ -82,21 +72,37 @@ function DevWebApp(args: StorybookDmnEditorRootProps) {
         i18n: new I18nService(),
       },
       supportedThemes: [],
-    };
-  }, []);
+    }),
+    []
+  );
 
   useEffect(() => {
-    const redoId = envelopeContext.services.keyboardShortcuts.registerKeyPress("shift+ctrl+z", ``, async () => {
-      editorRef.current?.redo();
-    });
+    if (editor.current && loading) {
+      editor.current.setContent("example.dmn", args.initialContent ?? emptyDmn);
+      setLoading(false);
+    }
+  }, [args.initialContent, loading]);
 
-    const undoId = envelopeContext.services.keyboardShortcuts.registerKeyPress("ctrl+z", ``, async () => {
-      editorRef.current?.undo();
-    });
+  useEffect(() => {
+    const redo = envelopeContext.services.keyboardShortcuts.registerKeyPress(
+      "Ctrl+Shift+Z",
+      `Edit | Redo last edit`,
+      async () => {
+        editor.current?.redo();
+      }
+    );
+
+    const undo = envelopeContext.services.keyboardShortcuts.registerKeyPress(
+      "Ctrl+Z",
+      `Edit | Undo last edit`,
+      async () => {
+        editor.current?.undo();
+      }
+    );
 
     return () => {
-      envelopeContext.services.keyboardShortcuts.deregister(redoId);
-      envelopeContext.services.keyboardShortcuts.deregister(undoId);
+      envelopeContext.services.keyboardShortcuts.deregister(redo);
+      envelopeContext.services.keyboardShortcuts.deregister(undo);
     };
   }, [envelopeContext]);
 
@@ -124,10 +130,8 @@ function DevWebApp(args: StorybookDmnEditorRootProps) {
   );
 
   const onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot = useCallback(
-    (normalizedPosixPathRelativeToTheWorkspaceRoot: string) => {
-      envelopeContext?.channelApi.notifications.kogitoWorkspace_openFile.send(
-        normalizedPosixPathRelativeToTheWorkspaceRoot
-      );
+    (path: string) => {
+      envelopeContext.channelApi.notifications.kogitoWorkspace_openFile.send(path);
     },
     [envelopeContext]
   );
@@ -144,7 +148,7 @@ function DevWebApp(args: StorybookDmnEditorRootProps) {
           {!loading && <KeyBindingsHelpOverlay />}
           <DmnEditorRoot
             {...args}
-            exposing={(dmnEditorRoot) => (editorRef.current = dmnEditorRoot)}
+            exposing={(ref) => (editor.current = ref)}
             onNewEdit={onNewEdit}
             workspaceRootAbsolutePosixPath={
               args.workspaceRootAbsolutePosixPath ?? DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH
@@ -154,7 +158,7 @@ function DevWebApp(args: StorybookDmnEditorRootProps) {
             onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot={
               onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot
             }
-            keyboardShortcutsService={envelopeContext?.services.keyboardShortcuts}
+            keyboardShortcutsService={envelopeContext.services.keyboardShortcuts}
             isEvaluationHighlightsSupported={args.isEvaluationHighlightsSupported ?? false}
             isReadOnly={args.isReadOnly}
           />
@@ -179,7 +183,7 @@ function messageBusClientApiMock<T extends ApiDefinition<T>>(): MessageBusClient
       subscribe: () => {},
       unsubscribe: () => {},
     }),
-    requests: proxyMock(() => Promise.resolve()),
+    requests: proxyMock((value: any) => Promise.resolve(new ResourcesList("", []))),
     shared: proxyMock({
       set: () => {},
       subscribe: () => {},
@@ -197,10 +201,10 @@ export default meta;
 type Story = StoryObj<typeof DevWebApp>;
 
 export const WebApp: Story = {
-  render: (args) => DevWebApp(args),
+  render: (args) => <DevWebApp {...args} />,
   args: {
     initialContent: emptyDmn,
-    workspaceRootAbsolutePosixPath: "path1/subpath/newModel1.dmn",
+    workspaceRootAbsolutePosixPath: "/",
     isEvaluationHighlightsSupported: true,
     isReadOnly: false,
   },
