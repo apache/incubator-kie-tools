@@ -18,7 +18,7 @@
  */
 
 import * as vscode from "vscode";
-import { ColorThemeKind, TextDocument, UIKind } from "vscode";
+import { ColorThemeKind, FileSystemWatcher, TextDocument, UIKind } from "vscode";
 import {
   ChannelType,
   EditorApi,
@@ -62,6 +62,14 @@ const decoder = new TextDecoder("utf-8");
 export class VsCodeKieEditorController implements EditorApi {
   private broadcastSubscription: (msg: EnvelopeBusMessage<unknown, any>) => void;
   private changeDocumentSubscription: vscode.Disposable | undefined;
+  private fileWatcher: FileSystemWatcher;
+
+  private yesKeepTheChanges = "Yes, keep the changes";
+  private noDiscardTheChanges = "No, discard and reload from disk";
+  private warningMessage =
+    "This file was changed externally. Do you want to keep the changes you made here and discard the external changes?";
+
+  private hasPendingExternalChanges = false;
 
   public constructor(
     public readonly document: KogitoEditorDocument,
@@ -167,9 +175,12 @@ export class VsCodeKieEditorController implements EditorApi {
 
   public setupPanelActiveStatusChange() {
     this.panel.onDidChangeViewState(
-      () => {
+      async () => {
         if (this.panel.active) {
           this.editorStore.setActive(this);
+          if (this.hasPendingExternalChanges) {
+            await this.showExternalChangesNotification();
+          }
         }
 
         if (!this.panel.active && this.editorStore.isActive(this)) {
@@ -187,6 +198,7 @@ export class VsCodeKieEditorController implements EditorApi {
         this.envelopeServer.stopInitPolling();
         this.editorStore.close(this);
         this.messageBroadcaster.unsubscribe(this.broadcastSubscription);
+        this.fileWatcher.dispose();
       },
       this,
       this.context.subscriptions
@@ -199,6 +211,10 @@ export class VsCodeKieEditorController implements EditorApi {
 
   public hasUri(uri: vscode.Uri) {
     return this.document.document.uri === uri;
+  }
+
+  public isFileOpenInThisEditor(uri: vscode.Uri) {
+    return this.document.document.uri.path === uri.path;
   }
 
   public isActive() {
@@ -257,6 +273,42 @@ export class VsCodeKieEditorController implements EditorApi {
     this.changeDocumentSubscription = undefined;
   }
 
+  private async showExternalChangesNotification() {
+    const selection = await vscode.window.showWarningMessage(
+      this.warningMessage,
+      this.yesKeepTheChanges,
+      this.noDiscardTheChanges
+    );
+
+    if (selection === this.noDiscardTheChanges) {
+      await (this.document.document as VsCodeKieEditorCustomDocument).revert(undefined!);
+      await vscode.commands.executeCommand("workbench.action.files.save");
+    }
+    this.hasPendingExternalChanges = false;
+  }
+
+  public startListeningToExternalFileChanges() {
+    this.fileWatcher?.dispose();
+    const fileTypes = this.getFileTypes();
+    this.fileWatcher = vscode.workspace.createFileSystemWatcher(`**/*.{${fileTypes}}`);
+
+    this.fileWatcher.onDidChange(async (e) => {
+      if (!(this.document.document as VsCodeKieEditorCustomDocument).isDirty) {
+        await (this.document.document as VsCodeKieEditorCustomDocument).revert(undefined!);
+      } else if (this.isFileOpenInThisEditor(e)) {
+        if (!this.isActive()) {
+          this.hasPendingExternalChanges = true;
+        } else {
+          await this.showExternalChangesNotification();
+        }
+      }
+    });
+  }
+
+  private getFileTypes() {
+    return this.envelopeLocator.envelopeMappings.flatMap((m) => m.type).join();
+  }
+
   public startListeningToDocumentChanges() {
     this.changeDocumentSubscription?.dispose();
     this.changeDocumentSubscription = vscode.workspace.onDidChangeTextDocument(async (e) => {
@@ -268,7 +320,7 @@ export class VsCodeKieEditorController implements EditorApi {
         return;
       }
 
-      this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
+      await this.envelopeServer.envelopeApi.requests.kogitoEditor_contentChanged(
         {
           content: e.document.getText(),
           normalizedPosixPathRelativeToTheWorkspaceRoot: __path.posix.normalize(
