@@ -760,14 +760,14 @@ export class IdentifiersRepository {
   }
 
   private addDecisionTableEntryNode(parent: IdentifierContext, entryNode: ExpressionSource) {
+    this.addExpression(parent, entryNode);
     const ruleInputElementNode = this.addIdentifierContext({
       uuid: entryNode["@_id"] ?? "",
-      identifierDefinedByTheContext: "",
-      kind: FeelSyntacticSymbolNature.LocalVariable,
+      identifierDefinedByTheContext: "?",
+      kind: FeelSyntacticSymbolNature.DynamicVariable,
       parentContext: parent,
     });
     parent.children.set(ruleInputElementNode.uuid, ruleInputElementNode);
-    this.addExpression(parent, entryNode);
   }
 
   private addDecisionTableInputEntryNode(parent: IdentifierContext, inputEntryNode: DMN15__tInputClause) {
