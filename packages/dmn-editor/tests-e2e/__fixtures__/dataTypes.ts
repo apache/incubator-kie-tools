@@ -18,6 +18,8 @@
  */
 
 import { Monaco } from "@kie-tools/boxed-expression-component/tests-e2e/__fixtures__/monaco";
+import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+
 import { Page } from "@playwright/test";
 
 export enum DataType {
@@ -46,6 +48,22 @@ export enum RangeConstraintPosition {
   END = "end",
 }
 
+export enum DefaultDataTypeName {
+  Undefined = "New Data type - <Undefined>",
+  Any = "New Data type - Any",
+  Boolean = "New Data type - boolean",
+  Context = "New Data type - context",
+  Date = "New Data type - date",
+  DateTime = "New Data type - date and time",
+  DateTimeDuration = "New Data type - days and time duration",
+  Number = "New Data type - number",
+  String = "New Data type - string",
+  Time = "New Data type - time",
+  YearsMonthsDuration = "New Data type - years and months duration",
+}
+
+export const DMN15_SPEC_TYPE_LANGUAGE = DMN15_SPEC.typeLanguage.default;
+
 export class DataTypes {
   constructor(
     public page: Page,
@@ -54,6 +72,14 @@ export class DataTypes {
 
   public get() {
     return this.page.getByTestId("kie-tools--dmn-editor--data-types-container");
+  }
+
+  public resetFocus() {
+    return this.get().click({ position: { x: 0, y: 0 } });
+  }
+
+  public getDataType(args: { name: string }) {
+    return this.page.getByTestId("kie-tools--dmn-editor--data-types-list").getByText(args.name, { exact: true });
   }
 
   public getNoneConstraintButton() {
@@ -72,8 +98,25 @@ export class DataTypes {
     return this.get().getByRole("button", { name: ConstraintType.RANGE, exact: true });
   }
 
+  public enableDataTypeStruct() {
+    this.get().locator("span", { hasText: "Is struct?" }).last().click();
+  }
+
+  public async addDataTypeStructProperty(args: { name: string }) {
+    await this.get().getByTitle("Add item component (at the top)").click();
+    await this.changeDataTypePropertiesTable({ name: args.name });
+  }
+
+  public changeDataTypePropertiesTable(args: { name: string }) {
+    return this.get().getByRole("table").getByPlaceholder("Enter a name...").first().fill(args.name);
+  }
+
   public async createFirstCustonDataType() {
     await this.get().getByRole("button", { name: "Create a custom data type" }).click();
+  }
+
+  public async pasteFirstDataType() {
+    await this.get().getByRole("button", { name: "Paste data type" }).click();
   }
 
   public async createNewDataType() {
@@ -86,6 +129,10 @@ export class DataTypes {
 
   public async changeDataTypeName(args: { newName: string }) {
     await this.get().getByPlaceholder("Enter a name...").fill(args.newName);
+  }
+
+  public async addDataTypeDescription(args: { newDescription: string }) {
+    await this.get().getByPlaceholder("Enter a description...").fill(args.newDescription);
   }
 
   public async changeDataTypeBaseType(args: { newBaseType: DataType }) {
