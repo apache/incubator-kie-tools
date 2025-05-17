@@ -27,10 +27,10 @@ pipeline {
     }
 
     parameters {
-        booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
-        string(description: 'Base Ref', name: 'BASE_REF')
-        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
+        booleanParam(name: 'DRY_RUN', description: 'Dry run', defaultValue: true)
+        string(name: 'RELEASE_VERSION', description: 'Release Version', defaultValue: '0.0.0')
+        string(name: 'BASE_REF', description: 'GitHub Base Ref (tag or branch)')
+        string(name: 'RELEASE_CANDIDATE_VERSION', description: 'Release Candidate Version', defaultValue: '')
         string(name: 'PIPELINE_PATH', description: 'Path to run the pipeline')
     }
 
@@ -46,14 +46,10 @@ pipeline {
         SONATAFLOW_DEVMODE_IMAGE__buildTag = "${params.RELEASE_VERSION}"
 
         MAVEN_SETTINGS_PATH = "${WORKSPACE}/kie-settings.xml"
-
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
-
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
-
         PNPM_FILTER_STRING = '-F @kie-tools/sonataflow-devmode-image...'
-
-        MAVEN_ARGS = "-Dmaven.repo.local=${WORKSPACE}/.maven"
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
     }
 
     stages {
