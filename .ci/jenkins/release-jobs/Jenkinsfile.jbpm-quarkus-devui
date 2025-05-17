@@ -40,7 +40,6 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
-
         PNPM_FILTER_STRING = '-F jbpm-quarkus-devui...'
         MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
     }
@@ -99,7 +98,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}", "${env.MAVEN_ARGS}")
+                        buildUtils.pnpmBootstrap(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                     }
                 }
             }

@@ -37,14 +37,11 @@ pipeline {
     environment {
         KIE_TOOLS_BUILD__runLinters = 'false'
         KIE_TOOLS_BUILD__runTests = 'false'
-        KIE_TOOLS_BUILD__runEndToEndTests = 'false'
-        KIE_TOOLS_BUILD__mavenDeploySkip = 'false'
+        KIE_TOOLS_BUILD__runEndToEndTests = 'false'        
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
-
         PNPM_FILTER_STRING = '-F sonataflow-quarkus-devui...'
-
-        MAVEN_ARGS = "-Dmaven.repo.local=${WORKSPACE}/.maven"
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
     }
 
     stages {
@@ -122,10 +119,10 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        if (params.DRY_RUN) {
-                            env.KIE_TOOLS_BUILD__mavenDeploySkip = 'true'
+                        env.KIE_TOOLS_BUILD__mavenDeploySkip = params.DRY_RUN ? 'true' : 'false'
+                        withEnv(["KIE_TOOLS_BUILD__mavenDeploySkip=${env.KIE_TOOLS_BUILD__mavenDeploySkip}"]) {
+                            buildUtils.pnpmBuild(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                         }
-                        buildUtils.pnpmBuild(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                     }
                 }
             }
