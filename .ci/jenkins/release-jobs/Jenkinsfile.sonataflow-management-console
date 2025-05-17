@@ -46,12 +46,9 @@ pipeline {
         SONATAFLOW_MANAGEMENT_CONSOLE__buildTag = "latest ${params.RELEASE_VERSION}"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
-
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
-
         PNPM_FILTER_STRING = '-F @kie-tools/sonataflow-management-console-image...'
-
-        MAVEN_ARGS = "-Dmaven.repo.local=${WORKSPACE}/.maven"
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
     }
 
     stages {
@@ -113,7 +110,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm()
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsReleaseConfigFileId}")
                     }
                 }
             }
