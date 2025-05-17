@@ -97,18 +97,6 @@ def pnpmBuild(String filters, String mavenArgs = '') {
     sh """
     #!/bin/bash -el
     export MAVEN_ARGS="${mavenArgs}"
-
-    echo "--------------------------------"
-    echo "DEBUG: MAVEN_ARGS"
-    echo "${MAVEN_ARGS}"
-    echo "--------------------------------"
-
-    echo "--------------------------------"
-    echo "DEBUG: KIE_TOOLS_BUILD"
-    env | grep KIE_TOOLS_BUILD
-    echo "--------------------------------"    
-    echo "--------------------------------"
-
     pnpm ${filters} --workspace-concurrency=1 build:prod
     """.trim()    
 }

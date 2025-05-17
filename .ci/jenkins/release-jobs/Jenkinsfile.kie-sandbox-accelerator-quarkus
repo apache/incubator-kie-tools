@@ -81,6 +81,8 @@ pipeline {
                             "${params.BASE_REF}",
                             "${pipelineVars.kieToolsBotGithubCredentialsId}"
                         )
+
+                        githubUtils.setupGitConfig()
                     }
                 }
             }
@@ -142,9 +144,6 @@ pipeline {
                     script {
 
                         sh """#!/bin/bash -el
-                        git config user.email asf-ci-kie@jenkins.kie.apache.org
-                        git config user.name asf-ci-kie
-
                         git checkout --orphan ${params.RELEASE_VERSION}
 
                         echo "Copy content"
