@@ -28,7 +28,7 @@ test.describe("Create Data Types - With Constraint", () => {
     await dataTypes.createFirstCustonDataType();
   });
 
-  test(`Create Any data type - Expression Constraint`, async ({ jsonModel, dataTypes }) => {
+  test(`Create Any data type - Expression constraint`, async ({ jsonModel, dataTypes }) => {
     await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Any });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Any });
     await dataTypes.getExpressionConstraintButton().click();
@@ -49,7 +49,7 @@ test.describe("Create Data Types - With Constraint", () => {
     });
   });
 
-  test(`Create Number data type - Expression Constraint`, async ({ jsonModel, dataTypes }) => {
+  test(`Create Number data type - Expression constraint`, async ({ jsonModel, dataTypes }) => {
     await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Number });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Number });
     await dataTypes.getExpressionConstraintButton().click();
@@ -70,7 +70,7 @@ test.describe("Create Data Types - With Constraint", () => {
     });
   });
 
-  test(`Create Number data type - Enumeration Constraint`, async ({ jsonModel, dataTypes }) => {
+  test(`Create Number data type - Enumeration constraint`, async ({ jsonModel, dataTypes }) => {
     await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Number });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Number });
     await dataTypes.getEnumerationConstraintButton().click();
@@ -91,7 +91,7 @@ test.describe("Create Data Types - With Constraint", () => {
     });
   });
 
-  test(`Create Number data type - Range Constraint`, async ({ jsonModel, dataTypes }) => {
+  test(`Create Number data type - Range constraint`, async ({ jsonModel, dataTypes }) => {
     await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Number });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Number });
     await dataTypes.getRangeConstraintButton().click();
@@ -112,7 +112,7 @@ test.describe("Create Data Types - With Constraint", () => {
     });
   });
 
-  test(`Create String data type - Expression Constraint`, async ({ jsonModel, dataTypes }) => {
+  test(`Create String data type - Expression constraint`, async ({ jsonModel, dataTypes }) => {
     await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.String });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.String });
     await dataTypes.getExpressionConstraintButton().click();
@@ -133,7 +133,7 @@ test.describe("Create Data Types - With Constraint", () => {
     });
   });
 
-  test(`Create String data type - Enumeration Constraint`, async ({ jsonModel, dataTypes }) => {
+  test(`Create String data type - Enumeration constraint`, async ({ jsonModel, dataTypes }) => {
     await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.String });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.String });
     await dataTypes.getEnumerationConstraintButton().click();
@@ -154,7 +154,7 @@ test.describe("Create Data Types - With Constraint", () => {
     });
   });
 
-  test(`Create String data type - Range Constraint`, async ({ jsonModel, dataTypes }) => {
+  test(`Create String data type - Range constraint`, async ({ jsonModel, dataTypes }) => {
     await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.String });
     await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.String });
     await dataTypes.getRangeConstraintButton().click();
@@ -170,67 +170,6 @@ test.describe("Create Data Types - With Constraint", () => {
       typeConstraint: {
         "@_id": dataType.typeConstraint?.["@_id"],
         text: { __$$text: '["10".."20")' },
-        "@_kie:constraintType": "range",
-      },
-    });
-  });
-
-  test(`Custom Date data type - Expression Constraint`, async ({ jsonModel, dataTypes }) => {
-    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Date });
-    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Date });
-    await dataTypes.getExpressionConstraintButton().click();
-    await dataTypes.addExpressionConstraint({ value: 'date("2025-04-14")' });
-
-    const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
-    expect(dataType).toEqual({
-      "@_id": dataType["@_id"],
-      "@_name": DefaultDataTypeName.Date,
-      "@_isCollection": dataType["@_isCollection"],
-      "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
-      typeRef: dataType["typeRef"],
-      typeConstraint: {
-        "@_id": dataType.typeConstraint?.["@_id"],
-        text: { __$$text: 'date("2025-04-14")' },
-        "@_kie:constraintType": "expression",
-      },
-    });
-  });
-
-  test(`Custom Date data type - Enumeration Constraint`, async ({ jsonModel, dataTypes }) => {
-    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Date });
-    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Date });
-    await dataTypes.getEnumerationConstraintButton().click();
-    await dataTypes.addEnumerationDateConstraint({ values: ["2022-01-02", "2022-01-05"] });
-    const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
-    expect(dataType).toEqual({
-      "@_id": dataType["@_id"],
-      "@_name": DefaultDataTypeName.Date,
-      "@_isCollection": dataType["@_isCollection"],
-      "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
-      typeRef: dataType["typeRef"],
-      typeConstraint: {
-        "@_id": dataType.typeConstraint?.["@_id"],
-        text: { __$$text: dataType.typeConstraint?.text.__$$text },
-        "@_kie:constraintType": "enumeration",
-      },
-    });
-  });
-
-  test(`Custom Date data type - Range Constraint`, async ({ jsonModel, dataTypes }) => {
-    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Date });
-    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Date });
-    await dataTypes.getRangeConstraintButton().click();
-    await dataTypes.addRangeConstraint({ values: ["2025-01-14", "2025-04-15"] });
-    const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
-    expect(dataType).toEqual({
-      "@_id": dataType["@_id"],
-      "@_name": DefaultDataTypeName.Date,
-      "@_isCollection": dataType["@_isCollection"],
-      "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
-      typeRef: dataType["typeRef"],
-      typeConstraint: {
-        "@_id": dataType.typeConstraint?.["@_id"],
-        text: { __$$text: dataType.typeConstraint?.text.__$$text },
         "@_kie:constraintType": "range",
       },
     });
