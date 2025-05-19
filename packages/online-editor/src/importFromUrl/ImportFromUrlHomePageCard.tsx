@@ -168,7 +168,7 @@ export function ImportFromUrlCard() {
         <CardBody>
           <TextContent>
             <Text component={TextVariants.p}>
-              Import a Git repository, a GitHub Gist, Bitbucket Snippet, or any other file URL.
+              Import a Git repository, a GitHub Gist, Bitbucket Snippet, GitLab Snippet or any other file URL.
             </Text>
           </TextContent>
           <br />
