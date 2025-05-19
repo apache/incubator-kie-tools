@@ -16,6 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export * from "./TaskFormGatewayApi";
+export * from "./TaskFormChannelApiImpl";
 export * from "./TaskFormContext";
 export * from "./TaskFormContextProvider";

@@ -16,15 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+import { JobsManagementState } from "./JobsManagementApi";
+
 export interface JobsManagementEnvelopeApi {
-  jobsManagement__init(association: Association): Promise<void>;
+  jobsManagement__init(association: Association, initArgs: JobsManagementInitArgs): Promise<void>;
 }
 export interface Association {
   origin: string;
   envelopeServerId: string;
 }
 
-export interface QueryPage {
-  offset: number;
-  limit: number;
+export interface JobsManagementInitArgs {
+  initialState?: JobsManagementState;
 }

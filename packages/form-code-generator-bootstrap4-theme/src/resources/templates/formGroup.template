@@ -1,4 +1,4 @@
 <div class="form-group">
-    <label for="<%=props.id%>"><%=props.label%></label>
+    <label for="<%= isListItem ? "item-"+id : id %>"><%= label %></label>
     <%= input %>
 </div>

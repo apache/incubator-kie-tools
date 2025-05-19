@@ -23,9 +23,14 @@ import * as child_process from "child_process";
 import { getMarshaller } from "@kie-tools/scesim-marshaller";
 
 const files = [
-  "../tests-data--manual/OldEnoughTest.scesim",
-  "../tests-data--manual/TrafficViolationTest.scesim",
-  "../tests-data--manual/simple.scesim",
+  "../tests-data--manual/dmn/collection.scesim",
+  "../tests-data--manual/dmn/expression.scesim",
+  "../tests-data--manual/dmn/imported.scesim",
+  "../tests-data--manual/dmn/simple.scesim",
+  "../tests-data--manual/dmn/simpleTypes.scesim",
+  "../tests-data--manual/dmn/TrafficViolationTest.scesim",
+  "../tests-data--manual/dmn/undefined.scesim",
+  "../tests-data--manual/rule/OldEnoughTest.scesim",
 ];
 
 const tmpDir = path.join(__dirname, "..", "dist-tests", "scesim-marshaller-type-safety-tests");

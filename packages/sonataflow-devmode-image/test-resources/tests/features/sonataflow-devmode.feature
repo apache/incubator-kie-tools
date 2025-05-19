@@ -110,14 +110,14 @@ Feature: Serverless Workflow devmode images
       | path                 | /q/dev-ui/org.kie.kogito-addons-quarkus-data-index-inmemory/dataindex |
       | request_method       | GET                                                                   |
       | wait                 | 480                                                                   |
-      | expected_status_code | 200                                                                   |
+      | expected_status_code | 403                                                                   |
     And check that page is served
       | property             | value                                                                  |
       | port                 | 8080                                                                   |
       | path                 | /q/dev-ui/org.apache.kie.sonataflow.sonataflow-quarkus-devui/workflows |
       | request_method       | GET                                                                    |
       | wait                 | 480                                                                    |
-      | expected_status_code | 200                                                                    |
+      | expected_status_code | 403                                                                    |
 
   Scenario: Verify if container starts in devmode with service discovery enabled
     When container is started with env

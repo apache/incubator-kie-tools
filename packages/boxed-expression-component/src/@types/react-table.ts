@@ -50,12 +50,16 @@ declare module "react-table" {
     label: string;
     /** Custom Element to be rendered in place of the column label */
     headerCellElement?: JSX.Element;
+    /** Additional Element to be rendered in the Header Cell top right corner */
+    headerCellElementExtension?: JSX.Element;
     /** It makes this column header inline editable (with double-click) */
     isInlineEditable?: boolean;
     /** Column data type */
     dataType: string;
     /** It tells whether column is of type counter or not */
     isRowIndexColumn: boolean;
+    /** It tells if a header is a Feel Expression or just plain text */
+    isHeaderAFeelExpression?: boolean;
 
     cellDelegate?: (id: string) => React.ReactNode;
 

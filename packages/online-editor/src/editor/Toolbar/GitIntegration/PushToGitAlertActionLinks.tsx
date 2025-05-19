@@ -24,7 +24,7 @@ import { AccountsDispatchActionKind, useAccountsDispatch } from "../../../accoun
 import { WorkspaceKind } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceOrigin";
 import { Alert, AlertActionLink } from "@patternfly/react-core/dist/js/components/Alert";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
-import { SelectPosition } from "@patternfly/react-core/dist/js/components/Select";
+import { SelectPosition } from "@patternfly/react-core/deprecated";
 import { AuthProviderGroup } from "../../../authProviders/AuthProvidersApi";
 
 export function PushToGitAlertActionLinks(props: {
@@ -61,7 +61,7 @@ export function PushToGitAlertActionLinks(props: {
       {!props.canPush && (
         <Alert
           isInline={true}
-          variant={"default"}
+          variant={"custom"}
           title={"Can't Push without selecting an authentication source"}
           actionLinks={
             <>

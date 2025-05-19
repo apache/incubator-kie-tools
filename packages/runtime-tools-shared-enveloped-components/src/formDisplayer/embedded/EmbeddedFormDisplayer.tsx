@@ -72,7 +72,7 @@ export const EmbeddedFormDisplayer = React.forwardRef((props: Props, forwardedRe
         }
       );
     },
-    []
+    [props.context, props.data, props.formContent]
   );
 
   return (

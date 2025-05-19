@@ -58,10 +58,7 @@ const schema = {
       type: "date",
     },
   },
-  friends: { type: Array },
-  "friends.$": Object,
-  "friends.$.name": { type: String },
-  "friends.$.age": { type: Number },
+  friends: { type: "foo" },
 };
 
 const doRenderField = (fieldName: string) => {
@@ -138,9 +135,9 @@ describe("<AutoField> tests", () => {
   it("<UnsupportedField> - rendering", () => {
     const { formElement } = doRenderField("friends");
 
-    expect(formElement.html).toContain("Unsupported field type: Array");
+    expect(formElement.html).toContain("Unsupported field type: ");
     expect(formElement.html).toContain(
-      `Cannot find form control for property <code>friends</code> with type <code>Array</code>.</p>`
+      `Cannot find form control for property <code>friends</code> with type <code></code>.</p>`
     );
   });
 });

@@ -18,8 +18,13 @@
  */
 
 import { GwtEditorWrapperFactory, XmlFormatter } from "../../common";
-import { BpmnEditorChannelApi, getBpmnLanguageData } from "../api";
-import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
+import { BpmnEditorChannelApi, BpmnEditorEnvelopeApi, getBpmnLanguageData } from "../api";
+import {
+  EditorFactory,
+  EditorInitArgs,
+  KogitoEditorEnvelopeApi,
+  KogitoEditorEnvelopeContextType,
+} from "@kie-tools-core/editor/dist/api";
 import { BpmnEditor, BpmnEditorImpl } from "./BpmnEditor";
 import { DmnLanguageServiceExposedInteropApi } from "./exposedInteropApi/DmnLanguageServiceExposedInteropApi";
 import { DmnLanguageService } from "@kie-tools/dmn-language-service";
@@ -32,11 +37,11 @@ export interface CustomWindow extends Window {
 
 declare let window: CustomWindow;
 
-export class BpmnEditorFactory implements EditorFactory<BpmnEditor, BpmnEditorChannelApi> {
+export class BpmnEditorFactory implements EditorFactory<BpmnEditor, BpmnEditorEnvelopeApi, BpmnEditorChannelApi> {
   constructor(private readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }) {}
 
   public async createEditor(
-    ctx: KogitoEditorEnvelopeContextType<BpmnEditorChannelApi>,
+    ctx: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, BpmnEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<BpmnEditor> {
     const dmnLs = new DmnLanguageService({

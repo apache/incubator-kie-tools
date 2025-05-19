@@ -21,7 +21,7 @@ import React, { useCallback } from "react";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
-import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
+import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import AngleLeftIcon from "@patternfly/react-icons/dist/js/icons/angle-left-icon";
@@ -32,13 +32,19 @@ import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
 import { AuthSessionsList } from "../authSessions/AuthSessionsList";
 import { useAuthSessions } from "../authSessions/AuthSessionsContext";
 import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+  EmptyStateFooter,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import UsersIcon from "@patternfly/react-icons/dist/js/icons/users-icon";
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "./AccountsContext";
 import { ConnectToOpenShiftSection } from "./openshift/ConnectToOpenShiftSection";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ConnectToKubernetesSection } from "./kubernetes/ConnectToKubernetesSection";
+import { Title } from "@patternfly/react-core/dist/js/components/Title/Title";
 
 export function AccountsIcon() {
   const accounts = useAccounts();
@@ -132,7 +138,7 @@ export function AccountsIcon() {
                         </TextContent>
                       </Flex>
                     </FlexItem>
-                    <AuthProviderIcon authProvider={accounts.selectedAuthProvider} size={"sm"} />
+                    <AuthProviderIcon authProvider={accounts.selectedAuthProvider} size="sm" />
                   </Flex>
                 </>
               )}
@@ -158,7 +164,7 @@ export function AccountsIcon() {
                         </TextContent>
                       </Flex>
                     </FlexItem>
-                    <AuthProviderIcon authProvider={accounts.selectedAuthProvider} size={"sm"} />
+                    <AuthProviderIcon authProvider={accounts.selectedAuthProvider} size="sm" />
                   </Flex>
                 </>
               )}
@@ -181,58 +187,57 @@ export function AccountsIcon() {
             </div>
           }
         >
-          <Page>
-            <PageSection variant={"light"}>
-              <>
-                {accounts.section === AccountsSection.HOME && (
-                  <>
-                    {authSessions.size <= 0 && (
-                      <Bullseye>
-                        <EmptyState style={{ maxWidth: "400px" }}>
-                          <EmptyStateIcon icon={UsersIcon} />
-                          <Title headingLevel="h4" size="md">
-                            {`Looks like you don't have any accounts connected yet`}
-                          </Title>
-                          <br />
-                          <br />
+          <PageSection variant={"light"}>
+            <>
+              {accounts.section === AccountsSection.HOME && (
+                <>
+                  {authSessions.size <= 0 && (
+                    <Bullseye>
+                      <EmptyState style={{ maxWidth: "400px" }}>
+                        <EmptyStateHeader icon={<EmptyStateIcon icon={UsersIcon} />}>
+                          <Title headingLevel="h4">{`Looks like you don't have any accounts connected yet`}</Title>
+                        </EmptyStateHeader>
+                        <br />
+                        <br />
 
-                          <EmptyStateBody>{`Connecting to external accounts enables Git and Cloud integrations.`}</EmptyStateBody>
-                          <EmptyStateBody>
-                            <small>{`The connected accounts credentials are stored locally in this browser and are not shared with anyone.`}</small>
-                          </EmptyStateBody>
+                        <EmptyStateBody>{`Connecting to external accounts enables Git and Cloud integrations.`}</EmptyStateBody>
+                        <EmptyStateBody>
+                          <small>{`The connected accounts credentials are stored locally in this browser and are not shared with anyone.`}</small>
+                        </EmptyStateBody>
+                        <EmptyStateFooter>
                           <Button
                             variant="primary"
                             onClick={() => accountsDispatch({ kind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER })}
                           >
                             Connect to an account
                           </Button>
-                        </EmptyState>
-                      </Bullseye>
-                    )}
-                    {authSessions.size > 0 && (
-                      <>
-                        <AuthSessionsList />
-                      </>
-                    )}
-                  </>
-                )}
-                {accounts.section === AccountsSection.CONNECT_TO_AN_ACCOUNT && (
-                  <AuthProvidersGallery
-                    backActionKind={AccountsDispatchActionKind.SELECT_AUTH_PROVIDER}
-                    authProviderGroup={accounts.authProviderGroup}
-                  />
-                )}
-                {accounts.section === AccountsSection.CONNECT_TO_GITHUB && (
-                  <ConnectToGitSection authProvider={accounts.selectedAuthProvider} />
-                )}
-                {accounts.section === AccountsSection.CONNECT_TO_BITBUCKET && (
-                  <ConnectToGitSection authProvider={accounts.selectedAuthProvider} />
-                )}
-                {accounts.section === AccountsSection.CONNECT_TO_OPENSHIFT && <ConnectToOpenShiftSection />}
-                {accounts.section === AccountsSection.CONNECT_TO_KUBERNETES && <ConnectToKubernetesSection />}
-              </>
-            </PageSection>
-          </Page>
+                        </EmptyStateFooter>
+                      </EmptyState>
+                    </Bullseye>
+                  )}
+                  {authSessions.size > 0 && (
+                    <>
+                      <AuthSessionsList />
+                    </>
+                  )}
+                </>
+              )}
+              {accounts.section === AccountsSection.CONNECT_TO_AN_ACCOUNT && (
+                <AuthProvidersGallery
+                  backActionKind={AccountsDispatchActionKind.SELECT_AUTH_PROVIDER}
+                  authProviderGroup={accounts.authProviderGroup}
+                />
+              )}
+              {accounts.section === AccountsSection.CONNECT_TO_GITHUB && (
+                <ConnectToGitSection authProvider={accounts.selectedAuthProvider} />
+              )}
+              {accounts.section === AccountsSection.CONNECT_TO_BITBUCKET && (
+                <ConnectToGitSection authProvider={accounts.selectedAuthProvider} />
+              )}
+              {accounts.section === AccountsSection.CONNECT_TO_OPENSHIFT && <ConnectToOpenShiftSection />}
+              {accounts.section === AccountsSection.CONNECT_TO_KUBERNETES && <ConnectToKubernetesSection />}
+            </>
+          </PageSection>
         </Modal>
       )}
     </>

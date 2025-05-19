@@ -24,13 +24,14 @@ import {
   EditorInitArgs,
   KogitoEditorEnvelopeContextType,
   KogitoEditorChannelApi,
+  KogitoEditorEnvelopeApi,
 } from "@kie-tools-core/editor/dist/api";
 
 export const FACTORY_TYPE = "pmml";
 
-export class PMMLEditorFactory implements EditorFactory<Editor, KogitoEditorChannelApi> {
+export class PMMLEditorFactory implements EditorFactory<Editor, KogitoEditorEnvelopeApi, KogitoEditorChannelApi> {
   public createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<Editor> {
     return Promise.resolve(new PMMLEditorInterface(envelopeContext));

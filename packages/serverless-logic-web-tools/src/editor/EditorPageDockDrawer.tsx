@@ -67,8 +67,8 @@ export const EditorPageDockDrawer = React.forwardRef<
   const notificationsPanelTabNames = useMemo(() => [i18n.terms.validation], [i18n.terms.validation]);
 
   useEffect(() => {
-    if (!notificationsPanelTabNames.includes(i18n.terms.execution)) {
-      notificationsToggle?.deleteNotificationsFromTab(i18n.terms.execution);
+    if (!notificationsPanelTabNames.includes(i18n.terms.evaluation)) {
+      notificationsToggle?.deleteNotificationsFromTab(i18n.terms.evaluation);
     }
     if (notificationsPanel && notificationsToggle) {
       const notifications = notificationsToggle.getNotifications();
@@ -76,7 +76,7 @@ export const EditorPageDockDrawer = React.forwardRef<
         notificationsPanel.getTab(tabName)?.kogitoNotifications_setNotifications(value.path, value.notifications);
       });
     }
-  }, [i18n.terms.execution, notificationsPanel, notificationsPanelTabNames, notificationsToggle]);
+  }, [i18n.terms.evaluation, notificationsPanel, notificationsPanelTabNames, notificationsToggle]);
 
   const onToggle = useCallback((panel: PanelId) => {
     setPanel((currentPanel) => {

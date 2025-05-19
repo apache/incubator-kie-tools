@@ -33,11 +33,12 @@ import {
   OnSceSimModelChange,
   TestScenarioEditorProps,
 } from "../../src/TestScenarioEditor";
+import { EMPTY_ONE_EIGHT } from "../../src/resources/EmptyScesimFile";
 import { SceSimEditorWrapper } from "../scesimEditorStoriesWrapper";
-import { emptyFileName, emptySceSim } from "../misc/empty/Empty.stories";
+import { emptyFileName } from "../misc/empty/Empty.stories";
 import { isOldEnoughDrl, isOldEnoughDrlFileName } from "../useCases/IsOldEnoughRule.stories";
 import { trafficViolationDmn, trafficViolationDmnFileName } from "../useCases/TrafficViolationDmn.stories";
-import { availableModelsByPath } from "../examples/AvailableDMNModels";
+import { availableModels, availableModelsByPath } from "../examples/AvailableDMNModels";
 
 function DevWebApp(props: TestScenarioEditorProps) {
   const [fileName, setFileName] = useState<string | undefined>("Untitled.scesim");
@@ -46,7 +47,7 @@ function DevWebApp(props: TestScenarioEditorProps) {
     pointer: number;
     stack: SceSimModel[];
   }>(() => {
-    const emptySceSimMarshaller = getMarshaller(emptySceSim);
+    const emptySceSimMarshaller = getMarshaller(EMPTY_ONE_EIGHT);
     return {
       marshaller: emptySceSimMarshaller,
       pointer: 0,
@@ -72,9 +73,16 @@ function DevWebApp(props: TestScenarioEditorProps) {
     }
   }, [currentModel, fileName, state.marshaller.builder]);
 
-  // TODO Unmarshall here the DMN
-  const externalModelsByNamespace = useMemo<ExternalDmnsIndex>(() => {
-    return currentModel.ScenarioSimulationModel.settings.dmnNamespace?.__$$text, {} as ExternalDmnsIndex;
+  const externalModelsByNamespace = useMemo<ExternalDmnsIndex | undefined>(() => {
+    if (currentModel.ScenarioSimulationModel.settings.dmnNamespace) {
+      const dmnModel = availableModels.find(
+        (model) =>
+          model.model.definitions["@_namespace"] ===
+          currentModel.ScenarioSimulationModel.settings.dmnNamespace?.__$$text
+      );
+      return new Map([[currentModel.ScenarioSimulationModel.settings.dmnNamespace?.__$$text, dmnModel]]);
+    }
+    return undefined;
   }, [currentModel.ScenarioSimulationModel.settings.dmnNamespace]);
 
   const onDragOver = useCallback((e: React.DragEvent) => {
@@ -134,7 +142,7 @@ function DevWebApp(props: TestScenarioEditorProps) {
   }, []);
 
   const reset = useCallback(() => {
-    const marshaller = getMarshaller(emptySceSim);
+    const marshaller = getMarshaller(EMPTY_ONE_EIGHT);
     setState({
       marshaller,
       pointer: 0,
@@ -172,7 +180,7 @@ function DevWebApp(props: TestScenarioEditorProps) {
             <StackItem>
               <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
                 <FlexItem shrink={{ default: "shrink" }}>
-                  <Button onClick={() => onSelectModel(emptySceSim, emptyFileName)}>Empty</Button>
+                  <Button onClick={() => onSelectModel(EMPTY_ONE_EIGHT, emptyFileName)}>Empty</Button>
                   &nbsp; &nbsp;
                   <Button onClick={() => onSelectModel(isOldEnoughDrl, isOldEnoughDrlFileName)}>
                     Are They Old Enough?
@@ -265,7 +273,7 @@ export const WebApp: Story = {
   render: (args) => DevWebApp(args),
   args: {
     issueTrackerHref: "https://github.com/apache/incubator-kie-issues/issues/new",
-    model: getMarshaller(emptySceSim).parser.parse(),
+    model: getMarshaller(emptyFileName).parser.parse(),
     openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: "Untitled.scesim",
   },
 };

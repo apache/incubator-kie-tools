@@ -21,6 +21,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import * as ReactTable from "react-table";
 import {
+  Action,
   BeeTableCellProps,
   BeeTableContextMenuAllowedOperationsConditions,
   BeeTableHeaderVisibility,
@@ -30,6 +31,7 @@ import {
   BoxedExpression,
   BoxedList,
   DmnBuiltInDataType,
+  ExpressionChangedArgs,
   generateUuid,
   Normalized,
 } from "../../api";
@@ -114,7 +116,7 @@ export function ListExpression({
   const beeTableRows = useMemo(() => {
     const rows = (listExpression.expression ?? []).map((item) => ({
       "@_id": generateUuid(),
-      expression: item,
+      expression: item?.__$$element ? item : undefined!,
     }));
 
     if (rows.length === 0) {
@@ -156,25 +158,28 @@ export function ListExpression({
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number }) => {
-      setExpression((prev: Normalized<BoxedList>) => {
-        const newItems = [...(prev.expression ?? [])];
-        const newListItems: Normalized<BoxedExpression>[] = [];
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedList>) => {
+          const newItems = [...(prev.expression ?? [])];
+          const newListItems: Normalized<BoxedExpression>[] = [];
 
-        for (let i = 0; i < args.rowsCount; i++) {
-          newListItems.push(undefined!); // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
-        }
+          for (let i = 0; i < args.rowsCount; i++) {
+            newListItems.push(undefined!); // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+          }
 
-        for (const newEntry of newListItems) {
-          newItems.splice(args.beforeIndex, 0, newEntry);
-        }
+          for (const newEntry of newListItems) {
+            newItems.splice(args.beforeIndex, 0, newEntry);
+          }
 
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedList> = {
-          ...prev,
-          expression: newItems,
-        };
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedList> = {
+            ...prev,
+            expression: newItems,
+          };
 
-        return ret;
+          return ret;
+        },
+        expressionChangedArgs: { action: Action.RowsAdded, rowIndex: args.beforeIndex, rowsCount: args.rowsCount },
       });
     },
     [setExpression]
@@ -183,18 +188,21 @@ export function ListExpression({
   const onRowDeleted = useCallback(
     (args: { rowIndex: number }) => {
       let oldExpression: Normalized<BoxedExpression> | undefined;
-      setExpression((prev: Normalized<BoxedList>) => {
-        const newItems = [...(prev.expression ?? [])];
-        oldExpression = newItems[args.rowIndex];
-        newItems.splice(args.rowIndex, 1);
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedList>) => {
+          const newItems = [...(prev.expression ?? [])];
+          oldExpression = newItems[args.rowIndex];
+          newItems.splice(args.rowIndex, 1);
 
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedList> = {
-          ...prev,
-          expression: newItems,
-        };
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedList> = {
+            ...prev,
+            expression: newItems,
+          };
 
-        return ret;
+          return ret;
+        },
+        expressionChangedArgs: { action: Action.RowRemoved, rowIndex: args.rowIndex },
       });
 
       setWidthsById(({ newMap }) => {
@@ -209,18 +217,21 @@ export function ListExpression({
   const onRowReset = useCallback(
     (args: { rowIndex: number }) => {
       let oldExpression: Normalized<BoxedExpression> | undefined;
-      setExpression((prev: Normalized<BoxedList>) => {
-        const newItems = [...(prev.expression ?? [])];
-        oldExpression = newItems[args.rowIndex];
-        newItems.splice(args.rowIndex, 1, undefined!); // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedList>) => {
+          const newItems = [...(prev.expression ?? [])];
+          oldExpression = newItems[args.rowIndex];
+          newItems.splice(args.rowIndex, 1, undefined!); // SPEC DISCREPANCY: Starting without an expression gives users the ability to select the expression type.
 
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedList> = {
-          ...prev,
-          expression: newItems,
-        };
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedList> = {
+            ...prev,
+            expression: newItems,
+          };
 
-        return ret;
+          return ret;
+        },
+        expressionChangedArgs: { action: Action.RowReset, rowIndex: args.rowIndex },
       });
 
       setWidthsById(({ newMap }) => {
@@ -238,18 +249,40 @@ export function ListExpression({
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
-      setExpression((prev: Normalized<BoxedList>) => {
-        // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-        const ret: Normalized<BoxedList> = {
-          ...prev,
-          "@_label": name,
-          "@_typeRef": typeRef,
-        };
+      const expressionChangedArgs: ExpressionChangedArgs = {
+        action: Action.VariableChanged,
+        variableUuid: expressionHolderId,
+        typeChange:
+          typeRef !== listExpression["@_typeRef"]
+            ? {
+                from: listExpression["@_typeRef"] ?? "",
+                to: typeRef,
+              }
+            : undefined,
+        nameChange:
+          name !== listExpression["@_label"]
+            ? {
+                from: listExpression["@_label"] ?? "",
+                to: name,
+              }
+            : undefined,
+      };
 
-        return ret;
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedList>) => {
+          // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
+          const ret: Normalized<BoxedList> = {
+            ...prev,
+            "@_label": name,
+            "@_typeRef": typeRef,
+          };
+
+          return ret;
+        },
+        expressionChangedArgs,
       });
     },
-    [setExpression]
+    [expressionHolderId, listExpression, setExpression]
   );
 
   const allowedOperations = useCallback(

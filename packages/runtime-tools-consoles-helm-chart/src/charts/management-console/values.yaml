@@ -27,8 +27,8 @@ name: management-console
 # -- Overrides the deployed application name
 appNameOverride: ""
 
-# -- Overrides the deployed application version
-appVersionOverride: ""
+# -- Overrides the OIDC Client ID used by the Management Console
+oidcClientIdOverride: ""
 
 # @ignored
 replicaCount: 1

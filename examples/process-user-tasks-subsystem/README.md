@@ -17,66 +17,103 @@
 
 # Example :: Process User Task Subsystem
 
-A quickstart project shows very typical User Task orchestration. It comes with two tasks assigned
-to human actors via groups assignments - `managers`. So essentially anyone who is a member of that
-group can act on the tasks. Though this example applies four eye principle which essentially means
-that user who approved first task cannot approve second one. So there must be always at least two
-distinct manager involved.
+## Description
 
-This example shows
+This example demonstrates a Hiring Process workflow. It begins with a new hiring request, followed by sequential interviews with HR and IT departments. Each department assesses the candidate's suitability. Based on the evaluations, the process determines whether the candidate is approved or denied, leading to the corresponding end event.
 
-- working with User Tasks
-- four eye principle with user tasks
+- New Hiring Process Model
+  <p align="center"><img width=75% height=50% src="docs/images/NewHiringProcessModel.png"></p>
 
-<p align="center"><img width=75% height=50% src="docs/images/process.png"></p>
+### Key Steps:
 
-- Diagram Properties (top)
-<p align="center"><img src="docs/images/diagramProperties.png"></p>
+**Start event**:
 
-- Diagram Properties (bottom)
-<p align="center"><img src="docs/images/diagramProperties3.png"></p>
+- The process is initiated with a _start event_ labeled "start new hiring process".
 
-- First Line Approval (top)
-<p align="center"><img src="docs/images/firstLineApprovalUserTask.png"></p>
+2. **New Hiring Task**:
 
-- First Line Approval (bottom)
-<p align="center"><img src="docs/images/firstLineApprovalUserTask2.png"></p>
+- The initial task labeled "New Hiring" sets up the hiring procedure.
 
-- First Line Approval (Assignments)
-<p align="center"><img src="docs/images/firstLineApprovalUserTaskAssignments.png"></p>
+* New Hirining Properties (Top)
+<p align="center"><img width=75% height=50% src="docs/images/NewHiringTop.png"></p>
 
-- Second Line Approval
-<p align="center"><img src="docs/images/secondLineApprovalUserTask.png"></p>
+3. **HR Interview**:
 
-- Second Line Approval (Assignments)
-<p align="center"><img src="docs/images/secondLineApprovalUserTaskAssignments.png"></p>
+- The first step is an HR Interview (User Task).
+- After the interview, an exclusive gateway (HR approved?) is used to decide:
+  - If "approved", the process moves to the IT interview.
+  - If "not approved", the process ends with the "Application denied" task leading to the denied end event.
 
-## Build and run
+* HR Interview Properties (Top)
+<p align="center"><img width=75% height=50% src="docs/images/HRInterviewTop.png"></p>
+
+* HR InterviewAssignments
+  <p align="center"><img width=75% height=50% src="docs/images/HRInterviewAssign.png"></p>
+
+4. **IT Interview**:
+
+- If the candidate passes the HR interview, they proceed to the _IT Interview_ (User Task).
+- Another exclusive gateway (IT approved?) determines the outcome:
+  - If "approved", the process proceeds to an "Application approved" task, followed by an approved end event.
+  - If "not approved", it moves to the "Application denied" task, leading to the denied end event.
+
+* IT Interview Properties (Top)
+  <p align="center"><img width=75% height=50% src="docs/images/ITInterviewTop.png"></p>
+
+* IT InterviewAssignments
+  <p align="center"><img width=75% height=50% src="docs/images/ITInterviewAssign.png"></p>
+
+5. **Application approved and Aplication Denied**:
+
+- THis is the final task where the process can conclude in two ways:
+  - _"approved"_: The candidate successfully completes both HR and IT interviews.
+  - _"denied"_: The candidate fails either the HR or IT interview.
+
+* Application Approved (Top)
+<p align="center"><img width=75% height=50% src="docs/images/ApplicationAppTop.png"></p>
+
+* Application Denied (Top)
+<p align="center"><img width=75% height=50% src="docs/images/ApplicationDenTop.png"></p>
+
+### Custom User Task assignment strategy
+
+Apache KIE has a way to automatically assign User Tasks to a single user based on a defined logic, which is active by default. The default logic is very basic and doesn't cover real world business cases. This example shows how can you define your own logic. The `org.acme.candidate.CustomUserTaskAssignmentStrategyConfig.java` defines a simple logic assigning the User Task to an user based on the task name:
+
+```java
+@Override
+  public Optional<String> computeAssigment(UserTaskInstance userTaskInstance, IdentityProvider identityProvider) {
+      System.out.println("Computing assignment using custom User Task assignment strategy.");
+      // Your custom logic goes here. For example:
+      if ("hr_interview".equals(userTaskInstance.getTaskName())) {
+          return Optional.of("recruiter");
+      } else if ("it_interview".equals(userTaskInstance.getTaskName())) {
+          return Optional.of("developer");
+      } else {
+          return Optional.empty();
+      }
+  }
+```
+
+If the task name is `hr_interview` the assigned user will be "recruiter". For the task `it_interview` the assigned user will be "developer". At least, if isn't any of this tasks, the method will not assign to any user.
+
+## Running
 
 ### Prerequisites
 
-You will need:
-
 - Java 17 installed
-- Environment variable JAVA_HOME set accordingly
+- Environment variable `JAVA_HOME` set accordingly
 - Maven 3.9.6 installed
+- Docker and Docker Compose to run the required example infrastructure.
 
-When using native image compilation, you will also need:
-
-- GraalVM 20.3+ installed
-- Environment variable GRAALVM_HOME set accordingly
-- GraalVM native image needs as well native-image extension: https://www.graalvm.org/reference-manual/native-image/
-- Note that GraalVM native image compilation typically requires other packages (glibc-devel, zlib-devel and gcc) to be installed too, please refer to GraalVM installation documentation for more details.
-
-### Compile and Run in Local Dev Mode
+### Compile and Run in local development mode
 
 ```sh
-mvn clean compile quarkus:dev
+mvn clean compile quarkus:dev -Pdevelopment
 ```
 
 NOTE: With dev mode of Quarkus you can take advantage of hot reload for business assets like processes, rules, decision tables and java code. No need to redeploy or restart your running application.
 
-### Package and Run in JVM mode
+### Compile and Run in local JVM mode
 
 ```sh
 mvn clean package
@@ -90,19 +127,177 @@ mvn clean package
 java -jar target\quarkus-app\quarkus-run.jar
 ```
 
-### Package and Run using Local Native Image
+### Package and Run in container mode
 
-Note that this requires GRAALVM_HOME to point to a valid GraalVM installation
-
-```sh
-mvn clean package -Pnative
-```
-
-To run the generated native executable, generated in `target/`, execute
+Running in container mode gives access to Apache KIE Management Console. First you need to have `Docker` and `Docker compose` installed. After it, build the project using the `container` profile:
 
 ```sh
-./target/process-usertasks-quarkus-runner
+mvn clean package -Pcontainer
 ```
+
+Now, add an `.env` file with the content below:
+
+```
+PROJECT_VERSION=
+MANAGEMENT_CONSOLE_IMAGE=
+COMPOSE_PROFILES=
+```
+
+- `PROJECT_VERSION`: Should be set with the current Apache KIE version being used: `PROJECT_VERSION=`
+- `MANAGEMENT_CONSOLE_IMAGE`: Should be set with the Apache KIE Management Console image `docker.io/apache/incubator-kie-kogito-management-console:main`
+- `COMPOSE_PROFILES`: filters which services will run.
+
+```
+PROJECT_VERSION=0.0.0
+MANAGEMENT_CONSOLE_IMAGE=docker.io/apache/incubator-kie-kogito-management-console:main
+COMPOSE_PROFILES=container
+```
+
+Start PostgreSQL, pgAdmin, the user-tasks-susbystem business service and Apache KIE Management Console with the command below:
+
+```sh
+docker compose up
+```
+
+You can stop any time hiting `CMD/CTRL + C`, and to clean-up, removing all containers, use the command below:
+
+```sh
+docker compose down
+```
+
+To access Management Console open `http://localhost:8280` in your browser.
+
+## Using
+
+Once the business service is running, you can start a new process using the above `curl` command:
+
+```sh
+curl -X POST http://localhost:8080/hiring \
+     -H "Content-Type: application/json" \
+     -d '{
+           "candidate": {
+             "firstName": "John",
+             "lastName": "Doe",
+             "position": "Software Engineer"
+           }
+         }'
+```
+
+To get all processes use the GET request:
+
+```sh
+curl -X GET "http://localhost:8080/hiring"
+```
+
+Creating a new process will make the business service waits for an user from the group `HR` to complete the task. You can get all tasks from the `HR` group with the following curl command:
+
+```sh
+curl -X 'GET' \
+  'http://localhost:8080/usertasks/instance?group=HR' \
+  -H 'accept: application/json'
+```
+
+Alternatively, it's possible to filter the tasks assigned to an user:
+
+```sh
+curl -X 'GET' \
+  'http://localhost:8080/usertasks/instance?user=recruiter' \
+  -H 'accept: application/json'
+```
+
+Or even both, using both query params: `group=HR&user=recruiter`. This filter is available in all `usertasks` routes.
+
+The `"id"` value retuned by these requests is used in the User Task API replacing the `taskId`:
+
+```sh
+curl -X 'POST' \
+  'http://localhost:8080/usertasks/instance/{taskId}/transition?user=recruiter' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "transitionId": "complete",
+  "data": {
+    "hr_approval": "true"
+  }
+}'
+```
+
+The above request will transition the task, advancing the process to the IT_Interview, which you can retrieve the new `id` (taskId) with:
+
+```sh
+curl -X 'GET' \
+  'http://localhost:8080/usertasks/instance?group=IT' \
+  -H 'accept: application/json'
+```
+
+NOTE: To check the available `transitionId` for the current user task, you can use the GET route:
+
+```sh
+curl -X 'GET' \
+  'http://localhost:8080/usertasks/instance/{taskId}/transition?user=recruiter' \
+  -H 'accept: application/json'
+```
+
+To change the inputs and outputs values of a task, it's possible to use the `inputs` and `outputs` route.
+
+**Inputs**
+
+```sh
+curl -X 'PUT' \
+  'http://localhost:8080/usertasks/instance/{taskId}/inputs?user=recruiter' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "candidate": {
+    "firstName": "Jane",
+    "lastName": "Doe",
+    "position": "Software Engineer"
+  }
+}'
+```
+
+**Outputs**
+
+```sh
+curl -X 'PUT' \
+  'http://localhost:8080/usertasks/instance/{taskId}/outputs?user=recruiter' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{"hr_approval": true}'
+```
+
+Additionally, it's possible to attach document links and add comments on each task
+
+**Attachment**:
+
+```sh
+curl -X 'POST' \
+  'http://localhost:8080/usertasks/instance/{taskId}/attachments?user=recruiter' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "uri": "https://google.com",
+  "name": "Google"
+}'
+```
+
+NOTE: The `GET`, `PUT` and `DELETE` HTTP methods are avaiable for this route.
+
+**Comment**:
+
+```sh
+curl -X 'POST' \
+  'http://localhost:8080/usertasks/instance/{taskId}/comments?user=recruiter' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "comment": "My comment"
+}'
+```
+
+NOTE: The `GET`, `PUT` and `DELETE` HTTP methods are avaiable for this route.
+
+NOTE: If you have started the business service in development mode, you can check the entire API in the `localhost:8080/q/swagger-ui` route.
 
 ### OpenAPI (Swagger) documentation
 
@@ -112,122 +307,7 @@ You can take a look at the [OpenAPI definition](http://localhost:8080/openapi?fo
 
 In addition, various clients to interact with this service can be easily generated using this OpenAPI definition.
 
-When running in either Quarkus Development or Native mode, we also leverage the [Quarkus OpenAPI extension](https://quarkus.io/guides/openapi-swaggerui#use-swagger-ui-for-development) that exposes [Swagger UI](http://localhost:8080/swagger-ui/) that you can use to look at available REST endpoints and send test requests.
-
-### Submit a request to start new approval
-
-To make use of this application it is as simple as putting a sending request to `http://localhost:8080/approvals` with following content
-
-```json
-{
-  "traveller": {
-    "firstName": "John",
-    "lastName": "Doe",
-    "email": "jon.doe@example.com",
-    "nationality": "American",
-    "address": {
-      "street": "main street",
-      "city": "Boston",
-      "zipCode": "10005",
-      "country": "US"
-    }
-  }
-}
-```
-
-Complete curl command can be found below:
-
-```sh
-curl -X POST -H 'Content-Type:application/json' -H 'Accept:application/json' -d '{"traveller" : { "firstName" : "John", "lastName" : "Doe", "email" : "jon.doe@example.com", "nationality" : "American","address" : { "street" : "main street", "city" : "Boston", "zipCode" : "10005", "country" : "US" }}}' http://localhost:8080/approvals
-```
-
-### Show active approvals
-
-```sh
-curl -H 'Content-Type:application/json' -H 'Accept:application/json' http://localhost:8080/approvals
-```
-
-### Show tasks
-
-```sh
-curl -H 'Content-Type:application/json' -H 'Accept:application/json' 'http://localhost:8080/approvals/{uuid}/tasks?user=admin&group=managers'
-```
-
-where `{uuid}` is the id of the given approval instance
-
-### Complete first line approval task
-
-```sh
-curl -X POST -d '{"approved" : true}' -H 'Content-Type:application/json' -H 'Accept:application/json' 'http://localhost:8080/approvals/{uuid}/firstLineApproval/{tuuid}?user=admin&group=managers'
-```
-
-where `{uuid}` is the id of the given approval instance and `{tuuid}` is the id of the task instance
-
-### Show tasks
-
-```sh
-curl -H 'Content-Type:application/json' -H 'Accept:application/json' 'http://localhost:8080/approvals/{uuid}/tasks?user=admin&group=managers'
-```
-
-where `{uuid}` is the id of the given approval instance
-
-This should return empty response as the admin user was the first approver and by that can't be assigned to another one.
-
-Repeating the request with another user will return task
-
-```sh
-curl -H 'Content-Type:application/json' -H 'Accept:application/json' 'http://localhost:8080/approvals/{uuid}/tasks?user=john&group=managers'
-```
-
-### Complete second line approval task
-
-```sh
-curl -X POST -d '{"approved" : true}' -H 'Content-Type:application/json' -H 'Accept:application/json' 'http://localhost:8080/approvals/{uuid}/secondLineApproval/{tuuid}?user=john&group=managers'
-```
-
-where `{uuid}` is the id of the given approval instance and `{tuuid}` is the id of the task instance
-
-This completes the approval and returns approvals model where both approvals of first and second line can be found,
-plus the approver who made the first one.
-
-```json
-{
-  "approver": "admin",
-  "firstLineApproval": true,
-  "id": "2eeafa82-d631-4554-8d8e-46614cbe3bdf",
-  "secondLineApproval": true,
-  "traveller": {
-    "address": {
-      "city": "Boston",
-      "country": "US",
-      "street": "main street",
-      "zipCode": "10005"
-    },
-    "email": "jon.doe@example.com",
-    "firstName": "John",
-    "lastName": "Doe",
-    "nationality": "American"
-  }
-}
-```
-
-You should see a similar message after performing the second line approval after the curl command
-
-```json
-{
-  "id": "f498de73-e02d-4829-905e-2f768479a4f1",
-  "approver": "admin",
-  "firstLineApproval": true,
-  "secondLineApproval": true,
-  "traveller": {
-    "firstName": "John",
-    "lastName": "Doe",
-    "email": "jon.doe@example.com",
-    "nationality": "American",
-    "address": { "street": "main street", "city": "Boston", "zipCode": "10005", "country": "US" }
-  }
-}
-```
+When running in either Quarkus Development or Native mode, we also leverage the [Quarkus OpenAPI extension](https://quarkus.io/guides/openapi-swaggerui#use-swagger-ui-for-development) that exposes http://localhost:8080/q/swagger-ui/ that you can use to look at available REST endpoints and send test requests.
 
 ---
 

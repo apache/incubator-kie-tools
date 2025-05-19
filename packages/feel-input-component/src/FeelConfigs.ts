@@ -86,6 +86,7 @@ export const feelDefaultConfig = (
     },
     wordBasedSuggestions: false,
     "semanticHighlighting.enabled": true,
+
     ...options,
   };
 };
@@ -1067,6 +1068,13 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         description: "Returns the current date and time.",
         parameters: [],
         examples: ["now()"],
+      },
+      {
+        label: "number(from)",
+        insertText: "number($1)",
+        description: "Converts `from` to a number.",
+        parameters: [["from", "`string` or `number` representing a valid number"]],
+        examples: ['number( "1.1" ) = number( "1.1", "null", "null" ) = 1.1', "number( 5 ) = 5"],
       },
       {
         label: "number(from, grouping separator, decimal separator)",

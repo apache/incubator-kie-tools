@@ -71,13 +71,20 @@ func (e *ensureRunningWorkflowState) Do(ctx context.Context, workflow *operatora
 
 	devBaseContainerImage := workflowdef.GetDefaultWorkflowDevModeImageTag()
 	// check if the Platform available
-	pl, err := platform.GetActivePlatform(context.TODO(), e.C, workflow.Namespace)
+	pl, err := platform.GetActivePlatform(context.TODO(), e.C, workflow.Namespace, true)
 	if err != nil {
 		return ctrl.Result{Requeue: false}, objs, err
 	}
 	if pl != nil && len(pl.Spec.DevMode.BaseImage) > 0 {
 		devBaseContainerImage = pl.Spec.DevMode.BaseImage
 	}
+	// make the route available before the properties calculation
+	route, _, err := e.ensurers.network.Ensure(ctx, workflow)
+	if err != nil {
+		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, objs, err
+	}
+	objs = append(objs, route)
+
 	userPropsCM, _, err := e.ensurers.userPropsConfigMap.Ensure(ctx, workflow)
 	if err != nil {
 		return ctrl.Result{Requeue: false}, objs, err
@@ -119,12 +126,6 @@ func (e *ensureRunningWorkflowState) Do(ctx context.Context, workflow *operatora
 	if serviceMonitor != nil {
 		objs = append(objs, serviceMonitor)
 	}
-
-	route, _, err := e.ensurers.network.Ensure(ctx, workflow)
-	if err != nil {
-		return ctrl.Result{RequeueAfter: constants.RequeueAfterFailure}, objs, err
-	}
-	objs = append(objs, route)
 
 	// First time reconciling this object, mark as wait for deployment
 	if workflow.Status.GetTopLevelCondition().IsUnknown() {

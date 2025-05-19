@@ -28,13 +28,14 @@
     "@kie-tools-core/keyboard-shortcuts": "workspace:*",
     "@kie-tools-core/notifications": "workspace:*",
     "@kie-tools-core/react-hooks": "workspace:*",
+    "@kie-tools-core/vscode-java-code-completion": "workspace:*",
     "@kie-tools-core/workspace": "workspace:*",
     "@kie-tools/boxed-expression-component": "workspace:*",
     "@kie-tools/dmn-editor": "workspace:*",
     "@kie-tools/dmn-marshaller": "workspace:*",
     "@kie-tools/pmml-editor-marshaller": "workspace:*",
     "@kie-tools/xml-parser-ts": "workspace:*",
-    "@patternfly/react-core": "^4.276.6"
+    "@patternfly/react-core": "^5.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",

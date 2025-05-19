@@ -98,13 +98,13 @@ pipeline {
                     }
                 }
 
-                stage('Dev Deployment Kogito Quarkus Blank App Image') {
+                stage('Dev Deployment Quarkus Blank App Image') {
                     when {
-                        expression { env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE == 'true' }
+                        expression { env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE == 'true' }
                     }
                     steps {
                         script {
-                            devDeploymentKogitoQuarkusBlankAppImageBuildJob()
+                            devDeploymentQuarkusBlankAppImageBuildJob()
                         }
                     }
                 }
@@ -428,7 +428,7 @@ def setRunners() {
     runners = readJSON text: "${params.RUNNERS}"
     env.KIE_SANDBOX_ACCELERATOR_QUARKUS = runners.kie_sandbox_accelerator_quarkus
     env.DEV_DEPLOYMENT_BASE_IMAGE = runners.dev_deployment_base_image
-    env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE = runners.dev_deployment_kogito_quakus_blank_app_image
+    env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE = runners.dev_deployment_kogito_quakus_blank_app_image
     env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE = runners.dev_deployment_dmn_form_webapp_image
     env.DEV_DEPLOYMENT_UPLOAD_SERVICE = runners.dev_deployment_upload_service
     env.KIE_SANDBOX_IMAGE = runners.kie_sandbox_image
@@ -461,7 +461,7 @@ def printRunners() {
     sh """
     echo "kie_sandbox_accelerator_quarkus: ${env.KIE_SANDBOX_ACCELERATOR_QUARKUS}"
     echo "dev_deployment_base_image: ${env.DEV_DEPLOYMENT_BASE_IMAGE}"
-    echo "dev_deployment_kogito_quakus_blank_app_image: ${env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE}"
+    echo "dev_deployment_kogito_quakus_blank_app_image: ${env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE}"
     echo "dev_deployment_dmn_form_webapp_image: ${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE}"
     echo "dev_deployment_upload_service: ${env.DEV_DEPLOYMENT_UPLOAD_SERVICE}"
     echo "kie_sandbox_image: ${env.KIE_SANDBOX_IMAGE}"
@@ -491,9 +491,9 @@ def printRunners() {
     """.trim()
 }
 
-def devDeploymentKogitoQuarkusBlankAppImageBuildJob() {
-    env.DEV_DEPLOYMENT_KOGITO_QUARKUS_BLANK_APP_IMAGE_JOB_RESULT = build(
-        job: 'KIE/kie-tools/kie-tools-release-jobs/dev-deployment-kogito-quarkus-blank-app-image',
+def devDeploymentQuarkusBlankAppImageBuildJob() {
+    env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE_JOB_RESULT = build(
+        job: 'KIE/kie-tools/kie-tools-release-jobs/dev-deployment-quarkus-blank-app-image',
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),

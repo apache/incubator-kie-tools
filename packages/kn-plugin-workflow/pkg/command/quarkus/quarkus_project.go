@@ -20,8 +20,11 @@
 package quarkus
 
 import (
+	"bufio"
 	"fmt"
 	"os"
+	"path"
+	"strings"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
@@ -40,7 +43,11 @@ type Repository struct {
 	Url  string
 }
 
-var filesToRemove = []string{"mvnw", "mvnw.cmd", ".mvn"}
+var filesToRemove = []string{"mvnw", "mvnw.cmd", ".mvn",
+	"src/test/java/org/acme/GreetingResourceTest.java",
+	"src/test/java/org/acme/GreetingResourceIT.java",
+	"src/main/java/org/acme/GreetingResource.java",
+}
 
 func CreateQuarkusProject(cfg CreateQuarkusProjectConfig) error {
 	if err := common.CheckProjectName(cfg.ProjectName); err != nil {
@@ -69,16 +76,31 @@ func CreateQuarkusProject(cfg CreateQuarkusProjectConfig) error {
 	}
 
 	//Until we are part of Quarkus 3.x bom we need to manipulate the pom.xml to use the right kogito dependencies
-	pomPath := cfg.ProjectName + "/pom.xml"
+	pomPath := path.Join(cfg.ProjectName, "pom.xml")
 	if err := manipulatePomToKogito(pomPath, cfg); err != nil {
 		return err
 	}
+
+	dockerIgnorePath := path.Join(cfg.ProjectName, ".dockerignore")
+	if err := manipulateDockerIgnore(dockerIgnorePath); err != nil {
+		return err
+	}
+
+	extensions := []string{"jvm", "legacy-jar", "native", "native-micro"}
+
+	for _, extension := range extensions {
+		dockerfilePath := path.Join(cfg.ProjectName, "src/main/docker", "Dockerfile."+extension)
+		if err := manipulateDockerfile(dockerfilePath); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
 func PostMavenCleanup(cfg CreateQuarkusProjectConfig) error {
 	for _, file := range filesToRemove {
-		var fqdn = cfg.ProjectName + "/" + file
+		var fqdn = path.Join(cfg.ProjectName, file)
 		if err := os.RemoveAll(fqdn); err != nil {
 			return fmt.Errorf("error removing %s: %w", fqdn, err)
 		}
@@ -154,6 +176,7 @@ func manipulatePomToKogito(filename string, cfg CreateQuarkusProjectConfig) erro
 
 	//add apache repository after profiles declaration
 	var repositories = []Repository{
+		{Id: "central", Name: "Central Repository", Url: "https://repo.maven.apache.org/maven2"},
 		{Id: "apache-public-repository-group", Name: "Apache Public Repository Group", Url: "https://repository.apache.org/content/groups/public/"},
 		{Id: "apache-snapshot-repository-group", Name: "Apache Snapshot Repository Group", Url: "https://repository.apache.org/content/groups/snapshots/"},
 	}
@@ -179,4 +202,68 @@ func manipulatePomToKogito(filename string, cfg CreateQuarkusProjectConfig) erro
 
 	return nil
 
+}
+
+func manipulateDockerIgnore(filename string) error {
+	line := "\n!target/classes/workflow.sw.json"
+	f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0644)
+	defer f.Close()
+
+	if _, err := f.WriteString(line); err != nil {
+		return fmt.Errorf("error writing to %s: %w", filename, err)
+	}
+
+	if err != nil {
+		return fmt.Errorf("error opening %s: %w", filename, err)
+	}
+	return nil
+}
+
+func manipulateDockerfile(filename string) error {
+	text := "COPY target/classes/workflow.sw.json /deployments/app/workflow.sw.json"
+
+	file, err := os.Open(filename)
+	defer file.Close()
+	if err != nil {
+		return fmt.Errorf("error opening %s: %w", filename, err)
+	}
+
+	appended := false
+	scanner := bufio.NewScanner(file)
+
+	var lines []string
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.HasPrefix(line, "COPY") && !appended {
+			lines = append(lines, text)
+			appended = true
+		}
+		lines = append(lines, line)
+	}
+
+	if err := scanner.Err(); err != nil {
+		return fmt.Errorf("error reading from %s: %w", filename, err)
+	}
+
+	file, err = os.OpenFile(filename, os.O_WRONLY|os.O_TRUNC, 0644)
+	if err != nil {
+		return fmt.Errorf("error opening %s for writing: %w", filename, err)
+	}
+	defer file.Close()
+
+	writer := bufio.NewWriter(file)
+	for _, line := range lines {
+		_, err := writer.WriteString(line + "\n")
+		if err != nil {
+			return fmt.Errorf("error writing to %s: %w", filename, err)
+		}
+	}
+
+	err = writer.Flush()
+	if err != nil {
+		return fmt.Errorf("error flushing to %s: %w", filename, err)
+	}
+
+	return nil
 }

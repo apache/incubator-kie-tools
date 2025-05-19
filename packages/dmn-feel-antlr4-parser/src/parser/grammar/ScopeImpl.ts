@@ -23,8 +23,9 @@ import { Symbol } from "./Symbol";
 import { TokenTree } from "./TokenTree";
 import { CharStreams, Token } from "antlr4";
 import FEEL_1_1Lexer from "./generated-parser/FEEL_1_1Lexer";
-import { VariableSymbol } from "./VariableSymbol";
+import { IdentifierSymbol } from "./IdentifierSymbol";
 import { FeelSyntacticSymbolNature } from "../FeelSyntacticSymbolNature";
+import { Expression } from "../Expression";
 
 export class ScopeImpl implements Scope {
   private readonly name?: string;
@@ -119,10 +120,15 @@ export class ScopeImpl implements Scope {
   resolve(parameter: string | string[]): Symbol | undefined {
     if (typeof parameter === "string") {
       if (this._allowDynamicVariables) {
-        return new VariableSymbol(
+        return new IdentifierSymbol(
           parameter,
           {
             name: "name",
+            source: {
+              value: "name",
+              feelSyntacticSymbolNature: FeelSyntacticSymbolNature.DynamicVariable,
+              expressionsThatUseTheIdentifier: new Map<string, Expression>(),
+            },
           },
           FeelSyntacticSymbolNature.DynamicVariable
         );

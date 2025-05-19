@@ -90,9 +90,9 @@ export function BeeTableThResizable<R extends object>({
     }
 
     cssClasses.push(column.groupType ?? "");
-    // cssClasses.push(column.cssClasses ?? ""); // FIXME: Breaking Decision tables because of positioning of rowSpan=2 column headers (See https://github.com/apache/incubator-kie-issues/issues/162)
+    cssClasses.push(column.cssClasses ?? "");
     return cssClasses.join(" ");
-  }, [columnKey, column.dataType, column.groupType]);
+  }, [columnKey, column.cssClasses, column.dataType, column.groupType]);
 
   const onClick = useCallback(() => {
     return onHeaderClick?.(columnKey);
@@ -206,7 +206,15 @@ export function BeeTableThResizable<R extends object>({
       shouldShowColumnsInlineControls={shouldShowColumnsInlineControls}
       column={column}
     >
-      <div className="header-cell" data-ouia-component-type="expression-column-header" ref={headerCellRef}>
+      <div
+        className={`header-cell ${cssClasses}`}
+        data-ouia-component-type="expression-column-header"
+        ref={headerCellRef}
+        // We stop propagation here because if the user performs a double click on any component inside
+        // the ExpressionVariableMenu (for example, to select a word) we don't want that action to bubble
+        // to the parent component (BeeTableTh).
+        onDoubleClick={(e) => e.stopPropagation()}
+      >
         {!isReadOnly && column.dataType && isEditableHeader ? (
           <ExpressionVariableMenu
             position={PopoverPosition.bottom}
@@ -214,6 +222,8 @@ export function BeeTableThResizable<R extends object>({
             selectedDataType={column.dataType}
             onVariableUpdated={onExpressionHeaderUpdated}
             appendTo={getAppendToElement}
+            variableUuid={column.id}
+            isContentAFeelExpression={column.isHeaderAFeelExpression ?? false}
           >
             {headerCellInfo}
           </ExpressionVariableMenu>

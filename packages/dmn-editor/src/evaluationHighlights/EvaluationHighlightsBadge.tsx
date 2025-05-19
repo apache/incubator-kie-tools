@@ -30,7 +30,7 @@ export function EvaluationHighlightsBadge() {
     <aside className={"kie-dmn-editor--evaluation-highlights-panel-toggle"}>
       <Label
         icon={isEvaluationHighlightsEnabled ? <OnIcon /> : <OffIcon />}
-        color={isEvaluationHighlightsEnabled ? "green" : "grey"}
+        color={isEvaluationHighlightsEnabled ? "purple" : "grey"}
         onClick={() => {
           dmnEditorStoreApi.setState((state) => {
             state.diagram.overlays.enableEvaluationHighlights = !state.diagram.overlays.enableEvaluationHighlights;

@@ -19,11 +19,11 @@
 
 ### Running the Dev application
 
-- Run `pnpm start` as usual and access http://0.0.0.0:8080/kie/q/dev-ui
+- Run `pnpm start` as usual and access http://127.0.0.1:8080/kie/q/dev-ui
 
 To test the application running on different domains:
 
-- Edit your `/etc/hosts` file and add a `0.0.0.0   quarkus-app.localhost` entry
+- Edit your `/etc/hosts` file and add a `127.0.0.1   quarkus-app.localhost` entry
 - Run `pnpm start` and access http://quarkus-app.localhost:8080/kie/q/dev-ui
 
 ---

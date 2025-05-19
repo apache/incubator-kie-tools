@@ -42,7 +42,7 @@ test.describe("Background table misc", () => {
 
   test("should render add column plus symbols on Property headers", async ({ table, backgroundTable }) => {
     await expect(table.getColumnHeader({ name: "INSTANCE-2 (<Undefined>)" })).not.toBeAttached();
-    await table.getColumnHeader({ name: "PROPERTY (<Undefined>)", columnNumber: 0 }).hover();
+    await table.getColumnHeader({ name: "PROPERTY-1 (<Undefined>)", columnNumber: 0 }).hover();
     await backgroundTable.clickPlusIcon();
     await expect(table.getColumnHeader({ name: "INSTANCE-2 (<Undefined>)" })).toBeAttached();
   });

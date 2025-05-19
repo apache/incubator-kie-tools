@@ -95,7 +95,7 @@ test.describe("DMN Editor - Standalone - API", () => {
       await expect(nodes.get({ name: "Input-D" })).not.toBeAttached();
 
       // Should show initial modal for an empty DMN
-      await expect(editor.get().getByText("This DMN's Diagram is empty")).toBeAttached();
+      await expect(editor.get().getByRole("heading", { name: "This DMN's Diagram is empty" })).toBeAttached();
 
       await editor.redo();
       await expect(await editor.getEditCount()).toHaveText("17");

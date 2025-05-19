@@ -21,6 +21,7 @@ import {
   EditorFactory,
   EditorInitArgs,
   KogitoEditorChannelApi,
+  KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
 import { Base64PngEditorInterface } from "./Base64PngEditorInterface";
@@ -29,13 +30,15 @@ import { Base64PngEditorInterface } from "./Base64PngEditorInterface";
  * Factory to be used by the Envelope to create a Base64 PNG Editor, It implements an EditorFactory.
  * It tells which extension the Editor supports and how to create a new Editor
  */
-export class Base64PngEditorFactory implements EditorFactory<Base64PngEditorInterface, KogitoEditorChannelApi> {
+export class Base64PngEditorFactory
+  implements EditorFactory<Base64PngEditorInterface, KogitoEditorEnvelopeApi, KogitoEditorChannelApi>
+{
   public supports(fileExtension: string) {
     return fileExtension === "base64png";
   }
 
   public createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>,
     initArgs: EditorInitArgs
   ) {
     return Promise.resolve(new Base64PngEditorInterface(envelopeContext, initArgs));

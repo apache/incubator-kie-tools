@@ -70,6 +70,10 @@
       <artifactId>quarkus-resteasy-multipart-deployment</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-vertx-http-deployment</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.apache.kie.sonataflow</groupId>
       <artifactId>sonataflow-quarkus-devui</artifactId>
       <version>${project.version}</version>
@@ -123,6 +127,9 @@
               <version>${version.quarkus}</version>
             </path>
           </annotationProcessorPaths>
+          <compilerArgs>
+            <arg>-AlegacyConfigRoot=true</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
       <plugin>

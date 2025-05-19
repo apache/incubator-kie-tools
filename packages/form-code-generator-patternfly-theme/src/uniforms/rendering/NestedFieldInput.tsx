@@ -26,14 +26,14 @@ export interface Props {
   codegenCtx: CodeGenContext;
   uniformsContext: Context<any>;
   field: any;
-  itempProps: any;
+  itemProps: any;
   disabled?: boolean;
 }
 
-export const NestedFieldInput: React.FC<Props> = ({ codegenCtx, uniformsContext, field, itempProps, disabled }) => {
+export const NestedFieldInput: React.FC<Props> = ({ codegenCtx, uniformsContext, field, itemProps, disabled }) => {
   return (
     <CodeGenContextProvider schema={uniformsContext.schema} codegenCtx={codegenCtx} uniformsCtx={uniformsContext}>
-      <AutoField key={field} name={field} disabled={disabled} {...itempProps} />
+      <AutoField key={field} name={field} disabled={disabled} itemProps={itemProps} />
     </CodeGenContextProvider>
   );
 };

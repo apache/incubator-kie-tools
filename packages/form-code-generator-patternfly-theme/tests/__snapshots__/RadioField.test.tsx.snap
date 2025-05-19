@@ -1,13 +1,79 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<RadioField> tests <RadioField> - RadioInput rendering - disabled 1`] = `
-<div>
-  {"ref":{"binding":"role","stateName":"role","stateSetter":"set__role","dataType":{"name":"string","defaultValue":"\\"\\""}},"pfImports":["Radio","FormGroup"],"reactImports":["useState"],"jsxCode":"&lt;FormGroup\\n      fieldId={'id'}\\n      label={'Role'}\\n      isRequired={true}\\n    &gt;\\n      &lt;div&gt;&lt;Radio\\n      key={'Developer'}\\n      id={'id-Developer'}\\n      name={'role'}\\n      isChecked={'Developer' === role}\\n      isDisabled={true}\\n      label={'Developer'}\\n      aria-label={'role'}\\n      onChange={() =&gt; set__role('Developer')}\\n    /&gt;\\n&lt;Radio\\n      key={'HR'}\\n      id={'id-HR'}\\n      name={'role'}\\n      isChecked={'HR' === role}\\n      isDisabled={true}\\n      label={'HR'}\\n      aria-label={'role'}\\n      onChange={() =&gt; set__role('HR')}\\n    /&gt;\\n&lt;Radio\\n      key={'UX'}\\n      id={'id-UX'}\\n      name={'role'}\\n      isChecked={'UX' === role}\\n      isDisabled={true}\\n      label={'UX'}\\n      aria-label={'role'}\\n      onChange={() =&gt; set__role('UX')}\\n    /&gt;&lt;/div&gt;\\n    &lt;/FormGroup&gt;","stateCode":"const [ role, set__role ] = useState&lt;string&gt;(\\"\\");","isReadonly":true}
-</div>
+"<FormGroup
+      fieldId={'id'}
+      label={'Role'}
+      isRequired={true}
+    >
+      <div><Radio
+      key={'Developer'}
+      id={'id-Developer'}
+      name={'role'}
+      isChecked={'Developer' === role}
+      isDisabled={true}
+      label={'Developer'}
+      aria-label={'role'}
+      onChange={() => set__role('Developer')}
+    />
+<Radio
+      key={'HR'}
+      id={'id-HR'}
+      name={'role'}
+      isChecked={'HR' === role}
+      isDisabled={true}
+      label={'HR'}
+      aria-label={'role'}
+      onChange={() => set__role('HR')}
+    />
+<Radio
+      key={'UX'}
+      id={'id-UX'}
+      name={'role'}
+      isChecked={'UX' === role}
+      isDisabled={true}
+      label={'UX'}
+      aria-label={'role'}
+      onChange={() => set__role('UX')}
+    /></div>
+    </FormGroup>"
 `;
 
 exports[`<RadioField> tests <RadioField> - rendering 1`] = `
-<div>
-  {"ref":{"binding":"role","stateName":"role","stateSetter":"set__role","dataType":{"name":"string","defaultValue":"\\"\\""}},"pfImports":["Radio","FormGroup"],"reactImports":["useState"],"jsxCode":"&lt;FormGroup\\n      fieldId={'id'}\\n      label={'Role'}\\n      isRequired={true}\\n    &gt;\\n      &lt;div&gt;&lt;Radio\\n      key={'Developer'}\\n      id={'id-Developer'}\\n      name={'role'}\\n      isChecked={'Developer' === role}\\n      isDisabled={false}\\n      label={'Developer'}\\n      aria-label={'role'}\\n      onChange={() =&gt; set__role('Developer')}\\n    /&gt;\\n&lt;Radio\\n      key={'HR'}\\n      id={'id-HR'}\\n      name={'role'}\\n      isChecked={'HR' === role}\\n      isDisabled={false}\\n      label={'HR'}\\n      aria-label={'role'}\\n      onChange={() =&gt; set__role('HR')}\\n    /&gt;\\n&lt;Radio\\n      key={'UX'}\\n      id={'id-UX'}\\n      name={'role'}\\n      isChecked={'UX' === role}\\n      isDisabled={false}\\n      label={'UX'}\\n      aria-label={'role'}\\n      onChange={() =&gt; set__role('UX')}\\n    /&gt;&lt;/div&gt;\\n    &lt;/FormGroup&gt;","stateCode":"const [ role, set__role ] = useState&lt;string&gt;(\\"\\");","isReadonly":false}
-</div>
+"<FormGroup
+      fieldId={'id'}
+      label={'Role'}
+      isRequired={true}
+    >
+      <div><Radio
+      key={'Developer'}
+      id={'id-Developer'}
+      name={'role'}
+      isChecked={'Developer' === role}
+      isDisabled={false}
+      label={'Developer'}
+      aria-label={'role'}
+      onChange={() => set__role('Developer')}
+    />
+<Radio
+      key={'HR'}
+      id={'id-HR'}
+      name={'role'}
+      isChecked={'HR' === role}
+      isDisabled={false}
+      label={'HR'}
+      aria-label={'role'}
+      onChange={() => set__role('HR')}
+    />
+<Radio
+      key={'UX'}
+      id={'id-UX'}
+      name={'role'}
+      isChecked={'UX' === role}
+      isDisabled={false}
+      label={'UX'}
+      aria-label={'role'}
+      onChange={() => set__role('UX')}
+    /></div>
+    </FormGroup>"
 `;

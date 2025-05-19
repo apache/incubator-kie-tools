@@ -64,7 +64,11 @@ import {
   useState,
 } from "react";
 import { Position } from "monaco-editor";
-import { ServerlessWorkflowCombinedEditorChannelApi, SwfPreviewOptions } from "../api";
+import {
+  ServerlessWorkflowCombinedEditorChannelApi,
+  ServerlessWorkflowCombinedEditorEnvelopeApi,
+  SwfPreviewOptions,
+} from "../api";
 import { useSwfDiagramEditorChannelApi } from "./hooks/useSwfDiagramEditorChannelApi";
 import { UseSwfTextEditorChannelApiArgs, useSwfTextEditorChannelApi } from "./hooks/useSwfTextEditorChannelApi";
 import { colorNodes } from "./helpers/ColorNodes";
@@ -106,7 +110,10 @@ const RefForwardingServerlessWorkflowCombinedEditor: ForwardRefRenderFunction<
   const [file, setFile] = useState<File | undefined>(undefined);
   const [embeddedTextEditorFile, setEmbeddedTextEditorFile] = useState<EmbeddedEditorFile>();
   const [embeddedDiagramEditorFile, setEmbeddedDiagramEditorFile] = useState<EmbeddedEditorFile>();
-  const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<ServerlessWorkflowCombinedEditorChannelApi>();
+  const editorEnvelopeCtx = useKogitoEditorEnvelopeContext<
+    ServerlessWorkflowCombinedEditorEnvelopeApi,
+    ServerlessWorkflowCombinedEditorChannelApi
+  >();
   const [diagramEditorEnvelopeContent] = useSharedValue<string>(
     editorEnvelopeCtx.channelApi.shared.kogitoSwfGetDiagramEditorEnvelopeContent
   );

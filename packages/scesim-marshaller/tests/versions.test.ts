@@ -22,9 +22,14 @@ import * as path from "path";
 import { getMarshaller } from "@kie-tools/scesim-marshaller";
 
 const files = [
-  { path: "../tests-data--manual/simple.scesim", version: "1.8" },
-  { path: "../tests-data--manual/OldEnoughTest.scesim", version: "1.8" },
-  { path: "../tests-data--manual/TrafficViolationTest.scesim", version: "1.8" },
+  { path: "../tests-data--manual/dmn/collection.scesim", version: "1.8" },
+  { path: "../tests-data--manual/dmn/expression.scesim", version: "1.8" },
+  { path: "../tests-data--manual/dmn/imported.scesim", version: "1.8" },
+  { path: "../tests-data--manual/dmn/simple.scesim", version: "1.8" },
+  { path: "../tests-data--manual/dmn/simpleTypes.scesim", version: "1.8" },
+  { path: "../tests-data--manual/dmn/TrafficViolationTest.scesim", version: "1.8" },
+  { path: "../tests-data--manual/dmn/undefined.scesim", version: "1.8" },
+  { path: "../tests-data--manual/rule/OldEnoughTest.scesim", version: "1.8" },
 ];
 
 describe("versions", () => {

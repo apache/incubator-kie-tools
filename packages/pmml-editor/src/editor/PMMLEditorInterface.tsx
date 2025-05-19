@@ -16,7 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { Editor, KogitoEditorChannelApi, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
+import {
+  Editor,
+  KogitoEditorChannelApi,
+  KogitoEditorEnvelopeApi,
+  KogitoEditorEnvelopeContextType,
+} from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import * as React from "react";
 import { PMMLEditor } from "./PMMLEditor";
@@ -27,7 +32,9 @@ export class PMMLEditorInterface implements Editor {
   public af_componentId: "pmml-editor";
   public af_componentTitle: "PMML Editor";
 
-  constructor(private readonly envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorChannelApi>) {}
+  constructor(
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>
+  ) {}
 
   public setContent(normalizedPosixPathRelativeToTheWorkspaceRoot: string, content: string): Promise<void> {
     return this.self.setContent(normalizedPosixPathRelativeToTheWorkspaceRoot, content);

@@ -1,0 +1,31 @@
+{
+  "$id": "EnvJson",
+  "$ref": "#/definitions/EnvJson",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "EnvJson": {
+      "additionalProperties": false,
+      "properties": {
+        "MY_ENV": {
+          "type": "object",
+          "properties": {
+            "MY_ENV_A": {
+              "type": "number"
+            },
+            "MY_ENV_B": {
+              "type": "boolean"
+            },
+            "MY_ENV_C": {
+              "type": "string"
+            }
+          }
+        },
+        "MY_ENV2": {
+          "type": "string"
+        }
+      },
+      "required": ["MY_ENV", "MY_ENV2"],
+      "type": "object"
+    }
+  }
+}

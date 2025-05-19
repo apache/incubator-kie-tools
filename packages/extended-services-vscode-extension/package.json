@@ -40,7 +40,7 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
     "@types/vscode": "1.67.0",
-    "@vscode/test-web": "^0.0.30",
+    "@vscode/test-web": "^0.0.66",
     "@vscode/vsce": "^3.2.1",
     "copy-webpack-plugin": "^11.0.0",
     "node-fetch": "^3.3.2",
@@ -60,13 +60,13 @@
   "contributes": {
     "commands": [
       {
-        "category": "Extended-Services",
+        "category": "Apache KIE Extended Services",
         "command": "extended-services-vscode-extension.startExtendedServices",
         "title": "Connect Apache KIE™ Extended Services",
         "when": "extended-services-vscode-extension.connected"
       },
       {
-        "category": "Extended-Services",
+        "category": "Apache KIE Extended-Services",
         "command": "extended-services-vscode-extension.stopExtendedServices",
         "title": "Disconnect Apache KIE™ Extended Services"
       }
@@ -88,7 +88,7 @@
           "type": "boolean"
         },
         "extendedServices.extendedServicesURL": {
-          "default": "http://localhost:21345",
+          "default": "http://127.0.0.1:21345",
           "description": "Specifies the Extended Services URL.",
           "format": "uri",
           "order": 1,

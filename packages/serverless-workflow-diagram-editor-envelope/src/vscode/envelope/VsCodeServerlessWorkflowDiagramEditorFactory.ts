@@ -23,6 +23,7 @@ import { DiagramExposedInteropApi } from "../../api/DiagramExposedInteropApi";
 import { DiagramService } from "../../api/DiagramService";
 import { ServerlessWorkflowDiagramEditor, ServerlessWorkflowDiagramEditorFactory } from "../../envelope";
 import { VsCodeServerlessWorkflowDiagramEditorChannelApi } from "../api/VsCodeServerlessWorkflowDiagramEditorChannelApi";
+import { ServerlessWorkflowDiagramEditorEnvelopeApi } from "../../api";
 
 export interface CustomWindow extends Window {
   envelope: {
@@ -35,7 +36,10 @@ declare let window: CustomWindow;
 
 class JavaCodeCompletionService implements JavaCodeCompletionApi {
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<VsCodeServerlessWorkflowDiagramEditorChannelApi>
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<
+      ServerlessWorkflowDiagramEditorEnvelopeApi,
+      VsCodeServerlessWorkflowDiagramEditorChannelApi
+    >
   ) {}
   getAccessors(fqcn: string, query: string) {
     return this.envelopeContext.channelApi.requests.kogitoJavaCodeCompletion__getAccessors(fqcn, query);
@@ -49,12 +53,20 @@ class JavaCodeCompletionService implements JavaCodeCompletionApi {
 }
 
 export class VsCodeServerlessWorkflowDiagramEditorFactory
-  implements EditorFactory<ServerlessWorkflowDiagramEditor, VsCodeServerlessWorkflowDiagramEditorChannelApi>
+  implements
+    EditorFactory<
+      ServerlessWorkflowDiagramEditor,
+      ServerlessWorkflowDiagramEditorEnvelopeApi,
+      VsCodeServerlessWorkflowDiagramEditorChannelApi
+    >
 {
   constructor(private readonly gwtEditorEnvelopeConfig: { shouldLoadResourcesDynamically: boolean }) {}
 
   public createEditor(
-    ctx: KogitoEditorEnvelopeContextType<VsCodeServerlessWorkflowDiagramEditorChannelApi>,
+    ctx: KogitoEditorEnvelopeContextType<
+      ServerlessWorkflowDiagramEditorEnvelopeApi,
+      VsCodeServerlessWorkflowDiagramEditorChannelApi
+    >,
     initArgs: EditorInitArgs
   ): Promise<ServerlessWorkflowDiagramEditor> {
     window.envelope = {

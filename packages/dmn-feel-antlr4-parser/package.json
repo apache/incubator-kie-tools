@@ -25,7 +25,8 @@
   },
   "dependencies": {
     "@kie-tools/dmn-marshaller": "workspace:*",
-    "antlr4": "^4.13.0"
+    "antlr4": "^4.13.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -33,6 +34,7 @@
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
+    "@types/uuid": "^8.3.0",
     "rimraf": "^3.0.2",
     "typescript": "^5.5.3"
   }

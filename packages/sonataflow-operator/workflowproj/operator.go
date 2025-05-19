@@ -31,9 +31,12 @@ import (
 )
 
 const (
-	workflowUserConfigMapNameSuffix = "-props"
+	workflowUserConfigMapNameSuffix       = "-props"
+	workflowUserSecretConfigMapNameSuffix = "-secrets"
 	// ApplicationPropertiesFileName is the default application properties file name holding user properties
-	ApplicationPropertiesFileName      = "application.properties"
+	ApplicationPropertiesFileName = "application.properties"
+	// SecretPropertiesFileName is the default application secret properties file name holding user secret properties
+	SecretPropertiesFileName           = "secret.properties"
 	workflowManagedConfigMapNameSuffix = "-managed-props"
 	// LabelApp key to use among object selectors, "app" is used among k8s applications to group objects in some UI consoles
 	LabelApp = "app"
@@ -90,6 +93,11 @@ func GetManagedPropertiesFileName(workflow *operatorapi.SonataFlow) string {
 	return fmt.Sprintf("application-%s.properties", profile)
 }
 
+// GetWorkflowUserSecretPropertiesConfigMapName gets the default ConfigMap name that holds the user application secrets property for the given workflow
+func GetWorkflowUserSecretPropertiesConfigMapName(workflow *operatorapi.SonataFlow) string {
+	return workflow.Name + workflowUserSecretConfigMapNameSuffix
+}
+
 // GetDefaultLabels gets the default labels based on the given workflow.
 func GetDefaultLabels(workflow *operatorapi.SonataFlow) map[string]string {
 	labels := map[string]string{
@@ -141,6 +149,17 @@ func CreateNewUserPropsConfigMap(workflow *operatorapi.SonataFlow) *corev1.Confi
 		},
 		Data: map[string]string{ApplicationPropertiesFileName: ""},
 	}
+}
+
+func CreateNewSecretPropsConfigMap(workflow *operatorapi.SonataFlow) *corev1.Secret {
+	return &corev1.Secret{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      GetWorkflowUserSecretPropertiesConfigMapName(workflow),
+			Namespace: workflow.Namespace,
+			Labels:    GetMergedLabels(workflow),
+		},
+	}
+
 }
 
 // CreateNewManagedPropsConfigMap creates a new ConfigMap object to hold the managed application properties of the workflows.

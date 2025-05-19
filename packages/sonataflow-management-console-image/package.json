@@ -14,12 +14,14 @@
   },
   "scripts": {
     "build:dev": "pnpm cleanup && pnpm env-json:schema:generate && pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:cekit:build\"",
-    "build:prod": "pnpm cleanup && pnpm env-json:schema:generate && pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:cekit:build\"",
+    "build:prod": "pnpm cleanup && pnpm env-json:schema:generate && pnpm copy:assets && run-script-if --bool \"$(build-env containerImages.build)\" --then \"pnpm image:cekit:build && pnpm image:test\"",
     "cleanup": "rimraf dist-dev && mkdir dist-dev",
     "copy:assets": "pnpm copy:webapp-assets && pnpm copy:image-env-to-json",
     "copy:image-env-to-json": "run-script-os",
-    "copy:image-env-to-json:linux:darwin": "cp ./node_modules/@kie-tools/image-env-to-json/dist/linux/image-env-to-json-standalone ./dist-dev/",
-    "copy:image-env-to-json:win32": "pnpm powershell \"Copy-Item ./node_modules/@kie-tools/image-env-to-json/dist/linux/image-env-to-json-standalone ./dist-dev/\"",
+    "copy:image-env-to-json:linux:darwin": "cp ./node_modules/@kie-tools/image-env-to-json/dist/image-env-to-json-linux-amd64 ./dist-dev/",
+    "copy:image-env-to-json:win32": "pnpm powershell \"Copy-Item ./node_modules/@kie-tools/image-env-to-json/dist/image-env-to-json-linux-amd64 ./dist-dev/\"",
+    "copy:test-assets": "run-script-os",
+    "copy:test-assets:linux:darwin": "cp -R test-resources/* dist-dev && DOCKER_HOST=\"$(hostname -I | awk '{print $1}')\" envsubst < test-resources/tests/features/sonataflow-management-console.feature > dist-dev/tests/features/sonataflow-management-console.feature",
     "copy:webapp-assets": "run-script-os",
     "copy:webapp-assets:linux:darwin": "cp -R ./node_modules/@kie-tools/sonataflow-management-console-webapp/dist/ ./dist-dev/sonataflow-management-console-webapp",
     "copy:webapp-assets:win32": "pnpm powershell \"Copy-Item -R ./node_modules/@kie-tools/sonataflow-management-console-webapp/dist/ ./dist-dev/sonataflow-management-console-webapp\"",
@@ -28,18 +30,24 @@
     "image:cekit:build:linux": "pnpm image:cekit:copy && pnpm image:cekit:setup:env make -C ./dist-dev build",
     "image:cekit:build:win32:darwin": "echo \"Build skipped on macOS and Windows\"",
     "image:cekit:copy": "cp -R ./node_modules/@kie-tools/sonataflow-image-common/resources/* ./dist-dev/ && cp -R resources/* ./dist-dev/",
-    "image:cekit:setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env sonataflowManagementConsoleImageEnv.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env sonataflowManagementConsoleImageEnv.account) KOGITO_IMAGE_NAME=$(build-env sonataflowManagementConsoleImageEnv.name) KOGITO_IMAGE_TAG=$(build-env sonataflowManagementConsoleImageEnv.buildTag) QUARKUS_PLATFORM_GROUPID=$(build-env kogitoImagesCekitModules.quarkusGroupId) QUARKUS_PLATFORM_VERSION=$(build-env versions.quarkus) KOGITO_VERSION=$(build-env versions.kogito) SONATAFLOW_MANAGEMENT_CONSOLE_PORT=$(build-env sonataflowManagementConsoleImageEnv.port)"
+    "image:cekit:setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env sonataflowManagementConsoleImageEnv.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env sonataflowManagementConsoleImageEnv.account) KOGITO_IMAGE_NAME=$(build-env sonataflowManagementConsoleImageEnv.name) KOGITO_IMAGE_TAG=$(build-env sonataflowManagementConsoleImageEnv.buildTag) QUARKUS_PLATFORM_GROUPID=$(build-env kogitoImagesCekitModules.quarkusGroupId) QUARKUS_PLATFORM_VERSION=$(build-env versions.quarkus) KOGITO_VERSION=$(build-env versions.kogito) SONATAFLOW_MANAGEMENT_CONSOLE_PORT=$(build-env sonataflowManagementConsoleImageEnv.port)",
+    "image:test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"mkdir -p dist-dev/target/test/results\" \"run-script-os\" --finally \"cp -R dist-dev/target/test/results dist-tests-e2e/\"",
+    "image:test:darwin:win32": "echo \"Tests skipped on macOS and Windows\"",
+    "image:test:linux": "pnpm copy:test-assets && pnpm start-server-and-test start:sonataflow-dev-app http-get://0.0.0.0:4000/graphql 'pnpm image:cekit:setup:env make -C ./dist-dev test-image'",
+    "start:sonataflow-dev-app": "SONATAFLOW_DEV_APP_DELAY=0 npm --prefix ./node_modules/@kie-tools/sonataflow-dev-app run start"
   },
   "devDependencies": {
     "@kie-tools/image-env-to-json": "workspace:*",
     "@kie-tools/python-venv": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/sonataflow-dev-app": "workspace:*",
     "@kie-tools/sonataflow-image-common": "workspace:*",
     "@kie-tools/sonataflow-management-console-image-env": "workspace:*",
     "@kie-tools/sonataflow-management-console-webapp": "workspace:*",
     "cross-env": "^7.0.3",
     "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6",
+    "start-server-and-test": "^2.0.3",
     "ts-json-schema-generator": "^1.1.2"
   }
 }

@@ -13,13 +13,14 @@
         <option value="$PROJECT_DIR$/../packages/sonataflow-quarkus-devui/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/serverless-workflow-diagram-editor/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/extended-services-java/pom.xml" />
-        <option value="$PROJECT_DIR$/../packages/dev-deployment-kogito-quarkus-blank-app/pom.xml" />
+        <option value="$PROJECT_DIR$/../packages/dev-deployment-quarkus-blank-app/pom.xml" />
         <option value="$PROJECT_DIR$/../examples/process-user-tasks-subsystem/pom.xml" />
         <option value="$PROJECT_DIR$/../examples/sonataflow-greeting/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/dashbuilder/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/dmn-testing-models/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/serverless-logic-web-tools-swf-deployment-quarkus-app/pom.xml" />
         <option value="$PROJECT_DIR$/../packages/vscode-java-code-completion-extension-plugin/pom.xml" />
+        <option value="$PROJECT_DIR$/../packages/kogito-db-migrator-tool/pom.xml" />
       </list>
     </option>
   </component>

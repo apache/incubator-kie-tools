@@ -457,7 +457,7 @@ endif
 .PHONY: full-test-e2e
 full-test-e2e: create-cluster load-docker-image deploy deploy-knative deploy-prometheus
 	sleep 30
-	kubectl wait pod -A -l control-plane=sonataflow-operator --for condition=Ready --timeout 120s
+	kubectl wait pod -A -l app.kubernetes.io/name=sonataflow-operator --for condition=Ready --timeout 120s
 	@$(MAKE) test-e2e label=platform
 	@$(MAKE) test-e2e label=cluster
 	@$(MAKE) test-e2e label=flows-monitoring
@@ -517,7 +517,8 @@ update-config:
 		dataIndexPostgreSQLImageTag=$$(shell build-env sonataFlowOperator.kogitoDataIndexPostgresqlImage) \
 		dataIndexEphemeralImageTag=$$(shell build-env sonataFlowOperator.kogitoDataIndexEphemeralImage) \
 		sonataFlowBaseBuilderImageTag=$$(shell build-env sonataFlowOperator.sonataflowBuilderImage) \
-		sonataFlowDevModeImageTag=$$(shell build-env sonataFlowOperator.sonataflowDevModeImage))
+		sonataFlowDevModeImageTag=$$(shell build-env sonataFlowOperator.sonataflowDevModeImage) \
+		dbMigratorToolImageTag=$$(shell build-env sonataFlowOperator.kogitoDBMigratorToolImage))
 	@if [ -z "$(strip $(PARAMS))" ]; then \
 		echo "⚠️  No variables resolved. Skipping updates to controllers config file."; \
 	else \

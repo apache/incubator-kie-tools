@@ -100,7 +100,11 @@ export class DecisionTableExpressionElement {
             y: 0,
           },
         });
-      await this.locator.getByTestId("kie-tools--bee--table-header-input").nth(index).locator("svg").click();
+      await this.locator
+        .getByTestId("kie-tools--bee--table-header-input")
+        .nth(index)
+        .locator(".add-column-button svg")
+        .click();
     }
   }
 
@@ -272,12 +276,19 @@ export class DecisionTableExpressionElement {
             y: 0,
           },
         });
-      await this.locator.getByTestId("kie-tools--bee--table-header-output").nth(0).locator("svg").click();
+      await this.locator
+        .getByTestId("kie-tools--bee--table-header-output")
+        .nth(0)
+        .locator(".add-column-button svg")
+        .click();
     }
   }
 
   public inputHeaderAt(index: number) {
-    return new NameAndDataTypeCell(this.locator.getByTestId("kie-tools--bee--table-header-input").nth(index));
+    return new NameAndDataTypeCell(
+      this.locator.getByTestId("kie-tools--bee--table-header-input").nth(index),
+      this.monaco
+    );
   }
 
   public outputHeaderAt(index: number) {

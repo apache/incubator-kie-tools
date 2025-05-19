@@ -22,6 +22,7 @@ import {
   EditorApi,
   EditorInitArgs,
   EditorTheme,
+  KogitoEditorEnvelopeApi,
   KogitoEditorEnvelopeContextType,
 } from "@kie-tools-core/editor/dist/api";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
@@ -36,7 +37,10 @@ export class DashbuilderViewerView implements Editor {
   public af_componentTitle: "Dashbuilder Editor";
 
   constructor(
-    private readonly envelopeContext: KogitoEditorEnvelopeContextType<DashbuilderViewerChannelApi>,
+    private readonly envelopeContext: KogitoEditorEnvelopeContextType<
+      KogitoEditorEnvelopeApi,
+      DashbuilderViewerChannelApi
+    >,
     private readonly initArgs: EditorInitArgs
   ) {
     this.editorRef = React.createRef<EditorApi>();

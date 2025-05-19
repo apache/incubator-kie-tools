@@ -48,10 +48,6 @@ module.exports = composeEnv([rootEnv, extendedServicesJavaEnv, corsProxyEnv, kie
       description:
         "Version Extended Services compatile with KIE Sandbox. Exact match only. No version ranges are supported.",
     },
-    ONLINE_EDITOR__gtmId: {
-      default: undefined,
-      description: "Google Tag Manager ID. Used for analytics.",
-    },
     ONLINE_EDITOR__corsProxyUrl: {
       default: `http://localhost:${corsProxyEnv.env.corsProxy.dev.port}`,
       description: "CORS Proxy URL.",
@@ -96,19 +92,19 @@ module.exports = composeEnv([rootEnv, extendedServicesJavaEnv, corsProxyEnv, kie
       default: rootEnv.env.root.streamName,
       description: "Image tag to be used by Dev Deployments when deploying models.",
     },
-    ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageRegistry: {
+    ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageRegistry: {
       default: "docker.io",
       description: "Image registry to be used by Dev Deployments when deploying models.",
     },
-    ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageAccount: {
+    ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageAccount: {
       default: "apache",
       description: "Image account to be used by Dev Deployments when deploying models.",
     },
-    ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageName: {
-      default: "incubator-kie-sandbox-dev-deployment-kogito-quarkus-blank-app",
+    ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageName: {
+      default: "incubator-kie-sandbox-dev-deployment-quarkus-blank-app",
       description: "Image name to be used by Dev Deployments when deploying models.",
     },
-    ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageTag: {
+    ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageTag: {
       default: rootEnv.env.root.streamName,
       description: "Image tag to be used by Dev Deployments when deploying models.",
     },
@@ -148,6 +144,10 @@ module.exports = composeEnv([rootEnv, extendedServicesJavaEnv, corsProxyEnv, kie
       default: "false",
       description: "Tells if the development web server should use https",
     },
+    ONLINE_EDITOR__skipPlaywrightTestsForArm64: {
+      default: "false",
+      description: "Skip Playwright tests for ARM64 architecture.",
+    },
   }),
   get env() {
     return {
@@ -156,7 +156,9 @@ module.exports = composeEnv([rootEnv, extendedServicesJavaEnv, corsProxyEnv, kie
           port: getOrDefault(this.vars.ONLINE_EDITOR_DEV__port),
           https: str2bool(getOrDefault(this.vars.ONLINE_EDITOR_DEV__https)),
         },
-        gtmId: getOrDefault(this.vars.ONLINE_EDITOR__gtmId),
+        test: {
+          skipForArm64: getOrDefault(this.vars.ONLINE_EDITOR__skipPlaywrightTestsForArm64),
+        },
         buildInfo: getOrDefault(this.vars.ONLINE_EDITOR__buildInfo),
         extendedServices: {
           compatibleVersion: getOrDefault(this.vars.ONLINE_EDITOR__extendedServicesCompatibleVersion),
@@ -190,11 +192,11 @@ module.exports = composeEnv([rootEnv, extendedServicesJavaEnv, corsProxyEnv, kie
           account: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentBaseImageAccount),
           name: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentBaseImageName),
         },
-        kogitoQuarkusBlankAppImage: {
-          tag: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageTag),
-          registry: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageRegistry),
-          account: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageAccount),
-          name: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentKogitoQuarkusBlankAppImageName),
+        quarkusBlankAppImage: {
+          tag: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageTag),
+          registry: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageRegistry),
+          account: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageAccount),
+          name: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentQuarkusBlankAppImageName),
         },
         dmnFormWebappImage: {
           tag: getOrDefault(this.vars.ONLINE_EDITOR__devDeploymentDmnFormWebappImageTag),

@@ -16,18 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tools-core/envelope/dist/embedded";
-import { ProcessListApi, ProcessListChannelApi, ProcessListEnvelopeApi, ProcessListDriver } from "../api";
-import { ProcessListChannelApiImpl } from "./ProcessListChannelApiImpl";
+import { ProcessListApi, ProcessListChannelApi, ProcessListEnvelopeApi, ProcessListState } from "../api";
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
 import { init } from "../envelope";
-import { ProcessListState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export interface Props {
   targetOrigin: string;
-  driver: ProcessListDriver;
+  channelApi: ProcessListChannelApi;
   initialState: ProcessListState;
   singularProcessLabel: string;
   pluralProcessLabel: string;
@@ -39,11 +37,11 @@ export const EmbeddedProcessList = React.forwardRef((props: Props, forwardedRef:
     []
   );
   const pollInit = useCallback(
-    (
+    async (
       envelopeServer: EnvelopeServer<ProcessListChannelApi, ProcessListEnvelopeApi>,
       container: () => HTMLDivElement
     ) => {
-      init({
+      await init({
         config: {
           containerType: ContainerType.DIV,
           envelopeId: envelopeServer.id,
@@ -51,7 +49,6 @@ export const EmbeddedProcessList = React.forwardRef((props: Props, forwardedRef:
         container: container(),
         bus: {
           postMessage(message, targetOrigin, transfer) {
-            /* istanbul ignore next */
             window.postMessage(message, targetOrigin!, transfer);
           },
         },
@@ -68,13 +65,13 @@ export const EmbeddedProcessList = React.forwardRef((props: Props, forwardedRef:
         }
       );
     },
-    []
+    [props.initialState, props.pluralProcessLabel, props.singularProcessLabel]
   );
 
   return (
     <EmbeddedProcessListEnvelope
       ref={forwardedRef}
-      apiImpl={new ProcessListChannelApiImpl(props.driver)}
+      apiImpl={props.channelApi}
       origin={props.targetOrigin}
       refDelegate={refDelegate}
       pollInit={pollInit}

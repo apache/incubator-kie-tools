@@ -1,0 +1,76 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+FROM ubuntu:22.04
+
+# Set non-interactive mode to prevent tzdata prompt
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install required dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    wget \
+    jq \
+    && rm -rf /var/lib/apt/lists/*
+
+# Adding all dependencies available in GHA `ubuntu-latest`
+RUN wget https://raw.githubusercontent.com/actions/runner-images/refs/heads/main/images/ubuntu/toolsets/toolset-2204.json && \
+    export APT_PACKAGES="$(cat toolset-2204.json | jq -r '.apt | [.vital_packages[], .common_packages[], .cmd_packages[]] | join(" ")')" && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends $APT_PACKAGES && \
+    rm -rf /var/lib/apt/lists/* toolset-2204.json
+
+# Install fonts
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    fonts-ubuntu \
+    fonts-dejavu-core \
+    fonts-dejavu-extra \
+    fonts-freefont-ttf \
+    fonts-liberation \
+    fonts-noto-core \
+    fonts-noto-ui-core \
+    fonts-noto-color-emoji \
+    fonts-noto-mono \
+    fonts-droid-fallback \
+    fontconfig \
+    ttf-mscorefonts-installer && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set Node.js version
+ENV NODE_VERSION=22.13.0
+
+# Download and install Node.js
+RUN curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz" -o /tmp/node.tar.xz && \
+    tar -xJf /tmp/node.tar.xz -C /usr/local --strip-components=1 && \
+    rm -rf /tmp/node.tar.xz
+
+# Create a user with UID 1000 and ensure the group exists
+RUN groupadd --gid 1000 nodegroup && \
+    useradd --uid 1000 --gid 1000 --create-home --shell /bin/bash node
+
+# Set Playwright cache folder
+ENV PLAYWRIGHT_BROWSERS_PATH=/home/node/kie-tools-playwright/.cache/ms-playwright
+
+# Installing `pnpm` to keep it consistent with the kie-tools repository
+RUN npm install --global pnpm@9.3.0
+# Installing Playwright browser and dependencies
+RUN npx playwright@1.45.2 install-deps && npx playwright@1.45.2 install chrome chromium webkit
+
+WORKDIR /home/node/kie-tools-playwright
+
+ENTRYPOINT ["/bin/bash"]

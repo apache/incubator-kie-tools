@@ -443,7 +443,7 @@ export const en: OnlineI18n = {
         notificationPanelExplanation: [
           `The Problems panel `,
           wrapped("icon"),
-          `, at the bottom-right corner of the Editor, displays live Execution messages to assist modeling your decisions.`,
+          `, at the bottom-right corner of the Editor, displays live Evaluation messages to assist modeling your Decisions.`,
         ],
       },
       wizard: {

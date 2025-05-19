@@ -83,7 +83,7 @@ run_quarkus_mvn_add_extension() {
 
     log_info "Processed extensions to be added ${processed_extensions}"
 
-    "${MAVEN_HOME}"/bin/mvn -B ${MAVEN_ARGS_APPEND} \
+    "${MAVEN_CMD}" -B ${MAVEN_ARGS_APPEND} \
         -nsu \
         -B \
         -s "${MAVEN_SETTINGS_PATH}" \

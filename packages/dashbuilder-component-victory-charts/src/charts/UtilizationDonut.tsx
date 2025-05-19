@@ -39,7 +39,6 @@ export class UtilizationDonut extends PieBaseChart {
         legendData={this.buildLegendData()}
         legendOrientation={this.legendOrientation}
         legendPosition={this.pieLegendPosition()}
-        themeVariant={this.props.themeVariant}
       />
     );
   }

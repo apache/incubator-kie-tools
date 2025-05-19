@@ -230,7 +230,7 @@ function DevWebApp(args: DmnEditorProps) {
                 externalContextName: args.externalContextName,
                 externalContextDescription: args.externalContextDescription,
                 validationMessages: args.validationMessages,
-                evaluationResults: args.evaluationResults,
+                evaluationResultsByNodeId: args.evaluationResultsByNodeId,
                 issueTrackerHref: args.issueTrackerHref,
                 onRequestToJumpToPath,
                 isReadOnly: args.isReadOnly,
@@ -270,7 +270,7 @@ export const WebApp: Story = {
   args: {
     model: getMarshaller(initialModel, { upgradeTo: "latest" }).parser.parse(),
     originalVersion: "1.5",
-    evaluationResults: {},
+    evaluationResultsByNodeId: new Map(),
     externalContextDescription:
       "You're using the DMN Dev webapp, so there's only two simple external models that can be included.",
     externalContextName: "Dev webapp",

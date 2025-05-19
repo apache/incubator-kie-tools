@@ -33,7 +33,7 @@ export interface FormDmnI18n extends FormI18n {
   };
   result: {
     evaluation: {
-      success: string;
+      succeeded: string;
       skipped: string;
       failed: string;
     };

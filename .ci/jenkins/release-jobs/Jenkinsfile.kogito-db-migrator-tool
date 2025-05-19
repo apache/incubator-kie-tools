@@ -40,10 +40,10 @@ pipeline {
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
 
-        KOGITO_DB_MIGRATOR_TOOL__registry = 'docker.io'
-        KOGITO_DB_MIGRATOR_TOOL__account = 'apache'
-        KOGITO_DB_MIGRATOR_TOOL__name = 'kogito-db-migrator-tool'
-        KOGITO_DB_MIGRATOR_TOOL__buildTag = "${params.RELEASE_VERSION}"
+        KIE_KOGITO_DB_MIGRATOR_TOOL__registry = 'docker.io'
+        KIE_KOGITO_DB_MIGRATOR_TOOL__account = 'apache'
+        KIE_KOGITO_DB_MIGRATOR_TOOL__name = 'kie-kogito-db-migrator-tool'
+        KIE_KOGITO_DB_MIGRATOR_TOOL__buildTag = "${params.RELEASE_VERSION}"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
@@ -144,10 +144,10 @@ pipeline {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.KOGITO_DB_MIGRATOR_TOOL__registry}",
-                        "${env.KOGITO_DB_MIGRATOR_TOOL__account}",
-                        "${env.KOGITO_DB_MIGRATOR_TOOL__name}",
-                        "${env.KOGITO_DB_MIGRATOR_TOOL_buildTag}",
+                        "${env.KIE_KOGITO_DB_MIGRATOR_TOOL__registry}",
+                        "${env.KIE_KOGITO_DB_MIGRATOR_TOOL__account}",
+                        "${env.KIE_KOGITO_DB_MIGRATOR_TOOL__name}",
+                        "${env.KIE_KOGITO_DB_MIGRATOR_TOOL__buildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
@@ -161,11 +161,11 @@ pipeline {
             }
             steps {
                 script {
-                    env.RELEASE_IMAGE_TAR_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-kogito-db-migrator-tool-image.tar.gz"
+                    env.RELEASE_IMAGE_TAR_FILE = "kie-${params.RELEASE_CANDIDATE_VERSION}-kogito-db-migrator-tool-image.tar.gz"
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
-                    docker save "${env.KOGITO_DB_MIGRATOR_TOOL__registry}/${env.KOGITO_MANAGEMENT_CONSOLE__account}/${env.KOGITO_MANAGEMENT_CONSOLE__name}:${params.RELEASE_VERSION}" | gzip > "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_IMAGE_TAR_FILE}"
+                    docker save "${env.KIE_KOGITO_DB_MIGRATOR_TOOL__registry}/${env.KOGITO_MANAGEMENT_CONSOLE__account}/${env.KOGITO_MANAGEMENT_CONSOLE__name}:${params.RELEASE_VERSION}" | gzip > "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_IMAGE_TAR_FILE}"
                     """.trim()
                 }
             }

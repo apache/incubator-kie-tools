@@ -18,13 +18,23 @@
  */
 
 import * as React from "react";
-import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
+import {
+  ChannelType,
+  DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
+  EditorFactory,
+  EditorInitArgs,
+  KogitoEditorEnvelopeContextType,
+} from "@kie-tools-core/editor/dist/api";
 import { NewDmnEditorChannelApi } from "./NewDmnEditorChannelApi";
-import { DmnEditorInterface } from "./DmnEditorFactory";
+import { DmnEditorInterface, DmnEditorRootWrapper } from "./DmnEditorFactory";
+import { NewDmnEditorEnvelopeApi } from "./NewDmnEditorEnvelopeApi";
+import { NewDmnEditorTypes } from "./NewDmnEditorTypes";
 
-export class NewDmnEditorFactory implements EditorFactory<NewDmnEditorInterface, NewDmnEditorChannelApi> {
+export class NewDmnEditorFactory
+  implements EditorFactory<NewDmnEditorInterface, NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>
+{
   public createEditor(
-    envelopeContext: KogitoEditorEnvelopeContextType<NewDmnEditorChannelApi>,
+    envelopeContext: KogitoEditorEnvelopeContextType<NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>,
     initArgs: EditorInitArgs
   ): Promise<NewDmnEditorInterface> {
     return Promise.resolve(new NewDmnEditorInterface(envelopeContext, initArgs));
@@ -38,5 +48,30 @@ export class NewDmnEditorInterface extends DmnEditorInterface {
    */
   public openBoxedExpressionEditor(nodeId: string): void {
     this.self.openBoxedExpressionEditor(nodeId);
+  }
+
+  public showDmnEvaluationResults(evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId): void {
+    this.self.showDmnEvaluationResults(evaluationResultsByNodeId);
+  }
+
+  public af_componentRoot() {
+    return (
+      <DmnEditorRootWrapper
+        exposing={(dmnEditorRoot) => (this.self = dmnEditorRoot)}
+        envelopeContext={this.envelopeContext}
+        workspaceRootAbsolutePosixPath={
+          this.initArgs.workspaceRootAbsolutePosixPath ?? DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH
+        }
+        isEvaluationHighlightsSupported={
+          this.initArgs.channel === ChannelType.ONLINE || this.initArgs.channel === ChannelType.ONLINE_MULTI_FILE
+        }
+        isReadOnly={this.initArgs.isReadOnly}
+        onOpenedBoxedExpressionEditorNodeChange={(newOpenedNodeId) => {
+          (
+            this.envelopeContext as KogitoEditorEnvelopeContextType<NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>
+          )?.shared.newDmnEditor_openedBoxedExpressionEditorNodeId.set(newOpenedNodeId);
+        }}
+      />
+    );
   }
 }

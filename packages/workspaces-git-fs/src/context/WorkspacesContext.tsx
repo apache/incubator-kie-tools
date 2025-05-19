@@ -191,6 +191,10 @@ export interface WorkspacesContextType {
     workspaceId: string;
     remote: string;
     ref: string;
+    authInfo?: {
+      username: string;
+      password: string;
+    };
     insecurelyDisableTlsCertificateValidation?: boolean;
   }): Promise<FetchResult>;
 

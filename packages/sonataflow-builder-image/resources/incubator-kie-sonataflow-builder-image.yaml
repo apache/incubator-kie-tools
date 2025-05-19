@@ -36,7 +36,7 @@
 - name: "docker.io/apache/incubator-kie-sonataflow-builder"
   from: "registry.access.redhat.com/ubi8/openjdk-17:1.21"
   version: "main"
-  description: "Kogito Serverless Workflow base builder with Quarkus extensions libraries preinstalled"
+  description: "Apache KIE SonataFlow base builder with Quarkus extensions libraries preinstalled"
 
   labels:
     - name: "io.openshift.s2i.scripts-url"
@@ -50,11 +50,11 @@
     - name: "maintainer"
       value: "Apache KIE <dev@kie.apache.org>"
     - name: "io.k8s.description"
-      value: "Sonataflow base builder with Quarkus extensions libraries preinstalled."
+      value: "Apache KIE SonataFlow base builder with Quarkus extensions libraries preinstalled."
     - name: "io.k8s.display-name"
-      value: "Sonataflow Builder"
+      value: "Apache KIE SonataFlow Builder"
     - name: "io.openshift.tags"
-      value: "kogito,builder,serverless,workflow"
+      value: "sonataflow,kogito,kie,builder,serverless,workflow"
 
   modules:
     repositories:
@@ -67,7 +67,8 @@
       - name: org.kie.kogito.maven.common
       - name: org.kie.kogito.project.versions
       - name: org.kie.sonataflow.common.scripts
-      - name: org.kie.sonataflow.builder.runtime.community
+      - name: org.kie.sonataflow.common.quarkus.registry
+      - name: org.kie.sonataflow.builder.runtime
 
   run:
     workdir: "/home/kogito/${PROJECT_ARTIFACT_ID}"

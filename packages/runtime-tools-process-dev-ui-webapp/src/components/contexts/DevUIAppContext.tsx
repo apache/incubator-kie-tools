@@ -31,7 +31,7 @@ export interface DevUIAppContext {
   getQuarkusAppOrigin(): string;
   getQuarkusAppRootPath(): string;
   shouldReplaceQuarkusAppOriginWithWebappOrigin(): boolean;
-  transformQuarkusUrl(url?: string): string;
+  transformEndpointBaseUrl(url: string): string;
   availablePages?: string[];
   customLabels: CustomLabels;
   omittedProcessTimelineEvents: string[];
@@ -119,7 +119,7 @@ export class DevUIAppContextImpl implements DevUIAppContext {
     };
   }
 
-  transformQuarkusUrl(url?: string): string | undefined {
+  transformEndpointBaseUrl(url?: string): string {
     if (!url) {
       return undefined;
     }

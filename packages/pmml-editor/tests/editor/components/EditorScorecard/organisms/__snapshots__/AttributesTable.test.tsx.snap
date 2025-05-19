@@ -15,94 +15,110 @@ exports[`AttributesTable Attribute:Render 1`] = `
       tabindex="0"
     >
       <div
-        class="pf-l-split pf-m-gutter"
+        class="pf-v5-l-split pf-m-gutter"
         style="height: 100%;"
       >
         <div
-          class="pf-l-split__item"
+          class="pf-v5-l-split__item"
         >
           <span
-            class="pf-c-label pf-m-blue"
+            class="pf-v5-c-label pf-m-blue"
             tabindex="0"
           >
             <span
-              class="pf-c-label__content"
+              class="pf-v5-c-label__content"
             >
-              <pre />
-            </span>
-            <button
-              aria-disabled="false"
-              aria-label="Close [object Object]"
-              class="pf-c-button pf-m-plain"
-              data-ouia-component-id="OUIA-Generated-Button-plain-1"
-              data-ouia-component-type="PF4/Button"
-              data-ouia-safe="true"
-              type="button"
-            >
-              <svg
-                aria-hidden="true"
-                fill="currentColor"
-                height="1em"
-                role="img"
-                style="vertical-align: -0.125em;"
-                viewBox="0 0 352 512"
-                width="1em"
+              <span
+                class="pf-v5-c-label__text"
               >
-                <path
-                  d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                />
-              </svg>
-            </button>
-          </span>
-        </div>
-        <div
-          class="pf-l-split__item pf-m-fill"
-        >
-          <span
-            class="pf-c-label pf-m-cyan attribute-list__item__label"
-          >
-            <span
-              class="pf-c-label__content"
-            >
-              <strong>
-                Reason code
-                :
-              </strong>
-               
-              <span>
-                A1
+                <pre />
               </span>
             </span>
-            <button
-              aria-disabled="false"
-              aria-label="Close [object Object], ,[object Object]"
-              class="pf-c-button pf-m-plain"
-              data-ouia-component-id="OUIA-Generated-Button-plain-2"
-              data-ouia-component-type="PF4/Button"
-              data-ouia-safe="true"
-              type="button"
+            <span
+              class="pf-v5-c-label__actions"
             >
-              <svg
-                aria-hidden="true"
-                fill="currentColor"
-                height="1em"
-                role="img"
-                style="vertical-align: -0.125em;"
-                viewBox="0 0 352 512"
-                width="1em"
+              <button
+                aria-disabled="false"
+                aria-label="Close [object Object]"
+                class="pf-v5-c-button pf-m-plain"
+                data-ouia-component-id="OUIA-Generated-Button-plain-1"
+                data-ouia-component-type="PF5/Button"
+                data-ouia-safe="true"
+                type="button"
               >
-                <path
-                  d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                />
-              </svg>
-            </button>
+                <svg
+                  aria-hidden="true"
+                  class="pf-v5-svg"
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  viewBox="0 0 352 512"
+                  width="1em"
+                >
+                  <path
+                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                  />
+                </svg>
+              </button>
+            </span>
           </span>
         </div>
         <div
-          class="pf-l-split__item"
+          class="pf-v5-l-split__item pf-m-fill"
+        >
+          <span
+            class="pf-v5-c-label pf-m-cyan attribute-list__item__label"
+          >
+            <span
+              class="pf-v5-c-label__content"
+            >
+              <span
+                class="pf-v5-c-label__text"
+              >
+                <strong>
+                  Reason code
+                  :
+                </strong>
+                 
+                <span>
+                  A1
+                </span>
+              </span>
+            </span>
+            <span
+              class="pf-v5-c-label__actions"
+            >
+              <button
+                aria-disabled="false"
+                aria-label="Close [object Object], ,[object Object]"
+                class="pf-v5-c-button pf-m-plain"
+                data-ouia-component-id="OUIA-Generated-Button-plain-2"
+                data-ouia-component-type="PF5/Button"
+                data-ouia-safe="true"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="pf-v5-svg"
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  viewBox="0 0 352 512"
+                  width="1em"
+                >
+                  <path
+                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                  />
+                </svg>
+              </button>
+            </span>
+          </span>
+        </div>
+        <div
+          class="pf-v5-l-split__item"
         >
           <div
-            class="pf-l-flex pf-m-align-items-center"
+            class="pf-v5-l-flex pf-m-align-items-center"
             style="height: 100%;"
           >
             <div
@@ -110,9 +126,9 @@ exports[`AttributesTable Attribute:Render 1`] = `
             >
               <button
                 aria-disabled="false"
-                class="pf-c-button pf-m-plain attribute-item__delete"
+                class="pf-v5-c-button pf-m-plain attribute-item__delete"
                 data-ouia-component-id="delete-attribute"
-                data-ouia-component-type="PF4/Button"
+                data-ouia-component-type="PF5/Button"
                 data-ouia-safe="true"
                 data-testid="attribute-n0__delete"
                 id="attribute-n0__delete"
@@ -120,10 +136,10 @@ exports[`AttributesTable Attribute:Render 1`] = `
               >
                 <svg
                   aria-hidden="true"
+                  class="pf-v5-svg"
                   fill="currentColor"
                   height="1em"
                   role="img"
-                  style="vertical-align: -0.125em;"
                   viewBox="0 0 448 512"
                   width="1em"
                 >
@@ -149,94 +165,110 @@ exports[`AttributesTable Attribute:Render 1`] = `
       tabindex="0"
     >
       <div
-        class="pf-l-split pf-m-gutter"
+        class="pf-v5-l-split pf-m-gutter"
         style="height: 100%;"
       >
         <div
-          class="pf-l-split__item"
+          class="pf-v5-l-split__item"
         >
           <span
-            class="pf-c-label pf-m-blue"
+            class="pf-v5-c-label pf-m-blue"
             tabindex="0"
           >
             <span
-              class="pf-c-label__content"
+              class="pf-v5-c-label__content"
             >
-              <pre />
-            </span>
-            <button
-              aria-disabled="false"
-              aria-label="Close [object Object]"
-              class="pf-c-button pf-m-plain"
-              data-ouia-component-id="OUIA-Generated-Button-plain-4"
-              data-ouia-component-type="PF4/Button"
-              data-ouia-safe="true"
-              type="button"
-            >
-              <svg
-                aria-hidden="true"
-                fill="currentColor"
-                height="1em"
-                role="img"
-                style="vertical-align: -0.125em;"
-                viewBox="0 0 352 512"
-                width="1em"
+              <span
+                class="pf-v5-c-label__text"
               >
-                <path
-                  d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                />
-              </svg>
-            </button>
-          </span>
-        </div>
-        <div
-          class="pf-l-split__item pf-m-fill"
-        >
-          <span
-            class="pf-c-label pf-m-cyan attribute-list__item__label"
-          >
-            <span
-              class="pf-c-label__content"
-            >
-              <strong>
-                Reason code
-                :
-              </strong>
-               
-              <span>
-                A2
+                <pre />
               </span>
             </span>
-            <button
-              aria-disabled="false"
-              aria-label="Close [object Object], ,[object Object]"
-              class="pf-c-button pf-m-plain"
-              data-ouia-component-id="OUIA-Generated-Button-plain-5"
-              data-ouia-component-type="PF4/Button"
-              data-ouia-safe="true"
-              type="button"
+            <span
+              class="pf-v5-c-label__actions"
             >
-              <svg
-                aria-hidden="true"
-                fill="currentColor"
-                height="1em"
-                role="img"
-                style="vertical-align: -0.125em;"
-                viewBox="0 0 352 512"
-                width="1em"
+              <button
+                aria-disabled="false"
+                aria-label="Close [object Object]"
+                class="pf-v5-c-button pf-m-plain"
+                data-ouia-component-id="OUIA-Generated-Button-plain-4"
+                data-ouia-component-type="PF5/Button"
+                data-ouia-safe="true"
+                type="button"
               >
-                <path
-                  d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                />
-              </svg>
-            </button>
+                <svg
+                  aria-hidden="true"
+                  class="pf-v5-svg"
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  viewBox="0 0 352 512"
+                  width="1em"
+                >
+                  <path
+                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                  />
+                </svg>
+              </button>
+            </span>
           </span>
         </div>
         <div
-          class="pf-l-split__item"
+          class="pf-v5-l-split__item pf-m-fill"
+        >
+          <span
+            class="pf-v5-c-label pf-m-cyan attribute-list__item__label"
+          >
+            <span
+              class="pf-v5-c-label__content"
+            >
+              <span
+                class="pf-v5-c-label__text"
+              >
+                <strong>
+                  Reason code
+                  :
+                </strong>
+                 
+                <span>
+                  A2
+                </span>
+              </span>
+            </span>
+            <span
+              class="pf-v5-c-label__actions"
+            >
+              <button
+                aria-disabled="false"
+                aria-label="Close [object Object], ,[object Object]"
+                class="pf-v5-c-button pf-m-plain"
+                data-ouia-component-id="OUIA-Generated-Button-plain-5"
+                data-ouia-component-type="PF5/Button"
+                data-ouia-safe="true"
+                type="button"
+              >
+                <svg
+                  aria-hidden="true"
+                  class="pf-v5-svg"
+                  fill="currentColor"
+                  height="1em"
+                  role="img"
+                  viewBox="0 0 352 512"
+                  width="1em"
+                >
+                  <path
+                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                  />
+                </svg>
+              </button>
+            </span>
+          </span>
+        </div>
+        <div
+          class="pf-v5-l-split__item"
         >
           <div
-            class="pf-l-flex pf-m-align-items-center"
+            class="pf-v5-l-flex pf-m-align-items-center"
             style="height: 100%;"
           >
             <div
@@ -244,9 +276,9 @@ exports[`AttributesTable Attribute:Render 1`] = `
             >
               <button
                 aria-disabled="false"
-                class="pf-c-button pf-m-plain attribute-item__delete"
+                class="pf-v5-c-button pf-m-plain attribute-item__delete"
                 data-ouia-component-id="delete-attribute"
-                data-ouia-component-type="PF4/Button"
+                data-ouia-component-type="PF5/Button"
                 data-ouia-safe="true"
                 data-testid="attribute-n1__delete"
                 id="attribute-n1__delete"
@@ -254,10 +286,10 @@ exports[`AttributesTable Attribute:Render 1`] = `
               >
                 <svg
                   aria-hidden="true"
+                  class="pf-v5-svg"
                   fill="currentColor"
                   height="1em"
                   role="img"
-                  style="vertical-align: -0.125em;"
                   viewBox="0 0 448 512"
                   width="1em"
                 >

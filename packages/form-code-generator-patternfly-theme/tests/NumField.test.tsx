@@ -39,9 +39,9 @@ describe("<NumField> tests", () => {
       onChange: jest.fn(),
     };
 
-    const { container, formElement } = renderField(NumField, props, schema);
+    const { formElement } = renderField(NumField, props, schema);
 
-    expect(container).toMatchSnapshot();
+    expect(formElement.jsxCode).toMatchSnapshot();
 
     expect(formElement.reactImports).toContain("useState");
     expect(formElement.pfImports).toContain("FormGroup");
@@ -99,9 +99,9 @@ describe("<NumField> tests", () => {
       onChange: jest.fn(),
     };
 
-    const { container, formElement } = renderField(NumField, props, schema);
+    const { formElement } = renderField(NumField, props, schema);
 
-    expect(container).toMatchSnapshot();
+    expect(formElement.jsxCode).toMatchSnapshot();
 
     expect(formElement.reactImports).toContain("useState");
     expect(formElement.pfImports).toContain("FormGroup");
@@ -132,9 +132,9 @@ describe("<NumField> tests", () => {
       onChange: jest.fn(),
     };
 
-    const { container, formElement } = renderField(NumField, props, schema);
+    const { formElement } = renderField(NumField, props, schema);
 
-    expect(container).toMatchSnapshot();
+    expect(formElement.jsxCode).toMatchSnapshot();
 
     expect(formElement.reactImports).toContain("useState");
     expect(formElement.pfImports).toContain("FormGroup");

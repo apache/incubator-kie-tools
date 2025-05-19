@@ -455,7 +455,7 @@ export const de: OnlineI18n = {
         notificationPanelExplanation: [
           `Das Problem-Panel`,
           wrapped("icon"),
-          `, in der unteren rechten Ecke des Editors, zeigt Live-Ausführungsmeldungen an, um Sie bei der Modellierung Ihrer Entscheidungen zu unterstützen.`,
+          `, in der unteren rechten Ecke des Editors, zeigt Live-Auswertungsmeldungen an, um Sie bei der Modellierung Ihrer Entscheidungen zu unterstützen.`,
         ],
       },
       wizard: {

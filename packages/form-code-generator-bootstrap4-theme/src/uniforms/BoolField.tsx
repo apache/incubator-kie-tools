@@ -23,6 +23,7 @@ import { FormInput } from "../api";
 
 import { useAddFormElementToBootstrapContext } from "./BootstrapCodeGenContext";
 import { CHECKBOX, renderCodeGenElement } from "./templates/templates";
+import { ListItemProps } from "./rendering/ListFieldInput";
 
 export type BoolFieldProps = HTMLFieldProps<
   boolean,
@@ -30,19 +31,19 @@ export type BoolFieldProps = HTMLFieldProps<
   {
     name: string;
     label: string;
+    itemProps?: ListItemProps;
   }
 >;
 
 const Bool: React.FC<BoolFieldProps> = (props: BoolFieldProps) => {
-  const properties = {
+  const element: FormInput = renderCodeGenElement(CHECKBOX, {
     id: props.name,
     name: props.name,
     label: props.label,
     disabled: props.disabled ?? false,
     checked: props.value ?? false,
-  };
-
-  const element: FormInput = renderCodeGenElement(CHECKBOX, properties);
+    itemProps: props.itemProps,
+  });
 
   useAddFormElementToBootstrapContext(element);
 

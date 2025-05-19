@@ -20,6 +20,7 @@ package org.kie.sonataflow.swf.tools.deployment;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.quarkus.deployment.Capabilities;
@@ -34,16 +35,15 @@ import io.quarkus.deployment.annotations.ExecutionTime;
 import io.quarkus.deployment.annotations.Record;
 import io.quarkus.deployment.builditem.ConfigurationBuildItem;
 import io.quarkus.deployment.builditem.LaunchModeBuildItem;
-import io.quarkus.deployment.builditem.LiveReloadBuildItem;
 import io.quarkus.deployment.builditem.ShutdownContextBuildItem;
 import io.quarkus.deployment.builditem.SystemPropertyBuildItem;
-import io.quarkus.deployment.pkg.builditem.CurateOutcomeBuildItem;
-import io.quarkus.deployment.util.WebJarUtil;
 import io.quarkus.devui.spi.page.CardPageBuildItem;
 import io.quarkus.devui.spi.page.Page;
-import io.quarkus.maven.dependency.ResolvedDependency;
+import io.quarkus.maven.dependency.GACT;
 import io.quarkus.vertx.http.deployment.NonApplicationRootPathBuildItem;
 import io.quarkus.vertx.http.deployment.RouteBuildItem;
+import io.quarkus.vertx.http.deployment.webjar.WebJarResultsBuildItem;
+import io.quarkus.vertx.http.runtime.devmode.FileSystemStaticHandler;
 import io.quarkus.vertx.http.runtime.management.ManagementInterfaceBuildTimeConfig;
 import org.kie.sonataflow.swf.tools.runtime.rpc.SonataFlowQuarkusExtensionJsonRPCService;
 
@@ -53,36 +53,39 @@ public class DevConsoleProcessor {
 
     private static final String STATIC_RESOURCES_PATH = "dev-static/";
     private static final String BASE_RELATIVE_URL = "/q/dev-ui/org.apache.kie.sonataflow.sonataflow-quarkus-devui";
+    private static final GACT DEVCONSOLE_WEBJAR_ARTIFACT_KEY = new GACT("org.apache.kie.sonataflow", "sonataflow-quarkus-devui-deployment", null,
+    "jar");
 
     @BuildStep(onlyIf = IsDevelopment.class)
     @Record(ExecutionTime.RUNTIME_INIT)
     public void deployStaticResources(final DevUIStaticArtifactsRecorder devUIStaticArtifactsRecorder,
-            final CurateOutcomeBuildItem curateOutcomeBuildItem,
-            final LiveReloadBuildItem liveReloadBuildItem,
-            final LaunchModeBuildItem launchMode,
             final ShutdownContextBuildItem shutdownContext,
+            final WebJarResultsBuildItem webJarResultsBuildItem,
             final BuildProducer<RouteBuildItem> routeBuildItemBuildProducer) throws IOException {
-        ResolvedDependency devConsoleResourcesArtifact = WebJarUtil.getAppArtifact(curateOutcomeBuildItem,
-                "org.apache.kie.sonataflow",
-                "sonataflow-quarkus-devui-deployment");
 
-        Path devConsoleStaticResourcesDeploymentPath = WebJarUtil.copyResourcesForDevOrTest(
-                liveReloadBuildItem,
-                curateOutcomeBuildItem,
-                launchMode,
-                devConsoleResourcesArtifact,
-                STATIC_RESOURCES_PATH,
-                true);
+        WebJarResultsBuildItem.WebJarResult result = webJarResultsBuildItem.byArtifactKey(DEVCONSOLE_WEBJAR_ARTIFACT_KEY);
+
+        if (result == null) {
+                return;
+        }
+
+        List<FileSystemStaticHandler.StaticWebRootConfiguration> webRootConfigurations = new ArrayList<>();
+        webRootConfigurations.add(
+                new FileSystemStaticHandler.StaticWebRootConfiguration(result.getFinalDestination(),""));
+        for (Path resolvedPath : result.getDependency().getResolvedPaths()) {
+            webRootConfigurations
+                    .add(new FileSystemStaticHandler.StaticWebRootConfiguration(resolvedPath.toString(),STATIC_RESOURCES_PATH));
+        }
 
         routeBuildItemBuildProducer.produce(new RouteBuildItem.Builder()
                 .route(BASE_RELATIVE_URL + "/resources/*")
-                .handler(devUIStaticArtifactsRecorder.handler(devConsoleStaticResourcesDeploymentPath.toString(),
+                .handler(devUIStaticArtifactsRecorder.handler(webRootConfigurations,
                         shutdownContext))
                 .build());
 
         routeBuildItemBuildProducer.produce(new RouteBuildItem.Builder()
                 .route(BASE_RELATIVE_URL + "/*")
-                .handler(devUIStaticArtifactsRecorder.handler(devConsoleStaticResourcesDeploymentPath.toString(),
+                .handler(devUIStaticArtifactsRecorder.handler(webRootConfigurations,
                         shutdownContext))
                 .build());
     }

@@ -29,11 +29,7 @@ import { useEnv } from "../env/hooks/EnvContext";
 import { QueryParams } from "../navigation/Routes";
 import { useQueryParams } from "../queryParams/QueryParamsContext";
 import { SettingsTabs } from "./SettingsModalBody";
-import { getCookie } from "../cookies";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
-
-export const EXTENDED_SERVICES_HOST_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--host";
-export const EXTENDED_SERVICES_PORT_COOKIE_NAME = "kie-tools-COOKIE__kie-sandbox-extended-services--port";
 
 export type SettingsContextType = {
   settings: {
@@ -155,8 +151,8 @@ export function SettingsContextProvider(props: PropsWithChildren<{}>) {
                 url: env.KIE_SANDBOX_CORS_PROXY_URL,
               },
               extendedServices: {
-                host: getCookie(EXTENDED_SERVICES_HOST_COOKIE_NAME) ?? envExtendedServicesHost,
-                port: getCookie(EXTENDED_SERVICES_PORT_COOKIE_NAME) ?? envExtendedServicesPort,
+                host: envExtendedServicesHost,
+                port: envExtendedServicesPort,
               },
               editors: {
                 useLegacyDmnEditor: false,

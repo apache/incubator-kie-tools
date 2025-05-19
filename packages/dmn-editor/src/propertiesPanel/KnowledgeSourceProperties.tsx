@@ -26,10 +26,11 @@ import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { DocumentationLinksFormGroup } from "./DocumentationLinksFormGroup";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
-import { renameDrgElement } from "../mutations/renameNode";
+
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { useRefactor } from "../refactor/RefactorConfirmationDialog";
 
 export function KnowledgeSourceProperties({
   knowledgeSource,
@@ -45,27 +46,32 @@ export function KnowledgeSourceProperties({
 
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const isReadOnly = settings.isReadOnly || (!!namespace && namespace !== thisDmnsNamespace);
+  const identifierId = useMemo(() => knowledgeSource["@_id"], [knowledgeSource]);
+  const oldName = useMemo(() => knowledgeSource["@_label"] ?? knowledgeSource["@_name"], [knowledgeSource]);
+
+  const { setNewIdentifierNameCandidate, refactorConfirmationDialog, newName } = useRefactor({
+    index,
+    identifierId,
+    oldName,
+  });
+
+  const currentName = useMemo(() => {
+    return newName === "" ? oldName : newName;
+  }, [newName, oldName]);
 
   return (
     <>
+      {refactorConfirmationDialog}
       <FormGroup label="Name">
         <InlineFeelNameInput
           enableAutoFocusing={false}
           isPlain={false}
           id={knowledgeSource["@_id"]!}
-          name={knowledgeSource["@_name"]}
+          name={currentName}
           isReadOnly={isReadOnly}
           shouldCommitOnBlur={true}
-          className={"pf-c-form-control"}
-          onRenamed={(newName) => {
-            setState((state) => {
-              renameDrgElement({
-                definitions: state.dmn.model.definitions,
-                index,
-                newName,
-              });
-            });
-          }}
+          className={"pf-v5-c-form-control"}
+          onRenamed={setNewIdentifierNameCandidate}
           allUniqueNames={useCallback((s) => s.computed(s).getAllFeelVariableUniqueNames(), [])}
         />
       </FormGroup>
@@ -76,7 +82,7 @@ export function KnowledgeSourceProperties({
           type={"text"}
           isDisabled={isReadOnly}
           value={knowledgeSource.description?.__$$text}
-          onChange={(newDescription) => {
+          onChange={(_event, newDescription) => {
             setState((state) => {
               (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>).description = {
                 __$$text: newDescription,
@@ -101,7 +107,7 @@ export function KnowledgeSourceProperties({
           type={"text"}
           isDisabled={isReadOnly}
           value={knowledgeSource.type?.__$$text}
-          onChange={(newType) => {
+          onChange={(_event, newType) => {
             setState((state) => {
               (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>).type = {
                 __$$text: newType,
@@ -118,7 +124,7 @@ export function KnowledgeSourceProperties({
           type={"text"}
           isDisabled={isReadOnly}
           value={knowledgeSource["@_locationURI"]}
-          onChange={(newLocationUri) => {
+          onChange={(_event, newLocationUri) => {
             setState((state) => {
               (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>)["@_locationURI"] =
                 newLocationUri;

@@ -24,7 +24,7 @@ import {
   DropdownPosition,
   DropdownToggle,
   DropdownToggleCheckbox,
-} from "@patternfly/react-core/dist/js/components/Dropdown";
+} from "@patternfly/react-core/deprecated";
 import {
   Toolbar,
   ToolbarItem,
@@ -41,13 +41,13 @@ import {
 } from "@patternfly/react-core/dist/js/components/OverflowMenu";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/dist/js/components/Select";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
-import { InputGroup } from "@patternfly/react-core/dist/js/components/InputGroup";
+import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/components/InputGroup";
 import { FilterIcon } from "@patternfly/react-icons/dist/js/icons/filter-icon";
 import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
 import _ from "lodash";
-import { ProcessListDriver } from "../../../api";
+import { ProcessListChannelApi } from "../../../api";
 import "../styles.css";
 import { formatForBulkListProcessInstance } from "../utils/ProcessListUtils";
 import {
@@ -64,6 +64,7 @@ import {
 import { ProcessInfoModal } from "@kie-tools/runtime-tools-components/dist/components/ProcessInfoModal";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { OperationType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 enum Category {
   STATUS = "Status",
@@ -79,8 +80,8 @@ enum BulkSelectionType {
 interface ProcessListToolbarProps {
   filters: ProcessInstanceFilter;
   setFilters: React.Dispatch<React.SetStateAction<ProcessInstanceFilter>>;
-  applyFilter: (filter: ProcessInstanceFilter) => void;
-  refresh: () => void;
+  applyFilter: (filter: ProcessInstanceFilter) => Promise<void>;
+  refresh: () => Promise<void>;
   processStates: ProcessInstanceState[];
   setProcessStates: React.Dispatch<React.SetStateAction<ProcessInstanceState[]>>;
   selectedInstances: ProcessInstance[];
@@ -89,7 +90,7 @@ interface ProcessListToolbarProps {
   setProcessInstances: React.Dispatch<React.SetStateAction<ProcessInstance[]>>;
   isAllChecked: boolean;
   setIsAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
-  driver: ProcessListDriver;
+  channelApi: MessageBusClientApi<ProcessListChannelApi>;
   defaultStatusFilter: ProcessInstanceState[];
   singularProcessLabel: string;
   pluralProcessLabel: string;
@@ -108,7 +109,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
   setProcessInstances,
   isAllChecked,
   setIsAllChecked,
-  driver,
+  channelApi,
   defaultStatusFilter,
   singularProcessLabel,
   pluralProcessLabel,
@@ -167,23 +168,25 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
               return true;
             }
           });
-          await driver.handleProcessMultipleAction(remainingInstances, OperationType.ABORT).then((result) => {
-            onShowMessage(
-              "Abort operation",
-              result.successProcessInstances,
-              result.failedProcessInstances,
-              ignoredItems,
-              OperationType.ABORT
-            );
-            processInstances.forEach((instance) => {
-              result.successProcessInstances.forEach((successInstances) => {
-                if (successInstances.id === instance.id) {
-                  instance.state = ProcessInstanceState.Aborted;
-                }
+          await channelApi.requests
+            .processList__handleProcessMultipleAction(remainingInstances, OperationType.ABORT)
+            .then((result) => {
+              onShowMessage(
+                "Abort operation",
+                result.successProcessInstances,
+                result.failedProcessInstances,
+                ignoredItems,
+                OperationType.ABORT
+              );
+              processInstances.forEach((instance) => {
+                result.successProcessInstances.forEach((successInstances) => {
+                  if (successInstances.id === instance.id) {
+                    instance.state = ProcessInstanceState.Aborted;
+                  }
+                });
               });
+              setProcessInstances([...processInstances]);
             });
-            setProcessInstances([...processInstances]);
-          });
         },
       },
     },
@@ -205,15 +208,17 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
               return true;
             }
           });
-          await driver.handleProcessMultipleAction(remainingInstances, OperationType.SKIP).then((result) => {
-            onShowMessage(
-              "Skip operation",
-              result.successProcessInstances,
-              result.failedProcessInstances,
-              ignoredItems,
-              OperationType.SKIP
-            );
-          });
+          await channelApi.requests
+            .processList__handleProcessMultipleAction(remainingInstances, OperationType.SKIP)
+            .then((result) => {
+              onShowMessage(
+                "Skip operation",
+                result.successProcessInstances,
+                result.failedProcessInstances,
+                ignoredItems,
+                OperationType.SKIP
+              );
+            });
         },
       },
     },
@@ -235,15 +240,17 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
               return true;
             }
           });
-          await driver.handleProcessMultipleAction(remainingInstances, OperationType.RETRY).then((result) => {
-            onShowMessage(
-              "Retry operation",
-              result.successProcessInstances,
-              result.failedProcessInstances,
-              ignoredItems,
-              OperationType.RETRY
-            );
-          });
+          await channelApi.requests
+            .processList__handleProcessMultipleAction(remainingInstances, OperationType.RETRY)
+            .then((result) => {
+              onShowMessage(
+                "Retry operation",
+                result.successProcessInstances,
+                result.failedProcessInstances,
+                ignoredItems,
+                OperationType.RETRY
+              );
+            });
         },
       },
     },
@@ -296,7 +303,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
     }
   };
 
-  const onDeleteChip = (categoryName: Category, value: string): void => {
+  const onDeleteChip = async (categoryName: Category, value: string) => {
     const clonedProcessStates = [...processStates];
     const clonedBusinessKeyArray = [...(filters.businessKey ?? [])];
     switch (categoryName) {
@@ -314,13 +321,13 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
         setFilters({ ...filters, businessKey: clonedBusinessKeyArray });
         break;
     }
-    applyFilter({
+    await applyFilter({
       status: clonedProcessStates,
       businessKey: clonedBusinessKeyArray,
     });
   };
 
-  const onApplyFilter = (): void => {
+  const onApplyFilter = async () => {
     setBusinessKeyInput("");
     const clonedBusinessKeyArray = [...(filters.businessKey ?? [])];
     if (businessKeyInput && !clonedBusinessKeyArray.includes(businessKeyInput)) {
@@ -331,16 +338,15 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
       status: processStates,
       businessKey: clonedBusinessKeyArray,
     });
-    applyFilter({
+    await applyFilter({
       status: processStates,
       businessKey: clonedBusinessKeyArray,
     });
   };
 
-  const onEnterClicked = (event: React.KeyboardEvent<EventTarget>): void => {
-    /* istanbul ignore else */
+  const onEnterClicked = async (event: React.KeyboardEvent<EventTarget>) => {
     if (event.key === "Enter") {
-      businessKeyInput.length > 0 && onApplyFilter();
+      businessKeyInput.length > 0 && (await onApplyFilter());
     }
   };
 
@@ -533,7 +539,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
       <OverflowMenuControl>
         <Dropdown
           onSelect={onProcessManagementButtonSelect}
-          toggle={<KebabToggle onToggle={onProcessManagementKebabToggle} />}
+          toggle={<KebabToggle onToggle={(_event, isOpen: boolean) => onProcessManagementKebabToggle(isOpen)} />}
           isOpen={isKebabOpen}
           isPlain
           dropdownItems={dropdownItemsProcesManagementButtons()}
@@ -573,14 +579,14 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
         <ToolbarFilter
           chips={filters.status}
           deleteChip={onDeleteChip}
-          className="kogito-management-console__state-dropdown-list pf-u-mr-sm"
+          className="kogito-management-console__state-dropdown-list pf-v5-u-mr-sm"
           categoryName="Status"
           id="datatoolbar-filter-status"
         >
           <Select
             variant={SelectVariant.checkbox}
             aria-label="Status"
-            onToggle={onStatusToggle}
+            onToggle={(_event, isExpandedItem: boolean) => onStatusToggle(isExpandedItem)}
             onSelect={onSelect}
             selections={processStates}
             isOpen={isExpanded}
@@ -593,17 +599,19 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
         </ToolbarFilter>
         <ToolbarFilter chips={filters.businessKey} deleteChip={onDeleteChip} categoryName={Category.BUSINESS_KEY}>
           <InputGroup>
-            <TextInput
-              name="businessKey"
-              id="businessKey"
-              data-testid="businesskey"
-              type="search"
-              aria-label="business key"
-              onChange={setBusinessKeyInput}
-              onKeyPress={onEnterClicked}
-              placeholder="Filter by business key"
-              value={businessKeyInput}
-            />
+            <InputGroupItem isFill>
+              <TextInput
+                name="businessKey"
+                id="businessKey"
+                data-testid="businesskey"
+                type="search"
+                aria-label="business key"
+                onChange={(_event, val) => setBusinessKeyInput(val)}
+                onKeyPress={onEnterClicked}
+                placeholder="Filter by business key"
+                value={businessKeyInput}
+              />
+            </InputGroupItem>
           </InputGroup>
         </ToolbarFilter>
         <ToolbarItem>
@@ -614,7 +622,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
       </ToolbarGroup>
       <ToolbarGroup>
         <ToolbarItem variant="separator" />
-        <ToolbarGroup className="pf-u-ml-md" id="process-management-buttons">
+        <ToolbarGroup className="pf-v5-u-ml-md" id="process-management-buttons">
           {buttonItems}
         </ToolbarGroup>
       </ToolbarGroup>

@@ -32,6 +32,18 @@ import { VsCodeWorkspaceChannelApiImpl } from "./workspace/VsCodeWorkspaceChanne
 
 const encoder = new TextEncoder();
 
+function kogitoCompatibleSvgDirname(fileType: string | undefined) {
+  if (fileType === "bpmn" || fileType === "bpmn2") {
+    return "processSVG";
+  }
+
+  if (fileType === "dmn") {
+    return "decisionSVG";
+  }
+
+  return "anySVG";
+}
+
 export async function generateSvg(args: {
   editorStore: VsCodeKieEditorStore;
   vscodeWorkspace: VsCodeWorkspaceChannelApiImpl;
@@ -64,8 +76,8 @@ export async function generateSvg(args: {
   const svgFilenameTemplateId = `kogito.${fileType}.svgFilenameTemplate`;
   const svgFilePathTemplateId = `kogito.${fileType}.svgFilePath`;
 
-  const svgFilenameTemplate = vscode.workspace.getConfiguration().get(svgFilenameTemplateId, "");
-  const svgFilePathTemplate = vscode.workspace.getConfiguration().get(svgFilePathTemplateId, "");
+  const svgFilenameTemplate = vscode.workspace.getConfiguration().get(svgFilenameTemplateId, "" as string);
+  const svgFilePathTemplate = vscode.workspace.getConfiguration().get(svgFilePathTemplateId, "" as string);
 
   if (__path.parse(svgFilenameTemplate).dir) {
     vscode.window.showErrorMessage(
@@ -76,25 +88,43 @@ export async function generateSvg(args: {
 
   const svgFileName = getInterpolatedConfigurationValue({
     currentFileAbsolutePosixPath: editor.document.document.uri.path,
-    value:
-      definitelyPosixPath(svgFilenameTemplate) || `${configurationTokenKeys["${fileBasenameNoExtension}"]}-svg.svg`,
-  });
-  const svgFilePath = getInterpolatedConfigurationValue({
-    currentFileAbsolutePosixPath: editor.document.document.uri.path,
-    value: definitelyPosixPath(svgFilePathTemplate) || `${configurationTokenKeys["${fileDirname}"]}`,
+    value: definitelyPosixPath(svgFilenameTemplate) || `${configurationTokenKeys["${fileBasenameNoExtension}"]}.svg`,
   });
 
-  const svgUri = editor.document.document.uri.with({ path: __path.posix.resolve(svgFilePath, svgFileName) });
+  let svgFilePath;
+  if (svgFilePathTemplate.trim() !== "" /* has customized setting for svgFilePath */) {
+    svgFilePath = getInterpolatedConfigurationValue({
+      currentFileAbsolutePosixPath: editor.document.document.uri.path,
+      value: definitelyPosixPath(svgFilePathTemplate),
+    });
+  } else if (editor.document.document.uri.path.includes("/src/main/resources") /* is inside Kogito app */) {
+    const split = editor.document.document.uri.path.split("/src/main/resources");
+    svgFilePath = __path.posix.join(
+      split[0],
+      `src/main/resources/META-INF/${kogitoCompatibleSvgDirname(fileType)}`,
+      __path.dirname(split[1])
+    );
+  } else {
+    svgFilePath = getInterpolatedConfigurationValue({
+      currentFileAbsolutePosixPath: editor.document.document.uri.path,
+      value: `${configurationTokenKeys["${fileDirname}"]}`,
+    });
+  }
 
-  await vscode.workspace.fs.writeFile(svgUri, encoder.encode(previewSvg));
+  const svgFilePathUri = editor.document.document.uri.with({ path: __path.posix.resolve(svgFilePath, svgFileName) });
+
+  await vscode.workspace.fs.writeFile(svgFilePathUri, encoder.encode(previewSvg));
 
   if (args.displayNotification) {
-    vscode.window.showInformationMessage(i18n.savedSvg(svgFileName), i18n.openSvg).then((selection) => {
-      if (selection !== i18n.openSvg) {
-        return;
-      }
+    const svgFilePosixPathRelativeToOpenFile = __path.posix.relative(editor.document.document.uri.path, svgFilePath);
+    vscode.window
+      .showInformationMessage(i18n.savedSvg(svgFilePosixPathRelativeToOpenFile), i18n.openSvg)
+      .then((selection) => {
+        if (selection !== i18n.openSvg) {
+          return;
+        }
 
-      args.vscodeWorkspace.openFile(svgUri.fsPath);
-    });
+        args.vscodeWorkspace.openFile(svgFilePathUri.fsPath);
+      });
   }
 }

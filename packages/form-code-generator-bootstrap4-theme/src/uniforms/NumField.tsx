@@ -22,6 +22,7 @@ import { connectField, HTMLFieldProps } from "uniforms/cjs";
 import { NUMBER, renderCodeGenElement } from "./templates/templates";
 import { useAddFormElementToBootstrapContext } from "./BootstrapCodeGenContext";
 import { FormInput } from "../api";
+import { ListItemProps } from "./rendering/ListFieldInput";
 
 export type NumFieldProps = HTMLFieldProps<
   string,
@@ -32,10 +33,11 @@ export type NumFieldProps = HTMLFieldProps<
     decimal?: boolean;
     min?: string;
     max?: string;
+    itemProps?: ListItemProps;
   }
 >;
 const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
-  const properties = {
+  const element: FormInput = renderCodeGenElement(NUMBER, {
     id: props.name,
     name: props.name,
     label: props.label,
@@ -47,9 +49,8 @@ const Num: React.FC<NumFieldProps> = (props: NumFieldProps) => {
     max: props.max,
     min: props.min,
     step: props.decimal ? 0.01 : 1,
-  };
-
-  const element: FormInput = renderCodeGenElement(NUMBER, properties);
+    itemProps: props.itemProps,
+  });
   useAddFormElementToBootstrapContext(element);
   return <>{JSON.stringify(element)}</>;
 };

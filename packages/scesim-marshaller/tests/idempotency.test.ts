@@ -22,9 +22,14 @@ import * as path from "path";
 import { getMarshaller } from "@kie-tools/scesim-marshaller";
 
 const files = [
-  "../tests-data--manual/simple.scesim",
-  "../tests-data--manual/OldEnoughTest.scesim",
-  "../tests-data--manual/TrafficViolationTest.scesim",
+  "../tests-data--manual/dmn/collection.scesim",
+  "../tests-data--manual/dmn/expression.scesim",
+  "../tests-data--manual/dmn/imported.scesim",
+  "../tests-data--manual/dmn/simple.scesim",
+  "../tests-data--manual/dmn/simpleTypes.scesim",
+  "../tests-data--manual/dmn/TrafficViolationTest.scesim",
+  "../tests-data--manual/dmn/undefined.scesim",
+  "../tests-data--manual/rule/OldEnoughTest.scesim",
 ];
 
 describe("idempotency", () => {

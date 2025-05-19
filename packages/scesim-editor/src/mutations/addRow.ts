@@ -42,7 +42,6 @@ export function addRow({
         name: { __$$text: factMapping.factIdentifier.name!.__$$text },
         className: { __$$text: factMapping.factIdentifier.className!.__$$text },
       },
-      rawValue: { __$$text: "", "@_class": "string" },
     };
   });
 

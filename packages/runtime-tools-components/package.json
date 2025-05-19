@@ -20,7 +20,7 @@
   "scripts": {
     "build:dev": "rimraf dist && tsc -p tsconfig.json && pnpm copy:css",
     "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.json && pnpm copy:css",
-    "copy:css": "copyfiles -u 2 \"src/**/*.{sass,scss,css,svg,png}\" dist/",
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css,svg,png}\" dist",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\""
   },
   "dependencies": {
@@ -30,10 +30,10 @@
     "@kie-tools/json-yaml-language-service": "workspace:*",
     "@kie-tools/runtime-tools-shared-gateway-api": "workspace:*",
     "@kie-tools/uniforms-patternfly": "workspace:*",
-    "@patternfly/react-core": "^4.276.6",
-    "@patternfly/react-icons": "^4.93.6",
-    "@patternfly/react-styles": "^4.92.6",
-    "@patternfly/react-table": "^4.112.39",
+    "@patternfly/react-core": "^5.4.1",
+    "@patternfly/react-icons": "^5.4.1",
+    "@patternfly/react-styles": "^5.4.0",
+    "@patternfly/react-table": "^5.4.1",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "axios": "^1.8.4",

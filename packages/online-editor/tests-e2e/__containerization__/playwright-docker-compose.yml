@@ -1,0 +1,103 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+services:
+  playwright:
+    platform: linux/amd64
+    container_name: kie-tools-playwright-containerization-online-editor
+    image: dev.local/apache-kie-tools/playwright-e2e-tests-image:${STREAM_NAME}
+    depends_on:
+      - reverse-proxy
+    entrypoint: ["/bin/bash"]
+    stdin_open: true
+    tty: true
+    network_mode: host
+    user: "1000:1000"
+    environment:
+      - KIE_TOOLS_BUILD__runEndToEndTests=true
+      - KIE_TOOLS_BUILD__containerizedEndToEndTests=false # Already inside the container, variable must be false.
+      - ONLINE_EDITOR__skipPlaywrightTestsForArm64=${ONLINE_EDITOR__skipPlaywrightTestsForArm64}
+    volumes:
+      - type: bind
+        source: ./../../../../
+        target: /home/node/kie-tools-playwright/incubator-kie-tools
+
+  # The nginx reverse-proxy is used to forward `host.docker.internal` requests to `localhost.
+  reverse-proxy:
+    image: nginx:1.27.3-alpine
+    container_name: kie-tools-playwright-containerization-online-editor-reverse-proxy
+    network_mode: host
+    command: ["nginx", "-g", "daemon off;"]
+    configs:
+      - source: reverse-proxy-config
+        target: /etc/nginx/nginx.conf
+
+configs:
+  reverse-proxy-config:
+    content: |
+      events {}
+
+      http {
+          server {
+              listen ${KIE_TOOLS_PLAYWRIGHT_CONTAINER__PORT};
+              server_name localhost;
+
+              location / {
+                  proxy_pass http://host.docker.internal:${KIE_TOOLS_PLAYWRIGHT_CONTAINER__PORT};
+
+                  proxy_http_version 1.1;
+                  proxy_set_header Connection "Upgrade";
+              }
+
+              location /ws {
+                  proxy_pass http://host.docker.internal:${KIE_TOOLS_PLAYWRIGHT_CONTAINER__PORT};
+
+                  proxy_http_version 1.1;
+                  proxy_set_header Upgrade websocket;
+                  proxy_set_header Connection "Upgrade";
+              }
+          }
+
+          server {
+              listen ${KIE_TOOLS_PLAYWRIGHT_CONTAINER__CORS_PROXY_PORT};
+              server_name localhost;
+
+              location / {
+                  proxy_pass http://host.docker.internal:${KIE_TOOLS_PLAYWRIGHT_CONTAINER__CORS_PROXY_PORT};
+              }
+          }
+
+          server {
+              listen ${KIE_TOOLS_PLAYWRIGHT_CONTAINER__EXTENDED_SERVICES_PORT};
+              server_name localhost;
+
+              location / {
+                  proxy_pass http://host.docker.internal:${KIE_TOOLS_PLAYWRIGHT_CONTAINER__EXTENDED_SERVICES_PORT};
+              }
+          }
+
+          server {
+              listen ${KIE_TOOLS_PLAYWRIGHT_CONTAINER__QUARKUS_ACCELERATOR_PORT};
+              server_name localhost;
+
+              location / {
+                  proxy_pass http://host.docker.internal:${KIE_TOOLS_PLAYWRIGHT_CONTAINER__QUARKUS_ACCELERATOR_PORT};
+              }
+          }
+      }

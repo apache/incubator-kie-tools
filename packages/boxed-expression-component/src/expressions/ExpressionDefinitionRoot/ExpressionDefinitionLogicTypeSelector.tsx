@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/esm/components/Dropdown";
+import { Dropdown, DropdownToggle } from "@patternfly/react-core/dist/esm/deprecated/components/Dropdown";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Menu } from "@patternfly/react-core/dist/js/components/Menu/Menu";
 import { MenuGroup } from "@patternfly/react-core/dist/js/components/Menu/MenuGroup";
@@ -34,7 +34,7 @@ import { ResourcesAlmostEmptyIcon } from "@patternfly/react-icons/dist/js/icons/
 import { ResourcesFullIcon } from "@patternfly/react-icons/dist/js/icons/resources-full-icon";
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import { BoxedExpression, Normalized } from "../../api";
+import { Action, BoxedExpression, Normalized } from "../../api";
 import { useCustomContextMenuHandler } from "../../contextMenu";
 import { MenuItemWithHelp } from "../../contextMenu/MenuWithHelp";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
@@ -59,6 +59,7 @@ import { ConditionalExpression } from "../ConditionalExpression/ConditionalExpre
 import { IteratorExpressionComponent } from "../IteratorExpression/IteratorExpressionComponent";
 import { FilterExpressionComponent } from "../FilterExpression/FilterExpressionComponent";
 import FilterIcon from "@patternfly/react-icons/dist/esm/icons/filter-icon";
+import { Icon } from "@patternfly/react-core/dist/js";
 
 export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Expression properties */
@@ -320,10 +321,13 @@ export function ExpressionDefinitionLogicTypeSelector({
       const newIdsByOriginalId = mutateExpressionRandomizingIds(clipboard.expression);
 
       let oldExpression: Normalized<BoxedExpression> | undefined;
-      setExpression((prev: Normalized<BoxedExpression>) => {
-        oldExpression = prev;
-        return clipboard.expression;
-      }); // This is mutated to have new IDs by the ID randomizer above.
+      setExpression({
+        setExpressionAction: (prev: Normalized<BoxedExpression>) => {
+          oldExpression = prev;
+          return clipboard.expression;
+        }, // This is mutated to have new IDs by the ID randomizer above.
+        expressionChangedArgs: { action: Action.ExpressionPastedFromClipboard },
+      });
 
       setWidthsById(({ newMap }) => {
         for (const id of findAllIdsDeep(oldExpression)) {
@@ -531,9 +535,13 @@ export function ExpressionDefinitionLogicTypeSelector({
               toggle={
                 <DropdownToggle
                   data-testid={"kie-tools--bee--expression-header-dropdown"}
-                  icon={<>{logicTypeIcon(expression.__$$element)}</>}
+                  icon={
+                    <Icon style={{ marginRight: "5px" }}>
+                      <>{logicTypeIcon(expression.__$$element)}</>
+                    </Icon>
+                  }
                   style={{ padding: 0 }}
-                  onToggle={setDropdownOpen}
+                  onToggle={(_event, val) => setDropdownOpen(val)}
                   tabIndex={-1}
                 >
                   {getLogicTypeLabel(expression?.__$$element)}

@@ -277,14 +277,14 @@ func TestSonataFlowPlatformController(t *testing.T) {
 				DataIndex: &v1alpha08.DataIndexServiceSpec{
 					ServiceSpec: v1alpha08.ServiceSpec{
 						Persistence: &v1alpha08.PersistenceOptionsSpec{
-							MigrateDBOnStartUp: false,
+							DBMigrationStrategy: "none",
 						},
 					},
 				},
 				JobService: &v1alpha08.JobServiceServiceSpec{
 					ServiceSpec: v1alpha08.ServiceSpec{
 						Persistence: &v1alpha08.PersistenceOptionsSpec{
-							MigrateDBOnStartUp: false,
+							DBMigrationStrategy: "none",
 						},
 					},
 				},

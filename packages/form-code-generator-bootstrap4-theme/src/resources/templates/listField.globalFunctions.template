@@ -1,0 +1,12 @@
+function onDelListItem<%= functionName %>(name, itemIndex) {
+  const disabled = <%= disabled %>
+  if (!disabled) {
+    delListItem(name, <%= minCount !== undefined ? minCount : "undefined" %>, itemIndex, onDelListItem<%= functionName %>)
+  }
+}
+function onAddListItem<%= functionName %>(name, initialSetValues) {
+  const disabled = <%= disabled %>
+  if (!disabled || initialSetValues) {
+    addListItem(name, <%= defaultValue %>, <%= maxCount !== undefined ? maxCount : "undefined" %>, `<%= childrenHtml %>`, "<%= functionName %>")
+  }
+}

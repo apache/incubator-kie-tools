@@ -49,8 +49,14 @@ var KogitoDependencies = []Dependency{
 }
 
 // requared crds for sonataflow
-var SonataflowCRDs = []string{"sonataflowbuilds.sonataflow.org", "sonataflowclusterplatforms.sonataflow.org", "sonataflowplatforms.sonataflow.org", "sonataflows.sonataflow.org"}
+var SonataflowCRDs = []string{"sonataflows.sonataflow.org", "sonataflowbuilds.sonataflow.org", "sonataflowplatforms.sonataflow.org"}
 var KnativeCoreServingCRDs = []string{"images.caching.internal.knative.dev", "certificates.networking.internal.knative.dev", "configurations.serving.knative.dev", "clusterdomainclaims.networking.internal.knative.dev", "domainmappings.serving.knative.dev", "ingresses.networking.internal.knative.dev", "metrics.autoscaling.internal.knative.dev", "podautoscalers.autoscaling.internal.knative.dev", "revisions.serving.knative.dev", "routes.serving.knative.dev", "services.serving.knative.dev", "serverlessservices.networking.internal.knative.dev"}
+
+// OLM CatalogSources
+var OLMCatalogSourcesMap = map[string]string{"operatorhubio-catalog": "olm", "community-operators": "openshift-marketplace"}
+
+var SonataFlowOperatorName = "sonataflow-operator"
+
 
 const (
 	QuarkusMavenPlugin                          = "quarkus-maven-plugin"
@@ -83,7 +89,7 @@ const (
 	YMLSWExtension        = "sw.yml"
 	JSONSWExtension       = "sw.json"
 	ApplicationProperties = "application.properties"
-
+	ApplicationSecretProperties = "secret.properties"
 	ManifestServiceFilesKind = "SonataFlow"
 
 	DockerInternalPort = "8080/tcp"

@@ -37,10 +37,19 @@ import {
 } from "@kie-tools-core/react-hooks/dist/useImperativePromiseHandler";
 import { KeyboardShortcutsService } from "@kie-tools-core/keyboard-shortcuts/dist/envelope/KeyboardShortcutsService";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { Title } from "@patternfly/react-core/dist/js/components/Title";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  JavaCodeCompletionAccessor,
+  JavaCodeCompletionClass,
+} from "@kie-tools-core/vscode-java-code-completion/dist/api";
 
 export const EXTERNAL_MODELS_SEARCH_GLOB_PATTERN = "**/*.{dmn,pmml}";
+export const TARGET_DIRECTORY = "target/classes/";
 
 export const EMPTY_DMN = () => `<?xml version="1.0" encoding="UTF-8"?>
 <definitions
@@ -51,15 +60,25 @@ export const EMPTY_DMN = () => `<?xml version="1.0" encoding="UTF-8"?>
   name="DMN${generateUuid()}">
 </definitions>`;
 
+export interface JavaCodeCompletionExposedInteropApi {
+  getFields(fqcn: string): Promise<JavaCodeCompletionAccessor[]>;
+  getClasses(query: string): Promise<JavaCodeCompletionClass[]>;
+  isLanguageServerAvailable(): Promise<boolean>;
+}
+
 export type DmnEditorRootProps = {
   exposing: (s: DmnEditorRoot) => void;
   onNewEdit: (edit: WorkspaceEdit) => void;
   onRequestWorkspaceFilesList: WorkspaceChannelApi["kogitoWorkspace_resourceListRequest"];
   onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot: WorkspaceChannelApi["kogitoWorkspace_openFile"];
+  onOpenedBoxedExpressionEditorNodeChange?: (newOpenedNodeId: string | undefined) => void;
   workspaceRootAbsolutePosixPath: string;
   keyboardShortcutsService: KeyboardShortcutsService | undefined;
+  isEvaluationHighlightsSupported?: boolean;
   isReadOnly: boolean;
+  isImportDataTypesFromJavaClassesSupported?: boolean;
+  javaCodeCompletionService?: JavaCodeCompletionExposedInteropApi;
 };
 
 export type DmnEditorRootState = {
@@ -73,6 +92,7 @@ export type DmnEditorRootState = {
   keyboardShortcutsRegisterIds: number[];
   keyboardShortcutsRegistered: boolean;
   error: Error | undefined;
+  evaluationResultsByNodeId: DmnEditor.EvaluationResultsByNodeId;
 };
 
 export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditorRootState> {
@@ -95,6 +115,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       keyboardShortcutsRegisterIds: [],
       keyboardShortcutsRegistered: false,
       error: undefined,
+      evaluationResultsByNodeId: new Map(),
     };
   }
 
@@ -102,6 +123,10 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
 
   public openBoxedExpressionEditor(nodeId: string): void {
     this.dmnEditorRef.current?.openBoxedExpressionEditor(nodeId);
+  }
+
+  public showDmnEvaluationResults(evaluationResultsByNodeId: DmnEditor.EvaluationResultsByNodeId): void {
+    this.setState((prev) => ({ ...prev, evaluationResultsByNodeId: evaluationResultsByNodeId }));
   }
 
   public async undo(): Promise<void> {
@@ -230,8 +255,8 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     });
 
     return list.normalizedPosixPathsRelativeToTheWorkspaceRoot.flatMap((p) =>
-      // Do not show this DMN on the list
-      p === this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot
+      // Do not show this DMN on the list and filter out assets into target/classes directory
+      p === this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot || p.includes(TARGET_DIRECTORY)
         ? []
         : __path.relative(__path.dirname(this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot!), p)
     );
@@ -478,13 +503,17 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
               originalVersion={this.state.marshaller?.originalVersion}
               model={this.model}
               externalModelsByNamespace={this.state.externalModelsByNamespace}
-              evaluationResults={[]}
+              evaluationResultsByNodeId={this.state.evaluationResultsByNodeId}
               validationMessages={[]}
               externalContextName={""}
               externalContextDescription={""}
               issueTrackerHref={""}
+              isEvaluationHighlightsSupported={this.props?.isEvaluationHighlightsSupported}
               isReadOnly={this.state.isReadOnly}
+              isImportDataTypesFromJavaClassesSupported={this.props?.isImportDataTypesFromJavaClassesSupported}
+              javaCodeCompletionService={this.props?.javaCodeCompletionService}
               onModelChange={this.onModelChange}
+              onOpenedBoxedExpressionEditorNodeChange={this.props.onOpenedBoxedExpressionEditorNodeChange}
               onRequestExternalModelsAvailableToInclude={this.onRequestExternalModelsAvailableToInclude}
               // (begin) All paths coming from inside the DmnEditor component are paths relative to the open file.
               onRequestExternalModelByPath={this.onRequestExternalModelByPathsRelativeToTheOpenFile}
@@ -604,7 +633,11 @@ function ExternalModelsManager({
         for (let i = 0; i < list.normalizedPosixPathsRelativeToTheWorkspaceRoot.length; i++) {
           const normalizedPosixPathRelativeToTheWorkspaceRoot = list.normalizedPosixPathsRelativeToTheWorkspaceRoot[i];
 
-          if (normalizedPosixPathRelativeToTheWorkspaceRoot === thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot) {
+          // Do not show this DMN on the list and filter out assets into target/classes directory
+          if (
+            normalizedPosixPathRelativeToTheWorkspaceRoot === thisDmnsNormalizedPosixPathRelativeToTheWorkspaceRoot ||
+            normalizedPosixPathRelativeToTheWorkspaceRoot.includes(TARGET_DIRECTORY)
+          ) {
             continue;
           }
 
@@ -710,10 +743,11 @@ function DmnMarshallerFallbackError({ error }: { error: Error }) {
   return (
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
       <EmptyState style={{ maxWidth: "1280px" }}>
-        <EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />
-        <Title size={"lg"} headingLevel={"h4"}>
-          Unable to open file.
-        </Title>
+        <EmptyStateHeader
+          titleText="Unable to open file."
+          icon={<EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />}
+          headingLevel={"h4"}
+        />
         <br />
         <EmptyStateBody>Error details: {error.message}</EmptyStateBody>
       </EmptyState>

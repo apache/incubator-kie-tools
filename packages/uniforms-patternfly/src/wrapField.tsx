@@ -18,10 +18,12 @@
  */
 
 import * as React from "react";
-import { FormGroup, FormGroupProps } from "@patternfly/react-core/dist/js/components/Form";
+import { FormGroup, FormGroupProps, FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { filterDOMProps } from "uniforms";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
+import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 declare module "uniforms" {
   interface FilterDOMProps {
@@ -83,21 +85,33 @@ export default function wrapField(
               type="button"
               aria-label="field description"
               onClick={(e) => e.preventDefault()}
-              className="pf-c-form__group-label-help"
+              className="pf-v5-c-form__group-label-help"
             >
-              <HelpIcon noVerticalAlign />
+              <Icon isInline>
+                <HelpIcon />
+              </Icon>
             </button>
           </Popover>
         ) : undefined
       }
       isRequired={required}
-      validated={error ? "error" : "default"}
       type={type}
-      helperText={help}
-      helperTextInvalid={errorMessage}
       {...filterDOMProps(props)}
     >
       {children}
+      {error === true ? (
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem variant="error">{errorMessage}</HelperTextItem>
+          </HelperText>
+        </FormHelperText>
+      ) : (
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem variant="default">{help}</HelperTextItem>
+          </HelperText>
+        </FormHelperText>
+      )}
     </FormGroup>
   );
 }

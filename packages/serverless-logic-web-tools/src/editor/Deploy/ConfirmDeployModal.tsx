@@ -74,7 +74,7 @@ export function ConfirmDeployModal(props: ConfirmDeployModalProps) {
     useCallback(({ close }) => {
       return (
         <Alert
-          className="pf-u-mb-md"
+          className="pf-v5-u-mb-md"
           variant="danger"
           title={
             "Something went wrong while creating the deployment resources. Check your OpenShift settings and resource limits, and then try again."
@@ -92,7 +92,7 @@ export function ConfirmDeployModal(props: ConfirmDeployModalProps) {
     useCallback(({ close }) => {
       return (
         <Alert
-          className="pf-u-mb-md"
+          className="pf-v5-u-mb-md"
           variant="info"
           title={
             "Your deployment has been successfully started and will be available shortly. Please do not close this browser tab until the operation is completed."

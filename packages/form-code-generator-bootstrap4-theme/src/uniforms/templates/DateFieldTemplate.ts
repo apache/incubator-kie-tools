@@ -21,7 +21,7 @@ import date from "!!raw-loader!../../resources/templates/date.template";
 import setValueFromModel from "!!raw-loader!../../resources/templates/date.setModelData.template";
 import writeValueToModel from "!!raw-loader!../../resources/templates/input.writeModelData.template";
 import { template } from "underscore";
-import { AbstractFormGroupInputTemplate, FormElementTemplateProps } from "./types";
+import { AbstractFormGroupTemplate, FormElementTemplateProps } from "./AbstractFormGroupTemplate";
 
 interface DateFieldProps extends FormElementTemplateProps<string> {
   type: string;
@@ -31,7 +31,7 @@ interface DateFieldProps extends FormElementTemplateProps<string> {
   min: string;
 }
 
-export class DateFieldTemplate extends AbstractFormGroupInputTemplate<DateFieldProps> {
+export class DateFieldTemplate extends AbstractFormGroupTemplate<DateFieldProps> {
   constructor() {
     super(template(date), template(setValueFromModel), template(writeValueToModel));
   }

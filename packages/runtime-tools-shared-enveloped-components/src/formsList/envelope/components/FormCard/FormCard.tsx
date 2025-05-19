@@ -20,10 +20,10 @@
 import React from "react";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { FormGroup, Form } from "@patternfly/react-core/dist/js/components/Form";
-import { Card, CardBody, CardHeaderMain, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
+import { Card, CardBody, CardHeader } from "@patternfly/react-core/dist/js/components/Card";
 import { TextVariants, Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/src/types";
+import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { FormsListDriver } from "../../../api/FormsListDriver";
 import Moment from "react-moment";
 export interface FormCardProps {
@@ -50,16 +50,14 @@ const FormCard: React.FC<FormCardProps & OUIAProps> = ({ formData, driver, ouiaI
 
   return (
     <Card {...componentOuiaProps(ouiaId, "forms-card", ouiaSafe)} isSelectable onClick={handleCardClick}>
+      <CardHeader>{getLabel()}</CardHeader>
       <CardHeader>
-        <CardHeaderMain>{getLabel()}</CardHeaderMain>
-      </CardHeader>
-      <CardHeader>
-        <Text component={TextVariants.h1} className="pf-u-font-weight-bold">
+        <Text component={TextVariants.h1} className="pf-v5-u-font-weight-bold">
           {formData.name}
         </Text>
       </CardHeader>
       <CardBody>
-        <div className="pf-u-mt-md">
+        <div className="pf-v5-u-mt-md">
           <Form>
             <FormGroup label="Type" fieldId="type">
               <Text component={TextVariants.p}>{formData.type}</Text>

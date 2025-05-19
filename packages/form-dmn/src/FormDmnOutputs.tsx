@@ -19,6 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { ArrowUpIcon } from "@patternfly/react-icons/dist/js/icons/arrow-up-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
 import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";
@@ -33,7 +34,12 @@ import {
 } from "@patternfly/react-core/dist/js/components/DescriptionList";
 import { Card, CardBody, CardFooter, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { EmptyState, EmptyStateBody, EmptyStateIcon } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateIcon,
+  EmptyStateHeader,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { formDmnI18n } from "./i18n";
 import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
@@ -63,13 +69,20 @@ export interface FormDmnOutputsProps {
   differences?: Array<DeepPartial<DecisionResult>>;
   locale?: string;
   notificationsPanel: boolean;
-  openExecutionTab?: () => void;
+  openEvaluationTab?: () => void;
   openBoxedExpressionEditor?: (nodeId: string) => void;
+  openedBoxedExpressionEditorNodeId: string | undefined;
 }
 
-export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ...props }: FormDmnOutputsProps) {
+export function FormDmnOutputs({
+  openEvaluationTab,
+  openBoxedExpressionEditor,
+  openedBoxedExpressionEditorNodeId,
+  ...props
+}: FormDmnOutputsProps) {
   const [formResultStatus, setFormResultStatus] = useState<FormDmnOutputsStatus>(FormDmnOutputsStatus.EMPTY);
   const [formResultError, setFormResultError] = useState<boolean>(false);
+
   const i18n = useMemo(() => {
     formDmnI18n.setLocale(props.locale ?? navigator.language);
     return formDmnI18n.getCurrent();
@@ -85,7 +98,7 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
       const updatedResult = document.getElementById(`${index}-dmn-result`);
       updatedResult?.classList.add("kogito--editor__dmn-form-result__leaf-updated");
     });
-  }, [props.differences]);
+  }, [openedBoxedExpressionEditorNodeId, props.differences]);
 
   const onAnimationEnd = useCallback((e: React.AnimationEvent<HTMLElement>, index) => {
     e.preventDefault();
@@ -95,11 +108,11 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
     updatedResult?.classList.remove("kogito--editor__dmn-form-result__leaf-updated");
   }, []);
 
-  const onOpenExecutionTab = useCallback(() => {
+  const onOpenEvaluationTab = useCallback(() => {
     if (props.notificationsPanel) {
-      openExecutionTab?.();
+      openEvaluationTab?.();
     }
-  }, [props.notificationsPanel, openExecutionTab]);
+  }, [props.notificationsPanel, openEvaluationTab]);
 
   const resultStatus = useCallback(
     (evaluationStatus: DmnEvaluationStatus) => {
@@ -110,11 +123,13 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
               <div className={"kie-tools__dmn-form-result__evaluation"}>
                 <CheckCircleIcon />
                 {props.notificationsPanel ? (
-                  <a onClick={onOpenExecutionTab} className={"kogito--editor__dmn-form-result__evaluation-link"}>
-                    {i18n.result.evaluation.success}
+                  <a onClick={onOpenEvaluationTab} className={"kogito--editor__dmn-form-result__evaluation-link"}>
+                    {i18n.result.evaluation.succeeded}
                   </a>
                 ) : (
-                  <p className={"kogito--editor__dmn-form-result__evaluation-link"}>{i18n.result.evaluation.success}</p>
+                  <p className={"kogito--editor__dmn-form-result__evaluation-link"}>
+                    {i18n.result.evaluation.succeeded}
+                  </p>
                 )}
               </div>
             </>
@@ -123,9 +138,9 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
           return (
             <>
               <div className={"kie-tools__dmn-form-result__evaluation"}>
-                <InfoCircleIcon />
+                <Icon>&#8631;</Icon>
                 {props.notificationsPanel ? (
-                  <a onClick={onOpenExecutionTab} className={"kogito--editor__dmn-form-result__evaluation-link"}>
+                  <a onClick={onOpenEvaluationTab} className={"kogito--editor__dmn-form-result__evaluation-link"}>
                     {i18n.result.evaluation.skipped}
                   </a>
                 ) : (
@@ -140,7 +155,7 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
               <div className={"kie-tools__dmn-form-result__evaluation"}>
                 <ExclamationCircleIcon />
                 {props.notificationsPanel ? (
-                  <a onClick={onOpenExecutionTab} className={"kogito--editor__dmn-form-result__evaluation-link"}>
+                  <a onClick={onOpenEvaluationTab} className={"kogito--editor__dmn-form-result__evaluation-link"}>
                     {i18n.result.evaluation.failed}
                   </a>
                 ) : (
@@ -154,8 +169,8 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
     [
       i18n.result.evaluation.failed,
       i18n.result.evaluation.skipped,
-      i18n.result.evaluation.success,
-      onOpenExecutionTab,
+      i18n.result.evaluation.succeeded,
+      onOpenEvaluationTab,
       props.notificationsPanel,
     ]
   );
@@ -265,18 +280,21 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
           <Card
             id={`${index}-dmn-result`}
             isFlat={true}
-            className={"kogito--editor__dmn-form-result__results-card"}
+            className={
+              openedBoxedExpressionEditorNodeId === dmnFormResult.decisionId
+                ? "kogito--editor__dmn-form-result__results-card-highlight"
+                : "kogito--editor__dmn-form-result__results-card"
+            }
             onAnimationEnd={(e) => onAnimationEnd(e, index)}
           >
             <CardTitle>
-              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+              <Flex justifyContent={{ default: "justifyContentSpaceBetween" }} flexWrap={{ default: "nowrap" }}>
                 <Title headingLevel={"h2"}>{dmnFormResult.decisionName}</Title>
-                {onOpenBoxedExpressionEditor !== undefined && (
+                {openBoxedExpressionEditor !== undefined && (
                   <Button
                     variant={"plain"}
-                    title={`Open ${dmnFormResult.decisionName} expression`}
+                    title={`Open '${dmnFormResult.decisionName}' expression`}
                     icon={<ArrowUpIcon />}
-                    data-navigate-to-expression-id={dmnFormResult.decisionId}
                     onClick={() => onOpenBoxedExpressionEditor?.(dmnFormResult.decisionId)}
                   />
                 )}
@@ -287,14 +305,22 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
           </Card>
         </div>
       )),
-    [onAnimationEnd, onOpenBoxedExpressionEditor, props.results, result, resultStatus]
+    [
+      props.results,
+      openedBoxedExpressionEditorNodeId,
+      openBoxedExpressionEditor,
+      result,
+      resultStatus,
+      onAnimationEnd,
+      onOpenBoxedExpressionEditor,
+    ]
   );
 
   const formResultErrorMessage = useMemo(
     () => (
       <div>
         <EmptyState>
-          <EmptyStateIcon icon={ExclamationTriangleIcon} />
+          <EmptyStateHeader icon={<EmptyStateIcon icon={ExclamationTriangleIcon} />} />
           <TextContent>
             <Text component={"h2"}>{i18n.result.error.title}</Text>
           </TextContent>
@@ -340,7 +366,7 @@ export function FormDmnOutputs({ openExecutionTab, openBoxedExpressionEditor, ..
     <>
       {formResultStatus === FormDmnOutputsStatus.EMPTY && (
         <EmptyState>
-          <EmptyStateIcon icon={InfoCircleIcon} />
+          <EmptyStateHeader icon={<EmptyStateIcon icon={InfoCircleIcon} />} />
           <TextContent>
             <Text component={"h2"}>{i18n.result.withoutResponse.title}</Text>
           </TextContent>

@@ -22,13 +22,14 @@ import java.util.List;
 
 import io.quarkus.runtime.annotations.ConfigGroup;
 import io.quarkus.runtime.annotations.ConfigItem;
+import io.smallrye.config.WithName;
 
 @ConfigGroup
-public class UserConfig {
+public interface UserConfig {
 
     /**
      * Groups which the user belong to.
      */
-    @ConfigItem(name = "groups")
-    public List<String> groups;
+    @WithName("groups")
+    public List<String> groups();
 }

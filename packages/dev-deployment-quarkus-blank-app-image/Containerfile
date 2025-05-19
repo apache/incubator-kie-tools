@@ -1,0 +1,44 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+# Defaults to docker.io/apache/incubator-kie-sandbox-dev-deployment-base (check env/index.js)
+ARG BUILDER_IMAGE_ARG
+
+FROM --platform=linux/amd64 ${BUILDER_IMAGE_ARG}
+
+USER root
+
+ENV ROOT_PATH="/"
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_EXTRACT_TO_DIR=$HOME_PATH/app/src/main/resources
+ENV DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT=8080
+
+COPY --chown=$USER_ID:$USER_ID dist-dev/quarkus-app $HOME_PATH/app/
+COPY --chown=$USER_ID:$USER_ID dist-dev/settings.xml /tmp/kogito/.m2/settings.xml
+
+# Pre-populate local Maven repository for faster startup
+RUN ./mvnw -Dmaven=3.9.6 clean package -B -nsu --settings /tmp/kogito/.m2/settings.xml -Dmaven.test.skip -Dmaven.repo.local=/tmp/kogito/.m2/repository -Dquarkus.http.root-path=${ROOT_PATH} \
+  && chgrp -R 0 $HOME_PATH/app && chmod -R g=u $HOME_PATH/app && chgrp -R 0 /tmp/kogito && chmod -R g=u /tmp/kogito && chgrp -R 0 /.m2 && chmod -R g=u /.m2
+
+USER $USER_ID
+
+EXPOSE 8080
+
+ENTRYPOINT ["/bin/bash", "-c"]
+
+HEALTHCHECK --interval=1m --timeout=5s CMD curl -f http://localhost:$DEV_DEPLOYMENT__UPLOAD_SERVICE_PORT/upload-status || curl -f http://localhost:8080/q/health || exit 1
+
+CMD ["dev-deployment-upload-service && cp -r $HOME_PATH/app/. /tmp/app && cd /tmp/app && ./mvnw -Dmaven=3.9.6 quarkus:dev -o -s=/tmp/kogito/.m2/settings.xml -Dquarkus.analytics.disabled=true -Ddebug=false -Dmaven.repo.local=/tmp/kogito/.m2/repository -Dquarkus.http.root-path=${ROOT_PATH}"]

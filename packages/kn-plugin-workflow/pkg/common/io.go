@@ -21,11 +21,15 @@ package common
 
 import (
 	"fmt"
+	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
 )
+
+var WorkflowExtensionsType = []string{metadata.YAMLSWExtension, metadata.YMLSWExtension, metadata.JSONSWExtension}
+
 
 func FindFilesWithExtensions(directoryPath string, extensions []string) ([]string, error) {
 	filePaths := []string{}
@@ -58,6 +62,10 @@ func FindFilesWithExtensions(directoryPath string, extensions []string) ([]strin
 	}
 
 	return filePaths, nil
+}
+
+func FindSonataFlowFileByDefaultExtensions() (string, error) {
+	return FindSonataFlowFile(WorkflowExtensionsType)
 }
 
 func FindSonataFlowFile(extensions []string) (string, error) {

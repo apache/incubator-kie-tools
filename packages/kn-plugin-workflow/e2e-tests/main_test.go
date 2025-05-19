@@ -38,6 +38,7 @@ var KnExecutable string
 
 var TestPrintCmdOutput = flag.Bool("logs", true, "Print command output during tests")
 
+
 func TestMain(m *testing.M) {
 
 	// Create temp directory for tests and switch inside it
@@ -54,8 +55,11 @@ func TestMain(m *testing.M) {
 
 	checkAndBuildExecutable()
 
+	InstallOperator()
 	// Run tests
 	exitCode := m.Run()
+
+	UninstallOperator()
 
 	// Cleanup after tests
 	cleanUpTemp(workingPath, tempDirName)

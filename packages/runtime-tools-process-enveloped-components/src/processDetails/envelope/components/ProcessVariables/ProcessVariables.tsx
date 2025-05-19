@@ -20,12 +20,11 @@ import { Card, CardBody, CardHeader } from "@patternfly/react-core/dist/js/compo
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { TextContent } from "@patternfly/react-core/dist/js/components/Text";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import ReactJson from "@microlink/react-json-view";
 import { InfoCircleIcon } from "@patternfly/react-icons/dist/js/icons/info-circle-icon";
 import "../styles.css";
 import { ProcessInstance, ProcessInstanceState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 
 interface ProcessVariablesProps {
   displayLabel: boolean;
@@ -36,27 +35,32 @@ interface ProcessVariablesProps {
   processInstance: ProcessInstance;
 }
 
-const ProcessVariables: React.FC<ProcessVariablesProps & OUIAProps> = ({
+const ProcessVariables: React.FC<ProcessVariablesProps> = ({
   displayLabel,
   displaySuccess,
-  ouiaId,
-  ouiaSafe,
   setDisplayLabel,
   setUpdateJson,
   updateJson,
   processInstance,
 }) => {
-  const handleVariablesChange = (e) => {
-    setUpdateJson({ ...updateJson, ...e.updated_src });
-    setDisplayLabel(true);
-  };
-  const checkProcessStatus =
-    processInstance.state === ProcessInstanceState.Completed || processInstance.state === ProcessInstanceState.Aborted
-      ? false
-      : handleVariablesChange;
+  const handleVariablesChange = useCallback(
+    (e) => {
+      setUpdateJson(e.updated_src);
+      setDisplayLabel(true);
+    },
+    [setDisplayLabel, setUpdateJson]
+  );
+
+  const checkProcessStatus = useMemo(
+    () =>
+      processInstance.state === ProcessInstanceState.Completed || processInstance.state === ProcessInstanceState.Aborted
+        ? false
+        : handleVariablesChange,
+    [handleVariablesChange, processInstance.state]
+  );
 
   return (
-    <Card {...componentOuiaProps(ouiaId, "process-variables", ouiaSafe)}>
+    <Card className="process-variables" style={{ height: "100%" }}>
       <CardHeader>
         <Title headingLevel="h3" size="xl">
           Variables

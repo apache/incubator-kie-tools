@@ -504,7 +504,7 @@ const resolvers = {
       await timeout(2000);
 
       if (args.where.id && taskDetailsError.includes(args.where.id.equal)) {
-        throw new Error(`Cannot find task ${args.where.id.equal}`);
+        throw new Error(`Cannot find Task ${args.where.id.equal}`);
       }
       if (args.pagination) {
         const offset = args.pagination.offset;

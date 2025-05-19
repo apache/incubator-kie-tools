@@ -20,13 +20,19 @@
 import * as React from "react";
 import { useCallback, useState, useRef, useMemo, useEffect } from "react";
 import { useArgs } from "@storybook/preview-api";
-import { DmnEditor, DmnEditorProps, DmnEditorRef, EvaluationResults, ValidationMessages } from "../src/DmnEditor";
+import {
+  DmnEditor,
+  DmnEditorProps,
+  DmnEditorRef,
+  EvaluationResultsByNodeId,
+  ValidationMessages,
+} from "../src/DmnEditor";
 import { DmnLatestModel, getMarshaller } from "@kie-tools/dmn-marshaller";
 import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { diff } from "deep-object-diff";
 import { generateEmptyDmn15 } from "./misc/empty/Empty.stories";
 
-export const evaluationResults: EvaluationResults = {};
+export const evaluationResultsByNodeId: EvaluationResultsByNodeId = new Map();
 export const validationMessages: ValidationMessages = {};
 
 export type StorybookDmnEditorProps = DmnEditorProps & { xml: string };
@@ -43,6 +49,11 @@ export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
   const onModelChange = useMemo(
     () => (props?.onModelChange ? props.onModelChange : setModelArgs),
     [props?.onModelChange]
+  );
+
+  const onOpenedBoxedExpressionEditorNodeChangeNoOperation = useMemo(
+    () => (newOpenedNodeId: string | undefined) => {},
+    []
   );
 
   useEffect(() => {
@@ -95,8 +106,12 @@ export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
           ref={ref}
           model={model}
           originalVersion={props?.originalVersion ?? args.originalVersion}
+          isEvaluationHighlightsSupported={
+            props?.isEvaluationHighlightsSupported ?? args.isEvaluationHighlightsSupported
+          }
           isReadOnly={isReadOnly}
           onModelChange={onModelChange}
+          onOpenedBoxedExpressionEditorNodeChange={onOpenedBoxedExpressionEditorNodeChangeNoOperation}
           onRequestExternalModelByPath={props?.onRequestExternalModelByPath ?? args.onRequestExternalModelByPath}
           onRequestExternalModelsAvailableToInclude={
             props?.onRequestExternalModelsAvailableToInclude ?? args.onRequestExternalModelsAvailableToInclude
@@ -105,7 +120,7 @@ export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
           externalContextName={props?.externalContextName ?? args.externalContextName}
           externalContextDescription={props?.externalContextDescription ?? args.externalContextDescription}
           validationMessages={props?.validationMessages ?? args.validationMessages}
-          evaluationResults={props?.evaluationResults ?? args.evaluationResults}
+          evaluationResultsByNodeId={props?.evaluationResultsByNodeId ?? args.evaluationResultsByNodeId}
           issueTrackerHref={props?.issueTrackerHref ?? args.issueTrackerHref}
           onRequestToJumpToPath={props?.onRequestToJumpToPath ?? args.onRequestToJumpToPath}
           onModelDebounceStateChanged={onModelDebounceStateChanged}

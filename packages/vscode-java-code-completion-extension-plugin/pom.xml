@@ -43,10 +43,9 @@
 
   <properties>
     <project.build.outputTimestamp>2024-01-12T00:00:00Z</project.build.outputTimestamp>
-    <version.tycho>3.0.5</version.tycho>
+    <version.jdt.ls>1.43.0.20241219145916</version.jdt.ls>
+    <version.tycho>4.0.12</version.tycho>
     <version.tycho.extras>${version.tycho}</version.tycho.extras>
-    <version.jacoco>0.8.12</version.jacoco>
-    <version.jdt.ls>1.30.1.20231207151730</version.jdt.ls>
 
     <!-- Tycho -->
     <tycho.scmUrl>scm:git:https://github.com/apache/incubator-kie-tools.git</tycho.scmUrl>
@@ -65,19 +64,9 @@
     <repository>
       <id>jdt.ls.p2</id>
       <layout>p2</layout>
-      <url>https://download.eclipse.org/jdtls/milestones/1.30.1/repository/</url>
-    </repository>
-    <repository>
-      <id>jdt.ls.maven</id>
-      <url>https://repo.eclipse.org/content/repositories/jdtls-releases/</url>
+      <url>https://download.eclipse.org/jdtls/milestones/1.43.0/repository</url>
     </repository>
   </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>cbi-release</id>
-      <url>https://repo.eclipse.org/content/repositories/cbi-releases/</url>
-    </pluginRepository>
-  </pluginRepositories>
 
   <build>
     <plugins>
@@ -92,14 +81,6 @@
         <artifactId>target-platform-configuration</artifactId>
         <version>${version.tycho}</version>
         <configuration>
-          <target>
-            <artifact>
-              <groupId>org.eclipse.jdt.ls</groupId>
-              <artifactId>org.eclipse.jdt.ls.tp</artifactId>
-              <version>${version.jdt.ls}</version>
-            </artifact>
-          </target>
-          <resolver>p2</resolver>
           <pomDependencies>consider</pomDependencies>
         </configuration>
       </plugin>
@@ -219,7 +200,6 @@
           <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
-            <version>${version.jacoco}</version>
             <executions>
               <execution>
                 <goals>

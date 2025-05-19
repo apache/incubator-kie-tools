@@ -33,7 +33,7 @@ module.exports = composeEnv([rootEnv, sonataflowImageCommonEnv], {
       description: "The image registry account.",
     },
     KOGITO_DB_MIGRATOR_TOOL_IMAGE__name: {
-      default: "incubator-kie-kogito-db-migrator-tool",
+      default: "kie-kogito-db-migrator-tool",
       description: "The image name.",
     },
     KOGITO_DB_MIGRATOR_TOOL_IMAGE__buildTag: {

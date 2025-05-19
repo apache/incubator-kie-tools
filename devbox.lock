@@ -21,51 +21,51 @@
         }
       }
     },
-    "go@1.22.9": {
-      "last_modified": "2024-11-16T04:25:12Z",
-      "resolved": "github:NixOS/nixpkgs/34a626458d686f1b58139620a8b2793e9e123bba#go_1_22",
+    "go@1.23.8": {
+      "last_modified": "2025-04-02T04:26:43Z",
+      "resolved": "github:NixOS/nixpkgs/b7ba7f9f45c5cd0d8625e9e217c28f8eb6a19a76#go_1_23",
       "source": "devbox-search",
-      "version": "1.22.9",
+      "version": "1.23.8",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/4nf51i4ah186y2jy3fad2fyvpa49qx6q-go-1.22.9",
+              "path": "/nix/store/sis9p5cc9s4q8hh1fb1hgr0a987bgyra-go-1.23.8",
               "default": true
             }
           ],
-          "store_path": "/nix/store/4nf51i4ah186y2jy3fad2fyvpa49qx6q-go-1.22.9"
+          "store_path": "/nix/store/sis9p5cc9s4q8hh1fb1hgr0a987bgyra-go-1.23.8"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/8w8vzwgp55yl8j1ljgm4wzdgjkvkv5v3-go-1.22.9",
+              "path": "/nix/store/i3kpb1nl3cmkbk7ghphyj61m223j1wm0-go-1.23.8",
               "default": true
             }
           ],
-          "store_path": "/nix/store/8w8vzwgp55yl8j1ljgm4wzdgjkvkv5v3-go-1.22.9"
+          "store_path": "/nix/store/i3kpb1nl3cmkbk7ghphyj61m223j1wm0-go-1.23.8"
         },
         "x86_64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/vlih7j78ki05i8nvzdsxvws7a7ksq04m-go-1.22.9",
+              "path": "/nix/store/kaxcl8h3s1h2k72k3pdhdv3zhysfd6xd-go-1.23.8",
               "default": true
             }
           ],
-          "store_path": "/nix/store/vlih7j78ki05i8nvzdsxvws7a7ksq04m-go-1.22.9"
+          "store_path": "/nix/store/kaxcl8h3s1h2k72k3pdhdv3zhysfd6xd-go-1.23.8"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/frc5188kgv3ws0n999c7cy5vi2f8k4jp-go-1.22.9",
+              "path": "/nix/store/23c2fm7x6646n3r11c0j971fa3g6vd4h-go-1.23.8",
               "default": true
             }
           ],
-          "store_path": "/nix/store/frc5188kgv3ws0n999c7cy5vi2f8k4jp-go-1.22.9"
+          "store_path": "/nix/store/23c2fm7x6646n3r11c0j971fa3g6vd4h-go-1.23.8"
         }
       }
     },

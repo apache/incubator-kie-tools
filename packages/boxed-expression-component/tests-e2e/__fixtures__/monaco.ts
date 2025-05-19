@@ -26,7 +26,7 @@ export class Monaco {
     public projectName: ProjectName
   ) {}
 
-  public async fill(args: { monacoParentLocator: Locator | Page; content: string; nth?: number }) {
+  public async fill(args: { monacoParentLocator: Locator | Page; content: string; nth?: number; submit?: boolean }) {
     if (args.nth !== undefined) {
       await args.monacoParentLocator.getByTestId("monaco-container").nth(args.nth).dblclick();
     } else {
@@ -42,7 +42,9 @@ export class Monaco {
     // FEEL text input selector when the monaco editor is selected.
     await this.page.getByLabel("Editor content;Press Alt+F1 for Accessibility Options.").fill(args.content);
     await this.page.keyboard.press("Home");
-    await this.page.keyboard.press("Enter");
+    if (args.submit === undefined || args.submit) {
+      await this.page.keyboard.press("Enter");
+    }
   }
 
   public async canFill(args: { monacoParentLocator: Locator | Page; nth?: number }) {

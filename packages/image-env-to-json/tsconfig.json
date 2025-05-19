@@ -1,8 +1,0 @@
-{
-  "extends": "@kie-tools/tsconfig/tsconfig.cjs.json",
-  "compilerOptions": {
-    "declaration": false,
-    "declarationMap": false,
-    "resolveJsonModule": true
-  }
-}

@@ -22,6 +22,7 @@ import { connectField, HTMLFieldProps } from "uniforms/cjs";
 import { INPUT, renderCodeGenElement } from "./templates/templates";
 import { useAddFormElementToBootstrapContext } from "./BootstrapCodeGenContext";
 import { FormInput } from "../api";
+import { ListItemProps } from "./rendering/ListFieldInput";
 
 export type TextFieldProps = HTMLFieldProps<
   string,
@@ -29,11 +30,12 @@ export type TextFieldProps = HTMLFieldProps<
   {
     label: string;
     required: boolean;
+    itemProps?: ListItemProps;
   }
 >;
 
 const Text: React.FC<TextFieldProps> = (props: TextFieldProps) => {
-  const properties = {
+  const element: FormInput = renderCodeGenElement(INPUT, {
     id: props.name,
     name: props.name,
     label: props.label,
@@ -42,9 +44,8 @@ const Text: React.FC<TextFieldProps> = (props: TextFieldProps) => {
     placeholder: props.placeholder,
     autoComplete: props.autoComplete ?? false,
     value: props.value,
-  };
-
-  const element: FormInput = renderCodeGenElement(INPUT, properties);
+    itemProps: props.itemProps,
+  });
   useAddFormElementToBootstrapContext(element);
   return <>{JSON.stringify(element)}</>;
 };

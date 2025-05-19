@@ -30,12 +30,12 @@
   }
   &__type-label {
     text-transform: capitalize;
-    margin-top: var(--pf-global--spacer--xs);
-    margin-bottom: var(--pf-global--spacer--xs);
+    margin-top: var(--pf-v5-global--spacer--xs);
+    margin-bottom: var(--pf-v5-global--spacer--xs);
   }
   &__type-select {
     &__option,
-    .pf-c-select__toggle {
+    .pf-v5-c-select__toggle {
       text-transform: capitalize;
     }
   }
