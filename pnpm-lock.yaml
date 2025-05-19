@@ -8430,8 +8430,8 @@ importers:
         specifier: ^3.0.1
         version: 3.0.1(ajv@8.17.1)
       axios:
-        specifier: ^1.7.4
-        version: 1.7.4
+        specifier: ^1.8.4
+        version: 1.9.0
       copyfiles:
         specifier: ^2.4.1
         version: 2.4.1
@@ -8582,8 +8582,8 @@ importers:
         specifier: 1.5.17
         version: 1.5.17(graphql@14.3.1)
       axios:
-        specifier: ^1.7.4
-        version: 1.7.4
+        specifier: ^1.8.4
+        version: 1.9.0
       graphql:
         specifier: 14.3.1
         version: 14.3.1
@@ -8835,8 +8835,8 @@ importers:
         specifier: 1.5.17
         version: 1.5.17(graphql@14.3.1)
       axios:
-        specifier: ^1.7.4
-        version: 1.7.4
+        specifier: ^1.8.4
+        version: 1.9.0
       history:
         specifier: ^4.9.0
         version: 4.10.1
@@ -9218,8 +9218,8 @@ importers:
         specifier: 2.6.10
         version: 2.6.10(graphql@14.3.1)
       axios:
-        specifier: ^1.7.4
-        version: 1.7.4
+        specifier: ^1.8.4
+        version: 1.9.0
       gql-query-builder:
         specifier: 3.1.3
         version: 3.1.3
@@ -9327,8 +9327,8 @@ importers:
         specifier: 2.6.10
         version: 2.6.10(graphql@14.3.1)
       axios:
-        specifier: ^1.7.4
-        version: 1.7.4
+        specifier: ^1.8.4
+        version: 1.9.0
       lodash:
         specifier: ^4.17.21
         version: 4.17.21
@@ -9784,8 +9784,8 @@ importers:
         specifier: 2.6.10
         version: 2.6.10(graphql@14.3.1)
       axios:
-        specifier: ^1.7.4
-        version: 1.7.4
+        specifier: ^1.8.4
+        version: 1.9.0
       gql-query-builder:
         specifier: 3.1.3
         version: 3.1.3
@@ -10398,8 +10398,8 @@ importers:
         specifier: 1.5.17
         version: 1.5.17(graphql@14.3.1)
       axios:
-        specifier: ^1.7.4
-        version: 1.7.4
+        specifier: ^1.8.4
+        version: 1.9.0
       bowser:
         specifier: ^2.10.0
         version: 2.11.0
@@ -21445,6 +21445,9 @@ packages:
 
   axios@1.7.4:
     resolution: {integrity: sha512-DukmaFRnY6AzAALSH4J2M3k6PkaC+MfaAGdEERRWcC9q3/TWQwLpHR8ZRLKTdQ3aBDL64EdluRDjJqKw+BPZEw==}
+
+  axios@1.9.0:
+    resolution: {integrity: sha512-re4CqKTJaURpzbLHtIi6XpDv20/CnpXOtjRY5/CU32L8gU8ek9UIivcfvSWvmKEngmVbrUtPpdDwWDWL7DNHvg==}
 
   azure-devops-node-api@12.5.0:
     resolution: {integrity: sha512-R5eFskGvOm3U/GzeAuxRkUsAl0hrAwGgWn6zAd2KrZmrEhWZVqLew4OOupbQlXUuojUzpGtq62SmdhJ06N88og==}
@@ -45306,6 +45309,14 @@ snapshots:
   axios@1.7.4(debug@4.3.4):
     dependencies:
       follow-redirects: 1.15.6(debug@4.3.4)
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+
+  axios@1.9.0:
+    dependencies:
+      follow-redirects: 1.15.6
       form-data: 4.0.0
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
