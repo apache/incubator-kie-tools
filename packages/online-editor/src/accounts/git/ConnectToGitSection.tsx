@@ -485,7 +485,7 @@ export const fetchAuthenticatedGitlabUser = async (
   proxyUrl?: string,
   insecurelyDisableTlsCertificateValidation?: boolean
 ) => {
-  const bitbucketClient = getGitlabClient({
+  const gitlabClient = getGitlabClient({
     appName,
     domain,
     token: gitlabToken,
@@ -493,7 +493,7 @@ export const fetchAuthenticatedGitlabUser = async (
     insecurelyDisableTlsCertificateValidation,
   });
 
-  const response = await bitbucketClient.getAuthedUser();
+  const response = await gitlabClient.getAuthedUser();
 
   if (!response.ok) {
     const message = await response.text();
