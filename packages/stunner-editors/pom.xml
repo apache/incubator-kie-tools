@@ -214,6 +214,7 @@
 
     <!-- Third party Libraries -->
     <version.ch.qos.logback>1.5.16</version.ch.qos.logback>
+    <version.commons-io>2.19.0</version.commons-io>
     <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
     <version.com.google.guava>32.1.3-jre</version.com.google.guava>
     <version.commons.codec>1.13</version.commons.codec>
@@ -384,6 +385,12 @@
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
         <version>${version.ch.qos.logback}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${version.commons-io}</version>
       </dependency>
 
       <dependency>
