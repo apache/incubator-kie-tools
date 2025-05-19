@@ -224,8 +224,15 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
       );
     }
 
+    if (props.workspace.descriptor.origin.kind === WorkspaceKind.GITLAB_SNIPPET) {
+      return authSessionsSelectFilterCompatibleWithGistOrSnippetUrlDomain(
+        new URL(props.workspace.descriptor.origin.url).host,
+        gitlabSnippet?.author?.username
+      );
+    }
+
     return gitAuthSessionSelectFilter();
-  }, [bitbucketSnippet?.owner?.login, gitHubGist?.owner?.login, props.workspace]);
+  }, [bitbucketSnippet?.owner?.login, gitHubGist?.owner?.login, gitlabSnippet?.author?.username, props.workspace]);
 
   const changeGitAuthSessionId = useCallback(
     (newGitAuthSessionId: React.SetStateAction<string | undefined>, lastAuthSessionId: string | undefined) => {
