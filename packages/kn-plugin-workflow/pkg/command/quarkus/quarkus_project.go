@@ -35,6 +35,8 @@ type CreateQuarkusProjectConfig struct {
 	ProjectName         string
 	Extensions          string // List of extensions separated by "," to be added to the Quarkus project
 	DependenciesVersion metadata.DependenciesVersion
+	Profile string
+	WithPersistence bool
 }
 
 type Repository struct {
