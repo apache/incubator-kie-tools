@@ -26,8 +26,8 @@ test(`Should delete a data type`, async ({ jsonModel, editor, dataTypes, page })
   await editor.changeTab({ tab: TabName.DATA_TYPES });
 
   await dataTypes.createFirstCustonDataType();
-  await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Any });
-  await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Any });
+  await dataTypes.changeName({ newName: DefaultDataTypeName.Any });
+  await dataTypes.changeBaseType({ newBaseType: DataType.Any });
 
   // Delete the data type
   await dataTypes.get().getByLabel("Action").click();

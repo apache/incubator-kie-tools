@@ -30,21 +30,26 @@ test.describe("Create Struct Data Types - Without Constraint", () => {
 
   test.describe("Create struct data type without constraint", () => {
     test(`Create Struct data type`, async ({ jsonModel, dataTypes, page }) => {
-      await dataTypes.changeDataTypeName({ newName: "Custom data type - Struct" });
-      await dataTypes.enableDataTypeStruct();
+      await dataTypes.changeNameAndBaseType({
+        newName: "New Data type - Struct",
+        baseType: DataType.Any,
+        description: "New Data Type Description",
+      });
+      await dataTypes.enableIsStruct();
+      await expect(page.getByRole("checkbox").last()).toBeChecked();
 
       //add property
-      await expect(await page.getByRole("checkbox").last()).toBeChecked();
-      await dataTypes.addDataTypeStructProperty({ name: "Property 1" });
+      await dataTypes.addStructProperty({ name: "Property 1" });
       await dataTypes.resetFocus();
 
       const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
       expect(dataType).not.toBeUndefined();
       expect(dataType).toEqual({
         "@_id": dataType["@_id"],
-        "@_name": "Custom data type - Struct",
+        "@_name": "New Data type - Struct",
         "@_isCollection": dataType["@_isCollection"],
         "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
+        description: { __$$text: "New Data Type Description" },
         itemComponent: [
           {
             "@_id": dataType.itemComponent?.[0]["@_id"],

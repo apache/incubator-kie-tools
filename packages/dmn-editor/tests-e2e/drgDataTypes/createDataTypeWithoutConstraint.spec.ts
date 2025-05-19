@@ -29,9 +29,12 @@ test.describe("Create Data Types - Without Constraint", () => {
   });
 
   test(`Create data type - Undefined`, async ({ jsonModel, dataTypes }) => {
-    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Undefined });
-    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
-    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Undefined });
+    await dataTypes.changeNameAndBaseType({
+      newName: DefaultDataTypeName.Undefined,
+      baseType: DataType.Undefined,
+      description: "New Data Type Description",
+    });
+
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
@@ -44,9 +47,12 @@ test.describe("Create Data Types - Without Constraint", () => {
   });
 
   test(`Create data type - Any`, async ({ jsonModel, dataTypes }) => {
-    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Any });
-    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
-    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Any });
+    await dataTypes.changeNameAndBaseType({
+      newName: DefaultDataTypeName.Any,
+      baseType: DataType.Any,
+      description: "New Data Type Description",
+    });
+
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
@@ -60,9 +66,12 @@ test.describe("Create Data Types - Without Constraint", () => {
   });
 
   test(`Create data type - Boolean`, async ({ jsonModel, dataTypes }) => {
-    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Boolean });
-    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
-    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Boolean });
+    await dataTypes.changeNameAndBaseType({
+      newName: DefaultDataTypeName.Boolean,
+      baseType: DataType.Boolean,
+      description: "New Data Type Description",
+    });
+
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
@@ -76,9 +85,12 @@ test.describe("Create Data Types - Without Constraint", () => {
   });
 
   test(`Create data type - Context`, async ({ jsonModel, dataTypes }) => {
-    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Context });
-    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
-    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Context });
+    await dataTypes.changeNameAndBaseType({
+      newName: DefaultDataTypeName.Context,
+      baseType: DataType.Context,
+      description: "New Data Type Description",
+    });
+
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
@@ -92,9 +104,12 @@ test.describe("Create Data Types - Without Constraint", () => {
   });
 
   test(`Custom data type - Date`, async ({ jsonModel, dataTypes }) => {
-    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Date });
-    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
-    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Date });
+    await dataTypes.changeNameAndBaseType({
+      newName: DefaultDataTypeName.Date,
+      baseType: DataType.Date,
+      description: "New Data Type Description",
+    });
+
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
@@ -108,9 +123,12 @@ test.describe("Create Data Types - Without Constraint", () => {
   });
 
   test(`Create data type - DateTime`, async ({ jsonModel, dataTypes }) => {
-    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.DateTime });
-    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
-    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.DateTime });
+    await dataTypes.changeNameAndBaseType({
+      newName: DefaultDataTypeName.DateTime,
+      baseType: DataType.DateTime,
+      description: "New Data Type Description",
+    });
+
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
@@ -124,9 +142,12 @@ test.describe("Create Data Types - Without Constraint", () => {
   });
 
   test(`Create data type - DateTimeDuration`, async ({ jsonModel, dataTypes }) => {
-    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.DateTimeDuration });
-    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
-    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.DateTimeDuration });
+    await dataTypes.changeNameAndBaseType({
+      newName: DefaultDataTypeName.DateTimeDuration,
+      baseType: DataType.DateTimeDuration,
+      description: "New Data Type Description",
+    });
+
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
@@ -140,9 +161,12 @@ test.describe("Create Data Types - Without Constraint", () => {
   });
 
   test(`Create data type - Number`, async ({ jsonModel, dataTypes }) => {
-    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Number });
-    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
-    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Number });
+    await dataTypes.changeNameAndBaseType({
+      newName: DefaultDataTypeName.Number,
+      baseType: DataType.Number,
+      description: "New Data Type Description",
+    });
+
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
@@ -156,9 +180,11 @@ test.describe("Create Data Types - Without Constraint", () => {
   });
 
   test(`Create data type - String`, async ({ jsonModel, dataTypes }) => {
-    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.String });
-    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
-    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.String });
+    await dataTypes.changeNameAndBaseType({
+      newName: DefaultDataTypeName.String,
+      baseType: DataType.String,
+      description: "New Data Type Description",
+    });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
@@ -172,9 +198,11 @@ test.describe("Create Data Types - Without Constraint", () => {
   });
 
   test(`Create data type - Time`, async ({ jsonModel, dataTypes }) => {
-    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Time });
-    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
-    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Time });
+    await dataTypes.changeNameAndBaseType({
+      newName: DefaultDataTypeName.Time,
+      baseType: DataType.Time,
+      description: "New Data Type Description",
+    });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({
@@ -188,9 +216,11 @@ test.describe("Create Data Types - Without Constraint", () => {
   });
 
   test(`Create data type - YearsMonthsDuration`, async ({ jsonModel, dataTypes }) => {
-    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.YearsMonthsDuration });
-    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
-    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.YearsMonthsDuration });
+    await dataTypes.changeNameAndBaseType({
+      newName: DefaultDataTypeName.YearsMonthsDuration,
+      baseType: DataType.YearsMonthsDuration,
+      description: "New Data Type Description",
+    });
     const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(dataType).not.toBeUndefined();
     expect(dataType).toEqual({

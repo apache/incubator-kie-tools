@@ -20,7 +20,7 @@
 import { Monaco } from "@kie-tools/boxed-expression-component/tests-e2e/__fixtures__/monaco";
 import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 
-import { Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 
 export enum DataType {
   Undefined = "<Undefined>",
@@ -98,17 +98,8 @@ export class DataTypes {
     return this.get().getByRole("button", { name: ConstraintType.RANGE, exact: true });
   }
 
-  public enableDataTypeStruct() {
-    this.get().locator("span", { hasText: "Is struct?" }).last().click();
-  }
-
-  public async addDataTypeStructProperty(args: { name: string }) {
-    await this.get().getByTitle("Add item component (at the top)").click();
-    await this.changeDataTypePropertiesTable({ name: args.name });
-  }
-
-  public changeDataTypePropertiesTable(args: { name: string }) {
-    return this.get().getByRole("table").getByPlaceholder("Enter a name...").first().fill(args.name);
+  public async enableIsStruct() {
+    await this.get().locator("span", { hasText: "Is struct?" }).last().click();
   }
 
   public async createFirstCustonDataType() {
@@ -127,26 +118,19 @@ export class DataTypes {
     await this.get().getByTestId("kie-tools--dmn-editor--data-types-list").getByText(args.name).click();
   }
 
-  public async changeDataTypeName(args: { newName: string }) {
+  public async changeName(args: { newName: string }) {
     await this.get().getByPlaceholder("Enter a name...").fill(args.newName);
   }
 
-  public async addDataTypeDescription(args: { newDescription: string }) {
+  public async addDescription(args: { newDescription: string }) {
     await this.get().getByPlaceholder("Enter a description...").fill(args.newDescription);
   }
 
-  public async changeDataTypeBaseType(args: { newBaseType: DataType }) {
+  public async changeBaseType(args: { newBaseType: DataType }) {
     await this.get().getByPlaceholder("Select a data type...").click();
     await this.get().getByPlaceholder("Select a data type...").press("ControlOrMeta+a");
     await this.get().getByPlaceholder("Select a data type...").fill(args.newBaseType);
     await this.page.getByRole("option", { name: args.newBaseType, exact: true }).click();
-  }
-
-  public async changeDataTypeBaseCustomType(args: { newBaseType: string }) {
-    await this.get().getByPlaceholder("Select a data type...").click();
-    await this.get().getByPlaceholder("Select a data type...").press("ControlOrMeta+a");
-    await this.get().getByPlaceholder("Select a data type...").fill(args.newBaseType);
-    await this.page.getByRole("option", { name: `${args.newBaseType} `, exact: false }).click();
   }
 
   // The current method only supports "string", "number"
@@ -211,5 +195,260 @@ export class DataTypes {
 
   public async deleteConstraint() {
     await this.getNoneConstraintButton().click();
+  }
+
+  public async addStructProperty(args: { name: string; type?: string }) {
+    await this.get().getByTitle("Add item component (at the top)").click();
+    await this.changeStructPropertiesTable({ name: args.name, type: args.type });
+    await this.resetFocus();
+  }
+
+  public async changeStructPropertiesTable(args: { name: string; type?: string }) {
+    await this.get().getByRole("table").locator("tr").getByPlaceholder("Enter a name...").first().fill(args.name);
+    if (args.type !== "" && args.type !== undefined) {
+      await this.get().getByRole("table").locator("tr").getByPlaceholder("Select a data type...").fill(args.type);
+      await this.page.getByRole("option", { name: args.type, exact: true }).click();
+    }
+  }
+
+  public async selectStructPropertyAction(args: { action: string }) {
+    await this.get().getByRole("table").locator("tr").getByRole("button", { name: "Actions" }).click();
+    await this.page.getByRole("menuitem", { name: args.action }).click();
+  }
+
+  public async changeNameAndBaseType(args: { newName: string; baseType?: DataType; description?: string }) {
+    await this.get().getByPlaceholder("Enter a name...").fill(args.newName);
+    await this.addDescription({ newDescription: args.description ?? "" });
+    await this.changeBaseType({ newBaseType: args.baseType ?? DataType.Undefined });
+  }
+
+  private isValidDate(value: string): boolean {
+    return /^\d{4}-(0?[1-9]|1[0-2])-(0?[1-9]|[12]\d|3[01])$/.test(value);
+  }
+
+  private isValidTime(value: string): boolean {
+    return /^\d{2}:\d{2}:\d{2}$/.test(value);
+  }
+
+  private isValidTimezone(value: string): boolean {
+    return /^[+-]\d{2}:\d{2}$/.test(value);
+  }
+
+  private isValidNumber(value: string): boolean {
+    return /^-?\d+$/.test(value);
+  }
+
+  private async fillDateFields(container: Locator, date: string) {
+    const [year, month, day] = date.split("-");
+    if (!this.isValidDate(date)) throw new Error(`Invalid date format: ${date}`);
+
+    await container.getByLabel("Toggle date picker").click();
+    await container.locator('input[type="number"]').fill(year);
+    await container.locator('button[aria-expanded="false"]').first().click();
+    await container.getByRole("option", { name: this.getMonthName(month) }).click();
+    await container.getByRole("button", { name: `${day} ${this.getMonthName(month)} ${year}`, exact: true }).click();
+  }
+
+  private async fillTimeField(container: Locator, time: string) {
+    if (!this.isValidTime(time)) throw new Error(`Invalid time format: ${time}`);
+    await container.getByLabel("Time picker").fill(time);
+  }
+
+  private async fillTimezoneField(container: Locator, timezone: string) {
+    if (!this.isValidTimezone(timezone)) throw new Error(`Invalid timezone format: ${timezone}`);
+    await container.getByRole("button", { name: "Options menu" }).click();
+    await this.get().getByRole("option", { name: timezone }).click();
+    await this.resetFocus();
+  }
+
+  private async addValueIfLastElementFilled(container: Locator, label: string) {
+    const lastElementValue = await container
+      .getByRole("listitem")
+      .last()
+      .getByLabel(label, { exact: true })
+      .getAttribute("value");
+    if (lastElementValue !== "" || lastElementValue == null) {
+      await this.get().getByRole("button", { name: "Add value" }).click();
+    }
+  }
+
+  public async addEnumerationConstraintDate(args: { values: string[] }) {
+    const enumerationList = this.get().getByTestId("kie-tools--dmn-editor--enumeration-constraint-list");
+    const firstElementValue = await enumerationList
+      .getByTestId("kie-tools--dmn-editor--draggable-row-0")
+      .getByLabel("Date picker", { exact: true })
+      .getAttribute("value");
+
+    const append = firstElementValue !== "" && firstElementValue !== null;
+    const startIndex = append ? await enumerationList.getByRole("listitem").count() : 0;
+
+    for (let i = 0; i < args.values.length; i++) {
+      if (i !== 0 || append) {
+        await this.get().getByRole("button", { name: "Add value" }).click();
+      }
+      const row = enumerationList.getByTestId(`kie-tools--dmn-editor--draggable-row-${startIndex + i}`);
+      await this.fillDateFields(row, args.values[i]);
+    }
+  }
+
+  public async addRangeConstraintDate(args: { values: [string, string]; includeStart: boolean; includeEnd: boolean }) {
+    await this.fillDateFields(
+      this.get().getByTestId(`kie-tools--dmn-editor--range-constraint-start-value`),
+      args.values[0]
+    );
+    await this.fillDateFields(
+      this.get().getByTestId(`kie-tools--dmn-editor--range-constraint-end-value`),
+      args.values[1]
+    );
+    if (!args.includeStart) await this.get().locator('button[id="start"]').click();
+    if (args.includeEnd) await this.get().locator('button[id="end"]').click();
+  }
+
+  public async addEnumerationConstraintDateTime(args: { date: string; time: string; timezone: string }) {
+    const enumList = this.get().getByTestId("kie-tools--dmn-editor--enumeration-constraint-list");
+    await this.addValueIfLastElementFilled(enumList, "Date picker");
+
+    const row = enumList.getByRole("listitem").last();
+    await this.fillDateFields(row, args.date);
+    await this.fillTimeField(row, args.time);
+    await this.fillTimezoneField(row, args.timezone);
+  }
+
+  public async addRangeConstraintDateTime(args: {
+    date: string;
+    time: string;
+    timezone: string;
+    range: string;
+    includeDate: boolean;
+  }) {
+    const rangeContainer = this.get().getByTestId(`kie-tools--dmn-editor--range-constraint-${args.range}-value`);
+    await this.fillDateFields(rangeContainer, args.date);
+    await this.fillTimeField(rangeContainer, args.time);
+    await this.fillTimezoneField(rangeContainer, args.timezone);
+    if ((args.includeDate && args.range === "end") || (!args.includeDate && args.range === "start")) {
+      await this.get().locator(`button[id="${args.range}"]`).click();
+    }
+  }
+
+  public async addEnumerationConstraintDateTimeDuration(args: {
+    days: string;
+    hrs: string;
+    mins: string;
+    sec: string;
+  }) {
+    const { days, hrs, mins, sec } = args;
+    if (![days, hrs, mins, sec].every(this.isValidNumber)) {
+      throw new Error(`Invalid DateTimeDuration format: ${JSON.stringify(args)}`);
+    }
+
+    const enumList = this.get().getByTestId("kie-tools--dmn-editor--enumeration-constraint-list");
+    const last = enumList.getByRole("listitem").last();
+    const lastElementValue = await last.getByPlaceholder("Days").getAttribute("value");
+
+    if (lastElementValue !== "" || lastElementValue == null) {
+      await this.get().getByRole("button", { name: "Add value" }).click();
+    }
+
+    await last.getByPlaceholder("Days").fill(days);
+    await last.getByPlaceholder("Hours").fill(hrs);
+    await last.getByPlaceholder("Minutes").fill(mins);
+    await last.getByPlaceholder("Seconds").fill(sec);
+  }
+
+  public async addRangeConstraintDateTimeDuration(args: {
+    days: string;
+    hrs: string;
+    mins: string;
+    sec: string;
+    range: string;
+    includeDate: boolean;
+  }) {
+    const { days, hrs, mins, sec, range } = args;
+    if (![days, hrs, mins, sec].every(this.isValidNumber)) {
+      throw new Error(`Invalid DateTimeDuration format: ${JSON.stringify(args)}`);
+    }
+
+    const rangeContainer = this.get().getByTestId(`kie-tools--dmn-editor--range-constraint-${range}-value`);
+    await rangeContainer.getByPlaceholder("Days").fill(days);
+    await rangeContainer.getByPlaceholder("Hours").fill(hrs);
+    await rangeContainer.getByPlaceholder("Minutes").fill(mins);
+    await rangeContainer.getByPlaceholder("Seconds").fill(sec);
+
+    if ((args.includeDate && args.range === "end") || (!args.includeDate && args.range === "start")) {
+      await this.get().locator(`button[id="${args.range}"]`).click();
+    }
+  }
+
+  public async addEnumerationConstraintTime(args: { time: string; timezone: string }) {
+    const enumList = this.get().getByTestId("kie-tools--dmn-editor--enumeration-constraint-list");
+    await this.addValueIfLastElementFilled(enumList, "Time picker");
+
+    const row = enumList.getByRole("listitem").last();
+    await this.fillTimeField(row, args.time);
+    await this.fillTimezoneField(row, args.timezone);
+  }
+
+  public async addRangeConstraintTime(args: { time: string; timezone: string; range: string; includeDate: boolean }) {
+    const container = this.get().getByTestId(`kie-tools--dmn-editor--range-constraint-${args.range}-value`);
+    await this.fillTimeField(container, args.time);
+    await this.fillTimezoneField(container, args.timezone);
+    if ((args.includeDate && args.range === "end") || (!args.includeDate && args.range === "start")) {
+      await this.get().locator(`button[id="${args.range}"]`).click();
+    }
+  }
+
+  public async addEnumerationConstraintYearsMonthsDuration(args: { year: string; month: string }) {
+    if (![args.year, args.month].every(this.isValidNumber)) {
+      throw new Error(`Invalid YearsMonthsDuration format: ${JSON.stringify(args)}`);
+    }
+    const enumList = this.get().getByTestId("kie-tools--dmn-editor--enumeration-constraint-list");
+    const last = enumList.getByRole("listitem").last();
+    const lastElementValue = await last.getByPlaceholder("Years").getAttribute("value");
+
+    if (lastElementValue !== "" || lastElementValue == null) {
+      await this.get().getByRole("button", { name: "Add value" }).click();
+    }
+
+    await last.getByPlaceholder("Years").fill(args.year);
+    await last.getByPlaceholder("Months").fill(args.month);
+  }
+
+  public async addRangeConstraintYearsMonthsDuration(args: {
+    year: string;
+    month: string;
+    range: string;
+    includeDate: boolean;
+  }) {
+    if (![args.year, args.month].every(this.isValidNumber)) {
+      throw new Error(`Invalid YearsMonthsDuration format: ${JSON.stringify(args)}`);
+    }
+    const rangeContainer = this.get().getByTestId(`kie-tools--dmn-editor--range-constraint-${args.range}-value`);
+    await rangeContainer.getByPlaceholder("Years").fill(args.year);
+    await rangeContainer.getByPlaceholder("Months").fill(args.month);
+    if ((args.includeDate && args.range === "end") || (!args.includeDate && args.range === "start")) {
+      await this.get().locator(`button[id="${args.range}"]`).click();
+    }
+  }
+
+  private getMonthName(month: string): string {
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    const index = Number(month) - 1;
+    if (index < 0 || index > 11) {
+      throw new Error(`Invalid month: ${month}`);
+    }
+    return months[index];
   }
 }

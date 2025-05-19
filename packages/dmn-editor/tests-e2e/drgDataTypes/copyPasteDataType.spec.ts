@@ -32,11 +32,13 @@ test.describe("Copy and Paste Data Type", () => {
     await dataTypes.createFirstCustonDataType();
     clipboard.setup(context, browserName);
   });
+
   test("Should copy and paste data type - empty state", async ({ jsonModel, dataTypes, page }) => {
-    //create any data type without constaint
-    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Any });
-    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
-    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Any });
+    await dataTypes.changeNameAndBaseType({
+      newName: DefaultDataTypeName.Any,
+      baseType: DataType.Any,
+      description: "New Data Type Description",
+    });
 
     //copy data type
     await dataTypes.get().getByLabel("Action").click();
@@ -64,10 +66,11 @@ test.describe("Copy and Paste Data Type", () => {
   });
 
   test(`Should copy and paste data type - non empty state`, async ({ jsonModel, dataTypes, page }) => {
-    //create any data type without constaint
-    await dataTypes.changeDataTypeName({ newName: DefaultDataTypeName.Any });
-    await dataTypes.addDataTypeDescription({ newDescription: "New Data Type Description" });
-    await dataTypes.changeDataTypeBaseType({ newBaseType: DataType.Any });
+    await dataTypes.changeNameAndBaseType({
+      newName: DefaultDataTypeName.Any,
+      baseType: DataType.Any,
+      description: "New Data Type Description",
+    });
 
     //copy data type
     await dataTypes.get().getByLabel("Action").click();
