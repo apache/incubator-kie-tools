@@ -20,13 +20,14 @@ import React, { useCallback, useEffect } from "react";
 import { ProcessDefinitionForm } from "./ProcessDefinitionForm";
 import { useRuntimeInfo, useRuntimeSpecificRoutes } from "../../runtime/RuntimeContext";
 import { AuthSession, useAuthSessionsDispatch } from "../../authSessions";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { useEnv } from "../../env/hooks/EnvContext";
 import { useRoutes } from "../../navigation/Hooks";
 import { useRuntimePageLayoutDispatch } from "../../runtime/RuntimePageLayoutContext";
 
-export const ProcessDefinitionFormPage: React.FC<{ processName?: string }> = ({ processName }) => {
+export const ProcessDefinitionFormPage: React.FC = () => {
+  const { processName } = useParams<{ processName?: string }>();
   const navigate = useNavigate();
   const runtimeRoutes = useRuntimeSpecificRoutes();
   const routes = useRoutes();

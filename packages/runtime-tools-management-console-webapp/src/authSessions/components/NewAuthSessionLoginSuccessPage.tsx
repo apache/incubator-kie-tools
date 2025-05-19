@@ -42,7 +42,7 @@ type Props = {
 export const NewAuthSessionLoginSuccessPage: React.FC<Props> = ({ onAddAuthSession }) => {
   const { add } = useAuthSessionsDispatch();
   const { isAuthSessionsReady } = useAuthSessions();
-  const location = useNavigate();
+  const navigate = useNavigate();
   const routes = useRoutes();
   const [error, setError] = useState(false);
 
@@ -65,7 +65,7 @@ export const NewAuthSessionLoginSuccessPage: React.FC<Props> = ({ onAddAuthSessi
         if (onAddAuthSession) {
           onAddAuthSession(authSession);
         } else {
-          location(routes.home.path({}));
+          navigate(routes.home.path({}));
         }
       } catch (e) {
         setError(true);
@@ -73,7 +73,7 @@ export const NewAuthSessionLoginSuccessPage: React.FC<Props> = ({ onAddAuthSessi
     };
 
     addAuthSession();
-  }, [add, location, isAuthSessionsReady, onAddAuthSession, routes.home]);
+  }, [add, navigate, isAuthSessionsReady, onAddAuthSession, routes.home]);
 
   return (
     <ManagementConsolePageLayout>
@@ -95,7 +95,7 @@ export const NewAuthSessionLoginSuccessPage: React.FC<Props> = ({ onAddAuthSessi
             <EmptyStateFooter>
               {error && (
                 <EmptyStateActions>
-                  <Button onClick={() => location(routes.home.path({}))}>OK</Button>
+                  <Button onClick={() => navigate(routes.home.path({}))}>OK</Button>
                 </EmptyStateActions>
               )}
             </EmptyStateFooter>
