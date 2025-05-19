@@ -66,22 +66,16 @@ export const ManagementConsoleRoutes: FC = () => {
           <Route path={routes.runtime.jobs.path({ runtimeUrl: ":runtimeUrl" })} element={<JobsPage />} />
           <Route path={routes.runtime.tasks.path({ runtimeUrl: ":runtimeUrl" })} element={<TasksPage />} />
           <Route
-            path={routes.runtime.processDefinitions.path({
-              runtimeUrl: ":runtimeUrl",
-            })}
-          >
-            <ProcessDefinitionsListPage />
-          </Route>
+            path={routes.runtime.processDefinitions.path({ runtimeUrl: ":runtimeUrl" })}
+            element={<ProcessDefinitionsListPage />}
+          />
           <Route
             path={routes.runtime.processDefinitionForm.path({
               runtimeUrl: ":runtimeUrl",
               processName: ":processName",
             })}
-          >
-            {({ match }) => {
-              return <ProcessDefinitionFormPage processName={match?.params.processName} />;
-            }}
-          </Route>
+            element={<ProcessDefinitionFormPage />}
+          />
           <Route
             path={routes.runtime.taskDetails.path({ runtimeUrl: ":runtimeUrl", taskId: ":taskId" })}
             element={<TaskDetailsPage />}
