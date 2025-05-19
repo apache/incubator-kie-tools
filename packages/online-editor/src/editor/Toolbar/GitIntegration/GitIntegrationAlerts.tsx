@@ -265,7 +265,13 @@ export function useGitIntegrationAlerts(workspace: ActiveWorkspace) {
           return <></>;
         }
 
-        const gistOrSnippetUrl = workspace.descriptor.origin.url;
+        const gistOrSnippetUrl = switchExpression(workspace.descriptor.origin.kind, {
+          // Remove the `.git` extension from GitLab snippet URLs.
+          // If a snippet URL ends with `.git`, GitLab may return a 404 error when accessed.
+          // This ensures only the extension is removed, not other parts of the URL.
+          GITLAB_SNIPPET: workspace.descriptor.origin.url?.replace?.(/\.git$/, ""),
+          default: workspace.descriptor.origin.url,
+        });
         return (
           <Alert
             variant="info"
@@ -301,7 +307,13 @@ export function useGitIntegrationAlerts(workspace: ActiveWorkspace) {
           return <></>;
         }
 
-        const gistOrSnippetUrl = workspace.descriptor.origin.url;
+        const gistOrSnippetUrl = switchExpression(workspace.descriptor.origin.kind, {
+          // Remove the `.git` extension from GitLab snippet URLs.
+          // If a snippet URL ends with `.git`, GitLab may return a 404 error when accessed.
+          // This ensures only the extension is removed, not other parts of the URL.
+          GITLAB_SNIPPET: workspace.descriptor.origin.url?.replace?.(/\.git$/, ""),
+          default: workspace.descriptor.origin.url,
+        });
         return (
           <Alert
             variant="success"
