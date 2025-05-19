@@ -99,17 +99,32 @@ export class DataTypes {
     return this.get().getByRole("button", { name: ConstraintType.RANGE, exact: true });
   }
 
-  public enableDataTypeStruct() {
-    this.get().locator("span", { hasText: "Is struct?" }).last().click();
+  public async createStructDataType(args: { name: string }) {
+    await this.changeDataTypeName({ newName: args.name });
+    await this.enableDataTypeStruct();
   }
 
-  public async addDataTypeStructProperty(args: { name: string }) {
+  public async enableDataTypeStruct() {
+    await this.get().locator("span", { hasText: "Is struct?" }).last().click();
+  }
+
+  public async addStructProperty(args: { name: string; type?: string }) {
     await this.get().getByTitle("Add item component (at the top)").click();
-    await this.changeDataTypePropertiesTable({ name: args.name });
+    await this.changeDataTypePropertiesTable({ name: args.name, type: args.type });
+    await this.resetFocus();
   }
 
-  public changeDataTypePropertiesTable(args: { name: string }) {
-    return this.get().getByRole("table").getByPlaceholder("Enter a name...").first().fill(args.name);
+  public async changeDataTypePropertiesTable(args: { name: string; type?: string }) {
+    await this.get().getByRole("table").locator("tr").getByPlaceholder("Enter a name...").first().fill(args.name);
+    if (args.type !== "" && args.type !== undefined) {
+      await this.get().getByRole("table").locator("tr").getByPlaceholder("Select a data type...").fill(args.type);
+      await this.page.getByRole("option", { name: args.type, exact: true }).click();
+    }
+  }
+
+  public async setStructTypeAction(args: { action: string }) {
+    await this.get().getByRole("table").locator("tr").getByRole("button", { name: "Actions" }).click();
+    await this.page.getByRole("menuitem", { name: args.action }).click();
   }
 
   public async createFirstCustonDataType() {
