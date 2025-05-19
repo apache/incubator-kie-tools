@@ -47,7 +47,7 @@ import { InputGroup, InputGroupItem } from "@patternfly/react-core/dist/js/compo
 import { FilterIcon } from "@patternfly/react-icons/dist/js/icons/filter-icon";
 import { SyncIcon } from "@patternfly/react-icons/dist/js/icons/sync-icon";
 import _ from "lodash";
-import { ProcessListDriver } from "../../../api";
+import { ProcessListChannelApi } from "../../../api";
 import "../styles.css";
 import { formatForBulkListProcessInstance } from "../utils/ProcessListUtils";
 import {
@@ -64,6 +64,7 @@ import {
 import { ProcessInfoModal } from "@kie-tools/runtime-tools-components/dist/components/ProcessInfoModal";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { OperationType } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 enum Category {
   STATUS = "Status",
@@ -89,7 +90,7 @@ interface ProcessListToolbarProps {
   setProcessInstances: React.Dispatch<React.SetStateAction<ProcessInstance[]>>;
   isAllChecked: boolean;
   setIsAllChecked: React.Dispatch<React.SetStateAction<boolean>>;
-  driver: ProcessListDriver;
+  channelApi: MessageBusClientApi<ProcessListChannelApi>;
   defaultStatusFilter: ProcessInstanceState[];
   singularProcessLabel: string;
   pluralProcessLabel: string;
@@ -108,7 +109,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
   setProcessInstances,
   isAllChecked,
   setIsAllChecked,
-  driver,
+  channelApi,
   defaultStatusFilter,
   singularProcessLabel,
   pluralProcessLabel,
@@ -167,23 +168,25 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
               return true;
             }
           });
-          await driver.handleProcessMultipleAction(remainingInstances, OperationType.ABORT).then((result) => {
-            onShowMessage(
-              "Abort operation",
-              result.successProcessInstances,
-              result.failedProcessInstances,
-              ignoredItems,
-              OperationType.ABORT
-            );
-            processInstances.forEach((instance) => {
-              result.successProcessInstances.forEach((successInstances) => {
-                if (successInstances.id === instance.id) {
-                  instance.state = ProcessInstanceState.Aborted;
-                }
+          await channelApi.requests
+            .processList__handleProcessMultipleAction(remainingInstances, OperationType.ABORT)
+            .then((result) => {
+              onShowMessage(
+                "Abort operation",
+                result.successProcessInstances,
+                result.failedProcessInstances,
+                ignoredItems,
+                OperationType.ABORT
+              );
+              processInstances.forEach((instance) => {
+                result.successProcessInstances.forEach((successInstances) => {
+                  if (successInstances.id === instance.id) {
+                    instance.state = ProcessInstanceState.Aborted;
+                  }
+                });
               });
+              setProcessInstances([...processInstances]);
             });
-            setProcessInstances([...processInstances]);
-          });
         },
       },
     },
@@ -205,15 +208,17 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
               return true;
             }
           });
-          await driver.handleProcessMultipleAction(remainingInstances, OperationType.SKIP).then((result) => {
-            onShowMessage(
-              "Skip operation",
-              result.successProcessInstances,
-              result.failedProcessInstances,
-              ignoredItems,
-              OperationType.SKIP
-            );
-          });
+          await channelApi.requests
+            .processList__handleProcessMultipleAction(remainingInstances, OperationType.SKIP)
+            .then((result) => {
+              onShowMessage(
+                "Skip operation",
+                result.successProcessInstances,
+                result.failedProcessInstances,
+                ignoredItems,
+                OperationType.SKIP
+              );
+            });
         },
       },
     },
@@ -235,15 +240,17 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
               return true;
             }
           });
-          await driver.handleProcessMultipleAction(remainingInstances, OperationType.RETRY).then((result) => {
-            onShowMessage(
-              "Retry operation",
-              result.successProcessInstances,
-              result.failedProcessInstances,
-              ignoredItems,
-              OperationType.RETRY
-            );
-          });
+          await channelApi.requests
+            .processList__handleProcessMultipleAction(remainingInstances, OperationType.RETRY)
+            .then((result) => {
+              onShowMessage(
+                "Retry operation",
+                result.successProcessInstances,
+                result.failedProcessInstances,
+                ignoredItems,
+                OperationType.RETRY
+              );
+            });
         },
       },
     },

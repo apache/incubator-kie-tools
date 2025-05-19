@@ -19,21 +19,17 @@
 import React, { useCallback } from "react";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tools-core/envelope/dist/embedded";
-import {
-  ProcessDefinition,
-  ProcessFormApi,
-  ProcessFormChannelApi,
-  ProcessFormDriver,
-  ProcessFormEnvelopeApi,
-} from "../api";
-import { EmbeddedProcessFormChannelApiImpl } from "./EmbeddedProcessFormChannelApiImpl";
+import { ProcessFormApi, ProcessFormChannelApi, ProcessFormEnvelopeApi } from "../api";
 import { init } from "../envelope";
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 export interface EmbeddedProcessFormProps {
   targetOrigin: string;
-  driver: ProcessFormDriver;
+  channelApi: ProcessFormChannelApi;
   processDefinition: ProcessDefinition;
+  customFormDisplayerEnvelopePath?: string;
+  shouldLoadCustomForms?: boolean;
 }
 
 export const EmbeddedProcessForm = React.forwardRef(
@@ -43,11 +39,11 @@ export const EmbeddedProcessForm = React.forwardRef(
       []
     );
     const pollInit = useCallback(
-      (
+      async (
         envelopeServer: EnvelopeServer<ProcessFormChannelApi, ProcessFormEnvelopeApi>,
         container: () => HTMLDivElement
       ) => {
-        init({
+        await init({
           config: {
             containerType: ContainerType.DIV,
             envelopeId: envelopeServer.id,
@@ -59,6 +55,8 @@ export const EmbeddedProcessForm = React.forwardRef(
             },
           },
           targetOrigin: props.targetOrigin,
+          customFormDisplayerEnvelopePath: props.customFormDisplayerEnvelopePath,
+          shouldLoadCustomForms: props.shouldLoadCustomForms,
         });
         return envelopeServer.envelopeApi.requests.processForm__init(
           {
@@ -68,13 +66,13 @@ export const EmbeddedProcessForm = React.forwardRef(
           { ...props.processDefinition }
         );
       },
-      []
+      [props.customFormDisplayerEnvelopePath, props.processDefinition, props.targetOrigin, props.shouldLoadCustomForms]
     );
 
     return (
       <EmbeddedProcessFormEnvelope
         ref={forwardedRef}
-        apiImpl={new EmbeddedProcessFormChannelApiImpl(props.driver)}
+        apiImpl={props.channelApi}
         origin={props.targetOrigin}
         refDelegate={refDelegate}
         pollInit={pollInit}

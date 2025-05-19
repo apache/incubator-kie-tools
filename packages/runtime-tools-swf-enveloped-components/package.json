@@ -39,7 +39,6 @@
     "@kie-tools/dashbuilder-client": "workspace:*",
     "@kie-tools/i18n-common-dictionary": "workspace:*",
     "@kie-tools/runtime-tools-components": "workspace:*",
-    "@kie-tools/runtime-tools-shared-enveloped-components": "workspace:*",
     "@kie-tools/runtime-tools-shared-gateway-api": "workspace:*",
     "@kie-tools/runtime-tools-swf-gateway-api": "workspace:*",
     "@kie-tools/serverless-workflow-combined-editor": "workspace:*",

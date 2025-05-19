@@ -20,15 +20,14 @@ import React, { useCallback } from "react";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { EmbeddedEnvelopeProps, RefForwardingEmbeddedEnvelope } from "@kie-tools-core/envelope/dist/embedded";
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { TaskFormApi, TaskFormChannelApi, TaskFormDriver, TaskFormEnvelopeApi, User } from "../api";
-import { EmbeddedTaskFormChannelApiImpl } from "./EmbeddedTaskFormChannelApiImpl";
+import { TaskFormApi, TaskFormChannelApi, TaskFormEnvelopeApi, User } from "../api";
 import { init } from "../envelope";
 import { ContainerType } from "@kie-tools-core/envelope/dist/api";
 
 export interface EmbeddedTaskFormProps {
   targetOrigin: string;
   userTask: UserTaskInstance;
-  driver: TaskFormDriver;
+  channelApi: TaskFormChannelApi;
   user: User;
 }
 
@@ -39,8 +38,11 @@ export const EmbeddedTaskForm = React.forwardRef(
       []
     );
     const pollInit = useCallback(
-      (envelopeServer: EnvelopeServer<TaskFormChannelApi, TaskFormEnvelopeApi>, container: () => HTMLDivElement) => {
-        init({
+      async (
+        envelopeServer: EnvelopeServer<TaskFormChannelApi, TaskFormEnvelopeApi>,
+        container: () => HTMLDivElement
+      ) => {
+        await init({
           config: {
             containerType: ContainerType.DIV,
             envelopeId: envelopeServer.id,
@@ -67,7 +69,7 @@ export const EmbeddedTaskForm = React.forwardRef(
     return (
       <EmbeddedTaskFormEnvelope
         ref={forwardedRef}
-        apiImpl={new EmbeddedTaskFormChannelApiImpl(props.driver)}
+        apiImpl={props.channelApi}
         origin={props.targetOrigin}
         refDelegate={refDelegate}
         pollInit={pollInit}

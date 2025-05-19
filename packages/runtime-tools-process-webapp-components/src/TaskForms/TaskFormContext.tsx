@@ -17,10 +17,10 @@
  * under the License.
  */
 import React, { useContext } from "react";
-import { TaskFormGatewayApi } from "./TaskFormGatewayApi";
+import { TaskFormChannelApi } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskForm";
 
-export const TaskFormContext = React.createContext<TaskFormGatewayApi>({} as TaskFormGatewayApi);
+export const TaskFormContext = React.createContext<TaskFormChannelApi>({} as TaskFormChannelApi);
 
-export const useTaskFormGatewayApi = (): TaskFormGatewayApi => useContext<TaskFormGatewayApi>(TaskFormContext);
+export const useTaskFormChannelApi = (): TaskFormChannelApi => useContext<TaskFormChannelApi>(TaskFormContext);
 
 export default TaskFormContext;

@@ -16,6 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+
 export interface ProcessFormEnvelopeApi {
   processForm__init(association: Association, processDefinition: ProcessDefinition): Promise<void>;
 }
@@ -23,9 +26,4 @@ export interface ProcessFormEnvelopeApi {
 export interface Association {
   origin: string;
   envelopeServerId: string;
-}
-
-export interface ProcessDefinition {
-  processName: string;
-  endpoint: string;
 }
