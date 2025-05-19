@@ -70,7 +70,7 @@ public class JBPMDevUIJsonRPCService {
     @Inject
     public JBPMDevUIJsonRPCService(Vertx vertx, Instance<JBPMDevUIEventPublisher> jbpmDevUIEventPublishers, FormsStorage formsStorage) {
         this.vertx = vertx;
-        this.jbpmDevUIEventPublisher = jbpmDevUIEventPublishers.get(); //
+        this.jbpmDevUIEventPublisher = jbpmDevUIEventPublishers.get(); // We can rely on JBPMDevUIEventPublisher will be resolved since both beans are only available in DEV Mode.
         this.formsStorage = formsStorage;
     }
 
