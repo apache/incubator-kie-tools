@@ -121,7 +121,7 @@ const TaskDetailsPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
 
   const goToTaskList = () => {
     channelApi.taskList__clearOpenTask();
-    navigate({ pathname: "Tasks" });
+    navigate({ pathname: "/Tasks" });
   };
 
   const onSubmitSuccess = (phase: string) => {
