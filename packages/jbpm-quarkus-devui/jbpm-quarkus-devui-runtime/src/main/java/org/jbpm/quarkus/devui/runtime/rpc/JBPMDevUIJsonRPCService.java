@@ -23,29 +23,33 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 
+import org.eclipse.microprofile.config.ConfigProvider;
+import org.jbpm.quarkus.devui.runtime.forms.FormsStorage;
+import org.jbpm.quarkus.devui.runtime.rpc.events.JBPMDevUIEventPublisher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.smallrye.mutiny.Uni;
-import io.quarkus.arc.profile.IfBuildProfile;
 import io.smallrye.mutiny.Multi;
 import io.vertx.core.Vertx;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
+
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-
-import org.eclipse.microprofile.config.ConfigProvider;
-import org.jbpm.quarkus.devui.runtime.forms.FormsStorage;
-
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static org.jbpm.quarkus.devui.runtime.rpc.events.JBPMDevUIEventPublisher.JOB_EVENT;
+import static org.jbpm.quarkus.devui.runtime.rpc.events.JBPMDevUIEventPublisher.PROCESS_INSTANCE_STATE_DATA_EVENT;
+import static org.jbpm.quarkus.devui.runtime.rpc.events.JBPMDevUIEventPublisher.USER_TASK_INSTANCE_STATE_DATA_EVENT;
 
 @ApplicationScoped
-@IfBuildProfile("dev")
-public class JBPMDevuiJsonRPCService {
+public class JBPMDevUIJsonRPCService {
     private static final String DATA_INDEX_URL = "kogito.data-index.url";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JBPMDevuiJsonRPCService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JBPMDevUIJsonRPCService.class);
 
     public static final String PROCESS_INSTANCES = "ProcessInstances";
     public static final String USER_TASKS = "UserTaskInstances";
@@ -55,32 +59,32 @@ public class JBPMDevuiJsonRPCService {
     public static final String ALL_PROCESS_INSTANCES_IDS_QUERY = "{ \"operationName\": \"getAllProcessesIds\", \"query\": \"query getAllProcessesIds{  ProcessInstances{ id } }\" }";
     public static final String ALL_JOBS_IDS_QUERY = "{ \"operationName\": \"getAllJobsIds\", \"query\": \"query getAllJobsIds{  Jobs{ id } }\" }";
 
-    private WebClient dataIndexWebClient;
-
     private final Vertx vertx;
-    private final JBPMDevUIEventPublisher eventPublisher;
+    private final JBPMDevUIEventPublisher jbpmDevUIEventPublisher;
     private final FormsStorage formsStorage;
+
     private DataIndexCounter processesCounter;
     private DataIndexCounter tasksCounter;
     private DataIndexCounter jobsCounter;
 
     @Inject
-    public JBPMDevuiJsonRPCService(Vertx vertx, JBPMDevUIEventPublisher eventPublisher, FormsStorage formsStorage) {
+    public JBPMDevUIJsonRPCService(Vertx vertx, Instance<JBPMDevUIEventPublisher> jbpmDevUIEventPublishers, FormsStorage formsStorage) {
         this.vertx = vertx;
-        this.eventPublisher = eventPublisher;
+        this.jbpmDevUIEventPublisher = jbpmDevUIEventPublishers.get(); // We can rely on JBPMDevUIEventPublisher will be resolved since both beans are only available in DEV Mode.
         this.formsStorage = formsStorage;
     }
 
     @PostConstruct
     public void init() {
         Optional<String> dataIndexURL = ConfigProvider.getConfig().getOptionalValue(DATA_INDEX_URL, String.class);
-        dataIndexURL.ifPresent(this::initDataIndexWebClient);
+        String dataIndexUrl = dataIndexURL.orElseThrow(() -> new RuntimeException("Cannot initialize JBPMDevUIJsonRPCService, '" + DATA_INDEX_URL + "' is not configured"));
+        initCounters(dataIndexUrl);
     }
 
-    private void initDataIndexWebClient(String dataIndexURL) {
+    private void initCounters(String dataIndexURL) {
         try {
             URL url = new URL(dataIndexURL);
-            this.dataIndexWebClient = WebClient.create(vertx, buildWebClientOptions(url));
+            WebClient dataIndexWebClient = WebClient.create(vertx, buildWebClientOptions(url));
 
             String contextPath = url.getPath();
             this.processesCounter = new DataIndexCounter(ALL_PROCESS_INSTANCES_IDS_QUERY, PROCESS_INSTANCES,
@@ -88,11 +92,12 @@ public class JBPMDevuiJsonRPCService {
             this.tasksCounter = new DataIndexCounter(ALL_TASKS_IDS_QUERY, USER_TASKS, contextPath, vertx, dataIndexWebClient);
             this.jobsCounter = new DataIndexCounter(ALL_JOBS_IDS_QUERY, JOBS, contextPath, vertx, dataIndexWebClient);
 
-            this.eventPublisher.setOnProcessEventListener(processesCounter::refresh);
-            this.eventPublisher.setOnTaskEventListener(tasksCounter::refresh);
-            this.eventPublisher.setOnJobEventListener(jobsCounter::refresh);
+            jbpmDevUIEventPublisher.registerListener(PROCESS_INSTANCE_STATE_DATA_EVENT, processesCounter::refresh);
+            jbpmDevUIEventPublisher.registerListener(USER_TASK_INSTANCE_STATE_DATA_EVENT, tasksCounter::refresh);
+            jbpmDevUIEventPublisher.registerListener(JOB_EVENT, jobsCounter::refresh);
         } catch (Exception ex) {
             LOGGER.warn("Cannot configure dataIndexWebClient with 'kogito.data-index.url'='{}':", dataIndexURL, ex);
+            throw new RuntimeException(ex);
         }
     }
 
@@ -121,6 +126,7 @@ public class JBPMDevuiJsonRPCService {
 
     @PreDestroy
     public void destroy() {
+        jbpmDevUIEventPublisher.clear();
         processesCounter.stop();
         tasksCounter.stop();
         jobsCounter.stop();
