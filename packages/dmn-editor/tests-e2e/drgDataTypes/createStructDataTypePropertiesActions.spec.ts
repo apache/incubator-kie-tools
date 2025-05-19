@@ -98,7 +98,7 @@ test.describe("Struct Data Types - Properties Actions", () => {
     });
   });
 
-  test(`should copy struct data type property`, async ({ jsonModel, dataTypes, page, browserName }) => {
+  test(`should copy and paste struct property as data type`, async ({ jsonModel, dataTypes, page, browserName }) => {
     test.skip(
       browserName === "webkit",
       "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
@@ -129,9 +129,10 @@ test.describe("Struct Data Types - Properties Actions", () => {
     //copt property
     await dataTypes.setStructTypeAction({ action: "Copy" });
 
-    //paste property
+    //paste property as new data type
     await page.getByTestId("kie-tools--dmn-editor--data-types-list").getByLabel("Select").click();
     await page.getByRole("menuitem", { name: "Paste" }).click();
+
     const propertyDataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
     expect(propertyDataType).toEqual({
       "@_id": propertyDataType["@_id"],
@@ -214,6 +215,67 @@ test.describe("Struct Data Types - Properties Actions", () => {
       "@_isCollection": propertyRemoved["@_isCollection"],
       "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
       itemComponent: [],
+    });
+  });
+
+  test(`should copy and paste struct property as new property`, async ({ jsonModel, dataTypes, page, browserName }) => {
+    test.skip(
+      browserName === "webkit",
+      "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
+    );
+    await dataTypes.createStructDataType({ name: "New Data type - Struct" });
+
+    //add property
+    await dataTypes.addStructProperty({ name: "Property 1", type: DataType.Any });
+
+    const dataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(dataType).not.toBeUndefined();
+    expect(dataType).toEqual({
+      "@_id": dataType["@_id"],
+      "@_name": "New Data type - Struct",
+      "@_isCollection": dataType["@_isCollection"],
+      "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
+      itemComponent: [
+        {
+          "@_id": dataType.itemComponent?.[0]["@_id"],
+          "@_name": "Property 1",
+          "@_isCollection": dataType.itemComponent?.[0]["@_isCollection"],
+          "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
+          typeRef: { __$$text: "Any" },
+        },
+      ],
+    });
+
+    //copt property
+    await dataTypes.setStructTypeAction({ action: "Copy" });
+
+    //paste property
+
+    await dataTypes.get().getByRole("button", { name: "Actions" }).nth(1).click();
+    await page.getByRole("menuitem", { name: "Paste property" }).click();
+
+    const propertyDataType = await jsonModel.drgDataType.getDataType({ drgDataTypeIndex: 0, drdIndex: 0 });
+    expect(propertyDataType).toEqual({
+      "@_id": propertyDataType["@_id"],
+      "@_name": "New Data type - Struct",
+      "@_isCollection": propertyDataType["@_isCollection"],
+      "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
+      itemComponent: [
+        {
+          "@_id": propertyDataType.itemComponent?.[0]["@_id"],
+          "@_name": "Property 1",
+          "@_isCollection": propertyDataType.itemComponent?.[0]["@_isCollection"],
+          "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
+          typeRef: { __$$text: "Any" },
+        },
+        {
+          "@_id": propertyDataType.itemComponent?.[1]["@_id"],
+          "@_name": "Property 1",
+          "@_isCollection": propertyDataType.itemComponent?.[1]["@_isCollection"],
+          "@_typeLanguage": DMN15_SPEC_TYPE_LANGUAGE,
+          typeRef: { __$$text: "Any" },
+        },
+      ],
     });
   });
 });
