@@ -100,7 +100,7 @@ export function ImportSingleFileFromUrlForm(props: {
           isRequired={true}
           placeholder={"File URL"}
           value={props.url}
-          onChange={(_event, val) => props.setUrl}
+          onChange={(_event, val) => props.setUrl(val)}
         />
         {validatedOption === "error" ? (
           <FormHelperText>
