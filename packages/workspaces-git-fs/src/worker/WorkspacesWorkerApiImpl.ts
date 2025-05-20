@@ -79,13 +79,15 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     workspaceId: string;
     gitAuthSessionId: string | undefined;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void> {
     return this.args.services.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
       return this.args.services.descriptorService.changeGitAuthSessionId(
         fs,
         args.workspaceId,
         args.gitAuthSessionId,
-        args.insecurelyDisableTlsCertificateValidation
+        args.insecurelyDisableTlsCertificateValidation,
+        args.disableEncoding
       );
     });
   }
@@ -95,6 +97,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     remoteUrl: string;
     branch: string;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void> {
     return this.args.services.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
       return this.args.services.descriptorService.turnIntoGist(
@@ -102,7 +105,8 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
         args.workspaceId,
         new URL(args.remoteUrl),
         args.branch,
-        args.insecurelyDisableTlsCertificateValidation
+        args.insecurelyDisableTlsCertificateValidation,
+        args.disableEncoding
       );
     });
   }
@@ -112,6 +116,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     remoteUrl: string;
     branch: string;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void> {
     return this.args.services.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
       return this.args.services.descriptorService.turnIntoSnippet(
@@ -119,7 +124,8 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
         args.workspaceId,
         new URL(args.remoteUrl),
         args.branch,
-        args.insecurelyDisableTlsCertificateValidation
+        args.insecurelyDisableTlsCertificateValidation,
+        args.disableEncoding
       );
     });
   }
@@ -129,6 +135,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     remoteUrl: string;
     branch: string;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void> {
     return this.args.services.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
       return this.args.services.descriptorService.turnIntoGitlabSnippet(
@@ -136,7 +143,8 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
         args.workspaceId,
         new URL(args.remoteUrl),
         args.branch,
-        args.insecurelyDisableTlsCertificateValidation
+        args.insecurelyDisableTlsCertificateValidation,
+        args.disableEncoding
       );
     });
   }
@@ -146,6 +154,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     remoteUrl: string;
     branch?: string;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void> {
     return this.args.services.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
       return this.args.services.descriptorService.turnIntoGit(
@@ -153,7 +162,8 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
         args.workspaceId,
         new URL(args.remoteUrl),
         args.branch,
-        args.insecurelyDisableTlsCertificateValidation
+        args.insecurelyDisableTlsCertificateValidation,
+        args.disableEncoding
       );
     });
   }
@@ -525,6 +535,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
       password: string;
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<GitServerRef[]> {
     return this.args.services.gitService.listServerRefs(args);
   }
@@ -535,6 +546,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     authInfo?: { username: string; password: string };
     gitAuthSessionId: string | undefined;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceWorkerFileDescriptor }> {
     console.log(args);
     return this.createWorkspace({
@@ -542,6 +554,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
       origin: args.origin,
       gitAuthSessionId: args.gitAuthSessionId,
       gitInsecurelyDisableTlsCertificateValidation: args.insecurelyDisableTlsCertificateValidation,
+      gitDisableEncoding: args.disableEncoding,
       storeFiles: async (fs, schema, workspace) => {
         await this.args.services.gitService.clone({
           fs,
@@ -551,6 +564,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
           authInfo: args.authInfo,
           sourceBranch: args.origin.branch,
           insecurelyDisableTlsCertificateValidation: args.insecurelyDisableTlsCertificateValidation,
+          disableEncoding: args.disableEncoding,
         });
         return this.args.services.workspaceService.getFilteredWorkspaceFileDescriptors(schema, workspace.workspaceId);
       },
@@ -670,6 +684,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     remote: string;
     ref: string;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<FetchResult> {
     return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
       args.workspaceId,
@@ -689,12 +704,14 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     gitAuthSessionId: string | undefined;
     gitConfig?: { email: string; name: string };
     gitInsecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceWorkerFileDescriptor }> {
     return this.createWorkspace({
       preferredName: args.preferredName,
       origin: { kind: WorkspaceKind.LOCAL, branch: GIT_DEFAULT_BRANCH },
       gitAuthSessionId: args.gitAuthSessionId,
       gitInsecurelyDisableTlsCertificateValidation: args.gitInsecurelyDisableTlsCertificateValidation,
+      gitDisableEncoding: args.disableEncoding,
       storeFiles: async (fs, schema, workspace) => {
         const files = args.localFiles
           .filter((file) => !file.path.startsWith(".git/"))
@@ -771,6 +788,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     gitConfig?: { email: string; name: string };
     authInfo?: { username: string; password: string };
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void> {
     const workspace = await this.args.services.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
       return this.args.services.descriptorService.get(fs, args.workspaceId);
@@ -789,6 +807,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
           },
           authInfo: args.authInfo,
           insecurelyDisableTlsCertificateValidation: args.insecurelyDisableTlsCertificateValidation,
+          disableEncoding: args.disableEncoding,
         });
 
         broadcaster.broadcast({
@@ -813,6 +832,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
       password: string;
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void> {
     return this.args.services.workspaceFsService.withReadWriteInMemoryFs(
       args.workspaceId,
@@ -883,6 +903,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
     preferredName?: string;
     gitAuthSessionId: string | undefined;
     gitInsecurelyDisableTlsCertificateValidation?: boolean;
+    gitDisableEncoding?: boolean;
   }) {
     const { workspace, files } = await this.args.services.workspaceService.create({
       storeFiles: args.storeFiles,
@@ -890,6 +911,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
       preferredName: args.preferredName,
       gitAuthSessionId: args.gitAuthSessionId,
       gitInsecurelyDisableTlsCertificateValidation: args.gitInsecurelyDisableTlsCertificateValidation,
+      gitDisableEncoding: args.gitDisableEncoding,
     });
 
     if (files.length <= 0) {

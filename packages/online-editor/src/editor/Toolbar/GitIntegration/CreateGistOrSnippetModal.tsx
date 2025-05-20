@@ -178,6 +178,8 @@ If you are, it means that creating this Gist failed and it can safely be deleted
       const insecurelyDisableTlsCertificateValidation =
         authProvider?.group === AuthProviderGroup.GIT && authProvider.insecurelyDisableTlsCertificateValidation;
 
+      const disableEncoding = authProvider?.group === AuthProviderGroup.GIT && authProvider.disableEncoding;
+
       const createGistOrSnippetCommand: () => Promise<CreateGistOrSnippetResponse> = switchExpression(
         gistEnabledAuthProvider,
         {
@@ -193,6 +195,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
           url: new URL(gistOrSnippet.cloneUrl).toString(),
           authInfo,
           insecurelyDisableTlsCertificateValidation,
+          disableEncoding,
         })
       )
         .find((serverRef) => serverRef.ref === "HEAD")!
@@ -203,6 +206,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         remoteUrl: URL;
         branch: string;
         insecurelyDisableTlsCertificateValidation?: boolean;
+        disableEncoding?: boolean;
       }) => Promise<void> = switchExpression(gistEnabledAuthProvider, {
         github: workspaces.initGistOnWorkspace,
         bitbucket: workspaces.initSnippetOnWorkspace,
@@ -213,6 +217,7 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         remoteUrl: new URL(gistOrSnippet.cloneUrl),
         branch: gistOrSnippetDefaultBranch,
         insecurelyDisableTlsCertificateValidation,
+        disableEncoding,
       });
 
       await workspaces.addRemote({
@@ -240,11 +245,13 @@ If you are, it means that creating this Gist failed and it can safely be deleted
         force: true,
         authInfo,
         insecurelyDisableTlsCertificateValidation,
+        disableEncoding,
       });
       await workspaces.pull({
         workspaceId: props.workspace.workspaceId,
         authInfo,
         insecurelyDisableTlsCertificateValidation,
+        disableEncoding,
       });
 
       props.onClose();

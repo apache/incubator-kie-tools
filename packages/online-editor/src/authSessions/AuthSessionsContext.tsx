@@ -170,14 +170,16 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
                         authSession.token,
                         authProvider?.domain,
                         env.KIE_SANDBOX_CORS_PROXY_URL,
-                        authProvider?.insecurelyDisableTlsCertificateValidation
+                        authProvider?.insecurelyDisableTlsCertificateValidation,
+                        authProvider?.disableEncoding
                       ),
                     github: () =>
                       fetchAuthenticatedGitHubUser(
                         authSession.token,
                         authProvider?.domain,
                         env.KIE_SANDBOX_CORS_PROXY_URL,
-                        authProvider?.insecurelyDisableTlsCertificateValidation
+                        authProvider?.insecurelyDisableTlsCertificateValidation,
+                        authProvider?.disableEncoding
                       ),
                     gitlab: () =>
                       fetchAuthenticatedGitlabUser(
@@ -185,7 +187,8 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
                         authSession.token,
                         authProvider?.domain,
                         env.KIE_SANDBOX_CORS_PROXY_URL,
-                        authProvider?.insecurelyDisableTlsCertificateValidation
+                        authProvider?.insecurelyDisableTlsCertificateValidation,
+                        authProvider?.disableEncoding
                       ),
                   });
                   await fetchUser();

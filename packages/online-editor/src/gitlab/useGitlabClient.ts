@@ -30,6 +30,7 @@ export function getGitlabClient(args: {
   domain?: string;
   proxyUrl?: string;
   insecurelyDisableTlsCertificateValidation?: boolean;
+  disableEncoding?: boolean;
 }) {
   return new GitlabClient({
     appName: args.appName,
@@ -42,6 +43,12 @@ export function getGitlabClient(args: {
             [CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION]: Boolean(
               args.insecurelyDisableTlsCertificateValidation
             ).toString(),
+          }
+        : {}),
+      // If disableEncoding is true, force proxy/server to skip compression
+      ...(args.disableEncoding
+        ? {
+            [CorsProxyHeaderKeys.DISABLE_ENCODING]: Boolean(args.disableEncoding).toString(),
           }
         : {}),
     },
@@ -68,6 +75,7 @@ export function useGitlabClient(authSession: AuthSession | undefined): GitlabCli
       domain: authProvider.domain,
       proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
       insecurelyDisableTlsCertificateValidation: authProvider.insecurelyDisableTlsCertificateValidation,
+      disableEncoding: authProvider.disableEncoding,
     });
   }, [authProviders, authSession, env.KIE_SANDBOX_APP_NAME, env.KIE_SANDBOX_CORS_PROXY_URL]);
 }

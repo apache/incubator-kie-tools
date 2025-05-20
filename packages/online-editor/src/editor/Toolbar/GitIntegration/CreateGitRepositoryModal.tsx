@@ -186,6 +186,8 @@ export function CreateGitRepositoryModal(props: {
       const insecurelyDisableTlsCertificateValidation =
         authProvider?.group === AuthProviderGroup.GIT && authProvider.insecurelyDisableTlsCertificateValidation;
 
+      const disableEncoding = authProvider?.group === AuthProviderGroup.GIT && authProvider.disableEncoding;
+
       setError(undefined);
       setLoading(true);
 
@@ -229,6 +231,7 @@ export function CreateGitRepositoryModal(props: {
         }),
         authInfo,
         insecurelyDisableTlsCertificateValidation,
+        disableEncoding,
       });
 
       await workspaces.initGitOnWorkspace({
@@ -236,6 +239,7 @@ export function CreateGitRepositoryModal(props: {
         remoteUrl: new URL(cloneUrl),
         branch: props.workspace.origin.branch,
         insecurelyDisableTlsCertificateValidation,
+        disableEncoding,
       });
 
       await workspaces.renameWorkspace({

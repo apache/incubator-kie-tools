@@ -282,7 +282,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       return { type: UrlType.INVALID, error: "Invalid URL" };
     }
 
-    if (isGitRemoteDomainAllowed(url, "github.com", AuthProviderType.github)) {
+    if (url.host === "github.com") {
       const defaultBranchMatch = matchPath<{ org: string; repo: string }>(url.pathname, {
         path: "/:org/:repo",
         exact: true,
@@ -329,7 +329,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       return { type: UrlType.NOT_SUPPORTED, error: "Unsupported GitHub URL", url };
     }
 
-    if (isGitRemoteDomainAllowed(url, "bitbucket.org", AuthProviderType.bitbucket)) {
+    if (url.host === "bitbucket.org") {
       const defaultBranchMatch = matchPath<{ org: string; repo: string }>(url.pathname, {
         path: "/:org/:repo",
         exact: true,
@@ -416,7 +416,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       return { type: UrlType.NOT_SUPPORTED, error: "Unsupported Bitbucket URL", url };
     }
 
-    if (isGitRemoteDomainAllowed(url, "raw.githubusercontent.com", AuthProviderType.github)) {
+    if (url.host === "raw.githubusercontent.com") {
       const gitHubRawFileMatch = matchPath<{ org: string; repo: string; tree: string; path: string }>(url.pathname, {
         path: "/:org/:repo/refs/heads/:tree/:path*",
         exact: true,
@@ -438,7 +438,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       return { type: UrlType.NOT_SUPPORTED, error: "Unsupported GitHub raw URL", url };
     }
 
-    if (isGitRemoteDomainAllowed(url, ["gist.github.com", "gist.githubusercontent.com"], AuthProviderType.github)) {
+    if (url.host === "gist.github.com" || url.host === "gist.githubusercontent.com") {
       const gistMatch = matchPath<{ user: string; gistId: string }>(url.pathname, {
         path: "/:user/:gistId",
         exact: true,
@@ -513,14 +513,16 @@ export function useClonableUrl(
   url: string | undefined,
   authInfo: AuthInfo | undefined,
   gitRefName: string | undefined,
-  insecurelyDisableTlsCertificateValidation?: boolean
+  insecurelyDisableTlsCertificateValidation?: boolean,
+  disableEncoding?: boolean
 ) {
   const importableUrl = useImportableUrl(url);
 
   const gitServerRefsPromise = useGitServerRefs(
     isPotentiallyGit(importableUrl.type) ? importableUrl.url : undefined,
     authInfo,
-    insecurelyDisableTlsCertificateValidation
+    insecurelyDisableTlsCertificateValidation,
+    disableEncoding
   );
 
   const gitRefNameFromUrl = useMemo(() => {
@@ -586,7 +588,8 @@ export function useClonableUrl(
 export function useGitServerRefs(
   url: URL | undefined,
   authInfo: AuthInfo | undefined,
-  insecurelyDisableTlsCertificateValidation?: boolean
+  insecurelyDisableTlsCertificateValidation?: boolean,
+  disableEncoding?: boolean
 ) {
   const workspaces = useWorkspaces();
 
@@ -600,6 +603,7 @@ export function useGitServerRefs(
           url: url.toString(),
           authInfo,
           insecurelyDisableTlsCertificateValidation,
+          disableEncoding,
         });
 
         const headRef = refs.filter((f) => f.ref === "HEAD").pop()!.target!;
@@ -608,7 +612,7 @@ export function useGitServerRefs(
 
         return { refs, defaultBranch, headRef };
       };
-    }, [authInfo, url, workspaces, insecurelyDisableTlsCertificateValidation])
+    }, [authInfo, url, workspaces, insecurelyDisableTlsCertificateValidation, disableEncoding])
   );
 
   return gitServerRefsPromise;

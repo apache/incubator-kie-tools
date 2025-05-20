@@ -125,14 +125,16 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
                   tokenInput,
                   props.authProvider.domain,
                   env.KIE_SANDBOX_CORS_PROXY_URL,
-                  props.authProvider.insecurelyDisableTlsCertificateValidation
+                  props.authProvider.insecurelyDisableTlsCertificateValidation,
+                  props.authProvider.disableEncoding
                 ),
               github: () =>
                 fetchAuthenticatedGitHubUser(
                   tokenInput,
                   props.authProvider.domain,
                   env.KIE_SANDBOX_CORS_PROXY_URL,
-                  props.authProvider.insecurelyDisableTlsCertificateValidation
+                  props.authProvider.insecurelyDisableTlsCertificateValidation,
+                  props.authProvider.disableEncoding
                 ),
               gitlab: () =>
                 fetchAuthenticatedGitlabUser(
@@ -140,7 +142,8 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
                   tokenInput,
                   props.authProvider.domain,
                   env.KIE_SANDBOX_CORS_PROXY_URL,
-                  props.authProvider.insecurelyDisableTlsCertificateValidation
+                  props.authProvider.insecurelyDisableTlsCertificateValidation,
+                  props.authProvider.disableEncoding
                 ),
             })
           )
@@ -191,6 +194,7 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
         props.authProvider.type,
         props.authProvider.domain,
         props.authProvider.insecurelyDisableTlsCertificateValidation,
+        props.authProvider.disableEncoding,
         props.authProvider.id,
         tokenInput,
         success,
@@ -425,9 +429,16 @@ export const fetchAuthenticatedGitHubUser = async (
   githubToken: string,
   domain?: string,
   proxyUrl?: string,
-  insecurelyDisableTlsCertificateValidation?: boolean
+  insecurelyDisableTlsCertificateValidation?: boolean,
+  disableEncoding?: boolean
 ) => {
-  const octokit = getOctokitClient({ githubToken, domain, proxyUrl, insecurelyDisableTlsCertificateValidation });
+  const octokit = getOctokitClient({
+    githubToken,
+    domain,
+    proxyUrl,
+    insecurelyDisableTlsCertificateValidation,
+    disableEncoding,
+  });
   const response = await octokit.users.getAuthenticated();
   return {
     data: {
@@ -446,7 +457,8 @@ export const fetchAuthenticatedBitbucketUser = async (
   bitbucketToken: string,
   domain?: string,
   proxyUrl?: string,
-  insecurelyDisableTlsCertificateValidation?: boolean
+  insecurelyDisableTlsCertificateValidation?: boolean,
+  disableEncoding?: boolean
 ) => {
   const bitbucketClient = getBitbucketClient({
     appName,
@@ -458,6 +470,7 @@ export const fetchAuthenticatedBitbucketUser = async (
     },
     proxyUrl,
     insecurelyDisableTlsCertificateValidation,
+    disableEncoding,
   });
 
   const response = await bitbucketClient.getAuthedUser();
@@ -483,7 +496,8 @@ export const fetchAuthenticatedGitlabUser = async (
   gitlabToken: string,
   domain?: string,
   proxyUrl?: string,
-  insecurelyDisableTlsCertificateValidation?: boolean
+  insecurelyDisableTlsCertificateValidation?: boolean,
+  disableEncoding?: boolean
 ) => {
   const gitlabClient = getGitlabClient({
     appName,
@@ -491,6 +505,7 @@ export const fetchAuthenticatedGitlabUser = async (
     token: gitlabToken,
     proxyUrl,
     insecurelyDisableTlsCertificateValidation,
+    disableEncoding,
   });
 
   const response = await gitlabClient.getAuthedUser();

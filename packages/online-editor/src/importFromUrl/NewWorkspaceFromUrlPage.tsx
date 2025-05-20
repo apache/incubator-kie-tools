@@ -72,6 +72,7 @@ export function NewWorkspaceFromUrlPage() {
   const queryParamInsecurelyDisableTlsCertificateValidation = useQueryParam(
     QueryParams.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION
   );
+  const queryParamDisableEncodingValidation = useQueryParam(QueryParams.DISABLE_ENCODING);
   const queryParamConfirm = useQueryParam(QueryParams.CONFIRM);
 
   const authProviders = useAuthProviders();
@@ -87,12 +88,20 @@ export function NewWorkspaceFromUrlPage() {
       : false;
   }, [queryParamInsecurelyDisableTlsCertificateValidation, authProvider]);
 
+  const disableEncodingValidation = useMemo(() => {
+    if (typeof queryParamDisableEncodingValidation === "string") {
+      return queryParamDisableEncodingValidation === "true";
+    }
+    return authProvider?.group === AuthProviderGroup.GIT ? authProvider.disableEncoding : false;
+  }, [queryParamDisableEncodingValidation, authProvider]);
+
   const importableUrl = useImportableUrl(queryParamUrl);
   const clonableUrlObject = useClonableUrl(
     queryParamUrl,
     authInfo,
     queryParamBranch,
-    insecurelyDisableTlsCertificateValidation
+    insecurelyDisableTlsCertificateValidation,
+    disableEncodingValidation
   );
   const { clonableUrl, selectedGitRefName, gitServerRefsPromise } = clonableUrlObject;
 
@@ -327,6 +336,7 @@ export function NewWorkspaceFromUrlPage() {
             authInfo,
             gitAuthSessionId: queryParamAuthSessionId,
             insecurelyDisableTlsCertificateValidation,
+            disableEncoding: disableEncodingValidation,
           });
         } else {
           await doImportAsSingleFile(importableUrl);
@@ -351,6 +361,7 @@ export function NewWorkspaceFromUrlPage() {
             gitConfig,
             authInfo,
             insecurelyDisableTlsCertificateValidation,
+            disableEncoding: disableEncodingValidation,
           });
         } else {
           setImportingError(`Can't clone. ${gitServerRefsPromise.error}`);
@@ -373,6 +384,7 @@ export function NewWorkspaceFromUrlPage() {
             gitConfig,
             authInfo,
             insecurelyDisableTlsCertificateValidation,
+            disableEncoding: disableEncodingValidation,
           });
         } else {
           setImportingError(`Can't clone. ${gitServerRefsPromise.error}`);
@@ -400,6 +412,7 @@ export function NewWorkspaceFromUrlPage() {
             gitConfig,
             authInfo,
             insecurelyDisableTlsCertificateValidation,
+            disableEncoding: disableEncodingValidation,
           });
         } else {
           setImportingError(`Can't clone. ${gitServerRefsPromise.error}`);
@@ -433,6 +446,7 @@ export function NewWorkspaceFromUrlPage() {
     doImportAsSingleFile,
     queryParamBranch,
     insecurelyDisableTlsCertificateValidation,
+    disableEncodingValidation,
   ]);
 
   useEffect(() => {

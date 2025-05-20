@@ -29,4 +29,5 @@ export interface WorkspaceDescriptor {
   lastUpdatedDateISO: string;
   gitAuthSessionId: string | undefined;
   gitInsecurelyDisableTlsCertificateValidation?: boolean;
+  gitDisableEncoding?: boolean;
 }

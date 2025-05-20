@@ -118,6 +118,7 @@ export interface WorkspacesContextType {
       password: string;
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }) => Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
 
   pull(args: {
@@ -128,6 +129,7 @@ export interface WorkspacesContextType {
       password: string;
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void>;
 
   push(args: {
@@ -141,6 +143,7 @@ export interface WorkspacesContextType {
       password: string;
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void>;
 
   deleteBranch(args: { workspaceId: string; ref: string }): Promise<void>;
@@ -164,6 +167,7 @@ export interface WorkspacesContextType {
       password: string;
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<GitServerRef[]>;
 
   hasLocalChanges(args: { workspaceId: string }): Promise<boolean>;
@@ -203,6 +207,7 @@ export interface WorkspacesContextType {
       password: string;
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<FetchResult>;
 
   // storage
@@ -264,6 +269,7 @@ export interface WorkspacesContextType {
     remoteUrl: URL;
     branch?: string;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void>;
 
   initGistOnWorkspace(args: {
@@ -271,6 +277,7 @@ export interface WorkspacesContextType {
     remoteUrl: URL;
     branch: string;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void>;
 
   initSnippetOnWorkspace(args: {
@@ -278,6 +285,7 @@ export interface WorkspacesContextType {
     remoteUrl: URL;
     branch: string;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void>;
 
   initGilabSnippetOnWorkspace(args: {
@@ -285,12 +293,14 @@ export interface WorkspacesContextType {
     remoteUrl: URL;
     branch: string;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void>;
 
   changeGitAuthSessionId(args: {
     workspaceId: string;
     gitAuthSessionId: string | undefined;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void>;
 
   initLocalOnWorkspace(args: { workspaceId: string }): Promise<void>;

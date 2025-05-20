@@ -82,6 +82,7 @@ export type GitAuthProvider = {
   supportedGitRemoteDomains: string[];
   group: AuthProviderGroup.GIT;
   insecurelyDisableTlsCertificateValidation?: boolean;
+  disableEncoding?: boolean;
 };
 
 export type AuthProvider = OpenShiftAuthProvider | KubernetesAuthProvider | GitAuthProvider;

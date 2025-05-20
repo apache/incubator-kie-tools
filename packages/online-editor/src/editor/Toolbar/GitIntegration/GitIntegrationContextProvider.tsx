@@ -120,6 +120,13 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     return props.workspace.descriptor.gitInsecurelyDisableTlsCertificateValidation;
   }, [authProvider, props.workspace]);
 
+  const disableEncoding = useMemo(() => {
+    if (authProvider?.group === AuthProviderGroup.GIT) {
+      return authProvider.disableEncoding;
+    }
+    return props.workspace.descriptor.gitDisableEncoding;
+  }, [authProvider, props.workspace]);
+
   useCancelableEffect(
     useCallback(
       ({ canceled }) => {
@@ -241,9 +248,10 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
         gitAuthSessionId:
           typeof newGitAuthSessionId === "function" ? newGitAuthSessionId(lastAuthSessionId) : newGitAuthSessionId,
         insecurelyDisableTlsCertificateValidation,
+        disableEncoding,
       });
     },
-    [props.workspace.descriptor.workspaceId, workspaces, insecurelyDisableTlsCertificateValidation]
+    [props.workspace.descriptor.workspaceId, workspaces, insecurelyDisableTlsCertificateValidation, disableEncoding]
   );
 
   const workspaceHasNestedDirectories = useMemo(
@@ -342,6 +350,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
           force: false,
           authInfo,
           insecurelyDisableTlsCertificateValidation,
+          disableEncoding,
         });
 
         history.push({
@@ -368,6 +377,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
       history,
       routes.import,
       insecurelyDisableTlsCertificateValidation,
+      disableEncoding,
     ]
   );
 
@@ -390,6 +400,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
           workspaceId: props.workspace.descriptor.workspaceId,
           authInfo,
           insecurelyDisableTlsCertificateValidation,
+          disableEncoding,
         });
 
         if (args.showAlerts) {
@@ -420,6 +431,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
       canPushToGitRepository,
       pushNewBranch,
       insecurelyDisableTlsCertificateValidation,
+      disableEncoding,
     ]
   );
 
@@ -449,6 +461,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
         force: false,
         authInfo,
         insecurelyDisableTlsCertificateValidation,
+        disableEncoding,
       });
       await pullFromGitRepository({ showAlerts: false });
       alerts.pushSuccessAlert.show();
@@ -468,6 +481,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     gitConfig,
     pullFromGitRepository,
     insecurelyDisableTlsCertificateValidation,
+    disableEncoding,
   ]);
 
   const forceUpdateGistOrSnippet = useCallback(async () => {
@@ -485,12 +499,14 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
         remoteRef: `refs/heads/${props.workspace.descriptor.origin.branch}`,
         force: true,
         authInfo,
+        disableEncoding,
       });
 
       await workspaces.pull({
         workspaceId: props.workspace.descriptor.workspaceId,
         authInfo,
         insecurelyDisableTlsCertificateValidation,
+        disableEncoding,
       });
       alerts.successfullyUpdatedGistOrSnippetAlert.show();
     } catch (e) {
@@ -507,6 +523,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     setSyncGistOrSnippetDropdownOpen,
     workspaces,
     insecurelyDisableTlsCertificateValidation,
+    disableEncoding,
   ]);
 
   const updateGistOrSnippet = useCallback(async () => {
@@ -534,11 +551,13 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
         force: false,
         authInfo,
         insecurelyDisableTlsCertificateValidation,
+        disableEncoding,
       });
 
       await workspaces.pull({
         workspaceId: props.workspace.descriptor.workspaceId,
         authInfo,
+        disableEncoding,
       });
     } catch (e) {
       alerts.errorPushingGistOrSnippet.show({ forceUpdateGistOrSnippet });
@@ -560,6 +579,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     forceUpdateGistOrSnippet,
     setSyncGistOrSnippetDropdownOpen,
     insecurelyDisableTlsCertificateValidation,
+    disableEncoding,
   ]);
 
   const forkGitHubGist = useCallback(async () => {
@@ -600,6 +620,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
         force: true,
         authInfo,
         insecurelyDisableTlsCertificateValidation,
+        disableEncoding,
       });
 
       // Redirect to import workspace
@@ -631,6 +652,7 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     routes.import,
     alerts.errorAlert,
     insecurelyDisableTlsCertificateValidation,
+    disableEncoding,
   ]);
 
   useEffect(() => {
