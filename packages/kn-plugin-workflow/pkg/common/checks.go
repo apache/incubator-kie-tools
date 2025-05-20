@@ -202,7 +202,6 @@ func CheckProjectName(name string) (err error) {
 func IsValidProfile(profile string) error {
 	var allProfiles = []apiMetadata.ProfileType{
 		apiMetadata.DevProfile,
-		apiMetadata.ProdProfile,
 		apiMetadata.PreviewProfile,
 		apiMetadata.GitOpsProfile,
 	}
