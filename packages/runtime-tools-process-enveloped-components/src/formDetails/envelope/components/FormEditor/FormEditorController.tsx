@@ -19,11 +19,11 @@
 import React from "react";
 import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
-import { editor, KeyCode, KeyMod } from "monaco-editor";
+import * as monaco from "monaco-editor";
 
 export interface FormEditorEditorApi {
-  editor: editor.IStandaloneCodeEditor | undefined;
-  show: (container: HTMLDivElement, theme?: EditorTheme) => editor.IStandaloneCodeEditor;
+  editor: monaco.editor.IStandaloneCodeEditor | undefined;
+  show: (container: HTMLDivElement, theme?: EditorTheme) => monaco.editor.IStandaloneCodeEditor;
   undo: () => void;
   redo: () => void;
   getContent: () => string;
@@ -41,13 +41,13 @@ export enum FormEditorEditorOperation {
 }
 
 export interface FormEditorEditorInstance {
-  instance: editor.IStandaloneCodeEditor;
+  instance: monaco.editor.IStandaloneCodeEditor;
 }
 
 export class FormEditorEditorController implements FormEditorEditorApi {
-  private readonly model: editor.ITextModel;
+  private readonly model: monaco.editor.ITextModel;
 
-  public editor: editor.IStandaloneCodeEditor | undefined;
+  public editor: monaco.editor.IStandaloneCodeEditor | undefined;
 
   constructor(
     content: string,
@@ -55,7 +55,34 @@ export class FormEditorEditorController implements FormEditorEditorApi {
     private readonly language: string | undefined,
     private readonly isReadOnly: boolean
   ) {
-    this.model = editor.createModel(content, language);
+    if (this.language === "typescript") {
+      monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+        jsx: monaco.languages.typescript.JsxEmit.React,
+        target: monaco.languages.typescript.ScriptTarget.Latest,
+        module: monaco.languages.typescript.ModuleKind.ESNext,
+        moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+        allowJs: true,
+        checkJs: false,
+        allowNonTsExtensions: true,
+
+        noImplicitAny: false,
+        strictNullChecks: false,
+        strictFunctionTypes: false,
+        strictPropertyInitialization: false,
+        strictBindCallApply: false,
+        noImplicitThis: false,
+        noImplicitReturns: false,
+        alwaysStrict: false,
+      });
+      this.model = monaco.editor.createModel(
+        content,
+        this.language,
+        monaco.Uri.parse("file:///main.tsx") // Ensures TSX compatibility
+      );
+    } else {
+      this.model = monaco.editor.createModel(content, this.language);
+    }
+
     this.model.onDidChangeContent((event) => {
       if (!event.isUndoing && !event.isRedoing) {
         this.editor?.pushUndoStop();
@@ -75,10 +102,10 @@ export class FormEditorEditorController implements FormEditorEditorApi {
   }
 
   public setTheme(theme: EditorTheme): void {
-    editor.setTheme(this.getMonacoThemeByEditorTheme(theme));
+    monaco.editor.setTheme(this.getMonacoThemeByEditorTheme(theme));
   }
 
-  public show(container: HTMLDivElement, theme: EditorTheme): editor.IStandaloneCodeEditor {
+  public show(container: HTMLDivElement, theme: EditorTheme): monaco.editor.IStandaloneCodeEditor {
     if (!container) {
       throw new Error("We need a container to show the editor!");
     }
@@ -87,7 +114,7 @@ export class FormEditorEditorController implements FormEditorEditorApi {
       return this.editor;
     }
 
-    this.editor = editor.create(container, {
+    this.editor = monaco.editor.create(container, {
       model: this.model,
       language: this.language,
       scrollBeyondLastLine: false,
@@ -97,16 +124,16 @@ export class FormEditorEditorController implements FormEditorEditorApi {
       readOnly: this.isReadOnly,
     });
 
-    this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KeyZ, () => {
+    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyZ, () => {
       this.onContentChange({ content: this.model.getValue(), operation: FormEditorEditorOperation.UNDO });
     });
 
-    this.editor.addCommand(KeyMod.CtrlCmd | KeyMod.Shift | KeyCode.KeyZ, () => {
+    this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyZ, () => {
       this.onContentChange({ content: this.model.getValue(), operation: FormEditorEditorOperation.REDO });
     });
 
     if (getOperatingSystem() !== OperatingSystem.MACOS) {
-      this.editor.addCommand(KeyMod.CtrlCmd | KeyCode.KeyY, () => {
+      this.editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyY, () => {
         this.onContentChange({ content: this.model.getValue(), operation: FormEditorEditorOperation.REDO });
       });
     }
