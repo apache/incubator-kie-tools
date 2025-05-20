@@ -86,16 +86,16 @@ func NewCreateCommand() *cobra.Command {
 	return cmd
 }
 
-type mavenDependency struct {
-	groupId string
-	artifactId string
+type MavenDependency struct {
+	GroupId    string
+	ArtifactId string
 }
 
-var extensionPerProfile = map[string][]mavenDependency {
+var ExtensionPerProfile = map[string][]MavenDependency{
 	apiMetadata.GitOpsProfile.String(): {
-		mavenDependency{"org.kie","kie-addons-quarkus-persistence-jdbc"},
-		mavenDependency{"io.quarkus","quarkus-agroal"},
-		mavenDependency{"io.quarkus","quarkus-jdbc-postgresql"},
+		MavenDependency{"org.kie","kie-addons-quarkus-persistence-jdbc"},
+		MavenDependency{"io.quarkus","quarkus-agroal"},
+		MavenDependency{"io.quarkus","quarkus-jdbc-postgresql"},
 	},
 }
 
@@ -241,10 +241,10 @@ func addGitOpsProfileExtensions(cfg CreateQuarkusProjectConfig) error {
 		return fmt.Errorf("error parsing %s: %w", filename, err)
 	}
 
-	for _, dep := range extensionPerProfile[cfg.Profile] {
+	for _, dep := range ExtensionPerProfile[cfg.Profile] {
 		dependencyElement := dependencies.CreateElement("dependency")
-		dependencyElement.CreateElement("groupId").SetText(dep.groupId)
-		dependencyElement.CreateElement("artifactId").SetText(dep.artifactId)
+		dependencyElement.CreateElement("groupId").SetText(dep.GroupId)
+		dependencyElement.CreateElement("artifactId").SetText(dep.ArtifactId)
 	}
 
 	doc.Indent(4)
@@ -317,7 +317,7 @@ func addPersistenceVariablesToDockerFiles(cfg CreateQuarkusProjectConfig) error 
 }
 
 func addPersistenceVariablesToDockerFile(filename string) error {
-	var text = generateEnvLine()
+	var text = GenerateEnvLine()
 
 	file, err := os.Open(filename)
 	defer file.Close()
@@ -365,7 +365,7 @@ func addPersistenceVariablesToDockerFile(filename string) error {
 	return nil
 }
 
-func generateEnvLine() string {
+func GenerateEnvLine() string {
 	var sb strings.Builder
 	sb.WriteString("ENV ")
 	first := true
