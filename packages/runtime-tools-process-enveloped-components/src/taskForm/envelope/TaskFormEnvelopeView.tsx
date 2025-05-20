@@ -20,12 +20,10 @@ import React, { useCallback, useEffect, useImperativeHandle, useState } from "re
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { TaskFormChannelApi, TaskFormInitArgs, User } from "../api";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { TaskFormEnvelopeViewDriver } from "./TaskFormEnvelopeViewDriver";
 import CustomTaskFormDisplayer from "./components/CustomTaskFormDisplayer/CustomTaskFormDisplayer";
 import TaskForm from "./components/TaskForm/TaskForm";
 
 import "@patternfly/patternfly/patternfly.css";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
@@ -45,8 +43,8 @@ interface Props {
   targetOrigin: string;
 }
 
-export const TaskFormEnvelopeView = React.forwardRef<TaskFormEnvelopeViewApi, Props & OUIAProps>(
-  ({ channelApi, targetOrigin, ouiaId, ouiaSafe }, forwardedRef) => {
+export const TaskFormEnvelopeView = React.forwardRef<TaskFormEnvelopeViewApi, Props>(
+  ({ channelApi, targetOrigin }, forwardedRef) => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [isEnvelopeConnectedToChannel, setEnvelopeConnectedToChannel] = useState<boolean>(false);
     const [userTask, setUserTask] = useState<UserTaskInstance>();
@@ -54,8 +52,6 @@ export const TaskFormEnvelopeView = React.forwardRef<TaskFormEnvelopeViewApi, Pr
     const [taskFormSchema, setTaskFormSchema] = useState<Record<string, any>>();
     const [customForm, setCustomForm] = useState<Form>();
     const [userTaskPhases, setUserTaskPhases] = useState<string[]>([]);
-
-    const [driver] = useState<TaskFormEnvelopeViewDriver>(new TaskFormEnvelopeViewDriver(channelApi));
 
     useImperativeHandle(
       forwardedRef,
@@ -72,62 +68,62 @@ export const TaskFormEnvelopeView = React.forwardRef<TaskFormEnvelopeViewApi, Pr
     useCancelableEffect(
       useCallback(
         ({ canceled }) => {
-          if (!isEnvelopeConnectedToChannel) {
+          if (!isEnvelopeConnectedToChannel || !userTask) {
             setIsLoading(true);
           } else {
-            const customFormPromise: Promise<void> = new Promise<void>((resolve) => {
-              driver
-                .getCustomForm()
-                .then((customForm) => {
-                  if (canceled.get()) {
-                    return;
-                  }
-                  setCustomForm(customForm);
-                  resolve();
-                })
-                .catch((error) => resolve());
-            });
+            const customFormPromise = channelApi.requests
+              .taskForm__getCustomForm(userTask)
+              .then((customForm) => {
+                if (canceled.get()) {
+                  return;
+                }
+                setCustomForm(customForm);
+                return;
+              })
+              .catch(() => {
+                // no-op
+                return;
+              });
 
-            const schemaPromise: Promise<void> = new Promise<void>((resolve) => {
-              driver
-                .getTaskFormSchema()
-                .then((schema) => {
-                  if (canceled.get()) {
-                    return;
-                  }
-                  setTaskFormSchema(schema);
-                  resolve();
-                })
-                .catch((error) => resolve());
-            });
+            const schemaPromise = channelApi.requests
+              .taskForm__getTaskFormSchema(userTask)
+              .then((schema) => {
+                if (canceled.get()) {
+                  return;
+                }
+                setTaskFormSchema(schema);
+              })
+              .catch(() => {
+                // no-op
+                return;
+              });
 
-            const phasesPromise: Promise<void> = new Promise<void>((resolve) => {
-              driver
-                .getTaskPhases()
-                .then((phases) => {
-                  if (canceled.get()) {
-                    return;
-                  }
-                  setUserTaskPhases(filterTaskPhases(phases));
-                  resolve();
-                })
-                .catch((error) => resolve());
-            });
+            const phasesPromise = channelApi.requests
+              .taskForm__getTaskPhases(userTask)
+              .then((phases) => {
+                if (canceled.get()) {
+                  return;
+                }
+                setUserTaskPhases(filterTaskPhases(phases));
+                return;
+              })
+              .catch(() => {
+                // no-op
+                return;
+              });
 
-            Promise.all([customFormPromise, schemaPromise, phasesPromise]).then((values) => {
+            Promise.all([customFormPromise, schemaPromise, phasesPromise]).then(() => {
               setIsLoading(false);
             });
           }
         },
-        [driver, isEnvelopeConnectedToChannel]
+        [channelApi.requests, userTask, isEnvelopeConnectedToChannel]
       )
     );
 
     if (isLoading) {
       return (
-        <Bullseye
-          {...componentOuiaProps((ouiaId ? ouiaId : "task-form-envelope-view") + "-loading-spinner", "task-form", true)}
-        >
+        <Bullseye>
           <KogitoSpinner spinnerText={`Loading Task form...`} />
         </Bullseye>
       );
@@ -137,30 +133,17 @@ export const TaskFormEnvelopeView = React.forwardRef<TaskFormEnvelopeViewApi, Pr
       if (customForm) {
         return (
           <CustomTaskFormDisplayer
-            {...componentOuiaProps(
-              (ouiaId ? ouiaId : "task-form-envelope-view") + "-custom-task-form",
-              "custom-task-form",
-              ouiaSafe
-            )}
             userTask={userTask!}
             schema={taskFormSchema}
             customForm={customForm}
             user={user!}
-            driver={driver}
+            channelApi={channelApi}
             phases={userTaskPhases}
             targetOrigin={targetOrigin}
           />
         );
       }
-      return (
-        <TaskForm
-          {...componentOuiaProps((ouiaId ? ouiaId : "task-form-envelope-view") + "-task-form", "task-form", ouiaSafe)}
-          userTask={userTask!}
-          schema={taskFormSchema}
-          phases={userTaskPhases}
-          driver={driver}
-        />
-      );
+      return <TaskForm userTask={userTask!} schema={taskFormSchema} phases={userTaskPhases} channelApi={channelApi} />;
     }
 
     return (
@@ -168,7 +151,6 @@ export const TaskFormEnvelopeView = React.forwardRef<TaskFormEnvelopeViewApi, Pr
         type={KogitoEmptyStateType.Info}
         title="No form to show"
         body={`Cannot find form for task  ${userTask!.referenceName} (${userTask!.id.substring(0, 5)})`}
-        {...componentOuiaProps((ouiaId ? ouiaId : "task-form-envelope-view") + "-no-form", "empty-task-form", ouiaSafe)}
       />
     );
   }

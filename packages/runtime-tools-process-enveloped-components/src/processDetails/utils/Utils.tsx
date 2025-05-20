@@ -23,10 +23,11 @@ import { BanIcon } from "@patternfly/react-icons/dist/js/icons/ban-icon";
 import { UndoIcon } from "@patternfly/react-icons/dist/js/icons/undo-icon";
 import { ErrorCircleOIcon } from "@patternfly/react-icons/dist/js/icons/error-circle-o-icon";
 import { CheckCircleIcon } from "@patternfly/react-icons/dist/js/icons/check-circle-icon";
-import { ProcessDetailsDriver } from "../api";
 import { NodeInstance } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { setTitle } from "@kie-tools/runtime-tools-components/dist/utils/Utils";
 import { Job, JobStatus, ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { ProcessDetailsChannelApi } from "../api";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 
 export const JobsIconCreator = (state: JobStatus): JSX.Element => {
   switch (state) {
@@ -70,12 +71,12 @@ export const JobsIconCreator = (state: JobStatus): JSX.Element => {
 
 export const handleRetry = async (
   processInstance: ProcessInstance,
-  drive: ProcessDetailsDriver,
+  channelApi: MessageBusClientApi<ProcessDetailsChannelApi>,
   onRetrySuccess: () => void,
   onRetryFailure: (errorMessage: string) => void
 ) => {
   try {
-    await drive.handleProcessRetry(processInstance);
+    await channelApi.requests.processDetails__handleProcessRetry(processInstance);
     onRetrySuccess();
   } catch (error) {
     onRetryFailure(JSON.stringify(error.message));
@@ -84,12 +85,12 @@ export const handleRetry = async (
 
 export const handleSkip = async (
   processInstance: ProcessInstance,
-  drive: ProcessDetailsDriver,
+  channelApi: MessageBusClientApi<ProcessDetailsChannelApi>,
   onSkipSuccess: () => void,
   onSkipFailure: (errorMessage: string) => void
 ) => {
   try {
-    await drive.handleProcessSkip(processInstance);
+    await channelApi.requests.processDetails__handleProcessSkip(processInstance);
     onSkipSuccess();
   } catch (error) {
     onSkipFailure(JSON.stringify(error.message));
@@ -98,13 +99,13 @@ export const handleSkip = async (
 
 export const handleNodeInstanceRetrigger = (
   processInstance: ProcessInstance,
-  driver: ProcessDetailsDriver,
+  channelApi: MessageBusClientApi<ProcessDetailsChannelApi>,
   node: NodeInstance,
   onRetriggerSuccess: () => void,
   onRetriggerFailure: (errorMessage: string) => void
 ) => {
-  driver
-    .handleNodeInstanceRetrigger(processInstance, node)
+  channelApi.requests
+    .processDetails__handleNodeInstanceRetrigger(processInstance, node)
     .then(() => {
       onRetriggerSuccess();
     })
@@ -115,13 +116,13 @@ export const handleNodeInstanceRetrigger = (
 
 export const handleNodeInstanceCancel = (
   processInstance: ProcessInstance,
-  drive: ProcessDetailsDriver,
+  channelApi: MessageBusClientApi<ProcessDetailsChannelApi>,
   node: NodeInstance,
   onCancelSuccess: () => void,
   onCancelFailure: (errorMessage: string) => void
 ) => {
-  drive
-    .handleNodeInstanceCancel(processInstance, node)
+  channelApi.requests
+    .processDetails__handleNodeInstanceCancel(processInstance, node)
     .then(() => {
       onCancelSuccess();
     })
@@ -131,12 +132,12 @@ export const handleNodeInstanceCancel = (
 };
 
 export const jobCancel = async (
-  drive: ProcessDetailsDriver,
+  channelApi: MessageBusClientApi<ProcessDetailsChannelApi>,
   job: Job,
   setModalTitle: (title: JSX.Element) => void,
   setModalContent: (content: string) => void
 ) => {
-  const response = await drive.cancelJob(job);
+  const response = await channelApi.requests.processDetails__cancelJob(job);
   setModalTitle(setTitle(response.modalTitle, "Job cancel"));
   setModalContent(response.modalContent);
 };
@@ -147,10 +148,15 @@ export const handleJobRescheduleUtil = async (
   scheduleDate: Date,
   selectedJob: Job,
   handleRescheduleAction: () => void,
-  driver: ProcessDetailsDriver,
+  channelApi: MessageBusClientApi<ProcessDetailsChannelApi>,
   setRescheduleError: (modalContent: string) => void
 ): Promise<void> => {
-  const response = await driver.rescheduleJob(selectedJob, repeatInterval, repeatLimit, scheduleDate);
+  const response = await channelApi.requests.processDetails__rescheduleJob(
+    selectedJob,
+    repeatInterval,
+    repeatLimit,
+    scheduleDate
+  );
   if (response && response.modalTitle === "success") {
     handleRescheduleAction();
   } else if (response && response.modalTitle === "failure") {

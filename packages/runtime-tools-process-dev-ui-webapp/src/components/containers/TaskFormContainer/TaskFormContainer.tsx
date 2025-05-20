@@ -16,10 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React from "react";
+import React, { useMemo } from "react";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { useTaskFormGatewayApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskForms";
+import { useTaskFormChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskForms";
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { EmbeddedTaskForm } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskForm";
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
@@ -30,47 +29,45 @@ interface Props {
   onSubmitError: (message: string, details?: string) => void;
 }
 
-const TaskFormContainer: React.FC<Props & OUIAProps> = ({
-  userTask,
-  onSubmitSuccess,
-  onSubmitError,
-  ouiaId,
-  ouiaSafe,
-}) => {
-  const gatewayApi = useTaskFormGatewayApi();
+const TaskFormContainer: React.FC<Props> = ({ userTask, onSubmitSuccess, onSubmitError }) => {
+  const channelApi = useTaskFormChannelApi();
   const appContext = useDevUIAppContext();
+
+  const extendedChannelApi = useMemo(
+    () => ({
+      taskForm__doSubmit(userTask: UserTaskInstance, phase?: string, payload?: any): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+          channelApi
+            .taskForm__doSubmit(userTask, phase, payload)
+            .then((response) => {
+              onSubmitSuccess(phase);
+              resolve(response);
+            })
+            .catch((error) => {
+              const details = error.response?.data?.message ? error.response.data.message : error.message;
+              onSubmitError(phase ?? "", details);
+              reject(error);
+            });
+        });
+      },
+      taskForm__getTaskFormSchema(userTask: UserTaskInstance): Promise<Record<string, any>> {
+        return channelApi.taskForm__getTaskFormSchema(userTask);
+      },
+      taskForm__getCustomForm(userTask: UserTaskInstance): Promise<Form> {
+        return channelApi.taskForm__getCustomForm(userTask);
+      },
+      taskForm__getTaskPhases(userTask: UserTaskInstance): Promise<string[]> {
+        return channelApi.taskForm__getTaskPhases(userTask);
+      },
+    }),
+    [channelApi, onSubmitError, onSubmitSuccess]
+  );
 
   return (
     <EmbeddedTaskForm
-      {...componentOuiaProps(ouiaId, "task-form-container", ouiaSafe)}
       userTask={userTask}
       user={appContext.getCurrentUser()}
-      driver={{
-        doSubmit(phase?: string, payload?: any): Promise<any> {
-          return new Promise<any>((resolve, reject) => {
-            gatewayApi
-              .doSubmit(userTask, phase, payload)
-              .then((response) => {
-                onSubmitSuccess(phase);
-                resolve(response);
-              })
-              .catch((error) => {
-                const details = error.response?.data?.message ? error.response.data.message : error.message;
-                onSubmitError(phase ?? "", details);
-                reject(error);
-              });
-          });
-        },
-        getTaskFormSchema(): Promise<Record<string, any>> {
-          return gatewayApi.getTaskFormSchema(userTask);
-        },
-        getCustomForm(): Promise<Form> {
-          return gatewayApi.getCustomForm(userTask);
-        },
-        getTaskPhases(): Promise<string[]> {
-          return gatewayApi.getTaskPhases(userTask);
-        },
-      }}
+      channelApi={extendedChannelApi}
       targetOrigin={appContext.getDevUIUrl()}
     />
   );

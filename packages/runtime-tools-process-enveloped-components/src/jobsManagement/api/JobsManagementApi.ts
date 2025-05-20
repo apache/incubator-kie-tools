@@ -16,5 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
+import { JobsSortBy, JobStatus } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+
 // eslint-disable-next-line  @typescript-eslint/no-empty-interface
 export interface JobsManagementApi {}
+
+export interface JobsManagementState {
+  filters: JobStatus[];
+  orderBy: JobsSortBy;
+}

@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import _ from "lodash";
 import { generateFormData } from "../utils/TaskFormDataUtils";
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
@@ -58,9 +58,9 @@ const TaskFormRenderer: React.FC<IOwnProps & OUIAProps> = ({
       });
       setFormActions(actions);
     }
-  }, []);
+  }, [phases]);
 
-  const isReadOnly = (): boolean => {
+  const isReadOnly = useMemo((): boolean => {
     if (!enabled || formActions.length === 0) {
       return true;
     }
@@ -74,18 +74,23 @@ const TaskFormRenderer: React.FC<IOwnProps & OUIAProps> = ({
     }
 
     return false;
-  };
+  }, [enabled, formActions.length, phases, userTask.completed]);
 
-  const doSubmit = (data: any) => {
-    submit(selectedPhase!, data);
-  };
+  const doSubmit = useCallback(
+    (data: any) => {
+      submit(selectedPhase!, data);
+    },
+    [selectedPhase, submit]
+  );
+
+  const model = useMemo(() => formData || generateFormData(userTask), [formData, userTask]);
 
   return (
     <div {...componentOuiaProps(ouiaId, "task-form-renderer", ouiaSafe)}>
       <FormRenderer
         formSchema={formSchema}
-        model={formData || generateFormData(userTask)}
-        readOnly={isReadOnly()}
+        model={model}
+        readOnly={isReadOnly}
         onSubmit={doSubmit}
         formActions={formActions}
       />

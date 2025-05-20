@@ -1046,6 +1046,19 @@ export namespace GraphQL {
     } | null> | null;
   };
 
+  export type GetProcessDefinitionByIdQueryVariables = Exact<{
+    id?: InputMaybe<Scalars["String"]>;
+  }>;
+
+  export type GetProcessDefinitionByIdQuery = {
+    __typename?: "Query";
+    ProcessDefinition?: Array<{
+      __typename?: "ProcessDefinition";
+      id: string;
+      endpoint: string;
+    } | null> | null;
+  };
+
   export type GetColumnPickerAttributesQueryVariables = Exact<{
     columnPickerType: Scalars["String"];
   }>;
@@ -2512,6 +2525,15 @@ export namespace GraphQL {
   export const GetProcessDefinitionsDocument = gql`
     query getProcessDefinitions {
       ProcessDefinitions {
+        id
+        endpoint
+      }
+    }
+  `;
+
+  export const GetProcessDefinitionByIdDocument = gql`
+    query getProcessDefinitionById($id: String) {
+      ProcessDefinitions(where: { id: { equal: $id } }) {
         id
         endpoint
       }
