@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useCallback, useEffect, useLayoutEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useAuthSessions, useAuthSessionsDispatch } from "../authSessions/AuthSessionsContext";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";

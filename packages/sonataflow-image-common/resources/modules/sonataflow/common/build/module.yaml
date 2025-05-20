@@ -21,5 +21,7 @@ name: org.kie.sonataflow.common.build
 version: "main"
 description: "Kogito Serverless Workflow image build process"
 
+# Requires org.kie.sonataflow.common.scripts module
+
 execute:
   - script: configure.sh

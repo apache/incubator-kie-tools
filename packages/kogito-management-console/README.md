@@ -45,7 +45,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 - After optionally setting up the environment variables, run the following in the root folder of the repository to build the package:
 
   ```bash
-  pnpm -F @kie-tools/runtime-tools-management-console-webapp-image... build:prod
+  pnpm -F @kie-tools/runtime-tools-management-console-webapp... build:prod
   ```
 
 - Then check if the image is correctly stored:
