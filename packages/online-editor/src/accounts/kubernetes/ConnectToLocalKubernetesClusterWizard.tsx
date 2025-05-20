@@ -32,10 +32,12 @@ import { useOnlineI18n } from "../../i18n";
 import { KubernetesSettingsTabMode } from "./ConnectToKubernetesSection";
 import { KubernetesInstanceStatus } from "./KubernetesInstanceStatus";
 import { v4 as uuid } from "uuid";
-import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
+import { useAuthSessionsDispatch, useSyncCloudAuthSession } from "../../authSessions/AuthSessionsContext";
 import {
   AUTH_SESSION_VERSION_NUMBER,
+  AuthSession,
   CloudAuthSessionType,
+  isCloudAuthSession,
   KubernetesAuthSession,
 } from "../../authSessions/AuthSessionApi";
 import {
@@ -119,6 +121,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
   setStatus: React.Dispatch<React.SetStateAction<KubernetesInstanceStatus>>;
   setNewAuthSession: React.Dispatch<React.SetStateAction<KubernetesAuthSession>>;
   isLoadingService: boolean;
+  selectedAuthSession?: AuthSession;
 }) {
   const { i18n } = useOnlineI18n();
   const routes = useRoutes();
@@ -188,6 +191,8 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
   const isTokenValidated = useMemo(() => {
     return isTokenValid(props.connection.token);
   }, [props.connection.token]);
+
+  useSyncCloudAuthSession(props.selectedAuthSession, props.setConnection);
 
   useEffect(() => {
     setConnectionValidated(isKubernetesConnectionValid(props.connection));
@@ -259,7 +264,7 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
       const newAuthSession: KubernetesAuthSession = {
         type: CloudAuthSessionType.Kubernetes,
         version: AUTH_SESSION_VERSION_NUMBER,
-        id: uuid(),
+        id: props.selectedAuthSession?.id ?? uuid(),
         ...props.connection,
         authProviderId: "kubernetes",
         createdAtDateISO: new Date().toISOString(),
@@ -267,8 +272,12 @@ export function ConnectToLocalKubernetesClusterWizard(props: {
       };
       setConnectionValidated(true);
       props.setStatus(KubernetesInstanceStatus.CONNECTED);
-      authSessionsDispatch.add(newAuthSession);
       props.setNewAuthSession(newAuthSession);
+      if (props.selectedAuthSession) {
+        authSessionsDispatch.update(newAuthSession);
+      } else {
+        authSessionsDispatch.add(newAuthSession);
+      }
     } else {
       setConnectionValidated(false);
       return;
