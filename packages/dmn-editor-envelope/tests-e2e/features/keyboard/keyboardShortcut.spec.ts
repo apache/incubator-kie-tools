@@ -20,6 +20,8 @@
 import { test, expect } from "../../__fixtures__/base";
 import { DefaultNodeName, NodeType } from "../../__fixtures__/nodes";
 
+const controlOrMeta = process.platform === "darwin" ? "Meta" : "Control";
+
 test.beforeEach(async ({ editor }) => {
   await editor.open();
 });
@@ -101,9 +103,9 @@ test.describe("Keyboard Shortcuts", () => {
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 200, y: 200 } });
     await diagram.resetFocus();
     await expect(diagram.get()).toHaveScreenshot("added-decision-node-to-zoom-in.png");
-    await page.keyboard.down("ControlOrMeta");
+    await page.keyboard.down(controlOrMeta);
     await page.mouse.wheel(0, -100);
-    await page.keyboard.up("ControlOrMeta");
+    await page.keyboard.up(controlOrMeta);
     await expect(diagram.get()).toHaveScreenshot("zoomed-drd-using-shortcut.png");
   });
 
@@ -111,9 +113,9 @@ test.describe("Keyboard Shortcuts", () => {
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 200, y: 200 } });
     await diagram.resetFocus();
     await expect(diagram.get()).toHaveScreenshot("added-decision-node-to-zoom-out.png");
-    await page.keyboard.down("ControlOrMeta");
+    await page.keyboard.down(controlOrMeta);
     await page.mouse.wheel(0, 100);
-    await page.keyboard.up("ControlOrMeta");
+    await page.keyboard.up(controlOrMeta);
     await expect(diagram.get()).toHaveScreenshot("zoomed-out-drd-using-shortcut.png");
   });
 
@@ -122,7 +124,7 @@ test.describe("Keyboard Shortcuts", () => {
     await diagram.resetFocus();
     await nodes.select({ name: DefaultNodeName.DECISION });
     await expect(diagram.get()).toHaveScreenshot("selected-decision-node-to-cut.png");
-    await page.keyboard.press(`ControlOrMeta+KeyX`);
+    await page.keyboard.press(`${controlOrMeta}+KeyX`);
     await expect(diagram.get()).toHaveScreenshot("decision-node-cut-from-drd-using-cmd-key.png");
   });
 
@@ -140,14 +142,15 @@ test.describe("Keyboard Shortcuts", () => {
       "Playwright Webkit doesn't support clipboard permissions: https://github.com/microsoft/playwright/issues/13037"
     );
     clipboard.setup(context, browserName);
+    console.log(controlOrMeta);
     await palette.dragNewNode({ type: NodeType.DECISION, targetPosition: { x: 100, y: 100 } });
     await diagram.resetFocus();
     await nodes.select({ name: DefaultNodeName.DECISION });
     await expect(diagram.get()).toHaveScreenshot("selected-decision-node-to-copy.png");
-    await page.keyboard.press("ControlOrMeta+KeyC");
+    await page.keyboard.press(`${controlOrMeta}+KeyC`);
     await nodes.delete({ name: DefaultNodeName.DECISION });
     await expect(diagram.get().getByText("This DMN's Diagram is empty")).toBeAttached();
-    await page.keyboard.press("ControlOrMeta+KeyV");
+    await page.keyboard.press(`${controlOrMeta}+KeyV`);
     await expect(diagram.get()).toHaveScreenshot("pasted-node-using-shortcut.png");
   });
 
@@ -173,9 +176,9 @@ test.describe("Keyboard Shortcuts", () => {
       thenRenameTo: DefaultNodeName.DECISION,
     });
     await expect(diagram.get()).toHaveScreenshot("added-decision-for-undo-redo-action.png");
-    await page.keyboard.press("ControlOrMeta+KeyZ");
+    await page.keyboard.press(`${controlOrMeta}+KeyZ`);
     await expect(diagram.get()).toHaveScreenshot("undo-decision-rename-using-shortcut.png");
-    await page.keyboard.press("ControlOrMeta+Shift+KeyZ");
+    await page.keyboard.press(`${controlOrMeta}+Shift+KeyZ`);
     await expect(diagram.get()).toHaveScreenshot("redo-decision-rename-using-shortcut.png");
   });
 
