@@ -856,10 +856,13 @@ export const DecisionServiceNode = React.memo(
     const isDropTarget = useDmnEditorStore((s) => s.diagram.dropTargetNode?.id === id);
     const dmnEditorStoreApi = useDmnEditorStoreApi();
 
-    const dropPoint = {
-      x: shape["dc:Bounds"]?.["@_x"] ?? 0,
-      y: shape["dc:Bounds"]?.["@_y"] ?? 0,
-    };
+    const dropPoint = useMemo(
+      () => ({
+        x: shape["dc:Bounds"]?.["@_x"] ?? 0,
+        y: shape["dc:Bounds"]?.["@_y"] ?? 0,
+      }),
+      [shape]
+    );
 
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
@@ -887,10 +890,13 @@ export const DecisionServiceNode = React.memo(
 
     const settings = useSettings();
 
-    const decisionsInCurrentDecisionService = [
-      ...(decisionService.outputDecision ?? []).map((od) => od["@_href"]),
-      ...(decisionService.encapsulatedDecision ?? []).map((ed) => ed["@_href"]),
-    ];
+    const decisionsInCurrentDecisionService = useMemo(
+      () => [
+        ...(decisionService.outputDecision ?? []).map((od) => od["@_href"]),
+        ...(decisionService.encapsulatedDecision ?? []).map((ed) => ed["@_href"]),
+      ],
+      [decisionService.outputDecision, decisionService.encapsulatedDecision]
+    );
 
     const { isTargeted, isValidConnectionTarget } = useConnectionTargetStatus(id, shouldActLikeHovered);
     const className = useNodeClassName(isValidConnectionTarget, id);
