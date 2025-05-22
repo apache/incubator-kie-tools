@@ -24,9 +24,15 @@ export enum WorkspaceKind {
   GIT = "GIT",
   LOCAL = "LOCAL",
   BITBUCKET_SNIPPET = "BITBUCKET_SNIPPET",
+  GITLAB_SNIPPET = "GITLAB_SNIPPET",
 }
 
-const gitBasedTypeKeys = [WorkspaceKind.GIT, WorkspaceKind.BITBUCKET_SNIPPET, WorkspaceKind.GITHUB_GIST] as const;
+const gitBasedTypeKeys = [
+  WorkspaceKind.GIT,
+  WorkspaceKind.BITBUCKET_SNIPPET,
+  WorkspaceKind.GITHUB_GIST,
+  WorkspaceKind.GITLAB_SNIPPET,
+] as const;
 export type WorkspaceKindGitBased = (typeof gitBasedTypeKeys)[number];
 
 export const isGitBasedWorkspaceKind = (
@@ -35,7 +41,11 @@ export const isGitBasedWorkspaceKind = (
   return gitBasedTypeKeys.some((k) => k === maybeGitBasedType);
 };
 
-const gistLikeTypeKeys = [WorkspaceKind.GITHUB_GIST, WorkspaceKind.BITBUCKET_SNIPPET] as const;
+const gistLikeTypeKeys = [
+  WorkspaceKind.GITHUB_GIST,
+  WorkspaceKind.BITBUCKET_SNIPPET,
+  WorkspaceKind.GITLAB_SNIPPET,
+] as const;
 export type WorkspaceKindGistLike = (typeof gistLikeTypeKeys)[number];
 
 export const isGistLikeWorkspaceKind = (
@@ -44,7 +54,14 @@ export const isGistLikeWorkspaceKind = (
   return gistLikeTypeKeys.some((k) => k === maybeGistLikeType);
 };
 
-export type WorkspaceOrigin = LocalOrigin | GistOrigin | GitHubOrigin | BitbucketOrigin | SnippetOrigin;
+export type WorkspaceOrigin =
+  | LocalOrigin
+  | GistOrigin
+  | GitHubOrigin
+  | BitbucketOrigin
+  | BitbucketSnippetOrigin
+  | GitlabOrigin
+  | GitlabSnippetOrigin;
 
 export interface LocalOrigin {
   kind: WorkspaceKind.LOCAL;
@@ -70,8 +87,20 @@ export interface GistOrigin {
   branch: string;
 }
 
-export interface SnippetOrigin {
+export interface BitbucketSnippetOrigin {
   kind: WorkspaceKind.BITBUCKET_SNIPPET;
+  url: string;
+  branch: string;
+}
+
+export interface GitlabOrigin {
+  kind: WorkspaceKind.GIT;
+  url: string;
+  branch: string;
+}
+
+export interface GitlabSnippetOrigin {
+  kind: WorkspaceKind.GITLAB_SNIPPET;
   url: string;
   branch: string;
 }

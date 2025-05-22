@@ -89,6 +89,7 @@ export function useWorkspaceNavigationBlocker(workspace: ActiveWorkspace) {
                   canPush={switchExpression(workspace.descriptor.origin.kind as WorkspaceKindGitBased, {
                     BITBUCKET_SNIPPET: canUpdateGistOrSnippet,
                     GITHUB_GIST: canUpdateGistOrSnippet,
+                    GITLAB_SNIPPET: canUpdateGistOrSnippet,
                     GIT: canPushToGitRepository,
                   })}
                   remoteRef={`${GIT_ORIGIN_REMOTE_NAME}/${workspace.descriptor.origin.branch}`}
@@ -98,6 +99,7 @@ export function useWorkspaceNavigationBlocker(workspace: ActiveWorkspace) {
                     switchExpression(workspace.descriptor.origin.kind as WorkspaceKindGitBased, {
                       BITBUCKET_SNIPPET: updateGistOrSnippet,
                       GITHUB_GIST: updateGistOrSnippet,
+                      GITLAB_SNIPPET: updateGistOrSnippet,
                       GIT: pushToGitRepository,
                     })();
                   }}

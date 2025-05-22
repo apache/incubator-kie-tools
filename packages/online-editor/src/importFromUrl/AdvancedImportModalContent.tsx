@@ -171,7 +171,7 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                   aria-label="Disable TLS Certificate Validation"
                   tabIndex={4}
                   isChecked={props.insecurelyDisableTlsCertificateValidation}
-                  onChange={(_event, val) => props.setInsecurelyDisableTlsCertificateValidation}
+                  onChange={(_event, val) => props.setInsecurelyDisableTlsCertificateValidation(val)}
                 />
               </FormGroup>
               <FormGroup fieldId="url" label="URL" isRequired={true}>
@@ -184,16 +184,12 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                   onChange={(_event, value) => props.setUrl(value)}
                 />
                 <HelperText>
-                  {props.validation.helperTextInvalid === "error" ? (
+                  {props.validation.option === "error" ? (
                     <HelperTextItem variant="error" icon={<ExclamationCircleIcon />}>
-                      {props.validation.option !== ValidatedOptions.success ? (
-                        props.validation.helperText
-                      ) : (
-                        <FormHelperText />
-                      )}
+                      {props.validation.helperTextInvalid}
                     </HelperTextItem>
                   ) : (
-                    <HelperTextItem icon={props.validation.option}></HelperTextItem>
+                    props.validation.option !== "success" && props.validation.helperText
                   )}
                 </HelperText>
               </FormGroup>
@@ -230,11 +226,7 @@ export const AdvancedImportModal = React.forwardRef<AdvancedImportModalRef, Adva
                       </SelectGroup>
                     ))}
                 </Select>
-                <HelperText>
-                  <HelperTextItem variant="error" icon={ValidatedOptions.default}>
-                    {<FormHelperText>Loading...</FormHelperText>}
-                  </HelperTextItem>
-                </HelperText>
+                <HelperText>{props.validation.option !== "success" && props.validation.helperText}</HelperText>
               </FormGroup>
             </Form>
             <br />

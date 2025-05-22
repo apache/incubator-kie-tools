@@ -76,6 +76,7 @@ export class WorkspaceDescriptorService {
     preferredName?: string;
     gitAuthSessionId: string | undefined;
     gitInsecurelyDisableTlsCertificateValidation?: boolean;
+    gitDisableEncoding?: boolean;
   }) {
     const workspace: WorkspaceDescriptor = {
       workspaceId: this.newWorkspaceId(),
@@ -85,6 +86,7 @@ export class WorkspaceDescriptorService {
       lastUpdatedDateISO: new Date().toISOString(),
       gitAuthSessionId: args.gitAuthSessionId,
       gitInsecurelyDisableTlsCertificateValidation: args.gitInsecurelyDisableTlsCertificateValidation,
+      gitDisableEncoding: args.gitDisableEncoding,
     };
     await this.storageService.createOrOverwriteFile(args.fs, this.toStorageFile(workspace));
     return workspace;
@@ -107,7 +109,8 @@ export class WorkspaceDescriptorService {
     workspaceId: string,
     gistUrl: URL,
     branch: string,
-    insecurelyDisableTlsCertificateValidation?: boolean
+    insecurelyDisableTlsCertificateValidation?: boolean,
+    disableEncoding?: boolean
   ) {
     const file = this.toStorageFile({
       ...(await this.get(fs, workspaceId)),
@@ -117,6 +120,7 @@ export class WorkspaceDescriptorService {
         branch,
       },
       gitInsecurelyDisableTlsCertificateValidation: insecurelyDisableTlsCertificateValidation,
+      gitDisableEncoding: disableEncoding,
     });
     await this.storageService.updateFile(fs, file.path, file.getFileContents);
 
@@ -135,7 +139,8 @@ export class WorkspaceDescriptorService {
     workspaceId: string,
     snippetUrl: URL,
     branch: string,
-    insecurelyDisableTlsCertificateValidation?: boolean
+    insecurelyDisableTlsCertificateValidation?: boolean,
+    disableEncoding?: boolean
   ) {
     const file = this.toStorageFile({
       ...(await this.get(fs, workspaceId)),
@@ -145,6 +150,38 @@ export class WorkspaceDescriptorService {
         branch,
       },
       gitInsecurelyDisableTlsCertificateValidation: insecurelyDisableTlsCertificateValidation,
+      gitDisableEncoding: disableEncoding,
+    });
+    await this.storageService.updateFile(fs, file.path, file.getFileContents);
+
+    new Broadcaster().broadcast({
+      channel: workspaceId,
+      message: async () => ({ type: "WS_UPDATE_DESCRIPTOR" }),
+    });
+
+    new Broadcaster().broadcast({
+      channel: WORKSPACES_BROADCAST_CHANNEL,
+      message: async () => ({ type: "WSS_UPDATE", workspaceId }),
+    });
+  }
+
+  public async turnIntoGitlabSnippet(
+    fs: KieSandboxWorkspacesFs,
+    workspaceId: string,
+    snippetUrl: URL,
+    branch: string,
+    insecurelyDisableTlsCertificateValidation?: boolean,
+    disableEncoding?: boolean
+  ) {
+    const file = this.toStorageFile({
+      ...(await this.get(fs, workspaceId)),
+      origin: {
+        kind: WorkspaceKind.GITLAB_SNIPPET,
+        url: snippetUrl.toString(),
+        branch,
+      },
+      gitInsecurelyDisableTlsCertificateValidation: insecurelyDisableTlsCertificateValidation,
+      gitDisableEncoding: disableEncoding,
     });
     await this.storageService.updateFile(fs, file.path, file.getFileContents);
 
@@ -164,7 +201,8 @@ export class WorkspaceDescriptorService {
     workspaceId: string,
     url: URL,
     branch?: string,
-    insecurelyDisableTlsCertificateValidation?: boolean
+    insecurelyDisableTlsCertificateValidation?: boolean,
+    disableEncoding?: boolean
   ) {
     const file = this.toStorageFile({
       ...(await this.get(fs, workspaceId)),
@@ -174,6 +212,7 @@ export class WorkspaceDescriptorService {
         branch: branch ?? GIT_DEFAULT_BRANCH,
       },
       gitInsecurelyDisableTlsCertificateValidation: insecurelyDisableTlsCertificateValidation,
+      gitDisableEncoding: disableEncoding,
     });
     await this.storageService.updateFile(fs, file.path, file.getFileContents);
 
@@ -192,12 +231,14 @@ export class WorkspaceDescriptorService {
     fs: KieSandboxWorkspacesFs,
     workspaceId: string,
     gitAuthSessionId: string | undefined,
-    insecurelyDisableTlsCertificateValidation?: boolean
+    insecurelyDisableTlsCertificateValidation?: boolean,
+    disableEncoding?: boolean
   ) {
     const file = this.toStorageFile({
       ...(await this.get(fs, workspaceId)),
       gitAuthSessionId,
       gitInsecurelyDisableTlsCertificateValidation: insecurelyDisableTlsCertificateValidation,
+      gitDisableEncoding: disableEncoding,
     });
     await this.storageService.updateFile(fs, file.path, file.getFileContents);
 

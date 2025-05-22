@@ -227,6 +227,7 @@ export function getBitbucketClient(args: {
   domain?: string;
   proxyUrl?: string;
   insecurelyDisableTlsCertificateValidation?: boolean;
+  disableEncoding?: boolean;
 }) {
   return new BitbucketClient({
     appName: args.appName,
@@ -240,6 +241,10 @@ export function getBitbucketClient(args: {
               args.insecurelyDisableTlsCertificateValidation
             ).toString(),
           }
+        : {}),
+      // If disableEncoding is true, force proxy/server to skip compression
+      ...(args.disableEncoding
+        ? { [CorsProxyHeaderKeys.DISABLE_ENCODING]: Boolean(args.disableEncoding).toString() }
         : {}),
     },
   });
@@ -269,6 +274,7 @@ export function useBitbucketClient(authSession: AuthSession | undefined): Bitbuc
       },
       proxyUrl: env.KIE_SANDBOX_CORS_PROXY_URL,
       insecurelyDisableTlsCertificateValidation: authProvider.insecurelyDisableTlsCertificateValidation,
+      disableEncoding: authProvider.disableEncoding,
     });
   }, [authProviders, authSession, env.KIE_SANDBOX_APP_NAME, env.KIE_SANDBOX_CORS_PROXY_URL]);
 }

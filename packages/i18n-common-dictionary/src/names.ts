@@ -36,6 +36,7 @@ export const names = {
   dropbox: "Dropbox",
   git: "Git",
   github: "GitHub",
+  gitlab: "GitLab",
   kogito: "Kogito",
   linux: "Linux",
   macos: "macOS",

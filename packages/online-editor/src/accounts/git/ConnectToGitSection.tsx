@@ -45,14 +45,18 @@ import {
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { AuthOptionsType, getBitbucketClient } from "../../bitbucket/Hooks";
 import { useEnv } from "../../env/hooks/EnvContext";
+import { getGitlabClient } from "../../gitlab/useGitlabClient";
 import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 export const BITBUCKET_OAUTH_TOKEN_SIZE = 40;
+export const GITLAB_OAUTH_TOKEN_SIZE = 40;
 
 export const GITHUB_TOKENS_HOW_TO_URL =
   "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token";
 export const BITBUCKET_TOKENS_HOW_TO_URL = "https://support.atlassian.com/bitbucket-cloud/docs/create-an-app-password/";
+export const GITLAB_TOKENS_HOW_TO_URL =
+  "https://docs.gitlab.com/user/profile/personal_access_tokens/#create-a-personal-access-token";
 
 export const GITHUB_OAUTH_SCOPES = ["repo", "gist"];
 export const BITBUCKET_OAUTH_SCOPES = [
@@ -63,6 +67,8 @@ export const BITBUCKET_OAUTH_SCOPES = [
   "snippet",
   "snippet:write",
 ];
+
+export const GITLAB_OAUTH_SCOPES = ["api", "read_user", "read_repository", "write_repository"];
 
 export type AuthenticatedUserResponse = {
   headers: {
@@ -119,14 +125,25 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
                   tokenInput,
                   props.authProvider.domain,
                   env.KIE_SANDBOX_CORS_PROXY_URL,
-                  props.authProvider.insecurelyDisableTlsCertificateValidation
+                  props.authProvider.insecurelyDisableTlsCertificateValidation,
+                  props.authProvider.disableEncoding
                 ),
               github: () =>
                 fetchAuthenticatedGitHubUser(
                   tokenInput,
                   props.authProvider.domain,
                   env.KIE_SANDBOX_CORS_PROXY_URL,
-                  props.authProvider.insecurelyDisableTlsCertificateValidation
+                  props.authProvider.insecurelyDisableTlsCertificateValidation,
+                  props.authProvider.disableEncoding
+                ),
+              gitlab: () =>
+                fetchAuthenticatedGitlabUser(
+                  env.KIE_SANDBOX_APP_NAME,
+                  tokenInput,
+                  props.authProvider.domain,
+                  env.KIE_SANDBOX_CORS_PROXY_URL,
+                  props.authProvider.insecurelyDisableTlsCertificateValidation,
+                  props.authProvider.disableEncoding
                 ),
             })
           )
@@ -137,6 +154,7 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
             const requiredScopes = switchExpression(authProviderType, {
               bitbucket: BITBUCKET_OAUTH_SCOPES,
               github: GITHUB_OAUTH_SCOPES,
+              gitlab: GITLAB_OAUTH_SCOPES,
             });
             if (!response.headers.scopes.some((it) => requiredScopes.includes(it))) {
               setNewAuthSession({
@@ -176,6 +194,7 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
         props.authProvider.type,
         props.authProvider.domain,
         props.authProvider.insecurelyDisableTlsCertificateValidation,
+        props.authProvider.disableEncoding,
         props.authProvider.id,
         tokenInput,
         success,
@@ -230,7 +249,8 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
   const successPrimaryAction = useMemo(() => {
     if (
       (accounts.section !== AccountsSection.CONNECT_TO_GITHUB &&
-        accounts.section !== AccountsSection.CONNECT_TO_BITBUCKET) ||
+        accounts.section !== AccountsSection.CONNECT_TO_BITBUCKET &&
+        accounts.section !== AccountsSection.CONNECT_TO_GITLAB) ||
       !newAuthSession.data
     ) {
       return;
@@ -331,6 +351,7 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
               href={switchExpression(props.authProvider.type, {
                 bitbucket: generateNewBitbucketTokenUrl(props.authProvider.domain),
                 github: generateNewGitHubTokenUrl(props.authProvider.domain),
+                gitlab: generateNewGitlabTokenUrl(props.authProvider.domain),
               })}
               target={"_blank"}
               rel={"noopener"}
@@ -351,6 +372,7 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
                 href={switchExpression(props.authProvider.type, {
                   bitbucket: BITBUCKET_TOKENS_HOW_TO_URL,
                   github: GITHUB_TOKENS_HOW_TO_URL,
+                  gitlab: GITLAB_TOKENS_HOW_TO_URL,
                 })}
                 target={"_blank"}
                 rel={"noopener"}
@@ -370,6 +392,7 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
     return switchExpression(props.authProvider.type, {
       bitbucket: BITBUCKET_OAUTH_TOKEN_SIZE,
       github: GITHUB_OAUTH_TOKEN_SIZE,
+      gitlab: GITLAB_OAUTH_TOKEN_SIZE,
       default: -1,
     });
   }
@@ -391,6 +414,8 @@ export const generateNewBitbucketTokenUrl = (domain: string) => {
 export const generateNewGitHubTokenUrl = (domain: string) => {
   return `https://${domain}/settings/tokens`;
 };
+export const generateNewGitlabTokenUrl = (domain: string): string =>
+  `https://${domain}/-/user_settings/personal_access_tokens`;
 
 function delay(ms: number) {
   return new Promise((res) => setTimeout(res, ms));
@@ -404,9 +429,16 @@ export const fetchAuthenticatedGitHubUser = async (
   githubToken: string,
   domain?: string,
   proxyUrl?: string,
-  insecurelyDisableTlsCertificateValidation?: boolean
+  insecurelyDisableTlsCertificateValidation?: boolean,
+  disableEncoding?: boolean
 ) => {
-  const octokit = getOctokitClient({ githubToken, domain, proxyUrl, insecurelyDisableTlsCertificateValidation });
+  const octokit = getOctokitClient({
+    githubToken,
+    domain,
+    proxyUrl,
+    insecurelyDisableTlsCertificateValidation,
+    disableEncoding,
+  });
   const response = await octokit.users.getAuthenticated();
   return {
     data: {
@@ -425,7 +457,8 @@ export const fetchAuthenticatedBitbucketUser = async (
   bitbucketToken: string,
   domain?: string,
   proxyUrl?: string,
-  insecurelyDisableTlsCertificateValidation?: boolean
+  insecurelyDisableTlsCertificateValidation?: boolean,
+  disableEncoding?: boolean
 ) => {
   const bitbucketClient = getBitbucketClient({
     appName,
@@ -437,6 +470,7 @@ export const fetchAuthenticatedBitbucketUser = async (
     },
     proxyUrl,
     insecurelyDisableTlsCertificateValidation,
+    disableEncoding,
   });
 
   const response = await bitbucketClient.getAuthedUser();
@@ -454,5 +488,41 @@ export const fetchAuthenticatedBitbucketUser = async (
       uuid: json.uuid,
     },
     headers: { scopes: response.headers.get("x-oauth-scopes")?.split(", ") ?? [] },
+  };
+};
+
+export const fetchAuthenticatedGitlabUser = async (
+  appName: string,
+  gitlabToken: string,
+  domain?: string,
+  proxyUrl?: string,
+  insecurelyDisableTlsCertificateValidation?: boolean,
+  disableEncoding?: boolean
+) => {
+  const gitlabClient = getGitlabClient({
+    appName,
+    domain,
+    token: gitlabToken,
+    proxyUrl,
+    insecurelyDisableTlsCertificateValidation,
+    disableEncoding,
+  });
+
+  const response = await gitlabClient.getAuthedUser();
+
+  if (!response.ok) {
+    const message = await response.text();
+    throw new Error(`While authenticating : ${response.status} ${response.statusText} ${message}`);
+  }
+  const jsonResponse = await response.json();
+
+  return {
+    data: {
+      name: jsonResponse?.name,
+      login: jsonResponse?.username,
+      email: jsonResponse?.email,
+    },
+    // GitLab does not expose PAT scopes in the response
+    headers: { scopes: [] },
   };
 };

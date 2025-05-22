@@ -56,6 +56,7 @@ export class WorkspaceService {
     preferredName?: string;
     gitAuthSessionId: string | undefined;
     gitInsecurelyDisableTlsCertificateValidation?: boolean;
+    gitDisableEncoding?: boolean;
   }) {
     const workspace = await this.descriptorsFsService.withReadWriteInMemoryFs(({ fs }) => {
       return this.workspaceDescriptorService.create({
@@ -64,6 +65,7 @@ export class WorkspaceService {
         preferredName: args.preferredName,
         gitAuthSessionId: args.gitAuthSessionId,
         gitInsecurelyDisableTlsCertificateValidation: args.gitInsecurelyDisableTlsCertificateValidation,
+        gitDisableEncoding: args.gitDisableEncoding,
       });
     });
 

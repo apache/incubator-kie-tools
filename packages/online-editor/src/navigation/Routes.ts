@@ -26,6 +26,7 @@ export enum QueryParams {
   EXPAND = "expand",
   AUTH_SESSION_ID = "authSessionId",
   INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION = "insecurelyDisableTlsCertificateValidation",
+  DISABLE_ENCODING = "disableEncoding",
   CONFIRM = "confirm",
 }
 
@@ -141,6 +142,7 @@ export const routes = {
       | QueryParams.BRANCH
       | QueryParams.AUTH_SESSION_ID
       | QueryParams.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION
+      | QueryParams.DISABLE_ENCODING
       | QueryParams.CONFIRM;
   }>(() => `/import`),
 

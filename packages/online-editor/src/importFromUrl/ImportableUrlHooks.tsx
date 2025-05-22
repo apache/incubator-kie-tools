@@ -28,9 +28,9 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { matchPath } from "react-router";
 import { AuthProviderIcon } from "../authProviders/AuthProviderIcon";
-import { useAuthProvider } from "../authProviders/AuthProvidersContext";
+import { useAuthProvider, useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { AuthSession, AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
-import { AuthInfo } from "../authSessions/AuthSessionsContext";
+import { AuthInfo, useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { useEditorEnvelopeLocator } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { AdvancedImportModalRef } from "./AdvancedImportModalContent";
 import { getGitRefName, getGitRefType } from "../gitRefs/GitRefs";
@@ -38,8 +38,11 @@ import { PromiseStateStatus, useLivePromiseState } from "@kie-tools-core/react-h
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { GitServerRef } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/GitServerRef";
 import { GitRefTypeIcon } from "../gitRefs/GitRefTypeIcon";
+import { parseGitLabUrl } from "../gitlab/ParseGitLabUrl";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
+import { getCompatibleAuthSessionWithUrlDomain } from "../authSessions/CompatibleAuthSessions";
+import { AuthProviderType } from "../authProviders/AuthProvidersApi";
 
 export enum UrlType {
   //git
@@ -48,12 +51,16 @@ export enum UrlType {
   GIST_DOT_GITHUB_DOT_COM,
   BITBUCKET_DOT_ORG,
   BITBUCKET_DOT_ORG_SNIPPET,
+  GITLAB_DOT_COM,
+  GITLAB_DOT_COM_SNIPPET,
 
   //single file
   GIST_DOT_GITHUB_DOT_COM_FILE,
   GITHUB_DOT_COM_FILE,
   BITBUCKET_DOT_ORG_FILE,
   BITBUCKET_DOT_ORG_SNIPPET_FILE,
+  GITLAB_DOT_COM_FILE,
+  GITLAB_DOT_COM_SNIPPET_FILE,
   FILE,
 
   //other
@@ -68,7 +75,9 @@ export function isCertainlyGit(urlType: UrlType): boolean {
     urlType === UrlType.GITHUB_DOT_COM ||
     urlType === UrlType.GIST_DOT_GITHUB_DOT_COM ||
     urlType === UrlType.BITBUCKET_DOT_ORG ||
-    urlType === UrlType.BITBUCKET_DOT_ORG_SNIPPET
+    urlType === UrlType.BITBUCKET_DOT_ORG_SNIPPET ||
+    urlType === UrlType.GITLAB_DOT_COM ||
+    urlType === UrlType.GITLAB_DOT_COM_SNIPPET
   );
 }
 
@@ -82,7 +91,9 @@ export function isSingleFile(urlType: UrlType) {
     urlType === UrlType.GIST_DOT_GITHUB_DOT_COM_FILE ||
     urlType === UrlType.GITHUB_DOT_COM_FILE ||
     urlType === UrlType.BITBUCKET_DOT_ORG_FILE ||
-    urlType === UrlType.BITBUCKET_DOT_ORG_SNIPPET_FILE
+    urlType === UrlType.BITBUCKET_DOT_ORG_SNIPPET_FILE ||
+    urlType === UrlType.GITLAB_DOT_COM_FILE ||
+    urlType === UrlType.GITLAB_DOT_COM_SNIPPET_FILE
   );
 }
 
@@ -158,6 +169,42 @@ export type ImportableUrl =
       filename: string;
     }
   | {
+      type: UrlType.GITLAB_DOT_COM;
+      project: string;
+      url: URL;
+      group?: string;
+      branch?: string;
+      error?: undefined;
+    }
+  | {
+      type: UrlType.GITLAB_DOT_COM_FILE;
+      error?: undefined;
+      url: URL;
+      group?: string;
+      project: string;
+      branch: string;
+      filePath: string;
+    }
+  | {
+      type: UrlType.GITLAB_DOT_COM_SNIPPET;
+      url: URL;
+      snippetId: string;
+      group?: string;
+      project?: string;
+      branch?: string;
+      error?: undefined;
+    }
+  | {
+      type: UrlType.GITLAB_DOT_COM_SNIPPET_FILE;
+      url: URL;
+      snippetId: string;
+      error?: undefined;
+      group?: string;
+      project?: string;
+      branch?: string;
+      filePath?: string;
+    }
+  | {
       type: UrlType.NOT_SUPPORTED;
       error: string;
       url: URL;
@@ -175,6 +222,8 @@ export type ImportableUrl =
 
 export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]): ImportableUrl {
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
+  const { authSessions, authSessionStatus } = useAuthSessions();
+  const authProviders = useAuthProviders();
 
   const ifAllowed = useCallback(
     (url: ImportableUrl): ImportableUrl => {
@@ -185,6 +234,40 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       return url;
     },
     [allowedUrlTypes]
+  );
+
+  const isGitRemoteDomainAllowed = useCallback(
+    (
+      url: URL,
+      hostname: string | string[],
+      authProvider: AuthProviderType.bitbucket | AuthProviderType.github | AuthProviderType.gitlab
+    ) => {
+      const hostnames = Array.isArray(hostname) ? hostname : [hostname];
+      // allow if exact match
+      if (hostnames.includes(url.host)) {
+        return true;
+      }
+      // Step 1: Determine which auth sessions are compatible with the given URL domain
+      const { compatible } = getCompatibleAuthSessionWithUrlDomain({
+        authProviders,
+        authSessions,
+        authSessionStatus,
+        urlDomain: url.host,
+      });
+      // Step 2: Find the first compatible auth provider (if any)
+      const selectedAuthProvider = authProviders?.find(
+        ({ id }) => compatible?.[0]?.type !== "none" && id === compatible?.[0]?.authProviderId
+      );
+      if (!selectedAuthProvider || selectedAuthProvider.type !== AuthProviderType[authProvider]) {
+        return false;
+      }
+      // Step 3: Validate whether the hostname is allowed for the selected provider
+      return (
+        selectedAuthProvider?.domain === url.host || // match primary domain
+        selectedAuthProvider?.supportedGitRemoteDomains?.some((supportedDomain) => supportedDomain === url.host) // match against supported domains
+      );
+    },
+    [authProviders, authSessionStatus, authSessions]
   );
 
   return useMemo(() => {
@@ -403,6 +486,12 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
       });
     }
 
+    // Gitlab
+    if (isGitRemoteDomainAllowed(url, "gitlab.com", AuthProviderType.gitlab)) {
+      const gitlabImportUrl = parseGitLabUrl(url);
+      return ifAllowed(gitlabImportUrl);
+    }
+
     const extension = extname(url.pathname).replace(".", "");
     if (extension) {
       if (extension === "git") {
@@ -417,21 +506,23 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
     }
 
     return { type: UrlType.UNKNOWN, url };
-  }, [urlString, ifAllowed, editorEnvelopeLocator]);
+  }, [urlString, ifAllowed, editorEnvelopeLocator, isGitRemoteDomainAllowed]);
 }
 
 export function useClonableUrl(
   url: string | undefined,
   authInfo: AuthInfo | undefined,
   gitRefName: string | undefined,
-  insecurelyDisableTlsCertificateValidation?: boolean
+  insecurelyDisableTlsCertificateValidation?: boolean,
+  disableEncoding?: boolean
 ) {
   const importableUrl = useImportableUrl(url);
 
   const gitServerRefsPromise = useGitServerRefs(
     isPotentiallyGit(importableUrl.type) ? importableUrl.url : undefined,
     authInfo,
-    insecurelyDisableTlsCertificateValidation
+    insecurelyDisableTlsCertificateValidation,
+    disableEncoding
   );
 
   const gitRefNameFromUrl = useMemo(() => {
@@ -497,7 +588,8 @@ export function useClonableUrl(
 export function useGitServerRefs(
   url: URL | undefined,
   authInfo: AuthInfo | undefined,
-  insecurelyDisableTlsCertificateValidation?: boolean
+  insecurelyDisableTlsCertificateValidation?: boolean,
+  disableEncoding?: boolean
 ) {
   const workspaces = useWorkspaces();
 
@@ -511,6 +603,7 @@ export function useGitServerRefs(
           url: url.toString(),
           authInfo,
           insecurelyDisableTlsCertificateValidation,
+          disableEncoding,
         });
 
         const headRef = refs.filter((f) => f.ref === "HEAD").pop()!.target!;
@@ -519,7 +612,7 @@ export function useGitServerRefs(
 
         return { refs, defaultBranch, headRef };
       };
-    }, [authInfo, url, workspaces, insecurelyDisableTlsCertificateValidation])
+    }, [authInfo, url, workspaces, insecurelyDisableTlsCertificateValidation, disableEncoding])
   );
 
   return gitServerRefsPromise;

@@ -168,6 +168,32 @@ export function AccountsIcon() {
                   </Flex>
                 </>
               )}
+              {accounts.section === AccountsSection.CONNECT_TO_GITLAB && (
+                <>
+                  <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+                    <FlexItem>
+                      <Flex
+                        justifyContent={{ default: "justifyContentFlexStart" }}
+                        spaceItems={{ default: "spaceItemsSm" }}
+                      >
+                        <TextContent>
+                          <Text component={TextVariants.h2}>
+                            {`Connect to`}
+                            &nbsp;
+                            {accounts.selectedAuthProvider.name}
+                          </Text>
+                        </TextContent>
+                        <TextContent>
+                          <Text component={TextVariants.small}>
+                            <i>{accounts.selectedAuthProvider.domain}</i>
+                          </Text>
+                        </TextContent>
+                      </Flex>
+                    </FlexItem>
+                    <AuthProviderIcon authProvider={accounts.selectedAuthProvider} size={"sm"} />
+                  </Flex>
+                </>
+              )}
               {accounts.section === AccountsSection.CONNECT_TO_OPENSHIFT && (
                 <>
                   <TextContent>
@@ -232,6 +258,9 @@ export function AccountsIcon() {
                 <ConnectToGitSection authProvider={accounts.selectedAuthProvider} />
               )}
               {accounts.section === AccountsSection.CONNECT_TO_BITBUCKET && (
+                <ConnectToGitSection authProvider={accounts.selectedAuthProvider} />
+              )}
+              {accounts.section === AccountsSection.CONNECT_TO_GITLAB && (
                 <ConnectToGitSection authProvider={accounts.selectedAuthProvider} />
               )}
               {accounts.section === AccountsSection.CONNECT_TO_OPENSHIFT && <ConnectToOpenShiftSection />}

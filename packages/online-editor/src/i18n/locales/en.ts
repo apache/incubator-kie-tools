@@ -344,6 +344,31 @@ export const en: OnlineI18n = {
         },
       },
     },
+    gitlab: {
+      header: {
+        title: `${en_common.names.gitlab} ${en_common.names.oauth} ${en_common.terms.token}`,
+        subtitle: `Set up your ${en_common.names.gitlab} token so you can interact with ${en_common.names.gitlab}.`,
+      },
+      footer: {
+        createNewToken: "Generate new token",
+        placeHolder: "Paste your token here",
+      },
+      body: {
+        learnMore: `Learn more about ${en_common.names.gitlab} tokens`,
+        note: `You should provide a token with the ${"'api' 'read_user' 'read_repository' 'write_repository'"} permission.`,
+      },
+      validation: {
+        scopes: {
+          helper: `Your token must include the ${"'api' 'read_user' 'read_repository' 'write_repository'"} scopes.`,
+        },
+      },
+      form: {
+        token: {
+          label: "Personal Access Token",
+          placeHolder: `Paste your ${en_common.names.gitlab} token here`,
+        },
+      },
+    },
     auth: {
       disclaimer: `The token you provide is locally stored in this browser and is never shared with anyone.`,
       error: {
@@ -650,6 +675,21 @@ export const en: OnlineI18n = {
         },
       },
     },
+    gitlab: {
+      repository: `${en_common.names.gitlab} repository`,
+      createRepository: `Create ${en_common.names.gitlab} repository`,
+      description: (workspace: string) =>
+        `The contents of '${workspace}' will be all in the new ${en_common.names.gitlab} repository.`,
+      error: {
+        formAlert: (error: string) => `Error creating ${en_common.names.gitlab} repository. ${error}`,
+      },
+      form: {
+        select: {
+          label: "The new repository will be created under the following scope",
+          description: `Pick either your user account or a ${en_common.names.gitlab} group.`,
+        },
+      },
+    },
   },
   createGistOrSnippetModal: {
     form: {
@@ -695,6 +735,21 @@ export const en: OnlineI18n = {
         },
       },
     },
+    gitlab: {
+      gistOrSnippet: `${en_common.names.gitlab} Snippet`,
+      create: `Create ${en_common.names.gitlab} Snippet`,
+      description: (workspace: string) =>
+        `The contents of '${workspace}' will be all in the new ${en_common.names.gitlab} Snippet.`,
+      error: {
+        formAlert: (error: string) => `Error creating ${en_common.names.gitlab} Snippet. ${error}`,
+      },
+      form: {
+        select: {
+          label: "Pick a project under which the new Snippet will be created.",
+          description: "Pick either a personal or shared project.",
+        },
+      },
+    },
   },
   loadOrganizationsSelect: {
     bitbucket: {
@@ -704,6 +759,10 @@ export const en: OnlineI18n = {
     github: {
       user: "GitHub user",
       organizations: "GitHub organizations",
+    },
+    gitlab: {
+      user: `${en_common.names.gitlab} user`,
+      organizations: `${en_common.names.gitlab} groups`,
     },
   },
   gitStatusIndicatorActions: {
