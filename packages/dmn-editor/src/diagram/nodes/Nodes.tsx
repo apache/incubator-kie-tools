@@ -867,26 +867,30 @@ export const DecisionServiceNode = React.memo(
     const { isEditingLabel, setEditingLabel, triggerEditing, triggerEditingIfEnter } = useEditableNodeLabel(id);
     useHoveredNodeAlwaysOnTop(ref, zIndex, shouldActLikeHovered, dragging, selected, isEditingLabel);
 
-    let expandButtonClassname = "kie-dmn-editor--decision-service-collapsed-button";
     const { decisionsMap, conflictedDecisionIds } = useDmnEditorStore((s) =>
       s.computed(s).getConflictedDecisionServices(externalModelsByNamespace)
     );
 
-    conflictedDecisionIds.forEach((key) => {
-      const values = decisionsMap.get(key) ?? [];
-      if (values.length > 1) {
-        const exists = values.some((item) => item.id === id);
+    const expandButtonClassname = useMemo(() => {
+      let className = "kie-dmn-editor--decision-service-collapsed-button";
 
-        values.forEach((node) => {
-          const isOtherNode = node.id !== id;
-          const isCollapsedMismatch = shape["@_isCollapsed"] && node.data.shape["@_isCollapsed"] === false;
+      conflictedDecisionIds.forEach((key) => {
+        const values = decisionsMap.get(key) ?? [];
+        if (values.length > 1) {
+          const exists = values.some((item) => item.id === id);
 
-          if (exists && isOtherNode && isCollapsedMismatch) {
-            expandButtonClassname += " button-inactive";
-          }
-        });
-      }
-    });
+          values.forEach((node) => {
+            const isOtherNode = node.id !== id;
+            const isCollapsedMismatch = shape["@_isCollapsed"] && node.data.shape["@_isCollapsed"] === false;
+
+            if (exists && isOtherNode && isCollapsedMismatch) {
+              className += " button-inactive";
+            }
+          });
+        }
+      });
+      return className;
+    }, [conflictedDecisionIds, decisionsMap, id, shape]);
 
     const settings = useSettings();
 
@@ -931,40 +935,44 @@ export const DecisionServiceNode = React.memo(
       };
     }, [decisionService.encapsulatedDecision, decisionService.outputDecision, dmnEditorStoreApi, id]);
 
-    const defaultSizeNode = DEFAULT_NODE_SIZES[NODE_TYPES.decisionService]({
-      snapGrid: snapGrid,
-    });
-
     const { computed, ...state } = dmnEditorStoreApi.getState();
-    const dereferencedState: State = { computed, ...JSON.parse(JSON.stringify(state)) };
-    const drdIndex = dereferencedState.computed(dereferencedState).getDrdIndex();
 
-    const drds = dereferencedState.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
-    let indexedDrdContainingDecisionServiceDepiction: ReturnType<Computed["indexedDrd"]> | undefined;
-    for (let i = 0; i < drds.length; i++) {
-      if (
-        dereferencedState.dmn.model.definitions["@_namespace"] ===
-          dereferencedState.dmn.model.definitions["@_namespace"] &&
-        i === drdIndex
-      ) {
-        continue;
-      }
+    const { defaultSizeNode, indexedDrdContainingDecisionServiceDepiction } = useMemo(() => {
+      const defaultSizeNode = DEFAULT_NODE_SIZES[NODE_TYPES.decisionService]({
+        snapGrid: snapGrid,
+      });
 
-      const _indexedDrd = computeIndexedDrd(
-        dereferencedState.dmn.model.definitions["@_namespace"],
-        dereferencedState.dmn.model.definitions,
-        i
-      );
-      const dsShape = _indexedDrd.dmnShapesByHref.get(id);
-      const hasCompleteExpandedDepictionOfDecisionService =
-        dsShape &&
-        !(dsShape["@_isCollapsed"] ?? false) &&
-        decisionsInCurrentDecisionService.every((dHref) => _indexedDrd.dmnShapesByHref.has(dHref));
-      if (hasCompleteExpandedDepictionOfDecisionService) {
-        indexedDrdContainingDecisionServiceDepiction = _indexedDrd;
-        break;
+      const dereferencedState: State = { computed, ...JSON.parse(JSON.stringify(state)) };
+      const drdIndex = dereferencedState.computed(dereferencedState).getDrdIndex();
+
+      const drds = dereferencedState.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
+      let indexedDrdContainingDecisionServiceDepiction: ReturnType<Computed["indexedDrd"]> | undefined;
+      for (let i = 0; i < drds.length; i++) {
+        if (
+          dereferencedState.dmn.model.definitions["@_namespace"] ===
+            dereferencedState.dmn.model.definitions["@_namespace"] &&
+          i === drdIndex
+        ) {
+          continue;
+        }
+
+        const _indexedDrd = computeIndexedDrd(
+          dereferencedState.dmn.model.definitions["@_namespace"],
+          dereferencedState.dmn.model.definitions,
+          i
+        );
+        const dsShape = _indexedDrd.dmnShapesByHref.get(id);
+        const hasCompleteExpandedDepictionOfDecisionService =
+          dsShape &&
+          !(dsShape["@_isCollapsed"] ?? false) &&
+          decisionsInCurrentDecisionService.every((dHref) => _indexedDrd.dmnShapesByHref.has(dHref));
+        if (hasCompleteExpandedDepictionOfDecisionService) {
+          indexedDrdContainingDecisionServiceDepiction = _indexedDrd;
+          break;
+        }
       }
-    }
+      return { defaultSizeNode, indexedDrdContainingDecisionServiceDepiction };
+    }, [snapGrid, computed, state, id, decisionsInCurrentDecisionService]);
 
     const onExpand = useCallback(async () => {
       const dsShapeOnOtherDrd = indexedDrdContainingDecisionServiceDepiction?.dmnShapesByHref.get(id);
@@ -1075,7 +1083,10 @@ export const DecisionServiceNode = React.memo(
           __readonly_height: defaultSizeNode["@_height"],
           __readonly_autoLayout: indexedDrdContainingDecisionServiceDepiction ? false : true,
         });
-        const { diagramElements } = addOrGetDrd({ definitions: state.dmn.model.definitions, drdIndex: drdIndex });
+        const { diagramElements } = addOrGetDrd({
+          definitions: state.dmn.model.definitions,
+          drdIndex: state.computed(state).getDrdIndex(),
+        });
 
         for (const decisionHref of decisionsInCurrentDecisionService) {
           const node = state.computed(state).getDiagramData(externalModelsByNamespace).nodesById.get(decisionHref)!;
@@ -1090,7 +1101,6 @@ export const DecisionServiceNode = React.memo(
       shape.index,
       defaultSizeNode,
       indexedDrdContainingDecisionServiceDepiction,
-      drdIndex,
       decisionsInCurrentDecisionService,
       externalModelsByNamespace,
     ]);
