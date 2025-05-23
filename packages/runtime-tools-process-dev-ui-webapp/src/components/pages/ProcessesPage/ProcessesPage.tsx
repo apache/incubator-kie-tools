@@ -20,26 +20,23 @@ import React, { useState } from "react";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Tab, Tabs, TabTitleText } from "@patternfly/react-core/dist/js/components/Tabs";
-import { RouteComponentProps } from "react-router-dom";
-import { StaticContext } from "react-router";
-import * as H from "history";
+import { useLocation } from "react-router-dom";
 import ProcessListContainer from "../../containers/ProcessListContainer/ProcessListContainer";
 import "../../styles.css";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
+import { OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/components/PageSectionHeader";
 import ProcessDefinitionsListContainer from "../../containers/ProcessDefinitionListContainer/ProcessDefinitionListContainer";
 import { ProcessListState } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processList";
 
-interface MatchProps {
-  instanceID: string;
-}
-
-const ProcessesPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.LocationState>> = ({ ...props }) => {
+const ProcessesPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   const apiContext = useDevUIAppContext();
 
   const [activeTabKey, setActiveTabKey] = useState<number>(0);
 
-  const initialState: ProcessListState = props.location && (props.location.state as ProcessListState);
+  const location = useLocation();
+
+  const initialState: ProcessListState = location && (location.state as ProcessListState);
 
   const handleTabClick = (event, tabIndex) => {
     setActiveTabKey(tabIndex);

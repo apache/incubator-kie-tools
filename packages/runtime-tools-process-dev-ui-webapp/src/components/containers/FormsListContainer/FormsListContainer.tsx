@@ -17,33 +17,37 @@
  * under the License.
  */
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 import { EmbeddedFormsList } from "@kie-tools/runtime-tools-process-enveloped-components/dist/formsList";
 import { useFormsListChannelApi } from "../../../channel/FormsList";
 
 const FormsListContainer: React.FC = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const channelApi = useFormsListChannelApi();
   const appContext = useDevUIAppContext();
 
   useEffect(() => {
     const unsubscriber = channelApi.formsList__onOpenFormListen({
       onOpen(formData: FormInfo) {
-        history.push({
-          pathname: `/Forms/${formData.name}`,
-          state: {
-            filter: channelApi.formsList__getFormFilter(),
-            formData: formData,
+        navigate(
+          {
+            pathname: `../Forms/${formData.name}`,
           },
-        });
+          {
+            state: {
+              filter: channelApi.formsList__getFormFilter(),
+              formData: formData,
+            },
+          }
+        );
       },
     });
     return () => {
       unsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
     };
-  }, [channelApi, history]);
+  }, [channelApi, navigate]);
 
   return <EmbeddedFormsList channelApi={channelApi} targetOrigin={appContext.getDevUIUrl()} />;
 };

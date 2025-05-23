@@ -17,19 +17,17 @@
  * under the License.
  */
 import * as React from "react";
+import { Link, Location } from "react-router-dom";
 import { useMemo, ReactElement } from "react";
-import { Link } from "react-router-dom";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Breadcrumb, BreadcrumbItem } from "@patternfly/react-core/dist/js/components/Breadcrumb";
 import { PageTitle } from "../PageTitle";
 import { componentOuiaProps, OUIAProps } from "../../ouiaTools";
-import * as H from "history";
 
-type pathType = Pick<H.Location, "pathname" | "state"> | H.LocationDescriptor;
 interface PageSectionHeaderProps {
   titleText: string | ReactElement;
   breadcrumbText?: (string | ReactElement)[];
-  breadcrumbPath?: Array<pathType | string>;
+  breadcrumbPath?: Array<Partial<Location> | string>;
 }
 export const PageSectionHeader: React.FC<PageSectionHeaderProps & OUIAProps> = ({
   titleText,

@@ -22,7 +22,7 @@ import {
   JobsManagementState,
 } from "@kie-tools/runtime-tools-process-enveloped-components/dist/jobsManagement";
 import { useJobsManagementChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/JobsManagement";
-import { useHistory } from "react-router";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useQueryParam, useQueryParams } from "../navigation/queryParams/QueryParamsContext";
 import { RuntimePathSearchParamsRoutes, useRuntimeDispatch } from "../runtime/RuntimeContext";
 import { QueryParams } from "../navigation/Routes";
@@ -37,7 +37,8 @@ const defaultOrderBy = {
 
 export const Jobs: React.FC = () => {
   const channelApi = useJobsManagementChannelApi();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
   const filters = useQueryParam(QueryParams.FILTERS);
   const orderBy = useQueryParam(QueryParams.ORDER_BY);
   const queryParams = useQueryParams();
@@ -73,14 +74,14 @@ export const Jobs: React.FC = () => {
         const newQueryParams = queryParams
           .with(QueryParams.FILTERS, newSearchParams[QueryParams.FILTERS])
           .with(QueryParams.ORDER_BY, newSearchParams[QueryParams.ORDER_BY]);
-        history.replace({ pathname: history.location.pathname, search: newQueryParams.toString() });
+        navigate({ pathname: location.pathname, search: newQueryParams.toString() }, { replace: true });
       },
     });
 
     return () => {
       unsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
     };
-  }, [channelApi, history, queryParams, setRuntimePathSearchParams]);
+  }, [channelApi, location.pathname, navigate, queryParams, setRuntimePathSearchParams]);
 
   return channelApi && initialState ? (
     <EmbeddedJobsManagement channelApi={channelApi} targetOrigin={window.location.origin} initialState={initialState} />

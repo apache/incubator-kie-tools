@@ -20,6 +20,7 @@
 import { ExtendedServicesFormSchema } from "@kie-tools/extended-services-api";
 import OpenAPIParser from "@readme/openapi-parser";
 import { routes } from "./Routes";
+import path from "path";
 
 export interface FormData {
   modelName: string;
@@ -36,6 +37,11 @@ export async function fetchAppData(args: { quarkusAppOrigin: string; quarkusAppP
   const openApiSpec = await (
     await fetch(routes.quarkusApp.openApiJson.path({}, args.quarkusAppOrigin, args.quarkusAppPath))
   ).json();
+
+  // Save all `/dmnresult` routes.
+  const dmnResultPaths = new Set(
+    Object.keys(openApiSpec.paths).filter((modelPath) => modelPath.endsWith("/dmnresult"))
+  );
 
   // Append origin to schema $refs, but only on DMN paths
   //

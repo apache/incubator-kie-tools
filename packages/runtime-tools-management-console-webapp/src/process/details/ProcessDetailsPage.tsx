@@ -20,14 +20,15 @@ import React, { useCallback, useEffect } from "react";
 import { ProcessDetails } from "./ProcessDetails";
 import { useRuntimeInfo, useRuntimeSpecificRoutes } from "../../runtime/RuntimeContext";
 import { AuthSession, useAuthSessionsDispatch } from "../../authSessions";
-import { useHistory } from "react-router";
+import { useNavigate, useParams } from "react-router-dom";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { useEnv } from "../../env/hooks/EnvContext";
 import { useRoutes } from "../../navigation/Hooks";
 import { useRuntimePageLayoutDispatch } from "../../runtime/RuntimePageLayoutContext";
 
-export const ProcessDetailsPage: React.FC<{ processInstanceId?: string }> = ({ processInstanceId }) => {
-  const history = useHistory();
+export const ProcessDetailsPage: React.FC = () => {
+  const { processInstanceId } = useParams<{ processInstanceId?: string }>();
+  const navigate = useNavigate();
   const runtimeRoutes = useRuntimeSpecificRoutes();
   const routes = useRoutes();
   const { runtimeDisplayInfo } = useRuntimeInfo();
@@ -38,17 +39,17 @@ export const ProcessDetailsPage: React.FC<{ processInstanceId?: string }> = ({ p
   const onNavigateToProcessDetails = useCallback(
     (authSession?: AuthSession) => {
       if (processInstanceId) {
-        history.push(runtimeRoutes.processDetails(processInstanceId, authSession));
+        navigate(runtimeRoutes.processDetails(processInstanceId, authSession));
       } else {
-        history.push(runtimeRoutes.processes(authSession));
+        navigate(runtimeRoutes.processes(authSession));
       }
     },
-    [history, processInstanceId, runtimeRoutes]
+    [navigate, processInstanceId, runtimeRoutes]
   );
 
   const onNavigateToProcessesList = useCallback(() => {
-    history.push(runtimeRoutes.processes());
-  }, [runtimeRoutes, history]);
+    navigate(runtimeRoutes.processes());
+  }, [runtimeRoutes, navigate]);
 
   useEffect(() => {
     setOnSelectAuthSession(() => onNavigateToProcessDetails);

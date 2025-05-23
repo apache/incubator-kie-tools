@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { useProcessDetailsChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
@@ -28,22 +28,22 @@ interface ProcessDetailsContainerProps {
 }
 
 const ProcessDetailsContainer: React.FC<ProcessDetailsContainerProps> = ({ processInstance }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const appContext = useDevUIAppContext();
   const channelApi = useProcessDetailsChannelApi();
 
   useEffect(() => {
     const unsubscriber = channelApi.processDetails__onOpenProcessInstanceDetailsListener({
       onOpen(id: string) {
-        history.push(`/`);
-        history.push(`/Process/${id}`);
+        navigate({ pathname: `/` });
+        navigate({ pathname: `/Process/${id}` });
       },
     });
 
     return () => {
       unsubscriber.then((unSubscribeHandler) => unSubscribeHandler.unSubscribe());
     };
-  }, [channelApi, history, processInstance]);
+  }, [channelApi, navigate, processInstance]);
 
   return (
     <EmbeddedProcessDetails
