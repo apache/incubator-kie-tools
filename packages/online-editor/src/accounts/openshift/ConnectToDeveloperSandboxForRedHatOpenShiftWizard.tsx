@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -40,7 +40,6 @@ import {
   AUTH_SESSION_VERSION_NUMBER,
   AuthSession,
   CloudAuthSessionType,
-  isCloudAuthSession,
   OpenShiftAuthSession,
 } from "../../authSessions/AuthSessionApi";
 import {

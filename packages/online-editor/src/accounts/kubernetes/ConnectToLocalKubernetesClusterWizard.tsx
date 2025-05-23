@@ -37,7 +37,6 @@ import {
   AUTH_SESSION_VERSION_NUMBER,
   AuthSession,
   CloudAuthSessionType,
-  isCloudAuthSession,
   KubernetesAuthSession,
 } from "../../authSessions/AuthSessionApi";
 import {
