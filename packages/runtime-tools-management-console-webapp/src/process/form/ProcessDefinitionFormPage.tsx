@@ -20,14 +20,15 @@ import React, { useCallback, useEffect } from "react";
 import { ProcessDefinitionForm } from "./ProcessDefinitionForm";
 import { useRuntimeInfo, useRuntimeSpecificRoutes } from "../../runtime/RuntimeContext";
 import { AuthSession, useAuthSessionsDispatch } from "../../authSessions";
-import { useHistory } from "react-router";
+import { useNavigate, useParams } from "react-router-dom";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { useEnv } from "../../env/hooks/EnvContext";
 import { useRoutes } from "../../navigation/Hooks";
 import { useRuntimePageLayoutDispatch } from "../../runtime/RuntimePageLayoutContext";
 
-export const ProcessDefinitionFormPage: React.FC<{ processName?: string }> = ({ processName }) => {
-  const history = useHistory();
+export const ProcessDefinitionFormPage: React.FC = () => {
+  const { processName } = useParams<{ processName?: string }>();
+  const navigate = useNavigate();
   const runtimeRoutes = useRuntimeSpecificRoutes();
   const routes = useRoutes();
   const { runtimeDisplayInfo } = useRuntimeInfo();
@@ -38,23 +39,23 @@ export const ProcessDefinitionFormPage: React.FC<{ processName?: string }> = ({ 
   const onNavigateToProcessDefinitionForm = useCallback(
     (authSession?: AuthSession) => {
       if (processName) {
-        history.push(runtimeRoutes.processDefinitionForm(processName, authSession));
+        navigate(runtimeRoutes.processDefinitionForm(processName, authSession));
       } else {
-        history.push(runtimeRoutes.processDefinitions(authSession));
+        navigate(runtimeRoutes.processDefinitions(authSession));
       }
     },
-    [history, processName, runtimeRoutes]
+    [navigate, processName, runtimeRoutes]
   );
 
   const onNavigateToProcessDefinitionsList = useCallback(() => {
-    history.push(runtimeRoutes.processDefinitions());
-  }, [runtimeRoutes, history]);
+    navigate(runtimeRoutes.processDefinitions());
+  }, [runtimeRoutes, navigate]);
 
   const onNavigateToProcessInstanceDetails = useCallback(
     (processInstanceId: string) => {
-      history.push(runtimeRoutes.processDetails(processInstanceId));
+      navigate(runtimeRoutes.processDetails(processInstanceId));
     },
-    [runtimeRoutes, history]
+    [runtimeRoutes, navigate]
   );
 
   useEffect(() => {

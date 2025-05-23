@@ -17,9 +17,9 @@
  * under the License.
  */
 import React, { FC, useCallback } from "react";
-import { Route } from "react-router-dom";
+import { Outlet, Route } from "react-router-dom";
 import { ProcessListPage, ProcessDefinitionsListPage } from "../process";
-import { Switch, useHistory } from "react-router";
+import { Routes, useNavigate, useLocation, useParams } from "react-router-dom";
 import { ManagementConsoleHome } from "./ManagementConsoleHome";
 import { NewAuthSessionLoginSuccessPage, NewAuthSessionModal } from "../authSessions/components";
 import { useRoutes } from "../navigation/Hooks";
@@ -33,110 +33,72 @@ import { ProcessDefinitionFormPage } from "../process/form/ProcessDefinitionForm
 
 export const ManagementConsoleRoutes: FC = () => {
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const onAddAuthSession = useCallback(
     (authSession: AuthSession) => {
-      history.push({
+      navigate({
         pathname: routes.runtime.processes.path({
           runtimeUrl: encodeURIComponent(authSession.runtimeUrl),
         }),
         search: isOpenIdConnectAuthSession(authSession) ? `?user=${authSession.username}` : "",
       });
     },
-    [history, routes.runtime.processes]
+    [navigate, routes.runtime.processes]
   );
 
   return (
     <>
-      <Switch>
-        <Route exact path={routes.login.path({})}>
-          <NewAuthSessionLoginSuccessPage onAddAuthSession={onAddAuthSession} />
+      <Routes>
+        <Route element={<RuntimeRoutesContext />}>
+          <Route
+            path={routes.login.path({})}
+            element={<NewAuthSessionLoginSuccessPage onAddAuthSession={onAddAuthSession} />}
+          />
+          <Route path={routes.runtime.processes.path({ runtimeUrl: ":runtimeUrl" })} element={<ProcessListPage />} />
+          <Route
+            path={routes.runtime.processDetails.path({
+              runtimeUrl: ":runtimeUrl",
+              processInstanceId: ":processInstanceId",
+            })}
+            element={<ProcessDetailsPage />}
+          />
+          <Route path={routes.runtime.jobs.path({ runtimeUrl: ":runtimeUrl" })} element={<JobsPage />} />
+          <Route path={routes.runtime.tasks.path({ runtimeUrl: ":runtimeUrl" })} element={<TasksPage />} />
+          <Route
+            path={routes.runtime.processDefinitions.path({ runtimeUrl: ":runtimeUrl" })}
+            element={<ProcessDefinitionsListPage />}
+          />
+          <Route
+            path={routes.runtime.processDefinitionForm.path({
+              runtimeUrl: ":runtimeUrl",
+              processName: ":processName",
+            })}
+            element={<ProcessDefinitionFormPage />}
+          />
+          <Route
+            path={routes.runtime.taskDetails.path({ runtimeUrl: ":runtimeUrl", taskId: ":taskId" })}
+            element={<TaskDetailsPage />}
+          />
+          <Route path={routes.home.path({})} element={<ManagementConsoleHome />} />
         </Route>
-
-        <Route
-          path={routes.runtime.context.path({
-            runtimeUrl: ":runtimeUrl",
-          })}
-        >
-          {({ match }) => {
-            return (
-              <RuntimeContextProvider
-                runtimeUrl={match?.params.runtimeUrl && decodeURIComponent(match.params.runtimeUrl)}
-                fullPath={match?.path}
-              >
-                <RuntimePageLayoutContextProvider>
-                  <Switch>
-                    <Route
-                      path={routes.runtime.processes.path({
-                        runtimeUrl: ":runtimeUrl",
-                      })}
-                    >
-                      <ProcessListPage />
-                    </Route>
-                    <Route
-                      path={routes.runtime.processDetails.path({
-                        runtimeUrl: ":runtimeUrl",
-                        processInstanceId: ":processInstanceId",
-                      })}
-                    >
-                      {({ match }) => {
-                        return <ProcessDetailsPage processInstanceId={match?.params.processInstanceId} />;
-                      }}
-                    </Route>
-                    <Route
-                      path={routes.runtime.processDefinitions.path({
-                        runtimeUrl: ":runtimeUrl",
-                      })}
-                      exact={true}
-                    >
-                      <ProcessDefinitionsListPage />
-                    </Route>
-                    <Route
-                      path={routes.runtime.processDefinitionForm.path({
-                        runtimeUrl: ":runtimeUrl",
-                        processName: ":processName",
-                      })}
-                    >
-                      {({ match }) => {
-                        return <ProcessDefinitionFormPage processName={match?.params.processName} />;
-                      }}
-                    </Route>
-                    <Route
-                      path={routes.runtime.jobs.path({
-                        runtimeUrl: ":runtimeUrl",
-                      })}
-                    >
-                      <JobsPage />
-                    </Route>
-                    <Route
-                      path={routes.runtime.tasks.path({
-                        runtimeUrl: ":runtimeUrl",
-                      })}
-                    >
-                      <TasksPage />
-                    </Route>
-                    <Route
-                      path={routes.runtime.taskDetails.path({
-                        runtimeUrl: ":runtimeUrl",
-                        taskId: ":taskId",
-                      })}
-                    >
-                      {({ match }) => {
-                        return <TaskDetailsPage taskId={match?.params.taskId} />;
-                      }}
-                    </Route>
-                  </Switch>
-                </RuntimePageLayoutContextProvider>
-              </RuntimeContextProvider>
-            );
-          }}
-        </Route>
-        <Route exact path={routes.home.path({})}>
-          <ManagementConsoleHome />
-        </Route>
-      </Switch>
+      </Routes>
       <NewAuthSessionModal onAddAuthSession={onAddAuthSession} />
     </>
   );
 };
+
+function RuntimeRoutesContext() {
+  const { runtimeUrl } = useParams<{ runtimeUrl?: string }>();
+  const { pathname } = useLocation();
+
+  return runtimeUrl && pathname ? (
+    <RuntimeContextProvider runtimeUrl={runtimeUrl && decodeURIComponent(runtimeUrl)} fullPath={pathname}>
+      <RuntimePageLayoutContextProvider>
+        <Outlet />
+      </RuntimePageLayoutContextProvider>
+    </RuntimeContextProvider>
+  ) : (
+    <Outlet />
+  );
+}

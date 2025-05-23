@@ -92,7 +92,6 @@ export async function CreateWorkspaceFromUploadedFolder(args: { files: File[]; w
 
   return {
     workspaceId: workspace.workspaceId,
-    fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-    extension: suggestedFirstFile.extension,
+    fileRelativePath: suggestedFirstFile.relativePath,
   };
 }

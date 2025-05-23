@@ -19,7 +19,7 @@
 import React, { useState, useCallback, useMemo, ReactElement } from "react";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import ProcessFormContainer from "../../containers/ProcessFormContainer/ProcessFormContainer";
-import { useHistory } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { InlineEdit } from "./components/InlineEdit/InlineEdit";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
@@ -29,15 +29,16 @@ import "../../styles.css";
 
 const ProcessFormPage: React.FC = () => {
   const [notification, setNotification] = useState<Notification>();
-  const history = useHistory();
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const channelApi = useProcessFormChannelApi();
-  const processDefinition = useMemo(
-    () => history.location.state["processDefinition"] as ProcessDefinition,
-    [history.location.state]
-  );
+
+  const processDefinition = useMemo(() => location.state["processDefinition"] as ProcessDefinition, [location.state]);
 
   const showNotification = useCallback(
-    (notificationType: Notification["type"], submitMessage: string, notificationDetails?: ReactElement | string) => {
+    (notificationType: Notification["type"], submitMessage: string, notificationDetails?: string) => {
       setNotification({
         type: notificationType,
         message: submitMessage,
@@ -47,7 +48,7 @@ const ProcessFormPage: React.FC = () => {
             label: "Go to Processes",
             onClick: () => {
               setNotification(null);
-              history.push(`/Processes`);
+              navigate({ pathname: "/Processes" });
             },
           },
         ],
@@ -56,7 +57,7 @@ const ProcessFormPage: React.FC = () => {
         },
       });
     },
-    [history]
+    [navigate]
   );
 
   const onSubmitSuccess = useCallback(
@@ -68,7 +69,7 @@ const ProcessFormPage: React.FC = () => {
   );
 
   const onSubmitError = useCallback(
-    (details?: ReactElement | string) => {
+    (details?: string) => {
       const message = "Failed to start the process.";
       showNotification("error", message, details);
     },

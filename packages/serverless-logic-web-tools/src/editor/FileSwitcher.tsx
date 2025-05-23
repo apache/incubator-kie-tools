@@ -659,8 +659,7 @@ export function FileMenuItem(props: { file: WorkspaceFile; onSelectFile: () => v
       <Link
         to={routes.workspaceWithFilePath.path({
           workspaceId: props.file.workspaceId,
-          fileRelativePath: props.file.relativePathWithoutExtension,
-          extension: props.file.extension,
+          fileRelativePath: props.file.relativePath,
         })}
       >
         <FileName file={props.file} />

@@ -19,15 +19,12 @@
 
 import React from "react";
 import { Nav, NavItem, NavList } from "@patternfly/react-core/dist/js/components/Nav";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ouiaAttribute } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 
-interface IOwnProps {
-  pathname: string;
-}
-
-const DevUINav: React.FC<IOwnProps> = ({ pathname }) => {
+const DevUINav: React.FC = () => {
+  const location = useLocation();
   const { isWorkflowEnabled: isWorkflowEnabled, availablePages } = useDevUIAppContext();
 
   return (
@@ -36,28 +33,28 @@ const DevUINav: React.FC<IOwnProps> = ({ pathname }) => {
         {isWorkflowEnabled && (
           <>
             {(!availablePages || availablePages.includes("Workflows")) && (
-              <NavItem key={"workflows-nav"} isActive={pathname === "/Workflows"}>
+              <NavItem key={"workflows-nav"} isActive={location.pathname === "/Workflows"}>
                 <Link to="/Workflows" {...ouiaAttribute("data-ouia-navigation-name", "workflows-nav")}>
                   Workflows
                 </Link>
               </NavItem>
             )}
             {(!availablePages || availablePages.includes("Forms")) && (
-              <NavItem key={"forms-list-nav"} isActive={pathname === "/Forms"}>
+              <NavItem key={"forms-list-nav"} isActive={location.pathname === "/Forms"}>
                 <Link to="/Forms" {...ouiaAttribute("data-ouia-navigation-name", "forms-list-nav")}>
                   Forms
                 </Link>
               </NavItem>
             )}
             {(!availablePages || availablePages.includes("Monitoring")) && (
-              <NavItem key={"monitoring-nav"} isActive={pathname.startsWith("/Monitoring")}>
+              <NavItem key={"monitoring-nav"} isActive={location.pathname.startsWith("/Monitoring")}>
                 <Link to="/Monitoring" {...ouiaAttribute("data-ouia-navigation-name", "monitoring-nav")}>
                   Monitoring
                 </Link>
               </NavItem>
             )}
             {(!availablePages || availablePages.includes("CustomDashboard")) && (
-              <NavItem key={"customDashboard-nav"} isActive={pathname.startsWith("/CustomDashboard")}>
+              <NavItem key={"customDashboard-nav"} isActive={location.pathname.startsWith("/CustomDashboard")}>
                 <Link to="/CustomDashboard" {...ouiaAttribute("data-ouia-navigation-name", "customDashboard-nav")}>
                   Dashboards
                 </Link>
