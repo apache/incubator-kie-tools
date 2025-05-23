@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useEffect, useMemo } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import {
@@ -31,19 +31,23 @@ const defaultFilters = {
 };
 
 const ProcessDefinitionsListContainer: React.FC = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const channelApi = useProcessDefinitionsListChannelApi();
   const appContext = useDevUIAppContext();
 
   useEffect(() => {
     const onOpenProcess = {
       onOpen(processDefinition: ProcessDefinition) {
-        history.push({
-          pathname: `ProcessDefinition/Form/${processDefinition.processName}`,
-          state: {
-            processDefinition: processDefinition,
+        navigate(
+          {
+            pathname: `../ProcessDefinition/Form/${processDefinition.processName}`,
           },
-        });
+          {
+            state: {
+              processDefinition: processDefinition,
+            },
+          }
+        );
       },
     };
 
@@ -52,7 +56,7 @@ const ProcessDefinitionsListContainer: React.FC = () => {
     return () => {
       onOpenInstanceUnsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
     };
-  }, [channelApi, history]);
+  }, [channelApi, navigate]);
 
   const initialState: ProcessDefinitionsListState = useMemo(() => {
     return {

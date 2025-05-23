@@ -19,16 +19,17 @@
 
 import { expect, test } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
+import { CloseOption } from "../../api/nameAndDataTypeCell";
 
 test.describe("Populate Boxed Context", () => {
   test("should correctly create pre-bureau risk category boxed context", async ({ page, stories, bee, resizing }) => {
     await stories.openBoxedContext();
 
     await bee.expression.asContext().expressionHeaderCell.open();
+    await bee.expression.asContext().expressionHeaderCell.setName({ name: "Pre-bureau risk category calculation" });
     await bee.expression
       .asContext()
-      .expressionHeaderCell.setName({ name: "Pre-bureau risk category calculation", close: false });
-    await bee.expression.asContext().expressionHeaderCell.setDataType({ dataType: "number", close: true });
+      .expressionHeaderCell.setDataType({ dataType: "number", close: CloseOption.PRESS_ENTER });
 
     await bee.expression.asContext().entry(0).selectExpressionMenu.selectLiteral();
     await bee.expression.asContext().entry(0).variable.open();
@@ -51,24 +52,24 @@ test.describe("Populate Boxed Context", () => {
       .asContext()
       .result.expression.asDecisionTable()
       .inputHeaderAt(0)
-      .setName({ name: "Existing customer", close: false });
+      .setName({ name: "Existing customer" });
     await bee.expression
       .asContext()
       .result.expression.asDecisionTable()
       .inputHeaderAt(0)
-      .setDataType({ dataType: "boolean", close: true });
+      .setDataType({ dataType: "boolean", close: CloseOption.PRESS_ENTER });
 
     await bee.expression.asContext().result.expression.asDecisionTable().inputHeaderAt(1).open();
     await bee.expression
       .asContext()
       .result.expression.asDecisionTable()
       .inputHeaderAt(1)
-      .setName({ name: "Application risk score", close: false });
+      .setName({ name: "Application risk score" });
     await bee.expression
       .asContext()
       .result.expression.asDecisionTable()
       .inputHeaderAt(1)
-      .setDataType({ dataType: "number", close: true });
+      .setDataType({ dataType: "number", close: CloseOption.PRESS_ENTER });
 
     await bee.expression.asDecisionTable().fill({
       startAtCell: 1,
@@ -113,8 +114,10 @@ test.describe("Populate Boxed Context", () => {
 
     // change the context header
     await bee.expression.asContext().expressionHeaderCell.open();
-    await bee.expression.asContext().expressionHeaderCell.setName({ name: "New Expression Name", close: false });
-    await bee.expression.asContext().expressionHeaderCell.setDataType({ dataType: "number", close: true });
+    await bee.expression.asContext().expressionHeaderCell.setName({ name: "New Expression Name" });
+    await bee.expression
+      .asContext()
+      .expressionHeaderCell.setDataType({ dataType: "number", close: CloseOption.PRESS_ENTER });
 
     // edit '<result>' cell for the second time
     await bee.expression.asContext().result.expression.asLiteral().fill("2");

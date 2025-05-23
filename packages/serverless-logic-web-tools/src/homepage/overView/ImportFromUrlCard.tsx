@@ -23,23 +23,23 @@ import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/
 import { ValidatedOptions } from "@patternfly/react-core/dist/js/helpers";
 import { CodeIcon } from "@patternfly/react-icons/dist/js/icons/code-icon";
 import { useCallback, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useRoutes } from "../../navigation/Hooks";
 import { ImportFromUrlForm } from "../../workspace/components/ImportFromUrlForm";
 import { ImportFromUrlButton } from "./ImportFromUrlButton";
 
 export function ImportFromUrlCard() {
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [url, setUrl] = useState("");
   const [isUrlValid, setIsUrlValid] = useState(ValidatedOptions.default);
 
   const importFromUrl = useCallback(() => {
-    history.push({
+    navigate({
       pathname: routes.importModel.path({}),
       search: routes.importModel.queryString({ url: url }),
     });
-  }, [history, routes, url]);
+  }, [navigate, routes, url]);
 
   return (
     <Card isFullHeight={true} isPlain={true} isSelected={url.length > 0} isCompact>

@@ -18,13 +18,16 @@
  */
 
 import { test, expect } from "../../__fixtures__/base";
+import { CloseOption } from "../../api/nameAndDataTypeCell";
 
 test.describe("Populate Boxed Literal", () => {
   test("should correctly create a can drive boxed literal", async ({ stories, page, bee, resizing, monaco }) => {
     await stories.openBoxedLiteral();
     await bee.expression.asLiteral().expressionHeaderCell.open();
-    await bee.expression.asLiteral().expressionHeaderCell.setName({ name: "Can drive?", close: false });
-    await bee.expression.asLiteral().expressionHeaderCell.setDataType({ dataType: "boolean", close: true });
+    await bee.expression.asLiteral().expressionHeaderCell.setName({ name: "Can drive?" });
+    await bee.expression
+      .asLiteral()
+      .expressionHeaderCell.setDataType({ dataType: "boolean", close: CloseOption.PRESS_ENTER });
 
     await monaco.fill({ monacoParentLocator: page, nth: 0, content: "Age >= 18 then true else false" });
     await resizing.resizeCell(
