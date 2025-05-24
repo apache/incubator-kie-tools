@@ -42,6 +42,7 @@ import { useWorkspaceDescriptorsPromise } from "@kie-tools-core/workspaces-git-f
 import { useDevDeployments } from "../devDeployments/DevDeploymentsContext";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { KieSandboxDeployment } from "../devDeployments/services/types";
+import { ReAuthenticateButton } from "./ReAuthenticateHelper";
 
 export function AuthSessionsList(props: {}) {
   const { authSessions, authSessionStatus } = useAuthSessions();
@@ -165,6 +166,19 @@ function AuthSessionCard(props: {
                   &nbsp;{props.usages ? (props.usages.length === 1 ? "1 usage" : `${props.usages.length} usages`) : "-"}
                   &nbsp;
                 </Label>
+                &nbsp; &nbsp; &nbsp;
+                {authSessionStatus.get(props.authSession.id) === AuthSessionStatus.INVALID && (
+                  <>
+                    <Tooltip
+                      content={"Could not authenticate using this session. Its Token was probably revoked, or expired."}
+                    >
+                      <>
+                        <ExclamationCircleIcon style={{ color: "var(--pf-v5-global--palette--red-100)" }} />
+                      </>
+                    </Tooltip>
+                    <ReAuthenticateButton authSession={props.authSession} />
+                  </>
+                )}
               </>
             )}
           </>

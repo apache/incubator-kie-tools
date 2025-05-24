@@ -46,7 +46,8 @@ export function ConnectToOpenShiftSection() {
   const [newAuthSession, setNewAuthSession] = useState<OpenShiftAuthSession>();
   const [status, setStatus] = useState(OpenShiftInstanceStatus.DISCONNECTED);
   const [connection, setConnection] = useState(EMPTY_KUBERNETES_CONNECTION);
-
+  const selectedOpenShiftSession =
+    accounts.section === AccountsSection.CONNECT_TO_OPENSHIFT ? accounts.selectedAuthSession : undefined;
   const [kieSandboxOpenShiftService, setKieSandboxOpenShiftService] = useState<KieSandboxOpenShiftService>();
   const [isLoadingService, setIsLoadingService] = useState(false);
 
@@ -133,6 +134,7 @@ export function ConnectToOpenShiftSection() {
               setNewAuthSession={setNewAuthSession}
               kieSandboxOpenShiftService={kieSandboxOpenShiftService}
               isLoadingService={isLoadingService}
+              selectedAuthSession={selectedOpenShiftSession}
             />
           )}
           {mode === OpenShiftSettingsTabMode.WIZARD && (
@@ -145,6 +147,7 @@ export function ConnectToOpenShiftSection() {
               setNewAuthSession={setNewAuthSession}
               kieSandboxOpenShiftService={kieSandboxOpenShiftService}
               isLoadingService={isLoadingService}
+              selectedAuthSession={selectedOpenShiftSession}
             />
           )}
         </>

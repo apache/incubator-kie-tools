@@ -35,7 +35,7 @@ import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancela
 import { AccountsDispatchActionKind, AccountsSection, useAccounts, useAccountsDispatch } from "../AccountsContext";
 import { useAuthSessions, useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
 import { AuthSessionDescriptionList } from "../../authSessions/AuthSessionsList";
-import { AUTH_SESSION_VERSION_NUMBER, GitAuthSession } from "../../authSessions/AuthSessionApi";
+import { AUTH_SESSION_VERSION_NUMBER, GitAuthSession, isGitAuthSession } from "../../authSessions/AuthSessionApi";
 import { PromiseStateStatus, usePromiseState } from "@kie-tools-core/react-hooks/dist/PromiseState";
 import {
   GitAuthProvider,
@@ -83,6 +83,15 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
   const [tokenInput, setTokenInput] = useState("");
   const [success, setSuccess] = useState(false);
   const [newAuthSession, setNewAuthSession] = usePromiseState<GitAuthSession>();
+  const isGitSection =
+    accounts.section === AccountsSection.CONNECT_TO_GITHUB || accounts.section === AccountsSection.CONNECT_TO_BITBUCKET;
+  const selectedGitSession = isGitSection ? accounts.selectedAuthSession : undefined;
+
+  useEffect(() => {
+    if (selectedGitSession && isGitAuthSession(selectedGitSession)) {
+      setUsernameInput(selectedGitSession.login);
+    }
+  }, [selectedGitSession]);
 
   useCancelableEffect(
     useCallback(
@@ -145,7 +154,7 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
             }
 
             const newAuthSession: GitAuthSession = {
-              id: uuid(),
+              id: selectedGitSession?.id ?? uuid(),
               version: AUTH_SESSION_VERSION_NUMBER,
               token: tokenInput,
               type: "git",
@@ -157,12 +166,15 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
               createdAtDateISO: new Date().toISOString(),
             };
 
+            setNewAuthSession({ data: newAuthSession });
+            setSuccess(true);
+
             // batch updates
-            setTimeout(() => {
+            if (selectedGitSession) {
+              authSessionsDispatch.update(newAuthSession);
+            } else {
               authSessionsDispatch.add(newAuthSession);
-              setNewAuthSession({ data: newAuthSession });
-              setSuccess(true);
-            }, 0);
+            }
           })
           .catch((e) => {
             if (canceled.get()) {
@@ -186,6 +198,7 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
         env.KIE_SANDBOX_CORS_PROXY_URL,
         usernameInput,
         authSessionsDispatch,
+        selectedGitSession,
       ]
     )
   );

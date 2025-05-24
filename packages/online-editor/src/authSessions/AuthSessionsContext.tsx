@@ -35,6 +35,7 @@ import {
   AUTH_SESSIONS_FS_NAME_WITH_VERSION,
   mapSerializer,
   authSessionBroadcastChannel,
+  isCloudAuthSession,
 } from "./AuthSessionApi";
 import { KieSandboxOpenShiftService } from "../devDeployments/services/openshift/KieSandboxOpenShiftService";
 import { isGitAuthProvider, isSupportedGitAuthProviderType } from "../authProviders/AuthProvidersApi";
@@ -53,6 +54,7 @@ export type AuthSessionsDispatchContextType = {
   recalculateAuthSessionStatus: () => void;
   add: (authSession: AuthSession) => void;
   remove: (authSession: AuthSession) => void;
+  update: (authSession: AuthSession) => void;
 };
 
 const AuthSessionsContext = createContext<AuthSessionsContextType>({} as any);
@@ -121,6 +123,18 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
     (authSession: AuthSession) => {
       const n = new Map(authSessions?.entries() ?? []);
       n?.delete(authSession.id);
+      persistAuthSessions(n);
+    },
+    [authSessions, persistAuthSessions]
+  );
+
+  const update = useCallback(
+    (authSession: AuthSession) => {
+      const n = new Map(authSessions?.entries() ?? []);
+      if (!n.has(authSession.id)) {
+        return;
+      }
+      n.set(authSession.id, authSession);
       persistAuthSessions(n);
     },
     [authSessions, persistAuthSessions]
@@ -235,8 +249,8 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
   useCancelableEffect(recalculateAuthSessionStatus);
 
   const dispatch = useMemo(() => {
-    return { add, remove, recalculateAuthSessionStatus };
-  }, [add, remove, recalculateAuthSessionStatus]);
+    return { add, remove, recalculateAuthSessionStatus, update };
+  }, [add, remove, recalculateAuthSessionStatus, update]);
 
   const value = useMemo(() => {
     return { authSessions, authSessionStatus };
@@ -262,6 +276,27 @@ export interface AuthInfo {
 export interface GitConfig {
   name: string;
   email: string;
+}
+
+export function useSyncCloudAuthSession(
+  selectedAuthSession: AuthSession | undefined,
+  setConnection: (connection: {
+    host: string;
+    namespace: string;
+    token: string;
+    insecurelyDisableTlsCertificateValidation: boolean;
+  }) => void
+) {
+  useEffect(() => {
+    if (selectedAuthSession && isCloudAuthSession(selectedAuthSession)) {
+      setConnection({
+        host: selectedAuthSession.host,
+        namespace: selectedAuthSession.namespace,
+        token: "",
+        insecurelyDisableTlsCertificateValidation: selectedAuthSession.insecurelyDisableTlsCertificateValidation,
+      });
+    }
+  }, [selectedAuthSession, setConnection]);
 }
 
 export function useAuthSession(authSessionId: string | undefined): {

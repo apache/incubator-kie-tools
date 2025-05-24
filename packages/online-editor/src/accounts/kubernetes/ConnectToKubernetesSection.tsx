@@ -46,6 +46,8 @@ export function ConnectToKubernetesSection() {
   const [connection, setConnection] = useState(EMPTY_KUBERNETES_CONNECTION);
   const [kieSandboxKubernetesService, setKieSandboxKubernetesService] = useState<KieSandboxKubernetesService>();
   const [isLoadingService, setIsLoadingService] = useState(false);
+  const selectedKubernetesSession =
+    accounts.section === AccountsSection.CONNECT_TO_KUBERNETES ? accounts.selectedAuthSession : undefined;
 
   useCancelableEffect(
     useCallback(
@@ -145,6 +147,7 @@ export function ConnectToKubernetesSection() {
               setNewAuthSession={setNewAuthSession}
               kieSandboxKubernetesService={kieSandboxKubernetesService}
               isLoadingService={isLoadingService}
+              selectedAuthSession={selectedKubernetesSession}
             />
           )}
           {mode === KubernetesSettingsTabMode.WIZARD && (
@@ -157,6 +160,7 @@ export function ConnectToKubernetesSection() {
               setNewAuthSession={setNewAuthSession}
               kieSandboxKubernetesService={kieSandboxKubernetesService}
               isLoadingService={isLoadingService}
+              selectedAuthSession={selectedKubernetesSession}
             />
           )}
         </>
