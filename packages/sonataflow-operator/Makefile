@@ -506,25 +506,24 @@ deploy-grafana: create-cluster
 delete-cluster: install-kind
 	kind delete cluster && $(BUILDER) rm -f kind-registry
 
-# Updates the controllers_cfg.yaml file with the images used by the operator.
+# Updates the manager_env_patch.yaml file with the images used by the operator.
 # These params come from the package.json file processing the env vars at ./env/index.js
-.PHONY: update-config
-update-config:
-	@echo "🔧 Preparing to update controllers config file..."
+.PHONY: update-patch
+update-patch:
+	@echo "🔧 Updating Kustomize patch file..."
+	$(eval PIN_TOOL ?= $$(shell build-env sonataFlowOperator.pinImageSHABundleTool)) # set to docker, podman, or skopeo if needed
 	$(eval PARAMS := \
-		jobsServicePostgreSQLImageTag=$$(shell build-env sonataFlowOperator.kogitoJobsServicePostgresqlImage) \
-		jobsServiceEphemeralImageTag=$$(shell build-env sonataFlowOperator.kogitoJobsServiceEphemeralImage) \
-		dataIndexPostgreSQLImageTag=$$(shell build-env sonataFlowOperator.kogitoDataIndexPostgresqlImage) \
-		dataIndexEphemeralImageTag=$$(shell build-env sonataFlowOperator.kogitoDataIndexEphemeralImage) \
-		sonataFlowBaseBuilderImageTag=$$(shell build-env sonataFlowOperator.sonataflowBuilderImage) \
-		sonataFlowDevModeImageTag=$$(shell build-env sonataFlowOperator.sonataflowDevModeImage) \
-		dbMigratorToolImageTag=$$(shell build-env sonataFlowOperator.kogitoDBMigratorToolImage))
+		RELATED_IMAGE_JOBS_SERVICE_POSTGRESQL=$$(shell build-env sonataFlowOperator.kogitoJobsServicePostgresqlImage) \
+		RELATED_IMAGE_JOBS_SERVICE_EPHEMERAL=$$(shell build-env sonataFlowOperator.kogitoJobsServiceEphemeralImage) \
+		RELATED_IMAGE_DATA_INDEX_POSTGRESQL=$$(shell build-env sonataFlowOperator.kogitoDataIndexPostgresqlImage) \
+		RELATED_IMAGE_DATA_INDEX_EPHEMERAL=$$(shell build-env sonataFlowOperator.kogitoDataIndexEphemeralImage) \
+		RELATED_IMAGE_BASE_BUILDER=$$(shell build-env sonataFlowOperator.sonataflowBuilderImage) \
+		RELATED_IMAGE_DEVMODE=$$(shell build-env sonataFlowOperator.sonataflowDevModeImage) \
+		RELATED_IMAGE_DB_MIGRATOR_TOOL=$$(shell build-env sonataFlowOperator.kogitoDBMigratorToolImage))
 	@if [ -z "$(strip $(PARAMS))" ]; then \
-		echo "⚠️  No variables resolved. Skipping updates to controllers config file."; \
+		echo "⚠️  No variables resolved. Skipping updates."; \
 	else \
-		echo "📋 Resolved variables:"; \
-		echo "$(PARAMS)" | tr ' ' '\n'; \
-		echo "🚀 Running Python script to update controllers config file..."; \
-		python ./hack/update_controllers_cfg.py $(PARAMS); \
-		echo "✅ Configuration updated successfully!"; \
+		echo "✅ Resolved:"; echo "$(PARAMS)" | tr ' ' '\n'; \
+		python ./hack/update_patch_env.py "$(PIN_TOOL)" $(PARAMS); \
+		echo "✅ Patch updated!"; \
 	fi
