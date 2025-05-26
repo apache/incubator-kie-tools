@@ -314,7 +314,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
 
       const gitHubFileMatch = matchPath(
         {
-          path: "/:org/:repo/blob/:tree/:path*",
+          path: "/:org/:repo/blob/:tree/*",
           end: true,
           caseSensitive: true,
         },
@@ -326,7 +326,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
         gitHubFileMatch.params.org &&
         gitHubFileMatch.params.repo &&
         gitHubFileMatch.params.tree &&
-        gitHubFileMatch.params["path*"]
+        gitHubFileMatch.params["*"]
       ) {
         return ifAllowed({
           type: UrlType.GITHUB_DOT_COM_FILE,
@@ -334,7 +334,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
           org: gitHubFileMatch.params.org,
           repo: gitHubFileMatch.params.repo,
           branch: gitHubFileMatch.params.tree,
-          filePath: gitHubFileMatch.params["path*"],
+          filePath: gitHubFileMatch.params["*"],
         });
       }
 
@@ -373,7 +373,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
 
       const bitbucketFileMatch = matchPath(
         {
-          path: "/:org/:repo/src/:tree/:path*",
+          path: "/:org/:repo/src/:tree/*",
           end: true,
           caseSensitive: true,
         },
@@ -385,7 +385,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
         bitbucketFileMatch.params.org &&
         bitbucketFileMatch.params.repo &&
         bitbucketFileMatch.params.tree &&
-        bitbucketFileMatch.params["path*"]
+        bitbucketFileMatch.params["*"]
       ) {
         return ifAllowed({
           type: UrlType.BITBUCKET_DOT_ORG_FILE,
@@ -393,7 +393,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
           org: bitbucketFileMatch.params.org,
           repo: bitbucketFileMatch.params.repo,
           branch: bitbucketFileMatch.params.tree,
-          filePath: bitbucketFileMatch.params["path*"],
+          filePath: bitbucketFileMatch.params["*"],
         });
       }
 
@@ -465,7 +465,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
     if (url.host === "raw.githubusercontent.com") {
       const gitHubRawFileMatch = matchPath(
         {
-          path: "/:org/:repo/refs/heads/:tree/:path*",
+          path: "/:org/:repo/refs/heads/:tree/*",
           end: true,
           caseSensitive: true,
         },
@@ -477,7 +477,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
         gitHubRawFileMatch.params.org &&
         gitHubRawFileMatch.params.repo &&
         gitHubRawFileMatch.params.tree &&
-        gitHubRawFileMatch.params["path*"]
+        gitHubRawFileMatch.params["*"]
       ) {
         return ifAllowed({
           type: UrlType.GITHUB_DOT_COM_FILE,
@@ -485,7 +485,7 @@ export function useImportableUrl(urlString?: string, allowedUrlTypes?: UrlType[]
           org: gitHubRawFileMatch.params.org,
           repo: gitHubRawFileMatch.params.repo,
           branch: gitHubRawFileMatch.params.tree,
-          filePath: gitHubRawFileMatch.params["path*"],
+          filePath: gitHubRawFileMatch.params["*"],
         });
       }
 
