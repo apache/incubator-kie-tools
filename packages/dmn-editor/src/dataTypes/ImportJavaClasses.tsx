@@ -167,7 +167,7 @@ const ImportJavaClassNameConflictsModal = ({
             {hasInternalConflicts && (
               <>
                 <b>{internalConflicts.map((c) => c.name).join("  , ")}</b>
-                <span style={{ fontStyle: "italic", color: "gray" }}> (These are internal data types.)</span>
+                <span style={{ fontStyle: "italic", color: "gray" }}> (These are internal data types){"."}</span>
               </>
             )}
             {hasExternalConflicts && (
