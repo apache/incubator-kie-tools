@@ -23,6 +23,7 @@ import { TaskDetailsEnvelopeContext } from "./TaskDetailsEnvelopeContext";
 
 export class TaskDetailsEnvelopeApiImpl implements TaskDetailsEnvelopeApi {
   private view: () => TaskDetailsEnvelopeViewApi;
+  private capturedInitRequestYet = false;
   constructor(
     private readonly args: EnvelopeApiFactoryArgs<
       TaskDetailsEnvelopeApi,
@@ -32,8 +33,22 @@ export class TaskDetailsEnvelopeApiImpl implements TaskDetailsEnvelopeApi {
     >
   ) {}
 
+  private hasCapturedInitRequestYet() {
+    return this.capturedInitRequestYet;
+  }
+
+  private ackCapturedInitRequest() {
+    this.capturedInitRequestYet = true;
+  }
+
   public async taskDetails__init(association: Association, initArgs: TaskDetailsInitArgs) {
     this.args.envelopeClient.associate(association.origin, association.envelopeServerId);
+
+    if (this.hasCapturedInitRequestYet()) {
+      return;
+    }
+
+    this.ackCapturedInitRequest();
     this.view = await this.args.viewDelegate();
     this.view().setTask(initArgs.task);
   }

@@ -17,7 +17,8 @@
  * under the License.
  */
 
-import React, { useCallback, useState } from "react";
+import * as React from "react";
+import { useCallback, useState } from "react";
 import { ResponsiveDropdown } from "../../../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../../../ResponsiveDropdown/ResponsiveDropdownToggle";
 import { useEditorToolbarContext, useEditorToolbarDispatchContext } from "../EditorToolbarContextProvider";
@@ -33,6 +34,8 @@ import { AcceleratorConfig } from "../../../accelerators/AcceleratorsApi";
 import { useOnlineI18n } from "../../../i18n";
 import { AcceleratorModal } from "./AcceleratorModal";
 import { AcceleratorIcon } from "./AcceleratorIcon";
+import { useAuthSession, useAuthSessions } from "../../../authSessions/AuthSessionsContext";
+import { GitAuthSession, isGitAuthSession } from "../../../authSessions/AuthSessionApi";
 
 type Props = {
   workspaceFile: WorkspaceFile;
@@ -48,6 +51,7 @@ export function AcceleratorsDropdown(props: Props) {
   const [selectedAccelerator, setSelectedAccelerator] = useState<AcceleratorConfig | undefined>();
 
   const currentAccelerator = useCurrentAccelerator(props.workspaceFile.workspaceId);
+  const { authSessions } = useAuthSessions();
 
   const onOpenApplyAccelerator = useCallback(
     (accelerator: AcceleratorConfig) => {
@@ -58,13 +62,29 @@ export function AcceleratorsDropdown(props: Props) {
     [setAcceleratorsDropdownOpen]
   );
 
-  const onApplyAccelerator = useCallback(() => {
-    if (selectedAccelerator) {
-      applyAcceleratorToWorkspace(selectedAccelerator, props.workspaceFile);
-    }
-    setSelectedAccelerator(undefined);
-    setApplyModalOpen(false);
-  }, [applyAcceleratorToWorkspace, props.workspaceFile, selectedAccelerator]);
+  const onApplyAccelerator = useCallback(
+    async (authSessionId?: string) => {
+      if (!selectedAccelerator) {
+        console.error("Missing required parameters to apply accelerator");
+        return;
+      }
+      const authSession = authSessions.get(authSessionId || "");
+      const authInfo =
+        authSession && isGitAuthSession(authSession)
+          ? { username: authSession.login, password: authSession.token }
+          : undefined;
+
+      try {
+        await applyAcceleratorToWorkspace(selectedAccelerator, props.workspaceFile, authInfo);
+      } catch (error) {
+        console.error("Failed to apply accelerator:", error);
+      } finally {
+        setSelectedAccelerator(undefined);
+        setApplyModalOpen(false);
+      }
+    },
+    [applyAcceleratorToWorkspace, authSessions, props.workspaceFile, selectedAccelerator]
+  );
 
   if (currentAccelerator) {
     return <></>;

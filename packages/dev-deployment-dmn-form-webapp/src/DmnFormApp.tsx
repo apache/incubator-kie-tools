@@ -19,9 +19,8 @@
 
 import * as React from "react";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
-import { Route, Switch } from "react-router";
-import { HashRouter, Redirect } from "react-router-dom";
-import { AppContext } from "./AppContext";
+import { HashRouter, Navigate, Route, Routes, useParams } from "react-router-dom";
+import { AppContext, AppContextType } from "./AppContext";
 import { AppContextProvider } from "./AppContextProvider";
 import { DmnFormErrorPage } from "./DmnFormErrorPage";
 import { DmnFormPage } from "./DmnFormPage";
@@ -42,26 +41,12 @@ export function DmnFormApp() {
           {(app) =>
             app.fetchDone && (
               <HashRouter>
-                <Switch>
-                  {app.data && (
-                    <Route path={routes.form.path({ modelName: ":modelName*" })}>
-                      {({ match }) => {
-                        const formData = app.data!.forms.find((form) => form.modelName === match?.params.modelName);
-                        return formData ? <DmnFormPage formData={formData} /> : <Redirect to={routes.error.path({})} />;
-                      }}
-                    </Route>
-                  )}
-                  {app.data?.forms[0] && (
-                    <Route path={routes.root.path({})}>
-                      <Redirect to={routes.form.path({ modelName: app.data.forms[0].modelName })} />
-                    </Route>
-                  )}
-                  <Route path={routes.error.path({})}>
-                    <DmnFormErrorPage />
-                  </Route>
-                  {!app.data && <Redirect to={routes.error.path({})} />}
-                  <Route component={NoMatchPage} />
-                </Switch>
+                <Routes>
+                  <Route path={routes.root.path({})} element={<RootPageRouteElement app={app} />} />
+                  <Route path={routes.form.path({ modelName: "*" })} element={<DmnFormPageRouteElement app={app} />} />
+                  <Route path={routes.error.path({})} element={<DmnFormErrorPage />} />
+                  <Route path={"*"} element={<NoMatchPage />} />
+                </Routes>
               </HashRouter>
             )
           }
@@ -69,4 +54,24 @@ export function DmnFormApp() {
       </AppContextProvider>
     </I18nDictionariesProvider>
   );
+}
+
+function RootPageRouteElement({ app }: { app: AppContextType }) {
+  // If we have data, and elements in the form array, we must navigate to the /form route.
+  // Otherwise we navigate to the /error route.
+  if (app.data !== undefined && app.data?.forms[0] !== undefined) {
+    return <Navigate to={routes.form.path({ modelName: app.data.forms[0].modelName })} replace />;
+  }
+  return <Navigate to={routes.error.path({})} replace />;
+}
+
+function DmnFormPageRouteElement({ app }: { app: AppContextType }) {
+  const params = useParams();
+  const modelName = params["*"];
+  const formData = app.data?.forms.find((form) => form.modelName === modelName);
+
+  if (formData !== undefined) {
+    return <DmnFormPage formData={formData} />;
+  }
+  return <Navigate to={routes.error.path({})} />;
 }

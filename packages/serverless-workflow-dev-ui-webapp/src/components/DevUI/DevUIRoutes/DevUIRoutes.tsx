@@ -17,11 +17,8 @@
  * under the License.
  */
 
-import { NoData } from "@kie-tools/runtime-tools-shared-webapp-components/dist/NoData";
-import { PageNotFound, PageNotFoundProps } from "@kie-tools/runtime-tools-shared-webapp-components/dist/PageNotFound";
-import React, { useMemo } from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
-import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
+import React from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { WorkflowsPage } from "../../pages";
 import CloudEventFormPage from "../../pages/CloudEventFormPage/CloudEventFormPage";
 import CustomDashboardListPage from "../../pages/CustomDashboardListPage/CustomDashboardListPage";
@@ -37,66 +34,22 @@ interface IOwnProps {
   navigate: string;
 }
 
-type DevUIRoute = { enabled: () => boolean; node: React.ReactNode };
-
 const DevUIRoutes: React.FC<IOwnProps> = ({ dataIndexUrl, navigate }) => {
-  const context = useDevUIAppContext();
-
-  const routes: DevUIRoute[] = useMemo(
-    () => [
-      {
-        enabled: () => true,
-        node: <Route key="0" exact path="/" render={() => <Redirect to={`/${navigate}`} />} />,
-      },
-      {
-        enabled: () => context.isWorkflowEnabled,
-        node: <Route key="1" exact path="/Workflows" component={WorkflowsPage} />,
-      },
-      {
-        enabled: () => context.isWorkflowEnabled,
-        node: <Route key="2" exact path="/Workflow/:instanceID" component={WorkflowDetailsPage} />,
-      },
-      {
-        enabled: () => context.isWorkflowEnabled,
-        node: <Route key="5" exact path="/Forms" component={FormsListPage} />,
-      },
-      {
-        enabled: () => context.isWorkflowEnabled,
-        node: <Route key="6" exact path="/Forms/:formName" component={FormDetailPage} />,
-      },
-      {
-        enabled: () => context.isWorkflowEnabled,
-        node: <Route key="8" exact path="/WorkflowDefinition/Form/:workflowName" component={WorkflowFormPage} />,
-      },
-      {
-        enabled: () => context.isWorkflowEnabled,
-        node: <Route key="9" exact path="/CustomDashboard" component={CustomDashboardListPage} />,
-      },
-      {
-        enabled: () => context.isWorkflowEnabled,
-        node: <Route key="10" exact path="/CustomDashboard/:customDashboardName" component={CustomDashboardViewPage} />,
-      },
-      {
-        enabled: () => context.isWorkflowEnabled,
-        node: (
-          <Route key="13" path="/Monitoring">
-            <MonitoringPage dataIndexUrl={dataIndexUrl} />
-          </Route>
-        ),
-      },
-      {
-        enabled: () => context.isWorkflowEnabled,
-        node: <Route key="16" exact path="/Workflows/CloudEvent/:instanceId?" component={CloudEventFormPage} />,
-      },
-      {
-        enabled: () => context.isWorkflowEnabled,
-        node: <Route key="17" exact path="/WorkflowDefinitions/CloudEvent" component={CloudEventFormPage} />,
-      },
-    ],
-    [context.isWorkflowEnabled]
+  return (
+    <Routes>
+      <Route path="/" element={<Navigate to={`/${navigate}`} />} />,
+      <Route path="/Workflows" element={<WorkflowsPage />} />,
+      <Route path="/Workflow/:instanceID" element={<WorkflowDetailsPage />} />,
+      <Route path="/Forms" element={<FormsListPage />} />,
+      <Route path="/Forms/:formName" element={<FormDetailPage />} />,
+      <Route path="/WorkflowDefinition/Form/:workflowName" element={<WorkflowFormPage />} />,
+      <Route path="/CustomDashboard" element={<CustomDashboardListPage />} />,
+      <Route path="/CustomDashboard/:customDashboardName" element={<CustomDashboardViewPage />} />,
+      <Route path="/Monitoring" element={<MonitoringPage dataIndexUrl={dataIndexUrl} />} />
+      <Route path="/Workflows/CloudEvent/:instanceId" element={<CloudEventFormPage />} />,
+      <Route path="/WorkflowDefinitions/CloudEvent" element={<CloudEventFormPage />} />,
+    </Routes>
   );
-
-  return <Switch>{routes.filter((r) => r.enabled()).map((r) => r.node)}</Switch>;
 };
 
 export default DevUIRoutes;

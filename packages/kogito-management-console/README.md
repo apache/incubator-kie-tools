@@ -45,7 +45,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 - After optionally setting up the environment variables, run the following in the root folder of the repository to build the package:
 
   ```bash
-  pnpm -F @kie-tools/runtime-tools-management-console-webapp-image... build:prod
+  pnpm -F @kie-tools/runtime-tools-management-console-webapp... build:prod
   ```
 
 - Then check if the image is correctly stored:
@@ -70,10 +70,11 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
    [comment]: <> (//TODO: Use EnvJson.schema.json to generate this documentation somehow.. See https://github.com/kiegroup/kie-issues/issues/16)
 
-   |                           Name                           |                          Description                           |                                            Default                                            |
-   | :------------------------------------------------------: | :------------------------------------------------------------: | :-------------------------------------------------------------------------------------------: |
-   |       `RUNTIME_TOOLS_MANAGEMENT_CONSOLE_APP_NAME`        |                  Management Console app name.                  | See [ defaultEnvJson.js ](../runtime-tools-management-console-webapp/build/defaultEnvJson.js) |
-   | `RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID` | OpenID Connect client ID for connecting to Identity Providers. | See [ defaultEnvJson.js ](../runtime-tools-management-console-webapp/build/defaultEnvJson.js) |
+   |                             Name                              |                             Description                              |                                            Default                                            |
+   | :-----------------------------------------------------------: | :------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------: |
+   |          `RUNTIME_TOOLS_MANAGEMENT_CONSOLE_APP_NAME`          |                     Management Console app name.                     | See [ defaultEnvJson.js ](../runtime-tools-management-console-webapp/build/defaultEnvJson.js) |
+   |   `RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID`    |    OpenID Connect client ID for connecting to Identity Providers.    | See [ defaultEnvJson.js ](../runtime-tools-management-console-webapp/build/defaultEnvJson.js) |
+   | `RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_DEFAULT_SCOPES` | OpenID Connect default scopes when connecting to Identity Providers. | See [ defaultEnvJson.js ](../runtime-tools-management-console-webapp/build/defaultEnvJson.js) |
 
    ### Examples
 
@@ -92,6 +93,7 @@ This package contains the `Containerfile/Dockerfile` and scripts to build a cont
 
    ENV RUNTIME_TOOLS_MANAGEMENT_CONSOLE_APP_NAME=<my_app_name>
    ENV RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_CLIENT_ID=<my_client_id>
+   ENV RUNTIME_TOOLS_MANAGEMENT_CONSOLE_OIDC_CLIENT_DEFAULT_SCOPES=<my_default_scopes>
    ```
 
 3. Create the application from the image in OpenShift and set the deployment environment variable right from the OpenShift UI.

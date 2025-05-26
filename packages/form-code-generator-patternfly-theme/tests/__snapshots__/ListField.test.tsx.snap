@@ -53,7 +53,7 @@ exports[`<ListField> tests <ListField> 1`] = `
         placeholder={''}
         type={'text'}
         value={friends?.[itemIndex].name}
-        onChange={newValue => {
+        onChange={(e, newValue) => {
     set__friends(s => {
       const newState = [...s];
       newState[itemIndex].name = newValue;
@@ -75,7 +75,7 @@ exports[`<ListField> tests <ListField> 1`] = `
       placeholder={''}
       step={0.01}  
       value={friends?.[itemIndex].age}
-      onChange={newValue => {
+      onChange={(e, newValue) => {
     set__friends(s => {
       const newState = [...s];
       newState[itemIndex].age = Number(newValue);
@@ -151,7 +151,7 @@ exports[`<ListField> tests <ListField> 1`] = `
       id={'uniforms-0000-0009'}
       name={\`friends.\${itemIndex}.married\`}
       label={'Married'}
-      onChange={newValue => {
+      onChange={(e, newValue) => {
     set__friends(s => {
       const newState = [...s];
       newState[itemIndex].married = newValue;
@@ -213,7 +213,7 @@ exports[`<ListField> tests <ListField> 1`] = `
         placeholder={''}
         type={'text'}
         value={friends?.[itemIndex].know?.[nested__itemIndex]}
-        onChange={newValue => {
+        onChange={(e, newValue) => {
     set__friends(s => {
       const newState = [...s];
       newState[itemIndex].know[nested__itemIndex] = newValue;
@@ -307,7 +307,7 @@ exports[`<ListField> tests <ListField> 1`] = `
           id={'date-picker-uniforms-0000-000g'}
           isDisabled={false}
           name={\`friends.\${itemIndex}.birthday\`}
-          onChange={newDate => {
+          onChange={(e, newDate) => {
         set__friends(prev => {
           if (newDate) {
             const newState = [...prev];
@@ -330,7 +330,7 @@ exports[`<ListField> tests <ListField> 1`] = `
           id={'time-picker-uniforms-0000-000g'}
           isDisabled={false}
           name={\`friends.\${itemIndex}.birthday\`}
-          onChange={(time, hours?, minutes?) => set__friends(prev => {
+          onChange={(e, time, hours?, minutes?) => set__friends(prev => {
         const newState = [...prev];
         const currentDate = newState[itemIndex].birthday
         if (currentDate) {

@@ -19,14 +19,18 @@
 
 import { test, expect } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
+import { CloseOption } from "../../api/nameAndDataTypeCell";
 
 test.describe("Populate Relation", () => {
   test("should correctly create a people relation", async ({ stories, page, bee, resizing }) => {
     await stories.openRelation();
 
     await bee.expression.asRelation().columnHeaderAtIndex(1).open();
-    await bee.expression.asRelation().columnHeaderAtIndex(1).setName({ name: "Name", close: false });
-    await bee.expression.asRelation().columnHeaderAtIndex(1).setDataType({ dataType: "string", close: true });
+    await bee.expression.asRelation().columnHeaderAtIndex(1).setName({ name: "Name" });
+    await bee.expression
+      .asRelation()
+      .columnHeaderAtIndex(1)
+      .setDataType({ dataType: "string", close: CloseOption.PRESS_ENTER });
     await resizing.resizeCell(
       page.getByRole("columnheader", { name: "Name (string)" }),
       { x: 0, y: 0 },
@@ -35,18 +39,27 @@ test.describe("Populate Relation", () => {
     await bee.expression.asRelation().addColumnAtRightOfIndex(1);
 
     await bee.expression.asRelation().columnHeaderAtIndex(2).open();
-    await bee.expression.asRelation().columnHeaderAtIndex(2).setName({ name: "Age", close: false });
-    await bee.expression.asRelation().columnHeaderAtIndex(2).setDataType({ dataType: "number", close: true });
+    await bee.expression.asRelation().columnHeaderAtIndex(2).setName({ name: "Age" });
+    await bee.expression
+      .asRelation()
+      .columnHeaderAtIndex(2)
+      .setDataType({ dataType: "number", close: CloseOption.PRESS_ENTER });
     await bee.expression.asRelation().addColumnAtRightOfIndex(2);
 
     await bee.expression.asRelation().columnHeaderAtIndex(3).open();
-    await bee.expression.asRelation().columnHeaderAtIndex(3).setName({ name: "Country", close: false });
-    await bee.expression.asRelation().columnHeaderAtIndex(3).setDataType({ dataType: "string", close: true });
+    await bee.expression.asRelation().columnHeaderAtIndex(3).setName({ name: "Country" });
+    await bee.expression
+      .asRelation()
+      .columnHeaderAtIndex(3)
+      .setDataType({ dataType: "string", close: CloseOption.PRESS_ENTER });
     await bee.expression.asRelation().addColumnAtRightOfIndex(3);
 
     await bee.expression.asRelation().columnHeaderAtIndex(4).open();
-    await bee.expression.asRelation().columnHeaderAtIndex(4).setName({ name: "Married", close: false });
-    await bee.expression.asRelation().columnHeaderAtIndex(4).setDataType({ dataType: "boolean", close: true });
+    await bee.expression.asRelation().columnHeaderAtIndex(4).setName({ name: "Married" });
+    await bee.expression
+      .asRelation()
+      .columnHeaderAtIndex(4)
+      .setDataType({ dataType: "boolean", close: CloseOption.PRESS_ENTER });
 
     test.info().annotations.push({
       type: TestAnnotations.WORKAROUND_DUE_TO,

@@ -170,6 +170,10 @@ export class GitService {
     dir: string;
     remote: string;
     ref: string;
+    authInfo?: {
+      username: string;
+      password: string;
+    };
     insecurelyDisableTlsCertificateValidation?: boolean;
   }): Promise<FetchResult> {
     return await git.fetch({
@@ -183,6 +187,7 @@ export class GitService {
       singleBranch: true,
       depth: 1,
       tags: true,
+      onAuth: () => args.authInfo,
     });
   }
 

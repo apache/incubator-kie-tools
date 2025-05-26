@@ -16,5 +16,5 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export { FormDetailsGatewayApi } from "./FormDetailsGatewayApi";
+export * from "./FormDetailsChannelApiImpl";
 export * from "./FormDetailsContext";

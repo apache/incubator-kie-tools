@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   EmptyState,
   EmptyStateIcon,
@@ -31,32 +31,22 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ExclamationCircleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-circle-icon";
-import { Redirect, StaticContext, RouteComponentProps } from "react-router";
+import { Navigate, useLocation } from "react-router-dom";
 import { componentOuiaProps, OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools/OuiaUtils";
-import * as H from "history";
 
 interface IOwnProps {
   defaultPath: string;
   defaultButton: string;
 }
 
-export type LocationProps = H.LocationState & { prev?: string };
-
-export interface PageNotFoundProps
-  extends IOwnProps,
-    RouteComponentProps<{}, StaticContext, LocationProps>,
-    OUIAProps {}
+export interface PageNotFoundProps extends IOwnProps, OUIAProps {}
 
 export const PageNotFound: React.FC<PageNotFoundProps> = ({ ouiaId, ouiaSafe, ...props }) => {
-  let prevPath;
-  if (props.location.state !== undefined) {
-    prevPath = props.location.state.prev;
-  } else {
-    prevPath = props.defaultPath;
-  }
+  const location = useLocation();
 
-  const tempPath = prevPath?.split("/");
-  prevPath = tempPath?.filter((item: string) => item);
+  const prevPath = useMemo(() => {
+    return (location.state?.prev ?? props.defaultPath).split("/").filter((item: string) => item);
+  }, [location.state, props.defaultPath]);
 
   const [isRedirect, setIsredirect] = useState(false);
   const redirectHandler = () => {
@@ -64,7 +54,7 @@ export const PageNotFound: React.FC<PageNotFoundProps> = ({ ouiaId, ouiaSafe, ..
   };
   return (
     <>
-      {isRedirect && <Redirect to={`/${prevPath?.[0]}`} />}
+      {isRedirect && <Navigate to={`/${prevPath?.[0] ?? ""}`} />}
       <PageSection variant="light" {...componentOuiaProps(ouiaId, "page-not-found", ouiaSafe ? ouiaSafe : !isRedirect)}>
         <Bullseye>
           <EmptyState variant={EmptyStateVariant.full}>

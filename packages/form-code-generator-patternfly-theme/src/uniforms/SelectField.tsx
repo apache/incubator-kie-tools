@@ -29,7 +29,6 @@ import {
   getListItemValue,
   ListItemProps,
 } from "./rendering/ListItemField";
-import { REFUSED } from "dns";
 
 export type SelectInputProps = HTMLFieldProps<
   string | string[],
@@ -40,8 +39,6 @@ export type SelectInputProps = HTMLFieldProps<
     itemProps?: ListItemProps;
   }
 >;
-
-export const SELECT_IMPORTS: string[] = ["SelectOption", "SelectOptionObject", "Select", "SelectVariant", "FormGroup"];
 
 const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
   const isArray: boolean = props.fieldType === Array;
@@ -225,7 +222,8 @@ const Select: React.FC<SelectInputProps> = (props: SelectInputProps) => {
 
   const element: FormInput = {
     ref,
-    pfImports: SELECT_IMPORTS,
+    pfImports: ["FormGroup"],
+    pfDeprecatedImports: ["SelectOption", "SelectOptionObject", "Select", "SelectVariant"],
     reactImports: ["useState"],
     jsxCode,
     requiredCode: undefined,

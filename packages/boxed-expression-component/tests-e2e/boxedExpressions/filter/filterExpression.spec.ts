@@ -19,13 +19,16 @@
 
 import { expect, test } from "../../__fixtures__/base";
 import { TestAnnotations } from "@kie-tools/playwright-base/annotations";
+import { CloseOption } from "../../api/nameAndDataTypeCell";
 
 test.describe("Create Boxed Filter", () => {
   test("should rename a filter", async ({ bee, page, stories }) => {
     await stories.openBoxedFilter("base");
 
     await bee.expression.asFilter().expressionHeaderCell.open();
-    await bee.expression.asFilter().expressionHeaderCell.setName({ name: "Filter Expression Name", close: true });
+    await bee.expression
+      .asFilter()
+      .expressionHeaderCell.setName({ name: "Filter Expression Name", close: CloseOption.PRESS_ENTER });
 
     await expect(page.getByRole("columnheader", { name: "Filter Expression Name (<Undefined>)" })).toBeVisible();
   });
@@ -34,7 +37,9 @@ test.describe("Create Boxed Filter", () => {
     await stories.openBoxedFilter("base");
 
     await bee.expression.asFilter().expressionHeaderCell.open();
-    await bee.expression.asFilter().expressionHeaderCell.setDataType({ dataType: "boolean", close: true });
+    await bee.expression
+      .asFilter()
+      .expressionHeaderCell.setDataType({ dataType: "boolean", close: CloseOption.PRESS_ENTER });
 
     await expect(page.getByRole("columnheader", { name: "Expression Name (boolean)" })).toBeVisible();
   });

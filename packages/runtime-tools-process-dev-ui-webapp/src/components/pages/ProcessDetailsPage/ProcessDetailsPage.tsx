@@ -16,21 +16,16 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { RouteComponentProps } from "react-router-dom";
 import { PageSectionHeader } from "@kie-tools/runtime-tools-components/dist/components/PageSectionHeader";
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import ProcessDetailsContainer from "../../containers/ProcessDetailsContainer/ProcessDetailsContainer";
-import {
-  ProcessDetailsGatewayApi,
-  useProcessDetailsGatewayApi,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
-import { StaticContext, useHistory } from "react-router";
-import * as H from "history";
+import { useProcessDetailsChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "../../styles.css";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import {
@@ -40,80 +35,75 @@ import {
 } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
-interface MatchProps {
-  instanceID: string;
-}
-
-const ProcessDetailsPage: React.FC<RouteComponentProps<MatchProps, StaticContext, H.LocationState> & OUIAProps> = ({
-  ouiaId,
-  ouiaSafe,
-  ...props
-}) => {
+const ProcessDetailsPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
   useEffect(() => {
     return ouiaPageTypeAndObjectId("process-details");
   });
 
-  const gatewayApi: ProcessDetailsGatewayApi = useProcessDetailsGatewayApi();
+  const channelApi = useProcessDetailsChannelApi();
   const appContext = useDevUIAppContext();
 
-  const history = useHistory();
-  const processId = props.match.params.instanceID;
+  const navigate = useNavigate();
+  const { processId } = useParams<{ processId?: string }>();
+  const location = useLocation();
   const [processInstance, setProcessInstance] = useState<ProcessInstance>({} as ProcessInstance);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [fetchError, setFetchError] = useState<string>("");
-  let currentPage = JSON.parse(window.localStorage.getItem("state"));
+  const currentPage = useRef(JSON.parse(window.localStorage.getItem("state")));
+
   useEffect(() => {
     window.onpopstate = () => {
-      props.history.push({ state: Object.assign({}, props.location.state) });
+      navigate({}, { state: Object.assign({}, location.state) });
     };
   });
 
-  async function fetchDetails() {
+  const fetchDetails = useCallback(async () => {
     let response: ProcessInstance = {} as ProcessInstance;
     let responseError: string = "";
     try {
       setIsLoading(true);
-      response = await gatewayApi.processDetailsQuery(processId);
+      response = await channelApi.processDetails__getProcessDetails(processId);
       setProcessInstance(response);
     } catch (error) {
       responseError = error;
       setFetchError(error);
     } finally {
       setIsLoading(false);
-      /* istanbul ignore else */
       if (responseError.length === 0 && fetchError.length === 0 && Object.keys(response).length === 0) {
         let prevPath;
-        /* istanbul ignore else */
-        if (currentPage) {
-          currentPage = Object.assign({}, currentPage, props.location.state);
-          const tempPath = currentPage.prev.split("/");
+        if (currentPage.current) {
+          currentPage.current = Object.assign({}, currentPage.current, location.state);
+          const tempPath = currentPage.current.prev.split("/");
           prevPath = tempPath.filter((item) => item);
         }
-        history.push({
-          pathname: "/NoData",
-          state: {
-            prev: currentPage ? currentPage.prev : "/ProcessInstances",
-            title: "Process not found",
-            description: `Process instance with the id ${processId} not found`,
-            buttonText: currentPage
-              ? `Go to ${prevPath[0]
-                  .replace(/([A-Z])/g, " $1")
-                  .trim()
-                  .toLowerCase()}`
-              : "Go to process instances",
-            rememberedData: Object.assign({}, props.location.state),
+        navigate(
+          {
+            pathname: "../NoData",
           },
-        });
+          {
+            state: {
+              prev: currentPage ? currentPage.current.prev : "/ProcessInstances",
+              title: "Process not found",
+              description: `Process instance with the id ${processId} not found`,
+              buttonText: currentPage
+                ? `Go to ${prevPath[0]
+                    .replace(/([A-Z])/g, " $1")
+                    .trim()
+                    .toLowerCase()}`
+                : "Go to process instances",
+              rememberedData: Object.assign({}, location.state),
+            },
+          }
+        );
       }
     }
-  }
+  }, [channelApi, fetchError.length, navigate, processId, location.state]);
 
   useEffect(() => {
-    /* istanbul ignore else */
     if (processId) {
       fetchDetails();
     }
-  }, [processId]);
+  }, [fetchDetails, processId]);
 
   const renderItems = () => {
     if (!isLoading) {

@@ -16,6 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export { FormsListGatewayApi } from "./FormsListGatewayApi";
 export * from "./FormsListContext";
-export { default as FormsListContextProvider } from "./FormsListContextProvider";
+export * from "./FormsListContextProvider";
+export * from "./FormsListChannelApiImpl";

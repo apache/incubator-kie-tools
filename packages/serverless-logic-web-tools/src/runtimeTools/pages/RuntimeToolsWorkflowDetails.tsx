@@ -31,16 +31,14 @@ import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { useHistory } from "react-router";
+import { useNavigate, useParams } from "react-router-dom";
 import { routes } from "../../navigation/Routes";
 
 const PAGE_TITLE = "Workflow Details";
 
-interface WorkflowListContainerProps {
-  workflowId: string;
-}
-export function RuntimeToolsWorkflowDetails(props: WorkflowListContainerProps) {
-  const history = useHistory();
+export function RuntimeToolsWorkflowDetails() {
+  const navigate = useNavigate();
+  const { workflowId } = useParams<{ workflowId: string }>();
   const gatewayApi: WorkflowDetailsGatewayApi = useWorkflowDetailsGatewayApi();
 
   const [workflowInstance, setWorkflowInstance] = useState<WorkflowInstance>({} as WorkflowInstance);
@@ -49,7 +47,7 @@ export function RuntimeToolsWorkflowDetails(props: WorkflowListContainerProps) {
 
   useEffect(() => {
     gatewayApi
-      .workflowDetailsQuery(props.workflowId)
+      .workflowDetailsQuery(workflowId!)
       .then((response) => {
         setWorkflowInstance(response);
       })
@@ -59,7 +57,7 @@ export function RuntimeToolsWorkflowDetails(props: WorkflowListContainerProps) {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [gatewayApi, props.workflowId]);
+  }, [gatewayApi, workflowId]);
 
   useEffect(() => {
     return ouiaPageTypeAndObjectId("workflow-details");
@@ -67,10 +65,10 @@ export function RuntimeToolsWorkflowDetails(props: WorkflowListContainerProps) {
 
   const onOpenWorkflowInstanceDetails = useCallback(
     (workflowId: string) => {
-      history.push(`/`);
-      history.push(routes.runtimeToolsWorkflowDetails.path({ workflowId }));
+      navigate(`/`);
+      navigate(routes.runtimeToolsWorkflowDetails.path({ workflowId }));
     },
-    [history]
+    [navigate]
   );
 
   return (

@@ -21,7 +21,6 @@ import { useImperativeHandle, useState } from "react";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { DiagramPreviewSize, ProcessDetailsChannelApi, ProcessDetailsInitArgs } from "../api";
 import ProcessDetails from "./components/ProcessDetails/ProcessDetails";
-import ProcessDetailsEnvelopeViewDriver from "./ProcessDetailsEnvelopeViewDriver";
 import "@patternfly/patternfly/patternfly.css";
 import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
@@ -39,9 +38,7 @@ export const ProcessDetailsEnvelopeView = React.forwardRef<ProcessDetailsEnvelop
     const [processInstance, setProcessInstance] = useState<ProcessInstance>({} as ProcessInstance);
     const [omittedProcessTimelineEvents, setOmittedProcessTimelineEvents] = useState<string[]>([]);
     const [diagramPreviewSize, setDiagramPreviewSize] = useState<DiagramPreviewSize>();
-    const [showSwfDiagram, setShowSwfDiagram] = useState<boolean>(false);
     const [singularProcessLabel, setSingularProcessLabel] = useState<string>("");
-    const [pluralProcessLabel, setPluralProcessLabel] = useState<string>("");
     useImperativeHandle(
       forwardedRef,
       () => ({
@@ -50,7 +47,6 @@ export const ProcessDetailsEnvelopeView = React.forwardRef<ProcessDetailsEnvelop
           setOmittedProcessTimelineEvents(initArgs.omittedProcessTimelineEvents!);
           setDiagramPreviewSize(initArgs.diagramPreviewSize);
           setSingularProcessLabel(initArgs.singularProcessLabel);
-          setPluralProcessLabel(initArgs.pluralProcessLabel);
           setEnvelopeConnectedToChannel(true);
         },
       }),
@@ -61,13 +57,11 @@ export const ProcessDetailsEnvelopeView = React.forwardRef<ProcessDetailsEnvelop
       <React.Fragment>
         <ProcessDetails
           isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
-          driver={new ProcessDetailsEnvelopeViewDriver(props.channelApi)}
+          channelApi={props.channelApi}
           processDetails={processInstance}
           omittedProcessTimelineEvents={omittedProcessTimelineEvents}
           diagramPreviewSize={diagramPreviewSize}
-          showSwfDiagram={showSwfDiagram}
           singularProcessLabel={singularProcessLabel}
-          pluralProcessLabel={pluralProcessLabel}
         />
       </React.Fragment>
     );
