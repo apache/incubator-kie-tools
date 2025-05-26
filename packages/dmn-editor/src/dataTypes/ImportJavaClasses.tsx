@@ -119,7 +119,12 @@ const ImportJavaClassNameConflictsModal = ({
 }) => {
   const [action, setAction] = useState<JavaClassConflictOptions>(JavaClassConflictOptions.REPLACE);
   const handleActionButtonClick = useCallback(() => handleConfirm?.(action), [handleConfirm, action]);
-  const handleRadioBtnClick = useCallback((_, e) => setAction?.(e?.target?.name), []);
+  const handleRadioBtnClick = useCallback((event: React.FormEvent<HTMLInputElement>) => {
+    const selectedValue = event.currentTarget.name;
+    setAction(selectedValue as JavaClassConflictOptions);
+  }, []);
+  const internalConflicts = confliectedJavaClasses.filter((c) => !c.isExternalConflict);
+  const externalConflicts = confliectedJavaClasses.filter((c) => c.isExternalConflict);
   const classNames = confliectedJavaClasses?.map((javaClass) => javaClass?.name);
   return (
     <Modal
@@ -131,7 +136,12 @@ const ImportJavaClassNameConflictsModal = ({
       variant={ModalVariant.small}
       position="top"
       actions={[
-        <Button key="import-java-classes-conflict-btn" variant="primary" onClick={handleActionButtonClick}>
+        <Button
+          key="import-java-classes-conflict-btn"
+          isDisabled={externalConflicts.length > 0 && action === JavaClassConflictOptions.REPLACE}
+          variant="primary"
+          onClick={handleActionButtonClick}
+        >
           Import
         </Button>,
       ]}
@@ -139,13 +149,35 @@ const ImportJavaClassNameConflictsModal = ({
       <TextContent>
         {classNames?.length === 1 ? (
           <Text component={TextVariants.p}>
-            An existing DMN type named <b>{classNames?.join()}</b> has been detected. This type is currently in use
-            within the system. How would you like to proceed?
+            An existing DMN type named{" "}
+            {internalConflicts.length > 0 ? <b>{internalConflicts[0]?.name}</b> : externalConflicts[0]?.name} has been
+            detected.{" "}
+            {externalConflicts.length > 0
+              ? "This type is an external data type, and no action can be performed on it."
+              : "This type is currently in use within the system. How would you like to proceed?"}
           </Text>
         ) : (
           <Text component={TextVariants.p}>
             Multiple DMN types have been detected in the list. The following DMN types are currently in use within the
-            system <b>{classNames?.join()}</b>. How would you like to proceed?
+            system:{" "}
+            {internalConflicts.length > 0 && (
+              <>
+                <b>{internalConflicts.map((c) => c.name).join("  , ")}</b> {". "}
+              </>
+            )}
+            {externalConflicts.length > 0 && (
+              <>
+                <span>
+                  {internalConflicts.length > 0}
+                  {externalConflicts.map((c) => c.name).join(" , ")}
+                  <span style={{ fontStyle: "italic", color: "gray" }}>
+                    {" "}
+                    (These are external data types, and no action can be performed on them.)
+                  </span>
+                </span>
+              </>
+            )}
+            How would you like to proceed?
           </Text>
         )}
         <Text
@@ -160,6 +192,7 @@ const ImportJavaClassNameConflictsModal = ({
             onChange={handleRadioBtnClick}
             description="This option will replace the existing DMN type with the new one."
             isLabelWrapped={true}
+            isDisabled={externalConflicts.length > 0}
           />
           <Radio
             isChecked={action === JavaClassConflictOptions.KEEP_BOTH}

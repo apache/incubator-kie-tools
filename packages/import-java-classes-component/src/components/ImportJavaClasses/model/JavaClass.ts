@@ -26,11 +26,14 @@ export class JavaClass {
   public fields: JavaField[];
   /** It indicates if the fields has been loaded, in order to support empty fields Java Classes */
   public fieldsLoaded: boolean;
+  /** It indicates if there is an external conflict */
+  public isExternalConflict: boolean;
 
   constructor(name: string) {
     this.name = name;
     this.fields = [];
     this.fieldsLoaded = false;
+    this.isExternalConflict = false;
   }
 
   setFields(fields: JavaField[]) {

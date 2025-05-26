@@ -188,13 +188,27 @@ const useImportJavaClasses = () => {
       // Pre-allocate arrays to avoid resizing
       const conflicts: JavaClass[] = [];
       const nonConflicts: JavaClass[] = [];
+      if (!dataTypesTree || !externalModelsByNamespace) {
+        console.error("Data types or external models are undefined.");
+        return { conflicts: [], nonConflicts: [] };
+      }
 
       // Use a traditional for loop for better performance
       for (let i = 0, len = updatedJavaClasses?.length; i < len; i++) {
         const javaClass = updatedJavaClasses?.[i];
         const fullClassName = javaClass.name;
-        if (dataTypeNames.has(fullClassName)) conflicts.push(javaClass);
-        else nonConflicts.push(javaClass);
+        const isExternalConflict = dataTypesTree.some((dataType) => {
+          return (
+            dataType.namespace && externalModelsByNamespace[dataType.namespace] && dataType.feelName === fullClassName
+          );
+        });
+
+        javaClass.isExternalConflict = isExternalConflict;
+        if (dataTypeNames.has(fullClassName)) {
+          conflicts.push(javaClass);
+        } else {
+          nonConflicts.push(javaClass);
+        }
       }
 
       return {
@@ -202,7 +216,7 @@ const useImportJavaClasses = () => {
         nonConflicts,
       };
     },
-    [renameJavaClassToDMNName, dataTypeNames]
+    [renameJavaClassToDMNName, dataTypesTree, externalModelsByNamespace, dataTypeNames]
   );
 
   const mapJavaClassesToDMNItemDefinitions = useCallback(
