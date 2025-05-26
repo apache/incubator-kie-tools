@@ -34,7 +34,7 @@ import {
   useLanguageServerAvailable,
 } from "@kie-tools/import-java-classes-component";
 import { addTopLevelItemDefinition as _addTopLevelItemDefinition } from "../mutations/addTopLevelItemDefinition";
-import { JavaClassConflictOptions, useImportJavaClasses } from "./useImportJavaClasses";
+import { JavaClassConflictOptions, JavaClassWithConflictInfo, useImportJavaClasses } from "./useImportJavaClasses";
 import { Radio } from "@patternfly/react-core/dist/esm/components/Radio";
 
 const ImportJavaClassesWrapper = ({
@@ -54,7 +54,7 @@ const ImportJavaClassesWrapper = ({
         <ImportJavaClassNameConflictsModal
           isOpen={isConflictsOccured}
           handleConfirm={handleConflictAction}
-          confliectedJavaClasses={conflictsClasses}
+          conflictedJavaClasses={conflictsClasses}
         />
       )}
     </>
@@ -111,21 +111,26 @@ const ImportJavaClassesDropdownItem = ({
 const ImportJavaClassNameConflictsModal = ({
   isOpen,
   handleConfirm,
-  confliectedJavaClasses,
+  conflictedJavaClasses,
 }: {
   isOpen: boolean;
   handleConfirm: (options: JavaClassConflictOptions) => void;
-  confliectedJavaClasses: JavaClass[];
+  conflictedJavaClasses: JavaClassWithConflictInfo[];
 }) => {
-  const [action, setAction] = useState<JavaClassConflictOptions>(JavaClassConflictOptions.REPLACE);
-  const handleActionButtonClick = useCallback(() => handleConfirm?.(action), [handleConfirm, action]);
   const handleRadioBtnClick = useCallback((event: React.FormEvent<HTMLInputElement>) => {
     const selectedValue = event.currentTarget.name;
     setAction(selectedValue as JavaClassConflictOptions);
   }, []);
-  const internalConflicts = confliectedJavaClasses.filter((c) => !c.isExternalConflict);
-  const externalConflicts = confliectedJavaClasses.filter((c) => c.isExternalConflict);
-  const classNames = confliectedJavaClasses?.map((javaClass) => javaClass?.name);
+  const internalConflicts = conflictedJavaClasses.filter((c) => !c.isExternalConflict);
+  const externalConflicts = conflictedJavaClasses.filter((c) => c.isExternalConflict);
+  const hasInternalConflicts = internalConflicts.length > 0;
+  const hasExternalConflicts = externalConflicts.length > 0;
+  const [action, setAction] = useState<JavaClassConflictOptions>(
+    hasExternalConflicts ? JavaClassConflictOptions.KEEP_BOTH : JavaClassConflictOptions.REPLACE
+  );
+  const handleActionButtonClick = useCallback(() => handleConfirm?.(action), [handleConfirm, action]);
+
+  const classNames = conflictedJavaClasses?.map((javaClass) => javaClass?.name);
   return (
     <Modal
       title="Duplicate DMN Data Type Detected"
@@ -138,7 +143,7 @@ const ImportJavaClassNameConflictsModal = ({
       actions={[
         <Button
           key="import-java-classes-conflict-btn"
-          isDisabled={externalConflicts.length > 0 && action === JavaClassConflictOptions.REPLACE}
+          isDisabled={hasExternalConflicts && action === JavaClassConflictOptions.REPLACE}
           variant="primary"
           onClick={handleActionButtonClick}
         >
@@ -150,9 +155,8 @@ const ImportJavaClassNameConflictsModal = ({
         {classNames?.length === 1 ? (
           <Text component={TextVariants.p}>
             An existing DMN type named{" "}
-            {internalConflicts.length > 0 ? <b>{internalConflicts[0]?.name}</b> : externalConflicts[0]?.name} has been
-            detected.{" "}
-            {externalConflicts.length > 0
+            {hasInternalConflicts ? <b>{internalConflicts[0]?.name}</b> : externalConflicts[0]?.name} has been detected.{" "}
+            {hasExternalConflicts
               ? "This type is an external data type, and no action can be performed on it."
               : "This type is currently in use within the system. How would you like to proceed?"}
           </Text>
@@ -160,15 +164,15 @@ const ImportJavaClassNameConflictsModal = ({
           <Text component={TextVariants.p}>
             Multiple DMN types have been detected in the list. The following DMN types are currently in use within the
             system:{" "}
-            {internalConflicts.length > 0 && (
+            {hasInternalConflicts && (
               <>
                 <b>{internalConflicts.map((c) => c.name).join("  , ")}</b> {". "}
               </>
             )}
-            {externalConflicts.length > 0 && (
+            {hasExternalConflicts && (
               <>
                 <span>
-                  {internalConflicts.length > 0}
+                  {hasInternalConflicts}
                   {externalConflicts.map((c) => c.name).join(" , ")}
                   <span style={{ fontStyle: "italic", color: "gray" }}>
                     {" "}
@@ -192,7 +196,7 @@ const ImportJavaClassNameConflictsModal = ({
             onChange={handleRadioBtnClick}
             description="This option will replace the existing DMN type with the new one."
             isLabelWrapped={true}
-            isDisabled={externalConflicts.length > 0}
+            isDisabled={hasExternalConflicts}
           />
           <Radio
             isChecked={action === JavaClassConflictOptions.KEEP_BOTH}

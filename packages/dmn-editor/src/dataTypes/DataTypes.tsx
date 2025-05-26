@@ -357,7 +357,7 @@ export function DataTypes() {
                 <ImportJavaClassNameConflictsModal
                   isOpen={isConflictsOccured}
                   handleConfirm={handleConflictAction}
-                  confliectedJavaClasses={conflictsClasses}
+                  conflictedJavaClasses={conflictsClasses}
                 />
               )}
             </DrawerContentBody>

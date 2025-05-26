@@ -30,10 +30,13 @@ export enum JavaClassConflictOptions {
   REPLACE = "Replace",
   KEEP_BOTH = "Keep Both",
 }
+export type JavaClassWithConflictInfo = JavaClass & {
+  isExternalConflict: boolean;
+};
 
 const useImportJavaClasses = () => {
   const [isConflictsOccured, setIsConflictsOccured] = useState<boolean>(false);
-  const [conflictsClasses, setConflictsClasses] = useState<JavaClass[]>([]);
+  const [conflictsClasses, setConflictsClasses] = useState<JavaClassWithConflictInfo[]>([]);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { externalModelsByNamespace } = useExternalModels();
@@ -186,7 +189,7 @@ const useImportJavaClasses = () => {
       const updatedJavaClasses = renameJavaClassToDMNName(javaClasses);
 
       // Pre-allocate arrays to avoid resizing
-      const conflicts: JavaClass[] = [];
+      const conflicts: JavaClassWithConflictInfo[] = [];
       const nonConflicts: JavaClass[] = [];
       if (!dataTypesTree || !externalModelsByNamespace) {
         console.error("Data types or external models are undefined.");
@@ -197,15 +200,17 @@ const useImportJavaClasses = () => {
       for (let i = 0, len = updatedJavaClasses?.length; i < len; i++) {
         const javaClass = updatedJavaClasses?.[i];
         const fullClassName = javaClass.name;
-        const isExternalConflict = dataTypesTree.some((dataType) => {
-          return (
-            dataType.namespace && externalModelsByNamespace[dataType.namespace] && dataType.feelName === fullClassName
-          );
-        });
-
-        javaClass.isExternalConflict = isExternalConflict;
         if (dataTypeNames.has(fullClassName)) {
-          conflicts.push(javaClass);
+          const isExternalConflict = dataTypesTree.some((dataType) => {
+            return (
+              dataType.namespace && externalModelsByNamespace[dataType.namespace] && dataType.feelName === fullClassName
+            );
+          });
+
+          const javaClassWithConflict: JavaClassWithConflictInfo = Object.assign(javaClass, {
+            isExternalConflict,
+          });
+          conflicts.push(javaClassWithConflict);
         } else {
           nonConflicts.push(javaClass);
         }
