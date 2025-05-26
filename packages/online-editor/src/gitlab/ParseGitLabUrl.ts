@@ -17,8 +17,14 @@
  * under the License.
  */
 
-import { matchPath } from "react-router";
+import { matchPath } from "react-router-dom";
 import { ImportableUrl, UrlType } from "../importFromUrl/ImportableUrlHooks";
+
+const GITLAB_PROJECT_SNIPPET_REGEX = /^\/(.+?)\/([^/]+)\/snippets\/(\d+)\/?$/;
+const GITLAB_PROJECT_SNIPPET_FILE_REGEX = /^\/(.+?)\/([^/]+)\/snippets\/([^/]+)\/raw\/([^/]+)\/(.+)$/;
+const GITLAB_REPO_TREE_REGEX = /^\/(.+?)\/([^/]+)\/tree\/([^/]+)$/;
+const GITLAB_REPO_FILE_REGEX = /^\/(.+?)\/([^/]+)\/blob\/([^/]+)\/(.+)$/;
+const GITLAB_DEFAULT_REPO_REGEX = /^\/(.+?)\/([^/]+)$/;
 
 function ensureGitExtension(pathname: string): string {
   // Remove any trailing slash first
@@ -34,32 +40,43 @@ export function parseGitLabUrl(url: URL): ImportableUrl {
   const pathname = (url.pathname = url?.pathname?.replace(/\/-\//g, "/"));
 
   // 1. Standalone Snippet: eg: https://gitlab.com/snippets/123
-  const standaloneSnippet = matchPath<{ snippetId: string }>(pathname, {
-    path: "/snippets/:snippetId",
-    exact: true,
-    strict: true,
-  });
+  const standaloneSnippet = matchPath(
+    {
+      path: "/snippets/:snippetId",
+      end: true,
+      caseSensitive: true,
+    },
+    pathname
+  );
 
-  if (standaloneSnippet) {
+  if (standaloneSnippet !== null && standaloneSnippet.params.snippetId) {
     const customStandaloneSnippetUrl = new URL(url);
     // Without .git on GitLab → Error (not a git repository or unexpected server response)
     // Ensure the pathname ends with `.git`
     customStandaloneSnippetUrl.pathname = ensureGitExtension(customStandaloneSnippetUrl.pathname);
     return {
       type: UrlType.GITLAB_DOT_COM_SNIPPET,
-      snippetId: standaloneSnippet?.params?.snippetId,
+      snippetId: standaloneSnippet.params.snippetId,
       url: customStandaloneSnippetUrl,
     };
   }
 
   // 2. Standalone Snippet File: eg: https://gitlab.com/snippets/123/raw/main/sample.dmn
-  const standaloneSnippetFile = matchPath<{ snippetId: string; tree: string; fileName: string }>(pathname, {
-    path: "/snippets/:snippetId/raw/:tree/:fileName",
-    exact: true,
-    strict: true,
-  });
+  const standaloneSnippetFile = matchPath(
+    {
+      path: "/snippets/:snippetId/raw/:tree/:fileName",
+      end: true,
+      caseSensitive: true,
+    },
+    pathname
+  );
 
-  if (standaloneSnippetFile) {
+  if (
+    standaloneSnippetFile !== null &&
+    standaloneSnippetFile.params.fileName &&
+    standaloneSnippetFile.params.snippetId &&
+    standaloneSnippetFile.params.tree
+  ) {
     const {
       params: { fileName, snippetId, tree },
     } = standaloneSnippetFile;
@@ -67,92 +84,93 @@ export function parseGitLabUrl(url: URL): ImportableUrl {
   }
 
   // 3. Project Snippet: eg: https://gitlab.com/group/project/-/snippets/123
-  const projectSnippet = matchPath<{ group: string; project: string; snippetId: string }>(pathname, {
-    path: "/:group*/:project/snippets/:snippetId",
-    exact: true,
-    strict: true,
-  });
-
-  if (projectSnippet) {
-    const {
-      params: { group, project, snippetId },
-    } = projectSnippet;
-    const customProjectSnippetUrl = new URL(url);
-    // Without .git on GitLab → Error (not a git repository or unexpected server response)
-    // Ensure the pathname ends with `.git`
-    customProjectSnippetUrl.pathname = ensureGitExtension(customProjectSnippetUrl.pathname);
-    return { type: UrlType.GITLAB_DOT_COM_SNIPPET, snippetId, group, project, url: customProjectSnippetUrl };
+  const projectSnippetMatch = pathname.match(GITLAB_PROJECT_SNIPPET_REGEX);
+  if (projectSnippetMatch) {
+    const [, group, project, snippetId] = projectSnippetMatch ?? [];
+    if (group && project && snippetId) {
+      const customProjectSnippetUrl = new URL(url);
+      // Without .git on GitLab → Error (not a git repository or unexpected server response)
+      // Ensure the pathname ends with `.git`
+      customProjectSnippetUrl.pathname = ensureGitExtension(customProjectSnippetUrl.pathname);
+      return {
+        type: UrlType.GITLAB_DOT_COM_SNIPPET,
+        snippetId,
+        group: group,
+        project,
+        url: customProjectSnippetUrl,
+      };
+    }
   }
 
   // 4. Project Snippet File: eg: https://gitlab.com/group/project/-/snippets/123/raw/main/sample.dmn
-  const projectSnippetFile = matchPath<{
-    group: string;
-    project: string;
-    snippetId: string;
-    tree: string;
-    path: string;
-  }>(pathname, {
-    path: "/:group*/:project/snippets/:snippetId/raw/:tree/:path*",
-    exact: true,
-    strict: true,
-  });
-
-  if (projectSnippetFile) {
-    const {
-      params: { group, project, snippetId, path, tree },
-    } = projectSnippetFile;
-    return { type: UrlType.GITLAB_DOT_COM_SNIPPET_FILE, snippetId, group, project, branch: tree, filePath: path, url };
+  const projectSnippetFileMatch = pathname.match(GITLAB_PROJECT_SNIPPET_FILE_REGEX);
+  if (projectSnippetFileMatch) {
+    const [, group, project, snippetId, tree, path] = projectSnippetFileMatch ?? [];
+    if (group && project && snippetId && tree && path) {
+      return {
+        type: UrlType.GITLAB_DOT_COM_SNIPPET_FILE,
+        snippetId,
+        group,
+        project,
+        branch: tree,
+        filePath: path,
+        url,
+      };
+    }
   }
 
   // 5. Specific branch/ref: eg: https://gitlab.com/group/project/-/tree/main
-  const repoTreeView = matchPath<{ group: string; project: string; tree: string }>(pathname, {
-    path: "/:group*/:project/tree/:tree",
-    exact: true,
-    strict: true,
-  });
-
-  if (repoTreeView) {
-    const {
-      params: { group, project, tree },
-    } = repoTreeView;
-    const customGitRefNameUrl = new URL(url);
-    customGitRefNameUrl.pathname = customGitRefNameUrl.pathname.replace(`/tree/${tree}`, "");
-    // Without .git on GitLab → Error (not a git repository or unexpected server response)
-    // Ensure the pathname ends with `.git`
-    customGitRefNameUrl.pathname = ensureGitExtension(customGitRefNameUrl.pathname);
-    return { type: UrlType.GITLAB_DOT_COM, group, project, branch: tree, url: customGitRefNameUrl };
+  const repoTreeViewMatch = pathname.match(GITLAB_REPO_TREE_REGEX);
+  if (repoTreeViewMatch) {
+    const [, group, project, tree] = repoTreeViewMatch ?? [];
+    if (group && project && tree) {
+      const customGitRefNameUrl = new URL(url);
+      customGitRefNameUrl.pathname = customGitRefNameUrl.pathname.replace(`/tree/${tree}`, "");
+      // Without .git on GitLab → Error (not a git repository or unexpected server response)
+      // Ensure the pathname ends with `.git`
+      customGitRefNameUrl.pathname = ensureGitExtension(customGitRefNameUrl.pathname);
+      return {
+        type: UrlType.GITLAB_DOT_COM,
+        group,
+        project,
+        branch: tree,
+        url: customGitRefNameUrl,
+      };
+    }
   }
 
   // 6. File in branch: eg: https://gitlab.com/group/project/-/blob/main/src/sample.dmn
-  const repoFileView = matchPath<{ group: string; project: string; tree: string; path: string }>(pathname, {
-    path: "/:group*/:project/blob/:tree/:path*",
-    exact: true,
-    strict: true,
-  });
-
-  if (repoFileView) {
-    const {
-      params: { group, project, tree, path },
-    } = repoFileView;
-    return { type: UrlType.GITLAB_DOT_COM_FILE, group, project, branch: tree, filePath: path, url };
+  const repoFileViewMatch = pathname.match(GITLAB_REPO_FILE_REGEX);
+  if (repoFileViewMatch) {
+    const [, group, project, tree, path] = repoFileViewMatch ?? [];
+    if (group && project && tree && path) {
+      return {
+        type: UrlType.GITLAB_DOT_COM_FILE,
+        group: group,
+        project,
+        branch: tree,
+        filePath: path,
+        url,
+      };
+    }
   }
 
   // 7. Default repo view: eg: https://gitlab.com/group/project
-  const repoDefaultView = matchPath<{ group: string; project: string }>(pathname, {
-    path: "/:group*/:project",
-    exact: true,
-    strict: true,
-  });
-
-  if (repoDefaultView) {
-    const {
-      params: { group, project },
-    } = repoDefaultView;
-    const customGitRepoUrl = new URL(url);
-    // Without .git on GitLab → Error (not a git repository or unexpected server response)
-    // Ensure the pathname ends with `.git`
-    customGitRepoUrl.pathname = ensureGitExtension(customGitRepoUrl.pathname);
-    return { type: UrlType.GITLAB_DOT_COM, group, project, url: customGitRepoUrl };
+  const repoDefaultViewMatch = pathname.match(GITLAB_DEFAULT_REPO_REGEX);
+  if (repoDefaultViewMatch) {
+    const [, group, project] = repoDefaultViewMatch ?? [];
+    if (group && project) {
+      const customGitRepoUrl = new URL(url);
+      // Without .git on GitLab → Error (not a git repository or unexpected server response)
+      // Ensure the pathname ends with `.git`
+      customGitRepoUrl.pathname = ensureGitExtension(customGitRepoUrl.pathname);
+      return {
+        type: UrlType.GITLAB_DOT_COM,
+        group,
+        project,
+        url: customGitRepoUrl,
+      };
+    }
   }
 
   return { type: UrlType.NOT_SUPPORTED, error: "Unsupported GitLab URL", url };
