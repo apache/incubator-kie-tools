@@ -20,11 +20,15 @@
 import { matchPath } from "react-router-dom";
 import { ImportableUrl, UrlType } from "../importFromUrl/ImportableUrlHooks";
 
-const GITLAB_PROJECT_SNIPPET_REGEX = /^\/(.+?)\/([^/]+)\/snippets\/(\d+)\/?$/;
-const GITLAB_PROJECT_SNIPPET_FILE_REGEX = /^\/(.+?)\/([^/]+)\/snippets\/([^/]+)\/raw\/([^/]+)\/(.+)$/;
-const GITLAB_REPO_TREE_REGEX = /^\/(.+?)\/([^/]+)\/tree\/([^/]+)$/;
-const GITLAB_REPO_FILE_REGEX = /^\/(.+?)\/([^/]+)\/blob\/([^/]+)\/(.+)$/;
-const GITLAB_DEFAULT_REPO_REGEX = /^\/(.+?)\/([^/]+)$/;
+const GITLAB_NAMESPACE_REGEX = "([^\\/]+(?:\\/[^\\/]+)*)"; // group or nested group(s)
+const NAMESPACE = GITLAB_NAMESPACE_REGEX;
+const PROJECT = "([^\\/]+)"; // project name
+
+const GITLAB_PROJECT_SNIPPET_REGEX = new RegExp(`^/${NAMESPACE}/${PROJECT}/snippets/(\\d+)(?:\\.git)?/?$`);
+const GITLAB_PROJECT_SNIPPET_FILE_REGEX = new RegExp(`^/${NAMESPACE}/${PROJECT}/snippets/([^/]+)/raw/([^/]+)/(.+)$`);
+const GITLAB_REPO_TREE_REGEX = new RegExp(`^/${NAMESPACE}/${PROJECT}/tree/([^/]+)$`);
+const GITLAB_REPO_FILE_REGEX = new RegExp(`^/${NAMESPACE}/${PROJECT}/blob/([^/]+)/(.*)$`);
+const GITLAB_DEFAULT_REPO_REGEX = new RegExp(`^/${NAMESPACE}/${PROJECT}$`);
 
 function ensureGitExtension(pathname: string): string {
   // Remove any trailing slash first
