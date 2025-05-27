@@ -13,7 +13,7 @@ require (
 	github.com/distribution/reference v0.6.0
 	github.com/docker/docker v28.0.1+incompatible
 	github.com/docker/go-connections v0.5.0
-	github.com/getkin/kin-openapi v0.128.0
+	github.com/getkin/kin-openapi v0.131.0
 	github.com/jstemmer/go-junit-report/v2 v2.1.0
 	github.com/ory/viper v1.7.5
 	github.com/spf13/afero v1.12.0
@@ -64,7 +64,6 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/imdario/mergo v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/invopop/yaml v0.3.1 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
@@ -80,6 +79,8 @@ require (
 	github.com/morikuni/aec v1.0.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f // indirect
+	github.com/oasdiff/yaml v0.0.0-20250309154309-f31be36b4037 // indirect
+	github.com/oasdiff/yaml3 v0.0.0-20250309153720-d2182401db90 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.0.2 // indirect
 	github.com/pb33f/libopenapi v0.10.1 // indirect
