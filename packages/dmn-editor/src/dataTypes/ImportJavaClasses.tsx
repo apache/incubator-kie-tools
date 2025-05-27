@@ -152,39 +152,30 @@ const ImportJavaClassNameConflictsModal = ({
       ]}
     >
       <TextContent>
-        {classNames?.length === 1 ? (
-          <Text component={TextVariants.p}>
-            An existing DMN type named{" "}
-            {hasInternalConflicts ? <b>{internalConflicts[0]?.name}</b> : externalConflicts[0]?.name} has been detected.{" "}
-            {hasExternalConflicts
-              ? "This type is an external data type, and no action can be performed on it."
-              : "This type is currently in use within the system. How would you like to proceed?"}
-          </Text>
-        ) : (
-          <Text component={TextVariants.p}>
-            Multiple DMN types have been detected in the list. The following DMN types are currently in use within the
-            system:{" "}
-            {hasInternalConflicts && (
-              <>
-                <b>{internalConflicts.map((c) => c.name).join("  , ")}</b>
-                <span style={{ fontStyle: "italic", color: "gray" }}> (These are internal data types){"."}</span>
-              </>
-            )}
-            {hasExternalConflicts && (
-              <>
-                <span>
-                  {hasInternalConflicts}
-                  {externalConflicts.map((c) => c.name).join(" , ")}
-                  <span style={{ fontStyle: "italic", color: "gray" }}>
-                    {" "}
-                    (These are external data types, and no action can be performed on them.)
-                  </span>
-                </span>
-              </>
-            )}
-            How would you like to proceed?
-          </Text>
+        <Text component={TextVariants.p}>
+          Conflicts have been detected between imported Java classes and existing DMN data types. Please review the
+          details below and choose how to proceed.
+        </Text>
+
+        {hasInternalConflicts && (
+          <>
+            <Text component={TextVariants.h4}>Internal Data Type Conflicts</Text>
+            <Text>
+              <b>{internalConflicts.map((c) => c.name).join(" , ")}</b>- These are editable DMN types. Choose how to
+              resolve them.
+            </Text>
+          </>
         )}
+        {hasExternalConflicts && (
+          <>
+            <Text component={TextVariants.h4}>External Data Type Conflicts</Text>
+            <Text>
+              <b>{externalConflicts.map((c) => c.name).join(", ")}</b>- These types come from external sources and
+              cannot be modified.
+            </Text>
+          </>
+        )}
+
         <Text
           component={TextVariants.blockquote}
           style={{ background: "none", display: "flex", flexDirection: "column", gap: "1rem" }}
