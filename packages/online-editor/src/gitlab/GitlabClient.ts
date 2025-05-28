@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import lodash from "lodash";
+import { isEmpty } from "lodash";
 
 export interface Options {
   appName: string;
@@ -146,7 +146,7 @@ export class GitlabClient implements GitlabClientApi {
   };
 
   checkSnippetLevel = ({ group, project }: ProjectPath): string => {
-    const isProjectSnippet = !lodash.isEmpty(group) || !lodash.isEmpty(project);
+    const isProjectSnippet = !isEmpty(group) || !isEmpty(project);
     return isProjectSnippet ? this.createProjectBasePathWithId({ group, project }) : "";
   };
 
