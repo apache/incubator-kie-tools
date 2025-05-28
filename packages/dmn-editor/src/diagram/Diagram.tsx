@@ -894,7 +894,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                     }
                   }
                   if (node.type === NODE_TYPES.decision && node.data.parentRfNode) {
-                    const parentDS = node.data.parentRfNode;
+                    const parentDecisionService = node.data.parentRfNode;
                     const drds = state.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
                     for (let i = 0; i < drds.length; i++) {
                       if (i === state.computed(state).getDrdIndex()) {
@@ -905,11 +905,11 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                         state.dmn.model.definitions,
                         i
                       );
-                      const parentShape = _indexedDrd.dmnShapesByHref.get(parentDS.id);
+                      const parentShape = _indexedDrd.dmnShapesByHref.get(parentDecisionService.id);
                       const dsShape = _indexedDrd.dmnShapesByHref.get(node.id);
                       const relativePosinCurrentDS = {
-                        x: (change.position?.x ?? 0) - (parentDS?.data?.shape["dc:Bounds"]?.["@_x"] ?? 0),
-                        y: (change.position?.y ?? 0) - (parentDS.data.shape["dc:Bounds"]?.["@_y"] ?? 0),
+                        x: (change.position?.x ?? 0) - (parentDecisionService?.data?.shape["dc:Bounds"]?.["@_x"] ?? 0),
+                        y: (change.position?.y ?? 0) - (parentDecisionService.data.shape["dc:Bounds"]?.["@_y"] ?? 0),
                       };
                       if (parentShape && dsShape && dsShape["dc:Bounds"] && !parentShape["@_isCollapsed"]) {
                         dsShape["dc:Bounds"]["@_x"] =
