@@ -42,6 +42,7 @@ pipeline {
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
+        PNPM_FILTER_STRING = '-F bpmn-vscode-extension... -F dmn-vscode-extension... -F pmml-vscode-extension... -F vscode-extension-kogito-bundle... -F swf-vscode-extension... -F vscode-extension-kie-ba-bundle... -F vscode-extension-dashbuilder-editor... -F yard-vscode-extension... -F extended-services-vscode-extension...'
         
         MAVEN_ARGS = "-Dmaven.repo.local=${WORKSPACE}/.maven"
     }
@@ -99,18 +100,8 @@ pipeline {
         stage('PNPM Bootstrap') {
             steps {
                 dir('kie-tools') {
-                    withEnv(["MAVEN_ARGS=${env.MAVEN_ARGS}"]){
-                        sh '''#!/bin/bash -el
-                        pnpm bootstrap -F bpmn-vscode-extension... \
-                        -F dmn-vscode-extension... \
-                        -F pmml-vscode-extension... \
-                        -F vscode-extension-kogito-bundle... \
-                        -F swf-vscode-extension... \
-                        -F vscode-extension-kie-ba-bundle... \
-                        -F vscode-extension-dashbuilder-editor... \
-                        -F yard-vscode-extension... \
-                        -F extended-services-vscode-extension...
-                        '''.trim()
+                    script {
+                        buildUtils.pnpmBootstrap(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                     }
                 }
             }
@@ -119,19 +110,8 @@ pipeline {
         stage('Build') {
             steps {
                 dir('kie-tools') {
-                    withEnv(["MAVEN_ARGS=${env.MAVEN_ARGS}"]){
-                        sh '''#!/bin/bash -el
-                        pnpm -F bpmn-vscode-extension... \
-                        -F dmn-vscode-extension... \
-                        -F pmml-vscode-extension... \
-                        -F vscode-extension-kogito-bundle... \
-                        -F swf-vscode-extension... \
-                        -F vscode-extension-kie-ba-bundle... \
-                        -F vscode-extension-dashbuilder-editor... \
-                        -F yard-vscode-extension... \
-                        -F extended-services-vscode-extension... \
-                        build:prod
-                        '''.trim()
+                    script {
+                        buildUtils.pnpmBuild(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                     }
                 }
             }
