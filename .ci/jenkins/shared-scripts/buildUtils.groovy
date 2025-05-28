@@ -96,6 +96,11 @@ def pnpmBuildFull(Integer workspaceConcurrency = 1) {
 def pnpmBuild(String filters, String mavenArgs = '') {
     sh """
     #!/bin/bash -el
+    echo "Initializing git email and name with:"
+    echo "git config user.email asf-ci-kie@jenkins.kie.apache.org"
+    echo "git config user.name asf-ci-kie"
+    git config user.email asf-ci-kie@jenkins.kie.apache.org
+    git config user.name asf-ci-kie
     export MAVEN_ARGS="${mavenArgs}"
     pnpm ${filters} --workspace-concurrency=1 build:prod
     """.trim()    
