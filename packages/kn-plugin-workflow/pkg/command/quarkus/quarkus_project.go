@@ -205,22 +205,26 @@ func manipulatePomToKogito(filename string, cfg CreateQuarkusProjectConfig) erro
 }
 
 func manipulateDockerIgnore(filename string) error {
-	line := "\n!target/classes/workflow.sw.json"
+	pattern := "\n!target/classes/*.sw.%s"
+	extensions := []string{"json", "yaml", "yml"}
 	f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0644)
-	defer f.Close()
-
-	if _, err := f.WriteString(line); err != nil {
-		return fmt.Errorf("error writing to %s: %w", filename, err)
-	}
-
 	if err != nil {
 		return fmt.Errorf("error opening %s: %w", filename, err)
 	}
+	defer f.Close()
+
+	for _, extension := range extensions {
+		if _, err := f.WriteString(fmt.Sprintf(pattern, extension)); err != nil {
+			return fmt.Errorf("error writing to %s: %w", filename, err)
+		}
+	}
+
 	return nil
 }
 
 func manipulateDockerfile(filename string) error {
-	text := "COPY target/classes/workflow.sw.json /deployments/app/workflow.sw.json"
+	extensions := []string{"json", "yaml", "yml"}
+	pattern := "COPY --chown=185 target/classes/*.sw.%s /deployments/app/"
 
 	file, err := os.Open(filename)
 	defer file.Close()
@@ -236,7 +240,9 @@ func manipulateDockerfile(filename string) error {
 	for scanner.Scan() {
 		line := scanner.Text()
 		if strings.HasPrefix(line, "COPY") && !appended {
-			lines = append(lines, text)
+			for _, extension := range extensions {
+				lines = append(lines, fmt.Sprintf(pattern, extension))
+			}
 			appended = true
 		}
 		lines = append(lines, line)
