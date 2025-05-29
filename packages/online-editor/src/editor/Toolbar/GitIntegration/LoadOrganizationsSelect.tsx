@@ -129,19 +129,23 @@ export const LoadOrganizationsSelect = ({ onSelect, workspace, readonly, actionT
       const projectsResponse = await gitlabClient.listProjects();
       const projectsResponseJson: any[] = await projectsResponse.json();
       return {
-        organizations: (projectsResponseJson ?? []).map((project) => ({
-          name: project?.name_with_namespace,
-          value: project?.id,
-        })),
+        organizations: (projectsResponseJson ?? [])
+          .map((project) => ({
+            name: project?.name_with_namespace,
+            value: project?.id,
+          }))
+          .sort((a, b) => a?.name?.localeCompare?.(b?.name)),
       };
     }
     const groupsResponse = await gitlabClient.listGroups();
     const groupsResponseJson: any[] = await groupsResponse.json();
     return {
-      organizations: (groupsResponseJson ?? []).map((group) => ({
-        name: group?.full_name,
-        value: group?.id,
-      })),
+      organizations: (groupsResponseJson ?? [])
+        .map((group) => ({
+          name: group?.full_name,
+          value: group?.id,
+        }))
+        .sort((a, b) => a?.name?.localeCompare?.(b?.name)),
     };
   }, [gitlabClient, actionType]);
 
