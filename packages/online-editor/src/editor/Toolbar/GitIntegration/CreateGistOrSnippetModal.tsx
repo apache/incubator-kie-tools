@@ -27,6 +27,7 @@ import { Radio } from "@patternfly/react-core/dist/js/components/Radio";
 
 import { UsersIcon } from "@patternfly/react-icons/dist/js/icons/users-icon";
 import { LockIcon } from "@patternfly/react-icons/dist/js/icons/lock-icon";
+import { GitlabIcon } from "@patternfly/react-icons/dist/js/icons/gitlab-icon";
 
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { GIST_ORIGIN_REMOTE_NAME } from "@kie-tools-core/workspaces-git-fs/dist/constants/GitConstants";
@@ -49,8 +50,8 @@ import { useOnlineI18n } from "../../../i18n";
 import { LoadOrganizationsSelect, SelectOptionObjectType } from "./LoadOrganizationsSelect";
 import { useGitIntegration } from "./GitIntegrationContextProvider";
 import { useEnv } from "../../../env/hooks/EnvContext";
+import { useGitlabClient } from "../../../gitlab/useGitlabClient";
 import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
-
 export interface CreateGistOrSnippetResponse {
   cloneUrl: string;
   htmlUrl: string;
@@ -68,6 +69,7 @@ export const CreateGistOrSnippetModal = (props: {
   const authProvider = useAuthProvider(authSession);
   const bitbucketClient = useBitbucketClient(authSession);
   const gitHubClient = useGitHubClient(authSession);
+  const gitlabClient = useGitlabClient(authSession);
 
   const [isPrivate, setPrivate] = useState(false);
   const [error, setError] = useState<string | undefined>(undefined);
@@ -107,17 +109,17 @@ If you are, it means that creating this Gist failed and it can safely be deleted
     if (selectedOrganization?.kind !== "organization") {
       throw new Error("No workspace was selected for Bitbucket Snippet.");
     }
+    const bitbucketWorkspace = (selectedOrganization as SelectOptionObjectType<"organization">).selectedOption;
     const response = await bitbucketClient.createSnippet({
-      workspace: selectedOrganization.value,
+      workspace: bitbucketWorkspace.name,
       title: props.workspace.name ?? `${env.KIE_SANDBOX_APP_NAME} Snippet`,
       files: {
         "README.md": {
           content: `
-This Snippet was created from ${env.KIE_SANDBOX_APP_NAME}.
+          This Snippet was created from ${env.KIE_SANDBOX_APP_NAME}.
 
-This file is temporary and you should not be seeing it.
-If you are, it means that creating this Snippet failed and it can safely be deleted.
-`,
+          This file is temporary and you should not be seeing it.
+          If you are, it means that creating this Snippet failed and it can safely be deleted.`,
         },
       },
       isPrivate,
@@ -136,6 +138,35 @@ If you are, it means that creating this Snippet failed and it can safely be dele
     return { cloneUrl, htmlUrl: json.links.html.href };
   }, [bitbucketClient, env.KIE_SANDBOX_APP_NAME, isPrivate, props.workspace.name, selectedOrganization]);
 
+  const createGitlabSnippet: () => Promise<CreateGistOrSnippetResponse> = useCallback(async () => {
+    const gitlabGroupOrProject = (selectedOrganization as SelectOptionObjectType<"organization">).selectedOption;
+    const snippetResponse = await gitlabClient.createSnippet({
+      title: props?.workspace?.name ?? `${env.KIE_SANDBOX_APP_NAME} Snippet`,
+      visibility: isPrivate ? "private" : "public",
+      files: [
+        {
+          file_path: "README.md",
+          content: `
+          This Snippet was created from ${env.KIE_SANDBOX_APP_NAME}.
+
+          This file is temporary and you should not be seeing it.
+          If you are, it means that creating this Snippet failed and it can safely be deleted.`,
+        },
+      ],
+      id: gitlabGroupOrProject.value,
+    });
+    if (!(snippetResponse.status === 201)) {
+      throw new Error(
+        `Gitlab snippet creation request failed with: ${snippetResponse.status} ${snippetResponse.statusText}`
+      );
+    }
+    const repo = await snippetResponse.json();
+    if (!repo?.http_url_to_repo || !repo?.web_url) {
+      throw new Error("Unexpected contents of the Gitlab snippet creation response.");
+    }
+    return { cloneUrl: repo?.http_url_to_repo, htmlUrl: repo?.web_url };
+  }, [gitlabClient, env.KIE_SANDBOX_APP_NAME, isPrivate, props.workspace.name, selectedOrganization]);
+
   const createGistOrSnippet = useCallback(async () => {
     try {
       if (!authInfo || !isGistEnabledAuthProviderType(authProvider?.type)) {
@@ -147,11 +178,14 @@ If you are, it means that creating this Snippet failed and it can safely be dele
       const insecurelyDisableTlsCertificateValidation =
         authProvider?.group === AuthProviderGroup.GIT && authProvider.insecurelyDisableTlsCertificateValidation;
 
+      const disableEncoding = authProvider?.group === AuthProviderGroup.GIT && authProvider.disableEncoding;
+
       const createGistOrSnippetCommand: () => Promise<CreateGistOrSnippetResponse> = switchExpression(
         gistEnabledAuthProvider,
         {
           github: createGitHubGist,
           bitbucket: createBitbucketSnippet,
+          gitlab: createGitlabSnippet,
         }
       );
       const gistOrSnippet = await createGistOrSnippetCommand();
@@ -161,6 +195,7 @@ If you are, it means that creating this Snippet failed and it can safely be dele
           url: new URL(gistOrSnippet.cloneUrl).toString(),
           authInfo,
           insecurelyDisableTlsCertificateValidation,
+          disableEncoding,
         })
       )
         .find((serverRef) => serverRef.ref === "HEAD")!
@@ -171,15 +206,18 @@ If you are, it means that creating this Snippet failed and it can safely be dele
         remoteUrl: URL;
         branch: string;
         insecurelyDisableTlsCertificateValidation?: boolean;
+        disableEncoding?: boolean;
       }) => Promise<void> = switchExpression(gistEnabledAuthProvider, {
         github: workspaces.initGistOnWorkspace,
         bitbucket: workspaces.initSnippetOnWorkspace,
+        gitlab: workspaces.initGilabSnippetOnWorkspace,
       });
       await initWorkspaceCommand({
         workspaceId: props.workspace.workspaceId,
         remoteUrl: new URL(gistOrSnippet.cloneUrl),
         branch: gistOrSnippetDefaultBranch,
         insecurelyDisableTlsCertificateValidation,
+        disableEncoding,
       });
 
       await workspaces.addRemote({
@@ -207,11 +245,13 @@ If you are, it means that creating this Snippet failed and it can safely be dele
         force: true,
         authInfo,
         insecurelyDisableTlsCertificateValidation,
+        disableEncoding,
       });
       await workspaces.pull({
         workspaceId: props.workspace.workspaceId,
         authInfo,
         insecurelyDisableTlsCertificateValidation,
+        disableEncoding,
       });
 
       props.onClose();
@@ -231,6 +271,7 @@ If you are, it means that creating this Snippet failed and it can safely be dele
     authProvider,
     createGitHubGist,
     createBitbucketSnippet,
+    createGitlabSnippet,
     workspaces,
     props,
     gitConfig,
@@ -254,6 +295,7 @@ If you are, it means that creating this Snippet failed and it can safely be dele
       titleIconVariant={switchExpression(authProvider.type, {
         bitbucket: BitbucketIcon,
         github: GithubIcon,
+        gitlab: GitlabIcon,
       })}
       description={i18n.createGistOrSnippetModal[authProvider.type].description(props.workspace.name)}
       actions={[
@@ -293,6 +335,7 @@ If you are, it means that creating this Snippet failed and it can safely be dele
             workspace={props.workspace}
             onSelect={setSelectedOrganization}
             readonly={authProvider.type === AuthProviderType.github}
+            actionType="snippet"
           />
           <FormHelperText>
             <HelperText>
