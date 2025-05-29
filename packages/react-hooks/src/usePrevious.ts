@@ -17,11 +17,10 @@
  * under the License.
  */
 
-import * as React from "react";
 import { useEffect, useRef } from "react";
 
-export function usePreviousRef<T>(value: T): React.MutableRefObject<T> {
-  const ref = useRef<T>(value);
+export function usePrevious<T>(value: T): T | undefined {
+  const ref = useRef<T>();
 
   useEffect(() => {
     if (ref.current !== value) {
@@ -29,5 +28,5 @@ export function usePreviousRef<T>(value: T): React.MutableRefObject<T> {
     }
   }, [value]);
 
-  return ref;
+  return ref.current;
 }
