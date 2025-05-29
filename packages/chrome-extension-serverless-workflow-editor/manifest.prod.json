@@ -1,6 +1,6 @@
 {
   "name": "Apache KIE™ Serverless Workflow Editor for GitHub",
-  "version": "10.1.999",
+  "version": "10.1.0",
   "manifest_version": 3,
   "description": "Visualize and edit Serverless Workflow files using a graphical editor on GitHub",
   "content_scripts": [

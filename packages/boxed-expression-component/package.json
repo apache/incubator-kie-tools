@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/boxed-expression-component",
-  "version": "10.1.999",
+  "version": "10.1.0",
   "description": "The Boxed Expression editor component provides the possibility to edit the decision logic for decisions and BKMs nodes",
   "license": "Apache-2.0",
   "keywords": [],

@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/chrome-extension-test-helper",
-  "version": "10.1.999",
+  "version": "10.1.0",
   "description": "Chrome extension test helper",
   "license": "Apache-2.0",
   "publisher": "kie-group",
