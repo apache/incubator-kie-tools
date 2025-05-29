@@ -127,25 +127,21 @@ export const LoadOrganizationsSelect = ({ onSelect, workspace, readonly, actionT
   const getGitlabGroupsForUser = useCallback(async (): Promise<LoadOrganizationsReponse> => {
     if (actionType && actionType === "snippet") {
       const projectsResponse = await gitlabClient.listProjects();
-      const projectsResponseJson = await projectsResponse.json();
+      const projectsResponseJson: any[] = await projectsResponse.json();
       return {
-        organizations: (projectsResponseJson ?? []).map(
-          ({ name_with_namespace: nameWithNamespace, id }: { name_with_namespace: string; id: string }) => ({
-            name: nameWithNamespace,
-            value: id,
-          })
-        ),
+        organizations: (projectsResponseJson ?? []).map((project) => ({
+          name: project?.name_with_namespace,
+          value: project?.id,
+        })),
       };
     }
     const groupsResponse = await gitlabClient.listGroups();
-    const groupsResponseJson = await groupsResponse.json();
+    const groupsResponseJson: any[] = await groupsResponse.json();
     return {
-      organizations: (groupsResponseJson ?? []).map(
-        ({ full_name: fullName, id }: { full_name: string; id: string }) => ({
-          name: fullName,
-          value: id,
-        })
-      ),
+      organizations: (groupsResponseJson ?? []).map((group) => ({
+        name: group?.full_name,
+        value: group?.id,
+      })),
     };
   }, [gitlabClient, actionType]);
 
