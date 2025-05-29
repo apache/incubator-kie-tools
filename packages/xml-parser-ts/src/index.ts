@@ -233,7 +233,7 @@ export function parse(args: {
           : undefined); // If the current element is not known, we simply ignore its type and go with the defaults.
 
       // If the elemNode's meta type has a __$$text property, this is the one we use to parse its value.
-      // All other properties (except `__$$element`) on `elemType` are certainly attributes, which are handlded below.
+      // All other properties (except `__$$element`) on `elemType` are certainly attributes, which are handled below.
       // The `__$$element` property is also processed below, since there can be an element with both `__$$text` and `__$$element` properties.
       const t = elemMetaType?.["__$$text"]?.type ?? elemMetaProp?.type;
 
