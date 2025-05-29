@@ -169,6 +169,7 @@ pipeline {
                     script {
                         githubUtils.createTag("${params.TAG_NAME}")
                         githubUtils.pushObject('origin', "${params.TAG_NAME}", "${pipelineVars.asfGithubPushCredentialsId}")
+                        sleep(time: 1, unit: 'MINUTES') // Wait for the tag to be created
                     }
                 }
             }
