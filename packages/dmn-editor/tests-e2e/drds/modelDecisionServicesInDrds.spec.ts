@@ -339,13 +339,36 @@ test.describe("Model Decision Services - DRD", () => {
     // TODO
   });
 
-  test("889 resize DS content and replicate in DRDs", async ({ drds }) => {
-    test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/889");
+  test("Resizing a Decision Service in a DRD should replicate it in all DRDs", async ({
+    drds,
+    drgNodes,
+    palette,
+    nodes,
+    diagram,
+  }) => {
     test.info().annotations.push({
       type: TestAnnotations.REGRESSION,
-      description: "https://github.com/apache/incubator-kie-issues/issues/889",
+      description: "https://github.com/apache/incubator-kie-issues/issues/898",
     });
-    // TODO
+    await drds.toggle();
+    await drds.create({ name: "First DRD" });
+    await drgNodes.toggle();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION_SERVICE,
+      targetPosition: { x: 400, y: 200 },
+      thenRenameTo: "DS1",
+    });
+    await expect(nodes.get({ name: "DS1" })).toBeAttached();
+    await drds.toggle();
+    await drds.create({ name: "Second DRD" });
+    await drgNodes.dragNode({ name: "DS1", targetPosition: { x: 400, y: 200 } });
+    await drgNodes.toggle();
+    await nodes.resize({ nodeName: "DS1", xOffset: 100, yOffset: 100 });
+    await drds.toggle();
+    await drds.navigateTo({ name: "First DRD" });
+    await drds.toggle();
+    await expect(diagram.get()).toHaveScreenshot("resized-decision-service.png");
   });
 
   test("898 move DS divider and replicate in DRDs", async ({ drds }) => {

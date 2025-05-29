@@ -167,4 +167,6 @@ export function resizeNode({
 
   shapeBounds["@_width"] = newDimensions.width;
   shapeBounds["@_height"] = newDimensions.height;
+
+  return { deltaWidth, deltaHeight };
 }

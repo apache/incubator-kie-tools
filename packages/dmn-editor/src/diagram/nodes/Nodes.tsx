@@ -1161,10 +1161,34 @@ export const DecisionServiceNode = React.memo(
         });
 
       selection.call(dragHandler);
+
+      dmnEditorStoreApi.setState((state) => {
+        const dividerLineLocalY = getDecisionServiceDividerLineLocalY(shape);
+        const drds = state.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
+        for (let i = 0; i < drds.length; i++) {
+          if (i === state.computed(state).getDrdIndex()) {
+            continue;
+          }
+          const _indexedDrd = computeIndexedDrd(
+            state.dmn.model.definitions["@_namespace"],
+            state.dmn.model.definitions,
+            i
+          );
+          const dsShape = _indexedDrd.dmnShapesByHref.get(id);
+          const dsShapeYPosition = dsShape?.["dc:Bounds"]?.["@_y"];
+          if (dsShape && dsShape["dmndi:DMNDecisionServiceDividerLine"]) {
+            dsShape["dmndi:DMNDecisionServiceDividerLine"]!["di:waypoint"]![0]["@_y"] =
+              dsShapeYPosition! + dividerLineLocalY;
+            dsShape["dmndi:DMNDecisionServiceDividerLine"]!["di:waypoint"]![1]["@_y"] =
+              dsShapeYPosition! + dividerLineLocalY;
+          }
+        }
+      });
+
       return () => {
         selection.on(".drag", null);
       };
-    }, [decisionService, dmnEditorStoreApi, dmnObjectNamespace, externalModelsByNamespace, id, index, shape.index]);
+    }, [decisionService, dmnEditorStoreApi, dmnObjectNamespace, externalModelsByNamespace, id, index, shape]);
 
     const { fontCssProperties, shapeStyle } = useNodeStyle({
       dmnStyle: shape["di:Style"],
