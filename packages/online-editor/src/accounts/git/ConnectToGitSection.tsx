@@ -90,7 +90,9 @@ export function ConnectToGitSection(props: { authProvider: GitAuthProvider }) {
   const [success, setSuccess] = useState(false);
   const [newAuthSession, setNewAuthSession] = usePromiseState<GitAuthSession>();
   const isGitSection =
-    accounts.section === AccountsSection.CONNECT_TO_GITHUB || accounts.section === AccountsSection.CONNECT_TO_BITBUCKET;
+    accounts.section === AccountsSection.CONNECT_TO_GITHUB ||
+    accounts.section === AccountsSection.CONNECT_TO_BITBUCKET ||
+    accounts.section === AccountsSection.CONNECT_TO_GITLAB;
   const selectedGitSession = isGitSection ? accounts.selectedAuthSession : undefined;
 
   useEffect(() => {

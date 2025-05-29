@@ -76,6 +76,7 @@ export type AccountsState =
       selectedAuthProvider: GitAuthProvider;
       backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
+      selectedAuthSession?: AuthSession;
     }
   | {
       section: AccountsSection.CONNECT_TO_OPENSHIFT;
@@ -136,6 +137,7 @@ export type AccountsDispatchAction =
       selectedAuthProvider: GitAuthProvider;
       backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
+      selectedAuthSession?: AuthSession;
     }
   | {
       kind: AccountsDispatchActionKind.SETUP_OPENSHIFT_AUTH;
@@ -205,6 +207,7 @@ export function AccountsContextProvider(props: React.PropsWithChildren<{}>) {
             selectedAuthProvider: action.selectedAuthProvider,
             onNewAuthSession: action.onNewAuthSession,
             backActionKind: action.backActionKind,
+            selectedAuthSession: action.selectedAuthSession,
           };
         case AccountsDispatchActionKind.SETUP_OPENSHIFT_AUTH:
           return {

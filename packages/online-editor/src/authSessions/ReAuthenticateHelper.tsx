@@ -62,6 +62,15 @@ export function ReAuthenticateButton({ authSession }: { authSession: AuthSession
         });
         break;
 
+      case AuthProviderType.gitlab:
+        accountsDispatch({
+          kind: AccountsDispatchActionKind.SETUP_GITLAB_AUTH,
+          selectedAuthProvider: matchedProvider,
+          selectedAuthSession: authSession,
+          backActionKind: AccountsDispatchActionKind.GO_HOME,
+        });
+        break;
+
       case AuthProviderType.openshift:
         accountsDispatch({
           kind: AccountsDispatchActionKind.SETUP_OPENSHIFT_AUTH,
