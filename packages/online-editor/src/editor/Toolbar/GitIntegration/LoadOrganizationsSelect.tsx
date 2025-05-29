@@ -68,10 +68,10 @@ const getSelectOptionValue = <K extends SelectOptionKindType>(
     selectedOption,
     kind,
     toString: () => {
-      return kind === "user" ? (selectedOption as string) : (selectedOption as Organization).name;
+      return kind === "user" ? (selectedOption as string) : (selectedOption as Organization)?.name;
     },
     compareTo: (selectOption: any) => {
-      const val = kind === "user" ? (selectedOption as string) : (selectedOption as Organization).name;
+      const val = kind === "user" ? (selectedOption as string) : (selectedOption as Organization)?.name;
       return val.toLowerCase() === selectOption.toString().toLowerCase();
     },
   };

@@ -176,7 +176,7 @@ function AuthSessionCard(props: {
                         <ExclamationCircleIcon style={{ color: "var(--pf-v5-global--palette--red-100)" }} />
                       </>
                     </Tooltip>
-                    <ReAuthenticateButton authSession={props.authSession} />
+                    <ReAuthenticateButton key={`reauth-${props.authSession.id}`} authSession={props.authSession} />
                   </>
                 )}
               </>

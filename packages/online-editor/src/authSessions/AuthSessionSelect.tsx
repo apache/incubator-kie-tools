@@ -267,7 +267,7 @@ export function AuthSessionSelect(props: {
                       </Flex>
                     </SelectOption>,
                     ...(isInvalidSession
-                      ? [<ReAuthenticateButton key={`${authSession.id}`} authSession={authSession} />]
+                      ? [<ReAuthenticateButton key={`reauth-${authSession.id}`} authSession={authSession} />]
                       : []),
                   ];
                 }
@@ -289,7 +289,7 @@ export function AuthSessionSelect(props: {
                       </Flex>
                     </SelectOption>,
                     ...(isInvalidSession
-                      ? [<ReAuthenticateButton key={`${authSession.id}`} authSession={authSession} />]
+                      ? [<ReAuthenticateButton key={`reauth-${authSession.id}`} authSession={authSession} />]
                       : []),
                   ];
                 }
