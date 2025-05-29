@@ -17,7 +17,7 @@
  * under the License.
  */
 import * as React from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { routes } from "../../../navigation/Routes";
 import MonitoringPage from "../../pages/MonitoringPage/MonitoringPage";
 import { WorkflowInstancesPage } from "../../pages/WorkflowInstancesPage/WorkflowInstancesPage";
@@ -25,20 +25,21 @@ import { WorkflowDetailsPage } from "../../pages/WorkflowDetailsPage/WorkflowDet
 
 const ManagementConsoleRoutes: React.FC = () => {
   return (
-    <Switch>
+    <Routes>
       <Route
-        exact
         path={routes.home.path({})}
-        render={() => <Redirect to={routes.runtimeToolsWorkflowInstances.path({})} />}
+        element={<Navigate replace to={routes.runtimeToolsWorkflowInstances.path({})} />}
       />
-      <Route exact path={routes.runtimeToolsWorkflowInstances.path({})} component={WorkflowInstancesPage} />
-      <Route path={routes.runtimeToolsWorkflowDetails.path({ workflowId: ":workflowId" })}>
-        {({ match }) => <WorkflowDetailsPage workflowId={match!.params.workflowId!} />}
-      </Route>
-      <Route exact path={routes.monitoring.path({})} component={MonitoringPage}>
-        <MonitoringPage dataIndexUrl={(window as any)["DATA_INDEX_ENDPOINT"]} />
-      </Route>
-    </Switch>
+      <Route path={routes.runtimeToolsWorkflowInstances.path({})} element={<WorkflowInstancesPage />} />
+      <Route
+        path={routes.runtimeToolsWorkflowDetails.path({ workflowId: ":workflowId" })}
+        element={<WorkflowDetailsPage />}
+      />
+      <Route
+        path={routes.monitoring.path({})}
+        element={<MonitoringPage dataIndexUrl={(window as any)["DATA_INDEX_ENDPOINT"]} />}
+      />
+    </Routes>
   );
 };
 

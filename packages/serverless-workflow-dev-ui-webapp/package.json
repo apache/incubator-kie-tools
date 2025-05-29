@@ -50,13 +50,11 @@
     "apollo-client": "2.6.10",
     "apollo-link-error": "1.1.13",
     "apollo-link-http": "1.5.17",
-    "history": "^4.9.0",
     "react": "^17.0.2",
     "react-apollo": "3.1.3",
     "react-dom": "^17.0.2",
     "react-moment": "0.9.7",
-    "react-router": "^5.3.4",
-    "react-router-dom": "^5.3.4"
+    "react-router-dom": "^6.29.0"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -68,12 +66,9 @@
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/sonataflow-dev-app": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@types/history": "^4.7.3",
     "@types/jest": "^29.5.12",
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
-    "@types/react-router": "^5.1.20",
-    "@types/react-router-dom": "^5.3.3",
     "@types/testing-library__jest-dom": "^5.9.1",
     "concurrently": "^8.2.2",
     "copy-webpack-plugin": "^11.0.0",

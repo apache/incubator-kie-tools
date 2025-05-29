@@ -22,37 +22,44 @@ import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Pag
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { WorkflowListContainer } from "@kie-tools/runtime-tools-swf-webapp-components/dist/WorkflowListContainer";
 import { CloudEventPageSource } from "@kie-tools/runtime-tools-swf-webapp-components/dist/CloudEventForm";
-import { useHistory } from "react-router";
+import { useLocation, useNavigate } from "react-router-dom";
 import { WorkflowListState } from "@kie-tools/runtime-tools-swf-gateway-api/dist/types";
 import { routes } from "../../../navigation/Routes";
 
 const PAGE_TITLE = "Workflow Instances";
 
 export function WorkflowInstancesPage() {
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const initialState: WorkflowListState = history.location && (history.location.state as WorkflowListState);
+  const initialState: WorkflowListState = location && (location.state as WorkflowListState);
 
   const onOpenWorkflowDetails = useCallback(
     (args: { workflowId: string; state: WorkflowListState }) => {
-      history.push({
-        pathname: routes.runtimeToolsWorkflowDetails.path({ workflowId: args.workflowId }),
-        state: args.state,
-      });
+      navigate(
+        {
+          pathname: routes.runtimeToolsWorkflowDetails.path({ workflowId: args.workflowId }),
+        },
+        { state: args.state }
+      );
     },
-    [history]
+    [navigate]
   );
 
   const onOpenTriggerCloudEventForWorkflow = useCallback(
     (workflowId: string) => {
-      history.push({
-        pathname: routes.runtimeToolsTriggerCloudEventForWorkflow.path({ workflowId }),
-        state: {
-          source: CloudEventPageSource.INSTANCES,
+      navigate(
+        {
+          pathname: routes.runtimeToolsTriggerCloudEventForWorkflow.path({ workflowId }),
         },
-      });
+        {
+          state: {
+            source: CloudEventPageSource.INSTANCES,
+          },
+        }
+      );
     },
-    [history]
+    [navigate]
   );
 
   return (

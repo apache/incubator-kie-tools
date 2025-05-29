@@ -18,7 +18,7 @@
  */
 import * as React from "react";
 import { useCallback } from "react";
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import { HashRouter as Router, Route, Routes } from "react-router-dom";
 import { ApolloProvider } from "react-apollo";
 import { ApolloClient } from "apollo-client";
 import {
@@ -39,10 +39,6 @@ interface IOwnProps {
 }
 
 const ManagementConsole: React.FC<IOwnProps> = ({ apolloClient, userContext, children }) => {
-  const renderPage = useCallback(() => {
-    return <BasePage>{children}</BasePage>;
-  }, [children]);
-
   return (
     <ApolloProvider client={apolloClient}>
       <KogitoAppContextProvider userContext={userContext}>
@@ -52,9 +48,9 @@ const ManagementConsole: React.FC<IOwnProps> = ({ apolloClient, userContext, chi
               <WorkflowListContextProviderWithApolloClient apolloClient={apolloClient}>
                 <WorkflowFormContextProvider>
                   <Router>
-                    <Switch>
-                      <Route path="/" render={renderPage} />
-                    </Switch>
+                    <Routes>
+                      <Route path="*" element={<BasePage>{children}</BasePage>} />
+                    </Routes>
                   </Router>
                 </WorkflowFormContextProvider>
               </WorkflowListContextProviderWithApolloClient>

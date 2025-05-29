@@ -21,7 +21,7 @@ import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { Tasks } from "./Tasks";
 import { useEnv } from "../env/hooks/EnvContext";
 import { useRuntimeInfo, useRuntimeSpecificRoutes } from "../runtime/RuntimeContext";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useRoutes } from "../navigation/Hooks";
 import { AuthSession, useAuthSessionsDispatch } from "../authSessions";
 import { useRuntimePageLayoutDispatch } from "../runtime/RuntimePageLayoutContext";
@@ -30,7 +30,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 
 export const TasksPage: React.FC = (ouiaId, ouiaSafe) => {
   const { env } = useEnv();
-  const history = useHistory();
+  const navigate = useNavigate();
   const runtimeRoutes = useRuntimeSpecificRoutes();
   const routes = useRoutes();
   const { runtimeDisplayInfo } = useRuntimeInfo();
@@ -43,13 +43,13 @@ export const TasksPage: React.FC = (ouiaId, ouiaSafe) => {
 
   useEffect(() => {
     setOnSelectAuthSession(() => (authSession: AuthSession) => {
-      history.push(runtimeRoutes.tasks(authSession));
+      navigate(runtimeRoutes.tasks(authSession));
     });
 
     return () => {
       setOnSelectAuthSession(undefined);
     };
-  }, [history, runtimeRoutes, setOnSelectAuthSession]);
+  }, [navigate, runtimeRoutes, setOnSelectAuthSession]);
 
   useEffect(() => {
     setCurrentPageTitle("Tasks");
@@ -72,9 +72,9 @@ export const TasksPage: React.FC = (ouiaId, ouiaSafe) => {
 
   const onNavigateToTaskDetails = useCallback(
     (taskId: string) => {
-      history.push(runtimeRoutes.taskDetails(taskId));
+      navigate(runtimeRoutes.taskDetails(taskId));
     },
-    [history, runtimeRoutes]
+    [navigate, runtimeRoutes]
   );
 
   return (
