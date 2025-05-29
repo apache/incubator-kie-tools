@@ -176,7 +176,7 @@ const ImportJavaClassNameConflictsModal = ({
           <>
             <Text component={TextVariants.h4}>Internal Data Type Conflicts</Text>
             <Text>
-              <b>{internalConflicts.map((c) => c.name).join(", ")}</b>- These are editable DMN types. Choose how to
+              <b>{internalConflicts.map((c) => c.name).join(", ")}</b>- These are editable DMN Types. Choose how to
               resolve them.
             </Text>
             <Text
