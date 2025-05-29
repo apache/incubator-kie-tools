@@ -179,7 +179,7 @@ pipeline {
             steps {
                 build job: "KIE/kie-tools/${params.PIPELINE_PATH}/kie-tools-release-build", parameters: [
                     booleanParam(name: 'DRY_RUN', value: false),
-                    string(name: 'BASE_REF', value: "${params.TAG_NAME}"),
+                    string(name: 'BASE_REF', value: "${params.BRANCH_NAME}"),
                     string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
                     string(name: 'RUNNERS', value: "${params.RUNNERS}"),
                     string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.TAG_NAME}"),
