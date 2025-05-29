@@ -47,10 +47,6 @@
       <dmn:typeRef>number</dmn:typeRef>
     </dmn:itemComponent>
   </dmn:itemDefinition>
-  <dmn:inputData id="_66B82652-6454-4792-A989-7C97C4DF4672" name="Person">
-    <dmn:extensionElements />
-    <dmn:variable id="_6866698D-4B5B-44C2-952F-98EB982F16B6" name="Person" typeRef="tPerson" />
-  </dmn:inputData>
   <dmn:decision id="_753802DC-87F4-4485-81AE-E5393C61B1AC" name="Can drive?">
     <dmn:extensionElements />
     <dmn:variable id="_F1CBDD9A-1300-469A-A478-7A2D1C00C5B6" name="Can drive?" typeRef="boolean" />
@@ -159,6 +155,10 @@
       </dmn:rule>
     </dmn:decisionTable>
   </dmn:decision>
+  <dmn:inputData id="_66B82652-6454-4792-A989-7C97C4DF4672" name="Person">
+    <dmn:extensionElements />
+    <dmn:variable id="_6866698D-4B5B-44C2-952F-98EB982F16B6" name="Person" typeRef="tPerson" />
+  </dmn:inputData>
   <dmndi:DMNDI>
     <dmndi:DMNDiagram id="_1ED795B9-32EE-417C-8D14-C48D140B6ED5" name="DRG">
       <di:extension>

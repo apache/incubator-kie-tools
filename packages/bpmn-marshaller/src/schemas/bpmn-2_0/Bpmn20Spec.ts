@@ -17,18 +17,19 @@
  * under the License.
  */
 
-import * as fs from "fs";
-import * as path from "path";
-import { getMarshaller } from "@kie-tools/bpmn-marshaller";
+import { ns as bpmn20ns } from "../bpmn-2_0/ts-gen/meta";
 
-const files = [{ path: "../tests-data--manual/other/sample.bpmn", version: "2.0" }];
+export type UniqueNameIndex = Map<string, string>;
 
-describe("versions", () => {
-  for (const file of files) {
-    test(path.basename(file.path), () => {
-      const xml = fs.readFileSync(path.join(__dirname, file.path), "utf-8");
-      const { version } = getMarshaller(xml, { upgradeTo: "latest" });
-      expect(version).toStrictEqual(file.version);
-    });
-  }
-});
+export const BPMN20_SPEC = {
+  isValidName: (id: string, name: string | undefined, allUniqueNames: UniqueNameIndex): boolean => {
+    return true; // FIXME: Tiago: Implement (valid name)
+  },
+};
+
+export const allBpmnImportNamespaces = new Set([bpmn20ns.get("")!]);
+
+export const KIE_BPMN_UNKNOWN_NAMESPACE = "https://kie.apache.org/bpmn/unknown";
+
+export const BOUNDARY_EVENT_CANCEL_ACTIVITY_DEFAULT_VALUE = true;
+export const START_EVENT_NODE_ON_EVENT_SUB_PROCESSES_IS_INTERRUPTING_DEFAULT_VALUE = true;
