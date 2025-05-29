@@ -131,6 +131,7 @@ import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { EvaluationHighlightsBadge } from "../evaluationHighlights/EvaluationHighlightsBadge";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
+import { computeIndexedDrd } from "../store/computed/computeIndexes";
 
 const isFirefox = typeof (window as any).InstallTrigger !== "undefined"; // See https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers
 
@@ -787,6 +788,31 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                         },
                       },
                     });
+                    if (node.type === NODE_TYPES.decision && node.data.parentRfNode) {
+                      const dsContainingDecision = node.data.parentRfNode;
+                      const drds = state.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
+                      for (let i = 0; i < drds.length; i++) {
+                        if (i === state.computed(state).getDrdIndex()) {
+                          continue;
+                        }
+                        const _indexedDrd = computeIndexedDrd(
+                          state.dmn.model.definitions["@_namespace"],
+                          state.dmn.model.definitions,
+                          i
+                        );
+                        const dsShapeContainingDecision = _indexedDrd.dmnShapesByHref.get(dsContainingDecision.id);
+                        const dsShape = _indexedDrd.dmnShapesByHref.get(node.id);
+                        if (
+                          dsShapeContainingDecision &&
+                          dsShape &&
+                          dsShape["dc:Bounds"] &&
+                          !dsShapeContainingDecision["@_isCollapsed"]
+                        ) {
+                          dsShape["dc:Bounds"]["@_width"] = change.dimensions?.width ?? 0;
+                          dsShape["dc:Bounds"]["@_height"] = change.dimensions?.height ?? 0;
+                        }
+                      }
+                    }
                   }
                 }
                 break;
@@ -865,6 +891,32 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                           position: snappedNestedNodeShapeWithAppliedDelta,
                         },
                       });
+                    }
+                  }
+                  if (node.type === NODE_TYPES.decision && node.data.parentRfNode) {
+                    const parentDecisionService = node.data.parentRfNode;
+                    const drds = state.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
+                    for (let i = 0; i < drds.length; i++) {
+                      if (i === state.computed(state).getDrdIndex()) {
+                        continue;
+                      }
+                      const _indexedDrd = computeIndexedDrd(
+                        state.dmn.model.definitions["@_namespace"],
+                        state.dmn.model.definitions,
+                        i
+                      );
+                      const parentShape = _indexedDrd.dmnShapesByHref.get(parentDecisionService.id);
+                      const dsShape = _indexedDrd.dmnShapesByHref.get(node.id);
+                      const relativePosinCurrentDS = {
+                        x: (change.position?.x ?? 0) - (parentDecisionService?.data?.shape["dc:Bounds"]?.["@_x"] ?? 0),
+                        y: (change.position?.y ?? 0) - (parentDecisionService.data.shape["dc:Bounds"]?.["@_y"] ?? 0),
+                      };
+                      if (parentShape && dsShape && dsShape["dc:Bounds"] && !parentShape["@_isCollapsed"]) {
+                        dsShape["dc:Bounds"]["@_x"] =
+                          (parentShape["dc:Bounds"]?.["@_x"] ?? 0) + relativePosinCurrentDS.x;
+                        dsShape["dc:Bounds"]["@_y"] =
+                          (parentShape["dc:Bounds"]?.["@_y"] ?? 0) + relativePosinCurrentDS.y;
+                      }
                     }
                   }
                 }
