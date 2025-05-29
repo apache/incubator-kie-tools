@@ -57,7 +57,7 @@ func NewCreateCommand() *cobra.Command {
 	# You can add multiple extensions by separating them with a comma
 	{{.Name}} create --extensions kogito-addons-quarkus-persistence-postgresql,quarkus-core
 
-	# Specify a profile to use for the new Quarkus project (default: dev)
+	# Specify a profile to use for the new Quarkus project (default: dev). Available options: dev, preview, gitops.
 	{{.Name}} create --profile=<profile_name>
 
 	# Add persistence support to the project (default: false)
