@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getNewDmnIdRandomizer } from "@kie-tools/dmn-marshaller/dist/idRandomizer/dmnIdRandomizer";
@@ -112,11 +112,23 @@ export function DataTypes() {
   const dataTypesTree = useDmnEditorStore((s) => s.computed(s).getDataTypes(externalModelsByNamespace).dataTypesTree);
 
   const [isOpenImportJavaClassesWizard, setOpenImportJavaClassesWizard] = useState(false);
-  const { conflictsClasses, handleConflictAction, handleImportJavaClasses, isConflictsOccured } =
-    useImportJavaClasses();
+  const {
+    conflictsClasses,
+    handleConflictAction,
+    handleImportJavaClasses,
+    isConflictsOccured,
+    handleCloseConflictsModal,
+  } = useImportJavaClasses();
   const handleImportJavaClassButtonClick = useCallback(() => {
+    setAddDataTypeDropdownOpen(false);
     setOpenImportJavaClassesWizard((prevState) => !prevState);
   }, []);
+
+  useEffect(() => {
+    if (isOpenImportJavaClassesWizard || isConflictsOccured) {
+      setAddDataTypeDropdownOpen(false);
+    }
+  }, [isOpenImportJavaClassesWizard, isConflictsOccured]);
 
   const activeDataType = useMemo(() => {
     return activeItemDefinitionId ? allDataTypesById.get(activeItemDefinitionId) : undefined;
@@ -358,6 +370,7 @@ export function DataTypes() {
                   isOpen={isConflictsOccured}
                   handleConfirm={handleConflictAction}
                   conflictedJavaClasses={conflictsClasses}
+                  onClose={handleCloseConflictsModal}
                 />
               )}
             </DrawerContentBody>

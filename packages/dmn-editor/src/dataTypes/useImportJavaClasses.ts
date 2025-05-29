@@ -53,6 +53,8 @@ const useImportJavaClasses = () => {
     return dataTypeNames;
   }, [dataTypesTree]);
 
+  const handleCloseConflictsModal = () => setIsConflictsOccured(false);
+
   const buildName = useCallback(
     (nameCandidate: string, namesCount: Map<string, number>, nameSeparator: string = NAME_SEPARATOR): string => {
       if (namesCount.has(nameCandidate)) {
@@ -266,13 +268,21 @@ const useImportJavaClasses = () => {
   );
 
   const handleConflictAction = useCallback(
-    (action: JavaClassConflictOptions) => {
+    (action: { internal: JavaClassConflictOptions; external: JavaClassConflictOptions }) => {
       if (conflictsClasses?.length === 0) return;
-      if (action === JavaClassConflictOptions.KEEP_BOTH) {
-        const updatedJavaClasses = generateUniqueDmnTypeNames(conflictsClasses);
+      const internalConflicts = conflictsClasses.filter((c) => !c.isExternalConflict);
+      const externalConflicts = conflictsClasses.filter((c) => c.isExternalConflict);
+      if (internalConflicts.length > 0) {
+        if (action.internal === JavaClassConflictOptions.REPLACE) {
+          overwriteExistingDMNTypes(internalConflicts);
+        } else if (action.internal === JavaClassConflictOptions.KEEP_BOTH) {
+          const updatedJavaClasses = generateUniqueDmnTypeNames(internalConflicts);
+          importJavaClassesInDataTypeEditor(updatedJavaClasses);
+        }
+      }
+      if (externalConflicts.length > 0 && action.external === JavaClassConflictOptions.KEEP_BOTH) {
+        const updatedJavaClasses = generateUniqueDmnTypeNames(externalConflicts);
         importJavaClassesInDataTypeEditor(updatedJavaClasses);
-      } else if (action === JavaClassConflictOptions.REPLACE) {
-        overwriteExistingDMNTypes(conflictsClasses);
       }
       setIsConflictsOccured(false);
       setConflictsClasses([]);
@@ -285,6 +295,7 @@ const useImportJavaClasses = () => {
     handleConflictAction,
     conflictsClasses,
     isConflictsOccured,
+    handleCloseConflictsModal,
   };
 };
 
