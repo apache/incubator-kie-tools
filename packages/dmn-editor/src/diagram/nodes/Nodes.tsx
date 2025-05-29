@@ -1005,7 +1005,8 @@ export const DecisionServiceNode = React.memo(
                     "@_y":
                       dropPoint.y +
                       (decisionShapeOnOtherDrd["dc:Bounds"]!["@_y"] - dsShapeOnOtherDrd["dc:Bounds"]!["@_y"]),
-                    ...minNodeSize,
+                    "@_width": decisionShapeOnOtherDrd["dc:Bounds"]!["@_width"],
+                    "@_height": decisionShapeOnOtherDrd["dc:Bounds"]!["@_height"],
                   },
                 },
               });
