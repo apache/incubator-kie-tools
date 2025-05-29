@@ -58,8 +58,14 @@
     <xsd:complexContent>
       <xsd:extension base="tBaseElement">
         <xsd:sequence>
-          <xsd:element name="from" type="tExpression" minOccurs="1" maxOccurs="1" />
-          <xsd:element name="to" type="tExpression" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="from" type="tFormalExpression" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="to" type="tFormalExpression" minOccurs="1" maxOccurs="1" />
+          <xsd:element name="inputName" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+          <xsd:element name="inputDataType" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+          <xsd:element name="inputSource" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+          <xsd:element name="outputName" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+          <xsd:element name="outputDataType" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+          <xsd:element name="outputTarget" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
       </xsd:extension>
     </xsd:complexContent>
@@ -95,7 +101,15 @@
   <xsd:complexType name="tBaseElement" abstract="true">
     <xsd:sequence>
       <xsd:element ref="documentation" minOccurs="0" maxOccurs="unbounded" />
-      <xsd:element ref="extensionElements" minOccurs="0" maxOccurs="1" />
+      <!-- (begin) Manually edited. Inlined `tExtensionElements` for type-safe extensibility. -->
+      <xsd:element name="extensionElements" minOccurs="0" maxOccurs="1">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <!-- (end) -->
     </xsd:sequence>
     <xsd:attribute name="id" type="xsd:ID" use="optional" />
     <xsd:anyAttribute namespace="##other" processContents="lax" />
@@ -105,7 +119,15 @@
   <xsd:complexType name="tBaseElementWithMixedContent" abstract="true" mixed="true">
     <xsd:sequence>
       <xsd:element ref="documentation" minOccurs="0" maxOccurs="unbounded" />
-      <xsd:element ref="extensionElements" minOccurs="0" maxOccurs="1" />
+      <!-- (begin) Manually edited. Inlined `tExtensionElements` for type-safe extensibility. -->
+      <xsd:element name="extensionElements" minOccurs="0" maxOccurs="1">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <!-- (end) -->
     </xsd:sequence>
     <xsd:attribute name="id" type="xsd:ID" use="optional" />
     <xsd:anyAttribute namespace="##other" processContents="lax" />
@@ -174,13 +196,6 @@
         </xsd:sequence>
         <xsd:attribute name="calledCollaborationRef" type="xsd:QName" use="optional" />
       </xsd:extension>
-    </xsd:complexContent>
-  </xsd:complexType>
-
-  <xsd:element name="cancelEventDefinition" type="tCancelEventDefinition" substitutionGroup="eventDefinition" />
-  <xsd:complexType name="tCancelEventDefinition">
-    <xsd:complexContent>
-      <xsd:extension base="tEventDefinition" />
     </xsd:complexContent>
   </xsd:complexType>
 
@@ -682,12 +697,13 @@
     <xsd:attribute name="mustUnderstand" type="xsd:boolean" use="optional" default="false" />
   </xsd:complexType>
 
-  <xsd:element name="extensionElements" type="tExtensionElements" />
+  <!-- Manually edited. This is inlined in baseElement and baseElementWithMixedContent, for type-safe extensibility. -->
+  <!-- <xsd:element name="extensionElements" type="tExtensionElements" />
   <xsd:complexType name="tExtensionElements">
     <xsd:sequence>
       <xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" />
     </xsd:sequence>
-  </xsd:complexType>
+  </xsd:complexType> -->
 
   <xsd:element name="flowElement" type="tFlowElement" />
   <xsd:complexType name="tFlowElement" abstract="true">
@@ -802,8 +818,14 @@
     <xsd:complexContent>
       <xsd:extension base="tGlobalTask">
         <xsd:sequence>
+          <xsd:element name="taskName" type="xsd:string" minOccurs="0" maxOccurs="1" />
+          <xsd:element name="subject" type="xsd:string" minOccurs="0" maxOccurs="1" />
+          <xsd:element name="content" type="xsd:string" minOccurs="0" maxOccurs="1" />
+          <xsd:element name="priority" type="xsd:string" minOccurs="0" maxOccurs="1" />
           <xsd:element ref="rendering" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
+        <xsd:attribute name="description" type="xsd:string" use="optional" />
+        <xsd:attribute name="skippable" type="xsd:boolean" default="false" />
         <xsd:attribute name="implementation" type="tImplementation" default="##unspecified" />
       </xsd:extension>
     </xsd:complexContent>
@@ -1498,19 +1520,22 @@
     <xsd:complexContent>
       <xsd:extension base="tArtifact">
         <xsd:sequence>
-          <xsd:element ref="text" minOccurs="0" maxOccurs="1" />
+          <xsd:element name="text" type="xsd:string" minOccurs="0" maxOccurs="1" />
         </xsd:sequence>
         <xsd:attribute name="textFormat" type="xsd:string" default="text/plain" />
       </xsd:extension>
     </xsd:complexContent>
   </xsd:complexType>
 
+  <!-- Manually edited to make this type-safe -->
+  <!-- 
   <xsd:element name="text" type="tText" />
   <xsd:complexType name="tText" mixed="true">
     <xsd:sequence>
       <xsd:any namespace="##any" processContents="lax" minOccurs="0" />
     </xsd:sequence>
   </xsd:complexType>
+  -->
 
   <xsd:element name="throwEvent" type="tThrowEvent" />
   <xsd:complexType name="tThrowEvent" abstract="true">

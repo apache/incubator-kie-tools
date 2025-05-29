@@ -8508,7 +8508,7 @@ importers:
         specifier: ^5.4.1
         version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@patternfly/react-styles':
-        specifier: ^5.4.0
+        specifier: ^5.4.1
         version: 5.4.1
       '@patternfly/react-table':
         specifier: ^5.4.1
@@ -8648,7 +8648,7 @@ importers:
         specifier: ^5.4.1
         version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@patternfly/react-styles':
-        specifier: ^5.4.0
+        specifier: ^5.4.1
         version: 5.4.1
       apollo-cache-inmemory:
         specifier: 1.6.6
