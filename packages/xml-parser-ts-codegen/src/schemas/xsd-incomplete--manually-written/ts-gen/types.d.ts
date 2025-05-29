@@ -17,6 +17,8 @@
  * under the License.
  */
 
+import { XmlParserTsRootElementBaseType } from "@kie-tools/xml-parser-ts";
+
 export type XsdPrimitives = "xsd:int" | "xsd:string" | "xsd:token" | "xsd:integer" | "xsd:anyURI";
 
 export interface XsdImport {
@@ -28,7 +30,7 @@ export interface XsdImport {
 }
 
 export interface XsdSimpleType {
-  "@_name": string;
+  "@_name"?: string;
   "xsd:union"?: {
     "@_memberTypes": XsdPrimitives;
     "xsd:simpleType"?: XsdSimpleType[];
@@ -47,6 +49,12 @@ export interface XsdAttribute {
   "@_type": string;
   "@_use"?: "required" | "optional";
   "@_default": string;
+  "xsd:simpleType"?: XsdSimpleType;
+}
+
+export interface XsdTopLevelAttributeGroup {
+  "xsd:attribute": XsdAttribute[];
+  "@_name": string;
 }
 
 export interface XsdSequence {
@@ -61,7 +69,7 @@ export interface XsdSequence {
   };
 }
 
-export interface XSDExtension {
+export interface XsdExtension {
   "xsd:attribute"?: XsdAttribute[];
   "xsd:sequence"?: XsdSequence;
   "xsd:all"?: XsdAll;
@@ -72,7 +80,9 @@ export interface XSDExtension {
 export interface XsdComplexType {
   "@_name"?: string;
   "@_abstract"?: boolean;
+  "@_mixed"?: boolean;
   "xsd:attribute"?: XsdAttribute[];
+  "xsd:attributeGroup"?: Array<{ "@_ref": string }>;
   "xsd:sequence"?: XsdSequence;
   "xsd:all"?: XsdAll;
   "xsd:anyAttribute"?: {
@@ -80,10 +90,10 @@ export interface XsdComplexType {
     "@_processContents": "lax";
   };
   "xsd:complexContent"?: {
-    "xsd:extension"?: XSDExtension;
+    "xsd:extension"?: XsdExtension;
   };
   "xsd:simpleContent"?: {
-    "xsd:extension"?: XSDExtension;
+    "xsd:extension"?: XsdExtension;
   };
 }
 
@@ -121,7 +131,7 @@ export interface XsdTopLevelElement {
 }
 
 export interface XsdSchema {
-  "xsd:schema": {
+  "xsd:schema": XmlParserTsRootElementBaseType & {
     "@_targetNamespace": string;
     "@_elementFormDefault": "qualified";
     "@_attributeFormDefault": "unqualified";
@@ -130,5 +140,7 @@ export interface XsdSchema {
     "xsd:simpleType"?: XsdSimpleType[];
     "xsd:complexType"?: XsdComplexType[];
     "xsd:element"?: XsdTopLevelElement[];
+    "xsd:attribute"?: XsdAttribute[];
+    "xsd:attributeGroup"?: XsdTopLevelAttributeGroup[];
   };
 }

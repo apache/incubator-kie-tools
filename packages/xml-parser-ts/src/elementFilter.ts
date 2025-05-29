@@ -17,18 +17,14 @@
  * under the License.
  */
 
-import * as fs from "fs";
-import * as path from "path";
-import { getMarshaller } from "@kie-tools/bpmn-marshaller";
+export type ElementFilter<E extends { __$$element: string }, Filter extends string> = E extends any
+  ? E["__$$element"] extends Filter
+    ? E
+    : never
+  : never;
 
-const files = [{ path: "../tests-data--manual/other/sample.bpmn", version: "2.0" }];
-
-describe("versions", () => {
-  for (const file of files) {
-    test(path.basename(file.path), () => {
-      const xml = fs.readFileSync(path.join(__dirname, file.path), "utf-8");
-      const { version } = getMarshaller(xml, { upgradeTo: "latest" });
-      expect(version).toStrictEqual(file.version);
-    });
-  }
-});
+export type ElementExclusion<E extends { __$$element: string }, Filter extends string> = E extends any
+  ? E["__$$element"] extends Filter
+    ? never
+    : E
+  : never;
