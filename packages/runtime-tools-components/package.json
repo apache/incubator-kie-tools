@@ -20,7 +20,7 @@
   "scripts": {
     "build:dev": "rimraf dist && tsc -p tsconfig.json && pnpm copy:css",
     "build:prod": "pnpm lint && rimraf dist && tsc -p tsconfig.json && pnpm copy:css",
-    "copy:css": "copyfiles -u 2 \"src/**/*.{sass,scss,css,svg,png}\" dist/",
+    "copy:css": "copyfiles -u 1 \"src/**/*.{sass,scss,css,svg,png}\" dist",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\""
   },
   "dependencies": {
@@ -36,16 +36,14 @@
     "@patternfly/react-table": "^5.4.1",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
-    "axios": "^1.7.4",
+    "axios": "^1.9.0",
     "copyfiles": "^2.4.1",
-    "history": "^4.9.0",
     "keycloak-js": "^23.0.5",
     "lodash": "^4.17.21",
     "monaco-editor": "^0.39.0",
     "react-datetime-picker": "^3.5.0",
     "react-moment": "0.9.7",
-    "react-router": "^5.3.4",
-    "react-router-dom": "^5.3.4",
+    "react-router-dom": "^6.29.0",
     "uniforms": "^3.10.2",
     "uniforms-bridge-json-schema": "^3.10.2",
     "uuid": "^8.3.2"
@@ -54,13 +52,10 @@
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@types/history": "^4.7.3",
     "@types/lodash": "^4.14.168",
     "@types/react": "^17.0.6",
     "@types/react-datetime-picker": "^3.4.1",
     "@types/react-dom": "^17.0.5",
-    "@types/react-router": "^5.1.20",
-    "@types/react-router-dom": "^5.3.3",
     "@types/uuid": "^8.3.0",
     "rimraf": "^3.0.2",
     "typescript": "^5.5.3"

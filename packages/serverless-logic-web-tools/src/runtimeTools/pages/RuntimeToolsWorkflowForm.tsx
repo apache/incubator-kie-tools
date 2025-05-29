@@ -30,19 +30,20 @@ import { Alert, AlertActionCloseButton, AlertActionLink } from "@patternfly/reac
 import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { useHistory } from "react-router";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 import { routes } from "../../navigation/Routes";
 
 const PAGE_TITLE = "Start new workflow";
 
 export function RuntimeToolsWorkflowForm() {
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
   const gatewayApi: WorkflowFormGatewayApi = useWorkflowFormGatewayApi();
 
   const inlineEditRef = useRef<InlineEditApi>(null);
 
-  const workflowDefinition: WorkflowDefinition = (history.location.state as any)["workflowDefinition"];
+  const workflowDefinition: WorkflowDefinition = (location.state as any)["workflowDefinition"];
 
   const onResetForm = useCallback(() => {
     gatewayApi.setBusinessKey("");
@@ -62,7 +63,7 @@ export function RuntimeToolsWorkflowForm() {
     useCallback(
       ({ close }, { workflowId }) => {
         const viewDetails = () => {
-          history.push({
+          navigate({
             pathname: routes.runtimeToolsWorkflowDetails.path({ workflowId }),
           });
           close();
@@ -84,7 +85,7 @@ export function RuntimeToolsWorkflowForm() {
           />
         );
       },
-      [history]
+      [navigate]
     ),
     { durationInSeconds: 5 }
   );

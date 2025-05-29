@@ -17,16 +17,12 @@
  * under the License.
  */
 import * as React from "react";
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card } from "@patternfly/react-core/dist/js/components/Card";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
-import {
-  useProcessDetailsGatewayApi,
-  ProcessDetailsGatewayApi,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
 import {
   EmptyState,
   EmptyStateBody,
@@ -39,8 +35,9 @@ import { SearchIcon } from "@patternfly/react-icons/dist/js/icons/search-icon";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { EmbeddedProcessDetails } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processDetails";
+import { useProcessDetailsChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessDetails";
 import { useRuntimeSpecificRoutes } from "../../runtime/RuntimeContext";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   processInstanceId: string;
@@ -48,9 +45,9 @@ interface Props {
 }
 
 export const ProcessDetails: React.FC<Props> = ({ processInstanceId, onReturnToProcessList }) => {
-  const gatewayApi: ProcessDetailsGatewayApi = useProcessDetailsGatewayApi();
+  const channelApi = useProcessDetailsChannelApi();
   const runtimeRoutes = useRuntimeSpecificRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [processInstance, setProcessInstance] = useState<ProcessInstance>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>();
@@ -62,8 +59,8 @@ export const ProcessDetails: React.FC<Props> = ({ processInstanceId, onReturnToP
           return;
         }
         setIsLoading(true);
-        gatewayApi
-          .processDetailsQuery(processInstanceId)
+        channelApi
+          .processDetails__getProcessDetails(processInstanceId)
           .then((response) => {
             if (canceled.get()) {
               return;
@@ -71,28 +68,27 @@ export const ProcessDetails: React.FC<Props> = ({ processInstanceId, onReturnToP
             setProcessInstance(response);
           })
           .catch((error) => {
-            console.log("DEU ERROR!");
             setError(error);
           })
           .finally(() => {
             setIsLoading(false);
           });
       },
-      [gatewayApi, processInstanceId]
+      [channelApi, processInstanceId]
     )
   );
 
   useEffect(() => {
-    const unSubscribeHandler = gatewayApi.onOpenProcessInstanceDetailsListener({
+    const unsubscriber = channelApi.processDetails__onOpenProcessInstanceDetailsListener({
       onOpen(id: string) {
-        history.push(runtimeRoutes.processDetails(id));
+        navigate(runtimeRoutes.processDetails(id));
       },
     });
 
     return () => {
-      unSubscribeHandler.unSubscribe();
+      unsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
     };
-  }, [gatewayApi, history, runtimeRoutes]);
+  }, [channelApi, navigate, runtimeRoutes]);
 
   // Loading State
   if (isLoading) {
@@ -105,18 +101,14 @@ export const ProcessDetails: React.FC<Props> = ({ processInstanceId, onReturnToP
 
   // Error State
   if (error) {
-    return (
-      <Bullseye>
-        <ServerErrors error={error} variant="large" />
-      </Bullseye>
-    );
+    return <ServerErrors error={error} variant="large" onGoBack={() => navigate(runtimeRoutes.processes())} />;
   }
 
   // Process Instance Details
   if (processInstance) {
     return (
       <EmbeddedProcessDetails
-        driver={gatewayApi}
+        channelApi={channelApi}
         targetOrigin={window.location.origin}
         processInstance={processInstance}
         singularProcessLabel={"process"}

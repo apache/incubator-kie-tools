@@ -131,11 +131,8 @@ export const routes = {
   sampleShowcase: new Route<{ queryParams: QueryParams.SAMPLE_ID }>(() => `/sample`),
 
   workspaceWithFilePath: new Route<{
-    pathParams: PathParams.WORKSPACE_ID | PathParams.FILE_RELATIVE_PATH | PathParams.EXTENSION;
-  }>(
-    ({ workspaceId, fileRelativePath, extension }) =>
-      `/${workspaceId}/file/${fileRelativePath}${extension ? "." + extension : ""}`
-  ),
+    pathParams: PathParams.WORKSPACE_ID | PathParams.FILE_RELATIVE_PATH;
+  }>(({ workspaceId, fileRelativePath }) => `/${workspaceId}/file/${fileRelativePath}`),
 
   workspaceWithFiles: new Route<{
     pathParams: PathParams.WORKSPACE_ID;
@@ -168,6 +165,7 @@ export const routes = {
     service_registry: new Route<{}>(() => `${SETTINGS_ROUTE}/service-registry`),
     storage: new Route<{}>(() => `${SETTINGS_ROUTE}/storage`),
     runtime_tools: new Route<{}>(() => `${SETTINGS_ROUTE}/runtime-tools`),
+    redirect: new Route<{}>(() => `${SETTINGS_ROUTE}/*`),
   },
 
   static: {
@@ -178,4 +176,6 @@ export const routes = {
       kieHorizontalLogoReverse: new Route<{}>(() => `images/kie_horizontal_rgb_fullcolor_reverse.svg`),
     },
   },
+
+  noMatch: new Route<{}>(() => `*`),
 };

@@ -30,7 +30,6 @@
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/react-hooks": "workspace:*",
     "@kie-tools/runtime-tools-components": "workspace:*",
-    "@kie-tools/runtime-tools-shared-enveloped-components": "workspace:*",
     "@kie-tools/runtime-tools-shared-gateway-api": "workspace:*",
     "@kie-tools/runtime-tools-shared-webapp-components": "workspace:*",
     "@kie-tools/runtime-tools-swf-enveloped-components": "workspace:*",
@@ -46,8 +45,7 @@
     "openapi-types": "^7.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-router": "^5.3.4",
-    "react-router-dom": "^5.3.4",
+    "react-router-dom": "^6.29.0",
     "typescript": "^5.5.3"
   },
   "devDependencies": {
@@ -63,8 +61,6 @@
     "@types/jest": "^29.5.12",
     "@types/react": "^17.0.6",
     "@types/react-dom": "^17.0.5",
-    "@types/react-router": "^5.1.20",
-    "@types/react-router-dom": "^5.3.3",
     "concurrently": "^8.2.2",
     "copy-webpack-plugin": "^11.0.0",
     "jest": "^29.7.0",

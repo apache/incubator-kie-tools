@@ -17,11 +17,12 @@
  * under the License.
  */
 
+import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 export interface TaskFormChannelApi {
-  taskForm__getTaskFormSchema(): Promise<Record<string, any>>;
-  taskForm__getCustomForm(): Promise<Form>;
-  taskForm__doSubmit(phase?: string, payload?: any): Promise<any>;
-  taskForm__getTaskPhases(): Promise<string[]>;
+  taskForm__getTaskFormSchema(userTask: UserTaskInstance): Promise<Record<string, any>>;
+  taskForm__getCustomForm(userTask: UserTaskInstance): Promise<Form>;
+  taskForm__doSubmit(userTask: UserTaskInstance, phase: string, payload: any): Promise<any>;
+  taskForm__getTaskPhases(userTask: UserTaskInstance): Promise<string[]>;
 }

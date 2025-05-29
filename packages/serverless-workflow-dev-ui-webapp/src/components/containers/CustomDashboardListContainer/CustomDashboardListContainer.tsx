@@ -23,22 +23,26 @@ import { CustomDashboardInfo } from "@kie-tools/runtime-tools-shared-gateway-api
 import { EmbeddedCustomDashboardList } from "@kie-tools/runtime-tools-shared-enveloped-components/dist/customDashboardList";
 import { CustomDashboardListGatewayApi } from "../../../channel/CustomDashboardList";
 import { useCustomDashboardListGatewayApi } from "../../../channel/CustomDashboardList/CustomDashboardListContext";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const CustomDashboardListContainer: React.FC<OUIAProps> = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const gatewayApi: CustomDashboardListGatewayApi = useCustomDashboardListGatewayApi();
 
   useEffect(() => {
     const unsubscriber = gatewayApi.onOpenCustomDashboardListen({
       onOpen(customDashboardInfo: CustomDashboardInfo) {
-        history.push({
-          pathname: `/customDashboard/${customDashboardInfo.name}`,
-          state: {
-            filter: gatewayApi.getCustomDashboardFilter(),
-            data: customDashboardInfo,
+        navigate(
+          {
+            pathname: `../customDashboard/${customDashboardInfo.name}`,
           },
-        });
+          {
+            state: {
+              filter: gatewayApi.getCustomDashboardFilter(),
+              data: customDashboardInfo,
+            },
+          }
+        );
       },
     });
     return () => {

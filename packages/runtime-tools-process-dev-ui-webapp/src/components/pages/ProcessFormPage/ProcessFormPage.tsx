@@ -16,106 +16,75 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useEffect, useState, useCallback } from "react";
-import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
+import React, { useState, useCallback, useMemo, ReactElement } from "react";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import ProcessFormContainer from "../../containers/ProcessFormContainer/ProcessFormContainer";
-import "../../styles.css";
-import { useHistory } from "react-router-dom";
-import InlineEdit from "./components/InlineEdit/InlineEdit";
-import { useProcessFormGatewayApi } from "../../../channel/ProcessForm/ProcessFormContext";
+import { useLocation, useNavigate } from "react-router-dom";
+import { InlineEdit } from "./components/InlineEdit/InlineEdit";
 import { ProcessDefinition } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import {
-  OUIAProps,
-  componentOuiaProps,
-  ouiaPageTypeAndObjectId,
-} from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 import { PageTitle } from "@kie-tools/runtime-tools-components/dist/components/PageTitle";
+import { useProcessFormChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessForm";
+import "../../styles.css";
 
-const ProcessFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
+const ProcessFormPage: React.FC = () => {
   const [notification, setNotification] = useState<Notification>();
 
-  const history = useHistory();
-  const gatewayApi = useProcessFormGatewayApi();
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const processDefinition: ProcessDefinition = history.location.state["processDefinition"];
+  const channelApi = useProcessFormChannelApi();
 
-  let processId: string;
+  const processDefinition = useMemo(() => location.state["processDefinition"] as ProcessDefinition, [location.state]);
 
-  useEffect(() => {
-    return ouiaPageTypeAndObjectId("process-form");
-  });
-
-  const goToProcessDefinition = () => {
-    history.push("/Processes");
-  };
-
-  const showNotification = (
-    notificationType: Notification["type"],
-    submitMessage: string,
-    notificationDetails?: string
-  ) => {
-    setNotification({
-      type: notificationType,
-      message: submitMessage,
-      details: notificationDetails,
-      customActions: [
-        {
-          label: "Go to Processes",
-          onClick: () => {
-            setNotification(null);
-            goToProcessDefinition();
+  const showNotification = useCallback(
+    (notificationType: Notification["type"], submitMessage: string, notificationDetails?: string) => {
+      setNotification({
+        type: notificationType,
+        message: submitMessage,
+        details: notificationDetails,
+        customActions: [
+          {
+            label: "Go to Processes",
+            onClick: () => {
+              setNotification(null);
+              navigate({ pathname: "/Processes" });
+            },
           },
+        ],
+        close: () => {
+          setNotification(null);
         },
-      ],
-      close: () => {
-        setNotification(null);
-      },
-    });
-    return (
-      <>
-        {processId && (
-          <div>
-            <label>Go to Process details</label>
-            <button onClick={handleClick}>Click Here</button>
-          </div>
-        )}
-      </>
-    );
-  };
+      });
+    },
+    [navigate]
+  );
 
-  const onSubmitSuccess = (id: string): void => {
-    processId = id;
-    const message = `The process with id: ${id} has started successfully`;
-    showNotification("success", message);
-  };
+  const onSubmitSuccess = useCallback(
+    (id: string): void => {
+      const message = `The process with id: ${id} has started successfully`;
+      showNotification("success", message);
+    },
+    [showNotification]
+  );
 
-  const onSubmitError = (details?: string) => {
-    const message = "Failed to start the process.";
-    showNotification("error", message, details);
-  };
-
-  const handleClick = useCallback(() => {
-    const goToProcessDetails = () => {
-      history.push(`/Process/${processId}`);
-    };
-    setNotification(null);
-    goToProcessDetails();
-  }, [setNotification, history, processId]);
+  const onSubmitError = useCallback(
+    (details?: string) => {
+      const message = "Failed to start the process.";
+      showNotification("error", message, details);
+    },
+    [showNotification]
+  );
 
   return (
     <React.Fragment>
-      <PageSection
-        {...componentOuiaProps(`title${ouiaId ? "-" + ouiaId : ""}`, "process-form-page-section", ouiaSafe)}
-        variant="light"
-      >
+      <PageSection variant="light">
         <PageTitle
           title={`Start ${processDefinition.processName}`}
           extra={
             <InlineEdit
-              setBusinessKey={(bk) => gatewayApi.setBusinessKey(bk)}
-              getBusinessKey={() => gatewayApi.getBusinessKey()}
+              setBusinessKey={(bk) => channelApi.processForm__setBusinessKey(bk)}
+              getBusinessKey={async () => await channelApi.processForm__getBusinessKey()}
             />
           }
         />
@@ -125,18 +94,12 @@ const ProcessFormPage: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
           </div>
         )}
       </PageSection>
-      <PageSection
-        {...componentOuiaProps(`content${ouiaId ? "-" + ouiaId : ""}`, "process-form-page-section", ouiaSafe)}
-      >
-        <Card className="Dev-ui__card-size">
-          <CardBody className="pf-v5-u-h-100">
-            <ProcessFormContainer
-              processDefinitionData={processDefinition}
-              onSubmitSuccess={onSubmitSuccess}
-              onSubmitError={onSubmitError}
-            />
-          </CardBody>
-        </Card>
+      <PageSection>
+        <ProcessFormContainer
+          processDefinitionData={processDefinition}
+          onSubmitSuccess={onSubmitSuccess}
+          onSubmitError={onSubmitError}
+        />
       </PageSection>
     </React.Fragment>
   );

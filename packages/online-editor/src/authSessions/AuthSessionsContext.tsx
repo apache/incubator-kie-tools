@@ -23,7 +23,11 @@ import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancela
 import { decoder, encoder } from "@kie-tools-core/workspaces-git-fs/dist/encoderdecoder/EncoderDecoder";
 import { LfsStorageFile } from "@kie-tools-core/workspaces-git-fs/dist/lfs/LfsStorageService";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
-import { fetchAuthenticatedBitbucketUser, fetchAuthenticatedGitHubUser } from "../accounts/git/ConnectToGitSection";
+import {
+  fetchAuthenticatedBitbucketUser,
+  fetchAuthenticatedGitHubUser,
+  fetchAuthenticatedGitlabUser,
+} from "../accounts/git/ConnectToGitSection";
 import {
   AuthSession,
   AuthSessionStatus,
@@ -180,14 +184,25 @@ export function AuthSessionsContextProvider(props: PropsWithChildren<{}>) {
                         authSession.token,
                         authProvider?.domain,
                         env.KIE_SANDBOX_CORS_PROXY_URL,
-                        authProvider?.insecurelyDisableTlsCertificateValidation
+                        authProvider?.insecurelyDisableTlsCertificateValidation,
+                        authProvider?.disableEncoding
                       ),
                     github: () =>
                       fetchAuthenticatedGitHubUser(
                         authSession.token,
                         authProvider?.domain,
                         env.KIE_SANDBOX_CORS_PROXY_URL,
-                        authProvider?.insecurelyDisableTlsCertificateValidation
+                        authProvider?.insecurelyDisableTlsCertificateValidation,
+                        authProvider?.disableEncoding
+                      ),
+                    gitlab: () =>
+                      fetchAuthenticatedGitlabUser(
+                        env.KIE_SANDBOX_APP_NAME,
+                        authSession.token,
+                        authProvider?.domain,
+                        env.KIE_SANDBOX_CORS_PROXY_URL,
+                        authProvider?.insecurelyDisableTlsCertificateValidation,
+                        authProvider?.disableEncoding
                       ),
                   });
                   await fetchUser();

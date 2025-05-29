@@ -42,7 +42,7 @@ import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { routes } from "../../navigation/Routes";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 const REFRESH_COUNTDOWN_INITIAL_VALUE_IN_SECONDS = 20;
 
@@ -55,7 +55,7 @@ export function OpenshiftDeploymentsDropdown() {
   const [refreshCountdownInSeconds, setRefreshCountdownInSeconds] = useState(
     REFRESH_COUNTDOWN_INITIAL_VALUE_IN_SECONDS
   );
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const isConnected = useMemo(
     () => settings.openshift.status === OpenShiftInstanceStatus.CONNECTED,
@@ -63,8 +63,8 @@ export function OpenshiftDeploymentsDropdown() {
   );
 
   const openOpenShiftSettings = useCallback(() => {
-    history.push(routes.settings.openshift.path({}));
-  }, [history]);
+    navigate(routes.settings.openshift.path({}));
+  }, [navigate]);
 
   const [deployments, refresh] = useLivePromiseState<WebToolsOpenShiftDeployedModel[]>(
     useMemo(() => {
@@ -198,10 +198,10 @@ export function OpenshiftDeploymentsDropdown() {
 
   const onDeploymensDropdownToggle = useCallback(() => {
     if (!isConnected) {
-      history.push(routes.settings.openshift.path({}));
+      navigate(routes.settings.openshift.path({}));
     }
     openshift.setDeploymentsDropdownOpen((dropdownOpen) => isConnected && !dropdownOpen);
-  }, [history, isConnected, openshift]);
+  }, [navigate, isConnected, openshift]);
 
   return (
     <>

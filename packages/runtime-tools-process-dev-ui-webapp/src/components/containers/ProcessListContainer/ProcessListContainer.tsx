@@ -17,44 +17,43 @@
  * under the License.
  */
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
-import { ProcessListState } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
-import { EmbeddedProcessList } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processList";
 import {
-  ProcessListGatewayApi,
-  useProcessListGatewayApi,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessList";
+  EmbeddedProcessList,
+  ProcessListState,
+} from "@kie-tools/runtime-tools-process-enveloped-components/dist/processList";
+import { useProcessListChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/ProcessList";
 import { ProcessInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 
 interface ProcessListContainerProps {
   initialState: ProcessListState;
 }
 
-const ProcessListContainer: React.FC<ProcessListContainerProps & OUIAProps> = ({ initialState, ouiaId, ouiaSafe }) => {
-  const history = useHistory();
-  const gatewayApi: ProcessListGatewayApi = useProcessListGatewayApi();
+const ProcessListContainer: React.FC<ProcessListContainerProps> = ({ initialState }) => {
+  const navigate = useNavigate();
+  const channelApi = useProcessListChannelApi();
   const appContext = useDevUIAppContext();
 
   useEffect(() => {
-    const onOpenInstanceUnsubscriber = gatewayApi.onOpenProcessListen({
+    const onOpenInstanceUnsubscriber = channelApi.processList__onOpenProcessListen({
       onOpen(process: ProcessInstance) {
-        history.push({
-          pathname: `/Process/${process.id}`,
-          state: gatewayApi.processListState,
-        });
+        navigate(
+          {
+            pathname: `../Process/${process.id}`,
+          },
+          {}
+        );
       },
     });
     return () => {
-      onOpenInstanceUnsubscriber.unSubscribe();
+      onOpenInstanceUnsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
     };
-  }, []);
+  }, [channelApi, history]);
 
   return (
     <EmbeddedProcessList
-      {...componentOuiaProps(ouiaId, "process-list-container", ouiaSafe)}
-      driver={gatewayApi}
+      channelApi={channelApi}
       targetOrigin={appContext.getDevUIUrl()}
       initialState={initialState}
       singularProcessLabel={appContext.customLabels.singularProcessLabel}

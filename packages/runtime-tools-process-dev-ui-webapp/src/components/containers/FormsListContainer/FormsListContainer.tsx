@@ -17,37 +17,39 @@
  * under the License.
  */
 import React, { useEffect } from "react";
-import { FormsListGatewayApi } from "../../../channel/FormsList";
-import { useFormsListGatewayApi } from "../../../channel/FormsList/FormsListContext";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
-import { OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
-import { EmbeddedFormsList } from "@kie-tools/runtime-tools-shared-enveloped-components/dist/formsList";
+import { EmbeddedFormsList } from "@kie-tools/runtime-tools-process-enveloped-components/dist/formsList";
+import { useFormsListChannelApi } from "../../../channel/FormsList";
 
-const FormsListContainer: React.FC<OUIAProps> = () => {
-  const history = useHistory();
-  const gatewayApi: FormsListGatewayApi = useFormsListGatewayApi();
+const FormsListContainer: React.FC = () => {
+  const navigate = useNavigate();
+  const channelApi = useFormsListChannelApi();
   const appContext = useDevUIAppContext();
 
   useEffect(() => {
-    const unsubscriber = gatewayApi.onOpenFormListen({
+    const unsubscriber = channelApi.formsList__onOpenFormListen({
       onOpen(formData: FormInfo) {
-        history.push({
-          pathname: `/Forms/${formData.name}`,
-          state: {
-            filter: gatewayApi.getFormFilter(),
-            formData: formData,
+        navigate(
+          {
+            pathname: `../Forms/${formData.name}`,
           },
-        });
+          {
+            state: {
+              filter: channelApi.formsList__getFormFilter(),
+              formData: formData,
+            },
+          }
+        );
       },
     });
     return () => {
-      unsubscriber.unSubscribe();
+      unsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
     };
-  }, []);
+  }, [channelApi, navigate]);
 
-  return <EmbeddedFormsList driver={gatewayApi} targetOrigin={appContext.getDevUIUrl()} />;
+  return <EmbeddedFormsList channelApi={channelApi} targetOrigin={appContext.getDevUIUrl()} />;
 };
 
 export default FormsListContainer;

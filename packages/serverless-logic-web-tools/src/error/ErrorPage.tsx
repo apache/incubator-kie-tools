@@ -30,7 +30,7 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useCallback, useMemo, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { WorkspaceDescriptor } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { useRoutes } from "../navigation/Hooks";
@@ -59,12 +59,12 @@ export type ErrorPageProps = { errors: string[] } & (
 
 export function ErrorPage(props: ErrorPageProps) {
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [showDetails, setShowDetails] = useState(false);
 
   const returnRecentModels = useCallback(() => {
-    history.replace({ pathname: routes.home.path({}) });
-  }, [history, routes]);
+    navigate({ pathname: routes.home.path({}) }, { replace: true });
+  }, [navigate, routes]);
 
   const errorDetails = useMemo(() => props.errors.filter(Boolean).join("\n"), [props.errors]);
 

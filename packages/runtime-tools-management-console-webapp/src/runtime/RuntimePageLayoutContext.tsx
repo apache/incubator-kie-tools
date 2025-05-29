@@ -17,22 +17,21 @@
  * under the License.
  */
 
-import React, { createContext, PropsWithChildren, useContext, useMemo, useState } from "react";
-import { Location, LocationDescriptor } from "history";
+import React, { createContext, PropsWithChildren, ReactElement, useContext, useMemo, useState } from "react";
 import { ManagementConsolePageLayout } from "../managementConsole/ManagementConsolePageLayout";
 import { RuntimeNav } from "./RuntimeNav";
 
-export type BreadcrumbPathType = Array<Pick<Location, "pathname" | "state"> | LocationDescriptor>;
+export type BreadcrumbPathType = Array<Partial<Location> | string>;
 
 export type RuntimePageLayoutContextType = {
-  currentPageTitle: string;
-  breadcrumbText: string[];
+  currentPageTitle: string | ReactElement;
+  breadcrumbText: (string | ReactElement)[];
   breadcrumbPath: BreadcrumbPathType;
 };
 
 export type RuntimePageLayoutDispatchContextType = {
-  setCurrentPageTitle: React.Dispatch<React.SetStateAction<string>>;
-  setBreadcrumbText: React.Dispatch<React.SetStateAction<string[]>>;
+  setCurrentPageTitle: React.Dispatch<React.SetStateAction<string | ReactElement>>;
+  setBreadcrumbText: React.Dispatch<React.SetStateAction<(string | ReactElement)[]>>;
   setBreadcrumbPath: React.Dispatch<React.SetStateAction<BreadcrumbPathType | undefined>>;
 };
 
@@ -50,8 +49,8 @@ export function useRuntimePageLayoutDispatch() {
 }
 
 export function RuntimePageLayoutContextProvider(props: PropsWithChildren<{}>) {
-  const [currentPageTitle, setCurrentPageTitle] = useState("");
-  const [breadcrumbText, setBreadcrumbText] = useState<string[]>([]);
+  const [currentPageTitle, setCurrentPageTitle] = useState<string | ReactElement>("");
+  const [breadcrumbText, setBreadcrumbText] = useState<(string | ReactElement)[]>([]);
   const [breadcrumbPath, setBreadcrumbPath] = useState<BreadcrumbPathType>([]);
 
   const value = useMemo(

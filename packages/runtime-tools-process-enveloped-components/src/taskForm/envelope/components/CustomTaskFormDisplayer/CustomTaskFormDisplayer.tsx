@@ -20,7 +20,6 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { generateFormData } from "../utils/TaskFormDataUtils";
-import { TaskFormDriver, User } from "../../../api";
 import { Stack, StackItem } from "@patternfly/react-core/dist/js/layouts/Stack";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { FormAction } from "@kie-tools/runtime-tools-components/dist/utils";
@@ -28,35 +27,34 @@ import { buildTaskFormContext } from "./utils/utils";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { FormFooter } from "@kie-tools/runtime-tools-components/dist/components/FormFooter";
 import { Form } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
-import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
+import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
+import { TaskFormChannelApi, User } from "../../../api";
 import {
   EmbeddedFormDisplayer,
   FormDisplayerApi,
   FormOpened,
   FormOpenedState,
   FormSubmitResponseType,
-} from "@kie-tools/runtime-tools-shared-enveloped-components/dist/formDisplayer";
+} from "../../../../formDisplayer";
 
 export interface CustomTaskFormDisplayerProps {
   userTask: UserTaskInstance;
   schema: Record<string, any>;
   customForm: Form;
   user: User;
-  driver: TaskFormDriver;
+  channelApi: MessageBusClientApi<TaskFormChannelApi>;
   phases: string[];
   targetOrigin: string;
 }
 
-const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps & OUIAProps> = ({
+const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps> = ({
   userTask,
   customForm,
   schema,
   user,
-  driver,
+  channelApi,
   phases,
   targetOrigin,
-  ouiaId,
-  ouiaSafe,
 }) => {
   const formDisplayerApiRef = useRef<FormDisplayerApi>(null);
   const [formUUID] = useState<string>(uuidv4());
@@ -70,7 +68,7 @@ const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps & OUIAProps
       const formDisplayerApi = formDisplayerApiRef.current;
 
       try {
-        const response = await driver.doSubmit(phase, payload);
+        const response = await channelApi.requests.taskForm__doSubmit(userTask, phase, payload);
         formDisplayerApi!.notifySubmitResult({
           type: FormSubmitResponseType.SUCCESS,
           info: response,
@@ -84,7 +82,7 @@ const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps & OUIAProps
         setSubmitted(true);
       }
     },
-    [driver]
+    [channelApi, userTask]
   );
 
   useEffect(() => {
@@ -116,11 +114,9 @@ const CustomTaskFormDisplayer: React.FC<CustomTaskFormDisplayerProps & OUIAProps
   }, [formOpened, formUUID]);
 
   return (
-    <div {...componentOuiaProps(ouiaId, "custom-form-displayer", ouiaSafe)} style={{ height: "100%" }}>
+    <div style={{ height: "100%" }}>
       {!formOpened && (
-        <Bullseye
-          {...componentOuiaProps((ouiaId ? ouiaId : "task-form-envelope-view") + "-loading-spinner", "task-form", true)}
-        >
+        <Bullseye>
           <KogitoSpinner spinnerText={`Loading Task form...`} />
         </Bullseye>
       )}
