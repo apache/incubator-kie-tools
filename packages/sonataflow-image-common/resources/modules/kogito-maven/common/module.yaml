@@ -23,6 +23,7 @@ version: "main"
 envs:
   - name: "MAVEN_VERSION"
     description: "The Maven version to setup with this module"
+    value: "3.8.6"
   - name: "MAVEN_HOME"
     value: "/usr/share/maven"
   - name: "MAVEN_CMD"
@@ -94,6 +95,16 @@ envs:
   - name: "MAVEN_OFFLINE_MODE"
     description: "When set to true, tells Maven to work in offline mode. See Maven `-o` option for more information."
     example: "true"
+
+packages:
+  manager: microdnf
+  install:
+    - gzip
+
+artifacts:
+  - name: apache-maven-3.8.6-bin.tar.gz
+    url: https://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
+    md5: 0e07de4a7b5c84ebed737a2002f52019
 
 execute:
   - script: configure
