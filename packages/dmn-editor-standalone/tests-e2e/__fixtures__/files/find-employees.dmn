@@ -66,41 +66,6 @@
   <dmn:itemDefinition id="_8F50694C-1210-42B7-AB93-C839B8DA61CF" name="tKnowledges" isCollection="true">
     <dmn:typeRef>tKnowledge</dmn:typeRef>
   </dmn:itemDefinition>
-  <dmn:businessKnowledgeModel id="_F08537C6-DD4C-46F2-9709-61B43DF7AB0C" name="Find employee by knowledge">
-    <dmn:extensionElements />
-    <dmn:variable id="_87CC2587-114D-41AE-9D69-35DC313B8A47" name="Find employee by knowledge" typeRef="tEmployees" />
-    <dmn:encapsulatedLogic id="_243056C9-28EA-4EF2-8510-6F3BC6A5E5DC" kind="FEEL">
-      <dmn:formalParameter id="_FC4939B4-6414-4F17-8D8C-FE339EA9AC5D" name="employees" typeRef="tEmployees" />
-      <dmn:formalParameter id="_2B8160CE-1F54-42D7-B111-706FE3BF2012" name="knowledge" typeRef="tKnowledge" />
-      <dmn:formalParameter id="_810CD0CE-7F46-4827-B19B-BFBD543BB3D9" name="dept" typeRef="tDept" />
-      <dmn:context id="_1B96445B-523F-49B3-99BE-308A2F3CFBA5">
-        <dmn:contextEntry>
-          <dmn:variable id="_A762CB8E-56C3-45AE-B59F-731E4A0CA73F" name="Employees by" typeRef="tEmployees" />
-          <dmn:literalExpression id="_BC626016-B599-47A1-ABD6-67A2C7F761CE">
-            <dmn:text>employees[item.Dept = dept]</dmn:text>
-          </dmn:literalExpression>
-        </dmn:contextEntry>
-        <dmn:contextEntry>
-          <dmn:variable
-            id="_C772ADED-2499-4AF1-9C99-63AA17901EBB"
-            name="Employees with Knowledge"
-            typeRef="tEmployees"
-          />
-          <dmn:literalExpression id="_3543AF00-0F90-47C4-BCBF-6E3B28A08BD7">
-            <dmn:text>for e in Employees by return 
-if (list contains(e.Knowledges, knowledge))
-then e
-else null</dmn:text>
-          </dmn:literalExpression>
-        </dmn:contextEntry>
-        <dmn:contextEntry>
-          <dmn:literalExpression id="_049ECA86-1971-48B7-86FF-7E89B399074A">
-            <dmn:text>for e in Employees with Knowledge[item != null] return e</dmn:text>
-          </dmn:literalExpression>
-        </dmn:contextEntry>
-      </dmn:context>
-    </dmn:encapsulatedLogic>
-  </dmn:businessKnowledgeModel>
   <dmn:decision id="_7E27D2CF-13CA-4EF5-945C-0E7EB26E89CF" name="Employees">
     <dmn:extensionElements />
     <dmn:variable id="_C732DAF4-F690-42BF-BB38-5994AF7D4193" name="Employees" typeRef="tEmployees" />
@@ -206,6 +171,41 @@ else null</dmn:text>
       </dmn:binding>
     </dmn:invocation>
   </dmn:decision>
+  <dmn:businessKnowledgeModel id="_F08537C6-DD4C-46F2-9709-61B43DF7AB0C" name="Find employee by knowledge">
+    <dmn:extensionElements />
+    <dmn:variable id="_87CC2587-114D-41AE-9D69-35DC313B8A47" name="Find employee by knowledge" typeRef="tEmployees" />
+    <dmn:encapsulatedLogic id="_243056C9-28EA-4EF2-8510-6F3BC6A5E5DC" kind="FEEL">
+      <dmn:formalParameter id="_FC4939B4-6414-4F17-8D8C-FE339EA9AC5D" name="employees" typeRef="tEmployees" />
+      <dmn:formalParameter id="_2B8160CE-1F54-42D7-B111-706FE3BF2012" name="knowledge" typeRef="tKnowledge" />
+      <dmn:formalParameter id="_810CD0CE-7F46-4827-B19B-BFBD543BB3D9" name="dept" typeRef="tDept" />
+      <dmn:context id="_1B96445B-523F-49B3-99BE-308A2F3CFBA5">
+        <dmn:contextEntry>
+          <dmn:variable id="_A762CB8E-56C3-45AE-B59F-731E4A0CA73F" name="Employees by" typeRef="tEmployees" />
+          <dmn:literalExpression id="_BC626016-B599-47A1-ABD6-67A2C7F761CE">
+            <dmn:text>employees[item.Dept = dept]</dmn:text>
+          </dmn:literalExpression>
+        </dmn:contextEntry>
+        <dmn:contextEntry>
+          <dmn:variable
+            id="_C772ADED-2499-4AF1-9C99-63AA17901EBB"
+            name="Employees with Knowledge"
+            typeRef="tEmployees"
+          />
+          <dmn:literalExpression id="_3543AF00-0F90-47C4-BCBF-6E3B28A08BD7">
+            <dmn:text>for e in Employees by return 
+if (list contains(e.Knowledges, knowledge))
+then e
+else null</dmn:text>
+          </dmn:literalExpression>
+        </dmn:contextEntry>
+        <dmn:contextEntry>
+          <dmn:literalExpression id="_049ECA86-1971-48B7-86FF-7E89B399074A">
+            <dmn:text>for e in Employees with Knowledge[item != null] return e</dmn:text>
+          </dmn:literalExpression>
+        </dmn:contextEntry>
+      </dmn:context>
+    </dmn:encapsulatedLogic>
+  </dmn:businessKnowledgeModel>
   <dmn:inputData id="_FC002A20-9A6F-4461-A568-01946BE5CD6C" name="Dept">
     <dmn:extensionElements />
     <dmn:variable id="_7B025B6B-40F4-4E77-BEC6-712D72ED3A82" name="Dept" typeRef="tDept" />

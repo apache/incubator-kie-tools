@@ -355,6 +355,31 @@ export const de: OnlineI18n = {
         },
       },
     },
+    gitlab: {
+      header: {
+        title: `${de_common.names.gitlab} ${de_common.names.oauth} ${de_common.terms.token}`,
+        subtitle: `Richten Sie Ihr ${de_common.names.gitlab}-Token ein, damit Sie mit ${de_common.names.gitlab} interagieren können.`,
+      },
+      footer: {
+        createNewToken: "Neues Token generieren",
+        placeHolder: "Fügen Sie hier Ihren Token ein",
+      },
+      body: {
+        learnMore: `Erfahren Sie mehr über ${de_common.names.gitlab}-Token`,
+        note: `Sie sollten ein Token mit der Berechtigung ${"'api' 'read_user' 'read_repository' 'write_repository'"} bereitstellen.`,
+      },
+      validation: {
+        scopes: {
+          helper: "Ihr Token muss die Bereiche 'api' 'read_user' 'read_repository' 'write_repository' enthalten.",
+        },
+      },
+      form: {
+        token: {
+          label: "Persönliches Zugriffstoken",
+          placeHolder: `Fügen Sie Ihr ${de_common.names.gitlab} Token ein.`,
+        },
+      },
+    },
     auth: {
       disclaimer: `Das von Ihnen angegebene Token wird lokal in diesem Browser gespeichert und niemals an Dritte weitergegeben..`,
       error: {
@@ -666,6 +691,21 @@ export const de: OnlineI18n = {
         },
       },
     },
+    gitlab: {
+      repository: `${de_common.names.gitlab} repository`,
+      createRepository: `Erstelle ${de_common.names.gitlab} repository`,
+      description: (workspace: string) =>
+        `Der Inhalt von '${workspace}' wird in das neue ${de_common.names.gitlab} repository übernommen.`,
+      error: {
+        formAlert: (error: string) => `Fehler beim Erstellen des Repositorys ${de_common.names.gitlab}. ${error}`,
+      },
+      form: {
+        select: {
+          label: "Das neue Repository wird unter dem folgenden Scope erstellt",
+          description: `Wählen Sie entweder Ihr Benutzerkonto oder eine ${de_common.names.gitlab} Gruppe.`,
+        },
+      },
+    },
   },
   createGistOrSnippetModal: {
     form: {
@@ -711,6 +751,21 @@ export const de: OnlineI18n = {
         },
       },
     },
+    gitlab: {
+      gistOrSnippet: `${de_common.names.gitlab} Snippet`,
+      create: `Erstelle ${de_common.names.gitlab} Snippet`,
+      description: (workspace: string) =>
+        `Der Inhalt des '${workspace}' wird in dem neuen ${de_common.names.gitlab} Snippet.`,
+      error: {
+        formAlert: (error: string) => `Fehler beim Erstellen von ${de_common.names.gitlab} Snippet. ${error}`,
+      },
+      form: {
+        select: {
+          label: "Wählen Sie einen Arbeitsbereich aus, unter dem das neue Snippet erstellt wird.",
+          description: "Wählen Sie entweder ein persönliches oder ein gemeinsames Projekt aus.",
+        },
+      },
+    },
   },
   loadOrganizationsSelect: {
     bitbucket: {
@@ -720,6 +775,10 @@ export const de: OnlineI18n = {
     github: {
       user: "GitHub-Benutzer",
       organizations: "GitHub Organisationen",
+    },
+    gitlab: {
+      user: `${de_common.names.gitlab} user`,
+      organizations: `${de_common.names.gitlab} Gruppen`,
     },
   },
   gitStatusIndicatorActions: {

@@ -9,7 +9,7 @@
   <xsd:element name="ComponentsWidthsExtension" type="kie:tComponentsWidthsExtension" />
   <xsd:element name="ComponentWidths" type="kie:tComponentWidths" />
   <xsd:element name="attachment" type="kie:tAttachment" />
-  <xsd:attribute name="constraintType" type="tConstraintType" use="optional" />
+  <xsd:attribute name="constraintType" type="kie:tConstraintType" use="optional" />
 
   <xsd:complexType name="tComponentsWidthsExtension">
     <xsd:sequence>

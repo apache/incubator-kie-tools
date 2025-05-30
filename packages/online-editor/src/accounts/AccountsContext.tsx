@@ -36,6 +36,7 @@ export enum AccountsSection {
   CONNECT_TO_AN_ACCOUNT = "CONNECT_TO_AN_ACCOUNT",
   CONNECT_TO_GITHUB = "CONNECT_TO_GITHUB",
   CONNECT_TO_BITBUCKET = "CONNECT_TO_BITBUCKET",
+  CONNECT_TO_GITLAB = "CONNECT_TO_GITLAB",
   CONNECT_TO_OPENSHIFT = "CONNECT_TO_OPENSHIFT",
   CONNECT_TO_KUBERNETES = "CONNECT_TO_KUBERNETES",
 }
@@ -68,6 +69,12 @@ export type AccountsState =
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
     }
   | {
+      section: AccountsSection.CONNECT_TO_GITLAB;
+      selectedAuthProvider: GitAuthProvider;
+      backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
+      onNewAuthSession?: (newAuthSession: AuthSession) => any;
+    }
+  | {
       section: AccountsSection.CONNECT_TO_OPENSHIFT;
       selectedAuthProvider: OpenShiftAuthProvider;
       backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
@@ -88,6 +95,7 @@ export enum AccountsDispatchActionKind {
   SELECT_AUTH_PROVIDER = "SELECT_AUTH_PROVIDER",
   SETUP_GITHUB_AUTH = "SETUP_GITHUB_AUTH",
   SETUP_BITBUCKET_AUTH = "SETUP_BITBUCKET_AUTH",
+  SETUP_GITLAB_AUTH = "SETUP_GITLAB_AUTH",
   SETUP_OPENSHIFT_AUTH = "SETUP_OPENSHIFT_AUTH",
   SETUP_KUBERNETES_AUTH = "SETUP_KUBERNETES_AUTH",
 }
@@ -112,6 +120,12 @@ export type AccountsDispatchAction =
     }
   | {
       kind: AccountsDispatchActionKind.SETUP_BITBUCKET_AUTH;
+      selectedAuthProvider: GitAuthProvider;
+      backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
+      onNewAuthSession?: (newAuthSession: AuthSession) => any;
+    }
+  | {
+      kind: AccountsDispatchActionKind.SETUP_GITLAB_AUTH;
       selectedAuthProvider: GitAuthProvider;
       backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
@@ -170,6 +184,13 @@ export function AccountsContextProvider(props: React.PropsWithChildren<{}>) {
         case AccountsDispatchActionKind.SETUP_BITBUCKET_AUTH:
           return {
             section: AccountsSection.CONNECT_TO_BITBUCKET,
+            selectedAuthProvider: action.selectedAuthProvider,
+            onNewAuthSession: action.onNewAuthSession,
+            backActionKind: action.backActionKind,
+          };
+        case AccountsDispatchActionKind.SETUP_GITLAB_AUTH:
+          return {
+            section: AccountsSection.CONNECT_TO_GITLAB,
             selectedAuthProvider: action.selectedAuthProvider,
             onNewAuthSession: action.onNewAuthSession,
             backActionKind: action.backActionKind,

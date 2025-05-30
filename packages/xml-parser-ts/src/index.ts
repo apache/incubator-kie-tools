@@ -162,7 +162,7 @@ export function getParser<T extends object>(args: {
         if (k.endsWith(":") || k === "" /* Filters only `xmlns --> URL` mappings, since `ns` is bi-directional.*/) {
           const instanceNsKey = instanceNs.get(v)?.slice(0, -1);
           const originalXmlnsPropName = instanceNsKey ? `@_xmlns:${instanceNsKey}` : `@_xmlns`;
-          if (!instanceNsKey || !__json[args.root.element][originalXmlnsPropName]) {
+          if (instanceNsKey === undefined || !__json[args.root.element][originalXmlnsPropName]) {
             const nsName = k.slice(0, -1);
             const newXmlnsPropName = nsName ? `@_xmlns:${nsName}` : `@_xmlns`;
             console.warn(`Adding NS mapping to XML: ${newXmlnsPropName} --> ${v}`);
@@ -181,6 +181,11 @@ export function getParser<T extends object>(args: {
         [args.root.element]: { type: args.root.type, fromType: "root", isArray: false, xsdType: "// root" },
       };
 
+      const declaredElementsOrder = [];
+      for (const e in args.elements ?? {}) {
+        declaredElementsOrder.push(e);
+      }
+
       const xml = build({
         json: __json,
         ns: args.ns,
@@ -188,6 +193,7 @@ export function getParser<T extends object>(args: {
         elements: args.elements,
         meta: args.meta,
         metaType: rootMetaType,
+        declaredElementsOrder,
         indent: "",
       });
       // console.timeEnd("building took");
@@ -216,7 +222,7 @@ export function parse(args: {
     const elemNode = children[ii];
 
     if (elemNode.nodeType === 1 /* ELEMENT_NODE */) {
-      const { nsedName, subsedName } = resolveElement(elemNode.nodeName, args.nodeMetaType, args);
+      const { nsedName, subsedName } = resolveQName(elemNode.nodeName, args.nodeMetaType, args);
 
       const elemMetaProp = args.nodeMetaType?.[subsedName ?? nsedName];
 
@@ -227,7 +233,8 @@ export function parse(args: {
           : undefined); // If the current element is not known, we simply ignore its type and go with the defaults.
 
       // If the elemNode's meta type has a __$$text property, this is the one we use to parse its value.
-      // All other properties on `elemType` are certainly attributes, which are handlded below.
+      // All other properties (except `__$$element`) on `elemType` are certainly attributes, which are handled below.
+      // The `__$$element` property is also processed below, since there can be an element with both `__$$text` and `__$$element` properties.
       const t = elemMetaType?.["__$$text"]?.type ?? elemMetaProp?.type;
 
       let elemValue: any = {};
@@ -241,16 +248,27 @@ export function parse(args: {
         elemValue["__$$text"] = parseFloat(elemNode.textContent ?? "");
       } else {
         elemValue = parse({ ...args, node: elemNode, nodeMetaType: elemMetaType });
-        if (subsedName !== nsedName) {
-          // substitution occurred, need to save the original, normalized element name
-          elemValue["__$$element"] = nsedName;
-        }
       }
 
+      if (subsedName !== nsedName) {
+        // substitution occurred, need to save the original, normalized element name
+        elemValue["__$$element"] = nsedName;
+      }
+
+      const argsForAttrs = { ns: args.ns, instanceNs: args.instanceNs, subs: {} }; // Attributes can't use substitution groups.
       const attrs = (elemNode as Element).attributes;
       for (let i = 0; i < attrs.length; i++) {
         const attr = attrs[i];
-        const attrPropType = elemMetaType?.[`@_${attr.name}`];
+        const resolvedAttrQName = resolveQName(attr.name, args.nodeMetaType, argsForAttrs);
+
+        // If the attribute's name is not qualified, we don't mess
+        // with it. We treat it as having no namespace, instead of
+        // potentially using the default namespace mapped with `xmlns=`.
+        const attrName = resolvedAttrQName.isQualified
+          ? resolvedAttrQName.subsedName ?? resolvedAttrQName.nsedName
+          : attr.name;
+
+        const attrPropType = elemMetaType?.[`@_${attrName}`];
 
         let attrValue: any;
         if (attrPropType?.type === "string") {
@@ -267,7 +285,7 @@ export function parse(args: {
           attrValue = attr.value; // Unknown type, default to the text from the XML.
         }
 
-        elemValue[`@_${attr.name}`] = attrValue;
+        elemValue[`@_${attrName}`] = attrValue;
       }
 
       const currentValue = json[subsedName ?? nsedName];
@@ -296,7 +314,7 @@ export function parse(args: {
   return json;
 }
 
-export function resolveElement(
+export function resolveQName(
   name: string,
   parentMetaType: MetaType | undefined,
   {
@@ -311,14 +329,17 @@ export function resolveElement(
 ) {
   let nameNs = undefined;
   let nameName = undefined;
+  let isQualified: boolean;
 
   const s = name.split(":");
   if (s.length === 1) {
     nameNs = ns.get(instanceNs.get("")!) ?? "";
     nameName = s[0];
+    isQualified = false;
   } else if (s.length === 2) {
     nameNs = ns.get(instanceNs.get(`${s[0]}:`)!) ?? `${s[0]}:`;
     nameName = s[1];
+    isQualified = true;
   } else {
     throw new Error(name);
   }
@@ -339,7 +360,7 @@ export function resolveElement(
     subsedName = nsedSubs[subsedName];
   }
 
-  return { nsedName, subsedName };
+  return { nsedName, subsedName, isQualified };
 }
 
 function parseInt(attrValue: string) {
@@ -410,7 +431,7 @@ function applyEntities(value: any) {
     .replace(quotEntity.regex, quotEntity.replacement);
 }
 
-function buildAttrs(json: any) {
+function buildAttrs(json: any, { ns, instanceNs }: { ns: Map<string, string>; instanceNs: Map<string, string> }) {
   let isEmpty = true;
   let hasText = false;
   let attrs = " ";
@@ -418,7 +439,12 @@ function buildAttrs(json: any) {
   // Attributes don't ever need to be serialized in a particular order.
   for (const propName in json) {
     if (propName[0] === "@") {
-      attrs += `${propName.substring(2)}="${applyEntities(json[propName])}" `;
+      const attrName =
+        propName.split(":").length === 2 // only apply namespace if it's qualified name. attributes are unnamespaced by default.
+          ? applyInstanceNs({ propName: propName.substring(2), instanceNs, ns })
+          : propName.substring(2);
+
+      attrs += `${attrName}="${applyEntities(json[propName])}" `;
     } else if (propName === "__$$text") {
       hasText = true;
       isEmpty = false;
@@ -441,6 +467,7 @@ export function build(args: {
   elements: Elements;
   meta: Meta;
   metaType: MetaType | undefined;
+  declaredElementsOrder: string[];
   indent: string;
 }): string {
   const { json, ns, instanceNs, indent, metaType } = args;
@@ -451,7 +478,7 @@ export function build(args: {
 
   let xml = "";
 
-  // We want to respect a certain order here given xsd:sequence declarations.
+  // We want to respect a certain order here given xsd:sequence, xsd:choice, and xsd:all declarations
   const sortedJsonProps: string[] = [];
   for (const p in json) {
     sortedJsonProps.push(p);
@@ -483,7 +510,7 @@ export function build(args: {
     }
     // pi tag
     else if (jsonPropName[0] === "?") {
-      xml = `${indent}<${jsonPropName}${buildAttrs(jsonPropValue).attrs} ?>\n` + xml; // PI Tags should always go at the top of the XML
+      xml = `${indent}<${jsonPropName}${buildAttrs(jsonPropValue, args).attrs} ?>\n` + xml; // PI Tags should always go at the top of the XML
     }
     // empty tag
     else if (jsonPropValue === undefined || jsonPropValue === null || jsonPropValue === "") {
@@ -497,9 +524,17 @@ export function build(args: {
     }
     // array
     else if (Array.isArray(jsonPropValue)) {
-      for (const item of jsonPropValue) {
+      // In order to keep the order of elements of xsd:sequences in a `substituionGroup`
+      // we need to sort elements by their declaration order.
+      const elemOrder = args.declaredElementsOrder;
+      const arr =
+        jsonPropValue?.[0]?.__$$element === undefined
+          ? jsonPropValue
+          : jsonPropValue.toSorted((a, b) => elemOrder.indexOf(a.__$$element) - elemOrder.indexOf(b.__$$element));
+
+      for (const item of arr) {
         const elementName = applyInstanceNs({ ns, instanceNs, propName: item?.["__$$element"] ?? jsonPropName });
-        const { attrs, isEmpty, hasText } = buildAttrs(item);
+        const { attrs, isEmpty, hasText } = buildAttrs(item, args);
         xml += `${indent}<${elementName}${attrs}`;
         if (isEmpty) {
           xml += " />\n";
@@ -522,7 +557,7 @@ export function build(args: {
     else {
       const item = jsonPropValue;
       const elementName = applyInstanceNs({ ns, instanceNs, propName: item["__$$element"] ?? jsonPropName });
-      const { attrs, isEmpty, hasText } = buildAttrs(item);
+      const { attrs, isEmpty, hasText } = buildAttrs(item, args);
       xml += `${indent}<${elementName}${attrs}`;
       if (isEmpty) {
         xml += " />\n";

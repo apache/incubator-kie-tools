@@ -21,7 +21,7 @@ This package provides a Node.js script that generates TypeScript types and metad
 
 For more information about `@kie-tools/xml-parser-ts`, go to [../packages/xml-parser-ts](../xml-parser-ts/README.md)
 
-It was created to provide a way to marshall/unmarshall DMN, SceSim, BPMN, and PMML files, so it is only tested against those formats XSDs.
+It was created to provide a way to marshall/unmarshall BPMN, DMN, Test Scenario, and PMML files, so it is only tested against those formats XSDs.
 
 > NOTE: This package is probably not suited for your use-case, as it is incomplete and was not tested with a large number of XSD files, but it should work for simple XSDs. If you want to use it, please go ahead! Let us know if you tried and it worked! Feel free to contribute too with issues and PRs too.
 
