@@ -1162,6 +1162,7 @@ export const DecisionServiceNode = React.memo(
 
       selection.call(dragHandler);
 
+      // Handles moving divider line in a DRD moves it in all DRDs that contain the decision service
       dmnEditorStoreApi.setState((state) => {
         const dividerLineLocalY = getDecisionServiceDividerLineLocalY(shape);
         const drds = state.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
