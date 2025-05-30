@@ -22,15 +22,11 @@ set -e
 SOURCES_DIR=/tmp/artifacts
 SCRIPT_DIR=$(dirname "${0}")
 
-mvn_install_dir="/usr/share/maven-${MAVEN_VERSION}"
-
-echo "---> Installing Apache Maven ${MAVEN_VERSION} to ${mvn_install_dir}"
+echo "---> Installing Apache Maven ${MAVEN_VERSION} to ${KOGITO_MAVEN_HOME}"
 
 tar -xzf "${SOURCES_DIR}/apache-maven-${MAVEN_VERSION}-bin.tar.gz" -C /usr/share
-mv "/usr/share/apache-maven-${MAVEN_VERSION}" "${mvn_install_dir}"
 
-ln -sf  "${mvn_install_dir}/bin/mvn" "/usr/share/maven/bin/mvn"  
-
+ln -sf "${KOGITO_MAVEN_HOME}/bin/mvn" "${MAVEN_HOME}/bin/mvn"  
 mkdir "${KOGITO_HOME}"/.m2
 cp -v "${SCRIPT_DIR}"/maven/* "${KOGITO_HOME}"/.m2
 cp -v "${SCRIPT_DIR}"/added/* "${KOGITO_HOME}"/launch/
