@@ -25,8 +25,6 @@ envs:
   - name: "SCRIPT_DEBUG"
     value: "false"
   - name: QUARKUS_EXTENSIONS
-    # NOTE: If you change the QUARKUS_EXTENSIONS value remember to update the scripts/logic/build-quarkus-app.sh too!
-    # Follow up issue to remove KOGITO_VERSION: https://issues.redhat.com/browse/KOGITO-9270
     value: org.apache.kie.sonataflow:sonataflow-quarkus:${KOGITO_VERSION},org.kie:kie-addons-quarkus-knative-eventing:${KOGITO_VERSION},smallrye-health,org.apache.kie.sonataflow:sonataflow-quarkus-devui:${SONATAFLOW_QUARKUS_DEVUI_VERSION},org.kie:kie-addons-quarkus-source-files:${KOGITO_VERSION},org.kie:kie-addons-quarkus-process-management:${KOGITO_VERSION},org.kie:kogito-addons-quarkus-jobs-service-embedded:${KOGITO_VERSION},org.kie:kogito-addons-quarkus-data-index-inmemory:${KOGITO_VERSION},org.kie:kogito-addons-quarkus-microprofile-config-service-catalog:${KOGITO_VERSION},org.kie:kie-addons-quarkus-kubernetes:${KOGITO_VERSION},org.kie:kogito-addons-quarkus-knative-serving:${KOGITO_VERSION},org.kie:kie-addons-quarkus-monitoring-prometheus:${KOGITO_VERSION},org.kie:kie-addons-quarkus-monitoring-sonataflow:${KOGITO_VERSION}
 
 execute:

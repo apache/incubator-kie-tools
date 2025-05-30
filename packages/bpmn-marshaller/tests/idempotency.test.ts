@@ -28,11 +28,11 @@ describe("idempotency", () => {
     test(path.basename(file), () => {
       const xml_original = fs.readFileSync(path.join(__dirname, file), "utf-8");
 
-      const { parser, builder } = getMarshaller(xml_original);
+      const { parser, builder } = getMarshaller(xml_original, { upgradeTo: "latest" });
       const json = parser.parse();
 
       const xml_firstPass = builder.build(json);
-      const xml_secondPass = builder.build(getMarshaller(xml_firstPass).parser.parse());
+      const xml_secondPass = builder.build(getMarshaller(xml_firstPass, { upgradeTo: "latest" }).parser.parse());
 
       expect(xml_firstPass).toStrictEqual(xml_secondPass);
     });

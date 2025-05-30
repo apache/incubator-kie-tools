@@ -38,6 +38,7 @@ export enum PathParams {
   RUNTIME_URL = "runtimeUrl",
   PROCESS_INSTANCE_ID = "processInstanceId",
   TASK_ID = "taskId",
+  PROCESS_NAME = "processName",
 }
 
 export class Route<
@@ -127,9 +128,8 @@ export const routes = {
 
   runtime: {
     context: new Route<{
-      pathParams: PathParams.RUNTIME_URL;
       queryParams: QueryParams.USER;
-    }>(({ runtimeUrl }) => `/${runtimeUrl}`),
+    }>(() => ``),
 
     processes: new Route<{
       pathParams: PathParams.RUNTIME_URL;
@@ -140,6 +140,16 @@ export const routes = {
       pathParams: PathParams.RUNTIME_URL | PathParams.PROCESS_INSTANCE_ID;
       queryParams: QueryParams.USER;
     }>(({ runtimeUrl, processInstanceId }) => `/${runtimeUrl}/process/${processInstanceId}`),
+
+    processDefinitions: new Route<{
+      pathParams: PathParams.RUNTIME_URL;
+      queryParams: QueryParams.USER | QueryParams.FILTERS;
+    }>(({ runtimeUrl }) => `/${runtimeUrl}/process-definitions`),
+
+    processDefinitionForm: new Route<{
+      pathParams: PathParams.RUNTIME_URL | PathParams.PROCESS_NAME;
+      queryParams: QueryParams.USER;
+    }>(({ runtimeUrl, processName }) => `/${runtimeUrl}/process-definitions/${processName}`),
 
     jobs: new Route<{
       pathParams: PathParams.RUNTIME_URL;

@@ -37,6 +37,7 @@ export interface CloneArgs {
     password: string;
   };
   insecurelyDisableTlsCertificateValidation?: boolean;
+  disableEncoding?: boolean;
 }
 
 export interface CommitArgs {
@@ -62,6 +63,7 @@ export interface PushArgs {
     password: string;
   };
   insecurelyDisableTlsCertificateValidation?: boolean;
+  disableEncoding?: boolean;
 }
 
 export interface RemoteRefArgs {
@@ -73,6 +75,7 @@ export interface RemoteRefArgs {
     password: string;
   };
   insecurelyDisableTlsCertificateValidation?: boolean;
+  disableEncoding?: boolean;
 }
 
 export enum FileModificationStatus {
@@ -87,14 +90,22 @@ export type UnstagedModifiedFilesStatusEntryType = {
 export class GitService {
   public constructor(private readonly corsProxy: Promise<string>) {}
 
-  private getRequestHeaders(args: { insecurelyDisableTlsCertificateValidation?: boolean }) {
-    return args.insecurelyDisableTlsCertificateValidation
-      ? {
-          [CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION]: Boolean(
-            args.insecurelyDisableTlsCertificateValidation
-          ).toString(),
-        }
-      : undefined;
+  private getRequestHeaders(args: { insecurelyDisableTlsCertificateValidation?: boolean; disableEncoding?: boolean }) {
+    if (!args.insecurelyDisableTlsCertificateValidation && !args.disableEncoding) {
+      return undefined;
+    }
+    const headers: Record<string, string> = {
+      ...(args.insecurelyDisableTlsCertificateValidation && {
+        [CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION]: Boolean(
+          args.insecurelyDisableTlsCertificateValidation
+        ).toString(),
+      }),
+      // If disableEncoding is true, force proxy/server to skip compression
+      ...(args.disableEncoding
+        ? { [CorsProxyHeaderKeys.DISABLE_ENCODING]: Boolean(args.disableEncoding).toString() }
+        : {}),
+    };
+    return headers;
   }
 
   public async listServerRefs(args: {
@@ -104,6 +115,7 @@ export class GitService {
       password: string;
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }) {
     return git.listServerRefs({
       http,
@@ -170,7 +182,12 @@ export class GitService {
     dir: string;
     remote: string;
     ref: string;
+    authInfo?: {
+      username: string;
+      password: string;
+    };
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<FetchResult> {
     return await git.fetch({
       fs: args.fs,
@@ -183,6 +200,7 @@ export class GitService {
       singleBranch: true,
       depth: 1,
       tags: true,
+      onAuth: () => args.authInfo,
     });
   }
 
@@ -249,6 +267,7 @@ export class GitService {
       password: string;
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }) {
     await git.pull({
       fs: args.fs,
@@ -309,6 +328,7 @@ export class GitService {
       remoteRef: args.remoteRef,
       authInfo: args.authInfo,
       insecurelyDisableTlsCertificateValidation: args.insecurelyDisableTlsCertificateValidation,
+      disableEncoding: args.disableEncoding,
     });
 
     if (serverRemoteRef?.oid && head === serverRemoteRef.oid) return;

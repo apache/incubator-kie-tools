@@ -16,12 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import { ProcessListChannelApi } from "@kie-tools/runtime-tools-process-enveloped-components/dist/processList";
 import React, { useContext, createContext } from "react";
-import { ProcessListGatewayApi } from "./ProcessListGatewayApi";
 
-export const ProcessListContext = createContext<ProcessListGatewayApi>({} as ProcessListGatewayApi);
+export const ProcessListContext = createContext<ProcessListChannelApi>({} as ProcessListChannelApi);
 
-export const useProcessListGatewayApi = (): ProcessListGatewayApi =>
-  useContext<ProcessListGatewayApi>(ProcessListContext);
+export const useProcessListChannelApi = (): ProcessListChannelApi =>
+  useContext<ProcessListChannelApi>(ProcessListContext);
 
 export default ProcessListContext;

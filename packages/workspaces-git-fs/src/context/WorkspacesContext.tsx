@@ -26,7 +26,14 @@ import {
 import * as React from "react";
 import { createContext, useContext } from "react";
 import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
-import { BitbucketOrigin, GistOrigin, GitHubOrigin, SnippetOrigin } from "../worker/api/WorkspaceOrigin";
+import {
+  BitbucketOrigin,
+  GistOrigin,
+  GitHubOrigin,
+  GitlabOrigin,
+  GitlabSnippetOrigin,
+  BitbucketSnippetOrigin,
+} from "../worker/api/WorkspaceOrigin";
 import { LocalFile } from "../worker/api/LocalFile";
 import { decoder } from "../encoderdecoder/EncoderDecoder";
 import { parseWorkspaceFileRelativePath } from "../relativePath/WorkspaceFileRelativePathParser";
@@ -103,7 +110,7 @@ export interface WorkspacesContextType {
   }>;
 
   createWorkspaceFromGitRepository: (args: {
-    origin: GistOrigin | GitHubOrigin | BitbucketOrigin | SnippetOrigin;
+    origin: GistOrigin | GitHubOrigin | BitbucketOrigin | BitbucketSnippetOrigin | GitlabOrigin | GitlabSnippetOrigin;
     gitConfig?: { email: string; name: string };
     gitAuthSessionId: string | undefined;
     authInfo?: {
@@ -111,6 +118,7 @@ export interface WorkspacesContextType {
       password: string;
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }) => Promise<{ workspace: WorkspaceDescriptor; suggestedFirstFile?: WorkspaceFile }>;
 
   pull(args: {
@@ -121,6 +129,7 @@ export interface WorkspacesContextType {
       password: string;
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void>;
 
   push(args: {
@@ -134,6 +143,7 @@ export interface WorkspacesContextType {
       password: string;
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void>;
 
   deleteBranch(args: { workspaceId: string; ref: string }): Promise<void>;
@@ -157,6 +167,7 @@ export interface WorkspacesContextType {
       password: string;
     };
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<GitServerRef[]>;
 
   hasLocalChanges(args: { workspaceId: string }): Promise<boolean>;
@@ -191,7 +202,12 @@ export interface WorkspacesContextType {
     workspaceId: string;
     remote: string;
     ref: string;
+    authInfo?: {
+      username: string;
+      password: string;
+    };
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<FetchResult>;
 
   // storage
@@ -253,6 +269,7 @@ export interface WorkspacesContextType {
     remoteUrl: URL;
     branch?: string;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void>;
 
   initGistOnWorkspace(args: {
@@ -260,6 +277,7 @@ export interface WorkspacesContextType {
     remoteUrl: URL;
     branch: string;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void>;
 
   initSnippetOnWorkspace(args: {
@@ -267,12 +285,22 @@ export interface WorkspacesContextType {
     remoteUrl: URL;
     branch: string;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
+  }): Promise<void>;
+
+  initGilabSnippetOnWorkspace(args: {
+    workspaceId: string;
+    remoteUrl: URL;
+    branch: string;
+    insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void>;
 
   changeGitAuthSessionId(args: {
     workspaceId: string;
     gitAuthSessionId: string | undefined;
     insecurelyDisableTlsCertificateValidation?: boolean;
+    disableEncoding?: boolean;
   }): Promise<void>;
 
   initLocalOnWorkspace(args: { workspaceId: string }): Promise<void>;

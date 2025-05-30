@@ -31,7 +31,7 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
 import { useRoutes } from "../navigation/Hooks";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 
@@ -43,12 +43,12 @@ export interface Props {
 
 export function EditorPageErrorPage(props: Props) {
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [showDetails, setShowDetails] = useState(false);
 
   const returnHome = useCallback(() => {
-    history.push({ pathname: routes.home.path({}) });
-  }, [history, routes]);
+    navigate({ pathname: routes.home.path({}) });
+  }, [navigate, routes]);
 
   const detailsString = useMemo(() => {
     return props.errors.join("\n");

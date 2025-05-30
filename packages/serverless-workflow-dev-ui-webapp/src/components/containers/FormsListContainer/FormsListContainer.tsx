@@ -22,25 +22,29 @@ import { OUIAProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 import { EmbeddedFormsList } from "@kie-tools/runtime-tools-shared-enveloped-components/dist/formsList";
 import { FormsListGatewayApi } from "../../../channel/FormsList";
 import { useFormsListGatewayApi } from "../../../channel/FormsList/FormsListContext";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDevUIAppContext } from "../../contexts/DevUIAppContext";
 import { FormInfo } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 const FormsListContainer: React.FC<OUIAProps> = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const gatewayApi: FormsListGatewayApi = useFormsListGatewayApi();
   const appContext = useDevUIAppContext();
 
   useEffect(() => {
     const unsubscriber = gatewayApi.onOpenFormListen({
       onOpen(formData: FormInfo) {
-        history.push({
-          pathname: `/Forms/${formData.name}`,
-          state: {
-            filter: gatewayApi.getFormFilter(),
-            formData: formData,
+        navigate(
+          {
+            pathname: `../Forms/${formData.name}`,
           },
-        });
+          {
+            state: {
+              filter: gatewayApi.getFormFilter(),
+              formData: formData,
+            },
+          }
+        );
       },
     });
     return () => {

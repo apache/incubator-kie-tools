@@ -17,16 +17,16 @@
  * under the License.
  */
 import React, { useMemo, useEffect } from "react";
-import { EmbeddedJobsManagement } from "@kie-tools/runtime-tools-process-enveloped-components/dist/jobsManagement";
 import {
-  JobsManagementGatewayApi,
-  useJobsManagementGatewayApi,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/JobsManagement";
-import { useHistory } from "react-router";
+  EmbeddedJobsManagement,
+  JobsManagementState,
+} from "@kie-tools/runtime-tools-process-enveloped-components/dist/jobsManagement";
+import { useJobsManagementChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/JobsManagement";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useQueryParam, useQueryParams } from "../navigation/queryParams/QueryParamsContext";
 import { RuntimePathSearchParamsRoutes, useRuntimeDispatch } from "../runtime/RuntimeContext";
 import { QueryParams } from "../navigation/Routes";
-import { JobsManagementState, JobStatus } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
+import { JobStatus } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { OrderBy } from "@kie-tools/runtime-tools-shared-gateway-api/dist/types";
 
 const defaultStatus = [JobStatus.Scheduled];
@@ -36,8 +36,9 @@ const defaultOrderBy = {
 };
 
 export const Jobs: React.FC = () => {
-  const gatewayApi: JobsManagementGatewayApi = useJobsManagementGatewayApi();
-  const history = useHistory();
+  const channelApi = useJobsManagementChannelApi();
+  const navigate = useNavigate();
+  const location = useLocation();
   const filters = useQueryParam(QueryParams.FILTERS);
   const orderBy = useQueryParam(QueryParams.ORDER_BY);
   const queryParams = useQueryParams();
@@ -61,7 +62,7 @@ export const Jobs: React.FC = () => {
   }, [initialState, setRuntimePathSearchParams]);
 
   useEffect(() => {
-    const unsubscriber = gatewayApi.onUpdateJobsManagementState({
+    const unsubscriber = channelApi.jobList__onUpdateJobsManagementState({
       onUpdate(jobsManagementState: JobsManagementState) {
         const newSearchParams = {
           [QueryParams.FILTERS]: JSON.stringify(jobsManagementState.filters),
@@ -73,17 +74,17 @@ export const Jobs: React.FC = () => {
         const newQueryParams = queryParams
           .with(QueryParams.FILTERS, newSearchParams[QueryParams.FILTERS])
           .with(QueryParams.ORDER_BY, newSearchParams[QueryParams.ORDER_BY]);
-        history.replace({ pathname: history.location.pathname, search: newQueryParams.toString() });
+        navigate({ pathname: location.pathname, search: newQueryParams.toString() }, { replace: true });
       },
     });
 
     return () => {
-      unsubscriber.unSubscribe();
+      unsubscriber.then((unsubscribeHandler) => unsubscribeHandler.unSubscribe());
     };
-  }, [gatewayApi, history, queryParams, setRuntimePathSearchParams]);
+  }, [channelApi, location.pathname, navigate, queryParams, setRuntimePathSearchParams]);
 
-  return gatewayApi && initialState ? (
-    <EmbeddedJobsManagement driver={gatewayApi} targetOrigin={window.location.origin} initialState={initialState} />
+  return channelApi && initialState ? (
+    <EmbeddedJobsManagement channelApi={channelApi} targetOrigin={window.location.origin} initialState={initialState} />
   ) : (
     <></>
   );

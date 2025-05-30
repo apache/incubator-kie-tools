@@ -261,6 +261,8 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   );
   const status = useMemo(() => (isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE), [isExpanded]);
   const dmnRunnerAjv = useMemo(() => new DmnRunnerAjv().getAjv(), []);
+  const [currentResponseMessages, setCurrentResponseMessages] = useState<DmnEvaluationMessages[]>([]);
+  const [invalidElementPaths, setInvalidElementPaths] = useState<string[][]>([]);
 
   const { envelopeServer } = useEditorDockContext();
 
@@ -333,6 +335,19 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     [props.dmnLanguageService, props.workspaceFile.relativePath, props.workspaceFile.workspaceId, workspaces]
   );
 
+  const findDecisionIdBySourceId = useCallback(
+    (sourceId: string) => {
+      if (!Array.isArray(invalidElementPaths)) return "";
+      for (const path of invalidElementPaths) {
+        if (path.includes(sourceId)) {
+          return path[0];
+        }
+      }
+      return "";
+    },
+    [invalidElementPaths]
+  );
+
   // Responsible for getting decision results
   useCancelableEffect(
     useCallback(
@@ -363,7 +378,24 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             if (canceled.get()) {
               return;
             }
+            if (dmnRunnerMode === DmnRunnerMode.TABLE) {
+              const messagesWithRowNumbers = results.flatMap((result, rowIndex) =>
+                (result?.messages || []).map((message) => ({
+                  ...message,
+                  message: `Row ${rowIndex + 1} : ${message.messageType}: ${message.message}`,
+                }))
+              );
+              setCurrentResponseMessages(messagesWithRowNumbers);
+            } else {
+              const messagesWithTypes =
+                results[currentInputIndex]?.messages?.map((message) => ({
+                  ...message,
+                  message: `${message.messageType}: ${message.message}`,
+                })) || [];
+              setCurrentResponseMessages(messagesWithTypes);
+            }
 
+            const invalidElements: string[][] = [];
             const runnerResults: Array<DecisionResult[] | undefined> = [];
             for (const result of results) {
               if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
@@ -371,10 +403,12 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                 break;
               }
               if (result) {
+                invalidElements.push(...result.invalidElementPaths);
                 runnerResults.push(result.decisionResults);
               }
             }
             setDmnRunnerResults({ type: DmnRunnerResultsActionType.DEFAULT, newResults: runnerResults });
+            setInvalidElementPaths(invalidElements);
 
             const evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId = new Map();
             if (dmnRunnerMode === DmnRunnerMode.FORM && results[currentInputIndex]) {
@@ -449,6 +483,18 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     }
   }, [dmnRunnerMode, isExpanded, onTogglePanel, panel]);
   // END
+  const decisionNameByDecisionId = useMemo(
+    () =>
+      results.reduce((decisionMap, decisionResults) => {
+        if (decisionResults) {
+          decisionResults.forEach((decisionResult) => {
+            decisionMap.set(decisionResult.decisionId, decisionResult.decisionName);
+          });
+        }
+        return decisionMap;
+      }, new Map<string, string>()),
+    [results]
+  );
 
   // Set evaluation tab on Problems panel;
   useEffect(() => {
@@ -456,31 +502,24 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       return;
     }
 
-    const decisionNameByDecisionId = results[currentInputIndex]?.reduce(
-      (acc: Map<string, string>, decisionResult) => acc.set(decisionResult.decisionId, decisionResult.decisionName),
-      new Map<string, string>()
-    );
-
-    const messagesBySourceId =
-      results[currentInputIndex]?.reduce((acc, decisionResult) => {
-        decisionResult.messages?.forEach((message) => {
-          const messageEntry = acc.get(message.sourceId);
-          if (!messageEntry) {
-            acc.set(message.sourceId, [message]);
-          } else {
-            acc.set(message.sourceId, [...messageEntry, message]);
-          }
-        });
-        return acc;
-      }, new Map<string, DmnEvaluationMessages[]>()) ?? new Map<string, DmnEvaluationMessages[]>();
+    const messagesBySourceId = currentResponseMessages.reduce((acc, message) => {
+      const messageEntry = acc.get(message.sourceId);
+      if (!messageEntry) {
+        acc.set(message.sourceId, [message]);
+      } else {
+        acc.set(message.sourceId, [...messageEntry, message]);
+      }
+      return acc;
+    }, new Map<string, DmnEvaluationMessages[]>());
 
     const notifications: Notification[] = [...messagesBySourceId.entries()].flatMap(([sourceId, messages]) => {
-      const path = decisionNameByDecisionId?.get(sourceId) ?? "";
+      const decisionId = findDecisionIdBySourceId(sourceId);
+      const path = decisionNameByDecisionId?.get(decisionId) ?? "";
       return messages.map((message: any) => ({
         type: "PROBLEM",
         normalizedPosixPathRelativeToTheWorkspaceRoot: path,
         severity: message.severity,
-        message: `${message.messageType}: ${message.message}`,
+        message: `${message.message}`,
       }));
     });
 
@@ -492,6 +531,9 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     currentInputIndex,
     props.workspaceFile.extension,
     extendedServices.status,
+    currentResponseMessages,
+    decisionNameByDecisionId,
+    findDecisionIdBySourceId,
   ]);
 
   const setDmnRunnerPersistenceJson = useCallback(

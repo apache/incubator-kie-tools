@@ -17,7 +17,7 @@
  * under the License.
  */
 import React, { useCallback, useMemo, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Drawer,
   DrawerActions,
@@ -32,12 +32,8 @@ import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import {
-  TaskInboxGatewayApi,
-  useTaskInboxGatewayApi,
-} from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskInbox";
+import { useTaskListChannelApi } from "@kie-tools/runtime-tools-process-webapp-components/dist/TaskList";
 import { KogitoSpinner } from "@kie-tools/runtime-tools-components/dist/components/KogitoSpinner";
 import { ServerErrors } from "@kie-tools/runtime-tools-components/dist/components/ServerErrors";
 import {
@@ -49,20 +45,20 @@ import { EmbeddedTaskDetails } from "@kie-tools/runtime-tools-process-enveloped-
 import { UserTaskInstance } from "@kie-tools/runtime-tools-process-gateway-api/dist/types";
 import { TaskState } from "@kie-tools/runtime-tools-process-enveloped-components/dist/taskDetails";
 import { TaskForm } from "./TaskForm";
-import { FormNotification, Notification } from "./components";
 import { useRuntime, useRuntimeDispatch, useRuntimeInfo, useRuntimeSpecificRoutes } from "../runtime/RuntimeContext";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
 import { isOpenIdConnectAuthSession, useAuthSessions } from "../authSessions";
+import { FormNotification, Notification } from "@kie-tools/runtime-tools-components/dist/components/FormNotification";
 
 interface Props {
   taskId?: string;
 }
 
 export const TaskDetails: React.FC<Props> = ({ taskId }) => {
-  const taskInboxGatewayApi: TaskInboxGatewayApi = useTaskInboxGatewayApi();
-  const history = useHistory();
+  const channelApi = useTaskListChannelApi();
+  const navigate = useNavigate();
   const runtimeRoutes = useRuntimeSpecificRoutes();
-  const { username, accessToken } = useRuntimeInfo();
+  const { username } = useRuntimeInfo();
   const { impersonationUsername } = useRuntime();
   const { currentAuthSession } = useAuthSessions();
   const { refreshToken } = useRuntimeDispatch();
@@ -80,8 +76,8 @@ export const TaskDetails: React.FC<Props> = ({ taskId }) => {
         }
         setIsLoading(true);
         setIsDetailsExpanded(false);
-        taskInboxGatewayApi
-          .getTaskById(taskId)
+        channelApi
+          .taskList__getTaskById(taskId)
           .then((taskData) => {
             if (canceled.get()) {
               return;
@@ -104,14 +100,14 @@ export const TaskDetails: React.FC<Props> = ({ taskId }) => {
             setIsLoading(false);
           });
       },
-      [impersonationUsername, taskId, taskInboxGatewayApi, username]
+      [impersonationUsername, taskId, channelApi, username]
     )
   );
 
   const goToTasks = useCallback(() => {
-    taskInboxGatewayApi.clearOpenTask();
-    history.push(runtimeRoutes.tasks());
-  }, [history, runtimeRoutes, taskInboxGatewayApi]);
+    channelApi.taskList__clearOpenTask();
+    navigate(runtimeRoutes.tasks());
+  }, [navigate, runtimeRoutes, channelApi]);
 
   const showNotification = useCallback(
     (notificationType: "error" | "success", submitMessage: string, notificationDetails?: string) => {
@@ -119,13 +115,15 @@ export const TaskDetails: React.FC<Props> = ({ taskId }) => {
         type: notificationType,
         message: submitMessage,
         details: notificationDetails,
-        customAction: {
-          label: "Go to Tasks",
-          onClick: () => {
-            setNotification(undefined);
-            goToTasks();
+        customActions: [
+          {
+            label: "Go to Tasks",
+            onClick: () => {
+              setNotification(undefined);
+              goToTasks();
+            },
           },
-        },
+        ],
         close: () => {
           setNotification(undefined);
         },
@@ -171,136 +169,112 @@ export const TaskDetails: React.FC<Props> = ({ taskId }) => {
     setIsDetailsExpanded(false);
   }, []);
 
+  const taskFormContent = useMemo(
+    () =>
+      userTask ? (
+        <TaskForm
+          userTask={userTask}
+          onSubmitFormSuccess={onSubmitSuccess}
+          onSubmitFormError={onSubmitError}
+          onUnauthorized={onUnauthorized}
+          username={username}
+        />
+      ) : null,
+    [onSubmitError, onSubmitSuccess, onUnauthorized, userTask, username]
+  );
+
+  const taskDetailsPanel = useMemo(
+    () =>
+      userTask ? (
+        <DrawerPanelContent>
+          <DrawerHead>
+            <span tabIndex={isDetailsExpanded ? 0 : -1}>
+              <Title headingLevel="h3" size="xl">
+                Details
+              </Title>
+            </span>
+            <DrawerActions>
+              <DrawerCloseButton onClick={onDetailsCloseClick} />
+            </DrawerActions>
+          </DrawerHead>
+          <DrawerPanelBody>
+            <EmbeddedTaskDetails targetOrigin={window.location.origin} userTask={userTask} />
+          </DrawerPanelBody>
+        </DrawerPanelContent>
+      ) : null,
+    [isDetailsExpanded, onDetailsCloseClick, userTask]
+  );
+
   const content = useMemo(() => {
     if (isLoading) {
       return (
-        <Grid hasGutter md={1} className={"kogito-management-console__full-size"}>
-          <GridItem span={12} className={"kogito-management-console__full-size"}>
-            <Card className={"kogito-management-console__full-size"}>
-              <Bullseye>
-                <KogitoSpinner spinnerText={`Loading details for task: ${taskId}`} />
-              </Bullseye>
-            </Card>
-          </GridItem>
-        </Grid>
+        <Card className="kogito-management-console__card-size">
+          <Bullseye>
+            <KogitoSpinner spinnerText={`Loading details for task: ${taskId}`} />
+          </Bullseye>
+        </Card>
       );
     }
 
     if (error) {
       return (
-        <Grid hasGutter md={1} className={"kogito-management-console__full-size"}>
-          <GridItem span={12} className={"kogito-management-console__full-size"}>
-            <Card className={"kogito-management-console__full-size"}>
-              <ServerErrors error={error} variant="large">
-                <Button variant="primary" onClick={() => goToTasks()}>
-                  Go to Tasks
-                </Button>
-              </ServerErrors>
-            </Card>
-          </GridItem>
-        </Grid>
+        <Card className="kogito-management-console__card-size">
+          <ServerErrors error={error} variant="large">
+            <Button variant="primary" onClick={() => goToTasks()}>
+              Go to Tasks
+            </Button>
+          </ServerErrors>
+        </Card>
       );
     }
 
     if (!userTask) {
       return (
-        <Grid hasGutter md={1} className={"kogito-management-console__full-size"}>
-          <GridItem span={12} className={"kogito-management-console__full-size"}>
-            <Card className={"kogito-management-console__full-size"}>
-              <KogitoEmptyState
-                type={KogitoEmptyStateType.Info}
-                title={"Cannot find Task"}
-                body={`Cannot find Task with id '${taskId}'`}
-              />
-            </Card>
-          </GridItem>
-        </Grid>
+        <Card className="kogito-management-console__card-size">
+          <KogitoEmptyState
+            type={KogitoEmptyStateType.Info}
+            title={"Cannot find Task"}
+            body={`Cannot find Task with id '${taskId}'`}
+          />
+        </Card>
       );
     }
 
-    const taskDetailsPanel = (
-      <DrawerPanelContent className={"kogito-management-console__full-size"}>
-        <DrawerHead>
-          <span tabIndex={isDetailsExpanded ? 0 : -1}>
-            <Title headingLevel="h3" size="xl">
-              Details
-            </Title>
-          </span>
-          <DrawerActions>
-            <DrawerCloseButton onClick={onDetailsCloseClick} />
-          </DrawerActions>
-        </DrawerHead>
-        <DrawerPanelBody>
-          <EmbeddedTaskDetails targetOrigin={window.location.origin} userTask={userTask} />
-        </DrawerPanelBody>
-      </DrawerPanelContent>
-    );
-
     return (
-      <Drawer isExpanded={isDetailsExpanded}>
-        <DrawerContent panelContent={taskDetailsPanel}>
-          <DrawerContentBody>
-            <Grid hasGutter md={1} className={"kogito-management-console__full-size"}>
-              <GridItem span={12} className={"kogito-management-console__full-size"}>
-                <Card isPlain className={"kogito-management-console__full-size"}>
-                  <CardBody className="pf-v5-u-h-100">
-                    <TaskForm
-                      userTask={userTask}
-                      onSubmitFormSuccess={onSubmitSuccess}
-                      onSubmitFormError={onSubmitError}
-                      onUnauthorized={onUnauthorized}
-                      accessToken={accessToken}
-                      username={username}
-                    />
-                  </CardBody>
-                </Card>
-              </GridItem>
-            </Grid>
-          </DrawerContentBody>
-        </DrawerContent>
-      </Drawer>
+      <Card className="kogito-management-console__card-size">
+        <Drawer isExpanded={isDetailsExpanded}>
+          <DrawerContent panelContent={taskDetailsPanel}>
+            <DrawerContentBody>
+              <CardBody className="pf-v5-u-h-100">{taskFormContent}</CardBody>
+            </DrawerContentBody>
+          </DrawerContent>
+        </Drawer>
+      </Card>
     );
-  }, [
-    accessToken,
-    error,
-    goToTasks,
-    isDetailsExpanded,
-    isLoading,
-    onDetailsCloseClick,
-    onSubmitError,
-    onSubmitSuccess,
-    onUnauthorized,
-    taskId,
-    userTask,
-    username,
-  ]);
+  }, [error, goToTasks, isDetailsExpanded, isLoading, taskDetailsPanel, taskFormContent, taskId, userTask]);
 
   return (
     <>
       {userTask && (
-        <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
-          <FlexItem>
-            <PageTitle title={userTask.referenceName} extra={<TaskState task={userTask} variant={"label"} />} />
-          </FlexItem>
-          <FlexItem>
-            <Button variant="secondary" id="view-details" onClick={onViewDetailsClick}>
-              View details
-            </Button>
-          </FlexItem>
-        </Flex>
+        <FlexItem>
+          <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
+            <FlexItem>
+              <PageTitle title={userTask.referenceName} extra={<TaskState task={userTask} variant={"label"} />} />
+            </FlexItem>
+            <FlexItem>
+              <Button variant="secondary" id="view-details" onClick={onViewDetailsClick}>
+                View details
+              </Button>
+            </FlexItem>
+          </Flex>
+        </FlexItem>
       )}
       {notification && (
         <div className="kogito-management-console__task-details-page">
           <FormNotification notification={notification} />
         </div>
       )}
-      <Card
-        isPlain
-        className="kogito-management-console__card-size"
-        style={{ paddingTop: "var(--pf-v5-global--spacer--md)" }}
-      >
-        {content}
-      </Card>
+      <FlexItem grow={{ default: "grow" }}>{content}</FlexItem>
     </>
   );
 };

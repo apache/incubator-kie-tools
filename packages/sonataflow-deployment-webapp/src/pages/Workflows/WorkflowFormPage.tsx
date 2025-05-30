@@ -35,7 +35,7 @@ import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useHistory } from "react-router";
+import { useNavigate, useParams } from "react-router-dom";
 import { useOpenApi } from "../../context/OpenApiContext";
 import { WorkflowFormGatewayApiImpl } from "../../impl/WorkflowFormGatewayApiImpl";
 import { routes } from "../../routes";
@@ -43,13 +43,14 @@ import { BasePage } from "../BasePage";
 import { ErrorKind, ErrorPage } from "../ErrorPage";
 import { useApp } from "../../context/AppContext";
 
-export function WorkflowFormPage(props: { workflowId: string }) {
+export function WorkflowFormPage() {
   const [notification, setNotification] = useState<Notification>();
   const [workflowResponse, setWorkflowResponse] = useState<WorkflowResponse>();
   const openApi = useOpenApi();
   const [customFormSchema, setCustomFormSchema] = useState<Record<string, any>>();
   const app = useApp();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const { workflowId } = useParams<{ workflowId: string }>();
   const gatewayApi = useMemo(
     () =>
       openApi.openApiPromise.status === PromiseStateStatus.RESOLVED && openApi.openApiData
@@ -59,24 +60,24 @@ export function WorkflowFormPage(props: { workflowId: string }) {
   );
   const workflowDefinition = useMemo<WorkflowDefinition>(
     () => ({
-      workflowName: props.workflowId,
-      endpoint: `/${props.workflowId}`,
+      workflowName: workflowId!,
+      endpoint: `/${workflowId}`,
       serviceUrl: window.location.href.split("/#")[0],
     }),
-    [props.workflowId]
+    [workflowId]
   );
 
   const goToWorkflowList = useCallback(() => {
-    history.push(routes.workflows.home.path({}));
-  }, [history]);
+    navigate(routes.workflows.home.path({}));
+  }, [navigate]);
 
   const openWorkflowInstance = useCallback(
     (id: string) => {
-      history.push({
+      navigate({
         pathname: routes.runtimeTools.workflowDetails.path({ workflowId: id }),
       });
     },
-    [history]
+    [navigate]
   );
 
   const showNotification = useCallback(
@@ -157,13 +158,13 @@ export function WorkflowFormPage(props: { workflowId: string }) {
 
   useEffect(() => {
     if (gatewayApi) {
-      gatewayApi.getCustomWorkflowSchema(props.workflowId).then((data) => {
+      gatewayApi.getCustomWorkflowSchema(workflowId!).then((data) => {
         if (data) {
           setCustomFormSchema(data);
         }
       });
     }
-  }, [gatewayApi, props.workflowId]);
+  }, [gatewayApi, workflowId]);
 
   if (openApi.openApiPromise.status === PromiseStateStatus.REJECTED) {
     return <ErrorPage kind={ErrorKind.OPENAPI} errors={["OpenAPI service not available"]} />;

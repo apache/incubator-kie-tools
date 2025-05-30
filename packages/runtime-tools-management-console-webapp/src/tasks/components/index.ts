@@ -16,4 +16,4 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export * from "./FormNotification";
+export * from "./ImpersonationPageSection";
