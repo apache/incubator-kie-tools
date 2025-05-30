@@ -17,17 +17,17 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import { test, expect } from "../../__fixtures__/base";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools-core/webpack-base/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      dmnEditorEnvelope: {
-        storybook: {
-          port: "9904",
-        },
-      },
-    };
-  },
+test.beforeEach(async ({ editor, nodes }) => {
+  await editor.openLoanPreQualification();
+  await expect(nodes.get({ name: "Loan Pre-Qualification" })).toBeVisible();
+  await nodes.select({ name: "Loan Pre-Qualification" });
+});
+
+test("Toggle hierarchy highlight - H", async ({ nodes, diagram, page }) => {
+  await page.keyboard.press("H");
+  await expect(diagram.get()).toHaveScreenshot("enable-hierarchy-highlight-using-shoftcut.png");
+  await page.keyboard.press("H");
+  await expect(diagram.get()).toHaveScreenshot("disable-hierarchy-highlight-using-shoftcut.png");
 });
