@@ -31,7 +31,7 @@ WORKDIR /home/kogito/serverless-logic-web-tools-swf-deployment-quarkus-app/
 
 RUN chown kogito /home/kogito/.m2 && \
   rm -rf src/test/ && \
-  mvn clean package \
+  "${MAVEN_CMD}" clean package \
   quarkus:go-offline \
   -B \
   -s /home/kogito/.m2/settings.xml \
