@@ -27,10 +27,11 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import HelpIcon from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { useOnlineI18n } from "../../i18n";
-import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
+import { useAuthSessionsDispatch, useSyncCloudAuthSession } from "../../authSessions/AuthSessionsContext";
 import { v4 as uuid } from "uuid";
 import {
   AUTH_SESSION_VERSION_NUMBER,
+  AuthSession,
   CloudAuthSessionType,
   KubernetesAuthSession,
 } from "../../authSessions/AuthSessionApi";
@@ -62,11 +63,14 @@ export function ConnectToKubernetesSimple(props: {
   setMode: React.Dispatch<React.SetStateAction<KubernetesSettingsTabMode>>;
   setNewAuthSession: React.Dispatch<React.SetStateAction<KubernetesAuthSession>>;
   isLoadingService: boolean;
+  selectedAuthSession?: AuthSession;
 }) {
   const { i18n } = useOnlineI18n();
   const [isConnectionValidated, setConnectionValidated] = useState(FormValiationOptions.INITIAL);
   const [isConnecting, setConnecting] = useState(false);
   const authSessionsDispatch = useAuthSessionsDispatch();
+
+  useSyncCloudAuthSession(props.selectedAuthSession, props.setConnection);
 
   const onConnect = useCallback(async () => {
     if (isConnecting) {
@@ -87,14 +91,18 @@ export function ConnectToKubernetesSimple(props: {
       const newAuthSession: KubernetesAuthSession = {
         type: CloudAuthSessionType.Kubernetes,
         version: AUTH_SESSION_VERSION_NUMBER,
-        id: uuid(),
+        id: props.selectedAuthSession?.id ?? uuid(),
         ...props.connection,
         authProviderId: "kubernetes",
         createdAtDateISO: new Date().toISOString(),
         k8sApiServerEndpointsByResourceKind: props.kieSandboxKubernetesService.args.k8sApiServerEndpointsByResourceKind,
       };
       props.setStatus(KubernetesInstanceStatus.CONNECTED);
-      authSessionsDispatch.add(newAuthSession);
+      if (props.selectedAuthSession) {
+        authSessionsDispatch.update(newAuthSession);
+      } else {
+        authSessionsDispatch.add(newAuthSession);
+      }
       props.setNewAuthSession(newAuthSession);
     } else if (isConnectionEstablished === KubernetesConnectionStatus.MISSING_PERMISSIONS) {
       setConnectionValidated(FormValiationOptions.MISSING_PERMISSIONS);

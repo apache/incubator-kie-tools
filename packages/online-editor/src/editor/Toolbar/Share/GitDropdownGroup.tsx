@@ -98,7 +98,7 @@ export const GitDropdownGroup = (props: Props) => {
         >
           {`Manage authentication sources for '${props.workspace.descriptor.name}' to be able to create Repository, GitHub Gist, Bitbucket Snippet or GitLab Snippet.`}
         </Alert>
-        {canCreateGitRepository && (
+        {authProvider && (
           <Tooltip
             data-testid={"create-git-repository-tooltip"}
             key={`dropdown-create-git-repository`}
@@ -129,7 +129,7 @@ export const GitDropdownGroup = (props: Props) => {
             </DropdownItem>
           </Tooltip>
         )}
-        {canCreateGistOrSnippet && (
+        {authProvider && (
           <Tooltip
             data-testid={"create-gist-or-snippet-tooltip"}
             key={`dropdown-create-gist-or-snippet`}

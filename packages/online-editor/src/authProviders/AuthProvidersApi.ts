@@ -47,6 +47,19 @@ export const isGitAuthProvider = (
 ): maybeGitAuthProvider is GitAuthProvider => {
   return gitAuthProviderKeys.some((k) => k === maybeGitAuthProvider?.type);
 };
+export const isOpenShiftAuthProvider = (
+  maybeOpenShiftAuthProvider: AuthProvider | undefined
+): maybeOpenShiftAuthProvider is OpenShiftAuthProvider => {
+  const openShiftAuthProviderKeys = ["openshift"];
+  return openShiftAuthProviderKeys.some((k) => k === maybeOpenShiftAuthProvider?.type);
+};
+
+export const isKubernetesAuthProvider = (
+  maybeKubernetesAuthProvider: AuthProvider | undefined
+): maybeKubernetesAuthProvider is KubernetesAuthProvider => {
+  const kubernetesAuthProviderKeys = ["kubernetes"];
+  return kubernetesAuthProviderKeys.some((k) => k === maybeKubernetesAuthProvider?.type);
+};
 
 export type OpenShiftAuthProviderType = AuthProviderType.openshift;
 export type KubernetesAuthProviderType = AuthProviderType.kubernetes;
