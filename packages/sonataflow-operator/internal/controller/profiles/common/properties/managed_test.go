@@ -123,7 +123,7 @@ func Test_appPropertyHandler_WithUserPropertiesWithNoUserOverrides(t *testing.T)
 	assert.NoError(t, err)
 	generatedProps, propsErr := properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 12, len(generatedProps.Keys()))
+	assert.Equal(t, 14, len(generatedProps.Keys()))
 	assert.NotContains(t, "property1", generatedProps.Keys())
 	assert.NotContains(t, "property2", generatedProps.Keys())
 	assert.Equal(t, "http://greeting.default", generatedProps.GetString("kogito.service.url", ""))
@@ -161,7 +161,7 @@ func Test_appPropertyHandler_WithUserPropertiesWithServiceDiscovery(t *testing.T
 		Build())
 	generatedProps.DisableExpansion = true
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 26, len(generatedProps.Keys()))
+	assert.Equal(t, 28, len(generatedProps.Keys()))
 	assert.NotContains(t, "property1", generatedProps.Keys())
 	assert.NotContains(t, "property2", generatedProps.Keys())
 	assertHasProperty(t, generatedProps, "service1", myService1Address)
@@ -256,7 +256,7 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.NoError(t, err)
 	generatedProps, propsErr = properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 17, len(generatedProps.Keys()))
+	assert.Equal(t, 19, len(generatedProps.Keys()))
 	assert.NotContains(t, "property1", generatedProps.Keys())
 	assert.NotContains(t, "property2", generatedProps.Keys())
 	assert.Equal(t, "http://"+platform.Name+"-"+constants.DataIndexServiceName+"."+platform.Namespace+"/definitions", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsURL, ""))
@@ -283,7 +283,7 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.NoError(t, err)
 	generatedProps, propsErr = properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 12, len(generatedProps.Keys()))
+	assert.Equal(t, 14, len(generatedProps.Keys()))
 	assert.NotContains(t, "property1", generatedProps.Keys())
 	assert.NotContains(t, "property2", generatedProps.Keys())
 	assert.Equal(t, "", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsURL, ""))
@@ -303,7 +303,7 @@ func Test_appPropertyHandler_WithServicesWithUserOverrides(t *testing.T) {
 	assert.NoError(t, err)
 	generatedProps, propsErr = properties.LoadString(props.WithUserProperties(userProperties).Build())
 	assert.NoError(t, propsErr)
-	assert.Equal(t, 11, len(generatedProps.Keys()))
+	assert.Equal(t, 13, len(generatedProps.Keys()))
 	assert.NotContains(t, "property1", generatedProps.Keys())
 	assert.NotContains(t, "property2", generatedProps.Keys())
 	assert.Equal(t, "", generatedProps.GetString(constants.KogitoProcessDefinitionsEventsURL, ""))
@@ -603,6 +603,8 @@ func generateJobServiceWorkflowProductionWithJobServiceDisabled() *properties.Pr
 	props.Set("kogito.events.processdefinitions.enabled", "false")
 	props.Set("kogito.events.processinstances.enabled", "false")
 	props.Set("kogito.events.usertasks.enabled", "false")
+	props.Set("kogito.events.grouping", "true")
+	props.Set("kogito.events.grouping.binary", "true")
 	props.Sort()
 	return props
 }
@@ -621,6 +623,8 @@ func generateJobServiceWorkflowProductionProperties() *properties.Properties {
 	props.Set("kogito.events.processdefinitions.enabled", "false")
 	props.Set("kogito.events.processinstances.enabled", "false")
 	props.Set("kogito.events.usertasks.enabled", "false")
+	props.Set("kogito.events.grouping", "true")
+	props.Set("kogito.events.grouping.binary", "true")
 	props.Sort()
 	return props
 }
@@ -657,6 +661,8 @@ func generateDataIndexWorkflowProductionPropertiesWithDataIndexDisabled() *prope
 	props.Set("kogito.events.processdefinitions.enabled", "false")
 	props.Set("kogito.events.processinstances.enabled", "false")
 	props.Set("kogito.events.usertasks.enabled", "false")
+	props.Set("kogito.events.grouping", "true")
+	props.Set("kogito.events.grouping.binary", "true")
 	props.Sort()
 	return props
 }
@@ -679,6 +685,8 @@ func generateDataIndexWorkflowProductionProperties() *properties.Properties {
 	props.Set("kogito.events.processdefinitions.errors.propagate", "true")
 	props.Set("kogito.events.processinstances.enabled", "true")
 	props.Set("kogito.events.usertasks.enabled", "false")
+	props.Set("kogito.events.grouping", "true")
+	props.Set("kogito.events.grouping.binary", "true")
 	props.Sort()
 	return props
 }
@@ -714,6 +722,8 @@ func generateDataIndexAndJobServiceWorkflowProductionDataIndexAndJobsServiceDisa
 	props.Set("kogito.events.processdefinitions.enabled", "false")
 	props.Set("kogito.events.processinstances.enabled", "false")
 	props.Set("kogito.events.usertasks.enabled", "false")
+	props.Set("kogito.events.grouping", "true")
+	props.Set("kogito.events.grouping.binary", "true")
 	props.Sort()
 	return props
 }
@@ -737,6 +747,8 @@ func generateDataIndexAndJobServiceWorkflowProductionProperties() *properties.Pr
 	props.Set("kogito.events.usertasks.enabled", "false")
 	props.Set("mp.messaging.outgoing.kogito-processdefinitions-events.url", "http://foo-data-index-service.default/definitions")
 	props.Set("mp.messaging.outgoing.kogito-processinstances-events.url", "http://foo-data-index-service.default/processes")
+	props.Set("kogito.events.grouping", "true")
+	props.Set("kogito.events.grouping.binary", "true")
 	props.Sort()
 	return props
 
