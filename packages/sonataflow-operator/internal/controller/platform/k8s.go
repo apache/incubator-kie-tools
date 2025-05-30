@@ -199,6 +199,12 @@ func createOrUpdateDeployment(ctx context.Context, client client.Client, platfor
 	}
 	kubeutil.AddOrReplaceContainer(serviceContainer.Name, *serviceContainer, &serviceDeploymentSpec.Template.Spec)
 
+	// NEW: inject platform defaults
+	if platform.Spec.WorkflowDefaults != nil {
+		mergePodTemplate(&serviceDeploymentSpec.Template,
+			&platform.Spec.WorkflowDefaults.PodTemplate)
+	}
+
 	serviceDeployment := &appsv1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace: platform.Namespace,

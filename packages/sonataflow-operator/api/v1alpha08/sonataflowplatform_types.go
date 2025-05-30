@@ -22,6 +22,7 @@ package v1alpha08
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	duckv1 "knative.dev/pkg/apis/duck/v1"
+	corev1 "k8s.io/api/core/v1"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api"
 )
@@ -66,6 +67,9 @@ type SonataFlowPlatformSpec struct {
 	// Settings for Prometheus monitoring
 	// +optional
 	Monitoring *PlatformMonitoringOptionsSpec `json:"monitoring,omitempty"`
+
+	 // +optional
+	WorkflowDefaults *WorkflowDefaults `json:"workflowDefaults,omitempty"`
 }
 
 // PlatformEventingSpec specifies the Knative Eventing integration details in the platform.
@@ -150,6 +154,11 @@ type SonataFlowPlatformStatus struct {
 	Triggers []SonataFlowPlatformTriggerRef `json:"triggers,omitempty"`
 	//+operator-sdk:csv:customresourcedefinitions:type=status,displayName="dbMigrationStatus"
 	SonataFlowPlatformDBMigrationPhase *SonataFlowPlatformDBMigrationPhase `json:"sonataFlowPlatformDBMigrationPhase,omitempty"`
+}
+
+// +kubebuilder:object:generate=true
+type WorkflowDefaults struct {
+    corev1.PodTemplateSpec `json:",inline,omitempty"`
 }
 
 // SonataFlowPlatformTriggerRef defines a trigger created for the SonataFlowPlatform.
