@@ -30,7 +30,7 @@ import React, {
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { AuthSessionSelectFilter } from "../../../authSessions/AuthSessionSelect";
 import { ActiveWorkspace } from "@kie-tools-core/workspaces-git-fs/dist/model/ActiveWorkspace";
-import { useAuthSession } from "../../../authSessions/AuthSessionsContext";
+import { useAuthSession, useAuthSessions } from "../../../authSessions/AuthSessionsContext";
 import { useAuthProvider } from "../../../authProviders/AuthProvidersContext";
 import { useGitHubClient } from "../../../github/Hooks";
 import { useBitbucketClient } from "../../../bitbucket/Hooks";
@@ -56,6 +56,7 @@ import { useGitIntegrationAlerts } from "./GitIntegrationAlerts";
 import { AuthProviderGroup, isGistEnabledAuthProviderType } from "../../../authProviders/AuthProvidersApi";
 import { useEditorToolbarDispatchContext } from "../EditorToolbarContextProvider";
 import { useGitlabClient } from "../../../gitlab/useGitlabClient";
+import { AuthSession, AuthSessionStatus } from "../../../authSessions/AuthSessionApi";
 
 export type GitIntegrationContextType = {
   workspaceImportableUrl: ImportableUrl;
@@ -258,12 +259,29 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
     () => props.workspace.files.filter((f) => f.relativePath !== f.name).length !== 0,
     [props.workspace]
   );
+  const { authSessionStatus } = useAuthSessions();
+  const isValidAuthSession = useCallback((): boolean => {
+    if (!authSession?.id) {
+      return false;
+    }
+    const status = authSessionStatus.get(authSession.id);
+    return status === AuthSessionStatus.VALID;
+  }, [authSession?.id, authSessionStatus]);
 
-  const canCreateGitHubRepository = useMemo(() => authProvider?.type === "github", [authProvider?.type]);
+  const canCreateGitHubRepository = useMemo(
+    () => authProvider?.type === "github" && isValidAuthSession(),
+    [authProvider?.type, isValidAuthSession]
+  );
 
-  const canCreateBitbucketRepository = useMemo(() => authProvider?.type === "bitbucket", [authProvider?.type]);
+  const canCreateBitbucketRepository = useMemo(
+    () => authProvider?.type === "bitbucket" && isValidAuthSession(),
+    [authProvider?.type, isValidAuthSession]
+  );
 
-  const canCreateGitlabRepository = useMemo(() => authProvider?.type === "gitlab", [authProvider?.type]);
+  const canCreateGitlabRepository = useMemo(
+    () => authProvider?.type === "gitlab" && isValidAuthSession(),
+    [authProvider?.type, isValidAuthSession]
+  );
 
   const canCreateGitRepository = useMemo(
     () => canCreateGitHubRepository || canCreateBitbucketRepository || canCreateGitlabRepository,
@@ -271,8 +289,8 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
   );
 
   const canPushToGitRepository = useMemo(
-    () => authSession?.type === "git" && !!authProvider,
-    [authProvider, authSession?.type]
+    () => authSession?.type === "git" && !!authProvider && isValidAuthSession(),
+    [authProvider, authSession?.type, isValidAuthSession]
   );
 
   const isGitHubGistOwner = useMemo(() => {
@@ -295,9 +313,10 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
         authProvider &&
           isGistEnabledAuthProviderType(authProvider?.type) &&
           props.workspace.descriptor.origin.kind === WorkspaceKind.LOCAL &&
-          !workspaceHasNestedDirectories
+          !workspaceHasNestedDirectories &&
+          isValidAuthSession()
       ),
-    [authProvider, props.workspace.descriptor.origin.kind, workspaceHasNestedDirectories]
+    [authProvider, isValidAuthSession, props.workspace.descriptor.origin.kind, workspaceHasNestedDirectories]
   );
 
   const canUpdateGistOrSnippet = useMemo(
@@ -308,9 +327,10 @@ export function GitIntegrationContextProvider(props: GitIntegrationContextProvid
           !!isGistOrSnippetOwner &&
           props.workspace &&
           isGistLikeWorkspaceKind(props.workspace.descriptor.origin.kind) &&
-          !workspaceHasNestedDirectories
+          !workspaceHasNestedDirectories &&
+          isValidAuthSession()
       ),
-    [authProvider, isGistOrSnippetOwner, props.workspace, workspaceHasNestedDirectories]
+    [authProvider, isGistOrSnippetOwner, isValidAuthSession, props.workspace, workspaceHasNestedDirectories]
   );
 
   const canForkGitHubGist = useMemo(
