@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -35,9 +35,10 @@ import { OpenShiftSettingsTabMode } from "./ConnectToOpenShiftSection";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { KieSandboxOpenShiftService } from "../../devDeployments/services/openshift/KieSandboxOpenShiftService";
 import { v4 as uuid } from "uuid";
-import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
+import { useAuthSessionsDispatch, useSyncCloudAuthSession } from "../../authSessions/AuthSessionsContext";
 import {
   AUTH_SESSION_VERSION_NUMBER,
+  AuthSession,
   CloudAuthSessionType,
   OpenShiftAuthSession,
 } from "../../authSessions/AuthSessionApi";
@@ -70,6 +71,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
   setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
   setNewAuthSession: React.Dispatch<React.SetStateAction<OpenShiftAuthSession>>;
   isLoadingService: boolean;
+  selectedAuthSession?: AuthSession;
 }) {
   const { i18n } = useOnlineI18n();
   const [isConnectionValidated, setConnectionValidated] = useState(false);
@@ -92,6 +94,8 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
   const isTokenValidated = useMemo(() => {
     return isTokenValid(props.connection.token);
   }, [props.connection.token]);
+
+  useSyncCloudAuthSession(props.selectedAuthSession, props.setConnection);
 
   useCancelableEffect(
     useCallback(
@@ -166,7 +170,7 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
       const newAuthSession: OpenShiftAuthSession = {
         type: CloudAuthSessionType.OpenShift,
         version: AUTH_SESSION_VERSION_NUMBER,
-        id: uuid(),
+        id: props.selectedAuthSession?.id ?? uuid(),
         ...props.connection,
         authProviderId: "openshift",
         createdAtDateISO: new Date().toISOString(),
@@ -174,8 +178,12 @@ export function ConnectToDeveloperSandboxForRedHatOpenShiftWizard(props: {
       };
       setConnectionValidated(true);
       props.setStatus(OpenShiftInstanceStatus.CONNECTED);
-      authSessionsDispatch.add(newAuthSession);
       props.setNewAuthSession(newAuthSession);
+      if (props.selectedAuthSession) {
+        authSessionsDispatch.update(newAuthSession);
+      } else {
+        authSessionsDispatch.add(newAuthSession);
+      }
     } else {
       setConnectionValidated(false);
       return;
