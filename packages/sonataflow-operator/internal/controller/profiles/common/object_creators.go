@@ -126,6 +126,11 @@ func DeploymentCreator(workflow *operatorapi.SonataFlow, plf *operatorapi.Sonata
 		return nil, err
 	}
 	kubeutil.AddOrReplaceContainer(operatorapi.DefaultContainerName, *flowContainer, &deployment.Spec.Template.Spec)
+	// NEW: inject platform defaults
+	if plf != nil && plf.Spec.WorkflowDefaults != nil {
+		mergePodTemplate(&deployment.Spec.Template,
+			&plf.Spec.WorkflowDefaults.PodTemplate)
+	}
 
 	return deployment, nil
 }
@@ -161,7 +166,14 @@ func KServiceCreator(workflow *operatorapi.SonataFlow, plf *operatorapi.SonataFl
 		return nil, err
 	}
 	kubeutil.AddOrReplaceContainer(operatorapi.DefaultContainerName, *flowContainer, &ksvc.Spec.Template.Spec.PodSpec)
-
+	
+	// NEW: inject platform defaults
+	if plf != nil && plf.Spec.WorkflowDefaults != nil {
+		mergePodTemplate(
+			&ksvc.Spec.Template.Spec.PodTemplateSpec,
+			&plf.Spec.WorkflowDefaults.PodTemplate)
+	}
+	
 	return ksvc, nil
 }
 
