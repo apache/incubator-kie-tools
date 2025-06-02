@@ -68,19 +68,6 @@ type SonataFlowPlatformReconciler struct {
 	Recorder record.EventRecorder
 }
 
-// mergePodTemplate merges envFrom & volumes from defaults into dst.
-func mergePodTemplate(dst *corev1.PodTemplateSpec, def *corev1.PodTemplateSpec) {
-    if def == nil { return }
-    if len(dst.Spec.Containers) == 0 || len(def.Spec.Containers) == 0 { return }
-
-    dstC := &dst.Spec.Containers[0]
-    defC := def.Spec.Containers[0]
-
-    dst.Spec.Volumes = append(dst.Spec.Volumes, def.Spec.Volumes...)
-    dstC.EnvFrom      = append(dstC.EnvFrom,      defC.EnvFrom...)
-    dstC.VolumeMounts = append(dstC.VolumeMounts, defC.VolumeMounts...)
-}
-
 //+kubebuilder:rbac:groups=sonataflow.org,resources=sonataflowplatforms,verbs=get;list;watch;create;update;patch;delete
 //+kubebuilder:rbac:groups=sonataflow.org,resources=sonataflowplatforms/status,verbs=get;update;patch
 //+kubebuilder:rbac:groups=sonataflow.org,resources=sonataflowplatforms/finalizers,verbs=update
