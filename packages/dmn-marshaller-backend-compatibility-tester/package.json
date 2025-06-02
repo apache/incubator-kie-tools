@@ -20,7 +20,7 @@
     "src"
   ],
   "scripts": {
-    "build:dev": "rimraf dist && tsc -p tsconfig.json && pnpm prefetch",
+    "build:dev": "rimraf dist dist-m2 && tsc -p tsconfig.json && cross-env JBANG_REPO=$(realpath ./dist-m2) pnpm prefetch",
     "build:prod": "pnpm build:dev",
     "prefetch": "node dist/dependenciesFetch.js"
   },
@@ -28,8 +28,10 @@
     "@jbangdev/jbang": "0.2.3"
   },
   "devDependencies": {
+    "@kie-tools-core/drools-and-kogito": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
+    "cross-env": "^7.0.3",
     "rimraf": "^3.0.2",
     "typescript": "^5.5.3"
   }

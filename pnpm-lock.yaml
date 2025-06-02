@@ -4859,12 +4859,18 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
     devDependencies:
+      '@kie-tools-core/drools-and-kogito':
+        specifier: workspace:*
+        version: link:../drools-and-kogito
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
       '@kie-tools/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -5054,6 +5060,15 @@ importers:
       webpack-merge:
         specifier: ^5.9.0
         version: 5.9.0
+
+  packages/drools-and-kogito:
+    devDependencies:
+      '@kie-tools-scripts/build-env':
+        specifier: workspace:*
+        version: link:../../scripts/build-env
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
 
   packages/editor:
     dependencies:
@@ -7636,6 +7651,10 @@ importers:
         version: 5.5.3
 
   packages/maven-base:
+    dependencies:
+      '@kie-tools-core/drools-and-kogito':
+        specifier: workspace:*
+        version: link:../drools-and-kogito
     devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
@@ -11127,10 +11146,11 @@ importers:
         version: 5.9.0
 
   packages/serverless-workflow-diagram-editor:
-    devDependencies:
+    dependencies:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
+    devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -12627,10 +12647,11 @@ importers:
         version: 5.9.0
 
   packages/stunner-editors:
-    devDependencies:
+    dependencies:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
+    devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env

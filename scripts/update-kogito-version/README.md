@@ -21,7 +21,7 @@ Updates the default value of `KOGITO_RUNTIME_version` of `packages/root-env` and
 
 ### Usage
 
-`pnpm update-kogito-version-to --maven [new-version]`
+`pnpm update-kogito-version-to --maven {new-version} [--droolsGitRef {ref} --optaplannerGitRef {ref} --kogitoRuntimesGitRef {ref} --kogitoAppsGitRef {ref}]`
 
 ---
 
