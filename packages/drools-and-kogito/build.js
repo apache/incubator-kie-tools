@@ -47,7 +47,7 @@ console.log(`[drools-and-kogito] Force build: ${forceBuild}`);
 if (localM2DirExists && buildInfoMatches && !forceBuild) {
   console.log(`[drools-and-kogito] Nothing to do. Exiting.`);
   process.exit(0);
-} else {
+} else if (localM2DirExists) {
   console.log(`[drools-and-kogito] Cleaning up 'dist' and 'dist-tmp' directories...`);
   fs.rmSync("./dist", { recursive: true });
 }
@@ -184,12 +184,6 @@ fs.writeFileSync(
   }),
   "utf-8"
 );
-
-if (buildEnv.droolsAndKogito.uploadCommand) {
-  console.log(`[drools-and-kogito] Non-empty cache upload command detected. Proceeding to upload...`);
-  execSync(buildEnv.droolsAndKogito.uploadCommand, { ...execOpts, cwd: "./" });
-  console.log(`[drools-and-kogito] Upload succeeeded.`);
-}
 
 console.log(`[drools-and-kogito] Done.`);
 

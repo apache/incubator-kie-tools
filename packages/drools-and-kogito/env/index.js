@@ -68,10 +68,6 @@ module.exports = composeEnv([rootEnv], {
       default: `gh run download --name drools-and-kogito-cached-build-for-${rootEnv.env.versions.kogito} --dir dist`,
       description: "",
     },
-    DROOLS_AND_KOGITO__cacheUploadCommand: {
-      default: "",
-      description: "",
-    },
   }),
   get env() {
     return {
@@ -97,10 +93,7 @@ module.exports = composeEnv([rootEnv], {
           },
         },
         cache: {
-          commands: {
-            download: getOrDefault(this.vars.DROOLS_AND_KOGITO__cacheDownloadCommand),
-            upload: getOrDefault(this.vars.DROOLS_AND_KOGITO__cacheUploadCommand),
-          },
+          download: getOrDefault(this.vars.DROOLS_AND_KOGITO__cacheDownloadCommand),
         },
       },
     };
