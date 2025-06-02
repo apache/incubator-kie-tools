@@ -214,10 +214,10 @@ pipeline {
             }
             steps {
                 script {
-                    env.KN_PLUGIN_LINUX_X86_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sonataflow-knative-plugin-linux-x86.zip"
-                    env.KN_PLUGIN_MACOS_ARM_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sonataflow-knative-plugin-macOS-arm64.zip"
-                    env.KN_PLUGIN_MACOS_X86_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sonataflow-knative-plugin-macOS-x86.zip"
-                    env.KN_PLUGIN_WINDOWS_X86_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sonataflow-knative-plugin-windows-x86.zip"
+                    env.KN_PLUGIN_LINUX_X86_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_VERSION}-sonataflow-knative-plugin-linux-x86.zip"
+                    env.KN_PLUGIN_MACOS_ARM_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_VERSION}-sonataflow-knative-plugin-macOS-arm64.zip"
+                    env.KN_PLUGIN_MACOS_X86_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_VERSION}-sonataflow-knative-plugin-macOS-x86.zip"
+                    env.KN_PLUGIN_WINDOWS_X86_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_VERSION}-sonataflow-knative-plugin-windows-x86.zip"
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}

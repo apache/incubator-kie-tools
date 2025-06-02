@@ -143,7 +143,7 @@ pipeline {
             }
             steps {
                 script {
-                    env.RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-extended-services-linux-x86.zip"
+                    env.RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_VERSION}-sandbox-extended-services-linux-x86.zip"
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}

@@ -167,7 +167,7 @@ pipeline {
             }
             steps {
                 script {
-                    env.KIE_SANDBOX_ACCELERATOR_QUARKUS_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-accelerator-quarkus.zip"
+                    env.KIE_SANDBOX_ACCELERATOR_QUARKUS_ZIP_FILE = "incubator-kie-${params.RELEASE_VERSION}-sandbox-accelerator-quarkus.zip"
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
                     cd "${WORKSPACE}/kie-tools/packages/kie-sandbox-accelerator-quarkus/dist" && zip -r "${env.RELEASE_ARTIFACTS_DIR}/${env.KIE_SANDBOX_ACCELERATOR_QUARKUS_ZIP_FILE}" .

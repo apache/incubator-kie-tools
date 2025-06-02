@@ -187,7 +187,7 @@ pipeline {
             }
             steps {
                 script {
-                    env.RELEASE_IMAGE_TAR_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sandbox-extended-services-image.tar.gz"
+                    env.RELEASE_IMAGE_TAR_FILE = "incubator-kie-${params.RELEASE_VERSION}-sandbox-extended-services-image.tar.gz"
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
