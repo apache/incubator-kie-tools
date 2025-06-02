@@ -1,5 +1,5 @@
 @docker.io/apache/incubator-kie-sonataflow-builder
-Feature: Serverless Workflow builder images
+Feature: SonataFlow Builder Image Sanity Checks
 
   Scenario: Verify that the application is built and started correctly
     When container is started with command bash -c '/home/kogito/launch/build-app.sh && java -jar target/quarkus-app/quarkus-run.jar'

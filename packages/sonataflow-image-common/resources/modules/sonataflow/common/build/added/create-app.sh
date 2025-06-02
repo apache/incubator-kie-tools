@@ -136,6 +136,19 @@ fi
   -Dmaven.javadoc.skip=true \
   clean dependency:go-offline "${QUARKUS_PLATFORM_GROUPID}":quarkus-maven-plugin:"${QUARKUS_PLATFORM_VERSION}":go-offline install
 
+# additional libraries (supports comma-separated list via xargs)
+if [ ! -z "${ADDITIONAL_DEPENDENCIES}" ]; then
+  echo "Adding additional dependencies to m2: ${ADDITIONAL_DEPENDENCIES}"
+  printf '%s\n' ${ADDITIONAL_DEPENDENCIES//,/ } | \
+  xargs -n1 -I{} \
+    "${MAVEN_CMD}" -B ${MAVEN_ARGS_APPEND} \
+      -nsu \
+      -s "${MAVEN_SETTINGS_PATH}" \
+      dependency:get \
+      -U \
+      -Dartifact="{}"
+fi
+
 # clean up
 "${MAVEN_CMD}" -B ${MAVEN_ARGS_APPEND} \
   -nsu \
