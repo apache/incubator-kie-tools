@@ -20,7 +20,7 @@ if (buildEnv.droolsAndKogito.skip) {
 if (!buildEnv.versions.kogito.endsWith("-local") && !buildEnv.droolsAndKogito.forceBuild) {
   console.log(`[drools-and-kogito] Detected a non-local version for Drools and Kogito.`);
   console.log(
-    `[drools-and-kogito] Building will not occur, as this version is expected to be published in some publicly available Maven repository.`
+    `[drools-and-kogito] Building will not occur, as this version is expected to be either present on the local Maven repository (E.g., ~/.m2), or published in some publicly available Maven repository so that it can be downloaded.`
   );
   console.log(`[drools-and-kogito] Done.`);
   process.exit(0);
