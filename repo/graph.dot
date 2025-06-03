@@ -627,7 +627,7 @@ digraph G {
   "swf-vscode-extension" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "swf-vscode-extension" -> "@kie-tools/serverless-workflow-diagram-editor-assets" [ style = "dashed", color = "blue" ];
   "swf-vscode-extension" -> "@kie-tools/vscode-extension-common-test-helpers" [ style = "dashed", color = "blue" ];
-  "@kie-tools/sonataflow-builder-image" -> "@kie-tools/maven-base" [ style = "dashed", color = "black" ];
+  "@kie-tools/sonataflow-builder-image" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
   "@kie-tools/sonataflow-builder-image" -> "@kie-tools/maven-m2-repo-via-http-image" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-builder-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
   "sonataflow-deployment-webapp" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];

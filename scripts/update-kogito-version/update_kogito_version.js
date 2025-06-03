@@ -34,10 +34,12 @@ const newOptaPlannerGitRef = process.argv[7] ?? "optaplanner--n/a";
 const newKogitoRuntimesGitRef = process.argv[9] ?? "kogito-runtimes--n/a";
 const newKogitoAppsGitRef = process.argv[11] ?? "kogito-apps--n/a";
 
+console.log(process.argv);
+
 if (
   process.argv[2] !== "--maven" ||
   (process.argv[4] && process.argv[4] !== "--droolsGitRef") ||
-  (process.argv[6] && process.argv[6] !== "--optaplannerGitRe)f") ||
+  (process.argv[6] && process.argv[6] !== "--optaplannerGitRef") ||
   (process.argv[8] && process.argv[8] !== "--kogitoRuntimesGitRef") ||
   (process.argv[10] && process.argv[10] !== "--kogitoAppsGitRef")
 ) {

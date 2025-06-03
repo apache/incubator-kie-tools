@@ -168,6 +168,9 @@ execSync(
   }
 );
 
+console.log("[drools-and-kogito] Removing source code directory to free up disk space... ");
+fs.rmSync("./dist-tmp");
+
 console.log(
   `[drools-and-kogito] Finished building. Final artifacts are in '${path.resolve("./dist/1st-party-m2/repository")}'`
 );

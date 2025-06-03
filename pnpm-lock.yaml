@@ -11918,13 +11918,14 @@ importers:
         version: 5.9.0
 
   packages/sonataflow-builder-image:
+    dependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
     devDependencies:
       '@kie-tools/image-builder':
         specifier: workspace:*
         version: link:../image-builder
-      '@kie-tools/maven-base':
-        specifier: workspace:*
-        version: link:../maven-base
       '@kie-tools/maven-m2-repo-via-http-image':
         specifier: workspace:*
         version: link:../maven-m2-repo-via-http-image

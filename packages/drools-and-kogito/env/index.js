@@ -25,40 +25,40 @@ module.exports = composeEnv([rootEnv], {
   vars: varsWithName({
     DROOLS_AND_KOGITO__droolsRepoUrl: {
       default: "https://github.com/apache/incubator-kie-drools",
-      description: "",
+      description: "Git repository URL for Drools",
     },
     DROOLS_AND_KOGITO__droolsRepoGitRef: {
       default: "878fe13a914a8fe274dd0fcc5dda40290e2c0e2b",
-      description: "",
+      description: "Git ref for the Drools repository (SHA, branch, or tag)",
     },
     DROOLS_AND_KOGITO__optaplannerRepoUrl: {
       default: "https://github.com/apache/incubator-kie-optaplanner",
-      description: "",
+      description: "Git repository URL for OptaPlanner",
     },
     DROOLS_AND_KOGITO__optaplannerRepoGitRef: {
       default: "55b583cd4dfaf9185c316e12a94dc159b36e2708",
-      description: "",
+      description: "Git ref for the OptaPlanner repository (SHA, branch, or tag)",
     },
     DROOLS_AND_KOGITO__kogitoRuntimesRepoUrl: {
       default: "https://github.com/apache/incubator-kie-kogito-runtimes",
-      description: "",
+      description: "Git repository URL for Kogito Runtimes",
     },
     DROOLS_AND_KOGITO__kogitoRuntimesRepoGitRef: {
       default: "74159c722b1b4eb4a6f5ab70a7981bb5df93f136",
-      description: "",
+      description: "Git ref for the Kogito Runtimes repository (SHA, branch, or tag)",
     },
     DROOLS_AND_KOGITO__kogitoAppsRepoUrl: {
       default: "https://github.com/apache/incubator-kie-kogito-apps",
-      description: "",
+      description: "Git repository URL for Kogito Apps",
     },
     DROOLS_AND_KOGITO__kogitoAppsRepoGitRef: {
       default: "0500270f74822858c717ee60e50c07dc18983fcb",
-      description: "",
+      description: "Git ref for the Kogito Apps repository (SHA, branch, or tag)",
     },
     DROOLS_AND_KOGITO__skip: {
       default: `${false}`,
       description:
-        "Whether or not to skip the entire package. No artifacts will be downloaded nor built when this flag is 'true'. Useful for building tags.",
+        "Whether or not to skip the entire package. No artifacts will be downloaded nor built when this flag is 'true'.",
     },
     DROOLS_AND_KOGITO__forceBuild: {
       default: `${false}`,
@@ -66,7 +66,8 @@ module.exports = composeEnv([rootEnv], {
     },
     DROOLS_AND_KOGITO__cacheDownloadCommand: {
       default: `gh run download --name drools-and-kogito-cached-build-for-${rootEnv.env.versions.kogito} --dir dist`,
-      description: "",
+      description:
+        "Shell command that will try to restore a cached build matching the build info supplied via this package's env vars.",
     },
   }),
   get env() {
