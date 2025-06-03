@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "keywords": [],
   "scripts": {
-    "install": "node build.js"
+    "install": "node install.js"
   },
   "dependencies": {},
   "devDependencies": {
