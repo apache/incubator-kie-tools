@@ -36,7 +36,7 @@ pipeline {
         string(name: 'BASE_REF', description: 'GitHub Base Ref (tag or branch)')
         string(name: 'RELEASE_VERSION', description: 'Release Version', defaultValue: '0.0.0')
         string(name: 'UPLOAD_ASSET_URL', description: 'Upload asset url', defaultValue: '')
-        string(name: 'RUNNERS', description: 'Runners', defaultValue: '{"chrome_extensions":"false","cors_proxy_image":"false","dashbuilder_viewer_image":"false","dev_deployment_base_image":"false","dev_deployment_dmn_form_webapp_image":"false","dev_deployment_quakus_blank_app_image":"false","dev_deployment_upload_service":"false","extended_services":"false","jbpm_quarkus_devui":"false","kie_sandbox_image":"false","kie_sandbox_accelerator_quarkus":"false","kie_sandbox_extended_services":"false","kie_sandbox_helm_chart":"false","kn_plugin_workflow":"false","kogito_base_builder_image":"false","kogito_db_migrator_tool":"false","kogito_management_console":"false","kogito_serverless_operator":"false","kogito_swf_builder":"false","kogito_swf_devmode":"false","npm_packages":"false","online_editor":"false","runtime_tools_consoles_helm_chart":"false","serverless_logic_web_tools":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","sonataflow_management_console":"false","sonataflow_quarkus_devui":"false","standalone_editors_cdn":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false"}')
+        string(name: 'RUNNERS', description: 'Runners', defaultValue: '{"chrome_extensions":"false","cors_proxy_image":"false","dashbuilder_viewer_image":"false","dev_deployment_base_image":"false","dev_deployment_dmn_form_webapp_image":"false","dev_deployment_quakus_blank_app_image":"false","dev_deployment_upload_service":"false","extended_services":"false","jbpm_quarkus_devui":"false","kie_sandbox_image":"false","kie_sandbox_accelerator_quarkus":"false","kie_sandbox_extended_services":"false","kie_sandbox_helm_chart":"false","kn_plugin_workflow":"false","kogito_base_builder_image":"false","kogito_data_index_ephemeral_image":"false","kogito_data_index_postgresql_image":"false","kogito_jobs_service_allinone_image":"false","kogito_jobs_service_ephemeral_image":"false","kogito_jobs_service_postgresql_image":"false","kogito_jit_runner_image":"false","kogito_db_migrator_tool":"false","kogito_management_console":"false","kogito_serverless_operator":"false","kogito_swf_builder":"false","kogito_swf_devmode":"false","npm_packages":"false","online_editor":"false","runtime_tools_consoles_helm_chart":"false","serverless_logic_web_tools":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","sonataflow_management_console":"false","sonataflow_quarkus_devui":"false","standalone_editors_cdn":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false"}')
         string(name: 'RELEASE_CANDIDATE_VERSION', description: 'Release Candidate Version', defaultValue: '')
     }
 
@@ -95,6 +95,72 @@ pipeline {
                     steps {
                         script {
                             kogitoBaseBuilderImageBuildJob()
+                        }
+                    }
+                }
+
+                stage('KIE Kogito Data Index Ephemeral Image') {
+                    when {
+                        expression { env.KOGITO_DATA_INDEX_EPHEMERAL_IMAGE == 'true' }
+                    }
+                    steps {
+                        script {
+                            kogitoDataIndexEphemeralImageBuildJob()
+                        }
+                    }
+                }
+
+                stage('KIE Kogito Data Index Postgresql Image') {
+                    when {
+                        expression { env.KOGITO_DATA_INDEX_POSTGRESQL_IMAGE == 'true' }
+                    }
+                    steps {
+                        script {
+                            kogitoDataIndexPostgresqlImageBuildJob()
+                        }
+                    }
+                }
+
+                stage('KIE Kogito Jobs Service Allinone Image') {
+                    when {
+                        expression { env.KOGITO_JOBS_SERVICE_ALLINONE_IMAGE == 'true' }
+                    }
+                    steps {
+                        script {
+                            kogitoJobsServiceAllinoneImageBuildJob()
+                        }
+                    }
+                }
+
+                stage('KIE Kogito Jobs Service Ephemeral Image') {
+                    when {
+                        expression { env.KOGITO_JOBS_SERVICE_EPHEMERAL_IMAGE == 'true' }
+                    }
+                    steps {
+                        script {
+                            kogitoJobsServiceEphemeralImageBuildJob()
+                        }
+                    }
+                }
+
+                stage('KIE Kogito Jobs Service Postgresql Image') {
+                    when {
+                        expression { env.KOGITO_JOBS_SERVICE_POSTGRESQL_IMAGE == 'true' }
+                    }
+                    steps {
+                        script {
+                            kogitoJobsServicePostgresqlImageBuildJob()
+                        }
+                    }
+                }
+
+                stage('KIE Kogito Jit Runner Image') {
+                    when {
+                        expression { env.KOGITO_JIT_RUNNER_IMAGE == 'true' }
+                    }
+                    steps {
+                        script {
+                            kogitoJitRunnerImageBuildJob()
                         }
                     }
                 }
@@ -475,8 +541,14 @@ def setRunners() {
     env.KIE_SANDBOX_ACCELERATOR_QUARKUS = runners.kie_sandbox_accelerator_quarkus
     env.KIE_SANDBOX_EXTENDED_SERVICES = runners.kie_sandbox_extended_services    
     env.KIE_SANDBOX_HELM_CHART = runners.kie_sandbox_helm_chart
-    env.KN_PLUGIN_WORKFLOW = runners.kn_plugin_workflow
-    env.KOGITO_BASE_BUILDER_IMAGE = runners.kogito_base_builder_image
+    env.KN_PLUGIN_WORKFLOW = runners.kn_plugin_workflow    
+    env.KOGITO_BASE_BUILDER_IMAGE = runners.kogito_base_builder_image   
+    env.KOGITO_DATA_INDEX_EPHEMERAL_IMAGE = runners.kogito_data_index_ephemeral_image
+    env.KOGITO_DATA_INDEX_POSTGRESQL_IMAGE = runners.kogito_data_index_postgresql_image
+    env.KOGITO_JOBS_SERVICE_ALLINONE_IMAGE = runners.kogito_jobs_service_allinone_image
+    env.KOGITO_JOBS_SERVICE_EPHEMERAL_IMAGE = runners.kogito_jobs_service_ephemeral_image
+    env.KOGITO_JOBS_SERVICE_POSTGRESQL_IMAGE = runners.kogito_jobs_service_postgresql_image
+    env.KOGITO_JIT_RUNNER_IMAGE = runners.kogito_jit_runner_image
     env.KOGITO_DB_MIGRATOR_TOOL = runners.kogito_db_migrator_tool
     env.KOGITO_MANAGEMENT_CONSOLE = runners.kogito_management_console
     env.KOGITO_SERVERLESS_OPERATOR = runners.kogito_serverless_operator
@@ -514,6 +586,12 @@ def printRunners() {
     echo "kie_sandbox_helm_chart: ${env.KIE_SANDBOX_HELM_CHART}"
     echo "kn_plugin_workflow: ${env.KN_PLUGIN_WORKFLOW}"
     echo "kogito_base_builder_image: ${env.KOGITO_BASE_BUILDER_IMAGE}"
+    echo "kogito_data_index_ephemeral_image: ${env.KOGITO_DATA_INDEX_EPHEMERAL_IMAGE}"
+    echo "kogito_data_index_postgresql_image: ${env.KOGITO_DATA_INDEX_POSTGRESQL_IMAGE}"
+    echo "kogito_jobs_service_allinone_image: ${env.KOGITO_JOBS_SERVICE_ALLINONE_IMAGE}"
+    echo "kogito_jobs_service_ephemeral_image: ${env.KOGITO_JOBS_SERVICE_EPHEMERAL_IMAGE}"
+    echo "kogito_jobs_service_postgresql_image: ${env.KOGITO_JOBS_SERVICE_POSTGRESQL_IMAGE}"
+    echo "kogito_jit_runner_image: ${env.KOGITO_JIT_RUNNER_IMAGE}"
     echo "kogito_db_migrator_tool: ${env.KOGITO_DB_MIGRATOR_TOOL}"
     echo "kogito_management_console: ${env.KOGITO_MANAGEMENT_CONSOLE}"
     echo "kogito_serverless_operator: ${env.KOGITO_SERVERLESS_OPERATOR}"
@@ -537,6 +615,84 @@ def printRunners() {
 def kogitoBaseBuilderImageBuildJob() {
     env.KOGITO_BASE_BUILDER_IMAGE_JOB_RESULT = build(
         job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/kogito-base-builder-image",
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
+        ]
+    ).result
+}
+
+def kogitoDataIndexEphemeralImageBuildJob() {
+    env.KOGITO_DATA_INDEX_EPHEMERAL_IMAGE_JOB_RESULT = build(
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/kogito-data-index-ephemeral-image",
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
+        ]
+    ).result
+}
+
+def kogitoDataIndexPostgresqlImageBuildJob() {
+    env.KOGITO_DATA_INDEX_POSTGRESQL_IMAGE_JOB_RESULT = build(
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/kogito-data-index-postgresql-image",
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
+        ]
+    ).result
+}
+
+def kogitoJobsServiceAllinoneImageBuildJob() {
+    env.KOGITO_JOBS_SERVICE_ALLINONE_IMAGE_JOB_RESULT = build(
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/kogito-jobs-service-allinone-image",
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
+        ]
+    ).result
+}
+
+def kogitoJobsServiceEphemeralImageBuildJob() {
+    env.KOGITO_JOBS_SERVICE_EPHEMERAL_IMAGE_JOB_RESULT = build(
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/kogito-jobs-service-ephemeral-image",
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
+        ]
+    ).result
+}
+
+def kogitoJobsServicePostgresqlImageBuildJob() {
+    env.KOGITO_JOBS_SERVICE_POSTGRESQL_IMAGE_JOB_RESULT = build(
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/kogito-jobs-service-postgresql-image",
+        parameters: [
+            booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
+            string(name: 'BASE_REF', value: "${params.BASE_REF}"),
+            string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
+            string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+            string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
+        ]
+    ).result
+}
+
+def kogitoJitRunnerImageBuildJob() {
+    env.KOGITO_JIT_RUNNER_IMAGE_JOB_RESULT = build(
+        job: "KIE/kie-tools/${params.PIPELINE_PATH}/individual-release-artifacts-jobs/kogito-jit-runner-image",
         parameters: [
             booleanParam(name: 'DRY_RUN', value: "${params.DRY_RUN}"),
             string(name: 'BASE_REF', value: "${params.BASE_REF}"),
