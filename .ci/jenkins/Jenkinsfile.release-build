@@ -176,17 +176,6 @@ pipeline {
                     }
                 }
 
-                stage('Dev Deployment Quarkus Blank App Image') {
-                    when {
-                        expression { env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE == 'true' }
-                    }
-                    steps {
-                        script {
-                            devDeploymentQuarkusBlankAppImageBuildJob()
-                        }
-                    }
-                }
-
                 stage('Dev Deployment Upload Service') {
                     when {
                         expression { env.DEV_DEPLOYMENT_UPLOAD_SERVICE == 'true' }
@@ -231,105 +220,6 @@ pipeline {
                     }
                 }
 
-                stage('Serverless Logic Web Tools Swf Builder Image') {
-                    when {
-                        expression { env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE == 'true' }
-                    }
-                    steps {
-                        script {
-                            serverlessLogicWebToolsSwfBuilderImageBuildJob()
-                        }
-                    }
-                }
-
-                stage('Serverless Logic Web Tools Swf Dev Mode Image') {
-                    when {
-                        expression { env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_DEV_MODE_IMAGE == 'true' }
-                    }
-                    steps {
-                        script {
-                            serverlessLogicWebToolsSwfDevModeImageBuildJob()
-                        }
-                    }
-                }
-
-                stage('Serverless Logic Web Tools Base Builder Image') {
-                    when {
-                        expression { env.SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE == 'true' }
-                    }
-                    steps {
-                        script {
-                            serverlessLogicWebToolsBaseBuilderImageBuildJob()
-                        }
-                    }
-                }
-
-                stage('Dashbuilder Viewer Image') {
-                    when {
-                        expression { env.DASHBUILDER_VIEWER_IMAGE == 'true' }
-                    }
-                    steps {
-                        script {
-                            dashbuilderViewerImageBuildJob()
-                        }
-                    }
-                }
-
-                stage('Serverless Logic Web Tools') {
-                    when {
-                        expression { env.SERVERLESS_LOGIC_WEB_TOOLS == 'true' }
-                    }
-                    steps {
-                        script {
-                            serverlessLogicWebToolsBuildJob()
-                        }
-                    }
-                }
-
-                stage('Kogito Management Console Image') {
-                    when {
-                        expression { env.KOGITO_MANAGEMENT_CONSOLE == 'true' }
-                    }
-                    steps {
-                        script {
-                            kogitoManagementConsoleBuildJob()
-                        }
-                    }
-                }
-
-                stage('Kogito SWF Builder Image') {
-                    when {
-                        expression { env.KOGITO_SWF_BUILDER == 'true' }
-                    }
-                    steps {
-                        script {
-                            kogitoSwfBuilderBuildJob()
-                        }
-                    }
-                }
-
-                stage('Kogito SWF Devmode Image') {
-                    when {
-                        expression { env.KOGITO_SWF_DEVMODE == 'true' }
-                    }
-                    steps {
-                        script {
-                            kogitoSwfDevmodeBuildJob()
-                        }
-                    }
-                }
-
-                stage('Kogito Serverless Operator Image') {
-                    when {
-                        expression { env.KOGITO_SERVERLESS_OPERATOR == 'true' }
-                    }
-                    steps {
-                        script {
-                            kogitoServerlessOperatorBuildJob()
-                        }
-                    }
-                }
-
                 stage('JBPM Quarkus Dev UI') {
                     when {
                         expression { env.JBPM_QUARKUS_DEVUI == 'true' }
@@ -352,19 +242,129 @@ pipeline {
                     }
                 }
 
-                stage('Sonataflow Management Console') {
-                    when {
-                        expression { env.SONATAFLOW_MANAGEMENT_CONSOLE == 'true' }
-                    }
-                    steps {
-                        script {
-                            sonataflowManagementConsoleBuildJob()
-                        }
-                    }
-                }
-
                 stage('Dependant build #1') {
-                    stages {
+                    stages {                        
+                        stage('Dev Deployment Quarkus Blank App Image') {
+                            when {
+                                expression { env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE == 'true' }
+                            }
+                            steps {
+                                script {
+                                    devDeploymentQuarkusBlankAppImageBuildJob()
+                                }
+                            }
+                        }
+
+                        stage('Sonataflow Management Console') {
+                            when {
+                                expression { env.SONATAFLOW_MANAGEMENT_CONSOLE == 'true' }
+                            }
+                            steps {
+                                script {
+                                    sonataflowManagementConsoleBuildJob()
+                                }
+                            }
+                        }                        
+                        
+                        stage('Serverless Logic Web Tools Swf Builder Image') {
+                            when {
+                                expression { env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_BUILDER_IMAGE == 'true' }
+                            }
+                            steps {
+                                script {
+                                    serverlessLogicWebToolsSwfBuilderImageBuildJob()
+                                }
+                            }
+                        }
+
+                        stage('Serverless Logic Web Tools Swf Dev Mode Image') {
+                            when {
+                                expression { env.SERVERLESS_LOGIC_WEB_TOOLS_SWF_DEV_MODE_IMAGE == 'true' }
+                            }
+                            steps {
+                                script {
+                                    serverlessLogicWebToolsSwfDevModeImageBuildJob()
+                                }
+                            }
+                        }
+
+                        stage('Serverless Logic Web Tools Base Builder Image') {
+                            when {
+                                expression { env.SERVERLESS_LOGIC_WEB_TOOLS_BASE_BUILDER_IMAGE == 'true' }
+                            }
+                            steps {
+                                script {
+                                    serverlessLogicWebToolsBaseBuilderImageBuildJob()
+                                }
+                            }
+                        }
+
+                        stage('Dashbuilder Viewer Image') {
+                            when {
+                                expression { env.DASHBUILDER_VIEWER_IMAGE == 'true' }
+                            }
+                            steps {
+                                script {
+                                    dashbuilderViewerImageBuildJob()
+                                }
+                            }
+                        }
+
+                        stage('Serverless Logic Web Tools') {
+                            when {
+                                expression { env.SERVERLESS_LOGIC_WEB_TOOLS == 'true' }
+                            }
+                            steps {
+                                script {
+                                    serverlessLogicWebToolsBuildJob()
+                                }
+                            }
+                        }
+
+                        stage('Kogito Management Console Image') {
+                            when {
+                                expression { env.KOGITO_MANAGEMENT_CONSOLE == 'true' }
+                            }
+                            steps {
+                                script {
+                                    kogitoManagementConsoleBuildJob()
+                                }
+                            }
+                        }
+
+                        stage('Kogito SWF Builder Image') {
+                            when {
+                                expression { env.KOGITO_SWF_BUILDER == 'true' }
+                            }
+                            steps {
+                                script {
+                                    kogitoSwfBuilderBuildJob()
+                                }
+                            }
+                        }
+
+                        stage('Kogito SWF Devmode Image') {
+                            when {
+                                expression { env.KOGITO_SWF_DEVMODE == 'true' }
+                            }
+                            steps {
+                                script {
+                                    kogitoSwfDevmodeBuildJob()
+                                }
+                            }
+                        }
+
+                        stage('Kogito Serverless Operator Image') {
+                            when {
+                                expression { env.KOGITO_SERVERLESS_OPERATOR == 'true' }
+                            }
+                            steps {
+                                script {
+                                    kogitoServerlessOperatorBuildJob()
+                                }
+                            }
+                        }
+                                                                        
                         stage('Dev Deployment Base Image') {
                             when {
                                 expression { env.DEV_DEPLOYMENT_BASE_IMAGE == 'true' }

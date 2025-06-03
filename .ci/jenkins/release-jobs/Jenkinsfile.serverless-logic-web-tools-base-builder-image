@@ -50,7 +50,7 @@ pipeline {
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
         PNPM_FILTER_STRING = '-F @kie-tools/serverless-logic-web-tools-base-builder-image...'
-        MAVEN_ARGS = "-Dmaven.repo.local=${WORKSPACE}/.maven"
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
     }
 
     stages {
@@ -112,7 +112,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.setupPnpm()
+                        buildUtils.setupPnpm("${pipelineVars.mavenSettingsReleaseConfigFileId}")
                     }
                 }
             }
@@ -123,6 +123,18 @@ pipeline {
                 dir('kie-tools') {
                     script {
                         buildUtils.pnpmBootstrap(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
+                    }
+                }
+            }
+        }
+
+        stage('Update project, kogito and stream name version') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmUpdateProjectVersion(params.RELEASE_VERSION, env.MAVEN_ARGS)
+                        buildUtils.pnpmUpdateKogitoVersion(params.RELEASE_VERSION, params.RELEASE_VERSION, env.MAVEN_ARGS)
+                        buildUtils.pnpmUpdateStreamName(params.RELEASE_VERSION, env.MAVEN_ARGS)
                     }
                 }
             }

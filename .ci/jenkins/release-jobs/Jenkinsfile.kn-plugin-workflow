@@ -42,7 +42,7 @@ pipeline {
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
         MAVEN_SETTINGS_PATH = "${WORKSPACE}/kie-settings.xml"
-        MAVEN_ARGS = "-Dmaven.repo.local=${WORKSPACE}/.maven"
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
         PNPM_FILTER_STRING = '-F @kie-tools/kn-plugin-workflow...'
     }
@@ -117,6 +117,18 @@ pipeline {
                 dir('kie-tools') {
                     script {
                         buildUtils.pnpmBootstrap(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
+                    }
+                }
+            }
+        }
+
+        stage('Update project, kogito and stream name version') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmUpdateProjectVersion(params.RELEASE_VERSION, env.MAVEN_ARGS)
+                        buildUtils.pnpmUpdateKogitoVersion(params.RELEASE_VERSION, params.RELEASE_VERSION, env.MAVEN_ARGS)
+                        buildUtils.pnpmUpdateStreamName(params.RELEASE_VERSION, env.MAVEN_ARGS)
                     }
                 }
             }
