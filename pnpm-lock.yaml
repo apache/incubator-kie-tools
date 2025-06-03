@@ -7327,6 +7327,9 @@ importers:
 
   packages/kn-plugin-workflow:
     dependencies:
+      '@kie-tools-core/drools-and-kogito':
+        specifier: workspace:*
+        version: link:../drools-and-kogito
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base

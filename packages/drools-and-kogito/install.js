@@ -84,7 +84,7 @@ fs.mkdirSync("./dist-tmp", { recursive: true });
 
 console.log(`[drools-and-kogito] Cloning Drools...`);
 execSync(
-  `git clone $(build-env droolsAndKogito.repos.drools.url) --branch $(build-env root.streamName) --depth 50 ./dist-tmp/drools`,
+  `git clone --branch $(build-env root.streamName) --depth 50 $(build-env droolsAndKogito.repos.drools.url) ./dist-tmp/drools`,
   execOpts
 );
 execSync(`git checkout $(build-env droolsAndKogito.repos.drools.gitRef)`, {
@@ -94,7 +94,7 @@ execSync(`git checkout $(build-env droolsAndKogito.repos.drools.gitRef)`, {
 
 console.log(`[drools-and-kogito] Cloning OptaPlanner...`);
 execSync(
-  `git clone $(build-env droolsAndKogito.repos.optaplanner.url) --branch $(build-env root.streamName) --depth 50 ./dist-tmp/optaplanner`,
+  `git clone --branch $(build-env root.streamName) --depth 50 $(build-env droolsAndKogito.repos.optaplanner.url) ./dist-tmp/optaplanner`,
   execOpts
 );
 execSync(`git checkout $(build-env droolsAndKogito.repos.optaplanner.gitRef)`, {
@@ -104,7 +104,7 @@ execSync(`git checkout $(build-env droolsAndKogito.repos.optaplanner.gitRef)`, {
 
 console.log(`[drools-and-kogito] Cloning Kogito Runtimes...`);
 execSync(
-  `git clone $(build-env droolsAndKogito.repos.kogitoRuntimes.url) --branch $(build-env root.streamName) --depth 50 ./dist-tmp/kogito-runtimes`,
+  `git clone --branch $(build-env root.streamName) --depth 50 $(build-env droolsAndKogito.repos.kogitoRuntimes.url) ./dist-tmp/kogito-runtimes`,
   execOpts
 );
 execSync(`git checkout $(build-env droolsAndKogito.repos.kogitoRuntimes.gitRef)`, {
@@ -114,7 +114,7 @@ execSync(`git checkout $(build-env droolsAndKogito.repos.kogitoRuntimes.gitRef)`
 
 console.log(`[drools-and-kogito] Cloning Kogito Apps...`);
 execSync(
-  `git clone $(build-env droolsAndKogito.repos.kogitoApps.url) --branch $(build-env root.streamName) --depth 50 ./dist-tmp/kogito-apps`,
+  `git clone --branch $(build-env root.streamName) --depth 50 $(build-env droolsAndKogito.repos.kogitoApps.url) ./dist-tmp/kogito-apps`,
   execOpts
 );
 execSync(`git checkout $(build-env droolsAndKogito.repos.kogitoApps.gitRef)`, {
