@@ -81,7 +81,7 @@ def getUpstreamImagesArtifactsList(String artifactsDir, String releaseVersion) {
     def versionClean = releaseVersion.replaceAll(/(?i)-rc\d*/, '')
 
     return components.collect { component ->
-        "${artifactsDir}/incubator-kie-${versionClean}-${component}-image.tar.gz"
+        "${artifactsDir}/apache-kie-${versionClean}-incubating-${component}-image.tar.gz"
     }
 }
 
