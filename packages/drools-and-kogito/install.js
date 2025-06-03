@@ -151,7 +151,7 @@ removeMavenModule(`apps\\-integration\\-tests`);
 
 console.log(`[drools-and-kogito] Building Drools...`);
 execSync(
-  `mvn deploy -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -DaltDeploymentRepository=snapshot-repo::default::file:${DIST_REPO}`,
+  `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO}`,
   {
     ...execOpts,
     cwd: "./dist-tmp/drools",
@@ -160,7 +160,7 @@ execSync(
 
 console.log(`[drools-and-kogito] Building OptaPlanner...`);
 execSync(
-  `mvn deploy -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dmaven.repo.local.tail=${path.resolve("./dist/1st-party-m2/repository")} -DaltDeploymentRepository=snapshot-repo::default::file:${DIST_REPO}`,
+  `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dmaven.repo.local.tail=${path.resolve("./dist/1st-party-m2/repository")} -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO}`,
   {
     ...execOpts,
     cwd: "./dist-tmp/optaplanner",
@@ -169,7 +169,7 @@ execSync(
 
 console.log(`[drools-and-kogito] Building Kogito Runtimes...`);
 execSync(
-  `mvn deploy -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dmaven.repo.local.tail=${path.resolve("./dist/1st-party-m2/repository")} -DaltDeploymentRepository=snapshot-repo::default::file:${DIST_REPO}`,
+  `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dmaven.repo.local.tail=${path.resolve("./dist/1st-party-m2/repository")} -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO}`,
   {
     ...execOpts,
     cwd: "./dist-tmp/kogito-runtimes",
@@ -178,7 +178,7 @@ execSync(
 
 console.log(`[drools-and-kogito] Building Kogito Apps...`);
 execSync(
-  `mvn deploy -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dmaven.repo.local.tail=${path.resolve("./dist/1st-party-m2/repository")} -DaltDeploymentRepository=snapshot-repo::default::file:${DIST_REPO} -Dquarkus.container-image.build=false`,
+  `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dmaven.repo.local.tail=${path.resolve("./dist/1st-party-m2/repository")} -DaltDeploymentRepository=snapshot-repo::default::file:${DIST_REPO} -Dquarkus.container-image.build=false`,
   {
     ...execOpts,
     cwd: "./dist-tmp/kogito-apps",
@@ -186,7 +186,7 @@ execSync(
 );
 
 console.log("[drools-and-kogito] Removing source code directory to free up disk space... ");
-fs.rmSync("./dist-tmp");
+fs.rmSync("./dist-tmp", { recursive: true });
 
 console.log(
   `[drools-and-kogito] Finished building. Final artifacts are in '${path.resolve("./dist/1st-party-m2/repository")}'`
