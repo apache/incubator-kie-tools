@@ -82,44 +82,49 @@ fs.mkdirSync("./dist-tmp", { recursive: true });
 
 // cloning
 
+const droolsRepoDir = path.join("dist-tmp", "drools");
+const optaplannerRepoDir = path.join("dist-tmp", "optaplanner");
+const kogitoRuntimesRepoDir = path.join("dist-tmp", "kogito-runtimes");
+const kogitoAppsRepoDir = path.join("dist-tmp", "kogito-apps");
+
 console.log(`[drools-and-kogito] Cloning Drools...`);
 execSync(
-  `git clone --branch $(build-env root.streamName) --depth 50 $(build-env droolsAndKogito.repos.drools.url) ./dist-tmp/drools`,
+  `git clone --branch "$(build-env root.streamName)" --depth 50 "$(build-env droolsAndKogito.repos.drools.url)" "${droolsRepoDir}"`,
   execOpts
 );
 execSync(`git checkout $(build-env droolsAndKogito.repos.drools.gitRef)`, {
   ...execOpts,
-  cwd: "./dist-tmp/drools",
+  cwd: droolsRepoDir,
 });
 
 console.log(`[drools-and-kogito] Cloning OptaPlanner...`);
 execSync(
-  `git clone --branch $(build-env root.streamName) --depth 50 $(build-env droolsAndKogito.repos.optaplanner.url) ./dist-tmp/optaplanner`,
+  `git clone --branch "$(build-env root.streamName)" --depth 50 "$(build-env droolsAndKogito.repos.optaplanner.url)" "${optaplannerRepoDir}"`,
   execOpts
 );
-execSync(`git checkout $(build-env droolsAndKogito.repos.optaplanner.gitRef)`, {
+execSync(`git checkout "$(build-env droolsAndKogito.repos.optaplanner.gitRef)"`, {
   ...execOpts,
-  cwd: "./dist-tmp/optaplanner",
+  cwd: optaplannerRepoDir,
 });
 
 console.log(`[drools-and-kogito] Cloning Kogito Runtimes...`);
 execSync(
-  `git clone --branch $(build-env root.streamName) --depth 50 $(build-env droolsAndKogito.repos.kogitoRuntimes.url) ./dist-tmp/kogito-runtimes`,
+  `git clone --branch "$(build-env root.streamName)" --depth 50 "$(build-env droolsAndKogito.repos.kogitoRuntimes.url)" "${kogitoRuntimesRepoDir}"`,
   execOpts
 );
-execSync(`git checkout $(build-env droolsAndKogito.repos.kogitoRuntimes.gitRef)`, {
+execSync(`git checkout "$(build-env droolsAndKogito.repos.kogitoRuntimes.gitRef)"`, {
   ...execOpts,
-  cwd: "./dist-tmp/kogito-runtimes",
+  cwd: kogitoRuntimesRepoDir,
 });
 
 console.log(`[drools-and-kogito] Cloning Kogito Apps...`);
 execSync(
-  `git clone --branch $(build-env root.streamName) --depth 50 $(build-env droolsAndKogito.repos.kogitoApps.url) ./dist-tmp/kogito-apps`,
+  `git clone --branch "$(build-env root.streamName)" --depth 50 "$(build-env droolsAndKogito.repos.kogitoApps.url)" "${kogitoAppsRepoDir}"`,
   execOpts
 );
 execSync(`git checkout $(build-env droolsAndKogito.repos.kogitoApps.gitRef)`, {
   ...execOpts,
-  cwd: "./dist-tmp/kogito-apps",
+  cwd: kogitoAppsRepoDir,
 });
 
 // update versions
@@ -158,7 +163,7 @@ execSync(
   `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO}`,
   {
     ...execOpts,
-    cwd: "./dist-tmp/drools",
+    cwd: droolsRepoDir,
   }
 );
 
@@ -167,7 +172,7 @@ execSync(
   `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dmaven.repo.local.tail=${path.resolve("./dist/1st-party-m2/repository")} -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO}`,
   {
     ...execOpts,
-    cwd: "./dist-tmp/optaplanner",
+    cwd: optaplannerRepoDir,
   }
 );
 
@@ -176,7 +181,7 @@ execSync(
   `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dmaven.repo.local.tail=${path.resolve("./dist/1st-party-m2/repository")} -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO}`,
   {
     ...execOpts,
-    cwd: "./dist-tmp/kogito-runtimes",
+    cwd: kogitoRuntimesRepoDir,
   }
 );
 
@@ -185,7 +190,7 @@ execSync(
   `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -Dmaven.repo.local.tail=${path.resolve("./dist/1st-party-m2/repository")} -DaltDeploymentRepository=snapshot-repo::default::file:${DIST_REPO} -Dquarkus.container-image.build=false`,
   {
     ...execOpts,
-    cwd: "./dist-tmp/kogito-apps",
+    cwd: kogitoAppsRepoDir,
   }
 );
 
