@@ -88,7 +88,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap()
+                        buildUtils.pnpmBootstrap('', env.MAVEN_ARGS)
                     }
                 }
             }
@@ -112,7 +112,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmUpdateProjectVersion(params.RELEASE_VERSION)
+                        buildUtils.pnpmUpdateProjectVersion(params.RELEASE_VERSION, env.MAVEN_ARGS)
                     }
                 }
             }
@@ -122,7 +122,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmUpdateKogitoVersion(params.RELEASE_VERSION, params.RELEASE_VERSION)
+                        buildUtils.pnpmUpdateKogitoVersion(params.RELEASE_VERSION, params.RELEASE_VERSION, env.MAVEN_ARGS)
                     }
                 }
             }
@@ -132,7 +132,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmUpdateStreamName(params.RELEASE_VERSION)
+                        buildUtils.pnpmUpdateStreamName(params.RELEASE_VERSION, env.MAVEN_ARGS)
                     }
                 }
             }
