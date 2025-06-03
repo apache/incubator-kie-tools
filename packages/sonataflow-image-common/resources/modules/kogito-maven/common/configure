@@ -33,11 +33,6 @@ then
     mv /usr/share/apache-maven-"${MAVEN_VERSION}" ${MAVEN_HOME}
 else
     echo "---> Maven already present in the current context"
-    # TODO: Remove this temporary solution in favor of the -DnoMavenVersionCheck flag once it's available
-    # https://github.com/quarkusio/quarkus/issues/46105
-    # Installs Maven for version 3.9.6 in order to be compatible with the quarkus-maven-plugin minimum requirements (on Quarkus 3.15.3.1).
-    echo "---> Installing Maven 3.9.6"
-    ln -sf "${ALTERNATIVE_MAVEN_HOME}/bin/mvn" "${MAVEN_HOME}/bin/mvn"  
 fi
 
 mkdir "${KOGITO_HOME}"/.m2
