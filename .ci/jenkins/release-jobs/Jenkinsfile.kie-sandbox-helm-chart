@@ -165,7 +165,7 @@ pipeline {
             }
             steps {
                 script {
-                    env.RELEASE_TAR_FILE = "incubator-kie-${params.RELEASE_VERSION}-sandbox-helm-chart.tar.gz"
+                    env.RELEASE_TAR_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sandbox-helm-chart.tar.gz"
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}

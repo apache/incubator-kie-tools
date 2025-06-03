@@ -154,8 +154,8 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        env.RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_VERSION}-tools-npm-packages.zip"
-                        env.TMP_RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/incubator-kie-${params.RELEASE_VERSION}-tools-npm-packages"
+                        env.RELEASE_ZIP_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-tools-npm-packages.zip"
+                        env.TMP_RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/apache-kie-${params.RELEASE_VERSION}-incubating-tools-npm-packages"
 
                         sh """#!/bin/bash -el
                         mkdir ${env.TMP_RELEASE_ARTIFACTS_DIR} ${env.RELEASE_ARTIFACTS_DIR}

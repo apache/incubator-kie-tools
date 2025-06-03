@@ -178,8 +178,8 @@ pipeline {
             }
             steps {
                 script {
-                    env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_VERSION}-business-automation-standalone-editors.zip"
-                    env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_VERSION}-sonataflow-standalone-editors.zip"
+                    env.BUSINESS_AUTOMATION_STANDALONE_RELEASE_ZIP_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-business-automation-standalone-editors.zip"
+                    env.SONATAFLOW_STANDALONE_RELEASE_ZIP_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sonataflow-standalone-editors.zip"
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}

@@ -209,8 +209,8 @@ pipeline {
             }
             steps {
                 script {
-                    env.RELEASE_IMAGE_TAR_FILE = "incubator-kie-${params.RELEASE_VERSION}-sonataflow-operator-image.tar.gz"
-                    env.RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_VERSION}-sonataflow-operator.zip"
+                    env.RELEASE_IMAGE_TAR_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sonataflow-operator-image.tar.gz"
+                    env.RELEASE_ZIP_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sonataflow-operator.zip"
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}

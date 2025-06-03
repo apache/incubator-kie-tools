@@ -179,7 +179,7 @@ pipeline {
             }
             steps {
                 script {
-                    env.RELEASE_IMAGE_TAR_FILE = "incubator-kie-${params.RELEASE_VERSION}-serverless-logic-web-tools-swf-builder-image.tar.gz"
+                    env.RELEASE_IMAGE_TAR_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-serverless-logic-web-tools-swf-builder-image.tar.gz"
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
