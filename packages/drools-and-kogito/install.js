@@ -45,7 +45,8 @@ if (!buildEnv.versions.kogito.endsWith("-local") && !buildEnv.droolsAndKogito.fo
 
 const buildInfo = getBuildInfo();
 
-console.log();
+console.log(`[drools-and-kogito] Build info:`);
+console.log(JSON.stringify(buildInfo, null, 2));
 
 const buildInfoMatches =
   buildInfo?.kogitoVersion === buildEnv.versions.kogito &&
@@ -62,15 +63,18 @@ console.log(`[drools-and-kogito] Build info matches: ${buildInfoMatches}`);
 console.log(`[drools-and-kogito] Force build: ${forceBuild}`);
 
 if (localM2DirExists && buildInfoMatches && !forceBuild) {
-  console.log(`[drools-and-kogito] Nothing to do. Exiting.`);
+  console.log(`[drools-and-kogito] Nothing to do.`);
+  console.log(`[drools-and-kogito] Done.`);
   process.exit(0);
 } else if (localM2DirExists) {
-  console.log(`[drools-and-kogito] Cleaning up 'dist' and 'dist-tmp' directories...`);
+  console.log(`[drools-and-kogito] Cleaning up 'dist' directory...`);
   fs.rmSync("./dist", { recursive: true });
 }
-
 fs.mkdirSync("./dist", { recursive: true });
 
+// TODO: cache restoration
+
+console.log(`[drools-and-kogito] Cleaning up 'dist' directory...`);
 if (fs.existsSync("./dist-tmp")) {
   fs.rmSync("./dist-tmp", { recursive: true });
 }

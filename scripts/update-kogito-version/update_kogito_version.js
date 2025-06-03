@@ -34,6 +34,7 @@ const newOptaPlannerGitRef = process.argv[7] ?? "optaplanner--n/a";
 const newKogitoRuntimesGitRef = process.argv[9] ?? "kogito-runtimes--n/a";
 const newKogitoAppsGitRef = process.argv[11] ?? "kogito-apps--n/a";
 
+console.log(`[update-kogito-version] process.argv:`);
 console.log(process.argv);
 
 if (

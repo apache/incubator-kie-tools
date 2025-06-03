@@ -7378,10 +7378,11 @@ importers:
         version: 1.1.6
 
   packages/kogito-data-index-ephemeral-image:
-    devDependencies:
+    dependencies:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
+    devDependencies:
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -7405,10 +7406,11 @@ importers:
         version: 1.1.6
 
   packages/kogito-data-index-postgresql-image:
-    devDependencies:
+    dependencies:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
+    devDependencies:
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -7476,10 +7478,11 @@ importers:
         version: 1.1.6
 
   packages/kogito-jit-runner-image:
-    devDependencies:
+    dependencies:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
+    devDependencies:
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -7503,10 +7506,11 @@ importers:
         version: 1.1.6
 
   packages/kogito-jobs-service-allinone-image:
-    devDependencies:
+    dependencies:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
+    devDependencies:
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -7530,10 +7534,11 @@ importers:
         version: 1.1.6
 
   packages/kogito-jobs-service-ephemeral-image:
-    devDependencies:
+    dependencies:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
+    devDependencies:
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -7557,10 +7562,11 @@ importers:
         version: 1.1.6
 
   packages/kogito-jobs-service-postgresql-image:
-    devDependencies:
+    dependencies:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
+    devDependencies:
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
