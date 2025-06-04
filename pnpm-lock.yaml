@@ -4874,6 +4874,9 @@ importers:
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
       typescript:
         specifier: ^5.5.3
         version: 5.5.3
