@@ -154,7 +154,7 @@ pipeline {
 
         stage('Push runtime-tools-consoles-helm-chart to Docker Hub') {
             when {
-                expression { !params.DRY_RUN && !params.RELEASE_CANDIDATE  }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
             }
             steps {
                 dir('kie-tools') {
