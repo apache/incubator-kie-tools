@@ -161,13 +161,24 @@ removeMavenModule(`apps\\-integration\\-tests`);
 // building
 
 console.log(`[drools-and-kogito] Building Drools...`);
-execSync(
-  `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO}`,
-  {
-    ...execOpts,
-    cwd: droolsRepoDir,
-  }
-);
+try {
+  execSync(
+    `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO}`,
+    {
+      ...execOpts,
+      cwd: droolsRepoDir,
+    }
+  );
+} catch (e) {
+  // Try it again!
+  execSync(
+    `mvn deploy -ntp -DskipTests -DskipITs -T 0.5C -Dformatter.skip -Denforcer.skip=true -Dcheckstyle.skip=true -Dmaven.install.skip=true -DaltDeploymentRepository=drools-and-kogito--dist-1st-party-m2::default::file:${DIST_REPO}`,
+    {
+      ...execOpts,
+      cwd: droolsRepoDir,
+    }
+  );
+}
 
 console.log(`[drools-and-kogito] Building OptaPlanner...`);
 execSync(
