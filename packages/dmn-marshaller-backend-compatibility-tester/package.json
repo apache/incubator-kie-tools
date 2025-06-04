@@ -20,7 +20,7 @@
     "src"
   ],
   "scripts": {
-    "build:dev": "rimraf dist dist-m2 && tsc -p tsconfig.json && cross-env JBANG_REPO=$(realpath ./dist-m2) pnpm prefetch",
+    "build:dev": "rimraf dist dist-m2 && tsc -p tsconfig.json && cross-env JBANG_REPO=$(node -p \"require('path').resolve('dist-m2')\") pnpm prefetch",
     "build:prod": "pnpm build:dev",
     "prefetch": "node dist/dependenciesFetch.js"
   },
