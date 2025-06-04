@@ -50,7 +50,7 @@
             <enabled>false</enabled>
           </releases>
           <snapshots>
-            <enabled>true</enabled>
+            <enabled>false</enabled>
             <updatePolicy>never</updatePolicy>
           </snapshots>
         </repository>

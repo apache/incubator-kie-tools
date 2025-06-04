@@ -94,7 +94,7 @@ module.exports = {
    * Builds a single Maven repository directory out of multiple local Maven repositories using hard links.
    *
    * @param tmpM2Dir Relative path of this new Maven repository directory. It will be deleted and recreated for each invocation.
-   * @param dirname A list of paths representing additional Maven repository directories, to be concatenated the default one (I.e, `maven.repo.local`)
+   * @param relativePackagePath A list of paths representing additional Maven repository directories, to be concatenated the default one (I.e, `maven.repo.local`)
    *  */
   prepareHardLinkedM2ForPackage: (tmpM2Dir, relativePackagePath) => {
     const resolvedTmpM2Dir = path.resolve(tmpM2Dir);

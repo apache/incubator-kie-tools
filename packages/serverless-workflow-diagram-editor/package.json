@@ -27,8 +27,10 @@
     "lint": "echo 'Linting'",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
+  "dependencies": {
+    "@kie-tools/maven-base": "workspace:*"
+  },
   "devDependencies": {
-    "@kie-tools/maven-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "cpr": "^3.0.1",
     "rimraf": "^3.0.2",

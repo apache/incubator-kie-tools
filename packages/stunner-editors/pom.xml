@@ -276,6 +276,9 @@
       <releases>
         <enabled>false</enabled>
       </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
   </repositories>
   <pluginRepositories>
@@ -287,6 +290,9 @@
       <releases>
         <enabled>false</enabled>
       </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </pluginRepository>
   </pluginRepositories>
 

@@ -82,6 +82,13 @@ function executeScript(scriptPath: string, args?: string[]) {
 
   const jbangArgs = [] as string[];
   jbangArgs.push("-Dkogito-runtime.version=" + env.versions.kogito);
+  jbangArgs.push(
+    "-DdroolsAndKogitoLocalM2Repo=" +
+      path.join(
+        path.dirname(require.resolve("@kie-tools-core/drools-and-kogito/package.json")),
+        "dist/1st-party-m2/repository"
+      )
+  );
   jbangArgs.push(scriptPath);
   args?.forEach((arg) => jbangArgs.push(quoteChar + arg + quoteChar));
 

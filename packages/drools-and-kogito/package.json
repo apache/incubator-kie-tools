@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "name": "@kie-tools-core/drools-and-kogito",
+  "version": "0.0.0",
+  "keywords": [],
+  "scripts": {
+    "install": "node install.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@kie-tools-scripts/build-env": "workspace:*",
+    "@kie-tools/root-env": "workspace:*"
+  }
+}

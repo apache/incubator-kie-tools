@@ -111,7 +111,7 @@ jobs:
         if: steps.setup_build_mode.outputs.mode != 'none'
         env:
           MAVEN_ARGS: "-B -Puse-maven-repo-local-tail"
-          MAVEN_OPTS: "-Xmx2g"
+          MAVEN_OPTS: "-Xmx3g"
         uses: ./.github/actions/bootstrap
         with:
           pnpm_filter_string: ${{ steps.setup_build_mode.outputs.bootstrapPnpmFilterString }}

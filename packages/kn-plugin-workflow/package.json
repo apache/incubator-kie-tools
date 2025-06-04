@@ -50,6 +50,7 @@
     "test-e2e:quarkus:logs": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm go:test-e2e:quarkus:logs\" \"pnpm go:test-e2e:report\""
   },
   "dependencies": {
+    "@kie-tools-core/drools-and-kogito": "workspace:*",
     "@kie-tools/maven-base": "workspace:*",
     "@kie-tools/sonataflow-quarkus-devui": "workspace:*"
   },
