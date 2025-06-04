@@ -23,7 +23,7 @@ version: "main"
 envs:
   - name: "MAVEN_VERSION"
     description: "The Maven version to setup with this module"
-    value: "3.8.6"
+    value: "3.9.6"
   - name: "MAVEN_HOME"
     value: "/usr/share/maven"
   - name: "MAVEN_CMD"
@@ -36,7 +36,7 @@ envs:
     value: "${KOGITO_HOME}/.m2/maven-m2-repo-via-http-settings.xml"
   - name: "ALTERNATIVE_MAVEN_HOME"
     description: " (Temporary Fix) Path to the alternative Maven installation until a new base image with Maven 3.9 is available."
-    value: "/usr/share/apache-maven-3.8.6"
+    value: "/usr/share/apache-maven-3.9.6"
   - name: "HTTP_PROXY"
     description: "The location of the http proxy, will be used for both Maven builds and Java runtime."
     example: "http://127.0.0.1:8080"
@@ -105,9 +105,9 @@ packages:
     - gzip
 
 artifacts:
-  - name: apache-maven-3.8.6-bin.tar.gz
-    url: https://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz
-    md5: 0e07de4a7b5c84ebed737a2002f52019
+  - name: apache-maven-3.9.6-bin.tar.gz
+    url: https://archive.apache.org/dist/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
+    md5: fb90d9f8aa9ac18e8aa0a0842a09239f
 
 execute:
   - script: configure
