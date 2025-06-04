@@ -24,7 +24,7 @@
     "build:prod": "pnpm build:dev",
     "prefetch": "run-script-os",
     "prefetch:darwin:linux": "cross-env JBANG_REPO=$(node -p \"require('path').resolve('dist-m2')\") node dist/dependenciesFetch.js",
-    "prefetch:win32": "pnpm powershell \"cross-env JBANG_REPO=$(node -p \\\"require('path').resolve('dist-m2')\\\") node dist/dependenciesFetch.js\""
+    "prefetch:win32": "pnpm powershell \"cross-env JBANG_REPO=$(Resolve-Path . | Write-Host)\\dist-m2 node dist/dependenciesFetch.js\""
   },
   "dependencies": {
     "@jbangdev/jbang": "0.2.3"
