@@ -20,9 +20,9 @@
 const execSync = require("child_process").execSync;
 const fs = require("fs");
 const path = require("path");
-const execOpts = { stdio: "inherit" };
 const { env } = require("./env");
 const buildEnv = env;
+const execOpts = { stdio: "inherit" };
 
 ///
 
@@ -88,41 +88,42 @@ const kogitoRuntimesRepoDir = path.join("dist-tmp", "kogito-runtimes");
 const kogitoAppsRepoDir = path.join("dist-tmp", "kogito-apps");
 
 console.log(`[drools-and-kogito] Cloning Drools...`);
+
 execSync(
-  `git clone --branch "$(build-env root.streamName)" --depth 50 "$(build-env droolsAndKogito.repos.drools.url)" "${droolsRepoDir}"`,
+  `git clone --branch ${buildEnv.root.streamName} --depth 50 ${buildEnv.droolsAndKogito.repos.drools.url} "${droolsRepoDir}"`,
   execOpts
 );
-execSync(`git checkout $(build-env droolsAndKogito.repos.drools.gitRef)`, {
+execSync(`git checkout ${buildEnv.droolsAndKogito.repos.drools.gitRef}`, {
   ...execOpts,
   cwd: droolsRepoDir,
 });
 
 console.log(`[drools-and-kogito] Cloning OptaPlanner...`);
 execSync(
-  `git clone --branch "$(build-env root.streamName)" --depth 50 "$(build-env droolsAndKogito.repos.optaplanner.url)" "${optaplannerRepoDir}"`,
+  `git clone --branch ${buildEnv.root.streamName} --depth 50 ${buildEnv.droolsAndKogito.repos.optaplanner.url} "${optaplannerRepoDir}"`,
   execOpts
 );
-execSync(`git checkout "$(build-env droolsAndKogito.repos.optaplanner.gitRef)"`, {
+execSync(`git checkout ${buildEnv.droolsAndKogito.repos.optaplanner.gitRef}`, {
   ...execOpts,
   cwd: optaplannerRepoDir,
 });
 
 console.log(`[drools-and-kogito] Cloning Kogito Runtimes...`);
 execSync(
-  `git clone --branch "$(build-env root.streamName)" --depth 50 "$(build-env droolsAndKogito.repos.kogitoRuntimes.url)" "${kogitoRuntimesRepoDir}"`,
+  `git clone --branch ${buildEnv.root.streamName} --depth 50 ${buildEnv.droolsAndKogito.repos.kogitoRuntimes.url} "${kogitoRuntimesRepoDir}"`,
   execOpts
 );
-execSync(`git checkout "$(build-env droolsAndKogito.repos.kogitoRuntimes.gitRef)"`, {
+execSync(`git checkout ${buildEnv.droolsAndKogito.repos.kogitoRuntimes.gitRef}`, {
   ...execOpts,
   cwd: kogitoRuntimesRepoDir,
 });
 
 console.log(`[drools-and-kogito] Cloning Kogito Apps...`);
 execSync(
-  `git clone --branch "$(build-env root.streamName)" --depth 50 "$(build-env droolsAndKogito.repos.kogitoApps.url)" "${kogitoAppsRepoDir}"`,
+  `git clone --branch ${buildEnv.root.streamName} --depth 50 ${buildEnv.droolsAndKogito.repos.kogitoApps.url} "${kogitoAppsRepoDir}"`,
   execOpts
 );
-execSync(`git checkout $(build-env droolsAndKogito.repos.kogitoApps.gitRef)`, {
+execSync(`git checkout ${buildEnv.droolsAndKogito.repos.kogitoApps.gitRef}`, {
   ...execOpts,
   cwd: kogitoAppsRepoDir,
 });
@@ -134,13 +135,14 @@ const streamsMavenVersion =
     : buildEnv.root.streamName.replace(".x", ".999-SNAPSHOT"); // 10.1.x becomes 10.1.999-SNAPSHOT
 
 console.log(`[drools-and-kogito] Updating versions to ${streamsMavenVersion}...`);
-execSync(
-  `find . -name "pom.xml" -exec sed -i.bak 's/${streamsMavenVersion}/${buildEnv.versions.kogito}/g' {} \\; -exec rm {}.bak \\;`,
-  {
-    ...execOpts,
-    cwd: "./dist-tmp",
-  }
-);
+execSync(`find . -name "pom.xml" -exec sed -i.bak "s/${streamsMavenVersion}/${buildEnv.versions.kogito}/g" {} ";"`, {
+  ...execOpts,
+  cwd: "./dist-tmp",
+});
+execSync(`find . -name "pom.xml.bak" -exec rm {} ";"`, {
+  ...execOpts,
+  cwd: "./dist-tmp",
+});
 
 // patching
 console.log(`[drools-and-kogito] Patching pom.xml files to remove Tests and Integration Tests modules...`);
@@ -221,7 +223,11 @@ console.log(`[drools-and-kogito] Done.`);
 
 function removeMavenModule(moduleName) {
   process.stdout.write(`[drools-and-kogito] Excluding Maven module pattern ${moduleName} from the build...`);
-  execSync(`find . -name "pom.xml" -exec sed -i.bak 's#<module>${moduleName}</module>##g' {} \\; -exec rm {}.bak \\;`, {
+  execSync(`find . -name "pom.xml" -exec sed -i.bak "s#<module>${moduleName}</module>##g" {} ";"`, {
+    ...execOpts,
+    cwd: "./dist-tmp",
+  });
+  execSync(`find . -name "pom.xml.bak" -exec rm {} ";"`, {
     ...execOpts,
     cwd: "./dist-tmp",
   });
