@@ -176,7 +176,7 @@ pipeline {
             }
             steps {
                 script {
-                    env.RELEASE_IMAGE_TAR_FILE = "kie-${params.RELEASE_CANDIDATE_VERSION}-kogito-db-migrator-tool-image.tar.gz"
+                    env.RELEASE_IMAGE_TAR_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-kogito-db-migrator-tool-image.tar.gz"
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
