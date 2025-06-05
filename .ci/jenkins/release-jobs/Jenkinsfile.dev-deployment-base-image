@@ -51,7 +51,7 @@ pipeline {
 
         PNPM_FILTER_STRING = '-F @kie-tools/dev-deployment-base-image...'
 
-        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml -Dmaven.repo.local=${WORKSPACE}/.maven"
     }
 
     stages {

@@ -44,7 +44,7 @@ pipeline {
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
         PNPM_FILTER_STRING = '-F bpmn-vscode-extension... -F dmn-vscode-extension... -F pmml-vscode-extension... -F vscode-extension-kogito-bundle... -F swf-vscode-extension... -F vscode-extension-kie-ba-bundle... -F vscode-extension-dashbuilder-editor... -F yard-vscode-extension... -F extended-services-vscode-extension...'
         
-        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml -Dmaven.repo.local=${WORKSPACE}/.maven"
     }
 
     stages {

@@ -31,7 +31,7 @@ pipeline {
     }
 
     environment {
-        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml -Dmaven.repo.local=${WORKSPACE}/.maven"
     }
 
     parameters {

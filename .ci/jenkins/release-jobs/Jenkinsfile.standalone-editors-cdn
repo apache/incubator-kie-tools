@@ -44,7 +44,7 @@ pipeline {
 
         PNPM_FILTER_STRING = '-F @kie-tools/kie-editors-standalone... -F @kie-tools/serverless-workflow-standalone-editor...'
 
-        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml -Dmaven.repo.local=${WORKSPACE}/.maven"
     }
 
     stages {

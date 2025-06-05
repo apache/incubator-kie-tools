@@ -53,7 +53,7 @@ pipeline {
 
         PNPM_FILTER_STRING = '-F chrome-extension-pack-kogito-kie-editors... -F chrome-extension-serverless-workflow-editor...'
         
-        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml -Dmaven.repo.local=${WORKSPACE}/.maven"
     }
 
     stages {

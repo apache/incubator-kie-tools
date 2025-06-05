@@ -41,7 +41,7 @@ pipeline {
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
-        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml -Dmaven.repo.local=${WORKSPACE}/.maven"
     }
 
     stages {

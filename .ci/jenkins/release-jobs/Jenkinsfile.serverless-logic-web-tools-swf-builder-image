@@ -53,7 +53,7 @@ pipeline {
 
         PNPM_FILTER_STRING = '-F @kie-tools/serverless-logic-web-tools-swf-builder-image...'
 
-        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml -Dmaven.repo.local=${WORKSPACE}/.maven"
     }
 
     stages {

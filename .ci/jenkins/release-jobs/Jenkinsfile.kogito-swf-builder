@@ -49,7 +49,7 @@ pipeline {
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
         PNPM_FILTER_STRING = '-F @kie-tools/sonataflow-builder-image...'
-        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml"
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml -Dmaven.repo.local=${WORKSPACE}/.maven"
     }
 
     stages {
