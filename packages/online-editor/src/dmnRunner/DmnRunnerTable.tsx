@@ -71,7 +71,32 @@ export function DmnRunnerTable() {
   const rowCount = useMemo(() => inputs?.length ?? 1, [inputs?.length]);
   const jsonSchemaBridge = useMemo(() => {
     try {
-      return new DmnUnitablesValidator(i18n.dmnRunner.table).getBridge(cloneDeep(jsonSchema) ?? {});
+      const modifiedSchema = cloneDeep(jsonSchema) ?? {};
+      if (modifiedSchema.definitions) {
+        Object.entries(modifiedSchema.definitions).forEach(([key, definition]) => {
+          if (key.startsWith("InputSetDMN")) {
+            const inputSetDefinition = modifiedSchema.definitions?.InputSet;
+            if (inputSetDefinition) {
+              inputSetDefinition.properties = inputSetDefinition.properties || {};
+              if (definition.properties) {
+                Object.assign(inputSetDefinition.properties, definition.properties);
+              }
+            }
+          }
+
+          if (key.startsWith("OutputSetDMN")) {
+            const outputSetDefinition = modifiedSchema.definitions?.OutputSet;
+            if (outputSetDefinition) {
+              outputSetDefinition.properties = outputSetDefinition.properties || {};
+              if (definition.properties) {
+                Object.assign(outputSetDefinition.properties, definition.properties);
+              }
+            }
+          }
+        });
+      }
+
+      return new DmnUnitablesValidator(i18n.dmnRunner.table).getBridge(cloneDeep(modifiedSchema) ?? {});
     } catch (err) {
       throw Error(`getBridge ${err}`);
     }

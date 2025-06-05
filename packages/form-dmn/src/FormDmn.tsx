@@ -35,14 +35,38 @@ export function FormDmn(props: FormProps<InputRow, JSONSchema4>) {
   }, [props.locale]);
   const dmnValidator = useMemo(() => new FormDmnValidator(i18n), [i18n]);
 
+  const mergedInputSetSchema = useMemo(() => {
+    const definitions = props.formSchema?.definitions ?? {};
+    const inputSetProperties: Record<string, any> = {};
+
+    Object.entries(definitions).forEach(([key, value]) => {
+      if (key.startsWith("InputSetDMN") && value.properties) {
+        Object.assign(inputSetProperties, value.properties);
+      }
+    });
+
+    return {
+      ...props.formSchema,
+      definitions: {
+        ...props.formSchema?.definitions,
+        InputSet: {
+          ...props.formSchema?.definitions?.InputSet,
+          properties: {
+            ...props.formSchema?.definitions?.InputSet?.properties,
+            ...inputSetProperties,
+          },
+        },
+      },
+    };
+  }, [props.formSchema]);
+
   return (
     <FormComponent
       {...props}
       i18n={i18n}
       validator={dmnValidator}
       removeRequired={true}
-      entryPath={"definitions.InputSet"}
-      propertiesEntryPath={"definitions.InputSet.properties"}
+      formSchema={mergedInputSetSchema}
     >
       <DmnAutoFieldProvider value={formDmnRunnerAutoFieldValue} />
     </FormComponent>

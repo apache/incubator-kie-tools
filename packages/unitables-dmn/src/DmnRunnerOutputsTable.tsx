@@ -294,7 +294,15 @@ function OutputsBeeTable({
 
   const beeTableColumns = useMemo<ReactTable.Column<ROWTYPE>[]>(() => {
     return (results?.[0] ?? []).flatMap(({ result, decisionName, decisionId }) => {
-      const outputProperties = outputsPropertiesMap.get(decisionName);
+      let outputProperties = outputsPropertiesMap.get(decisionName);
+      if (!outputProperties) {
+        const decionNameWithoutNamespace = decisionName.split(".")[1];
+        outputProperties = outputsPropertiesMap.get(decionNameWithoutNamespace);
+        if (outputProperties) {
+          outputProperties.name = decisionName;
+          outputProperties.joinedName = decisionName;
+        }
+      }
       if (!outputProperties) {
         return [];
       }

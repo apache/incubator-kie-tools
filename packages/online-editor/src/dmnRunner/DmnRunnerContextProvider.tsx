@@ -306,6 +306,51 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     }
   }, [prevExtendedServicesStatus, extendedServices.status, props.workspaceFile.extension]);
 
+  const restructureFormInputs = (
+    inputs: InputRow | undefined,
+    models: Map<string, any> | undefined
+  ): InputRow | undefined => {
+    if (!inputs || !models) {
+      return inputs;
+    }
+    const newFormInputs: InputRow = {};
+    const inputToImportMap = new Map<string, string>();
+    for (const [_, model] of models.entries()) {
+      const imports = model.definitions.import;
+      if (imports) {
+        const importList = Array.isArray(imports) ? imports : [imports];
+        for (const imp of importList) {
+          const importedModel = Array.from(models.values()).find(
+            (m) => m.definitions["@_namespace"] === imp["@_namespace"]
+          );
+
+          if (importedModel) {
+            const drgElements = importedModel.definitions.drgElement;
+            const elements = Array.isArray(drgElements) ? drgElements : [drgElements];
+            for (const element of elements) {
+              if (element!["__$$element"] === "inputData") {
+                inputToImportMap.set(element!["@_name"], imp["@_name"]);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    for (const [inputName, inputValue] of Object.entries(inputs)) {
+      const importName = inputToImportMap.get(inputName);
+      if (importName) {
+        if (!newFormInputs[importName]) {
+          newFormInputs[importName] = {};
+        }
+        (newFormInputs[importName] as Record<string, string>)[inputName] = inputValue;
+      } else {
+        newFormInputs[inputName] = inputValue;
+      }
+    }
+    return newFormInputs;
+  };
+
   const extendedServicesModelPayload = useCallback<(formInputs?: InputRow) => Promise<ExtendedServicesModelPayload>>(
     async (formInputs) => {
       const fileContent = await workspaces.getFileContent({
@@ -322,7 +367,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       ]);
 
       return {
-        context: formInputs,
+        context: restructureFormInputs(formInputs, importIndex?.models),
         mainURI: props.workspaceFile.relativePath,
         resources: [...(importIndex?.models.entries() ?? [])].map(
           ([normalizedPosixPathRelativeToTheWorkspaceRoot, model]) => ({
