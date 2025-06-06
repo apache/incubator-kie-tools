@@ -348,6 +348,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         newFormInputs[inputName] = inputValue;
       }
     }
+    console.log("newFormInputs:", newFormInputs);
     return newFormInputs;
   };
 
@@ -365,7 +366,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           normalizedPosixPathRelativeToTheWorkspaceRoot: props.workspaceFile.relativePath,
         },
       ]);
-
+      console.log("form inputs:", formInputs);
       return {
         context: restructureFormInputs(formInputs, importIndex?.models),
         mainURI: props.workspaceFile.relativePath,
@@ -724,6 +725,16 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       [dmnRunnerAjv, dmnRunnerPersistenceService, jsonSchema, setDmnRunnerPersistenceJson]
     )
   );
+
+  useLayoutEffect(() => {
+    // Reset inputs and configs when the jsonSchema changes
+    setDmnRunnerPersistenceJson({
+      newInputsRow: [],
+      newConfigInputs: {},
+      shouldUpdateFs: false,
+      cancellationToken: new Holder(false),
+    });
+  }, [jsonSchema, setDmnRunnerPersistenceJson]);
 
   // Responsible to set the JSON schema based on the DMN model;
   useCancelableEffect(

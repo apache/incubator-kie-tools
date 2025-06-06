@@ -384,7 +384,7 @@ function OutputsBeeTable({
                 cssClasses: decisionId === openedBoxedExpressionEditorNodeId ? "runner-column-highlight" : "",
                 headerCellElementExtension: openBoxedExpressionHeaderButton({ decisionId, decisionName }),
                 label: label,
-                accessor: (`output-${outputProperties?.name}-` + generateUuid()) as any,
+                accessor: (`output-${outputProperties?.name.replace(".", "_")}-` + generateUuid()) as any,
                 dataType: dataType,
                 isRowIndexColumn: false,
                 groupType: "dmn-runner-output",
