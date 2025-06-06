@@ -27,7 +27,6 @@ import NumField from "./NumField";
 import RadioField from "./RadioField";
 import SelectField from "./SelectField";
 import TextField from "./TextField";
-import CodeEditorTextField from "./CodeEditorTextField";
 
 export type AutoFieldProps = Parameters<typeof AutoField>[0];
 
@@ -48,7 +47,7 @@ const AutoField = createAutoField((props) => {
     case Object:
       return NestField;
     case String:
-      return props.field.uniforms?.language ? CodeEditorTextField : TextField;
+      return TextField;
   }
 
   return invariant(false, "Unsupported field type: %s", props.fieldType);

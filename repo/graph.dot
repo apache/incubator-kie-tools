@@ -559,7 +559,7 @@ digraph G {
   "@kie-tools/runtime-tools-shared-webapp-components" -> "@kie-tools/runtime-tools-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools-core/monaco-editor" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools/dashbuilder-client" [ style = "solid", color = "blue" ];
-  "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
+  "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools/form-dmn" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools/runtime-tools-components" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools/runtime-tools-swf-gateway-api" [ style = "solid", color = "blue" ];
   "@kie-tools/runtime-tools-swf-enveloped-components" -> "@kie-tools/serverless-workflow-combined-editor" [ style = "solid", color = "blue" ];
@@ -628,7 +628,6 @@ digraph G {
   "@kie-tools/sonataflow-builder-image" -> "@kie-tools/maven-base" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-builder-image" -> "@kie-tools/maven-m2-repo-via-http-image" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-builder-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
-  "sonataflow-deployment-webapp" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
   "sonataflow-deployment-webapp" -> "@kie-tools/runtime-tools-shared-webapp-components" [ style = "solid", color = "blue" ];
   "sonataflow-deployment-webapp" -> "@kie-tools/runtime-tools-swf-webapp-components" [ style = "solid", color = "blue" ];
   "sonataflow-deployment-webapp" -> "@kie-tools/sonataflow-dev-app" [ style = "dashed", color = "blue" ];

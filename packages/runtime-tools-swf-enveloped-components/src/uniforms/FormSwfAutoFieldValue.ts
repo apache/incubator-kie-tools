@@ -17,6 +17,13 @@
  * under the License.
  */
 
-export * from "./DmnAutoFieldProvider";
-export * from "./DmnAutoFieldValue";
-export * from "./SwfAutoFieldValue";
+import { Context, GuaranteedProps } from "uniforms/esm";
+// import { defaultSwfAutoFieldValue } from "@kie-tools/dmn-runner/dist/uniforms";
+import { defaultSwfAutoFieldValue } from "./SwfAutoFieldValue";
+
+export function formSwfAutoFieldValue(props: GuaranteedProps<unknown>, uniforms: Context<Record<string, unknown>>) {
+  // if (props.fieldType === Object && !props.field.properties) {
+  //   return CodeEditorTextField;
+  // }
+  return defaultSwfAutoFieldValue(props, uniforms);
+}

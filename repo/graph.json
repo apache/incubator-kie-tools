@@ -2315,7 +2315,7 @@
       },
       {
         "source": "@kie-tools/runtime-tools-swf-enveloped-components",
-        "target": "@kie-tools/i18n-common-dictionary",
+        "target": "@kie-tools/form-dmn",
         "weight": 1
       },
       {
@@ -2521,11 +2521,6 @@
       {
         "source": "@kie-tools/serverless-logic-web-tools-swf-builder-image",
         "target": "sonataflow-deployment-webapp",
-        "weight": 1
-      },
-      {
-        "source": "sonataflow-deployment-webapp",
-        "target": "@kie-tools-core/react-hooks",
         "weight": 1
       },
       {
