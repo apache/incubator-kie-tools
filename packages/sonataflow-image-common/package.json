@@ -13,11 +13,16 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
-    "build:prod": "pnpm test",
+    "build:dev": "pnpm update:quarkus:config && pnpm format && pnpm test",
+    "build:prod": "pnpm build:dev",
+    "format": "prettier --write .",
     "install": "node install.js",
     "test": "run-script-os",
     "test:linux:darwin": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"mkdir -p dist-tests\" \"rm -rf dist-tests/*\" \"make -C ./resources bats\" --finally \"touch dist-tests/report.xml\" \"mv dist-tests/report.xml dist-tests/junit-report.xml\"",
-    "test:win32": "echo \"Tests are skipped in Windows\""
+    "test:win32": "echo \"Tests are skipped in Windows\"",
+    "update:quarkus:config": "run-script-os",
+    "update:quarkus:config:linux:darwin": "node_modules/@kie-tools/python-venv/venv/bin/python resources/scripts/update_quarkus_config.py $(build-env kogitoImagesCekitModules.quarkusRegistries)",
+    "update:quarkus:config:win32": "echo \"Update Quarkus Config is skipped on Windows\""
   },
   "devDependencies": {
     "@kie-tools/python-venv": "workspace:*",
