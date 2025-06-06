@@ -38,10 +38,14 @@ export function FormDmn(props: FormProps<InputRow, JSONSchema4>) {
   const mergedInputSetSchema = useMemo(() => {
     const definitions = props.formSchema?.definitions ?? {};
     const inputSetProperties: Record<string, any> = {};
+    const requiredFields = new Set<string>();
 
     Object.entries(definitions).forEach(([key, value]) => {
       if (key.startsWith("InputSetDMN") && value.properties) {
         Object.assign(inputSetProperties, value.properties);
+      }
+      if (Array.isArray(value.required)) {
+        value.required.forEach((field: string) => requiredFields.add(field));
       }
     });
 
@@ -55,6 +59,7 @@ export function FormDmn(props: FormProps<InputRow, JSONSchema4>) {
             ...props.formSchema?.definitions?.InputSet?.properties,
             ...inputSetProperties,
           },
+          required: Array.from(requiredFields),
         },
       },
     };
