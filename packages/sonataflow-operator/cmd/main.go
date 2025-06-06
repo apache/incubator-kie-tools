@@ -25,11 +25,11 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/version"
+
 	"k8s.io/client-go/dynamic"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/manager"
-
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/version"
 
 	prometheus "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"k8s.io/klog/v2/klogr"
