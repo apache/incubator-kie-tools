@@ -25,14 +25,14 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/version"
+
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog/v2"
 	"k8s.io/utils/pointer"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
-
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/version"
 
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/container-builder/client"

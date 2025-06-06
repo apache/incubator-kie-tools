@@ -22,6 +22,8 @@ package dev
 import (
 	"testing"
 
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/version"
+
 	"github.com/stretchr/testify/assert"
 	v1 "k8s.io/api/core/v1"
 
@@ -45,11 +47,13 @@ func Test_ensureWorkflowDevServiceIsExposed(t *testing.T) {
 	assert.NotNil(t, reflectService.ObjectMeta.Labels)
 	assert.Equal(t, reflectService.ObjectMeta.Labels, map[string]string{
 		"app":                               "greeting",
+		"app.kubernetes.io/instance":        "greeting",
 		"test":                              "test",
 		"sonataflow.org/workflow-app":       "greeting",
 		"sonataflow.org/workflow-namespace": workflow.Namespace,
 		"app.kubernetes.io/name":            "greeting",
 		"app.kubernetes.io/component":       "serverless-workflow",
 		"app.kubernetes.io/managed-by":      "sonataflow-operator",
+		"app.kubernetes.io/version":         version.GetImageTagVersion(),
 	})
 }

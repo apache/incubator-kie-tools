@@ -21,6 +21,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/version"
+
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -74,6 +76,7 @@ func Test_Reconciler_ProdOps(t *testing.T) {
 	assert.NotNil(t, deployment.ObjectMeta.Labels)
 	assert.Equal(t, deployment.ObjectMeta.Labels, map[string]string{
 		"app":                               "simple",
+		"app.kubernetes.io/instance":        "simple",
 		"test":                              "test",
 		"sonataflow.org/workflow-app":       "simple",
 		"sonataflow.org/workflow-namespace": workflow.Namespace,
@@ -81,5 +84,6 @@ func Test_Reconciler_ProdOps(t *testing.T) {
 		"app.kubernetes.io/component":       "serverless-workflow",
 		"app.kubernetes.io/managed-by":      "sonataflow-operator",
 		"app.kubernetes.io/part-of":         "sonataflow-platform",
+		"app.kubernetes.io/version":         version.GetImageTagVersion(),
 	})
 }

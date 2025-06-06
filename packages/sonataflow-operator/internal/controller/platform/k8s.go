@@ -23,7 +23,11 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/version"
+
 	"k8s.io/klog/v2"
+
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 
 	"github.com/imdario/mergo"
 	appsv1 "k8s.io/api/apps/v1"
@@ -268,13 +272,15 @@ func createOrUpdateService(ctx context.Context, client client.Client, platform *
 // getServicesLabelsMap A common utility function for use by SonataFlow Services (e.g. DI/JS and DB Migrator) to obtain standard common labels by passing parameters
 func getServicesLabelsMap(app string, appNamespace string, service string, k8sName string, k8sComponent string, k8sPartOf string, k8sManagedBy string) (map[string]string, map[string]string) {
 	lbl := map[string]string{
-		workflowproj.LabelApp:          app,
-		workflowproj.LabelAppNamespace: appNamespace,
-		workflowproj.LabelService:      service,
-		workflowproj.LabelK8SName:      k8sName,
-		workflowproj.LabelK8SComponent: k8sComponent,
-		workflowproj.LabelK8SPartOF:    k8sPartOf,
-		workflowproj.LabelK8SManagedBy: k8sManagedBy,
+		workflowproj.LabelApp:             app,
+		workflowproj.LabelAppNamespace:    appNamespace,
+		workflowproj.LabelService:         service,
+		metadata.KubernetesLabelInstance:  app,
+		metadata.KubernetesLabelName:      k8sName,
+		metadata.KubernetesLabelComponent: k8sComponent,
+		metadata.KubernetesLabelPartOf:    k8sPartOf,
+		metadata.KubernetesLabelManagedBy: k8sManagedBy,
+		metadata.KubernetesLabelVersion:   version.GetImageTagVersion(),
 	}
 
 	selectorLbl := map[string]string{

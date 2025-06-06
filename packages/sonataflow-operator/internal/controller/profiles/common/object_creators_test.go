@@ -23,6 +23,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/version"
+
 	"github.com/magiconair/properties"
 	prometheus "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/stretchr/testify/assert"
@@ -209,6 +211,8 @@ func TestEnsureWorkflowSinkBindingWithWorkflowSinkIsCreated(t *testing.T) {
 		"sonataflow.org/workflow-app":       "vet",
 		"sonataflow.org/workflow-namespace": workflow.Namespace,
 		"app.kubernetes.io/name":            "vet",
+		"app.kubernetes.io/version":         version.GetImageTagVersion(),
+		"app.kubernetes.io/instance":        "vet",
 		"app.kubernetes.io/component":       "serverless-workflow",
 		"app.kubernetes.io/managed-by":      "sonataflow-operator"})
 }
@@ -236,6 +240,8 @@ func TestEnsureWorkflowSinkBindingWithPlatformBrokerIsCreated(t *testing.T) {
 		"sonataflow.org/workflow-app":       "vet",
 		"sonataflow.org/workflow-namespace": workflow.Namespace,
 		"app.kubernetes.io/name":            "vet",
+		"app.kubernetes.io/version":         version.GetImageTagVersion(),
+		"app.kubernetes.io/instance":        "vet",
 		"app.kubernetes.io/component":       "serverless-workflow",
 		"app.kubernetes.io/managed-by":      "sonataflow-operator"})
 }
@@ -288,6 +294,8 @@ func TestEnsureWorkflowTriggersWithPlatformBrokerAreCreated(t *testing.T) {
 		"sonataflow.org/workflow-app":       "vet",
 		"sonataflow.org/workflow-namespace": workflow.Namespace,
 		"app.kubernetes.io/name":            "vet",
+		"app.kubernetes.io/instance":        "vet",
+		"app.kubernetes.io/version":         version.GetImageTagVersion(),
 		"app.kubernetes.io/component":       "serverless-workflow",
 		"app.kubernetes.io/managed-by":      "sonataflow-operator"})
 	assert.Equal(t, trigger.Namespace, plf.Namespace) //trigger should be in the platform namespace
@@ -304,6 +312,8 @@ func TestEnsureWorkflowTriggersWithPlatformBrokerAreCreated(t *testing.T) {
 		"sonataflow.org/workflow-app":       "vet",
 		"sonataflow.org/workflow-namespace": workflow.Namespace,
 		"app.kubernetes.io/name":            "vet",
+		"app.kubernetes.io/version":         version.GetImageTagVersion(),
+		"app.kubernetes.io/instance":        "vet",
 		"app.kubernetes.io/component":       "serverless-workflow",
 		"app.kubernetes.io/managed-by":      "sonataflow-operator"})
 	assert.Equal(t, trigger.Namespace, plf.Namespace) //trigger should be in the platform namespace
@@ -339,6 +349,8 @@ func TestEnsureWorkflowTriggersWithWorkflowBrokerAreCreated(t *testing.T) {
 	assert.Equal(t, trigger.GetLabels(), map[string]string{"app": "vet",
 		"sonataflow.org/workflow-app":       "vet",
 		"sonataflow.org/workflow-namespace": workflow.Namespace,
+		"app.kubernetes.io/version":         version.GetImageTagVersion(),
+		"app.kubernetes.io/instance":        "vet",
 		"app.kubernetes.io/name":            "vet",
 		"app.kubernetes.io/component":       "serverless-workflow",
 		"app.kubernetes.io/managed-by":      "sonataflow-operator"})
@@ -354,6 +366,8 @@ func TestEnsureWorkflowTriggersWithWorkflowBrokerAreCreated(t *testing.T) {
 	assert.NotNil(t, trigger.GetLabels())
 	assert.Equal(t, trigger.GetLabels(), map[string]string{"app": "vet",
 		"sonataflow.org/workflow-app":       "vet",
+		"app.kubernetes.io/instance":        "vet",
+		"app.kubernetes.io/version":         version.GetImageTagVersion(),
 		"sonataflow.org/workflow-namespace": workflow.Namespace,
 		"app.kubernetes.io/name":            "vet",
 		"app.kubernetes.io/component":       "serverless-workflow",
@@ -965,6 +979,8 @@ func TestEnsureWorkflowServiceMonitorIsCreatedWhenDeployedAsDeployment(t *testin
 		"sonataflow.org/workflow-app":       workflow.Name,
 		"sonataflow.org/workflow-namespace": workflow.Namespace,
 		"app.kubernetes.io/name":            workflow.Name,
+		"app.kubernetes.io/instance":        workflow.Name,
+		"app.kubernetes.io/version":         version.GetImageTagVersion(),
 		"app.kubernetes.io/component":       "serverless-workflow",
 		"app.kubernetes.io/managed-by":      "sonataflow-operator"})
 }
