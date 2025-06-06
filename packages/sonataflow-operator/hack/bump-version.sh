@@ -42,7 +42,7 @@ node -p "require('replace-in-file').sync({ from: /\bnewName:.*\b/g, to: 'newName
 node -p "require('replace-in-file').sync({ from: /\bversion: .*\b/g, to: 'version: ${version}', files: ['./images/bundle.yaml'] });"
 node -p "require('replace-in-file').sync({ from: /\bversion: .*\b/g, to: 'version: ${version}', files: ['./images/manager.yaml'] });"
 
-node -p "require('replace-in-file').sync({ from: /\boperatorVersion = .*/g, to: 'operatorVersion = \"${version}\"', files: ['version/version.go'] });"
-node -p "require('replace-in-file').sync({ from: /\bplatformTagVersion = .*/g, to: 'platformTagVersion = \"${platformTag}\"', files: ['version/version.go'] });"
+node -p "require('replace-in-file').sync({ from: /\boperatorVersion = .*/g, to: 'operatorVersion = \"${version}\"', files: ['api/version/version.go'] });"
+node -p "require('replace-in-file').sync({ from: /\bplatformTagVersion = .*/g, to: 'platformTagVersion = \"${platformTag}\"', files: ['api/version/version.go'] });"
 
 echo "Version bumped to ${version}"

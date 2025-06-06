@@ -21,7 +21,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/version"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/version"
 
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"

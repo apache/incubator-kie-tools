@@ -23,7 +23,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/version"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/version"
 
 	appsv1 "k8s.io/api/apps/v1"
 

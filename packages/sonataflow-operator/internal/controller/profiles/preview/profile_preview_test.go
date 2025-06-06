@@ -24,7 +24,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/version"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/version"
 
 	prometheus "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/stretchr/testify/assert"
