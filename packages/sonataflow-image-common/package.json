@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build:dev": "pnpm update:quarkus:config && pnpm format && pnpm test",
-    "build:prod": "pnpm build:prod",
+    "build:prod": "pnpm build:dev",
     "format": "prettier --write .",
     "install": "node install.js",
     "test": "run-script-os",
