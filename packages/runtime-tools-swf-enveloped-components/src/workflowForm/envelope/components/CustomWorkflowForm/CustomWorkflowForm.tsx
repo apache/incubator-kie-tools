@@ -25,6 +25,8 @@ import { FormRenderer, FormRendererApi } from "@kie-tools/runtime-tools-componen
 import { WorkflowFormDriver } from "../../../api/WorkflowFormDriver";
 import { WorkflowDefinition } from "../../../api";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
+import { formSwfAutoFieldValue } from "../../../../uniforms/FormSwfAutoFieldValue";
+import { SwfAutoFieldProvider } from "../../../../uniforms/SwfAutoFieldProvider";
 
 export interface CustomWorkflowFormProps {
   customFormSchema: Record<string, any>;
@@ -82,7 +84,9 @@ const CustomWorkflowForm: React.FC<CustomWorkflowFormProps & OUIAProps> = ({
         onSubmit={startWorkflow}
         formActions={formAction}
         ref={formRendererApi}
-      />
+      >
+        <SwfAutoFieldProvider value={formSwfAutoFieldValue} />
+      </FormRenderer>
     </div>
   );
 };
