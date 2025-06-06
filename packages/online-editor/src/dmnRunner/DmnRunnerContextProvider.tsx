@@ -366,7 +366,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           normalizedPosixPathRelativeToTheWorkspaceRoot: props.workspaceFile.relativePath,
         },
       ]);
-      console.log("form inputs:", formInputs);
+
       return {
         context: restructureFormInputs(formInputs, importIndex?.models),
         mainURI: props.workspaceFile.relativePath,

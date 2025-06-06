@@ -39,6 +39,11 @@ export function FormDmn(props: FormProps<InputRow, JSONSchema4>) {
     const definitions = props.formSchema?.definitions ?? {};
     const inputSetProperties: Record<string, any> = {};
     const requiredFields = new Set<string>();
+    const hasInputSetDMN = Object.keys(definitions).some((key) => key.startsWith("InputSetDMN"));
+
+    if (!hasInputSetDMN) {
+      return props.formSchema;
+    }
 
     Object.entries(definitions).forEach(([key, value]) => {
       if (key.startsWith("InputSetDMN") && value.properties) {
