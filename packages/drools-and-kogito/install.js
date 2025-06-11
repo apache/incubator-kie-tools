@@ -147,9 +147,9 @@ execSync(`find . -name "pom.xml.bak" -exec rm {} ";"`, {
 // patching
 console.log(`[drools-and-kogito] Patching pom.xml files to remove Tests and Integration Tests modules...`);
 removeMavenModule(`drools\\-test\\-coverage`);
-removeMavenModule(`.*\\-integration\\-tests`);
+removeMavenModule(`.*integration\\-tests`);
 removeMavenModule(`integration\\-tests`);
-removeMavenModule(`.*\\-integration\\-test`);
+removeMavenModule(`.*integration\\-test`);
 removeMavenModule(`.*\\-integration\\-test\\-.*`);
 removeMavenModule(`.*\\-integrationtests`);
 removeMavenModule(`.*integration\\-tests\\-.*`);
@@ -157,6 +157,7 @@ removeMavenModule(`.*\\-integrationtest`);
 removeMavenModule(`.*\\-it`);
 removeMavenModule(`.*\\-live\\-reload\\-test`);
 removeMavenModule(`kie\\-archetypes`);
+removeMavenModule(`apps\\-integration\\-tests`);
 removeMavenModule(`apps\\-integration\\-tests`);
 
 // building
