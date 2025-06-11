@@ -97,7 +97,6 @@ digraph G {
   "@kie-tools/i18n-common-dictionary" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dashbuilder-viewer-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dashbuilder-viewer-image-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
-  "@kie-tools/data-index-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/dev-deployment-base-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dev-deployment-upload-service" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/dev-deployment-dmn-form-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -157,6 +156,7 @@ digraph G {
   "@kie-tools/sonataflow-image-common" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie/kogito-data-index-ephemeral-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie/kogito-data-index-postgresql-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
+  "@kie-tools/kogito-data-index-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/kogito-db-migrator-tool" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/kogito-db-migrator-tool-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie/kogito-jit-runner-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -355,7 +355,6 @@ digraph G {
   "@kie-tools/dashbuilder-viewer-image" -> "@kie-tools/dashbuilder-viewer-deployment-webapp" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-viewer-image" -> "@kie-tools/dashbuilder-viewer-image-env" [ style = "dashed", color = "black" ];
   "@kie-tools/dashbuilder-viewer-image-env" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
-  "@kie-tools/data-index-webapp" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/dev-deployment-base-image" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
   "@kie-tools/dev-deployment-base-image" -> "@kie-tools/dev-deployment-upload-service" [ style = "dashed", color = "black" ];
   "@kie-tools/dev-deployment-base-image" -> "@kie-tools/image-builder" [ style = "dashed", color = "black" ];
@@ -481,6 +480,7 @@ digraph G {
   "@kie/kogito-data-index-ephemeral-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
   "@kie/kogito-data-index-postgresql-image" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
   "@kie/kogito-data-index-postgresql-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
+  "@kie-tools/kogito-data-index-webapp" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/kogito-db-migrator-tool" -> "@kie-tools/maven-base" [ style = "solid", color = "black" ];
   "@kie-tools/kogito-db-migrator-tool-image" -> "@kie-tools/kogito-db-migrator-tool" [ style = "solid", color = "black" ];
   "@kie-tools/kogito-db-migrator-tool-image" -> "@kie-tools/sonataflow-image-common" [ style = "solid", color = "black" ];
@@ -639,8 +639,8 @@ digraph G {
   "@kie-tools/sonataflow-devmode-image" -> "@kie-tools/maven-m2-repo-via-http-image" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-devmode-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-devmode-image" -> "@kie-tools/sonataflow-quarkus-devui" [ style = "dashed", color = "black" ];
+  "@kie-tools/sonataflow-image-common" -> "@kie-tools/kogito-data-index-webapp" [ style = "solid", color = "black" ];
   "@kie-tools/sonataflow-image-common" -> "@kie-tools/python-venv" [ style = "dashed", color = "black" ];
-  "@kie-tools/sonataflow-image-common" -> "@kie-tools/root-env" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-management-console-image" -> "@kie-tools/image-env-to-json" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-management-console-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-management-console-image" -> "@kie-tools/sonataflow-management-console-image-env" [ style = "dashed", color = "black" ];

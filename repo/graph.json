@@ -145,7 +145,6 @@
       { "id": "@kie-tools-core/i18n" },
       { "id": "@kie-tools/dashbuilder-viewer-image" },
       { "id": "@kie-tools/dashbuilder-viewer-image-env" },
-      { "id": "@kie-tools/data-index-webapp" },
       { "id": "@kie-tools/dev-deployment-base-image" },
       { "id": "@kie-tools/dev-deployment-upload-service" },
       { "id": "@kie-tools/dev-deployment-dmn-form-webapp" },
@@ -199,6 +198,7 @@
       { "id": "@kie/kogito-jobs-service-postgresql-image" },
       { "id": "@kie/kogito-base-builder-image" },
       { "id": "@kie-tools/sonataflow-image-common" },
+      { "id": "@kie-tools/kogito-data-index-webapp" },
       { "id": "@kie-tools/python-venv" },
       { "id": "@kie-tools/kogito-db-migrator-tool" },
       { "id": "@kie/kogito-jit-runner-image" },
@@ -1500,11 +1500,6 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/data-index-webapp",
-        "target": "@kie-tools-core/webpack-base",
-        "weight": 1
-      },
-      {
         "source": "@kie-tools/dev-deployment-base-image",
         "target": "@kie-tools/maven-base",
         "weight": 1
@@ -2161,12 +2156,17 @@
       },
       {
         "source": "@kie-tools/sonataflow-image-common",
-        "target": "@kie-tools/python-venv",
+        "target": "@kie-tools/kogito-data-index-webapp",
         "weight": 1
       },
       {
         "source": "@kie-tools/sonataflow-image-common",
-        "target": "@kie-tools/root-env",
+        "target": "@kie-tools/python-venv",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/kogito-data-index-webapp",
+        "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
       {
@@ -2862,7 +2862,6 @@
     ["@kie-tools/dashbuilder-viewer-deployment-webapp", "packages/dashbuilder-viewer-deployment-webapp"],
     ["@kie-tools/dashbuilder-viewer-image", "packages/dashbuilder-viewer-image"],
     ["@kie-tools/dashbuilder-viewer-image-env", "packages/dashbuilder-viewer-image-env"],
-    ["@kie-tools/data-index-webapp", "packages/data-index-webapp"],
     ["@kie-tools/dev-deployment-base-image", "packages/dev-deployment-base-image"],
     ["@kie-tools/dev-deployment-dmn-form-webapp", "packages/dev-deployment-dmn-form-webapp"],
     ["@kie-tools/dev-deployment-dmn-form-webapp-image", "packages/dev-deployment-dmn-form-webapp-image"],
@@ -2920,6 +2919,7 @@
     ["@kie/kogito-base-builder-image", "packages/kogito-base-builder-image"],
     ["@kie/kogito-data-index-ephemeral-image", "packages/kogito-data-index-ephemeral-image"],
     ["@kie/kogito-data-index-postgresql-image", "packages/kogito-data-index-postgresql-image"],
+    ["@kie-tools/kogito-data-index-webapp", "packages/kogito-data-index-webapp"],
     ["@kie-tools/kogito-db-migrator-tool", "packages/kogito-db-migrator-tool"],
     ["@kie-tools/kogito-db-migrator-tool-image", "packages/kogito-db-migrator-tool-image"],
     ["@kie/kogito-jit-runner-image", "packages/kogito-jit-runner-image"],
