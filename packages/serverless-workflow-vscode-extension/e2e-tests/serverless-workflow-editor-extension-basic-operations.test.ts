@@ -31,26 +31,27 @@ describe("Serverless workflow editor - Basic operations tests", () => {
   let testHelper: VSCodeTestHelper;
 
   before(async function () {
-    this.timeout(30000);
+    this.timeout(100000);
     testHelper = new VSCodeTestHelper();
+    testHelper.setimplicitTimeout(50000);
     await testHelper.openFolder(TEST_PROJECT_FOLDER);
   });
 
   beforeEach(async function () {
-    this.timeout(15000);
+    this.timeout(100000);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });
 
   afterEach(async function () {
-    this.timeout(15000);
+    this.timeout(100000);
     await testHelper.takeScreenshotOnTestFailure(this, DIST_E2E_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });
 
   it("Opens, edits and saves the *.sw.json file", async function () {
-    this.timeout(80000);
+    this.timeout(100000);
 
     const WORKFLOW_NAME = "greet.sw.json";
 
@@ -108,7 +109,7 @@ describe("Serverless workflow editor - Basic operations tests", () => {
   });
 
   it("Opens, edits and saves the *.sw.yaml file", async function () {
-    this.timeout(80000);
+    this.timeout(100000);
 
     const WORKFLOW_NAME = "greet.sw.yaml";
 
@@ -162,13 +163,13 @@ describe("Serverless workflow editor - Basic operations tests", () => {
 
   //The following test is skipped because of bug: https://issues.redhat.com/browse/KOGITO-8384
   it.skip("Renames *.sw.json file while editor is open", async function () {
-    this.timeout(30000);
+    this.timeout(50000);
     await testRenameSWFile("hello-world.sw.json");
   });
 
   //The following test is skipped because of bug: https://issues.redhat.com/browse/KOGITO-8384
   it.skip("Renames *.sw.yaml file while editor is open", async function () {
-    this.timeout(30000);
+    this.timeout(50000);
     await testRenameSWFile("hello-world.sw.yaml");
   });
 

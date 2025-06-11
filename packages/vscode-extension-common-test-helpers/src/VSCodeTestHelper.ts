@@ -430,6 +430,13 @@ export class VSCodeTestHelper {
 
     return previousSettingValuesArray;
   };
+
+  /**
+   * set custom ImplicitTimeout to async operations.
+   */
+  public setimplicitTimeout = async (timeout: number): Promise<void> => {
+    await this.driver.manage().setTimeouts({ implicit: timeout });
+  };
 }
 
 /**
