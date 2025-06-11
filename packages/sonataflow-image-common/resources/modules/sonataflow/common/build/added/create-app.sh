@@ -124,21 +124,53 @@ if [ "${SCRIPT_DEBUG^^}" = "TRUE" ]; then
     cat pom.xml
 fi
 
-# we force the dependencies download beforehand, so we won't have problems when running or building our apps in offline mode
-# see:
-#   https://quarkus.io/guides/maven-tooling#downloading-maven-artifact-dependencies-for-offline-development-and-testing
-#   https://maven.apache.org/plugins/maven-dependency-plugin/go-offline-mojo.html
-"${MAVEN_CMD}" -B ${MAVEN_ARGS_APPEND} \
+cp "pom.xml" "pom.bak"
+
+if [ -n "${ADDITIONAL_DEPENDENCIES}" ]; then
+  echo "Adding additional dependencies (extensions): ${ADDITIONAL_DEPENDENCIES}"
+  echo "${ADDITIONAL_DEPENDENCIES}" | tr ',' '\n' | \
+    xargs -n1 -I{} \
+      "${MAVEN_CMD}" \
+        -B ${MAVEN_ARGS_APPEND} \
+        -nsu \
+        -s "${MAVEN_SETTINGS_PATH}" \
+        quarkus:add-extension \
+        -Dextensions="{}"
+fi
+
+echo "Running Quarkus go-offline"
+"${MAVEN_CMD}" \
+  -B ${MAVEN_ARGS_APPEND} \
   -nsu \
-  -B \
   -s "${MAVEN_SETTINGS_PATH}" \
   -DskipTests=true \
   -Dmaven.javadoc.skip=true \
-  clean dependency:go-offline "${QUARKUS_PLATFORM_GROUPID}":quarkus-maven-plugin:"${QUARKUS_PLATFORM_VERSION}":go-offline install
+  "${QUARKUS_PLATFORM_GROUPID}":quarkus-maven-plugin:"${QUARKUS_PLATFORM_VERSION}":go-offline
 
-# clean up
-"${MAVEN_CMD}" -B ${MAVEN_ARGS_APPEND} \
+echo "Running go-offline / resolve-plugins"
+"${MAVEN_CMD}" \
+  -B ${MAVEN_ARGS_APPEND} \
   -nsu \
+  -s "${MAVEN_SETTINGS_PATH}" \
+  -DskipTests=true \
+  -Dmaven.javadoc.skip=true \
+  dependency:resolve-plugins \
+  dependency:go-offline
+
+echo "Running install"
+"${MAVEN_CMD}" \
+  -B ${MAVEN_ARGS_APPEND} \
+  -nsu \
+  -s "${MAVEN_SETTINGS_PATH}" \
+  -DskipTests=true \
+  -Dmaven.javadoc.skip=true \
+  install
+
+# You can also remove target directories if you want a slimmer image:
+"${MAVEN_CMD}" \
   -B \
+  -nsu \
   -s "${MAVEN_SETTINGS_PATH}" \
   clean
+
+mv "pom.bak" "pom.xml"
