@@ -116,6 +116,20 @@ pipeline {
             }
         }
 
+        stage('Setup maven') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        defaultSettingsFile = 'packages/sonataflow-image-common/resources/modules/kogito-maven/common/maven/maven-m2-repo-via-http-settings.xml.envsubst'
+                        sh """#!/bin/bash -el
+                        rm -rf "${defaultSettingsFile}"
+                        cp "${env.MAVEN_SETTINGS_PATH}" "${defaultSettingsFile}"
+                        """.trim()
+                    }
+                }
+            }
+        }
+
         stage('PNPM Bootstrap') {
             steps {
                 dir('kie-tools') {
