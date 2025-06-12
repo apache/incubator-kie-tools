@@ -39,6 +39,7 @@
     "@kie-tools/python-venv": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/sonataflow-image-common": "workspace:*",
+    "@kie/kogito-images-install-helper": "workspace:*",
     "cross-env": "^7.0.3",
     "replace-in-file": "^7.1.0",
     "rimraf": "^3.0.2",

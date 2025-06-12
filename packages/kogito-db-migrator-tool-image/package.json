@@ -32,11 +32,12 @@
   },
   "dependencies": {
     "@kie-tools/kogito-db-migrator-tool": "workspace:*",
-    "@kie-tools/python-venv": "workspace:*",
-    "@kie-tools/root-env": "workspace:*",
     "@kie-tools/sonataflow-image-common": "workspace:*"
   },
   "devDependencies": {
+    "@kie-tools/python-venv": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie/kogito-images-install-helper": "workspace:*",
     "cross-env": "^7.0.3",
     "replace-in-file": "^7.1.0",
     "rimraf": "^3.0.2",

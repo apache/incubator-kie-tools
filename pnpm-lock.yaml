@@ -7370,6 +7370,9 @@ importers:
       '@kie-tools/sonataflow-image-common':
         specifier: workspace:*
         version: link:../sonataflow-image-common
+      '@kie/kogito-images-install-helper':
+        specifier: workspace:*
+        version: link:../kogito-images-install-helper
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -7398,6 +7401,9 @@ importers:
       '@kie-tools/sonataflow-image-common':
         specifier: workspace:*
         version: link:../sonataflow-image-common
+      '@kie/kogito-images-install-helper':
+        specifier: workspace:*
+        version: link:../kogito-images-install-helper
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -7426,6 +7432,9 @@ importers:
       '@kie-tools/sonataflow-image-common':
         specifier: workspace:*
         version: link:../sonataflow-image-common
+      '@kie/kogito-images-install-helper':
+        specifier: workspace:*
+        version: link:../kogito-images-install-helper
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -7493,16 +7502,19 @@ importers:
       '@kie-tools/kogito-db-migrator-tool':
         specifier: workspace:*
         version: link:../kogito-db-migrator-tool
+      '@kie-tools/sonataflow-image-common':
+        specifier: workspace:*
+        version: link:../sonataflow-image-common
+    devDependencies:
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
-      '@kie-tools/sonataflow-image-common':
+      '@kie/kogito-images-install-helper':
         specifier: workspace:*
-        version: link:../sonataflow-image-common
-    devDependencies:
+        version: link:../kogito-images-install-helper
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -7515,6 +7527,24 @@ importers:
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6
+
+  packages/kogito-images-install-helper:
+    dependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
+      '@kie-tools/python-venv':
+        specifier: workspace:*
+        version: link:../python-venv
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      '@kie-tools/sonataflow-image-common':
+        specifier: workspace:*
+        version: link:../sonataflow-image-common
+      replace-in-file:
+        specifier: ^7.1.0
+        version: 7.1.0
 
   packages/kogito-jit-runner-image:
     dependencies:
@@ -7531,6 +7561,9 @@ importers:
       '@kie-tools/sonataflow-image-common':
         specifier: workspace:*
         version: link:../sonataflow-image-common
+      '@kie/kogito-images-install-helper':
+        specifier: workspace:*
+        version: link:../kogito-images-install-helper
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -7587,6 +7620,9 @@ importers:
       '@kie-tools/sonataflow-image-common':
         specifier: workspace:*
         version: link:../sonataflow-image-common
+      '@kie/kogito-images-install-helper':
+        specifier: workspace:*
+        version: link:../kogito-images-install-helper
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -7615,6 +7651,9 @@ importers:
       '@kie-tools/sonataflow-image-common':
         specifier: workspace:*
         version: link:../sonataflow-image-common
+      '@kie/kogito-images-install-helper':
+        specifier: workspace:*
+        version: link:../kogito-images-install-helper
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -11983,6 +12022,9 @@ importers:
       '@kie-tools/sonataflow-image-common':
         specifier: workspace:*
         version: link:../sonataflow-image-common
+      '@kie/kogito-images-install-helper':
+        specifier: workspace:*
+        version: link:../kogito-images-install-helper
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -12227,6 +12269,9 @@ importers:
       '@kie-tools/sonataflow-quarkus-devui':
         specifier: workspace:*
         version: link:../sonataflow-quarkus-devui
+      '@kie/kogito-images-install-helper':
+        specifier: workspace:*
+        version: link:../kogito-images-install-helper
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
