@@ -44,16 +44,8 @@ images:
     newTag: main
 # Patching the manager deployment file to add an env var with the operator namespace in
 patches:
-  - patch: |-
-      - op: add
-        path: /spec/template/spec/containers/0/env
-        value:
-          - name: POD_NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
+  - path: manager_env_patch.yaml
     target:
-      group: apps
       kind: Deployment
       name: controller-manager
       namespace: system
