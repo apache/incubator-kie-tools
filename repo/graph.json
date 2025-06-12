@@ -74,6 +74,7 @@
       },
       { "id": "@kie-tools-examples/process-accelerator" },
       { "id": "@kie-tools/maven-base" },
+      { "id": "@kie-tools-core/drools-and-kogito" },
       { "id": "@kie-tools-examples/process-business-calendar" },
       { "id": "@kie-tools/jbpm-quarkus-devui" },
       { "id": "@kie-tools/runtime-tools-process-dev-ui-webapp" },
@@ -690,6 +691,16 @@
       },
       {
         "source": "@kie-tools/maven-base",
+        "target": "@kie-tools-core/drools-and-kogito",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/drools-and-kogito",
+        "target": "@kie-tools-scripts/build-env",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools-core/drools-and-kogito",
         "target": "@kie-tools/root-env",
         "weight": 1
       },
@@ -1640,12 +1651,7 @@
       },
       {
         "source": "@kie-tools/dmn-marshaller-backend-compatibility-tester",
-        "target": "@kie-tools/root-env",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/dmn-marshaller-backend-compatibility-tester",
-        "target": "@kie-tools/tsconfig",
+        "target": "@kie-tools-core/drools-and-kogito",
         "weight": 1
       },
       {
@@ -2873,6 +2879,7 @@
     ["@kie-tools/dmn-runner", "packages/dmn-runner"],
     ["@kie-tools/dmn-testing-models", "packages/dmn-testing-models"],
     ["dmn-vscode-extension", "packages/dmn-vscode-extension"],
+    ["@kie-tools-core/drools-and-kogito", "packages/drools-and-kogito"],
     ["@kie-tools-core/editor", "packages/editor"],
     ["@kie-tools-core/envelope", "packages/envelope"],
     ["@kie-tools-core/envelope-bus", "packages/envelope-bus"],
