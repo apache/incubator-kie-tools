@@ -1,6 +1,34 @@
 {
   "lockfile_version": "1",
   "packages": {
+    "glibcLocales@2.40-66": {
+      "last_modified": "2025-05-16T20:19:48Z",
+      "resolved": "github:NixOS/nixpkgs/12a55407652e04dcf2309436eb06fef0d3713ef3#glibcLocales",
+      "source": "devbox-search",
+      "version": "2.40-66",
+      "systems": {
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/2hb8s2i45cx30qqhayzzsfbg12k8d8fs-glibc-locales-2.40-66",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/2hb8s2i45cx30qqhayzzsfbg12k8d8fs-glibc-locales-2.40-66"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/d91i3lzpkii5kabfx1kxvl3banc47min-glibc-locales-2.40-66",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/d91i3lzpkii5kabfx1kxvl3banc47min-glibc-locales-2.40-66"
+        }
+      }
+    },
     "gnumake@4.4.1": {
       "last_modified": "2024-10-13T23:44:06Z",
       "resolved": "github:NixOS/nixpkgs/d4f247e89f6e10120f911e2e2d2254a050d0f732#gnumake",
@@ -221,10 +249,44 @@
       "source": "devbox-search",
       "version": "17.0.9",
       "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/6dfds89qqlzg4rdp9bf3nlpisx05lmcj-temurin-bin-17.0.9",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/6dfds89qqlzg4rdp9bf3nlpisx05lmcj-temurin-bin-17.0.9"
+        },
         "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/xbkf0hfcaw0jbqf7pm70xwinn655pz50-temurin-bin-17.0.9",
+              "default": true
+            }
+          ],
           "store_path": "/nix/store/xbkf0hfcaw0jbqf7pm70xwinn655pz50-temurin-bin-17.0.9"
         },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/rxi440bp4g1njffgrbl5w1209hclawxn-temurin-bin-17.0.9",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/rxi440bp4g1njffgrbl5w1209hclawxn-temurin-bin-17.0.9"
+        },
         "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/55gj16bms465y8giaf5jch2bbs12yrbf-temurin-bin-17.0.9",
+              "default": true
+            }
+          ],
           "store_path": "/nix/store/55gj16bms465y8giaf5jch2bbs12yrbf-temurin-bin-17.0.9"
         }
       }
