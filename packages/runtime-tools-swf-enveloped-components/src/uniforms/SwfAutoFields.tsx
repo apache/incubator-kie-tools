@@ -17,6 +17,26 @@
  * under the License.
  */
 
-export * from "./DmnAutoFieldProvider";
-export * from "./DmnAutoFieldValue";
-export * from "./SwfAutoFieldValue";
+// import { ComponentType, createElement } from "react";
+// import { useForm } from "uniforms";
+//
+// export type SwfAutoFieldsProps = {
+//   autoField?: ComponentType<{ name: string }>;
+//   element?: ComponentType | string;
+//   fields?: string[];
+//   omitFields?: string[];
+// };
+//
+// function SwfAutoFields({ autoField = AutoField, element = "div", fields, omitFields = [], ...props }: SwfAutoFieldsProps) {
+//   const { schema } = useForm();
+//
+//   return createElement(
+//     element!,
+//     props,
+//     (fields ?? schema.getSubfields())
+//       .filter((field) => !omitFields!.includes(field))
+//       .map((field) => createElement(autoField!, { key: field, name: field }))
+//   );
+// }
+//
+// export default AutoFields;

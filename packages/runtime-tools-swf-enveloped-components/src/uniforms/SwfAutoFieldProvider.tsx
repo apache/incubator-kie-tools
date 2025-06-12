@@ -17,6 +17,18 @@
  * under the License.
  */
 
-export * from "./DmnAutoFieldProvider";
-export * from "./DmnAutoFieldValue";
-export * from "./SwfAutoFieldValue";
+import * as React from "react";
+import { AutoField, AutoFields } from "@kie-tools/uniforms-patternfly/dist/esm";
+import { ComponentDetector } from "uniforms/esm";
+
+interface SwfAutoFieldValue {
+  value: ComponentDetector;
+}
+
+export function SwfAutoFieldProvider(props: React.PropsWithChildren<SwfAutoFieldValue>) {
+  return (
+    <AutoField.componentDetectorContext.Provider value={props.value}>
+      {props.children ? props.children : <AutoFields />}
+    </AutoField.componentDetectorContext.Provider>
+  );
+}
