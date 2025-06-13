@@ -25,6 +25,9 @@ envs:
   - name: "KOGITO_DATA_INDEX_QUARKUS_PROFILE"
     value: "kafka-events-support"
     description: "Allows to change the event connection type. The possible values are :`kafka-events-support`(default) or `http-events-support`"
+  - name: "KOGITO_DATA_INDEX_UI_PATH"
+    value: "/home/kogito/ui/"
+    description: "Path where the Data Index WebApp UI is served"
 
 execute:
   - script: configure

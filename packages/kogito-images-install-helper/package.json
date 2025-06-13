@@ -1,0 +1,33 @@
+{
+  "private": true,
+  "name": "@kie/kogito-images-install-helper",
+  "version": "0.0.0",
+  "description": "Install helper for Kogito images",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "scripts": {},
+  "dependencies": {
+    "@kie-tools/maven-base": "workspace:*",
+    "@kie-tools/python-venv": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/sonataflow-image-common": "workspace:*",
+    "replace-in-file": "^7.1.0"
+  },
+  "devDependencies": {},
+  "kieTools": {
+    "requiredPreinstalledCliCommands": [
+      "python3"
+    ]
+  }
+}

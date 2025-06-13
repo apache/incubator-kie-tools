@@ -21,7 +21,7 @@
     "build:prod:linux": "pnpm build",
     "build:prod:win32:darwin": "echo \"Build skipped on Windows and MacOS\"",
     "copy-assets": "run-script-os",
-    "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/sonataflow-image-common/resources build && cp -R resources/* build && mkdir -p build/modules/kogito-db-migrator-tool/postgresql/quarkus-app && cp -R ./node_modules/@kie-tools/kogito-db-migrator-tool/target/quarkus-app/* build/modules/kogito-db-migrator-tool/postgresql/quarkus-app",
+    "copy-assets:linux:darwin": "rimraf build && cp -R ./node_modules/@kie-tools/sonataflow-image-common/dist build && cp -R resources/* build && mkdir -p build/modules/kogito-db-migrator-tool/postgresql/quarkus-app && cp -R ./node_modules/@kie-tools/kogito-db-migrator-tool/target/quarkus-app/* build/modules/kogito-db-migrator-tool/postgresql/quarkus-app",
     "format": "prettier --write . --ignore-path=../../.prettierignore --ignore-path=../../.gitignore",
     "image:build": "run-script-os",
     "image:build:linux": "pnpm setup:env make -C ./build build",
@@ -32,11 +32,12 @@
   },
   "dependencies": {
     "@kie-tools/kogito-db-migrator-tool": "workspace:*",
-    "@kie-tools/python-venv": "workspace:*",
-    "@kie-tools/root-env": "workspace:*",
     "@kie-tools/sonataflow-image-common": "workspace:*"
   },
   "devDependencies": {
+    "@kie-tools/python-venv": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie/kogito-images-install-helper": "workspace:*",
     "cross-env": "^7.0.3",
     "replace-in-file": "^7.1.0",
     "rimraf": "^3.0.2",

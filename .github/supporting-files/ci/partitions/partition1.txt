@@ -10,6 +10,3 @@ chrome-extension-serverless-workflow-editor
 vscode-extension-dashbuilder-editor
 yard-vscode-extension
 swf-vscode-extension
-@kie-tools/sonataflow-management-console-image
-@kie/kogito-jit-runner-image
-@kie/kogito-jobs-service-allinone-image

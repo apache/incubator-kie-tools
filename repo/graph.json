@@ -145,7 +145,6 @@
       { "id": "@kie-tools-core/i18n" },
       { "id": "@kie-tools/dashbuilder-viewer-image" },
       { "id": "@kie-tools/dashbuilder-viewer-image-env" },
-      { "id": "@kie-tools/data-index-webapp" },
       { "id": "@kie-tools/dev-deployment-base-image" },
       { "id": "@kie-tools/dev-deployment-upload-service" },
       { "id": "@kie-tools/dev-deployment-dmn-form-webapp" },
@@ -198,11 +197,12 @@
       { "id": "@kie/kogito-jobs-service-ephemeral-image" },
       { "id": "@kie/kogito-jobs-service-postgresql-image" },
       { "id": "@kie/kogito-base-builder-image" },
+      { "id": "@kie/kogito-images-install-helper" },
       { "id": "@kie-tools/sonataflow-image-common" },
-      { "id": "@kie-tools/python-venv" },
+      { "id": "@kie-tools/kogito-data-index-webapp" },
       { "id": "@kie-tools/kogito-db-migrator-tool" },
+      { "id": "@kie-tools/python-venv" },
       { "id": "@kie/kogito-jit-runner-image" },
-      { "id": "@kie/kogito-jobs-service-allinone-image" },
       { "id": "@kie-tools/unitables" },
       { "id": "pmml-vscode-extension" },
       { "id": "@kie-tools/runtime-tools-components" },
@@ -1500,11 +1500,6 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/data-index-webapp",
-        "target": "@kie-tools-core/webpack-base",
-        "weight": 1
-      },
-      {
         "source": "@kie-tools/dev-deployment-base-image",
         "target": "@kie-tools/maven-base",
         "weight": 1
@@ -2081,12 +2076,7 @@
       },
       {
         "source": "@kie-tools/kogito-db-migrator-tool-image",
-        "target": "@kie-tools/sonataflow-image-common",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/sonataflow-builder-image",
-        "target": "@kie-tools/maven-base",
+        "target": "@kie/kogito-images-install-helper",
         "weight": 1
       },
       {
@@ -2096,17 +2086,12 @@
       },
       {
         "source": "@kie-tools/sonataflow-builder-image",
-        "target": "@kie-tools/sonataflow-image-common",
+        "target": "@kie/kogito-images-install-helper",
         "weight": 1
       },
       {
         "source": "@kie-tools/sonataflow-devmode-image",
         "target": "@kie-tools/maven-m2-repo-via-http-image",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/sonataflow-devmode-image",
-        "target": "@kie-tools/sonataflow-image-common",
         "weight": 1
       },
       {
@@ -2115,48 +2100,48 @@
         "weight": 1
       },
       {
-        "source": "@kie/kogito-data-index-ephemeral-image",
-        "target": "@kie-tools/maven-base",
+        "source": "@kie-tools/sonataflow-devmode-image",
+        "target": "@kie/kogito-images-install-helper",
         "weight": 1
       },
       {
         "source": "@kie/kogito-data-index-ephemeral-image",
-        "target": "@kie-tools/sonataflow-image-common",
+        "target": "@kie/kogito-images-install-helper",
         "weight": 1
       },
       {
         "source": "@kie/kogito-data-index-postgresql-image",
-        "target": "@kie-tools/maven-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie/kogito-data-index-postgresql-image",
-        "target": "@kie-tools/sonataflow-image-common",
+        "target": "@kie/kogito-images-install-helper",
         "weight": 1
       },
       {
         "source": "@kie/kogito-jobs-service-ephemeral-image",
-        "target": "@kie-tools/maven-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie/kogito-jobs-service-ephemeral-image",
-        "target": "@kie-tools/sonataflow-image-common",
+        "target": "@kie/kogito-images-install-helper",
         "weight": 1
       },
       {
         "source": "@kie/kogito-jobs-service-postgresql-image",
-        "target": "@kie-tools/maven-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie/kogito-jobs-service-postgresql-image",
-        "target": "@kie-tools/sonataflow-image-common",
+        "target": "@kie/kogito-images-install-helper",
         "weight": 1
       },
       {
         "source": "@kie/kogito-base-builder-image",
+        "target": "@kie/kogito-images-install-helper",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-images-install-helper",
+        "target": "@kie-tools/maven-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie/kogito-images-install-helper",
         "target": "@kie-tools/sonataflow-image-common",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-image-common",
+        "target": "@kie-tools/kogito-data-index-webapp",
         "weight": 1
       },
       {
@@ -2165,8 +2150,8 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/sonataflow-image-common",
-        "target": "@kie-tools/root-env",
+        "source": "@kie-tools/kogito-data-index-webapp",
+        "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
       {
@@ -2176,22 +2161,7 @@
       },
       {
         "source": "@kie/kogito-jit-runner-image",
-        "target": "@kie-tools/maven-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie/kogito-jit-runner-image",
-        "target": "@kie-tools/sonataflow-image-common",
-        "weight": 1
-      },
-      {
-        "source": "@kie/kogito-jobs-service-allinone-image",
-        "target": "@kie-tools/maven-base",
-        "weight": 1
-      },
-      {
-        "source": "@kie/kogito-jobs-service-allinone-image",
-        "target": "@kie-tools/sonataflow-image-common",
+        "target": "@kie/kogito-images-install-helper",
         "weight": 1
       },
       {
@@ -2862,7 +2832,6 @@
     ["@kie-tools/dashbuilder-viewer-deployment-webapp", "packages/dashbuilder-viewer-deployment-webapp"],
     ["@kie-tools/dashbuilder-viewer-image", "packages/dashbuilder-viewer-image"],
     ["@kie-tools/dashbuilder-viewer-image-env", "packages/dashbuilder-viewer-image-env"],
-    ["@kie-tools/data-index-webapp", "packages/data-index-webapp"],
     ["@kie-tools/dev-deployment-base-image", "packages/dev-deployment-base-image"],
     ["@kie-tools/dev-deployment-dmn-form-webapp", "packages/dev-deployment-dmn-form-webapp"],
     ["@kie-tools/dev-deployment-dmn-form-webapp-image", "packages/dev-deployment-dmn-form-webapp-image"],
@@ -2920,10 +2889,11 @@
     ["@kie/kogito-base-builder-image", "packages/kogito-base-builder-image"],
     ["@kie/kogito-data-index-ephemeral-image", "packages/kogito-data-index-ephemeral-image"],
     ["@kie/kogito-data-index-postgresql-image", "packages/kogito-data-index-postgresql-image"],
+    ["@kie-tools/kogito-data-index-webapp", "packages/kogito-data-index-webapp"],
     ["@kie-tools/kogito-db-migrator-tool", "packages/kogito-db-migrator-tool"],
     ["@kie-tools/kogito-db-migrator-tool-image", "packages/kogito-db-migrator-tool-image"],
+    ["@kie/kogito-images-install-helper", "packages/kogito-images-install-helper"],
     ["@kie/kogito-jit-runner-image", "packages/kogito-jit-runner-image"],
-    ["@kie/kogito-jobs-service-allinone-image", "packages/kogito-jobs-service-allinone-image"],
     ["@kie/kogito-jobs-service-ephemeral-image", "packages/kogito-jobs-service-ephemeral-image"],
     ["@kie/kogito-jobs-service-postgresql-image", "packages/kogito-jobs-service-postgresql-image"],
     ["@kie-tools/kogito-management-console", "packages/kogito-management-console"],
