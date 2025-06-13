@@ -41,7 +41,7 @@ pipeline {
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
         PNPM_FILTER_STRING = '-F sonataflow-quarkus-devui... -F jbpm-quarkus-devui...'
-        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml -Dmaven.repo.local=${WORKSPACE}/.maven"
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml -Dmaven.repo.local=${WORKSPACE}/.maven -Papache-release"
     }
 
     stages {
