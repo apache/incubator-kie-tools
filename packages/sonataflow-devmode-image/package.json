@@ -37,8 +37,8 @@
     "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env sonataflowDevModeImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env sonataflowDevModeImage.account) KOGITO_IMAGE_NAME=$(build-env sonataflowDevModeImage.name) KOGITO_IMAGE_TAG=$(build-env sonataflowDevModeImage.buildTag) QUARKUS_PLATFORM_GROUPID=$(build-env kogitoImagesCekitModules.quarkusGroupId) QUARKUS_PLATFORM_VERSION=$(build-env versions.quarkus) KOGITO_VERSION=$(build-env versions.kogito) SONATAFLOW_QUARKUS_DEVUI_VERSION=$(build-env sonataflowDevModeImage.sonataflowQuarkusDevUiVersion)"
   },
   "dependencies": {
-    "@kie-tools/sonataflow-quarkus-devui": "workspace:*",
-    "@kie-tools/sonataflow-image-common": "workspace:*"
+    "@kie-tools/sonataflow-image-common": "workspace:*",
+    "@kie-tools/sonataflow-quarkus-devui": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools/image-builder": "workspace:*",
