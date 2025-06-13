@@ -94,16 +94,6 @@ pipeline {
             }
         }
 
-        stage('PNPM Bootstrap') {
-            steps {
-                dir('kie-tools') {
-                    script {
-                        buildUtils.pnpmBootstrap(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
-                    }
-                }
-            }
-        }
-
         stage('Setup signing key') {
             when {
                 expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
@@ -111,6 +101,16 @@ pipeline {
             steps {
                 script {
                     releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
+                }
+            }
+        }
+
+        stage('PNPM Bootstrap') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmBootstrap(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
+                    }
                 }
             }
         }
