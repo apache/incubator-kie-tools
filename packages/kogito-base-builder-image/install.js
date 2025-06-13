@@ -19,14 +19,16 @@
 
 const path = require("path");
 // import the function you exported
-const { runSharedInstall } = require("@kie/kogito-images-install-helper");
+const { runKogitoImageInstall } = require("@kie/kogito-images-install-helper");
 
 // grab your package's env object
 const { env } = require("./env");
+const { buildTag, registry, account, name: imageName } = env.kogitoBaseBuilderImage;
 
-runSharedInstall({
+runKogitoImageInstall({
   finalImageName: "kogito-base-builder",
-  imageEnv: env.kogitoBaseBuilderImage,
+  imageTag: { buildTag, registry, account, name: imageName },
   resourceDir: path.resolve(__dirname, "./resources"),
   requiresMvn: false,
+  imagePkgDir: __dirname,
 });

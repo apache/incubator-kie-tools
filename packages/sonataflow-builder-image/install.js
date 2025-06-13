@@ -21,14 +21,16 @@ const fs = require("fs");
 const path = require("path");
 const sonataflowImageCommonDir = path.dirname(require.resolve("@kie-tools/sonataflow-image-common/package.json"));
 // import the function you exported
-const { runSharedInstall } = require("@kie/kogito-images-install-helper");
+const { runKogitoImageInstall } = require("@kie/kogito-images-install-helper");
 
 // grab your package's env object
 const { env } = require("./env");
 
-runSharedInstall({
+const { buildTag, registry, account, name: imageName } = env.sonataflowBuilderImage;
+
+runKogitoImageInstall({
   finalImageName: "sonataflow-builder",
-  imageEnv: env.sonataflowBuilderImage,
+  imageTag: { buildTag, registry, account, name: imageName },
   resourceDir: path.resolve(__dirname, "./resources"),
   requiresMvn: false,
 });

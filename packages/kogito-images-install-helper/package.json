@@ -2,7 +2,7 @@
   "private": true,
   "name": "@kie/kogito-images-install-helper",
   "version": "0.0.0",
-  "description": "Shared install helper for Kogito images",
+  "description": "Install helper for Kogito images",
   "license": "Apache-2.0",
   "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {

@@ -19,15 +19,18 @@
 
 const path = require("path");
 // import the function you exported
-const { runSharedInstall } = require("@kie/kogito-images-install-helper");
+const { runKogitoImageInstall } = require("@kie/kogito-images-install-helper");
 
 // grab your package's env object
 const { env } = require("./env");
 
-runSharedInstall({
+const { buildTag, registry, account, name: imageName } = env.kogitoDataIndexEphemeralImage;
+
+runKogitoImageInstall({
   finalImageName: "kogito-data-index-ephemeral",
-  imageEnv: env.kogitoDataIndexEphemeralImage,
+  imageTag: { buildTag, registry, account, name: imageName },
   resourceDir: path.resolve(__dirname, "./resources"),
+  imagePkgDir: __dirname,
 });
 
 /// Maven app

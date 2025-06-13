@@ -23,36 +23,38 @@ const path = require("path");
 const replaceInFile = require("replace-in-file");
 const { setupMavenConfigFile, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
 
-// Constants for dependent packages
-const PYTHON_VENV_PKG = "@kie-tools/python-venv";
-const IMAGE_COMMON_PKG = "@kie-tools/sonataflow-image-common";
-
 /**
- * Shared install routine for bumping versions, configuring Maven and updating YAMLs/features.
- * @param {{ imageEnv: { buildTag:string, registry:string, account:string, name:string }, resourceDir?: string, finalImageName: string, requiresMvn: boolean }} options
+ * Install routine for Kogito images. Helps with bumping versions, configuring Maven, and updating YAMLs/features.
+ * @param {{ imageTag: { buildTag:string, registry:string, account:string, name:string }, resourceDir?: string, finalImageName: string, requiresMvn: boolean, imagePkgDir: string }} options
  */
-function runSharedInstall({ imageEnv, resourceDir = "./resources", finalImageName, requiresMvn = true }) {
+function runKogitoImageInstall({
+  imageTag,
+  resourceDir = "./resources",
+  finalImageName,
+  requiresMvn = true,
+  imagePkgDir,
+}) {
   if (!finalImageName) {
     throw new Error("'finalImageName' parameter is required");
   }
-  if (!imageEnv) {
-    throw new Error("'imageEnv' parameter is required");
+  if (!imageTag) {
+    throw new Error("'imageTag' parameter is required");
   }
 
   // 1) Maven revision and tail
   if (requiresMvn) {
-    const { version } = require(path.resolve(__dirname, "package.json"));
+    const consumerVersion = require(path.join(imagePkgDir, "package.json")).version;
     setupMavenConfigFile(
       `
-  -Drevision=${version}
-  -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
+  -Drevision=${consumerVersion}
+  -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies(path.resolve(imagePkgDir))}
   `
     );
   }
 
   // 2) Activate Python venv and bump via versions_manager.py
-  const pythonVenvDir = path.dirname(require.resolve(`${PYTHON_VENV_PKG}/package.json`));
-  const imageCommonDir = path.dirname(require.resolve(`${IMAGE_COMMON_PKG}/package.json`));
+  const pythonVenvDir = path.dirname(require.resolve("@kie-tools/python-venv/package.json"));
+  const imageCommonDir = path.dirname(require.resolve("@kie-tools/sonataflow-image-common/package.json"));
 
   const activateCmd =
     process.platform === "win32"
@@ -62,27 +64,27 @@ function runSharedInstall({ imageEnv, resourceDir = "./resources", finalImageNam
   execSync(
     `${activateCmd} && \
  python3 ${imageCommonDir}/resources/scripts/versions_manager.py \
-   --bump-to ${imageEnv.buildTag} --source-folder ${resourceDir}`,
+   --bump-to ${imageTag.buildTag} --source-folder ${resourceDir}`,
     { stdio: "inherit" }
   );
 
   // 3) Find, replace inside, and rename the *-image.yaml
   const files = fs.readdirSync(resourceDir);
   const yamlFile =
-    files.find((f) => f.endsWith(`-${imageEnv.name}.yaml`)) || files.find((f) => f.endsWith("-image.yaml"));
+    files.find((f) => f.endsWith(`-${imageTag.name}.yaml`)) || files.find((f) => f.endsWith("-image.yaml"));
   if (!yamlFile) {
     throw new Error(`No *-image.yaml found in ${resourceDir}`);
   }
   const yamlPath = path.join(resourceDir, yamlFile);
   let content = fs.readFileSync(yamlPath, "utf8");
 
-  const imageUrl = `${imageEnv.registry}/${imageEnv.account}/${imageEnv.name}`;
+  const imageUrl = `${imageTag.registry}/${imageTag.account}/${imageTag.name}`;
   // Use the provided finalImageName to match and replace
   const regex = new RegExp(`(?<=").*${finalImageName}.*(?=")`, "g");
   content = content.replace(regex, imageUrl);
 
   fs.writeFileSync(yamlPath, content);
-  fs.renameSync(yamlPath, path.join(resourceDir, `${imageEnv.name}-image.yaml`));
+  fs.renameSync(yamlPath, path.join(resourceDir, `${imageTag.name}-image.yaml`));
 
   // 4) Update any .feature files with the new image URL tag
   replaceInFile.sync({
@@ -92,4 +94,4 @@ function runSharedInstall({ imageEnv, resourceDir = "./resources", finalImageNam
   });
 }
 
-module.exports = { runSharedInstall };
+module.exports = { runKogitoImageInstall };
