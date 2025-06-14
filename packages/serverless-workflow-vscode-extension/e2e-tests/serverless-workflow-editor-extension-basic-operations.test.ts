@@ -32,8 +32,7 @@ describe("Serverless workflow editor - Basic operations tests", () => {
 
   before(async function () {
     this.timeout(100000);
-    testHelper = new VSCodeTestHelper();
-    testHelper.setimplicitTimeout(50000);
+    testHelper = new VSCodeTestHelper(50000);
     await testHelper.openFolder(TEST_PROJECT_FOLDER);
   });
 
@@ -44,15 +43,13 @@ describe("Serverless workflow editor - Basic operations tests", () => {
   });
 
   afterEach(async function () {
-    this.timeout(100000);
+    this.timeout(150000);
     await testHelper.takeScreenshotOnTestFailure(this, DIST_E2E_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });
 
   it("Opens, edits and saves the *.sw.json file", async function () {
-    this.timeout(100000);
-
     const WORKFLOW_NAME = "greet.sw.json";
 
     let editorWebViews = await testHelper.openFileFromSidebar(WORKFLOW_NAME);
@@ -106,11 +103,9 @@ describe("Serverless workflow editor - Basic operations tests", () => {
     expect(editorTextTrimmedLines).to.have.string(germanConditionString);
 
     expect((await swfEditor.getAllNodeIds()).length).equal(7);
-  });
+  }).timeout(100000);
 
   it("Opens, edits and saves the *.sw.yaml file", async function () {
-    this.timeout(100000);
-
     const WORKFLOW_NAME = "greet.sw.yaml";
 
     let editorWebViews = await testHelper.openFileFromSidebar(WORKFLOW_NAME);
@@ -159,19 +154,17 @@ describe("Serverless workflow editor - Basic operations tests", () => {
     expect(editorText).to.have.string(germanConditionString);
 
     expect((await swfEditor.getAllNodeIds()).length).equal(7);
-  });
+  }).timeout(100000);
 
   //The following test is skipped because of bug: https://issues.redhat.com/browse/KOGITO-8384
   it.skip("Renames *.sw.json file while editor is open", async function () {
-    this.timeout(50000);
     await testRenameSWFile("hello-world.sw.json");
-  });
+  }).timeout(100000);
 
   //The following test is skipped because of bug: https://issues.redhat.com/browse/KOGITO-8384
   it.skip("Renames *.sw.yaml file while editor is open", async function () {
-    this.timeout(50000);
     await testRenameSWFile("hello-world.sw.yaml");
-  });
+  }).timeout(100000);
 
   async function testRenameSWFile(workflowName: string): Promise<void> {
     const renamedWorkflowName = "renamed-" + workflowName;

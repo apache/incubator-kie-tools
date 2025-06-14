@@ -91,10 +91,13 @@ export class VSCodeTestHelper {
    */
   private readonly EDITOR_LOADING_TIMEOUT: number = 60000;
 
-  constructor() {
+  constructor(implicitTimeout?: number) {
     this.workbench = new Workbench() as Workbench;
     this.browser = VSBrowser.instance;
     this.driver = this.browser.driver;
+    if (implicitTimeout) {
+      this.setimplicitTimeout(implicitTimeout);
+    }
   }
 
   /**
