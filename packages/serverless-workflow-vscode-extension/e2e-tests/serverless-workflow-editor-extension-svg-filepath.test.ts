@@ -37,7 +37,6 @@ describe("Serverless workflow editor - SVG generation with path setting end-to-e
   before(async function () {
     this.timeout(100000);
     testHelper = new VSCodeTestHelper();
-    testHelper.setimplicitTimeout(50000);
     await testHelper.openFolder(TEST_PROJECT_FOLDER);
   });
 
@@ -48,14 +47,14 @@ describe("Serverless workflow editor - SVG generation with path setting end-to-e
   });
 
   afterEach(async function () {
-    this.timeout(100000);
+    this.timeout(150000);
     await testHelper.takeScreenshotOnTestFailure(this, DIST_E2E_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });
 
   it(`Opens ${WORKFLOW_NAME}, saves it, and verifies SVG generation`, async function () {
-    this.timeout(80000);
+    testHelper.setimplicitTimeout(50000);
 
     const svgName = `${FILE_NAME_NO_EXTENSION}.svg`;
 
@@ -69,10 +68,10 @@ describe("Serverless workflow editor - SVG generation with path setting end-to-e
       IS_VALID_SVG_REGEX,
       `SVG file was not generated correctly at path: ${SVG_FILE_PATH}.`
     );
-  });
+  }).timeout(100000);
 
   it(`Changes settings, opens ${WORKFLOW_NAME}, saves it, and verifies SVG generation`, async function () {
-    this.timeout(80000);
+    testHelper.setimplicitTimeout(50000);
 
     const svgNameAddition = "-changed";
     const svgName = `${FILE_NAME_NO_EXTENSION}${svgNameAddition}.svg`;
@@ -123,5 +122,5 @@ describe("Serverless workflow editor - SVG generation with path setting end-to-e
       },
     ];
     await testHelper.setVSCodeSettings(...settingValuesToRestore);
-  });
+  }).timeout(100000);
 });

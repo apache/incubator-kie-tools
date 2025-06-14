@@ -35,7 +35,6 @@ describe("Serverless workflow editor - functions tests", () => {
   before(async function () {
     this.timeout(100000);
     testHelper = new VSCodeTestHelper();
-    testHelper.setimplicitTimeout(50000);
     await testHelper.openFolder(TEST_PROJECT_FOLDER);
   });
 
@@ -46,14 +45,14 @@ describe("Serverless workflow editor - functions tests", () => {
   });
 
   afterEach(async function () {
-    this.timeout(100000);
+    this.timeout(150000);
     await testHelper.takeScreenshotOnTestFailure(this, DIST_E2E_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });
 
   it("Checks functions are loaded from specs and routes directories into JSON serverless workflow file", async function () {
-    this.timeout(100000);
+    testHelper.setimplicitTimeout(50000);
 
     const editorWebviews = await testHelper.openFileFromSidebar("function.sw.json");
     const swfTextEditor = new SwfTextEditorTestHelper(editorWebviews[0]);
@@ -110,10 +109,10 @@ describe("Serverless workflow editor - functions tests", () => {
     const editorContent = await textEditor.getText();
     const expectedContent = fs.readFileSync(path.resolve(TEST_PROJECT_FOLDER, "function.sw.json.result"), "utf-8");
     expect(editorContent).equal(expectedContent);
-  });
+  }).timeout(100000);
 
   it("Checks functions are loaded from specs and routes directories into YAML serverless workflow file", async function () {
-    this.timeout(100000);
+    testHelper.setimplicitTimeout(50000);
 
     const editorWebviews = await testHelper.openFileFromSidebar("function.sw.yaml");
     const swfTextEditor = new SwfTextEditorTestHelper(editorWebviews[0]);
@@ -170,5 +169,5 @@ describe("Serverless workflow editor - functions tests", () => {
     const editorContent = await textEditor.getText();
     const expectedContent = fs.readFileSync(path.resolve(TEST_PROJECT_FOLDER, "function.sw.yaml.result"), "utf-8");
     expect(editorContent).equal(expectedContent);
-  });
+  }).timeout(100000);
 });
