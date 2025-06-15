@@ -31,7 +31,7 @@ describe("Serverless workflow editor - Diagram navigation tests", () => {
 
   before(async function () {
     this.timeout(100000);
-    testHelper = new VSCodeTestHelper(50000);
+    testHelper = new VSCodeTestHelper();
     await testHelper.openFolder(TEST_PROJECT_FOLDER);
   });
 
@@ -39,6 +39,7 @@ describe("Serverless workflow editor - Diagram navigation tests", () => {
     this.timeout(100000);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
+    testHelper.setimplicitTimeout(50000);
   });
 
   afterEach(async function () {
