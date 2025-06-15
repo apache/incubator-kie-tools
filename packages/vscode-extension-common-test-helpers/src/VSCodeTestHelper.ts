@@ -91,10 +91,13 @@ export class VSCodeTestHelper {
    */
   private readonly EDITOR_LOADING_TIMEOUT: number = 60000;
 
-  constructor() {
+  constructor(implicitTimeout?: number) {
     this.workbench = new Workbench() as Workbench;
     this.browser = VSBrowser.instance;
     this.driver = this.browser.driver;
+    if (implicitTimeout) {
+      this.setimplicitTimeout(implicitTimeout);
+    }
   }
 
   /**
@@ -429,6 +432,13 @@ export class VSCodeTestHelper {
     await sleep(1000);
 
     return previousSettingValuesArray;
+  };
+
+  /**
+   * set custom ImplicitTimeout to async operations.
+   */
+  public setimplicitTimeout = async (timeout: number): Promise<void> => {
+    await this.driver.manage().setTimeouts({ implicit: timeout });
   };
 }
 

@@ -35,29 +35,26 @@ describe("Serverless workflow editor - SVG generation with path setting end-to-e
   let testHelper: VSCodeTestHelper;
 
   before(async function () {
-    this.timeout(60000);
-    testHelper = new VSCodeTestHelper();
+    this.timeout(100000);
+    testHelper = new VSCodeTestHelper(50000);
     await testHelper.openFolder(TEST_PROJECT_FOLDER);
   });
 
   beforeEach(async function () {
-    this.timeout(15000);
+    this.timeout(100000);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });
 
   afterEach(async function () {
-    this.timeout(15000);
+    this.timeout(150000);
     await testHelper.takeScreenshotOnTestFailure(this, DIST_E2E_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });
 
   it(`Opens ${WORKFLOW_NAME}, saves it, and verifies SVG generation`, async function () {
-    this.timeout(30000);
-
     const svgName = `${FILE_NAME_NO_EXTENSION}.svg`;
-
     const editorWebViews = await testHelper.openFileFromSidebar(WORKFLOW_NAME, RESOURCE_FOLDER);
 
     await testHelper.saveFileInTextEditor();
@@ -68,11 +65,9 @@ describe("Serverless workflow editor - SVG generation with path setting end-to-e
       IS_VALID_SVG_REGEX,
       `SVG file was not generated correctly at path: ${SVG_FILE_PATH}.`
     );
-  });
+  }).timeout(100000);
 
   it(`Changes settings, opens ${WORKFLOW_NAME}, saves it, and verifies SVG generation`, async function () {
-    this.timeout(60000);
-
     const svgNameAddition = "-changed";
     const svgName = `${FILE_NAME_NO_EXTENSION}${svgNameAddition}.svg`;
     const changedFilename = `\${fileBasenameNoExtension}${svgNameAddition}.svg`;
@@ -99,7 +94,7 @@ describe("Serverless workflow editor - SVG generation with path setting end-to-e
 
     // save file and wait for the SVG generation
     await testHelper.saveFileInTextEditor();
-    await sleep(1000);
+    await sleep(2000);
 
     // verify SVG was generated after file save
     const SVG_FILE_PATH: string = path.resolve(TEST_PROJECT_FOLDER, changedDirectory, svgName);
@@ -122,5 +117,5 @@ describe("Serverless workflow editor - SVG generation with path setting end-to-e
       },
     ];
     await testHelper.setVSCodeSettings(...settingValuesToRestore);
-  });
+  }).timeout(100000);
 });

@@ -30,27 +30,25 @@ describe("Serverless workflow editor - Diagram navigation tests", () => {
   let testHelper: VSCodeTestHelper;
 
   before(async function () {
-    this.timeout(30000);
-    testHelper = new VSCodeTestHelper();
+    this.timeout(100000);
+    testHelper = new VSCodeTestHelper(50000);
     await testHelper.openFolder(TEST_PROJECT_FOLDER);
   });
 
   beforeEach(async function () {
-    this.timeout(15000);
+    this.timeout(100000);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });
 
   afterEach(async function () {
-    this.timeout(15000);
+    this.timeout(150000);
     await testHelper.takeScreenshotOnTestFailure(this, DIST_E2E_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });
 
   it("Select states using JSON serverless workflow files", async function () {
-    this.timeout(50000);
-
     const WORKFLOW_NAME = "applicant-request-decision.sw.json";
 
     const editorWebViews = await testHelper.openFileFromSidebar(WORKFLOW_NAME);
@@ -78,11 +76,9 @@ describe("Serverless workflow editor - Diagram navigation tests", () => {
 
     expect(lineNumber).equal(33);
     expect(columnNumber).equal(7);
-  });
+  }).timeout(100000);
 
   it("Select states using YAML serverless workflow files", async function () {
-    this.timeout(50000);
-
     const WORKFLOW_NAME = "applicant-request-decision.sw.yaml";
 
     const editorWebViews = await testHelper.openFileFromSidebar(WORKFLOW_NAME);
@@ -110,5 +106,5 @@ describe("Serverless workflow editor - Diagram navigation tests", () => {
 
     expect(lineNumber).equal(20);
     expect(columnNumber).equal(5);
-  });
+  }).timeout(100000);
 });

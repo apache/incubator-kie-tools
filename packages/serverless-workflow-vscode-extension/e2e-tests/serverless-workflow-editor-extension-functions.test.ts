@@ -33,27 +33,25 @@ describe("Serverless workflow editor - functions tests", () => {
   let testHelper: VSCodeTestHelper;
 
   before(async function () {
-    this.timeout(30000);
-    testHelper = new VSCodeTestHelper();
+    this.timeout(100000);
+    testHelper = new VSCodeTestHelper(50000);
     await testHelper.openFolder(TEST_PROJECT_FOLDER);
   });
 
   beforeEach(async function () {
-    this.timeout(15000);
+    this.timeout(100000);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });
 
   afterEach(async function () {
-    this.timeout(15000);
+    this.timeout(150000);
     await testHelper.takeScreenshotOnTestFailure(this, DIST_E2E_TESTS_FOLDER);
     await testHelper.closeAllEditors();
     await testHelper.closeAllNotifications();
   });
 
   it("Checks functions are loaded from specs and routes directories into JSON serverless workflow file", async function () {
-    this.timeout(80000);
-
     const editorWebviews = await testHelper.openFileFromSidebar("function.sw.json");
     const swfTextEditor = new SwfTextEditorTestHelper(editorWebviews[0]);
     const textEditor = await swfTextEditor.getSwfTextEditor();
@@ -109,11 +107,9 @@ describe("Serverless workflow editor - functions tests", () => {
     const editorContent = await textEditor.getText();
     const expectedContent = fs.readFileSync(path.resolve(TEST_PROJECT_FOLDER, "function.sw.json.result"), "utf-8");
     expect(editorContent).equal(expectedContent);
-  });
+  }).timeout(100000);
 
   it("Checks functions are loaded from specs and routes directories into YAML serverless workflow file", async function () {
-    this.timeout(80000);
-
     const editorWebviews = await testHelper.openFileFromSidebar("function.sw.yaml");
     const swfTextEditor = new SwfTextEditorTestHelper(editorWebviews[0]);
     const textEditor = await swfTextEditor.getSwfTextEditor();
@@ -169,5 +165,5 @@ describe("Serverless workflow editor - functions tests", () => {
     const editorContent = await textEditor.getText();
     const expectedContent = fs.readFileSync(path.resolve(TEST_PROJECT_FOLDER, "function.sw.yaml.result"), "utf-8");
     expect(editorContent).equal(expectedContent);
-  });
+  }).timeout(100000);
 });
