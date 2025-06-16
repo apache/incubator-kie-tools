@@ -163,20 +163,20 @@ pipeline {
             }
         }
 
-        stage('Create "latest" tag for sonataflow-builder') {
+        stage('Create "latest" tag for sonataflow-management-console') {
             steps {
                 script {
                     dockerUtils.tagImage(
-                        "${env.SONATAFLOW_BUILDER_IMAGE__registry}/${env.SONATAFLOW_BUILDER_IMAGE__account}",
-                        "${env.SONATAFLOW_BUILDER_IMAGE__name}",
-                        "${env.SONATAFLOW_BUILDER_IMAGE__buildTag}",
+                        "${env.SONATAFLOW_MANAGEMENT_CONSOLE__registry}/${env.SONATAFLOW_MANAGEMENT_CONSOLE__account}",
+                        "${env.SONATAFLOW_MANAGEMENT_CONSOLE__name}",
+                        "${env.SONATAFLOW_MANAGEMENT_CONSOLE__buildTag}",
                         'latest'
                     )
                 }
             }
         }
 
-        stage('Push sonataflow-builder to Docker Hub') {
+        stage('Push sonataflow-management-console to Docker Hub') {
             when {
                 expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
             }
