@@ -43,7 +43,7 @@ pipeline {
         SONATAFLOW_MANAGEMENT_CONSOLE__registry = 'docker.io'
         SONATAFLOW_MANAGEMENT_CONSOLE__account = 'apache'
         SONATAFLOW_MANAGEMENT_CONSOLE__name = 'incubator-kie-sonataflow-management-console'
-        SONATAFLOW_MANAGEMENT_CONSOLE__buildTag = "latest ${params.RELEASE_VERSION}"
+        SONATAFLOW_MANAGEMENT_CONSOLE__buildTag = "${params.RELEASE_VERSION}"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
@@ -163,7 +163,20 @@ pipeline {
             }
         }
 
-        stage('Push sonataflow-management-console to Docker Hub') {
+        stage('Create "latest" tag for sonataflow-builder') {
+            steps {
+                script {
+                    dockerUtils.tagImage(
+                        "${env.SONATAFLOW_BUILDER_IMAGE__registry}/${env.SONATAFLOW_BUILDER_IMAGE__account}",
+                        "${env.SONATAFLOW_BUILDER_IMAGE__name}",
+                        "${env.SONATAFLOW_BUILDER_IMAGE__buildTag}",
+                        'latest'
+                    )
+                }
+            }
+        }
+
+        stage('Push sonataflow-builder to Docker Hub') {
             when {
                 expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
             }
