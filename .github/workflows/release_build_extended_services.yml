@@ -370,23 +370,33 @@ jobs:
       - name: "Setup Maven settings file (MacOS)"
         if: runner.os == 'macOS'
         shell: bash
+        env:
+          MAVEN_ARGS: "-B -Puse-maven-repo-local-tail -s ${{ github.workspace }}/.m2/settings.xml"
         run: |
-          pnpm -r exec 'bash' '-c' 'echo --settings=${{ github.workspace }}/.m2/settings.xml >> .mvn/maven.config'
+          echo "$MAVEN_ARGS"
 
       - name: "Setup Maven settings file (Windows)"
         if: runner.os == 'Windows'
         shell: pwsh
+        env:
+          MAVEN_ARGS: "-B -Puse-maven-repo-local-tail -s ${{ github.workspace }}/.m2/settings.xml"
         run: |
-          pnpm -r powershell "Add-Content .\.mvn\maven.config '--settings=${{ github.workspace }}\.m2\settings.xml'"
+          echo "$MAVEN_ARGS"
 
       - name: "Bootstrap"
         id: bootstrap
+        env:
+          MAVEN_ARGS: "-B -Puse-maven-repo-local-tail -s ${{ github.workspace }}/.m2/settings.xml"
+          MAVEN_OPTS: "-Xmx2g"
         uses: ./.github/actions/bootstrap
         with:
           pnpm_filter_string: -F @kie-tools/extended-services...
 
       - name: "Build"
         shell: bash
+        env:
+          MAVEN_ARGS: "-B -Puse-maven-repo-local-tail -s ${{ github.workspace }}/.m2/settings.xml"
+          MAVEN_OPTS: "-Xmx2g"
         run: |
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
