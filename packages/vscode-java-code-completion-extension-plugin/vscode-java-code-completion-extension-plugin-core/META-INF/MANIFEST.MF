@@ -3,7 +3,7 @@ Bundle-Vendor: Apache KIE
 Bundle-ManifestVersion: 2
 Bundle-Name: vscode-java-code-completion-extension-plugin-core
 Bundle-SymbolicName: vscode-java-code-completion-extension-plugin-core;singleton:=true
-Bundle-Version: 10.1.999
+Bundle-Version: 10.1.0
 Bundle-Activator: org.kogito.core.internal.ExtensionActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,

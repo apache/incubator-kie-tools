@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "kie-tools-examples-micro-frontends-multiplying-architecture-base64png-editor-vscode-extension",
-  "version": "10.1.999",
+  "version": "10.1.0",
   "description": "",
   "license": "Apache-2.0",
   "publisher": "kie-tools-examples",

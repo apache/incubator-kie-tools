@@ -18,7 +18,7 @@
 #
 schema_version: 1
 name: org.kie.sonataflow.devmode.build-config
-version: "main"
+version: "10.1.0"
 description: "Kogito Serverless Workflow devmode image build configuration"
 
 envs:

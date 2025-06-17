@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@kie-tools-scripts/update-kogito-version",
-  "version": "10.1.999",
+  "version": "10.1.0",
   "keywords": [],
   "bin": {
     "kie-tools--update-kogito-version-to": "update_kogito_version.js"

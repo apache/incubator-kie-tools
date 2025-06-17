@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/scesim-editor",
-  "version": "10.1.999",
+  "version": "10.1.0",
   "description": "The Test Scenario editor, a powerful tool to create, edit and manage *.scesim files, to test DMN assets",
   "license": "Apache-2.0",
   "keywords": [],

@@ -1,6 +1,6 @@
 {
   "name": "yard-vscode-extension",
-  "version": "10.1.999",
+  "version": "10.1.0",
   "description": "Edit yard definitions",
   "license": "Apache-2.0",
   "publisher": "kie-group",

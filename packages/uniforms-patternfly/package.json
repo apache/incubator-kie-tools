@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/uniforms-patternfly",
-  "version": "10.1.999",
+  "version": "10.1.0",
   "description": "Patternfly forms for uniforms",
   "license": "Apache-2.0",
   "author": {

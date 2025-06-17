@@ -1,6 +1,6 @@
 {
   "name": "@kie-tools/serverless-workflow-standalone-editor",
-  "version": "10.1.999",
+  "version": "10.1.0",
   "description": "Standalone editor for serverless workflow",
   "license": "Apache-2.0",
   "keywords": [],

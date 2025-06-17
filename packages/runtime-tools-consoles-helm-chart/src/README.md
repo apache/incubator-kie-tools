@@ -17,15 +17,15 @@
 
 # incubator-kie-runtime-tools-consoles-helm-chart
 
-![Version: 10.1.999](https://img.shields.io/badge/Version-10.1.999-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 10.1.999](https://img.shields.io/badge/AppVersion-10.1.999-informational?style=flat-square)
+![Version: 10.1.0](https://img.shields.io/badge/Version-10.1.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 10.1.0](https://img.shields.io/badge/AppVersion-10.1.0-informational?style=flat-square)
 
 A Helm chart to deploy Runtime Tools Consoles on Kubernetes
 
 ## Requirements
 
-| Repository | Name               | Version  |
-| ---------- | ------------------ | -------- |
-|            | management-console | 10.1.999 |
+| Repository | Name               | Version |
+| ---------- | ------------------ | ------- |
+|            | management-console | 10.1.0  |
 
 ## Values
 
@@ -41,7 +41,7 @@ A Helm chart to deploy Runtime Tools Consoles on Kubernetes
 | management-console.autoscaling          | object | `{"enabled":false,"maxReplicas":100,"minReplicas":1,"targetCPUUtilizationPercentage":80}`                                                                                                                                                               | Management Console HorizontalPodAutoscaler configuration (https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)            |
 | management-console.enabled              | bool   | `true`                                                                                                                                                                                                                                                  | Enable or disable Management Console installation                                                                                                |
 | management-console.fullnameOverride     | string | `""`                                                                                                                                                                                                                                                    | Overrides charts full name                                                                                                                       |
-| management-console.image                | object | `{"account":"apache","name":"incubator-kie-kogito-management-console","pullPolicy":"IfNotPresent","registry":"docker.io","tag":"main"}`                                                                                                                 | Image source configuration for the Management Console image                                                                                      |
+| management-console.image                | object | `{"account":"apache","name":"incubator-kie-kogito-management-console","pullPolicy":"IfNotPresent","registry":"docker.io","tag":"10.1.0"}`                                                                                                               | Image source configuration for the Management Console image                                                                                      |
 | management-console.imagePullSecrets     | list   | `[]`                                                                                                                                                                                                                                                    | Pull secrets used when pulling Management Console image                                                                                          |
 | management-console.ingress              | object | `{"annotations":{},"className":"{{ .Values.global.kubernetesIngressClass }}","enabled":false,"hosts":[{"host":"management-console.{{ .Values.global.kubernetesClusterDomain }}","paths":[{"path":"/","pathType":"ImplementationSpecific"}]}],"tls":[]}` | Management Console Ingress configuration (https://kubernetes.io/docs/concepts/services-networking/ingress/)                                      |
 | management-console.name                 | string | `"management-console"`                                                                                                                                                                                                                                  | Component name                                                                                                                                   |

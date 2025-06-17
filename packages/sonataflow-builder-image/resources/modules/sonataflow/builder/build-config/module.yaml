@@ -18,7 +18,7 @@
 #
 schema_version: 1
 name: org.kie.sonataflow.builder.build-config
-version: "main"
+version: "10.1.0"
 description: "Apache KIE SonataFlow builder image build configuration"
 
 envs:

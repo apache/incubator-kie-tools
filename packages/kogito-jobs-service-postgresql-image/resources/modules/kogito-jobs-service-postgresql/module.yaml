@@ -18,7 +18,7 @@
 #
 schema_version: 1
 name: org.kie.kogito.jobs.service.postgresql
-version: "main"
+version: "10.1.0"
 
 # Relative to build/target/image/modules/, that's why the four `../`
 artifacts:

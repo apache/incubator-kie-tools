@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@kie-tools-examples/micro-frontends-multiplying-architecture-todo-list-view",
-  "version": "10.1.999",
+  "version": "10.1.0",
   "license": "Apache-2.0",
   "homepage": "https://github.com/apache/incubator-kie-tools",
   "repository": {

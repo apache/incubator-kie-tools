@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@kie-tools/kogito-db-migrator-tool",
-  "version": "10.1.999",
+  "version": "10.1.0",
   "description": "",
   "license": "Apache-2.0",
   "homepage": "https://github.com/apache/incubator-kie-tools",
