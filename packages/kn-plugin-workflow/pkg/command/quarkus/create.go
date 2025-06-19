@@ -93,17 +93,17 @@ type MavenDependency struct {
 
 var ExtensionPerProfile = map[string][]MavenDependency{
 	apiMetadata.GitOpsProfile.String(): {
-		MavenDependency{"org.kie","kie-addons-quarkus-persistence-jdbc"},
-		MavenDependency{"io.quarkus","quarkus-agroal"},
-		MavenDependency{"io.quarkus","quarkus-jdbc-postgresql"},
+		MavenDependency{"org.kie", "kie-addons-quarkus-persistence-jdbc"},
+		MavenDependency{"io.quarkus", "quarkus-agroal"},
+		MavenDependency{"io.quarkus", "quarkus-jdbc-postgresql"},
 	},
 }
 
-var persistenceVariables = map[string]string {
-	"maxYamlCodePoints": "35000000",
-	"kogito.persistence.type": "jdbc",
+var persistenceVariables = map[string]string{
+	"maxYamlCodePoints":                   "35000000",
+	"kogito.persistence.type":             "jdbc",
 	"kogito.persistence.proto.marshaller": "false",
-	"quarkus.datasource.db-kind": "postgresql",
+	"quarkus.datasource.db-kind":          "postgresql",
 }
 
 func runCreate(cmd *cobra.Command) error {
@@ -252,7 +252,6 @@ func addGitOpsProfileExtensions(cfg CreateQuarkusProjectConfig) error {
 	if err := doc.WriteToFile(filename); err != nil {
 		return fmt.Errorf("error writing modified content to %s: %w", filename, err)
 	}
-
 	return nil
 }
 
@@ -285,7 +284,7 @@ func addPersistenceVariables(cfg CreateQuarkusProjectConfig) error {
 				if configElem == nil {
 					configElem = plugin.CreateElement("configuration")
 				}
-				var systemPropertyVariables = configElem.CreateElement("environmentVariables");
+				var systemPropertyVariables = configElem.CreateElement("environmentVariables")
 				for key, val := range persistenceVariables {
 					propertyElem := systemPropertyVariables.CreateElement(key)
 					propertyElem.SetText(val)
@@ -308,7 +307,7 @@ func addPersistenceVariablesToDockerFiles(cfg CreateQuarkusProjectConfig) error 
 	extensions := []string{"jvm", "legacy-jar", "native", "native-micro"}
 
 	for _, extension := range extensions {
-		dockerfilePath := path.Join(cfg.ProjectName, "src/main/docker", "Dockerfile." + extension)
+		dockerfilePath := path.Join(cfg.ProjectName, "src/main/docker", "Dockerfile."+extension)
 		if err := addPersistenceVariablesToDockerFile(dockerfilePath); err != nil {
 			return err
 		}
