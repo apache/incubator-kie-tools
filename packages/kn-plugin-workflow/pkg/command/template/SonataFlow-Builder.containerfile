@@ -19,11 +19,17 @@ FROM {{ .BuildImage }} AS builder
 
 # variables that can be overridden by the builder
 # To add a Quarkus extension to your application
-ARG QUARKUS_EXTENSIONS=org.kie:kie-addons-quarkus-persistence-jdbc,io.quarkus:quarkus-jdbc-postgresql,io.quarkus:quarkus-agroal
+ARG QUARKUS_EXTENSIONS
+ENV QUARKUS_EXTENSIONS="${QUARKUS_EXTENSIONS:-org.kie:kie-addons-quarkus-persistence-jdbc,io.quarkus:quarkus-jdbc-postgresql,io.quarkus:quarkus-agroal}"
 # Args to pass to the Quarkus CLI add extension command
 ARG QUARKUS_ADD_EXTENSION_ARGS
 # Additional java/mvn arguments to pass to the builder
 ARG MAVEN_ARGS_APPEND
+ENV MAVEN_ARGS_APPEND="${MAVEN_ARGS_APPEND:-} \
+    -DmaxYamlCodePoints=35000000 \
+    -Dkogito.persistence.type=jdbc \
+    -Dquarkus.datasource.db-kind=postgresql \
+    -Dkogito.persistence.proto.marshaller=false"
 
 # Copy from build context to skeleton resources project
 COPY --chown=1001 . ./resources
@@ -45,11 +51,6 @@ COPY --from=builder --chown=185 /home/kogito/serverless-workflow-project/target/
 
 EXPOSE 8080
 USER 185
-
-ENV maxYamlCodePoints=35000000 \
-    kogito.persistence.type=jdbc \
-    kogito.persistence.proto.marshaller=false \
-    quarkus.datasource.db-kind=postgresql
 
 ENV AB_JOLOKIA_OFF=""
 ENV JAVA_OPTS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
