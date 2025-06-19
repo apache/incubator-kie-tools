@@ -180,7 +180,7 @@ pipeline {
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
-                    docker save "${env.KIE_KOGITO_DB_MIGRATOR_TOOL__registry}/${env.KOGITO_MANAGEMENT_CONSOLE__account}/${env.KOGITO_MANAGEMENT_CONSOLE__name}:${params.RELEASE_VERSION}" | gzip > "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_IMAGE_TAR_FILE}"
+                    docker save "${env.KIE_KOGITO_DB_MIGRATOR_TOOL__registry}/${env.KIE_KOGITO_DB_MIGRATOR_TOOL__account}/${env.KIE_KOGITO_DB_MIGRATOR_TOOL__name}:${params.RELEASE_VERSION}" | gzip > "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_IMAGE_TAR_FILE}"
                     """.trim()
                 }
             }
