@@ -7343,6 +7343,9 @@ importers:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
+      '@kie-tools/sonataflow-builder-image':
+        specifier: workspace:*
+        version: link:../sonataflow-builder-image
       '@kie-tools/sonataflow-devmode-image':
         specifier: workspace:*
         version: link:../sonataflow-devmode-image
