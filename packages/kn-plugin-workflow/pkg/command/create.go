@@ -20,17 +20,23 @@
 package command
 
 import (
+	"bytes"
+	_ "embed"
 	"fmt"
+	"os"
+	"path"
+	"text/template"
+
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
-	"os"
 )
 
 type CreateCmdConfig struct {
-	ProjectName string
-	YAML        bool
+	ProjectName     string
+	YAML            bool
+	WithPersistence bool
 }
 
 func NewCreateCommand() *cobra.Command {
@@ -67,9 +73,13 @@ func NewCreateCommand() *cobra.Command {
 
 	# Creates a YAML sample workflow file (JSON is default)
 	{{.Name}} create --yaml-workflow
+	
+	# Add Dockerfile with persistence support to the project (default: false)
+	{{.Name}} create --with-persistence
+
 		`,
 		SuggestFor: []string{"vreate", "creaet", "craete", "new"}, //nolint:misspell
-		PreRunE:    common.BindEnv("name", "yaml-workflow"),
+		PreRunE:    common.BindEnv("name", "yaml-workflow", "with-persistence"),
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -82,10 +92,14 @@ func NewCreateCommand() *cobra.Command {
 
 	cmd.Flags().StringP("name", "n", "new-project", "Project name created in the current directory.")
 	cmd.Flags().Bool("yaml-workflow", false, "Create a sample YAML workflow file.")
+	cmd.Flags().BoolP("with-persistence", "w", false, "Add persistence support to the project (default: false)")
 	cmd.SetHelpFunc(common.DefaultTemplatedHelp)
 
 	return cmd
 }
+
+//go:embed template/SonataFlow-Builder.containerfile
+var SonataFlowBuilderContainerFile string
 
 func runCreate(cfg CreateCmdConfig) error {
 	fmt.Println("🛠️ Creating SonataFlow project")
@@ -105,7 +119,12 @@ func runCreate(cfg CreateCmdConfig) error {
 	if err := common.CreateWorkflow(workflowPath, cfg.YAML); err != nil {
 		return fmt.Errorf("❌ ERROR: Error creating workflow file: %w", err)
 	}
-
+	if cfg.WithPersistence {
+		err := addGitOpsDockerFile(cfg)
+		if err != nil {
+			return fmt.Errorf("❌ ERROR: Error creating Dockerfile for gitops profile: %w", err)
+		}
+	}
 	fmt.Println("🎉 SonataFlow project successfully created")
 
 	return nil
@@ -115,8 +134,38 @@ func runCreate(cfg CreateCmdConfig) error {
 func runCreateCmdConfig() (cfg CreateCmdConfig, err error) {
 
 	cfg = CreateCmdConfig{
-		ProjectName: viper.GetString("name"),
-		YAML:        viper.GetBool("yaml-workflow"),
+		ProjectName:     viper.GetString("name"),
+		YAML:            viper.GetBool("yaml-workflow"),
+		WithPersistence: viper.GetBool("with-persistence"),
 	}
 	return cfg, nil
+}
+
+func addGitOpsDockerFile(cfg CreateCmdConfig) error {
+	data := struct {
+		BuildImage string
+	}{
+		BuildImage: metadata.BuilderImage,
+	}
+
+	tmpl, err := template.New("dockerfile").Parse(SonataFlowBuilderContainerFile)
+	if err != nil {
+		return fmt.Errorf("error parsing Dockerfile template: %w", err)
+	}
+
+	var rendered bytes.Buffer
+	if err := tmpl.Execute(&rendered, data); err != nil {
+		return fmt.Errorf("error executing Dockerfile template: %w", err)
+	}
+
+	dockerfilePath := path.Join(cfg.ProjectName, "Dockerfile.gitops")
+	file, err := os.Create(dockerfilePath)
+	if err != nil {
+		return fmt.Errorf("error creating Dockerfile %s: %w", dockerfilePath, err)
+	}
+	defer file.Close()
+	if _, err := file.WriteString(rendered.String()); err != nil {
+		return fmt.Errorf("error writing to Dockerfile %s: %w", dockerfilePath, err)
+	}
+	return nil
 }
