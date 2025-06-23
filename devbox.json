@@ -9,7 +9,10 @@
     "go": "1.23.8",
     "python": "3.12.2",
     "libxml2": "2.13.3",
-    "glibcLocales": "2.40-66"
+    "glibcLocales": {
+      "version": "2.40-66",
+      "platforms": ["x86_64-linux", "aarch64-linux"]
+    }
   },
   "env": {
     "PLAYWRIGHT_BROWSERS_PATH": "0",
