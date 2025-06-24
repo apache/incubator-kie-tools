@@ -12,7 +12,8 @@
     "glibcLocales": {
       "version": "2.40-66",
       "platforms": ["x86_64-linux", "aarch64-linux"]
-    }
+    },
+    "git": "latest"
   },
   "env": {
     "PLAYWRIGHT_BROWSERS_PATH": "0",
