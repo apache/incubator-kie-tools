@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.ConfigValue;
 import org.jboss.jandex.DotName;
 import org.jbpm.quarkus.devui.runtime.rpc.events.JBPMDevUIEventPublisher;
 import org.kie.kogito.quarkus.extensions.spi.deployment.KogitoDataIndexServiceAvailableBuildItem;
@@ -196,29 +197,29 @@ public class DevConsoleProcessor {
     private static String getProperty(ConfigurationBuildItem configurationBuildItem,
                                       List<SystemPropertyBuildItem> systemPropertyBuildItems, String propertyKey) {
 
-        String propertyValue = configurationBuildItem
+        ConfigValue propertyConfig = configurationBuildItem
                 .getReadResult()
                 .getAllBuildTimeValues()
                 .get(propertyKey);
 
-        if (propertyValue == null) {
-            propertyValue = configurationBuildItem
+        if (propertyConfig == null) {
+            propertyConfig = configurationBuildItem
                     .getReadResult()
                     .getBuildTimeRunTimeValues()
                     .get(propertyKey);
         } else {
-            return propertyValue;
+            return propertyConfig.getValue();
         }
 
-        if (propertyValue == null) {
-            propertyValue = configurationBuildItem
+        if (propertyConfig == null) {
+            propertyConfig = configurationBuildItem
                     .getReadResult()
                     .getRunTimeDefaultValues()
                     .get(propertyKey);
         }
 
-        if (propertyValue != null) {
-            return propertyValue;
+        if (propertyConfig != null) {
+            return propertyConfig.getValue();
         }
 
         return systemPropertyBuildItems.stream().filter(property -> property.getKey().equals(propertyKey))
