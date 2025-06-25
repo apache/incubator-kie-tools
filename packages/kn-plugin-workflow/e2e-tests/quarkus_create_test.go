@@ -23,11 +23,8 @@ package e2e_tests
 
 import (
 	"fmt"
-	"github.com/beevik/etree"
 	"os"
-	"path"
 	"path/filepath"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -169,74 +166,3 @@ func TestQuarkusCreateProjectFail(t *testing.T) {
 		})
 	}
 }
-
-func RunQuarkusCreateGitOpsTest(t *testing.T) string {
-	var err error
-
-	var test = CfgTestInputQuarkusCreate{
-		input: 	quarkus.CreateQuarkusProjectConfig{
-						ProjectName: "test",
-						Profile: "gitops",
-						WithPersistence: true,
-				},
-	}
-
-	projectName := GetQuarkusCreateProjectName(t, test)
-	projectDir := filepath.Join(TempTestsPath, projectName)
-
-	_, err = ExecuteKnWorkflowQuarkus(transformQuarkusCreateCmdCfgToArgs(test.input)...)
-
-	err = os.Chdir(projectDir)
-	require.NoErrorf(t, err, "Expected nil error, got: %v", err)
-	WriteMavenConfigFileWithTailDirs(projectDir)
-
-	require.DirExistsf(t, projectDir, "Expected project directory '%s' to be created", projectDir)
-
-	var envs = quarkus.GenerateEnvLine()
-
-	dockerFilePath := path.Join(projectDir, "src/main/docker/Dockerfile.jvm")
-	_, err = os.Stat(dockerFilePath)
-	if os.IsNotExist(err) {
-		t.Fatalf("Expected Dockerfile.jvm to be created, but it does not exist")
-	}
-
-	bytes, err := os.ReadFile(dockerFilePath)
-	if err != nil{
-		t.Fatalf("Error reading Dockerfile.jvm: %v", err)
-	}
-	if strings.Contains(string(bytes), envs) {
-		t.Fatalf("Expected Dockerfile.jvm to contain envs: %s", envs)
-	}
-
-	extensions := quarkus.ExtensionPerProfile["gitops"]
-	checkMap := make(map[string]bool)
-	for _, ext := range extensions {
-		checkMap[ext.ArtifactId] = false
-	}
-
-	filename := path.Join(test.input.ProjectName, "pom.xml")
-	doc := etree.NewDocument()
-	err = doc.ReadFromFile(filename)
-	require.NoErrorf(t, err, "Error reading %s: %v", filename, err)
-
-	dependencies := doc.FindElement("//dependencies")
-	if dependencies == nil {
-		t.Fatalf("Error finding dependencies in %s", filename)
-	}
-	for _, ext := range dependencies.ChildElements() {
-		if ext.Tag == "dependency" {
-			artifactId := ext.FindElement("artifactId")
-			if artifactId != nil && checkMap[artifactId.Text()] {
-				checkMap[artifactId.Text()] = true
-			}
-		}
-	}
-	for ext, found := range checkMap {
-		if !found {
-			t.Fatalf("Expected extension %s to be present in pom.xml", ext)
-		}
-	}
-
-	return projectName
-}
-
