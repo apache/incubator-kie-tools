@@ -132,6 +132,7 @@ import { EvaluationHighlightsBadge } from "../evaluationHighlights/EvaluationHig
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { computeIndexedDrd } from "../store/computed/computeIndexes";
+import { addOrGetDrd } from "../mutations/addOrGetDrd";
 
 const isFirefox = typeof (window as any).InstallTrigger !== "undefined"; // See https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers
 
@@ -1078,6 +1079,85 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                   snapGrid: state.diagram.snapGrid,
                   externalModelsByNamespace,
                 });
+                const drds = state.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
+                const parentDecisionService = dropTargetNode;
+                for (let j = 0; j < drds.length; j++) {
+                  if (j === state.computed(state).getDrdIndex()) {
+                    continue;
+                  }
+                  const _indexedDrd = computeIndexedDrd(
+                    state.dmn.model.definitions["@_namespace"],
+                    state.dmn.model.definitions,
+                    j
+                  );
+                  const currentParentShape = parentDecisionService.data.shape;
+                  const currentChildShape = selectedNodes[i].data.shape;
+                  const dsShape = _indexedDrd.dmnShapesByHref.get(dropTargetNode.id);
+                  const relativePosinCurrentDS = {
+                    x:
+                      (currentChildShape?.["dc:Bounds"]?.["@_x"] ?? 0) -
+                      (currentParentShape["dc:Bounds"]?.["@_x"] ?? 0),
+                    y:
+                      (currentChildShape?.["dc:Bounds"]?.["@_y"] ?? 0) -
+                      (currentParentShape["dc:Bounds"]?.["@_y"] ?? 0),
+                  };
+                  if (
+                    currentChildShape &&
+                    currentChildShape["dc:Bounds"] &&
+                    dsShape &&
+                    dsShape["dc:Bounds"] &&
+                    !dsShape["@_isCollapsed"]
+                  ) {
+                    const currentDecisionShape = _indexedDrd.dmnShapesByHref.get(selectedNodes[i].id);
+                    if (currentDecisionShape) {
+                      repositionNode({
+                        definitions: state.dmn.model.definitions,
+                        drdIndex: j,
+                        controlWaypointsByEdge: new Map(),
+                        change: {
+                          nodeType: NODE_TYPES.decision,
+                          type: "absolute",
+                          position: {
+                            x: (dsShape["dc:Bounds"]?.["@_x"] ?? 0) + relativePosinCurrentDS.x,
+                            y: (dsShape["dc:Bounds"]?.["@_y"] ?? 0) + relativePosinCurrentDS.y,
+                          },
+                          shapeIndex: currentDecisionShape.index,
+                          selectedEdges: [],
+                          sourceEdgeIndexes: [],
+                          targetEdgeIndexes: [],
+                        },
+                      });
+                    } else {
+                      addShape({
+                        definitions: state.dmn.model.definitions,
+                        drdIndex: j,
+                        nodeType: NODE_TYPES.decision,
+                        shape: {
+                          "@_id": generateUuid(),
+                          "@_dmnElementRef": xmlHrefToQName(selectedNodes[i].id, state.dmn.model.definitions),
+                          "dc:Bounds": {
+                            "@_x": (dsShape["dc:Bounds"]?.["@_x"] ?? 0) + relativePosinCurrentDS.x,
+                            "@_y": (dsShape["dc:Bounds"]?.["@_y"] ?? 0) + relativePosinCurrentDS.y,
+                            "@_width": currentChildShape["dc:Bounds"]["@_width"],
+                            "@_height": currentChildShape["dc:Bounds"]["@_height"],
+                          },
+                        },
+                      });
+                    }
+                  }
+                  if (dsShape && dsShape["@_isCollapsed"]) {
+                    const { diagramElements } = addOrGetDrd({
+                      definitions: state.dmn.model.definitions,
+                      drdIndex: j,
+                    });
+                    const dmnShapeIndex = (diagramElements ?? []).findIndex(
+                      (d) => d["@_dmnElementRef"] === selectedNodes[i].data.dmnObjectQName.localPart
+                    );
+                    if (dmnShapeIndex >= 0) {
+                      diagramElements?.splice(dmnShapeIndex, 1);
+                    }
+                  }
+                }
               }
             } else {
               console.debug(
