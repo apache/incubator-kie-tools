@@ -26,6 +26,7 @@ import java.util.List;
 import io.quarkus.deployment.Capabilities;
 import io.quarkus.devui.spi.JsonRPCProvidersBuildItem;
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.ConfigValue;
 import org.kie.sonataflow.swf.tools.runtime.config.DevUIStaticArtifactsRecorder;
 
 import io.quarkus.deployment.IsDevelopment;
@@ -144,29 +145,29 @@ public class DevConsoleProcessor {
             List<SystemPropertyBuildItem> systemPropertyBuildItems,
             String propertyKey) {
 
-        String propertyValue = configurationBuildItem
+        ConfigValue propertyConfig = configurationBuildItem
                 .getReadResult()
                 .getAllBuildTimeValues()
                 .get(propertyKey);
 
-        if (propertyValue == null) {
-            propertyValue = configurationBuildItem
+        if (propertyConfig == null) {
+            propertyConfig = configurationBuildItem
                     .getReadResult()
                     .getBuildTimeRunTimeValues()
                     .get(propertyKey);
         } else {
-            return propertyValue;
+            return propertyConfig.getValue();
         }
 
-        if (propertyValue == null) {
-            propertyValue = configurationBuildItem
+        if (propertyConfig == null) {
+            propertyConfig = configurationBuildItem
                     .getReadResult()
                     .getRunTimeDefaultValues()
                     .get(propertyKey);
         }
 
-        if (propertyValue != null) {
-            return propertyValue;
+        if (propertyConfig != null) {
+            return propertyConfig.getValue();
         }
 
         return systemPropertyBuildItems.stream().filter(property -> property.getKey().equals(propertyKey))

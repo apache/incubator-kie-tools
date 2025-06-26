@@ -69,12 +69,12 @@ module.exports = composeEnv([], {
     },
     /* (end) */
     QUARKUS_PLATFORM_version: {
-      default: "3.15.3.1",
+      default: "3.20.1",
       description: "Quarkus version to be used on dependency declaration.",
     },
     /* (begin) This part of the file is referenced in `scripts/update-kogito-version` */
     KOGITO_RUNTIME_version: {
-      default: "999-20250511-local",
+      default: "999-20250622-local",
       description: "Kogito version to be used on dependency declaration.",
     },
     /* (end) */
