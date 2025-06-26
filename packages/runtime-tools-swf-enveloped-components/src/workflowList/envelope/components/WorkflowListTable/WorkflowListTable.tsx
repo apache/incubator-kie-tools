@@ -91,6 +91,41 @@ const WorkflowListTable: React.FC<WorkflowListTableProps & OUIAProps> = ({
   const [titleType, setTitleType] = useState<string>("");
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedWorkflowInstance, setSelectedWorkflowInstance] = useState<WorkflowInstance | null>(null);
+  const [sortByState, setSortByState] = useState<{ index: number; direction: "asc" | "desc" }>({
+    index: 2,
+    direction: "asc",
+  });
+
+  const getComparableValue = useCallback((instance: WorkflowInstance, columnKey: string): any => {
+    switch (columnKey) {
+      case "Id":
+        return instance.processName?.toLowerCase?.() || "";
+      case "Status":
+        return instance.state;
+      case "Created":
+        return new Date(instance.start);
+      case "Last update":
+        return new Date(instance.lastUpdate);
+      default:
+        return "";
+    }
+  }, []);
+
+  const onSortInternal = useCallback(
+    (_event: React.SyntheticEvent, index: number, direction: "asc" | "desc") => {
+      const columnKey = columns[index];
+      const sorted = [...workflowInstances].sort((a, b) => {
+        const aVal = getComparableValue(a, columnKey);
+        const bVal = getComparableValue(b, columnKey);
+        if (aVal < bVal) return direction === "asc" ? -1 : 1;
+        if (aVal > bVal) return direction === "asc" ? 1 : -1;
+        return 0;
+      });
+      setSortByState({ index, direction });
+      setWorkflowInstances(sorted);
+    },
+    [columns, workflowInstances, setSortByState, setWorkflowInstances]
+  );
 
   const handleModalToggle = (): void => {
     setIsModalOpen(!isModalOpen);
@@ -362,11 +397,14 @@ const WorkflowListTable: React.FC<WorkflowListTableProps & OUIAProps> = ({
           <Tr ouiaId="workflow-list-table-header">
             {columns.map((column, columnIndex) => {
               let sortParams = {};
-              if (!isLoading && rowPairs.length > 0) {
+              if (!isLoading && rowPairs.length > 0 && columnIndex > 1 && columnIndex !== columns.length - 1) {
                 sortParams = {
                   sort: {
-                    sortBy,
-                    onSort,
+                    sortBy: {
+                      index: sortByState.index,
+                      direction: sortByState.direction,
+                    },
+                    onSort: onSortInternal,
                     columnIndex,
                   },
                 };
@@ -388,7 +426,7 @@ const WorkflowListTable: React.FC<WorkflowListTableProps & OUIAProps> = ({
               }
               return (
                 <Th style={styleParams} key={`${column}_header`} {...sortParams}>
-                  {column.startsWith("__") ? "" : column}
+                  {columnIndex === 2 ? "Process Name" : column.startsWith("__") ? "" : column}
                 </Th>
               );
             })}
