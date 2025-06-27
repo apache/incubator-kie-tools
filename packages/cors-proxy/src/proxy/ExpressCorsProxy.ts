@@ -29,6 +29,7 @@ const BANNED_PROXY_HEADERS = [
   "host",
   CorsProxyHeaderKeys.TARGET_URL,
   CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION,
+  CorsProxyHeaderKeys.DISABLE_ENCODING,
 ];
 
 export class ExpressCorsProxy implements CorsProxy<Request, Response> {
@@ -71,6 +72,10 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
 
       // TO DO: Figure out why this gzip encoding is broken with insecure tls certificates!
       if (req.headers[CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION] === "true") {
+        outHeaders["accept-encoding"] = "identity";
+      }
+      // Force uncompressed response if encoding is disabled via header
+      if (req.headers[CorsProxyHeaderKeys.DISABLE_ENCODING] === "true") {
         outHeaders["accept-encoding"] = "identity";
       }
 

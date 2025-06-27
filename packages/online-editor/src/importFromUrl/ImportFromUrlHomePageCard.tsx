@@ -48,6 +48,7 @@ export function ImportFromUrlCard() {
   const [authSessionId, setAuthSessionId] = useState<string | undefined>(AUTH_SESSION_NONE.id);
   const [url, setUrl] = useState("");
   const [insecurelyDisableTlsCertificateValidation, setInsecurelyDisableTlsCertificateValidation] = useState(false);
+  const [disableEncoding, setDisableEncoding] = useState(false);
   const [gitRefName, setGitRef] = useState("");
 
   const advancedImportModalRef = useRef<AdvancedImportModalRef>(null);
@@ -56,13 +57,19 @@ export function ImportFromUrlCard() {
 
   const importableUrl = useImportableUrl(url);
 
-  const clonableUrl = useClonableUrl(url, authInfo, gitRefName, insecurelyDisableTlsCertificateValidation);
+  const clonableUrl = useClonableUrl(
+    url,
+    authInfo,
+    gitRefName,
+    insecurelyDisableTlsCertificateValidation,
+    disableEncoding
+  );
 
   // Select authSession based on the importableUrl domain (begin)
   const authProviders = useAuthProviders();
   const { authSessions, authSessionStatus } = useAuthSessions();
 
-  const updateInsecurelyDisableTlsCertificateValidation = useCallback(
+  const updateInsecurelyDisableTlsCertificateValidationAndDisableEncoding = useCallback(
     (newAuthSession: AuthSession) => {
       if (newAuthSession?.type === "git") {
         const localAuthProvider = authProviders.find((provider) => provider.id === newAuthSession.authProviderId);
@@ -70,6 +77,7 @@ export function ImportFromUrlCard() {
           setInsecurelyDisableTlsCertificateValidation(
             localAuthProvider.insecurelyDisableTlsCertificateValidation ?? false
           );
+          setDisableEncoding(localAuthProvider.disableEncoding ?? false);
         }
       }
     },
@@ -85,8 +93,14 @@ export function ImportFromUrlCard() {
       urlDomain,
     });
     setAuthSessionId(compatible[0]!.id);
-    updateInsecurelyDisableTlsCertificateValidation(compatible[0]);
-  }, [authProviders, authSessionStatus, authSessions, importableUrl, updateInsecurelyDisableTlsCertificateValidation]);
+    updateInsecurelyDisableTlsCertificateValidationAndDisableEncoding(compatible[0]);
+  }, [
+    authProviders,
+    authSessionStatus,
+    authSessions,
+    importableUrl,
+    updateInsecurelyDisableTlsCertificateValidationAndDisableEncoding,
+  ]);
   // Select authSession based on the importableUrl domain (end)
 
   useEffect(() => {
@@ -94,8 +108,8 @@ export function ImportFromUrlCard() {
   }, [clonableUrl.selectedGitRefName]);
 
   useEffect(() => {
-    authSession && updateInsecurelyDisableTlsCertificateValidation(authSession);
-  }, [authSession, updateInsecurelyDisableTlsCertificateValidation]);
+    authSession && updateInsecurelyDisableTlsCertificateValidationAndDisableEncoding(authSession);
+  }, [authSession, updateInsecurelyDisableTlsCertificateValidationAndDisableEncoding]);
 
   const validation = useImportableUrlValidation(authSession, url, gitRefName, clonableUrl, advancedImportModalRef);
 
@@ -119,10 +133,20 @@ export function ImportFromUrlCard() {
           branch: gitRefName,
           authSessionId,
           insecurelyDisableTlsCertificateValidation: insecurelyDisableTlsCertificateValidation.toString(),
+          disableEncoding: disableEncoding.toString(),
         }),
       });
     },
-    [authSessionId, gitRefName, navigate, isValid, routes.import, url, insecurelyDisableTlsCertificateValidation]
+    [
+      authSessionId,
+      gitRefName,
+      navigate,
+      isValid,
+      routes.import,
+      url,
+      insecurelyDisableTlsCertificateValidation,
+      disableEncoding,
+    ]
   );
 
   const buttonLabel = useMemo(() => {
@@ -168,7 +192,7 @@ export function ImportFromUrlCard() {
         <CardBody>
           <TextContent>
             <Text component={TextVariants.p}>
-              Import a Git repository, a GitHub Gist, Bitbucket Snippet, or any other file URL.
+              Import a Git repository, a GitHub Gist, Bitbucket Snippet, GitLab Snippet or any other file URL.
             </Text>
           </TextContent>
           <br />

@@ -27,7 +27,7 @@ describe("versions", () => {
   for (const file of files) {
     test(path.basename(file.path), () => {
       const xml = fs.readFileSync(path.join(__dirname, file.path), "utf-8");
-      const { version } = getMarshaller(xml);
+      const { version } = getMarshaller(xml, { upgradeTo: "latest" });
       expect(version).toStrictEqual(file.version);
     });
   }

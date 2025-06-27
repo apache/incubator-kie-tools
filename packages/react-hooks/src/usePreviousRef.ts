@@ -17,6 +17,7 @@
  * under the License.
  */
 
+import * as React from "react";
 import { useEffect, useRef } from "react";
 
 export function usePreviousRef<T>(value: T): React.MutableRefObject<T> {

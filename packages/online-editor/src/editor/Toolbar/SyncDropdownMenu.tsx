@@ -49,6 +49,7 @@ import { useEditorToolbarContext, useEditorToolbarDispatchContext } from "./Edit
 import { useGitIntegration } from "./GitIntegration/GitIntegrationContextProvider";
 import { useAuthProvider } from "../../authProviders/AuthProvidersContext";
 import { useAuthSession } from "../../authSessions/AuthSessionsContext";
+import GitlabIcon from "@patternfly/react-icons/dist/js/icons/gitlab-icon";
 
 type Props = {
   workspace: ActiveWorkspace;
@@ -94,6 +95,7 @@ export function SyncDropdownMenu(props: Props) {
                     {switchExpression(props.workspace.descriptor.origin.kind as WorkspaceKindGistLike, {
                       GITHUB_GIST: i18n.editorToolbar.cantUpdateGistTooltip,
                       BITBUCKET_SNIPPET: i18n.editorToolbar.cantUpdateSnippetTooltip,
+                      GITLAB_SNIPPET: i18n.editorToolbar.cantUpdateSnippetTooltip,
                     })}
                   </div>
                 }
@@ -106,6 +108,7 @@ export function SyncDropdownMenu(props: Props) {
                     icon={switchExpression(props.workspace.descriptor.origin.kind as WorkspaceKindGistLike, {
                       BITBUCKET_SNIPPET: <BitbucketIcon />,
                       GITHUB_GIST: <GithubIcon />,
+                      GITLAB_SNIPPET: <GitlabIcon />,
                     })}
                     onClick={updateGistOrSnippet}
                     isDisabled={!canUpdateGistOrSnippet}
@@ -114,6 +117,7 @@ export function SyncDropdownMenu(props: Props) {
                     {switchExpression(props.workspace.descriptor.origin.kind as WorkspaceKindGistLike, {
                       BITBUCKET_SNIPPET: "Bitbucket Snippet",
                       GITHUB_GIST: "GitHub Gist",
+                      GITLAB_SNIPPET: "GitLab Snippet",
                     })}
                   </DropdownItem>
                   {canForkGitHubGist && (
@@ -169,6 +173,7 @@ export function SyncDropdownMenu(props: Props) {
                         title={`Can't Update ${switchExpression(authProvider?.type as GitAuthProviderType, {
                           github: "GitHub repository",
                           bitbucket: "Bitbucket repository",
+                          gitlab: "GitLab repository",
                           default: "Git repository",
                         })} without selecting a matching authentication source`}
                         actionLinks={
@@ -195,6 +200,7 @@ export function SyncDropdownMenu(props: Props) {
                           {
                             GITHUB_GIST: "Github Gist",
                             BITBUCKET_SNIPPET: "Bitbucket Snippet",
+                            GITLAB_SNIPPET: "GitLab Snippet",
                           }
                         )}.`}
                       </Alert>

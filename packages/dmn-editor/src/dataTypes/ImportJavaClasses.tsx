@@ -34,7 +34,7 @@ import {
   useLanguageServerAvailable,
 } from "@kie-tools/import-java-classes-component";
 import { addTopLevelItemDefinition as _addTopLevelItemDefinition } from "../mutations/addTopLevelItemDefinition";
-import { JavaClassConflictOptions, useImportJavaClasses } from "./useImportJavaClasses";
+import { JavaClassConflictOptions, JavaClassWithConflictInfo, useImportJavaClasses } from "./useImportJavaClasses";
 import { Radio } from "@patternfly/react-core/dist/esm/components/Radio";
 
 const ImportJavaClassesWrapper = ({
@@ -42,8 +42,13 @@ const ImportJavaClassesWrapper = ({
 }: {
   javaCodeCompletionService: JavaCodeCompletionService;
 }) => {
-  const { handleConflictAction, handleImportJavaClasses, conflictsClasses, isConflictsOccured } =
-    useImportJavaClasses();
+  const {
+    handleConflictAction,
+    handleImportJavaClasses,
+    conflictsClasses,
+    isConflictsOccured,
+    handleCloseConflictsModal,
+  } = useImportJavaClasses();
   return (
     <>
       <ImportJavaClasses
@@ -54,7 +59,8 @@ const ImportJavaClassesWrapper = ({
         <ImportJavaClassNameConflictsModal
           isOpen={isConflictsOccured}
           handleConfirm={handleConflictAction}
-          confliectedJavaClasses={conflictsClasses}
+          conflictedJavaClasses={conflictsClasses}
+          onClose={handleCloseConflictsModal}
         />
       )}
     </>
@@ -111,22 +117,43 @@ const ImportJavaClassesDropdownItem = ({
 const ImportJavaClassNameConflictsModal = ({
   isOpen,
   handleConfirm,
-  confliectedJavaClasses,
+  conflictedJavaClasses,
+  onClose,
 }: {
   isOpen: boolean;
-  handleConfirm: (options: JavaClassConflictOptions) => void;
-  confliectedJavaClasses: JavaClass[];
+  handleConfirm: (options: { internal: JavaClassConflictOptions; external: JavaClassConflictOptions }) => void;
+  conflictedJavaClasses: JavaClassWithConflictInfo[];
+  onClose: () => void;
 }) => {
-  const [action, setAction] = useState<JavaClassConflictOptions>(JavaClassConflictOptions.REPLACE);
-  const handleActionButtonClick = useCallback(() => handleConfirm?.(action), [handleConfirm, action]);
-  const handleRadioBtnClick = useCallback((_, e) => setAction?.(e?.target?.name), []);
-  const classNames = confliectedJavaClasses?.map((javaClass) => javaClass?.name);
+  const internalConflicts = conflictedJavaClasses.filter((c) => !c.isExternalConflict);
+  const externalConflicts = conflictedJavaClasses.filter((c) => c.isExternalConflict);
+  const hasInternalConflicts = internalConflicts.length > 0;
+  const hasExternalConflicts = externalConflicts.length > 0;
+
+  const [internalAction, setInternalAction] = useState<JavaClassConflictOptions>(JavaClassConflictOptions.REPLACE);
+  const [externalAction, setExternalAction] = useState<JavaClassConflictOptions>(JavaClassConflictOptions.KEEP_BOTH);
+
+  const handleInternalRadioBtnClick = useCallback((event: React.FormEvent<HTMLInputElement>) => {
+    setInternalAction(event.currentTarget.name as JavaClassConflictOptions);
+  }, []);
+
+  const handleExternalRadioBtnClick = useCallback((event: React.FormEvent<HTMLInputElement>) => {
+    setExternalAction(event.currentTarget.name as JavaClassConflictOptions);
+  }, []);
+
+  const handleActionButtonClick = useCallback(() => {
+    handleConfirm?.({
+      internal: internalAction,
+      external: externalAction,
+    });
+  }, [handleConfirm, internalAction, externalAction]);
+
   return (
     <Modal
       title="Duplicate DMN Data Type Detected"
       titleIconVariant="warning"
       aria-describedby="modal-import-java-classes-conflict-description"
-      showClose={false}
+      onClose={onClose}
       isOpen={isOpen}
       variant={ModalVariant.small}
       position="top"
@@ -134,43 +161,83 @@ const ImportJavaClassNameConflictsModal = ({
         <Button key="import-java-classes-conflict-btn" variant="primary" onClick={handleActionButtonClick}>
           Import
         </Button>,
+        <Button key="import-java-classes-cancel-btn" variant="primary" onClick={onClose}>
+          Cancel
+        </Button>,
       ]}
     >
       <TextContent>
-        {classNames?.length === 1 ? (
-          <Text component={TextVariants.p}>
-            An existing DMN type named <b>{classNames?.join()}</b> has been detected. This type is currently in use
-            within the system. How would you like to proceed?
-          </Text>
-        ) : (
-          <Text component={TextVariants.p}>
-            Multiple DMN types have been detected in the list. The following DMN types are currently in use within the
-            system <b>{classNames?.join()}</b>. How would you like to proceed?
-          </Text>
-        )}
-        <Text
-          component={TextVariants.blockquote}
-          style={{ background: "none", display: "flex", flexDirection: "column", gap: "1rem" }}
-        >
-          <Radio
-            isChecked={action === JavaClassConflictOptions.REPLACE}
-            id={`radio-${JavaClassConflictOptions.REPLACE}`}
-            label={JavaClassConflictOptions.REPLACE}
-            name={JavaClassConflictOptions.REPLACE}
-            onChange={handleRadioBtnClick}
-            description="This option will replace the existing DMN type with the new one."
-            isLabelWrapped={true}
-          />
-          <Radio
-            isChecked={action === JavaClassConflictOptions.KEEP_BOTH}
-            id={`radio-${JavaClassConflictOptions.KEEP_BOTH}`}
-            label={JavaClassConflictOptions.KEEP_BOTH}
-            name={JavaClassConflictOptions.KEEP_BOTH}
-            onChange={handleRadioBtnClick}
-            description="This option will preserve the existing DMN type and create a new one with a unique name."
-            isLabelWrapped={true}
-          />
+        <Text component={TextVariants.p}>
+          Conflicts have been detected between imported Java classes and existing DMN data types. Please review the
+          details below and choose how to proceed.
         </Text>
+
+        {hasInternalConflicts && (
+          <>
+            <Text component={TextVariants.h4}>Internal Data Type Conflicts</Text>
+            <Text>
+              <b>{internalConflicts.map((c) => c.name).join(", ")}</b>- These are editable DMN Types. Choose how to
+              resolve them.
+            </Text>
+            <Text
+              component={TextVariants.blockquote}
+              style={{ background: "none", display: "flex", flexDirection: "column", gap: "1rem" }}
+            >
+              <Radio
+                isChecked={internalAction === JavaClassConflictOptions.REPLACE}
+                id={`radio-internal-${JavaClassConflictOptions.REPLACE}`}
+                label={JavaClassConflictOptions.REPLACE}
+                name={JavaClassConflictOptions.REPLACE}
+                onChange={handleInternalRadioBtnClick}
+                description="This option will replace the existing DMN type with the new one."
+                isLabelWrapped={true}
+              />
+              <Radio
+                isChecked={internalAction === JavaClassConflictOptions.KEEP_BOTH}
+                id={`radio-internal-${JavaClassConflictOptions.KEEP_BOTH}`}
+                label={JavaClassConflictOptions.KEEP_BOTH}
+                name={JavaClassConflictOptions.KEEP_BOTH}
+                onChange={handleInternalRadioBtnClick}
+                description="This option will preserve the existing DMN type and create a new one with a unique name."
+                isLabelWrapped={true}
+              />
+            </Text>
+          </>
+        )}
+
+        {hasExternalConflicts && (
+          <>
+            <Text component={TextVariants.h4}>External Data Type Conflicts</Text>
+            <Text>
+              <b>{externalConflicts.map((c) => c.name).join(", ")}</b>- These types come from external sources and
+              cannot be replaced.
+            </Text>
+            <Text
+              component={TextVariants.blockquote}
+              style={{ background: "none", display: "flex", flexDirection: "column", gap: "1rem" }}
+            >
+              <Radio
+                isChecked={externalAction === JavaClassConflictOptions.REPLACE}
+                id={`radio-external-${JavaClassConflictOptions.REPLACE}`}
+                label={JavaClassConflictOptions.REPLACE}
+                name={JavaClassConflictOptions.REPLACE + "-external"}
+                onChange={handleExternalRadioBtnClick}
+                description="This option will replace the existing DMN type with the new one."
+                isLabelWrapped={true}
+                isDisabled={true}
+              />
+              <Radio
+                isChecked={externalAction === JavaClassConflictOptions.KEEP_BOTH}
+                id={`radio-external-${JavaClassConflictOptions.KEEP_BOTH}`}
+                label={JavaClassConflictOptions.KEEP_BOTH}
+                name={JavaClassConflictOptions.KEEP_BOTH + "-external"}
+                onChange={handleExternalRadioBtnClick}
+                description="This option will preserve the existing DMN type and create a new one with a unique name."
+                isLabelWrapped={true}
+              />
+            </Text>
+          </>
+        )}
       </TextContent>
     </Modal>
   );

@@ -19,9 +19,7 @@
 
 const { getOrDefault, varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
-const rootEnv = require("@kie-tools/root-env/env");
-
-module.exports = composeEnv([rootEnv], {
+module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
     EXTENDED_SERVICES__kieSandboxUrl: {
       default: "https://localhost:9001",
@@ -40,15 +38,15 @@ module.exports = composeEnv([rootEnv], {
       description: "HTTP port",
     },
     EXTENDED_SERVICES__nativeBinaryPath_macOS: {
-      default: `./dist-dev/jitexecutor-native-darwin-${rootEnv.env.versions.kogito}-runner`,
+      default: `./dist-dev/jitexecutor-native-darwin-999-20250511-SNAPSHOT-runner`,
       description: "",
     },
     EXTENDED_SERVICES__nativeBinaryPath_linux: {
-      default: `./dist-dev/jitexecutor-native-linux-${rootEnv.env.versions.kogito}-runner`,
+      default: `./dist-dev/jitexecutor-native-linux-999-20250511-SNAPSHOT-runner`,
       description: "",
     },
     EXTENDED_SERVICES__nativeBinaryPath_win32: {
-      default: `.\\dist-dev\\jitexecutor-native-win32-${rootEnv.env.versions.kogito}-runner.exe`,
+      default: `.\\dist-dev\\jitexecutor-native-win32-999-20250511-SNAPSHOT-runner.exe`,
       description: "",
     },
   }),

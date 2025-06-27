@@ -36,31 +36,43 @@ import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon
 import { UserIcon } from "@patternfly/react-icons/dist/js/icons/user-icon";
 import { UsersIcon } from "@patternfly/react-icons/dist/js/icons/users-icon";
 import { useOnlineI18n } from "../../../i18n";
+import GitlabIcon from "@patternfly/react-icons/dist/js/icons/gitlab-icon";
+import { useGitlabClient } from "../../../gitlab/useGitlabClient";
 
+export type Organization = {
+  name: string;
+  value: string;
+};
 export interface LoadOrganizationsReponse {
-  organizations: {
-    name: string;
-  }[];
+  organizations: Organization[];
 }
+type KindToValueMap = {
+  user: string;
+  organization: Organization;
+};
 
 export type SelectOptionKindType = "user" | "organization";
 
-export type SelectOptionObjectType = {
-  value: string;
-  kind: SelectOptionKindType;
+export type SelectOptionObjectType<K extends SelectOptionKindType = SelectOptionKindType> = {
+  selectedOption: KindToValueMap[K];
+  kind: K;
   toString(): string;
   compareTo(selectOption: any): boolean;
 };
 
-const getSelectOptionValue = (value: string, kind: SelectOptionKindType): SelectOptionObjectType => {
+const getSelectOptionValue = <K extends SelectOptionKindType>(
+  selectedOption: KindToValueMap[K],
+  kind: K
+): SelectOptionObjectType<K> => {
   return {
-    value,
+    selectedOption,
     kind,
     toString: () => {
-      return value;
+      return kind === "user" ? (selectedOption as string) : (selectedOption as Organization)?.name;
     },
     compareTo: (selectOption: any) => {
-      return value.toLowerCase() === selectOption.toString().toLowerCase();
+      const val = kind === "user" ? (selectedOption as string) : (selectedOption as Organization)?.name;
+      return val.toLowerCase() === selectOption.toString().toLowerCase();
     },
   };
 };
@@ -70,18 +82,20 @@ export interface Props {
   onSelect: (organization?: SelectOptionObjectType) => void;
   readonly?: boolean;
   hideUser?: boolean;
+  actionType?: "repository" | "snippet";
 }
 
-export const LoadOrganizationsSelect = (props: Props) => {
-  const { authSession, authInfo } = useAuthSession(props.workspace.gitAuthSessionId);
+export const LoadOrganizationsSelect = ({ onSelect, workspace, readonly, actionType }: Props) => {
+  const { authSession, authInfo } = useAuthSession(workspace.gitAuthSessionId);
   const authProvider = useAuthProvider(authSession);
   const gitHubClient = useGitHubClient(authSession);
   const bitbucketClient = useBitbucketClient(authSession);
+  const gitlabClient = useGitlabClient(authSession);
 
   const { i18n } = useOnlineI18n();
 
   const [isOrganizationDropdownOpen, setOrganizationDropdownOpen] = useState(false);
-  const [organizations, setOrganizations] = useState<{ name: string }[]>();
+  const [organizations, setOrganizations] = useState<Organization[]>();
   const [isLoadingOrganizations, setLoadingOrganizations] = useState(false);
   const [internalSelectedOption, setInternalSelectedOption] = useState<SelectOptionObjectType>();
 
@@ -89,9 +103,14 @@ export const LoadOrganizationsSelect = (props: Props) => {
     return authProvider?.type === AuthProviderType.bitbucket;
   }, [authProvider?.type]);
 
+  const isGitlabSnippet = useMemo(
+    () => authProvider?.type === AuthProviderType.gitlab && actionType === "snippet",
+    [authProvider?.type, actionType]
+  );
+
   const getGitHubOrganizationsForUser = useCallback(async (): Promise<LoadOrganizationsReponse> => {
     const orgs = await gitHubClient.orgs.listForAuthenticatedUser();
-    return { organizations: orgs.data.map((it) => ({ name: it.login })) };
+    return { organizations: orgs.data.map((it) => ({ name: it.login, value: it.login })) };
   }, [gitHubClient.orgs]);
 
   const getBitbucketWorkspacesForUser = useCallback(async (): Promise<LoadOrganizationsReponse> => {
@@ -102,10 +121,34 @@ export const LoadOrganizationsSelect = (props: Props) => {
       return emptyResponse;
     }
     const values: any[] = json.values;
-    return { organizations: values.map((it) => ({ name: it.workspace.slug })) };
+    return { organizations: values.map((it) => ({ name: it.workspace.slug, value: it.workspace.slug })) };
   }, [bitbucketClient]);
 
-  const { onSelect } = props;
+  const getGitlabGroupsForUser = useCallback(async (): Promise<LoadOrganizationsReponse> => {
+    if (actionType && actionType === "snippet") {
+      const projectsResponse = await gitlabClient.listProjects();
+      const projectsResponseJson: any[] = await projectsResponse.json();
+      return {
+        organizations: (projectsResponseJson ?? [])
+          .map((project) => ({
+            name: project?.name_with_namespace,
+            value: project?.id,
+          }))
+          .sort((a, b) => a?.name?.localeCompare?.(b?.name)),
+      };
+    }
+    const groupsResponse = await gitlabClient.listGroups();
+    const groupsResponseJson: any[] = await groupsResponse.json();
+    return {
+      organizations: (groupsResponseJson ?? [])
+        .map((group) => ({
+          name: group?.full_name,
+          value: group?.id,
+        }))
+        .sort((a, b) => a?.name?.localeCompare?.(b?.name)),
+    };
+  }, [gitlabClient, actionType]);
+
   const setSelectedOption = useCallback(
     (option?: SelectOptionObjectType) => {
       onSelect(option);
@@ -119,10 +162,13 @@ export const LoadOrganizationsSelect = (props: Props) => {
       if (!isSupportedGitAuthProviderType(authProvider?.type)) {
         return;
       }
+      const defaultSelectedOptionValue = orgs?.organizations?.[0] ?? authInfo?.username;
+      const defaultSelectedOptionKind = orgs?.organizations?.[0] ? "organization" : "user";
       setSelectedOption(
         switchExpression(authProvider?.type, {
-          bitbucket: getSelectOptionValue(orgs.organizations[0].name, "organization"),
+          bitbucket: getSelectOptionValue(orgs.organizations[0], "organization"),
           github: getSelectOptionValue(authInfo!.username, "user"),
+          gitlab: getSelectOptionValue(defaultSelectedOptionValue, defaultSelectedOptionKind),
         })
       );
     },
@@ -137,6 +183,7 @@ export const LoadOrganizationsSelect = (props: Props) => {
     switchExpression(authProvider?.type, {
       bitbucket: getBitbucketWorkspacesForUser,
       github: getGitHubOrganizationsForUser,
+      gitlab: getGitlabGroupsForUser,
     })()
       .then((it) => {
         setOrganizations(it.organizations);
@@ -145,7 +192,13 @@ export const LoadOrganizationsSelect = (props: Props) => {
       .finally(() => {
         setLoadingOrganizations(false);
       });
-  }, [authProvider?.type, getBitbucketWorkspacesForUser, getGitHubOrganizationsForUser, selectDefaultOption]);
+  }, [
+    authProvider?.type,
+    getBitbucketWorkspacesForUser,
+    getGitHubOrganizationsForUser,
+    getGitlabGroupsForUser,
+    selectDefaultOption,
+  ]);
 
   useEffect(() => {
     setOrganizations(undefined);
@@ -177,9 +230,12 @@ export const LoadOrganizationsSelect = (props: Props) => {
         options.push(<Divider component="li" key={1} />);
       }
       options.push(
-        <SelectGroup label={i18n.loadOrganizationsSelect[authProvider.type].organizations} key="group2">
+        <SelectGroup
+          label={isGitlabSnippet ? "GitLab Projects" : i18n.loadOrganizationsSelect[authProvider.type].organizations}
+          key="group2"
+        >
           {organizations?.map((it, index) => (
-            <SelectOption key={2 + index} value={getSelectOptionValue(it.name, "organization")}>
+            <SelectOption key={2 + index} value={getSelectOptionValue(it, "organization")}>
               <Flex>
                 <FlexItem>
                   <UsersIcon />
@@ -192,7 +248,7 @@ export const LoadOrganizationsSelect = (props: Props) => {
       );
     }
     return options;
-  }, [authInfo, authProvider, hideUser, i18n.loadOrganizationsSelect, organizations]);
+  }, [authInfo, authProvider, hideUser, i18n.loadOrganizationsSelect, organizations, isGitlabSnippet]);
 
   if (!authProvider || !isSupportedGitAuthProviderType(authProvider?.type)) {
     return <></>;
@@ -211,10 +267,11 @@ export const LoadOrganizationsSelect = (props: Props) => {
             toggleIcon={switchExpression(authProvider.type, {
               bitbucket: <BitbucketIcon />,
               github: <GithubIcon />,
+              gitlab: <GitlabIcon />,
             })}
             onToggle={(_event, val) => setOrganizationDropdownOpen(val)}
             selections={internalSelectedOption}
-            isDisabled={props.readonly}
+            isDisabled={readonly}
           >
             {selectOptions}
           </Select>
@@ -227,7 +284,7 @@ export const LoadOrganizationsSelect = (props: Props) => {
           size="sm"
           isLoading={isLoadingOrganizations}
           onClick={loadOrganizations}
-          isDisabled={props.readonly}
+          isDisabled={readonly}
         >
           {isLoadingOrganizations ? "" : <SyncAltIcon />}
         </Button>

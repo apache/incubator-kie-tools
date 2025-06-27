@@ -235,6 +235,92 @@ test.describe("Model Decision Services - DRD", () => {
     await expect(diagram.get()).toHaveScreenshot("decision-service-from-other-drd.png");
   });
 
+  test("Resizing decision contained by decision service should resize it in all DRDs", async ({
+    drds,
+    drgNodes,
+    palette,
+    nodes,
+    diagram,
+  }) => {
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/889",
+    });
+    await drds.toggle();
+    await drds.create({ name: "First DRD" });
+    await drgNodes.toggle();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION_SERVICE,
+      targetPosition: { x: 400, y: 200 },
+      thenRenameTo: "DS1",
+    });
+    await expect(nodes.get({ name: "DS1" })).toBeAttached();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION,
+      targetPosition: { x: 200, y: 200 },
+      thenRenameTo: "D1",
+    });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+
+    await nodes.move({ name: "D1", targetPosition: { x: 500, y: 300 } });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+    await drds.toggle();
+    await drds.create({ name: "Second DRD" });
+    await drgNodes.dragNode({ name: "DS1", targetPosition: { x: 400, y: 200 } });
+
+    await drgNodes.toggle();
+    await nodes.resize({ nodeName: "D1", xOffset: 50, yOffset: 0 });
+    await drds.toggle();
+    await drds.navigateTo({ name: "First DRD" });
+    await drds.toggle();
+    await expect(diagram.get()).toHaveScreenshot("resized-decision.png");
+  });
+
+  test("Moving decision contained by decision service should move it in all DRDs", async ({
+    drds,
+    drgNodes,
+    palette,
+    nodes,
+    diagram,
+  }) => {
+    test.info().annotations.push({
+      type: TestAnnotations.REGRESSION,
+      description: "https://github.com/apache/incubator-kie-issues/issues/889",
+    });
+    await drds.toggle();
+    await drds.create({ name: "First DRD" });
+    await drgNodes.toggle();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION_SERVICE,
+      targetPosition: { x: 400, y: 200 },
+      thenRenameTo: "DS1",
+    });
+    await expect(nodes.get({ name: "DS1" })).toBeAttached();
+
+    await palette.dragNewNode({
+      type: NodeType.DECISION,
+      targetPosition: { x: 200, y: 200 },
+      thenRenameTo: "D1",
+    });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+
+    await nodes.move({ name: "D1", targetPosition: { x: 500, y: 300 } });
+    await expect(nodes.get({ name: "D1" })).toBeAttached();
+    await drds.toggle();
+    await drds.create({ name: "Second DRD" });
+    await drgNodes.dragNode({ name: "DS1", targetPosition: { x: 400, y: 200 } });
+
+    await drgNodes.toggle();
+    await nodes.move({ name: "D1", targetPosition: { x: 600, y: 300 } });
+    await drds.toggle();
+    await drds.navigateTo({ name: "First DRD" });
+    await drds.toggle();
+    await expect(diagram.get()).toHaveScreenshot("repositioned-decision.png");
+  });
+
   test("892 expand - allow only if no other DS is collpased in the DRD", async ({ drds }) => {
     test.skip(true, "https://github.com/apache/incubator-kie-issues/issues/892");
     test.info().annotations.push({

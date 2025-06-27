@@ -29,6 +29,7 @@ export function getOctokitClient(args: {
   domain?: string;
   proxyUrl?: string;
   insecurelyDisableTlsCertificateValidation?: boolean;
+  disableEncoding?: boolean;
 }) {
   return new Octokit({
     auth: args.githubToken,
@@ -46,6 +47,12 @@ export function getOctokitClient(args: {
                   [CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION]: Boolean(
                     args.insecurelyDisableTlsCertificateValidation
                   ).toString(),
+                }
+              : {}),
+            // If disableEncoding is true, force proxy/server to skip compression
+            ...(args.disableEncoding
+              ? {
+                  [CorsProxyHeaderKeys.DISABLE_ENCODING]: Boolean(args.disableEncoding).toString(),
                 }
               : {}),
             ...options.headers,
@@ -75,6 +82,7 @@ export function useGitHubClient(authSession: AuthSession | undefined): Octokit {
       githubToken: authSession.token,
       proxyUrl: authProvider.insecurelyDisableTlsCertificateValidation ? env.KIE_SANDBOX_CORS_PROXY_URL : undefined,
       insecurelyDisableTlsCertificateValidation: authProvider.insecurelyDisableTlsCertificateValidation,
+      disableEncoding: authProvider.disableEncoding,
     });
   }, [authProviders, env.KIE_SANDBOX_CORS_PROXY_URL, authSession]);
 }

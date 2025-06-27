@@ -13,15 +13,28 @@
     "url": "https://github.com/apache/incubator-kie-tools/issues"
   },
   "scripts": {
-    "build:prod": "pnpm test",
+    "build:dev": "rimraf dist && pnpm update:quarkus:config && pnpm format && pnpm test && pnpm gen-dist",
+    "build:prod": "pnpm build:dev",
+    "copy-deps-dist": "mkdir -p dist/modules/kogito-data-index-common/added/kogito-data-index-webapp && cp -r node_modules/@kie-tools/kogito-data-index-webapp/dist/* dist/modules/kogito-data-index-common/added/kogito-data-index-webapp/",
+    "format": "prettier --write .",
+    "gen-dist": "run-script-os",
+    "gen-dist:linux:darwin": "mkdir dist && cp -r resources/* dist/ && pnpm copy-deps-dist",
+    "gen-dist:win32": "echo \"Copy is skipped in Windows\"",
     "install": "node install.js",
     "test": "run-script-os",
     "test:linux:darwin": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"mkdir -p dist-tests\" \"rm -rf dist-tests/*\" \"make -C ./resources bats\" --finally \"touch dist-tests/report.xml\" \"mv dist-tests/report.xml dist-tests/junit-report.xml\"",
-    "test:win32": "echo \"Tests are skipped in Windows\""
+    "test:win32": "echo \"Tests are skipped in Windows\"",
+    "update:quarkus:config": "run-script-os",
+    "update:quarkus:config:linux:darwin": "node_modules/@kie-tools/python-venv/venv/bin/python resources/scripts/update_quarkus_config.py $(build-env kogitoImagesCekitModules.quarkusRegistries)",
+    "update:quarkus:config:win32": "echo \"Update Quarkus Config is skipped on Windows\""
+  },
+  "dependencies": {
+    "@kie-tools/kogito-data-index-webapp": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools/python-venv": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
+    "rimraf": "^3.0.2",
     "run-script-os": "^1.1.6"
   },
   "kieTools": {

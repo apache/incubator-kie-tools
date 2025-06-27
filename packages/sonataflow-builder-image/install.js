@@ -17,25 +17,20 @@
  * under the License.
  */
 
-const { execSync } = require("child_process");
 const fs = require("fs");
-
-const { env } = require("./env");
 const path = require("path");
-const pythonVenvDir = path.dirname(require.resolve("@kie-tools/python-venv/package.json"));
 const sonataflowImageCommonDir = path.dirname(require.resolve("@kie-tools/sonataflow-image-common/package.json"));
-const replaceInFile = require("replace-in-file");
+const { runKogitoImageInstall } = require("@kie/kogito-images-install-helper");
+const { env } = require("./env");
 
-const activateCmd =
-  process.platform === "win32"
-    ? `${pythonVenvDir}\\venv\\Scripts\\Activate.bat`
-    : `. ${pythonVenvDir}/venv/bin/activate`;
+const { buildTag, registry, account, name: imageName } = env.sonataflowBuilderImage;
 
-execSync(
-  `${activateCmd} && \
-  python3 ${sonataflowImageCommonDir}/resources/scripts/versions_manager.py --bump-to ${env.sonataflowBuilderImage.buildTag} --source-folder ./resources`,
-  { stdio: "inherit" }
-);
+runKogitoImageInstall({
+  finalImageName: "sonataflow-builder",
+  imageTag: { buildTag, registry, account, name: imageName },
+  resourceDir: path.resolve(__dirname, "./resources"),
+  requiresMvn: false,
+});
 
 // Creates a symlink to the bats installation dir
 try {
@@ -45,29 +40,3 @@ try {
     throw err;
   }
 }
-
-// Find and read the -image.yaml file
-const resourcesPath = path.resolve(__dirname, "./resources");
-const files = fs.readdirSync(resourcesPath);
-const imageYamlFiles = files.filter((fileName) => fileName.endsWith("-image.yaml"));
-if (imageYamlFiles.length !== 1) {
-  throw new Error("There should only be one -image.yaml file on ./resources!");
-}
-const originalYamlPath = path.join(resourcesPath, imageYamlFiles[0]);
-let imageYaml = fs.readFileSync(originalYamlPath, "utf8");
-
-const imageUrl = `${env.sonataflowBuilderImage.registry}/${env.sonataflowBuilderImage.account}/${env.sonataflowBuilderImage.name}`;
-
-// Replace the whole string between quotes ("") with the image name
-imageYaml = imageYaml.replace(/(?<=")(.*sonataflow-builder.*)(?=")/gm, imageUrl);
-
-// Write file and then rename it to match the image name
-fs.writeFileSync(originalYamlPath, imageYaml);
-fs.renameSync(originalYamlPath, path.join(resourcesPath, `${env.sonataflowBuilderImage.name}-image.yaml`));
-
-// Replace image URL in .feature files
-replaceInFile.sync({
-  files: ["**/*.feature"],
-  from: /@docker.io\/apache\/.*/g,
-  to: `@${imageUrl}`,
-});

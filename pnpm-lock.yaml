@@ -4859,15 +4859,24 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
     devDependencies:
+      '@kie-tools-core/drools-and-kogito':
+        specifier: workspace:*
+        version: link:../drools-and-kogito
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
       '@kie-tools/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
+      run-script-os:
+        specifier: ^1.1.6
+        version: 1.1.6
       typescript:
         specifier: ^5.5.3
         version: 5.5.3
@@ -5054,6 +5063,15 @@ importers:
       webpack-merge:
         specifier: ^5.9.0
         version: 5.9.0
+
+  packages/drools-and-kogito:
+    devDependencies:
+      '@kie-tools-scripts/build-env':
+        specifier: workspace:*
+        version: link:../../scripts/build-env
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
 
   packages/editor:
     dependencies:
@@ -7312,6 +7330,9 @@ importers:
 
   packages/kn-plugin-workflow:
     dependencies:
+      '@kie-tools-core/drools-and-kogito':
+        specifier: workspace:*
+        version: link:../drools-and-kogito
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
@@ -7349,6 +7370,9 @@ importers:
       '@kie-tools/sonataflow-image-common':
         specifier: workspace:*
         version: link:../sonataflow-image-common
+      '@kie/kogito-images-install-helper':
+        specifier: workspace:*
+        version: link:../kogito-images-install-helper
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -7363,10 +7387,11 @@ importers:
         version: 1.1.6
 
   packages/kogito-data-index-ephemeral-image:
-    devDependencies:
+    dependencies:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
+    devDependencies:
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -7376,6 +7401,9 @@ importers:
       '@kie-tools/sonataflow-image-common':
         specifier: workspace:*
         version: link:../sonataflow-image-common
+      '@kie/kogito-images-install-helper':
+        specifier: workspace:*
+        version: link:../kogito-images-install-helper
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -7390,10 +7418,11 @@ importers:
         version: 1.1.6
 
   packages/kogito-data-index-postgresql-image:
-    devDependencies:
+    dependencies:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
+    devDependencies:
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -7403,6 +7432,9 @@ importers:
       '@kie-tools/sonataflow-image-common':
         specifier: workspace:*
         version: link:../sonataflow-image-common
+      '@kie/kogito-images-install-helper':
+        specifier: workspace:*
+        version: link:../kogito-images-install-helper
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -7415,6 +7447,39 @@ importers:
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6
+
+  packages/kogito-data-index-webapp:
+    devDependencies:
+      '@kie-tools-core/webpack-base':
+        specifier: workspace:*
+        version: link:../webpack-base
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      copy-webpack-plugin:
+        specifier: ^11.0.0
+        version: 11.0.0(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0))
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@22.13.10)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@22.13.10)(typescript@5.5.3))
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@swc/core@1.3.92)(@types/node@22.13.10)(typescript@5.5.3)
+      webpack:
+        specifier: ^5.94.0
+        version: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0)
+      webpack-cli:
+        specifier: ^4.10.0
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0)
+      webpack-dev-server:
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.94.0)
+      webpack-merge:
+        specifier: ^5.9.0
+        version: 5.10.0
 
   packages/kogito-db-migrator-tool:
     dependencies:
@@ -7437,16 +7502,19 @@ importers:
       '@kie-tools/kogito-db-migrator-tool':
         specifier: workspace:*
         version: link:../kogito-db-migrator-tool
+      '@kie-tools/sonataflow-image-common':
+        specifier: workspace:*
+        version: link:../sonataflow-image-common
+    devDependencies:
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
-      '@kie-tools/sonataflow-image-common':
+      '@kie/kogito-images-install-helper':
         specifier: workspace:*
-        version: link:../sonataflow-image-common
-    devDependencies:
+        version: link:../kogito-images-install-helper
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -7460,8 +7528,8 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
-  packages/kogito-jit-runner-image:
-    devDependencies:
+  packages/kogito-images-install-helper:
+    dependencies:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
@@ -7474,6 +7542,28 @@ importers:
       '@kie-tools/sonataflow-image-common':
         specifier: workspace:*
         version: link:../sonataflow-image-common
+      replace-in-file:
+        specifier: ^7.1.0
+        version: 7.1.0
+
+  packages/kogito-jit-runner-image:
+    dependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
+    devDependencies:
+      '@kie-tools/python-venv':
+        specifier: workspace:*
+        version: link:../python-venv
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      '@kie-tools/sonataflow-image-common':
+        specifier: workspace:*
+        version: link:../sonataflow-image-common
+      '@kie/kogito-images-install-helper':
+        specifier: workspace:*
+        version: link:../kogito-images-install-helper
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -7488,10 +7578,11 @@ importers:
         version: 1.1.6
 
   packages/kogito-jobs-service-allinone-image:
-    devDependencies:
+    dependencies:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
+    devDependencies:
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -7515,10 +7606,11 @@ importers:
         version: 1.1.6
 
   packages/kogito-jobs-service-ephemeral-image:
-    devDependencies:
+    dependencies:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
+    devDependencies:
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -7528,6 +7620,9 @@ importers:
       '@kie-tools/sonataflow-image-common':
         specifier: workspace:*
         version: link:../sonataflow-image-common
+      '@kie/kogito-images-install-helper':
+        specifier: workspace:*
+        version: link:../kogito-images-install-helper
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -7542,10 +7637,11 @@ importers:
         version: 1.1.6
 
   packages/kogito-jobs-service-postgresql-image:
-    devDependencies:
+    dependencies:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
+    devDependencies:
       '@kie-tools/python-venv':
         specifier: workspace:*
         version: link:../python-venv
@@ -7555,6 +7651,9 @@ importers:
       '@kie-tools/sonataflow-image-common':
         specifier: workspace:*
         version: link:../sonataflow-image-common
+      '@kie/kogito-images-install-helper':
+        specifier: workspace:*
+        version: link:../kogito-images-install-helper
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -7636,6 +7735,10 @@ importers:
         version: 5.5.3
 
   packages/maven-base:
+    dependencies:
+      '@kie-tools-core/drools-and-kogito':
+        specifier: workspace:*
+        version: link:../drools-and-kogito
     devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
@@ -11145,10 +11248,11 @@ importers:
         version: 5.9.0
 
   packages/serverless-workflow-diagram-editor:
-    devDependencies:
+    dependencies:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
+    devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
@@ -11916,13 +12020,14 @@ importers:
         version: 5.9.0
 
   packages/sonataflow-builder-image:
+    dependencies:
+      '@kie-tools/maven-base':
+        specifier: workspace:*
+        version: link:../maven-base
     devDependencies:
       '@kie-tools/image-builder':
         specifier: workspace:*
         version: link:../image-builder
-      '@kie-tools/maven-base':
-        specifier: workspace:*
-        version: link:../maven-base
       '@kie-tools/maven-m2-repo-via-http-image':
         specifier: workspace:*
         version: link:../maven-m2-repo-via-http-image
@@ -11935,6 +12040,9 @@ importers:
       '@kie-tools/sonataflow-image-common':
         specifier: workspace:*
         version: link:../sonataflow-image-common
+      '@kie/kogito-images-install-helper':
+        specifier: workspace:*
+        version: link:../kogito-images-install-helper
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -12179,6 +12287,9 @@ importers:
       '@kie-tools/sonataflow-quarkus-devui':
         specifier: workspace:*
         version: link:../sonataflow-quarkus-devui
+      '@kie/kogito-images-install-helper':
+        specifier: workspace:*
+        version: link:../kogito-images-install-helper
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -12193,6 +12304,10 @@ importers:
         version: 1.1.6
 
   packages/sonataflow-image-common:
+    dependencies:
+      '@kie-tools/kogito-data-index-webapp':
+        specifier: workspace:*
+        version: link:../kogito-data-index-webapp
     devDependencies:
       '@kie-tools/python-venv':
         specifier: workspace:*
@@ -12200,6 +12315,9 @@ importers:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
       run-script-os:
         specifier: ^1.1.6
         version: 1.1.6
@@ -12645,10 +12763,11 @@ importers:
         version: 5.9.0
 
   packages/stunner-editors:
-    devDependencies:
+    dependencies:
       '@kie-tools/maven-base':
         specifier: workspace:*
         version: link:../maven-base
+    devDependencies:
       '@kie-tools/root-env':
         specifier: workspace:*
         version: link:../root-env

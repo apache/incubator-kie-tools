@@ -15,13 +15,13 @@
    under the License.
 -->
 
-## @kie-tools-scripts/update-version
+## @kie-tools-scripts/update-kogito-version
 
-Updates the default value of `KOGITO_RUNTIME_version` of `packages/root-env` and runs `pnpm bootstrap` at the end.
+Updates the default value of `KOGITO_RUNTIME_version` of `packages/root-env`, optionally the Git refs of repositories `packages/drools-and-kogito`, and runs `pnpm bootstrap` at the end.
 
 ### Usage
 
-`pnpm update-kogito-version-to --maven [new-version]`
+`pnpm update-kogito-version-to --maven {new-version} [--droolsGitRef {ref} --optaplannerGitRef {ref} --kogitoRuntimesGitRef {ref} --kogitoAppsGitRef {ref}]`
 
 ---
 
