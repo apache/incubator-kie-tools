@@ -1151,7 +1151,7 @@ export const DecisionServiceNode = React.memo(
               shapeIndex: shape.index,
               localYPosition: e.y,
               snapGrid: state.diagram.snapGrid,
-              __readonly_decisionServiceId: id,
+              __readonly_decisionServiceHref: id,
             });
           });
         })
