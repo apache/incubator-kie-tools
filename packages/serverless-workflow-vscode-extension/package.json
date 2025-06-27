@@ -22,11 +22,12 @@
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "pack:prod": "vsce package --githubBranch main --no-dependencies -o ./dist/serverless_workflow_vscode_extension_$npm_package_version.vsix",
     "run:webmode": "pnpm vscode-test-web --browserType=chromium --extensionDevelopmentPath=. --version=stable",
-    "test-e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm test-e2e:clean\" \"cpr e2e-tests/resources e2e-tests-tmp/resources\" \"tsc --project tsconfig.e2e-tests.json\" \"extest setup-and-run --yarn -c max -u -e ./test-resources -o ./e2e-tests/settings.json out/*.test.js\"",
+    "test-e2e": "echo 'Tests are skipped for this package as they were flaky. See https://github.com/apache/incubator-kie-tools/pull/3170#issuecomment-2963826517'",
     "test-e2e:clean": "rimraf ./dist-tests-e2e && rimraf ./test-resources && rimraf ./out && rimraf ./e2e-tests-tmp && rimraf *.vsix",
     "test-e2e:clean:offline": "rimraf ./dist-tests-e2e && rimraf ./out && rimraf ./e2e-tests-tmp && rimraf *.vsix",
     "test-e2e:insider": "rimraf ./test-resources && rimraf ./out && tsc --project tsconfig.e2e-tests.json --skipLibCheck --sourceMap true && extest setup-and-run --yarn -t insider -u -e ./test-resources -o ./e2e-tests/settings.json out/*.test.js",
     "test-e2e:offline": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm test-e2e:clean:offline\" \"cpr e2e-tests/resources e2e-tests-tmp/resources\" \"tsc --project tsconfig.e2e-tests.json\" \"extest setup-and-run --offline --yarn -c max -u -e ./test-resources -o e2e-tests/settings.json out/*.test.js\"",
+    "test-e2e:skip": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm test-e2e:clean\" \"cpr e2e-tests/resources e2e-tests-tmp/resources\" \"tsc --project tsconfig.e2e-tests.json\" \"extest setup-and-run --yarn -c max -u -e ./test-resources -o ./e2e-tests/settings.json out/*.test.js\"",
     "watch": "export WEBPACK__sourceMaps=true; WEBPACK__minimize=false; webpack --env dev"
   },
   "dependencies": {

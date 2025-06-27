@@ -1,5 +1,3 @@
-#!/bin/sh
-#
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
 # distributed with this work for additional information
@@ -17,21 +15,13 @@
 # specific language governing permissions and limitations
 # under the License.
 #
-set -e
+@docker.io/apache/incubator-kie-sonataflow-builder
+Feature: SonataFlow Builder Static Checks
 
-SCRIPT_DIR=$(dirname "${0}")
-ADDED_DIR="${SCRIPT_DIR}"/added
-
-mkdir "${KOGITO_HOME}"/bin/shared-libs/
-
-mv "${KOGITO_HOME}"/bin/ephemeral/quarkus-app/lib/* "${KOGITO_HOME}"/bin/shared-libs/
-rm -rf "${KOGITO_HOME}"/bin/ephemeral/quarkus-app/lib
-ln -s "${KOGITO_HOME}"/bin/shared-libs "${KOGITO_HOME}"/bin/ephemeral/quarkus-app/lib
-
-cp -R "${KOGITO_HOME}"/bin/postgresql/quarkus-app/lib/* "${KOGITO_HOME}"/bin/shared-libs/
-rm -rf "${KOGITO_HOME}"/bin/postgresql/quarkus-app/lib
-ln -s "${KOGITO_HOME}"/bin/shared-libs "${KOGITO_HOME}"/bin/postgresql/quarkus-app/lib
-
-
-cp "${ADDED_DIR}"/kogito-app-launch.sh "${KOGITO_HOME}"
-chmod +x-w "${KOGITO_HOME}"/kogito-app-launch.sh
+  Scenario: Verify if the sonataflow and quarkus files are under /home/kogito/.m2/repository
+    When container is started with command bash
+    Then file /home/kogito/.m2/repository/io/quarkus/platform/quarkus-bom should exist and be a directory
+    And file /home/kogito/.m2/repository/org/apache/kie/sonataflow/sonataflow-quarkus/ should exist and be a directory
+    And file /home/kogito/.m2/repository/org/kie/kie-addons-quarkus-persistence-jdbc/ should exist and be a directory
+    And file /home/kogito/.m2/repository/io/quarkus/quarkus-agroal should exist and be a directory
+    And file /home/kogito/.m2/repository/io/quarkus/quarkus-jdbc-postgresql should exist and be a directory

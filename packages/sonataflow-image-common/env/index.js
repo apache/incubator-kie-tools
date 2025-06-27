@@ -25,11 +25,18 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: "io.quarkus.platform",
       description: "Quarkus platform group id.",
     },
+    KOGITO_IMAGES_CEKIT_MODULES_quarkusRegistries: {
+      default: "registry.quarkus.io",
+      description:
+        "Quarkus Registry URLs comma-separated to add to the .quarkus/config.yaml file. Variables substitutions are done during bootstrap phase.",
+      example: "registry.com,registry2.com",
+    },
   }),
   get env() {
     return {
       kogitoImagesCekitModules: {
         quarkusGroupId: getOrDefault(this.vars.KOGITO_IMAGES_CEKIT_MODULES__quarkusGroupId),
+        quarkusRegistries: getOrDefault(this.vars.KOGITO_IMAGES_CEKIT_MODULES_quarkusRegistries),
       },
     };
   },

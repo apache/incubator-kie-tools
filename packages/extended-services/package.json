@@ -34,9 +34,9 @@
     "copy-jitexecutor-linux-headless:linux": "cp $(build-env extendedServices.jitexecutor.nativeBinaryPath.linux) jitexecutor && chmod +x jitexecutor",
     "copy-jitexecutor-linux-headless:win32": "pnpm powershell \"Copy-Item $(build-env extendedServices.jitexecutor.nativeBinaryPath.win32) jitexecutor\"",
     "download:mvn:jitexecutor-native": "run-script-os",
-    "download:mvn:jitexecutor-native:darwin": "mvn dependency:get -Dartifact=\"org.kie.kogito:jitexecutor-native-darwin:$(build-env versions.kogito):jar:binaries\"",
-    "download:mvn:jitexecutor-native:linux": "mvn dependency:get -Dartifact=\"org.kie.kogito:jitexecutor-native-linux:$(build-env versions.kogito):jar:binaries\"",
-    "download:mvn:jitexecutor-native:win32": "pnpm powershell \"mvn dependency:get `-Dartifact=org.kie.kogito:jitexecutor-native-win32:$(build-env versions.kogito):jar:binaries\"",
+    "download:mvn:jitexecutor-native:darwin": "mvn dependency:get -Dartifact=\"org.kie.kogito:jitexecutor-native-darwin:999-20250511-SNAPSHOT:jar:binaries\"",
+    "download:mvn:jitexecutor-native:linux": "mvn dependency:get -Dartifact=\"org.kie.kogito:jitexecutor-native-linux:999-20250511-SNAPSHOT:jar:binaries\"",
+    "download:mvn:jitexecutor-native:win32": "pnpm powershell \"mvn dependency:get `-Dartifact=org.kie.kogito:jitexecutor-native-win32:999-20250511-SNAPSHOT:jar:binaries\"",
     "install": "go mod tidy && pnpm download:mvn:jitexecutor-native && pnpm unpack:mvn:jitexecutor-native",
     "pack-app": "run-script-os",
     "pack-app:darwin": "cd ./scripts/macos && ./build.sh",
@@ -45,9 +45,9 @@
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
     "start": "cross-env ENV=dev make start",
     "unpack:mvn:jitexecutor-native": "run-script-os",
-    "unpack:mvn:jitexecutor-native:darwin": "mvn dependency:unpack -DoutputDirectory=dist-dev -Dartifact=\"org.kie.kogito:jitexecutor-native-darwin:$(build-env versions.kogito):jar:binaries\"",
-    "unpack:mvn:jitexecutor-native:linux": "mvn dependency:unpack -DoutputDirectory=dist-dev -Dartifact=\"org.kie.kogito:jitexecutor-native-linux:$(build-env versions.kogito):jar:binaries\"",
-    "unpack:mvn:jitexecutor-native:win32": "pnpm powershell \"mvn dependency:unpack `-DoutputDirectory=dist-dev `-Dartifact=org.kie.kogito:jitexecutor-native-win32:$(build-env versions.kogito):jar:binaries\""
+    "unpack:mvn:jitexecutor-native:darwin": "mvn dependency:unpack -DoutputDirectory=dist-dev -Dartifact=\"org.kie.kogito:jitexecutor-native-darwin:999-20250511-SNAPSHOT:jar:binaries\"",
+    "unpack:mvn:jitexecutor-native:linux": "mvn dependency:unpack -DoutputDirectory=dist-dev -Dartifact=\"org.kie.kogito:jitexecutor-native-linux:999-20250511-SNAPSHOT:jar:binaries\"",
+    "unpack:mvn:jitexecutor-native:win32": "pnpm powershell \"mvn dependency:unpack `-DoutputDirectory=dist-dev `-Dartifact=org.kie.kogito:jitexecutor-native-win32:999-20250511-SNAPSHOT:jar:binaries\""
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",

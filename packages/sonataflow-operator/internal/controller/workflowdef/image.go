@@ -22,11 +22,11 @@ package workflowdef
 import (
 	"fmt"
 
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/version"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/version"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/internal/controller/cfg"
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/utils"
 )
 
 const (
