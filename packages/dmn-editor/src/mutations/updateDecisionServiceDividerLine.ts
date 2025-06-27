@@ -33,6 +33,8 @@ import { SnapGrid } from "../store/Store";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ExternalDmnsIndex } from "../DmnEditor";
+import { getDecisionServiceDividerLineLocalY } from "../diagram/maths/DmnMaths";
+import { computeIndexedDrd } from "../store/computed/computeIndexes";
 
 export const DECISION_SERVICE_DIVIDER_LINE_PADDING = 100;
 
@@ -46,6 +48,7 @@ export function updateDecisionServiceDividerLine({
   localYPosition,
   drgElementIndex,
   snapGrid,
+  __readonly_decisionServiceHref,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
@@ -56,6 +59,7 @@ export function updateDecisionServiceDividerLine({
   localYPosition: number;
   drgElementIndex: number;
   snapGrid: SnapGrid;
+  __readonly_decisionServiceHref: string;
 }) {
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
@@ -121,6 +125,22 @@ export function updateDecisionServiceDividerLine({
   shape["dmndi:DMNDecisionServiceDividerLine"] ??= getCentralizedDecisionServiceDividerLine(shapeBounds);
   shape["dmndi:DMNDecisionServiceDividerLine"]["di:waypoint"]![0]["@_y"] = newDividerLineYPosition;
   shape["dmndi:DMNDecisionServiceDividerLine"]["di:waypoint"]![1]["@_y"] = newDividerLineYPosition;
+
+  //Updating dividerline position in all DRDs that contain the decisions service
+  const dividerLineLocalY = getDecisionServiceDividerLineLocalY(shape);
+  const drds = definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
+  for (let i = 0; i < drds.length; i++) {
+    if (i === drdIndex) {
+      continue;
+    }
+    const _indexedDrd = computeIndexedDrd(definitions["@_namespace"], definitions, i);
+    const dsShape = _indexedDrd.dmnShapesByHref.get(__readonly_decisionServiceHref);
+    const dsShapeYPosition = dsShape?.["dc:Bounds"]?.["@_y"];
+    if (dsShape && dsShape["dmndi:DMNDecisionServiceDividerLine"]) {
+      dsShape["dmndi:DMNDecisionServiceDividerLine"]!["di:waypoint"]![0]["@_y"] = dsShapeYPosition! + dividerLineLocalY;
+      dsShape["dmndi:DMNDecisionServiceDividerLine"]!["di:waypoint"]![1]["@_y"] = dsShapeYPosition! + dividerLineLocalY;
+    }
+  }
 }
 
 export function getCentralizedDecisionServiceDividerLine(
