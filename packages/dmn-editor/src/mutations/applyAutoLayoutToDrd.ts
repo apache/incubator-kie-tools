@@ -178,7 +178,7 @@ export function applyAutoLayoutToDrd({
       shapeIndex: parentNode.data.shape.index,
       snapGrid: state.diagram.snapGrid,
       localYPosition: dividerLinerLocalYPosition,
-      __readonly_id: parentNode.id,
+      __readonly_decisionServiceId: parentNode.id,
     });
   }
 

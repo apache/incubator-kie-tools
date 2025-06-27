@@ -829,8 +829,8 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                         );
                         const dsShape = _indexedDrd.dmnShapesByHref.get(node.id);
                         if (dsShape && dsShape["dc:Bounds"] && !node.data.shape["@_isCollapsed"]) {
-                          dsShape["dc:Bounds"]["@_width"] = change.dimensions?.width ?? 0;
-                          dsShape["dc:Bounds"]["@_height"] = change.dimensions?.height ?? 0;
+                          dsShape["dc:Bounds"]["@_width"] = node.data.shape["dc:Bounds"]?.["@_width"] ?? 0;
+                          dsShape["dc:Bounds"]["@_height"] = node.data.shape["dc:Bounds"]?.["@_height"] ?? 0;
                         }
 
                         // Apply delta shift to neighbouring nodes in other DRD

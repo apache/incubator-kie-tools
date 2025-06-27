@@ -48,7 +48,7 @@ export function updateDecisionServiceDividerLine({
   localYPosition,
   drgElementIndex,
   snapGrid,
-  __readonly_id,
+  __readonly_decisionServiceId,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   drdIndex: number;
@@ -59,7 +59,7 @@ export function updateDecisionServiceDividerLine({
   localYPosition: number;
   drgElementIndex: number;
   snapGrid: SnapGrid;
-  __readonly_id: string;
+  __readonly_decisionServiceId: string;
 }) {
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
@@ -134,7 +134,7 @@ export function updateDecisionServiceDividerLine({
       continue;
     }
     const _indexedDrd = computeIndexedDrd(definitions["@_namespace"], definitions, i);
-    const dsShape = _indexedDrd.dmnShapesByHref.get(__readonly_id);
+    const dsShape = _indexedDrd.dmnShapesByHref.get(__readonly_decisionServiceId);
     const dsShapeYPosition = dsShape?.["dc:Bounds"]?.["@_y"];
     if (dsShape && dsShape["dmndi:DMNDecisionServiceDividerLine"]) {
       dsShape["dmndi:DMNDecisionServiceDividerLine"]!["di:waypoint"]![0]["@_y"] = dsShapeYPosition! + dividerLineLocalY;
