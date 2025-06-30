@@ -19,4 +19,4 @@
 
 package metadata
 
-var DevModeImage string
+var BuilderImage string

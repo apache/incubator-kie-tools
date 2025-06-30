@@ -30,6 +30,7 @@ import (
 	"strings"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
+	apiMetadata "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 	"github.com/docker/docker/client"
 )
 
@@ -196,4 +197,23 @@ func CheckProjectName(name string) (err error) {
 
 	}
 	return
+}
+
+func IsValidProfile(profile string) error {
+	var allProfiles = []apiMetadata.ProfileType{
+		apiMetadata.DevProfile,
+		apiMetadata.PreviewProfile,
+		apiMetadata.GitOpsProfile,
+	}
+
+	for _, t := range allProfiles {
+		if t.String() == profile {
+			return nil
+		}
+	}
+	keys := make([]string, 0, len(allProfiles))
+	for k := range allProfiles {
+		keys = append(keys, allProfiles[k].String())
+	}
+	return fmt.Errorf("❌ ERROR: invalid profile: %s, valid profiles are: %s", profile, strings.Join(keys, ","))
 }
