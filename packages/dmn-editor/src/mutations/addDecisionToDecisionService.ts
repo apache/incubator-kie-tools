@@ -27,6 +27,10 @@ import { SnapGrid } from "../store/Store";
 import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { ExternalModelsIndex } from "../DmnEditor";
+import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { addShape } from "./addShape";
+import { repositionNode } from "./repositionNode";
+import { computeIndexedDrd } from "../store/computed/computeIndexes";
 
 export function addDecisionToDecisionService({
   definitions,
@@ -35,6 +39,7 @@ export function addDecisionToDecisionService({
   drdIndex,
   snapGrid,
   externalModelsByNamespace,
+  __readonly_decisionServiceHref,
 }: {
   definitions: Normalized<DMN15__tDefinitions>;
   decisionHref: string;
@@ -42,6 +47,7 @@ export function addDecisionToDecisionService({
   drdIndex: number;
   snapGrid: SnapGrid;
   externalModelsByNamespace: ExternalModelsIndex | undefined;
+  __readonly_decisionServiceHref: string;
 }) {
   console.debug(`DMN MUTATION: Adding Decision '${decisionHref}' to Decision Service '${decisionServiceId}'`);
 
@@ -101,6 +107,75 @@ export function addDecisionToDecisionService({
   }
 
   repopulateInputDataAndDecisionsOnDecisionService({ definitions, decisionService, externalModelsByNamespace });
+
+  //Adding decisions to decision service in other DRDs
+  const drds = definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
+  for (let j = 0; j < drds.length; j++) {
+    if (j === drdIndex) {
+      continue;
+    }
+    const _indexedDrd = computeIndexedDrd(definitions["@_namespace"], definitions, j);
+    const dsShape = _indexedDrd.dmnShapesByHref.get(__readonly_decisionServiceHref);
+    const relativePosinCurrentDS = {
+      x: (decisionShape?.["dc:Bounds"]?.["@_x"] ?? 0) - (decisionServiceShape["dc:Bounds"]?.["@_x"] ?? 0),
+      y: (decisionShape?.["dc:Bounds"]?.["@_y"] ?? 0) - (decisionServiceShape["dc:Bounds"]?.["@_y"] ?? 0),
+    };
+    if (
+      decisionShape &&
+      decisionServiceShape["dc:Bounds"] &&
+      dsShape &&
+      dsShape["dc:Bounds"] &&
+      !dsShape["@_isCollapsed"]
+    ) {
+      const currentDecisionShape = _indexedDrd.dmnShapesByHref.get(decisionHref);
+      if (currentDecisionShape) {
+        repositionNode({
+          definitions: definitions,
+          drdIndex: j,
+          controlWaypointsByEdge: new Map(),
+          change: {
+            nodeType: NODE_TYPES.decision,
+            type: "absolute",
+            position: {
+              x: (dsShape["dc:Bounds"]?.["@_x"] ?? 0) + relativePosinCurrentDS.x,
+              y: (dsShape["dc:Bounds"]?.["@_y"] ?? 0) + relativePosinCurrentDS.y,
+            },
+            shapeIndex: currentDecisionShape.index,
+            selectedEdges: [],
+            sourceEdgeIndexes: [],
+            targetEdgeIndexes: [],
+          },
+        });
+      } else {
+        addShape({
+          definitions: definitions,
+          drdIndex: j,
+          nodeType: NODE_TYPES.decision,
+          shape: {
+            "@_id": generateUuid(),
+            "@_dmnElementRef": xmlHrefToQName(decisionHref, definitions),
+            "dc:Bounds": {
+              "@_x": (dsShape["dc:Bounds"]?.["@_x"] ?? 0) + relativePosinCurrentDS.x,
+              "@_y": (dsShape["dc:Bounds"]?.["@_y"] ?? 0) + relativePosinCurrentDS.y,
+              "@_width": decisionShape["dc:Bounds"]!["@_width"],
+              "@_height": decisionShape["dc:Bounds"]!["@_height"],
+            },
+          },
+        });
+      }
+    }
+    //Removing decisions if service is collapsed
+    if (dsShape && dsShape["@_isCollapsed"]) {
+      const { diagramElements } = addOrGetDrd({
+        definitions: definitions,
+        drdIndex: j,
+      });
+      const dmnShapeIndex = (diagramElements ?? []).findIndex((d) => d["@_dmnElementRef"] === href.id);
+      if (dmnShapeIndex >= 0) {
+        diagramElements?.splice(dmnShapeIndex, 1);
+      }
+    }
+  }
 }
 
 export function getSectionForDecisionInsideDecisionService({
