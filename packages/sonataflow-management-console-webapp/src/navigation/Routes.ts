@@ -18,7 +18,6 @@
  */
 
 const IS_HASH_ROUTER = true;
-const SETTINGS_ROUTE = "/settings";
 
 export enum QueryParams {
   SETTINGS = "settings",
@@ -120,19 +119,12 @@ export function newQueryParamsImpl<Q extends string>(queryString: string): Query
 export const routes = {
   home: new Route<{}>(() => `/`),
   runtimeToolsWorkflowInstances: new Route<{}>(() => `/WorkflowInstances`),
-  runtimeToolsWorkflowDefinitions: new Route<{}>(() => `/WorkflowDefinitions`),
   runtimeToolsWorkflowDetails: new Route<{
     queryParams: QueryParams.FILTERS | QueryParams.SORT_BY;
     pathParams: PathParams.WORKFLOW_ID;
   }>(({ workflowId }) => `/WorkflowDetails/${workflowId}`),
-  runtimeToolsWorkflowForm: new Route<{
-    pathParams: PathParams.WORKFLOW_NAME;
-  }>(({ workflowName }) => `/WorkflowDefinition/${workflowName}`),
   runtimeToolsTriggerCloudEventForWorkflow: new Route<{
     pathParams: PathParams.WORKFLOW_ID;
   }>(({ workflowId }) => `/WorkflowInstances/${workflowId}`),
-  runtimeToolsTriggerCloudEventForWorkflowDefinition: new Route<{
-    pathParams: PathParams.WORKFLOW_NAME;
-  }>(({ workflowName }) => `/WorkflowDefinition/${workflowName}/trigger-cloud-event`),
   monitoring: new Route<{}>(() => `/Monitoring`),
 };
