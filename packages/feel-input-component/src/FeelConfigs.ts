@@ -430,6 +430,20 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         ],
       },
       {
+        label: "date and time(date, time, timezone)",
+        insertText: "date and time($1, $2, $3)",
+        description: "Creates a date time from the given `date`, `time` and timezone",
+        parameters: [
+          ["date", `\`date\` or \`date and time\``],
+          ["time", `\`time\``],
+          ["timezone", `\`string\``],
+        ],
+        examples: [
+          'date and time( date("2024-12-24"), time("23:59:00"), "Z" ) = date and time( "2024-12-24T23:59:00Z" )',
+          'date and time( date("2024-12-24"), time("23:59:00"), "America/Costa_Rica" ) = date and time( "2024-12-24T23:59:00@America/Costa_Rica" )',
+        ],
+      },
+      {
         label: "date and time(year, month, day, hour, minute, second)",
         insertText: "date and time($1, $2, $3, $4, $5, $6)",
         description: "Creates a date time from the given `year`, `month`, `day`, `hour`, `minute`, and `second`.",
