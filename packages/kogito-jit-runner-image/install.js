@@ -35,5 +35,6 @@ runKogitoImageInstall({
 
 const { setupMavenConfigFile, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
 setupMavenConfigFile(`
+    -Drevision=${env.kogitoJitRunnerImage.version}
     -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
 `);
