@@ -21,9 +21,9 @@ import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
 import {
-  DMN15__tItemDefinition,
-  DMN15__tUnaryTests,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN16__tItemDefinition,
+  DMN16__tUnaryTests,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ConstraintsEnum, isEnum } from "./ConstraintsEnum";
@@ -49,7 +49,7 @@ import { invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 import { ConstraintProps } from "./ConstraintComponents/Constraint";
 import { useDmnEditorStore } from "../store/StoreContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
-import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 
 export type TypeHelper = {
@@ -83,10 +83,10 @@ enum ConstraintsType {
 // that is part of the built in FEEL types.
 // If the found `itemDefinition` is a collection, it will have a early stop.
 export function recursivelyGetRootItemDefinition(
-  itemDefinition: Normalized<DMN15__tItemDefinition>,
+  itemDefinition: Normalized<DMN16__tItemDefinition>,
   allDataTypesById: DataTypeIndex,
   allTopLevelItemDefinitionUniqueNames: UniqueNameIndex
-): Normalized<DMN15__tItemDefinition> {
+): Normalized<DMN16__tItemDefinition> {
   const typeRef: DmnBuiltInDataType = itemDefinition.typeRef?.__$$text as DmnBuiltInDataType;
 
   if (builtInFeelTypeNames.has(typeRef) === false) {
@@ -109,7 +109,7 @@ export function recursivelyGetRootItemDefinition(
 }
 
 export const constraintTypeHelper = (
-  itemDefinition: Normalized<DMN15__tItemDefinition>,
+  itemDefinition: Normalized<DMN16__tItemDefinition>,
   allDataTypesById?: DataTypeIndex,
   allTopLevelItemDefinitionUniqueNames?: UniqueNameIndex
 ): TypeHelper => {
@@ -309,8 +309,8 @@ export function useConstraint({
   constraintTypeHelper,
   enabledConstraints,
 }: {
-  constraint: Normalized<DMN15__tUnaryTests> | undefined;
-  itemDefinition: Normalized<DMN15__tItemDefinition>;
+  constraint: Normalized<DMN16__tUnaryTests> | undefined;
+  itemDefinition: Normalized<DMN16__tItemDefinition>;
   isCollectionConstraintEnabled: boolean;
   constraintTypeHelper: TypeHelper;
   enabledConstraints: KIE__tConstraintType[] | undefined;
@@ -412,7 +412,7 @@ export function ConstraintsFromAllowedValuesAttribute({
   renderOnPropertiesPanel,
 }: {
   isReadOnly: boolean;
-  itemDefinition: Normalized<DMN15__tItemDefinition>;
+  itemDefinition: Normalized<DMN16__tItemDefinition>;
   editItemDefinition: EditItemDefinition;
   renderOnPropertiesPanel?: boolean;
   isEnumDisabled?: boolean;
@@ -554,7 +554,7 @@ export function ConstraintsFromTypeConstraintAttribute({
   defaultsToAllowedValues,
 }: {
   isReadOnly: boolean;
-  itemDefinition: Normalized<DMN15__tItemDefinition>;
+  itemDefinition: Normalized<DMN16__tItemDefinition>;
   editItemDefinition: EditItemDefinition;
   renderOnPropertiesPanel?: boolean;
   defaultsToAllowedValues: boolean;

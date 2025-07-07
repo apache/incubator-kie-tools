@@ -29,12 +29,12 @@ import { Menu } from "@patternfly/react-core/dist/js/components/Menu/Menu";
 import { MenuGroup } from "@patternfly/react-core/dist/js/components/Menu/MenuGroup";
 import { MenuList } from "@patternfly/react-core/dist/js/components/Menu/MenuList";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { DMN15__tHitPolicy } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN16__tHitPolicy } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import "./HitPolicySelector.css";
 
 export interface HitPolicySelectorProps {
   /** Pre-selected hit policy */
-  selectedHitPolicy: DMN15__tHitPolicy;
+  selectedHitPolicy: DMN16__tHitPolicy;
   /** Pre-selected built-in aggregator */
   selectedBuiltInAggregator: string;
   /** Callback invoked when hit policy selection changes */

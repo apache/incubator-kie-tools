@@ -18,13 +18,13 @@
  */
 
 import {
-  DMN15__tDecision,
-  DMN15__tDecisionService,
-  DMN15__tDefinitions,
-  DMN15__tItemDefinition,
-  DMNDI15__DMNEdge,
-  DMNDI15__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN16__tDecision,
+  DMN16__tDecisionService,
+  DMN16__tDefinitions,
+  DMN16__tItemDefinition,
+  DMNDI16__DMNEdge,
+  DMNDI16__DMNShape,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { parseXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { getNewDmnIdRandomizer } from "@kie-tools/dmn-marshaller/dist/idRandomizer/dmnIdRandomizer";
@@ -48,17 +48,17 @@ export type DmnEditorDataTypesClipboard = {
   mimeType: typeof DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE;
   namespaceWhereClipboardWasCreatedFrom: string;
   namespace: string;
-  itemDefinitions: Normalized<DMN15__tItemDefinition>[];
+  itemDefinitions: Normalized<DMN16__tItemDefinition>[];
 };
 
 export type DmnEditorDiagramClipboard = {
   mimeType: typeof DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE;
   namespaceWhereClipboardWasCreatedFrom: string;
-  drgElements: NonNullable<Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]>>[];
-  artifacts: NonNullable<Unpacked<Normalized<DMN15__tDefinitions>["artifact"]>>[];
+  drgElements: NonNullable<Unpacked<Normalized<DMN16__tDefinitions>["drgElement"]>>[];
+  artifacts: NonNullable<Unpacked<Normalized<DMN16__tDefinitions>["artifact"]>>[];
   widths: Namespaced<KIE, KIE__tComponentWidths>[];
-  shapes: Normalized<DMNDI15__DMNShape>[];
-  edges: Normalized<DMNDI15__DMNEdge>[];
+  shapes: Normalized<DMNDI16__DMNShape>[];
+  edges: Normalized<DMNDI16__DMNEdge>[];
 };
 
 export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorState: State) {
@@ -90,12 +90,12 @@ export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorS
             return;
           }
 
-          const dmnObject = JSON.parse(JSON.stringify(node.data.dmnObject)) as Normalized<DMN15__tDecision>; // Casting to `DMN15__tDecision` because it has all requirement types.
+          const dmnObject = JSON.parse(JSON.stringify(node.data.dmnObject)) as Normalized<DMN16__tDecision>; // Casting to `DMN16__tDecision` because it has all requirement types.
 
           // This is going to get repopulated when this data is pasted somewhere.
           if (node.data.dmnObject?.__$$element === "decisionService") {
-            (dmnObject as Normalized<DMN15__tDecisionService>).inputData = [];
-            (dmnObject as Normalized<DMN15__tDecisionService>).inputDecision = [];
+            (dmnObject as Normalized<DMN16__tDecisionService>).inputData = [];
+            (dmnObject as Normalized<DMN16__tDecisionService>).inputDecision = [];
           }
 
           if (dmnObject.authorityRequirement) {
@@ -185,7 +185,7 @@ export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorS
   );
 
   const idsOnDrgElementTrees = getNewDmnIdRandomizer()
-    .ack({ json: clipboard.drgElements, type: "DMN15__tDefinitions", attr: "drgElement" })
+    .ack({ json: clipboard.drgElements, type: "DMN16__tDefinitions", attr: "drgElement" })
     .getOriginalIds();
 
   clipboard.widths = (

@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useMemo } from "react";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
-import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN16__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
@@ -36,7 +36,7 @@ export function RelationInformationItemCell(props: {
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tInformationItem>>(
+  const updater = useBoxedExpressionUpdater<Normalized<DMN16__tInformationItem>>(
     selectedObjectInfos?.expressionPath ?? []
   );
 

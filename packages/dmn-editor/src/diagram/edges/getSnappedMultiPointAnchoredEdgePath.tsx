@@ -20,9 +20,9 @@
 import * as RF from "reactflow";
 import {
   DC__Point,
-  DMNDI15__DMNEdge,
-  DMNDI15__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMNDI16__DMNEdge,
+  DMNDI16__DMNShape,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { snapPoint } from "../SnapGrid";
@@ -42,11 +42,11 @@ export function getSnappedMultiPointAnchoredEdgePath({
   dmnShapeTarget,
 }: {
   snapGrid: SnapGrid;
-  dmnEdge: Normalized<DMNDI15__DMNEdge> | undefined;
+  dmnEdge: Normalized<DMNDI16__DMNEdge> | undefined;
   sourceNodeBounds: Bounds | undefined;
   targetNodeBounds: Bounds | undefined;
-  dmnShapeSource: Normalized<DMNDI15__DMNShape> | undefined;
-  dmnShapeTarget: Normalized<DMNDI15__DMNShape> | undefined;
+  dmnShapeSource: Normalized<DMNDI16__DMNShape> | undefined;
+  dmnShapeTarget: Normalized<DMNDI16__DMNShape> | undefined;
 }) {
   if (!sourceNodeBounds || !targetNodeBounds) {
     return { path: undefined, points: [] };
@@ -108,7 +108,7 @@ export function getSnappedMultiPointAnchoredEdgePath({
 }
 
 export function getSnappedHandlePosition(
-  shape: Normalized<DMNDI15__DMNShape>,
+  shape: Normalized<DMNDI16__DMNShape>,
   snappedNode: Bounds,
   originalHandleWaypoint: DC__Point,
   snappedSecondWaypoint: DC__Point

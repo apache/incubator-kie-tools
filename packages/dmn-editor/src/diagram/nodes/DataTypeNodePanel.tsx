@@ -19,9 +19,9 @@
 
 import * as React from "react";
 import {
-  DMN15__tInformationItem,
-  DMNDI15__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN16__tInformationItem,
+  DMNDI16__DMNShape,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore } from "../../store/StoreContext";
 import { OnCreateDataType, OnToggle, OnTypeRefChange, TypeRefSelector } from "../../dataTypes/TypeRefSelector";
@@ -35,8 +35,8 @@ function stopPropagation(e: React.MouseEvent | React.KeyboardEvent) {
 export function DataTypeNodePanel(props: {
   isVisible: boolean;
   isReadOnly?: boolean;
-  variable: Normalized<DMN15__tInformationItem> | undefined;
-  shape: Normalized<DMNDI15__DMNShape> | undefined;
+  variable: Normalized<DMN16__tInformationItem> | undefined;
+  shape: Normalized<DMNDI16__DMNShape> | undefined;
   onChange: OnTypeRefChange;
   onCreate?: OnCreateDataType;
   onToggle?: OnToggle;
