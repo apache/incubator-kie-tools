@@ -19,7 +19,7 @@
     "src"
   ],
   "scripts": {
-    "build:codegen": "pnpm build:codegen:dmn10 && pnpm build:codegen:dmn11 && pnpm build:codegen:dmn12 && pnpm build:codegen:dmn13 && pnpm build:codegen:dmn14 && pnpm build:codegen:dmn15 && pnpm build:codegen:kie10",
+    "build:codegen": "pnpm build:codegen:dmn10 && pnpm build:codegen:dmn11 && pnpm build:codegen:dmn12 && pnpm build:codegen:dmn13 && pnpm build:codegen:dmn14 && pnpm build:codegen:dmn15 && pnpm build:codegen:dmn16 && pnpm build:codegen:kie10",
     "build:codegen:dmn10": "xml-parser-ts-codegen ./src/schemas/dmn-1_0/dmn3.xsd Definitions",
     "build:codegen:dmn11": "xml-parser-ts-codegen ./src/schemas/dmn-1_1/dmn.xsd definitions",
     "build:codegen:dmn12": "xml-parser-ts-codegen ./src/schemas/dmn-1_2/DMN12.xsd definitions",
