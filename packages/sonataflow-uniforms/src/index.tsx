@@ -17,13 +17,5 @@
  * under the License.
  */
 
-import { Context, GuaranteedProps } from "uniforms/esm";
-import { AutoField } from "@kie-tools/uniforms-patternfly/dist/esm";
-import CodeEditorTextField from "./CodeEditorTextField";
-
-export function SwfAutoField(props: GuaranteedProps<unknown>, uniforms: Context<Record<string, unknown>>) {
-  if (props.fieldType === Object && !props.field.properties) {
-    return CodeEditorTextField;
-  }
-  return AutoField.defaultComponentDetector(props, uniforms);
-}
+export * from "./FormSwfAutoFieldValue";
+export * from "./SwfAutoFieldProvider";

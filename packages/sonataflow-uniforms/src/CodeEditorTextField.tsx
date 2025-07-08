@@ -18,10 +18,10 @@
  */
 
 import * as React from "react";
-import { useCallback, useState } from "react";
-import { CodeEditor, Language } from "@patternfly/react-code-editor/dist/js/components/CodeEditor";
-import { connectField, filterDOMProps, HTMLFieldProps } from "uniforms";
-import wrapField from "./wrapField";
+import { useCallback, useMemo, useState } from "react";
+import { CodeEditor, Language } from "@patternfly/react-code-editor";
+import { connectField, HTMLFieldProps } from "uniforms";
+import wrapField from "@kie-tools/uniforms-patternfly/dist/esm/wrapField";
 
 export type CodeEditorTextFieldProps = HTMLFieldProps<
   string,
@@ -42,7 +42,7 @@ function CodeEditorTextField({
   helperText,
   language,
   name,
-  value,
+  value = "",
   ...props
 }: CodeEditorTextFieldProps) {
   const [hiddenValue, setHiddenValue] = useState(value ?? "");
@@ -55,11 +55,19 @@ function CodeEditorTextField({
     [props]
   );
 
+  const stringifiedValue = useMemo(() => {
+    if (value && typeof value === "object") {
+      const isEmptyObj = !Object.keys(value).length;
+      return isEmptyObj ? "" : JSON.stringify(value);
+    }
+    return value;
+  }, [value]);
+
   return wrapField(
     { ...props, help: helperText },
     <>
       <CodeEditor
-        code={value ?? ""}
+        code={stringifiedValue ?? ""}
         height={height ? `${height}` : "200px"}
         isReadOnly={disabled}
         language={language ?? Language.json}

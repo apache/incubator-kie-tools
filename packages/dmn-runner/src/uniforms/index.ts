@@ -19,4 +19,3 @@
 
 export * from "./DmnAutoFieldProvider";
 export * from "./DmnAutoFieldValue";
-export * from "./SwfAutoFieldValue";

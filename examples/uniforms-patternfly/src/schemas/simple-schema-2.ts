@@ -44,11 +44,6 @@ const schema = new SimpleSchema({
     },
   },
 
-  customData: {
-    type: String,
-    uniforms: { language: "json" },
-  },
-
   hello: {
     type: Object,
   },
