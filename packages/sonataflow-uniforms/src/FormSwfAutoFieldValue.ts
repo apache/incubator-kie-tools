@@ -19,13 +19,11 @@
 
 import { Context, GuaranteedProps } from "uniforms/esm";
 import { AutoField } from "@kie-tools/uniforms-patternfly/dist/esm";
-// import { defaultSwfAutoFieldValue } from "./SwfAutoFieldValue";
 import CodeEditorTextField from "./CodeEditorTextField";
 
 export function formSwfAutoFieldValue(props: GuaranteedProps<unknown>, uniforms: Context<Record<string, unknown>>) {
   if (props.fieldType === Object && !props.field.properties) {
     return CodeEditorTextField;
   }
-  // return defaultSwfAutoFieldValue(props, uniforms);
   return AutoField.defaultComponentDetector(props, uniforms);
 }

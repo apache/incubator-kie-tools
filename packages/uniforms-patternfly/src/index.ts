@@ -31,7 +31,6 @@ export { default as ListDelField } from "./ListDelField";
 export { default as ListField } from "./ListField";
 export { default as ListItemField } from "./ListItemField";
 export { default as LongTextField } from "./LongTextField";
-export { default as CodeEditorTextField } from "./CodeEditorTextField";
 export { default as NestField } from "./NestField";
 export { default as NumField } from "./NumField";
 export { default as QuickForm } from "./QuickForm";
