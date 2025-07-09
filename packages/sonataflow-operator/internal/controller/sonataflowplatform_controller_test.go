@@ -327,9 +327,17 @@ func TestSonataFlowPlatformController(t *testing.T) {
 			Name:  "QUARKUS_DATASOURCE_JDBC_URL",
 			Value: "jdbc:postgresql://postgresql.default:5432/sonataflow?currentSchema=sonataflow-platform-data-index-service",
 		}
+		dbSourceDIReactiveURL := corev1.EnvVar{
+			Name:  "QUARKUS_DATASOURCE_REACTIVE_URL",
+			Value: "postgresql://postgresql.default:5432/sonataflow?currentSchema=sonataflow-platform-data-index-service",
+		}
 		dbSourceJSURL := corev1.EnvVar{
 			Name:  "QUARKUS_DATASOURCE_JDBC_URL",
 			Value: "jdbc:postgresql://postgresql.default:5432/sonataflow?currentSchema=sonataflow-platform-jobs-service",
+		}
+		dbSourceJSReactiveURL := corev1.EnvVar{
+			Name:  "QUARKUS_DATASOURCE_REACTIVE_URL",
+			Value: "postgresql://postgresql.default:5432/sonataflow?currentSchema=sonataflow-platform-jobs-service",
 		}
 		dbUsername := corev1.EnvVar{
 			Name:  "QUARKUS_DATASOURCE_USERNAME",
@@ -361,6 +369,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbUsername)
 		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbPassword)
 		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbSourceDIURL)
+		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbSourceDIReactiveURL)
 
 		js := services.NewJobServiceHandler(ksp)
 		assert.NoError(t, cl.Get(context.TODO(), types.NamespacedName{Name: js.GetServiceName(), Namespace: ksp.Namespace}, dep))
@@ -370,6 +379,7 @@ func TestSonataFlowPlatformController(t *testing.T) {
 		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbUsername)
 		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbPassword)
 		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbSourceJSURL)
+		assert.Contains(t, dep.Spec.Template.Spec.Containers[0].Env, dbSourceJSReactiveURL)
 	})
 
 	t.Run("verify that persistence options are correctly reconciled when defined in the platform and overwriten in the services spec", func(t *testing.T) {
