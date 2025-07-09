@@ -57,6 +57,9 @@ func ConfigurePostgreSQLEnv(postgresql *operatorapi.PersistencePostgreSQL, datab
 		}
 		dataSourceURL = fmt.Sprintf("jdbc:postgresql://%s.%s:%d/%s?currentSchema=%s", postgresql.ServiceRef.Name, databaseNamespace, dataSourcePort, databaseName, databaseSchema)
 	}
+
+	dataSourceReactiveURL := strings.TrimPrefix(dataSourceURL, "jdbc:")
+
 	secretRef := corev1.LocalObjectReference{
 		Name: postgresql.SecretRef.Name,
 	}
@@ -94,6 +97,10 @@ func ConfigurePostgreSQLEnv(postgresql *operatorapi.PersistencePostgreSQL, datab
 		{
 			Name:  "QUARKUS_DATASOURCE_JDBC_URL",
 			Value: dataSourceURL,
+		},
+		{
+			Name:  "QUARKUS_DATASOURCE_REACTIVE_URL",
+			Value: dataSourceReactiveURL,
 		},
 		{
 			Name:  "KOGITO_PERSISTENCE_TYPE",
