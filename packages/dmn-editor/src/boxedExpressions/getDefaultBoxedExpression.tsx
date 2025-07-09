@@ -131,7 +131,7 @@ export function getDefaultBoxedExpression({
       });
     }
 
-    // context <result> cell    // context <result> cell is not created by default, so we do not add it here.
+    // context <result> cell is not created by default, so we do not add it here.
     // this is because context evaluation should collect all context entries until <result> is explicitely added by the user.
     // if we do like below, the validation would always fail and the evaluation would return null
     // contextEntries.push({
