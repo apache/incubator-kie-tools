@@ -54,12 +54,11 @@ import { DmnEditorStoreApiContext, StoreApiType, useDmnEditorStore, useDmnEditor
 import { DmnDiagramSvg } from "./svg/DmnDiagramSvg";
 import { useEffectAfterFirstRender } from "./useEffectAfterFirstRender";
 import { INITIAL_COMPUTED_CACHE } from "./store/computed/initial";
-
-import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
-import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
 import { Commands, CommandsContextProvider, useCommands } from "./commands/CommandsContextProvider";
 import { DmnEditorSettingsContextProvider } from "./settings/DmnEditorSettingsContext";
 import { JavaCodeCompletionService } from "@kie-tools/import-java-classes-component/dist/components/ImportJavaClasses/services";
+import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
+import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
 
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
 
@@ -234,7 +233,8 @@ export const DmnEditorInternal = ({
   // Refs
   const diagramRef = useRef<DiagramRef>(null);
   const diagramContainerRef = useRef<HTMLDivElement>(null);
-  const beeContainerRef = useRef<HTMLDivElement>(null);
+  const beeContainerRef = useRef<HTMLDivElement | null>(null);
+  const drawerContentRef = useRef<HTMLDivElement | null>(null);
 
   // Allow imperativelly controlling the Editor.
   useImperativeHandle(
@@ -396,6 +396,12 @@ export const DmnEditorInternal = ({
   const diagramPropertiesPanel = useMemo(() => <DiagramPropertiesPanel />, []);
   const beePropertiesPanel = useMemo(() => <BoxedExpressionPropertiesPanel />, []);
 
+  useEffect(() => {
+    // This is the actual scrollableParentRef for BEE.
+    drawerContentRef.current =
+      (beeContainerRef?.current?.parentElement?.parentElement as HTMLDivElement | undefined) ?? null;
+  }, []);
+
   return (
     <div ref={dmnEditorRootElementRef} className={"kie-dmn-editor--root"}>
       <Tabs
@@ -429,7 +435,7 @@ export const DmnEditorInternal = ({
                   <DrawerContent panelContent={beePropertiesPanel}>
                     <DrawerContentBody>
                       <div className={"kie-dmn-editor--bee-container"} ref={beeContainerRef}>
-                        <BoxedExpressionScreen container={beeContainerRef} />
+                        <BoxedExpressionScreen container={drawerContentRef} />
                       </div>
                     </DrawerContentBody>
                   </DrawerContent>

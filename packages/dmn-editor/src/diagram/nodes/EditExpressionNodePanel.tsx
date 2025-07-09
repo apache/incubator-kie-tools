@@ -29,16 +29,16 @@ export function EditExpressionNodePanel(props: { isVisible: boolean; id: string 
   return (
     <>
       {props.isVisible && (
-        <Label
+        <div
+          className={"kie-dmn-editor--edit-expression-node-panel"}
           onClick={() =>
             dmnEditorStoreApi.setState((state) => {
               state.dispatch(state).boxedExpressionEditor.open(props.id);
             })
           }
-          className={"kie-dmn-editor--edit-expression-node-panel"}
         >
-          {settings.isReadOnly ? "View" : "Edit"}
-        </Label>
+          <Label>{settings.isReadOnly ? "View" : "Edit"}</Label>
+        </div>
       )}
     </>
   );
