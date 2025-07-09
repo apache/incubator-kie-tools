@@ -42,7 +42,7 @@ Add the `quarkus-oidc-proxy` extension to your `pom.xml` to proxy the Identity P
 <dependency>
   <groupId>io.quarkiverse.oidc-proxy</groupId>
   <artifactId>quarkus-oidc-proxy</artifactId>
-  <version>0.1.2</version>
+  <version>0.2.2</version>
 </dependency>
 ```
 

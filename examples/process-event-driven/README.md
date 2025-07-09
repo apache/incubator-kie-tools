@@ -34,7 +34,7 @@ To enable events we must configure our project by adding Maven dependencies to t
 To enable Kafka messages we must add the following two dependencies in the `pom.xml` file:
 
 - `org.kie.kie-addons-quarkus-messaging`: Quarkus addon that enables Apache KIE runtime to produce and consume messages using the Smallrye Messaging library.
-- `io.quarkus.quarkus-smallrye-reactive-messaging-kafka`: Enables connecting Kafka broker using the Smallrye Messaging library for Quarkus.
+- `io.quarkus.quarkus-messaging-kafka`: Enables connecting Kafka broker using the Smallrye Messaging library for Quarkus.
 
 ### Application properties
 
