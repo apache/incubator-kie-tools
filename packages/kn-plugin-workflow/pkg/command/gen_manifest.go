@@ -23,11 +23,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/common"
 	"github.com/apache/incubator-kie-tools/packages/kn-plugin-workflow/pkg/metadata"
-	apiMetadata "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/metadata"
 	"github.com/ory/viper"
 	"github.com/spf13/cobra"
 )
@@ -140,7 +138,7 @@ func runGenManifestCmdConfig(cmd *cobra.Command) (cfg DeployUndeployCmdConfig, e
 
 	if cmd.Flags().Changed("profile") && len(cfg.Profile) == 0 {
 		profile, _ := cmd.Flags().GetString("profile")
-		if err := isValidProfile(profile); err != nil {
+		if err := common.IsValidProfile(profile); err != nil {
 			return cfg, err
 		}
 		cfg.Profile = profile
@@ -232,24 +230,4 @@ func resolveManifestDir(folderName string) (string, error) {
 	}
 
 	return absPath, nil
-}
-
-func isValidProfile(profile string) error {
-	var allProfiles = []apiMetadata.ProfileType{
-		apiMetadata.DevProfile,
-		apiMetadata.ProdProfile,
-		apiMetadata.PreviewProfile,
-		apiMetadata.GitOpsProfile,
-	}
-
-	for _, t := range allProfiles {
-		if t.String() == profile {
-			return nil
-		}
-	}
-	keys := make([]string, 0, len(allProfiles))
-	for k := range allProfiles {
-		keys = append(keys, allProfiles[k].String())
-	}
-	return fmt.Errorf("❌ ERROR: invalid profile: %s, valid profiles are: %s", profile, strings.Join(keys, ","))
 }
