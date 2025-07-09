@@ -30,7 +30,11 @@ export function EditExpressionNodePanel(props: { isVisible: boolean; id: string 
     <>
       {props.isVisible && (
         <div
-          className={"kie-dmn-editor--edit-expression-node-panel"}
+          className={"kie-dmn-editor--edit-expression-node-panel nodrag"}
+          onDragCapture={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+          }}
           onClick={() =>
             dmnEditorStoreApi.setState((state) => {
               state.dispatch(state).boxedExpressionEditor.open(props.id);
