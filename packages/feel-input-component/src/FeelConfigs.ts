@@ -487,7 +487,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           ["second", `\`number\``],
           ["timezone", `\`string\``],
         ],
-        examples: ['date and time( 2012, 12, 24, 23, 59, 59, "z" ) = date and time( "2012-12-24T23:59:59z" )'],
+        examples: ['date and time( 2012, 12, 24, 23, 59, 59, "Z" ) = date and time( "2012-12-24T23:59:59Z" )'],
       },
       {
         label: "day of week(date)",
