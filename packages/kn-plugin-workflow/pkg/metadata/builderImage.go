@@ -17,24 +17,6 @@
  * under the License.
  */
 
-const path = require("path");
-const { runKogitoImageInstall } = require("@kie/kogito-images-install-helper");
+package metadata
 
-const { env } = require("./env");
-
-const { buildTag, registry, account, name: imageName } = env.kogitoJitRunnerImage;
-
-runKogitoImageInstall({
-  finalImageName: "kogito-jit-runner",
-  imageTag: { buildTag, registry, account, name: imageName },
-  resourceDir: path.resolve(__dirname, "./resources"),
-  imagePkgDir: __dirname,
-});
-
-/// Maven app
-
-const { setupMavenConfigFile, buildTailFromPackageJsonDependencies } = require("@kie-tools/maven-base");
-setupMavenConfigFile(`
-    -Drevision=${env.kogitoJitRunnerImage.version}
-    -Dmaven.repo.local.tail=${buildTailFromPackageJsonDependencies()}
-`);
+var BuilderImage string
