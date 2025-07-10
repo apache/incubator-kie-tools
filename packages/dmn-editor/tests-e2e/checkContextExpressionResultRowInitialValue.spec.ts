@@ -19,7 +19,7 @@
 
 import { test, expect } from "./__fixtures__/base";
 import { DefaultNodeName, NodeType } from "./__fixtures__/nodes";
-import { DMN15__tContext } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN16__tContext } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();
@@ -38,7 +38,7 @@ test.describe("Check Context Result Row Initial Value", () => {
     test("result row of the root context should be absent", async ({ jsonModel }) => {
       // JSON model assertions
       const decision = await jsonModel.drgElements.getDecision({ drgElementIndex: 0, drdIndex: 0 });
-      expect((decision.expression as DMN15__tContext).contextEntry?.length).toEqual(1);
+      expect((decision.expression as DMN16__tContext).contextEntry?.length).toEqual(1);
     });
 
     test("result row of the nested context should be absent", async ({ bee, jsonModel }) => {
@@ -47,7 +47,7 @@ test.describe("Check Context Result Row Initial Value", () => {
       // JSON model assertions
       const decision = await jsonModel.drgElements.getDecision({ drgElementIndex: 0, drdIndex: 0 });
       expect(
-        ((decision.expression as DMN15__tContext).contextEntry![0].expression as DMN15__tContext).contextEntry?.length
+        ((decision.expression as DMN16__tContext).contextEntry![0].expression as DMN16__tContext).contextEntry?.length
       ).toEqual(1);
     });
   });
@@ -64,7 +64,7 @@ test.describe("Check Context Result Row Initial Value", () => {
     test("result row of the context in function should be absent", async ({ jsonModel }) => {
       // JSON model assertions
       const bkm = await jsonModel.drgElements.getBkm({ drgElementIndex: 0, drdIndex: 0 });
-      expect((bkm.encapsulatedLogic?.expression as DMN15__tContext).contextEntry?.length).toEqual(1);
+      expect((bkm.encapsulatedLogic?.expression as DMN16__tContext).contextEntry?.length).toEqual(1);
     });
   });
 });

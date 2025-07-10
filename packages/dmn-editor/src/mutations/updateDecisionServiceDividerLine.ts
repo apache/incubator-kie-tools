@@ -19,11 +19,11 @@
 
 import {
   DC__Bounds,
-  DMN15__tDecisionService,
-  DMN15__tDefinitions,
-  DMNDI15__DMNDecisionServiceDividerLine,
-  DMNDI15__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN16__tDecisionService,
+  DMN16__tDefinitions,
+  DMNDI16__DMNDecisionServiceDividerLine,
+  DMNDI16__DMNShape,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { addNamespaceToHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { addOrGetDrd } from "./addOrGetDrd";
@@ -47,9 +47,9 @@ export function updateDecisionServiceDividerLine({
   drgElementIndex,
   snapGrid,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN16__tDefinitions>;
   drdIndex: number;
-  __readonly_dmnShapesByHref: Map<string, Normalized<DMNDI15__DMNShape> & { index: number }>;
+  __readonly_dmnShapesByHref: Map<string, Normalized<DMNDI16__DMNShape> & { index: number }>;
   __readonly_dmnObjectNamespace: string | undefined;
   __readonly_externalDmnsIndex: ExternalDmnsIndex;
   shapeIndex: number;
@@ -59,7 +59,7 @@ export function updateDecisionServiceDividerLine({
 }) {
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
-  const shape = diagramElements?.[shapeIndex] as Normalized<DMNDI15__DMNShape> | undefined;
+  const shape = diagramElements?.[shapeIndex] as Normalized<DMNDI16__DMNShape> | undefined;
   const shapeBounds = shape?.["dc:Bounds"];
   if (!shapeBounds) {
     throw new Error("DMN MUTATION: Cannot reposition divider line of non-existent shape bounds");
@@ -69,8 +69,8 @@ export function updateDecisionServiceDividerLine({
 
   const ds =
     externalDmn === undefined
-      ? (definitions.drgElement![drgElementIndex] as Normalized<DMN15__tDecisionService>)
-      : (externalDmn.model.definitions.drgElement![drgElementIndex] as Normalized<DMN15__tDecisionService>);
+      ? (definitions.drgElement![drgElementIndex] as Normalized<DMN16__tDecisionService>)
+      : (externalDmn.model.definitions.drgElement![drgElementIndex] as Normalized<DMN16__tDecisionService>);
   if (!ds) {
     throw new Error("DMN MUTATION: Cannot reposition divider line of non-existent Decision Service");
   }
@@ -125,7 +125,7 @@ export function updateDecisionServiceDividerLine({
 
 export function getCentralizedDecisionServiceDividerLine(
   bounds: DC__Bounds
-): Normalized<DMNDI15__DMNDecisionServiceDividerLine> {
+): Normalized<DMNDI16__DMNDecisionServiceDividerLine> {
   return {
     "@_id": generateUuid(),
     "di:waypoint": [

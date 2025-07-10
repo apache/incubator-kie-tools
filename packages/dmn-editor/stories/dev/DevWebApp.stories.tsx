@@ -26,7 +26,7 @@ import { Page, PageSection } from "@patternfly/react-core/dist/js/components/Pag
 import { DmnLatestModel, DmnMarshaller, getMarshaller } from "@kie-tools/dmn-marshaller";
 import { normalize, Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { availableModelsByPath, modelsByNamespace } from "./availableModelsToInclude";
-import { generateEmptyDmn15 } from "../misc/empty/Empty.stories";
+import { generateEmptyDmn16 } from "../misc/empty/Empty.stories";
 import { loanPreQualificationDmn } from "../useCases/loanPreQualification/LoanPreQualification.stories";
 import { DmnEditorWrapper } from "../dmnEditorStoriesWrapper";
 import {
@@ -38,7 +38,7 @@ import {
   OnRequestToJumpToPath,
 } from "../../src/DmnEditor";
 
-const initialModel = generateEmptyDmn15();
+const initialModel = generateEmptyDmn16();
 
 const emptyDrd = `<?xml version="1.0" encoding="UTF-8" ?>
 <definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" xmlns:included0="https://kie.org/dmn/_125A5475-65CE-4574-822C-9CB2268F1393" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_2B849D68-E816-42F9-898A-1938B5D6B297" id="_A06623F7-6F03-49B9-9215-B9F99817C3ED" name="DMN_48A8D068-DBF3-4AE6-94E2-496DFC4B3E46">
@@ -103,7 +103,7 @@ function DevWebApp(args: DmnEditorProps) {
   }, []);
 
   const reset = useCallback(() => {
-    const marshaller = getMarshaller(generateEmptyDmn15(), { upgradeTo: "latest" });
+    const marshaller = getMarshaller(generateEmptyDmn16(), { upgradeTo: "latest" });
     setState({
       marshaller,
       stack: [normalize(marshaller.parser.parse())],
@@ -189,7 +189,7 @@ function DevWebApp(args: DmnEditorProps) {
                   <h5>(Drag & drop a file anywhere to open it)</h5>
                 </FlexItem>
                 <FlexItem shrink={{ default: "shrink" }}>
-                  <button onClick={() => onSelectModel(generateEmptyDmn15())}>Empty</button>
+                  <button onClick={() => onSelectModel(generateEmptyDmn16())}>Empty</button>
                   &nbsp; &nbsp;
                   <button onClick={() => onSelectModel(loanPreQualificationDmn)}>Loan Pre Qualification</button>
                   &nbsp; &nbsp;

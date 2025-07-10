@@ -21,56 +21,56 @@ import { DataType } from "./DataType";
 import { FeelSyntacticSymbolNature } from "./FeelSyntacticSymbolNature";
 import { IdentifierContext } from "./IdentifierContext";
 import {
-  DMN15__tBusinessKnowledgeModel,
-  DMN15__tConditional,
-  DMN15__tContext,
-  DMN15__tContextEntry,
-  DMN15__tDecision,
-  DMN15__tDecisionService,
-  DMN15__tDecisionTable,
-  DMN15__tDefinitions,
-  DMN15__tFilter,
-  DMN15__tFor,
-  DMN15__tFunctionDefinition,
-  DMN15__tInformationRequirement,
-  DMN15__tInputClause,
-  DMN15__tInputData,
-  DMN15__tInvocation,
-  DMN15__tItemDefinition,
-  DMN15__tKnowledgeRequirement,
-  DMN15__tList,
-  DMN15__tLiteralExpression,
-  DMN15__tQuantified,
-  DMN15__tRelation,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN16__tBusinessKnowledgeModel,
+  DMN16__tConditional,
+  DMN16__tContext,
+  DMN16__tContextEntry,
+  DMN16__tDecision,
+  DMN16__tDecisionService,
+  DMN16__tDecisionTable,
+  DMN16__tDefinitions,
+  DMN16__tFilter,
+  DMN16__tFor,
+  DMN16__tFunctionDefinition,
+  DMN16__tInformationRequirement,
+  DMN16__tInputClause,
+  DMN16__tInputData,
+  DMN16__tInvocation,
+  DMN16__tItemDefinition,
+  DMN16__tKnowledgeRequirement,
+  DMN16__tList,
+  DMN16__tLiteralExpression,
+  DMN16__tQuantified,
+  DMN16__tRelation,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Expression } from "./Expression";
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import { BuiltInTypes } from "./BuiltInTypes";
 
 export type ExpressionSource = { text?: { __$$text: string }; "@_id"?: string };
-export type DmnLiteralExpression = { __$$element: "literalExpression" } & DMN15__tLiteralExpression;
-export type DmnInvocation = { __$$element: "invocation" } & DMN15__tInvocation;
-export type DmnDecisionTable = { __$$element: "decisionTable" } & DMN15__tDecisionTable;
-export type DmnContext = { __$$element: "context" } & DMN15__tContext;
-export type DmnFunctionDefinition = { __$$element: "functionDefinition" } & DMN15__tFunctionDefinition;
-export type DmnRelation = { __$$element: "relation" } & DMN15__tRelation;
-export type DmnList = { __$$element: "list" } & DMN15__tList;
-export type DmnConditional = { __$$element: "conditional" } & DMN15__tConditional;
-export type DmnFilter = { __$$element: "filter" } & DMN15__tFilter;
-export type DmnFor = { __$$element: "for" } & DMN15__tFor;
-export type DmnEvery = { __$$element: "every" } & DMN15__tQuantified;
-export type DmnSome = { __$$element: "some" } & DMN15__tQuantified;
-export type DmnDecisionNode = { __$$element: "decision" } & DMN15__tDecision;
+export type DmnLiteralExpression = { __$$element: "literalExpression" } & DMN16__tLiteralExpression;
+export type DmnInvocation = { __$$element: "invocation" } & DMN16__tInvocation;
+export type DmnDecisionTable = { __$$element: "decisionTable" } & DMN16__tDecisionTable;
+export type DmnContext = { __$$element: "context" } & DMN16__tContext;
+export type DmnFunctionDefinition = { __$$element: "functionDefinition" } & DMN16__tFunctionDefinition;
+export type DmnRelation = { __$$element: "relation" } & DMN16__tRelation;
+export type DmnList = { __$$element: "list" } & DMN16__tList;
+export type DmnConditional = { __$$element: "conditional" } & DMN16__tConditional;
+export type DmnFilter = { __$$element: "filter" } & DMN16__tFilter;
+export type DmnFor = { __$$element: "for" } & DMN16__tFor;
+export type DmnEvery = { __$$element: "every" } & DMN16__tQuantified;
+export type DmnSome = { __$$element: "some" } & DMN16__tQuantified;
+export type DmnDecisionNode = { __$$element: "decision" } & DMN16__tDecision;
 
-export type DmnDefinitions = DMN15__tDefinitions;
-export type DmnKnowledgeRequirement = DMN15__tKnowledgeRequirement;
-export type DmnContextEntry = DMN15__tContextEntry;
+export type DmnDefinitions = DMN16__tDefinitions;
+export type DmnKnowledgeRequirement = DMN16__tKnowledgeRequirement;
+export type DmnContextEntry = DMN16__tContextEntry;
 
-type DmnBusinessKnowledgeModel = DMN15__tBusinessKnowledgeModel;
-type DmnItemDefinition = DMN15__tItemDefinition;
-type DmnInputData = DMN15__tInputData;
-type DmnInformationRequirement = DMN15__tInformationRequirement;
-type DmnDecisionService = DMN15__tDecisionService;
+type DmnBusinessKnowledgeModel = DMN16__tBusinessKnowledgeModel;
+type DmnItemDefinition = DMN16__tItemDefinition;
+type DmnInputData = DMN16__tInputData;
+type DmnInformationRequirement = DMN16__tInformationRequirement;
+type DmnDecisionService = DMN16__tDecisionService;
 
 export class IdentifiersRepository {
   private readonly _identifiersContextIndexedByUuid: Map<string, IdentifierContext>;
@@ -770,7 +770,7 @@ export class IdentifiersRepository {
     parent.children.set(ruleInputElementNode.uuid, ruleInputElementNode);
   }
 
-  private addDecisionTableInputEntryNode(parent: IdentifierContext, inputEntryNode: DMN15__tInputClause) {
+  private addDecisionTableInputEntryNode(parent: IdentifierContext, inputEntryNode: DMN16__tInputClause) {
     const identifierContext = this.addIdentifierContext({
       uuid: inputEntryNode["@_id"] ?? "",
       identifierDefinedByTheContext: "",

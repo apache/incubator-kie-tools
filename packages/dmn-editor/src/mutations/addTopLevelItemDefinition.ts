@@ -18,9 +18,9 @@
  */
 
 import {
-  DMN15__tDefinitions,
-  DMN15__tItemDefinition,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN16__tDefinitions,
+  DMN16__tItemDefinition,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getNewItemDefinition } from "../dataTypes/DataTypeSpec";
 
@@ -28,8 +28,8 @@ export function addTopLevelItemDefinition({
   definitions,
   partial,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
-  partial?: Partial<Normalized<DMN15__tItemDefinition>>;
+  definitions: Normalized<DMN16__tDefinitions>;
+  partial?: Partial<Normalized<DMN16__tItemDefinition>>;
 }) {
   const newItemDefinition = getNewItemDefinition(partial);
   definitions.itemDefinition ??= [];

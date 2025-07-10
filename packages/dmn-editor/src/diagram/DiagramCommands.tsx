@@ -203,23 +203,23 @@ export function DiagramCommands(props: {}) {
         getNewDmnIdRandomizer()
           .ack({
             json: clipboard.drgElements,
-            type: "DMN15__tDefinitions",
+            type: "DMN16__tDefinitions",
             attr: "drgElement",
           })
           .ack({
             json: clipboard.artifacts,
-            type: "DMN15__tDefinitions",
+            type: "DMN16__tDefinitions",
             attr: "artifact",
           })
           .ack({
             json: clipboard.shapes,
-            type: "DMNDI15__DMNDiagram",
+            type: "DMNDI16__DMNDiagram",
             attr: "dmndi:DMNDiagramElement",
             __$$element: "dmndi:DMNShape",
           })
           .ack({
             json: clipboard.edges,
-            type: "DMNDI15__DMNDiagram",
+            type: "DMNDI16__DMNDiagram",
             attr: "dmndi:DMNDiagramElement",
             __$$element: "dmndi:DMNEdge",
           })

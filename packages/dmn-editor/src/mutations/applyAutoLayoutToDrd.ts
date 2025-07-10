@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMNDI16__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import * as Elk from "elkjs/lib/elk.bundled.js";
@@ -60,7 +60,7 @@ export function applyAutoLayoutToDrd({
   __readonly_edges: RF.Edge<DmnDiagramEdgeData>[];
   __readonly_dmnShapesByHref: Map<
     string,
-    Normalized<DMNDI15__DMNShape> & {
+    Normalized<DMNDI16__DMNShape> & {
       index: number;
       dmnElementRefQName: XmlQName;
     }

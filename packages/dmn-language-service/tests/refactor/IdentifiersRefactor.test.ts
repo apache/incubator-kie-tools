@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN16__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { DmnLatestModel, getMarshaller } from "@kie-tools/dmn-marshaller";
 import { includeMathModelDmn, mathDmnModel, sampleLoanDmnModel } from "../fs/fixtures";
 import { IdentifiersRefactor } from "@kie-tools/dmn-language-service";
@@ -212,8 +212,8 @@ describe("Refactor renamed identifiers", () => {
   });
 });
 
-function getDefinitions(content: string): Normalized<DMN15__tDefinitions> {
-  return getMarshaller(content, { upgradeTo: "latest" }).parser.parse().definitions as Normalized<DMN15__tDefinitions>;
+function getDefinitions(content: string): Normalized<DMN16__tDefinitions> {
+  return getMarshaller(content, { upgradeTo: "latest" }).parser.parse().definitions as Normalized<DMN16__tDefinitions>;
 }
 
 function getModel(content: string): Normalized<DmnLatestModel> {

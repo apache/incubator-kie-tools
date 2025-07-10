@@ -33,14 +33,14 @@ import { useMemo } from "react";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import {
-  DMN15__tBusinessKnowledgeModel,
-  DMN15__tDecision,
-  DMN15__tDecisionService,
-  DMN15__tGroup,
-  DMN15__tInputData,
-  DMN15__tKnowledgeSource,
-  DMN15__tTextAnnotation,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN16__tBusinessKnowledgeModel,
+  DMN16__tDecision,
+  DMN16__tDecisionService,
+  DMN16__tGroup,
+  DMN16__tInputData,
+  DMN16__tKnowledgeSource,
+  DMN16__tTextAnnotation,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
 import { NodeIcon } from "../icons/Icons";
@@ -134,7 +134,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                   case NODE_TYPES.inputData:
                     return (
                       <InputDataProperties
-                        inputData={node.data!.dmnObject as Normalized<DMN15__tInputData>}
+                        inputData={node.data!.dmnObject as Normalized<DMN16__tInputData>}
                         namespace={node.data.dmnObjectNamespace}
                         index={node.data.index}
                       />
@@ -142,7 +142,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                   case NODE_TYPES.decision:
                     return (
                       <DecisionProperties
-                        decision={node.data!.dmnObject as Normalized<DMN15__tDecision>}
+                        decision={node.data!.dmnObject as Normalized<DMN16__tDecision>}
                         namespace={node.data.dmnObjectNamespace}
                         index={node.data.index}
                       />
@@ -150,7 +150,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                   case NODE_TYPES.bkm:
                     return (
                       <BkmProperties
-                        bkm={node.data!.dmnObject as Normalized<DMN15__tBusinessKnowledgeModel>}
+                        bkm={node.data!.dmnObject as Normalized<DMN16__tBusinessKnowledgeModel>}
                         namespace={node.data.dmnObjectNamespace}
                         index={node.data.index}
                       />
@@ -158,7 +158,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                   case NODE_TYPES.decisionService:
                     return (
                       <DecisionServiceProperties
-                        decisionService={node.data!.dmnObject as Normalized<DMN15__tDecisionService>}
+                        decisionService={node.data!.dmnObject as Normalized<DMN16__tDecisionService>}
                         namespace={node.data.dmnObjectNamespace}
                         index={node.data.index}
                       />
@@ -166,7 +166,7 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                   case NODE_TYPES.knowledgeSource:
                     return (
                       <KnowledgeSourceProperties
-                        knowledgeSource={node.data!.dmnObject as Normalized<DMN15__tKnowledgeSource>}
+                        knowledgeSource={node.data!.dmnObject as Normalized<DMN16__tKnowledgeSource>}
                         namespace={node.data.dmnObjectNamespace}
                         index={node.data.index}
                       />
@@ -174,14 +174,14 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
                   case NODE_TYPES.textAnnotation:
                     return (
                       <TextAnnotationProperties
-                        textAnnotation={node.data!.dmnObject as Normalized<DMN15__tTextAnnotation>}
+                        textAnnotation={node.data!.dmnObject as Normalized<DMN16__tTextAnnotation>}
                         index={node.data.index}
                       />
                     );
                   case NODE_TYPES.group:
                     return (
                       <GroupProperties
-                        group={node.data!.dmnObject as Normalized<DMN15__tGroup>}
+                        group={node.data!.dmnObject as Normalized<DMN16__tGroup>}
                         index={node.data.index}
                       />
                     );
