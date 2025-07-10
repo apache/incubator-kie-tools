@@ -43,5 +43,6 @@ else
 fi
 
 mkdir "${KOGITO_HOME}"/.m2
+chown -R kogito:kogito "${KOGITO_HOME}"/.m2
 cp -v "${SCRIPT_DIR}"/maven/* "${KOGITO_HOME}"/.m2
 cp -v "${SCRIPT_DIR}"/added/* "${KOGITO_HOME}"/launch/
