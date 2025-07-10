@@ -85,7 +85,7 @@ const WorkflowListTable: React.FC<WorkflowListTableProps & OUIAProps> = ({
   ouiaSafe,
 }) => {
   const [rowPairs, setRowPairs] = useState<any>([]);
-  const columns: string[] = ["__Toggle", "__Select", "Id", "Status", "Created", "Last update", "__Actions"];
+  const columns: string[] = ["__Toggle", "__Select", "Process name", "Status", "Created", "Last update", "__Actions"];
   const [modalTitle, setModalTitle] = useState<string>("");
   const [modalContent, setModalContent] = useState<string>("");
   const [titleType, setTitleType] = useState<string>("");
@@ -388,7 +388,7 @@ const WorkflowListTable: React.FC<WorkflowListTableProps & OUIAProps> = ({
               }
               return (
                 <Th style={styleParams} key={`${column}_header`} {...sortParams}>
-                  {columnIndex === 2 ? "Process Name" : column.startsWith("__") ? "" : column}
+                  {column.startsWith("__") ? "" : column}
                 </Th>
               );
             })}

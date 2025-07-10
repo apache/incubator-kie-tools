@@ -172,11 +172,7 @@ const WorkflowList: React.FC<WorkflowListProps & OUIAProps> = ({
     setSortBy({ index, direction });
     let sortingColumn: string = event.target.innerText;
     sortingColumn = _.camelCase(sortingColumn);
-    const sortFieldMap: Record<string, string> = {
-      id: "processName",
-    };
-    const graphqlSortField = sortFieldMap[sortingColumn] || sortingColumn;
-    let sortByObj = _.set({}, graphqlSortField, direction.toUpperCase());
+    let sortByObj = _.set({}, sortingColumn, direction.toUpperCase());
     sortByObj = alterOrderByObj(sortByObj);
     await driver.applySorting(sortByObj);
     doQuery(0, defaultPageSize, true, true);
