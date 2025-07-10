@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import "@patternfly/react-styles/css/components/Drawer/drawer.css";
+import "@patternfly/react-core/dist/styles/base.css";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import * as React from "react";
 import { BeeGwtService, BoxedExpression, DmnDataType, Normalized, PmmlDocument } from "./api";
@@ -29,7 +29,6 @@ import {
 import { ExpressionDefinitionRoot } from "./expressions/ExpressionDefinitionRoot/ExpressionDefinitionRoot";
 import { BoxedExpressionEditorContextProvider, OnExpressionChange } from "./BoxedExpressionEditorContext";
 import { FeelIdentifiers } from "@kie-tools/dmn-feel-antlr4-parser";
-import "./base-no-reset-wrapped.css";
 import "./@types/react-table";
 
 export type OnRequestFeelIdentifiers = () => FeelIdentifiers;

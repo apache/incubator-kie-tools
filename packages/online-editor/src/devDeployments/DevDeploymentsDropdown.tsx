@@ -22,7 +22,12 @@ import { useDevDeployments as useDevDeployments } from "./DevDeploymentsContext"
 import { DropdownItem } from "@patternfly/react-core/deprecated";
 import { DevDeploymentsDropdownItem } from "./DevDeploymentsDropdownItem";
 import { PficonSatelliteIcon } from "@patternfly/react-icons/dist/js/icons/pficon-satellite-icon";
-import { EmptyState, EmptyStateIcon, EmptyStateHeader } from "@patternfly/react-core/dist/js/components/EmptyState";
+import {
+  EmptyState,
+  EmptyStateIcon,
+  EmptyStateHeader,
+  EmptyStateBody,
+} from "@patternfly/react-core/dist/js/components/EmptyState";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { ResponsiveDropdown } from "../ResponsiveDropdown/ResponsiveDropdown";
 import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdownToggle";
@@ -141,15 +146,8 @@ export function DevDeploymentsDropdown() {
           <DropdownItem key="disabled link" isDisabled>
             <Bullseye>
               <EmptyState>
-                <EmptyStateHeader
-                  titleText={<>{`Error fetching Dev Deployments.`}</>}
-                  icon={
-                    <Icon size="lg" color="darkgrey">
-                      <EmptyStateIcon icon={PficonSatelliteIcon} />
-                    </Icon>
-                  }
-                  headingLevel="h4"
-                />
+                <EmptyStateIcon icon={PficonSatelliteIcon} color={"darkgray"} />
+                <EmptyStateBody style={{ color: "darkgray" }}>{`Error fetching Dev Deployments.`}</EmptyStateBody>
               </EmptyState>
             </Bullseye>
           </DropdownItem>,
@@ -159,15 +157,8 @@ export function DevDeploymentsDropdown() {
           <DropdownItem key="disabled link" isDisabled>
             <Bullseye>
               <EmptyState>
-                <EmptyStateHeader
-                  titleText={<>{`No Dev Deployments found`}</>}
-                  icon={
-                    <Icon size="lg" color="darkgrey">
-                      <EmptyStateIcon icon={PficonSatelliteIcon} />
-                    </Icon>
-                  }
-                  headingLevel="h5"
-                />
+                <EmptyStateIcon icon={PficonSatelliteIcon} color={"darkgray"} />
+                <EmptyStateBody style={{ color: "darkgray" }}>{`No Dev Deployments found`}</EmptyStateBody>
               </EmptyState>
             </Bullseye>
           </DropdownItem>,
@@ -205,15 +196,10 @@ export function DevDeploymentsDropdown() {
       return [
         <div key={"empty-deployments"}>
           <EmptyState>
-            <EmptyStateHeader
-              titleText={<>{`Choose a Cloud provider to see your Dev Deployments.`}</>}
-              icon={
-                <Icon size="lg" color="darkgrey">
-                  <EmptyStateIcon icon={PficonSatelliteIcon} />
-                </Icon>
-              }
-              headingLevel="h4"
-            />
+            <EmptyStateIcon icon={PficonSatelliteIcon} color={"darkgray"} />
+            <EmptyStateBody
+              style={{ color: "darkgray" }}
+            >{`Choose a Cloud provider to see your Dev Deployments.`}</EmptyStateBody>
           </EmptyState>
         </div>,
       ];

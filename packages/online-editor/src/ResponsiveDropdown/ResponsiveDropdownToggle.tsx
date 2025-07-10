@@ -38,7 +38,7 @@ export function ResponsiveDropdownToggle(props: DropdownToggleProps) {
           {props.icon ?? props.children}
         </Button>
       ) : (
-        <DropdownToggle {...props} />
+        <DropdownToggle {...props} style={{ ...(props.style ?? {}), display: "flex", flexWrap: "nowrap" }} />
       )}
     </>
   );

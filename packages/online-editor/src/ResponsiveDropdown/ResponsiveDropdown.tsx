@@ -49,7 +49,7 @@ export function ResponsiveDropdown(props: React.PropsWithChildren<ResponsiveDrop
           </ResponsiveDropdownModal>
         </>
       ) : (
-        <Dropdown {...props} />
+        <Dropdown {...props} menuAppendTo={props.menuAppendTo ?? document.body} />
       )}
     </ResponsiveDropdownContext.Provider>
   );

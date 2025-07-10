@@ -19,10 +19,12 @@
 
 .menu-item-with-help .pf-v5-c-menu__item {
   min-height: 40px;
+  width: 200px;
 }
 
 .menu-item-with-help .pf-v5-c-menu__item-description {
-  font-size: 10px;
+  padding-top: 4px;
+  font-size: 0.8em;
   word-break: keep-all;
 }
 
@@ -35,5 +37,6 @@
 }
 
 .menu-with-help .pf-v5-c-menu__group-title {
-  padding-bottom: 10px;
+  padding: 0;
+  padding-bottom: 4px;
 }

@@ -53,6 +53,7 @@ interface EditorPageDockContextType {
   removeToggleItem: (panelId: PanelId) => void;
   toggleGroupItems: Map<PanelId, JSX.Element>;
   panelContent?: JSX.Element;
+  panelContentHeight?: number;
   notificationsPanel?: NotificationsPanelRef;
   error: boolean;
   setHasError: React.Dispatch<React.SetStateAction<boolean>>;
@@ -97,6 +98,7 @@ export function EditorPageDockContextProvider({
   const errorBoundaryRef = useRef<ErrorBoundary>(null);
   const [error, setHasError] = useState<boolean>(false);
   const [panel, setPanel] = useState<PanelId>(PanelId.NONE);
+  const [panelContentHeight, setPanelContentHeight] = useState<number | undefined>();
   const [toggleGroupItems, setToggleGroupItem] = useState(
     new Map([
       [
@@ -191,7 +193,7 @@ export function EditorPageDockContextProvider({
       case PanelId.DMN_RUNNER_TABLE:
         return (
           <DmnRunnerErrorBoundary>
-            <DmnRunnerTable />
+            <DmnRunnerTable setPanelContentHeight={setPanelContentHeight} />
           </DmnRunnerErrorBoundary>
         );
       default:
@@ -247,6 +249,7 @@ export function EditorPageDockContextProvider({
         disabledReason,
         toggleGroupItems,
         panelContent,
+        panelContentHeight,
         notificationsPanel,
         envelopeServer,
         error,
