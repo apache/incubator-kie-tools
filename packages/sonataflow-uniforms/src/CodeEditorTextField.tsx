@@ -40,12 +40,29 @@ function CodeEditorTextField({
   disabled,
   height,
   helperText,
-  language,
+  language = Language.json,
   name,
   value = "",
   ...props
 }: CodeEditorTextFieldProps) {
   const [hiddenValue, setHiddenValue] = useState(value ?? "");
+
+  const isInvalid = useMemo(() => {
+    if (!value.trim()) {
+      return true;
+    }
+
+    if (language === Language.json) {
+      try {
+        JSON.parse(value);
+        return true;
+      } catch (error) {
+        return "Invalid JSON syntax";
+      }
+    }
+
+    return false;
+  }, [value, language]);
 
   const onChange = useCallback(
     (val: string) => {
@@ -70,10 +87,21 @@ function CodeEditorTextField({
         code={stringifiedValue ?? ""}
         height={height ? `${height}` : "200px"}
         isReadOnly={disabled}
-        language={language ?? Language.json}
+        language={language}
         onChange={onChange}
       />
       <input type="hidden" name={name} value={hiddenValue} data-testid={"code-editor-hidden-field"} />
+      {isInvalid && (
+        <div
+          style={{
+            fontSize: "0.875rem",
+            color: "#c9190b",
+            marginTop: "0.25rem",
+          }}
+        >
+          {isInvalid}
+        </div>
+      )}
     </>
   );
 }
