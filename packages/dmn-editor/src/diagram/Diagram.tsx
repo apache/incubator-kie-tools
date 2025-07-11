@@ -756,7 +756,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                     snappedShape.width !== change.dimensions.width ||
                     snappedShape.height !== change.dimensions.height
                   ) {
-                    const { deltaWidth, deltaHeight } = resizeNode({
+                    resizeNode({
                       definitions: state.dmn.model.definitions,
                       drdIndex: state.computed(state).getDrdIndex(),
                       __readonly_dmnShapesByHref: state.computed(state).indexedDrd().dmnShapesByHref,
@@ -765,6 +765,8 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                       __readonly_externalDmnsIndex: state
                         .computed(state)
                         .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
+                      __readonly_href: node.id,
+                      __readonly_dmnObjectId: node.data.dmnObject?.["@_id"] ?? "",
                       change: {
                         isExternal: !!node.data.dmnObjectQName.prefix,
                         nodeType: node.type as NodeType,
@@ -811,118 +813,6 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                         ) {
                           dsShape["dc:Bounds"]["@_width"] = change.dimensions?.width ?? 0;
                           dsShape["dc:Bounds"]["@_height"] = change.dimensions?.height ?? 0;
-                        }
-                      }
-                    }
-                    // Handles resizing a decision service in a DRD resizes it in all DRDs to keep Decision Services consistent
-                    if (node.type === NODE_TYPES.decisionService) {
-                      const drds = state.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
-                      const drgElements = state.dmn.model.definitions.drgElement!;
-                      for (let i = 0; i < drds.length; i++) {
-                        if (i === state.computed(state).getDrdIndex()) {
-                          continue;
-                        }
-                        const _indexedDrd = computeIndexedDrd(
-                          state.dmn.model.definitions["@_namespace"],
-                          state.dmn.model.definitions,
-                          i
-                        );
-                        const dsShape = _indexedDrd.dmnShapesByHref.get(node.id);
-                        if (dsShape && dsShape["dc:Bounds"] && !node.data.shape["@_isCollapsed"]) {
-                          dsShape["dc:Bounds"]["@_width"] = node.data.shape["dc:Bounds"]?.["@_width"] ?? 0;
-                          dsShape["dc:Bounds"]["@_height"] = node.data.shape["dc:Bounds"]?.["@_height"] ?? 0;
-                        }
-
-                        // Apply delta shift to neighbouring nodes in other DRD
-                        const decisionService = node.data.dmnObject as Normalized<DMN15__tDecisionService>;
-                        const { containedDecisionHrefsRelativeToThisDmn } =
-                          getDecisionServicePropertiesRelativeToThisDmn({
-                            thisDmnsNamespace: state.dmn.model.definitions["@_namespace"],
-                            decisionService,
-                            decisionServiceNamespace:
-                              node.data.dmnObjectNamespace ?? state.dmn.model.definitions["@_namespace"],
-                          });
-
-                        const decisionsInDecisionServiceInDrd: string[] = [];
-                        for (const elem of drgElements) {
-                          if (elem.__$$element === "decisionService") {
-                            decisionsInDecisionServiceInDrd.push(
-                              ...(elem.outputDecision ?? []).map((od) => od["@_href"]),
-                              ...(elem.encapsulatedDecision ?? []).map((od) => od["@_href"])
-                            );
-                          }
-                        }
-
-                        for (const [key] of _indexedDrd.dmnShapesByHref.entries()) {
-                          if (key !== node.id && !containedDecisionHrefsRelativeToThisDmn.includes(key)) {
-                            const nodeShape = _indexedDrd.dmnShapesByHref.get(key);
-                            if (nodeShape && nodeShape["dc:Bounds"] && dsShape && !node.data.shape["@_isCollapsed"]) {
-                              const nodeShapeWidth =
-                                nodeShape["dc:Bounds"]!["@_x"] + nodeShape["dc:Bounds"]!["@_width"];
-                              const nodeShapeHeight =
-                                nodeShape["dc:Bounds"]!["@_y"] + nodeShape["dc:Bounds"]!["@_height"];
-                              const dsShapeWidth =
-                                dsShape["dc:Bounds"]!["@_x"] + dsShape["dc:Bounds"]!["@_width"] - deltaWidth;
-                              const dsShapeHeight =
-                                dsShape["dc:Bounds"]!["@_y"] + dsShape["dc:Bounds"]!["@_height"] - deltaHeight;
-
-                              const drgElem = drgElements.filter(
-                                (item) => item["@_id"] === nodeShape["@_dmnElementRef"]
-                              );
-
-                              const shiftXPosition =
-                                nodeShape["dc:Bounds"]["@_x"] >= dsShapeWidth &&
-                                (nodeShapeHeight >= dsShape["dc:Bounds"]!["@_y"] ||
-                                  nodeShape["dc:Bounds"]["@_y"] <= dsShapeHeight);
-
-                              const shiftYPosition =
-                                nodeShape["dc:Bounds"]["@_y"] >= dsShapeHeight &&
-                                (dsShapeWidth <= nodeShapeWidth || nodeShape["dc:Bounds"]!["@_x"] <= nodeShapeWidth);
-
-                              const bounds = nodeShape["dc:Bounds"];
-
-                              if (drgElem[0].__$$element === "decisionService") {
-                                const containedDecisions = [
-                                  ...(drgElem[0].outputDecision ?? []).map((od) => od["@_href"]),
-                                  ...(drgElem[0].encapsulatedDecision ?? []).map((od) => od["@_href"]),
-                                ];
-
-                                if (shiftXPosition || shiftYPosition) {
-                                  const divider = nodeShape["dmndi:DMNDecisionServiceDividerLine"];
-                                  const waypoints = divider?.["di:waypoint"];
-                                  // Handles position shift of decision service
-                                  if (shiftXPosition) {
-                                    bounds["@_x"] += deltaWidth;
-                                  }
-
-                                  if (shiftYPosition) {
-                                    bounds["@_y"] += deltaHeight;
-                                    waypoints![0]["@_y"] += deltaHeight;
-                                    waypoints![1]["@_y"] += deltaHeight;
-                                  }
-                                  // Handles position shift of decisions inside decision service
-                                  for (const decision of containedDecisions) {
-                                    const containedDecisionBounds =
-                                      _indexedDrd.dmnShapesByHref.get(decision)?.["dc:Bounds"];
-                                    if (containedDecisionBounds) {
-                                      if (shiftXPosition) containedDecisionBounds["@_x"] += deltaWidth;
-                                      if (shiftYPosition) containedDecisionBounds["@_y"] += deltaHeight;
-                                    }
-                                  }
-                                }
-                              } else {
-                                // Handles position shift of other independent shapes
-                                if (!decisionsInDecisionServiceInDrd.some((arr) => arr.includes(key))) {
-                                  if (shiftXPosition) {
-                                    bounds["@_x"] = bounds!["@_x"] + deltaWidth;
-                                  }
-                                  if (shiftYPosition) {
-                                    bounds["@_y"] = bounds!["@_y"] + deltaHeight;
-                                  }
-                                }
-                              }
-                            }
-                          }
                         }
                       }
                     }
