@@ -3,10 +3,10 @@
   elementFormDefault="qualified"
   xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/"
   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-  xmlns:dmndi="https://www.omg.org/spec/DMN/20240513/DMNDI/"
+  xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
   targetNamespace="https://www.omg.org/spec/DMN/20240513/MODEL/"
 >
-  <xsd:import namespace="https://www.omg.org/spec/DMN/20240513/DMNDI/" schemaLocation="DMNDI16.xsd">
+  <xsd:import namespace="https://www.omg.org/spec/DMN/20230324/DMNDI/" schemaLocation="DMNDI16.xsd">
     <xsd:annotation>
       <xsd:documentation>
 				Include the DMN Diagram Interchange (DI) schema
@@ -58,13 +58,13 @@
           name="expressionLanguage"
           type="xsd:anyURI"
           use="optional"
-          default="https://www.omg.org/spec/DMN/20230324/FEEL/"
+          default="https://www.omg.org/spec/DMN/20240513/FEEL/"
         />
         <xsd:attribute
           name="typeLanguage"
           type="xsd:anyURI"
           use="optional"
-          default="https://www.omg.org/spec/DMN/20230324/FEEL/"
+          default="https://www.omg.org/spec/DMN/20240513/FEEL/"
         />
         <xsd:attribute name="namespace" type="xsd:anyURI" use="required" />
         <xsd:attribute name="exporter" type="xsd:string" use="optional" />
