@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState, useMemo } from "react";
 import { CodeEditor, Language } from "@patternfly/react-code-editor";
 import { connectField, HTMLFieldProps } from "uniforms";
 import wrapField from "@kie-tools/uniforms-patternfly/dist/esm/wrapField";
@@ -30,9 +30,9 @@ export type CodeEditorTextFieldProps = HTMLFieldProps<
     helperText?: string;
     label?: string;
     language?: Language;
-    onChange: (value?: string) => void;
+    onChange: (value?: any) => void;
     prefix?: string;
-    value?: string;
+    value?: any;
   }
 >;
 
@@ -42,55 +42,40 @@ function CodeEditorTextField({
   helperText,
   language = Language.json,
   name,
-  value = "",
+  value,
   ...props
 }: CodeEditorTextFieldProps) {
-  const [hiddenValue, setHiddenValue] = useState(value ?? "");
-
-  const isInvalid = useMemo(() => {
-    if (!value.trim()) {
-      return true;
-    }
-
-    if (language === Language.json) {
-      try {
-        JSON.parse(value);
-        return true;
-      } catch (error) {
-        return "Invalid JSON syntax";
-      }
-    }
-
-    return false;
-  }, [value, language]);
+  const [isInvalid, setIsInvalid] = useState<string | boolean>(false);
 
   const onChange = useCallback(
     (val: string) => {
-      setHiddenValue(val);
-      props.onChange(val);
+      if (language === Language.json) {
+        try {
+          const stringifiedValue = JSON.parse(val);
+          props.onChange(stringifiedValue);
+          setIsInvalid(false);
+        } catch (error) {
+          setIsInvalid("Invalid JSON syntax");
+        }
+      } else {
+        props.onChange(val);
+      }
     },
-    [props]
+    [language, props]
   );
 
-  const stringifiedValue = useMemo(() => {
-    if (value && typeof value === "object") {
-      const isEmptyObj = !Object.keys(value).length;
-      return isEmptyObj ? "" : JSON.stringify(value);
-    }
-    return value;
-  }, [value]);
+  const code = useMemo(() => (language === Language.json ? JSON.stringify(value) : value), [value, language]);
 
   return wrapField(
     { ...props, help: helperText },
     <>
       <CodeEditor
-        code={stringifiedValue ?? ""}
+        code={code}
         height={height ? `${height}` : "200px"}
         isReadOnly={disabled}
         language={language}
         onChange={onChange}
       />
-      <input type="hidden" name={name} value={hiddenValue} data-testid={"code-editor-hidden-field"} />
       {isInvalid && (
         <div
           style={{

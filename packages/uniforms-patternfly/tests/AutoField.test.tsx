@@ -92,16 +92,6 @@ test("<AutoField> - renders TextField", () => {
   expect(screen.getByTestId("text-field")).toBeInTheDocument();
 });
 
-test("<CodeEditor> - renders CodeEditor with json language", () => {
-  render(usingUniformsContext(<AutoField name="x" />, { x: { type: String, uniforms: { language: "json" } } }));
-  expect(screen.getByTestId("code-editor-textarea")).toBeInTheDocument();
-});
-
-test("<CodeEditor> - renders CodeEditor with graphql language", () => {
-  render(usingUniformsContext(<AutoField name="x" />, { x: { type: String, uniforms: { language: "graphql" } } }));
-  expect(screen.getByTestId("code-editor-textarea")).toBeInTheDocument();
-});
-
 test("<AutoField> - renders BoolField", () => {
   render(usingUniformsContext(<AutoField name="x" />, { x: { type: Boolean } }));
   expect(screen.getByTestId("bool-field")).toBeInTheDocument();

@@ -23,77 +23,77 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { usingUniformsContext } from "./test-utils";
 import { Language } from "@patternfly/react-code-editor/dist/js/components/CodeEditor";
 
-const jsonMock = JSON.stringify({ first_name: "John", last_name: "Doe" });
+const jsonMock = { first_name: "John", last_name: "Doe" };
+const jsonMockStringified = JSON.stringify(jsonMock);
+const htmlMock = "<html></html>";
+jest.mock("@patternfly/react-code-editor", () => require("./__mocks__/react-code-editor"));
 
 test("<CodeEditorTextField> - renders an editor", () => {
   render(
     usingUniformsContext(<CodeEditorTextField name="x" language={Language.json} />, {
-      x: { type: String, uniforms: { language: "json" } },
+      x: { type: Object },
     })
   );
 
-  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
+  expect(screen.getByTestId("code-editor-textarea")).toBeInTheDocument();
 });
 
 test("<CodeEditorTextField> - renders an editor with correct disabled state", () => {
   render(
     usingUniformsContext(<CodeEditorTextField name="x" disabled language={Language.json} />, {
-      x: { type: String, uniforms: { language: "json" } },
+      x: { type: Object },
     })
   );
 
-  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
+  expect(screen.getByTestId("code-editor-textarea")).toBeInTheDocument();
   expect(screen.getByTestId("code-editor-textarea").getAttribute("readOnly")).not.toBe(null);
-});
-
-test("<CodeEditorTextField> - renders an editor with correct name", () => {
-  render(
-    usingUniformsContext(<CodeEditorTextField name="x" disabled language={Language.json} />, {
-      x: { type: String, uniforms: { language: "json" } },
-    })
-  );
-
-  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
-  expect(screen.getByTestId("code-editor-hidden-field").getAttribute("name")).toBe("x");
 });
 
 test("<CodeEditorTextField> - renders an editor with correct value (default)", () => {
   render(
     usingUniformsContext(<CodeEditorTextField name="x" language={Language.json} />, {
-      x: { type: String, uniforms: { language: "json" } },
+      x: { type: Object },
     })
   );
 
-  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
+  expect(screen.getByTestId("code-editor-textarea")).toBeInTheDocument();
   const editor = screen.getByTestId("code-editor-textarea") as HTMLTextAreaElement;
-  expect(editor.value).toBe("");
-  expect(screen.getByTestId("code-editor-hidden-field").getAttribute("value")).toBe("");
+  expect(editor.value).toBe("{}");
 });
 
 test("<CodeEditorTextField> - renders an editor with correct value (model)", () => {
   render(
     usingUniformsContext(
       <CodeEditorTextField name="x" language={Language.json} />,
-      { x: { type: String, uniforms: { language: "json" } } },
+      { x: { type: Object } },
       { model: { x: jsonMock } }
     )
   );
 
-  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
-  expect(screen.getByText(jsonMock)).toBeInTheDocument();
-  expect(screen.getByTestId("code-editor-hidden-field").getAttribute("value")).toBe(jsonMock);
+  expect(screen.getByTestId("code-editor-textarea")).toBeInTheDocument();
+  expect(screen.getByText(jsonMockStringified)).toBeInTheDocument();
 });
 
 test("<CodeEditorTextField> - renders an editor with correct value (specified)", () => {
   render(
-    usingUniformsContext(<CodeEditorTextField name="x" language={Language.json} value="y" />, {
-      x: { type: String, uniforms: { language: "json" } },
+    usingUniformsContext(<CodeEditorTextField name="x" language={Language.json} value={jsonMock} />, {
+      x: { type: Object },
     })
   );
 
-  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
-  expect(screen.getByText("y")).toBeInTheDocument();
-  expect(screen.getByTestId("code-editor-hidden-field").getAttribute("value")).toBe("y");
+  expect(screen.getByTestId("code-editor-textarea")).toBeInTheDocument();
+  expect(screen.getByText(jsonMockStringified)).toBeInTheDocument();
+});
+
+test("<CodeEditorTextField> - renders an html editor with correct value (specified)", () => {
+  render(
+    usingUniformsContext(<CodeEditorTextField name="x" language={Language.html} value={htmlMock} />, {
+      x: { type: Object },
+    })
+  );
+
+  expect(screen.getByTestId("code-editor-textarea")).toBeInTheDocument();
+  expect(screen.getByText(htmlMock)).toBeInTheDocument();
 });
 
 test("<CodeEditorTextField> - renders an editor which correctly reacts on change", () => {
@@ -102,33 +102,33 @@ test("<CodeEditorTextField> - renders an editor which correctly reacts on change
   render(
     usingUniformsContext(
       <CodeEditorTextField name="x" language={Language.json} />,
-      { x: { type: String, uniforms: { language: "json" } } },
+      { x: { type: Object } },
       { onChange }
     )
   );
 
-  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
+  expect(screen.getByTestId("code-editor-textarea")).toBeInTheDocument();
+  expect(onChange).toHaveBeenLastCalledWith("x", {});
   const editor = screen.getByTestId("code-editor-textarea");
-  fireEvent.change(editor, { target: { value: "y" } });
-  expect(onChange).toHaveBeenLastCalledWith("x", "y");
-  expect(screen.getByTestId("code-editor-hidden-field").getAttribute("value")).toBe("y");
+  fireEvent.change(editor, { target: { value: jsonMockStringified } });
+  expect(onChange).toHaveBeenLastCalledWith("x", jsonMock);
 });
 
-test("<CodeEditorTextField> - renders an editor which correctly reacts on change (empty)", () => {
+test("<CodeEditorTextField> - renders an html editor which correctly reacts on change", () => {
   const onChange = jest.fn();
 
   render(
     usingUniformsContext(
-      <CodeEditorTextField name="x" language={Language.json} />,
-      { x: { type: String, uniforms: { language: "json" } } },
+      <CodeEditorTextField name="x" language={Language.html} />,
+      { x: { type: Object } },
       { onChange }
     )
   );
 
-  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
+  expect(screen.getByTestId("code-editor-textarea")).toBeInTheDocument();
   const editor = screen.getByTestId("code-editor-textarea");
-  fireEvent.change(editor, { target: { value: "" } });
-  expect(onChange).not.toHaveBeenCalled();
+  fireEvent.change(editor, { target: { value: htmlMock } });
+  expect(onChange).toHaveBeenLastCalledWith("x", htmlMock);
 });
 
 test("<CodeEditorTextField> - renders an editor which correctly reacts on change (same value)", () => {
@@ -137,67 +137,65 @@ test("<CodeEditorTextField> - renders an editor which correctly reacts on change
   render(
     usingUniformsContext(
       <CodeEditorTextField name="x" language={Language.json} />,
-      { x: { type: String, uniforms: { language: "json" } } },
-      { model: { x: "y" }, onChange }
+      { x: { type: Object } },
+      { model: { x: jsonMock }, onChange }
     )
   );
 
-  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
+  expect(screen.getByTestId("code-editor-textarea")).toBeInTheDocument();
   const editor = screen.getByTestId("code-editor-textarea");
-  fireEvent.change(editor, { target: { value: "y" } });
-  expect(screen.getByText("y")).toBeInTheDocument();
+  fireEvent.change(editor, { target: { value: jsonMock } });
+  expect(screen.getByText(jsonMockStringified)).toBeInTheDocument();
   expect(onChange).not.toHaveBeenCalled();
 });
 
 test("<CodeEditorTextField> - renders a label", () => {
   render(
     usingUniformsContext(<CodeEditorTextField name="x" label="y" language={Language.json} />, {
-      x: { type: String, uniforms: { language: "json" } },
+      x: { type: Object },
     })
   );
 
-  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
+  expect(screen.getByTestId("code-editor-textarea")).toBeInTheDocument();
   expect(screen.getByText("y")).toBeInTheDocument();
 });
 
 test("<CodeEditorTextField> - renders an editor with correct height (default)", () => {
   render(
     usingUniformsContext(<CodeEditorTextField name="x" language={Language.json} />, {
-      x: { type: String, uniforms: { language: "json" } },
+      x: { type: Object },
     })
   );
 
-  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
+  expect(screen.getByTestId("code-editor-textarea")).toBeInTheDocument();
   expect(screen.getByTestId("code-editor-textarea").style.height).toBe("200px");
 });
 
 test("<CodeEditorTextField> - renders an editor with correct height (specified)", () => {
   render(
     usingUniformsContext(<CodeEditorTextField name="x" height="300px" language={Language.json} />, {
-      x: { type: String, uniforms: { language: "json" } },
+      x: { type: Object },
     })
   );
 
-  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
+  expect(screen.getByTestId("code-editor-textarea")).toBeInTheDocument();
   expect(screen.getByTestId("code-editor-textarea").style.height).toBe("300px");
 });
 
 test("<CodeEditorTextField> - renders an editor with correct language (default)", () => {
-  render(
-    usingUniformsContext(<CodeEditorTextField name="x" />, { x: { type: String, uniforms: { language: "json" } } })
-  );
+  render(usingUniformsContext(<CodeEditorTextField name="x" />, { x: { type: Object } }));
 
-  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
+  expect(screen.getByTestId("code-editor-textarea")).toBeInTheDocument();
   expect(screen.getByTestId("code-editor-textarea").getAttribute("data-language")).toBe("json");
 });
 
 test("<CodeEditorTextField> - renders an editor with correct language (specified)", () => {
   render(
-    usingUniformsContext(<CodeEditorTextField name="x" language={Language.graphql} />, {
-      x: { type: String, uniforms: { language: "json" } },
+    usingUniformsContext(<CodeEditorTextField name="x" language={Language.html} />, {
+      x: { type: Object },
     })
   );
 
-  expect(screen.getByTestId("wrapper-field")).toBeInTheDocument();
-  expect(screen.getByTestId("code-editor-textarea").getAttribute("data-language")).toBe("graphql");
+  expect(screen.getByTestId("code-editor-textarea")).toBeInTheDocument();
+  expect(screen.getByTestId("code-editor-textarea").getAttribute("data-language")).toBe("html");
 });
