@@ -26,13 +26,12 @@ import {
   MenuList,
 } from "@patternfly/react-core/dist/js/components/Menu";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
-import BlueprintIcon from "@patternfly/react-icons/dist/js/icons/blueprint-icon";
-import CompressIcon from "@patternfly/react-icons/dist/js/icons/compress-icon";
+import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
+import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
+import { BlueprintIcon } from "@patternfly/react-icons/dist/js/icons/blueprint-icon";
+import { CompressIcon } from "@patternfly/react-icons/dist/js/icons/compress-icon";
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { useCallback, useEffect, useImperativeHandle, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BeeTableContextMenuAllowedOperationsConditions,
   BeeTableOperation,
@@ -40,7 +39,7 @@ import {
   BeeTableOperationGroup,
   InsertRowColumnsDirection,
 } from "../../api";
-import { ContextMenu, ContextMenuRef, useCustomContextMenuHandler } from "../../contextMenu";
+import { ContextMenu, ContextMenuRef } from "../../contextMenu";
 import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 import {
@@ -50,9 +49,9 @@ import {
 } from "../../selection/BeeTableSelectionContext";
 import * as ReactTable from "react-table";
 import * as _ from "lodash";
-import CutIcon from "@patternfly/react-icons/dist/js/icons/cut-icon";
-import CopyIcon from "@patternfly/react-icons/dist/js/icons/copy-icon";
-import PasteIcon from "@patternfly/react-icons/dist/js/icons/paste-icon";
+import { CutIcon } from "@patternfly/react-icons/dist/js/icons/cut-icon";
+import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
+import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { NumberInput, Radio } from "@patternfly/react-core/dist/js/";

@@ -115,10 +115,9 @@ export function useCustomContextMenuHandler(
       }
     }
 
-    const elem = scrollableParentRef?.current;
-    elem?.addEventListener("keydown", handleEscPressed);
+    window?.addEventListener("keydown", handleEscPressed);
     return () => {
-      elem?.removeEventListener("keydown", handleEscPressed);
+      window?.removeEventListener("keydown", handleEscPressed);
     };
   }, [scrollableParentRef, setCurrentlyOpenContextMenu]);
 

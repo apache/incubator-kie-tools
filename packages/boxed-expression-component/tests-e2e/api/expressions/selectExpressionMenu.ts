@@ -20,7 +20,7 @@
 import { Locator, Page } from "@playwright/test";
 
 export class SelectExpressionMenu {
-  constructor(public element: Page | Locator) {
+  constructor(public element: Locator) {
     this.element = element;
   }
 
@@ -30,66 +30,66 @@ export class SelectExpressionMenu {
 
   public async selectRelation() {
     await this.click();
-    await this.element.getByRole("menuitem", { name: "Relation" }).click();
+    await this.element.page().getByRole("menuitem", { name: "Relation" }).click();
   }
 
   public async selectLiteral() {
     await this.click();
-    await this.element.getByRole("menuitem", { name: "Literal" }).click();
+    await this.element.page().getByRole("menuitem", { name: "Literal" }).click();
   }
 
   public async paste() {
     await this.click();
-    await this.element.getByRole("menuitem", { name: "Paste" }).click();
+    await this.element.page().getByRole("menuitem", { name: "Paste" }).click();
   }
 
   public async selectContext() {
     await this.click();
-    await this.element.getByRole("menuitem", { name: "Context" }).click();
+    await this.element.page().getByRole("menuitem", { name: "Context" }).click();
   }
 
   public async selectDecisionTable() {
     await this.click();
-    await this.element.getByRole("menuitem", { name: "Decision" }).click();
+    await this.element.page().getByRole("menuitem", { name: "Decision" }).click();
   }
 
   public async selectInvocation() {
     await this.click();
-    await this.element.getByRole("menuitem", { name: "Invocation" }).click();
+    await this.element.page().getByRole("menuitem", { name: "Invocation" }).click();
   }
 
   public async selectList() {
     await this.click();
-    await this.element.getByRole("menuitem", { name: "List" }).click();
+    await this.element.page().getByRole("menuitem", { name: "List" }).click();
   }
 
   public async selectFunction() {
     await this.click();
-    await this.element.getByRole("menuitem", { name: "Function" }).click();
+    await this.element.page().getByRole("menuitem", { name: "Function" }).click();
   }
 
   public async selectFor() {
     await this.click();
-    await this.element.getByRole("menuitem", { name: "For" }).click();
+    await this.element.page().getByRole("menuitem", { name: "For" }).click();
   }
 
   public async selectEvery() {
     await this.click();
-    await this.element.getByRole("menuitem", { name: "Every" }).click();
+    await this.element.page().getByRole("menuitem", { name: "Every" }).click();
   }
 
   public async selectFilter() {
     await this.click();
-    await this.element.getByRole("menuitem", { name: "Filter" }).click();
+    await this.element.page().getByRole("menuitem", { name: "Filter" }).click();
   }
 
   public async selectConditional() {
     await this.click();
-    await this.element.getByRole("menuitem", { name: "if Conditional" }).click();
+    await this.element.page().getByRole("menuitem", { name: "if Conditional" }).click();
   }
 
   public async selectSome() {
     await this.click();
-    await this.element.getByRole("menuitem", { name: "Some" }).click();
+    await this.element.page().getByRole("menuitem", { name: "Some" }).click();
   }
 }

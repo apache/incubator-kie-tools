@@ -17,8 +17,8 @@
  * under the License. 
  */
 
-.table-context-menu {
-  padding: 16px 0;
+.context-menu-container .no-allowed-actions-in-group {
+  display: none;
 }
 
 .context-menu-container {
