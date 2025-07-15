@@ -25,7 +25,7 @@ import { FormRenderer, FormRendererApi } from "@kie-tools/runtime-tools-componen
 import { WorkflowFormDriver } from "../../../api/WorkflowFormDriver";
 import { WorkflowDefinition } from "../../../api";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { formSwfAutoFieldValue, SwfAutoFieldProvider } from "@kie-tools/sonataflow-uniforms";
+import { formSwfAutoFieldValue, SwfAutoFieldProvider } from "@kie-tools/sonataflow-uniforms/dist/esm";
 
 export interface CustomWorkflowFormProps {
   customFormSchema: Record<string, any>;

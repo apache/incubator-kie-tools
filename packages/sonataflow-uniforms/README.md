@@ -17,6 +17,8 @@
 
 ## @kie-tools/sonataflow-uniforms
 
+This package provides additional uniforms-patternfly components for SonataFlow.
+
 ---
 
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software

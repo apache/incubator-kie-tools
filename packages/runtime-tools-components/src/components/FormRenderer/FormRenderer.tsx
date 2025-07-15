@@ -19,7 +19,7 @@
 
 import React, { useImperativeHandle, useState } from "react";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
-import { AutoField, AutoFields, AutoForm, ErrorsField } from "@kie-tools/uniforms-patternfly/dist/esm";
+import { AutoForm, ErrorsField } from "@kie-tools/uniforms-patternfly/dist/esm";
 import { componentOuiaProps, OUIAProps } from "../../ouiaTools";
 import { FormAction, lookupValidator, ModelConversionTool } from "../../utils";
 import { FormFooter } from "../FormFooter";

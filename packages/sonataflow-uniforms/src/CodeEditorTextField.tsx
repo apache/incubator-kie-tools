@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useState, useMemo } from "react";
-import { CodeEditor, Language } from "@patternfly/react-code-editor";
+import { CodeEditor, Language } from "@patternfly/react-code-editor/dist/esm";
 import { connectField, HTMLFieldProps } from "uniforms";
 import wrapField from "@kie-tools/uniforms-patternfly/dist/esm/wrapField";
 
