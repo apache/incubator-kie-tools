@@ -25,7 +25,8 @@ module.exports = {
   testEnvironment: "jsdom",
   moduleNameMapper: {
     ...styleMock,
-    "^@kie-tools/uniforms-patternfly/dist/esm(.*)": "<rootDir>/node_modules/@kie-tools/uniforms-patternfly/src$1",
+    "^@kie-tools/uniforms-patternfly/dist/esm(.*)": "<rootDir>/node_modules/@kie-tools/uniforms-patternfly/dist/cjs$1",
+    "^@patternfly/react-code-editor/dist/esm(.*)": "<rootDir>/node_modules/@patternfly/react-code-editor/dist/js$1",
   },
   setupFilesAfterEnv: [jestSetupPath],
   transform: {
