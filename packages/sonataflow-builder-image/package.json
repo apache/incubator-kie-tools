@@ -20,7 +20,7 @@
     "copy:maven-m2-repo-via-http-image--settings-xml:linux:darwin": "M2_REPO_VIA_HTTP_URL_WITHOUT_PROTOCOL=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' m2-repo-via-http) envsubst < build/modules/kogito-maven/common/maven/maven-m2-repo-via-http-settings.xml.envsubst > build/modules/kogito-maven/common/maven/maven-m2-repo-via-http-settings.xml && rm build/modules/kogito-maven/common/maven/maven-m2-repo-via-http-settings.xml.envsubst",
     "copy:maven-m2-repo-via-http-image--settings-xml:win32": "echo \"Build skipped on macOS and Windows\"",
     "copy-assets": "run-script-os",
-    "copy-assets:linux:darwin": "rimraf build && rsync -av --exclude '*.bats' ./node_modules/@kie-tools/sonataflow-image-common/resources/ build && cp -R resources/* build && pnpm copy:maven-m2-repo-via-http-image--settings-xml",
+    "copy-assets:linux:darwin": "rimraf build && rsync -av --exclude '*.bats' ./node_modules/@kie-tools/sonataflow-image-common/dist/ build && cp -R resources/* build && pnpm copy:maven-m2-repo-via-http-image--settings-xml",
     "copy-test-assets": "run-script-os",
     "copy-test-assets:linux:darwin": "cp -R test-resources/* build",
     "format": "prettier --write . --ignore-path=../../.prettierignore --ignore-path=../../.gitignore",
@@ -32,7 +32,8 @@
     "image:test:linux": "pnpm copy-test-assets && pnpm setup:env make -C ./build test-image",
     "install": "node install.js && pnpm format",
     "m2-repo-via-http:container:kill": "(docker container kill m2-repo-via-http || true) && (docker container rm m2-repo-via-http || true)",
-    "m2-repo-via-http:container:run": "(pnpm m2-repo-via-http:container:kill || true) && docker run --name m2-repo-via-http -v \"$(mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout):/var/www/html\" -dit $(build-env sonataflowBuilderImage.dev.mavenM2RepoViaHttpImage)",
+    "m2-repo-via-http:container:prepare-m2-repo-volume": "node -e 'require(`@kie-tools/maven-base`).prepareHardLinkedM2ForPackage(`./dist/tmp-m2/repository`, `.`)'",
+    "m2-repo-via-http:container:run": "(pnpm m2-repo-via-http:container:kill || true) && pnpm m2-repo-via-http:container:prepare-m2-repo-volume && docker run -p 8888:80 --name m2-repo-via-http -v \"./dist/tmp-m2/repository:/var/www/html\" -dit $(build-env sonataflowBuilderImage.dev.mavenM2RepoViaHttpImage)",
     "setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env sonataflowBuilderImage.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env sonataflowBuilderImage.account) KOGITO_IMAGE_NAME=$(build-env sonataflowBuilderImage.name) KOGITO_IMAGE_TAG=$(build-env sonataflowBuilderImage.buildTag) QUARKUS_PLATFORM_GROUPID=$(build-env kogitoImagesCekitModules.quarkusGroupId) QUARKUS_PLATFORM_VERSION=$(build-env versions.quarkus) KOGITO_VERSION=$(build-env versions.kogito)",
     "test": "run-script-os",
     "test:cleanup": "mv dist-tests/report.xml dist-tests/junit-report.xml || true",
@@ -41,13 +42,16 @@
     "test:setup": "pnpm copy-test-assets && mkdir -p dist-tests && rm -rf dist-tests/*",
     "test:win32": "echo \"Tests are skipped in Windows\""
   },
+  "dependencies": {
+    "@kie-tools/maven-base": "workspace:*"
+  },
   "devDependencies": {
     "@kie-tools/image-builder": "workspace:*",
-    "@kie-tools/maven-base": "workspace:*",
     "@kie-tools/maven-m2-repo-via-http-image": "workspace:*",
     "@kie-tools/python-venv": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/sonataflow-image-common": "workspace:*",
+    "@kie/kogito-images-install-helper": "workspace:*",
     "cross-env": "^7.0.3",
     "replace-in-file": "^7.1.0",
     "rimraf": "^3.0.2",

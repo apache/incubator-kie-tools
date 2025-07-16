@@ -57,11 +57,11 @@
 
     <!-- 3rd party -->
     <version.junit>4.13.2</version.junit>
-    <version.org.apache.commons.commons-compress>1.26.1</version.org.apache.commons.commons-compress>
+    <version.org.apache.commons.commons-compress>1.27.1</version.org.apache.commons.commons-compress>
     <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
     <version.commons-io>2.16.1</version.commons-io>
     <version.com.google.protobuf>3.25.5</version.com.google.protobuf>
-    <version.io.netty>4.1.118.Final</version.io.netty>
+    <version.io.netty>4.1.121.Final</version.io.netty>
   </properties>
 
   <dependencyManagement>
@@ -410,6 +410,9 @@
       <releases>
         <enabled>false</enabled>
       </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </repository>
   </repositories>
   <pluginRepositories>
@@ -420,6 +423,9 @@
       <releases>
         <enabled>false</enabled>
       </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
     </pluginRepository>
   </pluginRepositories>
 </project>

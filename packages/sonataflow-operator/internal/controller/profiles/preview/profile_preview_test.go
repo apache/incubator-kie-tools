@@ -24,6 +24,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/version"
+
 	prometheus "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/stretchr/testify/assert"
 	appsv1 "k8s.io/api/apps/v1"
@@ -70,12 +72,14 @@ func Test_Reconciler_ProdCustomPod(t *testing.T) {
 	assert.NotNil(t, deployment.ObjectMeta.Labels)
 	assert.Equal(t, deployment.ObjectMeta.Labels, map[string]string{
 		"app":                               "greeting",
+		"app.kubernetes.io/instance":        "greeting",
 		"test":                              "test",
 		"sonataflow.org/workflow-app":       "greeting",
 		"sonataflow.org/workflow-namespace": workflow.Namespace,
 		"app.kubernetes.io/name":            "greeting",
 		"app.kubernetes.io/component":       "serverless-workflow",
 		"app.kubernetes.io/managed-by":      "sonataflow-operator",
+		"app.kubernetes.io/version":         version.GetImageTagVersion(),
 	})
 }
 

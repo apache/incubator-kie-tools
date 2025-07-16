@@ -23,6 +23,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/version"
+
 	"github.com/magiconair/properties"
 	prometheus "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/stretchr/testify/assert"
@@ -209,6 +211,8 @@ func TestEnsureWorkflowSinkBindingWithWorkflowSinkIsCreated(t *testing.T) {
 		"sonataflow.org/workflow-app":       "vet",
 		"sonataflow.org/workflow-namespace": workflow.Namespace,
 		"app.kubernetes.io/name":            "vet",
+		"app.kubernetes.io/version":         version.GetImageTagVersion(),
+		"app.kubernetes.io/instance":        "vet",
 		"app.kubernetes.io/component":       "serverless-workflow",
 		"app.kubernetes.io/managed-by":      "sonataflow-operator"})
 }
@@ -236,6 +240,8 @@ func TestEnsureWorkflowSinkBindingWithPlatformBrokerIsCreated(t *testing.T) {
 		"sonataflow.org/workflow-app":       "vet",
 		"sonataflow.org/workflow-namespace": workflow.Namespace,
 		"app.kubernetes.io/name":            "vet",
+		"app.kubernetes.io/version":         version.GetImageTagVersion(),
+		"app.kubernetes.io/instance":        "vet",
 		"app.kubernetes.io/component":       "serverless-workflow",
 		"app.kubernetes.io/managed-by":      "sonataflow-operator"})
 }
@@ -288,6 +294,8 @@ func TestEnsureWorkflowTriggersWithPlatformBrokerAreCreated(t *testing.T) {
 		"sonataflow.org/workflow-app":       "vet",
 		"sonataflow.org/workflow-namespace": workflow.Namespace,
 		"app.kubernetes.io/name":            "vet",
+		"app.kubernetes.io/instance":        "vet",
+		"app.kubernetes.io/version":         version.GetImageTagVersion(),
 		"app.kubernetes.io/component":       "serverless-workflow",
 		"app.kubernetes.io/managed-by":      "sonataflow-operator"})
 	assert.Equal(t, trigger.Namespace, plf.Namespace) //trigger should be in the platform namespace
@@ -304,6 +312,8 @@ func TestEnsureWorkflowTriggersWithPlatformBrokerAreCreated(t *testing.T) {
 		"sonataflow.org/workflow-app":       "vet",
 		"sonataflow.org/workflow-namespace": workflow.Namespace,
 		"app.kubernetes.io/name":            "vet",
+		"app.kubernetes.io/version":         version.GetImageTagVersion(),
+		"app.kubernetes.io/instance":        "vet",
 		"app.kubernetes.io/component":       "serverless-workflow",
 		"app.kubernetes.io/managed-by":      "sonataflow-operator"})
 	assert.Equal(t, trigger.Namespace, plf.Namespace) //trigger should be in the platform namespace
@@ -339,6 +349,8 @@ func TestEnsureWorkflowTriggersWithWorkflowBrokerAreCreated(t *testing.T) {
 	assert.Equal(t, trigger.GetLabels(), map[string]string{"app": "vet",
 		"sonataflow.org/workflow-app":       "vet",
 		"sonataflow.org/workflow-namespace": workflow.Namespace,
+		"app.kubernetes.io/version":         version.GetImageTagVersion(),
+		"app.kubernetes.io/instance":        "vet",
 		"app.kubernetes.io/name":            "vet",
 		"app.kubernetes.io/component":       "serverless-workflow",
 		"app.kubernetes.io/managed-by":      "sonataflow-operator"})
@@ -354,6 +366,8 @@ func TestEnsureWorkflowTriggersWithWorkflowBrokerAreCreated(t *testing.T) {
 	assert.NotNil(t, trigger.GetLabels())
 	assert.Equal(t, trigger.GetLabels(), map[string]string{"app": "vet",
 		"sonataflow.org/workflow-app":       "vet",
+		"app.kubernetes.io/instance":        "vet",
+		"app.kubernetes.io/version":         version.GetImageTagVersion(),
 		"sonataflow.org/workflow-namespace": workflow.Namespace,
 		"app.kubernetes.io/name":            "vet",
 		"app.kubernetes.io/component":       "serverless-workflow",
@@ -458,6 +472,10 @@ func TestMergePodSpec_WithPostgreSQL_and_JDBC_URL_field(t *testing.T) {
 			Value: "jdbc:postgresql://host:port/database?currentSchema=workflow",
 		},
 		{
+			Name:  "QUARKUS_DATASOURCE_REACTIVE_URL",
+			Value: "postgresql://host:port/database?currentSchema=workflow",
+		},
+		{
 			Name:  "KOGITO_PERSISTENCE_TYPE",
 			Value: "jdbc",
 		},
@@ -542,6 +560,10 @@ func TestMergePodSpec_OverrideContainers_WithPostgreSQL_In_Workflow_CR(t *testin
 			Value: "jdbc:postgresql://test.foo:5432/petstore?currentSchema=bar",
 		},
 		{
+			Name:  "QUARKUS_DATASOURCE_REACTIVE_URL",
+			Value: "postgresql://test.foo:5432/petstore?currentSchema=bar",
+		},
+		{
 			Name:  "KOGITO_PERSISTENCE_TYPE",
 			Value: "jdbc",
 		},
@@ -612,6 +634,10 @@ func TestMergePodSpec_WithServicedPostgreSQL_In_Platform_CR_And_Worflow_Requesti
 		{
 			Name:  "QUARKUS_DATASOURCE_JDBC_URL",
 			Value: "jdbc:postgresql://service_name.service_namespace:5432/foo?currentSchema=greeting",
+		},
+		{
+			Name:  "QUARKUS_DATASOURCE_REACTIVE_URL",
+			Value: "postgresql://service_name.service_namespace:5432/foo?currentSchema=greeting",
 		},
 		{
 			Name:  "KOGITO_PERSISTENCE_TYPE",
@@ -712,6 +738,10 @@ func TestMergePodSpec_WithServicedPostgreSQL_In_Platform_And_In_Workflow_CR(t *t
 		{
 			Name:  "QUARKUS_DATASOURCE_JDBC_URL",
 			Value: "jdbc:postgresql://test.default:5432/my_database?currentSchema=bar",
+		},
+		{
+			Name:  "QUARKUS_DATASOURCE_REACTIVE_URL",
+			Value: "postgresql://test.default:5432/my_database?currentSchema=bar",
 		},
 		{
 			Name:  "KOGITO_PERSISTENCE_TYPE",
@@ -931,6 +961,10 @@ func doTestDefaultContainer_WithPlatformPersistence(t *testing.T, workflow *v1al
 				Value: "jdbc:postgresql://service_name.service_namespace:5432/foo?currentSchema=greeting",
 			},
 			{
+				Name:  "QUARKUS_DATASOURCE_REACTIVE_URL",
+				Value: "postgresql://service_name.service_namespace:5432/foo?currentSchema=greeting",
+			},
+			{
 				Name:  "KOGITO_PERSISTENCE_TYPE",
 				Value: "jdbc",
 			},
@@ -965,6 +999,8 @@ func TestEnsureWorkflowServiceMonitorIsCreatedWhenDeployedAsDeployment(t *testin
 		"sonataflow.org/workflow-app":       workflow.Name,
 		"sonataflow.org/workflow-namespace": workflow.Namespace,
 		"app.kubernetes.io/name":            workflow.Name,
+		"app.kubernetes.io/instance":        workflow.Name,
+		"app.kubernetes.io/version":         version.GetImageTagVersion(),
 		"app.kubernetes.io/component":       "serverless-workflow",
 		"app.kubernetes.io/managed-by":      "sonataflow-operator"})
 }

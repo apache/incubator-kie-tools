@@ -33,10 +33,6 @@ artifacts:
     path: "../../../../internal/manager"
     dest: /workspace/internal/manager
 
-  - name: version
-    path: "../../../../version"
-    dest: /workspace/version
-
   - name: utils
     path: "../../../../utils"
     dest: /workspace/utils

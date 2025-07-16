@@ -277,8 +277,13 @@ func WriteMavenConfigFileWithTailDirs(projectDir string) {
 		fmt.Printf("Failed to resolve absolute path for `@kie-tools/maven-base` package. %v", err)
 		os.Exit(1)
 	}
+	droolsAndKogitoM2, err := filepath.Abs("../../../node_modules/@kie-tools-core/drools-and-kogito/dist/1st-party-m2/repository")
+	if err != nil {
+		fmt.Printf("Failed to resolve absolute path for `@kie-tools-core/drools-and-kogito` package. %v", err)
+		os.Exit(1)
+	}
 
-	tail := mavenBaseM2 + "," + sonataflowQuarkusDevUiM2 + "\n"
+	tail := droolsAndKogitoM2 + "," + mavenBaseM2 + "," + sonataflowQuarkusDevUiM2 + "\n"
 
 	err = os.WriteFile(filepath.Join(projectDir, ".mvn", "maven.config"), []byte("-Dmaven.repo.local.tail="+tail), 0644)
 	if err != nil {

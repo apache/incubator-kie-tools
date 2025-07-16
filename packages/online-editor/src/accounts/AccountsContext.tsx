@@ -55,36 +55,42 @@ export type AccountsState =
       backActionKind: AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
       authProviderGroup?: AuthProviderGroup;
+      selectedAuthSession?: AuthSession;
     }
   | {
       section: AccountsSection.CONNECT_TO_GITHUB;
       selectedAuthProvider: GitAuthProvider;
       backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
+      selectedAuthSession?: AuthSession;
     }
   | {
       section: AccountsSection.CONNECT_TO_BITBUCKET;
       selectedAuthProvider: GitAuthProvider;
       backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
+      selectedAuthSession?: AuthSession;
     }
   | {
       section: AccountsSection.CONNECT_TO_GITLAB;
       selectedAuthProvider: GitAuthProvider;
       backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
+      selectedAuthSession?: AuthSession;
     }
   | {
       section: AccountsSection.CONNECT_TO_OPENSHIFT;
       selectedAuthProvider: OpenShiftAuthProvider;
       backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
+      selectedAuthSession?: AuthSession;
     }
   | {
       section: AccountsSection.CONNECT_TO_KUBERNETES;
       selectedAuthProvider: KubernetesAuthProvider;
       backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
+      selectedAuthSession?: AuthSession;
     };
 
 // Reducer
@@ -117,30 +123,35 @@ export type AccountsDispatchAction =
       selectedAuthProvider: GitAuthProvider;
       backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
+      selectedAuthSession?: AuthSession;
     }
   | {
       kind: AccountsDispatchActionKind.SETUP_BITBUCKET_AUTH;
       selectedAuthProvider: GitAuthProvider;
       backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
+      selectedAuthSession?: AuthSession;
     }
   | {
       kind: AccountsDispatchActionKind.SETUP_GITLAB_AUTH;
       selectedAuthProvider: GitAuthProvider;
       backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
+      selectedAuthSession?: AuthSession;
     }
   | {
       kind: AccountsDispatchActionKind.SETUP_OPENSHIFT_AUTH;
       selectedAuthProvider: OpenShiftAuthProvider;
       backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
+      selectedAuthSession?: AuthSession;
     }
   | {
       kind: AccountsDispatchActionKind.SETUP_KUBERNETES_AUTH;
       selectedAuthProvider: KubernetesAuthProvider;
       backActionKind: AccountsDispatchActionKind.SELECT_AUTH_PROVIDER | AccountsDispatchActionKind.GO_HOME;
       onNewAuthSession?: (newAuthSession: AuthSession) => any;
+      selectedAuthSession?: AuthSession;
     };
 
 export const AccountsContext = React.createContext<AccountsState>({} as any);
@@ -180,6 +191,7 @@ export function AccountsContextProvider(props: React.PropsWithChildren<{}>) {
             selectedAuthProvider: action.selectedAuthProvider,
             onNewAuthSession: action.onNewAuthSession,
             backActionKind: action.backActionKind,
+            selectedAuthSession: action.selectedAuthSession,
           };
         case AccountsDispatchActionKind.SETUP_BITBUCKET_AUTH:
           return {
@@ -187,6 +199,7 @@ export function AccountsContextProvider(props: React.PropsWithChildren<{}>) {
             selectedAuthProvider: action.selectedAuthProvider,
             onNewAuthSession: action.onNewAuthSession,
             backActionKind: action.backActionKind,
+            selectedAuthSession: action.selectedAuthSession,
           };
         case AccountsDispatchActionKind.SETUP_GITLAB_AUTH:
           return {
@@ -194,6 +207,7 @@ export function AccountsContextProvider(props: React.PropsWithChildren<{}>) {
             selectedAuthProvider: action.selectedAuthProvider,
             onNewAuthSession: action.onNewAuthSession,
             backActionKind: action.backActionKind,
+            selectedAuthSession: action.selectedAuthSession,
           };
         case AccountsDispatchActionKind.SETUP_OPENSHIFT_AUTH:
           return {
@@ -201,6 +215,7 @@ export function AccountsContextProvider(props: React.PropsWithChildren<{}>) {
             selectedAuthProvider: action.selectedAuthProvider,
             onNewAuthSession: action.onNewAuthSession,
             backActionKind: action.backActionKind,
+            selectedAuthSession: action.selectedAuthSession,
           };
         case AccountsDispatchActionKind.SETUP_KUBERNETES_AUTH:
           return {
@@ -208,6 +223,7 @@ export function AccountsContextProvider(props: React.PropsWithChildren<{}>) {
             selectedAuthProvider: action.selectedAuthProvider,
             onNewAuthSession: action.onNewAuthSession,
             backActionKind: action.backActionKind,
+            selectedAuthSession: action.selectedAuthSession,
           };
         default:
           assertUnreachable(kind);

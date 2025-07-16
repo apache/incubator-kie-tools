@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Alert } from "@patternfly/react-core/dist/js/components/Alert";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { ActionGroup, Form, FormAlert, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -32,11 +32,13 @@ import { useOnlineI18n } from "../../i18n";
 import { OpenShiftInstanceStatus } from "./OpenShiftInstanceStatus";
 import { OpenShiftSettingsTabMode } from "./ConnectToOpenShiftSection";
 import { KieSandboxOpenShiftService } from "../../devDeployments/services/openshift/KieSandboxOpenShiftService";
-import { useAuthSessionsDispatch } from "../../authSessions/AuthSessionsContext";
+import { useAuthSessionsDispatch, useSyncCloudAuthSession } from "../../authSessions/AuthSessionsContext";
 import { v4 as uuid } from "uuid";
 import {
   AUTH_SESSION_VERSION_NUMBER,
+  AuthSession,
   CloudAuthSessionType,
+  isCloudAuthSession,
   OpenShiftAuthSession,
 } from "../../authSessions/AuthSessionApi";
 import {
@@ -62,11 +64,13 @@ export function ConnecToOpenShiftSimple(props: {
   setStatus: React.Dispatch<React.SetStateAction<OpenShiftInstanceStatus>>;
   setNewAuthSession: React.Dispatch<React.SetStateAction<OpenShiftAuthSession>>;
   isLoadingService: boolean;
+  selectedAuthSession?: AuthSession;
 }) {
   const { i18n } = useOnlineI18n();
   const [isConnectionValidated, setConnectionValidated] = useState(FormValiationOptions.INITIAL);
   const [isConnecting, setConnecting] = useState(false);
   const authSessionsDispatch = useAuthSessionsDispatch();
+  useSyncCloudAuthSession(props.selectedAuthSession, props.setConnection);
 
   const onConnect = useCallback(async () => {
     if (isConnecting) {
@@ -87,15 +91,19 @@ export function ConnecToOpenShiftSimple(props: {
       const newAuthSession: OpenShiftAuthSession = {
         type: CloudAuthSessionType.OpenShift,
         version: AUTH_SESSION_VERSION_NUMBER,
-        id: uuid(),
+        id: props.selectedAuthSession?.id ?? uuid(),
         ...props.connection,
         authProviderId: "openshift",
         createdAtDateISO: new Date().toISOString(),
         k8sApiServerEndpointsByResourceKind: props.kieSandboxOpenShiftService.args.k8sApiServerEndpointsByResourceKind,
       };
       props.setStatus(OpenShiftInstanceStatus.CONNECTED);
-      authSessionsDispatch.add(newAuthSession);
       props.setNewAuthSession(newAuthSession);
+      if (props.selectedAuthSession) {
+        authSessionsDispatch.update(newAuthSession);
+      } else {
+        authSessionsDispatch.add(newAuthSession);
+      }
     } else {
       setConnectionValidated(FormValiationOptions.CONNECTION_ERROR);
       return;
