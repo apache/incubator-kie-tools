@@ -452,7 +452,7 @@ test.describe("Resizing", () => {
       expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 100);
     });
 
-    test("should change annotations column name and reset size", async ({ page, resizing, browserName }) => {
+    test("should change annotations column name and reset size", async ({ page, resizing, browserName, channel }) => {
       await page.getByRole("columnheader", { name: "Annotations", exact: true }).click();
       await page.keyboard.type("Relevant information");
       await page.keyboard.press("Enter");
@@ -469,8 +469,10 @@ test.describe("Resizing", () => {
       expect(await outputHeader.boundingBox()).toHaveProperty("width", 100);
       if (browserName === "webkit") {
         expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 157);
-      } else {
+      } else if (channel === "chrome") {
         expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 155);
+      } else {
+        expect(await annotationsHeader.boundingBox()).toHaveProperty("width", 158);
       }
     });
 

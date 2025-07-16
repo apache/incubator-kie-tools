@@ -88,8 +88,8 @@ export function useCustomContextMenuHandler(
     function onScroll(e: UIEvent) {
       if (currentlyOpenContextMenu === id) {
         setScroll({
-          x: e.target ? (e.target as HTMLElement).scrollLeft : window.scrollX,
-          y: e.target ? (e.target as HTMLElement).scrollTop : window.scrollY,
+          x: e.target && e.target !== document ? (e.target as HTMLElement).scrollLeft : window.scrollX,
+          y: e.target && e.target !== document ? (e.target as HTMLElement).scrollTop : window.scrollY,
         });
       }
     }
@@ -189,8 +189,7 @@ export function ContextMenu({
         if (contextMenuContainerRef.current) {
           contextMenuContainerRef.current.style.maxHeight = minHeight - PADDING_FROM_BOTTOM_IN_PX + "px";
         }
-        const niceY = Math.max(PADDING_FROM_BOTTOM_IN_PX, availableHeight - minHeight);
-        setNiceY(niceY);
+        setNiceY(Math.max(PADDING_FROM_BOTTOM_IN_PX, availableHeight - minHeight));
       } else {
         if (contextMenuContainerRef.current) {
           contextMenuContainerRef.current.style.maxHeight = finalHeight + "px";
