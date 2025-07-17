@@ -332,7 +332,7 @@ export function getMarshaller<V extends DmnMarshallerVersions>(
       if (targetVersion === "1.6") break;
     case "1.6":
       throw new Error(
-        "DMN MARSHALLER: Unexpected error. Shouldn't ever try to migrate a DMN 1.5, as DMN 1.5 is latest."
+        "DMN MARSHALLER: Unexpected error. Shouldn't ever try to migrate a DMN 1.6, as DMN 1.6 is latest."
       );
   }
 
