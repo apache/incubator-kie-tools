@@ -29,7 +29,7 @@
     "image:cekit:build": "run-script-os",
     "image:cekit:build:linux": "pnpm image:cekit:copy && pnpm image:cekit:setup:env make -C ./dist-dev build",
     "image:cekit:build:win32:darwin": "echo \"Build skipped on macOS and Windows\"",
-    "image:cekit:copy": "cp -R ./node_modules/@kie-tools/sonataflow-image-common/resources/* ./dist-dev/ && cp -R resources/* ./dist-dev/",
+    "image:cekit:copy": "cp -R ./node_modules/@kie-tools/sonataflow-image-common/dist/* ./dist-dev/ && cp -R resources/* ./dist-dev/",
     "image:cekit:setup:env": ". ./node_modules/@kie-tools/python-venv/venv/bin/activate && cross-env KOGITO_IMAGE_REGISTRY=$(build-env sonataflowManagementConsoleImageEnv.registry) KOGITO_IMAGE_REGISTRY_ACCOUNT=$(build-env sonataflowManagementConsoleImageEnv.account) KOGITO_IMAGE_NAME=$(build-env sonataflowManagementConsoleImageEnv.name) KOGITO_IMAGE_TAG=$(build-env sonataflowManagementConsoleImageEnv.buildTag) QUARKUS_PLATFORM_GROUPID=$(build-env kogitoImagesCekitModules.quarkusGroupId) QUARKUS_PLATFORM_VERSION=$(build-env versions.quarkus) KOGITO_VERSION=$(build-env versions.kogito) SONATAFLOW_MANAGEMENT_CONSOLE_PORT=$(build-env sonataflowManagementConsoleImageEnv.port)",
     "image:test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"mkdir -p dist-dev/target/test/results\" \"run-script-os\" --finally \"cp -R dist-dev/target/test/results dist-tests-e2e/\"",
     "image:test:darwin:win32": "echo \"Tests skipped on macOS and Windows\"",

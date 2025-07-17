@@ -30,10 +30,13 @@ export enum JavaClassConflictOptions {
   REPLACE = "Replace",
   KEEP_BOTH = "Keep Both",
 }
+export type JavaClassWithConflictInfo = JavaClass & {
+  isExternalConflict: boolean;
+};
 
 const useImportJavaClasses = () => {
   const [isConflictsOccured, setIsConflictsOccured] = useState<boolean>(false);
-  const [conflictsClasses, setConflictsClasses] = useState<JavaClass[]>([]);
+  const [conflictsClasses, setConflictsClasses] = useState<JavaClassWithConflictInfo[]>([]);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { externalModelsByNamespace } = useExternalModels();
@@ -49,6 +52,8 @@ const useImportJavaClasses = () => {
     }
     return dataTypeNames;
   }, [dataTypesTree]);
+
+  const handleCloseConflictsModal = () => setIsConflictsOccured(false);
 
   const buildName = useCallback(
     (nameCandidate: string, namesCount: Map<string, number>, nameSeparator: string = NAME_SEPARATOR): string => {
@@ -186,15 +191,31 @@ const useImportJavaClasses = () => {
       const updatedJavaClasses = renameJavaClassToDMNName(javaClasses);
 
       // Pre-allocate arrays to avoid resizing
-      const conflicts: JavaClass[] = [];
+      const conflicts: JavaClassWithConflictInfo[] = [];
       const nonConflicts: JavaClass[] = [];
+      if (!dataTypesTree || !externalModelsByNamespace) {
+        console.error("Data types or external models are undefined.");
+        return { conflicts: [], nonConflicts: [] };
+      }
 
       // Use a traditional for loop for better performance
       for (let i = 0, len = updatedJavaClasses?.length; i < len; i++) {
         const javaClass = updatedJavaClasses?.[i];
         const fullClassName = javaClass.name;
-        if (dataTypeNames.has(fullClassName)) conflicts.push(javaClass);
-        else nonConflicts.push(javaClass);
+        if (dataTypeNames.has(fullClassName)) {
+          const isExternalConflict = dataTypesTree.some((dataType) => {
+            return (
+              dataType.namespace && externalModelsByNamespace[dataType.namespace] && dataType.feelName === fullClassName
+            );
+          });
+
+          const javaClassWithConflict: JavaClassWithConflictInfo = Object.assign(javaClass, {
+            isExternalConflict,
+          });
+          conflicts.push(javaClassWithConflict);
+        } else {
+          nonConflicts.push(javaClass);
+        }
       }
 
       return {
@@ -202,7 +223,7 @@ const useImportJavaClasses = () => {
         nonConflicts,
       };
     },
-    [renameJavaClassToDMNName, dataTypeNames]
+    [renameJavaClassToDMNName, dataTypesTree, externalModelsByNamespace, dataTypeNames]
   );
 
   const mapJavaClassesToDMNItemDefinitions = useCallback(
@@ -247,13 +268,21 @@ const useImportJavaClasses = () => {
   );
 
   const handleConflictAction = useCallback(
-    (action: JavaClassConflictOptions) => {
+    (action: { internal: JavaClassConflictOptions; external: JavaClassConflictOptions }) => {
       if (conflictsClasses?.length === 0) return;
-      if (action === JavaClassConflictOptions.KEEP_BOTH) {
-        const updatedJavaClasses = generateUniqueDmnTypeNames(conflictsClasses);
+      const internalConflicts = conflictsClasses.filter((c) => !c.isExternalConflict);
+      const externalConflicts = conflictsClasses.filter((c) => c.isExternalConflict);
+      if (internalConflicts.length > 0) {
+        if (action.internal === JavaClassConflictOptions.REPLACE) {
+          overwriteExistingDMNTypes(internalConflicts);
+        } else if (action.internal === JavaClassConflictOptions.KEEP_BOTH) {
+          const updatedJavaClasses = generateUniqueDmnTypeNames(internalConflicts);
+          importJavaClassesInDataTypeEditor(updatedJavaClasses);
+        }
+      }
+      if (externalConflicts.length > 0 && action.external === JavaClassConflictOptions.KEEP_BOTH) {
+        const updatedJavaClasses = generateUniqueDmnTypeNames(externalConflicts);
         importJavaClassesInDataTypeEditor(updatedJavaClasses);
-      } else if (action === JavaClassConflictOptions.REPLACE) {
-        overwriteExistingDMNTypes(conflictsClasses);
       }
       setIsConflictsOccured(false);
       setConflictsClasses([]);
@@ -266,6 +295,7 @@ const useImportJavaClasses = () => {
     handleConflictAction,
     conflictsClasses,
     isConflictsOccured,
+    handleCloseConflictsModal,
   };
 };
 

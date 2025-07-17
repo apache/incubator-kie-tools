@@ -68,5 +68,6 @@ cd ${KOGITO_HOME}/serverless-workflow-project
     -B \
     -s "${MAVEN_SETTINGS_PATH}" \
     -DskipTests \
+    -Dmaven.javadoc.skip=true \
     -Dquarkus.container-image.build=false \
     clean install

@@ -106,9 +106,6 @@ describe("build always produces elements in the same order", () => {
       expect(marshaller.builder.build(json)).toStrictEqual(`<?xml version="1.0" encoding="UTF-8" ?>
 <definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_D19C1092-7677-427F-A493-BCED38F74A9B" id="_11655DE3-BEA5-45B1-B54E-8AD84FBBED25" name="DMN_1E889EDB-B967-4508-8DB1-E0DF5986E62F" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
   <import name="some-import" namespace="some-namespace" importType="some-import-type" />
-  <inputData name="New Input Data" id="_154F9E03-B180-4C87-B7D3-8745DA4336F4">
-    <variable name="New Input Data" id="_A28401DD-9A87-4251-A1E4-C63FC3A7C729" typeRef="string" />
-  </inputData>
   <decision name="New Decision" id="_392BEF3D-44B5-47DC-8A06-C36F15DB2984">
     <variable id="_C2C9C21A-E708-46D9-876A-52BB25692B66" typeRef="string" name="New Decision" />
     <informationRequirement id="_E781E253-D97E-4A1D-BE51-037B012B30F0">
@@ -118,6 +115,9 @@ describe("build always produces elements in the same order", () => {
       <text>&quot;New Decision&quot;</text>
     </literalExpression>
   </decision>
+  <inputData name="New Input Data" id="_154F9E03-B180-4C87-B7D3-8745DA4336F4">
+    <variable name="New Input Data" id="_A28401DD-9A87-4251-A1E4-C63FC3A7C729" typeRef="string" />
+  </inputData>
   <group name="some-group" />
   <dmndi:DMNDI>
     <dmndi:DMNDiagram id="_0D2FD42B-91FF-4795-B71F-E501CE115389" name="Default DRD" useAlternativeInputDataShape="false">

@@ -22,6 +22,8 @@ package workflowproj
 import (
 	"fmt"
 
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/version"
+
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -45,11 +47,7 @@ const (
 	// LabelService key to use among object selectors
 	LabelService = metadata.Domain + "/service"
 	// LabelWorkflow specialized label managed by the controller
-	LabelWorkflow     = metadata.Domain + "/workflow-app"
-	LabelK8SName      = "app.kubernetes.io/name"
-	LabelK8SComponent = "app.kubernetes.io/component"
-	LabelK8SPartOF    = "app.kubernetes.io/part-of"
-	LabelK8SManagedBy = "app.kubernetes.io/managed-by"
+	LabelWorkflow = metadata.Domain + "/workflow-app"
 	// LabelWorkflowNamespace specialized label managed by the controller indicating the namespace of the workflow
 	LabelWorkflowNamespace = metadata.Domain + "/workflow-namespace"
 )
@@ -101,22 +99,24 @@ func GetWorkflowUserSecretPropertiesConfigMapName(workflow *operatorapi.SonataFl
 // GetDefaultLabels gets the default labels based on the given workflow.
 func GetDefaultLabels(workflow *operatorapi.SonataFlow) map[string]string {
 	labels := map[string]string{
-		LabelWorkflow:          workflow.Name,
-		LabelK8SName:           workflow.Name,
-		LabelK8SComponent:      "serverless-workflow",
-		LabelK8SManagedBy:      "sonataflow-operator",
-		LabelApp:               workflow.Name,
-		LabelWorkflowNamespace: workflow.Namespace,
+		LabelWorkflow:                     workflow.Name,
+		metadata.KubernetesLabelName:      workflow.Name,
+		metadata.KubernetesLabelInstance:  workflow.Name,
+		metadata.KubernetesLabelComponent: "serverless-workflow",
+		metadata.KubernetesLabelManagedBy: "sonataflow-operator",
+		metadata.KubernetesLabelVersion:   version.GetImageTagVersion(),
+		LabelApp:                          workflow.Name,
+		LabelWorkflowNamespace:            workflow.Namespace,
 	}
 	if workflow.Status.Platform != nil {
-		labels[LabelK8SPartOF] = workflow.Status.Platform.Name
+		labels[metadata.KubernetesLabelPartOf] = workflow.Status.Platform.Name
 	}
 	return labels
 
 }
 func GetSelectorLabels(workflow *operatorapi.SonataFlow) map[string]string {
 	labels := GetDefaultLabels(workflow)
-	delete(labels, LabelK8SPartOF)
+	delete(labels, metadata.KubernetesLabelPartOf)
 	return labels
 }
 

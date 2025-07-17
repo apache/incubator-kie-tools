@@ -52,6 +52,8 @@ export default class Driver {
     chromeOptions.addArguments(
       "--user-data-dir=" + CHROME_DIR,
       "--load-extension=" + chromeExtensionPath,
+      // This flag enables --load-extension, required for testing Chrome extensions
+      "--disable-features=DisableLoadExtensionCommandLineSwitch",
       "--enable-features=UnexpireFlagsM118",
       "--allow-insecure-localhost",
       "--disable-web-security",
