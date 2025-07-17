@@ -1,0 +1,325 @@
+<?xml version="1.0" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>9</version>
+	</parent>
+
+	<groupId>org.jpmml</groupId>
+	<artifactId>jpmml-model</artifactId>
+	<version>1.6.4</version>
+	<packaging>pom</packaging>
+
+	<name>JPMML-Model</name>
+	<description>Java class model API for Predictive Model Markup Language (PMML)</description>
+	<url>http://www.jpmml.org</url>
+
+	<licenses>
+		<license>
+			<name>BSD 3-Clause License</name>
+			<url>http://opensource.org/licenses/BSD-3-Clause</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>villu.ruusmann</id>
+			<name>Villu Ruusmann</name>
+		</developer>
+	</developers>
+
+	<modules>
+		<module>pmml-agent</module>
+		<module>pmml-model</module>
+		<module>pmml-model-example</module>
+		<module>pmml-model-gwt</module>
+		<module>pmml-model-jackson</module>
+		<module>pmml-model-kryo</module>
+		<module>pmml-model-metro</module>
+		<module>pmml-model-moxy</module>
+		<module>pmml-xjc</module>
+	</modules>
+
+	<scm>
+		<connection>scm:git:git@github.com:jpmml/jpmml-model.git</connection>
+		<developerConnection>scm:git:git@github.com:jpmml/jpmml-model.git</developerConnection>
+		<url>git://github.com/jpmml/jpmml-model.git</url>
+		<tag>1.6.4</tag>
+	</scm>
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/jpmml/jpmml-model/issues</url>
+	</issueManagement>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jpmml</groupId>
+				<artifactId>pmml-agent</artifactId>
+				<version>1.6.4</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jpmml</groupId>
+				<artifactId>pmml-model</artifactId>
+				<version>1.6.4</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jpmml</groupId>
+				<artifactId>pmml-model</artifactId>
+				<classifier>tests</classifier>
+				<version>1.6.4</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jpmml</groupId>
+				<artifactId>pmml-model-example</artifactId>
+				<version>1.6.4</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jpmml</groupId>
+				<artifactId>pmml-model-gwt</artifactId>
+				<version>1.6.4</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jpmml</groupId>
+				<artifactId>pmml-model-jackson</artifactId>
+				<version>1.6.4</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jpmml</groupId>
+				<artifactId>pmml-model-kryo</artifactId>
+				<version>1.6.4</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jpmml</groupId>
+				<artifactId>pmml-model-metro</artifactId>
+				<version>1.6.4</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jpmml</groupId>
+				<artifactId>pmml-model-moxy</artifactId>
+				<version>1.6.4</version>
+			</dependency>
+			<dependency>
+				<groupId>org.jpmml</groupId>
+				<artifactId>pmml-xjc</artifactId>
+				<version>1.6.4</version>
+			</dependency>
+
+			<!-- Inherited from org.glassfish.jaxb:jaxb-bom via org.glassfish.jaxb:jaxb-runtime dependency -->
+			<dependency>
+				<groupId>jakarta.xml.bind</groupId>
+				<artifactId>jakarta.xml.bind-api</artifactId>
+				<version>3.0.1</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.sun.activation</groupId>
+						<artifactId>jakarta.activation</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+
+			<dependency>
+				<groupId>com.beust</groupId>
+				<artifactId>jcommander</artifactId>
+				<version>1.72</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.esotericsoftware</groupId>
+				<artifactId>kryo</artifactId>
+				<version>[5.0.0,)</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>[2.11.0, 2.13.3]</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>[2.11.0, 2.13.3]</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.dataformat</groupId>
+				<artifactId>jackson-dataformat-yaml</artifactId>
+				<version>[2.11.0, 2.13.3]</version>
+			</dependency>
+
+			<!-- Inherited from org.glassfish.jaxb:jaxb-bom via org.glassfish.jaxb:jaxb-runtime dependency -->
+			<dependency>
+				<groupId>com.sun.istack</groupId>
+				<artifactId>istack-commons-buildtools</artifactId>
+				<version>4.0.1</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.eclipse.persistence</groupId>
+				<artifactId>org.eclipse.persistence.core</artifactId>
+				<version>[3.0.0, 3.0.2]</version>
+			</dependency>
+			<dependency>
+				<groupId>org.eclipse.persistence</groupId>
+				<artifactId>org.eclipse.persistence.moxy</artifactId>
+				<version>[3.0.0, 3.0.2]</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.glassfish.jaxb</groupId>
+				<artifactId>jaxb-runtime</artifactId>
+				<version>3.0.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jaxb</groupId>
+				<artifactId>jaxb-xjc</artifactId>
+				<version>3.0.2</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.javassist</groupId>
+				<artifactId>javassist</artifactId>
+				<version>[3.13.0-GA, 3.28.0-GA]</version>
+			</dependency>
+
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.13.2</version>
+				<scope>test</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.10.1</version>
+				<configuration>
+					<source>1.8</source>
+					<showDeprecation>true</showDeprecation>
+					<showWarnings>true</showWarnings>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.1.0</version>
+				<executions>
+					<execution>
+						<id>enforce-maven</id>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<requireMavenVersion>
+									<version>3.3.9</version>
+								</requireMavenVersion>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.4.0</version>
+				<configuration>
+					<source>1.8</source>
+					<javadocVersion>1.8</javadocVersion>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+				<configuration>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<localCheckout>true</localCheckout>
+					<pushChanges>false</pushChanges>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.2</version>
+				<configuration>
+					<trimStackTrace>false</trimStackTrace>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>animal-sniffer-maven-plugin</artifactId>
+				<version>1.21</version>
+				<executions>
+					<execution>
+						<id>android-21</id>
+						<!-- Sniff main classes only -->
+						<phase>process-classes</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<ignores>
+								<ignore>java.lang.instrument.*</ignore>
+								<ignore>java.time.*</ignore>
+							</ignores>
+							<signature>
+								<groupId>net.sf.androidscents.signature</groupId>
+								<artifactId>android-api-level-21</artifactId>
+								<version>5.0.1_r2</version>
+							</signature>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!--
+			Usage:
+			$ mvn versions:display-dependency-updates
+			$ mvn versions:display-plugin-updates
+			-->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>versions-maven-plugin</artifactId>
+				<version>2.8.1</version>
+			</plugin>
+			<plugin>
+				<groupId>de.jutzig</groupId>
+				<artifactId>github-release-plugin</artifactId>
+				<version>1.2.0</version>
+				<executions>
+					<execution>
+						<id>default-cli</id>
+						<configuration>
+							<artifact>${project.build.directory}/${project.artifactId}-executable-${project.version}.${project.packaging}</artifact>
+							<description>https://github.com/jpmml/jpmml-model</description>
+							<releaseName>${project.version}</releaseName>
+							<repositoryId>jpmml/jpmml-model</repositoryId>
+							<tag>${project.version}</tag>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
