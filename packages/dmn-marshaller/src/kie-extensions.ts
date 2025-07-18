@@ -27,6 +27,8 @@ import { meta as dmn14meta, ns as dmn14ns } from "./schemas/dmn-1_4/ts-gen/meta"
 import "./schemas/dmn-1_4/ts-gen/types";
 import { meta as dmn15meta, ns as dmn15ns } from "./schemas/dmn-1_5/ts-gen/meta";
 import "./schemas/dmn-1_5/ts-gen/types";
+import { meta as dmn16meta, ns as dmn16ns } from "./schemas/dmn-1_6/ts-gen/meta";
+import "./schemas/dmn-1_6/ts-gen/types";
 import { meta as kie10meta, ns as kie10ns } from "./schemas/kie-1_0/ts-gen/meta";
 import {
   KIE__tAttachment,
@@ -357,6 +359,87 @@ mergeMetas(dmn15meta, [[KIE_NS, kie10meta]]);
 };
 
 (dmn15meta["DMN15__tKnowledgeSource__extensionElements"] as any)["kie:attachment"] = {
+  type: "KIE__tAttachment",
+  isArray: true,
+  xsdType: "// local type",
+  fromType: "KIE__tAttachment",
+};
+
+///////////////////////////
+///       DMN 1.6       ///
+///////////////////////////
+
+declare module "./schemas/dmn-1_6/ts-gen/types" {
+  export interface DMNDI15__DMNDiagram__extension {
+    "kie:ComponentsWidthsExtension"?: Namespaced<KIE, KIE__tComponentsWidthsExtension>;
+  }
+
+  export interface DMN16__tBusinessKnowledgeModel__extensionElements {
+    "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
+  }
+
+  export interface DMN16__tDecision__extensionElements {
+    "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
+  }
+
+  export interface DMN16__tDecisionService__extensionElements {
+    "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
+  }
+
+  export interface DMN16__tInputData__extensionElements {
+    "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
+  }
+
+  export interface DMN16__tKnowledgeSource__extensionElements {
+    "kie:attachment"?: Namespaced<KIE, KIE__tAttachment>[];
+  }
+
+  export interface DMN16__tUnaryTests {
+    "@_kie:constraintType"?: KIE__tConstraintType;
+  }
+}
+
+dmn16ns.set(KIE_NS, kie10ns.get("")!);
+dmn16ns.set(kie10ns.get("")!, KIE_NS);
+
+mergeMetas(dmn16meta, [[KIE_NS, kie10meta]]);
+
+(dmn16meta["DMNDI15__DMNDiagram__extension"] as any)["kie:ComponentsWidthsExtension"] = {
+  type: "KIE__tComponentsWidthsExtension",
+  isArray: false,
+  xsdType: "// local type",
+  fromType: "KIE__tComponentsWidthsExtension",
+};
+
+(dmn16meta["DMN16__tBusinessKnowledgeModel__extensionElements"] as any)["kie:attachment"] = {
+  type: "KIE__tAttachment",
+  isArray: true,
+  xsdType: "// local type",
+  fromType: "KIE__tAttachment",
+};
+
+(dmn16meta["DMN16__tDecision__extensionElements"] as any)["kie:attachment"] = {
+  type: "KIE__tAttachment",
+  isArray: true,
+  xsdType: "// local type",
+  fromType: "KIE__tAttachment",
+};
+
+(dmn16meta["DMN16__tDecisionService__extensionElements"] as any)["kie:attachment"] = {
+  type: "KIE__tAttachment",
+  isArray: true,
+  xsdType: "// local type",
+  fromType: "KIE__tAttachment",
+};
+
+(dmn16meta["DMN16__tInputData__extensionElements"] as any)["kie:attachment"] = {
+  type: "KIE__tAttachment",
+  isArray: true,
+  xsdType: "// local type",
+  fromType: "KIE__tAttachment",
+};
+
+(dmn16meta["DMN16__tKnowledgeSource__extensionElements"] as any)["kie:attachment"] = {
   type: "KIE__tAttachment",
   isArray: true,
   xsdType: "// local type",

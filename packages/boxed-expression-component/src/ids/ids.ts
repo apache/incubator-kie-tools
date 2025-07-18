@@ -18,9 +18,9 @@
  */
 
 import {
-  meta as dmn15meta,
-  elements as dmn15elements,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
+  meta as dmn16meta,
+  elements as dmn16elements,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/meta";
 import { XmlParserTsIdRandomizer } from "@kie-tools/xml-parser-ts/dist/idRandomizer";
 import { BoxedExpression, generateUuid } from "../api";
 
@@ -42,8 +42,8 @@ export function mutateExpressionRandomizingIds(expression: BoxedExpression | und
 
 function getNewBeeIdRandomizer() {
   return new XmlParserTsIdRandomizer({
-    meta: dmn15meta,
-    elements: dmn15elements,
+    meta: dmn16meta,
+    elements: dmn16elements,
     newIdGenerator: generateUuid,
     matchers: [],
   });
@@ -52,7 +52,7 @@ function getNewBeeIdRandomizer() {
 function getIdRandomizerForExpression(expression: BoxedExpression) {
   return getNewBeeIdRandomizer().ack({
     json: { __$$element: "decision", expression },
-    type: "DMN15__tDecision",
+    type: "DMN16__tDecision",
     attr: "expression",
   });
 }

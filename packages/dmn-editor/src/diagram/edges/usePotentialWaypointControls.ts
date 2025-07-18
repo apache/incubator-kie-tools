@@ -22,7 +22,7 @@ import { useState, useCallback, useMemo } from "react";
 import { addEdgeWaypoint } from "../../mutations/addEdgeWaypoint";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { snapPoint } from "../SnapGrid";
-import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefToQName";
 import { DmnDiagramNodeData } from "../nodes/Nodes";
 import { DmnDiagramEdgeData } from "./Edges";

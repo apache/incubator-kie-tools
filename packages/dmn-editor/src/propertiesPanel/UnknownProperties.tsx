@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert/Alert";
-import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN16__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore } from "../store/StoreContext";
 import { useMemo } from "react";
@@ -54,7 +54,7 @@ export function UnknownProperties(props: { shape: Normalized<DMNDI15__DMNShape>;
 
     const externalDrgElementsById = (externalDmn.model.definitions.drgElement ?? []).reduce(
       (acc, e, index) => acc.set(e["@_id"]!, { element: e, index }),
-      new Map<string, { index: number; element: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]> }>()
+      new Map<string, { index: number; element: Unpacked<Normalized<DMN16__tDefinitions>["drgElement"]> }>()
     );
 
     const externalDrgElement = externalDrgElementsById.get(props.dmnElementRefQName.localPart);

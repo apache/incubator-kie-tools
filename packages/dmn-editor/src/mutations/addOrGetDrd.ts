@@ -18,7 +18,7 @@
  */
 
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN16__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 
 export function getDefaultDrdName({ drdIndex }: { drdIndex: number }) {
@@ -29,7 +29,7 @@ export function addOrGetDrd({
   definitions,
   drdIndex,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN16__tDefinitions>;
   drdIndex: number;
 }) {
   const drdName = getDefaultDrdName({ drdIndex: drdIndex });

@@ -764,8 +764,8 @@ else &quot;Insufficient&quot;</dmn:text>
       </dmndi:DMNEdge>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>
-  <dmn:import id="_E4562608-B14C-4845-A4C3-6C1A1FBC0219" name="sumBkm" importType="https://www.omg.org/spec/DMN/20230324/MODEL/" namespace="https://kie.org/dmn/_923784BD-CD31-488A-9C31-C1A83C5483C0" />
-  <dmn:import id="_C726A824-9349-4CF8-91FA-F969250C8421" name="sumDiffDs" importType="https://www.omg.org/spec/DMN/20230324/MODEL/" namespace="https://kie.org/dmn/_D19B0015-2CBD-4BA8-84A9-5F554D84A9E1" />
+  <dmn:import id="_E4562608-B14C-4845-A4C3-6C1A1FBC0219" name="sumBkm" importType="https://www.omg.org/spec/DMN/20240513/MODEL/" namespace="https://kie.org/dmn/_923784BD-CD31-488A-9C31-C1A83C5483C0" />
+  <dmn:import id="_C726A824-9349-4CF8-91FA-F969250C8421" name="sumDiffDs" importType="https://www.omg.org/spec/DMN/20240513/MODEL/" namespace="https://kie.org/dmn/_D19B0015-2CBD-4BA8-84A9-5F554D84A9E1" />
   <dmn:import id="_87CDD600-7564-CF87-547E-A8B876CD0812" name="testTreePmml" importType="https://www.dmg.org/PMML-4_2" namespace="https://kie.org/pmml#dev-webapp/available-models-to-include/testTree.pmml" />
 </dmn:definitions>
 `;
@@ -1002,7 +1002,7 @@ export const TRAFFIC_VIOLATION = `<?xml version='1.0' encoding='UTF-8'?>
 </dmn:definitions>`;
 
 export const SIMPLE = `<?xml version="1.0" encoding="UTF-8" ?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_0457D4F2-02B6-4A3D-957F-8F971A8321BC" id="_DE888083-9CD8-44DC-BE0A-0EC85244DE3B" name="Simple">
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" namespace="https://kie.org/dmn/_0457D4F2-02B6-4A3D-957F-8F971A8321BC" id="_DE888083-9CD8-44DC-BE0A-0EC85244DE3B" name="Simple">
   <inputData name="Input" id="_926B9E31-3CEA-4A0E-8A66-97F875EFB428">
     <variable name="Input" id="_9B4713BA-E468-447E-9649-91E108CB2F4F" typeRef="number" />
   </inputData>
@@ -1037,24 +1037,24 @@ export const SIMPLE = `<?xml version="1.0" encoding="UTF-8" ?>
 </definitions>`;
 
 export const EMPTY = `<?xml version="1.0" encoding="UTF-8" ?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_14487CEE-1B30-453E-976D-C11ED911548F" id="_6FEE4554-BE5D-4F30-B523-6DFDA563221A" name="Empty" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" />
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" namespace="https://kie.org/dmn/_14487CEE-1B30-453E-976D-C11ED911548F" id="_6FEE4554-BE5D-4F30-B523-6DFDA563221A" name="Empty" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" />
 `;
 
 export const COMPLEX_COLLECTION = `<?xml version="1.0" encoding="UTF-8" ?>
-<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/" namespace="https://kie.org/dmn/_8D6316E7-ED43-4528-BB0B-2A7587B20853" id="_A736BA8A-E346-48F8-8504-421B0CB288AD" name="DMN_EE8B8820-C396-45D8-BB02-3317B5C43C3F" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
-  <itemDefinition id="_41EE4053-C229-4E41-BD2D-832953944AB0" name="tPerson" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
-    <itemComponent id="_58BA4949-52D2-4482-978A-D7C0D48209F7" name="name" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" namespace="https://kie.org/dmn/_8D6316E7-ED43-4528-BB0B-2A7587B20853" id="_A736BA8A-E346-48F8-8504-421B0CB288AD" name="DMN_EE8B8820-C396-45D8-BB02-3317B5C43C3F" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
+  <itemDefinition id="_41EE4053-C229-4E41-BD2D-832953944AB0" name="tPerson" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/">
+    <itemComponent id="_58BA4949-52D2-4482-978A-D7C0D48209F7" name="name" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/">
       <typeRef>string</typeRef>
     </itemComponent>
-    <itemComponent id="_45828076-7AB5-4F38-A40C-DEB2E9A098AF" name="age" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+    <itemComponent id="_45828076-7AB5-4F38-A40C-DEB2E9A098AF" name="age" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/">
       <typeRef>number</typeRef>
     </itemComponent>
   </itemDefinition>
-  <itemDefinition id="_0072B1FA-04DA-4759-9933-50513F26B4EF" name="tTeam" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
-    <itemComponent id="_17166342-0AF1-4005-83BE-B5EBDE3CBF77" name="name" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+  <itemDefinition id="_0072B1FA-04DA-4759-9933-50513F26B4EF" name="tTeam" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/">
+    <itemComponent id="_17166342-0AF1-4005-83BE-B5EBDE3CBF77" name="name" isCollection="false" typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/">
       <typeRef>string</typeRef>
     </itemComponent>
-    <itemComponent id="_B39FD1B3-05BA-4F9F-A240-4B2DC14E6530" name="people" isCollection="true" typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/">
+    <itemComponent id="_B39FD1B3-05BA-4F9F-A240-4B2DC14E6530" name="people" isCollection="true" typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/">
       <typeRef>tPerson</typeRef>
     </itemComponent>
   </itemDefinition>

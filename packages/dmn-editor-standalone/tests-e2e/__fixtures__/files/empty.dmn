@@ -18,8 +18,8 @@
   ~ under the License.      
 -->
 <definitions
-  xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
-  expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+  xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/"
+  expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/"
   namespace="https://kie.org/dmn/_BFBA386F-D4D2-4D4F-896D-0B002F2F7835"
   id="_14647316-6D1C-4ECA-BE95-249212B27BC2"
   name="DMN_A578DFD0-A00B-4337-B420-1CC63E719221"

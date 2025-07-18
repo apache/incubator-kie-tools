@@ -18,10 +18,10 @@
  */
 
 import {
-  DMN15__tDecision,
-  DMN15__tInputData,
-  DMN15__tItemDefinition,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN16__tDecision,
+  DMN16__tInputData,
+  DMN16__tItemDefinition,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 
 import { ExternalDmnsIndex } from "../../TestScenarioEditor";
 import { State, TestScenarioDataObject } from "../TestScenarioEditorStore";
@@ -65,8 +65,8 @@ export function computeDmnDataObjects(
 }
 
 function createTestScenarioObjects(
-  drgElement: DMN15__tInputData | DMN15__tDecision,
-  allItemDefinitionsMap: Map<string, DMN15__tItemDefinition>
+  drgElement: DMN16__tInputData | DMN16__tDecision,
+  allItemDefinitionsMap: Map<string, DMN16__tItemDefinition>
 ): TestScenarioDataObject {
   const drgElementName = drgElement["@_name"];
   const drgElementTypeRef = drgElement!.variable?.["@_typeRef"];
@@ -88,8 +88,8 @@ function createTestScenarioObjects(
 }
 
 function createChildrenTestScenarioObjects(
-  itemDefinition: DMN15__tItemDefinition | undefined,
-  allItemDefinitionsMap: Map<string, DMN15__tItemDefinition>,
+  itemDefinition: DMN16__tItemDefinition | undefined,
+  allItemDefinitionsMap: Map<string, DMN16__tItemDefinition>,
   expressionElements: string[],
   rootDrgElementTypeRef: string | undefined
 ) {

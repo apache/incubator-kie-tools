@@ -52,11 +52,11 @@ describe("build produces elements respecting the hierarchy of the element type",
     };
     expect(
       getMarshaller(
-        `<?xml version="1.0" encoding="UTF-8" ?><definitions name="" namespace="" xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"/>`,
+        `<?xml version="1.0" encoding="UTF-8" ?><definitions name="" namespace="" xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/"/>`,
         { upgradeTo: "latest" }
       ).builder.build(json)
     ).toStrictEqual(`<?xml version="1.0" encoding="UTF-8" ?>
-<definitions name="myDmn" namespace="myDmnNamespace" xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
+<definitions name="myDmn" namespace="myDmnNamespace" xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0">
   <businessKnowledgeModel name="myBkm">
     <description>myBkm description</description>
     <extensionElements />

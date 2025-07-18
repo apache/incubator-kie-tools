@@ -19,7 +19,7 @@
 
 import { DmnLatestModel } from "..";
 import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
-import { DMN15__tDefinitions } from "../schemas/dmn-1_5/ts-gen/types";
+import { DMN16__tDefinitions } from "../schemas/dmn-1_6/ts-gen/types";
 
 export type Normalized<T> = WithRequiredDeep<T, "@_id">;
 
@@ -35,27 +35,27 @@ export function normalize(model: DmnLatestModel): Normalized<DmnLatestModel> {
   getNewDmnIdRandomizer()
     .ack({
       json: model.definitions.drgElement,
-      type: "DMN15__tDefinitions",
+      type: "DMN16__tDefinitions",
       attr: "drgElement",
     })
     .ack({
       json: model.definitions.artifact,
-      type: "DMN15__tDefinitions",
+      type: "DMN16__tDefinitions",
       attr: "artifact",
     })
     .ack({
       json: model.definitions["dmndi:DMNDI"],
-      type: "DMN15__tDefinitions",
+      type: "DMN16__tDefinitions",
       attr: "dmndi:DMNDI",
     })
     .ack({
       json: model.definitions.import,
-      type: "DMN15__tDefinitions",
+      type: "DMN16__tDefinitions",
       attr: "import",
     })
     .ack({
       json: model.definitions.itemDefinition,
-      type: "DMN15__tDefinitions",
+      type: "DMN16__tDefinitions",
       attr: "itemDefinition",
     })
     .randomize({ skipAlreadyAttributedIds: true });
@@ -67,7 +67,7 @@ export function normalize(model: DmnLatestModel): Normalized<DmnLatestModel> {
   return normalizedModel;
 }
 
-function addMissingImportNamespaces(definitions: Normalized<DMN15__tDefinitions>) {
+function addMissingImportNamespaces(definitions: Normalized<DMN16__tDefinitions>) {
   if (definitions.import === undefined) {
     return;
   }
@@ -75,8 +75,8 @@ function addMissingImportNamespaces(definitions: Normalized<DMN15__tDefinitions>
   // Collect all declared namespaces
   const definedNamespaces = new Set(
     Object.keys(definitions)
-      .filter((keys: keyof DMN15__tDefinitions) => String(keys).startsWith("@_xmlns:"))
-      .map((xmlnsKey: keyof DMN15__tDefinitions) => definitions[xmlnsKey])
+      .filter((keys: keyof DMN16__tDefinitions) => String(keys).startsWith("@_xmlns:"))
+      .map((xmlnsKey: keyof DMN16__tDefinitions) => definitions[xmlnsKey])
   );
 
   // Add missing import namespace declarations as `xmlns:included*`

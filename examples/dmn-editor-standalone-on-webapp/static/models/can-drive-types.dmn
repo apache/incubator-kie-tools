@@ -18,8 +18,8 @@
   ~ under the License.      
 -->
 <definitions
-  xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
-  expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+  xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/"
+  expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/"
   namespace="https://kie.org/dmn/_8A2ED07B-1CE0-4A81-B9C9-5792D851EC85"
   id="_9B5C0976-EAA8-4686-8C8E-E012C715D6C2"
   name="CanDriveTypes"
@@ -32,13 +32,13 @@
     id="_8CAE9E46-6F07-4C2C-8E0F-4D61E96C4A87"
     name="tPerson"
     isCollection="false"
-    typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+    typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/"
   >
     <itemComponent
       id="_20C02B7D-0670-471A-B684-9FBEF3481FE9"
       name="Country"
       isCollection="false"
-      typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+      typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/"
     >
       <typeRef>Country</typeRef>
     </itemComponent>
@@ -46,7 +46,7 @@
       id="_67E83504-AF1D-4159-85B9-B2A847E74C66"
       name="Age"
       isCollection="false"
-      typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+      typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/"
     >
       <typeRef>number</typeRef>
     </itemComponent>
@@ -54,7 +54,7 @@
       id="_94BE7A68-8A8C-4B6F-9B92-02179AF5B12F"
       name="Passed the test"
       isCollection="false"
-      typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+      typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/"
     >
       <typeRef>boolean</typeRef>
     </itemComponent>
@@ -63,7 +63,7 @@
     id="_17792D5B-A0AB-478B-AB60-ECC7F2A4FCB2"
     name="Country"
     isCollection="false"
-    typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+    typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/"
   >
     <typeRef>string</typeRef>
     <typeConstraint id="_AA66EE6B-778C-45E5-AF26-37488D6E80F4" kie:constraintType="enumeration">
