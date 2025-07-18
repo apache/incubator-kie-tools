@@ -125,6 +125,8 @@ export function applyAutoLayoutToDrd({
         snapGrid: state.diagram.snapGrid,
         __readonly_dmnObjectNamespace,
         __readonly_externalDmnsIndex,
+        __readonly_href: nodeId,
+        __readonly_dmnObjectId: node.data.dmnObject?.["@_id"] ?? "",
         change: {
           index: node.data.index,
           isExternal: !!node.data.dmnObjectQName.prefix,
@@ -178,6 +180,7 @@ export function applyAutoLayoutToDrd({
       shapeIndex: parentNode.data.shape.index,
       snapGrid: state.diagram.snapGrid,
       localYPosition: dividerLinerLocalYPosition,
+      __readonly_decisionServiceHref: parentNode.id,
     });
   }
 
