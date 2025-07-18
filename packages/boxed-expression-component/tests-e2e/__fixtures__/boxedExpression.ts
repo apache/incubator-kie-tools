@@ -32,7 +32,7 @@ export class BoxedExpressionEditor {
     public baseURL?: string
   ) {
     this.page = page;
-    this._selectExpressionMenu = new SelectExpressionMenu(page);
+    this._selectExpressionMenu = new SelectExpressionMenu(page.locator("body"));
   }
 
   get selectExpressionMenu(): SelectExpressionMenu {

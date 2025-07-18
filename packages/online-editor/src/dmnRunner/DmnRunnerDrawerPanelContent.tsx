@@ -222,7 +222,7 @@ export function DmnRunnerDrawerPanelContent() {
                             aria-label="Select Row Input"
                             toggle={
                               <DropdownToggle
-                                style={{ padding: "0px" }}
+                                style={{ padding: "0px", whiteSpace: "nowrap" }}
                                 toggleIndicator={null}
                                 onToggle={() => openRowSelection((prevState) => !prevState)}
                               >

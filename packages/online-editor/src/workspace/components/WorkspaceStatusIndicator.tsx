@@ -107,7 +107,7 @@ export function GitStatusIndicator(
     <Flex
       flexWrap={{ default: "nowrap" }}
       spaceItems={{ default: "spaceItemsMd" }}
-      className={"kie-tools--git-status-indicator"}
+      className={"kie-tools--git-status-indicator pf-v5-c-select kie-tools--masthead-hoverable"}
     >
       {(isGitBasedWorkspaceKind(props.gitStatusProps.workspaceDescriptor.origin.kind) ||
         props.gitStatusProps.workspaceDescriptor.origin.kind === WorkspaceKind.LOCAL) &&

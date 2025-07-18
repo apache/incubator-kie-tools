@@ -26,12 +26,12 @@ import {
   MenuList,
 } from "@patternfly/react-core/dist/js/components/Menu";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
-import PlusIcon from "@patternfly/react-icons/dist/js/icons/plus-icon";
-import TrashIcon from "@patternfly/react-icons/dist/js/icons/trash-icon";
-import BlueprintIcon from "@patternfly/react-icons/dist/js/icons/blueprint-icon";
-import CompressIcon from "@patternfly/react-icons/dist/js/icons/compress-icon";
+import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
+import { TrashIcon } from "@patternfly/react-icons/dist/js/icons/trash-icon";
+import { BlueprintIcon } from "@patternfly/react-icons/dist/js/icons/blueprint-icon";
+import { CompressIcon } from "@patternfly/react-icons/dist/js/icons/compress-icon";
 import * as React from "react";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BeeTableContextMenuAllowedOperationsConditions,
   BeeTableOperation,
@@ -39,7 +39,7 @@ import {
   BeeTableOperationGroup,
   InsertRowColumnsDirection,
 } from "../../api";
-import { useCustomContextMenuHandler } from "../../contextMenu";
+import { ContextMenu, ContextMenuRef } from "../../contextMenu";
 import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 import { assertUnreachable } from "../../expressions/ExpressionDefinitionRoot/ExpressionDefinitionLogicTypeSelector";
 import {
@@ -49,9 +49,9 @@ import {
 } from "../../selection/BeeTableSelectionContext";
 import * as ReactTable from "react-table";
 import * as _ from "lodash";
-import CutIcon from "@patternfly/react-icons/dist/js/icons/cut-icon";
-import CopyIcon from "@patternfly/react-icons/dist/js/icons/copy-icon";
-import PasteIcon from "@patternfly/react-icons/dist/js/icons/paste-icon";
+import { CutIcon } from "@patternfly/react-icons/dist/js/icons/cut-icon";
+import { CopyIcon } from "@patternfly/react-icons/dist/js/icons/copy-icon";
+import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { NumberInput, Radio } from "@patternfly/react-core/dist/js/";
@@ -501,10 +501,6 @@ export function BeeTableContextMenuHandler({
     );
   }, [insertMultipleRowColumnsValue, onMinus, onChange, onPlus]);
 
-  const contextMenuContainer = React.createRef<HTMLDivElement>();
-
-  const { xPos, yPos, isOpen } = useCustomContextMenuHandler(tableRef);
-
   const resetDrillDownMenu = useCallback(() => {
     setMenuDrilledIn([]);
     setDrillDownPath([]);
@@ -514,46 +510,8 @@ export function BeeTableContextMenuHandler({
   }, [rootMenuId]);
 
   useEffect(() => {
-    if (!isOpen) {
-      resetDrillDownMenu();
-    }
-  }, [isOpen, resetDrillDownMenu]);
-
-  const style = useMemo(() => {
-    return {
-      top: yPos + "px",
-      left: xPos + "px",
-    };
-  }, [xPos, yPos]);
-
-  useLayoutEffect(() => {
-    if (contextMenuContainer.current) {
-      const bounds = contextMenuContainer.current.getBoundingClientRect();
-      let contextMenuHeight = menuHeights[activeMenuId];
-      const availableHeight = document.documentElement.clientHeight;
-      if (contextMenuHeight + yPos >= availableHeight) {
-        const offset = contextMenuHeight + yPos - availableHeight;
-        contextMenuHeight = contextMenuHeight - offset;
-        contextMenuContainer.current.style.height = contextMenuHeight + "px";
-        contextMenuContainer.current.style.overflowY = "scroll";
-      } else {
-        contextMenuContainer.current.style.overflowY = "visible";
-      }
-
-      if (contextMenuHeight <= availableHeight && contextMenuHeight + yPos > availableHeight) {
-        const offset = contextMenuHeight + yPos - availableHeight;
-        contextMenuContainer.current.style.top = yPos - offset + "px";
-        contextMenuContainer.current.style.left = xPos + 2 + "px";
-      }
-
-      const contextMenuWidth = bounds.width;
-      const availableWidth = document.documentElement.clientWidth;
-      if (contextMenuWidth <= availableWidth && contextMenuWidth + xPos > availableWidth) {
-        const offset = contextMenuWidth + xPos - availableWidth;
-        contextMenuContainer.current.style.left = xPos - offset - 2 + "px";
-      }
-    }
-  });
+    resetDrillDownMenu();
+  }, [resetDrillDownMenu]);
 
   const allowedOperationsForSelection = useMemo(() => {
     return allowedOperations({
@@ -633,7 +591,6 @@ export function BeeTableContextMenuHandler({
           operation.type === BeeTableOperation.ColumnInsertN || operation.type === BeeTableOperation.RowInsertN ? (
             <MenuItem
               icon={operationIcon(operation.type)}
-              data-ouia-component-id={"expression-table-context-menu-" + operation.name}
               key={operation.type + group}
               itemId={operation.type}
               isDisabled={!allowedOperationsForSelection.includes(operation.type)}
@@ -646,7 +603,6 @@ export function BeeTableContextMenuHandler({
           ) : (
             <MenuItem
               icon={operationIcon(operation.type)}
-              data-ouia-component-id={"expression-table-context-menu-" + operation.name}
               key={operation.type + group}
               itemId={operation.type}
               onClick={() => handleOperation(operation.type)}
@@ -680,41 +636,46 @@ export function BeeTableContextMenuHandler({
     );
   }
 
+  const contextMenuRef = useRef<ContextMenuRef>(null);
+  useEffect(() => {
+    if (activeMenuId === rootMenuId) {
+      contextMenuRef.current?.recalculateNiceHeight(menuHeights[activeMenuId]);
+      return;
+    }
+
+    const t = setTimeout(() => {
+      contextMenuRef.current?.recalculateNiceHeight(menuHeights[activeMenuId]);
+    }, 250 /* this is how long it takes for the drill down menu animation to be done (inMs) */);
+    return () => {
+      clearTimeout(t);
+    };
+  }, [activeMenuId, menuHeights, rootMenuId]);
+
   return (
     <>
-      {isOpen && (
-        <div
-          className="context-menu-container"
-          style={style}
-          onMouseDown={(e) => e.stopPropagation()}
-          ref={contextMenuContainer}
-          data-testid={"kie-tools--bee--context-menu-container"}
+      <ContextMenu domEventTargetRef={tableRef as any} triggerOn={"contextmenu"} forwardRef={contextMenuRef}>
+        <Menu
+          id={rootMenuId}
+          containsDrilldown={true}
+          onDrillIn={drillIn}
+          onDrillOut={drillOut}
+          activeMenu={activeMenuId}
+          onGetMenuHeight={setMenuHeight}
+          drilldownItemPath={drillDownPath}
+          drilledInMenus={menuDrilledIn}
         >
-          <Menu
-            ouiaId="expression-table-context-menu"
-            className="table-context-menu"
-            id={rootMenuId}
-            containsDrilldown={true}
-            onDrillIn={drillIn}
-            onDrillOut={drillOut}
-            activeMenu={activeMenuId}
-            onGetMenuHeight={setMenuHeight}
-            drilldownItemPath={drillDownPath}
-            drilledInMenus={menuDrilledIn}
-          >
-            <MenuContent menuHeight={`${menuHeights[activeMenuId]}px`}>
-              {hasAllowedOperations &&
-                operationGroups.map(({ group, items }) => (
-                  <React.Fragment key={group}>
-                    {activeMenuId === rootMenuId
-                      ? createMenuGroup(items, group, buildMenuList(items, group))
-                      : buildMenuList(items, group)}
-                  </React.Fragment>
-                ))}
-            </MenuContent>
-          </Menu>
-        </div>
-      )}
+          <MenuContent menuHeight={`${menuHeights[activeMenuId]}px`}>
+            {hasAllowedOperations &&
+              operationGroups.map(({ group, items }) => (
+                <React.Fragment key={group}>
+                  {activeMenuId === rootMenuId
+                    ? createMenuGroup(items, group, buildMenuList(items, group))
+                    : buildMenuList(items, group)}
+                </React.Fragment>
+              ))}
+          </MenuContent>
+        </Menu>
+      </ContextMenu>
     </>
   );
 }

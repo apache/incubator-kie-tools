@@ -21,10 +21,44 @@
   margin-top: -3px;
 }
 
+.kie-tools--dmn-runner-table--drawer .pf-v5-c-drawer__content {
+  position: relative;
+}
+
+.kie-tools--dmn-runner-table--drawer .pf-v5-c-drawer__content .expression-container-box {
+  margin-left: 56px;
+  border-radius: 0;
+}
+
 .kie-tools--dmn-runner-table--drawer .pf-v5-c-drawer__panel-main .expression-container-box {
   margin-right: 5px;
+  border-radius: 0;
 }
 
 .kie-tools--unitables-open-on-form-container {
   margin-top: -2px !important;
+  position: absolute;
+  left: -2px;
+  top: 0;
+  border-right: 1px solid lightgray;
+  background-color: white;
+}
+
+.kie-tools--dmn-runner-table--drawer .pf-v5-c-form-control::before,
+.kie-tools--dmn-runner-table--drawer .pf-v5-c-form-control::after {
+  content: unset; /* Removes extra border on AutoInputs */
+}
+
+/* 
+  Prevent extra height to be added at
+  the end since all components are getting 60px height
+*/
+.kie-tools--dmn-runner-table--drawer .pf-v5-c-form__helper-text {
+  height: 0;
+  display: none;
+  overflow: hidden;
+}
+
+.kie-tools--dmn-runner-table--drawer .expression-container-box {
+  box-shadow: 40px 0px 40px 0px #efefef;
 }
