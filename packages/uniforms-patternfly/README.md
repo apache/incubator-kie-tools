@@ -78,7 +78,7 @@ example of a JSON Schema, it's necessary to use a JSON Schema validation library
 import { JSONSchemaBridge } from "uniforms-bridge-json-schema";
 import AJV from "ajv";
 
-const ajv = new Ajv({ allErrors: true, useDefaults: true });
+const ajv = new AJV({ allErrors: true, useDefaults: true });
 
 function createValidator(schema) {
   const validator = ajv.compile(schema);
