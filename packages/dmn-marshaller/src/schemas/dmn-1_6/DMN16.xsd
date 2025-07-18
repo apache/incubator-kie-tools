@@ -6,7 +6,7 @@
   xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
   targetNamespace="https://www.omg.org/spec/DMN/20240513/MODEL/"
 >
-  <xsd:import namespace="https://www.omg.org/spec/DMN/20230324/DMNDI/" schemaLocation="DMNDI16.xsd">
+  <xsd:import namespace="https://www.omg.org/spec/DMN/20230324/DMNDI/" schemaLocation="DMNDI15.xsd">
     <xsd:annotation>
       <xsd:documentation>
 				Include the DMN Diagram Interchange (DI) schema

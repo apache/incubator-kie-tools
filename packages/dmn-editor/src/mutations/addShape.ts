@@ -20,7 +20,7 @@
 import {
   DC__Point,
   DMN16__tDefinitions,
-  DMNDI16__DMNShape,
+  DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { NodeType } from "../diagram/connections/graphStructure";
@@ -39,7 +39,7 @@ export function addShape({
   definitions: Normalized<DMN16__tDefinitions>;
   drdIndex: number;
   nodeType: NodeType;
-  shape: Normalized<DMNDI16__DMNShape>;
+  shape: Normalized<DMNDI15__DMNShape>;
   decisionServiceDividerLineWaypoint?: DC__Point[];
 }) {
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });

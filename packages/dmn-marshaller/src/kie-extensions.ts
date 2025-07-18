@@ -370,7 +370,7 @@ mergeMetas(dmn15meta, [[KIE_NS, kie10meta]]);
 ///////////////////////////
 
 declare module "./schemas/dmn-1_6/ts-gen/types" {
-  export interface DMNDI16__DMNDiagram__extension {
+  export interface DMNDI15__DMNDiagram__extension {
     "kie:ComponentsWidthsExtension"?: Namespaced<KIE, KIE__tComponentsWidthsExtension>;
   }
 
@@ -404,7 +404,7 @@ dmn16ns.set(kie10ns.get("")!, KIE_NS);
 
 mergeMetas(dmn16meta, [[KIE_NS, kie10meta]]);
 
-(dmn16meta["DMNDI16__DMNDiagram__extension"] as any)["kie:ComponentsWidthsExtension"] = {
+(dmn16meta["DMNDI15__DMNDiagram__extension"] as any)["kie:ComponentsWidthsExtension"] = {
   type: "KIE__tComponentsWidthsExtension",
   isArray: false,
   xsdType: "// local type",

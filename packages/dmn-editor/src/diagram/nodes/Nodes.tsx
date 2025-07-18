@@ -27,7 +27,7 @@ import {
   DMN16__tInputData,
   DMN16__tKnowledgeSource,
   DMN16__tTextAnnotation,
-  DMNDI16__DMNShape,
+  DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
@@ -102,7 +102,7 @@ export type DmnDiagramNodeData<T extends NodeDmnObjects = NodeDmnObjects> = {
   dmnObjectNamespace: string | undefined;
   dmnObjectQName: XmlQName;
   dmnObject: T;
-  shape: Normalized<DMNDI16__DMNShape> & { index: number };
+  shape: Normalized<DMNDI15__DMNShape> & { index: number };
   index: number;
   hasHiddenRequirements: boolean;
   /**
@@ -1522,7 +1522,7 @@ function useNodeResizing(id: string): boolean {
 
 type NodeDimensionsArgs = {
   snapGrid: SnapGrid;
-  shape: Normalized<DMNDI16__DMNShape>;
+  shape: Normalized<DMNDI15__DMNShape>;
 } & (
   | { nodeType: Extract<NodeType, typeof NODE_TYPES.inputData>; isAlternativeInputDataShape: boolean }
   | { nodeType: Exclude<NodeType, typeof NODE_TYPES.inputData> }

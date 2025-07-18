@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMNDI16__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { FormSection } from "@patternfly/react-core/dist/js/components/Form";
@@ -91,7 +91,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
   const [isStyleSectionExpanded, setStyleSectionExpanded] = useState<boolean>(startExpanded);
 
   const setShapeStyles = useCallback(
-    (callback: (shape: Normalized<DMNDI16__DMNShape>[], state: State) => void) => {
+    (callback: (shape: Normalized<DMNDI15__DMNShape>[], state: State) => void) => {
       dmnEditorStoreApi.setState((s) => {
         const { diagramElements } = addOrGetDrd({
           definitions: s.dmn.model.definitions,

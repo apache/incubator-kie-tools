@@ -18,7 +18,7 @@
  */
 
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
-import { DMNDI16__DMNDiagram, DMNDI16__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMNDI15__DMNDiagram, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Page } from "@playwright/test";
 import { DrgElement } from "./drgElement";
 
@@ -30,10 +30,10 @@ export class Drd {
 
   public async getDrgElementBoundsOnDrd(args: { drgElementIndex: number; drdIndex: number }) {
     const drd = await this.getDrd({ drdIndex: args.drdIndex });
-    return (drd?.["dmndi:DMNDiagramElement"]?.[args.drgElementIndex] as DMNDI16__DMNShape)?.["dc:Bounds"];
+    return (drd?.["dmndi:DMNDiagramElement"]?.[args.drgElementIndex] as DMNDI15__DMNShape)?.["dc:Bounds"];
   }
 
-  private async getDrd(args: { drdIndex: number }): Promise<DMNDI16__DMNDiagram | undefined> {
+  private async getDrd(args: { drdIndex: number }): Promise<DMNDI15__DMNDiagram | undefined> {
     const textContent = await this.page.getByTestId("storybook--dmn-editor-model").textContent();
 
     if (textContent === null || textContent === undefined) {

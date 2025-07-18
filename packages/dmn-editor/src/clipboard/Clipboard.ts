@@ -22,8 +22,8 @@ import {
   DMN16__tDecisionService,
   DMN16__tDefinitions,
   DMN16__tItemDefinition,
-  DMNDI16__DMNEdge,
-  DMNDI16__DMNShape,
+  DMNDI15__DMNEdge,
+  DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { parseXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
@@ -57,8 +57,8 @@ export type DmnEditorDiagramClipboard = {
   drgElements: NonNullable<Unpacked<Normalized<DMN16__tDefinitions>["drgElement"]>>[];
   artifacts: NonNullable<Unpacked<Normalized<DMN16__tDefinitions>["artifact"]>>[];
   widths: Namespaced<KIE, KIE__tComponentWidths>[];
-  shapes: Normalized<DMNDI16__DMNShape>[];
-  edges: Normalized<DMNDI16__DMNEdge>[];
+  shapes: Normalized<DMNDI15__DMNShape>[];
+  edges: Normalized<DMNDI15__DMNEdge>[];
 };
 
 export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorState: State) {

@@ -213,13 +213,13 @@ export function DiagramCommands(props: {}) {
           })
           .ack({
             json: clipboard.shapes,
-            type: "DMNDI16__DMNDiagram",
+            type: "DMNDI15__DMNDiagram",
             attr: "dmndi:DMNDiagramElement",
             __$$element: "dmndi:DMNShape",
           })
           .ack({
             json: clipboard.edges,
-            type: "DMNDI16__DMNDiagram",
+            type: "DMNDI15__DMNDiagram",
             attr: "dmndi:DMNDiagramElement",
             __$$element: "dmndi:DMNEdge",
           })

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN16__tDefinitions, DMNDI16__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN16__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { parseXmlHref, xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml";
 import { getContainmentRelationship, getDecisionServiceDividerLineLocalY } from "../diagram/maths/DmnMaths";
@@ -83,11 +83,11 @@ export function addDecisionToDecisionService({
 
   const decisionShape = diagram.diagramElements.find(
     (s) => s["@_dmnElementRef"] === dmnElementRef && s.__$$element === "dmndi:DMNShape"
-  ) as Normalized<DMNDI16__DMNShape>;
+  ) as Normalized<DMNDI15__DMNShape>;
 
   const decisionServiceShape = diagram.diagramElements.find(
     (s) => s["@_dmnElementRef"] === decisionServiceId && s.__$$element === "dmndi:DMNShape"
-  ) as Normalized<DMNDI16__DMNShape>;
+  ) as Normalized<DMNDI15__DMNShape>;
 
   const section = getSectionForDecisionInsideDecisionService({ decisionShape, decisionServiceShape, snapGrid });
   if (section === "encapsulated") {
@@ -108,8 +108,8 @@ export function getSectionForDecisionInsideDecisionService({
   decisionServiceShape,
   snapGrid,
 }: {
-  decisionShape: Normalized<DMNDI16__DMNShape>;
-  decisionServiceShape: Normalized<DMNDI16__DMNShape>;
+  decisionShape: Normalized<DMNDI15__DMNShape>;
+  decisionServiceShape: Normalized<DMNDI15__DMNShape>;
   snapGrid: SnapGrid;
 }): "output" | "encapsulated" {
   if (!decisionShape?.["dc:Bounds"] || !decisionServiceShape?.["dc:Bounds"]) {

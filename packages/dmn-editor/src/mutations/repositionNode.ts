@@ -20,8 +20,8 @@
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import {
   DMN16__tDefinitions,
-  DMNDI16__DMNEdge,
-  DMNDI16__DMNShape,
+  DMNDI15__DMNEdge,
+  DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { NodeType } from "../diagram/connections/graphStructure";
@@ -61,7 +61,7 @@ export function repositionNode({
 }) {
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
-  const shape = diagramElements?.[change.shapeIndex] as Normalized<DMNDI16__DMNShape> | undefined;
+  const shape = diagramElements?.[change.shapeIndex] as Normalized<DMNDI15__DMNShape> | undefined;
   const shapeBounds = shape?.["dc:Bounds"];
   if (!shapeBounds) {
     throw new Error("DMN MUTATION: Cannot reposition non-existent shape bounds");
@@ -85,7 +85,7 @@ export function repositionNode({
 
   const offsetEdges = (args: { edgeIndexes: number[]; waypoint: "last" | "first" }) => {
     for (const edgeIndex of args.edgeIndexes) {
-      const edge = diagramElements[edgeIndex] as Normalized<DMNDI16__DMNEdge> | undefined;
+      const edge = diagramElements[edgeIndex] as Normalized<DMNDI15__DMNEdge> | undefined;
       if (!edge || !edge["di:waypoint"]) {
         throw new Error("DMN MUTATION: Cannot reposition non-existent edge");
       }

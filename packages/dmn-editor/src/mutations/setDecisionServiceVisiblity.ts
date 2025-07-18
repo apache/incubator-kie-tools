@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN16__tDefinitions, DMNDI16__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN16__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { addOrGetDrd, addOrGetDrd as getDefaultDiagram } from "./addOrGetDrd";
 
@@ -42,7 +42,7 @@ export function setDecisionServiceVisiblity({
     definitions: definitions,
     drdIndex: __readonly_drdIndex,
   });
-  const shape = diagramElements?.[__readonly_shapeIndex] as Normalized<DMNDI16__DMNShape> | undefined;
+  const shape = diagramElements?.[__readonly_shapeIndex] as Normalized<DMNDI15__DMNShape> | undefined;
 
   if (shape !== undefined && shape !== null) {
     shape["@_isCollapsed"] = __readonly_collapse;

@@ -26,7 +26,7 @@ import {
   DMN16__tDefinitions,
   DMN16__tInformationRequirement,
   DMN16__tKnowledgeRequirement,
-  DMNDI16__DMNEdge,
+  DMNDI15__DMNEdge,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { PositionalNodeHandleId } from "../diagram/connections/PositionalNodeHandles";
@@ -167,7 +167,7 @@ export function addEdge({
   const removedDmnEdge = removeFirstMatchIfPresent(
     diagramElements,
     (e) => e.__$$element === "dmndi:DMNEdge" && e["@_dmnElementRef"] === existingRequirementOrAssociationId
-  ) as Normalized<DMNDI16__DMNEdge> | undefined;
+  ) as Normalized<DMNDI15__DMNEdge> | undefined;
 
   const newWaypoints = keepWaypoints
     ? [

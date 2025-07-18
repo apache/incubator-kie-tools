@@ -23,7 +23,7 @@ import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/component
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
-import { DC__Bounds, DMNDI16__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DC__Bounds, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { State } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
@@ -207,7 +207,7 @@ export function ShapeOptions({
   const setShapeStyles = useCallback(
     (
       callback: (
-        shapesWithMinNodeSize: { shape: Normalized<DMNDI16__DMNShape>; minNodeSize: DC__Dimension }[],
+        shapesWithMinNodeSize: { shape: Normalized<DMNDI15__DMNShape>; minNodeSize: DC__Dimension }[],
         state: State
       ) => void
     ) => {

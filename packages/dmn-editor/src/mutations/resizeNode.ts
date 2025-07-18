@@ -21,8 +21,8 @@ import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import {
   DMN16__tDecisionService,
   DMN16__tDefinitions,
-  DMNDI16__DMNEdge,
-  DMNDI16__DMNShape,
+  DMNDI15__DMNEdge,
+  DMNDI15__DMNShape,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
@@ -47,7 +47,7 @@ export function resizeNode({
 }: {
   definitions: Normalized<DMN16__tDefinitions>;
   drdIndex: number;
-  __readonly_dmnShapesByHref: Map<string, Normalized<DMNDI16__DMNShape> & { index: number }>;
+  __readonly_dmnShapesByHref: Map<string, Normalized<DMNDI15__DMNShape> & { index: number }>;
   snapGrid: SnapGrid;
   __readonly_dmnObjectNamespace: string | undefined;
   __readonly_externalDmnsIndex: ExternalDmnsIndex;
@@ -65,7 +65,7 @@ export function resizeNode({
 
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
-  const shape = diagramElements?.[change.shapeIndex] as Normalized<DMNDI16__DMNShape> | undefined;
+  const shape = diagramElements?.[change.shapeIndex] as Normalized<DMNDI15__DMNShape> | undefined;
   const shapeBounds = shape?.["dc:Bounds"];
   if (!shapeBounds) {
     throw new Error("DMN MUTATION: Cannot resize non-existent shape bounds");
@@ -142,7 +142,7 @@ export function resizeNode({
 
       edgeIndexesAlreadyUpdated.add(edgeIndex);
 
-      const edge = diagramElements[edgeIndex] as Normalized<DMNDI16__DMNEdge> | undefined;
+      const edge = diagramElements[edgeIndex] as Normalized<DMNDI15__DMNEdge> | undefined;
       if (!edge || !edge["di:waypoint"]) {
         throw new Error("DMN MUTATION: Cannot reposition non-existent edge");
       }
