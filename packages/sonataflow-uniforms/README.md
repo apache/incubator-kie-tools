@@ -17,7 +17,92 @@
 
 ## @kie-tools/sonataflow-uniforms
 
-This package provides additional uniforms-patternfly components for SonataFlow.
+This package extends [`@kie-tools/uniforms-patternfly`](../uniforms-patternfly/README.md) with SonataFlow-specific [Uniforms](https://uniforms.tools/) components.
+
+### Available Components
+
+Each component is automatically registered as a Uniforms field, if used with a JSON schema.
+
+- **`CodeEditorTextField`**: A code editor based on [@patternfly/react-code-editor](https://www.patternfly.org/components/code-editor) that supports syntax-highlighted editing of code (e.g., JSON, YAML) with validation.
+
+### Basic usage
+
+Follow uniforms-patternfly's [guide](../uniforms-patternfly/README.md#basic-usage) and in addition follow these steps.
+
+#### 1. Install the required packages
+
+Refer to the [step 1](../uniforms-patternfly/README.md#1-install-the-required-packages)
+
+```sh
+npm install @kie-tools/sonataflow-uniforms
+```
+
+#### 2. Define a schema
+
+You can use the `CodeEditorTextField` by simply defining a field as `type: object`, without nested properties, in your JSON Schema:
+
+```ts
+const schema = {
+  type: "object",
+  properties: {
+    customData: {
+      type: "object",
+      title: "Custom JSON",
+      description: "Write your JSON using the editor",
+    },
+  },
+};
+```
+
+#### 3. Create the bridge
+
+Refer to the [step 3](../uniforms-patternfly/README.md#3-then-create-the-bridge).
+
+#### 4. Use the form
+
+In addition to [step 4](../uniforms-patternfly/README.md#4-finally-use-it-in-a-form-) we need to render our form this way:
+
+```tsx
+import * as React from "react";
+import { useState } from "react";
+import { Button } from "@patternfly/react-core";
+import { AutoForm, ErrorsField } from "@kie-tools/uniforms-patternfly";
+import { formSwfAutoFieldValue, SwfAutoFieldProvider } from "@kie-tools/sonataflow-uniforms";
+
+import schema from "./schema";
+
+export default function MyForm() {
+  const [formApiRef, setFormApiRef] = useState<HTMLFormElement>();
+
+  const submitFormData = (): void => {
+    console.log("Submit!");
+    formApiRef!.submit();
+  };
+
+  return (
+    <>
+      <AutoForm schema={bridge} ref={(ref: HTMLFormElement) => setFormApiRef(ref)}>
+        <ErrorsField />
+        <SwfAutoFieldProvider value={formSwfAutoFieldValue} />
+      </AutoForm>
+      <Button type="submit" onClick={submitFormData}>
+        Submit
+      </Button>
+    </>
+  );
+}
+```
+
+### Contributing a New Component
+
+To contribute a new custom component:
+
+1.  Create a new component that accepts standard Uniforms props (`helperText, label, language, onChange, prefix, value`).
+2.  Wrap it using `wrapField()` from `@kie-tools/uniforms-patternfly`.
+3.  Export it using `connectField()` from `uniforms`.
+4.  Update the `AutoFields` logic registered at `src/FormSwfAutoFieldValue.ts`.
+5.  Add it to the `/src` directory and create a test in `/tests`.
+6.  Document the component in the list above.
 
 ---
 
