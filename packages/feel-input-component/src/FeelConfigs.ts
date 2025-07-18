@@ -1260,6 +1260,13 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         ],
       },
       {
+        label: "round down(n)",
+        insertText: "round down($1)",
+        description: "Returns `n` with rounding mode round down. If `n` is null, the result is null.",
+        parameters: [["n", `\`number\``]],
+        examples: ["round down( 5.5) = 5", "round down( -5.5) = -5"],
+      },
+      {
         label: "round half down(n, scale)",
         insertText: "round half down($1, $2)",
         description:
@@ -1274,6 +1281,13 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           "round half down( 1.121, 2 ) = 1.12",
           "round half down( -1.126, 2 ) = -1.13",
         ],
+      },
+      {
+        label: "round half down(n)",
+        insertText: "round half down($1)",
+        description: "Returns `n` with rounding mode round half down. If `n` is null, the result is null.",
+        parameters: [["n", `\`number\``]],
+        examples: ["round half down( 5.5) = 5", "round half down( -5.5) = -5"],
       },
       {
         label: "round half up(n, scale)",
@@ -1292,6 +1306,13 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         ],
       },
       {
+        label: "round half up(n)",
+        insertText: "round half up($1)",
+        description: "Returns `n` with rounding mode round half up. If  `n` is null, the result is null.",
+        parameters: [["n", `\`number\``]],
+        examples: ["round half up(5.5) = 6 ", "round half up( -5.5) = -6"],
+      },
+      {
         label: "round up(n, scale)",
         insertText: "round up($1, $2)",
         description:
@@ -1306,6 +1327,13 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           "round up( 1.121, 2 ) = 1.13",
           "round up( -1.126, 2 ) = -1.13",
         ],
+      },
+      {
+        label: "round up(n)",
+        insertText: "round up($1)",
+        description: "Returns `n` with rounding mode round up. If `n` is null, the result is null.",
+        parameters: [["n", `\`number\``]],
+        examples: ["round up(5.5) = 6", "round up(-5.5) = -6 "],
       },
       {
         label: "sort(list)",
