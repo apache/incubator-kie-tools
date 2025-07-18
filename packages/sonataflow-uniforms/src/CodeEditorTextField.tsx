@@ -66,9 +66,8 @@ function CodeEditorTextField({
 
   const code = useMemo(() => (language === Language.json ? JSON.stringify(value) : value), [value, language]);
 
-  return wrapField(
-    { ...props, help: helperText },
-    <>
+  const renderCodeEditor = useMemo(
+    () => (
       <CodeEditor
         code={code}
         height={height ? `${height}` : "200px"}
@@ -76,6 +75,15 @@ function CodeEditorTextField({
         language={language}
         onChange={onChange}
       />
+      // eslint-disable-next-line react-hooks/exhaustive-deps -- this is needed to prevent CodeEditor to be rendered if `code` or `onChange` are updated.
+    ),
+    [language, disabled, height]
+  );
+
+  return wrapField(
+    { ...props, help: helperText },
+    <>
+      {renderCodeEditor}
       {isInvalid && (
         <div
           style={{
