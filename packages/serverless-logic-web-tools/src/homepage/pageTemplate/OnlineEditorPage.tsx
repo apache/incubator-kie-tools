@@ -58,7 +58,7 @@ export type OnlineEditorPageProps = {
 export function OnlineEditorPage(props: OnlineEditorPageProps) {
   const navigate = useNavigate();
   const routes = useRoutes();
-  const isRouteInSettingsSection = useMatch(routes.settings.home.path({}));
+  const isRouteInSettingsSection = useMatch(`${routes.settings.home.path({})}/*`);
   const [activeQuickStartID, setActiveQuickStartID] = useState("");
   const [allQuickStartStates, setAllQuickStartStates] = useState({});
 
