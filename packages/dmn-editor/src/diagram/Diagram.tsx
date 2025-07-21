@@ -132,6 +132,7 @@ import { EvaluationHighlightsBadge } from "../evaluationHighlights/EvaluationHig
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { computeIndexedDrd } from "../store/computed/computeIndexes";
+import { addOrGetDrd } from "../mutations/addOrGetDrd";
 
 const isFirefox = typeof (window as any).InstallTrigger !== "undefined"; // See https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers
 
@@ -1081,6 +1082,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                     .nodesById.get(dropTargetNode.id)!.data.dmnObject!["@_id"]!,
                   snapGrid: state.diagram.snapGrid,
                   externalModelsByNamespace,
+                  __readonly_decisionServiceHref: dropTargetNode.id,
                 });
               }
             } else {

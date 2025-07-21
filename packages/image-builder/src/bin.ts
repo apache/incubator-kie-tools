@@ -126,6 +126,7 @@ function buildNativeImage(args: ArgsType, imageFullNames: string[]) {
   console.log(`[image-builder] Building native image`);
   const buildNativeCommand = `${args.engine} build
     --progress=plain
+    --load
     ${args.allowHostNetworkAccess ? "--allow network.host --network host" : ""}
     ${args.push ? "--push" : ""}
     ${imageFullNames.map((fullName) => `-t ${fullName}`).join(" ")}
