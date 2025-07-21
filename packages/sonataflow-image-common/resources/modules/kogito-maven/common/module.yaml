@@ -23,16 +23,20 @@ version: "main"
 envs:
   - name: "MAVEN_VERSION"
     description: "The Maven version to setup with this module"
+    value: "3.9.6"
   - name: "MAVEN_HOME"
     value: "/usr/share/maven"
   - name: "MAVEN_CMD"
-    value: "/usr/share/maven/bin/mvnw"
+    value: "/usr/share/maven/bin/mvn"
   - name: "MAVEN_SETTINGS_PATH"
     description: "The location of the settings.xml file"
     value: "${KOGITO_HOME}/.m2/settings.xml"
   - name: "MAVEN_CONTAINER_BUILD_SETTINGS_PATH"
     description: "The location of the settings.xml file during container image build"
     value: "${KOGITO_HOME}/.m2/maven-m2-repo-via-http-settings.xml"
+  - name: "ALTERNATIVE_MAVEN_HOME"
+    description: " (Temporary Fix) Path to the alternative Maven installation until a new base image with Maven 3.9 is available."
+    value: "/usr/share/apache-maven-3.9.6"
   - name: "HTTP_PROXY"
     description: "The location of the http proxy, will be used for both Maven builds and Java runtime."
     example: "http://127.0.0.1:8080"
@@ -47,7 +51,7 @@ envs:
   - name: "HTTP_PROXY_USERNAME"
     description: "Proxy Username"
   - name: "HTTP_PROXY_NONPROXYHOSTS"
-    description: "Non proxy hosts, list of hosts that will ot be proxied."
+    description: "Non proxy hosts, list of hosts that will not be proxied."
     example: "localhost"
   - name: "MAVEN_MIRROR_URL"
     description: "The base URL of a mirror used for retrieving artifacts."
@@ -94,6 +98,16 @@ envs:
   - name: "MAVEN_OFFLINE_MODE"
     description: "When set to true, tells Maven to work in offline mode. See Maven `-o` option for more information."
     example: "true"
+
+packages:
+  manager: microdnf
+  install:
+    - gzip
+
+artifacts:
+  - name: apache-maven-3.9.6-bin.tar.gz
+    url: https://archive.apache.org/dist/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
+    md5: fb90d9f8aa9ac18e8aa0a0842a09239f
 
 execute:
   - script: configure
