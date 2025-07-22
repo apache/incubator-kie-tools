@@ -49,19 +49,21 @@ export function EditorPageDockDrawer({ children }: React.PropsWithChildren<{}>) 
     return [...toggleGroupItems.entries()].map(([key, value]) => value).reverse();
   }, [toggleGroupItems]);
 
-  const { maxSize, minSize, defaultSize } = useMemo(() => {
+  const { maxSize, minSize, defaultSize, increment } = useMemo(() => {
     if (panel === PanelId.DMN_RUNNER_TABLE && panelContentHeight !== undefined) {
       const maxSize = 2 + panelContentHeight + PATTERNFLY_DRAWER_RESIZE_HANDLE_SIZE_IN_PX;
       return {
         maxSize: `${maxSize}px`,
         minSize: `${dmnRunnerTableSizeInPx({ rows: 3 })}px`,
         defaultSize: `${Math.min(maxSize, dmnRunnerTableSizeInPx({ rows: 6 }))}px`,
+        increment: DMN_RUNNER_TABLE_ROW_HEIGHT_IN_PX,
       };
     } else {
       return {
-        maxSize: "50%",
+        maxSize: "600px",
         minSize: "110px",
         defaultSize: "210px",
+        increment: undefined,
       };
     }
   }, [panel, panelContentHeight]);
@@ -77,7 +79,7 @@ export function EditorPageDockDrawer({ children }: React.PropsWithChildren<{}>) 
                 defaultSize={defaultSize}
                 maxSize={maxSize}
                 minSize={minSize}
-                increment={DMN_RUNNER_TABLE_ROW_HEIGHT_IN_PX}
+                increment={increment}
               >
                 <ErrorBoundary ref={errorBoundaryRef} error={error} setHasError={setHasError}>
                   {panelContent}
