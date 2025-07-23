@@ -207,6 +207,12 @@ export const InputDataNode = React.memo(
       [isAlternativeInputDataShape, selected]
     );
 
+    const isSingleNodeSelected = useDmnEditorStore((s) => s.diagram._selectedNodes.length === 1);
+    const showPanels = useMemo(() => {
+      // return (isSingleNodeSelected && selected) || shouldActLikeHovered;
+      return shouldActLikeHovered;
+    }, [shouldActLikeHovered]);
+
     return (
       <>
         {refactorConfirmationDialog}
@@ -250,10 +256,10 @@ export const InputDataNode = React.memo(
           data-nodelabel={inputData["@_name"]}
         >
           <div className={`kie-dmn-editor--node `}>
-            <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
+            <InfoNodePanel isVisible={!isTargeted && showPanels} />
             <OutgoingStuffNodePanel
               nodeHref={id}
-              isVisible={!settings.isReadOnly && !isTargeted && shouldActLikeHovered}
+              isVisible={!settings.isReadOnly && !isTargeted && showPanels}
               nodeTypes={outgoingStructure[NODE_TYPES.inputData].nodes}
               edgeTypes={outgoingStructure[NODE_TYPES.inputData].edges}
             />
@@ -275,7 +281,7 @@ export const InputDataNode = React.memo(
                 fontCssProperties={fontCssProperties}
               />
             )}
-            {shouldActLikeHovered && !settings.isReadOnly && (
+            {showPanels && !settings.isReadOnly && (
               <NodeResizerHandle
                 nodeType={type as typeof NODE_TYPES.inputData}
                 snapGrid={snapGrid}
@@ -286,7 +292,7 @@ export const InputDataNode = React.memo(
               />
             )}
             <DataTypeNodePanel
-              isVisible={!isTargeted && shouldActLikeHovered}
+              isVisible={!isTargeted && showPanels}
               isReadOnly={settings.isReadOnly}
               variable={inputData.variable}
               dmnObjectNamespace={dmnObjectNamespace}
@@ -413,6 +419,12 @@ export const DecisionNode = React.memo(
       [decision, evaluationResultsByNodeId, isEvaluationHighlightsEnabled]
     );
 
+    const isSingleNodeSelected = useDmnEditorStore((s) => s.diagram._selectedNodes.length === 1);
+    const showPanels = useMemo(() => {
+      // return (isSingleNodeSelected && selected) || shouldActLikeHovered;
+      return shouldActLikeHovered;
+    }, [shouldActLikeHovered]);
+
     return (
       <>
         {refactorConfirmationDialog}
@@ -438,13 +450,11 @@ export const DecisionNode = React.memo(
           data-nodehref={id}
           data-nodelabel={decision["@_name"]}
         >
-          <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
-          {!isExternal && (
-            <EditExpressionNodePanel isVisible={!isTargeted && shouldActLikeHovered} id={decision["@_id"]!} />
-          )}
+          <InfoNodePanel isVisible={!isTargeted && showPanels} />
+          {!isExternal && <EditExpressionNodePanel isVisible={!isTargeted && showPanels} id={decision["@_id"]!} />}
           <OutgoingStuffNodePanel
             nodeHref={id}
-            isVisible={!settings.isReadOnly && !isTargeted && shouldActLikeHovered}
+            isVisible={!settings.isReadOnly && !isTargeted && showPanels}
             nodeTypes={outgoingStructure[NODE_TYPES.decision].nodes}
             edgeTypes={outgoingStructure[NODE_TYPES.decision].edges}
           />
@@ -461,7 +471,7 @@ export const DecisionNode = React.memo(
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
           />
-          {shouldActLikeHovered && !settings.isReadOnly && (
+          {showPanels && !settings.isReadOnly && (
             <NodeResizerHandle
               nodeType={type as typeof NODE_TYPES.decision}
               snapGrid={snapGrid}
@@ -471,7 +481,7 @@ export const DecisionNode = React.memo(
             />
           )}
           <DataTypeNodePanel
-            isVisible={!isTargeted && shouldActLikeHovered}
+            isVisible={!isTargeted && showPanels}
             isReadOnly={settings.isReadOnly}
             variable={decision.variable}
             dmnObjectNamespace={dmnObjectNamespace}
@@ -547,6 +557,12 @@ export const BkmNode = React.memo(
       isEnabled: enableCustomNodeStyles,
     });
 
+    const isSingleNodeSelected = useDmnEditorStore((s) => s.diagram._selectedNodes.length === 1);
+    const showPanels = useMemo(() => {
+      // return (isSingleNodeSelected && selected) || shouldActLikeHovered;
+      return shouldActLikeHovered;
+    }, [shouldActLikeHovered]);
+
     return (
       <>
         {refactorConfirmationDialog}
@@ -573,11 +589,11 @@ export const BkmNode = React.memo(
           data-nodehref={id}
           data-nodelabel={bkm["@_name"]}
         >
-          <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
-          {!isExternal && <EditExpressionNodePanel isVisible={!isTargeted && shouldActLikeHovered} id={bkm["@_id"]!} />}
+          <InfoNodePanel isVisible={!isTargeted && showPanels} />
+          {!isExternal && <EditExpressionNodePanel isVisible={!isTargeted && showPanels} id={bkm["@_id"]!} />}
           <OutgoingStuffNodePanel
             nodeHref={id}
-            isVisible={!settings.isReadOnly && !isTargeted && shouldActLikeHovered}
+            isVisible={!settings.isReadOnly && !isTargeted && showPanels}
             nodeTypes={outgoingStructure[NODE_TYPES.bkm].nodes}
             edgeTypes={outgoingStructure[NODE_TYPES.bkm].edges}
           />
@@ -594,7 +610,7 @@ export const BkmNode = React.memo(
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
           />
-          {shouldActLikeHovered && !settings.isReadOnly && (
+          {showPanels && !settings.isReadOnly && (
             <NodeResizerHandle
               nodeType={type as typeof NODE_TYPES.bkm}
               snapGrid={snapGrid}
@@ -604,7 +620,7 @@ export const BkmNode = React.memo(
             />
           )}
           <DataTypeNodePanel
-            isVisible={!isTargeted && shouldActLikeHovered}
+            isVisible={!isTargeted && showPanels}
             isReadOnly={settings.isReadOnly}
             variable={bkm.variable}
             dmnObjectNamespace={dmnObjectNamespace}
@@ -663,6 +679,12 @@ export const KnowledgeSourceNode = React.memo(
       isEnabled: enableCustomNodeStyles,
     });
 
+    const isSingleNodeSelected = useDmnEditorStore((s) => s.diagram._selectedNodes.length === 1);
+    const showPanels = useMemo(() => {
+      // return (isSingleNodeSelected && selected) || shouldActLikeHovered;
+      return shouldActLikeHovered;
+    }, [shouldActLikeHovered]);
+
     return (
       <>
         {refactorConfirmationDialog}
@@ -689,10 +711,10 @@ export const KnowledgeSourceNode = React.memo(
           data-nodehref={id}
           data-nodelabel={knowledgeSource["@_name"]}
         >
-          <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
+          <InfoNodePanel isVisible={!isTargeted && showPanels} />
           <OutgoingStuffNodePanel
             nodeHref={id}
-            isVisible={!settings.isReadOnly && !isTargeted && shouldActLikeHovered}
+            isVisible={!settings.isReadOnly && !isTargeted && showPanels}
             nodeTypes={outgoingStructure[NODE_TYPES.knowledgeSource].nodes}
             edgeTypes={outgoingStructure[NODE_TYPES.knowledgeSource].edges}
           />
@@ -709,7 +731,7 @@ export const KnowledgeSourceNode = React.memo(
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
           />
-          {shouldActLikeHovered && !settings.isReadOnly && (
+          {showPanels && !settings.isReadOnly && (
             <NodeResizerHandle
               nodeType={type as typeof NODE_TYPES.knowledgeSource}
               snapGrid={snapGrid}
@@ -774,6 +796,12 @@ export const TextAnnotationNode = React.memo(
       isEnabled: enableCustomNodeStyles,
     });
 
+    const isSingleNodeSelected = useDmnEditorStore((s) => s.diagram._selectedNodes.length === 1);
+    const showPanels = useMemo(() => {
+      // return (isSingleNodeSelected && selected) || shouldActLikeHovered;
+      return shouldActLikeHovered;
+    }, [shouldActLikeHovered]);
+
     return (
       <>
         <svg className={`kie-dmn-editor--node-shape ${className}`}>
@@ -798,10 +826,10 @@ export const TextAnnotationNode = React.memo(
           data-nodehref={id}
           data-nodelabel={textAnnotation["@_label"] ?? textAnnotation.text?.__$$text}
         >
-          <InfoNodePanel isVisible={!isTargeted && shouldActLikeHovered} />
+          <InfoNodePanel isVisible={!isTargeted && showPanels} />
           <OutgoingStuffNodePanel
             nodeHref={id}
-            isVisible={!settings.isReadOnly && !isTargeted && shouldActLikeHovered}
+            isVisible={!settings.isReadOnly && !isTargeted && showPanels}
             nodeTypes={outgoingStructure[NODE_TYPES.textAnnotation].nodes}
             edgeTypes={outgoingStructure[NODE_TYPES.textAnnotation].edges}
           />
@@ -819,7 +847,7 @@ export const TextAnnotationNode = React.memo(
             shouldCommitOnBlur={true}
             fontCssProperties={fontCssProperties}
           />
-          {shouldActLikeHovered && !settings.isReadOnly && (
+          {showPanels && !settings.isReadOnly && (
             <NodeResizerHandle
               nodeType={type as typeof NODE_TYPES.textAnnotation}
               snapGrid={snapGrid}

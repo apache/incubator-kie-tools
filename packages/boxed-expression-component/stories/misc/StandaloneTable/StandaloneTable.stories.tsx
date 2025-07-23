@@ -34,11 +34,11 @@ export default meta;
 type Story = StoryObj<typeof StandaloneBeeTable>;
 
 function StandaloneBeeTableWrapper(props: BeeTableProps<object>) {
-  const ref = useRef(null);
+  const emptyRef = useRef(null);
 
   return (
-    <div ref={ref}>
-      <StandaloneBeeTable {...props} scrollableParentRef={ref} />
+    <div>
+      <StandaloneBeeTable {...props} scrollableParentRef={emptyRef} />
     </div>
   );
 }

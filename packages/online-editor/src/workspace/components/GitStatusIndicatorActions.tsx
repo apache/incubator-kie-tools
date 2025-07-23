@@ -45,6 +45,7 @@ import { listDeletedFiles } from "./WorkspaceStatusIndicator";
 import { FileLabel } from "../../filesList/FileLabel";
 import CaretDownIcon from "@patternfly/react-icons/dist/js/icons/caret-down-icon";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
+import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 
 export type GitStatusProps = {
   workspaceDescriptor: WorkspaceDescriptor;
@@ -227,6 +228,7 @@ export const GitStatusIndicatorActions = (
           <br />
           {workspaceFilesRendered}
           <br />
+          <Divider />
         </>
       ),
       confirmButtonText: i18n.gitStatusIndicatorActions[id].confirmButtonText,
@@ -261,14 +263,7 @@ export const GitStatusIndicatorActions = (
       }
       description={
         <Flex direction={{ default: "column" }}>
-          <FlexItem>
-            <TextContent>
-              <Text component="p">
-                {`There are local changes to the following files in`}
-                <i>{`'${props.gitStatusProps.workspaceDescriptor.name}'`}</i>
-              </Text>
-            </TextContent>
-          </FlexItem>
+          <Divider style={{ marginBottom: "1.5rem" }} />
           {workspaceFilesRendered}
         </Flex>
       }
@@ -455,6 +450,7 @@ const ActionsAlert = (props: {
       actionLinks={
         <>
           <AlertActionLink
+            className={"kie-tools--masthead-hoverable"}
             onClick={(ev) => {
               props.onConfirm();
               ev.stopPropagation();
@@ -462,7 +458,7 @@ const ActionsAlert = (props: {
             }}
             title={props.confirmButtonText}
             variant={"link"}
-            style={{ color: "var(--pf-v5-global--danger-color--200)", fontWeight: "bold" }}
+            style={{ color: "var(--pf-v5-global--danger-color--200)", fontWeight: "bold", padding: "8px" }}
           >
             {props.confirmButtonText}
           </AlertActionLink>

@@ -17,28 +17,16 @@
  * under the License. 
  */
 
-.table-context-menu {
-  min-width: 250px;
-  padding: 16px 0;
-}
-
-.table-context-menu .no-allowed-actions-in-group {
+.context-menu-container .no-allowed-actions-in-group {
   display: none;
 }
 
-.table-context-menu .pf-v5-c-menu__group-title {
-  text-align: left;
-  font-size: small;
-  padding-left: var(--pf-v5-c-menu__group-title--PaddingLeft);
-  margin-bottom: 4px;
-  font-weight: var(--pf-v5-c-menu__group-title--FontWeight);
-  color: var(--pf-v5-c-menu__group-title--Color);
-}
-
-.table-context-menu .pf-v5-c-menu__item {
-  color: var(--pf-v5-c-menu__item--Color);
-}
-
-.table-context-menu .pf-v5-c-number-input .pf-v5-c-form-control {
-  text-align: center;
+.context-menu-container {
+  position: fixed;
+  z-index: 10000;
+  font-style: initial;
+  border-radius: 8px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  box-shadow: 0 0 20px 0 lightgray;
 }

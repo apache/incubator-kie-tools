@@ -561,7 +561,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
               <FlexItem>
                 <ResponsiveDropdown
                   isPlain={true}
-                  position={"left"}
+                  position={"right"}
                   isOpen={isNewFileDropdownMenuOpen}
                   onClose={() => setNewFileDropdownMenuOpen(false)}
                   title={"Add file"}

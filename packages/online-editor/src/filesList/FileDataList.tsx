@@ -179,6 +179,7 @@ export function FileDataList(props: {
       onDeletedWorkspaceFile={props.onDeletedWorkspaceFile}
     />
   );
+
   return (
     <DataList
       aria-label="file-data-list"
