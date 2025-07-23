@@ -166,7 +166,6 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
       )}
 
       <div
-        ref={emptyRef}
         onKeyDown={(e) => {
           // Prevent keys from propagating to Storybook
           console.log("wrapper stopped");
@@ -184,7 +183,7 @@ export function BoxedExpressionEditorStory(props?: Partial<BoxedExpressionEditor
           evaluationHitsCountById={props?.evaluationHitsCountById ?? args?.evaluationHitsCountById}
           onWidthsChange={onWidthsChange}
           dataTypes={props?.dataTypes ?? args?.dataTypes ?? dataTypes}
-          scrollableParentRef={props?.scrollableParentRef ?? args?.scrollableParentRef ?? emptyRef}
+          scrollableParentRef={emptyRef}
           beeGwtService={props?.beeGwtService ?? args?.beeGwtService ?? beeGwtService}
           pmmlDocuments={props?.pmmlDocuments ?? args?.pmmlDocuments ?? pmmlDocuments}
           isReadOnly={props?.isReadOnly ?? args?.isReadOnly ?? false}

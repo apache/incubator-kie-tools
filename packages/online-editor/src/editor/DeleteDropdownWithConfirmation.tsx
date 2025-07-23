@@ -42,6 +42,7 @@ export function DeleteDropdownWithConfirmation(
       isOpen={isDeleteDropdownOpen}
       isPlain={true}
       position={DropdownPosition.right}
+      menuAppendTo={document.body}
       toggle={
         <ResponsiveDropdownToggle
           style={{ color: "unset" }}
@@ -55,7 +56,13 @@ export function DeleteDropdownWithConfirmation(
       }
       dropdownItems={[
         <DropdownGroup label={"Are you sure?"} key="confirm-delete">
-          <DropdownItem tabIndex={1} onClick={props.onDelete}>
+          <DropdownItem
+            tabIndex={1}
+            onClick={(e) => {
+              e.stopPropagation();
+              props.onDelete();
+            }}
+          >
             {props.item}
           </DropdownItem>
         </DropdownGroup>,

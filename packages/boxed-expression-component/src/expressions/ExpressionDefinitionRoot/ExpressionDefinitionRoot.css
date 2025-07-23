@@ -21,12 +21,8 @@
   display: inline-block;
   border: 2px solid var(--pf-v5-global--palette--black-300);
   margin-top: 5px;
-}
-
-.expression-container .context-menu-container {
-  position: fixed;
-  z-index: 10000;
-  font-style: initial;
+  box-shadow: 0 20px 20px 0 lightgray;
+  border-radius: 8px;
 }
 
 .expression-container .expression-container-box,

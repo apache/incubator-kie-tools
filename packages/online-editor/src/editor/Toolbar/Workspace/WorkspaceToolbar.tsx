@@ -134,7 +134,7 @@ export function WorkspaceToolbar(props: Props) {
         <AcceleratorIndicator workspaceId={props.workspace.descriptor.workspaceId} />
       </FlexItem>
       <FlexItem
-        style={{ minWidth: 0, padding: "0 8px 0 8px", flexShrink: 0 }}
+        style={{ minWidth: 0, padding: "0 16px 0 16px", flexShrink: 0 }}
         className={"kie-tools--masthead-hoverable"}
       >
         <FolderIcon style={{ marginRight: "8px", verticalAlign: "middle" }} />

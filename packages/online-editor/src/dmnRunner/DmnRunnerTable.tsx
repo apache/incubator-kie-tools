@@ -38,15 +38,21 @@ import { useSettings } from "../settings/SettingsContext";
 import { useEditorDockContext } from "../editor/EditorPageDockContextProvider";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 
-export function DmnRunnerTable() {
+export const DMN_RUNNER_TABLE_ROW_HEIGHT_IN_PX = 62;
+
+export function DmnRunnerTable({
+  setPanelContentHeight,
+}: {
+  setPanelContentHeight: React.Dispatch<React.SetStateAction<number | undefined>>;
+}) {
   // STATEs
   const [dmnRunnerTableError, setDmnRunnerTableError] = useState<boolean>(false);
 
   // REFs
   const [inputsContainerRef, setInputsContainerRef] = useState<HTMLDivElement | null>(null);
   const outputsContainerRef = useRef<HTMLDivElement>(null);
-  const inputsScrollableElementRef = useRef<{ current: HTMLDivElement | null }>({ current: null });
-  const outputsScrollableElementRef = useRef<{ current: HTMLDivElement | null }>({ current: null });
+  const inputsScrollableElementRef = useRef<{ current: any }>({ current: document.body });
+  const outputsScrollableElementRef = useRef<{ current: any }>({ current: document.body });
 
   // CUSTOM HOOKs
   const { i18n } = useOnlineI18n();
@@ -96,14 +102,6 @@ export function DmnRunnerTable() {
     [setDmnRunnerMode, setDmnRunnerContextProviderState]
   );
 
-  useEffect(() => {
-    inputsScrollableElementRef.current.current =
-      document.querySelector(".kie-tools--dmn-runner-table--drawer")?.querySelector(".pf-v5-c-drawer__content") ?? null;
-    outputsScrollableElementRef.current.current =
-      document.querySelector(".kie-tools--dmn-runner-table--drawer")?.querySelector(".pf-v5-c-drawer__panel-main") ??
-      null;
-  }, []);
-
   const setWidth = useCallback(
     (newWidth: number, fieldName: string) => {
       setDmnRunnerConfigInputs((previousDmnRunnerConfigInputs) => {
@@ -128,6 +126,10 @@ export function DmnRunnerTable() {
     (envelopeServer?.envelopeApi as MessageBusClientApi<NewDmnEditorEnvelopeApi>).shared
       .newDmnEditor_openedBoxedExpressionEditorNodeId
   );
+
+  useEffect(() => {
+    setPanelContentHeight((inputs.length + 2) /* 2 header rows */ * DMN_RUNNER_TABLE_ROW_HEIGHT_IN_PX);
+  }, [inputs, setPanelContentHeight]);
 
   return (
     <>
@@ -251,7 +253,7 @@ function useAnchoredUnitablesDrawerPanel(args: {
         return;
       }
 
-      const children = Object.values(args.inputsContainerRef.childNodes?.[0]?.childNodes);
+      const children = Object.values(args.inputsContainerRef.childNodes?.[1]?.childNodes);
       const newWidth = children?.reduce((acc, child: HTMLElement) => acc + child.offsetWidth, 1) ?? 0;
       const newDefaultSize = `calc(100vw - ${newWidth + scrollbarWidth}px)`;
 
@@ -274,7 +276,7 @@ function useAnchoredUnitablesDrawerPanel(args: {
       return { didRefresh: false };
     }
 
-    const children = Object.values(args.inputsContainerRef.childNodes?.[0]?.childNodes);
+    const children = Object.values(args.inputsContainerRef.childNodes?.[1]?.childNodes);
     const newWidth = children?.reduce((acc, child: HTMLElement) => acc + child.offsetWidth, 1) ?? 0;
     const newDefaultSize = `calc(100vw - ${newWidth + scrollbarWidth}px)`;
 
