@@ -33,9 +33,8 @@ import { RebootingIcon } from "@patternfly/react-icons/dist/js/icons/rebooting-i
 import { ResourcesAlmostEmptyIcon } from "@patternfly/react-icons/dist/js/icons/resources-almost-empty-icon";
 import { ResourcesFullIcon } from "@patternfly/react-icons/dist/js/icons/resources-full-icon";
 import * as React from "react";
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Action, BoxedExpression, Normalized } from "../../api";
-import { useCustomContextMenuHandler } from "../../contextMenu";
 import { MenuItemWithHelp } from "../../contextMenu/MenuWithHelp";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useNestedExpressionContainer } from "../../resizing/NestedExpressionContainerContext";
@@ -60,6 +59,7 @@ import { IteratorExpressionComponent } from "../IteratorExpression/IteratorExpre
 import { FilterExpressionComponent } from "../FilterExpression/FilterExpressionComponent";
 import FilterIcon from "@patternfly/react-icons/dist/esm/icons/filter-icon";
 import { Icon } from "@patternfly/react-core/dist/js";
+import { ContextMenuRef, ContextMenu } from "../../contextMenu";
 
 export interface ExpressionDefinitionLogicTypeSelectorProps {
   /** Expression properties */
@@ -94,26 +94,7 @@ export function ExpressionDefinitionLogicTypeSelector({
     [isNested]
   );
   const { i18n } = useBoxedExpressionEditorI18n();
-  const { setCurrentlyOpenContextMenu, widthsById, scrollableParentRef, isReadOnly } = useBoxedExpressionEditor();
-  const [isOpen, setOpen] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-
-  const showSelectExpression = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      setPosition({
-        x:
-          e.pageX +
-          (scrollableParentRef.current?.offsetLeft ?? 0) -
-          (scrollableParentRef.current?.getBoundingClientRect().left ?? 0),
-        y:
-          e.pageY +
-          (scrollableParentRef.current?.offsetTop ?? 0) -
-          (scrollableParentRef.current?.getBoundingClientRect().top ?? 0),
-      });
-      setOpen(true);
-    },
-    [scrollableParentRef]
-  );
+  const { setCurrentlyOpenContextMenu, widthsById, isReadOnly } = useBoxedExpressionEditor();
 
   const selectableLogicTypes = useMemo<Array<BoxedExpression["__$$element"]>>(
     () => [
@@ -132,8 +113,6 @@ export function ExpressionDefinitionLogicTypeSelector({
     ],
     [hideDmn14BoxedExpressions, isNested]
   );
-
-  const selectLogicTypeContainer = useRef<HTMLDivElement>(null);
 
   const renderExpression = useMemo(() => {
     const logicType = expression?.__$$element;
@@ -179,7 +158,6 @@ export function ExpressionDefinitionLogicTypeSelector({
       }
       setCurrentlyOpenContextMenu(undefined);
       setVisibleHelp("");
-      setOpen(false);
       mouseEvent.stopPropagation();
     },
     [onLogicTypeSelected, setCurrentlyOpenContextMenu]
@@ -200,36 +178,22 @@ export function ExpressionDefinitionLogicTypeSelector({
   }, [expression]);
 
   const resetContextMenuContainerRef = React.useRef<HTMLDivElement>(null);
-  const {
-    xPos: resetContextMenuXPos,
-    yPos: resetContextMenuYPos,
-    isOpen: isResetContextMenuOpen,
-  } = useCustomContextMenuHandler(resetContextMenuContainerRef);
-
-  const shouldRenderResetContextMenu = useMemo(() => {
-    return isResetContextMenuOpen && expression && isResetSupported;
-  }, [isResetContextMenuOpen, isResetSupported, expression]);
-
   const selectExpressionMenuContainerRef = React.useRef<HTMLDivElement>(null);
-
-  const shouldRenderSelectExpressionContextMenu = useMemo(() => {
-    return !isReadOnly && isOpen && !expression;
-  }, [isReadOnly, isOpen, expression]);
-
-  const hide = useCallback((e: MouseEvent) => {
-    if (e.target != selectExpressionMenuContainerRef.current) {
-      setOpen(false);
-    }
-  }, []);
+  const contextMenuRef = React.useRef<ContextMenuRef>(null);
 
   useEffect(() => {
-    if (isOpen) {
-      document.addEventListener("click", hide);
+    function onContextMenu(e: MouseEvent) {
+      e.stopPropagation();
+      e.preventDefault();
+      setDropdownOpen((prev) => !prev);
     }
+
+    const a = resetContextMenuContainerRef?.current;
+    a?.addEventListener("contextmenu", onContextMenu);
     return () => {
-      document.removeEventListener("click", hide);
+      a?.removeEventListener("contextmenu", onContextMenu);
     };
-  }, [hide, isOpen]);
+  }, [expression]);
 
   const logicTypeIcon = useCallback((logicType: BoxedExpression["__$$element"] | undefined) => {
     switch (logicType) {
@@ -358,6 +322,7 @@ export function ExpressionDefinitionLogicTypeSelector({
     if (!expression) {
       return false;
     }
+
     if (!isNested) {
       return true;
     }
@@ -413,62 +378,64 @@ export function ExpressionDefinitionLogicTypeSelector({
     }
   }, []);
 
-  const contextMenuItems = useMemo(() => {
+  const headerMenuItems = useMemo(() => {
     return (
-      <MenuList>
-        {!isReadOnly && isResetSupported && (
-          <>
+      <MenuGroup>
+        <MenuList>
+          {!isReadOnly && isResetSupported && (
+            <>
+              <MenuItem
+                onClick={resetLogicType}
+                icon={
+                  <div style={menuIconContainerStyle}>
+                    <CompressIcon />
+                  </div>
+                }
+              >
+                {i18n.terms.reset}
+              </MenuItem>
+              <Divider style={{ padding: "16px", margin: 0 }} />
+            </>
+          )}
+          <MenuItem
+            onClick={copyExpression}
+            icon={
+              <div style={menuIconContainerStyle}>
+                <CopyIcon />
+              </div>
+            }
+          >
+            {i18n.terms.copy}
+          </MenuItem>
+          {!isReadOnly && isResetSupported && (
             <MenuItem
-              onClick={resetLogicType}
+              onClick={cutExpression}
               icon={
                 <div style={menuIconContainerStyle}>
-                  <CompressIcon />
+                  <CutIcon />
                 </div>
               }
             >
-              {i18n.terms.reset}
+              {i18n.terms.cut}
             </MenuItem>
-            <Divider style={{ padding: "16px", margin: 0 }} />
-          </>
-        )}
-        <MenuItem
-          onClick={copyExpression}
-          icon={
-            <div style={menuIconContainerStyle}>
-              <CopyIcon />
-            </div>
-          }
-        >
-          {i18n.terms.copy}
-        </MenuItem>
-        {!isReadOnly && isResetSupported && (
-          <MenuItem
-            onClick={cutExpression}
-            icon={
-              <div style={menuIconContainerStyle}>
-                <CutIcon />
-              </div>
-            }
-          >
-            {i18n.terms.cut}
-          </MenuItem>
-        )}
+          )}
 
-        {!isReadOnly && (
-          <MenuItem
-            className={pasteExpressionError ? "paste-from-clipboard-error" : ""}
-            description={pasteExpressionError ? "Paste operation was not successful" : ""}
-            onClick={pasteExpression}
-            icon={
-              <div style={menuIconContainerStyle}>
-                <PasteIcon />
-              </div>
-            }
-          >
-            {i18n.terms.paste}
-          </MenuItem>
-        )}
-      </MenuList>
+          {!isReadOnly && (
+            <MenuItem
+              className={pasteExpressionError ? "paste-from-clipboard-error" : ""}
+              description={pasteExpressionError ? "Paste operation was not successful" : ""}
+              onClick={pasteExpression}
+              icon={
+                <div style={menuIconContainerStyle}>
+                  <PasteIcon />
+                </div>
+              }
+            >
+              {i18n.terms.paste}
+            </MenuItem>
+          )}
+        </MenuList>
+      </MenuGroup>
     );
   }, [
     pasteExpressionError,
@@ -484,12 +451,6 @@ export function ExpressionDefinitionLogicTypeSelector({
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
-  useEffect(() => {
-    if (isResetContextMenuOpen) {
-      setDropdownOpen(false);
-    }
-  }, [isResetContextMenuOpen]);
-
   const nestedExpressionContainer = useNestedExpressionContainer();
   const [visibleHelp, setVisibleHelp] = React.useState<string>("");
 
@@ -497,166 +458,12 @@ export function ExpressionDefinitionLogicTypeSelector({
     setVisibleHelp((previousHelp) => (previousHelp !== help ? help : ""));
   }, []);
 
-  useLayoutEffect(() => {
-    if (selectLogicTypeContainer.current) {
-      const boundingClientRect = selectLogicTypeContainer.current?.getBoundingClientRect();
-      if (boundingClientRect) {
-        const yPos = boundingClientRect.top;
-        const availableHeight = document.documentElement.clientHeight;
-        if (DEFAULT_LOGIC_TYPE_SELECTOR_HEIGHT + yPos > availableHeight) {
-          const offset =
-            DEFAULT_LOGIC_TYPE_SELECTOR_HEIGHT + yPos - availableHeight - LOGIC_TYPE_SELECTOR_BOTTOM_MARGIN;
-          selectLogicTypeContainer.current.style.height = DEFAULT_LOGIC_TYPE_SELECTOR_HEIGHT - offset + "px";
-          selectLogicTypeContainer.current.style.overflowY = "scroll";
-        } else {
-          selectLogicTypeContainer.current.style.height = DEFAULT_LOGIC_TYPE_SELECTOR_HEIGHT + "px";
-          selectLogicTypeContainer.current.style.overflowY = "visible";
-        }
-      } else {
-        selectLogicTypeContainer.current.style.height = DEFAULT_LOGIC_TYPE_SELECTOR_HEIGHT + "px";
-        selectLogicTypeContainer.current.style.overflowY = "visible";
-      }
-    }
-  });
-
-  const getRenderExpressionElement = useCallback(() => {
-    return (
-      <>
-        {showExpressionHeader && expression && (
-          <div className={"logic-type-selected-header"} data-testid={"kie-tools--bee--logic-type-selected-header"}>
-            <Dropdown
-              isPlain={true}
-              isOpen={isDropdownOpen}
-              onKeyDown={(e) => {
-                if (NavigationKeysUtils.isEsc(e.key)) {
-                  setDropdownOpen(false);
-                }
-              }}
-              toggle={
-                <DropdownToggle
-                  data-testid={"kie-tools--bee--expression-header-dropdown"}
-                  icon={
-                    <Icon style={{ marginRight: "5px" }}>
-                      <>{logicTypeIcon(expression.__$$element)}</>
-                    </Icon>
-                  }
-                  style={{ padding: 0 }}
-                  onToggle={(_event, val) => setDropdownOpen(val)}
-                  tabIndex={-1}
-                >
-                  {getLogicTypeLabel(expression?.__$$element)}
-                  {expression.__$$element === "functionDefinition" && ` (${expression["@_kind"]})`}
-                </DropdownToggle>
-              }
-            >
-              <Menu className="table-context-menu" style={{ width: "200px", fontSize: "larger" }}>
-                <>{contextMenuItems}</>
-              </Menu>
-            </Dropdown>
-          </div>
-        )}
-        {renderExpression}
-      </>
-    );
-  }, [contextMenuItems, expression, isDropdownOpen, logicTypeIcon, renderExpression, showExpressionHeader]);
-
-  const getSelectExpressionElement = useCallback(() => {
-    return (
-      <div
-        className="context-menu-container"
-        style={{
-          top: position.y,
-          left: position.x,
-          opacity: 1,
-          width: "200px",
-        }}
-        data-testid={"kie-tools--bee--context-menu-container"}
-        ref={selectLogicTypeContainer}
-      >
-        <Menu onSelect={selectLogicType}>
-          <MenuGroup className="menu-with-help" style={{ paddingBottom: "16px" }}>
-            <MenuList>
-              {selectableLogicTypes.map((key) => {
-                const label = getLogicTypeLabel(key);
-                return (
-                  <MenuItemWithHelp
-                    key={key}
-                    menuItemKey={key}
-                    menuItemHelp={logicTypeHelp(key)}
-                    menuItemIcon={logicTypeIcon(key)}
-                    menuItemCustomText={label}
-                    menuItemIconStyle={menuIconContainerStyle}
-                    setVisibleHelp={toggleVisibleHelp}
-                    visibleHelp={visibleHelp}
-                  />
-                );
-              })}
-              <Divider style={{ padding: "16px" }} />
-              <MenuItem
-                itemId={PASTE_MENU_ITEM_ID}
-                className={pasteExpressionError ? "paste-from-clipboard-error" : ""}
-                description={pasteExpressionError ? "Paste operation was not successful" : ""}
-                onClick={pasteExpression}
-                icon={
-                  <div style={menuIconContainerStyle}>
-                    <PasteIcon />
-                  </div>
-                }
-              >
-                {i18n.terms.paste}
-              </MenuItem>
-            </MenuList>
-          </MenuGroup>
-        </Menu>
-      </div>
-    );
-  }, [
-    i18n.terms.paste,
-    logicTypeHelp,
-    logicTypeIcon,
-    menuIconContainerStyle,
-    pasteExpression,
-    pasteExpressionError,
-    position.x,
-    position.y,
-    selectLogicType,
-    selectableLogicTypes,
-    toggleVisibleHelp,
-    visibleHelp,
-  ]);
-
-  const getResetExpressionElement = useCallback(() => {
-    return (
-      <div
-        className="context-menu-container"
-        style={{
-          top: resetContextMenuYPos,
-          left: resetContextMenuXPos,
-          opacity: 1,
-          minWidth: "150px",
-        }}
-        data-testid={"kie-tools--bee--context-menu-container"}
-        onKeyDown={(e) => {
-          if (NavigationKeysUtils.isEsc(e.key)) {
-            setDropdownOpen(false);
-          }
-        }}
-      >
-        <Menu className="table-context-menu">
-          <MenuGroup label={`${getLogicTypeLabel(expression?.__$$element).toLocaleUpperCase()} EXPRESSION`}></MenuGroup>
-          {contextMenuItems}
-        </Menu>
-      </div>
-    );
-  }, [contextMenuItems, expression?.__$$element, resetContextMenuXPos, resetContextMenuYPos]);
-
   return (
     <>
-      {!expression && (
+      {(!expression && (
         <div
           className={cssClass}
           ref={selectExpressionMenuContainerRef}
-          onClick={showSelectExpression}
           data-testid={"kie-tools--bee--select-expression"}
           style={
             !expression && nestedExpressionContainer.resizingWidth
@@ -665,11 +472,49 @@ export function ExpressionDefinitionLogicTypeSelector({
           }
         >
           {i18n.selectExpression}
-          {!expression && shouldRenderSelectExpressionContextMenu && getSelectExpressionElement()}
+          <ContextMenu
+            domEventTargetRef={selectExpressionMenuContainerRef}
+            triggerOn={"click"}
+            forwardRef={contextMenuRef}
+          >
+            <Menu onSelect={selectLogicType}>
+              <MenuGroup className="menu-with-help">
+                <MenuList>
+                  {selectableLogicTypes.map((key) => {
+                    const label = getLogicTypeLabel(key);
+                    return (
+                      <MenuItemWithHelp
+                        key={key}
+                        menuItemKey={key}
+                        menuItemHelp={logicTypeHelp(key)}
+                        menuItemIcon={logicTypeIcon(key)}
+                        menuItemCustomText={label}
+                        menuItemIconStyle={menuIconContainerStyle}
+                        setVisibleHelp={toggleVisibleHelp}
+                        visibleHelp={visibleHelp}
+                      />
+                    );
+                  })}
+                  <Divider style={{ padding: "16px" }} />
+                  <MenuItem
+                    itemId={PASTE_MENU_ITEM_ID}
+                    className={pasteExpressionError ? "paste-from-clipboard-error" : ""}
+                    description={pasteExpressionError ? "Paste operation was not successful" : ""}
+                    onClick={pasteExpression}
+                    icon={
+                      <div style={menuIconContainerStyle}>
+                        <PasteIcon />
+                      </div>
+                    }
+                  >
+                    {i18n.terms.paste}
+                  </MenuItem>
+                </MenuList>
+              </MenuGroup>
+            </Menu>
+          </ContextMenu>
         </div>
-      )}
-
-      {expression && (
+      )) || (
         <div
           className={cssClass}
           ref={resetContextMenuContainerRef}
@@ -679,10 +524,63 @@ export function ExpressionDefinitionLogicTypeSelector({
               : {}
           }
         >
-          {expression ? getRenderExpressionElement() : i18n.selectExpression}
+          {expression ? (
+            <>
+              {showExpressionHeader && expression && (
+                <div
+                  className={"logic-type-selected-header"}
+                  data-testid={"kie-tools--bee--logic-type-selected-header"}
+                >
+                  <Dropdown
+                    isPlain={true}
+                    isOpen={isDropdownOpen}
+                    onKeyDown={(e) => {
+                      if (NavigationKeysUtils.isEsc(e.key)) {
+                        setDropdownOpen(false);
+                      }
+                    }}
+                    style={{ width: "100%" }}
+                    toggle={
+                      <DropdownToggle
+                        data-testid={"kie-tools--bee--expression-header-dropdown"}
+                        icon={
+                          <Icon style={{ marginRight: "14px", marginLeft: "8px" }}>
+                            <>{logicTypeIcon(expression.__$$element)}</>
+                          </Icon>
+                        }
+                        onToggle={(_event, val) => setDropdownOpen(val)}
+                        tabIndex={-1}
+                        style={{ padding: 0, fontSize: "0.8em" }}
+                      >
+                        {getLogicTypeLabel(expression?.__$$element)}
+                        {expression.__$$element === "functionDefinition" && ` (${expression["@_kind"]})`}
+                      </DropdownToggle>
+                    }
+                  >
+                    <Menu>
+                      <>{headerMenuItems}</>
+                    </Menu>
+                  </Dropdown>
+                </div>
+              )}
+              {renderExpression}
+            </>
+          ) : (
+            i18n.selectExpression
+          )}
         </div>
       )}
-      {shouldRenderResetContextMenu && getResetExpressionElement()}
+
+      {!showExpressionHeader && (
+        <ContextMenu domEventTargetRef={resetContextMenuContainerRef} triggerOn={"contextmenu"}>
+          <Menu>
+            <MenuGroup
+              label={`${getLogicTypeLabel(expression?.__$$element).toLocaleUpperCase()} EXPRESSION`}
+            ></MenuGroup>
+            {headerMenuItems}
+          </Menu>
+        </ContextMenu>
+      )}
     </>
   );
 }

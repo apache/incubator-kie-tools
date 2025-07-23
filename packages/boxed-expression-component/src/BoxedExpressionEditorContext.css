@@ -55,34 +55,8 @@
 .boxed-expression-provider textarea,
 .boxed-expression-provider label {
   font-family: inherit;
-  font-size: 100%;
   line-height: var(--pf-v5-global--LineHeight--md);
   color: var(--pf-v5-global--Color--100);
-}
-
-.boxed-expression-provider blockquote,
-.boxed-expression-provider dd,
-.boxed-expression-provider dl,
-.boxed-expression-provider dt,
-.boxed-expression-provider fieldset,
-.boxed-expression-provider figure,
-.boxed-expression-provider h1,
-.boxed-expression-provider h2,
-.boxed-expression-provider h3,
-.boxed-expression-provider h4,
-.boxed-expression-provider h5,
-.boxed-expression-provider h6,
-.boxed-expression-provider hr,
-.boxed-expression-provider iframe,
-.boxed-expression-provider legend,
-.boxed-expression-provider li,
-.boxed-expression-provider ol,
-.boxed-expression-provider p,
-.boxed-expression-provider pre,
-.boxed-expression-provider textarea,
-.boxed-expression-provider ul {
-  padding: 0;
-  margin: 0;
 }
 
 .expression-container .expression-info .expression-info-name {

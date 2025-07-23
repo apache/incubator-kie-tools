@@ -455,14 +455,16 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
           alignItems={{ default: "alignItemsCenter" }}
           direction={{ default: "row" }}
         >
-          <FlexItem>
+          <FlexItem
+            style={{ borderRadius: 99999 }}
+            onClick={() => {
+              dmnEditorStoreApi.setState((state) => {
+                state.dispatch(state).boxedExpressionEditor.close();
+              });
+            }}
+          >
             <Label
               className={"kie-dmn-editor--boxed-expression-back"}
-              onClick={() => {
-                dmnEditorStoreApi.setState((state) => {
-                  state.dispatch(state).boxedExpressionEditor.close();
-                });
-              }}
               icon={<ArrowRightIcon style={{ transform: "scale(-1, -1)", marginRight: "8px", marginTop: "4px" }} />}
             >
               <p>Back to Diagram</p>
