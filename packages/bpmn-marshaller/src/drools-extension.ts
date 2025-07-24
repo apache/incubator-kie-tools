@@ -155,6 +155,11 @@ declare module "./schemas/bpmn-2_0/ts-gen/types" {
   export interface BPMN20__tGroup__extensionElements extends WithEntryAndExitScripts, WithMetaData {}
   export interface BPMN20__tTextAnnotation__extensionElements extends WithEntryAndExitScripts, WithMetaData {}
 
+  // Custom Tasks
+  export interface BPMN20__tTask {
+    "@_drools:taskName"?: Namespaced<DROOLS, string>;
+  }
+
   // Other
   export interface BPMN20__tProperty__extensionElements extends WithMetaData {}
   export interface BPMN20__tLane__extensionElements extends WithMetaData {}
