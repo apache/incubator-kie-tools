@@ -894,7 +894,6 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                       });
                     }
                   }
-                  // Remove decision from decision service
                   if (node.type === NODE_TYPES.decision && node.data.parentRfNode) {
                     const parentDecisionService = node.data.parentRfNode;
                     const drds = state.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
@@ -919,6 +918,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                         dsShape["dc:Bounds"]["@_y"] =
                           (parentShape["dc:Bounds"]?.["@_y"] ?? 0) + relativePosinCurrentDS.y;
                       }
+                      // Remove decision from decision service
                       let isInside = true;
                       if (
                         node.data.shape["dc:Bounds"] &&
