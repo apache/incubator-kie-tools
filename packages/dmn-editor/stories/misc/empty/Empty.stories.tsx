@@ -19,16 +19,16 @@
 
 import type { Meta, StoryObj } from "@storybook/react";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
-import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
+import { ns as dmn16ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/meta";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { DMN16_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { DmnEditorWrapper, StorybookDmnEditorProps } from "../../dmnEditorStoriesWrapper";
 import { DmnEditor, DmnEditorProps } from "../../../src/DmnEditor";
 
-export const generateEmptyDmn15 = () => `<?xml version="1.0" encoding="UTF-8"?>
+export const generateEmptyDmn16 = () => `<?xml version="1.0" encoding="UTF-8"?>
 <definitions
-  xmlns="${dmn15ns.get("")}"
-  expressionLanguage="${DMN15_SPEC.expressionLanguage.default}"
+  xmlns="${dmn16ns.get("")}"
+  expressionLanguage="${DMN16_SPEC.expressionLanguage.default}"
   namespace="https://kie.apache.org/dmn/${generateUuid()}"
   id="${generateUuid()}"
   name="DMN${generateUuid()}">
@@ -43,7 +43,7 @@ const meta: Meta<DmnEditorProps> = {
 export default meta;
 type Story = StoryObj<StorybookDmnEditorProps>;
 
-const marshaller = getMarshaller(generateEmptyDmn15(), { upgradeTo: "latest" });
+const marshaller = getMarshaller(generateEmptyDmn16(), { upgradeTo: "latest" });
 const model = marshaller.parser.parse();
 
 export const Empty: Story = {

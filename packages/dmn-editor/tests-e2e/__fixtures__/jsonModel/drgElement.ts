@@ -19,16 +19,16 @@
 
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import {
-  DMN15__tBusinessKnowledgeModel,
-  DMN15__tDecision,
-  DMN15__tDecisionService,
-  DMN15__tDefinitions,
-  DMN15__tInputData,
-  DMN15__tKnowledgeSource,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN16__tBusinessKnowledgeModel,
+  DMN16__tDecision,
+  DMN16__tDecisionService,
+  DMN16__tDefinitions,
+  DMN16__tInputData,
+  DMN16__tKnowledgeSource,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Page } from "@playwright/test";
 
-type AllDrgElements = NonNullable<DMN15__tDefinitions["drgElement"]>[0];
+type AllDrgElements = NonNullable<DMN16__tDefinitions["drgElement"]>[0];
 
 export class DrgElement {
   constructor(public page: Page) {}
@@ -36,7 +36,7 @@ export class DrgElement {
   public async getBkm(args: { drgElementIndex: number; drdIndex: number }) {
     const drgElement = (await this.getDrgElement({
       drgElementIndex: args.drgElementIndex,
-    })) as DMN15__tBusinessKnowledgeModel & {
+    })) as DMN16__tBusinessKnowledgeModel & {
       __$$element: string;
     };
     if (drgElement === undefined) {
@@ -46,7 +46,7 @@ export class DrgElement {
   }
 
   public async getDecision(args: { drgElementIndex: number; drdIndex: number }) {
-    const drgElement = (await this.getDrgElement({ drgElementIndex: args.drgElementIndex })) as DMN15__tDecision & {
+    const drgElement = (await this.getDrgElement({ drgElementIndex: args.drgElementIndex })) as DMN16__tDecision & {
       __$$element: string;
     };
     if (drgElement === undefined) {
@@ -58,7 +58,7 @@ export class DrgElement {
   public async getDecisionService(args: { drgElementIndex: number; drdIndex: number }) {
     const drgElement = (await this.getDrgElement({
       drgElementIndex: args.drgElementIndex,
-    })) as DMN15__tDecisionService & {
+    })) as DMN16__tDecisionService & {
       __$$element: string;
     };
     if (drgElement === undefined) {
@@ -68,7 +68,7 @@ export class DrgElement {
   }
 
   public async getInputData(args: { drgElementIndex: number; drdIndex: number }) {
-    const drgElement = (await this.getDrgElement({ drgElementIndex: args.drgElementIndex })) as DMN15__tInputData & {
+    const drgElement = (await this.getDrgElement({ drgElementIndex: args.drgElementIndex })) as DMN16__tInputData & {
       __$$element: string;
     };
     if (drgElement === undefined) {
@@ -80,7 +80,7 @@ export class DrgElement {
   public async getKnowledgeSource(args: { drgElementIndex: number; drdIndex: number }) {
     const drgElement = (await this.getDrgElement({
       drgElementIndex: args.drgElementIndex,
-    })) as DMN15__tKnowledgeSource & {
+    })) as DMN16__tKnowledgeSource & {
       __$$element: string;
     };
     if (drgElement === undefined) {

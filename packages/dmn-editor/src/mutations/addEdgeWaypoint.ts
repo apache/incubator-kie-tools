@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DC__Point, DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DC__Point, DMN16__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { addOrGetDrd } from "./addOrGetDrd";
 
@@ -28,7 +28,7 @@ export function addEdgeWaypoint({
   beforeIndex,
   waypoint,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN16__tDefinitions>;
   drdIndex: number;
   dmnEdgeIndex: number;
   beforeIndex: number;

@@ -22,17 +22,17 @@
 //////////////////////////////////////////////////////////////////////
 
 import {
-  DMN15__tDefinitions,
-  DMN15__tGroup,
-  DMN15__tTextAnnotation,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN16__tDefinitions,
+  DMN16__tGroup,
+  DMN16__tTextAnnotation,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 
 export function renameDrgElement({
   definitions,
   newName,
   index,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: DMN16__tDefinitions;
   newName: string;
   index: number;
 }) {
@@ -63,11 +63,11 @@ export function renameGroupNode({
   newName,
   index,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: DMN16__tDefinitions;
   newName: string;
   index: number;
 }) {
-  (definitions.artifact![index] as DMN15__tGroup)["@_name"] = newName;
+  (definitions.artifact![index] as DMN16__tGroup)["@_name"] = newName;
 }
 
 export function updateTextAnnotation({
@@ -75,9 +75,9 @@ export function updateTextAnnotation({
   newText,
   index,
 }: {
-  definitions: DMN15__tDefinitions;
+  definitions: DMN16__tDefinitions;
   newText: string;
   index: number;
 }) {
-  (definitions.artifact![index] as DMN15__tTextAnnotation).text = { __$$text: newText };
+  (definitions.artifact![index] as DMN16__tTextAnnotation).text = { __$$text: newText };
 }

@@ -27,14 +27,14 @@ import { MenuItemWithHelp } from "../../contextMenu/MenuWithHelp";
 import { Menu } from "@patternfly/react-core/dist/js/components/Menu/Menu";
 import { MenuGroup } from "@patternfly/react-core/dist/js/components/Menu/MenuGroup";
 import { MenuList } from "@patternfly/react-core/dist/js/components/Menu/MenuList";
-import { DMN15__tFunctionKind } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN16__tFunctionKind } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { BoxedFunctionKind } from "../../api";
 
 export interface FunctionKindSelectorProps {
   /** Pre-selected function kind */
-  selectedFunctionKind: DMN15__tFunctionKind;
+  selectedFunctionKind: DMN16__tFunctionKind;
   /** Callback invoked when function kind selection changes */
-  onFunctionKindSelect: (functionKind: DMN15__tFunctionKind) => void;
+  onFunctionKindSelect: (functionKind: DMN16__tFunctionKind) => void;
   /** If should only display function kind */
   isReadOnly?: boolean;
 }
@@ -48,14 +48,14 @@ export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorP
 
   const functionKindSelectionCallback = useCallback(
     (hide: () => void) => (event?: React.MouseEvent, itemId?: string | number) => {
-      onFunctionKindSelect(itemId as DMN15__tFunctionKind);
+      onFunctionKindSelect(itemId as DMN16__tFunctionKind);
       setVisibleHelp("");
       hide();
     },
     [onFunctionKindSelect]
   );
 
-  const functionKindHelp = useCallback((functionKind: DMN15__tFunctionKind) => {
+  const functionKindHelp = useCallback((functionKind: DMN16__tFunctionKind) => {
     switch (functionKind) {
       case "FEEL":
         return "Define function as a 'Friendly Enough Expression Language (FEEL)' expression. This is the default.";
