@@ -55,10 +55,10 @@
       "zustand@4.4.2": "patches/zustand@4.4.2.patch"
     }
   },
-  "packageManager": "pnpm@9.3.0",
+  "packageManager": "pnpm@10.12.4",
   "engines": {
     "node": ">=20",
-    "pnpm": "9.3.0"
+    "pnpm": "10.12.4"
   },
   "kieTools": {
     "requiredPreinstalledCliCommands": [
