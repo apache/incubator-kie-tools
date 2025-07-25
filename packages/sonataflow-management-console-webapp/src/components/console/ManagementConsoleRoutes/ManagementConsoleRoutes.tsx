@@ -19,12 +19,9 @@
 import * as React from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { routes } from "../../../navigation/Routes";
-import { TriggerCloudEventPage } from "../../pages/TriggerCloudEventPage/TriggerCloudEventPage";
 import MonitoringPage from "../../pages/MonitoringPage/MonitoringPage";
-import { WorkflowDefinitionsPage } from "../../pages/WorkflowDefinitionsPage/WorkflowDefinitionsPage";
 import { WorkflowInstancesPage } from "../../pages/WorkflowInstancesPage/WorkflowInstancesPage";
 import { WorkflowDetailsPage } from "../../pages/WorkflowDetailsPage/WorkflowDetailsPage";
-import { WorkflowFormPage } from "../../pages/WorkflowFormPage/WorkflowFormPage";
 
 const ManagementConsoleRoutes: React.FC = () => {
   return (
@@ -34,18 +31,9 @@ const ManagementConsoleRoutes: React.FC = () => {
         element={<Navigate replace to={routes.runtimeToolsWorkflowInstances.path({})} />}
       />
       <Route path={routes.runtimeToolsWorkflowInstances.path({})} element={<WorkflowInstancesPage />} />
-      <Route path={routes.runtimeToolsWorkflowDefinitions.path({})} element={<WorkflowDefinitionsPage />} />
       <Route
         path={routes.runtimeToolsWorkflowDetails.path({ workflowId: ":workflowId" })}
         element={<WorkflowDetailsPage />}
-      />
-      <Route
-        path={routes.runtimeToolsTriggerCloudEventForWorkflowDefinition.path({ workflowName: ":workflowName" })}
-        element={<TriggerCloudEventPage />}
-      />
-      <Route
-        path={routes.runtimeToolsWorkflowForm.path({ workflowName: ":workflowName" })}
-        element={<WorkflowFormPage />}
       />
       <Route
         path={routes.monitoring.path({})}
