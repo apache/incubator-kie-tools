@@ -250,7 +250,7 @@ const feel15ns = new Map<string, string>([
 ]);
 
 const feel16ns = new Map<string, string>([
-  [FEEL_NS, FEEL_NAMESPACES["1.5"]],
+  [FEEL_NS, FEEL_NAMESPACES["1.6"]],
   [FEEL_NAMESPACES["1.6"], FEEL_NS],
 ]);
 
