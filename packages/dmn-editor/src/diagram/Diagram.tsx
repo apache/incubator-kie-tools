@@ -766,6 +766,8 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                       __readonly_externalDmnsIndex: state
                         .computed(state)
                         .getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
+                      __readonly_href: node.id,
+                      __readonly_dmnObjectId: node.data.dmnObject?.["@_id"] ?? "",
                       change: {
                         isExternal: !!node.data.dmnObjectQName.prefix,
                         nodeType: node.type as NodeType,
@@ -789,6 +791,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                         },
                       },
                     });
+                    // Handles resizing a decision contained in a decision service in a DRD resizes it in all DRDs to keep Decision Services consistent
                     if (node.type === NODE_TYPES.decision && node.data.parentRfNode) {
                       const dsContainingDecision = node.data.parentRfNode;
                       const drds = state.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
@@ -894,6 +897,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                       });
                     }
                   }
+                  // Handles repositioning a decision in a decision service in a DRD repositions it in all DRDs to have the Decision Service consistent
                   if (node.type === NODE_TYPES.decision && node.data.parentRfNode) {
                     const parentDecisionService = node.data.parentRfNode;
                     const drds = state.dmn.model.definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];

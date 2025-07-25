@@ -1179,6 +1179,7 @@ export const DecisionServiceNode = React.memo(
               shapeIndex: shape.index,
               localYPosition: e.y,
               snapGrid: state.diagram.snapGrid,
+              __readonly_decisionServiceHref: id,
             });
           });
         })
@@ -1192,7 +1193,16 @@ export const DecisionServiceNode = React.memo(
       return () => {
         selection.on(".drag", null);
       };
-    }, [decisionService, dmnEditorStoreApi, dmnObjectNamespace, externalModelsByNamespace, id, index, shape.index]);
+    }, [
+      decisionService,
+      dmnEditorStoreApi,
+      dmnObjectNamespace,
+      externalModelsByNamespace,
+      id,
+      index,
+      shape.index,
+      isCollapsed,
+    ]);
 
     const { fontCssProperties, shapeStyle } = useNodeStyle({
       dmnStyle: shape["di:Style"],
