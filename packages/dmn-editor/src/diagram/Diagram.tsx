@@ -922,6 +922,32 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
                         dsShape["dc:Bounds"]["@_y"] =
                           (parentShape["dc:Bounds"]?.["@_y"] ?? 0) + relativePosinCurrentDS.y;
                       }
+                      // Remove decision from decision service
+                      let isInside = true;
+                      if (
+                        node.data.shape["dc:Bounds"] &&
+                        parentShape &&
+                        parentShape["dc:Bounds"] &&
+                        !parentShape["@_isCollapsed"]
+                      ) {
+                        isInside =
+                          node.data.shape["dc:Bounds"]["@_x"] >= parentShape["dc:Bounds"]["@_x"] &&
+                          node.data.shape["dc:Bounds"]["@_y"] >= parentShape!["dc:Bounds"]["@_y"] &&
+                          node.data.shape["dc:Bounds"]!["@_x"] + node.data.shape["dc:Bounds"]["@_width"] <=
+                            parentShape["dc:Bounds"]["@_x"] + parentShape!["dc:Bounds"]["@_width"] &&
+                          node.data.shape["dc:Bounds"]["@_y"] + node.data.shape["dc:Bounds"]["@_height"] <=
+                            parentShape["dc:Bounds"]["@_y"] + parentShape!["dc:Bounds"]["@_height"];
+                      }
+                      const { diagramElements } = addOrGetDrd({
+                        definitions: state.dmn.model.definitions,
+                        drdIndex: i,
+                      });
+                      const dmnShapeIndex = (diagramElements ?? []).findIndex(
+                        (d) => d["@_dmnElementRef"] === dsShape?.["@_dmnElementRef"]
+                      );
+                      if (dmnShapeIndex >= 0 && !isInside) {
+                        diagramElements?.splice(dmnShapeIndex, 1);
+                      }
                     }
                   }
                 }
