@@ -291,7 +291,7 @@ func (d *DataIndexHandler) ConfigurePersistence(containerSpec *corev1.Container)
 		p := persistence.RetrievePostgreSQLConfiguration(d.platform.Spec.Services.DataIndex.Persistence, d.platform.Spec.Persistence, d.GetServiceName())
 		c := containerSpec.DeepCopy()
 		c.Image = d.GetServiceImageName(constants.PersistenceTypePostgreSQL)
-		c.Env = append(c.Env, persistence.ConfigurePostgreSQLEnv(p.PostgreSQL, d.GetServiceName(), d.platform.Namespace)...)
+		c.Env = append(c.Env, persistence.ConfigurePostgreSQLEnv(p.PostgreSQL, d.GetServiceName(), d.platform.Namespace, false)...)
 
 		dbMigrationStrategyService := isDBMigrationStrategyService(d.platform.Spec.Services.DataIndex.Persistence)
 
@@ -484,7 +484,7 @@ func (j *JobServiceHandler) ConfigurePersistence(containerSpec *corev1.Container
 		c := containerSpec.DeepCopy()
 		c.Image = j.GetServiceImageName(constants.PersistenceTypePostgreSQL)
 		p := persistence.RetrievePostgreSQLConfiguration(j.platform.Spec.Services.JobService.Persistence, j.platform.Spec.Persistence, j.GetServiceName())
-		c.Env = append(c.Env, persistence.ConfigurePostgreSQLEnv(p.PostgreSQL, j.GetServiceName(), j.platform.Namespace)...)
+		c.Env = append(c.Env, persistence.ConfigurePostgreSQLEnv(p.PostgreSQL, j.GetServiceName(), j.platform.Namespace, true)...)
 
 		dbMigrationStrategyService := isDBMigrationStrategyService(j.platform.Spec.Services.JobService.Persistence)
 
@@ -513,16 +513,6 @@ func (j *JobServiceHandler) GenerateServiceProperties() (*properties.Properties,
 		props.Set(constants.JobServiceKSinkInjectionHealthCheck, "false")
 	} else {
 		props.Set(constants.JobServiceKSinkInjectionHealthCheck, "true")
-	}
-
-	// add data source reactive URL
-	if j.hasPostgreSQLConfigured() {
-		p := persistence.RetrievePostgreSQLConfiguration(j.platform.Spec.Services.JobService.Persistence, j.platform.Spec.Persistence, j.GetServiceName())
-		dataSourceReactiveURL, err := generateReactiveURL(p.PostgreSQL, j.GetServiceName(), j.platform.Namespace, constants.DefaultDatabaseName, constants.DefaultPostgreSQLPort)
-		if err != nil {
-			return nil, err
-		}
-		props.Set(constants.JobServiceDataSourceReactiveURL, dataSourceReactiveURL)
 	}
 
 	if isDataIndexEnabled(j.platform) {
