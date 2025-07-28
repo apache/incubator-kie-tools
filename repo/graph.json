@@ -203,6 +203,7 @@
       { "id": "@kie-tools/kogito-db-migrator-tool" },
       { "id": "@kie-tools/python-venv" },
       { "id": "@kie/kogito-jit-runner-image" },
+      { "id": "@kie-tools/kogito-jobs-service-webapp" },
       { "id": "@kie-tools/unitables" },
       { "id": "pmml-vscode-extension" },
       { "id": "@kie-tools/runtime-tools-components" },
@@ -2165,6 +2166,11 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/kogito-jobs-service-webapp",
+        "target": "@kie-tools-core/webpack-base",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/unitables",
         "target": "@kie-tools/boxed-expression-component",
         "weight": 1
@@ -2896,6 +2902,7 @@
     ["@kie/kogito-jit-runner-image", "packages/kogito-jit-runner-image"],
     ["@kie/kogito-jobs-service-ephemeral-image", "packages/kogito-jobs-service-ephemeral-image"],
     ["@kie/kogito-jobs-service-postgresql-image", "packages/kogito-jobs-service-postgresql-image"],
+    ["@kie-tools/kogito-jobs-service-webapp", "packages/kogito-jobs-service-webapp"],
     ["@kie-tools/kogito-management-console", "packages/kogito-management-console"],
     ["@kie-tools-core/kubernetes-bridge", "packages/kubernetes-bridge"],
     ["@kie-tools/maven-base", "packages/maven-base"],
