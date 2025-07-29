@@ -24,7 +24,6 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
-	"strings"
 
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/version"
 
@@ -52,10 +51,6 @@ type QuarkusDataSource struct {
 	Schema            string
 }
 
-func (q *QuarkusDataSource) JdbcReactiveUrl() string {
-	return strings.TrimPrefix(q.JdbcUrl, "jdbc:")
-}
-
 type DBMigratorJob struct {
 	MigrateDBDataIndex    bool
 	DataIndexDataSource   *QuarkusDataSource
@@ -74,19 +69,17 @@ const (
 	dbMigrationJobFailed     = 1
 	dbMigrationJobSucceeded  = 1
 
-	migrateDBDataIndex                        = "MIGRATE_DB_DATAINDEX"
-	quarkusDataSourceDataIndexJdbcURL         = "QUARKUS_DATASOURCE_DATAINDEX_JDBC_URL"
-	quarkusDataSourceDataIndexJdbcReactiveURL = "QUARKUS_DATASOURCE_DATAINDEX_REACTIVE_URL"
-	quarkusDataSourceDataIndexUserName        = "QUARKUS_DATASOURCE_DATAINDEX_USERNAME"
-	quarkusDataSourceDataIndexPassword        = "QUARKUS_DATASOURCE_DATAINDEX_PASSWORD"
-	quarkusFlywayDataIndexSchemas             = "QUARKUS_FLYWAY_DATAINDEX_SCHEMAS"
+	migrateDBDataIndex                 = "MIGRATE_DB_DATAINDEX"
+	quarkusDataSourceDataIndexJdbcURL  = "QUARKUS_DATASOURCE_DATAINDEX_JDBC_URL"
+	quarkusDataSourceDataIndexUserName = "QUARKUS_DATASOURCE_DATAINDEX_USERNAME"
+	quarkusDataSourceDataIndexPassword = "QUARKUS_DATASOURCE_DATAINDEX_PASSWORD"
+	quarkusFlywayDataIndexSchemas      = "QUARKUS_FLYWAY_DATAINDEX_SCHEMAS"
 
-	migrateDBJobsService                        = "MIGRATE_DB_JOBSSERVICE"
-	quarkusDataSourceJobsServiceJdbcURL         = "QUARKUS_DATASOURCE_JOBSSERVICE_JDBC_URL"
-	quarkusDataSourceJobsServiceJdbcReactiveURL = "QUARKUS_DATASOURCE_JOBSSERVICE_REACTIVE_URL"
-	quarkusDataSourceJobsServiceUserName        = "QUARKUS_DATASOURCE_JOBSSERVICE_USERNAME"
-	quarkusDataSourceJobsServicePassword        = "QUARKUS_DATASOURCE_JOBSSERVICE_PASSWORD"
-	quarkusFlywayJobsServiceSchemas             = "QUARKUS_FLYWAY_JOBSSERVICE_SCHEMAS"
+	migrateDBJobsService                 = "MIGRATE_DB_JOBSSERVICE"
+	quarkusDataSourceJobsServiceJdbcURL  = "QUARKUS_DATASOURCE_JOBSSERVICE_JDBC_URL"
+	quarkusDataSourceJobsServiceUserName = "QUARKUS_DATASOURCE_JOBSSERVICE_USERNAME"
+	quarkusDataSourceJobsServicePassword = "QUARKUS_DATASOURCE_JOBSSERVICE_PASSWORD"
+	quarkusFlywayJobsServiceSchemas      = "QUARKUS_FLYWAY_JOBSSERVICE_SCHEMAS"
 )
 
 type DBMigrationJobCfg struct {
@@ -110,7 +103,7 @@ func getJdbcUrl(env []corev1.EnvVar) string {
 func getQuarkusDSFromServicePersistence(platform *operatorapi.SonataFlowPlatform, persistenceOptionsSpec *operatorapi.PersistenceOptionsSpec, defaultSchemaName string) *QuarkusDataSource {
 	klog.InfoS("Using service level persistence for PostgreSQL", "defaultSchemaName", defaultSchemaName)
 	quarkusDataSource := &QuarkusDataSource{}
-	env := persistence.ConfigurePostgreSQLEnv(persistenceOptionsSpec.PostgreSQL, defaultSchemaName, platform.Namespace)
+	env := persistence.ConfigurePostgreSQLEnv(persistenceOptionsSpec.PostgreSQL, defaultSchemaName, platform.Namespace, false)
 	quarkusDataSource.JdbcUrl = getJdbcUrl(env)
 	quarkusDataSource.SecretRefName = persistenceOptionsSpec.PostgreSQL.SecretRef.Name
 	quarkusDataSource.SecretUserKey = persistenceOptionsSpec.PostgreSQL.SecretRef.UserKey
@@ -125,7 +118,7 @@ func getQuarkusDSFromPlatformPersistence(platform *operatorapi.SonataFlowPlatfor
 	quarkusDataSource := &QuarkusDataSource{}
 	postgresql := persistence.MapToPersistencePostgreSQL(platform, defaultSchemaName)
 
-	env := persistence.ConfigurePostgreSQLEnv(postgresql, defaultSchemaName, platform.Namespace)
+	env := persistence.ConfigurePostgreSQLEnv(postgresql, defaultSchemaName, platform.Namespace, false)
 	quarkusDataSource.JdbcUrl = getJdbcUrl(env)
 	quarkusDataSource.SecretRefName = platform.Spec.Persistence.PostgreSQL.SecretRef.Name
 	quarkusDataSource.SecretUserKey = platform.Spec.Persistence.PostgreSQL.SecretRef.UserKey
@@ -310,10 +303,6 @@ func createJobDBMigration(platform *operatorapi.SonataFlowPlatform, dbmj *DBMigr
 									Value: diQuarkusDataSource.JdbcUrl,
 								},
 								{
-									Name:  quarkusDataSourceDataIndexJdbcReactiveURL,
-									Value: diQuarkusDataSource.JdbcReactiveUrl(),
-								},
-								{
 									Name: quarkusDataSourceDataIndexUserName,
 									ValueFrom: &corev1.EnvVarSource{
 										SecretKeyRef: &corev1.SecretKeySelector{
@@ -342,10 +331,6 @@ func createJobDBMigration(platform *operatorapi.SonataFlowPlatform, dbmj *DBMigr
 								{
 									Name:  quarkusDataSourceJobsServiceJdbcURL,
 									Value: jsQuarkusDataSource.JdbcUrl,
-								},
-								{
-									Name:  quarkusDataSourceJobsServiceJdbcReactiveURL,
-									Value: jsQuarkusDataSource.JdbcReactiveUrl(),
 								},
 								{
 									Name: quarkusDataSourceJobsServiceUserName,

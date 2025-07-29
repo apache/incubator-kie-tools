@@ -55,7 +55,7 @@ func TestDbMigratorJob(t *testing.T) {
 
 	t.Run("verify data-index jdbc url", func(t *testing.T) {
 		ksp := getBaseSonataFlowPlatformInReadyPhase(t.Name())
-		env := persistence.ConfigurePostgreSQLEnv(ksp.Spec.Services.DataIndex.Persistence.PostgreSQL, "data-index-schema", ksp.Namespace)
+		env := persistence.ConfigurePostgreSQLEnv(ksp.Spec.Services.DataIndex.Persistence.PostgreSQL, "data-index-schema", ksp.Namespace, false)
 
 		jdbcUrl := getJdbcUrl(env)
 		assert.Equal(t, jdbcUrl, DataIndexJdbcUrl)
