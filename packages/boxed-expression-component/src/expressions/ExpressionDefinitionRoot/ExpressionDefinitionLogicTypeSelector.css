@@ -27,6 +27,7 @@
   min-height: 62px; /* That's the default Literal expression height. 20px * 3 lines + 2px for border-top and border-bottom */
   overflow: visible;
   transition: background-color 0.1s ease;
+  border-radius: inherit;
 }
 
 .expression-container .logic-type-selector.logic-type-not-present:hover {
@@ -37,6 +38,7 @@
   cursor: pointer;
   justify-content: center;
   min-width: 210px;
+  font-size: 1rem;
 }
 
 .expression-container .logic-type-selector.logic-type-selected {
@@ -49,19 +51,22 @@
 
 .expression-container .logic-type-selector.logic-type-selected .logic-type-selected-header {
   color: black;
-  padding: 0 0 2px 8px;
+  padding: 0 0 0 8px;
   border-bottom: 1px solid var(--pf-v5-global--palette--black-500);
   border-top: 1px solid var(--pf-v5-global--palette--black-400);
   border-left: 1px solid var(--pf-v5-global--palette--black-400);
   border-right: 1px solid var(--pf-v5-global--palette--black-400);
   position: relative;
-  font-size: 10px;
   width: 100%;
   height: 20px;
+  border-radius: 6px 6px 0 0;
+  display: flex;
+  align-items: flex-end;
 }
 
 .expression-container .logic-type-selector.logic-type-selected .logic-type-selected-header .pf-v5-c-dropdown__menu {
   padding: 0;
+  min-width: 300px;
 }
 
 .expression-container
@@ -69,10 +74,6 @@
   .logic-type-selected-header
   .pf-v5-c-dropdown__toggle-icon {
   margin-left: 4px;
-}
-
-.logic-type-popover .pf-v5-c-menu {
-  width: 300px;
 }
 
 .paste-from-clipboard-error .pf-v5-c-menu__item-description {
