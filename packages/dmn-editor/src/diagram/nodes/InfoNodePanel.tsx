@@ -29,16 +29,17 @@ export function InfoNodePanel(props: { isVisible: boolean }) {
     <>
       {props.isVisible && (
         <div className={"kie-dmn-editor--info-node-panel"}>
-          <Label
+          <div
             onClick={() =>
               dmnEditorStoreApi.setState((state) => {
                 state.diagram.propertiesPanel.isOpen = true;
               })
             }
-            className={"kie-dmn-editor--info-label"}
           >
-            <InfoIcon style={{ width: "0.7em", height: "0.7em" }} />
-          </Label>
+            <Label className={"kie-dmn-editor--info-label"}>
+              <InfoIcon style={{ width: "0.7em", height: "0.7em" }} />
+            </Label>
+          </div>
         </div>
       )}
     </>

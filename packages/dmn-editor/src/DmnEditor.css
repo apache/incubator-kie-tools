@@ -300,7 +300,7 @@
 }
 .kie-dmn-editor--drd-selector {
   padding: 3px 8px 3px 16px;
-  border-radius: 99999px;
+  border-radius: 999999px;
   background: white;
   border: 1px solid black;
   display: flex;
@@ -702,7 +702,7 @@ the cursor is inside it. By making it adimensional, that never happens.  */
 .kie-dmn-editor--data-type-node-panel > div > div:first-of-type > button,
 .kie-dmn-editor--data-type-node-panel > div > div:first-of-type,
 .kie-dmn-editor--data-type-node-panel > div {
-  border-radius: 99999px;
+  border-radius: 999999px;
   outline: none;
 }
 .kie-dmn-editor--data-type-node-panel .pf-v5-c-select__toggle.pf-m-typeahead {
@@ -735,22 +735,25 @@ the cursor is inside it. By making it adimensional, that never happens.  */
 }
 /* edit button on decision and bkm nodes */
 .kie-dmn-editor--edit-expression-node-panel {
+  border-radius: 999999px;
   position: absolute;
-  padding: 4px 8px;
   bottom: -16px;
-  font-size: 0.7em;
-  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
-  cursor: pointer;
   background: white;
   color: black;
-}
-.kie-dmn-editor--edit-expression-node-panel > .pf-v5-c-label__content::before {
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+  cursor: pointer;
   border: 1px solid black;
 }
-.kie-dmn-editor--edit-expression-node-panel:hover {
+.kie-dmn-editor--edit-expression-node-panel span > .pf-v5-c-label__content {
+  font-size: 0.7rem;
+}
+.kie-dmn-editor--edit-expression-node-panel span > .pf-v5-c-label__content::before {
+  content: unset;
+}
+.kie-dmn-editor--edit-expression-node-panel span:hover {
   filter: brightness(95%);
 }
-.kie-dmn-editor--edit-expression-node-panel:active {
+.kie-dmn-editor--edit-expression-node-panel span:active {
   filter: brightness(90%);
 }
 .kie-dmn-editor--tabs ~ section {
@@ -773,6 +776,9 @@ the cursor is inside it. By making it adimensional, that never happens.  */
   color: black;
   font-weight: bold;
   box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+}
+.kie-dmn-editor--info-label div {
+  border-radius: 999999px;
 }
 .kie-dmn-editor--info-label > .pf-v5-c-label__content::before {
   border: 1px solid black;

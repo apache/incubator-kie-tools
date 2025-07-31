@@ -472,10 +472,6 @@ func TestMergePodSpec_WithPostgreSQL_and_JDBC_URL_field(t *testing.T) {
 			Value: "jdbc:postgresql://host:port/database?currentSchema=workflow",
 		},
 		{
-			Name:  "QUARKUS_DATASOURCE_REACTIVE_URL",
-			Value: "postgresql://host:port/database?currentSchema=workflow",
-		},
-		{
 			Name:  "KOGITO_PERSISTENCE_TYPE",
 			Value: "jdbc",
 		},
@@ -560,10 +556,6 @@ func TestMergePodSpec_OverrideContainers_WithPostgreSQL_In_Workflow_CR(t *testin
 			Value: "jdbc:postgresql://test.foo:5432/petstore?currentSchema=bar",
 		},
 		{
-			Name:  "QUARKUS_DATASOURCE_REACTIVE_URL",
-			Value: "postgresql://test.foo:5432/petstore?currentSchema=bar",
-		},
-		{
 			Name:  "KOGITO_PERSISTENCE_TYPE",
 			Value: "jdbc",
 		},
@@ -634,10 +626,6 @@ func TestMergePodSpec_WithServicedPostgreSQL_In_Platform_CR_And_Worflow_Requesti
 		{
 			Name:  "QUARKUS_DATASOURCE_JDBC_URL",
 			Value: "jdbc:postgresql://service_name.service_namespace:5432/foo?currentSchema=greeting",
-		},
-		{
-			Name:  "QUARKUS_DATASOURCE_REACTIVE_URL",
-			Value: "postgresql://service_name.service_namespace:5432/foo?currentSchema=greeting",
 		},
 		{
 			Name:  "KOGITO_PERSISTENCE_TYPE",
@@ -738,10 +726,6 @@ func TestMergePodSpec_WithServicedPostgreSQL_In_Platform_And_In_Workflow_CR(t *t
 		{
 			Name:  "QUARKUS_DATASOURCE_JDBC_URL",
 			Value: "jdbc:postgresql://test.default:5432/my_database?currentSchema=bar",
-		},
-		{
-			Name:  "QUARKUS_DATASOURCE_REACTIVE_URL",
-			Value: "postgresql://test.default:5432/my_database?currentSchema=bar",
 		},
 		{
 			Name:  "KOGITO_PERSISTENCE_TYPE",
@@ -959,10 +943,6 @@ func doTestDefaultContainer_WithPlatformPersistence(t *testing.T, workflow *v1al
 			{
 				Name:  "QUARKUS_DATASOURCE_JDBC_URL",
 				Value: "jdbc:postgresql://service_name.service_namespace:5432/foo?currentSchema=greeting",
-			},
-			{
-				Name:  "QUARKUS_DATASOURCE_REACTIVE_URL",
-				Value: "postgresql://service_name.service_namespace:5432/foo?currentSchema=greeting",
 			},
 			{
 				Name:  "KOGITO_PERSISTENCE_TYPE",
