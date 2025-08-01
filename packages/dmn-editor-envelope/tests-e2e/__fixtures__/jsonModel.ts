@@ -17,17 +17,22 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
+import { Page } from "@playwright/test";
+import { DrgElement } from "./jsonModel/drgElement";
+import { Drd } from "./jsonModel/drd";
 
-module.exports = composeEnv([require("@kie-tools/root-env/env"), require("@kie-tools-core/webpack-base/env")], {
-  vars: varsWithName({}),
-  get env() {
-    return {
-      dmnEditorEnvelope: {
-        storybook: {
-          port: "9904",
-        },
-      },
-    };
-  },
-});
+export const STORYBOOK__DMN_EDITOR_MODEL = "div[data-testid='storybook--dmn-editor-model']";
+
+export class JsonModel {
+  public drgElements: DrgElement;
+  public drd: Drd;
+
+  constructor(
+    public page: Page,
+    public baseURL?: string
+  ) {
+    this.drgElements = new DrgElement(page);
+    this.drd = new Drd(page, this.drgElements);
+  }
+}
