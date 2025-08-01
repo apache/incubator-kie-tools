@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useMemo } from "react";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
-import { DMN15__tContext, DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN16__tContext, DMN16__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { InformationItemCell } from "./InformationItemCell";
@@ -45,10 +45,10 @@ export function ContextInformationItemCell(props: {
     [cellPath?.root, props.boxedExpressionIndex]
   );
 
-  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tInformationItem>>(
+  const updater = useBoxedExpressionUpdater<Normalized<DMN16__tInformationItem>>(
     selectedObjectInfos?.expressionPath ?? []
   );
-  const rootExpressionUpdater = useBoxedExpressionUpdater<Normalized<DMN15__tContext>>(rootPath ?? []);
+  const rootExpressionUpdater = useBoxedExpressionUpdater<Normalized<DMN16__tContext>>(rootPath ?? []);
 
   return (
     <>
@@ -71,7 +71,7 @@ export function ContextInformationItemCell(props: {
           });
           rootExpressionUpdater((dmnObject) => {
             if (cellPath?.type === "context") {
-              const expression = (dmnObject as Normalized<DMN15__tContext>).contextEntry![cellPath.row ?? 0].expression;
+              const expression = (dmnObject as Normalized<DMN16__tContext>).contextEntry![cellPath.row ?? 0].expression;
               if (expression) {
                 expression["@_typeRef"] = newTypeRef;
               }

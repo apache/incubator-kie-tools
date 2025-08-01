@@ -18,9 +18,9 @@
  */
 
 import {
-  DMN15__tContext,
-  DMN15__tLiteralExpression,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN16__tContext,
+  DMN16__tLiteralExpression,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import {
   ContextExpressionDefinitionEntry,
   DecisionTableExpressionDefinitionBuiltInAggregation,
@@ -30,7 +30,7 @@ import {
   GwtExpressionDefinitionLogicType,
 } from "./types";
 import { DmnBuiltInDataType, BoxedExpression, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { DMN16_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 
 /** Converts a BoxedExpression to a GwtExpressionDefinition. This convertion is
  *  necessary for historical reasons, as the GWT-based DMN Editor implements its
@@ -64,7 +64,7 @@ export function beeToGwt(
         : DecisionTableExpressionDefinitionBuiltInAggregation["<None>"],
       hitPolicy:
         (expression["@_hitPolicy"] as DecisionTableExpressionDefinitionHitPolicy) ??
-        DMN15_SPEC.BOXED.DECISION_TABLE.HitPolicy.default,
+        DMN16_SPEC.BOXED.DECISION_TABLE.HitPolicy.default,
       input: (expression.input ?? []).map((input, i) => ({
         idLiteralExpression: input.inputExpression["@_id"]!,
         id: input["@_id"]!,
@@ -106,7 +106,7 @@ export function beeToGwt(
       rows: (expression.row ?? []).map((row) => ({
         id: row["@_id"]!,
         // Assuming only literalExpressions are supported. Any other type of expression won't work for Relations.
-        cells: ((row.expression as DMN15__tLiteralExpression[]) ?? []).map((s) => ({
+        cells: ((row.expression as DMN16__tLiteralExpression[]) ?? []).map((s) => ({
           id: s["@_id"]!,
           content: s.text?.__$$text ?? "",
         })),
@@ -162,7 +162,7 @@ export function beeToGwt(
     // commonly, it is a LiteralExpression naming a BusinessKnowledgeModel.
     //
     // Source: https://www.omg.org/spec/DMN/1.4/PDF. PDF page 71, document page 57. Section "7.3.6 Invocation metamodel".
-    const calledFunction = expression.expression! as DMN15__tLiteralExpression;
+    const calledFunction = expression.expression! as DMN16__tLiteralExpression;
 
     return {
       id: expression["@_id"]!,
@@ -200,7 +200,7 @@ export function beeToGwt(
       })),
     };
 
-    const kind = expression["@_kind"] ?? DMN15_SPEC.BOXED.FUNCTION.kind.default;
+    const kind = expression["@_kind"] ?? DMN16_SPEC.BOXED.FUNCTION.kind.default;
     switch (kind) {
       case "FEEL": {
         return {
@@ -219,39 +219,39 @@ export function beeToGwt(
         // and the form of the mapping information SHALL be the pmml form.
         //
         // Source: https://www.omg.org/spec/DMN/1.4/PDF, PDF page 106, document page 92. Section "10.2.1.7 Boxed Function".
-        const c = expression.expression! as DMN15__tContext;
+        const c = expression.expression! as DMN16__tContext;
         const clazz = c.contextEntry?.find(
-          ({ variable }) => variable?.["@_name"] === DMN15_SPEC.BOXED.FUNCTION.JAVA.classFieldName
+          ({ variable }) => variable?.["@_name"] === DMN16_SPEC.BOXED.FUNCTION.JAVA.classFieldName
         );
         const method = c.contextEntry?.find(
-          ({ variable }) => variable?.["@_name"] === DMN15_SPEC.BOXED.FUNCTION.JAVA.methodSignatureFieldName
+          ({ variable }) => variable?.["@_name"] === DMN16_SPEC.BOXED.FUNCTION.JAVA.methodSignatureFieldName
         );
 
         return {
           ...basic,
           functionKind: FunctionExpressionDefinitionKind.Java,
-          className: (clazz?.expression as DMN15__tLiteralExpression | undefined)?.text?.__$$text,
+          className: (clazz?.expression as DMN16__tLiteralExpression | undefined)?.text?.__$$text,
           classFieldId: clazz?.expression?.["@_id"],
-          methodName: (method?.expression as DMN15__tLiteralExpression | undefined)?.text?.__$$text,
+          methodName: (method?.expression as DMN16__tLiteralExpression | undefined)?.text?.__$$text,
           methodFieldId: method?.expression?.["@_id"],
           classAndMethodNamesWidth: widthsById.get(expression["@_id"] ?? "")?.[1],
         };
       }
       case "PMML": {
         // Special case, defined by the spec, where the implementation is a context expression with two fields.
-        const c = expression.expression as DMN15__tContext;
+        const c = expression.expression as DMN16__tContext;
         const document = c.contextEntry?.find(
-          ({ variable }) => variable?.["@_name"] === DMN15_SPEC.BOXED.FUNCTION.PMML.documentFieldName
+          ({ variable }) => variable?.["@_name"] === DMN16_SPEC.BOXED.FUNCTION.PMML.documentFieldName
         );
         const model = c.contextEntry?.find(
-          ({ variable }) => variable?.["@_name"] === DMN15_SPEC.BOXED.FUNCTION.PMML.modelFieldName
+          ({ variable }) => variable?.["@_name"] === DMN16_SPEC.BOXED.FUNCTION.PMML.modelFieldName
         );
         return {
           ...basic,
           functionKind: FunctionExpressionDefinitionKind.Pmml,
-          document: (document?.expression as DMN15__tLiteralExpression | undefined)?.text?.__$$text.replaceAll(`"`, ``), // Sometimes this is stored as a FEEL string. We don't need the quotes to show in the screen.
+          document: (document?.expression as DMN16__tLiteralExpression | undefined)?.text?.__$$text.replaceAll(`"`, ``), // Sometimes this is stored as a FEEL string. We don't need the quotes to show in the screen.
           documentFieldId: document?.expression?.["@_id"],
-          model: (model?.expression as DMN15__tLiteralExpression | undefined)?.text?.__$$text.replaceAll(`"`, ``), // Sometimes this is stored as a FEEL string. We don't need the quotes to show in the screen.
+          model: (model?.expression as DMN16__tLiteralExpression | undefined)?.text?.__$$text.replaceAll(`"`, ``), // Sometimes this is stored as a FEEL string. We don't need the quotes to show in the screen.
           modelFieldId: model?.expression?.["@_id"],
         };
       }

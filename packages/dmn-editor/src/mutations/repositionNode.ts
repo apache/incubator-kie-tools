@@ -19,10 +19,10 @@
 
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import {
-  DMN15__tDefinitions,
+  DMN16__tDefinitions,
   DMNDI15__DMNEdge,
   DMNDI15__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
@@ -40,7 +40,7 @@ export function repositionNode({
    * This will make sure we only move edges once, even though they might be source/target edges for multiple nodes.
    */
   controlWaypointsByEdge: Map<number, Set<number>>;
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN16__tDefinitions>;
   drdIndex: number;
   change: {
     nodeType: NodeType;

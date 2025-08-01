@@ -57,7 +57,7 @@ import { NodeType } from "../diagram/connections/graphStructure";
 import { buildFeelQNameFromXmlQName } from "../feel/buildFeelQName";
 import { Text } from "@visx/text";
 import { TypeOrReturnType } from "../store/ComputedStateCache";
-import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
 
 export function DmnDiagramSvg({

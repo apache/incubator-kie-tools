@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { DMN15__tBusinessKnowledgeModel } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN16__tBusinessKnowledgeModel } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -39,7 +39,7 @@ export function BkmProperties({
   namespace,
   index,
 }: {
-  bkm: Normalized<DMN15__tBusinessKnowledgeModel>;
+  bkm: Normalized<DMN16__tBusinessKnowledgeModel>;
   namespace: string | undefined;
   index: number;
 }) {
@@ -90,7 +90,7 @@ export function BkmProperties({
             setState((state) => {
               const drgElement = state.dmn.model.definitions.drgElement![
                 index
-              ] as Normalized<DMN15__tBusinessKnowledgeModel>;
+              ] as Normalized<DMN16__tBusinessKnowledgeModel>;
               drgElement.variable ??= { "@_id": generateUuid(), "@_name": bkm["@_name"] };
               drgElement.variable["@_typeRef"] = newTypeRef;
             });
@@ -105,7 +105,7 @@ export function BkmProperties({
         initialValue={bkm.description?.__$$text || ""}
         onChange={(newDescription) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tBusinessKnowledgeModel>).description =
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN16__tBusinessKnowledgeModel>).description =
               {
                 __$$text: newDescription,
               };
@@ -126,7 +126,7 @@ export function BkmProperties({
         onChange={(newExtensionElements) => {
           setState((state) => {
             (
-              state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tBusinessKnowledgeModel>
+              state.dmn.model.definitions.drgElement![index] as Normalized<DMN16__tBusinessKnowledgeModel>
             ).extensionElements = {
               "kie:attachment": newExtensionElements,
             };

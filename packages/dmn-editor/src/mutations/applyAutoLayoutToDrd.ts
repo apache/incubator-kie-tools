@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import * as Elk from "elkjs/lib/elk.bundled.js";

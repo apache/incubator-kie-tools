@@ -23,7 +23,7 @@ import {
   DC__Dimension,
   DC__Point,
   DMNDI15__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { SnapGrid } from "../../store/Store";
 import { snapBoundsDimensions, snapBoundsPosition } from "../SnapGrid";

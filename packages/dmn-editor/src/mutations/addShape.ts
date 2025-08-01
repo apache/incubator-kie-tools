@@ -19,9 +19,9 @@
 
 import {
   DC__Point,
-  DMN15__tDefinitions,
+  DMN16__tDefinitions,
   DMNDI15__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
@@ -36,7 +36,7 @@ export function addShape({
   shape,
   decisionServiceDividerLineWaypoint: decisionServiceDividerLineWaypoint,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN16__tDefinitions>;
   drdIndex: number;
   nodeType: NodeType;
   shape: Normalized<DMNDI15__DMNShape>;

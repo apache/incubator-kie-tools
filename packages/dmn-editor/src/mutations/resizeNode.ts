@@ -19,11 +19,11 @@
 
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import {
-  DMN15__tDecisionService,
-  DMN15__tDefinitions,
+  DMN16__tDecisionService,
+  DMN16__tDefinitions,
   DMNDI15__DMNEdge,
   DMNDI15__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
 import { PositionalNodeHandleId } from "../diagram/connections/PositionalNodeHandles";
@@ -49,7 +49,7 @@ export function resizeNode({
   __readonly_dmnObjectId,
   change,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN16__tDefinitions>;
   drdIndex: number;
   __readonly_dmnShapesByHref: Map<string, Normalized<DMNDI15__DMNShape> & { index: number }>;
   snapGrid: SnapGrid;
@@ -83,8 +83,8 @@ export function resizeNode({
 
     const ds =
       externalDmn === undefined
-        ? (definitions.drgElement![change.index] as Normalized<DMN15__tDecisionService>)
-        : (externalDmn.model.definitions.drgElement![change.index] as Normalized<DMN15__tDecisionService>);
+        ? (definitions.drgElement![change.index] as Normalized<DMN16__tDecisionService>)
+        : (externalDmn.model.definitions.drgElement![change.index] as Normalized<DMN16__tDecisionService>);
     if (!ds) {
       throw new Error("DMN MUTATION: Cannot reposition divider line of non-existent Decision Service");
     }
