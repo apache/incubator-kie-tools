@@ -30,7 +30,7 @@
     "image:docker:build": "kie-tools--image-builder build --allowHostNetworkAccess -r \"$(build-env devDeploymentQuarkusBlankAppImage.registry)\" -a \"$(build-env devDeploymentQuarkusBlankAppImage.account)\" -n \"$(build-env devDeploymentQuarkusBlankAppImage.name)\" -t \"$(build-env devDeploymentQuarkusBlankAppImage.buildTag)\" --build-arg BUILDER_IMAGE_ARG=\"$(build-env devDeploymentQuarkusBlankAppImage.builderImage)\"",
     "m2-repo-via-http:container:kill": "(docker container kill m2-repo-via-http || true) && (docker container rm m2-repo-via-http || true)",
     "m2-repo-via-http:container:prepare-m2-repo-volume": "node -e 'require(`@kie-tools/maven-base`).prepareHardLinkedM2ForPackage(`./dist/tmp-m2/repository`, `./node_modules/@kie-tools/dev-deployment-quarkus-blank-app`)'",
-    "m2-repo-via-http:container:run": "(pnpm m2-repo-via-http:container:kill || true) && pnpm m2-repo-via-http:container:prepare-m2-repo-volume && docker run -p 8888:80 --name m2-repo-via-http -v \"./dist/tmp-m2/repository:/var/www/html\" -dit $(build-env devDeploymentQuarkusBlankAppImage.dev.mavenM2RepoViaHttpImage)",
+    "m2-repo-via-http:container:run": "(pnpm m2-repo-via-http:container:kill || true) && pnpm m2-repo-via-http:container:prepare-m2-repo-volume && docker run -p 8888:80 --name m2-repo-via-http -v \"./dist/tmp-m2/repository:/var/www/html:z\" -dit $(build-env devDeploymentQuarkusBlankAppImage.dev.mavenM2RepoViaHttpImage)",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
   "dependencies": {

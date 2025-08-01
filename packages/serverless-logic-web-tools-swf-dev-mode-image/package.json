@@ -31,7 +31,7 @@
     "install": "node install.js",
     "m2-repo-via-http:container:kill": "(docker container kill m2-repo-via-http || true) && (docker container rm m2-repo-via-http || true)",
     "m2-repo-via-http:container:prepare-m2-repo-volume": "node -e 'require(`@kie-tools/maven-base`).prepareHardLinkedM2ForPackage(`./dist/tmp-m2/repository`, `./node_modules/@kie-tools/serverless-logic-web-tools-swf-deployment-quarkus-app`)'",
-    "m2-repo-via-http:container:run": "(pnpm m2-repo-via-http:container:kill || true) && pnpm m2-repo-via-http:container:prepare-m2-repo-volume && docker run --name m2-repo-via-http -v \"./dist/tmp-m2/repository:/var/www/html\" -dit $(build-env slwtDevModeImage.dev.mavenM2RepoViaHttpImage)",
+    "m2-repo-via-http:container:run": "(pnpm m2-repo-via-http:container:kill || true) && pnpm m2-repo-via-http:container:prepare-m2-repo-volume && docker run --name m2-repo-via-http -v \"./dist/tmp-m2/repository:/var/www/html:z\" -dit $(build-env slwtDevModeImage.dev.mavenM2RepoViaHttpImage)",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command"
   },
   "devDependencies": {
