@@ -192,7 +192,7 @@ export function resizeNode({
       // Apply delta shift to neighbouring nodes in other DRD
       const decisionService = drgElements.find(
         (elem) => elem["@_id"] === __readonly_dmnObjectId
-      ) as Normalized<DMN15__tDecisionService>;
+      ) as Normalized<DMN16__tDecisionService>;
       const { containedDecisionHrefsRelativeToThisDmn } = getDecisionServicePropertiesRelativeToThisDmn({
         thisDmnsNamespace: definitions["@_namespace"],
         decisionService,
