@@ -444,7 +444,7 @@ test.describe("Model Decision Services - DRD", () => {
     await drds.toggle();
     await drds.navigateTo({ name: "First DRD" });
     await drds.toggle();
-    await expect(diagram.get()).toHaveScreenshot("decision_added_to_decision_service.png");
+    await expect(diagram.get()).toHaveScreenshot("decision-added-to-decision-service.png");
   });
 
   test("Moving a node to Decision service , check it is removed from DRDs where DS in collapsed form", async ({
@@ -488,7 +488,7 @@ test.describe("Model Decision Services - DRD", () => {
     await drds.toggle();
     await drds.navigateTo({ name: "First DRD" });
     await drds.toggle();
-    await expect(diagram.get()).toHaveScreenshot("decision_added_to_decision_service_collapsedDS.png");
+    await expect(diagram.get()).toHaveScreenshot("decision-added-to-decision-service-collapsedDS.png");
   });
 
   test("Removing node from Decision Service removes from all DRDs", async ({
@@ -532,7 +532,7 @@ test.describe("Model Decision Services - DRD", () => {
     await drds.navigateTo({ name: "First DRD" });
     await drds.toggle();
     await expect(nodes.get({ name: "D1" })).not.toBeAttached();
-    await expect(diagram.get()).toHaveScreenshot("decision_removed_from_decision_service.png");
+    await expect(diagram.get()).toHaveScreenshot("decision-removed-from-decision-service.png");
   });
 
   test("893 collapsed external DS, synced in all DRDs", async ({ drds }) => {

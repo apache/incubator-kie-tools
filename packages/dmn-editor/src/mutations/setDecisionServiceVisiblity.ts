@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN16__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { addOrGetDrd, addOrGetDrd as getDefaultDiagram } from "./addOrGetDrd";
 
@@ -30,7 +30,7 @@ export function setDecisionServiceVisiblity({
   __readonly_height,
   __readonly_autoLayout,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN16__tDefinitions>;
   __readonly_drdIndex: number;
   __readonly_collapse: boolean;
   __readonly_shapeIndex: number;

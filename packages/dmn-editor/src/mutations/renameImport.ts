@@ -18,10 +18,10 @@
  */
 
 import {
-  DMN15__tDefinitions,
-  DMN15__tFunctionDefinition,
-  DMN15__tLiteralExpression,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN16__tDefinitions,
+  DMN16__tFunctionDefinition,
+  DMN16__tLiteralExpression,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import {
   traverseExpressionsInExpressionHolders,
@@ -30,8 +30,8 @@ import {
 } from "../dataTypes/DataTypeSpec";
 import { buildFeelQName, parseFeelQName } from "../feel/parseFeelQName";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
-import { DMN15__tContext } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { DMN16__tContext } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN16_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { IdentifiersRefactor } from "@kie-tools/dmn-language-service";
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 
@@ -42,7 +42,7 @@ export function renameImport({
   index,
   externalModelsByNamespaceMap,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN16__tDefinitions>;
   allTopLevelDataTypesByFeelName: DataTypeIndex;
   newName: string;
   index: number;
@@ -96,14 +96,14 @@ export function renameImport({
       if (element.__$$element === "decision" || element.__$$element === "businessKnowledgeModel") {
         traverseExpressionsInExpressionHolders(element, (expression, __$$element) => {
           if (__$$element === "functionDefinition") {
-            const e = expression as Normalized<DMN15__tFunctionDefinition>;
+            const e = expression as Normalized<DMN16__tFunctionDefinition>;
             if (e["@_kind"] === "PMML") {
-              const pmmlDocument = (e.expression as Normalized<DMN15__tContext>).contextEntry?.find(
-                ({ variable }) => variable?.["@_name"] === DMN15_SPEC.BOXED.FUNCTION.PMML.documentFieldName
+              const pmmlDocument = (e.expression as Normalized<DMN16__tContext>).contextEntry?.find(
+                ({ variable }) => variable?.["@_name"] === DMN16_SPEC.BOXED.FUNCTION.PMML.documentFieldName
               );
 
               const pmmlDocumentLiteralExpression = pmmlDocument?.expression as
-                | Normalized<DMN15__tLiteralExpression>
+                | Normalized<DMN16__tLiteralExpression>
                 | undefined;
               if (pmmlDocumentLiteralExpression?.text?.__$$text === _import["@_name"]) {
                 pmmlDocumentLiteralExpression.text = { __$$text: trimmedNewName };

@@ -20,7 +20,7 @@
 import * as fs from "fs";
 import * as path from "path";
 import { DMN_LATEST_VERSION, DmnVersions, FEEL_NAMESPACES, getMarshaller } from "@kie-tools/dmn-marshaller";
-import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
+import { ns as dmn16ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/meta";
 
 const files: Array<{ path: string; version: DmnVersions; upgradeTo: DmnVersions }> = [
   { path: "../tests-data--manual/other/attachment.dmn", version: "1.2", upgradeTo: "1.3" },
@@ -32,6 +32,7 @@ const files: Array<{ path: string; version: DmnVersions; upgradeTo: DmnVersions 
     version: "1.4",
     upgradeTo: "1.4",
   },
+  { path: "../tests-data--manual/other/decisionAndInput.dmn", version: "1.5", upgradeTo: "1.6" },
 ];
 
 describe("migrations", () => {
@@ -44,18 +45,18 @@ describe("migrations", () => {
       expect(marshaller.instanceNs.get(marshaller.instanceNs.get(FEEL_NAMESPACES[DMN_LATEST_VERSION])!)).toStrictEqual(
         FEEL_NAMESPACES[DMN_LATEST_VERSION]
       );
-      expect(marshaller.instanceNs.get(marshaller.instanceNs.get(dmn15ns.get("")!)!)).toStrictEqual(dmn15ns.get(""));
-      expect(marshaller.instanceNs.get(marshaller.instanceNs.get(dmn15ns.get("dmndi:")!)!)).toStrictEqual(
-        dmn15ns.get("dmndi:")
+      expect(marshaller.instanceNs.get(marshaller.instanceNs.get(dmn16ns.get("")!)!)).toStrictEqual(dmn16ns.get(""));
+      expect(marshaller.instanceNs.get(marshaller.instanceNs.get(dmn16ns.get("dmndi:")!)!)).toStrictEqual(
+        dmn16ns.get("dmndi:")
       );
-      expect(marshaller.instanceNs.get(marshaller.instanceNs.get(dmn15ns.get("dc:")!)!)).toStrictEqual(
-        dmn15ns.get("dc:")
+      expect(marshaller.instanceNs.get(marshaller.instanceNs.get(dmn16ns.get("dc:")!)!)).toStrictEqual(
+        dmn16ns.get("dc:")
       );
-      expect(marshaller.instanceNs.get(marshaller.instanceNs.get(dmn15ns.get("di:")!)!)).toStrictEqual(
-        dmn15ns.get("di:")
+      expect(marshaller.instanceNs.get(marshaller.instanceNs.get(dmn16ns.get("di:")!)!)).toStrictEqual(
+        dmn16ns.get("di:")
       );
-      expect(marshaller.instanceNs.get(marshaller.instanceNs.get(dmn15ns.get("kie:")!)!)).toStrictEqual(
-        dmn15ns.get("kie:")
+      expect(marshaller.instanceNs.get(marshaller.instanceNs.get(dmn16ns.get("kie:")!)!)).toStrictEqual(
+        dmn16ns.get("kie:")
       );
     });
 

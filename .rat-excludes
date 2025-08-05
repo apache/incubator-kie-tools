@@ -348,6 +348,14 @@ DI.xsd
 DMN15.xsd
 # packages/dmn-marshaller/src/schemas/dmn-1_5/DMNDI15.xsd
 DMNDI15.xsd
+# packages/dmn-marshaller/src/schemas/dmn-1_6/DC.xsd
+DC.xsd
+# packages/dmn-marshaller/src/schemas/dmn-1_6/DI.xsd
+DI.xsd
+# packages/dmn-marshaller/src/schemas/dmn-1_6/DMN16.xsd
+DMN16.xsd
+# packages/dmn-marshaller/src/schemas/dmn-1_6/DMNDI15.xsd
+DMNDI15.xsd
 # packages/dmn-marshaller/src/schemas/kie-1_0/KIE.xsd
 KIE.xsd
 # packages/dmn-marshaller-backend-compatibility-tester/dmn-marshaller-backend-compatibility-tester.iml

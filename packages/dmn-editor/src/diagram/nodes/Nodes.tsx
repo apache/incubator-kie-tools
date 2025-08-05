@@ -19,16 +19,16 @@
 
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import {
-  DMN15__tBusinessKnowledgeModel,
-  DMN15__tDecision,
-  DMN15__tDecisionService,
-  DMN15__tDefinitions,
-  DMN15__tGroup,
-  DMN15__tInputData,
-  DMN15__tKnowledgeSource,
-  DMN15__tTextAnnotation,
+  DMN16__tBusinessKnowledgeModel,
+  DMN16__tDecision,
+  DMN16__tDecisionService,
+  DMN16__tDefinitions,
+  DMN16__tGroup,
+  DMN16__tInputData,
+  DMN16__tKnowledgeSource,
+  DMN16__tTextAnnotation,
   DMNDI15__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { drag } from "d3-drag";
@@ -95,8 +95,8 @@ export type ElementFilter<E extends { __$$element: string }, Filter extends stri
 
 export type NodeDmnObjects =
   | null
-  | Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]>
-  | ElementFilter<Unpacked<Normalized<DMN15__tDefinitions>["artifact"]>, "textAnnotation" | "group">;
+  | Unpacked<Normalized<DMN16__tDefinitions>["drgElement"]>
+  | ElementFilter<Unpacked<Normalized<DMN16__tDefinitions>["artifact"]>, "textAnnotation" | "group">;
 
 export type DmnDiagramNodeData<T extends NodeDmnObjects = NodeDmnObjects> = {
   dmnObjectNamespace: string | undefined;
@@ -121,7 +121,7 @@ export const InputDataNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN15__tInputData> & { __$$element: "inputData" }>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN16__tInputData> & { __$$element: "inputData" }>>) => {
     const ref = useRef<HTMLDivElement>(null);
 
     const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
@@ -156,7 +156,7 @@ export const InputDataNode = React.memo(
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
         dmnEditorStoreApi.setState((state) => {
-          const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tInputData>;
+          const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN16__tInputData>;
           drgElement.variable ??= { "@_id": generateUuid(), "@_name": inputData["@_name"] };
           drgElement.variable["@_typeRef"] = newTypeRef;
         });
@@ -343,7 +343,7 @@ export const DecisionNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN15__tDecision> & { __$$element: "decision" }>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN16__tDecision> & { __$$element: "decision" }>>) => {
     const ref = useRef<HTMLDivElement>(null);
     const isExternal = !!dmnObjectQName.prefix;
 
@@ -376,7 +376,7 @@ export const DecisionNode = React.memo(
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
         dmnEditorStoreApi.setState((state) => {
-          const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>;
+          const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN16__tDecision>;
           drgElement.variable ??= { "@_id": generateUuid(), "@_name": decision["@_name"] };
           drgElement.variable["@_typeRef"] = newTypeRef;
           if (drgElement.expression) {
@@ -505,7 +505,7 @@ export const BkmNode = React.memo(
     type,
     id,
   }: RF.NodeProps<
-    DmnDiagramNodeData<Normalized<DMN15__tBusinessKnowledgeModel> & { __$$element: "businessKnowledgeModel" }>
+    DmnDiagramNodeData<Normalized<DMN16__tBusinessKnowledgeModel> & { __$$element: "businessKnowledgeModel" }>
   >) => {
     const ref = useRef<HTMLDivElement>(null);
     const isExternal = !!dmnObjectQName.prefix;
@@ -536,7 +536,7 @@ export const BkmNode = React.memo(
         dmnEditorStoreApi.setState((state) => {
           const drgElement = state.dmn.model.definitions.drgElement![
             index
-          ] as Normalized<DMN15__tBusinessKnowledgeModel>;
+          ] as Normalized<DMN16__tBusinessKnowledgeModel>;
           drgElement.variable ??= { "@_id": generateUuid(), "@_name": bkm["@_name"] };
           drgElement.variable["@_typeRef"] = newTypeRef;
           if (drgElement.encapsulatedLogic) {
@@ -643,7 +643,7 @@ export const KnowledgeSourceNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN15__tKnowledgeSource> & { __$$element: "knowledgeSource" }>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN16__tKnowledgeSource> & { __$$element: "knowledgeSource" }>>) => {
     const ref = useRef<HTMLDivElement>(null);
 
     const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
@@ -755,7 +755,7 @@ export const TextAnnotationNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN15__tTextAnnotation> & { __$$element: "textAnnotation" }>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN16__tTextAnnotation> & { __$$element: "textAnnotation" }>>) => {
     const ref = useRef<HTMLDivElement>(null);
 
     const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
@@ -871,7 +871,7 @@ export const DecisionServiceNode = React.memo(
     zIndex,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN15__tDecisionService> & { __$$element: "decisionService" }>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN16__tDecisionService> & { __$$element: "decisionService" }>>) => {
     const ref = useRef<SVGRectElement>(null);
     const { externalModelsByNamespace } = useExternalModels();
     const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
@@ -1137,7 +1137,7 @@ export const DecisionServiceNode = React.memo(
     const onTypeRefChange = useCallback<OnTypeRefChange>(
       (newTypeRef) => {
         dmnEditorStoreApi.setState((state) => {
-          const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tInputData>;
+          const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN16__tInputData>;
           drgElement.variable ??= { "@_id": generateUuid(), "@_name": decisionService["@_name"] };
           drgElement.variable["@_typeRef"] = newTypeRef;
         });
@@ -1310,7 +1310,7 @@ export const GroupNode = React.memo(
     dragging,
     type,
     id,
-  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN15__tGroup> & { __$$element: "group" }>>) => {
+  }: RF.NodeProps<DmnDiagramNodeData<Normalized<DMN16__tGroup> & { __$$element: "group" }>>) => {
     const ref = useRef<SVGRectElement>(null);
 
     const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
@@ -1688,7 +1688,7 @@ export function useDataTypeCreationCallbackForNodes(index: number, drgElementNam
   return useCallback<OnCreateDataType>(
     (newDataTypeName) => {
       dmnEditorStoreApi.setState((state) => {
-        const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tInputData>;
+        const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN16__tInputData>;
         drgElement.variable ??= { "@_id": generateUuid(), "@_name": drgElementName };
         drgElement.variable["@_typeRef"] = newDataTypeName;
         const newItemDefinition = addTopLevelItemDefinition({

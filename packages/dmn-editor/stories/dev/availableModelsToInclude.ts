@@ -44,7 +44,7 @@ export const avaiableModels: DmnEditor.ExternalModel[] = [
   {
     type: "dmn",
     model: normalize(
-      getMarshaller(`<definitions xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" />`, {
+      getMarshaller(`<definitions xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" />`, {
         upgradeTo: "latest",
       }).parser.parse()
     ),
