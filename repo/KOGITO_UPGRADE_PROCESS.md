@@ -31,7 +31,7 @@ With the [GitHub CLI](https://cli.github.com/) installed, you can run:
 
 ```bash
 
-DATE='2025-06-22' # CHANGE THIS TO WHATEVER DATE YOU'D LIKE TO UPGRADE TO.
+DATE='2025-08-05' # CHANGE THIS TO WHATEVER DATE YOU'D LIKE TO UPGRADE TO.
 PAGER='cat'
 DROOLS_SHA=$(gh search commits --author-date "<${DATE}" -R "apache/incubator-kie-drools" --sort author-date --order desc --json sha --limit 1 --jq '.[].sha')
 OPTAPLANNER_SHA=$(gh search commits --author-date "<${DATE}" -R "apache/incubator-kie-optaplanner" --sort author-date --order desc --json sha --limit 1 --jq '.[].sha')
