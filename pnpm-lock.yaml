@@ -8823,6 +8823,9 @@ importers:
       '@graphql-codegen/typescript-react-apollo':
         specifier: ^3.3.7
         version: 3.3.7(encoding@0.1.13)(graphql-tag@2.12.6(graphql@14.3.1))(graphql@14.3.1)
+      '@kie-tools-core/drools-and-kogito':
+        specifier: workspace:*
+        version: link:../drools-and-kogito
       '@kie-tools-core/envelope':
         specifier: workspace:*
         version: link:../envelope
