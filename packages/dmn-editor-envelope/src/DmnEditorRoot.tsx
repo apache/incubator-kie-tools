@@ -338,126 +338,126 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
       return;
     }
     const cancelAction = this.props.keyboardShortcutsService.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.escape,
-      this.props.i18n.editOrUnselect,
+      this.props.i18n.terms.keyboardShortCuts.escape,
+      this.props.i18n.terms.keyboardShortCuts.edit + " | " + this.props.i18n.unselect,
       async () => commands.cancelAction()
     );
     const deleteSelectionBackspace = this.props.keyboardShortcutsService.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.backspace,
-      this.props.i18n.editOrDeleteSelection,
+      this.props.i18n.terms.keyboardShortCuts.backspace,
+      this.props.i18n.terms.keyboardShortCuts.edit + " | " + this.props.i18n.deleteSelection,
       async () => {}
     );
     const deleteSelectionDelete = this.props.keyboardShortcutsService.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.delete,
-      this.props.i18n.editOrDeleteSelection,
+      this.props.i18n.terms.keyboardShortCuts.delete,
+      this.props.i18n.terms.keyboardShortCuts.edit + " | " + this.props.i18n.deleteSelection,
       async () => {}
     );
     const selectAll = this.props.keyboardShortcutsService?.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.a,
-      this.props.i18n.editOrSelectOrDeselectAll,
+      this.props.i18n.terms.keyboardShortCuts.a,
+      this.props.i18n.terms.keyboardShortCuts.edit + " | " + this.props.i18n.selectOrDeselectAll,
       async () => commands.selectAll()
     );
     const createGroup = this.props.keyboardShortcutsService?.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.g,
-      this.props.i18n.editCreateGroupWrappingSelection,
+      this.props.i18n.terms.keyboardShortCuts.g,
+      this.props.i18n.terms.keyboardShortCuts.edit + " | " + this.props.i18n.createGroupWrappingSelection,
       async () => {
         console.log(" KEY GROUP PRESSED, ", commands);
         return commands.createGroup();
       }
     );
     const hideFromDrd = this.props.keyboardShortcutsService?.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.x,
-      this.props.i18n.editOrHideGroup,
+      this.props.i18n.terms.keyboardShortCuts.x,
+      this.props.i18n.terms.keyboardShortCuts.edit + " | " + this.props.i18n.hideFromDrd,
       async () => commands.hideFromDrd()
     );
     const copy = this.props.keyboardShortcutsService?.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.ctrlC,
-      this.props.i18n.editOrCopyNodes,
+      this.props.i18n.terms.keyboardShortCuts.ctrlC,
+      this.props.i18n.terms.keyboardShortCuts.edit + " | " + this.props.i18n.copyNodes,
       async () => commands.copy()
     );
     const cut = this.props.keyboardShortcutsService?.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.ctrlX,
-      this.props.i18n.editOrCutNodes,
+      this.props.i18n.terms.keyboardShortCuts.ctrlX,
+      this.props.i18n.terms.keyboardShortCuts.edit + " | " + this.props.i18n.cutNodes,
       async () => commands.cut()
     );
     const paste = this.props.keyboardShortcutsService?.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.ctrlV,
-      this.props.i18n.editOrPasteNodes,
+      this.props.i18n.terms.keyboardShortCuts.ctrlV,
+      this.props.i18n.terms.keyboardShortCuts.edit + " | " + this.props.i18n.pasteNodes,
       async () => commands.paste()
     );
     const togglePropertiesPanel = this.props.keyboardShortcutsService?.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.i,
-      this.props.i18n.miscOpenClosePropertiesPanel,
+      this.props.i18n.terms.keyboardShortCuts.i,
+      this.props.i18n.terms.keyboardShortCuts.misc + " | " + this.props.i18n.openClosePropertiesPanel,
       async () => commands.togglePropertiesPanel()
     );
     const toggleHierarchyHighlight = this.props.keyboardShortcutsService?.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.h,
-      this.props.i18n.miscToggleHierarchyHighlights,
+      this.props.i18n.terms.keyboardShortCuts.h,
+      this.props.i18n.terms.keyboardShortCuts.misc + " | " + this.props.i18n.toggleHierarchyHighlights,
       async () => commands.toggleHierarchyHighlight()
     );
     const moveUp = this.props.keyboardShortcutsService.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.up,
-      this.props.i18n.moveSelectionUp,
+      this.props.i18n.terms.keyboardShortCuts.up,
+      this.props.i18n.terms.keyboardShortCuts.move + " | " + this.props.i18n.selectionUp,
       async () => {}
     );
     const moveDown = this.props.keyboardShortcutsService.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.down,
-      this.props.i18n.moveSelectionDown,
+      this.props.i18n.terms.keyboardShortCuts.down,
+      this.props.i18n.terms.keyboardShortCuts.move + " | " + this.props.i18n.selectionDown,
       async () => {}
     );
     const moveLeft = this.props.keyboardShortcutsService.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.left,
-      this.props.i18n.moveSelectionLeft,
+      this.props.i18n.terms.keyboardShortCuts.left,
+      this.props.i18n.terms.keyboardShortCuts.move + " | " + this.props.i18n.selectionLeft,
       async () => {}
     );
     const moveRight = this.props.keyboardShortcutsService.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.right,
-      this.props.i18n.moveSelectionRight,
+      this.props.i18n.terms.keyboardShortCuts.right,
+      this.props.i18n.terms.keyboardShortCuts.move + " | " + this.props.i18n.selectionRight,
       async () => {}
     );
     const bigMoveUp = this.props.keyboardShortcutsService.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.shiftUp,
-      this.props.i18n.moveSelectionUpBigDistance,
+      this.props.i18n.terms.keyboardShortCuts.shiftUp,
+      this.props.i18n.terms.keyboardShortCuts.move + " | " + this.props.i18n.selectionUpBigDistance,
       async () => {}
     );
     const bigMoveDown = this.props.keyboardShortcutsService.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.shiftDown,
-      this.props.i18n.moveSelectionDownBigDistance,
+      this.props.i18n.terms.keyboardShortCuts.shiftDown,
+      this.props.i18n.terms.keyboardShortCuts.move + " | " + this.props.i18n.selectionDownBigDistance,
       async () => {}
     );
     const bigMoveLeft = this.props.keyboardShortcutsService.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.shiftLeft,
-      this.props.i18n.moveSelectionLeftBigDistance,
+      this.props.i18n.terms.keyboardShortCuts.shiftLeft,
+      this.props.i18n.terms.keyboardShortCuts.move + " | " + this.props.i18n.selectionLeftBigDistance,
       async () => {}
     );
     const bigMoveRight = this.props.keyboardShortcutsService.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.shiftRight,
-      this.props.i18n.moveSelectionRightBigDistance,
+      this.props.i18n.terms.keyboardShortCuts.shiftRight,
+      this.props.i18n.terms.keyboardShortCuts.move + " | " + this.props.i18n.selectionRightBigDistance,
       async () => {}
     );
     const focusOnBounds = this.props.keyboardShortcutsService?.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.b,
-      this.props.i18n.navigateFocusOnSelection,
+      this.props.i18n.terms.keyboardShortCuts.b,
+      this.props.i18n.terms.keyboardShortCuts.navigate + " | " + this.props.i18n.focusOnSelection,
       async () => commands.focusOnSelection()
     );
     const resetPosition = this.props.keyboardShortcutsService?.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.space,
-      this.props.i18n.navigateResetPositionToOrigin,
+      this.props.i18n.terms.keyboardShortCuts.space,
+      this.props.i18n.terms.keyboardShortCuts.navigate + " | " + this.props.i18n.resetPositionToOrigin,
       async () => commands.resetPosition()
     );
     const pan = this.props.keyboardShortcutsService?.registerKeyPress(
       this.props.i18n.rightMouseButton,
-      this.props.i18n.navigateHoldAndDragtoPan,
+      this.props.i18n.terms.keyboardShortCuts.navigate + " | " + this.props.i18n.holdAndDragtoPan,
       async () => {}
     );
     const zoom = this.props.keyboardShortcutsService?.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.ctrl,
-      this.props.i18n.navigateHoldAndScrollToZoomInOut,
+      this.props.i18n.terms.keyboardShortCuts.ctrl,
+      this.props.i18n.terms.keyboardShortCuts.navigate + " | " + this.props.i18n.holdAndScrollToZoomInOut,
       async () => {}
     );
     const navigateHorizontally = this.props.keyboardShortcutsService?.registerKeyPress(
-      this.props.i18n.keyboardShortCuts.shift,
-      this.props.i18n.navigateHoldAndScrollToNavigateHorizontally,
+      this.props.i18n.terms.keyboardShortCuts.shift,
+      this.props.i18n.terms.keyboardShortCuts.navigate + " | " + this.props.i18n.holdAndScrollToNavigateHorizontally,
       async () => {}
     );
 
