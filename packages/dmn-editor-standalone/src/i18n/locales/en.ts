@@ -18,6 +18,7 @@
  */
 
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
+import { DmnEditorStandaloneI18n } from "../DmnEditorStandaloneI18n";
 
 export const en: DmnEditorStandaloneI18n = {
   ...en_common,
