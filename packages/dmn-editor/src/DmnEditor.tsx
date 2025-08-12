@@ -59,6 +59,7 @@ import { DmnEditorSettingsContextProvider } from "./settings/DmnEditorSettingsCo
 import { JavaCodeCompletionService } from "@kie-tools/import-java-classes-component/dist/components/ImportJavaClasses/services";
 import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
+import { useDmnEditorI18n } from "./i18n";
 
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
 
@@ -210,6 +211,7 @@ export const DmnEditorInternal = ({
   onModelDebounceStateChanged,
   forwardRef,
 }: DmnEditorProps & { forwardRef?: React.Ref<DmnEditorRef> }) => {
+  const { i18n } = useDmnEditorI18n();
   const boxedExpressionEditorActiveDrgElementId = useDmnEditorStore((s) => s.boxedExpressionEditor.activeDrgElementId);
   const dmnEditorActiveTab = useDmnEditorStore((s) => s.navigation.tab);
   const isBeePropertiesPanelOpen = useDmnEditorStore((s) => s.boxedExpressionEditor.propertiesPanel.isOpen);
@@ -365,7 +367,7 @@ export const DmnEditorInternal = ({
           <TabTitleIcon>
             <PficonTemplateIcon />
           </TabTitleIcon>
-          <TabTitleText>Editor</TabTitleText>
+          <TabTitleText>{i18n.dmnEditor.editor}</TabTitleText>
         </>
       ),
       dataTypes: (
@@ -374,7 +376,7 @@ export const DmnEditorInternal = ({
             <InfrastructureIcon />
           </TabTitleIcon>
           <TabTitleText>
-            Data types&nbsp;&nbsp;
+            {i18n.dmnEditor.dataTypes}&nbsp;&nbsp;
             <Label style={{ padding: "0 12px" }}>{dmn.model.definitions.itemDefinition?.length ?? 0}</Label>
           </TabTitleText>
         </>
@@ -385,13 +387,13 @@ export const DmnEditorInternal = ({
             <FileIcon />
           </TabTitleIcon>
           <TabTitleText>
-            Included models&nbsp;&nbsp;
+            {i18n.dmnEditor.includedModels}&nbsp;&nbsp;
             <Label style={{ padding: "0 12px" }}>{dmn.model.definitions.import?.length ?? 0}</Label>
           </TabTitleText>
         </>
       ),
     };
-  }, [dmn.model.definitions.import?.length, dmn.model.definitions.itemDefinition?.length]);
+  }, [dmn.model.definitions.import?.length, dmn.model.definitions.itemDefinition?.length, i18n.dmnEditor]);
 
   const diagramPropertiesPanel = useMemo(() => <DiagramPropertiesPanel />, []);
   const beePropertiesPanel = useMemo(() => <BoxedExpressionPropertiesPanel />, []);

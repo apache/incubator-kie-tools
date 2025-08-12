@@ -22,17 +22,19 @@ import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { Popover, PopoverPosition } from "@patternfly/react-core/dist/js/components/Popover";
 import { useMemo } from "react";
 import { DMN_LATEST_VERSION } from "@kie-tools/dmn-marshaller";
+import { useDmnEditorI18n } from "../i18n";
 
 const latestChangelogHref = `https://www.omg.org/spec/DMN/1.5/Beta1/PDF/changebar`;
 
 export function DmnVersionLabel(props: { version: string }) {
+  const { i18n } = useDmnEditorI18n();
   const label = useMemo(
     () => (
-      <Label
-        style={{ cursor: "pointer", position: "absolute", bottom: "8px", left: "calc(50% - 34px)", zIndex: 100 }}
-      >{`DMN ${DMN_LATEST_VERSION}`}</Label>
+      <Label style={{ cursor: "pointer", position: "absolute", bottom: "8px", left: "calc(50% - 34px)", zIndex: 100 }}>
+        {i18n.nodes.dmnversion(DMN_LATEST_VERSION)}
+      </Label>
     ),
-    []
+    [i18n.nodes]
   );
 
   if (props.version === DMN_LATEST_VERSION) {
@@ -48,10 +50,9 @@ export function DmnVersionLabel(props: { version: string }) {
       headerContent={<div>Version upgraded!</div>}
       bodyContent={
         <div>
-          This DMN was originally imported as DMN {props.version}, but was converted to DMN {DMN_LATEST_VERSION} to
-          enable new features.
+          {i18n.nodes.originallyImportedDmn(props.version, DMN_LATEST_VERSION)}
           <a href={latestChangelogHref} target={"_blank"}>
-            &nbsp;{`See what's new on DMN ${DMN_LATEST_VERSION}`}.
+            &nbsp;{i18n.nodes.newInDmn(DMN_LATEST_VERSION)}.
           </a>
         </div>
       }

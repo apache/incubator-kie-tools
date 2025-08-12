@@ -27,6 +27,7 @@ import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { DMN15__tFunctionDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore } from "../../store/StoreContext";
+import { useDmnEditorI18n } from "../../i18n";
 
 type FunctionDefinitionRoot = Pick<
   Normalized<DMN15__tFunctionDefinition>,
@@ -37,6 +38,7 @@ export function FunctionDefinitionRootCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
   isReadOnly: boolean;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const selectedObjectInfos = useMemo(
     () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
@@ -49,7 +51,7 @@ export function FunctionDefinitionRootCell(props: {
 
   return (
     <>
-      <FormGroup label="ID">
+      <FormGroup label={i18n.propertiesPanel.id}>
         <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
           {selectedObjectId}
         </ClipboardCopy>

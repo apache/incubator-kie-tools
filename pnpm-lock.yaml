@@ -4434,9 +4434,6 @@ importers:
       '@kie-tools-core/envelope-bus':
         specifier: workspace:*
         version: link:../envelope-bus
-      '@kie-tools-core/i18n':
-        specifier: workspace:*
-        version: link:../i18n
       '@kie-tools-core/keyboard-shortcuts':
         specifier: workspace:*
         version: link:../keyboard-shortcuts
@@ -4461,9 +4458,6 @@ importers:
       '@kie-tools/dmn-marshaller':
         specifier: workspace:*
         version: link:../dmn-marshaller
-      '@kie-tools/i18n-common-dictionary':
-        specifier: workspace:*
-        version: link:../i18n-common-dictionary
       '@kie-tools/pmml-editor-marshaller':
         specifier: workspace:*
         version: link:../pmml-editor-marshaller

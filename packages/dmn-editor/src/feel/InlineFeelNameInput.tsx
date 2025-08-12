@@ -24,6 +24,7 @@ import { useFocusableElement } from "../focus/useFocusableElement";
 import { State } from "../store/Store";
 import { useDmnEditorStoreApi } from "../store/StoreContext";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
+import { useDmnEditorI18n } from "../i18n";
 
 export type OnInlineFeelNameRenamed = (newName: string) => void;
 
@@ -60,6 +61,7 @@ export function InlineFeelNameInput({
   validate?: typeof DMN15_SPEC.namedElement.isValidName;
   enableAutoFocusing?: boolean;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const _validate = (validate ??= DMN15_SPEC.namedElement.isValidName);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -100,7 +102,7 @@ export function InlineFeelNameInput({
 
   const { style: _style, disabled, defaultValue, ..._inputProps } = inputProps;
 
-  const _placeholder = placeholder ?? "Enter a name...";
+  const _placeholder = placeholder ?? i18n.propertiesPanel.namePlaceholder;
 
   return (
     <input

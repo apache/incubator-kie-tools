@@ -29,8 +29,10 @@ import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components
 import { useDmnEditor } from "../DmnEditorContext";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { useDmnEditorI18n } from "../i18n";
 
 export function UnknownProperties(props: { shape: Normalized<DMNDI15__DMNShape>; dmnElementRefQName: XmlQName }) {
+  const { i18n } = useDmnEditorI18n();
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const { externalModelsByNamespace } = useExternalModels();
   const externalDmnsByNamespace = useDmnEditorStore(
@@ -41,15 +43,13 @@ export function UnknownProperties(props: { shape: Normalized<DMNDI15__DMNShape>;
   const content = useMemo(() => {
     const namespace = thisDmn.model.definitions[`@_xmlns:${props.dmnElementRefQName.prefix}`];
     if (!namespace) {
-      return <p>{`This node references an external node with a namespace that is not declared at this DMN.`}</p>;
+      return <p>{i18n.propertiesPanel.nodeReferenceMessage}</p>;
     }
 
     const externalDmn = externalDmnsByNamespace.get(namespace);
     if (!externalDmn) {
       // Nothing that the user can do.
-      return (
-        <p>{`This node references an external node from a namespace that is not provided on this DMN's external DMNs mapping. `}</p>
-      );
+      return <p>{i18n.propertiesPanel.externalDmnNodeReference}</p>;
     }
 
     const externalDrgElementsById = (externalDmn.model.definitions.drgElement ?? []).reduce(
@@ -61,7 +61,7 @@ export function UnknownProperties(props: { shape: Normalized<DMNDI15__DMNShape>;
     if (!externalDrgElement) {
       return (
         <>
-          <p>{`This node references a DRG element from '${externalDmn.model.definitions["@_name"]}' that doesn't exist.`}</p>
+          <p>{i18n.propertiesPanel.nameNotExists(externalDmn.model.definitions["@_name"])}</p>
           {onRequestToJumpToPath && (
             <>
               <br />
@@ -69,7 +69,9 @@ export function UnknownProperties(props: { shape: Normalized<DMNDI15__DMNShape>;
                 style={{ paddingLeft: 0 }}
                 variant={ButtonVariant.link}
                 onClick={() => onRequestToJumpToPath?.(externalDmn.normalizedPosixPathRelativeToTheOpenFile)}
-              >{`Go to '${externalDmn.model.definitions["@_name"]}'`}</Button>
+              >
+                {i18n.propertiesPanel.goToName(externalDmn.model.definitions["@_name"])}
+              </Button>
             </>
           )}
         </>
@@ -81,17 +83,19 @@ export function UnknownProperties(props: { shape: Normalized<DMNDI15__DMNShape>;
     props.dmnElementRefQName.localPart,
     props.dmnElementRefQName.prefix,
     thisDmn.model.definitions,
+    i18n.propertiesPanel,
   ]);
 
   return (
     <>
-      <Alert title={"This is a placeholder for an unknown node"} isInline={true} variant={AlertVariant.danger}>
+      <Alert title={i18n.propertiesPanel.unknownNodePlaceholder} isInline={true} variant={AlertVariant.danger}>
         <br />
         {content}
         <Divider style={{ marginTop: "16px" }} />
         <br />
         <p>
-          <b>Reference:</b>&nbsp;{`${buildXmlQName(props.dmnElementRefQName)}`}
+          <b>{i18n.propertiesPanel.reference}</b>&nbsp;
+          {i18n.propertiesPanel.buildXmlName(buildXmlQName(props.dmnElementRefQName))}
         </p>
       </Alert>
     </>

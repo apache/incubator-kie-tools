@@ -25,6 +25,7 @@ import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/compo
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { ConstraintComponentProps } from "./Constraints";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
+import { useDmnEditorI18n } from "../i18n";
 
 const RANGE_CONSTRAINT_SEPARATOR = "..";
 const CONSTRAINT_START_ID = "start";
@@ -41,6 +42,7 @@ export function ConstraintsRange({
   isDisabled,
   renderOnPropertiesPanel,
 }: ConstraintComponentProps) {
+  const { i18n } = useDmnEditorI18n();
   const start = useMemo(
     () => typeHelper.recover(isRange(value ?? "", typeHelper.check)?.[0]) ?? "",
     [typeHelper, value]
@@ -143,26 +145,32 @@ export function ConstraintsRange({
   const messages = useCallback(
     (value: string, operator: string) => {
       if (type === DmnBuiltInDataType.Date && value !== "") {
-        return `The next valid number is: (${value} ${operator} 1 Day).`;
+        return i18n.dataTypes.nextValidDate;
       }
       if (type === DmnBuiltInDataType.DateTime && value !== "") {
-        return `The next valid number is: (${value} ${operator} 1 Second).`;
+        return i18n.dataTypes.nextValidDateTime;
       }
       if (type === DmnBuiltInDataType.DateTimeDuration && value !== "") {
-        return `The next valid number is: (${value} ${operator} 1 Second).`;
+        return i18n.dataTypes.nextValidDateTime;
       }
       if (type === DmnBuiltInDataType.Number && value !== "") {
-        return `The next valid number is: (${value} ${operator} 2e-52).`;
+        return i18n.dataTypes.nextValidNumber;
       }
       if (type === DmnBuiltInDataType.Time && value !== "") {
-        return `The next valid number is: (${value} ${operator} 1 Second).`;
+        return i18n.dataTypes.nextValidDateTime;
       }
       if (type === DmnBuiltInDataType.YearsMonthsDuration && value !== "") {
-        return `The next valid number is: (${value} ${operator} 1 Month).`;
+        return i18n.dataTypes.nextValidYearsAndMonths;
       }
       return "";
     },
-    [type]
+    [
+      i18n.dataTypes.nextValidDate,
+      i18n.dataTypes.nextValidDateTime,
+      i18n.dataTypes.nextValidNumber,
+      i18n.dataTypes.nextValidYearsAndMonths,
+      type,
+    ]
   );
 
   const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -202,12 +210,10 @@ export function ConstraintsRange({
         }}
       >
         <div style={{ gridArea: "start" }}>
-          <Label>Start</Label>
+          <Label>{i18n.dataTypes.start}</Label>
         </div>
         <div style={{ gridArea: "includeStartButton" }}>
-          <Tooltip
-            content={includeStart ? "Click to remove value from the range" : "Click to include value in the range"}
-          >
+          <Tooltip content={includeStart ? i18n.dataTypes.clickToRemoveValue : i18n.dataTypes.clickToIncludeInRange}>
             <button
               id={CONSTRAINT_START_ID}
               disabled={isReadOnly || isDisabled}
@@ -231,7 +237,7 @@ export function ConstraintsRange({
             onChange: onStartChange,
             id: "start-value",
             isDisabled: isReadOnly || isDisabled,
-            placeholder: "Starts with",
+            placeholder: i18n.dataTypes.startsWith,
             style: {
               outline: "none",
             },
@@ -244,8 +250,8 @@ export function ConstraintsRange({
           <HelperText>
             <HelperTextItem variant="indeterminate">
               {includeStart
-                ? "The starting value will be included in the range."
-                : `The starting value will not be included in the range. ${messages(start, "+")}`}
+                ? i18n.dataTypes.startingValueIncluded
+                : i18n.dataTypes.startingValueNotIncluded + ` ${messages(start, "+")}`}
             </HelperTextItem>
           </HelperText>
         </div>
@@ -268,7 +274,7 @@ export function ConstraintsRange({
         </div>
         <div style={{ gridArea: "includeEndButton" }}>
           <Tooltip
-            content={includeEnd ? "Click to remove value from the range" : "Click to include value in the range"}
+            content={includeEnd ? i18n.dataTypes.clickToRemoveValueFromRange : i18n.dataTypes.clickToIncludeInRange}
           >
             <button
               id={CONSTRAINT_END_ID}
@@ -293,7 +299,7 @@ export function ConstraintsRange({
             onChange: onEndChange,
             id: "end-value",
             isDisabled: isReadOnly || isDisabled,
-            placeholder: "Ends with",
+            placeholder: i18n.dataTypes.endsWith,
             style: { outline: "none" },
             value: end,
             isValid: isEndValid({ includeEnd, start, end }),
@@ -304,8 +310,8 @@ export function ConstraintsRange({
           <HelperText>
             <HelperTextItem variant="indeterminate">
               {includeEnd
-                ? "The ending value will be included in the range."
-                : `The ending value will not be included in the range. ${messages(end, "-")}`}
+                ? i18n.dataTypes.endingValueIncludedInRange
+                : i18n.dataTypes.endingValueNotIncludedInRange + ` ${messages(end, "-")}`}
             </HelperTextItem>
           </HelperText>
         </div>

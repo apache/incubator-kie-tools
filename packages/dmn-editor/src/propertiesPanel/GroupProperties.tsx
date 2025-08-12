@@ -27,14 +27,16 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { useDmnEditorStoreApi } from "../store/StoreContext";
 import { renameGroupNode } from "../mutations/renameNode";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { useDmnEditorI18n } from "../i18n";
 
 export function GroupProperties({ group, index }: { group: Normalized<DMN15__tGroup>; index: number }) {
+  const { i18n } = useDmnEditorI18n();
   const { setState } = useDmnEditorStoreApi();
   const settings = useSettings();
 
   return (
     <>
-      <FormGroup label="Name">
+      <FormGroup label={i18n.name}>
         <TextInput
           aria-label={"Name"}
           type={"text"}
@@ -49,11 +51,11 @@ export function GroupProperties({ group, index }: { group: Normalized<DMN15__tGr
             });
           }}
           value={group["@_name"]}
-          placeholder={"Enter a name..."}
+          placeholder={i18n.propertiesPanel.namePlaceholder}
         />
       </FormGroup>
 
-      <FormGroup label="Description">
+      <FormGroup label={i18n.propertiesPanel.description}>
         <TextArea
           aria-label={"Description"}
           type={"text"}
@@ -66,14 +68,14 @@ export function GroupProperties({ group, index }: { group: Normalized<DMN15__tGr
               };
             });
           }}
-          placeholder={"Enter a description..."}
+          placeholder={i18n.propertiesPanel.descriptionPlaceholder}
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={6}
         />
       </FormGroup>
 
-      <FormGroup label="ID">
-        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+      <FormGroup label={i18n.propertiesPanel.id}>
+        <ClipboardCopy isReadOnly={true} hoverTip={i18n.propertiesPanel.copy} clickTip={i18n.propertiesPanel.copied}>
           {group["@_id"]}
         </ClipboardCopy>
       </FormGroup>

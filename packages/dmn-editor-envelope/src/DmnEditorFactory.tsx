@@ -34,7 +34,6 @@ import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { ResourceContent, ResourcesList, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { DmnEditorRoot, JavaCodeCompletionExposedInteropApi } from "./DmnEditorRoot";
 import { VsCodeNewDmnEditorEnvelopeContext } from "./vscode/VsCodeNewDmnEditorFactory";
-import { useDmnEditorEnvelopeI18n } from "./i18n";
 
 export class DmnEditorFactory implements EditorFactory<Editor, KogitoEditorEnvelopeApi, KogitoEditorChannelApi> {
   public createEditor(
@@ -125,7 +124,6 @@ export function DmnEditorRootWrapper({
   channelType?: ChannelType;
   onOpenedBoxedExpressionEditorNodeChange?: (newOpenedNodeId: string | undefined) => void;
 }) {
-  const { i18n } = useDmnEditorEnvelopeI18n();
   const onNewEdit = useCallback(
     (workspaceEdit: WorkspaceEdit) => {
       envelopeContext?.channelApi.notifications.kogitoWorkspace_newEdit.send(workspaceEdit);
@@ -191,7 +189,6 @@ export function DmnEditorRootWrapper({
       isReadOnly={isReadOnly}
       isImportDataTypesFromJavaClassesSupported={isImportDataTypesFromJavaClassesSupported}
       javaCodeCompletionService={javaCodeCompletionService}
-      i18n={i18n}
     />
   );
 }

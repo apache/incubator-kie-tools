@@ -32,34 +32,34 @@ import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { PasteIcon } from "@patternfly/react-icons/dist/js/icons/paste-icon";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { ImportJavaClassesWrapper } from "./ImportJavaClasses";
+import { useDmnEditorI18n } from "../i18n";
 
 export function DataTypesEmptyState({ onAdd, onPaste }: { onAdd: () => void; onPaste: () => void }) {
+  const { i18n } = useDmnEditorI18n();
   const { isReadOnly, isImportDataTypesFromJavaClassesSupported, javaCodeCompletionService } = useSettings();
 
   return (
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
       <EmptyState style={{ maxWidth: "1280px" }}>
         <EmptyStateHeader
-          titleText={<>{`No custom data types have been defined.`}</>}
+          titleText={<>{i18n.dataTypes.noCustomDataTypes}</>}
           icon={<EmptyStateIcon icon={CubesIcon} />}
           headingLevel={"h4"}
         />
-        <EmptyStateBody>
-          {`Data types are referenced in the input and output values for decision tables. Custom data types allow you to reference more complex data types, beyond the simple "default" types.`}
-        </EmptyStateBody>
+        <EmptyStateBody>{i18n.dataTypes.dmnEmptyBody}</EmptyStateBody>
         <EmptyStateFooter>
           <br />
           {!isReadOnly && (
             <>
               <EmptyStateActions>
                 <Button variant={ButtonVariant.primary} onClick={onAdd}>
-                  Create a custom data type
+                  {i18n.dataTypes.createCustomDataType}
                 </Button>
               </EmptyStateActions>
               <br />
               {isImportDataTypesFromJavaClassesSupported && javaCodeCompletionService && (
                 <>
-                  or
+                  {i18n.dataTypes.or}
                   <br />
                   <br />
                   <ImportJavaClassesWrapper javaCodeCompletionService={javaCodeCompletionService} />
@@ -70,7 +70,7 @@ export function DataTypesEmptyState({ onAdd, onPaste }: { onAdd: () => void; onP
               or
               <EmptyStateActions>
                 <Button variant={ButtonVariant.link} onClick={onPaste} icon={<PasteIcon />}>
-                  Paste data type
+                  {i18n.dataTypes.pasteDataType}
                 </Button>
               </EmptyStateActions>
             </>

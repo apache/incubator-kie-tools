@@ -51,6 +51,7 @@ import { useDmnEditorStore } from "../store/StoreContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
+import { useDmnEditorI18n } from "../i18n";
 
 export type TypeHelper = {
   check: (value: string) => boolean;
@@ -721,6 +722,7 @@ export function Constraints({
   onToggleGroupChange: (selected: boolean, selectedConstraint: ConstraintsType) => void;
   onConstraintChange: (value: string | undefined, selectedConstraint: ConstraintsType) => void;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const [internalSelectedConstraint, setInternalSelectedConstraint] = useState<{
     selectedConstraint: ConstraintsType;
     itemDefinitionId: string;
@@ -768,14 +770,14 @@ export function Constraints({
             textAlign: "center",
           }}
         >
-          {`This data type doesn't support constraints`}
+          {i18n.dataTypes.dataTypeConstraints}
         </p>
       ) : (
         <div style={{ display: "flex", flexDirection: "column" }}>
           <div>
             <ToggleGroup aria-label={"Constraint toggle group"}>
               <ToggleGroupItem
-                text={ConstraintsType.NONE}
+                text={i18n.none}
                 buttonId={ConstraintsType.NONE}
                 isSelected={internalSelectedConstraint.selectedConstraint === ConstraintsType.NONE}
                 onChange={(event, val) => onToggleGroupChangeInternal(val, event)}
@@ -787,21 +789,21 @@ export function Constraints({
                 // to be on top of the Monaco suggestion. The 10
                 // is an arbirtrary value, which solves the issue.
                 style={{ zIndex: 10 }}
-                text={ConstraintsType.EXPRESSION}
+                text={i18n.dataTypes.expression}
                 buttonId={ConstraintsType.EXPRESSION}
                 isSelected={internalSelectedConstraint.selectedConstraint === ConstraintsType.EXPRESSION}
                 onChange={(event, val) => onToggleGroupChangeInternal(val, event)}
                 isDisabled={isReadOnly || !isConstraintEnabled.expression}
               />
               <ToggleGroupItem
-                text={ConstraintsType.ENUMERATION}
+                text={i18n.dataTypes.enumeration}
                 buttonId={ConstraintsType.ENUMERATION}
                 isSelected={internalSelectedConstraint.selectedConstraint === ConstraintsType.ENUMERATION}
                 onChange={(event, val) => onToggleGroupChangeInternal(val, event)}
                 isDisabled={isReadOnly || !isConstraintEnabled.enumeration}
               />
               <ToggleGroupItem
-                text={ConstraintsType.RANGE}
+                text={i18n.dataTypes.range}
                 buttonId={ConstraintsType.RANGE}
                 isSelected={internalSelectedConstraint.selectedConstraint === ConstraintsType.RANGE}
                 onChange={(event, val) => onToggleGroupChangeInternal(val, event)}
@@ -857,7 +859,7 @@ export function Constraints({
                   textAlign: "center",
                 }}
               >
-                {`All values are allowed`}
+                {i18n.dataTypes.allValuesAllowed}
               </p>
             )}
           </div>

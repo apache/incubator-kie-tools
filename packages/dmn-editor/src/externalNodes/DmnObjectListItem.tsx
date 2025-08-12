@@ -33,6 +33,7 @@ import { useExternalModels } from "../includedModels/DmnEditorDependenciesContex
 import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
+import { useDmnEditorI18n } from "../i18n";
 
 export function DmnObjectListItem({
   dmnObject,
@@ -45,6 +46,7 @@ export function DmnObjectListItem({
   namespace: string;
   relativeToNamespace: string;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const importsByNamespace = useDmnEditorStore((s) => s.computed(s).importsByNamespace());
   const { externalModelsByNamespace } = useExternalModels();
   const allTopLevelDataTypesByFeelName = useDmnEditorStore(
@@ -101,21 +103,21 @@ export function DmnObjectListItem({
       throw new Error("Can't determine nodeTypeDescription with undefined node type");
     }
     if (nodeType === NODE_TYPES.decision) {
-      return "Decision";
+      return i18n.nodes.decision;
     } else if (nodeType === NODE_TYPES.inputData) {
-      return "Input Data";
+      return i18n.nodes.inputData;
     } else {
-      return "Unknown";
+      return i18n.nodes.unknown;
     }
-  }, [dmnObject]);
+  }, [dmnObject, i18n.nodes.decision, i18n.nodes.inputData, i18n.nodes.unknown]);
 
   const toolTip = useMemo(() => {
     return dmnObject && isNamespaceDirectlyIncluded ? (
       <p>{displayName}</p>
     ) : (
-      <div>{`This ${nodeTypeTooltipDescription} node is from an external model that is not included in this one. Namespace: ${namespace}`}</div>
+      <div>{i18n.externalNodes.externalModelTooltip(nodeTypeTooltipDescription, namespace)}</div>
     );
-  }, [displayName, dmnObject, isNamespaceDirectlyIncluded, namespace, nodeTypeTooltipDescription]);
+  }, [displayName, dmnObject, i18n.externalNodes, isNamespaceDirectlyIncluded, namespace, nodeTypeTooltipDescription]);
 
   const isValid = useDmnEditorStore((s) =>
     DMN15_SPEC.namedElement.isValidName(

@@ -26,6 +26,7 @@ import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/compo
 import InfoIcon from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { TypeHelper } from "./Constraints";
+import { useDmnEditorI18n } from "../i18n";
 
 export function ConstraintsExpression({
   id,
@@ -42,6 +43,7 @@ export function ConstraintsExpression({
   onSave?: (value?: string) => void;
   isDisabled?: boolean;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const [preview, setPreview] = useState(value ?? "");
   const [isEditing, setEditing] = useState(false);
   const valueCopy = useRef(value);
@@ -99,7 +101,7 @@ export function ConstraintsExpression({
     <div key={id} style={{ display: "flex", flexDirection: "column", width: "100%" }} onKeyDown={onKeyDown}>
       {isReadOnly && (
         <Title size={"md"} headingLevel="h5" style={{ paddingBottom: "10px" }}>
-          Equivalent FEEL expression:
+          {i18n.dataTypes.equivalentFeelExpression}
         </Title>
       )}
 
@@ -132,11 +134,11 @@ export function ConstraintsExpression({
       <HelperText>
         {!isReadOnly && (
           <HelperTextItem variant="indeterminate" icon={<InfoIcon />}>
-            Check the{" "}
+            {i18n.dataTypes.checkThe}
             <a target={"_blank"} href={"https://kiegroup.github.io/dmn-feel-handbook/#feel-values"}>
-              FEEL handbook
+              {i18n.dataTypes.feelHandbook}
             </a>{" "}
-            to help you on creating your expressions.
+            {i18n.dataTypes.creatingAnExpression}
           </HelperTextItem>
         )}
       </HelperText>

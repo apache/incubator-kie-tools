@@ -64,6 +64,7 @@ import { useExternalModels } from "../includedModels/DmnEditorDependenciesContex
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { ImportJavaClassesDropdownItem, ImportJavaClassNameConflictsModal } from "./ImportJavaClasses";
 import { useImportJavaClasses } from "./useImportJavaClasses";
+import { useDmnEditorI18n } from "../i18n";
 
 export type DataType = {
   itemDefinition: Normalized<DMN15__tItemDefinition>;
@@ -96,6 +97,7 @@ export type EditItemDefinition = (
 ) => void;
 
 export function DataTypes() {
+  const { i18n } = useDmnEditorI18n();
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const activeItemDefinitionId = useDmnEditorStore((s) => s.dataTypesEditor.activeItemDefinitionId);
@@ -196,7 +198,7 @@ export function DataTypes() {
   const [isAddDataTypeDropdownOpen, setAddDataTypeDropdownOpen] = useState(false);
 
   // Using this object because DropdownToggleAction's props doesn't accept a 'title'.
-  const extraPropsForDropdownToggleAction = { title: "New Data Type" };
+  const extraPropsForDropdownToggleAction = { title: i18n.dataTypes.newDataType };
 
   const addDataTypesDropdownItems = useMemo(() => {
     const dropdownItems = [
@@ -206,7 +208,7 @@ export function DataTypes() {
         style={{ minWidth: "240px" }}
         icon={<PasteIcon />}
       >
-        Paste
+        {i18n.dataTypes.paste}
       </DropdownItem>,
     ];
     if (isImportDataTypesFromJavaClassesSupported && javaCodeCompletionService) {
@@ -225,6 +227,7 @@ export function DataTypes() {
     javaCodeCompletionService,
     handleImportJavaClassButtonClick,
     pasteTopLevelItemDefinition,
+    i18n.dataTypes.paste,
   ]);
 
   return (
@@ -252,7 +255,7 @@ export function DataTypes() {
                   <InputGroup>
                     <InputGroupItem isFill>
                       <SearchInput
-                        placeholder="Filter..."
+                        placeholder={i18n.filter}
                         value={filter}
                         onChange={(_event, value) => setFilter(value)}
                         onClear={() => setFilter("")}
@@ -322,7 +325,7 @@ export function DataTypes() {
                           />
                         )) || (
                           <>
-                            <Label style={{ marginLeft: "8px" }}>External</Label>
+                            <Label style={{ marginLeft: "8px" }}>{i18n.dataTypes.external}</Label>
                             <div
                               className={`kie-dmn-editor--editable-node-name-input top-left grow`}
                               style={

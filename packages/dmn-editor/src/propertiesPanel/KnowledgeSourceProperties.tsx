@@ -31,6 +31,7 @@ import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useCallback, useMemo } from "react";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { useRefactor } from "../refactor/RefactorConfirmationDialog";
+import { useDmnEditorI18n } from "../i18n";
 
 export function KnowledgeSourceProperties({
   knowledgeSource,
@@ -41,6 +42,7 @@ export function KnowledgeSourceProperties({
   namespace: string | undefined;
   index: number;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const { setState } = useDmnEditorStoreApi();
   const settings = useSettings();
 
@@ -62,7 +64,7 @@ export function KnowledgeSourceProperties({
   return (
     <>
       {refactorConfirmationDialog}
-      <FormGroup label="Name">
+      <FormGroup label={i18n.name}>
         <InlineFeelNameInput
           enableAutoFocusing={false}
           isPlain={false}
@@ -76,7 +78,7 @@ export function KnowledgeSourceProperties({
         />
       </FormGroup>
 
-      <FormGroup label="Description">
+      <FormGroup label={i18n.propertiesPanel.description}>
         <TextArea
           aria-label={"Description"}
           type={"text"}
@@ -89,19 +91,19 @@ export function KnowledgeSourceProperties({
               };
             });
           }}
-          placeholder={"Enter a description..."}
+          placeholder={i18n.propertiesPanel.descriptionPlaceholder}
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={6}
         />
       </FormGroup>
 
-      <FormGroup label="ID">
-        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+      <FormGroup label={i18n.propertiesPanel.id}>
+        <ClipboardCopy isReadOnly={true} hoverTip={i18n.propertiesPanel.copy} clickTip={i18n.propertiesPanel.copied}>
           {knowledgeSource["@_id"]}
         </ClipboardCopy>
       </FormGroup>
 
-      <FormGroup label="Source type">
+      <FormGroup label={i18n.propertiesPanel.sourceType}>
         <TextInput
           aria-label={"Source type"}
           type={"text"}
@@ -114,13 +116,13 @@ export function KnowledgeSourceProperties({
               };
             });
           }}
-          placeholder={"Enter source type..."}
+          placeholder={i18n.propertiesPanel.sourceTypePlaceHolder}
         />
       </FormGroup>
 
-      <FormGroup label="Location URI">
+      <FormGroup label="">
         <TextInput
-          aria-label={"Location URI"}
+          aria-label={i18n.propertiesPanel.locationUri}
           type={"text"}
           isDisabled={isReadOnly}
           value={knowledgeSource["@_locationURI"]}
@@ -130,7 +132,7 @@ export function KnowledgeSourceProperties({
                 newLocationUri;
             });
           }}
-          placeholder={"Enter location URI..."}
+          placeholder={i18n.propertiesPanel.locationUriPlaceholder}
         />
       </FormGroup>
 

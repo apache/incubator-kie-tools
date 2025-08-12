@@ -33,11 +33,13 @@ import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constrai
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { State } from "../../store/Store";
+import { useDmnEditorI18n } from "../../i18n";
 
 export function DecisionTableInputHeaderCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
   isReadOnly: boolean;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const { externalModelsByNamespace } = useExternalModels();
@@ -91,7 +93,7 @@ export function DecisionTableInputHeaderCell(props: {
           fixed={false}
           isSectionExpanded={isInputExpressionExpanded}
           toogleSectionExpanded={() => setInputExpressionExpanded((prev) => !prev)}
-          title={"Input Expression"}
+          title={i18n.propertiesPanel.inputExpression}
         />
         {isInputExpressionExpanded && (
           <>
@@ -122,7 +124,7 @@ export function DecisionTableInputHeaderCell(props: {
               }
             />
             {inputExpressionItemDefinition && (
-              <FormGroup label="Constraint">
+              <FormGroup label={i18n.propertiesPanel.constraint}>
                 <ConstraintsFromTypeConstraintAttribute
                   isReadOnly={true}
                   itemDefinition={inputExpressionItemDefinition}
@@ -164,7 +166,7 @@ export function DecisionTableInputHeaderCell(props: {
           fixed={false}
           isSectionExpanded={isInputValuesExpanded}
           toogleSectionExpanded={() => setInputValuesExpanded((prev) => !prev)}
-          title={"Input Values"}
+          title={i18n.propertiesPanel.inputValues}
         />
         {isInputValuesExpanded && (
           <>

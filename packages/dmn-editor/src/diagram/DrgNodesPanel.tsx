@@ -40,10 +40,12 @@ import {
   EmptyStateHeader,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import CubesIcon from "@patternfly/react-icons/dist/js/icons/cubes-icon";
+import { useDmnEditorI18n } from "../i18n";
 
 export const MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE = "kie-dmn-editor--drg-node";
 
 export function DrgNodesPanel() {
+  const { i18n } = useDmnEditorI18n();
   const thisDmnsDrgElements = useDmnEditorStore((s) => s.dmn.model.definitions.drgElement ?? []);
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const dmnShapesByHref = useDmnEditorStore((s) => s.computed(s).indexedDrd().dmnShapesByHref);
@@ -114,11 +116,11 @@ export function DrgNodesPanel() {
         <>
           <EmptyState>
             <EmptyStateHeader
-              titleText="No DRG nodes yet"
+              titleText={i18n.nodes.noDrgNodes}
               icon={<EmptyStateIcon icon={CubesIcon} />}
               headingLevel={"h4"}
             />
-            <EmptyStateBody>Use the Palette on the left-hand-side to drag new nodes into the Diagram.</EmptyStateBody>
+            <EmptyStateBody>{i18n.nodes.usePaletteLeftHandSide}</EmptyStateBody>
           </EmptyState>
         </>
       )) || (
@@ -126,10 +128,10 @@ export function DrgNodesPanel() {
           <div className="kie-dmn-editor--sticky-top-glass-header" style={{ padding: "12px" }}>
             <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
               <TextContent>
-                <Text component="h3">DRG Nodes</Text>
+                <Text component="h3">{i18n.nodes.drgNodes}</Text>
               </TextContent>
               <Button
-                title={"Close"}
+                title={i18n.close}
                 variant={ButtonVariant.plain}
                 onClick={() =>
                   dmnEditorStoreApi.setState((state) => {
@@ -147,7 +149,7 @@ export function DrgNodesPanel() {
               style={{ marginBottom: "12px", height: "36px" }}
               onKeyDown={(e) => e.stopPropagation()}
               autoFocus={true}
-              placeholder="Filter..."
+              placeholder={i18n.filter}
               value={filter}
               onChange={(_event, value) => setFilter(value)}
               onClear={() => setFilter("")}

@@ -33,6 +33,7 @@ import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { useRefactor } from "../refactor/RefactorConfirmationDialog";
 import { TextField, TextFieldType } from "./Fields";
+import { useDmnEditorI18n } from "../i18n";
 
 export function BkmProperties({
   bkm,
@@ -43,6 +44,7 @@ export function BkmProperties({
   namespace: string | undefined;
   index: number;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const { setState } = useDmnEditorStoreApi();
   const settings = useSettings();
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
@@ -67,7 +69,7 @@ export function BkmProperties({
   return (
     <>
       {refactorConfirmationDialog}
-      <FormGroup label="Name">
+      <FormGroup label={i18n.name}>
         <InlineFeelNameInput
           enableAutoFocusing={false}
           isPlain={false}
@@ -81,7 +83,7 @@ export function BkmProperties({
         />
       </FormGroup>
 
-      <FormGroup label="Data type">
+      <FormGroup label={i18n.propertiesPanel.dataType}>
         <TypeRefSelector
           heightRef={dmnEditorRootElementRef}
           typeRef={resolvedTypeRef}
@@ -99,7 +101,7 @@ export function BkmProperties({
       </FormGroup>
 
       <TextField
-        title={"Description"}
+        title={i18n.propertiesPanel.description}
         type={TextFieldType.TEXT_AREA}
         isReadOnly={isReadOnly}
         initialValue={bkm.description?.__$$text || ""}
@@ -111,10 +113,10 @@ export function BkmProperties({
               };
           });
         }}
-        placeholder={"Enter a description..."}
+        placeholder={i18n.propertiesPanel.descriptionPlaceholder}
       />
 
-      <FormGroup label="ID">
+      <FormGroup label={i18n.propertiesPanel.id}>
         <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
           {bkm["@_id"]}
         </ClipboardCopy>

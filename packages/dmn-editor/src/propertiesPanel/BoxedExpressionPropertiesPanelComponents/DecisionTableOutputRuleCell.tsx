@@ -34,11 +34,13 @@ import { BoxedDecisionTable, DmnBuiltInDataType } from "@kie-tools/boxed-express
 import { useDmnEditor } from "../../DmnEditorContext";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
+import { useDmnEditorI18n } from "../../i18n";
 
 export function DecisionTableOutputRuleCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
   isReadOnly: boolean;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const { externalModelsByNamespace } = useExternalModels();
@@ -107,7 +109,7 @@ export function DecisionTableOutputRuleCell(props: {
 
   return (
     <>
-      <FormGroup label="ID">
+      <FormGroup label={i18n.propertiesPanel.id}>
         <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
           {selectedObjectId}
         </ClipboardCopy>
@@ -115,7 +117,7 @@ export function DecisionTableOutputRuleCell(props: {
       {headerType && (
         <>
           <TypeRefField
-            alternativeFieldName={"Output header type"}
+            alternativeFieldName={i18n.propertiesPanel.outputHeaderType}
             isReadOnly={true}
             dmnEditorRootElementRef={dmnEditorRootElementRef}
             typeRef={
@@ -128,7 +130,7 @@ export function DecisionTableOutputRuleCell(props: {
       )}
       {headerType?.itemDefinition && (
         <>
-          <FormGroup label="Constraint">
+          <FormGroup label={i18n.propertiesPanel.constraint}>
             <ConstraintsFromTypeConstraintAttribute
               isReadOnly={true}
               itemDefinition={headerType.itemDefinition}

@@ -54,8 +54,10 @@ import { drgElementToBoxedExpression } from "../boxedExpressions/BoxedExpression
 import { IteratorVariableCell } from "./BoxedExpressionPropertiesPanelComponents/IteratorVariableCell";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
+import { useDmnEditorI18n } from "../i18n";
 
 export function BoxedExpressionPropertiesPanel() {
+  const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
@@ -132,7 +134,13 @@ export function BoxedExpressionPropertiesPanel() {
             </DrawerActions>
             {!shouldDisplayDecisionOrBkmProps && (
               <Form>
-                <FormSection title={boxedExpressionPropertiesPanelComponent?.title ?? ""}>
+                <FormSection
+                  title={
+                    boxedExpressionPropertiesPanelComponent?.title
+                      ? i18n.propertiesPanel.boxedExpressionTitle(boxedExpressionPropertiesPanelComponent?.title)
+                      : ""
+                  }
+                >
                   {(((selectedObjectId === undefined || selectedObjectId === "") &&
                     boxedExpressionPropertiesPanelComponent === undefined) ||
                     boxedExpressionPropertiesPanelComponent?.component ===

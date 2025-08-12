@@ -18,6 +18,7 @@
  */
 
 import { ExpressionPath } from "../../boxedExpressions/boxedExpressionIndex";
+import { useDmnEditorI18n } from "../../i18n";
 
 export enum BoxedExpressionPropertiesPanelComponent {
   CONTEXT_INFORMATION_ITEM_CELL = "context-information-item-cell",

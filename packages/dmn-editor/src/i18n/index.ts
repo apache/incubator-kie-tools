@@ -17,5 +17,5 @@
  * under the License.
  */
 
-export * from "./DmnEditorEnvelopeI18n";
+export * from "./DmnEditorI18n";
 export * from "./setup";
