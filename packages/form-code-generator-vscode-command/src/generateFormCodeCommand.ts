@@ -27,6 +27,7 @@ import { jbpmPatternflyFormCodeGeneratorTheme } from "@kie-tools/jbpm-form-code-
 import { FormSchema } from "@kie-tools/form-code-generator/dist/types";
 import { PATTERNFLY_FILE_EXT } from "@kie-tools/form-code-generator-patternfly-theme/dist/theme";
 import { BOOTSTRAP4_FILE_EXT } from "@kie-tools/form-code-generator-bootstrap4-theme/dist/theme";
+import { FormCodeGeneratorI18n } from "./i18n";
 
 const FORM_CODE_GENERATION_DEST_PATH = "src/main/resources/custom-forms-dev";
 const JSON_SCHEMA_PATH = "target/classes/META-INF/jsonSchema";
@@ -34,7 +35,11 @@ const JSON_SCHEMA_PATH = "target/classes/META-INF/jsonSchema";
 const BOOTSTRAP_UI_LIBRARY_NAME = "Bootstrap 4";
 const PATTERNFLY_UI_LIBRARY_NAME = "PatternFly";
 
-export async function generateFormsCommand() {
+interface FormCodeGeneratorProps {
+  i18n: FormCodeGeneratorI18n;
+}
+
+export async function generateFormsCommand(props: FormCodeGeneratorProps) {
   // Get workspace path as default value
   const defaultPath = vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.fsPath : undefined;
 
@@ -43,7 +48,7 @@ export async function generateFormsCommand() {
     canSelectFiles: false,
     canSelectFolders: true,
     canSelectMany: false,
-    title: "Select project folder",
+    title: props.i18n.generateFormCode.selectProjectFolder,
     defaultUri: defaultPath ? vscode.Uri.file(defaultPath) : undefined,
   });
 
@@ -57,22 +62,18 @@ export async function generateFormsCommand() {
 
   // Check if project has a target folder
   if (fs.existsSync(`${projectPath}/target`) === false) {
-    vscode.window.showErrorMessage(
-      `Couldn't find project's "target" folder. Please install your project before using this command.`
-    );
+    vscode.window.showErrorMessage(props.i18n.generateFormCode.NotFoundProjectsTarget);
     return;
   }
   // Check if project has the JSON Schemas folder
   if (fs.existsSync(`${projectPath}/${JSON_SCHEMA_PATH}`) === false) {
-    vscode.window.showErrorMessage(
-      `Couldn't find any JSON Schema, did you install your project ("mvn clean install")?`
-    );
+    vscode.window.showErrorMessage(props.i18n.generateFormCode.NotFoundJsonSchema);
     return;
   }
 
   // Select UI library
   const uiLibrary = await vscode.window.showQuickPick([BOOTSTRAP_UI_LIBRARY_NAME, PATTERNFLY_UI_LIBRARY_NAME], {
-    placeHolder: "Select the UI library for the generated form(s)",
+    placeHolder: props.i18n.generateFormCode.uiLibraryPlaceholder,
   });
 
   // Check if a UI library was selected
@@ -80,7 +81,7 @@ export async function generateFormsCommand() {
     return;
   }
 
-  const formSchemas: FormSchema[] = await getFormSchemas(projectPath);
+  const formSchemas: FormSchema[] = await getFormSchemas(projectPath, props);
 
   const existingFiles: { fileName: string; ext: string }[] = [];
   for (const { name: fileName } of formSchemas) {
@@ -102,12 +103,12 @@ export async function generateFormsCommand() {
   }
 
   if (existingFiles.length === 0) {
-    saveFormCode(projectPath, uiLibrary, formSchemas);
+    saveFormCode(projectPath, uiLibrary, formSchemas, props);
     return;
   }
 
   const shouldOverride = await vscode.window.showQuickPick(["Override", "Cancel"], {
-    placeHolder: "You already have custom forms in this project. Do you want to override them?",
+    placeHolder: props.i18n.generateFormCode.customFormsPlaceholder,
   });
   if (shouldOverride === "Override") {
     // Remove previous files.
@@ -117,19 +118,19 @@ export async function generateFormsCommand() {
         `${projectPath}/${FORM_CODE_GENERATION_DEST_PATH}/${removeInvalidVarChars(path.parse(fileName).name)}.${ext}`
       );
     });
-    saveFormCode(projectPath, uiLibrary, formSchemas);
+    saveFormCode(projectPath, uiLibrary, formSchemas, props);
   }
   return;
 }
 
-async function getFormSchemas(projectPath: string): Promise<FormSchema[]> {
+async function getFormSchemas(projectPath: string, props: FormCodeGeneratorProps): Promise<FormSchema[]> {
   const GENERATE_FOR_ALL_HUMAN_INTERACTIONS = "Generate form code for all User Tasks";
   const GENERATE_FOR_SPECIFIC_HUMAN_INTERACTIONS = "Generate form code for specific User Tasks";
 
   const generationChoice = await vscode.window.showQuickPick(
-    [GENERATE_FOR_ALL_HUMAN_INTERACTIONS, GENERATE_FOR_SPECIFIC_HUMAN_INTERACTIONS],
+    [props.i18n.generateFormCode.generateForHumanTasks, props.i18n.generateFormCode.generateForSpecificHumanTasks],
     {
-      placeHolder: "Select an option",
+      placeHolder: props.i18n.generateFormCode.optionPlaceHolder,
     }
   );
 
@@ -141,7 +142,7 @@ async function getFormSchemas(projectPath: string): Promise<FormSchema[]> {
       })),
       {
         canPickMany: true,
-        placeHolder: "Choose the User Tasks",
+        placeHolder: props.i18n.generateFormCode.userTaskPlaceholder,
       }
     );
 
@@ -155,18 +156,19 @@ async function getFormSchemas(projectPath: string): Promise<FormSchema[]> {
         (jsonSchemaFilesName: string[], option) =>
           option.label ? [...jsonSchemaFilesName, `${option.label}.json`] : jsonSchemaFilesName,
         []
-      )
+      ),
+      props
     );
   }
 
   if (generationChoice === GENERATE_FOR_ALL_HUMAN_INTERACTIONS) {
-    return readAndParseJsonSchemas(projectPath, jsonSchemaFilesName);
+    return readAndParseJsonSchemas(projectPath, jsonSchemaFilesName, props);
   }
 
   return [];
 }
 
-function readAndParseJsonSchemas(projectPath: string, jsonSchemaFilesName: string[]) {
+function readAndParseJsonSchemas(projectPath: string, jsonSchemaFilesName: string[], props: FormCodeGeneratorProps) {
   const formSchemas: FormSchema[] = [];
   const failedParsingFilesName: string[] = [];
   for (const jsonSchemaFileName of jsonSchemaFilesName) {
@@ -181,15 +183,17 @@ function readAndParseJsonSchemas(projectPath: string, jsonSchemaFilesName: strin
     }
   }
   if (failedParsingFilesName.length > 0) {
-    vscode.window.showErrorMessage(
-      "JSON Schema parsing failed for the following files:",
-      failedParsingFilesName.join(", ")
-    );
+    vscode.window.showErrorMessage(props.i18n.generateFormCode.parsingFailed(failedParsingFilesName.join(", ")));
   }
   return formSchemas;
 }
 
-function saveFormCode(projectPath: string, uiLibrary: string, formSchemas: FormSchema[]) {
+function saveFormCode(
+  projectPath: string,
+  uiLibrary: string,
+  formSchemas: FormSchema[],
+  props: FormCodeGeneratorProps
+) {
   const formCode =
     uiLibrary.toLowerCase() === BOOTSTRAP_UI_LIBRARY_NAME.toLowerCase()
       ? generateFormCode({ formCodeGeneratorTheme: jbpmBootstrap4FormCodeGeneratorTheme, formSchemas })
@@ -198,7 +202,7 @@ function saveFormCode(projectPath: string, uiLibrary: string, formSchemas: FormS
         : undefined;
 
   if (formCode === undefined) {
-    vscode.window.showErrorMessage(`The "${uiLibrary}" UI library isn't available.`);
+    vscode.window.showErrorMessage(props.i18n.generateFormCode.uiLibraryNotAvailable(uiLibrary));
     return undefined;
   }
 
@@ -221,7 +225,7 @@ function saveFormCode(projectPath: string, uiLibrary: string, formSchemas: FormS
       );
     });
     vscode.window.showInformationMessage(
-      `Success generating form code for the following files: ${formAssets.map((formAsset) => formAsset.fileName).join(", ")}`
+      props.i18n.generateFormCode.successFormGeneration(formAssets.map((formAsset) => formAsset.fileName).join(", "))
     );
   }
 
@@ -232,7 +236,7 @@ function saveFormCode(projectPath: string, uiLibrary: string, formSchemas: FormS
   );
   if (formErrors.length > 0) {
     vscode.window.showErrorMessage(
-      `Error generating form code for the following files: ${formErrors.map((formError) => formError.fileName).join(", ")}`
+      props.i18n.generateFormCode.errorFormGeneration(formErrors.map((formError) => formError.fileName).join(", "))
     );
   }
 }

@@ -21,17 +21,25 @@
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\""
   },
   "dependencies": {
+    "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools/form-code-generator": "workspace:*",
     "@kie-tools/form-code-generator-bootstrap4-theme": "workspace:*",
     "@kie-tools/form-code-generator-patternfly-theme": "workspace:*",
+    "@kie-tools/i18n-common-dictionary": "workspace:*",
     "@kie-tools/jbpm-form-code-generator-themes": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
+    "@types/react": "^17.0.6",
+    "@types/react-dom": "^17.0.5",
     "@types/vscode": "1.67.0",
     "rimraf": "^3.0.2",
     "typescript": "^5.5.3"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0",
+    "react-dom": ">=17.0.2 <19.0.0"
   }
 }

@@ -1031,6 +1031,11 @@
       },
       {
         "source": "@kie-tools/form-code-generator-vscode-command",
+        "target": "@kie-tools/i18n-common-dictionary",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/form-code-generator-vscode-command",
         "target": "@kie-tools/jbpm-form-code-generator-themes",
         "weight": 1
       },
