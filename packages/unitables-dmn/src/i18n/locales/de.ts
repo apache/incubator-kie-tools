@@ -27,4 +27,8 @@ export const de: DmnUnitablesI18n = {
   schema: {
     selectPlaceholder: "Auswählen...",
   },
+  noDecisionResults: "",
+  addInputDecisionNodes: "",
+  error: "",
+  errorMessage: "",
 };

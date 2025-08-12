@@ -27,4 +27,10 @@ export const de: UnitablesI18n = {
   schema: {
     selectPlaceholder: "Auswählen...",
   },
+  recursiveNotSupported: "",
+  openRowFormView: (rowIndex: number): string => "",
+  noInputNodes: "",
+  addInputNode: "",
+  error: "",
+  errorMessage: "",
 };

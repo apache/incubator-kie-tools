@@ -25,6 +25,10 @@ interface DmnUniablesDictionary extends ReferenceDictionary {
   schema: {
     selectPlaceholder: string;
   };
+  noDecisionResults: string;
+  addInputDecisionNodes: string;
+  error: string;
+  errorMessage: string;
 }
 
 export interface DmnUnitablesI18n extends DmnUniablesDictionary, CommonI18n, UnitablesI18n {}
