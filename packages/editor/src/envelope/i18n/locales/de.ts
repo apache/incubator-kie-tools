@@ -35,4 +35,8 @@ export const de: EditorEnvelopeI18n = {
   loadingScreen: {
     loading: "Laden...",
   },
+  editorNotAvailable: function (extension: string): string {
+    throw new Error("Function not implemented.");
+  },
+  kogitoEditor: "",
 };
