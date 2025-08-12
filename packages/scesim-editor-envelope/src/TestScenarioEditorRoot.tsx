@@ -33,6 +33,7 @@ import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";
 import * as TestScenarioEditor from "@kie-tools/scesim-editor/dist/TestScenarioEditor";
 import { getMarshaller, SceSimMarshaller, SceSimModel } from "@kie-tools/scesim-marshaller";
 import { EMPTY_ONE_EIGHT } from "@kie-tools/scesim-editor/dist/resources/EmptyScesimFile";
+import { ScesimEditorEnvelopeI18n } from "./i18n";
 
 export const DMN_MODELS_SEARCH_GLOB_PATTERN = "**/*.dmn";
 export const TARGET_DIRECTORY = "target/classes/";
@@ -59,6 +60,10 @@ export type TestScenarioEditorRootState = {
   pointer: number;
   stack: SceSimModel[];
 };
+
+interface ScesimEditorEnvelopeProps {
+  i18n: ScesimEditorEnvelopeI18n;
+}
 
 export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRootProps, TestScenarioEditorRootState> {
   private readonly externalModelsManagerDoneBootstraping = imperativePromiseHandle<void>();
@@ -265,6 +270,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
   public componentDidUpdate(
     prevProps: Readonly<TestScenarioEditorRootProps>,
     prevState: Readonly<TestScenarioEditorRootState>,
+    props: ScesimEditorEnvelopeProps,
     snapshot?: any
   ): void {
     if (this.props.keyboardShortcutsService === undefined || this.state.keyboardShortcutsRegistred === true) {
@@ -276,8 +282,8 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
       return;
     }
     const togglePropertiesPanel = this.props.keyboardShortcutsService?.registerKeyPress(
-      "I",
-      "Misc | Open/Close dock panel",
+      props.i18n.i,
+      props.i18n.misc + " | " + props.i18n.openCloseDockPanel,
       async () => commands.toggleTestScenarioDock()
     );
 
