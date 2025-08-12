@@ -20,6 +20,7 @@
 import * as Monaco from "@kie-tools-core/monaco-editor";
 import { ReservedWords } from "@kie-tools/dmn-feel-antlr4-parser";
 import { Element } from "./themes/Element";
+import { FeelInputComponentI18n } from "./i18n";
 
 export const MONACO_FEEL_LANGUAGE = "feel-language";
 
@@ -91,7 +92,7 @@ export const feelDefaultConfig = (
   };
 };
 
-export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
+export const feelDefaultSuggestions = (i18n: FeelInputComponentI18n): Monaco.languages.CompletionItem[] => {
   const suggestions: Monaco.languages.CompletionItem[] = [];
 
   const suggestionTypes = {
@@ -125,14 +126,14 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "abs(n)",
         insertText: "abs($1)",
-        description: "Returns the absolute value of `n`",
+        description: i18n.functionDescription.absDescription("n"),
         parameters: [["n", `\`number\`, \`days and time duration\`, \`years and months duration\``]],
         examples: ["abs( 10 ) = 10", "abs( -10 ) = 10", 'abs( @"PT5H" ) = @"PT5H"', 'abs( @"-PT5H" ) = @"PT5H"'],
       },
       {
         label: "after(point1, point2)",
         insertText: "after($1, $2)",
-        description: "Returns true when `point1` is after `point2`",
+        description: i18n.functionDescription.afterPoint("point1", "point2"),
         parameters: [
           ["point1", `\`number\``],
           ["point2", `\`number\``],
@@ -142,7 +143,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "after(point, range)",
         insertText: "after($1, $2)",
-        description: "Returns true when `point` is after `range`",
+        description: i18n.functionDescription.afterPointRange("point", "range"),
         parameters: [
           ["point", `\`number\``],
           ["range", `\`range\` (\`interval\`)`],
@@ -152,7 +153,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "after(range, point)",
         insertText: "after($1, $2)",
-        description: "Returns true when `range` is after `point`",
+        description: i18n.functionDescription.afterRangePoint("range", "point"),
         parameters: [
           ["range", `\`range\` (\`interval\`)`],
           ["point", `\`number\``],
@@ -167,7 +168,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "after(range1, range2)",
         insertText: "after($1, $2)",
-        description: "Returns true when `range1` is after `range2`",
+        description: i18n.functionDescription.afterRange("range1", "range2"),
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -182,7 +183,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "all(list)",
         insertText: "all($1)",
-        description: "Returns true if all elements in the `list` are true.",
+        description: i18n.functionDescription.allTrue("list"),
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
         examples: [
           "all( [false,null,true] ) = false",
@@ -195,8 +196,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "any(list)",
         insertText: "any($1)",
-        description:
-          "Returns true if any `list` item is true, else false if empty or all `list` items are false, else null",
+        description: i18n.functionDescription.anyTrue("list"),
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
         examples: [
           "any( [false,null,true] ) = true",
@@ -209,7 +209,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "append(list, item)",
         insertText: "append($1, $2)",
-        description: "Returns new list with items appended",
+        description: i18n.functionDescription.append,
         parameters: [
           ["list", `\`list\``],
           ["item", "Any type (even more items)"],
@@ -219,7 +219,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "before(point1, point2)",
         insertText: "before($1, $2)",
-        description: "Returns true when `point1` is before `point2`",
+        description: i18n.functionDescription.beforePoint("point1", "point2"),
         parameters: [
           ["point1", `\`number\``],
           ["point2", `\`number\``],
@@ -229,7 +229,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "before(point, range)",
         insertText: "before($1, $2)",
-        description: "Returns true when `point` is before `range`",
+        description: i18n.functionDescription.beforePointRange("point", "range"),
         parameters: [
           ["point", `\`number\``],
           ["range", `\`range\` (\`interval\`)`],
@@ -239,7 +239,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "before(range, point)",
         insertText: "before($1, $2)",
-        description: "Returns true when a `range` is before `point`",
+        description: i18n.functionDescription.beforeRangePoint("range", "point"),
         parameters: [
           ["range", `\`range\` (\`interval\`)`],
           ["point", `\`number\``],
@@ -249,7 +249,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "before(range1, range1)",
         insertText: "before($1, $2)",
-        description: "Returns true when `range1` is before `range2`",
+        description: i18n.functionDescription.beforeRange("range1", "range2"),
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -264,15 +264,14 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "ceiling(n)",
         insertText: "ceiling($1)",
-        description: "Returns `n` with rounding mode ceiling. If `n` is null the result is null.",
+        description: i18n.functionDescription.ceiling("n"),
         parameters: [["n", `\`number\``]],
         examples: ["ceiling( 1.5 ) = 2", "ceiling( -1.5 ) = -1"],
       },
       {
         label: "ceiling(n, scale)",
         insertText: "ceiling($1, $2)",
-        description:
-          "Returns `n` with given scale and rounding mode ceiling. If at least one of `n` or `scale` is null, the result is null. The `scale` must be in the range [−6111..6176].",
+        description: i18n.functionDescription.ceilingScale("n", "scale"),
         parameters: [
           ["n", `\`number\``],
           ["scale", `\`number\``],
@@ -289,7 +288,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "coincides(point1, point2)",
         insertText: "coincides($1, $2)",
-        description: "Returns true when `point1` coincides with `point2`",
+        description: i18n.functionDescription.coincides("point1", "point2"),
         parameters: [
           ["point1", `\`number\``],
           ["point2", `\`number\``],
@@ -299,7 +298,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "coincides(range1, range2)",
         insertText: "coincides($1, $2)",
-        description: "Returns true when `range1` coincides with `range2`",
+        description: i18n.functionDescription.coincidesRange("range1", "range2"),
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -313,14 +312,14 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "concatenate(list...)",
         insertText: "concatenate($1)",
-        description: "Returns a new list that is a concatenation of the arguments",
+        description: i18n.functionDescription.concatenate,
         parameters: [["list", `Multiple \`list\``]],
         examples: ["concatenate( [1,2], [3] ) = [1,2,3]"],
       },
       {
         label: "contains(string, match)",
         insertText: "contains($1, $2)",
-        description: "Does the `string` contain the `match`?",
+        description: i18n.functionDescription.contains("string", "match"),
         parameters: [
           ["string", `string`],
           ["match", `string`],
