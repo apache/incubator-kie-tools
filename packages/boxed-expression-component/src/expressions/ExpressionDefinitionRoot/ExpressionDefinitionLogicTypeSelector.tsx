@@ -333,45 +333,30 @@ export function ExpressionDefinitionLogicTypeSelector({
   const logicTypeHelp = useCallback((logicType: BoxedExpression["__$$element"] | undefined) => {
     switch (logicType) {
       case "literalExpression":
-        return "A boxed literal expression in DMN is a literal FEEL expression as text in a table cell, typically with a labeled column and an assigned data type.";
+        return i18n.logicTypeHelp.literExpression;
       case "context":
-        return "A boxed context expression in DMN is a set of variable names and values with a result value. Each name-value pair is a context entry.";
+        return i18n.logicTypeHelp.context;
       case "decisionTable":
-        return "A decision table in DMN is a visual representation of one or more business rules in a tabular format.";
+        return i18n.logicTypeHelp.decisionTable;
       case "relation":
-        return "A boxed relation expression in DMN is a traditional data table with information about given entities, listed as rows. You use boxed relation tables to define decision data for relevant entities in a decision at a particular node.";
+        return i18n.logicTypeHelp.relation;
       case "functionDefinition":
-        return "A boxed function expression in DMN is a parameterized boxed expression containing a literal FEEL expression, a nested context expression of an external JAVA or PMML function, or a nested boxed expression of any type.";
+        return i18n.logicTypeHelp.functionDefinition;
       case "invocation":
-        return "A boxed invocation expression in DMN is a boxed expression that invokes a business knowledge model. A boxed invocation expression contains the name of the business knowledge model to be invoked and a list of parameter bindings.";
+        return i18n.logicTypeHelp.invocation;
       case "list":
-        return "A boxed list expression in DMN represents a FEEL list of items. You use boxed lists to define lists of relevant items for a particular node in a decision.";
+        return i18n.logicTypeHelp.list;
       case "conditional":
-        return 'A boxed conditional offers a visual representation of an if statement using three rows. The expression in the "if" part MUST resolve to a boolean.';
+        return i18n.logicTypeHelp.conditional;
       case "for":
-        return (
-          "A boxed iterator offers a visual representation of an iterator statement. " +
-          'For the "for" loop, the right part of the "for" displays the iterator variable name. The second row holds an expression representing the collection that will be iterated over. The expression in the "in" row MUST resolve to a collection.' +
-          " The last row contains the expression that will process each element of the collection."
-        );
+        return i18n.logicTypeHelp.for;
 
       case "every":
-        return (
-          "A boxed iterator offers a visual representation of an iterator statement. " +
-          'For the "every" loop, the right part of the "every" displays the iterator variable name. The second row holds an expression representing the collection that will be iterated over. The expression in the "in" row MUST resolve to a collection.' +
-          'The last line is an expression that will be evaluated on each item. The expression defined in the "satisfies" MUST resolve to a boolean.'
-        );
+        return i18n.logicTypeHelp.every;
       case "some":
-        return (
-          "A boxed iterator offers a visual representation of an iterator statement. " +
-          'For the "some" loop, the right part of the "some" displays the iterator variable name. The second row holds an expression representing the collection that will be iterated over. The expression in the "in" row MUST resolve to a collection. ' +
-          'The last line is an expression that will be evaluated on each item. The expression defined in the "satisfies" MUST resolve to a boolean.'
-        );
+        return i18n.logicTypeHelp.some;
       case "filter":
-        return (
-          "A boxed filter offers a visual representation of collection filtering. The top part is an expression that is the collection " +
-          "to be filtered. The bottom part, between the square brackets, holds the filter expression."
-        );
+        return i18n.logicTypeHelp.filter;
 
       default:
         return "";
@@ -423,7 +408,7 @@ export function ExpressionDefinitionLogicTypeSelector({
           {!isReadOnly && (
             <MenuItem
               className={pasteExpressionError ? "paste-from-clipboard-error" : ""}
-              description={pasteExpressionError ? "Paste operation was not successful" : ""}
+              description={pasteExpressionError ? i18n.pasteOperationNotSuccessful : ""}
               onClick={pasteExpression}
               icon={
                 <div style={menuIconContainerStyle}>
@@ -499,7 +484,7 @@ export function ExpressionDefinitionLogicTypeSelector({
                   <MenuItem
                     itemId={PASTE_MENU_ITEM_ID}
                     className={pasteExpressionError ? "paste-from-clipboard-error" : ""}
-                    description={pasteExpressionError ? "Paste operation was not successful" : ""}
+                    description={pasteExpressionError ? i18n.pasteOperationNotSuccessful : ""}
                     onClick={pasteExpression}
                     icon={
                       <div style={menuIconContainerStyle}>

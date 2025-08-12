@@ -164,7 +164,7 @@ export function ContextExpression({
         columns: [
           {
             accessor: "variable",
-            label: "variable",
+            label: i18n.contextExpression.variable,
             isRowIndexColumn: false,
             dataType: DmnBuiltInDataType.Undefined,
             isWidthPinned: true,
@@ -174,7 +174,7 @@ export function ContextExpression({
           },
           {
             accessor: "expression",
-            label: "expression",
+            label: i18n.contextExpression.expression,
             dataType: DmnBuiltInDataType.Undefined,
             isRowIndexColumn: false,
             minWidth: CONTEXT_ENTRY_EXPRESSION_MIN_WIDTH,
@@ -183,7 +183,7 @@ export function ContextExpression({
         ],
       },
     ];
-  }, [contextExpression, entryVariableWidth, expressionHolderId, setEntryVariableWidth]);
+  }, [contextExpression, entryVariableWidth, expressionHolderId, setEntryVariableWidth, i18n.contextExpression]);
 
   const onColumnUpdates = useCallback(
     ([{ name, typeRef }]: BeeTableColumnUpdate<ROWTYPE>[]) => {
