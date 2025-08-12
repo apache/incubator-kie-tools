@@ -52,6 +52,7 @@
     "@kie-tools/dmn-editor-envelope": "workspace:*",
     "@kie-tools/dmn-marshaller": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/i18n-common-dictionary": "workspace:*",
     "@kie-tools/playwright-base": "workspace:*",
     "@kie-tools/pmml-editor-marshaller": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
