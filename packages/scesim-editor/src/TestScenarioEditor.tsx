@@ -322,16 +322,17 @@ function TestScenarioParserErrorPanel({
   parserErrorTitle: string;
   parserErrorMessage: string;
 }) {
+  const { i18n } = useTestScenarioEditorI18n();
   return (
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
       <EmptyState style={{ maxWidth: "1280px" }}>
         <EmptyStateHeader
-          titleText={<>{parserErrorTitle}</>}
+          titleText={<>{i18n.errorFallBack.errorTitle(parserErrorTitle)}</>}
           icon={<EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />}
           headingLevel={"h4"}
         />
         <br />
-        <EmptyStateBody>Error details: {parserErrorMessage}</EmptyStateBody>
+        <EmptyStateBody>{i18n.errorFallBack.errorMessage(parserErrorMessage)}</EmptyStateBody>
       </EmptyState>
     </Flex>
   );

@@ -50,6 +50,7 @@ export const en: TestScenarioEditorI18n = {
     statelessSession: "Stateless Session",
     testSkip: "Skip this file during the test",
     title: "Create a new Test Scenario",
+    modelPlaceholder: "Select a model...",
   },
   drawer: {
     cheatSheet: {
@@ -147,6 +148,8 @@ export const en: TestScenarioEditorI18n = {
     body: "This is a bug. Please consider reporting it so the Test Scenario Editor can continue improving. See the details below.",
     lastActionButton: "Try undoing last action",
     fileIssueHref: "File an issue",
+    errorMessage: (message: string): string => `Error details: ${message}`,
+    errorTitle: (title: string): string => `${title}`,
   },
   sidebar: {
     cheatSheetTooltip: "CheatSheet: Useful information for Test Scenario Usage",
@@ -166,6 +169,7 @@ export const en: TestScenarioEditorI18n = {
     },
     background: {},
     copy: "Copy",
+    copied: "Copied",
     cut: "Cut",
     delete: "Delete",
     deleteField: "Delete Field",

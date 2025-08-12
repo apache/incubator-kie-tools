@@ -45,6 +45,7 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
     statelessSession: string;
     testSkip: string;
     title: string;
+    modelPlaceholder: string;
   };
   drawer: {
     cheatSheet: {
@@ -125,6 +126,8 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
     body: string;
     lastActionButton: string;
     fileIssueHref: string;
+    errorMessage(message: string): string;
+    errorTitle(title: string): string;
   };
   sidebar: {
     cheatSheetTooltip: string;
@@ -141,6 +144,7 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
     simulation: { singleEntry: string };
     background: {};
     copy: string;
+    copied: string;
     cut: string;
     delete: string;
     duplicate: string;
