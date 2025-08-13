@@ -101,8 +101,8 @@ export function BoxedExpressionPropertiesPanel() {
     if (!selectedObjectPath) {
       return;
     }
-    return getBoxedExpressionPropertiesPanelComponent(selectedObjectPath);
-  }, [boxedExpressionIndex, selectedObjectId]);
+    return getBoxedExpressionPropertiesPanelComponent(selectedObjectPath, i18n);
+  }, [boxedExpressionIndex, i18n, selectedObjectId]);
 
   return (
     <>
@@ -136,9 +136,7 @@ export function BoxedExpressionPropertiesPanel() {
               <Form>
                 <FormSection
                   title={
-                    boxedExpressionPropertiesPanelComponent?.title
-                      ? i18n.propertiesPanel.boxedExpressionTitle(boxedExpressionPropertiesPanelComponent?.title)
-                      : ""
+                    boxedExpressionPropertiesPanelComponent?.title ? boxedExpressionPropertiesPanelComponent?.title : ""
                   }
                 >
                   {(((selectedObjectId === undefined || selectedObjectId === "") &&

@@ -69,13 +69,13 @@ export function RefactorConfirmationDialog({
       {i18n.theIdentifier}{" "}
       <pre style={{ display: "inline" }}>
         {'"'}
-        {fromName ? i18n.getName(fromName ?? "") : i18n.undefined}
+        {fromName ?? "<undefined>"}
         {'"'}
       </pre>{" "}
       {i18n.renamedTo}{" "}
       <pre style={{ display: "inline" }}>
         {'"'}
-        {toName ? i18n.getName(toName) : i18n.undefined}
+        {toName ?? "<undefined>"}
         {'"'}
       </pre>
       {i18n.usedByOneOrMoreExpressions}
@@ -84,13 +84,13 @@ export function RefactorConfirmationDialog({
       {i18n.automaticallyReplaceAll}{" "}
       <pre style={{ display: "inline" }}>
         {'"'}
-        {fromName ? i18n.getName(fromName ?? "") : i18n.undefined}
+        {fromName ?? "<undefined>"}
         {'"'}
       </pre>{" "}
       with{" "}
       <pre style={{ display: "inline" }}>
         {'"'}
-        {toName ? i18n.getName(toName ?? "") : i18n.undefined}
+        {toName ?? "<undefined>"}
         {'"'}
       </pre>
       ?

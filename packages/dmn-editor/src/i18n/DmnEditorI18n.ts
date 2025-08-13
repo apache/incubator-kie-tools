@@ -243,7 +243,6 @@ interface DmnEditorDictionary extends ReferenceDictionary {
     emptyParameters: string;
     parameter: string;
     boxedConditional: string;
-    boxedExpressionTitle(title: string): string;
     functionTobeCalled: string;
     functionNamePlaceholder: string;
     variableToItervateOver: string;
@@ -318,6 +317,34 @@ interface DmnEditorDictionary extends ReferenceDictionary {
     buildXmlName(value: string): string;
     unknownNodePlaceholder: string;
   };
+  boxedExpressionPropertiesPanelTitle: {
+    boxedConditional: string;
+    boxedContext: string;
+    boxedContextVariable: string;
+    decisionTable: string;
+    variable: string;
+    decisionTableInputHeader: string;
+    decisionTableInputCell: string;
+    decisionTableOutputHeader: string;
+    decisionTableOutputCell: string;
+    every: string;
+    boxedEveryVariable: string;
+    filter: string;
+    for: string;
+    boxedForvariable: string;
+    functionDefinition: string;
+    functionParameters: string;
+    boxedInvocation: string;
+    boxedInvocationFunction: string;
+    boxedInvocationParameter: string;
+    list: string;
+    literalExpresssion: string;
+    boxedRelation: string;
+    boxedRelationHeader: string;
+    boxedRelationCell: string;
+    some: string;
+    boxedsomeVariable: string;
+  };
   letters: {
     s: string;
     u: string;
@@ -331,7 +358,6 @@ interface DmnEditorDictionary extends ReferenceDictionary {
   justRename: string;
   theIdentifier: string;
   renamedTo: string;
-  getName(name: string): string;
   undefined: string;
   usedByOneOrMoreExpressions: string;
   automaticallyReplaceAll: string;
