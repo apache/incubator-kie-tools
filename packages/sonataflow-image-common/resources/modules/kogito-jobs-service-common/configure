@@ -23,7 +23,13 @@ SOURCES_DIR=/tmp/artifacts
 SCRIPT_DIR=$(dirname "${0}")
 ADDED_DIR="${SCRIPT_DIR}"/added
 
+# Web UI
+mkdir -p "${KOGITO_HOME}"/ui/
+
 cp -Rv "${ADDED_DIR}"/launch/* "${KOGITO_HOME}"/launch/
+
+# Copy UI web application
+cp -v -p "${ADDED_DIR}"/kogito-jobs-service-webapp/* "${KOGITO_HOME}"/ui/
 
 chown -R ${USER_ID}:0 "${KOGITO_HOME}"
 chmod -R ug+rwX "${KOGITO_HOME}"
