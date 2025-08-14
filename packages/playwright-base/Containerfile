@@ -67,7 +67,7 @@ RUN groupadd --gid 1000 nodegroup && \
 ENV PLAYWRIGHT_BROWSERS_PATH=/home/node/kie-tools-playwright/.cache/ms-playwright
 
 # Installing `pnpm` to keep it consistent with the kie-tools repository
-RUN npm install --global pnpm@9.3.0
+RUN npm install --global pnpm@10.12.4
 # Installing Playwright browser and dependencies
 RUN npx playwright@1.45.2 install-deps && npx playwright@1.45.2 install chrome chromium webkit
 
