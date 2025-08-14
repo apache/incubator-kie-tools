@@ -19,7 +19,7 @@
 
 import React, { useImperativeHandle, useState } from "react";
 import JSONSchemaBridge from "uniforms-bridge-json-schema";
-import { AutoFields, AutoForm, ErrorsField } from "@kie-tools/uniforms-patternfly/dist/esm";
+import { AutoForm, ErrorsField } from "@kie-tools/uniforms-patternfly/dist/esm";
 import { componentOuiaProps, OUIAProps } from "../../ouiaTools";
 import { FormAction, lookupValidator, ModelConversionTool } from "../../utils";
 import { FormFooter } from "../FormFooter";
@@ -35,10 +35,11 @@ interface IOwnProps {
   onSubmit?: (data: any) => void;
   formActions?: FormAction[];
   readOnly: boolean;
+  children?: React.ReactNode;
 }
 
 export const FormRenderer = React.forwardRef<FormRendererApi, IOwnProps & OUIAProps>(
-  ({ formSchema, model, onSubmit, formActions, readOnly, ouiaId, ouiaSafe }, forwardedRef) => {
+  ({ formSchema, model, onSubmit, formActions, readOnly, ouiaId, ouiaSafe, children }, forwardedRef) => {
     const validator = lookupValidator(formSchema);
     const [formApiRef, setFormApiRef] = useState<HTMLFormElement>();
 
@@ -76,7 +77,7 @@ export const FormRenderer = React.forwardRef<FormRendererApi, IOwnProps & OUIAPr
           {...componentOuiaProps(ouiaId, "form-renderer", ouiaSafe)}
         >
           <ErrorsField />
-          <AutoFields />
+          {children}
         </AutoForm>
         <FormFooter actions={formActions} enabled={!readOnly} onSubmitForm={submitFormData} />
       </React.Fragment>
