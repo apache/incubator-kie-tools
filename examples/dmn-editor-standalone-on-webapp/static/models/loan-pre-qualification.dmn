@@ -1,22 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!--
-  ~ Licensed to the Apache Software Foundation (ASF) under one
-  ~ or more contributor license agreements.  See the NOTICE file
-  ~ distributed with this work for additional information
-  ~ regarding copyright ownership.  The ASF licenses this file
-  ~ to you under the Apache License, Version 2.0 (the
-  ~ "License"); you may not use this file except in compliance
-  ~ with the License.  You may obtain a copy of the License at
-  ~ 
-  ~   http://www.apache.org/licenses/LICENSE-2.0
-  ~ 
-  ~ Unless required by applicable law or agreed to in writing,
-  ~ software distributed under the License is distributed on an
-  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  ~ KIND, either express or implied.  See the License for the
-  ~ specific language governing permissions and limitations
-  ~ under the License.      
--->
 <dmn:definitions
   xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/"
   xmlns="https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB"
@@ -25,11 +7,11 @@
   xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
   xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
   xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
-  id="_C6CBECEB-2BBC-4E14-80B0-17F576B2CF92"
+  id="_A81E3325-F66C-418C-95E8-D1FB0FA1E851"
   name="loan_pre_qualification"
   expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
   typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
-  namespace="https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB"
+  namespace="https://kie.apache.org/dmn/_EFBE0E42-626B-4552-B4D8-F991A47E9D34"
 >
   <dmn:extensionElements />
   <dmn:itemDefinition id="_D40B0106-62E8-4AC0-A39A-C6C9506194A9" name="Requested_Product" isCollection="false">
