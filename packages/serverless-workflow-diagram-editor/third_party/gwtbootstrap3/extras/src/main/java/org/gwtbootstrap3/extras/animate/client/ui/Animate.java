@@ -34,7 +34,6 @@ import jsinterop.base.JsPropertyMap;
 import org.gwtbootstrap3.client.shared.js.JQuery;
 import org.gwtbootstrap3.extras.animate.client.ui.constants.Animation;
 import org.gwtproject.core.client.Scheduler;
-import org.kie.j2cl.tools.processors.common.injectors.StyleInjector;
 
 import static org.gwtbootstrap3.client.shared.js.JQuery.$;
 
@@ -283,7 +282,7 @@ public class Animate {
             styleSheet += "}";
 
             // inject new style
-            StyleInjector.fromString(styleSheet).inject();
+            StyleInjector.fromString(styleSheet, htmlElement -> htmlElement.setAttribute("nonce", "DEV_NONCE")).inject();
 
             usedStyles.add(animation + " " + getStyleNameFromAnimation(animation, count, duration, delay));
 
