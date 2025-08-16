@@ -49,7 +49,11 @@ public class WorkbenchEntryPoint {
     private final HTMLElement mainContainer = (HTMLElement) DomGlobal.document.createElement("div");
 
     public void afterInitialization() {
-        WorkbenchResources.INSTANCE.CSS().insureInjectedAsStyle();
+        StyleInjector.fromString(WorkbenchResources.INSTANCE.CSS().getText(),
+                htmlElement -> htmlElement.setAttribute("nonce", "DEV_NONCE"))
+                .inject();
+
+
         setupRootContainer();
         JSFunctions.notifyJSReady();
     }

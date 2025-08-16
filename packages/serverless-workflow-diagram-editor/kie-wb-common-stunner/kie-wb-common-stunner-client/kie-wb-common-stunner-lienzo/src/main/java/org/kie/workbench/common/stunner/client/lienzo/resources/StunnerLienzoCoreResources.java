@@ -28,21 +28,6 @@ public interface StunnerLienzoCoreResources extends ClientBundle {
 
     StunnerLienzoCoreResources INSTANCE = StunnerLienzoCoreResourcesImpl.INSTANCE;
 
-    @Source("js/jquery-1.12.4.min.cache.js.noproc")
-    TextResource jquery();
-
-    @Source("js/bootstrap.min.js.noproc")
-    TextResource bootstrapJs();
-
-    @Source("js/gwtbootstrap3.js.noproc")
-    TextResource gwtbootstrap3();
-
-    @Source("js/patternfly.min.js.noproc")
-    TextResource patternfly();
-
-    @Source("js/bootstrap-select.min.js.noproc")
-    TextResource bootstrapSelectJs();
-
     @Source("css/animate.min.css")
     TextResource animate();
 
@@ -60,5 +45,23 @@ public interface StunnerLienzoCoreResources extends ClientBundle {
 
     @Source("css/fonts.css")
     TextResource fonts();
+
+    @Source("buildin/AlertsView.less")
+    TextResource AlertsView();
+
+    @Source("buildin/ErrorPage.css")
+    TextResource ErrorPage();
+
+    @Source("buildin/InlineTextEditorBox.css")
+    TextResource InlineTextEditorBox();
+
+    @Source("buildin/SessionPresenterView.less")
+    TextResource SessionPresenterView();
+
+    @Source("buildin/ZoomLevelSelectorItem.css")
+    TextResource ZoomLevelSelectorItem();
+
+    @Source("buildin/ZoomLevelSelectorView.css")
+    TextResource ZoomLevelSelectorView();
 
 }
