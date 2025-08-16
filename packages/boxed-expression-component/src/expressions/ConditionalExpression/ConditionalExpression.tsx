@@ -32,7 +32,7 @@ import {
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import React, { useCallback, useMemo } from "react";
-import { DMN16__tChildExpression } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tChildExpression } from "@kie-tools/dmn-marshaller/src/index";
 import * as ReactTable from "react-table";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { BeeTableReadOnlyCell } from "../../table/BeeTable/BeeTableReadOnlyCell";
@@ -50,7 +50,7 @@ import {
 export type ROWTYPE = Normalized<ConditionalClause>;
 
 export type ConditionalClause = {
-  part: DMN16__tChildExpression;
+  part: DMN_LATEST__tChildExpression;
   label: string;
 };
 

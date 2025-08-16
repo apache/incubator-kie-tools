@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN16__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tInformationItem } from "@kie-tools/dmn-marshaller/src/index";
 import * as React from "react";
 import { useCallback, useEffect, useMemo } from "react";
 import {
@@ -42,7 +42,7 @@ import "./ExpressionVariableCell.css";
 
 export interface ExpressionWithVariable {
   expression: Normalized<BoxedExpression> | undefined;
-  variable: Normalized<DMN16__tInformationItem>;
+  variable: Normalized<DMN_LATEST__tInformationItem>;
 }
 
 export type OnExpressionWithVariableUpdated = (

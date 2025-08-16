@@ -18,10 +18,7 @@
  */
 
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import {
-  DMN16__tDecisionService,
-  DMN16__tDefinitions,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tDecisionService, DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller/src/index";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref, parseXmlHref, xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml";
 import { ExternalModelsIndex } from "../DmnEditor";
@@ -66,9 +63,9 @@ export function getStrategyToAddExistingDecisionServiceToDrd({
   __readonly_indexedDrd,
   __readonly_drdIndex,
 }: {
-  __readonly_definitions: Normalized<DMN16__tDefinitions>;
+  __readonly_definitions: Normalized<DMN_LATEST__tDefinitions>;
   __readonly_decisionServiceNamespace: string;
-  __readonly_drgElement: Normalized<DMN16__tDecisionService>;
+  __readonly_drgElement: Normalized<DMN_LATEST__tDecisionService>;
   __readonly_externalDmnsIndex: ReturnType<Computed["getDirectlyIncludedExternalModelsByNamespace"]>["dmns"];
   __readonly_namespace: string;
   __readonly_indexedDrd: ReturnType<Computed["indexedDrd"]>;
@@ -166,7 +163,7 @@ export function addConflictingDecisionServiceToDrd({
   __readonly_decisionServiceHrefRelativeToThisDmn,
   __readonly_snapGrid,
 }: {
-  definitions: Normalized<DMN16__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   __readonly_drdIndex: number;
   __readonly_dropPoint: { x: number; y: number };
   __readonly_decisionServiceHrefRelativeToThisDmn: string;
@@ -406,7 +403,7 @@ export function addExistingDecisionServiceToDrd({
   __readonly_decisionServiceHrefRelativeToThisDmn,
   __readonly_containedDecisionHrefsRelativeToThisDmn,
 }: {
-  definitions: Normalized<DMN16__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   __readonly_decisionServiceNamespace: string;
   __readonly_externalDmnsIndex: ReturnType<Computed["getDirectlyIncludedExternalModelsByNamespace"]>["dmns"];
   __readonly_namespace: string;
@@ -543,7 +540,7 @@ export function getDecisionServicePropertiesRelativeToThisDmn({
 }: {
   thisDmnsNamespace: string;
   decisionServiceNamespace: string;
-  decisionService: Normalized<DMN16__tDecisionService>;
+  decisionService: Normalized<DMN_LATEST__tDecisionService>;
 }) {
   const decisionServiceNamespaceForHref =
     decisionServiceNamespace === thisDmnsNamespace ? "" : decisionServiceNamespace;

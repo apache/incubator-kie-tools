@@ -18,13 +18,13 @@
  */
 
 import {
-  DMN16__tDecision,
-  DMN16__tDecisionService,
-  DMN16__tDefinitions,
-  DMN16__tItemDefinition,
-  DMNDI15__DMNEdge,
-  DMNDI15__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+  DMN_LATEST__tDecision,
+  DMN_LATEST__tDecisionService,
+  DMN_LATEST__tDefinitions,
+  DMN_LATEST__tItemDefinition,
+  DMN_LATEST__DMNEdge,
+  DMN_LATEST__DMNShape,
+} from "@kie-tools/dmn-marshaller/src/index";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { parseXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { getNewDmnIdRandomizer } from "@kie-tools/dmn-marshaller/dist/idRandomizer/dmnIdRandomizer";
@@ -48,17 +48,17 @@ export type DmnEditorDataTypesClipboard = {
   mimeType: typeof DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE;
   namespaceWhereClipboardWasCreatedFrom: string;
   namespace: string;
-  itemDefinitions: Normalized<DMN16__tItemDefinition>[];
+  itemDefinitions: Normalized<DMN_LATEST__tItemDefinition>[];
 };
 
 export type DmnEditorDiagramClipboard = {
   mimeType: typeof DMN_EDITOR_DIAGRAM_CLIPBOARD_MIME_TYPE;
   namespaceWhereClipboardWasCreatedFrom: string;
-  drgElements: NonNullable<Unpacked<Normalized<DMN16__tDefinitions>["drgElement"]>>[];
-  artifacts: NonNullable<Unpacked<Normalized<DMN16__tDefinitions>["artifact"]>>[];
+  drgElements: NonNullable<Unpacked<Normalized<DMN_LATEST__tDefinitions>["drgElement"]>>[];
+  artifacts: NonNullable<Unpacked<Normalized<DMN_LATEST__tDefinitions>["artifact"]>>[];
   widths: Namespaced<KIE, KIE__tComponentWidths>[];
-  shapes: Normalized<DMNDI15__DMNShape>[];
-  edges: Normalized<DMNDI15__DMNEdge>[];
+  shapes: Normalized<DMN_LATEST__DMNShape>[];
+  edges: Normalized<DMN_LATEST__DMNEdge>[];
 };
 
 export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorState: State) {
@@ -90,12 +90,12 @@ export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorS
             return;
           }
 
-          const dmnObject = JSON.parse(JSON.stringify(node.data.dmnObject)) as Normalized<DMN16__tDecision>; // Casting to `DMN16__tDecision` because it has all requirement types.
+          const dmnObject = JSON.parse(JSON.stringify(node.data.dmnObject)) as Normalized<DMN_LATEST__tDecision>; // Casting to `DMN_LATEST__tDecision` because it has all requirement types.
 
           // This is going to get repopulated when this data is pasted somewhere.
           if (node.data.dmnObject?.__$$element === "decisionService") {
-            (dmnObject as Normalized<DMN16__tDecisionService>).inputData = [];
-            (dmnObject as Normalized<DMN16__tDecisionService>).inputDecision = [];
+            (dmnObject as Normalized<DMN_LATEST__tDecisionService>).inputData = [];
+            (dmnObject as Normalized<DMN_LATEST__tDecisionService>).inputDecision = [];
           }
 
           if (dmnObject.authorityRequirement) {

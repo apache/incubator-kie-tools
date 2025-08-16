@@ -84,6 +84,52 @@ import { DMN15__tDefinitions } from "./schemas/dmn-1_5/ts-gen/types";
 import { DMN16__tDefinitions } from "./schemas/dmn-1_6/ts-gen/types";
 import { ns as kie10ns } from "./schemas/kie-1_0/ts-gen/meta";
 import { KIE_NS, LEGACY_KIE_NS__PRE_GWT_REMOVAL } from "./kie-extensions";
+import {
+  DMNDI15__DMNShape,
+  DMNDI15__DMNEdge,
+  DMNDI15__DMNDiagram,
+  DMNDI15__DMNDecisionServiceDividerLine,
+  DMN16__tBusinessKnowledgeModel,
+  DMN16__tDecision,
+  DMN16__tDecisionService,
+  DMN16__tGroup,
+  DMN16__tInputData,
+  DMN16__tKnowledgeSource,
+  DMN16__tTextAnnotation,
+  DMN16__tItemDefinition,
+  DMN16__tAssociation,
+  DMN16__tAuthorityRequirement,
+  DMN16__tBinding,
+  DMN16__tBuiltinAggregator,
+  DMN16__tChildExpression,
+  DMN16__tConditional,
+  DMN16__tContext,
+  DMN16__tContextEntry,
+  DMN16__tDecisionRule,
+  DMN16__tDecisionTable,
+  DMN16__tDMNElementReference,
+  DMN16__tFilter,
+  DMN16__tFor,
+  DMN16__tFunctionDefinition,
+  DMN16__tFunctionKind,
+  DMN16__tHitPolicy,
+  DMN16__tImport,
+  DMN16__tInformationItem,
+  DMN16__tInformationRequirement,
+  DMN16__tInputClause,
+  DMN16__tInvocation,
+  DMN16__tIterator,
+  DMN16__tKnowledgeRequirement,
+  DMN16__tList,
+  DMN16__tLiteralExpression,
+  DMN16__tNamedElement,
+  DMN16__tOutputClause,
+  DMN16__tQuantified,
+  DMN16__tRelation,
+  DMN16__tRuleAnnotationClause,
+  DMN16__tTypedChildExpression,
+  DMN16__tUnaryTests,
+} from "./schemas/dmn-1_6/ts-gen/types";
 
 import "./kie-extensions"; // Necessary to include the type extensions and patch the ns maps. Do not remove.
 
@@ -263,6 +309,53 @@ export const DMN_VERSIONS_TIMELINE: DmnVersions[] = ["1.0", "1.1", "1.2", "1.3",
 export const DMN_LATEST_VERSION = "1.6" as const;
 export type DmnLatestMarshaller = DmnMarshaller16;
 export type DmnLatestModel = { [dmn16root.element]: DMN16__tDefinitions };
+
+//aliases
+export type DMN_LATEST__tDefinitions = DMN16__tDefinitions;
+export type DMN_LATEST__tBusinessKnowledgeModel = DMN16__tBusinessKnowledgeModel;
+export type DMN_LATEST__tDecision = DMN16__tDecision;
+export type DMN_LATEST__tDecisionService = DMN16__tDecisionService;
+export type DMN_LATEST__tGroup = DMN16__tGroup;
+export type DMN_LATEST__tInputData = DMN16__tInputData;
+export type DMN_LATEST__tKnowledgeSource = DMN16__tKnowledgeSource;
+export type DMN_LATEST__tTextAnnotation = DMN16__tTextAnnotation;
+export type DMN_LATEST__tItemDefinition = DMN16__tItemDefinition;
+export type DMN_LATEST__tConditional = DMN16__tConditional;
+export type DMN_LATEST__tContext = DMN16__tContext;
+export type DMN_LATEST__tDecisionTable = DMN16__tDecisionTable;
+export type DMN_LATEST__tFilter = DMN16__tFilter;
+export type DMN_LATEST__tFor = DMN16__tFor;
+export type DMN_LATEST__tFunctionDefinition = DMN16__tFunctionDefinition;
+export type DMN_LATEST__tInformationItem = DMN16__tInformationItem;
+export type DMN_LATEST__tInvocation = DMN16__tInvocation;
+export type DMN_LATEST__tList = DMN16__tList;
+export type DMN_LATEST__tLiteralExpression = DMN16__tLiteralExpression;
+export type DMN_LATEST__tQuantified = DMN16__tQuantified;
+export type DMN_LATEST__tRelation = DMN16__tRelation;
+export type DMN_LATEST__tChildExpression = DMN16__tChildExpression;
+export type DMN_LATEST__tUnaryTests = DMN16__tUnaryTests;
+export type DMN_LATEST__tNamedElement = DMN16__tNamedElement;
+export type DMN_LATEST__tContextEntry = DMN16__tContextEntry;
+export type DMN_LATEST__tBuiltinAggregator = DMN16__tBuiltinAggregator;
+export type DMN_LATEST__tDecisionRule = DMN16__tDecisionRule;
+export type DMN_LATEST__tHitPolicy = DMN16__tHitPolicy;
+export type DMN_LATEST__tInputClause = DMN16__tInputClause;
+export type DMN_LATEST__tOutputClause = DMN16__tOutputClause;
+export type DMN_LATEST__tRuleAnnotationClause = DMN16__tRuleAnnotationClause;
+export type DMN_LATEST__tFunctionKind = DMN16__tFunctionKind;
+export type DMN_LATEST__tBinding = DMN16__tBinding;
+export type DMN_LATEST__tTypedChildExpression = DMN16__tTypedChildExpression;
+export type DMN_LATEST__tImport = DMN16__tImport;
+export type DMN_LATEST__tAuthorityRequirement = DMN16__tAuthorityRequirement;
+export type DMN_LATEST__tInformationRequirement = DMN16__tInformationRequirement;
+export type DMN_LATEST__tKnowledgeRequirement = DMN16__tKnowledgeRequirement;
+export type DMN_LATEST__tAssociation = DMN16__tAssociation;
+export type DMN_LATEST__tDMNElementReference = DMN16__tDMNElementReference;
+export type DMN_LATEST__tIterator = DMN16__tIterator;
+export type DMN_LATEST__DMNShape = DMNDI15__DMNShape;
+export type DMN_LATEST__DMNEdge = DMNDI15__DMNEdge;
+export type DMN_LATEST__DMNDecisionServiceDividerLine = DMNDI15__DMNDecisionServiceDividerLine;
+export type DMN_LATEST__DMNDiagram = DMNDI15__DMNDiagram;
 
 export type DmnMarshallerOpts<V extends DmnMarshallerVersions> = { upgradeTo?: V };
 

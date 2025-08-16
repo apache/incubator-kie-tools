@@ -19,10 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import {
-  DMN16__tDefinitions,
-  DMN16__tItemDefinition,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tDefinitions, DMN_LATEST__tItemDefinition } from "@kie-tools/dmn-marshaller/src/index";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { EditableNodeLabel, useEditableNodeLabel } from "../diagram/nodes/EditableNodeLabel";
@@ -54,7 +51,7 @@ export function DataTypeName({
 }: {
   isReadOnly: boolean;
   editMode: "hover" | "double-click";
-  itemDefinition: Normalized<DMN16__tItemDefinition>;
+  itemDefinition: Normalized<DMN_LATEST__tItemDefinition>;
   isActive: boolean;
   relativeToNamespace: string;
   shouldCommitOnBlur?: boolean;
@@ -102,7 +99,7 @@ export function DataTypeName({
 
   const applyRename = useCallback(
     (args: {
-      definitions: Normalized<DMN16__tDefinitions>;
+      definitions: Normalized<DMN_LATEST__tDefinitions>;
       newName: string;
       shouldRenameReferencedExpressions: boolean;
       allDataTypesById: DataTypeIndex;

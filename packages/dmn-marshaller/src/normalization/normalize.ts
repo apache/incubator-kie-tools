@@ -19,7 +19,7 @@
 
 import { DmnLatestModel } from "..";
 import { getNewDmnIdRandomizer } from "../idRandomizer/dmnIdRandomizer";
-import { DMN16__tDefinitions } from "../schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller/src/index";
 
 export type Normalized<T> = WithRequiredDeep<T, "@_id">;
 
@@ -67,7 +67,7 @@ export function normalize(model: DmnLatestModel): Normalized<DmnLatestModel> {
   return normalizedModel;
 }
 
-function addMissingImportNamespaces(definitions: Normalized<DMN16__tDefinitions>) {
+function addMissingImportNamespaces(definitions: Normalized<DMN_LATEST__tDefinitions>) {
   if (definitions.import === undefined) {
     return;
   }
@@ -75,8 +75,8 @@ function addMissingImportNamespaces(definitions: Normalized<DMN16__tDefinitions>
   // Collect all declared namespaces
   const definedNamespaces = new Set(
     Object.keys(definitions)
-      .filter((keys: keyof DMN16__tDefinitions) => String(keys).startsWith("@_xmlns:"))
-      .map((xmlnsKey: keyof DMN16__tDefinitions) => definitions[xmlnsKey])
+      .filter((keys: keyof DMN_LATEST__tDefinitions) => String(keys).startsWith("@_xmlns:"))
+      .map((xmlnsKey: keyof DMN_LATEST__tDefinitions) => definitions[xmlnsKey])
   );
 
   // Add missing import namespace declarations as `xmlns:included*`

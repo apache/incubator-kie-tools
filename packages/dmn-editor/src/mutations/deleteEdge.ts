@@ -19,10 +19,10 @@
 
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import {
-  DMN16__tDecision,
-  DMN16__tDefinitions,
-  DMNDI15__DMNEdge,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+  DMN_LATEST__tDecision,
+  DMN_LATEST__tDefinitions,
+  DMN_LATEST__DMNEdge,
+} from "@kie-tools/dmn-marshaller/src/index";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefToQName";
 import { addOrGetDrd } from "./addOrGetDrd";
@@ -42,14 +42,14 @@ export function deleteEdge({
   mode,
   externalModelsByNamespace,
 }: {
-  definitions: Normalized<DMN16__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   drdIndex: number;
   edge: { id: string; dmnObject: DmnDiagramEdgeData["dmnObject"] };
   mode: EdgeDeletionMode;
   externalModelsByNamespace: ExternalModelsIndex | undefined;
 }) {
   if (edge.dmnObject.namespace === definitions["@_namespace"]) {
-    const dmnObjects: Normalized<DMN16__tDefinitions>["drgElement" | "artifact"] =
+    const dmnObjects: Normalized<DMN_LATEST__tDefinitions>["drgElement" | "artifact"] =
       switchExpression(edge?.dmnObject.type, {
         association: definitions.artifact,
         group: definitions.artifact,
@@ -64,10 +64,11 @@ export function deleteEdge({
     if (mode === EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
       const requirements =
         switchExpression(edge?.dmnObject.requirementType, {
-          // Casting toDMN16__tDecision because if has all types of requirement, but not necessarily that's true.
-          informationRequirement: (dmnObjects[dmnObjectIndex] as Normalized<DMN16__tDecision>).informationRequirement,
-          knowledgeRequirement: (dmnObjects[dmnObjectIndex] as Normalized<DMN16__tDecision>).knowledgeRequirement,
-          authorityRequirement: (dmnObjects[dmnObjectIndex] as Normalized<DMN16__tDecision>).authorityRequirement,
+          // Casting toDMN_LATEST__tDecision because if has all types of requirement, but not necessarily that's true.
+          informationRequirement: (dmnObjects[dmnObjectIndex] as Normalized<DMN_LATEST__tDecision>)
+            .informationRequirement,
+          knowledgeRequirement: (dmnObjects[dmnObjectIndex] as Normalized<DMN_LATEST__tDecision>).knowledgeRequirement,
+          authorityRequirement: (dmnObjects[dmnObjectIndex] as Normalized<DMN_LATEST__tDecision>).authorityRequirement,
           association: dmnObjects,
         }) ?? [];
 
@@ -82,7 +83,7 @@ export function deleteEdge({
   // Deleting the DMNEdge's
   // needs to be executed even if edge.dmnObject.namespace !== definitions["@_namespace"]
   // As they may be DMNEdge depictions for edges targeting external nodes
-  let deletedDmnEdgeOnCurrentDrd: Normalized<DMNDI15__DMNEdge> | undefined;
+  let deletedDmnEdgeOnCurrentDrd: Normalized<DMN_LATEST__DMNEdge> | undefined;
 
   const drdCount = (definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? []).length;
   for (let i = 0; i < drdCount; i++) {

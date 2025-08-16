@@ -46,7 +46,7 @@ import {
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
 import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
-import { DMN16__tList } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tList } from "@kie-tools/dmn-marshaller/src/index";
 import "./RelationExpression.css";
 
 type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169
@@ -115,7 +115,7 @@ export function RelationExpression({
     }));
   }, [getColumnWidth, relationExpression.column, widths]);
 
-  const rows = useMemo<DMN16__tList[]>(() => {
+  const rows = useMemo<DMN_LATEST__tList[]>(() => {
     return relationExpression.row ?? [];
   }, [relationExpression]);
 

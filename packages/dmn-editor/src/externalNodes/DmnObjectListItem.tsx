@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import { DMN16__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller/src/index";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Unpacked } from "../tsExt/tsExt";
 import { TypeRefLabel } from "../dataTypes/TypeRefLabel";
@@ -40,7 +40,7 @@ export function DmnObjectListItem({
   namespace,
   relativeToNamespace,
 }: {
-  dmnObject: Unpacked<Normalized<DMN16__tDefinitions>["drgElement"]> | undefined;
+  dmnObject: Unpacked<Normalized<DMN_LATEST__tDefinitions>["drgElement"]> | undefined;
   dmnObjectHref: string;
   namespace: string;
   relativeToNamespace: string;

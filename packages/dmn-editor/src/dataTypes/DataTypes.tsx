@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo, useState, useEffect } from "react";
-import { DMN16__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tItemDefinition } from "@kie-tools/dmn-marshaller/src/index";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getNewDmnIdRandomizer } from "@kie-tools/dmn-marshaller/dist/idRandomizer/dmnIdRandomizer";
 import {
@@ -66,7 +66,7 @@ import { ImportJavaClassesDropdownItem, ImportJavaClassNameConflictsModal } from
 import { useImportJavaClasses } from "./useImportJavaClasses";
 
 export type DataType = {
-  itemDefinition: Normalized<DMN16__tItemDefinition>;
+  itemDefinition: Normalized<DMN_LATEST__tItemDefinition>;
   parentId: string | undefined;
   parents: Set<string>;
   index: number;
@@ -80,17 +80,17 @@ export type DataTypeIndex = Map<string, DataType>;
 export type AddItemComponent = (
   id: string,
   how: "unshift" | "push",
-  partial?: Partial<Normalized<DMN16__tItemDefinition>>
+  partial?: Partial<Normalized<DMN_LATEST__tItemDefinition>>
 ) => void;
-export type AddTopLevelItemDefinition = (partial: Partial<Normalized<DMN16__tItemDefinition>>) => void;
+export type AddTopLevelItemDefinition = (partial: Partial<Normalized<DMN_LATEST__tItemDefinition>>) => void;
 
 export type EditItemDefinition = (
   id: string,
   consumer: (
-    itemDefinition: Normalized<DMN16__tItemDefinition>,
-    items: Normalized<DMN16__tItemDefinition>[],
+    itemDefinition: Normalized<DMN_LATEST__tItemDefinition>,
+    items: Normalized<DMN_LATEST__tItemDefinition>[],
     index: number,
-    all: Normalized<DMN16__tItemDefinition>[],
+    all: Normalized<DMN_LATEST__tItemDefinition>[],
     state: State
   ) => void
 ) => void;

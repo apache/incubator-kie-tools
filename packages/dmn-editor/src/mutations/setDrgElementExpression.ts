@@ -18,10 +18,7 @@
  */
 
 import { BoxedExpression } from "@kie-tools/boxed-expression-component/dist/api";
-import {
-  DMN16__tDefinitions,
-  DMN16__tFunctionDefinition,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tDefinitions, DMN_LATEST__tFunctionDefinition } from "@kie-tools/dmn-marshaller/src/index";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 
 export function setDrgElementExpression({
@@ -29,7 +26,7 @@ export function setDrgElementExpression({
   expression,
   drgElementIndex,
 }: {
-  definitions: Normalized<DMN16__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   expression: Normalized<BoxedExpression>;
   drgElementIndex: number;
 }): void {
@@ -51,7 +48,7 @@ export function setDrgElementExpression({
 
     // We remove the __$$element here, because otherwise the "functionDefinition" element name will be used in the final XML.
     const { __$$element, ..._updateExpression } = expression;
-    drgElement.encapsulatedLogic = _updateExpression as Normalized<DMN16__tFunctionDefinition>;
+    drgElement.encapsulatedLogic = _updateExpression as Normalized<DMN_LATEST__tFunctionDefinition>;
   } else {
     throw new Error("DMN MUTATION: Can't update expression for drgElement that is not a Decision or a BKM.");
   }

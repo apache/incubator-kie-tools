@@ -21,7 +21,7 @@ import { DmnDocumentData } from "./DmnDocumentData";
 import { DmnDecision } from "./DmnDecision";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
-import { DMN16__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller/src/index";
 import { ns as dmn16ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/meta";
 import { DMN16_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { v4 as uuid } from "uuid";
@@ -81,7 +81,7 @@ type ImportIndexHierarchy = Map<
 type ImportIndexModels = Map<
   NormalizedPosixPathRelativeToWorkspaceRoot,
   {
-    definitions: DMN16__tDefinitions;
+    definitions: DMN_LATEST__tDefinitions;
     xml: string;
   }
 >;

@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { DMN16__tBusinessKnowledgeModel } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tBusinessKnowledgeModel } from "@kie-tools/dmn-marshaller/src/index";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -39,7 +39,7 @@ export function BkmProperties({
   namespace,
   index,
 }: {
-  bkm: Normalized<DMN16__tBusinessKnowledgeModel>;
+  bkm: Normalized<DMN_LATEST__tBusinessKnowledgeModel>;
   namespace: string | undefined;
   index: number;
 }) {
@@ -90,7 +90,7 @@ export function BkmProperties({
             setState((state) => {
               const drgElement = state.dmn.model.definitions.drgElement![
                 index
-              ] as Normalized<DMN16__tBusinessKnowledgeModel>;
+              ] as Normalized<DMN_LATEST__tBusinessKnowledgeModel>;
               drgElement.variable ??= { "@_id": generateUuid(), "@_name": bkm["@_name"] };
               drgElement.variable["@_typeRef"] = newTypeRef;
             });
@@ -105,10 +105,11 @@ export function BkmProperties({
         initialValue={bkm.description?.__$$text || ""}
         onChange={(newDescription) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN16__tBusinessKnowledgeModel>).description =
-              {
-                __$$text: newDescription,
-              };
+            (
+              state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tBusinessKnowledgeModel>
+            ).description = {
+              __$$text: newDescription,
+            };
           });
         }}
         placeholder={"Enter a description..."}
@@ -126,7 +127,7 @@ export function BkmProperties({
         onChange={(newExtensionElements) => {
           setState((state) => {
             (
-              state.dmn.model.definitions.drgElement![index] as Normalized<DMN16__tBusinessKnowledgeModel>
+              state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tBusinessKnowledgeModel>
             ).extensionElements = {
               "kie:attachment": newExtensionElements,
             };

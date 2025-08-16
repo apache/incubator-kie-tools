@@ -21,56 +21,56 @@ import { DataType } from "./DataType";
 import { FeelSyntacticSymbolNature } from "./FeelSyntacticSymbolNature";
 import { IdentifierContext } from "./IdentifierContext";
 import {
-  DMN16__tBusinessKnowledgeModel,
-  DMN16__tConditional,
-  DMN16__tContext,
-  DMN16__tContextEntry,
-  DMN16__tDecision,
-  DMN16__tDecisionService,
-  DMN16__tDecisionTable,
-  DMN16__tDefinitions,
-  DMN16__tFilter,
-  DMN16__tFor,
-  DMN16__tFunctionDefinition,
-  DMN16__tInformationRequirement,
-  DMN16__tInputClause,
-  DMN16__tInputData,
-  DMN16__tInvocation,
-  DMN16__tItemDefinition,
-  DMN16__tKnowledgeRequirement,
-  DMN16__tList,
-  DMN16__tLiteralExpression,
-  DMN16__tQuantified,
-  DMN16__tRelation,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+  DMN_LATEST__tBusinessKnowledgeModel,
+  DMN_LATEST__tConditional,
+  DMN_LATEST__tContext,
+  DMN_LATEST__tContextEntry,
+  DMN_LATEST__tDecision,
+  DMN_LATEST__tDecisionService,
+  DMN_LATEST__tDecisionTable,
+  DMN_LATEST__tDefinitions,
+  DMN_LATEST__tFilter,
+  DMN_LATEST__tFor,
+  DMN_LATEST__tFunctionDefinition,
+  DMN_LATEST__tInformationRequirement,
+  DMN_LATEST__tInputClause,
+  DMN_LATEST__tInputData,
+  DMN_LATEST__tInvocation,
+  DMN_LATEST__tItemDefinition,
+  DMN_LATEST__tKnowledgeRequirement,
+  DMN_LATEST__tList,
+  DMN_LATEST__tLiteralExpression,
+  DMN_LATEST__tQuantified,
+  DMN_LATEST__tRelation,
+} from "@kie-tools/dmn-marshaller/src/index";
 import { Expression } from "./Expression";
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import { BuiltInTypes } from "./BuiltInTypes";
 
 export type ExpressionSource = { text?: { __$$text: string }; "@_id"?: string };
-export type DmnLiteralExpression = { __$$element: "literalExpression" } & DMN16__tLiteralExpression;
-export type DmnInvocation = { __$$element: "invocation" } & DMN16__tInvocation;
-export type DmnDecisionTable = { __$$element: "decisionTable" } & DMN16__tDecisionTable;
-export type DmnContext = { __$$element: "context" } & DMN16__tContext;
-export type DmnFunctionDefinition = { __$$element: "functionDefinition" } & DMN16__tFunctionDefinition;
-export type DmnRelation = { __$$element: "relation" } & DMN16__tRelation;
-export type DmnList = { __$$element: "list" } & DMN16__tList;
-export type DmnConditional = { __$$element: "conditional" } & DMN16__tConditional;
-export type DmnFilter = { __$$element: "filter" } & DMN16__tFilter;
-export type DmnFor = { __$$element: "for" } & DMN16__tFor;
-export type DmnEvery = { __$$element: "every" } & DMN16__tQuantified;
-export type DmnSome = { __$$element: "some" } & DMN16__tQuantified;
-export type DmnDecisionNode = { __$$element: "decision" } & DMN16__tDecision;
+export type DmnLiteralExpression = { __$$element: "literalExpression" } & DMN_LATEST__tLiteralExpression;
+export type DmnInvocation = { __$$element: "invocation" } & DMN_LATEST__tInvocation;
+export type DmnDecisionTable = { __$$element: "decisionTable" } & DMN_LATEST__tDecisionTable;
+export type DmnContext = { __$$element: "context" } & DMN_LATEST__tContext;
+export type DmnFunctionDefinition = { __$$element: "functionDefinition" } & DMN_LATEST__tFunctionDefinition;
+export type DmnRelation = { __$$element: "relation" } & DMN_LATEST__tRelation;
+export type DmnList = { __$$element: "list" } & DMN_LATEST__tList;
+export type DmnConditional = { __$$element: "conditional" } & DMN_LATEST__tConditional;
+export type DmnFilter = { __$$element: "filter" } & DMN_LATEST__tFilter;
+export type DmnFor = { __$$element: "for" } & DMN_LATEST__tFor;
+export type DmnEvery = { __$$element: "every" } & DMN_LATEST__tQuantified;
+export type DmnSome = { __$$element: "some" } & DMN_LATEST__tQuantified;
+export type DmnDecisionNode = { __$$element: "decision" } & DMN_LATEST__tDecision;
 
-export type DmnDefinitions = DMN16__tDefinitions;
-export type DmnKnowledgeRequirement = DMN16__tKnowledgeRequirement;
-export type DmnContextEntry = DMN16__tContextEntry;
+export type DmnDefinitions = DMN_LATEST__tDefinitions;
+export type DmnKnowledgeRequirement = DMN_LATEST__tKnowledgeRequirement;
+export type DmnContextEntry = DMN_LATEST__tContextEntry;
 
-type DmnBusinessKnowledgeModel = DMN16__tBusinessKnowledgeModel;
-type DmnItemDefinition = DMN16__tItemDefinition;
-type DmnInputData = DMN16__tInputData;
-type DmnInformationRequirement = DMN16__tInformationRequirement;
-type DmnDecisionService = DMN16__tDecisionService;
+type DmnBusinessKnowledgeModel = DMN_LATEST__tBusinessKnowledgeModel;
+type DmnItemDefinition = DMN_LATEST__tItemDefinition;
+type DmnInputData = DMN_LATEST__tInputData;
+type DmnInformationRequirement = DMN_LATEST__tInformationRequirement;
+type DmnDecisionService = DMN_LATEST__tDecisionService;
 
 export class IdentifiersRepository {
   private readonly _identifiersContextIndexedByUuid: Map<string, IdentifierContext>;
@@ -770,7 +770,7 @@ export class IdentifiersRepository {
     parent.children.set(ruleInputElementNode.uuid, ruleInputElementNode);
   }
 
-  private addDecisionTableInputEntryNode(parent: IdentifierContext, inputEntryNode: DMN16__tInputClause) {
+  private addDecisionTableInputEntryNode(parent: IdentifierContext, inputEntryNode: DMN_LATEST__tInputClause) {
     const identifierContext = this.addIdentifierContext({
       uuid: inputEntryNode["@_id"] ?? "",
       identifierDefinedByTheContext: "",

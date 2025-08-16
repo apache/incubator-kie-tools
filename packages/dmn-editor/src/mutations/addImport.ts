@@ -18,14 +18,14 @@
  */
 
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import { DMN16__tDefinitions, DMN16__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tDefinitions, DMN_LATEST__tImport } from "@kie-tools/dmn-marshaller/src/index";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 
 export function addImport({
   definitions,
   includedModel,
 }: {
-  definitions: Normalized<DMN16__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   includedModel: {
     name: string;
     namespace: string;
@@ -41,7 +41,7 @@ export function addImport({
     ? includedModel.normalizedPathRelativeToThisDmn // If the included model is located in a parent directory, we leave it that way because that is explicit enough already.
     : `./${includedModel.normalizedPathRelativeToThisDmn}`; // Always use this notation to make it explicit that we're using thisDmn's location as reference.
 
-  const newImport: Normalized<DMN16__tImport> = {
+  const newImport: Normalized<DMN_LATEST__tImport> = {
     "@_id": generateUuid(),
     "@_name": includedModel.name.trim(),
     "@_importType": includedModel.xmlns,

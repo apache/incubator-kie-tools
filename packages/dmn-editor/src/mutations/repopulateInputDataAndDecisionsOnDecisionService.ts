@@ -17,10 +17,7 @@
  * under the License.
  */
 
-import {
-  DMN16__tDecisionService,
-  DMN16__tDefinitions,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tDecisionService, DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller/src/index";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref, parseXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { ExternalModelsIndex } from "../DmnEditor";
@@ -29,7 +26,7 @@ export function repopulateInputDataAndDecisionsOnAllDecisionServices({
   definitions,
   externalModelsByNamespace,
 }: {
-  definitions: Normalized<DMN16__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   externalModelsByNamespace: ExternalModelsIndex | undefined;
 }) {
   for (let i = 0; i < (definitions.drgElement ?? []).length; i++) {
@@ -49,8 +46,8 @@ export function repopulateInputDataAndDecisionsOnDecisionService({
   decisionService,
   externalModelsByNamespace,
 }: {
-  definitions: Normalized<DMN16__tDefinitions>;
-  decisionService: Normalized<DMN16__tDecisionService>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
+  decisionService: Normalized<DMN_LATEST__tDecisionService>;
   externalModelsByNamespace: ExternalModelsIndex | undefined;
 }) {
   // Save previous values to preserve order

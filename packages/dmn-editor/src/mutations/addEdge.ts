@@ -18,16 +18,16 @@
  */
 
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { DC__Bounds } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import {
-  DC__Bounds,
-  DMN16__tAssociation,
-  DMN16__tAuthorityRequirement,
-  DMN16__tDecision,
-  DMN16__tDefinitions,
-  DMN16__tInformationRequirement,
-  DMN16__tKnowledgeRequirement,
-  DMNDI15__DMNEdge,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+  DMN_LATEST__tAssociation,
+  DMN_LATEST__tAuthorityRequirement,
+  DMN_LATEST__tDecision,
+  DMN_LATEST__tDefinitions,
+  DMN_LATEST__tInformationRequirement,
+  DMN_LATEST__tKnowledgeRequirement,
+  DMN_LATEST__DMNEdge,
+} from "@kie-tools/dmn-marshaller/src/index";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { PositionalNodeHandleId } from "../diagram/connections/PositionalNodeHandles";
 import { EdgeType, NodeType } from "../diagram/connections/graphStructure";
@@ -52,7 +52,7 @@ export function addEdge({
   externalModelsByNamespace,
   dmnElementRefOfDmnEdge,
 }: {
-  definitions: Normalized<DMN16__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   drdIndex: number;
   sourceNode: {
     type: NodeType;
@@ -93,7 +93,7 @@ export function addEdge({
   if (edge.type === EDGE_TYPES.association) {
     definitions.artifact ??= [];
 
-    const newAssociation: Normalized<DMN16__tAssociation> = {
+    const newAssociation: Normalized<DMN_LATEST__tAssociation> = {
       "@_id": newEdgeId,
       "@_associationDirection": "Both",
       sourceRef: { "@_href": `${sourceNode.href}` },
@@ -117,7 +117,7 @@ export function addEdge({
   // Requirements
   else if (!externalTargetAllowed) {
     const requirements = getRequirementsFromEdge(sourceNode, newEdgeId, edge.type);
-    const drgElement = definitions.drgElement![targetNode.index] as Normalized<DMN16__tDecision>; // We cast to tDecision here because it has all three types of requirement.
+    const drgElement = definitions.drgElement![targetNode.index] as Normalized<DMN_LATEST__tDecision>; // We cast to tDecision here because it has all three types of requirement.
     if (requirements?.informationRequirement) {
       drgElement.informationRequirement ??= [];
       const removed = removeFirstMatchIfPresent(drgElement.informationRequirement, (ir) =>
@@ -167,7 +167,7 @@ export function addEdge({
   const removedDmnEdge = removeFirstMatchIfPresent(
     diagramElements,
     (e) => e.__$$element === "dmndi:DMNEdge" && e["@_dmnElementRef"] === existingRequirementOrAssociationId
-  ) as Normalized<DMNDI15__DMNEdge> | undefined;
+  ) as Normalized<DMN_LATEST__DMNEdge> | undefined;
 
   const newWaypoints = keepWaypoints
     ? [
@@ -202,18 +202,18 @@ export function addEdge({
   return { newDmnEdge };
 }
 
-function doesInformationRequirementsPointTo(a: Normalized<DMN16__tInformationRequirement>, nodeId: string) {
+function doesInformationRequirementsPointTo(a: Normalized<DMN_LATEST__tInformationRequirement>, nodeId: string) {
   return (
     a.requiredInput?.["@_href"] === `${nodeId}` || //
     a.requiredDecision?.["@_href"] === `${nodeId}`
   );
 }
 
-function doesKnowledgeRequirementsPointTo(a: Normalized<DMN16__tKnowledgeRequirement>, nodeId: string) {
+function doesKnowledgeRequirementsPointTo(a: Normalized<DMN_LATEST__tKnowledgeRequirement>, nodeId: string) {
   return a.requiredKnowledge?.["@_href"] === `${nodeId}`;
 }
 
-function doesAuthorityRequirementsPointTo(a: Normalized<DMN16__tAuthorityRequirement>, nodeId: string) {
+function doesAuthorityRequirementsPointTo(a: Normalized<DMN_LATEST__tAuthorityRequirement>, nodeId: string) {
   return (
     a.requiredInput?.["@_href"] === `${nodeId}` ||
     a.requiredDecision?.["@_href"] === `${nodeId}` ||
@@ -221,7 +221,7 @@ function doesAuthorityRequirementsPointTo(a: Normalized<DMN16__tAuthorityRequire
   );
 }
 
-function areAssociationsEquivalent(a: Normalized<DMN16__tAssociation>, b: Normalized<DMN16__tAssociation>) {
+function areAssociationsEquivalent(a: Normalized<DMN_LATEST__tAssociation>, b: Normalized<DMN_LATEST__tAssociation>) {
   return (
     (a.sourceRef["@_href"] === b.sourceRef["@_href"] && a.targetRef["@_href"] === b.targetRef["@_href"]) ||
     (a.sourceRef["@_href"] === b.targetRef["@_href"] && a.targetRef["@_href"] === b.sourceRef["@_href"])

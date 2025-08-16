@@ -18,31 +18,31 @@
  */
 
 import {
-  DMN16__tConditional,
-  DMN16__tContext,
-  DMN16__tDecisionTable,
-  DMN16__tFilter,
-  DMN16__tFor,
-  DMN16__tFunctionDefinition,
-  DMN16__tInvocation,
-  DMN16__tList,
-  DMN16__tLiteralExpression,
-  DMN16__tQuantified,
-  DMN16__tRelation,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+  DMN_LATEST__tConditional,
+  DMN_LATEST__tContext,
+  DMN_LATEST__tDecisionTable,
+  DMN_LATEST__tFilter,
+  DMN_LATEST__tFor,
+  DMN_LATEST__tFunctionDefinition,
+  DMN_LATEST__tInvocation,
+  DMN_LATEST__tList,
+  DMN_LATEST__tLiteralExpression,
+  DMN_LATEST__tQuantified,
+  DMN_LATEST__tRelation,
+} from "@kie-tools/dmn-marshaller/src/index";
 
-export type BoxedLiteral = { __$$element: "literalExpression" } & DMN16__tLiteralExpression;
-export type BoxedRelation = { __$$element: "relation" } & DMN16__tRelation;
-export type BoxedContext = { __$$element: "context" } & DMN16__tContext;
-export type BoxedDecisionTable = { __$$element: "decisionTable" } & DMN16__tDecisionTable;
-export type BoxedList = { __$$element: "list" } & DMN16__tList;
-export type BoxedInvocation = { __$$element: "invocation" } & DMN16__tInvocation;
-export type BoxedFunction = { __$$element: "functionDefinition" } & DMN16__tFunctionDefinition;
-export type BoxedFor = { __$$element: "for" } & DMN16__tFor;
-export type BoxedEvery = { __$$element: "every" } & DMN16__tQuantified;
-export type BoxedSome = { __$$element: "some" } & DMN16__tQuantified;
-export type BoxedConditional = { __$$element: "conditional" } & DMN16__tConditional;
-export type BoxedFilter = { __$$element: "filter" } & DMN16__tFilter;
+export type BoxedLiteral = { __$$element: "literalExpression" } & DMN_LATEST__tLiteralExpression;
+export type BoxedRelation = { __$$element: "relation" } & DMN_LATEST__tRelation;
+export type BoxedContext = { __$$element: "context" } & DMN_LATEST__tContext;
+export type BoxedDecisionTable = { __$$element: "decisionTable" } & DMN_LATEST__tDecisionTable;
+export type BoxedList = { __$$element: "list" } & DMN_LATEST__tList;
+export type BoxedInvocation = { __$$element: "invocation" } & DMN_LATEST__tInvocation;
+export type BoxedFunction = { __$$element: "functionDefinition" } & DMN_LATEST__tFunctionDefinition;
+export type BoxedFor = { __$$element: "for" } & DMN_LATEST__tFor;
+export type BoxedEvery = { __$$element: "every" } & DMN_LATEST__tQuantified;
+export type BoxedSome = { __$$element: "some" } & DMN_LATEST__tQuantified;
+export type BoxedConditional = { __$$element: "conditional" } & DMN_LATEST__tConditional;
+export type BoxedFilter = { __$$element: "filter" } & DMN_LATEST__tFilter;
 
 export type Normalized<T> = WithRequiredDeep<T, "@_id">;
 

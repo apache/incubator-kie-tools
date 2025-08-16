@@ -52,7 +52,7 @@ import { isRange } from "./ConstraintsRange";
 import { constraintTypeHelper, recursivelyGetRootItemDefinition } from "./Constraints";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 import { useDmnEditor } from "../DmnEditorContext";
-import { DMN16__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tItemDefinition } from "@kie-tools/dmn-marshaller/src/index";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { resolveTypeRef } from "./resolveTypeRef";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
@@ -519,9 +519,8 @@ export function ItemComponentsTable({
                                             "@_isCollection": false,
                                           });
 
-                                          const newItemDefinitionCopy: Normalized<DMN16__tItemDefinition> = JSON.parse(
-                                            JSON.stringify(newItemDefinition)
-                                          ); // Necessary because idRandomizer will mutate this object.
+                                          const newItemDefinitionCopy: Normalized<DMN_LATEST__tItemDefinition> =
+                                            JSON.parse(JSON.stringify(newItemDefinition)); // Necessary because idRandomizer will mutate this object.
 
                                           getNewDmnIdRandomizer()
                                             .ack({

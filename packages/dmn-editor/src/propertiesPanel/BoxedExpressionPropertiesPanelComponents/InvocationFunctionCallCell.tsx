@@ -23,7 +23,7 @@ import { TextField, TextFieldType } from "../Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { useDmnEditorStore } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
-import { DMN16__tLiteralExpression } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tLiteralExpression } from "@kie-tools/dmn-marshaller/src/index";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 
 export function InvocationFunctionCallCell(props: {
@@ -36,12 +36,12 @@ export function InvocationFunctionCallCell(props: {
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updater = useBoxedExpressionUpdater<Normalized<DMN16__tLiteralExpression>>(
+  const updater = useBoxedExpressionUpdater<Normalized<DMN_LATEST__tLiteralExpression>>(
     selectedObjectInfos?.expressionPath ?? []
   );
 
   const cell = useMemo(
-    () => selectedObjectInfos?.cell as Normalized<DMN16__tLiteralExpression>,
+    () => selectedObjectInfos?.cell as Normalized<DMN_LATEST__tLiteralExpression>,
     [selectedObjectInfos?.cell]
   );
 

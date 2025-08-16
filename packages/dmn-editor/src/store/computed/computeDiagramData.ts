@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN16__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller/src/index";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import * as RF from "reactflow";
 import { KIE_DMN_UNKNOWN_NAMESPACE } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
@@ -284,7 +284,7 @@ export function computeDiagramData(
             string,
             {
               index: number;
-              element: Unpacked<Normalized<DMN16__tDefinitions>["drgElement"]>;
+              element: Unpacked<Normalized<DMN_LATEST__tDefinitions>["drgElement"]>;
             }
           >()
         )
@@ -296,7 +296,7 @@ export function computeDiagramData(
         string,
         {
           index: number;
-          element: Unpacked<Normalized<DMN16__tDefinitions>["drgElement"]>;
+          element: Unpacked<Normalized<DMN_LATEST__tDefinitions>["drgElement"]>;
         }
       >
     >()
@@ -410,7 +410,7 @@ export function computeDiagramData(
 function ackRequirementEdges(
   thisDmnsNamespace: string,
   drgElementsNamespace: string,
-  drgElements: Normalized<DMN16__tDefinitions>["drgElement"],
+  drgElements: Normalized<DMN_LATEST__tDefinitions>["drgElement"],
   ackEdge: AckEdge
 ) {
   const namespace = drgElementsNamespace === thisDmnsNamespace ? "" : drgElementsNamespace;

@@ -18,7 +18,7 @@
  */
 
 import { BoxedExpression } from "@kie-tools/boxed-expression-component/dist/api";
-import { DMN16__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller/src/index";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { renameDrgElement } from "./renameNode";
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller/dist";
@@ -31,7 +31,7 @@ export function updateExpression({
   drgElementIndex,
   externalDmnModelsByNamespaceMap,
 }: {
-  definitions: Normalized<DMN16__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   expression: Normalized<BoxedExpression>;
   drgElementIndex: number;
   externalDmnModelsByNamespaceMap: Map<string, Normalized<DmnLatestModel>>;

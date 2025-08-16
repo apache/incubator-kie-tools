@@ -20,7 +20,7 @@
 import * as React from "react";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ns as dmn12ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_2/ts-gen/meta";
-import { DMN16__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tImport } from "@kie-tools/dmn-marshaller/src/index";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Card, CardBody, CardHeader, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
@@ -460,7 +460,7 @@ function IncludedModelCard({
   externalModel,
   isReadOnly,
 }: {
-  _import: Normalized<DMN16__tImport>;
+  _import: Normalized<DMN_LATEST__tImport>;
   externalModel: ExternalModel | undefined;
   index: number;
   isReadOnly: boolean;

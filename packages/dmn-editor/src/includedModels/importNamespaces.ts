@@ -17,12 +17,12 @@
  * under the License.
  */
 
-import { DMN16__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tImport } from "@kie-tools/dmn-marshaller/src/index";
 import { allDmnImportNamespaces } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { allPmmlImportNamespaces, getPmmlNamespaceFromDmnImport } from "../pmml/pmml";
 
-export function getNamespaceOfDmnImport({ dmnImport }: { dmnImport: Normalized<DMN16__tImport> }) {
+export function getNamespaceOfDmnImport({ dmnImport }: { dmnImport: Normalized<DMN_LATEST__tImport> }) {
   if (allDmnImportNamespaces.has(dmnImport["@_importType"])) {
     return dmnImport["@_namespace"];
   } else if (allPmmlImportNamespaces.has(dmnImport["@_importType"])) {

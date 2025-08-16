@@ -17,13 +17,13 @@
  * under the License.
  */
 
-import { DMN16__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tImport } from "@kie-tools/dmn-marshaller/src/index";
 import { State } from "../Store";
 
 export function computeImportsByNamespace(imports: State["dmn"]["model"]["definitions"]["import"]) {
   imports ??= [];
 
-  const ret = new Map<string, DMN16__tImport>();
+  const ret = new Map<string, DMN_LATEST__tImport>();
   for (let i = 0; i < imports.length; i++) {
     ret.set(imports[i]["@_namespace"], imports[i]);
   }

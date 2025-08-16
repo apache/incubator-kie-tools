@@ -18,18 +18,18 @@
  */
 
 import {
-  DMN16__tConditional,
-  DMN16__tContext,
-  DMN16__tDecisionTable,
-  DMN16__tFilter,
-  DMN16__tFor,
-  DMN16__tFunctionDefinition,
-  DMN16__tInvocation,
-  DMN16__tList,
-  DMN16__tLiteralExpression,
-  DMN16__tQuantified,
-  DMN16__tRelation,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+  DMN_LATEST__tConditional,
+  DMN_LATEST__tContext,
+  DMN_LATEST__tDecisionTable,
+  DMN_LATEST__tFilter,
+  DMN_LATEST__tFor,
+  DMN_LATEST__tFunctionDefinition,
+  DMN_LATEST__tInvocation,
+  DMN_LATEST__tList,
+  DMN_LATEST__tLiteralExpression,
+  DMN_LATEST__tQuantified,
+  DMN_LATEST__tRelation,
+} from "@kie-tools/dmn-marshaller/src/index";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { AllExpressionTypes, AllExpressions, AllExpressionsWithoutTypes } from "../dataTypes/DataTypeSpec";
 
@@ -412,134 +412,134 @@ export function getDmnObjectByPath(
     if (path.type === "conditional") {
       // root
       if (path.row === undefined) {
-        return expressionToEdit as Normalized<DMN16__tConditional>;
+        return expressionToEdit as Normalized<DMN_LATEST__tConditional>;
       }
       if (path.row === "if") {
-        return (expressionToEdit as Normalized<DMN16__tConditional>).if.expression;
+        return (expressionToEdit as Normalized<DMN_LATEST__tConditional>).if.expression;
       }
       if (path.row === "else") {
-        return (expressionToEdit as Normalized<DMN16__tConditional>).else.expression;
+        return (expressionToEdit as Normalized<DMN_LATEST__tConditional>).else.expression;
       }
-      return (expressionToEdit as Normalized<DMN16__tConditional>).then.expression;
+      return (expressionToEdit as Normalized<DMN_LATEST__tConditional>).then.expression;
     }
     if (path.type === "context") {
       // root
       if (path.row === undefined || path.column === undefined) {
-        return expressionToEdit as Normalized<DMN16__tContext>;
+        return expressionToEdit as Normalized<DMN_LATEST__tContext>;
       }
       if (path.column === "expression") {
-        return (expressionToEdit as Normalized<DMN16__tContext>).contextEntry?.[path.row].expression;
+        return (expressionToEdit as Normalized<DMN_LATEST__tContext>).contextEntry?.[path.row].expression;
       }
-      return (expressionToEdit as Normalized<DMN16__tContext>).contextEntry?.[path.row].variable;
+      return (expressionToEdit as Normalized<DMN_LATEST__tContext>).contextEntry?.[path.row].variable;
     }
     if (path.type === "decisionTable") {
       // root
       if (path.row === undefined || path.column === undefined) {
-        return expressionToEdit as Normalized<DMN16__tDecisionTable>;
+        return expressionToEdit as Normalized<DMN_LATEST__tDecisionTable>;
       }
       if (path.header === "input") {
         if (path.row < 0) {
-          return (expressionToEdit as Normalized<DMN16__tDecisionTable>).input?.[path.column];
+          return (expressionToEdit as Normalized<DMN_LATEST__tDecisionTable>).input?.[path.column];
         }
-        return (expressionToEdit as Normalized<DMN16__tDecisionTable>).rule?.[path.row].inputEntry?.[path.column];
+        return (expressionToEdit as Normalized<DMN_LATEST__tDecisionTable>).rule?.[path.row].inputEntry?.[path.column];
       }
       if (path.row < 0) {
-        return (expressionToEdit as Normalized<DMN16__tDecisionTable>).output?.[path.column];
+        return (expressionToEdit as Normalized<DMN_LATEST__tDecisionTable>).output?.[path.column];
       }
-      return (expressionToEdit as Normalized<DMN16__tDecisionTable>).rule?.[path.row].outputEntry?.[path.column];
+      return (expressionToEdit as Normalized<DMN_LATEST__tDecisionTable>).rule?.[path.row].outputEntry?.[path.column];
     }
     if (path.type === "every") {
       // root
       if (path.row === undefined) {
-        return expressionToEdit as Normalized<DMN16__tQuantified>;
+        return expressionToEdit as Normalized<DMN_LATEST__tQuantified>;
       }
       if (path.row === "variable") {
-        return expressionToEdit as Normalized<DMN16__tQuantified>;
+        return expressionToEdit as Normalized<DMN_LATEST__tQuantified>;
       }
       if (path.row === "in") {
-        return (expressionToEdit as Normalized<DMN16__tQuantified>).in.expression;
+        return (expressionToEdit as Normalized<DMN_LATEST__tQuantified>).in.expression;
       }
-      return (expressionToEdit as Normalized<DMN16__tQuantified>).satisfies.expression;
+      return (expressionToEdit as Normalized<DMN_LATEST__tQuantified>).satisfies.expression;
     }
     if (path.type === "filter") {
       // root
       if (path.row === undefined) {
-        return expressionToEdit as Normalized<DMN16__tFilter>;
+        return expressionToEdit as Normalized<DMN_LATEST__tFilter>;
       }
       if (path.row === "in") {
-        return (expressionToEdit as Normalized<DMN16__tFilter>).in.expression;
+        return (expressionToEdit as Normalized<DMN_LATEST__tFilter>).in.expression;
       }
-      return (expressionToEdit as Normalized<DMN16__tFilter>).match.expression;
+      return (expressionToEdit as Normalized<DMN_LATEST__tFilter>).match.expression;
     }
     if (path.type === "for") {
       // root
       if (path.row === undefined) {
-        return expressionToEdit as Normalized<DMN16__tFor>;
+        return expressionToEdit as Normalized<DMN_LATEST__tFor>;
       }
       if (path.row === "variable") {
-        return expressionToEdit as Normalized<DMN16__tFor>;
+        return expressionToEdit as Normalized<DMN_LATEST__tFor>;
       }
       if (path.row === "in") {
-        return (expressionToEdit as Normalized<DMN16__tFor>).in.expression;
+        return (expressionToEdit as Normalized<DMN_LATEST__tFor>).in.expression;
       }
-      return (expressionToEdit as Normalized<DMN16__tFor>).return.expression;
+      return (expressionToEdit as Normalized<DMN_LATEST__tFor>).return.expression;
     }
     if (path.type === "functionDefinition") {
       // root
       if (!path.parameterIndex) {
-        return expressionToEdit as Normalized<DMN16__tFunctionDefinition>;
+        return expressionToEdit as Normalized<DMN_LATEST__tFunctionDefinition>;
       }
       if (path.parameterIndex < 0) {
-        return (expressionToEdit as Normalized<DMN16__tFunctionDefinition>).expression;
+        return (expressionToEdit as Normalized<DMN_LATEST__tFunctionDefinition>).expression;
       }
-      return expressionToEdit as Normalized<DMN16__tFunctionDefinition>;
+      return expressionToEdit as Normalized<DMN_LATEST__tFunctionDefinition>;
     }
     if (path.type === "invocation") {
       // root
       if (path.row === undefined || path.column === undefined) {
-        return expressionToEdit as Normalized<DMN16__tInvocation>;
+        return expressionToEdit as Normalized<DMN_LATEST__tInvocation>;
       }
       if (path.column === "parameter") {
-        return (expressionToEdit as Normalized<DMN16__tInvocation>).binding?.[path.row].parameter;
+        return (expressionToEdit as Normalized<DMN_LATEST__tInvocation>).binding?.[path.row].parameter;
       }
       if (path.column === "expression" && path.row >= 0) {
-        return (expressionToEdit as Normalized<DMN16__tInvocation>).binding?.[path.row].expression;
+        return (expressionToEdit as Normalized<DMN_LATEST__tInvocation>).binding?.[path.row].expression;
       }
       // function call
-      return (expressionToEdit as Normalized<DMN16__tInvocation>).expression;
+      return (expressionToEdit as Normalized<DMN_LATEST__tInvocation>).expression;
     }
     if (path.type === "list") {
       // root
       if (path.row === undefined) {
-        return expressionToEdit as Normalized<DMN16__tList>;
+        return expressionToEdit as Normalized<DMN_LATEST__tList>;
       }
-      return (expressionToEdit as Normalized<DMN16__tList>).expression?.[path.row];
+      return (expressionToEdit as Normalized<DMN_LATEST__tList>).expression?.[path.row];
     }
     if (path.type === "literalExpression") {
-      return expressionToEdit as Normalized<DMN16__tLiteralExpression>;
+      return expressionToEdit as Normalized<DMN_LATEST__tLiteralExpression>;
     }
     if (path.type === "relation") {
       // root
       if (path.row === undefined || path.column === undefined) {
-        return expressionToEdit as Normalized<DMN16__tRelation>;
+        return expressionToEdit as Normalized<DMN_LATEST__tRelation>;
       }
       if (path.row < 0) {
-        return (expressionToEdit as Normalized<DMN16__tRelation>).column?.[path.column];
+        return (expressionToEdit as Normalized<DMN_LATEST__tRelation>).column?.[path.column];
       }
-      return (expressionToEdit as Normalized<DMN16__tRelation>).row?.[path.row].expression?.[path.column];
+      return (expressionToEdit as Normalized<DMN_LATEST__tRelation>).row?.[path.row].expression?.[path.column];
     }
     if (path.type === "some") {
       // root
       if (path.row === undefined) {
-        return expressionToEdit as Normalized<DMN16__tQuantified>;
+        return expressionToEdit as Normalized<DMN_LATEST__tQuantified>;
       }
       if (path.row === "variable") {
-        return expressionToEdit as Normalized<DMN16__tQuantified>;
+        return expressionToEdit as Normalized<DMN_LATEST__tQuantified>;
       }
       if (path.row === "in") {
-        return (expressionToEdit as Normalized<DMN16__tQuantified>).in.expression;
+        return (expressionToEdit as Normalized<DMN_LATEST__tQuantified>).in.expression;
       }
-      return (expressionToEdit as Normalized<DMN16__tQuantified>).satisfies.expression;
+      return (expressionToEdit as Normalized<DMN_LATEST__tQuantified>).satisfies.expression;
     }
   }, expressionRoot);
 }

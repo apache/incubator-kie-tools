@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN16__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tImport } from "@kie-tools/dmn-marshaller/src/index";
 import { parseFeelQName, buildFeelQName } from "../feel/parseFeelQName";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 import { DataTypeIndex } from "./DataTypes";
@@ -34,7 +34,7 @@ export function resolveTypeRef({
   typeRef: string | undefined;
   namespace: string;
   relativeToNamespace: string;
-  thisDmnsImportsByNamespace: Map<string, DMN16__tImport>;
+  thisDmnsImportsByNamespace: Map<string, DMN_LATEST__tImport>;
   allTopLevelDataTypesByFeelName: DataTypeIndex;
   externalModelsByNamespace: ExternalModelsIndex | undefined;
 }) {
