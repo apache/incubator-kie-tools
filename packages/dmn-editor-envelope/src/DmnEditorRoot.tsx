@@ -354,7 +354,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
     );
     const selectAll = this.props.keyboardShortcutsService?.registerKeyPress(
       this.props.i18n.terms.keyboardShortCuts.a,
-      this.props.i18n.terms.keyboardShortCuts.edit + " | " + this.props.i18n.selectOrDeselectAll,
+      this.props.i18n.terms.keyboardShortCuts.edit + " | " + this.props.i18n.selectDeselectAll,
       async () => commands.selectAll()
     );
     const createGroup = this.props.keyboardShortcutsService?.registerKeyPress(

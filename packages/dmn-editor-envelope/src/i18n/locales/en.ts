@@ -24,7 +24,7 @@ export const en: DmnEditorEnvelopeI18n = {
   ...en_common,
   unselect: "Unselect",
   deleteSelection: "Delete selection",
-  selectOrDeselectAll: "Select/Deselect all",
+  selectDeselectAll: "Select/Deselect all",
   createGroupWrappingSelection: "Create group wrapping selection",
   hideFromDrd: "Hide from DRD",
   copyNodes: "Copy nodes",

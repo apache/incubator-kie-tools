@@ -23,7 +23,7 @@ import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 interface DmnEditorEnvelopeDictionary extends ReferenceDictionary {
   unselect: string;
   deleteSelection: string;
-  selectOrDeselectAll: string;
+  selectDeselectAll: string;
   createGroupWrappingSelection: string;
   hideFromDrd: string;
   copyNodes: string;
