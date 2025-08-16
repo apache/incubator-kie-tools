@@ -19,13 +19,14 @@
     "src"
   ],
   "scripts": {
-    "build:codegen": "pnpm build:codegen:dmn10 && pnpm build:codegen:dmn11 && pnpm build:codegen:dmn12 && pnpm build:codegen:dmn13 && pnpm build:codegen:dmn14 && pnpm build:codegen:dmn15 && pnpm build:codegen:kie10",
+    "build:codegen": "pnpm build:codegen:dmn10 && pnpm build:codegen:dmn11 && pnpm build:codegen:dmn12 && pnpm build:codegen:dmn13 && pnpm build:codegen:dmn14 && pnpm build:codegen:dmn15 && pnpm build:codegen:dmn16 && pnpm build:codegen:kie10",
     "build:codegen:dmn10": "xml-parser-ts-codegen ./src/schemas/dmn-1_0/dmn3.xsd Definitions",
     "build:codegen:dmn11": "xml-parser-ts-codegen ./src/schemas/dmn-1_1/dmn.xsd definitions",
     "build:codegen:dmn12": "xml-parser-ts-codegen ./src/schemas/dmn-1_2/DMN12.xsd definitions",
     "build:codegen:dmn13": "xml-parser-ts-codegen ./src/schemas/dmn-1_3/DMN13.xsd definitions",
     "build:codegen:dmn14": "xml-parser-ts-codegen ./src/schemas/dmn-1_4/DMN14.xsd definitions",
     "build:codegen:dmn15": "xml-parser-ts-codegen ./src/schemas/dmn-1_5/DMN15.xsd definitions",
+    "build:codegen:dmn16": "xml-parser-ts-codegen ./src/schemas/dmn-1_6/DMN16.xsd definitions",
     "build:codegen:kie10": "xml-parser-ts-codegen ./src/schemas/kie-1_0/KIE.xsd ComponentsWidthsExtension",
     "build:dev": "rimraf dist && pnpm build:codegen && tsc -p tsconfig.json",
     "build:prod": "pnpm lint && rimraf dist && pnpm build:codegen && tsc -p tsconfig.json && pnpm test",

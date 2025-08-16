@@ -888,6 +888,10 @@ for packages/stunner-editors/kie-wb-common-dmn/kie-wb-common-dmn-webapp-kogito-m
    packages/dmn-marshaller/src/schemas/dmn-1_5/DI.xsd
    packages/dmn-marshaller/src/schemas/dmn-1_5/DC.xsd
    packages/dmn-marshaller/src/schemas/dmn-1_5/DMN15.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_6/DMNDI15.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_6/DI.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_6/DC.xsd
+   packages/dmn-marshaller/src/schemas/dmn-1_6/DMN16.xsd
    packages/dmn-marshaller/src/schemas/dmn-1_0/dmn3.xsd
    packages/dmn-marshaller/src/schemas/dmn-1_0/dmn.xsd
    packages/dmn-marshaller/src/schemas/dmn-1_4/DI.xsd

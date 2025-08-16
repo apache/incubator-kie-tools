@@ -23,7 +23,7 @@ import { Popover, PopoverPosition } from "@patternfly/react-core/dist/js/compone
 import { useMemo } from "react";
 import { DMN_LATEST_VERSION } from "@kie-tools/dmn-marshaller";
 
-const latestChangelogHref = `https://www.omg.org/spec/DMN/1.5/Beta1/PDF/changebar`;
+const latestChangelogHref = `https://www.omg.org/spec/DMN/1.6/Beta1/PDF/changebar`;
 
 export function DmnVersionLabel(props: { version: string }) {
   const label = useMemo(

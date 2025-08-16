@@ -18,12 +18,12 @@
   ~ under the License.      
 -->
 <definitions
-  xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
+  xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/"
   xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
   xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
   xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
   xmlns:kie="https://kie.org/dmn/extensions/1.0"
-  expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+  expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/"
   namespace="https://kie.org/dmn/_B2A15CAD-A32F-461F-9BEA-4E4BC46B76D6"
   id="_8D96437B-D31F-437F-8B32-CD54C071A151"
   name="DMN_B739B18D-74D9-4C75-A8E9-6845E731D3EB"

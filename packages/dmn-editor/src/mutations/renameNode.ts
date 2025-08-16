@@ -18,10 +18,10 @@
  */
 
 import {
-  DMN15__tDefinitions,
-  DMN15__tGroup,
-  DMN15__tTextAnnotation,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN_LATEST__tDefinitions,
+  DMN_LATEST__tGroup,
+  DMN_LATEST__tTextAnnotation,
+} from "@kie-tools/dmn-marshaller/src/index";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { IdentifiersRefactor } from "@kie-tools/dmn-language-service";
@@ -34,7 +34,7 @@ export function renameDrgElement({
   externalDmnModelsByNamespaceMap,
   shouldRenameReferencedExpressions,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   newName: string;
   index: number;
   externalDmnModelsByNamespaceMap: Map<string, Normalized<DmnLatestModel>>;
@@ -74,11 +74,11 @@ export function renameGroupNode({
   newName,
   index,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   newName: string;
   index: number;
 }) {
-  (definitions.artifact![index] as Normalized<DMN15__tGroup>)["@_name"] = newName;
+  (definitions.artifact![index] as Normalized<DMN_LATEST__tGroup>)["@_name"] = newName;
 }
 
 export function updateTextAnnotation({
@@ -86,9 +86,9 @@ export function updateTextAnnotation({
   newText,
   index,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   newText: string;
   index: number;
 }) {
-  (definitions.artifact![index] as Normalized<DMN15__tTextAnnotation>).text = { __$$text: newText };
+  (definitions.artifact![index] as Normalized<DMN_LATEST__tTextAnnotation>).text = { __$$text: newText };
 }
