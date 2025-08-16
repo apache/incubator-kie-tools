@@ -17,10 +17,11 @@
  * under the License.
  */
 
+import { TranslatedDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "../CommonI18n";
 import { names } from "../names";
 
-export const de: CommonI18n = {
+export const de: TranslatedDictionary<CommonI18n> = {
   names,
   terms: {
     apply: "Anwenden",
@@ -81,34 +82,5 @@ export const de: CommonI18n = {
     uninstall: "Deinstallieren",
     username: "Username",
     validation: "Validierung",
-    keyboardShortCuts: {
-      ctrlC: "",
-      ctrlX: "",
-      ctrlV: "",
-      ctrl: "",
-      escape: "",
-      backspace: "",
-      delete: "",
-      up: "",
-      down: "",
-      left: "",
-      right: "",
-      a: "",
-      x: "",
-      g: "",
-      i: "",
-      h: "",
-      b: "",
-      shiftUp: "",
-      shiftDown: "",
-      shiftLeft: "",
-      shiftRight: "",
-      space: "",
-      shift: "",
-      edit: "",
-      misc: "",
-      move: "",
-      navigate: "",
-    },
   },
 };

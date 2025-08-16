@@ -20,8 +20,9 @@
 import { UnitablesI18n } from "../UnitablesI18n";
 import { de as de_common } from "@kie-tools/i18n-common-dictionary";
 import { de as de_boxed_expression } from "@kie-tools/boxed-expression-component/dist/i18n/locales/de";
+import { TranslatedDictionary } from "@kie-tools-core/i18n/dist/core";
 
-export const de: UnitablesI18n = {
+export const de: TranslatedDictionary<UnitablesI18n> = {
   ...de_common,
   ...de_boxed_expression,
   schema: {
