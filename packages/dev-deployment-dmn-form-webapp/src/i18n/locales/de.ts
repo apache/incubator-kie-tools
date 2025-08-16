@@ -17,11 +17,11 @@
  * under the License.
  */
 
-import { wrapped } from "@kie-tools-core/i18n/dist/core";
+import { TranslatedDictionary, wrapped } from "@kie-tools-core/i18n/dist/core";
 import { de as de_common } from "@kie-tools/i18n-common-dictionary";
 import { DmnFormI18n } from "..";
 
-export const de: DmnFormI18n = {
+export const de: TranslatedDictionary<DmnFormI18n> = {
   ...de_common,
   formToolbar: {
     disclaimer: {
@@ -32,9 +32,9 @@ export const de: DmnFormI18n = {
   },
   page: {
     error: {
-      title: `${de_common.terms.oops}!`,
+      title: `${de_common.terms?.oops}!`,
       explanation: "Die Seite konnte aufgrund eines Fehlers nicht gerendert werden.",
-      dmnNotSupported: `${de_common.names.dmn} hat ein Konstrukt, das nicht unterstützt wird. `,
+      dmnNotSupported: `${de_common.names?.dmn} hat ein Konstrukt, das nicht unterstützt wird. `,
       uploadFiles: "Vergessen Sie nicht, die aktuelle Datei und die verwendeten Eingaben hochzuladen",
       referToJira: ["Bitte lesen Sie ", wrapped("jira"), " und melden Sie ein Problem."],
     },

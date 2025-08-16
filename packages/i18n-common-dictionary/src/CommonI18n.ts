@@ -79,6 +79,35 @@ export type CommonDictionary = {
   uninstall: string;
   username: string;
   validation: string;
+  keyboardShortCuts: {
+    ctrlC: string;
+    ctrlX: string;
+    ctrlV: string;
+    ctrl: string;
+    escape: string;
+    backspace: string;
+    delete: string;
+    up: string;
+    down: string;
+    left: string;
+    right: string;
+    a: string;
+    x: string;
+    g: string;
+    i: string;
+    h: string;
+    b: string;
+    shiftUp: string;
+    shiftDown: string;
+    shiftLeft: string;
+    shiftRight: string;
+    space: string;
+    shift: string;
+    edit: string;
+    misc: string;
+    move: string;
+    navigate: string;
+  };
 };
 
 export interface CommonI18n extends ReferenceDictionary {
