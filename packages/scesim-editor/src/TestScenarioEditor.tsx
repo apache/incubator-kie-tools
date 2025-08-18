@@ -327,12 +327,14 @@ function TestScenarioParserErrorPanel({
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
       <EmptyState style={{ maxWidth: "1280px" }}>
         <EmptyStateHeader
-          titleText={<>{i18n.errorFallBack.errorTitle(parserErrorTitle)}</>}
+          titleText={<>{parserErrorTitle}</>}
           icon={<EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />}
           headingLevel={"h4"}
         />
         <br />
-        <EmptyStateBody>{i18n.errorFallBack.errorMessage(parserErrorMessage)}</EmptyStateBody>
+        <EmptyStateBody>
+          {i18n.errorFallBack.errorDetails} + {parserErrorMessage}
+        </EmptyStateBody>
       </EmptyState>
     </Flex>
   );
@@ -350,6 +352,7 @@ export const TestScenarioEditorInternal = ({
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const { testScenarioEditorModelBeforeEditingRef, testScenarioEditorRootElementRef } = useTestScenarioEditor();
   const { commandsRef } = useCommands();
+  const { i18n } = useTestScenarioEditorI18n();
 
   /** Implementing Editor APIs */
 
@@ -446,11 +449,8 @@ export const TestScenarioEditorInternal = ({
           case TestScenarioFileStatus.ERROR:
             return (
               <TestScenarioParserErrorPanel
-                parserErrorTitle={"File parsing error"}
-                parserErrorMessage={
-                  "Impossibile to correctly parse the provided scesim file. Most likely, the XML structure of the file " +
-                  "is invalid."
-                }
+                parserErrorTitle={i18n.parsingErrorTitle}
+                parserErrorMessage={i18n.fileParsingErrorMessage}
               />
             );
           case TestScenarioFileStatus.NEW:
@@ -458,17 +458,8 @@ export const TestScenarioEditorInternal = ({
           case TestScenarioFileStatus.UNSUPPORTED:
             return (
               <TestScenarioParserErrorPanel
-                parserErrorTitle={
-                  "This file holds a Test Scenario asset version (" +
-                  scesim.model.ScenarioSimulationModel["@_version"] +
-                  ") not supported"
-                }
-                parserErrorMessage={
-                  "Most likely, this file has been generated with a very old Business Central version (< 7.30.0.Final). " +
-                  "Please update your Business Central instance and download again this scesim file, it will be automatically updated to the supported version (" +
-                  CURRENT_SUPPORTED_VERSION +
-                  ")."
-                }
+                parserErrorTitle={i18n.unsupportedTitle(scesim.model.ScenarioSimulationModel["@_version"] ?? "")}
+                parserErrorMessage={i18n.unsupportedMessage(CURRENT_SUPPORTED_VERSION)}
               />
             );
           case TestScenarioFileStatus.VALID:

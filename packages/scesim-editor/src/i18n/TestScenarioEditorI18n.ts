@@ -126,8 +126,7 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
     body: string;
     lastActionButton: string;
     fileIssueHref: string;
-    errorMessage(message: string): string;
-    errorTitle(title: string): string;
+    errorDetails: string;
   };
   sidebar: {
     cheatSheetTooltip: string;
@@ -165,6 +164,10 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
     reset: string;
     selection: string;
   };
+  fileParsingErrorMessage: string;
+  parsingErrorTitle: string;
+  unsupportedTitle: (version: string) => string;
+  unsupportedMessage: (version: string) => string;
 }
 
 export default interface TestScenarioEditorI18n extends TestScenarioEditorDictionary, CommonI18n {}
