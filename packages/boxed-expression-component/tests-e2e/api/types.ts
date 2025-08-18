@@ -29,7 +29,7 @@ import {
   DMN_LATEST__tLiteralExpression,
   DMN_LATEST__tQuantified,
   DMN_LATEST__tRelation,
-} from "@kie-tools/dmn-marshaller/src/index";
+} from "@kie-tools/dmn-marshaller";
 
 export type BoxedLiteral = { __$$element: "literalExpression" } & DMN_LATEST__tLiteralExpression;
 export type BoxedRelation = { __$$element: "relation" } & DMN_LATEST__tRelation;

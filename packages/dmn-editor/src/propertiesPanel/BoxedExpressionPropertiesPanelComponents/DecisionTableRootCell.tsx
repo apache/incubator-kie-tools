@@ -21,7 +21,7 @@ import * as React from "react";
 import { useMemo } from "react";
 import { DescriptionField, TextField, TextFieldType } from "../Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
-import { DMN_LATEST__tDecisionTable } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tDecisionTable } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";

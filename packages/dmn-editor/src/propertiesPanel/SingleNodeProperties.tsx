@@ -40,7 +40,7 @@ import {
   DMN_LATEST__tInputData,
   DMN_LATEST__tKnowledgeSource,
   DMN_LATEST__tTextAnnotation,
-} from "@kie-tools/dmn-marshaller/src/index";
+} from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
 import { NodeIcon } from "../icons/Icons";

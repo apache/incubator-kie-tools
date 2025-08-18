@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import * as RF from "reactflow";
 import { KIE_DMN_UNKNOWN_NAMESPACE } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";

@@ -18,7 +18,7 @@
  */
 
 import { BoxedExpression } from "@kie-tools/boxed-expression-component/dist/api";
-import { DMN_LATEST__tDefinitions, DMN_LATEST__tFunctionDefinition } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tDefinitions, DMN_LATEST__tFunctionDefinition } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 
 export function setDrgElementExpression({

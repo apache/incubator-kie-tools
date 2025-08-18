@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useRef } from "react";
 import * as RF from "reactflow";
-import { DMN_LATEST__DMNEdge, DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__DMNEdge, DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { DrgEdge } from "../graph/graph";
 import { DEFAULT_INTRACTION_WIDTH } from "../maths/DmnMaths";

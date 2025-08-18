@@ -23,7 +23,7 @@ import {
   DMN_LATEST__tDefinitions,
   DMN_LATEST__DMNEdge,
   DMN_LATEST__DMNShape,
-} from "@kie-tools/dmn-marshaller/src/index";
+} from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
 import { PositionalNodeHandleId } from "../diagram/connections/PositionalNodeHandles";

@@ -22,7 +22,7 @@ import { useCallback, useMemo, useState } from "react";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { ContentField, DescriptionField, ExpressionLanguageField, NameField, TypeRefField } from "../Fields";
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
-import { DMN_LATEST__tDecision, DMN_LATEST__tOutputClause } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tDecision, DMN_LATEST__tOutputClause } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";

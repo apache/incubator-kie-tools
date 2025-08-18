@@ -31,7 +31,7 @@ import { ChangeEvent, useCallback } from "react";
 import { Action, BoxedFunction, generateUuid, getNextAvailablePrefixedName, Normalized } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
-import { DMN_LATEST__tInformationItem } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tInformationItem } from "@kie-tools/dmn-marshaller";
 import { DataTypeSelector } from "../../expressionVariable/DataTypeSelector";
 import "./ParametersPopover.css";
 

@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo, useState, useEffect } from "react";
-import { DMN_LATEST__tItemDefinition } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tItemDefinition } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getNewDmnIdRandomizer } from "@kie-tools/dmn-marshaller/dist/idRandomizer/dmnIdRandomizer";
 import {

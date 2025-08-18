@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ConstraintsExpression } from "./ConstraintsExpression";
-import { DMN_LATEST__tItemDefinition, DMN_LATEST__tUnaryTests } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tItemDefinition, DMN_LATEST__tUnaryTests } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ConstraintsEnum, isEnum } from "./ConstraintsEnum";

@@ -24,7 +24,7 @@ import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { buildFeelQNameFromXmlQName } from "../../feel/buildFeelQName";
-import { DMN_LATEST__tNamedElement } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tNamedElement } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 import { DMN16_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";

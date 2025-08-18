@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { FormSection } from "@patternfly/react-core/dist/js/components/Form";

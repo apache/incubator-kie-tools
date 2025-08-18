@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN_LATEST__tImport } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tImport } from "@kie-tools/dmn-marshaller";
 import { parseFeelQName, buildFeelQName } from "../feel/parseFeelQName";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 import { DataTypeIndex } from "./DataTypes";

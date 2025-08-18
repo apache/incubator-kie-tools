@@ -23,7 +23,7 @@ import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { DC__Bounds, DC__Dimension } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
-import { DMN_LATEST__tDecisionService, DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tDecisionService, DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import { Normalized, normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref, parseXmlHref, xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml";
 import { buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";

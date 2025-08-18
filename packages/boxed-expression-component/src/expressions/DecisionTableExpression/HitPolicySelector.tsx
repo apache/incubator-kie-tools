@@ -29,7 +29,7 @@ import { Menu } from "@patternfly/react-core/dist/js/components/Menu/Menu";
 import { MenuGroup } from "@patternfly/react-core/dist/js/components/Menu/MenuGroup";
 import { MenuList } from "@patternfly/react-core/dist/js/components/Menu/MenuList";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { DMN_LATEST__tHitPolicy } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tHitPolicy } from "@kie-tools/dmn-marshaller";
 import "./HitPolicySelector.css";
 
 export interface HitPolicySelectorProps {

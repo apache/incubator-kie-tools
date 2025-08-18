@@ -29,7 +29,7 @@ import { FunctionKindSelector } from "./FunctionKindSelector";
 import { BoxedFunctionJava, JavaFunctionExpression } from "./JavaFunctionExpression";
 import { ParametersPopover } from "./ParametersPopover";
 import { BoxedFunctionPmml, PmmlFunctionExpression } from "./PmmlFunctionExpression";
-import { DMN_LATEST__tFunctionDefinition, DMN_LATEST__tFunctionKind } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tFunctionDefinition, DMN_LATEST__tFunctionKind } from "@kie-tools/dmn-marshaller";
 import "./FunctionExpression.css";
 
 export function FunctionExpression({

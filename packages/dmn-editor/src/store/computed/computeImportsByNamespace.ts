@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN_LATEST__tImport } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tImport } from "@kie-tools/dmn-marshaller";
 import { State } from "../Store";
 
 export function computeImportsByNamespace(imports: State["dmn"]["model"]["definitions"]["import"]) {

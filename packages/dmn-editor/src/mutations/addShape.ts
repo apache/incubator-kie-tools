@@ -18,7 +18,7 @@
  */
 
 import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
-import { DMN_LATEST__tDefinitions, DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tDefinitions, DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";

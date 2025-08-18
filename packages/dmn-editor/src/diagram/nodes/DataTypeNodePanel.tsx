@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { DMN_LATEST__tInformationItem, DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tInformationItem, DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore } from "../../store/StoreContext";
 import { OnCreateDataType, OnToggle, OnTypeRefChange, TypeRefSelector } from "../../dataTypes/TypeRefSelector";

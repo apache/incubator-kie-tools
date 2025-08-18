@@ -24,7 +24,7 @@ import {
   DMN_LATEST__tItemDefinition,
   DMN_LATEST__DMNEdge,
   DMN_LATEST__DMNShape,
-} from "@kie-tools/dmn-marshaller/src/index";
+} from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { parseXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { getNewDmnIdRandomizer } from "@kie-tools/dmn-marshaller/dist/idRandomizer/dmnIdRandomizer";

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getXmlNamespaceDeclarationName } from "@kie-tools/dmn-marshaller/dist/xml/xmlNamespaceDeclarations";
 import { computeDiagramData } from "../store/computed/computeDiagramData";

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN_LATEST__tImport } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tImport } from "@kie-tools/dmn-marshaller";
 import { allDmnImportNamespaces } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { allPmmlImportNamespaces, getPmmlNamespaceFromDmnImport } from "../pmml/pmml";

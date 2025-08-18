@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN_LATEST__tInformationItem } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tInformationItem } from "@kie-tools/dmn-marshaller";
 import * as React from "react";
 import { useCallback, useEffect, useMemo } from "react";
 import {

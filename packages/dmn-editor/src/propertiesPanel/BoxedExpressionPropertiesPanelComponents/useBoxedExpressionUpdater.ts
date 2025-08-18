@@ -19,7 +19,7 @@
 
 import { useCallback, useMemo } from "react";
 import { ExpressionPath, getDmnObjectByPath } from "../../boxedExpressions/boxedExpressionIndex";
-import { DMN_LATEST__tBusinessKnowledgeModel, DMN_LATEST__tDecision } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tBusinessKnowledgeModel, DMN_LATEST__tDecision } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";

@@ -24,7 +24,7 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import { DC__Bounds } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
-import { DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { State } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";

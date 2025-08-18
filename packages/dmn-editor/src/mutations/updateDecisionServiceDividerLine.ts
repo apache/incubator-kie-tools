@@ -23,7 +23,7 @@ import {
   DMN_LATEST__tDefinitions,
   DMN_LATEST__DMNDecisionServiceDividerLine,
   DMN_LATEST__DMNShape,
-} from "@kie-tools/dmn-marshaller/src/index";
+} from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { addNamespaceToHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { addOrGetDrd } from "./addOrGetDrd";

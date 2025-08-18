@@ -27,7 +27,7 @@ import { MenuItemWithHelp } from "../../contextMenu/MenuWithHelp";
 import { Menu } from "@patternfly/react-core/dist/js/components/Menu/Menu";
 import { MenuGroup } from "@patternfly/react-core/dist/js/components/Menu/MenuGroup";
 import { MenuList } from "@patternfly/react-core/dist/js/components/Menu/MenuList";
-import { DMN_LATEST__tFunctionKind } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tFunctionKind } from "@kie-tools/dmn-marshaller";
 import { BoxedFunctionKind } from "../../api";
 
 export interface FunctionKindSelectorProps {

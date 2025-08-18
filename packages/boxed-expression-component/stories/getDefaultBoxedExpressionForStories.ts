@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN_LATEST__tItemDefinition, DMN_LATEST__tOutputClause } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tItemDefinition, DMN_LATEST__tOutputClause } from "@kie-tools/dmn-marshaller";
 import {
   BoxedConditional,
   BoxedContext,

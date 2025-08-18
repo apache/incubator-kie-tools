@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN_LATEST__tImport, DMN_LATEST__tItemDefinition } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tImport, DMN_LATEST__tItemDefinition } from "@kie-tools/dmn-marshaller";
 import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { builtInFeelTypeNames } from "../../dataTypes/BuiltInFeelTypes";

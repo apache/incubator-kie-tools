@@ -23,7 +23,7 @@ import { TextField, TextFieldType } from "../Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { useDmnEditorStore } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
-import { DMN_LATEST__tIterator } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tIterator } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 
 export function IteratorVariableCell(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadOnly: boolean }) {

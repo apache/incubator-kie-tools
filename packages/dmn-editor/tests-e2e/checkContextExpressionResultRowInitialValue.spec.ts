@@ -19,7 +19,7 @@
 
 import { test, expect } from "./__fixtures__/base";
 import { DefaultNodeName, NodeType } from "./__fixtures__/nodes";
-import { DMN_LATEST__tContext } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tContext } from "@kie-tools/dmn-marshaller";
 
 test.beforeEach(async ({ editor }) => {
   await editor.open();

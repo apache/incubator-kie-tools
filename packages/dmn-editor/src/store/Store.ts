@@ -19,7 +19,7 @@
 
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import { normalize, Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
-import { DMN_LATEST__tImport } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tImport } from "@kie-tools/dmn-marshaller";
 import { enableMapSet } from "immer";
 import * as RF from "reactflow";
 import { create } from "zustand";

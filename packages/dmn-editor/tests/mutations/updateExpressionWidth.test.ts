@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { KIE__tComponentsWidthsExtension } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";

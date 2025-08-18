@@ -55,7 +55,7 @@ import {
   DMN_LATEST__tContextEntry,
   DMN_LATEST__tFunctionDefinition,
   DMN_LATEST__tLiteralExpression,
-} from "@kie-tools/dmn-marshaller/src/index";
+} from "@kie-tools/dmn-marshaller";
 import "./PmmlFunctionExpression.css";
 
 export type BoxedFunctionPmml = DMN_LATEST__tFunctionDefinition & {

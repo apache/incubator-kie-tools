@@ -18,11 +18,7 @@
  */
 
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
-import {
-  DMN_LATEST__tDefinitions,
-  DMN_LATEST__DMNEdge,
-  DMN_LATEST__DMNShape,
-} from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tDefinitions, DMN_LATEST__DMNEdge, DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";

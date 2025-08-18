@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useMemo } from "react";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
-import { DMN_LATEST__tInformationItem, DMN_LATEST__tInvocation } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tInformationItem, DMN_LATEST__tInvocation } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";

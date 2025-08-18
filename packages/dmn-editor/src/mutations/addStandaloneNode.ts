@@ -20,7 +20,7 @@
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { DC__Bounds } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
-import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { NodeType } from "../diagram/connections/graphStructure";

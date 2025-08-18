@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN_LATEST__tImport, DMN_LATEST__tNamedElement } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tImport, DMN_LATEST__tNamedElement } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { XmlParserTsRootElementBaseType } from "@kie-tools/xml-parser-ts";

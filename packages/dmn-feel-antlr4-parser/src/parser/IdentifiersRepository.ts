@@ -42,7 +42,7 @@ import {
   DMN_LATEST__tLiteralExpression,
   DMN_LATEST__tQuantified,
   DMN_LATEST__tRelation,
-} from "@kie-tools/dmn-marshaller/src/index";
+} from "@kie-tools/dmn-marshaller";
 import { Expression } from "./Expression";
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import { BuiltInTypes } from "./BuiltInTypes";

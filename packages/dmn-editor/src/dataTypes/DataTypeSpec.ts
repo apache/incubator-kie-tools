@@ -33,7 +33,7 @@ import {
   DMN_LATEST__tList,
   DMN_LATEST__tQuantified,
   DMN_LATEST__tRelation,
-} from "@kie-tools/dmn-marshaller/src/index";
+} from "@kie-tools/dmn-marshaller";
 import { DMN16_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { DataTypeIndex } from "./DataTypes";

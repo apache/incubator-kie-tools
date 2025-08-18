@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN_LATEST__tDefinitions, DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tDefinitions, DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { addOrGetDrd, addOrGetDrd as getDefaultDiagram } from "./addOrGetDrd";
 

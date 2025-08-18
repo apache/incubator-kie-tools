@@ -51,7 +51,7 @@ import { INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME } from "@kie-tools/boxed-e
 import { RELATION_EXPRESSION_DEFAULT_VALUE } from "@kie-tools/boxed-expression-component/dist/expressions/RelationExpression/RelationExpression";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
 import { isStruct } from "../dataTypes/DataTypeSpec";
-import { DMN_LATEST__tContextEntry, DMN_LATEST__tOutputClause } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tContextEntry, DMN_LATEST__tOutputClause } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 
 export function getDefaultBoxedExpression({

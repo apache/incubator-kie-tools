@@ -27,7 +27,7 @@ import {
 } from "../../BoxedExpressionEditorContext";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 import { ROWTYPE } from "./ListExpression";
-import { DMN_LATEST__tList } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tList } from "@kie-tools/dmn-marshaller";
 
 export function ListItemCell({
   rowIndex,

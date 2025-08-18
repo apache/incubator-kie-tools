@@ -24,7 +24,7 @@ import {
   DMN_LATEST__tDecisionService,
   DMN_LATEST__tInputData,
   DMN_LATEST__tDefinitions,
-} from "@kie-tools/dmn-marshaller/src/index";
+} from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref, parseXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";

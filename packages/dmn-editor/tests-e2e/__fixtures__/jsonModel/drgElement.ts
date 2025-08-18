@@ -25,7 +25,7 @@ import {
   DMN_LATEST__tDefinitions,
   DMN_LATEST__tInputData,
   DMN_LATEST__tKnowledgeSource,
-} from "@kie-tools/dmn-marshaller/src/index";
+} from "@kie-tools/dmn-marshaller";
 import { Page } from "@playwright/test";
 
 type AllDrgElements = NonNullable<DMN_LATEST__tDefinitions["drgElement"]>[0];

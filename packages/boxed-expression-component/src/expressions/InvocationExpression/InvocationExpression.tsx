@@ -52,7 +52,7 @@ import { ExpressionVariableCell, ExpressionWithVariable } from "../../expression
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
 import { useBeeTableCoordinates, useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
-import { DMN_LATEST__tBinding } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tBinding } from "@kie-tools/dmn-marshaller";
 import { findAllIdsDeep } from "../../ids/ids";
 import "./InvocationExpression.css";
 

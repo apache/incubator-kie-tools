@@ -46,7 +46,7 @@ import {
 import { BeeTable, BeeTableCellUpdate, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
 import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
-import { DMN_LATEST__tList } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tList } from "@kie-tools/dmn-marshaller";
 import "./RelationExpression.css";
 
 type ROWTYPE = any; // FIXME: https://github.com/kiegroup/kie-issues/issues/169

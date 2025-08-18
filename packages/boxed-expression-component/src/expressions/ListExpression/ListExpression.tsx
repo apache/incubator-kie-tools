@@ -44,7 +44,7 @@ import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../.
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { ListItemCell } from "./ListItemCell";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
-import { DMN_LATEST__tContextEntry } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tContextEntry } from "@kie-tools/dmn-marshaller";
 import { findAllIdsDeep } from "../../ids/ids";
 import "./ListExpression.css";
 

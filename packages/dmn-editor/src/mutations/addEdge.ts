@@ -27,7 +27,7 @@ import {
   DMN_LATEST__tInformationRequirement,
   DMN_LATEST__tKnowledgeRequirement,
   DMN_LATEST__DMNEdge,
-} from "@kie-tools/dmn-marshaller/src/index";
+} from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { PositionalNodeHandleId } from "../diagram/connections/PositionalNodeHandles";
 import { EdgeType, NodeType } from "../diagram/connections/graphStructure";

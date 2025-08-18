@@ -19,7 +19,7 @@
 
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import { DC__Bounds, DC__Dimension, DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
-import { DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { SnapGrid } from "../../store/Store";
 import { snapBoundsDimensions, snapBoundsPosition } from "../SnapGrid";

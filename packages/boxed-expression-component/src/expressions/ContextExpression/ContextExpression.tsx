@@ -53,7 +53,7 @@ import { ContextEntryExpressionCell } from "./ContextEntryExpressionCell";
 import { ExpressionVariableCell, ExpressionWithVariable } from "../../expressionVariable/ExpressionVariableCell";
 import { ContextResultExpressionCell } from "./ContextResultExpressionCell";
 import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
-import { DMN_LATEST__tContextEntry } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tContextEntry } from "@kie-tools/dmn-marshaller";
 import { findAllIdsDeep } from "../../ids/ids";
 import "./ContextExpression.css";
 

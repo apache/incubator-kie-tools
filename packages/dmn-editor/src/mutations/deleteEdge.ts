@@ -18,11 +18,7 @@
  */
 
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
-import {
-  DMN_LATEST__tDecision,
-  DMN_LATEST__tDefinitions,
-  DMN_LATEST__DMNEdge,
-} from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tDecision, DMN_LATEST__tDefinitions, DMN_LATEST__DMNEdge } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefToQName";
 import { addOrGetDrd } from "./addOrGetDrd";

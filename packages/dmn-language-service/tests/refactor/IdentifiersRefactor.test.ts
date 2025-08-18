@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import { DmnLatestModel, getMarshaller } from "@kie-tools/dmn-marshaller";
 import { includeMathModelDmn, mathDmnModel, sampleLoanDmnModel } from "../fs/fixtures";
 import { IdentifiersRefactor } from "@kie-tools/dmn-language-service";

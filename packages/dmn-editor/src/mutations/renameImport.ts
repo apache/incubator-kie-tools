@@ -22,7 +22,7 @@ import {
   DMN_LATEST__tFunctionDefinition,
   DMN_LATEST__tLiteralExpression,
   DMN_LATEST__tContext,
-} from "@kie-tools/dmn-marshaller/src/index";
+} from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import {
   traverseExpressionsInExpressionHolders,

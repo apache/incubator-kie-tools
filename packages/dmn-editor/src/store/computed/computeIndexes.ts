@@ -18,7 +18,7 @@
  */
 
 import { XmlQName, parseXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
-import { DMN_LATEST__DMNEdge, DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__DMNEdge, DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller";
 import { KIE_DMN_UNKNOWN_NAMESPACE } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";

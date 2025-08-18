@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import { DMN_LATEST__tDefinitions, DMN_LATEST__tItemDefinition } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tDefinitions, DMN_LATEST__tItemDefinition } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { EditableNodeLabel, useEditableNodeLabel } from "../diagram/nodes/EditableNodeLabel";

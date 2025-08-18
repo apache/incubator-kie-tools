@@ -17,11 +17,7 @@
  * under the License.
  */
 
-import {
-  DMN_LATEST__tDefinitions,
-  DMN_LATEST__tGroup,
-  DMN_LATEST__tTextAnnotation,
-} from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tDefinitions, DMN_LATEST__tGroup, DMN_LATEST__tTextAnnotation } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { IdentifiersRefactor } from "@kie-tools/dmn-language-service";

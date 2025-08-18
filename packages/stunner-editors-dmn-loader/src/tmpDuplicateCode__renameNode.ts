@@ -21,11 +21,7 @@
 // TEMPORARILY COPIED FROM @kie-tools/dmn-editor/src/mutations/renameNode.ts
 //////////////////////////////////////////////////////////////////////
 
-import {
-  DMN_LATEST__tDefinitions,
-  DMN_LATEST__tGroup,
-  DMN_LATEST__tTextAnnotation,
-} from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tDefinitions, DMN_LATEST__tGroup, DMN_LATEST__tTextAnnotation } from "@kie-tools/dmn-marshaller";
 
 export function renameDrgElement({
   definitions,

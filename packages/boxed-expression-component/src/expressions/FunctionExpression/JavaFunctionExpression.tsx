@@ -55,7 +55,7 @@ import {
   DMN_LATEST__tContext,
   DMN_LATEST__tFunctionDefinition,
   DMN_LATEST__tLiteralExpression,
-} from "@kie-tools/dmn-marshaller/src/index";
+} from "@kie-tools/dmn-marshaller";
 import "./JavaFunctionExpression.css";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";

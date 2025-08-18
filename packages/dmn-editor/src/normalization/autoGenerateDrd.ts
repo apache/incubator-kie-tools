@@ -23,7 +23,7 @@ import { computeDiagramData } from "../store/computed/computeDiagramData";
 import { State } from "../store/Store";
 import { MIN_NODE_SIZES } from "../diagram/nodes/DefaultSizes";
 import { getNodeTypeFromDmnObject } from "../diagram/maths/DmnMaths";
-import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref, parseXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";

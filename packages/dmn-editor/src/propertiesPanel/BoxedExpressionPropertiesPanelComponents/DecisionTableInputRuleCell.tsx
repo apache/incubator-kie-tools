@@ -21,7 +21,7 @@ import * as React from "react";
 import { useMemo } from "react";
 import { DescriptionField, ExpressionLanguageField, TypeRefField } from "../Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
-import { DMN_LATEST__tDecisionTable, DMN_LATEST__tUnaryTests } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tDecisionTable, DMN_LATEST__tUnaryTests } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";

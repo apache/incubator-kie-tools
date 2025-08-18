@@ -29,7 +29,7 @@ import {
   DMN_LATEST__tLiteralExpression,
   DMN_LATEST__tQuantified,
   DMN_LATEST__tRelation,
-} from "@kie-tools/dmn-marshaller/src/index";
+} from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { AllExpressionTypes, AllExpressions, AllExpressionsWithoutTypes } from "../dataTypes/DataTypeSpec";
 

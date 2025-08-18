@@ -33,7 +33,7 @@ import {
   DMN_LATEST__tDecision,
   DMN_LATEST__tDefinitions,
   DMN_LATEST__tItemDefinition,
-} from "@kie-tools/dmn-marshaller/src/index";
+} from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { PMMLDocumentData } from "@kie-tools/pmml-editor-marshaller/dist/api";
 import { PMMLFieldData } from "@kie-tools/pmml-editor-marshaller/dist/api/PMMLFieldData";

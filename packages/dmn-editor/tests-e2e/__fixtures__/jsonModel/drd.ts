@@ -18,7 +18,7 @@
  */
 
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
-import { DMN_LATEST__DMNDiagram, DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__DMNDiagram, DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller";
 import { Page } from "@playwright/test";
 import { DrgElement } from "./drgElement";
 

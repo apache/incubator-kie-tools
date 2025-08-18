@@ -28,7 +28,7 @@ import {
   DMN_LATEST__tKnowledgeSource,
   DMN_LATEST__tTextAnnotation,
   DMN_LATEST__DMNShape,
-} from "@kie-tools/dmn-marshaller/src/index";
+} from "@kie-tools/dmn-marshaller";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { drag } from "d3-drag";

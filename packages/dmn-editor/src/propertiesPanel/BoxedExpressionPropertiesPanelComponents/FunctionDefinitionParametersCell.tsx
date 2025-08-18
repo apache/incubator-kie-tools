@@ -25,7 +25,7 @@ import { useDmnEditor } from "../../DmnEditorContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
-import { DMN_LATEST__tFunctionDefinition, DMN_LATEST__tInformationItem } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tFunctionDefinition, DMN_LATEST__tInformationItem } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";

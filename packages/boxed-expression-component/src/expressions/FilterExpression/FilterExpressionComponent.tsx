@@ -32,7 +32,7 @@ import {
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import React, { useCallback, useMemo } from "react";
-import { DMN_LATEST__tChildExpression } from "@kie-tools/dmn-marshaller/src/index";
+import { DMN_LATEST__tChildExpression } from "@kie-tools/dmn-marshaller";
 import * as ReactTable from "react-table";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";

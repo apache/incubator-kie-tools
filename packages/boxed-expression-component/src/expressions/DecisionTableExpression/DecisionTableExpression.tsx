@@ -67,7 +67,7 @@ import {
   DMN_LATEST__tOutputClause,
   DMN_LATEST__tRuleAnnotationClause,
   DMN_LATEST__tUnaryTests,
-} from "@kie-tools/dmn-marshaller/src/index";
+} from "@kie-tools/dmn-marshaller";
 import "./DecisionTableExpression.css";
 import { Unpacked } from "../../tsExt/tsExt";
 
