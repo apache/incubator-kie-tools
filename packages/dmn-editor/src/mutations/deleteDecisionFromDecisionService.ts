@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { parseXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { repopulateInputDataAndDecisionsOnDecisionService } from "./repopulateInputDataAndDecisionsOnDecisionService";
@@ -29,7 +29,7 @@ export function deleteDecisionFromDecisionService({
   decisionServiceId,
   externalModelsByNamespace,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   decisionHref: string;
   decisionServiceId: string;
   externalModelsByNamespace: ExternalModelsIndex | undefined;

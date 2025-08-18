@@ -21,10 +21,7 @@ import * as React from "react";
 import { useMemo } from "react";
 import { DescriptionField, ExpressionLanguageField, TypeRefField } from "../Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
-import {
-  DMN15__tDecisionTable,
-  DMN15__tLiteralExpression,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDecisionTable, DMN_LATEST__tLiteralExpression } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
@@ -57,7 +54,7 @@ export function DecisionTableOutputRuleCell(props: {
   );
 
   const cell = useMemo(
-    () => selectedObjectInfos?.cell as Normalized<DMN15__tLiteralExpression>,
+    () => selectedObjectInfos?.cell as Normalized<DMN_LATEST__tLiteralExpression>,
     [selectedObjectInfos?.cell]
   );
 
@@ -86,8 +83,9 @@ export function DecisionTableOutputRuleCell(props: {
         const typeRef =
           allTopLevelItemDefinitionUniqueNames.get(
             cellMustHaveSameTypeAsRoot
-              ? (root?.cell as Normalized<DMN15__tDecisionTable> | undefined)?.["@_typeRef"] ?? ""
-              : (root?.cell as Normalized<DMN15__tDecisionTable>)?.output?.[cellPath.column ?? 0]["@_typeRef"] ?? ""
+              ? (root?.cell as Normalized<DMN_LATEST__tDecisionTable> | undefined)?.["@_typeRef"] ?? ""
+              : (root?.cell as Normalized<DMN_LATEST__tDecisionTable>)?.output?.[cellPath.column ?? 0]["@_typeRef"] ??
+                  ""
           ) ?? DmnBuiltInDataType.Undefined;
         return { typeRef, itemDefinition: allDataTypesById.get(typeRef)?.itemDefinition };
       }
@@ -101,7 +99,7 @@ export function DecisionTableOutputRuleCell(props: {
     selectedObjectInfos?.expressionPath,
   ]);
 
-  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tLiteralExpression>>(
+  const updater = useBoxedExpressionUpdater<Normalized<DMN_LATEST__tLiteralExpression>>(
     selectedObjectInfos?.expressionPath ?? []
   );
 

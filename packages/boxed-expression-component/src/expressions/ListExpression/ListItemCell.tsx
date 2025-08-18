@@ -27,7 +27,7 @@ import {
 } from "../../BoxedExpressionEditorContext";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
 import { ROWTYPE } from "./ListExpression";
-import { DMN15__tList } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tList } from "@kie-tools/dmn-marshaller";
 
 export function ListItemCell({
   rowIndex,
@@ -35,7 +35,7 @@ export function ListItemCell({
   columnIndex,
   parentElementId,
   listExpression,
-}: BeeTableCellProps<ROWTYPE> & { parentElementId: string; listExpression: Normalized<DMN15__tList> }) {
+}: BeeTableCellProps<ROWTYPE> & { parentElementId: string; listExpression: Normalized<DMN_LATEST__tList> }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onSetExpression = useCallback<OnSetExpression>(

@@ -21,7 +21,7 @@ import * as React from "react";
 import { useMemo } from "react";
 import { DescriptionField, ExpressionLanguageField } from "../Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
-import { DMN15__tLiteralExpression } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tLiteralExpression } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
@@ -38,12 +38,12 @@ export function LiteralExpressionContentCell(props: {
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tLiteralExpression>>(
+  const updater = useBoxedExpressionUpdater<Normalized<DMN_LATEST__tLiteralExpression>>(
     selectedObjectInfos?.expressionPath ?? []
   );
 
   const cell = useMemo(
-    () => selectedObjectInfos?.cell as Normalized<DMN15__tLiteralExpression>,
+    () => selectedObjectInfos?.cell as Normalized<DMN_LATEST__tLiteralExpression>,
     [selectedObjectInfos?.cell]
   );
 
