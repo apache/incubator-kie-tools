@@ -127,7 +127,8 @@ export function useFileValidation(
                 dmnSpecVersion !== "1.2" &&
                 dmnSpecVersion !== "1.3" &&
                 dmnSpecVersion !== "1.4" &&
-                dmnSpecVersion !== "1.5")
+                dmnSpecVersion !== "1.5" &&
+                dmnSpecVersion !== "1.6")
             ) {
               setNotifications(i18n.terms.validation, "", [
                 {
