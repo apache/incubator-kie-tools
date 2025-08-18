@@ -17,10 +17,11 @@
  * under the License.
  */
 
+import { TranslatedDictionary } from "@kie-tools-core/i18n/dist/core";
 import { BoxedExpressionEditorI18n } from "..";
 import { de as de_common } from "@kie-tools/i18n-common-dictionary";
 
-export const de: BoxedExpressionEditorI18n = {
+export const de: TranslatedDictionary<BoxedExpressionEditorI18n> = {
   ...de_common,
   addParameter: "Parameter hinzufügen",
   builtInAggregator: "Integrierter Aggregator",
@@ -115,49 +116,5 @@ export const de: BoxedExpressionEditorI18n = {
   contextExpression: {
     variable: "",
     expression: "",
-  },
-  yourAnnotationsHere: "",
-  hitpolicy: "",
-  aggregatorFunction: "",
-  logicTypeHelp: {
-    literExpression: "",
-    context: "",
-    decisionTable: "",
-    relation: "",
-    functionDefinition: "",
-    invocation: "",
-    list: "",
-    conditional: "",
-    for: "",
-    every: "",
-    some: "",
-    filter: "",
-  },
-  pasteOperationNotSuccessful: "",
-  paramets: "",
-  functionKindHelp: {
-    feel: "",
-    pmml: "",
-    java: "",
-    notSupported: "",
-  },
-  label: "",
-  value: "",
-  classNameLabel: "",
-  methodSignatureLabel: "",
-  example: "",
-  parameterNamePlaceholder: "",
-  noneSelected: "",
-  selectDocument: "",
-  parameter: "",
-  functionName: "",
-  child: "",
-  iterableRowLabel: {
-    for: "",
-    some: "",
-    every: "",
-    return: "",
-    in: "",
-    satisfies: "",
   },
 };

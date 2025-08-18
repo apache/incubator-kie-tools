@@ -22,7 +22,12 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { Action, BoxedFunction, BoxedFunctionKind, DmnBuiltInDataType, generateUuid, Normalized } from "../../api";
 import { PopoverMenu } from "../../contextMenu/PopoverMenu";
-import { useBoxedExpressionEditorI18n } from "../../i18n";
+import {
+  boxedExpressionEditorDictionaries,
+  BoxedExpressionEditorI18nContext,
+  boxedExpressionEditorI18nDefaults,
+  useBoxedExpressionEditorI18n,
+} from "../../i18n";
 import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
 import { BoxedFunctionFeel, FeelFunctionExpression } from "./FeelFunctionExpression";
 import { FunctionKindSelector } from "./FunctionKindSelector";
@@ -34,6 +39,7 @@ import {
   DMN15__tFunctionKind,
 } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
 import "./FunctionExpression.css";
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 
 export function FunctionExpression({
   isNested,
@@ -139,11 +145,18 @@ export function useFunctionExpressionControllerCell(functionKind: Normalized<DMN
 
   return useMemo(
     () => (
-      <FunctionKindSelector
-        isReadOnly={isReadOnly}
-        selectedFunctionKind={functionKind}
-        onFunctionKindSelect={onFunctionKindSelect}
-      />
+      <I18nDictionariesProvider
+        defaults={boxedExpressionEditorI18nDefaults}
+        dictionaries={boxedExpressionEditorDictionaries}
+        initialLocale={navigator.language}
+        ctx={BoxedExpressionEditorI18nContext}
+      >
+        <FunctionKindSelector
+          isReadOnly={isReadOnly}
+          selectedFunctionKind={functionKind}
+          onFunctionKindSelect={onFunctionKindSelect}
+        />
+      </I18nDictionariesProvider>
     ),
     [functionKind, isReadOnly, onFunctionKindSelect]
   );
