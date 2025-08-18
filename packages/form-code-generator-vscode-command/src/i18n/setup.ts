@@ -20,14 +20,11 @@
 import { en } from "./locales";
 import { FormCodeGeneratorI18n } from "./FormCodeGeneratorI18n";
 import { I18n, I18nDefaults, I18nDictionaries } from "../../../i18n/dist/core";
-import * as React from "react";
-import { I18nContextType } from "@kie-tools-core/i18n/dist/react-components";
 
 export const formCodeGeneratorI18nDefaults: I18nDefaults<FormCodeGeneratorI18n> = {
   locale: "en",
   dictionary: en,
 };
 export const formCodeGeneratorI18nDictionaries: I18nDictionaries<FormCodeGeneratorI18n> = new Map([["en", en]]);
-export const formI18nContext = React.createContext<I18nContextType<FormCodeGeneratorI18n>>({} as any);
 
 export const formCodeGeneratorI18n = new I18n(formCodeGeneratorI18nDefaults, formCodeGeneratorI18nDictionaries);

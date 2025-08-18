@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 import { ReferenceDictionary } from "../../../i18n/dist/core";
 
 interface FormCodeGeneratorDictionary extends ReferenceDictionary {
@@ -38,4 +37,4 @@ interface FormCodeGeneratorDictionary extends ReferenceDictionary {
   };
 }
 
-export interface FormCodeGeneratorI18n extends FormCodeGeneratorDictionary, CommonI18n {}
+export interface FormCodeGeneratorI18n extends FormCodeGeneratorDictionary {}

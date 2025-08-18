@@ -18,10 +18,8 @@
  */
 
 import { FormCodeGeneratorI18n } from "../FormCodeGeneratorI18n";
-import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 
 export const en: FormCodeGeneratorI18n = {
-  ...en_common,
   generateFormCode: {
     selectProjectFolder: "Select project folder",
     NotFoundProjectsTarget: `Couldn't find project's "target" folder. Please install your project before using this command.`,
