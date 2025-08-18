@@ -1,40 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!--
-  ~ Licensed to the Apache Software Foundation (ASF) under one
-  ~ or more contributor license agreements.  See the NOTICE file
-  ~ distributed with this work for additional information
-  ~ regarding copyright ownership.  The ASF licenses this file
-  ~ to you under the Apache License, Version 2.0 (the
-  ~ "License"); you may not use this file except in compliance
-  ~ with the License.  You may obtain a copy of the License at
-  ~ 
-  ~   http://www.apache.org/licenses/LICENSE-2.0
-  ~ 
-  ~ Unless required by applicable law or agreed to in writing,
-  ~ software distributed under the License is distributed on an
-  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-  ~ KIND, either express or implied.  See the License for the
-  ~ specific language governing permissions and limitations
-  ~ under the License.      
--->
 <definitions
   xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
-  expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
-  namespace="https://kie.org/dmn/_8131B6C4-A117-47E9-93EB-922C63CE328F"
-  id="_71B8B1CC-1F0B-4DE3-AFD2-C60FF033481C"
-  name="CanDrive"
   xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
   xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
   xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
   xmlns:kie="https://kie.org/dmn/extensions/1.0"
-  xmlns:included0="https://kie.org/dmn/_8A2ED07B-1CE0-4A81-B9C9-5792D851EC85"
+  expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+  namespace="https://kie.apache.org/dmn/_79B379C4-EA67-4A1C-9F81-E47F0A90EDFF"
+  id="_93E8D13F-824D-45BA-89ED-D23831A4E824"
+  name="CanDrive"
+  xmlns:included1="https://kie.apache.org/dmn/_54296A23-F501-44E9-93BD-D5632F6C76E2"
 >
   <import
-    id="_44F1D0BD-60F9-4E99-A821-442C56404FC0"
+    id="_80BE30E5-5BC7-464A-BA40-120AB9D31229"
     name="CanDriveTypes"
     importType="http://www.omg.org/spec/DMN/20180521/MODEL/"
-    namespace="https://kie.org/dmn/_8A2ED07B-1CE0-4A81-B9C9-5792D851EC85"
-    locationURI="./path1/can-drive-types.dmn"
+    namespace="https://kie.apache.org/dmn/_54296A23-F501-44E9-93BD-D5632F6C76E2"
+    locationURI="./can-drive-types.dmn"
   />
   <inputData name="Person" id="_E2FBAB4A-317B-4D46-903D-D2771D209F2F">
     <variable name="Person" id="_7A5CA35A-1E13-48E0-87B2-C9686586DBE3" typeRef="CanDriveTypes.tPerson" />
