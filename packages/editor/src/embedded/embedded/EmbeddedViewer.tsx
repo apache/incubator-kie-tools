@@ -21,6 +21,12 @@ import { EditorEnvelopeLocator, ChannelType } from "../../api";
 import * as React from "react";
 import { EmbeddedEditorFile } from "../../channel";
 import { EmbeddedEditor, Props as EmbeddedEditorProps } from "./EmbeddedEditor";
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
+import {
+  EditorEnvelopeI18nContext,
+  editorEnvelopeI18nDefaults,
+  editorEnvelopeI18nDictionaries,
+} from "../../envelope/i18n";
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -42,4 +48,13 @@ export type Props = EmbeddedViewerChannelApiOverrides & {
   locale: string;
 };
 
-export const EmbeddedViewer = (props: Props) => <EmbeddedEditor {...props} />;
+export const EmbeddedViewer = (props: Props) => (
+  <I18nDictionariesProvider
+    defaults={editorEnvelopeI18nDefaults}
+    dictionaries={editorEnvelopeI18nDictionaries}
+    ctx={EditorEnvelopeI18nContext}
+    initialLocale={navigator.language}
+  >
+    <EmbeddedEditor {...props} />
+  </I18nDictionariesProvider>
+);

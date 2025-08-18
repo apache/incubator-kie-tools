@@ -84,10 +84,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
 ) => {
   const { i18n } = useEditorEnvelopeI18nContext();
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const stateControl = useMemo(
-    () => props.stateControl ?? new StateControl(),
-    [props.file.getFileContents, props.stateControl]
-  );
+  const stateControl = useMemo(() => props.stateControl ?? new StateControl(), [props.stateControl]);
   const [isReady, setReady] = useState(false);
   const envelopeMapping = useMemo(
     () =>
