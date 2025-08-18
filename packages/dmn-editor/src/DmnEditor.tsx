@@ -59,7 +59,8 @@ import { DmnEditorSettingsContextProvider } from "./settings/DmnEditorSettingsCo
 import { JavaCodeCompletionService } from "@kie-tools/import-java-classes-component/dist/components/ImportJavaClasses/services";
 import "@kie-tools/dmn-marshaller/dist/kie-extensions"; // This is here because of the KIE Extension for DMN.
 import "./DmnEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
-import { useDmnEditorI18n } from "./i18n";
+import { dmnEditorDictionaries, DmnEditorI18nContext, dmnEditorI18nDefaults, useDmnEditorI18n } from "./i18n";
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
 
@@ -480,19 +481,26 @@ export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref
   }, []);
 
   return (
-    <DmnEditorContextProvider {...props}>
-      <ErrorBoundary FallbackComponent={DmnEditorErrorFallback} onReset={resetState}>
-        <DmnEditorSettingsContextProvider {...props}>
-          <DmnEditorExternalModelsContextProvider {...props}>
-            <DmnEditorStoreApiContext.Provider value={storeRef.current}>
-              <CommandsContextProvider>
-                <DmnEditorInternal forwardRef={ref} {...props} />
-              </CommandsContextProvider>
-            </DmnEditorStoreApiContext.Provider>
-          </DmnEditorExternalModelsContextProvider>
-        </DmnEditorSettingsContextProvider>
-      </ErrorBoundary>
-    </DmnEditorContextProvider>
+    <I18nDictionariesProvider
+      defaults={dmnEditorI18nDefaults}
+      dictionaries={dmnEditorDictionaries}
+      initialLocale={navigator.language}
+      ctx={DmnEditorI18nContext}
+    >
+      <DmnEditorContextProvider {...props}>
+        <ErrorBoundary FallbackComponent={DmnEditorErrorFallback} onReset={resetState}>
+          <DmnEditorSettingsContextProvider {...props}>
+            <DmnEditorExternalModelsContextProvider {...props}>
+              <DmnEditorStoreApiContext.Provider value={storeRef.current}>
+                <CommandsContextProvider>
+                  <DmnEditorInternal forwardRef={ref} {...props} />
+                </CommandsContextProvider>
+              </DmnEditorStoreApiContext.Provider>
+            </DmnEditorExternalModelsContextProvider>
+          </DmnEditorSettingsContextProvider>
+        </ErrorBoundary>
+      </DmnEditorContextProvider>
+    </I18nDictionariesProvider>
   );
 });
 

@@ -145,32 +145,26 @@ export function ConstraintsRange({
   const messages = useCallback(
     (value: string, operator: string) => {
       if (type === DmnBuiltInDataType.Date && value !== "") {
-        return i18n.dataTypes.nextValidDate;
+        return i18n.dataTypes.nextValidNumber + `(${value} ${operator} 1 Day).`;
       }
       if (type === DmnBuiltInDataType.DateTime && value !== "") {
-        return i18n.dataTypes.nextValidDateTime;
+        return i18n.dataTypes.nextValidNumber + `(${value} ${operator} 1 Second).`;
       }
       if (type === DmnBuiltInDataType.DateTimeDuration && value !== "") {
-        return i18n.dataTypes.nextValidDateTime;
+        return i18n.dataTypes.nextValidNumber + `(${value} ${operator} 1 Second).`;
       }
       if (type === DmnBuiltInDataType.Number && value !== "") {
-        return i18n.dataTypes.nextValidNumber;
+        return i18n.dataTypes.nextValidNumber + `(${value} ${operator} 2e-52).`;
       }
       if (type === DmnBuiltInDataType.Time && value !== "") {
-        return i18n.dataTypes.nextValidDateTime;
+        return i18n.dataTypes.nextValidNumber + `(${value} ${operator} 1 Second).`;
       }
       if (type === DmnBuiltInDataType.YearsMonthsDuration && value !== "") {
-        return i18n.dataTypes.nextValidYearsAndMonths;
+        return i18n.dataTypes.nextValidNumber + `(${value} ${operator} 1 Month).`;
       }
       return "";
     },
-    [
-      i18n.dataTypes.nextValidDate,
-      i18n.dataTypes.nextValidDateTime,
-      i18n.dataTypes.nextValidNumber,
-      i18n.dataTypes.nextValidYearsAndMonths,
-      type,
-    ]
+    [i18n.dataTypes.nextValidNumber, type]
   );
 
   const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {

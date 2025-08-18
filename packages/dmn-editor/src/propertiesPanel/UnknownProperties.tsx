@@ -94,8 +94,7 @@ export function UnknownProperties(props: { shape: Normalized<DMNDI15__DMNShape>;
         <Divider style={{ marginTop: "16px" }} />
         <br />
         <p>
-          <b>{i18n.propertiesPanel.reference}</b>&nbsp;
-          {i18n.propertiesPanel.buildXmlName(buildXmlQName(props.dmnElementRefQName))}
+          <b>{i18n.propertiesPanel.reference}</b>&nbsp;{`${buildXmlQName(props.dmnElementRefQName)}`}
         </p>
       </Alert>
     </>

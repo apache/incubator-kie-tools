@@ -34,6 +34,7 @@ export const en: DmnEditorI18n = {
   noneYet: "None yet",
   name: "Name",
   cancel: "Cancel",
+  with: "with",
   dataTypes: {
     days: "Days",
     hours: "Hours",
@@ -55,14 +56,7 @@ export const en: DmnEditorI18n = {
     checkThe: "Check the",
     feelHandbook: "FEEL handbook",
     creatingAnExpression: "to help you on creating your expressions.",
-    nextValidDate: (value: string, operator: string): string =>
-      `The next valid number is: (${value} ${operator} 1 Day).`,
-    nextValidDateTime: (value: string, operator: string): string =>
-      `The next valid number is: (${value} ${operator} 1 Second).`,
-    nextValidNumber: (value: string, operator: string): string =>
-      `The next valid number is: (${value} ${operator} 2e-52).`,
-    nextValidYearsAndMonths: (value: string, operator: string): string =>
-      `The next valid number is: (${value} ${operator} 1 Month).`,
+    nextValidNumber: "The next valid number is: ",
     start: "Start",
     clickToRemoveValue: "Click to remove value from the range",
     clickToIncludeValue: "Click to include value in the range",
@@ -218,9 +212,9 @@ export const en: DmnEditorI18n = {
     model: "Model",
     selectModelToInclude: "Select a model to include...",
     allModelsAvailable: (externalContextName: string): string =>
-      `All models available${externalContextName ? ` in '${externalContextName}' ` : ` `}are already included.`,
+      `All models available${externalContextName && externalContextName.trim() !== "" ? ` in '${externalContextName}' ` : ""} are already included.`,
     noAvailableModels: (externalContextName: string): string =>
-      `There's no available models${externalContextName ? ` in '${externalContextName}' ` : ` `}to be included.`,
+      `There's no available models${externalContextName && externalContextName.trim() !== "" ? ` in '${externalContextName}'` : ""} to be included.`,
     loading: "Loading...",
     noExternalModelsIncluded: "No external models have been included.",
     externalModelsEmptyMessage:
@@ -338,7 +332,6 @@ export const en: DmnEditorI18n = {
     nameNotExists: (name: string): string => `This node references a DRG element from '${name}' that doesn't exist.`,
     goToName: (name: string): string => `Go to '${name}'`,
     reference: "Reference:",
-    buildXmlName: (value: string): string => `${value}`,
     unknownNodePlaceholder: "This is a placeholder for an unknown node",
   },
   boxedExpressionPropertiesPanelTitle: {

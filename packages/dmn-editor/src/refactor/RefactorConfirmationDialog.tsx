@@ -87,7 +87,7 @@ export function RefactorConfirmationDialog({
         {fromName ?? "<undefined>"}
         {'"'}
       </pre>{" "}
-      with{" "}
+      {i18n.with}{" "}
       <pre style={{ display: "inline" }}>
         {'"'}
         {toName ?? "<undefined>"}

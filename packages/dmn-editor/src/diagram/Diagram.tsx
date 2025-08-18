@@ -1610,7 +1610,7 @@ function DmnDiagramEmptyState({
             <>
               <EmptyStateBody>{i18n.nodes.startByDraggingNodes}</EmptyStateBody>
               <br />
-              <EmptyStateBody>{i18n.or}</EmptyStateBody>
+              <EmptyStateBody>{i18n.dataTypes.or}</EmptyStateBody>
               <EmptyStateFooter>
                 <EmptyStateActions>
                   <div>
