@@ -87,7 +87,18 @@ module.exports = {
    * @returns A comma-separated string containing a flat list of absolute paths of local Maven repositories.
    */
   buildTailFromPackageJsonDependencies: (dirname) => {
-    return deepResolveMavenLocalRepoTail(path.resolve(dirname ?? ".")).join(",");
+    return deepResolveMavenLocalRepoTail(path.resolve(dirname ?? "."), "dependencies").join(",");
+  },
+
+  /**
+   * Helps setting up an array of absolute paths that will be used to configure `-Dmaven.repo.local.tail`.
+   *
+   * @param dirname Where to locate the first package.json.
+   *
+   * @returns A comma-separated string containing a flat list of absolute paths of local Maven repositories.
+   */
+  buildTailFromPackageJsonDevDependencies: (dirname) => {
+    return deepResolveMavenLocalRepoTail(path.resolve(dirname ?? "."), "devDependencies").join(",");
   },
 
   /**
@@ -107,8 +118,7 @@ module.exports = {
     cp.execSync(`cp -nal ${DEFAULT_LOCAL_REPO}/* ${resolvedTmpM2Dir}`, { stdio: "inherit" });
 
     const cwd = path.resolve(".", relativePackagePath);
-    const packageName = require(path.resolve(cwd, "package.json")).name;
-    const tail = deepResolveMavenLocalRepoTail(cwd, packageName);
+    const tail = deepResolveMavenLocalRepoTail(cwd, "dependencies");
 
     // tail
     for (const t of tail) {
@@ -192,14 +202,14 @@ module.exports = {
 
 // private functions
 
-function deepResolveMavenLocalRepoTail(cwd) {
-  const packageJsonDependencies = require(path.resolve(cwd, "package.json")).dependencies ?? {};
+function deepResolveMavenLocalRepoTail(cwd, dependenciesProp) {
+  const packageJsonDependencies = require(path.resolve(cwd, "package.json"))[dependenciesProp] ?? {};
   return [
     ...new Set([
       path.resolve(fs.realpathSync(cwd), "dist/1st-party-m2/repository"),
       ...Object.entries(packageJsonDependencies).flatMap(([depName, depVersion]) =>
         depVersion === "workspace:*" // It's an internal package.
-          ? deepResolveMavenLocalRepoTail(cwd + "/node_modules/" + depName)
+          ? deepResolveMavenLocalRepoTail(cwd + "/node_modules/" + depName, dependenciesProp)
           : []
       ),
     ]),
