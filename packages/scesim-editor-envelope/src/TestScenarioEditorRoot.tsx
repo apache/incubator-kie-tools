@@ -47,6 +47,7 @@ export type TestScenarioEditorRootProps = {
   onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot: WorkspaceChannelApi["kogitoWorkspace_openFile"];
   workspaceRootAbsolutePosixPath: string;
+  i18n: ScesimEditorEnvelopeI18n;
 };
 
 export type TestScenarioEditorRootState = {
@@ -60,10 +61,6 @@ export type TestScenarioEditorRootState = {
   pointer: number;
   stack: SceSimModel[];
 };
-
-interface ScesimEditorEnvelopeProps {
-  i18n: ScesimEditorEnvelopeI18n;
-}
 
 export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRootProps, TestScenarioEditorRootState> {
   private readonly externalModelsManagerDoneBootstraping = imperativePromiseHandle<void>();
@@ -270,7 +267,6 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
   public componentDidUpdate(
     prevProps: Readonly<TestScenarioEditorRootProps>,
     prevState: Readonly<TestScenarioEditorRootState>,
-    props: ScesimEditorEnvelopeProps,
     snapshot?: any
   ): void {
     if (this.props.keyboardShortcutsService === undefined || this.state.keyboardShortcutsRegistred === true) {
@@ -282,8 +278,8 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
       return;
     }
     const togglePropertiesPanel = this.props.keyboardShortcutsService?.registerKeyPress(
-      props.i18n.i,
-      props.i18n.misc + " | " + props.i18n.openCloseDockPanel,
+      this.props.i18n.i,
+      this.props.i18n.misc + " | " + this.props.i18n.openCloseDockPanel,
       async () => commands.toggleTestScenarioDock()
     );
 

@@ -32,6 +32,13 @@ import {
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { ResourceContent, ResourcesList, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
 import { TestScenarioEditorRoot } from "./TestScenarioEditorRoot";
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
+import {
+  scesimEditorEnvelopeDictionaries,
+  ScesimEditorEnvelopeI18nContext,
+  scesimEditorEnvelopeI18nDefaults,
+  useScesimEditorEnvelopeI18n,
+} from "./i18n";
 
 export class TestScenarioEditorFactory
   implements EditorFactory<Editor, KogitoEditorEnvelopeApi, KogitoEditorChannelApi>
@@ -90,14 +97,21 @@ export class TestScenarioEditorInterface implements Editor {
   // This is the argument to ReactDOM.render. These props can be understood like "static globals".
   public af_componentRoot() {
     return (
-      <TestScenarioEditorRootWrapper
-        exposing={(testScenarioEditorRoot) => (this.self = testScenarioEditorRoot)}
-        envelopeContext={this.envelopeContext}
-        workspaceRootAbsolutePosixPath={
-          this.initArgs.workspaceRootAbsolutePosixPath ?? DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH
-        }
-        isReadOnly={this.initArgs.isReadOnly}
-      />
+      <I18nDictionariesProvider
+        defaults={scesimEditorEnvelopeI18nDefaults}
+        dictionaries={scesimEditorEnvelopeDictionaries}
+        initialLocale={navigator.language}
+        ctx={ScesimEditorEnvelopeI18nContext}
+      >
+        <TestScenarioEditorRootWrapper
+          exposing={(testScenarioEditorRoot) => (this.self = testScenarioEditorRoot)}
+          envelopeContext={this.envelopeContext}
+          workspaceRootAbsolutePosixPath={
+            this.initArgs.workspaceRootAbsolutePosixPath ?? DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH
+          }
+          isReadOnly={this.initArgs.isReadOnly}
+        />
+      </I18nDictionariesProvider>
     );
   }
 }
@@ -114,6 +128,7 @@ function TestScenarioEditorRootWrapper({
   workspaceRootAbsolutePosixPath: string;
   isReadOnly: boolean;
 }) {
+  const { i18n } = useScesimEditorEnvelopeI18n();
   const onNewEdit = useCallback(
     (workspaceEdit: WorkspaceEdit) => {
       envelopeContext?.channelApi.notifications.kogitoWorkspace_newEdit.send(workspaceEdit);
@@ -158,6 +173,7 @@ function TestScenarioEditorRootWrapper({
       workspaceRootAbsolutePosixPath={workspaceRootAbsolutePosixPath}
       keyboardShortcutsService={envelopeContext?.services.keyboardShortcuts}
       isReadOnly={isReadOnly}
+      i18n={i18n}
     />
   );
 }

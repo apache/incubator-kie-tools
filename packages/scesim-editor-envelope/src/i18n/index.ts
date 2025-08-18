@@ -17,5 +17,5 @@
  * under the License.
  */
 
-export * from "./ScesimEditorEnevelopeI18n";
+export * from "./ScesimEditorEnvelopeI18n";
 export * from "./setup";

@@ -18,7 +18,7 @@
  */
 
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
-import { ScesimEditorEnvelopeI18n } from "../ScesimEditorEnevelopeI18n";
+import { ScesimEditorEnvelopeI18n } from "../ScesimEditorEnvelopeI18n";
 
 export const en: ScesimEditorEnvelopeI18n = {
   ...en_common,

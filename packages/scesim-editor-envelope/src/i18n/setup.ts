@@ -19,9 +19,10 @@
 
 import * as React from "react";
 import { en } from "./locales";
-import { ScesimEditorEnvelopeI18n } from "./ScesimEditorEnevelopeI18n";
-import { I18n, I18nDefaults, I18nDictionaries } from "../../../i18n/dist/core";
+import { I18nDefaults, I18nDictionaries } from "../../../i18n/dist/core";
 import { I18nContextType } from "../../../i18n/dist/react-components";
+import { ScesimEditorEnvelopeI18n } from "./ScesimEditorEnvelopeI18n";
+import { useContext } from "react";
 
 export const scesimEditorEnvelopeI18nDefaults: I18nDefaults<ScesimEditorEnvelopeI18n> = {
   locale: "en",
@@ -32,4 +33,6 @@ export const ScesimEditorEnvelopeI18nContext = React.createContext<I18nContextTy
   {} as never
 );
 
-export const ScesimEditorEnevelopeI18n = new I18n(scesimEditorEnvelopeI18nDefaults, scesimEditorEnvelopeDictionaries);
+export function useScesimEditorEnvelopeI18n(): I18nContextType<ScesimEditorEnvelopeI18n> {
+  return useContext(ScesimEditorEnvelopeI18nContext);
+}
