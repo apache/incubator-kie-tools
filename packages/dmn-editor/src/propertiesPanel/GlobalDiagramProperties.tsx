@@ -21,11 +21,11 @@ import * as React from "react";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { Form, FormSection, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { DataSourceIcon } from "@patternfly/react-icons/dist/js/icons/data-source-icon";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -33,8 +33,10 @@ import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { EXPRESSION_LANGUAGES_LATEST } from "@kie-tools/dmn-marshaller";
 
 export function GlobalDiagramProperties() {
+  const [isExpressionLanguageSelectOpen, setExpressionLanguageSelectOpen] = useState(false);
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const [isGlobalSectionExpanded, setGlobalSectionExpanded] = useState<boolean>(true);
   const [isIdNamespaceSectionExpanded, setIdNamespaceSectionExpanded] = useState<boolean>(true);
@@ -43,6 +45,8 @@ export function GlobalDiagramProperties() {
   const settings = useSettings();
 
   const [regenerateIdConfirmationModal, setRegenerateIdConfirmationModal] = useState(false);
+
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   return (
     <Form>
@@ -109,18 +113,28 @@ export function GlobalDiagramProperties() {
               </FormGroup>
 
               <FormGroup label="Expression language">
-                <TextInput
+                <Select
+                  toggleRef={toggleRef}
+                  variant={SelectVariant.single}
                   aria-label={"Expression language"}
-                  type={"text"}
-                  isDisabled={settings.isReadOnly}
-                  placeholder={"Enter an expression language..."}
-                  value={thisDmn.model.definitions["@_expressionLanguage"]}
-                  onChange={(_event, newExprLang) =>
+                  isOpen={isExpressionLanguageSelectOpen}
+                  onSelect={(e, val) => {
+                    setExpressionLanguageSelectOpen(false);
                     dmnEditorStoreApi.setState((state) => {
-                      state.dmn.model.definitions["@_expressionLanguage"] = newExprLang;
-                    })
-                  }
-                />
+                      state.dmn.model.definitions["@_expressionLanguage"] = val as string;
+                    });
+                  }}
+                  onToggle={() => setExpressionLanguageSelectOpen((prev) => !prev)}
+                  isDisabled={settings.isReadOnly}
+                  selections={thisDmn.model.definitions["@_expressionLanguage"] || "Enter an expression language..."}
+                  placeholder={"Enter an expression language..."}
+                >
+                  {EXPRESSION_LANGUAGES_LATEST.map((EXPRESSION_LANGUAGES: string) => (
+                    <SelectOption key={EXPRESSION_LANGUAGES} value={EXPRESSION_LANGUAGES}>
+                      {EXPRESSION_LANGUAGES}
+                    </SelectOption>
+                  ))}
+                </Select>
               </FormGroup>
             </FormSection>
           </>

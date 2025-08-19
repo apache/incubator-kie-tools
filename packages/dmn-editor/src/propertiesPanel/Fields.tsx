@@ -27,6 +27,8 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { State } from "../store/Store";
+import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
+import { EXPRESSION_LANGUAGES_LATEST } from "@kie-tools/dmn-marshaller";
 
 export function ContentField(props: {
   initialValue: string;
@@ -57,7 +59,7 @@ export function ExpressionLanguageField(props: {
   return (
     <TextField
       {...props}
-      type={TextFieldType.TEXT_INPUT}
+      type={TextFieldType.DROP_DOWN}
       title="Expression Language"
       placeholder="Enter the expression language..."
     />
@@ -111,6 +113,7 @@ export function TypeRefField(props: {
 export enum TextFieldType {
   TEXT_AREA = "text-area",
   TEXT_INPUT = "text-input",
+  DROP_DOWN = "drop-down",
 }
 
 export function TextField({
@@ -129,9 +132,13 @@ export function TextField({
   const [expressionPath, setExpressionPath] = useState(props.expressionPath);
   const [value, setValue] = useState(props.initialValue);
 
+  const toggleRef = React.useRef<HTMLButtonElement>(null);
+
   // Uses refs to prevent `useEffect` to run multiple times
   const valueRef = React.useRef(props.initialValue);
   const isEditing = React.useRef(false);
+
+  const [isExpressionLanguageSelectOpen, setExpressionLanguageSelectOpen] = useState(false);
 
   // Updates the value and expression path with the props value
   useEffect(() => {
@@ -202,6 +209,33 @@ export function TextField({
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={6}
         />
+      )}
+      {props.type === TextFieldType.DROP_DOWN && (
+        <Select
+          toggleRef={toggleRef}
+          variant={SelectVariant.single}
+          aria-label={"Expression language"}
+          isOpen={isExpressionLanguageSelectOpen}
+          onSelect={(e, val) => {
+            const language = val;
+            setValue(language as string);
+            setExpressionLanguageSelectOpen(false);
+            valueRef.current = val as string;
+            isEditing.current = true;
+            if (props.initialValue !== language) {
+              onChange?.(language as string, expressionPath);
+              isEditing.current = false;
+            }
+          }}
+          onToggle={() => setExpressionLanguageSelectOpen((prev) => !prev)}
+          selections={value || "Enter an expression language..."}
+        >
+          {EXPRESSION_LANGUAGES_LATEST.map((EXPRESSION_LANGUAGES: string) => (
+            <SelectOption key={EXPRESSION_LANGUAGES} value={EXPRESSION_LANGUAGES}>
+              {EXPRESSION_LANGUAGES}
+            </SelectOption>
+          ))}
+        </Select>
       )}
     </FormGroup>
   );
