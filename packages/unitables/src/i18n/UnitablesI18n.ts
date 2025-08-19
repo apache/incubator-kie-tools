@@ -31,6 +31,8 @@ interface UnitablesDictionary extends ReferenceDictionary {
   addInputNode: string;
   error: string;
   errorMessage: string;
+  noDecisionResults: string;
+  addInputDecisionNodes: string;
 }
 
 export interface UnitablesI18n extends UnitablesDictionary, CommonI18n, BoxedExpressionEditorI18n {}

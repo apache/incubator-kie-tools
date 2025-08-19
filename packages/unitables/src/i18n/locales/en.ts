@@ -33,4 +33,7 @@ export const en: UnitablesI18n = {
   addInputNode: "Add an input node and see a custom table here.",
   error: "Error",
   errorMessage: "An error has happened while trying to show your inputs",
+  noDecisionResults: "No Decision results yet...",
+  addInputDecisionNodes:
+    "Add input and decision nodes, provide values to the inputs at the left and see the Decisions results here.",
 };
