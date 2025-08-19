@@ -48,13 +48,4 @@ export type Props = EmbeddedViewerChannelApiOverrides & {
   locale: string;
 };
 
-export const EmbeddedViewer = (props: Props) => (
-  <I18nDictionariesProvider
-    defaults={editorEnvelopeI18nDefaults}
-    dictionaries={editorEnvelopeI18nDictionaries}
-    ctx={EditorEnvelopeI18nContext}
-    initialLocale={navigator.language}
-  >
-    <EmbeddedEditor {...props} />
-  </I18nDictionariesProvider>
-);
+export const EmbeddedViewer = (props: Props) => <EmbeddedEditor {...props} />;

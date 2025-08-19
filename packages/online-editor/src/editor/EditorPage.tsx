@@ -493,29 +493,22 @@ Error details: ${err}`);
                     <DmnRunnerDrawer>
                       <EditorPageDockDrawer>
                         {embeddedEditorFile && (
-                          <I18nDictionariesProvider
-                            defaults={editorEnvelopeI18nDefaults}
-                            dictionaries={editorEnvelopeI18nDictionaries}
-                            ctx={EditorEnvelopeI18nContext}
-                            initialLocale={navigator.language}
-                          >
-                            <EmbeddedEditor
-                              /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
-                               * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
-                               */
-                              key={uniqueFileId}
-                              ref={editorRef}
-                              file={embeddedEditorFile}
-                              kogitoWorkspace_openFile={handleOpenFile}
-                              kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
-                              kogitoWorkspace_resourceListRequest={handleResourceListRequest}
-                              kogitoEditor_setContentError={handleSetContentError}
-                              editorEnvelopeLocator={settingsAwareEditorEnvelopeLocator}
-                              channelType={ChannelType.ONLINE_MULTI_FILE}
-                              locale={locale}
-                              workspaceRootAbsolutePosixPath={DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH}
-                            />
-                          </I18nDictionariesProvider>
+                          <EmbeddedEditor
+                            /* FIXME: By providing a different `key` everytime, we avoid calling `setContent` twice on the same Editor.
+                             * This is by design, and after setContent supports multiple calls on the same instance, we can remove that.
+                             */
+                            key={uniqueFileId}
+                            ref={editorRef}
+                            file={embeddedEditorFile}
+                            kogitoWorkspace_openFile={handleOpenFile}
+                            kogitoWorkspace_resourceContentRequest={handleResourceContentRequest}
+                            kogitoWorkspace_resourceListRequest={handleResourceListRequest}
+                            kogitoEditor_setContentError={handleSetContentError}
+                            editorEnvelopeLocator={settingsAwareEditorEnvelopeLocator}
+                            channelType={ChannelType.ONLINE_MULTI_FILE}
+                            locale={locale}
+                            workspaceRootAbsolutePosixPath={DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH}
+                          />
                         )}
                       </EditorPageDockDrawer>
                     </DmnRunnerDrawer>
