@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { DMN15__tInputData } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tInputData } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -40,7 +40,7 @@ export function InputDataProperties({
   namespace,
   index,
 }: {
-  inputData: Normalized<DMN15__tInputData>;
+  inputData: Normalized<DMN_LATEST__tInputData>;
   namespace: string | undefined;
   index: number;
 }) {
@@ -90,7 +90,7 @@ export function InputDataProperties({
           isDisabled={isReadOnly}
           onChange={(newTypeRef) => {
             setState((state) => {
-              const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tInputData>;
+              const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tInputData>;
               drgElement.variable ??= { "@_id": generateUuid(), "@_name": inputData["@_name"] };
               drgElement.variable["@_typeRef"] = newTypeRef;
             });
@@ -105,7 +105,7 @@ export function InputDataProperties({
           value={inputData.description?.__$$text}
           onChange={(_event, newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tInputData>).description = {
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tInputData>).description = {
                 __$$text: newDescription,
               };
             });
@@ -127,7 +127,7 @@ export function InputDataProperties({
         values={inputData.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tInputData>).extensionElements = {
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tInputData>).extensionElements = {
               "kie:attachment": newExtensionElements,
             };
           });

@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { DMN15__tDecision } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDecision } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -40,7 +40,7 @@ export function DecisionProperties({
   namespace,
   index,
 }: {
-  decision: Normalized<DMN15__tDecision>;
+  decision: Normalized<DMN_LATEST__tDecision>;
   namespace: string | undefined;
   index: number;
 }) {
@@ -90,7 +90,7 @@ export function DecisionProperties({
           isDisabled={isReadOnly}
           onChange={(newTypeRef) => {
             setState((state) => {
-              const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>;
+              const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tDecision>;
               drgElement.variable ??= { "@_id": generateUuid(), "@_name": decision["@_name"] };
               drgElement.variable["@_typeRef"] = newTypeRef;
             });
@@ -105,7 +105,7 @@ export function DecisionProperties({
         initialValue={decision.description?.__$$text || ""}
         onChange={(newDescription) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).description = {
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tDecision>).description = {
               __$$text: newDescription,
             };
           });
@@ -126,7 +126,7 @@ export function DecisionProperties({
         initialValue={decision.question?.__$$text || ""}
         onChange={(newQuestion) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).question = {
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tDecision>).question = {
               __$$text: newQuestion,
             };
           });
@@ -141,7 +141,7 @@ export function DecisionProperties({
         initialValue={decision.allowedAnswers?.__$$text || ""}
         onChange={(newAllowedAnswers) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).allowedAnswers = {
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tDecision>).allowedAnswers = {
               __$$text: newAllowedAnswers,
             };
           });
@@ -154,7 +154,7 @@ export function DecisionProperties({
         values={decision.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).extensionElements = {
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tDecision>).extensionElements = {
               "kie:attachment": newExtensionElements,
             };
           });

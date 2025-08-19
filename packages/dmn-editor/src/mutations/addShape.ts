@@ -17,11 +17,8 @@
  * under the License.
  */
 
-import {
-  DC__Point,
-  DMN15__tDefinitions,
-  DMNDI15__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tDefinitions, DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { NodeType } from "../diagram/connections/graphStructure";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
@@ -36,10 +33,10 @@ export function addShape({
   shape,
   decisionServiceDividerLineWaypoint: decisionServiceDividerLineWaypoint,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   drdIndex: number;
   nodeType: NodeType;
-  shape: Normalized<DMNDI15__DMNShape>;
+  shape: Normalized<DMN_LATEST__DMNShape>;
   decisionServiceDividerLineWaypoint?: DC__Point[];
 }) {
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });

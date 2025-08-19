@@ -23,7 +23,7 @@ import { TextField, TextFieldType } from "../Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { useDmnEditorStore } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
-import { DMN15__tIterator } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tIterator } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorI18n } from "../../i18n";
 
@@ -35,9 +35,14 @@ export function IteratorVariableCell(props: { boxedExpressionIndex?: BoxedExpres
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tIterator>>(selectedObjectInfos?.expressionPath ?? []);
+  const updater = useBoxedExpressionUpdater<Normalized<DMN_LATEST__tIterator>>(
+    selectedObjectInfos?.expressionPath ?? []
+  );
 
-  const cell = useMemo(() => selectedObjectInfos?.cell as Normalized<DMN15__tIterator>, [selectedObjectInfos?.cell]);
+  const cell = useMemo(
+    () => selectedObjectInfos?.cell as Normalized<DMN_LATEST__tIterator>,
+    [selectedObjectInfos?.cell]
+  );
 
   return (
     <>

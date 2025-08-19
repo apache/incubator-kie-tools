@@ -213,6 +213,7 @@
       { "id": "@kie-tools/runtime-tools-shared-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-swf-enveloped-components" },
       { "id": "@kie-tools/runtime-tools-swf-gateway-api" },
+      { "id": "@kie-tools/sonataflow-uniforms" },
       { "id": "@kie-tools/runtime-tools-swf-webapp-components" },
       { "id": "@kie-tools/scesim-marshaller" },
       { "id": "@kie-tools/serverless-logic-web-tools" },
@@ -2310,6 +2311,11 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/runtime-tools-swf-enveloped-components",
+        "target": "@kie-tools/sonataflow-uniforms",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/runtime-tools-swf-gateway-api",
         "target": "@kie-tools/runtime-tools-shared-gateway-api",
         "weight": 1
@@ -2317,6 +2323,11 @@
       {
         "source": "@kie-tools/runtime-tools-swf-gateway-api",
         "target": "@kie-tools/jest-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-uniforms",
+        "target": "@kie-tools/uniforms-patternfly",
         "weight": 1
       },
       {
@@ -2982,6 +2993,7 @@
     ["@kie-tools/sonataflow-management-console-webapp", "packages/sonataflow-management-console-webapp"],
     ["@kie-tools/sonataflow-operator", "packages/sonataflow-operator"],
     ["@kie-tools/sonataflow-quarkus-devui", "packages/sonataflow-quarkus-devui"],
+    ["@kie-tools/sonataflow-uniforms", "packages/sonataflow-uniforms"],
     ["@kie-tools/storybook-base", "packages/storybook-base"],
     ["@kie-tools/stunner-editors", "packages/stunner-editors"],
     ["@kie-tools/stunner-editors-dmn-loader", "packages/stunner-editors-dmn-loader"],

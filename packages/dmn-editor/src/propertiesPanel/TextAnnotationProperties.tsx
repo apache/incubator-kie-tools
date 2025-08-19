@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { DMN15__tTextAnnotation } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tTextAnnotation } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -33,7 +33,7 @@ export function TextAnnotationProperties({
   textAnnotation,
   index,
 }: {
-  textAnnotation: Normalized<DMN15__tTextAnnotation>;
+  textAnnotation: Normalized<DMN_LATEST__tTextAnnotation>;
   index: number;
 }) {
   const { i18n } = useDmnEditorI18n();
@@ -51,8 +51,9 @@ export function TextAnnotationProperties({
           placeholder={i18n.propertiesPanel.formatPlaceholder}
           onChange={(_event, newTextFormat) => {
             setState((state) => {
-              (state.dmn.model.definitions.artifact![index] as Normalized<DMN15__tTextAnnotation>)["@_textFormat"] =
-                newTextFormat;
+              (state.dmn.model.definitions.artifact![index] as Normalized<DMN_LATEST__tTextAnnotation>)[
+                "@_textFormat"
+              ] = newTextFormat;
             });
           }}
         />
@@ -87,7 +88,7 @@ export function TextAnnotationProperties({
           value={textAnnotation.description?.__$$text}
           onChange={(_event, newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.artifact![index] as Normalized<DMN15__tTextAnnotation>).description = {
+              (state.dmn.model.definitions.artifact![index] as Normalized<DMN_LATEST__tTextAnnotation>).description = {
                 __$$text: newDescription,
               };
             });

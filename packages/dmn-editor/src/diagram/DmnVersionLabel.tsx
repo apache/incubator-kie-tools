@@ -24,7 +24,7 @@ import { useMemo } from "react";
 import { DMN_LATEST_VERSION } from "@kie-tools/dmn-marshaller";
 import { useDmnEditorI18n } from "../i18n";
 
-const latestChangelogHref = `https://www.omg.org/spec/DMN/1.5/Beta1/PDF/changebar`;
+const latestChangelogHref = `https://www.omg.org/spec/DMN/1.6/Beta1/PDF/changebar`;
 
 export function DmnVersionLabel(props: { version: string }) {
   const { i18n } = useDmnEditorI18n();

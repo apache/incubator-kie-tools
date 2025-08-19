@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert/Alert";
-import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDefinitions, DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore } from "../store/StoreContext";
 import { useMemo } from "react";
@@ -31,7 +31,8 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { useDmnEditorI18n } from "../i18n";
 
-export function UnknownProperties(props: { shape: Normalized<DMNDI15__DMNShape>; dmnElementRefQName: XmlQName }) {
+
+export function UnknownProperties(props: { shape: Normalized<DMN_LATEST__DMNShape>; dmnElementRefQName: XmlQName }) {
   const { i18n } = useDmnEditorI18n();
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const { externalModelsByNamespace } = useExternalModels();
@@ -54,7 +55,7 @@ export function UnknownProperties(props: { shape: Normalized<DMNDI15__DMNShape>;
 
     const externalDrgElementsById = (externalDmn.model.definitions.drgElement ?? []).reduce(
       (acc, e, index) => acc.set(e["@_id"]!, { element: e, index }),
-      new Map<string, { index: number; element: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]> }>()
+      new Map<string, { index: number; element: Unpacked<Normalized<DMN_LATEST__tDefinitions>["drgElement"]> }>()
     );
 
     const externalDrgElement = externalDrgElementsById.get(props.dmnElementRefQName.localPart);

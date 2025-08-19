@@ -21,7 +21,7 @@ import * as React from "react";
 import { useMemo } from "react";
 import { DescriptionField, TextField, TextFieldType } from "../Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
-import { DMN15__tDecisionTable } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDecisionTable } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
@@ -30,7 +30,7 @@ import { useDmnEditorStore } from "../../store/StoreContext";
 import { useDmnEditorI18n } from "../../i18n";
 
 type DecisionTableRoot = Pick<
-  Normalized<DMN15__tDecisionTable>,
+  Normalized<DMN_LATEST__tDecisionTable>,
   "@_label" | "description" | "@_typeRef" | "@_outputLabel" | "@_aggregation" | "@_hitPolicy" | "@_id"
 >;
 
