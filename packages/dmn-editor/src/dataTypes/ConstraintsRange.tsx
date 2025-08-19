@@ -145,26 +145,26 @@ export function ConstraintsRange({
   const messages = useCallback(
     (value: string, operator: string) => {
       if (type === DmnBuiltInDataType.Date && value !== "") {
-        return i18n.dataTypes.nextValidNumber + `(${value} ${operator} 1 Day).`;
+        return i18n.dataTypes.nextValidDate(value, operator);
       }
       if (type === DmnBuiltInDataType.DateTime && value !== "") {
-        return i18n.dataTypes.nextValidNumber + `(${value} ${operator} 1 Second).`;
+        return i18n.dataTypes.nextValidDateTime(value, operator);
       }
       if (type === DmnBuiltInDataType.DateTimeDuration && value !== "") {
-        return i18n.dataTypes.nextValidNumber + `(${value} ${operator} 1 Second).`;
+        return i18n.dataTypes.nextValidDateTime(value, operator);
       }
       if (type === DmnBuiltInDataType.Number && value !== "") {
-        return i18n.dataTypes.nextValidNumber + `(${value} ${operator} 2e-52).`;
+        return i18n.dataTypes.nextValidNumber(value, operator);
       }
       if (type === DmnBuiltInDataType.Time && value !== "") {
-        return i18n.dataTypes.nextValidNumber + `(${value} ${operator} 1 Second).`;
+        return i18n.dataTypes.nextValidDateTime(value, operator);
       }
       if (type === DmnBuiltInDataType.YearsMonthsDuration && value !== "") {
-        return i18n.dataTypes.nextValidNumber + `(${value} ${operator} 1 Month).`;
+        return i18n.dataTypes.nextValidYearsAndMonths(value, operator);
       }
       return "";
     },
-    [i18n.dataTypes.nextValidNumber, type]
+    [i18n.dataTypes, type]
   );
 
   const onKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {

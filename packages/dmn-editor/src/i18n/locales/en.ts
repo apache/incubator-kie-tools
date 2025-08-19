@@ -56,7 +56,14 @@ export const en: DmnEditorI18n = {
     checkThe: "Check the",
     feelHandbook: "FEEL handbook",
     creatingAnExpression: "to help you on creating your expressions.",
-    nextValidNumber: "The next valid number is: ",
+    nextValidDate: (value: string, operator: string): string =>
+      `The next valid number is: (${value} ${operator} 1 Day).`,
+    nextValidDateTime: (value: string, operator: string): string =>
+      `The next valid number is: (${value} ${operator} 1 Second).`,
+    nextValidNumber: (value: string, operator: string): string =>
+      `The next valid number is: (${value} ${operator} 2e-52).`,
+    nextValidYearsAndMonths: (value: string, operator: string): string =>
+      `The next valid number is: (${value} ${operator} 1 Month).`,
     start: "Start",
     clickToRemoveValue: "Click to remove value from the range",
     clickToIncludeValue: "Click to include value in the range",
@@ -151,11 +158,10 @@ export const en: DmnEditorI18n = {
     propertiesPanel: "Properties panel",
     nodesSelected: (selectedNodesCount: number): string => `${selectedNodesCount} nodes selected`,
     edgesSelected: (selectedEdgesCount: number): string => `${selectedEdgesCount} edges selected`,
-    nodeOrEdgeSelected: (nodeCount: number, edgeCount: number): string =>
-      `${nodeCount} node${nodeCount === 1 ? "" : "s"}, ${edgeCount} edge${edgeCount === 1 ? "" : "s"} selected`,
-    node: "node",
-    edge: "edge",
-    s: "s",
+    nodeSelected: (nodeCount: number): string => `${nodeCount} node`,
+    edgeSelected: (edgeCount: number): string => `${edgeCount} edge`,
+    nodes: (nodeCount: number): string => `${nodeCount} nodes`,
+    edges: (edgeCount: number): string => `${edgeCount} edges`,
     selected: "selected",
     dmnversion: (latestVersion: string): string => `DMN ${latestVersion}`,
     originallyImportedDmn: (version: string, latestVersion: string): string =>
@@ -202,7 +208,6 @@ export const en: DmnEditorI18n = {
       "Maybe the included models have no exported nodes, or there are no included models.",
     includedModels: "Include model...",
     externalNodesTitle: "External nodes",
-    getLabel: (label: string): string => (`${label}` === "DMN" ? "DMN" : "PMML"),
   },
   includedModels: {
     errorOccuredParsing: (selectedPathRelativeToThisDmn: string): string =>
@@ -211,10 +216,12 @@ export const en: DmnEditorI18n = {
     cancel: "Cancel",
     model: "Model",
     selectModelToInclude: "Select a model to include...",
-    allModelsAvailable: (externalContextName: string): string =>
-      `All models available${externalContextName && externalContextName.trim() !== "" ? ` in '${externalContextName}' ` : ""} are already included.`,
-    noAvailableModels: (externalContextName: string): string =>
-      `There's no available models${externalContextName && externalContextName.trim() !== "" ? ` in '${externalContextName}'` : ""} to be included.`,
+    allModelsAvailablewithName: (externalContextName: string): string =>
+      `All models available in '${externalContextName}' are already included.`,
+    noAvailableModelswithName: (externalContextName: string): string =>
+      `There's no available models in '${externalContextName}' to be included.`,
+    allModelsAvailable: "All models available are already included.",
+    noAvailableModels: "There's no available models to be included.",
     loading: "Loading...",
     noExternalModelsIncluded: "No external models have been included.",
     externalModelsEmptyMessage:

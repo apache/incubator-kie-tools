@@ -377,9 +377,11 @@ export function IncludedModels() {
               </>
             )) || (
               <>
-                {((modelPathRelativeToThisDmn?.length ?? 0) > 0 &&
-                  i18n.includedModels.allModelsAvailable(externalContextName ? externalContextName : " ")) ||
-                  i18n.includedModels.noAvailableModels(externalContextName ? externalContextName : " ")}
+                {((modelPathRelativeToThisDmn?.length ?? 0) > 0 && externalContextName
+                  ? i18n.includedModels.allModelsAvailablewithName(externalContextName)
+                  : i18n.includedModels.allModelsAvailable) || externalContextName
+                  ? i18n.includedModels.noAvailableModelswithName(externalContextName!)
+                  : i18n.includedModels.noAvailableModels}
               </>
             )}
           </>

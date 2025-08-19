@@ -54,7 +54,10 @@ interface DmnEditorDictionary extends ReferenceDictionary {
     checkThe: string;
     feelHandbook: string;
     creatingAnExpression: string;
-    nextValidNumber: string;
+    nextValidDate: (value: string, operator: string) => string;
+    nextValidDateTime: (value: string, operator: string) => string;
+    nextValidNumber: (value: string, operator: string) => string;
+    nextValidYearsAndMonths: (value: string, operator: string) => string;
     start: string;
     clickToRemoveValue: string;
     clickToIncludeValue: string;
@@ -144,10 +147,10 @@ interface DmnEditorDictionary extends ReferenceDictionary {
     propertiesPanel: string;
     nodesSelected: (selectedNodesCount: number) => string;
     edgesSelected: (selectedEdgesCount: number) => string;
-    nodeOrEdgeSelected: (nodeCount: number, edgeCount: number) => string;
-    node: string;
-    edge: string;
-    s: string;
+    nodeSelected: (nodeCount: number) => string;
+    edgeSelected: (edgeCount: number) => string;
+    nodes: (nodeCount: number) => string;
+    edges: (edgeCount: number) => string;
     selected: string;
     dmnversion: (latestVersion: string) => string;
     originallyImportedDmn: (version: string, latestVersion: string) => string;
@@ -191,7 +194,6 @@ interface DmnEditorDictionary extends ReferenceDictionary {
     IncludedModelsHaveNoExportedNodes: string;
     includedModels: string;
     externalNodesTitle: string;
-    getLabel: (label: string) => string;
   };
   includedModels: {
     errorOccuredParsing: (selectedPathRelativeToThisDmn: string) => string;
@@ -199,8 +201,10 @@ interface DmnEditorDictionary extends ReferenceDictionary {
     cancel: string;
     model: string;
     selectModelToInclude: string;
-    allModelsAvailable: (contextName: string) => string;
-    noAvailableModels: (contextName: string) => string;
+    allModelsAvailablewithName: (contextName: string) => string;
+    noAvailableModelswithName: (contextName: string) => string;
+    allModelsAvailable: string;
+    noAvailableModels: string;
     loading: string;
     noExternalModelsIncluded: string;
     externalModelsEmptyMessage: string;
