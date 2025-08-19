@@ -226,7 +226,7 @@ export const Unitables = ({
       >
         <OutsideRowMenu height={128} isFirstChild={true}>{`#`}</OutsideRowMenu>
         {rows.map((_, rowIndex) => (
-          <Tooltip key={rowIndex} content={i18n.openRowFormView(rowIndex + 1)}>
+          <Tooltip key={rowIndex} content={i18n.openRowFormView(rowIndex)}>
             <OutsideRowMenu height={61} isLastChild={rowIndex === rows.length - 1}>
               <Button
                 className={"kie-tools--masthead-hoverable"}

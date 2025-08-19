@@ -26,7 +26,7 @@ interface UnitablesDictionary extends ReferenceDictionary {
     selectPlaceholder: string;
   };
   recursiveNotSupported: string;
-  openRowFormView(rowIndex: number): string;
+  openRowFormView: (rowIndex: number) => string;
   noInputNodes: string;
   addInputNode: string;
   error: string;
