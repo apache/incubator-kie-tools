@@ -115,7 +115,7 @@ export function GlobalDiagramProperties() {
                   aria-label={"Expression language"}
                   type={"text"}
                   isDisabled={settings.isReadOnly}
-                  placeholder={i18n.propertiesPanel.expressionLanguagePlaceholder}
+                  placeholder={i18n.propertiesPanel.expressionLangPlaceholder}
                   value={thisDmn.model.definitions["@_expressionLanguage"]}
                   onChange={(_event, newExprLang) =>
                     dmnEditorStoreApi.setState((state) => {

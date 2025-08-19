@@ -317,6 +317,7 @@ interface DmnEditorDictionary extends ReferenceDictionary {
     goToName: (name: string) => string;
     reference: string;
     unknownNodePlaceholder: string;
+    expressionLangPlaceholder: string;
   };
   boxedExpressionPropertiesPanelTitle: {
     boxedConditional: string;

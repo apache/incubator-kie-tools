@@ -340,6 +340,7 @@ export const en: DmnEditorI18n = {
     goToName: (name: string): string => `Go to '${name}'`,
     reference: "Reference:",
     unknownNodePlaceholder: "This is a placeholder for an unknown node",
+    expressionLangPlaceholder: "Enter an expression language...",
   },
   boxedExpressionPropertiesPanelTitle: {
     boxedConditional: "Boxed Conditional",
