@@ -38,6 +38,7 @@ export function open(args: {
   origin?: string;
   onError?: () => any;
   resources?: Map<string, DmnEditorStandaloneResource>;
+  locale?: string;
 }): DmnEditorStandaloneApi {
   const iframe = document.createElement("iframe");
   iframe.srcdoc = `
@@ -81,6 +82,7 @@ export function open(args: {
   const envelopeServer = createEnvelopeServer(iframe, args.readOnly, args.origin);
 
   const stateControl = new StateControl();
+  const updated_locale = args.locale ?? "en-US";
 
   let receivedSetContentError = false;
 
@@ -97,7 +99,7 @@ export function open(args: {
       getFileContents: () => Promise.resolve(args.initialContent),
       isReadOnly: args.readOnly ?? false,
     },
-    "en-US",
+    updated_locale,
     {
       kogitoEditor_setContentError() {
         if (!receivedSetContentError) {
