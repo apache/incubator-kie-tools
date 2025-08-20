@@ -45,6 +45,7 @@ import { DeleteDropdownWithConfirmation } from "../DeleteDropdownWithConfirmatio
 import { useDmnRunnerPersistenceDispatch } from "../../dmnRunnerPersistence/DmnRunnerPersistenceDispatchContext";
 import { DmnRunnerProviderActionType } from "../../dmnRunner/DmnRunnerTypes";
 import { PanelId, useEditorDockContext } from "../EditorPageDockContextProvider";
+import { Switch } from "@patternfly/react-core/dist/js/components/Switch";
 
 interface Props {
   workspace: ActiveWorkspace | undefined;
@@ -56,8 +57,8 @@ export function ExtendedServicesButtons(props: Props) {
   const extendedServices = useExtendedServices();
   const devDeployments = useDevDeployments();
   const { onTogglePanel, onOpenPanel } = useEditorDockContext();
-  const { isExpanded, mode } = useDmnRunnerState();
-  const { setDmnRunnerMode, setDmnRunnerContextProviderState } = useDmnRunnerDispatch();
+  const { isExpanded, mode, isStrictMode } = useDmnRunnerState();
+  const { setDmnRunnerMode, setDmnRunnerContextProviderState, setIsStrictMode } = useDmnRunnerDispatch();
   const devDeploymentsDropdownItems = useDevDeploymentsDeployDropdownItems(props.workspace);
   const { onDeleteDmnRunnerPersistenceJson, onDownloadDmnRunnerPersistenceJson, onUploadDmnRunnerPersistenceJson } =
     useDmnRunnerPersistenceDispatch();
@@ -185,6 +186,24 @@ export function ExtendedServicesButtons(props: Props) {
                 >
                   As Table
                 </DropdownItem>,
+                <React.Fragment key={"dmn-runner-mode"}>
+                  <Divider />
+                  <DropdownItem key={"strict-mode"} component={"button"} className={"strict-mode-check"}>
+                    <div onClick={(e) => e.stopPropagation()}>
+                      <Switch
+                        id="validation-mode"
+                        label={"Strict"}
+                        isChecked={isStrictMode}
+                        isDisabled={false}
+                        onChange={(e, val) => {
+                          if (extendedServices.status === ExtendedServicesStatus.RUNNING) {
+                            setIsStrictMode(val);
+                          }
+                        }}
+                      />
+                    </div>
+                  </DropdownItem>
+                </React.Fragment>,
                 <React.Fragment key={"dmn-runner-inputs"}>
                   <Divider />
                   <DropdownItem

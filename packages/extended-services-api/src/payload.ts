@@ -26,4 +26,5 @@ export interface ExtendedServicesModelPayload {
   mainURI: string;
   resources: ExtendedServicesModelResource[];
   context?: any;
+  isStrictMode?: boolean;
 }
