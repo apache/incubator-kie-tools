@@ -263,6 +263,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   const dmnRunnerAjv = useMemo(() => new DmnRunnerAjv().getAjv(), []);
   const [currentResponseMessages, setCurrentResponseMessages] = useState<DmnEvaluationMessages[]>([]);
   const [invalidElementPaths, setInvalidElementPaths] = useState<string[][]>([]);
+  const [isStrictMode, setIsStrictMode] = useState(false);
 
   const { envelopeServer } = useEditorDockContext();
 
@@ -330,9 +331,16 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             URI: normalizedPosixPathRelativeToTheWorkspaceRoot,
           })
         ),
+        isStrictMode: isStrictMode,
       };
     },
-    [props.dmnLanguageService, props.workspaceFile.relativePath, props.workspaceFile.workspaceId, workspaces]
+    [
+      isStrictMode,
+      props.dmnLanguageService,
+      props.workspaceFile.relativePath,
+      props.workspaceFile.workspaceId,
+      workspaces,
+    ]
   );
 
   const findDecisionIdBySourceId = useCallback(
@@ -842,6 +850,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       setDmnRunnerInputs,
       setDmnRunnerMode,
       setDmnRunnerPersistenceJson,
+      setIsStrictMode,
     }),
     [
       onRowAdded,
@@ -852,6 +861,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       setDmnRunnerInputs,
       setDmnRunnerMode,
       setDmnRunnerPersistenceJson,
+      setIsStrictMode,
     ]
   );
 
@@ -870,6 +880,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       results,
       resultsDifference,
       status,
+      isStrictMode,
     }),
     [
       canBeVisualized,
@@ -885,6 +896,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       results,
       resultsDifference,
       status,
+      isStrictMode,
     ]
   );
 
