@@ -31,7 +31,6 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { useDmnEditorI18n } from "../i18n";
 
-
 export function UnknownProperties(props: { shape: Normalized<DMN_LATEST__DMNShape>; dmnElementRefQName: XmlQName }) {
   const { i18n } = useDmnEditorI18n();
   const thisDmn = useDmnEditorStore((s) => s.dmn);

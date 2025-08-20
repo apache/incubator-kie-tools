@@ -29,7 +29,6 @@ import { renameGroupNode } from "../mutations/renameNode";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { useDmnEditorI18n } from "../i18n";
 
-
 export function GroupProperties({ group, index }: { group: Normalized<DMN_LATEST__tGroup>; index: number }) {
   const { i18n } = useDmnEditorI18n();
   const { setState } = useDmnEditorStoreApi();

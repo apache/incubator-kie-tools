@@ -333,9 +333,8 @@ export const en: DmnEditorI18n = {
     formatPlaceholder: "Enter a text format...",
     text: "Text",
     textPlaceholder: "Enter text...",
-    nodeReferenceMessage: "This node references an external node with a namespace that is not declared at this DMN.",
-    externalDmnNodeReference:
-      "This node references an external node from a namespace that is not provided on this DMN's external DMNs mapping.",
+    nodeReferenceMessage: `This node references an external node with a namespace that is not declared at this DMN.`,
+    externalDmnNodeReference: `This node references an external node from a namespace that is not provided on this DMN's external DMNs mapping. `,
     nameNotExists: (name: string): string => `This node references a DRG element from '${name}' that doesn't exist.`,
     goToName: (name: string): string => `Go to '${name}'`,
     reference: "Reference:",
