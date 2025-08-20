@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button/Button";
@@ -55,7 +55,7 @@ export function DrgNodesPanel() {
   const namespaceForHref = ""; // That's the default namespace.
 
   const onDragStart = useCallback(
-    (event: React.DragEvent, drgElement: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]>) => {
+    (event: React.DragEvent, drgElement: Unpacked<Normalized<DMN_LATEST__tDefinitions>["drgElement"]>) => {
       event.dataTransfer.setData(MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE, JSON.stringify(drgElement));
       event.dataTransfer.effectAllowed = "move";
     },

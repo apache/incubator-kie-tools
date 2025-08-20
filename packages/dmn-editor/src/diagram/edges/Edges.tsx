@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useRef } from "react";
 import * as RF from "reactflow";
-import { DMNDI15__DMNEdge, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__DMNEdge, DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { DrgEdge } from "../graph/graph";
 import { DEFAULT_INTRACTION_WIDTH } from "../maths/DmnMaths";
@@ -33,10 +33,10 @@ import { usePotentialWaypointControls } from "./usePotentialWaypointControls";
 import { useSettings } from "../../settings/DmnEditorSettingsContext";
 
 export type DmnDiagramEdgeData = {
-  dmnEdge: (Normalized<DMNDI15__DMNEdge> & { index: number }) | undefined;
+  dmnEdge: (Normalized<DMN_LATEST__DMNEdge> & { index: number }) | undefined;
   dmnObject: DrgEdge["dmnObject"];
-  dmnShapeSource: Normalized<DMNDI15__DMNShape> | undefined;
-  dmnShapeTarget: Normalized<DMNDI15__DMNShape> | undefined;
+  dmnShapeSource: Normalized<DMN_LATEST__DMNShape> | undefined;
+  dmnShapeTarget: Normalized<DMN_LATEST__DMNShape> | undefined;
 };
 
 export const InformationRequirementPath = React.memo(

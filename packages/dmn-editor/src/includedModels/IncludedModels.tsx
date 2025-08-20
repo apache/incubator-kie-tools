@@ -20,7 +20,7 @@
 import * as React from "react";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ns as dmn12ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_2/ts-gen/meta";
-import { DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tImport } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Card, CardBody, CardHeader, CardTitle } from "@patternfly/react-core/dist/js/components/Card";
@@ -43,7 +43,7 @@ import { basename, dirname, extname } from "path";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { ExternalModel } from "../DmnEditor";
 import { useDmnEditor } from "../DmnEditorContext";
-import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { DMN16_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { InlineFeelNameInput, OnInlineFeelNameRenamed } from "../feel/InlineFeelNameInput";
 import { addImport } from "../mutations/addImport";
 import { deleteImport } from "../mutations/deleteImport";
@@ -53,7 +53,7 @@ import { KIE_UNKNOWN_NAMESPACE } from "../kie/kie";
 import { ExternalModelLabel } from "./ExternalModelLabel";
 import { useExternalModels } from "./DmnEditorDependenciesContext";
 import { allPmmlImportNamespaces, getPmmlNamespace } from "../pmml/pmml";
-import { allDmnImportNamespaces } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { allDmnImportNamespaces } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { getNamespaceOfDmnImport } from "./importNamespaces";
 import { Alert, AlertVariant } from "@patternfly/react-core/dist/js/components/Alert/Alert";
 import { KebabToggle } from "@patternfly/react-core/deprecated";
@@ -146,7 +146,7 @@ export function IncludedModels() {
     if (
       !selectedPathRelativeToThisDmn ||
       !selectedModel ||
-      !DMN15_SPEC.IMPORT.name.isValid(generateUuid(), importName, s.computed(s).getAllFeelVariableUniqueNames())
+      !DMN16_SPEC.IMPORT.name.isValid(generateUuid(), importName, s.computed(s).getAllFeelVariableUniqueNames())
     ) {
       return;
     }
@@ -355,7 +355,7 @@ export function IncludedModels() {
                   </FormGroup>
                   <FormGroup label={"Name"}>
                     <InlineFeelNameInput
-                      validate={DMN15_SPEC.IMPORT.name.isValid}
+                      validate={DMN16_SPEC.IMPORT.name.isValid}
                       placeholder={EMPTY_IMPORT_NAME_NAMESPACE_IDENTIFIER}
                       isPlain={false}
                       id={generateUuid()}
@@ -460,7 +460,7 @@ function IncludedModelCard({
   externalModel,
   isReadOnly,
 }: {
-  _import: Normalized<DMN15__tImport>;
+  _import: Normalized<DMN_LATEST__tImport>;
   externalModel: ExternalModel | undefined;
   index: number;
   isReadOnly: boolean;
@@ -663,7 +663,7 @@ function IncludedModelCard({
             isReadOnly={isReadOnly}
             shouldCommitOnBlur={true}
             onRenamed={rename}
-            validate={DMN15_SPEC.IMPORT.name.isValid}
+            validate={DMN16_SPEC.IMPORT.name.isValid}
           />
           <br />
           <br />

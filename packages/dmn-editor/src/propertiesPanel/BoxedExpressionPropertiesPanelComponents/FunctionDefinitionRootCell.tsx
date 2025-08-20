@@ -24,12 +24,12 @@ import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionInde
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
-import { DMN15__tFunctionDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tFunctionDefinition } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore } from "../../store/StoreContext";
 
 type FunctionDefinitionRoot = Pick<
-  Normalized<DMN15__tFunctionDefinition>,
+  Normalized<DMN_LATEST__tFunctionDefinition>,
   "@_kind" | "@_typeRef" | "description" | "@_id"
 >;
 

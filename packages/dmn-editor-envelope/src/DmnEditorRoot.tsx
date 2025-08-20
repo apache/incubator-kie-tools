@@ -25,9 +25,9 @@ import { normalize, Normalized } from "@kie-tools/dmn-marshaller/dist/normalizat
 import { DMN_LATEST_VERSION, DmnLatestModel, DmnMarshaller, getMarshaller } from "@kie-tools/dmn-marshaller";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ResourceContent, SearchType, WorkspaceChannelApi, WorkspaceEdit } from "@kie-tools-core/workspace/dist/api";
-import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { DMN16_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { domParser } from "@kie-tools/xml-parser-ts";
-import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
+import { ns as dmn16ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/meta";
 import { XML2PMML } from "@kie-tools/pmml-editor-marshaller";
 import { getPmmlNamespace } from "@kie-tools/dmn-editor/dist/pmml/pmml";
 import { getNamespaceOfDmnImport } from "@kie-tools/dmn-editor/dist/includedModels/importNamespaces";
@@ -54,8 +54,8 @@ export const TARGET_DIRECTORY = "target/classes/";
 
 export const EMPTY_DMN = () => `<?xml version="1.0" encoding="UTF-8"?>
 <definitions
-  xmlns="${dmn15ns.get("")}"
-  expressionLanguage="${DMN15_SPEC.expressionLanguage.default}"
+  xmlns="${dmn16ns.get("")}"
+  expressionLanguage="${DMN16_SPEC.expressionLanguage.default}"
   namespace="https://kie.org/dmn/${generateUuid()}"
   id="${generateUuid()}"
   name="DMN${generateUuid()}">
