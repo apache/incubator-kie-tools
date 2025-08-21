@@ -232,7 +232,6 @@ export function TextField({
           rows={6}
         />
       )}
-      {console.log(value)}
       {props.type === TextFieldType.DROP_DOWN && (
         <Select
           toggleRef={toggleRef}
