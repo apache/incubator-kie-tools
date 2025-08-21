@@ -25,7 +25,7 @@ import { DataSourceIcon } from "@patternfly/react-icons/dist/js/icons/data-sourc
 import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -43,10 +43,35 @@ export function GlobalDiagramProperties() {
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const settings = useSettings();
+  const customLanguages = useDmnEditorStore((s) => s.expressionLanguages.customLanguages);
 
   const [regenerateIdConfirmationModal, setRegenerateIdConfirmationModal] = useState(false);
 
   const toggleRef = useRef<HTMLButtonElement>(null);
+
+  const expressionLanguage = thisDmn.model.definitions["@_expressionLanguage"];
+
+  //to keep the list updated when user checks later
+  const allLanguages = [
+    ...EXPRESSION_LANGUAGES_LATEST,
+    ...customLanguages,
+    ...(expressionLanguage &&
+    !EXPRESSION_LANGUAGES_LATEST.includes(expressionLanguage) &&
+    !customLanguages.includes(expressionLanguage)
+      ? [expressionLanguage]
+      : []),
+  ];
+
+  const onCreateOption = useCallback(
+    (val: string) => {
+      if (val && !EXPRESSION_LANGUAGES_LATEST.includes(val)) {
+        dmnEditorStoreApi.setState((state) => {
+          state.expressionLanguages.customLanguages.push(val);
+        });
+      }
+    },
+    [dmnEditorStoreApi]
+  );
 
   return (
     <Form>
@@ -115,21 +140,22 @@ export function GlobalDiagramProperties() {
               <FormGroup label="Expression language">
                 <Select
                   toggleRef={toggleRef}
-                  variant={SelectVariant.single}
+                  variant={SelectVariant.typeahead}
                   aria-label={"Expression language"}
                   isOpen={isExpressionLanguageSelectOpen}
                   onSelect={(e, val) => {
-                    setExpressionLanguageSelectOpen(false);
                     dmnEditorStoreApi.setState((state) => {
                       state.dmn.model.definitions["@_expressionLanguage"] = val as string;
                     });
                   }}
-                  onToggle={() => setExpressionLanguageSelectOpen((prev) => !prev)}
+                  isCreatable
+                  onCreateOption={onCreateOption}
+                  onToggle={(event, isExpanded) => setExpressionLanguageSelectOpen(isExpanded)}
                   isDisabled={settings.isReadOnly}
-                  selections={thisDmn.model.definitions["@_expressionLanguage"] || "Enter an expression language..."}
-                  placeholder={"Enter an expression language..."}
+                  selections={thisDmn.model.definitions["@_expressionLanguage"]}
+                  placeholderText={"Enter an expression language..."}
                 >
-                  {EXPRESSION_LANGUAGES_LATEST.map((EXPRESSION_LANGUAGES: string) => (
+                  {allLanguages?.map((EXPRESSION_LANGUAGES: string) => (
                     <SelectOption key={EXPRESSION_LANGUAGES} value={EXPRESSION_LANGUAGES}>
                       {EXPRESSION_LANGUAGES}
                     </SelectOption>
