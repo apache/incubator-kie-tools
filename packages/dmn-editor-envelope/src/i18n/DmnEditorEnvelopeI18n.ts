@@ -21,6 +21,10 @@ import { ReferenceDictionary } from "../../../i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
 interface DmnEditorEnvelopeDictionary extends ReferenceDictionary {
+  edit: string;
+  misc: string;
+  move: string;
+  navigate: string;
   unselect: string;
   deleteSelection: string;
   selectDeselectAll: string;

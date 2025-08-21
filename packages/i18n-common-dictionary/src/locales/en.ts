@@ -81,7 +81,7 @@ export const en: CommonI18n = {
     uninstall: "Uninstall",
     username: "Username",
     validation: "Validation",
-    keyboardShortCuts: {
+    keyboardKeys: {
       ctrlC: "Ctrl+C",
       ctrlX: "Ctrl+X",
       ctrlV: "Ctrl+V",
@@ -105,10 +105,6 @@ export const en: CommonI18n = {
       shiftRight: "Shift + Right",
       space: "Space",
       shift: "Shift",
-      edit: "Edit",
-      misc: "Misc",
-      move: "Move",
-      navigate: "Navigate",
     },
   },
 };

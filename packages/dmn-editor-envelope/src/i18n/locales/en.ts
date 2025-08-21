@@ -22,6 +22,10 @@ import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 
 export const en: DmnEditorEnvelopeI18n = {
   ...en_common,
+  edit: "Edit",
+  misc: "Misc",
+  move: "Move",
+  navigate: "Navigate",
   unselect: "Unselect",
   deleteSelection: "Delete selection",
   selectDeselectAll: "Select/Deselect all",

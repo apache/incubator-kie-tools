@@ -79,7 +79,7 @@ export type CommonDictionary = {
   uninstall: string;
   username: string;
   validation: string;
-  keyboardShortCuts: {
+  keyboardKeys: {
     ctrlC: string;
     ctrlX: string;
     ctrlV: string;
@@ -103,10 +103,6 @@ export type CommonDictionary = {
     shiftRight: string;
     space: string;
     shift: string;
-    edit: string;
-    misc: string;
-    move: string;
-    navigate: string;
   };
 };
 
