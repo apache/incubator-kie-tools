@@ -20,23 +20,17 @@
 import * as React from "react";
 import { useContext } from "react";
 import { en } from "./locales";
-import { de } from "./locales";
 import { I18nContextType } from "@kie-tools-core/i18n/dist/react-components";
-import { BoxedExpressionEditorI18n } from "./FeelInputComponentI18n";
+import { FeelInputComponentI18n } from "./FeelInputComponentI18n";
 import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
 
-export const boxedExpressionEditorI18nDefaults: I18nDefaults<BoxedExpressionEditorI18n> = {
+export const feelInputComponentI18nDefaults: I18nDefaults<FeelInputComponentI18n> = {
   locale: "en",
   dictionary: en,
 };
-export const boxedExpressionEditorDictionaries: I18nDictionaries<BoxedExpressionEditorI18n> = new Map([
-  ["en", en],
-  ["de", de],
-]);
-export const BoxedExpressionEditorI18nContext = React.createContext<I18nContextType<BoxedExpressionEditorI18n>>(
-  {} as never
-);
+export const feelInputComponentDictionaries: I18nDictionaries<FeelInputComponentI18n> = new Map([["en", en]]);
+export const FeelInputComponentI18nContext = React.createContext<I18nContextType<FeelInputComponentI18n>>({} as never);
 
-export function useBoxedExpressionEditorI18n(): I18nContextType<BoxedExpressionEditorI18n> {
-  return useContext(BoxedExpressionEditorI18nContext);
+export function useBoxedExpressionEditorI18n(): I18nContextType<FeelInputComponentI18n> {
+  return useContext(FeelInputComponentI18nContext);
 }

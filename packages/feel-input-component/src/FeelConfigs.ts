@@ -20,7 +20,8 @@
 import * as Monaco from "@kie-tools-core/monaco-editor";
 import { ReservedWords } from "@kie-tools/dmn-feel-antlr4-parser";
 import { Element } from "./themes/Element";
-import { FeelInputComponentI18n } from "./i18n";
+import { feelInputComponentDictionaries, FeelInputComponentI18n, feelInputComponentI18nDefaults } from "./i18n";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
 
 export const MONACO_FEEL_LANGUAGE = "feel-language";
 
@@ -92,7 +93,8 @@ export const feelDefaultConfig = (
   };
 };
 
-export const feelDefaultSuggestions = (i18n: FeelInputComponentI18n): Monaco.languages.CompletionItem[] => {
+export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
+  const i18n = new I18n(feelInputComponentI18nDefaults, feelInputComponentDictionaries).getCurrent();
   const suggestions: Monaco.languages.CompletionItem[] = [];
 
   const suggestionTypes = {
@@ -329,8 +331,7 @@ export const feelDefaultSuggestions = (i18n: FeelInputComponentI18n): Monaco.lan
       {
         label: "context(entries)",
         insertText: "context($1)",
-        description:
-          "Returns a new `context` that includes all specified entries. If a `context` item contains additional entries beyond the required `key` and `value` entries, the additional entries are ignored. If a `context` item is missing the required `key` and `value` entries, the final result is null.",
+        description: i18n.functionDescription.contextKeyValue("context", "key", "value"),
         parameters: [["entries", `\`list\` of \`context\``]],
         examples: [
           'context( [{key:"a", value:1}, {key:"b", value:2}] ) = { a:1, b:2 }',
@@ -341,16 +342,14 @@ export const feelDefaultSuggestions = (i18n: FeelInputComponentI18n): Monaco.lan
       {
         label: "context merge(contexts)",
         insertText: "context merge($1)",
-        description:
-          "Returns a new `context` that includes all entries from the given `contexts`; if some of the keys are equal, the entries are overridden. The entries are overridden in the same order as specified by the supplied parameter, with new entries added as the last entry in the new context.",
+        description: i18n.functionDescription.contextMerge("context", "contexts"),
         parameters: [["contexts", `\`list\` of \`context\``]],
         examples: ["context merge( [{x:1}, {y:2}] ) = {x:1, y:2}", "context merge( [{x:1, y:0}, {y:2}] ) = {x:1, y:2}"],
       },
       {
         label: "context put(context, key, value)",
         insertText: "context put($1, $2, $3)",
-        description:
-          "Returns a new `context` that includes the new entry, or overrides the existing value if an entry for the same key already exists in the supplied `context` parameter. A new entry is added as the last entry of the new context. If overriding an existing entry, the order of the keys maintains the same order as in the original context.",
+        description: i18n.functionDescription.context("context"),
         parameters: [
           ["context", `\`context\``],
           ["key", `\`string\``],
@@ -365,8 +364,7 @@ export const feelDefaultSuggestions = (i18n: FeelInputComponentI18n): Monaco.lan
       {
         label: "context put(context, keys, value)",
         insertText: "context put($1, $2, $3)",
-        description:
-          "Returns the composite of nested invocations to `context put()` for each item in keys hierarchy in `context`.",
+        description: i18n.functionDescription.contextPut("context", "context put()"),
         parameters: [
           ["context", `\`context\``],
           ["keys", `\`list\` of \`string\``],
@@ -382,14 +380,14 @@ export const feelDefaultSuggestions = (i18n: FeelInputComponentI18n): Monaco.lan
       {
         label: "count(list)",
         insertText: "count($1)",
-        description: "Returns size of `list`, or zero if `list` is empty",
+        description: i18n.functionDescription.count("list"),
         parameters: [["list", `\`list\``]],
         examples: ["count( [1,2,3] ) = 3", "count( [] ) = 0", "count( [1, [2,3]] ) = 2"],
       },
       {
         label: "date(from)",
         insertText: "date($1)",
-        description: "convert `from` to a date",
+        description: i18n.functionDescription.date("from"),
         parameters: [["from", `\`string\` or \`date and time\``]],
         examples: [
           'date( "2012-12-25" ) – date( "2012-12-24" ) = duration( "P1D" )',
@@ -399,7 +397,7 @@ export const feelDefaultSuggestions = (i18n: FeelInputComponentI18n): Monaco.lan
       {
         label: "date(year, month, day)",
         insertText: "date($1, $2, $3)",
-        description: "Creates a date from `year`, `month`, `day` component values",
+        description: i18n.functionDescription.dateyear("year", "month", "day"),
         parameters: [
           ["year", `\`number\``],
           ["month", `\`number\``],
@@ -410,7 +408,7 @@ export const feelDefaultSuggestions = (i18n: FeelInputComponentI18n): Monaco.lan
       {
         label: "date and time(from)",
         insertText: "date and time($1)",
-        description: "convert `from` to a date and time",
+        description: i18n.functionDescription.dateTimeFrom("from"),
         parameters: [["from", `string`]],
         examples: [
           'date and time( "2012-12-24T23:59:00" ) + duration( "PT1M" ) = date and time( "2012-12-25T00:00:00" )',
@@ -419,7 +417,7 @@ export const feelDefaultSuggestions = (i18n: FeelInputComponentI18n): Monaco.lan
       {
         label: "date and time(date, time)",
         insertText: "date and time($1, $2)",
-        description: "Creates a date time from the given `date` (ignoring any time component) and the given `time`",
+        description: i18n.functionDescription.dateTime("date", "time"),
         parameters: [
           ["date", `\`date\` or \`date and time\``],
           ["time", `\`time\``],
@@ -431,7 +429,7 @@ export const feelDefaultSuggestions = (i18n: FeelInputComponentI18n): Monaco.lan
       {
         label: "date and time(date, time, timezone)",
         insertText: "date and time($1, $2, $3)",
-        description: "Creates a date time from the given `date`, `time` and timezone",
+        description: i18n.functionDescription.datetimezone("date", "time"),
         parameters: [
           ["date", `\`date\` or \`date and time\``],
           ["time", `\`time\``],
@@ -445,7 +443,7 @@ export const feelDefaultSuggestions = (i18n: FeelInputComponentI18n): Monaco.lan
       {
         label: "date and time(year, month, day, hour, minute, second)",
         insertText: "date and time($1, $2, $3, $4, $5, $6)",
-        description: "Creates a date time from the given `year`, `month`, `day`, `hour`, `minute`, and `second`.",
+        description: i18n.functionDescription.dateYearSecond("year", "month", "day", "hour", "minute", "second"),
         parameters: [
           ["year", `\`number\``],
           ["month", `\`number\``],
@@ -459,8 +457,15 @@ export const feelDefaultSuggestions = (i18n: FeelInputComponentI18n): Monaco.lan
       {
         label: "date and time(year, month, day, hour, minute, second, offset)",
         insertText: "date and time($1, $2, $3, $4, $5, $6, $7)",
-        description:
-          "Creates a date time from the given `year`, `month`, `day`, `hour`, `minute`, `second` and `offset`",
+        description: i18n.functionDescription.dateYearOffset(
+          "year",
+          "month",
+          "day",
+          "hour",
+          "minute",
+          "second",
+          "offset"
+        ),
         parameters: [
           ["year", `\`number\``],
           ["month", `\`number\``],
