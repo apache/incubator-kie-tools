@@ -4525,9 +4525,6 @@ importers:
       '@kie-tools-core/envelope-bus':
         specifier: workspace:*
         version: link:../envelope-bus
-      '@kie-tools-core/i18n':
-        specifier: workspace:*
-        version: link:../i18n
       '@kie-tools-core/notifications':
         specifier: workspace:*
         version: link:../notifications
@@ -4555,9 +4552,6 @@ importers:
       '@kie-tools/eslint':
         specifier: workspace:*
         version: link:../eslint
-      '@kie-tools/i18n-common-dictionary':
-        specifier: workspace:*
-        version: link:../i18n-common-dictionary
       '@kie-tools/playwright-base':
         specifier: workspace:*
         version: link:../playwright-base
