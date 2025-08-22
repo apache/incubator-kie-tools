@@ -23,8 +23,10 @@ import { useDmnEditorStoreApi } from "../store/StoreContext";
 import { getAutoLayoutedInfo } from "./autoLayoutInfo";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { applyAutoLayoutToDrd } from "../mutations/applyAutoLayoutToDrd";
+import { useDmnEditorI18n } from "../i18n";
 
 export function AutolayoutButton() {
+  const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { externalModelsByNamespace } = useExternalModels();
 
@@ -66,7 +68,7 @@ export function AutolayoutButton() {
   }, [dmnEditorStoreApi, externalModelsByNamespace]);
 
   return (
-    <button className={"kie-dmn-editor--autolayout-panel-toggle-button"} onClick={onClick} title={"Autolayout (beta)"}>
+    <button className={"kie-dmn-editor--autolayout-panel-toggle-button"} onClick={onClick} title={i18n.autoLayout}>
       <OptimizeIcon />
     </button>
   );

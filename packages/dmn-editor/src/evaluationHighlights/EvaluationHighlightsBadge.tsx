@@ -21,8 +21,10 @@ import * as React from "react";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
 import { OffIcon, OnIcon } from "@patternfly/react-icons/dist/js/icons";
+import { useDmnEditorI18n } from "../i18n";
 
 export function EvaluationHighlightsBadge() {
+  const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const isEvaluationHighlightsEnabled = useDmnEditorStore((s) => s.diagram.overlays.enableEvaluationHighlights);
 
@@ -36,9 +38,10 @@ export function EvaluationHighlightsBadge() {
             state.diagram.overlays.enableEvaluationHighlights = !state.diagram.overlays.enableEvaluationHighlights;
           });
         }}
-        title={"Evaluation highlights"}
+        title={i18n.evaluationHightlights}
       >
-        Evaluation highlights: {dmnEditorStoreApi.getState().diagram.overlays.enableEvaluationHighlights ? "on" : "off"}
+        {i18n.evaluationHightlights}:{" "}
+        {dmnEditorStoreApi.getState().diagram.overlays.enableEvaluationHighlights ? i18n.on : i18n.off}
       </Label>
     </aside>
   );

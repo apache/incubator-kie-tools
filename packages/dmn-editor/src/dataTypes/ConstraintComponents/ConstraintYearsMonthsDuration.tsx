@@ -22,6 +22,7 @@ import { useCallback, useMemo, useEffect } from "react";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import "./Constraint.css";
 import { ConstraintProps } from "./Constraint";
+import { useDmnEditorI18n } from "../../i18n";
 
 export const REGEX_YEARS_MONTH_DURATION = /^P(?!$)((-)?\d+Y)?((-)?\d+M)?$/;
 
@@ -34,6 +35,7 @@ export function ConstraintYearsMonthsDuration({
   isValid,
   isDisabled,
 }: ConstraintProps) {
+  const { i18n } = useDmnEditorI18n();
   const years = useMemo<string>(() => getYearsDuration(value), [value]);
   const months = useMemo<string>(() => getMonthsDuration(value), [value]);
 
@@ -78,7 +80,7 @@ export function ConstraintYearsMonthsDuration({
           <TextInput
             id={`${id}-constraint-years`}
             type={"number"}
-            placeholder={"Years"}
+            placeholder={i18n.dataTypes.years}
             style={{ flex: "1 1 0px" }}
             className={`kie-dmn-editor--constraint-input ${isValid ? "" : "kie-dmn-editor--constraint-invalid"}`}
             value={years}
@@ -92,7 +94,7 @@ export function ConstraintYearsMonthsDuration({
           <TextInput
             id={`${id}-constraint-months`}
             type={"number"}
-            placeholder={"Months"}
+            placeholder={i18n.dataTypes.months}
             style={{ flex: "1 1 0px" }}
             className={`kie-dmn-editor--constraint-input ${isValid ? "" : "kie-dmn-editor--constraint-invalid"}`}
             value={months}

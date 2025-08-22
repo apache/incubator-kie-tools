@@ -33,9 +33,7 @@ import { InlineFeelNameInput, invalidInlineFeelNameStyle } from "../feel/InlineF
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { Draggable, DragAndDrop, useDraggableItemContext } from "../draggable/Draggable";
 import "./DocumentationLinksFormGroup.css";
-
-const PLACEHOLDER_URL_TITLE = "Enter a title...";
-const PLACEHOLDER_URL = "https://...";
+import { useDmnEditorI18n } from "../i18n";
 
 export function DocumentationLinksFormGroup({
   isReadOnly,
@@ -46,6 +44,7 @@ export function DocumentationLinksFormGroup({
   values?: Namespaced<"kie", KIE__tAttachment>[];
   onChange?: (newExtensionElements: Namespaced<"kie", KIE__tAttachment>[]) => void;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const [autoFocusFirst, setAutoFocusFirst] = useState(true);
   // Start - Values Cache and UUID
   // A cache is created to keep this component updated even when the values prop is changed
@@ -204,14 +203,19 @@ export function DocumentationLinksFormGroup({
             <span className={"pf-v5-c-form__label-text"}>Documentation links</span>
           </label>
           {!isReadOnly && (
-            <Button variant={"plain"} icon={<PlusCircleIcon />} onClick={onAdd} title={"Add documentation link"} />
+            <Button
+              variant={"plain"}
+              icon={<PlusCircleIcon />}
+              onClick={onAdd}
+              title={i18n.propertiesPanel.addDocumentationLink}
+            />
           )}
         </div>
       }
     >
       <ul>
         {(values ?? []).length === 0 && (
-          <li className={"kie-dmn-editor--documentation-link--empty-state"}>{isReadOnly ? "None" : "None yet"}</li>
+          <li className={"kie-dmn-editor--documentation-link--empty-state"}>{isReadOnly ? i18n.none : i18n.noneYet}</li>
         )}
         <DragAndDrop
           reorder={reorder}
@@ -244,6 +248,7 @@ function DocumentationLinksInput({
   setUrlExpanded: (isExpanded: boolean) => void;
   autoFocus: boolean;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const urlTitleRef = useRef<HTMLInputElement>(null);
   const uuid = useMemo(() => generateUuid(), []);
   const [titleIsUrl, setTitleIsUrl] = useState(false);
@@ -327,10 +332,10 @@ function DocumentationLinksInput({
     return url !== "" ? (
       <Text component={TextVariants.p}>{url}</Text>
     ) : (
-      <Text component={TextVariants.p}>Empty URL</Text>
+      <Text component={TextVariants.p}>{i18n.propertiesPanel.emptyUrl}</Text>
     );
-  }, [url]);
-  const removeTooltip = useMemo(() => <Text component={TextVariants.p}>Remove</Text>, []);
+  }, [i18n.propertiesPanel.emptyUrl, url]);
+  const removeTooltip = useMemo(() => <Text component={TextVariants.p}>{i18n.nodes.remove}</Text>, [i18n.nodes.remove]);
 
   return (
     <React.Fragment>
@@ -339,7 +344,7 @@ function DocumentationLinksInput({
         data-testid={"kie-tools--dmn-editor--documentation-link--row"}
       >
         <Button
-          title={"Expand / collapse documentation link"}
+          title={i18n.propertiesPanel.expandCollapseDocLink}
           variant={ButtonVariant.plain}
           className={"kie-dmn-editor--documentation-link--row-expand-toogle"}
           onClick={() => toogleExpanded(title, url)}
@@ -356,7 +361,7 @@ function DocumentationLinksInput({
                   </a>
                 ) : (
                   <p style={title === "" ? {} : invalidInlineFeelNameStyle} onClick={() => setUrlExpanded(true)}>
-                    {title !== "" ? title : PLACEHOLDER_URL_TITLE}
+                    {title !== "" ? title : i18n.propertiesPanel.placeholderUrlTitle}
                   </p>
                 )}
               </div>
@@ -371,7 +376,7 @@ function DocumentationLinksInput({
                 isReadOnly={isReadOnly}
                 id={`${uuid}-name`}
                 shouldCommitOnBlur={true}
-                placeholder={PLACEHOLDER_URL_TITLE}
+                placeholder={i18n.propertiesPanel.placeholderUrlTitle}
                 name={title ?? ""}
                 onRenamed={(newUrlTitle) => {
                   if (!updatedOnToogle.current && newUrlTitle !== title) {
@@ -398,7 +403,7 @@ function DocumentationLinksInput({
                 isReadOnly={isReadOnly}
                 id={`${uuid}-url`}
                 shouldCommitOnBlur={true}
-                placeholder={PLACEHOLDER_URL}
+                placeholder={i18n.propertiesPanel.placeholderUrl}
                 name={url ?? ""}
                 onRenamed={(newUrl: string) => {
                   if (!updatedOnToogle.current && newUrl !== url) {
@@ -424,7 +429,7 @@ function DocumentationLinksInput({
         {hovered && (
           <Tooltip content={removeTooltip}>
             <Button
-              title={"Remove documentation link"}
+              title={i18n.propertiesPanel.removeDocumentationLink}
               className={"kie-dmn-editor--documentation-link--row-remove"}
               variant={"plain"}
               icon={<TimesIcon />}

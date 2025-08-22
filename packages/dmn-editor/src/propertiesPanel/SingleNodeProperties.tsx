@@ -51,8 +51,10 @@ import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import { UnknownProperties } from "./UnknownProperties";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import "./SingleNodeProperties.css";
+import { useDmnEditorI18n } from "../i18n";
 
 export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
+  const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { externalModelsByNamespace } = useExternalModels();
   const node = useDmnEditorStore((s) => s.computed(s).getDiagramData(externalModelsByNamespace).nodesById.get(nodeId));
@@ -89,28 +91,28 @@ export function SingleNodeProperties({ nodeId }: { nodeId: string }) {
             title={(() => {
               switch (node.type) {
                 case NODE_TYPES.inputData:
-                  return "Input";
+                  return i18n.nodes.input;
                 case NODE_TYPES.decision:
-                  return "Decision";
+                  return i18n.nodes.decision;
                 case NODE_TYPES.bkm:
-                  return "Business Knowledge Model";
+                  return i18n.nodes.businessKnowledgeModel;
                 case NODE_TYPES.decisionService:
-                  return "Decision Service";
+                  return i18n.nodes.decisionService;
                 case NODE_TYPES.knowledgeSource:
-                  return "Knowledge Source";
+                  return i18n.nodes.knowledgeSource;
                 case NODE_TYPES.textAnnotation:
-                  return "Text Annotation";
+                  return i18n.nodes.textAnnotation;
                 case NODE_TYPES.group:
-                  return "Group";
+                  return i18n.nodes.group;
                 case NODE_TYPES.unknown:
-                  return <>Unknown</>;
+                  return <>{i18n.externalNodes.unknown}</>;
                 default:
                   throw new Error(`Unknown type of node ${node.type}`);
               }
             })()}
             action={
               <Button
-                title={"Close"}
+                title={i18n.close}
                 variant={ButtonVariant.plain}
                 onClick={() => {
                   dmnEditorStoreApi.setState((state) => {
