@@ -190,14 +190,9 @@ export const en: TestScenarioEditorI18n = {
     selection: "Selection",
   },
   fileParsingErrorMessage:
-    "Impossibile to correctly parse the provided scesim file. Most likely, the XML structure of the file " +
-    "is invalid.",
+    "Impossibile to correctly parse the provided scesim file. Most likely, the XML structure of the file is invalid.",
   parsingErrorTitle: "File parsing error",
-  unsupportedTitle: (version: string) =>
-    "This file holds a Test Scenario asset version (" + version + ") not supported",
+  unsupportedTitle: (version: string) => `This file holds a Test Scenario asset version ( ${version} ) not supported`,
   unsupportedMessage: (version: string) =>
-    "Most likely, this file has been generated with a very old Business Central version (< 7.30.0.Final). " +
-    "Please update your Business Central instance and download again this scesim file, it will be automatically updated to the supported version (" +
-    version +
-    ").",
+    `Most likely, this file has been generated with a very old Business Central version (< 7.30.0.Final). Please update your Business Central instance and download again this scesim file, it will be automatically updated to the supported version ( ${version} ).`,
 };
