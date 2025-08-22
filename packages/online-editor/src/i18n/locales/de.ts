@@ -22,7 +22,7 @@ import { de as de_common } from "@kie-tools/i18n-common-dictionary";
 import { de as de_unitables } from "@kie-tools/unitables/dist/i18n/locales/de";
 import { TranslatedDictionary, wrapped } from "@kie-tools-core/i18n/dist/core";
 
-export const de: TranslatedDictionary<OnlineI18n> = {
+export const de: OnlineI18n = {
   ...de_common,
   editorPage: {
     textEditorModal: {

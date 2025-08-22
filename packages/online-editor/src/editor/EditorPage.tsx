@@ -69,11 +69,6 @@ import { useEnv } from "../env/hooks/EnvContext";
 import { useSettings } from "../settings/SettingsContext";
 import { EditorEnvelopeLocatorFactory } from "../envelopeLocator/EditorEnvelopeLocatorFactory";
 import * as __path from "path";
-import {
-  EditorEnvelopeI18nContext,
-  editorEnvelopeI18nDefaults,
-  editorEnvelopeI18nDictionaries,
-} from "@kie-tools-core/editor/dist/envelope/i18n";
 
 let saveVersion = 1;
 let refreshVersion = 0;
