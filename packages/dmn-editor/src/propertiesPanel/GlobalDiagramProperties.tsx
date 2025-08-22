@@ -148,6 +148,11 @@ export function GlobalDiagramProperties() {
                       state.dmn.model.definitions["@_expressionLanguage"] = val as string;
                     });
                   }}
+                  onClear={() => {
+                    dmnEditorStoreApi.setState((state) => {
+                      state.dmn.model.definitions["@_expressionLanguage"] = "";
+                    });
+                  }}
                   isCreatable
                   onCreateOption={onCreateOption}
                   onToggle={(event, isExpanded) => setExpressionLanguageSelectOpen(isExpanded)}

@@ -241,10 +241,15 @@ export function TextField({
           onSelect={(e, val) => {
             const language = val;
             setValue(language as string);
+            valueRef.current = language as string;
+            isEditing.current = true;
             if (props.initialValue !== language) {
               onChange?.(language as string, expressionPath);
               isEditing.current = false;
             }
+          }}
+          onClear={() => {
+            onChange?.("", expressionPath);
           }}
           isCreatable
           onCreateOption={onCreateOption}
