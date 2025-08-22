@@ -22,13 +22,13 @@ import { ReferenceDictionary } from "../../../i18n/dist/core";
 interface FormCodeGeneratorDictionary extends ReferenceDictionary {
   generateFormCode: {
     selectProjectFolder: string;
-    NotFoundProjectsTarget: string;
-    NotFoundJsonSchema: string;
+    notFoundProjectsTarget: string;
+    notFoundJsonSchema: string;
     uiLibraryPlaceholder: string;
     customFormsPlaceholder: string;
     generateForHumanTasks: string;
     generateForSpecificHumanTasks: string;
-    optionPlaceHolder: string;
+    optionPlaceholder: string;
     userTaskPlaceholder: string;
     parsingFailed(files: string): string;
     uiLibraryNotAvailable(uiLibrary: string): string;

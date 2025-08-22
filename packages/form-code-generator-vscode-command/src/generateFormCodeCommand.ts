@@ -65,12 +65,12 @@ export async function generateFormsCommand() {
 
   // Check if project has a target folder
   if (fs.existsSync(`${projectPath}/target`) === false) {
-    vscode.window.showErrorMessage(i18n.generateFormCode.NotFoundProjectsTarget);
+    vscode.window.showErrorMessage(i18n.generateFormCode.notFoundProjectsTarget);
     return;
   }
   // Check if project has the JSON Schemas folder
   if (fs.existsSync(`${projectPath}/${JSON_SCHEMA_PATH}`) === false) {
-    vscode.window.showErrorMessage(i18n.generateFormCode.NotFoundJsonSchema);
+    vscode.window.showErrorMessage(i18n.generateFormCode.notFoundJsonSchema);
     return;
   }
 
@@ -133,7 +133,7 @@ async function getFormSchemas(projectPath: string): Promise<FormSchema[]> {
   const generationChoice = await vscode.window.showQuickPick(
     [i18n.generateFormCode.generateForHumanTasks, i18n.generateFormCode.generateForSpecificHumanTasks],
     {
-      placeHolder: i18n.generateFormCode.optionPlaceHolder,
+      placeHolder: i18n.generateFormCode.optionPlaceholder,
     }
   );
 

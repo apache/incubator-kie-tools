@@ -22,13 +22,13 @@ import { FormCodeGeneratorI18n } from "../FormCodeGeneratorI18n";
 export const en: FormCodeGeneratorI18n = {
   generateFormCode: {
     selectProjectFolder: "Select project folder",
-    NotFoundProjectsTarget: `Couldn't find project's "target" folder. Please install your project before using this command.`,
-    NotFoundJsonSchema: `Couldn't find any JSON Schema, did you install your project ("mvn clean install")?`,
+    notFoundProjectsTarget: `Couldn't find project's "target" folder. Please install your project before using this command.`,
+    notFoundJsonSchema: `Couldn't find any JSON Schema, did you install your project ("mvn clean install")?`,
     uiLibraryPlaceholder: "Select the UI library for the generated form(s)",
     customFormsPlaceholder: "You already have custom forms in this project. Do you want to override them?",
     generateForHumanTasks: "Generate form code for all User Tasks",
     generateForSpecificHumanTasks: "Generate form code for specific User Tasks",
-    optionPlaceHolder: "Select an option",
+    optionPlaceholder: "Select an option",
     userTaskPlaceholder: "Choose the User Tasks",
     parsingFailed: (files: string): string => `JSON Schema parsing failed for the following files: ${files}`,
     uiLibraryNotAvailable: (uiLibrary: string): string => `The "${uiLibrary}" UI library isn't available.`,
