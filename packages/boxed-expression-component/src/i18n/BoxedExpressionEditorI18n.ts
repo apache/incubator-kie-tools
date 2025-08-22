@@ -109,10 +109,10 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
     expression: string;
   };
   yourAnnotationsHere: string;
-  hitpolicy: string;
+  hitPolicyLabel: string;
   aggregatorFunction: string;
   logicTypeHelp: {
-    literExpression: string;
+    literal: string;
     context: string;
     decisionTable: string;
     relation: string;

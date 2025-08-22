@@ -333,7 +333,7 @@ export function ExpressionDefinitionLogicTypeSelector({
   const logicTypeHelp = useCallback((logicType: BoxedExpression["__$$element"] | undefined) => {
     switch (logicType) {
       case "literalExpression":
-        return i18n.logicTypeHelp.literExpression;
+        return i18n.logicTypeHelp.literal;
       case "context":
         return i18n.logicTypeHelp.context;
       case "decisionTable":

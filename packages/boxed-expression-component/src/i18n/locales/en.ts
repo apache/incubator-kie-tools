@@ -117,10 +117,10 @@ export const en: BoxedExpressionEditorI18n = {
     expression: "expression",
   },
   yourAnnotationsHere: "// Your annotations here",
-  hitpolicy: "Hit policy",
+  hitPolicyLabel: "Hit policy",
   aggregatorFunction: "Aggregator function",
   logicTypeHelp: {
-    literExpression:
+    literal:
       "A boxed literal expression in DMN is a literal FEEL expression as text in a table cell, typically with a labeled column and an assigned data type.",
     context:
       "A boxed context expression in DMN is a set of variable names and values with a result value. Each name-value pair is a context entry.",
@@ -163,7 +163,7 @@ export const en: BoxedExpressionEditorI18n = {
   value: "value",
   classNameLabel: "Class name",
   methodSignatureLabel: "Method signature",
-  example: " example",
+  example: "example",
   parameterNamePlaceholder: "Parameter Name",
   noneSelected: "-- None selected --",
   selectDocument: "Select a document first",

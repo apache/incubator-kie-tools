@@ -182,7 +182,7 @@ export function JavaFunctionExpression({
     parametersId,
     i18n.label,
     i18n.value,
-    i18n.parameters
+    i18n.parameters,
   ]);
 
   const headerVisibility = useMemo(() => {
@@ -255,7 +255,7 @@ export function JavaFunctionExpression({
         value: (method?.expression as DMN_LATEST__tLiteralExpression | undefined)?.text?.__$$text ?? "",
       },
     ];
-  }, [clazz?.expression, method?.expression,i18n.classNameLabel, i18n.methodSignatureLabel,]);
+  }, [clazz?.expression, method?.expression, i18n.classNameLabel, i18n.methodSignatureLabel]);
 
   const controllerCell = useFunctionExpressionControllerCell(BoxedFunctionKind.Java);
 
@@ -510,7 +510,7 @@ function JavaFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTable
         {isCellHovered && (
           <Popover
             className="java-function-parameter-help-popover"
-            headerContent={label + i18n.example}
+            headerContent={label + " " + i18n.example}
             bodyContent={getParameterLabelHelp}
           >
             <Icon size="sm">
