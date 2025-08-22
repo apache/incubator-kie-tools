@@ -72,7 +72,7 @@ export class BuiltInTypes {
       ["minutes", BuiltInTypes.Number],
       ["seconds", BuiltInTypes.Number],
       ["timezone", BuiltInTypes.String],
-      ["value", BuiltInTypes.String],
+      ["value", BuiltInTypes.Number],
     ]),
 
     source: {
@@ -96,7 +96,7 @@ export class BuiltInTypes {
       ["second", BuiltInTypes.Number],
       ["time offset", BuiltInTypes.DaysAndTimeDuration],
       ["timezone", BuiltInTypes.String],
-      ["value", BuiltInTypes.String],
+      ["value", BuiltInTypes.Number],
     ]),
 
     source: {
@@ -113,7 +113,7 @@ export class BuiltInTypes {
     properties: new Map([
       ["years", BuiltInTypes.Number],
       ["months", BuiltInTypes.Number],
-      ["value", BuiltInTypes.String],
+      ["value", BuiltInTypes.Number],
     ]),
 
     source: {
@@ -133,7 +133,7 @@ export class BuiltInTypes {
       ["second", BuiltInTypes.Number],
       ["time offset", BuiltInTypes.DaysAndTimeDuration],
       ["timezone", BuiltInTypes.String],
-      ["value", BuiltInTypes.String],
+      ["value", BuiltInTypes.Number],
     ]),
     source: {
       expressionsThatUseTheIdentifier: new Map<string, Expression>(),
@@ -151,7 +151,7 @@ export class BuiltInTypes {
       ["month", BuiltInTypes.Number],
       ["day", BuiltInTypes.Number],
       ["weekday", BuiltInTypes.Number],
-      ["value", BuiltInTypes.String],
+      ["value", BuiltInTypes.Number],
     ]),
     source: {
       expressionsThatUseTheIdentifier: new Map<string, Expression>(),
