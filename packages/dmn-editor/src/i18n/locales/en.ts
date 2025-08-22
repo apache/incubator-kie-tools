@@ -20,6 +20,7 @@
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 import { DmnEditorI18n } from "../DmnEditorI18n";
 import { title } from "process";
+import { wrapped } from "@kie-tools-core/i18n/dist/core";
 
 export const en: DmnEditorI18n = {
   ...en_common,
@@ -28,8 +29,6 @@ export const en: DmnEditorI18n = {
   yourAnnotationsHere: "// Your annotations here",
   filter: "Filter...",
   close: "Close",
-  dmn: "DMN",
-  pmml: "PMML",
   none: "None",
   noneYet: "None yet",
   name: "Name",
@@ -53,9 +52,6 @@ export const en: DmnEditorI18n = {
     addValue: "Add value",
     removeEnumValue: "Remove enum value",
     equivalentFeelExpression: "Equivalent FEEL expression:",
-    checkThe: "Check the",
-    feelHandbook: "FEEL handbook",
-    creatingAnExpression: "to help you on creating your expressions.",
     nextValidDate: (value: string, operator: string): string =>
       `The next valid number is: (${value} ${operator} 1 Day).`,
     nextValidDateTime: (value: string, operator: string): string =>
@@ -79,10 +75,6 @@ export const en: DmnEditorI18n = {
     type: "Type",
     collectionConstraint: "Collection constraint",
     collectionConstrainsTypeConstraint: "Collection Constraints (Type Constraint)",
-    dmnSpecification: "As per the DMN specification, the ",
-    typeConstraint: "Type Constraint",
-    attributeListsPossibleValues: "attribute lists the possible values",
-    rangeOfValuesAllowed: "or ranges of values in the base type that are allowed in this ItemDefinition.",
     collectionItemConstraint: "Collection item constraint",
     collectionItemConstraintAllowedValues: "Collection Item Constraints (Allowed Values)",
     allowedValues: "Allowed Values",
@@ -128,6 +120,34 @@ export const en: DmnEditorI18n = {
     custom: "Custom",
     jumpToDefinition: "Jump to definition",
     selectDataType: "Select a data type...",
+    checkFeelHandbook: [
+      "Check the FEEL handbook ",
+      wrapped("feelHandBook"),
+      " to help you on creating your expressions.",
+    ],
+    dmnTypeConstraintText: [
+      "As per the DMN specification, the ",
+      wrapped("typeConstraint"),
+      " attribute lists the possible values",
+      wrapped("lineBreak"),
+      "or ranges of values in the base type that are allowed in this ItemDefinition.",
+    ],
+    typeConstraint: "Type Constraint",
+    constraints: "Constraints",
+    identifierRenameMessage: [
+      "The identifier ",
+      wrapped("fromIdentifier"),
+      " was renamed to ",
+      wrapped("toIdentifier"),
+      ", and it is used by one or more expressions.",
+      wrapped("lineBreak"),
+      wrapped("lineBreak"),
+      "Would you like to automatically replace all occurrences of ",
+      wrapped("fromIdentifier"),
+      " with ",
+      wrapped("toIdentifier"),
+      "?",
+    ],
   },
   nodes: {
     view: "View",
@@ -154,7 +174,7 @@ export const en: DmnEditorI18n = {
     startByDraggingNodes: "Start by dragging nodes from the Palette",
     newDecisionTable: "New Decision Table...",
     newDecisionWithInputData: "New Decision with Input Data...",
-    overLays: "Overlays",
+    overlays: "Overlays",
     propertiesPanel: "Properties panel",
     nodesSelected: (selectedNodesCount: number): string => `${selectedNodesCount} nodes selected`,
     edgesSelected: (selectedEdgesCount: number): string => `${selectedEdgesCount} edges selected`,
@@ -268,7 +288,7 @@ export const en: DmnEditorI18n = {
     boxedConditional: "Boxed Conditional",
     functionTobeCalled: "Function to be called",
     functionNamePlaceholder: "Enter the function name...",
-    variableToItervateOver: "Variable to interate over",
+    variableToIterateOver: "Variable to interate over",
     variableNamePlaceholder: "Enter the variable name...",
     selectExpression: "Select expression",
     selectedCell: "The selected cell still doesn't have an expresison associate with it.",
@@ -367,15 +387,7 @@ export const en: DmnEditorI18n = {
     boxedRelationHeader: "Boxed Relation Header",
     boxedRelationCell: "Boxed Relation Cell",
     some: "Boxed Some",
-    boxedsomeVariable: "Boxed Some Variable",
-  },
-  letters: {
-    s: "S",
-    u: "U",
-    i: "I",
-    b: "B",
-    x: "X",
-    y: "Y",
+    boxedSomeVariable: "Boxed Some Variable",
   },
   renamingIdentifier: "Renaming identifier",
   renameAndReplace: "Yes, rename and replace",

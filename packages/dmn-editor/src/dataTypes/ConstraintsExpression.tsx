@@ -27,6 +27,7 @@ import InfoIcon from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { TypeHelper } from "./Constraints";
 import { useDmnEditorI18n } from "../i18n";
+import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 
 export function ConstraintsExpression({
   id,
@@ -47,6 +48,7 @@ export function ConstraintsExpression({
   const [preview, setPreview] = useState(value ?? "");
   const [isEditing, setEditing] = useState(false);
   const valueCopy = useRef(value);
+  const FEEL_HANDBOOK_URL = "https://kiegroup.github.io/dmn-feel-handbook/#feel-values";
 
   const onFeelBlur = useCallback((valueOnBlur: string) => {
     setEditing(false);
@@ -134,11 +136,17 @@ export function ConstraintsExpression({
       <HelperText>
         {!isReadOnly && (
           <HelperTextItem variant="indeterminate" icon={<InfoIcon />}>
-            {i18n.dataTypes.checkThe}
-            <a target={"_blank"} href={"https://kiegroup.github.io/dmn-feel-handbook/#feel-values"}>
-              {i18n.dataTypes.feelHandbook}
-            </a>{" "}
-            {i18n.dataTypes.creatingAnExpression}
+            <I18nWrapped
+              components={{
+                feelHandBook: (
+                  <a href={FEEL_HANDBOOK_URL} target={"_blank"}>
+                    {FEEL_HANDBOOK_URL}
+                  </a>
+                ),
+              }}
+            >
+              {i18n.dataTypes.checkFeelHandbook}
+            </I18nWrapped>
           </HelperTextItem>
         )}
       </HelperText>

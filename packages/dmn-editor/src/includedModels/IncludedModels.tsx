@@ -314,7 +314,7 @@ export function IncludedModels() {
                       aria-labelledby={"Included model selector"}
                       isGrouped={true}
                     >
-                      <SelectGroup label={i18n.dmn} key={"DMN"}>
+                      <SelectGroup label={i18n.names.dmn} key={"DMN"}>
                         {((dmnPathsNotYetIncluded?.length ?? 0) > 0 &&
                           dmnPathsNotYetIncluded?.map((p) => {
                             const normalizedPosixPathRelativeToTheWorkspaceRoot = onRequestToResolvePath?.(p) ?? p;
@@ -334,7 +334,7 @@ export function IncludedModels() {
                         )}
                       </SelectGroup>
                       <Divider key="divider" />
-                      <SelectGroup label={i18n.pmml} key={"PMML"}>
+                      <SelectGroup label={i18n.names.pmml} key={"PMML"}>
                         {((pmmlPathsNotYetIncluded?.length ?? 0) > 0 &&
                           pmmlPathsNotYetIncluded?.map((p) => {
                             const normalizedPosixPathRelativeToTheWorkspaceRoot = onRequestToResolvePath?.(p) ?? p;

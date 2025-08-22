@@ -50,6 +50,7 @@ import { Alert } from "@patternfly/react-core/dist/js/components/Alert/Alert";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { InfoAltIcon } from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
 import { useDmnEditorI18n } from "../i18n";
+import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 
 export function DataTypePanel({
   isReadOnly,
@@ -385,12 +386,14 @@ export function DataTypePanel({
                     headerIcon={<InfoAltIcon />}
                     headerComponent="h1"
                     bodyContent={
-                      <p>
-                        {i18n.dataTypes.dmnSpecification} <b>{i18n.dataTypes.typeConstraint}</b>{" "}
-                        {i18n.dataTypes.attributeListsPossibleValues}
-                        <br />
-                        {i18n.dataTypes.rangeOfValuesAllowed}
-                      </p>
+                      <I18nWrapped
+                        components={{
+                          typeConstraint: <b>{i18n.dataTypes.typeConstraint}</b>,
+                          lineBreak: <br />,
+                        }}
+                      >
+                        {i18n.dataTypes.dmnTypeConstraintText}
+                      </I18nWrapped>
                     }
                   >
                     <InfoAltIcon
@@ -419,12 +422,14 @@ export function DataTypePanel({
                     headerIcon={<InfoAltIcon />}
                     headerComponent="h1"
                     bodyContent={
-                      <p>
-                        {i18n.dataTypes.dmnSpecification} <b>{i18n.dataTypes.allowedValues}</b>{" "}
-                        {i18n.dataTypes.attributeListsPossibleValues}
-                        <br />
-                        {i18n.dataTypes.rangeOfValuesAllowed}
-                      </p>
+                      <I18nWrapped
+                        components={{
+                          typeConstraint: <b>{i18n.dataTypes.allowedValues}</b>,
+                          lineBreak: <br />,
+                        }}
+                      >
+                        {i18n.dataTypes.dmnTypeConstraintText}
+                      </I18nWrapped>
                     }
                   >
                     <InfoAltIcon
@@ -447,7 +452,7 @@ export function DataTypePanel({
             ) : (
               <>
                 <Title size={"md"} headingLevel="h4">
-                  Constraints
+                  {i18n.dataTypes.constraints}
                 </Title>
                 <ConstraintsFromTypeConstraintAttribute
                   isReadOnly={isReadOnly}

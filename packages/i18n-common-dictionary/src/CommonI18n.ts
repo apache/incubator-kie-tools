@@ -79,6 +79,14 @@ export type CommonDictionary = {
   uninstall: string;
   username: string;
   validation: string;
+  letters: {
+    s: string;
+    u: string;
+    i: string;
+    b: string;
+    x: string;
+    y: string;
+  };
 };
 
 export interface CommonI18n extends ReferenceDictionary {

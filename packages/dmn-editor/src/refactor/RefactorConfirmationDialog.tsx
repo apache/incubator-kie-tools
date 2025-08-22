@@ -29,6 +29,7 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { useCallback, useMemo, useState } from "react";
 import { renameDrgElement } from "../mutations/renameNode";
 import { useDmnEditorI18n } from "../i18n";
+import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 
 export function RefactorConfirmationDialog({
   onConfirmExpressionRefactor,
@@ -66,34 +67,27 @@ export function RefactorConfirmationDialog({
         </Button>,
       ]}
     >
-      {i18n.theIdentifier}{" "}
-      <pre style={{ display: "inline" }}>
-        {'"'}
-        {fromName ?? "<undefined>"}
-        {'"'}
-      </pre>{" "}
-      {i18n.renamedTo}{" "}
-      <pre style={{ display: "inline" }}>
-        {'"'}
-        {toName ?? "<undefined>"}
-        {'"'}
-      </pre>
-      {i18n.usedByOneOrMoreExpressions}
-      <br />
-      <br />
-      {i18n.automaticallyReplaceAll}{" "}
-      <pre style={{ display: "inline" }}>
-        {'"'}
-        {fromName ?? "<undefined>"}
-        {'"'}
-      </pre>{" "}
-      {i18n.with}{" "}
-      <pre style={{ display: "inline" }}>
-        {'"'}
-        {toName ?? "<undefined>"}
-        {'"'}
-      </pre>
-      ?
+      <I18nWrapped
+        components={{
+          fromIdentifier: (
+            <pre style={{ display: "inline" }}>
+              {'"'}
+              {fromName ?? i18n.undefined}
+              {'"'}
+            </pre>
+          ),
+          toIdentifier: (
+            <pre style={{ display: "inline" }}>
+              {'"'}
+              {toName ?? i18n.undefined}
+              {'"'}
+            </pre>
+          ),
+          lineBreak: <br />,
+        }}
+      >
+        {i18n.dataTypes.identifierRenameMessage}
+      </I18nWrapped>
     </Modal>
   );
 }

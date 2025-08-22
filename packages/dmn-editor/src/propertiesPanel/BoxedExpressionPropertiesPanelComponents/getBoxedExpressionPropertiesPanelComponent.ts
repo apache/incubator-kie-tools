@@ -226,7 +226,7 @@ export function getBoxedExpressionPropertiesPanelComponent(
     if (selectedObjectPath.row === "variable") {
       return {
         component: BoxedExpressionPropertiesPanelComponent.ITERATOR_VARIABLE_CELL,
-        title: i18n.boxedExpressionPropertiesPanelTitle.boxedsomeVariable,
+        title: i18n.boxedExpressionPropertiesPanelTitle.boxedSomeVariable,
       };
     }
   }

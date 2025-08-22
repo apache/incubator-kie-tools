@@ -81,5 +81,13 @@ export const en: CommonI18n = {
     uninstall: "Uninstall",
     username: "Username",
     validation: "Validation",
+    letters: {
+      s: "S",
+      u: "U",
+      i: "I",
+      b: "B",
+      x: "X",
+      y: "Y",
+    },
   },
 };

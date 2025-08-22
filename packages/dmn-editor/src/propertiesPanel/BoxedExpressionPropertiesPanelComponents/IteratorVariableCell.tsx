@@ -48,7 +48,7 @@ export function IteratorVariableCell(props: { boxedExpressionIndex?: BoxedExpres
     <>
       <TextField
         type={TextFieldType.TEXT_INPUT}
-        title={i18n.propertiesPanel.variableToItervateOver}
+        title={i18n.propertiesPanel.variableToIterateOver}
         placeholder={i18n.propertiesPanel.variableNamePlaceholder}
         isReadOnly={props.isReadOnly}
         initialValue={cell["@_iteratorVariable"] ?? ""}

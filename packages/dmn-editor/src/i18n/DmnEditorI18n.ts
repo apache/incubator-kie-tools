@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
+import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
 interface DmnEditorDictionary extends ReferenceDictionary {
@@ -26,8 +26,6 @@ interface DmnEditorDictionary extends ReferenceDictionary {
   yourAnnotationsHere: string;
   filter: string;
   close: string;
-  dmn: string;
-  pmml: string;
   none: string;
   noneYet: string;
   name: string;
@@ -51,9 +49,6 @@ interface DmnEditorDictionary extends ReferenceDictionary {
     addValue: string;
     removeEnumValue: string;
     equivalentFeelExpression: string;
-    checkThe: string;
-    feelHandbook: string;
-    creatingAnExpression: string;
     nextValidDate: (value: string, operator: string) => string;
     nextValidDateTime: (value: string, operator: string) => string;
     nextValidNumber: (value: string, operator: string) => string;
@@ -74,10 +69,6 @@ interface DmnEditorDictionary extends ReferenceDictionary {
     type: string;
     collectionConstraint: string;
     collectionConstrainsTypeConstraint: string;
-    dmnSpecification: string;
-    typeConstraint: string;
-    attributeListsPossibleValues: string;
-    rangeOfValuesAllowed: string;
     collectionItemConstraint: string;
     collectionItemConstraintAllowedValues: string;
     allowedValues: string;
@@ -119,6 +110,11 @@ interface DmnEditorDictionary extends ReferenceDictionary {
     custom: string;
     jumpToDefinition: string;
     selectDataType: string;
+    checkFeelHandbook: Array<string | Wrapped<"feelHandBook">>;
+    dmnTypeConstraintText: Array<string | Wrapped<"typeConstraint" | "lineBreak">>;
+    typeConstraint: string;
+    constraints: string;
+    identifierRenameMessage: Array<string | Wrapped<"fromIdentifier" | "toIdentifier" | "lineBreak">>;
   };
   nodes: {
     view: string;
@@ -143,7 +139,7 @@ interface DmnEditorDictionary extends ReferenceDictionary {
     startByDraggingNodes: string;
     newDecisionTable: string;
     newDecisionWithInputData: string;
-    overLays: string;
+    overlays: string;
     propertiesPanel: string;
     nodesSelected: (selectedNodesCount: number) => string;
     edgesSelected: (selectedEdgesCount: number) => string;
@@ -247,7 +243,7 @@ interface DmnEditorDictionary extends ReferenceDictionary {
     boxedConditional: string;
     functionTobeCalled: string;
     functionNamePlaceholder: string;
-    variableToItervateOver: string;
+    variableToIterateOver: string;
     variableNamePlaceholder: string;
     selectExpression: string;
     selectedCell: string;
@@ -345,15 +341,7 @@ interface DmnEditorDictionary extends ReferenceDictionary {
     boxedRelationHeader: string;
     boxedRelationCell: string;
     some: string;
-    boxedsomeVariable: string;
-  };
-  letters: {
-    s: string;
-    u: string;
-    i: string;
-    b: string;
-    x: string;
-    y: string;
+    boxedSomeVariable: string;
   };
   renamingIdentifier: string;
   renameAndReplace: string;
