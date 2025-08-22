@@ -126,7 +126,6 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
     filter: string;
   };
   pasteOperationNotSuccessful: string;
-  paramets: string;
   functionKindHelp: {
     feel: string;
     pmml: string;

@@ -152,7 +152,6 @@ export const en: BoxedExpressionEditorI18n = {
       "to be filtered. The bottom part, between the square brackets, holds the filter expression.",
   },
   pasteOperationNotSuccessful: "Paste operation was not successful",
-  paramets: "parameters",
   functionKindHelp: {
     feel: "Define function as a 'Friendly Enough Expression Language (FEEL)' expression. This is the default.",
     pmml: "Define 'Predictive Model Markup Language (PMML)' model to invoke.\nEditor parses and offers you all your PMML models from the workspace.",
