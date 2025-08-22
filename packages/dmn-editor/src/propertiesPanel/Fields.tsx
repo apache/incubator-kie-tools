@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
@@ -27,8 +27,8 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { State } from "../store/Store";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import { EXPRESSION_LANGUAGES_LATEST } from "@kie-tools/dmn-marshaller";
+import { ExpressionLangaugeSelect } from "./ExpressionLanguageSelect";
 
 export function ContentField(props: {
   initialValue: string;
@@ -167,6 +167,24 @@ export function TextField({
     return [...customLanguages, ...(value && !customLanguages.includes(value) ? [value] : [])];
   }, [customLanguages, value]);
 
+  const onClear = () => {
+    onChange?.("", expressionPath);
+  };
+
+  const onSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>, val: string) => {
+      const language = val;
+      setValue(language as string);
+      valueRef.current = language as string;
+      isEditing.current = true;
+      if (props.initialValue !== language) {
+        onChange?.(language as string, expressionPath);
+        isEditing.current = false;
+      }
+    },
+    [expressionPath, onChange, props.initialValue]
+  );
+
   return (
     <FormGroup label={props.title}>
       {props.type === TextFieldType.TEXT_AREA && (
@@ -216,40 +234,12 @@ export function TextField({
         />
       )}
       {props.type === TextFieldType.DROP_DOWN && (
-        <Select
-          toggleRef={toggleRef}
-          variant={SelectVariant.typeahead}
-          aria-label={"Expression language"}
-          isOpen={isExpressionLanguageSelectOpen}
-          onSelect={(e, val) => {
-            const language = val;
-            setValue(language as string);
-            valueRef.current = language as string;
-            isEditing.current = true;
-            if (props.initialValue !== language) {
-              onChange?.(language as string, expressionPath);
-              isEditing.current = false;
-            }
-          }}
-          onClear={() => {
-            onChange?.("", expressionPath);
-          }}
-          isCreatable
-          onCreateOption={(val) => {
-            if (val && !customLanguages.includes(val)) {
-              setCustomLanguages((prev) => [...prev, val]);
-            }
-          }}
-          onToggle={(event, isExpanded) => setExpressionLanguageSelectOpen(isExpanded)}
+        <ExpressionLangaugeSelect
+          OnClear={onClear}
+          onSelect={onSelect}
+          allLanguages={allLanguages}
           selections={value}
-          placeholderText={"Enter an expression language..."}
-        >
-          {allLanguages.map((EXPRESSION_LANGUAGES: string) => (
-            <SelectOption key={EXPRESSION_LANGUAGES} value={EXPRESSION_LANGUAGES}>
-              {EXPRESSION_LANGUAGES}
-            </SelectOption>
-          ))}
-        </Select>
+        />
       )}
     </FormGroup>
   );

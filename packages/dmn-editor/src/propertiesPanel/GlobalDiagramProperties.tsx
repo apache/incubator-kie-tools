@@ -22,10 +22,9 @@ import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/Clipboa
 import { Form, FormSection, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { DataSourceIcon } from "@patternfly/react-icons/dist/js/icons/data-source-icon";
-import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
-import { useState, useRef, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -34,6 +33,7 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { EXPRESSION_LANGUAGES_LATEST } from "@kie-tools/dmn-marshaller";
+import { ExpressionLangaugeSelect } from "./ExpressionLanguageSelect";
 
 export function GlobalDiagramProperties() {
   const [isExpressionLanguageSelectOpen, setExpressionLanguageSelectOpen] = useState(false);
@@ -47,7 +47,6 @@ export function GlobalDiagramProperties() {
 
   const [regenerateIdConfirmationModal, setRegenerateIdConfirmationModal] = useState(false);
 
-  const toggleRef = useRef<HTMLButtonElement>(null);
   const expressionLanguage = thisDmn.model.definitions["@_expressionLanguage"];
 
   const allLanguages = useMemo(() => {
@@ -56,6 +55,21 @@ export function GlobalDiagramProperties() {
       ...(expressionLanguage && !customLanguages.includes(expressionLanguage) ? [expressionLanguage] : []),
     ];
   }, [customLanguages, expressionLanguage]);
+
+  const onClear = () => {
+    dmnEditorStoreApi.setState((state) => {
+      state.dmn.model.definitions["@_expressionLanguage"] = "";
+    });
+  };
+
+  const onSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>, val: string) => {
+      dmnEditorStoreApi.setState((state) => {
+        state.dmn.model.definitions["@_expressionLanguage"] = val as string;
+      });
+    },
+    [dmnEditorStoreApi]
+  );
 
   return (
     <Form>
@@ -122,38 +136,12 @@ export function GlobalDiagramProperties() {
               </FormGroup>
 
               <FormGroup label="Expression language">
-                <Select
-                  toggleRef={toggleRef}
-                  variant={SelectVariant.typeahead}
-                  aria-label={"Expression language"}
-                  isOpen={isExpressionLanguageSelectOpen}
-                  onSelect={(e, val) => {
-                    dmnEditorStoreApi.setState((state) => {
-                      state.dmn.model.definitions["@_expressionLanguage"] = val as string;
-                    });
-                  }}
-                  onClear={() => {
-                    dmnEditorStoreApi.setState((state) => {
-                      state.dmn.model.definitions["@_expressionLanguage"] = "";
-                    });
-                  }}
-                  isCreatable
-                  onCreateOption={(val) => {
-                    if (val && !customLanguages.includes(val)) {
-                      setCustomLanguages((prev) => [...prev, val]);
-                    }
-                  }}
-                  onToggle={(event, isExpanded) => setExpressionLanguageSelectOpen(isExpanded)}
-                  isDisabled={settings.isReadOnly}
-                  selections={thisDmn.model.definitions["@_expressionLanguage"]}
-                  placeholderText={"Enter an expression language..."}
-                >
-                  {allLanguages?.map((EXPRESSION_LANGUAGES: string) => (
-                    <SelectOption key={EXPRESSION_LANGUAGES} value={EXPRESSION_LANGUAGES}>
-                      {EXPRESSION_LANGUAGES}
-                    </SelectOption>
-                  ))}
-                </Select>
+                <ExpressionLangaugeSelect
+                  OnClear={onClear}
+                  onSelect={onSelect}
+                  allLanguages={allLanguages}
+                  selections={thisDmn.model.definitions["@_expressionLanguage"] ?? ""}
+                />
               </FormGroup>
             </FormSection>
           </>
