@@ -25,7 +25,7 @@ import { DataSourceIcon } from "@patternfly/react-icons/dist/js/icons/data-sourc
 import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/deprecated";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useMemo } from "react";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -37,41 +37,25 @@ import { EXPRESSION_LANGUAGES_LATEST } from "@kie-tools/dmn-marshaller";
 
 export function GlobalDiagramProperties() {
   const [isExpressionLanguageSelectOpen, setExpressionLanguageSelectOpen] = useState(false);
+  const [customLanguages, setCustomLanguages] = useState<string[]>(EXPRESSION_LANGUAGES_LATEST);
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const [isGlobalSectionExpanded, setGlobalSectionExpanded] = useState<boolean>(true);
   const [isIdNamespaceSectionExpanded, setIdNamespaceSectionExpanded] = useState<boolean>(true);
 
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const settings = useSettings();
-  const customLanguages = useDmnEditorStore((s) => s.expressionLanguages.customLanguages);
 
   const [regenerateIdConfirmationModal, setRegenerateIdConfirmationModal] = useState(false);
 
   const toggleRef = useRef<HTMLButtonElement>(null);
-
   const expressionLanguage = thisDmn.model.definitions["@_expressionLanguage"];
 
-  //to keep the list updated when user checks later
-  const allLanguages = [
-    ...EXPRESSION_LANGUAGES_LATEST,
-    ...customLanguages,
-    ...(expressionLanguage &&
-    !EXPRESSION_LANGUAGES_LATEST.includes(expressionLanguage) &&
-    !customLanguages.includes(expressionLanguage)
-      ? [expressionLanguage]
-      : []),
-  ];
-
-  const onCreateOption = useCallback(
-    (val: string) => {
-      if (val && !EXPRESSION_LANGUAGES_LATEST.includes(val)) {
-        dmnEditorStoreApi.setState((state) => {
-          state.expressionLanguages.customLanguages.push(val);
-        });
-      }
-    },
-    [dmnEditorStoreApi]
-  );
+  const allLanguages = useMemo(() => {
+    return [
+      ...customLanguages,
+      ...(expressionLanguage && !customLanguages.includes(expressionLanguage) ? [expressionLanguage] : []),
+    ];
+  }, [customLanguages, expressionLanguage]);
 
   return (
     <Form>
@@ -154,7 +138,11 @@ export function GlobalDiagramProperties() {
                     });
                   }}
                   isCreatable
-                  onCreateOption={onCreateOption}
+                  onCreateOption={(val) => {
+                    if (val && !customLanguages.includes(val)) {
+                      setCustomLanguages((prev) => [...prev, val]);
+                    }
+                  }}
                   onToggle={(event, isExpanded) => setExpressionLanguageSelectOpen(isExpanded)}
                   isDisabled={settings.isReadOnly}
                   selections={thisDmn.model.definitions["@_expressionLanguage"]}
