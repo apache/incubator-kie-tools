@@ -1832,7 +1832,7 @@ export function TopRightCornerPanels({ availableHeight }: TopRightCornerPanelsPr
               <button
                 className={"kie-dmn-editor--overlays-panel-toggle-button"}
                 onClick={toggleOverlaysPanel}
-                title={i18n.nodes.overLays}
+                title={i18n.nodes.overlays}
               >
                 <VirtualMachineIcon />
               </button>
