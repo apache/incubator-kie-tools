@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import {
   findDataTypeById,
   traverseItemDefinitions,
@@ -36,7 +36,7 @@ export function renameItemDefinition({
   externalDmnModelsByNamespaceMap,
   shouldRenameReferencedExpressions,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   newName: string;
   itemDefinitionId: string;
   allDataTypesById: DataTypeIndex;

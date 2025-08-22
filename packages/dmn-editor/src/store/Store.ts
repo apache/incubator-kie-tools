@@ -19,7 +19,7 @@
 
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import { normalize, Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
-import { DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tImport } from "@kie-tools/dmn-marshaller";
 import { enableMapSet } from "immer";
 import * as RF from "reactflow";
 import { create } from "zustand";
@@ -134,7 +134,7 @@ export interface State {
 export type Computed = {
   isDiagramEditingInProgress(): boolean;
 
-  importsByNamespace(): Map<string, DMN15__tImport>;
+  importsByNamespace(): Map<string, DMN_LATEST__tImport>;
 
   indexedDrd(): ReturnType<typeof computeIndexedDrd>;
 

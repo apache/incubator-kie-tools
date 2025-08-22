@@ -53,12 +53,12 @@ import {
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { useFunctionExpressionControllerCell, useFunctionExpressionParametersColumnHeader } from "./FunctionExpression";
 import { ExpressionContainer } from "../ExpressionDefinitionRoot/ExpressionContainer";
-import { DMN15__tFunctionDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tFunctionDefinition } from "@kie-tools/dmn-marshaller";
 import { findAllIdsDeep } from "../../ids/ids";
 
 export type FEEL_ROWTYPE = { functionExpression: Normalized<BoxedFunction> };
 
-export type BoxedFunctionFeel = DMN15__tFunctionDefinition & {
+export type BoxedFunctionFeel = DMN_LATEST__tFunctionDefinition & {
   "@_kind": "FEEL";
   __$$element: "functionDefinition";
 };

@@ -33,10 +33,7 @@ import {
 import { BeeTable, BeeTableColumnUpdate, BeeTableRef } from "../../table/BeeTable";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import React, { useCallback, useMemo, useRef } from "react";
-import {
-  DMN15__tChildExpression,
-  DMN15__tTypedChildExpression,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tChildExpression, DMN_LATEST__tTypedChildExpression } from "@kie-tools/dmn-marshaller";
 import * as ReactTable from "react-table";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { BeeTableReadOnlyCell } from "../../table/BeeTable/BeeTableReadOnlyCell";
@@ -56,7 +53,7 @@ import { IteratorExpressionVariableCell } from "./IteratorExpressionVariableCell
 type ROWTYPE = Normalized<IteratorClause>;
 
 export type IteratorClause = {
-  child: DMN15__tTypedChildExpression | DMN15__tChildExpression | string | undefined;
+  child: DMN_LATEST__tTypedChildExpression | DMN_LATEST__tChildExpression | string | undefined;
   label: string;
 };
 

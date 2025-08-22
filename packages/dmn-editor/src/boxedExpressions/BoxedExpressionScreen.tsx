@@ -29,11 +29,11 @@ import { BoxedExpressionEditor } from "@kie-tools/boxed-expression-component/dis
 import { FeelIdentifiers } from "@kie-tools/dmn-feel-antlr4-parser";
 import { IdentifiersRefactor } from "@kie-tools/dmn-language-service";
 import {
-  DMN15__tBusinessKnowledgeModel,
-  DMN15__tDecision,
-  DMN15__tDefinitions,
-  DMN15__tItemDefinition,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN_LATEST__tBusinessKnowledgeModel,
+  DMN_LATEST__tDecision,
+  DMN_LATEST__tDefinitions,
+  DMN_LATEST__tItemDefinition,
+} from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { PMMLDocumentData } from "@kie-tools/pmml-editor-marshaller/dist/api";
 import { PMMLFieldData } from "@kie-tools/pmml-editor-marshaller/dist/api/PMMLFieldData";
@@ -220,7 +220,10 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
   );
 
   const setExpression = useCallback(
-    (args: { definitions: Normalized<DMN15__tDefinitions>; expression: Normalized<BoxedExpression | undefined> }) => {
+    (args: {
+      definitions: Normalized<DMN_LATEST__tDefinitions>;
+      expression: Normalized<BoxedExpression | undefined>;
+    }) => {
       boxedExpressionRef.current = args.expression;
       updateExpression({
         definitions: args.definitions,
@@ -554,8 +557,8 @@ export function BoxedExpressionScreen({ container }: { container: React.RefObjec
 
 export function drgElementToBoxedExpression(
   expressionHolder:
-    | (Normalized<DMN15__tDecision> & { __$$element: "decision" })
-    | (Normalized<DMN15__tBusinessKnowledgeModel> & { __$$element: "businessKnowledgeModel" })
+    | (Normalized<DMN_LATEST__tDecision> & { __$$element: "decision" })
+    | (Normalized<DMN_LATEST__tBusinessKnowledgeModel> & { __$$element: "businessKnowledgeModel" })
 ): Normalized<BoxedExpression> | undefined {
   if (expressionHolder.__$$element === "businessKnowledgeModel") {
     return expressionHolder.encapsulatedLogic
@@ -595,7 +598,7 @@ export function drgElementToBoxedExpression(
 }
 
 function determineInputsForDecision(
-  decision: Normalized<DMN15__tDecision>,
+  decision: Normalized<DMN_LATEST__tDecision>,
   allTopLevelDataTypesByFeelName: DataTypeIndex,
   nodesById: Map<string, RF.Node<DmnDiagramNodeData>>
 ) {
@@ -639,7 +642,7 @@ function flattenItemComponents({
   itemDefinition,
   acc,
 }: {
-  itemDefinition: Normalized<DMN15__tItemDefinition>;
+  itemDefinition: Normalized<DMN_LATEST__tItemDefinition>;
   acc: string;
 }): { name: string; typeRef: string | undefined }[] {
   if (!isStruct(itemDefinition)) {

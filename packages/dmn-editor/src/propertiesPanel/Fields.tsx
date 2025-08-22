@@ -25,7 +25,7 @@ import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
 import { ExpressionPath } from "../boxedExpressions/boxedExpressionIndex";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
-import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { State } from "../store/Store";
 
 export function ContentField(props: {

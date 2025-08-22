@@ -19,10 +19,7 @@
 
 import { useCallback, useMemo } from "react";
 import { ExpressionPath, getDmnObjectByPath } from "../../boxedExpressions/boxedExpressionIndex";
-import {
-  DMN15__tBusinessKnowledgeModel,
-  DMN15__tDecision,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tBusinessKnowledgeModel, DMN_LATEST__tDecision } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
@@ -53,7 +50,7 @@ export function useBoxedExpressionUpdater<T extends AllExpressionsWithoutTypes>(
             (
               state.dmn.model.definitions.drgElement?.[
                 node?.data.index ?? 0
-              ] as Normalized<DMN15__tBusinessKnowledgeModel>
+              ] as Normalized<DMN_LATEST__tBusinessKnowledgeModel>
             )?.encapsulatedLogic
           );
           dmnObject && consumer(dmnObject as T);
@@ -61,7 +58,7 @@ export function useBoxedExpressionUpdater<T extends AllExpressionsWithoutTypes>(
         if (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0]?.__$$element === "decision") {
           const dmnObject = getDmnObjectByPath(
             expressionPath ?? [],
-            (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0] as Normalized<DMN15__tDecision>)
+            (state.dmn.model.definitions.drgElement?.[node?.data.index ?? 0] as Normalized<DMN_LATEST__tDecision>)
               ?.expression
           );
           dmnObject && consumer(dmnObject as T);

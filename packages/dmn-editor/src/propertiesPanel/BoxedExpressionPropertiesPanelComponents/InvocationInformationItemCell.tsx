@@ -20,10 +20,7 @@
 import * as React from "react";
 import { useMemo } from "react";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
-import {
-  DMN15__tInformationItem,
-  DMN15__tInvocation,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tInformationItem, DMN_LATEST__tInvocation } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
@@ -48,10 +45,10 @@ export function InvocationInformationItemCell(props: {
     [cellPath?.root, props.boxedExpressionIndex]
   );
 
-  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tInformationItem>>(
+  const updater = useBoxedExpressionUpdater<Normalized<DMN_LATEST__tInformationItem>>(
     selectedObjectInfos?.expressionPath ?? []
   );
-  const rootExpressionUpdater = useBoxedExpressionUpdater<Normalized<DMN15__tInvocation>>(rootPath ?? []);
+  const rootExpressionUpdater = useBoxedExpressionUpdater<Normalized<DMN_LATEST__tInvocation>>(rootPath ?? []);
 
   return (
     <>
@@ -74,7 +71,8 @@ export function InvocationInformationItemCell(props: {
           });
           rootExpressionUpdater((dmnObject) => {
             if (cellPath?.type === "invocation") {
-              const expression = (dmnObject as Normalized<DMN15__tInvocation>).binding![cellPath.row ?? 0].expression;
+              const expression = (dmnObject as Normalized<DMN_LATEST__tInvocation>).binding![cellPath.row ?? 0]
+                .expression;
               if (expression) {
                 expression["@_typeRef"] = newTypeRef;
               }
