@@ -216,7 +216,7 @@ function TestScenarioCreationPanel() {
                   onToggle={(_event, val) => setModelSelectOpen(val)}
                   isOpen={isModelSelectOpen}
                   typeAheadAriaLabel={"Select a model..."}
-                  placeholderText={"Select a model..."}
+                  placeholderText={i18n.creationPanel.modelPlaceholder}
                   maxHeight={"350px"}
                   onSelect={(e, dmnModelPathRelativeToThisScesim) => {
                     if (typeof dmnModelPathRelativeToThisScesim !== "string") {

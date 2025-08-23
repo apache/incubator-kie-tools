@@ -45,6 +45,7 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
     statelessSession: string;
     testSkip: string;
     title: string;
+    modelPlaceholder: string;
   };
   drawer: {
     cheatSheet: {
@@ -125,6 +126,7 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
     body: string;
     lastActionButton: string;
     fileIssueHref: string;
+    errorDetails: string;
   };
   sidebar: {
     cheatSheetTooltip: string;
@@ -141,6 +143,7 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
     simulation: { singleEntry: string };
     background: {};
     copy: string;
+    copied: string;
     cut: string;
     delete: string;
     duplicate: string;
@@ -161,6 +164,10 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
     reset: string;
     selection: string;
   };
+  fileParsingErrorMessage: string;
+  parsingErrorTitle: string;
+  unsupportedTitle: (version: string) => string;
+  unsupportedMessage: (version: string) => string;
 }
 
 export default interface TestScenarioEditorI18n extends TestScenarioEditorDictionary, CommonI18n {}

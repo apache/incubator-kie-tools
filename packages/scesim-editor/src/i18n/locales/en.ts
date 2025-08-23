@@ -50,6 +50,7 @@ export const en: TestScenarioEditorI18n = {
     statelessSession: "Stateless Session",
     testSkip: "Skip this file during the test",
     title: "Create a new Test Scenario",
+    modelPlaceholder: "Select a model...",
   },
   drawer: {
     cheatSheet: {
@@ -147,6 +148,7 @@ export const en: TestScenarioEditorI18n = {
     body: "This is a bug. Please consider reporting it so the Test Scenario Editor can continue improving. See the details below.",
     lastActionButton: "Try undoing last action",
     fileIssueHref: "File an issue",
+    errorDetails: "Error details: ",
   },
   sidebar: {
     cheatSheetTooltip: "CheatSheet: Useful information for Test Scenario Usage",
@@ -166,6 +168,7 @@ export const en: TestScenarioEditorI18n = {
     },
     background: {},
     copy: "Copy",
+    copied: "Copied",
     cut: "Cut",
     delete: "Delete",
     deleteField: "Delete Field",
@@ -186,4 +189,10 @@ export const en: TestScenarioEditorI18n = {
     reset: "Reset",
     selection: "Selection",
   },
+  fileParsingErrorMessage:
+    "Impossibile to correctly parse the provided scesim file. Most likely, the XML structure of the file is invalid.",
+  parsingErrorTitle: "File parsing error",
+  unsupportedTitle: (version: string) => `This file holds a Test Scenario asset version ( ${version} ) not supported`,
+  unsupportedMessage: (version: string) =>
+    `Most likely, this file has been generated with a very old Business Central version (< 7.30.0.Final). Please update your Business Central instance and download again this scesim file, it will be automatically updated to the supported version ( ${version} ).`,
 };
