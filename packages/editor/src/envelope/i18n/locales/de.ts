@@ -17,9 +17,10 @@
  * under the License.
  */
 
+import { TranslatedDictionary } from "@kie-tools-core/i18n/dist/core";
 import { EditorEnvelopeI18n } from "../EditorEnvelopeI18n";
 
-export const de: EditorEnvelopeI18n = {
+export const de: TranslatedDictionary<EditorEnvelopeI18n> = {
   keyBindingsHelpOverlay: {
     title: "Tastenkombinationen",
     categories: {

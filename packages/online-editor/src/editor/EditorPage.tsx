@@ -63,7 +63,7 @@ import {
   EmptyStateIcon,
   EmptyStateHeader,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
+import { I18nDictionariesProvider, I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { useEnv } from "../env/hooks/EnvContext";
 import { useSettings } from "../settings/SettingsContext";
