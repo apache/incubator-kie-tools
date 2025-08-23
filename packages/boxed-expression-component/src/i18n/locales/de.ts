@@ -17,10 +17,11 @@
  * under the License.
  */
 
+import { TranslatedDictionary } from "@kie-tools-core/i18n/dist/core";
 import { BoxedExpressionEditorI18n } from "..";
 import { de as de_common } from "@kie-tools/i18n-common-dictionary";
 
-export const de: BoxedExpressionEditorI18n = {
+export const de: TranslatedDictionary<BoxedExpressionEditorI18n> = {
   ...de_common,
   addParameter: "Parameter hinzufügen",
   builtInAggregator: "Integrierter Aggregator",

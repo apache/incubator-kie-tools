@@ -17,11 +17,11 @@
  * under the License.
  */
 
-import { wrapped } from "@kie-tools-core/i18n/dist/core";
+import { TranslatedDictionary, wrapped } from "@kie-tools-core/i18n/dist/core";
 import { de as de_common } from "@kie-tools/i18n-common-dictionary";
 import { AppI18n } from "..";
 
-export const de: AppI18n = {
+export const de: TranslatedDictionary<AppI18n> = {
   ...de_common,
   editorPage: {
     textEditorModal: {
@@ -38,7 +38,7 @@ export const de: AppI18n = {
       createGist: "Gist erfolgreich erstellt.",
       errorPushingGist: "Push für das aktuelle Gist fehlgeschlagen. Push erzwungen?",
       forcePushWarning: "WARNUNG: Dadurch wird Ihre Gist mit den lokalen Änderungen überschrieben!",
-      invalidCurrentGist: `Das aktuelle Gist ${de_common.names.url} ist ungültig. Wenn Sie den Dateinamen aktualisiert haben, müssen Sie auch die ${de_common.names.url} aktualisieren.`,
+      invalidCurrentGist: `Das aktuelle Gist ${de_common.names?.url} ist ungültig. Wenn Sie den Dateinamen aktualisiert haben, müssen Sie auch die ${de_common.names?.url} aktualisieren.`,
       invalidGistFilename: "Ungültiger Dateiname. Dieses Gist hat bereits eine Datei mit diesem Namen.",
       error: `Beim Versuch, den letzten Vorgang auszuführen, ist ein Fehler aufgetreten. Überprüfen Sie, ob Ihr Authentifizierungstoken noch gültig ist und versuchen Sie es später erneut.`,
       unsaved: {
@@ -53,9 +53,9 @@ export const de: AppI18n = {
   editorToolbar: {
     closeAndReturnHome: "Schließen und zurück zur Startseite",
     saveAndDownload: "Speichern & Herunterladen",
-    sendChangesToGitHub: `Änderungen senden an ${de_common.names.github}`,
+    sendChangesToGitHub: `Änderungen senden an ${de_common.names?.github}`,
     copySource: "Quellcode kopieren",
-    downloadSVG: `${de_common.terms.download} ${de_common.names.svg}`,
+    downloadSVG: `${de_common.terms?.download} ${de_common.names?.svg}`,
     setGitHubToken: `Einrichten`,
     createGist: "Gist erstellen",
     cantCreateGistTooltip: `Sie können keinen Gist erstellen, weil Sie entweder nicht eingeloggt sind oder Ihre Modelle in verschachtelten Verzeichnissen liegen.`,
@@ -84,8 +84,8 @@ export const de: AppI18n = {
   },
   githubTokenModal: {
     header: {
-      title: `${de_common.names.github} ${de_common.names.oauth} ${de_common.terms.token}`,
-      subtitle: `Richten Sie Ihr ${de_common.names.github}-Token ein, damit Sie gist erstellen und aktualisieren können.`,
+      title: `${de_common.names?.github} ${de_common.names?.oauth} ${de_common.terms?.token}`,
+      subtitle: `Richten Sie Ihr ${de_common.names?.github}-Token ein, damit Sie gist erstellen und aktualisieren können.`,
     },
     footer: {
       createNewToken: "Ein neues Token erstellen",
@@ -94,7 +94,7 @@ export const de: AppI18n = {
     body: {
       disclaimer:
         "Das von Ihnen angegebene Token wird lokal als Browser-Cookie gespeichert und niemals an Dritte weitergegeben.",
-      learnMore: `Erfahren Sie mehr über ${de_common.names.github}-Token`,
+      learnMore: `Erfahren Sie mehr über ${de_common.names?.github}-Token`,
       note: `Sie sollten ein Token mit der Berechtigung ${"'gist'".bold()} bereitstellen.`,
     },
   },

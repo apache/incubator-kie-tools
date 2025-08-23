@@ -17,15 +17,17 @@
  * under the License.
  */
 
-import { UnitablesI18n } from "../UnitablesI18n";
-import { de as de_common } from "@kie-tools/i18n-common-dictionary";
-import { de as de_boxed_expression } from "@kie-tools/boxed-expression-component/dist/i18n/locales/de";
-import { TranslatedDictionary } from "@kie-tools-core/i18n/dist/core";
+import * as React from "react";
+import { useContext } from "react";
+import { en } from "./locales";
+import { DmnEditorEnvelopeI18n } from "./DmnEditorEnvelopeI18n";
+import { I18nDefaults, I18nDictionaries } from "../../../i18n/dist/core";
+import { I18nContextType } from "../../../i18n/dist/react-components";
 
-export const de: TranslatedDictionary<UnitablesI18n> = {
-  ...de_common,
-  ...de_boxed_expression,
-  schema: {
-    selectPlaceholder: "Auswählen...",
-  },
-};
+export const dmnEditorEnvelopeI18nDefaults: I18nDefaults<DmnEditorEnvelopeI18n> = { locale: "en", dictionary: en };
+export const dmnEditorEnvelopeI18nDictionaries: I18nDictionaries<DmnEditorEnvelopeI18n> = new Map([["en", en]]);
+export const DmnEditorEnvelopeI18nContext = React.createContext<I18nContextType<DmnEditorEnvelopeI18n>>({} as never);
+
+export function useDmnEditorEnvelopeI18n(): I18nContextType<DmnEditorEnvelopeI18n> {
+  return useContext(DmnEditorEnvelopeI18nContext);
+}

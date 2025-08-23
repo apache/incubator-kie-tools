@@ -18,15 +18,15 @@
  */
 
 import { de as de_common } from "@kie-tools/i18n-common-dictionary";
-import { wrapped } from "@kie-tools-core/i18n/dist/core";
+import { TranslatedDictionary, wrapped } from "@kie-tools-core/i18n/dist/core";
 import { FormI18n } from "../FormI18n";
 
-export const de: FormI18n = {
+export const de: TranslatedDictionary<FormI18n> = {
   ...de_common,
   form: {
     status: {
       autoGenerationError: {
-        title: `${de_common.terms.oops}!`,
+        title: `${de_common.terms?.oops}!`,
         explanation: "Das Formular kann aufgrund eines Fehlers nicht dargestellt werden.",
         checkNotificationPanel: ["Auf ", wrapped("link"), ` Fehler im Benachrichtigungsfeld prüfen`],
       },

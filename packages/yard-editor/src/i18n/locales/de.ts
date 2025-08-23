@@ -17,10 +17,11 @@
  * under the License.
  */
 
+import { TranslatedDictionary } from "@kie-tools-core/i18n/dist/core";
 import { YardEditorI18n } from "..";
 import { de as de_common } from "@kie-tools/i18n-common-dictionary";
 
-export const de: YardEditorI18n = {
+export const de: TranslatedDictionary<YardEditorI18n> = {
   ...de_common,
   decisionElementsTab: {
     emptyStateBody: "Ihre Yard-Datei enthält kein Entscheidungselement. Bitte fügen Sie ein neues Element hinzu",
