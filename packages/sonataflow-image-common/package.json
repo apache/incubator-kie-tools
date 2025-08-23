@@ -15,7 +15,7 @@
   "scripts": {
     "build:dev": "rimraf dist && pnpm update:quarkus:config && pnpm format && pnpm test && pnpm gen-dist",
     "build:prod": "pnpm build:dev",
-    "copy-deps-dist": "mkdir -p dist/modules/kogito-data-index-common/added/kogito-data-index-webapp && cp -r node_modules/@kie-tools/kogito-data-index-webapp/dist/* dist/modules/kogito-data-index-common/added/kogito-data-index-webapp/",
+    "copy-deps-dist": "mkdir -p dist/modules/kogito-data-index-common/added/kogito-data-index-webapp && cp -r node_modules/@kie-tools/kogito-data-index-webapp/dist/* dist/modules/kogito-data-index-common/added/kogito-data-index-webapp/ && mkdir -p dist/modules/kogito-jobs-service-common/added/kogito-jobs-service-webapp && cp -r node_modules/@kie-tools/kogito-jobs-service-webapp/dist/* dist/modules/kogito-jobs-service-common/added/kogito-jobs-service-webapp/",
     "format": "prettier --write .",
     "gen-dist": "run-script-os",
     "gen-dist:linux:darwin": "mkdir dist && cp -r resources/* dist/ && pnpm copy-deps-dist",
@@ -29,7 +29,8 @@
     "update:quarkus:config:win32": "echo \"Update Quarkus Config is skipped on Windows\""
   },
   "dependencies": {
-    "@kie-tools/kogito-data-index-webapp": "workspace:*"
+    "@kie-tools/kogito-data-index-webapp": "workspace:*",
+    "@kie-tools/kogito-jobs-service-webapp": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools/python-venv": "workspace:*",
