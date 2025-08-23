@@ -226,7 +226,7 @@ export const Unitables = ({
       >
         <OutsideRowMenu height={128} isFirstChild={true}>{`#`}</OutsideRowMenu>
         {rows.map((_, rowIndex) => (
-          <Tooltip key={rowIndex} content={`Open row ${rowIndex + 1} in the form view`}>
+          <Tooltip key={rowIndex} content={i18n.openRowFormView(rowIndex)}>
             <OutsideRowMenu height={61} isLastChild={rowIndex === rows.length - 1}>
               <Button
                 className={"kie-tools--masthead-hoverable"}
@@ -258,7 +258,7 @@ export const Unitables = ({
           />
         </div>
       ) : (
-        <EmptyUnitables />
+        <EmptyUnitables i18n={i18n} />
       )}
       <div ref={() => setFormsDivRendered(true)} id={FORMS_ID} />
     </>
@@ -298,16 +298,16 @@ function OutsideRowMenu({
   );
 }
 
-function EmptyUnitables() {
+function EmptyUnitables(props: { i18n: UnitablesI18n }) {
   return (
     <div style={{ width: "50vw" }}>
       <EmptyState>
         <EmptyStateHeader icon={<EmptyStateIcon icon={CubeIcon} />} />
         <TextContent>
-          <Text component={"h2"}>No inputs node yet...</Text>
+          <Text component={"h2"}>{props.i18n.noInputNodes}</Text>
         </TextContent>
         <EmptyStateBody>
-          <TextContent>Add an input node and see a custom table here.</TextContent>
+          <TextContent>{props.i18n.addInputNode}</TextContent>
         </EmptyStateBody>
       </EmptyState>
     </div>
