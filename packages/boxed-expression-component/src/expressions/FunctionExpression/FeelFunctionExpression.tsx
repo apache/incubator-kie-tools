@@ -97,7 +97,7 @@ export function FeelFunctionExpression({
           {
             headerCellElement: parametersColumnHeader,
             accessor: parametersId as any,
-            label: "parameters",
+            label: i18n.parameters,
             isRowIndexColumn: false,
             dataType: undefined as any,
             width: undefined,
@@ -105,7 +105,7 @@ export function FeelFunctionExpression({
         ],
       },
     ];
-  }, [expressionHolderId, functionExpression, parametersColumnHeader, parametersId]);
+  }, [expressionHolderId, functionExpression, parametersColumnHeader, parametersId, i18n.parameters]);
 
   const headerVisibility = useMemo(() => {
     return isNested ? BeeTableHeaderVisibility.LastLevel : BeeTableHeaderVisibility.AllLevels;

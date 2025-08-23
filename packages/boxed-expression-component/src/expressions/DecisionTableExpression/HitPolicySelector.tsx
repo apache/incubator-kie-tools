@@ -169,7 +169,7 @@ export function HitPolicySelector({
         <div className="hit-policy-flex-container" data-testid={"kie-tools--bee--hit-policy-header"}>
           <div className="hit-policy-section">
             <Menu onSelect={hitPolicySelectionCallback} selected={selectedHitPolicy}>
-              <MenuGroup className="menu-with-help" label="Hit policy">
+              <MenuGroup className="menu-with-help" label={i18n.hitPolicyLabel}>
                 <MenuList>
                   <>
                     {["UNIQUE", "FIRST", "PRIORITY", "ANY", "COLLECT", "RULE ORDER", "OUTPUT ORDER"].map(
@@ -196,7 +196,7 @@ export function HitPolicySelector({
               <Divider orientation={{ default: "vertical" }} />
               <div className="hit-policy-aggregator-section">
                 <Menu onSelect={builtInAggregatorSelectionCallback} selected={selectedBuiltInAggregator}>
-                  <MenuGroup className="menu-with-help" label="Aggregator function">
+                  <MenuGroup className="menu-with-help" label={i18n.aggregatorFunction}>
                     <MenuList>
                       <>
                         {[
