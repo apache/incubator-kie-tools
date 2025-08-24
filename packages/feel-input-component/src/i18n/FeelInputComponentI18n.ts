@@ -60,6 +60,113 @@ interface FeelInputComponentDictionary extends ReferenceDictionary {
       second: string,
       offset: string
     ) => string;
+    datetTimeTimezone: (
+      year: string,
+      month: string,
+      day: string,
+      hour: string,
+      minute: string,
+      second: string,
+      timezone: string
+    ) => string;
+    dayOfWeek: string;
+    dateOfYear: string;
+    decimal: (n: string, scale: string) => string;
+    distinctValues: (list: string) => string;
+    duration: (from: string) => string;
+    during: (point: string, range: string) => string;
+    duringRange: (range1: string, range2: string) => string;
+    endsWith: (string: string, match: string) => string;
+    even: (number: string) => string;
+    exp: (number: string) => string;
+    finishedBy: (range: string, point: string) => string;
+    finishedByRange: (range1: string, range2: string) => string;
+    finishes: (point: string, range: string) => string;
+    finishesRange: (range1: string, range2: string) => string;
+    flattenNestedLists: string;
+    floor: (n: string) => string;
+    floorScale: (n: string, scale: string) => string;
+    getEntries: (m: string) => string;
+    getValue: (m: string, key: string) => string;
+    includes: (range: string, point: string) => string;
+    includesRange: (range1: string, range2: string) => string;
+    indexOf: (list: string, match: string) => string;
+    insertBefore: (list: string, position: string, newItem: string) => string;
+    is: string;
+    listConstains: (list: string, element: string) => string;
+    listReplace: (newItem: string, position: string) => string;
+    listNewItem: (newItem: string, match: string, trueValue: string) => string;
+    log: (number: string) => string;
+    lowerCase: (stringValue: string) => string;
+    matches: (input: string, pattern: string) => string;
+    max: (list: string) => string;
+    mean: (list: string) => string;
+    median: (list: string) => string;
+    meets: (range1: string, range2: string) => string;
+    metBy: (range1: string, range2: string) => string;
+    min: (list: string) => string;
+    mode: (list: string) => string;
+    modulo: (dividend: string, divisor: string) => string;
+    monthOfYear: string;
+    nnAll: (list: string) => string;
+    nnAny: (list: string) => string;
+    nnCount: (list: string) => string;
+    nnMax: (list: string) => string;
+    nnMean: string;
+    nnMedian: (list: string) => string;
+    nnMin: (list: string) => string;
+    nnMode: (list: string) => string;
+    nnStddev: (list: string) => string;
+    nnSum: (list: string) => string;
+    not: (negand: string) => string;
+    now: string;
+    numberFrom: (from: string) => string;
+    odd: (number: string) => string;
+    overlapsAfter: (range1: string, range2: string) => string;
+    overlapsBefore: (range1: string, range2: string) => string;
+    overlaps: (range1: string, range2: string) => string;
+    product: (list: string) => string;
+    rangeFrom: (stringValue: string, from: string) => string;
+    remove: (position: string) => string;
+    replace: string;
+    reverse: (list: string) => string;
+    roundDown: (n: string, scale: string) => string;
+    roundDownN: (n: string) => string;
+    roundHalfDown: (n: string, scale: string) => string;
+    roundHalfDownN: (n: string) => string;
+    roundHalfUp: (n: string, scale: string) => string;
+    roundHalfUpN: (n: string) => string;
+    roundUp: (n: string, scale: string) => string;
+    roundUpN: (n: string) => string;
+    sort: (numberValue: string, stringValue: string) => string;
+    sortPrecedes: string;
+    split: (stringValue: string, delimiter: string) => string;
+    sqrt: (numberValue: string) => string;
+    startedBy: (range: string, point: string) => string;
+    startedByRange: (range1: string, range2: string) => string;
+    startsWith: (stringValue: string, match: string) => string;
+    starts: (point: string, range: string) => string;
+    startsRange: (range1: string, range2: string) => string;
+    stddev: (list: string) => string;
+    stringLength: (stringValue: string) => string;
+    stringFrom: string;
+    stringJoin: (list: string) => string;
+    stringJoinDelimiter: (list: string, delimiter: string) => string;
+    sublist: (startPosition: string) => string;
+    sublistLength: (startPosition: string, length: string) => string;
+    substringAfter: (match: string) => string;
+    substringBefore: (match: string) => string;
+    substringStartPosition: (startPosition: string) => string;
+    substringLength: (startPosition: string, length: string) => string;
+    sum: (list: string) => string;
+    time: string;
+    timeHour: (hour: string, minute: string, second: string) => string;
+    timeOffset: (hour: string, minute: string, second: string, offset: string) => string;
+    today: string;
+    union: string;
+    upperCase: (stringValue: string) => string;
+    weekOfYear: string;
+    yearsAndMonthsDuration: string;
   };
 }
 
