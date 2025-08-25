@@ -211,11 +211,12 @@ digraph G {
   "@kie-tools/sonataflow-management-console-image-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/sonataflow-management-console-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/stunner-editors-dmn-loader" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/swf-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/xml-parser-ts" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-dashbuilder-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-kie-ba-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-kogito-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/xml-parser-ts" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yard-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yard-validator" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yard-model" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -662,6 +663,14 @@ digraph G {
   "@kie-tools/stunner-editors" -> "@kie-tools/stunner-editors-dmn-loader" [ style = "dashed", color = "black" ];
   "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools/boxed-expression-component" [ style = "solid", color = "blue" ];
   "@kie-tools/stunner-editors-dmn-loader" -> "@kie-tools/import-java-classes-component" [ style = "solid", color = "blue" ];
+  "@kie-tools/swf-editor" -> "@kie-tools-core/operating-system" [ style = "solid", color = "blue" ];
+  "@kie-tools/swf-editor" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "blue" ];
+  "@kie-tools/swf-editor" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
+  "@kie-tools/swf-editor" -> "@kie-tools-core/switch-expression-ts" [ style = "solid", color = "blue" ];
+  "@kie-tools/swf-editor" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
+  "@kie-tools/swf-editor" -> "@kie-tools/xml-parser-ts" [ style = "solid", color = "blue" ];
+  "@kie-tools/swf-editor" -> "@kie-tools/playwright-base" [ style = "dashed", color = "blue" ];
+  "@kie-tools/swf-editor" -> "@kie-tools/storybook-base" [ style = "dashed", color = "blue" ];
   "@kie-tools-core/switch-expression-ts" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/switch-expression-ts" -> "@kie-tools/jest-base" [ style = "dashed", color = "purple" ];
   "@kie-tools-core/switch-expression-ts" -> "@kie-tools/tsconfig" [ style = "dashed", color = "purple" ];
