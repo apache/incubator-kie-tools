@@ -25,10 +25,7 @@ import java.util.Queue;
 
 import com.ait.lienzo.client.core.config.LienzoCore;
 import com.ait.lienzo.shared.core.types.ImageSelectionMode;
-import org.gwtbootstrap3.extras.notify.client.NotifyClientBundle;
 import org.kie.j2cl.tools.di.ui.translation.client.annotation.Bundle;
-import org.kie.j2cl.tools.processors.common.injectors.ScriptInjector;
-import org.kie.j2cl.tools.processors.common.injectors.StyleInjector;
 import org.kie.j2cl.tools.processors.common.resources.TextResource;
 import org.kie.workbench.common.stunner.client.lienzo.resources.StunnerLienzoCoreResources;
 
@@ -47,19 +44,20 @@ public class StunnerLienzoCore {
      */
     public void init() {
 
-        // sequence of resources is important
-        resources.add(() -> injectScript(StunnerLienzoCoreResources.INSTANCE.jquery()));
-        resources.add(() -> injectScript(StunnerLienzoCoreResources.INSTANCE.bootstrapJs()));
         resources.add(() -> injectStyle(StunnerLienzoCoreResources.INSTANCE.animate()));
-        resources.add(() -> injectScript(StunnerLienzoCoreResources.INSTANCE.gwtbootstrap3()));
         resources.add(() -> injectStyle(StunnerLienzoCoreResources.INSTANCE.patternflyStyleAdditionsMin()));
         resources.add(() -> injectStyle(StunnerLienzoCoreResources.INSTANCE.patternflyStyleMin()));
-        resources.add(() -> injectScript(StunnerLienzoCoreResources.INSTANCE.patternfly()));
         resources.add(() -> injectStyle(StunnerLienzoCoreResources.INSTANCE.uberfirePatternfly()));
         resources.add(() -> injectStyle(StunnerLienzoCoreResources.INSTANCE.fontAwesome()));
         resources.add(() -> injectStyle(StunnerLienzoCoreResources.INSTANCE.fonts()));
-        resources.add(() -> injectScript(NotifyClientBundle.INSTANCE.notifyJS()));
-        resources.add(() -> injectScript(StunnerLienzoCoreResources.INSTANCE.bootstrapSelectJs()));
+
+        resources.add(() -> injectStyle(StunnerLienzoCoreResources.INSTANCE.AlertsView()));
+        resources.add(() -> injectStyle(StunnerLienzoCoreResources.INSTANCE.ErrorPage()));
+        resources.add(() -> injectStyle(StunnerLienzoCoreResources.INSTANCE.InlineTextEditorBox()));
+        resources.add(() -> injectStyle(StunnerLienzoCoreResources.INSTANCE.SessionPresenterView()));
+        resources.add(() -> injectStyle(StunnerLienzoCoreResources.INSTANCE.ZoomLevelSelectorItem()));
+        resources.add(() -> injectStyle(StunnerLienzoCoreResources.INSTANCE.ZoomLevelSelectorView()));
+
 
         pollResource();
 
@@ -68,12 +66,7 @@ public class StunnerLienzoCore {
 
 
     private void injectStyle(TextResource resource) {
-        StyleInjector.fromString(resource.getText()).inject();
-        pollResource();
-    }
-
-    private void injectScript(TextResource resource) {
-        ScriptInjector.fromString(resource.getText()).inject();
+        StyleInjector.fromString(resource.getText(), htmlElement -> htmlElement.setAttribute("nonce", "DEV_NONCE")).inject();
         pollResource();
     }
 

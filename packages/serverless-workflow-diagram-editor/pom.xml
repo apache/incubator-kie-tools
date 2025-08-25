@@ -232,6 +232,8 @@
     <version.gwtbootstrap3>1.0.1</version.gwtbootstrap3>
     <version.bootstrap>3.4.1</version.bootstrap>
     <version.animate_css>3.5.2</version.animate_css>
+    <version.jquery>3.7.1</version.jquery>
+    <version.jquery-migrate>3.3.2</version.jquery-migrate>
   </properties>
 
   <dependencyManagement>
