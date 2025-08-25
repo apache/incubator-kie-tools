@@ -19,27 +19,7 @@
 
 ## Overview
 
-This package collects common configurations to run end-to-end Playwright tests.
-
-## Installing Playwright deps
-
-Currently, all Playwright end-to-end tests run inside containers. If you need to debug a test, we recommend doing so on the host machine. To do this, you need to install the Playwright dependencies. Use the `PLAYWRIGHT_BASE__installDeps` environment variable during the bootstrap phase to install all the required dependencies.
-
-```sh
-# in the `kie-tools` root
-PLAYWRIGHT_BASE__installDeps=true pnpm bootstrap
-```
-
-or
-
-```sh
-# in the `kie-tools` root
-PLAYWRIGHT_BASE__installDeps=true pnpm bootstrap -F playwright-base
-```
-
-> **i NOTE**
->
-> Since this step install the Playwright browsers, it requires sudo permision.
+This package collects common configurations to run end-to-end Playwright tests. Currently, all Playwright end-to-end tests run inside containers. If you need to debug a test, we recommend doing so on the host machine, refer to the [Installing Playwright deps](#Installing-Playwright-deps)
 
 ## Using containers to generate screenshots
 
@@ -47,7 +27,7 @@ Each operating system has slight variations in UI, even within the same browser.
 
 > **ℹ️ NOTE**
 >
-> Due to compatibility issues, this containerization solution cannot yet be used on native Windows and requires running it directly within WSL (Windows Subsystem for Linux). Also, Linux arm64 doesn't support Google Chrome, and due to this caveat, some tests will be disabled for this arch.
+> Due to compatibility issues, this containerization solution cannot yet be used on native Windows and requires running it directly within WSL (Windows Subsystem for Linux). Also, Linux arm64 doesn't support Google Chrome, and due to this caveat, Google Chrome tests in macOS arm are disabled.
 
 ---
 
@@ -78,6 +58,29 @@ pnpm test-e2e:container:shell
 # Wait until the new shell is ready
 pnpm test-e2e:run --update-snapshots
 ```
+
+## Installing Playwright dependencies on host machine
+
+> **i Warning**
+>
+> The tests screenshot comparisons will not work in an environment different than the containers, meaning, this setup is only used to debug.
+> To install the Playwright dependencies use the `PLAYWRIGHT_BASE__installDeps` environment variable during the bootstrap phase to install all the required dependencies.
+
+```sh
+# in the `kie-tools` root
+PLAYWRIGHT_BASE__installDeps=true pnpm bootstrap
+```
+
+or
+
+```sh
+# in the `kie-tools` root
+PLAYWRIGHT_BASE__installDeps=true pnpm bootstrap -F playwright-base
+```
+
+> **i NOTE**
+>
+> Since this step install the Playwright browsers, it requires sudo permision.
 
 ---
 
