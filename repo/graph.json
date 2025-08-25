@@ -242,6 +242,7 @@
       { "id": "@kie-tools/sonataflow-management-console-image" },
       { "id": "@kie-tools/sonataflow-management-console-image-env" },
       { "id": "@kie-tools/sonataflow-management-console-webapp" },
+      { "id": "@kie-tools/swf-editor" },
       { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" },
@@ -2671,6 +2672,46 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/swf-editor",
+        "target": "@kie-tools-core/operating-system",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/swf-editor",
+        "target": "@kie-tools-core/patternfly-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/swf-editor",
+        "target": "@kie-tools-core/react-hooks",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/swf-editor",
+        "target": "@kie-tools-core/switch-expression-ts",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/swf-editor",
+        "target": "@kie-tools/i18n-common-dictionary",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/swf-editor",
+        "target": "@kie-tools/xml-parser-ts",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/swf-editor",
+        "target": "@kie-tools/playwright-base",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/swf-editor",
+        "target": "@kie-tools/storybook-base",
+        "weight": 1
+      },
+      {
         "source": "vscode-extension-dashbuilder-editor",
         "target": "@kie-tools-core/vscode-extension",
         "weight": 1
@@ -2997,6 +3038,7 @@
     ["@kie-tools/storybook-base", "packages/storybook-base"],
     ["@kie-tools/stunner-editors", "packages/stunner-editors"],
     ["@kie-tools/stunner-editors-dmn-loader", "packages/stunner-editors-dmn-loader"],
+    ["@kie-tools/swf-editor", "packages/swf-editor"],
     ["@kie-tools-core/switch-expression-ts", "packages/switch-expression-ts"],
     ["@kie-tools/text-editor", "packages/text-editor"],
     ["@kie-tools/tsconfig", "packages/tsconfig"],
