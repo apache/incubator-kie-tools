@@ -136,7 +136,7 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
   value: string;
   classNameLabel: string;
   methodSignatureLabel: string;
-  example: string;
+  getLabelexample: (label: string) => string;
   parameterNamePlaceholder: string;
   noneSelected: string;
   selectDocument: string;

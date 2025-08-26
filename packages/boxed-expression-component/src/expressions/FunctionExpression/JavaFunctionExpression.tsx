@@ -510,7 +510,7 @@ function JavaFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTable
         {isCellHovered && (
           <Popover
             className="java-function-parameter-help-popover"
-            headerContent={label + " " + i18n.example}
+            headerContent={i18n.getLabelexample(label)}
             bodyContent={getParameterLabelHelp}
           >
             <Icon size="sm">

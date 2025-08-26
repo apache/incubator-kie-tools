@@ -57,18 +57,26 @@ export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorP
     [onFunctionKindSelect]
   );
 
-  const functionKindHelp = useCallback((functionKind: DMN_LATEST__tFunctionKind) => {
-    switch (functionKind) {
-      case "FEEL":
-        return i18n.functionKindHelp.feel;
-      case "Java":
-        return i18n.functionKindHelp.java;
-      case "PMML":
-        return i18n.functionKindHelp.pmml;
-      default:
-        return i18n.functionKindHelp.notSupported;
-    }
-  }, []);
+  const functionKindHelp = useCallback(
+    (functionKind: DMN_LATEST__tFunctionKind) => {
+      switch (functionKind) {
+        case "FEEL":
+          return i18n.functionKindHelp.feel;
+        case "Java":
+          return i18n.functionKindHelp.java;
+        case "PMML":
+          return i18n.functionKindHelp.pmml;
+        default:
+          return i18n.functionKindHelp.notSupported;
+      }
+    },
+    [
+      i18n.functionKindHelp.feel,
+      i18n.functionKindHelp.java,
+      i18n.functionKindHelp.notSupported,
+      i18n.functionKindHelp.pmml,
+    ]
+  );
 
   const [visibleHelp, setVisibleHelp] = React.useState<string>("");
   const toggleVisibleHelp = useCallback((help: string) => {

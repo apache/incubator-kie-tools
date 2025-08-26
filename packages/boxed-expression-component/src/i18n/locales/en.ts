@@ -162,7 +162,7 @@ export const en: BoxedExpressionEditorI18n = {
   value: "value",
   classNameLabel: "Class name",
   methodSignatureLabel: "Method signature",
-  example: "example",
+  getLabelexample: (label: string) => `${label} example`,
   parameterNamePlaceholder: "Parameter Name",
   noneSelected: "-- None selected --",
   selectDocument: "Select a document first",

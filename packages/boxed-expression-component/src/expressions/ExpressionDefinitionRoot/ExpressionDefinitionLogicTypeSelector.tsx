@@ -330,38 +330,54 @@ export function ExpressionDefinitionLogicTypeSelector({
     return expression.__$$element !== "literalExpression" && !nonSelectableLogicTypes.has(expression.__$$element);
   }, [expression, isNested, nonSelectableLogicTypes]);
 
-  const logicTypeHelp = useCallback((logicType: BoxedExpression["__$$element"] | undefined) => {
-    switch (logicType) {
-      case "literalExpression":
-        return i18n.logicTypeHelp.literal;
-      case "context":
-        return i18n.logicTypeHelp.context;
-      case "decisionTable":
-        return i18n.logicTypeHelp.decisionTable;
-      case "relation":
-        return i18n.logicTypeHelp.relation;
-      case "functionDefinition":
-        return i18n.logicTypeHelp.functionDefinition;
-      case "invocation":
-        return i18n.logicTypeHelp.invocation;
-      case "list":
-        return i18n.logicTypeHelp.list;
-      case "conditional":
-        return i18n.logicTypeHelp.conditional;
-      case "for":
-        return i18n.logicTypeHelp.for;
+  const logicTypeHelp = useCallback(
+    (logicType: BoxedExpression["__$$element"] | undefined) => {
+      switch (logicType) {
+        case "literalExpression":
+          return i18n.logicTypeHelp.literal;
+        case "context":
+          return i18n.logicTypeHelp.context;
+        case "decisionTable":
+          return i18n.logicTypeHelp.decisionTable;
+        case "relation":
+          return i18n.logicTypeHelp.relation;
+        case "functionDefinition":
+          return i18n.logicTypeHelp.functionDefinition;
+        case "invocation":
+          return i18n.logicTypeHelp.invocation;
+        case "list":
+          return i18n.logicTypeHelp.list;
+        case "conditional":
+          return i18n.logicTypeHelp.conditional;
+        case "for":
+          return i18n.logicTypeHelp.for;
 
-      case "every":
-        return i18n.logicTypeHelp.every;
-      case "some":
-        return i18n.logicTypeHelp.some;
-      case "filter":
-        return i18n.logicTypeHelp.filter;
+        case "every":
+          return i18n.logicTypeHelp.every;
+        case "some":
+          return i18n.logicTypeHelp.some;
+        case "filter":
+          return i18n.logicTypeHelp.filter;
 
-      default:
-        return "";
-    }
-  }, []);
+        default:
+          return "";
+      }
+    },
+    [
+      i18n.logicTypeHelp.conditional,
+      i18n.logicTypeHelp.context,
+      i18n.logicTypeHelp.decisionTable,
+      i18n.logicTypeHelp.every,
+      i18n.logicTypeHelp.filter,
+      i18n.logicTypeHelp.for,
+      i18n.logicTypeHelp.functionDefinition,
+      i18n.logicTypeHelp.invocation,
+      i18n.logicTypeHelp.list,
+      i18n.logicTypeHelp.literal,
+      i18n.logicTypeHelp.relation,
+      i18n.logicTypeHelp.some,
+    ]
+  );
 
   const headerMenuItems = useMemo(() => {
     return (
