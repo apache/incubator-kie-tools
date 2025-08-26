@@ -19,10 +19,10 @@
 
 import * as React from "react";
 import { en } from "./locales";
-import { I18nDefaults, I18nDictionaries } from "../../../i18n/dist/core";
-import { I18nContextType } from "../../../i18n/dist/react-components";
-import { ScesimEditorEnvelopeI18n } from "./ScesimEditorEnvelopeI18n";
 import { useContext } from "react";
+import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
+import { ScesimEditorEnvelopeI18n } from "./ScesimEditorEnvelopeI18n";
+import { I18nContextType } from "@kie-tools-core/i18n/dist/react-components";
 
 export const scesimEditorEnvelopeI18nDefaults: I18nDefaults<ScesimEditorEnvelopeI18n> = {
   locale: "en",
