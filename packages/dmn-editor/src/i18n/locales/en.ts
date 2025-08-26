@@ -19,7 +19,6 @@
 
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 import { DmnEditorI18n } from "../DmnEditorI18n";
-import { title } from "process";
 import { wrapped } from "@kie-tools-core/i18n/dist/core";
 
 export const en: DmnEditorI18n = {
@@ -286,7 +285,7 @@ export const en: DmnEditorI18n = {
     emptyParameters: "Empty parameters list",
     parameter: ["Parameter ", wrapped("name")],
     boxedConditional: "Boxed Conditional",
-    functionTobeCalled: "Function to be called",
+    functionToBeCalled: "Function to be called",
     functionNamePlaceholder: "Enter the function name...",
     variableToIterateOver: "Variable to interate over",
     variableNamePlaceholder: "Enter the variable name...",

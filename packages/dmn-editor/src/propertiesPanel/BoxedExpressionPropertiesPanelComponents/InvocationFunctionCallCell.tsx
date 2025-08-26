@@ -51,7 +51,7 @@ export function InvocationFunctionCallCell(props: {
     <>
       <TextField
         type={TextFieldType.TEXT_INPUT}
-        title={i18n.propertiesPanel.functionTobeCalled}
+        title={i18n.propertiesPanel.functionToBeCalled}
         placeholder={i18n.propertiesPanel.functionNamePlaceholder}
         isReadOnly={props.isReadOnly}
         initialValue={cell.text?.__$$text ?? ""}
