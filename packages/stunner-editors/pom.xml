@@ -194,6 +194,7 @@
     <version.deploy.plugin>3.1.2</version.deploy.plugin>
     <version.enforcer.plugin>3.5.0</version.enforcer.plugin>
     <version.failsafe.plugin>${version.surefire.plugin}</version.failsafe.plugin>
+    <version.gwt-maven-plugin>2.10.0</version.gwt-maven-plugin>
     <version.install.plugin>3.1.3</version.install.plugin>
     <version.jacoco.plugin>0.8.11</version.jacoco.plugin>
     <version.jar.plugin>3.1.0</version.jar.plugin>
@@ -216,9 +217,9 @@
     <version.ch.qos.logback>1.5.16</version.ch.qos.logback>
     <version.commons-io>2.19.0</version.commons-io>
     <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
-    <version.com.google.guava>32.1.3-jre</version.com.google.guava>
+    <version.com.google.guava>33.0.0-jre</version.com.google.guava>
     <version.commons.codec>1.13</version.commons.codec>
-    <version.org.gwtproject>2.10.0</version.org.gwtproject>
+    <version.org.gwtproject>2.12.2</version.org.gwtproject>
     <version.com.google.jsinterop.base>1.0.0</version.com.google.jsinterop.base>
     <version.com.thoughtworks.xstream>1.4.21</version.com.thoughtworks.xstream>
     <version.enforce-managed-deps-rule>1.3</version.enforce-managed-deps-rule>
@@ -238,14 +239,14 @@
     <version.com.google.inject.guice>4.0</version.com.google.inject.guice>
     <version.org.gwtbootstrap3>1.0.1</version.org.gwtbootstrap3>
     <version.org.gwtbootstrap3-extras>1.0.2</version.org.gwtbootstrap3-extras>
-    <version.org.javassist>3.26.0-GA</version.org.javassist>
+    <version.org.javassist>3.30.2-GA</version.org.javassist>
     <version.org.seleniumhq.selenium>4.18.1</version.org.seleniumhq.selenium>
     <version.org.jboss.maven-jdocbook-plugin>2.3.5</version.org.jboss.maven-jdocbook-plugin>
     <version.org.jboss.pressbang>2.0.0</version.org.jboss.pressbang>
     <version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.2_spec
     >1.0.0.Final</version.org.jboss.spec.javax.annotation.jboss-annotations-api_1.2_spec>
     <version.org.jsoup>1.15.3</version.org.jsoup>
-    <version.org.ow2.asm>7.1</version.org.ow2.asm>
+    <version.org.ow2.asm>9.6</version.org.ow2.asm>
     <version.org.w3c.css.sac>1.3</version.org.w3c.css.sac>
 
     <!-- Test Libraries -->
@@ -1518,7 +1519,19 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>gwt-maven-plugin</artifactId>
-          <version>${version.org.gwtproject}</version>
+          <version>${version.gwt-maven-plugin}</version>
+          <dependencies>
+            <dependency>
+              <groupId>org.gwtproject</groupId>
+              <artifactId>gwt-dev</artifactId>
+              <version>${version.org.gwtproject}</version>
+            </dependency>
+            <dependency>
+              <groupId>org.gwtproject</groupId>
+              <artifactId>gwt-user</artifactId>
+              <version>${version.org.gwtproject}</version>
+            </dependency>
+          </dependencies>
           <executions>
             <execution>
               <goals>
