@@ -19,7 +19,7 @@
 
 import { en } from "./locales";
 import { FormCodeGeneratorI18n } from "./FormCodeGeneratorI18n";
-import { I18n, I18nDefaults, I18nDictionaries } from "../../../i18n/dist/core";
+import { I18n, I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
 
 export const formCodeGeneratorI18nDefaults: I18nDefaults<FormCodeGeneratorI18n> = {
   locale: "en",

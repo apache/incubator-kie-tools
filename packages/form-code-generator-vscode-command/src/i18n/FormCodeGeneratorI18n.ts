@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ReferenceDictionary } from "../../../i18n/dist/core";
+import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 
 interface FormCodeGeneratorDictionary extends ReferenceDictionary {
   generateFormCode: {
