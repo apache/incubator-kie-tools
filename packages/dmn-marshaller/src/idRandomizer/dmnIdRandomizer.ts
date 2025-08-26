@@ -19,24 +19,24 @@
 
 import { v4 as uuid } from "uuid";
 import { XmlParserTsIdRandomizer, XmlParserTsIdRandomizerMatcher } from "@kie-tools/xml-parser-ts/dist/idRandomizer";
-import { elements as dmn15elements, meta as dmn15meta } from "../schemas/dmn-1_5/ts-gen/meta";
+import { elements as dmn16elements, meta as dmn16meta } from "../schemas/dmn-1_6/ts-gen/meta";
 import { buildXmlHref, parseXmlHref } from "../xml/xmlHrefs";
 
 export function getNewDmnIdRandomizer() {
   return new XmlParserTsIdRandomizer({
-    meta: dmn15meta,
-    elements: dmn15elements,
+    meta: dmn16meta,
+    elements: dmn16elements,
     newIdGenerator: () => `_${uuid()}`.toLocaleUpperCase(),
     matchers: [tDmnElementReferenceIdRandomizerMatcher],
   });
 }
 
-export const tDmnElementReferenceIdRandomizerMatcher: XmlParserTsIdRandomizerMatcher<typeof dmn15meta> = ({
+export const tDmnElementReferenceIdRandomizerMatcher: XmlParserTsIdRandomizerMatcher<typeof dmn16meta> = ({
   parentJson,
   metaTypeName,
   attr,
 }) => {
-  if (metaTypeName === "DMN15__tDMNElementReference" && attr === "@_href") {
+  if (metaTypeName === "DMN16__tDMNElementReference" && attr === "@_href") {
     const href = parseXmlHref(parentJson[attr]);
     return [
       href.id,

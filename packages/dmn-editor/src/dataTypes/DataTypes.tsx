@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo, useState, useEffect } from "react";
-import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tItemDefinition } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getNewDmnIdRandomizer } from "@kie-tools/dmn-marshaller/dist/idRandomizer/dmnIdRandomizer";
 import {
@@ -38,7 +38,7 @@ import { DataTypePanel } from "./DataTypePanel";
 import { findDataTypeById, isStruct } from "./DataTypeSpec";
 import { DataTypeName } from "./DataTypeName";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { DMN16_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 import {
   Dropdown,
@@ -66,7 +66,7 @@ import { ImportJavaClassesDropdownItem, ImportJavaClassNameConflictsModal } from
 import { useImportJavaClasses } from "./useImportJavaClasses";
 
 export type DataType = {
-  itemDefinition: Normalized<DMN15__tItemDefinition>;
+  itemDefinition: Normalized<DMN_LATEST__tItemDefinition>;
   parentId: string | undefined;
   parents: Set<string>;
   index: number;
@@ -80,17 +80,17 @@ export type DataTypeIndex = Map<string, DataType>;
 export type AddItemComponent = (
   id: string,
   how: "unshift" | "push",
-  partial?: Partial<Normalized<DMN15__tItemDefinition>>
+  partial?: Partial<Normalized<DMN_LATEST__tItemDefinition>>
 ) => void;
-export type AddTopLevelItemDefinition = (partial: Partial<Normalized<DMN15__tItemDefinition>>) => void;
+export type AddTopLevelItemDefinition = (partial: Partial<Normalized<DMN_LATEST__tItemDefinition>>) => void;
 
 export type EditItemDefinition = (
   id: string,
   consumer: (
-    itemDefinition: Normalized<DMN15__tItemDefinition>,
-    items: Normalized<DMN15__tItemDefinition>[],
+    itemDefinition: Normalized<DMN_LATEST__tItemDefinition>,
+    items: Normalized<DMN_LATEST__tItemDefinition>[],
     index: number,
-    all: Normalized<DMN15__tItemDefinition>[],
+    all: Normalized<DMN_LATEST__tItemDefinition>[],
     state: State
   ) => void
 ) => void;
@@ -182,7 +182,7 @@ export function DataTypes() {
       getNewDmnIdRandomizer()
         .ack({
           json: clipboard.itemDefinitions,
-          type: "DMN15__tDefinitions",
+          type: "DMN16__tDefinitions",
           attr: "itemDefinition",
         })
         .randomize({ skipAlreadyAttributedIds: false });
@@ -326,7 +326,7 @@ export function DataTypes() {
                             <div
                               className={`kie-dmn-editor--editable-node-name-input top-left grow`}
                               style={
-                                DMN15_SPEC.namedElement.isValidName(
+                                DMN16_SPEC.namedElement.isValidName(
                                   itemDefinition["@_id"]!,
                                   feelName,
                                   allTopLevelItemDefinitionUniqueNames

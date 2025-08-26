@@ -52,7 +52,7 @@ import { ExpressionVariableCell, ExpressionWithVariable } from "../../expression
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
 import { useBeeTableCoordinates, useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
-import { DMN15__tBinding } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tBinding } from "@kie-tools/dmn-marshaller";
 import { findAllIdsDeep } from "../../ids/ids";
 import "./InvocationExpression.css";
 
@@ -353,7 +353,7 @@ export function InvocationExpression({
   }, [i18n]);
 
   const getDefaultArgumentEntry = useCallback(
-    (name?: string): Normalized<DMN15__tBinding> => {
+    (name?: string): Normalized<DMN_LATEST__tBinding> => {
       return {
         parameter: {
           "@_id": generateUuid(),
@@ -373,7 +373,7 @@ export function InvocationExpression({
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number }) => {
-      const newEntries: Normalized<DMN15__tBinding>[] = [];
+      const newEntries: Normalized<DMN_LATEST__tBinding>[] = [];
       const names = (invocationExpression.binding ?? []).map((e) => e.parameter["@_name"]);
       for (let i = 0; i < args.rowsCount; i++) {
         const name = getNextAvailablePrefixedName(names, "p");

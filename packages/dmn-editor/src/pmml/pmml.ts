@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tImport } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import * as __path from "path";
@@ -57,7 +57,7 @@ export function getPmmlNamespace({
   return buildXmlHref({ namespace: KIE_PMML_NAMESPACE, id: normalizedPosixPathRelativeToTheOpenFile });
 }
 
-export function getPmmlNamespaceFromDmnImport({ dmnImport }: { dmnImport: Normalized<DMN15__tImport> }) {
+export function getPmmlNamespaceFromDmnImport({ dmnImport }: { dmnImport: Normalized<DMN_LATEST__tImport> }) {
   return dmnImport["@_locationURI"]
     ? getPmmlNamespace({
         // We need to normalize the path here because they're always stored as explicit relative paths starting with `./` or `../`

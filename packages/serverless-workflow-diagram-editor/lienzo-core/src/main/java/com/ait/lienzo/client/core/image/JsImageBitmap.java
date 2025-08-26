@@ -21,6 +21,7 @@
 package com.ait.lienzo.client.core.image;
 
 import elemental2.dom.DomGlobal;
+import elemental2.dom.HTMLImageElement;
 import elemental2.dom.ImageBitmap;
 import elemental2.dom.Response;
 import jsinterop.annotations.JsOverlay;
@@ -41,16 +42,45 @@ public class JsImageBitmap implements ImageBitmap {
 
     @JsOverlay
     public static void loadImageBitmap(final String url, final JsImageBitmapCallback callback) {
+        if (url != null && url.startsWith("data:")) {
+            final HTMLImageElement img = (HTMLImageElement) DomGlobal.document.createElement("img");
+            img.onload = e -> {
+                DomGlobal.createImageBitmap(img)
+                        .then(imageBitmap -> {
+                            img.onload = null;
+                            img.onerror = null;
+                            callback.onSuccess(Js.uncheckedCast(imageBitmap));
+                            return null;
+                        })
+                        .catch_(err -> {
+                            img.onload = null;
+                            img.onerror = null;
+                            callback.onError(err);
+                            return null;
+                        });
+                return null;
+            };
+            img.onerror = e -> {
+                img.onload = null;
+                img.onerror = null;
+                callback.onError(e);
+                return null;
+            };
+            img.src = url;
+            return;
+        }
+
         DomGlobal.fetch(url)
                 .then(Response::blob)
                 .then(DomGlobal::createImageBitmap)
                 .then(image -> {
                     callback.onSuccess(Js.uncheckedCast(image));
                     return null;
-                }).catch_(error -> {
-            callback.onError(error);
-            return null;
-        });
+                })
+                .catch_(error -> {
+                    callback.onError(error);
+                    return null;
+                });
     }
 
 }
