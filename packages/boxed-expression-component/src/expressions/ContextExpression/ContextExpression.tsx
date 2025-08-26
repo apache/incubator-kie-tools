@@ -53,7 +53,7 @@ import { ContextEntryExpressionCell } from "./ContextEntryExpressionCell";
 import { ExpressionVariableCell, ExpressionWithVariable } from "../../expressionVariable/ExpressionVariableCell";
 import { ContextResultExpressionCell } from "./ContextResultExpressionCell";
 import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
-import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tContextEntry } from "@kie-tools/dmn-marshaller";
 import { findAllIdsDeep } from "../../ids/ids";
 import "./ContextExpression.css";
 
@@ -300,7 +300,7 @@ export function ContextExpression({
   }, [contextExpression, parentElementId]);
 
   const getDefaultContextEntry = useCallback(
-    (name?: string): Normalized<DMN15__tContextEntry> => {
+    (name?: string): Normalized<DMN_LATEST__tContextEntry> => {
       const variableName =
         name ||
         getNextAvailablePrefixedName(
@@ -526,7 +526,7 @@ export function solveResultAndEntriesIndex({
   contextEntries,
   rowIndex,
 }: {
-  contextEntries: DMN15__tContextEntry[];
+  contextEntries: DMN_LATEST__tContextEntry[];
   rowIndex: number;
 }) {
   const resultIndex = contextEntries.findIndex((e) => !e.variable);

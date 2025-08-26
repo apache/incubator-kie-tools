@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { State } from "../Store";
 
 export function computeAllFeelVariableUniqueNames(

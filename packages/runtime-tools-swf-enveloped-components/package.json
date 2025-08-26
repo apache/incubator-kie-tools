@@ -42,6 +42,7 @@
     "@kie-tools/runtime-tools-shared-gateway-api": "workspace:*",
     "@kie-tools/runtime-tools-swf-gateway-api": "workspace:*",
     "@kie-tools/serverless-workflow-combined-editor": "workspace:*",
+    "@kie-tools/sonataflow-uniforms": "workspace:*",
     "@microlink/react-json-view": "^1.24.0",
     "@patternfly/patternfly": "^5.4.1",
     "@patternfly/react-core": "^5.4.1",

@@ -21,7 +21,7 @@ import * as React from "react";
 import { useMemo } from "react";
 import { DescriptionField, ExpressionLanguageField, TypeRefField } from "../Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
-import { DMN15__tDecisionTable, DMN15__tUnaryTests } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDecisionTable, DMN_LATEST__tUnaryTests } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
@@ -57,7 +57,7 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
           .getDataTypes(externalModelsByNamespace);
         const typeRef =
           allTopLevelItemDefinitionUniqueNames.get(
-            (root?.cell as Normalized<DMN15__tDecisionTable>)?.input?.[cellPath.column ?? 0].inputExpression[
+            (root?.cell as Normalized<DMN_LATEST__tDecisionTable>)?.input?.[cellPath.column ?? 0].inputExpression[
               "@_typeRef"
             ] ?? ""
           ) ?? DmnBuiltInDataType.Undefined;
@@ -66,9 +66,14 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
     }
   }, [dmnEditorStoreApi, externalModelsByNamespace, props.boxedExpressionIndex, selectedObjectInfos?.expressionPath]);
 
-  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tUnaryTests>>(selectedObjectInfos?.expressionPath ?? []);
+  const updater = useBoxedExpressionUpdater<Normalized<DMN_LATEST__tUnaryTests>>(
+    selectedObjectInfos?.expressionPath ?? []
+  );
 
-  const cell = useMemo(() => selectedObjectInfos?.cell as Normalized<DMN15__tUnaryTests>, [selectedObjectInfos?.cell]);
+  const cell = useMemo(
+    () => selectedObjectInfos?.cell as Normalized<DMN_LATEST__tUnaryTests>,
+    [selectedObjectInfos?.cell]
+  );
 
   return (
     <>

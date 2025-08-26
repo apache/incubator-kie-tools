@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useMemo } from "react";
-import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Unpacked } from "../tsExt/tsExt";
 import { TypeRefLabel } from "../dataTypes/TypeRefLabel";
@@ -30,7 +30,7 @@ import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { DmnBuiltInDataType, generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditorStore } from "../store/StoreContext";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
-import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { DMN16_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 
@@ -40,7 +40,7 @@ export function DmnObjectListItem({
   namespace,
   relativeToNamespace,
 }: {
-  dmnObject: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]> | undefined;
+  dmnObject: Unpacked<Normalized<DMN_LATEST__tDefinitions>["drgElement"]> | undefined;
   dmnObjectHref: string;
   namespace: string;
   relativeToNamespace: string;
@@ -118,7 +118,7 @@ export function DmnObjectListItem({
   }, [displayName, dmnObject, isNamespaceDirectlyIncluded, namespace, nodeTypeTooltipDescription]);
 
   const isValid = useDmnEditorStore((s) =>
-    DMN15_SPEC.namedElement.isValidName(
+    DMN16_SPEC.namedElement.isValidName(
       dmnObject?.["@_id"] ?? generateUuid(),
       displayName,
       s.computed(s).getAllFeelVariableUniqueNames()

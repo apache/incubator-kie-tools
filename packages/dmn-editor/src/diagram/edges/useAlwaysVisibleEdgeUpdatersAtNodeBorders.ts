@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DC__Point } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { useLayoutEffect } from "react";
 import * as RF from "reactflow";
 import { getLineRectangleIntersectionPoint } from "../maths/DmnMaths";

@@ -31,12 +31,12 @@ import { ChangeEvent, useCallback } from "react";
 import { Action, BoxedFunction, generateUuid, getNextAvailablePrefixedName, Normalized } from "../../api";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
-import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tInformationItem } from "@kie-tools/dmn-marshaller";
 import { DataTypeSelector } from "../../expressionVariable/DataTypeSelector";
 import "./ParametersPopover.css";
 
 export interface ParametersPopoverProps {
-  parameters: Normalized<DMN15__tInformationItem>[];
+  parameters: Normalized<DMN_LATEST__tInformationItem>[];
 }
 
 export const ParametersPopover: React.FunctionComponent<ParametersPopoverProps> = ({ parameters }) => {
@@ -107,7 +107,7 @@ export const ParametersPopover: React.FunctionComponent<ParametersPopoverProps> 
   );
 };
 
-function ParameterEntry({ parameter, index }: { parameter: DMN15__tInformationItem; index: number }) {
+function ParameterEntry({ parameter, index }: { parameter: DMN_LATEST__tInformationItem; index: number }) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onNameChange = useCallback(
