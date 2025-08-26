@@ -284,7 +284,7 @@ export const en: DmnEditorI18n = {
     outputLabel: "Output Label",
     outputLabelPlaceholder: "Enter a output label...",
     emptyParameters: "Empty parameters list",
-    parameter: "Parameter ",
+    parameter: ["Parameter ", wrapped("name")],
     boxedConditional: "Boxed Conditional",
     functionTobeCalled: "Function to be called",
     functionNamePlaceholder: "Enter the function name...",

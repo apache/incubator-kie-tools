@@ -35,6 +35,7 @@ import { useExternalModels } from "../../includedModels/DmnEditorDependenciesCon
 import { State } from "../../store/Store";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditorI18n } from "../../i18n";
+import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 
 export function FunctionDefinitionParameterCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
@@ -87,7 +88,13 @@ export function FunctionDefinitionParameterCell(props: {
             }
             title={
               <p>
-                {i18n.propertiesPanel.parameter} <b>{parameter["@_name"]}</b>
+                <I18nWrapped
+                  components={{
+                    name: <b>{parameter["@_name"]}</b>,
+                  }}
+                >
+                  {i18n.propertiesPanel.parameter}
+                </I18nWrapped>
               </p>
             }
           />

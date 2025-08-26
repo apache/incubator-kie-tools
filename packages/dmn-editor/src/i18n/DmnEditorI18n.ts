@@ -239,7 +239,7 @@ interface DmnEditorDictionary extends ReferenceDictionary {
     outputLabel: string;
     outputLabelPlaceholder: string;
     emptyParameters: string;
-    parameter: string;
+    parameter: Array<string | Wrapped<"name">>;
     boxedConditional: string;
     functionTobeCalled: string;
     functionNamePlaceholder: string;
