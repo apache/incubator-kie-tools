@@ -21,7 +21,7 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { DescriptionField, NameField, TypeRefField } from "../Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
-import { DMN15__tInformationItem } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tInformationItem } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
@@ -48,7 +48,7 @@ export function InformationItemCell(props: {
   );
 
   const cell = useMemo(
-    () => selectedObjectInfos?.cell as Normalized<DMN15__tInformationItem>,
+    () => selectedObjectInfos?.cell as Normalized<DMN_LATEST__tInformationItem>,
     [selectedObjectInfos?.cell]
   );
 

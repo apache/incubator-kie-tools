@@ -22,7 +22,7 @@ import { useCallback, useMemo, useState } from "react";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { ContentField, DescriptionField, ExpressionLanguageField, NameField, TypeRefField } from "../Fields";
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
-import { DMN15__tDecision, DMN15__tOutputClause } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDecision, DMN_LATEST__tOutputClause } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
@@ -59,12 +59,12 @@ export function DecisionTableOutputHeaderCell(props: {
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tOutputClause>>(
+  const updater = useBoxedExpressionUpdater<Normalized<DMN_LATEST__tOutputClause>>(
     selectedObjectInfos?.expressionPath ?? []
   );
 
   const cell = useMemo(
-    () => selectedObjectInfos?.cell as Normalized<DMN15__tOutputClause>,
+    () => selectedObjectInfos?.cell as Normalized<DMN_LATEST__tOutputClause>,
     [selectedObjectInfos?.cell]
   );
   const defaultOutputEntry = useMemo(() => cell.defaultOutputEntry, [cell.defaultOutputEntry]);
@@ -164,10 +164,10 @@ export function DecisionTableOutputHeaderCell(props: {
               dmnEditorStoreApi.setState((state) => {
                 const drgElement = state.dmn.model.definitions.drgElement![
                   node?.data.index ?? 0
-                ] as Normalized<DMN15__tDecision>;
+                ] as Normalized<DMN_LATEST__tDecision>;
                 drgElement.variable ??= {
                   "@_id": generateUuid(),
-                  "@_name": (node?.data.dmnObject as Normalized<DMN15__tDecision> | undefined)?.["@_name"] ?? "",
+                  "@_name": (node?.data.dmnObject as Normalized<DMN_LATEST__tDecision> | undefined)?.["@_name"] ?? "",
                 };
                 drgElement.variable["@_typeRef"] = newTypeRef;
               });

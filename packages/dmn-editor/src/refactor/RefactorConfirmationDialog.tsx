@@ -21,7 +21,7 @@ import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/M
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import * as React from "react";
-import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import { IdentifiersRefactor } from "@kie-tools/dmn-language-service";
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller/dist";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
@@ -98,7 +98,7 @@ export function RefactorConfirmationDialog({
 
 export function isIdentifierReferencedInSomeExpression(args: {
   identifierUuid: string;
-  dmnDefinitions: Normalized<DMN15__tDefinitions>;
+  dmnDefinitions: Normalized<DMN_LATEST__tDefinitions>;
   externalDmnModelsByNamespaceMap: Map<string, Normalized<DmnLatestModel>>;
 }) {
   const identifiersRefactor = new IdentifiersRefactor({
@@ -128,7 +128,7 @@ export function useRefactor({
 
   const applyRename = useCallback(
     (args: {
-      definitions: Normalized<DMN15__tDefinitions>;
+      definitions: Normalized<DMN_LATEST__tDefinitions>;
       newName: string;
       shouldRenameReferencedExpressions: boolean;
     }) => {

@@ -39,7 +39,7 @@ import { DataTypeName } from "./DataTypeName";
 import { canHaveConstraints, getNewItemDefinition, isStruct } from "./DataTypeSpec";
 import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
-import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import {
   buildClipboardFromDataType,
   DMN_EDITOR_DATA_TYPES_CLIPBOARD_MIME_TYPE,
@@ -52,7 +52,7 @@ import { isRange } from "./ConstraintsRange";
 import { constraintTypeHelper, recursivelyGetRootItemDefinition } from "./Constraints";
 import { builtInFeelTypeNames } from "./BuiltInFeelTypes";
 import { useDmnEditor } from "../DmnEditorContext";
-import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tItemDefinition } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { resolveTypeRef } from "./resolveTypeRef";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
@@ -206,7 +206,7 @@ export function ItemComponentsTable({
                       getNewDmnIdRandomizer()
                         .ack({
                           json: clipboard.itemDefinitions,
-                          type: "DMN15__tDefinitions",
+                          type: "DMN16__tDefinitions",
                           attr: "itemDefinition",
                         })
                         .randomize();
@@ -519,14 +519,13 @@ export function ItemComponentsTable({
                                             "@_isCollection": false,
                                           });
 
-                                          const newItemDefinitionCopy: Normalized<DMN15__tItemDefinition> = JSON.parse(
-                                            JSON.stringify(newItemDefinition)
-                                          ); // Necessary because idRandomizer will mutate this object.
+                                          const newItemDefinitionCopy: Normalized<DMN_LATEST__tItemDefinition> =
+                                            JSON.parse(JSON.stringify(newItemDefinition)); // Necessary because idRandomizer will mutate this object.
 
                                           getNewDmnIdRandomizer()
                                             .ack({
                                               json: [newItemDefinitionCopy],
-                                              type: "DMN15__tDefinitions",
+                                              type: "DMN16__tDefinitions",
                                               attr: "itemDefinition",
                                             })
                                             .randomize();
@@ -611,7 +610,7 @@ export function ItemComponentsTable({
                                         getNewDmnIdRandomizer()
                                           .ack({
                                             json: clipboard.itemDefinitions,
-                                            type: "DMN15__tDefinitions",
+                                            type: "DMN16__tDefinitions",
                                             attr: "itemDefinition",
                                           })
                                           .randomize();

@@ -35,4 +35,6 @@ export const en: EditorEnvelopeI18n = {
   loadingScreen: {
     loading: "Loading...",
   },
+  editorNotAvailable: (extension: string): string => `No Editor available for '${extension}' extension`,
+  kogitoEditor: "Kogito editor",
 };

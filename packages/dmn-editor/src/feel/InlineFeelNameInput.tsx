@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { DMN15_SPEC, UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { DMN16_SPEC, UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { useFocusableElement } from "../focus/useFocusableElement";
 import { State } from "../store/Store";
 import { useDmnEditorStoreApi } from "../store/StoreContext";
@@ -57,10 +57,10 @@ export function InlineFeelNameInput({
   allUniqueNames: (s: State) => UniqueNameIndex;
   placeholder?: string;
   saveInvalidValue?: boolean;
-  validate?: typeof DMN15_SPEC.namedElement.isValidName;
+  validate?: typeof DMN16_SPEC.namedElement.isValidName;
   enableAutoFocusing?: boolean;
 }) {
-  const _validate = (validate ??= DMN15_SPEC.namedElement.isValidName);
+  const _validate = (validate ??= DMN16_SPEC.namedElement.isValidName);
 
   const inputRef = useRef<HTMLInputElement>(null);
 

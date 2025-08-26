@@ -68,14 +68,68 @@ import {
   root as dmn15root,
   ns as dmn15ns,
 } from "./schemas/dmn-1_5/ts-gen/meta";
+import {
+  subs as dmn16subs,
+  elements as dmn16elements,
+  meta as dmn16meta,
+  root as dmn16root,
+  ns as dmn16ns,
+} from "./schemas/dmn-1_6/ts-gen/meta";
 import { dmn3__tDefinitions as DMN10__tDefinitions } from "./schemas/dmn-1_0/ts-gen/types";
 import { dmn__tDefinitions as DMN11__tDefinitions } from "./schemas/dmn-1_1/ts-gen/types";
 import { DMN12__tDefinitions } from "./schemas/dmn-1_2/ts-gen/types";
 import { DMN13__tDefinitions } from "./schemas/dmn-1_3/ts-gen/types";
 import { DMN14__tDefinitions } from "./schemas/dmn-1_4/ts-gen/types";
 import { DMN15__tDefinitions } from "./schemas/dmn-1_5/ts-gen/types";
+import { DMN16__tDefinitions } from "./schemas/dmn-1_6/ts-gen/types";
 import { ns as kie10ns } from "./schemas/kie-1_0/ts-gen/meta";
 import { KIE_NS, LEGACY_KIE_NS__PRE_GWT_REMOVAL } from "./kie-extensions";
+import {
+  DMNDI15__DMNShape,
+  DMNDI15__DMNEdge,
+  DMNDI15__DMNDiagram,
+  DMNDI15__DMNDecisionServiceDividerLine,
+  DMN16__tBusinessKnowledgeModel,
+  DMN16__tDecision,
+  DMN16__tDecisionService,
+  DMN16__tGroup,
+  DMN16__tInputData,
+  DMN16__tKnowledgeSource,
+  DMN16__tTextAnnotation,
+  DMN16__tItemDefinition,
+  DMN16__tAssociation,
+  DMN16__tAuthorityRequirement,
+  DMN16__tBinding,
+  DMN16__tBuiltinAggregator,
+  DMN16__tChildExpression,
+  DMN16__tConditional,
+  DMN16__tContext,
+  DMN16__tContextEntry,
+  DMN16__tDecisionRule,
+  DMN16__tDecisionTable,
+  DMN16__tDMNElementReference,
+  DMN16__tFilter,
+  DMN16__tFor,
+  DMN16__tFunctionDefinition,
+  DMN16__tFunctionKind,
+  DMN16__tHitPolicy,
+  DMN16__tImport,
+  DMN16__tInformationItem,
+  DMN16__tInformationRequirement,
+  DMN16__tInputClause,
+  DMN16__tInvocation,
+  DMN16__tIterator,
+  DMN16__tKnowledgeRequirement,
+  DMN16__tList,
+  DMN16__tLiteralExpression,
+  DMN16__tNamedElement,
+  DMN16__tOutputClause,
+  DMN16__tQuantified,
+  DMN16__tRelation,
+  DMN16__tRuleAnnotationClause,
+  DMN16__tTypedChildExpression,
+  DMN16__tUnaryTests,
+} from "./schemas/dmn-1_6/ts-gen/types";
 
 import "./kie-extensions"; // Necessary to include the type extensions and patch the ns maps. Do not remove.
 
@@ -96,9 +150,11 @@ export type InternalDmnMarshaller<V extends DmnMarshallerVersions = "latest"> = 
           ? DmnMarshaller14
           : V extends "1.5"
             ? DmnMarshaller15
-            : V extends "latest"
-              ? DmnLatestMarshaller
-              : never;
+            : V extends "1.6"
+              ? DmnMarshaller16
+              : V extends "latest"
+                ? DmnLatestMarshaller
+                : never;
 
 export type DmnMarshallerBase = {
   instanceNs: Map<string, string>;
@@ -112,7 +168,8 @@ export type AllDmnMarshallers =
   | DmnMarshaller12
   | DmnMarshaller13
   | DmnMarshaller14
-  | DmnMarshaller15;
+  | DmnMarshaller15
+  | DmnMarshaller16;
 
 export type KieExtensionVersions = "0.0" | "1.0";
 export type DmnVersions = AllDmnMarshallers["version"];
@@ -147,6 +204,11 @@ export type DmnMarshaller15 = DmnMarshallerBase & {
   parser: { parse(): { definitions: DMN15__tDefinitions } };
   builder: { build(json: { definitions: DMN15__tDefinitions }): string };
   version: "1.5";
+};
+export type DmnMarshaller16 = DmnMarshallerBase & {
+  parser: { parse(): { definitions: DMN16__tDefinitions } };
+  builder: { build(json: { definitions: DMN16__tDefinitions }): string };
+  version: "1.6";
 };
 
 export const DMN_PARSERS: Record<DmnVersions, XmlParserTs<any>> = {
@@ -192,6 +254,13 @@ export const DMN_PARSERS: Record<DmnVersions, XmlParserTs<any>> = {
     elements: dmn15elements,
     root: dmn15root,
   }),
+  "1.6": getParser<{ [dmn16root.element]: DMN16__tDefinitions }>({
+    ns: dmn16ns,
+    meta: dmn16meta,
+    subs: dmn16subs,
+    elements: dmn16elements,
+    root: dmn16root,
+  }),
 };
 
 const FEEL_NS = "feel:";
@@ -203,7 +272,13 @@ export const FEEL_NAMESPACES: Record<DmnVersions, string> = {
   "1.3": "https://www.omg.org/spec/DMN/20191111/FEEL/",
   "1.4": "https://www.omg.org/spec/DMN/20211108/FEEL/",
   "1.5": "https://www.omg.org/spec/DMN/20230324/FEEL/",
+  "1.6": "https://www.omg.org/spec/DMN/20240513/FEEL/",
 };
+
+export const EXPRESSION_LANGUAGES_LATEST = [
+  "https://www.omg.org/spec/DMN/20240513/FEEL/",
+  "https://www.omg.org/spec/DMN/20240513/B-FEEL/",
+];
 
 const feel12ns = new Map<string, string>([
   [FEEL_NS, FEEL_NAMESPACES["1.2"]],
@@ -225,15 +300,67 @@ const feel15ns = new Map<string, string>([
   [FEEL_NAMESPACES["1.5"], FEEL_NS],
 ]);
 
+const feel16ns = new Map<string, string>([
+  [FEEL_NS, FEEL_NAMESPACES["1.6"]],
+  [FEEL_NAMESPACES["1.6"], FEEL_NS],
+]);
+
 const kie10nsRelativeToDmns = new Map<string, string>([
   [kie10ns.get("")!, KIE_NS],
   [KIE_NS, kie10ns.get("")!],
 ]);
 
-export const DMN_VERSIONS_TIMELINE: DmnVersions[] = ["1.0", "1.1", "1.2", "1.3", "1.4", "1.5"];
-export const DMN_LATEST_VERSION = "1.5" as const;
-export type DmnLatestMarshaller = DmnMarshaller15;
-export type DmnLatestModel = { [dmn15root.element]: DMN15__tDefinitions };
+export const DMN_VERSIONS_TIMELINE: DmnVersions[] = ["1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6"];
+export const DMN_LATEST_VERSION = "1.6" as const;
+export type DmnLatestMarshaller = DmnMarshaller16;
+export type DmnLatestModel = { [dmn16root.element]: DMN16__tDefinitions };
+
+//aliases
+export type DMN_LATEST__tDefinitions = DMN16__tDefinitions;
+export type DMN_LATEST__tBusinessKnowledgeModel = DMN16__tBusinessKnowledgeModel;
+export type DMN_LATEST__tDecision = DMN16__tDecision;
+export type DMN_LATEST__tDecisionService = DMN16__tDecisionService;
+export type DMN_LATEST__tGroup = DMN16__tGroup;
+export type DMN_LATEST__tInputData = DMN16__tInputData;
+export type DMN_LATEST__tKnowledgeSource = DMN16__tKnowledgeSource;
+export type DMN_LATEST__tTextAnnotation = DMN16__tTextAnnotation;
+export type DMN_LATEST__tItemDefinition = DMN16__tItemDefinition;
+export type DMN_LATEST__tConditional = DMN16__tConditional;
+export type DMN_LATEST__tContext = DMN16__tContext;
+export type DMN_LATEST__tDecisionTable = DMN16__tDecisionTable;
+export type DMN_LATEST__tFilter = DMN16__tFilter;
+export type DMN_LATEST__tFor = DMN16__tFor;
+export type DMN_LATEST__tFunctionDefinition = DMN16__tFunctionDefinition;
+export type DMN_LATEST__tInformationItem = DMN16__tInformationItem;
+export type DMN_LATEST__tInvocation = DMN16__tInvocation;
+export type DMN_LATEST__tList = DMN16__tList;
+export type DMN_LATEST__tLiteralExpression = DMN16__tLiteralExpression;
+export type DMN_LATEST__tQuantified = DMN16__tQuantified;
+export type DMN_LATEST__tRelation = DMN16__tRelation;
+export type DMN_LATEST__tChildExpression = DMN16__tChildExpression;
+export type DMN_LATEST__tUnaryTests = DMN16__tUnaryTests;
+export type DMN_LATEST__tNamedElement = DMN16__tNamedElement;
+export type DMN_LATEST__tContextEntry = DMN16__tContextEntry;
+export type DMN_LATEST__tBuiltinAggregator = DMN16__tBuiltinAggregator;
+export type DMN_LATEST__tDecisionRule = DMN16__tDecisionRule;
+export type DMN_LATEST__tHitPolicy = DMN16__tHitPolicy;
+export type DMN_LATEST__tInputClause = DMN16__tInputClause;
+export type DMN_LATEST__tOutputClause = DMN16__tOutputClause;
+export type DMN_LATEST__tRuleAnnotationClause = DMN16__tRuleAnnotationClause;
+export type DMN_LATEST__tFunctionKind = DMN16__tFunctionKind;
+export type DMN_LATEST__tBinding = DMN16__tBinding;
+export type DMN_LATEST__tTypedChildExpression = DMN16__tTypedChildExpression;
+export type DMN_LATEST__tImport = DMN16__tImport;
+export type DMN_LATEST__tAuthorityRequirement = DMN16__tAuthorityRequirement;
+export type DMN_LATEST__tInformationRequirement = DMN16__tInformationRequirement;
+export type DMN_LATEST__tKnowledgeRequirement = DMN16__tKnowledgeRequirement;
+export type DMN_LATEST__tAssociation = DMN16__tAssociation;
+export type DMN_LATEST__tDMNElementReference = DMN16__tDMNElementReference;
+export type DMN_LATEST__tIterator = DMN16__tIterator;
+export type DMN_LATEST__DMNShape = DMNDI15__DMNShape;
+export type DMN_LATEST__DMNEdge = DMNDI15__DMNEdge;
+export type DMN_LATEST__DMNDecisionServiceDividerLine = DMNDI15__DMNDecisionServiceDividerLine;
+export type DMN_LATEST__DMNDiagram = DMNDI15__DMNDiagram;
 
 export type DmnMarshallerOpts<V extends DmnMarshallerVersions> = { upgradeTo?: V };
 
@@ -275,6 +402,7 @@ export function getMarshaller<V extends DmnMarshallerVersions>(
   let dmn13: { [dmn13root.element]: DMN13__tDefinitions } | undefined = undefined;
   let dmn14: { [dmn14root.element]: DMN14__tDefinitions } | undefined = undefined;
   let dmn15: { [dmn15root.element]: DMN15__tDefinitions } | undefined = undefined;
+  let dmn16: { [dmn16root.element]: DMN16__tDefinitions } | undefined = undefined;
   switch (originalMarshaller.version) {
     case "1.0":
       dmn10 = dmn10 ?? originalMarshaller.parser.parse();
@@ -297,13 +425,17 @@ export function getMarshaller<V extends DmnMarshallerVersions>(
       dmn15 = upgrade14to15(dmn14);
       if (targetVersion === "1.5") break;
     case "1.5":
+      dmn15 = dmn15 ?? (originalMarshaller as DmnMarshaller15).parser.parse();
+      dmn16 = upgrade15to16(dmn15);
+      if (targetVersion === "1.6") break;
+    case "1.6":
       throw new Error(
-        "DMN MARSHALLER: Unexpected error. Shouldn't ever try to migrate a DMN 1.5, as DMN 1.5 is latest."
+        "DMN MARSHALLER: Unexpected error. Shouldn't ever try to migrate a DMN 1.6, as DMN 1.6 is latest."
       );
   }
 
   // DMN 1.0 won't ever be here, because it is the first verison.
-  const upgradedJson = dmn15 ?? dmn14 ?? dmn13 ?? dmn12 ?? dmn11;
+  const upgradedJson = dmn16 ?? dmn15 ?? dmn14 ?? dmn13 ?? dmn12 ?? dmn11;
   if (!upgradedJson) {
     throw new Error("DMN MARSHALLER: Unexpected error. At least one upgraded model should've been created.");
   }
@@ -372,6 +504,10 @@ export function getDmnVersion(instanceNs: Map<string, string>): DmnVersions {
   else if (instanceNs.get(dmn15ns.get("")!) !== undefined) {
     return "1.5";
   }
+  // Do not remove this '!== undefined', as "" is a valid namespace on the instanceNs map, although it is a falsy value.
+  else if (instanceNs.get(dmn16ns.get("")!) !== undefined) {
+    return "1.6";
+  }
   // None.. throw error
   else {
     throw new Error(
@@ -439,6 +575,15 @@ export function getMarshallerForFixedVersion(domdoc: Document, instanceNs: Map<s
         meta: dmn15meta,
         parser: { parse: () => DMN_PARSERS["1.5"].parse({ type: "domdoc", domdoc, instanceNs }).json },
         builder: { build: (json) => DMN_PARSERS["1.5"].build({ json, instanceNs }) },
+      };
+    case "1.6":
+      return {
+        instanceNs,
+        version: "1.6",
+        root: dmn16root,
+        meta: dmn16meta,
+        parser: { parse: () => DMN_PARSERS["1.6"].parse({ type: "domdoc", domdoc, instanceNs }).json },
+        builder: { build: (json) => DMN_PARSERS["1.6"].build({ json, instanceNs }) },
       };
     default:
       throw new Error(
@@ -633,4 +778,58 @@ export function upgrade14to15(dmn14: { definitions: DMN14__tDefinitions }): { de
 
   // FIXME: Tiago --> Convert deprecated `allowedValues` to `typeConstraint` on ItemDefinitions
   return dmn14;
+}
+
+////////////////////////
+// DMN 1.5 TO DMN 1.6 //
+////////////////////////
+
+export function upgrade15to16(dmn15: { definitions: DMN15__tDefinitions }): { definitions: DMN16__tDefinitions } {
+  const instanceNs = getInstanceNsFromJson(dmn15.definitions);
+
+  // Upgrade DMN namespace
+  dmn15.definitions[
+    getNsDeclarationPropName({
+      namespace: dmn15ns.get("")!,
+      atInstanceNs: instanceNs,
+      fallingBackToNs: dmn15ns,
+    })
+  ] = dmn16ns.get("")!;
+
+  // Upgrade DMNDI namespace
+  dmn15.definitions[
+    getNsDeclarationPropName({
+      namespace: dmn15ns.get("dmndi:")!,
+      atInstanceNs: instanceNs,
+      fallingBackToNs: dmn15ns,
+    })
+  ] = dmn16ns.get("dmndi:")!;
+
+  // Upgrade FEEL namespace
+  dmn15.definitions[
+    getNsDeclarationPropName({
+      namespace: FEEL_NAMESPACES["1.5"],
+      atInstanceNs: instanceNs,
+      fallingBackToNs: feel15ns,
+    })
+  ] = FEEL_NAMESPACES["1.6"];
+
+  // Add KIE namespace if not there yet.
+  dmn15.definitions[
+    getNsDeclarationPropName({
+      namespace: kie10ns.get("")!,
+      atInstanceNs: instanceNs,
+      fallingBackToNs: kie10nsRelativeToDmns,
+    })
+  ] = kie10ns.get("")!;
+
+  if (dmn15.definitions["@_typeLanguage"] === FEEL_NAMESPACES["1.5"]) {
+    dmn15.definitions["@_typeLanguage"] = FEEL_NAMESPACES["1.6"];
+  }
+
+  if (dmn15.definitions["@_expressionLanguage"] === FEEL_NAMESPACES["1.5"]) {
+    dmn15.definitions["@_expressionLanguage"] = FEEL_NAMESPACES["1.6"];
+  }
+
+  return dmn15;
 }

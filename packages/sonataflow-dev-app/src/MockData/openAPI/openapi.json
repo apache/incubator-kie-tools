@@ -1228,12 +1228,18 @@
           "content": {
             "application/json": {
               "schema": {
+                "$schema": "http://json-schema.org/draft-04/schema#",
                 "title": "service_input",
                 "required": ["name"],
                 "type": "object",
                 "properties": {
                   "name": {
                     "type": "string"
+                  },
+                  "customData": {
+                    "title": "custom JSON data",
+                    "description": "Use the CodeEditor to write your custom JSON",
+                    "type": "object"
                   }
                 }
               }
@@ -1318,12 +1324,18 @@
           "content": {
             "application/json": {
               "schema": {
+                "$schema": "http://json-schema.org/draft-04/schema#",
                 "title": "service_input",
                 "required": ["name"],
                 "type": "object",
                 "properties": {
                   "name": {
                     "type": "string"
+                  },
+                  "customData": {
+                    "title": "custom JSON data",
+                    "description": "Use the CodeEditor to write your custom JSON",
+                    "type": "object"
                   }
                 }
               }
@@ -1390,12 +1402,18 @@
           "content": {
             "application/json": {
               "schema": {
+                "$schema": "http://json-schema.org/draft-04/schema#",
                 "title": "service_input",
                 "required": ["name"],
                 "type": "object",
                 "properties": {
                   "name": {
                     "type": "string"
+                  },
+                  "customData": {
+                    "title": "custom JSON data",
+                    "description": "Use the CodeEditor to write your custom JSON",
+                    "type": "object"
                   }
                 }
               }
@@ -2589,12 +2607,18 @@
         "example": "2022-03-10T12:15:50-04:00"
       },
       "service_input": {
+        "$schema": "http://json-schema.org/draft-04/schema#",
         "title": "service_input",
         "required": ["name"],
         "type": "object",
         "properties": {
           "name": {
             "type": "string"
+          },
+          "customData": {
+            "title": "custom JSON data",
+            "description": "Use the CodeEditor to write your custom JSON",
+            "type": "object"
           }
         }
       }

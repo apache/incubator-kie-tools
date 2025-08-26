@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import * as RF from "reactflow";
-import { KIE_DMN_UNKNOWN_NAMESPACE } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { KIE_DMN_UNKNOWN_NAMESPACE } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref, parseXmlHref, xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml";
 import { snapShapeDimensions, snapShapePosition } from "../../diagram/SnapGrid";
@@ -284,7 +284,7 @@ export function computeDiagramData(
             string,
             {
               index: number;
-              element: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]>;
+              element: Unpacked<Normalized<DMN_LATEST__tDefinitions>["drgElement"]>;
             }
           >()
         )
@@ -296,7 +296,7 @@ export function computeDiagramData(
         string,
         {
           index: number;
-          element: Unpacked<Normalized<DMN15__tDefinitions>["drgElement"]>;
+          element: Unpacked<Normalized<DMN_LATEST__tDefinitions>["drgElement"]>;
         }
       >
     >()
@@ -410,7 +410,7 @@ export function computeDiagramData(
 function ackRequirementEdges(
   thisDmnsNamespace: string,
   drgElementsNamespace: string,
-  drgElements: Normalized<DMN15__tDefinitions>["drgElement"],
+  drgElements: Normalized<DMN_LATEST__tDefinitions>["drgElement"],
   ackEdge: AckEdge
 ) {
   const namespace = drgElementsNamespace === thisDmnsNamespace ? "" : drgElementsNamespace;

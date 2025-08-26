@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import { DMN15__tImport, DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { DMN_LATEST__tImport, DMN_LATEST__tItemDefinition } from "@kie-tools/dmn-marshaller";
+import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { builtInFeelTypeNames } from "../../dataTypes/BuiltInFeelTypes";
 import { DataType, DataTypeIndex } from "../../dataTypes/DataTypes";
@@ -80,8 +80,8 @@ export function computeDataTypes(
 }
 
 export function buildDataTypesTree(
-  items: Normalized<DMN15__tItemDefinition>[],
-  importsByNamespace: Map<string, DMN15__tImport>,
+  items: Normalized<DMN_LATEST__tItemDefinition>[],
+  importsByNamespace: Map<string, DMN_LATEST__tImport>,
   allDataTypesById: DataTypeIndex,
   allTopLevelDataTypesByFeelName: DataTypeIndex,
   parentId: string | undefined,
