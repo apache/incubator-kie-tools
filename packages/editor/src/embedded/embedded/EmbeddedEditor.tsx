@@ -34,6 +34,12 @@ import { EmbeddedEditorChannelApiImpl } from "./EmbeddedEditorChannelApiImpl";
 import { EnvelopeServer } from "@kie-tools-core/envelope-bus/dist/channel";
 import { useConnectedEnvelopeServer } from "@kie-tools-core/envelope-bus/dist/hooks";
 import { getEditorIframeProps } from "../../channel/editorIframeProps";
+import {
+  editorEnvelopeI18nDefaults,
+  editorEnvelopeI18nDictionaries,
+  useEditorEnvelopeI18nContext,
+} from "../../envelope/i18n";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 
@@ -81,11 +87,9 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
   props: Props,
   forwardedRef
 ) => {
+  const i18n = new I18n(editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries, props.locale).getCurrent();
   const iframeRef = useRef<HTMLIFrameElement>(null);
-  const stateControl = useMemo(
-    () => props.stateControl ?? new StateControl(),
-    [props.file.getFileContents, props.stateControl]
-  );
+  const stateControl = useMemo(() => props.stateControl ?? new StateControl(), [props.stateControl]);
   const [isReady, setReady] = useState(false);
   const envelopeMapping = useMemo(
     () =>
@@ -200,7 +204,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
     <>
       {!envelopeMapping && (
         <>
-          <span>{`No Editor available for '${props.file.fileExtension}' extension`}</span>
+          <span>{i18n.editorNotAvailable(props.file.fileExtension)}</span>
         </>
       )}
       {envelopeMapping && (
@@ -208,7 +212,7 @@ const RefForwardingEmbeddedEditor: React.ForwardRefRenderFunction<EmbeddedEditor
           ref={iframeRef}
           id={"kogito-iframe"}
           data-testid={"kogito-iframe"}
-          title="Kogito editor"
+          title={i18n.kogitoEditor}
           style={containerStyles}
           data-envelope-channel={props.channelType}
           {...getEditorIframeProps(envelopeMapping)}

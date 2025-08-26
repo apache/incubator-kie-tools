@@ -19,17 +19,14 @@
 
 import * as React from "react";
 import { useCallback, useMemo, useState } from "react";
-import {
-  DMN15__tDefinitions,
-  DMN15__tItemDefinition,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDefinitions, DMN_LATEST__tItemDefinition } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { EditableNodeLabel, useEditableNodeLabel } from "../diagram/nodes/EditableNodeLabel";
 import { TypeRefLabel } from "./TypeRefLabel";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { renameItemDefinition } from "../mutations/renameItemDefinition";
-import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { buildFeelQNameFromNamespace } from "../feel/buildFeelQName";
 import { InlineFeelNameInput, OnInlineFeelNameRenamed } from "../feel/InlineFeelNameInput";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
@@ -54,7 +51,7 @@ export function DataTypeName({
 }: {
   isReadOnly: boolean;
   editMode: "hover" | "double-click";
-  itemDefinition: Normalized<DMN15__tItemDefinition>;
+  itemDefinition: Normalized<DMN_LATEST__tItemDefinition>;
   isActive: boolean;
   relativeToNamespace: string;
   shouldCommitOnBlur?: boolean;
@@ -102,7 +99,7 @@ export function DataTypeName({
 
   const applyRename = useCallback(
     (args: {
-      definitions: Normalized<DMN15__tDefinitions>;
+      definitions: Normalized<DMN_LATEST__tDefinitions>;
       newName: string;
       shouldRenameReferencedExpressions: boolean;
       allDataTypesById: DataTypeIndex;

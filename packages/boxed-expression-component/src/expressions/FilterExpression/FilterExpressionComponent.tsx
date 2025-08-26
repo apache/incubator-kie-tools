@@ -32,7 +32,7 @@ import {
 import { BeeTable, BeeTableColumnUpdate } from "../../table/BeeTable";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
 import React, { useCallback, useMemo } from "react";
-import { DMN15__tChildExpression } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tChildExpression } from "@kie-tools/dmn-marshaller";
 import * as ReactTable from "react-table";
 import { useBoxedExpressionEditorI18n } from "../../i18n";
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
@@ -48,7 +48,7 @@ import { FilterExpressionCollectionCell } from "./FilterExpressionCollectionCell
 import { FilterExpressionMatchCell } from "./FilterExpressionMatchCell";
 import "./FilterExpression.css";
 
-export type ROWTYPE = Normalized<DMN15__tChildExpression>;
+export type ROWTYPE = Normalized<DMN_LATEST__tChildExpression>;
 
 export function FilterExpressionComponent({
   isNested,

@@ -22,12 +22,8 @@ import { useOnViewportChange, Viewport } from "reactflow";
 import * as React from "react";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
-import {
-  DC__Bounds,
-  DC__Dimension,
-  DMN15__tDecisionService,
-  DMN15__tDefinitions,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DC__Bounds, DC__Dimension } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__tDecisionService, DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import { Normalized, normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref, parseXmlHref, xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml";
 import { buildXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
@@ -475,7 +471,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
           console.debug(`DMN DIAGRAM: Adding external node`, JSON.stringify(externalNode));
         } else if (e.dataTransfer.getData(MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE)) {
           const drgElement = JSON.parse(e.dataTransfer.getData(MIME_TYPE_FOR_DMN_EDITOR_DRG_NODE)) as Unpacked<
-            Normalized<DMN15__tDefinitions>["drgElement"]
+            Normalized<DMN_LATEST__tDefinitions>["drgElement"]
           >;
 
           const nodeType = getNodeTypeFromDmnObject(drgElement);
@@ -857,7 +853,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
 
                   // Update contained Decisions of Decision Service if in expanded form
                   if (node.type === NODE_TYPES.decisionService && !(node.data.shape["@_isCollapsed"] ?? false)) {
-                    const decisionService = node.data.dmnObject as Normalized<DMN15__tDecisionService>;
+                    const decisionService = node.data.dmnObject as Normalized<DMN_LATEST__tDecisionService>;
 
                     const { containedDecisionHrefsRelativeToThisDmn } = getDecisionServicePropertiesRelativeToThisDmn({
                       thisDmnsNamespace: state.dmn.model.definitions["@_namespace"],

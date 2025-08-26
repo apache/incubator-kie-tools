@@ -25,10 +25,7 @@ import { useDmnEditor } from "../../DmnEditorContext";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
-import {
-  DMN15__tFunctionDefinition,
-  DMN15__tInformationItem,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tFunctionDefinition, DMN_LATEST__tInformationItem } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
@@ -49,12 +46,12 @@ export function FunctionDefinitionParameterCell(props: {
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tFunctionDefinition>>(
+  const updater = useBoxedExpressionUpdater<Normalized<DMN_LATEST__tFunctionDefinition>>(
     selectedObjectInfos?.expressionPath ?? []
   );
 
   const cell = useMemo(
-    () => selectedObjectInfos?.cell as Normalized<DMN15__tInformationItem>[],
+    () => selectedObjectInfos?.cell as Normalized<DMN_LATEST__tInformationItem>[],
     [selectedObjectInfos?.cell]
   );
   const [isParameterExpanded, setParameterExpaded] = useState<boolean[]>([]);
@@ -144,7 +141,7 @@ export function FunctionDefinitionParameterCell(props: {
 }
 
 function FunctionDefinitionParameterTypeRef(props: {
-  parameter: Normalized<DMN15__tInformationItem>;
+  parameter: Normalized<DMN_LATEST__tInformationItem>;
   isReadOnly: boolean;
   onTypeRefChange: (newTypeRef: string) => void;
 }) {
