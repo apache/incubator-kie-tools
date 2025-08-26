@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ReferenceDictionary } from "../../../i18n/dist/core";
+import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
 interface DmnEditorEnvelopeDictionary extends ReferenceDictionary {

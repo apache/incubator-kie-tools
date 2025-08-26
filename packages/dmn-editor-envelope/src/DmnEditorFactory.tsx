@@ -40,7 +40,7 @@ import {
   dmnEditorEnvelopeI18nDictionaries,
   useDmnEditorEnvelopeI18n,
 } from "./i18n";
-import { I18nDictionariesProvider } from "../../i18n/dist/react-components";
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 
 export class DmnEditorFactory implements EditorFactory<Editor, KogitoEditorEnvelopeApi, KogitoEditorChannelApi> {
   public createEditor(

@@ -21,8 +21,8 @@ import * as React from "react";
 import { useContext } from "react";
 import { en } from "./locales";
 import { DmnEditorEnvelopeI18n } from "./DmnEditorEnvelopeI18n";
-import { I18nDefaults, I18nDictionaries } from "../../../i18n/dist/core";
-import { I18nContextType } from "../../../i18n/dist/react-components";
+import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
+import { I18nContextType } from "@kie-tools-core/i18n/dist/react-components";
 
 export const dmnEditorEnvelopeI18nDefaults: I18nDefaults<DmnEditorEnvelopeI18n> = { locale: "en", dictionary: en };
 export const dmnEditorEnvelopeI18nDictionaries: I18nDictionaries<DmnEditorEnvelopeI18n> = new Map([["en", en]]);

@@ -29,7 +29,7 @@ import { NewDmnEditorChannelApi } from "./NewDmnEditorChannelApi";
 import { DmnEditorInterface, DmnEditorRootWrapper } from "./DmnEditorFactory";
 import { NewDmnEditorEnvelopeApi } from "./NewDmnEditorEnvelopeApi";
 import { NewDmnEditorTypes } from "./NewDmnEditorTypes";
-import { I18nDictionariesProvider } from "../../i18n/dist/react-components";
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { DmnEditorEnvelopeI18nContext, dmnEditorEnvelopeI18nDefaults, dmnEditorEnvelopeI18nDictionaries } from "./i18n";
 
 export class NewDmnEditorFactory
