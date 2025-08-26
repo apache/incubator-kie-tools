@@ -20,11 +20,13 @@
 import { DmnDocumentData } from "./DmnDocumentData";
 import { DmnDecision } from "./DmnDecision";
 import * as path from "path";
-import { getMarshaller } from "@kie-tools/dmn-marshaller";
+import { DMN_LATEST__tImport, DMN_LATEST__tInformationRequirement, getMarshaller } from "@kie-tools/dmn-marshaller";
 import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import { ns as dmn16ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/meta";
 import { DMN16_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { v4 as uuid } from "uuid";
+import { JSONSchema4 } from "json-schema";
+import { cloneDeep } from "lodash";
 
 const INPUT_DATA = "inputData";
 const XML_MIME = "text/xml";
@@ -60,6 +62,13 @@ export interface DmnLanguageServiceResource {
   normalizedPosixPathRelativeToTheWorkspaceRoot: NormalizedPosixPathRelativeToWorkspaceRoot;
 }
 
+type DrgElement = NonNullable<DMN_LATEST__tDefinitions["drgElement"]>[number];
+
+interface Model {
+  definitions: DMN_LATEST__tDefinitions;
+  xml: string;
+}
+
 /**
  * The hierarchy is a map of NormalizedPosixPathRelativeToWorkspaceRoot to `deep` and `immediate` sets
  * The `deep` Set contains all direct and indirect imported DMNs of the given DMN
@@ -78,13 +87,7 @@ type ImportIndexHierarchy = Map<
  * The `definitions` is the parsed definitions of the given DMN
  * The `xml` is the plain text of the given DMN
  */
-type ImportIndexModels = Map<
-  NormalizedPosixPathRelativeToWorkspaceRoot,
-  {
-    definitions: DMN_LATEST__tDefinitions;
-    xml: string;
-  }
->;
+type ImportIndexModels = Map<NormalizedPosixPathRelativeToWorkspaceRoot, Model>;
 
 /**
  * The ImportIndex collects the hierarchy and the models of all imported DMNs
@@ -251,6 +254,310 @@ Error details: ${error}`);
       }
     }
     return "";
+  }
+
+  //To get namespace with decision and it's related inputs
+  public getDecisionInputDataNodes(
+    decisionId: string,
+    modelNamespace: string,
+    namespaceDrgElementsMap: Map<string, Map<string, DrgElement>>,
+    namespaceToImportedModelsMap: Map<string, Model>,
+    decisionToInputDataMap: Map<string, Set<string>>
+  ): Set<string> {
+    const inputDataIds = new Set<string>();
+    decisionToInputDataMap.set(`${modelNamespace}#${decisionId}`, inputDataIds);
+    const drgElementsMap = namespaceDrgElementsMap.get(modelNamespace);
+
+    if (!drgElementsMap) return inputDataIds;
+    const decision = drgElementsMap.get(decisionId);
+
+    if (!decision || decision["__$$element"] !== "decision") return inputDataIds;
+
+    decision.informationRequirement?.forEach((requirement) => {
+      if (requirement.requiredInput) {
+        const inputHref = requirement.requiredInput["@_href"];
+        const inputDataId = inputHref.startsWith("#") ? inputHref.substring(1) : inputHref;
+        inputDataIds.add(inputDataId);
+      } else if (requirement.requiredDecision) {
+        const decisionHref = requirement.requiredDecision["@_href"];
+        const [namespace, decisionId] = decisionHref.includes("#") ? decisionHref.split("#") : ["", decisionHref];
+        const includedModelNamespace = namespace.startsWith("http") ? namespace : modelNamespace;
+        const IncludedModelName = namespaceToImportedModelsMap.get(includedModelNamespace);
+        if (IncludedModelName) {
+          this.getDecisionInputDataNodes(
+            decisionId,
+            includedModelNamespace,
+            namespaceDrgElementsMap,
+            namespaceToImportedModelsMap,
+            decisionToInputDataMap
+          ).forEach((inputId) => inputDataIds.add(inputId));
+        }
+      }
+    });
+    return inputDataIds;
+  }
+
+  //To get imports model data
+  public getNamespaceToImportedModelData(model: Model, namespaceToModelsMap: Map<string, Model>) {
+    model.definitions.import?.forEach((importedDmn) => {
+      if (importedDmn?.["@_namespace"]) {
+        namespaceToModelsMap.set(importedDmn["@_namespace"], model);
+      }
+    });
+  }
+
+  public getNamespaceToDrgElementsData(model: Model, namespaceToDrgElementsMap: Map<string, Map<string, DrgElement>>) {
+    const idToDrgElementsMap = new Map<string, DrgElement>();
+    model.definitions?.drgElement?.forEach((element) => {
+      idToDrgElementsMap.set(element["@_id"]!, element);
+    });
+    namespaceToDrgElementsMap.set(model.definitions?.["@_namespace"] ?? "", idToDrgElementsMap);
+  }
+
+  //To filter only included inputs for decisions / decisionService
+  public filterRequiredDecisionInputDataNodes = (
+    namespace: string | undefined,
+    namespaceToElementsMap: Map<string, Map<string, DrgElement>>,
+    decisionIdToInputIdsMap: Map<string, Set<string>>,
+    requiredDecisionsHref: Set<string>
+  ) => {
+    if (!namespace) return;
+    const drgElementsMap = namespaceToElementsMap.get(namespace);
+    if (!drgElementsMap) return;
+    drgElementsMap.forEach((drgElement) => {
+      if (drgElement.__$$element === "decision") {
+        drgElement.informationRequirement?.forEach((decision) => {
+          if (decision.requiredDecision) {
+            const decisionHref = decision.requiredDecision["@_href"];
+            if (decisionIdToInputIdsMap.has(decisionHref)) {
+              requiredDecisionsHref.add(decisionHref);
+            }
+
+            if (decisionHref.includes("#")) {
+              const [namespace] = decisionHref.split("#");
+              if (namespace) {
+                this.filterRequiredDecisionInputDataNodes(
+                  namespace,
+                  namespaceToElementsMap,
+                  decisionIdToInputIdsMap,
+                  requiredDecisionsHref
+                );
+              }
+            }
+          }
+        });
+      }
+
+      if (drgElement.__$$element === "decisionService" && drgElement.outputDecision) {
+        drgElement.outputDecision.forEach((outputDecision) => {
+          const decisionHref = outputDecision["@_href"];
+          if (decisionIdToInputIdsMap.has(decisionHref)) {
+            requiredDecisionsHref.add(decisionHref);
+          }
+
+          if (decisionHref.includes("#")) {
+            const [namespace] = decisionHref.split("#");
+            if (namespace)
+              this.filterRequiredDecisionInputDataNodes(
+                namespace,
+                namespaceToElementsMap,
+                decisionIdToInputIdsMap,
+                requiredDecisionsHref
+              );
+          }
+        });
+      }
+    });
+  };
+
+  public buildIncludedModelsSchema(
+    parentSchema: JSONSchema4,
+    readonly__modelName: string,
+    readonly__importIndex: ImportIndex,
+    readonly__modelNameToImportDefinition: Map<string, DMN_LATEST__tImport>,
+    readonly__requiredDecisions: Set<string>,
+    readonly__namespaceToDrgElementsMap: Map<string, Map<string, DrgElement>>,
+    readonly__modifiedJsonSchema: JSONSchema4,
+    readonly__inputSet: JSONSchema4,
+    alreadyProcessedIncludedModelNames = new Set<string>()
+  ) {
+    if (alreadyProcessedIncludedModelNames.has(readonly__modelName)) return;
+    alreadyProcessedIncludedModelNames.add(readonly__modelName);
+
+    const modelHierarchy = readonly__importIndex.hierarchy.get(readonly__modelName);
+    if (!modelHierarchy) return;
+
+    // For immediate imported models
+    modelHierarchy.immediate.forEach((importedModelName: string) => {
+      const importedModel = readonly__modelNameToImportDefinition.get(importedModelName);
+      if (!importedModel) return;
+
+      const dmnDefinition = Object.values(readonly__modifiedJsonSchema.definitions!).find((definition) =>
+        definition?.["x-dmn-type"]?.includes(importedModel["@_namespace"])
+      ) as JSONSchema4 | undefined;
+
+      if (!dmnDefinition?.properties) return;
+
+      // Get required inputs for this namespace
+      const inputDataNames = new Set<string>();
+      readonly__requiredDecisions.forEach((namespaceDecisionId) => {
+        const [namespace, decisionId] = namespaceDecisionId.split("#");
+        if (namespace !== importedModel["@_namespace"]) return;
+
+        const drgElementsMap = readonly__namespaceToDrgElementsMap.get(namespace);
+        if (!drgElementsMap) return;
+
+        const drgElement = drgElementsMap.get(decisionId);
+        if (!drgElement) return;
+
+        if (drgElement.__$$element !== "decision") return;
+
+        drgElement.informationRequirement?.forEach((requirement: DMN_LATEST__tInformationRequirement) => {
+          if (requirement.requiredInput) {
+            const inputDataId = requirement.requiredInput["@_href"].split("#")[1];
+            const inputElement = drgElementsMap.get(inputDataId);
+            if (inputElement && inputElement["@_name"]) {
+              inputDataNames.add(inputElement["@_name"]);
+            }
+          }
+        });
+      });
+
+      // Filter properties to only include required inputs
+      const filteredProperties = Object.fromEntries(
+        Object.entries(dmnDefinition.properties).filter(([inputDataName]) => {
+          const isInInputDataNames = inputDataNames.has(inputDataName);
+          const shouldInclude = !(
+            !importedModel["@_name"] &&
+            readonly__inputSet.properties &&
+            inputDataName in readonly__inputSet.properties
+          );
+          return isInInputDataNames && shouldInclude;
+        })
+      );
+
+      if (Object.keys(filteredProperties).length > 0) {
+        if (!parentSchema.properties) parentSchema.properties = {};
+
+        if (importedModel["@_name"]) {
+          // If we have an import name, nest under that importName
+          if (!parentSchema.properties[importedModel["@_name"]]) {
+            parentSchema.properties[importedModel["@_name"]] = {
+              type: "object" as const,
+              properties: {},
+            };
+          }
+          const importSchema = parentSchema.properties[importedModel["@_name"]] as JSONSchema4;
+          if (!importSchema.properties) importSchema.properties = {};
+          Object.assign(importSchema.properties, filteredProperties);
+
+          // Recursively build inputs for import's dependencies
+          this.buildIncludedModelsSchema(
+            importSchema,
+            importedModelName,
+            readonly__importIndex,
+            readonly__modelNameToImportDefinition,
+            readonly__requiredDecisions,
+            readonly__namespaceToDrgElementsMap,
+            readonly__modifiedJsonSchema,
+            readonly__inputSet,
+            alreadyProcessedIncludedModelNames
+          );
+        } else {
+          // If no import name, add directly to properties
+          Object.assign(parentSchema.properties, filteredProperties);
+          this.buildIncludedModelsSchema(
+            parentSchema,
+            importedModelName,
+            readonly__importIndex,
+            readonly__modelNameToImportDefinition,
+            readonly__requiredDecisions,
+            readonly__namespaceToDrgElementsMap,
+            readonly__modifiedJsonSchema,
+            readonly__inputSet,
+            alreadyProcessedIncludedModelNames
+          );
+        }
+      }
+    });
+  }
+
+  public buildModifiedJsonSchemaWithIncludedModels(jsonSchema: JSONSchema4, importIndex: ImportIndex) {
+    if (!jsonSchema.definitions) return jsonSchema;
+
+    const modifiedJsonSchema = cloneDeep(jsonSchema);
+    const inputSet = modifiedJsonSchema.definitions?.InputSet || {};
+    if (!inputSet.properties) {
+      inputSet.properties = {};
+    }
+
+    const namespaceToImportedModelsMap = new Map<string, Model>();
+    const namespaceToIdToDrgElementsMap = new Map<string, Map<string, DrgElement>>();
+    const decisionIdToInputIdsMap = new Map<string, Set<string>>();
+
+    Array.from(importIndex.models.values()).forEach((model) => {
+      this.getNamespaceToImportedModelData(model, namespaceToImportedModelsMap);
+      this.getNamespaceToDrgElementsData(model, namespaceToIdToDrgElementsMap);
+    });
+
+    namespaceToIdToDrgElementsMap.forEach((elementsMap, namespace) => {
+      elementsMap.forEach((element, decisionId) => {
+        if (element["__$$element"] === "decision") {
+          this.getDecisionInputDataNodes(
+            decisionId,
+            namespace,
+            namespaceToIdToDrgElementsMap,
+            namespaceToImportedModelsMap,
+            decisionIdToInputIdsMap
+          );
+        }
+      });
+    });
+
+    const requiredDecisionsHref = new Set<string>();
+    const currentModel = importIndex.models.values().next().value;
+    this.filterRequiredDecisionInputDataNodes(
+      currentModel.definitions?.["@_namespace"],
+      namespaceToIdToDrgElementsMap,
+      decisionIdToInputIdsMap,
+      requiredDecisionsHref
+    );
+
+    // Create a map of model filenames to their import definitions
+    const modelNameToImportDefinition = new Map<string, DMN_LATEST__tImport>();
+    Array.from(importIndex.models.values()).forEach((model) => {
+      model.definitions?.import?.forEach((importDefinition) => {
+        const locationUri = importDefinition["@_locationURI"];
+        if (locationUri) {
+          const modelName = locationUri.replace("./", "");
+          modelNameToImportDefinition.set(modelName, importDefinition);
+        }
+      });
+    });
+
+    const includedModelSchema: JSONSchema4 = {
+      type: "object",
+      properties: {},
+    };
+
+    // Start building inputs for the current model
+    const rootModelFile = Array.from(importIndex.hierarchy.keys())[0];
+    this.buildIncludedModelsSchema(
+      includedModelSchema,
+      rootModelFile,
+      importIndex,
+      modelNameToImportDefinition,
+      requiredDecisionsHref,
+      namespaceToIdToDrgElementsMap,
+      modifiedJsonSchema,
+      inputSet
+    );
+
+    if (Object.keys(includedModelSchema.properties!).length > 0) {
+      inputSet.properties["Included Models"] = includedModelSchema;
+    }
+
+    return modifiedJsonSchema;
   }
 
   // TODO: Rewrite this using the new Marshaller.
