@@ -17,10 +17,7 @@
  * under the License.
  */
 
-import {
-  DMN15__tDefinitions,
-  DMN15__tItemDefinition,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDefinitions, DMN_LATEST__tItemDefinition } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getNewItemDefinition } from "../dataTypes/DataTypeSpec";
 
@@ -28,8 +25,8 @@ export function addTopLevelItemDefinition({
   definitions,
   partial,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
-  partial?: Partial<Normalized<DMN15__tItemDefinition>>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
+  partial?: Partial<Normalized<DMN_LATEST__tItemDefinition>>;
 }) {
   const newItemDefinition = getNewItemDefinition(partial);
   definitions.itemDefinition ??= [];

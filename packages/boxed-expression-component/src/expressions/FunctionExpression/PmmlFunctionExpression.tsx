@@ -51,14 +51,14 @@ import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../.
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { useFunctionExpressionControllerCell, useFunctionExpressionParametersColumnHeader } from "./FunctionExpression";
 import {
-  DMN15__tContext,
-  DMN15__tContextEntry,
-  DMN15__tFunctionDefinition,
-  DMN15__tLiteralExpression,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN_LATEST__tContext,
+  DMN_LATEST__tContextEntry,
+  DMN_LATEST__tFunctionDefinition,
+  DMN_LATEST__tLiteralExpression,
+} from "@kie-tools/dmn-marshaller";
 import "./PmmlFunctionExpression.css";
 
-export type BoxedFunctionPmml = DMN15__tFunctionDefinition & {
+export type BoxedFunctionPmml = DMN_LATEST__tFunctionDefinition & {
   "@_kind": "PMML";
   __$$element: "functionDefinition";
 };
@@ -188,13 +188,13 @@ export function PmmlFunctionExpression({
   }, [i18n]);
 
   const getDocument = useCallback(() => {
-    return (functionExpression.expression as DMN15__tContext).contextEntry?.find(
+    return (functionExpression.expression as DMN_LATEST__tContext).contextEntry?.find(
       ({ variable }) => variable?.["@_name"] === "document"
     );
   }, [functionExpression.expression]);
 
   const getModel = useCallback(() => {
-    return (functionExpression.expression as DMN15__tContext).contextEntry?.find(
+    return (functionExpression.expression as DMN_LATEST__tContext).contextEntry?.find(
       ({ variable }) => variable?.["@_name"] === "model"
     );
   }, [functionExpression.expression]);
@@ -207,12 +207,14 @@ export function PmmlFunctionExpression({
       {
         label: "Document",
         value:
-          (document?.expression as DMN15__tLiteralExpression | undefined)?.text?.__$$text.replaceAll(`"`, ``) ?? "",
+          (document?.expression as DMN_LATEST__tLiteralExpression | undefined)?.text?.__$$text.replaceAll(`"`, ``) ??
+          "",
         pmmlFunctionExpression: functionExpression,
       },
       {
         label: "Model",
-        value: (model?.expression as DMN15__tLiteralExpression | undefined)?.text?.__$$text.replaceAll(`"`, ``) ?? "",
+        value:
+          (model?.expression as DMN_LATEST__tLiteralExpression | undefined)?.text?.__$$text.replaceAll(`"`, ``) ?? "",
         pmmlFunctionExpression: functionExpression,
       },
     ];
@@ -355,9 +357,9 @@ function PmmlFunctionExpressionValueCell(props: React.PropsWithChildren<BeeTable
   );
 }
 
-function getDocumentEntry(pmmlFunction: Normalized<BoxedFunctionPmml>): Normalized<DMN15__tContextEntry> {
+function getDocumentEntry(pmmlFunction: Normalized<BoxedFunctionPmml>): Normalized<DMN_LATEST__tContextEntry> {
   return (
-    (pmmlFunction.expression as Normalized<DMN15__tContext>).contextEntry?.find(
+    (pmmlFunction.expression as Normalized<DMN_LATEST__tContext>).contextEntry?.find(
       ({ variable }) => variable?.["@_name"] === "document"
     ) ?? {
       "@_id": generateUuid(),
@@ -369,9 +371,9 @@ function getDocumentEntry(pmmlFunction: Normalized<BoxedFunctionPmml>): Normaliz
   );
 }
 
-function getModelEntry(pmmlFunction: Normalized<BoxedFunctionPmml>): Normalized<DMN15__tContextEntry> {
+function getModelEntry(pmmlFunction: Normalized<BoxedFunctionPmml>): Normalized<DMN_LATEST__tContextEntry> {
   return (
-    (pmmlFunction.expression as Normalized<DMN15__tContext>).contextEntry?.find(
+    (pmmlFunction.expression as Normalized<DMN_LATEST__tContext>).contextEntry?.find(
       ({ variable }) => variable?.["@_name"] === "model"
     ) ?? {
       "@_id": generateUuid(),
@@ -397,7 +399,7 @@ function getUpdatedExpression(
     expression: {
       "@_id": generateUuid(),
       __$$element: "context",
-      ...(prev.expression as DMN15__tContext),
+      ...(prev.expression as DMN_LATEST__tContext),
       contextEntry: [
         {
           ...document,

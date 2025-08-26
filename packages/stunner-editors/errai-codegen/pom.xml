@@ -146,53 +146,6 @@
   <build>
     <plugins>
       <plugin>
-        <artifactId>maven-shade-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <minimizeJar>true</minimizeJar>
-              <createSourcesJar>true</createSourcesJar>
-              <artifactSet>
-                <includes>
-                  <include>org.eclipse.jdt:ecj</include>
-                  <include>org.gwtproject:gwt-dev</include>
-                </includes>
-              </artifactSet>
-              <filters>
-                <filter>
-                  <artifact>org.gwtproject:gwt-dev</artifact>
-                  <excludes>
-                    <exclude>com/google/gwt/**</exclude>
-                    <exclude>org/eclipse/jdt/**</exclude>
-                  </excludes>
-                </filter>
-              </filters>
-              <relocations>
-                <relocation>
-                  <pattern>org.eclipse.jdt</pattern>
-                  <shadedPattern>org.jboss.errai.codegen.shade.org.eclipse.jdt</shadedPattern>
-                  <excludes>
-                    <exclude>org.eclipse.jdt.core.prefs</exclude>
-                  </excludes>
-                </relocation>
-                <relocation>
-                  <pattern>org.osgi</pattern>
-                  <shadedPattern>org.jboss.errai.codegen.shade.org.osgi</shadedPattern>
-                </relocation>
-              </relocations>
-              <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-              </transformers>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <excludes combine.self="override" />

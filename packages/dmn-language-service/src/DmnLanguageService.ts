@@ -21,9 +21,9 @@ import { DmnDocumentData } from "./DmnDocumentData";
 import { DmnDecision } from "./DmnDecision";
 import * as path from "path";
 import { getMarshaller } from "@kie-tools/dmn-marshaller";
-import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { ns as dmn15ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/meta";
-import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
+import { ns as dmn16ns } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/meta";
+import { DMN16_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { v4 as uuid } from "uuid";
 
 const INPUT_DATA = "inputData";
@@ -42,8 +42,8 @@ const generateUuid = () => {
 // FIXME: This was duplicated from dmn-editor-envelope
 const EMPTY_DMN = () => `<?xml version="1.0" encoding="UTF-8"?>
 <definitions
-  xmlns="${dmn15ns.get("")}"
-  expressionLanguage="${DMN15_SPEC.expressionLanguage.default}"
+  xmlns="${dmn16ns.get("")}"
+  expressionLanguage="${DMN16_SPEC.expressionLanguage.default}"
   namespace="https://kie.org/dmn/${generateUuid()}"
   id="${generateUuid()}"
   name="DMN${generateUuid()}">
@@ -81,7 +81,7 @@ type ImportIndexHierarchy = Map<
 type ImportIndexModels = Map<
   NormalizedPosixPathRelativeToWorkspaceRoot,
   {
-    definitions: DMN15__tDefinitions;
+    definitions: DMN_LATEST__tDefinitions;
     xml: string;
   }
 >;

@@ -154,6 +154,8 @@ public class DMNMarshallerService {
             errorMessage = translationService.getValue(DMNEditorConstants.DMNMarshaller_UnsupportedMessage, "1.4");
         } else if (xml.contains("https://www.omg.org/spec/DMN/20230324/MODEL/")) {
             errorMessage = translationService.getValue(DMNEditorConstants.DMNMarshaller_UnsupportedMessage, "1.5");
+        } else if (xml.contains("https://www.omg.org/spec/DMN/20240513/MODEL/")) {
+            errorMessage = translationService.getValue(DMNEditorConstants.DMNMarshaller_UnsupportedMessage, "1.6");
         }
 
         return errorMessage;

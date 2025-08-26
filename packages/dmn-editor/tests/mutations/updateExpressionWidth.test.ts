@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { KIE__tComponentsWidthsExtension } from "@kie-tools/dmn-marshaller/dist/schemas/kie-1_0/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
@@ -186,7 +186,7 @@ describe("updateExpressionWidth", () => {
 
 function definitionContainsWidthExtension(args: {
   widthEntry: { dmnElementRef: string; widths: number[] };
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
 }) {
   const componentsWidthExtension =
     args.definitions?.["dmndi:DMNDI"]?.["dmndi:DMNDiagram"]?.[0]["di:extension"]?.["kie:ComponentsWidthsExtension"];
@@ -208,7 +208,7 @@ function definitionContainsWidthExtension(args: {
 
 function createDefinitionsWithComponentWidths(widthDefinition: { dmnElementRef: string; widths: number[] }[]) {
   // Do not inline this variable for type safety. See https://github.com/microsoft/TypeScript/issues/241
-  const definitions: Normalized<DMN15__tDefinitions> = {
+  const definitions: Normalized<DMN_LATEST__tDefinitions> = {
     "@_namespace": "https://kie.org/dmn/_982CA10C-B1B9-495C-9CFC-98FAA801BB50",
     "@_id": generateUuid(),
     "@_name": "my definitions",

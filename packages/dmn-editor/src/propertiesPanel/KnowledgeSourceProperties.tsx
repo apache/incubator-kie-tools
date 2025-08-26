@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { DMN15__tKnowledgeSource } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tKnowledgeSource } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -37,7 +37,7 @@ export function KnowledgeSourceProperties({
   namespace,
   index,
 }: {
-  knowledgeSource: Normalized<DMN15__tKnowledgeSource>;
+  knowledgeSource: Normalized<DMN_LATEST__tKnowledgeSource>;
   namespace: string | undefined;
   index: number;
 }) {
@@ -84,9 +84,10 @@ export function KnowledgeSourceProperties({
           value={knowledgeSource.description?.__$$text}
           onChange={(_event, newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>).description = {
-                __$$text: newDescription,
-              };
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tKnowledgeSource>).description =
+                {
+                  __$$text: newDescription,
+                };
             });
           }}
           placeholder={"Enter a description..."}
@@ -109,7 +110,7 @@ export function KnowledgeSourceProperties({
           value={knowledgeSource.type?.__$$text}
           onChange={(_event, newType) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>).type = {
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tKnowledgeSource>).type = {
                 __$$text: newType,
               };
             });
@@ -126,8 +127,9 @@ export function KnowledgeSourceProperties({
           value={knowledgeSource["@_locationURI"]}
           onChange={(_event, newLocationUri) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>)["@_locationURI"] =
-                newLocationUri;
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tKnowledgeSource>)[
+                "@_locationURI"
+              ] = newLocationUri;
             });
           }}
           placeholder={"Enter location URI..."}
@@ -139,10 +141,11 @@ export function KnowledgeSourceProperties({
         values={knowledgeSource.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>).extensionElements =
-              {
-                "kie:attachment": newExtensionElements,
-              };
+            (
+              state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tKnowledgeSource>
+            ).extensionElements = {
+              "kie:attachment": newExtensionElements,
+            };
           });
         }}
       />

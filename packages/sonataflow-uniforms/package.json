@@ -1,0 +1,66 @@
+{
+  "name": "@kie-tools/sonataflow-uniforms",
+  "version": "0.0.0",
+  "description": "Patternfly forms for SonataFlow",
+  "license": "Apache-2.0",
+  "keywords": [],
+  "homepage": "https://github.com/apache/incubator-kie-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apache/incubator-kie-tools.git"
+  },
+  "bugs": {
+    "url": "https://github.com/apache/incubator-kie-tools/issues"
+  },
+  "types": "./dist/esm/index.d.ts",
+  "main": "dist/esm/index.js",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build:dev": "rimraf dist && tsc --build tsconfig.cjs.json && tsc --build tsconfig.esm.json",
+    "build:prod": "rimraf dist && pnpm lint && pnpm test && rimraf dist && tsc --build tsconfig.cjs.json && tsc --build tsconfig.esm.json",
+    "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
+    "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
+  },
+  "dependencies": {
+    "@kie-tools/uniforms-patternfly": "workspace:*",
+    "@patternfly/react-code-editor": "5.4.3",
+    "uniforms": "^3.10.2"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.16.0",
+    "@babel/preset-react": "^7.16.0",
+    "@kie-tools/eslint": "workspace:*",
+    "@kie-tools/jest-base": "workspace:*",
+    "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/tsconfig": "workspace:*",
+    "@patternfly/react-core": "^5.4.1",
+    "@patternfly/react-icons": "^5.4.1",
+    "@testing-library/jest-dom": "^6.4.6",
+    "@testing-library/react": "^12.1.5",
+    "@types/jest": "^29.5.12",
+    "@types/lodash": "^4.14.168",
+    "@types/react": "^17.0.6",
+    "@types/react-dom": "^17.0.5",
+    "@types/simpl-schema": "^1.12.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "jest-junit": "^16.0.0",
+    "rimraf": "^3.0.2",
+    "simpl-schema": "^1.12.0",
+    "ts-jest": "^29.1.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.3",
+    "uniforms-bridge-simple-schema-2": "^3.10.2",
+    "webpack": "^5.94.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.15.1",
+    "webpack-merge": "^5.9.0"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.2 <19.0.0",
+    "react-dom": ">=17.0.2 <19.0.0"
+  }
+}

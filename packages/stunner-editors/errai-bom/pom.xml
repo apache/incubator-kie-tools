@@ -82,11 +82,11 @@
   <properties>
     <apache.stanbol.htmlextractor.version>0.10.0</apache.stanbol.htmlextractor.version>
     <appengine.version>1.7.6</appengine.version>
-    <asm.version>7.1</asm.version>
+    <asm.version>9.6</asm.version>
     <gmaven.mojo.version>1.5</gmaven.mojo.version>
     <guice.version>3.0</guice.version>
     <gwt.phonegap.version>3.5.0.1</gwt.phonegap.version>
-    <gwt.version>2.10.0</gwt.version>
+    <gwt.version>2.12.2</gwt.version>
     <javaee.api.version>8.0.1</javaee.api.version>
 
     <!-- ip-bom uses artifact with groupId org.jboss.remoting3 -->
@@ -104,7 +104,7 @@
     <version.com.google.code.gson>2.9.0</version.com.google.code.gson>
     <version.com.google.jsinterop>2.0.0</version.com.google.jsinterop>
     <!-- 3.18+ breaks GWT compilation -->
-    <version.org.eclipse.jdt.ecj>3.17.0</version.org.eclipse.jdt.ecj>
+    <version.org.eclipse.jdt.ecj>3.33.0</version.org.eclipse.jdt.ecj>
     <version.com.google.gwt.gwtmockito>1.1.9</version.com.google.gwt.gwtmockito>
     <version.de.benediktmeurer.gwt-slf4j>0.0.2</version.de.benediktmeurer.gwt-slf4j>
 
@@ -113,11 +113,11 @@
     <version.javax.persistence-api>2.2</version.javax.persistence-api>
     <!-- we can't use this due GWT hard dependency on api 1.x <version.jakarta.validation>2.0.2</version.jakarta.validation> -->
     <version.javax.validation>1.0.0.GA</version.javax.validation>
-    <version.junit>4.13.1</version.junit>
+    <version.junit>4.13.2</version.junit>
 
     <version.org.apache.commons.lang3>3.18.0</version.org.apache.commons.lang3>
     <version.org.apache.deltaspike.core>1.5.1</version.org.apache.deltaspike.core>
-    <version.org.apache.maven>3.3.9</version.org.apache.maven>
+    <version.org.apache.maven>3.9.6</version.org.apache.maven>
     <version.org.dom4j>2.1.3</version.org.dom4j>
     <version.org.glassfish.javax.el>3.0.0</version.org.glassfish.javax.el>
     <version.org.hibernate>5.4.24.Final</version.org.hibernate>

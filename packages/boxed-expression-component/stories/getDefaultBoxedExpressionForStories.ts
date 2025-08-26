@@ -17,10 +17,7 @@
  * under the License.
  */
 
-import {
-  DMN15__tItemDefinition,
-  DMN15__tOutputClause,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tItemDefinition, DMN_LATEST__tOutputClause } from "@kie-tools/dmn-marshaller";
 import {
   BoxedConditional,
   BoxedContext,
@@ -55,7 +52,7 @@ import {
 } from "../src/resizing/WidthConstants";
 import { RELATION_EXPRESSION_DEFAULT_VALUE } from "../src/expressions/RelationExpression/RelationExpression";
 
-export function isStruct(itemDefinition: DMN15__tItemDefinition) {
+export function isStruct(itemDefinition: DMN_LATEST__tItemDefinition) {
   return !itemDefinition.typeRef && !!itemDefinition.itemComponent;
 }
 
@@ -199,7 +196,7 @@ export function getDefaultBoxedExpressionForStories({
       },
     ];
 
-    const output: Normalized<DMN15__tOutputClause>[] = [
+    const output: Normalized<DMN_LATEST__tOutputClause>[] = [
       {
         "@_id": generateUuid(),
         "@_name": singleOutputColumn.name,

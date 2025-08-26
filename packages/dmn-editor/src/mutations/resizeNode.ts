@@ -19,11 +19,11 @@
 
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import {
-  DMN15__tDecisionService,
-  DMN15__tDefinitions,
-  DMNDI15__DMNEdge,
-  DMNDI15__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN_LATEST__tDecisionService,
+  DMN_LATEST__tDefinitions,
+  DMN_LATEST__DMNEdge,
+  DMN_LATEST__DMNShape,
+} from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
 import { PositionalNodeHandleId } from "../diagram/connections/PositionalNodeHandles";
@@ -49,9 +49,9 @@ export function resizeNode({
   __readonly_dmnObjectId,
   change,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   drdIndex: number;
-  __readonly_dmnShapesByHref: Map<string, Normalized<DMNDI15__DMNShape> & { index: number }>;
+  __readonly_dmnShapesByHref: Map<string, Normalized<DMN_LATEST__DMNShape> & { index: number }>;
   snapGrid: SnapGrid;
   __readonly_dmnObjectNamespace: string | undefined;
   __readonly_externalDmnsIndex: ExternalDmnsIndex;
@@ -71,7 +71,7 @@ export function resizeNode({
 
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
-  const shape = diagramElements?.[change.shapeIndex] as Normalized<DMNDI15__DMNShape> | undefined;
+  const shape = diagramElements?.[change.shapeIndex] as Normalized<DMN_LATEST__DMNShape> | undefined;
   const shapeBounds = shape?.["dc:Bounds"];
   if (!shapeBounds) {
     throw new Error("DMN MUTATION: Cannot resize non-existent shape bounds");
@@ -83,8 +83,8 @@ export function resizeNode({
 
     const ds =
       externalDmn === undefined
-        ? (definitions.drgElement![change.index] as Normalized<DMN15__tDecisionService>)
-        : (externalDmn.model.definitions.drgElement![change.index] as Normalized<DMN15__tDecisionService>);
+        ? (definitions.drgElement![change.index] as Normalized<DMN_LATEST__tDecisionService>)
+        : (externalDmn.model.definitions.drgElement![change.index] as Normalized<DMN_LATEST__tDecisionService>);
     if (!ds) {
       throw new Error("DMN MUTATION: Cannot reposition divider line of non-existent Decision Service");
     }
@@ -148,7 +148,7 @@ export function resizeNode({
 
       edgeIndexesAlreadyUpdated.add(edgeIndex);
 
-      const edge = diagramElements[edgeIndex] as Normalized<DMNDI15__DMNEdge> | undefined;
+      const edge = diagramElements[edgeIndex] as Normalized<DMN_LATEST__DMNEdge> | undefined;
       if (!edge || !edge["di:waypoint"]) {
         throw new Error("DMN MUTATION: Cannot reposition non-existent edge");
       }
@@ -192,7 +192,7 @@ export function resizeNode({
       // Apply delta shift to neighbouring nodes in other DRD
       const decisionService = drgElements.find(
         (elem) => elem["@_id"] === __readonly_dmnObjectId
-      ) as Normalized<DMN15__tDecisionService>;
+      ) as Normalized<DMN_LATEST__tDecisionService>;
       const { containedDecisionHrefsRelativeToThisDmn } = getDecisionServicePropertiesRelativeToThisDmn({
         thisDmnsNamespace: definitions["@_namespace"],
         decisionService,
