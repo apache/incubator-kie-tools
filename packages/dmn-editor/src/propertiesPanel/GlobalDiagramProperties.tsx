@@ -21,11 +21,10 @@ import * as React from "react";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { Form, FormSection, FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
-import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { DataSourceIcon } from "@patternfly/react-icons/dist/js/icons/data-source-icon";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { Modal, ModalVariant } from "@patternfly/react-core/dist/js/components/Modal";
 import { SyncAltIcon } from "@patternfly/react-icons/dist/js/icons/sync-alt-icon";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
@@ -33,8 +32,12 @@ import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { EXPRESSION_LANGUAGES_LATEST } from "@kie-tools/dmn-marshaller";
+import { ExpressionLangaugeSelect } from "./ExpressionLanguageSelect";
 
 export function GlobalDiagramProperties() {
+  const [isExpressionLanguageSelectOpen, setExpressionLanguageSelectOpen] = useState(false);
+  const [customLanguages, setCustomLanguages] = useState<string[]>(EXPRESSION_LANGUAGES_LATEST);
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const [isGlobalSectionExpanded, setGlobalSectionExpanded] = useState<boolean>(true);
   const [isIdNamespaceSectionExpanded, setIdNamespaceSectionExpanded] = useState<boolean>(true);
@@ -43,6 +46,30 @@ export function GlobalDiagramProperties() {
   const settings = useSettings();
 
   const [regenerateIdConfirmationModal, setRegenerateIdConfirmationModal] = useState(false);
+
+  const expressionLanguage = thisDmn.model.definitions["@_expressionLanguage"];
+
+  const allLanguages = useMemo(() => {
+    return [
+      ...customLanguages,
+      ...(expressionLanguage && !customLanguages.includes(expressionLanguage) ? [expressionLanguage] : []),
+    ];
+  }, [customLanguages, expressionLanguage]);
+
+  const onClear = () => {
+    dmnEditorStoreApi.setState((state) => {
+      state.dmn.model.definitions["@_expressionLanguage"] = "";
+    });
+  };
+
+  const onSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>, val: string) => {
+      dmnEditorStoreApi.setState((state) => {
+        state.dmn.model.definitions["@_expressionLanguage"] = val as string;
+      });
+    },
+    [dmnEditorStoreApi]
+  );
 
   return (
     <Form>
@@ -109,17 +136,11 @@ export function GlobalDiagramProperties() {
               </FormGroup>
 
               <FormGroup label="Expression language">
-                <TextInput
-                  aria-label={"Expression language"}
-                  type={"text"}
-                  isDisabled={settings.isReadOnly}
-                  placeholder={"Enter an expression language..."}
-                  value={thisDmn.model.definitions["@_expressionLanguage"]}
-                  onChange={(_event, newExprLang) =>
-                    dmnEditorStoreApi.setState((state) => {
-                      state.dmn.model.definitions["@_expressionLanguage"] = newExprLang;
-                    })
-                  }
+                <ExpressionLangaugeSelect
+                  OnClear={onClear}
+                  onSelect={onSelect}
+                  allLanguages={allLanguages}
+                  selections={thisDmn.model.definitions["@_expressionLanguage"] ?? ""}
                 />
               </FormGroup>
             </FormSection>

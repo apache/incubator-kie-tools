@@ -1,0 +1,9 @@
+{
+  "extends": "@kie-tools/tsconfig/tsconfig.cjs.json",
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "outDir": "dist/cjs",
+    "types": ["node", "@testing-library/jest-dom"]
+  }
+}

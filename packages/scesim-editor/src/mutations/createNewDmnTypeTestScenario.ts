@@ -25,10 +25,10 @@ import {
 import { ExternalDmn } from "../TestScenarioEditor";
 import { pushFactMappings } from "./pushFactMappings";
 import {
-  DMN15__tDecision,
-  DMN15__tInputData,
-  DMN15__tItemDefinition,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN16__tDecision,
+  DMN16__tInputData,
+  DMN16__tItemDefinition,
+} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 
 const EMPTY_GIVEN_FACTMAPPING = {
   className: "java.lang.Void",
@@ -141,9 +141,9 @@ export function createNewDmnTypeTestScenario({
 }
 
 function generateFactMappingsAndFactMappingValuesFromDmnModel(
-  drgElements: DMN15__tInputData[] | DMN15__tDecision[],
+  drgElements: DMN16__tInputData[] | DMN16__tDecision[],
   expressionIdentifierType: "EXPECT" | "GIVEN",
-  allItemDefinitionsMap: Map<string, DMN15__tItemDefinition>
+  allItemDefinitionsMap: Map<string, DMN16__tItemDefinition>
 ) {
   const factMappingsToPush = [] as FactMapping[];
 
@@ -182,11 +182,11 @@ function generateFactMappingsAndFactMappingValuesFromDmnModel(
 }
 
 function recursevlyNavigateItemComponent(
-  allItemDefinitionsMap: Map<string, DMN15__tItemDefinition>,
+  allItemDefinitionsMap: Map<string, DMN16__tItemDefinition>,
   columnWidth: number,
   expressionElements: string[],
   expressionIdentifierType: "EXPECT" | "GIVEN",
-  itemComponent: DMN15__tItemDefinition,
+  itemComponent: DMN16__tItemDefinition,
   name: string,
   typeRef: string
 ) {

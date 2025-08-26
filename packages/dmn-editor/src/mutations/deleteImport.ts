@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN15__tDefinitions } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDefinitions } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getXmlNamespaceDeclarationName } from "@kie-tools/dmn-marshaller/dist/xml/xmlNamespaceDeclarations";
 import { computeDiagramData } from "../store/computed/computeDiagramData";
@@ -36,7 +36,7 @@ export function deleteImport({
   __readonly_externalModelTypesByNamespace,
   __readonly_externalModelsByNamespace,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   __readonly_index: number;
   __readonly_externalModelTypesByNamespace: TypeOrReturnType<Computed["getDirectlyIncludedExternalModelsByNamespace"]>;
   __readonly_externalModelsByNamespace: ExternalModelsIndex | undefined;

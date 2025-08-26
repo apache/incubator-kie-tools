@@ -51,10 +51,7 @@ import { INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME } from "@kie-tools/boxed-e
 import { RELATION_EXPRESSION_DEFAULT_VALUE } from "@kie-tools/boxed-expression-component/dist/expressions/RelationExpression/RelationExpression";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
 import { isStruct } from "../dataTypes/DataTypeSpec";
-import {
-  DMN15__tContextEntry,
-  DMN15__tOutputClause,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tContextEntry, DMN_LATEST__tOutputClause } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 
 export function getDefaultBoxedExpression({
@@ -99,7 +96,7 @@ export function getDefaultBoxedExpression({
   else if (logicType === "context") {
     let maxWidthBasedOnEntryNames = CONTEXT_ENTRY_VARIABLE_MIN_WIDTH;
 
-    let contextEntries: Normalized<DMN15__tContextEntry>[];
+    let contextEntries: Normalized<DMN_LATEST__tContextEntry>[];
     if (!dataType || !isStruct(dataType.itemDefinition)) {
       contextEntries = [
         {
@@ -258,7 +255,7 @@ export function getDefaultBoxedExpression({
       },
     ];
 
-    const output: Normalized<DMN15__tOutputClause>[] =
+    const output: Normalized<DMN_LATEST__tOutputClause>[] =
       !dataType || !isStruct(dataType.itemDefinition)
         ? [
             {

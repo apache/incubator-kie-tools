@@ -455,11 +455,12 @@ public class TimerSettingsFieldEditorViewTest {
         calendar.set(Calendar.AM_PM, Calendar.AM);
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, second);
-        int zone = calendar.get(Calendar.ZONE_OFFSET) / 60 / 60 / 1000;
-        int daylightSaving = calendar.get(Calendar.DST_OFFSET) / 60 / 60 / 1000;
-        zone = zone + daylightSaving;
+        int zoneMillisec = calendar.get(Calendar.ZONE_OFFSET)+calendar.get(Calendar.DST_OFFSET);
+        int zone = zoneMillisec / 60 / 60 / 1000;
+        int zoneMinutes = abs((zoneMillisec / (60 * 1000)) % 60);
+
         String currentValue = calendar.get(Calendar.YEAR) + "-" + fullInt(calendar.get(Calendar.MONTH) + 1) + "-" + fullInt(calendar.get(Calendar.DAY_OF_MONTH)) +
-                "T" + fullInt(calendar.get(Calendar.HOUR)) + ":" + fullInt(calendar.get(Calendar.MINUTE)) + ":" + fullInt(calendar.get(Calendar.SECOND)) + (zone >= 0 ? "+" : "-") + fullInt(abs(zone)) + ":00";
+                "T" + fullInt(calendar.get(Calendar.HOUR)) + ":" + fullInt(calendar.get(Calendar.MINUTE)) + ":" + fullInt(calendar.get(Calendar.SECOND)) + (zone >= 0 ? "+" : "-") + fullInt(abs(zone)) +  ":" + fullInt(zoneMinutes);
 
         Date date = view.parseFromISO(currentValue);
         GregorianCalendar result = new GregorianCalendar(TimeZone.getDefault());
@@ -505,12 +506,13 @@ public class TimerSettingsFieldEditorViewTest {
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, second);
 
-        int zone = calendar.get(Calendar.ZONE_OFFSET) / 60 / 60 / 1000;
-        int daylightSaving = calendar.get(Calendar.DST_OFFSET) / 60 / 60 / 1000;
-        zone = zone + daylightSaving;
+        int zoneMillisec = calendar.get(Calendar.ZONE_OFFSET)+calendar.get(Calendar.DST_OFFSET);
+        int zone = zoneMillisec / 60 / 60 / 1000;
+        int zoneMinutes = abs((zoneMillisec / (60 * 1000)) % 60);
+
         Date date = calendar.getTime();
         String expectedValue = calendar.get(Calendar.YEAR) + "-" + fullInt(calendar.get(Calendar.MONTH) + 1) + "-" + fullInt(calendar.get(Calendar.DAY_OF_MONTH)) +
-                "T" + fullInt(calendar.get(Calendar.HOUR)) + ":" + fullInt(calendar.get(Calendar.MINUTE)) + ":" + fullInt(calendar.get(Calendar.SECOND)) + (zone >= 0 ? "+" : "-") + fullInt(abs(zone)) + ":00";
+                "T" + fullInt(calendar.get(Calendar.HOUR)) + ":" + fullInt(calendar.get(Calendar.MINUTE)) + ":" + fullInt(calendar.get(Calendar.SECOND)) + (zone >= 0 ? "+" : "-") + fullInt(abs(zone)) +  ":" + fullInt(zoneMinutes);
         assertEquals(expectedValue, view.formatToISO(date));
     }
 

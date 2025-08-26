@@ -17,29 +17,18 @@
  * under the License.
  */
 
+import * as React from "react";
+import { AutoField, AutoFields } from "@kie-tools/uniforms-patternfly/dist/esm";
+import { ComponentDetector } from "uniforms/esm";
 
-package org.uberfire.ext.editor.commons.client.file.exports;
+interface SwfAutoFieldValue {
+  value: ComponentDetector;
+}
 
-import org.kie.j2cl.tools.processors.annotations.GWT3Resource;
-import org.kie.j2cl.tools.processors.common.resources.ClientBundle;
-import org.kie.j2cl.tools.processors.common.resources.TextResource;
-
-/**
- * Static resources related to the file export.
- */
-@GWT3Resource
-public interface FileExportResources extends ClientBundle {
-
-    FileExportResources INSTANCE = FileExportResourcesImpl.INSTANCE;
-
-    // The File Saver js.
-    @Source("js/FileSaver.min.js.back")
-    TextResource fileSaver();
-
-    // The jsPDF js.
-    @Source("js/jspdf.min.js.back")
-    TextResource jsPdf();
-
-    @Source("js/canvas2svg.js.back")
-    TextResource canvas2svg();
+export function SwfAutoFieldProvider(props: React.PropsWithChildren<SwfAutoFieldValue>) {
+  return (
+    <AutoField.componentDetectorContext.Provider value={props.value}>
+      {props.children ? props.children : <AutoFields />}
+    </AutoField.componentDetectorContext.Provider>
+  );
 }

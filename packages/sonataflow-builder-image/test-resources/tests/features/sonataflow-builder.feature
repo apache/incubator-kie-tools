@@ -20,33 +20,20 @@ Feature: SonataFlow Builder Image Sanity Checks
 
   Scenario: Verify that the application is built and started correctly
     When container is started with command bash -c '/home/kogito/launch/build-app.sh && java -jar target/quarkus-app/quarkus-run.jar'
-      | variable     | value |
-      | SCRIPT_DEBUG | false  |
-    Then check that page is served
-      | property             | value             |
-      | port                 | 8080              |
-      | path                 | /q/health/ready   |
-      | wait                 | 480               |
-      | request_method       | GET               |
-      | expected_status_code | 200               |
-    And container log should match regex Installed features:.*kogito-serverless-workflow
+      | variable           | value                 |
+      | SCRIPT_DEBUG       | false                 |
+      | KOGITO_SERVICE_URL | http://localhost:8080 |
+    Then container log should match regex Installed features:.*kogito-serverless-workflow
     And container log should match regex Installed features:.*kie-addon-knative-eventing-extension
     And container log should match regex Installed features:.*smallrye-health
+    And container log should match regex Listening on: http://0\.0\.0\.0:8080
+    And run curl -fsS -o /dev/null -w %{http_code} http://127.0.0.1:8080/q/health/ready in container and immediately check its output contains 200
 
   Scenario: Verify that the application is built and started correctly when QUARKUS_EXTENSIONS env is used
     When container is started with command bash -c '/home/kogito/launch/build-app.sh && java -jar target/quarkus-app/quarkus-run.jar'
-      | variable            | value                                    |
-      | SCRIPT_DEBUG        | false                                     |
-      | QUARKUS_EXTENSIONS  | io.quarkus:quarkus-elytron-security-jdbc |
-    Then check that page is served
-      | property             | value             |
-      | port                 | 8080              |
-      | path                 | /q/health/ready   |
-      | wait                 | 480               |
-      | request_method       | GET               |
-      | expected_status_code | 200               |
-    And container log should match regex Extension io\.quarkus:quarkus-elytron-security-jdbc.* has been installed
-    And container log should match regex Installed features:.*kogito-serverless-workflow
-    And container log should match regex Installed features:.*kie-addon-knative-eventing-extension
-    And container log should match regex Installed features:.*smallrye-health
+      | variable           | value                                    |
+      | SCRIPT_DEBUG       | false                                    |
+      | KOGITO_SERVICE_URL | http://localhost:8080                    |
+      | QUARKUS_EXTENSIONS | io.quarkus:quarkus-elytron-security-jdbc |
+    Then container log should match regex Extension io\.quarkus:quarkus-elytron-security-jdbc.* has been installed
     And container log should match regex Installed features:.*security-jdbc

@@ -35,6 +35,8 @@ export interface EditorEnvelopeDictionary extends ReferenceDictionary {
   loadingScreen: {
     loading: string;
   };
+  editorNotAvailable: (extension: string) => string;
+  kogitoEditor: string;
 }
 
 export interface EditorEnvelopeI18n extends EditorEnvelopeDictionary {}

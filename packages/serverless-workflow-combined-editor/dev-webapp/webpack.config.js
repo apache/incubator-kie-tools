@@ -96,6 +96,10 @@ module.exports = (webpackEnv) =>
     },
     ignoreWarnings: [/Failed to parse source map/],
     devServer: {
+      headers: {
+        "Content-Security-Policy":
+          "default-src 'self'; base-uri 'self'; font-src 'self' https: data:; frame-ancestors 'self'; img-src 'self' data:; object-src 'none'; script-src 'self' 'unsafe-eval' https://cdn.segment.com; script-src-attr 'none'; style-src 'self' https: 'unsafe-inline'; connect-src 'self' http: https:;",
+      },
       historyApiFallback: true,
       static: [{ directory: path.join(__dirname) }],
       compress: true,
