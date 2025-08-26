@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { TextArea } from "@patternfly/react-core/dist/js/components/TextArea";
@@ -28,6 +28,8 @@ import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { State } from "../store/Store";
 import { useDmnEditorI18n } from "../i18n";
+import { EXPRESSION_LANGUAGES_LATEST } from "@kie-tools/dmn-marshaller";
+import { ExpressionLangaugeSelect } from "./ExpressionLanguageSelect";
 
 export function ContentField(props: {
   initialValue: string;
@@ -73,7 +75,7 @@ export function ExpressionLanguageField(props: {
   return (
     <TextField
       {...props}
-      type={TextFieldType.TEXT_INPUT}
+      type={TextFieldType.DROP_DOWN}
       title={i18n.propertiesPanel.expressionLanguage}
       placeholder={i18n.propertiesPanel.expressionLanguagePlaceholder}
     />
@@ -127,6 +129,7 @@ export function TypeRefField(props: {
 export enum TextFieldType {
   TEXT_AREA = "text-area",
   TEXT_INPUT = "text-input",
+  DROP_DOWN = "drop-down",
 }
 
 export function TextField({
@@ -145,10 +148,15 @@ export function TextField({
   // used to save the expression path value until the flush operation
   const [expressionPath, setExpressionPath] = useState(props.expressionPath);
   const [value, setValue] = useState(props.initialValue);
+  const [customLanguages, setCustomLanguages] = useState<string[]>(EXPRESSION_LANGUAGES_LATEST);
+
+  const toggleRef = React.useRef<HTMLButtonElement>(null);
 
   // Uses refs to prevent `useEffect` to run multiple times
   const valueRef = React.useRef(props.initialValue);
   const isEditing = React.useRef(false);
+
+  const [isExpressionLanguageSelectOpen, setExpressionLanguageSelectOpen] = useState(false);
 
   // Updates the value and expression path with the props value
   useEffect(() => {
@@ -171,6 +179,28 @@ export function TextField({
       }
     };
   }, [expressionPath, onChange, props.initialValue]);
+
+  const allLanguages = useMemo(() => {
+    return [...customLanguages, ...(value && !customLanguages.includes(value) ? [value] : [])];
+  }, [customLanguages, value]);
+
+  const onClear = () => {
+    onChange?.("", expressionPath);
+  };
+
+  const onSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>, val: string) => {
+      const language = val;
+      setValue(language as string);
+      valueRef.current = language as string;
+      isEditing.current = true;
+      if (props.initialValue !== language) {
+        onChange?.(language as string, expressionPath);
+        isEditing.current = false;
+      }
+    },
+    [expressionPath, onChange, props.initialValue]
+  );
 
   return (
     <FormGroup label={props.title}>
@@ -218,6 +248,14 @@ export function TextField({
           placeholder={props.placeholder ?? i18n.propertiesPanel.expressionContentPlaceholder}
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={6}
+        />
+      )}
+      {props.type === TextFieldType.DROP_DOWN && (
+        <ExpressionLangaugeSelect
+          OnClear={onClear}
+          onSelect={onSelect}
+          allLanguages={allLanguages}
+          selections={value}
         />
       )}
     </FormGroup>

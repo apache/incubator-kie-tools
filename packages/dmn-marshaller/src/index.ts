@@ -275,6 +275,11 @@ export const FEEL_NAMESPACES: Record<DmnVersions, string> = {
   "1.6": "https://www.omg.org/spec/DMN/20240513/FEEL/",
 };
 
+export const EXPRESSION_LANGUAGES_LATEST = [
+  "https://www.omg.org/spec/DMN/20240513/FEEL/",
+  "https://www.omg.org/spec/DMN/20240513/B-FEEL/",
+];
+
 const feel12ns = new Map<string, string>([
   [FEEL_NS, FEEL_NAMESPACES["1.2"]],
   [FEEL_NAMESPACES["1.2"], FEEL_NS],

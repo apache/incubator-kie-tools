@@ -41,7 +41,7 @@ import org.kie.workbench.common.stunner.client.widgets.resources.i18n.StunnerWid
 import org.kie.workbench.common.stunner.core.client.canvas.controls.inlineeditor.InlineTextEditorBox;
 import org.uberfire.mvp.Command;
 
-@Templated(value = "InlineTextEditorBox.html", stylesheet = "InlineTextEditorBox.css")
+@Templated(value = "InlineTextEditorBox.html")
 @InlineTextEditorBox
 @Dependent
 public class InlineTextEditorBoxViewImpl
