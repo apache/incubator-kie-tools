@@ -32,7 +32,9 @@ export class BpmnEditorResources extends BaseEditorResources {
         .filter((r) => r.type === "js")
         .flatMap((r) => r.paths)
         .map((p) => this.createResource({ path: p }, ["\\", "`", "$"])),
-      referencedJsResources: this.getReferencedJSPaths(args.resourcesPathPrefix, bpmnLanguageData.gwtModuleName).map(
+      referencedJsResources: this.getReferencedJSPaths(args.resourcesPathPrefix, bpmnLanguageData.gwtModuleName)
+        .filter(r=>!r.path.includes('.cache.js'))
+        .map(
         (rp) => this.createResource(rp, ["\\", "`", "$"])
       ),
       baseCssResources: bpmnLanguageData.resources
