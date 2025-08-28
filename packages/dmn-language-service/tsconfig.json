@@ -1,3 +1,6 @@
 {
-  "extends": "@kie-tools/tsconfig/tsconfig.esm.json"
+  "extends": "@kie-tools/tsconfig/tsconfig.esm.json",
+  "compilerOptions": {
+    "esModuleInterop": true
+  }
 }
