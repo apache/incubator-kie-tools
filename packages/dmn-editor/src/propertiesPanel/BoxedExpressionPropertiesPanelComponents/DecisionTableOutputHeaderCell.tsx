@@ -36,11 +36,13 @@ import { useExternalModels } from "../../includedModels/DmnEditorDependenciesCon
 import { State } from "../../store/Store";
 
 import { useRefactor } from "../../refactor/RefactorConfirmationDialog";
+import { useDmnEditorI18n } from "../../i18n";
 
 export function DecisionTableOutputHeaderCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
   isReadOnly: boolean;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const activeDrgElementId = useDmnEditorStore((s) => s.boxedExpressionEditor.activeDrgElementId);
@@ -140,7 +142,7 @@ export function DecisionTableOutputHeaderCell(props: {
   return (
     <>
       {refactorConfirmationDialog}
-      <FormGroup label="ID">
+      <FormGroup label={i18n.propertiesPanel.id}>
         <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
           {selectedObjectId}
         </ClipboardCopy>
@@ -148,7 +150,7 @@ export function DecisionTableOutputHeaderCell(props: {
       {root?.output.length === 1 && (
         <>
           <NameField
-            alternativeFieldName={`${alternativeFieldName} Name`}
+            alternativeFieldName={i18n.propertiesPanel.alternativeFieldName(alternativeFieldName)}
             isReadOnly={false}
             id={root["@_id"]!}
             name={root?.["@_label"] ?? ""}
@@ -156,7 +158,7 @@ export function DecisionTableOutputHeaderCell(props: {
             onChange={setNewIdentifierNameCandidate}
           />
           <TypeRefField
-            alternativeFieldName={`${alternativeFieldName} Type`}
+            alternativeFieldName={i18n.propertiesPanel.alternativeFieldType(alternativeFieldName)}
             isReadOnly={false}
             dmnEditorRootElementRef={dmnEditorRootElementRef}
             typeRef={root?.["@_typeRef"]}
@@ -205,7 +207,7 @@ export function DecisionTableOutputHeaderCell(props: {
         ""
       )}
       {itemDefinition && (
-        <FormGroup label="Constraint">
+        <FormGroup label={i18n.propertiesPanel.constraint}>
           <ConstraintsFromTypeConstraintAttribute
             isReadOnly={true}
             itemDefinition={itemDefinition}
@@ -232,7 +234,7 @@ export function DecisionTableOutputHeaderCell(props: {
           fixed={false}
           isSectionExpanded={isDefaultOutputEntryExpanded}
           toogleSectionExpanded={() => setDefaultOutputEntryExpanded((prev) => !prev)}
-          title={"Default Output Entry"}
+          title={i18n.propertiesPanel.defaultOutputEntry}
         />
         {isDefaultOutputEntryExpanded && (
           <>
@@ -280,7 +282,7 @@ export function DecisionTableOutputHeaderCell(props: {
           fixed={false}
           isSectionExpanded={isOutputValuesExpanded}
           toogleSectionExpanded={() => setOutputValuesExpanded((prev) => !prev)}
-          title={"Output Values"}
+          title={i18n.propertiesPanel.outputValues}
         />
         {isOutputValuesExpanded && (
           <>

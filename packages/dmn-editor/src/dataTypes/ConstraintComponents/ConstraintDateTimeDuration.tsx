@@ -22,6 +22,7 @@ import { useMemo, useCallback, useEffect } from "react";
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import "./Constraint.css";
 import { ConstraintProps } from "./Constraint";
+import { useDmnEditorI18n } from "../../i18n";
 
 export const REGEX_DATE_TIME_DURATION = /^P(?!$)((-)?\d+D)?(T(?=(-)?\d)((-)?\d+H)?((-)?\d+M)?((-)?\d+S)?)?$/;
 
@@ -34,6 +35,7 @@ export function ConstraintDateTimeDuration({
   isValid,
   isDisabled,
 }: ConstraintProps) {
+  const { i18n } = useDmnEditorI18n();
   const days = useMemo<string>(() => getDaysDuration(value), [value]);
   const hours = useMemo<string>(() => getHoursDuration(value), [value]);
   const minutes = useMemo<string>(() => getMinutesDuration(value), [value]);
@@ -99,7 +101,7 @@ export function ConstraintDateTimeDuration({
           <TextInput
             id={`${id}-constraint-days`}
             type={"number"}
-            placeholder={"Days"}
+            placeholder={i18n.dataTypes.days}
             className={`kie-dmn-editor--constraint-input ${isValid ? "" : "kie-dmn-editor--constraint-invalid"}`}
             value={days}
             onChange={(event, val) => onDaysChange(val, event)}
@@ -112,7 +114,7 @@ export function ConstraintDateTimeDuration({
           <TextInput
             id={`${id}-constraint-hours`}
             type={"number"}
-            placeholder={"Hours"}
+            placeholder={i18n.dataTypes.hours}
             className={`kie-dmn-editor--constraint-input ${isValid ? "" : "kie-dmn-editor--constraint-invalid"}`}
             value={hours}
             onChange={(event, val) => onHoursChange(val, event)}
@@ -124,7 +126,7 @@ export function ConstraintDateTimeDuration({
           <TextInput
             id={`${id}-constraint-minutes`}
             type={"number"}
-            placeholder={"Minutes"}
+            placeholder={i18n.dataTypes.minutes}
             className={`kie-dmn-editor--constraint-input ${isValid ? "" : "kie-dmn-editor--constraint-invalid"}`}
             value={minutes}
             onChange={(event, val) => onMinutesChange(val, event)}
@@ -136,7 +138,7 @@ export function ConstraintDateTimeDuration({
           <TextInput
             id={`${id}-constraint-seconds`}
             type={"number"}
-            placeholder={"Seconds"}
+            placeholder={i18n.dataTypes.seconds}
             className={`kie-dmn-editor--constraint-input ${isValid ? "" : "kie-dmn-editor--constraint-invalid"}`}
             value={seconds}
             onChange={(event, val) => onSecondsChange(val, event)}

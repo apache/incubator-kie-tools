@@ -27,6 +27,7 @@ import TimesIcon from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ConstraintComponentProps, TypeHelper } from "./Constraints";
+import { useDmnEditorI18n } from "../i18n";
 
 export const ENUM_SEPARATOR = ",";
 
@@ -41,6 +42,7 @@ export function ConstraintsEnum({
   isDisabled,
   renderOnPropertiesPanel,
 }: ConstraintComponentProps) {
+  const { i18n } = useDmnEditorI18n();
   const enumValues = useMemo(() => isEnum(value, typeHelper.check) ?? [""], [typeHelper.check, value]);
   const [valuesUuid, setValuesUuid] = useState((enumValues ?? [""])?.map((_) => generateUuid()));
   const isItemValid = useMemo(
@@ -169,13 +171,13 @@ export function ConstraintsEnum({
       {!(isDisabled || isReadOnly) && (
         <>
           <Button
-            title={"Add enum value"}
+            title={i18n.dataTypes.addEnumValue}
             onClick={() => onAdd()}
             variant={ButtonVariant.link}
             icon={<PlusCircleIcon />}
             style={{ paddingTop: "10px", paddingBottom: 0, paddingLeft: 0, paddingRight: 0 }}
           >
-            Add value
+            {i18n.dataTypes.addValue}
           </Button>
         </>
       )}
@@ -213,6 +215,7 @@ function EnumElement({
   onRemove: () => void;
   onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => void;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const value = useMemo<string>(() => initialValue, [initialValue]);
   const removeButtonRef = useRef(null);
   const { hovered } = useDraggableItemContext();
@@ -237,7 +240,7 @@ function EnumElement({
       })}
 
       <Button
-        title={"Remove enum value"}
+        title={i18n.dataTypes.removeEnumValue}
         ref={removeButtonRef}
         style={{ opacity: hovered ? "100%" : "0" }}
         isDisabled={isDisabled}
@@ -246,7 +249,7 @@ function EnumElement({
         icon={<TimesIcon />}
         onClick={() => onRemove()}
       />
-      {hovered && <Tooltip content={"Remove"} triggerRef={removeButtonRef} />}
+      {hovered && <Tooltip content={i18n.dataTypes.remove} triggerRef={removeButtonRef} />}
     </div>
   );
 }

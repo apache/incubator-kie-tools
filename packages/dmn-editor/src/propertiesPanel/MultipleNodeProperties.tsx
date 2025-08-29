@@ -29,8 +29,10 @@ import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import { ShapeOptions } from "./ShapeOptions";
+import { useDmnEditorI18n } from "../i18n";
 
 export function MultipleNodeProperties({ nodeIds }: { nodeIds: string[] }) {
+  const { i18n } = useDmnEditorI18n();
   const [isSectionExpanded, setSectionExpanded] = useState<boolean>(true);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const size = useMemo(() => nodeIds.length, [nodeIds.length]);
@@ -47,7 +49,7 @@ export function MultipleNodeProperties({ nodeIds }: { nodeIds: string[] }) {
               <TextContent>
                 <Text component={TextVariants.h4}>
                   <Truncate
-                    content={`Multiple nodes selected (${size})`}
+                    content={i18n.propertiesPanel.multiplenodesSize(size)}
                     position={"middle"}
                     trailingNumChars={size.toString().length + 2}
                   />
@@ -57,7 +59,7 @@ export function MultipleNodeProperties({ nodeIds }: { nodeIds: string[] }) {
           }
           action={
             <Button
-              title={"Close"}
+              title={i18n.close}
               variant={ButtonVariant.plain}
               onClick={() => {
                 dmnEditorStoreApi.setState((state) => {

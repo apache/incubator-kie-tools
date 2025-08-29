@@ -34,8 +34,10 @@ import { EmptyState, EmptyStateBody, EmptyStateHeader } from "@patternfly/react-
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useCallback } from "react";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { useDmnEditorI18n } from "../i18n";
 
 export function DrdSelectorPanel() {
+  const { i18n } = useDmnEditorI18n();
   const thisDmn = useDmnEditorStore((s) => s.dmn);
   const diagram = useDmnEditorStore((s) => s.diagram);
   const drdIndex = useDmnEditorStore((s) => s.computed(s).getDrdIndex());
@@ -77,11 +79,11 @@ export function DrdSelectorPanel() {
         <div style={{ gridArea: "header-list" }} data-testid={"kie-tools--dmn-editor--drd-selector-popover"}>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <TextContent>
-              <Text component="h3">DRDs</Text>
+              <Text component="h3">{i18n.nodes.drds}</Text>
             </TextContent>
             {!settings.isReadOnly && (
               <Button
-                title={"New DRD"}
+                title={i18n.nodes.newDrd}
                 variant={ButtonVariant.link}
                 onClick={() => {
                   dmnEditorStoreApi.setState((state) => {
@@ -110,10 +112,8 @@ export function DrdSelectorPanel() {
         {(drds.length <= 0 && (
           <>
             <EmptyState>
-              <EmptyStateHeader titleText={<>{"You're on the default DRD"}</>} headingLevel={"h4"} />
-              <EmptyStateBody>
-                {"Adding nodes or making changes to the Diagram will automatically create a DRD for you."}
-              </EmptyStateBody>
+              <EmptyStateHeader titleText={<>{i18n.nodes.defaultDrd}</>} headingLevel={"h4"} />
+              <EmptyStateBody>{i18n.nodes.addingNodesMakingChanges}</EmptyStateBody>
             </EmptyState>
           </>
         )) || (
@@ -146,8 +146,13 @@ export function DrdSelectorPanel() {
               {drdName}
             </Title>
             {drds.length > 0 && !settings.isReadOnly && (
-              <Button variant={ButtonVariant.link} onClick={removeDrd} style={{ padding: 0 }} title="Remove DRD">
-                Remove
+              <Button
+                variant={ButtonVariant.link}
+                onClick={removeDrd}
+                style={{ padding: 0 }}
+                title={i18n.nodes.removeDrd}
+              >
+                {i18n.nodes.remove}
               </Button>
             )}
           </Flex>
@@ -158,13 +163,13 @@ export function DrdSelectorPanel() {
         <div style={{ gridArea: "content-properties" }}>
           <Form>
             <FormSection>
-              <FormGroup label={"Input Data node shape"}>
+              <FormGroup label={i18n.nodes.inputDataNodeShape}>
                 <ToggleGroup
                   aria-label="Tweak the shape of the input data node"
                   className={"kie-dmn-editor--drd-properties--input-data-node-shape"}
                 >
                   <ToggleGroupItem
-                    text="Classic"
+                    text={i18n.nodes.classic}
                     icon={<InputDataIcon padding={"2px 0 0 0"} height={22} />}
                     buttonId="classic-input-node-shape"
                     isSelected={isAlternativeInputDataShape === false}
@@ -180,7 +185,7 @@ export function DrdSelectorPanel() {
                     }
                   />
                   <ToggleGroupItem
-                    text="Alternative"
+                    text={i18n.nodes.alternative}
                     icon={
                       <AlternativeInputDataIcon
                         padding={"1px 0 0 0"}

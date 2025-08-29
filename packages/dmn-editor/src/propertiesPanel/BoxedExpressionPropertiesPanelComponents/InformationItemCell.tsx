@@ -30,6 +30,7 @@ import { useDmnEditor } from "../../DmnEditorContext";
 import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constraints";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { State } from "../../store/Store";
+import { useDmnEditorI18n } from "../../i18n";
 
 export function InformationItemCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
@@ -38,6 +39,7 @@ export function InformationItemCell(props: {
   onTypeRefChange: (newTypeRef: string) => void;
   onDescriptionChange: (newDescription: string) => void;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const { externalModelsByNamespace } = useExternalModels();
@@ -65,7 +67,7 @@ export function InformationItemCell(props: {
 
   return (
     <>
-      <FormGroup label="ID">
+      <FormGroup label={i18n.propertiesPanel.id}>
         <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
           {selectedObjectId}
         </ClipboardCopy>
@@ -84,7 +86,7 @@ export function InformationItemCell(props: {
         onChange={props.onTypeRefChange}
       />
       {itemDefinition && (
-        <FormGroup label="Constraint">
+        <FormGroup label={i18n.propertiesPanel.constraint}>
           <ConstraintsFromTypeConstraintAttribute
             isReadOnly={true}
             itemDefinition={itemDefinition}

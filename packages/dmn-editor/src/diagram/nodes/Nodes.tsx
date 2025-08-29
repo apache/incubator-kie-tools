@@ -86,6 +86,7 @@ import { deleteNode, NodeDeletionMode } from "../../mutations/deleteNode";
 import { nodeNatures } from "../../mutations/NodeNature";
 import { computeIndexedDrd } from "../../store/computed/computeIndexes";
 import { addOrGetDrd } from "../../mutations/addOrGetDrd";
+import { useDmnEditorI18n } from "../../i18n";
 
 export type ElementFilter<E extends { __$$element: string }, Filter extends string> = E extends any
   ? E["__$$element"] extends Filter
@@ -1437,6 +1438,7 @@ export const GroupNode = React.memo(
 
 export const UnknownNode = React.memo(
   ({ data: { shape }, selected, dragging, type, id }: RF.NodeProps<DmnDiagramNodeData<null>>) => {
+    const { i18n } = useDmnEditorI18n();
     const ref = useRef<HTMLDivElement>(null);
 
     const snapGrid = useDmnEditorStore((s) => s.diagram.snapGrid);
@@ -1492,7 +1494,7 @@ export const UnknownNode = React.memo(
               nodeType={type as typeof NODE_TYPES.unknown}
               snapGrid={snapGrid}
               nodeId={id}
-              nodeName={"unknown"}
+              nodeName={i18n.nodes.unknown}
               nodeShapeIndex={shape.index}
             />
           )}
@@ -1506,11 +1508,12 @@ export const UnknownNode = React.memo(
 ///
 
 export function EmptyLabel() {
+  const { i18n } = useDmnEditorI18n();
   return (
     <span style={{ fontFamily: "serif" }}>
-      <i style={{ opacity: 0.8 }}>{`<Empty>`}</i>
+      <i style={{ opacity: 0.8 }}>{i18n.nodes.empty}</i>
       <br />
-      <i style={{ opacity: 0.5, fontSize: "0.8em", lineHeight: "0.8em" }}>{`Double-click to name`}</i>
+      <i style={{ opacity: 0.5, fontSize: "0.8em", lineHeight: "0.8em" }}>{i18n.nodes.doubleClickToName}</i>
     </span>
   );
 }
