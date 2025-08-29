@@ -22,16 +22,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Data Index Webapp</title>
+    <title>${KOGITO_DATA_INDEX_WEBAPP_TITLE}</title>
     <link rel="stylesheet" href="styles.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.svg" />
+    <link rel="shortcut icon" type="image/x-icon" href="${KOGITO_DATA_INDEX_WEBAPP_LOGO}" />
   </head>
   <body>
     <div class="maindiv">
       <div class="container">
         <div class="logo" style="display: flex; justify-content: center">
-          <img src="favicon.svg" alt="KIE Logo" />
-          <h1>Data Index Service</h1>
+          <img src="${KOGITO_DATA_INDEX_WEBAPP_LOGO}" alt="KIE Logo" />
+          <h1>${KOGITO_DATA_INDEX_WEBAPP_TITLE}</h1>
         </div>
         <div>
           <h4>Your Data Index service is up and working!</h4>
@@ -42,7 +42,9 @@
           modify that data.
         </p>
         <div>
-          <a href="https://graphql.org/learn/" class="btn" target="_blank">GraphQL docs</a>
+          <a href="${KOGITO_DATA_INDEX_WEBAPP_DOCLINK_HREF}" class="btn" target="_blank"
+            >${KOGITO_DATA_INDEX_WEBAPP_DOCLINK_TEXT}</a
+          >
         </div>
       </div>
     </div>

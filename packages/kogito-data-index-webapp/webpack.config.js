@@ -17,10 +17,13 @@
  * under the License.
  */
 
+const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { env } = require("./env");
+const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = async (webpackEnv) =>
   merge(common(webpackEnv), {
@@ -28,17 +31,39 @@ module.exports = async (webpackEnv) =>
     plugins: [
       new CopyPlugin({
         patterns: [
-          { from: "./src/index.html", to: "./index.html" },
           { from: "./src/styles.css", to: "./styles.css" },
           { from: "./static/favicon.svg", to: "./favicon.svg" },
         ],
       }),
+      new HtmlWebpackPlugin({
+        template: path.resolve(__dirname, "src/index.html"),
+        filename: "index.html",
+        chunks: ["app"],
+      }),
+      new HtmlReplaceWebpackPlugin([
+        {
+          pattern: /\${KOGITO_DATA_INDEX_WEBAPP_TITLE}/g,
+          replacement: () => env.kogitoDataIndexWebapp.title ?? "",
+        },
+        {
+          pattern: /\${KOGITO_DATA_INDEX_WEBAPP_LOGO}/g,
+          replacement: () => env.kogitoDataIndexWebapp.logo ?? "",
+        },
+        {
+          pattern: /\${KOGITO_DATA_INDEX_WEBAPP_DOCLINK_HREF}/g,
+          replacement: () => env.kogitoDataIndexWebapp.docLink.href ?? "",
+        },
+        {
+          pattern: /\${KOGITO_DATA_INDEX_WEBAPP_DOCLINK_TEXT}/g,
+          replacement: () => env.kogitoDataIndexWebapp.docLink.text ?? "",
+        },
+      ]),
     ],
     ignoreWarnings: [/Failed to parse source map/],
     devServer: {
       static: {
         directory: "./dist",
       },
-      port: env.dataIndexWebapp.dev.port,
+      port: env.kogitoDataIndexWebapp.dev.port,
     },
   });

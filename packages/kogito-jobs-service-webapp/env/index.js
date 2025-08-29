@@ -21,34 +21,46 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/b
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
-    KOGITO_DATA_INDEX_WEBAPP_title: {
-      default: "KOGITO DATA INDEX",
+    KOGITO_JOBS_SERVICE_WEBAPP_title: {
+      default: "KOGITO JOBS SERVICE",
       description: "Application title",
     },
-    KOGITO_DATA_INDEX_WEBAPP_logo: {
+    KOGITO_JOBS_SERVICE_WEBAPP_logo: {
       default: "favicon.svg",
       description: "Path to logo image",
     },
-    KOGITO_DATA_INDEX_WEBAPP_docLinkHref: {
-      default: "https://graphql.org/learn/",
+    KOGITO_JOBS_SERVICE_WEBAPP_docLinkHref: {
+      default: "https://docs.kogito.kie.org/latest/html_single/#con-jobs-service_kogito-configuring",
       description: "Documentation link URL",
     },
-    KOGITO_DATA_INDEX_WEBAPP_docLinkText: {
-      default: "GraphQL DOCS",
+    KOGITO_JOBS_SERVICE_WEBAPP_docLinkText: {
+      default: "Kogito Jobs Service docs",
+      description: "Documentation link text",
+    },
+    SONATAFLOW_JOBS_SERVICE_WEBAPP_docLinkHref: {
+      default: "https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/job-services/core-concepts.html",
+      description: "Documentation link URL",
+    },
+    SONATAFLOW_JOBS_SERVICE_WEBAPP_docLinkText: {
+      default: "SonataFlow Jobs Service docs",
       description: "Documentation link text",
     },
   }),
   get env() {
     return {
-      kogitoDataIndexWebapp: {
+      kogitoJobsServiceWebapp: {
         dev: {
-          port: 9026,
+          port: 9028,
         },
-        title: getOrDefault(this.vars.KOGITO_DATA_INDEX_WEBAPP_title),
-        logo: getOrDefault(this.vars.KOGITO_DATA_INDEX_WEBAPP_logo),
-        docLink: {
-          href: getOrDefault(this.vars.KOGITO_DATA_INDEX_WEBAPP_docLinkHref),
-          text: getOrDefault(this.vars.KOGITO_DATA_INDEX_WEBAPP_docLinkText),
+        title: getOrDefault(this.vars.KOGITO_JOBS_SERVICE_WEBAPP_title),
+        logo: getOrDefault(this.vars.KOGITO_JOBS_SERVICE_WEBAPP_logo),
+        docLinkKogito: {
+          href: getOrDefault(this.vars.KOGITO_JOBS_SERVICE_WEBAPP_docLinkHref),
+          text: getOrDefault(this.vars.KOGITO_JOBS_SERVICE_WEBAPP_docLinkText),
+        },
+        docLinkSonataflow: {
+          href: getOrDefault(this.vars.SONATAFLOW_JOBS_SERVICE_WEBAPP_docLinkHref),
+          text: getOrDefault(this.vars.SONATAFLOW_JOBS_SERVICE_WEBAPP_docLinkText),
         },
       },
     };

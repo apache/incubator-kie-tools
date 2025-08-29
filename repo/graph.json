@@ -173,7 +173,6 @@
       { "id": "@kie-tools/form-code-generator-patternfly-theme" },
       { "id": "@kie-tools/runtime-tools-process-webapp-components" },
       { "id": "@kie-tools/runtime-tools-shared-webapp-components" },
-      { "id": "@kie-tools/jobs-service-webapp" },
       { "id": "@kie-tools-core/k8s-yaml-to-apiserver-requests" },
       { "id": "kie-editors-dev-vscode-extension" },
       { "id": "@kie-tools/pmml-editor" },
@@ -203,6 +202,7 @@
       { "id": "@kie-tools/kogito-db-migrator-tool" },
       { "id": "@kie-tools/python-venv" },
       { "id": "@kie/kogito-jit-runner-image" },
+      { "id": "@kie-tools/kogito-jobs-service-webapp" },
       { "id": "@kie-tools/unitables" },
       { "id": "pmml-vscode-extension" },
       { "id": "@kie-tools/runtime-tools-components" },
@@ -1816,11 +1816,6 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/jobs-service-webapp",
-        "target": "@kie-tools-core/webpack-base",
-        "weight": 1
-      },
-      {
         "source": "@kie-tools-core/k8s-yaml-to-apiserver-requests",
         "target": "@kie-tools/cors-proxy-api",
         "weight": 1
@@ -2163,6 +2158,11 @@
       {
         "source": "@kie/kogito-jit-runner-image",
         "target": "@kie/kogito-images-install-helper",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/kogito-jobs-service-webapp",
+        "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
       {
@@ -2883,7 +2883,6 @@
     ["@kie-tools/jbpm-form-code-generator-themes", "packages/jbpm-form-code-generator-themes"],
     ["@kie-tools/jbpm-quarkus-devui", "packages/jbpm-quarkus-devui"],
     ["@kie-tools/jest-base", "packages/jest-base"],
-    ["@kie-tools/jobs-service-webapp", "packages/jobs-service-webapp"],
     ["@kie-tools/json-yaml-language-service", "packages/json-yaml-language-service"],
     ["@kie-tools-core/k8s-yaml-to-apiserver-requests", "packages/k8s-yaml-to-apiserver-requests"],
     ["@kie-tools-core/keyboard-shortcuts", "packages/keyboard-shortcuts"],
@@ -2907,6 +2906,7 @@
     ["@kie/kogito-jit-runner-image", "packages/kogito-jit-runner-image"],
     ["@kie/kogito-jobs-service-ephemeral-image", "packages/kogito-jobs-service-ephemeral-image"],
     ["@kie/kogito-jobs-service-postgresql-image", "packages/kogito-jobs-service-postgresql-image"],
+    ["@kie-tools/kogito-jobs-service-webapp", "packages/kogito-jobs-service-webapp"],
     ["@kie-tools/kogito-management-console", "packages/kogito-management-console"],
     ["@kie-tools-core/kubernetes-bridge", "packages/kubernetes-bridge"],
     ["@kie-tools/maven-base", "packages/maven-base"],
