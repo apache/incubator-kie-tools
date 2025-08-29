@@ -19,11 +19,11 @@
 
 import { DmnUnitablesI18n } from "..";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
-import { en as en_boxed_expression } from "@kie-tools/boxed-expression-component/dist/i18n/locales/en";
+import { en as en_unitables } from "@kie-tools/unitables/dist/i18n/locales/en";
 
 export const en: DmnUnitablesI18n = {
   ...en_common,
-  ...en_boxed_expression,
+  ...en_unitables,
   schema: {
     selectPlaceholder: "Select...",
   },

@@ -21,6 +21,7 @@ import * as React from "react";
 import { HTMLFieldProps } from "uniforms";
 import { connectField, filterDOMProps } from "uniforms/esm";
 import wrapField from "@kie-tools/uniforms-patternfly/dist/esm/wrapField";
+import { UnitablesI18n } from "../i18n";
 
 export type UnitablesNotSupportedFieldProps = HTMLFieldProps<
   object,
@@ -28,7 +29,14 @@ export type UnitablesNotSupportedFieldProps = HTMLFieldProps<
   { recursion: boolean; recursionRef: string }
 >;
 
-function UnitablesNotSupportedField({ recursion, recursionRef, ...props }: UnitablesNotSupportedFieldProps) {
+interface UnitablesI18nProps {
+  i18n: UnitablesI18n;
+}
+
+function UnitablesNotSupportedField(
+  { recursion, recursionRef, ...props }: UnitablesNotSupportedFieldProps,
+  unitableI18nProp: UnitablesI18nProps
+) {
   return wrapField(
     props as any,
     <div style={{ display: "flex" }} {...filterDOMProps(props)}>
@@ -43,7 +51,7 @@ function UnitablesNotSupportedField({ recursion, recursionRef, ...props }: Unita
           width: "100%",
         }}
       >
-        Recursive structures are not supported yet
+        {unitableI18nProp.i18n.recursiveNotSupported}
       </div>
     </div>
   );
