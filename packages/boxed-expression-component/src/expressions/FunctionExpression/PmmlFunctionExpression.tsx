@@ -101,13 +101,13 @@ export function PmmlFunctionExpression({
           {
             headerCellElement: parametersColumnHeader,
             accessor: parametersId as any,
-            label: "parameters",
+            label: i18n.parameters,
             isRowIndexColumn: false,
             dataType: undefined as any,
             width: undefined,
             columns: [
               {
-                label: "label",
+                label: i18n.label,
                 accessor: "label" as any,
                 dataType: undefined as any,
                 isRowIndexColumn: false,
@@ -117,7 +117,7 @@ export function PmmlFunctionExpression({
                 minWidth: PMML_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
               },
               {
-                label: "value",
+                label: i18n.value,
                 accessor: "value" as any,
                 dataType: undefined as any,
                 isRowIndexColumn: false,
@@ -130,7 +130,15 @@ export function PmmlFunctionExpression({
         ],
       },
     ];
-  }, [expressionHolderId, functionExpression, parametersColumnHeader, parametersId]);
+  }, [
+    expressionHolderId,
+    functionExpression,
+    i18n.label,
+    i18n.parameters,
+    i18n.value,
+    parametersColumnHeader,
+    parametersId,
+  ]);
 
   const headerVisibility = useMemo(() => {
     return isNested ? BeeTableHeaderVisibility.SecondToLastLevel : BeeTableHeaderVisibility.AllLevels;
@@ -433,6 +441,7 @@ function getUpdatedExpression(
 }
 
 function PmmlFunctionExpressionDocumentCell(props: React.PropsWithChildren<BeeTableCellProps<PMML_ROWTYPE>>) {
+  const { i18n } = useBoxedExpressionEditorI18n();
   const pmmlFunctionExpression = useMemo(
     () => props.data[props.rowIndex].pmmlFunctionExpression,
     [props.data, props.rowIndex]
@@ -483,7 +492,7 @@ function PmmlFunctionExpressionDocumentCell(props: React.PropsWithChildren<BeeTa
       className={`pmml-document-select`}
       menuAppendTo={editorRef?.current ?? "inline"}
       ouiaId="pmml-document-select"
-      placeholderText={PMML_BINDING_VALUE_PLACEHOLDER}
+      placeholderText={i18n.noneSelected}
       aria-placeholder={PMML_BINDING_VALUE_PLACEHOLDER}
       variant={SelectVariant.single}
       onToggle={(_event, val) => setSelectOpen(val)}
@@ -506,6 +515,7 @@ function PmmlFunctionExpressionDocumentCell(props: React.PropsWithChildren<BeeTa
 }
 
 function PmmlFunctionExpressionModelCell(props: React.PropsWithChildren<BeeTableCellProps<PMML_ROWTYPE>>) {
+  const { i18n } = useBoxedExpressionEditorI18n();
   const pmmlFunctionExpression = useMemo(
     () => props.data[props.rowIndex].pmmlFunctionExpression,
     [props.data, props.rowIndex]
@@ -580,7 +590,7 @@ function PmmlFunctionExpressionModelCell(props: React.PropsWithChildren<BeeTable
       menuAppendTo={editorRef?.current ?? "inline"}
       ouiaId="pmml-document-select"
       isDisabled={!pmmlDocument}
-      placeholderText={pmmlDocument ? PMML_BINDING_VALUE_PLACEHOLDER : "Select a document first"}
+      placeholderText={pmmlDocument ? i18n.noneSelected : i18n.selectDocument}
       aria-placeholder={PMML_BINDING_VALUE_PLACEHOLDER}
       variant={SelectVariant.single}
       onToggle={(_event, val) => setSelectOpen(val)}
