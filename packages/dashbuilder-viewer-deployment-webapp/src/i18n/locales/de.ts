@@ -17,11 +17,11 @@
  * under the License.
  */
 
-import { wrapped } from "@kie-tools-core/i18n/dist/core";
+import { TranslatedDictionary, wrapped } from "@kie-tools-core/i18n/dist/core";
 import { de as de_common } from "@kie-tools/i18n-common-dictionary";
 import { AppI18n } from "..";
 
-export const de: AppI18n = {
+export const de: TranslatedDictionary<AppI18n> = {
   ...de_common,
   masthead: {
     disclaimer: {
@@ -32,7 +32,7 @@ export const de: AppI18n = {
   },
   page: {
     error: {
-      title: `${de_common.terms.oops}!`,
+      title: `${de_common.terms?.oops}!`,
       explanation: "Die Seite konnte aufgrund eines Fehlers nicht gerendert werden.",
       referToJira: ["Bitte lesen Sie ", wrapped("jira"), " und melden Sie ein Problem."],
     },

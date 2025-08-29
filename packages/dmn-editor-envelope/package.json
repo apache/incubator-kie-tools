@@ -25,6 +25,7 @@
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/envelope": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
+    "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/keyboard-shortcuts": "workspace:*",
     "@kie-tools-core/notifications": "workspace:*",
     "@kie-tools-core/react-hooks": "workspace:*",
@@ -33,6 +34,7 @@
     "@kie-tools/boxed-expression-component": "workspace:*",
     "@kie-tools/dmn-editor": "workspace:*",
     "@kie-tools/dmn-marshaller": "workspace:*",
+    "@kie-tools/i18n-common-dictionary": "workspace:*",
     "@kie-tools/pmml-editor-marshaller": "workspace:*",
     "@kie-tools/xml-parser-ts": "workspace:*",
     "@patternfly/react-core": "^5.4.1"

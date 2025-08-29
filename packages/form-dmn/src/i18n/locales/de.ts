@@ -26,18 +26,18 @@ export const de: TranslatedDictionary<FormDmnI18n> = {
   form: {
     status: {
       autoGenerationError: {
-        title: `${de_common.terms.oops}!`,
+        title: `${de_common.terms?.oops}!`,
         explanation: "Formular kann wegen eines Fehlers nicht dargestellt werden.",
         checkNotificationPanel: ["Auf ", wrapped("link"), ` Fehler auf dem Benachrichtigungsfeld prüfen`],
       },
       emptyForm: {
         title: "Kein Formular",
-        explanation: `Assoziiertes ${de_common.names.dmn} hat keine Eingaben.`,
+        explanation: `Assoziiertes ${de_common.names?.dmn} hat keine Eingaben.`,
       },
       validatorError: {
         title: "Beim Versuch, das Formular zu erstellen, ist ein Fehler aufgetreten",
         message: [
-          `Dieses ${de_common.names.dmn}-Modell enthält ein Konstrukt, das noch nicht unterstützt wird. Bitte beziehen Sie sich auf `,
+          `Dieses ${de_common.names?.dmn}-Modell enthält ein Konstrukt, das noch nicht unterstützt wird. Bitte beziehen Sie sich auf `,
           wrapped("jira"),
           " und melden Sie ein Problem. Vergessen Sie nicht, die aktuelle Datei hochzuladen.",
         ],
@@ -63,7 +63,7 @@ export const de: TranslatedDictionary<FormDmnI18n> = {
       failed: "Evaluierung fehlgeschlagen",
     },
     error: {
-      title: `${de_common.terms.oops}!`,
+      title: `${de_common.terms?.oops}!`,
       explanation: "Das Ergebnis kann aufgrund eines Fehlers nicht wiedergegeben werden.",
       message: [
         `Dieses Ergebnis enthält ein Konstrukt, das noch nicht unterstützt wird. Bitte beachten Sie `,
