@@ -40,6 +40,8 @@ This package contains the webapp for the Jobs Service endpoint
   pnpm -F @kie-tools/kogito-jobs-service-webapp... build:prod
   ```
 
+---
+
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software
 Foundation (ASF), sponsored by the name of Apache Incubator. Incubation is
 required of all newly accepted projects until a further review indicates that
@@ -52,6 +54,10 @@ Some of the incubating project’s releases may not be fully compliant with ASF
 policy. For example, releases may have incomplete or un-reviewed licensing
 conditions. What follows is a list of known issues the project is currently
 aware of (note that this list, by definition, is likely to be incomplete):
+
+- Hibernate, an LGPL project, is being used. Hibernate is in the process of relicensing to ASL v2
+- Some files, particularly test files, and those not supporting comments, may be missing the ASF Licensing Header
+-
 
 - Hibernate, an LGPL project, is being used. Hibernate is in the process of
   relicensing to ASL v2
