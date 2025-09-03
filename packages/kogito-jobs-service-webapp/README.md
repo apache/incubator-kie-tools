@@ -55,10 +55,6 @@ policy. For example, releases may have incomplete or un-reviewed licensing
 conditions. What follows is a list of known issues the project is currently
 aware of (note that this list, by definition, is likely to be incomplete):
 
-- Hibernate, an LGPL project, is being used. Hibernate is in the process of relicensing to ASL v2
-- Some files, particularly test files, and those not supporting comments, may be missing the ASF Licensing Header
--
-
 - Hibernate, an LGPL project, is being used. Hibernate is in the process of
   relicensing to ASL v2
 - Some files, particularly test files, and those not supporting comments, may
