@@ -61,7 +61,7 @@ export class NewDmnEditorInterface extends DmnEditorInterface {
       <I18nDictionariesProvider
         defaults={dmnEditorEnvelopeI18nDefaults}
         dictionaries={dmnEditorEnvelopeI18nDictionaries}
-        initialLocale={navigator.language}
+        initialLocale={this.initArgs.initialLocale}
         ctx={DmnEditorEnvelopeI18nContext}
       >
         <DmnEditorRootWrapper

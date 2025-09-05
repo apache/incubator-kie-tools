@@ -103,7 +103,7 @@ export class DmnEditorInterface implements Editor {
       <I18nDictionariesProvider
         defaults={dmnEditorEnvelopeI18nDefaults}
         dictionaries={dmnEditorEnvelopeI18nDictionaries}
-        initialLocale={navigator.language}
+        initialLocale={this.initArgs.initialLocale}
         ctx={DmnEditorEnvelopeI18nContext}
       >
         <DmnEditorRootWrapper
