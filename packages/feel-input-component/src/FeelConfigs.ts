@@ -93,8 +93,10 @@ export const feelDefaultConfig = (
   };
 };
 
-export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
-  const i18n = new I18n(feelInputComponentI18nDefaults, feelInputComponentDictionaries).getCurrent();
+export const feelDefaultSuggestions = (locale: string): Monaco.languages.CompletionItem[] => {
+  const i18n = new I18n(feelInputComponentI18nDefaults, feelInputComponentDictionaries)
+    .setLocale(locale ?? navigator.language)
+    .getCurrent();
   const suggestions: Monaco.languages.CompletionItem[] = [];
 
   const suggestionTypes = {
@@ -135,7 +137,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "after(point1, point2)",
         insertText: "after($1, $2)",
-        description: i18n.functionDescription.afterPoint("point1", "point2"),
+        description: i18n.functionDescription.afterPoint("true", "point1", "point2"),
         parameters: [
           ["point1", `\`number\``],
           ["point2", `\`number\``],
@@ -145,7 +147,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "after(point, range)",
         insertText: "after($1, $2)",
-        description: i18n.functionDescription.afterPointRange("point", "range"),
+        description: i18n.functionDescription.afterPointRange("true", "point", "range"),
         parameters: [
           ["point", `\`number\``],
           ["range", `\`range\` (\`interval\`)`],
@@ -155,7 +157,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "after(range, point)",
         insertText: "after($1, $2)",
-        description: i18n.functionDescription.afterRangePoint("range", "point"),
+        description: i18n.functionDescription.afterRangePoint("true", "range", "point"),
         parameters: [
           ["range", `\`range\` (\`interval\`)`],
           ["point", `\`number\``],
@@ -170,7 +172,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "after(range1, range2)",
         insertText: "after($1, $2)",
-        description: i18n.functionDescription.afterRange("range1", "range2"),
+        description: i18n.functionDescription.afterRange("true", "range1", "range2"),
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -185,7 +187,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "all(list)",
         insertText: "all($1)",
-        description: i18n.functionDescription.allTrue("list"),
+        description: i18n.functionDescription.allTrue("true", "list"),
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
         examples: [
           "all( [false,null,true] ) = false",
@@ -198,7 +200,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "any(list)",
         insertText: "any($1)",
-        description: i18n.functionDescription.anyTrue("list"),
+        description: i18n.functionDescription.anyTrue("true", "list", "false"),
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
         examples: [
           "any( [false,null,true] ) = true",
@@ -211,7 +213,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "append(list, item)",
         insertText: "append($1, $2)",
-        description: i18n.functionDescription.append,
+        description: i18n.functionDescription.append("list"),
         parameters: [
           ["list", `\`list\``],
           ["item", "Any type (even more items)"],
@@ -221,7 +223,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "before(point1, point2)",
         insertText: "before($1, $2)",
-        description: i18n.functionDescription.beforePoint("point1", "point2"),
+        description: i18n.functionDescription.beforePoint("true", "point1", "point2"),
         parameters: [
           ["point1", `\`number\``],
           ["point2", `\`number\``],
@@ -231,7 +233,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "before(point, range)",
         insertText: "before($1, $2)",
-        description: i18n.functionDescription.beforePointRange("point", "range"),
+        description: i18n.functionDescription.beforePointRange("true", "point", "range"),
         parameters: [
           ["point", `\`number\``],
           ["range", `\`range\` (\`interval\`)`],
@@ -241,7 +243,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "before(range, point)",
         insertText: "before($1, $2)",
-        description: i18n.functionDescription.beforeRangePoint("range", "point"),
+        description: i18n.functionDescription.beforeRangePoint("true", "range", "point"),
         parameters: [
           ["range", `\`range\` (\`interval\`)`],
           ["point", `\`number\``],
@@ -251,7 +253,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "before(range1, range1)",
         insertText: "before($1, $2)",
-        description: i18n.functionDescription.beforeRange("range1", "range2"),
+        description: i18n.functionDescription.beforeRange("true", "range1", "range2"),
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -290,7 +292,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "coincides(point1, point2)",
         insertText: "coincides($1, $2)",
-        description: i18n.functionDescription.coincides("point1", "point2"),
+        description: i18n.functionDescription.coincides("true", "point1", "point2"),
         parameters: [
           ["point1", `\`number\``],
           ["point2", `\`number\``],
@@ -300,7 +302,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "coincides(range1, range2)",
         insertText: "coincides($1, $2)",
-        description: i18n.functionDescription.coincidesRange("range1", "range2"),
+        description: i18n.functionDescription.coincidesRange("true", "range1", "range2"),
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -314,7 +316,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "concatenate(list...)",
         insertText: "concatenate($1)",
-        description: i18n.functionDescription.concatenate,
+        description: i18n.functionDescription.concatenate("list"),
         parameters: [["list", `Multiple \`list\``]],
         examples: ["concatenate( [1,2], [3] ) = [1,2,3]"],
       },
@@ -503,14 +505,14 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "day of week(date)",
         insertText: "day of week($1)",
-        description: i18n.functionDescription.dayOfWeek,
+        description: i18n.functionDescription.dayOfWeek("day"),
         parameters: [["date", `\`date\` or \`date and time\``]],
         examples: ['day of week( date(2019, 9, 17) ) = "Tuesday"'],
       },
       {
         label: "day of year(date)",
         insertText: "day of year($1)",
-        description: i18n.functionDescription.dateOfYear,
+        description: i18n.functionDescription.dateOfYear("day"),
         parameters: [["date", `\`date\` or \`date and time\``]],
         examples: ["day of year( date(2019, 9, 17) ) = 260"],
       },
@@ -552,7 +554,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "during(point, range)",
         insertText: "during($1, $2)",
-        description: i18n.functionDescription.during("point", "range"),
+        description: i18n.functionDescription.during("true", "point", "range"),
         parameters: [
           ["point", `\`number\``],
           ["range", `\`range\` (\`interval\`)`],
@@ -569,7 +571,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "during(range1, range2)",
         insertText: "during($1, $2)",
-        description: i18n.functionDescription.duringRange("range1", "range2"),
+        description: i18n.functionDescription.duringRange("true", "range1", "range2"),
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -598,7 +600,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "even(number)",
         insertText: "even($1)",
-        description: i18n.functionDescription.even("number"),
+        description: i18n.functionDescription.even("true", "number", "false"),
         parameters: [
           ["string", `string`],
           ["match", `string`],
@@ -615,7 +617,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "finished by(range, point)",
         insertText: "finished by($1, $2)",
-        description: i18n.functionDescription.finishedBy("range", "point"),
+        description: i18n.functionDescription.finishedBy("true", "range", "point"),
         parameters: [
           ["range", `\`range\` (\`interval\`)`],
           ["point", `\`number\``],
@@ -625,7 +627,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "finished by(range1, range2)",
         insertText: "finished by($1, $2)",
-        description: i18n.functionDescription.finishedByRange("range1", "range2"),
+        description: i18n.functionDescription.finishedByRange("true", "range1", "range2"),
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -641,7 +643,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "finishes(point, range)",
         insertText: "finishes($1, $2)",
-        description: i18n.functionDescription.finishes("point", "range"),
+        description: i18n.functionDescription.finishes("true", "point", "range"),
         parameters: [
           ["point", `\`number\``],
           ["range", `\`range\` (\`interval\`)`],
@@ -651,7 +653,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "finishes(range1, range2)",
         insertText: "finishes($1, $2)",
-        description: i18n.functionDescription.finishesRange("range1", "range2"),
+        description: i18n.functionDescription.finishesRange("true", "range1", "range2"),
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -669,7 +671,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "flatten(list)",
         insertText: "flatten($1)",
-        description: i18n.functionDescription.flattenNestedLists,
+        description: i18n.functionDescription.flattenNestedLists("lists"),
         parameters: [["list", `\`list\``]],
         examples: ["flatten( [[1 ,2],[[3]], 4] ) = [1,2,3,4]"],
       },
@@ -693,7 +695,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "get entries(m)",
         insertText: "get entries($1)",
-        description: i18n.functionDescription.getEntries("m"),
+        description: i18n.functionDescription.getEntries("list", "m"),
         parameters: [["m", `\`context\``]],
         examples: [
           'get entries( {key1 : "value1", key2 : "value2"} ) = [ { key : "key1", value : "value1" }, {key : "key2", value : "value2"} ]',
@@ -715,7 +717,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "includes(range, point)",
         insertText: "includes($1, $2)",
-        description: i18n.functionDescription.includes("range", "point"),
+        description: i18n.functionDescription.includes("true", "range", "point"),
         parameters: [
           ["range", `\`range\` (\`interval\`)`],
           ["point", `\`number\``],
@@ -732,7 +734,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "includes(range1, range2)",
         insertText: "includes($1, $2)",
-        description: i18n.functionDescription.includesRange("range1", "range2"),
+        description: i18n.functionDescription.includesRange("true", "range1", "range2"),
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -772,7 +774,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "is(value1, value2)",
         insertText: "is($1, $2)",
-        description: i18n.functionDescription.is,
+        description: i18n.functionDescription.is("true"),
         parameters: [
           ["value1", `Any type`],
           ["value2", `Any type`],
@@ -804,7 +806,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "list replace(list, position, newItem)",
         insertText: "list replace($1, $2, $3)",
-        description: i18n.functionDescription.listReplace("newItem", "position"),
+        description: i18n.functionDescription.listReplace("list", "newItem", "position"),
         parameters: [
           ["list", `\`list\``],
           ["position", `\`number\``],
@@ -815,7 +817,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "list replace(list, match, newItem)",
         insertText: "list replace($1, $2, $3)",
-        description: i18n.functionDescription.listNewItem("newItem", "match", "true"),
+        description: i18n.functionDescription.listNewItem("list", "newItem", "match", "true"),
         parameters: [
           ["list", `\`list\``],
           ["match", `boolean function(item, newItem)`],
@@ -885,7 +887,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "meets(range1, range2)",
         insertText: "meets($1, $2)",
-        description: i18n.functionDescription.meets("range1", "range2"),
+        description: i18n.functionDescription.meets("true", "range1", "range2"),
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -900,7 +902,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "met by(range1, range2)",
         insertText: "met by($1, $2)",
-        description: i18n.functionDescription.metBy("range1", "range2"),
+        description: i18n.functionDescription.metBy("true", "range1", "range2"),
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -955,7 +957,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "nn all(list)",
         insertText: "nn all($1)",
-        description: i18n.functionDescription.nnAll("list"),
+        description: i18n.functionDescription.nnAll("true", "list"),
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
         examples: [
           "nn all( [false,null,true] ) = false",
@@ -968,7 +970,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "nn any(list)",
         insertText: "nn any($1)",
-        description: i18n.functionDescription.nnAny("list"),
+        description: i18n.functionDescription.nnAny("true", "list"),
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
         examples: [
           "nn any( [false,null,true] ) = true",
@@ -1083,14 +1085,14 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "now()",
         insertText: "now()",
-        description: "",
+        description: i18n.functionDescription.now("date", "time"),
         parameters: [],
         examples: ["now()"],
       },
       {
         label: "number(from)",
         insertText: "number($1)",
-        description: i18n.functionDescription.now,
+        description: i18n.functionDescription.numbers("from"),
         parameters: [["from", "`string` or `number` representing a valid number"]],
         examples: ['number( "1.1" ) = number( "1.1", "null", "null" ) = 1.1', "number( 5 ) = 5"],
       },
@@ -1108,14 +1110,14 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "odd(number)",
         insertText: "odd($1)",
-        description: i18n.functionDescription.odd("number"),
+        description: i18n.functionDescription.odd("true", "number"),
         parameters: [["number", `\`number\``]],
         examples: ["odd( 5 ) = true", "odd( 2 ) = false"],
       },
       {
         label: "overlaps after(range1, range2)",
         insertText: "overlaps after($1, $2)",
-        description: i18n.functionDescription.overlapsAfter("range1", "range2"),
+        description: i18n.functionDescription.overlapsAfter("true", "range1", "range2"),
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -1139,7 +1141,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "overlaps before(range1, range2)",
         insertText: "overlaps before($1, $2)",
-        description: i18n.functionDescription.overlapsBefore("range1", "range2"),
+        description: i18n.functionDescription.overlapsBefore("true", "range1", "range2"),
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -1159,7 +1161,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "overlaps(range1, range2)",
         insertText: "overlaps($1, $2)",
-        description: i18n.functionDescription.overlaps("range1", "range2"),
+        description: i18n.functionDescription.overlaps("true", "range1", "range2"),
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -1204,7 +1206,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "remove(list, position)",
         insertText: "remove($1, $2)",
-        description: i18n.functionDescription.remove("position"),
+        description: i18n.functionDescription.remove("list", "position"),
         parameters: [
           ["list", `\`list\``],
           ["position", `\`number\``],
@@ -1338,14 +1340,14 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "sort(list)",
         insertText: "sort($1)",
-        description: i18n.functionDescription.sort("number", "string"),
+        description: i18n.functionDescription.sort("list", "number", "string"),
         parameters: [["list", `\`list\``]],
         examples: ["sort( [3,1,4,5,2] ) = [1,2,3,4,5]"],
       },
       {
         label: "sort(list, precedes)",
         insertText: "sort($1, $2)",
-        description: i18n.functionDescription.sortPrecedes,
+        description: i18n.functionDescription.sortPrecedes("list"),
         parameters: [
           ["list", `\`list\``],
           ["precedes", `\`function\``],
@@ -1355,7 +1357,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "split(string, delimiter)",
         insertText: "split($1, $2)",
-        description: i18n.functionDescription.split("string", "delimiter"),
+        description: i18n.functionDescription.split("list", "string", "delimiter"),
         parameters: [
           ["string", `\`string\``],
           ["delimiter", `\`string\` for a regular expression pattern`],
@@ -1372,7 +1374,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "started by(range, point)",
         insertText: "started by($1, $2)",
-        description: i18n.functionDescription.startedBy("range", "point"),
+        description: i18n.functionDescription.startedBy("true", "range", "point"),
         parameters: [
           ["range", `\`range\` (\`interval\`)`],
           ["point", `\`number\``],
@@ -1385,7 +1387,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       },
       {
         label: "started by(range1, range2)",
-        insertText: i18n.functionDescription.startedByRange("range1", "range2"),
+        insertText: i18n.functionDescription.startedByRange("true", "range1", "range2"),
         description: "",
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
@@ -1404,7 +1406,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "starts with(string, match)",
         insertText: "starts with($1, $2)",
-        description: i18n.functionDescription.startsWith("string", "match"),
+        description: i18n.functionDescription.startsWith("true", "string", "match"),
         parameters: [
           ["string", `string`],
           ["match", `string`],
@@ -1414,7 +1416,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "starts(point, range)",
         insertText: "starts($1, $2)",
-        description: i18n.functionDescription.starts("point", "range"),
+        description: i18n.functionDescription.starts("true", "point", "range"),
         parameters: [
           ["point", `\`number\``],
           ["range", `\`range\` (\`interval\`)`],
@@ -1424,7 +1426,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "starts(range1, range2)",
         insertText: "starts($1, $2)",
-        description: i18n.functionDescription.startsRange("range1", "range2"),
+        description: i18n.functionDescription.startsRange("true", "range1", "range2"),
         parameters: [
           ["range1", `\`range\` (\`interval\`)`],
           ["range2", `\`range\` (\`interval\`)`],
@@ -1605,7 +1607,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
       {
         label: "union(list)",
         insertText: "union($1)",
-        description: i18n.functionDescription.union,
+        description: i18n.functionDescription.union("list"),
         parameters: [["list", `\`list\``]],
         examples: ["union( [1,2],[2,3] ) = [1,2,3]"],
       },
