@@ -79,7 +79,7 @@ export function open(args: {
   iframe.style.height = "100%";
   iframe.style.border = "none";
 
-  const envelopeServer = createEnvelopeServer(iframe, args.readOnly, args.origin);
+  const envelopeServer = createEnvelopeServer(iframe, args.readOnly, args.origin, args.locale);
 
   const stateControl = new StateControl();
 
