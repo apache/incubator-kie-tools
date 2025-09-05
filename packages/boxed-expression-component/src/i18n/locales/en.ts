@@ -135,21 +135,11 @@ export const en: BoxedExpressionEditorI18n = {
     list: "A boxed list expression in DMN represents a FEEL list of items. You use boxed lists to define lists of relevant items for a particular node in a decision.",
     conditional:
       'A boxed conditional offers a visual representation of an if statement using three rows. The expression in the "if" part MUST resolve to a boolean.',
-    for:
-      "A boxed iterator offers a visual representation of an iterator statement. " +
-      'For the "for" loop, the right part of the "for" displays the iterator variable name. The second row holds an expression representing the collection that will be iterated over. The expression in the "in" row MUST resolve to a collection.' +
-      " The last row contains the expression that will process each element of the collection.",
-    every:
-      "A boxed iterator offers a visual representation of an iterator statement. " +
-      'For the "every" loop, the right part of the "every" displays the iterator variable name. The second row holds an expression representing the collection that will be iterated over. The expression in the "in" row MUST resolve to a collection.' +
-      'The last line is an expression that will be evaluated on each item. The expression defined in the "satisfies" MUST resolve to a boolean.',
-    some:
-      "A boxed iterator offers a visual representation of an iterator statement. " +
-      'For the "some" loop, the right part of the "some" displays the iterator variable name. The second row holds an expression representing the collection that will be iterated over. The expression in the "in" row MUST resolve to a collection. ' +
-      'The last line is an expression that will be evaluated on each item. The expression defined in the "satisfies" MUST resolve to a boolean.',
+    for: `A boxed iterator offers a visual representation of an iterator statement. For the "for" loop, the right part of the "for" displays the iterator variable name. The second row holds an expression representing the collection that will be iterated over. The expression in the "in" row MUST resolve to a collection. The last row contains the expression that will process each element of the collection.`,
+    every: `A boxed iterator offers a visual representation of an iterator statement. For the "every" loop, the right part of the "every" displays the iterator variable name. The second row holds an expression representing the collection that will be iterated over. The expression in the "in" row MUST resolve to a collection. The last line is an expression that will be evaluated on each item. The expression defined in the "satisfies" MUST resolve to a boolean.`,
+    some: `A boxed iterator offers a visual representation of an iterator statement. For the "some" loop, the right part of the "some" displays the iterator variable name. The second row holds an expression representing the collection that will be iterated over. The expression in the "in" row MUST resolve to a collection. The last line is an expression that will be evaluated on each item. The expression defined in the "satisfies" MUST resolve to a boolean.`,
     filter:
-      "A boxed filter offers a visual representation of collection filtering. The top part is an expression that is the collection " +
-      "to be filtered. The bottom part, between the square brackets, holds the filter expression.",
+      "A boxed filter offers a visual representation of collection filtering. The top part is an expression that is the collection to be filtered. The bottom part, between the square brackets, holds the filter expression.",
   },
   pasteOperationNotSuccessful: "Paste operation was not successful",
   functionKindHelp: {

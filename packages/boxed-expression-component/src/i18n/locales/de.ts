@@ -113,8 +113,4 @@ export const de: TranslatedDictionary<BoxedExpressionEditorI18n> = {
   selectExpression: "Ausdruck auswählen",
   selectFunctionKind: "Funktionsart auswählen",
   selectLogicType: "Logiktyp auswählen",
-  contextExpression: {
-    variable: "",
-    expression: "",
-  },
 };

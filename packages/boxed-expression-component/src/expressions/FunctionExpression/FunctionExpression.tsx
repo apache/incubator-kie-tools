@@ -142,18 +142,11 @@ export function useFunctionExpressionControllerCell(functionKind: Normalized<DMN
 
   return useMemo(
     () => (
-      <I18nDictionariesProvider
-        defaults={boxedExpressionEditorI18nDefaults}
-        dictionaries={boxedExpressionEditorDictionaries}
-        initialLocale={navigator.language}
-        ctx={BoxedExpressionEditorI18nContext}
-      >
-        <FunctionKindSelector
-          isReadOnly={isReadOnly}
-          selectedFunctionKind={functionKind}
-          onFunctionKindSelect={onFunctionKindSelect}
-        />
-      </I18nDictionariesProvider>
+      <FunctionKindSelector
+        isReadOnly={isReadOnly}
+        selectedFunctionKind={functionKind}
+        onFunctionKindSelect={onFunctionKindSelect}
+      />
     ),
     [functionKind, isReadOnly, onFunctionKindSelect]
   );
