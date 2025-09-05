@@ -101,6 +101,7 @@ export class DmnEditorInterface implements Editor {
         }
         isReadOnly={this.initArgs.isReadOnly}
         channelType={this.initArgs?.channel}
+        locale={this.initArgs.initialLocale}
       />
     );
   }
@@ -115,6 +116,7 @@ export function DmnEditorRootWrapper({
   isReadOnly,
   channelType,
   onOpenedBoxedExpressionEditorNodeChange,
+  locale,
 }: {
   envelopeContext?: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>;
   exposing: (s: DmnEditorRoot) => void;
@@ -123,6 +125,7 @@ export function DmnEditorRootWrapper({
   isReadOnly: boolean;
   channelType?: ChannelType;
   onOpenedBoxedExpressionEditorNodeChange?: (newOpenedNodeId: string | undefined) => void;
+  locale: string;
 }) {
   const onNewEdit = useCallback(
     (workspaceEdit: WorkspaceEdit) => {
@@ -189,6 +192,7 @@ export function DmnEditorRootWrapper({
       isReadOnly={isReadOnly}
       isImportDataTypesFromJavaClassesSupported={isImportDataTypesFromJavaClassesSupported}
       javaCodeCompletionService={javaCodeCompletionService}
+      locale={locale}
     />
   );
 }

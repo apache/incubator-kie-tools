@@ -71,6 +71,7 @@ export class NewDmnEditorInterface extends DmnEditorInterface {
             this.envelopeContext as KogitoEditorEnvelopeContextType<NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>
           )?.shared.newDmnEditor_openedBoxedExpressionEditorNodeId.set(newOpenedNodeId);
         }}
+        locale={this.initArgs.initialLocale}
       />
     );
   }

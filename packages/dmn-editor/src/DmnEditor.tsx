@@ -202,6 +202,8 @@ export type DmnEditorProps = {
   onModelDebounceStateChanged?: (changed: boolean) => void;
 
   onOpenedBoxedExpressionEditorNodeChange?: (newOpenedNodeId: string | undefined) => void;
+
+  locale: string;
 };
 
 export const DmnEditorInternal = ({
@@ -484,7 +486,7 @@ export const DmnEditor = React.forwardRef((props: DmnEditorProps, ref: React.Ref
     <I18nDictionariesProvider
       defaults={dmnEditorI18nDefaults}
       dictionaries={dmnEditorDictionaries}
-      initialLocale={navigator.language}
+      initialLocale={props.locale}
       ctx={DmnEditorI18nContext}
     >
       <DmnEditorContextProvider {...props}>
