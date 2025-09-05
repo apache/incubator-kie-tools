@@ -100,7 +100,7 @@ export class TestScenarioEditorInterface implements Editor {
       <I18nDictionariesProvider
         defaults={scesimEditorEnvelopeI18nDefaults}
         dictionaries={scesimEditorEnvelopeDictionaries}
-        initialLocale={navigator.language}
+        initialLocale={this.initArgs.initialLocale}
         ctx={ScesimEditorEnvelopeI18nContext}
       >
         <TestScenarioEditorRootWrapper
