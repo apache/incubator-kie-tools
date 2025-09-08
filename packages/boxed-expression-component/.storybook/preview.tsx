@@ -19,7 +19,6 @@
 
 import * as React from "react";
 import type { Preview } from "@storybook/react";
-import "../src/base-no-reset-wrapped.css";
 
 const preview: Preview = {
   parameters: {

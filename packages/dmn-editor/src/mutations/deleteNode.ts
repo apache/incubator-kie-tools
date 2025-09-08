@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN15__tDefinitions, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDefinitions, DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller";
 import { getNewDmnIdRandomizer } from "@kie-tools/dmn-marshaller/dist/idRandomizer/dmnIdRandomizer";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref, xmlHrefToQName } from "@kie-tools/dmn-marshaller/dist/xml";
@@ -49,7 +49,7 @@ export function deleteNode({
   __readonly_mode,
   __readonly_externalModelsByNamespace,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   __readonly_drgEdges: DrgEdge[];
   __readonly_drdIndex: number;
   __readonly_nodeNature: NodeNature;
@@ -60,8 +60,8 @@ export function deleteNode({
   __readonly_mode: NodeDeletionMode;
   __readonly_externalModelsByNamespace: ExternalModelsIndex | undefined;
 }): {
-  deletedDmnObject: Unpacked<Normalized<DMN15__tDefinitions>["drgElement" | "artifact"]> | undefined;
-  deletedDmnShapeOnCurrentDrd: Normalized<DMNDI15__DMNShape> | undefined;
+  deletedDmnObject: Unpacked<Normalized<DMN_LATEST__tDefinitions>["drgElement" | "artifact"]> | undefined;
+  deletedDmnShapeOnCurrentDrd: Normalized<DMN_LATEST__DMNShape> | undefined;
 } {
   if (
     __readonly_mode === NodeDeletionMode.FROM_CURRENT_DRD_ONLY &&
@@ -128,7 +128,7 @@ export function deleteNode({
     }
   }
 
-  let deletedDmnObject: Unpacked<Normalized<DMN15__tDefinitions>["drgElement" | "artifact"]> | undefined;
+  let deletedDmnObject: Unpacked<Normalized<DMN_LATEST__tDefinitions>["drgElement" | "artifact"]> | undefined;
 
   // External or unknown nodes don't have a dmnObject associated with it, just the shape..
   if (!__readonly_dmnObjectQName.prefix) {
@@ -165,11 +165,11 @@ export function deleteNode({
   const shapeDmnElementRef = buildXmlQName(__readonly_dmnObjectQName);
 
   // Deleting the DMNShape's
-  let deletedDmnShapeOnCurrentDrd: Normalized<DMNDI15__DMNShape> | undefined;
+  let deletedDmnShapeOnCurrentDrd: Normalized<DMN_LATEST__DMNShape> | undefined;
 
   const deletedIdsOnDmnObjectTree = deletedDmnObject
     ? getNewDmnIdRandomizer()
-        .ack({ json: [deletedDmnObject], type: "DMN15__tDefinitions", attr: "drgElement" })
+        .ack({ json: [deletedDmnObject], type: "DMN16__tDefinitions", attr: "drgElement" })
         .getOriginalIds()
     : new Set<string>();
 
@@ -213,7 +213,7 @@ export function isContainedInAnExternalExpandedDecisionService({
   __readonly_dmnObjectId,
   __readonly_externalDmnsIndex,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   __readonly_dmnObjectNamespace: string;
   __readonly_dmnObjectId: string | undefined;
   __readonly_drdIndex: number;
@@ -258,7 +258,7 @@ export function canRemoveNodeFromDrdOnly({
   __readonly_dmnObjectId,
   __readonly_externalDmnsIndex,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   __readonly_dmnObjectNamespace: string;
   __readonly_dmnObjectId: string | undefined;
   __readonly_drdIndex: number;

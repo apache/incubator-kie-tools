@@ -19,7 +19,7 @@
 
 import { DmnLatestModel } from "@kie-tools/dmn-marshaller";
 import { normalize, Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
-import { DMN15__tImport } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tImport } from "@kie-tools/dmn-marshaller";
 import { enableMapSet } from "immer";
 import * as RF from "reactflow";
 import { create } from "zustand";
@@ -36,6 +36,7 @@ import { computeIndexedDrd } from "./computed/computeIndexes";
 import { computeIsDropTargetNodeValidForSelection } from "./computed/computeIsDropTargetNodeValidForSelection";
 import { DEFAULT_VIEWPORT } from "../diagram/Diagram";
 import { computeExternalDmnModelsByNamespaceMap } from "./computed/computeExternalDmnModelsByNamespaceMap";
+import { computeConflictedDecisionServices } from "./computed/computeConflictedDecisionServices";
 
 enableMapSet(); // Necessary because `Computed` has a lot of Maps and Sets.
 
@@ -133,7 +134,7 @@ export interface State {
 export type Computed = {
   isDiagramEditingInProgress(): boolean;
 
-  importsByNamespace(): Map<string, DMN15__tImport>;
+  importsByNamespace(): Map<string, DMN_LATEST__tImport>;
 
   indexedDrd(): ReturnType<typeof computeIndexedDrd>;
 
@@ -160,6 +161,10 @@ export type Computed = {
   getDataTypes(e: ExternalModelsIndex | undefined): ReturnType<typeof computeDataTypes>;
 
   getAllFeelVariableUniqueNames(): ReturnType<typeof computeAllFeelVariableUniqueNames>;
+
+  getConflictedDecisionServices(
+    e: ExternalModelsIndex | undefined
+  ): ReturnType<typeof computeConflictedDecisionServices>;
 };
 
 export type Dispatch = {
@@ -435,6 +440,11 @@ export function createDmnEditorStore(model: DmnLatestModel, computedCache: Compu
           getExternalDmnModelsByNamespaceMap: (externalModelsByNamespace: ExternalModelsIndex | undefined) =>
             computedCache.cached("getExternalDmnModelsByNamespaceMap", computeExternalDmnModelsByNamespaceMap, [
               s.computed(s).getDirectlyIncludedExternalModelsByNamespace(externalModelsByNamespace).dmns,
+            ]),
+          getConflictedDecisionServices: (externalModelsByNamespace: ExternalModelsIndex | undefined) =>
+            computedCache.cached("getConflictedDecisionServices", computeConflictedDecisionServices, [
+              s.dmn.model.definitions,
+              s.computed(s).getDiagramData(externalModelsByNamespace),
             ]),
         };
       },

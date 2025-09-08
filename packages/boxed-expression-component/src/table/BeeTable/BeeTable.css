@@ -101,7 +101,6 @@
 .expression-container .table-component table tbody tr:last-child td {
   border-bottom: 1px solid var(--pf-v5-global--palette--black-300);
 }
-
 /* SELECTION */
 
 .expression-container .table-component table thead th.selected:after {
@@ -133,12 +132,12 @@
   border-bottom: 1px solid var(--pf-v5-global--palette--black-400);
 }
 
-.expression-container .table-component table tbody tr td:first-child {
+.expression-container .table-component table tbody tr td.row-index-column-cell {
   border-top: 1px solid var(--pf-v5-global--palette--black-400);
   border-left: 1px solid var(--pf-v5-global--palette--black-400);
   border-right: 1px solid var(--pf-v5-global--palette--black-400);
 }
-.expression-container .table-component table tbody tr:last-child td:first-child {
+.expression-container .table-component table tbody tr:last-child td.row-index-column-cell {
   border-bottom: 1px solid var(--pf-v5-global--palette--black-400);
 }
 
@@ -297,7 +296,7 @@
   position: relative;
 }
 
-.expression-container .table-component table tbody tr td:first-child {
+.expression-container .table-component table tbody tr td.row-index-column-cell {
   align-items: flex-start;
   justify-content: center;
   box-sizing: border-box;
@@ -369,12 +368,6 @@
 
 .expression-container .table-component table tbody tr .additional-row-content {
   box-sizing: border-box;
-}
-
-/** Hiding popover arrow for the Table context menu */
-
-.boxed-expression-provider .table-context-menu .pf-v5-c-popover__arrow {
-  display: none;
 }
 
 /** Inline adding rows and columns */

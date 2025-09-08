@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMN15__tImport, DMN15__tNamedElement } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tImport, DMN_LATEST__tNamedElement } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { XmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
 import { XmlParserTsRootElementBaseType } from "@kie-tools/xml-parser-ts";
@@ -36,9 +36,9 @@ export function buildFeelQNameFromXmlQName({
   relativeToNamespace,
   model,
 }: {
-  namedElement: Normalized<DMN15__tNamedElement>;
+  namedElement: Normalized<DMN_LATEST__tNamedElement>;
   namedElementQName: XmlQName;
-  importsByNamespace: Map<string, DMN15__tImport>;
+  importsByNamespace: Map<string, DMN_LATEST__tImport>;
   model: XmlParserTsRootElementBaseType;
   relativeToNamespace: string;
 }): FeelQNameBuild {
@@ -65,9 +65,9 @@ export function buildFeelQNameFromNamespace({
   importsByNamespace,
   relativeToNamespace,
 }: {
-  namedElement: Normalized<DMN15__tNamedElement>;
+  namedElement: Normalized<DMN_LATEST__tNamedElement>;
   namespace: string;
-  importsByNamespace: Map<string, DMN15__tImport>;
+  importsByNamespace: Map<string, DMN_LATEST__tImport>;
   relativeToNamespace: string;
 }): FeelQNameBuild {
   if (relativeToNamespace === namespace) {
@@ -90,7 +90,7 @@ export function buildFeelQNameFromNamespace({
   }
 
   // FEEL namespaces elements with a `.`, while XML does so by using a `:` on QNames. Note that the FEEL
-  // namespace is determined by the `@_name` attribute of a DMN15__tImport, not by its namespace declaration
+  // namespace is determined by the `@_name` attribute of a DMN_LATEST__tImport, not by its namespace declaration
   // name on the XML itself.
   return {
     full: `${_import["@_name"]}.${namedElement["@_name"]}`,

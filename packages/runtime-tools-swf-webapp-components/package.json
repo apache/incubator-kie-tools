@@ -24,7 +24,6 @@
   },
   "dependencies": {
     "@kie-tools/runtime-tools-components": "workspace:*",
-    "@kie-tools/runtime-tools-shared-enveloped-components": "workspace:*",
     "@kie-tools/runtime-tools-shared-gateway-api": "workspace:*",
     "@kie-tools/runtime-tools-swf-enveloped-components": "workspace:*",
     "@kie-tools/runtime-tools-swf-gateway-api": "workspace:*",
@@ -32,9 +31,7 @@
     "@patternfly/react-icons": "^5.4.1",
     "apollo-cache-inmemory": "1.6.6",
     "apollo-client": "2.6.10",
-    "apollo-link-http": "1.5.17",
-    "history": "^4.9.0",
-    "react-router": "^5.3.4"
+    "apollo-link-http": "1.5.17"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -43,9 +40,7 @@
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/tsconfig": "workspace:*",
-    "@types/history": "^4.7.3",
     "@types/react": "^17.0.6",
-    "@types/react-router": "^5.1.20",
     "rimraf": "^3.0.2",
     "typescript": "^5.5.3"
   },

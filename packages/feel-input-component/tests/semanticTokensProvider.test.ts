@@ -434,6 +434,360 @@ ThatShouldFailWhenBreakLine`,
       }
     });
   });
+
+  describe("Question mark symbol placeholder", () => {
+    const questionMarkTestModelPathRelativeToTheTestFile =
+      "../tests-data/variables-inside-decision-tables/questionMark.dmn";
+    const questionMarkModel = getDmnModelFromFilePath(questionMarkTestModelPathRelativeToTheTestFile);
+
+    describe("should recognize question mark placeholder inside Decision Tables", () => {
+      const ifExpression = 'if ?="blue" then "#0000FF" else "#000000"';
+      const containsExpression = 'contains(?, "blue")';
+      const everyExpression = 'every item in ? satisfies item = "blue"';
+
+      const feelIdentifiers = new FeelIdentifiers({
+        _readonly_dmnDefinitions: questionMarkModel.definitions,
+      });
+
+      const inputColumnId = "_DACB979A-9CA4-4CC7-A831-D409B08EE061";
+      const outputColumnId = "_4EE4BBE9-E0F5-4124-8F68-4CC5BC894BFF";
+      const inputColumnSemanticTokensProvider = new SemanticTokensProvider(feelIdentifiers, inputColumnId, () => {});
+      const outputColumnSemanticTokensProvider = new SemanticTokensProvider(feelIdentifiers, outputColumnId, () => {});
+
+      test("should recognize in 'if' inside input columns", async () => {
+        const modelMock = createModelMockForExpression(ifExpression);
+
+        const semanticMonacoTokens = await inputColumnSemanticTokensProvider.provideDocumentSemanticTokens(
+          modelMock as unknown as Monaco.editor.ITextModel,
+          null,
+          cancellationTokenMock
+        );
+
+        // Reserved keywords like "if", "then" and "else" are not returned by the FeelIdentifiers since they are
+        // reserved keywords used by FEEL handled outside by the Monaco as reserved words.
+        // Also, strings are handled by the Monaco.
+        const expected = [
+          ...getMonacoSemanticToken({
+            startLineRelativeToPreviousLine: 0,
+            startIndexRelativeToPreviousStartIndex: "if ".length,
+            tokenLength: "?".length,
+            tokenType: Element.DynamicVariable,
+          }),
+        ];
+
+        for (let i = 0; i < expected.length; i++) {
+          expect(semanticMonacoTokens?.data[i]).toEqual(expected[i]);
+        }
+      });
+
+      test("should recognize in 'contains' inside input columns", async () => {
+        const modelMock = createModelMockForExpression(containsExpression);
+
+        const semanticMonacoTokens = await inputColumnSemanticTokensProvider.provideDocumentSemanticTokens(
+          modelMock as unknown as Monaco.editor.ITextModel,
+          null,
+          cancellationTokenMock
+        );
+
+        // Reserved keywords like "contains" are not returned by the FeelIdentifiers since they are
+        // reserved keywords used by FEEL handled outside by the Monaco as reserved words.
+        // Also, strings are handled by the Monaco.
+        const expected = [
+          ...getMonacoSemanticToken({
+            startLineRelativeToPreviousLine: 0,
+            startIndexRelativeToPreviousStartIndex: "contains(".length,
+            tokenLength: "?".length,
+            tokenType: Element.DynamicVariable,
+          }),
+        ];
+
+        for (let i = 0; i < expected.length; i++) {
+          expect(semanticMonacoTokens?.data[i]).toEqual(expected[i]);
+        }
+      });
+
+      test("should recognize in 'every' inside input columns", async () => {
+        const modelMock = createModelMockForExpression(everyExpression);
+
+        const semanticMonacoTokens = await inputColumnSemanticTokensProvider.provideDocumentSemanticTokens(
+          modelMock as unknown as Monaco.editor.ITextModel,
+          null,
+          cancellationTokenMock
+        );
+
+        // Reserved keywords like "every", "in" and "satisfies" are not returned by the FeelIdentifiers since they are
+        // reserved keywords used by FEEL handled outside by the Monaco as reserved words.
+        // Also, "item" is not returned here because here is where it being declared so there is really nothing
+        // to identify and colorize.
+        const expected = [
+          ...getMonacoSemanticToken({
+            startLineRelativeToPreviousLine: 0,
+            startIndexRelativeToPreviousStartIndex: "every item in ".length,
+            tokenLength: "?".length,
+            tokenType: Element.DynamicVariable,
+          }),
+
+          // The declared "item" is identified here.
+          ...getMonacoSemanticToken({
+            startLineRelativeToPreviousLine: 0,
+            startIndexRelativeToPreviousStartIndex: " satisfies ".length + 1,
+            tokenLength: "item".length,
+            tokenType: Element.Variable,
+          }),
+        ];
+
+        for (let i = 0; i < expected.length; i++) {
+          expect(semanticMonacoTokens?.data[i]).toEqual(expected[i]);
+        }
+      });
+
+      test("should recognize in 'if' inside output columns", async () => {
+        const modelMock = createModelMockForExpression(ifExpression);
+
+        const semanticMonacoTokens = await outputColumnSemanticTokensProvider.provideDocumentSemanticTokens(
+          modelMock as unknown as Monaco.editor.ITextModel,
+          null,
+          cancellationTokenMock
+        );
+
+        // Reserved keywords like "if", "then" and "else" are not returned by the FeelIdentifiers since they are
+        // reserved keywords used by FEEL handled outside by the Monaco as reserved words.
+        // Also, strings are handled by the Monaco.
+        const expected = [
+          ...getMonacoSemanticToken({
+            startLineRelativeToPreviousLine: 0,
+            startIndexRelativeToPreviousStartIndex: "if ".length,
+            tokenLength: "?".length,
+            tokenType: Element.DynamicVariable,
+          }),
+        ];
+
+        for (let i = 0; i < expected.length; i++) {
+          expect(semanticMonacoTokens?.data[i]).toEqual(expected[i]);
+        }
+      });
+
+      test("should recognize in 'contains' inside output columns", async () => {
+        const modelMock = createModelMockForExpression(containsExpression);
+
+        const semanticMonacoTokens = await outputColumnSemanticTokensProvider.provideDocumentSemanticTokens(
+          modelMock as unknown as Monaco.editor.ITextModel,
+          null,
+          cancellationTokenMock
+        );
+
+        // Reserved keywords like "contains" are not returned by the FeelIdentifiers since they are
+        // reserved keywords used by FEEL handled outside by the Monaco as reserved words.
+        // Also, strings are handled by the Monaco.
+        const expected = [
+          ...getMonacoSemanticToken({
+            startLineRelativeToPreviousLine: 0,
+            startIndexRelativeToPreviousStartIndex: "contains(".length,
+            tokenLength: "?".length,
+            tokenType: Element.DynamicVariable,
+          }),
+        ];
+
+        for (let i = 0; i < expected.length; i++) {
+          expect(semanticMonacoTokens?.data[i]).toEqual(expected[i]);
+        }
+      });
+
+      test("should recognize in 'every' inside output columns", async () => {
+        const modelMock = createModelMockForExpression(everyExpression);
+
+        const semanticMonacoTokens = await outputColumnSemanticTokensProvider.provideDocumentSemanticTokens(
+          modelMock as unknown as Monaco.editor.ITextModel,
+          null,
+          cancellationTokenMock
+        );
+
+        // Reserved keywords like "every", "in" and "satisfies" are not returned by the FeelIdentifiers since they are
+        // reserved keywords used by FEEL handled outside by the Monaco as reserved words.
+        // Also, "item" is not returned here because here is where it being declared so there is really nothing
+        // to identify and colorize.
+        const expected = [
+          ...getMonacoSemanticToken({
+            startLineRelativeToPreviousLine: 0,
+            startIndexRelativeToPreviousStartIndex: "every item in ".length,
+            tokenLength: "?".length,
+            tokenType: Element.DynamicVariable,
+          }),
+
+          // The declared "item" is identified here.
+          ...getMonacoSemanticToken({
+            startLineRelativeToPreviousLine: 0,
+            startIndexRelativeToPreviousStartIndex: " satisfies ".length + 1,
+            tokenLength: "item".length,
+            tokenType: Element.Variable,
+          }),
+        ];
+
+        for (let i = 0; i < expected.length; i++) {
+          expect(semanticMonacoTokens?.data[i]).toEqual(expected[i]);
+        }
+      });
+
+      test("should recognize double question mark as an error", async () => {
+        const expression = 'contains(??, "blue")';
+        const modelMock = createModelMockForExpression(expression);
+
+        const semanticMonacoTokens = await inputColumnSemanticTokensProvider.provideDocumentSemanticTokens(
+          modelMock as unknown as Monaco.editor.ITextModel,
+          null,
+          cancellationTokenMock
+        );
+
+        const expected = [
+          ...getMonacoSemanticToken({
+            startLineRelativeToPreviousLine: 0,
+            startIndexRelativeToPreviousStartIndex: "contains(".length,
+            tokenLength: "??".length,
+            tokenType: Element.UnknownVariable,
+          }),
+        ];
+
+        for (let i = 0; i < expected.length; i++) {
+          expect(semanticMonacoTokens?.data[i]).toEqual(expected[i]);
+        }
+      });
+    });
+
+    test("should not recognize question mark placeholder in Literal Expression", async () => {
+      const expression = 'every item in ? satisfies item = "blue"';
+      const literalExpressionId = "_8A76C5EF-26C1-4522-B1B2-63B64D753799";
+      const modelMock = createModelMockForExpression(expression);
+
+      const feelVariables = new FeelIdentifiers({
+        _readonly_dmnDefinitions: questionMarkModel.definitions,
+      });
+
+      const semanticTokensProvider = new SemanticTokensProvider(feelVariables, literalExpressionId, () => {});
+
+      const semanticMonacoTokens = await semanticTokensProvider.provideDocumentSemanticTokens(
+        modelMock as unknown as Monaco.editor.ITextModel,
+        null,
+        cancellationTokenMock
+      );
+
+      // Reserved keywords like "every", "in" and "satisfies" are not returned by the FeelIdentifiers since they are
+      // reserved keywords used by FEEL handled outside by the Monaco as reserved words.
+      // Also, "item" is not returned here because here is where it being declared so there is really nothing
+      // to identify and colorize.
+      const expected = [
+        ...getMonacoSemanticToken({
+          startLineRelativeToPreviousLine: 0,
+          startIndexRelativeToPreviousStartIndex: "every item in ".length,
+          tokenLength: "?".length,
+          tokenType: Element.UnknownVariable,
+        }),
+
+        // The declared "item" is identified here.
+        ...getMonacoSemanticToken({
+          startLineRelativeToPreviousLine: 0,
+          startIndexRelativeToPreviousStartIndex: " satisfies ".length + 1,
+          tokenLength: "item".length,
+          tokenType: Element.Variable,
+        }),
+      ];
+
+      for (let i = 0; i < expected.length; i++) {
+        expect(semanticMonacoTokens?.data[i]).toEqual(expected[i]);
+      }
+    });
+
+    describe("should recognize question mark placeholder in nested Decision Table", () => {
+      const expression = 'every item in ? satisfies item = "blue"';
+      const nestedDecisionTableInputColumnCellId = "_56D207EF-0BB2-4127-85B1-BE0F0E095CCC";
+      const nestedDecisionTableOutputColumnCellId = "_57A39F96-2671-41F4-8D0D-36893B549CDF";
+
+      test("should recognize question mark placeholder in input column", async () => {
+        const modelMock = createModelMockForExpression(expression);
+        const feelVariables = new FeelIdentifiers({
+          _readonly_dmnDefinitions: questionMarkModel.definitions,
+        });
+        const semanticTokensProvider = new SemanticTokensProvider(
+          feelVariables,
+          nestedDecisionTableInputColumnCellId,
+          () => {}
+        );
+
+        const semanticMonacoTokens = await semanticTokensProvider.provideDocumentSemanticTokens(
+          modelMock as unknown as Monaco.editor.ITextModel,
+          null,
+          cancellationTokenMock
+        );
+
+        // Reserved keywords like "every", "in" and "satisfies" are not returned by the FeelIdentifiers since they are
+        // reserved keywords used by FEEL handled outside by the Monaco as reserved words.
+        // Also, "item" is not returned here because here is where it being declared so there is really nothing
+        // to identify and colorize.
+        const expected = [
+          ...getMonacoSemanticToken({
+            startLineRelativeToPreviousLine: 0,
+            startIndexRelativeToPreviousStartIndex: "every item in ".length,
+            tokenLength: "?".length,
+            tokenType: Element.DynamicVariable,
+          }),
+
+          // The declared "item" is identified here.
+          ...getMonacoSemanticToken({
+            startLineRelativeToPreviousLine: 0,
+            startIndexRelativeToPreviousStartIndex: " satisfies ".length + 1,
+            tokenLength: "item".length,
+            tokenType: Element.Variable,
+          }),
+        ];
+
+        for (let i = 0; i < expected.length; i++) {
+          expect(semanticMonacoTokens?.data[i]).toEqual(expected[i]);
+        }
+      });
+
+      test("should recognize question mark placeholder in output column", async () => {
+        const modelMock = createModelMockForExpression(expression);
+        const feelVariables = new FeelIdentifiers({
+          _readonly_dmnDefinitions: questionMarkModel.definitions,
+        });
+        const semanticTokensProvider = new SemanticTokensProvider(
+          feelVariables,
+          nestedDecisionTableOutputColumnCellId,
+          () => {}
+        );
+
+        const semanticMonacoTokens = await semanticTokensProvider.provideDocumentSemanticTokens(
+          modelMock as unknown as Monaco.editor.ITextModel,
+          null,
+          cancellationTokenMock
+        );
+
+        // Reserved keywords like "every", "in" and "satisfies" are not returned by the FeelIdentifiers since they are
+        // reserved keywords used by FEEL handled outside by the Monaco as reserved words.
+        // Also, "item" is not returned here because here is where it being declared so there is really nothing
+        // to identify and colorize.
+        const expected = [
+          ...getMonacoSemanticToken({
+            startLineRelativeToPreviousLine: 0,
+            startIndexRelativeToPreviousStartIndex: "every item in ".length,
+            tokenLength: "?".length,
+            tokenType: Element.DynamicVariable,
+          }),
+
+          // The declared "item" is identified here.
+          ...getMonacoSemanticToken({
+            startLineRelativeToPreviousLine: 0,
+            startIndexRelativeToPreviousStartIndex: " satisfies ".length + 1,
+            tokenLength: "item".length,
+            tokenType: Element.Variable,
+          }),
+        ];
+
+        for (let i = 0; i < expected.length; i++) {
+          expect(semanticMonacoTokens?.data[i]).toEqual(expected[i]);
+        }
+      });
+    });
+  });
 });
 
 function getDmnModelWithContextEntry({

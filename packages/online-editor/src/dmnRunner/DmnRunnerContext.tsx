@@ -41,6 +41,7 @@ export interface DmnRunnerContextType {
   results: Array<DecisionResult[] | undefined>;
   resultsDifference: Array<Array<object>>;
   status: DmnRunnerStatus;
+  isStrictMode: boolean;
 }
 
 export interface DmnRunnerCallbacksContextType {
@@ -51,6 +52,7 @@ export interface DmnRunnerCallbacksContextType {
   onRowDeleted: (args: { rowIndex: number }) => void;
   setDmnRunnerInputs: (newInputsRow: (previousInputs: Array<InputRow>) => Array<InputRow> | Array<InputRow>) => void;
   setDmnRunnerMode: (newMode: DmnRunnerMode) => void;
+  setIsStrictMode: (newMode: boolean) => void;
   setDmnRunnerConfigInputs: (
     newConfigInputs: (previousConfigInputs: UnitablesInputsConfigs) => UnitablesInputsConfigs | UnitablesInputsConfigs
   ) => void;

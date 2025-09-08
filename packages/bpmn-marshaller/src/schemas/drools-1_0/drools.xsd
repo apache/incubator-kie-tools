@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  ~ Licensed to the Apache Software Foundation (ASF) under one
+  ~ or more contributor license agreements.  See the NOTICE file
+  ~ distributed with this work for additional information
+  ~ regarding copyright ownership.  The ASF licenses this file
+  ~ to you under the Apache License, Version 2.0 (the
+  ~ "License"); you may not use this file except in compliance
+  ~ with the License.  You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<xsd:schema
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:drools="http://www.jboss.org/drools"
+  targetNamespace="http://www.jboss.org/drools"
+  elementFormDefault="qualified"
+>
+  <xsd:attribute name="packageName">
+    <xsd:simpleType>
+      <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+  </xsd:attribute>
+
+  <xsd:attribute name="version">
+    <xsd:simpleType>
+      <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+  </xsd:attribute>
+
+  <xsd:attribute name="ruleFlowGroup">
+    <xsd:simpleType>
+      <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+  </xsd:attribute>
+
+  <xsd:attribute name="taskName">
+    <xsd:simpleType>
+      <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+  </xsd:attribute>
+
+  <xsd:attribute name="priority">
+    <xsd:simpleType>
+      <xsd:restriction base="xsd:integer">
+        <xsd:minInclusive value="1" />
+      </xsd:restriction>
+    </xsd:simpleType>
+  </xsd:attribute>
+
+  <xsd:attribute name="msgref">
+    <xsd:simpleType>
+      <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+  </xsd:attribute>
+
+  <xsd:attribute name="esccode">
+    <xsd:simpleType>
+      <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+  </xsd:attribute>
+
+  <xsd:attribute name="erefname">
+    <xsd:simpleType>
+      <xsd:restriction base="xsd:string" />
+    </xsd:simpleType>
+  </xsd:attribute>
+
+  <xsd:attributeGroup name="onxscriptattributes">
+    <xsd:attribute name="scriptFormat" type="xsd:string" use="required" />
+  </xsd:attributeGroup>
+
+  <xsd:attributeGroup name="importattributes">
+    <xsd:attribute name="name" type="xsd:string" use="required" />
+  </xsd:attributeGroup>
+
+  <xsd:attributeGroup name="globalattributes">
+    <xsd:attribute name="identifier" type="xsd:string" use="required" />
+    <xsd:attribute name="type" type="xsd:string" use="required" />
+  </xsd:attributeGroup>
+
+  <xsd:element name="onEntry-script">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="script" minOccurs="1" maxOccurs="1" type="xsd:string" />
+      </xsd:sequence>
+      <xsd:attributeGroup ref="drools:onxscriptattributes" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="onExit-script">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="script" minOccurs="1" maxOccurs="1" type="xsd:string" />
+      </xsd:sequence>
+      <xsd:attributeGroup ref="drools:onxscriptattributes" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="import">
+    <xsd:complexType>
+      <xsd:attributeGroup ref="drools:importattributes" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="global">
+    <xsd:complexType>
+      <xsd:attributeGroup ref="drools:globalattributes" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Manually written to reflect what's actually happening on BPMN Editor (classic) -->
+  <xsd:element name="metaData">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="metaValue" minOccurs="1" maxOccurs="1" type="xsd:string" />
+      </xsd:sequence>
+      <xsd:attribute name="name" type="xsd:string" use="required" />
+    </xsd:complexType>
+  </xsd:element>
+
+  <!-- Manually edited to reflect what's actually happening on BPMN Editor (classic) -->
+  <!--
+  <xsd:element name="metadata">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element maxOccurs="unbounded" ref="drools:metaentry" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="metaentry">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1" />
+        <xsd:element name="value" type="xsd:string" minOccurs="1" maxOccurs="1" />
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+  -->
+</xsd:schema>

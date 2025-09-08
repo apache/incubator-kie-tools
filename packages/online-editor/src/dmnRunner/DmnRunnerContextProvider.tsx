@@ -28,7 +28,11 @@ import {
   useReducer,
   useRef,
 } from "react";
-import { useWorkspaces, WorkspaceFile } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
+import {
+  useWorkspaces,
+  WorkspaceFile,
+  WorkspacesContextType,
+} from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { DmnRunnerMode, DmnRunnerStatus } from "./DmnRunnerStatus";
 import { DmnRunnerDispatchContext, DmnRunnerStateContext } from "./DmnRunnerContext";
 import { ExtendedServicesStatus } from "../extendedServices/ExtendedServicesStatus";
@@ -261,6 +265,9 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
   );
   const status = useMemo(() => (isExpanded ? DmnRunnerStatus.AVAILABLE : DmnRunnerStatus.UNAVAILABLE), [isExpanded]);
   const dmnRunnerAjv = useMemo(() => new DmnRunnerAjv().getAjv(), []);
+  const [currentResponseMessages, setCurrentResponseMessages] = useState<DmnEvaluationMessages[]>([]);
+  const [invalidElementPaths, setInvalidElementPaths] = useState<string[][]>([]);
+  const [isStrictMode, setIsStrictMode] = useState(false);
 
   const { envelopeServer } = useEditorDockContext();
 
@@ -306,21 +313,20 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
 
   const extendedServicesModelPayload = useCallback<(formInputs?: InputRow) => Promise<ExtendedServicesModelPayload>>(
     async (formInputs) => {
-      const fileContent = await workspaces.getFileContent({
-        workspaceId: props.workspaceFile.workspaceId,
-        relativePath: props.workspaceFile.relativePath,
-      });
-
-      const decodedFileContent = decoder.decode(fileContent);
-      const importIndex = await props.dmnLanguageService?.buildImportIndex([
-        {
-          content: decodedFileContent,
-          normalizedPosixPathRelativeToTheWorkspaceRoot: props.workspaceFile.relativePath,
-        },
-      ]);
+      const importIndex = await getImportIndex(
+        workspaces,
+        props.workspaceFile.workspaceId,
+        props.workspaceFile.relativePath,
+        props.dmnLanguageService
+      );
+      const { ["Included Models"]: includedModelInputs, ...rest } = formInputs ?? {};
+      const modifiedFormInputs = {
+        ...rest,
+        ...includedModelInputs,
+      };
 
       return {
-        context: formInputs,
+        context: modifiedFormInputs,
         mainURI: props.workspaceFile.relativePath,
         resources: [...(importIndex?.models.entries() ?? [])].map(
           ([normalizedPosixPathRelativeToTheWorkspaceRoot, model]) => ({
@@ -328,9 +334,29 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             URI: normalizedPosixPathRelativeToTheWorkspaceRoot,
           })
         ),
+        isStrictMode: isStrictMode,
       };
     },
-    [props.dmnLanguageService, props.workspaceFile.relativePath, props.workspaceFile.workspaceId, workspaces]
+    [
+      isStrictMode,
+      props.dmnLanguageService,
+      props.workspaceFile.relativePath,
+      props.workspaceFile.workspaceId,
+      workspaces,
+    ]
+  );
+
+  const findDecisionIdBySourceId = useCallback(
+    (sourceId: string) => {
+      if (!Array.isArray(invalidElementPaths)) return "";
+      for (const path of invalidElementPaths) {
+        if (path.includes(sourceId)) {
+          return path[0];
+        }
+      }
+      return "";
+    },
+    [invalidElementPaths]
   );
 
   // Responsible for getting decision results
@@ -363,7 +389,24 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             if (canceled.get()) {
               return;
             }
+            if (dmnRunnerMode === DmnRunnerMode.TABLE) {
+              const messagesWithRowNumbers = results.flatMap((result, rowIndex) =>
+                (result?.messages || []).map((message) => ({
+                  ...message,
+                  message: `Row ${rowIndex + 1} : ${message.messageType}: ${message.message}`,
+                }))
+              );
+              setCurrentResponseMessages(messagesWithRowNumbers);
+            } else {
+              const messagesWithTypes =
+                results[currentInputIndex]?.messages?.map((message) => ({
+                  ...message,
+                  message: `${message.messageType}: ${message.message}`,
+                })) || [];
+              setCurrentResponseMessages(messagesWithTypes);
+            }
 
+            const invalidElements: string[][] = [];
             const runnerResults: Array<DecisionResult[] | undefined> = [];
             for (const result of results) {
               if (Object.hasOwnProperty.call(result, "details") && Object.hasOwnProperty.call(result, "stack")) {
@@ -371,10 +414,12 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                 break;
               }
               if (result) {
+                invalidElements.push(...result.invalidElementPaths);
                 runnerResults.push(result.decisionResults);
               }
             }
             setDmnRunnerResults({ type: DmnRunnerResultsActionType.DEFAULT, newResults: runnerResults });
+            setInvalidElementPaths(invalidElements);
 
             const evaluationResultsByNodeId: NewDmnEditorTypes.EvaluationResultsByNodeId = new Map();
             if (dmnRunnerMode === DmnRunnerMode.FORM && results[currentInputIndex]) {
@@ -449,6 +494,18 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     }
   }, [dmnRunnerMode, isExpanded, onTogglePanel, panel]);
   // END
+  const decisionNameByDecisionId = useMemo(
+    () =>
+      results.reduce((decisionMap, decisionResults) => {
+        if (decisionResults) {
+          decisionResults.forEach((decisionResult) => {
+            decisionMap.set(decisionResult.decisionId, decisionResult.decisionName);
+          });
+        }
+        return decisionMap;
+      }, new Map<string, string>()),
+    [results]
+  );
 
   // Set evaluation tab on Problems panel;
   useEffect(() => {
@@ -456,31 +513,24 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       return;
     }
 
-    const decisionNameByDecisionId = results[currentInputIndex]?.reduce(
-      (acc: Map<string, string>, decisionResult) => acc.set(decisionResult.decisionId, decisionResult.decisionName),
-      new Map<string, string>()
-    );
-
-    const messagesBySourceId =
-      results[currentInputIndex]?.reduce((acc, decisionResult) => {
-        decisionResult.messages?.forEach((message) => {
-          const messageEntry = acc.get(message.sourceId);
-          if (!messageEntry) {
-            acc.set(message.sourceId, [message]);
-          } else {
-            acc.set(message.sourceId, [...messageEntry, message]);
-          }
-        });
-        return acc;
-      }, new Map<string, DmnEvaluationMessages[]>()) ?? new Map<string, DmnEvaluationMessages[]>();
+    const messagesBySourceId = currentResponseMessages.reduce((acc, message) => {
+      const messageEntry = acc.get(message.sourceId);
+      if (!messageEntry) {
+        acc.set(message.sourceId, [message]);
+      } else {
+        acc.set(message.sourceId, [...messageEntry, message]);
+      }
+      return acc;
+    }, new Map<string, DmnEvaluationMessages[]>());
 
     const notifications: Notification[] = [...messagesBySourceId.entries()].flatMap(([sourceId, messages]) => {
-      const path = decisionNameByDecisionId?.get(sourceId) ?? "";
+      const decisionId = findDecisionIdBySourceId(sourceId);
+      const path = decisionNameByDecisionId?.get(decisionId) ?? "";
       return messages.map((message: any) => ({
         type: "PROBLEM",
         normalizedPosixPathRelativeToTheWorkspaceRoot: path,
         severity: message.severity,
-        message: `${message.messageType}: ${message.message}`,
+        message: `${message.message}`,
       }));
     });
 
@@ -492,6 +542,9 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
     currentInputIndex,
     props.workspaceFile.extension,
     extendedServices.status,
+    currentResponseMessages,
+    decisionNameByDecisionId,
+    findDecisionIdBySourceId,
   ]);
 
   const setDmnRunnerPersistenceJson = useCallback(
@@ -583,9 +636,19 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
             workspaceFileEvent.content
           );
 
+          const importIndex = await getImportIndex(
+            workspaces,
+            props.workspaceFile.workspaceId,
+            props.workspaceFile.relativePath,
+            props.dmnLanguageService
+          );
+          const modifiedSchema = importIndex
+            ? props.dmnLanguageService?.buildModifiedJsonSchemaWithIncludedModels(jsonSchema, importIndex) ?? jsonSchema
+            : jsonSchema;
+
           // Remove incompatible values and add default values;
           try {
-            const validate = dmnRunnerAjv.compile(jsonSchema);
+            const validate = dmnRunnerAjv.compile(modifiedSchema);
             dmnRunnerPersistenceJson.inputs.forEach((input) => {
               // save id;
               const id = input.id;
@@ -599,7 +662,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
           setDmnRunnerPersistenceJson({
             newConfigInputs: cloneDeep(dmnRunnerPersistenceJson.configs.inputs),
             newInputsRow: cloneDeep(dmnRunnerPersistenceJson.inputs).map((dmnRunnerInput) => ({
-              ...getDefaultValues(jsonSchema),
+              ...getDefaultValues(modifiedSchema),
               ...dmnRunnerInput,
             })),
             shouldUpdateFs: false,
@@ -634,7 +697,16 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         }
         return;
       },
-      [dmnRunnerAjv, dmnRunnerPersistenceService, jsonSchema, setDmnRunnerPersistenceJson]
+      [
+        dmnRunnerAjv,
+        dmnRunnerPersistenceService,
+        jsonSchema,
+        props.dmnLanguageService,
+        props.workspaceFile.relativePath,
+        props.workspaceFile.workspaceId,
+        setDmnRunnerPersistenceJson,
+        workspaces,
+      ]
     )
   );
 
@@ -669,39 +741,52 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
                   const jsonSchema = openapiSchemaToJsonSchema(dereferencedOpenApiSchema, {
                     definitionKeywords: ["definitions"],
                   });
-
-                  setJsonSchema((previousJsonSchema) => {
-                    // Early bailout in the DMN first render;
-                    // This prevents to set the inputs from the previous DMN
-                    if (!previousJsonSchema) {
-                      return jsonSchema;
+                  return getImportIndex(
+                    workspaces,
+                    props.workspaceFile.workspaceId,
+                    props.workspaceFile.relativePath,
+                    props.dmnLanguageService
+                  ).then((importIndex) => {
+                    if (canceled.get()) {
+                      return;
                     }
+                    const modifiedSchema = importIndex
+                      ? props.dmnLanguageService?.buildModifiedJsonSchemaWithIncludedModels(jsonSchema, importIndex) ??
+                        jsonSchema
+                      : jsonSchema;
+                    setJsonSchema((previousJsonSchema) => {
+                      // Early bailout in the DMN first render;
+                      // This prevents to set the inputs from the previous DMN
+                      if (!previousJsonSchema) {
+                        return modifiedSchema;
+                      }
 
-                    const validateInputs = dmnRunnerAjv.compile(jsonSchema);
+                      const validateInputs = dmnRunnerAjv.compile(modifiedSchema);
 
-                    // Add default values and delete changed data types;
-                    setDmnRunnerPersistenceJson({
-                      newConfigInputs: (previousConfigInputs) => {
-                        const newConfigInputs = cloneDeep(previousConfigInputs);
-                        removeChangedPropertiesAndAdditionalProperties(validateInputs, newConfigInputs);
-                        return newConfigInputs;
-                      },
-                      newInputsRow: (previousInputs) => {
-                        return cloneDeep(previousInputs).map((input) => {
-                          const id = input.id;
-                          removeChangedPropertiesAndAdditionalProperties(validateInputs, input);
-                          input.id = id;
-                          return { ...getDefaultValues(jsonSchema), ...input };
-                        });
-                      },
-                      cancellationToken: canceled,
+                      // Add default values and delete changed data types;
+                      setDmnRunnerPersistenceJson({
+                        newConfigInputs: (previousConfigInputs) => {
+                          const newConfigInputs = cloneDeep(previousConfigInputs);
+                          removeChangedPropertiesAndAdditionalProperties(validateInputs, newConfigInputs);
+                          return newConfigInputs;
+                        },
+                        newInputsRow: (previousInputs) => {
+                          return cloneDeep(previousInputs).map((input) => {
+                            const id = input.id;
+                            removeChangedPropertiesAndAdditionalProperties(validateInputs, input);
+                            input.id = id;
+                            return { ...getDefaultValues(modifiedSchema), ...input };
+                          });
+                        },
+                        cancellationToken: canceled,
+                      });
+
+                      // This should be done to remove any previous errors or to add new errors
+                      if (Object.keys(diff(previousJsonSchema, modifiedSchema)).length > 0) {
+                        forceDmnRunnerReRender();
+                      }
+                      return modifiedSchema;
                     });
-
-                    // This should be done to remove any previous errors or to add new errors
-                    if (Object.keys(diff(previousJsonSchema, jsonSchema)).length > 0) {
-                      forceDmnRunnerReRender();
-                    }
-                    return jsonSchema;
                   });
                 })
                 .catch((err) => {
@@ -725,6 +810,10 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
         extendedServicesModelPayload,
         props.workspaceFile.extension,
         setDmnRunnerPersistenceJson,
+        props.dmnLanguageService,
+        props.workspaceFile.relativePath,
+        props.workspaceFile.workspaceId,
+        workspaces,
       ]
     )
   );
@@ -800,6 +889,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       setDmnRunnerInputs,
       setDmnRunnerMode,
       setDmnRunnerPersistenceJson,
+      setIsStrictMode,
     }),
     [
       onRowAdded,
@@ -810,6 +900,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       setDmnRunnerInputs,
       setDmnRunnerMode,
       setDmnRunnerPersistenceJson,
+      setIsStrictMode,
     ]
   );
 
@@ -828,6 +919,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       results,
       resultsDifference,
       status,
+      isStrictMode,
     }),
     [
       canBeVisualized,
@@ -843,6 +935,7 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       results,
       resultsDifference,
       status,
+      isStrictMode,
     ]
   );
 
@@ -855,6 +948,27 @@ export function DmnRunnerContextProvider(props: PropsWithChildren<Props>) {
       </DmnRunnerStateContext.Provider>
     </>
   );
+}
+
+async function getImportIndex(
+  workspaces: WorkspacesContextType,
+  workspaceId: string,
+  normalizedPosixPathRelativeToTheWorkspaceRoot: string,
+  dmnLanguageService?: DmnLanguageService
+) {
+  const fileContent = await workspaces.getFileContent({
+    workspaceId,
+    relativePath: normalizedPosixPathRelativeToTheWorkspaceRoot,
+  });
+
+  const decodedFileContent = decoder.decode(fileContent);
+  const importIndex = await dmnLanguageService?.buildImportIndex([
+    {
+      content: decodedFileContent,
+      normalizedPosixPathRelativeToTheWorkspaceRoot,
+    },
+  ]);
+  return importIndex;
 }
 
 export function DmnRunnerExtendedServicesError() {

@@ -39,7 +39,7 @@
     "go:test-e2e:report": "go run github.com/jstemmer/go-junit-report/v2 -set-exit-code -in ./dist-tests-e2e/go-test-output-e2e.txt -out ./dist-tests-e2e/junit-report-it.xml",
     "install": "go mod tidy",
     "powershell": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command",
-    "setup:env": "cross-env QUARKUS_PLATFORM_GROUP_ID=$(build-env knPluginWorkflow.quarkusPlatformGroupId) QUARKUS_VERSION=$(build-env versions.quarkus) PLUGIN_VERSION=$(build-env knPluginWorkflow.version) DEV_MODE_IMAGE_URL=$(build-env knPluginWorkflow.devModeImageUrl) KOGITO_VERSION=$(build-env versions.kogito)",
+    "setup:env": "cross-env QUARKUS_PLATFORM_GROUP_ID=$(build-env knPluginWorkflow.quarkusPlatformGroupId) QUARKUS_VERSION=$(build-env versions.quarkus) PLUGIN_VERSION=$(build-env knPluginWorkflow.version) DEV_MODE_IMAGE_URL=$(build-env knPluginWorkflow.devModeImageUrl) BUILD_IMAGE_URL=$(build-env knPluginWorkflow.builderImage) KOGITO_VERSION=$(build-env versions.kogito)",
     "setup:env:win32": "pnpm powershell \"cross-env QUARKUS_PLATFORM_GROUP_ID=$(build-env knPluginWorkflow.quarkusPlatformGroupId) QUARKUS_VERSION=$(build-env versions.quarkus) DEV_MODE_IMAGE_URL=$(build-env knPluginWorkflow.devModeImageUrl) KOGITO_VERSION=$(build-env versions.kogito) PLUGIN_VERSION=$(build-env knPluginWorkflow.version)\"",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"pnpm go:test\" \"pnpm go:test:report\"",
     "test-e2e": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"make test-e2e\"",
@@ -50,11 +50,13 @@
     "test-e2e:quarkus:logs": "run-script-if --ignore-errors \"$(build-env endToEndTests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"pnpm go:test-e2e:quarkus:logs\" \"pnpm go:test-e2e:report\""
   },
   "dependencies": {
+    "@kie-tools-core/drools-and-kogito": "workspace:*",
     "@kie-tools/maven-base": "workspace:*",
     "@kie-tools/sonataflow-quarkus-devui": "workspace:*"
   },
   "devDependencies": {
     "@kie-tools/root-env": "workspace:*",
+    "@kie-tools/sonataflow-builder-image": "workspace:*",
     "@kie-tools/sonataflow-devmode-image": "workspace:*",
     "@kie-tools/sonataflow-operator": "workspace:*",
     "cross-env": "^7.0.3",

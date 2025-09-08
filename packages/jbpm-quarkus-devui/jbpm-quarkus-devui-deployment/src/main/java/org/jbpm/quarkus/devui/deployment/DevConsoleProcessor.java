@@ -27,12 +27,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
+import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.ConfigValue;
+import org.jboss.jandex.DotName;
+import org.jbpm.quarkus.devui.runtime.rpc.events.JBPMDevUIEventPublisher;
 import org.kie.kogito.quarkus.extensions.spi.deployment.KogitoDataIndexServiceAvailableBuildItem;
 import org.jbpm.quarkus.devui.deployment.data.UserInfo;
 import org.jbpm.quarkus.devui.runtime.config.DevConsoleRuntimeConfig;
 import org.jbpm.quarkus.devui.runtime.config.DevUIStaticArtifactsRecorder;
-import org.jbpm.quarkus.devui.runtime.rpc.JBPMDevuiJsonRPCService;
+import org.jbpm.quarkus.devui.runtime.rpc.JBPMDevUIJsonRPCService;
 
 import io.quarkus.deployment.Capabilities;
 import io.quarkus.deployment.IsDevelopment;
@@ -96,8 +101,18 @@ public class DevConsoleProcessor {
     }
 
     @BuildStep(onlyIf = IsDevelopment.class)
-    public JsonRPCProvidersBuildItem createJsonRPCServiceForJBPMDevUi() {
-        return new JsonRPCProvidersBuildItem(JBPMDevuiJsonRPCService.class);
+    public JsonRPCProvidersBuildItem createJsonRPCServiceForJBPMDevUi(BuildProducer<AdditionalBeanBuildItem> beanBuildItemBuildProducer) {
+
+        // Adding JBPMDevUIEventPublisher to the CDI container only in DEV mode
+        AdditionalBeanBuildItem jBPMDevUIEventPublisherBean = AdditionalBeanBuildItem.builder()
+                .addBeanClasses(JBPMDevUIEventPublisher.class)
+                .setDefaultScope(DotName.createSimple(ApplicationScoped.class.getName()))
+                .setRemovable()
+                .build();
+
+        beanBuildItemBuildProducer.produce(jBPMDevUIEventPublisherBean);
+
+        return new JsonRPCProvidersBuildItem(JBPMDevUIJsonRPCService.class);
     }
 
     @BuildStep(onlyIf = IsDevelopment.class)
@@ -182,29 +197,29 @@ public class DevConsoleProcessor {
     private static String getProperty(ConfigurationBuildItem configurationBuildItem,
                                       List<SystemPropertyBuildItem> systemPropertyBuildItems, String propertyKey) {
 
-        String propertyValue = configurationBuildItem
+        ConfigValue propertyConfig = configurationBuildItem
                 .getReadResult()
                 .getAllBuildTimeValues()
                 .get(propertyKey);
 
-        if (propertyValue == null) {
-            propertyValue = configurationBuildItem
+        if (propertyConfig == null) {
+            propertyConfig = configurationBuildItem
                     .getReadResult()
                     .getBuildTimeRunTimeValues()
                     .get(propertyKey);
         } else {
-            return propertyValue;
+            return propertyConfig.getValue();
         }
 
-        if (propertyValue == null) {
-            propertyValue = configurationBuildItem
+        if (propertyConfig == null) {
+            propertyConfig = configurationBuildItem
                     .getReadResult()
                     .getRunTimeDefaultValues()
                     .get(propertyKey);
         }
 
-        if (propertyValue != null) {
-            return propertyValue;
+        if (propertyConfig != null) {
+            return propertyConfig.getValue();
         }
 
         return systemPropertyBuildItems.stream().filter(property -> property.getKey().equals(propertyKey))

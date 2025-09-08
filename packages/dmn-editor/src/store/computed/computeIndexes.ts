@@ -18,8 +18,8 @@
  */
 
 import { XmlQName, parseXmlQName } from "@kie-tools/xml-parser-ts/dist/qNames";
-import { DMNDI15__DMNEdge, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
-import { KIE_DMN_UNKNOWN_NAMESPACE } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { DMN_LATEST__DMNEdge, DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller";
+import { KIE_DMN_UNKNOWN_NAMESPACE } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { Computed, State } from "../Store";
@@ -29,10 +29,10 @@ export function computeIndexedDrd(
   definitions: State["dmn"]["model"]["definitions"],
   drdIndex: ReturnType<Computed["getDrdIndex"]>
 ) {
-  const dmnEdgesByDmnElementRef = new Map<string, Normalized<DMNDI15__DMNEdge> & { index: number }>();
+  const dmnEdgesByDmnElementRef = new Map<string, Normalized<DMN_LATEST__DMNEdge> & { index: number }>();
   const dmnShapesByHref = new Map<
     string,
-    Normalized<DMNDI15__DMNShape> & { index: number; dmnElementRefQName: XmlQName }
+    Normalized<DMN_LATEST__DMNShape> & { index: number; dmnElementRefQName: XmlQName }
   >();
   const hrefsOfDmnElementRefsOfShapesPointingToExternalDmnObjects = new Set<string>();
 

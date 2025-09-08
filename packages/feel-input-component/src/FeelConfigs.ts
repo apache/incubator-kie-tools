@@ -430,6 +430,20 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         ],
       },
       {
+        label: "date and time(date, time, timezone)",
+        insertText: "date and time($1, $2, $3)",
+        description: "Creates a date time from the given `date`, `time` and timezone",
+        parameters: [
+          ["date", `\`date\` or \`date and time\``],
+          ["time", `\`time\``],
+          ["timezone", `\`string\``],
+        ],
+        examples: [
+          'date and time( date("2024-12-24"), time("23:59:00"), "Z" ) = date and time( "2024-12-24T23:59:00Z" )',
+          'date and time( date("2024-12-24"), time("23:59:00"), "America/Costa_Rica" ) = date and time( "2024-12-24T23:59:00@America/Costa_Rica" )',
+        ],
+      },
+      {
         label: "date and time(year, month, day, hour, minute, second)",
         insertText: "date and time($1, $2, $3, $4, $5, $6)",
         description: "Creates a date time from the given `year`, `month`, `day`, `hour`, `minute`, and `second`.",
@@ -473,7 +487,7 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           ["second", `\`number\``],
           ["timezone", `\`string\``],
         ],
-        examples: ['date and time( 2012, 12, 24, 23, 59, 59, "z" ) = date and time( "2012-12-24T23:59:59z" )'],
+        examples: ['date and time( 2012, 12, 24, 23, 59, 59, "Z" ) = date and time( "2012-12-24T23:59:59Z" )'],
       },
       {
         label: "day of week(date)",
@@ -1246,6 +1260,13 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         ],
       },
       {
+        label: "round down(n)",
+        insertText: "round down($1)",
+        description: "Returns `n` with rounding mode round down. If `n` is null, the result is null.",
+        parameters: [["n", `\`number\``]],
+        examples: ["round down( 5.5) = 5", "round down( -5.5) = -5"],
+      },
+      {
         label: "round half down(n, scale)",
         insertText: "round half down($1, $2)",
         description:
@@ -1260,6 +1281,13 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           "round half down( 1.121, 2 ) = 1.12",
           "round half down( -1.126, 2 ) = -1.13",
         ],
+      },
+      {
+        label: "round half down(n)",
+        insertText: "round half down($1)",
+        description: "Returns `n` with rounding mode round half down. If `n` is null, the result is null.",
+        parameters: [["n", `\`number\``]],
+        examples: ["round half down( 5.5) = 5", "round half down( -5.5) = -5"],
       },
       {
         label: "round half up(n, scale)",
@@ -1278,6 +1306,13 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
         ],
       },
       {
+        label: "round half up(n)",
+        insertText: "round half up($1)",
+        description: "Returns `n` with rounding mode round half up. If  `n` is null, the result is null.",
+        parameters: [["n", `\`number\``]],
+        examples: ["round half up(5.5) = 6 ", "round half up( -5.5) = -6"],
+      },
+      {
         label: "round up(n, scale)",
         insertText: "round up($1, $2)",
         description:
@@ -1292,6 +1327,13 @@ export const feelDefaultSuggestions = (): Monaco.languages.CompletionItem[] => {
           "round up( 1.121, 2 ) = 1.13",
           "round up( -1.126, 2 ) = -1.13",
         ],
+      },
+      {
+        label: "round up(n)",
+        insertText: "round up($1)",
+        description: "Returns `n` with rounding mode round up. If `n` is null, the result is null.",
+        parameters: [["n", `\`number\``]],
+        examples: ["round up(5.5) = 6", "round up(-5.5) = -6 "],
       },
       {
         label: "sort(list)",

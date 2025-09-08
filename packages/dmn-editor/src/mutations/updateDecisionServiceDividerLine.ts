@@ -17,13 +17,13 @@
  * under the License.
  */
 
+import { DC__Bounds } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import {
-  DC__Bounds,
-  DMN15__tDecisionService,
-  DMN15__tDefinitions,
-  DMNDI15__DMNDecisionServiceDividerLine,
-  DMNDI15__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN_LATEST__tDecisionService,
+  DMN_LATEST__tDefinitions,
+  DMN_LATEST__DMNDecisionServiceDividerLine,
+  DMN_LATEST__DMNShape,
+} from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { addNamespaceToHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { addOrGetDrd } from "./addOrGetDrd";
@@ -33,6 +33,8 @@ import { SnapGrid } from "../store/Store";
 import { NODE_TYPES } from "../diagram/nodes/NodeTypes";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { ExternalDmnsIndex } from "../DmnEditor";
+import { getDecisionServiceDividerLineLocalY } from "../diagram/maths/DmnMaths";
+import { computeIndexedDrd } from "../store/computed/computeIndexes";
 
 export const DECISION_SERVICE_DIVIDER_LINE_PADDING = 100;
 
@@ -46,20 +48,22 @@ export function updateDecisionServiceDividerLine({
   localYPosition,
   drgElementIndex,
   snapGrid,
+  __readonly_decisionServiceHref,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   drdIndex: number;
-  __readonly_dmnShapesByHref: Map<string, Normalized<DMNDI15__DMNShape> & { index: number }>;
+  __readonly_dmnShapesByHref: Map<string, Normalized<DMN_LATEST__DMNShape> & { index: number }>;
   __readonly_dmnObjectNamespace: string | undefined;
   __readonly_externalDmnsIndex: ExternalDmnsIndex;
   shapeIndex: number;
   localYPosition: number;
   drgElementIndex: number;
   snapGrid: SnapGrid;
+  __readonly_decisionServiceHref: string;
 }) {
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
-  const shape = diagramElements?.[shapeIndex] as Normalized<DMNDI15__DMNShape> | undefined;
+  const shape = diagramElements?.[shapeIndex] as Normalized<DMN_LATEST__DMNShape> | undefined;
   const shapeBounds = shape?.["dc:Bounds"];
   if (!shapeBounds) {
     throw new Error("DMN MUTATION: Cannot reposition divider line of non-existent shape bounds");
@@ -69,8 +73,8 @@ export function updateDecisionServiceDividerLine({
 
   const ds =
     externalDmn === undefined
-      ? (definitions.drgElement![drgElementIndex] as Normalized<DMN15__tDecisionService>)
-      : (externalDmn.model.definitions.drgElement![drgElementIndex] as Normalized<DMN15__tDecisionService>);
+      ? (definitions.drgElement![drgElementIndex] as Normalized<DMN_LATEST__tDecisionService>)
+      : (externalDmn.model.definitions.drgElement![drgElementIndex] as Normalized<DMN_LATEST__tDecisionService>);
   if (!ds) {
     throw new Error("DMN MUTATION: Cannot reposition divider line of non-existent Decision Service");
   }
@@ -121,11 +125,27 @@ export function updateDecisionServiceDividerLine({
   shape["dmndi:DMNDecisionServiceDividerLine"] ??= getCentralizedDecisionServiceDividerLine(shapeBounds);
   shape["dmndi:DMNDecisionServiceDividerLine"]["di:waypoint"]![0]["@_y"] = newDividerLineYPosition;
   shape["dmndi:DMNDecisionServiceDividerLine"]["di:waypoint"]![1]["@_y"] = newDividerLineYPosition;
+
+  //Updating dividerline position in all DRDs that contain the decisions service
+  const dividerLineLocalY = getDecisionServiceDividerLineLocalY(shape);
+  const drds = definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
+  for (let i = 0; i < drds.length; i++) {
+    if (i === drdIndex) {
+      continue;
+    }
+    const _indexedDrd = computeIndexedDrd(definitions["@_namespace"], definitions, i);
+    const dsShape = _indexedDrd.dmnShapesByHref.get(__readonly_decisionServiceHref);
+    const dsShapeYPosition = dsShape?.["dc:Bounds"]?.["@_y"];
+    if (dsShape && dsShape["dmndi:DMNDecisionServiceDividerLine"]) {
+      dsShape["dmndi:DMNDecisionServiceDividerLine"]!["di:waypoint"]![0]["@_y"] = dsShapeYPosition! + dividerLineLocalY;
+      dsShape["dmndi:DMNDecisionServiceDividerLine"]!["di:waypoint"]![1]["@_y"] = dsShapeYPosition! + dividerLineLocalY;
+    }
+  }
 }
 
 export function getCentralizedDecisionServiceDividerLine(
   bounds: DC__Bounds
-): Normalized<DMNDI15__DMNDecisionServiceDividerLine> {
+): Normalized<DMN_LATEST__DMNDecisionServiceDividerLine> {
   return {
     "@_id": generateUuid(),
     "di:waypoint": [

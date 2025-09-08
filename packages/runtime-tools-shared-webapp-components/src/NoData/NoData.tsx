@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   EmptyState,
   EmptyStateIcon,
@@ -31,47 +31,40 @@ import { Button } from "@patternfly/react-core/dist/js/components/Button";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { SearchIcon } from "@patternfly/react-icons/dist/js/icons/search-icon";
-import { Redirect } from "react-router";
+import { Navigate, useLocation } from "react-router-dom";
 import { OUIAProps, componentOuiaProps } from "@kie-tools/runtime-tools-components/dist/ouiaTools";
 
 export interface IOwnProps {
   defaultPath: string;
   defaultButton: string;
-  location: any;
 }
 
 export const NoData: React.FC<IOwnProps & OUIAProps> = ({ ouiaId, ouiaSafe, ...props }) => {
-  let prevPath;
-  if (props.location.state !== undefined) {
-    prevPath = props.location.state.prev;
-  } else {
-    prevPath = props.defaultPath;
-  }
+  const location = useLocation();
 
-  const tempPath = prevPath.split("/");
-  prevPath = tempPath.filter((item: string) => item);
+  const prevPath = useMemo(() => {
+    return (location.state?.prev ?? props.defaultPath).split("/").filter((item: string) => item);
+  }, [location.state, props.defaultPath]);
 
-  const [isRedirect, setIsredirect] = useState(false);
+  const [isRedirect, setIsRedirect] = useState(false);
   const redirectHandler = () => {
-    setIsredirect(true);
+    setIsRedirect(true);
   };
   return (
     <>
-      {isRedirect && <Redirect to={`/${prevPath[0]}`} />}
+      {isRedirect && <Navigate replace to={`/${prevPath?.[0] ?? ""}`} />}
       <PageSection isFilled={true} {...componentOuiaProps(ouiaId, "no-data", ouiaSafe ? ouiaSafe : !isRedirect)}>
         <Bullseye>
           <EmptyState variant={EmptyStateVariant.full}>
             <EmptyStateHeader
-              titleText={<>{props.location.state ? props.location.state.title : "No matches"}</>}
+              titleText={<>{location.state ? location.state.title : "No matches"}</>}
               icon={<EmptyStateIcon icon={SearchIcon} />}
               headingLevel="h1"
             />
-            <EmptyStateBody>
-              {props.location.state ? props.location.state.description : "No data to display"}
-            </EmptyStateBody>
+            <EmptyStateBody>{location.state ? location.state.description : "No data to display"}</EmptyStateBody>
             <EmptyStateFooter>
               <Button variant="primary" onClick={redirectHandler} data-testid="redirect-button">
-                {props.location.state ? props.location.state.buttonText : props.defaultButton}
+                {location.state ? location.state.buttonText : props.defaultButton}
               </Button>
             </EmptyStateFooter>
           </EmptyState>

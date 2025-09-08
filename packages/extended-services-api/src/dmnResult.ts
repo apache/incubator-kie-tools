@@ -57,4 +57,5 @@ export interface ExtendedServicesDmnResult {
   dmnContext?: Record<string, any>;
   messages: DmnEvaluationMessages[];
   namespace?: string;
+  invalidElementPaths: string[][];
 }

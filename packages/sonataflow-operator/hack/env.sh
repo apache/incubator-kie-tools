@@ -20,7 +20,7 @@ CSV_DIR="config/manifests/bases"
 BUNDLE_DIR="bundle/manifests"
 
 getOperatorVersion() {
-  local version=$(grep -m 1 'operatorVersion = ' version/version.go | awk -F\" '{print $2}')
+  local version=$(grep -m 1 'operatorVersion = ' api/version/version.go | awk -F\" '{print $2}')
   echo "${version}"
 }
 

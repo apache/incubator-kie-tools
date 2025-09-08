@@ -38,7 +38,7 @@ const (
 )
 
 // ConfigurePostgreSQLEnv returns the common env variables required for the DataIndex or JobsService when postresql persistence is used.
-func ConfigurePostgreSQLEnv(postgresql *operatorapi.PersistencePostgreSQL, databaseSchema, databaseNamespace string) []corev1.EnvVar {
+func ConfigurePostgreSQLEnv(postgresql *operatorapi.PersistencePostgreSQL, databaseSchema, databaseNamespace string, includeReactiveUrl bool) []corev1.EnvVar {
 	dataSourcePort := constants.DefaultPostgreSQLPort
 	databaseName := defaultDatabaseName
 	dataSourceURL := postgresql.JdbcUrl
@@ -68,7 +68,7 @@ func ConfigurePostgreSQLEnv(postgresql *operatorapi.PersistencePostgreSQL, datab
 	if len(postgresql.SecretRef.PasswordKey) > 0 {
 		quarkusDatasourcePassword = postgresql.SecretRef.PasswordKey
 	}
-	return []corev1.EnvVar{
+	env := []corev1.EnvVar{
 		{
 			Name: "QUARKUS_DATASOURCE_USERNAME",
 			ValueFrom: &corev1.EnvVarSource{
@@ -95,19 +95,28 @@ func ConfigurePostgreSQLEnv(postgresql *operatorapi.PersistencePostgreSQL, datab
 			Name:  "QUARKUS_DATASOURCE_JDBC_URL",
 			Value: dataSourceURL,
 		},
-		{
-			Name:  "KOGITO_PERSISTENCE_TYPE",
-			Value: "jdbc",
-		},
 	}
+	if includeReactiveUrl {
+		dataSourceReactiveURL := strings.TrimPrefix(dataSourceURL, "jdbc:")
+		dataSourceReactiveURL = strings.ReplaceAll(dataSourceReactiveURL, "currentSchema=", "search_path=")
+		env = append(env, corev1.EnvVar{
+			Name:  "QUARKUS_DATASOURCE_REACTIVE_URL",
+			Value: dataSourceReactiveURL,
+		})
+	}
+	env = append(env, corev1.EnvVar{
+		Name:  "KOGITO_PERSISTENCE_TYPE",
+		Value: "jdbc",
+	})
+	return env
 }
 
-func ConfigurePersistence(serviceContainer *corev1.Container, config *operatorapi.PersistenceOptionsSpec, defaultSchema, namespace string) *corev1.Container {
+func ConfigureWorkflowPersistence(serviceContainer *corev1.Container, config *operatorapi.PersistenceOptionsSpec, defaultSchema, namespace string) *corev1.Container {
 	if config.PostgreSQL == nil {
 		return serviceContainer
 	}
 	c := serviceContainer.DeepCopy()
-	c.Env = append(c.Env, ConfigurePostgreSQLEnv(config.PostgreSQL, defaultSchema, namespace)...)
+	c.Env = append(c.Env, ConfigurePostgreSQLEnv(config.PostgreSQL, defaultSchema, namespace, false)...)
 	return c
 }
 

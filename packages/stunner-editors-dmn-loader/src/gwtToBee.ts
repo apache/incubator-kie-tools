@@ -30,7 +30,7 @@ import {
   GwtExpressionDefinition,
   GwtExpressionDefinitionLogicType,
 } from "./types";
-import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { DMN16_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import {
   BoxedExpression,
   DmnBuiltInDataType,
@@ -179,7 +179,7 @@ export function gwtToBee(
                         },
                         variable: {
                           "@_id": generateUuid(),
-                          "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.classFieldName,
+                          "@_name": DMN16_SPEC.BOXED.FUNCTION.JAVA.classFieldName,
                         },
                       },
                       {
@@ -191,7 +191,7 @@ export function gwtToBee(
                         },
                         variable: {
                           "@_id": generateUuid(),
-                          "@_name": DMN15_SPEC.BOXED.FUNCTION.JAVA.methodSignatureFieldName,
+                          "@_name": DMN16_SPEC.BOXED.FUNCTION.JAVA.methodSignatureFieldName,
                         },
                       },
                     ],
@@ -212,7 +212,7 @@ export function gwtToBee(
                           },
                           variable: {
                             "@_id": generateUuid(),
-                            "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.documentFieldName,
+                            "@_name": DMN16_SPEC.BOXED.FUNCTION.PMML.documentFieldName,
                           },
                         },
                         {
@@ -224,7 +224,7 @@ export function gwtToBee(
                           },
                           variable: {
                             "@_id": generateUuid(),
-                            "@_name": DMN15_SPEC.BOXED.FUNCTION.PMML.modelFieldName,
+                            "@_name": DMN16_SPEC.BOXED.FUNCTION.PMML.modelFieldName,
                           },
                         },
                       ],

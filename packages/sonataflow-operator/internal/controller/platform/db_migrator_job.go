@@ -25,14 +25,14 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/version"
+
 	batchv1 "k8s.io/api/batch/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog/v2"
 	"k8s.io/utils/pointer"
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
-
-	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/version"
 
 	operatorapi "github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api/v1alpha08"
 	"github.com/apache/incubator-kie-tools/packages/sonataflow-operator/container-builder/client"
@@ -103,7 +103,7 @@ func getJdbcUrl(env []corev1.EnvVar) string {
 func getQuarkusDSFromServicePersistence(platform *operatorapi.SonataFlowPlatform, persistenceOptionsSpec *operatorapi.PersistenceOptionsSpec, defaultSchemaName string) *QuarkusDataSource {
 	klog.InfoS("Using service level persistence for PostgreSQL", "defaultSchemaName", defaultSchemaName)
 	quarkusDataSource := &QuarkusDataSource{}
-	env := persistence.ConfigurePostgreSQLEnv(persistenceOptionsSpec.PostgreSQL, defaultSchemaName, platform.Namespace)
+	env := persistence.ConfigurePostgreSQLEnv(persistenceOptionsSpec.PostgreSQL, defaultSchemaName, platform.Namespace, false)
 	quarkusDataSource.JdbcUrl = getJdbcUrl(env)
 	quarkusDataSource.SecretRefName = persistenceOptionsSpec.PostgreSQL.SecretRef.Name
 	quarkusDataSource.SecretUserKey = persistenceOptionsSpec.PostgreSQL.SecretRef.UserKey
@@ -118,7 +118,7 @@ func getQuarkusDSFromPlatformPersistence(platform *operatorapi.SonataFlowPlatfor
 	quarkusDataSource := &QuarkusDataSource{}
 	postgresql := persistence.MapToPersistencePostgreSQL(platform, defaultSchemaName)
 
-	env := persistence.ConfigurePostgreSQLEnv(postgresql, defaultSchemaName, platform.Namespace)
+	env := persistence.ConfigurePostgreSQLEnv(postgresql, defaultSchemaName, platform.Namespace, false)
 	quarkusDataSource.JdbcUrl = getJdbcUrl(env)
 	quarkusDataSource.SecretRefName = platform.Spec.Persistence.PostgreSQL.SecretRef.Name
 	quarkusDataSource.SecretUserKey = platform.Spec.Persistence.PostgreSQL.SecretRef.UserKey

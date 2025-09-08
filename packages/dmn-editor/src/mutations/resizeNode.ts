@@ -19,11 +19,11 @@
 
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import {
-  DMN15__tDecisionService,
-  DMN15__tDefinitions,
-  DMNDI15__DMNEdge,
-  DMNDI15__DMNShape,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN_LATEST__tDecisionService,
+  DMN_LATEST__tDefinitions,
+  DMN_LATEST__DMNEdge,
+  DMN_LATEST__DMNShape,
+} from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { snapShapeDimensions, snapShapePosition } from "../diagram/SnapGrid";
 import { PositionalNodeHandleId } from "../diagram/connections/PositionalNodeHandles";
@@ -35,6 +35,8 @@ import { SnapGrid } from "../store/Store";
 import { addOrGetDrd } from "./addOrGetDrd";
 import { DECISION_SERVICE_DIVIDER_LINE_PADDING } from "./updateDecisionServiceDividerLine";
 import { ExternalDmnsIndex } from "../DmnEditor";
+import { computeIndexedDrd } from "../store/computed/computeIndexes";
+import { getDecisionServicePropertiesRelativeToThisDmn } from "./addExistingDecisionServiceToDrd";
 
 export function resizeNode({
   definitions,
@@ -43,14 +45,18 @@ export function resizeNode({
   __readonly_dmnObjectNamespace,
   __readonly_externalDmnsIndex,
   snapGrid,
+  __readonly_href,
+  __readonly_dmnObjectId,
   change,
 }: {
-  definitions: Normalized<DMN15__tDefinitions>;
+  definitions: Normalized<DMN_LATEST__tDefinitions>;
   drdIndex: number;
-  __readonly_dmnShapesByHref: Map<string, Normalized<DMNDI15__DMNShape> & { index: number }>;
+  __readonly_dmnShapesByHref: Map<string, Normalized<DMN_LATEST__DMNShape> & { index: number }>;
   snapGrid: SnapGrid;
   __readonly_dmnObjectNamespace: string | undefined;
   __readonly_externalDmnsIndex: ExternalDmnsIndex;
+  __readonly_href: string;
+  __readonly_dmnObjectId: string;
   change: {
     nodeType: NodeType;
     isExternal: boolean;
@@ -65,7 +71,7 @@ export function resizeNode({
 
   const { diagramElements } = addOrGetDrd({ definitions, drdIndex });
 
-  const shape = diagramElements?.[change.shapeIndex] as Normalized<DMNDI15__DMNShape> | undefined;
+  const shape = diagramElements?.[change.shapeIndex] as Normalized<DMN_LATEST__DMNShape> | undefined;
   const shapeBounds = shape?.["dc:Bounds"];
   if (!shapeBounds) {
     throw new Error("DMN MUTATION: Cannot resize non-existent shape bounds");
@@ -77,8 +83,8 @@ export function resizeNode({
 
     const ds =
       externalDmn === undefined
-        ? (definitions.drgElement![change.index] as Normalized<DMN15__tDecisionService>)
-        : (externalDmn.model.definitions.drgElement![change.index] as Normalized<DMN15__tDecisionService>);
+        ? (definitions.drgElement![change.index] as Normalized<DMN_LATEST__tDecisionService>)
+        : (externalDmn.model.definitions.drgElement![change.index] as Normalized<DMN_LATEST__tDecisionService>);
     if (!ds) {
       throw new Error("DMN MUTATION: Cannot reposition divider line of non-existent Decision Service");
     }
@@ -142,7 +148,7 @@ export function resizeNode({
 
       edgeIndexesAlreadyUpdated.add(edgeIndex);
 
-      const edge = diagramElements[edgeIndex] as Normalized<DMNDI15__DMNEdge> | undefined;
+      const edge = diagramElements[edgeIndex] as Normalized<DMN_LATEST__DMNEdge> | undefined;
       if (!edge || !edge["di:waypoint"]) {
         throw new Error("DMN MUTATION: Cannot reposition non-existent edge");
       }
@@ -167,4 +173,105 @@ export function resizeNode({
 
   shapeBounds["@_width"] = newDimensions.width;
   shapeBounds["@_height"] = newDimensions.height;
+
+  // Handles resizing a decision service in a DRD resizes it in all DRDs to keep Decision Services consistent
+  if (change.nodeType === NODE_TYPES.decisionService) {
+    const drds = definitions["dmndi:DMNDI"]?.["dmndi:DMNDiagram"] ?? [];
+    const drgElements = definitions.drgElement!;
+    for (let i = 0; i < drds.length; i++) {
+      if (i === drdIndex) {
+        continue;
+      }
+      const _indexedDrd = computeIndexedDrd(definitions["@_namespace"], definitions, i);
+      const dsShape = _indexedDrd.dmnShapesByHref.get(__readonly_href);
+      if (dsShape && dsShape["dc:Bounds"] && !shape["@_isCollapsed"]) {
+        dsShape["dc:Bounds"]["@_width"] = shape["dc:Bounds"]?.["@_width"] ?? 0;
+        dsShape["dc:Bounds"]["@_height"] = shape["dc:Bounds"]?.["@_height"] ?? 0;
+      }
+
+      // Apply delta shift to neighbouring nodes in other DRD
+      const decisionService = drgElements.find(
+        (elem) => elem["@_id"] === __readonly_dmnObjectId
+      ) as Normalized<DMN_LATEST__tDecisionService>;
+      const { containedDecisionHrefsRelativeToThisDmn } = getDecisionServicePropertiesRelativeToThisDmn({
+        thisDmnsNamespace: definitions["@_namespace"],
+        decisionService,
+        decisionServiceNamespace: __readonly_dmnObjectNamespace ?? definitions["@_namespace"],
+      });
+
+      const decisionsInDecisionServiceInDrd: string[] = [];
+      for (const elem of drgElements) {
+        if (elem.__$$element === "decisionService") {
+          decisionsInDecisionServiceInDrd.push(
+            ...(elem.outputDecision ?? []).map((od) => od["@_href"]),
+            ...(elem.encapsulatedDecision ?? []).map((od) => od["@_href"])
+          );
+        }
+      }
+
+      for (const [key] of _indexedDrd.dmnShapesByHref.entries()) {
+        if (key !== __readonly_href && !containedDecisionHrefsRelativeToThisDmn.includes(key)) {
+          const nodeShape = _indexedDrd.dmnShapesByHref.get(key);
+          if (nodeShape && nodeShape["dc:Bounds"] && dsShape && !shape["@_isCollapsed"]) {
+            const nodeShapeWidth = nodeShape["dc:Bounds"]!["@_x"] + nodeShape["dc:Bounds"]!["@_width"];
+            const nodeShapeHeight = nodeShape["dc:Bounds"]!["@_y"] + nodeShape["dc:Bounds"]!["@_height"];
+            const dsShapeWidth = dsShape["dc:Bounds"]!["@_x"] + dsShape["dc:Bounds"]!["@_width"] - deltaWidth;
+            const dsShapeHeight = dsShape["dc:Bounds"]!["@_y"] + dsShape["dc:Bounds"]!["@_height"] - deltaHeight;
+
+            const drgElem = drgElements.filter((item) => item["@_id"] === nodeShape["@_dmnElementRef"]);
+
+            const shiftXPosition =
+              nodeShape["dc:Bounds"]["@_x"] >= dsShapeWidth &&
+              (nodeShapeHeight >= dsShape["dc:Bounds"]!["@_y"] || nodeShape["dc:Bounds"]["@_y"] <= dsShapeHeight);
+
+            const shiftYPosition =
+              nodeShape["dc:Bounds"]["@_y"] >= dsShapeHeight &&
+              (dsShapeWidth <= nodeShapeWidth || nodeShape["dc:Bounds"]!["@_x"] <= nodeShapeWidth);
+
+            const bounds = nodeShape["dc:Bounds"];
+
+            if (drgElem[0].__$$element === "decisionService") {
+              const containedDecisions = [
+                ...(drgElem[0].outputDecision ?? []).map((od) => od["@_href"]),
+                ...(drgElem[0].encapsulatedDecision ?? []).map((od) => od["@_href"]),
+              ];
+
+              if (shiftXPosition || shiftYPosition) {
+                const divider = nodeShape["dmndi:DMNDecisionServiceDividerLine"];
+                const waypoints = divider?.["di:waypoint"];
+                // Handles position shift of decision service
+                if (shiftXPosition) {
+                  bounds["@_x"] += deltaWidth;
+                }
+
+                if (shiftYPosition) {
+                  bounds["@_y"] += deltaHeight;
+                  waypoints![0]["@_y"] += deltaHeight;
+                  waypoints![1]["@_y"] += deltaHeight;
+                }
+                // Handles position shift of decisions inside decision service
+                for (const decision of containedDecisions) {
+                  const containedDecisionBounds = _indexedDrd.dmnShapesByHref.get(decision)?.["dc:Bounds"];
+                  if (containedDecisionBounds) {
+                    if (shiftXPosition) containedDecisionBounds["@_x"] += deltaWidth;
+                    if (shiftYPosition) containedDecisionBounds["@_y"] += deltaHeight;
+                  }
+                }
+              }
+            } else {
+              // Handles position shift of other independent shapes
+              if (!decisionsInDecisionServiceInDrd.some((arr) => arr.includes(key))) {
+                if (shiftXPosition) {
+                  bounds["@_x"] = bounds!["@_x"] + deltaWidth;
+                }
+                if (shiftYPosition) {
+                  bounds["@_y"] = bounds!["@_y"] + deltaHeight;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }

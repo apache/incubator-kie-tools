@@ -26,10 +26,9 @@
     "@kie-tools/runtime-tools-components": "workspace:*",
     "@kie-tools/runtime-tools-process-enveloped-components": "workspace:*",
     "@kie-tools/runtime-tools-process-gateway-api": "workspace:*",
-    "@kie-tools/runtime-tools-shared-enveloped-components": "workspace:*",
     "@kie-tools/runtime-tools-shared-gateway-api": "workspace:*",
     "apollo-client": "2.6.10",
-    "axios": "^1.7.4",
+    "axios": "^1.9.0",
     "lodash": "^4.17.21"
   },
   "devDependencies": {

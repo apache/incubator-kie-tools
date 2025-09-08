@@ -284,4 +284,24 @@ export class Nodes {
         return "Add Knowledge Requirement edge";
     }
   }
+
+  public async selectAndCollapseDecisionService(args: { name: string }) {
+    await this.select({ name: args.name, position: NodePosition.TOP });
+    await this.page.getByTestId(`kie-tools--dmn-editor--${args.name}-expanded-button`).click();
+  }
+
+  public async selectAndExpandDecisionService(args: { name: string }) {
+    await this.select({ name: args.name, position: NodePosition.TOP });
+    await this.page.getByTestId(`kie-tools--dmn-editor--${args.name}-collapsed-button`).click();
+  }
+
+  public async moveDividerLine(args: { nodeName: string }) {
+    await this.select({ name: args.nodeName, position: NodePosition.CENTER });
+    const node = this.get({ name: args.nodeName });
+    const { x, y, width, height } = (await node.boundingBox()) ?? { x: 0, y: 0, width: 0, height: 0 };
+    await this.page.mouse.move(x + width / 2, y + height / 2);
+    await this.page.mouse.down();
+    await this.page.mouse.move(x, y - 60);
+    await this.page.mouse.up();
+  }
 }

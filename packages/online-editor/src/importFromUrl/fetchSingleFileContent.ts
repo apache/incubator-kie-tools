@@ -20,11 +20,13 @@
 import { Octokit } from "@octokit/rest";
 import { BitbucketClientApi } from "../bitbucket/Hooks";
 import { ImportableUrl, UrlType } from "./ImportableUrlHooks";
+import { GitlabClientApi } from "../gitlab/GitlabClient";
 
 export async function fetchSingleFileContent(
   importableUrl: ImportableUrl,
   gitHubClient: Octokit,
-  bitbucketClient: BitbucketClientApi
+  bitbucketClient: BitbucketClientApi,
+  gitlabClient: GitlabClientApi
 ): Promise<{ rawUrl?: URL; content?: string; error?: string }> {
   let rawUrl = importableUrl.url as URL;
   if (importableUrl.type === UrlType.GITHUB_DOT_COM_FILE) {
@@ -89,6 +91,40 @@ export async function fetchSingleFileContent(
       throw new Error("Unexpected contents of Bitbucket response - missing links property.");
     }
     rawUrl = new URL(links.self.href);
+  }
+  if (importableUrl.type === UrlType.GITLAB_DOT_COM_FILE) {
+    const repoResponse = await gitlabClient.getRepositoryContents({
+      group: importableUrl.group,
+      project: importableUrl.project,
+      ref: importableUrl.branch,
+      path: decodeURIComponent(importableUrl.filePath),
+    });
+
+    if (!repoResponse.ok) {
+      throw new Error(`Couldn't get Gitlab repository contents: ${repoResponse.status} ${repoResponse.statusText}`);
+    }
+    const content = await repoResponse?.text();
+    if (!content) {
+      throw new Error(`Unexpected contents of Gitlab response`);
+    }
+    return { content, rawUrl: new URL(importableUrl?.url), error: undefined };
+  }
+  if (importableUrl.type === UrlType.GITLAB_DOT_COM_SNIPPET_FILE) {
+    const snippetResponse = await gitlabClient.getSnippetFileRaw({
+      group: importableUrl.group,
+      filePath: decodeURIComponent(importableUrl.filePath!),
+      snippetId: importableUrl.snippetId,
+      branch: importableUrl?.branch,
+      project: importableUrl?.project,
+    });
+    if (!snippetResponse.ok) {
+      throw new Error(`Couldn't get Gitlab snippet contents: ${snippetResponse.status} ${snippetResponse.statusText}`);
+    }
+    const content = await snippetResponse?.text();
+    if (!content) {
+      throw new Error(`Unexpected contents of Gitlab response`);
+    }
+    return { content, rawUrl: new URL(importableUrl?.url), error: undefined };
   }
 
   const response = await fetch(rawUrl.toString());

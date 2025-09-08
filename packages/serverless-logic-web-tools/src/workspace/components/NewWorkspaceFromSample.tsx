@@ -20,7 +20,7 @@
 import * as React from "react";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useRoutes } from "../../navigation/Hooks";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
@@ -35,7 +35,7 @@ export function NewWorkspaceFromSample() {
   const sampleDispatch = useSampleDispatch();
   const workspaces = useWorkspaces();
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
   const [openingError, setOpeningError] = useState("");
 
   const sampleId = useQueryParam(QueryParams.SAMPLE_ID) ?? "";
@@ -48,18 +48,20 @@ export function NewWorkspaceFromSample() {
         if (!suggestedFirstFile) {
           return;
         }
-        history.replace({
-          pathname: routes.workspaceWithFilePath.path({
-            workspaceId: workspace.workspaceId,
-            fileRelativePath: suggestedFirstFile.relativePathWithoutExtension,
-            extension: suggestedFirstFile.extension,
-          }),
-        });
+        navigate(
+          {
+            pathname: routes.workspaceWithFilePath.path({
+              workspaceId: workspace.workspaceId,
+              fileRelativePath: suggestedFirstFile.relativePath,
+            }),
+          },
+          { replace: true }
+        );
       })
       .catch((e) => {
         setOpeningError(e.message);
       });
-  }, [history, routes.workspaceWithFilePath, sampleId, workspaces, sampleDispatch]);
+  }, [navigate, routes.workspaceWithFilePath, sampleId, workspaces, sampleDispatch]);
 
   return (
     <>

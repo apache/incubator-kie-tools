@@ -31,7 +31,11 @@ export enum AuthProviderType {
 }
 
 const gitAuthProviderKeys = [AuthProviderType.bitbucket, AuthProviderType.github, AuthProviderType.gitlab] as const;
-const supportedGitAuthProvidersKeys = [AuthProviderType.bitbucket, AuthProviderType.github] as const;
+const supportedGitAuthProvidersKeys = [
+  AuthProviderType.bitbucket,
+  AuthProviderType.github,
+  AuthProviderType.gitlab,
+] as const;
 export type SupportedGitAuthProviders = (typeof supportedGitAuthProvidersKeys)[number];
 export const isSupportedGitAuthProviderType = (
   maybeSupportedTypeKey: AuthProviderType | undefined
@@ -42,6 +46,19 @@ export const isGitAuthProvider = (
   maybeGitAuthProvider: AuthProvider | undefined
 ): maybeGitAuthProvider is GitAuthProvider => {
   return gitAuthProviderKeys.some((k) => k === maybeGitAuthProvider?.type);
+};
+export const isOpenShiftAuthProvider = (
+  maybeOpenShiftAuthProvider: AuthProvider | undefined
+): maybeOpenShiftAuthProvider is OpenShiftAuthProvider => {
+  const openShiftAuthProviderKeys = ["openshift"];
+  return openShiftAuthProviderKeys.some((k) => k === maybeOpenShiftAuthProvider?.type);
+};
+
+export const isKubernetesAuthProvider = (
+  maybeKubernetesAuthProvider: AuthProvider | undefined
+): maybeKubernetesAuthProvider is KubernetesAuthProvider => {
+  const kubernetesAuthProviderKeys = ["kubernetes"];
+  return kubernetesAuthProviderKeys.some((k) => k === maybeKubernetesAuthProvider?.type);
 };
 
 export type OpenShiftAuthProviderType = AuthProviderType.openshift;
@@ -78,11 +95,16 @@ export type GitAuthProvider = {
   supportedGitRemoteDomains: string[];
   group: AuthProviderGroup.GIT;
   insecurelyDisableTlsCertificateValidation?: boolean;
+  disableEncoding?: boolean;
 };
 
 export type AuthProvider = OpenShiftAuthProvider | KubernetesAuthProvider | GitAuthProvider;
 
-const gistEnabledTypeConfigKeys = [AuthProviderType.github, AuthProviderType.bitbucket] as const;
+const gistEnabledTypeConfigKeys = [
+  AuthProviderType.github,
+  AuthProviderType.bitbucket,
+  AuthProviderType.gitlab,
+] as const;
 export type GistEnabledAuthProviderType = (typeof gistEnabledTypeConfigKeys)[number];
 
 export const isGistEnabledAuthProviderType = (

@@ -38,6 +38,7 @@ import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { switchExpression } from "@kie-tools-core/switch-expression-ts";
 import BitbucketIcon from "@patternfly/react-icons/dist/js/icons/bitbucket-icon";
 import GithubIcon from "@patternfly/react-icons/dist/js/icons/github-icon";
+import { GitlabIcon } from "@patternfly/react-icons/dist/js/icons/gitlab-icon";
 import GitIcon from "@patternfly/react-icons/dist/js/icons/git-icon";
 import { useAuthSession } from "../../../authSessions/AuthSessionsContext";
 import { useAuthProvider } from "../../../authProviders/AuthProvidersContext";
@@ -95,9 +96,9 @@ export const GitDropdownGroup = (props: Props) => {
             />
           }
         >
-          {`Manage authentication sources for '${props.workspace.descriptor.name}' to be able to create Repository, GitHub Gist or Bitbucket Snippet.`}
+          {`Manage authentication sources for '${props.workspace.descriptor.name}' to be able to create Repository, GitHub Gist, Bitbucket Snippet or GitLab Snippet.`}
         </Alert>
-        {canCreateGitRepository && (
+        {authProvider && (
           <Tooltip
             data-testid={"create-git-repository-tooltip"}
             key={`dropdown-create-git-repository`}
@@ -109,6 +110,7 @@ export const GitDropdownGroup = (props: Props) => {
               icon={switchExpression(authProvider?.type as GitAuthProviderType, {
                 bitbucket: <BitbucketIcon />,
                 github: <GithubIcon />,
+                gitlab: <GitlabIcon />,
                 default: <GitIcon />,
               })}
               data-testid={"create-git-repository-button"}
@@ -120,13 +122,14 @@ export const GitDropdownGroup = (props: Props) => {
               {switchExpression(authProvider?.type as GitAuthProviderType, {
                 github: "GitHub repository",
                 bitbucket: "Bitbucket repository",
+                gitlab: "GitLab repository",
                 default: "Git repository",
               })}
               ...
             </DropdownItem>
           </Tooltip>
         )}
-        {canCreateGistOrSnippet && (
+        {authProvider && (
           <Tooltip
             data-testid={"create-gist-or-snippet-tooltip"}
             key={`dropdown-create-gist-or-snippet`}
@@ -135,6 +138,7 @@ export const GitDropdownGroup = (props: Props) => {
                 {switchExpression(authProvider?.type as GistEnabledAuthProviderType, {
                   github: i18n.editorToolbar.cantCreateGistTooltip,
                   bitbucket: i18n.editorToolbar.cantCreateSnippetTooltip,
+                  gitlab: i18n.editorToolbar.cantCreateSnippetTooltip,
                 })}
               </div>
             }
@@ -145,6 +149,7 @@ export const GitDropdownGroup = (props: Props) => {
               icon={switchExpression(authProvider?.type as GistEnabledAuthProviderType, {
                 bitbucket: <BitbucketIcon />,
                 github: <GithubIcon />,
+                gitlab: <GitlabIcon />,
               })}
               data-testid={"create-gist-or-snippet-button"}
               component="button"
@@ -154,6 +159,7 @@ export const GitDropdownGroup = (props: Props) => {
               {switchExpression(authProvider?.type as GistEnabledAuthProviderType, {
                 github: i18n.editorToolbar.createGist,
                 bitbucket: i18n.editorToolbar.createSnippet,
+                gitlab: i18n.editorToolbar.createSnippet,
               })}
             </DropdownItem>
           </Tooltip>

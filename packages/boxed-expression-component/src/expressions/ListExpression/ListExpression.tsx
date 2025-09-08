@@ -44,11 +44,11 @@ import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../.
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { ListItemCell } from "./ListItemCell";
 import { ResizerStopBehavior } from "../../resizing/ResizingWidthsContext";
-import { DMN15__tContextEntry } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tContextEntry } from "@kie-tools/dmn-marshaller";
 import { findAllIdsDeep } from "../../ids/ids";
 import "./ListExpression.css";
 
-export type ROWTYPE = Normalized<DMN15__tContextEntry>;
+export type ROWTYPE = Normalized<DMN_LATEST__tContextEntry>;
 
 export function ListExpression({
   isNested,

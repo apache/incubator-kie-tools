@@ -17,11 +17,11 @@
  * under the License.
  */
 import React, { useContext, createContext } from "react";
-import { JobsManagementGatewayApi } from "./JobsManagementGatewayApi";
+import { JobsManagementChannelApi } from "@kie-tools/runtime-tools-process-enveloped-components/dist/jobsManagement";
 
-export const JobsManagementContext = createContext<JobsManagementGatewayApi>({} as JobsManagementGatewayApi);
+export const JobsManagementContext = createContext<JobsManagementChannelApi>({} as JobsManagementChannelApi);
 
-export const useJobsManagementGatewayApi = (): JobsManagementGatewayApi =>
-  useContext<JobsManagementGatewayApi>(JobsManagementContext);
+export const useJobsManagementChannelApi = (): JobsManagementChannelApi =>
+  useContext<JobsManagementChannelApi>(JobsManagementContext);
 
 export default JobsManagementContext;

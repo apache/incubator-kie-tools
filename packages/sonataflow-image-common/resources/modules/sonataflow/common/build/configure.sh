@@ -26,7 +26,9 @@ LAUNCH_DIR="${KOGITO_HOME}"/launch
 BUILD_DIR="${KOGITO_HOME}"/build
 
 mkdir -p "${BUILD_DIR}"
-cp -v "${ADDED_DIR}"/* "${BUILD_DIR}"
+cp -v "${ADDED_DIR}"/cleanup_project.sh "${BUILD_DIR}"
+cp -v "${ADDED_DIR}"/zip_files.sh "${BUILD_DIR}"
+cp -v "${ADDED_DIR}"/create-app.sh "${LAUNCH_DIR}"
 
 chown -R 1001:0 "${KOGITO_HOME}"
 chmod -R ug+rwX "${KOGITO_HOME}"

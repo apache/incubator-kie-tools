@@ -19,7 +19,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useAuthSessions, useAuthSessionsDispatch } from "../AuthSessionsContext";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { AuthSessionsService } from "../AuthSessionsService";
 import { ManagementConsolePageLayout } from "../../managementConsole/ManagementConsolePageLayout";
 import { useRoutes } from "../../navigation/Hooks";
@@ -42,7 +42,7 @@ type Props = {
 export const NewAuthSessionLoginSuccessPage: React.FC<Props> = ({ onAddAuthSession }) => {
   const { add } = useAuthSessionsDispatch();
   const { isAuthSessionsReady } = useAuthSessions();
-  const history = useHistory();
+  const navigate = useNavigate();
   const routes = useRoutes();
   const [error, setError] = useState(false);
 
@@ -65,7 +65,7 @@ export const NewAuthSessionLoginSuccessPage: React.FC<Props> = ({ onAddAuthSessi
         if (onAddAuthSession) {
           onAddAuthSession(authSession);
         } else {
-          history.push(routes.home.path({}));
+          navigate(routes.home.path({}));
         }
       } catch (e) {
         setError(true);
@@ -73,7 +73,7 @@ export const NewAuthSessionLoginSuccessPage: React.FC<Props> = ({ onAddAuthSessi
     };
 
     addAuthSession();
-  }, [add, history, isAuthSessionsReady, onAddAuthSession, routes.home]);
+  }, [add, navigate, isAuthSessionsReady, onAddAuthSession, routes.home]);
 
   return (
     <ManagementConsolePageLayout>
@@ -95,7 +95,7 @@ export const NewAuthSessionLoginSuccessPage: React.FC<Props> = ({ onAddAuthSessi
             <EmptyStateFooter>
               {error && (
                 <EmptyStateActions>
-                  <Button onClick={() => history.push(routes.home.path({}))}>OK</Button>
+                  <Button onClick={() => navigate(routes.home.path({}))}>OK</Button>
                 </EmptyStateActions>
               )}
             </EmptyStateFooter>

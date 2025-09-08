@@ -34,12 +34,13 @@ Feature: Kogito-jobs-service-postgresql feature.
 
   Scenario: verify if container starts as expected
     When container is started with env
-      | variable                    | value                                                 |
-      | SCRIPT_DEBUG                | false                                                 |
-      | QUARKUS_LOG_LEVEL           | DEBUG                                                 |
-      | QUARKUS_DATASOURCE_DB_KIND  | postgresql                                            |
-      | QUARKUS_DATASOURCE_USERNAME | test                                                  |
-      | QUARKUS_DATASOURCE_PASSWORD | 123456                                                |
-      | QUARKUS_DATASOURCE_JDBC_URL | jdbc:postgresql://10.11.12.13:5432/hibernate_orm_test |
+      | variable                        | value                                                 |
+      | SCRIPT_DEBUG                    | false                                                 |
+      | QUARKUS_LOG_LEVEL               | DEBUG                                                 |
+      | QUARKUS_DATASOURCE_DB_KIND      | postgresql                                            |
+      | QUARKUS_DATASOURCE_USERNAME     | test                                                  |
+      | QUARKUS_DATASOURCE_PASSWORD     | 123456                                                |
+      | QUARKUS_DATASOURCE_JDBC_URL     | jdbc:postgresql://10.11.12.13:5432/hibernate_orm_test |
+      | QUARKUS_DATASOURCE_REACTIVE_URL | postgresql://10.11.12.13:5432/hibernate_orm_test      |
     Then container log should contain -Dquarkus.http.host=0.0.0.0 -Dquarkus.http.port=8080 -jar "/home/kogito/bin/quarkus-app/quarkus-run.jar"
     And container log should contain  connected to jdbc:postgresql://10.11.12.13:5432/hibernate_orm_test

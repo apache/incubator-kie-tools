@@ -44,7 +44,7 @@ import { useEnv } from "../../env/EnvContext";
 import { useGlobalAlert } from "../../alerts/GlobalAlertsContext";
 import { useEditor } from "../hooks/EditorContext";
 import { isOfKind } from "@kie-tools-core/workspaces-git-fs/dist/constants/ExtensionHelper";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { routes } from "../../navigation/Routes";
 
 const FETCH_DEV_MODE_DEPLOYMENT_POLLING_TIME = 2000;
@@ -66,11 +66,13 @@ export function useDeployDropdownItems(props: Props) {
   const { needsDependencyDeployment } = useVirtualServiceRegistryDependencies({
     workspace: props.workspace,
   });
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     props.workspaceFile.getFileContentsAsString().then((content) => {
-      setCanContentBeDeployed(content.trim().length > 0 && !notifications.some((d) => d.severity === "ERROR"));
+      setCanContentBeDeployed(
+        content.trim().length > 0 && !notifications.some((d) => d.severity === "ERROR" || d.severity === "WARNING")
+      );
     });
   }, [notifications, props.workspaceFile]);
 
@@ -202,8 +204,8 @@ export function useDeployDropdownItems(props: Props) {
   );
 
   const onSetup = useCallback(() => {
-    history.push(routes.settings.openshift.path({}));
-  }, [history]);
+    navigate(routes.settings.openshift.path({}));
+  }, [navigate]);
 
   const onDeploy = useCallback(() => {
     openshift.setConfirmDeployModalOpen(true);
@@ -336,7 +338,7 @@ export function useDeployDropdownItems(props: Props) {
             <Divider />
             <Tooltip
               content={
-                "Models with errors or empty ones cannot be deployed. Check the Problems tab for more information."
+                "Models with errors, warnings, or that are empty cannot be deployed. Please check the Problems tab for more information."
               }
               position="bottom"
             >

@@ -29,10 +29,7 @@ import { FunctionKindSelector } from "./FunctionKindSelector";
 import { BoxedFunctionJava, JavaFunctionExpression } from "./JavaFunctionExpression";
 import { ParametersPopover } from "./ParametersPopover";
 import { BoxedFunctionPmml, PmmlFunctionExpression } from "./PmmlFunctionExpression";
-import {
-  DMN15__tFunctionDefinition,
-  DMN15__tFunctionKind,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tFunctionDefinition, DMN_LATEST__tFunctionKind } from "@kie-tools/dmn-marshaller";
 import "./FunctionExpression.css";
 
 export function FunctionExpression({
@@ -71,12 +68,12 @@ export function FunctionExpression({
   }
 }
 
-export function useFunctionExpressionControllerCell(functionKind: Normalized<DMN15__tFunctionKind>) {
+export function useFunctionExpressionControllerCell(functionKind: Normalized<DMN_LATEST__tFunctionKind>) {
   const { setExpression } = useBoxedExpressionEditorDispatch();
   const { isReadOnly } = useBoxedExpressionEditor();
 
   const onFunctionKindSelect = useCallback(
-    (kind: Normalized<DMN15__tFunctionKind>) => {
+    (kind: Normalized<DMN_LATEST__tFunctionKind>) => {
       setExpression({
         setExpressionAction: (prev: Normalized<BoxedFunction>) => {
           if (kind === BoxedFunctionKind.Feel) {
@@ -150,7 +147,7 @@ export function useFunctionExpressionControllerCell(functionKind: Normalized<DMN
 }
 
 export function useFunctionExpressionParametersColumnHeader(
-  formalParameters: Normalized<DMN15__tFunctionDefinition["formalParameter"]>,
+  formalParameters: Normalized<DMN_LATEST__tFunctionDefinition["formalParameter"]>,
   isReadOnly: boolean
 ) {
   const { i18n } = useBoxedExpressionEditorI18n();

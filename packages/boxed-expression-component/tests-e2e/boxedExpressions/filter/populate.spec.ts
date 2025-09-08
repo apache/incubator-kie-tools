@@ -18,14 +18,17 @@
  */
 
 import { test, expect } from "../../__fixtures__/base";
+import { CloseOption } from "../../api/nameAndDataTypeCell";
 
 test.describe("Populate Boxed Filter", () => {
   test("should correctly create a Rebooked Flights filter", async ({ stories, bee }) => {
     await stories.openBoxedFilter("base");
 
     await bee.expression.asFilter().expressionHeaderCell.open();
-    await bee.expression.asFilter().expressionHeaderCell.setName({ name: "Rebooked Flights", close: false });
-    await bee.expression.asFilter().expressionHeaderCell.setDataType({ dataType: "Any", close: true });
+    await bee.expression.asFilter().expressionHeaderCell.setName({ name: "Rebooked Flights" });
+    await bee.expression
+      .asFilter()
+      .expressionHeaderCell.setDataType({ dataType: "Any", close: CloseOption.PRESS_ENTER });
 
     // Prepare empty Filter 'in' and 'match' cells
     await bee.expression.asFilter().in.selectExpressionMenu.selectLiteral();

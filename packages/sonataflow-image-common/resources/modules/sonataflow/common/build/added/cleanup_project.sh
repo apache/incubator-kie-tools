@@ -33,11 +33,9 @@ rm -rfv "${PROJECT_ARTIFACT_ID}"/*.bak
 # Maven useless files
 # Needed to avoid Maven to automatically re-download from original Maven repository ...
 echo 'Clean Maven useless files'
-find "${KOGITO_HOME}"/.m2/repository -name _remote.repositories -type f -delete
-find "${KOGITO_HOME}"/.m2/repository -name _maven.repositories -type f -delete
+find "${KOGITO_HOME}"/.m2/repository -name '_*.repositories' -type f -delete
 find "${KOGITO_HOME}"/.m2/repository -name '*.lastUpdated' -type f -delete
 
 # Remove files that include build timestamps to have reproducible images
 find "${KOGITO_HOME}"/.m2/ -name resolver-status.properties -delete 
-# Remove quarkus registry
-rm -rf "${KOGITO_HOME}"/.m2/repository/io/quarkus/registry/
+

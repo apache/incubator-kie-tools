@@ -18,7 +18,7 @@
  */
 
 export const sumBkm = `<definitions 
-  xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/"
+  xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/"
   xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" 
   xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" 
   xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" 
@@ -56,7 +56,7 @@ export const sumBkm = `<definitions
 `;
 
 export const sumDiffDs = `<definitions 
-  xmlns="https://www.omg.org/spec/DMN/20230324/MODEL/" 
+  xmlns="https://www.omg.org/spec/DMN/20240513/MODEL/" 
   xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/"
   xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" 
   xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" 

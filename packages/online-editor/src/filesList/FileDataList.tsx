@@ -179,6 +179,7 @@ export function FileDataList(props: {
       onDeletedWorkspaceFile={props.onDeletedWorkspaceFile}
     />
   );
+
   return (
     <DataList
       aria-label="file-data-list"
@@ -205,8 +206,7 @@ export function FileLink(props: React.PropsWithChildren<{ file: WorkspaceFile; s
       key={props.file.relativePath}
       to={routes.workspaceWithFilePath.path({
         workspaceId: props.file.workspaceId,
-        fileRelativePath: props.file.relativePathWithoutExtension,
-        extension: props.file.extension,
+        fileRelativePath: props.file.relativePath,
       })}
       style={props.style}
     >

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import React, { useCallback, useEffect, useLayoutEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { useAuthSessions, useAuthSessionsDispatch } from "../authSessions/AuthSessionsContext";
 import { PageSection } from "@patternfly/react-core/dist/js/components/Page";
@@ -35,7 +35,7 @@ import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { PlusIcon } from "@patternfly/react-icons/dist/js/icons/plus-icon";
 import { useEnv } from "../env/hooks/EnvContext";
 import { AuthSession, AuthSessionsList, isOpenIdConnectAuthSession } from "../authSessions";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useRoutes } from "../navigation/Hooks";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
@@ -45,7 +45,7 @@ export const ManagementConsoleHome = () => {
   const { env } = useEnv();
   const { setIsNewAuthSessionModalOpen, setOnSelectAuthSession, setCurrentAuthSession } = useAuthSessionsDispatch();
   const { authSessions } = useAuthSessions();
-  const history = useHistory();
+  const navigate = useNavigate();
   const routes = useRoutes();
 
   useEffect(() => {
@@ -60,12 +60,12 @@ export const ManagementConsoleHome = () => {
       const path = routes.runtime.processes.path({
         runtimeUrl: encodedRuntimeUrl,
       });
-      history.push({
+      navigate({
         pathname: path,
         search: user ? `?user=${encodeURIComponent(user)}` : "",
       });
     },
-    [history, routes.runtime.processes]
+    [navigate, routes.runtime.processes]
   );
 
   useEffect(() => {
