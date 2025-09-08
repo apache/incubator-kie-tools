@@ -96,8 +96,7 @@
   </mailingLists>
 
   <properties>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
+    <maven.compiler.release>17</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -123,7 +122,7 @@
     <version.maven.surefire.plugin>3.5.0</version.maven.surefire.plugin>
 
     <!-- Apache KIE -->
-    <version.org.kie.kogito>999-20250823-local</version.org.kie.kogito>
+    <version.org.kie.kogito>999-20250829-local</version.org.kie.kogito>
 
     <!-- Quarkus -->
     <version.quarkus>3.20.1</version.quarkus>
