@@ -29,6 +29,7 @@ import { MenuGroup } from "@patternfly/react-core/dist/js/components/Menu/MenuGr
 import { MenuList } from "@patternfly/react-core/dist/js/components/Menu/MenuList";
 import { DMN_LATEST__tFunctionKind } from "@kie-tools/dmn-marshaller";
 import { BoxedFunctionKind } from "../../api";
+import { useBoxedExpressionEditorI18n } from "../../i18n";
 
 export interface FunctionKindSelectorProps {
   /** Pre-selected function kind */
@@ -44,6 +45,7 @@ export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorP
   onFunctionKindSelect,
   isReadOnly,
 }) => {
+  const { i18n } = useBoxedExpressionEditorI18n();
   const { editorRef } = useBoxedExpressionEditor();
 
   const functionKindSelectionCallback = useCallback(
@@ -55,18 +57,26 @@ export const FunctionKindSelector: React.FunctionComponent<FunctionKindSelectorP
     [onFunctionKindSelect]
   );
 
-  const functionKindHelp = useCallback((functionKind: DMN_LATEST__tFunctionKind) => {
-    switch (functionKind) {
-      case "FEEL":
-        return "Define function as a 'Friendly Enough Expression Language (FEEL)' expression. This is the default.";
-      case "Java":
-        return "Define the full qualified java class name and a public static method signature to invoke.\nThe method signature consists of the name of the method, followed by an argument list of the argument types.";
-      case "PMML":
-        return "Define 'Predictive Model Markup Language (PMML)' model to invoke.\nEditor parses and offers you all your PMML models from the workspace.";
-      default:
-        return "Not supported";
-    }
-  }, []);
+  const functionKindHelp = useCallback(
+    (functionKind: DMN_LATEST__tFunctionKind) => {
+      switch (functionKind) {
+        case "FEEL":
+          return i18n.functionKindHelp.feel;
+        case "Java":
+          return i18n.functionKindHelp.java;
+        case "PMML":
+          return i18n.functionKindHelp.pmml;
+        default:
+          return i18n.functionKindHelp.notSupported;
+      }
+    },
+    [
+      i18n.functionKindHelp.feel,
+      i18n.functionKindHelp.java,
+      i18n.functionKindHelp.notSupported,
+      i18n.functionKindHelp.pmml,
+    ]
+  );
 
   const [visibleHelp, setVisibleHelp] = React.useState<string>("");
   const toggleVisibleHelp = useCallback((help: string) => {

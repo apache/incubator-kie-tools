@@ -194,8 +194,8 @@ export function InvocationExpression({
             accessor: invocationId as keyof ROWTYPE,
             label:
               invocationExpression.expression?.__$$element === "literalExpression"
-                ? invocationExpression.expression.text?.__$$text ?? "Function name"
-                : "Function name",
+                ? invocationExpression.expression.text?.__$$text ?? i18n.functionName
+                : i18n.functionName,
             isRowIndexColumn: false,
             isInlineEditable: true,
             dataType: undefined as any,
@@ -204,7 +204,7 @@ export function InvocationExpression({
             columns: [
               {
                 accessor: "parameter" as any,
-                label: "parameter",
+                label: i18n.parameter,
                 isRowIndexColumn: false,
                 dataType: DmnBuiltInDataType.Undefined,
                 isWidthPinned: true,
@@ -214,7 +214,7 @@ export function InvocationExpression({
               },
               {
                 accessor: "expression" as any,
-                label: "expression",
+                label: i18n.expression,
                 isRowIndexColumn: false,
                 dataType: DmnBuiltInDataType.Undefined,
                 minWidth: INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
@@ -225,7 +225,16 @@ export function InvocationExpression({
         ],
       },
     ],
-    [expressionHolderId, invocationExpression, parametersWidth, invocationId, setParametersWidth]
+    [
+      expressionHolderId,
+      invocationExpression,
+      invocationId,
+      i18n.functionName,
+      i18n.parameter,
+      i18n.expression,
+      parametersWidth,
+      setParametersWidth,
+    ]
   );
 
   const onColumnUpdates = useCallback(

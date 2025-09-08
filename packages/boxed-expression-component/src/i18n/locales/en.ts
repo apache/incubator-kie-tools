@@ -112,4 +112,59 @@ export const en: BoxedExpressionEditorI18n = {
   selectExpression: "Select expression",
   selectFunctionKind: "Select Function Kind",
   selectLogicType: "Select logic type",
+  contextExpression: {
+    variable: "variable",
+    expression: "expression",
+  },
+  yourAnnotationsHere: "// Your annotations here",
+  hitPolicyLabel: "Hit policy",
+  aggregatorFunction: "Aggregator function",
+  logicTypeHelp: {
+    literal:
+      "A boxed literal expression in DMN is a literal FEEL expression as text in a table cell, typically with a labeled column and an assigned data type.",
+    context:
+      "A boxed context expression in DMN is a set of variable names and values with a result value. Each name-value pair is a context entry.",
+    decisionTable:
+      "A decision table in DMN is a visual representation of one or more business rules in a tabular format.",
+    relation:
+      "A boxed relation expression in DMN is a traditional data table with information about given entities, listed as rows. You use boxed relation tables to define decision data for relevant entities in a decision at a particular node.",
+    functionDefinition:
+      "A boxed function expression in DMN is a parameterized boxed expression containing a literal FEEL expression, a nested context expression of an external JAVA or PMML function, or a nested boxed expression of any type.",
+    invocation:
+      "A boxed invocation expression in DMN is a boxed expression that invokes a business knowledge model. A boxed invocation expression contains the name of the business knowledge model to be invoked and a list of parameter bindings.",
+    list: "A boxed list expression in DMN represents a FEEL list of items. You use boxed lists to define lists of relevant items for a particular node in a decision.",
+    conditional:
+      'A boxed conditional offers a visual representation of an if statement using three rows. The expression in the "if" part MUST resolve to a boolean.',
+    for: `A boxed iterator offers a visual representation of an iterator statement. For the "for" loop, the right part of the "for" displays the iterator variable name. The second row holds an expression representing the collection that will be iterated over. The expression in the "in" row MUST resolve to a collection. The last row contains the expression that will process each element of the collection.`,
+    every: `A boxed iterator offers a visual representation of an iterator statement. For the "every" loop, the right part of the "every" displays the iterator variable name. The second row holds an expression representing the collection that will be iterated over. The expression in the "in" row MUST resolve to a collection. The last line is an expression that will be evaluated on each item. The expression defined in the "satisfies" MUST resolve to a boolean.`,
+    some: `A boxed iterator offers a visual representation of an iterator statement. For the "some" loop, the right part of the "some" displays the iterator variable name. The second row holds an expression representing the collection that will be iterated over. The expression in the "in" row MUST resolve to a collection. The last line is an expression that will be evaluated on each item. The expression defined in the "satisfies" MUST resolve to a boolean.`,
+    filter:
+      "A boxed filter offers a visual representation of collection filtering. The top part is an expression that is the collection to be filtered. The bottom part, between the square brackets, holds the filter expression.",
+  },
+  pasteOperationNotSuccessful: "Paste operation was not successful",
+  functionKindHelp: {
+    feel: "Define function as a 'Friendly Enough Expression Language (FEEL)' expression. This is the default.",
+    pmml: "Define 'Predictive Model Markup Language (PMML)' model to invoke.\nEditor parses and offers you all your PMML models from the workspace.",
+    java: "Define the full qualified java class name and a public static method signature to invoke.\nThe method signature consists of the name of the method, followed by an argument list of the argument types.",
+    notSupported: "Not supported",
+  },
+  label: "label",
+  value: "value",
+  classNameLabel: "Class name",
+  methodSignatureLabel: "Method signature",
+  getLabelexample: (label: string) => `${label} example`,
+  parameterNamePlaceholder: "Parameter Name",
+  noneSelected: "-- None selected --",
+  selectDocument: "Select a document first",
+  parameter: "parameter",
+  functionName: "Function name",
+  child: "child",
+  iterableRowLabel: {
+    for: "for",
+    some: "some",
+    every: "every",
+    return: "return",
+    in: "in",
+    satisfies: "satisfies",
+  },
 };
