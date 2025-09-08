@@ -53,6 +53,7 @@ export interface BeeTableEditableCellContentProps {
   onFeelTabKeyDown?: (args: { isShiftPressed: boolean }) => void;
   onFeelEnterKeyDown?: (args: { isShiftPressed: boolean }) => void;
   expressionId?: string;
+  locale: string;
 }
 
 export function BeeTableEditableCellContent({
@@ -65,6 +66,7 @@ export function BeeTableEditableCellContent({
   onFeelTabKeyDown,
   onFeelEnterKeyDown,
   expressionId,
+  locale,
 }: BeeTableEditableCellContentProps) {
   const [cellHeight, setCellHeight] = useState(CELL_LINE_HEIGHT * 3);
   const [preview, setPreview] = useState<string>(value);
@@ -223,6 +225,7 @@ export function BeeTableEditableCellContent({
           onBlur={onFeelBlur}
           feelIdentifiers={feelIdentifiers}
           expressionId={expressionId}
+          locale={locale}
         />
       </div>
     </>

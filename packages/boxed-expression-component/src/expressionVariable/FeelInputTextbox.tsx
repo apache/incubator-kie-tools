@@ -29,9 +29,10 @@ export interface FeelInputComponentProps {
   value: string;
   onChange: (value: string) => void;
   expressionId?: string;
+  locale: string;
 }
 
-export function FeelInputTextbox({ value, onChange, expressionId }: FeelInputComponentProps) {
+export function FeelInputTextbox({ value, onChange, expressionId, locale }: FeelInputComponentProps) {
   const feelInputRef = useRef<FeelInputRef>(null);
 
   const MONACO_OPTIONS: Monaco.editor.IStandaloneEditorConstructionOptions = {
@@ -105,6 +106,7 @@ export function FeelInputTextbox({ value, onChange, expressionId }: FeelInputCom
         onBlur={onFeelBlur}
         feelIdentifiers={feelIdentifiers}
         expressionId={expressionId}
+        locale={locale}
       />
     </div>
   );
