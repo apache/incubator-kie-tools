@@ -459,7 +459,9 @@ export const en: OnlineI18n = {
         " and report an issue. Don't forget to upload the current file, and the used inputs",
       ],
     },
-    table: { ...en_unitables },
+    table: {
+      ...en_unitables,
+    },
     modal: {
       initial: {
         runDmnModels: "Run your models and see live forms and results as you edit.",

@@ -25,6 +25,14 @@ interface UnitablesDictionary extends ReferenceDictionary {
   schema: {
     selectPlaceholder: string;
   };
+  recursiveNotSupported: string;
+  openRowFormView: (rowIndex: number) => string;
+  noInputNodes: string;
+  addInputNode: string;
+  error: string;
+  errorMessage: string;
+  noDecisionResults: string;
+  addInputDecisionNodes: string;
 }
 
 export interface UnitablesI18n extends UnitablesDictionary, CommonI18n, BoxedExpressionEditorI18n {}
