@@ -5985,6 +5985,9 @@ importers:
 
   packages/form-code-generator-vscode-command:
     dependencies:
+      '@kie-tools-core/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@kie-tools/form-code-generator':
         specifier: workspace:*
         version: link:../form-code-generator
@@ -5994,6 +5997,9 @@ importers:
       '@kie-tools/form-code-generator-patternfly-theme':
         specifier: workspace:*
         version: link:../form-code-generator-patternfly-theme
+      '@kie-tools/i18n-common-dictionary':
+        specifier: workspace:*
+        version: link:../i18n-common-dictionary
       '@kie-tools/jbpm-form-code-generator-themes':
         specifier: workspace:*
         version: link:../jbpm-form-code-generator-themes
