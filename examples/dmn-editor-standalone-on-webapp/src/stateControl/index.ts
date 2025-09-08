@@ -33,6 +33,7 @@ function loadEditor() {
     initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot: "newModel.dmn",
     initialContent: Promise.resolve(``),
     readOnly: false,
+    locale: "en",
   });
 
   // Undo button: Calls the `undo` method from the Editor API.
