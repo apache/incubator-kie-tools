@@ -97,6 +97,7 @@ export class TestScenarioEditorInterface implements Editor {
           this.initArgs.workspaceRootAbsolutePosixPath ?? DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH
         }
         isReadOnly={this.initArgs.isReadOnly}
+        locale={this.initArgs.initialLocale}
       />
     );
   }
@@ -108,11 +109,13 @@ function TestScenarioEditorRootWrapper({
   exposing,
   workspaceRootAbsolutePosixPath,
   isReadOnly,
+  locale,
 }: {
   envelopeContext?: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>;
   exposing: (s: TestScenarioEditorRoot) => void;
   workspaceRootAbsolutePosixPath: string;
   isReadOnly: boolean;
+  locale: string;
 }) {
   const onNewEdit = useCallback(
     (workspaceEdit: WorkspaceEdit) => {
@@ -158,6 +161,7 @@ function TestScenarioEditorRootWrapper({
       workspaceRootAbsolutePosixPath={workspaceRootAbsolutePosixPath}
       keyboardShortcutsService={envelopeContext?.services.keyboardShortcuts}
       isReadOnly={isReadOnly}
+      locale={locale}
     />
   );
 }

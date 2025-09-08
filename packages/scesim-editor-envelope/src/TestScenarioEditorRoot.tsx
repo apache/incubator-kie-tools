@@ -46,6 +46,7 @@ export type TestScenarioEditorRootProps = {
   onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot: WorkspaceChannelApi["kogitoWorkspace_openFile"];
   workspaceRootAbsolutePosixPath: string;
+  locale: string;
 };
 
 export type TestScenarioEditorRootState = {
@@ -317,6 +318,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
               openFileNormalizedPosixPathRelativeToTheWorkspaceRoot={
                 this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot
               }
+              locale={this.props.locale}
             />
             {
               <ExternalModelsManager
