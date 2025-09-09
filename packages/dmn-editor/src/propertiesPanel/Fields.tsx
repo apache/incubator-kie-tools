@@ -27,6 +27,7 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { TypeRefSelector } from "../dataTypes/TypeRefSelector";
 import { UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { State } from "../store/Store";
+import { useDmnEditorI18n } from "../i18n";
 import { EXPRESSION_LANGUAGES_LATEST } from "@kie-tools/dmn-marshaller";
 import { ExpressionLangaugeSelect } from "./ExpressionLanguageSelect";
 
@@ -36,7 +37,15 @@ export function ContentField(props: {
   expressionPath: ExpressionPath[];
   isReadOnly: boolean;
 }) {
-  return <TextField {...props} type={TextFieldType.TEXT_AREA} title="Content" placeholder="Enter the content..." />;
+  const { i18n } = useDmnEditorI18n();
+  return (
+    <TextField
+      {...props}
+      type={TextFieldType.TEXT_AREA}
+      title={i18n.propertiesPanel.content}
+      placeholder={i18n.propertiesPanel.contentPlaceholder}
+    />
+  );
 }
 
 export function DescriptionField(props: {
@@ -45,8 +54,14 @@ export function DescriptionField(props: {
   expressionPath: ExpressionPath[];
   isReadOnly: boolean;
 }) {
+  const { i18n } = useDmnEditorI18n();
   return (
-    <TextField {...props} type={TextFieldType.TEXT_AREA} title="Description" placeholder="Enter a description..." />
+    <TextField
+      {...props}
+      type={TextFieldType.TEXT_AREA}
+      title={i18n.propertiesPanel.description}
+      placeholder={i18n.propertiesPanel.descriptionPlaceholder}
+    />
   );
 }
 
@@ -56,12 +71,13 @@ export function ExpressionLanguageField(props: {
   expressionPath?: ExpressionPath[];
   isReadOnly: boolean;
 }) {
+  const { i18n } = useDmnEditorI18n();
   return (
     <TextField
       {...props}
       type={TextFieldType.DROP_DOWN}
-      title="Expression Language"
-      placeholder="Enter the expression language..."
+      title={i18n.propertiesPanel.expressionLanguage}
+      placeholder={i18n.propertiesPanel.expressionLanguagePlaceholder}
     />
   );
 }
@@ -128,6 +144,7 @@ export function TextField({
   placeholder?: string;
   type: TextFieldType;
 }) {
+  const { i18n } = useDmnEditorI18n();
   // used to save the expression path value until the flush operation
   const [expressionPath, setExpressionPath] = useState(props.expressionPath);
   const [value, setValue] = useState(props.initialValue);
@@ -205,7 +222,7 @@ export function TextField({
             onChange?.(value, expressionPath);
             isEditing.current = false;
           }}
-          placeholder={props.placeholder ?? "Enter the expression content..."}
+          placeholder={props.placeholder ?? i18n.propertiesPanel.expressionContentPlaceholder}
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={6}
         />
@@ -228,7 +245,7 @@ export function TextField({
             onChange?.(value, expressionPath);
             isEditing.current = false;
           }}
-          placeholder={props.placeholder ?? "Enter the expression content..."}
+          placeholder={props.placeholder ?? i18n.propertiesPanel.expressionContentPlaceholder}
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={6}
         />

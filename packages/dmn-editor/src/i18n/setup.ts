@@ -18,28 +18,19 @@
  */
 
 import * as React from "react";
-import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
-import {
-  EmptyState,
-  EmptyStateIcon,
-  EmptyStateHeader,
-  EmptyStateFooter,
-} from "@patternfly/react-core/dist/js/components/EmptyState";
-import CubeIcon from "@patternfly/react-icons/dist/js/icons/cube-icon";
-import { useDmnEditorI18n } from "../../i18n";
+import { useContext } from "react";
+import { en } from "./locales";
+import { I18nContextType } from "@kie-tools-core/i18n/dist/react-components";
+import { DmnEditorI18n } from "./DmnEditorI18n";
+import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
 
-export function WithoutPropertiesCell() {
-  const { i18n } = useDmnEditorI18n();
-  return (
-    <>
-      <EmptyState>
-        <EmptyStateHeader icon={<EmptyStateIcon icon={CubeIcon} />} />
-        <EmptyStateFooter>
-          <TextContent>
-            <Text component={"h2"}>{i18n.propertiesPanel.noPropertiesToDisplay}</Text>
-          </TextContent>
-        </EmptyStateFooter>
-      </EmptyState>
-    </>
-  );
+export const dmnEditorI18nDefaults: I18nDefaults<DmnEditorI18n> = {
+  locale: "en",
+  dictionary: en,
+};
+export const dmnEditorDictionaries: I18nDictionaries<DmnEditorI18n> = new Map([["en", en]]);
+export const DmnEditorI18nContext = React.createContext<I18nContextType<DmnEditorI18n>>({} as never);
+
+export function useDmnEditorI18n(): I18nContextType<DmnEditorI18n> {
+  return useContext(DmnEditorI18nContext);
 }

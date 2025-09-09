@@ -74,6 +74,7 @@ export class NewDmnEditorInterface extends DmnEditorInterface {
             this.initArgs.channel === ChannelType.ONLINE || this.initArgs.channel === ChannelType.ONLINE_MULTI_FILE
           }
           isReadOnly={this.initArgs.isReadOnly}
+          locale={this.initArgs.initialLocale}
           onOpenedBoxedExpressionEditorNodeChange={(newOpenedNodeId) => {
             (
               this.envelopeContext as KogitoEditorEnvelopeContextType<NewDmnEditorEnvelopeApi, NewDmnEditorChannelApi>

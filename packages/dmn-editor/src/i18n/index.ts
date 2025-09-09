@@ -17,29 +17,5 @@
  * under the License.
  */
 
-import * as React from "react";
-import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
-import {
-  EmptyState,
-  EmptyStateIcon,
-  EmptyStateHeader,
-  EmptyStateFooter,
-} from "@patternfly/react-core/dist/js/components/EmptyState";
-import CubeIcon from "@patternfly/react-icons/dist/js/icons/cube-icon";
-import { useDmnEditorI18n } from "../../i18n";
-
-export function WithoutPropertiesCell() {
-  const { i18n } = useDmnEditorI18n();
-  return (
-    <>
-      <EmptyState>
-        <EmptyStateHeader icon={<EmptyStateIcon icon={CubeIcon} />} />
-        <EmptyStateFooter>
-          <TextContent>
-            <Text component={"h2"}>{i18n.propertiesPanel.noPropertiesToDisplay}</Text>
-          </TextContent>
-        </EmptyStateFooter>
-      </EmptyState>
-    </>
-  );
-}
+export * from "./DmnEditorI18n";
+export * from "./setup";

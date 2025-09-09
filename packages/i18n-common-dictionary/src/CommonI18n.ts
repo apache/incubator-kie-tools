@@ -92,11 +92,14 @@ export type CommonDictionary = {
     left: string;
     right: string;
     a: string;
-    x: string;
     g: string;
-    i: string;
     h: string;
+    s: string;
+    u: string;
+    i: string;
     b: string;
+    x: string;
+    y: string;
     shiftUp: string;
     shiftDown: string;
     shiftLeft: string;

@@ -80,6 +80,7 @@ export type DmnEditorRootProps = {
   isReadOnly: boolean;
   isImportDataTypesFromJavaClassesSupported?: boolean;
   javaCodeCompletionService?: JavaCodeCompletionExposedInteropApi;
+  locale: string;
   i18n: DmnEditorEnvelopeI18n;
 };
 
@@ -520,6 +521,7 @@ export class DmnEditorRoot extends React.Component<DmnEditorRootProps, DmnEditor
               externalContextName={""}
               externalContextDescription={""}
               issueTrackerHref={""}
+              locale={this.props.locale}
               isEvaluationHighlightsSupported={this.props?.isEvaluationHighlightsSupported}
               isReadOnly={this.state.isReadOnly}
               isImportDataTypesFromJavaClassesSupported={this.props?.isImportDataTypesFromJavaClassesSupported}
