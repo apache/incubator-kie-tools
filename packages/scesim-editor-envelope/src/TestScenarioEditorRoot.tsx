@@ -33,6 +33,7 @@ import { getMarshaller as getDmnMarshaller } from "@kie-tools/dmn-marshaller";
 import * as TestScenarioEditor from "@kie-tools/scesim-editor/dist/TestScenarioEditor";
 import { getMarshaller, SceSimMarshaller, SceSimModel } from "@kie-tools/scesim-marshaller";
 import { EMPTY_ONE_EIGHT } from "@kie-tools/scesim-editor/dist/resources/EmptyScesimFile";
+import { ScesimEditorEnvelopeI18n } from "./i18n";
 
 export const DMN_MODELS_SEARCH_GLOB_PATTERN = "**/*.dmn";
 export const TARGET_DIRECTORY = "target/classes/";
@@ -46,6 +47,7 @@ export type TestScenarioEditorRootProps = {
   onRequestWorkspaceFileContent: WorkspaceChannelApi["kogitoWorkspace_resourceContentRequest"];
   onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot: WorkspaceChannelApi["kogitoWorkspace_openFile"];
   workspaceRootAbsolutePosixPath: string;
+  i18n: ScesimEditorEnvelopeI18n;
   locale: string;
 };
 
@@ -277,8 +279,8 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
       return;
     }
     const togglePropertiesPanel = this.props.keyboardShortcutsService?.registerKeyPress(
-      "I",
-      "Misc | Open/Close dock panel",
+      this.props.i18n.i,
+      this.props.i18n.misc + " | " + this.props.i18n.openCloseDockPanel,
       async () => commands.toggleTestScenarioDock()
     );
 
