@@ -17,8 +17,24 @@
  * under the License.
  */
 
-export const RECURSION_KEYWORD = "recursion";
-export const RECURSION_REF_KEYWORD = "recursionRef";
-export const SCHEMA_DRAFT4 = "http://json-schema.org/draft-04/schema#";
-export const JSON_SCHEMA_INPUT_SET_PATH = "definitions.InputSet.properties";
-export const EXAMPLES_KEYWORD = "examples";
+import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
+
+interface FormCodeGeneratorDictionary extends ReferenceDictionary {
+  generateFormCode: {
+    selectProjectFolder: string;
+    notFoundProjectsTarget: string;
+    notFoundJsonSchema: string;
+    uiLibraryPlaceholder: string;
+    customFormsPlaceholder: string;
+    generateForHumanTasks: string;
+    generateForSpecificHumanTasks: string;
+    optionPlaceholder: string;
+    userTaskPlaceholder: string;
+    parsingFailed(files: string): string;
+    uiLibraryNotAvailable(uiLibrary: string): string;
+    successFormGeneration(files: string): string;
+    errorFormGeneration(files: string): string;
+  };
+}
+
+export interface FormCodeGeneratorI18n extends FormCodeGeneratorDictionary {}

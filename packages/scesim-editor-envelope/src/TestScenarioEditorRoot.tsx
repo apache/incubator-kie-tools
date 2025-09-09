@@ -48,6 +48,7 @@ export type TestScenarioEditorRootProps = {
   onOpenFileFromNormalizedPosixPathRelativeToTheWorkspaceRoot: WorkspaceChannelApi["kogitoWorkspace_openFile"];
   workspaceRootAbsolutePosixPath: string;
   i18n: ScesimEditorEnvelopeI18n;
+  locale: string;
 };
 
 export type TestScenarioEditorRootState = {
@@ -319,6 +320,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
               openFileNormalizedPosixPathRelativeToTheWorkspaceRoot={
                 this.state.openFileNormalizedPosixPathRelativeToTheWorkspaceRoot
               }
+              locale={this.props.locale}
             />
             {
               <ExternalModelsManager

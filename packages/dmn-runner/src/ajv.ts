@@ -36,7 +36,7 @@ import {
   X_DMN_TYPE_CONSTRAINTS_KEYWORD,
   X_DMN_TYPE_KEYWORD,
 } from "./jitExecutorKeywords";
-import { RECURSION_KEYWORD, RECURSION_REF_KEYWORD } from "./jsonSchemaConstants";
+import { EXAMPLES_KEYWORD, RECURSION_KEYWORD, RECURSION_REF_KEYWORD } from "./jsonSchemaConstants";
 import {
   DAYS_AND_TIME_DURATION_FORMAT,
   DAYS_AND_TIME_DURATION_REGEXP,
@@ -235,6 +235,7 @@ export class DmnRunnerAjv {
     this.ajv.addKeyword(X_DMN_DESCRIPTIONS_KEYWORD);
     this.ajv.addKeyword(RECURSION_KEYWORD);
     this.ajv.addKeyword(RECURSION_REF_KEYWORD);
+    this.ajv.addKeyword(EXAMPLES_KEYWORD);
     this.ajv.addFormat(DAYS_AND_TIME_DURATION_FORMAT, {
       type: "string",
       validate: (data: string) => !!data.match(DAYS_AND_TIME_DURATION_REGEXP),

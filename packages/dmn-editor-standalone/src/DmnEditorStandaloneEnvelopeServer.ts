@@ -25,7 +25,12 @@ import {
   KogitoEditorEnvelopeApi,
 } from "@kie-tools-core/editor/dist/api";
 
-export const createEnvelopeServer = (iframe: HTMLIFrameElement, readOnly?: boolean, origin?: string) => {
+export const createEnvelopeServer = (
+  iframe: HTMLIFrameElement,
+  readOnly?: boolean,
+  origin?: string,
+  locale?: string
+) => {
   const defaultOrigin = window.location.protocol === "file:" ? "*" : window.location.origin;
 
   return new EnvelopeServer<KogitoEditorChannelApi, KogitoEditorEnvelopeApi>(
@@ -40,7 +45,7 @@ export const createEnvelopeServer = (iframe: HTMLIFrameElement, readOnly?: boole
         {
           resourcesPathPrefix: "",
           fileExtension: "dmn",
-          initialLocale: "en-US",
+          initialLocale: locale ?? "en-US",
           isReadOnly: readOnly ?? false,
           channel: ChannelType.STANDALONE,
           workspaceRootAbsolutePosixPath: DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,

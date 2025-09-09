@@ -22,7 +22,7 @@ import { de as de_common } from "@kie-tools/i18n-common-dictionary";
 import { de as de_unitables } from "@kie-tools/unitables/dist/i18n/locales/de";
 import { TranslatedDictionary, wrapped } from "@kie-tools-core/i18n/dist/core";
 
-export const de: OnlineI18n = {
+export const de: TranslatedDictionary<OnlineI18n> = {
   ...de_common,
   editorPage: {
     textEditorModal: {
@@ -42,7 +42,7 @@ export const de: OnlineI18n = {
       createSnippet: "Snippet erfolgreich erstellt.",
       errorPushingSnippet: "Push für das aktuelle Snippet fehlgeschlagen. Push erzwingen?",
       forcePushWarning: "WARNUNG: Dadurch wird Ihre Gist mit den lokalen Änderungen überschrieben!",
-      invalidCurrentGist: `Das aktuelle Gist ${de_common.names.url} ist ungültig. Wenn Sie den Dateinamen aktualisiert haben, müssen Sie auch die ${de_common.names.url} aktualisieren.`,
+      invalidCurrentGist: `Das aktuelle Gist ${de_common.names?.url} ist ungültig. Wenn Sie den Dateinamen aktualisiert haben, müssen Sie auch die ${de_common.names?.url} aktualisieren.`,
       invalidGistFilename: "Ungültiger Dateiname. Dieses Gist hat bereits eine Datei mit diesem Namen.",
       error: `Beim Versuch, den letzten Vorgang auszuführen, ist ein Fehler aufgetreten. Überprüfen Sie, ob Ihr Authentifizierungstoken noch gültig ist und versuchen Sie es später erneut.`,
       unsaved: {
@@ -54,10 +54,10 @@ export const de: OnlineI18n = {
       },
     },
     error: {
-      title: `${de_common.terms.oops}!`,
-      explanation: `Der ${de_common.names.dmnRunner} konnte aufgrund eines Fehlers nicht gerendert werden.`,
+      title: `${de_common.terms?.oops}!`,
+      explanation: `Der ${de_common.names?.dmnRunner} konnte aufgrund eines Fehlers nicht gerendert werden.`,
       message: [
-        `Dieses ${de_common.names.dmn} hat ein Konstrukt, das nicht unterstützt wird. Bitte beziehen Sie sich auf `,
+        `Dieses ${de_common.names?.dmn} hat ein Konstrukt, das nicht unterstützt wird. Bitte beziehen Sie sich auf `,
         wrapped("jira"),
         " und melden Sie einen Fehler. Vergessen Sie nicht, die aktuelle Datei und die verwendeten Eingaben hochzuladen",
       ],
@@ -66,9 +66,9 @@ export const de: OnlineI18n = {
   editorToolbar: {
     closeAndReturnHome: "Schließen und zurück zur Startseite",
     saveAndDownload: "Speichern & Herunterladen",
-    sendChangesToGitHub: `Änderungen senden an ${de_common.names.github}`,
+    sendChangesToGitHub: `Änderungen senden an ${de_common.names?.github}`,
     copySource: "Quellcode kopieren",
-    downloadSVG: `${de_common.terms.download} ${de_common.names.svg}`,
+    downloadSVG: `${de_common.terms?.download} ${de_common.names?.svg}`,
     setGitHubToken: `Einrichten`,
     createGist: "Gist erstellen",
     cantCreateGistTooltip: `Sie können keinen Gist erstellen, weil Sie entweder nicht eingeloggt sind oder Ihre Modelle in verschachtelten Verzeichnissen liegen.`,
@@ -111,7 +111,7 @@ export const de: OnlineI18n = {
       deploying: "Bereitstellen ...",
       deleting: "Löschen ...",
       saving: "Speichern ...",
-      setupFirst: `Richten Sie Ihre ${de_common.names.devDeployments} ein, um Ihre Modelle bereitstellen zu können`,
+      setupFirst: `Richten Sie Ihre ${de_common.names?.devDeployments} ein, um Ihre Modelle bereitstellen zu können`,
     },
     dropdown: {
       noDeployments: "Ihre Deployments werden hier angezeigt",
@@ -164,7 +164,7 @@ export const de: OnlineI18n = {
     introduction: {
       explanation: `Erstellen Sie Dev Deployments in der Cloud und teilen Sie sie mit anderen.`,
       disclaimer: `${
-        de_common.names.devDeployments
+        de_common.names?.devDeployments
       } ist für ${"Entwicklung".bold()} gedacht und sollte nicht für geschäftskritische Workloads verwendet werden.`,
       getStarted: "Um loszulegen, konfigurieren Sie Ihre Instanzinformationen.",
     },
@@ -175,9 +175,9 @@ export const de: OnlineI18n = {
       steps: {
         first: {
           name: "Instanz erstellen",
-          introduction: `Um Ihre ${de_common.names.shortDevSandbox} Instanz zu erstellen :`,
+          introduction: `Um Ihre ${de_common.names?.shortDevSandbox} Instanz zu erstellen :`,
           goToGetStartedPage: "Gehen Sie zur Seite Erste Schritte",
-          followSteps: `Folgen Sie den Schritten, um Ihre Instanz zu starten. Sie werden aufgefordert, sich mit Ihrem ${de_common.names.redHat}-Konto anzumelden.`,
+          followSteps: `Folgen Sie den Schritten, um Ihre Instanz zu starten. Sie werden aufgefordert, sich mit Ihrem ${de_common.names?.redHat}-Konto anzumelden.`,
           informNamespace: `Sobald Ihre Instanz in Betrieb ist, teilen Sie den Namespace (Projekt) mit, in dem Sie Ihre Dev Deployments erstellen möchten.`,
           inputReason:
             "Diese Informationen sind notwendig, um Ihre Dev Deployments im richtigen Namespace (Projekt) zu erstellen.",
@@ -185,7 +185,7 @@ export const de: OnlineI18n = {
         },
         second: {
           name: "Anmeldeinformationen eingeben",
-          introduction: `In Ihrer ${de_common.names.shortDevSandbox} Instanz:`,
+          introduction: `In Ihrer ${de_common.names?.shortDevSandbox} Instanz:`,
           accessLoginCommand: `Klicken Sie auf Ihren Benutzernamen in der oberen rechten Ecke und dann auf ${"'Copy login command'".bold()}.`,
           accessDisplayToken: `Wenn Sie dazu aufgefordert werden, melden Sie sich mit ${"'DevSandbox'".bold()} an, und rufen Sie dann den Link ${"'Display Token'".bold()} auf.`,
           copyInformation: `Kopieren Sie im Abschnitt ${"'Log in with this token'".bold()} die Werte ${"'--server'".bold()} und ${"'--token'".bold()}, und fügen Sie sie unten ein.`,
@@ -200,7 +200,7 @@ export const de: OnlineI18n = {
           introduction: "Jetzt können Sie Dev Deployments auf dieser OpenShift-Instanz erstellen.",
           configNote:
             "Das von Ihnen angegebene Token wird lokal in diesem Browser gespeichert und niemals an Dritte weitergegeben.",
-          connectionErrorLong: `Eine Verbindung mit Ihrer ${de_common.names.shortDevSandbox} Instanz konnte nicht hergestellt werden.`,
+          connectionErrorLong: `Eine Verbindung mit Ihrer ${de_common.names?.shortDevSandbox} Instanz konnte nicht hergestellt werden.`,
           checkInfo: "Bitte überprüfen Sie die angegebenen Informationen und versuchen Sie es erneut.",
           possibleErrorReasons: {
             introduction: "Hier sind einige mögliche Ursachen:",
@@ -290,9 +290,9 @@ export const de: OnlineI18n = {
           "Der eingebettete Editor enthält den aktuellen Inhalt, so dass er nicht von außen geändert werden kann.",
       },
       gist: {
-        alert: `Sie haben neue Änderungen zu pushen. Das Einbetten als ${de_common.names.github} gist wird Ihre letzten Änderungen nicht zeigen.`,
-        tooltip: `Nur verfügbar, wenn eine Datei aus einem ${de_common.names.github} gist bearbeitet wird.`,
-        label: `${de_common.names.github} gist`,
+        alert: `Sie haben neue Änderungen zu pushen. Das Einbetten als ${de_common.names?.github} gist wird Ihre letzten Änderungen nicht zeigen.`,
+        tooltip: `Nur verfügbar, wenn eine Datei aus einem ${de_common.names?.github} gist bearbeitet wird.`,
+        label: `${de_common.names?.github} gist`,
         description:
           "Der eingebettete Editor holt den Inhalt aus dem geöffneten Gist. Änderungen, die an diesem Gist vorgenommen werden, werden in den Editor übernommen.",
       },
@@ -303,15 +303,15 @@ export const de: OnlineI18n = {
   connectToGitModal: {
     github: {
       header: {
-        title: `${de_common.names.github} ${de_common.names.oauth} ${de_common.terms.token}`,
-        subtitle: `Richten Sie Ihr ${de_common.names.github}-Token ein, damit Sie mit GitHub interagieren können.`,
+        title: `${de_common.names?.github} ${de_common.names?.oauth} ${de_common.terms?.token}`,
+        subtitle: `Richten Sie Ihr ${de_common.names?.github}-Token ein, damit Sie mit GitHub interagieren können.`,
       },
       footer: {
         createNewToken: "Neues Token generieren",
         placeHolder: "Fügen Sie Ihren Token hier ein",
       },
       body: {
-        learnMore: `Erfahren Sie mehr über ${de_common.names.github}-Tokens`,
+        learnMore: `Erfahren Sie mehr über ${de_common.names?.github}-Tokens`,
         note: `Sie sollten ein Token mit der Berechtigung ${"'gist'".bold()} bereitstellen.`,
       },
       validation: {
@@ -328,15 +328,15 @@ export const de: OnlineI18n = {
     },
     bitbucket: {
       header: {
-        title: `${de_common.names.bitbucket} ${de_common.names.oauth} ${de_common.terms.token}`,
-        subtitle: `Richten Sie Ihr ${de_common.names.bitbucket} App Password ein, damit Sie mit Bitbucket interagieren können.`,
+        title: `${de_common.names?.bitbucket} ${de_common.names?.oauth} ${de_common.terms?.token}`,
+        subtitle: `Richten Sie Ihr ${de_common.names?.bitbucket} App Password ein, damit Sie mit Bitbucket interagieren können.`,
       },
       footer: {
         createNewToken: "Neue App Password generieren",
         placeHolder: "Fügen Sie Ihr App-Passwort hier ein",
       },
       body: {
-        learnMore: `Erfahren Sie mehr über ${de_common.names.bitbucket} App Passwords`,
+        learnMore: `Erfahren Sie mehr über ${de_common.names?.bitbucket} App Passwords`,
         note: `Sie sollten ein Token mit der Berechtigung ${"'snippet'".bold()} bereitstellen.`,
       },
       validation: {
@@ -357,15 +357,15 @@ export const de: OnlineI18n = {
     },
     gitlab: {
       header: {
-        title: `${de_common.names.gitlab} ${de_common.names.oauth} ${de_common.terms.token}`,
-        subtitle: `Richten Sie Ihr ${de_common.names.gitlab}-Token ein, damit Sie mit ${de_common.names.gitlab} interagieren können.`,
+        title: `${de_common.names?.gitlab} ${de_common.names?.oauth} ${de_common.terms?.token}`,
+        subtitle: `Richten Sie Ihr ${de_common.names?.gitlab}-Token ein, damit Sie mit ${de_common.names?.gitlab} interagieren können.`,
       },
       footer: {
         createNewToken: "Neues Token generieren",
         placeHolder: "Fügen Sie hier Ihren Token ein",
       },
       body: {
-        learnMore: `Erfahren Sie mehr über ${de_common.names.gitlab}-Token`,
+        learnMore: `Erfahren Sie mehr über ${de_common.names?.gitlab}-Token`,
         note: `Sie sollten ein Token mit der Berechtigung ${"'api' 'read_user' 'read_repository' 'write_repository'"} bereitstellen.`,
       },
       validation: {
@@ -376,7 +376,7 @@ export const de: OnlineI18n = {
       form: {
         token: {
           label: "Persönliches Zugriffstoken",
-          placeHolder: `Fügen Sie Ihr ${de_common.names.gitlab} Token ein.`,
+          placeHolder: `Fügen Sie Ihr ${de_common.names?.gitlab} Token ein.`,
         },
       },
     },
@@ -410,38 +410,38 @@ export const de: OnlineI18n = {
   homePage: {
     uploadFile: {
       header: "Vorhandene Datei bearbeiten",
-      body: `Laden Sie Ihre ${de_common.names.bpmn}-, ${de_common.names.dmn}- oder ${de_common.names.pmml}-Datei hier hoch, um neue Änderungen vorzunehmen!`,
-      helperText: `Hochladen einer .${de_common.names.bpmn}-, .${de_common.names.bpmn}2-, .${de_common.names.dmn}- oder .${de_common.names.pmml}-Datei`,
+      body: `Laden Sie Ihre ${de_common.names?.bpmn}-, ${de_common.names?.dmn}- oder ${de_common.names?.pmml}-Datei hier hoch, um neue Änderungen vorzunehmen!`,
+      helperText: `Hochladen einer .${de_common.names?.bpmn}-, .${de_common.names?.bpmn}2-, .${de_common.names?.dmn}- oder .${de_common.names?.pmml}-Datei`,
       helperInvalidText: "Dateierweiterung wird nicht unterstützt",
       placeholder: "Ziehen Sie eine Datei oder suchen Sie sie.",
     },
     openUrl: {
-      validating: `Validiere ${de_common.names.url}`,
+      validating: `Validiere ${de_common.names?.url}`,
       invalidGistExtension: "Der Dateityp der angegebenen Gist wird nicht unterstützt.",
-      invalidExtension: `Der Dateityp der angegebenen ${de_common.names.url} wird nicht unterstützt.`,
-      invalidGist: `Geben Sie eine gültige Gist ${de_common.names.url} ein. Wenn Sie eine bestimmte Gist ${de_common.names.url} verwenden, denken Sie daran, dass deren Name keine Leerzeichen und Großbuchstaben enthalten darf.`,
-      invalidUrl: `Diese ${de_common.names.url} ist nicht gültig (vergessen Sie nicht "https://"!).`,
-      notFoundUrl: `Diese ${de_common.names.url} existiert nicht.`,
-      corsNotAvailable: `Diese ${de_common.names.url} kann nicht geöffnet werden, weil sie anderen Websites den Zugriff darauf verwehrt.`,
+      invalidExtension: `Der Dateityp der angegebenen ${de_common.names?.url} wird nicht unterstützt.`,
+      invalidGist: `Geben Sie eine gültige Gist ${de_common.names?.url} ein. Wenn Sie eine bestimmte Gist ${de_common.names?.url} verwenden, denken Sie daran, dass deren Name keine Leerzeichen und Großbuchstaben enthalten darf.`,
+      invalidUrl: `Diese ${de_common.names?.url} ist nicht gültig (vergessen Sie nicht "https://"!).`,
+      notFoundUrl: `Diese ${de_common.names?.url} existiert nicht.`,
+      corsNotAvailable: `Diese ${de_common.names?.url} kann nicht geöffnet werden, weil sie anderen Websites den Zugriff darauf verwehrt.`,
       openFromSource: "Von der Quelle öffnen",
-      description: `Einfügen einer ${de_common.names.url} zu einem Quellcode-Link (${de_common.names.github}, ${de_common.names.dropbox}, usw.)`,
+      description: `Einfügen einer ${de_common.names?.url} zu einem Quellcode-Link (${de_common.names?.github}, ${de_common.names?.dropbox}, usw.)`,
     },
     dropdown: {
       onlineForum: "Online-Forum",
     },
     bpmnCard: {
-      title: `Workflow (.${de_common.names.bpmn})`,
-      explanation: `${de_common.names.bpmn}-Dateien werden zur Erstellung von Workflows verwendet.`,
+      title: `Workflow (.${de_common.names?.bpmn})`,
+      explanation: `${de_common.names?.bpmn}-Dateien werden zur Erstellung von Workflows verwendet.`,
       createNew: "Neuen Workflow erstellen",
     },
     dmnCard: {
-      title: `Entscheidungsmodell (.${de_common.names.dmn})`,
-      explanation: `${de_common.names.dmn}-Dateien werden zur Erstellung von Entscheidungsmodellen verwendet.`,
+      title: `Entscheidungsmodell (.${de_common.names?.dmn})`,
+      explanation: `${de_common.names?.dmn}-Dateien werden zur Erstellung von Entscheidungsmodellen verwendet.`,
       createNew: "Neues Entscheidungsmodell erstellen",
     },
     pmmlCard: {
-      title: `Scorecard-Modell (.${de_common.names.pmml})`,
-      explanation: `${de_common.names.pmml}-Dateien werden zur Erstellung von Scorecards verwendet`,
+      title: `Scorecard-Modell (.${de_common.names?.pmml})`,
+      explanation: `${de_common.names?.pmml}-Dateien werden zur Erstellung von Scorecards verwendet`,
       createNew: "Neue Scorecard erstellen",
     },
     trySample: "Beispiel ausprobieren",
@@ -463,10 +463,10 @@ export const de: OnlineI18n = {
   },
   dmnRunner: {
     error: {
-      title: `${de_common.terms.oops}!`,
-      explanation: `Der ${de_common.names.dmnRunner} konnte aufgrund eines Fehlers nicht dargestellt werden.`,
+      title: `${de_common.terms?.oops}!`,
+      explanation: `Der ${de_common.names?.dmnRunner} konnte aufgrund eines Fehlers nicht dargestellt werden.`,
       message: [
-        `Dieser ${de_common.names.dmn} hat ein Konstrukt, das nicht unterstützt wird. Bitte beachten Sie `,
+        `Dieser ${de_common.names?.dmn} hat ein Konstrukt, das nicht unterstützt wird. Bitte beachten Sie `,
         wrapped("jira"),
         " und melden Sie ein Problem. Vergessen Sie nicht, die aktuelle Datei und die verwendeten Eingaben hochzuladen",
       ],
@@ -484,98 +484,98 @@ export const de: OnlineI18n = {
         ],
       },
       wizard: {
-        title: `${de_common.names.extendedServices} ${de_common.terms.setup}`,
-        description: `Wählen Sie Ihre ${de_common.terms.os.full} und folgen Sie den Anweisungen zur Installation und zum Start der ${de_common.names.extendedServices}.`,
+        title: `${de_common.names?.extendedServices} ${de_common.terms?.setup}`,
+        description: `Wählen Sie Ihre ${de_common.terms?.os?.full} und folgen Sie den Anweisungen zur Installation und zum Start der ${de_common.names?.extendedServices}.`,
         outdatedAlert: {
-          title: `${de_common.names.extendedServices} ist veraltet!`,
-          message: `Es sieht so aus, als ob Sie eine inkompatible Version von ${de_common.names.extendedServices} verwenden. Folgen Sie den nachstehenden Anweisungen, um sie zu aktualisieren.`,
+          title: `${de_common.names?.extendedServices} ist veraltet!`,
+          message: `Es sieht so aus, als ob Sie eine inkompatible Version von ${de_common.names?.extendedServices} verwenden. Folgen Sie den nachstehenden Anweisungen, um sie zu aktualisieren.`,
         },
         stoppedAlert: {
-          title: `${de_common.names.extendedServices} wurde angehalten!`,
-          message: `Es sieht so aus, als ob ${de_common.names.extendedServices} plötzlich beendet wurde, bitte folgen Sie diesen Anweisungen, um es wieder zu starten.`,
+          title: `${de_common.names?.extendedServices} wurde angehalten!`,
+          message: `Es sieht so aus, als ob ${de_common.names?.extendedServices} plötzlich beendet wurde, bitte folgen Sie diesen Anweisungen, um es wieder zu starten.`,
         },
         disabled: {
-          title: `${de_common.names.extendedServices}`,
-          alert: `Sie sind nicht mit ${de_common.names.extendedServices} verbunden.`,
-          message: `Beachten Sie, dass einige Funktionen wie der ${de_common.names.dmnRunner}, ohne ${de_common.names.extendedServices} nicht verfügbar sind.`,
-          helper: `Stellen Sie sicher, dass ${de_common.names.extendedServices} ausgeführt wird, und überprüfen Sie dann die Host- und Porteinstellungen.`,
+          title: `${de_common.names?.extendedServices}`,
+          alert: `Sie sind nicht mit ${de_common.names?.extendedServices} verbunden.`,
+          message: `Beachten Sie, dass einige Funktionen wie der ${de_common.names?.dmnRunner}, ohne ${de_common.names?.extendedServices} nicht verfügbar sind.`,
+          helper: `Stellen Sie sicher, dass ${de_common.names?.extendedServices} ausgeführt wird, und überprüfen Sie dann die Host- und Porteinstellungen.`,
         },
         macos: {
           install: {
-            download: ` ${de_common.names.extendedServices}.`,
+            download: ` ${de_common.names?.extendedServices}.`,
             openFile: [wrapped("file"), "-Datei öffnen."],
             dragFileToApplicationsFolder: ["Ziehen Sie ", wrapped("file"), " in den ", wrapped("folder"), " Ordner."],
           },
           start: {
             stopped: {
-              startInstruction: `Wenn Sie das Symbol ${de_common.names.extendedServices} in Ihrer Systemleiste sehen, klicken Sie einfach darauf und wählen Sie "${de_common.terms.start}".`,
+              startInstruction: `Wenn Sie das Symbol ${de_common.names?.extendedServices} in Ihrer Systemleiste sehen, klicken Sie einfach darauf und wählen Sie "${de_common.terms?.start}".`,
               launchExtendedServices: [
-                `Wenn nicht, starten Sie die ${de_common.names.extendedServices} Anwendung, indem Sie `,
+                `Wenn nicht, starten Sie die ${de_common.names?.extendedServices} Anwendung, indem Sie `,
                 wrapped("file"),
                 " ausführen.",
               ],
             },
             firstTime: {
-              title: `Wenn Sie gerade ${de_common.names.extendedServices} installiert haben:`,
+              title: `Wenn Sie gerade ${de_common.names?.extendedServices} installiert haben:`,
               openApplicationsFolder: ["Öffnen Sie den ", wrapped("folder"), " Ordner."],
               again: "Nochmals",
               openAndCancel: [
                 "Rechtsklick auf ",
                 wrapped("file"),
-                ` wählen Sie "${de_common.terms.open}" und dann "${de_common.terms.cancel}".`,
+                ` wählen Sie "${de_common.terms?.open}" und dann "${de_common.terms?.cancel}".`,
               ],
               openInstruction: [
                 "Rechtsklick auf ",
                 wrapped("file"),
                 " ",
                 wrapped("again"),
-                ` und wählen Sie dann "${de_common.terms.open}".`,
+                ` und wählen Sie dann "${de_common.terms?.open}".`,
               ],
             },
-            alreadyRanBefore: `Wenn Sie die ${de_common.names.extendedServices} bereits installiert und ausgeführt haben:`,
+            alreadyRanBefore: `Wenn Sie die ${de_common.names?.extendedServices} bereits installiert und ausgeführt haben:`,
             launchExtendedServices: ["Starten Sie die ", wrapped("file")],
             advanced: {
               title: "Erweiterte Einstellungen",
-              runFollowingCommand: `Führen Sie den folgenden Befehl auf einer Terminal-Registerkarte aus, um ${de_common.names.extendedServices} auf einem anderen Port zu starten:`,
+              runFollowingCommand: `Führen Sie den folgenden Befehl auf einer Terminal-Registerkarte aus, um ${de_common.names?.extendedServices} auf einem anderen Port zu starten:`,
             },
           },
         },
         windows: {
           install: {
-            keepDownload: ` ${de_common.names.extendedServices}. Beachten Sie, dass Sie wahrscheinlich mit der rechten Maustaste auf den Download klicken und "Behalten" wählen müssen`,
+            keepDownload: ` ${de_common.names?.extendedServices}. Beachten Sie, dass Sie wahrscheinlich mit der rechten Maustaste auf den Download klicken und "Behalten" wählen müssen`,
             moveTheFile: ["Verschieben Sie die ", wrapped("file"), " Datei in Ihren bevorzugten Ordner."],
           },
           start: {
             stopped: {
-              startInstruction: `Wenn Sie das Symbol ${de_common.names.extendedServices} in Ihrer Systemleiste sehen, klicken Sie einfach darauf und wählen Sie "${de_common.terms.start}".`,
+              startInstruction: `Wenn Sie das Symbol ${de_common.names?.extendedServices} in Ihrer Systemleiste sehen, klicken Sie einfach darauf und wählen Sie "${de_common.terms?.start}".`,
               launchExtendedServices: [
-                `Wenn nicht, starten Sie die ${de_common.names.extendedServices}, indem Sie die `,
+                `Wenn nicht, starten Sie die ${de_common.names?.extendedServices}, indem Sie die `,
                 wrapped("file"),
                 " öffnen.",
               ],
             },
             firstTime: {
-              title: `Wenn Sie gerade ${de_common.names.extendedServices} installiert haben:`,
+              title: `Wenn Sie gerade ${de_common.names?.extendedServices} installiert haben:`,
               openFolder: ["Öffnen Sie den Ordner, in dem Sie die ", wrapped("file"), " Datei abgelegt haben."],
               runAnyway: `Doppelklicken Sie auf die Datei und wählen Sie "Mehr Informationen" und klicken Sie dann auf die Schaltfläche "Trotzdem ausführen".`,
             },
-            alreadyRanBefore: `Wenn Sie die ${de_common.names.extendedServices} bereits installiert und vorher ausgeführt haben:`,
+            alreadyRanBefore: `Wenn Sie die ${de_common.names?.extendedServices} bereits installiert und vorher ausgeführt haben:`,
             launchExtendedServices: ["Öffnen Sie die ", wrapped("file"), " Datei."],
             advanced: {
               title: "Erweiterte Einstellungen",
-              runFollowingCommand: `Führen Sie den folgenden Befehl in der Eingabeaufforderung aus, um ${de_common.names.extendedServices} auf einem anderen Port zu starten:`,
+              runFollowingCommand: `Führen Sie den folgenden Befehl in der Eingabeaufforderung aus, um ${de_common.names?.extendedServices} auf einem anderen Port zu starten:`,
             },
           },
         },
         linux: {
           install: {
-            download: ` ${de_common.names.extendedServices}.`,
+            download: ` ${de_common.names?.extendedServices}.`,
             installAppIndicator: "Installieren Sie die AppIndicator-Bibliothek für Ihr System:",
-            ubuntuDependency: [`${de_common.names.ubuntu}: `, wrapped("package")],
-            fedoraDependency: [`${de_common.names.fedora}: `, wrapped("package")],
+            ubuntuDependency: [`${de_common.names?.ubuntu}: `, wrapped("package")],
+            fedoraDependency: [`${de_common.names?.fedora}: `, wrapped("package")],
             extractContent: ["Extrahieren Sie den Inhalt von ", wrapped("file"), " an einen Ort Ihrer Wahl."],
             binaryExplanation: [
-              `Die ${de_common.names.extendedServices} Datei, `,
+              `Die ${de_common.names?.extendedServices} Datei, `,
               wrapped("file"),
               ", ist eine einzelne ausführbare Datei, was bedeutet, dass Sie sie zu Ihrem PATH hinzufügen oder sogar so konfigurieren können, dass sie beim Start Ihres Computers ausgeführt wird.",
             ],
@@ -598,12 +598,12 @@ export const de: OnlineI18n = {
             },
           },
         },
-        footerWaitingToConnect: `Warten auf die Verbindung zu ${de_common.names.extendedServices}`,
+        footerWaitingToConnect: `Warten auf die Verbindung zu ${de_common.names?.extendedServices}`,
         advancedSettings: {
           title: [
-            `Der Standard-Port von ${de_common.names.extendedServices} ist `,
+            `Der Standard-Port von ${de_common.names?.extendedServices} ist `,
             wrapped("port"),
-            `. Wenn Sie diesen Port bereits für eine andere Anwendung verwenden, können Sie den Port, der für die Verbindung mit ${de_common.names.extendedServices} verwendet wird, ändern.`,
+            `. Wenn Sie diesen Port bereits für eine andere Anwendung verwenden, können Sie den Port, der für die Verbindung mit ${de_common.names?.extendedServices} verwendet wird, ändern.`,
           ],
           label: " Port",
           helperTextInvalid: "Ungültiger Port. Gültige Ports: 0 <= port <= 65353",
@@ -611,13 +611,13 @@ export const de: OnlineI18n = {
       },
     },
     dropdown: {
-      label: `${de_common.names.extendedServices}`,
-      setup: `${de_common.terms.setup} ${de_common.names.extendedServices}`,
-      open: `${de_common.terms.open} ${de_common.names.extendedServices} Panel`,
-      close: `${de_common.terms.close} ${de_common.names.extendedServices} Panel`,
+      label: `${de_common.names?.extendedServices}`,
+      setup: `${de_common.terms?.setup} ${de_common.names?.extendedServices}`,
+      open: `${de_common.terms?.open} ${de_common.names?.extendedServices} Panel`,
+      close: `${de_common.terms?.close} ${de_common.names?.extendedServices} Panel`,
     },
     button: {
-      available: `Diese Funktion ist derzeit nur in ${de_common.names.chrome} verfügbar`,
+      available: `Diese Funktion ist derzeit nur in ${de_common.names?.chrome} verfügbar`,
     },
   },
   notificationsPanel: {
@@ -631,15 +631,15 @@ export const de: OnlineI18n = {
     dropdown: {
       shortConnected: (port: string) => `Verbunden mit port ${port}`,
       tooltip: {
-        connected: `${de_common.names.extendedServices} ist verbunden.`,
-        install: `Richten Sie ${de_common.names.extendedServices} ein, um diese Funktion zu nutzen. Zum Installieren klicken.`,
-        outdated: `${de_common.names.extendedServices} ist veraltet. Klicken Sie zum Aktualisieren.`,
-        disconnected: `${de_common.names.extendedServices} ist nicht verbunden.`,
+        connected: `${de_common.names?.extendedServices} ist verbunden.`,
+        install: `Richten Sie ${de_common.names?.extendedServices} ein, um diese Funktion zu nutzen. Zum Installieren klicken.`,
+        outdated: `${de_common.names?.extendedServices} ist veraltet. Klicken Sie zum Aktualisieren.`,
+        disconnected: `${de_common.names?.extendedServices} ist nicht verbunden.`,
       },
     },
     modal: {
       initial: {
-        subHeader: `Erweitern Sie den ${de_common.names.dmn} Editor`,
+        subHeader: `Erweitern Sie den ${de_common.names?.dmn} Editor`,
       },
     },
   },
@@ -662,12 +662,12 @@ export const de: OnlineI18n = {
       },
     },
     bitbucket: {
-      repository: `${de_common.names.bitbucket} repository`,
-      createRepository: `Erstelle ${de_common.names.bitbucket} repository`,
+      repository: `${de_common.names?.bitbucket} repository`,
+      createRepository: `Erstelle ${de_common.names?.bitbucket} repository`,
       description: (workspace: string) =>
-        `Der Inhalt von '${workspace}' wird in das neue ${de_common.names.bitbucket} Repository übernommen.`,
+        `Der Inhalt von '${workspace}' wird in das neue ${de_common.names?.bitbucket} Repository übernommen.`,
       error: {
-        formAlert: (error: string) => `Fehler beim Erstellen des ${de_common.names.bitbucket} Repository. ${error}`,
+        formAlert: (error: string) => `Fehler beim Erstellen des ${de_common.names?.bitbucket} Repository. ${error}`,
       },
       form: {
         select: {
@@ -677,12 +677,12 @@ export const de: OnlineI18n = {
       },
     },
     github: {
-      repository: `${de_common.names.github} repository`,
-      createRepository: `Erstelle ${de_common.names.github} repository`,
+      repository: `${de_common.names?.github} repository`,
+      createRepository: `Erstelle ${de_common.names?.github} repository`,
       description: (workspace: string) =>
-        `Der Inhalt von '${workspace}' wird in das neue ${de_common.names.github} repository übernommen.`,
+        `Der Inhalt von '${workspace}' wird in das neue ${de_common.names?.github} repository übernommen.`,
       error: {
-        formAlert: (error: string) => `Fehler beim Erstellen des Repositorys ${de_common.names.github}. ${error}`,
+        formAlert: (error: string) => `Fehler beim Erstellen des Repositorys ${de_common.names?.github}. ${error}`,
       },
       form: {
         select: {
@@ -692,17 +692,17 @@ export const de: OnlineI18n = {
       },
     },
     gitlab: {
-      repository: `${de_common.names.gitlab} repository`,
-      createRepository: `Erstelle ${de_common.names.gitlab} repository`,
+      repository: `${de_common.names?.gitlab} repository`,
+      createRepository: `Erstelle ${de_common.names?.gitlab} repository`,
       description: (workspace: string) =>
-        `Der Inhalt von '${workspace}' wird in das neue ${de_common.names.gitlab} repository übernommen.`,
+        `Der Inhalt von '${workspace}' wird in das neue ${de_common.names?.gitlab} repository übernommen.`,
       error: {
-        formAlert: (error: string) => `Fehler beim Erstellen des Repositorys ${de_common.names.gitlab}. ${error}`,
+        formAlert: (error: string) => `Fehler beim Erstellen des Repositorys ${de_common.names?.gitlab}. ${error}`,
       },
       form: {
         select: {
           label: "Das neue Repository wird unter dem folgenden Scope erstellt",
-          description: `Wählen Sie entweder Ihr Benutzerkonto oder eine ${de_common.names.gitlab} Gruppe.`,
+          description: `Wählen Sie entweder Ihr Benutzerkonto oder eine ${de_common.names?.gitlab} Gruppe.`,
         },
       },
     },
@@ -722,12 +722,12 @@ export const de: OnlineI18n = {
       },
     },
     bitbucket: {
-      gistOrSnippet: `${de_common.names.bitbucket} Snippet`,
-      create: `Erstelle ${de_common.names.bitbucket} Snippet`,
+      gistOrSnippet: `${de_common.names?.bitbucket} Snippet`,
+      create: `Erstelle ${de_common.names?.bitbucket} Snippet`,
       description: (workspace: string) =>
-        `Der Inhalt des '${workspace}' wird in dem neuen ${de_common.names.bitbucket} Snippet verfügbar gemacht.`,
+        `Der Inhalt des '${workspace}' wird in dem neuen ${de_common.names?.bitbucket} Snippet verfügbar gemacht.`,
       error: {
-        formAlert: (error: string) => `Fehler beim Erstellen von ${de_common.names.bitbucket} Snippet. ${error}`,
+        formAlert: (error: string) => `Fehler beim Erstellen von ${de_common.names?.bitbucket} Snippet. ${error}`,
       },
       form: {
         select: {
@@ -737,12 +737,12 @@ export const de: OnlineI18n = {
       },
     },
     github: {
-      gistOrSnippet: `${de_common.names.github} Gist`,
-      create: `Erstelle ${de_common.names.github} Gist`,
+      gistOrSnippet: `${de_common.names?.github} Gist`,
+      create: `Erstelle ${de_common.names?.github} Gist`,
       description: (workspace: string) =>
-        `Der Inhalt des '${workspace}' wird in dem neuen ${de_common.names.github} Gist verfügbar gemacht.`,
+        `Der Inhalt des '${workspace}' wird in dem neuen ${de_common.names?.github} Gist verfügbar gemacht.`,
       error: {
-        formAlert: (error: string) => `Fehler beim Erstellen von ${de_common.names.github} Gist. ${error}`,
+        formAlert: (error: string) => `Fehler beim Erstellen von ${de_common.names?.github} Gist. ${error}`,
       },
       form: {
         select: {
@@ -752,12 +752,12 @@ export const de: OnlineI18n = {
       },
     },
     gitlab: {
-      gistOrSnippet: `${de_common.names.gitlab} Snippet`,
-      create: `Erstelle ${de_common.names.gitlab} Snippet`,
+      gistOrSnippet: `${de_common.names?.gitlab} Snippet`,
+      create: `Erstelle ${de_common.names?.gitlab} Snippet`,
       description: (workspace: string) =>
-        `Der Inhalt des '${workspace}' wird in dem neuen ${de_common.names.gitlab} Snippet.`,
+        `Der Inhalt des '${workspace}' wird in dem neuen ${de_common.names?.gitlab} Snippet.`,
       error: {
-        formAlert: (error: string) => `Fehler beim Erstellen von ${de_common.names.gitlab} Snippet. ${error}`,
+        formAlert: (error: string) => `Fehler beim Erstellen von ${de_common.names?.gitlab} Snippet. ${error}`,
       },
       form: {
         select: {
@@ -777,8 +777,8 @@ export const de: OnlineI18n = {
       organizations: "GitHub Organisationen",
     },
     gitlab: {
-      user: `${de_common.names.gitlab} user`,
-      organizations: `${de_common.names.gitlab} Gruppen`,
+      user: `${de_common.names?.gitlab} user`,
+      organizations: `${de_common.names?.gitlab} Gruppen`,
     },
   },
   gitStatusIndicatorActions: {

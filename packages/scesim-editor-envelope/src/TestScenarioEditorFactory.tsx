@@ -110,6 +110,7 @@ export class TestScenarioEditorInterface implements Editor {
             this.initArgs.workspaceRootAbsolutePosixPath ?? DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH
           }
           isReadOnly={this.initArgs.isReadOnly}
+          locale={this.initArgs.initialLocale}
         />
       </I18nDictionariesProvider>
     );
@@ -122,11 +123,13 @@ function TestScenarioEditorRootWrapper({
   exposing,
   workspaceRootAbsolutePosixPath,
   isReadOnly,
+  locale,
 }: {
   envelopeContext?: KogitoEditorEnvelopeContextType<KogitoEditorEnvelopeApi, KogitoEditorChannelApi>;
   exposing: (s: TestScenarioEditorRoot) => void;
   workspaceRootAbsolutePosixPath: string;
   isReadOnly: boolean;
+  locale: string;
 }) {
   const { i18n } = useScesimEditorEnvelopeI18n();
   const onNewEdit = useCallback(
@@ -174,6 +177,7 @@ function TestScenarioEditorRootWrapper({
       keyboardShortcutsService={envelopeContext?.services.keyboardShortcuts}
       isReadOnly={isReadOnly}
       i18n={i18n}
+      locale={locale}
     />
   );
 }
