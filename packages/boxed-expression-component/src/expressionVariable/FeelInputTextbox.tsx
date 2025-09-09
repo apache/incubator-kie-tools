@@ -24,16 +24,17 @@ import { NavigationKeysUtils } from "../keysUtils/keyUtils";
 import "./FeelInputTextbox.css";
 import { FeelInput, FeelInputRef } from "@kie-tools/feel-input-component";
 import * as Monaco from "@kie-tools-core/monaco-editor";
+import { useBoxedExpressionEditorI18n } from "../i18n";
 
 export interface FeelInputComponentProps {
   value: string;
   onChange: (value: string) => void;
   expressionId?: string;
-  locale: string;
 }
 
-export function FeelInputTextbox({ value, onChange, expressionId, locale }: FeelInputComponentProps) {
+export function FeelInputTextbox({ value, onChange, expressionId }: FeelInputComponentProps) {
   const feelInputRef = useRef<FeelInputRef>(null);
+  const i18n = useBoxedExpressionEditorI18n();
 
   const MONACO_OPTIONS: Monaco.editor.IStandaloneEditorConstructionOptions = {
     fixedOverflowWidgets: true,
@@ -106,7 +107,7 @@ export function FeelInputTextbox({ value, onChange, expressionId, locale }: Feel
         onBlur={onFeelBlur}
         feelIdentifiers={feelIdentifiers}
         expressionId={expressionId}
-        locale={locale}
+        locale={i18n.locale}
       />
     </div>
   );

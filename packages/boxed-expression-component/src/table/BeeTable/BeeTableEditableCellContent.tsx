@@ -25,6 +25,7 @@ import { NavigationKeysUtils } from "../../keysUtils/keyUtils";
 import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 import "./BeeTableEditableCellContent.css";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
+import { useBoxedExpressionEditorI18n } from "../../i18n";
 
 const CELL_LINE_HEIGHT = 20;
 
@@ -53,7 +54,6 @@ export interface BeeTableEditableCellContentProps {
   onFeelTabKeyDown?: (args: { isShiftPressed: boolean }) => void;
   onFeelEnterKeyDown?: (args: { isShiftPressed: boolean }) => void;
   expressionId?: string;
-  locale: string;
 }
 
 export function BeeTableEditableCellContent({
@@ -66,13 +66,13 @@ export function BeeTableEditableCellContent({
   onFeelTabKeyDown,
   onFeelEnterKeyDown,
   expressionId,
-  locale,
 }: BeeTableEditableCellContentProps) {
   const [cellHeight, setCellHeight] = useState(CELL_LINE_HEIGHT * 3);
   const [preview, setPreview] = useState<string>(value);
   const [previousValue, setPreviousValue] = useState(value);
   const [editingValue, setEditingValue] = useState(value);
   const feelInputRef = useRef<FeelInputRef>(null);
+  const i18n = useBoxedExpressionEditorI18n();
 
   const mode = useMemo(() => {
     return isEditing && !isReadOnly ? Mode.Edit : Mode.Read;
@@ -225,7 +225,7 @@ export function BeeTableEditableCellContent({
           onBlur={onFeelBlur}
           feelIdentifiers={feelIdentifiers}
           expressionId={expressionId}
-          locale={locale}
+          locale={i18n.locale}
         />
       </div>
     </>
