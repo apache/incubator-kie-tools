@@ -22,17 +22,15 @@ set -e
 SOURCES_DIR=/tmp/artifacts
 SCRIPT_DIR=$(dirname "${0}")
 
-echo "---> Installing Apache Maven ${MAVEN_VERSION} to ${KOGITO_MAVEN_HOME}"
-
-tar -xzf "${SOURCES_DIR}/apache-maven-${MAVEN_VERSION}-bin.tar.gz" -C /usr/share
+echo "---> Verifying Apache Maven installation"
 
 # Verify if mvn is installed
 if [ ! -d ${MAVEN_HOME} ] && ! command -v mvn > /dev/null 2>&1 ;
 then
-    echo "---> Maven not found, downloading and installing it"
-    mv /usr/share/apache-maven-"${MAVEN_VERSION}" ${MAVEN_HOME}
+    echo "---> Maven not found"
+    exit 1
 else
-    echo "---> Maven already present in the current context"
+    echo "---> Maven is present in the current context!"
 fi
 
 mkdir "${KOGITO_HOME}"/.m2
