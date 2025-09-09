@@ -52,7 +52,8 @@ type AckEdge = (args: {
   type: EdgeType;
   source: string;
   target: string;
-  sourceNamespace: string | undefined;
+  /* Empty or undefined if same as "thisDmn"'s namespace. */
+  sourceNormalizedNamespace: string | undefined;
 }) => RF.Edge<DmnDiagramEdgeData>;
 
 type AckNode = (
@@ -96,7 +97,7 @@ export function computeDiagramData(
   const drgEdges: DrgEdge[] = [];
   const drgAdjacencyList: DrgAdjacencyList = new Map();
 
-  const ackEdge: AckEdge = ({ id, type, dmnObject, source, target, sourceNamespace }) => {
+  const ackEdge: AckEdge = ({ id, type, dmnObject, source, target, sourceNormalizedNamespace }) => {
     const data = {
       dmnObject,
       dmnEdge: id ? indexedDrd.dmnEdgesByDmnElementRef.get(xmlHrefToQName(id, definitions)) : undefined,
@@ -113,9 +114,9 @@ export function computeDiagramData(
       selected: selectedEdges.has(id),
     };
 
-    if (sourceNamespace && sourceNamespace !== KIE_UNKNOWN_NAMESPACE) {
-      edgesFromExternalNodesByNamespace.set(sourceNamespace, [
-        ...(edgesFromExternalNodesByNamespace.get(sourceNamespace) ?? []),
+    if (sourceNormalizedNamespace && sourceNormalizedNamespace !== KIE_UNKNOWN_NAMESPACE) {
+      edgesFromExternalNodesByNamespace.set(sourceNormalizedNamespace, [
+        ...(edgesFromExternalNodesByNamespace.get(sourceNormalizedNamespace) ?? []),
         edge,
       ]);
     }
@@ -151,7 +152,7 @@ export function computeDiagramData(
     ackEdge({
       id: dmnObject["@_id"]!,
       dmnObject: {
-        namespace: definitions["@_namespace"],
+        normalizedNamespace: undefined, // normalized as it's always equal to `definitions["@_namespace"]`.
         type: dmnObject.__$$element,
         id: dmnObject["@_id"]!,
         requirementType: "association",
@@ -160,7 +161,7 @@ export function computeDiagramData(
       type: EDGE_TYPES.association,
       source: dmnObject.sourceRef?.["@_href"],
       target: dmnObject.targetRef?.["@_href"],
-      sourceNamespace: undefined, // association are always from the current namespace
+      sourceNormalizedNamespace: undefined, // association are always from the current namespace
     });
   });
 
@@ -431,7 +432,7 @@ function ackRequirementEdges(
               ? ir["@_id"] // prevent the id from having a leading `#`
               : buildXmlHref({ namespace: normalizedDrgElementsNamespace, id: ir["@_id"] }),
           dmnObject: {
-            namespace: normalizedDrgElementsNamespace, // owner of the requirement (edge)
+            normalizedNamespace: normalizedDrgElementsNamespace, // owner of the requirement (edge)
             type: dmnObject.__$$element,
             id: dmnObject["@_id"]!,
             requirementType: "informationRequirement",
@@ -440,7 +441,7 @@ function ackRequirementEdges(
           type: EDGE_TYPES.informationRequirement,
           source: buildXmlHref({ namespace: normalizedIrSourceNamespace, id: irHref.id }),
           target: buildXmlHref({ namespace: normalizedDrgElementsNamespace, id: dmnObject["@_id"]! }),
-          sourceNamespace: normalizedIrSourceNamespace,
+          sourceNormalizedNamespace: normalizedIrSourceNamespace,
         });
       });
     }
@@ -457,7 +458,7 @@ function ackRequirementEdges(
               ? kr["@_id"] // prevent the id from having a leading `#`
               : buildXmlHref({ namespace: normalizedDrgElementsNamespace, id: kr["@_id"] }),
           dmnObject: {
-            namespace: normalizedDrgElementsNamespace, // owner of the requirement (edge)
+            normalizedNamespace: normalizedDrgElementsNamespace, // owner of the requirement (edge)
             type: dmnObject.__$$element,
             id: dmnObject["@_id"]!,
             requirementType: "knowledgeRequirement",
@@ -466,7 +467,7 @@ function ackRequirementEdges(
           type: EDGE_TYPES.knowledgeRequirement,
           source: buildXmlHref({ namespace: normalizedKrSourceNamespace, id: krHref.id }),
           target: buildXmlHref({ namespace: normalizedDrgElementsNamespace, id: dmnObject["@_id"]! }),
-          sourceNamespace: normalizedKrSourceNamespace,
+          sourceNormalizedNamespace: normalizedKrSourceNamespace,
         });
       });
     }
@@ -483,7 +484,7 @@ function ackRequirementEdges(
         ackEdge({
           id: ar["@_id"]!,
           dmnObject: {
-            namespace: normalizedDrgElementsNamespace, // owner of the requirement (edge)
+            normalizedNamespace: normalizedDrgElementsNamespace, // owner of the requirement (edge)
             type: dmnObject.__$$element,
             id: dmnObject["@_id"]!,
             requirementType: "authorityRequirement",
@@ -492,7 +493,7 @@ function ackRequirementEdges(
           type: EDGE_TYPES.authorityRequirement,
           source: buildXmlHref({ namespace: normalizedArSourceNamespace, id: arHref.id }),
           target: buildXmlHref({ namespace: normalizedDrgElementsNamespace, id: dmnObject["@_id"]! }),
-          sourceNamespace: normalizedArSourceNamespace,
+          sourceNormalizedNamespace: normalizedArSourceNamespace,
         });
       });
     }

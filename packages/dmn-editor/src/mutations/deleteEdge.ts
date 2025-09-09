@@ -44,7 +44,7 @@ export function deleteEdge({
   mode: EdgeDeletionMode;
   externalModelsByNamespace: ExternalModelsIndex | undefined;
 }) {
-  if (edge.dmnObject.namespace === definitions["@_namespace"]) {
+  if (!edge.dmnObject.normalizedNamespace) {
     const dmnObjects: Normalized<DMN_LATEST__tDefinitions>["drgElement" | "artifact"] =
       switchExpression(edge?.dmnObject.type, {
         association: definitions.artifact,
@@ -60,7 +60,7 @@ export function deleteEdge({
     if (mode === EdgeDeletionMode.FROM_DRG_AND_ALL_DRDS) {
       const requirements =
         switchExpression(edge?.dmnObject.requirementType, {
-          // Casting toDMN_LATEST__tDecision because if has all types of requirement, but not necessarily that's true.
+          // Casting to DMN_LATEST__tDecision because if has all types of requirement, but not necessarily that's true.
           informationRequirement: (dmnObjects[dmnObjectIndex] as Normalized<DMN_LATEST__tDecision>)
             .informationRequirement,
           knowledgeRequirement: (dmnObjects[dmnObjectIndex] as Normalized<DMN_LATEST__tDecision>).knowledgeRequirement,
