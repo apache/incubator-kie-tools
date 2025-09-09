@@ -413,30 +413,34 @@ function ackRequirementEdges(
   drgElements: Normalized<DMN_LATEST__tDefinitions>["drgElement"],
   ackEdge: AckEdge
 ) {
-  const namespace = drgElementsNamespace === thisDmnsNamespace ? "" : drgElementsNamespace;
+  const normalizedDrgElementsNamespace =
+    !drgElementsNamespace || drgElementsNamespace === thisDmnsNamespace ? "" : drgElementsNamespace;
 
   for (const dmnObject of drgElements ?? []) {
     // information requirements
     if (dmnObject.__$$element === "decision") {
       (dmnObject.informationRequirement ?? []).forEach((ir, index) => {
         const irHref = parseXmlHref((ir.requiredDecision ?? ir.requiredInput)!["@_href"]);
+        const normalizedIrSourceNamespace =
+          !irHref.namespace || irHref.namespace === thisDmnsNamespace ? "" : normalizedDrgElementsNamespace;
+
         ackEdge({
-          // HREF format, used as RF.Edge ID
+          // Plain ID or full HREF format, used as RF.Edge ID
           id:
             drgElementsNamespace === thisDmnsNamespace
-              ? ir["@_id"]
-              : buildXmlHref({ namespace: drgElementsNamespace, id: ir["@_id"] }),
+              ? ir["@_id"] // prevent the id from having a leading `#`
+              : buildXmlHref({ namespace: normalizedDrgElementsNamespace, id: ir["@_id"] }),
           dmnObject: {
-            namespace: drgElementsNamespace,
+            namespace: normalizedDrgElementsNamespace, // owner of the requirement (edge)
             type: dmnObject.__$$element,
             id: dmnObject["@_id"]!,
             requirementType: "informationRequirement",
             index,
           },
           type: EDGE_TYPES.informationRequirement,
-          source: buildXmlHref({ namespace: irHref.namespace ?? namespace, id: irHref.id }),
-          target: buildXmlHref({ namespace, id: dmnObject["@_id"]! }),
-          sourceNamespace: irHref.namespace ?? namespace,
+          source: buildXmlHref({ namespace: normalizedIrSourceNamespace, id: irHref.id }),
+          target: buildXmlHref({ namespace: normalizedDrgElementsNamespace, id: dmnObject["@_id"]! }),
+          sourceNamespace: normalizedIrSourceNamespace,
         });
       });
     }
@@ -444,23 +448,25 @@ function ackRequirementEdges(
     if (dmnObject.__$$element === "decision" || dmnObject.__$$element === "businessKnowledgeModel") {
       (dmnObject.knowledgeRequirement ?? []).forEach((kr, index) => {
         const krHref = parseXmlHref(kr.requiredKnowledge["@_href"]);
+        const normalizedKrSourceNamespace =
+          !krHref.namespace || krHref.namespace === thisDmnsNamespace ? "" : normalizedDrgElementsNamespace;
         ackEdge({
-          // HREF format, used as RF.Edge ID
+          // Plain ID or full HREF format, used as RF.Edge ID
           id:
             drgElementsNamespace === thisDmnsNamespace
-              ? kr["@_id"]
-              : buildXmlHref({ namespace: drgElementsNamespace, id: kr["@_id"] }),
+              ? kr["@_id"] // prevent the id from having a leading `#`
+              : buildXmlHref({ namespace: normalizedDrgElementsNamespace, id: kr["@_id"] }),
           dmnObject: {
-            namespace: drgElementsNamespace,
+            namespace: normalizedDrgElementsNamespace, // owner of the requirement (edge)
             type: dmnObject.__$$element,
             id: dmnObject["@_id"]!,
             requirementType: "knowledgeRequirement",
             index,
           },
           type: EDGE_TYPES.knowledgeRequirement,
-          source: buildXmlHref({ namespace: krHref.namespace ?? namespace, id: krHref.id }),
-          target: buildXmlHref({ namespace, id: dmnObject["@_id"]! }),
-          sourceNamespace: krHref.namespace ?? namespace,
+          source: buildXmlHref({ namespace: normalizedKrSourceNamespace, id: krHref.id }),
+          target: buildXmlHref({ namespace: normalizedDrgElementsNamespace, id: dmnObject["@_id"]! }),
+          sourceNamespace: normalizedKrSourceNamespace,
         });
       });
     }
@@ -472,19 +478,21 @@ function ackRequirementEdges(
     ) {
       (dmnObject.authorityRequirement ?? []).forEach((ar, index) => {
         const arHref = parseXmlHref((ar.requiredInput ?? ar.requiredDecision ?? ar.requiredAuthority)!["@_href"]);
+        const normalizedArSourceNamespace =
+          !arHref.namespace || arHref.namespace === thisDmnsNamespace ? "" : normalizedDrgElementsNamespace;
         ackEdge({
           id: ar["@_id"]!,
           dmnObject: {
-            namespace: drgElementsNamespace,
+            namespace: normalizedDrgElementsNamespace, // owner of the requirement (edge)
             type: dmnObject.__$$element,
             id: dmnObject["@_id"]!,
             requirementType: "authorityRequirement",
             index,
           },
           type: EDGE_TYPES.authorityRequirement,
-          source: buildXmlHref({ namespace: arHref.namespace ?? namespace, id: arHref.id }),
-          target: buildXmlHref({ namespace, id: dmnObject["@_id"]! }),
-          sourceNamespace: arHref.namespace ?? namespace,
+          source: buildXmlHref({ namespace: normalizedArSourceNamespace, id: arHref.id }),
+          target: buildXmlHref({ namespace: normalizedDrgElementsNamespace, id: dmnObject["@_id"]! }),
+          sourceNamespace: normalizedArSourceNamespace,
         });
       });
     }
