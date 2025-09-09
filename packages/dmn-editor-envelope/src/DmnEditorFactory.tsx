@@ -117,7 +117,6 @@ export class DmnEditorInterface implements Editor {
           locale={this.initArgs.initialLocale}
         />
       </I18nDictionariesProvider>
-
     );
   }
 }
