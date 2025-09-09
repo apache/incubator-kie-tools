@@ -17,15 +17,24 @@
  * under the License.
  */
 
-import { UnitablesI18n } from "../UnitablesI18n";
-import { de as de_common } from "@kie-tools/i18n-common-dictionary";
-import { de as de_boxed_expression } from "@kie-tools/boxed-expression-component/dist/i18n/locales/de";
-import { TranslatedDictionary } from "@kie-tools-core/i18n/dist/core";
+import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 
-export const de: TranslatedDictionary<UnitablesI18n> = {
-  ...de_common,
-  ...de_boxed_expression,
-  schema: {
-    selectPlaceholder: "Auswählen...",
-  },
-};
+interface FormCodeGeneratorDictionary extends ReferenceDictionary {
+  generateFormCode: {
+    selectProjectFolder: string;
+    notFoundProjectsTarget: string;
+    notFoundJsonSchema: string;
+    uiLibraryPlaceholder: string;
+    customFormsPlaceholder: string;
+    generateForHumanTasks: string;
+    generateForSpecificHumanTasks: string;
+    optionPlaceholder: string;
+    userTaskPlaceholder: string;
+    parsingFailed(files: string): string;
+    uiLibraryNotAvailable(uiLibrary: string): string;
+    successFormGeneration(files: string): string;
+    errorFormGeneration(files: string): string;
+  };
+}
+
+export interface FormCodeGeneratorI18n extends FormCodeGeneratorDictionary {}

@@ -4434,6 +4434,9 @@ importers:
       '@kie-tools-core/envelope-bus':
         specifier: workspace:*
         version: link:../envelope-bus
+      '@kie-tools-core/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@kie-tools-core/keyboard-shortcuts':
         specifier: workspace:*
         version: link:../keyboard-shortcuts
@@ -4458,6 +4461,9 @@ importers:
       '@kie-tools/dmn-marshaller':
         specifier: workspace:*
         version: link:../dmn-marshaller
+      '@kie-tools/i18n-common-dictionary':
+        specifier: workspace:*
+        version: link:../i18n-common-dictionary
       '@kie-tools/pmml-editor-marshaller':
         specifier: workspace:*
         version: link:../pmml-editor-marshaller
@@ -4525,9 +4531,6 @@ importers:
       '@kie-tools-core/envelope-bus':
         specifier: workspace:*
         version: link:../envelope-bus
-      '@kie-tools-core/i18n':
-        specifier: workspace:*
-        version: link:../i18n
       '@kie-tools-core/notifications':
         specifier: workspace:*
         version: link:../notifications
@@ -5982,6 +5985,9 @@ importers:
 
   packages/form-code-generator-vscode-command:
     dependencies:
+      '@kie-tools-core/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@kie-tools/form-code-generator':
         specifier: workspace:*
         version: link:../form-code-generator
@@ -5991,6 +5997,9 @@ importers:
       '@kie-tools/form-code-generator-patternfly-theme':
         specifier: workspace:*
         version: link:../form-code-generator-patternfly-theme
+      '@kie-tools/i18n-common-dictionary':
+        specifier: workspace:*
+        version: link:../i18n-common-dictionary
       '@kie-tools/jbpm-form-code-generator-themes':
         specifier: workspace:*
         version: link:../jbpm-form-code-generator-themes

@@ -83,7 +83,7 @@ export function IteratorExpressionComponent({
         columns: [
           {
             accessor: "label",
-            label: "label",
+            label: i18n.label,
             width: ITERATOR_EXPRESSION_LABEL_COLUMN_WIDTH,
             minWidth: ITERATOR_EXPRESSION_LABEL_COLUMN_WIDTH,
             isInlineEditable: false,
@@ -94,7 +94,7 @@ export function IteratorExpressionComponent({
           },
           {
             accessor: "child",
-            label: "child",
+            label: i18n.child,
             width: undefined,
             minWidth: ITERATOR_EXPRESSION_CLAUSE_COLUMN_MIN_WIDTH,
             isInlineEditable: false,
@@ -104,7 +104,7 @@ export function IteratorExpressionComponent({
         ],
       },
     ];
-  }, [expression, expressionHolderId]);
+  }, [expression, expressionHolderId, i18n.child, i18n.label]);
 
   const headerVisibility = useMemo(() => {
     return isNested ? BeeTableHeaderVisibility.None : BeeTableHeaderVisibility.SecondToLastLevel;
@@ -127,21 +127,21 @@ export function IteratorExpressionComponent({
     (rowNumber: number) => {
       if (rowNumber === 0) {
         if (expression.__$$element === "for") {
-          return "for";
+          return i18n.iterableRowLabel.for;
         } else if (expression.__$$element === "some") {
-          return "some";
+          return i18n.iterableRowLabel.some;
         } else if (expression.__$$element === "every") {
-          return "every";
+          return i18n.iterableRowLabel.every;
         } else {
           throw new Error("Unknown IteratorExpression element");
         }
       } else if (rowNumber === 1) {
-        return "in";
+        return i18n.iterableRowLabel.in;
       } else if (rowNumber === 2) {
         if (expression.__$$element === "for") {
-          return "return";
+          return i18n.iterableRowLabel.return;
         } else if (expression.__$$element === "some" || expression.__$$element === "every") {
-          return "satisfies";
+          return i18n.iterableRowLabel.satisfies;
         } else {
           throw new Error("Unknown IteratorExpression element");
         }
@@ -149,7 +149,7 @@ export function IteratorExpressionComponent({
         throw new Error("IteratorExpression can't have more than 3 rows.");
       }
     },
-    [expression.__$$element]
+    [expression.__$$element, i18n.iterableRowLabel]
   );
 
   const getIterableRowElement = useCallback(

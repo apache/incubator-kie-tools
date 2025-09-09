@@ -22,7 +22,12 @@ import * as React from "react";
 import { useCallback, useMemo } from "react";
 import { Action, BoxedFunction, BoxedFunctionKind, DmnBuiltInDataType, generateUuid, Normalized } from "../../api";
 import { PopoverMenu } from "../../contextMenu/PopoverMenu";
-import { useBoxedExpressionEditorI18n } from "../../i18n";
+import {
+  boxedExpressionEditorDictionaries,
+  BoxedExpressionEditorI18nContext,
+  boxedExpressionEditorI18nDefaults,
+  useBoxedExpressionEditorI18n,
+} from "../../i18n";
 import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../../BoxedExpressionEditorContext";
 import { BoxedFunctionFeel, FeelFunctionExpression } from "./FeelFunctionExpression";
 import { FunctionKindSelector } from "./FunctionKindSelector";
@@ -31,6 +36,7 @@ import { ParametersPopover } from "./ParametersPopover";
 import { BoxedFunctionPmml, PmmlFunctionExpression } from "./PmmlFunctionExpression";
 import { DMN_LATEST__tFunctionDefinition, DMN_LATEST__tFunctionKind } from "@kie-tools/dmn-marshaller";
 import "./FunctionExpression.css";
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 
 export function FunctionExpression({
   isNested,

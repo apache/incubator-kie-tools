@@ -17,15 +17,14 @@
  * under the License.
  */
 
-import { UnitablesI18n } from "../UnitablesI18n";
-import { de as de_common } from "@kie-tools/i18n-common-dictionary";
-import { de as de_boxed_expression } from "@kie-tools/boxed-expression-component/dist/i18n/locales/de";
-import { TranslatedDictionary } from "@kie-tools-core/i18n/dist/core";
+import { en } from "./locales";
+import { FormCodeGeneratorI18n } from "./FormCodeGeneratorI18n";
+import { I18n, I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
 
-export const de: TranslatedDictionary<UnitablesI18n> = {
-  ...de_common,
-  ...de_boxed_expression,
-  schema: {
-    selectPlaceholder: "Auswählen...",
-  },
+export const formCodeGeneratorI18nDefaults: I18nDefaults<FormCodeGeneratorI18n> = {
+  locale: "en",
+  dictionary: en,
 };
+export const formCodeGeneratorI18nDictionaries: I18nDictionaries<FormCodeGeneratorI18n> = new Map([["en", en]]);
+
+export const formCodeGeneratorI18n = new I18n(formCodeGeneratorI18nDefaults, formCodeGeneratorI18nDictionaries);

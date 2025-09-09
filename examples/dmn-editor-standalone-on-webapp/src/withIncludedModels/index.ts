@@ -53,6 +53,7 @@ function loadEditor() {
       ["path2/loan-pre-qualification.dmn", { contentType: "text", content: loadFile("loan-pre-qualification.dmn") }], // Won't be available! Read comment above.
     ]),
     readOnly: false,
+    locale: "en",
   });
 
   console.log({ editor });

@@ -17,22 +17,17 @@
  * under the License.
  */
 
-import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
-import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
-import { BoxedExpressionEditorI18n } from "@kie-tools/boxed-expression-component/dist/i18n";
+import * as React from "react";
+import { useContext } from "react";
+import { en } from "./locales";
+import { DmnEditorEnvelopeI18n } from "./DmnEditorEnvelopeI18n";
+import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
+import { I18nContextType } from "@kie-tools-core/i18n/dist/react-components";
 
-interface UnitablesDictionary extends ReferenceDictionary {
-  schema: {
-    selectPlaceholder: string;
-  };
-  recursiveNotSupported: string;
-  openRowFormView: (rowIndex: number) => string;
-  noInputNodes: string;
-  addInputNode: string;
-  error: string;
-  errorMessage: string;
-  noDecisionResults: string;
-  addInputDecisionNodes: string;
+export const dmnEditorEnvelopeI18nDefaults: I18nDefaults<DmnEditorEnvelopeI18n> = { locale: "en", dictionary: en };
+export const dmnEditorEnvelopeI18nDictionaries: I18nDictionaries<DmnEditorEnvelopeI18n> = new Map([["en", en]]);
+export const DmnEditorEnvelopeI18nContext = React.createContext<I18nContextType<DmnEditorEnvelopeI18n>>({} as never);
+
+export function useDmnEditorEnvelopeI18n(): I18nContextType<DmnEditorEnvelopeI18n> {
+  return useContext(DmnEditorEnvelopeI18nContext);
 }
-
-export interface UnitablesI18n extends UnitablesDictionary, CommonI18n, BoxedExpressionEditorI18n {}
