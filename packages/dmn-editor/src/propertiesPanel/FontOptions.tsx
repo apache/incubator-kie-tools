@@ -321,7 +321,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                   className={"kie-dmn-editor--font-options-toggle-group-item"}
                   text={
                     <div>
-                      <b>{i18n.terms.letters.b}</b>
+                      <b>{i18n.terms.keyboardKeys.b}</b>
                     </div>
                   }
                   isDisabled={settings.isReadOnly}
@@ -335,7 +335,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                   className={"kie-dmn-editor--font-options-toggle-group-item-italic"}
                   text={
                     <div>
-                      <i style={{ fontFamily: "serif" }}>{i18n.terms.letters.i}</i>
+                      <i style={{ fontFamily: "serif" }}>{i18n.terms.keyboardKeys.i}</i>
                     </div>
                   }
                   isDisabled={settings.isReadOnly}
@@ -349,7 +349,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                   className={"kie-dmn-editor--font-options-toggle-group-item"}
                   text={
                     <div>
-                      <u>{i18n.terms.letters.u}</u>
+                      <u>{i18n.terms.keyboardKeys.u}</u>
                     </div>
                   }
                   isDisabled={settings.isReadOnly}
@@ -363,7 +363,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                   className={"kie-dmn-editor--font-options-toggle-group-item"}
                   text={
                     <div>
-                      <p style={{ textDecoration: "line-through" }}>{i18n.terms.letters.s}</p>
+                      <p style={{ textDecoration: "line-through" }}>{i18n.terms.keyboardKeys.s}</p>
                     </div>
                   }
                   isDisabled={settings.isReadOnly}

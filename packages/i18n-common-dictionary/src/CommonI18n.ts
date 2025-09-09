@@ -79,14 +79,6 @@ export type CommonDictionary = {
   uninstall: string;
   username: string;
   validation: string;
-  letters: {
-    s: string;
-    u: string;
-    i: string;
-    b: string;
-    x: string;
-    y: string;
-  };
   keyboardKeys: {
     ctrlC: string;
     ctrlX: string;
@@ -100,11 +92,14 @@ export type CommonDictionary = {
     left: string;
     right: string;
     a: string;
-    x: string;
     g: string;
-    i: string;
     h: string;
+    s: string;
+    u: string;
+    i: string;
     b: string;
+    x: string;
+    y: string;
     shiftUp: string;
     shiftDown: string;
     shiftLeft: string;

@@ -82,14 +82,5 @@ export const de: TranslatedDictionary<CommonI18n> = {
     uninstall: "Deinstallieren",
     username: "Username",
     validation: "Validierung",
-    //testing , will remove once dmn-editor-envelope PR is merged
-    letters: {
-      s: "",
-      u: "",
-      i: "",
-      b: "",
-      x: "",
-      y: "",
-    },
   },
 };

@@ -534,7 +534,7 @@ export function ShapeOptions({
                   />
                 </div>
                 <div style={{ gridArea: "position-x-label" }}>
-                  <p>{i18n.terms.letters.x}</p>
+                  <p>{i18n.terms.keyboardKeys.x}</p>
                 </div>
 
                 <div
@@ -551,7 +551,7 @@ export function ShapeOptions({
                   />
                 </div>
                 <div style={{ gridArea: "position-y-label" }}>
-                  <p>{i18n.terms.letters.y}</p>
+                  <p>{i18n.terms.keyboardKeys.y}</p>
                 </div>
               </div>
             </FormGroup>
