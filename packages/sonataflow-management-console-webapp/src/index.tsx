@@ -51,6 +51,7 @@ const onLoadFailure = (): void => {
 const appRender = async (ctx: UserContext) => {
   const httpLink = new HttpLink({
     uri: (window as any)["DATA_INDEX_ENDPOINT"],
+    useGETForQueries: true
   });
   const fallbackUI = onError(({ networkError }: any) => {
     if (networkError && networkError.stack === "TypeError: Failed to fetch") {
