@@ -124,6 +124,7 @@ export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
           issueTrackerHref={props?.issueTrackerHref ?? args.issueTrackerHref}
           onRequestToJumpToPath={props?.onRequestToJumpToPath ?? args.onRequestToJumpToPath}
           onModelDebounceStateChanged={onModelDebounceStateChanged}
+          locale={args.locale}
         />
       </div>
     </>
