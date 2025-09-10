@@ -322,6 +322,7 @@ export function getDefaultBoxedExpression({
     const conditionalExpression: Normalized<BoxedConditional> = {
       "@_id": generateUuid(),
       __$$element: "conditional",
+      "@_typeRef": typeRef,
       if: {
         "@_id": generateUuid(),
         expression: undefined as any,
@@ -341,6 +342,7 @@ export function getDefaultBoxedExpression({
     const forExpression: Normalized<BoxedFor> = {
       "@_id": generateUuid(),
       __$$element: "for",
+      "@_typeRef": typeRef,
       return: {
         "@_id": generateUuid(),
         expression: undefined as any,
@@ -355,6 +357,7 @@ export function getDefaultBoxedExpression({
     const someExpression: Normalized<BoxedSome> = {
       "@_id": generateUuid(),
       __$$element: "some",
+      "@_typeRef": typeRef,
       satisfies: {
         "@_id": generateUuid(),
         expression: undefined as any,
@@ -369,6 +372,7 @@ export function getDefaultBoxedExpression({
     const everyExpression: Normalized<BoxedEvery> = {
       "@_id": generateUuid(),
       __$$element: "every",
+      "@_typeRef": typeRef,
       satisfies: {
         "@_id": generateUuid(),
         expression: undefined as any,
@@ -383,6 +387,7 @@ export function getDefaultBoxedExpression({
     const filterExpression: Normalized<BoxedFilter> = {
       "@_id": generateUuid(),
       __$$element: "filter",
+      "@_typeRef": typeRef,
       match: {
         "@_id": generateUuid(),
         expression: undefined as any,
