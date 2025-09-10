@@ -164,7 +164,7 @@ export function DecisionServiceProperties({
           aria-label={"Description"}
           type={"text"}
           isDisabled={isReadOnly}
-          value={decisionService.description?.__$$text}
+          value={decisionService.description?.__$$text ?? ""}
           onChange={(_event, newDescription) => {
             setState((state) => {
               (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tDecisionService>).description =

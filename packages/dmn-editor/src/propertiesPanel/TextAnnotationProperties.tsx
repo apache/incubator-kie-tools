@@ -47,7 +47,7 @@ export function TextAnnotationProperties({
           aria-label={"Format"}
           type={"text"}
           isDisabled={settings.isReadOnly}
-          value={textAnnotation["@_textFormat"]}
+          value={textAnnotation["@_textFormat"] ?? ""}
           placeholder={i18n.propertiesPanel.formatPlaceholder}
           onChange={(_event, newTextFormat) => {
             setState((state) => {
@@ -64,7 +64,7 @@ export function TextAnnotationProperties({
           aria-label={"Text"}
           type={"text"}
           isDisabled={settings.isReadOnly}
-          value={textAnnotation.text?.__$$text}
+          value={textAnnotation.text?.__$$text ?? ""}
           onChange={(_event, newText) => {
             setState((state) => {
               updateTextAnnotation({
@@ -85,7 +85,7 @@ export function TextAnnotationProperties({
           aria-label={"Description"}
           type={"text"}
           isDisabled={settings.isReadOnly}
-          value={textAnnotation.description?.__$$text}
+          value={textAnnotation.description?.__$$text ?? ""}
           onChange={(_event, newDescription) => {
             setState((state) => {
               (state.dmn.model.definitions.artifact![index] as Normalized<DMN_LATEST__tTextAnnotation>).description = {
