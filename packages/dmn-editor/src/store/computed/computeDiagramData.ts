@@ -422,13 +422,17 @@ function ackRequirementEdges(
     if (dmnObject.__$$element === "decision") {
       (dmnObject.informationRequirement ?? []).forEach((ir, index) => {
         const irHref = parseXmlHref((ir.requiredDecision ?? ir.requiredInput)!["@_href"]);
-        const normalizedIrSourceNamespace =
-          !irHref.namespace || irHref.namespace === thisDmnsNamespace ? "" : normalizedDrgElementsNamespace;
+
+        const normalizedIrSourceNamespace = !irHref.namespace
+          ? normalizedDrgElementsNamespace
+          : irHref.namespace === thisDmnsNamespace
+            ? ""
+            : irHref.namespace;
 
         ackEdge({
           // Plain ID or full HREF format, used as RF.Edge ID
           id:
-            drgElementsNamespace === thisDmnsNamespace
+            normalizedDrgElementsNamespace === ""
               ? ir["@_id"] // prevent the id from having a leading `#`
               : buildXmlHref({ namespace: normalizedDrgElementsNamespace, id: ir["@_id"] }),
           dmnObject: {
@@ -449,12 +453,17 @@ function ackRequirementEdges(
     if (dmnObject.__$$element === "decision" || dmnObject.__$$element === "businessKnowledgeModel") {
       (dmnObject.knowledgeRequirement ?? []).forEach((kr, index) => {
         const krHref = parseXmlHref(kr.requiredKnowledge["@_href"]);
-        const normalizedKrSourceNamespace =
-          !krHref.namespace || krHref.namespace === thisDmnsNamespace ? "" : normalizedDrgElementsNamespace;
+
+        const normalizedKrSourceNamespace = !krHref.namespace
+          ? normalizedDrgElementsNamespace
+          : krHref.namespace === thisDmnsNamespace
+            ? ""
+            : krHref.namespace;
+
         ackEdge({
           // Plain ID or full HREF format, used as RF.Edge ID
           id:
-            drgElementsNamespace === thisDmnsNamespace
+            normalizedDrgElementsNamespace === ""
               ? kr["@_id"] // prevent the id from having a leading `#`
               : buildXmlHref({ namespace: normalizedDrgElementsNamespace, id: kr["@_id"] }),
           dmnObject: {
@@ -479,14 +488,19 @@ function ackRequirementEdges(
     ) {
       (dmnObject.authorityRequirement ?? []).forEach((ar, index) => {
         const arHref = parseXmlHref((ar.requiredInput ?? ar.requiredDecision ?? ar.requiredAuthority)!["@_href"]);
-        const normalizedArSourceNamespace =
-          !arHref.namespace || arHref.namespace === thisDmnsNamespace ? "" : normalizedDrgElementsNamespace;
+
+        const normalizedArSourceNamespace = !arHref.namespace
+          ? normalizedDrgElementsNamespace
+          : arHref.namespace === thisDmnsNamespace
+            ? ""
+            : arHref.namespace;
+
         ackEdge({
-          id: ar["@_id"]!,
+          id: ar["@_id"],
           dmnObject: {
             normalizedNamespace: normalizedDrgElementsNamespace, // owner of the requirement (edge)
             type: dmnObject.__$$element,
-            id: dmnObject["@_id"]!,
+            id: dmnObject["@_id"],
             requirementType: "authorityRequirement",
             index,
           },
