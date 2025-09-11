@@ -83,7 +83,7 @@ export function KnowledgeSourceProperties({
           aria-label={"Description"}
           type={"text"}
           isDisabled={isReadOnly}
-          value={knowledgeSource.description?.__$$text}
+          value={knowledgeSource.description?.__$$text ?? ""}
           onChange={(_event, newDescription) => {
             setState((state) => {
               (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tKnowledgeSource>).description =
@@ -109,7 +109,7 @@ export function KnowledgeSourceProperties({
           aria-label={"Source type"}
           type={"text"}
           isDisabled={isReadOnly}
-          value={knowledgeSource.type?.__$$text}
+          value={knowledgeSource.type?.__$$text ?? ""}
           onChange={(_event, newType) => {
             setState((state) => {
               (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tKnowledgeSource>).type = {
@@ -126,7 +126,7 @@ export function KnowledgeSourceProperties({
           aria-label={i18n.propertiesPanel.locationUri}
           type={"text"}
           isDisabled={isReadOnly}
-          value={knowledgeSource["@_locationURI"]}
+          value={knowledgeSource["@_locationURI"] ?? ""}
           onChange={(_event, newLocationUri) => {
             setState((state) => {
               (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tKnowledgeSource>)[

@@ -50,7 +50,7 @@ export function GroupProperties({ group, index }: { group: Normalized<DMN_LATEST
               });
             });
           }}
-          value={group["@_name"]}
+          value={group["@_name"] ?? ""}
           placeholder={i18n.propertiesPanel.namePlaceholder}
         />
       </FormGroup>
@@ -60,7 +60,7 @@ export function GroupProperties({ group, index }: { group: Normalized<DMN_LATEST
           aria-label={"Description"}
           type={"text"}
           isDisabled={settings.isReadOnly}
-          value={group.description?.__$$text}
+          value={group.description?.__$$text ?? ""}
           onChange={(_event, newDescription) => {
             setState((state) => {
               (state.dmn.model.definitions.artifact![index] as Normalized<DMN_LATEST__tGroup>).description = {

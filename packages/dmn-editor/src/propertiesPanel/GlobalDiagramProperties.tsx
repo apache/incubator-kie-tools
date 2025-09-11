@@ -128,7 +128,7 @@ export function GlobalDiagramProperties() {
                   style={{ resize: "vertical", minHeight: "40px" }}
                   rows={6}
                   placeholder={i18n.propertiesPanel.descriptionPlaceholder}
-                  value={thisDmn.model.definitions.description?.__$$text}
+                  value={thisDmn.model.definitions.description?.__$$text ?? ""}
                   onChange={(_event, newDescription) =>
                     dmnEditorStoreApi.setState((state) => {
                       state.dmn.model.definitions.description = { __$$text: newDescription };
