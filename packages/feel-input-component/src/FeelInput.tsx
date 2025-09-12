@@ -51,6 +51,7 @@ export interface FeelInputProps {
   options?: Monaco.editor.IStandaloneEditorConstructionOptions;
   feelIdentifiers?: FeelIdentifiers;
   expressionId?: string;
+  locale: string;
 }
 
 export interface FeelInputRef {
@@ -89,6 +90,7 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
       options,
       feelIdentifiers,
       expressionId,
+      locale,
     },
     forwardRef
   ) => {
@@ -147,9 +149,9 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
             return items;
           }
         }
-        return feelDefaultSuggestions();
+        return feelDefaultSuggestions(locale);
       },
-      []
+      [locale]
     );
 
     useEffect(() => {
