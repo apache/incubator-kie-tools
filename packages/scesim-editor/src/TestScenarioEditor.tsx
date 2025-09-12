@@ -157,6 +157,8 @@ export type TestScenarioEditorProps = {
    * The file path of the current opened Test Scenario scesim file
    */
   openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
+
+  locale: string;
 };
 
 export type TestScenarioEditorRef = {
@@ -492,7 +494,7 @@ export const TestScenarioEditor = React.forwardRef(
       <I18nDictionariesProvider
         defaults={testScenarioEditorI18nDefaults}
         dictionaries={testScenarioEditorDictionaries}
-        initialLocale={navigator.language}
+        initialLocale={props.locale}
         ctx={TestScenarioEditorI18nContext}
       >
         <TestScenarioEditorContextProvider {...props}>

@@ -32,10 +32,12 @@ import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { TimesIcon } from "@patternfly/react-icons/dist/js/icons/times-icon";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { useDmnEditorI18n } from "../i18n";
 import { EXPRESSION_LANGUAGES_LATEST } from "@kie-tools/dmn-marshaller";
 import { ExpressionLangaugeSelect } from "./ExpressionLanguageSelect";
 
 export function GlobalDiagramProperties() {
+  const { i18n } = useDmnEditorI18n();
   const [isExpressionLanguageSelectOpen, setExpressionLanguageSelectOpen] = useState(false);
   const [customLanguages, setCustomLanguages] = useState<string[]>(EXPRESSION_LANGUAGES_LATEST);
   const thisDmn = useDmnEditorStore((s) => s.dmn);
@@ -81,10 +83,10 @@ export function GlobalDiagramProperties() {
             isSectionExpanded={isGlobalSectionExpanded}
             toogleSectionExpanded={() => setGlobalSectionExpanded((prev) => !prev)}
             icon={<DataSourceIcon width={16} height={36} style={{ marginLeft: "12px" }} />}
-            title={"Global properties"}
+            title={i18n.propertiesPanel.globalProperties}
             action={
               <Button
-                title={"Close"}
+                title={i18n.close}
                 variant={ButtonVariant.plain}
                 onClick={() => {
                   dmnEditorStoreApi.setState((state) => {
@@ -101,7 +103,7 @@ export function GlobalDiagramProperties() {
         {isGlobalSectionExpanded && (
           <>
             <FormSection style={{ paddingLeft: "20px" }}>
-              <FormGroup label="Name">
+              <FormGroup label={i18n.name}>
                 <InlineFeelNameInput
                   enableAutoFocusing={false}
                   isPlain={false}
@@ -118,15 +120,15 @@ export function GlobalDiagramProperties() {
                   allUniqueNames={() => new Map()} // Right now, there's no way to know what are the unique names of all DMNs in the scope. So we let any name go.
                 />
               </FormGroup>
-              <FormGroup label="Description">
+              <FormGroup label={i18n.propertiesPanel.description}>
                 <TextArea
                   aria-label={"Description"}
                   type={"text"}
                   isDisabled={settings.isReadOnly}
                   style={{ resize: "vertical", minHeight: "40px" }}
                   rows={6}
-                  placeholder={"Enter a description..."}
-                  value={thisDmn.model.definitions.description?.__$$text}
+                  placeholder={i18n.propertiesPanel.descriptionPlaceholder}
+                  value={thisDmn.model.definitions.description?.__$$text ?? ""}
                   onChange={(_event, newDescription) =>
                     dmnEditorStoreApi.setState((state) => {
                       state.dmn.model.definitions.description = { __$$text: newDescription };
@@ -134,8 +136,7 @@ export function GlobalDiagramProperties() {
                   }
                 />
               </FormGroup>
-
-              <FormGroup label="Expression language">
+              <FormGroup label={i18n.propertiesPanel.expressionLanguage}>
                 <ExpressionLangaugeSelect
                   OnClear={onClear}
                   onSelect={onSelect}
@@ -155,10 +156,10 @@ export function GlobalDiagramProperties() {
             expands={true}
             isSectionExpanded={isIdNamespaceSectionExpanded}
             toogleSectionExpanded={() => setIdNamespaceSectionExpanded((prev) => !prev)}
-            title={"ID & Namespace"}
+            title={i18n.propertiesPanel.idAndNamespace}
             action={
               <Button
-                title={"Re-generate ID & Namespace"}
+                title={i18n.propertiesPanel.regenerateIdNamespace}
                 variant={ButtonVariant.plain}
                 isDisabled={settings.isReadOnly}
                 onClick={() => setRegenerateIdConfirmationModal(true)}
@@ -173,12 +174,12 @@ export function GlobalDiagramProperties() {
         {isIdNamespaceSectionExpanded && (
           <>
             <FormSection style={{ paddingLeft: "20px", marginTop: 0 }}>
-              <FormGroup label="ID">
+              <FormGroup label={i18n.propertiesPanel.id}>
                 <ClipboardCopy
-                  placeholder="Enter a diagram ID..."
+                  placeholder={i18n.propertiesPanel.diagramIdPlaceholder}
                   isReadOnly={settings.isReadOnly}
-                  hoverTip="Copy"
-                  clickTip="Copied"
+                  hoverTip={i18n.propertiesPanel.copy}
+                  clickTip={i18n.propertiesPanel.copied}
                   onChange={(_event, newId) => {
                     dmnEditorStoreApi.setState((state) => {
                       state.dmn.model.definitions["@_id"] = `${newId}`;
@@ -189,12 +190,12 @@ export function GlobalDiagramProperties() {
                 </ClipboardCopy>
               </FormGroup>
 
-              <FormGroup label="Namespace">
+              <FormGroup label={i18n.propertiesPanel.namespace}>
                 <ClipboardCopy
-                  placeholder="Enter a diagram Namespace..."
+                  placeholder={i18n.propertiesPanel.namespacePlaceholder}
                   isReadOnly={settings.isReadOnly}
-                  hoverTip="Copy"
-                  clickTip="Copied"
+                  hoverTip={i18n.propertiesPanel.copy}
+                  clickTip={i18n.propertiesPanel.copied}
                   onChange={(_event, newNamespace) => {
                     dmnEditorStoreApi.setState((state) => {
                       state.dmn.model.definitions["@_namespace"] = `${newNamespace}`;
@@ -226,17 +227,17 @@ export function GlobalDiagramProperties() {
               });
             }}
           >
-            Yes, re-generate ID and Namespace
+            {i18n.propertiesPanel.yesRegenerateIdNamespace}
           </Button>,
           <Button key="cancel" variant="link" onClick={() => setRegenerateIdConfirmationModal(false)}>
-            Cancel
+            {i18n.cancel}
           </Button>,
         ]}
       >
-        Re-generating the ID and Namespace of a DMN file will potentially break other DMN files that depend on it.
+        {i18n.propertiesPanel.regeneratingIdNamespaceMessage}
         <br />
         <br />
-        Are you sure you want to continue?
+        {i18n.propertiesPanel.sureToContinue}
       </Modal>
     </Form>
   );

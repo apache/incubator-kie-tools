@@ -27,6 +27,7 @@ import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { useDmnEditorStoreApi } from "../store/StoreContext";
 import { updateTextAnnotation } from "../mutations/renameNode";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { useDmnEditorI18n } from "../i18n";
 
 export function TextAnnotationProperties({
   textAnnotation,
@@ -35,18 +36,19 @@ export function TextAnnotationProperties({
   textAnnotation: Normalized<DMN_LATEST__tTextAnnotation>;
   index: number;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const { setState } = useDmnEditorStoreApi();
   const settings = useSettings();
 
   return (
     <>
-      <FormGroup label="Format">
+      <FormGroup label={i18n.propertiesPanel.format}>
         <TextInput
           aria-label={"Format"}
           type={"text"}
           isDisabled={settings.isReadOnly}
-          value={textAnnotation["@_textFormat"]}
-          placeholder={"Enter a text format..."}
+          value={textAnnotation["@_textFormat"] ?? ""}
+          placeholder={i18n.propertiesPanel.formatPlaceholder}
           onChange={(_event, newTextFormat) => {
             setState((state) => {
               (state.dmn.model.definitions.artifact![index] as Normalized<DMN_LATEST__tTextAnnotation>)[
@@ -57,12 +59,12 @@ export function TextAnnotationProperties({
         />
       </FormGroup>
 
-      <FormGroup label="Text">
+      <FormGroup label={i18n.propertiesPanel.text}>
         <TextArea
           aria-label={"Text"}
           type={"text"}
           isDisabled={settings.isReadOnly}
-          value={textAnnotation.text?.__$$text}
+          value={textAnnotation.text?.__$$text ?? ""}
           onChange={(_event, newText) => {
             setState((state) => {
               updateTextAnnotation({
@@ -72,18 +74,18 @@ export function TextAnnotationProperties({
               });
             });
           }}
-          placeholder={"Enter text..."}
+          placeholder={i18n.propertiesPanel.textPlaceholder}
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={6}
         />
       </FormGroup>
 
-      <FormGroup label="Description">
+      <FormGroup label={i18n.propertiesPanel.description}>
         <TextArea
           aria-label={"Description"}
           type={"text"}
           isDisabled={settings.isReadOnly}
-          value={textAnnotation.description?.__$$text}
+          value={textAnnotation.description?.__$$text ?? ""}
           onChange={(_event, newDescription) => {
             setState((state) => {
               (state.dmn.model.definitions.artifact![index] as Normalized<DMN_LATEST__tTextAnnotation>).description = {
@@ -91,14 +93,14 @@ export function TextAnnotationProperties({
               };
             });
           }}
-          placeholder={"Enter a description..."}
+          placeholder={i18n.propertiesPanel.descriptionPlaceholder}
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={2}
         />
       </FormGroup>
 
-      <FormGroup label="ID">
-        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+      <FormGroup label={i18n.propertiesPanel.id}>
+        <ClipboardCopy isReadOnly={true} hoverTip={i18n.propertiesPanel.copy} clickTip={i18n.propertiesPanel.copied}>
           {textAnnotation["@_id"]}
         </ClipboardCopy>
       </FormGroup>

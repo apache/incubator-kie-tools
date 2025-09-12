@@ -39,6 +39,7 @@ import {
 import { NODE_TYPES } from "./NodeTypes";
 import { EDGE_TYPES } from "../edges/EdgeTypes";
 import { useSettings } from "../../settings/DmnEditorSettingsContext";
+import { useDmnEditorI18n } from "../../i18n";
 
 const handleButtonSize = 34; // That's the size of the button. This is a "magic number", as it was obtained from the rendered page.
 const svgViewboxPadding = Math.sqrt(Math.pow(handleButtonSize, 2) / 2) - handleButtonSize / 2; // This lets us create a square that will perfectly fit inside the button circle.
@@ -60,6 +61,7 @@ export function OutgoingStuffNodePanel(props: {
   edgeTypes: EdgeType[];
   nodeHref: string;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const settings = useSettings();
   const style: React.CSSProperties = React.useMemo(
     () => ({
@@ -68,45 +70,61 @@ export function OutgoingStuffNodePanel(props: {
     [props.isVisible, settings.isReadOnly]
   );
 
-  const getEdgeActionTitle = React.useCallback((edgeType: string): string => {
-    switch (edgeType) {
-      case EDGE_TYPES.informationRequirement: {
-        return "Add Information Requirement edge";
+  const getEdgeActionTitle = React.useCallback(
+    (edgeType: string): string => {
+      switch (edgeType) {
+        case EDGE_TYPES.informationRequirement: {
+          return i18n.nodes.addInformationRequirementEdge;
+        }
+        case EDGE_TYPES.knowledgeRequirement: {
+          return i18n.nodes.addKnowledgeRequirementEdge;
+        }
+        case EDGE_TYPES.authorityRequirement: {
+          return i18n.nodes.addAuthorityRequirementEdge;
+        }
+        case EDGE_TYPES.association: {
+          return i18n.nodes.addAssociationEdge;
+        }
+        default: {
+          throw new Error("Add Unknown edge type");
+        }
       }
-      case EDGE_TYPES.knowledgeRequirement: {
-        return "Add Knowledge Requirement edge";
-      }
-      case EDGE_TYPES.authorityRequirement: {
-        return "Add Authority Requirement edge";
-      }
-      case EDGE_TYPES.association: {
-        return "Add Association edge";
-      }
-      default: {
-        throw new Error("Add Unknown edge type");
-      }
-    }
-  }, []);
+    },
+    [
+      i18n.nodes.addAssociationEdge,
+      i18n.nodes.addAuthorityRequirementEdge,
+      i18n.nodes.addInformationRequirementEdge,
+      i18n.nodes.addKnowledgeRequirementEdge,
+    ]
+  );
 
-  const getNodeActionTitle = React.useCallback((nodeType: string): string => {
-    switch (nodeType) {
-      case NODE_TYPES.decision: {
-        return "Add Decision node";
+  const getNodeActionTitle = React.useCallback(
+    (nodeType: string): string => {
+      switch (nodeType) {
+        case NODE_TYPES.decision: {
+          return i18n.nodes.addDecisionNode;
+        }
+        case NODE_TYPES.bkm: {
+          return i18n.nodes.addBkmNode;
+        }
+        case NODE_TYPES.knowledgeSource: {
+          return i18n.nodes.addKnowledgeResourceNode;
+        }
+        case NODE_TYPES.textAnnotation: {
+          return i18n.nodes.addTextAnnotationNode;
+        }
+        default: {
+          throw new Error("Add Unknown node type");
+        }
       }
-      case NODE_TYPES.bkm: {
-        return "Add BKM node";
-      }
-      case NODE_TYPES.knowledgeSource: {
-        return "Add Knowledge Source node";
-      }
-      case NODE_TYPES.textAnnotation: {
-        return "Add Text Annotation node";
-      }
-      default: {
-        throw new Error("Add Unknown node type");
-      }
-    }
-  }, []);
+    },
+    [
+      i18n.nodes.addBkmNode,
+      i18n.nodes.addDecisionNode,
+      i18n.nodes.addKnowledgeResourceNode,
+      i18n.nodes.addTextAnnotationNode,
+    ]
+  );
 
   return (
     <>

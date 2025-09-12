@@ -34,11 +34,14 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContex
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { State } from "../../store/Store";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
+import { useDmnEditorI18n } from "../../i18n";
+import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 
 export function FunctionDefinitionParameterCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
   isReadOnly: boolean;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
 
   const selectedObjectInfos = useMemo(
@@ -60,14 +63,14 @@ export function FunctionDefinitionParameterCell(props: {
 
   return (
     <>
-      <FormGroup label="ID">
+      <FormGroup label={i18n.propertiesPanel.id}>
         <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
       {cell.length === 0 && (
         <>
-          <Text>{"Empty parameters list"}</Text>
+          <Text>{i18n.propertiesPanel.emptyParameters}</Text>
         </>
       )}
       {cell.map((parameter, i) => (
@@ -85,7 +88,13 @@ export function FunctionDefinitionParameterCell(props: {
             }
             title={
               <p>
-                Parameter <b>{parameter["@_name"]}</b>
+                <I18nWrapped
+                  components={{
+                    name: <b>{parameter["@_name"]}</b>,
+                  }}
+                >
+                  {i18n.propertiesPanel.parameter}
+                </I18nWrapped>
               </p>
             }
           />

@@ -22,17 +22,19 @@ import { Text } from "@patternfly/react-core/dist/js/components/Text";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
+import { useDmnEditorI18n } from "../../i18n";
 
 export function SelectExpressionCell(props: { selectedObjectId: string }) {
+  const { i18n } = useDmnEditorI18n();
   return (
     <>
-      <Title headingLevel={"h2"}>{"Select expression"}</Title>
-      <FormGroup label="ID">
+      <Title headingLevel={"h2"}>{i18n.propertiesPanel.selectExpression}</Title>
+      <FormGroup label={i18n.propertiesPanel.id}>
         <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
           {props.selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
-      <Text>{"The selected cell still doesn't have an expresison associate with it."}</Text>
+      <Text>{i18n.propertiesPanel.selectedCell}</Text>
     </>
   );
 }

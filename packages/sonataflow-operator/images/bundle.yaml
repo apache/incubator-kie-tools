@@ -43,9 +43,9 @@ labels:
   - name: operators.operatorframework.io.bundle.package.v1
     value: sonataflow-operator
   - name: operators.operatorframework.io.bundle.channels.v1
-    value: "alpha"
+    value: "stable"
   - name: operators.operatorframework.io.bundle.channel.default.v1
-    value: alpha
+    value: stable
   - name: operators.operatorframework.io.metrics.mediatype.v1
     value: metrics+v1
   - name: operators.operatorframework.io.metrics.builder
@@ -59,7 +59,7 @@ labels:
   - name: com.redhat.delivery.operator.bundle
     value: "true"
   - name: com.redhat.openshift.versions
-    value: v4.10
+    value: v4.11
 
 modules:
   repositories:

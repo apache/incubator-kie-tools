@@ -144,13 +144,13 @@ export function JavaFunctionExpression({
           {
             headerCellElement: parametersColumnHeader,
             accessor: parametersId as any,
-            label: "parameters",
+            label: i18n.parameters,
             isRowIndexColumn: false,
             dataType: undefined as any,
             width: undefined,
             columns: [
               {
-                label: "label",
+                label: i18n.label,
                 accessor: "label" as any,
                 dataType: undefined as any,
                 isRowIndexColumn: false,
@@ -160,7 +160,7 @@ export function JavaFunctionExpression({
                 minWidth: JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
               },
               {
-                label: "value",
+                label: i18n.value,
                 accessor: "value" as any,
                 dataType: undefined as any,
                 isRowIndexColumn: false,
@@ -180,6 +180,9 @@ export function JavaFunctionExpression({
     parametersColumnHeader,
     setClassAndMethodNamesWidth,
     parametersId,
+    i18n.label,
+    i18n.value,
+    i18n.parameters,
   ]);
 
   const headerVisibility = useMemo(() => {
@@ -244,15 +247,15 @@ export function JavaFunctionExpression({
   const beeTableRows = useMemo<JAVA_ROWTYPE[]>(() => {
     return [
       {
-        label: "Class name",
+        label: i18n.classNameLabel,
         value: (clazz?.expression as DMN_LATEST__tLiteralExpression | undefined)?.text?.__$$text ?? "",
       },
       {
-        label: "Method signature",
+        label: i18n.methodSignatureLabel,
         value: (method?.expression as DMN_LATEST__tLiteralExpression | undefined)?.text?.__$$text ?? "",
       },
     ];
-  }, [clazz?.expression, method?.expression]);
+  }, [clazz?.expression, method?.expression, i18n.classNameLabel, i18n.methodSignatureLabel]);
 
   const controllerCell = useFunctionExpressionControllerCell(BoxedFunctionKind.Java);
 
@@ -465,6 +468,7 @@ export function JavaFunctionExpression({
 }
 
 function JavaFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTableCellProps<JAVA_ROWTYPE>>) {
+  const { i18n } = useBoxedExpressionEditorI18n();
   const label = useMemo(() => {
     return props.data[props.rowIndex].label;
   }, [props.data, props.rowIndex]);
@@ -506,7 +510,7 @@ function JavaFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTable
         {isCellHovered && (
           <Popover
             className="java-function-parameter-help-popover"
-            headerContent={label + " example"}
+            headerContent={i18n.getLabelexample(label)}
             bodyContent={getParameterLabelHelp}
           >
             <Icon size="sm">

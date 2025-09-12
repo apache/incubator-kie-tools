@@ -83,6 +83,7 @@ export function SceSimEditorWrapper(props: Partial<StorybookTestScenarioEditorPr
         }
         onRequestToJumpToPath={props?.onRequestToJumpToPath ?? args.onRequestToJumpToPath}
         onRequestToResolvePath={props?.onRequestToResolvePath ?? args.onRequestToResolvePath}
+        locale={args.locale}
       />
     </div>
   );

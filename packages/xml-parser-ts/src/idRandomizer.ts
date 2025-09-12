@@ -125,27 +125,35 @@ export class XmlParserTsIdRandomizer<M extends Meta> {
               attr
             )}: ${json})`
           );
-          return (parentJson[accessor] = newId);
+          // Differently from attributes, ID and IDREF *elements* store their value in the `__$$text` property.
+          return (parentJson[accessor] = json?.__$$text ? { __$$text: newId } : newId);
         };
 
         // Attributes an ID in case `json` === undefined
         if (json === undefined) {
           this.toAttribute.set(path === undefined ? String(attr) : path, u);
         } else {
-          this.updaters.set(json, [...(this.updaters.get(json) ?? []), u]);
+          // When it is an *element* instead of an attribute, correctly pass the `__$$text` value
+          this.updaters.set(json.__$$text ? json.__$$text : json, [
+            ...(this.updaters.get(json.__$$text ? json.__$$text : json) ?? []),
+            u,
+          ]);
         }
       }
 
       // QName
       else if (rootMetaProp.xsdType === "xsd:QName") {
-        const qname = parseXmlQName(json ?? "");
+        // Differently from attributes, QName *elements* store their value in the `__$$text` property.
+        const qname = parseXmlQName((json?.__$$text ? json.__$$text : json) ?? "");
         const u: XmlParserTsIdRandomizerUpdater = ({ newId }) => {
           console.debug(
             `ID RANDOMIZER: [QName] Updating id from ${qname.localPart} to ${newId} @ (${String(type)}.${String(
               attr
             )}: ${json})`
           );
-          return (parentJson[accessor] = buildXmlQName({ ...qname, localPart: newId }));
+          return (parentJson[accessor] = json?.__$$text
+            ? { __$$text: buildXmlQName({ ...qname, localPart: newId }) }
+            : buildXmlQName({ ...qname, localPart: newId }));
         };
         this.updaters.set(qname.localPart, [...(this.updaters.get(qname.localPart) ?? []), u]);
       }

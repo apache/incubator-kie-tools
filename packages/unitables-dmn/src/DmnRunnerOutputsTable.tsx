@@ -90,7 +90,7 @@ export function DmnRunnerOutputsTable({
       {outputError ? (
         outputError
       ) : numberOfResults > 0 ? (
-        <ErrorBoundary ref={outputErrorBoundaryRef} setHasError={setOutputError} error={<OutputError />}>
+        <ErrorBoundary ref={outputErrorBoundaryRef} setHasError={setOutputError} error={<OutputError i18n={i18n} />}>
           <OutputsBeeTable
             scrollableParentRef={scrollableParentRef}
             i18n={i18n}
@@ -105,12 +105,10 @@ export function DmnRunnerOutputsTable({
         <EmptyState>
           <EmptyStateHeader icon={<EmptyStateIcon icon={CubeIcon} />} />
           <TextContent>
-            <Text component={"h2"}>No Decision results yet...</Text>
+            <Text component={"h2"}>{i18n.noDecisionResults}</Text>
           </TextContent>
           <EmptyStateBody>
-            <TextContent>
-              Add input and decision nodes, provide values to the inputs at the left and see the Decisions results here.
-            </TextContent>
+            <TextContent>{i18n.addInputDecisionNodes}</TextContent>
           </EmptyStateBody>
         </EmptyState>
       )}
@@ -118,16 +116,16 @@ export function DmnRunnerOutputsTable({
   );
 }
 
-function OutputError() {
+function OutputError(props: { i18n: DmnUnitablesI18n }) {
   return (
     <div>
       <EmptyState>
         <EmptyStateHeader icon={<EmptyStateIcon icon={ExclamationIcon} />} />
         <TextContent>
-          <Text component={"h2"}>Error</Text>
+          <Text component={"h2"}>{props.i18n.error}</Text>
         </TextContent>
         <EmptyStateBody>
-          <p>An error has happened while trying to show your Decision results</p>
+          <p>{props.i18n.errorMessage}</p>
         </EmptyStateBody>
       </EmptyState>
     </div>

@@ -50,7 +50,7 @@ import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/compo
 
 export const GITHUB_OAUTH_TOKEN_SIZE = 40;
 export const BITBUCKET_OAUTH_TOKEN_SIZE = 40;
-export const GITLAB_OAUTH_TOKEN_SIZE = 40;
+export const GITLAB_OAUTH_TOKEN_SIZE = 57;
 
 export const GITHUB_TOKENS_HOW_TO_URL =
   "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token";

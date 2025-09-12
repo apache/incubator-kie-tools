@@ -18,6 +18,7 @@
  */
 
 import { ExpressionPath } from "../../boxedExpressions/boxedExpressionIndex";
+import { DmnEditorI18n } from "../../i18n";
 
 export enum BoxedExpressionPropertiesPanelComponent {
   CONTEXT_INFORMATION_ITEM_CELL = "context-information-item-cell",
@@ -37,82 +38,106 @@ export enum BoxedExpressionPropertiesPanelComponent {
   WITHOUT_PROPERTIES_CELL = "without-properties-cell",
 }
 
-export function getBoxedExpressionPropertiesPanelComponent(selectedObjectPath: ExpressionPath): {
+export function getBoxedExpressionPropertiesPanelComponent(
+  selectedObjectPath: ExpressionPath,
+  i18n: DmnEditorI18n
+): {
   component: BoxedExpressionPropertiesPanelComponent;
   title: string;
 } {
   if (selectedObjectPath.type === "conditional") {
     if (selectedObjectPath.row === undefined) {
-      return { component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Conditional" };
+      return {
+        component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT,
+        title: i18n.boxedExpressionPropertiesPanelTitle.boxedConditional,
+      };
     }
   }
 
   if (selectedObjectPath.type === "context") {
     if (selectedObjectPath.column === undefined) {
-      return { component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Context" };
+      return {
+        component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT,
+        title: i18n.boxedExpressionPropertiesPanelTitle.boxedContext,
+      };
     }
     if (selectedObjectPath.column === "variable") {
       return {
         component: BoxedExpressionPropertiesPanelComponent.CONTEXT_INFORMATION_ITEM_CELL,
-        title: "Boxed Context Variable",
+        title: i18n.boxedExpressionPropertiesPanelTitle.boxedContextVariable,
       };
     }
   }
 
   if (selectedObjectPath.type === "decisionTable") {
     if (selectedObjectPath.row === undefined) {
-      return { component: BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_ROOT, title: "Decision Table" };
+      return {
+        component: BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_ROOT,
+        title: i18n.boxedExpressionPropertiesPanelTitle.decisionTable,
+      };
     }
     if (selectedObjectPath.header === "input") {
       if (selectedObjectPath.row < 0) {
         return {
           component: BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_INPUT_HEADER,
-          title: "Decision Table Input Header",
+          title: i18n.boxedExpressionPropertiesPanelTitle.decisionTableInputHeader,
         };
       }
       return {
         component: BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_INPUT_RULE,
-        title: "Decision Table Input Cell",
+        title: i18n.boxedExpressionPropertiesPanelTitle.decisionTableInputCell,
       };
     }
     if (selectedObjectPath.header === "output") {
       if (selectedObjectPath.row < 0) {
         return {
           component: BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_OUTPUT_HEADER,
-          title: "Decision Table Output Header",
+          title: i18n.boxedExpressionPropertiesPanelTitle.decisionTableOutputHeader,
         };
       }
       return {
         component: BoxedExpressionPropertiesPanelComponent.DECISION_TABLE_OUTPUT_RULE,
-        title: "Decision Table Output Cell",
+        title: i18n.boxedExpressionPropertiesPanelTitle.decisionTableOutputCell,
       };
     }
   }
 
   if (selectedObjectPath.type === "every") {
     if (selectedObjectPath.row === undefined) {
-      return { component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Every" };
+      return {
+        component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT,
+        title: i18n.boxedExpressionPropertiesPanelTitle.every,
+      };
     }
     if (selectedObjectPath.row === "variable") {
       return {
         component: BoxedExpressionPropertiesPanelComponent.ITERATOR_VARIABLE_CELL,
-        title: "Boxed Every Variable",
+        title: i18n.boxedExpressionPropertiesPanelTitle.boxedEveryVariable,
       };
     }
   }
 
   if (selectedObjectPath.type === "filter") {
     if (selectedObjectPath.row === undefined) {
-      return { component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Filter" };
+      return {
+        component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT,
+        title: i18n.boxedExpressionPropertiesPanelTitle.filter,
+      };
     }
   }
 
   if (selectedObjectPath.type === "for") {
     if (selectedObjectPath.row === undefined) {
-      return { component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed For" };
+      return {
+        component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT,
+        title: i18n.boxedExpressionPropertiesPanelTitle.for,
+      };
     }
     if (selectedObjectPath.row === "variable") {
-      return { component: BoxedExpressionPropertiesPanelComponent.ITERATOR_VARIABLE_CELL, title: "Boxed For Variable" };
+      return {
+        component: BoxedExpressionPropertiesPanelComponent.ITERATOR_VARIABLE_CELL,
+        title: i18n.boxedExpressionPropertiesPanelTitle.boxedForvariable,
+      };
     }
   }
 
@@ -120,12 +145,12 @@ export function getBoxedExpressionPropertiesPanelComponent(selectedObjectPath: E
     if (selectedObjectPath.parameterIndex === undefined) {
       return {
         component: BoxedExpressionPropertiesPanelComponent.FUNCTION_DEFINITION_ROOT,
-        title: "Function Definition",
+        title: i18n.boxedExpressionPropertiesPanelTitle.functionDefinition,
       };
     }
     return {
       component: BoxedExpressionPropertiesPanelComponent.FUNCTION_DEFINITION_PARAMETERS,
-      title: "Function Parameters",
+      title: i18n.boxedExpressionPropertiesPanelTitle.functionParameters,
     };
   }
 
@@ -133,66 +158,75 @@ export function getBoxedExpressionPropertiesPanelComponent(selectedObjectPath: E
     if (selectedObjectPath.row === undefined || selectedObjectPath.column === undefined) {
       return {
         component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT,
-        title: "Boxed Invocation",
+        title: i18n.boxedExpressionPropertiesPanelTitle.boxedInvocation,
       };
     }
     if (selectedObjectPath.row < 0) {
       return {
         component: BoxedExpressionPropertiesPanelComponent.INVOCATION_FUNCTION_CALL,
-        title: "Boxed Invocation Called Function",
+        title: i18n.boxedExpressionPropertiesPanelTitle.boxedInvocationFunction,
       };
     }
     if (selectedObjectPath.column === "parameter") {
       return {
         component: BoxedExpressionPropertiesPanelComponent.INVOCATION_INFORMATION_ITEM_CELL,
-        title: "Boxed Invocation Parameter",
+        title: i18n.boxedExpressionPropertiesPanelTitle.boxedInvocationParameter,
       };
     }
     if (selectedObjectPath.column === "expression") {
       return {
         component: BoxedExpressionPropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT,
-        title: "Boxed Invocation",
+        title: i18n.boxedExpressionPropertiesPanelTitle.boxedInvocation,
       };
     }
   }
 
   if (selectedObjectPath.type === "list") {
     if (selectedObjectPath.row === undefined) {
-      return { component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed List" };
+      return {
+        component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT,
+        title: i18n.boxedExpressionPropertiesPanelTitle.list,
+      };
     }
   }
 
   if (selectedObjectPath.type === "literalExpression") {
     return {
       component: BoxedExpressionPropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT,
-      title: "Literal Expression",
+      title: i18n.boxedExpressionPropertiesPanelTitle.literalExpresssion,
     };
   }
 
   if (selectedObjectPath.type === "relation") {
     if (selectedObjectPath.row === undefined) {
-      return { component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Relation" };
+      return {
+        component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT,
+        title: i18n.boxedExpressionPropertiesPanelTitle.boxedRelation,
+      };
     }
     if (selectedObjectPath.row < 0) {
       return {
         component: BoxedExpressionPropertiesPanelComponent.RELATION_INFORMATION_ITEM_CELL,
-        title: "Boxed Relation Header",
+        title: i18n.boxedExpressionPropertiesPanelTitle.boxedRelationHeader,
       };
     }
     return {
       component: BoxedExpressionPropertiesPanelComponent.LITERAL_EXPRESSION_CONTENT,
-      title: "Boxed Relation Cell",
+      title: i18n.boxedExpressionPropertiesPanelTitle.boxedRelationCell,
     };
   }
 
   if (selectedObjectPath.type === "some") {
     if (selectedObjectPath.row === undefined) {
-      return { component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT, title: "Boxed Some" };
+      return {
+        component: BoxedExpressionPropertiesPanelComponent.EXPRESSION_ROOT,
+        title: i18n.boxedExpressionPropertiesPanelTitle.some,
+      };
     }
     if (selectedObjectPath.row === "variable") {
       return {
         component: BoxedExpressionPropertiesPanelComponent.ITERATOR_VARIABLE_CELL,
-        title: "Boxed Some Variable",
+        title: i18n.boxedExpressionPropertiesPanelTitle.boxedSomeVariable,
       };
     }
   }
