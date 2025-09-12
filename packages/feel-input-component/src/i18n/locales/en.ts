@@ -34,8 +34,8 @@ export const en: FeelInputComponentI18n = {
       `Returns ${result} when \`${range1}\` is after \`${range2}\``,
     allTrue: (result: string, list: string): string =>
       `Returns ${result} if all elements in the \`${list}\` are ${result}.`,
-    anyTrue: (result: string, list: string, falseResult: string): string =>
-      `Returns ${result} if any \`${list}\` item is ${result}, else ${falseResult} if empty or all \`${list}\` items are ${falseResult}, else null`,
+    anyTrue: (result: string, list: string, falseResult: string, nullValue: string): string =>
+      `Returns ${result} if any \`${list}\` item is ${result}, else ${falseResult} if empty or all \`${list}\` items are ${falseResult}, else ${nullValue}`,
     append: (list: string) => `Returns new ${list} with items appended`,
     beforePoint: (result: string, point1: string, point2: string): string =>
       `Returns ${result} when \`${point1}\` is before \`${point2}\``,
@@ -45,18 +45,18 @@ export const en: FeelInputComponentI18n = {
       `Returns ${result} when a \`${range}\` is before \`${point}\``,
     beforeRange: (result: string, range1: string, range2: string): string =>
       `Returns ${result} when \`${range1} is before \`${range2}\``,
-    ceiling: (value: string): string =>
-      `Returns \`${value} with rounding mode ceiling. If \`${value}\` is null the result is null.`,
-    ceilingScale: (value: string, scale: string): string =>
-      `Returns \`${value} with given scale and rounding mode ceiling. If at least one of \`${value}\` or \`${scale}\` is null, the result is null. The \`${scale}\` must be in the range [−6111..6176].`,
+    ceiling: (value: string, nullValue: string): string =>
+      `Returns \`${value} with rounding mode ceiling. If \`${value}\` is ${nullValue} the result is ${nullValue}.`,
+    ceilingScale: (value: string, scale: string, nullValue: string): string =>
+      `Returns \`${value} with given scale and rounding mode ceiling. If at least one of \`${value}\` or \`${scale}\` is ${nullValue}, the result is ${nullValue}. The \`${scale}\` must be in the range [−6111..6176].`,
     coincides: (result: string, point1: string, point2: string): string =>
       `Returns ${result} when \`${point1}\` coincides with \`${point2}\``,
     coincidesRange: (result: string, range1: string, range2: string): string =>
       `Returns ${result} when \`${range1}\` coincides with \`${range2}\``,
     concatenate: (list: string) => `Returns a new ${list} that is a concatenation of the arguments`,
     contains: (value: string, match: string): string => `Does the \`${value} contain the \`${match}\`?`,
-    contextKeyValue: (context: string, key: string, value: string): string =>
-      `Returns a new \`${context}\` that includes all specified entries. If a \`${context}\` item contains additional entries beyond the required \`${key}\` and \`${value}\` entries, the additional entries are ignored. If a \`${context}\` item is missing the required \`${key}\` and \`${value}\` entries, the final result is null.`,
+    contextKeyValue: (context: string, key: string, value: string, nullValue: string): string =>
+      `Returns a new \`${context}\` that includes all specified entries. If a \`${context}\` item contains additional entries beyond the required \`${key}\` and \`${value}\` entries, the additional entries are ignored. If a \`${context}\` item is missing the required \`${key}\` and \`${value}\` entries, the final result is ${nullValue}.`,
     contextMerge: (context: string, contexts: string): string =>
       `Returns a new \`${context}\` that includes all entries from the given \`${contexts}\`; if some of the keys are equal, the entries are overridden. The entries are overridden in the same order as specified by the supplied parameter, with new entries added as the last entry in the new context.`,
     context: (context: string): string =>
@@ -118,9 +118,10 @@ export const en: FeelInputComponentI18n = {
     finishesRange: (result: string, range1: string, range2: string) =>
       `Returns ${result} when \`${range1}\` finishes \`${range2}\``,
     flattenNestedLists: (list: string) => `Flatten nested ${list}`,
-    floor: (n: string) => `Returns \`${n}\` with rounding mode flooring. If \`${n}\` is null the result is null.`,
-    floorScale: (n: string, scale: string) =>
-      `Returns \`${n}\` with given scale and rounding mode flooring. If at least one of \`${n}\` or scale is null, the result is null. The \`${scale}\` must be in the range [−6111..6176].`,
+    floor: (n: string, nullValue: string) =>
+      `Returns \`${n}\` with rounding mode flooring. If \`${n}\` is ${nullValue} the result is ${nullValue}.`,
+    floorScale: (n: string, scale: string, nullValue: string) =>
+      `Returns \`${n}\` with given scale and rounding mode flooring. If at least one of \`${n}\` or scale is ${nullValue}, the result is ${nullValue}. The \`${scale}\` must be in the range [−6111..6176].`,
     getEntries: (list: string, m: string) => `Produces a ${list} of key,value pairs from a context \`${m}\``,
     getValue: (m: string, key: string) => `Select the value of the entry named \`${key}\` from context \`${m}\``,
     includes: (result: string, range: string, point: string) =>
@@ -139,36 +140,39 @@ export const en: FeelInputComponentI18n = {
     log: (number: string) => `Returns the natural logarithm (base e) of the \`${number}\` parameter`,
     lowerCase: (stringValue: string) => `Returns lowercased \`${stringValue}\``,
     matches: (input: string, pattern: string) => `Does the \`${input}\` match the regexp \`${pattern}\`?`,
-    max: (list: string) => `Returns maximum item, or null if \`${list}\` is empty`,
+    max: (list: string, nullValue: string) => `Returns maximum item, or ${nullValue} if \`${list}\` is empty`,
     mean: (list: string) => `Returns arithmetic mean (average) of \`${list}\` of numbers`,
-    median: (list: string) =>
-      `Returns the median element of the \`${list}\` of numbers. I.e., after sorting the \`${list}\`, if the \`${list}\` has an odd number of elements, it returns the middle element. If the \`${list}\` has an even number of elements, returns the average of the two middle elements. If the \`${list}\` is empty, returns null`,
+    median: (list: string, nullValue: string) =>
+      `Returns the median element of the \`${list}\` of numbers. I.e., after sorting the \`${list}\`, if the \`${list}\` has an odd number of elements, it returns the middle element. If the \`${list}\` has an even number of elements, returns the average of the two middle elements. If the \`${list}\` is empty, returns ${nullValue}`,
     meets: (result: string, range1: string, range2: string) =>
       `Returns ${result} when \`${range1}\` meets \`${range2}\``,
     metBy: (result: string, range1: string, range2: string) =>
       `Returns ${result} when \`${range1}\` is met \`${range2}\``,
-    min: (list: string) => `Returns minimum item, or null if \`${list}\` is empty`,
+    min: (list: string, nullValue: string) => `Returns minimum item, or ${nullValue} if \`${list}\` is empty`,
     mode: (list: string) =>
       `Returns the mode of the numbers in the \`${list}\`. If multiple elements are returned, the numbers are sorted in ascending order.`,
     modulo: (dividend: string, divisor: string) =>
       `Returns the remainder of the division of \`${dividend}\` by \`${divisor}\``,
     monthOfYear: "Returns the month of the year",
-    nnAll: (result: string, list: string) =>
-      `Returns ${result} if all elements in the \`${list}\` are ${result}. null values are ignored`,
-    nnAny: (result: string, list: string) =>
-      `Returns ${result} if any element in the \`${list}\` is ${result}. null values are ignored`,
-    nnCount: (list: string) =>
-      `Returns size of \`${list}\`, or zero if \`${list}\` is empty. null values are not counted`,
-    nnMax: (list: string) => `Returns maximum item, or null if \`${list}\` is empty. null values are ignored`,
-    nnMean: `Returns arithmetic mean (average) of numbers. null values are ignored`,
-    nnMedian: (list: string) =>
-      `Returns the median element of the \`${list}\` of numbers. null values are ignored. I.e., after sorting the \`${list}\`, if the \`${list}\` has an odd number of elements, it returns the middle element. If the \`${list}\` has an even number of elements, returns the average of the two middle elements. If the \`${list}\` is empty, returns null`,
-    nnMin: (list: string) => `Returns minimum item, or null if \`${list}\` is empty. null values are ignored`,
-    nnMode: (list: string) =>
-      `Returns the mode of the numbers in the \`${list}\`. null values are ignored. If multiple elements are returned, the numbers are sorted in ascending order`,
-    nnStddev: (list: string) =>
-      `Returns the standard deviation of the numbers in the \`${list}\`. null values are ignored.`,
-    nnSum: (list: string) => `Returns the sum of the numbers in the \`${list}\`. null values are ignored.`,
+    nnAll: (result: string, list: string, nullValue: string) =>
+      `Returns ${result} if all elements in the \`${list}\` are ${result}. ${nullValue} values are ignored`,
+    nnAny: (result: string, list: string, nullValue: string) =>
+      `Returns ${result} if any element in the \`${list}\` is ${result}. ${nullValue} values are ignored`,
+    nnCount: (list: string, nullValue: string) =>
+      `Returns size of \`${list}\`, or zero if \`${list}\` is empty. ${nullValue} values are not counted`,
+    nnMax: (list: string, nullValue: string) =>
+      `Returns maximum item, or ${nullValue} if \`${list}\` is empty. ${nullValue} values are ignored`,
+    nnMean: (nullValue: string) => `Returns arithmetic mean (average) of numbers. ${nullValue} values are ignored`,
+    nnMedian: (list: string, nullValue: string) =>
+      `Returns the median element of the \`${list}\` of numbers. ${nullValue} values are ignored. I.e., after sorting the \`${list}\`, if the \`${list}\` has an odd number of elements, it returns the middle element. If the \`${list}\` has an even number of elements, returns the average of the two middle elements. If the \`${list}\` is empty, returns ${nullValue}`,
+    nnMin: (list: string, nullValue: string) =>
+      `Returns minimum item, or ${nullValue} if \`${list}\` is empty. ${nullValue} values are ignored`,
+    nnMode: (list: string, nullValue: string) =>
+      `Returns the mode of the numbers in the \`${list}\`. ${nullValue} values are ignored. If multiple elements are returned, the numbers are sorted in ascending order`,
+    nnStddev: (list: string, nullValue: string) =>
+      `Returns the standard deviation of the numbers in the \`${list}\`. ${nullValue} values are ignored.`,
+    nnSum: (list: string, nullValue: string) =>
+      `Returns the sum of the numbers in the \`${list}\`. ${nullValue} values are ignored.`,
     not: (negand: string) => `Performs the logical negation of the \`${negand}\` operand`,
     now: (date: string, time: string) => `Returns the current ${date} and ${time}.`,
     numbers: (from: string) => `Converts \`${from}\` to a number.`,
@@ -186,21 +190,22 @@ export const en: FeelInputComponentI18n = {
       `Creates a ${list} with the removed element excluded from the specified \`${position}\`.`,
     replace: "Calculates the regular expression replacement",
     reverse: (list: string) => `Returns a reversed \`${list}\``,
-    roundDown: (n: string, scale: string) =>
-      `Returns \`${n}\` with given \`${scale}\` and rounding mode round down. If at least one of \`${n}\` or \`${scale}\` is null, the result is null. The \`${scale}\` must be in the range [−6111..6176].`,
-    roundDownN: (n: string) =>
-      `Returns \`${n}\` with rounding mode round down. If \`${n}\` is null, the result is null.`,
-    roundHalfDown: (n: string, scale: string) =>
-      `Returns \`${n}\` with given \`${scale}\` and rounding mode round half down. If at least one of \`${n}\` or \`${scale}\` is null, the result is null. The \`${scale}\` must be in the range [−6111..6176].`,
-    roundHalfDownN: (n: string) =>
-      `Returns \`${n}\` with rounding mode round half down. If \`${n}\` is null, the result is null.`,
-    roundHalfUp: (n: string, scale: string) =>
-      `Returns \`${n}\` with given \`${scale}\` and rounding mode round half up. If at least one of \`${n}\` or \`${scale}\` is null, the result is null. The \`${scale}\` must be in the range [−6111..6176].`,
-    roundHalfUpN: (n: string) =>
-      `Returns \`${n}\` with rounding mode round half up. If  \`${n}\` is null, the result is null.`,
-    roundUp: (n: string, scale: string) =>
-      `Returns \`${n}\` with given \`${scale}\` and rounding mode round up. If at least one of \`${n}\` or \`${scale}\` is null, the result is null. The \`${scale}\` must be in the range [−6111..6176].`,
-    roundUpN: (n: string) => `Returns \`${n}\` with rounding mode round up. If \`${n}\` is null, the result is null.`,
+    roundDown: (n: string, scale: string, nullValue: string) =>
+      `Returns \`${n}\` with given \`${scale}\` and rounding mode round down. If at least one of \`${n}\` or \`${scale}\` is ${nullValue}, the result is ${nullValue}. The \`${scale}\` must be in the range [−6111..6176].`,
+    roundDownN: (n: string, nullValue: string) =>
+      `Returns \`${n}\` with rounding mode round down. If \`${n}\` is ${nullValue}, the result is ${nullValue}.`,
+    roundHalfDown: (n: string, scale: string, nullValue: string) =>
+      `Returns \`${n}\` with given \`${scale}\` and rounding mode round half down. If at least one of \`${n}\` or \`${scale}\` is ${nullValue}, the result is ${nullValue}. The \`${scale}\` must be in the range [−6111..6176].`,
+    roundHalfDownN: (n: string, nullValue: string) =>
+      `Returns \`${n}\` with rounding mode round half down. If \`${n}\` is ${nullValue}, the result is ${nullValue}.`,
+    roundHalfUp: (n: string, scale: string, nullValue: string) =>
+      `Returns \`${n}\` with given \`${scale}\` and rounding mode round half up. If at least one of \`${n}\` or \`${scale}\` is ${nullValue}, the result is ${nullValue}. The \`${scale}\` must be in the range [−6111..6176].`,
+    roundHalfUpN: (n: string, nullValue: string) =>
+      `Returns \`${n}\` with rounding mode round half up. If  \`${n}\` is ${nullValue}, the result is ${nullValue}.`,
+    roundUp: (n: string, scale: string, nullValue: string) =>
+      `Returns \`${n}\` with given \`${scale}\` and rounding mode round up. If at least one of \`${n}\` or \`${scale}\` is ${nullValue}, the result is ${nullValue}. The \`${scale}\` must be in the range [−6111..6176].`,
+    roundUpN: (n: string, nullValue: string) =>
+      `Returns \`${n}\` with rounding mode round up. If \`${n}\` is ${nullValue}, the result is ${nullValue}.`,
     sort: (list: string, numberValue: string, stringValue: string) =>
       `Returns a ${list} of the same elements but ordered according a default sorting, if the elements are comparable (eg. \`${numberValue}\` or \`${stringValue}\`)`,
     sortPrecedes: (list: string) =>
@@ -223,8 +228,8 @@ export const en: FeelInputComponentI18n = {
     stringFrom: "Provides a string representation of the specified parameter",
     stringJoin: (list: string) =>
       `Returns a string which is composed by joining all the string elements from the \`${list}\` parameter. Null elements in the \`${list}\` parameter are ignored. If \`${list}\` is empty, the result is the empty string.`,
-    stringJoinDelimiter: (list: string, delimiter: string) =>
-      `Returns a string which is composed by joining all the string elements from the \`${list}\` parameter, separated by the \`${delimiter}\`. The \`${delimiter}\` can be an empty string. Null elements in the \`${list}\` parameter are ignored. If \`${list}\` is empty, the result is the empty string. If \`${delimiter}\` is null, the string elements are joined without a separator.`,
+    stringJoinDelimiter: (list: string, delimiter: string, nullValue: string) =>
+      `Returns a string which is composed by joining all the string elements from the \`${list}\` parameter, separated by the \`${delimiter}\`. The \`${delimiter}\` can be an empty string. Null elements in the \`${list}\` parameter are ignored. If \`${list}\` is empty, the result is the empty string. If \`${delimiter}\` is ${nullValue}, the string elements are joined without a separator.`,
     sublist: (startPosition: string) => `Returns the sublist from the \`${startPosition}\``,
     sublistLength: (startPosition: string, length: string) =>
       `Returns the sublist from the \`${startPosition}\` for the specified \`${length}\``,

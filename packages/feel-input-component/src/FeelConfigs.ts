@@ -94,9 +94,7 @@ export const feelDefaultConfig = (
 };
 
 export const feelDefaultSuggestions = (locale: string): Monaco.languages.CompletionItem[] => {
-  const i18n = new I18n(feelInputComponentI18nDefaults, feelInputComponentDictionaries)
-    .setLocale(locale ?? navigator.language)
-    .getCurrent();
+  const i18n = new I18n(feelInputComponentI18nDefaults, feelInputComponentDictionaries).setLocale(locale).getCurrent();
   const suggestions: Monaco.languages.CompletionItem[] = [];
 
   const suggestionTypes = {
@@ -200,7 +198,7 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "any(list)",
         insertText: "any($1)",
-        description: i18n.functionDescription.anyTrue("true", "list", "false"),
+        description: i18n.functionDescription.anyTrue("true", "list", "false", "null"),
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
         examples: [
           "any( [false,null,true] ) = true",
@@ -268,14 +266,14 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "ceiling(n)",
         insertText: "ceiling($1)",
-        description: i18n.functionDescription.ceiling("n"),
+        description: i18n.functionDescription.ceiling("n", "null"),
         parameters: [["n", `\`number\``]],
         examples: ["ceiling( 1.5 ) = 2", "ceiling( -1.5 ) = -1"],
       },
       {
         label: "ceiling(n, scale)",
         insertText: "ceiling($1, $2)",
-        description: i18n.functionDescription.ceilingScale("n", "scale"),
+        description: i18n.functionDescription.ceilingScale("n", "scale", "null"),
         parameters: [
           ["n", `\`number\``],
           ["scale", `\`number\``],
@@ -333,7 +331,7 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "context(entries)",
         insertText: "context($1)",
-        description: i18n.functionDescription.contextKeyValue("context", "key", "value"),
+        description: i18n.functionDescription.contextKeyValue("context", "key", "value", "null"),
         parameters: [["entries", `\`list\` of \`context\``]],
         examples: [
           'context( [{key:"a", value:1}, {key:"b", value:2}] ) = { a:1, b:2 }',
@@ -678,14 +676,14 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "floor(n)",
         insertText: "floor($1)",
-        description: i18n.functionDescription.floor("n"),
+        description: i18n.functionDescription.floor("n", "null"),
         parameters: [["n", `\`number\``]],
         examples: ["floor(1.5) = 1"],
       },
       {
         label: "floor(n, scale)",
         insertText: "floor($1, $2)",
-        description: i18n.functionDescription.floorScale("n", "scale"),
+        description: i18n.functionDescription.floorScale("n", "scale", "null"),
         parameters: [
           ["n", `\`number\``],
           ["scale", `\`number\``],
@@ -866,7 +864,7 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "max(list)",
         insertText: "max($1)",
-        description: i18n.functionDescription.max("list"),
+        description: i18n.functionDescription.max("list", "null"),
         parameters: [["list", `\`list\``]],
         examples: ["min( [1,2,3] ) = 1", "max( 1,2,3 ) = 3", "min( 1 ) = min( [1] ) = 1", "max( [] ) = null"],
       },
@@ -880,7 +878,7 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "median(list)",
         insertText: "median($1)",
-        description: i18n.functionDescription.median("list"),
+        description: i18n.functionDescription.median("list", "null"),
         parameters: [["list", `\`list\``]],
         examples: ["median( 8, 2, 5, 3, 4 ) = 4", "median( [6, 1, 2, 3] ) = 2.5", "median( [ ] ) = null"],
       },
@@ -917,7 +915,7 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "min(list)",
         insertText: "min($1)",
-        description: i18n.functionDescription.min("list"),
+        description: i18n.functionDescription.min("list", "null"),
         parameters: [["list", `\`list\``]],
         examples: ["min( [1,2,3] ) = 1", "min( 1 ) = 1", "min( [1] ) = 1"],
       },
@@ -957,7 +955,7 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "nn all(list)",
         insertText: "nn all($1)",
-        description: i18n.functionDescription.nnAll("true", "list"),
+        description: i18n.functionDescription.nnAll("true", "list", "null"),
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
         examples: [
           "nn all( [false,null,true] ) = false",
@@ -970,7 +968,7 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "nn any(list)",
         insertText: "nn any($1)",
-        description: i18n.functionDescription.nnAny("true", "list"),
+        description: i18n.functionDescription.nnAny("true", "list", "null"),
         parameters: [["list", `\`list\` of \`boolean\` elements`]],
         examples: [
           "nn any( [false,null,true] ) = true",
@@ -983,7 +981,7 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "nn count(list)",
         insertText: "nn count($1)",
-        description: i18n.functionDescription.nnCount("list"),
+        description: i18n.functionDescription.nnCount("list", "null"),
         parameters: [["list", `\`list\``]],
         examples: [
           "nn count( [1,2,3] ) = 3",
@@ -995,7 +993,7 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "nn max(list)",
         insertText: "nn max($1)",
-        description: i18n.functionDescription.nnMax("list"),
+        description: i18n.functionDescription.nnMax("list", "null"),
         parameters: [["list", `\`list\``]],
         examples: [
           "nn min( [1,2,3] ) = 1",
@@ -1008,7 +1006,7 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "nn mean(list)",
         insertText: "nn mean($1)",
-        description: i18n.functionDescription.nnMean,
+        description: i18n.functionDescription.nnMean("null"),
         parameters: [["list", `\`list\``]],
         examples: [
           "nn mean( [1,2,3] ) = 2",
@@ -1021,7 +1019,7 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "nn median(list)",
         insertText: "nn median($1)",
-        description: i18n.functionDescription.nnMedian("list"),
+        description: i18n.functionDescription.nnMedian("list", "null"),
         parameters: [["list", `\`list\``]],
         examples: [
           "nn median( 8, 2, 5, 3, 4 ) = 4",
@@ -1033,14 +1031,14 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "nn min(list)",
         insertText: "nn min($1)",
-        description: i18n.functionDescription.nnMin("list"),
+        description: i18n.functionDescription.nnMin("list", "null"),
         parameters: [["list", `\`list\``]],
         examples: ["nn min( [1,2,3] ) = 1", "nn min( [1,2,null,3] ) = 1", "nn min( 1 ) = 1", "nn min( [1] ) = 1"],
       },
       {
         label: "nn mode(list)",
         insertText: "nn mode($1)",
-        description: i18n.functionDescription.nnMode("list"),
+        description: i18n.functionDescription.nnMode("list", "null"),
         parameters: [["list", `\`list\``]],
         examples: [
           "nn mode( 6, 3, 9, 6, 6 ) = [6]",
@@ -1052,7 +1050,7 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "nn stddev(list)",
         insertText: "nn stddev($1)",
-        description: i18n.functionDescription.nnStddev("list"),
+        description: i18n.functionDescription.nnStddev("list", "null"),
         parameters: [["list", `\`list\``]],
         examples: [
           "nn stddev( 2, 4, 7, 5 ) = 2.081665999466132735282297706979931",
@@ -1065,7 +1063,7 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "nn sum(list)",
         insertText: "nn sum($1)",
-        description: i18n.functionDescription.nnSum("list"),
+        description: i18n.functionDescription.nnSum("list", "null"),
         parameters: [["list", `\`list\``]],
         examples: [
           "nn sum( [1,2,3] ) = 6",
@@ -1252,7 +1250,7 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "round down(n, scale)",
         insertText: "round down($1, $2)",
-        description: i18n.functionDescription.roundDown("n", "scale"),
+        description: i18n.functionDescription.roundDown("n", "scale", "null"),
         parameters: [
           ["n", `\`number\``],
           ["scale", `\`number\``],
@@ -1267,14 +1265,14 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "round down(n)",
         insertText: "round down($1)",
-        description: i18n.functionDescription.roundDownN("n"),
+        description: i18n.functionDescription.roundDownN("n", "null"),
         parameters: [["n", `\`number\``]],
         examples: ["round down( 5.5) = 5", "round down( -5.5) = -5"],
       },
       {
         label: "round half down(n, scale)",
         insertText: "round half down($1, $2)",
-        description: i18n.functionDescription.roundHalfDown("n", "scale"),
+        description: i18n.functionDescription.roundHalfDown("n", "scale", "null"),
         parameters: [
           ["n", `\`number\``],
           ["scale", `\`number\``],
@@ -1289,14 +1287,14 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "round half down(n)",
         insertText: "round half down($1)",
-        description: i18n.functionDescription.roundHalfDownN("n"),
+        description: i18n.functionDescription.roundHalfDownN("n", "null"),
         parameters: [["n", `\`number\``]],
         examples: ["round half down( 5.5) = 5", "round half down( -5.5) = -5"],
       },
       {
         label: "round half up(n, scale)",
         insertText: "round half up($1, $2)",
-        description: i18n.functionDescription.roundHalfUp("n", "scale"),
+        description: i18n.functionDescription.roundHalfUp("n", "scale", "null"),
         parameters: [
           ["n", `\`number\``],
           ["scale", `\`number\``],
@@ -1311,14 +1309,14 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "round half up(n)",
         insertText: "round half up($1)",
-        description: i18n.functionDescription.roundHalfUpN("n"),
+        description: i18n.functionDescription.roundHalfUpN("n", "null"),
         parameters: [["n", `\`number\``]],
         examples: ["round half up(5.5) = 6 ", "round half up( -5.5) = -6"],
       },
       {
         label: "round up(n, scale)",
         insertText: "round up($1, $2)",
-        description: i18n.functionDescription.roundUp("n", "scale"),
+        description: i18n.functionDescription.roundUp("n", "scale", "null"),
         parameters: [
           ["n", `\`number\``],
           ["scale", `\`number\``],
@@ -1333,7 +1331,7 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "round up(n)",
         insertText: "round up($1)",
-        description: i18n.functionDescription.roundUpN("n"),
+        description: i18n.functionDescription.roundUpN("n", "null"),
         parameters: [["n", `\`number\``]],
         examples: ["round up(5.5) = 6", "round up(-5.5) = -6 "],
       },
@@ -1481,7 +1479,7 @@ export const feelDefaultSuggestions = (locale: string): Monaco.languages.Complet
       {
         label: "string join(list, delimiter)",
         insertText: "string join($1, $2)",
-        description: i18n.functionDescription.stringJoinDelimiter("list", "delimiter"),
+        description: i18n.functionDescription.stringJoinDelimiter("list", "delimiter", "null"),
         parameters: [
           ["list", `\`list\` of \`string\``],
           ["delimiter", `\`string\``],

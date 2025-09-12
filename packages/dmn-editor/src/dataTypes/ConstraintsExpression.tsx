@@ -131,8 +131,6 @@ export function ConstraintsExpression({
           onPreviewChanged={onPreviewChanged}
           enabled={!isReadOnly}
           options={monacoOptions as any}
-          //for testing only - will change once dmn-editor PR is merged
-          locale={""}
         />
       </div>
       <HelperText>
