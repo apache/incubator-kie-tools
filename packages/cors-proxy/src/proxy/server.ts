@@ -44,7 +44,7 @@ export const startServer = (args: ServerArgs): void => {
 
   const proxy = new ExpressCorsProxy(args);
 
-  const corsHandler = cors();
+  const corsHandler = cors({ origin: args.origin });
 
   app.use(corsHandler);
   app.options("/", corsHandler); // enable pre-flight requests
