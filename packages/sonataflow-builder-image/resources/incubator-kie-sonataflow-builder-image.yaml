@@ -68,6 +68,7 @@
       - name: org.kie.kogito.project.versions
       - name: org.kie.sonataflow.common.scripts
       - name: org.kie.sonataflow.common.quarkus.registry
+      - name: org.kie.sonataflow.builder.packages
       - name: org.kie.sonataflow.builder.runtime
 
   run:
