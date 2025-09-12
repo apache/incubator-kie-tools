@@ -34,7 +34,7 @@ export interface FeelInputComponentProps {
 
 export function FeelInputTextbox({ value, onChange, expressionId }: FeelInputComponentProps) {
   const feelInputRef = useRef<FeelInputRef>(null);
-  const i18n = useBoxedExpressionEditorI18n();
+  const { locale } = useBoxedExpressionEditorI18n();
 
   const MONACO_OPTIONS: Monaco.editor.IStandaloneEditorConstructionOptions = {
     fixedOverflowWidgets: true,
@@ -107,7 +107,7 @@ export function FeelInputTextbox({ value, onChange, expressionId }: FeelInputCom
         onBlur={onFeelBlur}
         feelIdentifiers={feelIdentifiers}
         expressionId={expressionId}
-        locale={i18n.locale}
+        locale={locale}
       />
     </div>
   );

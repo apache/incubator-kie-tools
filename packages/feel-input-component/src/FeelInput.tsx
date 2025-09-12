@@ -151,7 +151,7 @@ export const FeelInput = React.forwardRef<FeelInputRef, FeelInputProps>(
         }
         return feelDefaultSuggestions(locale);
       },
-      []
+      [locale]
     );
 
     useEffect(() => {

@@ -49,6 +49,7 @@ export function ConstraintsExpression({
   const [isEditing, setEditing] = useState(false);
   const valueCopy = useRef(value);
   const FEEL_HANDBOOK_URL = "https://kiegroup.github.io/dmn-feel-handbook/#feel-values";
+  const { locale } = useDmnEditorI18n();
 
   const onFeelBlur = useCallback((valueOnBlur: string) => {
     setEditing(false);
@@ -131,6 +132,7 @@ export function ConstraintsExpression({
           onPreviewChanged={onPreviewChanged}
           enabled={!isReadOnly}
           options={monacoOptions as any}
+          locale={locale}
         />
       </div>
       <HelperText>

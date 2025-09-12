@@ -72,7 +72,7 @@ export function BeeTableEditableCellContent({
   const [previousValue, setPreviousValue] = useState(value);
   const [editingValue, setEditingValue] = useState(value);
   const feelInputRef = useRef<FeelInputRef>(null);
-  const i18n = useBoxedExpressionEditorI18n();
+  const { locale } = useBoxedExpressionEditorI18n();
 
   const mode = useMemo(() => {
     return isEditing && !isReadOnly ? Mode.Edit : Mode.Read;
@@ -225,7 +225,7 @@ export function BeeTableEditableCellContent({
           onBlur={onFeelBlur}
           feelIdentifiers={feelIdentifiers}
           expressionId={expressionId}
-          locale={i18n.locale}
+          locale={locale}
         />
       </div>
     </>
