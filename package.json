@@ -30,6 +30,7 @@
     "@nice-move/prettier-plugin-package-json": "^0.8.0",
     "@prettier/plugin-xml": "^3.4.1",
     "@types/node": "^22.10.7",
+    "html-webpack-plugin": "^5.3.2",
     "husky": "^6.0.0",
     "postinstall-postinstall": "^2.1.0",
     "prettier": "^3.3.2",
