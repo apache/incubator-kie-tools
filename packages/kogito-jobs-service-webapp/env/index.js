@@ -38,7 +38,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "Documentation link text",
     },
     SONATAFLOW_JOBS_SERVICE_WEBAPP_docLinkHref: {
-      default: "https://kiegroup.github.io/kogito-docs/serverlessworkflow/latest/job-services/core-concepts.html",
+      default: "https://sonataflow.org/serverlessworkflow/latest/job-services/core-concepts.html",
       description: "Documentation link URL",
     },
     SONATAFLOW_JOBS_SERVICE_WEBAPP_docLinkText: {
