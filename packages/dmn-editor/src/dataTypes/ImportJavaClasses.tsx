@@ -36,6 +36,7 @@ import {
 import { addTopLevelItemDefinition as _addTopLevelItemDefinition } from "../mutations/addTopLevelItemDefinition";
 import { JavaClassConflictOptions, JavaClassWithConflictInfo, useImportJavaClasses } from "./useImportJavaClasses";
 import { Radio } from "@patternfly/react-core/dist/esm/components/Radio";
+import { useDmnEditorI18n } from "../i18n";
 
 const ImportJavaClassesWrapper = ({
   javaCodeCompletionService,
@@ -125,6 +126,7 @@ const ImportJavaClassNameConflictsModal = ({
   conflictedJavaClasses: JavaClassWithConflictInfo[];
   onClose: () => void;
 }) => {
+  const { i18n } = useDmnEditorI18n();
   const internalConflicts = conflictedJavaClasses.filter((c) => !c.isExternalConflict);
   const externalConflicts = conflictedJavaClasses.filter((c) => c.isExternalConflict);
   const hasInternalConflicts = internalConflicts.length > 0;
@@ -150,7 +152,7 @@ const ImportJavaClassNameConflictsModal = ({
 
   return (
     <Modal
-      title="Duplicate DMN Data Type Detected"
+      title={i18n.dataTypes.duplicateDmnDetected}
       titleIconVariant="warning"
       aria-describedby="modal-import-java-classes-conflict-description"
       onClose={onClose}
@@ -159,25 +161,21 @@ const ImportJavaClassNameConflictsModal = ({
       position="top"
       actions={[
         <Button key="import-java-classes-conflict-btn" variant="primary" onClick={handleActionButtonClick}>
-          Import
+          {i18n.import}
         </Button>,
         <Button key="import-java-classes-cancel-btn" variant="primary" onClick={onClose}>
-          Cancel
+          {i18n.cancel}
         </Button>,
       ]}
     >
       <TextContent>
-        <Text component={TextVariants.p}>
-          Conflicts have been detected between imported Java classes and existing DMN data types. Please review the
-          details below and choose how to proceed.
-        </Text>
+        <Text component={TextVariants.p}>{i18n.dataTypes.conflictsDetectedMessage}</Text>
 
         {hasInternalConflicts && (
           <>
-            <Text component={TextVariants.h4}>Internal Data Type Conflicts</Text>
+            <Text component={TextVariants.h4}>{i18n.dataTypes.internalDataTypeConflicts}</Text>
             <Text>
-              <b>{internalConflicts.map((c) => c.name).join(", ")}</b>- These are editable DMN Types. Choose how to
-              resolve them.
+              <b>{internalConflicts.map((c) => c.name).join(", ")}</b>- {i18n.dataTypes.editableDataTypes}
             </Text>
             <Text
               component={TextVariants.blockquote}
@@ -186,19 +184,19 @@ const ImportJavaClassNameConflictsModal = ({
               <Radio
                 isChecked={internalAction === JavaClassConflictOptions.REPLACE}
                 id={`radio-internal-${JavaClassConflictOptions.REPLACE}`}
-                label={JavaClassConflictOptions.REPLACE}
+                label={i18n.dataTypes.replace}
                 name={JavaClassConflictOptions.REPLACE}
                 onChange={handleInternalRadioBtnClick}
-                description="This option will replace the existing DMN type with the new one."
+                description={i18n.dataTypes.replaceExistingDmn}
                 isLabelWrapped={true}
               />
               <Radio
                 isChecked={internalAction === JavaClassConflictOptions.KEEP_BOTH}
                 id={`radio-internal-${JavaClassConflictOptions.KEEP_BOTH}`}
-                label={JavaClassConflictOptions.KEEP_BOTH}
+                label={i18n.dataTypes.keepBoth}
                 name={JavaClassConflictOptions.KEEP_BOTH}
                 onChange={handleInternalRadioBtnClick}
-                description="This option will preserve the existing DMN type and create a new one with a unique name."
+                description={i18n.dataTypes.preserveExistingDmn}
                 isLabelWrapped={true}
               />
             </Text>
@@ -207,10 +205,9 @@ const ImportJavaClassNameConflictsModal = ({
 
         {hasExternalConflicts && (
           <>
-            <Text component={TextVariants.h4}>External Data Type Conflicts</Text>
+            <Text component={TextVariants.h4}>{i18n.dataTypes.externalDataTypeConflicts}</Text>
             <Text>
-              <b>{externalConflicts.map((c) => c.name).join(", ")}</b>- These types come from external sources and
-              cannot be replaced.
+              <b>{externalConflicts.map((c) => c.name).join(", ")}</b>- {i18n.dataTypes.externalSources}
             </Text>
             <Text
               component={TextVariants.blockquote}
@@ -219,20 +216,20 @@ const ImportJavaClassNameConflictsModal = ({
               <Radio
                 isChecked={externalAction === JavaClassConflictOptions.REPLACE}
                 id={`radio-external-${JavaClassConflictOptions.REPLACE}`}
-                label={JavaClassConflictOptions.REPLACE}
+                label={i18n.dataTypes.replace}
                 name={JavaClassConflictOptions.REPLACE + "-external"}
                 onChange={handleExternalRadioBtnClick}
-                description="This option will replace the existing DMN type with the new one."
+                description={i18n.dataTypes.replaceExistingDmn}
                 isLabelWrapped={true}
                 isDisabled={true}
               />
               <Radio
                 isChecked={externalAction === JavaClassConflictOptions.KEEP_BOTH}
                 id={`radio-external-${JavaClassConflictOptions.KEEP_BOTH}`}
-                label={JavaClassConflictOptions.KEEP_BOTH}
+                label={i18n.dataTypes.keepBoth}
                 name={JavaClassConflictOptions.KEEP_BOTH + "-external"}
                 onChange={handleExternalRadioBtnClick}
-                description="This option will preserve the existing DMN type and create a new one with a unique name."
+                description={i18n.dataTypes.preserveExistingDmn}
                 isLabelWrapped={true}
               />
             </Text>

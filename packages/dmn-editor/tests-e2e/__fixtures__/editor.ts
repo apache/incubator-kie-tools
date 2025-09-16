@@ -62,4 +62,10 @@ export class Editor {
   public async changeTab(args: { tab: TabName }) {
     await this.page.getByRole("tab", { name: args.tab }).click();
   }
+
+  public async openDecisionWithNamespaceInHref() {
+    await this.page.goto(
+      `${this.baseURL}/iframe.html?args=&id=use-cases-namespace-in-required-decision-href--namespace-in-required-decision-href&viewMode=story`
+    );
+  }
 }

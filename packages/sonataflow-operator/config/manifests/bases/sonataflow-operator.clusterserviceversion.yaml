@@ -299,7 +299,7 @@ spec:
   maintainers:
     - email: dev@kie.apache.org
       name: Apache KIE
-  maturity: alpha
+  maturity: stable
   minKubeVersion: 1.23.0
   provider:
     name: Apache KIE

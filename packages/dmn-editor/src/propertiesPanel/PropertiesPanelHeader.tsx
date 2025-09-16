@@ -25,6 +25,7 @@ import { Truncate } from "@patternfly/react-core/dist/js/components/Truncate";
 import { AngleDownIcon } from "@patternfly/react-icons/dist/js/icons/angle-down-icon";
 import { AngleRightIcon } from "@patternfly/react-icons/dist/js/icons/angle-right-icon";
 import "./PropertiesPanelHeader.css";
+import { useDmnEditorI18n } from "../i18n";
 
 export function PropertiesPanelHeader(props: {
   icon?: React.ReactNode;
@@ -35,6 +36,7 @@ export function PropertiesPanelHeader(props: {
   toogleSectionExpanded?: () => void;
   action?: React.ReactNode;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const propertiesPanelHeaderClass = useMemo(() => {
     let className = "kie-dmn-editor--properties-panel-header";
     if (props.fixed) {
@@ -56,7 +58,7 @@ export function PropertiesPanelHeader(props: {
         {props.expands && (
           <div className={"kie-dmn-editor--properties-panel-header-toogle-expanded"}>
             <Button
-              title={`Expand / collapse ${props.title}`}
+              title={i18n.propertiesPanel.expandCollapseTitle(typeof props.title === "string" ? props.title : "")}
               variant={ButtonVariant.plain}
               className={"kie-dmn-editor--documentation-link--row-expand-toogle"}
               onClick={() => props.toogleSectionExpanded?.()}

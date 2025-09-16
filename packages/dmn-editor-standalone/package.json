@@ -42,7 +42,6 @@
     "@babel/preset-typescript": "^7.22.5",
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/envelope-bus": "workspace:*",
-    "@kie-tools-core/i18n": "workspace:*",
     "@kie-tools-core/notifications": "workspace:*",
     "@kie-tools-core/patternfly-base": "workspace:*",
     "@kie-tools-core/webpack-base": "workspace:*",

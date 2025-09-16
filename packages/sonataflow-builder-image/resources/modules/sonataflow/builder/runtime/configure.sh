@@ -21,21 +21,12 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SOURCES_DIR=/tmp/artifacts
 ADDED_DIR="${SCRIPT_DIR}"/added
 LAUNCH_DIR="${KOGITO_HOME}"/launch
 
-mkdir -p "${KOGITO_HOME}"/.m2/repository
-mkdir -p "${KOGITO_HOME}/${PROJECT_ARTIFACT_ID}"
+mkdir -p "${LAUNCH_DIR}"
 
 cp -v "${ADDED_DIR}"/* "${LAUNCH_DIR}"
 
-# Unzip Quarkus app and Maven repository
-tar xf "${SOURCES_DIR}"/kogito-swf-quarkus-app.tar -C "${KOGITO_HOME}/${PROJECT_ARTIFACT_ID}"
-tar xf "${SOURCES_DIR}"/kogito-swf-maven-repo.tar -C "${KOGITO_HOME}"/.m2/repository
-
 chown -R 1001:0 "${KOGITO_HOME}"
 chmod -R ug+rwX "${KOGITO_HOME}"
-
-# Cleanup Maven M2 Repo Via HTTP Settings XML
-rm ${MAVEN_CONTAINER_BUILD_SETTINGS_PATH}

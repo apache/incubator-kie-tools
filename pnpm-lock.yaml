@@ -4434,6 +4434,9 @@ importers:
       '@kie-tools-core/envelope-bus':
         specifier: workspace:*
         version: link:../envelope-bus
+      '@kie-tools-core/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@kie-tools-core/keyboard-shortcuts':
         specifier: workspace:*
         version: link:../keyboard-shortcuts
@@ -4458,6 +4461,9 @@ importers:
       '@kie-tools/dmn-marshaller':
         specifier: workspace:*
         version: link:../dmn-marshaller
+      '@kie-tools/i18n-common-dictionary':
+        specifier: workspace:*
+        version: link:../i18n-common-dictionary
       '@kie-tools/pmml-editor-marshaller':
         specifier: workspace:*
         version: link:../pmml-editor-marshaller
@@ -4525,9 +4531,6 @@ importers:
       '@kie-tools-core/envelope-bus':
         specifier: workspace:*
         version: link:../envelope-bus
-      '@kie-tools-core/i18n':
-        specifier: workspace:*
-        version: link:../i18n
       '@kie-tools-core/notifications':
         specifier: workspace:*
         version: link:../notifications
@@ -4733,6 +4736,9 @@ importers:
       antlr4:
         specifier: ^4.13.0
         version: 4.13.0
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       uuid:
         specifier: ^8.3.2
         version: 8.3.2
@@ -4761,6 +4767,12 @@ importers:
       '@types/jest':
         specifier: ^29.5.12
         version: 29.5.12
+      '@types/json-schema':
+        specifier: ^7.0.11
+        version: 7.0.15
+      '@types/lodash':
+        specifier: ^4.14.168
+        version: 4.14.202
       '@types/uuid':
         specifier: ^8.3.0
         version: 8.3.0
@@ -5973,6 +5985,9 @@ importers:
 
   packages/form-code-generator-vscode-command:
     dependencies:
+      '@kie-tools-core/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@kie-tools/form-code-generator':
         specifier: workspace:*
         version: link:../form-code-generator
@@ -5982,6 +5997,9 @@ importers:
       '@kie-tools/form-code-generator-patternfly-theme':
         specifier: workspace:*
         version: link:../form-code-generator-patternfly-theme
+      '@kie-tools/i18n-common-dictionary':
+        specifier: workspace:*
+        version: link:../i18n-common-dictionary
       '@kie-tools/jbpm-form-code-generator-themes':
         specifier: workspace:*
         version: link:../jbpm-form-code-generator-themes
@@ -10342,6 +10360,9 @@ importers:
       '@kie-tools-core/envelope-bus':
         specifier: workspace:*
         version: link:../envelope-bus
+      '@kie-tools-core/i18n':
+        specifier: workspace:*
+        version: link:../i18n
       '@kie-tools-core/keyboard-shortcuts':
         specifier: workspace:*
         version: link:../keyboard-shortcuts
@@ -10360,6 +10381,9 @@ importers:
       '@kie-tools/dmn-marshaller':
         specifier: workspace:*
         version: link:../dmn-marshaller
+      '@kie-tools/i18n-common-dictionary':
+        specifier: workspace:*
+        version: link:../i18n-common-dictionary
       '@kie-tools/scesim-editor':
         specifier: workspace:*
         version: link:../scesim-editor
@@ -12347,6 +12371,9 @@ importers:
       '@kie-tools/kogito-data-index-webapp':
         specifier: workspace:*
         version: link:../kogito-data-index-webapp
+      '@kie-tools/kogito-jobs-service-webapp':
+        specifier: workspace:*
+        version: link:../kogito-jobs-service-webapp
     devDependencies:
       '@kie-tools/python-venv':
         specifier: workspace:*

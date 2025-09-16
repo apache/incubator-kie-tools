@@ -200,9 +200,9 @@
       { "id": "@kie-tools/sonataflow-image-common" },
       { "id": "@kie-tools/kogito-data-index-webapp" },
       { "id": "@kie-tools/kogito-db-migrator-tool" },
+      { "id": "@kie-tools/kogito-jobs-service-webapp" },
       { "id": "@kie-tools/python-venv" },
       { "id": "@kie/kogito-jit-runner-image" },
-      { "id": "@kie-tools/kogito-jobs-service-webapp" },
       { "id": "@kie-tools/unitables" },
       { "id": "pmml-vscode-extension" },
       { "id": "@kie-tools/runtime-tools-components" },
@@ -1028,6 +1028,11 @@
       {
         "source": "bpmn-vscode-extension",
         "target": "@kie-tools/vscode-java-code-completion-extension-plugin",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/form-code-generator-vscode-command",
+        "target": "@kie-tools/i18n-common-dictionary",
         "weight": 1
       },
       {
@@ -2142,6 +2147,11 @@
       },
       {
         "source": "@kie-tools/sonataflow-image-common",
+        "target": "@kie-tools/kogito-jobs-service-webapp",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-image-common",
         "target": "@kie-tools/python-venv",
         "weight": 1
       },
@@ -2156,13 +2166,13 @@
         "weight": 1
       },
       {
-        "source": "@kie/kogito-jit-runner-image",
-        "target": "@kie/kogito-images-install-helper",
+        "source": "@kie-tools/kogito-jobs-service-webapp",
+        "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
       {
-        "source": "@kie-tools/kogito-jobs-service-webapp",
-        "target": "@kie-tools-core/webpack-base",
+        "source": "@kie/kogito-jit-runner-image",
+        "target": "@kie/kogito-images-install-helper",
         "weight": 1
       },
       {

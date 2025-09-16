@@ -33,7 +33,8 @@ export type DrgEdge = {
   targetId: string;
   id: string;
   dmnObject: {
-    namespace: string;
+    /* Empty or undefined if same as "thisDmn"'s namespace. */
+    normalizedNamespace: undefined | string;
     id: string;
     type: Unpacked<Normalized<DMN_LATEST__tDefinitions>["artifact" | "drgElement"]>["__$$element"];
     requirementType: "informationRequirement" | "knowledgeRequirement" | "authorityRequirement" | "association";

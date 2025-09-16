@@ -108,6 +108,7 @@ export const ParametersPopover: React.FunctionComponent<ParametersPopoverProps> 
 };
 
 function ParameterEntry({ parameter, index }: { parameter: DMN_LATEST__tInformationItem; index: number }) {
+  const { i18n } = useBoxedExpressionEditorI18n();
   const { setExpression } = useBoxedExpressionEditorDispatch();
 
   const onNameChange = useCallback(
@@ -191,7 +192,7 @@ function ParameterEntry({ parameter, index }: { parameter: DMN_LATEST__tInformat
         className="parameter-name"
         type="text"
         onBlur={onNameChange}
-        placeholder={"Parameter Name"}
+        placeholder={i18n.parameterNamePlaceholder}
         defaultValue={parameter["@_name"]}
       />
       <DataTypeSelector value={parameter["@_typeRef"]} onChange={onDataTypeChange} menuAppendTo="parent" />

@@ -425,6 +425,7 @@ digraph G {
   "@kie-tools/form-code-generator-bootstrap4-theme" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/form-code-generator-patternfly-theme" -> "@kie-tools/form-code-generator" [ style = "solid", color = "blue" ];
   "@kie-tools/form-code-generator-patternfly-theme" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
+  "@kie-tools/form-code-generator-vscode-command" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
   "@kie-tools/form-code-generator-vscode-command" -> "@kie-tools/jbpm-form-code-generator-themes" [ style = "solid", color = "blue" ];
   "@kie-tools/form-dmn" -> "@kie-tools/form" [ style = "solid", color = "blue" ];
   "@kie-tools-core/i18n" -> "@kie-tools/eslint" [ style = "dashed", color = "purple" ];
@@ -636,6 +637,7 @@ digraph G {
   "@kie-tools/sonataflow-devmode-image" -> "@kie-tools/sonataflow-quarkus-devui" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-devmode-image" -> "@kie/kogito-images-install-helper" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-image-common" -> "@kie-tools/kogito-data-index-webapp" [ style = "solid", color = "black" ];
+  "@kie-tools/sonataflow-image-common" -> "@kie-tools/kogito-jobs-service-webapp" [ style = "solid", color = "black" ];
   "@kie-tools/sonataflow-image-common" -> "@kie-tools/python-venv" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-management-console-image" -> "@kie-tools/image-env-to-json" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-management-console-image" -> "@kie-tools/sonataflow-image-common" [ style = "dashed", color = "black" ];

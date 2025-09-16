@@ -21,5 +21,10 @@ name: org.kie.kogito.jobs.service.common
 version: "main"
 description: "This module needs to be run last, if adding it, add in the last position."
 
+envs:
+  - name: "KOGITO_JOBS_SERVICE_UI_PATH"
+    value: "/home/kogito/ui/"
+    description: "Path where the Jobs Service WebApp UI is served"
+
 execute:
   - script: configure

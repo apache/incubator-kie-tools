@@ -89,6 +89,8 @@
         <artifactId>tycho-compiler-plugin</artifactId>
         <version>${version.tycho}</version>
         <configuration>
+          <source>17</source>
+          <target>17</target>
           <compilerArgument>-err:-forbidden</compilerArgument>
           <useProjectSettings>false</useProjectSettings>
         </configuration>
