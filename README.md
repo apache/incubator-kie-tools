@@ -280,3 +280,24 @@ After that, you're ready to start developing the Editors individually.
 
   - Located at `packages/stunner-editors/drools-wb-screens/drools-wb-scenario-simulation-editor/drools-wb-scenario-simulation-editor-kogito-testing`.
   - Run `mvn clean gwt:run` to start.
+
+# Custom VAAS
+
+pnpm install
+pnpm bootstrap
+pnpm --filter @kie-tools/runtime-tools-management-console-webapp... build:dev
+
+brew install go
+brew install maven
+
+pnpm install --filter @kie-tools/runtime-tools-management-console-webapp
+pnpm install --filter=@kie-tools/runtime-tools-management-console-webapp --ignore-scripts
+
+Error
+runtime-tools-consoles-helm-chart
+Es una carpeta que contiene un Helm chart para desplegar las consolas (como el management-console y task-console) en Kubernetes.
+Eliminar: rm -rf packages/runtime-tools-consoles-helm-chart
+
+Luego
+pnpm install
+pnpm bootstrap
