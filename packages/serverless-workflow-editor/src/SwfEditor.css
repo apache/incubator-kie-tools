@@ -1,0 +1,563 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+/* (begin) global */
+.kie-swf-editor--root {
+  height: 100%;
+}
+
+.kie-tools--swf-editor--diagram-container {
+  height: 100%;
+  position: relative;
+}
+
+.kie-swf-editor--bee-container {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  user-select: none;
+  padding-left: 16px;
+}
+/* (end) global */
+
+/* (begin) diagram empty state */
+.kie-swf-editor--diagram-empty-state {
+  border: 1px solid lightgray;
+  backdrop-filter: blur(4px);
+  background: rgb(255, 255, 255, 60%);
+  border-radius: 16px;
+  padding: 16px;
+  pointer-events: all;
+  box-shadow: 0 0 60px 20px #e1e1e1;
+}
+/* (end) diagram empty state */
+
+/* (begin) nodes */
+.kie-swf-editor--node {
+  height: 100%;
+  width: 100%;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  word-break: break-word;
+  overflow: hidden;
+  -webkit-line-clamp: 2; /* number of lines to show */
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-align: center;
+  position: absolute;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  z-index: 10000; /* Makes the data type node panel appear correctly, on top of the node */
+}
+.kie-swf-editor--node:focus {
+  outline: none;
+}
+.kie-swf-editor--node.dimmed,
+.kie-swf-editor--node-shape.dimmed,
+.kie-swf-editor--generic-node.dimmed {
+  opacity: 0.3;
+  pointer-events: none;
+}
+.kie-swf-editor--node-shape {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+.kie-swf-editor--generic-node {
+  outline: none;
+  width: 100%;
+  height: 100%;
+}
+
+.kie-swf-editor--unknown-node {
+  color: red;
+}
+/* (end) nodes */
+
+/* (begin) palette */
+.kie-swf-editor--palette {
+  width: 42px;
+  background: #fff;
+  border-radius: 40px;
+  border: 1px solid black;
+}
+.kie-swf-editor--palette:hover {
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+}
+
+.kie-swf-editor--palette.pulse {
+  animation: pulse 3s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.3);
+  }
+
+  70% {
+    box-shadow: 0 0 20px 20px rgba(0, 0, 0, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0);
+  }
+}
+
+.kie-swf-editor--palette-button {
+  margin: 0;
+  margin-bottom: 8px;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  border-radius: 40px;
+  border: 0;
+  background: white;
+}
+.kie-swf-editor--palette-button:hover {
+  filter: brightness(95%);
+  cursor: grab;
+}
+.kie-swf-editor--palette-button:active {
+  filter: brightness(90%);
+  cursor: grabbing;
+}
+/* (end) palette */
+
+/* (begin) version popover */
+.kie-swf-editor--version-popover .pf-v5-c-popover__body {
+  padding: 0;
+}
+/* (end) version popover */
+
+/* (begin) autolayout panel toggle */
+.kie-swf-editor--autolayout-panel-toggle {
+  width: 42px;
+  background: #fff;
+  border-radius: 40px;
+  border: 1px solid black;
+}
+.kie-swf-editor--autolayout-panel-toggle:not(:last-child) {
+  margin-right: 16px;
+}
+
+.kie-swf-editor--autolayout-panel-toggle:hover {
+  box-shadow: -4px 4px 2px 0px rgb(127 127 127);
+}
+.kie-swf-editor--autolayout-panel-toggle-button {
+  margin: 0;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  border-radius: 40px;
+  border: 0;
+  background: white;
+}
+.kie-swf-editor--autolayout-panel-toggle-button:hover {
+  filter: brightness(95%);
+}
+.kie-swf-editor--autolayout-panel-toggle-button:active {
+  filter: brightness(90%);
+}
+/* (end) autolayout panel toggle */
+
+/* (begin) evaluation-highlights panel toggle */
+.kie-swf-editor--evaluation-highlights-panel-toggle {
+  min-width: 190px;
+}
+/* (end) evaluation-highlights panel toggle */
+
+/* (begin) overlays panel toggle */
+.kie-swf-editor--overlays-panel-toggle {
+  width: 42px;
+  background: #fff;
+  border-radius: 40px;
+  border: 1px solid black;
+}
+.kie-swf-editor--overlays-panel-toggle:not(:last-child) {
+  margin-right: 16px;
+}
+
+.kie-swf-editor--overlays-panel-toggle:hover {
+  box-shadow: -4px 4px 2px 0px rgb(127 127 127);
+}
+.kie-swf-editor--overlays-panel-toggle-button {
+  margin: 0;
+  width: 40px;
+  height: 40px;
+  max-width: 40px;
+  border-radius: 40px;
+  border: 0;
+  background: white;
+}
+.kie-swf-editor--overlays-panel-toggle-button:hover {
+  filter: brightness(95%);
+}
+.kie-swf-editor--overlays-panel-toggle-button:active {
+  filter: brightness(90%);
+}
+
+.kie-swf-editor--snap-slider .pf-v5-c-slider__value > input {
+  max-width: 60px;
+  min-width: 60px;
+  width: 60px;
+}
+/* (end) overlays panel toggle */
+
+/* nodes */
+.kie-swf-editor--outgoing-stuff-node-panel {
+  position: absolute;
+  left: calc(100% - 10px); /* - 1px to make sure it is directly connected to the node */
+  top: 0;
+  padding-left: 15px;
+  height: max(40%, 80px);
+  align-content: flex-start;
+}
+.kie-swf-editor--outgoing-stuff-node-panel > div {
+  display: flex;
+  margin: 0 0 4px 0;
+  background: #fff;
+  border-radius: 24px;
+  border: 1px solid black;
+  box-shadow: 4px 4px 2px 0px rgb(127 127 127);
+}
+.kie-swf-editor--outgoing-stuff-node-panel > div > div {
+  color: black;
+  margin: 0;
+  padding: 0;
+  width: 34px;
+  height: 34px;
+  max-width: 34px;
+  border-radius: 34px;
+  background: #fff;
+  border: 0;
+  cursor: pointer;
+  display: flex;
+  font-weight: bold;
+  align-items: center;
+  justify-content: center;
+}
+.kie-swf-editor--outgoing-stuff-node-panel > div > div:hover {
+  filter: brightness(95%);
+}
+.kie-swf-editor--outgoing-stuff-node-panel > div > div:active {
+  filter: brightness(90%);
+}
+
+/* (begin) node handles */
+/*  To make sure connection lines are steadly glued to the
+handles, we make their indicators be ::before elements. The handle
+itself is a 0px by 0px div, as connection lines can move freely when
+the cursor is inside it. By making it adimensional, that never happens.  */
+.kie-swf-editor--node-handle.connecting::before {
+  content: "";
+  position: absolute;
+  background: #0388ce;
+  border-radius: 100%;
+  border: 1px solid black;
+  pointer-events: none;
+  width: 20px;
+  height: 20px;
+  top: -10px;
+  left: -10px;
+}
+.kie-swf-editor--node-handle:not(.connecting)::before {
+  content: "";
+  position: absolute;
+  background: #0388ce;
+  border-radius: 100%;
+  border: 1px solid black;
+  pointer-events: none;
+  width: 14px;
+  height: 14px;
+  top: -7px;
+  left: -7px;
+}
+.kie-swf-editor--node-handle {
+  /* These 0px are is by design. See explanation above. */
+  width: 0px;
+  min-width: 0px;
+  height: 0px;
+  min-height: 0px;
+  border: 0;
+  z-index: 20;
+}
+.kie-swf-editor--node-handle.top {
+  top: 0;
+  left: 50%;
+}
+.kie-swf-editor--node-handle.right {
+  top: 50%;
+  right: 0;
+}
+.kie-swf-editor--node-handle.bottom {
+  bottom: 0;
+  left: 50%;
+}
+.kie-swf-editor--node-handle.left {
+  top: 50%;
+  left: 0;
+}
+.kie-swf-editor--node-handle.center {
+  top: 50%;
+  left: 50%;
+}
+/* (end) node handles */
+
+/* (begin) edges with waypoints */
+.kie-swf-editor--edge.dimmed {
+  opacity: 0.3;
+  pointer-events: none;
+}
+circle.kie-swf-editor--diagram-edge-waypoint {
+  fill: black;
+  stroke-width: 8;
+  stroke: #006ba4;
+}
+circle.kie-swf-editor--diagram-edge-waypoint:active,
+circle.kie-swf-editor--diagram-edge-waypoint:hover {
+  stroke-width: 16;
+  cursor: grab;
+}
+.react-flow__edge.selected .kie-swf-editor--edge-waypoint-potential,
+.react-flow__edge:not(.selected) .kie-swf-editor--edge-waypoint-potential {
+  fill: #4d809b96;
+}
+.kie-swf-editor--edge-waypoint-potential {
+  pointer-events: none;
+}
+/* (end) edges with waypoints */
+
+/* (begin) misc */
+.kie-swf-editor--round-svg-container {
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
+.kie-swf-editor--sticky-top-glass-header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  background: rgb(255, 255, 255, 60%);
+  backdrop-filter: blur(4px);
+  border-bottom: 1px solid lightgray;
+}
+
+/* (end) misc */
+
+/* ******************************* */
+/* ******************************* */
+/* ******************************* */
+/* ******************************* */
+/* ******************************* */
+/* ⬇ (begin) react-flow theming ⬇ */
+/* ******************************* */
+
+/* edge selection / hover */
+.react-flow__edge > .kie-swf-editor--edge {
+  pointer-events: none;
+}
+.react-flow__edge.selected > .kie-swf-editor--edge {
+  fill: #006ba4 !important;
+  stroke: #006ba4 !important;
+  stroke-width: 3px !important;
+  filter: drop-shadow(2px 2px 2px #006ba477);
+}
+.react-flow__edge.selected .react-flow__edge-interaction.normal {
+  cursor: crosshair;
+}
+.react-flow__edge.selected .react-flow__edge-interaction.dragging-waypoint,
+.react-flow__edge.selected
+  .react-flow__edge-interaction.dragging-waypoint
+  ~ .kie-swf-editor--diagram-edge-waypoints
+  circle {
+  cursor: grabbing;
+}
+.react-flow__edge:not(.selected) .kie-swf-editor--edge:hover,
+.react-flow__edge:not(.selected) .react-flow__edge-interaction:hover + .kie-swf-editor--edge {
+  stroke-width: 2px !important;
+}
+
+/* nodes selection / hover */
+.react-flow__node:not(.selected):hover > .kie-swf-editor--node-shape.normal {
+  filter: drop-shadow(2px 2px 2px rgb(127, 127, 127));
+}
+.react-flow__node.selected {
+  color: #006ba4 !important;
+}
+.react-flow__node > .kie-swf-editor--node-shape.drop-target-invalid ~ .kie-swf-editor--node,
+.react-flow__node
+  > .kie-swf-editor--node-shape.drop-target-invalid
+  ~ .kie-swf-editor--node
+  .kie-swf-editor--decision-service-collapsed-button {
+  border-color: red !important;
+  color: red !important;
+  opacity: 0.4;
+}
+.react-flow__node > .kie-swf-editor--node-shape.drop-target-invalid {
+  border-color: red !important;
+}
+.react-flow__node > .kie-swf-editor--node-shape.drop-target-invalid > * {
+  stroke: rgba(255, 0, 0, 0.2) !important;
+  fill: rgba(164, 0, 0, 0.1) !important;
+}
+.react-flow__node > .kie-swf-editor--node-shape.drop-target ~ .kie-swf-editor--node {
+  color: #006ba4 !important;
+}
+.react-flow__node > .kie-swf-editor--node-shape.drop-target,
+.react-flow__node.selected > .kie-swf-editor--node-shape.normal {
+  border-color: #006ba4 !important;
+  filter: drop-shadow(2px 2px 2px #006ba477);
+}
+.react-flow__node > .kie-swf-editor--node-shape.drop-target > * {
+  stroke: #006ba4 !important;
+  fill: rgba(0, 107, 164, 0.1) !important;
+}
+
+.react-flow__node.selected:not(.react-flow__node-node_unknown):not(.react-flow__node-node_textAnnotation)
+  > .kie-swf-editor--node-shape
+  > * {
+  stroke: #006ba4 !important;
+}
+
+/* hierarchy view */
+
+.react-flow__node.hierarchy.up::after,
+.react-flow__node.hierarchy.down::after {
+  content: "";
+  width: calc(100% + 20px);
+  height: calc(100% + 20px);
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  border-radius: 24px;
+}
+.react-flow__node.hierarchy.up::after {
+  background-color: rgba(0, 131, 164, 0.15);
+}
+.react-flow__node.hierarchy.down::after {
+  background-color: rgb(0 1 128 / 10%);
+}
+.react-flow__edge.hierarchy.up .react-flow__edge-interaction {
+  stroke: rgba(0, 131, 164, 0.15);
+}
+.react-flow__edge.hierarchy.down .react-flow__edge-interaction {
+  stroke: rgb(0 1 128 / 10%);
+}
+
+/* selection rect */
+.react-flow__nodesselection-rect {
+  display: none;
+}
+
+/* controls */
+.react-flow__controls {
+  border-radius: 20px;
+  border: 1px solid black;
+  background: white;
+  margin-bottom: 24px;
+}
+.react-flow__controls:hover {
+  box-shadow: -4px -4px 2px 0px rgb(127 127 127);
+}
+.react-flow__controls > button {
+  border-radius: 20px;
+}
+.react-flow__controls > button:hover {
+  filter: brightness(95%);
+}
+.react-flow__controls > button:active {
+  filter: brightness(90%);
+}
+.react-flow__controls {
+  border-radius: 1000px;
+}
+.react-flow__controls-button {
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 1000px;
+}
+.react-flow__resize-control {
+  z-index: 0;
+}
+
+/* This is the rectangle that renders when dragging to select nodes. It shouldn't have any interaction with the mouse, as it messes hoverInfo for nodes. */
+.react-flow__selection.react-flow__container {
+  pointer-events: none;
+}
+
+/* This is the rectangle that renders when dragging to select nodes. It shouldn't have any interaction with the mouse, as it messes hoverInfo for nodes. */
+.react-flow__connectionline {
+  z-index: 10000;
+}
+
+/* edge updaters */
+.react-flow__edgeupdater {
+  z-index: 9000;
+  fill: white;
+  stroke: #006ba4;
+  stroke-width: 2px;
+  cursor: grab;
+}
+.react-flow__edge:not(.selected:hover) .react-flow__edgeupdater,
+.react-flow__edgeupdater.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.react-flow__pane.selection {
+  cursor: crosshair;
+}
+/* attribution*/
+.react-flow__attribution {
+  margin-right: 7px;
+}
+/* ⬆ (end) react-flow theming ⬆ */
+
+/* ******************************* */
+/* ******************************* */
+/* ******************************* */
+/* ******************************* */
+/* ******************************* */
+/*   ⬇ (begin) pf4 overrides ⬇    */
+/* ******************************* */
+.pf-v5-c-popover {
+  max-width: unset;
+}
+
+.pf-v5-c-truncate,
+.pf-v5-c-truncate__start {
+  min-width: 0 !important;
+}
+
+.pf-v5-c-select__menu {
+  margin-top: 1px;
+}
+/*   ⬆ (end) pf4 overrides ⬆      */
