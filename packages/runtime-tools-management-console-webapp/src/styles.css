@@ -94,3 +94,36 @@
   padding: 0;
   border-radius: 16px;
 }
+
+/* ===== PATTERNFLY THEME CUSTOMIZATION ===== */
+/* Override PatternFly CSS custom properties for custom theme */
+
+:root {
+  /* Dark theme background colors */
+  --pf-v5-global--BackgroundColor--dark-100: #1a1a1a; /* Custom dark background */
+  --pf-v5-global--BackgroundColor--dark-200: #2d2d2d; /* Custom darker background */
+  --pf-v5-global--BackgroundColor--dark-300: #404040; /* Custom darkest background */
+
+  /* Light theme background colors */
+  --pf-v5-global--BackgroundColor--light-100: #ffffff; /* Custom light background */
+  --pf-v5-global--BackgroundColor--light-200: #f8f9fa; /* Custom lighter background */
+  --pf-v5-global--BackgroundColor--light-300: #e9ecef; /* Custom lightest background */
+
+  /* Primary colors */
+  --pf-v5-global--primary-color--100: #bf65ff; /* Custom primary color (matching your header) */
+  --pf-v5-global--primary-color--200: #390a82; /* Custom primary color variant */
+
+  /* Text colors */
+  --pf-v5-global--Color--100: #ffffff; /* Custom text color for dark theme */
+  --pf-v5-global--Color--200: #f0f0f0; /* Custom secondary text color */
+
+  /* Border colors */
+  --pf-v5-global--BorderColor--100: #4a4a4a; /* Custom border color */
+  --pf-v5-global--BorderColor--200: #6a6a6a; /* Custom border color variant */
+
+  --pf-v5-c-page__header--BackgroundColor: #2f2240;
+  --pf-v5-c-page__sidebar--BackgroundColor: #2f2240;
+}
+.pf-v5-c-page__header-tools .pf-v5-c-toolbar {
+  background-color: #2f2240;
+}

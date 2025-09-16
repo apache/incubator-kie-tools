@@ -133,6 +133,7 @@ export interface ProcessResponse {
 export interface ProcessInstanceFilter {
   status: ProcessInstanceState[];
   businessKey?: string[];
+  processId?: string[];
 }
 
 export interface ProcessListSortBy {

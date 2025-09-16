@@ -69,6 +69,7 @@ import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 enum Category {
   STATUS = "Status",
   BUSINESS_KEY = "Business key",
+  PROCESS_ID = "Process ID",
 }
 
 enum BulkSelectionType {
@@ -117,6 +118,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
   ouiaSafe,
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [isProcessIdExpanded, setIsProcessIdExpanded] = useState<string>("");
   const [businessKeyInput, setBusinessKeyInput] = useState<string>("");
   const [isKebabOpen, setIsKebabOpen] = useState<boolean>(false);
   const [modalTitle, setModalTitle] = useState<string>("");
@@ -306,6 +308,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
   const onDeleteChip = async (categoryName: Category, value: string) => {
     const clonedProcessStates = [...processStates];
     const clonedBusinessKeyArray = [...(filters.businessKey ?? [])];
+    const clonedProcessIdArray = [...(filters.processId ?? [])];
     switch (categoryName) {
       case Category.STATUS:
         _.remove(clonedProcessStates, (status: string) => {
@@ -320,10 +323,17 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
         });
         setFilters({ ...filters, businessKey: clonedBusinessKeyArray });
         break;
+      case Category.PROCESS_ID:
+        _.remove(clonedProcessIdArray, (processId: string) => {
+          return processId === value;
+        });
+        setFilters({ ...filters, processId: clonedProcessIdArray });
+        break;
     }
     await applyFilter({
       status: clonedProcessStates,
       businessKey: clonedBusinessKeyArray,
+      processId: clonedProcessIdArray,
     });
   };
 
@@ -337,10 +347,12 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
       ...filters,
       status: processStates,
       businessKey: clonedBusinessKeyArray,
+      processId: filters.processId ?? [],
     });
     await applyFilter({
       status: processStates,
       businessKey: clonedBusinessKeyArray,
+      processId: filters.processId ?? [],
     });
   };
 
@@ -349,11 +361,31 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
       businessKeyInput.length > 0 && (await onApplyFilter());
     }
   };
+  const onProcessIdEnterClicked = async (event: React.KeyboardEvent<EventTarget>) => {
+    if (event.key === "Enter") {
+      if (isProcessIdExpanded.length > 0) {
+        const clonedProcessIdArray = [...(filters.processId ?? [])];
+        if (!clonedProcessIdArray.includes(isProcessIdExpanded)) {
+          clonedProcessIdArray.push(isProcessIdExpanded);
+        }
+        setFilters({
+          ...filters,
+          processId: clonedProcessIdArray,
+        });
+        await applyFilter({
+          ...filters,
+          processId: clonedProcessIdArray,
+        });
+        setIsProcessIdExpanded("");
+      }
+    }
+  };
 
   const resetAllFilters = (): void => {
     const defaultFilters = {
       status: defaultStatusFilter,
       businessKey: [],
+      processId: [],
     };
     setProcessStates(defaultFilters.status);
     setFilters(defaultFilters);
@@ -596,6 +628,29 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
           >
             {statusMenuItems}
           </Select>
+        </ToolbarFilter>
+        <ToolbarFilter
+          chips={filters.processId}
+          deleteChip={onDeleteChip}
+          className="kogito-management-console__state-dropdown-list pf-v5-u-mr-sm"
+          categoryName="Process ID"
+          id="datatoolbar-filter-process-id"
+        >
+          <InputGroup>
+            <InputGroupItem isFill>
+              <TextInput
+                name="processId"
+                id="processId"
+                data-testid="processId"
+                type="search"
+                aria-label="process id"
+                onChange={(_event, val) => setIsProcessIdExpanded(val)}
+                onKeyPress={onProcessIdEnterClicked}
+                placeholder="Filter by process id"
+                value={isProcessIdExpanded}
+              />
+            </InputGroupItem>
+          </InputGroup>
         </ToolbarFilter>
         <ToolbarFilter chips={filters.businessKey} deleteChip={onDeleteChip} categoryName={Category.BUSINESS_KEY}>
           <InputGroup>

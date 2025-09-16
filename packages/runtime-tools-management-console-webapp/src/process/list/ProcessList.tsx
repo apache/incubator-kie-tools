@@ -37,6 +37,7 @@ import { RuntimePathSearchParamsRoutes, useRuntimeDispatch } from "../../runtime
 const defaultFilters = {
   status: [ProcessInstanceState.Active],
   businessKey: [],
+  processId: [],
 };
 
 const defaultSortBy = {

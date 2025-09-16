@@ -60,10 +60,16 @@ const ProcessList: React.FC<ProcessListProps & OUIAProps> = ({
   const defaultFilters: ProcessInstanceFilter = useMemo(
     () =>
       initialState && initialState.filters
-        ? { ...initialState.filters }
+        ? {
+            businessKey: [],
+            processId: [],
+            ...initialState.filters,
+            status: processListDefaultStatusFilter,
+          }
         : {
             status: processListDefaultStatusFilter,
             businessKey: [],
+            processId: [],
           },
     [initialState]
   );

@@ -63,7 +63,7 @@ export const ManagementConsolePageLayout: React.FC<Props> = ({
     return (
       <PageHeader
         logo={
-          <>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <MastheadBrand
               component="a"
               onClick={onClickBrand}
@@ -73,7 +73,12 @@ export const ManagementConsolePageLayout: React.FC<Props> = ({
               <img alt={"Logo"} src={routes.static.images.appLogoReverse.path({})} style={{ height: "38px" }} />
             </MastheadBrand>
             <AboutButton />
-          </>
+            <img
+              src="https://www.getvaas.com/_astro/LogoCompleto.e558d286.webp"
+              alt="Logo"
+              style={{ height: "38px" }}
+            />
+          </div>
         }
         headerTools={
           !disabledHeader && (

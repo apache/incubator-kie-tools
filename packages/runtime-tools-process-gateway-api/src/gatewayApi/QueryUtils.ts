@@ -27,17 +27,39 @@ const formatSearchWords = (searchWords: string[]) => {
   return tempSearchWordsArray;
 };
 
+const formatProcessIdSearchWords = (searchWords: string[]) => {
+  const tempSearchWordsArray: any[] = [];
+  searchWords.forEach((word) => {
+    tempSearchWordsArray.push({ processId: { like: word } });
+  });
+  return tempSearchWordsArray;
+};
+
 export const buildProcessListWhereArgument = (filters: ProcessInstanceFilter) => {
-  if (filters.businessKey?.length === 0) {
+  const baseWhere = {
+    parentProcessInstanceId: { isNull: true },
+    state: { in: filters.status },
+  };
+
+  const searchConditions: any[] = [];
+
+  // Add businessKey search conditions
+  if (filters.businessKey && filters.businessKey.length > 0) {
+    searchConditions.push(...formatSearchWords(filters.businessKey));
+  }
+
+  // Add processId search conditions
+  if (filters.processId && filters.processId.length > 0) {
+    searchConditions.push(...formatProcessIdSearchWords(filters.processId));
+  }
+
+  // If there are search conditions, add them with OR logic
+  if (searchConditions.length > 0) {
     return {
-      parentProcessInstanceId: { isNull: true },
-      state: { in: filters.status },
-    };
-  } else {
-    return {
-      parentProcessInstanceId: { isNull: true },
-      state: { in: filters.status },
-      or: formatSearchWords(filters.businessKey!),
+      ...baseWhere,
+      or: searchConditions,
     };
   }
+
+  return baseWhere;
 };
