@@ -17,15 +17,50 @@
  * under the License.
  */
 
-const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
+const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
+  vars: varsWithName({
+    KOGITO_JOBS_SERVICE_WEBAPP_title: {
+      default: "KOGITO JOBS SERVICE",
+      description: "Application title",
+    },
+    KOGITO_JOBS_SERVICE_WEBAPP_logo: {
+      default: "favicon.svg",
+      description: "Path to logo image",
+    },
+    KOGITO_JOBS_SERVICE_WEBAPP_docLinkHref: {
+      default: "https://docs.kogito.kie.org/latest/html_single/#con-jobs-service_kogito-configuring",
+      description: "Documentation link URL",
+    },
+    KOGITO_JOBS_SERVICE_WEBAPP_docLinkText: {
+      default: "Kogito Jobs Service docs",
+      description: "Documentation link text",
+    },
+    SONATAFLOW_JOBS_SERVICE_WEBAPP_docLinkHref: {
+      default: "https://sonataflow.org/serverlessworkflow/latest/job-services/core-concepts.html",
+      description: "Documentation link URL",
+    },
+    SONATAFLOW_JOBS_SERVICE_WEBAPP_docLinkText: {
+      default: "SonataFlow Jobs Service docs",
+      description: "Documentation link text",
+    },
+  }),
   get env() {
     return {
-      jobsServiceWebapp: {
+      kogitoJobsServiceWebapp: {
         dev: {
           port: 9028,
+        },
+        title: getOrDefault(this.vars.KOGITO_JOBS_SERVICE_WEBAPP_title),
+        logo: getOrDefault(this.vars.KOGITO_JOBS_SERVICE_WEBAPP_logo),
+        docLinkKogito: {
+          href: getOrDefault(this.vars.KOGITO_JOBS_SERVICE_WEBAPP_docLinkHref),
+          text: getOrDefault(this.vars.KOGITO_JOBS_SERVICE_WEBAPP_docLinkText),
+        },
+        docLinkSonataflow: {
+          href: getOrDefault(this.vars.SONATAFLOW_JOBS_SERVICE_WEBAPP_docLinkHref),
+          text: getOrDefault(this.vars.SONATAFLOW_JOBS_SERVICE_WEBAPP_docLinkText),
         },
       },
     };

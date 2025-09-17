@@ -17,10 +17,13 @@
  * under the License.
  */
 
+const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { env } = require("./env");
+const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = async (webpackEnv) =>
   merge(common(webpackEnv), {
@@ -28,17 +31,47 @@ module.exports = async (webpackEnv) =>
     plugins: [
       new CopyPlugin({
         patterns: [
-          { from: "./src/index.html", to: "./index.html" },
           { from: "./src/styles.css", to: "./styles.css" },
           { from: "./static/favicon.svg", to: "./favicon.svg" },
         ],
       }),
+      new HtmlWebpackPlugin({
+        template: path.resolve(__dirname, "src/index.html"),
+        filename: "index.html",
+        chunks: ["app"],
+      }),
+      new HtmlReplaceWebpackPlugin([
+        {
+          pattern: /\${KOGITO_JOBS_SERVICE_WEBAPP_TITLE}/g,
+          replacement: () => env.kogitoJobsServiceWebapp.title ?? "",
+        },
+        {
+          pattern: /\${KOGITO_JOBS_SERVICE_WEBAPP_LOGO}/g,
+          replacement: () => env.kogitoJobsServiceWebapp.logo ?? "",
+        },
+        {
+          pattern: /\${KOGITO_JOBS_SERVICE_WEBAPP_DOCLINK_HREF}/g,
+          replacement: () => env.kogitoJobsServiceWebapp.docLinkKogito.href ?? "",
+        },
+        {
+          pattern: /\${KOGITO_JOBS_SERVICE_WEBAPP_DOCLINK_TEXT}/g,
+          replacement: () => env.kogitoJobsServiceWebapp.docLinkKogito.text ?? "",
+        },
+        {
+          pattern: /\${SONATAFLOW_JOBS_SERVICE_WEBAPP_DOCLINK_HREF}/g,
+          replacement: () => env.kogitoJobsServiceWebapp.docLinkSonataflow.href ?? "",
+        },
+        {
+          pattern: /\${SONATAFLOW_JOBS_SERVICE_WEBAPP_DOCLINK_TEXT}/g,
+          replacement: () => env.kogitoJobsServiceWebapp.docLinkSonataflow.text ?? "",
+        },
+      ]),
     ],
     ignoreWarnings: [/Failed to parse source map/],
     devServer: {
       static: {
         directory: "./dist",
       },
-      port: env.jobsServiceWebapp.dev.port,
+      port: env.kogitoJobsServiceWebapp.dev.port,
     },
   });
