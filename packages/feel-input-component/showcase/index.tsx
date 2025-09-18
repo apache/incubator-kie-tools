@@ -23,6 +23,8 @@ import * as ReactDOM from "react-dom";
 import { FeelService } from "./FeelService";
 import "./index.css";
 import { FeelInput } from "../src";
+import { feelInputComponentDictionaries, feelInputComponentI18nDefaults } from "../src/i18n";
+import { I18n } from "@kie-tools-core/i18n/dist/core";
 
 const feelServerUrl = process.env.WEBPACK_REPLACE__FEEL_INPUT_COMPONENT_DEV_WEBAPP__feelServerUrl;
 if (!feelServerUrl) {
@@ -71,6 +73,7 @@ const FeelEditor = () => {
   }, [feelExpression]);
 
   const feelInput = useMemo(() => {
+    const locale = new I18n(feelInputComponentI18nDefaults, feelInputComponentDictionaries).getLocale();
     return (
       <FeelInput
         enabled={true}
@@ -81,9 +84,10 @@ const FeelEditor = () => {
         options={{
           lineNumbers: "on",
         }}
+        locale={locale}
       />
     );
-  }, [setFeelExpression, suggestionProvider]);
+  }, [suggestionProvider]);
 
   const feelOutput = useMemo(() => {
     return (
