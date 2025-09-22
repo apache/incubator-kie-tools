@@ -165,7 +165,9 @@ export function buildClipboardFromDiagram(rfState: RF.ReactFlowState, dmnEditorS
             continue;
           }
 
-          accNode(decisionNode);
+          if (!selectedNodesById.has(decisionNode.id)) {
+            accNode(decisionNode);
+          }
         }
       }
 
