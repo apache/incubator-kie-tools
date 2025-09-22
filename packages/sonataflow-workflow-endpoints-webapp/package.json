@@ -1,5 +1,5 @@
 {
-  "name": "@kie-tools/workflow-endpoints-webapp",
+  "name": "@kie-tools/sonataflow-workflow-endpoints-webapp",
   "version": "0.0.0",
   "description": "",
   "license": "Apache-2.0",
@@ -25,7 +25,6 @@
     "@kie-tools-core/webpack-base": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "copy-webpack-plugin": "^11.0.0",
-    "html-replace-webpack-plugin": "^2.6.0",
     "html-webpack-plugin": "^5.3.2",
     "jest": "^29.7.0",
     "rimraf": "^3.0.2",

@@ -22,7 +22,6 @@ const CopyPlugin = require("copy-webpack-plugin");
 const { merge } = require("webpack-merge");
 const common = require("@kie-tools-core/webpack-base/webpack.common.config");
 const { env } = require("./env");
-const HtmlReplaceWebpackPlugin = require("html-replace-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = async (webpackEnv) =>
@@ -39,31 +38,19 @@ module.exports = async (webpackEnv) =>
         template: path.resolve(__dirname, "src/index.html"),
         filename: "index.html",
         chunks: ["app"],
+        templateParameters: {
+          WORKFLOW_ENDPOINTS_WEBAPP_LOGO: env.sonataflowWorkflowEndpointsWebapp.logo,
+          WORKFLOW_ENDPOINTS_WEBAPP_TITLE: env.sonataflowWorkflowEndpointsWebapp.title,
+          WORKFLOW_ENDPOINTS_WEBAPP_DOCLINK_HREF: env.sonataflowWorkflowEndpointsWebapp.docLink.href,
+          WORKFLOW_ENDPOINTS_WEBAPP_DOCLINK_TEXT: env.sonataflowWorkflowEndpointsWebapp.docLink.text,
+        },
       }),
-      new HtmlReplaceWebpackPlugin([
-        {
-          pattern: /\${WORKFLOW_ENDPOINTS_WEBAPP_TITLE}/g,
-          replacement: () => env.workflowEndpointsWebapp.title ?? "",
-        },
-        {
-          pattern: /\${WORKFLOW_ENDPOINTS_WEBAPP_LOGO}/g,
-          replacement: () => env.workflowEndpointsWebapp.logo ?? "",
-        },
-        {
-          pattern: /\${WORKFLOW_ENDPOINTS_WEBAPP_DOCLINK_HREF}/g,
-          replacement: () => env.workflowEndpointsWebapp.docLink.href ?? "",
-        },
-        {
-          pattern: /\${WORKFLOW_ENDPOINTS_WEBAPP_DOCLINK_TEXT}/g,
-          replacement: () => env.workflowEndpointsWebapp.docLink.text ?? "",
-        },
-      ]),
     ],
     ignoreWarnings: [/Failed to parse source map/],
     devServer: {
       static: {
         directory: "./dist",
       },
-      port: env.workflowEndpointsWebapp.dev.port,
+      port: env.sonataflowWorkflowEndpointsWebapp.dev.port,
     },
   });

@@ -34,13 +34,13 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "Documentation link URL",
     },
     WORKFLOW_ENDPOINTS_WEBAPP_docLinkText: {
-      default: "WORKFLOW ENDPOINTS DOCS",
+      default: "Sonataflow docs",
       description: "Documentation link text",
     },
   }),
   get env() {
     return {
-      workflowEndpointsWebapp: {
+      sonataflowWorkflowEndpointsWebapp: {
         dev: {
           port: 9027,
         },
