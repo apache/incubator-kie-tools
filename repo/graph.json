@@ -245,6 +245,7 @@
       { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" },
+      { "id": "@kie-tools/workflow-endpoints-webapp" },
       { "id": "@kie-tools/yard-validator-worker" },
       { "id": "@kie-tools/yard-model" },
       { "id": "yard-vscode-extension" }
@@ -2731,6 +2732,11 @@
         "weight": 1
       },
       {
+        "source": "@kie-tools/workflow-endpoints-webapp",
+        "target": "@kie-tools-core/webpack-base",
+        "weight": 1
+      },
+      {
         "source": "@kie-tools/yard-validator-worker",
         "target": "@kie-tools/yard-model",
         "weight": 1
@@ -3024,6 +3030,7 @@
       "packages/vscode-java-code-completion-extension-plugin"
     ],
     ["@kie-tools-core/webpack-base", "packages/webpack-base"],
+    ["@kie-tools/workflow-endpoints-webapp", "packages/workflow-endpoints-webapp"],
     ["@kie-tools-core/workspace", "packages/workspace"],
     ["@kie-tools-core/workspaces-git-fs", "packages/workspaces-git-fs"],
     ["@kie-tools/xml-parser-ts", "packages/xml-parser-ts"],

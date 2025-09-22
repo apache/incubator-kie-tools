@@ -13885,6 +13885,45 @@ importers:
         specifier: ^5.94.0
         version: 5.94.0
 
+  packages/workflow-endpoints-webapp:
+    devDependencies:
+      '@kie-tools-core/webpack-base':
+        specifier: workspace:*
+        version: link:../webpack-base
+      '@kie-tools/root-env':
+        specifier: workspace:*
+        version: link:../root-env
+      copy-webpack-plugin:
+        specifier: ^11.0.0
+        version: 11.0.0(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0))
+      html-replace-webpack-plugin:
+        specifier: ^2.6.0
+        version: 2.6.0
+      html-webpack-plugin:
+        specifier: ^5.3.2
+        version: 5.3.2(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0))
+      jest:
+        specifier: ^29.7.0
+        version: 29.7.0(@types/node@22.13.10)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@22.13.10)(typescript@5.5.3))
+      rimraf:
+        specifier: ^3.0.2
+        version: 3.0.2
+      ts-node:
+        specifier: ^10.9.2
+        version: 10.9.2(@swc/core@1.3.92)(@types/node@22.13.10)(typescript@5.5.3)
+      webpack:
+        specifier: ^5.94.0
+        version: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0)
+      webpack-cli:
+        specifier: ^4.10.0
+        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0)
+      webpack-dev-server:
+        specifier: ^4.15.1
+        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.94.0)
+      webpack-merge:
+        specifier: ^5.9.0
+        version: 5.10.0
+
   packages/workspace:
     dependencies:
       '@kie-tools-core/operating-system':
@@ -59527,7 +59566,7 @@ snapshots:
       '@webassemblyjs/wasm-parser': 1.12.1
       acorn: 8.12.1
       acorn-import-attributes: 1.9.5(acorn@8.12.1)
-      browserslist: 4.24.4
+      browserslist: 4.23.3
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.17.1
       es-module-lexer: 1.5.4
