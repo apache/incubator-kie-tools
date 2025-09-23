@@ -21,34 +21,34 @@ const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/b
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
-    WORKFLOW_ENDPOINTS_WEBAPP_title: {
-      default: "WORKFLOW ENDPOINTS",
+    SONATAFLOW_WORKFLOW_ENDPOINT_WEBAPP_title: {
+      default: "SONATAFLOW WORKFLOW ENDPOINT",
       description: "Application title",
     },
-    WORKFLOW_ENDPOINTS_WEBAPP_logo: {
+    SONATAFLOW_WORKFLOW_ENDPOINT_WEBAPP_logo: {
       default: "favicon.svg",
       description: "Path to logo image",
     },
-    WORKFLOW_ENDPOINTS_WEBAPP_docLinkHref: {
+    SONATAFLOW_WORKFLOW_ENDPOINT_WEBAPP_docLinkHref: {
       default: "https://sonataflow.org/serverlessworkflow/latest/index.html",
       description: "Documentation link URL",
     },
-    WORKFLOW_ENDPOINTS_WEBAPP_docLinkText: {
+    SONATAFLOW_WORKFLOW_ENDPOINT_WEBAPP_docLinkText: {
       default: "Sonataflow docs",
       description: "Documentation link text",
     },
   }),
   get env() {
     return {
-      sonataflowWorkflowEndpointsWebapp: {
+      sonataflowWorkflowEndpointWebapp: {
         dev: {
           port: 9027,
         },
-        title: getOrDefault(this.vars.WORKFLOW_ENDPOINTS_WEBAPP_title),
-        logo: getOrDefault(this.vars.WORKFLOW_ENDPOINTS_WEBAPP_logo),
+        title: getOrDefault(this.vars.SONATAFLOW_WORKFLOW_ENDPOINT_WEBAPP_title),
+        logo: getOrDefault(this.vars.SONATAFLOW_WORKFLOW_ENDPOINT_WEBAPP_logo),
         docLink: {
-          href: getOrDefault(this.vars.WORKFLOW_ENDPOINTS_WEBAPP_docLinkHref),
-          text: getOrDefault(this.vars.WORKFLOW_ENDPOINTS_WEBAPP_docLinkText),
+          href: getOrDefault(this.vars.SONATAFLOW_WORKFLOW_ENDPOINT_WEBAPP_docLinkHref),
+          text: getOrDefault(this.vars.SONATAFLOW_WORKFLOW_ENDPOINT_WEBAPP_docLinkText),
         },
       },
     };

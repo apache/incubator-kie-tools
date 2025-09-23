@@ -12862,7 +12862,7 @@ importers:
         specifier: ^5.9.0
         version: 5.10.0
 
-  packages/sonataflow-workflow-endpoints-webapp:
+  packages/sonataflow-workflow-endpoint-webapp:
     devDependencies:
       '@kie-tools-core/webpack-base':
         specifier: workspace:*

@@ -15,19 +15,19 @@
    under the License.
 -->
 
-# Kogito Workflow Endpoints Webapp
+# SonataFlow Workflow Endpoint Webapp
 
-This package contains the webapp for the Workflow Endpoints
+This package contains the webapp for the Workflow Endpoint
 
 ## Build
 
 - The image name and tags can be customized by setting the following environment variables:
 
   ```bash
-  export WORKFLOW_ENDPOINTS_WEBAPP_title=<title>
-  export WORKFLOW_ENDPOINTS_WEBAPP_logo=<logo>
-  export WORKFLOW_ENDPOINTS_WEBAPP_docLinkHref=<docLinkHref>
-  export WORKFLOW_ENDPOINTS_WEBAPP_docLinkText=<docLinkText>
+  export SONATAFLOW_WORKFLOW_ENDPOINT_WEBAPP_title=<title>
+  export SONATAFLOW_WORKFLOW_ENDPOINT_WEBAPP_logo=<logo>
+  export SONATAFLOW_WORKFLOW_ENDPOINT_WEBAPP_docLinkHref=<docLinkHref>
+  export SONATAFLOW_WORKFLOW_ENDPOINT_WEBAPP_docLinkText=<docLinkText>
   ```
 
   > Default values can be found [here](./env/index.js).
@@ -35,7 +35,7 @@ This package contains the webapp for the Workflow Endpoints
 - After optionally setting up the environment variables, run the following in the root folder of the repository to build the package:
 
   ```bash
-  pnpm -F @kie-tools/workflow-endpoints-webapp... build:prod
+  pnpm -F @kie-tools/sonataflow-workflow-endpoint-webapp... build:prod
   ```
 
 ---

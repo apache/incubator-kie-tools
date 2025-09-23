@@ -210,7 +210,7 @@ digraph G {
   "@kie-tools/sonataflow-management-console-image" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/sonataflow-management-console-image-env" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/sonataflow-management-console-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/sonataflow-workflow-endpoints-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/sonataflow-workflow-endpoint-webapp" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/stunner-editors-dmn-loader" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/unitables" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-dashbuilder-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -659,7 +659,7 @@ digraph G {
   "@kie-tools/sonataflow-operator" -> "@kie/kogito-jobs-service-postgresql-image" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-quarkus-devui" -> "@kie-tools/serverless-workflow-dev-ui-webapp" [ style = "dashed", color = "black" ];
   "@kie-tools/sonataflow-uniforms" -> "@kie-tools/uniforms-patternfly" [ style = "solid", color = "blue" ];
-  "@kie-tools/sonataflow-workflow-endpoints-webapp" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
+  "@kie-tools/sonataflow-workflow-endpoint-webapp" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/storybook-base" -> "@kie-tools-core/webpack-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/storybook-base" -> "@kie-tools/eslint" [ style = "dashed", color = "blue" ];
   "@kie-tools/storybook-base" -> "@kie-tools/tsconfig" [ style = "dashed", color = "blue" ];

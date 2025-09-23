@@ -242,7 +242,7 @@
       { "id": "@kie-tools/sonataflow-management-console-image" },
       { "id": "@kie-tools/sonataflow-management-console-image-env" },
       { "id": "@kie-tools/sonataflow-management-console-webapp" },
-      { "id": "@kie-tools/sonataflow-workflow-endpoints-webapp" },
+      { "id": "@kie-tools/sonataflow-workflow-endpoint-webapp" },
       { "id": "vscode-extension-dashbuilder-editor" },
       { "id": "vscode-extension-kie-ba-bundle" },
       { "id": "vscode-extension-kogito-bundle" },
@@ -2682,7 +2682,7 @@
         "weight": 1
       },
       {
-        "source": "@kie-tools/sonataflow-workflow-endpoints-webapp",
+        "source": "@kie-tools/sonataflow-workflow-endpoint-webapp",
         "target": "@kie-tools-core/webpack-base",
         "weight": 1
       },
@@ -3010,7 +3010,7 @@
     ["@kie-tools/sonataflow-operator", "packages/sonataflow-operator"],
     ["@kie-tools/sonataflow-quarkus-devui", "packages/sonataflow-quarkus-devui"],
     ["@kie-tools/sonataflow-uniforms", "packages/sonataflow-uniforms"],
-    ["@kie-tools/sonataflow-workflow-endpoints-webapp", "packages/sonataflow-workflow-endpoints-webapp"],
+    ["@kie-tools/sonataflow-workflow-endpoint-webapp", "packages/sonataflow-workflow-endpoint-webapp"],
     ["@kie-tools/storybook-base", "packages/storybook-base"],
     ["@kie-tools/stunner-editors", "packages/stunner-editors"],
     ["@kie-tools/stunner-editors-dmn-loader", "packages/stunner-editors-dmn-loader"],

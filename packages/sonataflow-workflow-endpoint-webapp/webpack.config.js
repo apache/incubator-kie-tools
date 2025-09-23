@@ -39,10 +39,10 @@ module.exports = async (webpackEnv) =>
         filename: "index.html",
         chunks: ["app"],
         templateParameters: {
-          WORKFLOW_ENDPOINTS_WEBAPP_LOGO: env.sonataflowWorkflowEndpointsWebapp.logo,
-          WORKFLOW_ENDPOINTS_WEBAPP_TITLE: env.sonataflowWorkflowEndpointsWebapp.title,
-          WORKFLOW_ENDPOINTS_WEBAPP_DOCLINK_HREF: env.sonataflowWorkflowEndpointsWebapp.docLink.href,
-          WORKFLOW_ENDPOINTS_WEBAPP_DOCLINK_TEXT: env.sonataflowWorkflowEndpointsWebapp.docLink.text,
+          SONATAFLOW_WORKFLOW_ENDPOINT_WEBAPP_LOGO: env.sonataflowWorkflowEndpointWebapp.logo,
+          SONATAFLOW_WORKFLOW_ENDPOINT_WEBAPP_TITLE: env.sonataflowWorkflowEndpointWebapp.title,
+          SONATAFLOW_WORKFLOW_ENDPOINT_WEBAPP_DOCLINK_HREF: env.sonataflowWorkflowEndpointWebapp.docLink.href,
+          SONATAFLOW_WORKFLOW_ENDPOINT_WEBAPP_DOCLINK_TEXT: env.sonataflowWorkflowEndpointWebapp.docLink.text,
         },
       }),
     ],
@@ -51,6 +51,6 @@ module.exports = async (webpackEnv) =>
       static: {
         directory: "./dist",
       },
-      port: env.sonataflowWorkflowEndpointsWebapp.dev.port,
+      port: env.sonataflowWorkflowEndpointWebapp.dev.port,
     },
   });
