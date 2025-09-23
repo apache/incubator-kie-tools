@@ -12862,42 +12862,6 @@ importers:
         specifier: ^5.9.0
         version: 5.10.0
 
-  packages/sonataflow-workflow-endpoint-webapp:
-    devDependencies:
-      '@kie-tools-core/webpack-base':
-        specifier: workspace:*
-        version: link:../webpack-base
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../root-env
-      copy-webpack-plugin:
-        specifier: ^11.0.0
-        version: 11.0.0(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0))
-      html-webpack-plugin:
-        specifier: ^5.3.2
-        version: 5.6.4(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0))
-      jest:
-        specifier: ^29.7.0
-        version: 29.7.0(@types/node@22.13.10)(node-notifier@8.0.2)(ts-node@10.9.2(@swc/core@1.3.92)(@types/node@22.13.10)(typescript@5.5.3))
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      ts-node:
-        specifier: ^10.9.2
-        version: 10.9.2(@swc/core@1.3.92)(@types/node@22.13.10)(typescript@5.5.3)
-      webpack:
-        specifier: ^5.94.0
-        version: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0)
-      webpack-cli:
-        specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0)
-      webpack-dev-server:
-        specifier: ^4.15.1
-        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.94.0)
-      webpack-merge:
-        specifier: ^5.9.0
-        version: 5.10.0
-
   packages/storybook-base:
     devDependencies:
       '@babel/core':
@@ -45228,9 +45192,9 @@ snapshots:
       webpack: 5.94.0(webpack-cli@4.10.0)
       webpack-cli: 4.10.0(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.1)(webpack@5.94.0)
 
-  '@webpack-cli/configtest@1.2.0(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack@5.94.0(webpack-cli@4.10.0))':
+  '@webpack-cli/configtest@1.2.0(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0))':
     dependencies:
-      webpack: 5.94.0(webpack-cli@4.10.0)
+      webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0)
       webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0)
 
   '@webpack-cli/configtest@1.2.0(webpack-cli@4.10.0(webpack@5.94.0))(webpack@5.94.0(webpack-cli@4.10.0))':
@@ -51154,7 +51118,7 @@ snapshots:
       html-minifier-terser: 5.1.1
       lodash: 4.17.21
       pretty-error: 3.0.4
-      tapable: 2.2.0
+      tapable: 2.2.1
       webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0)
 
   html-webpack-plugin@5.3.2(webpack@5.94.0(webpack-cli@4.10.0)):
@@ -51233,16 +51197,6 @@ snapshots:
       tapable: 2.2.1
     optionalDependencies:
       webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))
-
-  html-webpack-plugin@5.6.4(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0)):
-    dependencies:
-      '@types/html-minifier-terser': 6.1.0
-      html-minifier-terser: 6.1.0
-      lodash: 4.17.21
-      pretty-error: 4.0.0
-      tapable: 2.2.1
-    optionalDependencies:
-      webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0)
 
   html-webpack-plugin@5.6.4(webpack@5.94.0(webpack-cli@4.10.0)):
     dependencies:
@@ -59272,7 +59226,7 @@ snapshots:
   webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0):
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
-      '@webpack-cli/configtest': 1.2.0(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack@5.94.0(webpack-cli@4.10.0))
+      '@webpack-cli/configtest': 1.2.0(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0))
       '@webpack-cli/info': 1.5.0(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))
       '@webpack-cli/serve': 1.7.0(webpack-cli@4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0))(webpack-dev-server@4.15.1(webpack-cli@4.10.0)(webpack@5.94.0))
       colorette: 2.0.20
@@ -59282,7 +59236,7 @@ snapshots:
       import-local: 3.0.2
       interpret: 2.2.0
       rechoir: 0.7.0
-      webpack: 5.94.0(webpack-cli@4.10.0)
+      webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0)
       webpack-merge: 5.10.0
     optionalDependencies:
       webpack-dev-server: 4.15.1(webpack-cli@4.10.0)(webpack@5.94.0)
@@ -59303,14 +59257,14 @@ snapshots:
       webpack: 5.94.0(webpack-cli@4.10.0)
       webpack-merge: 5.10.0
 
-  webpack-dev-middleware@5.3.3(webpack@5.94.0(webpack-cli@4.10.0)):
+  webpack-dev-middleware@5.3.3(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0)):
     dependencies:
       colorette: 2.0.20
       memfs: 3.5.1
       mime-types: 2.1.35
       range-parser: 1.2.1
       schema-utils: 4.2.0
-      webpack: 5.94.0(webpack-cli@4.10.0)
+      webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0)
 
   webpack-dev-middleware@5.3.3(webpack@5.94.0):
     dependencies:
@@ -59402,10 +59356,10 @@ snapshots:
       serve-index: 1.9.1
       sockjs: 0.3.24
       spdy: 4.0.2
-      webpack-dev-middleware: 5.3.3(webpack@5.94.0(webpack-cli@4.10.0))
+      webpack-dev-middleware: 5.3.3(webpack@5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0))
       ws: 8.18.0
     optionalDependencies:
-      webpack: 5.94.0(webpack-cli@4.10.0)
+      webpack: 5.94.0(@swc/core@1.3.92)(webpack-cli@4.10.0)
       webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0)
     transitivePeerDependencies:
       - bufferutil
@@ -59573,7 +59527,7 @@ snapshots:
       '@webassemblyjs/wasm-parser': 1.12.1
       acorn: 8.12.1
       acorn-import-attributes: 1.9.5(acorn@8.12.1)
-      browserslist: 4.23.3
+      browserslist: 4.24.4
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.17.1
       es-module-lexer: 1.5.4
