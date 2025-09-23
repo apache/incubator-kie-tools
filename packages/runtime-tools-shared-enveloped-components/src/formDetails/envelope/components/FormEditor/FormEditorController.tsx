@@ -142,6 +142,7 @@ export class FormEditorEditorController implements FormEditorEditorApi {
   }
 
   public dispose(): void {
+    this.model?.dispose();
     this.editor?.dispose();
   }
 }
