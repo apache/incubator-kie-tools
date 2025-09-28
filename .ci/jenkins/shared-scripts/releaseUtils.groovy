@@ -67,15 +67,22 @@ def downloadReleaseArtifacts(String releaseRepository, String artifactsDir, Stri
 * Return a list of upstream images artifacts
 */
 def getUpstreamImagesArtifactsList(String artifactsDir, String releaseVersion) {
-    return [
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-base-builder-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-data-index-ephemeral-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-data-index-postgresql-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jit-runner-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jobs-service-allinone-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jobs-service-ephemeral-image.tar.gz",
-        "${artifactsDir}/incubator-kie-${releaseVersion}-kogito-jobs-service-postgresql-image.tar.gz"
+    def components = [
+        "kogito-base-builder",              // jenkinsfile.kogito-base-builder-image
+        "kogito-data-index-ephemeral",      // jenkinsfile.kogito-data-index-ephemeral-image
+        "kogito-data-index-postgresql",     // jenkinsfile.kogito-data-index-postgresql-image
+        "kogito-jit-runner",                // jenkinsfile.kogito-jit-runner-image
+        "kogito-jobs-service-allinone",     // jenkinsfile.kogito-jobs-service-allinone-image
+        "kogito-jobs-service-ephemeral",    // jenkinsfile.kogito-jobs-service-ephemeral-image
+        "kogito-jobs-service-postgresql"    // jenkinsfile.kogito-jobs-service-postgresql-image
     ]
+
+    // clean -rc suffix if present
+    def versionClean = releaseVersion.replaceAll(/(?i)-rc\d*/, '')
+
+    return components.collect { component ->
+        "${artifactsDir}/apache-kie-${versionClean}-incubating-${component}-image.tar.gz"
+    }
 }
 
 return this
