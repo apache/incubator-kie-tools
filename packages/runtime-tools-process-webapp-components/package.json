@@ -28,7 +28,7 @@
     "@kie-tools/runtime-tools-process-gateway-api": "workspace:*",
     "@kie-tools/runtime-tools-shared-gateway-api": "workspace:*",
     "apollo-client": "2.6.10",
-    "axios": "^1.9.0",
+    "axios": "^1.12.2",
     "lodash": "^4.17.21"
   },
   "devDependencies": {

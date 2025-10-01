@@ -73,7 +73,7 @@
     "apollo-client": "2.6.10",
     "apollo-link-error": "1.1.13",
     "apollo-link-http": "1.5.17",
-    "axios": "^1.9.0",
+    "axios": "^1.12.2",
     "bowser": "^2.10.0",
     "buffer": "^6.0.3",
     "client-zip": "^2.3.1",
