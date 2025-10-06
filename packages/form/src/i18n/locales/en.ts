@@ -19,7 +19,7 @@
 
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 import { wrapped } from "@kie-tools-core/i18n/dist/core";
-import { FormI18n } from "../FormI18n";
+import { FormDictionary, FormI18n } from "../FormI18n";
 
 export const en: FormI18n = {
   ...en_common,
@@ -47,4 +47,4 @@ export const en: FormI18n = {
   schema: {
     selectPlaceholder: "Select...",
   },
-};
+} as const satisfies FormDictionary;

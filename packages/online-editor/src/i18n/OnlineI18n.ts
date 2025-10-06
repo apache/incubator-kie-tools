@@ -23,7 +23,7 @@ import { DmnUnitablesI18n } from "@kie-tools/unitables-dmn/dist/i18n";
 import { GistEnabledAuthProviderType, SupportedGitAuthProviders } from "../authProviders/AuthProvidersApi";
 import { SupportedActions } from "../workspace/components/GitStatusIndicatorActions";
 
-interface OnlineDictionary extends ReferenceDictionary {
+export interface OnlineDictionary {
   editorPage: {
     textEditorModal: {
       title: (fileName: string) => string;
@@ -594,4 +594,4 @@ interface OnlineDictionary extends ReferenceDictionary {
   };
 }
 
-export interface OnlineI18n extends OnlineDictionary, CommonI18n {}
+export interface OnlineI18n extends OnlineDictionary, CommonI18n, ReferenceDictionary {}

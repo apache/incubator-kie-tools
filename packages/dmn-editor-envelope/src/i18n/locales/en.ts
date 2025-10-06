@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DmnEditorEnvelopeI18n } from "..";
+import { DmnEditorEnvelopeDictionary, DmnEditorEnvelopeI18n } from "..";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 
 export const en: DmnEditorEnvelopeI18n = {
@@ -50,4 +50,4 @@ export const en: DmnEditorEnvelopeI18n = {
   holdAndDragtoPan: "Hold and drag to Pan",
   holdAndScrollToZoomInOut: "Hold and scroll to zoom in/out",
   holdAndScrollToNavigateHorizontally: "Hold and scroll to navigate horizontally",
-};
+} as const satisfies DmnEditorEnvelopeDictionary;

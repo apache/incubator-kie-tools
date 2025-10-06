@@ -20,7 +20,7 @@
 import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
-interface ImportJavaClassesWizardDictionary extends ReferenceDictionary {
+export interface ImportJavaClassesWizardDictionary {
   modalButton: {
     text: string;
     disabledMessage: string;
@@ -54,4 +54,7 @@ interface ImportJavaClassesWizardDictionary extends ReferenceDictionary {
   };
 }
 
-export interface ImportJavaClassesWizardI18n extends ImportJavaClassesWizardDictionary, CommonI18n {}
+export interface ImportJavaClassesWizardI18n
+  extends ImportJavaClassesWizardDictionary,
+    CommonI18n,
+    ReferenceDictionary {}

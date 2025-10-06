@@ -19,7 +19,7 @@
 
 import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 
-export interface EditorEnvelopeDictionary extends ReferenceDictionary {
+export interface EditorEnvelopeDictionary {
   keyBindingsHelpOverlay: {
     title: string;
     categories: {
@@ -39,4 +39,4 @@ export interface EditorEnvelopeDictionary extends ReferenceDictionary {
   kogitoEditor: string;
 }
 
-export interface EditorEnvelopeI18n extends EditorEnvelopeDictionary {}
+export interface EditorEnvelopeI18n extends EditorEnvelopeDictionary, ReferenceDictionary {}

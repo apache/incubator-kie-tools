@@ -19,7 +19,7 @@
 
 import { wrapped } from "@kie-tools-core/i18n/dist/core";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
-import { DmnFormI18n } from "..";
+import { DmnFormDictionary, DmnFormI18n } from "..";
 
 export const en: DmnFormI18n = {
   ...en_common,
@@ -43,4 +43,4 @@ export const en: DmnFormI18n = {
     title: "An unexpected error happened while trying to fetch your file",
     notFound: "A required file could be not be found",
   },
-};
+} as const satisfies DmnFormDictionary;

@@ -20,7 +20,7 @@
 import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
-interface YardEditorDictionary extends ReferenceDictionary {
+export interface YardEditorDictionary {
   decisionElementsTab: {
     emptyStateTitle: string;
     emptyStateBody: string;
@@ -42,4 +42,4 @@ interface YardEditorDictionary extends ReferenceDictionary {
   };
 }
 
-export interface YardEditorI18n extends YardEditorDictionary, CommonI18n {}
+export interface YardEditorI18n extends YardEditorDictionary, CommonI18n, ReferenceDictionary {}

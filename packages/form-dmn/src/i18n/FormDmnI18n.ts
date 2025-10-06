@@ -17,10 +17,10 @@
  * under the License.
  */
 
-import { Wrapped } from "@kie-tools-core/i18n/dist/core";
-import { FormI18n } from "@kie-tools/form/dist/i18n/FormI18n";
+import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
+import { FormDictionary } from "@kie-tools/form/dist/i18n/FormI18n";
 
-export interface FormDmnI18n extends FormI18n {
+export interface FormDmnI18nDictionary extends FormDictionary {
   validation: {
     xDmnAllowedValues: string;
     xDmnTypeConstraint: string;
@@ -51,3 +51,5 @@ export interface FormDmnI18n extends FormI18n {
     openExpression: (name: string) => string;
   };
 }
+
+export interface FormDmnI18n extends FormDmnI18nDictionary, ReferenceDictionary {}

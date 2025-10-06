@@ -19,6 +19,8 @@
 
 import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 
-export interface KieBcEditorsI18n extends ReferenceDictionary {
+export interface KieBcEditorsI18nDictionary {
   unsupportedFile: string;
 }
+
+export interface KieBcEditorsI18n extends ReferenceDictionary {}

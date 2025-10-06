@@ -20,7 +20,7 @@
 import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
-interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
+export interface BoxedExpressionEditorDictionary {
   addParameter: string;
   builtInAggregator: string;
   builtInAggregatorHelp: {
@@ -153,4 +153,4 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
   };
 }
 
-export interface BoxedExpressionEditorI18n extends BoxedExpressionEditorDictionary, CommonI18n {}
+export interface BoxedExpressionEditorI18n extends BoxedExpressionEditorDictionary, CommonI18n, ReferenceDictionary {}

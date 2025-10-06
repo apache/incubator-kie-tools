@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { YardEditorI18n } from "..";
+import { YardEditorDictionary, YardEditorI18n } from "..";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 
 export const en: YardEditorI18n = {
@@ -41,4 +41,4 @@ export const en: YardEditorI18n = {
     specVersion: "Specification version",
     tabTitle: "General",
   },
-};
+} as const satisfies YardEditorDictionary;

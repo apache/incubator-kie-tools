@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { BoxedExpressionEditorI18n } from "..";
+import { BoxedExpressionEditorDictionary, BoxedExpressionEditorI18n } from "..";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 
 export const en: BoxedExpressionEditorI18n = {
@@ -55,10 +55,7 @@ export const en: BoxedExpressionEditorI18n = {
     output: "Edit Output Clause",
   },
   editContextEntry: "Edit Context Entry",
-  editExpression: "Edit Expression",
-  editHitPolicy: "Edit Hit Policy",
   editParameter: "Edit Parameter",
-  editParameters: "Edit parameters",
   editRelation: "Edit Relation",
   enterFunction: "Function name",
   enterText: "Enter Text",
@@ -110,7 +107,6 @@ export const en: BoxedExpressionEditorI18n = {
   rows: "ROWS",
   ruleAnnotation: "RULE ANNOTATION",
   selectExpression: "Select expression",
-  selectFunctionKind: "Select Function Kind",
   selectLogicType: "Select logic type",
   contextExpression: {
     variable: "variable",
@@ -167,4 +163,4 @@ export const en: BoxedExpressionEditorI18n = {
     in: "in",
     satisfies: "satisfies",
   },
-};
+} as const satisfies BoxedExpressionEditorDictionary;

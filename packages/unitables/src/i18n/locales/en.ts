@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { UnitablesI18n } from "../UnitablesI18n";
+import { UnitablesDictionary, UnitablesI18n } from "../UnitablesI18n";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 import { en as en_boxed_expression } from "@kie-tools/boxed-expression-component/dist/i18n/locales/en";
 
@@ -36,4 +36,4 @@ export const en: UnitablesI18n = {
   noDecisionResults: "No Decision results yet...",
   addInputDecisionNodes:
     "Add input and decision nodes, provide values to the inputs at the left and see the Decisions results here.",
-};
+} as const satisfies UnitablesDictionary;

@@ -19,7 +19,7 @@
 
 import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 
-interface FormCodeGeneratorDictionary extends ReferenceDictionary {
+export interface FormCodeGeneratorDictionary {
   generateFormCode: {
     selectProjectFolder: string;
     notFoundProjectsTarget: string;
@@ -37,4 +37,4 @@ interface FormCodeGeneratorDictionary extends ReferenceDictionary {
   };
 }
 
-export interface FormCodeGeneratorI18n extends FormCodeGeneratorDictionary {}
+export interface FormCodeGeneratorI18n extends FormCodeGeneratorDictionary, ReferenceDictionary {}
