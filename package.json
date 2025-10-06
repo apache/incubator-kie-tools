@@ -39,7 +39,8 @@
   "resolutions": {
     "@types/react": "^17.0.6",
     "cross-spawn": "^7.0.6",
-    "react-dropzone": "^11.4.2"
+    "react-dropzone": "^11.4.2",
+    "superagent": "10.2.2"
   },
   "pnpm": {
     "packageExtensions": {

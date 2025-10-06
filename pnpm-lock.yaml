@@ -8,6 +8,7 @@ overrides:
   '@types/react': ^17.0.6
   cross-spawn: ^7.0.6
   react-dropzone: ^11.4.2
+  superagent: 10.2.2
 
 packageExtensionsChecksum: 662bbd7c100aa81b6a285b3204e4d9e4
 
