@@ -19,6 +19,7 @@
 
 import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
 import { FormDictionary } from "@kie-tools/form/dist/i18n/FormI18n";
+import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
 export interface FormDmnI18nDictionary extends FormDictionary {
   validation: {
@@ -52,4 +53,4 @@ export interface FormDmnI18nDictionary extends FormDictionary {
   };
 }
 
-export interface FormDmnI18n extends FormDmnI18nDictionary, ReferenceDictionary {}
+export interface FormDmnI18n extends FormDmnI18nDictionary, ReferenceDictionary, CommonI18n {}

@@ -20,14 +20,14 @@
 import { en } from "./locales";
 import { de } from "./locales";
 import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
-import { NotificationsApiVsCodeI18nDictionary } from "./NotificationsApiVsCodeI18nDictionary";
+import { NotificationsApiVsCodeI18n } from "./NotificationsApiVsCodeI18nDictionary";
 
-export const notificationsApiVsCodeI18nDefaults: I18nDefaults<NotificationsApiVsCodeI18nDictionary> = {
+export const notificationsApiVsCodeI18nDefaults: I18nDefaults<NotificationsApiVsCodeI18n> = {
   locale: "en",
   dictionary: en,
 };
 
-export const notificationsApiVsCodeI18nDictionaries: I18nDictionaries<NotificationsApiVsCodeI18nDictionary> = new Map([
+export const notificationsApiVsCodeI18nDictionaries: I18nDictionaries<NotificationsApiVsCodeI18n> = new Map([
   ["en", en],
   ["de", de],
 ]);

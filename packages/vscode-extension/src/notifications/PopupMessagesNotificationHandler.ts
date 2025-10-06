@@ -21,12 +21,12 @@ import { I18n } from "@kie-tools-core/i18n/dist/core";
 import { Notification, NotificationSeverity } from "@kie-tools-core/notifications/dist/api";
 import * as vscode from "vscode";
 import { VsCodeWorkspaceChannelApiImpl } from "../workspace/VsCodeWorkspaceChannelApiImpl";
-import { NotificationsApiVsCodeI18nDictionary } from "./i18n";
+import { NotificationsApiVsCodeI18n } from "./i18n";
 
 export class PopupMessagesNotificationHandler {
   constructor(
     private readonly vscodeWorkspace: VsCodeWorkspaceChannelApiImpl,
-    private readonly i18n: I18n<NotificationsApiVsCodeI18nDictionary>
+    private readonly i18n: I18n<NotificationsApiVsCodeI18n>
   ) {}
 
   public createNotification(notification: Notification): void {
