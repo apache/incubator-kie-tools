@@ -17,51 +17,64 @@
 
 # Apache KIE Tools i18n
 
-This package provides a type-safe i18n library for a Typescript project.
+This package provides a type-safe internationalization (i18n) library for TypeScript projects. It enables you to manage translations in a structured and type-safe manner.
 
-## Install
+## Installation
 
-- `npm install @kie-tools-core/i18n`
+```bash
+npm install @kie-tools-core/i18n
+```
 
-## Usage
+## Package Structure
 
-The library is separated into two submodules:
+The library is organized into two main submodules:
 
-- core
-  All core functionalities, which includes the types, and the I18n class.
-  to use the core:
-  `import * as I18nCore from "@kie-tools-core/i18n/dist/core"`
-- react-components
+### 1. Core Module
 
-  All components and types necessaries to integrate on your React project.
+Contains all core functionality, including types and the `I18n` class.
 
-  to use the React components:
-  `import * as I18nReact from "@kie-tools-core/i18n/dist/react-components"`
+```typescript
+import * as I18nCore from "@kie-tools-core/i18n/dist/core";
+```
+
+### 2. React Components Module
+
+Provides components and types necessary for React integration.
+
+```typescript
+import * as I18nReact from "@kie-tools-core/i18n/dist/react-components";
+```
 
 ## Examples
 
-- [Typescript](examples/typescript.md)
-- [React](examples/react.md)
+- [TypeScript Implementation](examples/typescript.md)
+- [React Integration](examples/react.md)
 
-## Core
+## Core Module
 
-### Class
+### I18n Class
 
-The core class `I18n` is under the `core` submodule "@kie-tools-core/i18n/dist/core".
+The main class for handling internationalization is available in the core submodule.
 
-- Constructor
+#### Constructor
 
+```typescript
+constructor(
+  defaults: I18nDefaults<D>,
+  dictionaries: I18nDictionaries<D>,
+  initialLocale?: string
+)
 ```
-defaults: I18nDefaults<D>
-dictionaries: I18nDictionaries<D>
-initialLocale?: string
-```
 
-_If no `initialLocale` is provide the default locale will be used as `initialLocale`_
+Parameters:
 
-- Available Methods
+- `defaults`: Default locale and dictionary
+- `dictionaries`: Map of available dictionaries
+- `initialLocale`: (Optional) Initial locale to use. If not provided, the default locale will be used.
 
-```
+#### Available Methods
+
+```typescript
 // Get the current locale
 getLocale(): string
 
@@ -72,54 +85,155 @@ getCurrent(): D
 setLocale(locale: string): void
 ```
 
-### Types
+**Example:**
 
-- `ReferenceDictionary<D>`
-  The type of the default dictionary
+```typescript
+// Get the current locale
+const locale = i18n.getLocale();
 
-- `TranslatedDictionary<D>`
-  The type of any other dictionary that isn't the default.
+// Get the current dictionary
+const dictionary = i18n.getCurrent();
 
-- `I18nDefaults<D>`
-  The type of the default configs to be used on the `I18nDictionariesProvider` component or `I18n` class.
+// Set locale and get current dictionary in one chain
+const dictionary = i18n.setLocale(locale).getCurrent();
+```
 
-```ts
-interface I18nDefaults<D extends ReferenceDictionary<D>> {
-  locale: string; // current locale
-  dictionary: D; // default dictionary
+### Core Types
+
+#### ReferenceDictionary
+
+The type of the default dictionary. It defines the structure of your translations.
+
+```typescript
+type ReferenceDictionary = {
+  [k: string]: string | DictionaryInterpolation | Array<string | number | Wrapped<string>> | ReferenceDictionary;
+};
+```
+
+#### TranslatedDictionary<D>
+
+The type for any dictionary that isn't the default one. All properties are optional, allowing partial translations.
+
+```typescript
+type TranslatedDictionary<D extends ReferenceDictionary> = DeepOptional<D>;
+```
+
+#### I18nDefaults<D>
+
+Configuration type for the default settings.
+
+```typescript
+interface I18nDefaults<D extends ReferenceDictionary> {
+  locale: string; // Default locale
+  dictionary: D; // Default dictionary
 }
 ```
 
-- `I18nDictionaries<D>`
-  The type of the dictionaries to be used on the `I18nDictionariesProvider` component or `I18n` class.
+#### I18nDictionaries<D>
 
-```ts
-type I18nDictionaries<D extends ReferenceDictionary<D>> = Map<string, TranslatedDictionary<D>>;
+Type for the collection of available dictionaries.
+
+```typescript
+type I18nDictionaries<D extends ReferenceDictionary> = Map<string, TranslatedDictionary<D>>;
 ```
 
-## React
+#### DictionaryInterpolation
+
+Function type for dynamic string interpolation.
+
+```typescript
+type DictionaryInterpolation = (...args: Array<string | number>) => string;
+```
+
+## React Integration
 
 ### Components
 
-- `<I18nDictionariesProvider>`
-  Provides your implementation of `I18nContextType`
+#### I18nDictionariesProvider
 
-- `<I18nHtml>` Renders a string with HTML tags
+Provides your implementation of `I18nContextType` to your React component tree.
 
-_Be aware: the `<I18nHtml>` component uses the `dangerouslySetInnerHTML` prop._
+```tsx
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 
-### Types
-
-- `I18nContextType<D>`
-  The context type use by `<I18nDictionaryProvider>`, provides an object with the following properties:
-
-```ts
-interface I18nContextType<D extends ReferenceDictionary<D>> {
-  locale: string; // current locale
-  setLocale: React.Dispatch<string>; // a function to set the desired locale
-  i18n: D; // Dictionary
-}
+<I18nDictionariesProvider
+  defaults={{ locale: "en", dictionary: enDictionary }}
+  dictionaries={new Map([["pt-BR", ptBrDictionary]])}
+  ctx={MyAppI18nContext}
+>
+  <App />
+</I18nDictionariesProvider>;
 ```
+
+#### I18nHtml
+
+Renders a string containing HTML tags.
+
+```tsx
+<I18nHtml>{i18n.someHtmlContent}</I18nHtml>
+```
+
+**Note:** This component uses React's `dangerouslySetInnerHTML` prop. Ensure your HTML content is safe to prevent XSS vulnerabilities.
+
+#### I18nWrapped
+
+React component wrapper that enables dynamic content replacement with localized versions based on keys in a provided components object.
+
+````tsx
+import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
+import { wrapped } from "@kie-tools-core/i18n/dist/core";
+
+// Define in your dictionary interface
+interface MyDictionary extends ReferenceDictionary<MyDictionary> {
+  message: Array<string | Wrapped<"nameOfTheComponent">>;
+}
+
+// Use in your dictionary
+const en: MyDictionary = {
+  message: [wrapped<"nameOfTheComponent">, "some string value"]
+};
+
+// Use in your component
+<I18nWrapped
+  components={{
+    nameOfTheComponent: <YourComponent />
+  }}
+>
+  {i18n.message}
+</I18nWrapped>
+
+### React Types
+
+#### I18nContextType<D>
+
+The context type used by `I18nDictionaryProvider`.
+
+```typescript
+interface I18nContextType<D extends ReferenceDictionary> {
+  locale: string;                      // Current locale
+  setLocale: React.Dispatch<string>;   // Function to change locale
+  i18n: D;                             // Current dictionary
+}
+````
+
+## Best Practices
+
+1. **Define a complete reference dictionary**: Create a comprehensive default dictionary (usually English) that includes all translation keys.
+
+2. **Use type safety**: Leverage TypeScript's type system to catch missing translations at compile time.
+
+3. **Organize translations logically**: Group related translations together in nested objects.
+
+4. **Use interpolation functions** for dynamic content:
+
+   ```typescript
+   greeting: (name: string) => `Hello, ${name}!`;
+   ```
+
+5. **Handle pluralization** with appropriate functions:
+   ```typescript
+   itemCount: (count: number) => `${count} ${count === 1 ? "item" : "items"}`;
+   ```
 
 ---
 

@@ -41,6 +41,7 @@ interface MyDictionary extends ReferenceDictionary<MyDictionary> {
   myNestedObject: {
     myNestedWord: string;
   };
+  wrappedExample: Array<string | Wrapped<"componentName">>;
 }
 ```
 
@@ -55,6 +56,7 @@ const en: MyDictionary = {
   myNestedObject: {
     myNestedWord: `My ${"Nested".bold()} word`,
   },
+  wrappedExample: [wrapped<"componentName">, "some string value"],
 };
 ```
 
