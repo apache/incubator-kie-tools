@@ -226,7 +226,13 @@ function OutputsBeeTable({
     } else if (value === null) {
       return "null";
     } else if (Array.isArray(value)) {
-      return value.map((element) => JSON.stringify(element, null, 2).replace(/"([^"]+)":/g, "$1:"));
+      return value.map((element) => {
+        if (typeof element === "string" || typeof element === "number" || typeof element === "boolean") {
+          return element.toString();
+        } else {
+          return JSON.stringify(element, null, 2).replace(/"([^"]+)":/g, "$1:");
+        }
+      });
     } else {
       return JSON.stringify(value);
     }
@@ -465,10 +471,14 @@ function OutputsBeeTable({
         if (result !== null && !Array.isArray(result) && typeof result === "object") {
           columnResults = deepFlattenObjectRow(result);
         } else {
+          const extractedRowValue = getRowValue(result);
           if (headerColumn.dataType === "context") {
-            columnResults = { context: getRowValue(result) };
+            columnResults = { context: extractedRowValue };
           } else {
-            columnResults = { [`${decisionName}`]: getRowValue(result) };
+            columnResults = { [`${decisionName}`]: extractedRowValue };
+          }
+          if (Array.isArray(extractedRowValue)) {
+            extractedRowValue.forEach((elementValue, index) => (columnResults[`[${index}]`] = elementValue));
           }
         }
 
