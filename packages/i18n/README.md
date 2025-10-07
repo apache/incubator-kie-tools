@@ -118,6 +118,34 @@ The type for any dictionary that isn't the default one. All properties are optio
 type TranslatedDictionary<D extends ReferenceDictionary> = DeepOptional<D>;
 ```
 
+#### When to use ReferenceDictionary vs TranslatedDictionary<D>
+
+- **ReferenceDictionary**: Use this for your default/reference language (typically English). This dictionary must contain all translation keys and serves as the complete structure for all translations.
+
+- **TranslatedDictionary<D>**: Use this for all other language dictionaries. Since it makes all properties optional (via `DeepOptional<D>`), you can provide partial translations while maintaining type safety against your reference dictionary.
+
+**Example:**
+
+```typescript
+// Define your reference dictionary structure
+interface MyDictionary extends ReferenceDictionary {
+  title: string;
+  description: string;
+}
+
+// Complete reference dictionary (English)
+const en: MyDictionary = {
+  title: "Development only",
+  description: "Description value",
+};
+
+// Partial translation
+const de: TranslatedDictionary<MyDictionary> = {
+  title: "Nur für die Entwicklung",
+  // description key can be omitted and will fall back to the reference dictionary
+};
+```
+
 #### I18nDefaults<D>
 
 Configuration type for the default settings.
