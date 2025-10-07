@@ -54,6 +54,7 @@ export interface BoxedExpressionEditorDictionary {
   };
   editContextEntry: string;
   editParameter: string;
+  editParameters: string;
   editRelation: string;
   enterFunction: string;
   enterText: string;
