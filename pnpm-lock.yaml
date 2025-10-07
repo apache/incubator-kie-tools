@@ -80,162 +80,6 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0(prettier@3.3.2)
 
-  examples/base64png-editor:
-    dependencies:
-      '@kie-tools-core/editor':
-        specifier: workspace:*
-        version: link:../../packages/editor
-      '@kie-tools-core/notifications':
-        specifier: workspace:*
-        version: link:../../packages/notifications
-      '@kie-tools-core/patternfly-base':
-        specifier: workspace:*
-        version: link:../../packages/patternfly-base
-      '@kie-tools-core/workspace':
-        specifier: workspace:*
-        version: link:../../packages/workspace
-      '@patternfly/react-core':
-        specifier: ^5.4.1
-        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      '@patternfly/react-icons':
-        specifier: ^5.4.1
-        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      react:
-        specifier: '>=17.0.2 <19.0.0'
-        version: 17.0.2
-      react-dom:
-        specifier: '>=17.0.2 <19.0.0'
-        version: 17.0.2(react@17.0.2)
-    devDependencies:
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@types/react':
-        specifier: ^17.0.6
-        version: 17.0.21
-      '@types/react-dom':
-        specifier: ^17.0.5
-        version: 17.0.8
-      copyfiles:
-        specifier: ^2.4.1
-        version: 2.4.1
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-
-  examples/base64png-editor-chrome-extension:
-    dependencies:
-      '@kie-tools-core/chrome-extension':
-        specifier: workspace:*
-        version: link:../../packages/chrome-extension
-      '@kie-tools-core/editor':
-        specifier: workspace:*
-        version: link:../../packages/editor
-      '@kie-tools-core/envelope-bus':
-        specifier: workspace:*
-        version: link:../../packages/envelope-bus
-      '@kie-tools-core/patternfly-base':
-        specifier: workspace:*
-        version: link:../../packages/patternfly-base
-      '@kie-tools-examples/base64png-editor':
-        specifier: workspace:*
-        version: link:../base64png-editor
-    devDependencies:
-      '@kie-tools-core/webpack-base':
-        specifier: workspace:*
-        version: link:../../packages/webpack-base
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@types/chrome':
-        specifier: ^0.0.193
-        version: 0.0.193
-      copy-webpack-plugin:
-        specifier: ^11.0.0
-        version: 11.0.0(webpack@5.94.0(webpack-cli@4.10.0))
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-      webpack:
-        specifier: ^5.94.0
-        version: 5.94.0(webpack-cli@4.10.0)
-      webpack-cli:
-        specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0)
-      webpack-dev-server:
-        specifier: ^4.15.1
-        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.94.0)
-      webpack-merge:
-        specifier: ^5.9.0
-        version: 5.9.0
-      zip-webpack-plugin:
-        specifier: ^4.0.1
-        version: 4.0.1(webpack-sources@3.2.3)(webpack@5.94.0(webpack-cli@4.10.0))
-
-  examples/base64png-editor-vscode-extension:
-    dependencies:
-      '@kie-tools-core/editor':
-        specifier: workspace:*
-        version: link:../../packages/editor
-      '@kie-tools-core/i18n':
-        specifier: workspace:*
-        version: link:../../packages/i18n
-      '@kie-tools-core/patternfly-base':
-        specifier: workspace:*
-        version: link:../../packages/patternfly-base
-      '@kie-tools-core/vscode-extension':
-        specifier: workspace:*
-        version: link:../../packages/vscode-extension
-      '@kie-tools-examples/base64png-editor':
-        specifier: workspace:*
-        version: link:../base64png-editor
-    devDependencies:
-      '@kie-tools-core/webpack-base':
-        specifier: workspace:*
-        version: link:../../packages/webpack-base
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@types/vscode':
-        specifier: 1.67.0
-        version: 1.67.0
-      '@vscode/vsce':
-        specifier: ^2.22.0
-        version: 2.22.0
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-      webpack:
-        specifier: ^5.94.0
-        version: 5.94.0(webpack-cli@4.10.0)
-      webpack-cli:
-        specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0)
-      webpack-dev-server:
-        specifier: ^4.15.1
-        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.94.0)
-      webpack-merge:
-        specifier: ^5.9.0
-        version: 5.9.0
-
   examples/bpmn-editor-classic-on-webapp:
     devDependencies:
       '@kie-tools-core/editor':
@@ -873,10 +717,10 @@ importers:
         version: 18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1)
       '@angular/platform-browser':
         specifier: ^18.1.2
-        version: 18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1))(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))
+        version: 18.2.14(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1))(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))
       '@angular/platform-browser-dynamic':
         specifier: ^18.1.2
-        version: 18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1))(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8)))(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(@angular/platform-browser@18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1))(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8)))
+        version: 18.2.14(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1))(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8)))(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(@angular/platform-browser@18.2.14(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1))(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8)))
       '@kie-tools-core/envelope':
         specifier: workspace:*
         version: link:../../packages/envelope
@@ -1187,141 +1031,6 @@ importers:
         specifier: ^5.9.0
         version: 5.10.0
 
-  examples/ping-pong-view:
-    dependencies:
-      '@kie-tools-core/envelope':
-        specifier: workspace:*
-        version: link:../../packages/envelope
-      '@kie-tools-core/envelope-bus':
-        specifier: workspace:*
-        version: link:../../packages/envelope-bus
-      react:
-        specifier: '>=17.0.2 <19.0.0'
-        version: 17.0.2
-      react-dom:
-        specifier: '>=17.0.2 <19.0.0'
-        version: 17.0.2(react@17.0.2)
-    devDependencies:
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@types/react':
-        specifier: ^17.0.6
-        version: 17.0.21
-      '@types/react-dom':
-        specifier: ^17.0.5
-        version: 17.0.8
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-
-  examples/ping-pong-view-angular:
-    dependencies:
-      '@angular/common':
-        specifier: ^18.1.2
-        version: 18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(rxjs@7.5.2)
-      '@angular/compiler':
-        specifier: ^18.1.2
-        version: 18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))
-      '@angular/core':
-        specifier: ^18.1.2
-        version: 18.1.3(rxjs@7.5.2)(zone.js@0.14.8)
-      '@angular/elements':
-        specifier: ^18.1.2
-        version: 18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(rxjs@7.5.2)
-      '@angular/platform-browser':
-        specifier: ^18.1.2
-        version: 18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(rxjs@7.5.2))(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))
-      '@angular/platform-browser-dynamic':
-        specifier: ^18.1.2
-        version: 18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(rxjs@7.5.2))(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(@angular/platform-browser@18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8))(rxjs@7.5.2))(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))
-      '@kie-tools-core/envelope':
-        specifier: workspace:*
-        version: link:../../packages/envelope
-      '@kie-tools-core/envelope-bus':
-        specifier: workspace:*
-        version: link:../../packages/envelope-bus
-      '@kie-tools-examples/ping-pong-view':
-        specifier: workspace:*
-        version: link:../ping-pong-view
-      rxjs:
-        specifier: ^7.4.0
-        version: 7.5.2
-      zone.js:
-        specifier: ^0.14.8
-        version: 0.14.8
-    devDependencies:
-      '@angular-devkit/build-angular':
-        specifier: ^18.1.2
-        version: 18.1.3(@angular/compiler-cli@18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(typescript@5.5.3))(@types/node@22.5.2)(chokidar@3.6.0)(html-webpack-plugin@5.5.3(webpack@5.94.0))(jest-environment-jsdom@29.7.0)(jest@29.7.0(@types/node@22.5.2))(karma@6.4.2)(stylus@0.59.0)(typescript@5.5.3)
-      '@angular/cli':
-        specifier: ^18.1.2
-        version: 18.1.3(chokidar@3.6.0)
-      '@angular/compiler-cli':
-        specifier: ^18.1.2
-        version: 18.1.3(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.5.2)(zone.js@0.14.8)))(typescript@5.5.3)
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-      webpack:
-        specifier: ^5.94.0
-        version: 5.94.0
-
-  examples/ping-pong-view-react:
-    dependencies:
-      '@kie-tools-core/envelope':
-        specifier: workspace:*
-        version: link:../../packages/envelope
-      '@kie-tools-core/envelope-bus':
-        specifier: workspace:*
-        version: link:../../packages/envelope-bus
-      '@kie-tools-examples/ping-pong-view':
-        specifier: workspace:*
-        version: link:../ping-pong-view
-      react:
-        specifier: '>=17.0.2 <19.0.0'
-        version: 17.0.2
-      react-dom:
-        specifier: '>=17.0.2 <19.0.0'
-        version: 17.0.2(react@17.0.2)
-    devDependencies:
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@types/react':
-        specifier: ^17.0.6
-        version: 17.0.21
-      '@types/react-dom':
-        specifier: ^17.0.5
-        version: 17.0.8
-      copyfiles:
-        specifier: ^2.4.1
-        version: 2.4.1
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-
   examples/process-accelerator:
     dependencies:
       '@kie-tools/maven-base':
@@ -1525,95 +1234,6 @@ importers:
         specifier: ^1.1.6
         version: 1.1.6
 
-  examples/todo-list-view:
-    dependencies:
-      '@kie-tools-core/envelope':
-        specifier: workspace:*
-        version: link:../../packages/envelope
-      '@kie-tools-core/envelope-bus':
-        specifier: workspace:*
-        version: link:../../packages/envelope-bus
-      react:
-        specifier: '>=17.0.2 <19.0.0'
-        version: 17.0.2
-      react-dom:
-        specifier: '>=17.0.2 <19.0.0'
-        version: 17.0.2(react@17.0.2)
-    devDependencies:
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@types/react':
-        specifier: ^17.0.6
-        version: 17.0.21
-      '@types/react-dom':
-        specifier: ^17.0.5
-        version: 17.0.8
-      '@types/vscode':
-        specifier: 1.67.0
-        version: 1.67.0
-      copyfiles:
-        specifier: ^2.4.1
-        version: 2.4.1
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-
-  examples/todo-list-view-vscode-extension:
-    dependencies:
-      '@kie-tools-core/envelope-bus':
-        specifier: workspace:*
-        version: link:../../packages/envelope-bus
-      '@kie-tools-core/vscode-extension':
-        specifier: workspace:*
-        version: link:../../packages/vscode-extension
-      '@kie-tools-examples/todo-list-view':
-        specifier: workspace:*
-        version: link:../todo-list-view
-    devDependencies:
-      '@kie-tools-core/patternfly-base':
-        specifier: workspace:*
-        version: link:../../packages/patternfly-base
-      '@kie-tools-core/webpack-base':
-        specifier: workspace:*
-        version: link:../../packages/webpack-base
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@types/vscode':
-        specifier: 1.67.0
-        version: 1.67.0
-      '@vscode/vsce':
-        specifier: ^2.22.0
-        version: 2.22.0
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-      webpack:
-        specifier: ^5.94.0
-        version: 5.94.0(webpack-cli@4.10.0)
-      webpack-cli:
-        specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0)
-      webpack-dev-server:
-        specifier: ^4.15.1
-        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.94.0)
-      webpack-merge:
-        specifier: ^5.9.0
-        version: 5.9.0
-
   examples/uniforms-patternfly:
     dependencies:
       '@kie-tools-core/patternfly-base':
@@ -1680,124 +1300,6 @@ importers:
       copy-webpack-plugin:
         specifier: ^11.0.0
         version: 11.0.0(webpack@5.94.0(webpack-cli@4.10.0))
-      rimraf:
-        specifier: ^3.0.2
-        version: 3.0.2
-      typescript:
-        specifier: ^5.5.3
-        version: 5.5.3
-      webpack:
-        specifier: ^5.94.0
-        version: 5.94.0(webpack-cli@4.10.0)
-      webpack-cli:
-        specifier: ^4.10.0
-        version: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0)
-      webpack-dev-server:
-        specifier: ^4.15.1
-        version: 4.15.1(webpack-cli@4.10.0)(webpack@5.94.0)
-      webpack-merge:
-        specifier: ^5.9.0
-        version: 5.9.0
-
-  examples/webapp:
-    dependencies:
-      '@kie-tools-core/editor':
-        specifier: workspace:*
-        version: link:../../packages/editor
-      '@kie-tools-core/envelope-bus':
-        specifier: workspace:*
-        version: link:../../packages/envelope-bus
-      '@kie-tools-core/monaco-editor':
-        specifier: workspace:*
-        version: link:../../packages/monaco-editor
-      '@kie-tools-core/patternfly-base':
-        specifier: workspace:*
-        version: link:../../packages/patternfly-base
-      '@kie-tools-core/react-hooks':
-        specifier: workspace:*
-        version: link:../../packages/react-hooks
-      '@kie-tools-examples/base64png-editor':
-        specifier: workspace:*
-        version: link:../base64png-editor
-      '@kie-tools-examples/ping-pong-view':
-        specifier: workspace:*
-        version: link:../ping-pong-view
-      '@kie-tools-examples/ping-pong-view-angular':
-        specifier: workspace:*
-        version: link:../ping-pong-view-angular
-      '@kie-tools-examples/ping-pong-view-react':
-        specifier: workspace:*
-        version: link:../ping-pong-view-react
-      '@kie-tools-examples/todo-list-view':
-        specifier: workspace:*
-        version: link:../todo-list-view
-      '@kie-tools/dmn-editor':
-        specifier: workspace:*
-        version: link:../../packages/dmn-editor
-      '@kie-tools/dmn-editor-envelope':
-        specifier: workspace:*
-        version: link:../../packages/dmn-editor-envelope
-      '@kie-tools/dmn-editor-standalone':
-        specifier: workspace:*
-        version: link:../../packages/dmn-editor-standalone
-      '@kie-tools/kie-bc-editors':
-        specifier: workspace:*
-        version: link:../../packages/kie-bc-editors
-      '@kie-tools/kie-editors-standalone':
-        specifier: workspace:*
-        version: link:../../packages/kie-editors-standalone
-      '@kie-tools/serverless-workflow-standalone-editor':
-        specifier: workspace:*
-        version: link:../../packages/serverless-workflow-standalone-editor
-      '@patternfly/react-core':
-        specifier: ^5.4.1
-        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      '@patternfly/react-icons':
-        specifier: ^5.4.1
-        version: 5.4.1(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      monaco-editor:
-        specifier: ^0.39.0
-        version: 0.39.0
-      react:
-        specifier: ^17.0.2
-        version: 17.0.2
-      react-dom:
-        specifier: ^17.0.2
-        version: 17.0.2(react@17.0.2)
-    devDependencies:
-      '@kie-tools-core/webpack-base':
-        specifier: workspace:*
-        version: link:../../packages/webpack-base
-      '@kie-tools/root-env':
-        specifier: workspace:*
-        version: link:../../packages/root-env
-      '@kie-tools/stunner-editors':
-        specifier: workspace:*
-        version: link:../../packages/stunner-editors
-      '@kie-tools/tsconfig':
-        specifier: workspace:*
-        version: link:../../packages/tsconfig
-      '@types/react':
-        specifier: ^17.0.6
-        version: 17.0.21
-      '@types/react-dom':
-        specifier: ^17.0.5
-        version: 17.0.8
-      '@types/react-router':
-        specifier: ^5.1.20
-        version: 5.1.20
-      '@types/react-router-dom':
-        specifier: ^5.3.3
-        version: 5.3.3
-      copy-webpack-plugin:
-        specifier: ^11.0.0
-        version: 11.0.0(webpack@5.94.0(webpack-cli@4.10.0))
-      process:
-        specifier: ^0.11.10
-        version: 0.11.10
-      react-router-dom:
-        specifier: ^5.3.4
-        version: 5.3.4(react@17.0.2)
       rimraf:
         specifier: ^3.0.2
         version: 3.0.2
@@ -14827,22 +14329,22 @@ packages:
       '@angular/core': 18.1.3
       rxjs: ^6.5.3 || ^7.4.0
 
-  '@angular/platform-browser-dynamic@18.1.3':
-    resolution: {integrity: sha512-VhYfyPcdKrsLrkd5Lq7W+pqE49DZBpUeCqM/Q+s9rhTSiCCKe9Ikktq8yPZ9iHDpFr203P+T1EMHmILnLvf+gQ==}
+  '@angular/platform-browser-dynamic@18.2.14':
+    resolution: {integrity: sha512-QOv+o89u8HLN0LG8faTIVHKBxfkOBHVDB0UuXy19+HJofWZGGvho+vGjV0/IAkhZnMC4Sxdoy/mOHP2ytALX3A==}
     engines: {node: ^18.19.1 || ^20.11.1 || >=22.0.0}
     peerDependencies:
-      '@angular/common': 18.1.3
-      '@angular/compiler': 18.1.3
-      '@angular/core': 18.1.3
-      '@angular/platform-browser': 18.1.3
+      '@angular/common': 18.2.14
+      '@angular/compiler': 18.2.14
+      '@angular/core': 18.2.14
+      '@angular/platform-browser': 18.2.14
 
-  '@angular/platform-browser@18.1.3':
-    resolution: {integrity: sha512-/k5Xt/WjOk6OlRqb1Wd0ZUQ3NjSbafQyDC9Icy0Mb8qJtiXZjA4VCMkZIiQD7cBxO0F/BsAiYnYNjWrIkCZICA==}
+  '@angular/platform-browser@18.2.14':
+    resolution: {integrity: sha512-W+JTxI25su3RiZVZT3Yrw6KNUCmOIy7OZIZ+612skPgYK2f2qil7VclnW1oCwG896h50cMJU/lnAfxZxefQgyQ==}
     engines: {node: ^18.19.1 || ^20.11.1 || >=22.0.0}
     peerDependencies:
-      '@angular/animations': 18.1.3
-      '@angular/common': 18.1.3
-      '@angular/core': 18.1.3
+      '@angular/animations': 18.2.14
+      '@angular/common': 18.2.14
+      '@angular/core': 18.2.14
     peerDependenciesMeta:
       '@angular/animations':
         optional: true
@@ -31885,15 +31387,15 @@ snapshots:
       rxjs: 7.8.1
       tslib: 2.7.0
 
-  '@angular/platform-browser-dynamic@18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1))(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8)))(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(@angular/platform-browser@18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1))(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8)))':
+  '@angular/platform-browser-dynamic@18.2.14(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1))(@angular/compiler@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8)))(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(@angular/platform-browser@18.2.14(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1))(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8)))':
     dependencies:
       '@angular/common': 18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1)
       '@angular/compiler': 18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))
       '@angular/core': 18.1.3(rxjs@7.8.1)(zone.js@0.14.8)
-      '@angular/platform-browser': 18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1))(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))
+      '@angular/platform-browser': 18.2.14(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1))(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))
       tslib: 2.7.0
 
-  '@angular/platform-browser@18.1.3(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1))(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))':
+  '@angular/platform-browser@18.2.14(@angular/common@18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1))(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))':
     dependencies:
       '@angular/common': 18.1.3(@angular/core@18.1.3(rxjs@7.8.1)(zone.js@0.14.8))(rxjs@7.8.1)
       '@angular/core': 18.1.3(rxjs@7.8.1)(zone.js@0.14.8)
@@ -59183,7 +58685,7 @@ snapshots:
       '@webassemblyjs/wasm-parser': 1.12.1
       acorn: 8.12.1
       acorn-import-attributes: 1.9.5(acorn@8.12.1)
-      browserslist: 4.23.3
+      browserslist: 4.24.4
       chrome-trace-event: 1.0.4
       enhanced-resolve: 5.17.1
       es-module-lexer: 1.5.4
