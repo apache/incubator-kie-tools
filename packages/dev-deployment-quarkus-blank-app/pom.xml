@@ -60,7 +60,7 @@
     <version.org.iq80.snappy>0.5</version.org.iq80.snappy>
     <version.commons-io>2.16.1</version.commons-io>
     <version.com.google.protobuf>3.25.5</version.com.google.protobuf>
-    <version.io.netty>4.1.121.Final</version.io.netty>
+    <version.io.netty>4.1.127.Final</version.io.netty>
   </properties>
 
   <dependencyManagement>
@@ -92,7 +92,7 @@
         <version>${version.org.kie.kogito}</version>
       </dependency>
 
-      <!-- Increasing netty-handler and netty-common version to fix CVE-2025-25193 & CVE-2025-24970 -->
+      <!-- Forcing of netty version to fix vulnerabilities. -->
       <dependency>
         <groupId>io.netty</groupId>
         <artifactId>netty-handler</artifactId>
@@ -101,6 +101,16 @@
       <dependency>
         <groupId>io.netty</groupId>
         <artifactId>netty-common</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec</artifactId>
+        <version>${version.io.netty}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-codec-http</artifactId>
         <version>${version.io.netty}</version>
       </dependency>
     </dependencies>
