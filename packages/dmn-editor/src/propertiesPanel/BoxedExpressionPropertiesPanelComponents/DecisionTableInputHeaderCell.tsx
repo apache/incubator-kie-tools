@@ -145,8 +145,12 @@ export function DecisionTableInputHeaderCell(props: {
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newExpressionLanguage) =>
                 updater((dmnObject) => {
-                  dmnObject.inputExpression ??= { "@_id": generateUuid() };
-                  dmnObject.inputExpression["@_expressionLanguage"] = newExpressionLanguage;
+                  if (newExpressionLanguage === "") {
+                    delete dmnObject.inputExpression["@_expressionLanguage"];
+                  } else {
+                    dmnObject.inputExpression ??= { "@_id": generateUuid() };
+                    dmnObject.inputExpression["@_expressionLanguage"] = newExpressionLanguage;
+                  }
                 })
               }
             />
@@ -181,8 +185,12 @@ export function DecisionTableInputHeaderCell(props: {
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newExpressionLanguage) =>
                 updater((dmnObject) => {
-                  dmnObject.inputValues ??= { "@_id": generateUuid(), text: { __$$text: "" } };
-                  dmnObject.inputValues["@_expressionLanguage"] = newExpressionLanguage;
+                  if (newExpressionLanguage === "") {
+                    delete dmnObject.inputValues?.["@_expressionLanguage"];
+                  } else {
+                    dmnObject.inputValues ??= { "@_id": generateUuid(), text: { __$$text: "" } };
+                    dmnObject.inputValues["@_expressionLanguage"] = newExpressionLanguage;
+                  }
                 })
               }
             />
