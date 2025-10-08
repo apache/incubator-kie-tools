@@ -81,7 +81,7 @@ RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | 
 
 # Node setup
 RUN source $HOME/.nvm/nvm.sh && \
-    nvm install 22.13.1 && \
+    nvm install 22.14.0 && \
     sudo update-alternatives --install /usr/local/bin/node node $(which node) 1 && \
     sudo update-alternatives --install /usr/local/bin/npm npm $(which npm) 1
 
@@ -100,8 +100,8 @@ RUN curl -s "https://get.sdkman.io" | bash && \
     sdk flush
 
 # Golang setup
-RUN wget https://go.dev/dl/go1.23.8.linux-amd64.tar.gz -P /tmp && \
-    sudo tar xzf /tmp/go1.23.8.linux-amd64.tar.gz -C /opt && rm /tmp/go1.23.8.linux-amd64.tar.gz && \
+RUN wget https://go.dev/dl/go1.24.7.linux-amd64.tar.gz -P /tmp && \
+    sudo tar xzf /tmp/go1.24.7.linux-amd64.tar.gz -C /opt && rm /tmp/go1.24.7.linux-amd64.tar.gz && \
     echo 'export GOPATH=${HOME}/go' | sudo tee /etc/profile.d/go.sh && \
     echo 'export PATH=${PATH}:/opt/go/bin:${GOPATH}/bin' | sudo tee -a /etc/profile.d/go.sh && \
     echo "source /etc/profile.d/go.sh" >> $HOME/.bashrc && \
@@ -133,7 +133,7 @@ RUN go install github.com/openshift/source-to-image/cmd/s2i@v1.3.9
 ENV HOME="/home/nonrootuser"
 ENV JAVA_HOME="${HOME}/.sdkman/candidates/java/current/"
 ENV MAVEN_HOME="${HOME}/.sdkman/candidates/maven/current/"
-ENV NODE_HOME="${HOME}/.nvm/versions/node/v22.13.1"
+ENV NODE_HOME="${HOME}/.nvm/versions/node/v22.14.0"
 ENV DISPLAY=":99"
 ENV NODE_OPTIONS="--max_old_space_size=6144"
 ENV GOPATH="${HOME}/go"
