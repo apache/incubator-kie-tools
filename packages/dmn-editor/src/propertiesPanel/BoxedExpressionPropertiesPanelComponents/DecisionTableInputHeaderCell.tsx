@@ -186,7 +186,7 @@ export function DecisionTableInputHeaderCell(props: {
               onChange={(newExpressionLanguage) =>
                 updater((dmnObject) => {
                   if (newExpressionLanguage === "") {
-                    delete dmnObject.inputValues?.["@_expressionLanguage"];
+                    dmnObject.inputValues && delete dmnObject.inputValues["@_expressionLanguage"];
                   } else {
                     dmnObject.inputValues ??= { "@_id": generateUuid(), text: { __$$text: "" } };
                     dmnObject.inputValues["@_expressionLanguage"] = newExpressionLanguage;

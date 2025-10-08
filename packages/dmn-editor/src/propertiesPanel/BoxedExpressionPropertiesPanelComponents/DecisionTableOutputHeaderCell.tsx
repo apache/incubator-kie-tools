@@ -245,7 +245,7 @@ export function DecisionTableOutputHeaderCell(props: {
               onChange={(newExpressionLanguage) =>
                 updater((dmnObject) => {
                   if (newExpressionLanguage === "") {
-                    delete dmnObject.defaultOutputEntry?.["@_expressionLanguage"];
+                    dmnObject.defaultOutputEntry && delete dmnObject.defaultOutputEntry["@_expressionLanguage"];
                   } else {
                     dmnObject.defaultOutputEntry ??= { "@_id": generateUuid() };
                     dmnObject.defaultOutputEntry["@_expressionLanguage"] = newExpressionLanguage;
@@ -297,7 +297,7 @@ export function DecisionTableOutputHeaderCell(props: {
               onChange={(newExpressionLanguage) =>
                 updater((dmnObject) => {
                   if (newExpressionLanguage === "") {
-                    delete dmnObject.outputValues?.["@_expressionLanguage"];
+                    dmnObject.outputValues && delete dmnObject.outputValues["@_expressionLanguage"];
                   } else {
                     dmnObject.outputValues ??= { "@_id": generateUuid(), text: { __$$text: "" } };
                     dmnObject.outputValues["@_expressionLanguage"] = newExpressionLanguage;
