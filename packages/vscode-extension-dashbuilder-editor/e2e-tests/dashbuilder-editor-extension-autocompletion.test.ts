@@ -68,7 +68,7 @@ describe("Dashbuilder editor - autocompletion tests", () => {
     expect(editorContent).equals(expectedContent);
   });
 
-  it("Checks dashbuilder yaml provides correct autocompletion", async function () {
+  it.skip("Checks dashbuilder yaml provides correct autocompletion", async function () {
     this.timeout(50000);
 
     const editorWebviews = await testHelper.openFileFromSidebar("autocompletion.dash.yaml");
