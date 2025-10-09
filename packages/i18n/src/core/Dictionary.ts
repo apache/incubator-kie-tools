@@ -19,20 +19,30 @@
 
 import { Wrapped } from "./Wrapped";
 
-export interface I18nDefaults<D extends ReferenceDictionary> {
+export interface I18nDefaults<D extends ReferenceDictionary<D>> {
   locale: string;
   dictionary: D;
 }
 
-export type I18nDictionaries<D extends ReferenceDictionary> = Map<string, TranslatedDictionary<D>>;
+export type I18nDictionaries<D extends ReferenceDictionary<D>> = Map<string, TranslatedDictionary<D>>;
 
 export type DictionaryInterpolation = (...args: Array<string | number>) => string;
 
-export type ReferenceDictionary = {
-  [k: string]: string | DictionaryInterpolation | Array<string | number | Wrapped<string>> | ReferenceDictionary;
+export type ReferenceDictionary<D extends ReferenceDictionary<D>> = {
+  [K in keyof D]: D[K] extends string
+    ? string
+    : D[K] extends (...args: any[]) => string
+      ? DictionaryInterpolation
+      : D[K] extends Wrapped<string>
+        ? Wrapped<string>
+        : D[K] extends Array<string | number | Wrapped<string>>
+          ? Array<string | number | Wrapped<string>>
+          : D[K] extends Record<string, any>
+            ? ReferenceDictionary<D[K]>
+            : never;
 };
 
 // Locales that aren't the default should implement this interface
-export type TranslatedDictionary<D extends ReferenceDictionary> = DeepOptional<D>;
+export type TranslatedDictionary<D extends ReferenceDictionary<D>> = DeepOptional<D>;
 
 type DeepOptional<D> = { [K in keyof D]?: DeepOptional<D[K]> };
