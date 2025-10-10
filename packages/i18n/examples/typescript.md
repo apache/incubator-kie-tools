@@ -41,6 +41,7 @@ interface MyDictionary extends ReferenceDictionary<MyDictionary> {
   myNestedObject: {
     myNestedWord: string;
   };
+  wrappedExample: Array<string | Wrapped<"componentName">>;
 }
 ```
 
@@ -55,6 +56,7 @@ const en: MyDictionary = {
   myNestedObject: {
     myNestedWord: `My ${"Nested".bold()} word`,
   },
+  wrappedExample: [wrapped<"componentName">, "some string value"],
 };
 ```
 
@@ -96,6 +98,11 @@ function myFunction(myI18n: I18n) {
   const i18n = myI18n.getCurrent();
 
   console.log(i18n.myWord);
+}
+
+// Using the custom hook created on ./i18n/locales/index.ts with locale
+function myFunction(myI18n: I18n) {
+  const i18n = myI18n.setLocale(locale).getCurrent();
 }
 ```
 
