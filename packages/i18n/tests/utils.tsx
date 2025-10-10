@@ -33,7 +33,7 @@ export interface DummyDictionary
   }> {}
 
 export const interpolationFunction: DictionaryInterpolation = (name: string | number) => `Hi ${name}!`;
-export const dummyDefault: DummyDictionary = {
+export const dummyDefault: ReferenceDictionary<DummyDictionary> = {
   greeting: interpolationFunction,
   welcome: "Welcome",
   modal: {
