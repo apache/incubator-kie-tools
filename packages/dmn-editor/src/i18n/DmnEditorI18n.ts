@@ -30,6 +30,7 @@ interface DmnEditorDictionary
     none: string;
     noneYet: string;
     name: string;
+    import: string;
     cancel: string;
     with: string;
     dataTypes: {
