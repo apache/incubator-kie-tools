@@ -20,35 +20,36 @@
 import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
-interface DmnEditorEnvelopeDictionary extends ReferenceDictionary {
-  edit: string;
-  misc: string;
-  move: string;
-  navigate: string;
-  unselect: string;
-  deleteSelection: string;
-  selectDeselectAll: string;
-  createGroupWrappingSelection: string;
-  hideFromDrd: string;
-  copyNodes: string;
-  cutNodes: string;
-  pasteNodes: string;
-  openClosePropertiesPanel: string;
-  toggleHierarchyHighlights: string;
-  selectionUp: string;
-  selectionDown: string;
-  selectionLeft: string;
-  selectionRight: string;
-  selectionUpBigDistance: string;
-  selectionDownBigDistance: string;
-  selectionLeftBigDistance: string;
-  selectionRightBigDistance: string;
-  focusOnSelection: string;
-  resetPositionToOrigin: string;
-  rightMouseButton: string;
-  holdAndDragtoPan: string;
-  holdAndScrollToZoomInOut: string;
-  holdAndScrollToNavigateHorizontally: string;
-}
+interface DmnEditorEnvelopeDictionary
+  extends ReferenceDictionary<{
+    edit: string;
+    misc: string;
+    move: string;
+    navigate: string;
+    unselect: string;
+    deleteSelection: string;
+    selectDeselectAll: string;
+    createGroupWrappingSelection: string;
+    hideFromDrd: string;
+    copyNodes: string;
+    cutNodes: string;
+    pasteNodes: string;
+    openClosePropertiesPanel: string;
+    toggleHierarchyHighlights: string;
+    selectionUp: string;
+    selectionDown: string;
+    selectionLeft: string;
+    selectionRight: string;
+    selectionUpBigDistance: string;
+    selectionDownBigDistance: string;
+    selectionLeftBigDistance: string;
+    selectionRightBigDistance: string;
+    focusOnSelection: string;
+    resetPositionToOrigin: string;
+    rightMouseButton: string;
+    holdAndDragtoPan: string;
+    holdAndScrollToZoomInOut: string;
+    holdAndScrollToNavigateHorizontally: string;
+  }> {}
 
 export interface DmnEditorEnvelopeI18n extends DmnEditorEnvelopeDictionary, CommonI18n {}

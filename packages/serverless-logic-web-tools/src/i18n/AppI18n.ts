@@ -20,97 +20,98 @@
 import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
-interface AppDictionary extends ReferenceDictionary {
-  editorPage: {
-    textEditorModal: {
-      title: (fileName: string) => string;
-    };
-    alerts: {
-      setContentError: {
-        action: string;
-        title: string;
+interface AppDictionary
+  extends ReferenceDictionary<{
+    editorPage: {
+      textEditorModal: {
+        title: (fileName: string) => string;
       };
-      copy: string;
-      updateGist: string;
+      alerts: {
+        setContentError: {
+          action: string;
+          title: string;
+        };
+        copy: string;
+        updateGist: string;
+        createGist: string;
+        errorPushingGist: string;
+        forcePushWarning: string;
+        invalidCurrentGist: string;
+        invalidGistFilename: string;
+        error: string;
+        unsaved: {
+          message: string;
+          titleLocal: string;
+          titleGit: string;
+          proceedAnyway: string;
+        };
+      };
+    };
+    editorToolbar: {
+      closeAndReturnHome: string;
+      saveAndDownload: string;
+      sendChangesToGitHub: string;
+      copySource: string;
+      downloadSVG: string;
+      setGitHubToken: string;
       createGist: string;
-      errorPushingGist: string;
-      forcePushWarning: string;
-      invalidCurrentGist: string;
-      invalidGistFilename: string;
-      error: string;
-      unsaved: {
-        message: string;
-        titleLocal: string;
-        titleGit: string;
-        proceedAnyway: string;
+      cantCreateGistTooltip: string;
+      cantUpdateGistTooltip: string;
+      share: string;
+    };
+    openshift: {
+      introduction: {
+        explanation: string;
+      };
+      configModal: {
+        hostInfo: string;
+        namespaceInfo: string;
+        tokenInfo: string;
+        insecurelyDisableTlsCertificateValidation: string;
+        insecurelyDisableTlsCertificateValidationInfo: string;
+        validationError: string;
+        connectionError: string;
+        configExpiredWarning: string;
+      };
+      confirmModal: {
+        title: string;
+        body: string;
       };
     };
-  };
-  editorToolbar: {
-    closeAndReturnHome: string;
-    saveAndDownload: string;
-    sendChangesToGitHub: string;
-    copySource: string;
-    downloadSVG: string;
-    setGitHubToken: string;
-    createGist: string;
-    cantCreateGistTooltip: string;
-    cantUpdateGistTooltip: string;
-    share: string;
-  };
-  openshift: {
-    introduction: {
-      explanation: string;
+    githubTokenModal: {
+      header: {
+        title: string;
+        subtitle: string;
+      };
+      footer: {
+        createNewToken: string;
+        placeHolder: string;
+      };
+      body: {
+        disclaimer: string;
+        learnMore: string;
+        note: string;
+      };
     };
-    configModal: {
-      hostInfo: string;
-      namespaceInfo: string;
-      tokenInfo: string;
-      insecurelyDisableTlsCertificateValidation: string;
-      insecurelyDisableTlsCertificateValidationInfo: string;
-      validationError: string;
-      connectionError: string;
-      configExpiredWarning: string;
+    notificationsPanel: {
+      name: string;
+      tooltip: {
+        retractAll: string;
+        expandAll: string;
+      };
     };
-    confirmModal: {
-      title: string;
-      body: string;
+    deployments: {
+      virtualServiceRegistry: {
+        dependencyWarning: string;
+        dependencyWarningTooltip: string;
+      };
     };
-  };
-  githubTokenModal: {
-    header: {
-      title: string;
-      subtitle: string;
+    RuntimeToolsSettings: {
+      configModal: {
+        validDataIndexURLError: string;
+        dataIndexConnectionError: string;
+      };
     };
-    footer: {
-      createNewToken: string;
-      placeHolder: string;
-    };
-    body: {
-      disclaimer: string;
-      learnMore: string;
-      note: string;
-    };
-  };
-  notificationsPanel: {
-    name: string;
-    tooltip: {
-      retractAll: string;
-      expandAll: string;
-    };
-  };
-  deployments: {
-    virtualServiceRegistry: {
-      dependencyWarning: string;
-      dependencyWarningTooltip: string;
-    };
-  };
-  RuntimeToolsSettings: {
-    configModal: {
-      validDataIndexURLError: string;
-      dataIndexConnectionError: string;
-    };
-  };
-}
+  }> {}
 
 export interface AppI18n extends AppDictionary, CommonI18n {}
