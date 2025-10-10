@@ -16,6 +16,17 @@
  */
 
 /**
+* Setup Git config
+*/
+def setupGitConfig() {
+    sh """
+    #!/bin/bash -el
+    git config --global user.name asf-ci-kie
+    git config --global user.email asf-ci-kie@jenkins.kie.apache.org
+    """.trim()
+}
+
+/**
 * Create a Github release
 *
 * @return String with the release information

@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            image 'apache/incubator-kie-tools-ci-build:main'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -27,11 +27,12 @@ pipeline {
     }
 
     parameters {
-        booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
-        string(description: 'Base Ref', name: 'BASE_REF')
-        string(description: 'Upload Asset Url', name: 'UPLOAD_ASSET_URL')
-        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
+        booleanParam(name: 'DRY_RUN', description: 'Dry run', defaultValue: true)
+        string(name: 'RELEASE_VERSION', description: 'Release Version', defaultValue: '0.0.0')
+        string(name: 'BASE_REF', description: 'GitHub Base Ref (tag or branch)')
+        string(name: 'RELEASE_CANDIDATE_VERSION', description: 'Release Candidate Version', defaultValue: '')
+        string(name: 'PIPELINE_PATH', description: 'Path to run the pipeline')
+        string(name: 'UPLOAD_ASSET_URL', description: 'Upload Asset Url')
     }
 
     environment {
@@ -51,6 +52,8 @@ pipeline {
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
         PNPM_FILTER_STRING = '-F chrome-extension-pack-kogito-kie-editors... -F chrome-extension-serverless-workflow-editor...'
+        
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml -Dmaven.repo.local=${WORKSPACE}/.maven"
     }
 
     stages {
@@ -123,7 +126,19 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBootstrap(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
+                    }
+                }
+            }
+        }
+
+        stage('Update project, kogito and stream name version') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmUpdateProjectVersion(params.RELEASE_VERSION, env.MAVEN_ARGS)
+                        buildUtils.pnpmUpdateKogitoVersion(params.RELEASE_VERSION, params.RELEASE_VERSION, env.MAVEN_ARGS)
+                        buildUtils.pnpmUpdateStreamName(params.RELEASE_VERSION, env.MAVEN_ARGS)
                     }
                 }
             }
@@ -133,7 +148,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBuild(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                     }
                 }
             }
@@ -351,10 +366,10 @@ pipeline {
             }
             steps {
                 script {
-                    env.CHROME_EXTENSION_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-business-automation-chrome-extension.zip"
-                    env.SWF_CHROME_EXTENSION_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sonataflow-chrome-extension.zip"
-                    env.CHROME_EXTENSION_EDITORS_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-business-automation-chrome-extension-editors.zip"
-                    env.SWF_CHROME_EXTENSION_EDITORS_RELEASE_ZIP_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sonataflow-chrome-extension-editors.zip"
+                    env.CHROME_EXTENSION_RELEASE_ZIP_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-business-automation-chrome-extension.zip"
+                    env.SWF_CHROME_EXTENSION_RELEASE_ZIP_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sonataflow-chrome-extension.zip"
+                    env.CHROME_EXTENSION_EDITORS_RELEASE_ZIP_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-business-automation-chrome-extension-editors.zip"
+                    env.SWF_CHROME_EXTENSION_EDITORS_RELEASE_ZIP_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sonataflow-chrome-extension-editors.zip"
 
                     sh """#!/bin/bash -el
                     mkdir -p ${env.RELEASE_ARTIFACTS_DIR}/{business-automation-chrome-extension-editors,sonataflow-chrome-extension-editors}
