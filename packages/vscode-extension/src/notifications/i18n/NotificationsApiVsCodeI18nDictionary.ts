@@ -19,6 +19,8 @@
 
 import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 
-export interface NotificationsApiVsCodeI18nDictionary extends ReferenceDictionary {
+export interface NotificationsApiVsCodeI18nDictionary {
   open: string;
 }
+
+export interface NotificationsApiVsCodeI18n extends NotificationsApiVsCodeI18nDictionary, ReferenceDictionary {}

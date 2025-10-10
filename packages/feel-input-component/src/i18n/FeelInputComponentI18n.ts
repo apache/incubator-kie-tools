@@ -20,7 +20,7 @@
 import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
-interface FeelInputComponentDictionary extends ReferenceDictionary {
+export interface FeelInputComponentDictionary {
   functionDescription: {
     absDescription: (value: string) => string;
     afterPoint: (result: string, point1: string, point2: string) => string;
@@ -171,4 +171,4 @@ interface FeelInputComponentDictionary extends ReferenceDictionary {
   };
 }
 
-export interface FeelInputComponentI18n extends FeelInputComponentDictionary, CommonI18n {}
+export interface FeelInputComponentI18n extends FeelInputComponentDictionary, CommonI18n, ReferenceDictionary {}

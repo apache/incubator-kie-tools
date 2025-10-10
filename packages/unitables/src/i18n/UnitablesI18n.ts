@@ -21,7 +21,7 @@ import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 import { BoxedExpressionEditorI18n } from "@kie-tools/boxed-expression-component/dist/i18n";
 
-interface UnitablesDictionary extends ReferenceDictionary {
+export interface UnitablesDictionary {
   schema: {
     selectPlaceholder: string;
   };
@@ -35,4 +35,8 @@ interface UnitablesDictionary extends ReferenceDictionary {
   addInputDecisionNodes: string;
 }
 
-export interface UnitablesI18n extends UnitablesDictionary, CommonI18n, BoxedExpressionEditorI18n {}
+export interface UnitablesI18n
+  extends UnitablesDictionary,
+    CommonI18n,
+    BoxedExpressionEditorI18n,
+    ReferenceDictionary {}

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ImportJavaClassesWizardI18n } from "..";
+import { ImportJavaClassesWizardDictionary, ImportJavaClassesWizardI18n } from "..";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 
 export const en: ImportJavaClassesWizardI18n = {
@@ -55,4 +55,4 @@ export const en: ImportJavaClassesWizardI18n = {
       fetchButtonLabel: "Fetch",
     },
   },
-};
+} as const satisfies ImportJavaClassesWizardDictionary;

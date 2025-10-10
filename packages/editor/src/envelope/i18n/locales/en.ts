@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { EditorEnvelopeI18n } from "../EditorEnvelopeI18n";
+import { EditorEnvelopeDictionary, EditorEnvelopeI18n } from "../EditorEnvelopeI18n";
 
 export const en: EditorEnvelopeI18n = {
   keyBindingsHelpOverlay: {
@@ -37,4 +37,4 @@ export const en: EditorEnvelopeI18n = {
   },
   editorNotAvailable: (extension: string): string => `No Editor available for '${extension}' extension`,
   kogitoEditor: "Kogito editor",
-};
+} as const satisfies EditorEnvelopeDictionary;

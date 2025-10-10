@@ -18,7 +18,7 @@
  */
 
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
-import { FeelInputComponentI18n } from "../FeelInputComponentI18n";
+import { FeelInputComponentDictionary, FeelInputComponentI18n } from "../FeelInputComponentI18n";
 
 export const en: FeelInputComponentI18n = {
   ...en_common,
@@ -251,4 +251,4 @@ export const en: FeelInputComponentI18n = {
     weekOfYear: "Returns the Gregorian week of the year as defined by ISO 8601",
     yearsAndMonthsDuration: "Calculates the years and months duration between the two specified parameters.",
   },
-};
+} as const satisfies FeelInputComponentDictionary;

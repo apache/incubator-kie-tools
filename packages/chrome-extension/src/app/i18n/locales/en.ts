@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ChromeExtensionI18n } from "..";
+import { ChromeExtensionDictionary, ChromeExtensionI18n } from "..";
 
 export const en: ChromeExtensionI18n = {
   openIn: (name: string) => `Open in ${name}`,
@@ -59,4 +59,4 @@ export const en: ChromeExtensionI18n = {
       },
     },
   },
-};
+} as const satisfies ChromeExtensionDictionary;

@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { FormCodeGeneratorI18n } from "../FormCodeGeneratorI18n";
+import { FormCodeGeneratorDictionary, FormCodeGeneratorI18n } from "../FormCodeGeneratorI18n";
 
 export const en: FormCodeGeneratorI18n = {
   generateFormCode: {
@@ -35,4 +35,4 @@ export const en: FormCodeGeneratorI18n = {
     successFormGeneration: (files: string): string => `Success generating form code for the following files: ${files}`,
     errorFormGeneration: (files: string): string => `Error generating form code for the following files: ${files}`,
   },
-};
+} as const satisfies FormCodeGeneratorDictionary;

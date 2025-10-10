@@ -20,7 +20,7 @@
 import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
-interface FormDictionary extends ReferenceDictionary {
+export interface FormDictionary {
   form: {
     status: {
       autoGenerationError: {
@@ -43,4 +43,4 @@ interface FormDictionary extends ReferenceDictionary {
   };
 }
 
-export interface FormI18n extends FormDictionary, CommonI18n {}
+export interface FormI18n extends FormDictionary, CommonI18n, ReferenceDictionary {}

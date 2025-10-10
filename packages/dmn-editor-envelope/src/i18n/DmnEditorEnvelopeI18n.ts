@@ -20,7 +20,7 @@
 import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
-interface DmnEditorEnvelopeDictionary extends ReferenceDictionary {
+export interface DmnEditorEnvelopeDictionary {
   edit: string;
   misc: string;
   move: string;
@@ -51,4 +51,4 @@ interface DmnEditorEnvelopeDictionary extends ReferenceDictionary {
   holdAndScrollToNavigateHorizontally: string;
 }
 
-export interface DmnEditorEnvelopeI18n extends DmnEditorEnvelopeDictionary, CommonI18n {}
+export interface DmnEditorEnvelopeI18n extends DmnEditorEnvelopeDictionary, CommonI18n, ReferenceDictionary {}

@@ -20,7 +20,7 @@
 import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
-interface DmnFormDictionary extends ReferenceDictionary {
+export interface DmnFormDictionary {
   formToolbar: {
     disclaimer: {
       title: string;
@@ -42,4 +42,4 @@ interface DmnFormDictionary extends ReferenceDictionary {
   };
 }
 
-export interface DmnFormI18n extends DmnFormDictionary, CommonI18n {}
+export interface DmnFormI18n extends DmnFormDictionary, CommonI18n, ReferenceDictionary {}

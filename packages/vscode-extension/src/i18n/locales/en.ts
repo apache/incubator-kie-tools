@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { VsCodeI18n } from "..";
+import { VsCodeDictionary, VsCodeI18n } from "..";
 
 export const en: VsCodeI18n = {
   savedSvg: (fileName) => `SVG saved at ${fileName}.`,
@@ -27,4 +27,4 @@ export const en: VsCodeI18n = {
   openAsTextButton: "Open as text",
   reopenAsDiagramText: "After you're finished fixing it, you can reopen it as diagram.",
   reopenAsDiagramButton: "Reopen as diagram",
-};
+} as const satisfies VsCodeDictionary;

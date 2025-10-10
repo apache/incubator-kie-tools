@@ -18,7 +18,7 @@
  */
 
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
-import TestScenarioEditorI18n from "../TestScenarioEditorI18n";
+import TestScenarioEditorI18n, { TestScenarioEditorDictionary } from "../TestScenarioEditorI18n";
 
 export const en: TestScenarioEditorI18n = {
   ...en_common,
@@ -195,4 +195,4 @@ export const en: TestScenarioEditorI18n = {
   unsupportedTitle: (version: string) => `This file holds a Test Scenario asset version ( ${version} ) not supported`,
   unsupportedMessage: (version: string) =>
     `Most likely, this file has been generated with a very old Business Central version (< 7.30.0.Final). Please update your Business Central instance and download again this scesim file, it will be automatically updated to the supported version ( ${version} ).`,
-};
+} as const satisfies TestScenarioEditorDictionary;

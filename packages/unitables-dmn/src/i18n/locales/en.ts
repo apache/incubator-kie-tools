@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DmnUnitablesI18n } from "..";
+import { DmnUniablesDictionary, DmnUnitablesI18n } from "..";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 import { en as en_unitables } from "@kie-tools/unitables/dist/i18n/locales/en";
 
@@ -27,4 +27,4 @@ export const en: DmnUnitablesI18n = {
   schema: {
     selectPlaceholder: "Select...",
   },
-};
+} as const satisfies DmnUniablesDictionary;

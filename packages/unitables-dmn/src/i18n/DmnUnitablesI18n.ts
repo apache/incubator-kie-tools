@@ -21,10 +21,10 @@ import { UnitablesI18n } from "@kie-tools/unitables/dist/i18n";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 
-interface DmnUniablesDictionary extends ReferenceDictionary {
+export interface DmnUniablesDictionary {
   schema: {
     selectPlaceholder: string;
   };
 }
 
-export interface DmnUnitablesI18n extends DmnUniablesDictionary, CommonI18n, UnitablesI18n {}
+export interface DmnUnitablesI18n extends DmnUniablesDictionary, CommonI18n, UnitablesI18n, ReferenceDictionary {}

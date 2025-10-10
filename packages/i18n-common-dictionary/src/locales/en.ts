@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { CommonI18n } from "../CommonI18n";
+import { CommonI18n, CommonI18nDictionary } from "../CommonI18n";
 import { names } from "../names";
 
 export const en: CommonI18n = {
@@ -110,4 +110,4 @@ export const en: CommonI18n = {
       shift: "Shift",
     },
   },
-};
+} as const satisfies CommonI18nDictionary;

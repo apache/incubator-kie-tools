@@ -20,7 +20,7 @@
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 
-interface TestScenarioEditorDictionary extends ReferenceDictionary {
+export interface TestScenarioEditorDictionary {
   alerts: {
     ruleDataNotAvailable: string;
     dmnDataRetrievedFromScesim: string;
@@ -170,4 +170,4 @@ interface TestScenarioEditorDictionary extends ReferenceDictionary {
   unsupportedMessage: (version: string) => string;
 }
 
-export default interface TestScenarioEditorI18n extends TestScenarioEditorDictionary, CommonI18n {}
+export default interface TestScenarioEditorI18n extends TestScenarioEditorDictionary, CommonI18n, ReferenceDictionary {}

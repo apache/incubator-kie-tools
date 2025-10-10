@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import { NotificationsApiVsCodeI18nDictionary } from "..";
+import { NotificationsApiVsCodeI18n } from "..";
 
-export const de: NotificationsApiVsCodeI18nDictionary = {
+export const de: NotificationsApiVsCodeI18n = {
   open: `Öffnen`,
 };

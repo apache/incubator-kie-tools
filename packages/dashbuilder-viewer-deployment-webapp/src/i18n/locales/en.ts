@@ -19,7 +19,7 @@
 
 import { wrapped } from "@kie-tools-core/i18n/dist/core";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
-import { AppI18n } from "..";
+import { AppDictionary, AppI18n } from "..";
 
 export const en: AppI18n = {
   ...en_common,
@@ -37,4 +37,4 @@ export const en: AppI18n = {
       referToJira: ["Please refer to ", wrapped("jira"), " and report an issue."],
     },
   },
-};
+} as const satisfies AppDictionary;

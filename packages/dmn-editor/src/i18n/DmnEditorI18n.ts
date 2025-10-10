@@ -20,7 +20,7 @@
 import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
-interface DmnEditorDictionary extends ReferenceDictionary {
+export interface DmnEditorDictionary {
   autoLayout: string;
   backToDiagram: string;
   yourAnnotationsHere: string;
@@ -362,4 +362,4 @@ interface DmnEditorDictionary extends ReferenceDictionary {
   };
 }
 
-export interface DmnEditorI18n extends DmnEditorDictionary, CommonI18n {}
+export interface DmnEditorI18n extends DmnEditorDictionary, CommonI18n, ReferenceDictionary {}

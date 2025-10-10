@@ -18,7 +18,7 @@
  */
 
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
-import { ScesimEditorEnvelopeI18n } from "../ScesimEditorEnvelopeI18n";
+import { ScesimEditorEnvelopeDictionary, ScesimEditorEnvelopeI18n } from "../ScesimEditorEnvelopeI18n";
 
 export const en: ScesimEditorEnvelopeI18n = {
   ...en_common,
@@ -26,4 +26,4 @@ export const en: ScesimEditorEnvelopeI18n = {
   i: "I",
   misc: "Misc",
   openCloseDockPanel: "Open/Close dock panel",
-};
+} as const satisfies ScesimEditorEnvelopeDictionary;
