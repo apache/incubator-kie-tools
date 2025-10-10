@@ -113,7 +113,11 @@ export function DecisionTableInputRule(props: { boxedExpressionIndex?: BoxedExpr
         expressionPath={selectedObjectInfos?.expressionPath ?? []}
         onChange={(newExpressionLanguage: string) =>
           updater((dmnObject) => {
-            dmnObject["@_expressionLanguage"] = newExpressionLanguage;
+            if (newExpressionLanguage === "") {
+              delete dmnObject["@_expressionLanguage"];
+            } else {
+              dmnObject["@_expressionLanguage"] = newExpressionLanguage;
+            }
           })
         }
       />
