@@ -125,7 +125,7 @@
     <version.org.kie.kogito>999-20251006-local</version.org.kie.kogito>
 
     <!-- Quarkus -->
-    <version.quarkus>3.20.2.2</version.quarkus>
+    <version.quarkus>3.20.3</version.quarkus>
 
     <!-- 3rd party dependencies -->
     <version.junit>4.13.2</version.junit>
