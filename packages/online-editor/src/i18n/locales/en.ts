@@ -309,6 +309,10 @@ export const en: OnlineI18n = {
         },
       },
       form: {
+        username: {
+          label: "",
+          placeHolder: "",
+        },
         token: {
           label: "Personal Access Token (classic)",
           placeHolder: "Paste your GitHub token here",
@@ -363,6 +367,10 @@ export const en: OnlineI18n = {
         },
       },
       form: {
+        username: {
+          label: "",
+          placeHolder: "",
+        },
         token: {
           label: "Personal Access Token",
           placeHolder: `Paste your ${en_common.names.gitlab} token here`,
