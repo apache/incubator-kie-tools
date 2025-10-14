@@ -212,7 +212,7 @@ export function FormDmnOutputs({
               return (
                 <>
                   {parentKey && <DescriptionListTerm>{parentKey}</DescriptionListTerm>}
-                  <i>(null)</i>
+                  <i>[]</i>
                 </>
               );
             }
