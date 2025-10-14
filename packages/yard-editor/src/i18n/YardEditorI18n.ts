@@ -30,14 +30,14 @@ interface YardEditorDictionary
     decisionInputsTab: {
       emptyStateTitle: string;
       emptyStateBody: string;
-      inputName: string;
+      name: string;
       tabTitle: string;
       type: string;
     };
     generalTab: {
       expressionLang: string;
       kind: string;
-      tabName: string;
+      name: string;
       specVersion: string;
       tabTitle: string;
     };

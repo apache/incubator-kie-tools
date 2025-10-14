@@ -30,14 +30,14 @@ export const en: YardEditorI18n = {
   decisionInputsTab: {
     emptyStateBody: "Your yard file doesn't have any Decision input. Please add a new input",
     emptyStateTitle: "No decision input",
-    inputName: "Name",
+    name: "Name",
     tabTitle: "Decision Inputs",
     type: "Type",
   },
   generalTab: {
     expressionLang: "Expression language version",
     kind: "Type",
-    tabName: "Name",
+    name: "Name",
     specVersion: "Specification version",
     tabTitle: "General",
   },

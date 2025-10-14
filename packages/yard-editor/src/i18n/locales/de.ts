@@ -31,14 +31,14 @@ export const de: TranslatedDictionary<YardEditorI18n> = {
   decisionInputsTab: {
     emptyStateBody: "Ihre Yard-Datei enthält keine Eingaben zur Entscheidung. Bitte fügen Sie eine neue Eingabe hinzu",
     emptyStateTitle: "Kein Eingaben zur Entscheidung",
-    inputName: "Name",
+    name: "Name",
     tabTitle: "Eingaben zur Entscheidung",
     type: "Typ",
   },
   generalTab: {
     expressionLang: "Sprachversion des Ausdrucks",
     kind: "Typ",
-    tabName: "Name",
+    name: "Name",
     specVersion: "Sprachversion",
     tabTitle: "Allgemein",
   },
