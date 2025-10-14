@@ -274,7 +274,7 @@ export const YardUIEditor = ({ yardData, isReadOnly }: Props) => {
         <Tab eventKey={0} title={<TabTitleText>{i18n.generalTab.tabTitle}</TabTitleText>}>
           <div className={"general-body"}>
             <Title headingLevel="h6" size={TitleSizes.md}>
-              {i18n.generalTab.tabName}
+              {i18n.generalTab.name}
             </Title>
             <TextInput
               id={"name-text-input"}
@@ -325,7 +325,7 @@ export const YardUIEditor = ({ yardData, isReadOnly }: Props) => {
                 return (
                   <div key={index}>
                     <Title headingLevel="h6" size={TitleSizes.md}>
-                      {i18n.decisionInputsTab.inputName}
+                      {i18n.decisionInputsTab.name}
                     </Title>
                     <TextInput
                       id={"expression-lang-text-input"}
