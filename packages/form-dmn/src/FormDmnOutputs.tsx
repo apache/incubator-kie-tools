@@ -212,7 +212,7 @@ export function FormDmnOutputs({
               return (
                 <>
                   {parentKey && <DescriptionListTerm>{parentKey}</DescriptionListTerm>}
-                  <i>(null)</i>
+                  <i>[]</i>
                 </>
               );
             }
@@ -293,7 +293,7 @@ export function FormDmnOutputs({
                 {openBoxedExpressionEditor !== undefined && (
                   <Button
                     variant={"plain"}
-                    title={`Open '${dmnFormResult.decisionName}' expression`}
+                    title={i18n.result.openExpression(dmnFormResult.decisionName)}
                     icon={<ArrowUpIcon />}
                     onClick={() => onOpenBoxedExpressionEditor?.(dmnFormResult.decisionId)}
                   />
@@ -313,6 +313,7 @@ export function FormDmnOutputs({
       resultStatus,
       onAnimationEnd,
       onOpenBoxedExpressionEditor,
+      i18n.result,
     ]
   );
 

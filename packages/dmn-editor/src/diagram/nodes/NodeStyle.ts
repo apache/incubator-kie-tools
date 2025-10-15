@@ -18,7 +18,7 @@
  */
 
 import React, { useMemo } from "react";
-import { DMNDI15__DMNStyle } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMNDI15__DMNStyle } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { NodeType } from "../connections/graphStructure";
 import { NODE_TYPES } from "./NodeTypes";

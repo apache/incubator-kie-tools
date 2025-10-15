@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { Button, ButtonVariant } from "@patternfly/react-core/dist/js/components/Button";
 import { FormSection } from "@patternfly/react-core/dist/js/components/Form";
@@ -39,6 +39,7 @@ import "./FontOptions.css";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
+import { useDmnEditorI18n } from "../i18n";
 
 // https://www.w3schools.com/cssref/css_websafe_fonts.php
 // Array of [name, family]
@@ -68,6 +69,7 @@ enum FontStyleToggleOptions {
 }
 
 export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean; nodeIds: string[] }) {
+  const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const settings = useSettings();
 
@@ -91,7 +93,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
   const [isStyleSectionExpanded, setStyleSectionExpanded] = useState<boolean>(startExpanded);
 
   const setShapeStyles = useCallback(
-    (callback: (shape: Normalized<DMNDI15__DMNShape>[], state: State) => void) => {
+    (callback: (shape: Normalized<DMN_LATEST__DMNShape>[], state: State) => void) => {
       dmnEditorStoreApi.setState((s) => {
         const { diagramElements } = addOrGetDrd({
           definitions: s.dmn.model.definitions,
@@ -282,14 +284,14 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
         fixed={false}
         isSectionExpanded={isStyleSectionExpanded} // TODO LUIZ: isStyleSectionExpanded
         toogleSectionExpanded={() => setStyleSectionExpanded((prev) => !prev)}
-        title={"Font"}
+        title={i18n.propertiesPanel.font}
         action={
           <Button
             variant={ButtonVariant.plain}
             isDisabled={settings.isReadOnly}
             onClick={() => onReset()}
             style={{ paddingBottom: 0, paddingTop: 0 }}
-            title={"Reset font"}
+            title={i18n.propertiesPanel.resetFont}
           >
             <UndoAltIcon />
           </Button>
@@ -319,7 +321,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                   className={"kie-dmn-editor--font-options-toggle-group-item"}
                   text={
                     <div>
-                      <b>B</b>
+                      <b>{i18n.terms.keyboardKeys.b}</b>
                     </div>
                   }
                   isDisabled={settings.isReadOnly}
@@ -333,7 +335,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                   className={"kie-dmn-editor--font-options-toggle-group-item-italic"}
                   text={
                     <div>
-                      <i style={{ fontFamily: "serif" }}>I</i>
+                      <i style={{ fontFamily: "serif" }}>{i18n.terms.keyboardKeys.i}</i>
                     </div>
                   }
                   isDisabled={settings.isReadOnly}
@@ -347,7 +349,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                   className={"kie-dmn-editor--font-options-toggle-group-item"}
                   text={
                     <div>
-                      <u>U</u>
+                      <u>{i18n.terms.keyboardKeys.u}</u>
                     </div>
                   }
                   isDisabled={settings.isReadOnly}
@@ -361,7 +363,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                   className={"kie-dmn-editor--font-options-toggle-group-item"}
                   text={
                     <div>
-                      <p style={{ textDecoration: "line-through" }}>S</p>
+                      <p style={{ textDecoration: "line-through" }}>{i18n.terms.keyboardKeys.s}</p>
                     </div>
                   }
                   isDisabled={settings.isReadOnly}

@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { useCallback, useMemo, useState, useEffect } from "react";
-import { DMN15__tItemDefinition } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tItemDefinition } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { getNewDmnIdRandomizer } from "@kie-tools/dmn-marshaller/dist/idRandomizer/dmnIdRandomizer";
 import {
@@ -38,7 +38,7 @@ import { DataTypePanel } from "./DataTypePanel";
 import { findDataTypeById, isStruct } from "./DataTypeSpec";
 import { DataTypeName } from "./DataTypeName";
 import { Label } from "@patternfly/react-core/dist/js/components/Label";
-import { DMN15_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { DMN16_SPEC } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { invalidInlineFeelNameStyle } from "../feel/InlineFeelNameInput";
 import {
   Dropdown,
@@ -64,9 +64,10 @@ import { useExternalModels } from "../includedModels/DmnEditorDependenciesContex
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { ImportJavaClassesDropdownItem, ImportJavaClassNameConflictsModal } from "./ImportJavaClasses";
 import { useImportJavaClasses } from "./useImportJavaClasses";
+import { useDmnEditorI18n } from "../i18n";
 
 export type DataType = {
-  itemDefinition: Normalized<DMN15__tItemDefinition>;
+  itemDefinition: Normalized<DMN_LATEST__tItemDefinition>;
   parentId: string | undefined;
   parents: Set<string>;
   index: number;
@@ -80,22 +81,23 @@ export type DataTypeIndex = Map<string, DataType>;
 export type AddItemComponent = (
   id: string,
   how: "unshift" | "push",
-  partial?: Partial<Normalized<DMN15__tItemDefinition>>
+  partial?: Partial<Normalized<DMN_LATEST__tItemDefinition>>
 ) => void;
-export type AddTopLevelItemDefinition = (partial: Partial<Normalized<DMN15__tItemDefinition>>) => void;
+export type AddTopLevelItemDefinition = (partial: Partial<Normalized<DMN_LATEST__tItemDefinition>>) => void;
 
 export type EditItemDefinition = (
   id: string,
   consumer: (
-    itemDefinition: Normalized<DMN15__tItemDefinition>,
-    items: Normalized<DMN15__tItemDefinition>[],
+    itemDefinition: Normalized<DMN_LATEST__tItemDefinition>,
+    items: Normalized<DMN_LATEST__tItemDefinition>[],
     index: number,
-    all: Normalized<DMN15__tItemDefinition>[],
+    all: Normalized<DMN_LATEST__tItemDefinition>[],
     state: State
   ) => void
 ) => void;
 
 export function DataTypes() {
+  const { i18n } = useDmnEditorI18n();
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const activeItemDefinitionId = useDmnEditorStore((s) => s.dataTypesEditor.activeItemDefinitionId);
@@ -182,7 +184,7 @@ export function DataTypes() {
       getNewDmnIdRandomizer()
         .ack({
           json: clipboard.itemDefinitions,
-          type: "DMN15__tDefinitions",
+          type: "DMN16__tDefinitions",
           attr: "itemDefinition",
         })
         .randomize({ skipAlreadyAttributedIds: false });
@@ -196,7 +198,7 @@ export function DataTypes() {
   const [isAddDataTypeDropdownOpen, setAddDataTypeDropdownOpen] = useState(false);
 
   // Using this object because DropdownToggleAction's props doesn't accept a 'title'.
-  const extraPropsForDropdownToggleAction = { title: "New Data Type" };
+  const extraPropsForDropdownToggleAction = { title: i18n.dataTypes.newDataType };
 
   const addDataTypesDropdownItems = useMemo(() => {
     const dropdownItems = [
@@ -206,7 +208,7 @@ export function DataTypes() {
         style={{ minWidth: "240px" }}
         icon={<PasteIcon />}
       >
-        Paste
+        {i18n.dataTypes.paste}
       </DropdownItem>,
     ];
     if (isImportDataTypesFromJavaClassesSupported && javaCodeCompletionService) {
@@ -225,6 +227,7 @@ export function DataTypes() {
     javaCodeCompletionService,
     handleImportJavaClassButtonClick,
     pasteTopLevelItemDefinition,
+    i18n.dataTypes.paste,
   ]);
 
   return (
@@ -252,7 +255,7 @@ export function DataTypes() {
                   <InputGroup>
                     <InputGroupItem isFill>
                       <SearchInput
-                        placeholder="Filter..."
+                        placeholder={i18n.filter}
                         value={filter}
                         onChange={(_event, value) => setFilter(value)}
                         onClear={() => setFilter("")}
@@ -322,11 +325,11 @@ export function DataTypes() {
                           />
                         )) || (
                           <>
-                            <Label style={{ marginLeft: "8px" }}>External</Label>
+                            <Label style={{ marginLeft: "8px" }}>{i18n.dataTypes.external}</Label>
                             <div
                               className={`kie-dmn-editor--editable-node-name-input top-left grow`}
                               style={
-                                DMN15_SPEC.namedElement.isValidName(
+                                DMN16_SPEC.namedElement.isValidName(
                                   itemDefinition["@_id"]!,
                                   feelName,
                                   allTopLevelItemDefinitionUniqueNames

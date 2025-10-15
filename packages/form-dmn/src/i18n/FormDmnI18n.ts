@@ -47,5 +47,7 @@ export interface FormDmnI18n extends FormI18n {
       title: string;
       explanation: string;
     };
+    recursiveStructureNotSupported: Array<string | Wrapped<"linebreak">>;
+    openExpression: (name: string) => string;
   };
 }

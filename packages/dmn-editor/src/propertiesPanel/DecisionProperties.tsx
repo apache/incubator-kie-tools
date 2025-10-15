@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { DMN15__tDecision } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDecision } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -33,16 +33,18 @@ import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { useRefactor } from "../refactor/RefactorConfirmationDialog";
 import { TextField, TextFieldType } from "./Fields";
+import { useDmnEditorI18n } from "../i18n";
 
 export function DecisionProperties({
   decision,
   namespace,
   index,
 }: {
-  decision: Normalized<DMN15__tDecision>;
+  decision: Normalized<DMN_LATEST__tDecision>;
   namespace: string | undefined;
   index: number;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const { setState } = useDmnEditorStoreApi();
   const settings = useSettings();
 
@@ -67,7 +69,7 @@ export function DecisionProperties({
   return (
     <>
       {refactorConfirmationDialog}
-      <FormGroup label="Name">
+      <FormGroup label={i18n.name}>
         <InlineFeelNameInput
           enableAutoFocusing={false}
           isPlain={false}
@@ -81,14 +83,14 @@ export function DecisionProperties({
         />
       </FormGroup>
 
-      <FormGroup label="Data type">
+      <FormGroup label={i18n.propertiesPanel.dataType}>
         <TypeRefSelector
           heightRef={dmnEditorRootElementRef}
           typeRef={resolvedTypeRef}
           isDisabled={isReadOnly}
           onChange={(newTypeRef) => {
             setState((state) => {
-              const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>;
+              const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tDecision>;
               drgElement.variable ??= { "@_id": generateUuid(), "@_name": decision["@_name"] };
               drgElement.variable["@_typeRef"] = newTypeRef;
             });
@@ -97,54 +99,54 @@ export function DecisionProperties({
       </FormGroup>
 
       <TextField
-        title={"Description"}
+        title={i18n.propertiesPanel.description}
         type={TextFieldType.TEXT_AREA}
         isReadOnly={isReadOnly}
         initialValue={decision.description?.__$$text || ""}
         onChange={(newDescription) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).description = {
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tDecision>).description = {
               __$$text: newDescription,
             };
           });
         }}
-        placeholder={"Enter a description..."}
+        placeholder={i18n.propertiesPanel.descriptionPlaceholder}
       />
 
-      <FormGroup label="ID">
+      <FormGroup label={i18n.propertiesPanel.id}>
         <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
           {decision["@_id"]}
         </ClipboardCopy>
       </FormGroup>
 
       <TextField
-        title={"Question"}
+        title={i18n.propertiesPanel.question}
         type={TextFieldType.TEXT_AREA}
         isReadOnly={isReadOnly}
         initialValue={decision.question?.__$$text || ""}
         onChange={(newQuestion) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).question = {
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tDecision>).question = {
               __$$text: newQuestion,
             };
           });
         }}
-        placeholder={"Enter a question..."}
+        placeholder={i18n.propertiesPanel.questionPlaceholder}
       />
 
       <TextField
-        title={"Allowed answers"}
+        title={i18n.propertiesPanel.allowedAnswers}
         type={TextFieldType.TEXT_AREA}
         isReadOnly={isReadOnly}
         initialValue={decision.allowedAnswers?.__$$text || ""}
         onChange={(newAllowedAnswers) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).allowedAnswers = {
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tDecision>).allowedAnswers = {
               __$$text: newAllowedAnswers,
             };
           });
         }}
-        placeholder={"Enter allowed answers..."}
+        placeholder={i18n.propertiesPanel.allowedAnswersPlaceholder}
       />
 
       <DocumentationLinksFormGroup
@@ -152,7 +154,7 @@ export function DecisionProperties({
         values={decision.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tDecision>).extensionElements = {
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tDecision>).extensionElements = {
               "kie:attachment": newExtensionElements,
             };
           });

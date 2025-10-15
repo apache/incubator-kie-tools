@@ -20,12 +20,35 @@
 const { varsWithName, getOrDefault, composeEnv } = require("@kie-tools-scripts/build-env");
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
-  vars: varsWithName({}),
+  vars: varsWithName({
+    KOGITO_DATA_INDEX_WEBAPP_title: {
+      default: "KOGITO DATA INDEX",
+      description: "Application title",
+    },
+    KOGITO_DATA_INDEX_WEBAPP_logo: {
+      default: "favicon.svg",
+      description: "Path to logo image",
+    },
+    KOGITO_DATA_INDEX_WEBAPP_docLinkHref: {
+      default: "https://graphql.org/learn/",
+      description: "Documentation link URL",
+    },
+    KOGITO_DATA_INDEX_WEBAPP_docLinkText: {
+      default: "GraphQL DOCS",
+      description: "Documentation link text",
+    },
+  }),
   get env() {
     return {
-      dataIndexWebapp: {
+      kogitoDataIndexWebapp: {
         dev: {
           port: 9026,
+        },
+        title: getOrDefault(this.vars.KOGITO_DATA_INDEX_WEBAPP_title),
+        logo: getOrDefault(this.vars.KOGITO_DATA_INDEX_WEBAPP_logo),
+        docLink: {
+          href: getOrDefault(this.vars.KOGITO_DATA_INDEX_WEBAPP_docLinkHref),
+          text: getOrDefault(this.vars.KOGITO_DATA_INDEX_WEBAPP_docLinkText),
         },
       },
     };

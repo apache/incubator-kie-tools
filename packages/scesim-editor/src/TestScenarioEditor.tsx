@@ -157,6 +157,8 @@ export type TestScenarioEditorProps = {
    * The file path of the current opened Test Scenario scesim file
    */
   openFileNormalizedPosixPathRelativeToTheWorkspaceRoot: string | undefined;
+
+  locale: string;
 };
 
 export type TestScenarioEditorRef = {
@@ -322,6 +324,7 @@ function TestScenarioParserErrorPanel({
   parserErrorTitle: string;
   parserErrorMessage: string;
 }) {
+  const { i18n } = useTestScenarioEditorI18n();
   return (
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
       <EmptyState style={{ maxWidth: "1280px" }}>
@@ -331,7 +334,9 @@ function TestScenarioParserErrorPanel({
           headingLevel={"h4"}
         />
         <br />
-        <EmptyStateBody>Error details: {parserErrorMessage}</EmptyStateBody>
+        <EmptyStateBody>
+          {i18n.errorFallBack.errorDetails} + {parserErrorMessage}
+        </EmptyStateBody>
       </EmptyState>
     </Flex>
   );
@@ -349,6 +354,7 @@ export const TestScenarioEditorInternal = ({
   const testScenarioEditorStoreApi = useTestScenarioEditorStoreApi();
   const { testScenarioEditorModelBeforeEditingRef, testScenarioEditorRootElementRef } = useTestScenarioEditor();
   const { commandsRef } = useCommands();
+  const { i18n } = useTestScenarioEditorI18n();
 
   /** Implementing Editor APIs */
 
@@ -445,11 +451,8 @@ export const TestScenarioEditorInternal = ({
           case TestScenarioFileStatus.ERROR:
             return (
               <TestScenarioParserErrorPanel
-                parserErrorTitle={"File parsing error"}
-                parserErrorMessage={
-                  "Impossibile to correctly parse the provided scesim file. Most likely, the XML structure of the file " +
-                  "is invalid."
-                }
+                parserErrorTitle={i18n.parsingErrorTitle}
+                parserErrorMessage={i18n.fileParsingErrorMessage}
               />
             );
           case TestScenarioFileStatus.NEW:
@@ -457,17 +460,8 @@ export const TestScenarioEditorInternal = ({
           case TestScenarioFileStatus.UNSUPPORTED:
             return (
               <TestScenarioParserErrorPanel
-                parserErrorTitle={
-                  "This file holds a Test Scenario asset version (" +
-                  scesim.model.ScenarioSimulationModel["@_version"] +
-                  ") not supported"
-                }
-                parserErrorMessage={
-                  "Most likely, this file has been generated with a very old Business Central version (< 7.30.0.Final). " +
-                  "Please update your Business Central instance and download again this scesim file, it will be automatically updated to the supported version (" +
-                  CURRENT_SUPPORTED_VERSION +
-                  ")."
-                }
+                parserErrorTitle={i18n.unsupportedTitle(scesim.model.ScenarioSimulationModel["@_version"] ?? "")}
+                parserErrorMessage={i18n.unsupportedMessage(CURRENT_SUPPORTED_VERSION)}
               />
             );
           case TestScenarioFileStatus.VALID:
@@ -500,7 +494,7 @@ export const TestScenarioEditor = React.forwardRef(
       <I18nDictionariesProvider
         defaults={testScenarioEditorI18nDefaults}
         dictionaries={testScenarioEditorDictionaries}
-        initialLocale={navigator.language}
+        initialLocale={props.locale}
         ctx={TestScenarioEditorI18nContext}
       >
         <TestScenarioEditorContextProvider {...props}>

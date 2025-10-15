@@ -21,19 +21,21 @@ import * as React from "react";
 import { useMemo } from "react";
 import { DescriptionField, TextField, TextFieldType } from "../Fields";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
-import { DMN15__tDecisionTable } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDecisionTable } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useBoxedExpressionUpdater } from "./useBoxedExpressionUpdater";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
 import { useDmnEditorStore } from "../../store/StoreContext";
+import { useDmnEditorI18n } from "../../i18n";
 
 type DecisionTableRoot = Pick<
-  Normalized<DMN15__tDecisionTable>,
+  Normalized<DMN_LATEST__tDecisionTable>,
   "@_label" | "description" | "@_typeRef" | "@_outputLabel" | "@_aggregation" | "@_hitPolicy" | "@_id"
 >;
 
 export function DecisionTableRootCell(props: { boxedExpressionIndex?: BoxedExpressionIndex; isReadOnly: boolean }) {
+  const { i18n } = useDmnEditorI18n();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const selectedObjectInfos = useMemo(
     () => props.boxedExpressionIndex?.get(selectedObjectId ?? ""),
@@ -46,29 +48,29 @@ export function DecisionTableRootCell(props: { boxedExpressionIndex?: BoxedExpre
 
   return (
     <>
-      <FormGroup label="ID">
+      <FormGroup label={i18n.propertiesPanel.id}>
         <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>
       <TextField
         type={TextFieldType.TEXT_INPUT}
-        title={"Hit Policy"}
+        title={i18n.propertiesPanel.hitPolicy}
         isReadOnly={true}
         initialValue={cell["@_hitPolicy"] ?? ""}
       />
       {cell["@_hitPolicy"] === "COLLECT" && (
         <TextField
           type={TextFieldType.TEXT_INPUT}
-          title={"Aggregation"}
+          title={i18n.propertiesPanel.aggregation}
           isReadOnly={true}
           initialValue={cell["@_aggregation"] ?? "<None>"}
         />
       )}
       <TextField
         type={TextFieldType.TEXT_INPUT}
-        title={"Output Label"}
-        placeholder={"Enter a output label..."}
+        title={i18n.propertiesPanel.outputLabel}
+        placeholder={i18n.propertiesPanel.outputLabelPlaceholder}
         isReadOnly={props.isReadOnly}
         initialValue={cell["@_outputLabel"] ?? ""}
         onChange={(newOutputLabel: string) =>

@@ -33,8 +33,10 @@ import { FallbackProps } from "react-error-boundary";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { useCallback, useEffect } from "react";
+import { useDmnEditorI18n } from "./i18n";
 
 export function DmnEditorErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
+  const { i18n } = useDmnEditorI18n();
   const { dmnModelBeforeEditingRef, issueTrackerHref } = useDmnEditor();
 
   const resetToLastWorkingState = useCallback(() => {
@@ -49,20 +51,18 @@ export function DmnEditorErrorFallback({ error, resetErrorBoundary }: FallbackPr
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
       <EmptyState style={{ maxWidth: "1280px" }}>
         <EmptyStateHeader
-          titleText="An unexpected error happened"
+          titleText={i18n.dmnEditor.unexpectedErrorOccured}
           icon={<EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />}
           headingLevel={"h4"}
         />
-        <EmptyStateBody>
-          This is a bug. Please consider reporting it so the DMN Editor can continue improving. See the details below.
-        </EmptyStateBody>
+        <EmptyStateBody>{i18n.dmnEditor.reportBug}</EmptyStateBody>
         <EmptyStateFooter>
           <br />
           <ClipboardCopy
             isReadOnly={true}
             isExpanded={false}
-            hoverTip={"Copy"}
-            clickTip={"Copied"}
+            hoverTip={i18n.propertiesPanel.copy}
+            clickTip={i18n.propertiesPanel.copied}
             variant={ClipboardCopyVariant.expansion}
             style={{ textAlign: "left", whiteSpace: "pre-wrap", fontFamily: "monospace" }}
           >
@@ -80,12 +80,12 @@ export function DmnEditorErrorFallback({ error, resetErrorBoundary }: FallbackPr
           <br />
           <EmptyStateActions>
             <Button variant={ButtonVariant.link} onClick={resetToLastWorkingState}>
-              Try undoing last action
+              {i18n.dmnEditor.tryUndoingLastAction}
             </Button>
             {issueTrackerHref && (
               <a href={issueTrackerHref} target={"_blank"}>
                 <Button variant={ButtonVariant.link} icon={<ExternalLinkAltIcon />}>
-                  File an issue...
+                  {i18n.dmnEditor.fileAnIssue}
                 </Button>
               </a>
             )}

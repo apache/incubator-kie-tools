@@ -28,6 +28,7 @@ import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
 import { Tooltip } from "@patternfly/react-core/dist/js/components/Tooltip";
 import { HelpIcon } from "@patternfly/react-icons/dist/js/icons/help-icon";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
+import { useDmnEditorI18n } from "../i18n";
 
 const MIN_SNAP = 5;
 const MAX_SNAP = 50;
@@ -39,6 +40,7 @@ interface OverlaysPanelProps {
 }
 
 export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
+  const { i18n } = useDmnEditorI18n();
   const diagram = useDmnEditorStore((s) => s.diagram);
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const overlayPanelContainer = useRef<HTMLDivElement>(null);
@@ -63,7 +65,7 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
       <Form
         onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Overlays Panel
       >
-        <FormGroup label="Snapping">
+        <FormGroup label={i18n.overlaysPanel.snapping}>
           <Switch
             aria-label={"Snapping"}
             isChecked={diagram.snapGrid.isEnabled}
@@ -74,7 +76,7 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
             }
           />
         </FormGroup>
-        <FormGroup label="Horizontal">
+        <FormGroup label={i18n.overlaysPanel.horizontal}>
           <Slider
             data-testid={"kie-tools--dmn-editor--horizontal-snapping-control"}
             className={"kie-dmn-editor--snap-slider"}
@@ -94,7 +96,7 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
             }
           />
         </FormGroup>
-        <FormGroup label="Vertical">
+        <FormGroup label={i18n.overlaysPanel.vertical}>
           <Slider
             data-testid={"kie-tools--dmn-editor--vertical-snapping-control"}
             className={"kie-dmn-editor--snap-slider"}
@@ -121,7 +123,7 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
       <Form
         onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Overlays Panel
       >
-        <FormGroup label={"Highlight selected node(s) hierarchy"}>
+        <FormGroup label={i18n.overlaysPanel.highlightSelectedNode}>
           <Switch
             aria-label={"Highlight selected node(s) hierarchy"}
             isChecked={diagram.overlays.enableNodeHierarchyHighlight}
@@ -132,7 +134,7 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
             }
           />
         </FormGroup>
-        <FormGroup label={"Show data type toolbar on nodes"}>
+        <FormGroup label={i18n.overlaysPanel.showDataTypeToolbar}>
           <Switch
             aria-label={"Show data type toolbar on nodes"}
             isChecked={diagram.overlays.enableDataTypesToolbarOnNodes}
@@ -143,7 +145,7 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
             }
           />
         </FormGroup>
-        <FormGroup label={"Enable styles"}>
+        <FormGroup label={i18n.overlaysPanel.enableStyles}>
           <Switch
             aria-label={"Show data type toolbar on nodes"}
             isChecked={diagram.overlays.enableCustomNodeStyles}
@@ -156,13 +158,9 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
         </FormGroup>
         {isEvaluationHighlightsSupported && (
           <FormGroup
-            label={"Enable evaluation highlights"}
+            label={i18n.overlaysPanel.enableEvaluationHighlights}
             labelIcon={
-              <Tooltip
-                content={
-                  "Enable highlighting Decision Table rules and Boxed Conditional Expression branches based on evaluation results, also showing success/error status badges on Decision nodes."
-                }
-              >
+              <Tooltip content={i18n.overlaysPanel.enableHighlightingDecisionTable}>
                 <Icon size="sm" status="info">
                   <HelpIcon />
                 </Icon>

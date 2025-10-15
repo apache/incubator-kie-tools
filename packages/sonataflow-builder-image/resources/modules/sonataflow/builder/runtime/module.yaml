@@ -21,11 +21,5 @@ name: org.kie.sonataflow.builder.runtime
 version: "main"
 description: "Apache KIE SonataFlow builder runtime module"
 
-artifacts:
-  - image: builder
-    path: /home/kogito/build_output/kogito-swf-quarkus-app.tar
-  - image: builder
-    path: /home/kogito/build_output/kogito-swf-maven-repo.tar
-
 execute:
   - script: configure.sh

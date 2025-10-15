@@ -62,8 +62,8 @@ export function TestScenarioEditorErrorFallback({ error, resetErrorBoundary }: F
           <ClipboardCopy
             isReadOnly={true}
             isExpanded={false}
-            hoverTip={"Copy"}
-            clickTip={"Copied"}
+            hoverTip={i18n.table.copy}
+            clickTip={i18n.table.copied}
             variant={ClipboardCopyVariant.expansion}
             style={{ textAlign: "left", whiteSpace: "pre-wrap", fontFamily: "monospace" }}
           >

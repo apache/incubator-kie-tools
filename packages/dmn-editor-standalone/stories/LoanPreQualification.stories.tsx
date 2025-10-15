@@ -24,7 +24,7 @@ import { WebApp, DevWebAppProps } from "./DevWebApp.stories";
 
 const loanPreQualificationDmn = `<?xml version="1.0" encoding="UTF-8" ?>
 <dmn:definitions
-  xmlns:dmn="https://www.omg.org/spec/DMN/20230324/MODEL/"
+  xmlns:dmn="https://www.omg.org/spec/DMN/20240513/MODEL/"
   xmlns="https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB"
   xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
   xmlns:kie="https://kie.org/dmn/extensions/1.0"
@@ -33,8 +33,8 @@ const loanPreQualificationDmn = `<?xml version="1.0" encoding="UTF-8" ?>
   xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/"
   id="_C6CBECEB-2BBC-4E14-80B0-17F576B2CF92"
   name="loan_pre_qualification"
-  expressionLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
-  typeLanguage="https://www.omg.org/spec/DMN/20230324/FEEL/"
+  expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/"
+  typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/"
   namespace="https://kie.apache.org/dmn/_857FE424-BEDA-4772-AB8E-2F4CDDB864AB"
 >
   <dmn:extensionElements />

@@ -30,7 +30,7 @@ import {
 import { DmnLatestModel, getMarshaller } from "@kie-tools/dmn-marshaller";
 import { normalize } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { diff } from "deep-object-diff";
-import { generateEmptyDmn15 } from "./misc/empty/Empty.stories";
+import { generateEmptyDmn16 } from "./misc/empty/Empty.stories";
 
 export const evaluationResultsByNodeId: EvaluationResultsByNodeId = new Map();
 export const validationMessages: ValidationMessages = {};
@@ -67,7 +67,7 @@ export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
       updateArgs({
         ...argsCopy.current,
         model: model,
-        xml: getMarshaller(generateEmptyDmn15(), { upgradeTo: "latest" }).builder.build(model),
+        xml: getMarshaller(generateEmptyDmn16(), { upgradeTo: "latest" }).builder.build(model),
       });
     }
   }, [updateArgs, model]);
@@ -124,6 +124,7 @@ export function DmnEditorWrapper(props?: Partial<StorybookDmnEditorProps>) {
           issueTrackerHref={props?.issueTrackerHref ?? args.issueTrackerHref}
           onRequestToJumpToPath={props?.onRequestToJumpToPath ?? args.onRequestToJumpToPath}
           onModelDebounceStateChanged={onModelDebounceStateChanged}
+          locale={args.locale}
         />
       </div>
     </>

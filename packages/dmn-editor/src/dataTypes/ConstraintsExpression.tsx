@@ -26,6 +26,8 @@ import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/compo
 import InfoIcon from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { TypeHelper } from "./Constraints";
+import { useDmnEditorI18n } from "../i18n";
+import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 
 export function ConstraintsExpression({
   id,
@@ -42,9 +44,12 @@ export function ConstraintsExpression({
   onSave?: (value?: string) => void;
   isDisabled?: boolean;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const [preview, setPreview] = useState(value ?? "");
   const [isEditing, setEditing] = useState(false);
   const valueCopy = useRef(value);
+  const FEEL_HANDBOOK_URL = "https://kiegroup.github.io/dmn-feel-handbook/#feel-values";
+  const { locale } = useDmnEditorI18n();
 
   const onFeelBlur = useCallback((valueOnBlur: string) => {
     setEditing(false);
@@ -99,7 +104,7 @@ export function ConstraintsExpression({
     <div key={id} style={{ display: "flex", flexDirection: "column", width: "100%" }} onKeyDown={onKeyDown}>
       {isReadOnly && (
         <Title size={"md"} headingLevel="h5" style={{ paddingBottom: "10px" }}>
-          Equivalent FEEL expression:
+          {i18n.dataTypes.equivalentFeelExpression}
         </Title>
       )}
 
@@ -127,16 +132,23 @@ export function ConstraintsExpression({
           onPreviewChanged={onPreviewChanged}
           enabled={!isReadOnly}
           options={monacoOptions as any}
+          locale={locale}
         />
       </div>
       <HelperText>
         {!isReadOnly && (
           <HelperTextItem variant="indeterminate" icon={<InfoIcon />}>
-            Check the{" "}
-            <a target={"_blank"} href={"https://kiegroup.github.io/dmn-feel-handbook/#feel-values"}>
-              FEEL handbook
-            </a>{" "}
-            to help you on creating your expressions.
+            <I18nWrapped
+              components={{
+                feelHandBook: (
+                  <a href={FEEL_HANDBOOK_URL} target={"_blank"}>
+                    {FEEL_HANDBOOK_URL}
+                  </a>
+                ),
+              }}
+            >
+              {i18n.dataTypes.checkFeelHandbook}
+            </I18nWrapped>
           </HelperTextItem>
         )}
       </HelperText>

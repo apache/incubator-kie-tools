@@ -31,6 +31,7 @@ import { builtInFeelTypeNames, builtInFeelTypes } from "./BuiltInFeelTypes";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { useInViewSelect } from "../responsiveness/useInViewSelect";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
+import { useDmnEditorI18n } from "../i18n";
 
 export type OnTypeRefChange = (newDataType: string | undefined) => void;
 export type OnCreateDataType = (newDataTypeName: string) => void;
@@ -57,6 +58,7 @@ export function TypeRefSelector({
   menuAppendTo?: "parent";
   removeDataTypes?: DataType[];
 }) {
+  const { i18n } = useDmnEditorI18n();
   const [isOpen, setOpen] = useState(false);
   const { externalModelsByNamespace } = useExternalModels();
   const selectedDataType = useDmnEditorStore((s) =>
@@ -127,7 +129,7 @@ export function TypeRefSelector({
         const selectGroups = [];
         if (filteredBuiltInFeelTypes.length > 0 || !searchText) {
           selectGroups.push(
-            <SelectGroup label="Built-in" key="builtin" style={{ minWidth: "300px" }}>
+            <SelectGroup label={i18n.dataTypes.builtIn} key="builtin" style={{ minWidth: "300px" }}>
               {filteredBuiltInFeelTypes.map((dt) => (
                 <SelectOption key={dt.name} value={dt.name}>
                   {dt.name}
@@ -138,7 +140,7 @@ export function TypeRefSelector({
         }
         if (filteredCustomDataTypes.length > 0 || !searchText) {
           selectGroups.push(
-            <SelectGroup label="Custom" key="custom" style={{ minWidth: "300px" }}>
+            <SelectGroup label={i18n.dataTypes.custom} key="custom" style={{ minWidth: "300px" }}>
               {filteredCustomDataTypes.length > 0 ? (
                 filteredCustomDataTypes.map((dt) => (
                   <SelectOption key={dt.feelName} value={dt.feelName}>
@@ -159,7 +161,7 @@ export function TypeRefSelector({
         }
         if (filteredExternalDataTypes.length > 0 || !searchText) {
           selectGroups.push(
-            <SelectGroup label="External" key="external" style={{ minWidth: "300px" }}>
+            <SelectGroup label={i18n.dataTypes.external} key="external" style={{ minWidth: "300px" }}>
               {filteredExternalDataTypes.length > 0 ? (
                 filteredExternalDataTypes.map((dt) => (
                   <SelectOption key={dt.feelName} value={dt.feelName}>
@@ -173,7 +175,7 @@ export function TypeRefSelector({
                   </SelectOption>
                 ))
               ) : (
-                <SelectOption key={"None"} value={"None"} isDisabled={true} />
+                <SelectOption key={"None"} value={i18n.none} isDisabled={true} />
               )}
             </SelectGroup>
           );
@@ -199,7 +201,7 @@ export function TypeRefSelector({
     >
       {selectedDataType?.itemDefinition && (
         <Button
-          title={"Jump to definition"}
+          title={i18n.dataTypes.jumpToDefinition}
           className={"kie-dmn-editor--data-type-jump-to-definition"}
           variant={ButtonVariant.control}
           onClick={(e) =>
@@ -227,7 +229,7 @@ export function TypeRefSelector({
         selections={typeRef ?? DmnBuiltInDataType.Undefined}
         isOpen={isOpen}
         aria-labelledby={"Data types selector"}
-        placeholderText={"Select a data type..."}
+        placeholderText={i18n.dataTypes.selectDataType}
         isCreatable={!!onCreate}
         isCreateOptionOnTop={false}
         onCreateOption={onCreate}

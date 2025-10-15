@@ -22,7 +22,7 @@ import { useCallback, useMemo, useState } from "react";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { ContentField, DescriptionField, ExpressionLanguageField, NameField, TypeRefField } from "../Fields";
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
-import { DMN15__tInputClause } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tInputClause } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { useDmnEditor } from "../../DmnEditorContext";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
@@ -33,11 +33,13 @@ import { ConstraintsFromTypeConstraintAttribute } from "../../dataTypes/Constrai
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../../store/StoreContext";
 import { useExternalModels } from "../../includedModels/DmnEditorDependenciesContext";
 import { State } from "../../store/Store";
+import { useDmnEditorI18n } from "../../i18n";
 
 export function DecisionTableInputHeaderCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
   isReadOnly: boolean;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const { externalModelsByNamespace } = useExternalModels();
@@ -47,9 +49,14 @@ export function DecisionTableInputHeaderCell(props: {
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tInputClause>>(selectedObjectInfos?.expressionPath ?? []);
+  const updater = useBoxedExpressionUpdater<Normalized<DMN_LATEST__tInputClause>>(
+    selectedObjectInfos?.expressionPath ?? []
+  );
 
-  const cell = useMemo(() => selectedObjectInfos?.cell as Normalized<DMN15__tInputClause>, [selectedObjectInfos?.cell]);
+  const cell = useMemo(
+    () => selectedObjectInfos?.cell as Normalized<DMN_LATEST__tInputClause>,
+    [selectedObjectInfos?.cell]
+  );
   const inputExpression = useMemo(() => cell.inputExpression, [cell.inputExpression]);
   const inputValues = useMemo(() => cell.inputValues, [cell.inputValues]);
 
@@ -91,7 +98,7 @@ export function DecisionTableInputHeaderCell(props: {
           fixed={false}
           isSectionExpanded={isInputExpressionExpanded}
           toogleSectionExpanded={() => setInputExpressionExpanded((prev) => !prev)}
-          title={"Input Expression"}
+          title={i18n.propertiesPanel.inputExpression}
         />
         {isInputExpressionExpanded && (
           <>
@@ -122,7 +129,7 @@ export function DecisionTableInputHeaderCell(props: {
               }
             />
             {inputExpressionItemDefinition && (
-              <FormGroup label="Constraint">
+              <FormGroup label={i18n.propertiesPanel.constraint}>
                 <ConstraintsFromTypeConstraintAttribute
                   isReadOnly={true}
                   itemDefinition={inputExpressionItemDefinition}
@@ -138,8 +145,12 @@ export function DecisionTableInputHeaderCell(props: {
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newExpressionLanguage) =>
                 updater((dmnObject) => {
-                  dmnObject.inputExpression ??= { "@_id": generateUuid() };
-                  dmnObject.inputExpression["@_expressionLanguage"] = newExpressionLanguage;
+                  if (newExpressionLanguage === "") {
+                    delete dmnObject.inputExpression["@_expressionLanguage"];
+                  } else {
+                    dmnObject.inputExpression ??= { "@_id": generateUuid() };
+                    dmnObject.inputExpression["@_expressionLanguage"] = newExpressionLanguage;
+                  }
                 })
               }
             />
@@ -164,7 +175,7 @@ export function DecisionTableInputHeaderCell(props: {
           fixed={false}
           isSectionExpanded={isInputValuesExpanded}
           toogleSectionExpanded={() => setInputValuesExpanded((prev) => !prev)}
-          title={"Input Values"}
+          title={i18n.propertiesPanel.inputValues}
         />
         {isInputValuesExpanded && (
           <>
@@ -174,8 +185,12 @@ export function DecisionTableInputHeaderCell(props: {
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newExpressionLanguage) =>
                 updater((dmnObject) => {
-                  dmnObject.inputValues ??= { "@_id": generateUuid(), text: { __$$text: "" } };
-                  dmnObject.inputValues["@_expressionLanguage"] = newExpressionLanguage;
+                  if (newExpressionLanguage === "") {
+                    dmnObject.inputValues && delete dmnObject.inputValues["@_expressionLanguage"];
+                  } else {
+                    dmnObject.inputValues ??= { "@_id": generateUuid(), text: { __$$text: "" } };
+                    dmnObject.inputValues["@_expressionLanguage"] = newExpressionLanguage;
+                  }
                 })
               }
             />

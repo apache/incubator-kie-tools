@@ -26,15 +26,17 @@ import {
   EmptyStateFooter,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import CubeIcon from "@patternfly/react-icons/dist/js/icons/cube-icon";
+import { useDmnEditorI18n } from "../../i18n";
 
 export function WithoutPropertiesCell() {
+  const { i18n } = useDmnEditorI18n();
   return (
     <>
       <EmptyState>
         <EmptyStateHeader icon={<EmptyStateIcon icon={CubeIcon} />} />
         <EmptyStateFooter>
           <TextContent>
-            <Text component={"h2"}>No properties to display</Text>
+            <Text component={"h2"}>{i18n.propertiesPanel.noPropertiesToDisplay}</Text>
           </TextContent>
         </EmptyStateFooter>
       </EmptyState>

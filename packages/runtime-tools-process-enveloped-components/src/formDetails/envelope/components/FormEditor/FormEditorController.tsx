@@ -74,11 +74,13 @@ export class FormEditorEditorController implements FormEditorEditorApi {
         noImplicitReturns: false,
         alwaysStrict: false,
       });
-      this.model = monaco.editor.createModel(
-        content,
-        this.language,
-        monaco.Uri.parse("file:///main.tsx") // Ensures TSX compatibility
-      );
+      const monacoModelUri = monaco.Uri.parse("file:///main.tsx"); // Ensures TSX compatibility
+      const existingModel = monaco.editor.getModel(monacoModelUri);
+
+      if (existingModel) {
+        existingModel.dispose(); // Clean up the old model
+      }
+      this.model = monaco.editor.createModel(content, this.language, monacoModelUri);
     } else {
       this.model = monaco.editor.createModel(content, this.language);
     }
@@ -169,6 +171,7 @@ export class FormEditorEditorController implements FormEditorEditorApi {
   }
 
   public dispose(): void {
+    this.model?.dispose();
     this.editor?.dispose();
   }
 }

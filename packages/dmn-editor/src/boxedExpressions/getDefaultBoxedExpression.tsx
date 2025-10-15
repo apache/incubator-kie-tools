@@ -51,10 +51,7 @@ import { INVOCATION_EXPRESSION_DEFAULT_PARAMETER_NAME } from "@kie-tools/boxed-e
 import { RELATION_EXPRESSION_DEFAULT_VALUE } from "@kie-tools/boxed-expression-component/dist/expressions/RelationExpression/RelationExpression";
 import { DataTypeIndex } from "../dataTypes/DataTypes";
 import { isStruct } from "../dataTypes/DataTypeSpec";
-import {
-  DMN15__tContextEntry,
-  DMN15__tOutputClause,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tContextEntry, DMN_LATEST__tOutputClause } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 
 export function getDefaultBoxedExpression({
@@ -99,7 +96,7 @@ export function getDefaultBoxedExpression({
   else if (logicType === "context") {
     let maxWidthBasedOnEntryNames = CONTEXT_ENTRY_VARIABLE_MIN_WIDTH;
 
-    let contextEntries: Normalized<DMN15__tContextEntry>[];
+    let contextEntries: Normalized<DMN_LATEST__tContextEntry>[];
     if (!dataType || !isStruct(dataType.itemDefinition)) {
       contextEntries = [
         {
@@ -258,7 +255,7 @@ export function getDefaultBoxedExpression({
       },
     ];
 
-    const output: Normalized<DMN15__tOutputClause>[] =
+    const output: Normalized<DMN_LATEST__tOutputClause>[] =
       !dataType || !isStruct(dataType.itemDefinition)
         ? [
             {
@@ -325,6 +322,7 @@ export function getDefaultBoxedExpression({
     const conditionalExpression: Normalized<BoxedConditional> = {
       "@_id": generateUuid(),
       __$$element: "conditional",
+      "@_typeRef": typeRef,
       if: {
         "@_id": generateUuid(),
         expression: undefined as any,
@@ -344,6 +342,7 @@ export function getDefaultBoxedExpression({
     const forExpression: Normalized<BoxedFor> = {
       "@_id": generateUuid(),
       __$$element: "for",
+      "@_typeRef": typeRef,
       return: {
         "@_id": generateUuid(),
         expression: undefined as any,
@@ -358,6 +357,7 @@ export function getDefaultBoxedExpression({
     const someExpression: Normalized<BoxedSome> = {
       "@_id": generateUuid(),
       __$$element: "some",
+      "@_typeRef": typeRef,
       satisfies: {
         "@_id": generateUuid(),
         expression: undefined as any,
@@ -372,6 +372,7 @@ export function getDefaultBoxedExpression({
     const everyExpression: Normalized<BoxedEvery> = {
       "@_id": generateUuid(),
       __$$element: "every",
+      "@_typeRef": typeRef,
       satisfies: {
         "@_id": generateUuid(),
         expression: undefined as any,
@@ -386,6 +387,7 @@ export function getDefaultBoxedExpression({
     const filterExpression: Normalized<BoxedFilter> = {
       "@_id": generateUuid(),
       __$$element: "filter",
+      "@_typeRef": typeRef,
       match: {
         "@_id": generateUuid(),
         expression: undefined as any,

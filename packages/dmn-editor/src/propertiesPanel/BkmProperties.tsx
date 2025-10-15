@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { DMN15__tBusinessKnowledgeModel } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tBusinessKnowledgeModel } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -33,16 +33,18 @@ import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { useRefactor } from "../refactor/RefactorConfirmationDialog";
 import { TextField, TextFieldType } from "./Fields";
+import { useDmnEditorI18n } from "../i18n";
 
 export function BkmProperties({
   bkm,
   namespace,
   index,
 }: {
-  bkm: Normalized<DMN15__tBusinessKnowledgeModel>;
+  bkm: Normalized<DMN_LATEST__tBusinessKnowledgeModel>;
   namespace: string | undefined;
   index: number;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const { setState } = useDmnEditorStoreApi();
   const settings = useSettings();
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
@@ -67,7 +69,7 @@ export function BkmProperties({
   return (
     <>
       {refactorConfirmationDialog}
-      <FormGroup label="Name">
+      <FormGroup label={i18n.name}>
         <InlineFeelNameInput
           enableAutoFocusing={false}
           isPlain={false}
@@ -81,7 +83,7 @@ export function BkmProperties({
         />
       </FormGroup>
 
-      <FormGroup label="Data type">
+      <FormGroup label={i18n.propertiesPanel.dataType}>
         <TypeRefSelector
           heightRef={dmnEditorRootElementRef}
           typeRef={resolvedTypeRef}
@@ -90,7 +92,7 @@ export function BkmProperties({
             setState((state) => {
               const drgElement = state.dmn.model.definitions.drgElement![
                 index
-              ] as Normalized<DMN15__tBusinessKnowledgeModel>;
+              ] as Normalized<DMN_LATEST__tBusinessKnowledgeModel>;
               drgElement.variable ??= { "@_id": generateUuid(), "@_name": bkm["@_name"] };
               drgElement.variable["@_typeRef"] = newTypeRef;
             });
@@ -99,22 +101,23 @@ export function BkmProperties({
       </FormGroup>
 
       <TextField
-        title={"Description"}
+        title={i18n.propertiesPanel.description}
         type={TextFieldType.TEXT_AREA}
         isReadOnly={isReadOnly}
         initialValue={bkm.description?.__$$text || ""}
         onChange={(newDescription) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tBusinessKnowledgeModel>).description =
-              {
-                __$$text: newDescription,
-              };
+            (
+              state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tBusinessKnowledgeModel>
+            ).description = {
+              __$$text: newDescription,
+            };
           });
         }}
-        placeholder={"Enter a description..."}
+        placeholder={i18n.propertiesPanel.descriptionPlaceholder}
       />
 
-      <FormGroup label="ID">
+      <FormGroup label={i18n.propertiesPanel.id}>
         <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
           {bkm["@_id"]}
         </ClipboardCopy>
@@ -126,7 +129,7 @@ export function BkmProperties({
         onChange={(newExtensionElements) => {
           setState((state) => {
             (
-              state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tBusinessKnowledgeModel>
+              state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tBusinessKnowledgeModel>
             ).extensionElements = {
               "kie:attachment": newExtensionElements,
             };

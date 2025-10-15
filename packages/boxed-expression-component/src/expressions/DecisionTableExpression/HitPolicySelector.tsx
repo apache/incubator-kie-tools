@@ -29,12 +29,12 @@ import { Menu } from "@patternfly/react-core/dist/js/components/Menu/Menu";
 import { MenuGroup } from "@patternfly/react-core/dist/js/components/Menu/MenuGroup";
 import { MenuList } from "@patternfly/react-core/dist/js/components/Menu/MenuList";
 import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
-import { DMN15__tHitPolicy } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tHitPolicy } from "@kie-tools/dmn-marshaller";
 import "./HitPolicySelector.css";
 
 export interface HitPolicySelectorProps {
   /** Pre-selected hit policy */
-  selectedHitPolicy: DMN15__tHitPolicy;
+  selectedHitPolicy: DMN_LATEST__tHitPolicy;
   /** Pre-selected built-in aggregator */
   selectedBuiltInAggregator: string;
   /** Callback invoked when hit policy selection changes */
@@ -169,7 +169,7 @@ export function HitPolicySelector({
         <div className="hit-policy-flex-container" data-testid={"kie-tools--bee--hit-policy-header"}>
           <div className="hit-policy-section">
             <Menu onSelect={hitPolicySelectionCallback} selected={selectedHitPolicy}>
-              <MenuGroup className="menu-with-help" label="Hit policy">
+              <MenuGroup className="menu-with-help" label={i18n.hitPolicyLabel}>
                 <MenuList>
                   <>
                     {["UNIQUE", "FIRST", "PRIORITY", "ANY", "COLLECT", "RULE ORDER", "OUTPUT ORDER"].map(
@@ -196,7 +196,7 @@ export function HitPolicySelector({
               <Divider orientation={{ default: "vertical" }} />
               <div className="hit-policy-aggregator-section">
                 <Menu onSelect={builtInAggregatorSelectionCallback} selected={selectedBuiltInAggregator}>
-                  <MenuGroup className="menu-with-help" label="Aggregator function">
+                  <MenuGroup className="menu-with-help" label={i18n.aggregatorFunction}>
                     <MenuList>
                       <>
                         {[

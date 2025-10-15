@@ -52,7 +52,7 @@ import { ExpressionVariableCell, ExpressionWithVariable } from "../../expression
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { getExpressionTotalMinWidth } from "../../resizing/WidthMaths";
 import { useBeeTableCoordinates, useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
-import { DMN15__tBinding } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tBinding } from "@kie-tools/dmn-marshaller";
 import { findAllIdsDeep } from "../../ids/ids";
 import "./InvocationExpression.css";
 
@@ -194,8 +194,8 @@ export function InvocationExpression({
             accessor: invocationId as keyof ROWTYPE,
             label:
               invocationExpression.expression?.__$$element === "literalExpression"
-                ? invocationExpression.expression.text?.__$$text ?? "Function name"
-                : "Function name",
+                ? invocationExpression.expression.text?.__$$text ?? i18n.functionName
+                : i18n.functionName,
             isRowIndexColumn: false,
             isInlineEditable: true,
             dataType: undefined as any,
@@ -204,7 +204,7 @@ export function InvocationExpression({
             columns: [
               {
                 accessor: "parameter" as any,
-                label: "parameter",
+                label: i18n.parameter,
                 isRowIndexColumn: false,
                 dataType: DmnBuiltInDataType.Undefined,
                 isWidthPinned: true,
@@ -214,7 +214,7 @@ export function InvocationExpression({
               },
               {
                 accessor: "expression" as any,
-                label: "expression",
+                label: i18n.expression,
                 isRowIndexColumn: false,
                 dataType: DmnBuiltInDataType.Undefined,
                 minWidth: INVOCATION_ARGUMENT_EXPRESSION_MIN_WIDTH,
@@ -225,7 +225,16 @@ export function InvocationExpression({
         ],
       },
     ],
-    [expressionHolderId, invocationExpression, parametersWidth, invocationId, setParametersWidth]
+    [
+      expressionHolderId,
+      invocationExpression,
+      invocationId,
+      i18n.functionName,
+      i18n.parameter,
+      i18n.expression,
+      parametersWidth,
+      setParametersWidth,
+    ]
   );
 
   const onColumnUpdates = useCallback(
@@ -353,7 +362,7 @@ export function InvocationExpression({
   }, [i18n]);
 
   const getDefaultArgumentEntry = useCallback(
-    (name?: string): Normalized<DMN15__tBinding> => {
+    (name?: string): Normalized<DMN_LATEST__tBinding> => {
       return {
         parameter: {
           "@_id": generateUuid(),
@@ -373,7 +382,7 @@ export function InvocationExpression({
 
   const onRowAdded = useCallback(
     (args: { beforeIndex: number; rowsCount: number }) => {
-      const newEntries: Normalized<DMN15__tBinding>[] = [];
+      const newEntries: Normalized<DMN_LATEST__tBinding>[] = [];
       const names = (invocationExpression.binding ?? []).map((e) => e.parameter["@_name"]);
       for (let i = 0; i < args.rowsCount; i++) {
         const name = getNextAvailablePrefixedName(names, "p");

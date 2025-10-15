@@ -66,6 +66,8 @@ public class ScenarioSimulationKogitoDMNMarshallerService {
                     dmnVersion = "1.4";
                 } else if (dmnContent.contains("https://www.omg.org/spec/DMN/20230324/MODEL/")) {
                     dmnVersion = "1.5";
+                } else if (dmnContent.contains("https://www.omg.org/spec/DMN/20240513/MODEL/")) {
+                    dmnVersion = "1.6";
                 }
 
                 errorCallback.error(ScenarioSimulationEditorConstants.INSTANCE.unSupportedDmnVersion(dmnVersion), e);

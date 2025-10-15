@@ -19,11 +19,12 @@
 
 import * as React from "react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { DMN15_SPEC, UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/Dmn15Spec";
+import { DMN16_SPEC, UniqueNameIndex } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/Dmn16Spec";
 import { useFocusableElement } from "../focus/useFocusableElement";
 import { State } from "../store/Store";
 import { useDmnEditorStoreApi } from "../store/StoreContext";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
+import { useDmnEditorI18n } from "../i18n";
 
 export type OnInlineFeelNameRenamed = (newName: string) => void;
 
@@ -57,10 +58,11 @@ export function InlineFeelNameInput({
   allUniqueNames: (s: State) => UniqueNameIndex;
   placeholder?: string;
   saveInvalidValue?: boolean;
-  validate?: typeof DMN15_SPEC.namedElement.isValidName;
+  validate?: typeof DMN16_SPEC.namedElement.isValidName;
   enableAutoFocusing?: boolean;
 }) {
-  const _validate = (validate ??= DMN15_SPEC.namedElement.isValidName);
+  const { i18n } = useDmnEditorI18n();
+  const _validate = (validate ??= DMN16_SPEC.namedElement.isValidName);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -100,7 +102,7 @@ export function InlineFeelNameInput({
 
   const { style: _style, disabled, defaultValue, ..._inputProps } = inputProps;
 
-  const _placeholder = placeholder ?? "Enter a name...";
+  const _placeholder = placeholder ?? i18n.propertiesPanel.namePlaceholder;
 
   return (
     <input

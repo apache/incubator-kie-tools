@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { DMN15__tInputData } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tInputData } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -33,16 +33,18 @@ import { useCallback, useMemo } from "react";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { useRefactor } from "../refactor/RefactorConfirmationDialog";
+import { useDmnEditorI18n } from "../i18n";
 
 export function InputDataProperties({
   inputData,
   namespace,
   index,
 }: {
-  inputData: Normalized<DMN15__tInputData>;
+  inputData: Normalized<DMN_LATEST__tInputData>;
   namespace: string | undefined;
   index: number;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const { setState } = useDmnEditorStoreApi();
   const settings = useSettings();
   const thisDmnsNamespace = useDmnEditorStore((s) => s.dmn.model.definitions["@_namespace"]);
@@ -68,7 +70,7 @@ export function InputDataProperties({
   return (
     <>
       {refactorConfirmationDialog}
-      <FormGroup label="Name">
+      <FormGroup label={i18n.name}>
         <InlineFeelNameInput
           enableAutoFocusing={false}
           isPlain={false}
@@ -81,41 +83,41 @@ export function InputDataProperties({
           allUniqueNames={useCallback((s) => s.computed(s).getAllFeelVariableUniqueNames(), [])}
         />
       </FormGroup>
-      <FormGroup label="Data type">
+      <FormGroup label={i18n.propertiesPanel.dataType}>
         <TypeRefSelector
           heightRef={dmnEditorRootElementRef}
           typeRef={resolvedTypeRef}
           isDisabled={isReadOnly}
           onChange={(newTypeRef) => {
             setState((state) => {
-              const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tInputData>;
+              const drgElement = state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tInputData>;
               drgElement.variable ??= { "@_id": generateUuid(), "@_name": inputData["@_name"] };
               drgElement.variable["@_typeRef"] = newTypeRef;
             });
           }}
         />
       </FormGroup>
-      <FormGroup label="Description">
+      <FormGroup label={i18n.propertiesPanel.description}>
         <TextArea
           aria-label={"Description"}
           type={"text"}
           isDisabled={isReadOnly}
-          value={inputData.description?.__$$text}
+          value={inputData.description?.__$$text ?? ""}
           onChange={(_event, newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tInputData>).description = {
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tInputData>).description = {
                 __$$text: newDescription,
               };
             });
           }}
-          placeholder={"Enter a description..."}
+          placeholder={i18n.propertiesPanel.descriptionPlaceholder}
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={6}
         />
       </FormGroup>
 
-      <FormGroup label="ID">
-        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+      <FormGroup label={i18n.propertiesPanel.id}>
+        <ClipboardCopy isReadOnly={true} hoverTip={i18n.propertiesPanel.copy} clickTip={i18n.propertiesPanel.copied}>
           {inputData["@_id"]}
         </ClipboardCopy>
       </FormGroup>
@@ -125,7 +127,7 @@ export function InputDataProperties({
         values={inputData.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tInputData>).extensionElements = {
+            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tInputData>).extensionElements = {
               "kie:attachment": newExtensionElements,
             };
           });

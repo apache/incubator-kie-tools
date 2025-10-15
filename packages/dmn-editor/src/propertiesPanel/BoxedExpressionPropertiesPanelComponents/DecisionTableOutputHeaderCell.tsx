@@ -22,7 +22,7 @@ import { useCallback, useMemo, useState } from "react";
 import { BoxedExpressionIndex } from "../../boxedExpressions/boxedExpressionIndex";
 import { ContentField, DescriptionField, ExpressionLanguageField, NameField, TypeRefField } from "../Fields";
 import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/components/Form";
-import { DMN15__tDecision, DMN15__tOutputClause } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tDecision, DMN_LATEST__tOutputClause } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { buildXmlHref } from "@kie-tools/dmn-marshaller/dist/xml/xmlHrefs";
 import { PropertiesPanelHeader } from "../PropertiesPanelHeader";
@@ -36,11 +36,13 @@ import { useExternalModels } from "../../includedModels/DmnEditorDependenciesCon
 import { State } from "../../store/Store";
 
 import { useRefactor } from "../../refactor/RefactorConfirmationDialog";
+import { useDmnEditorI18n } from "../../i18n";
 
 export function DecisionTableOutputHeaderCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
   isReadOnly: boolean;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const selectedObjectId = useDmnEditorStore((s) => s.boxedExpressionEditor.selectedObjectId);
   const activeDrgElementId = useDmnEditorStore((s) => s.boxedExpressionEditor.activeDrgElementId);
@@ -59,12 +61,12 @@ export function DecisionTableOutputHeaderCell(props: {
     [props.boxedExpressionIndex, selectedObjectId]
   );
 
-  const updater = useBoxedExpressionUpdater<Normalized<DMN15__tOutputClause>>(
+  const updater = useBoxedExpressionUpdater<Normalized<DMN_LATEST__tOutputClause>>(
     selectedObjectInfos?.expressionPath ?? []
   );
 
   const cell = useMemo(
-    () => selectedObjectInfos?.cell as Normalized<DMN15__tOutputClause>,
+    () => selectedObjectInfos?.cell as Normalized<DMN_LATEST__tOutputClause>,
     [selectedObjectInfos?.cell]
   );
   const defaultOutputEntry = useMemo(() => cell.defaultOutputEntry, [cell.defaultOutputEntry]);
@@ -140,7 +142,7 @@ export function DecisionTableOutputHeaderCell(props: {
   return (
     <>
       {refactorConfirmationDialog}
-      <FormGroup label="ID">
+      <FormGroup label={i18n.propertiesPanel.id}>
         <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
           {selectedObjectId}
         </ClipboardCopy>
@@ -148,7 +150,7 @@ export function DecisionTableOutputHeaderCell(props: {
       {root?.output.length === 1 && (
         <>
           <NameField
-            alternativeFieldName={`${alternativeFieldName} Name`}
+            alternativeFieldName={i18n.propertiesPanel.alternativeFieldName(alternativeFieldName)}
             isReadOnly={false}
             id={root["@_id"]!}
             name={root?.["@_label"] ?? ""}
@@ -156,7 +158,7 @@ export function DecisionTableOutputHeaderCell(props: {
             onChange={setNewIdentifierNameCandidate}
           />
           <TypeRefField
-            alternativeFieldName={`${alternativeFieldName} Type`}
+            alternativeFieldName={i18n.propertiesPanel.alternativeFieldType(alternativeFieldName)}
             isReadOnly={false}
             dmnEditorRootElementRef={dmnEditorRootElementRef}
             typeRef={root?.["@_typeRef"]}
@@ -164,10 +166,10 @@ export function DecisionTableOutputHeaderCell(props: {
               dmnEditorStoreApi.setState((state) => {
                 const drgElement = state.dmn.model.definitions.drgElement![
                   node?.data.index ?? 0
-                ] as Normalized<DMN15__tDecision>;
+                ] as Normalized<DMN_LATEST__tDecision>;
                 drgElement.variable ??= {
                   "@_id": generateUuid(),
-                  "@_name": (node?.data.dmnObject as Normalized<DMN15__tDecision> | undefined)?.["@_name"] ?? "",
+                  "@_name": (node?.data.dmnObject as Normalized<DMN_LATEST__tDecision> | undefined)?.["@_name"] ?? "",
                 };
                 drgElement.variable["@_typeRef"] = newTypeRef;
               });
@@ -205,7 +207,7 @@ export function DecisionTableOutputHeaderCell(props: {
         ""
       )}
       {itemDefinition && (
-        <FormGroup label="Constraint">
+        <FormGroup label={i18n.propertiesPanel.constraint}>
           <ConstraintsFromTypeConstraintAttribute
             isReadOnly={true}
             itemDefinition={itemDefinition}
@@ -232,7 +234,7 @@ export function DecisionTableOutputHeaderCell(props: {
           fixed={false}
           isSectionExpanded={isDefaultOutputEntryExpanded}
           toogleSectionExpanded={() => setDefaultOutputEntryExpanded((prev) => !prev)}
-          title={"Default Output Entry"}
+          title={i18n.propertiesPanel.defaultOutputEntry}
         />
         {isDefaultOutputEntryExpanded && (
           <>
@@ -242,8 +244,12 @@ export function DecisionTableOutputHeaderCell(props: {
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newExpressionLanguage) =>
                 updater((dmnObject) => {
-                  dmnObject.defaultOutputEntry ??= { "@_id": generateUuid() };
-                  dmnObject.defaultOutputEntry["@_expressionLanguage"] = newExpressionLanguage;
+                  if (newExpressionLanguage === "") {
+                    dmnObject.defaultOutputEntry && delete dmnObject.defaultOutputEntry["@_expressionLanguage"];
+                  } else {
+                    dmnObject.defaultOutputEntry ??= { "@_id": generateUuid() };
+                    dmnObject.defaultOutputEntry["@_expressionLanguage"] = newExpressionLanguage;
+                  }
                 })
               }
             />
@@ -280,7 +286,7 @@ export function DecisionTableOutputHeaderCell(props: {
           fixed={false}
           isSectionExpanded={isOutputValuesExpanded}
           toogleSectionExpanded={() => setOutputValuesExpanded((prev) => !prev)}
-          title={"Output Values"}
+          title={i18n.propertiesPanel.outputValues}
         />
         {isOutputValuesExpanded && (
           <>
@@ -290,8 +296,12 @@ export function DecisionTableOutputHeaderCell(props: {
               expressionPath={selectedObjectInfos?.expressionPath ?? []}
               onChange={(newExpressionLanguage) =>
                 updater((dmnObject) => {
-                  dmnObject.outputValues ??= { "@_id": generateUuid(), text: { __$$text: "" } };
-                  dmnObject.outputValues["@_expressionLanguage"] = newExpressionLanguage;
+                  if (newExpressionLanguage === "") {
+                    dmnObject.outputValues && delete dmnObject.outputValues["@_expressionLanguage"];
+                  } else {
+                    dmnObject.outputValues ??= { "@_id": generateUuid(), text: { __$$text: "" } };
+                    dmnObject.outputValues["@_expressionLanguage"] = newExpressionLanguage;
+                  }
                 })
               }
             />

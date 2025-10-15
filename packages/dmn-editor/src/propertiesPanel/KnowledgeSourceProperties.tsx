@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { DMN15__tKnowledgeSource } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DMN_LATEST__tKnowledgeSource } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { ClipboardCopy } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { FormGroup } from "@patternfly/react-core/dist/js/components/Form";
@@ -31,16 +31,18 @@ import { InlineFeelNameInput } from "../feel/InlineFeelNameInput";
 import { useCallback, useMemo } from "react";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { useRefactor } from "../refactor/RefactorConfirmationDialog";
+import { useDmnEditorI18n } from "../i18n";
 
 export function KnowledgeSourceProperties({
   knowledgeSource,
   namespace,
   index,
 }: {
-  knowledgeSource: Normalized<DMN15__tKnowledgeSource>;
+  knowledgeSource: Normalized<DMN_LATEST__tKnowledgeSource>;
   namespace: string | undefined;
   index: number;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const { setState } = useDmnEditorStoreApi();
   const settings = useSettings();
 
@@ -62,7 +64,7 @@ export function KnowledgeSourceProperties({
   return (
     <>
       {refactorConfirmationDialog}
-      <FormGroup label="Name">
+      <FormGroup label={i18n.name}>
         <InlineFeelNameInput
           enableAutoFocusing={false}
           isPlain={false}
@@ -76,61 +78,63 @@ export function KnowledgeSourceProperties({
         />
       </FormGroup>
 
-      <FormGroup label="Description">
+      <FormGroup label={i18n.propertiesPanel.description}>
         <TextArea
           aria-label={"Description"}
           type={"text"}
           isDisabled={isReadOnly}
-          value={knowledgeSource.description?.__$$text}
+          value={knowledgeSource.description?.__$$text ?? ""}
           onChange={(_event, newDescription) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>).description = {
-                __$$text: newDescription,
-              };
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tKnowledgeSource>).description =
+                {
+                  __$$text: newDescription,
+                };
             });
           }}
-          placeholder={"Enter a description..."}
+          placeholder={i18n.propertiesPanel.descriptionPlaceholder}
           style={{ resize: "vertical", minHeight: "40px" }}
           rows={6}
         />
       </FormGroup>
 
-      <FormGroup label="ID">
-        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+      <FormGroup label={i18n.propertiesPanel.id}>
+        <ClipboardCopy isReadOnly={true} hoverTip={i18n.propertiesPanel.copy} clickTip={i18n.propertiesPanel.copied}>
           {knowledgeSource["@_id"]}
         </ClipboardCopy>
       </FormGroup>
 
-      <FormGroup label="Source type">
+      <FormGroup label={i18n.propertiesPanel.sourceType}>
         <TextInput
           aria-label={"Source type"}
           type={"text"}
           isDisabled={isReadOnly}
-          value={knowledgeSource.type?.__$$text}
+          value={knowledgeSource.type?.__$$text ?? ""}
           onChange={(_event, newType) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>).type = {
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tKnowledgeSource>).type = {
                 __$$text: newType,
               };
             });
           }}
-          placeholder={"Enter source type..."}
+          placeholder={i18n.propertiesPanel.sourceTypePlaceHolder}
         />
       </FormGroup>
 
-      <FormGroup label="Location URI">
+      <FormGroup label="">
         <TextInput
-          aria-label={"Location URI"}
+          aria-label={i18n.propertiesPanel.locationUri}
           type={"text"}
           isDisabled={isReadOnly}
-          value={knowledgeSource["@_locationURI"]}
+          value={knowledgeSource["@_locationURI"] ?? ""}
           onChange={(_event, newLocationUri) => {
             setState((state) => {
-              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>)["@_locationURI"] =
-                newLocationUri;
+              (state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tKnowledgeSource>)[
+                "@_locationURI"
+              ] = newLocationUri;
             });
           }}
-          placeholder={"Enter location URI..."}
+          placeholder={i18n.propertiesPanel.locationUriPlaceholder}
         />
       </FormGroup>
 
@@ -139,10 +143,11 @@ export function KnowledgeSourceProperties({
         values={knowledgeSource.extensionElements?.["kie:attachment"]}
         onChange={(newExtensionElements) => {
           setState((state) => {
-            (state.dmn.model.definitions.drgElement![index] as Normalized<DMN15__tKnowledgeSource>).extensionElements =
-              {
-                "kie:attachment": newExtensionElements,
-              };
+            (
+              state.dmn.model.definitions.drgElement![index] as Normalized<DMN_LATEST__tKnowledgeSource>
+            ).extensionElements = {
+              "kie:attachment": newExtensionElements,
+            };
           });
         }}
       />

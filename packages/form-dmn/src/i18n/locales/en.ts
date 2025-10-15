@@ -77,5 +77,7 @@ export const en: FormDmnI18n = {
       title: "No response",
       explanation: "Response appears after decisions are evaluated.",
     },
+    recursiveStructureNotSupported: ["Recursive structures ", wrapped("linebreak"), "are not supported yet"],
+    openExpression: (name: string) => `Open '${name}' expression`,
   },
 };

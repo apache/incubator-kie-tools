@@ -29,7 +29,6 @@ import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import org.kie.j2cl.tools.di.core.IsElement;
 import org.kie.j2cl.tools.di.core.ManagedInstance;
-import org.kie.j2cl.tools.processors.common.injectors.StyleInjector;
 import org.kie.workbench.common.stunner.core.client.components.glyph.DOMGlyphRenderer;
 import org.kie.workbench.common.stunner.core.client.components.views.WidgetElementRendererView;
 import org.kie.workbench.common.stunner.core.client.shape.ImageStrip;
@@ -82,7 +81,7 @@ public class ImageStripDOMGlyphRenderer implements DOMGlyphRenderer<ImageStripGl
     }
 
     protected void inject(final String css) {
-        StyleInjector.fromString(css).inject();
+        StyleInjector.fromString(css, htmlElement -> htmlElement.setAttribute("nonce", "DEV_NONCE")).inject();
     }
 
     @PreDestroy

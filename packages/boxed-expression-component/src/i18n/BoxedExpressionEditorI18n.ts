@@ -104,6 +104,53 @@ interface BoxedExpressionEditorDictionary extends ReferenceDictionary {
   ruleAnnotation: string;
   selectExpression: string;
   selectLogicType: string;
+  contextExpression: {
+    variable: string;
+    expression: string;
+  };
+  yourAnnotationsHere: string;
+  hitPolicyLabel: string;
+  aggregatorFunction: string;
+  logicTypeHelp: {
+    literal: string;
+    context: string;
+    decisionTable: string;
+    relation: string;
+    functionDefinition: string;
+    invocation: string;
+    list: string;
+    conditional: string;
+    for: string;
+    every: string;
+    some: string;
+    filter: string;
+  };
+  pasteOperationNotSuccessful: string;
+  functionKindHelp: {
+    feel: string;
+    pmml: string;
+    java: string;
+    notSupported: string;
+  };
+  label: string;
+  value: string;
+  classNameLabel: string;
+  methodSignatureLabel: string;
+  getLabelexample: (label: string) => string;
+  parameterNamePlaceholder: string;
+  noneSelected: string;
+  selectDocument: string;
+  parameter: string;
+  functionName: string;
+  child: string;
+  iterableRowLabel: {
+    for: string;
+    some: string;
+    every: string;
+    return: string;
+    in: string;
+    satisfies: string;
+  };
 }
 
 export interface BoxedExpressionEditorI18n extends BoxedExpressionEditorDictionary, CommonI18n {}

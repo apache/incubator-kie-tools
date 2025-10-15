@@ -52,10 +52,10 @@ import { useBoxedExpressionEditor, useBoxedExpressionEditorDispatch } from "../.
 import { DEFAULT_EXPRESSION_VARIABLE_NAME } from "../../expressionVariable/ExpressionVariableMenu";
 import { useFunctionExpressionControllerCell, useFunctionExpressionParametersColumnHeader } from "./FunctionExpression";
 import {
-  DMN15__tContext,
-  DMN15__tFunctionDefinition,
-  DMN15__tLiteralExpression,
-} from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+  DMN_LATEST__tContext,
+  DMN_LATEST__tFunctionDefinition,
+  DMN_LATEST__tLiteralExpression,
+} from "@kie-tools/dmn-marshaller";
 import "./JavaFunctionExpression.css";
 import { useBeeTableSelectableCellRef } from "../../selection/BeeTableSelectionContext";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
@@ -65,7 +65,7 @@ export type JAVA_ROWTYPE = {
   label: string;
 };
 
-export type BoxedFunctionJava = DMN15__tFunctionDefinition & {
+export type BoxedFunctionJava = DMN_LATEST__tFunctionDefinition & {
   "@_kind"?: "Java";
   __$$element: "functionDefinition";
 };
@@ -81,11 +81,11 @@ export function JavaFunctionExpression({
   const { expressionHolderId, widthsById, isReadOnly } = useBoxedExpressionEditor();
   const { setExpression, setWidthsById } = useBoxedExpressionEditorDispatch();
 
-  const getClassContextEntry = useCallback((c: Normalized<DMN15__tContext>) => {
+  const getClassContextEntry = useCallback((c: Normalized<DMN_LATEST__tContext>) => {
     return c.contextEntry?.find(({ variable }) => variable?.["@_name"] === "class");
   }, []);
 
-  const getVariableContextEntry = useCallback((c: Normalized<DMN15__tContext>) => {
+  const getVariableContextEntry = useCallback((c: Normalized<DMN_LATEST__tContext>) => {
     return c.contextEntry?.find(({ variable }) => variable?.["@_name"] === "method signature");
   }, []);
 
@@ -144,13 +144,13 @@ export function JavaFunctionExpression({
           {
             headerCellElement: parametersColumnHeader,
             accessor: parametersId as any,
-            label: "parameters",
+            label: i18n.parameters,
             isRowIndexColumn: false,
             dataType: undefined as any,
             width: undefined,
             columns: [
               {
-                label: "label",
+                label: i18n.label,
                 accessor: "label" as any,
                 dataType: undefined as any,
                 isRowIndexColumn: false,
@@ -160,7 +160,7 @@ export function JavaFunctionExpression({
                 minWidth: JAVA_FUNCTION_EXPRESSION_LABEL_MIN_WIDTH,
               },
               {
-                label: "value",
+                label: i18n.value,
                 accessor: "value" as any,
                 dataType: undefined as any,
                 isRowIndexColumn: false,
@@ -180,6 +180,9 @@ export function JavaFunctionExpression({
     parametersColumnHeader,
     setClassAndMethodNamesWidth,
     parametersId,
+    i18n.label,
+    i18n.value,
+    i18n.parameters,
   ]);
 
   const headerVisibility = useMemo(() => {
@@ -224,7 +227,7 @@ export function JavaFunctionExpression({
   );
 
   // It is always a Context
-  const context = functionExpression.expression! as Normalized<DMN15__tContext>;
+  const context = functionExpression.expression! as Normalized<DMN_LATEST__tContext>;
   const clazz = getClassContextEntry(context);
   const method = getVariableContextEntry(context);
 
@@ -244,15 +247,15 @@ export function JavaFunctionExpression({
   const beeTableRows = useMemo<JAVA_ROWTYPE[]>(() => {
     return [
       {
-        label: "Class name",
-        value: (clazz?.expression as DMN15__tLiteralExpression | undefined)?.text?.__$$text ?? "",
+        label: i18n.classNameLabel,
+        value: (clazz?.expression as DMN_LATEST__tLiteralExpression | undefined)?.text?.__$$text ?? "",
       },
       {
-        label: "Method signature",
-        value: (method?.expression as DMN15__tLiteralExpression | undefined)?.text?.__$$text ?? "",
+        label: i18n.methodSignatureLabel,
+        value: (method?.expression as DMN_LATEST__tLiteralExpression | undefined)?.text?.__$$text ?? "",
       },
     ];
-  }, [clazz?.expression, method?.expression]);
+  }, [clazz?.expression, method?.expression, i18n.classNameLabel, i18n.methodSignatureLabel]);
 
   const controllerCell = useFunctionExpressionControllerCell(BoxedFunctionKind.Java);
 
@@ -330,7 +333,7 @@ export function JavaFunctionExpression({
   const onCellUpdates = useCallback(
     (cellUpdates: BeeTableCellUpdate<JAVA_ROWTYPE>[]) => {
       for (const u of cellUpdates) {
-        const context: Normalized<DMN15__tContext> = functionExpression.expression!;
+        const context: Normalized<DMN_LATEST__tContext> = functionExpression.expression!;
 
         const clazz = getClassContextEntry(context) ?? {
           "@_id": generateUuid(),
@@ -465,6 +468,7 @@ export function JavaFunctionExpression({
 }
 
 function JavaFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTableCellProps<JAVA_ROWTYPE>>) {
+  const { i18n } = useBoxedExpressionEditorI18n();
   const label = useMemo(() => {
     return props.data[props.rowIndex].label;
   }, [props.data, props.rowIndex]);
@@ -506,7 +510,7 @@ function JavaFunctionExpressionLabelCell(props: React.PropsWithChildren<BeeTable
         {isCellHovered && (
           <Popover
             className="java-function-parameter-help-popover"
-            headerContent={label + " example"}
+            headerContent={i18n.getLabelexample(label)}
             bodyContent={getParameterLabelHelp}
           >
             <Icon size="sm">

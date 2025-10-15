@@ -25,6 +25,7 @@ import { NavigationKeysUtils } from "../../keysUtils/keyUtils";
 import { useBoxedExpressionEditor } from "../../BoxedExpressionEditorContext";
 import "./BeeTableEditableCellContent.css";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
+import { useBoxedExpressionEditorI18n } from "../../i18n";
 
 const CELL_LINE_HEIGHT = 20;
 
@@ -71,6 +72,7 @@ export function BeeTableEditableCellContent({
   const [previousValue, setPreviousValue] = useState(value);
   const [editingValue, setEditingValue] = useState(value);
   const feelInputRef = useRef<FeelInputRef>(null);
+  const { locale } = useBoxedExpressionEditorI18n();
 
   const mode = useMemo(() => {
     return isEditing && !isReadOnly ? Mode.Edit : Mode.Read;
@@ -223,6 +225,7 @@ export function BeeTableEditableCellContent({
           onBlur={onFeelBlur}
           feelIdentifiers={feelIdentifiers}
           expressionId={expressionId}
+          locale={locale}
         />
       </div>
     </>

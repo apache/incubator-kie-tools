@@ -23,7 +23,8 @@ import { FormGroup, FormSection } from "@patternfly/react-core/dist/js/component
 import { TextInput } from "@patternfly/react-core/dist/js/components/TextInput";
 import { CubeIcon } from "@patternfly/react-icons/dist/js/icons/cube-icon";
 import { PropertiesPanelHeader } from "./PropertiesPanelHeader";
-import { DC__Bounds, DMNDI15__DMNShape } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_5/ts-gen/types";
+import { DC__Bounds } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_6/ts-gen/types";
+import { DMN_LATEST__DMNShape } from "@kie-tools/dmn-marshaller";
 import { Normalized } from "@kie-tools/dmn-marshaller/dist/normalization/normalize";
 import { State } from "../store/Store";
 import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
@@ -43,6 +44,7 @@ import { DC__Dimension } from "@kie-tools/dmn-marshaller/dist/schemas/dmn-1_2/ts
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { Icon } from "@patternfly/react-core/dist/js/components/Icon";
+import { useDmnEditorI18n } from "../i18n";
 
 const DEFAULT_FILL_COLOR = { "@_blue": 255, "@_green": 255, "@_red": 255 };
 const DEFAULT_STROKE_COLOR = { "@_blue": 0, "@_green": 0, "@_red": 0 };
@@ -58,6 +60,7 @@ export function ShapeOptions({
   isDimensioningEnabled: boolean;
   isPositioningEnabled: boolean;
 }) {
+  const { i18n } = useDmnEditorI18n();
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { externalModelsByNamespace } = useExternalModels();
   const settings = useSettings();
@@ -207,7 +210,7 @@ export function ShapeOptions({
   const setShapeStyles = useCallback(
     (
       callback: (
-        shapesWithMinNodeSize: { shape: Normalized<DMNDI15__DMNShape>; minNodeSize: DC__Dimension }[],
+        shapesWithMinNodeSize: { shape: Normalized<DMN_LATEST__DMNShape>; minNodeSize: DC__Dimension }[],
         state: State
       ) => void
     ) => {
@@ -358,13 +361,13 @@ export function ShapeOptions({
         fixed={false}
         isSectionExpanded={isShapeSectionExpanded}
         toogleSectionExpanded={() => setShapeSectionExpanded((prev) => !prev)}
-        title={"Shape"}
+        title={i18n.propertiesPanel.shape}
         action={
           <Button
             variant={ButtonVariant.plain}
             onClick={onReset}
             style={{ paddingBottom: 0, paddingTop: 0 }}
-            title={"Reset shape"}
+            title={i18n.propertiesPanel.resetShape}
             isDisabled={settings.isReadOnly}
           >
             <UndoAltIcon />
@@ -373,9 +376,9 @@ export function ShapeOptions({
       />
       {isShapeSectionExpanded && (
         <FormSection style={{ paddingLeft: "20px", marginTop: "0px", marginBottom: "16px" }}>
-          <FormGroup label={"Style"}>
+          <FormGroup label={i18n.propertiesPanel.style}>
             <ToggleGroup>
-              <Tooltip content={"Fill color"}>
+              <Tooltip content={i18n.propertiesPanel.fillColor}>
                 <ToggleGroupItem
                   className={"kie-dmn-editor--shape-options-toggle-button"}
                   text={
@@ -407,7 +410,7 @@ export function ShapeOptions({
                 />
               </Tooltip>
 
-              <Tooltip content="Stroke color">
+              <Tooltip content={i18n.propertiesPanel.strokeColor}>
                 <ToggleGroupItem
                   className={"kie-dmn-editor--shape-options-toggle-button"}
                   text={
@@ -440,7 +443,7 @@ export function ShapeOptions({
                 />
               </Tooltip>
 
-              <Tooltip content={"Width"}>
+              <Tooltip content={i18n.propertiesPanel.width}>
                 <ToggleGroupItem
                   text={
                     <div
@@ -458,7 +461,7 @@ export function ShapeOptions({
                         type={"number"}
                         isDisabled={isDimensioningEnabled ? false : true}
                         value={isDimensioningEnabled ? width : undefined}
-                        placeholder={isDimensioningEnabled ? "Enter a value..." : undefined}
+                        placeholder={isDimensioningEnabled ? i18n.propertiesPanel.valuePlaceholder : undefined}
                         onBlur={onBlurWidth}
                         onChange={(_event, val) => onChangeWidth(val)}
                         style={{ border: "none", backgroundColor: "transparent" }}
@@ -474,7 +477,7 @@ export function ShapeOptions({
                 />
               </Tooltip>
 
-              <Tooltip content={"Height"}>
+              <Tooltip content={i18n.propertiesPanel.height}>
                 <ToggleGroupItem
                   text={
                     <div
@@ -486,7 +489,7 @@ export function ShapeOptions({
                         type={"number"}
                         isDisabled={isDimensioningEnabled ? false : true}
                         value={isDimensioningEnabled ? height : undefined}
-                        placeholder={isDimensioningEnabled ? "Enter a value..." : undefined}
+                        placeholder={isDimensioningEnabled ? i18n.propertiesPanel.valuePlaceholder : undefined}
                         onBlur={onBlurHeight}
                         onChange={(_event, val) => onChangeHeight(val)}
                         style={{ border: "none", backgroundColor: "transparent" }}
@@ -504,7 +507,7 @@ export function ShapeOptions({
             </ToggleGroup>
           </FormGroup>
           {isPositioningEnabled && (
-            <FormGroup label={"Position"}>
+            <FormGroup label={i18n.propertiesPanel.position}>
               <div
                 style={{
                   display: "grid",
@@ -527,11 +530,11 @@ export function ShapeOptions({
                     isDisabled={settings.isReadOnly}
                     value={boundPositionX}
                     onChange={(_event, val) => onChangePositionX(val)}
-                    placeholder={"Enter X value..."}
+                    placeholder={i18n.propertiesPanel.xValuePlaceholder}
                   />
                 </div>
                 <div style={{ gridArea: "position-x-label" }}>
-                  <p>X</p>
+                  <p>{i18n.terms.keyboardKeys.x}</p>
                 </div>
 
                 <div
@@ -544,11 +547,11 @@ export function ShapeOptions({
                     isDisabled={settings.isReadOnly}
                     value={boundPositionY}
                     onChange={(_event, val) => onChangePositionY(val)}
-                    placeholder={"Enter Y value..."}
+                    placeholder={i18n.propertiesPanel.yValuePlaceHolder}
                   />
                 </div>
                 <div style={{ gridArea: "position-y-label" }}>
-                  <p>Y</p>
+                  <p>{i18n.terms.keyboardKeys.y}</p>
                 </div>
               </div>
             </FormGroup>
