@@ -51,6 +51,7 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.kogito.client.service.AbstractKogitoClientDiagramService;
+import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.promise.Promises;
 
 import static org.kie.workbench.common.stunner.bpmn.util.XmlUtils.createValidId;
@@ -96,20 +97,26 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
     @Override
     public void transform(final String xml,
                           final ServiceCallback<Diagram> callback) {
-        doTransform(DEFAULT_DIAGRAM_ID, xml, callback);
+        doTransform(DEFAULT_DIAGRAM_ID, DEFAULT_DIAGRAM_ID, xml, callback);
     }
 
     @Override
     public void transform(final String fileName,
                           final String xml,
                           final ServiceCallback<Diagram> callback) {
-        doTransform(createDiagramTitleFromFilePath(fileName), xml, callback);
+        LOGGER.severe("Transform" + fileName);
+        doTransform(createDiagramTitleFromFilePath(fileName), fileName, xml, callback);
     }
 
     private void doTransform(final String fileName,
+                             final String fileRelativePath,
                              final String xml,
                              final ServiceCallback<Diagram> callback) {
-        final Metadata metadata = createMetadata();
+        final Metadata metadata = createMetadata();        
+        metadata.setPath(PathFactory.newPath(fileName, fileRelativePath));
+        LOGGER.severe("[METADATA 2]");
+        LOGGER.severe(fileName);
+        LOGGER.severe(metadata.getPath() + "----!");
         widService
                 .call(metadata)
                 .then(wid -> {
