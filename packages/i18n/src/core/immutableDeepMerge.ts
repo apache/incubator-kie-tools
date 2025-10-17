@@ -30,16 +30,17 @@ function deepMerge<D extends ReferenceDictionary<D>>(
       return;
     }
     if (typeof sourceValue === "string" || typeof sourceValue === "function") {
-      target[key] = sourceValue as any;
+      target[key] = sourceValue as ReferenceDictionary<D>[typeof key];
     } else {
       target[key] = deepMerge(
         createObjectCopy(target[key] as ReferenceDictionary<D>),
         sourceValue as TranslatedDictionary<ReferenceDictionary<D>>
-      ) as any;
+      ) as ReferenceDictionary<D>[typeof key];
     }
   });
   return target;
 }
+
 export function immutableDeepMerge<D extends ReferenceDictionary<D>>(
   target: ReferenceDictionary<D>,
   source: TranslatedDictionary<ReferenceDictionary<D>>
