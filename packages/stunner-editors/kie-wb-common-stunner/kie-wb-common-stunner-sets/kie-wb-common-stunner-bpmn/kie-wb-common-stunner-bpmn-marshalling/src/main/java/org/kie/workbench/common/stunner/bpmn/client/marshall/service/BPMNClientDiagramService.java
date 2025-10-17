@@ -22,6 +22,7 @@ package org.kie.workbench.common.stunner.bpmn.client.marshall.service;
 
 import java.util.Collection;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -104,7 +105,6 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
     public void transform(final String fileName,
                           final String xml,
                           final ServiceCallback<Diagram> callback) {
-        LOGGER.severe("Transform" + fileName);
         doTransform(createDiagramTitleFromFilePath(fileName), fileName, xml, callback);
     }
 
@@ -114,9 +114,7 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
                              final ServiceCallback<Diagram> callback) {
         final Metadata metadata = createMetadata();        
         metadata.setPath(PathFactory.newPath(fileName, fileRelativePath));
-        LOGGER.severe("[METADATA 2]");
-        LOGGER.severe(fileName);
-        LOGGER.severe(metadata.getPath() + "----!");
+        LOGGER.log(Level.INFO, "Load WID for a file: " + fileRelativePath);
         widService
                 .call(metadata)
                 .then(wid -> {

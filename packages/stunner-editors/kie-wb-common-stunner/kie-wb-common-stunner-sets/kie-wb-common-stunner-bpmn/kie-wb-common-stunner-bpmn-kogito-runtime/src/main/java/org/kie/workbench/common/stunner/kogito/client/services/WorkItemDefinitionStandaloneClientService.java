@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -50,6 +51,7 @@ import org.uberfire.client.promise.Promises;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientParser.parse;
+import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.nonEmpty;
 
 @ApplicationScoped
@@ -67,10 +69,6 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
     private final ResourceContentService resourceContentService;
     private final WorkItemIconCache workItemIconCache;
 
-    // Cache the promise, as by definition will be performed just once,
-    // so the available work item definitions will be also just registered once, by app.
-    // private Promise<Collection<WorkItemDefinition>> loader;
-
     @Inject
     public WorkItemDefinitionStandaloneClientService(final Promises promises,
                                                      final WorkItemDefinitionCacheRegistry registry,
@@ -85,7 +83,6 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
 
     @PostConstruct
     public void init() {
-        // loader = allWorkItemsLoader();
     }
 
     @Produces
@@ -103,30 +100,30 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
     @PreDestroy
     public void destroy() {
         registry.clear();
-        // loader = null;
     }
 
 
     private Promise<Collection<WorkItemDefinition>> allWorkItemsLoader(Path openedDiagramPath) {
 
-        int lastSlashIndex = openedDiagramPath != null ? openedDiagramPath.toURI().lastIndexOf('/') : -1;
-        String directoryPath = (lastSlashIndex != -1) 
-            ? openedDiagramPath.toURI().substring(0, lastSlashIndex) 
+        final int lastSlashIndex = openedDiagramPath != null ? openedDiagramPath.toURI().lastIndexOf('/') : -1;
+        final String directoryPath = (lastSlashIndex != -1) 
+            ? openedDiagramPath.toURI().substring(0, lastSlashIndex + 1) 
             : ""; 
 
-        String widPattern = openedDiagramPath == null ?  RESOURCE_ALL_WID_PATTERN : directoryPath + "/" + RESOURCE_ALL_WID_PATTERN;
-        LOGGER.severe("widPattern: " + widPattern);
+        final String widPattern = (openedDiagramPath == null || isEmpty(directoryPath)) ?  RESOURCE_ALL_WID_PATTERN : directoryPath + RESOURCE_ALL_WID_PATTERN;
+        
         return promises.create((success, failure) -> {
             registry.clear();
             final List<WorkItemDefinition> loaded = new LinkedList<>();
+            LOGGER.log(Level.INFO, "Searching WID using pattern: " + RESOURCE_GLOBAL_DIRECTORY_WID_PATTERN);
             resourceContentService
                     .list(RESOURCE_GLOBAL_DIRECTORY_WID_PATTERN, ResourceListOptions.assetFolder())
                     .then(paths1 -> {
+                        LOGGER.log(Level.INFO, "Searching WID using pattern: " + widPattern);
                         resourceContentService
                                 .list(widPattern, ResourceListOptions.assetFolder())
                                 .then(paths2 -> {
                                     String[] paths = mergeTwoArrays(paths1, paths2);
-                                    LOGGER.severe("Paths" + paths);
                                     if (paths.length > 0) {
                                         promises.all(asList(paths),
                                                      path -> workItemsLoader(path, loaded))
@@ -172,9 +169,7 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
     private Promise<Collection<WorkItemDefinition>> workItemsLoader(final String path,
                                                                     final Collection<WorkItemDefinition> loaded) {
         int lastDirIndex = path.lastIndexOf('/');
-        final String directory = (lastDirIndex >= 0) ? path.substring(0, lastDirIndex) + "/" : path;
-        LOGGER.severe("workItemsLoader directory:" + directory);
-        LOGGER.severe("workItemsLoader path:" + path);
+        final String directory = (lastDirIndex >= 0) ? path.substring(0, lastDirIndex) + "/" : "";
         if (nonEmpty(path)) {
             return resourceContentService
                     .get(path)
@@ -214,7 +209,10 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
     }
 
     private Promise<Collection<WorkItemDefinition>> getPromises(final List<WorkItemDefinition> wids, final Collection<WorkItemDefinition> loaded, final String path) {
-        wids.forEach(w -> w.getIconDefinition().setUri(path + w.getIconDefinition().getUri()));
+        wids.forEach(w -> {
+            LOGGER.log(Level.INFO, "WID Icon: " + path + w.getIconDefinition().getUri());
+            w.getIconDefinition().setUri(path + w.getIconDefinition().getUri());
+        });
         return promises.create((success, failure) -> {
             promises.all(wids, this::workItemIconLoader)
                     .then(wid -> {
