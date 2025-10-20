@@ -19,24 +19,25 @@
 
 import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 
-export interface EditorEnvelopeDictionary extends ReferenceDictionary {
-  keyBindingsHelpOverlay: {
-    title: string;
-    categories: {
-      edit: string;
-      help: string;
+export interface EditorEnvelopeDictionary
+  extends ReferenceDictionary<{
+    keyBindingsHelpOverlay: {
+      title: string;
+      categories: {
+        edit: string;
+        help: string;
+      };
+      commands: {
+        undo: string;
+        redo: string;
+        showKeyboardOverlay: string;
+      };
     };
-    commands: {
-      undo: string;
-      redo: string;
-      showKeyboardOverlay: string;
+    loadingScreen: {
+      loading: string;
     };
-  };
-  loadingScreen: {
-    loading: string;
-  };
-  editorNotAvailable: (extension: string) => string;
-  kogitoEditor: string;
-}
+    editorNotAvailable: (extension: string) => string;
+    kogitoEditor: string;
+  }> {}
 
 export interface EditorEnvelopeI18n extends EditorEnvelopeDictionary {}

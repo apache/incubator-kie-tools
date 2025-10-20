@@ -31,6 +31,7 @@ export const en: DmnEditorI18n = {
   none: "None",
   noneYet: "None yet",
   name: "Name",
+  import: "Import",
   cancel: "Cancel",
   with: "with",
   dataTypes: {

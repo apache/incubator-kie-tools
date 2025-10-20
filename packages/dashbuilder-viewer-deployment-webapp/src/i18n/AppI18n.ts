@@ -20,20 +20,21 @@
 import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
-interface AppDictionary extends ReferenceDictionary {
-  masthead: {
-    disclaimer: {
-      title: string;
-      description: string;
+interface AppDictionary
+  extends ReferenceDictionary<{
+    masthead: {
+      disclaimer: {
+        title: string;
+        description: string;
+      };
     };
-  };
-  page: {
-    error: {
-      title: string;
-      explanation: string;
-      referToJira: Array<string | Wrapped<"jira">>;
+    page: {
+      error: {
+        title: string;
+        explanation: string;
+        referToJira: Array<string | Wrapped<"jira">>;
+      };
     };
-  };
-}
+  }> {}
 
 export interface AppI18n extends AppDictionary, CommonI18n {}

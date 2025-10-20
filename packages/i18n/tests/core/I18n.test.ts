@@ -19,15 +19,18 @@
 
 import { I18n, ReferenceDictionary, TranslatedDictionary } from "@kie-tools-core/i18n/dist/core";
 
-interface TestI18n extends ReferenceDictionary {
-  test: string;
-}
+interface TestI18n
+  extends ReferenceDictionary<{
+    test: string;
+  }> {}
 
 const english: TestI18n = {
   test: "this is a test",
 };
 
-const portuguese: TranslatedDictionary<ReferenceDictionary> = {
+const portuguese: TranslatedDictionary<{
+  test: string;
+}> = {
   test: "isso é um teste",
 };
 
