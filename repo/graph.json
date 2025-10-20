@@ -2092,18 +2092,17 @@
       },
       {
         "source": "@kie-tools/sonataflow-devmode-image",
-        "target": "@kie-tools/sonataflow-image-common",
-        "weight": 1
-      },
-      {
-        "source": "@kie-tools/sonataflow-devmode-image",
         "target": "@kie-tools/sonataflow-quarkus-devui",
         "weight": 1
       },
       {
         "source": "@kie-tools/sonataflow-devmode-image",
-        "target": "@kie/kogito-images-install-helper",
         "target": "@kie-tools/maven-m2-repo-via-http-image",
+        "weight": 1
+      },
+      {
+        "source": "@kie-tools/sonataflow-devmode-image",
+        "target": "@kie/kogito-images-install-helper",
         "weight": 1
       },
       {
