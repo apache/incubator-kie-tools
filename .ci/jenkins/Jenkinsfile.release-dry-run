@@ -22,7 +22,7 @@ import groovy.json.JsonOutput
 pipeline {
     agent {
         docker {
-            image 'apache/incubator-kie-tools-ci-build:10.1.999'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
             label util.avoidFaultyNodes()
         }
     }
