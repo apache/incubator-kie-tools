@@ -20,8 +20,6 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.session;
 
-import elemental2.promise.IThenable;
-import elemental2.promise.Promise;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,16 +29,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.uberfire.mvp.Command;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BPMNSessionInitializerTest {
-
-    @Mock
-    private Promise promise;
 
     @Mock
     private DiagramTypeClientService diagramTypeService;
@@ -50,8 +43,6 @@ public class BPMNSessionInitializerTest {
     @Before
     @SuppressWarnings("unchecked")
     public void setUp() {
-        doReturn(promise).when(promise).then(any(IThenable.ThenOnFulfilledCallbackFn.class));
-        doReturn(promise).when(promise).catch_(any(Promise.CatchOnRejectedCallbackFn.class));
         tested = new BPMNSessionInitializer(diagramTypeService);
     }
 
