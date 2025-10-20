@@ -34,7 +34,7 @@
     "image:test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env endToEndTests.run)\" --then \"mkdir -p dist-dev/target/test/results\" \"run-script-os\" --finally \"cp -R dist-dev/target/test/results dist-tests-e2e/\"",
     "image:test:darwin:win32": "echo \"Tests skipped on Mac and Windows\"",
     "image:test:linux": "pnpm copy:test-assets && pnpm start-server-and-test start:sonataflow-dev-app http-get://0.0.0.0:4000/graphql 'pnpm image:cekit:setup:env make -C ./dist-dev test-image'",
-    "start:sonataflow-dev-app": "SONATAFLOW_DEV_APP_DELAY=0 npm --prefix ./node_modules/@kie-tools/sonataflow-dev-app run start"
+    "start:sonataflow-dev-app": "CORS_DOMAIN=https://localhost:$(build-env sonataflowManagementConsoleImageEnv.port) npm --prefix ./node_modules/@kie-tools/sonataflow-dev-app run start"
   },
   "devDependencies": {
     "@kie-tools/image-env-to-json": "workspace:*",
