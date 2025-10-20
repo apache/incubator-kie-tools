@@ -33,10 +33,10 @@ pipeline {
 
     parameters {
         booleanParam(name: 'DRY_RUN', description: 'Dry run', defaultValue: true)
-        string(name: 'PIPELINE_PATH', description: 'Path to run the pipeline', defaultValue: '10.1.x/release')
-        string(name: 'BASE_REF', description: 'GitHub Base Ref (tag or branch)', defaultValue: '10.1.x')
-        string(name: 'RELEASE_VERSION', description: 'Release version', defaultValue: '10.1.0')
-        string(name: 'RELEASE_CANDIDATE_VERSION', description: 'Release candidate version', defaultValue: '10.1.0')
+        string(name: 'PIPELINE_PATH', description: 'Path to run the pipeline')
+        string(name: 'BASE_REF', description: 'GitHub Base Ref (tag or branch)')
+        string(name: 'RELEASE_VERSION', description: 'Release version')
+        string(name: 'RELEASE_CANDIDATE_VERSION', description: 'Release candidate version')
 
         booleanParam(name: 'chrome_extensions', description: 'Build chrome extensions', defaultValue: false)
         booleanParam(name: 'cors_proxy_image', description: 'Build cors proxy image', defaultValue: false)
