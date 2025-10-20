@@ -1,6 +1,6 @@
 {
   "name": "swf-vscode-extension",
-  "version": "0.0.0",
+  "version": "10.1.999",
   "description": "Edit Serverless Workflow definitions",
   "license": "Apache-2.0",
   "publisher": "kie-group",

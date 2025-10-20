@@ -2,12 +2,12 @@ apiVersion: v2
 name: incubator-kie-sandbox-helm-chart
 description: A Helm chart to deploy KIE Sandbox and related services on Kubernetes
 type: application
-version: 0.0.0
-appVersion: 0.0.0
+version: 10.1.999
+appVersion: 10.1.999
 dependencies:
   - name: cors_proxy
-    version: 0.0.0
+    version: 10.1.999
   - name: extended_services
-    version: 0.0.0
+    version: 10.1.999
   - name: kie_sandbox
-    version: 0.0.0
+    version: 10.1.999

@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:10.1.999'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -31,6 +31,7 @@ pipeline {
         string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
         string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
+        string(name: 'PIPELINE_PATH', description: 'Path to run the pipeline')
     }
 
     environment {
@@ -39,17 +40,18 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-
-        KIE_KOGITO_DB_MIGRATOR_TOOL__registry = 'docker.io'
-        KIE_KOGITO_DB_MIGRATOR_TOOL__account = 'apache'
-        KIE_KOGITO_DB_MIGRATOR_TOOL__name = 'kie-kogito-db-migrator-tool'
-        KIE_KOGITO_DB_MIGRATOR_TOOL__buildTag = "${params.RELEASE_VERSION}"
+        KOGITO_DB_MIGRATOR_TOOL_IMAGE__registry = 'docker.io'
+        KOGITO_DB_MIGRATOR_TOOL_IMAGE__account = 'apache'
+        KOGITO_DB_MIGRATOR_TOOL_IMAGE__name = 'kie-kogito-db-migrator-tool'
+        KOGITO_DB_MIGRATOR_TOOL_IMAGE__buildTag = "${params.RELEASE_VERSION}"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
-        PNPM_FILTER_STRING = '-F @kie-tools/kogito-db-migrator-tool...'
+        PNPM_FILTER_STRING = '-F @kie-tools/kogito-db-migrator-tool-image...'
+        
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml -Dmaven.repo.local=${WORKSPACE}/.maven"
     }
 
     stages {
@@ -121,7 +123,19 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBootstrap(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
+                    }
+                }
+            }
+        }
+
+        stage('Update project, kogito and stream name version') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmUpdateProjectVersion(params.RELEASE_VERSION, env.MAVEN_ARGS)
+                        buildUtils.pnpmUpdateKogitoVersion(params.RELEASE_VERSION, params.RELEASE_VERSION, env.MAVEN_ARGS)
+                        buildUtils.pnpmUpdateStreamName(params.RELEASE_VERSION, env.MAVEN_ARGS)
                     }
                 }
             }
@@ -131,7 +145,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBuild(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                     }
                 }
             }
@@ -144,10 +158,10 @@ pipeline {
             steps {
                 script {
                     dockerUtils.pushImageToRegistry(
-                        "${env.KIE_KOGITO_DB_MIGRATOR_TOOL__registry}",
-                        "${env.KIE_KOGITO_DB_MIGRATOR_TOOL__account}",
-                        "${env.KIE_KOGITO_DB_MIGRATOR_TOOL__name}",
-                        "${env.KIE_KOGITO_DB_MIGRATOR_TOOL__buildTag}",
+                        "${env.KOGITO_DB_MIGRATOR_TOOL_IMAGE__registry}",
+                        "${env.KOGITO_DB_MIGRATOR_TOOL_IMAGE__account}",
+                        "${env.KOGITO_DB_MIGRATOR_TOOL_IMAGE__name}",
+                        "${env.KOGITO_DB_MIGRATOR_TOOL_IMAGE__buildTag}",
                         "${pipelineVars.dockerHubUserCredentialsId}",
                         "${pipelineVars.dockerHubTokenCredentialsId}"
                     )
@@ -161,11 +175,11 @@ pipeline {
             }
             steps {
                 script {
-                    env.RELEASE_IMAGE_TAR_FILE = "kie-${params.RELEASE_CANDIDATE_VERSION}-kogito-db-migrator-tool-image.tar.gz"
+                    env.RELEASE_IMAGE_TAR_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-kogito-db-migrator-tool-image.tar.gz"
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
-                    docker save "${env.KIE_KOGITO_DB_MIGRATOR_TOOL__registry}/${env.KOGITO_MANAGEMENT_CONSOLE__account}/${env.KOGITO_MANAGEMENT_CONSOLE__name}:${params.RELEASE_VERSION}" | gzip > "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_IMAGE_TAR_FILE}"
+                    docker save "${env.KOGITO_DB_MIGRATOR_TOOL_IMAGE__registry}/${env.KOGITO_DB_MIGRATOR_TOOL_IMAGE__account}/${env.KOGITO_DB_MIGRATOR_TOOL_IMAGE__name}:${params.RELEASE_VERSION}" | gzip > "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_IMAGE_TAR_FILE}"
                     """.trim()
                 }
             }

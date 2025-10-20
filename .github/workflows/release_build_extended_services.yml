@@ -30,6 +30,10 @@ on:
         type: string
         required: true
         description: "Base reference for the checkout"
+      release_version:
+        type: string
+        required: true
+        description: "Release version"
       release_candidate_version:
         type: string
         required: true
@@ -366,23 +370,33 @@ jobs:
       - name: "Setup Maven settings file (MacOS)"
         if: runner.os == 'macOS'
         shell: bash
+        env:
+          MAVEN_ARGS: "-B -Puse-maven-repo-local-tail -s ${{ github.workspace }}/.m2/settings.xml"
         run: |
-          pnpm -r exec 'bash' '-c' 'echo --settings=${{ github.workspace }}/.m2/settings.xml >> .mvn/maven.config'
+          echo "$MAVEN_ARGS"
 
       - name: "Setup Maven settings file (Windows)"
         if: runner.os == 'Windows'
         shell: pwsh
+        env:
+          MAVEN_ARGS: "-B -Puse-maven-repo-local-tail -s ${{ github.workspace }}/.m2/settings.xml"
         run: |
-          pnpm -r powershell "Add-Content .\.mvn\maven.config '--settings=${{ github.workspace }}\.m2\settings.xml'"
+          echo "$MAVEN_ARGS"
 
       - name: "Bootstrap"
         id: bootstrap
+        env:
+          MAVEN_ARGS: "-B -Puse-maven-repo-local-tail -s ${{ github.workspace }}/.m2/settings.xml"
+          MAVEN_OPTS: "-Xmx2g"
         uses: ./.github/actions/bootstrap
         with:
           pnpm_filter_string: -F @kie-tools/extended-services...
 
       - name: "Build"
         shell: bash
+        env:
+          MAVEN_ARGS: "-B -Puse-maven-repo-local-tail -s ${{ github.workspace }}/.m2/settings.xml"
+          MAVEN_OPTS: "-Xmx2g"
         run: |
           pnpm ${{ steps.bootstrap.outputs.pnpm_filter_string }} build:prod
 
@@ -408,6 +422,19 @@ jobs:
     env:
       RELEASE_CANDIDATE_ARTIFACTS_DIR: ${{ github.workspace }}/extended-services-release-candidate-artifacts
     steps:
+      - name: "Checkout @ GitHub default"
+        uses: actions/checkout@v3
+
+      - name: "Checkout @ Simulated squashed-merge if PR"
+        uses: ./.github/actions/checkout-pr
+        with:
+          ref: ${{ inputs.base_ref }}
+
+      - name: Install SVN
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y subversion
+
       - name: Import GPG key
         if: github.event_name != 'pull_request'
         uses: crazy-max/ghaction-import-gpg@111c56156bcc6918c056dbef52164cfa583dc549
@@ -437,16 +464,19 @@ jobs:
         shell: bash
         env:
           RELEASE_CANDIDATE_VERSION: ${{ inputs.release_candidate_version }}
+          RELEASE_VERSION: ${{ inputs.release_version }}
         run: |
-          MACOS_ARTIFACT_ZIP_FILE="incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-macOS-x86.zip"
-          WINDOWS_ARTIFACT_ZIP_FILE="incubator-kie-$RELEASE_CANDIDATE_VERSION-sandbox-extended-services-windows-x86.zip"
+          MACOS_ARTIFACT_ZIP_FILE="apache-kie-$RELEASE_VERSION-incubating-sandbox-extended-services-macOS-x86.zip"
+          WINDOWS_ARTIFACT_ZIP_FILE="apache-kie-$RELEASE_VERSION-incubating-sandbox-extended-services-windows-x86.zip"
           echo "MACOS_ARTIFACT_ZIP_FILE=$MACOS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
           echo "WINDOWS_ARTIFACT_ZIP_FILE=$WINDOWS_ARTIFACT_ZIP_FILE" >> "$GITHUB_OUTPUT"
+          cp ./{NOTICE,DISCLAIMER-WIP,LICENSE} $RELEASE_CANDIDATE_ARTIFACTS_DIR
           cd $RELEASE_CANDIDATE_ARTIFACTS_DIR
-          zip $RELEASE_CANDIDATE_ARTIFACTS_DIR/$MACOS_ARTIFACT_ZIP_FILE ./Kogito.dmg
-          zip $RELEASE_CANDIDATE_ARTIFACTS_DIR/$WINDOWS_ARTIFACT_ZIP_FILE ./kie_sandbox_extended_services.exe
+          zip $RELEASE_CANDIDATE_ARTIFACTS_DIR/$MACOS_ARTIFACT_ZIP_FILE ./Kogito.dmg ./NOTICE ./DISCLAIMER-WIP ./LICENSE
+          zip $RELEASE_CANDIDATE_ARTIFACTS_DIR/$WINDOWS_ARTIFACT_ZIP_FILE ./kie_sandbox_extended_services.exe ./NOTICE ./DISCLAIMER-WIP ./LICENSE
           rm -f ./Kogito.dmg
           rm -f ./kie_sandbox_extended_services.exe
+          rm -f ./{NOTICE,DISCLAIMER-WIP,LICENSE}
 
       - name: "Sign artifacts"
         if: ${{ !inputs.dry_run }}

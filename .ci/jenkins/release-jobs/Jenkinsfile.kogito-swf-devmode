@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:10.1.999'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -27,10 +27,11 @@ pipeline {
     }
 
     parameters {
-        booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
-        string(description: 'Base Ref', name: 'BASE_REF')
-        string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
+        booleanParam(name: 'DRY_RUN', description: 'Dry run', defaultValue: true)
+        string(name: 'RELEASE_VERSION', description: 'Release Version', defaultValue: '0.0.0')
+        string(name: 'BASE_REF', description: 'GitHub Base Ref (tag or branch)')
+        string(name: 'RELEASE_CANDIDATE_VERSION', description: 'Release Candidate Version', defaultValue: '')
+        string(name: 'PIPELINE_PATH', description: 'Path to run the pipeline')
     }
 
     environment {
@@ -45,12 +46,10 @@ pipeline {
         SONATAFLOW_DEVMODE_IMAGE__buildTag = "${params.RELEASE_VERSION}"
 
         MAVEN_SETTINGS_PATH = "${WORKSPACE}/kie-settings.xml"
-
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
-
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
-
         PNPM_FILTER_STRING = '-F @kie-tools/sonataflow-devmode-image...'
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml -Dmaven.repo.local=${WORKSPACE}/.maven"
     }
 
     stages {
@@ -136,7 +135,19 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBootstrap(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
+                    }
+                }
+            }
+        }
+
+        stage('Update project, kogito and stream name version') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmUpdateProjectVersion(params.RELEASE_VERSION, env.MAVEN_ARGS)
+                        buildUtils.pnpmUpdateKogitoVersion(params.RELEASE_VERSION, params.RELEASE_VERSION, env.MAVEN_ARGS)
+                        buildUtils.pnpmUpdateStreamName(params.RELEASE_VERSION, env.MAVEN_ARGS)
                     }
                 }
             }
@@ -146,7 +157,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBuild(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                     }
                 }
             }
@@ -189,7 +200,7 @@ pipeline {
             }
             steps {
                 script {
-                    env.RELEASE_IMAGE_TAR_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-sonataflow-devmode-image.tar.gz"
+                    env.RELEASE_IMAGE_TAR_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-sonataflow-devmode-image.tar.gz"
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}

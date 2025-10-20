@@ -17,7 +17,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker.io/apache/incubator-kie-tools-ci-build:main'
+            image 'docker.io/apache/incubator-kie-tools-ci-build:10.1.999'
             args '--shm-size=2g --privileged --group-add docker'
         }
     }
@@ -31,6 +31,7 @@ pipeline {
         string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
         string(description: 'Base Ref', name: 'BASE_REF')
         string(description: 'Release Candidate Version', name: 'RELEASE_CANDIDATE_VERSION', defaultValue: '')
+        string(name: 'PIPELINE_PATH', description: 'Path to run the pipeline')
     }
 
     environment {
@@ -49,6 +50,8 @@ pipeline {
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
 
         PNPM_FILTER_STRING = '-F @kie-tools/runtime-tools-consoles-helm-chart...'
+
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml -Dmaven.repo.local=${WORKSPACE}/.maven"
     }
 
     stages {
@@ -121,7 +124,19 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBootstrap(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
+                    }
+                }
+            }
+        }
+
+        stage('Update project, kogito and stream name version') {
+            steps {
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmUpdateProjectVersion(params.RELEASE_VERSION, env.MAVEN_ARGS)
+                        buildUtils.pnpmUpdateKogitoVersion(params.RELEASE_VERSION, params.RELEASE_VERSION, env.MAVEN_ARGS)
+                        buildUtils.pnpmUpdateStreamName(params.RELEASE_VERSION, env.MAVEN_ARGS)
                     }
                 }
             }
@@ -131,7 +146,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBuild("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBuild(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                     }
                 }
             }
@@ -139,7 +154,7 @@ pipeline {
 
         stage('Push runtime-tools-consoles-helm-chart to Docker Hub') {
             when {
-                expression { !params.DRY_RUN && !params.RELEASE_CANDIDATE  }
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
             }
             steps {
                 dir('kie-tools') {
@@ -162,7 +177,7 @@ pipeline {
             }
             steps {
                 script {
-                    env.RELEASE_TAR_FILE = "incubator-kie-${params.RELEASE_CANDIDATE_VERSION}-runtime-tools-console-helm-chart.tar.gz"
+                    env.RELEASE_TAR_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-runtime-tools-console-helm-chart.tar.gz"
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}

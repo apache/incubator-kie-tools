@@ -11826,6 +11826,13 @@ importers:
         version: 8.3.2
 
   packages/sonataflow-devmode-image:
+    dependencies:
+      '@kie-tools/sonataflow-image-common':
+        specifier: workspace:*
+        version: link:../sonataflow-image-common
+      '@kie-tools/sonataflow-quarkus-devui':
+        specifier: workspace:*
+        version: link:../sonataflow-quarkus-devui
     devDependencies:
       '@kie-tools/image-builder':
         specifier: workspace:*
