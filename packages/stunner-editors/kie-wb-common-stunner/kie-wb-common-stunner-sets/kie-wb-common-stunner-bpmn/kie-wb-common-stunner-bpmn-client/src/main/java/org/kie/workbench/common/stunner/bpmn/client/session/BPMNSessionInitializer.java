@@ -20,15 +20,19 @@
 
 package org.kie.workbench.common.stunner.bpmn.client.session;
 
+import java.util.Collection;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import elemental2.promise.Promise;
 import org.kie.workbench.common.stunner.bpmn.client.dataproviders.CalledElementFormProvider;
 import org.kie.workbench.common.stunner.bpmn.client.dataproviders.RuleFlowGroupFormProvider;
 import org.kie.workbench.common.stunner.bpmn.client.diagram.DiagramTypeClientService;
+import org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientService;
 import org.kie.workbench.common.stunner.bpmn.qualifiers.BPMN;
+import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinition;
 import org.kie.workbench.common.stunner.core.client.session.impl.SessionInitializer;
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.uberfire.mvp.Command;
@@ -39,15 +43,18 @@ public class BPMNSessionInitializer implements SessionInitializer {
 
     private static Logger LOGGER = Logger.getLogger(BPMNSessionInitializer.class.getName());
 
+    private final WorkItemDefinitionClientService workItemDefinitionService;
     private final DiagramTypeClientService diagramTypeService;
 
     // CDI proxy.
     protected BPMNSessionInitializer() {
-        this(null);
+        this(null, null);
     }
 
     @Inject
-    public BPMNSessionInitializer(final DiagramTypeClientService diagramTypeService) {
+    public BPMNSessionInitializer(final WorkItemDefinitionClientService workItemDefinitionService,
+                                  final DiagramTypeClientService diagramTypeService) {
+        this.workItemDefinitionService = workItemDefinitionService;
         this.diagramTypeService = diagramTypeService;
     }
 
@@ -57,6 +64,16 @@ public class BPMNSessionInitializer implements SessionInitializer {
         diagramTypeService.loadDiagramType(metadata);
         CalledElementFormProvider.initServerData();
         RuleFlowGroupFormProvider.initServerData();
-        completeCallback.execute();
+        workItemDefinitionService
+                .call(metadata)
+                .then(workItemDefinitions -> {
+                    completeCallback.execute();
+                    return null;
+                })
+                .catch_((Promise.CatchOnRejectedCallbackFn<Collection<WorkItemDefinition>>) error -> {
+                    LOGGER.severe("Error obtaining the work item definitions [error=" + error + "]");
+                    completeCallback.execute();
+                    return null;
+                });
     }
 }
