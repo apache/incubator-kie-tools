@@ -135,7 +135,7 @@ function buildNativeImage(args: ArgsType, imageFullNames: string[]) {
 }
 
 function checkNativeArch(arch: ArgsType["arch"]) {
-  return arch == undefined || (arch?.length == 1 && arch?.includes("native"));
+  return arch?.length == 1 && arch?.includes("native");
 }
 
 function buildImage(args: ArgsType, imageFullNames: string[]) {
@@ -324,12 +324,14 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
         },
         arch: {
           demandOption: false,
-          describe: "The target build architectures. If not provided will default to the native architecture",
+          describe:
+            "The target build architectures, For example: [linux/amd64, linux/arm64]. If not provided will default to the native architecture",
           type: "array",
+          default: ["native"],
           coerce: (arch) => {
             if (arch.length === 1) {
               const evaluedArgs = evalStringArg<string>(arch[0]);
-              return evaluedArgs.split(",").map((a) => (a != "native" ? `linux/${a}` : a)) as string[];
+              return evaluedArgs.split(",") as string[];
             }
             return arch as string[];
           },
