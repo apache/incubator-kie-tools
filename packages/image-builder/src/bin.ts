@@ -391,7 +391,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
           }
 
           const imageFullNames = getImageFullNames(args);
-          buildImage({ ...args, arch: ["amd64"] }, imageFullNames);
+          buildImage({ ...args, arch: ["linux/amd64"] }, imageFullNames);
           imageFullNames.forEach((imageName) => {
             execSync(`minikube image load ${imageName}`, { stdio: "inherit" });
           });
@@ -442,7 +442,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
           }
 
           const imageFullNames = getImageFullNames(args);
-          buildImage({ ...args, arch: ["amd64"] }, imageFullNames);
+          buildImage({ ...args, arch: ["linux/amd64"] }, imageFullNames);
           imageFullNames.forEach((imageName) => {
             execSync(`kind load docker-image ${imageName} --name ${args.kindClusterName}`, { stdio: "inherit" });
           });
