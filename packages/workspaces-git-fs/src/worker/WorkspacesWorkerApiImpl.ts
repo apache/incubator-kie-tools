@@ -22,7 +22,6 @@ import {
   ResourcesList,
   ResourceContentOptions,
   ResourceContent,
-  ContentType,
 } from "@kie-tools-core/workspace/dist/api";
 import { join } from "path";
 import { GIT_DEFAULT_BRANCH } from "../constants/GitConstants";
@@ -229,7 +228,8 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
       const files = await this.args.services.workspaceService.getFilteredWorkspaceFileDescriptors(
         schema,
         args.workspaceId,
-        args.globPattern
+        args.globPattern,
+        args.opts?.type
       );
       return new ResourcesList(
         args.globPattern,
