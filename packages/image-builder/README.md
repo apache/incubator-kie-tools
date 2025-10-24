@@ -18,7 +18,7 @@ Options:
   -f, --containerfile           Path to the Containerfile/Dockerfile  [string] [default: "Containerfile"]
   -c, --context                 Path to the build context  [string] [default: "./"]
       --build-arg               Build args for the builder in the format '<arg>=<value>', where <value> is a string (Can be used multiple times)  [array] [default: []]
-      --arch                    The target build architecture. If not provided will default to the native architecture  [string] [choices: "amd64", "arm64", "native"] [default: "native"]
+      --arch                    The target build architectures, For example: [linux/amd64, linux/arm64]. If not provided will default to the native architecture  [array] [default: ["native"]]
   -h, --help                    Show help  [boolean]
 
 Examples:

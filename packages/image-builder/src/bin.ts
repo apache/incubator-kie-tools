@@ -34,7 +34,7 @@ type ArgsType = {
   tags: string[];
   push: boolean;
   buildArg: string[];
-  arch: string;
+  arch?: string[];
   allowHostNetworkAccess: boolean;
 };
 
@@ -98,19 +98,14 @@ function checkBuildEngine(args: ArgsType) {
   }
 }
 
-function buildArchImage(args: ArgsType & { arch: "arm64" | "amd64" }, imageFullNames: string[]) {
-  const platform = {
-    arm64: "linux/arm64",
-    amd64: "linux/amd64",
-  }[args.arch];
-
+function buildArchImage(args: ArgsType & { arch: string[] | undefined }, imageFullNames: string[]) {
   createAndUseDockerBuilder({ allowHostNetworkAccess: args.allowHostNetworkAccess });
   console.log(`[image-builder] Building arch image ${args.arch}`);
   const buildPlatformCommand = `docker buildx build
     ${args.allowHostNetworkAccess ? "--allow network.host --network host" : ""}
     --progress=plain
     --load
-    --platform ${platform}
+    --platform ${args.arch}
     ${args.push ? "--push" : ""}
     ${imageFullNames.map((fullName) => `-t ${fullName}`).join(" ")}
     ${args.buildArg.map((arg) => `--build-arg ${arg}`).join(" ")}
@@ -139,8 +134,8 @@ function buildNativeImage(args: ArgsType, imageFullNames: string[]) {
   execSync(buildNativeCommand, { stdio: "inherit" });
 }
 
-function checkNotNativeArch(arch: ArgsType["arch"]): arch is "arm64" | "amd64" {
-  return arch !== "native";
+function checkNativeArch(arch: ArgsType["arch"]) {
+  return arch?.length == 1 && arch?.includes("native");
 }
 
 function buildImage(args: ArgsType, imageFullNames: string[]) {
@@ -148,10 +143,10 @@ function buildImage(args: ArgsType, imageFullNames: string[]) {
 
   const arch = args.arch;
 
-  if (checkNotNativeArch(arch)) {
-    buildArchImage({ ...args, arch }, imageFullNames);
-  } else {
+  if (checkNativeArch(arch)) {
     buildNativeImage(args, imageFullNames);
+  } else {
+    buildArchImage({ ...args, arch }, imageFullNames);
   }
 }
 
@@ -329,11 +324,17 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
         },
         arch: {
           demandOption: false,
-          describe: "The target build architecture. If not provided will default to the native architecture",
-          type: "string",
-          default: "native",
-          choices: ["amd64", "arm64", "native"] as const,
-          nargs: 1,
+          describe:
+            "The target build architectures, For example: [linux/amd64, linux/arm64]. If not provided will default to the native architecture",
+          type: "array",
+          default: ["native"],
+          coerce: (arch) => {
+            if (arch.length === 1) {
+              const evaluedArgs = evalStringArg<string>(arch[0]);
+              return evaluedArgs.split(",") as string[];
+            }
+            return arch as string[];
+          },
         },
       })
       .command(
@@ -353,9 +354,9 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
     - engine: ${args.engine}
     - push: ${args.push}
     - allowHostNetworkAccess: ${args.allowHostNetworkAccess}
-    - arch: linux/${args.arch}
+    - arch: ${args.arch}
         `);
-          if (args.arch !== "native" && args.engine !== "docker") {
+          if (!checkNativeArch(args.arch) && args.engine !== "docker") {
             throw new Error(
               `ERROR! --arch: Targetting non-native architecturies is only supported with the Docker engine.`
             );
@@ -390,7 +391,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
           }
 
           const imageFullNames = getImageFullNames(args);
-          buildImage({ ...args, arch: "amd64" }, imageFullNames);
+          buildImage({ ...args, arch: ["linux/amd64"] }, imageFullNames);
           imageFullNames.forEach((imageName) => {
             execSync(`minikube image load ${imageName}`, { stdio: "inherit" });
           });
@@ -441,7 +442,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
           }
 
           const imageFullNames = getImageFullNames(args);
-          buildImage({ ...args, arch: "amd64" }, imageFullNames);
+          buildImage({ ...args, arch: ["linux/amd64"] }, imageFullNames);
           imageFullNames.forEach((imageName) => {
             execSync(`kind load docker-image ${imageName} --name ${args.kindClusterName}`, { stdio: "inherit" });
           });
