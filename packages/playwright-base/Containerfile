@@ -30,7 +30,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Adding all dependencies available in GHA `ubuntu-latest`
 RUN curl https://raw.githubusercontent.com/actions/runner-images/refs/heads/main/images/ubuntu/toolsets/toolset-2404.json > toolset-2404.json && \
-    export APT_PACKAGES="$(cat toolset-2404.json | jq -r '.apt | [.vital_packages[], .common_packages[], .cmd_packages[]] | join(" ")')" && \
+    export APT_PACKAGES="$(cat toolset-2404.json | sed s/netcat/netcat-traditional/g | jq -r '.apt | [.vital_packages[], .common_packages[], .cmd_packages[]] | join(" ")')" && \
     apt-get update && \
     apt-get install -y --no-install-recommends $APT_PACKAGES && \
     rm -rf /var/lib/apt/lists/* toolset-2404.json
