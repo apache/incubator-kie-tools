@@ -66,6 +66,7 @@
            They need to be checked with Quarkus and Spring Boot upgrades and eventually removed, if they are not needed anymore. -->
     <version.angus.mail>2.0.5</version.angus.mail>
     <version.nimbus.jose.jwt>9.37.4</version.nimbus.jose.jwt>
+    <version.io.vertx>4.5.22</version.io.vertx>
     <!-- End of various transitive overrides. -->
   </properties>
 
@@ -82,6 +83,11 @@
         <groupId>com.nimbusds</groupId>
         <artifactId>nimbus-jose-jwt</artifactId>
         <version>${version.nimbus.jose.jwt}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-web</artifactId>
+        <version>${version.io.vertx}</version>
       </dependency>
       <!-- End of various transitive overrides. -->
 
