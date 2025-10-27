@@ -17,7 +17,7 @@
 
 # incubator-kie-runtime-tools-consoles-helm-chart
 
-![Version: 0.0.0](https://img.shields.io/badge/Version-0.0.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 0.0.0](https://img.shields.io/badge/AppVersion-0.0.0-informational?style=flat-square)
+![Version: 2.2.999](https://img.shields.io/badge/Version-2.2.999-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 2.2.999](https://img.shields.io/badge/AppVersion-2.2.999-informational?style=flat-square)
 
 A Helm chart to deploy Runtime Tools Consoles on Kubernetes
 
@@ -25,7 +25,7 @@ A Helm chart to deploy Runtime Tools Consoles on Kubernetes
 
 | Repository | Name               | Version |
 | ---------- | ------------------ | ------- |
-|            | management-console | 0.0.0   |
+|            | management-console | 2.2.999 |
 
 ## Values
 
