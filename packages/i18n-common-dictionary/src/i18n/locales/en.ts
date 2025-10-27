@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import { CommonI18n } from "../CommonI18n";
-import { names } from "../names";
+import { CommonI18n } from "../../CommonI18n";
+import { names } from "../../names";
 
 export const en: CommonI18n = {
   names,
