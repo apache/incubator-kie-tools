@@ -26,7 +26,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "HTTP Port the proxy should listen to",
     },
     CORS_PROXY__origin: {
-      default: "*",
+      default: "http://localhost",
       description: "Value to set on the 'Access-Control-Allow-Origin' header",
     },
     CORS_PROXY__verbose: {

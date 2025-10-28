@@ -18,7 +18,7 @@
 FROM --platform=linux/amd64 registry.access.redhat.com/ubi9/ubi-minimal:9.5
 
 ARG CORS_PROXY_DEFAULT_PORT=8080
-ARG CORS_PROXY_DEFAULT_ORIGIN=*
+ARG CORS_PROXY_DEFAULT_ORIGIN=http://localhost
 ARG CORS_PROXY_DEFAULT_VERBOSE=false
 
 ENV HOME          /home/kie-sandbox
