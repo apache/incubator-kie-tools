@@ -27,7 +27,7 @@ module.exports = composeEnv([], {
       description: "Enables/disables running linters during the build.",
     },
     KIE_TOOLS_BUILD__runTests: {
-      default: `${true}`,
+      default: `${false}`,
       description: "Enables/disables running tests during the build.",
     },
     KIE_TOOLS_BUILD__ignoreTestFailures: {
