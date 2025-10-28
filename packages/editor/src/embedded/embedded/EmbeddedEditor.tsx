@@ -38,7 +38,7 @@ import {
   editorEnvelopeI18nDefaults,
   editorEnvelopeI18nDictionaries,
   useEditorEnvelopeI18nContext,
-} from "../../envelope/i18n";
+} from "../../../i18n";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
 
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;

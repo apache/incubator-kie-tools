@@ -22,7 +22,7 @@ import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import { Spinner } from "@patternfly/react-core/dist/js/components/Spinner";
 import { Title } from "@patternfly/react-core/dist/js/components/Title";
 import { Bullseye } from "@patternfly/react-core/dist/js/layouts/Bullseye";
-import { useEditorEnvelopeI18nContext } from "../i18n";
+import { useEditorEnvelopeI18nContext } from "../../../i18n";
 
 export function LoadingScreen(props: { loading: boolean; styleTag?: string }) {
   const [mustRender, setMustRender] = useState(true);

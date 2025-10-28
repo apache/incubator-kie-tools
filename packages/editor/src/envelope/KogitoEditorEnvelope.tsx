@@ -29,7 +29,7 @@ import * as ReactDOM from "react-dom";
 import * as React from "react";
 import { Envelope, EnvelopeApiFactory } from "@kie-tools-core/envelope";
 import { I18nService } from "@kie-tools-core/i18n/dist/envelope";
-import { EditorEnvelopeI18nContext, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from "./i18n";
+import { EditorEnvelopeI18nContext, editorEnvelopeI18nDefaults, editorEnvelopeI18nDictionaries } from "../../i18n";
 import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 import { getOperatingSystem } from "@kie-tools-core/operating-system";
 import { ApiDefinition } from "@kie-tools-core/envelope-bus/dist/api";

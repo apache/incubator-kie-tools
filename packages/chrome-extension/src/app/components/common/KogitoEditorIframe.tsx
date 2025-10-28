@@ -27,7 +27,7 @@ import { useGitHubApi } from "./GitHubContext";
 import { useGlobals } from "./GlobalContext";
 import { IsolatedEditorContext } from "./IsolatedEditorContext";
 import { IsolatedEditorRef } from "./IsolatedEditorRef";
-import { useChromeExtensionI18n } from "../../i18n";
+import { useChromeExtensionI18n } from "../../../i18n";
 import { StateControl } from "@kie-tools-core/editor/dist/channel";
 
 interface Props {
