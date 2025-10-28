@@ -37,7 +37,7 @@ RUN curl https://raw.githubusercontent.com/actions/runner-images/refs/heads/main
 
 # Install fonts
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    fonts-ubuntu \
+    fonts-ubuntu-classic \
     fonts-dejavu-core \
     fonts-dejavu-extra \
     fonts-freefont-ttf \
