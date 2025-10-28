@@ -34,7 +34,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       description: "Build information to be shown in the 'About' modal.",
     },
     RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__appName: {
-      default: "Apache KIE™ Management Console",
+      default: "HRL 诊断规则平台 管理控制台",
       description: "The name used to refer to a particular KIE Management Console distribution.",
     },
     RUNTIME_TOOLS_MANAGEMENT_CONSOLE_WEBAPP__oidcClientClientId: {

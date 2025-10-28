@@ -73,7 +73,7 @@ module.exports = composeEnv([rootEnv, extendedServicesJavaEnv, corsProxyEnv, kie
       description: "Service URL to validate commit messages.",
     },
     ONLINE_EDITOR__appName: {
-      default: "Apache KIE™ Sandbox",
+      default: "HRL 诊断规则平台",
       description: "The name used to refer to a particular KIE Sandbox distribution.",
     },
     ONLINE_EDITOR__devDeploymentBaseImageRegistry: {
