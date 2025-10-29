@@ -36,7 +36,7 @@ pipeline {
         string(name: 'BASE_REF', description: 'GitHub Base Ref (tag or branch)')
         string(name: 'RELEASE_VERSION', description: 'Release Version', defaultValue: '0.0.0')
         string(name: 'UPLOAD_ASSET_URL', description: 'Upload asset url', defaultValue: '')
-        string(name: 'RUNNERS', description: 'Runners', defaultValue: '{"chrome_extensions":"false","cors_proxy_image":"false","dashbuilder_viewer_image":"false","dev_deployment_base_image":"false","dev_deployment_dmn_form_webapp_image":"false","dev_deployment_quakus_blank_app_image":"false","dev_deployment_upload_service":"false","extended_services":"false","jbpm_quarkus_devui":"false","kie_sandbox_image":"false","kie_sandbox_accelerator_quarkus":"false","kie_sandbox_extended_services":"false","kie_sandbox_helm_chart":"false","kn_plugin_workflow":"false","kogito_base_builder_image":"false","kogito_data_index_ephemeral_image":"false","kogito_data_index_postgresql_image":"false","kogito_jobs_service_allinone_image":"false","kogito_jobs_service_ephemeral_image":"false","kogito_jobs_service_postgresql_image":"false","kogito_jit_runner_image":"false","kogito_db_migrator_tool":"false","kogito_management_console":"false","kogito_serverless_operator":"false","kogito_swf_builder":"false","kogito_swf_devmode":"false","npm_packages":"false","online_editor":"false","runtime_tools_consoles_helm_chart":"false","serverless_logic_web_tools":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","sonataflow_management_console":"false","sonataflow_quarkus_devui":"false","standalone_editors_cdn":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false"}')
+        string(name: 'RUNNERS', description: 'Runners', defaultValue: '{"chrome_extensions":"false","cors_proxy_image":"false","dashbuilder_viewer_image":"false","dev_deployment_base_image":"false","dev_deployment_dmn_form_webapp_image":"false","dev_deployment_quarkus_blank_app_image":"false","dev_deployment_upload_service":"false","extended_services":"false","jbpm_quarkus_devui":"false","kie_sandbox_image":"false","kie_sandbox_accelerator_quarkus":"false","kie_sandbox_extended_services":"false","kie_sandbox_helm_chart":"false","kn_plugin_workflow":"false","kogito_base_builder_image":"false","kogito_data_index_ephemeral_image":"false","kogito_data_index_postgresql_image":"false","kogito_jobs_service_allinone_image":"false","kogito_jobs_service_ephemeral_image":"false","kogito_jobs_service_postgresql_image":"false","kogito_jit_runner_image":"false","kogito_db_migrator_tool":"false","kogito_management_console":"false","kogito_serverless_operator":"false","kogito_swf_builder":"false","kogito_swf_devmode":"false","npm_packages":"false","online_editor":"false","runtime_tools_consoles_helm_chart":"false","serverless_logic_web_tools":"false","serverless_logic_web_tools_base_builder_image":"false","serverless_logic_web_tools_swf_builder_image":"false","serverless_logic_web_tools_swf_dev_mode_image":"false","sonataflow_management_console":"false","sonataflow_quarkus_devui":"false","standalone_editors_cdn":"false","vscode_extensions_dev":"false","vscode_extensions_prod":"false"}')
         string(name: 'RELEASE_CANDIDATE_VERSION', description: 'Release Candidate Version', defaultValue: '')
     }
 
@@ -533,7 +533,7 @@ def setRunners() {
     env.DASHBUILDER_VIEWER_IMAGE = runners.dashbuilder_viewer_image
     env.DEV_DEPLOYMENT_BASE_IMAGE = runners.dev_deployment_base_image
     env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE = runners.dev_deployment_dmn_form_webapp_image
-    env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE = runners.dev_deployment_quakus_blank_app_image
+    env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE = runners.dev_deployment_quarkus_blank_app_image
     env.DEV_DEPLOYMENT_UPLOAD_SERVICE = runners.dev_deployment_upload_service    
     env.EXTENDED_SERVICES = runners.extended_services
     env.JBPM_QUARKUS_DEVUI = runners.jbpm_quarkus_devui
@@ -576,7 +576,7 @@ def printRunners() {
     echo "dashbuilder_viewer_image: ${env.DASHBUILDER_VIEWER_IMAGE}"
     echo "dev_deployment_base_image: ${env.DEV_DEPLOYMENT_BASE_IMAGE}"
     echo "dev_deployment_dmn_form_webapp_image: ${env.DEV_DEPLOYMENT_DMN_FORM_WEBAPP_IMAGE}"
-    echo "dev_deployment_quakus_blank_app_image: ${env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE}"    
+    echo "dev_deployment_quarkus_blank_app_image: ${env.DEV_DEPLOYMENT_QUARKUS_BLANK_APP_IMAGE}"    
     echo "dev_deployment_upload_service: ${env.DEV_DEPLOYMENT_UPLOAD_SERVICE}"
     echo "extended_services: ${env.EXTENDED_SERVICES}"
     echo "jbpm_quarkus_devui: ${env.JBPM_QUARKUS_DEVUI}"
