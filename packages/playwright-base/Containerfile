@@ -35,21 +35,24 @@ RUN curl https://raw.githubusercontent.com/actions/runner-images/refs/heads/main
     apt-get install -y --no-install-recommends $APT_PACKAGES && \
     rm -rf /var/lib/apt/lists/* toolset-2404.json
 
-# Install fonts
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    fonts-ubuntu-classic \
-    fonts-dejavu-core \
-    fonts-dejavu-extra \
-    fonts-freefont-ttf \
-    fonts-liberation \
-    fonts-noto-core \
-    fonts-noto-ui-core \
-    fonts-noto-color-emoji \
-    fonts-noto-mono \
-    fonts-droid-fallback \
-    fontconfig \
-    ttf-mscorefonts-installer && \
-    rm -rf /var/lib/apt/lists/*
+    
+# Configure deb installer to automatically accept mscorefonts eula and install fonts
+RUN echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections && \
+    apt-get update && apt-get install -y --no-install-recommends \
+        fonts-ubuntu-classic \
+        fonts-dejavu-core \
+        fonts-dejavu-extra \
+        fonts-freefont-ttf \
+        fonts-liberation \
+        fonts-noto-core \
+        fonts-noto-ui-core \
+        fonts-noto-color-emoji \
+        fonts-noto-mono \
+        fonts-droid-fallback \
+        fontconfig \
+        ttf-mscorefonts-installer && \
+    rm -rf /var/lib/apt/lists/* && \
+    fc-cache -fv
 
 # Set Node.js version
 ENV NODE_VERSION=22.13.0
