@@ -22,7 +22,7 @@ import { GwtStateControlService } from "@kie-tools/kie-bc-editors/dist/common/gw
 import { EditorTheme, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { messageBusClientApiMock } from "@kie-tools-core/envelope-bus/dist-tests/messageBusClientApiMock";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "@kie-tools/kie-bc-editors/dist/common/i18n";
+import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "@kie-tools/kie-bc-editors/dist/i18n";
 
 const MockEditor = jest.fn(() => ({
   undo: jest.fn(),
