@@ -15,7 +15,7 @@ Options:
   -e, --engine                  The build engine to be used  [string] [choices: "docker", "podman"] [default: "docker"]
   -p, --push                    Push the image to the registry  [boolean] [default: false]
       --allowHostNetworkAccess  Allows host network access during build  [boolean] [default: false]
-      --useDefaultDriver        Allows docker buildx to use default driver  [boolean] [default: false]
+      --useDefaultBuilder        Allows docker buildx to use default builder  [boolean] [default: false]
   -f, --containerfile           Path to the Containerfile/Dockerfile  [string] [default: "Containerfile"]
   -c, --context                 Path to the build context  [string] [default: "./"]
       --build-arg               Build args for the builder in the format '<arg>=<value>', where <value> is a string (Can be used multiple times)  [array] [default: []]

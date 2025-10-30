@@ -35,7 +35,7 @@ type ArgsType = {
   push: boolean;
   buildArg: string[];
   arch?: string[];
-  useDefaultDriver: boolean;
+  useDefaultBuilder: boolean;
   allowHostNetworkAccess: boolean;
 };
 
@@ -63,8 +63,8 @@ function getImageFullNames(args: ArgsType) {
   return args.tags.map((tag) => `${imageFullNameWithoutTags}:${tag}`);
 }
 
-function createAndUseDockerBuilder(args: { allowHostNetworkAccess: boolean; useDefaultDriver: boolean }) {
-  if (args.useDefaultDriver) {
+function createAndUseDockerBuilder(args: { allowHostNetworkAccess: boolean; useDefaultBuilder: boolean }) {
+  if (args.useDefaultBuilder) {
     execSync("docker buildx use default", { stdio: "inherit" });
   } else {
     try {
@@ -106,7 +106,7 @@ function checkBuildEngine(args: ArgsType) {
 function buildArchImage(args: ArgsType & { arch: string[] | undefined }, imageFullNames: string[]) {
   createAndUseDockerBuilder({
     allowHostNetworkAccess: args.allowHostNetworkAccess,
-    useDefaultDriver: args.useDefaultDriver,
+    useDefaultBuilder: args.useDefaultBuilder,
   });
   console.log(`[image-builder] Building arch image ${args.arch}`);
   const buildPlatformCommand = `docker buildx build
@@ -291,10 +291,10 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
           describe: "Allows host network access during build",
           type: "boolean",
         },
-        useDefaultDriver: {
+        useDefaultBuilder: {
           demandOption: false,
           default: false,
-          describe: "Allows docker buildx to use default driver",
+          describe: "Allows docker buildx to use default builder",
           type: "boolean",
         },
         containerfile: {
@@ -368,7 +368,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
     - engine: ${args.engine}
     - push: ${args.push}
     - allowHostNetworkAccess: ${args.allowHostNetworkAccess}
-    - useDefaultDriver: ${args.useDefaultDriver}
+    - useDefaultBuilder: ${args.useDefaultBuilder}
     - arch: ${args.arch}
         `);
           if (!checkNativeArch(args.arch) && args.engine !== "docker") {
@@ -397,7 +397,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
     - engine: ${args.engine}
     - push: ${args.push}
     - allowHostNetworkAccess: ${args.allowHostNetworkAccess}
-    - useDefaultDriver: ${args.useDefaultDriver}
+    - useDefaultBuilder: ${args.useDefaultBuilder}
     - arch: linux/amd64`);
 
           if (args.engine !== "docker") {
@@ -440,6 +440,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
     - engine: ${args.engine}
     - push: ${args.push}
     - arch: linux/amd64
+    - useDefaultBuilder: ${args.useDefaultBuilder}
     - allowHostNetworkAccess: ${args.allowHostNetworkAccess} (ignored)
     - kindClusterName: ${args.kindClusterName}
         `);
@@ -480,6 +481,7 @@ Also useful to aid on developing images and pushing them to Kubernetes/OpenShift
     - buildArg: ${args.buildArg?.join(" ") ?? " - "}
     - engine: ${args.engine} (ignored)
     - push: ${args.push}
+    - useDefaultBuilder: ${args.useDefaultBuilder}
     - allowHostNetworkAccess: ${args.allowHostNetworkAccess} (ignored)
     - arch: linux/amd64
         `);
