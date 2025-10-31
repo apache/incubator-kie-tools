@@ -69,7 +69,7 @@ export function RefactorConfirmationDialog({
     >
       <I18nWrappedTemplate
         text={i18n.dataTypes.identifierRenameMessage}
-        placeholders={{
+        interpolationMap={{
           fromIdentifier: (
             <pre style={{ display: "inline" }}>
               {'"'}

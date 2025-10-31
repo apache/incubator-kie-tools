@@ -90,7 +90,7 @@ export function FunctionDefinitionParameterCell(props: {
               <p>
                 <I18nWrappedTemplate
                   text={i18n.propertiesPanel.parameter}
-                  placeholders={{
+                  interpolationMap={{
                     name: <b>{parameter["@_name"]}</b>,
                   }}
                 />

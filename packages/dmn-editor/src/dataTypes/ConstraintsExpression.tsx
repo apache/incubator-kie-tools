@@ -140,7 +140,7 @@ export function ConstraintsExpression({
           <HelperTextItem variant="indeterminate" icon={<InfoIcon />}>
             <I18nWrappedTemplate
               text={i18n.dataTypes.checkFeelHandbook}
-              placeholders={{
+              interpolationMap={{
                 feelHandBook: (
                   <a href={FEEL_HANDBOOK_URL} target={"_blank"}>
                     {FEEL_HANDBOOK_URL}

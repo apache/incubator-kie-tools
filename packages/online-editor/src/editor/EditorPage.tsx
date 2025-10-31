@@ -384,7 +384,7 @@ Error details: ${err}`);
             <TextContent>
               <I18nWrappedTemplate
                 text={i18n.editorPage.error.message}
-                placeholders={{
+                interpolationMap={{
                   jira: (
                     <a href={ISSUES_URL} target={"_blank"} rel={"noopener noreferrer"}>
                       {ISSUES_URL}

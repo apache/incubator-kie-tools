@@ -388,7 +388,7 @@ export function DataTypePanel({
                     bodyContent={
                       <I18nWrappedTemplate
                         text={i18n.dataTypes.dmnTypeConstraintText}
-                        placeholders={{
+                        interpolationMap={{
                           typeConstraint: <b>{i18n.dataTypes.typeConstraint}</b>,
                           lineBreak: <br />,
                         }}
@@ -423,7 +423,7 @@ export function DataTypePanel({
                     bodyContent={
                       <I18nWrappedTemplate
                         text={i18n.dataTypes.dmnTypeConstraintText}
-                        placeholders={{
+                        interpolationMap={{
                           typeConstraint: <b>{i18n.dataTypes.allowedValues}</b>,
                           lineBreak: <br />,
                         }}

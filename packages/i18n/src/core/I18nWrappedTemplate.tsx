@@ -22,20 +22,20 @@ import * as React from "react";
 // component to replace placeholders in text with React components
 export const I18nWrappedTemplate = ({
   text,
-  placeholders,
+  interpolationMap,
 }: {
   text: string;
-  placeholders: Record<string, React.ReactNode>;
+  interpolationMap: Record<string, React.ReactNode>;
 }) => {
-  // Matches ${"{key}"} where key is one of the placeholder keys
-  const placeholderRegex = new RegExp(`\\$\\{"\\{(${Object.keys(placeholders).join("|")})\\}"\\}`, "g");
+  // Matches {key} where key is one of the placeholder keys
+  const interpolationMapRegex = new RegExp(`\\{(${Object.keys(interpolationMap).join("|")})\\}`, "g");
 
   return (
     <>
       {text
-        .split(placeholderRegex)
+        .split(interpolationMapRegex)
         .map((value, i) =>
-          value in placeholders ? <React.Fragment key={i}>{placeholders[value]}</React.Fragment> : value
+          value in interpolationMap ? <React.Fragment key={i}>{interpolationMap[value]}</React.Fragment> : value
         )}
     </>
   );

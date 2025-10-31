@@ -49,7 +49,7 @@ export function ErrorPage() {
           <TextContent>
             <I18nWrappedTemplate
               text={i18n.page.error.referToJira}
-              placeholders={{
+              interpolationMap={{
                 jira: (
                   <a href={KOGITO_JIRA_LINK} target={"_blank"} rel={"noopener"}>
                     {KOGITO_JIRA_LINK}

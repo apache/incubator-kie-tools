@@ -86,7 +86,6 @@ module.exports = (webpackEnv) => {
                 compilerOptions: {
                   ...verbatimModuleSyntax,
                   sourceMap: sourceMaps,
-                  jsx: "react-jsx",
                 },
               },
             },

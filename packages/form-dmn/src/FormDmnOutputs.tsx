@@ -192,7 +192,7 @@ export function FormDmnOutputs({
                   content={
                     <I18nWrappedTemplate
                       text={i18n.result.dateTooltip}
-                      placeholders={{
+                      interpolationMap={{
                         date: current.toString(),
                       }}
                     />
@@ -336,7 +336,7 @@ export function FormDmnOutputs({
             <TextContent>
               <I18nWrappedTemplate
                 text={i18n.result.error.message}
-                placeholders={{
+                interpolationMap={{
                   jira: (
                     <a href={ISSUES_URL} target={"_blank"} rel={"noopener noreferrer"}>
                       {ISSUES_URL}

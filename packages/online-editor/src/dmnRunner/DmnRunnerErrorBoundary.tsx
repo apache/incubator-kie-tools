@@ -58,7 +58,7 @@ export function DmnRunnerErrorBoundary({ children }: React.PropsWithChildren<{}>
             <TextContent>
               <I18nWrappedTemplate
                 text={i18n.dmnRunner.error.message}
-                placeholders={{
+                interpolationMap={{
                   jira: (
                     <a href={ISSUES_URL} target={"_blank"} rel={"noopener noreferrer"}>
                       {ISSUES_URL}

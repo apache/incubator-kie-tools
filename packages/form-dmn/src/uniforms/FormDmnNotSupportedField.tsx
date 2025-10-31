@@ -47,7 +47,7 @@ function FormDmnNotSupportedField({ recursion, recursionRef, ...props }: FormDmn
         >
           <I18nWrappedTemplate
             text={i18n.result.recursiveStructureNotSupported}
-            placeholders={{
+            interpolationMap={{
               linebreak: <br />,
             }}
           />
