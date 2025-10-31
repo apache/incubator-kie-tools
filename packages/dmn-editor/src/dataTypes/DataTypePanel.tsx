@@ -50,7 +50,7 @@ import { Alert } from "@patternfly/react-core/dist/js/components/Alert/Alert";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { InfoAltIcon } from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
 import { useDmnEditorI18n } from "../i18n";
-import { I18nWrappedTemplate } from "@kie-tools-core/i18n/src/core/I18nWrappedTemplate";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/core";
 
 export function DataTypePanel({
   isReadOnly,
@@ -388,7 +388,7 @@ export function DataTypePanel({
                     bodyContent={
                       <I18nWrappedTemplate
                         text={i18n.dataTypes.dmnTypeConstraintText}
-                        placeholders={{
+                        interpolationMap={{
                           typeConstraint: <b>{i18n.dataTypes.typeConstraint}</b>,
                           lineBreak: <br />,
                         }}
@@ -423,7 +423,7 @@ export function DataTypePanel({
                     bodyContent={
                       <I18nWrappedTemplate
                         text={i18n.dataTypes.dmnTypeConstraintText}
-                        placeholders={{
+                        interpolationMap={{
                           typeConstraint: <b>{i18n.dataTypes.allowedValues}</b>,
                           lineBreak: <br />,
                         }}

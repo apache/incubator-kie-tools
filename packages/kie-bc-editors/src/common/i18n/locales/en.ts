@@ -19,7 +19,7 @@
 
 import { KieBcEditorsI18n } from "../KieBcEditorsI18n";
 
-
 export const en: KieBcEditorsI18n = {
-  unsupportedFile:(url:string) => `This file contains a construct that is not yet supported. Please refer to ${url} and report an issue. Don't forget to upload the current file.`,
+  unsupportedFile: (url: string) =>
+    `This file contains a construct that is not yet supported. Please refer to ${url} and report an issue. Don't forget to upload the current file.`,
 };

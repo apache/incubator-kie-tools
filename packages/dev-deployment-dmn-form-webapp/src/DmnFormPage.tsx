@@ -136,7 +136,7 @@ export function DmnFormPage(props: Props) {
               {i18n.page.error.dmnNotSupported}
               <I18nWrappedTemplate
                 text={i18n.page.error.referToJira}
-                placeholders={{
+                interpolationMap={{
                   jira: (
                     <a href={ISSUES_URL} target={"_blank"} rel={"noopener noreferrer"}>
                       {ISSUES_URL}

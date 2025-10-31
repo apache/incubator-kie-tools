@@ -27,7 +27,7 @@ import InfoIcon from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { TypeHelper } from "./Constraints";
 import { useDmnEditorI18n } from "../i18n";
-import { I18nWrappedTemplate } from "@kie-tools-core/i18n/src/core/I18nWrappedTemplate";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/core";
 
 export function ConstraintsExpression({
   id,
@@ -140,7 +140,7 @@ export function ConstraintsExpression({
           <HelperTextItem variant="indeterminate" icon={<InfoIcon />}>
             <I18nWrappedTemplate
               text={i18n.dataTypes.checkFeelHandbook}
-              placeholders={{
+              interpolationMap={{
                 feelHandBook: (
                   <a href={FEEL_HANDBOOK_URL} target={"_blank"}>
                     {FEEL_HANDBOOK_URL}

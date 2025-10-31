@@ -21,5 +21,5 @@ import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 
 export interface KieBcEditorsI18n
   extends ReferenceDictionary<{
-    unsupportedFile:(url: string) => string;
+    unsupportedFile: (url: string) => string;
   }> {}

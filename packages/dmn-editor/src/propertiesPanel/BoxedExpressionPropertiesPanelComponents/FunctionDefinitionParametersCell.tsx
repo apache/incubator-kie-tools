@@ -35,7 +35,7 @@ import { useExternalModels } from "../../includedModels/DmnEditorDependenciesCon
 import { State } from "../../store/Store";
 import { generateUuid } from "@kie-tools/boxed-expression-component/dist/api";
 import { useDmnEditorI18n } from "../../i18n";
-import { I18nWrappedTemplate } from "@kie-tools-core/i18n/src/core/I18nWrappedTemplate";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/core";
 
 export function FunctionDefinitionParameterCell(props: {
   boxedExpressionIndex?: BoxedExpressionIndex;
@@ -90,7 +90,7 @@ export function FunctionDefinitionParameterCell(props: {
               <p>
                 <I18nWrappedTemplate
                   text={i18n.propertiesPanel.parameter}
-                  placeholders={{
+                  interpolationMap={{
                     name: <b>{parameter["@_name"]}</b>,
                   }}
                 />

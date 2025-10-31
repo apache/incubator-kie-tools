@@ -92,7 +92,7 @@ export function AutoGenerationErrorFormStatus(props: AutoGenerationErrorFormStat
             <TextContent>
               <I18nWrappedTemplate
                 text={props.i18n.form.status.autoGenerationError.checkNotificationPanel}
-                placeholders={{
+                interpolationMap={{
                   link: <a onClick={props.openValidationTab}>{props.i18n.terms.validation}</a>,
                 }}
               />
@@ -119,7 +119,7 @@ export function ValidatorErrorFormStatus({ i18n }: ValidatorErrorFormStatusProps
             <Text>
               <I18nWrappedTemplate
                 text={i18n.form.status.validatorError.message}
-                placeholders={{
+                interpolationMap={{
                   jira: (
                     <a href={ISSUES_URL} target={"_blank"} rel={"noopener noreferrer"}>
                       {ISSUES_URL}

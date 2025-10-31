@@ -49,7 +49,7 @@ export function DmnFormErrorPage() {
           <TextContent>
             <I18nWrappedTemplate
               text={i18n.page.error.referToJira}
-              placeholders={{
+              interpolationMap={{
                 jira: (
                   <a href={ISSUES_URL} key="github-issues" target={"_blank"} rel={"noopener noreferrer"}>
                     {ISSUES_URL}
