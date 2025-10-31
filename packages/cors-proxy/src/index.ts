@@ -27,10 +27,22 @@ function getPort(): number {
   return 8080;
 }
 
+function getOrigin(): string {
+  const origin = process.env.CORS_PROXY_ORIGIN;
+  if (!origin) {
+    return "http://localhost";
+  }
+  // validate origin, required for CodeQL scan
+  if (origin.trim() === "*") {
+    throw new Error('Invalid origin: wildcard "*" is not allowed.');
+  }
+  return origin;
+}
+
 export const run = () => {
   startServer({
     port: getPort(),
-    origin: process.env.CORS_PROXY_ORIGIN ?? "*",
+    origin: getOrigin(),
     verbose: process.env.CORS_PROXY_VERBOSE === "true",
     hostsToUseHttp: (process.env.CORS_PROXY_USE_HTTP_FOR_HOSTS || undefined)?.split(",") ?? [],
   });

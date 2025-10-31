@@ -40,12 +40,15 @@ describe("index.ts test", () => {
   });
 
   it("Default values", () => {
-    run();
+    setEnv({
+      CORS_PROXY_ORIGIN: "http://localhost",
+    });
 
+    run();
     expect(startServer).toHaveBeenCalledWith(
       expect.objectContaining({
         port: 8080,
-        origin: "*",
+        origin: "http://localhost",
         verbose: false,
       })
     );
@@ -54,13 +57,14 @@ describe("index.ts test", () => {
   it("Custom port", () => {
     setEnv({
       CORS_PROXY_HTTP_PORT: "90",
+      CORS_PROXY_ORIGIN: "http://localhost",
     });
 
     run();
     expect(startServer).toHaveBeenCalledWith(
       expect.objectContaining({
         port: 90,
-        origin: "*",
+        origin: "http://localhost",
         verbose: false,
       })
     );
@@ -83,12 +87,13 @@ describe("index.ts test", () => {
   it("Verbose", () => {
     setEnv({
       CORS_PROXY_VERBOSE: "true",
+      CORS_PROXY_ORIGIN: "http://localhost",
     });
     run();
     expect(startServer).toHaveBeenCalledWith(
       expect.objectContaining({
         port: 8080,
-        origin: "*",
+        origin: "http://localhost",
         verbose: true,
       })
     );
