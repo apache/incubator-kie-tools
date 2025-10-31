@@ -18,7 +18,6 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { FormDmn, FormDmnOutputs } from "@kie-tools/form-dmn";
 import { DecisionResult } from "@kie-tools/extended-services-api";
 import { Alert, AlertActionCloseButton } from "@patternfly/react-core/dist/js/components/Alert";
@@ -42,6 +41,7 @@ import { extractDifferences } from "@kie-tools/dmn-runner/dist/results";
 import { openapiSchemaToJsonSchema } from "@openapi-contrib/openapi-schema-to-json-schema";
 import type { JSONSchema4 } from "json-schema";
 import { useApp } from "./AppContext";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/core";
 
 interface Props {
   formData: FormData;
@@ -134,17 +134,16 @@ export function DmnFormPage(props: Props) {
             <br />
             <TextContent>
               {i18n.page.error.dmnNotSupported}
-              <I18nWrapped
-                components={{
+              <I18nWrappedTemplate
+                text={i18n.page.error.referToJira}
+                placeholders={{
                   jira: (
                     <a href={ISSUES_URL} target={"_blank"} rel={"noopener noreferrer"}>
                       {ISSUES_URL}
                     </a>
                   ),
                 }}
-              >
-                {i18n.page.error.referToJira}
-              </I18nWrapped>
+              />
             </TextContent>
             <br />
             <TextContent>{i18n.page.error.uploadFiles}</TextContent>

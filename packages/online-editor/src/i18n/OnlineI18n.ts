@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
+import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 import { DmnUnitablesI18n } from "@kie-tools/unitables-dmn/dist/i18n";
 import { GistEnabledAuthProviderType, SupportedGitAuthProviders } from "../authProviders/AuthProvidersApi";
@@ -55,7 +55,8 @@ interface OnlineDictionary
       error: {
         title: string;
         explanation: string;
-        message: Array<string | Wrapped<"jira">>;
+        message: string;
+        messagePlaceholders?: Record<string, React.ReactNode>;
       };
     };
     editorToolbar: {
@@ -380,14 +381,16 @@ interface OnlineDictionary
       error: {
         title: string;
         explanation: string;
-        message: Array<string | Wrapped<"jira">>;
+        message: string;
+        messagePlaceholders?: Record<string, React.ReactNode>;
       };
       table: DmnUnitablesI18n;
       modal: {
         initial: {
           runDmnModels: string;
           explanation: string;
-          notificationPanelExplanation: Array<string | Wrapped<"icon">>;
+          notificationPanelExplanation: string;
+          notificationPanelExplanationPlaceholders?: Record<string, React.ReactNode>;
         };
         wizard: {
           title: string;
@@ -409,23 +412,30 @@ interface OnlineDictionary
           macos: {
             install: {
               download: string;
-              openFile: Array<string | Wrapped<"file">>;
-              dragFileToApplicationsFolder: Array<string | Wrapped<"file" | "folder">>;
+              openFile: string;
+              openFilePlaceholders?: Record<string, React.ReactNode>;
+              dragFileToApplicationsFolder: string;
+              dragFileToApplicationsFolderPlaceholders?: Record<string, React.ReactNode>;
             };
             start: {
               stopped: {
                 startInstruction: string;
-                launchExtendedServices: Array<string | Wrapped<"file">>;
+                launchExtendedServices: string;
+                launchExtendedServicesPlaceholders?: Record<string, React.ReactNode>;
               };
               firstTime: {
                 title: string;
-                openApplicationsFolder: Array<string | Wrapped<"folder">>;
-                openAndCancel: Array<string | Wrapped<"file">>;
+                openApplicationsFolder: string;
+                openApplicationsFolderPlaceholders?: Record<string, React.ReactNode>;
+                openAndCancel: string;
+                openAndCancelPlaceholders?: Record<string, React.ReactNode>;
                 again: string;
-                openInstruction: Array<string | Wrapped<"file" | "again">>;
+                openInstruction: string;
+                openInstructionPlaceholders?: Record<string, React.ReactNode>;
               };
               alreadyRanBefore: string;
-              launchExtendedServices: Array<string | Wrapped<"file">>;
+              launchExtendedServices: string;
+              launchExtendedServicesPlaceholders?: Record<string, React.ReactNode>;
               advanced: {
                 title: string;
                 runFollowingCommand: string;
@@ -435,20 +445,24 @@ interface OnlineDictionary
           windows: {
             install: {
               keepDownload: string;
-              moveTheFile: Array<string | Wrapped<"file">>;
+              moveTheFile: string;
+              moveTheFilePlaceholders?: Record<string, React.ReactNode>;
             };
             start: {
               stopped: {
                 startInstruction: string;
-                launchExtendedServices: Array<string | Wrapped<"file">>;
+                launchExtendedServices: string;
+                launchExtendedServicesPlaceholders?: Record<string, React.ReactNode>;
               };
               firstTime: {
                 title: string;
-                openFolder: Array<string | Wrapped<"file">>;
+                openFolder: string;
+                openFolderPlaceholders?: Record<string, React.ReactNode>;
                 runAnyway: string;
               };
               alreadyRanBefore: string;
-              launchExtendedServices: Array<string | Wrapped<"file">>;
+              launchExtendedServices: string;
+              launchExtendedServicesPlaceholders?: Record<string, React.ReactNode>;
               advanced: {
                 title: string;
                 runFollowingCommand: string;
@@ -459,24 +473,31 @@ interface OnlineDictionary
             install: {
               download: string;
               installAppIndicator: string;
-              ubuntuDependency: Array<string | Wrapped<"package">>;
-              fedoraDependency: Array<string | Wrapped<"package">>;
-              extractContent: Array<string | Wrapped<"file">>;
-              binaryExplanation: Array<string | Wrapped<"file">>;
+              ubuntuDependency: string;
+              ubuntuDependencyPlaceholders?: Record<string, React.ReactNode>;
+              fedoraDependency: string;
+              fedoraDependencyPlaceholders?: Record<string, React.ReactNode>;
+              extractContent: string;
+              extractContentPlaceholders?: Record<string, React.ReactNode>;
+              binaryExplanation: string;
+              binaryExplanationPlaceholders?: Record<string, React.ReactNode>;
             };
             start: {
               openTerminal: string;
-              goToFolder: Array<string | Wrapped<"file">>;
+              goToFolder: string;
+              goToFolderPlaceholders?: Record<string, React.ReactNode>;
               runCommand: string;
               advanced: {
                 title: string;
-                runFollowingCommand: Array<string | Wrapped<"file">>;
+                runFollowingCommand: string;
+                runFollowingCommandPlaceholders?: Record<string, React.ReactNode>;
               };
             };
           };
           footerWaitingToConnect: string;
           advancedSettings: {
-            title: Array<string | Wrapped<"port">>;
+            title: string;
+            titlePlaceholders?: Record<string, React.ReactNode>;
             label: string;
             helperTextInvalid: string;
           };

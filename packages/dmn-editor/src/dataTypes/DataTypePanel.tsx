@@ -50,7 +50,7 @@ import { Alert } from "@patternfly/react-core/dist/js/components/Alert/Alert";
 import { Popover } from "@patternfly/react-core/dist/js/components/Popover";
 import { InfoAltIcon } from "@patternfly/react-icons/dist/js/icons/info-alt-icon";
 import { useDmnEditorI18n } from "../i18n";
-import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/src/core/I18nWrappedTemplate";
 
 export function DataTypePanel({
   isReadOnly,
@@ -386,14 +386,13 @@ export function DataTypePanel({
                     headerIcon={<InfoAltIcon />}
                     headerComponent="h1"
                     bodyContent={
-                      <I18nWrapped
-                        components={{
+                      <I18nWrappedTemplate
+                        text={i18n.dataTypes.dmnTypeConstraintText}
+                        placeholders={{
                           typeConstraint: <b>{i18n.dataTypes.typeConstraint}</b>,
                           lineBreak: <br />,
                         }}
-                      >
-                        {i18n.dataTypes.dmnTypeConstraintText}
-                      </I18nWrapped>
+                      />
                     }
                   >
                     <InfoAltIcon
@@ -422,14 +421,13 @@ export function DataTypePanel({
                     headerIcon={<InfoAltIcon />}
                     headerComponent="h1"
                     bodyContent={
-                      <I18nWrapped
-                        components={{
+                      <I18nWrappedTemplate
+                        text={i18n.dataTypes.dmnTypeConstraintText}
+                        placeholders={{
                           typeConstraint: <b>{i18n.dataTypes.allowedValues}</b>,
                           lineBreak: <br />,
                         }}
-                      >
-                        {i18n.dataTypes.dmnTypeConstraintText}
-                      </I18nWrapped>
+                      />
                     }
                   >
                     <InfoAltIcon

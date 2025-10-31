@@ -36,7 +36,7 @@ export const en: DmnFormI18n = {
       explanation: "The page couldn't be rendered due to an error.",
       dmnNotSupported: `This ${en_common.names.dmn} has a construct that is not supported. `,
       uploadFiles: "Don't forget to upload the current file, and the used inputs",
-      referToJira: ["Please refer to ", wrapped("jira"), " and report an issue."],
+      referToJira: `Please refer to ${"{jira}"} and report an issue.`,
     },
   },
   error: {

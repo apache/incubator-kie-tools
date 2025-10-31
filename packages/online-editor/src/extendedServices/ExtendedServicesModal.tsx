@@ -33,7 +33,7 @@ import * as React from "react";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { AnimatedTripleDotLabel } from "./AnimatedTripleDotLabel";
 import { useOnlineI18n } from "../i18n";
-import { I18nHtml, I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
+import { I18nHtml } from "@kie-tools-core/i18n/dist/react-components";
 import { SelectOs } from "../os/SelectOs";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
 import { DependentFeature, useExtendedServices } from "./ExtendedServicesContext";
@@ -42,6 +42,7 @@ import { useRoutes } from "../navigation/Hooks";
 import { useSettingsDispatch } from "../settings/SettingsContext";
 import { useEnv } from "../env/hooks/EnvContext";
 import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/core";
 
 enum ModalPage {
   INITIAL,
@@ -123,23 +124,25 @@ export function ExtendedServicesModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_DMG}</Label> }}>
-                      {i18n.dmnRunner.modal.wizard.macos.install.openFile}
-                    </I18nWrapped>
+                    <I18nWrappedTemplate
+                      text={i18n.dmnRunner.modal.wizard.macos.install.openFile}
+                      placeholders={{
+                        file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_DMG}</Label>,
+                      }}
+                    />
                   </Text>
                 </TextContent>
               </ListItem>
               <ListItem>
                 <TextContent>
                   <Text>
-                    <I18nWrapped
-                      components={{
+                    <I18nWrappedTemplate
+                      text={i18n.dmnRunner.modal.wizard.macos.install.dragFileToApplicationsFolder}
+                      placeholders={{
                         file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label>,
                         folder: <Label>{i18n.terms.macosApplicationFolder}</Label>,
                       }}
-                    >
-                      {i18n.dmnRunner.modal.wizard.macos.install.dragFileToApplicationsFolder}
-                    </I18nWrapped>
+                    />
                   </Text>
                 </TextContent>
               </ListItem>
@@ -172,9 +175,12 @@ export function ExtendedServicesModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.macos.start.stopped.launchExtendedServices}
-                        </I18nWrapped>
+                        <I18nWrappedTemplate
+                          text={i18n.dmnRunner.modal.wizard.macos.start.stopped.launchExtendedServices}
+                          placeholders={{
+                            file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label>,
+                          }}
+                        />
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -190,32 +196,37 @@ export function ExtendedServicesModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ folder: <Label>{i18n.terms.macosApplicationFolder}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.macos.start.firstTime.openApplicationsFolder}
-                        </I18nWrapped>
+                        <I18nWrappedTemplate
+                          text={i18n.dmnRunner.modal.wizard.macos.start.firstTime.openApplicationsFolder}
+                          placeholders={{
+                            folder: <Label>{i18n.terms.macosApplicationFolder}</Label>,
+                          }}
+                        />
                       </Text>
                     </TextContent>
                   </ListItem>
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.macos.start.firstTime.openAndCancel}
-                        </I18nWrapped>
+                        <I18nWrappedTemplate
+                          text={i18n.dmnRunner.modal.wizard.macos.start.firstTime.openAndCancel}
+                          placeholders={{
+                            file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label>,
+                          }}
+                        />
                       </Text>
                     </TextContent>
                   </ListItem>
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped
-                          components={{
+                        <I18nWrappedTemplate
+                          text={i18n.dmnRunner.modal.wizard.macos.start.firstTime.openInstruction}
+                          placeholders={{
                             file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label>,
                             again: <b>{i18n.dmnRunner.modal.wizard.macos.start.firstTime.again}</b>,
                           }}
-                        >
-                          {i18n.dmnRunner.modal.wizard.macos.start.firstTime.openInstruction}
-                        </I18nWrapped>
+                        />
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -231,9 +242,12 @@ export function ExtendedServicesModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.macos.start.launchExtendedServices}
-                        </I18nWrapped>
+                        <I18nWrappedTemplate
+                          text={i18n.dmnRunner.modal.wizard.macos.start.launchExtendedServices}
+                          placeholders={{
+                            file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_MACOS_APP}</Label>,
+                          }}
+                        />
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -314,9 +328,12 @@ export function ExtendedServicesModal() {
               </ListItem>
               <ListItem>
                 <TextContent>
-                  <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label> }}>
-                    {i18n.dmnRunner.modal.wizard.windows.install.moveTheFile}
-                  </I18nWrapped>
+                  <I18nWrappedTemplate
+                    text={i18n.dmnRunner.modal.wizard.windows.install.moveTheFile}
+                    placeholders={{
+                      file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label>,
+                    }}
+                  />
                 </TextContent>
               </ListItem>
             </List>
@@ -348,9 +365,12 @@ export function ExtendedServicesModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.windows.start.stopped.launchExtendedServices}
-                        </I18nWrapped>
+                        <I18nWrappedTemplate
+                          text={i18n.dmnRunner.modal.wizard.windows.start.stopped.launchExtendedServices}
+                          placeholders={{
+                            file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label>,
+                          }}
+                        />
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -366,9 +386,12 @@ export function ExtendedServicesModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.windows.start.firstTime.openFolder}
-                        </I18nWrapped>
+                        <I18nWrappedTemplate
+                          text={i18n.dmnRunner.modal.wizard.windows.start.firstTime.openFolder}
+                          placeholders={{
+                            file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label>,
+                          }}
+                        />
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -391,9 +414,12 @@ export function ExtendedServicesModal() {
                   <ListItem>
                     <TextContent>
                       <Text component={TextVariants.p}>
-                        <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label> }}>
-                          {i18n.dmnRunner.modal.wizard.windows.start.launchExtendedServices}
-                        </I18nWrapped>
+                        <I18nWrappedTemplate
+                          text={i18n.dmnRunner.modal.wizard.windows.start.launchExtendedServices}
+                          placeholders={{
+                            file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_WINDOWS_EXE}</Label>,
+                          }}
+                        />
                       </Text>
                     </TextContent>
                   </ListItem>
@@ -479,14 +505,20 @@ export function ExtendedServicesModal() {
                   </Text>
                   <List>
                     <ListItem>
-                      <I18nWrapped components={{ package: <Label>{UBUNTU_APP_INDICATOR_LIB}</Label> }}>
-                        {i18n.dmnRunner.modal.wizard.linux.install.ubuntuDependency}
-                      </I18nWrapped>
+                      <I18nWrappedTemplate
+                        text={i18n.dmnRunner.modal.wizard.linux.install.ubuntuDependency}
+                        placeholders={{
+                          package: <Label>{UBUNTU_APP_INDICATOR_LIB}</Label>,
+                        }}
+                      />
                     </ListItem>
                     <ListItem>
-                      <I18nWrapped components={{ package: <Label>{FEDORA_APP_INDICATOR_LIB}</Label> }}>
-                        {i18n.dmnRunner.modal.wizard.linux.install.fedoraDependency}
-                      </I18nWrapped>
+                      <I18nWrappedTemplate
+                        text={i18n.dmnRunner.modal.wizard.linux.install.fedoraDependency}
+                        placeholders={{
+                          package: <Label>{FEDORA_APP_INDICATOR_LIB}</Label>,
+                        }}
+                      />
                     </ListItem>
                   </List>
                 </TextContent>
@@ -494,9 +526,12 @@ export function ExtendedServicesModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_LINUX_TAG_GZ}</Label> }}>
-                      {i18n.dmnRunner.modal.wizard.linux.install.extractContent}
-                    </I18nWrapped>
+                    <I18nWrappedTemplate
+                      text={i18n.dmnRunner.modal.wizard.linux.install.extractContent}
+                      placeholders={{
+                        file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_LINUX_TAG_GZ}</Label>,
+                      }}
+                    />
                   </Text>
                 </TextContent>
               </ListItem>
@@ -504,9 +539,12 @@ export function ExtendedServicesModal() {
             <br />
             <TextContent>
               <Text component={TextVariants.p}>
-                <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_BINARIES}</Label> }}>
-                  {i18n.dmnRunner.modal.wizard.linux.install.binaryExplanation}
-                </I18nWrapped>
+                <I18nWrappedTemplate
+                  text={i18n.dmnRunner.modal.wizard.linux.install.binaryExplanation}
+                  placeholders={{
+                    file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_BINARIES}</Label>,
+                  }}
+                />
               </Text>
             </TextContent>
           </>
@@ -537,9 +575,12 @@ export function ExtendedServicesModal() {
               <ListItem>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_BINARIES}</Label> }}>
-                      {i18n.dmnRunner.modal.wizard.linux.start.goToFolder}
-                    </I18nWrapped>
+                    <I18nWrappedTemplate
+                      text={i18n.dmnRunner.modal.wizard.linux.start.goToFolder}
+                      placeholders={{
+                        file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_BINARIES}</Label>,
+                      }}
+                    />
                   </Text>
                 </TextContent>
               </ListItem>
@@ -564,9 +605,12 @@ export function ExtendedServicesModal() {
                 <br />
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    <I18nWrapped components={{ file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_BINARIES}</Label> }}>
-                      {i18n.dmnRunner.modal.wizard.linux.start.advanced.runFollowingCommand}
-                    </I18nWrapped>
+                    <I18nWrappedTemplate
+                      text={i18n.dmnRunner.modal.wizard.linux.start.advanced.runFollowingCommand}
+                      placeholders={{
+                        file: <Label>{KIE_SANDBOX_EXTENDED_SERVICES_BINARIES}</Label>,
+                      }}
+                    />
                   </Text>
                 </TextContent>
                 <br />
@@ -727,9 +771,12 @@ export function ExtendedServicesModal() {
                 <br />
                 <TextContent className="pf-v5-u-mt-md">
                   <Text component={TextVariants.p}>
-                    <I18nWrapped components={{ icon: <ExclamationCircleIcon /> }}>
-                      {i18n.dmnRunner.modal.initial.notificationPanelExplanation}
-                    </I18nWrapped>
+                    <I18nWrappedTemplate
+                      text={i18n.dmnRunner.modal.initial.notificationPanelExplanation}
+                      placeholders={{
+                        icon: <ExclamationCircleIcon />,
+                      }}
+                    />
                   </Text>
                 </TextContent>
               </div>
@@ -855,13 +902,12 @@ function ExtendedServicesPortForm() {
   return (
     <>
       <Text component={TextVariants.p}>
-        <I18nWrapped
-          components={{
+        <I18nWrappedTemplate
+          text={i18n.dmnRunner.modal.wizard.advancedSettings.title}
+          placeholders={{
             port: <Text className={"kogito--code"}>{config.port}</Text>,
           }}
-        >
-          {i18n.dmnRunner.modal.wizard.advancedSettings.title}
-        </I18nWrapped>
+        />
       </Text>
       <br />
       <Form isHorizontal={true}>

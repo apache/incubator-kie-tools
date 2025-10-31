@@ -28,7 +28,7 @@ export const en: FormI18n = {
       autoGenerationError: {
         title: `${en_common.terms.oops}!`,
         explanation: "Form cannot be rendered because of an error.",
-        checkNotificationPanel: ["Check for ", wrapped("link"), ` error on the Notifications Panel`],
+        checkNotificationPanel: `Check for ${"{link}"} error on the Notifications Panel`,
       },
       emptyForm: {
         title: "No Form",
@@ -36,11 +36,7 @@ export const en: FormI18n = {
       },
       validatorError: {
         title: "An error occurred while trying to generate the form",
-        message: [
-          `The JSON schema contains a construct that is not yet supported. Please refer to `,
-          wrapped("jira"),
-          " and report an issue. Don't forget to upload the current file.",
-        ],
+        message: `The JSON schema contains a construct that is not yet supported. Please refer to ${"{jira}"} and report an issue. Don't forget to upload the current file.`,
       },
     },
   },

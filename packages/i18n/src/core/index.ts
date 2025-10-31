@@ -20,3 +20,4 @@
 export * from "./I18n";
 export * from "./Dictionary";
 export * from "./Wrapped";
+export * from "./I18nWrappedTemplate";

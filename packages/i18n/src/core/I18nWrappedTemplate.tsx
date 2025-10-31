@@ -17,24 +17,20 @@
  * under the License.
  */
 
-import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
-import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
+import * as React from "react";
 
-interface AppDictionary
-  extends ReferenceDictionary<{
-    masthead: {
-      disclaimer: {
-        title: string;
-        description: string;
-      };
-    };
-    page: {
-      error: {
-        title: string;
-        explanation: string;
-        referToJira: string;
-      };
-    };
-  }> {}
-
-export interface AppI18n extends AppDictionary, CommonI18n {}
+// component to replace placeholders in text with React components
+export const I18nWrappedTemplate = ({
+  text,
+  placeholders,
+}: {
+  text: string;
+  placeholders: Record<string, React.ReactNode>;
+}) => (
+  <>
+    {text.split(/\{([^}]+)\}/).map((value, index) =>
+      // Even indices are regular text, odd indices are placeholder names
+      index % 2 === 0 ? value : placeholders[value] || `{${value}}`
+    )}
+  </>
+);

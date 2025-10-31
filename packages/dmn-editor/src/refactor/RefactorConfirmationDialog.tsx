@@ -29,7 +29,7 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { useCallback, useMemo, useState } from "react";
 import { renameDrgElement } from "../mutations/renameNode";
 import { useDmnEditorI18n } from "../i18n";
-import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/src/core/I18nWrappedTemplate";
 
 export function RefactorConfirmationDialog({
   onConfirmExpressionRefactor,
@@ -67,8 +67,9 @@ export function RefactorConfirmationDialog({
         </Button>,
       ]}
     >
-      <I18nWrapped
-        components={{
+      <I18nWrappedTemplate
+        text={i18n.dataTypes.identifierRenameMessage}
+        placeholders={{
           fromIdentifier: (
             <pre style={{ display: "inline" }}>
               {'"'}
@@ -85,9 +86,7 @@ export function RefactorConfirmationDialog({
           ),
           lineBreak: <br />,
         }}
-      >
-        {i18n.dataTypes.identifierRenameMessage}
-      </I18nWrapped>
+      />
     </Modal>
   );
 }

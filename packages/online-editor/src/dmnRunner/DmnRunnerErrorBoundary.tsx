@@ -28,9 +28,9 @@ import {
   EmptyStateIcon,
   EmptyStateHeader,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { Text, TextContent } from "@patternfly/react-core/dist/js/components/Text";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/core";
 
 const ISSUES_URL = "https://github.com/apache/incubator-kie-issues/issues";
 
@@ -56,17 +56,16 @@ export function DmnRunnerErrorBoundary({ children }: React.PropsWithChildren<{}>
             <TextContent>{i18n.dmnRunner.error.explanation}</TextContent>
             <br />
             <TextContent>
-              <I18nWrapped
-                components={{
+              <I18nWrappedTemplate
+                text={i18n.dmnRunner.error.message}
+                placeholders={{
                   jira: (
                     <a href={ISSUES_URL} target={"_blank"} rel={"noopener noreferrer"}>
                       {ISSUES_URL}
                     </a>
                   ),
                 }}
-              >
-                {i18n.dmnRunner.error.message}
-              </I18nWrapped>
+              />
             </TextContent>
           </EmptyStateBody>
         </EmptyState>
