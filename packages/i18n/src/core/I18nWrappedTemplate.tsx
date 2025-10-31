@@ -26,11 +26,17 @@ export const I18nWrappedTemplate = ({
 }: {
   text: string;
   placeholders: Record<string, React.ReactNode>;
-}) => (
-  <>
-    {text.split(/\{([^}]+)\}/).map((value, index) =>
-      // Even indices are regular text, odd indices are placeholder names
-      index % 2 === 0 ? value : placeholders[value] || `{${value}}`
-    )}
-  </>
-);
+}) => {
+  // Matches ${"{key}"} where key is one of the placeholder keys
+  const placeholderRegex = new RegExp(`\\$\\{"\\{(${Object.keys(placeholders).join("|")})\\}"\\}`, "g");
+
+  return (
+    <>
+      {text
+        .split(placeholderRegex)
+        .map((value, i) =>
+          value in placeholders ? <React.Fragment key={i}>{placeholders[value]}</React.Fragment> : value
+        )}
+    </>
+  );
+};
