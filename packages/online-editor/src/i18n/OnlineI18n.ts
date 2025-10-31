@@ -56,7 +56,6 @@ interface OnlineDictionary
         title: string;
         explanation: string;
         message: string;
-        messagePlaceholders?: Record<string, React.ReactNode>;
       };
     };
     editorToolbar: {
@@ -382,7 +381,6 @@ interface OnlineDictionary
         title: string;
         explanation: string;
         message: string;
-        messagePlaceholders?: Record<string, React.ReactNode>;
       };
       table: DmnUnitablesI18n;
       modal: {
@@ -390,7 +388,6 @@ interface OnlineDictionary
           runDmnModels: string;
           explanation: string;
           notificationPanelExplanation: string;
-          notificationPanelExplanationPlaceholders?: Record<string, React.ReactNode>;
         };
         wizard: {
           title: string;
@@ -413,29 +410,22 @@ interface OnlineDictionary
             install: {
               download: string;
               openFile: string;
-              openFilePlaceholders?: Record<string, React.ReactNode>;
               dragFileToApplicationsFolder: string;
-              dragFileToApplicationsFolderPlaceholders?: Record<string, React.ReactNode>;
             };
             start: {
               stopped: {
                 startInstruction: string;
                 launchExtendedServices: string;
-                launchExtendedServicesPlaceholders?: Record<string, React.ReactNode>;
               };
               firstTime: {
                 title: string;
                 openApplicationsFolder: string;
-                openApplicationsFolderPlaceholders?: Record<string, React.ReactNode>;
                 openAndCancel: string;
-                openAndCancelPlaceholders?: Record<string, React.ReactNode>;
                 again: string;
                 openInstruction: string;
-                openInstructionPlaceholders?: Record<string, React.ReactNode>;
               };
               alreadyRanBefore: string;
               launchExtendedServices: string;
-              launchExtendedServicesPlaceholders?: Record<string, React.ReactNode>;
               advanced: {
                 title: string;
                 runFollowingCommand: string;
@@ -446,23 +436,19 @@ interface OnlineDictionary
             install: {
               keepDownload: string;
               moveTheFile: string;
-              moveTheFilePlaceholders?: Record<string, React.ReactNode>;
             };
             start: {
               stopped: {
                 startInstruction: string;
                 launchExtendedServices: string;
-                launchExtendedServicesPlaceholders?: Record<string, React.ReactNode>;
               };
               firstTime: {
                 title: string;
                 openFolder: string;
-                openFolderPlaceholders?: Record<string, React.ReactNode>;
                 runAnyway: string;
               };
               alreadyRanBefore: string;
               launchExtendedServices: string;
-              launchExtendedServicesPlaceholders?: Record<string, React.ReactNode>;
               advanced: {
                 title: string;
                 runFollowingCommand: string;
@@ -474,30 +460,23 @@ interface OnlineDictionary
               download: string;
               installAppIndicator: string;
               ubuntuDependency: string;
-              ubuntuDependencyPlaceholders?: Record<string, React.ReactNode>;
               fedoraDependency: string;
-              fedoraDependencyPlaceholders?: Record<string, React.ReactNode>;
               extractContent: string;
-              extractContentPlaceholders?: Record<string, React.ReactNode>;
               binaryExplanation: string;
-              binaryExplanationPlaceholders?: Record<string, React.ReactNode>;
             };
             start: {
               openTerminal: string;
               goToFolder: string;
-              goToFolderPlaceholders?: Record<string, React.ReactNode>;
               runCommand: string;
               advanced: {
                 title: string;
                 runFollowingCommand: string;
-                runFollowingCommandPlaceholders?: Record<string, React.ReactNode>;
               };
             };
           };
           footerWaitingToConnect: string;
           advancedSettings: {
             title: string;
-            titlePlaceholders?: Record<string, React.ReactNode>;
             label: string;
             helperTextInvalid: string;
           };
