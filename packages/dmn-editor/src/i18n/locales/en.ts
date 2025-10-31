@@ -52,9 +52,11 @@ export const en: DmnEditorI18n = {
     removeEnumValue: "Remove enum value",
     equivalentFeelExpression: "Equivalent FEEL expression:",
     nextValidDate: (value: string, operator: string) => `The next valid number is: (${value} ${operator} 1 Day).`,
-    nextValidDateTime: (value: string, operator: string) => `The next valid number is: (${value} ${operator} 1 Second).`,
+    nextValidDateTime: (value: string, operator: string) =>
+      `The next valid number is: (${value} ${operator} 1 Second).`,
     nextValidNumber: (value: string, operator: string) => `The next valid number is: (${value} ${operator} 2e-52).`,
-    nextValidYearsAndMonths: (value: string, operator: string) =>`The next valid number is: (${value} ${operator} 1 Month).`,
+    nextValidYearsAndMonths: (value: string, operator: string) =>
+      `The next valid number is: (${value} ${operator} 1 Month).`,
     start: "Start",
     clickToRemoveValue: "Click to remove value from the range",
     clickToIncludeValue: "Click to include value in the range",
@@ -156,7 +158,8 @@ export const en: DmnEditorI18n = {
     edges: (edgeCount: number) => `${edgeCount} edges`,
     selected: "selected",
     dmnversion: (latestVersion: string) => `DMN ${latestVersion}`,
-    originallyImportedDmn: (version: string, latestVersion: string) => `This DMN was originally imported as DMN ${version}, but was converted to DMN ${latestVersion} to enable new features.`,
+    originallyImportedDmn: (version: string, latestVersion: string) =>
+      `This DMN was originally imported as DMN ${version}, but was converted to DMN ${latestVersion} to enable new features.`,
     drds: "DRDs",
     newDrd: "new DRD",
     versionUpgraded: "Version upgraded!",
@@ -192,7 +195,8 @@ export const en: DmnEditorI18n = {
     decision: "Decision",
     inputData: "Input Data",
     unknown: "Unknown",
-    externalModelTooltip: (nodeTypeTooltipDescription: string, namespace: string) => `This ${nodeTypeTooltipDescription} node is from an external model that is not included in this one. Namespace: ${namespace}`,
+    externalModelTooltip: (nodeTypeTooltipDescription: string, namespace: string) =>
+      `This ${nodeTypeTooltipDescription} node is from an external model that is not included in this one. Namespace: ${namespace}`,
     noExternalNodesAvailable: "No external nodes available",
     IncludedModelsHaveNoExportedNodes:
       "Maybe the included models have no exported nodes, or there are no included models.",
@@ -200,13 +204,16 @@ export const en: DmnEditorI18n = {
     externalNodesTitle: "External nodes",
   },
   includedModels: {
-    errorOccuredParsing: (selectedPathRelativeToThisDmn: string) => `An error occurred when parsing the selected model '${selectedPathRelativeToThisDmn}'. Please double-check it is a non-empty valid model.`,
+    errorOccuredParsing: (selectedPathRelativeToThisDmn: string) =>
+      `An error occurred when parsing the selected model '${selectedPathRelativeToThisDmn}'. Please double-check it is a non-empty valid model.`,
     includeModel: "Include model",
     cancel: "Cancel",
     model: "Model",
     selectModelToInclude: "Select a model to include...",
-    allModelsAvailablewithName: (externalContextName: string) =>`All models available in '${externalContextName}' are already included.`,
-    noAvailableModelswithName: (externalContextName: string) =>`There's no available models in '${externalContextName}' to be included.`,
+    allModelsAvailablewithName: (externalContextName: string) =>
+      `All models available in '${externalContextName}' are already included.`,
+    noAvailableModelswithName: (externalContextName: string) =>
+      `There's no available models in '${externalContextName}' to be included.`,
     allModelsAvailable: "All models available are already included.",
     noAvailableModels: "There's no available models to be included.",
     loading: "Loading...",
