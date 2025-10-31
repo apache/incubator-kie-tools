@@ -19,7 +19,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useCallback, useMemo } from "react";
-import { ResourceContentOptions } from "@kie-tools-core/workspace/dist/api";
+import { ResourceContentOptions, ResourceListOptions } from "@kie-tools-core/workspace/dist/api";
 import { WorkspaceFile, WorkspacesContext } from "./WorkspacesContext";
 import { LocalFile } from "../worker/api/LocalFile";
 import {
@@ -486,7 +486,7 @@ export function WorkspacesContextProvider(props: Props) {
   );
 
   const resourceContentList = useCallback(
-    async (args: { workspaceId: string; globPattern: string }) =>
+    async (args: { workspaceId: string; globPattern: string; opts?: ResourceListOptions }) =>
       workspacesSharedWorker.withBus((workspacesWorkerBus) =>
         workspacesWorkerBus.clientApi.requests.kieSandboxWorkspacesStorage_resourceContentList(args)
       ),
