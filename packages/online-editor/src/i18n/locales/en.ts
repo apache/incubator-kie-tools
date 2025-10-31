@@ -374,8 +374,7 @@ export const en: OnlineI18n = {
       disclaimer: `The token you provide is locally stored in this browser and is never shared with anyone.`,
       error: {
         alreadyLoggedIn: "You're already logged in with this Token.",
-        oauthScopes: (requiredScopes: string) =>
-          `Make sure your Token includes the necessary OAuth2 scopes: ${requiredScopes}`,
+        oauthScopes: (requiredScopes: string) =>`Make sure your Token includes the necessary OAuth2 scopes: ${requiredScopes}`,
       },
     },
     navigation: {
@@ -613,8 +612,7 @@ export const en: OnlineI18n = {
     bitbucket: {
       repository: `${en_common.names.bitbucket} repository`,
       createRepository: `Create ${en_common.names.bitbucket} repository`,
-      description: (workspace: string) =>
-        `The contents of '${workspace}' will be all in the new ${en_common.names.bitbucket} repository.`,
+      description: (workspace: string) =>`The contents of '${workspace}' will be all in the new ${en_common.names.bitbucket} repository.`,
       error: {
         formAlert: (error: string) => `Error creating ${en_common.names.bitbucket} repository. ${error}`,
       },
@@ -628,8 +626,7 @@ export const en: OnlineI18n = {
     github: {
       repository: `${en_common.names.github} repository`,
       createRepository: `Create ${en_common.names.github} repository`,
-      description: (workspace: string) =>
-        `The contents of '${workspace}' will be all in the new ${en_common.names.github} repository.`,
+      description: (workspace: string) =>`The contents of '${workspace}' will be all in the new ${en_common.names.github} repository.`,
       error: {
         formAlert: (error: string) => `Error creating ${en_common.names.github} repository. ${error}`,
       },
@@ -643,8 +640,7 @@ export const en: OnlineI18n = {
     gitlab: {
       repository: `${en_common.names.gitlab} repository`,
       createRepository: `Create ${en_common.names.gitlab} repository`,
-      description: (workspace: string) =>
-        `The contents of '${workspace}' will be all in the new ${en_common.names.gitlab} repository.`,
+      description: (workspace: string) =>`The contents of '${workspace}' will be all in the new ${en_common.names.gitlab} repository.`,
       error: {
         formAlert: (error: string) => `Error creating ${en_common.names.gitlab} repository. ${error}`,
       },
@@ -673,8 +669,7 @@ export const en: OnlineI18n = {
     bitbucket: {
       gistOrSnippet: `${en_common.names.bitbucket} Snippet`,
       create: `Create ${en_common.names.bitbucket} Snippet`,
-      description: (workspace: string) =>
-        `The contents of '${workspace}' will be all in the new ${en_common.names.bitbucket} Snippet.`,
+      description: (workspace: string) => `The contents of '${workspace}' will be all in the new ${en_common.names.bitbucket} Snippet.`,
       error: {
         formAlert: (error: string) => `Error creating ${en_common.names.bitbucket} Snippet. ${error}`,
       },
@@ -688,8 +683,7 @@ export const en: OnlineI18n = {
     github: {
       gistOrSnippet: `${en_common.names.github} Gist`,
       create: `Create ${en_common.names.github} Gist`,
-      description: (workspace: string) =>
-        `The contents of '${workspace}' will be all in the new ${en_common.names.github} Gist.`,
+      description: (workspace: string) => `The contents of '${workspace}' will be all in the new ${en_common.names.github} Gist.`,
       error: {
         formAlert: (error: string) => `Error creating ${en_common.names.github} Gist. ${error}`,
       },
@@ -703,8 +697,7 @@ export const en: OnlineI18n = {
     gitlab: {
       gistOrSnippet: `${en_common.names.gitlab} Snippet`,
       create: `Create ${en_common.names.gitlab} Snippet`,
-      description: (workspace: string) =>
-        `The contents of '${workspace}' will be all in the new ${en_common.names.gitlab} Snippet.`,
+      description: (workspace: string) => `The contents of '${workspace}' will be all in the new ${en_common.names.gitlab} Snippet.`,
       error: {
         formAlert: (error: string) => `Error creating ${en_common.names.gitlab} Snippet. ${error}`,
       },

@@ -26,8 +26,7 @@ export const en: DmnFormI18n = {
   formToolbar: {
     disclaimer: {
       title: "Development only",
-      description: `Dev Deployments are intended to be used for ${"development".bold()} purposes only, so users should not use the
-        deployed services in production or for any type of business-critical workloads.`,
+      description: `Dev Deployments are intended to be used for ${"development".bold()} purposes only, so users should not use the deployed services in production or for any type of business-critical workloads.`,
     },
   },
   page: {

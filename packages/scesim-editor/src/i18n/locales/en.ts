@@ -55,10 +55,8 @@ export const en: TestScenarioEditorI18n = {
   drawer: {
     cheatSheet: {
       paragraph1: "To start off, use contextual menus in the table to insert or edit or delete new columns and rows.",
-      paragraph2: (dataObjectsDrawer: string) =>
-        `Before defining the individual test scenarios, verify the instance and field mappings for each column. If any changes are necessary, use the ${dataObjectsDrawer} to update the mapping.`,
-      paragraph3: (backgroundTab: string, testScenarioTab: string) =>
-        `If the same GIVEN data is shared with the multiple test scenarios, you can use the ${backgroundTab} tab to define them only once. The way to create a column in the ${backgroundTab} tab is the same as of the ${testScenarioTab} tab.`,
+      paragraph2: (dataObjectsDrawer: string) => `Before defining the individual test scenarios, verify the instance and field mappings for each column. If any changes are necessary, use the ${dataObjectsDrawer} to update the mapping.`,
+      paragraph3: (backgroundTab: string, testScenarioTab: string) =>`If the same GIVEN data is shared with the multiple test scenarios, you can use the ${backgroundTab} tab to define them only once. The way to create a column in the ${backgroundTab} tab is the same as of the ${testScenarioTab} tab.`,
       paragraph4: "Now, define the test scenarios. Each cell of the table must contain a valid expression.",
       paragraph5DMN:
         "Values in the GIVEN part of the table are evaluated as literal expressions, whereas values in the EXPECT section are evaluated as unary expressions. The correctness of these unary tests is verified using the results from a DMN evaluation.",
@@ -193,6 +191,5 @@ export const en: TestScenarioEditorI18n = {
     "Impossibile to correctly parse the provided scesim file. Most likely, the XML structure of the file is invalid.",
   parsingErrorTitle: "File parsing error",
   unsupportedTitle: (version: string) => `This file holds a Test Scenario asset version ( ${version} ) not supported`,
-  unsupportedMessage: (version: string) =>
-    `Most likely, this file has been generated with a very old Business Central version (< 7.30.0.Final). Please update your Business Central instance and download again this scesim file, it will be automatically updated to the supported version ( ${version} ).`,
+  unsupportedMessage: (version: string) =>`Most likely, this file has been generated with a very old Business Central version (< 7.30.0.Final). Please update your Business Central instance and download again this scesim file, it will be automatically updated to the supported version ( ${version} ).`,
 };

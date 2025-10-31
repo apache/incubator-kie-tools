@@ -25,8 +25,7 @@ export const en: AppI18n = {
   masthead: {
     disclaimer: {
       title: "Development only",
-      description: `This deployment is intended to be used during ${"development".bold()}, so users should not use the
-        deployed services in production or for any type of business-critical workloads.`,
+      description: `This deployment is intended to be used during ${"development".bold()}, so users should not use the deployed services in production or for any type of business-critical workloads.`,
     },
   },
   page: {
