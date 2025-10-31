@@ -25,7 +25,7 @@ import { TextFormatter } from "./TextFormatter";
 import { GwtStateControlService } from "./gwtStateControl";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
 import { I18n } from "@kie-tools-core/i18n/dist/core";
-import { KieBcEditorsI18n } from "./i18n";
+import { KieBcEditorsI18n } from "../i18n";
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 
 export class GwtEditorWrapper implements Editor {

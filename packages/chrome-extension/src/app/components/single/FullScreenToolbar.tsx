@@ -18,7 +18,7 @@
  */
 
 import * as React from "react";
-import { useChromeExtensionI18n } from "../../i18n";
+import { useChromeExtensionI18n } from "../../../i18n";
 
 export function FullScreenToolbar(props: { onExitFullScreen: () => void }) {
   const { i18n } = useChromeExtensionI18n();

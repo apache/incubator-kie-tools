@@ -19,7 +19,7 @@
 
 import * as React from "react";
 import { FileStatusOnPr } from "./FileStatusOnPr";
-import { useChromeExtensionI18n } from "../../i18n";
+import { useChromeExtensionI18n } from "../../../i18n";
 
 export function PrToolbar(props: {
   onSeeAsDiagram: () => void;

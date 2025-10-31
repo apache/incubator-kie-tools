@@ -35,8 +35,8 @@ import {
   ChromeExtensionI18nContext,
   chromeExtensionI18nDictionaries,
   chromeExtensionI18nDefaults,
-} from "@kie-tools-core/chrome-extension/dist/app/i18n";
-import { ChromeExtensionI18n } from "@kie-tools-core/chrome-extension/dist/app/i18n";
+} from "@kie-tools-core/chrome-extension/dist/i18n";
+import { ChromeExtensionI18n } from "@kie-tools-core/chrome-extension/dist/i18n";
 
 export function usingTestingGlobalContext(children: React.ReactElement, ctx?: Partial<GlobalContextType>) {
   const editorEnvelopeLocator = new EditorEnvelopeLocator("localhost:8888", [

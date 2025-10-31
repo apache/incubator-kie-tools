@@ -32,7 +32,7 @@ import { Modal } from "@patternfly/react-core/dist/js/components/Modal";
 import { KeyboardIcon } from "@patternfly/react-icons/dist/js/icons/keyboard-icon";
 import { OperatingSystem } from "@kie-tools-core/operating-system";
 import { EditorTheme, useKogitoEditorEnvelopeContext } from "../../api";
-import { useEditorEnvelopeI18nContext } from "../i18n";
+import { useEditorEnvelopeI18nContext } from "../../i18n";
 import { useSharedValue } from "@kie-tools-core/envelope-bus/dist/hooks";
 
 export function KeyBindingsHelpOverlay() {
