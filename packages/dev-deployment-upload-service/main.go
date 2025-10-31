@@ -84,16 +84,16 @@ func main() {
 		os.Exit(1)
 	}
 
-	unzipAtPath := unzipAtArgString
+	unzipAtPath := validateThatUnzipIsInHomeFolder(unzipAtArgString)
 	// Validate --unzip-at
-	if _, err := os.Stat(unzipAtArgString); err == nil {
-		fmt.Fprintf(os.Stdout, LOG_PREFIX+"✅ Found directory '%s'.\n", unzipAtArgString)
-	} else if err := os.MkdirAll(filepath.Clean(unzipAtArgString), os.ModePerm); err != nil { // os.ModePerm == chmod 777
-		fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Creating directory '%s' failed:\n", unzipAtArgString)
+	if _, err := os.Stat(unzipAtPath); err == nil {
+		fmt.Fprintf(os.Stdout, LOG_PREFIX+"✅ Found directory '%s'.\n", unzipAtPath)
+	} else if err := os.MkdirAll(unzipAtPath, os.ModePerm); err != nil { // os.ModePerm == chmod 777
+		fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Creating directory '%s' failed:\n", unzipAtPath)
 		fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: %+v\n", err)
 		os.Exit(1)
 	} else {
-		fmt.Fprintf(os.Stdout, LOG_PREFIX+"✅ Created directory '%s'.\n", unzipAtArgString)
+		fmt.Fprintf(os.Stdout, LOG_PREFIX+"✅ Created directory '%s'.\n", unzipAtPath)
 	}
 
 	// All validations passed. Start the program.
@@ -328,4 +328,25 @@ func printUsage() {
 	fmt.Fprintf(os.Stderr, LOG_PREFIX+"\n")
 	fmt.Fprintf(os.Stderr, LOG_PREFIX+"Example:\n")
 	fmt.Fprintf(os.Stderr, LOG_PREFIX+"curl -X POST http://localhost:[port]/upload?apiKey=[apiKey]\n") // TODO: This is not right..
+}
+
+func validateThatUnzipIsInHomeFolder(pathToUnzipTo string) string {
+	absolutePathUnzipDestination, err := filepath.Abs(pathToUnzipTo)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Cannot get the absolute path where the unzip should happen. The error is: \n"+err.Error()+"\n")
+		fmt.Fprintf(os.Stderr, LOG_PREFIX+"\n")
+		os.Exit(1)
+	}
+	homeFolderOfUser, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Home folder of the user cannot be determined. The error is: \n"+err.Error()+"\n")
+		fmt.Fprintf(os.Stderr, LOG_PREFIX+"\n")
+		os.Exit(1)
+	}
+	if !strings.HasPrefix(absolutePathUnzipDestination, homeFolderOfUser) {
+		fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: The folder where the unzip should happen is not in the user's home folder. Please make sure you unzip into the user's home folder! \n")
+		fmt.Fprintf(os.Stderr, LOG_PREFIX+"\n")
+		os.Exit(1)
+	}
+	return absolutePathUnzipDestination
 }
