@@ -88,6 +88,8 @@ DC.xsd
 DI.xsd
 # packages/bpmn-marshaller/src/schemas/bpmn-2_0/Semantic.xsd
 Semantic.xsd
+# packages/bpmn-marshaller/src/schemas/bpmn-2_0/Semantic.kogito-compat.xsd
+Semantic.kogito-compat.xsd
 # packages/chrome-extension/tests/app/components/single/__snapshots__/SingleEditorApp.test.tsx.snap
 SingleEditorApp.test.tsx.snap
 # packages/chrome-extension/tests/app/components/single/__snapshots__/SingleEditorToolbar.test.tsx.snap
