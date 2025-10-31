@@ -28,7 +28,7 @@ export const de: TranslatedDictionary<FormI18n> = {
       autoGenerationError: {
         title: `${de_common.terms?.oops}!`,
         explanation: "Das Formular kann aufgrund eines Fehlers nicht dargestellt werden.",
-        checkNotificationPanel: ["Auf ", wrapped("link"), ` Fehler im Benachrichtigungsfeld prüfen`],
+        checkNotificationPanel: `Auf ${"{link}"} Fehler im Benachrichtigungsfeld prüfen`,
       },
       emptyForm: {
         title: "Kein Formular",
@@ -36,11 +36,7 @@ export const de: TranslatedDictionary<FormI18n> = {
       },
       validatorError: {
         title: "Beim Versuch, das Formular zu erstellen, ist ein Fehler aufgetreten",
-        message: [
-          `Das JSON-Schema enthält ein Konstrukt, das noch nicht unterstützt wird. Bitte beachten Sie `,
-          wrapped("jira"),
-          " und melden Sie ein Problem. Vergessen Sie nicht, die aktuelle Datei hochzuladen.",
-        ],
+        message: `Das JSON-Schema enthält ein Konstrukt, das noch nicht unterstützt wird. Bitte beachten Sie ${"{jira}"} und melden Sie ein Problem. Vergessen Sie nicht, die aktuelle Datei hochzuladen.`,
       },
     },
   },

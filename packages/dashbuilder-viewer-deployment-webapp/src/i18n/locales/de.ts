@@ -34,7 +34,7 @@ export const de: TranslatedDictionary<AppI18n> = {
     error: {
       title: `${de_common.terms?.oops}!`,
       explanation: "Die Seite konnte aufgrund eines Fehlers nicht gerendert werden.",
-      referToJira: ["Bitte lesen Sie ", wrapped("jira"), " und melden Sie ein Problem."],
+      referToJira: `Bitte lesen Sie ${"{jira}"} und melden Sie ein Problem.`,
     },
   },
 };

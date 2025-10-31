@@ -34,7 +34,7 @@ interface DmnFormDictionary
         explanation: string;
         dmnNotSupported: string;
         uploadFiles: string;
-        referToJira: Array<string | Wrapped<"jira">>;
+        referToJira: string;
       };
     };
     error: {

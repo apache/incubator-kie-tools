@@ -20,7 +20,6 @@
 import { OnlineI18n } from "..";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 import { en as en_unitables } from "@kie-tools/unitables/dist/i18n/locales/en";
-import { wrapped } from "@kie-tools-core/i18n/dist/core";
 
 export const en: OnlineI18n = {
   ...en_common,
@@ -54,11 +53,7 @@ export const en: OnlineI18n = {
     error: {
       title: `${en_common.terms.oops}!`,
       explanation: `The ${en_common.names.dmnRunner} couldn't be rendered due to an error.`,
-      message: [
-        `This ${en_common.names.dmn} has a construct that is not supported. Please refer to `,
-        wrapped("jira"),
-        " and report an issue. Don't forget to upload the current file, and the used inputs",
-      ],
+      message: `This ${en_common.names.dmn} has a construct that is not supported. Please refer to ${"{jira}"} and report an issue. Don't forget to upload the current file, and the used inputs`,
     },
   },
   editorToolbar: {
@@ -158,9 +153,7 @@ export const en: OnlineI18n = {
     },
     introduction: {
       explanation: `Create Dev Deployments in the cloud and share with others.`,
-      disclaimer: `${
-        en_common.names.devDeployments
-      } is intended for ${"development".bold()} and should not be used for business-critical workloads.`,
+      disclaimer: `${en_common.names.devDeployments} is intended for ${"development".bold()} and should not be used for business-critical workloads.`,
       getStarted: "To get started, configure your instance information.",
     },
     openShiftConfigWizard: {
@@ -461,11 +454,7 @@ export const en: OnlineI18n = {
     error: {
       title: `${en_common.terms.oops}!`,
       explanation: `The ${en_common.names.dmnRunner} couldn't be rendered due to an error.`,
-      message: [
-        `This ${en_common.names.dmn} has a construct that is not supported. Please refer to `,
-        wrapped("jira"),
-        " and report an issue. Don't forget to upload the current file, and the used inputs",
-      ],
+      message: `This ${en_common.names.dmn} has a construct that is not supported. Please refer to ${"{jira}"} and report an issue. Don't forget to upload the current file, and the used inputs`,
     },
     table: {
       ...en_unitables,
@@ -475,11 +464,7 @@ export const en: OnlineI18n = {
         runDmnModels: "Run your models and see live forms and results as you edit.",
         explanation:
           "Input nodes become interactive fields on an auto-generated form, and the results are displayed as easy-to-read cards.",
-        notificationPanelExplanation: [
-          `The Problems panel `,
-          wrapped("icon"),
-          `, at the bottom-right corner of the Editor, displays live Evaluation messages to assist modeling your Decisions.`,
-        ],
+        notificationPanelExplanation: `The Problems panel ${"{icon}"}, at the bottom-right corner of the Editor, displays live Evaluation messages to assist modeling your Decisions.`,
       },
       wizard: {
         title: `${en_common.names.extendedServices} ${en_common.terms.setup}`,
@@ -501,37 +486,23 @@ export const en: OnlineI18n = {
         macos: {
           install: {
             download: ` ${en_common.names.extendedServices}.`,
-            openFile: ["Open the ", wrapped("file"), " file."],
-            dragFileToApplicationsFolder: ["Drag ", wrapped("file"), " to the ", wrapped("folder"), " folder."],
+            openFile: `Open the ${"{file}"} file.`,
+            dragFileToApplicationsFolder: `Drag ${"{file}"} to the ${"{folder}"} folder.`,
           },
           start: {
             stopped: {
               startInstruction: `If you see the ${en_common.names.extendedServices} icon on your system bar, simply click it and select "${en_common.terms.start}".`,
-              launchExtendedServices: [
-                `If not, start the ${en_common.names.extendedServices} app by launching `,
-                wrapped("file"),
-                ".",
-              ],
+              launchExtendedServices: `If not, start the ${en_common.names.extendedServices} app by launching ${"{file}"}.`,
             },
             firstTime: {
               title: `If you just installed ${en_common.names.extendedServices}:`,
-              openApplicationsFolder: ["Open the ", wrapped("folder"), " folder."],
+              openApplicationsFolder: `Open the ${"{folder}"} folder.`,
               again: "again",
-              openAndCancel: [
-                "Right-click on ",
-                wrapped("file"),
-                ` select "${en_common.terms.open}" and then "${en_common.terms.cancel}".`,
-              ],
-              openInstruction: [
-                "Right-click on ",
-                wrapped("file"),
-                " ",
-                wrapped("again"),
-                ` and then select "${en_common.terms.open}".`,
-              ],
+              openAndCancel: `Right-click on ${"{file}"} select "${en_common.terms.open}" and then "${en_common.terms.cancel}".`,
+              openInstruction: `Right-click on ${"{file}"} ${"{again}"} and then select "${en_common.terms.open}".`,
             },
             alreadyRanBefore: `If you already installed and ran the ${en_common.names.extendedServices} before:`,
-            launchExtendedServices: ["Launch the ", wrapped("file")],
+            launchExtendedServices: `Launch the ${"{file}"}`,
             advanced: {
               title: "Advanced Settings",
               runFollowingCommand: `Run the following command on a Terminal tab to start ${en_common.names.extendedServices} on a different port:`,
@@ -541,24 +512,20 @@ export const en: OnlineI18n = {
         windows: {
           install: {
             keepDownload: ` ${en_common.names.extendedServices}. Note that you'll probably have to right-click the download and choose "Keep"`,
-            moveTheFile: ["Move the ", wrapped("file"), " file to your preferred folder."],
+            moveTheFile: `Move the ${"{file}"} file to your preferred folder.`,
           },
           start: {
             stopped: {
               startInstruction: `If you see the ${en_common.names.extendedServices} icon on your system bar, simply click it and select "${en_common.terms.start}".`,
-              launchExtendedServices: [
-                `If not, start the ${en_common.names.extendedServices} by opening the `,
-                wrapped("file"),
-                "file.",
-              ],
+              launchExtendedServices: `If not, start the ${en_common.names.extendedServices} by opening the ${"{file}"} file.`,
             },
             firstTime: {
               title: `If you just installed ${en_common.names.extendedServices}:`,
-              openFolder: ["Open folder where you placed the ", wrapped("file"), " file."],
+              openFolder: `Open folder where you placed the ${"{file}"} file.`,
               runAnyway: `Double-click it and select "More info" then click on the "Run anyway" button.`,
             },
             alreadyRanBefore: `If you already installed and ran the ${en_common.names.extendedServices} before:`,
-            launchExtendedServices: ["Open the ", wrapped("file"), " file."],
+            launchExtendedServices: `Open the ${"{file}"} file.`,
             advanced: {
               title: "Advanced Settings",
               runFollowingCommand: `Run the following command on the Command prompt to start ${en_common.names.extendedServices} on a different port:`,
@@ -569,36 +536,24 @@ export const en: OnlineI18n = {
           install: {
             download: ` ${en_common.names.extendedServices}.`,
             installAppIndicator: "Install the AppIndicator lib for your system:",
-            ubuntuDependency: [`${en_common.names.ubuntu}: `, wrapped("package")],
-            fedoraDependency: [`${en_common.names.fedora}: `, wrapped("package")],
-            extractContent: ["Extract the contents of ", wrapped("file"), " to your location of choice."],
-            binaryExplanation: [
-              `The ${en_common.names.extendedServices} binary, `,
-              wrapped("file"),
-              ", is a single binary file, which means you can add it to your PATH or even configure it to execute when your computer starts.",
-            ],
+            ubuntuDependency: `${en_common.names.ubuntu}: ${"{package}"}`,
+            fedoraDependency: `${en_common.names.fedora}: ${"{package}"}`,
+            extractContent: `Extract the contents of ${"{file}"} to your location of choice.`,
+            binaryExplanation: `The ${en_common.names.extendedServices} binary ${"{file}"} is a single binary file, which means you can add it to your PATH or even configure it to execute when your computer starts.`,
           },
           start: {
             openTerminal: "Open a Terminal window.",
-            goToFolder: ["Go to the folder where you placed the ", wrapped("file"), " binary."],
+            goToFolder: `Go to the folder where you placed the ${"{file}"} binary.`,
             runCommand: "Run ",
             advanced: {
               title: "Advanced Settings",
-              runFollowingCommand: [
-                "Open a Terminal window and run the following command on the directory where you placed the ",
-                wrapped("file"),
-                " binary:",
-              ],
+              runFollowingCommand: `Open a Terminal window and run the following command on the directory where you placed the ${"{file}"} binary:`,
             },
           },
         },
         footerWaitingToConnect: `Waiting to connect to ${en_common.names.extendedServices}`,
         advancedSettings: {
-          title: [
-            `The default ${en_common.names.extendedServices} port is `,
-            wrapped("port"),
-            `. If you're already using this port for another application, you can change the port used to connect with the ${en_common.names.extendedServices}.`,
-          ],
+          title: `The default ${en_common.names.extendedServices} port is ${"{port}"}. If you're already using this port for another application, you can change the port used to connect with the ${en_common.names.extendedServices}.`,
           label: "Port",
           helperTextInvalid: "Invalid port. Valid ports: 0 <= port <= 65353",
         },

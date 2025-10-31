@@ -36,7 +36,7 @@ export const de: TranslatedDictionary<DmnFormI18n> = {
       explanation: "Die Seite konnte aufgrund eines Fehlers nicht gerendert werden.",
       dmnNotSupported: `${de_common.names?.dmn} hat ein Konstrukt, das nicht unterstützt wird. `,
       uploadFiles: "Vergessen Sie nicht, die aktuelle Datei und die verwendeten Eingaben hochzuladen",
-      referToJira: ["Bitte lesen Sie ", wrapped("jira"), " und melden Sie ein Problem."],
+      referToJira: `Bitte lesen Sie ${"{jira}"} und melden Sie ein Problem.`,
     },
   },
   error: {

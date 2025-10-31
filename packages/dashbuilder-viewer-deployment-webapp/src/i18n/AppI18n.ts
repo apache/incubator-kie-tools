@@ -32,7 +32,7 @@ interface AppDictionary
       error: {
         title: string;
         explanation: string;
-        referToJira: Array<string | Wrapped<"jira">>;
+        referToJira: string;
       };
     };
   }> {}

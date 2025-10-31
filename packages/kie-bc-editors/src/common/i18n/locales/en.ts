@@ -19,8 +19,7 @@
 
 import { KieBcEditorsI18n } from "../KieBcEditorsI18n";
 
-const ISSUES_URL = "https://github.com/apache/incubator-kie-issues/issues";
-
 export const en: KieBcEditorsI18n = {
-  unsupportedFile: `This file contains a construct that is not yet supported. Please refer to ${ISSUES_URL} and report an issue. Don't forget to upload the current file.`,
+  unsupportedFile: (url: string) =>
+    `This file contains a construct that is not yet supported. Please refer to ${url} and report an issue. Don't forget to upload the current file.`,
 };
