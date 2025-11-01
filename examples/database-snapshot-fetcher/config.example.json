@@ -1,0 +1,21 @@
+{
+  "description": "数据库API配置示例文件",
+  "server_ip": "192.168.1.100",
+  "server_port": 5000,
+  "default_request": {
+    "tagNames": [
+      "Tag001",
+      "Tag002",
+      "Tag003"
+    ],
+    "count": 100,
+    "startTime": "2024-01-01 00:00:00.000",
+    "endTime": "2024-01-01 23:59:59.000"
+  },
+  "cron_schedule": {
+    "hourly": "0 0 * * * ?",
+    "every_15_minutes": "0 */15 * * * ?",
+    "daily_midnight": "0 0 0 * * ?",
+    "every_5_minutes": "0 */5 * * * ?"
+  }
+}

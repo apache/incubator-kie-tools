@@ -1,0 +1,54 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Eclipse
+.project
+.classpath
+.settings/
+bin/
+
+# IntelliJ
+.idea
+*.iws
+*.iml
+*.ipr
+
+# NetBeans
+nb-configuration.xml
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Quarkus
+.quarkus/
+
+# Node
+node_modules/
+dist/
+.pnpm-store/
+
+# Logs
+*.log
+
+# 用户配置文件
+config/zhongtai.json
+application-local.properties

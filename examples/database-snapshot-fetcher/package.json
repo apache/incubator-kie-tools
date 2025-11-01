@@ -1,0 +1,22 @@
+{
+  "name": "database-snapshot-fetcher",
+  "version": "0.0.0",
+  "description": "数据库快照定时获取与规则分析系统",
+  "license": "Apache-2.0",
+  "private": true,
+  "scripts": {
+    "build": "run-script-os",
+    "build:default": "pnpm setup:maven && mvn clean install -DskipTests && pnpm pack:mvn",
+    "build:prod": "pnpm build && pnpm quarkus:dev",
+    "build:dev": "pnpm setup:maven && mvn clean install -DskipTests",
+    "quarkus:dev": "mvn quarkus:dev",
+    "start": "mvn quarkus:dev",
+    "test": "mvn clean verify",
+    "setup:maven": "node ../../scripts/update-maven-for-dev.js",
+    "pack:mvn": "node ../../scripts/pack-maven-for-release.js"
+  },
+  "devDependencies": {
+    "@kie-tools/maven-base": "workspace:*",
+    "run-script-os": "^1.1.6"
+  }
+}

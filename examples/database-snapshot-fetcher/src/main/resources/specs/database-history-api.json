@@ -1,0 +1,284 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Database History API",
+    "description": "中台数据库历史数据查询API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://{serverIp}:{serverPort}/DataAdapter",
+      "description": "数据适配器服务",
+      "variables": {
+        "serverIp": {
+          "default": "localhost",
+          "description": "服务器IP地址"
+        },
+        "serverPort": {
+          "default": "5000",
+          "description": "服务器端口"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/History.GetSingleValue": {
+      "post": {
+        "operationId": "getSingleValue",
+        "summary": "获取单个标签点单一历史断面数据",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SingleValueRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功获取数据",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/History.GetValues": {
+      "post": {
+        "operationId": "getValues",
+        "summary": "获取多个标签点在某一时间的历史断面数据",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MultiValuesRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功获取数据",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/History.GetArchivedValues": {
+      "post": {
+        "operationId": "getArchivedValues",
+        "summary": "获取单个标签点一段时间内的储存数据",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArchivedValuesRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功获取数据",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/History.GetArchivedValuesBatch": {
+      "post": {
+        "operationId": "getArchivedValuesBatch",
+        "summary": "获取多个标签点一段时间内的储存数据",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ArchivedValuesBatchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "成功获取数据",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HistoryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SingleValueRequest": {
+        "type": "object",
+        "required": ["tagName", "dateTime", "historyMode"],
+        "properties": {
+          "tagName": {
+            "type": "string",
+            "description": "标签点名称",
+            "example": "Tag001"
+          },
+          "dateTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "查询时间 (格式: YYYY-MM-DD HH:mm:ss.fff)",
+            "example": "2024-01-01 12:00:00.000"
+          },
+          "historyMode": {
+            "type": "integer",
+            "description": "历史模式 (0=默认)",
+            "example": 0,
+            "default": 0
+          }
+        }
+      },
+      "MultiValuesRequest": {
+        "type": "object",
+        "required": ["tagNames", "dateTime", "historyMode"],
+        "properties": {
+          "tagNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "标签点名称列表",
+            "example": ["Tag001", "Tag002", "Tag003"]
+          },
+          "dateTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "查询时间 (格式: YYYY-MM-DD HH:mm:ss.fff)",
+            "example": "2024-01-01 12:00:00.000"
+          },
+          "historyMode": {
+            "type": "integer",
+            "description": "历史模式 (0=默认)",
+            "example": 0,
+            "default": 0
+          }
+        }
+      },
+      "ArchivedValuesRequest": {
+        "type": "object",
+        "required": ["tagName", "count", "startTime", "endTime"],
+        "properties": {
+          "tagName": {
+            "type": "string",
+            "description": "标签点名称",
+            "example": "Tag001"
+          },
+          "count": {
+            "type": "integer",
+            "description": "返回数据点数量",
+            "example": 100
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "开始时间 (格式: YYYY-MM-DD HH:mm:ss.fff)",
+            "example": "2024-01-01 00:00:00.000"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "结束时间 (格式: YYYY-MM-DD HH:mm:ss.fff)",
+            "example": "2024-01-01 23:59:59.000"
+          }
+        }
+      },
+      "ArchivedValuesBatchRequest": {
+        "type": "object",
+        "required": ["tagNames", "count", "startTime", "endTime"],
+        "properties": {
+          "tagNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "标签点名称列表",
+            "example": ["Tag001", "Tag002", "Tag003"]
+          },
+          "count": {
+            "type": "integer",
+            "description": "每个标签点返回的数据点数量",
+            "example": 100
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "开始时间 (格式: YYYY-MM-DD HH:mm:ss.fff)",
+            "example": "2024-01-01 00:00:00.000"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "description": "结束时间 (格式: YYYY-MM-DD HH:mm:ss.fff)",
+            "example": "2024-01-01 23:59:59.000"
+          }
+        }
+      },
+      "HistoryResponse": {
+        "type": "object",
+        "properties": {
+          "StatusCode": {
+            "type": "integer",
+            "description": "状态码",
+            "example": 200
+          },
+          "RequestID": {
+            "type": "string",
+            "description": "请求ID",
+            "example": "req-12345678"
+          },
+          "Result": {
+            "description": "查询结果数据",
+            "oneOf": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              },
+              {
+                "type": "object"
+              }
+            ]
+          },
+          "Error": {
+            "type": "string",
+            "description": "错误信息（成功时为空字符串）",
+            "example": ""
+          }
+        }
+      }
+    }
+  }
+}

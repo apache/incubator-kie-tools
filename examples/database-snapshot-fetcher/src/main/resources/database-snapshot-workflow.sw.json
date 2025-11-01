@@ -1,0 +1,111 @@
+{
+  "id": "database-snapshot-workflow",
+  "version": "1.0",
+  "specVersion": "0.8",
+  "name": "数据库快照定时获取工作流",
+  "description": "定时从数据库API获取多个标签点的历史数据，并执行诊断规则分析",
+  "start": {
+    "stateName": "FetchDatabaseSnapshot",
+    "schedule": {
+      "cron": "0 0 * * * ?"
+    }
+  },
+  "functions": [
+    {
+      "name": "getArchivedValuesBatch",
+      "operation": "specs/database-history-api.json#getArchivedValuesBatch",
+      "type": "rest"
+    },
+    {
+      "name": "logData",
+      "type": "custom",
+      "operation": "sysout"
+    }
+  ],
+  "states": [
+    {
+      "name": "FetchDatabaseSnapshot",
+      "type": "operation",
+      "actionMode": "sequential",
+      "actions": [
+        {
+          "name": "获取数据库历史快照",
+          "functionRef": {
+            "refName": "getArchivedValuesBatch",
+            "arguments": {
+              "tagNames": ".tagNames",
+              "count": ".count",
+              "startTime": ".startTime",
+              "endTime": ".endTime"
+            }
+          },
+          "actionDataFilter": {
+            "results": "${ .snapshotData }",
+            "toStateData": "${ .snapshotData }"
+          }
+        }
+      ],
+      "stateDataFilter": {
+        "output": "${ {snapshotData: .snapshotData, fetchTime: now()} }"
+      },
+      "transition": "ValidateResponse"
+    },
+    {
+      "name": "ValidateResponse",
+      "type": "switch",
+      "dataConditions": [
+        {
+          "name": "数据获取成功",
+          "condition": "${ .snapshotData.StatusCode == 200 }",
+          "transition": "ProcessSnapshot"
+        },
+        {
+          "name": "数据获取失败",
+          "condition": "${ .snapshotData.StatusCode != 200 }",
+          "transition": "HandleError"
+        }
+      ],
+      "defaultCondition": {
+        "transition": "HandleError"
+      }
+    },
+    {
+      "name": "ProcessSnapshot",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "记录成功获取的数据",
+          "functionRef": {
+            "refName": "logData",
+            "arguments": {
+              "message": "\"成功获取数据库快照: RequestID=\" + .snapshotData.RequestID + \", 数据点数=\" + (.snapshotData.Result | length | tostring)"
+            }
+          }
+        }
+      ],
+      "stateDataFilter": {
+        "output": "${ {status: \"success\", data: .snapshotData.Result, requestId: .snapshotData.RequestID, fetchTime: .fetchTime} }"
+      },
+      "end": true
+    },
+    {
+      "name": "HandleError",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "记录错误信息",
+          "functionRef": {
+            "refName": "logData",
+            "arguments": {
+              "message": "\"数据获取失败: \" + .snapshotData.Error"
+            }
+          }
+        }
+      ],
+      "stateDataFilter": {
+        "output": "${ {status: \"error\", error: .snapshotData.Error, statusCode: .snapshotData.StatusCode, fetchTime: .fetchTime} }"
+      },
+      "end": true
+    }
+  ]
+}
