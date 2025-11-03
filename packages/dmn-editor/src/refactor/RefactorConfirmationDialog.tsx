@@ -29,7 +29,7 @@ import { useDmnEditorStore, useDmnEditorStoreApi } from "../store/StoreContext";
 import { useCallback, useMemo, useState } from "react";
 import { renameDrgElement } from "../mutations/renameNode";
 import { useDmnEditorI18n } from "../i18n";
-import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/core";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
 
 export function RefactorConfirmationDialog({
   onConfirmExpressionRefactor,

@@ -27,7 +27,7 @@ import {
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { useDmnFormI18n } from "./i18n";
-import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/core";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
 
 const ISSUES_URL = "https://github.com/apache/incubator-kie-issues/issues";
 

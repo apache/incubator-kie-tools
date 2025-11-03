@@ -48,7 +48,7 @@ import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/e
 import { DecisionResult, DmnEvaluationStatus, DmnEvaluationResult } from "@kie-tools/extended-services-api";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { Button } from "@patternfly/react-core/dist/js/components/Button";
-import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/core";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
 
 const ISSUES_URL = "https://github.com/apache/incubator-kie-issues/issues";
 

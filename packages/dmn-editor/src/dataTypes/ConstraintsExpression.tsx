@@ -27,7 +27,7 @@ import InfoIcon from "@patternfly/react-icons/dist/js/icons/info-icon";
 import { DmnBuiltInDataType } from "@kie-tools/boxed-expression-component/dist/api";
 import { TypeHelper } from "./Constraints";
 import { useDmnEditorI18n } from "../i18n";
-import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/core";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
 
 export function ConstraintsExpression({
   id,

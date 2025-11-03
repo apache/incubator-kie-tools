@@ -41,7 +41,7 @@ import { extractDifferences } from "@kie-tools/dmn-runner/dist/results";
 import { openapiSchemaToJsonSchema } from "@openapi-contrib/openapi-schema-to-json-schema";
 import type { JSONSchema4 } from "json-schema";
 import { useApp } from "./AppContext";
-import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/core";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
 
 interface Props {
   formData: FormData;

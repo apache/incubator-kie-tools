@@ -42,7 +42,7 @@ import { useRoutes } from "../navigation/Hooks";
 import { useSettingsDispatch } from "../settings/SettingsContext";
 import { useEnv } from "../env/hooks/EnvContext";
 import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
-import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/core";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
 
 enum ModalPage {
   INITIAL,
