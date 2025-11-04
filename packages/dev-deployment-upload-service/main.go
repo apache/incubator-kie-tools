@@ -25,6 +25,7 @@ import (
 	"context"
 	"fmt"
 	"html"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -87,7 +88,7 @@ func main() {
 	// Validate --unzip-at
 	if _, err := os.Stat(unzipAtArgString); err == nil {
 		fmt.Fprintf(os.Stdout, LOG_PREFIX+"✅ Found directory '%s'.\n", unzipAtArgString)
-	} else if err := os.MkdirAll(unzipAtArgString, os.ModePerm); err != nil { // os.ModePerm == chmod 777
+	} else if err := os.MkdirAll(filepath.Clean(unzipAtArgString), os.ModePerm); err != nil { // os.ModePerm == chmod 777
 		fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Creating directory '%s' failed:\n", unzipAtArgString)
 		fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: %+v\n", err)
 		os.Exit(1)
@@ -223,7 +224,7 @@ func main() {
 			}
 
 			// Always try and write the dirs where the files are going to be written to.
-			if err := os.MkdirAll(filepath.Dir(extractedZippedFilePath), os.ModePerm); err != nil { // os.ModePerm == chmod 777
+			if err := os.MkdirAll(filepath.Dir(filepath.Clean(extractedZippedFilePath)), os.ModePerm); err != nil { // os.ModePerm == chmod 777
 				fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Creating directory '%s' failed:\n", filepath.Dir(extractedZippedFilePath))
 				fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: %+v\n", err)
 				w.WriteHeader(http.StatusInternalServerError)
@@ -235,7 +236,7 @@ func main() {
 
 			// Only write the file if it's not a dir
 			if !zipFile.FileInfo().IsDir() {
-				f, err := os.Create(extractedZippedFilePath)
+				f, err := os.Create(filepath.Clean(extractedZippedFilePath))
 				if err != nil {
 					fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: Creating file '%s' failed:\n", extractedZippedFilePath)
 					fmt.Fprintf(os.Stderr, LOG_PREFIX+"❌ ERROR: %+v\n", err)
@@ -316,7 +317,7 @@ func readZipFile(zf *zip.File) ([]byte, error) {
 	}
 
 	defer f.Close()
-	return ioutil.ReadAll(f)
+	return io.ReadAll(f)
 }
 
 func printUsage() {

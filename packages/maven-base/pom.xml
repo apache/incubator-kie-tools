@@ -137,12 +137,57 @@
     <version.org.junit.jupiter>5.12.2</version.org.junit.jupiter>
     <version.org.mockito>4.11.0</version.org.mockito>
     <version.org.kie.j2cl.tools.yaml.mapper>0.4</version.org.kie.j2cl.tools.yaml.mapper>
-    <version.io.netty>4.1.127.Final</version.io.netty>
+    <version.io.netty>4.1.128.Final</version.io.netty>
+
+    <!-- These versions are overrides for transitive dependencies, to fix security vulnerabilities.
+           They need to be checked with Quarkus and Spring Boot upgrades and eventually removed, if they are not needed anymore. -->
+    <version.tomcat.embed.core>10.1.48</version.tomcat.embed.core>
+    <version.apache.commons.lang3>3.18.0</version.apache.commons.lang3>
+    <version.angus.mail>2.0.5</version.angus.mail>
+    <version.nimbus.jose.jwt>9.37.4</version.nimbus.jose.jwt>
+    <version.io.vertx>4.5.22</version.io.vertx>
+    <!-- End of various transitive overrides. -->
   </properties>
 
   <dependencyManagement>
     <dependencies>
+      <!-- These versions are overrides for transitive dependencies, to fix security vulnerabilities.
+           They need to be checked with Quarkus and Spring Boot upgrades and eventually removed, if they are not needed anymore. -->
+      <dependency>
+        <groupId>org.eclipse.angus</groupId>
+        <artifactId>angus-mail</artifactId>
+        <version>${version.angus.mail}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.nimbusds</groupId>
+        <artifactId>nimbus-jose-jwt</artifactId>
+        <version>${version.nimbus.jose.jwt}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-web</artifactId>
+        <version>${version.io.vertx}</version>
+      </dependency>
+      <!-- End of various transitive overrides. -->
+
+      <!-- Not directly used, but used to override transitive versions from other dependencies to fix vulnerabilities -->
+      <dependency>
+        <groupId>org.apache.tomcat.embed</groupId>
+        <artifactId>tomcat-embed-core</artifactId>
+        <version>${version.tomcat.embed.core}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${version.apache.commons.lang3}</version>
+      </dependency>
+
       <!-- Apache KIE -->
+      <dependency>
+        <groupId>io.vertx</groupId>
+        <artifactId>vertx-web</artifactId>
+        <version>${version.io.vertx}</version>
+      </dependency>
 
       <dependency>
         <groupId>org.kie.kogito</groupId>

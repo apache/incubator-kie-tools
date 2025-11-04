@@ -18,4 +18,4 @@
  */
 
 export * from "./CommonI18n";
-export * from "./locales";
+export * from "./i18n/locales";
