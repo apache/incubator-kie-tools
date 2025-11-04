@@ -214,7 +214,7 @@
     <version.zanata.plugin>2.3.0</version.zanata.plugin>
 
     <!-- Third party Libraries -->
-    <version.ch.qos.logback>1.5.19</version.ch.qos.logback>
+    <version.ch.qos.logback>1.5.20</version.ch.qos.logback>
     <version.commons-io>2.19.0</version.commons-io>
     <version.com.google.elemental2>1.1.0</version.com.google.elemental2>
     <version.com.google.guava>33.0.0-jre</version.com.google.guava>

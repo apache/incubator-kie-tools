@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 
-FROM ubuntu:22.04
+FROM ubuntu:24.04
 
 # Set non-interactive mode to prevent tzdata prompt
 ENV DEBIAN_FRONTEND=noninteractive
@@ -29,39 +29,38 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Adding all dependencies available in GHA `ubuntu-latest`
-RUN wget https://raw.githubusercontent.com/actions/runner-images/refs/heads/main/images/ubuntu/toolsets/toolset-2204.json && \
-    export APT_PACKAGES="$(cat toolset-2204.json | jq -r '.apt | [.vital_packages[], .common_packages[], .cmd_packages[]] | join(" ")')" && \
+RUN curl https://raw.githubusercontent.com/actions/runner-images/refs/heads/main/images/ubuntu/toolsets/toolset-2404.json > toolset-2404.json && \
+    export APT_PACKAGES="$(cat toolset-2404.json | sed s/netcat/netcat-traditional/g | jq -r '.apt | [.vital_packages[], .common_packages[], .cmd_packages[]] | join(" ")')" && \
     apt-get update && \
     apt-get install -y --no-install-recommends $APT_PACKAGES && \
-    rm -rf /var/lib/apt/lists/* toolset-2204.json
+    rm -rf /var/lib/apt/lists/* toolset-2404.json
 
-# Install fonts
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    fonts-ubuntu \
-    fonts-dejavu-core \
-    fonts-dejavu-extra \
-    fonts-freefont-ttf \
-    fonts-liberation \
-    fonts-noto-core \
-    fonts-noto-ui-core \
-    fonts-noto-color-emoji \
-    fonts-noto-mono \
-    fonts-droid-fallback \
-    fontconfig \
-    ttf-mscorefonts-installer && \
-    rm -rf /var/lib/apt/lists/*
+    
+# Configure deb installer to automatically accept mscorefonts eula and install fonts
+RUN echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections && \
+    apt-get update && apt-get install -y --no-install-recommends \
+        fonts-ubuntu-classic \
+        fonts-dejavu-core \
+        fonts-dejavu-extra \
+        fonts-freefont-ttf \
+        fonts-liberation \
+        fonts-noto-core \
+        fonts-noto-ui-core \
+        fonts-noto-color-emoji \
+        fonts-noto-mono \
+        fonts-droid-fallback \
+        fontconfig \
+        ttf-mscorefonts-installer && \
+    rm -rf /var/lib/apt/lists/* && \
+    fc-cache -fv
 
 # Set Node.js version
 ENV NODE_VERSION=22.13.0
 
 # Download and install Node.js
-RUN curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz" -o /tmp/node.tar.xz && \
-    tar -xJf /tmp/node.tar.xz -C /usr/local --strip-components=1 && \
-    rm -rf /tmp/node.tar.xz
-
-# Create a user with UID 1000 and ensure the group exists
-RUN groupadd --gid 1000 nodegroup && \
-    useradd --uid 1000 --gid 1000 --create-home --shell /bin/bash node
+RUN curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.gz" -o /tmp/node.tar.gz && \
+    tar -xzf /tmp/node.tar.gz -C /usr/local --strip-components=1 && \
+    rm -rf /tmp/node.tar.gz
 
 # Set Playwright cache folder
 ENV PLAYWRIGHT_BROWSERS_PATH=/home/node/kie-tools-playwright/.cache/ms-playwright

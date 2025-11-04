@@ -18,8 +18,8 @@
  */
 
 import { TranslatedDictionary } from "@kie-tools-core/i18n/dist/core";
-import { CommonI18n } from "../CommonI18n";
-import { names } from "../names";
+import { CommonI18n } from "../../CommonI18n";
+import { names } from "../../names";
 
 export const de: TranslatedDictionary<CommonI18n> = {
   names,
