@@ -1,0 +1,59 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+.radio-group {
+  margin-bottom: 16px;
+}
+
+.timer-options-multiple,
+.timer-options-specific-date {
+  margin-top: 8px;
+}
+
+.timer-input {
+  margin-left: 12px;
+  width: 300px;
+}
+
+.dropdown-group {
+  display: flex;
+  align-items: center;
+}
+
+.iso-cron-select {
+  width: 100px;
+}
+
+.datepicker-group {
+  margin-left: 12px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.datepicker-group .pf-c-date-picker__input {
+  width: 180px;
+}
+
+.pf-c-radio {
+  margin-bottom: 8px;
+}
+
+.pf-c-radio + .pf-c-radio {
+  margin-left: 30px;
+}

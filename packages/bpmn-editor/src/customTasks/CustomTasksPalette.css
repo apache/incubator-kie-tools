@@ -1,0 +1,50 @@
+.kie-bpmn-editor--custom-tasks-palette--custom-task {
+  border-radius: 99999px;
+  padding: 0px 12px;
+  margin-bottom: 12px;
+  cursor: grab;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 300px;
+  backdrop-filter: brightness(0.95);
+  border: 1px solid lightgray;
+  font-size: 0.9rem;
+}
+
+.kie-bpmn-editor--palette-nodes-popover.custom-tasks h1 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-left: 12px;
+  margin-bottom: 12px;
+  margin-top: 18px;
+}
+
+.kie-bpmn-editor--palette-nodes-popover.custom-tasks h1:not(:first-child) {
+  margin-top: 32px;
+}
+
+.kie-bpmn-editor--custom-tasks-palette--custom-task:hover {
+  backdrop-filter: brightness(0.9);
+}
+.kie-bpmn-editor--custom-tasks-palette--custom-task:active {
+  backdrop-filter: brightness(0.85);
+}
+
+.kie-bpmn-editor--custom-tasks-palette--custom-task {
+  height: 36px;
+}
+
+.kie-bpmn-editor--custom-tasks-palette--custom-task div:first-child {
+  height: 30px;
+}
+
+.kie-bpmn-editor--custom-tasks-palette--custom-task .kie-bpmn-editor--custom-tasks-palette--custom-task--name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
