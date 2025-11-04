@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { GwtEditorWrapper } from "../../common";
+import { GwtEditorWrapper } from "@kie-tools/kie-bc-editors-common";
 import { EditorTheme } from "@kie-tools-core/editor/dist/api";
 
 export interface SceSimEditor extends GwtEditorWrapper {

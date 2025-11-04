@@ -38,7 +38,6 @@
     "@kie-tools-core/workspace": "workspace:*",
     "@kie-tools/eslint": "workspace:*",
     "@kie-tools/jest-base": "workspace:*",
-    "@kie-tools/kie-bc-editors": "workspace:*",
     "@kie-tools/root-env": "workspace:*",
     "@kie-tools/serverless-workflow-combined-editor": "workspace:*",
     "@kie-tools/serverless-workflow-diagram-editor": "workspace:*",

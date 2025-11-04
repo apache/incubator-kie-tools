@@ -17,9 +17,9 @@
  * under the License.
  */
 
-import { GwtEditorWrapperFactory } from "@kie-tools/kie-bc-editors/dist/common/GwtEditorWrapperFactory";
-import { GwtLanguageData, Resource } from "@kie-tools/kie-bc-editors/dist/common/GwtLanguageData";
-import { GwtStateControlService } from "@kie-tools/kie-bc-editors/dist/common/gwtStateControl";
+import { GwtEditorWrapperFactory } from "@kie-tools/kie-bc-editors-common/dist/GwtEditorWrapperFactory";
+import { GwtLanguageData, Resource } from "@kie-tools/kie-bc-editors-common/dist/GwtLanguageData";
+import { GwtStateControlService } from "@kie-tools/kie-bc-editors-common/dist/gwtStateControl";
 import { messageBusClientApiMock } from "@kie-tools-core/envelope-bus/dist-tests/messageBusClientApiMock";
 import { I18nService } from "@kie-tools-core/i18n/dist/envelope";
 import {
@@ -27,9 +27,9 @@ import {
   DEFAULT_WORKSPACE_ROOT_ABSOLUTE_POSIX_PATH,
   KogitoEditorChannelApi,
 } from "@kie-tools-core/editor/dist/api";
-import { GwtEditorWrapper } from "@kie-tools/kie-bc-editors/dist/common/GwtEditorWrapper";
+import { GwtEditorWrapper } from "@kie-tools/kie-bc-editors-common/dist/GwtEditorWrapper";
 import { MessageBusClientApi } from "@kie-tools-core/envelope-bus/dist/api";
-import { XmlFormatter } from "@kie-tools/kie-bc-editors/dist/common/XmlFormatter";
+import { XmlFormatter } from "@kie-tools/kie-bc-editors-common/dist/XmlFormatter";
 
 const cssResource: Resource = {
   type: "css",

@@ -17,19 +17,11 @@
  * under the License.
  */
 
-import { GwtLanguageData } from "@kie-tools/kie-bc-editors-common/dist";
-import { editors } from "./GwtEditorMapping";
+const { varsWithName, composeEnv } = require("@kie-tools-scripts/build-env");
 
-export function getServerlessWorkflowLanguageData(resourcesPathPrefix: string): GwtLanguageData {
-  return {
-    type: "gwt",
-    editorId: editors.swf.id,
-    gwtModuleName: editors.swf.name,
-    resources: [
-      {
-        type: "js",
-        paths: [`${resourcesPathPrefix}/${editors.swf.name}/${editors.swf.name}.js`],
-      },
-    ],
-  };
-}
+module.exports = composeEnv([require("@kie-tools/root-env/env")], {
+  vars: varsWithName({}),
+  get env() {
+    return {};
+  },
+});
