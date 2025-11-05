@@ -114,7 +114,7 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
                              final ServiceCallback<Diagram> callback) {
         final Metadata metadata = createMetadata();        
         metadata.setPath(PathFactory.newPath(fileName, fileRelativePath));
-        LOGGER.log(Level.INFO, "Load WID for a file: " + fileRelativePath);
+        LOGGER.log(Level.INFO, "Loading a file: [fileRelativePath: " + fileRelativePath + ", fileName: " + fileName + "]");
         widService
                 .call(metadata)
                 .then(wid -> {
