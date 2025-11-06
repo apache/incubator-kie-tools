@@ -41,7 +41,7 @@ import { GwtAppFormerConsumedInteropApi } from "./consumedInteropApi/GwtAppForme
 import { GwtEditorWrapper } from "./GwtEditorWrapper";
 import { GwtLanguageData, Resource } from "./GwtLanguageData";
 import { GwtStateControlService } from "./gwtStateControl";
-import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "./i18n";
+import { kieBcEditorsI18nDefaults, kieBcEditorsI18nDictionaries } from "../i18n";
 import * as __path from "path";
 
 export interface CustomWindow extends Window {
