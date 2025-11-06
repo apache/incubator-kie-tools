@@ -184,12 +184,6 @@
 
       <!-- Apache KIE -->
       <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-web</artifactId>
-        <version>${version.io.vertx}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-bom</artifactId>
         <version>${version.org.kie.kogito}</version>
