@@ -56,7 +56,6 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
       const info = this.resolveRequestInfo(req);
 
       this.logger.log("New request: ", info.targetUrl);
-      // The replace method call is used as a precaution against potential log forging attacks.
       this.logger.debugEscapeNewLines("Request Method: ", req.method);
       this.logger.debugEscapeNewLines("Request Headers: ", req.headers);
 
