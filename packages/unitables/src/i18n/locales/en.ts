@@ -35,5 +35,5 @@ export const en: UnitablesI18n = {
   errorMessage: "An error has happened while trying to show your inputs",
   noDecisionResults: "No Decision results yet...",
   addInputDecisionNodes:
-    "Add input and decision nodes, provide values to the inputs at the left and see the Decisions results here.",
+    "Add input and decision nodes, Enter values for the inputs on the left and see the Decisions results here.",
 };

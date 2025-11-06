@@ -81,13 +81,13 @@ export const en: OnlineI18n = {
       "An Accelerator is a template. Applying it will move your current files according to the Accelerator specifications and create a new commit for it.",
     acceleratorDetails: "This Accelerator is hosted at",
     dmnFilesMove: "Decisions (.dmn) will be moved to:",
-    dmnFilesLocation: "Decisions (.dmn) were moved to:",
-    pmmlFilesMove: "Score cards (.pmml) will moved to:",
-    pmmlFilesLocation: "Score cards (.pmml) were moved to:",
+    dmnFilesLocation: "Decisions (.dmn) have been moved to:",
+    pmmlFilesMove: "Score cards (.pmml) will be moved to:",
+    pmmlFilesLocation: "Score cards (.pmml) have been moved to:",
     bpmnFilesMove: "Workflows (.bpmn, .bpmn2) will be moved to:",
-    bpmnFilesLocation: "Workflows (.bpmn, .bpmn2) were moved to:",
+    bpmnFilesLocation: "Workflows (.bpmn, .bpmn2) have been moved to:",
     otherFilesMove: "Other files will be moved to:",
-    otherFilesLocation: "Other files were moved to:",
+    otherFilesLocation: "Other files have been moved to:",
     applyAccelerator: "Apply Accelerator",
     appliedAt: "This Accelerator was applied at:",
     applyDisclaimer:
@@ -108,7 +108,7 @@ export const en: OnlineI18n = {
     },
     dropdown: {
       noDeployments: "Your deployments show up here",
-      connectedTo: (username: string) => `Connected to  '${username}'`,
+      connectedTo: (username: string) => `Connected to '${username}'`,
       connectedToAction: "Change...",
       deleteDeployments: "Delete all",
       item: {

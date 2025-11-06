@@ -348,8 +348,6 @@ interface DmnEditorDictionary
     renamingIdentifier: string;
     renameAndReplace: string;
     justRename: string;
-    theIdentifier: string;
-    renamedTo: string;
     undefined: string;
     usedByOneOrMoreExpressions: string;
     automaticallyReplaceAll: string;

@@ -71,31 +71,38 @@ export const en: FeelInputComponentI18n = {
       `Creates a date time from the given '${date}' (ignoring any time component) and the given '${time}'`,
     datetimezone: (date: string, time: string) =>
       `Creates a date time from the given '${date}', '${time}' and timezone`,
-    dateYearSecond: (year: string, month: string, day: string, hour: string, minute: string, second: string) =>
-      `Creates a date time from the given '${year}', '${month}', '${day}', '${hour}', '${minute}', and '${second}'.`,
+    dateYearSecond: (
+      yearValue: string,
+      monthValue: string,
+      dayValue: string,
+      hourValue: string,
+      minuteValue: string,
+      secondValue: string
+    ) =>
+      `Creates a date time from the given '${yearValue}', '${monthValue}', '${dayValue}', '${hourValue}', '${minuteValue}', and '${secondValue}'.`,
     datetYearOffset: (
-      year: string,
-      month: string,
-      day: string,
-      hour: string,
-      minute: string,
-      second: string,
+      years: string,
+      months: string,
+      days: string,
+      hours: string,
+      minutes: string,
+      seconds: string,
       offset: string
     ) =>
-      `Creates a date time from the given '${year}', '${month}', '${day}', '${hour}', '${minute}', '${second}' and '${offset}'`,
+      `Creates a date time from the given '${years}', '${months}', '${days}', '${hours}', '${minutes}', '${seconds}' and '${offset}'`,
     datetTimeTimezone: (
-      year: string,
-      month: string,
-      day: string,
-      hour: string,
-      minute: string,
-      second: string,
+      yearVal: string,
+      monthVal: string,
+      dayVal: string,
+      hourVal: string,
+      minuteVal: string,
+      secondVal: string,
       timezone: string
     ) =>
-      `Creates a date time from the given '${year}', '${month}', '${day}', '${hour}', '${minute}', '${second}' and '${timezone}'`,
-    dayOfWeek: (day: string) =>
-      `Returns the ${day} of the week according to the Gregorian calendar enumeration: "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"`,
-    dateOfYear: (day: string) => `Returns the Gregorian number of the ${day} within the year`,
+      `Creates a date time from the given '${yearVal}', '${monthVal}', '${dayVal}', '${hourVal}', '${minuteVal}', '${secondVal}' and '${timezone}'`,
+    dayOfWeek: (dayWeek: string) =>
+      `Returns the ${dayWeek} of the week according to the Gregorian calendar enumeration: "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"`,
+    dateOfYear: (dayYear: string) => `Returns the Gregorian number of the ${dayYear} within the year`,
     decimal: (n: string, scale: string) =>
       `Returns '${n}' with given '${scale}'. The '${scale}' must be in the range [−6111..6176].`,
     distinctValues: (list: string) => `Returns '${list}' without duplicates`,
@@ -234,10 +241,10 @@ export const en: FeelInputComponentI18n = {
       `Returns the substring from the '${startPosition}' for the specified '${length}'. The first character is at position value 1`,
     sum: (list: string) => `Returns the sum of the numbers in the '${list}'`,
     time: "Produces a time from the specified parameter",
-    timeHour: (hour: string, minute: string, second: string) =>
-      `Creates a time from the given '${hour}', '${minute}', and '${second}'.`,
-    timeOffset: (hour: string, minute: string, second: string, offset: string) =>
-      `Creates a time from the given '${hour}', '${minute}', '${second}' and '${offset}'`,
+    timeHour: (hourTime: string, hourMinute: string, hourSecond: string) =>
+      `Creates a time from the given '${hourTime}', '${hourMinute}', and '${hourSecond}'.`,
+    timeOffset: (hourTimeoffset: string, minuteTimeoffset: string, secondTimeoffset: string, offset: string) =>
+      `Creates a time from the given '${hourTimeoffset}', '${minuteTimeoffset}', '${secondTimeoffset}' and '${offset}'`,
     today: "Returns the current date",
     union: (list: string) => `Returns a ${list} of all the elements from multiple lists and excludes duplicates`,
     upperCase: (stringValue: string) => `Produces an uppercase version of the specified '${stringValue}'.`,
