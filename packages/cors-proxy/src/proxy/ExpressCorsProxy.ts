@@ -56,8 +56,9 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
       const info = this.resolveRequestInfo(req);
 
       this.logger.log("New request: ", info.targetUrl);
-      this.logger.debug("Request Method: ", req.method);
-      this.logger.debug("Request Headers: ", req.headers);
+      // The replace method call is used as a precaution against potential log forging attacks.
+      this.logger.debugEscapeNewLines("Request Method: ", req.method);
+      this.logger.debugEscapeNewLines("Request Headers: ", req.headers);
 
       // Creating the headers for the new request
       const outHeaders: Record<string, string> = { ...info?.corsConfig?.customHeaders };
@@ -80,7 +81,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
       }
 
       this.logger.log("Proxying to: ", info.proxyUrl.toString());
-      this.logger.debug("Proxy Method: ", req.method);
+      this.logger.debugEscapeNewLines("Proxy Method: ", req.method);
       this.logger.debug("Proxy Headers: ", outHeaders);
 
       const proxyResponse = await fetch(info.proxyUrl, {
@@ -229,6 +230,19 @@ class Logger {
       return;
     }
     console.debug(message, arg ?? "");
+  }
+
+  /**
+   * This is used when some very basic user input sanitization is needed before it is posted in the logs,
+   * to avoid completely uncontrolled logging of user input.
+   * @param message
+   * @param arg
+   */
+  public debugEscapeNewLines(message: string, arg?: any) {
+    if (!this.verbose) {
+      return;
+    }
+    return console.debug(message.replace(/\r?\n|\r/g, "_"), arg ?? "");
   }
 
   public warn(message: string, arg?: any) {
