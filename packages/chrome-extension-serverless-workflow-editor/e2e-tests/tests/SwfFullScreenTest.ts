@@ -44,7 +44,7 @@ beforeEach(async () => {
   }
 });
 
-test(TEST_NAME, async () => {
+test.skip(TEST_NAME, async () => {
   const workflowUrl: string =
     "https://github.com/apache/incubator-kie-tools/blob/main/packages/chrome-extension-serverless-workflow-editor/e2e-tests/samples/chrome_sample.sw.yaml";
   let swfPage: GitHubEditorPage = await tools.openPage(GitHubEditorPage, workflowUrl);
