@@ -26,10 +26,10 @@ import {
 } from "@patternfly/react-core/dist/js/components/EmptyState";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
-import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { CubesIcon } from "@patternfly/react-icons/dist/js/icons/cubes-icon";
 import { ExclamationIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-icon";
 import { FormI18n } from "./i18n";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
 
 const ISSUES_URL = "https://github.com/apache/incubator-kie-issues/issues";
 
@@ -90,11 +90,12 @@ export function AutoGenerationErrorFormStatus(props: AutoGenerationErrorFormStat
           <br />
           {props.notificationsPanel && (
             <TextContent>
-              <I18nWrapped
-                components={{ link: <a onClick={props.openValidationTab}>{props.i18n.terms.validation}</a> }}
-              >
-                {props.i18n.form.status.autoGenerationError.checkNotificationPanel}
-              </I18nWrapped>
+              <I18nWrappedTemplate
+                text={props.i18n.form.status.autoGenerationError.checkNotificationPanel}
+                interpolationMap={{
+                  link: <a onClick={props.openValidationTab}>{props.i18n.terms.validation}</a>,
+                }}
+              />
             </TextContent>
           )}
         </EmptyStateBody>
@@ -116,17 +117,16 @@ export function ValidatorErrorFormStatus({ i18n }: ValidatorErrorFormStatusProps
         <EmptyStateBody>
           <TextContent>
             <Text>
-              <I18nWrapped
-                components={{
+              <I18nWrappedTemplate
+                text={i18n.form.status.validatorError.message}
+                interpolationMap={{
                   jira: (
                     <a href={ISSUES_URL} target={"_blank"} rel={"noopener noreferrer"}>
                       {ISSUES_URL}
                     </a>
                   ),
                 }}
-              >
-                {i18n.form.status.validatorError.message}
-              </I18nWrapped>
+              />
             </Text>
           </TextContent>
         </EmptyStateBody>

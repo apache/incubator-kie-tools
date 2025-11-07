@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { wrapped } from "@kie-tools-core/i18n/dist/core";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 import { AppI18n } from "..";
 
@@ -26,15 +25,14 @@ export const en: AppI18n = {
   masthead: {
     disclaimer: {
       title: "Development only",
-      description: `This deployment is intended to be used during ${"development".bold()}, so users should not use the
-        deployed services in production or for any type of business-critical workloads.`,
+      description: `This deployment is intended to be used during ${"development".bold()}, so users should not use the deployed services in production or for any type of business-critical workloads.`,
     },
   },
   page: {
     error: {
       title: `${en_common.terms.oops}!`,
       explanation: "The page couldn't be rendered due to an error.",
-      referToJira: ["Please refer to ", wrapped("jira"), " and report an issue."],
+      referToJira: `Please refer to ${"{jira}"} and report an issue.`,
     },
   },
 };
