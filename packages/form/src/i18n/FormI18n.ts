@@ -27,7 +27,7 @@ interface FormDictionary
         autoGenerationError: {
           title: string;
           explanation: string;
-          checkNotificationPanel: Array<string | Wrapped<"link">>;
+          checkNotificationPanel: string;
         };
         emptyForm: {
           title: string;
@@ -35,7 +35,7 @@ interface FormDictionary
         };
         validatorError: {
           title: string;
-          message: Array<string | Wrapped<"jira">>;
+          message: string;
         };
       };
     };

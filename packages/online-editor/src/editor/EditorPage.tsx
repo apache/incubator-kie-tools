@@ -63,12 +63,12 @@ import {
   EmptyStateIcon,
   EmptyStateHeader,
 } from "@patternfly/react-core/dist/js/components/EmptyState";
-import { I18nDictionariesProvider, I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { useEnv } from "../env/hooks/EnvContext";
 import { useSettings } from "../settings/SettingsContext";
 import { EditorEnvelopeLocatorFactory } from "../envelopeLocator/EditorEnvelopeLocatorFactory";
 import * as __path from "path";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
 
 let saveVersion = 1;
 let refreshVersion = 0;
@@ -382,17 +382,16 @@ Error details: ${err}`);
             <TextContent>{i18n.editorPage.error.explanation}</TextContent>
             <br />
             <TextContent>
-              <I18nWrapped
-                components={{
+              <I18nWrappedTemplate
+                text={i18n.editorPage.error.message}
+                interpolationMap={{
                   jira: (
                     <a href={ISSUES_URL} target={"_blank"} rel={"noopener noreferrer"}>
                       {ISSUES_URL}
                     </a>
                   ),
                 }}
-              >
-                {i18n.editorPage.error.message}
-              </I18nWrapped>
+              />
             </TextContent>
           </EmptyStateBody>
         </EmptyState>
