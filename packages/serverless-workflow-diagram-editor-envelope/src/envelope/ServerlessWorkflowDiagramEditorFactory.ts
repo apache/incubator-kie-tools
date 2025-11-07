@@ -23,7 +23,7 @@ import {
   KogitoEditorEnvelopeContextType,
   EditorTheme,
 } from "@kie-tools-core/editor/dist/api";
-import { GwtEditorWrapperFactory } from "@kie-tools/kie-bc-editors-common/dist";
+import { GwtEditorWrapperFactory } from "@kie-tools/kie-bc-editors-common/dist/common";
 import {
   getServerlessWorkflowLanguageData,
   ServerlessWorkflowDiagramEditorChannelApi,

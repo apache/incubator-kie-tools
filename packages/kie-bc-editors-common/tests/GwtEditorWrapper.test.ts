@@ -17,8 +17,8 @@
  * under the License.
  */
 
-import { GwtEditorWrapper } from "@kie-tools/kie-bc-editors-common/dist/GwtEditorWrapper";
-import { GwtStateControlService } from "@kie-tools/kie-bc-editors-common/dist/gwtStateControl";
+import { GwtEditorWrapper } from "@kie-tools/kie-bc-editors-common/dist/common/GwtEditorWrapper";
+import { GwtStateControlService } from "@kie-tools/kie-bc-editors-common/dist/common/gwtStateControl";
 import { EditorTheme, KogitoEditorChannelApi } from "@kie-tools-core/editor/dist/api";
 import { messageBusClientApiMock } from "@kie-tools-core/envelope-bus/dist-tests/messageBusClientApiMock";
 import { I18n } from "@kie-tools-core/i18n/dist/core";

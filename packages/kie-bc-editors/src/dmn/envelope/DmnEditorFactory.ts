@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { GwtEditorWrapperFactory, XmlFormatter } from "@kie-tools/kie-bc-editors-common";
+import { GwtEditorWrapperFactory, XmlFormatter } from "@kie-tools/kie-bc-editors-common/dist/common";
 import { DmnEditorChannelApi, DmnEditorEnvelopeApi, getDmnLanguageData } from "../api";
 import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 import { DmnEditor, DmnEditorImpl } from "./DmnEditor";
