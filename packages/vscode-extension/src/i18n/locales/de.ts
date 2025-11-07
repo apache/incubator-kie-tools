@@ -20,7 +20,7 @@
 import { VsCodeI18n } from "..";
 
 export const de: VsCodeI18n = {
-  savedSvg: (fileName) => `SVG gespeichert unter ${fileName}.`,
+  savedSvg: (fileName: string) => `SVG gespeichert unter ${fileName}.`,
   openSvg: `SVG öffnen`,
   savedSuccessfully: "Erfolgreich gespeichert!",
   errorOpeningFileText: (fileName: string) => `Fehler beim Öffnen von '${fileName}'.`,
