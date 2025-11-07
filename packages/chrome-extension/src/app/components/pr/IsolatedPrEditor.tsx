@@ -37,7 +37,7 @@ import { Octokit } from "@octokit/rest";
 import { fetchFile } from "../../github/api";
 import { useGitHubApi } from "../common/GitHubContext";
 import { useGlobals } from "../common/GlobalContext";
-import { useChromeExtensionI18n } from "../../i18n";
+import { useChromeExtensionI18n } from "../../../i18n";
 
 export interface PrInfo {
   repo: string;
