@@ -17,9 +17,26 @@
  * under the License.
  */
 
-import { KieBcEditorsI18n } from "../KieBcEditorsI18n";
+import * as React from "react";
 
-export const en: KieBcEditorsI18n = {
-  unsupportedFile: (url: string) =>
-    `This file contains a construct that is not yet supported. Please refer to ${url} and report an issue. Don't forget to upload the current file.`,
+// component to replace placeholders in text with React components
+export const I18nWrappedTemplate = ({
+  text,
+  interpolationMap,
+}: {
+  text: string;
+  interpolationMap: Record<string, React.ReactNode>;
+}) => {
+  // Matches {key} where key is one of the placeholder keys
+  const interpolationMapRegex = new RegExp(`\\{(${Object.keys(interpolationMap).join("|")})\\}`, "g");
+
+  return (
+    <>
+      {text
+        .split(interpolationMapRegex)
+        .map((value, i) =>
+          value in interpolationMap ? <React.Fragment key={i}>{interpolationMap[value]}</React.Fragment> : value
+        )}
+    </>
+  );
 };
