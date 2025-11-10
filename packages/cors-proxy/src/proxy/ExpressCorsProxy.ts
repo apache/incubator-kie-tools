@@ -152,7 +152,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
     return new ProxyRequestInfo({
       targetUrl,
       proxyUrl: proxyUrlString,
-      corsConfig: this.resolveCorsConfig(targetUrl, request),
+      corsConfig: this.resolveCorsConfig(proxyUrlString ?? targetUrl, request),
       insecurelyDisableTLSCertificateValidation:
         request.headers[CorsProxyHeaderKeys.INSECURELY_DISABLE_TLS_CERTIFICATE_VALIDATION] === "true",
     });
