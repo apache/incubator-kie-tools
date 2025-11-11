@@ -27,12 +27,17 @@ function getPort(): number {
   return 8080;
 }
 
+function getIsDevMode() {
+  return process.env.CORS_PROXY_MODE === "development";
+}
+
 function getOrigin(): string {
-  const origin = process.env.CORS_PROXY_ORIGIN;
-  if (!origin) {
-    return "http://localhost";
-  }
+  const origin = process.env.CORS_PROXY_ORIGIN || "";
+
   // validate origin, required for CodeQL scan
+  if (!getIsDevMode() && !origin) {
+    throw new Error("Invalid origin: please set an origin");
+  }
   if (origin.trim() === "*") {
     throw new Error('Invalid origin: wildcard "*" is not allowed.');
   }
@@ -41,6 +46,7 @@ function getOrigin(): string {
 
 export const run = () => {
   startServer({
+    isDevMode: getIsDevMode(),
     port: getPort(),
     origin: getOrigin(),
     verbose: process.env.CORS_PROXY_VERBOSE === "true",

@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+process.env.CORS_PROXY_MODE = "development";
 
 import { startServer } from "../src/proxy";
 import { run } from "../src";
@@ -28,8 +29,8 @@ jest.mock("../src/proxy", () => ({
 
 function setEnv(env: Record<string, string>) {
   process.env = {
-    ...env,
     ...process.env,
+    ...env,
   };
 }
 
@@ -39,63 +40,105 @@ describe("index.ts test", () => {
     jest.resetAllMocks();
   });
 
-  it("Default values", () => {
-    setEnv({
-      CORS_PROXY_ORIGIN: "http://localhost",
-    });
+  describe("Development mode", () => {
+    it("Default values", () => {
+      delete process.env.CORS_PROXY_ORIGIN;
 
-    run();
-    expect(startServer).toHaveBeenCalledWith(
-      expect.objectContaining({
-        port: 8080,
-        origin: "http://localhost",
-        verbose: false,
-      })
-    );
+      setEnv({
+        CORS_PROXY_MODE: "development",
+      });
+
+      run();
+      expect(startServer).toHaveBeenCalledWith(
+        expect.objectContaining({
+          port: 8080,
+          origin: "",
+          verbose: false,
+        })
+      );
+    });
   });
 
-  it("Custom port", () => {
-    setEnv({
-      CORS_PROXY_HTTP_PORT: "90",
-      CORS_PROXY_ORIGIN: "http://localhost",
+  describe("Production mode", () => {
+    it("Custom port", () => {
+      setEnv({
+        CORS_PROXY_MODE: "production",
+        CORS_PROXY_HTTP_PORT: "90",
+        CORS_PROXY_ORIGIN: "http://example.com",
+      });
+
+      run();
+      expect(startServer).toHaveBeenCalledWith(
+        expect.objectContaining({
+          port: 90,
+          origin: "http://example.com",
+          verbose: false,
+        })
+      );
+    });
+    it("Custom origin", () => {
+      setEnv({
+        CORS_PROXY_MODE: "production",
+        CORS_PROXY_ORIGIN: "http://example.com",
+      });
+      run();
+      expect(startServer).toHaveBeenCalledWith(
+        expect.objectContaining({
+          port: 8080,
+          origin: "http://example.com",
+          verbose: false,
+        })
+      );
     });
 
-    run();
-    expect(startServer).toHaveBeenCalledWith(
-      expect.objectContaining({
-        port: 90,
-        origin: "http://localhost",
-        verbose: false,
-      })
-    );
-  });
-
-  it("Custom origin", () => {
-    setEnv({
-      CORS_PROXY_ORIGIN: "http://localhost",
+    it("Verbose", () => {
+      setEnv({
+        CORS_PROXY_MODE: "production",
+        CORS_PROXY_ORIGIN: "http://example.com",
+        CORS_PROXY_VERBOSE: "true",
+      });
+      run();
+      expect(startServer).toHaveBeenCalledWith(
+        expect.objectContaining({
+          port: 8080,
+          origin: "http://example.com",
+          verbose: true,
+        })
+      );
     });
-    run();
-    expect(startServer).toHaveBeenCalledWith(
-      expect.objectContaining({
-        port: 8080,
-        origin: "http://localhost",
-        verbose: false,
-      })
-    );
-  });
 
-  it("Verbose", () => {
-    setEnv({
-      CORS_PROXY_VERBOSE: "true",
-      CORS_PROXY_ORIGIN: "http://localhost",
+    it("Should throw an error when the server is started without setting the origin", () => {
+      delete process.env.CORS_PROXY_ORIGIN;
+
+      setEnv({
+        CORS_PROXY_MODE: "production",
+      });
+
+      expect(() => {
+        run();
+      }).toThrow(new Error("Invalid origin: please set an origin"));
+
+      setEnv({
+        CORS_PROXY_MODE: "production",
+        CORS_PROXY_ORIGIN: "",
+      });
+
+      expect(() => {
+        run();
+      }).toThrow(new Error("Invalid origin: please set an origin"));
     });
-    run();
-    expect(startServer).toHaveBeenCalledWith(
-      expect.objectContaining({
-        port: 8080,
-        origin: "http://localhost",
-        verbose: true,
-      })
-    );
+
+    it("Should throw an error when the server is started origin '*'", () => {
+      delete process.env.CORS_PROXY_ORIGIN;
+
+      setEnv({
+        CORS_PROXY_MODE: "production",
+        CORS_PROXY_ORIGIN: "*",
+      });
+
+      expect(() => {
+        run();
+      }).toThrow(new Error('Invalid origin: wildcard "*" is not allowed.'));
+    });
   });
 });
