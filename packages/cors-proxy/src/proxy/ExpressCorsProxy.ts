@@ -241,7 +241,7 @@ class Logger {
     if (!this.verbose) {
       return;
     }
-    return console.debug(message.replace(/\r?\n|\r/g, "_"), arg ?? "");
+    console.debug(message.replace(/\r?\n|\r/g, "_"), arg ?? "");
   }
 
   public warn(message: string, arg?: any) {
