@@ -30,9 +30,9 @@ export const en: FormCodeGeneratorI18n = {
     generateForSpecificHumanTasks: "Generate form code for specific User Tasks",
     optionPlaceholder: "Select an option",
     userTaskPlaceholder: "Choose the User Tasks",
-    parsingFailed: (files: string): string => `JSON Schema parsing failed for the following files: ${files}`,
-    uiLibraryNotAvailable: (uiLibrary: string): string => `The "${uiLibrary}" UI library isn't available.`,
-    successFormGeneration: (files: string): string => `Success generating form code for the following files: ${files}`,
-    errorFormGeneration: (files: string): string => `Error generating form code for the following files: ${files}`,
+    parsingFailed: (files: string) => `JSON Schema parsing failed for the following files: ${files}`,
+    uiLibraryNotAvailable: (uiLibrary: string) => `The "${uiLibrary}" UI library isn't available.`,
+    successFormGeneration: (files: string) => `Success generating form code for the following files: ${files}`,
+    errorFormGeneration: (files: string) => `Error generating form code for the following files: ${files}`,
   },
 };

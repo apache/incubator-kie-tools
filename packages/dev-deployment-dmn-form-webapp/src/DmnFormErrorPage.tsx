@@ -18,7 +18,6 @@
  */
 
 import * as React from "react";
-import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import {
   EmptyState,
   EmptyStateBody,
@@ -28,6 +27,7 @@ import {
 import { Text, TextContent, TextVariants } from "@patternfly/react-core/dist/js/components/Text";
 import { ExclamationTriangleIcon } from "@patternfly/react-icons/dist/js/icons/exclamation-triangle-icon";
 import { useDmnFormI18n } from "./i18n";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
 
 const ISSUES_URL = "https://github.com/apache/incubator-kie-issues/issues";
 
@@ -47,17 +47,16 @@ export function DmnFormErrorPage() {
           </TextContent>
           <br />
           <TextContent>
-            <I18nWrapped
-              components={{
+            <I18nWrappedTemplate
+              text={i18n.page.error.referToJira}
+              interpolationMap={{
                 jira: (
                   <a href={ISSUES_URL} key="github-issues" target={"_blank"} rel={"noopener noreferrer"}>
                     {ISSUES_URL}
                   </a>
                 ),
               }}
-            >
-              {i18n.page.error.referToJira}
-            </I18nWrapped>
+            />
           </TextContent>
         </EmptyStateBody>
       </EmptyState>

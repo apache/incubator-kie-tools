@@ -20,7 +20,7 @@
 import { VsCodeI18n } from "..";
 
 export const en: VsCodeI18n = {
-  savedSvg: (fileName) => `SVG saved at ${fileName}.`,
+  savedSvg: (fileName: string) => `SVG saved at ${fileName}.`,
   openSvg: `Open SVG`,
   savedSuccessfully: "Saved successfully!",
   errorOpeningFileText: (fileName: string) => `Error opening '${fileName}'.`,

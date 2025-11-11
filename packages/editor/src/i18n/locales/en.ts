@@ -17,10 +17,24 @@
  * under the License.
  */
 
-import { KieBcEditorsI18n } from "../KieBcEditorsI18n";
+import { EditorEnvelopeI18n } from "../EditorEnvelopeI18n";
 
-const ISSUES_URL = "https://github.com/apache/incubator-kie-issues/issues";
-
-export const en: KieBcEditorsI18n = {
-  unsupportedFile: `This file contains a construct that is not yet supported. Please refer to ${ISSUES_URL} and report an issue. Don't forget to upload the current file.`,
+export const en: EditorEnvelopeI18n = {
+  keyBindingsHelpOverlay: {
+    title: "Keyboard shortcuts",
+    categories: {
+      edit: "Edit",
+      help: "Help",
+    },
+    commands: {
+      undo: "Undo last edit",
+      redo: "Redo last edit",
+      showKeyboardOverlay: "Show keyboard shortcuts",
+    },
+  },
+  loadingScreen: {
+    loading: "Loading...",
+  },
+  editorNotAvailable: (extension: string) => `No Editor available for '${extension}' extension`,
+  kogitoEditor: "Kogito editor",
 };

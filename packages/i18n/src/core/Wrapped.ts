@@ -18,11 +18,11 @@
  */
 
 export interface Wrapped<Name> {
-  name: Name;
+  nameValue: Name;
 }
 
 export function wrapped<Name extends string>(wrappedName: Name): Wrapped<Name> {
-  return { name: wrappedName };
+  return { nameValue: wrappedName };
 }
 
 export type ExtractWrappedComponentNames<Component> = Component extends Wrapped<infer Name> ? Name : never;

@@ -17,26 +17,26 @@
  * under the License.
  */
 
-import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
+import * as React from "react";
 
-export interface EditorEnvelopeDictionary extends ReferenceDictionary {
-  keyBindingsHelpOverlay: {
-    title: string;
-    categories: {
-      edit: string;
-      help: string;
-    };
-    commands: {
-      undo: string;
-      redo: string;
-      showKeyboardOverlay: string;
-    };
-  };
-  loadingScreen: {
-    loading: string;
-  };
-  editorNotAvailable: (extension: string) => string;
-  kogitoEditor: string;
-}
+// component to replace placeholders in text with React components
+export const I18nWrappedTemplate = ({
+  text,
+  interpolationMap,
+}: {
+  text: string;
+  interpolationMap: Record<string, React.ReactNode>;
+}) => {
+  // Matches {key} where key is one of the placeholder keys
+  const interpolationMapRegex = new RegExp(`\\{(${Object.keys(interpolationMap).join("|")})\\}`, "g");
 
-export interface EditorEnvelopeI18n extends EditorEnvelopeDictionary {}
+  return (
+    <>
+      {text
+        .split(interpolationMapRegex)
+        .map((value, i) =>
+          value in interpolationMap ? <React.Fragment key={i}>{interpolationMap[value]}</React.Fragment> : value
+        )}
+    </>
+  );
+};

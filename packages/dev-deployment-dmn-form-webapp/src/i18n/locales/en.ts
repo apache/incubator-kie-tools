@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { wrapped } from "@kie-tools-core/i18n/dist/core";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 import { DmnFormI18n } from "..";
 
@@ -26,17 +25,16 @@ export const en: DmnFormI18n = {
   formToolbar: {
     disclaimer: {
       title: "Development only",
-      description: `Dev Deployments are intended to be used for ${"development".bold()} purposes only, so users should not use the
-        deployed services in production or for any type of business-critical workloads.`,
+      description: `Dev Deployments are intended to be used for ${"development".bold()} purposes only, so users should not use the deployed services in production or for any type of business-critical workloads.`,
     },
   },
   page: {
     error: {
       title: `${en_common.terms.oops}!`,
       explanation: "The page couldn't be rendered due to an error.",
-      dmnNotSupported: `This ${en_common.names.dmn} has a construct that is not supported. `,
+      dmnNotSupported: `This ${en_common.names.dmn} has a construct that is not supported.`,
       uploadFiles: "Don't forget to upload the current file, and the used inputs",
-      referToJira: ["Please refer to ", wrapped("jira"), " and report an issue."],
+      referToJira: `Please refer to ${"{jira}"} and report an issue.`,
     },
   },
   error: {

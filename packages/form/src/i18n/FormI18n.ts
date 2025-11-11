@@ -20,27 +20,28 @@
 import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 
-interface FormDictionary extends ReferenceDictionary {
-  form: {
-    status: {
-      autoGenerationError: {
-        title: string;
-        explanation: string;
-        checkNotificationPanel: Array<string | Wrapped<"link">>;
-      };
-      emptyForm: {
-        title: string;
-        explanation: string;
-      };
-      validatorError: {
-        title: string;
-        message: Array<string | Wrapped<"jira">>;
+interface FormDictionary
+  extends ReferenceDictionary<{
+    form: {
+      status: {
+        autoGenerationError: {
+          title: string;
+          explanation: string;
+          checkNotificationPanel: string;
+        };
+        emptyForm: {
+          title: string;
+          explanation: string;
+        };
+        validatorError: {
+          title: string;
+          message: string;
+        };
       };
     };
-  };
-  schema: {
-    selectPlaceholder: string;
-  };
-}
+    schema: {
+      selectPlaceholder: string;
+    };
+  }> {}
 
 export interface FormI18n extends FormDictionary, CommonI18n {}

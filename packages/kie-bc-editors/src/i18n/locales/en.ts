@@ -17,8 +17,9 @@
  * under the License.
  */
 
-import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
+import { KieBcEditorsI18n } from "../KieBcEditorsI18n";
 
-export interface KieBcEditorsI18n extends ReferenceDictionary {
-  unsupportedFile: string;
-}
+export const en: KieBcEditorsI18n = {
+  unsupportedFile: (url: string) =>
+    `This file contains a construct that is not yet supported. Please refer to ${url} and report an issue. Don't forget to upload the current file.`,
+};
