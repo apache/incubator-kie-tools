@@ -15,31 +15,21 @@
    under the License.
 -->
 
-## BPMN Standalone Editor
+## @kie-tools/bpmn-editor-standalone
 
-### Description
-
-This library provides standalone BPMN Editor (one all-in-one JavaScript file) that can be embedded into any web application.
+This library provides Apache KIE BPMN Editor as an all-in-one JavaScript file that can be embedded into any web application.
 
 A comprehensive API is also provided for setup and interaction with the Editor.
 
-### Installation
-
-- To add it to your `package.json` file:
-
-  - `npm install @kie-tools/bpmn-editor-standalone`
-
-- To import the library:
-
-  - `import * as BpmnEditor from "@kie-tools/bpmn-editor-standalone/dist"`
-
 ### Usage
 
-Here is an example on how to open the BPMN Editor:
+Here is an example on how to open the standalone Apache KIE BPMN Editor:
 
-```
-const editor = BpmnEditor.open({
-  container: document.getElementById("bpmn-editor-container"),
+```typescript
+import * as ApacheKieBpmnEditor from "@kie-tools/bpmn-editor-standalone/dist";
+
+const editor = ApacheKieBpmnEditor.open({
+  container: document.getElementById("apache-kie-bpmn-editor-container"),
   initialContent: Promise.resolve(""),
   initialFileNormalizedPosixPathRelativeToTheWorkspaceRoot: "model.bpmn",
   readOnly: false,
@@ -48,14 +38,14 @@ const editor = BpmnEditor.open({
       "MyDecision.dmn",
       {
         contentType: "text",
-        content: Promise.resolve("")
-      }
-    ]
-  ])
+        content: Promise.resolve(""),
+      },
+    ],
+  ]),
 });
 ```
 
-Available parameters:
+### Available parameters
 
 - `container`: HTML element in which the Editor will be appended to.
 - `initialContent`: Promise to a BPMN model content. Can be empty. Examples:
@@ -84,6 +74,14 @@ The returned object will contain the methods needed to manipulate the Editor:
 - `redo(): void`: Redo the last undone change in the Editor. This will also fire the subscribed callbacks of content changes.
 - `close(): void`: Closes the Editor.
 - `envelopeApi: MessageBusClientApi<KogitoEditorEnvelopeApi>`: Advanced Editor API. See more details in [MessageBusClientApi](https://github.com/apache/incubator-kie-tools/blob/main/packages/envelope-bus/src/api/index.ts#L91-L95) and [KogitoEditorEnvelopeApi](https://github.com/apache/incubator-kie-tools/blob/main/packages/editor/src/api/KogitoEditorEnvelopeApi.ts#L52-L60).
+
+---
+
+## For development information see:
+
+- 👉 [DEV.md](./docs/DEV.md)
+- 👉 [TEST.md](./docs/TEST.md)
+- 👉 [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
 
 ---
 

@@ -15,9 +15,9 @@
    under the License.
 -->
 
-## BPMN Editor Envelope
+## @kie-tools/bpmn-editor-envelope
 
-Package responsible for creating the necessary pumbling for `bpmn-editor` to be used inside an Envelope.
+Package responsible for creating the necessary pumbling for [@kie-tools/bpmn-editor](../bpmn-editor/README.md) to be used inside an Envelope.
 
 ---
 

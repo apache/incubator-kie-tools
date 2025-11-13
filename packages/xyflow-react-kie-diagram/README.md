@@ -23,6 +23,22 @@ This package exposes React components and utility functions aimed at creating vi
 
 ---
 
+### Usage
+
+---
+
+### Examples
+
+---
+
+## For development information see:
+
+- 👉 [DEV.md](./docs/DEV.md)
+- 👉 [TEST.md](./docs/TEST.md)
+- 👉 [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
+
+---
+
 Apache KIE (incubating) is an effort undergoing incubation at The Apache Software
 Foundation (ASF), sponsored by the name of Apache Incubator. Incubation is
 required of all newly accepted projects until a further review indicates that
