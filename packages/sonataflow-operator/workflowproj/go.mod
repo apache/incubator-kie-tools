@@ -1,6 +1,6 @@
 module github.com/apache/incubator-kie-tools/packages/sonataflow-operator/workflowproj
 
-go 1.24.0
+go 1.24.8
 
 // Internal dependencies
 replace github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api => ../api
