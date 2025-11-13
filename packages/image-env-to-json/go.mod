@@ -1,6 +1,6 @@
 module github.com/apache/incubator-kie-tools/packages/image-env-to-json
 
-go 1.24.8
+go 1.24.10
 
 require (
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.1

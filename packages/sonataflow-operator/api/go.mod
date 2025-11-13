@@ -1,6 +1,6 @@
 module github.com/apache/incubator-kie-tools/packages/sonataflow-operator/api
 
-go 1.24.8
+go 1.24.10
 
 require (
 	github.com/serverlessworkflow/sdk-go/v2 v2.5.0
