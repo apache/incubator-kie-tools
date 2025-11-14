@@ -1,6 +1,6 @@
 module github.com/apache/incubator-kie-tools/packages/sonataflow-operator/container-builder
 
-go 1.24.10
+go 1.24.0
 
 require (
 	github.com/docker/docker v25.0.6+incompatible
