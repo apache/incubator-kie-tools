@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "keywords": [],
   "scripts": {
+    "get-ci-cache-key": "node getCICacheKey.js",
     "install": "node install.js"
   },
   "dependencies": {},
