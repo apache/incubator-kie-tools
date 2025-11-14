@@ -41,6 +41,7 @@ interface DmnFormDictionary
       title: string;
       notFound: string;
     };
+    devDeployments: string;
   }> {}
 
 export interface DmnFormI18n extends DmnFormDictionary, CommonI18n {}

@@ -145,7 +145,7 @@ export function DmnFormToolbar(props: Props) {
             <TextContent>
               &nbsp;&nbsp;
               <Text component={TextVariants.small} style={{ display: "inline" }}>
-                <i>Dev Deployments</i>
+                <i>{i18n.devDeployments}</i>
               </Text>
             </TextContent>
           </FlexItem>

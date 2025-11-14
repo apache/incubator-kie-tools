@@ -30,11 +30,14 @@ import { useAuthSessions } from "../authSessions/AuthSessionsContext";
 import { AuthSessionSelect } from "../authSessions/AuthSessionSelect";
 import { cloudAuthSessionSelectFilter } from "../authSessions/CompatibleAuthSessions";
 import { SelectPosition } from "@patternfly/react-core/deprecated";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
+import { useOnlineI18n } from "../i18n";
 
 export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace | undefined) {
   const devDeployments = useDevDeployments();
   const accountsDispatch = useAccountsDispatch();
   const { authSessions } = useAuthSessions();
+  const { i18n } = useOnlineI18n();
 
   const suggestedAuthSessionForDeployment = useMemo(() => {
     return [...authSessions.values()].find(
@@ -79,7 +82,7 @@ export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace 
                   }, 0);
                 }}
                 isPlain={false}
-                title={"Select Cloud provider for this Dev Deployment..."}
+                title={i18n.devDeployments.common.selectCloudForDev}
                 filter={cloudAuthSessionSelectFilter()}
                 showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.CLOUD}
               />
@@ -92,20 +95,30 @@ export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace 
               onClick={onDeploy}
               isDisabled={!authSessionId}
               ouiaId={"deploy-to-dmn-dev-deployment-dropdown-button"}
-              description="For development only!"
+              description={i18n.devDeployments.common.forDevelopmentOnly}
               style={{ minWidth: "400px" }}
             >
               {workspace.files.length > 1 && (
                 <Flex flexWrap={{ default: "nowrap" }}>
                   <FlexItem>
-                    Deploy <b>{`"${workspace.descriptor.name}"`}</b>
+                    <I18nWrappedTemplate
+                      text={i18n.devDeployments.common.deployWorkspace}
+                      interpolationMap={{
+                        name: <b>{`"${workspace.descriptor.name}"`}</b>,
+                      }}
+                    />
                   </FlexItem>
                 </Flex>
               )}
               {workspace.files.length === 1 && (
                 <Flex flexWrap={{ default: "nowrap" }}>
                   <FlexItem>
-                    Deploy <b>{`"${workspace.files[0].nameWithoutExtension}"`}</b>
+                    <I18nWrappedTemplate
+                      text={i18n.devDeployments.common.deployWorkspace}
+                      interpolationMap={{
+                        name: <b>{`"${workspace.files[0].nameWithoutExtension}"`}</b>,
+                      }}
+                    />
                   </FlexItem>
                   <FlexItem>
                     <b>
