@@ -24,6 +24,7 @@ import { ToggleGroupItem } from "@patternfly/react-core/dist/js/components/Toggl
 import { Notification } from "@kie-tools-core/notifications/dist/api";
 import { EditorPageDockToggleItem } from "../EditorPageDockToggleItem";
 import { PanelId, useEditorDockContext } from "../EditorPageDockContextProvider";
+import { useOnlineI18n } from "../../i18n";
 
 interface NotificationsWithPath {
   path: string;
@@ -101,6 +102,7 @@ function NotificationsToggleItem(props: NotificationsToggleItemProps) {
     const updatedResult = document.getElementById(`total-notifications`);
     updatedResult?.classList.remove("kogito--editor__notifications-panel-error-count-updated");
   }, []);
+  const { i18n } = useOnlineI18n();
 
   return (
     <ToggleGroupItem
@@ -123,7 +125,7 @@ function NotificationsToggleItem(props: NotificationsToggleItemProps) {
           <div style={{ paddingRight: "5px", width: "30px" }}>
             <ExclamationCircleIcon />
           </div>
-          Problems
+          {i18n.editorPage.problems}
           <div style={{ paddingLeft: "5px", width: "30px" }}>
             {!props.isDisabled && (
               <span id={"total-notifications"} onAnimationEnd={onAnimationEnd}>

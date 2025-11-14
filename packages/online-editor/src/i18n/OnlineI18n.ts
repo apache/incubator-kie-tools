@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
+import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
 import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
 import { DmnUnitablesI18n } from "@kie-tools/unitables-dmn/dist/i18n";
 import { GistEnabledAuthProviderType, SupportedGitAuthProviders } from "../authProviders/AuthProvidersApi";
@@ -26,6 +26,7 @@ import { SupportedActions } from "../workspace/components/GitStatusIndicatorActi
 interface OnlineDictionary
   extends ReferenceDictionary<{
     editorPage: {
+      problems: string;
       textEditorModal: {
         title: (fileName: string) => string;
       };
@@ -104,12 +105,42 @@ interface OnlineDictionary
         deleting: string;
         saving: string;
         setupFirst: string;
+        selectAuthentication: string;
+        authenticationExpired: string;
+        devDeployments: string;
+        selectCloudProvider: string;
+        errorFetchingDevDeployments: string;
+        noDeploymentsFound: string;
+        chooseCloudProvider: string;
+        selectCloudForDev: string;
+        deployWorkspace: string;
+        forDevelopmentOnly: string;
+      };
+      tokenMapDescriptions: {
+        uniqueName: string;
+        workspace: {
+          id: string;
+          name: string;
+        };
+        kubernetes: {
+          namespace: string;
+        };
+        uploadService: {
+          apiKey: string;
+        };
       };
       dropdown: {
         noDeployments: string;
         connectedTo: (username: string) => string;
         connectedToAction: string;
         deleteDeployments: string;
+        selectCloudProviderInDropdown: string;
+        refreshToken: (refreshCountdownInSeconds: number) => string;
+        refreshing: string;
+        refresh: string;
+        workspaceNotFound: string;
+        renamedTo: string;
+        defaultValue: string;
         item: {
           upTooltip: string;
           downTooltip: string;
@@ -140,10 +171,16 @@ interface OnlineDictionary
       deployConfirmModal: {
         title: string;
         body: string;
+        chooseDeployment: string;
+        devDeploymentNamespace: string;
+        precomputedValues: string;
       };
       deleteConfirmModal: {
         title: string;
         body: string;
+        actionNotReversible: string;
+        resourcesToBeDeleted: string;
+        loading: string;
       };
       alerts: {
         deployStartedError: string;
@@ -329,6 +366,27 @@ interface OnlineDictionary
         helperText: string;
         helperInvalidText: string;
         placeholder: string;
+        dragAndDropDescription: string;
+        upload: string;
+        uploadItems: (count: number) => string;
+        uploadingItems: (count: number) => string;
+        selectFiles: string;
+        selectFolders: string;
+        trySampleinHomepage: string;
+        trySampleModels: string;
+        newTitle: (name: string) => string;
+        nothingHere: string;
+        startByAdding: string;
+        create: string;
+        import: string;
+        recentModels: string;
+        errorObtainingInfo: (workspaceid: string) => string;
+        addFile: string;
+        modelsInFile: (name: string) => string;
+        newEditorAvailable: string;
+        delete: string;
+        deleteFileName: string;
+        errorFetchingWorkspace: (error: string) => string;
       };
       openUrl: {
         validating: string;
@@ -383,6 +441,7 @@ interface OnlineDictionary
         message: string;
       };
       table: DmnUnitablesI18n;
+      run: string;
       modal: {
         initial: {
           runDmnModels: string;

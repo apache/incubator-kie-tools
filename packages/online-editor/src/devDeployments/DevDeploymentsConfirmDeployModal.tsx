@@ -41,6 +41,7 @@ import { Flex, FlexItem } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { DevDeploymentsTokensList } from "./DevDeploymentsTokensList";
 import { FormHelperText } from "@patternfly/react-core/dist/js/components/Form";
 import { HelperText, HelperTextItem } from "@patternfly/react-core/dist/js/components/HelperText";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
 
 interface Props {
   workspaceFile: WorkspaceFile;
@@ -263,7 +264,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
           variant="primary"
           onClick={onConfirm}
           isLoading={isConfirmLoading}
-          spinnerAriaValueText={isConfirmLoading ? "Loading" : undefined}
+          spinnerAriaValueText={isConfirmLoading ? i18n.devDeployments.deleteConfirmModal.loading : undefined}
         >
           {isConfirmLoading ? i18n.devDeployments.common.deploying : i18n.terms.confirm}
         </Button>,
@@ -277,7 +278,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
       <br />
       {availableDeploymentOptions && (
         <>
-          <FormGroup label={<b>Choose your deployment option:</b>}>
+          <FormGroup label={<b>{i18n.devDeployments.deployConfirmModal.chooseDeployment}</b>}>
             <Select
               variant={SelectVariant.single}
               menuAppendTo={"parent"}
@@ -309,11 +310,12 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
       <br />
       {authSession && isCloudAuthSession(authSession) && (
         <>
-          {`This Dev Deployment will be created at the`}
-          &nbsp;
-          <b>{`'${authSession.namespace}'`}</b>
-          &nbsp;
-          {`namespace.`}
+          <I18nWrappedTemplate
+            text={i18n.devDeployments.deployConfirmModal.devDeploymentNamespace}
+            interpolationMap={{
+              namespace: <b>{`'${authSession.namespace}'`}</b>,
+            }}
+          />
         </>
       )}
       <br />
@@ -321,10 +323,7 @@ export function DevDeploymentsConfirmDeployModal(props: Props) {
         <>
           <br />
           <p>
-            <i>
-              You can use tokens with pre-computed values for your resources and parameters. Check a list of the
-              available tokens below:
-            </i>
+            <i>{i18n.devDeployments.deployConfirmModal.precomputedValues}</i>
           </p>
           <DevDeploymentsTokensList workspaceFile={props.workspaceFile} authSession={authSession} />
         </>
