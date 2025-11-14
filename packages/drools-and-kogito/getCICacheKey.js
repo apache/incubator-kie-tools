@@ -17,7 +17,7 @@
  * under the License.
  */
 
-// This simple script return the cache key used by the GitHub Action to save and restore the cache
+// This simple script returns a unique key used by the `bootstrap` GitHub Action to save and restore the a `drools-and-kogito` build.
 const { env } = require("./env");
 const repos = env.droolsAndKogito.repos;
 
