@@ -136,6 +136,7 @@ const isFirefox = typeof (window as any).InstallTrigger !== "undefined"; // See 
 const PAN_ON_DRAG = [1, 2];
 
 const FIT_VIEW_OPTIONS: RF.FitViewOptions = { maxZoom: 1, minZoom: 0.1, duration: 400 };
+const FIT_VIEW_OPTIONS_PREVIEW: RF.FitViewOptions = { maxZoom: 1, minZoom: 0.1, duration: 0 };
 
 export const DEFAULT_VIEWPORT = { x: 100, y: 100, zoom: 1 };
 
@@ -165,8 +166,8 @@ export type DiagramRef = {
   getReactFlowInstance: () => RF.ReactFlowInstance | undefined;
 };
 
-export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject<HTMLElement> }>(
-  ({ container }, ref) => {
+export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject<HTMLElement>; previewMode?: boolean }>(
+  ({ container, previewMode }, ref) => {
     // Contexts
 
     const dmnEditorStoreApi = useDmnEditorStoreApi();
@@ -1397,8 +1398,8 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             snapToGrid={true}
             snapGrid={rfSnapGrid}
             defaultViewport={viewport}
-            fitView={false}
-            fitViewOptions={FIT_VIEW_OPTIONS}
+            fitView={previewMode ? true : false}
+            fitViewOptions={previewMode ? FIT_VIEW_OPTIONS_PREVIEW : FIT_VIEW_OPTIONS}
             attributionPosition={"bottom-right"}
             onInit={setReactFlowInstance}
             deleteKeyCode={settings.isReadOnly ? [] : DELETE_NODE_KEY_CODES}
@@ -1409,11 +1410,11 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
             // (end)
           >
             <SelectionStatus />
-            <Palette pulse={isEmptyStateShowing} />
-            <TopRightCornerPanels availableHeight={container.current?.offsetHeight} />
+            {!previewMode && <Palette pulse={isEmptyStateShowing} />}
+            {!previewMode && <TopRightCornerPanels availableHeight={container.current?.offsetHeight} />}
             <DiagramCommands />
             {!isFirefox && <RF.Background />}
-            <RF.Controls fitViewOptions={FIT_VIEW_OPTIONS} position={"bottom-right"} />
+            {!previewMode && <RF.Controls fitViewOptions={FIT_VIEW_OPTIONS} position={"bottom-right"} />}
             <SetConnectionToReactFlowStore />
             <ViewportWatcher />
           </RF.ReactFlow>
