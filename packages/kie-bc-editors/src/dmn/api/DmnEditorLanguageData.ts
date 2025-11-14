@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { editors, GwtLanguageData } from "../../common";
+import { editors, GwtLanguageData } from "@kie-tools/kie-bc-editors-common/dist/common";
 
 export function getDmnLanguageData(resourcesPathPrefix: string): GwtLanguageData {
   return {

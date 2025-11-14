@@ -19,7 +19,7 @@
 
 import { SceSimEditor, SceSimEditorImpl } from "./SceSimEditor";
 import { getSceSimLanguageData, SceSimEditorChannelApi, SceSimEditorEnvelopeApi } from "../api";
-import { GwtEditorWrapperFactory, XmlFormatter } from "../../common";
+import { GwtEditorWrapperFactory, XmlFormatter } from "@kie-tools/kie-bc-editors-common/dist/common";
 import { EditorFactory, EditorInitArgs, KogitoEditorEnvelopeContextType } from "@kie-tools-core/editor/dist/api";
 
 export class SceSimEditorFactory

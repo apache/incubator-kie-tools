@@ -20,7 +20,7 @@
 import {
   GwtAppFormerConsumedInteropApi,
   GwtEditor,
-} from "@kie-tools/kie-bc-editors/dist/common/consumedInteropApi/GwtAppFormerConsumedInteropApi";
+} from "@kie-tools/kie-bc-editors-common/dist/common/consumedInteropApi/GwtAppFormerConsumedInteropApi";
 import { DummyEditor } from "./DummyEditor";
 
 class DummyGwtEditor {
