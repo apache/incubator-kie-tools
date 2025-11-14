@@ -60,7 +60,7 @@ public class BPMNDesignerKogitoSeleniumIT {
     private static final Logger LOG = LoggerFactory.getLogger(BPMNDesignerKogitoSeleniumIT.class);
 
     private static final String SET_CONTENT_TEMPLATE =
-            "gwtEditorBeans.get(\"BPMNDiagramEditor\").get().setContent(\"\", '%s')";
+            "gwtEditorBeans.get(\"BPMNDiagramEditor\").get().setContent(\"default\", '%s')";
     private static final String GET_CONTENT_TEMPLATE =
             "return gwtEditorBeans.get(\"BPMNDiagramEditor\").get().getContent()";
 
