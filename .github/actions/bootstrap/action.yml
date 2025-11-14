@@ -53,11 +53,12 @@ runs:
       run: |
         cd ${{ inputs.working_dir }}
         pnpm bootstrap -F @kie-tools-core/drools-and-kogito...
-        key=$(node packages/drools-and-kogito/getCICacheKey.js)
-        echo "Drools and Kogito cache key: $key"
-        echo "key=$key" >> "$GITHUB_OUTPUT"
+        keyOutput=$(pnpm run -F @kie-tools-core/drools-and-kogito get-ci-cache-key | grep "^key=")
+        echo "Drools and Kogito cache $keyOutput"
+        echo "$keyOutput" >> "$GITHUB_OUTPUT"
 
     - name: "Cache drools-and-kogito dist folder"
+      if: ${{ steps.drools_and_kogito_cache_key.outputs.key != '' }}
       id: drools_and_kogito_cache
       uses: actions/cache@v4
       with:

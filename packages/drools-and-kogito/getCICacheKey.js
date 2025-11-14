@@ -22,5 +22,5 @@ const { env } = require("./env");
 const repos = env.droolsAndKogito.repos;
 
 console.log(
-  `kogitoVersion-${env.versions.kogito}-droolsRepoGitRef-${env.droolsAndKogito.repos.drools.gitRef}-optaplannerRepoGitRef-${env.droolsAndKogito.repos.optaplanner.gitRef}-kogitoRuntimesRepoGitRef-${env.droolsAndKogito.repos.kogitoRuntimes.gitRef}-kogitoAppsRepoGitRef-${env.droolsAndKogito.repos.kogitoApps.gitRef}`
+  `key=droolsRepoGitRef-${repos.drools.gitRef}-optaplannerRepoGitRef-${repos.optaplanner.gitRef}-kogitoRuntimesRepoGitRef-${repos.kogitoRuntimes.gitRef}-kogitoAppsRepoGitRef-${repos.kogitoApps.gitRef}`
 );
