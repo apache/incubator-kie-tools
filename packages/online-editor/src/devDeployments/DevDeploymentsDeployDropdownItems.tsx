@@ -132,5 +132,14 @@ export function useDevDeploymentsDeployDropdownItems(workspace: ActiveWorkspace 
         )}
       </React.Fragment>,
     ];
-  }, [accountsDispatch, authSessionId, devDeployments, onDeploy, workspace]);
+  }, [
+    accountsDispatch,
+    authSessionId,
+    devDeployments,
+    onDeploy,
+    workspace,
+    i18n.devDeployments.common.forDevelopmentOnly,
+    i18n.devDeployments.common.deployWorkspace,
+    i18n.devDeployments.common.selectCloudForDev,
+  ]);
 }

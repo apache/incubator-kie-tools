@@ -95,7 +95,12 @@ export function AuthSessionSelect(props: {
     } else if (authSession) {
       return props.authSessionId;
     }
-  }, [authSession, props.authSessionId]);
+  }, [
+    authSession,
+    props.authSessionId,
+    i18n.devDeployments.common.authenticationExpired,
+    i18n.devDeployments.common.selectAuthentication,
+  ]);
 
   const validated = useMemo(() => {
     if (props.authSessionId && !authSession) {
