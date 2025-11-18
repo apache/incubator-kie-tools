@@ -41,5 +41,4 @@ export const en: DmnFormI18n = {
     title: "An unexpected error happened while trying to fetch your file",
     notFound: "A required file could be not be found",
   },
-  devDeployments: "Dev Deployments",
 };

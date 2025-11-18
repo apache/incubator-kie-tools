@@ -86,8 +86,6 @@ import { ResponsiveDropdownToggle } from "../ResponsiveDropdown/ResponsiveDropdo
 import { useEditorsConfig } from "../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { useEnv } from "../env/hooks/EnvContext";
 import { BellIcon } from "@patternfly/react-icons/dist/js/icons/bell-icon";
-import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
-import { useOnlineI18n } from "../i18n";
 
 export function HomePage() {
   const routes = useRoutes();
@@ -97,7 +95,7 @@ export function HomePage() {
   const queryParams = useQueryParams();
   const editorsConfig = useEditorsConfig();
   const { env } = useEnv();
-  const { i18n } = useOnlineI18n();
+
   const closeExpandedWorkspace = useCallback(() => {
     navigate(
       {
@@ -143,7 +141,7 @@ export function HomePage() {
           <GridItem span={6}>
             <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
               <TextContent>
-                <Text component={TextVariants.h1}>{i18n.homePage.uploadFile.create}</Text>
+                <Text component={TextVariants.h1}>Create</Text>
               </TextContent>
               <br />
               <Divider inset={{ default: "insetXl" }} />
@@ -171,7 +169,7 @@ export function HomePage() {
           <GridItem span={6}>
             <PageSection variant={"light"} isFilled={true} style={{ height: "100%" }}>
               <TextContent>
-                <Text component={TextVariants.h1}>{i18n.homePage.uploadFile.import}</Text>
+                <Text component={TextVariants.h1}>Import</Text>
               </TextContent>
               <br />
               <Divider inset={{ default: "insetXl" }} />
@@ -191,13 +189,13 @@ export function HomePage() {
       <PageSection isFilled={true} variant={"light"} hasOverflowScroll={true} aria-label="Workspace Section">
         <PromiseStateWrapper
           promise={workspaceDescriptorsPromise}
-          rejected={(e) => <>{i18n.homePage.uploadFile.errorFetchingWorkspace(e + "")}</>}
+          rejected={(e) => <>Error fetching workspaces: {e + ""}</>}
           resolved={(workspaceDescriptors) => {
             return (
               <Drawer isExpanded={!!expandedWorkspaceId} isInline={true}>
                 <DrawerSection>
                   <TextContent>
-                    <Text component={TextVariants.h1}>{i18n.homePage.uploadFile.recentModels}</Text>
+                    <Text component={TextVariants.h1}>Recent models</Text>
                   </TextContent>
                   <br />
                 </DrawerSection>
@@ -238,11 +236,11 @@ export function HomePage() {
                       <Bullseye>
                         <EmptyState>
                           <EmptyStateHeader
-                            titleText={<>{i18n.homePage.uploadFile.nothingHere}</>}
+                            titleText={<>{`Nothing here`}</>}
                             icon={<EmptyStateIcon icon={CubesIcon} />}
                             headingLevel="h4"
                           />
-                          <EmptyStateBody>{i18n.homePage.uploadFile.startByAdding}</EmptyStateBody>
+                          <EmptyStateBody>{`Start by adding a new model`}</EmptyStateBody>
                         </EmptyState>
                       </Bullseye>
                     )}
@@ -259,7 +257,6 @@ export function HomePage() {
 
 export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
   const workspaces = useWorkspaces();
-  const { i18n } = useOnlineI18n();
   return (
     <Card isSelected={false} isSelectable={true} isCompact={true}>
       <CardHeader
@@ -272,12 +269,7 @@ export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
                 }}
                 item={
                   <>
-                    <I18nWrappedTemplate
-                      text={i18n.homePage.uploadFile.deleteFileName}
-                      interpolationMap={{
-                        fileName: <b>{`"${props.workspace.name}"`}</b>,
-                      }}
-                    />
+                    Delete <b>{`"${props.workspace.name}"`}</b>
                   </>
                 }
               />
@@ -297,7 +289,7 @@ export function WorkspaceCardError(props: { workspace: WorkspaceDescriptor }) {
                     <Text component={TextVariants.h3}>
                       <ExclamationTriangleIcon />
                       &nbsp;&nbsp;
-                      {i18n.homePage.uploadFile.errorObtainingInfo(props.workspace.workspaceId)}
+                      {`There was an error obtaining information for '${props.workspace.workspaceId}'`}
                     </Text>
                   </TextContent>
                 </CardTitle>
@@ -322,7 +314,6 @@ export function WorkspaceCard(props: {
   const workspaces = useWorkspaces();
   const [isHovered, setHovered] = useState(false);
   const workspacePromise = useWorkspacePromise(props.workspaceId);
-  const { i18n } = useOnlineI18n();
 
   const editableFiles = useMemo(() => {
     return workspacePromise.data?.files.filter((file) => editorEnvelopeLocator.hasMappingFor(file.relativePath)) ?? [];
@@ -367,12 +358,7 @@ export function WorkspaceCard(props: {
                           item={
                             <Flex flexWrap={{ default: "nowrap" }}>
                               <FlexItem>
-                                <I18nWrappedTemplate
-                                  text={i18n.homePage.uploadFile.deleteFileName}
-                                  interpolationMap={{
-                                    fileName: <b>{`"${editableFiles[0].nameWithoutExtension}"`}</b>,
-                                  }}
-                                />
+                                Delete <b>{`"${editableFiles[0].nameWithoutExtension}"`}</b>
                               </FlexItem>
                               <FlexItem>
                                 <b>
@@ -429,7 +415,7 @@ export function WorkspaceCard(props: {
                             style={{ width: "100%" }}
                             spaceItems={{ default: "spaceItemsNone" }}
                           >
-                            <FlexItem>{i18n.homePage.uploadFile.delete}</FlexItem>
+                            <FlexItem>{"Delete "}</FlexItem>
                             <FlexItem style={{ minWidth: 0 }}>
                               <Tooltip distance={5} position={"top-start"} content={workspace.descriptor.name}>
                                 <TextContent>
@@ -478,7 +464,6 @@ export function WorkspaceCard(props: {
 
 export function NewModelCard(props: { title: string; extension: string; description: string }) {
   const routes = useRoutes();
-  const { i18n } = useOnlineI18n();
 
   return (
     <Card isFullHeight={true} isPlain={true} isLarge={true}>
@@ -501,7 +486,7 @@ export function NewModelCard(props: { title: string; extension: string; descript
         <Grid>
           <Link to={{ pathname: routes.newModel.path({ extension: props.extension }) }}>
             <Button variant={ButtonVariant.secondary} ouiaId={`new-${props.extension}-button`}>
-              {i18n.homePage.uploadFile.newTitle(props.title)}
+              New {props.title}
             </Button>
           </Link>
           <Link
@@ -519,7 +504,7 @@ export function NewModelCard(props: { title: string; extension: string; descript
               style={{ paddingLeft: "2px" }}
               ouiaId={`try-${props.extension}-sample-button`}
             >
-              {i18n.homePage.uploadFile.trySampleinHomepage}
+              Try sample
             </Button>
           </Link>
         </Grid>
@@ -531,7 +516,6 @@ export function NewModelCard(props: { title: string; extension: string; descript
 export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | undefined; onClose: () => void }) {
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const workspacePromise = useWorkspacePromise(props.workspaceId);
-  const { i18n } = useOnlineI18n();
 
   const otherFiles = useMemo(
     () =>
@@ -571,9 +555,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
             <Flex>
               <FlexItem>
                 <TextContent>
-                  <Text component={TextVariants.h3}>
-                    {i18n.homePage.uploadFile.modelsInFile(workspace.descriptor.name)}
-                  </Text>
+                  <Text component={TextVariants.h3}>{`Models in '${workspace.descriptor.name}'`}</Text>
                 </TextContent>
               </FlexItem>
               <FlexItem>
@@ -582,7 +564,7 @@ export function WorkspacesListDrawerPanelContent(props: { workspaceId: string | 
                   position={"right"}
                   isOpen={isNewFileDropdownMenuOpen}
                   onClose={() => setNewFileDropdownMenuOpen(false)}
-                  title={i18n.homePage.uploadFile.addFile}
+                  title={"Add file"}
                   toggle={
                     <ResponsiveDropdownToggle
                       className={"kie-tools--masthead-hoverable"}

@@ -29,8 +29,6 @@ import { Tokens } from "./services/types";
 import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { v4 as uuid } from "uuid";
 import { Text } from "@patternfly/react-core/dist/js/components/Text";
-import { useOnlineI18n } from "../i18n";
-import { OnlineI18n } from "../i18n";
 import {
   Card,
   CardBody,
@@ -43,21 +41,21 @@ import { Grid, GridItem } from "@patternfly/react-core/dist/js/layouts/Grid";
 
 type TokensToBeDisplayed = Omit<Tokens, "labels" | "annotations">;
 
-const tokenMapDescriptions = (i18n: OnlineI18n): { devDeployment: TokensToBeDisplayed } => ({
+const tokenMapDescriptions: { devDeployment: TokensToBeDisplayed } = {
   devDeployment: {
-    uniqueName: i18n.devDeployments.tokenMapDescriptions.uniqueName,
+    uniqueName: "Unique name for this Dev Deployment, automatically generated",
     workspace: {
-      id: i18n.devDeployments.tokenMapDescriptions.workspace.id,
-      name: i18n.devDeployments.tokenMapDescriptions.workspace.name,
+      id: "The current workspace ID",
+      name: "The current workspace name",
     },
     kubernetes: {
-      namespace: i18n.devDeployments.tokenMapDescriptions.kubernetes.namespace,
+      namespace: "The namespace for the target Kubernetes cluster",
     },
     uploadService: {
-      apiKey: i18n.devDeployments.tokenMapDescriptions.uploadService.apiKey,
+      apiKey: "Randomly generated code to be used by the Dev Deployment Upload Service to verify uploads",
     },
   },
-});
+};
 
 type Props = {
   workspaceFile: WorkspaceFile;
@@ -66,11 +64,10 @@ type Props = {
 
 export function DevDeploymentsTokensList(props: Props) {
   const workspacePromise = useWorkspacePromise(props.workspaceFile.workspaceId);
-  const { i18n } = useOnlineI18n();
 
   const devDeploymentTokensWithDescriptions = useMemo(() => {
     return {
-      descriptions: flattenTokenMap(tokenMapDescriptions(i18n)),
+      descriptions: flattenTokenMap(tokenMapDescriptions),
       defaultValues: flattenTokenMap({
         devDeployment: {
           uniqueName: KubernetesService.newResourceName(RESOURCE_PREFIX, "xxxxxxxxx"),
@@ -96,7 +93,6 @@ export function DevDeploymentsTokensList(props: Props) {
     props.workspaceFile.name,
     props.workspaceFile.workspaceId,
     workspacePromise.data?.descriptor.name,
-    i18n,
   ]);
 
   const [expandedCardId, setExpandedCardId] = useState("");
@@ -122,7 +118,7 @@ export function DevDeploymentsTokensList(props: Props) {
               <CardExpandableContent>
                 <CardBody>{value}</CardBody>
                 <CardFooter>
-                  <b>{i18n.devDeployments.dropdown.defaultValue} </b>
+                  <b>Default value: </b>
                   <Text component="pre">{devDeploymentTokensWithDescriptions.defaultValues[key]}</Text>
                 </CardFooter>
               </CardExpandableContent>
@@ -131,13 +127,7 @@ export function DevDeploymentsTokensList(props: Props) {
         ))}
       </Grid>
     );
-  }, [
-    devDeploymentTokensWithDescriptions.descriptions,
-    devDeploymentTokensWithDescriptions.defaultValues,
-    expandedCardId,
-    i18n.devDeployments.dropdown.defaultValue,
-    toggleExpandedCard,
-  ]);
+  }, [devDeploymentTokensWithDescriptions, toggleExpandedCard, expandedCardId]);
 
   const [isExpanded, setIsExpanded] = useState(false);
 

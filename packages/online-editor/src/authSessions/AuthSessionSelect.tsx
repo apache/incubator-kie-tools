@@ -43,7 +43,6 @@ import { AuthSession, AuthSessionStatus, AUTH_SESSION_NONE } from "./AuthSession
 import { v4 as uuid } from "uuid";
 import { useAuthProviders } from "../authProviders/AuthProvidersContext";
 import { ReAuthenticateButton } from "./ReAuthenticateHelper";
-import { useOnlineI18n } from "../i18n";
 
 export type AuthSessionSelectItem = {
   groupLabel: string;
@@ -79,7 +78,6 @@ export function AuthSessionSelect(props: {
 }) {
   const [isAuthSessionSelectorOpen, setAuthSessionSelectorOpen] = useState(false);
   const [showMore, setShowMore] = useState(false);
-  const { i18n } = useOnlineI18n();
 
   const { authSessions, authSessionStatus } = useAuthSessions();
   const authProviders = useAuthProviders();
@@ -89,18 +87,13 @@ export function AuthSessionSelect(props: {
 
   const selectedAuthSessionId = useMemo(() => {
     if (props.authSessionId && !authSession) {
-      return i18n.devDeployments.common.authenticationExpired; // authSession doesn't exist anymore
+      return "Authentication expired"; // authSession doesn't exist anymore
     } else if (!props.authSessionId) {
-      return i18n.devDeployments.common.selectAuthentication; // no authSession selected
+      return "Select authentication"; // no authSession selected
     } else if (authSession) {
       return props.authSessionId;
     }
-  }, [
-    authSession,
-    props.authSessionId,
-    i18n.devDeployments.common.authenticationExpired,
-    i18n.devDeployments.common.selectAuthentication,
-  ]);
+  }, [authSession, props.authSessionId]);
 
   const validated = useMemo(() => {
     if (props.authSessionId && !authSession) {

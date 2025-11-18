@@ -34,7 +34,6 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Split, SplitItem } from "@patternfly/react-core/dist/js/layouts/Split";
 import { LocalFile } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/LocalFile";
 import { AUTH_SESSION_NONE } from "../authSessions/AuthSessionApi";
-import { useOnlineI18n } from "../i18n";
 
 enum UploadType {
   NONE,
@@ -46,7 +45,6 @@ export function UploadCard(props: { expandWorkspace: (workspaceId: string) => vo
   const routes = useRoutes();
   const navigate = useNavigate();
   const workspaces = useWorkspaces();
-  const { i18n } = useOnlineI18n();
 
   const [uploading, setUploading] = useState(UploadType.NONE);
 
@@ -173,7 +171,7 @@ export function UploadCard(props: { expandWorkspace: (workspaceId: string) => vo
               <TextContent>
                 <Text component={TextVariants.h3}>
                   <Spinner size={"md"} />
-                  &nbsp;&nbsp; {i18n.homePage.uploadFile.uploadingItems(acceptedFiles.length)}
+                  &nbsp;&nbsp; Uploading {acceptedFiles.length} file(s).
                 </Text>
               </TextContent>
             </Bullseye>
@@ -181,7 +179,7 @@ export function UploadCard(props: { expandWorkspace: (workspaceId: string) => vo
           {isDragActive && (
             <Bullseye>
               <TextContent>
-                <Text component={TextVariants.h3}>{i18n.homePage.uploadFile.uploadItems(draggedFiles.length)}</Text>
+                <Text component={TextVariants.h3}>Upload {draggedFiles.length} items(s).</Text>
               </TextContent>
             </Bullseye>
           )}
@@ -193,13 +191,13 @@ export function UploadCard(props: { expandWorkspace: (workspaceId: string) => vo
           <TextContent>
             <Text component={TextVariants.h2}>
               <UploadIcon />
-              &nbsp;&nbsp;{i18n.homePage.uploadFile.upload}
+              &nbsp;&nbsp;Upload
             </Text>
           </TextContent>
         </CardTitle>
         <CardBody>
           <TextContent>
-            <Text component={TextVariants.p}>{i18n.homePage.uploadFile.dragAndDropDescription}</Text>
+            <Text component={TextVariants.p}>Drag & drop files and folders here...</Text>
           </TextContent>
         </CardBody>
         <CardFooter>
@@ -220,7 +218,7 @@ export function UploadCard(props: { expandWorkspace: (workspaceId: string) => vo
             variant={ButtonVariant.link}
             onClick={() => uploadFilesInputRef.current?.click()}
           >
-            {i18n.homePage.uploadFile.selectFiles}
+            Select files...
           </Button>
           <input
             type={"file"}
@@ -238,7 +236,7 @@ export function UploadCard(props: { expandWorkspace: (workspaceId: string) => vo
             variant={ButtonVariant.link}
             onClick={() => uploadFolderInputRef.current?.click()}
           >
-            {i18n.homePage.uploadFile.selectFolders}
+            Select folder...
           </Button>
           <input
             type={"file"}

@@ -147,9 +147,7 @@ export function DevDeploymentsDropdown() {
             <Bullseye>
               <EmptyState>
                 <EmptyStateIcon icon={PficonSatelliteIcon} color={"darkgray"} />
-                <EmptyStateBody style={{ color: "darkgray" }}>
-                  {i18n.devDeployments.common.errorFetchingDevDeployments}
-                </EmptyStateBody>
+                <EmptyStateBody style={{ color: "darkgray" }}>{`Error fetching Dev Deployments.`}</EmptyStateBody>
               </EmptyState>
             </Bullseye>
           </DropdownItem>,
@@ -160,9 +158,7 @@ export function DevDeploymentsDropdown() {
             <Bullseye>
               <EmptyState>
                 <EmptyStateIcon icon={PficonSatelliteIcon} color={"darkgray"} />
-                <EmptyStateBody style={{ color: "darkgray" }}>
-                  {i18n.devDeployments.common.noDeploymentsFound}
-                </EmptyStateBody>
+                <EmptyStateBody style={{ color: "darkgray" }}>{`No Dev Deployments found`}</EmptyStateBody>
               </EmptyState>
             </Bullseye>
           </DropdownItem>,
@@ -201,9 +197,9 @@ export function DevDeploymentsDropdown() {
         <div key={"empty-deployments"}>
           <EmptyState>
             <EmptyStateIcon icon={PficonSatelliteIcon} color={"darkgray"} />
-            <EmptyStateBody style={{ color: "darkgray" }}>
-              {i18n.devDeployments.common.chooseCloudProvider}
-            </EmptyStateBody>
+            <EmptyStateBody
+              style={{ color: "darkgray" }}
+            >{`Choose a Cloud provider to see your Dev Deployments.`}</EmptyStateBody>
           </EmptyState>
         </div>,
       ];
@@ -223,14 +219,14 @@ export function DevDeploymentsDropdown() {
             className={"kie-tools--masthead-hoverable-dark"}
           >
             <PficonSatelliteIcon color={undefined} />
-            &nbsp;&nbsp; {i18n.devDeployments.common.devDeployments} &nbsp;&nbsp;
+            &nbsp;&nbsp; Dev Deployments &nbsp;&nbsp;
             <CaretDownIcon color={undefined} />
           </ResponsiveDropdownToggle>
         }
         isOpen={devDeployments.isDeploymentsDropdownOpen}
         isPlain={true}
         className="kogito--editor__dev-deployments-dropdown"
-        title={i18n.devDeployments.common.devDeployments}
+        title="Dev Deployments"
         dropdownItems={[
           <div style={{ padding: "8px 16px", minWidth: "400px" }} key={"cloud-auth-session-select"}>
             <AuthSessionSelect
@@ -244,7 +240,7 @@ export function DevDeploymentsDropdown() {
                 }, 0);
               }}
               isPlain={false}
-              title={i18n.devDeployments.dropdown.selectCloudProviderInDropdown}
+              title={"Select Cloud provider..."}
               filter={cloudAuthSessionSelectFilter()}
               showOnlyThisAuthProviderGroupWhenConnectingToNewAccount={AuthProviderGroup.CLOUD}
             />
@@ -255,7 +251,7 @@ export function DevDeploymentsDropdown() {
                 <Flex justifyContent={{ default: "justifyContentSpaceBetween" }}>
                   <small style={{ color: "darkgray" }}>
                     {deployments.status !== PromiseStateStatus.PENDING && (
-                      <i>{i18n.devDeployments.dropdown.refreshToken(refreshCountdownInSeconds)}</i>
+                      <i>{`Refreshing in ${refreshCountdownInSeconds} seconds...`}</i>
                     )}
                   </small>
                   <Button
@@ -264,11 +260,7 @@ export function DevDeploymentsDropdown() {
                     style={{ padding: 0 }}
                     isDisabled={deployments.status === PromiseStateStatus.PENDING}
                   >
-                    <small>
-                      {deployments.status === PromiseStateStatus.PENDING
-                        ? i18n.devDeployments.dropdown.refreshing
-                        : i18n.devDeployments.dropdown.refresh}
-                    </small>
+                    <small>{deployments.status === PromiseStateStatus.PENDING ? "Refreshing..." : "Refresh"}</small>
                   </Button>
                 </Flex>
                 <Divider />

@@ -113,7 +113,7 @@ export function DevDeploymentsConfirmDeleteModal() {
           variant="primary"
           onClick={onConfirm}
           isLoading={isLoading}
-          spinnerAriaValueText={isLoading ? i18n.devDeployments.deleteConfirmModal.loading : undefined}
+          spinnerAriaValueText={isLoading ? "Loading" : undefined}
         >
           {isLoading ? i18n.devDeployments.common.deleting : i18n.terms.confirm}
         </Button>,
@@ -125,10 +125,10 @@ export function DevDeploymentsConfirmDeleteModal() {
       {i18n.devDeployments.deleteConfirmModal.body}
       <br />
       <br />
-      {i18n.devDeployments.deleteConfirmModal.actionNotReversible}
+      {`This action is not reversible and links you shared with other people will not be available anymore.`}
       <br />
       <br />
-      {i18n.devDeployments.deleteConfirmModal.resourcesToBeDeleted}:
+      {`The following resources will be deleted:`}
       <br />
       <br />
       {devDeployments.confirmDeleteModalState.isOpen && (

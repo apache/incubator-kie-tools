@@ -24,12 +24,10 @@ import { EditorPageDockToggleItem } from "../editor/EditorPageDockToggleItem";
 import { PanelId, useEditorDockContext } from "../editor/EditorPageDockContextProvider";
 import { useDmnRunnerDispatch } from "./DmnRunnerContext";
 import { DmnRunnerProviderActionType } from "./DmnRunnerTypes";
-import { useOnlineI18n } from "../i18n";
 
 export function DmnRunnerDockToggle(props: {}) {
   const { isDisabled, panel, onTogglePanel } = useEditorDockContext();
   const { setDmnRunnerContextProviderState } = useDmnRunnerDispatch();
-  const { i18n } = useOnlineI18n();
 
   return (
     <EditorPageDockToggleItem>
@@ -64,7 +62,7 @@ export function DmnRunnerDockToggle(props: {}) {
             <div style={{ paddingRight: "5px", width: "30px" }}>
               <TableIcon />
             </div>
-            {i18n.dmnRunner.run}
+            Run
           </div>
         }
       />

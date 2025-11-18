@@ -53,7 +53,6 @@ import { isEditable } from "../../envelopeLocator/EditorEnvelopeLocatorFactory";
 import { useEditorsConfig } from "../../envelopeLocator/hooks/EditorEnvelopeLocatorContext";
 import { useEnv } from "../../env/hooks/EnvContext";
 import { useGitlabClient } from "../../gitlab/useGitlabClient";
-import { useOnlineI18n } from "../../i18n";
 
 const ROOT_MENU_ID = "addFileRootMenu";
 
@@ -96,7 +95,6 @@ export function NewFileDropdownMenu(props: {
   const routes = useRoutes();
   const editorEnvelopeLocator = useEditorEnvelopeLocator();
   const { gitConfig } = useAuthSession(props.workspaceDescriptor.gitAuthSessionId);
-  const { i18n } = useOnlineI18n();
 
   const addEmptyFile = useCallback(
     async (extension: string) => {
@@ -326,7 +324,7 @@ export function NewFileDropdownMenu(props: {
 
           <Divider />
           <MenuItem
-            description={i18n.homePage.uploadFile.trySampleModels}
+            description={"Try sample models"}
             itemId="samplesItemId"
             direction={"down"}
             drilldownMenu={

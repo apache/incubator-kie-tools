@@ -35,7 +35,6 @@ import { KieSandboxDeployment } from "./services/types";
 import { NEW_WORKSPACE_DEFAULT_NAME } from "@kie-tools-core/workspaces-git-fs/dist/worker/api/WorkspaceDescriptor";
 import { useWorkspaces } from "@kie-tools-core/workspaces-git-fs/dist/context/WorkspacesContext";
 import { useCancelableEffect } from "@kie-tools-core/react-hooks/dist/useCancelableEffect";
-import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
 
 interface Props {
   id: number;
@@ -176,15 +175,10 @@ export function DevDeploymentsDropdownItem(props: Props) {
           tooltip={
             shouldDisplayNameChange ? (
               <>
-                <I18nWrappedTemplate
-                  text={i18n.devDeployments.dropdown.renamedTo}
-                  interpolationMap={{
-                    name: <b>{currentWorkspaceName}</b>,
-                  }}
-                />
+                Renamed to <b>{currentWorkspaceName}</b>
               </>
             ) : (
-              !currentWorkspaceName && <b>{i18n.devDeployments.dropdown.workspaceNotFound}</b>
+              !currentWorkspaceName && <b>Workspace not found</b>
             )
           }
         >
