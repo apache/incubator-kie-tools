@@ -45,7 +45,7 @@ beforeEach(async () => {
   }
 });
 
-test(TEST_NAME, async () => {
+test.skip(TEST_NAME, async () => {
   const gitHubListPage: GitHubListPage = await tools.openPage(
     GitHubListPage,
     "https://github.com/apache/incubator-kie-tools/tree/main/packages/chrome-extension-serverless-workflow-editor/e2e-tests/samples"

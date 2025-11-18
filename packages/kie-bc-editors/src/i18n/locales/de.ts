@@ -17,24 +17,9 @@
  * under the License.
  */
 
-import { ReferenceDictionary, Wrapped } from "@kie-tools-core/i18n/dist/core";
-import { CommonI18n } from "@kie-tools/i18n-common-dictionary";
+import { KieBcEditorsI18n } from "../KieBcEditorsI18n";
 
-interface AppDictionary
-  extends ReferenceDictionary<{
-    masthead: {
-      disclaimer: {
-        title: string;
-        description: string;
-      };
-    };
-    page: {
-      error: {
-        title: string;
-        explanation: string;
-        referToJira: string;
-      };
-    };
-  }> {}
-
-export interface AppI18n extends AppDictionary, CommonI18n {}
+export const de: KieBcEditorsI18n = {
+  unsupportedFile: (url: string) =>
+    `Diese Datei enthält ein Konstrukt, das noch nicht unterstützt wird. Bitte konsultieren Sie ${url} und melden Sie ein Problem. Vergessen Sie nicht, die aktuelle Datei hochzuladen.`,
+};

@@ -17,10 +17,9 @@
  * under the License.
  */
 
-import { KieBcEditorsI18n } from "../KieBcEditorsI18n";
+import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
 
-const ISSUES_URL = "https://github.com/apache/incubator-kie-issues/issues";
-
-export const de: KieBcEditorsI18n = {
-  unsupportedFile: `Diese Datei enthält ein Konstrukt, das noch nicht unterstützt wird. Bitte konsultieren Sie ${ISSUES_URL} und melden Sie ein Problem. Vergessen Sie nicht, die aktuelle Datei hochzuladen.`,
-};
+export interface KieBcEditorsI18n
+  extends ReferenceDictionary<{
+    unsupportedFile: (url: string) => string;
+  }> {}

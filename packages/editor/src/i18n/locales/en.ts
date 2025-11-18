@@ -17,9 +17,24 @@
  * under the License.
  */
 
-import { ReferenceDictionary } from "@kie-tools-core/i18n/dist/core";
+import { EditorEnvelopeI18n } from "../EditorEnvelopeI18n";
 
-export interface KieBcEditorsI18n
-  extends ReferenceDictionary<{
-    unsupportedFile: string;
-  }> {}
+export const en: EditorEnvelopeI18n = {
+  keyBindingsHelpOverlay: {
+    title: "Keyboard shortcuts",
+    categories: {
+      edit: "Edit",
+      help: "Help",
+    },
+    commands: {
+      undo: "Undo last edit",
+      redo: "Redo last edit",
+      showKeyboardOverlay: "Show keyboard shortcuts",
+    },
+  },
+  loadingScreen: {
+    loading: "Loading...",
+  },
+  editorNotAvailable: (extension: string) => `No Editor available for '${extension}' extension`,
+  kogitoEditor: "Kogito editor",
+};

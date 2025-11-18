@@ -122,7 +122,7 @@
     <version.maven.surefire.plugin>3.5.0</version.maven.surefire.plugin>
 
     <!-- Apache KIE -->
-    <version.org.kie.kogito>999-20251015-local</version.org.kie.kogito>
+    <version.org.kie.kogito>999-20251107-local</version.org.kie.kogito>
 
     <!-- Quarkus -->
     <version.quarkus>3.20.3</version.quarkus>
@@ -183,12 +183,6 @@
       </dependency>
 
       <!-- Apache KIE -->
-      <dependency>
-        <groupId>io.vertx</groupId>
-        <artifactId>vertx-web</artifactId>
-        <version>${version.io.vertx}</version>
-      </dependency>
-
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-bom</artifactId>

@@ -17,7 +17,6 @@
  * under the License.
  */
 
-import { wrapped } from "@kie-tools-core/i18n/dist/core";
 import { en as en_common } from "@kie-tools/i18n-common-dictionary";
 import { AppI18n } from "..";
 

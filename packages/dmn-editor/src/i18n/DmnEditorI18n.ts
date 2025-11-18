@@ -112,11 +112,11 @@ interface DmnEditorDictionary
       custom: string;
       jumpToDefinition: string;
       selectDataType: string;
-      checkFeelHandbook: Array<string | Wrapped<"feelHandBook">>;
-      dmnTypeConstraintText: Array<string | Wrapped<"typeConstraint" | "lineBreak">>;
+      checkFeelHandbook: string;
+      dmnTypeConstraintText: string;
       typeConstraint: string;
       constraints: string;
-      identifierRenameMessage: Array<string | Wrapped<"fromIdentifier" | "toIdentifier" | "lineBreak">>;
+      identifierRenameMessage: string;
     };
     nodes: {
       view: string;
@@ -241,7 +241,7 @@ interface DmnEditorDictionary
       outputLabel: string;
       outputLabelPlaceholder: string;
       emptyParameters: string;
-      parameter: Array<string | Wrapped<"name">>;
+      parameter: string;
       boxedConditional: string;
       functionToBeCalled: string;
       functionNamePlaceholder: string;
@@ -348,8 +348,6 @@ interface DmnEditorDictionary
     renamingIdentifier: string;
     renameAndReplace: string;
     justRename: string;
-    theIdentifier: string;
-    renamedTo: string;
     undefined: string;
     usedByOneOrMoreExpressions: string;
     automaticallyReplaceAll: string;

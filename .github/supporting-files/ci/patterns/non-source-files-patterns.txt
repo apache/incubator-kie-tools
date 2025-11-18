@@ -16,3 +16,4 @@ NOTICE
 .ci
 ./_intellij-project
 .github/CODEOWNERS
+.rat-excludes

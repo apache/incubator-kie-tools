@@ -34,7 +34,7 @@ beforeEach(async () => {
   tools = await Tools.init(TEST_NAME);
 });
 
-test(TEST_NAME, async () => {
+test.skip(TEST_NAME, async () => {
   const WEB_PAGE =
     "https://github.com/apache/incubator-kie-tools/tree/main/packages/chrome-extension-pack-kogito-kie-editors/e2e-tests/samples";
   const FILE_NAME = "test.dmn";

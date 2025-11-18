@@ -21,8 +21,8 @@ import * as React from "react";
 import { connectField, filterDOMProps, HTMLFieldProps } from "uniforms/esm";
 import { Card, CardBody } from "@patternfly/react-core/dist/js/components/Card";
 import wrapField from "@kie-tools/uniforms-patternfly/dist/esm/wrapField";
-import { I18nWrapped } from "@kie-tools-core/i18n/dist/react-components";
 import { formDmnI18n } from "../i18n";
+import { I18nWrappedTemplate } from "@kie-tools-core/i18n/dist/react-components";
 
 export type FormDmnNotSupportedField = HTMLFieldProps<
   object,
@@ -45,13 +45,12 @@ function FormDmnNotSupportedField({ recursion, recursionRef, ...props }: FormDmn
             width: "100%",
           }}
         >
-          <I18nWrapped
-            components={{
+          <I18nWrappedTemplate
+            text={i18n.result.recursiveStructureNotSupported}
+            interpolationMap={{
               linebreak: <br />,
             }}
-          >
-            {i18n.result.recursiveStructureNotSupported}
-          </I18nWrapped>
+          />
         </div>
       </CardBody>
     </Card>
