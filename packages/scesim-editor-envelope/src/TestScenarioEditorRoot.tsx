@@ -135,7 +135,7 @@ export class TestScenarioEditorRoot extends React.Component<TestScenarioEditorRo
       scesimModel.ScenarioSimulationModel["parsererror" as keyof typeof scesimModel.ScenarioSimulationModel]
     ) {
       throw new Error(
-        "Impossibile to correctly parse the provided scesim file. Most likely, the XML structure of the file is invalid."
+        "Impossible to correctly parse the provided SCESIM file. Most likely, the XML structure of the file is invalid."
       );
     }
 
