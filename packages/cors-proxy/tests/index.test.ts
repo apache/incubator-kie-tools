@@ -54,6 +54,7 @@ describe("index.ts test", () => {
           port: 8080,
           origin: "",
           verbose: false,
+          allowHosts: ["localhost", "*.github.com"],
         })
       );
     });
@@ -87,6 +88,22 @@ describe("index.ts test", () => {
           port: 8080,
           origin: "http://example.com",
           verbose: false,
+        })
+      );
+    });
+    it("Custom allow hosts", () => {
+      setEnv({
+        CORS_PROXY_MODE: "production",
+        CORS_PROXY_ORIGIN: "http://example.com",
+        CORS_PROXY_ALLOW_HOSTS: "*.target.example.com,*.github.com",
+      });
+      run();
+      expect(startServer).toHaveBeenCalledWith(
+        expect.objectContaining({
+          port: 8080,
+          origin: "http://example.com",
+          verbose: false,
+          allowHosts: ["*.target.example.com", "*.github.com"],
         })
       );
     });

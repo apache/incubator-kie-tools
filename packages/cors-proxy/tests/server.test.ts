@@ -46,6 +46,7 @@ describe("CORS handler logic test", () => {
         origin: "",
         verbose: false,
         hostsToUseHttp: [],
+        allowHosts: ["localhost"],
       };
 
       startServer(args);
@@ -79,6 +80,7 @@ describe("CORS handler logic test", () => {
         origin: "",
         verbose: false,
         hostsToUseHttp: [],
+        allowHosts: ["localhost"],
       };
 
       startServer(args);
@@ -114,6 +116,7 @@ describe("CORS handler logic test", () => {
         origin: "http://example.com",
         verbose: false,
         hostsToUseHttp: [],
+        allowHosts: ["localhost"],
       };
 
       startServer(args);
@@ -147,6 +150,7 @@ describe("CORS handler logic test", () => {
         origin: "http://example.com",
         verbose: false,
         hostsToUseHttp: [],
+        allowHosts: ["localhost"],
       };
 
       startServer(args);

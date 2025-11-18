@@ -21,6 +21,7 @@ import * as https from "https";
 import fetch from "node-fetch";
 import { Request, Response } from "express";
 import { HttpsProxyAgent } from "https-proxy-agent";
+import * as minimatch from "minimatch";
 import { GIT_CORS_CONFIG, isGitOperation } from "./git";
 import { CorsProxyHeaderKeys, CorsConfig, CorsProxy } from "@kie-tools/cors-proxy-api/dist";
 
@@ -40,6 +41,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
       origin: string;
       verbose: boolean;
       hostsToUseHttp: string[];
+      allowHosts: string[];
     }
   ) {
     this.logger = new Logger(args.verbose);
@@ -118,7 +120,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
 
       res.status(proxyResponse.status);
 
-      this.logger.debug("Writting Response...");
+      this.logger.debug("Writing Response...");
       if (proxyResponse.body) {
         const stream = proxyResponse.body.pipe(res);
         stream.on("close", () => {
@@ -141,8 +143,10 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
 
   private resolveRequestInfo(request: Request): ProxyRequestInfo {
     const targetUrl: string = (request.headers[CorsProxyHeaderKeys.TARGET_URL] as string) ?? request.url;
-    if (!targetUrl || targetUrl == "/") {
-      throw new Error("Couldn't resolve the target URL...");
+    const parsedTargetUrl = new URL(targetUrl);
+
+    if (!this.args.allowHosts.some((pattern) => minimatch(parsedTargetUrl.hostname, pattern))) {
+      throw new Error(`The target URL in not allowed. Requested: ${targetUrl}`);
     }
 
     const proxyUrl = new URL(`protocol://${targetUrl.substring(1)}`);

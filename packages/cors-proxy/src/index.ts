@@ -51,6 +51,7 @@ export const run = () => {
     origin: getOrigin(),
     verbose: process.env.CORS_PROXY_VERBOSE === "true",
     hostsToUseHttp: (process.env.CORS_PROXY_USE_HTTP_FOR_HOSTS || undefined)?.split(",") ?? [],
+    allowHosts: process.env.CORS_PROXY_ALLOW_HOSTS?.split(",") || ["localhost", "*.github.com"],
   });
 };
 
