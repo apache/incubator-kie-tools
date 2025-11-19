@@ -105,17 +105,39 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
       if (matchingNormalizedPosixPathsRelativeToTheBasePath.length > 0) {
         return new ResourcesList(pattern, matchingNormalizedPosixPathsRelativeToTheBasePath);
       } else {
-        console.debug("Git search returned no matches, falling back to VS Code API...");
+        console.debug(
+          "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Git search returned no matches. Falling back to VS Code API."
+        );
       }
     } catch (error) {
       console.debug(
-        "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Failed to use isomorphic-git to read dir. Falling back to vscode's API.",
+        "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Failed to use isomorphic-git to read dir. Falling back to VS Code API.",
         error
       );
     }
 
     const relativePattern = new RelativePattern(this.args.workspaceRootAbsoluteFsPath, pattern);
-    const files = await vscode.workspace.findFiles(relativePattern);
+
+    // Build exclude pattern from .gitignore
+    let excludePattern = "{node_modules,.git,dist,target,out,build,.vscode,.idea}/**"; // Default excludes
+    try {
+      const gitignorePath = __path.join(this.args.workspaceRootAbsoluteFsPath, ".gitignore");
+      const content = (await vscode.workspace.fs.readFile(vscode.Uri.file(gitignorePath))).toString();
+      const lines = content
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line && !line.startsWith("#"));
+      if (lines.length > 0) {
+        excludePattern += `,{${lines.join(",")}}/**`;
+      }
+    } catch {
+      console.debug(
+        "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: .gitignore not found or unreadable, using default excludes."
+      );
+    }
+
+    const files = await vscode.workspace.findFiles(relativePattern, excludePattern);
+
     const normalizedPosixPathsRelativeToTheWorkspaceRoot = files.map((uri) =>
       vscode.workspace.asRelativePath(uri, false)
     );
