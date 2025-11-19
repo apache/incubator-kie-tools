@@ -101,19 +101,26 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
           return matchesPattern && conformsToSearchType;
         }
       );
-      return new ResourcesList(pattern, matchingNormalizedPosixPathsRelativeToTheBasePath);
+
+      if (matchingNormalizedPosixPathsRelativeToTheBasePath.length > 0) {
+        return new ResourcesList(pattern, matchingNormalizedPosixPathsRelativeToTheBasePath);
+      } else {
+        console.debug("Git search returned no matches, falling back to VS Code API...");
+      }
     } catch (error) {
       console.debug(
         "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Failed to use isomorphic-git to read dir. Falling back to vscode's API.",
         error
       );
-      const relativePattern = new RelativePattern(this.args.workspaceRootAbsoluteFsPath, pattern);
-      const files = await vscode.workspace.findFiles(relativePattern);
-      const normalizedPosixPathsRelativeToTheWorkspaceRoot = files.map((uri) =>
-        vscode.workspace.asRelativePath(uri, false)
-      );
-      return new ResourcesList(pattern, normalizedPosixPathsRelativeToTheWorkspaceRoot);
     }
+
+    const relativePattern = new RelativePattern(this.args.workspaceRootAbsoluteFsPath, pattern);
+    const files = await vscode.workspace.findFiles(relativePattern);
+    const normalizedPosixPathsRelativeToTheWorkspaceRoot = files.map((uri) =>
+      vscode.workspace.asRelativePath(uri, false)
+    );
+
+    return new ResourcesList(pattern, normalizedPosixPathsRelativeToTheWorkspaceRoot);
   }
 
   public async get(
