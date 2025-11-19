@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "keywords": [],
   "scripts": {
-    "get-ci-cache-key": "node getCICacheKey.js",
-    "install": "node install.js"
+    "install": "node install.js",
+    "print-cache-key": "node printCacheKey.js"
   },
   "dependencies": {},
   "devDependencies": {
