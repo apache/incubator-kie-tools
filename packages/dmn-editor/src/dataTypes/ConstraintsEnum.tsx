@@ -216,15 +216,22 @@ function EnumElement({
   onKeyDown: (e: React.KeyboardEvent<HTMLElement>) => void;
 }) {
   const { i18n } = useDmnEditorI18n();
-  const value = useMemo<string>(() => initialValue, [initialValue]);
+  const [value, setValue] = useState<string>(initialValue);
   const removeButtonRef = useRef(null);
   const { hovered } = useDraggableItemContext();
+
+  React.useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
 
   return (
     <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between" }}>
       {typeHelper.component({
         autoFocus: true,
-        onChange: (newValue: string) => onChange(newValue),
+        onChange: (newValue: string) => {
+          setValue(newValue);
+          onChange(newValue);
+        },
         id,
         isDisabled,
         style: {
