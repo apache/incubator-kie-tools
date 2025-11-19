@@ -23,7 +23,6 @@ import {
   ResourceContentRequest,
   ResourceListRequest,
   ResourcesList,
-  ContentType,
 } from "@kie-tools-core/workspace/dist/api";
 import {
   EditorContent,
