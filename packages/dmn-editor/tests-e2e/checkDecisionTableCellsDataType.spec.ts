@@ -24,7 +24,7 @@ import { TabName } from "./__fixtures__/editor";
 import { DefaultNodeName, NodeType } from "./__fixtures__/nodes";
 import { CloseOption } from "@kie-tools/boxed-expression-component/tests-e2e/api/nameAndDataTypeCell";
 
-test.describe.only("Decision Table - Cells Data Type", () => {
+test.describe("Decision Table - Cells Data Type", () => {
   test.describe("Decision Table - Cells Data Type - Merged expression header and output column", () => {
     test.beforeEach(async ({ editor, palette, nodes }) => {
       await editor.open();
