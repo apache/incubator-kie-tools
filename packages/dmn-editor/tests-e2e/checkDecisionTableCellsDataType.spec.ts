@@ -24,7 +24,7 @@ import { TabName } from "./__fixtures__/editor";
 import { DefaultNodeName, NodeType } from "./__fixtures__/nodes";
 import { CloseOption } from "@kie-tools/boxed-expression-component/tests-e2e/api/nameAndDataTypeCell";
 
-test.describe("Decision Table - Cells Data Type", () => {
+test.describe.only("Decision Table - Cells Data Type", () => {
   test.describe("Decision Table - Cells Data Type - Merged expression header and output column", () => {
     test.beforeEach(async ({ editor, palette, nodes }) => {
       await editor.open();
@@ -73,11 +73,10 @@ test.describe("Decision Table - Cells Data Type", () => {
       bee,
       beePropertiesPanel,
     }) => {
-      await beePropertiesPanel.open();
-
       // Setup a decision table with expression header and output column with two different types.
       // First create a decision table with two output columns, change the type of one and delete the other.
       await bee.selectExpressionMenu.selectDecisionTable();
+      await beePropertiesPanel.open();
       await bee.expression.asDecisionTable().addOutputAtStart();
       await bee.expression.asDecisionTable().outputHeaderAt(0).select();
       await beePropertiesPanel.decisionTableOutputHeader.setDataType({ newDataType: DataType.Number });
@@ -95,11 +94,10 @@ test.describe("Decision Table - Cells Data Type", () => {
       bee,
       beePropertiesPanel,
     }) => {
-      await beePropertiesPanel.open();
-
       // Setup a decision table with expression header and output column with two different types.
       // First create a decision table with two output columns, change the type of one and delete the other.
       await bee.selectExpressionMenu.selectDecisionTable();
+      await beePropertiesPanel.open();
       await bee.expression.asDecisionTable().addOutputAtStart();
       await bee.expression.asDecisionTable().outputHeaderAt(0).select();
       await beePropertiesPanel.decisionTableOutputHeader.setDataType({ newDataType: DataType.Number });
@@ -142,8 +140,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         beePropertiesPanel,
         bee,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().inputHeaderAt(0).select();
         await beePropertiesPanel.decisionTableInputHeader.setDataType({ newDataType: dataType });
 
@@ -155,8 +153,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         beePropertiesPanel,
         bee,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().inputHeaderAt(0).select();
         await beePropertiesPanel.decisionTableInputHeader.setDataType({ newDataType: dataType });
         await bee.expression.asDecisionTable().cellAt({ row: 1, column: 1 }).select();
@@ -169,8 +167,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         beePropertiesPanel,
         bee,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().outputHeaderAt(0).select();
         await beePropertiesPanel.decisionTableOutputHeader.setExpressionDataType({ newDataType: dataType });
 
@@ -183,8 +181,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         beePropertiesPanel,
         bee,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().addOutputAtStart();
 
         await bee.expression.asDecisionTable().expressionHeaderCell.content.click();
@@ -207,8 +205,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         beePropertiesPanel,
         bee,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().outputHeaderAt(0).select();
         await beePropertiesPanel.decisionTableOutputHeader.setExpressionDataType({ newDataType: dataType });
         await bee.expression.asDecisionTable().cellAt({ row: 1, column: 2 }).select();
@@ -256,8 +254,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         bee,
         beePropertiesPanel,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().inputHeaderAt(0).select();
         await beePropertiesPanel.decisionTableInputHeader.setCustomDataType({ newDataType: "enumType" });
 
@@ -285,8 +283,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         editor,
         dataTypes,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().inputHeaderAt(0).select();
         await beePropertiesPanel.decisionTableInputHeader.setCustomDataType({ newDataType: "enumType" });
 
@@ -327,8 +325,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         bee,
         beePropertiesPanel,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().inputHeaderAt(0).select();
         await beePropertiesPanel.decisionTableInputHeader.setCustomDataType({ newDataType: "rangeType" });
 
@@ -363,8 +361,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         editor,
         dataTypes,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().inputHeaderAt(0).select();
         await beePropertiesPanel.decisionTableInputHeader.setCustomDataType({ newDataType: "rangeType" });
 
@@ -412,8 +410,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         bee,
         beePropertiesPanel,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().inputHeaderAt(0).select();
         await beePropertiesPanel.decisionTableInputHeader.setCustomDataType({ newDataType: "expressionType" });
 
@@ -437,8 +435,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         editor,
         dataTypes,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().inputHeaderAt(0).select();
         await beePropertiesPanel.decisionTableInputHeader.setCustomDataType({ newDataType: "expressionType" });
 
@@ -471,8 +469,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         bee,
         beePropertiesPanel,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().inputHeaderAt(0).select();
         await beePropertiesPanel.decisionTableInputHeader.setCustomDataType({ newDataType: "noneType" });
 
@@ -494,8 +492,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         bee,
         beePropertiesPanel,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().inputHeaderAt(0).select();
         await beePropertiesPanel.decisionTableInputHeader.setCustomDataType({ newDataType: "enumType" });
 
@@ -575,8 +573,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         bee,
         beePropertiesPanel,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().outputHeaderAt(0).select();
         await beePropertiesPanel.decisionTableOutputHeader.setExpressionCustomDataType({ newDataType: "enumType" });
 
@@ -606,8 +604,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         editor,
         dataTypes,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().outputHeaderAt(0).select();
         await beePropertiesPanel.decisionTableOutputHeader.setExpressionCustomDataType({ newDataType: "enumType" });
 
@@ -652,8 +650,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         bee,
         beePropertiesPanel,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().outputHeaderAt(0).select();
         await beePropertiesPanel.decisionTableOutputHeader.setExpressionCustomDataType({ newDataType: "rangeType" });
 
@@ -690,8 +688,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         editor,
         dataTypes,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().outputHeaderAt(0).select();
         await beePropertiesPanel.decisionTableOutputHeader.setExpressionCustomDataType({ newDataType: "rangeType" });
 
@@ -743,8 +741,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         bee,
         beePropertiesPanel,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().outputHeaderAt(0).select();
         await beePropertiesPanel.decisionTableOutputHeader.setExpressionCustomDataType({
           newDataType: "expressionType",
@@ -772,8 +770,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         editor,
         dataTypes,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().outputHeaderAt(0).select();
         await beePropertiesPanel.decisionTableOutputHeader.setExpressionCustomDataType({
           newDataType: "expressionType",
@@ -812,8 +810,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         bee,
         beePropertiesPanel,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().outputHeaderAt(0).select();
         await beePropertiesPanel.decisionTableOutputHeader.setExpressionCustomDataType({ newDataType: "noneType" });
 
@@ -837,8 +835,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         bee,
         beePropertiesPanel,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().outputHeaderAt(0).select();
         await beePropertiesPanel.decisionTableOutputHeader.setExpressionCustomDataType({ newDataType: "enumType" });
 
@@ -928,8 +926,8 @@ test.describe("Decision Table - Cells Data Type - Constraint", () => {
         bee,
         beePropertiesPanel,
       }) => {
-        await beePropertiesPanel.open();
         await bee.selectExpressionMenu.selectDecisionTable();
+        await beePropertiesPanel.open();
         await bee.expression.asDecisionTable().addOutputAtStart();
         await bee.expression.asDecisionTable().addOutputAtStart();
         await bee.expression.asDecisionTable().addOutputAtStart();
