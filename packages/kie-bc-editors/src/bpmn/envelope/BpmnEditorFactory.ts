@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { GwtEditorWrapperFactory, XmlFormatter } from "../../common";
+import { GwtEditorWrapperFactory, XmlFormatter } from "@kie-tools/kie-bc-editors-common/dist/common";
 import { BpmnEditorChannelApi, BpmnEditorEnvelopeApi, getBpmnLanguageData } from "../api";
 import {
   EditorFactory,

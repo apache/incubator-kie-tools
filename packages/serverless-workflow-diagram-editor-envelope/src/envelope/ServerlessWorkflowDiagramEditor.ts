@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { GwtEditorWrapper } from "@kie-tools/kie-bc-editors/dist/common";
+import { GwtEditorWrapper } from "@kie-tools/kie-bc-editors-common/dist/common";
 import { StunnerCanvas, StunnerEditor, StunnerNode, StunnerSession } from "../api/StunnerAPI";
 
 interface CustomWindow extends Window {
