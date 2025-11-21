@@ -25,6 +25,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -43,15 +45,19 @@ import org.kie.workbench.common.stunner.bpmn.workitem.WorkItemDefinitionRegistry
 import org.kie.workbench.common.stunner.core.diagram.Metadata;
 import org.kie.workbench.common.stunner.kogito.client.services.util.WidPresetResources;
 import org.kie.workbench.common.stunner.kogito.client.services.util.WorkItemIconCache;
+import org.uberfire.backend.vfs.Path;
 import org.uberfire.client.promise.Promises;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static org.kie.workbench.common.stunner.bpmn.client.workitem.WorkItemDefinitionClientParser.parse;
+import static org.kie.workbench.common.stunner.core.util.StringUtils.isEmpty;
 import static org.kie.workbench.common.stunner.core.util.StringUtils.nonEmpty;
 
 @ApplicationScoped
 public class WorkItemDefinitionStandaloneClientService implements WorkItemDefinitionClientService {
+
+    private static Logger LOGGER = Logger.getLogger(WorkItemDefinitionStandaloneClientService.class.getName());
 
     private static final String RESOURCE_ALL_WID_PATTERN = "*.wid";
     private static final String RESOURCE_GLOBAL_DIRECTORY_WID_PATTERN = "global/*.wid";
@@ -62,10 +68,6 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
     private final WorkItemDefinitionCacheRegistry registry;
     private final ResourceContentService resourceContentService;
     private final WorkItemIconCache workItemIconCache;
-
-    // Cache the promise, as by definition will be performed just once,
-    // so the available work item definitions will be also just registered once, by app.
-    private Promise<Collection<WorkItemDefinition>> loader;
 
     @Inject
     public WorkItemDefinitionStandaloneClientService(final Promises promises,
@@ -81,7 +83,6 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
 
     @PostConstruct
     public void init() {
-        loader = allWorkItemsLoader();
     }
 
     @Produces
@@ -93,24 +94,34 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
 
     @Override
     public Promise<Collection<WorkItemDefinition>> call(final Metadata input) {
-        return loader;
+        return allWorkItemsLoader(input.getPath());
     }
 
     @PreDestroy
     public void destroy() {
         registry.clear();
-        loader = null;
     }
 
-    private Promise<Collection<WorkItemDefinition>> allWorkItemsLoader() {
+
+    private Promise<Collection<WorkItemDefinition>> allWorkItemsLoader(Path openedDiagramPath) {
+
+        final int lastSlashIndex = openedDiagramPath != null ? openedDiagramPath.toURI().lastIndexOf('/') : -1;
+        final String directoryPath = (lastSlashIndex != -1) 
+            ? openedDiagramPath.toURI().substring(0, lastSlashIndex + 1) 
+            : ""; 
+
+        final String widPattern = (openedDiagramPath == null || isEmpty(directoryPath)) ?  RESOURCE_ALL_WID_PATTERN : directoryPath + RESOURCE_ALL_WID_PATTERN;
+        
         return promises.create((success, failure) -> {
             registry.clear();
             final List<WorkItemDefinition> loaded = new LinkedList<>();
+            LOGGER.log(Level.INFO, "Searching WID using pattern: " + RESOURCE_GLOBAL_DIRECTORY_WID_PATTERN);
             resourceContentService
-                    .list(RESOURCE_GLOBAL_DIRECTORY_WID_PATTERN, ResourceListOptions.traversal())
+                    .list(RESOURCE_GLOBAL_DIRECTORY_WID_PATTERN, ResourceListOptions.assetFolder())
                     .then(paths1 -> {
+                        LOGGER.log(Level.INFO, "Searching WID using pattern: " + widPattern);
                         resourceContentService
-                                .list(RESOURCE_ALL_WID_PATTERN, ResourceListOptions.assetFolder())
+                                .list(widPattern, ResourceListOptions.assetFolder())
                                 .then(paths2 -> {
                                     String[] paths = mergeTwoArrays(paths1, paths2);
                                     if (paths.length > 0) {
@@ -158,7 +169,7 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
     private Promise<Collection<WorkItemDefinition>> workItemsLoader(final String path,
                                                                     final Collection<WorkItemDefinition> loaded) {
         int lastDirIndex = path.lastIndexOf('/');
-        final String directory = (lastDirIndex >= 0) ? path.substring(0, lastDirIndex) + "/" : path;
+        final String directory = (lastDirIndex >= 0) ? path.substring(0, lastDirIndex) + "/" : "";
         if (nonEmpty(path)) {
             return resourceContentService
                     .get(path)
@@ -198,7 +209,10 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
     }
 
     private Promise<Collection<WorkItemDefinition>> getPromises(final List<WorkItemDefinition> wids, final Collection<WorkItemDefinition> loaded, final String path) {
-        wids.forEach(w -> w.getIconDefinition().setUri(path + w.getIconDefinition().getUri()));
+        wids.forEach(w -> {
+            LOGGER.log(Level.INFO, "WID Icon: " + path + w.getIconDefinition().getUri());
+            w.getIconDefinition().setUri(path + w.getIconDefinition().getUri());
+        });
         return promises.create((success, failure) -> {
             promises.all(wids, this::workItemIconLoader)
                     .then(wid -> {

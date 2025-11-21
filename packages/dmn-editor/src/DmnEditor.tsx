@@ -204,6 +204,8 @@ export type DmnEditorProps = {
   onOpenedBoxedExpressionEditorNodeChange?: (newOpenedNodeId: string | undefined) => void;
 
   locale: string;
+
+  previewMode?: boolean;
 };
 
 export const DmnEditorInternal = ({
@@ -213,6 +215,7 @@ export const DmnEditorInternal = ({
   onOpenedBoxedExpressionEditorNodeChange,
   onModelDebounceStateChanged,
   forwardRef,
+  previewMode,
 }: DmnEditorProps & { forwardRef?: React.Ref<DmnEditorRef> }) => {
   const { i18n } = useDmnEditorI18n();
   const boxedExpressionEditorActiveDrgElementId = useDmnEditorStore((s) => s.boxedExpressionEditor.activeDrgElementId);
@@ -429,7 +432,7 @@ export const DmnEditorInternal = ({
                         data-testid={"kie-tools--dmn-editor--diagram-container"}
                       >
                         {originalVersion && <DmnVersionLabel version={originalVersion} />}
-                        <Diagram ref={diagramRef} container={diagramContainerRef} />
+                        <Diagram ref={diagramRef} container={diagramContainerRef} previewMode={previewMode} />
                       </div>
                     </DrawerContentBody>
                   </DrawerContent>
