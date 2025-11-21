@@ -26,12 +26,7 @@
   "dependencies": {
     "@kie-tools-core/editor": "workspace:*",
     "@kie-tools-core/envelope": "workspace:*",
-    "@kie-tools-core/envelope-bus": "workspace:*",
-    "@kie-tools-core/i18n": "workspace:*",
-    "@kie-tools-core/notifications": "workspace:*",
-    "@kie-tools-core/operating-system": "workspace:*",
     "@kie-tools-core/vscode-java-code-completion": "workspace:*",
-    "@kie-tools-core/workspace": "workspace:*",
     "@kie-tools/dmn-language-service": "workspace:*",
     "@kie-tools/kie-bc-editors-common": "workspace:*",
     "@kie-tools/pmml-editor-marshaller": "workspace:*",
