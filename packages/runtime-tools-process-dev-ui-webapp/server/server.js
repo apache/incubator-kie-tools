@@ -53,6 +53,15 @@ function listen() {
     console.log(`The server is running and listening at http://localhost:${port}`);
   });
 }
+
+// validate corsDomain, required for CodeQL scan
+if (!config.corsDomain) {
+  throw new Error("Invalid CORS_DOMAIN: Please specify a domain.");
+}
+if (config.corsDomain.trim() === "*") {
+  throw new Error('Invalid CORS_DOMAIN: wildcard "*" is not allowed.');
+}
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 

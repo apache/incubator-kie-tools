@@ -92,9 +92,6 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
       });
       this.logger.debug("Proxy Response status: ", proxyResponse.status);
 
-      // Setting up the headers to the original response...
-      res.header("Access-Control-Allow-Origin", this.args.origin);
-
       if (req.method == "OPTIONS") {
         res.header("Access-Control-Allow-Methods", info.corsConfig?.allowMethods.join(", ") ?? "*");
         res.header("Access-Control-Allow-Headers", info.corsConfig?.allowHeaders.join(", ") ?? "*");
@@ -105,6 +102,9 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
       }
 
       proxyResponse.headers.forEach((value, header) => {
+        if (header.toLowerCase() === "access-control-allow-origin") {
+          return;
+        }
         if (!info.corsConfig || info.corsConfig.exposeHeaders.includes(header)) {
           res.setHeader(header, value);
         }
