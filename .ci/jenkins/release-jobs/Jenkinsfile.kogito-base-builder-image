@@ -23,7 +23,7 @@ pipeline {
     }
 
     options {
-        timeout(time: 90, unit: 'MINUTES')
+        timeout(time: 60, unit: 'MINUTES')
     }
 
     parameters {
@@ -40,21 +40,14 @@ pipeline {
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
         KIE_TOOLS_BUILD__buildContainerImages = 'true'
 
-        OPENSHIFT_APP_NAME = 'cors-proxy'
-        OPENSHIFT_PART_OF = 'kie-sandbox-app'
-        OPENSHIFT_NAMESPACE = 'kie-sandbox'
-
-        CORS_PROXY_IMAGE__imageRegistry = 'docker.io'
-        CORS_PROXY_IMAGE__imageAccount = 'apache'
-        CORS_PROXY_IMAGE__imageName = 'incubator-kie-cors-proxy'
-        CORS_PROXY_IMAGE__imageBuildTag = "${params.RELEASE_VERSION}"
+        KOGITO_BASE_BUILDER_IMAGE__registry = 'docker.io'
+        KOGITO_BASE_BUILDER_IMAGE__account = 'apache'
+        KOGITO_BASE_BUILDER_IMAGE__name = 'incubator-kie-kogito-base-builder'
+        KOGITO_BASE_BUILDER_IMAGE__buildTag = "${params.RELEASE_VERSION}"
 
         RELEASE_ARTIFACTS_DIR = "${WORKSPACE}/release-artifacts"
-
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
-
-        PNPM_FILTER_STRING = '-F @kie-tools/cors-proxy-image...'
-
+        PNPM_FILTER_STRING = '-F @kie/kogito-base-builder-image...'
         MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml -Dmaven.repo.local=${WORKSPACE}/.maven"
     }
 
@@ -65,7 +58,6 @@ pipeline {
                     pipelineVars = load '.ci/jenkins/shared-scripts/pipelineVars.groovy'
                     buildUtils = load '.ci/jenkins/shared-scripts/buildUtils.groovy'
                     githubUtils = load '.ci/jenkins/shared-scripts/githubUtils.groovy'
-                    openShiftUtils = load '.ci/jenkins/shared-scripts/openShiftUtils.groovy'
                     dockerUtils = load '.ci/jenkins/shared-scripts/dockerUtils.groovy'
                     releaseUtils = load '.ci/jenkins/shared-scripts/releaseUtils.groovy'
                 }
@@ -86,20 +78,6 @@ pipeline {
             }
         }
 
-        stage('Load upstream images') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
-            }
-            steps {
-                script {
-                    upstreamReleaseArtifactsDir = "${WORKSPACE}/upstream-release-artifacts"
-                    releaseUtils.downloadReleaseArtifacts("${pipelineVars.asfReleaseStagingRepository}", "${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}")
-                    upstreamImagesArtifacts = releaseUtils.getUpstreamImagesArtifactsList("${upstreamReleaseArtifactsDir}", "${params.RELEASE_CANDIDATE_VERSION}")
-                    dockerUtils.loadImages(upstreamImagesArtifacts as String[])
-                }
-            }
-        }
-
         stage('Checkout kie-tools') {
             steps {
                 dir('kie-tools') {
@@ -109,6 +87,7 @@ pipeline {
                             "${params.BASE_REF}",
                             "${pipelineVars.kieToolsBotGithubCredentialsId}"
                         )
+                        githubUtils.setupGitConfig()
                     }
                 }
             }
@@ -150,45 +129,11 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBuild(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
+                        env.KIE_TOOLS_BUILD__mavenDeploySkip = params.DRY_RUN ? 'true' : 'false'
+                        withEnv(["KIE_TOOLS_BUILD__mavenDeploySkip=${env.KIE_TOOLS_BUILD__mavenDeploySkip}"]) {
+                            buildUtils.pnpmBuild(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
+                        }
                     }
-                }
-            }
-        }
-
-        stage('Push cors-proxy-image to Docker Hub') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
-            }
-            steps {
-                script {
-                    dockerUtils.pushImageToRegistry(
-                        "${env.CORS_PROXY_IMAGE__imageRegistry}",
-                        "${env.CORS_PROXY_IMAGE__imageAccount}",
-                        "${env.CORS_PROXY_IMAGE__imageName}",
-                        "${env.CORS_PROXY_IMAGE__imageBuildTag}",
-                        "${pipelineVars.dockerHubUserCredentialsId}",
-                        "${pipelineVars.dockerHubTokenCredentialsId}"
-                    )
-                }
-            }
-        }
-
-        stage('Deploy cors-proxy-image to OpenShift') {
-            when {
-                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION == '' }
-            }
-            steps {
-                script {
-                    openShiftUtils.createOrUpdateApp(
-                        "${env.OPENSHIFT_NAMESPACE}",
-                        "${env.OPENSHIFT_APP_NAME}",
-                        "${params.RELEASE_VERSION}",
-                        "${env.CORS_PROXY_IMAGE__imageRegistry}/${env.CORS_PROXY_IMAGE__imageAccount}/${env.CORS_PROXY_IMAGE__imageName}:${params.RELEASE_VERSION}",
-                        "${env.OPENSHIFT_PART_OF}",
-                        'nodejs',
-                        "${pipelineVars.openshiftCredentialsId}"
-                    )
                 }
             }
         }
@@ -199,11 +144,11 @@ pipeline {
             }
             steps {
                 script {
-                    env.RELEASE_IMAGE_TAR_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-cors-proxy-image.tar.gz"
+                    env.RELEASE_IMAGE_TAR_FILE = "apache-kie-${params.RELEASE_VERSION}-incubating-kogito-base-builder-image.tar.gz"
 
                     sh """#!/bin/bash -el
                     mkdir ${env.RELEASE_ARTIFACTS_DIR}
-                    docker save "${env.CORS_PROXY_IMAGE__imageRegistry}/${env.CORS_PROXY_IMAGE__imageAccount}/${env.CORS_PROXY_IMAGE__imageName}:${params.RELEASE_VERSION}" | gzip > "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_IMAGE_TAR_FILE}"
+                    docker save "${env.KOGITO_BASE_BUILDER_IMAGE__registry}/${env.KOGITO_BASE_BUILDER_IMAGE__account}/${env.KOGITO_BASE_BUILDER_IMAGE__name}:${params.RELEASE_VERSION}" | gzip > "${env.RELEASE_ARTIFACTS_DIR}/${env.RELEASE_IMAGE_TAR_FILE}"
                     """.trim()
                 }
             }
