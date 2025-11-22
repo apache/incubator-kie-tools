@@ -381,7 +381,7 @@ export function FontOptions({ startExpanded, nodeIds }: { startExpanded: boolean
                   text={
                     <ColorPicker
                       name={"font"}
-                      icon={<p>A</p>}
+                      icon={<p>{i18n.terms.keyboardKeys.a}</p>}
                       colorPickerRef={colorPickerRef}
                       color={fontColor}
                       onChange={onChangeColor}

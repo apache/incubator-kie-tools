@@ -33,6 +33,7 @@ interface DmnEditorDictionary
     import: string;
     cancel: string;
     with: string;
+    kind: string;
     dataTypes: {
       days: string;
       hours: string;
@@ -227,10 +228,12 @@ interface DmnEditorDictionary
       enableHighlightingDecisionTable: string;
     };
     propertiesPanel: {
+      nothingToShow: string;
       inputExpression: string;
       constraint: string;
       inputValues: string;
       id: string;
+      documentationLinks: string;
       alternativeFieldName: (name: string) => string;
       alternativeFieldType: (name: string) => string;
       defaultOutputEntry: string;
@@ -316,6 +319,7 @@ interface DmnEditorDictionary
       reference: string;
       unknownNodePlaceholder: string;
       expressionLangPlaceholder: string;
+      inputHeaderType: string;
     };
     boxedExpressionPropertiesPanelTitle: {
       boxedConditional: string;

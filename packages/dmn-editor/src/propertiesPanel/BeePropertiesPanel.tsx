@@ -30,11 +30,13 @@ import { useMemo } from "react";
 import { SingleNodeProperties } from "./SingleNodeProperties";
 import { useExternalModels } from "../includedModels/DmnEditorDependenciesContext";
 import { getOperatingSystem, OperatingSystem } from "@kie-tools-core/operating-system";
+import { useDmnEditorI18n } from "../i18n";
 
 export function BeePropertiesPanel() {
   const dmnEditorStoreApi = useDmnEditorStoreApi();
   const { selectedObjectId, activeDrgElementId } = useDmnEditorStore((s) => s.boxedExpressionEditor);
   const { externalModelsByNamespace } = useExternalModels();
+  const { i18n } = useDmnEditorI18n();
   const node = useDmnEditorStore((s) =>
     activeDrgElementId
       ? s
@@ -67,7 +69,9 @@ export function BeePropertiesPanel() {
         >
           <DrawerHead>
             {shouldDisplayDecisionOrBkmProps && <SingleNodeProperties nodeId={node.id} />}
-            {!shouldDisplayDecisionOrBkmProps && selectedObjectId === "" && <div>{`Nothing to show`}</div>}
+            {!shouldDisplayDecisionOrBkmProps && selectedObjectId === "" && (
+              <div>{i18n.propertiesPanel.nothingToShow}</div>
+            )}
             {!shouldDisplayDecisionOrBkmProps && selectedObjectId !== "" && <div>{selectedObjectId}</div>}
             <DrawerActions>
               <DrawerCloseButton

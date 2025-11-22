@@ -143,7 +143,7 @@ export function DecisionTableOutputHeaderCell(props: {
     <>
       {refactorConfirmationDialog}
       <FormGroup label={i18n.propertiesPanel.id}>
-        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+        <ClipboardCopy isReadOnly={true} hoverTip={i18n.propertiesPanel.copy} clickTip={i18n.propertiesPanel.copied}>
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>

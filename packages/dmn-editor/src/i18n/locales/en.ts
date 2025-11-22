@@ -33,6 +33,7 @@ export const en: DmnEditorI18n = {
   import: "Import",
   cancel: "Cancel",
   with: "with",
+  kind: "Kind",
   dataTypes: {
     days: "Days",
     hours: "Hours",
@@ -244,10 +245,12 @@ export const en: DmnEditorI18n = {
       "Enable highlighting Decision Table rules and Boxed Conditional Expression branches based on evaluation results, also showing success/error status badges on Decision nodes.",
   },
   propertiesPanel: {
+    nothingToShow: "Nothing to show",
     inputExpression: "Input Expression",
     constraint: "Constraint",
     inputValues: "Input Values",
     id: "ID",
+    documentationLinks: "Documentation links",
     alternativeFieldName: (name: string) => `${name} Name`,
     alternativeFieldType: (name: string) => `${name} Type`,
     defaultOutputEntry: "Default Output Entry",
@@ -334,6 +337,7 @@ export const en: DmnEditorI18n = {
     reference: "Reference:",
     unknownNodePlaceholder: "This is a placeholder for an unknown node",
     expressionLangPlaceholder: "Enter an expression language...",
+    inputHeaderType: "Input header type",
   },
   boxedExpressionPropertiesPanelTitle: {
     boxedConditional: "Boxed Conditional",

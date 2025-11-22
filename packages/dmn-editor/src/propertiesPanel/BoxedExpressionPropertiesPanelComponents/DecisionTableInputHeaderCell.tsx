@@ -77,7 +77,7 @@ export function DecisionTableInputHeaderCell(props: {
   return (
     <>
       <FormGroup label="ID">
-        <ClipboardCopy isReadOnly={true} hoverTip="Copy" clickTip="Copied">
+        <ClipboardCopy isReadOnly={true} hoverTip={i18n.propertiesPanel.copy} clickTip={i18n.propertiesPanel.copied}>
           {selectedObjectId}
         </ClipboardCopy>
       </FormGroup>

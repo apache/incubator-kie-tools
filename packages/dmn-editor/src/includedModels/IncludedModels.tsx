@@ -686,7 +686,7 @@ function IncludedModelCard({
               <b>{i18n.includedModels.namespace}</b>&nbsp;{_import["@_namespace"]}
             </p>
             <p>
-              <b>{i18n.includedModels.uri}</b>&nbsp;{_import["@_locationURI"] ?? <i>None</i>}
+              <b>{i18n.includedModels.uri}</b>&nbsp;{_import["@_locationURI"] ?? <i>{i18n.none}</i>}
             </p>
           </Alert>
         </CardBody>
