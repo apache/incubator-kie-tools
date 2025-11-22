@@ -21,12 +21,16 @@ const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/b
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
+    CORS_PROXY__mode: {
+      default: "development",
+      description: "Can be `development` or `production`. Use `production` only in production environments.",
+    },
     CORS_PROXY__port: {
       default: 8080,
       description: "HTTP Port the proxy should listen to",
     },
     CORS_PROXY__origin: {
-      default: "*",
+      default: "",
       description: "Value to set on the 'Access-Control-Allow-Origin' header",
     },
     CORS_PROXY__verbose: {
@@ -37,15 +41,21 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: true,
       description: "Use `http` as default protocol for proxied requests. If `false`, `https` is used.",
     },
+    CORS_PROXY__allowHosts: {
+      default: "localhost,*.github.com",
+      description: "Comma-separated list of allowed host patterns. Supports wildcards (e.g., '*.example.com').",
+    },
   }),
   get env() {
     return {
       corsProxy: {
         dev: {
+          mode: getOrDefault(this.vars.CORS_PROXY__mode),
           port: getOrDefault(this.vars.CORS_PROXY__port),
           origin: getOrDefault(this.vars.CORS_PROXY__origin),
           verbose: getOrDefault(this.vars.CORS_PROXY__verbose),
           useHttpForHosts: getOrDefault(this.vars.CORS_PROXY__useHttpForHosts),
+          allowHosts: getOrDefault(this.vars.CORS_PROXY__allowHosts),
         },
       },
     };

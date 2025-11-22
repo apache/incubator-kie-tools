@@ -23,19 +23,23 @@ import * as cors from "cors";
 import { ExpressCorsProxy } from "./ExpressCorsProxy";
 
 export type ServerArgs = {
+  isDevMode: boolean;
   port: number;
   origin: string;
   verbose: boolean;
   hostsToUseHttp: string[];
+  allowHosts: string[];
 };
 
 export const startServer = (args: ServerArgs): void => {
   console.log("Starting CORS proxy...");
   console.log("====================================================");
+  console.log(`Mode:                       ${args.isDevMode ? "development" : "production"}`);
   console.log(`Origin:                     ${args.origin}`);
   console.log(`Port:                       ${args.port}`);
   console.log(`Verbose:                    ${args.verbose}`);
   console.log(`Hosts to proxy with HTTP:   ${args.hostsToUseHttp}`);
+  console.log(`Allow hosts:                ${args.allowHosts}`);
   console.log("====================================================");
 
   const app: express.Express = express();
@@ -44,7 +48,19 @@ export const startServer = (args: ServerArgs): void => {
 
   const proxy = new ExpressCorsProxy(args);
 
-  const corsHandler = cors({ origin: args.origin });
+  const corsHandler = cors({
+    origin: args.isDevMode
+      ? (origin, cb) => {
+          if (!origin) return cb(null, false);
+          const originUrl = new URL(origin);
+          const host = originUrl.hostname;
+          if (host === "localhost" || host === "127.0.0.1") {
+            return cb(null, true);
+          }
+          return cb(null, false);
+        }
+      : (_origin, cb) => cb(null, args.origin),
+  });
 
   app.use(corsHandler);
   app.options("/", corsHandler); // enable pre-flight requests

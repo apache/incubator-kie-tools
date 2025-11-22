@@ -27,12 +27,31 @@ function getPort(): number {
   return 8080;
 }
 
+function getIsDevMode() {
+  return process.env.CORS_PROXY_MODE === "development";
+}
+
+function getOrigin(): string {
+  const origin = process.env.CORS_PROXY_ORIGIN || "";
+
+  // validate origin, required for CodeQL scan
+  if (!getIsDevMode() && !origin) {
+    throw new Error("Invalid origin: please set an origin");
+  }
+  if (origin.trim() === "*") {
+    throw new Error('Invalid origin: wildcard "*" is not allowed.');
+  }
+  return origin;
+}
+
 export const run = () => {
   startServer({
+    isDevMode: getIsDevMode(),
     port: getPort(),
-    origin: process.env.CORS_PROXY_ORIGIN ?? "*",
+    origin: getOrigin(),
     verbose: process.env.CORS_PROXY_VERBOSE === "true",
     hostsToUseHttp: (process.env.CORS_PROXY_USE_HTTP_FOR_HOSTS || undefined)?.split(",") ?? [],
+    allowHosts: process.env.CORS_PROXY_ALLOW_HOSTS?.split(",") || ["localhost", "*.github.com"],
   });
 };
 

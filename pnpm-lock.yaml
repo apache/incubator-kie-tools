@@ -1898,6 +1898,9 @@ importers:
       https-proxy-agent:
         specifier: ^7.0.6
         version: 7.0.6
+      minimatch:
+        specifier: ^3.0.5
+        version: 3.1.2
       node-fetch:
         specifier: ^3.3.2
         version: 3.3.2
@@ -1935,6 +1938,9 @@ importers:
       '@types/jest':
         specifier: ^29.5.12
         version: 29.5.12
+      '@types/minimatch':
+        specifier: ^3.0.5
+        version: 3.0.5
       '@types/node':
         specifier: ^22.14.1
         version: 22.18.8
@@ -60236,7 +60242,7 @@ snapshots:
       watchpack: 2.4.2
       webpack-sources: 3.2.3
     optionalDependencies:
-      webpack-cli: 4.10.0(webpack-dev-server@4.15.1)(webpack@5.94.0)
+      webpack-cli: 4.10.0(webpack@5.94.0)
     transitivePeerDependencies:
       - '@swc/core'
       - esbuild
