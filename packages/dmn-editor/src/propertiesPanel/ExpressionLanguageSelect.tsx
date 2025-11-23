@@ -59,7 +59,7 @@ export function ExpressionLangaugeSelect({
       onToggle={(event, isExpanded) => setExpressionLanguageSelectOpen(isExpanded)}
       isDisabled={settings.isReadOnly}
       selections={selections}
-      placeholderText={i18n.propertiesPanel.expressionLanguagePlaceholder}
+      placeholderText={i18n.propertiesPanel.expressionLangPlaceholder}
     >
       {allLanguages?.map((language: string) => (
         <SelectOption key={language} value={language}>
