@@ -27,28 +27,25 @@ function getPort(): number {
   return 8080;
 }
 
-function getIsDevMode() {
-  return process.env.CORS_PROXY_MODE === "development";
-}
+function getAllowedOrigins(): string[] {
+  const origins = process.env.CORS_PROXY_ALLOWED_ORIGINS || "";
+  const originsList = origins.split(",").map((o) => o.trim());
 
-function getOrigin(): string {
-  const origin = process.env.CORS_PROXY_ORIGIN || "";
+  if (originsList.some((o) => o === "")) {
+    throw new Error("Invalid origin: empty origins are not allowed in CORS_PROXY_ALLOWED_ORIGINS.");
+  }
 
-  // validate origin, required for CodeQL scan
-  if (!getIsDevMode() && !origin) {
-    throw new Error("Invalid origin: please set an origin");
+  if (originsList.some((o) => o === "*")) {
+    throw new Error('Invalid origin: wildcard "*" is not allowed in CORS_PROXY_ALLOWED_ORIGINS.');
   }
-  if (origin.trim() === "*") {
-    throw new Error('Invalid origin: wildcard "*" is not allowed.');
-  }
-  return origin;
+
+  return originsList;
 }
 
 export const run = () => {
   startServer({
-    isDevMode: getIsDevMode(),
+    allowedOrigins: getAllowedOrigins(),
     port: getPort(),
-    origin: getOrigin(),
     verbose: process.env.CORS_PROXY_VERBOSE === "true",
     hostsToUseHttp: (process.env.CORS_PROXY_USE_HTTP_FOR_HOSTS || undefined)?.split(",") ?? [],
   });

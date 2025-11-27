@@ -23,9 +23,8 @@ import * as cors from "cors";
 import { ExpressCorsProxy } from "./ExpressCorsProxy";
 
 export type ServerArgs = {
-  isDevMode: boolean;
+  allowedOrigins: string[];
   port: number;
-  origin: string;
   verbose: boolean;
   hostsToUseHttp: string[];
 };
@@ -33,8 +32,7 @@ export type ServerArgs = {
 export const startServer = (args: ServerArgs): void => {
   console.log("Starting CORS proxy...");
   console.log("====================================================");
-  console.log(`Mode:                       ${args.isDevMode ? "development" : "production"}`);
-  console.log(`Origin:                     ${args.origin}`);
+  console.log(`Allowed Origins:            ${args.allowedOrigins.join(", ")}`);
   console.log(`Port:                       ${args.port}`);
   console.log(`Verbose:                    ${args.verbose}`);
   console.log(`Hosts to proxy with HTTP:   ${args.hostsToUseHttp}`);
@@ -47,17 +45,13 @@ export const startServer = (args: ServerArgs): void => {
   const proxy = new ExpressCorsProxy(args);
 
   const corsHandler = cors({
-    origin: args.isDevMode
-      ? (origin, cb) => {
-          if (!origin) return cb(null, false);
-          const originUrl = new URL(origin);
-          const host = originUrl.hostname;
-          if (host === "localhost" || host === "127.0.0.1") {
-            return cb(null, true);
-          }
-          return cb(null, false);
-        }
-      : (_origin, cb) => cb(null, args.origin),
+    origin: (origin, cb) => {
+      if (!origin || !args.allowedOrigins.includes(origin)) {
+        return cb(null, false);
+      }
+
+      return cb(null, origin);
+    },
   });
 
   app.use(corsHandler);
