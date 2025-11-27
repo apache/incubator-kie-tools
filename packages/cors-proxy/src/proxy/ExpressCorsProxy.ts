@@ -38,7 +38,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
 
   constructor(
     private readonly args: {
-      origin: string;
+      allowedOrigins: string[];
       verbose: boolean;
       hostsToUseHttp: string[];
       allowHosts: string[];
@@ -48,7 +48,6 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
 
     this.logger.debug("");
     this.logger.debug("Proxy Configuration:");
-    this.logger.debug("* Accept Origin Header: ", `"${args.origin}"`);
     this.logger.debug("* Verbose: ", args.verbose);
     this.logger.debug("");
   }
@@ -142,11 +141,20 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
   }
 
   private resolveRequestInfo(request: Request): ProxyRequestInfo {
+    const origin = request.header("origin");
     const targetUrl: string = (request.headers[CorsProxyHeaderKeys.TARGET_URL] as string) ?? request.url;
     const parsedTargetUrl = new URL(targetUrl);
 
     if (!this.args.allowHosts.some((pattern) => minimatch(parsedTargetUrl.hostname, pattern))) {
       throw new Error(`The target URL in not allowed. Requested: ${targetUrl}`);
+    }
+
+    if (!origin || !this.args.allowedOrigins.includes(origin)) {
+      throw new Error(`Origin ${origin} is not allowed`);
+    }
+
+    if (!targetUrl || targetUrl == "/") {
+      throw new Error("Couldn't resolve the target URL...");
     }
 
     const proxyUrl = new URL(`protocol://${targetUrl.substring(1)}`);

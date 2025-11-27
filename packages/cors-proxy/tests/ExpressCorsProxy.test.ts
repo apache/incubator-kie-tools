@@ -28,7 +28,7 @@ import { Request, Response } from "express";
 
 const getProxy = (allowHosts: string[]) =>
   new ExpressCorsProxy({
-    origin: "http://example.com",
+    allowedOrigins: ["http://example.com"],
     verbose: false,
     hostsToUseHttp: [],
     allowHosts,
@@ -55,6 +55,11 @@ const getMockResponse = (): Response =>
 
 const getMockRequest = (targetUrl: string) =>
   ({
+    header: (header: string) => {
+      if (header === "origin") {
+        return "http://example.com";
+      }
+    },
     headers: {
       origin: "http://example.com",
       "target-url": targetUrl,

@@ -38,12 +38,11 @@ describe("CORS handler logic test", () => {
     jest.clearAllMocks();
   });
 
-  describe("tests with isDevMode=true", () => {
-    it("should allow requests with origin http://localhost:8080", (done) => {
+  describe("Single origin in allowedOrigins", () => {
+    it("should allow requests from origin http://localhost:9000", (done) => {
       const args: ServerArgs = {
-        isDevMode: true,
+        allowedOrigins: ["http://localhost:9000"],
         port: 8080,
-        origin: "",
         verbose: false,
         hostsToUseHttp: [],
         allowHosts: ["localhost"],
@@ -73,11 +72,10 @@ describe("CORS handler logic test", () => {
       corsMiddleware(req, res, next);
     });
 
-    it("should not allow requests with origin http://notvalid:8080", (done) => {
+    it("should not allow requests from non-allowed origin", (done) => {
       const args: ServerArgs = {
-        isDevMode: true,
+        allowedOrigins: ["http://localhost:9000"],
         port: 8080,
-        origin: "",
         verbose: false,
         hostsToUseHttp: [],
         allowHosts: ["localhost"],
@@ -108,12 +106,47 @@ describe("CORS handler logic test", () => {
     });
   });
 
-  describe("tests with isDevMode=false", () => {
-    it("should allow requests with origin http://example.com", (done) => {
+  describe("Multiple origins in allowedOrigins", () => {
+    it.each(["http://example.com", "http://staging.example.com"])(
+      'should allow requests from %s allowed origin with allowedOrigins: ["http://example.com", "http://staging.example.com"]',
+      (origin, done) => {
+        const args: ServerArgs = {
+          allowedOrigins: ["http://example.com", "http://staging.example.com"],
+          port: 8080,
+          verbose: false,
+          hostsToUseHttp: [],
+          allowHosts: ["localhost"],
+        };
+
+        startServer(args);
+
+        const req: any = {
+          headers: {
+            origin,
+          },
+          method: "GET",
+        };
+
+        const res: any = {
+          statusCode: 200,
+          setHeader: jest.fn(),
+          getHeader: jest.fn(),
+        };
+
+        const next = function () {
+          expect(res.setHeader).toHaveBeenCalledWith("Access-Control-Allow-Origin", origin);
+          done();
+        };
+
+        const corsMiddleware = corsMock.mock.results[0].value;
+        corsMiddleware(req, res, next);
+      }
+    );
+
+    it("should not allow requests from non-allowed origin", (done) => {
       const args: ServerArgs = {
-        isDevMode: false,
+        allowedOrigins: ["http://example.com", "http://staging.example.com"],
         port: 8080,
-        origin: "http://example.com",
         verbose: false,
         hostsToUseHttp: [],
         allowHosts: ["localhost"],
@@ -145,9 +178,8 @@ describe("CORS handler logic test", () => {
 
     it("should not allow requests with origin http://notvalid:9000", (done) => {
       const args: ServerArgs = {
-        isDevMode: false,
+        allowedOrigins: ["http://localhost:9000"],
         port: 8080,
-        origin: "http://example.com",
         verbose: false,
         hostsToUseHttp: [],
         allowHosts: ["localhost"],
@@ -169,7 +201,7 @@ describe("CORS handler logic test", () => {
       };
 
       const next = function () {
-        expect(res.setHeader).toHaveBeenCalledWith("Access-Control-Allow-Origin", "http://example.com");
+        expect(res.setHeader).not.toHaveBeenCalled();
         done();
       };
 
