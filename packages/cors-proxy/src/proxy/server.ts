@@ -23,8 +23,8 @@ import * as cors from "cors";
 import { ExpressCorsProxy } from "./ExpressCorsProxy";
 
 export type ServerArgs = {
+  allowedOrigins: string[];
   port: number;
-  origin: string;
   verbose: boolean;
   hostsToUseHttp: string[];
 };
@@ -32,7 +32,7 @@ export type ServerArgs = {
 export const startServer = (args: ServerArgs): void => {
   console.log("Starting CORS proxy...");
   console.log("====================================================");
-  console.log(`Origin:                     ${args.origin}`);
+  console.log(`Allowed Origins:            ${args.allowedOrigins.join(", ")}`);
   console.log(`Port:                       ${args.port}`);
   console.log(`Verbose:                    ${args.verbose}`);
   console.log(`Hosts to proxy with HTTP:   ${args.hostsToUseHttp}`);
@@ -44,7 +44,15 @@ export const startServer = (args: ServerArgs): void => {
 
   const proxy = new ExpressCorsProxy(args);
 
-  const corsHandler = cors({ origin: args.origin });
+  const corsHandler = cors({
+    origin: (origin, cb) => {
+      if (!origin || !args.allowedOrigins.includes(origin)) {
+        return cb(null, false);
+      }
+
+      return cb(null, origin);
+    },
+  });
 
   app.use(corsHandler);
   app.options("/", corsHandler); // enable pre-flight requests

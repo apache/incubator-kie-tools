@@ -21,13 +21,13 @@ const { varsWithName, composeEnv, getOrDefault } = require("@kie-tools-scripts/b
 
 module.exports = composeEnv([require("@kie-tools/root-env/env")], {
   vars: varsWithName({
+    CORS_PROXY__allowedOrigins: {
+      default: "http://localhost:9001",
+      description: "Comma-separated list of allowed origins used to set on the 'Access-Control-Allow-Origin' header",
+    },
     CORS_PROXY__port: {
       default: 8080,
       description: "HTTP Port the proxy should listen to",
-    },
-    CORS_PROXY__origin: {
-      default: "*",
-      description: "Value to set on the 'Access-Control-Allow-Origin' header",
     },
     CORS_PROXY__verbose: {
       default: true,
@@ -42,8 +42,8 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
     return {
       corsProxy: {
         dev: {
+          allowedOrigins: getOrDefault(this.vars.CORS_PROXY__allowedOrigins),
           port: getOrDefault(this.vars.CORS_PROXY__port),
-          origin: getOrDefault(this.vars.CORS_PROXY__origin),
           verbose: getOrDefault(this.vars.CORS_PROXY__verbose),
           useHttpForHosts: getOrDefault(this.vars.CORS_PROXY__useHttpForHosts),
         },
