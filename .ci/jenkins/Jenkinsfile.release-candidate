@@ -30,11 +30,17 @@ pipeline {
         timeout(time: 180, unit: 'MINUTES')
     }
 
+    environment {
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml -Dmaven.repo.local=${WORKSPACE}/.maven"
+    }
+
     parameters {
-        string(name: 'BRANCH_NAME', description: 'Set the Git branch to checkout (0.0.x)', trim: true)
-        string(name: 'RELEASE_VERSION', description: 'Release version', trim: true)
-        string(name: 'TAG_NAME', description: 'Tag name to be created', trim: true)
-        string(description: 'Runners', name: 'RUNNERS', defaultValue: '{"chrome_extensions":"true","cors_proxy_image":"true","dashbuilder_viewer_image":"true","dev_deployment_base_image":"true","kie_sandbox_accelerator_quarkus":"true","dev_deployment_dmn_form_webapp_image":"true","dev_deployment_kogito_quakus_blank_app_image":"true","dev_deployment_upload_service":"true","extended_services":"true","jbpm_quarkus_devui":"true","kie_sandbox_extended_services_image":"true","kie_sandbox_helm_chart":"true","kie_sandbox_image":"true","kn_plugin_workflow":"true","kogito_management_console":"true","kogito_swf_builder":"true","kogito_swf_devmode":"true","kogito_serverless_operator":"true","npm_packages":"true","online_editor":"true","runtime_tools_consoles_helm_chart":"true","serverless_logic_web_tools":"true","serverless_logic_web_tools_base_builder_image":"true","serverless_logic_web_tools_swf_builder_image":"true","serverless_logic_web_tools_swf_dev_mode_image":"true","standalone_editors_cdn":"true","sonataflow_quarkus_devui":"true","vscode_extensions_dev":"true","vscode_extensions_prod":"true"}')
+        string(name: 'BRANCH_NAME', description: 'Set the Git branch to checkout (0.0.x)', trim: true, defaultValue: '10.1.x')
+        string(name: 'RELEASE_VERSION', description: 'Release version', trim: true, defaultValue: '10.1.0')
+        string(name: 'RELEASE_CANDIDATE_VERSION', description: 'Release candidate version', trim: true, defaultValue: '10.1.0-rc1')
+        string(name: 'TAG_NAME', description: 'Tag name to be created', trim: true, defaultValue: '10.1.0-rc1')
+        string(name: 'RUNNERS', description: 'Runners', defaultValue: '{"chrome_extensions":"true","cors_proxy_image":"true","dashbuilder_viewer_image":"true","dev_deployment_base_image":"true","dev_deployment_dmn_form_webapp_image":"true","dev_deployment_quakus_blank_app_image":"true","dev_deployment_upload_service":"true","extended_services":"true","jbpm_quarkus_devui":"true","kie_sandbox_image":"true","kie_sandbox_accelerator_quarkus":"true","kie_sandbox_extended_services":"true","kie_sandbox_helm_chart":"true","kn_plugin_workflow":"true","kogito_base_builder_image":"true","kogito_data_index_ephemeral_image":"true","kogito_data_index_postgresql_image":"true","kogito_jobs_service_allinone_image":"true","kogito_jobs_service_ephemeral_image":"true","kogito_jobs_service_postgresql_image":"true","kogito_jit_runner_image":"true","kogito_db_migrator_tool":"true","kogito_management_console":"true","kogito_serverless_operator":"true","kogito_swf_builder":"true","kogito_swf_devmode":"true","npm_packages":"true","online_editor":"true","runtime_tools_consoles_helm_chart":"true","serverless_logic_web_tools":"true","serverless_logic_web_tools_base_builder_image":"true","serverless_logic_web_tools_swf_builder_image":"true","serverless_logic_web_tools_swf_dev_mode_image":"true","sonataflow_management_console":"true","sonataflow_quarkus_devui":"true","standalone_editors_cdn":"true","vscode_extensions_dev":"true","vscode_extensions_prod":"true"}')
+        string(name: 'PIPELINE_PATH', description: 'Path to run the pipeline', defaultValue: '10.1.x/release')
     }
 
     stages {
@@ -82,7 +88,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap()
+                        buildUtils.pnpmBootstrap('', env.MAVEN_ARGS)
                     }
                 }
             }
@@ -106,7 +112,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmUpdateProjectVersion(params.RELEASE_VERSION)
+                        buildUtils.pnpmUpdateProjectVersion(params.RELEASE_VERSION, env.MAVEN_ARGS)
                     }
                 }
             }
@@ -116,7 +122,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmUpdateKogitoVersion(params.RELEASE_VERSION, params.RELEASE_VERSION)
+                        buildUtils.pnpmUpdateKogitoVersion(params.RELEASE_VERSION, params.RELEASE_VERSION, env.MAVEN_ARGS)
                     }
                 }
             }
@@ -126,7 +132,7 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmUpdateStreamName(params.RELEASE_VERSION)
+                        buildUtils.pnpmUpdateStreamName(params.RELEASE_VERSION, env.MAVEN_ARGS)
                     }
                 }
             }
@@ -164,6 +170,7 @@ pipeline {
                     script {
                         githubUtils.createTag("${params.TAG_NAME}")
                         githubUtils.pushObject('origin', "${params.TAG_NAME}", "${pipelineVars.asfGithubPushCredentialsId}")
+                        sleep(time: 1, unit: 'MINUTES') // Wait for the tag to be created
                     }
                 }
             }
@@ -171,12 +178,13 @@ pipeline {
 
         stage('Build and Publish release candidate artifacts') {
             steps {
-                build job: 'KIE/kie-tools/kie-tools-release-build', parameters: [
+                build job: "KIE/kie-tools/${params.PIPELINE_PATH}/kie-tools-release-build", parameters: [
                     booleanParam(name: 'DRY_RUN', value: false),
-                    string(name: 'BASE_REF', value: "${env.TAG_NAME}"),
+                    string(name: 'BASE_REF', value: "${params.BRANCH_NAME}"),
                     string(name: 'RELEASE_VERSION', value: "${params.RELEASE_VERSION}"),
                     string(name: 'RUNNERS', value: "${params.RUNNERS}"),
-                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${TAG_NAME}")
+                    string(name: 'RELEASE_CANDIDATE_VERSION', value: "${params.RELEASE_CANDIDATE_VERSION}"),
+                    string(name: 'PIPELINE_PATH', value: "${params.PIPELINE_PATH}")
                 ]
             }
         }
