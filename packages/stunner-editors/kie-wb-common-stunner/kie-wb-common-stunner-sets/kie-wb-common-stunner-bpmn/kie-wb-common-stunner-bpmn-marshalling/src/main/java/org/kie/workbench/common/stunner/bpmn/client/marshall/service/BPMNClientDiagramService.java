@@ -22,7 +22,6 @@ package org.kie.workbench.common.stunner.bpmn.client.marshall.service;
 
 import java.util.Collection;
 import java.util.Objects;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -52,7 +51,6 @@ import org.kie.workbench.common.stunner.core.graph.content.definition.Definition
 import org.kie.workbench.common.stunner.core.graph.content.definition.DefinitionSet;
 import org.kie.workbench.common.stunner.core.graph.util.GraphUtils;
 import org.kie.workbench.common.stunner.kogito.client.service.AbstractKogitoClientDiagramService;
-import org.uberfire.backend.vfs.PathFactory;
 import org.uberfire.client.promise.Promises;
 
 import static org.kie.workbench.common.stunner.bpmn.util.XmlUtils.createValidId;
@@ -98,23 +96,20 @@ public class BPMNClientDiagramService extends AbstractKogitoClientDiagramService
     @Override
     public void transform(final String xml,
                           final ServiceCallback<Diagram> callback) {
-        doTransform(DEFAULT_DIAGRAM_ID, DEFAULT_DIAGRAM_ID, xml, callback);
+        doTransform(DEFAULT_DIAGRAM_ID, xml, callback);
     }
 
     @Override
     public void transform(final String fileName,
                           final String xml,
                           final ServiceCallback<Diagram> callback) {
-        doTransform(createDiagramTitleFromFilePath(fileName), fileName, xml, callback);
+        doTransform(createDiagramTitleFromFilePath(fileName), xml, callback);
     }
 
     private void doTransform(final String fileName,
-                             final String fileRelativePath,
                              final String xml,
                              final ServiceCallback<Diagram> callback) {
-        final Metadata metadata = createMetadata();        
-        metadata.setPath(PathFactory.newPath(fileName, fileRelativePath));
-        LOGGER.log(Level.INFO, "Loading a file: [fileRelativePath: " + fileRelativePath + ", fileName: " + fileName + "]");
+        final Metadata metadata = createMetadata();
         widService
                 .call(metadata)
                 .then(wid -> {
