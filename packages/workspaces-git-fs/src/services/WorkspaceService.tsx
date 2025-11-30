@@ -37,7 +37,6 @@ import {
 } from "../worker/api/WorkspacesBroadcastEvents";
 import { FsSchema } from "./FsCache";
 import { extractExtension } from "../relativePath/WorkspaceFileRelativePathParser";
-import { SearchType } from "@kie-tools-core/workspace/dist/api";
 
 export class WorkspaceService {
   public constructor(
@@ -104,8 +103,7 @@ export class WorkspaceService {
   public async getFilteredWorkspaceFileDescriptors(
     schema: FsSchema,
     workspaceId: string,
-    globPattern?: string,
-    searchType?: SearchType
+    globPattern?: string
   ): Promise<WorkspaceWorkerFileDescriptor[]> {
     const matcher = globPattern ? new Minimatch(globPattern, { dot: true }) : undefined;
     const gitDirAbsolutePath = this.getAbsolutePath({ workspaceId, relativePath: ".git" });
@@ -115,13 +113,7 @@ export class WorkspaceService {
       baseAbsolutePath: this.getAbsolutePath({ workspaceId }),
       shouldExcludeAbsolutePath: (absolutePath) => absolutePath.startsWith(gitDirAbsolutePath),
       onVisit: async ({ relativePath }) => {
-        if (searchType !== undefined && searchType !== SearchType.ASSET_FOLDER && searchType !== SearchType.TRAVERSAL) {
-          throw Error(
-            `Unhandled SearchType '${searchType}' detected. Such SearchType was not taken into account for 'getFilteredWorkspaceFileDescriptors' code`
-          );
-        }
-        const searchedRelativePath = searchType === SearchType.ASSET_FOLDER ? relativePath : basename(relativePath);
-        if (matcher && !matcher.match(searchedRelativePath)) {
+        if (matcher && !matcher.match(basename(relativePath))) {
           return undefined;
         } else {
           return { workspaceId, relativePath };
