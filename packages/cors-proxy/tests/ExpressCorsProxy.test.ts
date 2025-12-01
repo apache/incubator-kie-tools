@@ -26,12 +26,12 @@ jest.mock("node-fetch", () => ({
 import { ExpressCorsProxy } from "../src/proxy/ExpressCorsProxy";
 import { Request, Response } from "express";
 
-const getProxy = (allowHosts: string[]) =>
+const getProxy = (allowedHosts: string[]) =>
   new ExpressCorsProxy({
     allowedOrigins: ["http://example.com"],
     verbose: false,
     hostsToUseHttp: [],
-    allowHosts,
+    allowedHosts,
   });
 
 const getMockFetchResponse = () =>
@@ -67,7 +67,7 @@ const getMockRequest = (targetUrl: string) =>
     method: "POST",
   }) as any as Request;
 
-describe("ExpressCorsProxy allow hosts functionality", () => {
+describe("ExpressCorsProxy allowed hosts functionality", () => {
   const mockWarn = (console.warn = jest.fn());
   const mockNext = jest.fn();
 
@@ -82,7 +82,7 @@ describe("ExpressCorsProxy allow hosts functionality", () => {
     "http://gist.github.com",
     "http://www.github.com",
     "https://www.github.com",
-  ])("should allow requests to %s with allow hosts set to default value", async (targetUrl) => {
+  ])("should allow requests to %s with allowed hosts set to default value", async (targetUrl) => {
     const proxy = getProxy(["localhost", "*.github.com"]);
 
     await proxy.handle(getMockRequest(targetUrl), getMockResponse(), mockNext);
@@ -101,8 +101,9 @@ describe("ExpressCorsProxy allow hosts functionality", () => {
     "http://gist.github.com",
     "http://www.github.com",
     "https://www.github.com",
-  ])("should allow requests to %s with allow hosts: *.target.example.com and *.github.com", async (targetUrl) => {
-    const proxy = getProxy(["*.target.example.com", "*.github.com"]);
+    "https://api.aaa.bbb.p1.openshiftapps.com:6443/version",
+  ])("should allow requests to %s with allowed hosts: *.target.example.com and *.github.com", async (targetUrl) => {
+    const proxy = getProxy(["*.target.example.com", "*.github.com", "*.openshiftapps.com"]);
 
     await proxy.handle(getMockRequest(targetUrl), getMockResponse(), mockNext);
 
@@ -118,7 +119,7 @@ describe("ExpressCorsProxy allow hosts functionality", () => {
     "http://api.notvalid.com/openapi.json",
     "http://notvalid.com",
     "http://api.notvalid.com/www.github.com",
-  ])("should not allow requests to %s with allow hosts: *.target.example.com and *.github.com", async (targetUrl) => {
+  ])("should not allow requests to %s with allowed hosts: *.target.example.com and *.github.com", async (targetUrl) => {
     const proxy = getProxy(["*.target.example.com", "*.github.com"]);
 
     await proxy.handle(getMockRequest(targetUrl), getMockResponse(), mockNext);

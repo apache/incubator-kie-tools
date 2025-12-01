@@ -39,9 +39,9 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
   constructor(
     private readonly args: {
       allowedOrigins: string[];
+      allowedHosts: string[];
       verbose: boolean;
       hostsToUseHttp: string[];
-      allowHosts: string[];
     }
   ) {
     this.logger = new Logger(args.verbose);
@@ -145,8 +145,8 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
     const targetUrl: string = (request.headers[CorsProxyHeaderKeys.TARGET_URL] as string) ?? request.url;
     const parsedTargetUrl = new URL(targetUrl);
 
-    if (!this.args.allowHosts.some((pattern) => minimatch(parsedTargetUrl.hostname, pattern))) {
-      throw new Error(`The target URL in not allowed. Requested: ${targetUrl}`);
+    if (!this.args.allowedHosts.some((pattern) => minimatch(parsedTargetUrl.hostname, pattern))) {
+      throw new Error(`The target URL is not allowed. Requested: ${targetUrl}`);
     }
 
     if (!origin || !this.args.allowedOrigins.includes(origin)) {

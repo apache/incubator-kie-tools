@@ -51,7 +51,7 @@ describe("index.ts test", () => {
       expect.objectContaining({
         port: 8080,
         verbose: false,
-        allowHosts: ["localhost", "*.github.com"],
+        allowedHosts: ["localhost", "*.github.com"],
         allowedOrigins: ["http://localhost:9001"],
       })
     );
@@ -69,7 +69,7 @@ describe("index.ts test", () => {
         port: 90,
         allowedOrigins: ["http://example.com"],
         verbose: false,
-        allowHosts: ["localhost", "*.github.com"],
+        allowedHosts: ["localhost", "*.github.com"],
       })
     );
   });
@@ -85,8 +85,39 @@ describe("index.ts test", () => {
         port: 8080,
         allowedOrigins: ["http://example.com"],
         verbose: true,
-        allowHosts: ["localhost", "*.github.com"],
+        allowedHosts: ["localhost", "*.github.com"],
       })
+    );
+  });
+
+  describe("Allowed hosts configuration", () => {
+    it("Custom allow hosts", () => {
+      setEnv({
+        CORS_PROXY_MODE: "production",
+        CORS_PROXY_ORIGIN: "http://example.com",
+        CORS_PROXY_ALLOWED_HOSTS: "*.target.example.com,*.github.com",
+      });
+      run();
+      expect(startServer).toHaveBeenCalledWith(
+        expect.objectContaining({
+          port: 8080,
+          verbose: false,
+          allowedHosts: ["*.target.example.com", "*.github.com"],
+        })
+      );
+    });
+
+    it.each(["*,http://example.com", "http://example.com,*", "*"])(
+      "Should throw an error when wildcard '*' is in the list with CORS_PROXY_ALLOWED_HOSTS: %s",
+      (allowedHosts) => {
+        setEnv({
+          CORS_PROXY_ALLOWED_HOSTS: allowedHosts,
+        });
+
+        expect(() => {
+          run();
+        }).toThrow(new Error('Invalid host: wildcard "*" is not allowed in CORS_PROXY_ALLOWED_HOSTS.'));
+      }
     );
   });
 
@@ -102,21 +133,6 @@ describe("index.ts test", () => {
           port: 8080,
           allowedOrigins: ["http://example.com"],
           verbose: false,
-        })
-      );
-    });
-    it("Custom allow hosts", () => {
-      setEnv({
-        CORS_PROXY_MODE: "production",
-        CORS_PROXY_ORIGIN: "http://example.com",
-        CORS_PROXY_ALLOW_HOSTS: "*.target.example.com,*.github.com",
-      });
-      run();
-      expect(startServer).toHaveBeenCalledWith(
-        expect.objectContaining({
-          port: 8080,
-          verbose: false,
-          allowHosts: ["*.target.example.com", "*.github.com"],
         })
       );
     });
@@ -154,15 +170,18 @@ describe("index.ts test", () => {
       }).toThrow(new Error("Invalid origin: empty origins are not allowed in CORS_PROXY_ALLOWED_ORIGINS."));
     });
 
-    it("Should throw an error when wildcard '*' is in the list", () => {
-      setEnv({
-        CORS_PROXY_ALLOWED_ORIGINS: "http://example.com,*",
-      });
+    it.each(["*,http://example.com", "http://example.com,*", "*"])(
+      "Should throw an error when wildcard '*' is in the list with CORS_PROXY_ALLOWED_ORIGINS: %s",
+      (allowedOrigins) => {
+        setEnv({
+          CORS_PROXY_ALLOWED_ORIGINS: allowedOrigins,
+        });
 
-      expect(() => {
-        run();
-      }).toThrow(new Error('Invalid origin: wildcard "*" is not allowed in CORS_PROXY_ALLOWED_ORIGINS.'));
-    });
+        expect(() => {
+          run();
+        }).toThrow(new Error('Invalid origin: wildcard "*" is not allowed in CORS_PROXY_ALLOWED_ORIGINS.'));
+      }
+    );
 
     it("Should throw an error when there are empty origins in the list", () => {
       setEnv({

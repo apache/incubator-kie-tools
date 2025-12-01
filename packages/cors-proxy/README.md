@@ -27,7 +27,7 @@ The `cors-proxy` can be configured via environment variables:
 - CORS_PROXY_HTTP_PORT: Sets the HTTP Port the proxy should listen to. Defaults to `8080`
 - CORS_PROXY_VERBOSE: Allows the proxy to run in verbose mode... useful to trace requests on development environments. Defaults to `false`
 - CORS_PROXY_USE_HTTP_FOR_HOSTS: Comma-separated list of hosts that should use the `http` protocol for proxied requests. Defaults to an empty list.
-- CORS_PROXY_ALLOW_HOSTS: Comma-separated list of allowed host patterns for domain filtering. Supports wildcards (e.g., `*.example.com`, `*.github.com`). Only requests to matching hosts will be proxied. Defaults to `localhost,*.github.com`.
+- CORS_PROXY_ALLOWED_HOSTS: Comma-separated list of allowed host patterns for domain filtering. Supports wildcards (e.g., `*.example.com`, `*.github.com`). Only requests to matching hosts will be proxied. Defaults to `localhost,*.github.com`.
 - HTTP_PROXY or HTTPS_PROXY: Url of a proxy that will be used to proxy the requests `cors-proxy` is already proxying.
 - NODE_EXTRA_CA_CERTS: This is used by NodeJS itself to add cartificates to the chain. See more at https://nodejs.org/api/cli.html#node_extra_ca_certsfile
 
@@ -38,7 +38,7 @@ export CORS_PROXY_HTTP_PORT=8080
 export CORS_PROXY_ALLOWED_ORIGINS="https://example.com,https://other.example.com"
 export CORS_PROXY_VERBOSE=false
 export CORS_PROXY_USE_HTTP_FOR_HOSTS="localhost:8080,localhost:8081"
-export CORS_PROXY_ALLOW_HOSTS="*.example.com,*.github.com"
+export CORS_PROXY_ALLOWED_HOSTS="*.example.com,*.github.com"
 ```
 
 # Build
@@ -68,7 +68,7 @@ export CORS_PROXY__allowedOrigins="http://localhost:9001"
 export CORS_PROXY__port=*
 export CORS_PROXY__verbose=false
 export CORS_PROXY__useHttpForHosts="localhost:8080,localhost:8081"
-export CORS_PROXY__allowHosts="*.example.com,*.github.com,localhost"
+export CORS_PROXY__allowedHosts="*.example.com,*.github.com,localhost"
 ```
 
 Default values can be found [here](./env/index.js).

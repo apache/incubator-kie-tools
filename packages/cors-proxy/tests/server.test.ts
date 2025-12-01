@@ -45,7 +45,7 @@ describe("CORS handler logic test", () => {
         port: 8080,
         verbose: false,
         hostsToUseHttp: [],
-        allowHosts: ["localhost"],
+        allowedHosts: ["localhost"],
       };
 
       startServer(args);
@@ -78,7 +78,7 @@ describe("CORS handler logic test", () => {
         port: 8080,
         verbose: false,
         hostsToUseHttp: [],
-        allowHosts: ["localhost"],
+        allowedHosts: ["localhost"],
       };
 
       startServer(args);
@@ -115,7 +115,7 @@ describe("CORS handler logic test", () => {
           port: 8080,
           verbose: false,
           hostsToUseHttp: [],
-          allowHosts: ["localhost"],
+          allowedHosts: ["localhost"],
         };
 
         startServer(args);
@@ -149,7 +149,7 @@ describe("CORS handler logic test", () => {
         port: 8080,
         verbose: false,
         hostsToUseHttp: [],
-        allowHosts: ["localhost"],
+        allowedHosts: ["localhost"],
       };
 
       startServer(args);
@@ -182,7 +182,7 @@ describe("CORS handler logic test", () => {
         port: 8080,
         verbose: false,
         hostsToUseHttp: [],
-        allowHosts: ["localhost"],
+        allowedHosts: ["localhost"],
       };
 
       startServer(args);

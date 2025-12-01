@@ -37,7 +37,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
       default: true,
       description: "Use `http` as default protocol for proxied requests. If `false`, `https` is used.",
     },
-    CORS_PROXY__allowHosts: {
+    CORS_PROXY__allowedHosts: {
       default: "localhost,*.github.com",
       description: "Comma-separated list of allowed host patterns. Supports wildcards (e.g., '*.example.com').",
     },
@@ -50,7 +50,7 @@ module.exports = composeEnv([require("@kie-tools/root-env/env")], {
           port: getOrDefault(this.vars.CORS_PROXY__port),
           verbose: getOrDefault(this.vars.CORS_PROXY__verbose),
           useHttpForHosts: getOrDefault(this.vars.CORS_PROXY__useHttpForHosts),
-          allowHosts: getOrDefault(this.vars.CORS_PROXY__allowHosts),
+          allowedHosts: getOrDefault(this.vars.CORS_PROXY__allowedHosts),
         },
       },
     };
