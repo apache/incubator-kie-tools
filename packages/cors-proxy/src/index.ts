@@ -27,10 +27,25 @@ function getPort(): number {
   return 8080;
 }
 
+function getAllowedOrigins(): string[] {
+  const origins = process.env.CORS_PROXY_ALLOWED_ORIGINS || "";
+  const originsList = origins.split(",").map((o) => o.trim());
+
+  if (originsList.some((o) => o === "")) {
+    throw new Error("Invalid origin: empty origins are not allowed in CORS_PROXY_ALLOWED_ORIGINS.");
+  }
+
+  if (originsList.some((o) => o === "*")) {
+    throw new Error('Invalid origin: wildcard "*" is not allowed in CORS_PROXY_ALLOWED_ORIGINS.');
+  }
+
+  return originsList;
+}
+
 export const run = () => {
   startServer({
+    allowedOrigins: getAllowedOrigins(),
     port: getPort(),
-    origin: process.env.CORS_PROXY_ORIGIN ?? "*",
     verbose: process.env.CORS_PROXY_VERBOSE === "true",
     hostsToUseHttp: (process.env.CORS_PROXY_USE_HTTP_FOR_HOSTS || undefined)?.split(",") ?? [],
   });

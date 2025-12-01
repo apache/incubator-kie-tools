@@ -37,7 +37,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
 
   constructor(
     private readonly args: {
-      origin: string;
+      allowedOrigins: string[];
       verbose: boolean;
       hostsToUseHttp: string[];
     }
@@ -46,7 +46,6 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
 
     this.logger.debug("");
     this.logger.debug("Proxy Configuration:");
-    this.logger.debug("* Accept Origin Header: ", `"${args.origin}"`);
     this.logger.debug("* Verbose: ", args.verbose);
     this.logger.debug("");
   }
@@ -92,9 +91,6 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
       });
       this.logger.debug("Proxy Response status: ", proxyResponse.status);
 
-      // Setting up the headers to the original response...
-      res.header("Access-Control-Allow-Origin", this.args.origin);
-
       if (req.method == "OPTIONS") {
         res.header("Access-Control-Allow-Methods", info.corsConfig?.allowMethods.join(", ") ?? "*");
         res.header("Access-Control-Allow-Headers", info.corsConfig?.allowHeaders.join(", ") ?? "*");
@@ -105,6 +101,9 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
       }
 
       proxyResponse.headers.forEach((value, header) => {
+        if (header.toLowerCase() === "access-control-allow-origin") {
+          return;
+        }
         if (!info.corsConfig || info.corsConfig.exposeHeaders.includes(header)) {
           res.setHeader(header, value);
         }
@@ -140,7 +139,12 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
   }
 
   private resolveRequestInfo(request: Request): ProxyRequestInfo {
+    const origin = request.header("origin");
     const targetUrl: string = (request.headers[CorsProxyHeaderKeys.TARGET_URL] as string) ?? request.url;
+    if (!origin || !this.args.allowedOrigins.includes(origin)) {
+      throw new Error(`Origin ${origin} is not allowed`);
+    }
+
     if (!targetUrl || targetUrl == "/") {
       throw new Error("Couldn't resolve the target URL...");
     }
