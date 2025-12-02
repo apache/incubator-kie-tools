@@ -196,13 +196,13 @@ runs:
             fluxbox -display :99 > /dev/null 2>&1 &
         fi
 
-    - name: "Configure Pagefile (Windows only)"
-      if: runner.os == 'Windows'
-      uses: al-cheb/configure-pagefile-action@86589fd789a4de3e62ba628dda2cb10027b66d67 #v1.3
-      with:
-        minimum-size: 16GB
-        maximum-size: 16GB
-        disk-root: "C:"
+    # - name: "Configure Pagefile (Windows only)"
+    #   if: runner.os == 'Windows'
+    #   uses: al-cheb/configure-pagefile-action@86589fd789a4de3e62ba628dda2cb10027b66d67 #v1.3
+    #   with:
+    #     minimum-size: 16GB
+    #     maximum-size: 16GB
+    #     disk-root: "C:"
 
     - name: "Increase inotify watches (Ubuntu only)"
       shell: bash
