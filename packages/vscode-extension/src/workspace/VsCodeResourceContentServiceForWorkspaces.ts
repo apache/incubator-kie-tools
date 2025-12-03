@@ -26,15 +26,15 @@ import {
   SearchType,
 } from "@kie-tools-core/workspace/dist/api";
 
-import * as vscode from "vscode";
-import * as __path from "path";
-import { RelativePattern } from "vscode";
 import { listFiles } from "isomorphic-git";
 import { Minimatch } from "minimatch";
-import { ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders } from "./VsCodeResourceContentServiceIsomorphicGitFs";
+import * as __path from "path";
+import * as vscode from "vscode";
+import { RelativePattern } from "vscode";
 import { toFsPath } from "../paths/paths";
-import { getNormalizedPosixPathRelativeToWorkspaceRoot } from "./workspaceRoot";
 import { KogitoEditorDocument } from "../VsCodeKieEditorController";
+import { ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders } from "./VsCodeResourceContentServiceIsomorphicGitFs";
+import { getNormalizedPosixPathRelativeToWorkspaceRoot } from "./workspaceRoot";
 
 /**
  * Implementation of a ResourceContentService using the vscode apis to list/get assets.
@@ -72,18 +72,33 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
 
       const minimatch = new Minimatch(pattern);
       const regexp = minimatch.makeRe(); // The regexp is ~50x faster than the direct match using glob.
+      // e.g. src/main/resources/com/my/module
       const openFileDirectoryNormalizedPosixPathRelativeToTheWorkspaceRoot = __path.dirname(
         getNormalizedPosixPathRelativeToWorkspaceRoot(this.args.document)
       );
 
       const matchingNormalizedPosixPathsRelativeToTheBasePath = normalizedPosixPathsRelativeToTheBasePath.filter(
         (p) => {
+          // relative to `this.args.document`, e.g. ../../../src/main/java/com/my/module/MyClass.java
+          const posixRelative = __path.posix.relative(
+            openFileDirectoryNormalizedPosixPathRelativeToTheWorkspaceRoot,
+            p
+          );
+          console.debug(
+            "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Testing regexp [" +
+              regexp +
+              "] against [/" +
+              p +
+              "] and [" +
+              posixRelative +
+              "]"
+          );
           const matchesPattern =
             // Adding a leading slash here to make the regex have the same behavior as the glob with **/* pattern.
             regexp.test("/" + p) ||
             // check on the asset folder for *.{ext} pattern
             // the regex doesn't support "\" from Windows paths, requiring to test againts POSIX paths
-            regexp.test(__path.posix.relative(openFileDirectoryNormalizedPosixPathRelativeToTheWorkspaceRoot, p));
+            regexp.test(posixRelative);
 
           const conformsToSearchType =
             !opts ||
@@ -116,10 +131,17 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
       );
     }
 
-    const relativePattern = new RelativePattern(this.args.workspaceRootAbsoluteFsPath, pattern);
+    const theMostSpecificFolder = __path.dirname(
+      opts?.type === SearchType.ASSET_FOLDER ? baseAbsoluteFsPath : __path.join(baseAbsoluteFsPath, toFsPath(pattern))
+    );
+    console.debug("!" + theMostSpecificFolder);
+    const theLastPartOfThePattern = __path.basename(pattern);
+    console.debug("!" + theLastPartOfThePattern);
+    const relativePattern = new RelativePattern(theMostSpecificFolder, theLastPartOfThePattern);
 
     // Build exclude pattern from .gitignore
-    let excludePattern = "{node_modules,.git,dist,target,out,build,.vscode,.idea}/**"; // Default excludes
+    let excludePattern =
+      "{**/node_modules/**,**/.git/**,**/dist/**,**/target/**,**/out/**,**/build/**,**/.vscode/**,**/.idea/**}"; // Default excludes
     try {
       const gitignorePath = __path.join(this.args.workspaceRootAbsoluteFsPath, ".gitignore");
       const content = (await vscode.workspace.fs.readFile(vscode.Uri.file(gitignorePath))).toString();
@@ -128,7 +150,7 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
         .map((line) => line.trim())
         .filter((line) => line && !line.startsWith("#"));
       if (lines.length > 0) {
-        excludePattern += `,{${lines.join(",")}}/**`;
+        excludePattern += `,{${lines.join(",")}}`;
       }
     } catch {
       console.debug(
@@ -136,7 +158,12 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
       );
     }
 
+    console.debug("excludePattern: " + excludePattern);
+    console.debug("relativePattern.base: " + relativePattern.baseUri);
+    console.debug("relativePattern.pattern: " + relativePattern.pattern);
     const files = await vscode.workspace.findFiles(relativePattern, excludePattern);
+
+    console.debug("files: " + files);
 
     const normalizedPosixPathsRelativeToTheWorkspaceRoot = files.map((uri) =>
       vscode.workspace.asRelativePath(uri, false)

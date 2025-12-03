@@ -60,7 +60,7 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
     private static Logger LOGGER = Logger.getLogger(WorkItemDefinitionStandaloneClientService.class.getName());
 
     private static final String RESOURCE_ALL_WID_PATTERN = "*.wid";
-    private static final String RESOURCE_GLOBAL_DIRECTORY_WID_PATTERN = "global/*.wid";
+    private static final String RESOURCE_GLOBAL_DIRECTORY_WID_PATTERN = "/global/*.wid";
     private static final String MILESTONE_ICON = "defaultmilestoneicon.png";
     private static final String MILESTONE_NAME = "Milestone";
 
@@ -110,14 +110,14 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
             ? openedDiagramPath.toURI().substring(0, lastSlashIndex + 1) 
             : ""; 
 
-        final String widPattern = (openedDiagramPath == null || isEmpty(directoryPath)) ?  RESOURCE_ALL_WID_PATTERN : directoryPath + RESOURCE_ALL_WID_PATTERN;
+        final String widPattern = "/" + ((openedDiagramPath == null || isEmpty(directoryPath)) ?  RESOURCE_ALL_WID_PATTERN : directoryPath + RESOURCE_ALL_WID_PATTERN);
         
         return promises.create((success, failure) -> {
             registry.clear();
             final List<WorkItemDefinition> loaded = new LinkedList<>();
             LOGGER.log(Level.INFO, "Searching WID using pattern: " + RESOURCE_GLOBAL_DIRECTORY_WID_PATTERN);
             resourceContentService
-                    .list(RESOURCE_GLOBAL_DIRECTORY_WID_PATTERN, ResourceListOptions.assetFolder())
+                    .list(RESOURCE_GLOBAL_DIRECTORY_WID_PATTERN, ResourceListOptions.traversal())
                     .then(paths1 -> {
                         LOGGER.log(Level.INFO, "Searching WID using pattern: " + widPattern);
                         resourceContentService
