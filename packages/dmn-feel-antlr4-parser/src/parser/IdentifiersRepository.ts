@@ -79,6 +79,7 @@ export class IdentifiersRepository {
   private readonly _dataTypeIndexedByUuid: Map<string, DataType>;
   private readonly _importedIdentifiers: Map<string, Array<IdentifierContext>>;
   private readonly _importedDataTypes: Map<string, Array<DataType>>;
+  private readonly _localNamespace: string;
   private currentIdentifierNamePrefix: string;
   private currentUuidPrefix: string;
 
@@ -102,6 +103,7 @@ export class IdentifiersRepository {
     this._dataTypeIndexedByUuid = new Map<string, DataType>();
     this._importedIdentifiers = new Map<string, Array<IdentifierContext>>();
     this._importedDataTypes = new Map<string, Array<DataType>>();
+    this._localNamespace = dmnDefinitions["@_namespace"];
     this.loadImportedIdentifiers(dmnDefinitions, externalDefinitions);
 
     this.currentIdentifierNamePrefix = "";
@@ -825,9 +827,13 @@ export class IdentifiersRepository {
 
   private addInputVariable(parent: IdentifierContext, requirement: DmnInformationRequirement) {
     if (requirement.requiredDecision) {
-      parent.inputIdentifiers.push(requirement.requiredDecision["@_href"]?.replace("#", ""));
+      parent.inputIdentifiers.push(
+        requirement.requiredDecision["@_href"]?.replace(this._localNamespace, "").replace("#", "")
+      );
     } else if (requirement.requiredInput) {
-      parent.inputIdentifiers.push(requirement.requiredInput["@_href"]?.replace("#", ""));
+      parent.inputIdentifiers.push(
+        requirement.requiredInput["@_href"]?.replace(this._localNamespace, "").replace("#", "")
+      );
     }
   }
 
