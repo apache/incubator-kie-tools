@@ -53,7 +53,7 @@ module.exports = composeEnv([rootEnv], {
       description: "Toggle verbose mode on the CORS proxy logs.",
     },
     CORS_PROXY_IMAGE__imageAllowHosts: {
-      default: corsProxyEnv.env.corsProxy.dev.allowHosts,
+      default: corsProxyEnv.env.corsProxy.dev.allowedHosts,
       description: "Comma-separated list of allowed host patterns for domain filtering. Supports wildcards.",
     },
   }),
@@ -68,7 +68,7 @@ module.exports = composeEnv([rootEnv], {
           port: getOrDefault(this.vars.CORS_PROXY_IMAGE__imagePort),
           allowedOrigins: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageAllowedOrigins),
           verbose: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageVerbose),
-          allowHosts: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageAllowHosts),
+          allowedHosts: getOrDefault(this.vars.CORS_PROXY_IMAGE__imageAllowHosts),
         },
       },
     };
