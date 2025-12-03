@@ -140,12 +140,18 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
     }
   }
 
+  private validateTargetUrl(targetUrl: string): boolean {
+    const protocol = /^https?:\/\//.test(targetUrl) ? "" : "https:/";
+    const parsedTargetUrl = new URL(protocol + targetUrl);
+
+    return this.args.allowedHosts.some((pattern) => minimatch(parsedTargetUrl.hostname, pattern));
+  }
+
   private resolveRequestInfo(request: Request): ProxyRequestInfo {
     const origin = request.header("origin");
     const targetUrl: string = (request.headers[CorsProxyHeaderKeys.TARGET_URL] as string) ?? request.url;
-    const parsedTargetUrl = new URL(targetUrl);
 
-    if (!this.args.allowedHosts.some((pattern) => minimatch(parsedTargetUrl.hostname, pattern))) {
+    if (!this.validateTargetUrl(targetUrl)) {
       throw new Error(`The target URL is not allowed. Requested: ${targetUrl}`);
     }
 

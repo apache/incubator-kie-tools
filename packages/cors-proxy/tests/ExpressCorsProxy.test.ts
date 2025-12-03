@@ -53,7 +53,21 @@ const getMockResponse = (): Response =>
     emit: () => {},
   }) as any as Response;
 
-const getMockRequest = (targetUrl: string) =>
+const getMockGetRequest = (url: string) =>
+  ({
+    header: (header: string) => {
+      if (header === "origin") {
+        return "http://example.com";
+      }
+    },
+    headers: {
+      origin: "http://example.com",
+    },
+    url,
+    method: "GET",
+  }) as any as Request;
+
+const getMockPostRequest = (targetUrl: string) =>
   ({
     header: (header: string) => {
       if (header === "origin") {
@@ -70,62 +84,104 @@ const getMockRequest = (targetUrl: string) =>
 describe("ExpressCorsProxy allowed hosts functionality", () => {
   const mockWarn = (console.warn = jest.fn());
   const mockNext = jest.fn();
+  const allowedRequests = [
+    ["http://", "localhost:8081", "localhost,*.github.com"],
+    ["https://", "localhost:4000", "localhost,*.github.com"],
+    ["http://", "gist.github.com", "localhost,*.github.com"],
+    ["http://", "www.github.com", "localhost,*.github.com"],
+    ["https://", "www.github.com", "localhost,*.github.com"],
+    ["http://", "test.target.example.com", "*.target.example.com,*.github.com"],
+    ["http://", "test.target.example.com:9000", "*.target.example.com,*.github.com"],
+    [
+      "http://",
+      "test.target.example.com:9000/path/to/something?search=test&sortBy=name",
+      "*.target.example.com,*.github.com",
+    ],
+    ["https://", "test.target.example.com", "*.target.example.com,*.github.com"],
+    ["https://", "test.target.example.com/graphql", "*.target.example.com,*.github.com"],
+    ["https://", "test.target.example.com/openapi", "*.target.example.com,*.github.com"],
+    ["http://", "gist.github.com", "*.target.example.com,*.github.com"],
+    ["http://", "www.github.com", "*.target.example.com,*.github.com"],
+    ["https://", "www.github.com", "*.target.example.com,*.github.com"],
+    [
+      "https://",
+      "api.aaa.bbb.p1.openshiftapps.com:6443/version",
+      "*.target.example.com,*.github.com,*.openshiftapps.com",
+    ],
+  ];
+  const deniedRequests = [
+    ["http://", "www.example.com"],
+    ["http://", "www.example.com/graphql"],
+    ["http://", "api.notvalid.com"],
+    ["http://", "api.notvalid.com/openapi.json"],
+    ["http://", "notvalid.com"],
+    ["http://", "api.notvalid.com/www.github.com"],
+  ];
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockFetch.mockImplementation(getMockFetchResponse);
   });
 
-  it.each([
-    "http://localhost:8080",
-    "https://localhost:4000",
-    "http://gist.github.com",
-    "http://www.github.com",
-    "https://www.github.com",
-  ])("should allow requests to %s with allowed hosts set to default value", async (targetUrl) => {
-    const proxy = getProxy(["localhost", "*.github.com"]);
+  describe("Test GET requests", () => {
+    it.each(allowedRequests)(
+      `should allow GET requests to %s%s with allowed hosts: %s`,
+      async (protocol, targetUrl, allowedHosts) => {
+        const proxy = getProxy(allowedHosts.split(","));
 
-    await proxy.handle(getMockRequest(targetUrl), getMockResponse(), mockNext);
+        await proxy.handle(getMockGetRequest(`/${targetUrl}`), getMockResponse(), mockNext);
 
-    expect(mockWarn).not.toHaveBeenCalled();
-    expect(mockFetch).toHaveBeenCalled();
-    expect(mockNext).not.toHaveBeenCalled();
+        expect(mockWarn).not.toHaveBeenCalled();
+        expect(mockFetch).toHaveBeenCalledWith(
+          new URL(protocol + targetUrl),
+          expect.objectContaining({ method: "GET" })
+        );
+        expect(mockNext).not.toHaveBeenCalled();
+      }
+    );
+
+    it.each(deniedRequests)(
+      "should not allow requests to %s%s with allowed hosts: *.target.example.com,*.github.com",
+      async (protocol, targetUrl) => {
+        const proxy = getProxy(["*.target.example.com", "*.github.com"]);
+
+        await proxy.handle(getMockGetRequest(`/${targetUrl}`), getMockResponse(), mockNext);
+
+        expect(mockWarn).toHaveBeenCalledWith(expect.any(String), expect.stringContaining("not allowed"));
+        expect(mockFetch).not.toHaveBeenCalled();
+        expect(mockNext).toHaveBeenCalled();
+      }
+    );
   });
 
-  it.each([
-    "http://test.target.example.com",
-    "http://test.target.example.com:9000",
-    "https://test.target.example.com",
-    "https://test.target.example.com/graphql",
-    "https://test.target.example.com/openapi",
-    "http://gist.github.com",
-    "http://www.github.com",
-    "https://www.github.com",
-    "https://api.aaa.bbb.p1.openshiftapps.com:6443/version",
-  ])("should allow requests to %s with allowed hosts: *.target.example.com and *.github.com", async (targetUrl) => {
-    const proxy = getProxy(["*.target.example.com", "*.github.com", "*.openshiftapps.com"]);
+  describe("Test POST requests", () => {
+    it.each(allowedRequests)(
+      `should allow POST requests to %s%s with allowed hosts: %s`,
+      async (protocol, targetUrl, allowedHosts) => {
+        const proxy = getProxy(allowedHosts.split(","));
 
-    await proxy.handle(getMockRequest(targetUrl), getMockResponse(), mockNext);
+        await proxy.handle(getMockPostRequest(protocol + targetUrl), getMockResponse(), mockNext);
 
-    expect(mockWarn).not.toHaveBeenCalled();
-    expect(mockFetch).toHaveBeenCalled();
-    expect(mockNext).not.toHaveBeenCalled();
-  });
+        expect(mockWarn).not.toHaveBeenCalled();
+        expect(mockFetch).toHaveBeenCalledWith(
+          new URL(protocol + targetUrl),
+          expect.objectContaining({ method: "POST" })
+        );
+        expect(mockNext).not.toHaveBeenCalled();
+      }
+    );
 
-  it.each([
-    "http://www.example.com",
-    "http://www.example.com/graphql",
-    "http://api.notvalid.com",
-    "http://api.notvalid.com/openapi.json",
-    "http://notvalid.com",
-    "http://api.notvalid.com/www.github.com",
-  ])("should not allow requests to %s with allowed hosts: *.target.example.com and *.github.com", async (targetUrl) => {
-    const proxy = getProxy(["*.target.example.com", "*.github.com"]);
+    it.each(deniedRequests)(
+      "should not allow requests to %s%s with allowed hosts: *.target.example.com,*.github.com",
+      async (protocol, targetUrl) => {
+        const proxy = getProxy(["*.target.example.com", "*.github.com"]);
 
-    await proxy.handle(getMockRequest(targetUrl), getMockResponse(), mockNext);
+        await proxy.handle(getMockPostRequest(protocol + targetUrl), getMockResponse(), mockNext);
 
-    expect(mockWarn).toHaveBeenCalledWith(expect.any(String), expect.stringContaining("not allowed"));
-    expect(mockFetch).not.toHaveBeenCalled();
-    expect(mockNext).toHaveBeenCalled();
+        expect(mockWarn).toHaveBeenCalledWith(expect.any(String), expect.stringContaining("not allowed"));
+        expect(mockFetch).not.toHaveBeenCalled();
+        expect(mockNext).toHaveBeenCalled();
+      }
+    );
   });
 });
