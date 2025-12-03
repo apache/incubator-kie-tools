@@ -51,26 +51,17 @@ export const FormRenderer = React.forwardRef<FormRendererApi, IOwnProps & OUIAPr
       };
     }, [formApiRef]);
 
-    const normalizeBooleans = (model: any, schema: any) => {
-      const normalized = { ...model };
-      Object.keys(schema.properties || {}).forEach((key) => {
-        const prop = schema.properties[key];
-        if (prop.type === "boolean") {
-          normalized[key] = !!model[key];
-        }
-      });
-      return normalized;
-    };
-
     const bridge = new JSONSchemaBridge(formSchema, (formModel) => {
       // Converting back all the JS Dates into String before validating the model
       const newModel = ModelConversionTool.convertDateToString(formModel, formSchema);
-      const booleanSafeModel = normalizeBooleans(newModel, formSchema);
-      return validator.validate(booleanSafeModel);
+      return validator.validate(newModel);
     });
 
-    // Converting Dates that are in string format into JS Dates so they can be correctly bound to the uniforms DateField and doing the same for boolField
-    const formData = normalizeBooleans(ModelConversionTool.convertDateToString(model, formSchema), formSchema);
+    // Converting Dates that are in string format into JS Dates so they can be correctly bound to the uniforms DateField
+    const formData = ModelConversionTool.normalizeBooleans(
+      ModelConversionTool.applySchemaDefaults(ModelConversionTool.convertStringToDate(model, formSchema), formSchema),
+      formSchema
+    );
 
     const submitFormData = (): void => {
       formApiRef!.submit();
