@@ -65,6 +65,7 @@ export interface BoxedExpressionEditorProps {
   onRequestFeelIdentifiers?: OnRequestFeelIdentifiers;
   /** Hide DMN 1.4 boxed expressions */
   hideDmn14BoxedExpressions?: boolean;
+  locale?: string;
 }
 
 export function BoxedExpressionEditor({
@@ -84,12 +85,13 @@ export function BoxedExpressionEditor({
   widthsById,
   onWidthsChange,
   hideDmn14BoxedExpressions,
+  locale,
 }: BoxedExpressionEditorProps) {
   return (
     <I18nDictionariesProvider
       defaults={boxedExpressionEditorI18nDefaults}
       dictionaries={boxedExpressionEditorDictionaries}
-      initialLocale={navigator.language}
+      initialLocale={locale ?? navigator.language}
       ctx={BoxedExpressionEditorI18nContext}
     >
       <BoxedExpressionEditorContextProvider

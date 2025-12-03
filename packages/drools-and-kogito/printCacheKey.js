@@ -17,19 +17,10 @@
  * under the License.
  */
 
-import { GwtLanguageData } from "@kie-tools/kie-bc-editors-common/dist/common";
-import { editors } from "./GwtEditorMapping";
+// This simple script returns a unique key used by the `bootstrap` GitHub Action to save and restore the a `drools-and-kogito` build.
+const { env } = require("./env");
+const repos = env.droolsAndKogito.repos;
 
-export function getServerlessWorkflowLanguageData(resourcesPathPrefix: string): GwtLanguageData {
-  return {
-    type: "gwt",
-    editorId: editors.swf.id,
-    gwtModuleName: editors.swf.name,
-    resources: [
-      {
-        type: "js",
-        paths: [`${resourcesPathPrefix}/${editors.swf.name}/${editors.swf.name}.js`],
-      },
-    ],
-  };
-}
+console.log(
+  `droolsRepoGitRef-${repos.drools.gitRef}-optaplannerRepoGitRef-${repos.optaplanner.gitRef}-kogitoRuntimesRepoGitRef-${repos.kogitoRuntimes.gitRef}-kogitoAppsRepoGitRef-${repos.kogitoApps.gitRef}`
+);

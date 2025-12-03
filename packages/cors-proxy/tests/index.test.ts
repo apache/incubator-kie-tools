@@ -42,9 +42,7 @@ describe("index.ts test", () => {
   });
 
   it("Default values", () => {
-    setEnv({
-      CORS_PROXY_MODE: "development",
-    });
+    setEnv({});
 
     run();
     expect(startServer).toHaveBeenCalledWith(
@@ -93,8 +91,7 @@ describe("index.ts test", () => {
   describe("Allowed hosts configuration", () => {
     it("Custom allow hosts", () => {
       setEnv({
-        CORS_PROXY_MODE: "production",
-        CORS_PROXY_ORIGIN: "http://example.com",
+        CORS_PROXY_ALLOWED_ORIGINS: "http://example.com",
         CORS_PROXY_ALLOWED_HOSTS: "*.target.example.com,*.github.com",
       });
       run();
@@ -103,6 +100,7 @@ describe("index.ts test", () => {
           port: 8080,
           verbose: false,
           allowedHosts: ["*.target.example.com", "*.github.com"],
+          allowedOrigins: ["http://example.com"],
         })
       );
     });
@@ -133,6 +131,7 @@ describe("index.ts test", () => {
           port: 8080,
           allowedOrigins: ["http://example.com"],
           verbose: false,
+          allowedHosts: ["localhost", "*.github.com"],
         })
       );
     });
@@ -148,6 +147,7 @@ describe("index.ts test", () => {
           port: 8080,
           allowedOrigins: ["http://example.com", "https://other.example.com", "http://localhost:9001"],
           verbose: false,
+          allowedHosts: ["localhost", "*.github.com"],
         })
       );
     });

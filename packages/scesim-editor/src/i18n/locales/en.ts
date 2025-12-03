@@ -24,11 +24,11 @@ export const en: TestScenarioEditorI18n = {
   ...en_common,
   alerts: {
     ruleDataNotAvailable:
-      "It's not possibile to retrieve the Java Classes from your project. This feature is still not supported.",
+      "It's not possible to retrieve the Java Classes from your project. This feature is still not supported.",
     dmnDataRetrievedFromScesim:
-      "Impossibile to retrieve DMN Nodes from the referenced DMN file, therefore they have been restored from the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose its related DMN Node data. To fix this issue, go to the Setting panel and restore the link with the related DMN model.",
+      "Impossible to retrieve DMN Nodes from the referenced DMN file, therefore, they have been restored from the SCESIM file. These data might NOT be synchronized. You can view and edit this asset, but dropping a column could result in losing its related DMN Node data. To fix this issue, go to the Settings panel and restore the link with the related DMN model.",
     ruleDataRetrievedFromScesim:
-      "Impossibile to retrieve the Java Classes from your project, therefore they have been restored from the scesim file. These data might be NOT synchronized. You can view and edit this asset, but dropping a column could lose its related Java Class data.",
+      "Impossible to retrieve the Java classes from your project, therefore, they have been restored from the SCESIM file. These data might NOT be synchronized. You can view and edit this asset, but dropping a column could result in losing its related Java Class data.",
   },
   creationPanel: {
     assetsGroup: "Asset type",
@@ -190,7 +190,7 @@ export const en: TestScenarioEditorI18n = {
     selection: "Selection",
   },
   fileParsingErrorMessage:
-    "Impossibile to correctly parse the provided scesim file. Most likely, the XML structure of the file is invalid.",
+    "Impossible to correctly parse the provided SCESIM file. Most likely, the XML structure of the file is invalid.",
   parsingErrorTitle: "File parsing error",
   unsupportedTitle: (version: string) => `This file holds a Test Scenario asset version ( ${version} ) not supported`,
   unsupportedMessage: (version: string) =>

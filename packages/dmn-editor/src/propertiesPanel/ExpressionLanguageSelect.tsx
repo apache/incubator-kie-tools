@@ -22,6 +22,7 @@ import { Select, SelectOption, SelectVariant } from "@patternfly/react-core/depr
 import { useState, useRef } from "react";
 import { useSettings } from "../settings/DmnEditorSettingsContext";
 import { EXPRESSION_LANGUAGES_LATEST } from "@kie-tools/dmn-marshaller";
+import { useDmnEditorI18n } from "../i18n";
 
 export function ExpressionLangaugeSelect({
   OnClear,
@@ -39,6 +40,7 @@ export function ExpressionLangaugeSelect({
 
   const settings = useSettings();
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const { i18n } = useDmnEditorI18n();
 
   return (
     <Select
@@ -57,7 +59,7 @@ export function ExpressionLangaugeSelect({
       onToggle={(event, isExpanded) => setExpressionLanguageSelectOpen(isExpanded)}
       isDisabled={settings.isReadOnly}
       selections={selections}
-      placeholderText={"Enter an expression language..."}
+      placeholderText={i18n.propertiesPanel.expressionLangPlaceholder}
     >
       {allLanguages?.map((language: string) => (
         <SelectOption key={language} value={language}>

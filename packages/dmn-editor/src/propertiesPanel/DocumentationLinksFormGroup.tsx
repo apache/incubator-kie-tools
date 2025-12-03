@@ -200,7 +200,7 @@ export function DocumentationLinksFormGroup({
       label={
         <div style={{ display: "flex", flexDirection: "row" }}>
           <label className={"pf-v5-c-form__label"} style={{ flexGrow: 1, cursor: "auto" }}>
-            <span className={"pf-v5-c-form__label-text"}>Documentation links</span>
+            <span className={"pf-v5-c-form__label-text"}>{i18n.propertiesPanel.documentationLinks}</span>
           </label>
           {!isReadOnly && (
             <Button
