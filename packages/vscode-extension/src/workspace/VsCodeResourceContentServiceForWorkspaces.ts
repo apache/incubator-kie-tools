@@ -62,6 +62,8 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
     // The vscode API will read all files, including the .gitignore ones,
     // making this action is less performatic than the git ls-files which will
     // automatically exclude the .gitignore files.
+
+    let gitNormalizedPosixPathsRelativeToTheBasePath: string[] = [];
     try {
       console.debug("VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Trying to use isomorphic-git to read dir.");
       const normalizedPosixPathsRelativeToTheBasePath = await listFiles({
@@ -77,49 +79,32 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
         getNormalizedPosixPathRelativeToWorkspaceRoot(this.args.document)
       );
 
-      const matchingNormalizedPosixPathsRelativeToTheBasePath = normalizedPosixPathsRelativeToTheBasePath.filter(
-        (p) => {
-          // relative to `this.args.document`, e.g. ../../../src/main/java/com/my/module/MyClass.java
-          const posixRelative = __path.posix.relative(
-            openFileDirectoryNormalizedPosixPathRelativeToTheWorkspaceRoot,
-            p
-          );
+      gitNormalizedPosixPathsRelativeToTheBasePath = normalizedPosixPathsRelativeToTheBasePath.filter((p) => {
+        // relative to `this.args.document`, e.g. ../../../src/main/java/com/my/module/MyClass.java
+        const posixRelative = __path.posix.relative(openFileDirectoryNormalizedPosixPathRelativeToTheWorkspaceRoot, p);
 
-          const matchesPattern =
-            // Adding a leading slash here to make the regex have the same behavior as the glob with **/* pattern.
-            regexp.test("/" + p) ||
-            // check on the asset folder for *.{ext} pattern
-            // the regex doesn't support "\" from Windows paths, requiring to test againts POSIX paths
-            regexp.test(posixRelative);
+        const matchesPattern =
+          // Adding a leading slash here to make the regex have the same behavior as the glob with **/* pattern.
+          regexp.test("/" + p) ||
+          // check on the asset folder for *.{ext} pattern
+          // the regex doesn't support "\" from Windows paths, requiring to test againts POSIX paths
+          regexp.test(posixRelative);
 
-          const conformsToSearchType =
-            !opts ||
-            opts.type === SearchType.TRAVERSAL ||
-            (opts.type === SearchType.ASSET_FOLDER &&
-              __path
-                .join(baseAbsoluteFsPath, toFsPath(p))
-                .startsWith(
-                  __path.join(
-                    baseAbsoluteFsPath,
-                    toFsPath(openFileDirectoryNormalizedPosixPathRelativeToTheWorkspaceRoot)
-                  )
-                ));
+        const conformsToSearchType =
+          !opts ||
+          opts.type === SearchType.TRAVERSAL ||
+          (opts.type === SearchType.ASSET_FOLDER &&
+            __path
+              .join(baseAbsoluteFsPath, toFsPath(p))
+              .startsWith(
+                __path.join(
+                  baseAbsoluteFsPath,
+                  toFsPath(openFileDirectoryNormalizedPosixPathRelativeToTheWorkspaceRoot)
+                )
+              ));
 
-          return matchesPattern && conformsToSearchType;
-        }
-      );
-
-      if (matchingNormalizedPosixPathsRelativeToTheBasePath.length > 0) {
-        console.debug(
-          "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Git found files [%s]",
-          matchingNormalizedPosixPathsRelativeToTheBasePath
-        );
-        return new ResourcesList(pattern, matchingNormalizedPosixPathsRelativeToTheBasePath);
-      } else {
-        console.debug(
-          "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Git search returned no matches. Falling back to VS Code API."
-        );
-      }
+        return matchesPattern && conformsToSearchType;
+      });
     } catch (error) {
       console.debug(
         "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Failed to use isomorphic-git to read dir. Falling back to VS Code API.",
@@ -138,46 +123,24 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
         ? new RelativePattern(baseAbsoluteFsPath, theLastPartOfThePattern)
         : new RelativePattern(baseAbsoluteFsPathPlusPatternFolderPrefix, theLastPartOfThePattern);
 
-    // Build exclude pattern from .gitignore
-    let excludePattern =
-      "{**/node_modules/**,**/.git/**,**/dist/**,**/target/**,**/out/**,**/build/**,**/.vscode/**,**/.idea/**}"; // Default excludes
-    try {
-      const gitignorePath = __path.join(this.args.workspaceRootAbsoluteFsPath, ".gitignore");
-      const content = (await vscode.workspace.fs.readFile(vscode.Uri.file(gitignorePath))).toString();
-      const lines = content
-        .split("\n")
-        .map((line) => line.trim())
-        .filter((line) => line && !line.startsWith("#"));
-      if (lines.length > 0) {
-        excludePattern += `,{${lines.join(",")}}`;
-      }
-    } catch {
-      console.debug(
-        "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: .gitignore not found or unreadable, using default excludes."
-      );
-    }
-
-    console.debug(
-      "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: vscode.workspace.findFiles excludePattern [%s] ",
-      excludePattern
-    );
-    console.debug(
-      "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: vscode.workspace.findFiles relativePattern.baseUri [%s]",
-      relativePattern.baseUri
-    );
-    console.debug(
-      "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: vscode.workspace.findFiles relativePattern.pattern [%s]",
-      relativePattern.pattern
-    );
-
-    const files = await vscode.workspace.findFiles(relativePattern, excludePattern);
-    console.debug("VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: found files count [%i]", files.length);
-
-    const normalizedPosixPathsRelativeToTheWorkspaceRoot = files.map((uri) =>
+    const vscodeFoundFiles = await vscode.workspace.findFiles(relativePattern);
+    const vscodeNormalizedPosixPathsRelativeToTheBasePath = vscodeFoundFiles.map((uri) =>
       vscode.workspace.asRelativePath(uri, false)
     );
 
-    return new ResourcesList(pattern, normalizedPosixPathsRelativeToTheWorkspaceRoot);
+    console.debug(
+      "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Git found files [%s]",
+      gitNormalizedPosixPathsRelativeToTheBasePath
+    );
+    console.debug(
+      "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: VS Code found files [%s]",
+      vscodeNormalizedPosixPathsRelativeToTheBasePath
+    );
+
+    return new ResourcesList(
+      pattern,
+      gitNormalizedPosixPathsRelativeToTheBasePath.concat(vscodeNormalizedPosixPathsRelativeToTheBasePath)
+    );
   }
 
   public async get(
