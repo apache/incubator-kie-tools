@@ -96,7 +96,7 @@ public class BPMNStaticResourceContentService implements ResourceContentService 
             "]";
 
     private static final String PATTERN_ALL_WID = "*.wid";
-    private static final String PATTERN_GLOBAL_WID = "global/*.wid";
+    private static final String PATTERN_GLOBAL_WID = "/global/*.wid";
     private static final Map<String, String> GLOBAL_WID_ENTRIES =
             new HashMap<String, String>() {{
                 put("global/default.wid", DEFAULT_DECLARATIONS);
