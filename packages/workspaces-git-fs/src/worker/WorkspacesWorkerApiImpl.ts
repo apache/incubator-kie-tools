@@ -228,8 +228,7 @@ export class WorkspacesWorkerApiImpl implements WorkspacesWorkerApi {
       const files = await this.args.services.workspaceService.getFilteredWorkspaceFileDescriptors(
         schema,
         args.workspaceId,
-        args.globPattern,
-        args.opts?.type
+        args.globPattern
       );
       return new ResourcesList(
         args.globPattern,

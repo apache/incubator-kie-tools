@@ -85,13 +85,10 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
             p
           );
           console.debug(
-            "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Testing regexp [" +
-              regexp +
-              "] against [/" +
-              p +
-              "] and [" +
-              posixRelative +
-              "]"
+            "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Testing regexp [%s] against [/%s] and [%s]",
+            regexp,
+            p,
+            posixRelative
           );
           const matchesPattern =
             // Adding a leading slash here to make the regex have the same behavior as the glob with **/* pattern.
@@ -131,13 +128,22 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
       );
     }
 
-    const theMostSpecificFolder = __path.dirname(
-      opts?.type === SearchType.ASSET_FOLDER ? baseAbsoluteFsPath : __path.join(baseAbsoluteFsPath, toFsPath(pattern))
-    );
-    console.debug("!" + theMostSpecificFolder);
+    console.debug("opts.type " + opts?.type);
+    console.debug("base absolute " + baseAbsoluteFsPath);
+    console.debug("pattern " + pattern);
+
+    const baseAbsoluteFsPathPlusPatternFolderPrefix =
+      opts?.type === SearchType.ASSET_FOLDER
+        ? baseAbsoluteFsPath
+        : __path.join(baseAbsoluteFsPath, __path.dirname(pattern));
+    console.debug("specific folder " + baseAbsoluteFsPathPlusPatternFolderPrefix);
     const theLastPartOfThePattern = __path.basename(pattern);
-    console.debug("!" + theLastPartOfThePattern);
-    const relativePattern = new RelativePattern(theMostSpecificFolder, theLastPartOfThePattern);
+    console.debug("the last " + theLastPartOfThePattern);
+
+    const relativePattern =
+      opts?.type === SearchType.ASSET_FOLDER
+        ? new RelativePattern(baseAbsoluteFsPath, theLastPartOfThePattern)
+        : new RelativePattern(baseAbsoluteFsPathPlusPatternFolderPrefix, theLastPartOfThePattern);
 
     // Build exclude pattern from .gitignore
     let excludePattern =
@@ -158,12 +164,18 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
       );
     }
 
-    console.debug("excludePattern: " + excludePattern);
-    console.debug("relativePattern.base: " + relativePattern.baseUri);
-    console.debug("relativePattern.pattern: " + relativePattern.pattern);
-    const files = await vscode.workspace.findFiles(relativePattern, excludePattern);
+    console.debug("VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: excludePattern [%s] ", excludePattern);
+    console.debug(
+      "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: relativePattern.baseUri [%s]",
+      relativePattern.baseUri
+    );
+    console.debug(
+      "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: relativePattern.pattern [%s]",
+      relativePattern.pattern
+    );
 
-    console.debug("files: " + files);
+    const files = await vscode.workspace.findFiles(relativePattern, excludePattern);
+    console.debug("VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: found files count [%i]", files.length);
 
     const normalizedPosixPathsRelativeToTheWorkspaceRoot = files.map((uri) =>
       vscode.workspace.asRelativePath(uri, false)

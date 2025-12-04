@@ -21,7 +21,7 @@ import { encoder } from "../encoderdecoder/EncoderDecoder";
 import { downloadZip, predictLength } from "client-zip";
 import { WorkspaceDescriptor } from "../worker/api/WorkspaceDescriptor";
 import { StorageFile, StorageService } from "./StorageService";
-import { basename, join, relative } from "path";
+import { join, relative } from "path";
 import { Minimatch } from "minimatch";
 import { WorkspaceDescriptorService } from "./WorkspaceDescriptorService";
 import { BroadcasterDispatch } from "./FsService";
@@ -37,7 +37,6 @@ import {
 } from "../worker/api/WorkspacesBroadcastEvents";
 import { FsSchema } from "./FsCache";
 import { extractExtension } from "../relativePath/WorkspaceFileRelativePathParser";
-import { SearchType } from "@kie-tools-core/workspace/dist/api";
 
 export class WorkspaceService {
   public constructor(
@@ -104,24 +103,22 @@ export class WorkspaceService {
   public async getFilteredWorkspaceFileDescriptors(
     schema: FsSchema,
     workspaceId: string,
-    globPattern?: string,
-    searchType?: SearchType
+    globPattern?: string
   ): Promise<WorkspaceWorkerFileDescriptor[]> {
+    const isGlobPatternSlashPrefixed = globPattern?.startsWith("/");
     const matcher = globPattern ? new Minimatch(globPattern, { dot: true }) : undefined;
     const gitDirAbsolutePath = this.getAbsolutePath({ workspaceId, relativePath: ".git" });
+    const workspaceBaseAbsolutePath = this.getAbsolutePath({ workspaceId });
 
     return this.storageService.walk({
       schema,
-      baseAbsolutePath: this.getAbsolutePath({ workspaceId }),
+      baseAbsolutePath: workspaceBaseAbsolutePath,
       shouldExcludeAbsolutePath: (absolutePath) => absolutePath.startsWith(gitDirAbsolutePath),
-      onVisit: async ({ relativePath }) => {
-        if (searchType !== undefined && searchType !== SearchType.ASSET_FOLDER && searchType !== SearchType.TRAVERSAL) {
-          throw Error(
-            `Unhandled SearchType '${searchType}' detected. Such SearchType was not taken into account for 'getFilteredWorkspaceFileDescriptors' code`
-          );
-        }
-        const searchedRelativePath = searchType === SearchType.ASSET_FOLDER ? relativePath : basename(relativePath);
-        if (matcher && !matcher.match(searchedRelativePath)) {
+      onVisit: async ({ absolutePath, relativePath }) => {
+        const searchedPath = isGlobPatternSlashPrefixed
+          ? absolutePath.slice(workspaceBaseAbsolutePath.length)
+          : relativePath;
+        if (matcher && !matcher.match(searchedPath)) {
           return undefined;
         } else {
           return { workspaceId, relativePath };
