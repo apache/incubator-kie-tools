@@ -110,16 +110,13 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
       );
     }
 
-    const baseAbsoluteFsPathPlusPatternFolderPrefix =
+    const theMostSpecificFolder =
       opts?.type === SearchType.ASSET_FOLDER
-        ? baseAbsoluteFsPath
-        : __path.join(baseAbsoluteFsPath, __path.dirname(pattern));
+        ? baseAbsoluteFsPath // for ASSET_FOLDER we are already done, see `baseAbsolutePath` creation
+        : __path.join(baseAbsoluteFsPath, __path.dirname(pattern)); // try the same principle for TRAVERSAL
     const theLastPartOfThePattern = __path.basename(pattern);
 
-    const relativePattern =
-      opts?.type === SearchType.ASSET_FOLDER
-        ? new RelativePattern(baseAbsoluteFsPath, theLastPartOfThePattern)
-        : new RelativePattern(baseAbsoluteFsPathPlusPatternFolderPrefix, theLastPartOfThePattern);
+    const relativePattern = new RelativePattern(theMostSpecificFolder, theLastPartOfThePattern);
 
     const vscodeFoundFiles = await vscode.workspace.findFiles(relativePattern);
     const vscodeNormalizedPosixPathsRelativeToTheBasePath = vscodeFoundFiles.map((uri) =>
