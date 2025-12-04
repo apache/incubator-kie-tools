@@ -80,15 +80,13 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
       );
 
       gitNormalizedPosixPathsRelativeToTheBasePath = normalizedPosixPathsRelativeToTheBasePath.filter((p) => {
-        // relative to `this.args.document`, e.g. ../../../src/main/java/com/my/module/MyClass.java
-        const posixRelative = __path.posix.relative(openFileDirectoryNormalizedPosixPathRelativeToTheWorkspaceRoot, p);
-
         const matchesPattern =
           // Adding a leading slash here to make the regex have the same behavior as the glob with **/* pattern.
           regexp.test("/" + p) ||
           // check on the asset folder for *.{ext} pattern
           // the regex doesn't support "\" from Windows paths, requiring to test againts POSIX paths
-          regexp.test(posixRelative);
+          // relative to `this.args.document`, e.g. ../../../src/main/java/com/my/module/MyClass.java
+          regexp.test(__path.posix.relative(openFileDirectoryNormalizedPosixPathRelativeToTheWorkspaceRoot, p));
 
         const conformsToSearchType =
           !opts ||
