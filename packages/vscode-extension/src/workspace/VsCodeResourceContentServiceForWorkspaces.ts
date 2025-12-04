@@ -84,12 +84,7 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
             openFileDirectoryNormalizedPosixPathRelativeToTheWorkspaceRoot,
             p
           );
-          console.debug(
-            "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Testing regexp [%s] against [/%s] and [%s]",
-            regexp,
-            p,
-            posixRelative
-          );
+
           const matchesPattern =
             // Adding a leading slash here to make the regex have the same behavior as the glob with **/* pattern.
             regexp.test("/" + p) ||
@@ -115,6 +110,10 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
       );
 
       if (matchingNormalizedPosixPathsRelativeToTheBasePath.length > 0) {
+        console.debug(
+          "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Git found files [%s]",
+          matchingNormalizedPosixPathsRelativeToTheBasePath
+        );
         return new ResourcesList(pattern, matchingNormalizedPosixPathsRelativeToTheBasePath);
       } else {
         console.debug(
@@ -128,17 +127,11 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
       );
     }
 
-    console.debug("opts.type " + opts?.type);
-    console.debug("base absolute " + baseAbsoluteFsPath);
-    console.debug("pattern " + pattern);
-
     const baseAbsoluteFsPathPlusPatternFolderPrefix =
       opts?.type === SearchType.ASSET_FOLDER
         ? baseAbsoluteFsPath
         : __path.join(baseAbsoluteFsPath, __path.dirname(pattern));
-    console.debug("specific folder " + baseAbsoluteFsPathPlusPatternFolderPrefix);
     const theLastPartOfThePattern = __path.basename(pattern);
-    console.debug("the last " + theLastPartOfThePattern);
 
     const relativePattern =
       opts?.type === SearchType.ASSET_FOLDER
@@ -164,13 +157,16 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
       );
     }
 
-    console.debug("VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: excludePattern [%s] ", excludePattern);
     console.debug(
-      "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: relativePattern.baseUri [%s]",
+      "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: vscode.workspace.findFiles excludePattern [%s] ",
+      excludePattern
+    );
+    console.debug(
+      "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: vscode.workspace.findFiles relativePattern.baseUri [%s]",
       relativePattern.baseUri
     );
     console.debug(
-      "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: relativePattern.pattern [%s]",
+      "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: vscode.workspace.findFiles relativePattern.pattern [%s]",
       relativePattern.pattern
     );
 
