@@ -41,6 +41,7 @@ export CORS_PROXY_IMAGE__imageBuildTag=<image-tag>
 export CORS_PROXY_IMAGE__imagePort=<port>
 export CORS_PROXY_IMAGE__imageAllowedOrigins=<allowed-origins>  # Comma-separated list
 export CORS_PROXY_IMAGE__imageVerbose=<verbose>
+export CORS_PROXY_IMAGE__imageAllowHosts=<allow-hosts>  # e.g., "*.example.com,*.github.com,localhost"
 ```
 
 Default values can be found [here](./env/index.js).
@@ -68,7 +69,7 @@ docker run -p 8080:8080 -i --rm -e CORS_PROXY_ALLOWED_ORIGINS="http://localhost:
 Or in production:
 
 ```bash
-docker run -p 8080:8080 -i --rm -e CORS_PROXY_ALLOWED_ORIGINS="https://example.com,https://other.example.com" docker.io/apache/incubator-kie-cors-proxy:main
+docker run -p 8080:8080 -i --rm -e CORS_PROXY_ALLOWED_ORIGINS="https://example.com,https://other.example.com" -e CORS_PROXY_ALLOW_HOSTS="*.example.com,*.github.com,localhost" docker.io/apache/incubator-kie-cors-proxy:main
 ```
 
 The service will be up at http://localhost:8080

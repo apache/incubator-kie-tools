@@ -41,6 +41,20 @@ describe("index.ts test", () => {
     jest.resetAllMocks();
   });
 
+  it("Default values", () => {
+    setEnv({});
+
+    run();
+    expect(startServer).toHaveBeenCalledWith(
+      expect.objectContaining({
+        port: 8080,
+        verbose: false,
+        allowedHosts: ["localhost", "*.github.com"],
+        allowedOrigins: ["http://localhost:9001"],
+      })
+    );
+  });
+
   it("Custom port", () => {
     setEnv({
       CORS_PROXY_HTTP_PORT: "90",
@@ -53,6 +67,7 @@ describe("index.ts test", () => {
         port: 90,
         allowedOrigins: ["http://example.com"],
         verbose: false,
+        allowedHosts: ["localhost", "*.github.com"],
       })
     );
   });
@@ -68,8 +83,27 @@ describe("index.ts test", () => {
         port: 8080,
         allowedOrigins: ["http://example.com"],
         verbose: true,
+        allowedHosts: ["localhost", "*.github.com"],
       })
     );
+  });
+
+  describe("Allowed hosts configuration", () => {
+    it.each(["*.target.example.com,*.github.com", "*"])("Custom allow hosts with: %s", (allowedHosts) => {
+      setEnv({
+        CORS_PROXY_ALLOWED_ORIGINS: "http://example.com",
+        CORS_PROXY_ALLOWED_HOSTS: allowedHosts,
+      });
+      run();
+      expect(startServer).toHaveBeenCalledWith(
+        expect.objectContaining({
+          port: 8080,
+          verbose: false,
+          allowedHosts: allowedHosts.split(","),
+          allowedOrigins: ["http://example.com"],
+        })
+      );
+    });
   });
 
   describe("Allowed origins configuration", () => {
@@ -84,6 +118,7 @@ describe("index.ts test", () => {
           port: 8080,
           allowedOrigins: ["http://example.com"],
           verbose: false,
+          allowedHosts: ["localhost", "*.github.com"],
         })
       );
     });
@@ -99,6 +134,7 @@ describe("index.ts test", () => {
           port: 8080,
           allowedOrigins: ["http://example.com", "https://other.example.com", "http://localhost:9001"],
           verbose: false,
+          allowedHosts: ["localhost", "*.github.com"],
         })
       );
     });
@@ -121,15 +157,18 @@ describe("index.ts test", () => {
       }).toThrow(new Error("Invalid origin: empty origins are not allowed in CORS_PROXY_ALLOWED_ORIGINS."));
     });
 
-    it("Should throw an error when wildcard '*' is in the list", () => {
-      setEnv({
-        CORS_PROXY_ALLOWED_ORIGINS: "http://example.com,*",
-      });
+    it.each(["*,http://example.com", "http://example.com,*", "*"])(
+      "Should throw an error when wildcard '*' is in the list with CORS_PROXY_ALLOWED_ORIGINS: %s",
+      (allowedOrigins) => {
+        setEnv({
+          CORS_PROXY_ALLOWED_ORIGINS: allowedOrigins,
+        });
 
-      expect(() => {
-        run();
-      }).toThrow(new Error('Invalid origin: wildcard "*" is not allowed in CORS_PROXY_ALLOWED_ORIGINS.'));
-    });
+        expect(() => {
+          run();
+        }).toThrow(new Error('Invalid origin: wildcard "*" is not allowed in CORS_PROXY_ALLOWED_ORIGINS.'));
+      }
+    );
 
     it("Should throw an error when there are empty origins in the list", () => {
       setEnv({

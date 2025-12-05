@@ -21,14 +21,15 @@
     "build:prod": "pnpm lint && pnpm test && rimraf dist && webpack",
     "lint": "run-script-if --bool \"$(build-env linters.run)\" --then \"kie-tools--eslint ./src\"",
     "start": "run-script-os",
-    "start:darwin:linux": "pnpm build:dev && cross-env CORS_PROXY_USE_HTTP_FOR_HOSTS=$(build-env corsProxy.dev.useHttpForHosts) CORS_PROXY_HTTP_PORT=$(build-env corsProxy.dev.port) CORS_PROXY_ALLOWED_ORIGINS=$(build-env corsProxy.dev.allowedOrigins) CORS_PROXY_VERBOSE=$(build-env corsProxy.dev.verbose) node dist/index.js",
-    "start:win32": "pnpm build:dev && pnpm powershell \"cross-env CORS_PROXY_USE_HTTP_FOR_HOSTS=$(build-env corsProxy.dev.useHttpForHosts) CORS_PROXY_HTTP_PORT=$(build-env corsProxy.dev.port) CORS_PROXY_ALLOWED_ORIGINS=$(build-env corsProxy.dev.allowedOrigins) CORS_PROXY_VERBOSE=$(build-env corsProxy.dev.verbose) node dist/index.js\"",
+    "start:darwin:linux": "pnpm build:dev && cross-env CORS_PROXY_USE_HTTP_FOR_HOSTS=$(build-env corsProxy.dev.useHttpForHosts) CORS_PROXY_HTTP_PORT=$(build-env corsProxy.dev.port) CORS_PROXY_ALLOWED_ORIGINS=$(build-env corsProxy.dev.allowedOrigins) CORS_PROXY_VERBOSE=$(build-env corsProxy.dev.verbose) CORS_PROXY_ALLOWED_HOSTS=$(build-env corsProxy.dev.allowedHosts) node dist/index.js",
+    "start:win32": "pnpm build:dev && pnpm powershell \"cross-env CORS_PROXY_USE_HTTP_FOR_HOSTS=$(build-env corsProxy.dev.useHttpForHosts) CORS_PROXY_HTTP_PORT=$(build-env corsProxy.dev.port) CORS_PROXY_ALLOWED_ORIGINS=$(build-env corsProxy.dev.allowedOrigins) CORS_PROXY_VERBOSE=$(build-env corsProxy.dev.verbose) CORS_PROXY_ALLOWED_HOSTS=$(build-env corsProxy.dev.allowedHosts) node dist/index.js\"",
     "test": "run-script-if --ignore-errors \"$(build-env tests.ignoreFailures)\" --bool \"$(build-env tests.run)\" --then \"jest --silent --verbose --passWithNoTests\""
   },
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "https-proxy-agent": "^7.0.6",
+    "minimatch": "^3.0.5",
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
@@ -43,6 +44,7 @@
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/jest": "^29.5.12",
+    "@types/minimatch": "^3.0.5",
     "@types/node": "^22.14.1",
     "cross-env": "^7.0.3",
     "jest": "^29.7.0",

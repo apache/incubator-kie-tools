@@ -21,6 +21,7 @@ import * as https from "https";
 import fetch from "node-fetch";
 import { Request, Response } from "express";
 import { HttpsProxyAgent } from "https-proxy-agent";
+import * as minimatch from "minimatch";
 import { GIT_CORS_CONFIG, isGitOperation } from "./git";
 import { CorsProxyHeaderKeys, CorsConfig, CorsProxy } from "@kie-tools/cors-proxy-api/dist";
 
@@ -38,6 +39,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
   constructor(
     private readonly args: {
       allowedOrigins: string[];
+      allowedHosts: string[];
       verbose: boolean;
       hostsToUseHttp: string[];
     }
@@ -117,7 +119,7 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
 
       res.status(proxyResponse.status);
 
-      this.logger.debug("Writting Response...");
+      this.logger.debug("Writing Response...");
       if (proxyResponse.body) {
         const stream = proxyResponse.body.pipe(res);
         stream.on("close", () => {
@@ -138,15 +140,27 @@ export class ExpressCorsProxy implements CorsProxy<Request, Response> {
     }
   }
 
+  private validateTargetUrl(targetUrl: string): boolean {
+    const protocol = /^https?:\/\//.test(targetUrl) ? "" : "https:/";
+    const parsedTargetUrl = new URL(protocol + targetUrl);
+
+    return this.args.allowedHosts.some((pattern) => minimatch(parsedTargetUrl.hostname, pattern));
+  }
+
   private resolveRequestInfo(request: Request): ProxyRequestInfo {
     const origin = request.header("origin");
     const targetUrl: string = (request.headers[CorsProxyHeaderKeys.TARGET_URL] as string) ?? request.url;
+
     if (!origin || !this.args.allowedOrigins.includes(origin)) {
       throw new Error(`Origin ${origin} is not allowed`);
     }
 
     if (!targetUrl || targetUrl == "/") {
       throw new Error("Couldn't resolve the target URL...");
+    }
+
+    if (!this.validateTargetUrl(targetUrl)) {
+      throw new Error(`The target URL is not allowed. Requested: ${targetUrl}`);
     }
 
     const proxyUrl = new URL(`protocol://${targetUrl.substring(1)}`);
