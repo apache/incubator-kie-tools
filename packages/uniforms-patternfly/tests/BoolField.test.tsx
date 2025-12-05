@@ -77,6 +77,17 @@ test("<BoolField> - renders a input with correct value (default)", () => {
   expect(screen.getByTestId("bool-field")).not.toHaveAttribute("checked");
 });
 
+test("<BoolField> - renders an input with correct value (default true)", () => {
+  render(
+    usingUniformsContext(<BoolField name="x" />, {
+      x: { type: Boolean, defaultValue: true },
+    })
+  );
+
+  expect(screen.getByTestId("bool-field")).toBeInTheDocument();
+  expect(screen.getByTestId("bool-field")).toHaveAttribute("checked");
+});
+
 test("<BoolField> - renders a input with correct value (model)", () => {
   render(usingUniformsContext(<BoolField name="x" />, { x: { type: Boolean } }, { model: { x: true } }));
 
@@ -109,3 +120,29 @@ test("<BoolField> - renders a wrapper with unknown props", () => {
   expect(screen.getByTestId("wrapper-field").getAttribute("data-y")).toBe("y");
   expect(screen.getByTestId("wrapper-field").getAttribute("data-z")).toBe("z");
 });
+
+// test("<BoolField> - respects default false from model", () => {
+//   render(usingUniformsContext(<BoolField name="x" />, { x: { type: Boolean } }, { model: { x: false } }));
+
+//   const input = screen.getByTestId("bool-field");
+//   expect(input).not.toBeChecked();
+// });
+
+// test("<BoolField> - respects default true from model", () => {
+//   render(usingUniformsContext(<BoolField name="x" />, { x: { type: Boolean } }, { model: { x: true } }));
+
+//   const input = screen.getByTestId("bool-field");
+//   expect(input).toBeChecked();
+// });
+
+// test("<BoolField> - respects schema default true", () => {
+//   render(usingUniformsContext(<BoolField name="x" />, { x: { type: Boolean, defaultValue: true } }));
+//   const input = screen.getByTestId("bool-field");
+//   expect(input).toBeChecked();
+// });
+
+// test("<BoolField> - respects schema default false", () => {
+//   render(usingUniformsContext(<BoolField name="x" />, { x: { type: Boolean, defaultValue: false } }));
+//   const input = screen.getByTestId("bool-field");
+//   expect(input).not.toBeChecked();
+// });

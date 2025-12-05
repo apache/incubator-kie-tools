@@ -25,6 +25,26 @@ export class ModelConversionTool {
   public static convertStringToDate = (model: any, schema: Record<string, any>): any => {
     return doConvert(model, schema, (value) => new Date(value));
   };
+
+  public static applySchemaDefaults(model: any, schema: Record<string, any>): any {
+    const newModel = { ...model };
+    if (schema.properties) {
+      Object.keys(schema.properties).forEach((key) => {
+        const prop = schema.properties[key];
+        if (newModel[key] !== undefined) {
+          return;
+        }
+        if (prop.default !== undefined) {
+          newModel[key] = prop.default;
+          return;
+        }
+        if (prop.type === "boolean") {
+          newModel[key] = false;
+        }
+      });
+    }
+    return newModel;
+  }
 }
 
 interface ContextInitArgs {
@@ -84,6 +104,7 @@ function convertModel(model: any, schema: Record<string, any>, ctx: ConversionCo
 
   Object.keys(model).forEach((propertyName) => {
     const property = schema.properties[propertyName];
+    const propSchema = lookupSchemaPropertyProps(schema.properties[propertyName], ctx);
 
     const value = model[propertyName];
 
