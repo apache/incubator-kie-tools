@@ -51,7 +51,7 @@ function getAllowedHosts(): string[] {
   }
 
   if (hostsList.some((o) => o === "*")) {
-    throw new Error('Invalid host: wildcard "*" is not allowed in CORS_PROXY_ALLOWED_HOSTS.');
+    console.warn('Wildcard alone "*" is strongly discouraged in CORS_PROXY_ALLOWED_HOSTS production environments.');
   }
 
   return hostsList;
