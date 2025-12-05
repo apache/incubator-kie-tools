@@ -106,7 +106,11 @@ export class StandaloneEditorsEditorChannelApiImpl implements KogitoEditorChanne
     }
 
     const matcher = new Minimatch(request.pattern);
-    const matches = Array.from(this.resources.keys()).filter((path) => matcher.match(path));
+    const matches = Array.from(this.resources.keys()).filter((path) => {
+      const pathAdaptedForSlashPrefixedPattern =
+        (request.pattern.startsWith("/") && !path.startsWith("/") ? "/" : "") + path;
+      return matcher.match(pathAdaptedForSlashPrefixedPattern);
+    });
     return new ResourcesList(request.pattern, matches);
   }
 
