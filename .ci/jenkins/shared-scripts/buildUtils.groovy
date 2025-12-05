@@ -51,7 +51,7 @@ def setupPnpm(String mavenSettingsFileId = '') {
     pnpm config set network-timeout 1000000
     pnpm -r exec 'bash' '-c' 'mkdir .mvn'
     pnpm -r exec 'bash' '-c' 'echo -B > .mvn/maven.config'
-    pnpm -r exec 'bash' '-c' 'echo -Xmx2g > .mvn/jvm.config'
+    pnpm -r exec 'bash' '-c' 'echo -Xmx3g > .mvn/jvm.config'
     """.trim()
 
     if (mavenSettingsFileId) {
