@@ -31,15 +31,8 @@ export class ModelConversionTool {
     if (schema.properties) {
       Object.keys(schema.properties).forEach((key) => {
         const prop = schema.properties[key];
-        if (newModel[key] !== undefined) {
-          return;
-        }
-        if (prop.default !== undefined) {
-          newModel[key] = prop.default;
-          return;
-        }
-        if (prop.type === "boolean") {
-          newModel[key] = false;
+        if (prop.type === "boolean" && newModel[key] === undefined) {
+          newModel[key] = prop.default ?? false;
         }
       });
     }
@@ -104,7 +97,6 @@ function convertModel(model: any, schema: Record<string, any>, ctx: ConversionCo
 
   Object.keys(model).forEach((propertyName) => {
     const property = schema.properties[propertyName];
-    const propSchema = lookupSchemaPropertyProps(schema.properties[propertyName], ctx);
 
     const value = model[propertyName];
 
