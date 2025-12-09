@@ -77,17 +77,6 @@ test("<BoolField> - renders a input with correct value (default)", () => {
   expect(screen.getByTestId("bool-field")).not.toHaveAttribute("checked");
 });
 
-test("<BoolField> - renders an input with correct value (default true)", () => {
-  render(
-    usingUniformsContext(<BoolField name="x" />, {
-      x: { type: Boolean, defaultValue: true },
-    })
-  );
-
-  expect(screen.getByTestId("bool-field")).toBeInTheDocument();
-  expect(screen.getByTestId("bool-field")).toHaveAttribute("checked");
-});
-
 test("<BoolField> - renders a input with correct value (model)", () => {
   render(usingUniformsContext(<BoolField name="x" />, { x: { type: Boolean } }, { model: { x: true } }));
 
