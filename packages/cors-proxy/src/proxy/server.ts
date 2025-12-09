@@ -27,6 +27,7 @@ export type ServerArgs = {
   port: number;
   verbose: boolean;
   hostsToUseHttp: string[];
+  allowedHosts: string[];
 };
 
 export const startServer = (args: ServerArgs): void => {
@@ -36,6 +37,7 @@ export const startServer = (args: ServerArgs): void => {
   console.log(`Port:                       ${args.port}`);
   console.log(`Verbose:                    ${args.verbose}`);
   console.log(`Hosts to proxy with HTTP:   ${args.hostsToUseHttp}`);
+  console.log(`Allow hosts:                ${args.allowedHosts}`);
   console.log("====================================================");
 
   const app: express.Express = express();
