@@ -27,20 +27,21 @@ pipeline {
     }
 
     parameters {
-        booleanParam(description: 'Dry run', name: 'DRY_RUN', defaultValue: true)
-        string(description: 'Release Version', name: 'RELEASE_VERSION', defaultValue: '0.0.0')
-        string(description: 'Base Ref', name: 'BASE_REF')
+        booleanParam(name: 'DRY_RUN', description: 'Dry run', defaultValue: true)
+        string(name: 'RELEASE_VERSION', description: 'Release Version', defaultValue: '0.0.0')
+        string(name: 'BASE_REF', description: 'GitHub Base Ref (tag or branch)')
+        string(name: 'RELEASE_CANDIDATE_VERSION', description: 'Release Candidate Version', defaultValue: '')
+        string(name: 'PIPELINE_PATH', description: 'Path to run the pipeline')
     }
 
     environment {
         KIE_TOOLS_BUILD__runLinters = 'false'
         KIE_TOOLS_BUILD__runTests = 'false'
         KIE_TOOLS_BUILD__runEndToEndTests = 'false'
-        KIE_TOOLS_BUILD__mavenDeploySkip = 'false'
 
         DOCKER_CONFIG = "${WORKSPACE}/.docker"
-
-        PNPM_FILTER_STRING = '-F jbpm-quarkus-devui...'
+        PNPM_FILTER_STRING = '-F sonataflow-quarkus-devui... -F jbpm-quarkus-devui...'
+        MAVEN_ARGS = "-B -s ${WORKSPACE}/kie-settings.xml -Dmaven.repo.local=${WORKSPACE}/.maven -Papache-release"
     }
 
     stages {
@@ -93,20 +94,35 @@ pipeline {
             }
         }
 
+        stage('Setup signing key') {
+            when {
+                expression { !params.DRY_RUN && params.RELEASE_CANDIDATE_VERSION != '' }
+            }
+            steps {
+                script {
+                    releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
+                }
+            }
+        }
+
         stage('PNPM Bootstrap') {
             steps {
                 dir('kie-tools') {
                     script {
-                        buildUtils.pnpmBootstrap("${env.PNPM_FILTER_STRING}")
+                        buildUtils.pnpmBootstrap(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                     }
                 }
             }
         }
 
-        stage('Setup signing key') {
+        stage('Update project, kogito and stream name version') {
             steps {
-                script {
-                    releaseUtils.setupSigningKey("${pipelineVars.asfReleaseGPGKeyCredentialsId}")
+                dir('kie-tools') {
+                    script {
+                        buildUtils.pnpmUpdateProjectVersion(params.RELEASE_VERSION, env.MAVEN_ARGS)
+                        buildUtils.pnpmUpdateKogitoVersion(params.RELEASE_VERSION, params.RELEASE_VERSION, env.MAVEN_ARGS)
+                        buildUtils.pnpmUpdateStreamName(params.RELEASE_VERSION, env.MAVEN_ARGS)
+                    }
                 }
             }
         }
@@ -115,16 +131,8 @@ pipeline {
             steps {
                 dir('kie-tools') {
                     script {
-                        if (params.DRY_RUN) {
-                            env.KIE_TOOLS_BUILD__mavenDeploySkip = 'true'
-                        }
-                        configFileProvider([configFile(fileId: "${pipelineVars.mavenSettingsReleaseConfigFileId}", variable: 'MAVEN_SETTINGS_FILE')]) {
-                            sh """#!/bin/bash -el
-                            pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -e "\n--settings=${MAVEN_SETTINGS_FILE}" >> .mvn/maven.config'
-                            pnpm ${env.PNPM_FILTER_STRING} exec 'bash' '-c' 'echo -Papache-release >> .mvn/maven.config'
-                            pnpm ${env.PNPM_FILTER_STRING} build:prod
-                            """.trim()
-                        }
+                        env.KIE_TOOLS_BUILD__mavenDeploySkip = params.DRY_RUN ? 'true' : 'false'
+                        buildUtils.pnpmBuild(env.PNPM_FILTER_STRING, env.MAVEN_ARGS)
                     }
                 }
             }
