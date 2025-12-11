@@ -203,6 +203,8 @@ digraph G {
   "@kie-tools/serverless-workflow-dev-ui-webapp" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-diagram-editor" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
   "@kie-tools/serverless-workflow-diagram-editor-envelope" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/serverless-workflow-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
+  "@kie-tools/xml-parser-ts" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-jq-expressions" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-service-catalog" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/serverless-workflow-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
@@ -216,7 +218,6 @@ digraph G {
   "vscode-extension-dashbuilder-editor" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-kie-ba-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "vscode-extension-kogito-bundle" [ color = "blue", fontcolor = "blue", style = "rounded" ];
-  "@kie-tools/xml-parser-ts" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yard-language-service" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yard-validator" [ color = "blue", fontcolor = "blue", style = "rounded" ];
   "@kie-tools/yard-model" [ color = "black", fontcolor = "black", style = "dashed, rounded" ];
@@ -614,6 +615,14 @@ digraph G {
   "@kie-tools/serverless-workflow-diagram-editor-assets" -> "@kie-tools/serverless-workflow-diagram-editor" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-diagram-editor-assets" -> "@kie-tools/serverless-workflow-diagram-editor-envelope" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-diagram-editor-envelope" -> "@kie-tools/kie-bc-editors-common" [ style = "solid", color = "blue" ];
+  "@kie-tools/serverless-workflow-editor" -> "@kie-tools-core/operating-system" [ style = "solid", color = "blue" ];
+  "@kie-tools/serverless-workflow-editor" -> "@kie-tools-core/patternfly-base" [ style = "solid", color = "blue" ];
+  "@kie-tools/serverless-workflow-editor" -> "@kie-tools-core/react-hooks" [ style = "solid", color = "blue" ];
+  "@kie-tools/serverless-workflow-editor" -> "@kie-tools-core/switch-expression-ts" [ style = "solid", color = "blue" ];
+  "@kie-tools/serverless-workflow-editor" -> "@kie-tools/i18n-common-dictionary" [ style = "solid", color = "blue" ];
+  "@kie-tools/serverless-workflow-editor" -> "@kie-tools/xml-parser-ts" [ style = "solid", color = "blue" ];
+  "@kie-tools/serverless-workflow-editor" -> "@kie-tools/playwright-base" [ style = "dashed", color = "blue" ];
+  "@kie-tools/serverless-workflow-editor" -> "@kie-tools/storybook-base" [ style = "dashed", color = "blue" ];
   "@kie-tools/serverless-workflow-jq-expressions" -> "@kie-tools/serverless-workflow-service-catalog" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-language-service" -> "@kie-tools/json-yaml-language-service" [ style = "solid", color = "blue" ];
   "@kie-tools/serverless-workflow-language-service" -> "@kie-tools/serverless-workflow-jq-expressions" [ style = "solid", color = "blue" ];
