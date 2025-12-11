@@ -788,6 +788,49 @@ ThatShouldFailWhenBreakLine`,
       });
     });
   });
+
+  describe("Local identifiers with namespace", () => {
+    test.each([
+      { modelPath: "../tests-data/local-model-identifier/required-decision-with-namespace-in-href.dmn" },
+      { modelPath: "../tests-data/local-model-identifier/required-decision-without-namespace-in-href.dmn" },
+    ])("should recognize identifiers with or without local namespace", async ({ modelPath }) => {
+      const model = getDmnModelFromFilePath(modelPath);
+      const expression = "Required Decision A + 10 + Required Decision A / 20";
+      const literalExpressionId = "_FF3A0DA7-D269-4821-AE29-73BA01837CE5";
+      const modelMock = createModelMockForExpression(expression);
+      const feelVariables = new FeelIdentifiers({
+        _readonly_dmnDefinitions: model.definitions,
+      });
+
+      const semanticTokensProvider = new SemanticTokensProvider(feelVariables, literalExpressionId, () => {});
+
+      const semanticMonacoTokens = await semanticTokensProvider.provideDocumentSemanticTokens(
+        modelMock as unknown as Monaco.editor.ITextModel,
+        null,
+        cancellationTokenMock
+      );
+
+      const expected = [
+        ...getMonacoSemanticToken({
+          startLineRelativeToPreviousLine: 0,
+          startIndexRelativeToPreviousStartIndex: 0,
+          tokenLength: "Required Decision A".length,
+          tokenType: Element.Variable,
+        }),
+
+        ...getMonacoSemanticToken({
+          startLineRelativeToPreviousLine: 0,
+          startIndexRelativeToPreviousStartIndex: "Required Decision A + 10 +".length + 1,
+          tokenLength: "Required Decision A".length,
+          tokenType: Element.Variable,
+        }),
+      ];
+
+      for (let i = 0; i < expected.length; i++) {
+        expect(semanticMonacoTokens?.data[i]).toEqual(expected[i]);
+      }
+    });
+  });
 });
 
 function getDmnModelWithContextEntry({
