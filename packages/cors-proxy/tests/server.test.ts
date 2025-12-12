@@ -45,6 +45,7 @@ describe("CORS handler logic test", () => {
         port: 8080,
         verbose: false,
         hostsToUseHttp: [],
+        allowedHosts: ["localhost"],
       };
 
       startServer(args);
@@ -77,6 +78,7 @@ describe("CORS handler logic test", () => {
         port: 8080,
         verbose: false,
         hostsToUseHttp: [],
+        allowedHosts: ["localhost"],
       };
 
       startServer(args);
@@ -113,6 +115,7 @@ describe("CORS handler logic test", () => {
           port: 8080,
           verbose: false,
           hostsToUseHttp: [],
+          allowedHosts: ["localhost"],
         };
 
         startServer(args);
@@ -146,6 +149,40 @@ describe("CORS handler logic test", () => {
         port: 8080,
         verbose: false,
         hostsToUseHttp: [],
+        allowedHosts: ["localhost"],
+      };
+
+      startServer(args);
+
+      const req: any = {
+        headers: {
+          origin: "http://example.com",
+        },
+        method: "GET",
+      };
+
+      const res: any = {
+        statusCode: 200,
+        setHeader: jest.fn(),
+        getHeader: jest.fn(),
+      };
+
+      const next = function () {
+        expect(res.setHeader).toHaveBeenCalledWith("Access-Control-Allow-Origin", "http://example.com");
+        done();
+      };
+
+      const corsMiddleware = corsMock.mock.results[0].value;
+      corsMiddleware(req, res, next);
+    });
+
+    it("should not allow requests with origin http://notvalid:9000", (done) => {
+      const args: ServerArgs = {
+        allowedOrigins: ["http://localhost:9000"],
+        port: 8080,
+        verbose: false,
+        hostsToUseHttp: [],
+        allowedHosts: ["localhost"],
       };
 
       startServer(args);
