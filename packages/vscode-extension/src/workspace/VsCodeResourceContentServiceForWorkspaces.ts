@@ -51,8 +51,6 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
       throw new Error("VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: No workspaces found.");
     }
 
-    console.debug("Pattern is: " + pattern);
-
     const baseAbsoluteFsPath =
       opts?.type === SearchType.ASSET_FOLDER
         ? __path.join(
