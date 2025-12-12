@@ -160,9 +160,9 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
   }
 
   /**
-   * Given a glob pattern, returns:
-   *  - staticPrefix: leading directory segments with no glob magic, may be empty
-   *  - remainingGlob: the rest of the pattern (dirs + filename) relative to staticPrefix
+   * Given a glob pattern (e.g. org/model/*.txt), returns:
+   *  - staticPrefix (org/model): leading directory segments with no glob magic, may be empty
+   *  - remainingGlob (*.txt): the rest of the pattern (dirs + filename) relative to staticPrefix
    */
   private splitStaticPrefix(pattern: string): { staticPrefix: string; remainingGlob: string } {
     const segments = this.splitPosixSegments(pattern);
