@@ -88,7 +88,7 @@ export function open(args: {
     stateControl,
     {
       normalizedPosixPathRelativeToTheWorkspaceRoot: "", // FIXME: https://github.com/apache/incubator-kie-issues/issues/811
-      fileName: "", // FIXME: https://github.com/apache/incubator-kie-issues/issues/811
+      fileName: "default", // FIXME: https://github.com/apache/incubator-kie-issues/issues/811
       fileExtension: "bpmn",
       getFileContents: () => Promise.resolve(args.initialContent),
       isReadOnly: args.readOnly ?? false,

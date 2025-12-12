@@ -95,8 +95,6 @@ public class BPMNStaticResourceContentService implements ResourceContentService 
             "  ]\n" +
             "]";
 
-    private static final String PATTERN_ALL_WID = "*.wid";
-    private static final String PATTERN_GLOBAL_WID = "global/*.wid";
     private static final Map<String, String> GLOBAL_WID_ENTRIES =
             new HashMap<String, String>() {{
                 put("global/default.wid", DEFAULT_DECLARATIONS);
@@ -144,14 +142,14 @@ public class BPMNStaticResourceContentService implements ResourceContentService 
 
     @Override
     public Promise<String[]> list(final String pattern) {
-        switch (pattern) {
-            case PATTERN_GLOBAL_WID:
+        if (pattern.endsWith(".wid")) {
+            if (pattern.contains("global")) {
                 return promises.resolve(GLOBAL_WID_ENTRIES.keySet().toArray(new String[0]));
-            case PATTERN_ALL_WID:
+            } else {
                 return promises.resolve(ALL_WID_ENTRIES.keySet().toArray(new String[0]));
-            default:
-                return promises.resolve(new String[0]);
+            }
         }
+        return promises.resolve(new String[0]);
     }
 
     @Override
