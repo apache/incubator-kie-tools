@@ -167,7 +167,7 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
   private splitStaticPrefix(pattern: string): { staticPrefix: string; remainingGlob: string } {
     const segments = this.splitPosixSegments(pattern);
 
-    if (segments.length == 1) {
+    if (segments.length === 1) {
       return { staticPrefix: "", remainingGlob: segments[0] };
     }
 
