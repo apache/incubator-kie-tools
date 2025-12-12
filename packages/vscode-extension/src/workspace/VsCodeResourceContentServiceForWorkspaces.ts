@@ -51,6 +51,8 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
       throw new Error("VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: No workspaces found.");
     }
 
+    console.debug("Pattern is: " + pattern);
+
     const baseAbsoluteFsPath =
       opts?.type === SearchType.ASSET_FOLDER
         ? __path.join(
@@ -110,17 +112,23 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
       );
     }
 
-    const theMostSpecificFolder =
-      opts?.type === SearchType.ASSET_FOLDER
-        ? baseAbsoluteFsPath // for ASSET_FOLDER we are already done, see `baseAbsolutePath` creation
-        : __path.join(baseAbsoluteFsPath, __path.dirname(pattern)); // try the same principle for TRAVERSAL
-    const theLastPartOfThePattern = __path.basename(pattern);
+    // Normalize incoming pattern to POSIX for VS Code globbing
+    const posixPattern = pattern.replace(/\\/g, "/");
+    const { staticPrefix, remainingGlob } = this.splitStaticPrefix(posixPattern);
 
-    const relativePattern = new RelativePattern(theMostSpecificFolder, theLastPartOfThePattern);
+    let theMostSpecificFolder = baseAbsoluteFsPath;
+    let globRelativeToBase = remainingGlob ?? posixPattern;
+
+    // In case of ASSET_FOLDER we are done, see baseAbsoluteFsPath creation
+    if (opts?.type !== SearchType.ASSET_FOLDER) {
+      theMostSpecificFolder = staticPrefix ? __path.join(baseAbsoluteFsPath, staticPrefix) : baseAbsoluteFsPath;
+    }
+
+    const relativePattern = new RelativePattern(theMostSpecificFolder, globRelativeToBase);
 
     const vscodeFoundFiles = await vscode.workspace.findFiles(relativePattern);
     const vscodeNormalizedPosixPathsRelativeToTheBasePath = vscodeFoundFiles.map((uri) =>
-      vscode.workspace.asRelativePath(uri, false)
+      vscode.workspace.asRelativePath(uri, false).replace(/\\/g, "/")
     );
 
     console.debug(
@@ -134,8 +142,44 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
 
     return new ResourcesList(
       pattern,
-      gitNormalizedPosixPathsRelativeToTheBasePath.concat(vscodeNormalizedPosixPathsRelativeToTheBasePath)
+      Array.from(
+        new Set([...gitNormalizedPosixPathsRelativeToTheBasePath, ...vscodeNormalizedPosixPathsRelativeToTheBasePath])
+      )
     );
+  }
+
+  // Detects glob "magic" beyond just "*" and "**"
+  private hasGlobMagic(seg: string): boolean {
+    // *, ?, [], {}, !, and simple extglobs like +(…), *(…), ?(…), !(…)
+    return /[*?[\]{},!]/.test(seg) || /\([^)]+\)/.test(seg);
+  }
+
+  // Splits "a/b/c" to array ["a", "b", "c"]
+  private splitPosixSegments(path: string): string[] {
+    return path.split("/").filter((s) => s.length > 0);
+  }
+
+  /**
+   * Given a glob pattern, returns:
+   *  - staticPrefix: leading directory segments with no glob magic, may be empty
+   *  - remainingGlob: the rest of the pattern (dirs + filename) relative to staticPrefix
+   */
+  private splitStaticPrefix(pattern: string): { staticPrefix: string; remainingGlob: string } {
+    const segments = this.splitPosixSegments(pattern);
+
+    if (segments.length == 1) {
+      return { staticPrefix: "", remainingGlob: segments[0] };
+    }
+
+    let i = 0;
+    while (i < segments.length && !this.hasGlobMagic(segments[i])) {
+      i++;
+    }
+
+    const staticPrefix = segments.slice(0, i).join("/");
+    const remainingGlob = segments.slice(i).join("/") || "";
+
+    return { staticPrefix, remainingGlob };
   }
 
   public async get(
