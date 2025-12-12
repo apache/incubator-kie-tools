@@ -454,7 +454,10 @@ export const DmnEditorInternal = ({
         </Tab>
 
         <Tab eventKey={DmnEditorTab.DATA_TYPES} title={tabTitle.dataTypes}>
-          <div data-testid={"kie-tools--dmn-editor--data-types-container"}>
+          <div
+            data-testid={"kie-tools--dmn-editor--data-types-container"}
+            className="kie-tools--dmn-editor--data-types-container"
+          >
             {navigationTab === DmnEditorTab.DATA_TYPES && <DataTypes />}
           </div>
         </Tab>

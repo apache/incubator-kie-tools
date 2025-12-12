@@ -907,8 +907,16 @@ circle.kie-dmn-editor--diagram-edge-waypoint:hover {
 .kie-dmn-editor--data-types-filter input {
   flex-grow: 1;
 }
+.kie-tools--dmn-editor--data-types-container {
+  overflow: hidden;
+  height: 100%;
+}
 .kie-dmn-editor--data-types-nav {
   padding-left: 16px;
+  overflow-y: auto;
+}
+.kie-dmn-editor--data-types-container .pf-c-drawer__content {
+  overflow-y: auto;
 }
 .kie-dmn-editor--data-types-nav-item:first-child {
   margin-top: 16px;
