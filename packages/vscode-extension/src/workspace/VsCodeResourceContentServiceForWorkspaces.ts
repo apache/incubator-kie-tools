@@ -115,7 +115,7 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
     const { staticPrefix, remainingGlob } = this.splitStaticPrefix(posixPattern);
 
     let theMostSpecificFolder = baseAbsoluteFsPath;
-    let globRelativeToBase = remainingGlob ?? posixPattern;
+    const globRelativeToBase = remainingGlob ?? posixPattern;
 
     // In case of ASSET_FOLDER we are done, see baseAbsoluteFsPath creation
     if (opts?.type !== SearchType.ASSET_FOLDER) {
