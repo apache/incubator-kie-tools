@@ -749,7 +749,7 @@ module.exports = {
           enter: "2024-05-30T11:09:26.858Z",
           exit: "2024-05-30T11:09:26.858Z",
           type: "EndNode",
-          definitionId: "_jbpm-unique-28",
+          definitionId: "2",
           __typename: "NodeInstance",
         },
         {
@@ -759,7 +759,7 @@ module.exports = {
           enter: "2024-05-30T11:09:06.135Z",
           exit: "2024-05-30T11:09:26.857Z",
           type: "CompositeContextNode",
-          definitionId: "_jbpm-unique-29",
+          definitionId: "3",
           __typename: "NodeInstance",
         },
         {
@@ -769,7 +769,7 @@ module.exports = {
           enter: "2024-05-30T11:09:26.857Z",
           exit: "2024-05-30T11:09:26.857Z",
           type: "EndNode",
-          definitionId: "_jbpm-unique-33",
+          definitionId: "8",
           __typename: "NodeInstance",
         },
         {
@@ -779,7 +779,7 @@ module.exports = {
           enter: "2024-05-30T11:09:26.857Z",
           exit: "2024-05-30T11:09:26.857Z",
           type: "ActionNode",
-          definitionId: "_jbpm-unique-32",
+          definitionId: "7",
           __typename: "NodeInstance",
         },
         {
@@ -789,7 +789,7 @@ module.exports = {
           enter: "2024-05-30T11:09:06.137Z",
           exit: "2024-05-30T11:09:26.857Z",
           type: "WorkItemNode",
-          definitionId: "_jbpm-unique-31",
+          definitionId: "6",
           __typename: "NodeInstance",
         },
         {
@@ -799,7 +799,7 @@ module.exports = {
           enter: "2024-05-30T11:09:06.136Z",
           exit: "2024-05-30T11:09:06.136Z",
           type: "StartNode",
-          definitionId: "_jbpm-unique-30",
+          definitionId: "4",
           __typename: "NodeInstance",
         },
         {
@@ -809,7 +809,7 @@ module.exports = {
           enter: "2024-05-30T11:09:06.134Z",
           exit: "2024-05-30T11:09:06.134Z",
           type: "StartNode",
-          definitionId: "_jbpm-unique-27",
+          definitionId: "1",
           __typename: "NodeInstance",
         },
       ],
@@ -936,7 +936,7 @@ module.exports = {
           enter: "2024-05-30T11:08:49.531Z",
           exit: "2024-05-30T11:08:49.531Z",
           type: "EndNode",
-          definitionId: "_jbpm-unique-13",
+          definitionId: "2",
           __typename: "NodeInstance",
         },
         {
@@ -946,7 +946,7 @@ module.exports = {
           enter: "2024-05-30T11:08:49.529Z",
           exit: "2024-05-30T11:08:49.531Z",
           type: "CompositeContextNode",
-          definitionId: "_jbpm-unique-17",
+          definitionId: "6",
           __typename: "NodeInstance",
         },
         {
@@ -956,7 +956,7 @@ module.exports = {
           enter: "2024-05-30T11:08:49.531Z",
           exit: "2024-05-30T11:08:49.531Z",
           type: "EndNode",
-          definitionId: "_jbpm-unique-21",
+          definitionId: "11",
           __typename: "NodeInstance",
         },
         {
@@ -966,7 +966,7 @@ module.exports = {
           enter: "2024-05-30T11:08:49.53Z",
           exit: "2024-05-30T11:08:49.53Z",
           type: "ActionNode",
-          definitionId: "_jbpm-unique-20",
+          definitionId: "10",
           __typename: "NodeInstance",
         },
         {
@@ -976,7 +976,7 @@ module.exports = {
           enter: "2024-05-30T11:08:49.53Z",
           exit: "2024-05-30T11:08:49.53Z",
           type: "ActionNode",
-          definitionId: "_jbpm-unique-19",
+          definitionId: "9",
           __typename: "NodeInstance",
         },
         {
@@ -986,7 +986,7 @@ module.exports = {
           enter: "2024-05-30T11:08:49.529Z",
           exit: "2024-05-30T11:08:49.529Z",
           type: "StartNode",
-          definitionId: "_jbpm-unique-18",
+          definitionId: "7",
           __typename: "NodeInstance",
         },
         {
@@ -996,7 +996,7 @@ module.exports = {
           enter: "2024-05-30T11:08:49.529Z",
           exit: "2024-05-30T11:08:49.529Z",
           type: "Join",
-          definitionId: "_jbpm-unique-23",
+          definitionId: "13",
           __typename: "NodeInstance",
         },
         {
@@ -1006,7 +1006,7 @@ module.exports = {
           enter: "2024-05-30T11:08:49.528Z",
           exit: "2024-05-30T11:08:49.528Z",
           type: "ActionNode",
-          definitionId: "_jbpm-unique-15",
+          definitionId: "4",
           __typename: "NodeInstance",
         },
         {
@@ -1016,7 +1016,7 @@ module.exports = {
           enter: "2024-05-30T11:08:49.527Z",
           exit: "2024-05-30T11:08:49.527Z",
           type: "Join",
-          definitionId: "_jbpm-unique-22",
+          definitionId: "12",
           __typename: "NodeInstance",
         },
         {
@@ -1036,7 +1036,7 @@ module.exports = {
           enter: "2024-05-30T11:08:49.509Z",
           exit: "2024-05-30T11:08:49.51Z",
           type: "StartNode",
-          definitionId: "_jbpm-unique-12",
+          definitionId: "1",
           __typename: "NodeInstance",
         },
       ],
@@ -1223,7 +1223,7 @@ module.exports = {
           enter: "2024-05-30T11:08:23.353Z",
           exit: "2024-05-30T11:08:23.353Z",
           type: "EndNode",
-          definitionId: "_jbpm-unique-1",
+          definitionId: "2",
           __typename: "NodeInstance",
         },
         {
@@ -1233,7 +1233,7 @@ module.exports = {
           enter: "2024-05-30T11:08:23.351Z",
           exit: "2024-05-30T11:08:23.352Z",
           type: "CompositeContextNode",
-          definitionId: "_jbpm-unique-5",
+          definitionId: "6",
           __typename: "NodeInstance",
         },
         {
@@ -1243,7 +1243,7 @@ module.exports = {
           enter: "2024-05-30T11:08:23.352Z",
           exit: "2024-05-30T11:08:23.352Z",
           type: "EndNode",
-          definitionId: "_jbpm-unique-9",
+          definitionId: "11",
           __typename: "NodeInstance",
         },
         {
@@ -1253,7 +1253,7 @@ module.exports = {
           enter: "2024-05-30T11:08:23.352Z",
           exit: "2024-05-30T11:08:23.352Z",
           type: "ActionNode",
-          definitionId: "_jbpm-unique-8",
+          definitionId: "10",
           __typename: "NodeInstance",
         },
         {
@@ -1263,7 +1263,7 @@ module.exports = {
           enter: "2024-05-30T11:08:23.352Z",
           exit: "2024-05-30T11:08:23.352Z",
           type: "ActionNode",
-          definitionId: "_jbpm-unique-7",
+          definitionId: "9",
           __typename: "NodeInstance",
         },
         {
@@ -1273,7 +1273,7 @@ module.exports = {
           enter: "2024-05-30T11:08:23.352Z",
           exit: "2024-05-30T11:08:23.352Z",
           type: "StartNode",
-          definitionId: "_jbpm-unique-6",
+          definitionId: "7",
           __typename: "NodeInstance",
         },
         {
@@ -1283,7 +1283,7 @@ module.exports = {
           enter: "2024-05-30T11:08:23.351Z",
           exit: "2024-05-30T11:08:23.351Z",
           type: "Join",
-          definitionId: "_jbpm-unique-11",
+          definitionId: "13",
           __typename: "NodeInstance",
         },
         {
@@ -1293,7 +1293,7 @@ module.exports = {
           enter: "2024-05-30T11:08:23.349Z",
           exit: "2024-05-30T11:08:23.351Z",
           type: "ActionNode",
-          definitionId: "_jbpm-unique-4",
+          definitionId: "5",
           __typename: "NodeInstance",
         },
         {
@@ -1313,7 +1313,7 @@ module.exports = {
           enter: "2024-05-30T11:08:23.349Z",
           exit: "2024-05-30T11:08:23.349Z",
           type: "StartNode",
-          definitionId: "_jbpm-unique-0",
+          definitionId: "1",
           __typename: "NodeInstance",
         },
       ],
@@ -1498,7 +1498,7 @@ module.exports = {
           enter: "2024-05-30T11:07:57.538Z",
           exit: "2024-05-30T11:07:57.538Z",
           type: "EndNode",
-          definitionId: "_jbpm-unique-25",
+          definitionId: "2",
           __typename: "NodeInstance",
         },
         {
@@ -1508,7 +1508,7 @@ module.exports = {
           enter: "2024-05-30T11:07:57.537Z",
           exit: "2024-05-30T11:07:57.538Z",
           type: "ActionNode",
-          definitionId: "_jbpm-unique-26",
+          definitionId: "3",
           __typename: "NodeInstance",
         },
         {
@@ -1518,7 +1518,7 @@ module.exports = {
           enter: "2024-05-30T11:07:57.536Z",
           exit: "2024-05-30T11:07:57.537Z",
           type: "StartNode",
-          definitionId: "_jbpm-unique-24",
+          definitionId: "1",
           __typename: "NodeInstance",
         },
       ],
