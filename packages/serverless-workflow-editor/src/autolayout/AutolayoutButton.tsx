@@ -22,8 +22,10 @@ import OptimizeIcon from "@patternfly/react-icons/dist/js/icons/optimize-icon";
 import { useSwfEditorStoreApi } from "../store/StoreContext";
 import { getAutoLayoutedInfo } from "./autoLayoutInfo";
 import { applyAutoLayoutToSwf } from "../mutations/applyAutoLayoutToSwf";
+import { useSwfEditorI18n } from "../i18n";
 
 export function AutolayoutButton() {
+  const { i18n } = useSwfEditorI18n();
   const swfEditorStoreApi = useSwfEditorStoreApi();
 
   const onClick = React.useCallback(async () => {
@@ -49,7 +51,7 @@ export function AutolayoutButton() {
   }, [swfEditorStoreApi]);
 
   return (
-    <button className={"kie-swf-editor--autolayout-panel-toggle-button"} onClick={onClick} title={"Autolayout"}>
+    <button className={"kie-swf-editor--autolayout-panel-toggle-button"} onClick={onClick} title={i18n.autoLayout}>
       <OptimizeIcon />
     </button>
   );

@@ -39,6 +39,8 @@ import { Commands, CommandsContextProvider, useCommands } from "./commands/Comma
 import { SwfEditorSettingsContextProvider } from "./settings/SwfEditorSettingsContext";
 import { Specification } from "@serverlessworkflow/sdk-typescript";
 import "./SwfEditor.css"; // Leave it for last, as this overrides some of the PF and RF styles.
+import { swfEditorDictionaries, SwfEditorI18nContext, swfEditorI18nDefaults, useSwfEditorI18n } from "./i18n";
+import { I18nDictionariesProvider } from "@kie-tools-core/i18n/dist/react-components";
 
 const ON_MODEL_CHANGE_DEBOUNCE_TIME_IN_MS = 500;
 
@@ -76,6 +78,8 @@ export type SwfEditorProps = {
    * Notifies the caller when the SWF Editor performs a new edit after the debounce time.
    */
   onModelDebounceStateChanged?: (changed: boolean) => void;
+
+  locale: string;
 };
 
 export const SwfEditorInternal = ({
@@ -84,6 +88,7 @@ export const SwfEditorInternal = ({
   onModelDebounceStateChanged,
   forwardRef,
 }: SwfEditorProps & { forwardRef?: React.Ref<SwfEditorRef> }) => {
+  const { i18n } = useSwfEditorI18n();
   const swf = useSwfEditorStore((s) => s.swf);
   const isDiagramEditingInProgress = useSwfEditorStore((s) => s.computed(s).isDiagramEditingInProgress());
   const swfEditorStoreApi = useSwfEditorStoreApi();
@@ -213,17 +218,24 @@ export const SwfEditor = React.forwardRef((props: SwfEditorProps, ref: React.Ref
   }, []);
 
   return (
-    <SwfEditorContextProvider {...props}>
-      <ErrorBoundary FallbackComponent={SwfEditorErrorFallback} onReset={resetState}>
-        <SwfEditorSettingsContextProvider {...props}>
-          <SwfEditorStoreApiContext.Provider value={storeRef.current}>
-            <CommandsContextProvider>
-              <SwfEditorInternal forwardRef={ref} {...props} />
-            </CommandsContextProvider>
-          </SwfEditorStoreApiContext.Provider>
-        </SwfEditorSettingsContextProvider>
-      </ErrorBoundary>
-    </SwfEditorContextProvider>
+    <I18nDictionariesProvider
+      defaults={swfEditorI18nDefaults}
+      dictionaries={swfEditorDictionaries}
+      initialLocale={props.locale}
+      ctx={SwfEditorI18nContext}
+    >
+      <SwfEditorContextProvider {...props}>
+        <ErrorBoundary FallbackComponent={SwfEditorErrorFallback} onReset={resetState}>
+          <SwfEditorSettingsContextProvider {...props}>
+            <SwfEditorStoreApiContext.Provider value={storeRef.current}>
+              <CommandsContextProvider>
+                <SwfEditorInternal forwardRef={ref} {...props} />
+              </CommandsContextProvider>
+            </SwfEditorStoreApiContext.Provider>
+          </SwfEditorSettingsContextProvider>
+        </ErrorBoundary>
+      </SwfEditorContextProvider>
+    </I18nDictionariesProvider>
   );
 });
 

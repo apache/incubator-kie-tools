@@ -33,8 +33,10 @@ import { FallbackProps } from "react-error-boundary";
 import { ClipboardCopy, ClipboardCopyVariant } from "@patternfly/react-core/dist/js/components/ClipboardCopy";
 import { ExternalLinkAltIcon } from "@patternfly/react-icons/dist/js/icons/external-link-alt-icon";
 import { useCallback, useEffect } from "react";
+import { useSwfEditorI18n } from "./i18n";
 
 export function SwfEditorErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
+  const { i18n } = useSwfEditorI18n();
   const { swfModelBeforeEditingRef, issueTrackerHref } = useSwfEditor();
 
   const resetToLastWorkingState = useCallback(() => {
@@ -49,20 +51,18 @@ export function SwfEditorErrorFallback({ error, resetErrorBoundary }: FallbackPr
     <Flex justifyContent={{ default: "justifyContentCenter" }} style={{ marginTop: "100px" }}>
       <EmptyState style={{ maxWidth: "1280px" }}>
         <EmptyStateHeader
-          titleText="An unexpected error happened"
+          titleText={i18n.swfEditor.unexpectedErrorOccured}
           icon={<EmptyStateIcon icon={() => <div style={{ fontSize: "3em" }}>😕</div>} />}
           headingLevel={"h4"}
         />
-        <EmptyStateBody>
-          This is a bug. Please consider reporting it so the SWF Editor can continue improving. See the details below.
-        </EmptyStateBody>
+        <EmptyStateBody>{i18n.swfEditor.reportBug}</EmptyStateBody>
         <EmptyStateFooter>
           <br />
           <ClipboardCopy
             isReadOnly={true}
             isExpanded={false}
-            hoverTip={"Copy"}
-            clickTip={"Copied"}
+            hoverTip={i18n.swfEditor.copy}
+            clickTip={i18n.swfEditor.copied}
             variant={ClipboardCopyVariant.expansion}
             style={{ textAlign: "left", whiteSpace: "pre-wrap", fontFamily: "monospace" }}
           >
@@ -80,12 +80,12 @@ export function SwfEditorErrorFallback({ error, resetErrorBoundary }: FallbackPr
           <br />
           <EmptyStateActions>
             <Button variant={ButtonVariant.link} onClick={resetToLastWorkingState}>
-              Try undoing last action
+              {i18n.swfEditor.tryUndoingLastAction}
             </Button>
             {issueTrackerHref && (
               <a href={issueTrackerHref} target={"_blank"}>
                 <Button variant={ButtonVariant.link} icon={<ExternalLinkAltIcon />}>
-                  File an issue...
+                  {i18n.swfEditor.fileAnIssue}
                 </Button>
               </a>
             )}

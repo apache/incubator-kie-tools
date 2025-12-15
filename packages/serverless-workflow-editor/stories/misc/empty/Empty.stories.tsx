@@ -21,7 +21,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import { SwfEditorWrapper, StorybookSwfEditorProps } from "../../swfEditorStoriesWrapper";
 import { SwfEditor, SwfEditorProps } from "../../../src/SwfEditor";
-import { Specification, WorkflowValidator } from "@serverlessworkflow/sdk-typescript";
+import { Specification } from "@serverlessworkflow/sdk-typescript";
 
 const emptyModel = {
   id: "Empty",

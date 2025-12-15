@@ -79,6 +79,7 @@ import { getAutoLayoutedInfo } from "../autolayout/autoLayoutInfo";
 import { useSettings } from "../settings/SwfEditorSettingsContext";
 import { Flex } from "@patternfly/react-core/dist/js/layouts/Flex";
 import { applyAutoLayoutToSwf } from "../mutations/applyAutoLayoutToSwf";
+import { useSwfEditorI18n } from "../i18n";
 
 const isFirefox = typeof (window as any).InstallTrigger !== "undefined"; // See https://stackoverflow.com/questions/9847580/how-to-detect-safari-chrome-ie-firefox-and-opera-browsers
 
@@ -608,6 +609,7 @@ function SwfDiagramEmptyState({
   setShowEmptyState: React.Dispatch<React.SetStateAction<boolean>>;
   isReadOnly?: boolean;
 }) {
+  const { i18n } = useSwfEditorI18n();
   return (
     <Bullseye
       style={{
@@ -621,7 +623,7 @@ function SwfDiagramEmptyState({
     >
       <div className={"kie-swf-editor--diagram-empty-state"}>
         <Button
-          title={"Close"}
+          title={i18n.close}
           style={{
             position: "absolute",
             top: "8px",
@@ -636,16 +638,16 @@ function SwfDiagramEmptyState({
           <EmptyStateHeader>
             <EmptyStateIcon icon={MousePointerIcon} />
             <Title size={"md"} headingLevel={"h4"}>
-              {`This SWF Diagram is empty`}
+              {i18n.nodes.swfDiagramEmpty}
             </Title>
           </EmptyStateHeader>
           {isReadOnly ? (
             <>
-              <EmptyStateBody>Make sure the SWF has nodes or try opening another file</EmptyStateBody>
+              <EmptyStateBody>{i18n.nodes.diagramHasNodesOrOpenAnotherFile}</EmptyStateBody>
             </>
           ) : (
             <>
-              <EmptyStateBody>Start by dragging nodes from the Palette</EmptyStateBody>
+              <EmptyStateBody>{i18n.nodes.startByDraggingNodes}</EmptyStateBody>
               <br />
             </>
           )}
@@ -690,6 +692,7 @@ interface TopRightCornerPanelsProps {
 }
 
 export function TopRightCornerPanels({ availableHeight }: TopRightCornerPanelsProps) {
+  const { i18n } = useSwfEditorI18n();
   const diagram = useSwfEditorStore((s) => s.diagram);
   const swfEditorStoreApi = useSwfEditorStoreApi();
   const settings = useSettings();
@@ -739,7 +742,7 @@ export function TopRightCornerPanels({ availableHeight }: TopRightCornerPanelsPr
               <button
                 className={"kie-swf-editor--overlays-panel-toggle-button"}
                 onClick={toggleOverlaysPanel}
-                title={"Overlays"}
+                title={i18n.nodes.overlays}
               >
                 <VirtualMachineIcon />
               </button>
@@ -752,6 +755,7 @@ export function TopRightCornerPanels({ availableHeight }: TopRightCornerPanelsPr
 }
 
 export function SelectionStatus() {
+  const { i18n } = useSwfEditorI18n();
   const rfStoreApi = RF.useStoreApi();
 
   const selectedNodesCount = useSwfEditorStore((s) => s.computed(s).getDiagramData().selectedNodesById.size);
@@ -780,11 +784,14 @@ export function SelectionStatus() {
       {(selectedNodesCount + selectedEdgesCount >= 2 && (
         <RF.Panel position={"top-center"}>
           <Label style={{ paddingLeft: "24px" }} onClose={onClose}>
-            {(selectedEdgesCount === 0 && `${selectedNodesCount} nodes selected`) ||
-              (selectedNodesCount === 0 && `${selectedEdgesCount} edges selected`) ||
-              `${selectedNodesCount} node${selectedNodesCount === 1 ? "" : "s"}, ${selectedEdgesCount} edge${
-                selectedEdgesCount === 1 ? "" : "s"
-              } selected`}
+            {(selectedEdgesCount === 0 && i18n.nodes.nodesSelected(selectedNodesCount)) ||
+              (selectedNodesCount === 0 && i18n.nodes.edgesSelected(selectedEdgesCount)) ||
+              `${selectedNodesCount === 1 ? i18n.nodes.nodeSelected(selectedNodesCount) : i18n.nodes.nodes(selectedNodesCount)}, 
+              ${
+                selectedEdgesCount === 1
+                  ? i18n.nodes.edgeSelected(selectedEdgesCount)
+                  : i18n.nodes.edges(selectedEdgesCount)
+              } ${i18n.nodes.selected}`}
           </Label>
         </RF.Panel>
       )) || <></>}

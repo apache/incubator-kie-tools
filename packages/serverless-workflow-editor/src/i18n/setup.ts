@@ -17,12 +17,20 @@
  * under the License.
  */
 
-import { Page } from "@playwright/test";
-import { SwfElement } from "./swfElement";
+import * as React from "react";
+import { useContext } from "react";
+import { en } from "./locales";
+import { I18nContextType } from "@kie-tools-core/i18n/dist/react-components";
+import { SwfEditorI18n } from "./SwfEditorI18n";
+import { I18nDefaults, I18nDictionaries } from "@kie-tools-core/i18n/dist/core";
 
-export class Swf {
-  constructor(
-    public page: Page,
-    public swfElement: SwfElement
-  ) {}
+export const swfEditorI18nDefaults: I18nDefaults<SwfEditorI18n> = {
+  locale: "en",
+  dictionary: en,
+};
+export const swfEditorDictionaries: I18nDictionaries<SwfEditorI18n> = new Map([["en", en]]);
+export const SwfEditorI18nContext = React.createContext<I18nContextType<SwfEditorI18n>>({} as never);
+
+export function useSwfEditorI18n(): I18nContextType<SwfEditorI18n> {
+  return useContext(SwfEditorI18nContext);
 }

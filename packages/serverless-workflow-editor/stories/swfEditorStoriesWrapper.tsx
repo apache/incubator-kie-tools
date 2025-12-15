@@ -95,6 +95,7 @@ export function SwfEditorWrapper(props?: Partial<StorybookSwfEditorProps>) {
           onModelChange={onModelChange}
           issueTrackerHref={props?.issueTrackerHref ?? args.issueTrackerHref}
           onModelDebounceStateChanged={onModelDebounceStateChanged}
+          locale={args.locale}
         />
       </div>
     </>

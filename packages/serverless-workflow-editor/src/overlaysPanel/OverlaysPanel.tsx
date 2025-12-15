@@ -24,6 +24,7 @@ import { Divider } from "@patternfly/react-core/dist/js/components/Divider";
 import { Slider } from "@patternfly/react-core/dist/js/components/Slider";
 import { useSwfEditorStore, useSwfEditorStoreApi } from "../store/StoreContext";
 import { useLayoutEffect, useRef } from "react";
+import { useSwfEditorI18n } from "../i18n";
 
 const MIN_SNAP = 5;
 const MAX_SNAP = 50;
@@ -35,6 +36,7 @@ interface OverlaysPanelProps {
 }
 
 export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
+  const { i18n } = useSwfEditorI18n();
   const diagram = useSwfEditorStore((s) => s.diagram);
   const swfEditorStoreApi = useSwfEditorStoreApi();
   const overlayPanelContainer = useRef<HTMLDivElement>(null);
@@ -57,7 +59,7 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
       <Form
         onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Overlays Panel
       >
-        <FormGroup label="Snapping">
+        <FormGroup label={i18n.overlaysPanel.snapping}>
           <Switch
             aria-label={"Snapping"}
             isChecked={diagram.snapGrid.isEnabled}
@@ -68,7 +70,7 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
             }
           />
         </FormGroup>
-        <FormGroup label="Horizontal">
+        <FormGroup label={i18n.overlaysPanel.horizontal}>
           <Slider
             data-testid={"kie-tools--swf-editor--horizontal-snapping-control"}
             className={"kie-swf-editor--snap-slider"}
@@ -88,7 +90,7 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
             }
           />
         </FormGroup>
-        <FormGroup label="Vertical">
+        <FormGroup label={i18n.overlaysPanel.vertical}>
           <Slider
             data-testid={"kie-tools--swf-editor--vertical-snapping-control"}
             className={"kie-swf-editor--snap-slider"}
@@ -115,7 +117,7 @@ export function OverlaysPanel({ availableHeight }: OverlaysPanelProps) {
       <Form
         onKeyDown={(e) => e.stopPropagation()} // Prevent ReactFlow KeyboardShortcuts from triggering when editing stuff on Overlays Panel
       >
-        <FormGroup label={"Highlight selected node(s) hierarchy"}>
+        <FormGroup label={i18n.overlaysPanel.highlightSelectedNode}>
           <Switch
             aria-label={"Highlight selected node(s) hierarchy"}
             isChecked={diagram.overlays.enableNodeHierarchyHighlight}

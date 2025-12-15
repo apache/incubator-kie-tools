@@ -45,6 +45,7 @@ import {
 import { NODE_TYPES } from "./SwfNodeTypes";
 import { OutgoingStuffNodePanel } from "./OutgoingStuffNodePanel";
 import { propsHaveSameValuesDeep } from "../memoization/memoization";
+import { useSwfEditorI18n } from "../../i18n";
 
 export type ElementFilter<E extends { __$$element: string }, Filter extends string> = E extends any
   ? E["__$$element"] extends Filter
@@ -828,11 +829,12 @@ export const UnknownNode = React.memo(
 ///
 
 export function EmptyLabel() {
+  const { i18n } = useSwfEditorI18n();
   return (
     <span style={{ fontFamily: "serif" }}>
-      <i style={{ opacity: 0.8 }}>{`<Empty>`}</i>
+      <i style={{ opacity: 0.8 }}>{i18n.nodes.empty}</i>
       <br />
-      <i style={{ opacity: 0.5, fontSize: "0.8em", lineHeight: "0.8em" }}>{`Double-click to name`}</i>
+      <i style={{ opacity: 0.5, fontSize: "0.8em", lineHeight: "0.8em" }}>{i18n.nodes.doubleClickToName}</i>
     </span>
   );
 }

@@ -17,12 +17,4 @@
  * under the License.
  */
 
-import { Page } from "@playwright/test";
-import { SwfElement } from "./swfElement";
-
-export class Swf {
-  constructor(
-    public page: Page,
-    public swfElement: SwfElement
-  ) {}
-}
+export { en } from "./en";

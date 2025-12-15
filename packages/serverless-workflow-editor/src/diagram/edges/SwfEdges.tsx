@@ -101,7 +101,7 @@ export const CompensationTransitionPath = React.memo(
       <>
         <path
           ref={svgRef}
-          style={{ strokeWidth: 1, stroke: "yellow", strokeDasharray: "5,5" }}
+          style={{ strokeWidth: 1, stroke: "#dab600", strokeDasharray: "5,5" }}
           markerEnd={"url(#closed-arrow)"}
           {...props}
         />

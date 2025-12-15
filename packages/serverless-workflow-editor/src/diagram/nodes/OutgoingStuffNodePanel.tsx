@@ -42,6 +42,7 @@ import {
 import { NODE_TYPES } from "./SwfNodeTypes";
 import { EDGE_TYPES } from "../edges/SwfEdgeTypes";
 import { useSettings } from "../../settings/SwfEditorSettingsContext";
+import { useSwfEditorI18n } from "../../i18n";
 
 const handleButtonSize = 34; // That's the size of the button. This is a "magic number", as it was obtained from the rendered page.
 const svgViewboxPadding = Math.sqrt(Math.pow(handleButtonSize, 2) / 2) - handleButtonSize / 2; // This lets us create a square that will perfectly fit inside the button circle.
@@ -63,6 +64,7 @@ export function OutgoingStuffNodePanel(props: {
   edgeTypes: EdgeType[];
   nodeHref: string;
 }) {
+  const { i18n } = useSwfEditorI18n();
   const settings = useSettings();
   const style: React.CSSProperties = React.useMemo(
     () => ({
@@ -74,22 +76,22 @@ export function OutgoingStuffNodePanel(props: {
   const getEdgeActionTitle = React.useCallback((edgeType: string): string => {
     switch (edgeType) {
       case EDGE_TYPES.compensationTransition: {
-        return "Add Compensation Transition";
+        return i18n.nodes.addCompensationTransitionEdge;
       }
       case EDGE_TYPES.dataConditionTransition: {
-        return "Add Data Condition Transition";
+        return i18n.nodes.addDataConditionTransitionEdge;
       }
       case EDGE_TYPES.defaultConditionTransition: {
-        return "Add Default Transition";
+        return i18n.nodes.addDefaultConditionTransitionEdge;
       }
       case EDGE_TYPES.errorTransition: {
-        return "Add Error Transition";
+        return i18n.nodes.addErrorTransitionEdge;
       }
       case EDGE_TYPES.eventConditionTransition: {
-        return "Add Event Condition Transition";
+        return i18n.nodes.addEventConditionTransitionEdge;
       }
       case EDGE_TYPES.transition: {
-        return "Add Transition";
+        return i18n.nodes.addErrorTransitionEdge;
       }
       default: {
         throw new Error("Add Unknown edge type");
@@ -100,28 +102,28 @@ export function OutgoingStuffNodePanel(props: {
   const getNodeActionTitle = React.useCallback((nodeType: string): string => {
     switch (nodeType) {
       case NODE_TYPES.callbackState: {
-        return "Add Callback State";
+        return i18n.nodes.addCallbackStateNode;
       }
       case NODE_TYPES.eventState: {
-        return "Add Event State";
+        return i18n.nodes.addEventStateNode;
       }
       case NODE_TYPES.foreachState: {
-        return "Add ForEach State";
+        return i18n.nodes.addForeachStateNode;
       }
       case NODE_TYPES.injectState: {
-        return "Add Inject State";
+        return i18n.nodes.addInjectStateNode;
       }
       case NODE_TYPES.operationState: {
-        return "Add Operation State";
+        return i18n.nodes.addOperationStateNode;
       }
       case NODE_TYPES.parallelState: {
-        return "Add Parallel State";
+        return i18n.nodes.addParallelStateNode;
       }
       case NODE_TYPES.sleepState: {
-        return "Add Sleep State";
+        return i18n.nodes.addSleepStateNode;
       }
       case NODE_TYPES.switchState: {
-        return "Add Switch State";
+        return i18n.nodes.addSwitchStateNode;
       }
       default: {
         throw new Error("Add Unknown node type");

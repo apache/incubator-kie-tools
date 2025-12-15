@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 import { expect, test } from "../__fixtures__/base";
 
 test.beforeEach(async ({ editor, nodes }) => {
@@ -29,5 +28,10 @@ test.describe("Read Only mode - Diagram", () => {
   test("should not be able to drag node", async ({ page, nodes }) => {
     await nodes.move({ name: "HandleNewApplicant", targetPosition: { x: 0, y: 0 } });
     await expect(page).toHaveScreenshot("readOnly-node-not-moved.png");
+  });
+
+  test("should not be able to rename node", async ({ nodes }) => {
+    await nodes.get({ name: "HandleNewApplicant" }).dblclick();
+    await expect(nodes.get({ name: "HandleNewApplicant" }).getByRole("textbox").nth(0)).toBeHidden();
   });
 });
