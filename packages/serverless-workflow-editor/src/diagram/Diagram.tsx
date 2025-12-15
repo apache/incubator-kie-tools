@@ -786,11 +786,9 @@ export function SelectionStatus() {
           <Label style={{ paddingLeft: "24px" }} onClose={onClose}>
             {(selectedEdgesCount === 0 && i18n.nodes.nodesSelected(selectedNodesCount)) ||
               (selectedNodesCount === 0 && i18n.nodes.edgesSelected(selectedEdgesCount)) ||
-              `${selectedNodesCount === 1 ? i18n.nodes.nodeSelected(selectedNodesCount) : i18n.nodes.nodes(selectedNodesCount)}, 
+              `${selectedNodesCount === 1 ? i18n.nodes.oneNode : i18n.nodes.nodes(selectedNodesCount)}, 
               ${
-                selectedEdgesCount === 1
-                  ? i18n.nodes.edgeSelected(selectedEdgesCount)
-                  : i18n.nodes.edges(selectedEdgesCount)
+                selectedEdgesCount === 1 ? i18n.nodes.oneEdge : i18n.nodes.edges(selectedEdgesCount)
               } ${i18n.nodes.selected}`}
           </Label>
         </RF.Panel>

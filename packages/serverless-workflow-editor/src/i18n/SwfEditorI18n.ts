@@ -52,13 +52,12 @@ interface SwfEditorDictionary
       overlays: string;
       nodesSelected: (selectedNodesCount: number) => string;
       edgesSelected: (selectedEdgesCount: number) => string;
-      nodeSelected: (nodeCount: number) => string;
-      edgeSelected: (edgeCount: number) => string;
+      oneNode: string;
+      oneEdge: string;
       nodes: (nodeCount: number) => string;
       edges: (edgeCount: number) => string;
       selected: string;
       addingNodesMakingChanges: string;
-      removeDrd: string;
       remove: string;
       unknown: string;
       empty: string;

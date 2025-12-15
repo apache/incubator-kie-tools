@@ -29,7 +29,7 @@ export const en: SwfEditorI18n = {
   nodes: {
     view: "View",
     edit: "Edit",
-    output: "OUTPUT",
+    output: "Output",
     doubleClickToName: "Double-click to name",
     addCompensationTransitionEdge: "Add Compensation Transition",
     addDataConditionTransitionEdge: "Add Data Condition Transition",
@@ -52,13 +52,12 @@ export const en: SwfEditorI18n = {
     overlays: "Overlays",
     nodesSelected: (selectedNodesCount: number) => `${selectedNodesCount} nodes selected`,
     edgesSelected: (selectedEdgesCount: number) => `${selectedEdgesCount} edges selected`,
-    nodeSelected: (nodeCount: number) => `${nodeCount} node`,
-    edgeSelected: (edgeCount: number) => `${edgeCount} edge`,
+    oneNode: "1 node",
+    oneEdge: "1 edge",
     nodes: (nodeCount: number) => `${nodeCount} nodes`,
     edges: (edgeCount: number) => `${edgeCount} edges`,
     selected: "selected",
     addingNodesMakingChanges: "Adding nodes or making changes to the Diagram will automatically create a DRD for you.",
-    removeDrd: "Remove DRD",
     remove: "Remove",
     unknown: "unknown",
     empty: "<Empty>",
@@ -73,7 +72,7 @@ export const en: SwfEditorI18n = {
   },
   swfEditor: {
     editor: "Editor",
-    unexpectedErrorOccured: "An unexpected error happened",
+    unexpectedErrorOccured: "An unexpected error occured",
     reportBug:
       "This is a bug. Please consider reporting it so the SWF Editor can continue improving. See the details below.",
     tryUndoingLastAction: "Try undoing last action",
