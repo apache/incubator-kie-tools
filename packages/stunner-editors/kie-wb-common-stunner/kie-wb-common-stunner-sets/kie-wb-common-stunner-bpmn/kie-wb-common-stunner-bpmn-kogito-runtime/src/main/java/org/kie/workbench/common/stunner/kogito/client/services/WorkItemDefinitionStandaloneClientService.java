@@ -115,11 +115,11 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
         return promises.create((success, failure) -> {
             registry.clear();
             final List<WorkItemDefinition> loaded = new LinkedList<>();
-            LOGGER.log(Level.INFO, "Searching WID using pattern: " + RESOURCE_GLOBAL_DIRECTORY_WID_PATTERN);
+            LOGGER.log(Level.FINE, "Searching WID using pattern: " + RESOURCE_GLOBAL_DIRECTORY_WID_PATTERN);
             resourceContentService
                     .list(RESOURCE_GLOBAL_DIRECTORY_WID_PATTERN, ResourceListOptions.traversal())
                     .then(paths1 -> {
-                        LOGGER.log(Level.INFO, "Searching WID using pattern: " + widPattern);
+                        LOGGER.log(Level.FINE, "Searching WID using pattern: " + widPattern);
                         resourceContentService
                                 .list(widPattern, ResourceListOptions.assetFolder())
                                 .then(paths2 -> {
@@ -210,7 +210,7 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
 
     private Promise<Collection<WorkItemDefinition>> getPromises(final List<WorkItemDefinition> wids, final Collection<WorkItemDefinition> loaded, final String path) {
         wids.forEach(w -> {
-            LOGGER.log(Level.INFO, "WID Icon: " + path + w.getIconDefinition().getUri());
+            LOGGER.log(Level.FINE, "WID Icon: " + path + w.getIconDefinition().getUri());
             w.getIconDefinition().setUri(path + w.getIconDefinition().getUri());
         });
         return promises.create((success, failure) -> {

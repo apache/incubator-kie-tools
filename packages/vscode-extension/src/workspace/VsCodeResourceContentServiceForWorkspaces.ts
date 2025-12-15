@@ -84,7 +84,7 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
           // Adding a leading slash here to make the regex have the same behavior as the glob with **/* pattern.
           regexp.test("/" + p) ||
           // check on the asset folder for *.{ext} pattern
-          // the regex doesn't support "\" from Windows paths, requiring to test againts POSIX paths
+          // the regex doesn't support "\" from Windows paths, requiring to test against POSIX paths
           // relative to `this.args.document`, e.g. ../../../src/main/java/com/my/module/MyClass.java
           regexp.test(__path.posix.relative(openFileDirectoryNormalizedPosixPathRelativeToTheWorkspaceRoot, p));
 
@@ -115,7 +115,7 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
     const { staticPrefix, remainingGlob } = this.splitStaticPrefix(posixPattern);
 
     let theMostSpecificFolder = baseAbsoluteFsPath;
-    const globRelativeToBase = remainingGlob ?? posixPattern;
+    const globRelativeToBase = remainingGlob || posixPattern;
 
     // In case of ASSET_FOLDER we are done, see baseAbsoluteFsPath creation
     if (opts?.type !== SearchType.ASSET_FOLDER) {
@@ -146,13 +146,21 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
     );
   }
 
-  // Detects glob "magic" beyond just "*" and "**"
+  /**
+   * Detects if a path segment contains glob "magic" characters (e.g., *, ?, [], {}, !, or extglobs like +(…), *(…), ?(…), !(…)).
+   * @param seg - The path segment to check.
+   * @returns True if the segment contains glob magic, false otherwise.
+   */
   private hasGlobMagic(seg: string): boolean {
     // *, ?, [], {}, !, and simple extglobs like +(…), *(…), ?(…), !(…)
-    return /[*?[\]{},!]/.test(seg) || /\([^)]+\)/.test(seg);
+    return /[*?\[\]{},!]/.test(seg) || /\([^)]+\)/.test(seg);
   }
 
-  // Splits "a/b/c" to array ["a", "b", "c"]
+  /**
+   * Splits a POSIX-style path (e.g., "a/b/c") into its non-empty segments.
+   * @param path - The POSIX path string to split.
+   * @returns An array of non-empty path segments.
+   */
   private splitPosixSegments(path: string): string[] {
     return path.split("/").filter((s) => s.length > 0);
   }
