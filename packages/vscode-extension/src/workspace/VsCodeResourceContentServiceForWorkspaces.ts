@@ -153,7 +153,7 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
    */
   private hasGlobMagic(seg: string): boolean {
     // *, ?, [], {}, !, and simple extglobs like +(…), *(…), ?(…), !(…)
-    return /[*?\[\]{},!]/.test(seg) || /\([^)]+\)/.test(seg);
+    return /[*?[\]{},!]/.test(seg) || /\([^)]+\)/.test(seg);
   }
 
   /**
