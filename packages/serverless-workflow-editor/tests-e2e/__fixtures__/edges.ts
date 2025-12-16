@@ -24,10 +24,10 @@ import { Diagram } from "./diagram";
 export enum EdgeType {
   TRANSITION = "transition",
   ERROR_TRANSITION = "errorTransition",
-  EVENT_CONDITION_TRASITION = "eventConditionTransition",
-  DATA_CONDITION_TRASITION = "dataConditionTransition",
-  DEFAULT_CONDITION_TRASITION = "defaultConditionTransition",
-  COMPENSATION_TRASITION = "compensationTransition",
+  EVENT_CONDITION_TRANSITION = "eventConditionTransition",
+  DATA_CONDITION_TRANSITION = "dataConditionTransition",
+  DEFAULT_CONDITION_TRANSITION = "defaultConditionTransition",
+  COMPENSATION_TRANSITION = "compensationTransition",
 }
 
 export class Edges {

@@ -61,8 +61,6 @@ export function computeDiagramData(
   indexedSwf: TypeOrReturnType<Computed["indexedSwf"]>,
   nodeIds: Array<string>,
   nodesPosition: Array<RF.XYPosition>,
-  edgeIds: Array<string>,
-  edgeWaypoints: Array<RF.XYPosition[]>,
   requiresLayout?: boolean
 ) {
   // console.time("nodes");
@@ -125,17 +123,17 @@ export function computeDiagramData(
 
     swfEdges.push({ id, sourceId: source, targetId: target, swfObject });
 
-    const targetAdjancyList = swfAdjacencyList.get(target);
-    if (!targetAdjancyList) {
+    const targetAdjacencyList = swfAdjacencyList.get(target);
+    if (!targetAdjacencyList) {
       swfAdjacencyList.set(target, { dependencies: new Set([source]) });
     } else {
-      targetAdjancyList.dependencies.add(source);
+      targetAdjacencyList.dependencies.add(source);
     }
 
     return edge;
   };
 
-  // trasitions
+  // transitions
   ackTransitionEdges(definitions.states, ackEdge);
 
   // console.timeEnd("edges");
@@ -157,12 +155,8 @@ export function computeDiagramData(
 
     // if there is no position calculated for the node in the state go for x:0 y:0
     const i = nodeIds.indexOf(nodeName);
-    const position = nodeIds.indexOf(nodeName) === -1 ? { x: 0, y: 0 } : nodesPosition[i];
-    nodeIds = [...nodeIds, nodeName];
-    nodesPosition = [...nodesPosition, position];
-
+    const position = i === -1 ? { x: 0, y: 0 } : nodesPosition[i];
     const bounds: RF.Rect = { ...DEFAULT_NODE_SIZES[type]({ snapGrid: diagram.snapGrid }), ...position };
-
     const newNode: RF.Node<SwfDiagramNodeData> = {
       id: nodeName,
       type,
@@ -202,32 +196,6 @@ export function computeDiagramData(
     assignClassesToHighlightedHierarchyNodes(diagram._selectedNodes, nodesById, edgesById, swfEdges);
   }
 
-  //clean up unused nodes position
-  if (nodesPosition) {
-    for (const id of nodeIds) {
-      if (!nodesById.get(id)) {
-        const i = nodeIds.indexOf(id);
-        if (i !== -1) {
-          nodesPosition.splice(1, i);
-          nodeIds.splice(1, i);
-        }
-      }
-    }
-  }
-
-  //clean up unused edges waypoits
-  if (edgeWaypoints) {
-    for (const id of edgeIds) {
-      if (!edgesById.get(id)) {
-        const i = edgeIds.indexOf(id);
-        if (i !== -1) {
-          edgeWaypoints.splice(1, i);
-          edgeIds.splice(1, i);
-        }
-      }
-    }
-  }
-
   return {
     swfEdges,
     swfAdjacencyList,
@@ -256,7 +224,7 @@ function getEdgeArgsForNode(node: Unpacked<Specification.States>, index: number)
 
   //compensation
   if (node.compensatedBy) {
-    edges.push(getCompensationTrasitionArgs(index, node));
+    edges.push(getCompensationTransitionArgs(index, node));
   }
 
   switch (node.type) {
@@ -268,7 +236,7 @@ function getEdgeArgsForNode(node: Unpacked<Specification.States>, index: number)
       }
 
       if (state.onErrors) {
-        getErrorTrasitionsArgs(index, state, state.onErrors).forEach((errorargs) => edges.push(errorargs));
+        getErrorTransitionsArgs(index, state, state.onErrors).forEach((errorargs) => edges.push(errorargs));
       }
 
       break;
@@ -281,7 +249,7 @@ function getEdgeArgsForNode(node: Unpacked<Specification.States>, index: number)
       }
 
       if (state.onErrors) {
-        getErrorTrasitionsArgs(index, state, state.onErrors).forEach((errorargs) => edges.push(errorargs));
+        getErrorTransitionsArgs(index, state, state.onErrors).forEach((errorargs) => edges.push(errorargs));
       }
 
       break;
@@ -294,7 +262,7 @@ function getEdgeArgsForNode(node: Unpacked<Specification.States>, index: number)
       }
 
       if (state.onErrors) {
-        getErrorTrasitionsArgs(index, state, state.onErrors).forEach((errorargs) => edges.push(errorargs));
+        getErrorTransitionsArgs(index, state, state.onErrors).forEach((errorargs) => edges.push(errorargs));
       }
 
       break;
@@ -307,7 +275,7 @@ function getEdgeArgsForNode(node: Unpacked<Specification.States>, index: number)
       }
 
       if (state.onErrors) {
-        getErrorTrasitionsArgs(index, state, state.onErrors).forEach((errorargs) => edges.push(errorargs));
+        getErrorTransitionsArgs(index, state, state.onErrors).forEach((errorargs) => edges.push(errorargs));
       }
 
       break;
@@ -318,14 +286,14 @@ function getEdgeArgsForNode(node: Unpacked<Specification.States>, index: number)
       if ("dataConditions" in state) {
         const switchData: Specification.IDatabasedswitchstate = state;
         if (switchData.dataConditions) {
-          getConditionTrasitionsArgs(index, node, switchData.dataConditions).forEach((dataConditions) =>
+          getConditionTransitionsArgs(index, node, switchData.dataConditions).forEach((dataConditions) =>
             edges.push(dataConditions)
           );
         }
       } else {
         const switchEvent: Specification.IEventbasedswitchstate = state;
         if (switchEvent.eventConditions) {
-          getConditionTrasitionsArgs(index, node, switchEvent.eventConditions).forEach((eventConditions) =>
+          getConditionTransitionsArgs(index, node, switchEvent.eventConditions).forEach((eventConditions) =>
             edges.push(eventConditions)
           );
         }
@@ -336,7 +304,7 @@ function getEdgeArgsForNode(node: Unpacked<Specification.States>, index: number)
       }
 
       if (state.onErrors) {
-        getErrorTrasitionsArgs(index, state, state.onErrors).forEach((errorargs) => edges.push(errorargs));
+        getErrorTransitionsArgs(index, state, state.onErrors).forEach((errorargs) => edges.push(errorargs));
       }
 
       break;
@@ -376,7 +344,7 @@ function getEdgeArgsForNode(node: Unpacked<Specification.States>, index: number)
   return edges;
 }
 
-function getCompensationTrasitionArgs(index: number, node: Unpacked<Specification.States>): EdgeArgs {
+function getCompensationTransitionArgs(index: number, node: Unpacked<Specification.States>): EdgeArgs {
   return buildEdgeArgs(index, node, node.compensatedBy!, "edge_compensation", "compensationTransition");
 }
 
@@ -395,7 +363,7 @@ function getTransitionArgs(
   return buildEdgeArgs(index, node, transitionStr, "edge_transition", "transition");
 }
 
-function getErrorTrasitionsArgs(
+function getErrorTransitionsArgs(
   index: number,
   node: Unpacked<Specification.States>,
   errors: Specification.IError[]
@@ -431,7 +399,7 @@ function getDefaultTransitionArgs(
   return buildEdgeArgs(index, node, transitionStr, "edge_defaultCondition", "defaultConditionTransition");
 }
 
-function getConditionTrasitionsArgs(
+function getConditionTransitionsArgs(
   index: number,
   node: Unpacked<Specification.States>,
   conditions: Specification.Datacondition[] | Specification.Eventcondition[]
@@ -439,8 +407,6 @@ function getConditionTrasitionsArgs(
   const conditionTransitions: EdgeArgs[] = [];
 
   conditions.forEach((condition) => {
-    // Specification.Enddeventcondition won't be created for now
-
     if (condition instanceof Specification.Transitioneventcondition) {
       const transitionEventCondition = condition as Specification.ITransitioneventcondition;
 

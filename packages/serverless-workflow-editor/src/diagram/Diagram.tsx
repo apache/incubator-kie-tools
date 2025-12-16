@@ -226,6 +226,7 @@ export const Diagram = React.forwardRef<DiagramRef, { container: React.RefObject
     const onNodesChange = useCallback<RF.OnNodesChange>(
       (changes) => {
         swfEditorStoreApi.setState((state) => {
+          state.layout(state).cleanup();
           for (const change of changes) {
             switch (change.type) {
               case "add":

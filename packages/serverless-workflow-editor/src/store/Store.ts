@@ -17,7 +17,7 @@
  * under the License.
  */
 
-import { enableMapSet, immerable } from "immer";
+import { enableMapSet } from "immer";
 import * as RF from "reactflow";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
@@ -104,6 +104,7 @@ export type Computed = {
 
 //Handle layout data out of the model
 export type Layout = {
+  cleanup: () => void;
   setNodePosition: (nodeId: string, newPosition: RF.XYPosition | undefined) => void;
   setEdgeWaypoints: (edgeId: string, newWaypoints: RF.XYPosition[] | undefined) => void;
   updateWaypointPosition: (edgeId: string, index: number, newPosition: RF.XYPosition | undefined) => void;
@@ -247,14 +248,38 @@ export function createSwfEditorStore(model: Specification.IWorkflow, computedCac
               s.computed(s).indexedSwf(),
               s.diagram.nodeIds,
               s.diagram.nodesPosition,
-              s.diagram.edgeIds,
-              s.diagram.edgeWaypoints,
               requiresLayout,
             ]),
         };
       },
       layout(s: State) {
         return {
+          cleanup: () => {
+            //clean up unused nodes position
+            if (s.diagram.nodesPosition) {
+              for (const id of s.diagram.nodeIds) {
+                if (!s.computed(s).indexedSwf().swfNodesByHref.get(id)) {
+                  const i = s.diagram.nodeIds.indexOf(id);
+                  if (i !== -1) {
+                    s.diagram.nodesPosition.splice(1, i);
+                    s.diagram.nodeIds.splice(1, i);
+                  }
+                }
+              }
+            }
+            //clean up unused edges waypoints
+            if (s.diagram.edgeWaypoints) {
+              for (const id of s.diagram.edgeIds) {
+                if (!s.computed(s).indexedSwf().swfEdgesBySwfRef.get(id)) {
+                  const i = s.diagram.edgeIds.indexOf(id);
+                  if (i !== -1) {
+                    s.diagram.edgeWaypoints.splice(1, i);
+                    s.diagram.edgeIds.splice(1, i);
+                  }
+                }
+              }
+            }
+          },
           setNodePosition: (nodeId, newPosition) => {
             if (!newPosition) {
               return;

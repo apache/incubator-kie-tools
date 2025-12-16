@@ -57,7 +57,6 @@ interface SwfEditorDictionary
       nodes: (nodeCount: number) => string;
       edges: (edgeCount: number) => string;
       selected: string;
-      addingNodesMakingChanges: string;
       remove: string;
       unknown: string;
       empty: string;

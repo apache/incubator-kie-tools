@@ -57,7 +57,6 @@ export const en: SwfEditorI18n = {
     nodes: (nodeCount: number) => `${nodeCount} nodes`,
     edges: (edgeCount: number) => `${edgeCount} edges`,
     selected: "selected",
-    addingNodesMakingChanges: "Adding nodes or making changes to the Diagram will automatically create a DRD for you.",
     remove: "Remove",
     unknown: "unknown",
     empty: "<Empty>",

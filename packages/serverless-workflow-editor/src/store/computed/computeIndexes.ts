@@ -22,6 +22,7 @@ import { Specification } from "@serverlessworkflow/sdk-typescript";
 import { SwfEdge, SwfEdgeTypes } from "../../diagram/graph/graph";
 import { Unpacked } from "../../tsExt/tsExt";
 import { buildEdgeId } from "../../diagram/edges/useKieEdgePath";
+import { ITransition } from "@serverlessworkflow/sdk-typescript/lib/definitions/transition";
 
 export function computeIndexedSwf(definitions: State["swf"]["model"]) {
   const swfEdgesBySwfRef = new Map<string, SwfEdge & { index: number }>();
@@ -54,114 +55,67 @@ function buildSwfEdgesForNode(node: Unpacked<Specification.States>, index: numbe
 
   //compensation
   if (node.compensatedBy) {
-    edges.push(getCompensationTrasition(index, node));
+    edges.push(getCompensationTransition(index, node));
   }
 
   switch (node.type) {
-    case "sleep": {
-      const state = node as Specification.ISleepstate;
-
-      if (state.transition) {
-        edges.push(getTransition(index, state, state.transition));
-      }
-
-      if (state.onErrors) {
-        getErrorTrasitions(index, state, state.onErrors).forEach((errorTransitions) => edges.push(errorTransitions));
-      }
-
-      break;
-    }
-    case "event": {
-      const state = node as Specification.IEventstate;
-
-      if (state.transition) {
-        edges.push(getTransition(index, state, state.transition));
-      }
-
-      if (state.onErrors) {
-        getErrorTrasitions(index, state, state.onErrors).forEach((errorTransitions) => edges.push(errorTransitions));
-      }
-
-      break;
-    }
-    case "operation": {
-      const state = node as Specification.IOperationstate;
-
-      if (state.transition) {
-        edges.push(getTransition(index, state, state.transition));
-      }
-
-      if (state.onErrors) {
-        getErrorTrasitions(index, state, state.onErrors).forEach((errorTransitions) => edges.push(errorTransitions));
-      }
-
-      break;
-    }
+    case "sleep":
+    case "event":
+    case "operation":
     case "parallel": {
-      const state = node as Specification.Parallelstate;
+      const state = node as
+        | Specification.ISleepstate
+        | Specification.IEventstate
+        | Specification.IOperationstate
+        | Specification.Parallelstate;
 
       if (state.transition) {
         edges.push(getTransition(index, state, state.transition));
       }
 
       if (state.onErrors) {
-        getErrorTrasitions(index, state, state.onErrors).forEach((errorTransitions) => edges.push(errorTransitions));
+        getErrorTransitions(index, state, state.onErrors).forEach((errorTransitions) => edges.push(errorTransitions));
       }
 
       break;
     }
+    case "inject":
+    case "foreach":
+    case "callback": {
+      const state = node as Specification.IInjectstate | Specification.IForeachstate | Specification.ICallbackstate;
+
+      if (state.transition) {
+        edges.push(getTransition(index, state, state.transition));
+      }
+
+      break;
+    }
+
     case "switch": {
       const state = node as Specification.Switchstate;
 
       if ("dataConditions" in state) {
         const switchData = state as Specification.IDatabasedswitchstate;
         if (switchData.dataConditions) {
-          getConditionTrasitions(index, node, switchData.dataConditions).forEach((dataConditions) =>
+          getConditionTransitions(index, node, switchData.dataConditions).forEach((dataConditions) =>
             edges.push(dataConditions)
           );
         }
       } else {
         const switchEvent = state as Specification.IEventbasedswitchstate;
         if (switchEvent.eventConditions) {
-          getConditionTrasitions(index, node, switchEvent.eventConditions).forEach((eventConditions) =>
+          getConditionTransitions(index, node, switchEvent.eventConditions).forEach((eventConditions) =>
             edges.push(eventConditions)
           );
         }
       }
 
       if (state.defaultCondition?.transition) {
-        edges.push(getDefaultTrasition(index, state, state.defaultCondition.transition));
+        edges.push(getDefaultTransition(index, state, state.defaultCondition.transition));
       }
 
       if (state.onErrors) {
-        getErrorTrasitions(index, state, state.onErrors).forEach((errorTransitions) => edges.push(errorTransitions));
-      }
-
-      break;
-    }
-    case "inject": {
-      const state = node as Specification.IInjectstate;
-
-      if (state.transition) {
-        edges.push(getTransition(index, state, state.transition));
-      }
-
-      break;
-    }
-    case "foreach": {
-      const state = node as Specification.IForeachstate;
-
-      if (state.transition) {
-        edges.push(getTransition(index, state, state.transition));
-      }
-
-      break;
-    }
-    case "callback": {
-      const state = node as Specification.ICallbackstate;
-
-      if (state.transition) {
-        edges.push(getTransition(index, state, state.transition));
+        getErrorTransitions(index, state, state.onErrors).forEach((errorTransitions) => edges.push(errorTransitions));
       }
 
       break;
@@ -174,7 +128,7 @@ function buildSwfEdgesForNode(node: Unpacked<Specification.States>, index: numbe
   return edges;
 }
 
-function getCompensationTrasition(index: number, node: Unpacked<Specification.States>): SwfEdge {
+function getCompensationTransition(index: number, node: Unpacked<Specification.States>): SwfEdge {
   return buildSwfEdge(index, node, node.name!, node.compensatedBy!, "compensationTransition");
 }
 
@@ -183,17 +137,10 @@ function getTransition(
   node: Unpacked<Specification.States>,
   transition: string | Specification.ITransition
 ): SwfEdge {
-  let transitionStr: string | undefined = undefined;
-  if (typeof transition === "object") {
-    transitionStr = transition.nextState;
-  } else {
-    transitionStr = transition;
-  }
-
-  return buildSwfEdge(index, node, node.name!, transitionStr, "transition");
+  return buildSwfEdge(index, node, node.name!, getNextNodeFromTransition(transition), "transition");
 }
 
-function getErrorTrasitions(
+function getErrorTransitions(
   index: number,
   node: Unpacked<Specification.States>,
   errors: Specification.IError[]
@@ -201,35 +148,23 @@ function getErrorTrasitions(
   const errorTransitions: SwfEdge[] = [];
 
   errors.forEach((error) => {
-    let transitionStr: string | undefined = undefined;
-    if (typeof error.transition === "object") {
-      transitionStr = error.transition.nextState;
-    } else {
-      transitionStr = error.transition;
-    }
-
-    errorTransitions.push(buildSwfEdge(index, node, node.name!, transitionStr, "errorTransition"));
+    errorTransitions.push(
+      buildSwfEdge(index, node, node.name!, getNextNodeFromTransition(error.transition), "errorTransition")
+    );
   });
 
   return errorTransitions;
 }
 
-function getDefaultTrasition(
+function getDefaultTransition(
   index: number,
   node: Unpacked<Specification.States>,
   transition: string | Specification.ITransition
 ): SwfEdge {
-  let transitionStr: string | undefined = undefined;
-  if (typeof transition === "object") {
-    transitionStr = transition.nextState;
-  } else {
-    transitionStr = transition;
-  }
-
-  return buildSwfEdge(index, node, node.name!, transitionStr, "defaultConditionTransition");
+  return buildSwfEdge(index, node, node.name!, getNextNodeFromTransition(transition), "defaultConditionTransition");
 }
 
-function getConditionTrasitions(
+function getConditionTransitions(
   index: number,
   node: Unpacked<Specification.States>,
   conditions: Specification.Datacondition[] | Specification.Eventcondition[]
@@ -237,32 +172,29 @@ function getConditionTrasitions(
   const conditionTransitions: SwfEdge[] = [];
 
   conditions.forEach((condition) => {
-    // Specification.Enddeventcondition won't be created for now
-
     if ("eventRef" in condition) {
       const transitionEventCondition = condition as Specification.ITransitioneventcondition;
-
-      let transitionStr: string | undefined = undefined;
-      if (typeof transitionEventCondition.transition === "object") {
-        transitionStr = transitionEventCondition.transition.nextState;
-      } else {
-        transitionStr = transitionEventCondition.transition;
-      }
-
-      conditionTransitions.push(buildSwfEdge(index, node, node.name!, transitionStr, "eventConditionTransition"));
+      conditionTransitions.push(
+        buildSwfEdge(
+          index,
+          node,
+          node.name!,
+          getNextNodeFromTransition(transitionEventCondition.transition),
+          "eventConditionTransition"
+        )
+      );
     } else {
       // Specification.Enddatacondition won't be created for now
-
       const transitionDataCondition = condition as Specification.ITransitiondatacondition;
-
-      let transitionStr: string | undefined = undefined;
-      if (typeof transitionDataCondition.transition === "object") {
-        transitionStr = transitionDataCondition.transition.nextState;
-      } else {
-        transitionStr = transitionDataCondition.transition;
-      }
-
-      conditionTransitions.push(buildSwfEdge(index, node, node.name!, transitionStr, "dataConditionTransition"));
+      conditionTransitions.push(
+        buildSwfEdge(
+          index,
+          node,
+          node.name!,
+          getNextNodeFromTransition(transitionDataCondition.transition),
+          "dataConditionTransition"
+        )
+      );
     }
   });
 
@@ -287,4 +219,12 @@ function buildSwfEdge(
       index: index,
     },
   };
+}
+
+function getNextNodeFromTransition(transition: ITransition | string): string {
+  if (typeof transition === "object") {
+    return transition.nextState;
+  }
+
+  return transition;
 }

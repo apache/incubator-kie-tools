@@ -33,6 +33,12 @@ export function applyAutoLayoutToSwf({
     edges: Elk.ElkExtendedEdge[] | undefined;
   };
 }) {
+  //clear nodes and edges positioning
+  state.diagram.nodeIds = [];
+  state.diagram.nodesPosition = [];
+  state.diagram.edgeIds = [];
+  state.diagram.edgeWaypoints = [];
+
   // Nodes
   for (const topLevelElkNode of __readonly_autoLayoutedInfo.nodes ?? []) {
     visitNodeAndNested(topLevelElkNode, { x: 0, y: 0 }, (elkNode, positionOffset) => {

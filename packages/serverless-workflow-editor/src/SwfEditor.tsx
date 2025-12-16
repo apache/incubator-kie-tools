@@ -185,18 +185,12 @@ export const SwfEditorInternal = ({
   }, [isDiagramEditingInProgress, onModelChange, swf.model]);
 
   return (
-    <div ref={swfEditorRootElementRef} className={"kie-swf-editor--root"}>
-      <>
-        {
-          <div
-            className={"kie-tools--swf-editor--diagram-container"}
-            ref={diagramContainerRef}
-            data-testid={"kie-tools--swf-editor--diagram-container"}
-          >
-            <Diagram ref={diagramRef} container={diagramContainerRef} />
-          </div>
-        }
-      </>
+    <div
+      className={"kie-tools--swf-editor--diagram-container"}
+      ref={diagramContainerRef}
+      data-testid={"kie-tools--swf-editor--diagram-container"}
+    >
+      <Diagram ref={diagramRef} container={diagramContainerRef} />
     </div>
   );
 };
