@@ -79,7 +79,7 @@ export default defineConfig({
     locale: "en-US",
   },
   expect: {
-    timeout: buildEnv.playwrightBase.expectTimeout,
+    timeout: +buildEnv.playwrightBase.expectTimeout,
     toHaveScreenshot: {
       // An acceptable ratio of pixels that are different to the
       // total amount of pixels, between 0 and 1.

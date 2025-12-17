@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
  * or more contributor license agreements.  See the NOTICE file
@@ -17,25 +19,4 @@
  * under the License.
  */
 
-import { defineConfig } from "@playwright/test";
-import playwirghtBaseConfig from "@kie-tools/playwright-base/playwright.config";
-import merge from "lodash/merge";
-
-import { env } from "./env";
-const buildEnv: any = env; // build-env is not typed
-
-const customConfig = defineConfig({
-  use: {
-    baseURL: `http://localhost:${buildEnv.dmnEditor.storybook.port}`,
-  },
-  /* Run your local dev server before starting the tests */
-  webServer: {
-    command: "pnpm start",
-    url: `http://localhost:${buildEnv.dmnEditor.storybook.port}/iframe.html?args=&id=use-cases-empty--empty&viewMode=story`,
-    reuseExistingServer: true,
-    stdout: "pipe",
-    timeout: 180000,
-  },
-});
-
-export default defineConfig(merge(playwirghtBaseConfig, customConfig));
+require("./dist/bin");

@@ -33,7 +33,7 @@ const customConfig = defineConfig({
   webServer: {
     command: "pnpm start",
     url: `http://localhost:${buildEnv.scesimEditor.storybook.port}/iframe.html?args=&id=misc-empty--empty&viewMode=story`,
-    reuseExistingServer: !process.env.CI || true,
+    reuseExistingServer: true,
     stdout: "pipe",
     timeout: 180000,
   },

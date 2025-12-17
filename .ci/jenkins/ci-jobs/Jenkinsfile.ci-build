@@ -109,6 +109,13 @@ pipeline {
                             export KIE_TOOLS_BUILD__ignoreEndToEndTestFailures=false
                             export START_SERVER_AND_TEST_INSECURE=true
                             export CYPRESS_VERIFY_TIMEOUT=100000
+                            export PLAYWRIGHT_BASE__enableChromiumProject=true
+                            export PLAYWRIGHT_BASE__enableGoogleChromeProject=true
+                            export PLAYWRIGHT_BASE__enableWebkitProject=true
+                            export PLAYWRIGHT_BASE__projectTimeout=90000
+                            export PLAYWRIGHT_BASE__expectTimeout=30000
+                            export PLAYWRIGHT_BASE__retries=2
+                            export PLAYWRIGHT_BASE__workers=2
                             pnpm -r --workspace-concurrency=1 build:prod
                             '''.trim()
                         }
