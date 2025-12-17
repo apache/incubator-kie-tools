@@ -121,7 +121,7 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
                     .then(paths1 -> {
                         LOGGER.log(Level.FINE, "Searching WID using pattern: " + widPattern);
                         resourceContentService
-                                .list(widPattern, ResourceListOptions.assetFolder())
+                                .list(widPattern, ResourceListOptions.traversal())
                                 .then(paths2 -> {
                                     String[] paths = mergeTwoArrays(paths1, paths2);
                                     if (paths.length > 0) {

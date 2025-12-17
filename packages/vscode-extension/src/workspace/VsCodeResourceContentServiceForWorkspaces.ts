@@ -26,22 +26,17 @@ import {
   SearchType,
 } from "@kie-tools-core/workspace/dist/api";
 
-import { listFiles } from "isomorphic-git";
-import { Minimatch } from "minimatch";
 import * as __path from "path";
 import * as vscode from "vscode";
 import { RelativePattern } from "vscode";
 import { toFsPath } from "../paths/paths";
 import { KogitoEditorDocument } from "../VsCodeKieEditorController";
-import { ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders } from "./VsCodeResourceContentServiceIsomorphicGitFs";
 import { getNormalizedPosixPathRelativeToWorkspaceRoot } from "./workspaceRoot";
 
 /**
  * Implementation of a ResourceContentService using the vscode apis to list/get assets.
  */
 export class VsCodeResourceContentServiceForWorkspaces implements ResourceContentService {
-  private readonly isomorphicGitFs = new ReadonlyIsomorphicGitFsForVsCodeWorkspaceFolders();
-
   constructor(
     private readonly args: { workspaceRootAbsoluteFsPath: string; document: KogitoEditorDocument["document"] }
   ) {}
@@ -59,105 +54,50 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
           )
         : this.args.workspaceRootAbsoluteFsPath;
 
-    // The vscode API will read all files, including the .gitignore ones,
-    // making this action is less performatic than the git ls-files which will
-    // automatically exclude the .gitignore files.
-
-    let gitNormalizedPosixPathsRelativeToTheBasePath: string[] = [];
-    try {
-      console.debug("VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Trying to use isomorphic-git to read dir.");
-      const normalizedPosixPathsRelativeToTheBasePath = await listFiles({
-        fs: this.isomorphicGitFs,
-        dir: this.args.workspaceRootAbsoluteFsPath,
-      });
-      console.debug("VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Success on using isomorphic-git!");
-
-      const minimatch = new Minimatch(pattern);
-      const regexp = minimatch.makeRe(); // The regexp is ~50x faster than the direct match using glob.
-      // e.g. src/main/resources/com/my/module
-      const openFileDirectoryNormalizedPosixPathRelativeToTheWorkspaceRoot = __path.dirname(
-        getNormalizedPosixPathRelativeToWorkspaceRoot(this.args.document)
-      );
-
-      gitNormalizedPosixPathsRelativeToTheBasePath = normalizedPosixPathsRelativeToTheBasePath.filter((p) => {
-        const matchesPattern =
-          // Adding a leading slash here to make the regex have the same behavior as the glob with **/* pattern.
-          regexp.test("/" + p) ||
-          // check on the asset folder for *.{ext} pattern
-          // the regex doesn't support "\" from Windows paths, requiring to test against POSIX paths
-          // relative to `this.args.document`, e.g. ../../../src/main/java/com/my/module/MyClass.java
-          regexp.test(__path.posix.relative(openFileDirectoryNormalizedPosixPathRelativeToTheWorkspaceRoot, p));
-
-        const conformsToSearchType =
-          !opts ||
-          opts.type === SearchType.TRAVERSAL ||
-          (opts.type === SearchType.ASSET_FOLDER &&
-            __path
-              .join(baseAbsoluteFsPath, toFsPath(p))
-              .startsWith(
-                __path.join(
-                  baseAbsoluteFsPath,
-                  toFsPath(openFileDirectoryNormalizedPosixPathRelativeToTheWorkspaceRoot)
-                )
-              ));
-
-        return matchesPattern && conformsToSearchType;
-      });
-    } catch (error) {
-      console.debug(
-        "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Failed to use isomorphic-git to read dir. Falling back to VS Code API.",
-        error
-      );
-    }
-
     // Normalize incoming pattern to POSIX for VS Code globbing
     const posixPattern = pattern.replace(/\\/g, "/");
-    const { staticPrefix, remainingGlob } = this.splitStaticPrefix(posixPattern);
+    const { leadingFolderOfPattern, trailingPattern } =
+      this.splitPosixPatternForLeadingFolderAndTrailingPattern(posixPattern);
 
     let theMostSpecificFolder = baseAbsoluteFsPath;
-    const globRelativeToBase = remainingGlob || posixPattern;
+    let globRelativeToBase = posixPattern;
 
     // In case of ASSET_FOLDER we are done, see baseAbsoluteFsPath creation
     if (opts?.type !== SearchType.ASSET_FOLDER) {
-      theMostSpecificFolder = staticPrefix ? __path.join(baseAbsoluteFsPath, staticPrefix) : baseAbsoluteFsPath;
+      theMostSpecificFolder = leadingFolderOfPattern
+        ? __path.join(baseAbsoluteFsPath, leadingFolderOfPattern)
+        : baseAbsoluteFsPath;
+      globRelativeToBase = trailingPattern || posixPattern;
     }
 
     const relativePattern = new RelativePattern(theMostSpecificFolder, globRelativeToBase);
 
-    const vscodeFoundFiles = await vscode.workspace.findFiles(relativePattern);
+    const defaultExcludes = "**/{target,dist,node_modules}";
+    const vscodeFoundFiles = await vscode.workspace.findFiles(relativePattern, defaultExcludes);
     const vscodeNormalizedPosixPathsRelativeToTheBasePath = vscodeFoundFiles.map((uri) =>
       vscode.workspace.asRelativePath(uri, false).replace(/\\/g, "/")
     );
 
     console.debug(
-      "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: Git found files [%s]",
-      gitNormalizedPosixPathsRelativeToTheBasePath
-    );
-    console.debug(
-      "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: VS Code found files [%s]",
+      "VS CODE RESOURCE CONTENT API IMPL FOR WORKSPACES: VS Code found files %s",
       vscodeNormalizedPosixPathsRelativeToTheBasePath
     );
 
-    return new ResourcesList(
-      pattern,
-      Array.from(
-        new Set([...gitNormalizedPosixPathsRelativeToTheBasePath, ...vscodeNormalizedPosixPathsRelativeToTheBasePath])
-      )
-    );
+    return new ResourcesList(pattern, vscodeNormalizedPosixPathsRelativeToTheBasePath);
   }
 
   /**
    * Detects if a path segment contains glob "magic" characters (e.g., *, ?, [], {}, !, or extglobs like +(…), *(…), ?(…), !(…)).
-   * @param seg - The path segment to check.
+   * @param pathSegment - The path segment to check.
    * @returns True if the segment contains glob magic, false otherwise.
    */
-  private hasGlobMagic(seg: string): boolean {
+  private hasGlobMagic(pathSegment: string): boolean {
     // *, ?, [], {}, !, and simple extglobs like +(…), *(…), ?(…), !(…)
-    return /[*?[\]{},!]/.test(seg) || /\([^)]+\)/.test(seg);
+    return /[*?[\]{},!]/.test(pathSegment) || /\([^)]+\)/.test(pathSegment);
   }
 
   /**
-   * Splits a POSIX-style path (e.g., "a/b/c") into its non-empty segments.
+   * Splits a POSIX-style path (e.g., "a/b/c") into its non-empty segments ["a", "b", "c"].
    * @param path - The POSIX path string to split.
    * @returns An array of non-empty path segments.
    */
@@ -166,15 +106,18 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
   }
 
   /**
-   * Given a glob pattern (e.g. org/model/*.txt), returns:
+   * Given a posix pattern (e.g. org/model/*.txt), returns:
    *  - staticPrefix (org/model): leading directory segments with no glob magic, may be empty
    *  - remainingGlob (*.txt): the rest of the pattern (dirs + filename) relative to staticPrefix
    */
-  private splitStaticPrefix(pattern: string): { staticPrefix: string; remainingGlob: string } {
+  private splitPosixPatternForLeadingFolderAndTrailingPattern(pattern: string): {
+    leadingFolderOfPattern: string;
+    trailingPattern: string;
+  } {
     const segments = this.splitPosixSegments(pattern);
 
     if (segments.length === 1) {
-      return { staticPrefix: "", remainingGlob: segments[0] };
+      return { leadingFolderOfPattern: "", trailingPattern: segments[0] };
     }
 
     let i = 0;
@@ -182,10 +125,10 @@ export class VsCodeResourceContentServiceForWorkspaces implements ResourceConten
       i++;
     }
 
-    const staticPrefix = segments.slice(0, i).join("/");
-    const remainingGlob = segments.slice(i).join("/") || "";
+    const leadingFolderOfPattern = segments.slice(0, i).join("/");
+    const trailingPattern = segments.slice(i).join("/") || "";
 
-    return { staticPrefix, remainingGlob };
+    return { leadingFolderOfPattern, trailingPattern };
   }
 
   public async get(
