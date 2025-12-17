@@ -146,6 +146,7 @@
     <version.angus.mail>2.0.5</version.angus.mail>
     <version.nimbus.jose.jwt>9.37.4</version.nimbus.jose.jwt>
     <version.io.vertx>4.5.22</version.io.vertx>
+    <version.org.lz4.java>1.8.1</version.org.lz4.java>
     <!-- End of various transitive overrides. -->
   </properties>
 
@@ -167,6 +168,11 @@
         <groupId>io.vertx</groupId>
         <artifactId>vertx-web</artifactId>
         <version>${version.io.vertx}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.lz4</groupId>
+        <artifactId>lz4-java</artifactId>
+        <version>${version.org.lz4.java}</version>
       </dependency>
       <!-- End of various transitive overrides. -->
 
