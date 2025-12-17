@@ -57,7 +57,7 @@
     <version.org.webjars.bower.d3js>5.5.0</version.org.webjars.bower.d3js>
     <version.org.webjars.npm.echarts>5.4.2</version.org.webjars.npm.echarts>
     <version.org.webjars.bower.c3>0.7.20</version.org.webjars.bower.c3>
-    <version.org.webjars.npm.js-yaml>4.1.0</version.org.webjars.npm.js-yaml>
+    <version.org.webjars.npm.js-yaml>4.1.1</version.org.webjars.npm.js-yaml>
     <version.org.webjars.bower.d3geoprojection>2.5.1</version.org.webjars.bower.d3geoprojection>
     <version.org.webjars.npm.marked>4.3.0</version.org.webjars.npm.marked>
     <version.org.webjars.npm.jsonata>1.8.7</version.org.webjars.npm.jsonata>
