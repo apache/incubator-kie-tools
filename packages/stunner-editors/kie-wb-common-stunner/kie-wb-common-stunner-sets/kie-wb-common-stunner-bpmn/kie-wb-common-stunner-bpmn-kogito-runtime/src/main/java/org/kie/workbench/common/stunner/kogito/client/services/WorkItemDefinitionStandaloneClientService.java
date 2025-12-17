@@ -106,11 +106,15 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
     private Promise<Collection<WorkItemDefinition>> allWorkItemsLoader(Path openedDiagramPath) {
 
         final int lastSlashIndex = openedDiagramPath != null ? openedDiagramPath.toURI().lastIndexOf('/') : -1;
-        final String directoryPath = (lastSlashIndex != -1) 
+        final String openedDiagramFolderRelativeToTheWorkspace = (lastSlashIndex != -1) 
             ? openedDiagramPath.toURI().substring(0, lastSlashIndex + 1) 
             : ""; 
 
-        final String widPattern = "/" + ((openedDiagramPath == null || isEmpty(directoryPath)) ?  RESOURCE_ALL_WID_PATTERN : directoryPath + RESOURCE_ALL_WID_PATTERN);
+        // We construct the `widPattern` in this complicated manner because of multiple ResourceContentImplementations
+        // VsCodeResourceContentServiceForWorkspaces - that has access to the currently opened file location - SearchType.ASSET_FOLDER could be used
+        // WorkspaceService - that has no access to the currently opened file location - SearchType.ASSET_FOLDER could not be used
+        // As a workaround we include folder into `widPattern` and use SearchType.TRAVERSAL
+        final String widPattern = "/" + ((openedDiagramPath == null || isEmpty(openedDiagramFolderRelativeToTheWorkspace)) ?  RESOURCE_ALL_WID_PATTERN : openedDiagramFolderRelativeToTheWorkspace + RESOURCE_ALL_WID_PATTERN);
         
         return promises.create((success, failure) -> {
             registry.clear();
@@ -169,11 +173,11 @@ public class WorkItemDefinitionStandaloneClientService implements WorkItemDefini
     private Promise<Collection<WorkItemDefinition>> workItemsLoader(final String path,
                                                                     final Collection<WorkItemDefinition> loaded) {
         int lastDirIndex = path.lastIndexOf('/');
-        final String directory = (lastDirIndex >= 0) ? path.substring(0, lastDirIndex) + "/" : "";
+        final String openedDiagramFolderRelativeToTheWorkspace = (lastDirIndex >= 0) ? path.substring(0, lastDirIndex) + "/" : "";
         if (nonEmpty(path)) {
             return resourceContentService
                     .get(path)
-                    .then(value -> getPromises(parse(value), loaded, directory));
+                    .then(value -> getPromises(parse(value), loaded, openedDiagramFolderRelativeToTheWorkspace));
         }
         return promises.resolve(emptyList());
     }
