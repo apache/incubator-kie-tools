@@ -90,7 +90,7 @@ You will need:
 
 - Java 17+ installed
 - Environment variable JAVA_HOME set accordingly
-- Maven 3.9.11+ installed
+- Maven 3.9.6+ installed
 
 ### Compile and Run in Local Dev Mode
 
