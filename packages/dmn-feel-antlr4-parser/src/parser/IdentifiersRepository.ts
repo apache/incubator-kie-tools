@@ -284,6 +284,7 @@ export class IdentifiersRepository {
             identifierDefinedByTheContext: parameter["@_name"] ?? "<parameter>",
             kind: FeelSyntacticSymbolNature.Parameter,
             parentContext: parentElement,
+            typeRef: parameter["@_typeRef"],
             applyValueToSource: (value) => {
               parameter["@_name"] = value;
             },
